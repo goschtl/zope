@@ -13,40 +13,17 @@
 ##############################################################################
 """Use-Configuration view for utilities.
 
-$Id: useconfiguration.py,v 1.4 2003/04/08 19:32:21 fdrake Exp $
+$Id: useconfiguration.py,v 1.5 2003/04/28 16:52:08 gvanrossum Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.services.configuration import AddComponentConfiguration
 from zope.app.form.widget import CustomWidget
-from zope.app.interfaces.services.configuration import IUseConfiguration
-from zope.app.traversing import traverse
-from zope.component import getAdapter, getServiceManager, getView
+from zope.component import getServiceManager, getView
 from zope.interface.implements import flattenInterfaces
 from zope.proxy.introspection import removeAllProxies
 from zope.publisher.browser import BrowserView
 
-class UseConfiguration(BrowserView):
-    """View for displaying the configurations for a utility.
-    """
-
-    def uses(self):
-        """Get a sequence of configuration summaries
-        """
-        component = self.context
-        useconfig = getAdapter(component, IUseConfiguration)
-        result = []
-        for path in useconfig.usages():
-            config = traverse(component, path)
-            url = getView(config, 'absolute_url', self.request)
-            result.append({'name': config.name,
-                           'interface': config.interface.__name__,
-                           'path': path,
-                           'url': url(),
-                           'status': config.status,
-                           })
-        return result
-        
 
 class UtilityInterfaceWidget(InterfaceWidget):
     """Custom widget to select an interface from the component's interfaces.

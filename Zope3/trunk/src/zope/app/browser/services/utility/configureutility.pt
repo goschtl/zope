@@ -5,13 +5,13 @@
      >
 
 <h2 i18n:translate="" tal:condition="request/name">
-  Utility configurations for interface
+  Utility registrations for interface
   <span tal:replace="request/interface" i18n:name="interface"/>
   with name
   <span tal:replace="request/name" i18n:name="utility_name" />
 </h2>
 <h2 i18n:translate="" tal:condition="not:request/name">
-  Utility configurations for interface
+  Utility registrations for interface
   <span tal:replace="request/interface" i18n:name="interface"/>
 </h2>
 

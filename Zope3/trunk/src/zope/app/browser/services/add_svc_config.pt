@@ -4,13 +4,13 @@
 
       <form action="add_svc_config.html">
 
-        <p>Configure this object to provide the following service(s):
+        <p>Register this object to provide the following service(s):
 
         <table>
 
           <thead>
             <tr>
-              <th>Configure</th>
+              <th>Register</th>
               <th>Service name</th>
               <th>Activate</th>
             </tr>

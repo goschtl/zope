@@ -23,16 +23,16 @@
       menu="zmi_views" title="Connections"
       />
 
-<!-- Browser directives for configuring individual connection objects -->
+<!-- Browser directives for registering individual connection objects -->
 
-  <!-- Configuration page for connection objects.  You get here by
-       clicking on the (configure) link for a particular connection
-       in the "Connections" tab of the connection service.  It shows
-       a menu of different configurations, at most one of which
-       is active.  You can activate a different configuration, or
-       click on an individual configuration to edit it.
-       (Note that this page doesn't really apply to a single connection,
-       it applies to a single connection name. -->
+  <!-- Registration page for connection objects.  You get here by
+       clicking on the (change registration) link for a particular
+       connection in the "Connections" tab of the connection service.
+       It shows a menu of different registration, at most one of which
+       is active.  You can activate a different registration, or click
+       on an individual registration to edit it.  (Note that this page
+       doesn't really apply to a single connection, it applies to a
+       single connection name. -->
   <page
       for="zope.app.interfaces.services.connection.ILocalConnectionService"
       name="configureConnection.html"
@@ -42,12 +42,12 @@
       />
 
   <!-- When creating a new connection object, you are taken to this
-       form to configure it.  The form lets you the connection
-       parameters, a permission, and a registration status
-       (Unregistered, Registered or Active). -->
+       form to register it.  The form lets you define the connection
+       name, a permission, and a registration status (Unregistered,
+       Registered or Active). -->
   <!--TBD: class AddCacheConfiguration-->
   <addform
-      label="New Connection Configuration"
+      label="New Connection Registration"
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
       name="addConfiguration.html"
       schema="zope.app.interfaces.services.connection.IConnectionConfiguration"
@@ -59,13 +59,13 @@
       fields="name componentPath permission status"
       />
 
-  <!-- When editing the configuration of an existing connection object,
+  <!-- When editing the registration of an existing connection object,
        you are taken to this form.  It is similar to the above add
        form, but doesn't let you change the name or path.
        (Thus leaving only permission and registration status.) -->
   <editform
       menu="zmi_views" title="Edit"
-      label="Connection Configuration"
+      label="Edit Connection Registration"
       name="index.html"
       schema="zope.app.interfaces.services.connection.IConnectionConfiguration"
       permission="zope.ManageServices"

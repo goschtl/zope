@@ -13,7 +13,7 @@
 
 <div metal:fill-slot="body">
 
-  <h2>Configurations for service
+  <h2>Registrations for service
     <i tal:content="request/type|default">No service type specified</i>
   </h2>
 
@@ -26,7 +26,7 @@
       <thead>
         <tr> <td></td> 
              <th align="left">Service</th> 
-             <th align="left">Configuration</th>
+             <th align="left">Registration</th>
         </tr>
       </thead>
 
@@ -42,7 +42,7 @@
           </td>
           <td><a href="foo"
                  tal:content="config/id"
-                 tal:attributes="href config/config">Configuration</a>
+                 tal:attributes="href config/config">Registration</a>
           </td>
         </tr>
 

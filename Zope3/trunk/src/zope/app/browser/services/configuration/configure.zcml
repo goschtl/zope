@@ -22,7 +22,7 @@
     schema=
     "zope.app.interfaces.services.configuration.INamedComponentConfiguration."
     menu="zmi_views"
-    label="Service Configuration"
+    label="Edit Registration"
     permission="zope.ManageServices"
     fields="name componentPath permission status"
     />

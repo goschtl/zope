@@ -3,10 +3,10 @@
 <div metal:define-macro="body">
 <div tal:define="registries view/update">
 
-  <h2 metal:define-slot="heading">Fruits configured in this fruits manager.</h2>
+  <h2 metal:define-slot="heading">Registered fruits in this fruits manager.</h2>
 
   <div tal:condition="not:registries">
-       <p metal:define-slot="empty_text">No fruits have been configured</p>
+       <p metal:define-slot="empty_text">No fruits have been registered</p>
   </div>
 
   <div tal:condition="registries">
@@ -47,10 +47,10 @@
 
   </div>
 
-  <p metal:define-slot="help_text">To configure a fruit, add a fruit component
+  <p metal:define-slot="help_text">To register a fruit, add a fruit component
      to a <em>package</em> in <a href="Packages">Packages</a> or to the <a
      href="Packages/default">default package</a>. After the fruit is added, add
-     a fruit configuration that configures the component to provide a fruit.
+     a fruit registration that registers the component to provide a fruit.
      These instructions may not apply, depending what kind of fruit you have.
   </p>
 

@@ -13,18 +13,18 @@
 <div metal:fill-slot="body">
 
   <h2>
-    Configured services in this service manager
+    Services registered in this service manager
   </h2>
 
   <div tal:define="registries view/listConfiguredServices">
 
-      <p tal:condition="not:registries">No services are configured.</p>
+      <p tal:condition="not:registries">No services are registered.</p>
 
       <div tal:condition="registries">
         <p>Unless a service is disabled, the service name
-           links to the active service.  The (configure) link allows
-           activating a different implementation or disabling the
-           service altogether.
+           links to the active service.  The (change registration)
+           link allows activating a different implementation or
+           disabling the service altogether.
         </p>
 
         <table>
@@ -46,12 +46,16 @@
                    tal:attributes=
                    "href string:@@serviceActivation.html?type=${reg/name}"
                    >
-                  (configure)
+                  (change registration)
                 </a>
               </td>
             </tr>
           <tbody>
         </table>
+
+        <p><a href="default/AddService">Add a service to this service
+           mananger</a></p>
+
       </div>
 
   </div>

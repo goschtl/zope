@@ -4,7 +4,7 @@
      i18n:domain="zope"
      >
 
-<h2 i18n:translate="">Cache configurations for
+<h2 i18n:translate="">Cache registrations for
     <i tal:content="request/name" i18n:name="cache_name">name</i></h2>
 
 <form method="POST"

@@ -4,7 +4,7 @@
      i18n:domain="zope"
      >
 
-<h2 i18n:translate="">Connection configurations for
+<h2 i18n:translate="">Connection registrations for
     <i tal:content="request/name" i18n:name="connection_name">name</i></h2>
 
 <form method="POST"

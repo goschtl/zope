@@ -3,10 +3,10 @@
 <div metal:define-macro="body">
 <div tal:define="registries view/update">
 
-  <h2 metal:define-slot="heading">Fruits configured in this fruits manager.</h2>
+  <h2 metal:define-slot="heading">Registered fruits in this fruits manager.</h2>
 
   <div tal:condition="not:registries">
-       <p metal:define-slot="empty_text">No fruits have been configured</p>
+       <p metal:define-slot="empty_text">No fruits have been registered</p>
   </div>
 
   <div tal:condition="registries">

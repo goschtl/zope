@@ -47,7 +47,7 @@
        an interface, a permission, and a registration status
        (Unregistered, Registered or Active). -->
   <addform
-      label="New Utility Configuration"
+      label="New Utility Registration"
       for="zope.app.interfaces.services.utility.ILocalUtility"
       name="addConfiguration.html"
       schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
@@ -65,7 +65,7 @@
        (Thus leaving only permission and registration status.) -->
   <editform
       menu="zmi_views" title="Edit"
-      label="Utility Configuration"
+      label="Utility Registration"
       name="index.html"
       schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
       permission="zope.ManageServices"

@@ -5,7 +5,7 @@
      tal:define="configs view/getConfigs"
      >
 
-<h2 i18n:translate="">Configured utilities in this utility service:</h2>
+<h2 i18n:translate="">Utilities registered in this utility service:</h2>
 
 <table tal:condition="configs">
   <tbody>
@@ -36,7 +36,7 @@
         <a href="."
            tal:attributes="href config/configurl"
            i18n:translate=""
-           >(configure)</a>
+           >(change registration)</a>
       </td>
     </tr>
   </tbody>

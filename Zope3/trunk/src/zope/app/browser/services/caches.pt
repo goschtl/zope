@@ -5,7 +5,7 @@
      tal:define="configs view/getConfigs"
      >
 
-<h2 i18n:translate="">Configured caches in this cache service:</h2>
+<h2 i18n:translate="">Caches registered in this cache service:</h2>
 
 <table tal:condition="configs">
   <tbody>
@@ -33,7 +33,7 @@
         <a href="."
            tal:attributes="href config/configurl"
            i18n:translate=""
-           >(configure)</a>
+           >(change registration)</a>
       </td>
     </tr>
   </tbody>

@@ -1,11 +1,11 @@
 <html metal:use-macro="views/standard_macros/page">
   <head>
-    <title>View Service Configuration</title>
+    <title>View Registration Manager</title>
   </head>
 
   <body metal:fill-slot="body">
 
-    <h2>Configuration Manager</h2>
+    <h2>Registration Manager</h2>
 
     <form action="." method="POST"
           tal:define="message view/update"

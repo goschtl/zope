@@ -29,7 +29,7 @@
        <th>For/<br>Provided</th>
        <th tal:condition="layer">Layer</th>
        <th tal:condition="viewName">View name</th>
-       <th>Configuration</th>
+       <th>Registration</th>
        
     </tr>
     

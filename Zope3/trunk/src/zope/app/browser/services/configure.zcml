@@ -258,7 +258,7 @@
       keyword_arguments = "forInterface presentationType class_
                            viewName permission"
       set_before_add = "layer"
-      label = "Configure a view" 
+      label = "Register a view" 
       permission="zope.ManageServices" 
       fields="forInterface viewName presentationType
               class_ layer permission status"
@@ -304,7 +304,7 @@
       content_factory = ".view.PageConfiguration"
       keyword_arguments = "forInterface class_ viewName permission"
       set_before_add = "template layer"
-      label = "Configure a view page"
+      label = "Register a view page"
       permission="zope.ManageServices"
       fields="forInterface viewName
               template class_ layer permission status"
