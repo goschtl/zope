@@ -252,7 +252,8 @@
         interface="zope.app.interfaces.container.IReadContainer" />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer" />
+        interface="zope.app.interfaces.container.IWriteContainer"
+        attributes="getConfigurationManager" />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 

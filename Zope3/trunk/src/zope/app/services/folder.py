@@ -13,7 +13,7 @@
 ##############################################################################
 """A package contains components and component configurations.
 
-$Id: folder.py,v 1.2 2003/03/23 17:13:42 jim Exp $
+$Id: folder.py,v 1.3 2003/03/23 17:20:48 jim Exp $
 """
 
 __metaclass__ = type
@@ -49,7 +49,7 @@ class SiteManagementFolder(BTreeContainer):
         else:
             raise SystemError("Couldn't find an configuration manager")
     
-
+    getConfigurationManager = ContextMethod(getConfigurationManager)
 
 class SiteManagementFolders(BTreeContainer):
     __implements__ = ISiteManagementFolders
