@@ -378,12 +378,24 @@ class AdapterLookup(object):
 
         return value
 
-    def queryAdapter(self, object, interface, name='', default=None):
+    def adapter_hook(self, interface, object, name='', default=None):
+        """Hook function used when calling interfaces.
+
+        When called from Interface.__adapt__, only the interface and
+        object parameters will be passed.
+        
+        """
         factory = self.lookup1(providedBy(object), interface, name)
         if factory is not None:
             return factory(object)
 
         return default
+
+    def queryAdapter(self, object, interface, name='', default=None):
+        # Note that we rarely call queryAdapter directly
+        # We usually end up calling adapter_hook
+        return self.adapter_hook(interface, object, name, default)
+
 
     def subscriptions(self, required, provided):
         if provided is None:
@@ -483,8 +495,10 @@ class AdapterRegistry(object):
             except KeyError:
                 pass
         lookup = AdapterLookup(self, surrogates, _remove)
+        
         for name in ('lookup', 'lookup1', 'queryAdapter', 'get',
-                     'subscriptions', 'queryMultiAdapter', 'subscribers'
+                     'adapter_hook', 'subscriptions',
+                     'queryMultiAdapter', 'subscribers',
                      ):
             setattr(self, name, getattr(lookup, name))
 
