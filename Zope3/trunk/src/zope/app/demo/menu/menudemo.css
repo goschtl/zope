@@ -1,0 +1,98 @@
+a {
+  color: black;
+  text-decoration: none;
+}
+
+img#appicon {
+  float: left;
+  vertical-align: bottom;
+  clear: both;
+}
+
+img.itemicon {
+  float: left;
+  vertical-align: bottom;
+}
+
+div.window {
+  border: 2px #529CEC solid;
+  margin: 10pt;
+  padding: 0;
+}
+
+div.titlebar {
+  background: #529CEC;
+  padding: 3px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+}
+
+div.menubar {
+  background: #EEE;
+  padding: 6px;
+  padding-left: 10px;
+}
+
+div.menubar span {
+  margin-right: 15px;
+}
+
+
+ul {
+  padding: 0; 
+  margin: 0; 
+}
+
+ul li {
+  list-style-type: none;
+  position: relative; 
+  margin: 0; 
+  padding: 2px;
+  background: #EEE;
+}
+
+ul ul {
+  display: none;
+}
+
+ul li:hover > ul {
+  display: block; 
+  position: absolute; 
+  top: -1px; 
+  left: 100%;
+}
+
+li a {
+  display: block; 
+  padding: 1px; 
+  text-decoration: none;
+  background: #EEE;
+}
+
+ul.topmenu li a:hover {
+  background: #DDD;
+}
+
+li.sub > a {
+  background: #EEE;
+}
+
+ul.topmenu {
+  width: 6em;
+  float: left;
+}
+
+ul.topmenu ul {
+  border: 1px solid #BBB;
+}
+
+ul.topmenu > li:hover > ul {
+  width: 10em; 
+  top: 1.5em; 
+  left: -3px;
+}
+
+ul ul {
+  width: 10em;
+}
