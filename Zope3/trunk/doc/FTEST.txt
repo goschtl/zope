@@ -73,3 +73,9 @@ Zope 3 Functional Testing
 
        from transaction import get_transaction
        get_transaction().commit()
+
+   - Functional tests should not change any global registries.  In particular,
+     functional unit test cases should not inherit from
+     zope.testing.cleanup.CleanUp or any of the PlacelessSetup classes that
+     inherit from CleanUp.
+
