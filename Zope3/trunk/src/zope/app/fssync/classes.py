@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.13 2003/08/17 06:06:34 philikon Exp $
+$Id: classes.py,v 1.14 2003/09/02 20:32:09 fdrake Exp $
 """
 
 from zope.app.interfaces.fssync import IObjectFile
@@ -95,8 +95,6 @@ class Default(ObjectEntryAdapter):
 
     def getBody(self):
         "See IObjectFile"
-        if type(self.context) is str:
-            return self.context
         return dumps(self.context)
 
     def setBody(self, body):
