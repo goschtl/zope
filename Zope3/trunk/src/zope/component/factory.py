@@ -16,6 +16,7 @@
 $Id$
 """
 from zope.interface import implements, implementedBy
+from zope.interface.declarations import Implements
 from zope.component.interfaces import IFactory
 
 class Factory(object):
@@ -26,18 +27,23 @@ class Factory(object):
     """
     implements(IFactory)
 
-    def __init__(self, callable, title='', description=''):
+    def __init__(self, callable, title='', description='', interfaces=None):
         self._callable = callable
         self.title = title
         self.description = description
+        self._interfaces = interfaces
 
     def __call__(self, *args, **kw):
         return self._callable(*args, **kw)
 
     def getInterfaces(self):
+        if self._interfaces is not None:
+            spec = Implements(*self._interfaces)
+            spec.__name__ = getattr(self._callable, '__name__', '[callable]')
+            return spec
         try:
             return implementedBy(self._callable)
         except TypeError:
-            # XXX This is a hack
-            # We really only support classes
-            return implementedBy(object())
+            spec = Implements()
+            spec.__name__ = getattr(self._callable, '__name__', '[callable]')
+            return spec
