@@ -13,12 +13,13 @@
 ##############################################################################
 """Interfaces for folders.
 
-$Id: folder.py,v 1.7 2003/12/03 05:41:26 jim Exp $
+$Id: folder.py,v 1.8 2003/12/18 08:00:57 jim Exp $
 """
-
 import zope.app.interfaces.services.registration 
 import zope.app.interfaces.container
 import zope.app.interfaces.services.service
+import zope.schema
+from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.interfaces.services.registration \
      import IRegistrationManagerContainer
 from zope.app.container.constraints import ItemTypePrecondition
@@ -34,6 +35,13 @@ class ISiteManagementFolder(
         """
     __setitem__.precondition = ItemTypePrecondition(
         zope.app.interfaces.services.registration.IRegisterable)
+
+    __parent__ = zope.schema.Field(
+        constraint = ContainerTypesConstraint(
+            zope.app.interfaces.services.service.ISiteManager,
+            IRegistrationManagerContainer,
+            ),
+        )
 
 class ISiteManagementFolders(
     zope.app.interfaces.container.IContainer,
