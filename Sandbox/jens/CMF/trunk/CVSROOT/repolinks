@@ -114,7 +114,6 @@
 /ZODB/src/persistent/pickle /Zope/lib/python/ExtensionClass/pickle
 /ZODB/src/ZopeUndo	    /Packages/ZopeUndo
 /ZODB/src/ZConfig           /Packages/ZConfig
-/ZODB/src/zLOG              /Packages/zLOG
 /ZODB/src/persistent	    /ZODB3/persistent
 /ZODB/src/scripts	    /ZODB3/Tools
 /ZODB/src/transaction	    /Zope3/src/transaction
