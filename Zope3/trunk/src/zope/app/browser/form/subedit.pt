@@ -1,10 +1,11 @@
 <div metal:define-macro="formbody">
-  <span tal:condition="view/label"
-      tal:content="view/label"
-      metal:define-slot="heading"
-      >
-Edit something
-  </span>
+  <h5 metal:define-slot="heading">
+    <a tal:attributes="href context/@@absolute_url"
+       tal:condition="view/label"
+       tal:content="view/label">
+         Edit something
+    </a>
+  </h5>
   <p tal:condition="view/fulledit_label">
     <a tal:attributes="href
          string:${context/@@absolute_url}/${view/fulledit_path}"

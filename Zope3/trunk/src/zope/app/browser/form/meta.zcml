@@ -78,7 +78,7 @@
 
           Many views are included in menus. It's convenient to name
           the menu in the page directive, rather than having to give a
-          separate menuItem directive.          
+          separate menuItem directive.
           </description>
         </attribute>
 
