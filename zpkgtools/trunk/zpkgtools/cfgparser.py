@@ -199,7 +199,12 @@ class Parser:
     def load(self):
         section = self.schema.getConfiguration()
         self.parse(section)
-        return self.schema.finishSection(section)
+        try:
+            return self.schema.finishSection(section)
+        except ConfigurationError, e:
+            e.lineno = self.lineno
+            e.url = self.url
+            raise
 
     def parse(self, section):
         done, line = self.nextline()
@@ -252,9 +257,19 @@ class Parser:
         # if name:
         #    name = name.lower()
         #
-        newsect = self.schema.startSection(section, type, name)
+        try:
+            newsect = self.schema.startSection(section, type, name)
+        except ConfigurationError, e:
+            e.lineno = self.lineno
+            e.url = self.url
+            raise
         if isempty:
-            self.schema.endSection(section, type, name, newsect)
+            try:
+                self.schema.endSection(section, type, name, newsect)
+            except ConfigurationError, e:
+                e.lineno = self.lineno
+                e.url = self.url
+                raise
             return section
         else:
             self.stack.append((type, name, section))
@@ -267,7 +282,12 @@ class Parser:
         opentype, name, prevsection = self.stack.pop()
         if type != opentype:
             self.error("unbalanced section end")
-        self.schema.endSection(prevsection, type, name, section)
+        try:
+            self.schema.endSection(prevsection, type, name, section)
+        except ConfigurationError, e:
+            e.lineno = self.lineno
+            e.url = self.url
+            raise
         return prevsection
 
     def handle_key_value(self, section, rest):
@@ -283,6 +303,7 @@ class Parser:
             self.schema.addValue(section, key, value)
         except ConfigurationError, e:
             e.lineno = self.lineno
+            e.url = self.url
             raise
 
     def replace(self, text):
