@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.8 2003/03/29 00:06:25 jim Exp $
+$Id: test_translationservice.py,v 1.9 2003/04/17 20:05:12 bwarsaw Exp $
 """
 import sys
 import unittest
@@ -107,21 +107,21 @@ class TestILocalTranslationService:
 
     def testAddUpdateDeleteMessage(self):
         service = self._service
-        self.assertEqual(service.translate('test', 'greeting',
+        self.assertEqual(service.translate('greeting', 'test',
                                            target_language='de'),
                          None)
-        self.assertEqual(service.translate('test', 'greeting',
+        self.assertEqual(service.translate('greeting', 'test',
                                            target_language='de', default=42),
                          42)
         service.addMessage('test', 'greeting', 'Hallo!', 'de')
-        self.assertEqual(service.translate('test', 'greeting',
+        self.assertEqual(service.translate('greeting', 'test',
                                            target_language='de'), 'Hallo!')
         service.updateMessage('test', 'greeting', 'Hallo Ihr da!', 'de')
-        self.assertEqual(service.translate('test', 'greeting',
+        self.assertEqual(service.translate('greeting', 'test',
                                            target_language='de'),
                          'Hallo Ihr da!')
         service.deleteMessage('test', 'greeting', 'de')
-        self.assertEqual(service.translate('test', 'greeting',
+        self.assertEqual(service.translate('greeting', 'test',
                                            target_language='de'), None)
 
 
@@ -269,12 +269,8 @@ class TestTranslationService(unittest.TestCase,
         eq = self.assertEqual
         raises = self.assertRaises
         # Test that the second argument is called `msgid'
-        eq(translate('default', msgid='short_greeting', target_language='en'),
+        eq(translate('short_greeting', 'default', target_language='en'),
            'Hello!')
-        # This is what the argument used to be called
-        raises(TypeError, translate, 'default', source='short_greeting',
-               target_language='en')
-
 
 
 def test_suite():

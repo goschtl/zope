@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.8 2003/04/11 13:20:12 mgedmin Exp $
+$Id: translationservice.py,v 1.9 2003/04/17 20:05:12 bwarsaw Exp $
 """
 import re
 from types import StringTypes, TupleType
@@ -71,7 +71,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         self._unregisterMessageCatalog(object.getLanguage(),
                                        object.getDomain(), name)
 
-    def translate(self, domain, msgid, mapping=None, context=None,
+    def translate(self, msgid, domain=None, mapping=None, context=None,
                   target_language=None, default=None):
         """See interface ITranslationService"""
         if domain is None:
@@ -96,7 +96,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
             # a translation server higher up the tree.
             ts = queryNextService(self, 'Translation')
             if ts is not None:
-                return ts.translate(domain, msgid, mapping, context,
+                return ts.translate(msgid, domain, mapping, context,
                                     target_language, default=default)
             else:
                 return default

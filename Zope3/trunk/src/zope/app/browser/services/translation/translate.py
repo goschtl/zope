@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation GUI
 
-$Id: translate.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: translate.py,v 1.3 2003/04/17 20:05:11 bwarsaw Exp $
 """
 from zope.app.browser.services.translation.basetranslationserviceview \
      import BaseTranslationServiceView
@@ -38,8 +38,8 @@ class Translate(BaseTranslationServiceView):
 
 
     def getTranslation(self, domain, msgid, target_lang):
-        return self.context.translate(domain, msgid,
-                                      target_language=target_lang)
+        return self.context.translate(
+            msgid, domain, target_language=target_lang)
 
 
     def getEditLanguages(self):
@@ -59,7 +59,7 @@ class Translate(BaseTranslationServiceView):
         msg_id = self.request['msg_id']
         for language in self.getEditLanguages():
             msg = self.request['msg_lang_%s' %language]
-            if msg != self.context.translate(domain, msg_id,
+            if msg != self.context.translate(msg_id, domain,
                                              target_language=language):
                 self.context.updateMessage(domain, msg_id, msg, language)
         return self.request.response.redirect(self.request.URL[-1])
@@ -85,7 +85,7 @@ class Translate(BaseTranslationServiceView):
             domain = self.request['edit-domain-'+key]
             for language in self.getEditLanguages():
                 msg = self.request['edit-%s-%s' %(language, key)]
-                if msg != self.context.translate(domain, msg_id,
+                if msg != self.context.translate(msg_id, domain,
                                                  target_language=language):
                     self.context.updateMessage(domain, msg_id, msg, language)
 

@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.11 2003/04/15 21:14:39 bwarsaw Exp $
+$Id: engine.py,v 1.12 2003/04/17 20:05:11 bwarsaw Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -64,9 +64,7 @@ class ZopeContext(Context):
         macro = removeAllProxies(macro)
         return macro
 
-    # XXX msgid should come first, with domain defaulting to None.  When msgid
-    # is a MessageID, domain tags along and needn't be specified.
-    def translate(self, domain, msgid, mapping=None, default=None):
+    def translate(self, msgid, domain=None, mapping=None, default=None):
         # When running Zope, request is a Proxy, but no mutation is done here,
         # so it is safe to remove all proxies
         request = removeAllProxies(self.request)

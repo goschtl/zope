@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation Service Message Export and Import Filters
 
-$Id: filters.py,v 1.3 2003/04/11 17:54:03 fdrake Exp $
+$Id: filters.py,v 1.4 2003/04/17 20:05:12 bwarsaw Exp $
 """
 import time, re
 from types import StringTypes
@@ -69,8 +69,7 @@ class GettextExportFilter:
         service = self.service
 
         for msgid in service.getMessageIdsOfDomain(domain):
-            msgstr = service.translate(domain, msgid,
-                                       target_language=language)
+            msgstr = service.translate(msgid, domain, target_language=language)
             msgstr = msgstr.encode('UTF-8')
             msgid = msgid.encode('UTF-8')
             output += _msg_template %(msgid, msgstr)

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.27 2003/04/16 20:25:30 fdrake Exp $
+$Id: widget.py,v 1.28 2003/04/17 20:05:11 bwarsaw Exp $
 """
 
 __metaclass__ = type
@@ -125,7 +125,7 @@ class BrowserWidget(Widget, BrowserView):
 
     def label(self):
         ts = getService(self.context.context, "Translation")
-        title = ts.translate("zope", self.title, context=self.request)
+        title = ts.translate(self.title, "zope", context=self.request)
         if title is None:
             title = self.title
         return '<label for="%s">%s</label>' % (
@@ -580,7 +580,7 @@ class RadioWidget(SingleItemsWidget):
 
     def label(self):
         ts = getService(self.context.context, "Translation")
-        title = ts.translate("zope", self.title, context=self.request)
+        title = ts.translate(self.title, "zope", context=self.request)
         if title is None:
             title = self.title
         # radio field's label isn't "for" anything
