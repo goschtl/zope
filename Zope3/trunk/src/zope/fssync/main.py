@@ -29,7 +29,7 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.29 2003/08/11 22:02:09 fdrake Exp $
+$Id: main.py,v 1.30 2003/08/12 16:47:21 fdrake Exp $
 """
 
 import os
@@ -66,7 +66,7 @@ def main():
     2 for command line syntax errors
     1 or other for later errors
     """
-    cmd = Command()
+    cmd = Command(usage=__doc__)
     for func, aliases, short, long in command_table:
         cmd.addCommand(func.__name__, func, short, long, aliases)
 
@@ -82,6 +82,9 @@ def main():
     except Error, msg:
         print >>sys.stderr, msg
         return 1
+
+    except SystemExit:
+        raise
 
     else:
         return None
