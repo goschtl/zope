@@ -44,10 +44,6 @@ zs Components/GreyThing \
   &Shared &DC &ZRDB \
   &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
 
-CHANGES -a ZBin/doc/CHANGES.txt
-
-Zope ZSrc CHANGES
-
 pcgi Components/pcgi2 pcgi_publisher.py
 
 
@@ -55,3 +51,49 @@ DCOraclePackage -d DCOracle DCOracle/DCOracle
 DCOracleSrc  -d src DCOracle/src
 
 ZOracleDA Packages/Products/ZOracleDA &DCOraclePackage &DCOracleSrc
+
+# KLM start
+
+lpAccessControl   -d lib/python/AccessControl Packages/AccessControl
+lpApp             -d lib/python/App Packages/App
+lpBoboPOS         -d lib/python/BoboPOS Packages/BoboPOS
+lpDateTime        -d lib/python/DateTime Packages/DateTime
+lpDocumentTemplate -d lib/Python/DocumentTemplate Packages/DocumentTemplate
+lpHelpSys         -d lib/python/HelpSys Packages/HelpSys
+lpZPublisher      -d lib/python/ZPublisher Packages/ZPublisher
+lpOFS             -d lib/python/OFS Packages/OFS
+lpPrincipiaHelp   -d lib/python/PrincipiaHelp Packages/PrincipiaHelp
+lpScheduler       -d lib/python/Scheduler Packages/Scheduler
+lpStructuredText  -d lib/python/StructuredText Packages/StructuredText
+lpTreeDisplay     -d lib/python/TreeDisplay Packages/TreeDisplay
+lpSearchIndex     -d lib/python/SearchIndex Packages/SearchIndex
+lpZClasses        -d lib/python/ZClasses Packages/ZClasses
+
+lpShared          -d lib/python/Shared Packages/Shared  __init__.py
+lpDC               -d lib/python/Shared/DC Packages/Shared/DC  __init__.py
+lpZRDB             -d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
+
+lpProducts        -d lib/python/Products Packages/Products  __init__.py
+lpOFSP           -d lib/python/Products/OFSP Packages/Products/OFSP
+lpMailHost       -d lib/python/Products/MailHost Packages/Products/MailHost
+lpExternalMethod -d lib/python/Products/ExternalMethod Packages/Products/ExternalMethod
+lpZSQLMethods    -d lib/python/Products/ZSQLMethods Packages/Products/ZSQLMethods
+lpZGadflyDA      -d lib/python/Products/ZGadflyDA Packages/Products/ZGadflyDA
+
+lExtensionClass -d python/Components/ExtensionClass Components/ExtensionClass
+lBTree -d python/Components/BTree Components/BTree
+lcPickle -d python/Components/cPickle Components/cPickle
+lzlib -d python/Components/zlib Components/zlib
+
+utilities ZUtil
+ZopeHTTPServer Components/ZopeHTTPServer
+
+Zope ZSrc &utilities &pcgi &ZopeHTTPServer \
+  Components/GreyThing \
+  &lExtensionClass &lBTree &lcPickle &lzlib \
+  &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate &lpHelpSys \
+  &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay &lpSearchIndex \
+  &lpShared &lpDC &lpZRDB \
+  &lpProducts &lpOFSP &lpMailHost &lpExternalMethod &lpZSQLMethods &lpZGadflyDA
+
+# KLM end
