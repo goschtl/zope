@@ -13,10 +13,12 @@
 ##############################################################################
 """
 
-$Id: testStartupDirectives.py,v 1.3 2002/12/12 18:35:27 gvanrossum Exp $
+$Id: testStartupDirectives.py,v 1.4 2002/12/19 23:05:22 gvanrossum Exp $
 """
 
 import unittest, sys, tempfile, os
+import logging
+
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup import \
      PlacefulSetup
 from Zope.App.StartUp.metaConfigure import SiteDefinition
@@ -62,14 +64,21 @@ class Test(PlacefulSetup, unittest.TestCase):
     def testUseLog(self):
         sd = self._createBlankSiteDefinition()
 
-        from zLOG.MinimalLogger import _log_dest
-
         self.assertEqual(sd.useLog(ContextStub()), [])
-        self.assertEqual(_log_dest, sys.stderr)
+        for h in logging.root.handlers:
+            if isinstance(h, logging.StreamHandler):
+                if h.stream is sys.stderr:
+                    break
+        else:
+            self.fail("Not logging to sys.stderr")
 
         self.assertEqual(sd.useLog(ContextStub(), _fsname), [])
-        from zLOG.MinimalLogger import _log_dest
-        self.assertEqual(_log_dest.name, open(_fsname, 'w').name)
+        for h in logging.root.handlers:
+            if isinstance(h, logging.FileHandler):
+                if h.baseFilename == _fsname:
+                    break
+        else:
+            self.fail("Not logging to _fsname")
 
 
     def testAddServer(self):

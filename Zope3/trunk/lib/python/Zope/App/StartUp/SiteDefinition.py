@@ -14,10 +14,12 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.9 2002/12/19 22:40:12 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.10 2002/12/19 23:05:22 gvanrossum Exp $
 """
 
 import sys
+import logging
+import asyncore
 
 # Import Configuration-related classes
 from Zope.Configuration.Action import Action
@@ -35,8 +37,6 @@ from Zope.Server.TaskThreads import ThreadedTaskDispatcher
 from Zope.App.ZopePublication.ZopePublication import ZopePublication
 
 from Persistence.Module import PersistentModuleImporter
-
-import asyncore, zLOG
 
 DEFAULT_STORAGE_FILE = 'Data.fs'
 DEFAULT_LOG_FILE = 'STDERR'
@@ -84,10 +84,10 @@ class SiteDefinition:
 
         if file in self._special_log_files.keys():
             file = self._special_log_files[file]
+            handler = logging.StreamHandler(file)
         else:
-            file = open(file, 'a')
-
-        zLOG._set_log_dest(file)
+            handler = logging.FileHandler(file)
+        logging.root.addHandler(handler)
         return []
 
 
