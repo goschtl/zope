@@ -15,7 +15,7 @@
 
 This boils down to distinguishing an astonishing number of cases.
 
-$Id: merger.py,v 1.8 2003/05/14 22:24:42 gvanrossum Exp $
+$Id: merger.py,v 1.9 2003/05/28 20:23:55 gvanrossum Exp $
 """
 
 import os
@@ -262,6 +262,10 @@ class Merger(object):
                 return ("Nothing", "Uptodate")
             else:
                 # Only local changes
+                if "conflict" in lmeta:
+                    if lmeta["conflict"] == os.path.getmtime(local):
+                        return ("Nothing", "Conflict")
+                    del lmeta["conflict"]
                 return ("Nothing", "Modified")
         else:
             # Some local changes; classify local changes

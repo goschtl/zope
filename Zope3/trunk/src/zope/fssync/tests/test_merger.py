@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.11 2003/05/28 14:40:04 gvanrossum Exp $
+$Id: test_merger.py,v 1.12 2003/05/28 20:24:03 gvanrossum Exp $
 """
 
 import os
@@ -183,6 +183,25 @@ class TestMerger(TempFiles):
 
     def test_spurious(self):
         self.runtest("a", None, None, None, None, "a", "Nothing", "Spurious")
+
+    def test_conflict_report(self):
+        local = self.tempfile("CONFLICT")
+        orig = self.tempfile("x")
+        remote = self.tempfile("x")
+        md = MockMetadata()
+        m = Merger(md)
+        lentry = md.getentry(local)
+        lentry["path"] = "/foo"
+        lentry["conflict"] = mtime = os.path.getmtime(local)
+        rentry = md.getentry(remote)
+        rentry["path"] = "/foo"
+        action, state = m.classify_files(local, orig, remote)
+        self.assertEqual((action, state), ("Nothing", "Conflict"))
+        self.assertEqual(lentry.get("conflict"), mtime)
+        lentry["conflict"] = mtime+100
+        action, state = m.classify_files(local, orig, remote)
+        self.assertEqual((action, state), ("Nothing", "Modified"))
+        self.assertEqual(lentry.get("conflict"), None)
 
     # XXX need test cases for anomalies, e.g. files missing or present
     # in spite of metadata, or directories instead of files, etc.
