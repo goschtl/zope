@@ -5,7 +5,13 @@
     <directive
        name="edit" 
        attributes="name schema label for layer permission class template"
-       handler=".EditView.directive"
+       handler=".EditView.edit"
+       />
+
+    <directive
+       name="subedit" 
+       attributes="name schema label for layer permission class template"
+       handler=".EditView.subedit"
        />
 
   </directives>

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: EditView.py,v 1.3 2002/12/01 10:22:33 jim Exp $
+$Id: EditView.py,v 1.4 2002/12/11 13:55:59 jim Exp $
 """
 
 from datetime import datetime
@@ -42,22 +42,20 @@ class EditView(BrowserView):
     errors = ()
     label = ''
 
-    generated_form = index = ViewPageTemplateFile('edit.pt')
-
+    # Fall-back field names computes from schema
+    fieldNames = property(lambda self: fieldNames(self.schema))
+        
     def __init__(self, context, request):
         super(EditView, self).__init__(context, request)
-        setUpEditWidgets(self, self.schema)
+        setUpEditWidgets(self, self.schema, names=self.fieldNames)
 
     def setPrefix(self, prefix):
         for widget in self.widgets():
             widget.setPrefix(prefix)
 
-    def __call__(self, *args, **kw):
-        return self.index(*args, **kw)
-
     def widgets(self):
         return [getattr(self, name)
-                for name in fieldNames(self.schema)
+                for name in self.fieldNames
                 ]
 
     def apply_update(self, data):
@@ -110,7 +108,8 @@ class EditView(BrowserView):
         if Update in self.request:
             unchanged = True
             try:
-                data = getWidgetsData(self, self.schema, required=0)
+                data = getWidgetsData(self, self.schema,
+                                      required=0, names=self.fieldNames)
                 unchanged = self.apply_update(data)
             except WidgetsError, errors:
                 self.errors = errors
@@ -119,22 +118,17 @@ class EditView(BrowserView):
                 self.errors = (v, )
                 return u"An error occured."
             else:
-                setUpEditWidgets(self, self.schema, force=1)
+                setUpEditWidgets(self, self.schema, force=1,
+                                 names=self.fieldNames)
                 if not unchanged:
                     return "Updated %s" % datetime.utcnow()
 
         return ''
 
-    
 
 def EditViewFactory(name, schema, label, permission, layer,
-                    template, class_, for_):
+                    template, default_template, bases, for_, fields):
 
-    if class_ is None:
-        bases = EditView,
-    else:
-        bases = class_, EditView
-    
     class_  = SimpleViewClass(
         template,
         used_for = schema, bases = bases
@@ -142,6 +136,9 @@ def EditViewFactory(name, schema, label, permission, layer,
 
     class_.schema = schema
     class_.label = label
+    class_.fieldNames = fields
+
+    class_.generated_form = ViewPageTemplateFile(default_template)
 
     defineChecker(class_,
                   NamesChecker(
@@ -152,34 +149,87 @@ def EditViewFactory(name, schema, label, permission, layer,
 
     provideView(for_, name, IBrowserPresentation, class_, layer)
                   
-        
 
-def directive(_context, name, schema, label,
-              permission = 'Zope.Public', layer = "default",
-              class_ = None, for_ = None,
-              template = None):
+def _normalize(_context, schema_, for_, class_, template, default_template,
+               fields, omit):
+    schema = _context.resolve(schema_)
 
-    schema = _context.resolve(schema)
     if for_ is None:
         for_ = schema
     else:
         for_ = _context.resolve(for_)
-    if class_ is not None:
-        class_ = _context.resolve(class_)
+
+    if class_ is None:
+        bases = (EditView, )
+    else:
+        bases = (_context.resolve(class_), EditView)
+        
+
     if template is not None:
         template = _context.path(template)
     else:
-        template = 'edit.pt'
+        template = default_template
 
     template = str(template)
+
+    names = fieldNames(schema)
+    
+    if fields:
+        fields = fields.split()
+        for name in fields:
+            if name not in names:
+                raise ValueError("Field name %s is not in schema %s",
+                                 name, schema_)
+    else:
+        fields = names
+
+    if omit:
+        omit = omit.split()
+        for name in omit:
+            if name not in names:
+                raise ValueError("Field name %s is not in schema %s",
+                                 name, schema_)
+        fields = [name for name in fields if name not in omit]
+
+    return schema, for_, bases, template, fields
+
+def edit(_context, name, schema, label,
+              permission = 'Zope.Public', layer = "default",
+              class_ = None, for_ = None,
+              template = None, omit=None, fields=None):
+
+    (schema, for_, bases, template, fields,
+     ) = _normalize(
+        _context, schema, for_, class_, template, 'edit.pt', fields, omit)
 
     return [
         Action(
         discriminator = ('http://namespaces.zope.org/form/edit',
                          name, for_, layer),
         callable = EditViewFactory,
-        args = (name, schema, label, permission, layer, template, class_,
-                for_),
+        args = (name, schema, label, permission, layer, template, 'edit.pt',
+                bases,
+                for_, fields),
+        )
+        ]
+
+def subedit(_context, name, schema, label,
+              permission = 'Zope.Public', layer = "default",
+              class_ = None, for_ = None,
+              template = None, omit=None, fields=None):
+
+    (schema, for_, bases, template, fields,
+     ) = _normalize(
+        _context, schema, for_, class_, template, 'subedit.pt', fields, omit)
+
+    return [
+        Action(
+        discriminator = ('http://namespaces.zope.org/form/subedit',
+                         name, for_, layer),
+        callable = EditViewFactory,
+        args = (name, schema, label, permission, layer, template, 'subedit.pt',
+                bases,
+                for_, fields),
         )
         ]
 
