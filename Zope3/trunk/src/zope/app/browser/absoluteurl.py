@@ -13,7 +13,7 @@
 ##############################################################################
 """Absolute URL View components
 
-$Id: absoluteurl.py,v 1.11 2003/08/06 14:41:11 srichter Exp $
+$Id: absoluteurl.py,v 1.12 2003/08/08 18:07:06 jim Exp $
 """
 
 from zope.app import zapi
@@ -52,10 +52,6 @@ class AbsoluteURL(BrowserView):
         if name:
             url += '/'+name
 
-        side_effect_names = dict.get('side_effect_names')
-        if side_effect_names:
-            url += _side_effects_url(side_effect_names)
-
         return url
 
     __call__ = __str__
@@ -85,16 +81,7 @@ class AbsoluteURL(BrowserView):
                       'url': ("%s/%s" % (base[-1]['url'], name))
                       }, )
 
-        side_effect_names = dict.get('side_effect_names')
-        if side_effect_names:
-            base[-1]['url'] += _side_effects_url(side_effect_names)
-
         return base
-
-def _side_effects_url(side_effect_names):
-    return "/"+"/".join([name
-                         for name in side_effect_names
-                         if not name.startswith("++vh++")])
 
 class SiteAbsoluteURL(BrowserView):
 
@@ -112,9 +99,6 @@ class SiteAbsoluteURL(BrowserView):
             name = dict.get('name')
             if name:
                 url += '/'+name
-            side_effect_names = dict.get('side_effect_names')
-            if side_effect_names:
-                url += _side_effects_url(side_effect_names)
                 
         return url
 
@@ -139,8 +123,5 @@ class SiteAbsoluteURL(BrowserView):
                           'url': ("%s/%s" % (base[-1]['url'], name))
                           }, )
 
-            side_effect_names = dict.get('side_effect_names')
-            if side_effect_names:
-                base[-1]['url'] += _side_effects_url(side_effect_names)
                 
         return base
