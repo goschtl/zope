@@ -1,11 +1,27 @@
 New Features
 
+  - Tweaked folder_factories so that the types listed 
+    are only those where the user has the 
+    'Access contents information' permission on the 
+    Type Information object associated with that 
+    type.
+
+  - Added the ability to limit what types of object an
+    object of a given Portal Type can be created in. 
+
+    If 'Implicity Addable' is set (the default), then 
+    objects of that Type can be added anywhere.
+
+    If it is not set, then objects of that Type can only be 
+    added to objects whose Type's allowed_content_types
+    contains the Type.
+
   - (__future__) Exposed role management for manager users on
       the default roster:  managers can now "promote" members
       without going to the ZMI.
 
   - (__future__) Added "custom schema" mechanism for content
-    objetcts:  site managers can now define additional
+    objects:  site managers can now define additional
     propertysheets for a content type, which will then be
     reflected in instances created from the type.
 
@@ -29,6 +45,41 @@ New Features
       workflows) to the core set of CMF products.
 
 Bugs Fixed
+
+  - Allowed the ActionsTool to gracefully handle objects
+    which return ActionInformation objects. Thanks to 
+    Andy Dawkins for the analysis. (Tracker #457)
+
+  - Made workflow Expressions use the correct ModuleImporter
+    so that they operate correctly in their restricted 
+    environment. Thanks to Dieter Maurer for the patch.
+    (Tracker 463)
+
+  - Fixed incorrent permissions in "pending" state of default 
+    DCWorkflows. Thanks for Lynn Walton for the report and 
+    Florent Guillaume for the patch. (Tracker #464)
+
+  - Fixed missing comma that affected manager permission to modify
+    in the published state. Thanks to Florent Guillaume for the 
+    patch (Tracker #459)
+
+  - html_quote'd errors raised by FSPageTemplates. Thanks to 
+    Dieter Maurer for the patch. (Tracker #462)
+
+  - Fixed typo in zpt_stylesheet.css. Thanks to Florent Guillaume
+    for the patch. (Tracker #461)
+
+  - Fixed long standing bug in FSPythonScript where get_size returned
+    the incorrect length. This broke editing using EMACS via FTP or
+    WebDAV. Thanks to John Glavin at South River Technologies for
+    help finding the bug.
+
+  - Reworked functionality added in Tracker #409 which broke the 
+    Types Tool. (Tracker #458)
+
+  - Fixed bug whereby DirectoryView instances were not noticing
+    some of the changes they should when Zope was running in debug mode
+    on Windows (Tracker #305)
 
   - Fixed a bug where the workflow notifyCreated method was called during
     manage_afterAdd in PortalContent, making it possible for the
