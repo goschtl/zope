@@ -20,7 +20,7 @@ $Id: xmlrpc.py,v 1.1 2003/07/28 10:21:06 srichter Exp $
 import base64
 
 from zope.event import notify
-from zope.publisher.xmlrpc import MethodPublisher
+from zope.app.publisher.xmlrpc import MethodPublisher
 from zope.schema.vocabulary import getVocabularyRegistry
 
 from zope.app import zapi

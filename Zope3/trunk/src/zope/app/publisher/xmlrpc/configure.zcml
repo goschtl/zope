@@ -27,4 +27,12 @@
       permission="zope.Public"
       />
 
+  <view 
+      for=".IMethodPublisher"
+      type="zope.publisher.interfaces.xmlrpc.IXMLRPCRequest"
+      provides="zope.publisher.interfaces.xmlrpc.IXMLRPCPublisher"
+      factory=".MethodTraverser"
+      permission="zope.Public"
+      />
+
 </configure>
