@@ -119,7 +119,7 @@ class Repository(persistent.Persistent):
         # *after* the version bookkeeping was saved. Note that this method is
         # not appropriate for detecting changes within a transaction!
         info = self.getVersionInfo(object)
-        itime = getattr(info, '_p_mtime', None)
+        itime = getattr(info, '_p_serial', None)
         if itime is None:
             return False
         mtime = utility._findModificationTime(object)

@@ -68,7 +68,7 @@ def _findModificationTime(object):
        themselves version-controlled objects. Note that this will
        return None if the object has no modification time."""
 
-    mtime = getattr(object, '_p_mtime', None)
+    mtime = getattr(object, '_p_serial', None)
     if mtime is None:
         return None
 
@@ -81,7 +81,7 @@ def _findModificationTime(object):
     oids=[object._p_oid]
     done_oids={}
     done=done_oids.has_key
-    first = 1
+    first = True
 
     while oids:
         oid=oids[0]
@@ -92,13 +92,12 @@ def _findModificationTime(object):
         try: p, serial = load(oid, version)
         except: pass # invalid reference!
         else:
-            if first is not None:
-                first = None
+            if first:
+                first = False
             else:
                 if p.find('U\x0b__vc_info__') == -1:
-                    mtime = TimeStamp(serial).timeTime()
-                    if mtime > latest:
-                        latest = mtime
+                    if serial > latest:
+                        latest = serial
             refs(p, oids)
 
     return latest
