@@ -47,6 +47,9 @@ class Test(unittest.TestCase):
                          3456)
         self.assertEqual(parse('Tue, 24 Jul 2001 09:41:03 -0400'),
                          (2001, 7, 24, 9, 41, 3, '-0400'))
+        self.assertEqual(parse('1999-12-31T01:02:03.456-12')[6], '-1200')
+        self.assertEqual(parse('1999-12-31T01:02:03.456+0030')[6], '+0030')
+        self.assertEqual(parse('1999-12-31T01:02:03.456-00:30')[6], '-0030')
 
     def testTime(self):
         from time import gmtime
@@ -84,6 +87,12 @@ class Test(unittest.TestCase):
         self.assertEqual(_tzoffset('-0030', None), -30*60)
         self.assertEqual(_tzoffset('+0200', None), 2*60*60)
         self.assertEqual(_tzoffset('EET', None), 2*60*60)
+
+    def testParseDatetimetz(self):
+        from datetime import datetimetz
+        from Zope.Misc.DateTimeParse import parseDatetimetz, tzinfo
+        self.assertEqual(parseDatetimetz('1999-12-31T01:02:03.037-00:30'),
+                         datetimetz(1999, 12, 31, 1, 2, 3, 37000, tzinfo(-30)))
 
 def test_suite():
     loader=unittest.TestLoader()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Encapsulation of date/time values
 
-$Id: DateTimeParse.py,v 1.7 2002/11/18 11:46:43 mgedmin Exp $
+$Id: DateTimeParse.py,v 1.8 2002/11/18 12:22:27 mgedmin Exp $
 """
     
 import re, math, DateTimeZone
@@ -786,40 +786,43 @@ class DateTimeParser:
 
 
     def __parse_iso8601(self,s):
-        """ parse an ISO 8601 compliant date """
+        """Parse an ISO 8601 compliant date.
+
+        XXX Not all allowed formats are recognized (for some examples see
+        http://www.cl.cam.ac.uk/~mgk25/iso-time.html).
+        """
         year=0
         month=day=1
         hour=minute=seconds=hour_off=min_off=0
-        
+        tzsign='+'
+
         datereg = re.compile(
             '([0-9]{4})(-([0-9][0-9]))?(-([0-9][0-9]))?')
         timereg = re.compile(
-            '([0-9]{2})(:([0-9][0-9]))?(:([0-9][0-9]))?(\.[0-9]{1,20})?')
-    
+            '([0-9]{2})(:([0-9][0-9]))?(:([0-9][0-9]))?(\.[0-9]{1,20})?'
+            '(\s*([-+])([0-9]{2})(:?([0-9]{2}))?)?')
+
         # Date part
-    
+
         fields = datereg.split(s.strip())
         if fields[1]:   year  = int(fields[1])
         if fields[3]:   month = int(fields[3])
         if fields[5]:   day   = int(fields[5])
-    
+
         if s.find('T')>-1:
             fields = timereg.split(s[s.find('T')+1:])
-    
+
             if fields[1]:   hour     = int(fields[1])
             if fields[3]:   minute   = int(fields[3])
             if fields[5]:   seconds  = int(fields[5])
             if fields[6]:   seconds  = seconds+float(fields[6])
-    
-        if s.find('Z')>-1:
-            pass
-    
-        if s[-3]==':' and s[-6] in ['+','-']:
-            hour_off = int(s[-6:-3])
-            min_off  = int(s[-2:])
+
+            if fields[8]:   tzsign   = fields[8]
+            if fields[9]:   hour_off = int(fields[9])
+            if fields[11]:  min_off  = int(fields[11])
 
         return (year,month,day,hour,minute,seconds,
-                'GMT%+03d%02d' % (hour_off,min_off))
+                '%s%02d%02d' % (tzsign,hour_off,min_off))
 
 parser = DateTimeParser()
 parse = parser.parse
@@ -828,7 +831,7 @@ time = parser.time
 class tzinfo(object):
 
     __slots__ = ('offset', )
-    
+
     def __init__(self, offset):
         self.offset = offset
 
@@ -841,14 +844,16 @@ class tzinfo(object):
     def dst(self, dt): return 0
     def tzname(self, dt): return ''
 
+    def __repr__(self):
+        return 'tzinfo(%d)' % self.offset
+
+
 from datetime import datetimetz as _datetimetz
 def parseDatetimetz(string):
     y, mo, d, h, m, s, tz = parse(string)
     s, micro = divmod(s, 1.0)
-    micro = int(micro * 1000000)
+    micro = round(micro * 1000000)
     offset = _tzoffset(tz, None) / 60
     return _datetimetz(y, mo, d, h, m, s, micro, tzinfo(offset))
 
 _iso_tz_re = re.compile("[-+]\d\d:\d\d$")
-
-    
