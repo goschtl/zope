@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: utility.py,v 1.10 2003/08/19 23:11:02 srichter Exp $
+$Id: utility.py,v 1.11 2004/02/09 01:11:13 anthony Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -32,7 +32,7 @@ class IUtilityRegistration(IComponentRegistration):
     """
 
     name = TextLine(
-        title=_("Name"),
+        title=_("Register As"),
         description=_("The name that is registered"),
         readonly=True,
         required=True,
