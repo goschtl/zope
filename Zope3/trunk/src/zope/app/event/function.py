@@ -38,7 +38,7 @@ class Subscriber:
 
         <event:subscribe
             subscriber='.module.startupEventHandler'
-            event_types='zope.app.event.interfaces.IProcessStartingEvent'
+            event_types='zope.app.appsetup.IProcessStartingEvent'
             />
     """
     implements(ISubscriber)

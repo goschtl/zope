@@ -20,7 +20,6 @@
   <include package="zope.app.observable" />
   <include package="zope.app.annotation" />
   <include package="zope.app.dependable" />
-  <include package="zope.app.server" />
   
   <include file="menus.zcml" />
 
@@ -70,9 +69,9 @@
   <include package="zope.app.broken" />
 
 
-  <!-- Process-configuration support -->
-  <include package="zope.app.process" />
-
+  <!-- Database boostrapping -->
+  <include package=".appsetup" />
+  
 
   <!-- Skins -->
 

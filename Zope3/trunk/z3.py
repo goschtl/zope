@@ -55,7 +55,7 @@ def run(argv=list(sys.argv)):
     srcdir = os.path.abspath(src)
     sys.path = [srcdir, here] + basepath
 
-    from zope.app.process.main import main
+    from zope.app.server.main import main
     main(argv[1:])
 
 

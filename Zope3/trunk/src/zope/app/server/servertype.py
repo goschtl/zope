@@ -15,7 +15,7 @@
 """
 
 from zope.interface import Interface, implements
-from zope.app.process.requestfactoryregistry import getRequestFactory
+from zope.app.server.requestfactoryregistry import getRequestFactory
 
 
 class IServerType(Interface):

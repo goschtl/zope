@@ -77,7 +77,7 @@ def installBroken(event):
     database-opened event::
 
       >>> import ZODB.tests.util
-      >>> from zope.app.process.event import DatabaseOpened
+      >>> from zope.app.appsetup import DatabaseOpened
       >>> db = ZODB.tests.util.DB()
       >>> installBroken(DatabaseOpened(db))
     

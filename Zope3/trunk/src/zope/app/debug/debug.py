@@ -21,72 +21,9 @@ from StringIO import StringIO
 from zope.publisher.publish import publish as _publish, debug_call
 from zope.publisher.browser import TestRequest
 from zope.app.publication.browser import BrowserPublication
-from zope.security.interfaces import IParticipation
-from zope.security.management import system_user
-from zope.interface import implements
+from zope.app.appsetup import config, database
 
-__metaclass__ = type
-
-
-class SystemConfigurationParticipation:
-    implements(IParticipation)
-
-    principal = system_user
-    interaction = None
-
-
-_configured = 0
-def config(file, execute=True):
-    "Configure site globals"
-    global _configured
-
-    if _configured:
-        return
-
-    from zope.configuration import xmlconfig
-
-    # Set user to system_user, so we can do anything we want
-    from zope.security.management import newInteraction
-    newInteraction(SystemConfigurationParticipation())
-
-    # Load server-independent site config
-    context = xmlconfig.file(file, execute=execute)
-
-    # Reset user
-    from zope.security.management import endInteraction
-    endInteraction()
-
-    _configured = execute
-
-    return context
-
-def database(db):
-    if type(db) is str:
-        # Database name
-        if db.endswith('.py'):
-            # Python source, exec it
-            globals = {}
-            execfile(db, globals)
-            if 'DB' in globals:
-                db = globals['DB']
-            else:
-                storage = globals['Storage']
-                from ZODB.DB import DB
-                db = DB(storage, cache_size=4000)
-        elif db.endswith(".fs"):
-            from ZODB.FileStorage import FileStorage
-            from ZODB.DB import DB
-            storage = FileStorage(db)
-            db = DB(storage, cache_size=4000)
-
-    # The following will fail unless the application has been configured.
-    from zope.app.process import event
-    from zope.app.event import publish
-    publish(None, event.DatabaseOpened(db))
-
-    return db
-
-class Application:
+class Debugger(object):
 
     def __init__(self, db=None, config_file=None):
         if db is None and config_file is None:
@@ -97,7 +34,7 @@ class Application:
             config(config_file)
         self.db = database(db)
 
-    def __call__(self):
+    def root(self):
         """Get the top-level application object
 
         The object returned is connected to an open database connection.

@@ -16,7 +16,7 @@
 $Id$
 """
 import copy
-from zope.app.process.interfaces import IRequestFactory
+from zope.app.publication.interfaces import IRequestFactory
 from zope.interface import implements
 
 class RequestFactory:

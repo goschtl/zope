@@ -14,15 +14,15 @@
 """
 $Id$
 """
+from zope.app.server.interfaces import ISimpleRegistry
+from zope.app.server.servertype import IServerType
+from zope.app.server.simpleregistry import SimpleRegistry
 from zope.interface import implements
-from zope.app.process.interfaces import ISimpleRegistry
-from zope.app.process.interfaces import IPublicationRequestFactoryFactory
-from zope.app.process.simpleregistry import SimpleRegistry
 
 
-class IRequestFactoryRegistry(ISimpleRegistry):
+class IServerTypeRegistry(ISimpleRegistry):
     """
-    The RequestFactory Registry manages a list of all the fields
+    The ServerType Registry manages a list of all the fields
     available in Zope. A registry is useful at this point, since
     fields can be initialized and registered by many places.
 
@@ -32,17 +32,16 @@ class IRequestFactoryRegistry(ISimpleRegistry):
     """
 
 
-class RequestFactoryRegistry(SimpleRegistry):
-    implements(IRequestFactoryRegistry)
+class ServerTypeRegistry(SimpleRegistry):
+    """Registry for the various Server types"""
+    implements(IServerTypeRegistry)
 
 
-RequestFactoryRegistry = RequestFactoryRegistry(
-    IPublicationRequestFactoryFactory)
-
-registerRequestFactory = RequestFactoryRegistry.register
-getRequestFactory = RequestFactoryRegistry.get
+ServerTypeRegistry = ServerTypeRegistry(IServerType)
+registerServerType = ServerTypeRegistry.register
+getServerType = ServerTypeRegistry.get
 
 # Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
 from zope.testing.cleanup import addCleanUp
-addCleanUp(RequestFactoryRegistry._clear)
+addCleanUp(ServerTypeRegistry._clear)
 del addCleanUp

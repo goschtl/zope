@@ -14,7 +14,7 @@
 """
 $Id$
 """
-from zope.app.process.interfaces import ISimpleRegistry
+from zope.app.server.interfaces import ISimpleRegistry
 from zope.interface import implements
 
 ListTypes = (tuple, list)

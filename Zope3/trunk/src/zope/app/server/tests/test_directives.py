@@ -16,9 +16,9 @@
 $Id$
 """
 import unittest
-from zope.app.process.interfaces import IPublicationRequestFactoryFactory
-from zope.app.process.requestfactoryregistry import getRequestFactory
-from zope.app.process.servertyperegistry import getServerType
+from zope.app.publication.interfaces import IPublicationRequestFactoryFactory
+from zope.app.server.requestfactoryregistry import getRequestFactory
+from zope.app.server.servertyperegistry import getServerType
 from zope.app.publication.browser import BrowserPublication
 from zope.configuration import xmlconfig
 from zope.interface import implements
@@ -26,7 +26,7 @@ from zope.publisher.browser import BrowserRequest
 from zope.server.http.publisherhttpserver import PublisherHTTPServer
 from zope.server.http.commonhitlogger import CommonHitLogger
 from zope.testing.cleanup import CleanUp
-import zope.app.process.tests
+import zope.app.server.tests
 
 class TF:
     "test request factory"
@@ -39,7 +39,7 @@ class DirectivesTest(CleanUp, unittest.TestCase):
 
     def setUp(self):
         CleanUp.setUp(self)
-        self.context = xmlconfig.file("startup.zcml", zope.app.process.tests)
+        self.context = xmlconfig.file("startup.zcml", zope.app.server.tests)
 
     def test_registerServerType(self):
         self.assertEqual(getServerType('Browser')._factory,

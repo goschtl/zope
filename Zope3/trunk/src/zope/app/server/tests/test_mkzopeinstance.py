@@ -23,7 +23,7 @@ import unittest
 
 from StringIO import StringIO
 
-from zope.app.process import mkzopeinstance
+from zope.app.server import mkzopeinstance
 
 
 class TestBase(unittest.TestCase):

@@ -19,9 +19,9 @@ $Id$
 """
 
 import unittest
-from zope.app.process.servertyperegistry import \
+from zope.app.server.servertyperegistry import \
      registerServerType, getServerType
-from zope.app.process.servertype import IServerType
+from zope.app.server.servertype import IServerType
 from zope.interface import implements
 
 

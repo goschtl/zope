@@ -11,8 +11,5 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Zope application package.
 """
-Zope application.
-"""
-
-from _app import config, Application

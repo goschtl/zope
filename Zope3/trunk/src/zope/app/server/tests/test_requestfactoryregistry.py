@@ -19,9 +19,9 @@ $Id$
 """
 
 import unittest
-from zope.app.process.requestfactoryregistry import \
+from zope.app.server.requestfactoryregistry import \
      registerRequestFactory, getRequestFactory
-from zope.app.process.requestfactory import IRequestFactory
+from zope.app.publication.interfaces import IRequestFactory
 from zope.interface import implements
 
 

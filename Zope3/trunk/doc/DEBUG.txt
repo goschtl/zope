@@ -18,8 +18,8 @@ Using the Zope Debugger
     zope application::
 
       $ python2.3
-      >>> from zope.app import Application
-      >>> app = Application('path/to/zodb/', 'path/to/site.zcml')
+      >>> from zope.app import Debugger
+      >>> debugger = Debugger('path/to/zodb/', 'path/to/site.zcml')
             
   Using the Debugger
 

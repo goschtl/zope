@@ -28,7 +28,7 @@
   <!-- Enable import of persistent modules -->
   <event:subscribe
       subscriber=".installPersistentModuleImporter"
-      event_types="zope.app.event.interfaces.IProcessStartingEvent"
+      event_types="zope.app.appsetup.IProcessStartingEvent"
       />
 
   <include package=".browser" />

@@ -18,7 +18,7 @@ $Id$
 
 import unittest
 from zope.interface import Interface
-from zope.app.process.simpleregistry import SimpleRegistry, \
+from zope.app.server.simpleregistry import SimpleRegistry, \
      ZopeDuplicateRegistryEntryError, ZopeIllegalInterfaceError
 from zope.interface import implements
 

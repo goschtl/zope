@@ -15,10 +15,10 @@
 
 $Id$
 """
-from zope.app.process import requestfactoryregistry
-from zope.app.process import servertyperegistry
-from zope.app.process.requestfactory import RequestFactory
-from zope.app.process.servertype import ServerType
+from zope.app.server import requestfactoryregistry
+from zope.app.server import servertyperegistry
+from zope.app.server.requestfactory import RequestFactory
+from zope.app.server.servertype import ServerType
 
 
 def registerRequestFactory(_context, name, request=None, publication=None,

@@ -20,6 +20,7 @@ essential services.
 $Id$
 """
 from transaction import get_transaction
+from zope.app.publication.zopepublication import ZopePublication
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.component.exceptions import ComponentLookupError
@@ -166,7 +167,6 @@ class BootstrapInstance(BootstrapSubscriberBase):
         XXX This ought to be configurable.  For now, hardcode some
         services we know we all need.
         """
-
         # The EventService class implements two services
         name = self.ensureService(EventPublication, EventService)
         if name:
@@ -181,6 +181,7 @@ class BootstrapInstance(BootstrapSubscriberBase):
         # Add a Registration object so that the Hub has something to do.
         name = self.ensureObject('Registration',
                                  ISubscriptionControl, Registration)
+
         if name:
             package = getServiceManagerDefault(self.root_folder)
             reg = package[name]

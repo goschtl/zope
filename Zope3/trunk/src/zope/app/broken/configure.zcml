@@ -9,7 +9,7 @@
 
   <event:subscribe
       subscriber=".broken.installBrokenSubscriber"
-      event_types="zope.app.event.interfaces.IDatabaseOpenedEvent" 
+      event_types="zope.app.appsetup.IDatabaseOpenedEvent" 
       />
 
   <include file="browser.zcml" /> 

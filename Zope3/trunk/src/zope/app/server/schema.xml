@@ -12,7 +12,7 @@
   <!-- logging configuration -->
   <import package="ZConfig.components.logger" />
 
-  <sectiontype name="server" datatype="zope.app.process.server.ServerFactory">
+  <sectiontype name="server" datatype="zope.app.server.server.ServerFactory">
     <key name="type" required="yes" />
     <key name="address" datatype="inet-address" />
     <key name="verbose" datatype="boolean" />

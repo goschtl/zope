@@ -69,7 +69,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
 
 
     def test_notify(self):
-        from zope.app.process.bootstrap import BootstrapSubscriberBase
+        from zope.app.appsetup.bootstrap import BootstrapSubscriberBase
 
         for setup in (lambda: None), self.createRootFolder, self.createRFAndSM:
 
@@ -88,7 +88,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
             cx.close()
 
     def test_ensureService(self):
-        from zope.app.process.bootstrap import BootstrapSubscriberBase
+        from zope.app.appsetup.bootstrap import BootstrapSubscriberBase
 
         self.createRFAndSM()
         bs = BootstrapSubscriberBase()
@@ -116,7 +116,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
 class TestBootstrapInstance(TestBootstrapSubscriberBase):
 
     def test_bootstrapInstance(self):
-        from zope.app.process.bootstrap import bootstrapInstance
+        from zope.app.appsetup.bootstrap import bootstrapInstance
 
         bootstrapInstance.notify(EventStub(self.db))
 
@@ -142,8 +142,8 @@ class TestBootstrapInstance(TestBootstrapSubscriberBase):
         cx.close()
 
     def test_bootstrapInstance_withServices(self):
-        from zope.app.process.bootstrap import bootstrapInstance
-        from zope.app.process.bootstrap import addService, configureService
+        from zope.app.appsetup.bootstrap import bootstrapInstance
+        from zope.app.appsetup.bootstrap import addService, configureService
 
         self.createRFAndSM()
 

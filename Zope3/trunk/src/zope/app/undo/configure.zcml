@@ -22,7 +22,7 @@
 
   <event:subscribe
       subscriber=".undoSetup"
-      event_types="zope.app.event.interfaces.IDatabaseOpenedEvent"
+      event_types="zope.app.appsetup.IDatabaseOpenedEvent"
       />
 
 

@@ -19,7 +19,7 @@ This is called by the ZConfig machinery while processing a configuration.
 $Id$
 """
 
-from zope.app.process.servertyperegistry import getServerType
+from zope.app.server.servertyperegistry import getServerType
 
 
 class ServerFactory:

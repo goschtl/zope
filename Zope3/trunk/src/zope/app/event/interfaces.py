@@ -338,11 +338,3 @@ class IObjectAnnotationsModifiedEvent(IObjectModifiedEvent):
 
 class IObjectContentModifiedEvent(IObjectModifiedEvent):
     """An object's content has been modified"""
-
-class IDatabaseOpenedEvent(IEvent):
-    """The main database has been opened."""
-
-    database = Attribute("The main database.")
-
-class IProcessStartingEvent(IEvent):
-    """The application server process is starting."""
