@@ -42,7 +42,7 @@ class ResultSet:
             yield obj
 
 
-class Catalog(Persistent, SampleContainer):
+class CatalogBase(Persistent, SampleContainer):
 
     implements(ICatalog, ISubscriber, IDeleteNotifiable, 
                IAddNotifiable, IContainer, IAttributeAnnotatable)
@@ -143,6 +143,10 @@ class Catalog(Persistent, SampleContainer):
         return results
     searchResults = ContextMethod(searchResults)
 
-class CatalogUtility(Catalog):
+class CatalogUtility(CatalogBase):
+    "A Catalog in service-space"
     implements (ILocalUtility)
 
+class Catalog(CatalogBase): 
+    "A content-space Catalog"
+    pass
