@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.13 2003/05/01 19:35:17 faassen Exp $
+$Id: test_utility.py,v 1.14 2003/06/04 11:13:48 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.interface import Interface, directlyProvides
+from zope.interface import Interface, directlyProvides, implements
 from zope.schema import Text, accessors
 from zope.app.browser.form.widget import TextWidget
 from zope.component.view import provideView, setDefaultViewName
@@ -34,7 +34,6 @@ from zope.app.form.utility import getWidgetsData, getWidgetsDataForContent
 from zope.app.form.utility import haveWidgetsData
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IViewFactory
-
 
 
 class I(Interface):
@@ -53,10 +52,10 @@ class I3(Interface):
     description = Text(title=u"Description", required = False)
 
 class C:
-    __implements__ = I
+    implements(I)
 
 class C2:
-    __implements__ = I2
+    implements(I2)
 
 
 class Ia(Interface):
@@ -67,7 +66,7 @@ class Ia(Interface):
                                                )
 
 class Ca:
-    __implements__ = Ia
+    implements(Ia)
 
     def getTitle(self): return self._t
     def setTitle(self, v): self._t = v

@@ -15,11 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.11 2003/05/01 14:13:36 mgedmin Exp $
+$Id: control.py,v 1.12 2003/06/04 11:13:47 stevea Exp $
 """
 
 from __future__ import generators
 
+from zope.interface import implements
 from zope.component import getService, queryAdapter
 from zope.app.services.servicenames import HubIds
 from zope.exceptions import NotFoundError
@@ -31,7 +32,7 @@ from zope.app.interfaces.index.text import IQueryView
 
 class ControlView(BrowserView):
 
-    __implements__ = BrowserView.__implements__, IQueryView
+    implements(IQueryView)
 
     default_start = 0 # Don't change -- always start at first batch
     default_count = 2 # Default batch size -- tune as you please

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_ftpview.py,v 1.1 2003/02/03 15:08:37 jim Exp $
+$Id: test_ftpview.py,v 1.2 2003/06/04 11:13:48 stevea Exp $
 """
 
 import datetime
@@ -29,13 +29,12 @@ from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.ftp import FTPView
 from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.interface import implements
 
 class Directory(demofs.Directory):
 
-    __implements__ = (IReadDirectory, IWriteDirectory,
-                      IFileFactory, IDirectoryFactory,
-                      IZopeWriteContainer, IZopeDublinCore,
-                      )
+    implements(IReadDirectory, IWriteDirectory, IFileFactory,
+               IDirectoryFactory, IZopeWriteContainer, IZopeDublinCore)
 
     modified = datetime.datetime(1990, 1,1)
 
@@ -56,8 +55,8 @@ class Directory(demofs.Directory):
         del self[old]
 
 class File(demofs.File):
-    
-    __implements__ = IReadFile, IWriteFile, IZopeDublinCore
+
+    implements(IReadFile, IWriteFile, IZopeDublinCore)
 
     modified = datetime.datetime(1990, 1,2)
 
@@ -180,7 +179,7 @@ class Test(PlacelessSetup, TestCase):
             'group_name': 'na', 'group_readable': 1, 'group_writable': 1,
             'other_readable': 0, 'other_writable': 0,
             })
-        
+
     def test_mtime(self):
         self.assertEqual(self.__view.mtime('test'), Directory.modified)
         self.assertEqual(self.__view.mtime('f'), File.modified)

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_attributeannotations.py,v 1.3 2003/05/01 19:35:37 faassen Exp $
+$Id: test_attributeannotations.py,v 1.4 2003/06/04 11:13:49 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -22,9 +22,10 @@ from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 from zope.app.tests.annotations import Annotations
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.interface import implements
 
 class Dummy:
-    __implements__ = IAttributeAnnotatable
+    implements(IAttributeAnnotatable)
 
 class Test(CleanUp, Annotations, TestCase):
 

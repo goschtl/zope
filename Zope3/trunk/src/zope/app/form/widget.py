@@ -12,17 +12,18 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.4 2003/01/09 14:13:08 jim Exp $
+$Id: widget.py,v 1.5 2003/06/04 11:13:48 stevea Exp $
 """
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
+from zope.interface import implements
 
 __metaclass__ = type
 
 class Widget:
     """Mix-in class providing some functionality common accross view types
     """
-    __implements__ = IWidget
+    implements(IWidget)
 
     _prefix = 'field.'
     _data = None
@@ -61,7 +62,7 @@ class Widget:
 
 class CustomWidget:
     """Custom Widget."""
-    __implements__ = IViewFactory
+    implements(IViewFactory)
 
     def __init__(self, widget, **kw):
         self.widget = widget

@@ -14,15 +14,15 @@
 """
 
 Revision information:
-$Id: objectname.py,v 1.4 2003/04/30 23:37:48 faassen Exp $
+$Id: objectname.py,v 1.5 2003/06/04 11:13:47 stevea Exp $
 """
 from zope.publisher.interfaces.browser import IBrowserView
-from zope.app.interfaces.traversing import IObjectName
 from zope.app.traversing.adapters import ObjectName, SiteObjectName
+from zope.interface import implements
 
 class ObjectNameView(ObjectName):
 
-    __implements__ = IBrowserView, IObjectName
+    implements(IBrowserView)
 
     def __init__(self, context, request):
         self.context = context
@@ -30,7 +30,7 @@ class ObjectNameView(ObjectName):
 
 class SiteObjectNameView(SiteObjectName):
 
-    __implements__ = IBrowserView, IObjectName
+    implements(IBrowserView)
 
     def __init__(self, context, request):
         pass
