@@ -13,7 +13,6 @@
 ##############################################################################
 """Tools to deal with the mapping of resources to URLs."""
 
-import logging
 import os.path
 import posixpath
 import re
@@ -25,6 +24,7 @@ import UserDict
 
 from zpkgtools import cvsloader
 from zpkgtools import loader
+from zpkgtools import loggingapi as logging
 from zpkgtools import svnloader
 
 

@@ -13,7 +13,6 @@
 #
 ##############################################################################
 
-import logging
 import os
 import sys
 
@@ -27,6 +26,7 @@ except ImportError:
     import zpkgtools
 
 from zpkgtools import app
+from zpkgtools import loggingapi as logging
 
 
 if __name__ == "__main__":

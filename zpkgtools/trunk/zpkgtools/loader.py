@@ -18,7 +18,6 @@ This handles tag insertion and URL type dispatch.
 
 import copy
 import errno
-import logging
 import os
 import posixpath
 import shutil
@@ -28,6 +27,7 @@ import urllib2
 import urlparse
 
 from zpkgtools import cvsloader
+from zpkgtools import loggingapi as logging
 from zpkgtools import svnloader
 
 

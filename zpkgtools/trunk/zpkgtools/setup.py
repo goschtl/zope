@@ -14,7 +14,6 @@
 """Generator for distutils setup.py files."""
 
 import errno
-import logging
 import os
 import posixpath
 import sys
@@ -22,9 +21,6 @@ import sys
 from zpkgtools import include
 from zpkgtools import package
 from zpkgtools import publication
-
-
-_logger = logging.getLogger(__name__)
 
 
 class SetupContext:
@@ -87,15 +83,16 @@ class SetupContext:
                 if e.errno != errno.EPIPE:
                     raise
         else:
-            root_logger = logging.getLogger()
-            if not root_logger.handlers:
-                root_logger.addHandler(logging.StreamHandler())
+            if sys.version_info < (2, 3):
+                from distutils.dist import DistributionMetadata
+                DistributionMetadata.classifiers = None
+                DistributionMetadata.download_url = None
             try:
                 from setuptools import setup
             except ImportError:
                 # package_data can't be handled this way ;-(
                 if self.package_data:
-                    _logger.error(
+                    print >>sys.stderr, (
                         "can't import setuptools;"
                         " some package data will not be properly installed")
                 from distutils.core import setup
@@ -166,7 +163,7 @@ class SetupContext:
         for dir, files in pkginfo.data_files:
             non_pkgdata.extend(files)
         for ext in pkginfo.extensions:
-            for fn in ext.sources + ext.depends:
+            for fn in ext.sources + getattr(ext, "depends", []):
                 if fn not in non_pkgdata:
                     non_pkgdata.append(fn)
         for fn in non_pkgdata:
@@ -201,7 +198,7 @@ class SetupContext:
 
     def add_package_dir(self, pkgname, reldir):
         self.packages.append(pkgname)
-        if pkgname.replace(".", posixpath.sep) != reldir:
+        if pkgname.replace(".", "/") != reldir:
             self.package_dir[pkgname] = reldir
 
     def add_package_file(self, pkgname, relfn):

@@ -13,9 +13,10 @@
 ##############################################################################
 """Utilities to help log running an external command."""
 
-import logging
 import os
 import sys
+
+from zpkgtools import loggingapi as logging
 
 
 def report_command(cmd):

@@ -29,7 +29,6 @@
 
 import fnmatch
 import glob
-import logging
 import os
 import posixpath
 import shutil
@@ -39,6 +38,7 @@ from zpkgtools import Error
 
 from zpkgtools import cfgparser
 from zpkgtools import loader
+from zpkgtools import loggingapi as logging
 from zpkgtools import publication
 
 

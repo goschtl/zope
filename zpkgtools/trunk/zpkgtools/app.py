@@ -13,7 +13,6 @@
 ##############################################################################
 """Top-level application object for **zpkg**."""
 
-import logging
 import optparse
 import os
 import re
@@ -28,6 +27,7 @@ from zpkgtools import config
 from zpkgtools import dependencies
 from zpkgtools import include
 from zpkgtools import loader
+from zpkgtools import loggingapi as logging
 from zpkgtools import package
 from zpkgtools import publication
 from zpkgtools import runlog
@@ -460,6 +460,13 @@ SETUP_HEADER = """\
 #
 import os
 import sys
+
+try:
+    __file__
+except NameError:
+    # Python 2.2.x does not have __file__ for scripts.
+    __file__ = sys.argv[0]
+
 support_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
                            'Support')
 if os.path.isdir(support_dir):
