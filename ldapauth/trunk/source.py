@@ -72,12 +72,13 @@ class LDAPPrincipalSource(Contained, Persistent):
             if principal is None:
                 cache.set(obj, location, {'login' : key})
 
-    ### TODO: returns the list of logins in the cache
     def keys(self):
         logins = []
         for login in self.__cached :
             if self[login]:
                 logins.append(login)
+            else:
+                self.__cached.remove(login)
         return logins
 
     def __iter__(self):
