@@ -96,7 +96,7 @@
             </div>
           </td>
         </tr>
-        
+
         <!-- this section is currently not available
         <tr>
           <th class="introspector">
@@ -115,7 +115,7 @@
     </div>
 
     <div tal:condition="python:not introspector.isInterface()">
-    
+
       <table>
         <tr>
           <th colspan="2" i18n:translate="">Class Browser</th>
@@ -125,8 +125,10 @@
           <th class="introspector">
             <tal:span i18n:translate="class-component">Class</tal:span>:
           </th>
-          <td><a tal:attributes="href 
-                string: /++apidoc++/Class/index.html?path=${introspector/getModule}.${introspector/getClass}" 
+          <td><a tal:define="path python: (introspector.getModule()
+                + '.' + introspector.getClass()).replace('.', '/')"
+                tal:attributes="href
+                string: /++apidoc++/Class/${path}/index.html"
                 href="">
             <span tal:replace="introspector/getModule">Module</span
             >.<span tal:replace="introspector/getClass">Name</span></a></td>
@@ -139,8 +141,10 @@
           </th>
           <td>
             <div tal:repeat="base introspector/getBaseClassNames">
-              <a tal:attributes="href 
-                string: /++apidoc++/Class/index.html?path=${repeat/base/item}" 
+              <a tal:define="path
+                python: path('repeat/base/item').replace('.', '/')"
+                tal:attributes="href
+                string: /++apidoc++/Class/${path}/index.html"
                 href=""><span tal:replace="repeat/base/item" /></a>
             </div>
           </td>
@@ -163,7 +167,8 @@
           </th>
           <td>
             <div tal:repeat="interface introspector/getInterfaceNames">
-              <div tal:define="url string: /++apidoc++/Class/index.html?path=${interface}">
+              <div tal:define="url
+                string: /++apidoc++/Interface/${interface}/apiindex.html">
                 <a href=""
                     tal:attributes="href url"
                     tal:content="interface"
@@ -182,7 +187,8 @@
           <td>
             <div tal:repeat="interface introspector/getDirectlyProvidedNames"
                   tal:condition="introspector/getDirectlyProvided">
-              <div tal:define="url string: /++apidoc++/Class/index.html?path=${interface}">
+              <div tal:define="url
+                string: /++apidoc++/Interface/${interface}/apiindex.html">
                 <a href=""
                     tal:attributes="href url"
                     tal:content="interface"
