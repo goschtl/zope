@@ -142,7 +142,7 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.9 2003/09/21 17:31:52 jim Exp $
+$Id: sql.py,v 1.10 2003/11/05 02:43:34 jeremy Exp $
 """
 
 import re
@@ -237,52 +237,6 @@ def parseArguments(text, result=None):
     result[name] = value
 
     return parseArguments(text[length:], result)
-
-
-class SQLGroup:
-    blockContinuations = 'and', 'or'
-    name = 'sqlgroup'
-    required = None
-    where = None
-
-    def __init__(self, blocks):
-        self.blocks = blocks
-        tname, args, section = blocks[0]
-        self.__name__ = "%s %s" % (tname, args)
-        args = parse_params(args, required=1, where=1)
-        if args.has_key(''):
-            args[args['']] = 1
-        if args.has_key('required'):
-            self.required = args['required']
-        if args.has_key('where'):
-            self.where = args['where']
-
-
-    def render(self, md):
-        result = []
-        for tname, args, section in self.blocks:
-            __traceback_info__ = tname
-            s = section(None, md).strip()
-            if s:
-                if result:
-                    result.append(tname)
-                result.append("%s\n" % s)
-
-        if result:
-            if len(result) > 1:
-                result = "(%s)\n" %(' '.join(result))
-            else:
-                result = result[0]
-            if self.where:
-                result = "where\n" + result
-            return result
-
-        if self.required:
-            raise 'Input Error', 'Not enough input was provided!'
-
-        return ''
-
-    __call__ = render
 
 
 class SQLVar:
