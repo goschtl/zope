@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.2 2002/12/25 14:12:57 jim Exp $
+$Id: form.py,v 1.3 2003/01/06 14:36:08 stevea Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.publisher.interfaces.browser import IBrowserView
@@ -62,7 +62,6 @@ class IReadForm(IBrowserView):
            into the content object."""
 
 
-
 class IWriteForm(IBrowserView):
     """This interface defines methods and attributes that are required to
     retrieve the data from the request and store them back into the."""
@@ -73,11 +72,8 @@ class IWriteForm(IBrowserView):
         to the context object."""
 
 
-
 class IForm(IReadForm, IWriteForm):
     """This is a complete form."""
-
-
 
 
 class IBrowserWidget(IWidget):
@@ -105,9 +101,16 @@ class IBrowserWidget(IWidget):
         """Render the widget as a hidden field
         """
 
+    def label():
+        """Render a label tag"""
 
-    # XXX The following methods are being supported for backward compatability
-    # They are depricated and will be refactored away eventually.
+    def row():
+        """Render the widget as a table row with the label and input widget
+        """
+
+    # XXX The following two methods are being supported for backward
+    # compatability. They are deprecated and will be refactored away
+    # eventually.
 
     def render(value):
         """Renders this widget as HTML using property values in field.
@@ -118,15 +121,6 @@ class IBrowserWidget(IWidget):
     def renderHidden(value):
         """Renders this widget as a hidden field.
         """
-
-    def label():
-        """Render a label tag"""
-
-    def row():
-        """Render the widget as a table row with the label and input widget
-        """
-
-
 
 
 class IFormCollaborationView(Interface):
