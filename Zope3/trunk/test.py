@@ -608,11 +608,11 @@ def process_args(argv=None):
     timetests = 0
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "a:bBcdDg:G:hLmprtTuv",
+        opts, args = getopt.getopt(argv[1:], "a:bBcdDg:G:hLmprtTuv",
                                    ["all", "help", "libdir=", "times="])
     except getopt.error, msg:
         print msg
-        print "Try `python %s -h' for more information." % sys.argv[0]
+        print "Try `python %s -h' for more information." % argv[0]
         sys.exit(2)
 
     for k, v in opts:
