@@ -17,7 +17,7 @@ An implementation of a generic TALES engine
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-__version__ = '$Revision: 1.4 $'[11:-2]
+__version__ = '$Revision: 1.5 $'[11:-2]
 
 import re
 import sys
@@ -25,6 +25,8 @@ from types import StringType, StringTypes
 
 import Zope.ZTUtils
 from SafeMapping import SafeMapping
+
+from Zope.TAL.ITALES import ITALESCompiler, ITALESEngine, ITALESErrorInfo
 
 
 NAME_RE = r"[a-zA-Z][a-zA-Z0-9_]*"
@@ -69,6 +71,9 @@ class Iterator(Zope.ZTUtils.Iterator):
 
 class ErrorInfo:
     """Information about an exception passed to an on-error handler."""
+
+    __implements__ = ITALESErrorInfo
+
     def __init__(self, err, position=(None, None)):
         if isinstance(err, Exception):
             self.type = err.__class__
@@ -89,6 +94,9 @@ class ExpressionEngine:
     these handlers.  It can provide an expression Context, which is
     capable of holding state and evaluating compiled expressions.
     '''
+
+    __implements__ = ITALESCompiler
+
     def __init__(self):
         self.types = {}
         self.base_names = {}
@@ -153,6 +161,8 @@ class Context:
     An instance of this class holds context information that it can
     use to evaluate compiled expressions.
     '''
+
+    __implements__ = ITALESEngine
 
     _context_class = SafeMapping
     position = (None, None)
