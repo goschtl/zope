@@ -139,6 +139,10 @@ def init_table():
         {'path': "Packages/Products/PresentationTemplates",
          'addrs': ["zpt@mail.zope.org"],
          'remote': None},
+
+        {'path': "Packages/Products/PageTemplates",
+         'addrs': ["zpt@mail.zope.org"],
+         'remote': None},
     ])
 
 init_table()
