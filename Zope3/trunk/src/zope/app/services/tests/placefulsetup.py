@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.25 2003/06/05 10:26:54 mgedmin Exp $
+$Id: placefulsetup.py,v 1.26 2003/06/12 18:48:02 gvanrossum Exp $
 """
 
 from zope.app import zapi
@@ -59,12 +59,12 @@ class PlacefulSetup(PlacelessSetup):
 
 
     def setUp(self, folders=False, site=False):
-        setup.placefullSetUp()
+        setup.placefulSetUp()
         if folders or site:
             return self.buildFolders(site)
 
     def tearDown(self):
-        setup.placefullTearDown()
+        setup.placefulTearDown()
         # clean up folders and placeful service managers and services too?
 
     def buildFolders(self, site=False):

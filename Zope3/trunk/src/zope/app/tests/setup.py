@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.3 2003/06/05 12:03:19 stevea Exp $
+$Id: setup.py,v 1.4 2003/06/12 18:48:02 gvanrossum Exp $
 """
 
 import zope.component
@@ -87,7 +87,7 @@ def setUpUseConfiguration():
 from zope.app.component.hooks import getServiceManager_hook
 from zope.app.tests.placelesssetup import setUp as placelessSetUp
 from zope.app.tests.placelesssetup import tearDown as placelessTearDown
-def placefullSetUp(site=False):
+def placefulSetUp(site=False):
     placelessSetUp()
     zope.component.getServiceManager.sethook(getServiceManager_hook)
     setUpAnnotations()
@@ -100,7 +100,7 @@ def placefullSetUp(site=False):
         createServiceManager(site)
         return site
 
-def placefullTearDown():
+def placefulTearDown():
     placelessTearDown()
     zope.component.getServiceManager.reset()
 
