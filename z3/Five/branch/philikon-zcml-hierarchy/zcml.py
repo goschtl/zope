@@ -49,3 +49,10 @@ def string(s, execute=True):
     """
     context = initialize()
     return xmlconfig.string(s, context=context, execute=execute)
+
+import os
+
+def load_site():
+    # load instance site configuration file
+    site_zcml = os.path.join(INSTANCE_HOME, "etc", "site.zcml")
+    process(site_zcml)

@@ -22,7 +22,7 @@ class PageSecurityTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
     def setUp(self):
         super(PageSecurityTestCase, self).setUp()
         zcml.reset()
-        zcml.initialize()
+        zcml.load_site()
         self.dummy1 = Dummy1
 
     def tearDown(self):
