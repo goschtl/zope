@@ -13,28 +13,11 @@
 ##############################################################################
 """Generator for distutils setup.py files."""
 
-import distutils.core
 import os
 import posixpath
-import pprint
 import sys
 
-from StringIO import StringIO
-
 from zpkgtools import publication
-
-
-def generate(directory, pkgname, version, type):
-    setup_py = os.path.join(directory, "setup.py")
-    f = open(setup_py, "w")
-    try:
-        print >>f, HEADER
-        print >>f, "context = zpkgtools.setup.%sContext(" % type.capitalize()
-        print >>f, "    %r, %r, __file__)" % (pkgname, version)
-        print >>f
-        print >>f, "context.setup()"
-    finally:
-        f.close()
 
 
 class SetupContext:
@@ -57,8 +40,10 @@ class SetupContext:
             if name[0] == "_":
                 del kwargs[name]
         if "--debug" in sys.argv:
+            import pprint
             pprint.pprint(kwargs)
         else:
+            import distutils.core
             distutils.core.setup(**kwargs)
 
     def loadMetadata(self, path):
@@ -128,13 +113,3 @@ class CollectionContext(SetupContext):
         SetupContext.__init__(self, pkgname, version, setup_file)
         self.loadMetadata(os.path.join(self._working_dir,
                                        "PUBLICATION.txt"))
-
-
-HEADER = """\
-#! /usr/bin/env python
-#
-# THIS IS A GENERATED FILE.  DO NOT EDIT THIS DIRECTLY.
-
-import zpkgtools.setup
-
-"""
