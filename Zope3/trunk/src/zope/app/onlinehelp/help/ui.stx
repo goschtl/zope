@@ -15,7 +15,7 @@ Zope Management Interface (ZMI)
     The lower box contains a list of content types that can
     be added to the current location. Some locations have constraints
     on the content types that can be added, so the contents of this box 
-    is dependend on where you are.
+    is dependent on where you are.
 
     The upper right corner contains the name of the current user and 
     links to the Login/Logout.
