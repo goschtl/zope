@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.4 2003/01/27 18:51:00 stevea Exp $
+$Id: globalservice.py,v 1.5 2003/03/26 12:57:48 jack-e Exp $
 """
 
 __metaclass__ = type
@@ -258,6 +258,7 @@ def globalSubscribeMany(subscriber, event_types=(IEvent,), filter=None):
         subscribe_func(subscriber, event_type, filter)
 
 eventPublisher = GlobalEventPublisher()
+eventLogger = Logger()
 
 _clear = eventPublisher._clear
 
