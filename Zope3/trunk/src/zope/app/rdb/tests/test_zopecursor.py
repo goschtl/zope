@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zopecursor.py,v 1.6 2003/07/04 14:29:35 sidnei Exp $
+$Id: test_zopecursor.py,v 1.7 2003/07/05 13:34:47 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -96,7 +96,7 @@ class ZopeCursorTests(TestCase):
                    'got %r, expected %r' % (results, expected))
 
     def test_cursor_fetchone_no_more_results(self):
-        self.cursor.cursor._raw = [] 
+        self.cursor.cursor._raw = []
         results = self.cursor.fetchone()
         expected = None
         self.assertEqual(results, expected,
