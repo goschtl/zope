@@ -4,7 +4,7 @@
    package="Zope.App.Caching"
 >
 
-  <adapter factory=".Caching.AnnotationCacheable."
+  <adapter factory=".AnnotationCacheable."
            provides=".ICacheable."
            for="Zope.App.OFS.Annotation.IAnnotatable." />
 
