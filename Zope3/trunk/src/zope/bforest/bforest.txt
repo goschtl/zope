@@ -1,4 +1,8 @@
-bforests are dictionary-like objects that use multiple BTrees for a backend and
+===========
+BForest API
+===========
+
+BForests are dictionary-like objects that use multiple BTrees for a backend and
 support rotation of the composite trees.  This supports various implementations 
 of timed member expirations, enabling caches and semi-persistent storage.  A
 useful and simple subclass would be to promote a key-value pair to the

@@ -1,5 +1,6 @@
+======================
 Untrusted interpreters
-**********************
+======================
 
 Untrusted programs are executed by untrusted interpreters.  Untrusted
 interpreters make use of security proxies to prevent un-mediated
@@ -100,7 +101,7 @@ untrusted code and making sure that:
   unless the results are basic objects.
 
 Security proxies
-****************
+----------------
 
 Security proxies are objects that wrap and mediate access to objects.
 
@@ -165,7 +166,7 @@ The result of an operation on a proxied object is a security proxy
 unless the result is a basic value.
 
 Basic objects
-*************
+-------------
 
 Basic objects are safe immutable objects that contain only immutable
 subobjects. Examples of basic objects include:
@@ -198,7 +199,7 @@ object.  Therefore, the access to the basic object in the first place
 is mediated by the security functions.
 
 Rationale for mutable safe objects
-*********************************
+----------------------------------
 
 Some safe objects are not basic. For these objects, we proxy the
 objects if they originate from outside of the environment.  We do this
