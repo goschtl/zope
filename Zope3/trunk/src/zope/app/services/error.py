@@ -15,7 +15,7 @@
 
 This is a port of the Zope 2 error reporting object
 
-$Id: error.py,v 1.1 2003/06/22 14:01:44 jim Exp $
+$Id: error.py,v 1.2 2003/08/12 21:26:26 gotcha Exp $
 """
 
 from persistence import Persistent
@@ -30,7 +30,6 @@ from zope.exceptions.exceptionformatter import format_exception
 from zope.interface import implements
 import logging
 import time
-
 
 #Restrict the rate at which errors are sent to the Event Log
 _rate_restrict_pool = {}
@@ -221,6 +220,20 @@ class ErrorReportingService(Persistent):
         return None
     getLogEntryById = ContextMethod(getLogEntryById)
 
+class RootErrorReportingService(ErrorReportingService):
+    rootId = 'root'
+    
+    def _getLog(self):
+        """Returns the log for this object.
+        Careful, the log is shared between threads.
+        """
+        log = _temp_logs.get(self.rootId, None)
+        if log is None:
+            log = []
+            _temp_logs[self.rootId] = log
+        return log
+
+globalErrorReportingService = RootErrorReportingService()
 
 def _cleanup_temp_log():
     _temp_logs.clear()

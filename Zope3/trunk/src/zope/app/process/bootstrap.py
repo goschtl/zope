@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.5 2003/07/11 07:16:55 jim Exp $
+$Id: bootstrap.py,v 1.6 2003/08/12 21:27:55 gotcha Exp $
 """
 
 from zope.app import zapi
@@ -34,7 +34,7 @@ from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceRegistration
 from zope.app.services.hub import ObjectHub, Registration
 from zope.app.services.event import EventService
-from zope.app.services.error import ErrorReportingService
+from zope.app.services.error import RootErrorReportingService
 from zope.app.services.principalannotation import PrincipalAnnotationService
 from zope.app.services.interface import LocalInterfaceService
 from zope.proxy import removeAllProxies
@@ -155,7 +155,7 @@ class BootstrapInstance(BootstrapSubscriberBase):
 
         # Sundry other services
         self.ensureService(ErrorLogging,
-                           ErrorReportingService, copy_to_zlog=True)
+                           RootErrorReportingService, copy_to_zlog=True)
         self.ensureService(PrincipalAnnotation, PrincipalAnnotationService)
 
 bootstrapInstance = BootstrapInstance()
