@@ -28,4 +28,12 @@
       permission="zope.ManageApplication"
       menu="zmi_views" title="ZODB Control"/>
 
+  <page
+      for="zope.app.interfaces.applicationcontrol.IApplicationControl"
+      name="GlobalTSControl.html"
+      template="globaltranslationservicecontrol.pt"
+      class="zope.app.browser.applicationcontrol.globaltranslationservicecontrol.GlobalTSControlView" 
+      permission="zope.ManageApplication"
+      menu="zmi_views" title="Global Translation Service Control"/>
+
 </configure>
