@@ -107,10 +107,13 @@ class ConfigurationContext(object):
         1
         >>> c.resolve('zope.interface') is zope.interface
         1
-        >>> c.resolve('zope.configuration.eek')
+
+        >>> c.resolve('zope.configuration.eek') #doctest: +NORMALIZE_WHITESPACE
         Traceback (most recent call last):
         ...
-        ConfigurationError: Module zope.configuration has no global eek
+        ConfigurationError:
+        ImportError: Module zope.configuration has no global eek
+
         >>> c.resolve('.config.ConfigurationContext')
         Traceback (most recent call last):
         ...
@@ -216,8 +219,8 @@ class ConfigurationContext(object):
                     # so reraise the exception so as not to hide it.
                     raise
 
-                raise ConfigurationError("Module %s has no global %s"
-                                         % (mname, oname))
+                raise ConfigurationError(
+                    "ImportError: Module %s has no global %s" % (mname, oname))
 
     def path(self, filename):
         """

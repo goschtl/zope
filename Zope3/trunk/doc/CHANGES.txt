@@ -495,6 +495,11 @@ Zope Changes
 
     Bug Fixes
 
+      - Addressed issue #348: ZCML hides import errors 
+ 
+        I tried really hard to get a better error message, but it is not
+        possible, so I just prepended "ImportError:" to the error message.
+
       - Fixed issue #352: documentation for
         zope.app.form.interfaces.IInputWidget.validate is wrong
 

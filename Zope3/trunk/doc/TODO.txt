@@ -76,8 +76,6 @@ Others
 
 * 319: Navigation with anonymous
 
-* 321: TraversalError after renaming or moving Sites with local services 
-
 * 332: Death to IContentContainer
 
 * 334: Failing RuntimeInfo tests 
@@ -90,15 +88,11 @@ Others
 
 * 345: Using response.write should not involve unicode conversion
 
-* 348: ZCML hides import errors 
-
 * 356: Copy and Paste does not handle exceptions raised by __setitem__ 
 
 * 360: MultiSelectWidget configured for ISet but creates list
 
 * 369: DAV is hosed on the trunk
-
-* 370: ZCML: Second 'packages-includes' 
 
 * 371: OrderedMultiSelectWidget ignores setRenderedValue
 
