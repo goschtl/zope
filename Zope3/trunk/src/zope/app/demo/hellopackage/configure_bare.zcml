@@ -8,30 +8,32 @@
 
 <content class=".hellomodule.HelloClass">
   <factory
-      id="Hello"
-      permission="zope.ManageContent"
+      id="hellopackage.Hello"
       title="Hello world"
-      description="A simple hello world object." />
+      description="A simple hello world object."
+      />
   <require
       permission="zope.View"
-      attributes="getHello" />
+      attributes="getHello"
+      />
 </content>
 
 <browser:page
     name="hello.html"
     for=".interfaces.IHello"
     template="hello.pt"
-    permission="zope.View" />
+    permission="zope.View"
+    />
 
 <browser:defaultView
     name="hello.html"
-    for=".interfaces.IHello" />
+    for=".interfaces.IHello"
+    />
 
-<browser:menuItem
-    menu="add_content"
-    for="zope.app.container.interfaces.IAdding."
-    action="Hello"
+<browser:addMenuItem
+    factory="hellopackage.Hello"
     title="Hello world"
-    description="An object for hello worlding." />
+    description="An object for hello worlding."
+    />
 
 </configure>

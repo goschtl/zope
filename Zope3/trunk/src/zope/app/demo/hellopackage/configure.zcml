@@ -8,11 +8,11 @@ configure is the root element of the ZCML file.
 Besides enclosing the rest of the directive, you define some
 namespaces on it in the standard XML namespaces way.
 
-xmlns="uri" defines the default namespace elements are in (when they don't
-use the 'foo:bar' notation).
+xmlns="uri" defines the default namespace elements are in (when they
+don't use the 'foo:bar' notation).
 
-xmlns:foo="uri" defines another namespace. You can put elements in that
-namespace by using the defined prefix ('foo:bar').
+xmlns:foo="uri" defines another namespace. You can put elements in
+that namespace by using the defined prefix ('foo:bar').
 
 i18n_domain="hellopackage" defines the internationalization (i18n)
 domain for this package
@@ -31,8 +31,8 @@ This is defined by HelloClass in hellomodule.
 -->
 <content class=".hellomodule.HelloClass">
   <implements 
-	    interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
-	    />
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      />
 
   <!--
   More information about making new Hello objects.
@@ -41,10 +41,10 @@ This is defined by HelloClass in hellomodule.
   used to restrict who is allowed to add Hello objects.
   -->
   <factory
-      id="Hello"
-      permission="zope.ManageContent"
+      id="hellopackage.Hello"
       title="Hello world"
-      description="A simple hello world object." />
+      description="A simple hello world object."
+      />
 
   <!--
   Permissions on using Hello objects.
@@ -54,42 +54,41 @@ This is defined by HelloClass in hellomodule.
   -->
   <require
       permission="zope.View"
-      attributes="getHello" />
+      attributes="getHello"
+      />
 </content>
 
 <!--
 Create a hello.html view for Hello object.
 
-The view has a name (index.html),it applies to ZMI tab called (View) and it applies to an interface
-(interfaces.IHello). The view is made from a page template called
-hello.pt. Only people with the 'Zope.View' permission may use this
-view.
+The view has a name (index.html), it applies to ZMI tab called (View)
+and it applies to an interface (interfaces.IHello). The view is made
+from a page template called hello.pt. Only people with the 'Zope.View'
+permission may use this view.
 -->
-<browser:page for=".interfaces.IHello"
-	name="index.html"
-	menu="zmi_views"
-	title="View"
-	template="hello.pt"
-	permission="zope.View"
-        />
+<browser:page
+    for=".interfaces.IHello"
+    name="index.html"
+    menu="zmi_views"
+    title="View"
+    template="hello.pt"
+    permission="zope.View"
+    />
 
 <!--
 Add the Hello object to the add menu.
 
-The add menu is called 'add_content'. It's always a special kind of
-view on the Zope.App.OFS.Container.IAdding interface.
-
-'action' refers to the id of the content object to add.
+'factory' refers to the id of the factory that creates new hello world
+objects.
 
 'title' is what will show up in the add menu as the name of the
 object. 'description' will show up as a description in the add menu as
 well.
 -->
-<browser:menuItem
-    menu="add_content"
-    for="zope.app.container.interfaces.IAdding"
-    action="Hello"
+<browser:addMenuItem
+    factory="hellopackage.Hello"
     title="Hello world"
-    description="An object for hello worlding." />
+    description="An object for hello worlding."
+    />
 
 </configure>

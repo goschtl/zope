@@ -17,14 +17,12 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from interfaces import IHello
 from persistent import Persistent
 from zope.interface import implements
-
+from zope.app.demo.hellopackage.interfaces import IHello
 
 class HelloClass(Persistent):
     implements(IHello)
-
     
     def getHello(self):
         return "Hello world"
