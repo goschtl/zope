@@ -249,27 +249,44 @@ class InterfaceField(Field):
             raise WrongType
 
 def _validate_sequence(value_type, value, errors=None):
+    """Validates a sequence value.
+    
+    Returns a list of validation errors generated during the validation. If
+    no errors are generated, returns an empty list.
+    
+    value_type is a field. value is the sequence being validated. errors is
+    an optional list of errors that will be prepended to the return value.
+    
+    To illustrate, we'll use a text value type. All values must be unicode.
+    
+	    >>> field = TextLine(required=True)
+	
+	To validate a sequence of various values:
+	
+	    >>> errors = _validate_sequence(field, ('foo', u'bar', 1))
+	    >>> errors
+	    [foo <type 'unicode'>, 1 <type 'unicode'>]
+	
+	The only valid value in the sequence is the second item. The others
+	generated errors.
+	
+	We can use the optional errors argument to collect additional errors
+	for a new sequence:
+	
+        >>> errors = _validate_sequence(field, (2, u'baz'), errors)
+        >>> errors
+        [foo <type 'unicode'>, 1 <type 'unicode'>, 2 <type 'unicode'>]
+
+    """
     if errors is None:
         errors = []
-
     if value_type is None:
         return errors
-
     for item in value:
-        error = None
         try:
             value_type.validate(item)
         except ValidationError, error:
-            pass
-        else:
-            # We validated, so clear error (if any) and done with
-            # this value
-            error = None
-            break
-
-        if error is not None:
             errors.append(error)
-
     return errors
 
 def _validate_uniqueness(value):
