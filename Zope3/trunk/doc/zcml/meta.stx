@@ -65,10 +65,7 @@ The Meta Configuration System
     us a place to declare the namespace the contained directives
     will be in so we don't have to repeat it on each directive
     declaration.  The namespace attribute gives the XML namespace
-    for the directives.  You do not have to use 'directives',
-    'directive' is also valid as a top level directive, although
-    in that case the 'namespace' attribute is required rather
-    than optional.
+    for the directives.
 
     The first example directive directive defines a directive that
     has no subdirectives.  The 'name' attribute gives the name of
