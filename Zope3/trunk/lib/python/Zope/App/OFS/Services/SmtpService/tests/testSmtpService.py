@@ -14,7 +14,7 @@
 
 """This module tests the regular persistent SMTP Service.
 
-$Id: testSmtpService.py,v 1.1 2002/10/28 21:05:00 bwarsaw Exp $
+$Id: testSmtpService.py,v 1.2 2002/10/28 23:09:43 bwarsaw Exp $
 """
 
 import sys
@@ -88,10 +88,10 @@ subject: testSmtpService.testSendMessage
 This is a test message.""")
 
 
-def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(TestSmtpService)
+##def test_suite():
+##    loader = unittest.TestLoader()
+##    return loader.loadTestsFromTestCase(TestSmtpService)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
+##if __name__ == '__main__':
+##    unittest.TextTestRunner().run(test_suite())
