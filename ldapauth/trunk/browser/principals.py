@@ -45,3 +45,10 @@ class Principals(BrowserView):
         return principals
 
     principals = ViewPageTemplateFile('principals.pt')
+
+    def index(self):
+        if 'index.html' in self.context:
+            self.request.response.redirect('index.html')
+            return ''
+
+        return self._index()

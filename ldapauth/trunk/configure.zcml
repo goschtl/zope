@@ -7,7 +7,7 @@
 
     <content class=".LDAPPrincipalSource">
         <factory
-            id="zope.products.ldapauth.LDAPPrincipalSource"/>
+            id="ldapauth.source.LDAPPrincipalSource"/>
         <allow interface=".interfaces.ILDAPBasedPrincipalSource"/>
         <require
             permission="zope.ManageContent"

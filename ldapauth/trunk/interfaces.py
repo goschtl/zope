@@ -22,6 +22,7 @@ from zope.app.pluggableauth.interfaces import IPrincipalSource
 
 class ILDAPBasedPrincipalSource(IPrincipalSource):
     """Describe LDAP-based authentication sources."""
+
     host = TextLine(
             title = _(u'Hostname'),
             description = _(u'LDAP Server location'),

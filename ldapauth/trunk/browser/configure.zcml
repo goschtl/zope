@@ -1,11 +1,11 @@
-<zope:configure
+<configure
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser">
 
     <!-- LDAPPrincipalSource -->
     <addMenuItem
         title="Add LDAP Principal Source"
-        class="ldapauth.LDAPPrincipalSource"
+        class="ldapauth.source.LDAPPrincipalSource"
         permission="zope.ManageServices" />
 
     <addform
@@ -14,7 +14,9 @@
         name="AddLDAPPrincipalSourceForm" 
         permission="zope.ManageContent" />
 
-    <!-- provide a own Contents view without add and delete functions -->
+    <!-- provide a own Contents view without add and delete functions 
+         Perhaps we enhance this view later. At this time we use thos view
+         instead of the inherited Contents view from the ocntainer. -->
     <page
         for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
         name="principals.html"
@@ -27,7 +29,8 @@
         schema="ldapauth.interfaces.ILDAPBasedPrincipalSource" 
         label="Edit LDAP-based Principal Source" 
         name="edit.html"        
-        menu="zmi_views" title="Edit" 
+        menu="zmi_views" title="Edit"
+        fields="host port basedn login_attribute manager_dn manager_passwd" 
         permission="zope.ManageContent" />
 
     <!-- connetion test view -->
@@ -41,4 +44,4 @@
 
 
 
-</zope:configure>
+</configure>
