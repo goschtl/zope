@@ -15,7 +15,7 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: test_cachename.py,v 1.6 2003/08/19 17:34:12 srichter Exp $
+$Id: test_cachename.py,v 1.7 2003/12/18 09:57:11 pnaveen Exp $
 """
 import unittest
 
@@ -29,6 +29,8 @@ from zope.interface import implements
 __metaclass__ = type
 
 class CachingServiceStub:
+
+    __name__ = __parent__ = None
 
     implements(ILocalService, IAttributeAnnotatable)
 

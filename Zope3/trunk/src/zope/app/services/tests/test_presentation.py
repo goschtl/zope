@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.3 2003/12/18 06:09:44 sraju Exp $
+$Id: test_presentation.py,v 1.4 2003/12/18 09:57:15 pnaveen Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -85,7 +85,7 @@ class Registration:
 class C: pass
 
 class PhonyTemplate:
-
+    __name__ = __parent__ = None
     implements(IZPTTemplate)
 
 class A:

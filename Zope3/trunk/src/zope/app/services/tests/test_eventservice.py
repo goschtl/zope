@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.29 2003/11/21 17:12:13 jim Exp $
+$Id: test_eventservice.py,v 1.30 2003/12/18 09:57:15 pnaveen Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -84,6 +84,8 @@ class IObjectHub(Interface):
 class DumbObjectHub:
     implements(IObjectHub, ISimpleService)
 
+    __name__ = __parent__ = None
+    
     def __init__(self):
         # (location, object)
         self.lib = []

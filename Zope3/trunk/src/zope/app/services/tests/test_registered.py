@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_registered.py,v 1.3 2003/09/24 20:43:14 fdrake Exp $
+$Id: test_registered.py,v 1.4 2003/12/18 09:57:15 pnaveen Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,6 +24,9 @@ from zope.interface import implements
 from zope.app.container.contained import Contained
 
 class C(dict, Contained):
+
+    __name__ = __parent__ = None
+    
     implements(IAnnotations, ITraverser)
 
     def __init__(self, testobjs={}):

@@ -13,13 +13,14 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.9 2003/09/21 17:31:17 jim Exp $
+$Id: ram.py,v 1.10 2003/12/18 09:57:09 pnaveen Exp $
 """
 from time import time
 from thread import allocate_lock
 from pickle import dumps
 from persistence import Persistent
 from zope.app import zapi
+from zope.app.container.contained import Contained
 from zope.app.interfaces.cache.ram import IRAMCache
 from zope.app.interfaces.cache import ICache
 from zope.app.interfaces.event import IObjectModifiedEvent
@@ -35,7 +36,7 @@ writelock = allocate_lock()
 cache_id_counter = 0
 cache_id_writelock = allocate_lock()
 
-class RAMCache(Persistent):
+class RAMCache(Persistent, Contained):
     """RAM Cache
 
     The design of this class is heavily based on RAMCacheManager in

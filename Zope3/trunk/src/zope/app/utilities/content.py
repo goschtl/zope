@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.6 2003/11/03 21:37:55 jeremy Exp $
+$Id: content.py,v 1.7 2003/12/18 09:57:16 pnaveen Exp $
 """
 __metaclass__ = type
 
@@ -28,6 +28,7 @@ from zope.app.interfaces.services.menu import \
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.utilities.content import \
      IContentComponentDefinition, IContentComponentMenuItem
+from zope.app.container.contained import Contained
 from zope.app.interfaces.utilities.content import IContentComponentInstance
 from zope.app.services.menu import \
      LocalBrowserMenuService, LocalBrowserMenu, LocalBrowserMenuItem
@@ -43,7 +44,7 @@ from zope.security.checker import CheckerPublic, Checker, defineChecker
 MenuItemKey = 'http://www.zope.org/utilities/content/menuitem'
 
 
-class ContentComponentDefinition(Persistent):
+class ContentComponentDefinition(Persistent, Contained):
 
     implements(IContentComponentDefinition)
 

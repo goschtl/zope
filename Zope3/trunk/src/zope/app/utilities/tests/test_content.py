@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Tests
 
-$Id: test_content.py,v 1.5 2003/11/21 17:12:16 jim Exp $
+$Id: test_content.py,v 1.6 2003/12/18 09:57:18 pnaveen Exp $
 """
 import unittest
 
@@ -48,6 +48,8 @@ class IDocument(Interface):
 
 class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
 
+    __name__ = __parent__ = None
+    
     def setUp(self):
         setup.placefulSetUp()
         self.rootFolder = setup.buildSampleFolderTree()

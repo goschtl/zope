@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_interfaceutility.py,v 1.5 2003/09/21 17:33:49 jim Exp $
+$Id: test_interfaceutility.py,v 1.6 2003/12/18 09:57:18 pnaveen Exp $
 """
 
 import unittest
@@ -28,6 +28,7 @@ from zope.component.utility import utilityService as globalUtilityService
 from zope.app.component.globalinterfaceservice \
      import interfaceService as globalInterfaceService
 from zope.interface import Interface, implements
+from zope.app.container.contained import Contained
 from zope.component import getService
 from zope.component.exceptions import ComponentLookupError
 from zope.app.traversing import traverse
@@ -84,7 +85,7 @@ class Baz:
         "See zope.app.interfaces.dependable.IDependable"
         return self._dependents
 
-class Foo(InterfaceClass, Baz):
+class Foo(InterfaceClass, Baz, Contained):
 
     def __init__(self, name):
         InterfaceClass.__init__(self, name, (Interface,))

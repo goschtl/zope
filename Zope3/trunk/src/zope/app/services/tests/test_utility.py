@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.11 2003/09/21 17:33:25 jim Exp $
+$Id: test_utility.py,v 1.12 2003/12/18 09:57:15 pnaveen Exp $
 """
 
 import unittest
@@ -47,8 +47,9 @@ class IBar(Interface): pass
 class Foo:
     # We implement IRegistered and IDependable directly to
     # depend as little  as possible on other infrastructure.
+    __name__ = __parent__ = None
     implements(IFoo, ILocalUtility, IRegistered, IDependable)
-
+    
     def __init__(self, name):
         self.name = name
         self._usages = []

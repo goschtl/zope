@@ -13,16 +13,19 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.13 2003/10/17 15:49:19 fdrake Exp $
+$Id: registration.py,v 1.14 2003/12/18 09:57:12 pnaveen Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.container  import IContainerNamesContainer, IContainer
+from zope.app.interfaces.container import IContainerNamesContainer
+from zope.app.interfaces.container import IContained, IContainer
 from zope.app.security.permission import PermissionField
 from zope.interface import Interface, Attribute, implements
-from zope.schema import TextLine
+from zope.schema import TextLine, Field
 from zope.schema.interfaces import ITextLine
+from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.container.constraints import ContainerTypesConstraint
 
 UnregisteredStatus = _('Unregistered')
 RegisteredStatus = _('Registered')
@@ -121,7 +124,6 @@ class INamedRegistration(IRegistration):
     # registration class.
     label = Attribute("Descriptive label of the registration type "
                       "(for example, Service, Connection)")
-
 
 class IComponentPath(ITextLine):
     """A component path
@@ -335,11 +337,46 @@ class INameComponentRegistry(INameRegistry):
         an active registration, and if so, returns its component.  Otherwise
         returns default.
         """
+class IOrderedContainer(Interface):
+    """Containers whose items can be reorderd.
 
-class IRegisterable(IAnnotatable):
+    XXX This is likely to go.
+    """
+
+    def moveTop(names):
+        """Move the objects corresponding to the given names to the top.
+        """
+
+    def moveUp(names):
+        """Move the objects corresponding to the given names up.
+        """
+
+    def moveBottom(names):
+        """Move the objects corresponding to the given names to the bottom.
+        """
+
+    def moveDown(names):
+        """Move the objects corresponding to the given names down.
+        """
+
+class IRegistrationManager(IContainerNamesContainer, IOrderedContainer):
+    """Manage Registrations
+    """
+
+    def __setitem__(name, object):
+        """Add to object"""
+
+class IRegisterable(IAnnotatable, IContained):
     """A marker interface."""
+    
+    __parent__ = Field(
+        constraint = ContainerTypesConstraint(IRegistrationManager))
 
-class IRegistered(IRegisterable):
+IRegistrationManager['__setitem__'].setTaggedValue(
+    'precondition', ItemTypePrecondition(IRegisterable))
+    
+
+class IRegistered(Interface):
     """An object that can keep track of its configured uses.
 
     The object need not implement this functionality itself, but must at
@@ -370,41 +407,6 @@ class IRegistered(IRegisterable):
 
 class IAttributeRegisterable(IAttributeAnnotatable, IRegisterable):
     """A marker interface."""
-
-
-class IOrderedContainer(Interface):
-    """Containers whose items can be reorderd.
-
-    XXX This is likely to go.
-    """
-
-    def moveTop(names):
-        """Move the objects corresponding to the given names to the top.
-        """
-
-    def moveUp(names):
-        """Move the objects corresponding to the given names up.
-        """
-
-    def moveBottom(names):
-        """Move the objects corresponding to the given names to the bottom.
-        """
-
-    def moveDown(names):
-        """Move the objects corresponding to the given names down.
-        """
-
-class IRegistrationManager(IContainerNamesContainer, IOrderedContainer):
-    """Manage Registrations
-    """
-
-    def addRegistration(registration):
-        """Add a registration
-
-        The registration name is chosen automatically. The chosen name
-        is returned.
-        """
-
 
 class INoRegistrationManagerError(Interface):
     """No registration manager error

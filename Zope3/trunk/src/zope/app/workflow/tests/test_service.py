@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_service.py,v 1.6 2003/09/21 17:34:03 jim Exp $
+$Id: test_service.py,v 1.7 2003/12/18 09:57:18 pnaveen Exp $
 """
 
 import unittest
@@ -22,7 +22,7 @@ import unittest
 from zope.app import zapi
 from zope.interface import implements
 from zope.interface.verify import verifyClass
-
+from zope.app.container.contained import Contained
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.interfaces.services.registration import IRegistered
@@ -36,7 +36,7 @@ from zope.app.workflow.service import WorkflowService
 from zope.app.workflow.service import ProcessDefinitionRegistration
 
 # define and create dummy ProcessDefinition (PD) for tests
-class DummyProcessDefinition:
+class DummyProcessDefinition(Contained):
     implements(IProcessDefinition, IAttributeAnnotatable, IRegisterable,
                IRegistered)
 

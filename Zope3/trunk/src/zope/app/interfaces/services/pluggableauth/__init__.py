@@ -13,13 +13,15 @@
 ##############################################################################
 """Pluggable Authentication service.
 
-$Id: __init__.py,v 1.8 2003/09/21 17:32:29 jim Exp $
+$Id: __init__.py,v 1.9 2003/12/18 09:57:13 pnaveen Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.container import IContainer 
+from zope.app.interfaces.container import IContainer, IContained
+from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 from zope.interface import Interface
-from zope.schema import Text, TextLine, Password
+from zope.schema import Text, TextLine, Password, Field
 
 class IUserSchemafied(IPrincipal):
     """A User object with schema-defined attributes."""
@@ -55,25 +57,7 @@ class IUserSchemafied(IPrincipal):
     def validate(test_password):
         """Confirm whether 'password' is the password of the user."""
 
-class IPluggableAuthenticationService(IAuthenticationService):
-    """An AuthenticationService that can contain multiple pricipal sources.
-    """
 
-    def addPrincipalSource(id, principal_source):
-        """Add an IReadPrincipalSource to the end of our OrderedContainer.
-
-        If id is already present or invalid (according to site
-        policy), raise KeyError.
-
-        If principal_source does not implement IReadPrincipalSource,
-        raise TypeError
-        """
-
-    def removePrincipalSource(id):
-        """Remove a PrincipalSource.
-
-        If id is not present, raise KeyError.
-        """
 
 class IPrincipalSource(Interface):
     """A read-only source of IPrincipals.
@@ -105,6 +89,22 @@ class IPrincipalSource(Interface):
         similar to (e.g. contain) the given name.
         """
 
+
+
+class IPluggableAuthenticationService(IAuthenticationService, IContainer):
+    """An AuthenticationService that can contain multiple pricipal sources.
+    """
+
+    def __setitem__(id, principal_source):
+        """Add to object"""
+    __setitem__.precondition = ItemTypePrecondition(IPrincipalSource)
+  
+    def removePrincipalSource(id):
+        """Remove a PrincipalSource.
+
+        If id is not present, raise KeyError.
+        """
+
 class ILoginPasswordPrincipalSource(IPrincipalSource):
     """ A principal source which can authenticate a user given a
     login and a password """
@@ -121,7 +121,9 @@ class ILoginPasswordPrincipalSource(IPrincipalSource):
         to change his login when his email address changes without
         effecting his security profile on the site.  """
 
-
-class IContainerPrincipalSource(IPrincipalSource, IContainer):
+class IContainerPrincipalSource(IPrincipalSource, IContained):
     """This is a marker interface for specifying principal sources that are
     also containers. """
+
+    __parent__= Field(
+        constraint = ContainerTypesConstraint(IPluggableAuthenticationService))

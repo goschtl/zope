@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_registrationmanager.py,v 1.5 2003/11/27 13:59:26 philikon Exp $
+$Id: test_registrationmanager.py,v 1.6 2003/12/18 09:57:15 pnaveen Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -29,6 +29,8 @@ from zope.app.container.contained import ObjectRemovedEvent
 
 class Undeletable:
 
+    __name__ = __parent__ = None
+    
     implements(IRemoveNotifiable)
 
     def removeNotify(self, event):
@@ -360,6 +362,7 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
         self.failUnless(thingy.was_called)
 
 class RegistrationManagerContainerTests(placefulsetup.PlacefulSetup):
+
 
     def test_getRegistrationManager(self):
         sm = self.buildFolders(site=True)

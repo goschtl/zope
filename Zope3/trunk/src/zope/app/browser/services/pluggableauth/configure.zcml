@@ -1,6 +1,8 @@
 <zope:configure 
-   xmlns:zope="http://namespaces.zope.org/zope"
-   xmlns="http://namespaces.zope.org/browser">
+   xmlns="http://namespaces.zope.org/browser"
+   xmlns:zope='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   >
 
 <!-- Pluggable Authentication Service -->
 
@@ -12,7 +14,6 @@
        description="A Pluggable Authentication Service
 
                     Uses plug-in principal sources." />
-
   <page
        name="contents.html"
        for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
@@ -20,7 +21,7 @@
        class="zope.app.browser.container.contents.Contents"
        attribute="contents" />
 
-  <view
+   <view
        name="+"
        menu="zmi_actions" title="Add Source"
        for="zope.app.services.pluggableauth.IPluggableAuthenticationService"
@@ -32,17 +33,20 @@
 
   </view>
 
-  <menu id="add_principal_source"
+  <menu
+      id="add_principal_source"
       title="Menu for adding new PrincipalSource."/>
 
 <!-- Principal Source -->
 
+ <!--
   <menuItem
       menu="add_principal_source"
       for="zope.app.interfaces.container.IAdding"
       action="zope.app.principalsources.BTreePrincipalSource"
       title="BTree Principal Source"
       description="BTree Principal Source" />
+ -->
 
   <page
        name="contents.html"
@@ -52,12 +56,13 @@
        class="zope.app.browser.container.contents.Contents"
        attribute="contents" />
 
-  <menuItem
-      menu="zmi_actions" title="Add Principal"
-      for="zope.app.services.pluggableauth.IContainerPrincipalSource"
-      action="AddPrincipalForm.html" />
+  <browser:addMenuItem
+      title="Add Principal Source" 
+      class="zope.app.services.pluggableauth.BTreePrincipalSource"	
+      permission="zope.ManageServices"
+      />
 
-  <addform
+  <browser:addform
       for="zope.app.services.pluggableauth.IContainerPrincipalSource"
       schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
       label="Add Simple User with details"

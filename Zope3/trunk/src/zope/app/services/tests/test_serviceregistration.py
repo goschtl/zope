@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceregistration.py,v 1.2 2003/09/21 17:33:25 jim Exp $
+$Id: test_serviceregistration.py,v 1.3 2003/12/18 09:57:15 pnaveen Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -40,8 +40,9 @@ class ITestService(Interface):
     pass
 
 class TestServiceBase:
+    __name__ = __parent__ = None
     implements(ITestService, IBindingAware, IDependable)
-
+    
     _bound = _unbound = ()
 
     def bound(self, name):
