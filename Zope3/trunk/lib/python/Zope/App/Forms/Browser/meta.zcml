@@ -1,0 +1,13 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <directives namespace="http://namespaces.zope.org/form">
+
+    <directive
+       name="edit" 
+       attributes="name schema label for layer permission class template"
+       handler=".EditView.directive"
+       />
+
+  </directives>
+
+</zopeConfigure>
