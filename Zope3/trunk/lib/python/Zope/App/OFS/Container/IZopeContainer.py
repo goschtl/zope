@@ -2,17 +2,17 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
-$Id: IZopeContainer.py,v 1.3 2002/11/19 14:45:54 jim Exp $
+$Id: IZopeContainer.py,v 1.4 2002/12/12 11:32:29 mgedmin Exp $
 """
 
 import IContainer
@@ -26,7 +26,7 @@ class IZopeItemContainer(IContainer.IItemContainer):
 
         The returned value will be in the context of the container.
         """
-        
+
 
 
 class IZopeSimpleReadContainer(IZopeItemContainer,
@@ -38,11 +38,11 @@ class IZopeSimpleReadContainer(IZopeItemContainer,
         """Get a value for a key
 
         The default is returned if there is no value for the key.
-        
-        The value for the key will be in the context of the container.         
+
+        The value for the key will be in the context of the container.
         """
-        
-    
+
+
 
 class IZopeReadContainer(IZopeSimpleReadContainer, IContainer.IReadContainer):
     """Readable containers that can be enumerated.
@@ -59,7 +59,7 @@ class IZopeReadContainer(IZopeSimpleReadContainer, IContainer.IReadContainer):
            of the container
         """
 
-    
+
 
 class IZopeWriteContainer(IContainer.IWriteContainer):
     """An interface for the write aspects of a container."""
@@ -80,7 +80,7 @@ class IZopeWriteContainer(IContainer.IWriteContainer):
         object in the context of the container
 
         An IObjectModifiedEvent will be published after the IObjectAddedEvent
-        is published. The event object will be the container.                        
+        is published. The event object will be the container.
         """
 
     def __delitem__(key):
@@ -88,7 +88,7 @@ class IZopeWriteContainer(IContainer.IWriteContainer):
 
         Raises a KeyError if the object is not found.
 
-        If the object has an adpter to IDeleteNotifyObject then the
+        If the object has an adpter to IDeleteNotifiable then the
         manageBeforeDeleteObject method on the adpter will be called before
         the object is removed.
 
@@ -100,6 +100,6 @@ class IZopeWriteContainer(IContainer.IWriteContainer):
         is published. The event object will be the container.
         """
 
-class IZopeContainer(IZopeReadContainer, IContainer.IContainer):
+class IZopeContainer(IZopeReadContainer, IZopeWriteContainer, IContainer.IContainer):
     """Readable and writable content container."""
 

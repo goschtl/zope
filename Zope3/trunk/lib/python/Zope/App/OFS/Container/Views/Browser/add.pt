@@ -48,9 +48,11 @@
                tal:attributes="for info/action">
           <span tal:replace="info/title" >Folder</span>
         </label>
-        <div class="TypeDescription" tal:content="info/description">
-          Folders are generic containers for content, including other
-          folders.
+        <div class="TypeDescription">
+          <label tal:attributes="for info/action" tal:content="info/description">
+            Folders are generic containers for content, including other
+            folders.
+          </label>
         </div>
       </td>
     </tr>

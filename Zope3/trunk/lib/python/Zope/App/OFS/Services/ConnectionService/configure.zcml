@@ -3,20 +3,22 @@
 
   <content class=".ConnectionService.">
     <factory id="ConnectionService" permission="Zope.ManageServices" />
-      <require
-          permission="Zope.View"
-          interface="Zope.App.RDB.IConnectionService."
-          attributes="queryConfigurations queryConfigurationsFor" />
-      <require
-          permission="Zope.ManageServices"
-          interface="Zope.App.OFS.Container.IContainer." />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+    <require
+        permission="Zope.View"
+        interface="Zope.App.RDB.IConnectionService."
+        attributes="queryConfigurations queryConfigurationsFor
+                    listConfigurationNames" />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IContainer." />
   </content>
 
   <content class=".ConnectionConfiguration.">
     <require
         permission="Zope.ManageServices"
         interface=".IConnectionConfiguration."
-        set_attributes="connectionName componentPath"
+        set_attributes="name componentPath"
         set_schema=
             "Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration" />
     <require

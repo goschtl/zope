@@ -2,31 +2,35 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
-$Id: ConfigurationManager.py,v 1.2 2002/11/30 18:39:16 jim Exp $
+$Id: ConfigurationManager.py,v 1.3 2002/12/12 11:32:32 mgedmin Exp $
 """
 
 __metaclass__ = type
 
 from Persistence import Persistent
 from IConfigurationManager import IConfigurationManager
+from Zope.App.OFS.Container.IDeleteNotifiable import IDeleteNotifiable
+from Zope.App.OFS.Container.IZopeContainer import IZopeWriteContainer
+from Zope.ComponentArchitecture import getAdapter
+
 
 class ConfigurationManager(Persistent):
     """Configuration manager
 
     Manages configurations within a package.
     """
-    
-    __implements__ = IConfigurationManager
+
+    __implements__ = IConfigurationManager, IDeleteNotifiable
 
     def __init__(self):
         self._data = ()
@@ -49,7 +53,7 @@ class ConfigurationManager(Persistent):
     def __contains__(self, key):
         "See Interface.Common.Mapping.IReadMapping"
         return self.get(key) is not None
-    
+
 
     def keys(self):
         "See Interface.Common.Mapping.IEnumerableMapping"
@@ -58,7 +62,7 @@ class ConfigurationManager(Persistent):
     def values(self):
         "See Interface.Common.Mapping.IEnumerableMapping"
         return [v for k, v in self._data]
-    
+
     def items(self):
         "See Interface.Common.Mapping.IEnumerableMapping"
         return self._data
@@ -73,7 +77,7 @@ class ConfigurationManager(Persistent):
         key = str(self._next)
         self._data += ((key, object), )
         return key
-        
+
     def __delitem__(self, key):
         "See Zope.App.OFS.Container.IContainer.IWriteContainer"
         if key not in self:
@@ -113,7 +117,7 @@ class ConfigurationManager(Persistent):
                 j = max(i + direction, 0)
                 while j in indexes:
                     j += 1
-                
+
                 indexes[j] = item
 
         # Fill in the rest where there's room.
@@ -134,7 +138,12 @@ class ConfigurationManager(Persistent):
 
     def moveDown(self, names):
         self._moveUpOrDown(names, 1)
-        
+
+    def manage_beforeDelete(self, object, container):
+        assert object == self
+        container = getAdapter(object, IZopeWriteContainer)
+        for k, v in self._data:
+            del container[k]
 
 
 __doc__ = ConfigurationManager.__doc__  + __doc__

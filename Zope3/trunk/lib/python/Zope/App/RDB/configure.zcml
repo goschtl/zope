@@ -28,4 +28,7 @@
 </content>
 
 <include package=".GadflyDA" />
+
+<include package=".Browser" />
+
 </zopeConfigure>

@@ -1,56 +1,33 @@
 <html metal:use-macro="views/standard_macros/page">
-<body metal:fill-slot="body" tal:define="connections view/update">
+<body metal:fill-slot="body">
+<div metal:use-macro="view/indexMacros/macros/body">
 
-  <h2>Connections configured in this connection service.</h2>
+  <h2 metal:fill-slot="heading">Connections configured in this connection service.</h2>
 
-    <p tal:condition="not:connections">
-         No connections have been configured
+  <p metal:fill-slot="empty_text">No connections have been configured</p>
+
+  <div metal:fill-slot="extra_top">
+
+    <p>For each connection, the connection name is given and all of the
+       components registered to provide the connection are shown.  You
+       may select the component to provide the connection or disable the
+       connection.
     </p>
 
-    <div tal:condition="connections">
+    <p>Select a connection name or a component name to visit the connection
+       or component.
+    </p>
 
-        <p>For each connection, the connection name is given and all of the
-           components registered to provide the connection are shown.  You
-           may select the component to provide the connection or disable the
-           connection.
-        </p>
+  </div>
 
-        <p>Select a connection name or a component name to visit the connection
-           or component. </p>
-
-        <form action="." method="post"
-              tal:attributes="action request/URL">
-
-        <table width="100%">
-
-           <tr tal:repeat="connection connections">
-             <td valign="top" align="right">
-                <a href="Roles"
-                   tal:content="connection/name"
-                   tal:attributes="href connection/name"
-                   tal:condition="connection/active"
-                   >Roles</a>
-                <span tal:replace="connection/name" 
-                      tal:condition="connection/inactive" />
-             </td>
-             <td tal:content="structure connection/view">
-             </td>
-           </tr>
-
-        </table>
-
-        <input type=submit name="submit_update" value="Update"><br>
-
-        </form>
-
-    </div>
-
-    <p>To configure a connection, add a database adapter component to a
-       <em>package</em> in <a href="../../../Packages">Packages</a> or to
-       the <a href="../../../Packages/default">default package</a>. After the
-       component is added, add a connection configuration that configures the
-       component to provide a connection.
+  <p metal:fill-slot="help_text">To configure a connection, add a database
+     adapter component to a <em>package</em> in <a
+     href="../../../Packages">Packages</a> or to the <a
+     href="../../../Packages/default">default package</a>. After the component
+     is added, add a connection configuration that configures the component to
+     provide a connection.
   </p>
 
+</div>
 </body>
 </html>

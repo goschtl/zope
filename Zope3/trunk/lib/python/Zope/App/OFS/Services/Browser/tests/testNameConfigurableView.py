@@ -11,21 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Unit test for the generic NameConfigurable view mixin
 
-XXX longer description goes here.
-
-$Id: testServices.py,v 1.2 2002/11/30 18:39:17 jim Exp $
+$Id: testNameConfigurableView.py,v 1.2 2002/12/12 11:32:31 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Interface import Interface
-from Zope.App.OFS.Services.ServiceManager.Browser.Services import Services
 from Zope.Publisher.Browser.BrowserRequest import TestRequest
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.ComponentArchitecture.GlobalViewService import provideView
 from Zope.Publisher.Browser.BrowserView import BrowserView
+from Zope.App.OFS.Services.Browser.NameConfigurableView \
+     import NameConfigurableView
+from Zope.App.Traversing.ITraversable import ITraversable
 
 
 class SM:
@@ -33,7 +33,7 @@ class SM:
     def __init__(self, **data):
         self._data = data
 
-    def getBoundServiceTypes(self):
+    def listConfigurationNames(self):
         return self._data.keys()
 
     def queryConfigurations(self, name):
@@ -50,6 +50,17 @@ class Registry:
     def active(self):
         return self._active
 
+class ITestConfiguration(Interface): pass
+
+class Configuration:
+
+    __implements__ = ITestConfiguration, ITraversable
+
+    def __init__(self, path):
+        self.componentPath = path
+
+    def traverse(self, name, parameters, original_name, furtherPath):
+        return self
 
 class V(BrowserView):
 
@@ -61,18 +72,25 @@ class V(BrowserView):
     def update(self):
         self._update += 1
 
+class AU(BrowserView):
+
+    def __str__(self):
+        return "/" + self.context.componentPath
+
 class Test(PlacelessSetup, TestCase):
 
     def test_update(self):
         provideView(I, 'ChangeConfigurations', IBrowserPresentation, V)
+        provideView(ITestConfiguration, 'absolute_url', IBrowserPresentation,
+                    AU)
 
         r1 = Registry(None)
-        r2 = Registry(1)
-        r3 = Registry(1)
+        r2 = Registry(Configuration('1'))
+        r3 = Registry(Configuration('1'))
 
         sm = SM(test1=r1, test2=r2, test3=r3)
 
-        services = Services(sm, TestRequest()).update()
+        services = NameConfigurableView(sm, TestRequest()).update()
 
         self.assertEqual(len(services), 3)
 
@@ -82,6 +100,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(services[0]['view'].context, r1)
         self.assertEqual(services[0]['view']._prefix, "test1")
         self.assertEqual(services[0]['view']._update, 1)
+        self.assertEqual(services[0]['url'], None)
 
         self.assertEqual(services[1]['name'], 'test2')
         self.assertEqual(services[1]['active'], True)
@@ -89,6 +108,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(services[1]['view'].context, r2)
         self.assertEqual(services[1]['view']._prefix, "test2")
         self.assertEqual(services[1]['view']._update, 1)
+        self.assertEqual(services[1]['url'], '/1')
 
         self.assertEqual(services[2]['name'], 'test3')
         self.assertEqual(services[2]['active'], True)
@@ -96,8 +116,9 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(services[2]['view'].context, r3)
         self.assertEqual(services[2]['view']._prefix, "test3")
         self.assertEqual(services[2]['view']._update, 1)
-        
-        
+        self.assertEqual(services[2]['url'], '/1')
+
+
 
 def test_suite():
     return TestSuite((

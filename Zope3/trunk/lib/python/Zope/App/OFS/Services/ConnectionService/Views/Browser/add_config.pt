@@ -7,7 +7,7 @@
   <table>
      <tr>
        <td>Connection Name</td>
-       <td tal:content="structure view/connectionName"><input type="text"></td>
+       <td><input type="text" name="connection_name" /></td>
      </tr>
      <tr>
        <td>Component</td>

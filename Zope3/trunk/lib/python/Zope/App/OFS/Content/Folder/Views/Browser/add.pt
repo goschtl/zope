@@ -59,9 +59,11 @@
 
     <tr>
       <td class="Selector"><br /></td>
-      <td class="TypeDescription" tal:content="info/description">
+      <td class="TypeDescription">
+        <label tal:attributes="for info/action" tal:content="info/description">
           Folders are generic containers for content, including other
           folders.
+        </label>
       </td>
     </tr>
 
@@ -73,7 +75,7 @@
 
       <td class="Selector">
         <input type="radio" name="type_name" value="" />
-               
+
       </td>
 
       <td class="TypeName">

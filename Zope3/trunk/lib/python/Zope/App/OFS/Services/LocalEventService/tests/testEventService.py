@@ -9,12 +9,12 @@
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: testEventService.py,v 1.7 2002/12/01 10:32:29 jim Exp $
+$Id: testEventService.py,v 1.8 2002/12/12 11:32:32 mgedmin Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -30,11 +30,10 @@ from Zope.App.OFS.Services.ServiceManager.ServiceConfiguration \
 
 from Zope.App.Traversing import getPhysicalPathString, traverse
 
-from Zope.ComponentArchitecture import getService, getServiceManager
-
 from Zope.Exceptions import NotFoundError
 
 from Zope.Event import subscribe, unsubscribe, listSubscriptions, publish
+from Zope.Event import getEventService
 from Zope.Event.tests.subscriber import DummySubscriber, DummyFilter
 from Zope.Event.IObjectEvent import IObjectEvent
 from Zope.Event.IObjectEvent import IObjectAddedEvent
@@ -53,7 +52,7 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 from EventSetup import EventSetup
 
 class UnpromotingLocalEventService(LocalEventService):
-    
+
     def isPromotableEvent(self, event):
         "see ILocalEventService"
         return 0
@@ -70,24 +69,24 @@ class ObjectEvent:
 
 class DummySubscriptionAwareSubscriber(DummySubscriber):
     __implements__ = ISubscriptionAware
-    
+
     def subscribedTo(self, subscribable, event_type, filter):
         self.subscribable = subscribable
         self.event_type = event_type
         self.filter = filter
-    
+
     def unsubscribedFrom(self, subscribable, event_type, filter):
         self.un_subscribable = subscribable
         self.un_event_type = event_type
         self.un_filter = filter
 
 class EventServiceTests(EventSetup, TestCase):
-    
+
     def _createNestedServices(self):
         self.createEventService('folder1')
         self.createEventService('folder1/folder1_1')
         self.createEventService('folder1/folder1_1/folder1_1_1')
-    
+
     def _createSubscribers(self):
         self.rootFolder.setObject("rootFolderSubscriber", DummySubscriber())
         self.rootFolderSubscriber=ContextWrapper(
@@ -104,19 +103,19 @@ class EventServiceTests(EventSetup, TestCase):
             self.folder1_1["folder1_1Subscriber"],
             self.folder1_1,
             name="folder1_1Subscriber")
-        
+
     def testCreateNestedServices(self):
         self._createNestedServices()
-    
+
     def testListSubscriptions1(self):
         "a non-subscribed subscriber gets an empty array"
         self._createSubscribers()
 
-        events = getService(self.rootFolder, "Events")
-        
+        events = getEventService(self.rootFolder)
+
         self.assertEqual(events.listSubscriptions(self.rootFolderSubscriber),
                          [])
-    
+
     def testListSubscriptions2(self):
         "one subscription"
         self._createSubscribers()
@@ -124,11 +123,10 @@ class EventServiceTests(EventSetup, TestCase):
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
             )
-        self.assertEqual(
-            [(IObjectAddedEvent,None)],
-            self.rootFolder.getServiceManager().getService(
-            "Events").listSubscriptions(self.rootFolderSubscriber))
-    
+        self.assertEqual([(IObjectAddedEvent,None)],
+                         getEventService(self.rootFolder)
+                            .listSubscriptions(self.rootFolderSubscriber))
+
     def testListSubscriptions3(self):
         "listing limited subscription"
         self._createSubscribers()
@@ -136,18 +134,18 @@ class EventServiceTests(EventSetup, TestCase):
             self.rootFolderSubscriber,
             event_type=IObjectAddedEvent
             )
-        self.assertEqual(
-            [],
-            self.rootFolder.getServiceManager().getService(
-            "Events").listSubscriptions(self.rootFolderSubscriber, IObjectRemovedEvent))
-    
+        self.assertEqual([],
+                         getEventService(self.rootFolder)
+                            .listSubscriptions(self.rootFolderSubscriber,
+                                               IObjectRemovedEvent))
+
     def testSubscribe1(self):
         "Test subscribe method with one parameter"
         self._createSubscribers()
         subscribe(self.rootFolderSubscriber)
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-        
+
     def testSubscribe2(self):
         "Test subscribe method with two parameters"
         self._createSubscribers()
@@ -227,7 +225,7 @@ class EventServiceTests(EventSetup, TestCase):
 
     def testSubscribe8(self):
         """Test subscribe method where the same subscriber
-        subscribes multiple times. 
+        subscribes multiple times.
         """
         self._createSubscribers()
         subscribe(
@@ -269,7 +267,7 @@ class EventServiceTests(EventSetup, TestCase):
                           IObjectEvent)
         self.assertEqual(None,
                          unsubscribe(self.rootFolderSubscriber))
-    
+
     def testUnsubscribe3(self):
         "Test selective unsubscribe"
         self._createSubscribers()
@@ -319,7 +317,7 @@ class EventServiceTests(EventSetup, TestCase):
         publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 7)
         self.assertEqual(subscriber2.notified, 4)
-    
+
     def testUnsubscribe4(self):
         "Test selective unsubscribe with nested services"
         self._createNestedServices()
@@ -387,7 +385,7 @@ class EventServiceTests(EventSetup, TestCase):
             )
         publish(self.folder1_1_1, ObjectEvent())
         self.assertEqual(subscriber.notified, 1)
-    
+
     def _createAlternateService(self, service):
         self._createSubscribers()
         self.folder2.setObject("folder2Subscriber", DummySubscriber())
@@ -395,7 +393,7 @@ class EventServiceTests(EventSetup, TestCase):
             self.folder2["folder2Subscriber"],
             self.folder2,
             name="folder2Subscriber")
-        
+
         if not self.folder2.hasServiceManager():
             self.folder2.setServiceManager(ServiceManager())
 
@@ -417,7 +415,7 @@ class EventServiceTests(EventSetup, TestCase):
             self.folder2Subscriber,
             event_type=IObjectAddedEvent
             )
-    
+
     def testNonPromotingEventService1(self):
         """test to see if events are not passed on to a parent event
         service with the appropriate isPromotableEvent setting"""
@@ -425,7 +423,7 @@ class EventServiceTests(EventSetup, TestCase):
         publish(self.folder2, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 1)
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
-    
+
     def testPromotingEventService1(self):
         """test to see if events are passed on to a parent event
         service with the appropriate isPromotableEvent setting"""
@@ -433,7 +431,7 @@ class EventServiceTests(EventSetup, TestCase):
         publish(self.folder2, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 1)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-    
+
     def testUnbindingResubscribing1(self):
         """an event service is unbound; a lower event service should
         then rebind to upper event service"""
@@ -459,7 +457,7 @@ class EventServiceTests(EventSetup, TestCase):
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder1Subscriber.notified, 0)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
-    
+
     def testNoSubscribeOnBind(self):
         """if subscribeOnBind is 0, service should not subscribe to
         parent"""
@@ -474,7 +472,7 @@ class EventServiceTests(EventSetup, TestCase):
         configuration = sm.queryConfigurations("Events").active()
         # make sure it doesn't raise any errors
         configuration.status = Registered
-        
+
     def testSubscriptionAwareInteraction(self):
         sub = DummySubscriptionAwareSubscriber()
         self.rootFolder.setObject(
@@ -491,7 +489,7 @@ class EventServiceTests(EventSetup, TestCase):
             filter=filter)
         self.assertEqual(
             self.mySubscriber.subscribable,
-            self.rootFolder.getServiceManager().getService("Events"))
+            getEventService(self.rootFolder))
         self.assertEqual(
             self.mySubscriber.event_type,
             IObjectAddedEvent)
@@ -504,15 +502,15 @@ class EventServiceTests(EventSetup, TestCase):
             filter=filter)
         self.assertEqual(
             self.mySubscriber.un_subscribable,
-            self.rootFolder.getServiceManager().getService("Events"))
+            getEventService(self.rootFolder))
         self.assertEqual(
             self.mySubscriber.un_event_type,
             IObjectAddedEvent)
         self.assertEqual(
             self.mySubscriber.un_filter,
             filter)
-        
-        
+
+
 def test_suite():
     loader=TestLoader()
     return loader.loadTestsFromTestCase(EventServiceTests)

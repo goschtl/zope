@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: testServiceManager.py,v 1.4 2002/11/30 18:39:18 jim Exp $
+$Id: testServiceManager.py,v 1.5 2002/12/12 11:32:33 mgedmin Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -59,7 +59,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.createServiceManager()
         sm = traverse(self.rootFolder, '++etc++Services')
         default = traverse(sm, 'Packages/default')
-        
+
         ts = TestService()
         default.setObject('test_service1', ts)
         configuration = ServiceConfiguration(
@@ -109,9 +109,9 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++Services')
         traverse(sm, 'Packages/default/configure/1').status = Unregistered
-        
+
         self.assertEqual(getService(self.rootFolder, 'test_service'), root_ts)
-    
+
     def testContextServiceLookup(self):
         self.testGetService() # set up localservice
         sm=getServiceManager(self.rootFolder)
@@ -124,14 +124,14 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         self.folder1.setServiceManager(ServiceManager())
         sm2=getServiceManager(self.folder1)
-        
+
         self.assertEqual(getService(self.folder1, 'test_service'),
                          sm.Packages['default']['test_service1'])
 
     def testComponentArchitectureServiceLookup(self):
         self.rootFolder.setServiceManager(ServiceManager())
         self.folder1.setServiceManager(ServiceManager())
-        
+
         ts = TestService()
 
         globsm=getServiceManager(None)
@@ -145,7 +145,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         from Zope.App.OFS.Services.ServiceManager.Module import Manager
         import Zope.App.OFS.Services.ServiceManager.tests.Sample1
         import Zope.App.OFS.Services.ServiceManager.tests.Sample2
-        
+
         self.rootFolder.setServiceManager(ServiceManager())
         sm=getServiceManager(self.rootFolder)
         Packages = cw(sm.Packages, sm, name='Packages')
@@ -180,16 +180,16 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.assertEqual(
           sm.resolve("Zope.App.OFS.Services.ServiceManager.tests.Sample2.y"),
           "sample 2")
-        
+
         self.assertEqual(sm.resolve("XXX.ZZZ.ZZZ"), 42)
         self.assertEqual(sm.resolve("XXX.ZZZ."), 42)
         self.assertEqual(sm.resolve("XXX.ZZZ.x"), "root m2")
-        
+
         self.assertEqual(sm2.resolve("XXX.ZZZ.ZZZ"), 42)
         self.assertEqual(sm2.resolve("XXX.ZZZ."), 42)
         self.assertEqual(sm2.resolve("XXX.ZZZ.x"), "root m2")
-        
-        
+
+
 def test_suite():
     loader=TestLoader()
     return loader.loadTestsFromTestCase(ServiceManagerTests)

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IConnectionService.py,v 1.4 2002/10/03 13:06:01 mgedmin Exp $
+$Id: IConnectionService.py,v 1.5 2002/12/12 11:32:34 mgedmin Exp $
 """
 from Interface import Interface, Attribute
 
@@ -25,4 +25,4 @@ class IConnectionService(Interface):
         """Returns a connection object by name or default."""
 
     def getAvailableConnections():
-        """Returns the connections known to this connection service."""
+        """Returns the connections available from this connection service."""

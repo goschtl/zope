@@ -45,17 +45,20 @@
         interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
     <require
         permission="Zope.ManageServices"
-    	interface=".IConfigurationManager.IOrderedContainer" />
-    <factory 
-        id = "Zope.App.OFS.Services.ServiceManager.ConfigurationManager" 
-	permission = "Zope.ManageServices"
-	title = "Configuration Manager" />
+        interface=".IConfigurationManager.IOrderedContainer" />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IDeleteNotifiable." />
+    <factory
+        id = "Zope.App.OFS.Services.ServiceManager.ConfigurationManager"
+        permission = "Zope.ManageServices"
+        title = "Configuration Manager" />
   </content>
 
   <content class=".Module.Manager.">
-    <require 
+    <require
         permission="Zope.ManageCode"
-	interface="Persistence.IPersistentModuleManager." />
+        interface="Persistence.IPersistentModuleManager." />
     <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
    </content>
 
@@ -78,7 +81,7 @@
         />
 
   </content>
-  
+
   <include package="Zope.App.OFS.Services.ServiceManager.Browser" />
 
 </zopeConfigure>

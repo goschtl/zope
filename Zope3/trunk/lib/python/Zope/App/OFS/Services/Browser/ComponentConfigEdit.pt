@@ -4,18 +4,23 @@
 
     <div metal:use-macro="view/generated_form/macros/body">
 
+      <h3 metal:fill-slot="heading">
+          <span tal:replace="context/label">Service</span>
+          Configuration
+      </h3>
+
       <table metal:fill-slot="extra_info">
         <tr>
-          <td>Connection Name</td>
-          <td tal:content="context/connectionName">Foo</td>    
+          <td tal:content="context/label">Service type</td>
+          <td tal:content="context/name">Foo</td>
         </tr>
         <tr>
           <td>Component Path</td>
-          <td tal:content="context/componentPath">
+          <td>
             <a href='.'
                tal:attributes="href view/componentURL"
-               tal:content="context/componentPath">foo/bar</a>
-          </td>    
+               tal:content="view/componentPath">foo/bar</a>
+          </td>
         </tr>
       </table>
 

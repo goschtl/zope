@@ -1,24 +1,84 @@
 <zope:zopeConfigure
    xmlns:zope='http://namespaces.zope.org/zope'
    xmlns="http://namespaces.zope.org/browser"
+   xmlns:form="http://namespaces.zope.org/form"
    package="Zope.App.OFS.Services"
    >
 
-<view
-    for=".ConfigurationInterfaces.IConfigurationStatus"
-    name="edit"
-    factory=".Browser.ConfigurationStatusWidget."
-    allowed_interface="Zope.App.Forms.Views.Browser.IBrowserWidget."
-    permission="Zope.ManageServices"
-    />
+<!-- IConfigurationStatus -->
 
-<view
-    for=".ConfigurationInterfaces.IConfigurationRegistry"
-    name="ChangeConfigurations"
-    template="Browser/ChangeConfigurations.pt"
-    class=".Browser.ChangeConfigurations."
-    allowed_interface="Zope.App.Forms.Browser.IFormCollaborationView."
-    permission="Zope.ManageServices"
-    />
+  <view
+      for=".ConfigurationInterfaces.IConfigurationStatus"
+      name="edit"
+      factory=".Browser.ConfigurationStatusWidget."
+      allowed_interface="Zope.App.Forms.Views.Browser.IBrowserWidget."
+      permission="Zope.ManageServices"
+      />
+
+<!-- IConfigurationRegistry -->
+
+  <view
+      for=".ConfigurationInterfaces.IConfigurationRegistry"
+      name="ChangeConfigurations"
+      template="Browser/ChangeConfigurations.pt"
+      class=".Browser.ChangeConfigurations."
+      allowed_interface="Zope.App.Forms.Browser.IFormCollaborationView."
+      permission="Zope.ManageServices"
+      />
+
+<!-- IConfiguration subclasses -->
+
+  <defaultView
+      for=".ConfigurationInterfaces.INamedComponentConfiguration."
+      name="index.html" />
+
+  <menuItems
+      menu="zmi_views"
+      for=".ConfigurationInterfaces.INamedComponentConfiguration.">
+    <menuItem title="Edit" action="index.html"/>
+  </menuItems>
+
+  <form:edit
+      for=".ConfigurationInterfaces.INamedComponentConfiguration."
+      name="index.html"
+      schema="Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration."
+      label="XXX Configuration"
+      permission="Zope.ManageServices"
+      template="Browser/ComponentConfigEdit.pt"
+      class=".Browser.ComponentConfigURL."
+      />
+
+  <form:edit
+      for=".ConfigurationInterfaces.INamedComponentConfiguration."
+      name="ItemEdit"
+      schema=
+        "Zope.App.OFS.Services.ConfigurationInterfaces.IConfigurationSummary."
+      template="Browser/ComponentConfigItemEdit.pt"
+      label="XXX not used but can't be omitted"
+      class=".Browser.ComponentConfigURL."
+      permission = "Zope.ManageServices"
+      />
+
+  <view
+      for=".ConfigurationInterfaces.IComponentConfiguration"
+      name="ConfigurationSummary"
+      template="Browser/ComponentConfigSummary.pt"
+      class=".Browser.ComponentConfigURL."
+      permission="Zope.ManageServices"
+      />
+
+<!-- INameConfigurable default view -->
+
+  <defaultView
+      for=".ConfigurationInterfaces.INameConfigurable"
+      name="index.html"
+      />
+
+  <view
+      for=".ConfigurationInterfaces.INameConfigurable."
+      factory=".Browser.NameConfigurableView."
+      permission="Zope.ManageServices">
+    <page name="index.html" attribute="index" />
+  </view>
 
 </zope:zopeConfigure>

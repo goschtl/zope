@@ -1,4 +1,0 @@
-<span tal:replace="context/title" />
-<a href='.'
-   tal:attributes="href view/componentURL"
-   tal:content="context/componentPath">foo/bar</a>

@@ -23,7 +23,6 @@
               tal:content="python: getattr(row, field)">Value</td>
         </tr>
 
-
       </tbody>
     </table>
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for ConnectionConfiguration.
 
-$Id: testConnectionConfiguration.py,v 1.1 2002/12/09 15:26:42 ryzaja Exp $
+$Id: testConnectionConfiguration.py,v 1.2 2002/12/12 11:32:32 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -68,7 +68,7 @@ class ConnectionServiceStub(DependableStub):
         self.bindings = {}
 
     def queryConfigurationsFor(self, cfg, default=None):
-        return self.queryConfigurations(cfg.connectionName)
+        return self.queryConfigurations(cfg.name)
     queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
 
     def queryConfigurations(self, name, default=None):
@@ -77,7 +77,7 @@ class ConnectionServiceStub(DependableStub):
     queryConfigurations = ContextMethod(queryConfigurations)
 
     def createConfigurationsFor(self, cfg):
-        return self.createConfigurations(cfg.connectionName)
+        return self.createConfigurations(cfg.name)
     createConfigurationsFor = ContextMethod(createConfigurationsFor)
 
     def createConfigurations(self, name):
@@ -95,7 +95,6 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
-        sm = self.rootFolder.getServiceManager()
 
         self.default = traverse(self.rootFolder,
                            '++etc++Services/Packages/default')
@@ -118,6 +117,8 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         PlacefulSetup.tearDown(self)
 
     def test_getComponent(self):
+        # This should be already tested by ComponentConfiguration tests, but
+        # let's doublecheck
         self.assertEqual(self.config.getComponent(), self.da)
 
     def test_status(self):
@@ -126,10 +127,6 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         self.assertEqual(self.config.status, Active)
         cr = self.service.queryConfigurations('conn_name')
         self.assertEqual(cr.active(), self.config)
-
-    # Unit tests for ComponentConfiguration should take care
-    # of test_manage_afterAdd, test_manage_beforeDelete_and_unregistered,
-    # test_disallow_delete_when_active
 
 
 def test_suite():

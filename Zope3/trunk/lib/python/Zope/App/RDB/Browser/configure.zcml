@@ -1,0 +1,36 @@
+<zopeConfigure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:form="http://namespaces.zope.org/form"
+    package="Zope.App.RDB">
+
+<!-- ZopeDatabaseAdapter default views -->
+
+  <browser:defaultView for="Zope.App.RDB.IZopeDatabaseAdapter."
+      name="editForm.html" />
+
+  <browser:menuItems menu="zmi_views" for="Zope.App.RDB.IZopeDatabaseAdapter.">
+    <browser:menuItem title="Edit" action="editForm.html"/>
+    <browser:menuItem title="Test" action="testForm.html"/>
+  </browser:menuItems>
+
+  <browser:view
+      for="Zope.App.RDB.IZopeDatabaseAdapter."
+      permission="Zope.View"
+      factory=".Browser.Connection.">
+    <browser:page name="editForm.html"
+        template="Browser/connection.pt" />
+    <browser:page name="edit.html" attribute="edit" />
+    <browser:page name="connect.html" attribute="connect" />
+    <browser:page name="disconnect.html" attribute="disconnect" />
+  </browser:view>
+
+  <browser:view
+      for="Zope.App.RDB.IZopeDatabaseAdapter."
+      permission="Zope.View"
+      factory=".Browser.TestSQL.">
+    <browser:page name="testForm.html" template="Browser/testSQL.pt" />
+    <browser:page name="test.html" template="Browser/testResults.pt" />
+  </browser:view>
+
+</zopeConfigure>

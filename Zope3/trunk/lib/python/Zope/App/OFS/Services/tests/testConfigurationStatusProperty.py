@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testConfigurationStatusProperty.py,v 1.2 2002/11/30 18:35:55 jim Exp $
+$Id: testConfigurationStatusProperty.py,v 1.3 2002/12/12 11:32:34 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -29,10 +29,15 @@ from Zope.App.OFS.Services.Configuration import ConfigurationStatusProperty
 from Zope.App.OFS.Services.ConfigurationInterfaces \
      import Active, Unregistered, Registered
 from Zope.Proxy.ContextWrapper import ContextWrapper
+from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
+
 
 class TestingConfiguration(TestingConfiguration):
     status = ConfigurationStatusProperty("Services")
     service_type = "Test"
+
+class PassiveConfiguration(TestingConfiguration):
+    status = ConfigurationStatusProperty("NoSuchService")
 
 class TestingConfigurationRegistry(TestingConfigurationRegistry):
     class_ = TestingConfiguration
@@ -46,7 +51,13 @@ class TestingServiceManager:
     def getService(self, name):
         if name == "Services":
             return self
-        raise ValueError("Wrong service name", name)
+        raise ComponentLookupError("Wrong service name", name)
+
+    def queryService(self, name, default=None):
+        if name == "Services":
+            return self
+        else:
+            return default
 
     def queryConfigurationsFor(self, configuration, default=None):
         if configuration.service_type != "Test":
@@ -68,7 +79,7 @@ class Test(PlacefulSetup, TestCase):
         self.__sm = TestingServiceManager()
         self.rootFolder.setServiceManager(self.__sm)
 
-    def test(self):
+    def test_property(self):
 
         configa = ContextWrapper(TestingConfiguration('a'), self.rootFolder)
         self.assertEqual(configa.status, Unregistered)
@@ -106,6 +117,32 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(configc.status, Unregistered)
         self.assertEqual(configb.status, Registered)
         self.assertEqual(configa.status, Registered)
+
+    def test_passive(self):
+        # scenario:
+        #   1. create and configure an SQLConnectionService
+        #   2. create and configure a database adapter&connection
+        #   3. disable SQLConnectionService
+        # now the ConnectionConfiguration.status cannot access the
+        # SQLConnectionService
+
+        configa = ContextWrapper(PassiveConfiguration('a'), self.rootFolder)
+        self.assertEqual(configa.status, Unregistered)
+
+        try:
+            configa.status = Registered
+        except ComponentLookupError:
+            self.assertEqual(configa.status, Unregistered)
+        else:
+            self.fail("should complain about missing service")
+
+        try:
+            configa.status = Active
+        except ComponentLookupError:
+            self.assertEqual(configa.status, Unregistered)
+        else:
+            self.fail("should complain about missing service")
+
 
 def test_suite():
     return TestSuite((

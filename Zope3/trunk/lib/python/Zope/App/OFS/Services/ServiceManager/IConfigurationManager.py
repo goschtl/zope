@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IConfigurationManager.py,v 1.3 2002/12/01 10:28:22 jim Exp $
+$Id: IConfigurationManager.py,v 1.4 2002/12/12 11:32:32 mgedmin Exp $
 """
 
 from Zope.App.OFS.Container.IContainer  import IContainerNamesContainer
@@ -21,7 +21,7 @@ from Interface import Interface
 class IOrderedContainer(Interface):
     """Container with items that can be rearranged.
     """
-    
+
     # Yes, maybe this should be in the container package, but, we are
     # likely to come up with a better general ordering interface, so
     # we'll leave this one here for now.

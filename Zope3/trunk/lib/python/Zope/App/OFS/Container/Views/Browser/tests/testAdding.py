@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: testAdding.py,v 1.6 2002/11/18 23:52:59 jim Exp $
+$Id: testAdding.py,v 1.7 2002/12/12 11:32:30 mgedmin Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -39,7 +39,7 @@ from Zope.App.OFS.Container.ZopeContainerAdapter import ZopeContainerAdapter
 class Container:
 
     __implements__ = IContainer
-    
+
     def __init__(self):
         self._data = {}
 
@@ -59,7 +59,7 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)    
+        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
 
     def test(self):
         container = Container()
@@ -77,7 +77,7 @@ class Test(PlacelessSetup, TestCase):
 
         o = Container() # any old instance will do
         result = adding.add(o)
-        
+
         # Make sure the right events were generated:
         self.failUnless(
             getEvents(IObjectAddedEvent,
@@ -103,9 +103,9 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         adding = Adding(container, request)
         provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
-        
+
         self.assertEqual(adding.contentName, None)
-        view = adding.publishTraverse(request, 'Thing=') 
+        view = adding.publishTraverse(request, 'Thing=')
         self.assertEqual(adding.contentName, '')
 
 

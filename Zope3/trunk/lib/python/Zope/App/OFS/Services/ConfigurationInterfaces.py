@@ -2,18 +2,18 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.5 2002/12/09 15:14:03 ryzaja Exp $
+$Id: ConfigurationInterfaces.py,v 1.6 2002/12/12 11:32:30 mgedmin Exp $
 """
 
 from Interface import Interface
@@ -54,7 +54,7 @@ class IConfiguration(IConfigurationSummary):
     identifying how they should be used. For example, a service
     configuration will provide a service type. An adapter
     configuration will specify a used-for interface and a provided
-    interface. 
+    interface.
     """
 
     description = Text(title = u"Description",
@@ -70,12 +70,25 @@ class IConfiguration(IConfigurationSummary):
         """
 
 class IComponentConfiguration(IConfiguration):
+    """Configuration object that configures a component
+    """
 
     componentPath = Attribute("The physical path to the component")
 
     def getComponent():
         """Return the component named in the configuration.
         """
+
+class INamedComponentConfiguration(IComponentConfiguration):
+    """Configuration object that configures a component associated with a name
+    """
+
+    name = Attribute("The name of the component")
+
+    label = TextLine(title=u"Label",
+                     description=u"Descriptive label of the configuration type"
+                                 u" (e.g. Service, Connection)")
+
 
 
 class IConfigurationRegistry(Interface):
@@ -85,7 +98,6 @@ class IConfigurationRegistry(Interface):
     for specific parameters. For example, an adapter service will have
     a configuration registry for each given used-for and provided
     interface.
-
     """
 
     def register(configuration):
@@ -118,7 +130,7 @@ class IConfigurationRegistry(Interface):
 
     def deactivate(configuration):
         """Make the configuration inactive.
-        
+
         Id the configuration is active, the deactivated method is called
         on the configuration.
 
@@ -152,6 +164,7 @@ class IConfigurationRegistry(Interface):
         """The registry is true if it is non-empty
         """
 
+
 class IConfigurable(Interface):
 
     def queryConfigurationsFor(configuration, default=None):
@@ -159,14 +172,13 @@ class IConfigurable(Interface):
 
         Data on the configuration is used to decide which registry to
         return. For example, a service manager will use the
-        configuration serviceType attribute to decide which registry
+        configuration name attribute to decide which registry
         to return.
 
         Typically, an object that implements this method will also
         implement a method named queryConfigurations, which takes
         arguments for each of the parameters needed to specify a set
         of configurations.
-        
         """
 
     def createConfigurationsFor(configuration):
@@ -174,11 +186,44 @@ class IConfigurable(Interface):
 
         Data on the configuration is used to decide which regsitry to
         create. For example, a service manager will use the
-        configuration serviceType attribute to decide which regsitry
+        configuration name attribute to decide which regsitry
         to create.
 
         Typically, an object that implements this method will also
         implement a method named createConfigurations, which takes
         arguments for each of the parameters needed to specify a set
         of configurations.
+
+        Calling createConfigurationsFor twice for the same configuration
+        returns the same registry.
         """
+
+
+class INameConfigurable(IConfigurable):
+    # XXX docstring
+
+    def queryConfigurations(name, default=None):
+        """Return an IConfigurationRegistry for the configuration name
+
+        queryConfigurationsFor(cfg, default) is equivalent to
+        queryConfigurations(cfg.name, default)
+        """
+
+    def createConfigurationsFor(configuration):
+        """Create and return an IConfigurationRegistry for the configuration
+        name
+
+        createConfigurationsFor(cfg, default) is equivalent to
+        createConfigurations(cfg.name, default)
+        """
+
+    def listConfigurationNames():
+        """Return a list of all registered configuration names
+        """
+
+    # XXX It might be useful to abstract out common parts from
+    # ServiceManager.getBoundService and ConnectionService.getConnection
+    # into a method declared in INameConfigurable.  That would also mean that
+    # INameConfigurable relies on configurations implementing
+    # INamedComponentConfiguration, while now it is sufficient for a
+    # configuration to have a name attribute.

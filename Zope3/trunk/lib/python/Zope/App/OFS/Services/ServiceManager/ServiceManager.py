@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """XXX I need a summary line.
 
@@ -17,7 +17,7 @@ In addition, a ServiceManager acts as a registry for persistent
 modules.  The Zope import hook uses the ServiceManager to search for
 modules.
 
-$Id: ServiceManager.py,v 1.13 2002/12/09 15:22:20 ryzaja Exp $
+$Id: ServiceManager.py,v 1.14 2002/12/12 11:32:32 mgedmin Exp $
 """
 
 import sys
@@ -44,6 +44,7 @@ from Packages import Packages
 from IServiceManager import IServiceManager
 
 from Zope.App.OFS.Services.Configuration import ConfigurationRegistry
+from Zope.App.OFS.Services.Configuration import NameConfigurable
 
 from Persistence.Module import PersistentModuleRegistry
 from Persistence.Module import PersistentModule
@@ -53,20 +54,16 @@ ModuleType = type(INameResolver)
 ModuleType = ModuleType, PersistentModule
 
 
-class ServiceManager(PersistentModuleRegistry):
+class ServiceManager(PersistentModuleRegistry, NameConfigurable):
 
     __implements__ = (IServiceManager, ISimpleReadContainer,
                       PersistentModuleRegistry.__implements__,
+                      NameConfigurable.__implements__,
                       INameResolver)
 
     def __init__(self):
         super(ServiceManager, self).__init__()
-
-        self.__bindings = {}
-        # Bindings is of the form:
-        #
-        # {service_type -> ConfigurationRegistry}
-
+        NameConfigurable.__init__(self)
         self.Packages = Packages()
 
 
@@ -106,13 +103,13 @@ class ServiceManager(PersistentModuleRegistry):
             return self # We are the service service
 
         if not getattr(self, '_v_calling', 0):
-            
+
             self._v_calling = 1
             try:
                 service = self.getBoundService(name)
                 if service is not None:
                     return service
-                    
+
             finally:
                 self._v_calling = 0
 
@@ -131,31 +128,6 @@ class ServiceManager(PersistentModuleRegistry):
 
     getInterfaceFor = ContextMethod(getInterfaceFor)
 
-    def queryConfigurationsFor(self, configuration, default=None):
-        return self.queryConfigurations(configuration.serviceType, default)
-
-    queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
-
-    def queryConfigurations(self, service_type, default=None):
-        registry = self.__bindings.get(service_type, default)
-        return ContextWrapper(registry, self)
-
-    queryConfigurations = ContextMethod(queryConfigurations)
-        
-
-    def createConfigurationsFor(self, configuration):
-        return self.createConfigurations(configuration.serviceType)
-
-    createConfigurationsFor = ContextMethod(createConfigurationsFor)
-
-    def createConfigurations(self, service_type):
-        registry = ConfigurationRegistry()
-        self.__bindings[service_type] = registry
-        self._p_changed = 1
-        return registry
-
-    createConfigurations = ContextMethod(createConfigurations)
-
     def getBoundService(self, name):
         "See Zope.App.OFS.Services.ServiceManager.IServiceManager."
 
@@ -165,16 +137,10 @@ class ServiceManager(PersistentModuleRegistry):
             if configuration is not None:
                 service = configuration.getComponent()
                 return service
-            
+
         return None
 
     getBoundService = ContextMethod(getBoundService)
-
-    def getBoundServiceTypes(self):
-        "See "
-        "Zope.App.OFS.Services.ServiceManager.IServiceManager.IServiceManager"
-        
-        return  self.__bindings.keys()
 
     ############################################################
     # Implementation methods for interface
@@ -208,7 +174,7 @@ class ServiceManager(PersistentModuleRegistry):
         if key == 'Packages':
             return self.Packages
 
-        directives = self.__bindings.get(key)
+        directives = self.queryConfigurations(key)
         if directives and directives[0] is not None:
             return self.queryService(key, default)
 
@@ -222,11 +188,11 @@ class ServiceManager(PersistentModuleRegistry):
         return self.get(key) is not None
 
     def findModule(self, name):
-        # override to pass call up to next service manager 
+        # override to pass call up to next service manager
         mod = super(ServiceManager, removeAllProxies(self)).findModule(name)
         if mod is not None:
             return mod
-        
+
         sm = getNextServiceManager(self)
         try:
             findModule = sm.findModule
@@ -252,7 +218,7 @@ class ServiceManager(PersistentModuleRegistry):
     __import = ContextMethod(__import)
 
     def resolve(self, name):
-        
+
         name = name.strip()
 
         if name.endswith('.') or name.endswith('+'):

@@ -6,19 +6,17 @@
 
 <!-- ConnectionService -->
 
-  <browser:defaultView 
-      for=".IConnectionManager."
-      name="index.html" />
-
-  <browser:menuItems menu="zmi_views" for=".IConnectionManager.">
-    <browser:menuItem title="Edit" action="index.html"/>
+  <browser:menuItems
+      menu="zmi_views"
+      for=".ConnectionService.ILocalConnectionService.">
+    <browser:menuItem title="Connections" action="index.html"/>
   </browser:menuItems>
 
-  <browser:view 
-      for=".IConnectionManager."
+  <browser:view
+      for=".ConnectionService.ILocalConnectionService."
       name="index.html"
       template="Views/Browser/Connections.pt"
-      class=".Views.Browser.Connections."
+      class="Zope.App.OFS.Services.Browser.NameConfigurableView."
       permission="Zope.ManageServices" />
 
   <browser:menuItem
@@ -31,43 +29,7 @@
 
 <!-- ConnectionConfiguration -->
 
-  <browser:defaultView 
-      for=".IConnectionConfiguration."
-      name="index.html" />
-
-  <browser:menuItems menu="zmi_views" for=".IConnectionConfiguration.">
-    <browser:menuItem title="Edit" action="index.html"/>
-  </browser:menuItems>
-
-  <form:edit
-      for=".IConnectionConfiguration."
-      name="index.html"
-      schema="Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration."
-      label="Connection Configuration"
-      permission="Zope.ManageServices"
-      template="Views/Browser/ConnectionConfigEdit.pt"
-      />
-
-  <form:edit
-      for=".IConnectionConfiguration."
-      name="ItemEdit"
-      schema= 
-        "Zope.App.OFS.Services.ConfigurationInterfaces.IConfigurationSummary."
-      label="Service Configuration"
-      template="Views/Browser/ConnectionConfigEditPart.pt"
-      class=".Views.Browser.ConnectionConfigURL."
-      permission = "Zope.ManageServices"
-      />
-
   <browser:view
-      for=".IConnectionConfiguration."
-      name="ConfigurationSummary"
-      template="Views/Browser/ConnectionConfigSummary.pt"
-      class=".Views.Browser.ConnectionConfigURL."
-      permission="Zope.ManageServices" 
-      />  
-
-  <browser:view 
       for="Zope.App.OFS.Container.IAdding."
       name="ConnectionConfiguration"
       factory=".Views.Browser.AddConnectionConfiguration."
@@ -85,34 +47,5 @@
       title="Connection"
       description="Database Connection"
       />
-
-<!-- ZopeDatabaseAdapter default views -->
-
-  <browser:defaultView for="Zope.App.RDB.IZopeDatabaseAdapter." 
-      name="editForm.html" />
-
-  <browser:view
-      for="Zope.App.RDB.IZopeDatabaseAdapter."
-      permission="Zope.View"
-      factory=".Views.Browser.Connection.">
-    <browser:page name="editForm.html" 
-        template="Views/Browser/connection.pt" />
-    <browser:page name="edit.html" attribute="edit" />
-    <browser:page name="connect.html" attribute="connect" />
-    <browser:page name="disconnect.html" attribute="disconnect" />
-  </browser:view>
-
-  <browser:view
-      for="Zope.App.RDB.IZopeDatabaseAdapter."
-      permission="Zope.View"
-      factory=".Views.Browser.TestSQL.">
-    <browser:page name="testForm.html" template="Views/Browser/testSQL.pt" />
-    <browser:page name="test.html" template="Views/Browser/testResults.pt" />
-  </browser:view>
-
-  <browser:menuItems menu="zmi_views" for="Zope.App.RDB.IZopeDatabaseAdapter.">
-    <browser:menuItem title="Edit" action="editForm.html"/>
-    <browser:menuItem title="Test" action="testForm.html"/>
-  </browser:menuItems>
 
 </zopeConfigure>

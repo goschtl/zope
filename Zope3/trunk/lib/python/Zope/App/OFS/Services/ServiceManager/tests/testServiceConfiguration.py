@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testServiceConfiguration.py,v 1.3 2002/12/05 17:00:44 jim Exp $
+$Id: testServiceConfiguration.py,v 1.4 2002/12/12 11:32:33 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -70,7 +70,7 @@ class TestService:
         self._dependents = tuple(
             [d for d in self._dependents if d != location]
             )
-        
+
     def dependents(self):
         return self._dependents
 
@@ -93,13 +93,10 @@ class Test(PlacefulSetup, TestCase):
 
         self.__c = traverse(default, 'c')
         self.__cm = ZopeContainerAdapter(traverse(default, "configure"))
-        
+
         self.__cm.setObject('', configuration)
 
         self.__config = traverse(default, 'configure/1')
-
-    def test_getComponent(self):
-        self.assertEqual(self.__config.getComponent(), self.__c)
 
     def test_activated(self):
         old = self.__c._bound
@@ -110,6 +107,15 @@ class Test(PlacefulSetup, TestCase):
         old = self.__c._unbound
         self.__config.deactivated()
         self.assertEqual(self.__c._unbound, old+('test_service',))
+
+    def test_getInterface(self):
+        self.assertEquals(self.__config.getInterface(), ITestService)
+
+    # XXX the following tests check the same things as
+    # Zope.App.OFS.Services.tests.testConfigurations, but in a different way
+
+    def test_getComponent(self):
+        self.assertEqual(self.__config.getComponent(), self.__c)
 
     def test_manage_afterAdd(self):
         self.assertEqual(self.__c._dependents,
@@ -135,7 +141,7 @@ class Test(PlacefulSetup, TestCase):
             pass # OK
         else:
             self.failUnless(0, "Should have gotten a depency error")
-            
+
 
 def test_suite():
     return makeSuite(Test)
