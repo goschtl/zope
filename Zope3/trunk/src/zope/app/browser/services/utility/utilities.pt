@@ -2,14 +2,24 @@
 
 <div metal:fill-slot="body"
      i18n:domain="zope"
-     tal:define="configs view/getConfigs"
+     tal:define="message view/update; configs view/getConfigs"
      >
 
 <h2 i18n:translate="">Utilities registered in this utility service:</h2>
 
-<table tal:condition="configs">
-  <tbody>
+      <div class="message" tal:condition="message">
+         <span tal:replace="message">view/update message here</span>
+         <br><br><i><a href="">(click to clear message)</a></i>
+      </div>
+
+<form method="POST" action="utilities.html">
+
+  <table tal:condition="configs">
     <tr tal:repeat="config configs">
+      <td><input type="checkbox" name="selected:list"
+                 tal:attributes=
+                 "value string:${config/name}:${config/interface}" />
+      </td>
       <td>
 
         <a href="."
@@ -39,8 +49,13 @@
            >(change registration)</a>
       </td>
     </tr>
-  </tbody>
-</table>
+  </table>
+
+  <input type="submit" name="Deactivate" value="Deactivate" />
+  <input type="submit" name="Delete" value="Delete" />
+  <input type="submit" name="Refresh" value="Refresh" />
+
+</form>
 
 <p><a href="../../default/AddUtility">Add a utility to this utility
 service</a></p>
