@@ -18,7 +18,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
-from monkey import DebugFlags
 
 from zope.security.management import thread_local
 from AccessControl import getSecurityManager
@@ -27,8 +26,6 @@ _marker = object
 
 class FakeRequest:
     implements(IBrowserRequest)
-
-    debug = DebugFlags()
 
     def getPresentationSkin(self):
         return None
