@@ -1,12 +1,12 @@
 Five is distributed under the provisions of the Zope Public License
 (ZPL) v2.1.  See doc/ZopePublicLicense.txt for the license text.
 
-Copyright (C) 2004 Five Contributors. See CREDITS.txt for a list of
+Copyright (C) 2005 Five Contributors. See CREDITS.txt for a list of
 Five contributors.
 
 Five contains source code derived from:
 
-- Zope 3, copyright (C) 2001-2004 by Zope Corporation.  Code that
+- Zope 3, copyright (C) 2001-2005 by Zope Corporation.  Code that
   falls under this copyright is prefixed with the following header:
 
   Copyright (c) 2001-2004 Zope Corporation and Contributors.

@@ -14,10 +14,6 @@ Trunk
 
 * Five now supports the browser:menu, menuItem and menuItems
   directives.
-  
-  Also supports the menu parameter for page directives and
-  subdirectives, as well as editform directives. [XXX this doesn't
-  seem to work yet]
 
 * A new Five-specific directive has been added:
   five:pagesFromDirectory.  This adds one page for each .pt file in a
@@ -36,11 +32,13 @@ Trunk
 
 * Support for browser:editform. You can now use schemas for editing.
 
-* Support for add forms using '+'. You can now browse to
-  'container/+/addsomething.html' to get to a schema-driven add form.
+* Support for browser:addform; add forms using '+'. You can now browse
+  to 'container/+/addsomething.html' to get to a schema-driven add
+  form.
 
 * Fixed a traversal bug which caused Zope to give the wrong error when
-  a page could not be found (missing docstring instead of not found).
+  a page could not be found (missing docstring instead of not
+  found). Zope 2.7.4 (or higher) is required for this fix.
 
 Five 0.2b
 ---------

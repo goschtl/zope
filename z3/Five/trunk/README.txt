@@ -16,8 +16,8 @@ What is Five?
 -------------
 
 The goal of five is to allow Zope 2 developers to use Zope 3
-technology right now, inside of Zope 2. This allows a gradual
-evolution of Zope 2 code to Zope 3.
+technology right now, inside of Zope 2. Additionally, this allows a
+gradual evolution of Zope 2 code to Zope 3.
 
 Five already makes the following Zope 3 technologies available in Zope
 2:
@@ -32,9 +32,11 @@ Five already makes the following Zope 3 technologies available in Zope
 
 * layers & skins
 
-* Zope 3 page template engine
+* schema/forms machinery, including edit and add forms.
 
 * Zope 2 security declarations in ZCML instead of in Python code.
+
+Together with another product, CMFonFive, Five can integrate into CMF.
 
 For more information, see ``doc/features.txt``.
 
