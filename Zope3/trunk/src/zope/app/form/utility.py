@@ -212,7 +212,6 @@ def applyWidgetsChanges(view, schema, target=None, names=None):
     
     names can be specified to update a subset of the schema constrained values.
     """
-    
     errors = []
     changed = False
     if target is None:
