@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.11 2003/09/21 17:30:46 jim Exp $
+$Id: test_module.py,v 1.12 2004/01/12 23:25:44 fdrake Exp $
 """
 
 import unittest
@@ -70,6 +70,8 @@ class LocalModuleTests(PlacefulSetup, unittest.TestCase):
         root = conn.root()
         root['Application'] = self.rootFolder
         get_transaction().commit()
+        # The findModule() here is only for the
+        # RegistrationManagerContainer, not the SiteManager.
         default = traverse(self.rootFolder, "++etc++site/default")
         m = default.findModule(NAME)
 
