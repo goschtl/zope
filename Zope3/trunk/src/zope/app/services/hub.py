@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.19 2003/07/13 07:18:23 anthony Exp $
+$Id: hub.py,v 1.20 2003/08/07 15:32:41 garrett Exp $
 """
 
 from __future__ import generators
@@ -122,7 +122,10 @@ class ObjectUnregisteredHubEvent:
         obj = self.__object
         if obj is None:
             adapter = getAdapter(self.hub, ITraverser)
-            obj = self.__object = adapter.traverse(self.location)
+            try:
+                obj = self.__object = adapter.traverse(self.location)
+            except NotFoundError:
+                pass
         return obj
 
     object = property(__getObject)
@@ -269,6 +272,7 @@ class ObjectHub(ServiceSubscriberEventChannel):
         '''See interface IObjectHub'''
         path = wrapped_self.getPath(hubid)
         adapter = getAdapter(wrapped_self, ITraverser)
+        wrapped_self._verifyPath(path, adapter)
         return adapter.traverse(path)
     getObject = ContextMethod(getObject)
 
@@ -359,7 +363,7 @@ class ObjectHub(ServiceSubscriberEventChannel):
         """See interface IHubEventChannel"""
         traverser = getAdapter(wrapped_self, ITraverser)
         for path, hubId in wrapped_self.iterRegistrations():
-            yield (path, hubId, traverser.traverse(path))
+            yield (path, hubId, wrapped_self._safeTraverse(path, traverser))
     iterObjectRegistrations = ContextMethod(iterObjectRegistrations)
 
     ############################################################
@@ -373,6 +377,36 @@ class ObjectHub(ServiceSubscriberEventChannel):
             index = randid()
         self._v_nextid = index + 1
         return index
+
+
+    def _verifyPath(wrapped_self, path, traverser=None):
+        if traverser is None:
+            traverser = getAdapter(wrapped_self, ITraverser)
+        try:
+            traverser.traverse(path)
+        except NotFoundError, e:
+            wrapped_self.unregister(path)
+            raise e
+    _verifyPath = ContextMethod(_verifyPath)
+
+
+    def _safeTraverse(self, path, traverser):
+        try:
+            return traverser.traverse(path)
+        except NotFoundError:
+            return None
+
+    def unregisterMissingObjects(wrapped_self):
+        # XXX temporary method for clearing missing objects - remove when
+        # proper unregistration mechanisms are added.
+        missing = []
+        for object in wrapped_self.iterObjectRegistrations():
+            if object[2] is None:
+                missing.append(object[0])
+        for path in missing:
+            wrapped_self.unregister(path)
+        return len(missing)
+    unregisterMissingObjects = ContextMethod(unregisterMissingObjects)
 
 
 """A simple-minded registration object.

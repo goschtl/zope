@@ -18,9 +18,15 @@
 </head>
 <body>
 <div metal:fill-slot="body">
-This is an object hub.  There are 
-<span tal:replace="context/numRegistrations">(some number of)</span>
-objects registered.
+<div class="message" tal:condition="request/unregister_missing|nothing">
+  <span tal:replace="context/unregisterMissingObjects">5</span> object(s) unregistered.
+</div>
+<p>This is an object hub. There are <span tal:replace="context/numRegistrations">
+(some number of)</span> objects registered.
+</p>
+<form>
+<input type="submit" name="unregister_missing" value="Unregister Missing Objects" />
+</form>
 </div>
 </body>
 </html>

@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.11 2003/06/07 07:23:52 stevea Exp $
+$Id: test_objecthub.py,v 1.12 2003/08/07 15:32:47 garrett Exp $
 """
 
 import unittest
@@ -39,7 +39,9 @@ from zope.app.services.hub \
 
 from zope.exceptions import NotFoundError
 
-from zope.app.traversing import canonicalPath
+from zope.app.traversing import canonicalPath, traverse
+from zope.context import Wrapper
+
 from zope.interface import implements
 
 # while these tests don't really test much of the placeful aspect of the
@@ -520,6 +522,134 @@ class TestObjectMovedEvent(BasicHubTest):
                 (IObjectMovedEvent, new_location),
             ])
 
+
+class TestLazyUnregistration(BasicHubTest):
+    """For the time being, the hub isn't notified of objects removed as
+    a result of their parent being deleted. E.g. the hub does not receive
+    notification of folder content removal when the folder is deleted.
+
+    These tests confirm that the hub will behave as expected even when it
+    contains references to missing objects.
+
+    There is only one method that lazily unregisters objects:
+
+        getObject
+
+    iterObjectRegistrations would be a candidate for lazy unregistration,
+    but it is currently implemented using yield, which prevents objects
+    from being unregistered during iteration.
+
+    The other object hub methods will reflect the invalid data without
+    unregistering. Each of the tests in this class documents the expected
+    behavior of each of the object hub methods wrt lazy unregistration.
+    """
+
+    def setUp(self):
+        ObjectHubSetup.setUp(self)
+        self.rootFolder.setObject('deleted', self.obj)
+        self.deleted_obj = Wrapper(object(), self.rootFolder, name='deleted')
+        self.deleted_path = '/deleted'
+        self.rootFolder.setObject('valid', self.obj)
+        self.valid_obj = Wrapper(object(), self.rootFolder, name='valid')
+        self.valid_path = '/valid'
+
+        # register the objects
+        self.deleted_hubid = self.object_hub.register(self.deleted_obj)
+        self.valid_hubid = self.object_hub.register(self.valid_obj)
+        self.assertEqual(self.object_hub.numRegistrations(), 2)
+
+        # delete an object - it should still be reigstered with the hub
+        del self.rootFolder['deleted']
+        self.assertRaises(NotFoundError, traverse, self.rootFolder, 'deleted')
+        self.assertEqual(self.object_hub.numRegistrations(), 2)
+
+
+    def _verifyUnregistered(self):
+        # confirm that deleted is not registered
+        self.assertRaises(NotFoundError, self.object_hub.getObject, 
+            self.deleted_hubid)
+        self.assertEqual(self.object_hub.numRegistrations(), 1)
+
+        # confirm that valid object wasn't effected by lazy unregistration
+        self.assertEqual(self.object_hub.getHubId(self.valid_obj), 
+            self.valid_hubid)
+        self.assertEqual(self.object_hub.getHubId(self.valid_path),
+            self.valid_hubid)
+        self.assertEqual(self.object_hub.getPath(self.valid_hubid),
+            self.valid_path)
+
+
+    def testGetHubId(self):
+        # no lazy unregistration
+        self.assert_(self.object_hub.getHubId(self.deleted_path))
+        self.assert_(self.object_hub.getHubId(self.deleted_obj))
+        self.assertEqual(self.object_hub.numRegistrations(), 2)
+
+
+    def testGetPath(self):
+        # no lazy unregistration
+        self.assertEqual(self.object_hub.getPath(self.deleted_hubid),
+            self.deleted_path)
+        self.assertEqual(self.object_hub.numRegistrations(), 2)
+
+
+    def testGetObject(self):
+        # lazy unregistration
+        self.assertRaises(NotFoundError, self.object_hub.getObject, 
+            self.deleted_hubid)
+        self._verifyUnregistered()
+
+
+    def testRegister(self):
+        # no lazy unregistration - currently, registration doesn't check
+        # for valid paths, so it doesn't make sense to unregister
+        self.assertRaises(ObjectHubError, self.object_hub.register, 
+            self.deleted_path)
+        self.assertRaises(ObjectHubError, self.object_hub.register, 
+            self.deleted_obj)
+
+
+    def testUnregister(self):
+        # no lazy unregistration
+        self.object_hub.unregister(self.deleted_obj)
+        self.assertEqual(self.object_hub.numRegistrations(), 1)
+
+
+    def numRegistrations(self):
+        # no lazy unregistration
+        self.assertEqual(self.object_hub.numRegistrations(), 2)
+
+
+    def testIterRegistrations(self):
+        # no lazy iteration
+        regs = list(self.object_hub.iterRegistrations())
+        self.assertEqual(len(regs), 2)
+        self.assert_((self.deleted_path, self.deleted_hubid) in regs)
+        self.assert_((self.valid_path, self.valid_hubid) in regs)
+        self.assertEqual(self.object_hub.numRegistrations(), 2)
+
+
+    def testIterObjectRegistrations(self):
+        # no lazy unregistration - however, missing objects are returned
+        # as None in the tuple
+        objects = list(self.object_hub.iterObjectRegistrations())
+        self.assertEqual(len(objects), 2)
+        self.assert_(
+            (self.deleted_path, self.deleted_hubid, None) in objects)
+        self.assert_((
+            self.valid_path, 
+            self.valid_hubid, 
+            self.object_hub.getObject(self.valid_hubid)) in objects)
+        self.assertEqual(self.object_hub.numRegistrations(), 2)
+
+
+    def testUnregisterMissingObjects(self):
+        missing = self.object_hub.unregisterMissingObjects()
+        self.assertEqual(missing, 1)
+        self._verifyUnregistered()
+
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TransmitObjectRemovedHubEventTest),
@@ -534,6 +664,7 @@ def test_suite():
         unittest.makeSuite(TestObjectRemovedEvent),
         unittest.makeSuite(TestObjectModifiedEvent),
         unittest.makeSuite(TestObjectMovedEvent),
+        unittest.makeSuite(TestLazyUnregistration),
         ))
 
 if __name__=='__main__':
