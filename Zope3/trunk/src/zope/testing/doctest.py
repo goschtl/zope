@@ -2118,9 +2118,11 @@ class DocTestCase(unittest.TestCase):
 
            """
 
+        self.setUp()
         runner = DebugRunner(optionflags=self._dt_optionflags,
                              checker=self._dt_checker, verbose=False)
         runner.run(self._dt_test)
+        self.tearDown()
 
     def id(self):
         return self._dt_test.name
