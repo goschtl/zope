@@ -12,22 +12,23 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.9 2003/09/21 17:30:45 jim Exp $
+$Id: test_propfind.py,v 1.10 2003/11/21 17:11:34 jim Exp $
 """
 __metaclass__ = type
 
+from zope.app import zapi
+from zope.app.tests import ztapi
 from datetime import datetime
 from unittest import TestCase, TestSuite, main, makeSuite
 from StringIO import StringIO
 from zope.component import getService, getView, getAdapter
-from zope.app.services.servicenames import Adapters, Views
+from zope.app.services.servicenames import Adapters
 from zope.app.traversing import traverse
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.file import IWriteFile
 from zope.app.interfaces.content.zpt import IZPTPage
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.publisher.interfaces.http import IHTTPPresentation
+from zope.publisher.interfaces.http import IHTTPRequest
 from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
@@ -42,37 +43,42 @@ from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.interface import implements
+import zope.app.location
 
-class Folder:
+class Folder(zope.app.location.Location):
 
     implements(IReadContainer)
 
-    def __init__(self, name, level=0):
-        self.name = name
+    def __init__(self, name, level=0, parent=None):
+        self.name = self.__name__ = name
         self.level=level
+        self.__parent__ = parent
 
     def items(self):
         if self.level == 2:
-            return (('last', File('last', 'text/plain', 'blablabla')),)
+            return (('last', File('last', 'text/plain', 'blablabla', self)),)
         result = []
         for i in range(1, 3):
-            result.append((str(i), File(str(i), 'text/plain', 'blablabla')))
-        result.append(('sub1', Folder('sub1', level=self.level+1)))
+            result.append((str(i),
+                           File(str(i), 'text/plain', 'blablabla', self)))
+        result.append(('sub1',
+                       Folder('sub1', level=self.level+1, parent=self)))
         return tuple(result)
 
-class File:
+class File(zope.app.location.Location):
 
     implements(IWriteFile)
 
-    def __init__(self, name, content_type, data):
-        self.name = name
+    def __init__(self, name, content_type, data, parent=None):
+        self.name = self.__name__ = name
         self.content_type = content_type
         self.data = data
+        self.__parent__ = parent
 
     def write(self, data):
         self.data = data
 
-class FooZPT:
+class FooZPT(zope.app.location.Location):
 
     implements(IAnnotatable, IZPTPage)
 
@@ -124,27 +130,21 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root['folder'] = folder
         self.zpt = traverse(root, 'zpt')
         self.file = traverse(root, 'file')
-        provideView = getService(None, Views).provideView
-        setDefaultView = getService(None, Views).setDefaultViewName
-        provideView(None, 'absolute_url', IHTTPPresentation,
-                    [AbsoluteURL])
-        provideView(None, 'PROPFIND', IHTTPPresentation,
-                    [propfind.PROPFIND])
-        provideView(IText, 'view', IBrowserPresentation,
-                    [TextDAVWidget])
-        provideView(ITextLine, 'view', IBrowserPresentation,
-                    [TextDAVWidget])
-        provideView(IDatetime, 'view', IBrowserPresentation,
-                    [TextDAVWidget])
-        provideView(ISequence, 'view', IBrowserPresentation,
-                    [SequenceDAVWidget])
-        setDefaultView(IText, IBrowserPresentation, 'view')
-        setDefaultView(ITextLine, IBrowserPresentation, 'view')
-        setDefaultView(IDatetime, IBrowserPresentation, 'view')
-        setDefaultView(ISequence, IBrowserPresentation, 'view')
-        provideAdapter = getService(None, Adapters).provideAdapter
-        provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
-        provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
+        ps = zapi.getService(None, zapi.servicenames.Presentation)
+        ps.provideView(None, 'absolute_url', IHTTPRequest,
+                       [AbsoluteURL])
+        ps.provideView(None, 'PROPFIND', IHTTPRequest,
+                       [propfind.PROPFIND])
+        ztapi.browserView(IText, 'view', [TextDAVWidget])
+        ztapi.browserView(ITextLine, 'view', [TextDAVWidget])
+        ztapi.browserView(IDatetime, 'view', [TextDAVWidget])
+        ztapi.browserView(ISequence, 'view', [SequenceDAVWidget])
+        ztapi.setDefaultViewName(IText, 'view')
+        ztapi.setDefaultViewName(ITextLine, 'view')
+        ztapi.setDefaultViewName(IDatetime, 'view')
+        ztapi.setDefaultViewName(ISequence, 'view')
+        ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
+        ztapi.provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
         provideInterface('DAV:', IDAVSchema)
         provideInterface('http://www.purl.org/dc/1.1', IZopeDublinCore)
 
@@ -477,20 +477,127 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
             props_xml += '<%s/>' % p
+
         expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
-        <href>%(resource_url)s</href>
+        <href>http://127.0.0.1/folder/</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url,
-               'props_xml':props_xml}
+        <response>
+        <href>http://127.0.0.1/folder/1</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        <response>
+        <href>http://127.0.0.1/folder/2</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        <response>
+        <href>http://127.0.0.1/folder/sub1/</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        </multistatus>'''
+
 
         pfind = propfind.PROPFIND(folder, request)
 
@@ -524,20 +631,242 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         props = getFieldNamesInOrder(IDAVSchema)
         for p in props:
             props_xml += '<%s/>' % p
+
         expect = '''<?xml version="1.0" ?>
         <multistatus xmlns="DAV:">
         <response>
-        <href>%(resource_url)s</href>
+        <href>http://127.0.0.1/folder/</href>
         <propstat>
         <prop xmlns:a0="http://www.purl.org/dc/1.1">
-        %(props_xml)s
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
         </prop>
         <status>HTTP/1.1 200 OK</status>
         </propstat>
         </response>
-        </multistatus>
-        ''' % {'resource_url':resource_url,
-               'props_xml':props_xml}
+        <response>
+        <href>http://127.0.0.1/folder/1</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        <response>
+        <href>http://127.0.0.1/folder/2</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        <response>
+        <href>http://127.0.0.1/folder/sub1/</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        <response>
+        <href>http://127.0.0.1/folder/sub1/1</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        <response>
+        <href>http://127.0.0.1/folder/sub1/2</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        <response>
+        <href>http://127.0.0.1/folder/sub1/sub1/</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        <response>
+        <href>http://127.0.0.1/folder/sub1/sub1/last</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0"/>
+        <description xmlns="a0"/>
+        <created xmlns="a0"/>
+        <modified xmlns="a0"/>
+        <effective xmlns="a0"/>
+        <expires xmlns="a0"/>
+        <creators xmlns="a0"/>
+        <subjects xmlns="a0"/>
+        <publisher xmlns="a0"/>
+        <contributors xmlns="a0"/>
+        <creationdate/>
+        <displayname/>
+        <source/>
+        <getcontentlanguage/>
+        <getcontentlength/>
+        <getcontenttype/>
+        <getetag/>
+        <getlastmodified/>
+        <resourcetype/>
+        <lockdiscovery/>
+        <supportedlock/>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        </multistatus>'''
 
         pfind = propfind.PROPFIND(folder, request)
 
