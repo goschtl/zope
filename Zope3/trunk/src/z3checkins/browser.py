@@ -301,7 +301,7 @@ class CheckinMessageView(MessageView):
     def body(self):
         """Colorize checkin message body."""
         # XXX This method is rather bloated and hard to understand.
-        text = self.context.body.replace('\r', '')\
+        text = self.context.body.replace('\r', '') \
                                 .replace('&', '&amp;') \
                                 .replace('<', '&lt;') \
                                 .replace('>', '&gt;') \
@@ -325,8 +325,6 @@ class CheckinMessageView(MessageView):
                 # XXX: Specific to Zope3 checkins
                 if log_idx != -1:
                     log_idx = text.find('\n', log_idx) + 1
-                    # XXX: This is yucky...
-                    text = text.replace('\n-=-\n', '')
         if log_idx == -1:
             return '<pre>%s</pre>' % text
 
@@ -340,6 +338,8 @@ class CheckinMessageView(MessageView):
             diff_idx = sig_idx
 
         status_idx = text.find('\nStatus:\n')
+        if status_idx == -1:
+            status_idx = text.find('\nChanged:\n')
         if status_idx == -1:
             if text[diff_idx:diff_idx+5] == "\n====":
                 # Subversion

@@ -175,14 +175,13 @@ class CheckinMessageParser:
         for line in lines:
             if in_log_msg:
                 if (line.startswith('=== ')
-                    or line.startswith('-=-') # XXX: Zope3 ML specific
+                    or line.startswith("Changed:")
                     or line.startswith("Added:")
                     or line.startswith("Modified:")
                     or line.startswith("Removed:")
                     or line.startswith("Deleted:")
                     or line.startswith("Property changes on:")
-                    or line == "Status:"
-                    ):
+                    or line == "Status:"):
                     break
                 else:
                     log_message.append(line)

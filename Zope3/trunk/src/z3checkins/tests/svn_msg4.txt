@@ -9,6 +9,9 @@ Log message for revision 24872:
 
 Changed a comment.
 
+Changed:
+  foo bar baz
+
 -=-
 Modified: Zope3/trunk/src/zope/app/traversing/interfaces.py
 ===================================================================
