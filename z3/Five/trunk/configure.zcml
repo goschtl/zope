@@ -60,9 +60,6 @@
       provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
       />
 
-  <five:traversable class="OFS.SimpleItem.Item" />
-  <five:traversable class="OFS.ObjectManager.ObjectManager" />
-
   <!-- make Zope 2's REQUEST implement the right thing -->
   <five:implements class="ZPublisher.HTTPRequest.HTTPRequest"
                    interface="zope.publisher.interfaces.browser.IBrowserRequest"
