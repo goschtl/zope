@@ -85,7 +85,7 @@ static PyTypeObject ISBType = {
         /* tp_dictoffset     */ 0,
         /* tp_init           */ (initproc)0,
         /* tp_alloc          */ (allocfunc)0,
-        /* tp_new            */ (newfunc)PyType_GenericNew,
+        /* tp_new            */ (newfunc)0 /*PyType_GenericNew*/,
 };
 
 typedef struct {
@@ -360,7 +360,7 @@ static PyTypeObject OSpecType = {
         /* tp_dictoffset     */ 0,
         /* tp_init           */ (initproc)OSpec_init,
         /* tp_alloc          */ (allocfunc)0,
-        /* tp_new            */ (newfunc)PyType_GenericNew,
+        /* tp_new            */ (newfunc)0 /*PyType_GenericNew*/,
 };
 
 /* List of methods defined in the module */
@@ -424,12 +424,16 @@ init_zope_interface_ospec(void)
     return;
 
   Py_DECREF(module);
+ 
+  OSpecType.tp_new = PyType_GenericNew;
+  ISBType.tp_new = PyType_GenericNew;
   
   /* Initialize types: */  
   if (PyType_Ready(&ISBType) < 0)
     return;
   if (PyType_Ready(&OSpecType) < 0)
     return;
+
 
   /* Create the module and add the functions */
   module = Py_InitModule3("_zope_interface_ospec", module_methods,

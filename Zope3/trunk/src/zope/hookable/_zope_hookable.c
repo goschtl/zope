@@ -176,8 +176,8 @@ static PyTypeObject hookabletype = {
         /* tp_dictoffset     */ 0,
         /* tp_init           */ (initproc)hookable_init,
         /* tp_alloc          */ (allocfunc)0,
-        /* tp_new            */ (newfunc)PyType_GenericNew,
-	/* tp_free           */ _PyObject_GC_Del, 
+        /* tp_new            */ (newfunc)0 /*PyType_GenericNew*/,
+	/* tp_free           */ 0/*_PyObject_GC_Del*/, 
 };
 
 static struct PyMethodDef zch_methods[] = {
@@ -191,7 +191,11 @@ PyMODINIT_FUNC
 init_zope_hookable(void)
 {
   PyObject *m;
-        
+
+
+  hookabletype.tp_new = PyType_GenericNew;
+  hookabletype.tp_free = _PyObject_GC_Del;
+  
   if (PyType_Ready(&hookabletype) < 0)
     return;
         
