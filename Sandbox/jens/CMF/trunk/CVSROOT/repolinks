@@ -79,7 +79,7 @@
 /Zope/lib/python/zLOG                           /Packages/zLOG
 /Zope/lib/python/ZTUtils                        /Packages/ZTUtils
 /Zope/lib/python/ZConfig                        /Packages/ZConfig
-/Zope/lib/python/logging			/Packages/logging
+/Zope/lib/python/logging
 /Zope/lib/python/Signals			/Packages/Signals
 /Zope/lib/python/Products/ExternalMethod        /Products/ExternalMethod
 /Zope/lib/python/Products/MailHost              /Products/MailHost
