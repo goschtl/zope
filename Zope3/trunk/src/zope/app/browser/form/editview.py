@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.15 2003/03/21 20:57:44 jim Exp $
+$Id: editview.py,v 1.16 2003/03/26 17:13:14 tseaver Exp $
 """
 
 from datetime import datetime
@@ -21,6 +21,7 @@ from zope.schema.interfaces import ValidationError
 from zope.schema import getFieldNamesInOrder
 
 from zope.configuration.action import Action
+from zope.proxy.context import ContextWrapper
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
@@ -67,7 +68,7 @@ class EditView(BrowserView):
         #       just using 'queryAdapter'.
         adapted = queryAdapter(context, self.schema)
         if adapted is not None:
-            context = adapted
+            context = ContextWrapper(adapted, context, name='(adapted)')
         super(EditView, self).__init__(context, request)
         self._setUpWidgets()
 
