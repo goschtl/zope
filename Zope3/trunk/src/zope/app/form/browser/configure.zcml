@@ -54,6 +54,22 @@
       permission="zope.Public"
       />
 
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IBytes"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".textwidgets.BytesDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IBytesLine"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".DisplayWidget"
+      permission="zope.Public"
+      />
+
   <!-- Core edit widgets -->
 
   <view

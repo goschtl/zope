@@ -23,6 +23,7 @@ from zope.interface import implements
 from zope.app.form.interfaces import IInputWidget, ConversionError
 from zope.app.form.browser.interfaces import ITextBrowserWidget
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
+from zope.app.form.browser.widget import DisplayWidget
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
 
@@ -185,6 +186,16 @@ class BytesWidget(Bytes, TextWidget):
     >>> widget.getInputValue()
     'Bob'
     """
+
+class BytesDisplayWidget(DisplayWidget):
+    """Bytes display widget"""
+
+    def __call__(self):
+        if self._renderedValueSet():
+            content = self._data
+        else:
+            content = self.context.default
+        return renderElement("pre", contents=escape(content))
 
 class ASCII(Bytes):
     """ASCII"""
