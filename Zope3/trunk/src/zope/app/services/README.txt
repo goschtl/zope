@@ -3,12 +3,12 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.8 $
+:Version: $Revision: 1.9 $
 
 This package includes implementations of several local services.
 It also contains infrastructure for implementing local services.
 
-Implementing lolcal services is not too difficult, but there can be a
+Implementing local services is not too difficult, but there can be a
 lot of details that are hard to remember.
 
 A service is a component that implements a specific interface *and*
@@ -32,7 +32,7 @@ A few words on the difference between local and global services:
   services by definition have nothing "above" them.
 
   (Note that it's up to the service to decide what form the
-  collaboration will take.  An exceptable form of collaboration is to
+  collaboration will take.  An acceptable form of collaboration is to
   not collaborate at all.
 
 Registration
@@ -46,9 +46,9 @@ utility service.
 
 An important feature of component registration services is that they
 support multiple conflicting registrations for the same registration
-parameters.  At most one of the registrations is active.  A site
-developer can switch between alternate components by simply changing
-which one is active.
+parameters.  At most one of the conflicting registrations is active.
+A site developer can switch between alternate components by simply
+changing which one is active.
 
 Consider the following scenario.  A product provides a utility.  A
 site manager gets a new version of the utility and installs
@@ -93,8 +93,8 @@ There are two kinds of registrations:
 
 - Module-global registrations register objects stored in
   modules. Objects in modules aren't managable directly, so we can't
-  manage their registrations trough them.  (The state of an object
-  stored in a module must be respresented soley by the module source.)
+  manage their registrations through them.  (The state of an object
+  stored in a module must be represented solely by the module source.)
   
   Module-global objects are named using dotted names.
 
