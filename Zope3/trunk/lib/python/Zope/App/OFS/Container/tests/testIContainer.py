@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: testIContainer.py,v 1.5 2002/11/18 13:34:19 stevea Exp $
+$Id: testIContainer.py,v 1.6 2002/12/20 19:34:42 bwarsaw Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -42,24 +42,24 @@ class BaseTestIContainer:
         verifyObject(IContainer, self._Test__new())
 
     def test_keys(self):
-        '''See interface IReadContainer'''
+        # See interface IReadContainer
         container = self._Test__new()
         data = container.keys()
         self.assertEqual(list(data), [])
-        
+
         container = self.__setUp()
         data = container.keys()
         # convert to sorted list
         data = list(data)
         data.sort()
         self.assertEqual(data, map(str, range(10)))
-        
+
     def test_get(self):
-        '''See interface IReadContainer'''
+        # See interface IReadContainer
         container = self._Test__new()
         self.assertRaises(KeyError, container.__getitem__, '1')
         self.assertEqual(container.get('1', '99'), '99')
-        
+
         container = self.__setUp()
         self.assertRaises(KeyError, container.__getitem__, '100')
         self.assertEqual(container.get('100', '99'), '99')
@@ -67,32 +67,32 @@ class BaseTestIContainer:
         self.assertEqual(container['7'], '8')
         self.assertEqual(container['0'], '4')
         self.assertEqual(container['9'], '9')
-        
+
     def test_values(self):
-        '''See interface IReadContainer'''
+        # See interface IReadContainer
         container = self._Test__new()
         data = container.values()
         self.assertEqual(list(data), [])
-        
+
         container = self.__setUp()
         data = container.values()
         data = list(data); data.sort() # convert to sorted list
         self.assertEqual(data, map(str, range(10)))
 
     def test_len(self):
-        '''See interface IReadContainer'''
+        # See interface IReadContainer
         container = self._Test__new()
         self.assertEqual(len(container), 0)
-        
+
         container = self.__setUp()
         self.assertEqual(len(container), 10)
 
     def test_items(self):
-        '''See interface IReadContainer'''
+        # See interface IReadContainer
         container = self._Test__new()
         data = container.items()
         self.assertEqual(list(data), [])
-        
+
         container = self.__setUp()
         data = container.items()
         # convert to sorted list
@@ -104,10 +104,10 @@ class BaseTestIContainer:
             ])
 
     def test___contains__(self):
-        '''See interface IReadContainer'''
+        # See interface IReadContainer
         container = self._Test__new()
         self.assertEqual(not not ('1' in container), 0)
-        
+
         container = self.__setUp()
         self.assertEqual(not not ('100' in container), 0)
         self.assertEqual(not not ('1' in container), 1)
@@ -115,10 +115,10 @@ class BaseTestIContainer:
         self.assertEqual(not not ('9' in container), 1)
 
     def test_delObject(self):
-        '''See interface IWriteContainer'''
+        # See interface IWriteContainer
         container = self._Test__new()
         self.assertRaises(KeyError, container.__delitem__, '1')
-        
+
         container = self.__setUp()
         self.assertRaises(KeyError, container.__delitem__, '100')
         del container['1']

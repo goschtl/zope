@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: testHookedHubEvent.py,v 1.2 2002/11/26 19:02:49 stevea Exp $
+$Id: testHookedHubEvent.py,v 1.3 2002/12/20 19:34:43 bwarsaw Exp $
 """
 
 # in this version of these tests, we are no longer using a fake
@@ -30,11 +30,11 @@ from Zope.App.OFS.Services.ObjectHub.HubEvent import \
 from Zope.App.Traversing import getPhysicalPath
 
 from Zope.ComponentArchitecture import getService
-        
+
 class AbstractTestHubEvent(ObjectHubSetup, unittest.TestCase):
-    
+
     klass = None
-    
+
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, "ObjectHub")
@@ -45,25 +45,25 @@ class AbstractTestHubEvent(ObjectHubSetup, unittest.TestCase):
                                 self.hubid,
                                 self.location,
                                 self.obj)
-        
+
     def testGetLocation(self):
-        "Test getLocation method"
+        # Test getLocation method
         self.assertEqual(self.event.location, self.location)
-        
+
     def testGetHubId(self):
-        "Test getHubId method"
+        # Test getHubId method
         self.assertEqual(self.event.hubid, self.hubid)
-    
+
     def testGetObject(self):
-        "Test getObject method"
+        # Test getObject method
         self.assertEqual(self.event.object, self.obj)
-    
+
 class TestObjectRegisteredHubEvent(AbstractTestHubEvent):
 
     klass = ObjectRegisteredHubEvent
 
 class TestEmptyObjectRegisteredHubEvent(TestObjectRegisteredHubEvent):
-    
+
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, "ObjectHub")
@@ -77,7 +77,7 @@ class TestObjectUnregisteredHubEvent(AbstractTestHubEvent):
     klass = ObjectUnregisteredHubEvent
 
 class TestEmptyObjectUnregisteredHubEvent(TestObjectUnregisteredHubEvent):
-    
+
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, "ObjectHub")
@@ -91,7 +91,7 @@ class TestObjectModifiedHubEvent(AbstractTestHubEvent):
     klass = ObjectModifiedHubEvent
 
 class TestEmptyObjectModifiedHubEvent(TestObjectModifiedHubEvent):
-    
+
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, "ObjectHub")
@@ -101,9 +101,9 @@ class TestEmptyObjectModifiedHubEvent(TestObjectModifiedHubEvent):
         self.event = self.klass(self.object_hub, self.hubid)
 
 class TestObjectMovedHubEvent(AbstractTestHubEvent):
-    
+
     fromLocation = '/old/location'
-    
+
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, "ObjectHub")
@@ -115,15 +115,15 @@ class TestObjectMovedHubEvent(AbstractTestHubEvent):
                                 self.fromLocation,
                                 self.location,
                                 self.obj)
-    
+
     def testGetFromLocation(self):
-        "Test from location"
+        # Test from location
         self.assertEqual(self.event.fromLocation, self.fromLocation)
 
     klass = ObjectMovedHubEvent
 
 class TestEmptyObjectMovedHubEvent(TestObjectMovedHubEvent):
-    
+
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, "ObjectHub")

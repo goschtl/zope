@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: testHubEvent.py,v 1.1 2002/10/30 03:47:48 poster Exp $
+$Id: testHubEvent.py,v 1.2 2002/12/20 19:34:43 bwarsaw Exp $
 """
 
 import unittest, sys
@@ -32,51 +32,51 @@ class DummyObjectHub:
         self.ruid = ruid
         self.obj = obj
         self.location = location
-    
-    
+
+
     def getObject(self, ruid):
         if ruid==self.ruid:
             return self.obj
-            
+
         raise NotFoundError
-    
+
     def getLocation(self, ruid):
         if ruid==self.ruid:
             return self.location
-            
+
         raise NotFoundError
-        
-        
+
+
 class AbstractTestHubEvent(unittest.TestCase):
-    
+
     location = '/some/location'
     hubid = 23
     obj = object()
     klass = None
-    
+
     def setUp(self):
         self.hub = DummyObjectHub(self.hubid, self.obj, self.location)
         self.event = self.klass(self.hub, self.hubid, self.location, self.obj)
-    
+
     def testGetHub(self):
         self.assertEqual(self.event.hub, self.hub)
-        
+
     def testGetLocation(self):
         self.assertEqual(self.event.location, self.location)
-        
+
     def testGetHubId(self):
-        "Test hubid"
+        # Test hubid
         self.assertEqual(self.event.hubid, self.hubid)
-    
+
     def testGetObject(self):
         self.assertEqual(self.event.object, self.obj)
-    
+
 class TestObjectRegisteredHubEvent(AbstractTestHubEvent):
 
     klass = ObjectRegisteredHubEvent
 
 class TestEmptyObjectRegisteredHubEvent(TestObjectRegisteredHubEvent):
-    
+
     def setUp(self):
         self.hub = DummyObjectHub(self.hubid, self.obj, self.location)
         self.event = self.klass(self.hub, self.hubid)
@@ -86,14 +86,14 @@ class TestObjectUnregisteredHubEvent(AbstractTestHubEvent):
     klass = ObjectUnregisteredHubEvent
 
 class TestEmptyObjectUnregisteredHubEvent(unittest.TestCase):
-    
+
     location = '/some/location'
     hubid = 23
     obj = object()
     klass = None
-    
+
     klass = ObjectUnregisteredHubEvent
-    
+
     def testRaisesTypeError(self):
         self.assertRaises(TypeError,
                           self.klass,
@@ -107,15 +107,15 @@ class TestObjectModifiedHubEvent(AbstractTestHubEvent):
     klass = ObjectModifiedHubEvent
 
 class TestEmptyObjectModifiedHubEvent(TestObjectModifiedHubEvent):
-    
+
     def setUp(self):
         self.hub = DummyObjectHub(self.hubid, self.obj, self.location)
         self.event = self.klass(self.hub, self.hubid)
 
 class TestObjectMovedHubEvent(AbstractTestHubEvent):
-    
+
     fromLocation = '/old/location'
-    
+
     def setUp(self):
         self.hub = DummyObjectHub(self.hubid, self.obj, self.location)
         self.event = self.klass(self.hub,
@@ -123,15 +123,15 @@ class TestObjectMovedHubEvent(AbstractTestHubEvent):
                                 self.fromLocation,
                                 self.location,
                                 self.obj)
-    
+
     def testGetFromLocation(self):
-        "Test from location"
+        # Test from location
         self.assertEqual(self.event.fromLocation, self.fromLocation)
 
     klass = ObjectMovedHubEvent
 
 class TestEmptyObjectMovedHubEvent(TestObjectMovedHubEvent):
-    
+
     def setUp(self):
         self.hub = DummyObjectHub(self.hubid, self.obj, self.location)
         self.event = self.klass(self.hub,

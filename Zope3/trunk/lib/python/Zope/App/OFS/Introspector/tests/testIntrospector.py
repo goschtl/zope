@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: testIntrospector.py,v 1.4 2002/12/19 18:25:37 poster Exp $
+$Id: testIntrospector.py,v 1.5 2002/12/20 19:34:42 bwarsaw Exp $
 """
 
 from Interface import Interface
@@ -23,22 +23,21 @@ from Zope.Testing.CleanUp import CleanUp
 from Zope.App.OFS.Introspector.Introspector import Introspector
 from TestClass import TestClass, ITestClass, BaseTestClass, I, I2, I3
 
+
 class Test(CleanUp, TestCase):
-    """Test Introspector.
-    """
-   
+    """Test Introspector."""
+
     def testIntrospector(self):
-        """Testing introspector"""
-        
+        # Testing introspector
         ints = Introspector(ITestClass)
         self.assertEqual(ints.isInterface(), 1)
-        
+
         ints = Introspector(TestClass())
         self.assertEqual(ints.isInterface(), 0)
         request = {}
         ints.setRequest(request)
         self.assertEqual(ints.getClass(), 'TestClass')
-        
+
         ints = Introspector(TestClass)
         self.assertEqual(ints.isInterface(), 0)
         request['PATH_INFO'] = '++module++Zope.App.OFS.Introspector.tests.TestClass.TestClass'
@@ -88,12 +87,13 @@ class Test(CleanUp, TestCase):
                       (attr_name2, attr_desc2), ]
         details = [Iname, bases, desc, methods, attributes]
         self.assertEqual(ints.getInterfaceDetails(), details)
- 
 
-        
+
 def test_suite():
-    return TestSuite((makeSuite(Test),))
+    suite = TestSuite()
+    suite.addTest(makeSuite(Test))
+    return suite
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main(defaultTest='test_suite')
-                

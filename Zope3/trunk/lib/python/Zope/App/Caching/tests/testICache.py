@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for ICache interface
 
-$Id: testICache.py,v 1.4 2002/12/12 15:28:16 mgedmin Exp $
+$Id: testICache.py,v 1.5 2002/12/20 19:34:41 bwarsaw Exp $
 """
 
 from unittest import TestSuite, main
@@ -27,11 +27,11 @@ class BaseICacheTest:
     """
 
     def testVerifyICache(self):
-        """Verify that the object implements ICache"""
+        # Verify that the object implements ICache
         verifyObject(ICache, self._Test__new())
 
     def testCaching(self):
-        """Verify basic caching"""
+        # Verify basic caching
         cache = self._Test__new()
         ob = "obj"
         data = "data"

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.8 2002/12/12 11:32:32 mgedmin Exp $
+$Id: testEventService.py,v 1.9 2002/12/20 19:34:43 bwarsaw Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -108,7 +108,7 @@ class EventServiceTests(EventSetup, TestCase):
         self._createNestedServices()
 
     def testListSubscriptions1(self):
-        "a non-subscribed subscriber gets an empty array"
+        # a non-subscribed subscriber gets an empty array
         self._createSubscribers()
 
         events = getEventService(self.rootFolder)
@@ -117,7 +117,7 @@ class EventServiceTests(EventSetup, TestCase):
                          [])
 
     def testListSubscriptions2(self):
-        "one subscription"
+        # one subscription
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -128,7 +128,7 @@ class EventServiceTests(EventSetup, TestCase):
                             .listSubscriptions(self.rootFolderSubscriber))
 
     def testListSubscriptions3(self):
-        "listing limited subscription"
+        # listing limited subscription
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -140,14 +140,14 @@ class EventServiceTests(EventSetup, TestCase):
                                                IObjectRemovedEvent))
 
     def testSubscribe1(self):
-        "Test subscribe method with one parameter"
+        # Test subscribe method with one parameter
         self._createSubscribers()
         subscribe(self.rootFolderSubscriber)
         publish(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe2(self):
-        "Test subscribe method with two parameters"
+        # Test subscribe method with two parameters
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -157,7 +157,7 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe3(self):
-        "Test subscribe method with three parameters"
+        # Test subscribe method with three parameters
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -168,9 +168,8 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe4(self):
-        """Test subscribe method with three parameters
-        and an always failing filter.
-        """
+        # Test subscribe method with three parameters and an always failing
+        # filter.
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -181,9 +180,8 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
 
     def testSubscribe5(self):
-        """Test subscribe method with three parameters
-        and an irrelevent event type.
-        """
+        # Test subscribe method with three parameters and an irrelevent event
+        # type.
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -194,10 +192,8 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
 
     def testSubscribe6(self):
-        """Test subscribe method where the event type
-        registered is a generalised interface of the
-        event passed to the 'publish' method.
-        """
+        # Test subscribe method where the event type registered is a
+        # generalised interface of the event passed to the 'publish' method.
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -207,10 +203,8 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe7(self):
-        """Test subscribe method where one of the
-        event types registered is not interested in
-        the published event.
-        """
+        # Test subscribe method where one of the event types registered is not
+        # interested in the published event.
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -224,9 +218,8 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testSubscribe8(self):
-        """Test subscribe method where the same subscriber
-        subscribes multiple times.
-        """
+        # Test subscribe method where the same subscriber subscribes multiple
+        # times.
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber,
@@ -245,7 +238,7 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 2)
 
     def testUnsubscribe1(self):
-        "Test unsubscribe method"
+        # Test unsubscribe method
         self._createSubscribers()
         subscribe(
             self.rootFolderSubscriber
@@ -259,7 +252,7 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testUnsubscribe2(self):
-        "Test unsubscribe of something that hasn't been subscribed"
+        # Test unsubscribe of something that hasn't been subscribed
         self._createSubscribers()
         self.assertRaises(NotFoundError,
                           unsubscribe,
@@ -269,7 +262,7 @@ class EventServiceTests(EventSetup, TestCase):
                          unsubscribe(self.rootFolderSubscriber))
 
     def testUnsubscribe3(self):
-        "Test selective unsubscribe"
+        # Test selective unsubscribe
         self._createSubscribers()
         subscriber=self.rootFolderSubscriber
         subscriber2=self.folder1Subscriber
@@ -308,7 +301,8 @@ class EventServiceTests(EventSetup, TestCase):
         publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 7)
         self.assertEqual(subscriber2.notified, 3)
-        self.assertRaises(NotFoundError, unsubscribe, subscriber, IObjectAddedEvent)
+        self.assertRaises(NotFoundError, unsubscribe, subscriber,
+                          IObjectAddedEvent)
         unsubscribe(subscriber, IObjectAddedEvent, filter)
         publish(self.folder1_1_1, event)
         self.assertEqual(subscriber.notified, 7)
@@ -319,12 +313,12 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(subscriber2.notified, 4)
 
     def testUnsubscribe4(self):
-        "Test selective unsubscribe with nested services"
+        # Test selective unsubscribe with nested services
         self._createNestedServices()
         self.testUnsubscribe3()
 
     def testpublish1(self):
-        "Test publish method"
+        # Test publish method
         self._createSubscribers()
         subscriber = self.rootFolderSubscriber
         subscribe(subscriber)
@@ -333,11 +327,9 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(subscriber.notified, 1)
 
     def testpublish2(self):
-        """Test publish method where subscriber has been
-        subscribed twice, with a more generalised
-        version of the initially subscribed interface
-        in the second subscription.
-        """
+        # Test publish method where subscriber has been subscribed twice, with
+        # a more generalised version of the initially subscribed interface in
+        # the second subscription.
         self._createSubscribers()
         subscriber = self.rootFolderSubscriber
         subscribe(
@@ -352,10 +344,8 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(subscriber.notified, 2)
 
     def testpublish3(self):
-        """Test publish method where subscriber has been
-        to two interfaces and a single event implements both
-        of those interfaces.
-        """
+        # Test publish method where subscriber has been to two interfaces and
+        # a single event implements both of those interfaces.
         self._createSubscribers()
         subscriber = self.rootFolderSubscriber
         subscribe(
@@ -370,9 +360,8 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(subscriber.notified, 2)
 
     def testpublish4(self):
-        """Test publish method to make sure that we don't
-        'leak registrations up' sez Jim.
-        """
+        # Test publish method to make sure that we don't 'leak registrations
+        # up' sez Jim.
         self._createSubscribers()
         subscriber = self.rootFolderSubscriber
         subscribe(
@@ -417,24 +406,24 @@ class EventServiceTests(EventSetup, TestCase):
             )
 
     def testNonPromotingEventService1(self):
-        """test to see if events are not passed on to a parent event
-        service with the appropriate isPromotableEvent setting"""
+        # test to see if events are not passed on to a parent event service
+        # with the appropriate isPromotableEvent setting
         self._createAlternateService(UnpromotingLocalEventService())
         publish(self.folder2, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 1)
         self.assertEqual(self.rootFolderSubscriber.notified, 0)
 
     def testPromotingEventService1(self):
-        """test to see if events are passed on to a parent event
-        service with the appropriate isPromotableEvent setting"""
+        # test to see if events are passed on to a parent event service with
+        # the appropriate isPromotableEvent setting
         self._createAlternateService(LocalEventService())
         publish(self.folder2, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 1)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
 
     def testUnbindingResubscribing1(self):
-        """an event service is unbound; a lower event service should
-        then rebind to upper event service"""
+        # an event service is unbound; a lower event service should then
+        # rebind to upper event service
         self._createNestedServices()
         self._createSubscribers()
         subscribe(
@@ -459,8 +448,7 @@ class EventServiceTests(EventSetup, TestCase):
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
 
     def testNoSubscribeOnBind(self):
-        """if subscribeOnBind is 0, service should not subscribe to
-        parent"""
+        # if subscribeOnBind is 0, service should not subscribe to parent
         sv=LocalEventService()
         sv.subscribeOnBind=0
         self._createAlternateService(sv)

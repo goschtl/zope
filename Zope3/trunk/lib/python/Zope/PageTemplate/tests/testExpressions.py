@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 import os, sys, unittest
 
@@ -22,12 +22,15 @@ class Data:
 
     def __repr__(self): return self.name
 
-def dict(**kw): return kw
+
+def dict(**kw):
+    return kw
+
 
 class ExpressionTests(unittest.TestCase):
 
     def testCompile(self):
-        '''Test expression compilation'''
+        # Test expression compilation
         context = Data(
             vars = dict(
               x = Data(
@@ -42,10 +45,10 @@ class ExpressionTests(unittest.TestCase):
               B = 2,
               )
             )
-              
-        
+
+
         engine = Engine
-        
+
         expr = engine.compile('x')
         self.assertEqual(expr(context), context.vars['x'])
 
@@ -72,9 +75,11 @@ class ExpressionTests(unittest.TestCase):
 
         expr = engine.compile('python: 2 \n+\n 2\n')
         self.assertEqual(expr(context), 4)
-        
+
+
 def test_suite():
     return unittest.makeSuite(ExpressionTests)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     unittest.TextTestRunner().run(test_suite())

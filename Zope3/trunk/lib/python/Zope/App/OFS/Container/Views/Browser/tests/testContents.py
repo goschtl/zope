@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: testContents.py,v 1.10 2002/12/04 15:19:07 runyaga Exp $
+$Id: testContents.py,v 1.11 2002/12/20 19:34:41 bwarsaw Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -43,11 +43,11 @@ class BaseTestContentsBrowserView(PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)    
-        
+        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
+
 
     def testInfo(self):
-        """ Do we get the correct information back from ContainerContents? """
+        # Do we get the correct information back from ContainerContents?
         container = self._TestView__newContext()
         subcontainer = self._TestView__newContext()
         container.setObject( 'subcontainer', subcontainer )
@@ -81,18 +81,18 @@ class BaseTestContentsBrowserView(PlacelessSetup):
             import formatTime, getSize
         class FauxDCAdapter:
             __implements__ = IZopeDublinCore
-            
+
             def __init__(self, context):
                 pass
             title = 'faux title'
             size = 1024
             created = datetime(2001, 1, 1, 1, 1, 1)
             modified = datetime(2002, 2, 2, 2, 2, 2)
-            
+
         from Zope.ComponentArchitecture.GlobalAdapterService \
              import provideAdapter
         provideAdapter(IDocument, IZopeDublinCore, FauxDCAdapter)
-        
+
         fc = self._TestView__newView( container )
         info = fc.listContentInfo()[0]
 
@@ -118,7 +118,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         self.assertEqual(getSize(SizeableObject('bob')), (0,u'N/A'))
         self.assertEqual(getSize('dobbs'), (0,u'N/A'))
 
-        
+
     def testRemove( self ):
         container = self._TestView__newContext()
         subcontainer = self._TestView__newContext()
@@ -147,7 +147,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
                       lambda event:
                       removeAllProxies(event.object) == container)
             )
-        
+
         info_list = fc.listContentInfo()
 
         self.assertEquals( len( info_list ), 2 )

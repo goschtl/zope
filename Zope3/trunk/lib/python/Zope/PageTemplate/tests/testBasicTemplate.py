@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 import os, sys, unittest
 
@@ -22,8 +22,9 @@ class BasicTemplateTests(unittest.TestCase):
       self.t = PageTemplate()
 
    def check_if_in_var(self):
-      """DTML test 1: if, in, and var:
-
+      # DTML test 1: if, in, and var:
+      pass # for unittest
+      """
       %(comment)[ blah %(comment)]
       <html><head><title>Test of documentation templates</title></head>
       <body>
@@ -57,8 +58,9 @@ class BasicTemplateTests(unittest.TestCase):
       util.check_xml(expect, o)
 
    def check_batches_and_formatting(self):
-      """DTML test 3: batches and formatting:
-
+      # DTML test 3: batches and formatting:
+      pass # for unittest
+      """
         <html><head><title>Test of documentation templates</title></head>
         <body>
         <!--#if args-->
@@ -93,7 +95,7 @@ class BasicTemplateTests(unittest.TestCase):
                       'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen',
                       'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty',
                       ))
-      from Zope.PageTemplate.tests import batch        
+      from Zope.PageTemplate.tests import batch
       o = self.t(content=aa, batch=batch.batch(aa.args, 5))
 
       expect = util.read_output('DTML3.html')

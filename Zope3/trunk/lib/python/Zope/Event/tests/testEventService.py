@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: testEventService.py,v 1.6 2002/12/05 17:20:29 stevea Exp $
+$Id: testEventService.py,v 1.7 2002/12/20 19:34:46 bwarsaw Exp $
 """
 
 import unittest, sys
@@ -38,7 +38,7 @@ class DummyEvent:
 class ObjectEvent:
 
     __implements__ = IObjectEvent
-    
+
 class TestEventService(CleanUp, unittest.TestCase):
 
     def setUp(self):
@@ -46,15 +46,15 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.service = GlobalEventService()
         self.event = ObjectAddedEvent(None, '/foo')
         self.subscriber = DummySubscriber()
-        
+
     def testSubscribe1(self):
-        "Test subscribe method with one parameter"
+        # Test subscribe method with one parameter
         self.service.globalSubscribe(self.subscriber)
         self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
-        
+
     def testSubscribe2(self):
-        "Test subscribe method with two parameters"
+        # Test subscribe method with two parameters
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectAddedEvent
@@ -63,7 +63,7 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 1)
 
     def testSubscribe3(self):
-        "Test subscribe method with three parameters"
+        # Test subscribe method with three parameters
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectAddedEvent,
@@ -73,9 +73,8 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 1)
 
     def testSubscribe4(self):
-        """Test subscribe method with three parameters
-        and an always failing filter.
-        """
+        # Test subscribe method with three parameters and an always failing
+        # filter.
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectAddedEvent,
@@ -85,9 +84,8 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 0)
 
     def testSubscribe5(self):
-        """Test subscribe method with three parameters
-        and an irrelevent event type.
-        """
+        # Test subscribe method with three parameters and an irrelevent event
+        # type.
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectModifiedEvent,
@@ -97,10 +95,8 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 0)
 
     def testSubscribe6(self):
-        """Test subscribe method where the event type
-        registered is a generalised interface of the
-        event passed to the 'publish' method.
-        """
+        # Test subscribe method where the event type registered is a
+        # generalised interface of the event passed to the 'publish' method.
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectEvent
@@ -109,10 +105,8 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 1)
 
     def testSubscribe7(self):
-        """Test subscribe method where one of the
-        event types registered is not interested in
-        the published event.
-        """
+        # Test subscribe method where one of the event types registered is not
+        # interested in the published event.
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectModifiedEvent
@@ -125,9 +119,8 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 1)
 
     def testSubscribe8(self):
-        """Test subscribe method where the same subscriber
-        subscribes multiple times. 
-        """
+        # Test subscribe method where the same subscriber subscribes multiple
+        # times.
         self.service.globalSubscribe(
             self.subscriber,
             event_type=IObjectAddedEvent,
@@ -147,7 +140,7 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 2)
 
     def testUnsubscribe1(self):
-        "Test unsubscribe method"
+        # Test unsubscribe method
         subscriber = self.subscriber
         self.service.globalSubscribe(subscriber)
         self.service.publish(self.event)
@@ -157,16 +150,16 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 1)
 
     def testUnsubscribe2(self):
-        "Test unsubscribe of something that hasn't been subscribed"
+        # Test unsubscribe of something that hasn't been subscribed
         subscriber = self.subscriber
         self.assertRaises(NotFoundError,
                           self.service.unsubscribe,
                           subscriber, IObjectEvent)
         self.assertEqual(None,
                          self.service.unsubscribe(subscriber))
-    
+
     def testUnsubscribe3(self):
-        "Test selective unsubscribe"
+        # Test selective unsubscribe
         subscriber2=DummySubscriber()
         filter=DummyFilter()
         event2=ObjectModifiedEvent(None, '/foo')
@@ -211,19 +204,17 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(subscriber2.notified, 3)
 
     def testpublish1(self):
-        "Test publish method"
+        # Test publish method
         subscriber = self.subscriber
         self.service.globalSubscribe(subscriber)
-        self.assertEqual(self.subscriber.notified, 0)        
+        self.assertEqual(self.subscriber.notified, 0)
         self.service.publish(self.event)
         self.assertEqual(self.subscriber.notified, 1)
 
     def testpublish2(self):
-        """Test publish method where subscriber has been
-        subscribed twice, with a more generalised
-        version of the initially subscribed interface
-        in the second subscription.
-        """
+        # Test publish method where subscriber has been subscribed twice, with
+        # a more generalised version of the initially subscribed interface in
+        # the second subscription.
         subscriber = self.subscriber
         self.service.globalSubscribe(
             self.subscriber,
@@ -234,13 +225,11 @@ class TestEventService(CleanUp, unittest.TestCase):
             event_type=IObjectAddedEvent,
             )
         self.service.publish(self.event)
-        self.assertEqual(self.subscriber.notified, 2) 
+        self.assertEqual(self.subscriber.notified, 2)
 
     def testpublish3(self):
-        """Test publish method where subscriber has been
-        to two interfaces and a single event implements both
-        of those interfaces.
-        """
+        # Test publish method where subscriber has been to two interfaces and
+        # a single event implements both of those interfaces.
         subscriber = self.subscriber
         self.service.globalSubscribe(
             self.subscriber,
@@ -254,9 +243,8 @@ class TestEventService(CleanUp, unittest.TestCase):
         self.assertEqual(self.subscriber.notified, 2)
 
     def testpublish4(self):
-        """Test publish method to make sure that we don't
-        'leak registrations up' sez Jim.
-        """
+        # Test publish method to make sure that we don't 'leak registrations
+        # up' sez Jim.
         subscriber = self.subscriber
         self.service.globalSubscribe(
             self.subscriber,
@@ -268,28 +256,30 @@ class TestEventService(CleanUp, unittest.TestCase):
             )
         self.service.publish(ObjectEvent())
         self.assertEqual(self.subscriber.notified, 1)
-    
+
     def testListSubscriptions1(self):
-        "a non-subscribed subscriber gets an empty array"
+        # a non-subscribed subscriber gets an empty array
         self.assertEqual([], self.service.listSubscriptions(self.subscriber))
-    
+
     def testListSubscriptions2(self):
-        "one subscription"
+        # one subscription
         self.service.globalSubscribe(
                 self.subscriber, event_type=IObjectAddedEvent)
         self.assertEqual([(IObjectAddedEvent, None)],
                          self.service.listSubscriptions(self.subscriber))
-    
+
     def testListSubscriptions3(self):
-        "listing limited subscription"
+        # listing limited subscription
         self.service.globalSubscribe(
                 self.subscriber, event_type=IObjectAddedEvent)
         L = self.service.listSubscriptions(self.subscriber,
                                            IObjectRemovedEvent)
         self.assertEqual([], L)
-    
+
+
 def test_suite():
     return unittest.makeSuite(TestEventService)
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

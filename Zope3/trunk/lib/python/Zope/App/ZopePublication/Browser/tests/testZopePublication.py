@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 import unittest
 
@@ -67,7 +67,7 @@ class BasePublicationTests(BasePublicationTests_):
         request = TestRequest(PATH_INFO=path, **kw)
         request.setPublication(publication)
         return request
-    
+
 
 class BrowserDefaultTests(BasePublicationTests):
     """
@@ -78,7 +78,7 @@ class BrowserDefaultTests(BasePublicationTests):
 
     """
     klass = BrowserPublication
-    
+
     def testBaseTagNoBase(self):
         self._testBaseTags('/somepath/@@view/', '')
 
@@ -93,45 +93,45 @@ class BrowserDefaultTests(BasePublicationTests):
     def testBaseTag3(self):
         self._testBaseTags('/somepath',
                            'http://127.0.0.1/somepath/@@view/bruce')
-        
+
 
 
     def _testBaseTags(self, url, expected):
 
         class I1(Interface): pass
-        
+
         from Persistence import Persistent
-        
+
         class O1(Persistent):
             __implements__ = I1
 
 
         pub = BrowserPublication(self.db)
-        
+
         getService(None,'Views').provideView(I1, 'view',
                            IBrowserPresentation, [DummyView])
         getService(None,'Views').setDefaultViewName(I1,
                              IBrowserPresentation, 'view')
         getService(None, 'Views').provideView(None,
                     '_traverse', IBrowserPresentation, [TestTraverser])
-        
+
         ob = O1()
 
         ## the following is for running the tests standalone
         principalRegistry.defineDefaultPrincipal(
             'tim', 'timbot', 'ai at its best')
-        
+
         principalRoleManager.assignRoleToPrincipal('Manager', 'tim')
 
 
         # now place our object inside the application
         from Transaction import get_transaction
-        
+
         connection = self.db.open()
         app = connection.root()['Application']
         app.somepath = ob
         get_transaction().commit()
-        connection.close()        
+        connection.close()
 
         defineChecker(app.__class__, NamesChecker(somepath='xxx'))
 
@@ -139,7 +139,7 @@ class BrowserDefaultTests(BasePublicationTests):
         response = req.response
 
         publish(req, handle_errors=0)
-            
+
         self.assertEqual(response.getBase(), expected)
 
 
@@ -197,9 +197,7 @@ class BrowserPublicationTests(BasePublicationTests):
         self.assertEqual(unw.v, 'bruce')
 
     def testAdaptedTraverseDefaultWrapping(self):
-        """Test default content and make sure that it's wrapped.
-        """
-
+        # Test default content and make sure that it's wrapped.
         class Adapter:
             __implements__ = IBrowserPublisher
             def __init__(self, context, request):
@@ -299,5 +297,6 @@ def test_suite():
     t3 = unittest.makeSuite(BrowserDefaultTests, 'test')
     return unittest.TestSuite((t2, t3))
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     unittest.TextTestRunner().run( test_suite() )

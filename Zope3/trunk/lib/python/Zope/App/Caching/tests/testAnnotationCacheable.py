@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: testAnnotationCacheable.py,v 1.4 2002/10/09 13:08:44 alga Exp $
+$Id: testAnnotationCacheable.py,v 1.5 2002/12/20 19:34:41 bwarsaw Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,16 +30,16 @@ from Zope.ComponentArchitecture.GlobalServiceManager import \
 class ObjectStub:
     __implements__ = IAttributeAnnotatable
 
-class CacheStub:
 
+class CacheStub:
     def __init__(self):
         self.invalidated = []
 
     def invalidate(self, obj):
         self.invalidated.append(obj)
 
-class CachingServiceStub:
 
+class CachingServiceStub:
     __implements__ = ICachingService
 
     def __init__(self):
@@ -48,8 +48,8 @@ class CachingServiceStub:
     def getCache(self, name):
         return self.caches[name]
 
-class TestAnnotationCacheable(PlacelessSetup, TestCase):
 
+class TestAnnotationCacheable(PlacelessSetup, TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         getService(None, "Adapters").provideAdapter(
@@ -70,25 +70,28 @@ class TestAnnotationCacheable(PlacelessSetup, TestCase):
                           "failed to set cache ID")
 
     def testInvalidate(self):
-        """Test that setting a different cache ID invalidates the old
-        cached value"""
+        # Test that setting a different cache ID invalidates the old cached
+        # value
         self.service.caches['cache1'] = cache1 = CacheStub()
         self.service.caches['cache2'] = cache2 = CacheStub()
         ob = ObjectStub()
         adapter = AnnotationCacheable(ob)
         adapter.setCacheId('cache1')
-        self.assertEquals(cache1.invalidated, [], "called invalidate too early")
+        self.assertEquals(cache1.invalidated, [],
+                          "called invalidate too early")
         adapter.setCacheId('cache2')
         self.assertEquals(cache1.invalidated, [ob], "did not call invalidate")
         adapter.setCacheId('cache2')
-        self.assertEquals(cache2.invalidated, [],
-                          "called invalidate when reassigning to the same cache")
-                
+        self.assertEquals(
+            cache2.invalidated, [],
+            "called invalidate when reassigning to the same cache")
+
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TestAnnotationCacheable),
-        ))
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestAnnotationCacheable))
+    return suite
 
-if __name__=='__main__':
+
+if __name__ == '__main__':
     main(defaultTest='test_suite')

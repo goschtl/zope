@@ -12,8 +12,11 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testDT_Var.py,v 1.1 2002/06/25 15:37:17 srichter Exp $
+$Id: testDT_Var.py,v 1.2 2002/12/20 19:34:45 bwarsaw Exp $
 """
+
+# XXX Don't normalize whitespace in this file -- the tests depend on the
+# whitespace in the triple quoted strings.
 
 import unittest
 from Zope.DocumentTemplate import String
@@ -89,7 +92,7 @@ class TestDT_Var(DTMLTestBase):
 
 
     def testRender(self):
-       "Test automatic rendering of callable obnjects"
+       # Test automatic rendering of callable objects
        class C:
           x = 1
           def y(self): return self.x * 2
@@ -118,9 +121,8 @@ class TestDT_Var(DTMLTestBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest( unittest.makeSuite(TestDT_Var) )
+    suite.addTest(unittest.makeSuite(TestDT_Var))
     return suite
-
 
 
 if __name__ == '__main__':
