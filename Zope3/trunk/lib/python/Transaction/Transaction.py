@@ -4,6 +4,7 @@
 __metaclass__ = type
 
 from ITransaction import ITransaction
+from Exceptions import TransactionError
 
 class Set(dict):
 
@@ -13,8 +14,11 @@ class Set(dict):
 class Status:
 
     ACTIVE = "Active"
+    PREPARING = "Preparing"
     PREPARED = "Prepared"
+    FAILED = "Failed"
     COMMITTED = "Committed"
+    ABORTING = "Aborting"
     ABORTED = "Aborted"
 
 class Transaction:
@@ -58,6 +62,9 @@ class Transaction:
     def join(self, resource):
         """resource is participating in the transaction."""
         assert self._manager is not None
+        if self._status != Status.ACTIVE:
+            raise TransactionError("Can't join transaction. Status=%s" %
+                                   self._status)
         self._resources.add(resource)
 
     def status(self):

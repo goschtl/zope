@@ -22,12 +22,18 @@ class TransactionManager(object):
 
     def commit(self, txn):
         assert txn._status is Status.ACTIVE
+        txn._status = Status.PREPARING
         prepare_ok = True
         zLOG.LOG("txn", zLOG.DEBUG, "%s: prepare" % txn)
-        for r in txn._resources:
-            if prepare_ok and not r.prepare(txn):
-                prepare_ok = False
+        try:
+            for r in txn._resources:
+                if prepare_ok and not r.prepare(txn):
+                    prepare_ok = False
+        except:
+            txn._status = Status.FAILED
+            raise
         txn._status = Status.PREPARED
+        # XXX An error below is intolerable.  What state to use?
         if prepare_ok:
             self._commit(txn)
         else:
@@ -42,7 +48,8 @@ class TransactionManager(object):
 
     def abort(self, txn):
         zLOG.LOG("txn", zLOG.DEBUG, "%s: abort" % txn)
-        assert txn._status in (Status.ACTIVE, Status.PREPARED)
+        assert txn._status in (Status.ACTIVE, Status.PREPARED, Status.FAILED)
+        txn._status = Status.PREPARING
         for r in txn._resources:
             r.abort(txn)
         txn._status = Status.ABORTED
