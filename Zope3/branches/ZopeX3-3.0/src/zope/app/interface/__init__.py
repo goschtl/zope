@@ -17,8 +17,6 @@ This module contains code for interfaces in persistent modules.
 
 $Id$
 """
-from zope.proxy import removeAllProxies
-
 from zope.interface.declarations import providedBy
 
 def queryType(object, interface):
@@ -79,8 +77,6 @@ def queryType(object, interface):
     'I4'
 
     """
-    object = removeAllProxies(object)
-    
     object_iro = providedBy(object).__iro__
     for iface in object_iro:
         if interface.providedBy(iface):
