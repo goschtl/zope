@@ -13,7 +13,7 @@
 ##############################################################################
 """This module handles the 'i18n' namespace directives.
 
-$Id: metaconfigure.py,v 1.4 2004/03/08 23:36:26 srichter Exp $
+$Id: metaconfigure.py,v 1.5 2004/03/31 14:18:13 gintautasm Exp $
 """
 import os
 from zope.app.component.metaconfigure import utility
@@ -39,7 +39,7 @@ def registerTranslations(_context, directory):
                         domains[domain] = {}
                     domains[domain][language] = domain_path
 
-    # Now create TranslationDomain objects and add them as utitlities
+    # Now create TranslationDomain objects and add them as utilities
     for name, langs in domains.items():
         domain = TranslationDomain(name)
         for lang, file in langs.items():
