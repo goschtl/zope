@@ -13,15 +13,17 @@
 ##############################################################################
 """
 
-$Id: folder.py,v 1.3 2002/12/28 14:13:25 stevea Exp $
+$Id: folder.py,v 1.4 2003/03/30 15:37:28 sidnei Exp $
 """
 
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.service import IServiceManagerContainer
+from zope.interface import Interface
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 
-class IFolder(IContainer, IServiceManagerContainer):
+class IFolder(IContainer, IServiceManagerContainer, IAttributeAnnotatable):
     """The standard Zope Folder object interface."""
 
 class IRootFolder(IFolder, IContainmentRoot):
@@ -29,3 +31,12 @@ class IRootFolder(IFolder, IContainmentRoot):
 
 class IFolderAdding(IAdding):
     pass
+
+class ICloneWithoutChildren(Interface):
+
+    def cloneWithoutChildren(self):
+        """Returns a clone of this folder-like object, without any
+        subobjects. Can raise NotImplementedError if this is not
+        available."""
+
+
