@@ -48,6 +48,8 @@ script, but the supporting code is mostly removed.  Stripping of the
 functionality was started around version 1.123.)"""
 
 import sys, os, tempfile, time, pwd
+SCRIPT_DIR = os.path.abspath(os.path.split(sys.argv[0])[0])
+os.chdir(SCRIPT_DIR)                # Valid dir, having other local scripts.
 import string
 import getopt
 import smtplib
@@ -57,8 +59,6 @@ CVSROOT = os.environ.get('CVSROOT', '/cvs-repository')
 LDAP_PORT = 389
 LDAP_HOST = "10.0.11.6"
 OFFICIAL_SENDER = "cvs-admin@cvs.zope.org"
-
-os.chdir('/tmp')                        # So we have a valid working directory.
 
 CUSTOM_TRAFFIC_TABLE = "%s/custom_traffic_table.py" % CVSROOT
 
