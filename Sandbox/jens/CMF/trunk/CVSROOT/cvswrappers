@@ -6,4 +6,4 @@
 *.dll -k b
 *.pyd -k b
 
-* -f 'chmod g+w %s' 
+#* -f 'chmod g+w %s' 
