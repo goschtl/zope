@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.44 2003/12/17 21:27:32 sidnei Exp $
+$Id: editview.py,v 1.45 2004/01/05 08:03:44 philikon Exp $
 """
 from datetime import datetime
 
@@ -91,7 +91,7 @@ class EditView(BrowserView):
             try:
                 changed = applyWidgetsChanges(self, content, self.schema,
                     names=self.fieldNames, exclude_readonly=True)
-                # We should not generate events whan an adapter is used.
+                # We should not generate events when an adapter is used.
                 # That's the adapter's job.
                 if changed and self.context is self.adapted:
                     publish(content, ObjectModifiedEvent(content))
@@ -118,7 +118,6 @@ def EditViewFactory(name, schema, label, permission, layer,
                     fulledit_path=None, fulledit_label=None, menu=u'',
                     usage=u''):
     s = zapi.getService(None, zapi.servicenames.Presentation)
-    # XXX What about the __implements__ of the bases?
     class_ = SimpleViewClass(template, used_for=schema, bases=bases)
     class_.schema = schema
     class_.label = label
