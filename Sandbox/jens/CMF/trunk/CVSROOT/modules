@@ -91,6 +91,8 @@ ZopeHTTPServer Components/ZopeHTTPServer
 
 GreyThing -d lib/python Components/GreyThing
 
+Awry &lpDC
+
 Zope ZSrc &utilities &pcgi &ZopeHTTPServer \
   &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
