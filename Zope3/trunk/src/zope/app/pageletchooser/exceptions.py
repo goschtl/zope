@@ -13,7 +13,7 @@
 ##############################################################################
 """PageletChooser exceptions
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 

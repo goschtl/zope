@@ -13,7 +13,7 @@
 ##############################################################################
 """PageletChooser Demo tests
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """PageletChooser interfaces
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
