@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.13 2003/01/08 18:42:21 stevea Exp $
+$Id: interfacewidget.py,v 1.14 2003/01/08 18:56:12 stevea Exp $
 """
 
 import sys
@@ -106,8 +106,6 @@ class InterfaceWidget(Widget, BrowserView):
             data = self.getData(1)
         else:
             data = self._data
-        if data is None:
-            data = 'None'
         return ('<input type="hidden" name="%s" value="%s" />'
                         % (self.name, interfaceToName(data))
                         )

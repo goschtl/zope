@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.8 2003/01/08 18:42:24 stevea Exp $
+$Id: test_interfacewidget.py,v 1.9 2003/01/08 18:56:15 stevea Exp $
 """
 
 __metaclass__ = type
@@ -184,7 +184,6 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         self.assertEqual(widget(), out)
 
     def testInterfaceWidgetNone(self):
-    
         request = self.request
         field = InterfaceField(__name__='TestName',
                                title=u"This is a test",
@@ -277,12 +276,32 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
         widget = InterfaceWidget(field, request)
 
-        request.form["field.TestName"] = (
-        'bad interface name'
-        )
+        request.form["field.TestName"] = ('bad interface name')
         self.assertRaises(ConversionError, widget.getData)
 
+    def testHidden(self):
+        request = self.request
+        field = InterfaceField(__name__='TestName',
+                               title=u"This is a test",
+                               required=False)
 
+        widget = InterfaceWidget(field, request)
+        
+        out = (
+        '<input type="hidden" name="field.TestName" value="None" />'
+        )
+        self.assertEqual(widget.hidden(), out)
+        
+        request.form["field.TestName"] = (
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        )
+        self.assertEqual(widget.getData(), I2)
+        out = (
+        '<input type="hidden" name="field.TestName"'
+        ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
+        )
+        self.assertEqual(widget.hidden(), out)
+        
 class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
     def testMultiInterfaceWidget(self):
@@ -612,9 +631,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         widget = MultiInterfaceWidget(field, request)
 
-        request.form["field.TestName.i0"] = (
-        'bad interface name'
-        )
+        request.form["field.TestName.i0"] = ('bad interface name')
         self.assertRaises(ConversionError, widget.getData)
         
 
