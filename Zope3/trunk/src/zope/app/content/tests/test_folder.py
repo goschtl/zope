@@ -83,8 +83,10 @@ class FolderMetaDataTest(PlacefulSetup, TestCase):
 
         new_folder = folder.cloneWithoutChildren()
 
-        self.assertEquals(getAdapter(new_folder, IZopeDublinCore).title, u'foo')
-        self.assertEquals(getAdapter(new_folder, IZopeDublinCore).description, u'bar')
+        self.assertEquals(getAdapter(new_folder, IZopeDublinCore).title,
+                          u'foo')
+        self.assertEquals(getAdapter(new_folder, IZopeDublinCore).description,
+                          u'bar')
 
 def test_suite():
     return TestSuite((

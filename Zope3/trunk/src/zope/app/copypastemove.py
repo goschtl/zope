@@ -14,20 +14,21 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.6 2003/05/01 19:35:02 faassen Exp $
+$Id: copypastemove.py,v 1.7 2003/05/21 20:27:41 jim Exp $
 """
 
 from zope.app.traversing import getParent, objectName, getPath
 from zope.component import getAdapter, queryAdapter
 from zope.app.interfaces.copypastemove import IObjectMover
-from zope.app.interfaces.copypastemove import IObjectCopier, INoChildrenObjectCopier
+from zope.app.interfaces.copypastemove import IObjectCopier
+from zope.app.interfaces.copypastemove import INoChildrenObjectCopier
 from zope.app.interfaces.container import IAddNotifiable
 from zope.app.interfaces.container import IDeleteNotifiable
 from zope.app.interfaces.container import IMoveNotifiable
 from zope.app.interfaces.container import ICopyNotifiable
 from zope.app.interfaces.container import IMoveSource
-from zope.app.interfaces.container import ICopySource, INoChildrenCopySource, \
-     CopyException
+from zope.app.interfaces.container import ICopySource, INoChildrenCopySource
+from zope.app.interfaces.container import CopyException
 from zope.app.interfaces.container import IPasteTarget
 from zope.app.event.objectevent import ObjectMovedEvent, ObjectCopiedEvent
 from zope.app.event import publish
@@ -58,8 +59,8 @@ class ObjectMover:
         source_path = getPath(container)
 
         if queryAdapter(obj, IMoveNotifiable):
-            getAdapter(obj, IMoveNotifiable).beforeDeleteHook(obj, container, \
-                                    movingTo=target_path)
+            getAdapter(obj, IMoveNotifiable).beforeDeleteHook(
+                obj, container, movingTo=target_path)
         elif queryAdapter(obj, IDeleteNotifiable):
             getAdapter(obj, IDeleteNotifiable).beforeDeleteHook(obj, container)
 
@@ -70,13 +71,15 @@ class ObjectMover:
 
         # call afterAddHook
         if queryAdapter(new_obj, IMoveNotifiable):
-            getAdapter(new_obj, IMoveNotifiable).afterAddHook(new_obj, container, \
-                                movedFrom=source_path)
+            getAdapter(new_obj, IMoveNotifiable).afterAddHook(
+                new_obj, container, movedFrom=source_path)
         elif queryAdapter(new_obj, IAddNotifiable):
-            getAdapter(new_obj, IAddNotifiable).afterAddHook(new_obj, container)
+            getAdapter(new_obj, IAddNotifiable).afterAddHook(
+                new_obj, container)
 
         # publish ObjectMovedEvent
-        publish(container, ObjectMovedEvent(container, source_path, target_path))
+        publish(container, ObjectMovedEvent(
+            container, source_path, target_path))
 
         return new_name
 
@@ -132,13 +135,14 @@ class ObjectCopier:
 
         # call afterAddHook
         if queryAdapter(obj, ICopyNotifiable):
-            getAdapter(obj, ICopyNotifiable).afterAddHook(obj, container, \
-                                copiedFrom=source_path)
+            getAdapter(obj, ICopyNotifiable).afterAddHook(
+                obj, container, copiedFrom=source_path)
         elif queryAdapter(obj, IAddNotifiable):
             getAdapter(obj, IAddNotifiable).afterAddHook(obj, container)
 
         # publish ObjectCopiedEvent
-        publish(container, ObjectCopiedEvent(container, source_path, target_path))
+        publish(container,
+                ObjectCopiedEvent(container, source_path, target_path))
 
         return new_name
 
@@ -189,8 +193,9 @@ class NoChildrenObjectCopier(ObjectCopier):
         copysource = getAdapter(container, INoChildrenCopySource)
         obj = copysource.copyObjectWithoutChildren(orig_name, target_path)
         if obj is None:
-            raise CopyException(container, orig_name, \
-                                'Could not get a copy without children of %s' % orig_name) 
+            raise CopyException(container, orig_name,
+                                'Could not get a copy without children of %s'
+                                % orig_name) 
 
         pastetarget = getAdapter(target, IPasteTarget)
         # publish an ObjectCreatedEvent (perhaps...?)
@@ -198,18 +203,22 @@ class NoChildrenObjectCopier(ObjectCopier):
 
         # call afterAddHook
         if queryAdapter(obj, ICopyNotifiable):
-            getAdapter(obj, ICopyNotifiable).afterAddHook(obj, container, \
-                                copiedFrom=source_path)
+            getAdapter(obj, ICopyNotifiable).afterAddHook(
+                obj, container, copiedFrom=source_path)
         elif queryAdapter(obj, IAddNotifiable):
             getAdapter(obj, IAddNotifiable).afterAddHook(obj, container)
 
         # publish ObjectCopiedEvent
-        publish(container, ObjectCopiedEvent(container, source_path, target_path))
+        publish(container, ObjectCopiedEvent(
+            container, source_path, target_path))
 
         return new_name
 
 class PrincipalClipboard:
-    '''Clipboard information consists on tuples of {'action':action, 'target':target}.
+    '''Principal clipboard
+
+    Clipboard information consists on tuples of
+    {'action':action, 'target':target}.
     '''
 
     def __init__(self, annotation):

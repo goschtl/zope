@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.1 2003/05/08 17:27:17 jack-e Exp $
+$Id: instance.py,v 1.2 2003/05/21 20:27:41 jim Exp $
 """
 __metaclass__ = type
 
@@ -38,7 +38,8 @@ class ManagementView(BrowserView):
         id, processInstance = item
         info = {}
         info['id']  = id
-        info['name']=self._getTitle(self._getProcessDefinition(processInstance))
+        info['name'] = self._getTitle(
+            self._getProcessDefinition(processInstance))
         return info
 
     def listContentInfo(self):
@@ -85,13 +86,15 @@ class ManagementView(BrowserView):
             return
 
         trans = self.request.get('selTransition', None)
-        self.request.response.redirect('@@workflows.html?workflow=%s' % pi.processDefinitionName)
+        self.request.response.redirect('@@workflows.html?workflow=%s'
+                                       % pi.processDefinitionName)
         if pi and trans:
             pi.fireTransition(trans)
 
 
     def _getTitle(self, obj):
-        return getAdapter(obj, IZopeDublinCore).title or getWrapperData(obj)['name']
+        return (getAdapter(obj, IZopeDublinCore).title
+                or getWrapperData(obj)['name'])
 
  
     def _getSelWorkflow(self):

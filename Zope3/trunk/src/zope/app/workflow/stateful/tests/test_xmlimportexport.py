@@ -104,7 +104,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        provideAdapter(IAttributeAnnotatable, IAnnotations, AttributeAnnotations)
+        provideAdapter(IAttributeAnnotatable, IAnnotations,
+                       AttributeAnnotations)
         provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
 
     def testInterface(self):
@@ -117,11 +118,15 @@ class Test(PlacefulSetup, unittest.TestCase):
         
         self.assertEqual(handler.canImport(testpd, StringIO(xml_text)), True)
         self.assertEqual(handler.canImport(None, StringIO(xml_text)), False)
-        self.assertEqual(handler.canImport(None, StringIO('<some><nonworking/><xml/></some>')), False)
+        self.assertEqual(
+            handler.canImport(None, StringIO(
+            '<some><nonworking/><xml/></some>')),
+            False)
 
         handler.doImport(testpd, StringIO(xml_text))
 
-        self.assertEqual(testpd.getRelevantDataSchema(), 'Some.path.to.an.ISchemaClass')
+        self.assertEqual(testpd.getRelevantDataSchema(),
+                         'Some.path.to.an.ISchemaClass')
         self.assertEqual(getAdapter(testpd, IZopeDublinCore).title, 'TestPD')
         
         self.assertEqual(len(testpd.states), 3)
@@ -142,7 +147,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         tr = testpd.transitions['initial_state1']
         self.assert_(isinstance(tr, Transition))
-        self.assertEqual(getAdapter(tr, IZopeDublinCore).title, 'INITIALtoState1')
+        self.assertEqual(getAdapter(tr, IZopeDublinCore).title,
+                         'INITIALtoState1')
         self.assertEqual(tr.sourceState, 'INITIAL')
         self.assertEqual(tr.destinationState, 'state1')
         self.assertEqual(tr.condition, None)
@@ -152,7 +158,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         
         tr = testpd.transitions['state1_state2']
         self.assert_(isinstance(tr, Transition))
-        self.assertEqual(getAdapter(tr, IZopeDublinCore).title, 'State1toState2')
+        self.assertEqual(getAdapter(tr, IZopeDublinCore).title,
+                         'State1toState2')
         self.assertEqual(tr.sourceState, 'state1')
         self.assertEqual(tr.destinationState, 'state2')
         self.assertEqual(tr.condition, 'python: 1==1')
@@ -162,7 +169,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         
         tr = testpd.transitions['state2_initial']
         self.assert_(isinstance(tr, Transition))
-        self.assertEqual(getAdapter(tr, IZopeDublinCore).title, 'State2toINITIAL')
+        self.assertEqual(getAdapter(tr, IZopeDublinCore).title,
+                         'State2toINITIAL')
         self.assertEqual(tr.sourceState, 'state2')
         self.assertEqual(tr.destinationState, 'INITIAL')
         self.assertEqual(tr.condition, None)
