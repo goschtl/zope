@@ -34,6 +34,7 @@ from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.copypastemove.interfaces import IContainerItemRenamer
 from zope.app.container.interfaces import IContainer
 
+
 class FTPView(object):
     implements(IFTPPublisher)
 

@@ -2,11 +2,11 @@
 Principal Home Folder
 =====================
 
-The principal home folder subscriber let's you assign home folders to
+The principal home folder subscriber lets you assign home folders to
 principals as you would do in any OS. This particular implementation of such a
 feature is intended as a demo of the power of the way to handle principals
 and not as the holy grail. If you have concerns about the assumptions made in
-this implementation (which are probably legitamite), just ignore this package
+this implementation (which are probably legitimate), just ignore this package
 altogether.
 
 Managing the Home Folders
@@ -141,12 +141,12 @@ returned. Remember 'dreamcatcher', which has an assignment, but not a folder?
 Accessing the Home Folder
 -------------------------
 
-But how does the home folder gets assigned to a principal? There are two ways
+But how does the home folder get assigned to a principal? There are two ways
 of accessing the homefolder. The first is via a simple adapter that provides a
 `homeFolder` attribute. The second method provides the folder via a path
 adapter called `homefolder`.
 
-Let's start by creatig a principal:
+Let's start by creating a principal:
 
   >>> from zope.security.interfaces import IPrincipal
   >>> from zope.interface import implements
@@ -178,8 +178,8 @@ We also need to register our manager as a utility:
   ...                 "homefolder") is baseFolder['stephan']
   True
 
-As you can see the path adapter just returns the homefolder. This way we can
-guarantee that always the folder's full API is available. Of course the real
+As you can see, the path adapter just returns the homefolder. This way we can
+guarantee that the folder's full API is always available. Of course the real
 way it will be used is via a TALES expression:
 
   Setup of the Engine

@@ -154,7 +154,7 @@ class ObjectMover(object):
     ...     return True
     ...
     >>> class I2(zope.interface.Interface):
-    ...     __parent__ = zope.schema.Field(constraint = con1)
+    ...     __parent__ = zope.schema.Field(constraint=con1)
     ...
     >>> class constrainedObject(object):
     ...     zope.interface.implements(I2)
@@ -346,7 +346,7 @@ class ObjectCopier(object):
     ...     return True
     ...
     >>> class I2(zope.interface.Interface):
-    ...     __parent__ = zope.schema.Field(constraint = con1)
+    ...     __parent__ = zope.schema.Field(constraint=con1)
     ...
     >>> class constrainedObject(object):
     ...     zope.interface.implements(I2)
