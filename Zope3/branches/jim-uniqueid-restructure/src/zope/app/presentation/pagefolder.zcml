@@ -1,0 +1,47 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:event="http://namespaces.zope.org/event"
+    xmlns:fssync="http://namespaces.zope.org/fssync"
+    >
+
+<!-- Page Folder -->
+
+<content class=".pagefolder.PageFolder">
+  <factory
+    id="zope.app.presentation.pagefolder.PageFolder"
+    title="View Folder"
+    />
+  <require
+      permission="zope.View"
+      interface="zope.app.container.interfaces.IReadContainer" />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.container.interfaces.IWriteContainer
+                 .pagefolder.IPageFolderInfo"
+      set_schema=".pagefolder.IPageFolderInfo"
+      attributes="getRegistrationManager applyDefaults" 
+      />
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+</content>
+
+<adapter
+  for=".pagefolder.IPageFolder"
+  provides="zope.app.filerepresentation.interfaces.IFileFactory"
+  factory=".zpt.ZPTFactory"
+  permission="zope.ManageServices"
+  />
+
+<adapter 
+  for="zope.app.site.interfaces.ISiteManagementFolder"
+  provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
+  factory=".pagefolder.PageFolderFactory"
+  permission="zope.ManageContent"
+  />
+
+<fssync:adapter
+    class=".pagefolder.PageFolder"
+    factory=".pagefolder.PageFolderAdapter"
+    />
+
+</configure>
