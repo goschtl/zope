@@ -134,7 +134,7 @@
     name="EditFolder"
     schema=".interfaces.ICheckinFolderSchema"
     label="Change properties of a checkin message folder"
-    menu="zmi_views" title="Edit"
+    menu="zmi_views" title="Edit properties"
     permission="zope.ManageContent" />
 
 <!-- Browser views: email message -->
@@ -215,6 +215,10 @@
 
 <!-- Browser views: containers -->
 
+  <browser:containerViews
+      for=".interfaces.ICheckinFolder"
+      contents="zope.ManageContent" />
+
   <browser:page
     for=".interfaces.ICheckinFolder"
     name="checkins.rss"
@@ -227,7 +231,8 @@
     name="index.html"
     template="container.pt"
     class=".browser.ContainerView"
-    permission="zope.View" />
+    permission="zope.View"
+    menu="zmi_views" title="View" />
 
   <browser:page
     for=".interfaces.ICheckinFolder"

@@ -180,6 +180,7 @@ class CheckinMessageParser:
                     or line.startswith("Modified:")
                     or line.startswith("Removed:")
                     or line.startswith("Deleted:")
+                    or line.startswith("Copied:")
                     or line.startswith("Property changes on:")
                     or line == "Status:"):
                     break
