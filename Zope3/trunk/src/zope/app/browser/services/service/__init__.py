@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.2 2003/09/21 17:31:01 jim Exp $
+$Id: __init__.py,v 1.3 2003/09/24 20:43:10 fdrake Exp $
 """
 
 from zope.app import zapi
@@ -42,11 +42,11 @@ class ComponentAdding(Adding):
 
     def nextURL(self):
         v = zapi.queryView(
-            self.added_object, "addRegistration.html", self.request)
+            self.added_object, "registration.html", self.request)
         if v is not None:
             url = str(
                 zapi.getView(self.added_object, 'absolute_url', self.request))
-            return url + "/@@addRegistration.html"
+            return url + "/@@registration.html"
 
         return super(ComponentAdding, self).nextURL()
 

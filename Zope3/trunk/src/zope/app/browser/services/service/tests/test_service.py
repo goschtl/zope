@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for service adding and registration views.
 
-$Id: test_service.py,v 1.2 2003/09/21 17:31:03 jim Exp $
+$Id: test_service.py,v 1.3 2003/09/24 20:43:10 fdrake Exp $
 """
 
 import unittest
@@ -44,7 +44,7 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
                 return self.context.url
             __call__ = __str__
         provideView(IFoo, 'absolute_url', IBrowserPresentation, AU)
-        provideView(IFoo, 'addRegistration.html', IBrowserPresentation, AU)
+        provideView(IFoo, 'registration.html', IBrowserPresentation, AU)
 
         context = Foo('foo_url')
         request = TestRequest()
@@ -53,7 +53,7 @@ class TestComponentAdding(PlacelessSetup, unittest.TestCase):
         self.assertEquals(view.nextURL(), 'foo_url/@@contents.html')
 
         view.added_object = Foo('bar_url')
-        self.assertEquals(view.nextURL(), 'bar_url/@@addRegistration.html')
+        self.assertEquals(view.nextURL(), 'bar_url/@@registration.html')
 
 
 def test_suite():
