@@ -177,16 +177,6 @@
                        dngettext " />
   </module>
 
-  <!-- 7. Optional Operating System Services -->
-
-  <module module="zlib">
-    <allow attributes="error adler32 compress compressobj crc32 decompress
-                       decompressobj" />
-  </module>
-
-  <module module="bz2">
-    <allow attributes="compress decompress BZ2Compressor BZ2Decompressor" />
-  </module>
 
   <!-- 11. Internet Protocols and Support -->
 
