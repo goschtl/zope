@@ -72,24 +72,30 @@ class AbsoluteURL(BrowserView):
     __call__ = __str__
 
     def breadcrumbs(self):
-        context = self.context
+        context = self.context.aq_inner
+        container = context.aq_parent
         request = self.request
 
-        container = aq_parent(aq_inner(context))
-        if container is None or not ITraversable.providedBy(container):
-            return ({'name': context.getId(),
-                     'url': context.absolute_url()
-                     },)
+        name = context.getId()
+        
+        if container is None or self._isVirtualHostRoot() \
+            or not ITraversable.providedBy(container):
+            return (
+                {'name': name, 'url': context.absolute_url()},)
 
         view = getViewProviding(container, IAbsoluteURL, request)
         base = tuple(view.breadcrumbs())
-        name = context.getId()
-        base += ({'name': name,
-                  'url': ("%s/%s" % (base[-1]['url'], name))
-                  },)
+        base += (
+            {'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))},)
 
         return base
 
+    def _isVirtualHostRoot(self):
+        virtualrootpath = self.request.get('VirtualRootPhysicalPath', None)
+        if virtualrootpath is None:
+            return False
+        context = self.context.aq_inner
+        return context.restrictedTraverse(virtualrootpath) == context
 
 class SiteAbsoluteURL(AbsoluteURL):
     """An adapter for Zope3-style absolute_url using Zope2 methods

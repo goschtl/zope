@@ -211,6 +211,20 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             {'url': 'http://nohost/test_folder_1_/testoid', 'name': 'testoid'})
         self.assertEquals(expected, view.breadcrumbs())
 
+    def test_virtualhost_breadcrumbs(self):
+        # Get REQUEST in shape
+        request = self.request = self.app.REQUEST
+        request['PARENTS'] = [self.folder.test_folder_1_]
+        request.setServerURL(
+            protocol='http', hostname='foo.bar.com', port='80')
+        request.setVirtualRoot('')
+            
+        view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
+        expected = (
+            {'url': 'http://foo.bar.com', 'name': 'test_folder_1_'},
+            {'url': 'http://foo.bar.com/testoid', 'name': 'testoid'})
+        self.assertEquals(expected, view.breadcrumbs())
+        
     def test_containement_root_breadcrumbs(self):
         # Should stop breadcrumbs from crumbing
         directlyProvides(self.folder, IContainmentRoot)
