@@ -13,8 +13,11 @@
 ##############################################################################
 """More convenience functions for dealing with proxies.
 
-$Id: __init__.py,v 1.3 2003/04/16 19:32:43 bwarsaw Exp $
+$Id: __init__.py,v 1.4 2003/04/17 15:19:00 bwarsaw Exp $
 """
+
+from zope.proxy.introspection import removeAllProxies
+
 
 def proxy_compatible_isinstance(obj, cls):
     """Like built-in isinstance() in Python 2.3.
@@ -24,9 +27,9 @@ def proxy_compatible_isinstance(obj, cls):
     """
     if isinstance(obj, cls):
         return True
-    oclass = obj.__class__
-    if type(obj) == oclass:
-        # Nothing more we can do
+    oclass = removeAllProxies(obj.__class__)
+    if type(obj) is oclass:
+        # Nothing more will help
         return False
     # Note that cls may be a tuple, but issubclass can't deal with that so we
     # need to expand recursively.
@@ -37,7 +40,7 @@ def proxy_compatible_isinstance(obj, cls):
         if thisclass in classes:
             continue
         if isinstance(thisclass, tuple):
-            flatten.extend(list(thisclass))
+            flatten.extend(thisclass)
         else:
             classes[thisclass] = True
     for bclass in classes.keys():
