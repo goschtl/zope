@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector
 
-$Id: introspector.py,v 1.18 2003/11/03 21:38:03 jeremy Exp $
+$Id: introspector.py,v 1.19 2003/11/21 17:10:44 jim Exp $
 """
 from zope.interface import Interface
 
@@ -122,7 +122,7 @@ class Introspector:
                 else:
                     attributes.append((desc.getName(), desc.getDoc()))
 
-            for base in interface.getBases():
+            for base in interface.__bases__:
                 bases.append(base.__module__+'.'+base.__name__)
             desc = str(interface.getDoc())
         return [Iname, bases, desc, methods, attributes]
@@ -181,7 +181,7 @@ class Introspector:
         results = []
         iservice = getService(self.context, Interfaces)
         for id, interface in iservice.items(base=base):
-            if base in interface.getBases() and not interface.names():
+            if base in interface.__bases__ and not interface.names():
                 results.append(interface)
         results.sort()
         return tuple(results)
