@@ -190,21 +190,47 @@ class CommandLineTestCase(unittest.TestCase):
 
     def test_control_build_type(self):
         options = self.parse_args([])
-        self.assert_(options.build_type is None)
+        self.failIf(options.application)
+        self.failIf(options.collect)
         # collection
         # short arg:
         options = self.parse_args(["-c"])
-        self.assert_(options.build_type is "collection")
+        self.failIf(options.application)
+        self.failUnless(options.collect)
         # long arg:
         options = self.parse_args(["--collection"])
-        self.assert_(options.build_type is "collection")
+        self.failIf(options.application)
+        self.failUnless(options.collect)
         # application
         # short arg:
         options = self.parse_args(["-a"])
-        self.assert_(options.build_type is "application")
+        self.failUnless(options.application)
+        self.failIf(options.collect)
         # long arg:
         options = self.parse_args(["--application"])
-        self.assert_(options.build_type is "application")
+        self.failUnless(options.application)
+        self.failIf(options.collect)
+        # both
+        # short args:
+        options = self.parse_args(["-ac"])
+        self.failUnless(options.application)
+        self.failUnless(options.collect)
+        options = self.parse_args(["-ca"])
+        self.failUnless(options.application)
+        self.failUnless(options.collect)
+        options = self.parse_args(["-a", "-c"])
+        self.failUnless(options.application)
+        self.failUnless(options.collect)
+        options = self.parse_args(["-c", "-a"])
+        self.failUnless(options.application)
+        self.failUnless(options.collect)
+        # long args:
+        options = self.parse_args(["--application", "--collection"])
+        self.failUnless(options.application)
+        self.failUnless(options.collect)
+        options = self.parse_args(["--collection", "--application"])
+        self.failUnless(options.application)
+        self.failUnless(options.collect)
 
 
 class ComponentTestCase(unittest.TestCase):

@@ -7,9 +7,6 @@ Things that need to be done
 
 - Package assembler script to build sumo/combined distro (mostly done)
 
-  - Separate the -a/-c options so they can be used independently; -a
-    should not imply -c.
-
   - We should have some way to wildcard an entire hierarchy of packages
     in resource maps.  Something like::
 

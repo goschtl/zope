@@ -101,7 +101,7 @@ class BuilderApplication(Application):
         dep_sources = {} 
         top = self.get_component(self.resource, self.resource_url)
         top.write_package(self.destination)
-        if self.options.build_type in ("application", "collection"):
+        if self.options.collect:
             depsdir = os.path.join(self.destination, "Dependencies")
             first = True
             handled = sets.Set()
@@ -135,7 +135,7 @@ class BuilderApplication(Application):
                 component.write_setup_cfg()
                 component.write_manifest()
                 self.add_headers(component)
-        if self.options.build_type == "application":
+        if self.options.application:
             top.write_setup_py(filename="install.py",
                                version=self.options.version)
             self.write_application_support(top)
@@ -517,13 +517,13 @@ def parse_args(argv):
 
     # options specific to building a package:
     parser.add_option(
-        "-a", "--application", dest="build_type",
-        action="store_const", const="application",
+        "-a", "--application", dest="application",
+        action="store_true",
         help="build an application distribution")
     parser.add_option(
-        "-c", "--collection", dest="build_type",
-        action="store_const", const="collection",
-        help="build a collection distribution")
+        "-c", "--collection", dest="collect",
+        action="store_true",
+        help="collect dependencies into the distribution")
     parser.add_option(
         "-n", "--name", dest="release_name",
         help="base name of the distribution file", metavar="NAME")
