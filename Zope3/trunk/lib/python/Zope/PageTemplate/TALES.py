@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """TALES
 
@@ -17,7 +17,7 @@ An implementation of a generic TALES engine
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-__version__ = '$Revision: 1.5 $'[11:-2]
+__version__ = '$Revision: 1.6 $'[11:-2]
 
 import re
 import sys
@@ -142,7 +142,7 @@ class ExpressionEngine:
             raise CompilerError, (
                 'Unrecognized expression type "%s".' % type)
         return handler(type, expr, self)
-    
+
     def getContext(self, contexts=None, **kwcontexts):
         if contexts is not None:
             if kwcontexts:
@@ -272,10 +272,12 @@ class TALESTracebackSupplement:
         self.line = context.position[0]
         self.column = context.position[1]
         self.expression = repr(expression)
-        
+
     def getInfo(self, as_html=0):
         import pprint
         data = self.context.contexts.copy()
+        if 'modules' in data:
+            del data['modules']     # the list is really long and boring
         s = pprint.pformat(data)
         if not as_html:
             return '   - Names:\n      %s' % s.replace('\n', '\n      ')
@@ -295,4 +297,3 @@ class SimpleExpr:
         return self._name, self._expr
     def __repr__(self):
         return '<SimpleExpr %s %s>' % (self._name, `self._expr`)
-
