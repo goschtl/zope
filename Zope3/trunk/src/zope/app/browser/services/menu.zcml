@@ -41,7 +41,8 @@
       content_factory="zope.app.services.utility.UtilityRegistration"
       arguments="name interface componentPath"
       set_after_add="status"
-      fields="name interface componentPath permission status" />
+      fields="name interface componentPath permission status" 
+      usage="addingdialog" />
 
 
   <addform
@@ -50,7 +51,8 @@
       label="Add Browser Menu"
       content_factory="zope.app.services.menu.LocalBrowserMenu"
       fields="title description inherit"
-      permission="zope.ManageContent" />
+      permission="zope.ManageContent"
+      usage="addingdialog" />
 
   <page
        name="contents.html"

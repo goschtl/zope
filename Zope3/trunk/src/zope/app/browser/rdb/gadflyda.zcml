@@ -9,7 +9,8 @@
       content_factory="zope.app.rdb.gadflyda.GadflyAdapter"
       arguments="dsn"
       fields="dsn"
-      permission="zope.ManageContent" />
+      permission="zope.ManageContent"
+      usage="addingdialog" />
 
   <!-- Menu entry for "add utility" menu -->
   <menuItem
