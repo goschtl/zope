@@ -119,12 +119,17 @@ class TrustedAdapterFactory(object):
          >>> getProxiedObject(TL(p)).__parent__ is o
          True
 
-       """
+       The factory adapter has the __name__ and __module__ of the factory it adapts:
 
-    __slots__ = ('factory', )
+         >>> (TA.__module__, TA.__name__) == (A.__module__, A.__name__)
+         True
+
+       """
 
     def __init__(self, factory):
         self.factory = factory
+        self.__name__ = factory.__name__
+        self.__module__ = factory.__module__
 
     def __call__(self, *args):
         for arg in args:
