@@ -4530,5 +4530,5 @@ msgstr "1 строка"
 
 #: src/zope/app/zptpage/zptpage.py:131
 msgid "${lines} lines"
-msgstr "${lines} строк"
+msgstr "${lines} строк(и)"
 
