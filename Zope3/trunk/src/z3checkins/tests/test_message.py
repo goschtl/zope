@@ -254,6 +254,29 @@ lineum furum testum logum messageum.""")
                                              tzinfo=FixedTimezone(3*60)))
         self.assertEquals(msg.body, svn_msg3_text.split("\n\n", 1)[1])
 
+    def test_parser_svnmsg_zope(self):
+        from z3checkins.message import CheckinMessageParser
+        from z3checkins.message import FixedTimezone
+        # XXX The Zope 3 checkin mailing list uses a non-standard format.
+        # This test checks the compatibility hacks planted in the code.
+        # I hope that they will be removed in the future.
+        svn_msg4 = open_test_data("svn_msg4.txt")
+        svn_msg4_text = svn_msg4.read()
+        svn_msg4.seek(0)
+        parser = CheckinMessageParser()
+        msg = parser.parse(svn_msg4)
+        self.assert_(IMessage.providedBy(msg))
+        self.assertEquals(msg.message_id,
+                          "200405220157.i4M1v7YW001064@cvs.zope.org")
+        self.assertEquals(msg.author_name, "Albertas Agejevas")
+        self.assertEquals(msg.author_email, "alga@pov.lt")
+        self.assertEquals(msg.date, datetime(2004, 5, 21, 21, 57, 07,
+                                             tzinfo=FixedTimezone(-4*60)))
+        self.assertEquals(msg.directory, "zope/app/traversing/interfaces.py")
+        self.assertEquals(msg.branch, None)
+        self.assertEquals(msg.log_message, """Changed a comment.""")
+        self.assertEquals(msg.body, svn_msg4_text.split("\n\n", 1)[1])
+
 
 class MessageStub:
 

@@ -235,12 +235,22 @@ class CheckinMessageParser:
             return None
 
         if "CVS:" in subject:
+            # [foo-bar] CVS: foobaz/bar - baz.py:1.5
             parts = subject.split("CVS: ", 1)
             if len(parts) < 2:
                 return None
             subject = parts[1]
             directory = subject.split(' - ')[0]
+        elif "SVN:" in subject:
+            # XXX Format specific to the Zope3 mailing list
+            # [foo-bar] SVN: foobaz/boo/bar.py log message
+            parts = subject.split("SVN: ", 1)
+            if len(parts) < 2:
+                return None
+            subject = parts[1]
+            directory = subject.split(" ", 1)[0]
         elif "rev " in subject:
+            # [foo-bar] rev 42 - trunk/foofoofoo
             parts = subject.split(' - ')
             if len(parts) < 2:
                 return None
@@ -263,6 +273,7 @@ class CheckinMessageParser:
         for line in lines:
             if in_log_msg:
                 if (line.startswith('=== ')
+                    or line.startswith('-=-') # XXX Zope3 ML specific
                     or line.startswith("Added:")
                     or line.startswith("Modified:")
                     or line.startswith("Removed:")
@@ -274,7 +285,7 @@ class CheckinMessageParser:
                 else:
                     log_message.append(line)
             else:
-                if (line.lower().startswith('log message:') or
+                if (line.lower().startswith('log message') or
                     line.startswith("Log:")):
                     in_log_msg = True
                 elif line.startswith('      Tag: '):
@@ -618,6 +629,12 @@ class CheckinMessageView(MessageView):
             log_idx = text.find('\nLog:\n')
             if log_idx != -1:
                 log_idx += len('\nLog:\n')
+            else:
+                log_idx = text.find('Log message') # XXX Zope3 checkin-specific
+                if log_idx != -1:
+                    log_idx = text.find('\n', log_idx) + 1
+                    # XXX This is yucky...
+                    text = text.replace('\n-=-\n', '')
         if log_idx == -1:
             return '<pre>%s</pre>' % text
 
