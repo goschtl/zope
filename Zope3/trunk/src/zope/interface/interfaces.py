@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.12 2003/04/03 22:05:35 fdrake Exp $
+$Id: interfaces.py,v 1.13 2003/05/03 16:36:36 jim Exp $
 """
 
 from zope.interface import Interface
@@ -125,50 +125,29 @@ class IInterface(IElement):
       There are several ways that you can assert that an object
       implements an interface::
 
-      1. Include an '__implements__' attribute in the object's class
-         definition. The value of the '__implements__' attribute must
-         be an implementation specification. An implementation
-         specification is either an interface or a tuple of
-         implementation specifications.
+      1. Call zope.interface.implements in your class definition.
 
-      2. Incluse an '__implements__' attribute in the object.
-         Because Python classes don't have their own attributes, to
-         assert that a class implements interfaces, you must provide a
-         '__class_implements__' attribute in the class definition.
+      2. Call zope.interfaces.directlyProvides on your object.
 
-         **Important**: A class usually doesn't implement the
-           interfaces that its instances implement. The class and
-           its instances are separate objects with their own
-           interfaces.
-
-      3. Call 'Interface.Implements.implements' to assert that instances
+      3. Call 'zope.interface.classImplements' to assert that instances
          of a class implement an interface.
 
          For example::
 
-           from zope.interface.implements import implements
+           from zope.interface import classImplements
 
-           implements(some_class, some_interface)
+           classImplements(some_class, some_interface)
 
          This is approach is useful when it is not an option to modify
          the class source.  Note that this doesn't affect what the
          class itself implements, but only what its instances
          implement.
 
-      4. For types that can't be modified, you can assert that
-         instances of the type implement an interface using
-         'Interface.Implements.assertTypeImplements'.
-
-         For example::
-
-           from zope.interface.implements import assertTypeImplements
-
-           assertTypeImplements(some_type, some_interface)
-
     o You query interface meta-data. See the IInterface methods and
       attributes for details.
 
     """
+
 
     def getBases():
         """Return a sequence of the base interfaces."""
@@ -239,7 +218,12 @@ class IInterface(IElement):
         returned.
         """
 
-    get = queryDescriptionFor
+    def get(name, default=None):
+        """Look up the description for a name
+
+        If the named attribute is not defined, the default is
+        returned.
+        """
 
     def __contains__(name):
         """Test whether the name is defined by the interface"""
@@ -250,6 +234,28 @@ class IInterface(IElement):
         The names iterated include all of the names defined by the
         interface directly and indirectly by base interfaces.
         """
+
+    __module__ = Attribute("""The name of the module defining the interface""")
+
+    __bases__ = Attribute("""A tuple of base interfaces""")
+    __iro__ = Attribute(
+        """A tuple of all interfaces extended by the interface
+
+        The first item in the tuple is the interface itself.  The
+        interfaces are listed in order from most specific to most
+        general, preserving the original order of base interfaces
+        where possible.
+
+        """)
+
+    __identifier__ = Attribute("""A unique identifier for the interface
+
+    This identifier should be different for different interfaces.
+
+    The identifier is not allowed to contain tab characters.
+    """)
+                               
+    
 
 
 class ITypeRegistry(Interface):
@@ -444,88 +450,6 @@ class IImplementorRegistry(Interface):
 
         """
 
-
-class IImplements(Interface):
-    """Functions for reasoning about implementation assertions
-    """
-
-    def getImplements(object):
-        """Return an interface specification for an object
-
-        Returns the interfaces that an object asserts that it implements.
-        """
-
-    def getImplementsOfInstances(class_):
-        """Return the interface specification ofr instances of a class
-
-        Returns the interfaces that a class asserts that it's
-        instances implement.
-
-        """
-
-    def visitImplements(implements, object, visitor, getInterface=None):
-        """Call visitor for each interace in an interface specification
-
-        The interface specification is given as the first argument. It
-        should be gotten by calling getImplements on an object, but
-        often object.__implements__ is passed.
-
-        The second argument is the object that implements the
-        interface. It is used for special experimental interface
-        features. (IOW, it is a burnt offering).
-
-        The third argument is a callable that will be called for each
-        interface in the specification.
-
-        The getImplements argument is a hook that will be called if a
-        certian experimental (and soon to be removed) feature is used
-        in the interface specification.
-
-        This method will soon be depricated.
-
-        """
-
-    def assertTypeImplements(type, interface):
-        """Assert that instances of a type implement an interface.
-        """
-
-    def objectImplements(object, getInterface=None):
-        """Get a sequence of the interfaces the object implements
-
-        The getImplements argument is a hook that will be called if a
-        certian experimental (and soon to be removed) feature is used
-        in the interface specification.
-
-        """
-
-    def instancesOfObjectImplements(class_, getInterface=None):
-        """Get a sequence of the interfaces instances of the class implements
-
-        The getImplements argument is a hook that will be called if a
-        certian experimental (and soon to be removed) feature is used
-        in the interface specification.
-
-        """
-
-    def flattenInterfaces(interfaces, remove_duplicates=True):
-        """Get a sequence of the interfaces in an interface specification
-
-        The result includes all base interfaces of the interfaces in
-        the specification.
-
-        If remove_duplicates is true, then duplicate interfaces are
-        removed.  The interfaces are included in order from most
-        specifgic to most general.
-        """
-
-    def implements(class_, interface, check=True):
-        """Assert that instanced of a class implement the given interface
-
-        If the check argument is true, the class will be checked to
-        see if it obviously fails the assertion.
-        """
-
-
 class IInterfaceSpecification(Interface):
 
     def __contains__(interface):
@@ -551,6 +475,14 @@ class IInterfaceSpecification(Interface):
         were defined in the specification.
         """
 
+    def extends(interface):
+        """Test whether an interface specification extends an interface
+
+        An interface specification extends an interface if it contains
+        an interface that extends an interface.
+        
+        """
+
     def __sub__(interfaces):
         """Create an interface specification with some interfaces excluded
 
@@ -560,6 +492,9 @@ class IInterfaceSpecification(Interface):
 
         Removing an interface that is not in the specification does
         not raise an error. Doing so has no effect.
+
+        Removing an interface also removes subinterfaces of the interface.
+
         """
 
     def __add__(interfaces):
@@ -573,8 +508,22 @@ class IInterfaceSpecification(Interface):
         not raise an error. Doing so has no effect.
         """
 
+    __signature__ = Attribute("""A specification signature
 
-class IImplements(Interface):
+    The signature should change if any of the interfaces in the
+    specification change.
+
+    """)
+
+    only = Attribute("""\
+    A flag (boolean) indicating whether a specification extends others
+
+    If only is true, then a class implementing the specification
+    doesn't implement base-class specifications.
+    
+    """)
+
+class IInterfaceDeclaration(Interface):
     """Declare and check the interfaces of objects
 
     The functions defined in this interface are used to declare the
@@ -654,29 +603,6 @@ class IImplements(Interface):
 
         Instances of ``C`` provide only ``I1``, ``I2``, and regardless of
         whatever interfaces instances of ``A`` and ``B`` implement.
-        """
-
-    def classUnimplements(class_, *interfaces):
-        """Declare the interfaces not implemented for instances of a class
-
-        The arguments after the class are one or more interfaces or
-        interface specifications (IInterfaceSpecification objects).
-
-        The interfaces given (including the interfaces in the
-        specifications) cancel previous declarations for the same
-        interfaces, including declarations made in base classes.
-
-        Consider the following example::
-
-          class C(A, B):
-             ...
-
-          classImplements(C, I1)
-          classUnimplements(C, I1, I2)
-
-
-        Instances of ``C`` don't provide ``I1`` and ``I2`` even if
-        instances of ``A`` or ``B`` do.
         """
 
     def directlyProvidedBy(object):
@@ -792,42 +718,6 @@ class IImplements(Interface):
         instances of ``A`` and ``B`` implement.
         """
 
-    def unimplements(*interfaces):
-        """Declare interfaces not implemented by instances of a class
-
-        This function is called in a class definition.
-
-        The arguments are one or more interfaces or interface
-        specifications (IInterfaceSpecification objects).
-
-        The interfaces given (including the interfaces in the
-        specifications) are removed from any interfaces previously
-        declared.
-
-        Previous declarations include declarations for base classes
-        unless implementsOnly was used.
-
-        This function is provided for convenience. It provides a more
-        convenient way to call classUnimplements. For example::
-
-          unimplements(I1)
-
-        is equivalent to calling::
-
-          classUnimplements(I1)
-
-        after the class has been created.
-
-        Consider the following example::
-
-          class C(A, B):
-            unimplements(I1, I2)
-
-
-        Instances of ``C`` don't implement ``I1``, ``I2``, even if
-        instances of ``A`` and ``B`` do.
-        """
-
     def classProvides(*interfaces):
         """Declare interfaces provided directly by a class
 
@@ -891,4 +781,71 @@ class IImplements(Interface):
 
         A new interface specification (IInterfaceSpecification) with
         the given interfaces is returned.
+        """
+
+class IInterfaceDeclarationYAGNI(Interface):
+    """YAGNI interface declaration API
+
+    The functions in this interface are functions that might be
+    provided later, but that introduce difficulties that we choose to
+    avoid now.
+    """
+
+    def unimplements(*interfaces):
+        """Declare interfaces not implemented by instances of a class
+
+        This function is called in a class definition.
+
+        The arguments are one or more interfaces or interface
+        specifications (IInterfaceSpecification objects).
+
+        The interfaces given (including the interfaces in the
+        specifications) are removed from any interfaces previously
+        declared.
+
+        Previous declarations include declarations for base classes
+        unless implementsOnly was used.
+
+        This function is provided for convenience. It provides a more
+        convenient way to call classUnimplements. For example::
+
+          unimplements(I1)
+
+        is equivalent to calling::
+
+          classUnimplements(I1)
+
+        after the class has been created.
+
+        Consider the following example::
+
+          class C(A, B):
+            unimplements(I1, I2)
+
+
+        Instances of ``C`` don't implement ``I1``, ``I2``, even if
+        instances of ``A`` and ``B`` do.
+        """
+
+    def classUnimplements(class_, *interfaces):
+        """Declare the interfaces not implemented for instances of a class
+
+        The arguments after the class are one or more interfaces or
+        interface specifications (IInterfaceSpecification objects).
+
+        The interfaces given (including the interfaces in the
+        specifications) cancel previous declarations for the same
+        interfaces, including declarations made in base classes.
+
+        Consider the following example::
+
+          class C(A, B):
+             ...
+
+          classImplements(C, I1)
+          classUnimplements(C, I1, I2)
+
+
+        Instances of ``C`` don't provide ``I1`` and ``I2`` even if
+        instances of ``A`` or ``B`` do.
         """
