@@ -1,0 +1,69 @@
+<html metal:use-macro="views/standard_macros/view">
+<body>
+<div metal:fill-slot="body">
+  <div metal:define-macro="contents"
+			 tal:define="hostinfo view/getHostInfo;
+			 						 syncreport view/loadPrincipalFromLDAP">
+
+		<form name="ldapSyncForm" method="POST" action="."
+          tal:attributes="action request/URL">
+
+			<table id="sortable" class="listing" summary="LDAP sync listing"
+						 i18n:attributes="summary">
+				<thead>
+					<tr>
+						<th i18n:translate="">Desription</th>
+						<th i18n:translate="">Data</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td i18n:translate="">Hostname</td>
+						<td><span tal:content="python:hostinfo['host']">host</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Port</td>
+						<td><span tal:content="python:hostinfo['port']">port</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Login attribute name</td>
+						<td><span tal:content="python:hostinfo['login_attribute']">login_attribute</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Base DN</td>
+						<td><span tal:content="python:hostinfo['basedn']">basedn</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Manager DN</td>
+						<td><span tal:content="python:hostinfo['manager_dn']">manager_dn</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Show the synchronized principals</td>
+						<td><input type="checkbox" value="" name="trace"></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<input type="hidden" value="Run" name="runsync">
+			<input type="submit" value="sync" name="submit">
+	
+			<table id="sortable" class="listing" summary="LDAP Sync Report listing"
+						 i18n:attributes="summary"
+						 tal:condition="syncreport">
+				<thead>
+					<tr>
+						<th i18n:translate="">Traceback</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr tal:repeat="line syncreport" >
+						<td><span tal:content="structure line">principal info</span>&nbsp;</td>
+					</tr>
+				</tbody>
+			</table>
+
+		</form>
+  </div>
+</div>
+</body>
+</html>

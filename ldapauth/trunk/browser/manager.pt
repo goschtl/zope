@@ -14,7 +14,7 @@
       </thead>
       <tbody>
         <metal:block tal:repeat="info python:view.getUserInfos()">
-					<tr tal:define="oddrow repeat/info/odd; url info/url"
+					<tr tal:define="oddrow repeat/info/odd; url info/login"
               tal:attributes="class python:oddrow and 'even' or 'odd'" >
 						<td><a href="#"
 									 tal:attributes="href

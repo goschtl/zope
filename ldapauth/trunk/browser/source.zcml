@@ -19,7 +19,7 @@
          instead of the inherited Contents view from the ocntainer. -->
     <page
         for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
-        name="contents.html"
+        name="source.html"
         attribute="contents"
         class=".source.PrincipalSource"
         menu="zmi_views" title="Contents"
@@ -32,6 +32,15 @@
         attribute="manager"
         class=".source.PrincipalSourceManager"
         menu="zmi_views" title="Manager"
+        permission="zope.ManageContent"/>
+
+    <!-- Sync data form LDAP server. -->
+    <page
+        for="ldapauth.interfaces.ILDAPBasedPrincipalSource"
+        name="sync.html"
+        attribute="sync"
+        class=".sync.SyncLDAPView"
+        menu="zmi_views" title="Sync"
         permission="zope.ManageContent"/>
 
     <editform 
