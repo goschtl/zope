@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.3 2003/01/23 09:46:28 ryzaja Exp $
+$Id: sql.py,v 1.4 2003/01/24 14:54:09 ryzaja Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.content.sql import ISQLScript
@@ -24,6 +24,14 @@ class SQLScriptTest(BrowserView):
 
     # XXX: if the following line is uncommented, @@test.html stops working
     # __implements__ = BrowserView.__implements__
+    #
+    # Just found the reason: if you specify __implements__ here, it overrides
+    # the one defined in zope.app.pagetemplate.simpeviewclass.simple,
+    # and IBrowserPublisher disappears from the interface list.  Instead,
+    # __implements__ of the newly created class (see SimpleViewClass in the
+    # same module) ought to be a union of __implements__ of all the base
+    # classes.  Or perhaps it should be done by zope.app.browser.form.editview?
+    
     __used_for__ = ISQLScript
 
     error = None
