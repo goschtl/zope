@@ -13,16 +13,20 @@
 ##############################################################################
 """
 
-$Id: query.py,v 1.3 2002/12/30 18:43:08 stevea Exp $
+$Id: query.py,v 1.4 2003/01/05 19:01:49 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
 from zope.app.security.permission import PermissionField
-from zope.app.interfaces.services.configuration \
-    import INamedConfigurationInfo, INamedConfiguration
+from zope.app.interfaces.services.configuration import INamedConfigurationInfo
+from zope.app.interfaces.services.configuration import INamedConfiguration
 from zope.app.component.interfacefield import InterfacesField
 
-class IQueryProcessor(Interface):
+class IQueryProcessable(Interface):
+    """Marker interface that says that the implementing component is adaptable
+    to IQueryProcessor, although maybe only via a named adapter."""
+
+class IQueryProcessor(IQueryProcessable):
 
     inputInterfaces = Attribute("Sequence of input interfaces")
     outputInterfaces = Attribute("Sequence of output interfaces")
@@ -55,6 +59,5 @@ class IQueryConfigurationInfo(INamedConfigurationInfo):
     outputInterfaces = InterfacesField(title=u'Output interfaces')
 
 class IQueryConfiguration(IQueryConfigurationInfo, INamedConfiguration):
-
     pass
 
