@@ -46,32 +46,35 @@
 
     <ul>
       <tal:block tal:repeat="cnf view/listConfigurations">
-        <li tal:condition="python: cnf['service'] == svc['service']">
-          <a tal:content="cnf/path" tal:attributes="href cnf/path">path</a>
-          (current status: <span tal:replace="cnf/status">Active</span>)
+        <li tal:condition="python: cnf['service'] == svc['service']"
+            tal:define="activate python:cnf['advice'] == 'Active'">
+          <a tal:attributes="href cnf/path">
+            <i tal:content="cnf/usage">Usage summary</i>
+            implemented by
+            <i tal:content="cnf/implementation">Implementation summary</i>
+          </a>
+          <span tal:condition="cnf/conflict">
+            <br>
+            <font color="red" tal:condition="not:activate">Conflicts
+                                                           with</font>
+            <font color="green" tal:condition="activate">Overrides</font>
+            <a tal:content="cnf/conflict"
+               tal:attributes="href cnf/conflict">path</a>
+          </span>
           <br>
-          <i tal:content="cnf/usage">Usage summary</i>
-          implemented by
-          <i tal:content="cnf/implementation">Implementation summary</i>
-          <br>
-          <span tal:condition="not:cnf/conflict">
-            Action:
-            <b><input type="radio" tal:attributes="name cnf/path"
-                   value="Registered" />Register only</b>
+          <span tal:condition="python: cnf['advice'] == 'Active'">
+            <input type="radio" tal:attributes="name cnf/path"
+                   value="Registered" />Register only
             <b><input type="radio" tal:attributes="name cnf/path"
                    value="Active" checked />Register and activate</b>
-	  </span>
-          <span tal:condition="cnf/conflict">
-            <font color="red">
-              Conflicts with <a tal:content="cnf/conflict"
-                                 tal:attributes="href cnf/conflict">path</a>
-            </font>
-            <br>Action:
+          </span>
+          <span tal:condition="python: cnf['advice'] == 'Registered'">
             <b><input type="radio" tal:attributes="name cnf/path"
                    value="Registered" checked />Register only</b>
-            <b><input type="radio" tal:attributes="name cnf/path"
-                   value="Active" />Register and activate</b>
+            <input type="radio" tal:attributes="name cnf/path"
+                   value="Active" />Register and activate
           </span>
+          (is: <span tal:replace="cnf/status">Active</span>)
         </li>
       </tal:block>
     </ul>

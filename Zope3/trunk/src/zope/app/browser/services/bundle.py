@@ -28,9 +28,10 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all configurations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.6 2003/06/17 02:04:47 gvanrossum Exp $
+$Id: bundle.py,v 1.7 2003/06/19 21:33:01 gvanrossum Exp $
 """
 
+import re
 from transaction import get_transaction
 from zope.app import zapi
 from zope.app.interfaces.container import IReadContainer
@@ -48,7 +49,18 @@ class BundleView(BrowserView):
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
-        self.sitepath = zapi.getPath(zapi.getParent(self.context))
+        self.mypath = zapi.getPath(self.context)
+        self.myversion = self.parseVersion(self.mypath)
+        # Compute sitepath as the parent of mypath
+        sitepath = zapi.getPath(self.context)
+        i = sitepath.rfind("/")
+        if i > 0:
+            sitepath = sitepath[:i]
+        elif i == 0:
+            sitepath = "/"
+        else:
+            sitepath = ""
+        self.sitepath = sitepath
         self.configurations = self.findConfigurations(self.context, "")
         self.configurations.sort(self.compareConfigurations)
         self.services = self.findServices()
@@ -151,23 +163,86 @@ class BundleView(BrowserView):
 
     def getAdvice(self, obj):
         name = self.getServiceName(obj)
+        advice = Active
         conflict = ""
         sm = zapi.getServiceManager(obj)
         service = sm.queryLocalService(name)
-        if not service:
-            advice = Active
-        else:
+        if service:
             registry = service.queryConfigurationsFor(obj)
-            if not registry:
-                advice = Active
-            else:
+            if registry:
                 active = registry.active()
-                if not active or active == obj:
-                    advice = Active
-                else:
-                    advice = Registered
+                if active and active != obj:
                     conflict = zapi.getPath(active)
+                    if not self.inOlderVersion(active):
+                        advice = Registered
         return name, advice, conflict
+
+    def inOlderVersion(self, obj):
+        # Return whether obj (an active component) belongs to an older
+        # version of the same bundle we're proposing to activate here.
+        # XXX This assumes sites are named with ++etc++site; there is
+        # no support for the older ++etc++Services.
+        path = zapi.getPath(obj)
+        prefix = "/++etc++site/"
+        i = path.rfind(prefix) # (can the prefix occur twice?)
+        if i < 0:
+            return False
+        i += len(prefix) # points just after the second "/"
+        i = path.find("/", i) # finds next slash after that
+        if i >= 0:
+            path = path[:i]
+        # Now path is of the form ".../++etc++site/name-version"
+        version = self.parseVersion(path)
+        if not version:
+            return False
+        i = path.rfind("-") + 1
+        return self.mypath[:i] == path[:i] and self.myversion > version
+
+    nineDigits = re.compile(r"^\d{1,9}$")
+
+    def parseVersion(self, path):
+        # Return a list containing the version numbers, suitably
+        # modified for sane version comparison.  If there is no
+        # version number, return None.  A version number is any number
+        # of dot-separated integers of at most 9 digits, optionally
+        # followed by another dot and something like "a1" or "b1"
+        # indicating an alpha or beta version.  If no alpha or beta
+        # version is present, "f" is assumed (indicating "final").
+        # ("f" is chosen to compare higher than "a1", "b1" or "c1" but
+        # lower than "p1"; "p1" is sometimes used to indicate a patch
+        # release.)  Examples:
+        #
+        # "/foo/bar-boo"        -> None
+        # "/foo/bar-boo-1.0"    -> ["f000000001", "f000000000", "f"]
+        # "/foo/bar-boo-1.0.f"  -> ["f000000001", "f000000000", "f"]
+        # "/foo/bar-boo-1.0.a1" -> ["f000000001", "f000000000", "a1"]
+        #
+        # Note that we do a string compare on the alpha/beta version
+        # number; "a10" will compare less than "a2".  OTOH, the
+        # integers are padded with leading zeros, so "10" will compare
+        # higher than "2".
+        i = path.rfind("/") + 1
+        base = path[i:]
+        i = base.rfind("-") + 1
+        if not i:
+            return None # No version
+        version = base[i:]
+        parts = version.split(".")
+        last = parts[-1]
+        if self.nineDigits.match(last):
+            last = "f"
+        else:
+            last = last.lower()
+            del parts[-1]
+            if not parts:
+                return None
+        for i in range(len(parts)):
+            p = parts[i]
+            if not self.nineDigits.match(p):
+                return None
+            parts[i] = "f" + "0"*(9-len(p)) + p
+        parts.append(last)
+        return parts
 
     def findServiceConfiguration(self, name):
         for path, obj in self.configurations:
