@@ -1,0 +1,18 @@
+<html metal:use-macro="context/@@standard_macros/dialog">
+<body>
+
+<div metal:fill-slot="body">
+
+<h3>Error type: <tal:span tal:replace="view/error_type" /></h3>
+
+<h5>Error object: <tal:span tal:replace="view/error_object" /></h5>
+
+<pre class="traceback">
+<tal:line tal:repeat="line view/traceback_lines"
+          tal:replace="line">TRACEBACK LINE</tal:line>
+</pre>
+
+</div>
+</body>
+</html>
+
