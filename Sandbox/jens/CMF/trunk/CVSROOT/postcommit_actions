@@ -146,7 +146,7 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
            + " --times"                 #    "     times
            + " --sparse"                # handle sparse files efficiently
            + " --delete"                # keep remote directory in sync
-           + " --compress"              # (more compression context than ssh)
+           #+ " --compress"              # (more compression context than ssh)
            )
     if VERBOSE:
         cmd = cmd + " --verbose"
