@@ -20,9 +20,9 @@ __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 from zope.pagetemplate.pagetemplatefile import PageTemplateFile
 from zope.component import getView
-from zope.app.pagetemplate.engine import AppPT
+from zope.app.pagetemplate.engine import TrustedAppPT
 
-class ViewPageTemplateFile(AppPT, PageTemplateFile):
+class ViewPageTemplateFile(TrustedAppPT, PageTemplateFile):
     """Page Templates used as methods of views defined as Python classes.
     """
 

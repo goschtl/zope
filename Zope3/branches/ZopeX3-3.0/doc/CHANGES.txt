@@ -10,7 +10,10 @@ Zope Changes
 
     New features
 
-    New Features
+      - Separated the trusted and untrusted behaviors of page
+        templates in the application server.  File-system-based
+        templates are trusted, and database-based templates are
+        untrusted.
 
       - Improved using documentation files as tests. (Needed to test
         new security policy):

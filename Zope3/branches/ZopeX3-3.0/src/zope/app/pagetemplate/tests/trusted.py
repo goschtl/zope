@@ -11,16 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Doc tests for the pagentemplate's 'engine' module
+"""Sample of a module imported by a trusted module.
+
+This module won't be imported by an untrusted template using a
+path:modules/... expression.
 
 $Id$
 """
-import unittest
-from zope.testing.doctestunit import DocTestSuite
 
-def test_suite():
-    return DocTestSuite('zope.app.pagetemplate.engine')
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
+x = 42

@@ -11,16 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Doc tests for the pagentemplate's 'engine' module
+"""Tests for zope.restrictedpython.
 
 $Id$
 """
-import unittest
-from zope.testing.doctestunit import DocTestSuite
+import os
+import zope.testing.doctestunit
+
 
 def test_suite():
-    return DocTestSuite('zope.app.pagetemplate.engine')
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
+    return zope.testing.doctestunit.DocFileSuite("README.txt")

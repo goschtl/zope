@@ -18,38 +18,80 @@ Each expression engine can have its own expression types and base names.
 $Id$
 """
 import sys
-from types import StringTypes
+
+from zope.interface import implements
 
 from zope.tales.expressions import PathExpr, StringExpr, NotExpr, DeferExpr
+from zope.tales.expressions import SimpleModuleImporter
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
 from zope.component.exceptions import ComponentLookupError
+from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
+from zope.restrictedpython import rcompile
 from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
 from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.traversing.adapters import Traverser
-from zope.app.traversing.interfaces import IPathAdapter
+from zope.app.traversing.adapters import Traverser, traversePathElement
+from zope.app.traversing.interfaces import IPathAdapter, ITraversable
 
 class InlineCodeError(Exception):
     pass
 
+
 def zopeTraverser(object, path_items, econtext):
+    """Traverses a sequence of names, first trying attributes then items.
+    """
+    request = getattr(econtext, 'request', None)
+    path_items = list(path_items)
+    path_items.reverse()
+
+    while path_items:
+        name = path_items.pop()
+        object = traversePathElement(object, name, path_items,
+                                     request=request)
+        object = ProxyFactory(object)
+    return object
+
+class ZopePathExpr(PathExpr):
+
+    def __init__(self, name, expr, engine):
+        super(ZopePathExpr, self).__init__(name, expr, engine, zopeTraverser)
+
+
+def trustedZopeTraverser(object, path_items, econtext):
     """Traverses a sequence of names, first trying attributes then items.
     """
     traverser = Traverser(object)
     return traverser.traverse(path_items,
                               request=getattr(econtext, 'request', None))
 
-
-class ZopePathExpr(PathExpr):
+class TrustedZopePathExpr(PathExpr):
 
     def __init__(self, name, expr, engine):
-        super(ZopePathExpr, self).__init__(name, expr, engine, zopeTraverser)
+        super(TrustedZopePathExpr, self).__init__(name, expr, engine,
+                                                  trustedZopeTraverser)
+
+
+# Create a version of the restricted built-ins that uses a safe
+# version of getattr() that wraps values in security proxies where
+# appropriate:
+
+_marker = object()
+
+def safe_getattr(object, name, default=_marker):
+    if default is _marker:
+        return ProxyFactory(getattr(object, name))
+    else:
+        return ProxyFactory(getattr(object, name, default))
+
+RestrictedBuiltins = RestrictedBuiltins.copy()
+RestrictedBuiltins["getattr"] = safe_getattr
+
 
 class ZopePythonExpr(PythonExpr):
 
@@ -58,17 +100,18 @@ class ZopePythonExpr(PythonExpr):
         vars = self._bind_used_names(econtext, RestrictedBuiltins)
         return eval(self._code, vars)
 
-class ZopeContext(Context):
+    def _compile(self, text, filename):
+        return rcompile.compile(text, filename, 'eval')
 
-    def setContext(self, name, value):
-        # Hook to allow subclasses to do things like adding security proxies
-        Context.setContext(self, name, ProxyFactory(value))
+
+class ZopeContextBase(Context):
+    """Base class for both trusted and untrusted evaluation contexts."""
 
     def evaluateText(self, expr):
         text = self.evaluate(expr)
         if text is self.getDefault() or text is None:
             return text
-        if isinstance(text, StringTypes):
+        if isinstance(text, basestring):
             # text could be a proxied/wrapped object
             return text
         return unicode(text)
@@ -102,7 +145,7 @@ class ZopeContext(Context):
             error = _('No interpreter named "${lang_name}" was found.')
             error.mapping = {'lang_name': lang}
             raise InlineCodeError, error
-                  
+
         globals = self.vars.copy()
         result = interpreter.evaluateRawCode(code, globals)
         # Add possibly new global variables.
@@ -111,6 +154,18 @@ class ZopeContext(Context):
             if name not in old_names:
                 self.setGlobal(name, value)
         return result
+
+
+class ZopeContext(ZopeContextBase):
+    """Evaluation context for untrusted programs."""
+
+    def setContext(self, name, value):
+        # Hook to allow subclasses to do things like adding security proxies
+        Context.setContext(self, name, ProxyFactory(value))
+
+
+class TrustedZopeContext(ZopeContextBase):
+    """Evaluation context for trusted programs."""
 
 
 class AdapterNamespaces(object):
@@ -143,7 +198,7 @@ class AdapterNamespaces(object):
 
 
     Cleanup:
-    
+
       >>> tearDown()
     """
 
@@ -158,11 +213,103 @@ class AdapterNamespaces(object):
                     return zapi.getAdapter(object, IPathAdapter, name)
                 except ComponentLookupError:
                     raise KeyError, name
-                
+
             self.namespaces[name] = namespace
         return namespace
 
+
 class ZopeEngine(ExpressionEngine):
+    """Untrusted expression engine.
+
+    This engine does not allow modules to be imported; only modules
+    already available may be accessed::
+
+      >>> modname = 'zope.app.pagetemplate.tests.trusted'
+      >>> engine = _Engine()
+      >>> context = engine.getContext(engine.getBaseNames())
+
+      >>> modname in sys.modules
+      False
+      >>> context.evaluate('modules/' + modname)
+      Traceback (most recent call last):
+        ...
+      KeyError: 'zope.app.pagetemplate.tests.trusted'
+
+    (The use of KeyError is an unfortunate implementation detail; I
+    think this should be a NotFoundError.)
+
+    Modules which have already been imported by trusted code are
+    available, wrapped in security proxies::
+
+      >>> m = context.evaluate('modules/sys')
+      >>> m.__name__
+      'sys'
+      >>> m._getframe
+      Traceback (most recent call last):
+        ...
+      ForbiddenAttribute: ('_getframe', <module 'sys' (built-in)>)
+
+    The results of Python expressions evaluated by this engine are
+    wrapped in security proxies::
+
+      >>> r = context.evaluate('python: {12: object()}.values')
+      >>> type(r)
+      <type 'zope.security._proxy._Proxy'>
+      >>> r = context.evaluate('python: {12: object()}.values()[0].__class__')
+      >>> type(r)
+      <type 'zope.security._proxy._Proxy'>
+
+    General path expressions provide objects that are wrapped in
+    security proxies as well::
+
+      >>> from zope.app.container.sample import SampleContainer
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> from zope.security.checker import NamesChecker, defineChecker
+
+      >>> class Container(SampleContainer):
+      ...     implements(ITraversable)
+      ...     def traverse(self, name, further_path):
+      ...         return self[name]
+
+      >>> setUp()
+      >>> defineChecker(Container, NamesChecker(['traverse']))
+      >>> d = engine.getBaseNames()
+      >>> foo = Container()
+      >>> foo.__name__ = 'foo'
+      >>> d['foo'] = ProxyFactory(foo)
+      >>> foo['bar'] = bar = Container()
+      >>> bar.__name__ = 'bar'
+      >>> bar.__parent__ = foo
+      >>> bar['baz'] = baz = Container()
+      >>> baz.__name__ = 'baz'
+      >>> baz.__parent__ = bar
+      >>> context = engine.getContext(d)
+
+      >>> o1 = context.evaluate('foo/bar')
+      >>> o1.__name__
+      'bar'
+      >>> type(o1)
+      <type 'zope.security._proxy._Proxy'>
+
+      >>> o2 = context.evaluate('foo/bar/baz')
+      >>> o2.__name__
+      'baz'
+      >>> type(o2)
+      <type 'zope.security._proxy._Proxy'>
+      >>> o3 = o2.__parent__
+      >>> type(o3)
+      <type 'zope.security._proxy._Proxy'>
+      >>> o1 == o3
+      True
+
+      >>> o1 is o2
+      False
+
+      >>> tearDown()
+
+    """
+
+    _create_context = ZopeContext
 
     def __init__(self):
         ExpressionEngine.__init__(self)
@@ -175,7 +322,7 @@ class ZopeEngine(ExpressionEngine):
             else:
                 namespace = __namespace
 
-        context = ZopeContext(self, namespace)
+        context = self._create_context(self, namespace)
 
         # Put request into context so path traversal can find it
         if 'request' in namespace:
@@ -187,22 +334,93 @@ class ZopeEngine(ExpressionEngine):
 
         return context
 
+
+class TrustedZopeEngine(ZopeEngine):
+    """Trusted expression engine.
+
+    This engine allows modules to be imported::
+
+      >>> modname = 'zope.app.pagetemplate.tests.trusted'
+      >>> engine = _TrustedEngine()
+      >>> context = engine.getContext(engine.getBaseNames())
+
+      >>> modname in sys.modules
+      False
+      >>> m = context.evaluate('modules/' + modname)
+      >>> m.__name__ == modname
+      True
+      >>> modname in sys.modules
+      True
+
+    Since this is trusted code, we can look at whatever is in the
+    module, not just __name__ or what's declared in a security
+    assertion::
+
+      >>> m.x
+      42
+
+    Clean up after ourselves::
+
+      >>> del sys.modules[modname]
+
+    """
+
+    _create_context = TrustedZopeContext
+
+
+class TraversableModuleImporter(SimpleModuleImporter):
+
+    implements(ITraversable)
+
+    def traverse(self, name, further_path):
+        try:
+            return self[name]
+        except KeyError:
+            raise NotFoundError(name)
+
+
 def _Engine(engine=None):
     if engine is None:
         engine = ZopeEngine()
-        
-    for pt in ZopePathExpr._default_type_names:
-        engine.registerType(pt, ZopePathExpr)
-    engine.registerType('string', StringExpr)
+    engine = _create_base_engine(engine, ZopePathExpr)
     engine.registerType('python', ZopePythonExpr)
-    engine.registerType('not', NotExpr)
-    engine.registerType('defer', DeferExpr)
+
+    # Using a proxy around sys.modules allows page templates to use
+    # modules for which security declarations have been made, but
+    # disallows execution of any import-time code for modules, which
+    # should not be allowed to happen during rendering.
     engine.registerBaseName('modules', ProxyFactory(sys.modules))
+
     return engine
 
+def _TrustedEngine(engine=None):
+    if engine is None:
+        engine = TrustedZopeEngine()
+    engine = _create_base_engine(engine, TrustedZopePathExpr)
+    engine.registerType('python', PythonExpr)
+    engine.registerBaseName('modules', TraversableModuleImporter())
+    return engine
+
+def _create_base_engine(engine, pathtype):
+    for pt in pathtype._default_type_names:
+        engine.registerType(pt, pathtype)
+    engine.registerType('string', StringExpr)
+    engine.registerType('not', NotExpr)
+    engine.registerType('defer', DeferExpr)
+    return engine
+
+
 Engine = _Engine()
+TrustedEngine = _TrustedEngine()
+
 
 class AppPT(object):
 
     def pt_getEngine(self):
         return Engine
+
+
+class TrustedAppPT(object):
+
+    def pt_getEngine(self):
+        return TrustedEngine

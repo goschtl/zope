@@ -99,6 +99,8 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
                     return 'None'
                 return name
 
+        defineChecker(AU, NamesChecker(['__str__']))
+
         from zope.app.traversing.namespace import view
         ztapi.provideNamespaceHandler('view', view)
         ztapi.browserView(IZPTPage, 'name', AU)
