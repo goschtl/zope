@@ -107,6 +107,7 @@ def load(f, base=None, mapping=None):
 
 
 def fromPathOrUrl(path, mapping=None):
+    # XXX need to deal with cvs: URLs directly!
     if os.path.isfile(path):
         # prefer a cvs: URL over a local path if possible:
         try:
