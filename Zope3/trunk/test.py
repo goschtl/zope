@@ -260,7 +260,7 @@ def gui_runner(files, test_filter):
     import unittestgui
     suites = []
     for file in files:
-        suites.append(module_from_path(file))
+        suites.append(module_from_path(file) + '.test_suite')
 
     suites = ", ".join(suites)
     minimal = (GUI == 'minimal')
@@ -271,10 +271,9 @@ def runner(files, test_filter, debug):
     suite = unittest.TestSuite()
     for file in files:
         s = get_suite(file)
-        if s is not None:
-            if test_filter is not None:
-                s = filter_testcases(s, test_filter)
-            suite.addTest(s)
+        if test_filter is not None:
+            s = filter_testcases(s, test_filter)
+        suite.addTest(s)
     r = runner.run(suite)
 
 def remove_stale_bytecode(arg, dirname, names):
