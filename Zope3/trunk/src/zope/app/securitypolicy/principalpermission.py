@@ -116,7 +116,6 @@ class PrincipalPermissionManager(SecurityMap):
         ''' See the interface IPrincipalPermissionManager '''
 
         if check:
-            checkPermission(None, permission_id)
             checkPrincipal(None, principal_id)
 
         self.addCell(permission_id, principal_id, Allow)
@@ -132,7 +131,6 @@ class PrincipalPermissionManager(SecurityMap):
         ''' See the interface IPrincipalPermissionManager '''
 
         if check:
-            checkPermission(None, permission_id)
             checkPrincipal(None, principal_id)
 
         self.addCell(permission_id, principal_id, Deny)

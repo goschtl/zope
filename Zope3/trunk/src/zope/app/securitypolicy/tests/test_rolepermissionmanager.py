@@ -121,12 +121,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ValueError,
                           manager.grantPermissionToRole, perm1, 'role1'
                           )
-
-    def test_invalidPerm(self):
-        role1 = defineRole('Role One', 'Role #1').id
-        self.assertRaises(ValueError,
-                          manager.grantPermissionToRole, 'perm1', role1
-                          )
         
 
 def test_suite():

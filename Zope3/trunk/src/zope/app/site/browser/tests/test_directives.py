@@ -58,7 +58,7 @@ def test_toolDirective():
     <InterfaceClass zope.interface.Interface>
     >>> view['callable'].__module__
     'zope.app.component.metaconfigure'
-    >>> view['args'][5]
+    >>> view['args'][4]
     'manageIDummyUtilityTool.html'
     """
 
@@ -89,7 +89,7 @@ def _test_servicetoolDirective():
     <InterfaceClass zope.interface.Interface>
     >>> view['callable'].__module__
     'zope.app.component.metaconfigure'
-    >>> view['args'][5]
+    >>> view['args'][4]
     'manageILocalServiceTool.html'
     """
 

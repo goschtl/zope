@@ -61,15 +61,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(manager.getPermissionsForPrincipal(principal), [])
 
 
-    def test_invalidPermission(self):
-        self.assertRaises(ValueError,
-                          manager.grantPermissionToPrincipal,
-                          'permission', 'principal')
-        principal = self._make_principal()
-        self.assertRaises(ValueError,
-                          manager.grantPermissionToPrincipal,
-                          'permission', principal)
-
     def test_invalidPrincipal(self):
         permission = definePermission('APerm', 'title').id
         self.assertRaises(ValueError,

@@ -43,7 +43,6 @@ def protectModule(module, name, permission):
 
     If there isn't a checker for the module, create one.
     """
-    checkPermission(None, permission)
 
     checker = moduleChecker(module)
     if checker is None:
