@@ -2,23 +2,22 @@ Object Locking
 ==============
 
 This package provides a framework for object locking. The implementation
-is intended to provide a simple general-purpose locking architecture upon 
+is intended to provide a simple general-purpose locking architecture upon
 which other locking applications can be built (WebDAV locking, for example).
 
-The locking system is purely *advisory* - it provides a way to associate a 
-lock with an object, but it does not enforce locking in any way. It is up 
-to application-level code to ensure that locked objects are restricted in 
+The locking system is purely *advisory* - it provides a way to associate a
+lock with an object, but it does not enforce locking in any way. It is up
+to application-level code to ensure that locked objects are restricted in
 a way appropriate to the application.
 
-The Zope 3 locking model defines interfaces and default implemenations 
+The Zope 3 locking model defines interfaces and a default implementation
 that:
 
-  - allows for a single lock on an object, owned by a specific
-    principal
+  - allows for a single lock on an object, owned by a specific principal
 
   - does not necessarily impose inherent semantic meaning (exclusive
-    vs. non-exclusive, write vs. read) on locks, though it will 
-    provide fields that higher-level application components can use 
+    vs. non-exclusive, write vs. read) on locks, though it will
+    provide fields that higher-level application components can use
     to implement and enforce such semantics
 
   - can potentially be be used to build more ambitious locking
@@ -30,9 +29,9 @@ that:
 
 
 The Zope3 locking architecture defines an `ILockable` interface and
-provides a default adapter implementation that requires only that an 
-object be adaptable to `IKeyReference`. All persistent objects can be 
-adapted to this interface by default in Zope 3, so in practice all 
+provides a default adapter implementation that requires only that an
+object be adaptable to `IKeyReference`. All persistent objects can be
+adapted to this interface by default in Zope 3, so in practice all
 persistent objects are lockable.
 
 The default `ILockable` adapter implementation provides support for:
@@ -45,27 +44,27 @@ The default `ILockable` adapter implementation provides support for:
 
 
 Locking operations (lock, unlock, break lock) fire events that may be
-handled by applications or other components to interact with the locking 
+handled by applications or other components to interact with the locking
 system in a loosely-coupled way.
 
-Lock information is accessible through an object that supports the 
-`ILockInfo` interface. The `ILockInfo` interface implies IAnnotatable, 
-so that other locking implementations (superceding or complementing the 
+Lock information is accessible through an object that supports the
+`ILockInfo` interface. The `ILockInfo` interface implies IAnnotatable,
+so that other locking implementations (superseding or complementing the
 default implementation) can store more information if needed to support
 extended locking semantics.
 
-The locking architecture also supports an efficient method of lock tracking 
-that allows you to determine what locks are held on objects. The default 
-implementation provides an `ILockTracker` utility that can be used by 
+The locking architecture also supports an efficient method of lock tracking
+that allows you to determine what locks are held on objects. The default
+implementation provides an `ILockTracker` utility that can be used by
 applications to quickly find all objects locked by a particular principal.
 
 
 Locking essentials
 ------------------
 
-Normally, locking is provided by the default locking implementation. In 
-this example, we'll create a simple content class. The content class 
-is persistent, which allows us to use the default locking adapters and 
+Normally, locking is provided by the default locking implementation. In
+this example, we'll create a simple content class. The content class
+is persistent, which allows us to use the default locking adapters and
 utilities.
 
   >>> import persistent
@@ -98,7 +97,7 @@ Now we will create a few sample objects to work with:
   >>> item3.__name__ = "item3"
 
 
-It is possible to test whether an object supports locking by attempting 
+It is possible to test whether an object supports locking by attempting
 to adapt it to the ILockable interface:
 
   >>> from zope.app.locking.interfaces import ILockable, ILockTracker
@@ -111,9 +110,9 @@ to adapt it to the ILockable interface:
   ...
 
 
-There must be an active interaction to use locking, to allow the framework 
-to determine the principal performing locking operations. This example sets 
-up some sample principals and a helper to switch principals for further 
+There must be an active interaction to use locking, to allow the framework
+to determine the principal performing locking operations. This example sets
+up some sample principals and a helper to switch principals for further
 examples:
 
   >>> class FauxPrincipal:
@@ -138,7 +137,7 @@ examples:
   >>> set_principal(britney)
 
 
-Now, let's look at basic locking. To perform locking operations, we first 
+Now, let's look at basic locking. To perform locking operations, we first
 have to adapt an object to `ILockable`:
 
   >>> obj = ILockable(item1)
@@ -150,14 +149,14 @@ We can ask if the object is locked:
   False
 
 
-If it were locked, we could get the id of the principal that owns the 
+If it were locked, we could get the id of the principal that owns the
 lock. Since it is not locked, this will return None:
 
   >>> obj.locker()
   ...
 
 
-Now lets lock the object. Note that the lock method return an instance 
+Now let's lock the object. Note that the lock method return an instance
 of an object that implements `ILockInfo` on success:
 
   >>> info = obj.lock()
@@ -171,8 +170,8 @@ of an object that implements `ILockInfo` on success:
   'britney'
 
 
-Methods are provided to check whether the current principal already has 
-the lock on an object and whether the lock is already owned by a different 
+Methods are provided to check whether the current principal already has
+the lock on an object and whether the lock is already owned by a different
 principal:
 
   >>> obj.ownLock()
@@ -182,7 +181,7 @@ principal:
   False
 
 
-If we switch principals, we see that the answers reflect the current 
+If we switch principals, we see that the answers reflect the current
 principal:
 
   >>> set_principal(tim)
@@ -201,7 +200,7 @@ A principal can only release his or her own locks:
   LockingError: Principal is not lock owner
 
 
-If we switch back to the original principal, we see that the original 
+If we switch back to the original principal, we see that the original
 principal can unlock the object:
 
   >>> set_principal(britney)
@@ -209,7 +208,7 @@ principal can unlock the object:
   ...
 
 
-There is a mechanism for breaking locks that does not take the current 
+There is a mechanism for breaking locks that does not take the current
 principal into account. This will break any existing lock on an object:
 
   >>> obj.lock()
@@ -224,9 +223,9 @@ principal into account. This will break any existing lock on an object:
   False
 
 
-Locks can be created with an optional timeout. If a timeout is provided, 
-it should be an integer number of seconds from the time the lock is 
-created. 
+Locks can be created with an optional timeout. If a timeout is provided,
+it should be an integer number of seconds from the time the lock is
+created.
 
   >>> # fake time function to avoid a time.sleep in tests!
   >>> import time
@@ -248,8 +247,8 @@ created.
   >>> zope.app.locking.storage.timefunc = time.time
 
 
-Finally, it is possible to explicitly get an `ILockInfo` object that 
-contains the lock information for the object. Note that locks that do 
+Finally, it is possible to explicitly get an `ILockInfo` object that
+contains the lock information for the object. Note that locks that do
 not have a timeout set have a timeout value of None.
 
   >>> obj = ILockable(item2)
@@ -263,7 +262,7 @@ not have a timeout set have a timeout value of None.
   ...
 
 
-It is possible to get the object associated with a lock directly from 
+It is possible to get the object associated with a lock directly from
 an ILockInfo instance:
 
   >>> target = info.target
@@ -271,9 +270,9 @@ an ILockInfo instance:
   True
 
 
-The `ILockInfo` interface extends the IMapping interface, so application 
-code can store extra information on locks if necessary. It is recommended 
-that keys for extra data use qualified names following the convention that 
+The `ILockInfo` interface extends the IMapping interface, so application
+code can store extra information on locks if necessary. It is recommended
+that keys for extra data use qualified names following the convention that
 is commonly used for annotations:
 
   >>> info['my.namespace.extra'] = 'spam'
@@ -287,9 +286,9 @@ is commonly used for annotations:
 Lock tracking
 -------------
 
-It is often desirable to be able to report on the currently held locks in 
-a system (particularly on a per-user basis), without requiring an expensive 
-brute-force search. An `ILockTracker` utility allows an application to get 
+It is often desirable to be able to report on the currently held locks in
+a system (particularly on a per-user basis), without requiring an expensive
+brute-force search. An `ILockTracker` utility allows an application to get
 the current locks for a principal, or all current locks:
 
   >>> set_principal(tim)
@@ -315,7 +314,7 @@ the current locks for a principal, or all current locks:
   True
 
 
-These methods allow an application to create forms and other code that 
+These methods allow an application to create forms and other code that
 performs unlocking or breaking of locks on sets of objects:
 
   >>> items = util.getAllLocks()
@@ -331,9 +330,9 @@ performs unlocking or breaking of locks on sets of objects:
 Locking events
 --------------
 
-Locking operations (lock, unlock, break lock) fire events that can be used 
-by applications. Note that expiration of a lock *does not* fire an event 
-(because the current implementation uses a lazy expiration approach). 
+Locking operations (lock, unlock, break lock) fire events that can be used
+by applications. Note that expiration of a lock *does not* fire an event
+(because the current implementation uses a lazy expiration approach).
 
   >>> import zope.event
 
@@ -354,13 +353,4 @@ by applications. Note that expiration of a lock *does not* fire an event
 
   >>> obj.breaklock()
   BreakLockEvent ...
-
-
-
-
-
-
-
-
-
 
