@@ -35,7 +35,7 @@ class BrowserView(Acquisition.Explicit):
 
 InitializeClass(BrowserView)
 
-class AbsoluteURL:
+class AbsoluteURL(BrowserView):
     """An adapter for Zope3-style absolute_url
     view using Zope2 methods
     """

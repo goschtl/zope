@@ -41,7 +41,7 @@ class Resource(Explicit):
 
     def __call__(self):
         name = self.__name__
-        container = aq_parent(self)
+        container = self.__parent__
 
         url = str(getViewProviding(container, IAbsoluteURL, self.request))
         if not '++resource++' in url:

@@ -1,9 +1,10 @@
 import os, sys
-import glob
 
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+import re
+import glob
 import unittest
 from Testing import ZopeTestCase
 from Testing.ZopeTestCase.functional import Functional
@@ -29,6 +30,10 @@ dir_resource_names = [os.path.basename(r)
                                 glob.glob('%s/*.pt' % _prefix) +
                                 glob.glob('%s/[a-z]*.py' % _prefix) +
                                 glob.glob('%s/*.css' % _prefix))]
+
+def normalize_html(s):
+    s = re.sub(r"[ \t\n]+", "", s)
+    return s
 
 class FiveTestCase(ZopeTestCase.ZopeTestCase):
 
@@ -95,6 +100,22 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
     def test_template_view_context_path(self):
         view = self.folder.unrestrictedTraverse('testoid/flamingo2.html')
         self.assertEquals(u'<p>Hello world</p>\n', view())
+
+    def test_template_view_resource_traversal(self):
+        view = self.folder.unrestrictedTraverse('testoid/parakeet.html')
+        expected = """\
+        <html>
+        <head>
+        <title>bird macro</title>
+        </head>
+        <body>
+        Color: green
+        <img alt="" src="http://nohost/test_folder_1_/testoid/++resource++pattern.png" />
+        </body>
+        </html>
+        """
+        expected = normalize_html(expected)
+        self.assertEquals(expected, normalize_html(view()))
 
     def test_view_backwards_compatibility(self):
         old_view = self.folder.unrestrictedTraverse('testoid/direct')

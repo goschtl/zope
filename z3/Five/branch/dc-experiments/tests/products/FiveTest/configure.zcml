@@ -170,6 +170,14 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <browser:page
+      for=".interfaces.ISimpleContent"
+      class=".browser.SimpleContentView"
+      template="parakeet.pt"
+      name="parakeet.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
   <!-- a publicly accessible page, attribute, template, template/class -->
 
   <browser:page
