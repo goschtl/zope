@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.10 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Revision: 1.11 $ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.10 $ (Draft)
-:Date: $Date: 2004/05/06 14:39:12 $
+:Version: $Revision: 1.11 $ (Draft)
+:Date: $Date: 2004/05/06 15:06:16 $
 :Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>
-:DocumentID: $Id: SecurityTarget.txt,v 1.10 2004/05/06 14:39:12 jim Exp $
+:DocumentID: $Id: SecurityTarget.txt,v 1.11 2004/05/06 15:06:16 spascoe Exp $
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.10 2004/05/06 14:39:12 jim Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.11 2004/05/06 15:06:16 spascoe Exp $
 
-:Document Version: $Revision: 1.10 $
+:Document Version: $Revision: 1.11 $
 
 :Origin: Zope Corporation public CVS server
 
@@ -198,7 +198,7 @@ release.
 
 Until agreed to be ready for public test the development and until all features
 are available (but maybe untested), development of a feature release happens
-onthe CVS HEAD branch. WHen starting public releases, no further features are
+on the CVS HEAD branch. When starting public releases, no further features are
 allowed to be introduced and the development enters maintanence mode. Therefore
 a named branch is created to identify changes that are applied for maintenance.
 New features will be introduced on the HEAD branch that is heading for the next
@@ -223,7 +223,7 @@ Files included in a Zope software distribution.
 TOE Logical Boundaries
 ^^^^^^^^^^^^^^^^^^^^^^
 
-The logical boundary fopr the TOE consists of the four security
+The logical boundary for the TOE consists of the four security
 sub-systems of Zope:
 
 - permission declarations
@@ -282,7 +282,7 @@ Zope has a concept of interactions, which model the interaction of one
 or more users with the system.  An interaction keeps track of the
 users that are participating in the interaction as "participations".
 In the TOE, interactions will have single users participating through
-server request (for example, Web requests).  Interactions are refered
+server request (for example, Web requests).  Interactions are referred
 to as "subjects" in the TOE.
 
 Operations
@@ -308,7 +308,7 @@ The following assumptions need to be made about the TOE environment:
     Assumption Name     Description
     ===============     ==================================================
     A.OS                The machine and the operating system Zope is 
-                        running on is physical secure. 
+                        running on is physically secure. 
     A.Admin             The "system-administrator" of the above 
                         mentioned machine is trustworthy.
     A.Network           A network connection to the Zope services is 
@@ -333,7 +333,7 @@ The following threat agents have been identified:
 
     *   Users having correct authentication credentials who might try to
         acquire more permission or role grants to get access to operations they
-        shall not.
+        should not.
         
     *   Users without correct authentication credentials for a certain
         principal trying to authenticate as this.
@@ -355,7 +355,7 @@ The following threats against the assets have been identified:
                        generation functions to log false information 
                        (date, time, type of event, outcome, user)
     T.Import           An attacker might try to make the system
-                       interprete imported security attributes in a
+                       interpret imported security attributes in a
                        not intended way to acquire a higher level of 
                        access to the system.
     T.RIP              An attacker might try to make the system use
@@ -452,7 +452,7 @@ The following security objectives have been defined for the TOE:
     O.ManageRisk    Provide the ability to manage risk by trading off
                     functionality against risk. For example, we can
                     make it easier to access the system to perform 
-                    operations whos potentional negative impact is
+                    operations whose potential negative impact is
                     low, but make it more difficult to access the
                     system in a way that allows operations with high
                     negative impact.
@@ -470,7 +470,7 @@ The following security objectives have been defined for the TOE environment:
     Assumption Name     Description
     ===============     =======================================================
     OE.OS               The machine and the operating system Zope is running 
-                        on is physical secure.
+                        on is physically secure.
     OE.Trust            Those responsible for the TOE must be trustworthy.
     OE.Manage           Those responsible for the TOE must ensure that the TOE 
                         is delivered, installed, managed, and operated in a 
@@ -510,7 +510,7 @@ TOE security functional requirements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following functional requirements identify the TOE functional requirements.
-They have beend drawn from the CC Part 2 functional requirements components.
+They have been drawn from the CC Part 2 functional requirements components.
 
 Class FAU: Audit data generation
 ********************************
@@ -869,7 +869,7 @@ FMT_MSA.1.1.password
 
     The TSF shall enforce the *[formal security policy]* to restrict
     the ability to *[selection: modify]* the security attributes
-    *[password]* to *[authorised administrators, users authorized to
+    *[password]* to *[authorized administrators, users authorized to
     modify their own authentication data]*.
 
 
@@ -909,7 +909,7 @@ FMT_SMR.1.1
 
     authorized administrator
        Users who can perform system-wide security functions. These are
-       people who have the zope.ManageSercurity permission.       
+       people who have the zope.ManageSecurity permission.       
 
     Grantor 
        Users who have the ability to grant or deny permissions to
