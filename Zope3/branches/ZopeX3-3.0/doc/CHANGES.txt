@@ -12,6 +12,9 @@ Zope Changes
 
     Bug fixes
 
+      - Fixed the default 'text/*' content type for file objects.
+        Backport of the fix for bug 201.
+
       - A monkey patch to cope with weakref problems in Python 2.3.3
         was removed, so Python 2.3.4 is required now.
 
