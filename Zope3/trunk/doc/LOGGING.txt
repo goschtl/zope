@@ -29,6 +29,14 @@ Zope 3 Logging
   logged to the process's standard error stream, and other messages
   are not logged.
 
+  test.py also understands the LOGGING environment variable, which can
+  be used to specify an integer logging level.  So a simple way to run
+  the tests with all logging going to standard error is to set LOGGING
+  to 0, e.g.:
+
+  export LOGGING=0
+  python test.py
+
 
  Using the logging package
 
