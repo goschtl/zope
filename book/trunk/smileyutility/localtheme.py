@@ -32,15 +32,15 @@ class Smiley(Image):
 class SmileyTheme(BTreeContainer):
     """A local smiley theme implementation.
 
-    >>> import os
     >>> from zope.app.tests import setup
     >>> from zope.app.utility.utility import LocalUtilityService
-    >>> import book.smileyutility
     >>> site = setup.placefulSetUp()
     >>> rootFolder = setup.buildSampleFolderTree()
 
     Setup a simple function to add local smileys to a theme.
 
+    >>> import os
+    >>> import book.smileyutility
     >>> def addSmiley(theme, text, filename):
     ...     base_dir = os.path.dirname(book.smileyutility.__file__)
     ...     filename = os.path.join(base_dir, filename)
@@ -51,20 +51,18 @@ class SmileyTheme(BTreeContainer):
     >>> site = setup.createServiceManager(rootFolder)
     >>> utils = setup.addService(site, zapi.servicenames.Utilities,
     ...                         LocalUtilityService())
-    >>> theme = SmileyTheme()
+    >>> theme = setup.addUtility(site, 'plain', ISmileyTheme, SmileyTheme())
     >>> addSmiley(theme, ':)',  'smileys/plain/smile.png')
     >>> addSmiley(theme, ':(',  'smileys/plain/sad.png')
-    >>> util = setup.addUtility(site, 'plain', ISmileyTheme, theme)
 
     Create components in `folder1`
 
     >>> site = setup.createServiceManager(rootFolder['folder1'])
     >>> utils = setup.addService(site, zapi.servicenames.Utilities,
     ...                          LocalUtilityService())
-    >>> theme = SmileyTheme() 
+    >>> theme = setup.addUtility(site, 'plain', ISmileyTheme, SmileyTheme())
     >>> addSmiley(theme, ':)',  'smileys/plain/biggrin.png')
     >>> addSmiley(theme, '8)',  'smileys/plain/cool.png')
-    >>> util = setup.addUtility(site, 'plain', ISmileyTheme, theme)
 
     Now test the single smiley accessor methods
 
