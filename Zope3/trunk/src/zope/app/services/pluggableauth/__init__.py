@@ -13,13 +13,14 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.2 2003/06/23 22:46:17 chrism Exp $
+$Id: __init__.py,v 1.3 2003/06/24 02:34:29 chrism Exp $
 """
 
 from __future__ import generators
 import random
 import sys
 import datetime
+import time
 from persistence import Persistent
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
@@ -44,7 +45,7 @@ from zope.app.interfaces.services.pluggableauth import IReadPrincipalSource,\
      ILoginPasswordPrincipalSource, IWritePrincipalSource
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.component.nextservice import queryNextService
-from zope.app.zapi import queryView
+from zope.app import zapi
 from zope.app.traversing import getPath
 from zope.context import ContextMethod
 from zope.exceptions import NotFoundError
@@ -62,22 +63,33 @@ class PluggableAuthenticationService(OrderedContainer):
 
     def __init__(self, earmark=None):
         self.earmark = earmark
+        # The earmark is used as a token which can uniquely identify
+        # this authentication service instance even if the service moves
+        # from place to place within the same context chain or is renamed.
+        # It is included in principal ids of principals which are obtained
+        # from this auth service, so code which dereferences a principal
+        # (like getPrincipal of this auth service) needs to take the earmark
+        # into account. The earmark cannot change once it is assigned.  If it
+        # does change, the system will not be able to dereference principal
+        # references which embed the old earmark.
         OrderedContainer.__init__(self)
 
-    def afterAddHook(self, object, container):
+    def afterAddHook(self, ob, container):
         """ See IAddNotifiable. """
         if self.earmark is None:
-            # XXX need to generate a better earmark that's more likely
-            # to be unique and which you can use to actually identify
-            # the auth service in error messages
-            self.earmark = str(random.randint(0, sys.maxint-1))
+            # we manufacture what is intended to be a globally unique
+            # earmark if one is not provided in __init__
+            myname = zapi.name(ob)
+            rand_id = gen_key()
+            t = int(time.time())
+            self.earmark = '%s-%s-%s' % (myname, rand_id, t)
 
     afterAddHook = ContextMethod(afterAddHook)
 
     def authenticate(self, request):
         """ See IAuthenticationService. """
         for ps_key, ps in self.items():
-            loginView = queryView(ps, "login", request)
+            loginView = zapi.queryView(ps, "login", request)
             if loginView is not None:
                 principal = loginView.authenticate()
                 if principal is not None:
@@ -110,9 +122,14 @@ class PluggableAuthenticationService(OrderedContainer):
         """ See IAuthenticationService.
 
         For this implementation, an 'id' is a string which can be
-        split into a 3-tuple by splitting on newline characters.  The
+        split into a 3-tuple by splitting on tab characters.  The
         three tuple consists of (auth_service_earmark,
         principal_source_id, principal_id).
+
+        In the current strategy, the principal sources that are members
+        of this authentication service cannot be renamed; if they are,
+        principal references that embed the old name will not be
+        dereferenceable.
 
         """
         next = None
@@ -124,6 +141,7 @@ class PluggableAuthenticationService(OrderedContainer):
             next = queryNextService(self, Authentication, None)
 
         if auth_svc_earmark != self.earmark:
+            # this is not our reference because its earmark doesnt match ours
             next = queryNextService(self, Authentication, None)
         
         if next is not None:
@@ -131,7 +149,7 @@ class PluggableAuthenticationService(OrderedContainer):
 
         source = self.get(principal_src_id)
         if source is None:
-            raise NotFoundError
+            raise NotFoundError, principal_src_id
         p = source.getPrincipal(principal_id)
         return PrincipalWrapper(p, self, id=id)
 
@@ -218,7 +236,7 @@ class BTreePrincipalSource(Persistent):
         del self._principals_by_number[number]
         del self._numbers_by_login[key]
 
-    def setObject(self, id, object):
+    def setObject(self, id, ob):
         """ See IContainerNamesContainer
 
         >>> sps = BTreePrincipalSource()
@@ -230,13 +248,13 @@ class BTreePrincipalSource(Persistent):
         store = self._principals_by_number
 
         key = gen_key()
-        while not store.insert(key, object):
+        while not store.insert(key, ob):
             key = gen_key()
 
-        object.id = key
-        self._numbers_by_login[object.login] = key
+        ob.id = key
+        self._numbers_by_login[ob.login] = key
 
-        return object.login
+        return ob.login
 
     def keys(self):
         """ See IContainer.
@@ -382,11 +400,11 @@ class BTreePrincipalSource(Persistent):
         try:
             id = int(id)
         except TypeError:
-            raise NotFoundError
+            raise NotFoundError, id
         try:
             return self._principals_by_number[id]
         except KeyError:
-            raise NotFoundError
+            raise NotFoundError, id
 
     def getPrincipals(self, name):
         """ See IReadPrincipalSource.
@@ -420,7 +438,7 @@ class BTreePrincipalSource(Persistent):
         if number is None:
             return
         user = self._principals_by_number[number]
-        if user.validate(password):
+        if user.password == password:
             return user
 
 class SimplePrincipal(Persistent):
@@ -474,22 +492,26 @@ class PrincipalAuthenticationView:
         self.request = request
         
     def authenticate(self):
-        for interface in (ILoginPassword,):
-            a = queryAdapter(self.request, interface, None)
-            if a is None:
-                return
-            login = a.getLogin()
-            password = a.getPassword()
+        # XXX we only handle requests which have basic auth credentials
+        # in them currently (ILoginPassword-based requests)
+        # If you want a different policy, you'll need to write and register
+        # a different view, replacing this one.
+        a = queryAdapter(self.request, ILoginPassword, None)
+        if a is None:
+            return
+        login = a.getLogin()
+        password = a.getPassword()
 
-            p = self.context.authenticate(login, password)
-            return p
+        p = self.context.authenticate(login, password)
+        return p
 
     
 class PrincipalWrapper(Wrapper):
     """ A wrapper for a principal as returned from the authentication
-    service.  The id of the principal as returned by the wrapper is
-    a three-tuple instead of the integer id returned by the simple
-    principal."""
+    service.  This wrapper returns the principal id which includes
+    identification of the auth service and the principal store id in
+    addition to the principal id."""
+    
     def getId(self):
         """ Return the id as passed in to the wrapper """
         return getWrapperData(self)['id']

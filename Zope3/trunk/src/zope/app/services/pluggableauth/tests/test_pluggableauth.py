@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_pluggableauth.py,v 1.2 2003/06/23 22:46:17 chrism Exp $
+$Id: test_pluggableauth.py,v 1.3 2003/06/24 02:34:29 chrism Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -55,12 +55,8 @@ class Setup(placefulsetup.PlacefulSetup, TestCase):
                                 IBrowserPresentation,
                                 (PrincipalAuthenticationView,))
 
-        auth = setup.addService(sm, "Authentication",
+        auth = setup.addService(sm, "TestPluggableAuthenticationService",
                                  PluggableAuthenticationService())
-
-        # auth.earmark = 'earmark'
-        # XXX - not sure why this is needed, it should be assigned by
-        # afterAddHook
 
         one = BTreePrincipalSource()
         two = BTreePrincipalSource()
