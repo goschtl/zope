@@ -78,7 +78,6 @@ def load(sourcedir):
             config = parser.load()
         finally:
             f.close()
-        config.collection.add_exclusion(package_conf)
     else:
         config = schema.getConfiguration()
     return config
@@ -166,41 +165,40 @@ class SpecificationSchema(cfgparser.Schema):
     def finishSection(self, section):
         return section
 
-    def addValue(self, section, dest, src):
+    def addValue(self, section, workfile, other):
         if not isinstance(section, Specification):
             raise cfgparser.ConfigurationError(
-                "all inclusion lines must be in a <collection> or"
-                " <distribution> section")
-        if not src:
-            raise InclusionSpecificationError("source information omitted",
-                                              self.filename)
-        dest = normalize_path(dest, "destination", section.group)
+                "all inclusion lines must be in a section")
+
         if section.group == "load":
-            f = normalize_path_or_url
+            if not other:
+                raise cfgparser.ConfigurationError(
+                    "referenced file must be named explicitly"
+                    " in <load> section")
+            # perhaps should make sure workfile and other don't refer
+            # to the same file
+            other = normalize_path_or_url(other, "source", section.group)
+        elif other:
+            other = normalize_path(other, "destination", section.group)
+
+        if workfile:
+            workfile = normalize_path(workfile, "workspace file",
+                                      section.group)
+
+        if other:
+            section.includes[other] = workfile
         else:
-            f = normalize_path
-        src = f(src, "source", section.group)
-        if src == "-":
-            if section.group != "collection":
-                raise InclusionSpecificationError(
-                    "can only exclude files from the collection group",
-                    self.filename)
-            section.add_exclusion(dest)
-        else:
-            section.includes[dest] = src
+            L = section.includes.setdefault(None, [])
+            L.append(workfile)
 
 
 class Specification:
-    """Specification for files to include and exclude.
+    """Specification for files to include.
 
     :Ivariables:
-      - `excludes`: Iterable containing the absolute path names of the
-        files in the source tree that should not be part of the
-        destination.
-
       - `includes`: Mapping from relative path (relative to the
-        destination) to either an absolute path in the source
-        directory or a URL.
+        source) to either the destination path (relative) or an empty
+        string.
 
       - `source`: Source directory which will be used to expand glob
         patterns.
@@ -218,7 +216,7 @@ class Specification:
 
         :Parameters:
           - `source`: Directory that will serve as the primary source
-            directory; this is needed to support exclusions.
+            directory; this is needed to support filename globbing.
 
           - `filename`: Path of the file from which this specification
             was loaded.  This is used when reporting errors.
@@ -230,16 +228,13 @@ class Specification:
         """
         # The source directory is needed since globbing is performed
         # to locate files if the spec includes wildcards.
-        self.excludes = []
         self.includes = {}
         self.source = source
         self.filename = filename
         self.group = group
 
-    def add_exclusion(self, path):
-        self.excludes.append(path)
-
     def cook(self):
+        return
         patterns = self.excludes
         self.excludes = []
         for pat in patterns:
@@ -285,17 +280,18 @@ class InclusionProcessor:
             This directory will be created if it doesn't exist.
 
           - `spec`: ``Specification`` object that describes what to
-            include and exclude.  If omitted, an empty specification
-            is used.
+            include.  If omitted, an empty specification is used.
 
         """
         if spec is None:
             spec = Specification(self.source, None, "collection")
         destination = os.path.abspath(destination)
-        self.copyTree(spec.source, destination, spec.excludes)
-        self.addIncludes(destination, spec)
+        if spec.includes:
+            self.addIncludes(destination, spec)
+        else:
+            self.copyTree(spec.source, destination)
 
-    def copyTree(self, source, destination, excludes={}):
+    def copyTree(self, source, destination):
         """Populate the destination tree from the source tree.
 
         :Parameters:
@@ -306,13 +302,8 @@ class InclusionProcessor:
             corresponds to the `source` tree.  It will be created if
             it doesn't exist.
 
-          - `excludes`: Container for paths that should not be copied
-            from the `source` tree.  This should be an absolute path.
-
         Files and directories will be created with the same permission
         bits and stat info as the source tree.
-
-        Entries identified as exclusions will not be copied at all.
         """
         if not os.path.exists(destination):
             os.mkdir(destination)
@@ -322,12 +313,6 @@ class InclusionProcessor:
         for dirname, dirs, files in os.walk(source, topdown=True):
             dirs[:] = filter_names(dirs)
             files = filter_names(files)
-
-            # remove excluded directories:
-            for dir in dirs[:]:
-                fullpath = os.path.join(dirname, dir)
-                if fullpath in excludes:
-                    dirs.remove(dir)
 
             # reldir is the name of the directory to write to,
             # relative to destination.  It will be '' at the top
@@ -339,8 +324,6 @@ class InclusionProcessor:
                 destdir = destination
             for file in files:
                 srcname = os.path.join(dirname, file)
-                if srcname in excludes:
-                    continue
                 destname = os.path.join(destdir, file)
                 # Copy file data, permission bits, and stat info;
                 # owner/group are not copied.

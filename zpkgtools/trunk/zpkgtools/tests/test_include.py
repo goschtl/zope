@@ -63,13 +63,12 @@ class InclusionProcessorTestCase(unittest.TestCase):
           <collection>
             # This is a comment.  It should be ignored.
 
-            # Don't include ignorethis.txt in the distributed collection:
-            ignorethis.txt   -
-
             # Include ignorethis.txt as newname1.txt and newname2.txt
             # in the distributed collection:
-            newname1.txt     ignorethis.txt
-            newname2.txt     ignorethis.txt
+            ignorethis.txt   newname1.txt
+            ignorethis.txt   newname2.txt
+
+            source.txt
 
             # Another comment.
           </collection>
@@ -84,77 +83,33 @@ class InclusionProcessorTestCase(unittest.TestCase):
           """)
         specs = include.load(self.source)
         specs.collection.cook()
-        self.assertEqual(len(specs.collection.excludes), 2)
-        self.assertEqual(len(specs.collection.includes), 2)
-        self.assert_(join(self.source, "ignorethis.txt")
-                     in specs.collection.excludes)
-        self.assert_(join(self.source, include.PACKAGE_CONF)
-                     in specs.collection.excludes)
+        includes = specs.collection.includes
+        self.assertEqual(len(includes), 3)
+        self.assert_("newname1.txt" in includes)
+        self.assert_("newname2.txt" in includes)
+        self.assert_(None in includes)
         self.assertEqual(specs.collection.includes["newname1.txt"],
                          "ignorethis.txt")
-        self.assertEqual(specs.loads.includes[join("doc", "whatzit.txt")],
-                         "repository:doc/whatzit.txt")
+        self.assertEqual(specs.loads.includes["repository:doc/whatzit.txt"],
+                         join("doc", "whatzit.txt"))
 
-    def test_error_on_nonexistant_ignore(self):
-        self.write_file(include.PACKAGE_CONF, """\
-            <collection>
-              does-not-exist.txt  -
-            </collection>
-            """)
-        specs = include.load(self.source)
-        try:
-            specs.collection.cook()
-        except include.InclusionSpecificationError, e:
-            self.assertEqual(e.filename,
-                             join(self.source, include.PACKAGE_CONF))
-            #self.assertEqual(e.lineno, 2)
-        else:
-            self.fail("expected InclusionSpecificationError")
-
-    def test_error_on_omitted_source(self):
+    def test_omitted_destination_keeps_name(self):
         self.write_file(include.PACKAGE_CONF, """\
             <collection>
               whatzit.txt
             </collection>
             """)
-        try:
-            include.load(self.source)
-        except include.InclusionSpecificationError, e:
-            self.assertEqual(e.filename,
-                             join(self.source, include.PACKAGE_CONF))
-            self.assertEqual(e.lineno, 2)
-        else:
-            self.fail("expected InclusionSpecificationError")
+        specs = include.load(self.source)
+        self.assert_("whatzit.txt" in specs.collection.includes[None])
 
-    def test_globbing_on_ignore(self):
+    def test_globbing_on_include(self):
         self.write_file(include.PACKAGE_CONF, """\
             <collection>
-              *.txt -
+              *.txt
             </collection>
             """)
         specs = include.load(self.source)
         specs.collection.cook()
-        self.assertEqual(len(specs.collection.excludes), 2)
-        self.assert_(join(self.source, "ignorethis.txt")
-                     in specs.collection.excludes)
-        self.assert_(join(self.source, include.PACKAGE_CONF)
-                     in specs.collection.excludes)
-
-    def test_disallow_exclude_in_distribution_spec(self):
-        self.check_disallow_exclude_in_spec("distribution")
-
-    def test_disallow_exclude_in_load_spec(self):
-        self.check_disallow_exclude_in_spec("load")
-
-    def check_disallow_exclude_in_spec(self, sectionname):
-        text = """\
-            <%s>
-              ignorethis.txt  -
-            </%s>
-            """ % (sectionname, sectionname)
-        self.write_file(include.PACKAGE_CONF, text)
-        self.assertRaises(include.InclusionSpecificationError,
-                          include.load, self.source)
 
     def test_disallow_external_reference_in_collection_spec(self):
         self.check_disallow_external_reference_in_spec("collection")
@@ -217,18 +172,12 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.assert_(os.path.isfile(join(self.destination, "ignorethis.txt")))
 
     def test_createDistributionTree(self):
-        self.write_file(include.PACKAGE_CONF, """\
-            <collection>
-              __init__.py -
-            </collection>
-            """)
         specs = include.load(self.source)
         specs.collection.cook()
         self.processor.createDistributionTree(self.destination,
                                               specs.collection)
         self.check_file("ignorethis.txt")
         self.check_file("somescript.py")
-        self.assert_(not os.path.exists(join(self.destination, "__init__.py")))
         self.assert_(not os.path.exists(join(self.destination, "CVS")))
         self.assert_(not os.path.exists(join(self.destination, ".cvsignore")))
 
