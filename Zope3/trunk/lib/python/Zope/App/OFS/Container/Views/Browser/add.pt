@@ -25,14 +25,9 @@
 <div metal:fill-slot="body">
 
 <form action="action.html" method="POST">
-<table class="TypeListing">
+<table class="TypeListing" cellpadding="3">
 
   <caption>Add Content</caption>
-
-    <tr>
-      <td class="Selector"><br /></td>
-      <th class="TypeName">Title</th>
-    </tr>
 
     <!--
       ** listAddableInfo returns a sequence of mappings, containing:
@@ -50,18 +45,14 @@
       </td>
 
       <td class="TypeName">
-        <label tal:attributes="for info/action">
-          <span tal:replace="info/title">Folder</span>
+        <label style="font-weight: bold;"
+               tal:attributes="for info/action">
+          <span tal:replace="info/title" >Folder</span>
         </label>
-      </td>
-
-    </tr>
-
-    <tr>
-      <td class="Selector"><br /></td>
-      <td class="TypeDescription" tal:content="info/description">
+        <div class="TypeDescription" tal:content="info/description">
           Folders are generic containers for content, including other
           folders.
+        </div>
       </td>
     </tr>
 
