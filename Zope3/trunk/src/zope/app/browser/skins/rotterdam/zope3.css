@@ -233,21 +233,21 @@ pre {
 
 #navtreecontents expand {
   	   background-repeat: no-repeat;
-  	   padding-left: 15px;
+  	   padding-left: 14px;
 	   display: inline;
 	   cursor: pointer;
                 }
                  
 #navtreecontents icon {
   	   background-repeat: no-repeat;
-  	   padding-left: 18px;
+  	   padding-left: 17px;
 	   display: inline;
 	   cursor: auto;
                 }
                  
 #navtreecontents collection {
 	   display: block;
-	   margin-left: 15px;
+	   margin-left: 8px;
 /*	   border: red solid 1pt;  */
 	   height: auto;
 }
@@ -275,7 +275,7 @@ pre {
 
 #navigators {
     float: left;
-    width: 18%;
+    width: 20%;
 }
 
 #content {
@@ -285,7 +285,7 @@ pre {
 
 #context_information {
     float: left;
-    width: 18%;
+    width: 16%;
 }
 #helpers {
 }
@@ -303,7 +303,7 @@ pre {
 div.box {
     background: transparent;
     border-collapse: collapse;
-    margin: 2em 1em 0em 1em;
+    margin: 2em .2em 0em .2em;
     border: none;
 }
 
