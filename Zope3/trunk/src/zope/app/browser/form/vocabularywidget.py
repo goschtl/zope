@@ -147,11 +147,13 @@ class ViewSupport(object, TranslationHook):
     def mkselectionitem(self, type, name, term, selected, disabled):
         flag = ""
         if selected:
-            flag = "checked "
+            flag = " checked='checked'"
         if disabled:
-            flag += "disabled "
+            flag += " disabled='disabled'"
+        if flag:
+            flag = "\n      " + flag
         return ("<tr><td>"
-                "<input type='%s' value='%s' name='%s' %s/>"
+                "<input type='%s' value='%s' name='%s'%s />"
                 "</td>\n    <td>%s</td></tr>"
                 % (type, term.token, name, flag, self.textForValue(term)))
 
@@ -377,7 +379,7 @@ class ActionHelper(object, TranslationHook):
         msgid = self.__actions[action]
         return ("<input type='submit' name='%s.action-%s' value=%s %s/>"
                 % (self.name, action, quoteattr(self.translate(msgid)),
-                   disabled and "disabled " or ""))
+                   disabled and "\n       disabled='disabled' " or ""))
 
 
 class VocabularyEditWidgetBase(VocabularyWidgetBase):
