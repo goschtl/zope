@@ -18,7 +18,7 @@
         class="zope.app.utility.browser.AddRegistration"
         permission="zope.ManageServices"
         content_factory=
-            "ldapadapter.LDAPAdapter"
+            "ldapadapter.utility.LDAPAdapter"
         arguments="name interface"
         set_after_add="status"
         fields="name interface permission status"

@@ -8,7 +8,7 @@
     <content class="ldapadapter.ManageableLDAPAdapter">
 
         <factory
-            id="ldapadapter.ManageableLDAPAdapter" />
+            id="ldapadapter.utility.ManageableLDAPAdapter" />
    
         <implements
             interface="zope.app.utility.interfaces.ILocalUtility" />
