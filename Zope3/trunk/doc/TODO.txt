@@ -191,3 +191,7 @@ The order that items are listed here is not significant.
 
   - Get the html titles a lot righter than they are now.
 
+- Schema fields
+
+  Some kind of field that can contain objects that conform to a particular
+  schema. And, widgets for this field.
