@@ -1,0 +1,87 @@
+<metal:block define-macro="menu"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xml:lang="en"
+  lang="en" 
+  i18n:domain="apidoc">
+
+  <head>
+    <!-- Waaa -->
+    <title metal:define-slot="title" i18n:translate="">Z3 UI</title>
+
+
+    <style type="text/css" 
+           media="all"
+           tal:content=
+           "string: @import url(${context/++resource++apidoc.css});"
+           >
+      @import url(/++resource++apidoc.css);
+    </style>
+
+    <metal:block define-slot="headers" />
+    <metal:block define-slot="style_slot" />
+    <metal:block define-slot="ecmascript_slot" />
+
+    <link rel="icon" type="image/png"
+          tal:attributes="href context/++resource++favicon.png" />
+  </head>
+
+<head>
+
+<body>
+
+  <div class="menu">Menu</div>
+ 
+  <metal:block define-slot="pre_menu" />
+
+  <metal:block define-slot="menu">
+
+    <table cellspacing="0" class="menu" border="0"
+           tal:define="root      context/@@static_cookie_tree;
+                       result    root/getFlatDicts;
+                       flatdicts python:result[0];
+                       maxdepth  python:result[1];">
+
+    <tr tal:repeat="dict flatdicts">
+    <tal:block tal:define="node dict/node">
+
+      <td style="width:16px" tal:repeat="depth python:range(dict['depth'])" />
+
+      <td style="width:10px">
+        <a href=""
+           tal:attributes="href string:?tree-state=${dict/tree-state}"
+           tal:condition="node/hasChildren"><img
+
+               tal:attributes="src context/++resource++pl_small.gif"
+               tal:condition="not:node/expanded" alt="+" border="0" /><img
+
+               tal:attributes="src context/++resource++mi_small.gif"
+               tal:condition="node/expanded" alt="-" border="0" /></a>
+      </td>
+
+      <td colspan="1" class="list-item"
+          tal:attributes="colspan python:maxdepth - dict['depth'] + 1">
+        <a href="" target="main"
+            tal:attributes="href python: view.getMenuLink(node)"
+            tal:content="python: view.getMenuTitle(node)"
+            tal:condition="python: view.getMenuLink(node) is not None">
+          node/id
+        </a>
+        <tal:block 
+            replace="python: view.getMenuTitle(node)"
+            condition="python: view.getMenuLink(node) is None" />
+      </td>
+
+    </tal:block>
+    </tr>
+
+    </table>
+
+  </metal:block>
+
+  <metal:block define-slot="post_menu" />
+
+</body>
+</html>
+</metal:block>

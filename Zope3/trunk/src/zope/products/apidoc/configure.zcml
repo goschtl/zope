@@ -1,0 +1,23 @@
+<configure
+  xmlns="http://namespaces.zope.org/zope"
+  i18n_domain="api_doc">
+
+  <class class=".APIDocumentation">
+    <allow interface="zope.app.interfaces.container.IReadContainer" />
+  </class>
+
+  <traversalNamespace
+      name="apidoc"
+      handler=".handleNamespace" />
+
+  <include package=".browser" />
+
+  <!-- API Documentation Modules -->
+  <include package=".classmodule" />
+  <include package=".ifacemodule" />
+  <include package=".servicemodule" />
+  <include package=".utilitymodule" />
+  <include package=".viewmodule" />
+  <include package=".zcmlmodule" />
+
+</configure>
