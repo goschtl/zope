@@ -119,7 +119,7 @@ def output_test(request, response):
     print
     print '  >>> print http(r"""'
     print '  ...', '\n  ... '.join(request.lines())+'""")'
-    print ' ', '\n  '.join([line.rstrip() or '<BLANKLINE>'
+    print ' ', '\n  '.join([line.rstrip() and line or '<BLANKLINE>'
                              for line in response.lines()])
 
 class Message:
