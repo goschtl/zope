@@ -5,13 +5,13 @@
   </title>
 </head>
 <body><div metal:fill-slot="body">
-    <div tal:omit-tag="" 
-        tal:define="principal python:request.principal.id" 
-        tal:condition="python:principal != 'zope.anybody'">
-        <span tal:define="dummy python:request.response.redirect(request['camefrom'])" />
-    </div>
     <p i18n:translate="">Please provide Login Information</p>
     <form action="" method="post">
+        <div tal:omit-tag="" 
+            tal:define="principal python:request.principal.id" 
+            tal:condition="python:principal != 'zope.anybody'">
+            <span tal:define="dummy python:request.response.redirect(request.get('camefrom', ''))" />
+        </div>
         <div class="row">
             <div class="label" i18n:translate="">User Name</div>
             <div class="field">
