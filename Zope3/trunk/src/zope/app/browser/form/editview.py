@@ -12,10 +12,13 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.22 2003/04/16 21:51:27 fdrake Exp $
+$Id: editview.py,v 1.23 2003/05/02 18:27:07 jim Exp $
 """
 
+import os
+
 from datetime import datetime
+from zope.configuration.exceptions import ConfigurationError
 
 from zope.schema.interfaces import ValidationError
 from zope.schema import getFieldNamesInOrder
@@ -197,10 +200,13 @@ def normalize(_context, schema_, for_, class_, template, default_template,
 
     if template is not None:
         template = _context.path(template)
+        template = os.path.abspath(str(template))
+        if not os.path.isfile(template):
+            raise ConfigurationError("No such file", template)
     else:
         template = default_template
 
-    template = str(template)
+
 
     names = getFieldNamesInOrder(schema)
 
