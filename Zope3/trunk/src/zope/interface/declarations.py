@@ -11,13 +11,14 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.12 2003/06/02 14:46:15 jim Exp $
+$Id: declarations.py,v 1.13 2003/06/03 19:52:39 pje Exp $
 """
 
 import sys
 from zope.interface.interface import InterfaceClass, mergeOrderings
 import exceptions
 from types import ClassType
+from advice import addClassAdvisor
 
 # There are imports from _zope_interface_ospec later in the file
 # because _zope_interface_ospec depends on some functions defined
@@ -358,10 +359,10 @@ def getObjectSpecification(ob):
         if provides is not None:
             # Just use the provides spec
             return provides
-        
+
         # No interfaces
         return _empty
-        
+
     return ObjectSpecification(provides, cls)
 
 def providedBy(ob):
@@ -979,24 +980,9 @@ def directlyProvidedBy(object):
     """
     return getattr(object, "__provides__", _empty)
 
-
-class metaclasshooker:
-
-    def __init__(self, metaclass):
-        self.metaclass = metaclass
-
-    def __call__(self, name, bases, dict):
-        metaclass = self.metaclass
-        if metaclass is None:
-            if bases:
-                metaclass = type(bases[0])
-            else:
-                metaclass = ClassType
-
-        cls = metaclass(name, bases, dict)
-        _setImplements(cls, dict['__implements__'])
-
-        return cls
+def _implements_advice(cls):
+    _setImplements(cls, cls.__dict__['__implements__'])
+    return cls
 
 def _implements(name, spec):
     frame = sys._getframe(2)
@@ -1010,11 +996,7 @@ def _implements(name, spec):
         raise TypeError(name+" can be used only once in a class definition.")
 
     locals["__implements__"] = spec
-
-    metaclass = locals.get('__metaclass__')
-    if metaclass is None:
-        metaclass = frame.f_globals.get('__metaclass__')
-    locals["__metaclass__"] = metaclasshooker(metaclass)
+    addClassAdvisor(_implements_advice, depth=3)
 
 def implements(*interfaces):
     """Declare interfaces implemented by instances of a class
@@ -1295,7 +1277,7 @@ def _getImplements(cls):
 def _finddescr(cls):
     # Try to find the __providedBy__ descriptor. If we can't find it,
     # just return the class. 
-    
+
     d = cls.__dict__.get("__providedBy__", cls)
     if d is not cls:
         return d
@@ -1337,7 +1319,7 @@ def _setImplements(cls, v):
                         break
                 else: # no break
                     pb = None
-                    
+
             if not isinstance(pb, ObjectSpecificationDescriptor):
                 raise TypeError(
                     cls,

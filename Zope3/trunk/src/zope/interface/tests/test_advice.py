@@ -1,0 +1,185 @@
+
+##############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Tests for advice
+
+This module was adapted from 'protocols.tests.advice', part of the Python
+Enterprise Application Kit (PEAK).  Please notify the PEAK authors
+(pje@telecommunity.com and tsarna@sarna.org) if bugs are found or
+Zope-specific changes are required, so that the PEAK version of this module
+can be kept in sync.
+
+PEAK is a Python application framework that interoperates with (but does
+not require) Zope 3 and Twisted.  It provides tools for manipulating UML
+models, object-relational persistence, aspect-oriented programming, and more.
+Visit the PEAK home page at http://peak.telecommunity.com for more information.
+
+$Id: test_advice.py,v 1.1 2003/06/03 19:52:39 pje Exp $
+"""
+
+from unittest import TestCase, makeSuite, TestSuite
+from zope.interface.advice import *
+import sys
+from types import InstanceType
+
+
+def ping(log, value):
+
+    def pong(klass):
+        log.append((value,klass))
+        return [klass]
+
+    addClassAdvisor(pong)
+
+
+moduleLevelFrameInfo = getFrameInfo(sys._getframe())
+
+class FrameInfoTest(TestCase):
+
+    classLevelFrameInfo = getFrameInfo(sys._getframe())
+
+    def checkModuleInfo(self):
+        kind,module,f_locals,f_globals = moduleLevelFrameInfo
+        assert kind=="module"
+        for d in module.__dict__, f_locals, f_globals:
+            assert d is globals()
+
+    def checkClassInfo(self):
+        kind,module,f_locals,f_globals = self.classLevelFrameInfo
+        assert kind=="class"
+        assert f_locals is self.__class__.__dict__  # ???
+        for d in module.__dict__, f_globals:
+            assert d is globals()
+
+
+    def checkCallInfo(self):
+        kind,module,f_locals,f_globals = getFrameInfo(sys._getframe())
+        assert kind=="function call"
+        assert f_locals is locals() # ???
+        for d in module.__dict__, f_globals:
+            assert d is globals()
+
+
+class AdviceTests(TestCase):
+
+    def checkOrder(self):
+        log = []
+        class Foo:
+            ping(log, 1)
+            ping(log, 2)
+            ping(log, 3)
+
+        # Strip the list nesting
+        for i in 1,2,3:
+            assert isinstance(Foo,list)
+            Foo, = Foo
+
+        assert log == [
+            (1, Foo),
+            (2, [Foo]),
+            (3, [[Foo]]),
+        ]
+
+    def XXXcheckOutside(self):
+        # Disabled because the check does not work with doctest tests.
+        try:
+            ping([], 1)
+        except SyntaxError:
+            pass
+        else:
+            raise AssertionError(
+                "Should have detected advice outside class body"
+            )
+
+    def checkDoubleType(self):
+        if sys.hexversion >= 0x02030000:
+            return  # you can't duplicate bases in 2.3
+        class aType(type,type):
+            ping([],1)
+        aType, = aType
+        assert aType.__class__ is type
+
+    def checkSingleExplicitMeta(self):
+
+        class M(type): pass
+
+        class C(M):
+            __metaclass__ = M
+            ping([],1)
+
+        C, = C
+        assert C.__class__ is M
+
+
+    def checkMixedMetas(self):
+
+        class M1(type): pass
+        class M2(type): pass
+
+        class B1: __metaclass__ = M1
+        class B2: __metaclass__ = M2
+
+        try:
+            class C(B1,B2):
+                ping([],1)
+        except TypeError:
+            pass
+        else:
+            raise AssertionError("Should have gotten incompatibility error")
+
+        class M3(M1,M2): pass
+
+        class C(B1,B2):
+            __metaclass__ = M3
+            ping([],1)
+
+        assert isinstance(C,list)
+        C, = C
+        assert isinstance(C,M3)
+
+    def checkMetaOfClass(self):
+
+        class metameta(type):
+            pass
+
+        class meta(type):
+            __metaclass__ = metameta
+
+        assert determineMetaclass((meta,type)) == metameta
+
+TestClasses = (AdviceTests, FrameInfoTest)
+
+def test_suite():
+    return TestSuite([makeSuite(t,'check') for t in TestClasses])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
