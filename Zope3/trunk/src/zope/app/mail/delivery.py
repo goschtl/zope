@@ -56,7 +56,7 @@ class MailDataManager(object):
         return NoSavepointSupportRollback(self)
 
     def sortKey(self):
-	return id(self)
+        return id(self)
 
 class AbstractMailDelivery(object):
 
