@@ -14,7 +14,7 @@
 """
 See ViewPageTemplateFile
 
-$Id: viewpagetemplatefile.py,v 1.7 2003/05/27 14:18:20 jim Exp $
+$Id: viewpagetemplatefile.py,v 1.8 2003/07/31 16:48:38 mgedmin Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -27,9 +27,11 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile, ContextDescriptor):
     """Page Templates used as methods of views defined as Python classes.
     """
 
-    def __init__(self, filename, _prefix=None, usage=u''):
+    def __init__(self, filename, _prefix=None, usage=u'', content_type=None):
         _prefix = self.get_path_from_prefix(_prefix)
         super(ViewPageTemplateFile, self).__init__(filename, _prefix)
+        if content_type is not None:
+            self.content_type = content_type
         self.usage = usage
 
     def pt_getContext(self, instance, request, **_kw):

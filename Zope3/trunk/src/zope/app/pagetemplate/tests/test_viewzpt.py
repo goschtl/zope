@@ -42,7 +42,7 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         self.context = C1()
 
 
-    def checkNamespaceContextAvailable(self):
+    def testNamespaceContextAvailable(self):
         context = self.context
         request = None
 
@@ -51,12 +51,12 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         self.failUnless('views' in namespace)
 
 
-    def checkNamespaceHereNotAvailable(self):
+    def testNamespaceHereNotAvailable(self):
         request = None
         self.assertRaises(AttributeError, self.t.pt_getContext,
                           InstanceWithoutContext(), request)
 
-    def checkViewMapper(self):
+    def testViewMapper(self):
 
         the_view = "This is the view"
         class the_view_type(Interface): pass
@@ -92,26 +92,53 @@ class TestViewZPTUsage(PlacefulSetup, unittest.TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.context = C1()
-        self.context.request = None
+        self.request = None
 
-    def checkInitWithUsage(self):
-        self.t = ViewPageTemplateFile('testusage.pt', usage="test")
-        result = self.t(self.context)
-        self.assertEquals(result, "<html><body>test</body></html>")
-        result = self.t(self.context, template_usage="other")
-        self.assertEquals(result, "<html><body>other</body></html>")
+    def testInitWithUsage(self):
+        self.t = ViewPageTemplateFile('testusage.pt', usage=u"test")
+        result = self.t(self)
+        self.assertEquals(result, "<html><body>test</body></html>\n")
+        result = self.t(self, template_usage=u"other")
+        self.assertEquals(result, "<html><body>other</body></html>\n")
 
-    def checkInitWithoutUsage(self):
+    def testInitWithoutUsage(self):
         self.t = ViewPageTemplateFile('testusage.pt')
-        result = self.t(self.context)
-        self.assertEquals(result, "<html><body></body></html>")
-        result = self.t(self.context, template_usage="other")
-        self.assertEquals(result, "<html><body>other</body></html>")
+        result = self.t(self)
+        self.assertEquals(result, "<html><body></body></html>\n")
+        result = self.t(self, template_usage=u"other")
+        self.assertEquals(result, "<html><body>other</body></html>\n")
+
+
+class TestViewZPTContentType(unittest.TestCase):
+
+    def testInitWithoutType(self):
+        t = ViewPageTemplateFile('test.pt')
+        t._cook_check()
+        self.assertEquals(t.content_type, "text/html")
+
+        t = ViewPageTemplateFile('testxml.pt')
+        t._cook_check()
+        self.assertEquals(t.content_type, "text/xml")
+
+    def testInitWithType(self):
+        t = ViewPageTemplateFile('test.pt', content_type="text/plain")
+        t._cook_check()
+        self.assertEquals(t.content_type, "text/plain")
+
+        t = ViewPageTemplateFile('testxml.pt', content_type="text/plain")
+        t._cook_check()
+        # XXX: This is arguable.  Should automatic content type detection
+        #      really override content type specified to the constructor?
+        self.assertEquals(t.content_type, "text/xml")
 
 
 def test_suite():
-    return unittest.makeSuite(TestViewZPT, 'check')
-    return unittest.makeSuite(TestViewZPTUsage, 'check')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(TestViewZPT))
+    suite.addTest(unittest.makeSuite(TestViewZPTUsage))
+    suite.addTest(unittest.makeSuite(TestViewZPTContentType))
+    return suite
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(test_suite())
