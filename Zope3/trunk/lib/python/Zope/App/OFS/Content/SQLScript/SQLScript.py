@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: SQLScript.py,v 1.1 2002/07/11 00:03:18 srichter Exp $
+$Id: SQLScript.py,v 1.2 2002/07/12 21:37:35 srichter Exp $
 """
 from types import StringTypes
 
 from Persistence import Persistent
-from Zope.ComponentArchitecture import getNextService
+from Zope.ComponentArchitecture import getService
 from Zope.ContextWrapper import ContextMethod
 
 from Zope.DocumentTemplate.DT_HTML import HTML
@@ -104,11 +104,7 @@ class SQLScript(SQLCommand, Persistent):
 
     def getConnection(self):
         'See Zope.App.RDB.ISQLCommand.ISQLCommand'
-        try:
-            parent = getParent(self)
-        except:
-            parent = self
-        connection_service = getNextService(parent, "ConnectionService")
+        connection_service = getService(self, "ConnectionService")
         connection = connection_service.getConnection(self.connectionName)
         return connection
 

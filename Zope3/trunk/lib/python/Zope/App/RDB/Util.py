@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Util.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
+$Id: Util.py,v 1.4 2002/07/12 21:37:35 srichter Exp $
 """
 from Zope.App.RDB.DatabaseException import DatabaseException
 from Zope.App.RDB.Row import RowClassFactory
@@ -21,7 +21,7 @@ from Zope.App.RDB.ResultSet import ResultSet
 def queryForResults(conn, query):
     """Convenience function to quickly execute a query."""
     
-    # need to typing
+    # XXX need to do typing
     cursor = conn.cursor()
 
     try:

@@ -3,6 +3,18 @@
 
 <serviceType id="ConnectionService" interface=".IConnectionService." />
 
+<content class=".ZopeConnection.">
+  <require
+      permission="Zope.ManageContent"
+      interface=".IZopeConnection." />
+</content>
+
+<content class=".ZopeCursor.">
+  <require
+      permission="Zope.ManageContent"
+      interface=".IZopeCursor." />
+</content>
+
 <content class=".ResultSet.">
   <require
       permission="Zope.ManageContent"
