@@ -133,7 +133,7 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpSearchIndex \
   &lpSharedInit &lpDCInit &lpProductsInit \
   &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
-  &lpZSQLMethods &lpZGadflyDA &ZServer
+  &lpZSQLMethods &lpZGadflyDA &ZServer &lpMIMETools
 
 
 # KLM end
