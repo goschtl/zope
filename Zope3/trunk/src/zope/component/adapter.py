@@ -13,10 +13,10 @@
 ##############################################################################
 """Global Adapter Service
 
-$Id: adapter.py,v 1.11 2004/04/15 13:26:09 srichter Exp $
+$Id: adapter.py,v 1.12 2004/04/17 14:33:51 srichter Exp $
 """
 from zope.component.exceptions import ComponentLookupError
-from zope.component.interfaces import IAdapterService, IComponentRegistry
+from zope.component.interfaces import IAdapterService, IRegistry
 from zope.component.service import GlobalService
 from zope.interface.adapter import AdapterRegistry
 from zope.interface import implements, providedBy, Interface
@@ -24,7 +24,7 @@ import sys
 import warnings
 import zope.schema
 
-class IGlobalAdapterService(IAdapterService, IComponentRegistry):
+class IGlobalAdapterService(IAdapterService, IRegistry):
 
     def register(required, provided, name, factory, info=''):
         """Register an adapter factory

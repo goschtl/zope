@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.32 2004/04/15 13:26:13 srichter Exp $
+$Id: interfaces.py,v 1.33 2004/04/17 14:33:51 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -329,7 +329,7 @@ class IComponentArchitecture(Interface):
         If the component can't be found, the default is returned.
         """
 
-class IComponentRegistry(Interface):
+class IRegistry(Interface):
     """Object that supports component registry
     """
 

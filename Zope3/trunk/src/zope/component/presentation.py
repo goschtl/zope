@@ -24,10 +24,10 @@ service. Additionally it contains all registration classes that can occur:
 
   - PresentationRegistration
 
-$Id: presentation.py,v 1.13 2004/04/15 13:26:17 srichter Exp $
+$Id: presentation.py,v 1.14 2004/04/17 14:33:51 srichter Exp $
 """
 from types import ClassType
-from zope.component.interfaces import IPresentationService, IComponentRegistry
+from zope.component.interfaces import IPresentationService, IRegistry
 from zope.component.service import GlobalService
 from zope.component.servicenames import Presentation
 from zope.interface import providedBy
@@ -203,7 +203,7 @@ class GlobalPresentationService(GlobalService):
 
     zope.interface.implements(IPresentationService,
                               IGlobalPresentationService,
-                              IComponentRegistry,
+                              IRegistry,
                               )
     
     def __init__(self):
