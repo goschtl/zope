@@ -17,9 +17,7 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-from messageid import MessageID
-
-class Message(MessageID):
+class Message(unicode):
     """Message (Python implementation)
 
     This is a string used as a message.  It has a domain attribute that is
@@ -85,6 +83,57 @@ class Message(MessageID):
     True
     >>> args
     (u'fembot', None, None, None)
+
+    Change classes for pickle tests
+    >>> import zope.i18nmessageid.message
+    >>> oldMessage = zope.i18nmessageid.message.Message
+    >>> zope.i18nmessageid.message.Message = Message
+    
+    At first check if pickling and unpicklung from pyMessage to pyMessage works
+    >>> from pickle import dumps, loads
+    >>> pystate = dumps(new_robot)
+    >>> pickle_bot = loads(pystate)
+    >>> pickle_bot, pickle_bot.domain, pickle_bot.default, pickle_bot.mapping
+    (u'robot-message', 'futurama', u'${name} is a robot.', {u'name': u'Bender'})
+    >>> pickle_bot._readonly
+    True
+    >>> from zope.i18nmessageid.message import pyMessage
+    >>> pickle_bot.__reduce__()[0] is pyMessage
+    True
+    >>> del pickle_bot
+    
+    At second check if cMessage is able to load the state of a pyMessage
+    >>> from _zope_i18nmessageid_message import Message
+    >>> zope.i18nmessageid.message.Message = Message
+    >>> c_bot = loads(pystate)
+    >>> c_bot, c_bot.domain, c_bot.default, c_bot.mapping
+    (u'robot-message', 'futurama', u'${name} is a robot.', {u'name': u'Bender'})
+    >>> c_bot._readonly
+    Traceback (most recent call last):
+    AttributeError: 'zope.i18nmessageid.message.Message' object has no attribute '_readonly'
+    >>> from _zope_i18nmessageid_message import Message as cMessage
+    >>> c_bot.__reduce__()[0] is cMessage
+    True
+    
+    At last check if pyMessage can load a state of cMessage
+    >>> cstate = dumps(c_bot)
+    >>> del c_bot
+    >>> from zope.i18nmessageid.message import pyMessage as Message
+    >>> zope.i18nmessageid.message.Message = Message
+    >>> py_bot = loads(cstate)
+    >>> py_bot, py_bot.domain, py_bot.default, py_bot.mapping
+    (u'robot-message', 'futurama', u'${name} is a robot.', {u'name': u'Bender'})
+    >>> py_bot._readonly
+    True
+    >>> py_bot.__reduce__()[0] is pyMessage
+    True
+    
+    Both pickle states should be equal
+    >>> pystate == cstate
+    True
+    
+    Finally restore classes for other unit tests
+    >>> zope.i18nmessageid.message.Message = oldMessage
     """
     
     __slots__ = ('domain', 'default', 'mapping', '_readonly')
@@ -114,12 +163,13 @@ class Message(MessageID):
         if getattr(self, '_readonly', False):
             raise TypeError, 'readonly attribute'
         else:
-            return MessageID.__setattr__(self, key, value)
+            return unicode.__setattr__(self, key, value)
         
     def __reduce__(self):
-        """The reduce hook is slightly different to the one from MessageID
-        """
         return self.__class__, self.__getstate__()
+
+    def __getstate__(self):
+        return unicode(self), self.domain, self.default, self.mapping
 
 # save a copy for the unit tests
 pyMessage = Message
