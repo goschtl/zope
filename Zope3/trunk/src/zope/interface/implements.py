@@ -14,7 +14,7 @@
 """Implemantation assertion facilities.
 
 Revision information:
-$Id: implements.py,v 1.3 2003/01/07 12:14:53 srichter Exp $
+$Id: implements.py,v 1.4 2003/04/10 15:43:16 philikon Exp $
 """
 
 from zope.interface import exceptions
@@ -64,8 +64,7 @@ def visitImplements(implements, object, visitor, getInterface=None):
     # yet remain compatible with earlier versions of python.
     implements_class = getattr(implements, '__class__', None)
 
-    if implements_class == InterfaceClass or \
-       isinstance(implements, InterfaceClass):
+    if InterfaceClass in implements_class.__mro__:
         return visitor(implements)
     elif implements == CLASS_INTERFACES:
         klass = getattr(object, '__class__', None)
