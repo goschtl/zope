@@ -222,6 +222,14 @@
 
 </content>
 
+<adapter 
+  for="zope.app.interfaces.content.folder.IFolder"
+  provides="zope.app.interfaces.file.IFileFactory"
+  name=".dtml"
+  factory=".dtmlpage.DTMLFactory"
+  permission="zope.ManageContent"
+  />
+
 
 <content class="zope.app.content.file.File">
 

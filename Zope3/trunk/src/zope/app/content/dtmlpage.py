@@ -12,13 +12,14 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.4 2003/05/27 14:18:14 jim Exp $
+$Id: dtmlpage.py,v 1.5 2003/05/29 16:48:16 gvanrossum Exp $
 """
 from persistence import Persistent
 
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.content.file import IFileContent
 from zope.app.interfaces.content.dtmlpage import IDTMLPage, IRenderDTMLPage
+from zope.app.interfaces.file import IFileFactory
 
 from zope.context import ContextMethod
 from zope.context import getWrapperContainer
@@ -62,3 +63,15 @@ class DTMLPage(Persistent):
 
     source = property(getSource, setSource, None,
                       """Source of the DTML Page.""")
+
+class DTMLFactory(object):
+
+    __implements__ = IFileFactory
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, name, content_type, data):
+        r = DTMLPage()
+        r.setSource(data, content_type or 'text/html')
+        return r
