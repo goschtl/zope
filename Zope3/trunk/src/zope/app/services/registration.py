@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.4 2003/06/30 16:24:14 jim Exp $
+$Id: registration.py,v 1.5 2003/07/01 22:05:42 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -107,10 +107,10 @@ class RegistrationStack(Persistent):
 
     implements(interfaces.IRegistrationStack)
 
-    _data = ()
+    _data = ()  # tuple of strings (ivar)
 
     def _id(self, ob):
-
+        """Turn ob into a path relative to the site management folder."""
         # Get and check relative path
         path = zapi.getPath(ob)
         prefix = "/++etc++site/"
@@ -302,7 +302,7 @@ class SimpleRegistration(Persistent):
                       IAttributeAnnotatable,
                       )
 
-    
+
     status = RegistrationStatusProperty()
 
     # Methods from IRegistration
@@ -523,7 +523,7 @@ class Registered(PathSetAnnotation):
     # We want to use this key:
     #   key = "zope.app.services.registration.Registered"
     # But we have existing annotations with the following key, so we'll keep
-    # it. :( 
+    # it. :(
     key = "zope.app.services.configuration.UseConfiguration"
 
     addUsage = PathSetAnnotation.addPath
@@ -715,14 +715,14 @@ class RegistrationManagerContainer(object):
         manager = self.get(name+'.py')
         if manager is not None:
             # found an item with that name, make sure it's a module(manager):
-            if IModuleManager.isImplementedBy(manager):            
+            if IModuleManager.isImplementedBy(manager):
                 return manager.getModule()
 
         # Look for the module in this folder:
         manager = self.get(name)
         if manager is not None:
             # found an item with that name, make sure it's a module(manager):
-            if IModuleManager.isImplementedBy(manager):            
+            if IModuleManager.isImplementedBy(manager):
                 return manager.getModule()
 
 
@@ -735,9 +735,9 @@ class RegistrationManagerContainer(object):
         module = sys.modules.get(name)
         if module is not None:
             return module
-        
+
         raise ImportError(name)
-        
+
     findModule = zapi.ContextMethod(findModule)
 
     def resolve(self, name):
