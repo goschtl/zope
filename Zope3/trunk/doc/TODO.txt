@@ -36,9 +36,6 @@ Things to do for the next release (in no particular order)
 
   http://dev.zope.org/Zope3/UnificationOfRequestsAndSecurityContextsThroughUse
 
-- Minor refactoring of adapter service to make it fast to find 
-  all names for adapters from/to a given interface
-
 - Redo utility service
 
 - Restructure registration framework to use direct references rather
