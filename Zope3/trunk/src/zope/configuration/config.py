@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Configuration processort
+"""Configuration processor
 
-See README.txt and notes.txt.
+See README.txt.
 
-$Id: config.py,v 1.12 2003/11/21 17:09:17 jim Exp $
+$Id: config.py,v 1.13 2003/12/17 08:06:10 philikon Exp $
 """
 
 import os.path
@@ -39,6 +39,7 @@ metans = 'http://namespaces.zope.org/meta'
 testns = 'http://namespaces.zope.org/test'
 
 _import_chickens = {}, {}, ("*",) # dead chickens needed by __import__
+
 class ConfigurationContext(object):
     """Mix-in that implements IConfigurationContext
 
@@ -371,7 +372,7 @@ class ConfigurationMachine(ConfigurationAdapterRegistry, ConfigurationContext):
     info = ''
 
     def __init__(self):
-        ConfigurationAdapterRegistry.__init__(self)
+        super(ConfigurationMachine, self).__init__()
         self.actions = []
         self.stack = [RootStackItem(self)]
         self.i18n_strings = {}
@@ -569,9 +570,8 @@ class GroupingStackItem(RootStackItem):
     Often, they just manage common data, but they may also take
     actions, either before or after contained directives are executed.
 
-    A grouping stack item us created with a grouping directive
-    definition, a configuration context,
-    and directive data.
+    A grouping stack item is created with a grouping directive
+    definition, a configuration context, and directive data.
 
     To see how this works, let's look at an example:
 
@@ -674,7 +674,7 @@ class GroupingStackItem(RootStackItem):
     implements(IStackItem)
 
     def __init__(self, context):
-        RootStackItem.__init__(self, context)
+        super(GroupingStackItem, self).__init__(context)
 
     def __callBefore(self):
         actions = self.context.before()
@@ -790,11 +790,9 @@ class ComplexStackItem(object):
 
     """
 
-
     implements(IStackItem)
 
     def __init__(self, meta, context, data, info):
-
         newcontext = GroupingContextDecorator(context)
         newcontext.info = info
         self.context = newcontext
@@ -1072,8 +1070,8 @@ def subdirective(context, name, schema):
 def toargs(context, schema, data):
     """Marshal data to an argument dictionary using a schema
 
-    Names that are python keywords have am underscore added
-    as a suffix in the schema and in the argument list, but are used
+    Names that are python keywords have an underscore added as a
+    suffix in the schema and in the argument list, but are used
     without the underscore in the data.
 
     The fields in the schema must all implement IFromUnicode.
