@@ -22,7 +22,7 @@ class TestCalendar(unittest.TestCase):
         # Log in as a god :-)
         newSecurityManager(None, UnrestrictedUser('god',
                                                   'god',
-                                                  [],
+                                                  ['Manager'],
                                                   ''))
         app = self.app
 
@@ -71,11 +71,20 @@ class TestCalendar(unittest.TestCase):
         self.assertEqual(tool.getId(),'portal_calendar')
 
     def test_types(self):
-        self.assertEqual(self.Tool.getCalendarTypes(),['Event'])
+        self.assertEqual(self.Tool.getCalendarTypes(), ('Event',))
 
         self.Tool.edit_configuration(show_types=['Event','Party']
+                                    , show_states=[] 
                                     , use_session="")
-        self.assertEqual(self.Tool.getCalendarTypes(),['Event', 'Party'])
+        self.assertEqual(self.Tool.getCalendarTypes(), ('Event', 'Party'))
+
+    def test_states(self):
+        self.assertEqual(self.Tool.getCalendarStates(), ('published',))
+
+        self.Tool.edit_configuration(show_types=[]
+                                    , show_states=['pending', 'published'] 
+                                    , use_session="")
+        self.assertEqual(self.Tool.getCalendarStates(), ('pending', 'published'))
 
     def test_Days(self):
         assert self.Tool.getDays() == ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
@@ -424,16 +433,16 @@ class TestCalendar(unittest.TestCase):
     def test_lastDayRendering(self):
         # Bug in catalog_getevents included events starting at 00:00:00 on the next day
 
-        self.Site.Members.invokeFactory('Event', id='today', title='title',
-                                         start_date='2002/05/31 23:50:00', 
-                                         end_date='2002/05/31 23:59:59')
+        self.Site.invokeFactory('Event', id='today', title='today',
+                                 start_date='2002/05/31 23:50:00', 
+                                 end_date='2002/05/31 23:59:59')
 
-        self.Site.Members.invokeFactory('Event', id='tomorrow', title='title',
-                                         start_date='2002/06/01 00:00:00', 
-                                         end_date='2002/06/01 00:10:00')
+        self.Site.invokeFactory('Event', id='tomorrow', title='tomorrow',
+                                 start_date='2002/06/01 00:00:00', 
+                                 end_date='2002/06/01 00:10:00')
 
-        self.Site.portal_workflow.doActionFor(self.Site.Members.today, 'publish')
-        self.Site.portal_workflow.doActionFor(self.Site.Members.tomorrow, 'publish')
+        self.Site.portal_workflow.doActionFor(self.Site.today, 'publish')
+        self.Site.portal_workflow.doActionFor(self.Site.tomorrow, 'publish')
 
         # Last week of May 2002
         data = [
@@ -443,7 +452,7 @@ class TestCalendar(unittest.TestCase):
                {'day': 28, 'event': 0, 'eventslist':[]},
                {'day': 29, 'event': 0, 'eventslist':[]},
                {'day': 30, 'event': 0, 'eventslist':[]},
-               {'day': 31, 'event': 1, 'eventslist':[{'start': '23:50:00', 'end': '23:59:59', 'title': 'title'}]},
+               {'day': 31, 'event': 1, 'eventslist':[{'start': '23:50:00', 'end': '23:59:59', 'title': 'today'}]},
                ]
 
         events = self.Site.portal_calendar.catalog_getevents(2002, 5)
@@ -452,20 +461,20 @@ class TestCalendar(unittest.TestCase):
     def test_firstDayRendering(self):
         # Double check it works on the other boundary as well
 
-        self.Site.Members.invokeFactory('Event', id='yesterday', title='title',
-                                         start_date='2002/05/31 23:50:00', 
-                                         end_date='2002/05/31 23:59:59')
+        self.Site.invokeFactory('Event', id='yesterday', title='yesterday',
+                                 start_date='2002/05/31 23:50:00', 
+                                 end_date='2002/05/31 23:59:59')
 
-        self.Site.Members.invokeFactory('Event', id='today', title='title',
-                                         start_date='2002/06/01 00:00:00', 
-                                         end_date='2002/06/01 00:10:00')
+        self.Site.invokeFactory('Event', id='today', title='today',
+                                 start_date='2002/06/01 00:00:00', 
+                                 end_date='2002/06/01 00:10:00')
 
-        self.Site.portal_workflow.doActionFor(self.Site.Members.yesterday, 'publish')
-        self.Site.portal_workflow.doActionFor(self.Site.Members.today, 'publish')
+        self.Site.portal_workflow.doActionFor(self.Site.yesterday, 'publish')
+        self.Site.portal_workflow.doActionFor(self.Site.today, 'publish')
 
         # First week of June 2002
         data = [
-               {'day': 1, 'event': 1, 'eventslist':[{'start': '00:00:00', 'end': '00:10:00', 'title': 'title'}]},
+               {'day': 1, 'event': 1, 'eventslist':[{'start': '00:00:00', 'end': '00:10:00', 'title': 'today'}]},
                {'day': 2, 'event': 0, 'eventslist':[]},
                {'day': 3, 'event': 0, 'eventslist':[]},
                {'day': 4, 'event': 0, 'eventslist':[]},
@@ -476,6 +485,41 @@ class TestCalendar(unittest.TestCase):
 
         events = self.Site.portal_calendar.catalog_getevents(2002, 6)
         self.assertEqual([events[e] for e in range(1, 8)], data)
+
+    def test_workflowStateRendering(self):
+        # Calendar should return events in all of the selected workflow states
+
+        self.Site.invokeFactory('Event', id='meeting',
+                                 start_date='2002/05/01 11:00:00', 
+                                 end_date='2002/05/01 13:30:00')
+
+        self.Site.invokeFactory('Event', id='dinner',
+                                 start_date='2002/05/01 20:00:00', 
+                                 end_date='2002/05/01 22:00:00')
+
+        self.assertEqual(len(self.Site.portal_catalog(portal_type='Event')), 2)
+
+        # No published events
+        self.assertEqual(len(self.Site.portal_calendar.getEventsForThisDay(DateTime('2002/05/01'))), 0) 
+        
+        # One published event
+        self.Site.portal_workflow.doActionFor(self.Site.meeting, 'publish')
+        self.assertEqual(len(self.Site.portal_catalog(review_state='published')), 1)
+
+        self.assertEqual(len(self.Site.portal_calendar.getEventsForThisDay(DateTime('2002/05/01'))), 1) 
+
+        # One pending event
+        self.Site.portal_workflow.doActionFor(self.Site.dinner, 'submit')
+        self.assertEqual(len(self.Site.portal_catalog(review_state='pending')), 1)
+
+        self.assertEqual(len(self.Site.portal_calendar.getEventsForThisDay(DateTime('2002/05/01'))), 1) 
+
+        # Make calendar return pending events
+        self.Site.portal_calendar.edit_configuration(show_types=('Event',), 
+                                                     show_states=('pending', 'published'), 
+                                                     use_session='')
+
+        self.assertEqual(len(self.Site.portal_calendar.getEventsForThisDay(DateTime('2002/05/01'))), 2)
 
 def test_suite():
     return unittest.TestSuite((
