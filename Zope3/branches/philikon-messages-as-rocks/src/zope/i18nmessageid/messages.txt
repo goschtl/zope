@@ -86,8 +86,17 @@ message id object:
 Last but not least, messages are reduceable for pickling:
 
   >>> callable, args = new_robot.__reduce__()
+  >>> callable is Message
+  True
   >>> args
-  (u'robot-message', 'futurama', u'${name} is a robot', {u'name': u'Bender'})
+  (u'robot-message', 'futurama', u'${name} is a robot.', {u'name': u'Bender'})
+
+  >>> fembot = Message(u'fembot')
+  >>> callable, args = fembot.__reduce__()
+  >>> callable is Message
+  True
+  >>> args
+  (u'fembot', None, None, None)
 
 
 Message IDs and backward compatability
