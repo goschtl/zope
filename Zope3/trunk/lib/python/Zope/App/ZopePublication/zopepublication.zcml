@@ -17,6 +17,6 @@
    for="Interface.Interface"
    factory=".Traversers.SimpleComponentTraverser." />
 
-<include package=".TraversalViews" file="config.zcml" />
+<include package=".TraversalViews" file="configure.zcml" />
 
 </zopeConfigure>

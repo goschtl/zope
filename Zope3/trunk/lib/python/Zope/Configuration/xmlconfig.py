@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.2 2002/06/10 23:29:24 jim Exp $
+$Id: xmlconfig.py,v 1.3 2002/06/17 17:52:41 gvanrossum Exp $
 """
 
 import os
@@ -258,7 +258,7 @@ class XMLConfig:
         xmlconfig(f, self._actions, Context(self._stack), self._directives)
         f.close()
 
-    def include(self, _context, file='config.zcml', package=None):
+    def include(self, _context, file='configure.zcml', package=None):
         if package is not None:
             try:
                 package = _context.resolve(package)
