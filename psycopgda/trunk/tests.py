@@ -138,6 +138,8 @@ class TestPsycopgTypeConversion(TestCase):
         # cannot represent them accurately
         self.assertEquals(c('1 month'), '1 month')
         self.assertEquals(c('2 months'), '2 months')
+        self.assertEquals(c('1 mon'), '1 mon')
+        self.assertEquals(c('2 mons'), '2 mons')
         self.assertEquals(c('1 year'), '1 year')
         self.assertEquals(c('3 years'), '3 years')
         # Later we might be able to use

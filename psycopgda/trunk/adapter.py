@@ -184,7 +184,9 @@ def parse_interval(s):
         date_comp ::= 1 'day'
                    |  number 'days'
                    |  1 'month'
+                   |  1 'mon'
                    |  number 'months'
+                   |  number 'mons'
                    |  1 'year'
                    |  number 'years'
         time      ::= number ':' number
@@ -194,6 +196,10 @@ def parse_interval(s):
     years = months = days = 0
     hours = minutes = seconds = 0
     elements = s.split()
+    # Tests with 7.4.6 on Ubuntu 5.4 interval output returns 'mon' and 'mons'
+    # and not 'month' or 'months' as expected. I've fixed this and left
+    # the original matches there too in case this is dependant on
+    # OS or PostgreSQL release.
     for i in range(0, len(elements) - 1, 2):
         count, unit = elements[i:i+2]
         if unit == 'day' and count == '1':
@@ -202,7 +208,11 @@ def parse_interval(s):
             days += int(count)
         elif unit == 'month' and count == '1':
             months += 1
+        elif unit == 'mon' and count == '1':
+            months += 1
         elif unit == 'months':
+            months += int(count)
+        elif unit == 'mons':
             months += int(count)
         elif unit == 'year' and count == '1':
             years += 1
