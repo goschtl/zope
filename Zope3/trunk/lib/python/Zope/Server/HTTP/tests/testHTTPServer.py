@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testHTTPServer.py,v 1.2 2002/06/10 23:29:36 jim Exp $
+$Id: testHTTPServer.py,v 1.3 2002/12/20 23:50:08 jeremy Exp $
 """
 
 import unittest
@@ -25,6 +25,7 @@ from Zope.Server.TaskThreads import ThreadedTaskDispatcher
 from Zope.Server.HTTP.HTTPServer import HTTPServer
 from Zope.Server.Adjustments import Adjustments
 from Zope.Server.ITask import ITask
+from Zope.Server.tests.asyncerror import AsyncoreErrorHook
 
 from httplib import HTTPConnection
 from httplib import HTTPResponse as ClientHTTPResponse
@@ -73,11 +74,12 @@ class SleepingTask:
         pass
 
 
-class Tests(unittest.TestCase):
+class Tests(unittest.TestCase, AsyncoreErrorHook):
 
     def setUp(self):
         td.setThreadCount(4)
         self.orig_map_size = len(socket_map)
+        self.hook_asyncore_error()
         self.server = EchoHTTPServer(LOCALHOST, SERVER_PORT,
                                      task_dispatcher=td, adj=my_adj)
         if CONNECT_TO_PORT == 0:
@@ -103,13 +105,14 @@ class Tests(unittest.TestCase):
                 break
             if time() >= timeout:
                 self.fail('Leaked a socket: %s' % `socket_map`)
-            poll(0.1, socket_map)
+            poll(0.1)
+        self.unhook_asyncore_error()
 
     def loop(self):
         while self.run_loop:
             self.counter = self.counter + 1
             #print 'loop', self.counter
-            poll(0.1, socket_map)
+            poll(0.1)
 
     def testEchoResponse(self, h=None, add_headers=None, body=''):
         if h is None:

@@ -13,19 +13,21 @@
 ##############################################################################
 """
 
-$Id: testFTPServer.py,v 1.6 2002/12/20 20:42:15 srichter Exp $
+$Id: testFTPServer.py,v 1.7 2002/12/20 23:50:08 jeremy Exp $
 """
 
+import asyncore
 import unittest
 import tempfile
 import os
-from asyncore import socket_map, poll
 import socket
 import shutil
+import sys
+import traceback
 from types import StringType
 from StringIO import StringIO
 
-from threading import Thread
+from threading import Thread, Event
 from Zope.Server.TaskThreads import ThreadedTaskDispatcher
 from Zope.Server.FTP.FTPServer import FTPServer
 from Zope.Server.FTP.FTPStatusMessages import status_msgs
@@ -34,6 +36,8 @@ from Zope.Server.ITask import ITask
 
 from Zope.Server.VFS.OSFileSystem import OSFileSystem
 from Zope.Server.FTP.TestFilesystemAccess import TestFilesystemAccess
+
+from Zope.Server.tests.asyncerror import AsyncoreErrorHook
 
 import ftplib
 
@@ -55,11 +59,13 @@ def retrlines(ftpconn, cmd):
     return ''.join(res)
 
 
-class Tests(unittest.TestCase):
+class Tests(unittest.TestCase, AsyncoreErrorHook):
 
     def setUp(self):
         td.setThreadCount(1)
-        self.orig_map_size = len(socket_map)
+        print "setUp", asyncore.socket_map
+        self.orig_map_size = len(asyncore.socket_map)
+        self.hook_asyncore_error()
 
         self.root_dir = tempfile.mktemp()
         os.mkdir(self.root_dir)
@@ -76,10 +82,11 @@ class Tests(unittest.TestCase):
             self.port = CONNECT_TO_PORT
         self.run_loop = 1
         self.counter = 0
+        self.thread_started = Event()
         self.thread = Thread(target=self.loop)
         self.thread.start()
-        sleep(0.1)  # Give the thread some time to start.
-
+        self.thread_started.wait(10.0)
+        self.assert_(self.thread_started.isSet())
 
     def tearDown(self):
         self.run_loop = 0
@@ -89,25 +96,28 @@ class Tests(unittest.TestCase):
         # Make sure all sockets get closed by asyncore normally.
         timeout = time() + 2
         while 1:
-            if len(socket_map) == self.orig_map_size:
+            if len(asyncore.socket_map) == self.orig_map_size:
                 # Clean!
                 break
             if time() >= timeout:
-                self.fail('Leaked a socket: %s' % `socket_map`)
+                self.fail('Leaked a socket: %s' % `asyncore.socket_map`)
                 break
-            poll(0.1, socket_map)
+            asyncore.poll(0.1)
+
+        self.unhook_asyncore_error()
 
         if os.path.exists(self.root_dir):
             shutil.rmtree(self.root_dir)
 
     def loop(self):
+        self.thread_started.set()
         import select
         from errno import EBADF
         while self.run_loop:
             self.counter = self.counter + 1
             # print 'loop', self.counter
             try:
-                poll(0.1, socket_map)
+                asyncore.poll(0.1)
             except select.error, data:
                 if data[0] == EBADF:
                     print "exception polling in loop(): ", data
