@@ -78,7 +78,7 @@ class PAS:
 
     zope.interface.implements(IPAS, IAuthenticationService, ISourceQueriables)
 
-    authenticators = extractors = challengers = factories = search = ()
+    authenticators = extractors = challengers = factories = searchers = ()
 
     def __init__(self, prefix=''):
         self.prefix = prefix
