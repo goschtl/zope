@@ -19,6 +19,7 @@ from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.size.interfaces import ISized
 from zope.app import zapi
 from zope.interface import implements
+from zope.exceptions import Unauthorized
 from zope.tales.interfaces import ITALESFunctionNamespace
 from interfaces import IZopeTalesAPI
 
@@ -64,7 +65,10 @@ class ZopeTalesAPI(object):
         return zapi.name(self.context)
 
     def title_or_name(self):
-        return getattr(self, 'title', '') or zapi.name(self.context)
+        try:
+            return getattr(self, 'title', '') or zapi.name(self.context)
+        except Unauthorized:
+            return zapi.name(self.context)
 
     def size(self):
         a = ISized(self.context, None)
