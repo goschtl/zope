@@ -36,6 +36,10 @@ Test harness.
     "name" ...).  Witn no -v, unittest is silent until the end of the
     run, except when errors occur.
 
+-p  progress
+    Show running progress.  It can be combined with -v or -vv (though the first
+    combination doesn't make much sense).
+
 -L  Loop
     Keep running the selected tests in a loop.  You may experience
     memory leakage.
@@ -118,14 +122,16 @@ except ImportError:
 class ImmediateTestResult(unittest._TextTestResult):
 
     __super_init = unittest._TextTestResult.__init__
+    __super_startTest = unittest._TextTestResult.startTest
+    __super_printErrors = unittest._TextTestResult.printErrors
 
-    def __init__(self, *args, **kwarg):
-        debug = kwarg.get('debug')
-        if debug is not None:
-            del kwarg['debug']
-        self.__super_init(*args, **kwarg)
+    def __init__(self, stream, descriptions, verbosity, debug=None,
+                 count=None, progress=0):
+        self.__super_init(stream, descriptions, verbosity)
         self._debug = debug
-        
+        self._progress = progress
+        self._count = count
+
     def _print_traceback(self, msg, err, test, errlist):
         if self.showAll or self.dots:
             self.stream.writeln("\n")
@@ -135,17 +141,37 @@ class ImmediateTestResult(unittest._TextTestResult):
         self.stream.writeln(tb)
         errlist.append((test, tb))
 
+    def startTest(self, test):
+        if self._progress:
+            self.stream.write('\r%d' % (self.testsRun + 1))
+            if self._count:
+                self.stream.write('/%d (%.1f%%)' % (self._count,
+                                  (self.testsRun + 1) * 100.0 / self._count))
+            if self.showAll:
+                self.stream.write(": ")
+            self.stream.flush()
+        self.__super_startTest(test)
+
     def addError(self, test, err):
+        if self._progress:
+            self.stream.write('\r')
         if self._debug:
             raise err[0], err[1], err[2]
         self._print_traceback("Error in test %s" % test, err,
                               test, self.errors)
 
     def addFailure(self, test, err):
+        if self._progress:
+            self.stream.write('\r')
         if self._debug:
             raise err[0], err[1], err[2]
         self._print_traceback("Failure in test %s" % test, err,
                               test, self.failures)
+
+    def printErrors(self):
+        if self._progress and not (self.dots or self.showAll):
+            self.stream.writeln()
+        self.__super_printErrors()
 
     def printErrorList(self, flavor, errors):
         for test, err in errors:
@@ -162,12 +188,21 @@ class ImmediateTestRunner(unittest.TextTestRunner):
         debug = kwarg.get('debug')
         if debug is not None:
             del kwarg['debug']
+        progress = kwarg.get('progress')
+        if progress is not None:
+            del kwarg['progress']
         self.__super_init(**kwarg)
         self._debug = debug
+        self._progress = progress
 
     def _makeResult(self):
         return ImmediateTestResult(self.stream, self.descriptions,
-                                   self.verbosity, debug=self._debug)
+                                   self.verbosity, debug=self._debug,
+                                   count=self._count, progress=self._progress)
+
+    def run(self, test):
+        self._count = test.countTestCases()
+        return unittest.TextTestRunner.run(self, test)
 
 # setup list of directories to put on the path
 
@@ -274,7 +309,8 @@ def gui_runner(files, test_filter):
     unittestgui.main(suites, minimal)
 
 def runner(files, test_filter, debug):
-    runner = ImmediateTestRunner(verbosity=VERBOSE, debug=debug)
+    runner = ImmediateTestRunner(verbosity=VERBOSE, debug=debug,
+                                 progress=progress)
     suite = unittest.TestSuite()
     for file in files:
         s = get_suite(file)
@@ -330,6 +366,7 @@ def process_args(argv=None):
     global debugger
     global build
     global gcthresh
+    global progress
 
     module_filter = None
     test_filter = None
@@ -341,9 +378,10 @@ def process_args(argv=None):
     build = 0
     gcthresh = None
     gcflags = []
+    progress = 0
 
     try:
-        opts, args = getopt.getopt(argv[1:], 'vdDLbhCumg:G:', ['help'])
+        opts, args = getopt.getopt(argv[1:], 'vpdDLbhCumg:G:', ['help'])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
@@ -352,6 +390,8 @@ def process_args(argv=None):
     for k, v in opts:
         if k == '-v':
             VERBOSE += 1
+        elif k == '-p':
+            progress = 1
         elif k == '-d':
             debug = 1
         elif k == '-D':
