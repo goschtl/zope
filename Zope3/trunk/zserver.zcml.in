@@ -14,13 +14,13 @@
          At the moment only three storages are supported:
              FileStorage - Saves data in a specified file
              MappingStorage - Saves data in a dictionary. No saving.
-	     BDBFullStorage - Save data in BerkeleyDB tables
-	     -->
+             BDBFullStorage - Save data in BerkeleyDB tables
+      -->
 
-    <startup:useFileStorage file = "Data.fs" />
+    <startup:useFileStorage file="Data.fs" />
     <!--startup:useMappingStorage /-->
-    <!--startup:useBDBFullStorage name="full" frequency="900"
-				  classicpack="96" /-->
+    <!--startup:useBDBFullStorage
+          name="full" frequency="900" classicpack="96" /-->
 
 
     <!-- Setup the log file and level.
@@ -51,8 +51,8 @@
     The 'verbose' option specifies whether any logs should be written. If
     set to false, nothing is reported. -->
 
-     <startup:addServer type = "HTTP" port = "8080" verbose="true"/>
-     <startup:addServer type = "FTP" port = "8021" />
+     <startup:addServer type="HTTP" port="8080" verbose="true" />
+     <startup:addServer type="FTP" port="8021" />
 
   </startup:defineSite>
 
