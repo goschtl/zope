@@ -10,6 +10,8 @@ Copyright (C) 2004 Five Contributors:
 
   - Philipp von Weitershausen (philikon@philikon.de)
 
+Martijn Faassen would like to thank ETH Zurich for their support
+during the initial development of Five.
 
 Five contains source code derived from:
 
