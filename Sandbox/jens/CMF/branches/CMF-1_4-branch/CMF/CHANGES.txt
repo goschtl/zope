@@ -1,3 +1,9 @@
+CMF 1.4.3 (unreleased)
+
+  Bug Fixes
+
+    - Action definitions: Removed leading spaces. (Collector #229)
+
 CMF 1.4.3-rc1 (2004/02/05)
 
   Bug Fixes
