@@ -3,18 +3,6 @@
     i18n_domain="zope"
     >
 
-  <!-- Module aliases for users of persistent objects moved during
-       the course of refactoring -->
-
-  <modulealias module=".securitymap"
-               alias="zope.app.security.grants.securitymap"/>
-
-  <modulealias module="zope.app.securitypolicy"
-               alias="zope.products.securitypolicy" />
-
-
-
-
   <content class=".permissionroles.PermissionRoles">
     <require permission="zope.Security"
              attributes="roles rolesInfo id title description" />

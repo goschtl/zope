@@ -42,10 +42,6 @@
     provides="zope.app.event.interfaces.ISubscriber"    
     />
 
-<modulealias module="zope.app.presentation.presentation"
-             alias="zope.app.services.presentation"
-             />
-
 <include file="pagefolder.zcml" />
 <include file="zpt.zcml" />
 

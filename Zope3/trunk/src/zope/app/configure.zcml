@@ -14,21 +14,6 @@
  
   <include package=".generations" file="subscriber.zcml" />
 
-  <modulealias
-      module="zope.app"
-      alias="zope.app.interfaces"
-      />
-
-  <modulealias
-      module="zope.app"
-      alias="zope.app.services"
-      />
-
-  <modulealias
-      module="zope.app.servicenames"
-      alias="zope.app.services.servicenames"
-      />
-
   <!-- Ordinary Application (non-view) configuration) -->
   <include package="zope.app.component" />
   <include package="zope.app.interface" />
@@ -136,12 +121,6 @@
   <include package="zope.app.zptpage" />
   <include package="zope.app.pythonpage" />
   <include package="zope.app.sqlscript" />
-
-
-  <!-- Module aliases -->
-
-  <include file="zodbaliases.zcml" />
-
 
   <!-- Browser Configurations -->
   <include file="browser.zcml" />
