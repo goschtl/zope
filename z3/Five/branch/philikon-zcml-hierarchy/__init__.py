@@ -23,5 +23,5 @@ monkey.monkeyPatch()
 
 def initialize(context):
     # load instance site configuration file
-    site_zcml = os.path.join(INSTANCE_HOME, "site.zcml")
+    site_zcml = os.path.join(INSTANCE_HOME, "etc", "site.zcml")
     zcml.process(site_zcml)
