@@ -90,7 +90,7 @@ MAIL_CMD = "/usr/lib/sendmail -t -f %s"
 
 WAIT = 0                                # Fork unless --wait is requested.
 DRYRUN = 0                              # '--dryrun' option
-VERBOSE = 0                             # '--verbose' option
+VERBOSE = 1                             # '--verbose' option default value
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
 sVv_re = re.compile("(.*),([^,]+),([^,]+)")
