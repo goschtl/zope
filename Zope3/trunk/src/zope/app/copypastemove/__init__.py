@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.1 2004/03/03 10:52:04 philikon Exp $
+$Id: __init__.py,v 1.2 2004/03/06 16:50:19 jim Exp $
 """
 from zope.interface import implements, Invalid
 from zope.exceptions import NotFoundError, DuplicationError
@@ -179,7 +179,7 @@ class ObjectMover:
             # Nothing to do
             return
 
-        chooser = zapi.getAdapter(target, INameChooser)
+        chooser = INameChooser(target)
         new_name = chooser.chooseName(new_name, obj)
 
         # Can't store security proxies
@@ -368,7 +368,7 @@ class ObjectCopier:
 
         checkObject(target, new_name, obj)
 
-        chooser = zapi.getAdapter(target, INameChooser)
+        chooser = INameChooser(target)
         new_name = chooser.chooseName(new_name, obj)
 
         copy = removeAllProxies(obj)
@@ -432,7 +432,7 @@ def rename(container, oldid, newid):
     object = container.get(oldid)
     if object is None:
         raise NotFoundError(container, oldid)
-    mover = zapi.getAdapter(object, IObjectMover)
+    mover = IObjectMover(object)
 
     if newid in container:
         raise DuplicationError("name, %s, is already in use" % newid)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of workflow process instance.
 
-$Id: instance.py,v 1.11 2004/02/27 16:50:37 philikon Exp $
+$Id: instance.py,v 1.12 2004/03/06 16:50:36 jim Exp $
 """
 __metaclass__ = type
 
@@ -26,7 +26,6 @@ from zope.app.workflow.interfaces \
      import IProcessInstance, IProcessInstanceContainer
 
 from zope.interface import implements
-from zope.component import getAdapter
 
 from zope.app.container.contained import Contained, setitem, uncontained
 
@@ -64,7 +63,7 @@ class ProcessInstanceContainerAdapter:
         # path. Eventually the pi should have context as parent directly. 
         self.__parent__ = context
         self.__name__ = "processInstances"
-        annotations = getAdapter(context, IAnnotations)
+        annotations = IAnnotations(context)
         wfdata = annotations.get(WFKey)
         if not wfdata:
             wfdata = PersistentDict()

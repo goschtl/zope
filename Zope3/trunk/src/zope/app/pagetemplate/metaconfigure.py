@@ -14,17 +14,16 @@
 """ZCML configuration directives for configuring the default zope:
 namespace in TALES.
 
-$Id: metaconfigure.py,v 1.5 2004/03/04 02:10:09 philikon Exp $
+$Id: metaconfigure.py,v 1.6 2004/03/06 16:50:27 jim Exp $
 """
 from zope.app.pagetemplate.engine import Engine
 from zope.testing.cleanup import addCleanUp
-from zope.component import getAdapter
 
 def namespace(_context, prefix, interface):
     _context.action(
         discriminator = ("tales:namespace", prefix),
         callable = Engine.registerFunctionNamespace,
-        args = (prefix, lambda ob: getAdapter(ob, interface)),
+        args = (prefix, lambda ob: interface(ob)),
         )
 
 def expressiontype(_context, name, handler):

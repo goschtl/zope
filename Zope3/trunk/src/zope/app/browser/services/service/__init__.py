@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.22 2004/03/05 22:08:56 jim Exp $
+$Id: __init__.py,v 1.23 2004/03/06 16:50:15 jim Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -124,7 +124,7 @@ class ServiceAdding(ComponentAdding):
 
         path = zapi.name(content)
         rm = content.__parent__.getRegistrationManager()
-        chooser = zapi.getAdapter(rm, INameChooser)
+        chooser = INameChooser(rm)
         
         # register an activated service registration
         for type_name in implements:
@@ -183,7 +183,7 @@ class AddServiceRegistration(BrowserView):
     def action(self, name=[], active=[]):
         path = zapi.name(self.context)
         rm = self.context.__parent__.getRegistrationManager()
-        chooser = zapi.getAdapter(rm, INameChooser)
+        chooser = INameChooser(rm)
 
         for nm in name:
             sc = ServiceRegistration(nm, path, self.context)

@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.18 2004/03/05 15:56:36 eddala Exp $
+$Id: schema.py,v 1.19 2004/03/06 16:50:34 jim Exp $
 """
 from types import FunctionType
 
@@ -264,7 +264,7 @@ class SchemaAdding(Adding):
 
     def add(self, content):
         name = self.contentName
-        container = zapi.getAdapter(self.context, IMutableSchema)
+        container = IMutableSchema(self.context)
         container.addField(name, content)
         return content
 

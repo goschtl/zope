@@ -13,11 +13,11 @@
 ##############################################################################
 """ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.2 2004/03/03 20:20:34 srichter Exp $
+$Id: definition.py,v 1.3 2004/03/06 16:50:36 jim Exp $
 """
 __metaclass__ = type
  
-from zope.component import getAdapter, getView, getUtility
+from zope.component import getView, getUtility
 from zope.app.traversing import traverse
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.workflow.interfaces import IProcessDefinitionImportExport

@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.21 2004/03/05 22:09:11 jim Exp $
+$Id: bootstrap.py,v 1.22 2004/03/06 16:50:27 jim Exp $
 """
 
 from transaction import get_transaction
@@ -224,7 +224,7 @@ def addService(root_folder, service_type, service_factory, **kw):
     # calls at the end require a fully context-wrapped
     # registration; hence all the traverse() and traverseName() calls.
     package = getServiceManagerDefault(root_folder)
-    chooser = zapi.getAdapter(package, INameChooser)
+    chooser = INameChooser(package)
     service = service_factory()
     service = removeAllProxies(service)
     name = chooser.chooseName(service_type, service)
@@ -260,7 +260,7 @@ def addUtility(root_folder, utility_type, utility_factory, **kw):
     This assumes the root folder already as a Utility Service
     """
     package = getServiceManagerDefault(root_folder)
-    chooser = zapi.getAdapter(package, INameChooser)
+    chooser = INameChooser(package)
     utility = utility_factory()
     name = chooser.chooseName(utility_type, utility)
     package[name] = utility

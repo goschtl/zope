@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.5 2004/03/05 22:09:24 jim Exp $
+$Id: test_zptpage.py,v 1.6 2004/03/06 16:50:38 jim Exp $
 """
 
 import unittest
@@ -24,7 +24,7 @@ from zope.exceptions import Forbidden
 
 from zope.app.tests import ztapi
 from zope.app.index.interfaces.text import ISearchableText
-from zope.component import getAdapter, getView
+from zope.component import getView
 from zope.publisher.browser import TestRequest, BrowserView
 
 # Wow, this is a lot of work. :(
@@ -59,7 +59,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
     def testSearchableText(self):
         page = ZPTPage()
-        searchableText = getAdapter(page, ISearchableText)
+        searchableText = ISearchableText(page)
 
         utext = u'another test\n' # The source will grow a newline if ommited
         html = u"<html><body>%s</body></html>\n" % (utext, )

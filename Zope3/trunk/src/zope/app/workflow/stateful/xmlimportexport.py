@@ -13,12 +13,12 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.10 2004/03/05 22:09:23 jim Exp $
+$Id: xmlimportexport.py,v 1.11 2004/03/06 16:50:37 jim Exp $
 """
 from xml.sax import parse
 from xml.sax.handler import ContentHandler
 
-from zope.component import getAdapter, getService
+from zope.component import getService
 from zope.configuration.name import resolve
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -82,7 +82,7 @@ class XMLStatefulImporter(ContentHandler):
     startPermissions = noop
 
     def startWorkflow(self, attrs):
-        dc = getAdapter(self.context, IZopeDublinCore)
+        dc = IZopeDublinCore(self.context)
         dc.title = attrs.get('title', u'')
 
     def startSchema(self, attrs):
@@ -113,11 +113,11 @@ class XMLStatefulImporter(ContentHandler):
         name  = attrs['name'].encode(encoding)
         if name == 'INITIAL':
             state = self.context.getState('INITIAL')
-            dc = getAdapter(state, IZopeDublinCore)
+            dc = IZopeDublinCore(state)
             dc.title = attrs.get('title', u'')
         else:
             state = State()
-            dc = getAdapter(state, IZopeDublinCore)
+            dc = IZopeDublinCore(state)
             dc.title = attrs.get('title', u'')
             self.context.addState(name, state)
 
@@ -135,7 +135,7 @@ class XMLStatefulImporter(ContentHandler):
                 permission = permission,
                 triggerMode = attrs['triggerMode'].encode(encoding)
                 )
-        dc = getAdapter(trans, IZopeDublinCore)
+        dc = IZopeDublinCore(trans)
         dc.title = attrs.get('title', u'')
         self.context.addTransition(name, trans)
 
@@ -175,7 +175,7 @@ class XMLExportHandler:
         return self.process_definition
 
     def getDublinCore(self, obj):
-        return getAdapter(obj, IZopeDublinCore)
+        return IZopeDublinCore(obj)
 
     def getPermissionId(self, permission):
         if isinstance(permission, str):

@@ -15,14 +15,14 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceregistration.py,v 1.3 2003/12/18 09:57:15 pnaveen Exp $
+$Id: test_serviceregistration.py,v 1.4 2004/03/06 16:50:30 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 
 from zope.interface import Interface, implements
 
-from zope.component import getServiceManager, getAdapter
+from zope.component import getServiceManager
 from zope.app.traversing import traverse, getPath
 from zope.app.services.service import ServiceRegistration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
@@ -117,7 +117,7 @@ class Test(PlacefulSetup, TestCase):
     def test_addNotify(self):
         self.assertEqual(self.__c._dependents,
                          (self.__configpath, ))
-        u = getAdapter(self.__c, IRegistered)
+        u = IRegistered(self.__c)
         self.assertEqual(list(u.usages()),
                          [self.__configpath])
 
@@ -130,7 +130,7 @@ class Test(PlacefulSetup, TestCase):
 
         del self.__cm[self.__registration_name]
         self.assertEqual(self.__c._dependents, ())
-        u = getAdapter(self.__c, IRegistered)
+        u = IRegistered(self.__c)
         self.assertEqual(len(u.usages()), 0)
 
         self.failIf(registry, "The components should not be registered")

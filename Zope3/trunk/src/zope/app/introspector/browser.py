@@ -13,11 +13,10 @@
 ##############################################################################
 """Introspector View class
 
-$Id: browser.py,v 1.2 2004/03/05 15:54:39 eddala Exp $
+$Id: browser.py,v 1.3 2004/03/06 16:50:26 jim Exp $
 """
 from zope.app.publisher.browser import BrowserView
 from zope.app.introspector.interfaces import IIntrospector
-from zope.component import getAdapter
 from zope.app import zapi
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import directlyProvides, directlyProvidedBy
@@ -29,7 +28,7 @@ from zope.app.services.servicenames import Services
 class IntrospectorView(BrowserView):
 
     def getIntrospector(self):
-        introspector = getAdapter(self.context, IIntrospector)
+        introspector = IIntrospector(self.context)
         introspector.setRequest(self.request)
         return introspector
 

@@ -13,10 +13,8 @@
 ##############################################################################
 """Mappings between principals and permissions, stored in an object locally.
 
-$Id: principalpermission.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: principalpermission.py,v 1.2 2004/03/06 16:50:29 jim Exp $
 """
-
-from zope.component import getAdapter
 
 from zope.interface import implements
 from zope.app.interfaces.annotation import IAnnotations
@@ -96,7 +94,7 @@ class AnnotationPrincipalPermissionManager:
         # getting PrincipalPermissions.
         from zope.proxy import removeAllProxies
         context = removeAllProxies(self._context)
-        annotations = getAdapter(context, IAnnotations)
+        annotations = IAnnotations(context)
         try:
             return annotations[annotation_key]
         except KeyError:

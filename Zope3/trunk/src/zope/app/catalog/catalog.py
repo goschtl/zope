@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog
 
-$Id: catalog.py,v 1.20 2004/03/03 10:38:38 philikon Exp $
+$Id: catalog.py,v 1.21 2004/03/06 16:50:18 jim Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -22,7 +22,7 @@ from zope.exceptions import NotFoundError
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.index.interfaces import ISimpleQuery
 
-from zope.app.zapi import getService, getAdapter
+from zope.app.zapi import getService
 from zope.app.services.servicenames import HubIds
 from zope.app.event.interfaces import ISubscriber
 from zope.app.interfaces.annotation import IAttributeAnnotatable
@@ -124,7 +124,7 @@ class CatalogBase(Persistent, SampleContainer):
             index = self.get(key)
             if not index: 
                 raise ValueError, "no such index %s"%(key)
-            index = getAdapter(index, ISimpleQuery)
+            index = ISimpleQuery(index)
             results = index.query(value)
             # Hm. As a result of calling getAdapter, I get back
             # security proxy wrapped results from anything that

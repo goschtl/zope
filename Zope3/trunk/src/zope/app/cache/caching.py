@@ -13,7 +13,7 @@
 ##############################################################################
 """Helpers for caching.
 
-$Id: caching.py,v 1.7 2004/03/01 10:57:35 philikon Exp $
+$Id: caching.py,v 1.8 2004/03/06 16:50:16 jim Exp $
 """
 from zope.app import zapi
 from zope.app.cache.interfaces import ICacheable
@@ -22,7 +22,7 @@ from zope.component import ComponentLookupError
 
 def getCacheForObj(obj):
     """Returns the cache associated with obj or None."""
-    adapter = zapi.getAdapter(obj, ICacheable)
+    adapter = ICacheable(obj)
     cache_id = adapter.getCacheId()
     if not cache_id:
         return None

@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: __init__.py,v 1.1 2004/02/27 14:23:17 philikon Exp $
+$Id: __init__.py,v 1.2 2004/03/06 16:50:23 jim Exp $
 """
 
 from zope.app import zapi
@@ -29,7 +29,7 @@ class ExternalEditor(BrowserView):
         r = []
         url = zapi.getView(context, 'absolute_url', request)()
         r.append('url:%s' % url)
-        adapted = zapi.getAdapter(context, IReadFile)
+        adapted = IReadFile(context)
 
         if hasattr(adapted, 'contentType'):
             # XXX Although IReadFile declares contentType,

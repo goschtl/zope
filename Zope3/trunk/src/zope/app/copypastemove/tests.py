@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: tests.py,v 1.1 2004/03/03 10:52:04 philikon Exp $
+$Id: tests.py,v 1.2 2004/03/06 16:50:19 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 
@@ -20,7 +20,6 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.tests import ztapi
 
-from zope.component import getAdapter
 from zope.exceptions import NotFoundError, DuplicationError
 from zope.app.traversing import traverse
 from zope.app.services.tests.placefulsetup import PlacefulSetup

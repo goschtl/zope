@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.16 2004/03/06 04:17:23 garrett Exp $
+$Id: test_propfind.py,v 1.17 2004/03/06 16:50:20 jim Exp $
 """
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
 from zope.interface import implements, directlyProvides
-from zope.component import getView, getAdapter
+from zope.component import getView
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
@@ -244,7 +244,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
     def test_davpropdctitle(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
-        dc = getAdapter(zpt, IZopeDublinCore)
+        dc = IZopeDublinCore(zpt)
         dc.title = u'Test Title'
         body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
@@ -285,7 +285,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
     def test_davpropdccreated(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
-        dc = getAdapter(zpt, IZopeDublinCore)
+        dc = IZopeDublinCore(zpt)
         dc.created = datetime.utcnow()
         body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">
@@ -327,7 +327,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
     def test_davpropdcsubjects(self):
         root = self.rootFolder
         zpt = traverse(root, 'zpt')
-        dc = getAdapter(zpt, IZopeDublinCore)
+        dc = IZopeDublinCore(zpt)
         dc.subjects = (u'Bla', u'Ble', u'Bli')
         body = '''<?xml version="1.0" ?>
         <propfind xmlns="DAV:">

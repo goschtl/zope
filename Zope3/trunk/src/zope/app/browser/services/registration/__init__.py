@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.16 2004/03/05 22:08:56 jim Exp $
+$Id: __init__.py,v 1.17 2004/03/06 16:50:14 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -29,7 +29,7 @@ from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.traversing import getName, traverse
-from zope.component import getView, getServiceManager, getAdapter
+from zope.component import getView, getServiceManager
 from zope.proxy import removeAllProxies
 from zope.app.publisher.browser import BrowserView
 from zope.interface import implements
@@ -83,7 +83,7 @@ class RegistrationView(BrowserView):
 
     def __init__(self, context, request):
         super(RegistrationView, self).__init__(context, request)
-        useconfig = getAdapter(self.context, IRegistered)
+        useconfig = IRegistered(self.context)
         self.registrations = useconfig.registrations()
 
     def update(self):
@@ -122,7 +122,7 @@ class NameRegistered:
 
     def uses(self):
         component = self.context
-        useconfig = getAdapter(component, IRegistered)
+        useconfig = IRegistered(component)
         result = []
         for path in useconfig.usages():
             config = traverse(component, path)
@@ -310,7 +310,7 @@ class AddComponentRegistration(BrowserView):
         folder = component.__parent__
         rm = folder.getRegistrationManager()
 
-        name = getAdapter(rm, INameChooser).chooseName('', registration)
+        name = INameChooser(rm).chooseName('', registration)
         rm[name] = registration
         return registration
 

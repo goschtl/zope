@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.24 2004/03/02 18:50:59 philikon Exp $
+$Id: subs.py,v 1.25 2004/03/06 16:50:22 jim Exp $
 """
 from zope.exceptions import NotFoundError
 from persistent import Persistent
@@ -28,7 +28,7 @@ from zope.app.traversing import canonicalPath, traverse
 from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribable
 from zope.app.event.interfaces import ISubscribingAware
 
-from zope.component import getService, queryService, getAdapter, queryAdapter
+from zope.component import getService, queryService, queryAdapter
 from zope.app.services.servicenames import HubIds
 from zope.app.services.type import PersistentTypeRegistry
 from cPickle import dumps, PicklingError
@@ -82,7 +82,7 @@ class Subscribable(Persistent, Contained):
 
         # Check that ISubscriber adapter exists for the wrapped object.
         # This will raise an error if there is no such adapter.
-        getAdapter(wrapped_object, ISubscriber)
+        ISubscriber(wrapped_object)
 
         # Optimisation
         if event_type is IEvent:

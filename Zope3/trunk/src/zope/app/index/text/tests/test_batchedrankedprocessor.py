@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_batchedrankedprocessor.py,v 1.10 2004/03/02 14:40:14 philikon Exp $
+$Id: test_batchedrankedprocessor.py,v 1.11 2004/03/06 16:50:26 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -20,8 +20,6 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.interface.verify import verifyObject
 from zope.interface import implements
-
-from zope.component import getAdapter
 
 from zope.index.interfaces import IQuerying
 from zope.app.index.interfaces.interfaces import \
@@ -79,13 +77,13 @@ class Test(PlacelessSetup, TestCase):
         # Do introspection on the result
 
         # BatchedResult
-        batch = getAdapter(result, IBatchedResult)
+        batch = IBatchedResult(result)
         self.failUnlessEqual(0, batch.totalSize)
         self.failUnlessEqual(0, batch.startPosition)
         self.failUnlessEqual(20, batch.batchSize)
 
         # RankedHubIdList
-        list = getAdapter(result, IRankedHubIdList)
+        list = IRankedHubIdList(result)
         self.failUnlessRaises(IndexError, list.__getitem__, 0)
 
 def test_suite():

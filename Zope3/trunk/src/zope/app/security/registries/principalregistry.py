@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: principalregistry.py,v 1.10 2003/09/21 17:32:45 jim Exp $
+$Id: principalregistry.py,v 1.11 2004/03/06 16:50:28 jim Exp $
 """
 __metaclass__ = type
 
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.security import ILoginPassword
-from zope.component import getAdapter, queryAdapter
+from zope.component import queryAdapter
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 from zope.app.interfaces.security import IUnauthenticatedPrincipal
 from zope.app.interfaces.services.service import ISimpleService
@@ -65,7 +65,7 @@ class PrincipalRegistry:
     def unauthorized(self, id, request):
         # XXX This is a mess. request has no place here!
         if id is None or id is self.__defaultid:
-            a = getAdapter(request, ILoginPassword)
+            a = ILoginPassword(request)
             a.needLogin(realm="zope")
 
     def getPrincipal(self, id):

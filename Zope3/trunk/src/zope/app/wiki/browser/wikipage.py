@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for WikiPages
 
-$Id: wikipage.py,v 1.3 2004/03/02 14:25:03 srichter Exp $
+$Id: wikipage.py,v 1.4 2004/03/06 16:50:35 jim Exp $
 """
 import re
 from urllib import quote, unquote
@@ -54,16 +54,16 @@ class DublinCoreViews(BrowserView):
 
     def author(self):
         """Get user who last modified the Wiki Page."""
-        creators = zapi.getAdapter(self.context, ICMFDublinCore).creators
+        creators = ICMFDublinCore(self.context).creators
         if not creators:
             return 'unknown'
         return creators[0]
 
     def modified(self):
         """Get last modification date."""
-        date = zapi.getAdapter(self.context, ICMFDublinCore).modified
+        date = ICMFDublinCore(self.context).modified
         if date is None:
-            date = zapi.getAdapter(self.context, ICMFDublinCore).created
+            date = ICMFDublinCore(self.context).created
         if date is None:
             return ''
         formatter = self.request.locale.dates.getFormatter('dateTime', 'medium')
@@ -75,7 +75,7 @@ class GenericWikiPageViews(DublinCoreViews):
     
     def breadcrumbs(self):
         """Get the path of this page."""
-        hier = zapi.getAdapter(self.context, IWikiPageHierarchy)
+        hier = IWikiPageHierarchy(self.context)
         path = hier.path()
         html = []
         for page in path:
@@ -267,7 +267,7 @@ class ViewWikiPage:
 class EditWikiParents:
 
     def parents(self):
-        hier = zapi.getAdapter(self.context, IWikiPageHierarchy)
+        hier = IWikiPageHierarchy(self.context)
         return hier.parents
 
     def availableWikis(self):
@@ -275,7 +275,7 @@ class EditWikiParents:
         return wiki.keys()
 
     def setParents(self, parents):
-        hier = zapi.getAdapter(self.context, IWikiPageHierarchy)
+        hier = IWikiPageHierarchy(self.context)
         hier.reparent(parents)
         return self.request.response.redirect('./@@parents.html')
 
@@ -290,7 +290,7 @@ class EditWikiParents:
         return html
 
     def branch(self):
-        hier = zapi.getAdapter(self.context, IWikiPageHierarchy)
+        hier = IWikiPageHierarchy(self.context)
         children = hier.findChildren()
         return self._branchHTML(children)
 
@@ -306,20 +306,17 @@ class AddComment(object):
 class MailSubscriptions:
 
     def subscriptions(self):
-        return zapi.getAdapter(self.context,
-                               IMailSubscriptions).getSubscriptions()
+        return IMailSubscriptions(self.context).getSubscriptions()
 
     def change(self):
         if 'ADD' in self.request:
             emails = self.request['emails'].split('\n')
-            zapi.getAdapter(self.context,
-                            IMailSubscriptions).addSubscriptions(emails)
+            IMailSubscriptions(self.context).addSubscriptions(emails)
         elif 'REMOVE' in self.request:
             emails = self.request['remails']
             print emails
             if isinstance(emails, (str, unicode)):
                 emails = [emails]
-            zapi.getAdapter(self.context,
-                            IMailSubscriptions).removeSubscriptions(emails)
+                IMailSubscriptions(self.context).removeSubscriptions(emails)
 
         self.request.response.redirect('.')

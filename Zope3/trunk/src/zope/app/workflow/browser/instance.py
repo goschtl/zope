@@ -13,9 +13,8 @@
 ##############################################################################
 """ProcessInstance views
  
-$Id: instance.py,v 1.2 2004/03/05 22:09:23 jim Exp $
+$Id: instance.py,v 1.3 2004/03/06 16:50:36 jim Exp $
 """
-from zope.component import getAdapter
 from zope.schema import getFieldNames
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
@@ -43,7 +42,7 @@ class InstanceContainerView:
 
     def removeObjects(self, ids):
         """Remove objects specified in a list of object ids"""
-        container = getAdapter(self.context, IProcessInstanceContainer)
+        container = IProcessInstanceContainer(self.context)
         for id in ids:
             container.__delitem__(id)
 
@@ -51,7 +50,7 @@ class InstanceContainerView:
 
     def listContentInfo(self):
         return map(self._extractContentInfo,
-                   getAdapter(self.context, IProcessInstanceContainer).items())
+                   IProcessInstanceContainer(self.context).items())
 
     contents = ViewPageTemplateFile('instancecontainer_main.pt')
     contentsMacros = contents
@@ -80,7 +79,7 @@ class InstanceContainerView:
 
     def getProcessInstanceInfo(self, pi_name):
         info = {}
-        pi = getAdapter(self.context, IProcessInstanceContainer)[pi_name]
+        pi = IProcessInstanceContainer(self.context)[pi_name]
         info['status'] = pi.status
 
         # temporary
@@ -95,7 +94,7 @@ class InstanceContainerView:
         return info
 
     def _fireTransition(self, pi_name, id):
-        pi = getAdapter(self.context, IProcessInstanceContainer)[pi_name]
+        pi = IProcessInstanceContainer(self.context)[pi_name]
         pi.fireTransition(id)
 
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: __init__.py,v 1.2 2004/03/05 22:09:10 jim Exp $
+$Id: __init__.py,v 1.3 2004/03/06 16:50:27 jim Exp $
 """
 import zope.interface
 from zope.app import zapi
@@ -445,7 +445,7 @@ class PathPersistent:
         if path[:1] != u'/':
             raise ValueError("ZPersistent paths must be absolute", path)
         root = LocationPhysicallyLocatable(self.location).getRoot()
-        return zapi.getAdapter(root, ITraverser).traverse(path[1:])
+        return ITraverser(root).traverse(path[1:])
 
 
 class LocationProxy(ProxyBase):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.32 2004/03/05 22:09:16 jim Exp $
+$Id: hub.py,v 1.33 2004/03/06 16:50:30 jim Exp $
 """
 __metaclass__ = type
 
@@ -23,7 +23,7 @@ from zope.app import zapi
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
 
-from zope.component import getAdapter, getService
+from zope.component import getService
 from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
 from zope.app.services.servicenames import EventSubscription
@@ -117,7 +117,7 @@ class ObjectUnregisteredHubEvent:
     def __getObject(self):
         obj = self.__object
         if obj is None:
-            adapter = getAdapter(self.hub, ITraverser)
+            adapter = ITraverser(self.hub)
             try:
                 obj = self.__object = adapter.traverse(self.location)
             except NotFoundError:
@@ -333,7 +333,7 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
     def getObject(self, hubid):
         '''See interface IObjectHub'''
         path = self.getPath(hubid)
-        adapter = getAdapter(self, ITraverser)
+        adapter = ITraverser(self)
         return adapter.traverse(path)
 
     def register(self, path_or_object):
@@ -418,7 +418,7 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
 
     def iterObjectRegistrations(self, path=u'/'):
         """See interface IHubEventChannel"""
-        traverser = getAdapter(self, ITraverser)
+        traverser = ITraverser(self)
         for path, hubId in self.iterRegistrations(path):
             yield (path, hubId, self._safeTraverse(path, traverser))
 
@@ -528,7 +528,7 @@ class Registration(Persistent, Contained):
             return
         # Register subobjects
         names = object.keys()
-        traversable = getAdapter(object, ITraversable)
+        traversable = ITraversable(object)
         for name in names:
             sub_object = traverseName(object, name, traversable=traversable)
             self._registerTree(sub_object, hub)

@@ -13,14 +13,14 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.13 2004/03/02 14:40:04 philikon Exp $
+$Id: processors.py,v 1.14 2004/03/06 16:50:25 jim Exp $
 """
 from zope.app.index.interfaces.interfaces import \
     IRankedObjectIterator, IRankedObjectRecord, \
     IRankedHubIdList, IBatchedResult
 from zope.app.interfaces.services.query import IQueryProcessor
 
-from zope.component import getAdapter, getService
+from zope.component import getService
 from zope.app.services.servicenames import HubIds
 from zope.app.container.contained import Contained
 from zope.interface import implements
@@ -37,8 +37,8 @@ class ObjectRetrievingProcessor(Contained):
     outputInterfaces = (IRankedObjectIterator,)
 
     def __call__(self, query):
-        list = getAdapter(query, IRankedHubIdList)
-        batch = getAdapter(query, IBatchedResult)
+        list = IRankedHubIdList(query)
+        batch = IBatchedResult(query)
 
         objectHub = getService(self, HubIds)
 

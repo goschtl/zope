@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_contents.py,v 1.7 2004/03/01 15:02:45 philikon Exp $
+$Id: test_contents.py,v 1.8 2004/03/06 16:50:14 jim Exp $
 """
 
 import unittest
@@ -137,7 +137,7 @@ class Test(BrowserTestCase):
         root['foo'] = File()
         get_transaction().commit()
         self.assert_('foo' in root)
-        dc = zapi.getAdapter(root['foo'], IZopeDublinCore)
+        dc = IZopeDublinCore(root['foo'])
         self.assert_(dc.title == '')
 
         response = self.publish('/@@contents.html',
@@ -161,7 +161,7 @@ class Test(BrowserTestCase):
 
         root._p_jar.sync()
         self.assert_('foo' in root)
-        dc = zapi.getAdapter(root['foo'], IZopeDublinCore)
+        dc = IZopeDublinCore(root['foo'])
         self.assert_(dc.title == 'test title')
 
 

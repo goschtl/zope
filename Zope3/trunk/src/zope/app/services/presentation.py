@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.5 2004/03/03 10:38:51 philikon Exp $
+$Id: presentation.py,v 1.6 2004/03/06 16:50:30 jim Exp $
 """
 
 from zope.app import zapi
@@ -489,7 +489,7 @@ class PageRegistration(ViewRegistration):
     def addNotify(self, event):
         "See IAddNotifiable"
         template = zapi.traverse(self.__parent__.__parent__,self.template)
-        dependents = zapi.getAdapter(template, IDependable)
+        dependents = IDependable(template)
         objectpath = zapi.getPath(self)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
@@ -502,7 +502,7 @@ class PageRegistration(ViewRegistration):
         "See IRemoveNotifiable"
         super(PageRegistration, self).removeNotify(event)
         template = zapi.traverse(self.__parent__.__parent__,self.template)
-        dependents = zapi.getAdapter(template, IDependable)
+        dependents = IDependable(template)
         objectpath = zapi.getPath(self)
         dependents.addDependent(objectpath)
         # Also update usage, if supported

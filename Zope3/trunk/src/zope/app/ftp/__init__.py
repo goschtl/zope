@@ -14,11 +14,11 @@
 These views implement ftp commands using file-system representation
 and meta-data apis.
 
-$Id: __init__.py,v 1.6 2004/03/01 15:02:51 philikon Exp $
+$Id: __init__.py,v 1.7 2004/03/06 16:50:24 jim Exp $
 """
 __metaclass__ = type
 
-from zope.component import queryAdapter, getAdapter, queryNamedAdapter
+from zope.component import queryAdapter, queryNamedAdapter
 from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.file import IReadFile, IWriteFile
@@ -35,7 +35,7 @@ class FTPView:
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self._dir = getAdapter(self.context, IReadDirectory)
+        self._dir = IReadDirectory(self.context)
 
     def publishTraverse(self, request, name):
         return self._dir[name]
@@ -100,7 +100,7 @@ class FTPView:
 
     def readfile(self, name, outstream, start = 0, end = None):
         file = self._dir[name]
-        file = getAdapter(file, IReadFile)
+        file = IReadFile(file)
         data = file.read()
         if end is not None:
             data = data[:end]
@@ -115,7 +115,7 @@ class FTPView:
         return self._lsinfo(name, self._dir[name])
 
     def _mtime(self, file):
-        dc = getAdapter(file, IZopeDublinCore)
+        dc = IZopeDublinCore(file)
         if dc is not None:
             return dc.modified
 
@@ -137,7 +137,7 @@ class FTPView:
 
     def mkdir(self, name):
         dir = queryAdapter(self.context, IWriteDirectory)
-        factory = getAdapter(self.context, IDirectoryFactory)
+        factory = IDirectoryFactory(self.context)
         newdir = factory(name)
         publish(self.context, ObjectCreatedEvent(newdir))
         dir[name] = newdir
@@ -205,7 +205,7 @@ class FTPView:
 
         factory = queryNamedAdapter(self.context, IFileFactory, ext)
         if factory is None:
-            factory = getAdapter(self.context, IFileFactory)
+            factory = IFileFactory(self.context)
 
         newfile = factory(name, '', data)
         publish(self.context, ObjectCreatedEvent(newfile))

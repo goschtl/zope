@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_principalannotation.py,v 1.9 2003/11/21 17:12:13 jim Exp $
+$Id: test_principalannotation.py,v 1.10 2004/03/06 16:50:30 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.placefulsetup \
@@ -25,7 +25,6 @@ from zope.app.services.principalannotation import \
 from zope.app.interfaces.services.principalannotation import \
      IPrincipalAnnotationService
 from zope.app.tests import ztapi
-from zope.component import getAdapter
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.security import IPrincipal
 from zope.app.tests import setup
@@ -102,9 +101,9 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
         p = Principal('somebody')
         ztapi.provideAdapter(IPrincipal, IAnnotations,
                              AnnotationsForPrincipal(self.svc))
-        annotations = getAdapter(p, IAnnotations)
+        annotations = IAnnotations(p)
         annotations["test"] = "bar"
-        annotations = getAdapter(p, IAnnotations)
+        annotations = IAnnotations(p)
         self.assertEquals(annotations["test"], "bar")
 
 

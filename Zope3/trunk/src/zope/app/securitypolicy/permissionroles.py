@@ -12,10 +12,9 @@
 #
 ##############################################################################
 """
-$Id: permissionroles.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
+$Id: permissionroles.py,v 1.3 2004/03/06 16:50:29 jim Exp $
 """
 
-from zope.component import getAdapter
 from zope.interface import implements
 
 from zope.app.interfaces.security import IPermission
@@ -44,7 +43,7 @@ class PermissionRoles:
         """
         Returns the list of setting names of each role for this permission.
         """
-        prm = getAdapter(self._context, IRolePermissionManager)
+        prm = IRolePermissionManager(self._context)
         proles = prm.getRolesForPermission(self._permission.getId())
         settings = {}
         for role, setting in proles:

@@ -13,11 +13,11 @@
 ##############################################################################
 """Unit tests for caching helpers.
 
-$Id: test_caching.py,v 1.13 2004/03/01 10:57:36 philikon Exp $
+$Id: test_caching.py,v 1.14 2004/03/06 16:50:17 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.component import getAdapter, getService
+from zope.component import getService
 from zope.interface import implements
 from zope.component.service import serviceManager as sm
 
@@ -68,7 +68,7 @@ class Test(PlacelessSetup, TestCase):
         obj = ObjectStub()
         self.assertEquals(getCacheForObj(obj), None)
 
-        getAdapter(obj, ICacheable).setCacheId("my_cache")
+        ICacheable(obj).setCacheId("my_cache")
 
         self.assertEquals(getCacheForObj(obj), my_cache)
 

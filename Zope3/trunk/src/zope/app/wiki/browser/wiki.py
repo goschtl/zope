@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for Wikis
 
-$Id: wiki.py,v 1.3 2004/03/02 14:25:03 srichter Exp $
+$Id: wiki.py,v 1.4 2004/03/06 16:50:35 jim Exp $
 """
 from datetime import datetime
 from zope.proxy import removeAllProxies
@@ -47,7 +47,7 @@ class AddWiki(object):
                 zapi.createObject(None, 'zope.wiki.WikiPage'))
             page.type = u'zope.source.rest'
             page.source = u'This is the FrontPage of the Wiki.'
-            dc = zapi.getAdapter(page, ICMFDublinCore)
+            dc = ICMFDublinCore(page)
             dc.created = datetime.now()
             dc.modified = datetime.now()
             dc.creators = [u'wiki']
@@ -83,7 +83,7 @@ class TableOfContents:
         children = []
 
         for name, page in self.context.items():
-            hier = zapi.getAdapter(page, IWikiPageHierarchy)
+            hier = IWikiPageHierarchy(page)
             if hier.getParents() == ():
                 children.append((page, hier.findChildren())) 
         return self._branchHTML(children)

@@ -58,7 +58,7 @@ the pickle unless it is stored in the object.
 >>> c4.__parent__ is c3
 1
 
-$Id: fspickle.py,v 1.5 2004/03/05 22:09:06 jim Exp $
+$Id: fspickle.py,v 1.6 2004/03/06 16:50:23 jim Exp $
 """
 
 import cPickle
@@ -158,7 +158,7 @@ class PersistentLoader:
         locatable = location.LocationPhysicallyLocatable(context)
         __traceback_info__ = (context, locatable),
         self.root = locatable.getRoot()
-        self.traverse = zapi.getAdapter(self.root, ITraverser).traverse
+        self.traverse = ITraverser(self.root).traverse
 
     def load(self, path):
         if path[:1] == u"/":

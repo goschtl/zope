@@ -13,14 +13,13 @@
 ##############################################################################
 """Dublin Core Meta Data View
 
-$Id: metadataedit.py,v 1.2 2004/03/01 15:02:50 philikon Exp $
+$Id: metadataedit.py,v 1.3 2004/03/06 16:50:22 jim Exp $
 """
 from datetime import datetime
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.component import getAdapter
 
 __metaclass__ = type
 
@@ -30,7 +29,7 @@ class MetaDataEdit:
     def edit(self):
         request = self.request
         formatter = self.request.locale.dates.getFormatter('dateTime', 'medium')
-        dc = getAdapter(self.context, IZopeDublinCore)
+        dc = IZopeDublinCore(self.context)
         message=''
 
         if 'dctitle' in request:

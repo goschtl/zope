@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dependable.py,v 1.6 2003/09/21 17:30:12 jim Exp $
+$Id: dependable.py,v 1.7 2004/03/06 16:50:11 jim Exp $
 """
 
 __metaclass__ = type
@@ -20,7 +20,6 @@ __metaclass__ = type
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.traversing import getParent, canonicalPath, getPath
-from zope.component import getAdapter
 from zope.interface import implements
 
 
@@ -50,7 +49,7 @@ class PathSetAnnotation:
 
     def addPath(self, path):
         path = self._make_relative(path)
-        annotations = getAdapter(self.context, IAnnotations)
+        annotations = IAnnotations(self.context)
         old = annotations.get(self.key, ())
         fixed = map(self._make_relative, old)
         if path not in fixed:
@@ -61,7 +60,7 @@ class PathSetAnnotation:
 
     def removePath(self, path):
         path = self._make_relative(path)
-        annotations = getAdapter(self.context, IAnnotations)
+        annotations = IAnnotations(self.context)
         old = annotations.get(self.key, ())
         if old:
             fixed = map(self._make_relative, old)
@@ -74,7 +73,7 @@ class PathSetAnnotation:
                     del annotations[self.key]
 
     def getPaths(self):
-        annotations = getAdapter(self.context, IAnnotations)
+        annotations = IAnnotations(self.context)
         locs = annotations.get(self.key, ())
         return tuple(map(self._make_absolute, locs))
 

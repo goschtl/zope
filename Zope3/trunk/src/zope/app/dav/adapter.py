@@ -13,11 +13,11 @@
 ##############################################################################
 """WebDAV-related Adapters
 
-$Id: adapter.py,v 1.7 2004/03/03 17:06:30 srichter Exp $
+$Id: adapter.py,v 1.8 2004/03/06 16:50:20 jim Exp $
 """
 from xml.dom import minidom
 
-from zope.component import getAdapter, queryAdapter
+from zope.component import queryAdapter
 from zope.interface import implements
 
 from zope.app import zapi
@@ -41,7 +41,7 @@ class DAVSchemaAdapter:
         return value
 
     def creationdate(self):
-        value = getAdapter(self.context, IDCTimes).created
+        value = IDCTimes(self.context).created
         if value is None:
             return ''
         value = value.strftime('%Y-%m-%d %TZ')
@@ -56,11 +56,11 @@ class DAVSchemaAdapter:
         return ''
 
     def getcontentlength(self):
-        value = getAdapter(self.context, ISized).sizeForDisplay()
+        value = ISized(self.context).sizeForDisplay()
         return str(value)
 
     def getlastmodified(self):
-        value = getAdapter(self.context, IDCTimes).modified
+        value = IDCTimes(self.context).modified
         if value is None:
             return ''
         value = value.strftime('%a, %d %b %Y %H:%M:%S GMT')

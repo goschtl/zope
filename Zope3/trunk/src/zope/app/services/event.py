@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.38 2004/03/05 22:09:16 jim Exp $
+$Id: event.py,v 1.39 2004/03/06 16:50:30 jim Exp $
 """
 from zope.app import zapi
 
@@ -126,7 +126,7 @@ class EventChannel(Subscribable):
                 # is no ISubscriber adapter available, that is an application
                 # error that should be fixed. So, failing is appropriate, and
                 # adding this subscriber to badSubscribers is inappropriate.
-                zapi.getAdapter(obj, ISubscriber).notify(event)
+                ISubscriber(obj).notify(event)
 
         for subscriber in badSubscribers:
             logging.getLogger('SiteError').warn(

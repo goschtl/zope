@@ -13,11 +13,11 @@
 
 XXX longer description goes here.
 
-$Id: put.py,v 1.7 2003/09/21 17:32:14 jim Exp $
+$Id: put.py,v 1.8 2004/03/06 16:50:24 jim Exp $
 """
 __metaclass__ = type
 
-from zope.component import getAdapter, queryAdapter, queryNamedAdapter
+from zope.component import queryAdapter, queryNamedAdapter
 from zope.app.interfaces.http import INullResource
 from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
 from zope.app.event import publish
@@ -73,7 +73,7 @@ class NullPUT:
 
         # Fall back to a non-custom one
         if factory is None:
-            factory = getAdapter(container, IFileFactory)
+            factory = IFileFactory(container)
 
         # XXX Need to add support for large files
         data = body.read()
@@ -105,7 +105,7 @@ class FilePUT:
 
         body = self.request.bodyFile
         file = self.context
-        adapter = getAdapter(file, IWriteFile)
+        adapter = IWriteFile(file)
 
         # XXX Need to add support for large files
         data = body.read()

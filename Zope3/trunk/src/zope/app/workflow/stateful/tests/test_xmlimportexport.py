@@ -30,7 +30,7 @@ from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
 from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
 from zope.app.tests import ztapi
-from zope.component import getAdapter, getService, getServiceManager
+from zope.component import getService, getServiceManager
 from zope.interface import implements, classImplements, Interface
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine
@@ -131,7 +131,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         handler.doImport(testpd, StringIO(xml_text))
 
         self.assertEqual(testpd.relevantDataSchema, ISchema)
-        self.assertEqual(getAdapter(testpd, IZopeDublinCore).title, 'TestPD')
+        self.assertEqual(IZopeDublinCore(testpd).title, 'TestPD')
 
         perm_service = getService(None, Permissions)
         self.assertEqual(
@@ -143,20 +143,20 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         st = testpd.states['INITIAL']
         self.assert_(isinstance(st, State))
-        self.assertEqual(getAdapter(st, IZopeDublinCore).title, 'initial')
+        self.assertEqual(IZopeDublinCore(st).title, 'initial')
 
         st = testpd.states['state1']
         self.assert_(isinstance(st, State))
-        self.assertEqual(getAdapter(st, IZopeDublinCore).title, 'State1')
+        self.assertEqual(IZopeDublinCore(st).title, 'State1')
 
         st = testpd.states['state2']
         self.assert_(isinstance(st, State))
-        self.assertEqual(getAdapter(st, IZopeDublinCore).title, 'State2')
+        self.assertEqual(IZopeDublinCore(st).title, 'State2')
 
 
         tr = testpd.transitions['initial_state1']
         self.assert_(isinstance(tr, Transition))
-        self.assertEqual(getAdapter(tr, IZopeDublinCore).title,
+        self.assertEqual(IZopeDublinCore(tr).title,
                          'INITIALtoState1')
         self.assertEqual(tr.sourceState, 'INITIAL')
         self.assertEqual(tr.destinationState, 'state1')
@@ -167,7 +167,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         tr = testpd.transitions['state1_state2']
         self.assert_(isinstance(tr, Transition))
-        self.assertEqual(getAdapter(tr, IZopeDublinCore).title,
+        self.assertEqual(IZopeDublinCore(tr).title,
                          'State1toState2')
         self.assertEqual(tr.sourceState, 'state1')
         self.assertEqual(tr.destinationState, 'state2')
@@ -178,7 +178,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         tr = testpd.transitions['state2_initial']
         self.assert_(isinstance(tr, Transition))
-        self.assertEqual(getAdapter(tr, IZopeDublinCore).title,
+        self.assertEqual(IZopeDublinCore(tr).title,
                          'State2toINITIAL')
         self.assertEqual(tr.sourceState, 'state2')
         self.assertEqual(tr.destinationState, 'INITIAL')

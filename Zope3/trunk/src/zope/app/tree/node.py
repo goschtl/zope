@@ -13,7 +13,7 @@
 ##############################################################################
 """A node in the treee
 
-$Id: node.py,v 1.1 2004/02/19 20:43:04 philikon Exp $
+$Id: node.py,v 1.2 2004/03/06 16:50:33 jim Exp $
 """
 
 from zope.interface import implements
@@ -47,7 +47,7 @@ class Node:
         self.expanded = False
         self.filter = filter
         self._expanded_nodes = expanded_nodes
-        self._id = id = zapi.getAdapter(context, IUniqueId).getId()
+        self._id = id = IUniqueId(context).getId()
         if id in expanded_nodes:
             self.expand()
 
@@ -63,8 +63,7 @@ class Node:
     def _get_child_objects_adapter(self):
         """Lazily create the child objects adapter"""
         if not hasattr(self, '_child_objects_adapter'):
-            self._child_objects_adapter = zapi.getAdapter(
-                self.context, IChildObjects)
+            self._child_objects_adapter = IChildObjects(self.context)
         return self._child_objects_adapter
 
     def expand(self, recursive=False):

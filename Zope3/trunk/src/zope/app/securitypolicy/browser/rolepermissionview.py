@@ -13,7 +13,7 @@
 ##############################################################################
 """Role Permission View Classes
 
-$Id: rolepermissionview.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
+$Id: rolepermissionview.py,v 1.3 2004/03/06 16:50:29 jim Exp $
 """
 from datetime import datetime
 
@@ -84,7 +84,7 @@ class RolePermissionView:
         if 'SUBMIT' in self.request:
             roles       = [r.id for r in self.roles()]
             permissions = [p.getId() for p in self.permissions()]
-            prm         = zapi.getAdapter(self.context, IRolePermissionManager)
+            prm         = IRolePermissionManager(self.context)
             for ip in range(len(permissions)):
                 rperm = self.request.get("p%s" % ip)
                 if rperm not in permissions: continue
@@ -104,7 +104,7 @@ class RolePermissionView:
             changed = True
 
         if 'SUBMIT_PERMS' in self.request:
-            prm = zapi.getAdapter(self.context, IRolePermissionManager)
+            prm = IRolePermissionManager(self.context)
             roles = self.roles()
             rperm = self.request.get('permission_id')
             settings = self.request.get('settings', ())
@@ -123,7 +123,7 @@ class RolePermissionView:
 
         if 'SUBMIT_ROLE' in self.request:
             role_id = self.request.get('role_id')
-            prm = zapi.getAdapter(self.context, IRolePermissionManager)
+            prm = IRolePermissionManager(self.context)
             allowed = self.request.get(Allow.getName(), ())
             denied = self.request.get(Deny.getName(), ())
             for permission in self.permissions():

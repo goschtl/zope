@@ -13,14 +13,14 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.25 2004/03/03 10:38:51 philikon Exp $
+$Id: auth.py,v 1.26 2004/03/06 16:50:30 jim Exp $
 """
 
 from persistent import Persistent
 from BTrees.OOBTree import OOBTree
 
 from zope.exceptions import NotFoundError
-from zope.component import getAdapter, queryAdapter
+from zope.component import queryAdapter
 from zope.app.services.servicenames import Authentication
 
 from zope.app.container.interfaces import IContainer
@@ -90,7 +90,7 @@ class AuthenticationService(Persistent, Contained):
         'See IAuthenticationService'
         # XXX This is a mess. request has no place here!
         if id is None:
-            a = getAdapter(request, ILoginPassword)
+            a = ILoginPassword(request)
             a.needLogin(realm="zope")
 
     def getPrincipal(self, id):

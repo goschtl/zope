@@ -12,12 +12,11 @@
 #
 ##############################################################################
 """
-$Id: annotatableadapter.py,v 1.7 2004/03/04 22:42:01 jim Exp $
+$Id: annotatableadapter.py,v 1.8 2004/03/06 16:50:21 jim Exp $
 """
 
 __metaclass__ = type
 
-from zope.component import getAdapter
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
 from zope.fssync.server.interfaces import IObjectFile
 from zope.interface import implements
@@ -37,7 +36,7 @@ class ZDCAnnotatableAdapter(ZopeDublinCore):
     annotations = None
 
     def __init__(self, context):
-        annotations = getAdapter(context, IAnnotations)
+        annotations = IAnnotations(context)
         dcdata = annotations.get(DCkey)
         if dcdata is None:
             self.annotations = annotations

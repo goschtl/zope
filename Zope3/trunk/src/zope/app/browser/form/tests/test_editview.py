@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.19 2004/03/06 04:17:18 garrett Exp $
+"""$Id: test_editview.py,v 1.20 2004/03/06 16:50:14 jim Exp $
 """
 import unittest
 
@@ -176,7 +176,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         v = BarV(f, request)
         # check adapter
         self.assertEqual(f.foo, u'Foo foo')
-        a = ztapi.zapi.getAdapter(f, IBar)
+        a = IBar(f)
         self.assertEqual(a.bar, u'Foo foo')
         # update
         request.form[Update] = ''

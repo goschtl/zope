@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.35 2004/03/05 22:08:53 jim Exp $
+$Id: contents.py,v 1.36 2004/03/06 16:50:12 jim Exp $
 """
 
 from zope.exceptions import NotFoundError
@@ -201,7 +201,7 @@ class Contents(BrowserView):
         new = request.get("new_value")
 
         item = self.context[id]
-        dc = zapi.getAdapter(item, IDCDescriptiveProperties)
+        dc = IDCDescriptiveProperties(item)
         dc.title = new
 
     def addObject(self):
@@ -249,7 +249,7 @@ class Contents(BrowserView):
         user = self.request.user
         annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
+        clipboard = IPrincipalClipboard(annotations)
         clipboard.clearContents()
         items = []
         for id in ids:
@@ -269,7 +269,7 @@ class Contents(BrowserView):
         user = self.request.user
         annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
+        clipboard = IPrincipalClipboard(annotations)
         clipboard.clearContents()
         items = []
         for id in ids:
@@ -284,7 +284,7 @@ class Contents(BrowserView):
         user = self.request.user
         annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
+        clipboard = IPrincipalClipboard(annotations)
         items = clipboard.getContents()
         for item in items:
             try:
@@ -293,11 +293,11 @@ class Contents(BrowserView):
                 pass
             else:
                 if item['action'] == 'cut':
-                    mover = zapi.getAdapter(obj, IObjectMover)
+                    mover = IObjectMover(obj)
                     if not mover.moveableTo(target):
                         return False
                 elif item['action'] == 'copy':
-                    copier = zapi.getAdapter(obj, IObjectCopier)
+                    copier = IObjectCopier(obj)
                     if not copier.copyableTo(target):
                         return False
                 else:
@@ -313,7 +313,7 @@ class Contents(BrowserView):
         user = self.request.user
         annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
+        clipboard = IPrincipalClipboard(annotations)
         items = clipboard.getContents()
         moved = False
         for item in items:
@@ -323,11 +323,11 @@ class Contents(BrowserView):
                 pass
             else:
                 if item['action'] == 'cut':
-                    mover = zapi.getAdapter(obj, IObjectMover)
+                    mover = IObjectMover(obj)
                     mover.moveTo(target)
                     moved = True
                 elif item['action'] == 'copy':
-                    copier = zapi.getAdapter(obj, IObjectCopier)
+                    copier = IObjectCopier(obj)
                     copier.copyTo(target)
                 else:
                     raise
@@ -350,7 +350,7 @@ class Contents(BrowserView):
         annotations = annotationsvc.getAnnotations(user)
 
         # touch at least one item to in clipboard confirm contents
-        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
+        clipboard = IPrincipalClipboard(annotations)
         items = clipboard.getContents()
         for item in items:
             try:

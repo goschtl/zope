@@ -13,7 +13,7 @@
 ##############################################################################
 """Management view for binding caches to content objects.
 
-$Id: cacheable.py,v 1.1 2004/03/01 10:57:35 philikon Exp $
+$Id: cacheable.py,v 1.2 2004/03/06 16:50:17 jim Exp $
 """
 from zope.app import zapi
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
@@ -33,7 +33,7 @@ class CacheableView(BrowserView):
 
     def __init__(self, *args):
         super(CacheableView, self).__init__(*args)
-        self.cacheable = zapi.getAdapter(self.context, ICacheable)
+        self.cacheable = ICacheable(self.context)
         setUpEditWidgets(self, ICacheable, self.cacheable)
 
     def current_cache_id(self):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Mutable Schema (as Utility) Views
 
-$Id: schema.py,v 1.6 2004/03/06 04:17:21 garrett Exp $
+$Id: schema.py,v 1.7 2004/03/06 16:50:16 jim Exp $
 """
 from zope.app import zapi
 from zope.app.browser.form.editview import EditView
@@ -44,7 +44,7 @@ class EditSchema(BrowserView):
 
     def update(self):
         status = ''
-        container = zapi.getAdapter(self.context, IMutableSchema)
+        container = IMutableSchema(self.context)
         request = self.request
 
         if 'DELETE' in request:
@@ -80,7 +80,7 @@ class EditMutableSchema(EditView):
     schema = property(_get_schema)
 
     def _setUpWidgets(self):
-        adapted = zapi.getAdapter(self.context, self.schema)
+        adapted = self.schema(self.context)
         if adapted is not self.context:
             adapted.__parent__ = self.context
         setUpEditWidgets(self, self.schema, source=self.adapted,

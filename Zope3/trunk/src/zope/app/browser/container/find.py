@@ -13,13 +13,13 @@
 ##############################################################################
 """Find View Class
 
-$Id: find.py,v 1.7 2003/09/21 17:30:21 jim Exp $
+$Id: find.py,v 1.8 2004/03/06 16:50:12 jim Exp $
 """
 # XXX this needs to be looked up in a registry
 from zope.app.container.find import SimpleIdFindFilter
 from zope.app.interfaces.find import IFind
 from zope.app.traversing import getName
-from zope.component import getAdapter, getView
+from zope.component import getView
 from zope.app.publisher.browser import BrowserView
 
 # XXX very simple implementation right now
@@ -27,7 +27,7 @@ class Find(BrowserView):
 
     def findByIds(self, ids):
         """Do a find for the ids listed in ids, which is a string."""
-        finder = getAdapter(self.context, IFind)
+        finder = IFind(self.context)
         ids = ids.split()
         # if we don't have any ids listed, don't search at all
         if not ids:

@@ -13,11 +13,10 @@
 
 XXX longer description goes here.
 
-$Id: delete.py,v 1.4 2003/09/21 17:32:16 jim Exp $
+$Id: delete.py,v 1.5 2004/03/06 16:50:24 jim Exp $
 """
 __metaclass__ = type
 
-from zope.component import getAdapter
 from zope.app.interfaces.file import IWriteDirectory
 
 class DELETE:
@@ -37,7 +36,7 @@ class DELETE:
 
 
         # Get a "directory" surrogate for the container
-        dir = getAdapter(container, IWriteDirectory)
+        dir = IWriteDirectory(container)
 
         del dir[name]
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.23 2004/03/05 22:09:16 jim Exp $
+$Id: registration.py,v 1.24 2004/03/06 16:50:30 jim Exp $
 """
 __metaclass__ = type
 
@@ -430,7 +430,7 @@ class ComponentRegistration(SimpleRegistration):
     def addNotify(self, event):
         "See IAddNotifiable"
         component = self.getComponent()
-        dependents = zapi.getAdapter(component, IDependable)
+        dependents = IDependable(component)
         objectpath = zapi.getPath(self)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
@@ -442,7 +442,7 @@ class ComponentRegistration(SimpleRegistration):
         "See IRemoveNotifiable"
         super(ComponentRegistration, self).removeNotify(event)
         component = self.getComponent()
-        dependents = zapi.getAdapter(component, IDependable)
+        dependents = IDependable(component)
         objectpath = zapi.getPath(self)
         dependents.removeDependent(objectpath)
         # Also update usage, if supported

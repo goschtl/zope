@@ -13,12 +13,12 @@ from zope.app.services.tests.test_auth import AuthSetup
 #
 ##############################################################################
 """
-$Id: test_clipboard.py,v 1.8 2004/03/03 10:52:07 philikon Exp $
+$Id: test_clipboard.py,v 1.9 2004/03/06 16:50:31 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
-from zope.component import getAdapter, getService, getServiceManager
+from zope.component import getService, getServiceManager
 from zope.app.tests import ztapi
 from zope.app.services.principalannotation \
     import PrincipalAnnotationService
@@ -51,7 +51,7 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
 
         annotationsvc = getService(self, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = getAdapter(annotations, IPrincipalClipboard)
+        clipboard = IPrincipalClipboard(annotations)
         clipboard.addItems('move', ['bla', 'bla/foo', 'bla/bar'])
         expected = ({'action':'move', 'target':'bla'},
                     {'action':'move', 'target':'bla/foo'},
@@ -68,7 +68,7 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
 
         annotationsvc = getService(self, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = getAdapter(annotations, IPrincipalClipboard)
+        clipboard = IPrincipalClipboard(annotations)
 
         expected = ({'action':'move', 'target':'bla'},
                     {'action':'move', 'target':'bla/foo'},
@@ -84,7 +84,7 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         user = auth.getPrincipalByLogin('srichter')
         annotationsvc = getService(self, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = getAdapter(annotations, IPrincipalClipboard)
+        clipboard = IPrincipalClipboard(annotations)
         clipboard.clearContents()
         self.failUnless(clipboard.getContents() == ())
 

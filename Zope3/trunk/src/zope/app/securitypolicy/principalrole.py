@@ -15,7 +15,6 @@
 
 __metaclass__ = type
 
-from zope.component import getAdapter
 from zope.interface import implements
 from zope.security.proxy import trustedRemoveSecurityProxy
 
@@ -90,7 +89,7 @@ class AnnotationPrincipalRoleManager:
     def _getPrincipalRoles(self, create=0):
         """ Get the principal role map stored in the context, optionally
             creating one if necessary """
-        annotations = getAdapter(self._context, IAnnotations)
+        annotations = IAnnotations(self._context)
         try:
             # there's a chance that annotations is security proxied -
             # remove proxy to avoid authentication failure on role lookup

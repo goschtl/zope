@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Tests
 
-$Id: test_content.py,v 1.8 2004/03/03 10:38:56 philikon Exp $
+$Id: test_content.py,v 1.9 2004/03/06 16:50:34 jim Exp $
 """
 import unittest
 
@@ -97,14 +97,14 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
         service = zapi.getService(self.rootFolder, BrowserMenu)
         menu = service.getLocalMenu('add_content')
         self.assertEqual('TestDoc', menu['1'].title)
-        mi = zapi.getAdapter(self.reg.getComponent(), IContentComponentMenuItem)
+        mi = IContentComponentMenuItem(self.reg.getComponent())
         self.assert_(mi._menuItem != None)
         self.assertEqual(mi._menu, menu)
 
     def test_deactivated(self):
         self.test_activated()
         self.reg.deactivated()
-        mi = zapi.getAdapter(self.reg.getComponent(), IContentComponentMenuItem)
+        mi = IContentComponentMenuItem(self.reg.getComponent())
         self.assertEqual(mi._menuItem, None)
         self.assertEqual(mi._menu, None)
         self.assertEqual(self.reg.getComponent().name, None)

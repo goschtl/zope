@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: rolepermission.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
+$Id: rolepermission.py,v 1.3 2004/03/06 16:50:29 jim Exp $
 """
 from zope.interface import implements
 
@@ -109,7 +109,7 @@ class AnnotationRolePermissionManager:
         # getting RolePermissions.
         from zope.proxy import removeAllProxies
         context = removeAllProxies(self._context)
-        annotations = zapi.getAdapter(context, IAnnotations)
+        annotations = IAnnotations(context)
         try:
             return annotations[annotation_key]
         except KeyError:
@@ -137,7 +137,7 @@ class RolePermissions:
         return self._role.description
 
     def permissionsInfo(self):
-        prm = zapi.getAdapter(self._context, IRolePermissionManager)
+        prm = IRolePermissionManager(self._context)
         rperms = prm.getPermissionsForRole(self._role.id)
         settings = {}
         for permission, setting in rperms:

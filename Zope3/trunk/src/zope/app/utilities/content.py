@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.10 2004/03/05 22:09:21 jim Exp $
+$Id: content.py,v 1.11 2004/03/06 16:50:34 jim Exp $
 """
 __metaclass__ = type
 
@@ -54,7 +54,7 @@ class ContentComponentDefinition(Persistent, Contained):
         self.copySchema = copySchema
         self.permissions = PersistentDict()
 ##        # This will set up the menu item entry.
-##        zapi.getAdapter(self, IContentComponentMenuItem)
+##        IContentComponentMenuItem(self)
         
 
 
@@ -67,7 +67,7 @@ class ContentComponentDefinitionMenuItem:
 
     def __init__(self, context):
         self.context = context
-        ann = zapi.getAdapter(context, IAnnotations)
+        ann = IAnnotations(context)
         if not ann.has_key(MenuItemKey):
             ann[MenuItemKey] = PersistentDict(
                 {'interface': IAdding,
@@ -268,14 +268,14 @@ class ContentComponentDefinitionRegistration(UtilityRegistration):
         """
         component = self.getComponent()
         component.name = self.name
-        zapi.getAdapter(component, IContentComponentMenuItem).createMenuItem()
+        IContentComponentMenuItem(component).createMenuItem()
 
     def deactivated(self):
         """Once activated, we have to unregister the new Content Object with
         the appropriate menu."""
         component = self.getComponent()
         component.name = None
-        zapi.getAdapter(component, IContentComponentMenuItem).removeMenuItem()
+        IContentComponentMenuItem(component).removeMenuItem()
 
 
 class ContentComponentInstance(Persistent):

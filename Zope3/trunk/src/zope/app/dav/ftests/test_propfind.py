@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for PROPFIND.
 
-$Id: test_propfind.py,v 1.5 2004/03/03 17:06:31 srichter Exp $
+$Id: test_propfind.py,v 1.6 2004/03/06 16:50:20 jim Exp $
 """
 import unittest
 from datetime import datetime
@@ -35,7 +35,7 @@ class TestPROPFIND(DAVTestCase):
     def test_dctitle2(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
-        adapted = zapi.getAdapter(pt, IZopeDublinCore)
+        adapted = IZopeDublinCore(pt)
         adapted.title = u'Test Title'
         get_transaction().commit()
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
@@ -44,7 +44,7 @@ class TestPROPFIND(DAVTestCase):
     def test_dccreated(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
-        adapted = zapi.getAdapter(pt, IZopeDublinCore)
+        adapted = IZopeDublinCore(pt)
         adapted.created = datetime.utcnow()
         get_transaction().commit()
         expect = str(adapted.created)
@@ -54,7 +54,7 @@ class TestPROPFIND(DAVTestCase):
     def test_dcsubject(self):
         self.addPage('/pt', u'<span />')
         pt = traverse(self.getRootFolder(), '/pt')
-        adapted = zapi.getAdapter(pt, IZopeDublinCore)
+        adapted = IZopeDublinCore(pt)
         adapted.subjects = (u'Bla', u'Ble', u'Bli')
         get_transaction().commit()
         expect = ', '.join(adapted.subjects)

@@ -14,7 +14,7 @@
 """Management view component for principal-role management (Zope2's
 'local roles').
 
-$Id: principalroleview.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
+$Id: principalroleview.py,v 1.3 2004/03/06 16:50:29 jim Exp $
 """
 from datetime import datetime
 
@@ -73,7 +73,7 @@ class PrincipalRoleView:
         if 'APPLY' in self.request:
             principals = self.request.get('principals')
             roles = self.request.get('roles')
-            prm = zapi.getAdapter(self.context, IPrincipalRoleManager)
+            prm = IPrincipalRoleManager(self.context)
             for role in roles:
                 for principal in principals:
                     name = 'grid.%s.%s' % (role, principal)
@@ -101,7 +101,7 @@ class PrincipalRoleGrid:
         self._roles = roles
         self._grid = {}
 
-        map = zapi.getAdapter(context, IPrincipalRoleMap)
+        map = IPrincipalRoleMap(context)
 
         for role in roles:
             rid = role.id

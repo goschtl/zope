@@ -13,9 +13,9 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.3 2004/03/06 04:17:26 garrett Exp $
+$Id: instance.py,v 1.4 2004/03/06 16:50:36 jim Exp $
 """
-from zope.component import getAdapter, getService
+from zope.component import getService
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.security.proxy import trustedRemoveSecurityProxy
@@ -60,7 +60,7 @@ class ManagementView(BrowserView):
 
     def listContentInfo(self):
         return map(self._extractContentInfo,
-                   getAdapter(self.context, IProcessInstanceContainer).items())
+                   IProcessInstanceContainer(self.context).items())
 
     def getWorkflowTitle(self):
         pi = self._getSelWorkflow()
@@ -79,14 +79,14 @@ class ManagementView(BrowserView):
         clean_pd = removeAllProxies(pd)
 
         current_state = clean_pd.getState(pi.status)
-        adapter = getAdapter(current_state, IZopeDublinCore)
+        adapter = IZopeDublinCore(current_state)
         info['status'] = adapter.title or pi.status
 
         transition_names = pi.getOutgoingTransitions()
         trans_info = []
         for name in transition_names:
             transition = clean_pd.getTransition(name)
-            adapter = getAdapter(transition, IZopeDublinCore)
+            adapter = IZopeDublinCore(transition)
             trans_info.append({'name':name,
                                'title': adapter.title or name})
         info['transitions'] = trans_info
@@ -105,12 +105,12 @@ class ManagementView(BrowserView):
 
 
     def _getTitle(self, obj):
-        return (getAdapter(obj, IZopeDublinCore).title or obj.__name___)
+        return (IZopeDublinCore(obj).title or obj.__name___)
 
  
     def _getSelWorkflow(self):
         reqWorkflow = self.request.get('workflow', u'')
-        pi_container = getAdapter(self.context, IProcessInstanceContainer)
+        pi_container = IProcessInstanceContainer(self.context)
         if reqWorkflow is u'':
             available_instances = pi_container.keys()
             if len(available_instances) > 0:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal Permission View Classes
 
-$Id: principalpermissionview.py,v 1.2 2004/03/05 18:39:07 srichter Exp $
+$Id: principalpermissionview.py,v 1.3 2004/03/06 16:50:29 jim Exp $
 """
 import time
 
@@ -44,7 +44,7 @@ class PrincipalPermissionView(BrowserView):
         """Form action unsetting a principals permissions"""
         permission_service = self.get_permission_service()
         principal = self.get_principal(principal_id)
-        ppm = zapi.getAdapter(self.context, IPrincipalPermissionManager)
+        ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
             permission = permission_service.getPermission(perm_id)
@@ -58,7 +58,7 @@ class PrincipalPermissionView(BrowserView):
         """Form action granting a list of permissions to a principal"""
         permission_service = self.get_permission_service()
         principal = self.get_principal(principal_id)
-        ppm = zapi.getAdapter(self.context, IPrincipalPermissionManager)
+        ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
             permission = permission_service.getPermission(perm_id)
@@ -71,7 +71,7 @@ class PrincipalPermissionView(BrowserView):
         """Form action denying a list of permissions for a principal"""
         permission_service = self.get_permission_service()
         principal = self.get_principal(principal_id)
-        ppm = zapi.getAdapter(self.context, IPrincipalPermissionManager)
+        ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
             permission = permission_service.getPermission(perm_id)
@@ -84,7 +84,7 @@ class PrincipalPermissionView(BrowserView):
     def getUnsetPermissionsForPrincipal(self, principal_id):
         """Returns all unset permissions for this principal"""
 
-        ppmap = zapi.getAdapter(self.context, IPrincipalPermissionMap)
+        ppmap = IPrincipalPermissionMap(self.context)
         principal = self.get_principal(principal_id)
         perm_serv = zapi.getService(self.context, Permissions)
         result = []
@@ -101,7 +101,7 @@ class PrincipalPermissionView(BrowserView):
            Return empty list if there are no permissions.
         """
 
-        ppmap = zapi.getAdapter(self.context, IPrincipalPermissionMap)
+        ppmap = IPrincipalPermissionMap(self.context)
         principal = self.get_principal(principal_id)
 
         permission_settings = ppmap.getPermissionsForPrincipal(principal)

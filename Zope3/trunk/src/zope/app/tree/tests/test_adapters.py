@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_adapters.py,v 1.3 2004/03/03 10:38:55 philikon Exp $
+$Id: test_adapters.py,v 1.4 2004/03/06 16:50:33 jim Exp $
 """
 
 import unittest
@@ -98,55 +98,55 @@ class AdapterTestCase(PlacelessSetup, unittest.TestCase):
         # test content unique id
         farnesworth = SampleContent()
         elzar = SampleContent()
-        adapter = zapi.getAdapter(farnesworth, IUniqueId)
-        adapter2 = zapi.getAdapter(elzar, IUniqueId)
+        adapter = IUniqueId(farnesworth)
+        adapter2 = IUniqueId(elzar)
         self.failIf(adapter.getId() == 'farnesworth')
         self.failIf(adapter2.getId() == 'elzar')
         # test for uniqueness
         self.failIf(adapter.getId() == adapter2.getId())
 
         # test content child objects
-        adapter = zapi.getAdapter(elzar, IChildObjects)
+        adapter = IChildObjects(elzar)
         self.failIf(adapter.hasChildren())
         self.assert_(len(adapter.getChildObjects()) == 0)
         # test with acquired content
         bender = self.futurama['planetexpress']['bender']
-        adapter = zapi.getAdapter(bender, IChildObjects)
+        adapter = IChildObjects(bender)
         self.failIf(adapter.hasChildren())
         self.assert_(len(adapter.getChildObjects()) == 0)
 
     def test_location_uniqueid(self):
         # futurama does not have a name
         futurama = self.futurama
-        adapter = zapi.getAdapter(futurama, IUniqueId)
+        adapter = IUniqueId(futurama)
         self.assertEqual(adapter.getId(), str(id(futurama)))
 
         # test container
         planetexpress = self.futurama['planetexpress']
-        adapter = zapi.getAdapter(planetexpress, IUniqueId)
+        adapter = IUniqueId(planetexpress)
         self.assertEqual(adapter.getId(), 'planetexpress')
 
         # test content
         bender = self.futurama['planetexpress']['bender']
-        adapter = zapi.getAdapter(bender, IUniqueId)
+        adapter = IUniqueId(bender)
         self.assertEqual(adapter.getId(), r'bender\planetexpress')
 
     def test_container_childobjects(self):
         # test container with children
         futurama = self.futurama
-        adapter = zapi.getAdapter(futurama, IChildObjects)
+        adapter = IChildObjects(futurama)
         self.assert_(adapter.hasChildren())
         self.assertEqual(adapter.getChildObjects(), futurama.values())
 
         # test acquired container with children
         planetexpress = self.futurama['planetexpress']
-        adapter = zapi.getAdapter(planetexpress, IChildObjects)
+        adapter = IChildObjects(planetexpress)
         self.assert_(adapter.hasChildren())
         self.assertEqual(adapter.getChildObjects(), planetexpress.values())
 
         # test acquired container w/o children
         omicronpersei = self.futurama['omicronpersei']
-        adapter = zapi.getAdapter(omicronpersei, IChildObjects)
+        adapter = IChildObjects(omicronpersei)
         self.failIf(adapter.hasChildren())
         self.assertEqual(adapter.getChildObjects(), [])
 
@@ -156,13 +156,13 @@ class AdapterTestCase(PlacelessSetup, unittest.TestCase):
         omicronpersei = self.futurama['omicronpersei']
 
         # test behaviour before and after setting a site
-        adapter = zapi.getAdapter(futurama, IChildObjects)
+        adapter = IChildObjects(futurama)
         self.assert_(adapter.hasChildren())
         self.assertEqual(adapter.getChildObjects(), futurama.values())
         futurama.setSiteManager(sm)
         self.assert_(sm in adapter.getChildObjects())
 
-        adapter = zapi.getAdapter(omicronpersei, IChildObjects)
+        adapter = IChildObjects(omicronpersei)
         self.failIf(adapter.hasChildren())
         omicronpersei.setSiteManager(sm)
         self.assert_(adapter.hasChildren())

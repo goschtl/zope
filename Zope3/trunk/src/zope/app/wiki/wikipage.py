@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.5 2004/03/05 22:09:22 jim Exp $
+$Id: wikipage.py,v 1.6 2004/03/06 16:50:35 jim Exp $
 """
 import smtplib
 from persistent import Persistent
@@ -62,7 +62,7 @@ class WikiPageHierarchyAdapter:
 
     def __init__(self, context):
         self.context = context
-        self._annotations = zapi.getAdapter(context, IAnnotations)
+        self._annotations = IAnnotations(context)
         if not self._annotations.get(HierarchyKey):
             self._annotations[HierarchyKey] = ()
 
@@ -85,7 +85,7 @@ class WikiPageHierarchyAdapter:
             return [self.context]
         wiki = zapi.getParent(self.context)
         name = self.getParents()[0]
-        hier = zapi.getAdapter(wiki[name], IWikiPageHierarchy)
+        hier = IWikiPageHierarchy(wiki[name])
         return hier.path() + [self.context]
 
     def findChildren(self, recursive=True):
@@ -94,7 +94,7 @@ class WikiPageHierarchyAdapter:
         contextName = zapi.name(self.context)
         children = []
         for pageName in wiki:
-            hier = zapi.getAdapter(wiki[pageName], IWikiPageHierarchy)
+            hier = IWikiPageHierarchy(wiki[pageName])
             if contextName in hier.getParents():
                 if recursive:
                     subs = hier.findChildren()
@@ -122,11 +122,11 @@ class Comment(Persistent):
 
     # See zope.app.wiki.interfaces.IComment
     def _getTitle(self):
-        dc = zapi.getAdapter(self, ICMFDublinCore)
+        dc = ICMFDublinCore(self)
         return dc.title
 
     def _setTitle(self, title):
-        dc = zapi.getAdapter(self, ICMFDublinCore)
+        dc = ICMFDublinCore(self)
         dc.title = title
 
     title = property(_getTitle, _setTitle)
@@ -177,7 +177,7 @@ class MailSubscriptions:
 
     def __init__(self, context):
         self.context = context
-        self._annotations = zapi.getAdapter(context, IAnnotations)
+        self._annotations = IAnnotations(context)
         if not self._annotations.get(SubscriberKey):
             self._annotations[SubscriberKey] = ()
 
@@ -249,10 +249,9 @@ class WikiMailer:
     def getAllSubscribers(self, object):
         """Retrieves all email subscribers by looking into the local Wiki Page
            and into the Wiki for the global subscriptions."""
-        emails = tuple(zapi.getAdapter(object,
-                                  IMailSubscriptions).getSubscriptions())
-        emails += tuple(zapi.getAdapter(zapi.getParent(object),
-                                   IMailSubscriptions).getSubscriptions())
+        emails = tuple(IMailSubscriptions(object).getSubscriptions())
+        emails += tuple(IMailSubscriptions(zapi.getParent(object)
+                                           ).getSubscriptions())
         return emails
 
     def mail(self, emails, subject, body):

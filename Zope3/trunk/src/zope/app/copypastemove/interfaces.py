@@ -13,13 +13,13 @@
 ##############################################################################
 """Copy and Move support
 
-$Id: interfaces.py,v 1.1 2004/03/03 10:52:04 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/03/06 16:50:19 jim Exp $
 """
 
 from zope.interface import Interface
 
 class IObjectMover(Interface):
-    '''Use getAdapter(obj, IObjectMover) to move an object somewhere.'''
+    '''Use IObjectMover(obj) to move an object somewhere.'''
 
     def moveTo(target, new_name=None):
         '''Move this object to the target given.

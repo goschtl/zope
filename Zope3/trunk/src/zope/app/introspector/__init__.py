@@ -13,12 +13,12 @@
 ##############################################################################
 """Introspector
 
-$Id: __init__.py,v 1.4 2004/03/05 22:09:09 jim Exp $
+$Id: __init__.py,v 1.5 2004/03/06 16:50:26 jim Exp $
 """
 from zope.interface import Interface
 from zope.app.introspector.interfaces import IIntrospector
 from zope.app.interfaces.services.module import IModuleService
-from zope.component import getService, getAdapter, getServiceDefinitions
+from zope.component import getService, getServiceDefinitions
 from zope.proxy import removeAllProxies
 from zope.interface import implements, implementedBy
 from zope.interface import directlyProvides, directlyProvidedBy, providedBy
@@ -53,7 +53,7 @@ class Introspector(object):
             if (self.context == Interface and
                 name != 'Interface._Interface.Interface'):
                 servicemanager = getServiceManager(self.context)
-                adapter = getAdapter(servicemanager, IModuleService)
+                adapter = IModuleService(servicemanager)
                 self.currentclass = adapter.resolve(name)
                 self.context = self.currentclass
             else:

@@ -13,7 +13,7 @@
 ##############################################################################
 """An adapter of annotatable objects.
 
-$Id: annotationcacheable.py,v 1.5 2004/03/01 10:57:35 philikon Exp $
+$Id: annotationcacheable.py,v 1.6 2004/03/06 16:50:16 jim Exp $
 """
 from zope.interface import implements
 
@@ -33,7 +33,7 @@ class AnnotationCacheable:
         self._context = context
 
     def getCacheId(self):
-        annotations = zapi.getAdapter(self._context, IAnnotations)
+        annotations = IAnnotations(self._context)
         return annotations.get(annotation_key, None)
 
     def setCacheId(self, id):
@@ -43,7 +43,7 @@ class AnnotationCacheable:
             service = zapi.getService(self._context, Caching)
             cache = service.getCache(old_cache_id)
             cache.invalidate(self._context)
-        annotations = zapi.getAdapter(self._context, IAnnotations)
+        annotations = IAnnotations(self._context)
         annotations[annotation_key] = id
 
     cacheId = property(getCacheId, setCacheId, None, "Associated cache name")
