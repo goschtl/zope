@@ -96,15 +96,15 @@ def _exe(callable, subs, context, kw):
 def begin(_custom_directives, _name, _context, **kw):
     """Begin executing a top-level directive
 
-    A custom registry is provided to provides specialized directive
+    A custom registry is provided to provide specialized directive
     handlers in addition to the globally registered directives. For
     example, the XML configuration mechanism uses these to provide XML
     configuration file directives.
 
-    The _name argument is a tuple with a namespace URI and an
+    The _name argument is a tuple with a namespace URI and a
     name string.
 
-    Thje _context argument is an execution context objects that
+    The _context argument is an execution context object that
     directives use for functions like resolving names. It will be
     passed as the first argument to the directive handler.
 
@@ -114,7 +114,7 @@ def begin(_custom_directives, _name, _context, **kw):
 
     - An object to be called to finish directive processing. This
       object will return a sequence of actions. The object must be
-      called after sub-directives are processes.
+      called after sub-directives are processed.
 
     - A registry for looking up subdirectives.
 
@@ -136,10 +136,10 @@ def sub(subs, _name, _context, **kw):
     The first argument, subs, is a registry of allowable subdirectives
     for the containing directive or subdirective.
 
-    The _name argument is a tuple with a namespace URI and an
+    The _name argument is a tuple with a namespace URI and a
     name string.
 
-    Thje _context argument is an execution context objects that
+    The _context argument is an execution context object that
     directives use for functions like resolving names. It will be
     passed as the first argument to the directive handler.
 
@@ -149,7 +149,7 @@ def sub(subs, _name, _context, **kw):
 
     - An object to be called to finish directive processing. This
       object will return a sequence of actions. The object must be
-      called after sub-directives are processes.
+      called after sub-directives are processed.
 
     - A registry for looking up subdirectives.
 
@@ -179,7 +179,7 @@ defaultkw = ({},)
 def end(base):
     """Finish processing a directive or subdirective
 
-    The argument is a return value from begin or sub. It's first
+    The argument is a return value from begin or sub.  Its first
     element is called to get a sequence of actions.
 
     The actions are normalized to a 4-element tuple with a
