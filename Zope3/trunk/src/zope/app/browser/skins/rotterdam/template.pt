@@ -31,7 +31,7 @@
           tal:attributes="href context/++resource++favicon.png" />
   </head>
 
-  <body onload="" tal:attributes="onload body_onload">
+  <body tal:attributes="onload body_onload | nothing">
 
     <div id="global">
       <div id="userDetails">

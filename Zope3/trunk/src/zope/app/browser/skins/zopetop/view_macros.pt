@@ -20,7 +20,7 @@
   </div>
 
 </head>
-<body onload="" tal:attributes="onload body_onload">
+<body tal:attributes="onload body_onload | nothing">
 
 <div class="top">
   <a href="#" tal:attributes="href string:${request/URL/1}/@@manage">
