@@ -1,3 +1,4 @@
+#! /usr/bin/env python2.3
 ##############################################################################
 #
 # Copyright (c) 2004 Zope Corporation and Contributors.
@@ -37,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.1 2004/02/25 15:29:20 srichter Exp $
+$Id: finddeps.py,v 1.2 2004/02/25 21:16:33 fdrake Exp $
 """
 import sys
 import getopt
