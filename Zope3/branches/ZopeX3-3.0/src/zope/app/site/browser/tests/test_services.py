@@ -22,7 +22,7 @@ from zope.app.tests import setup
 from zope.app.site.interfaces import ILocalService
 from zope.interface import implements
 
-class ServiceStub:
+class ServiceStub(object):
     __parent__ = None
     __name__ = None
     next = None

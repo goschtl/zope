@@ -24,7 +24,7 @@ class IDatabaseOpenedEvent(zope.interface.Interface):
 
     database = zope.interface.Attribute("The main database.")
 
-class DatabaseOpened:
+class DatabaseOpened(object):
     zope.interface.implements(IDatabaseOpenedEvent)
 
     def __init__(self, database):
@@ -33,10 +33,10 @@ class DatabaseOpened:
 class IProcessStartingEvent(zope.interface.Interface):
     """The application server process is starting."""
 
-class ProcessStarting:
+class ProcessStarting(object):
     zope.interface.implements(IProcessStartingEvent)
 
-class SystemConfigurationParticipation:
+class SystemConfigurationParticipation(object):
     zope.interface.implements(IParticipation)
 
     principal = system_user

@@ -37,7 +37,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.form.browser.tests.test_editview import IFoo, IBar, Foo
 from zope.app.form.browser.tests.test_editview import FooBarAdapter
 
-class Context:
+class Context(object):
 
     def action(self, discriminator, callable, args=(), kw={}):
         self.last_action = (discriminator, callable, args, kw)
@@ -53,7 +53,7 @@ class I(Interface):
     extra1 = TextLine()
     extra2 = TextLine(required=False)
 
-class C:
+class C(object):
 
     implements(I)
 
@@ -64,7 +64,7 @@ class C:
     def getfoo(self): return self._foo
     def setfoo(self, v): self._foo = v
 
-class V:
+class V(object):
     name_widget = CustomWidgetFactory(Text)
     first_widget = CustomWidgetFactory(Text)
     last_widget = CustomWidgetFactory(Text)
@@ -74,11 +74,11 @@ class V:
     extra1_widget = CustomWidgetFactory(Text)
     extra2_widget = CustomWidgetFactory(Text)
 
-class FooV:
+class FooV(object):
     bar_widget = CustomWidgetFactory(Text)
 
 
-class SampleData:
+class SampleData(object):
 
     name = u"foo"
     first = u"bar"
@@ -178,7 +178,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_create(self):
 
-        class Adding:
+        class Adding(object):
 
             implements(IAdding)
 
@@ -211,7 +211,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_createAndAdd(self):
 
-        class Adding:
+        class Adding(object):
 
             implements(IAdding)
 
@@ -246,7 +246,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_createAndAdd_w_adapter(self):
 
-        class Adding:
+        class Adding(object):
 
             implements(IAdding)
 
@@ -277,7 +277,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_hooks(self):
 
-        class Adding:
+        class Adding(object):
             implements(IAdding)
 
         adding = Adding()

@@ -11,18 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test HTTP-specific object traversers
+
 $Id$
 """
-__metaclass__ = type
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.exceptions import NotFoundError
 from zope.app.http.traversal import ContainerTraverser, ItemTraverser
 from zope.publisher.browser import TestRequest
 from zope.app.http.put import NullResource
 
-class Items:
+class Items(object):
 
     def __init__(self, data):
         self.data = data

@@ -41,7 +41,7 @@ class MultiCheckBoxWidgetTest(SimpleInputWidgetTest):
                     description=desc,
                     value_type=Choice(values=[u'foo', u'bar'])
                     )
-        class TestObject:
+        class TestObject(object):
             implements(ITestContent)
 
         self.content = TestObject()

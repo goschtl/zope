@@ -31,9 +31,9 @@ def queryType(object, interface):
     >>> class J(Interface):
     ...     pass
     >>> directlyProvides(I, IContentType)
-    >>> class C:
+    >>> class C(object):
     ...     implements(I)
-    >>> class D:
+    >>> class D(object):
     ...     implements(J,I)
     >>> obj = C()
     >>> c1_ctype = queryType(obj, IContentType)
@@ -45,20 +45,20 @@ def queryType(object, interface):
     ...     pass
     >>> class I3(Interface):
     ...     pass
-    >>> class C1:
+    >>> class C1(object):
     ...     implements(I1)
     >>> obj1 = C1()
     >>> c1_ctype = queryType(obj1, IContentType)
     >>> c1_ctype.__name__
     'I'
-    >>> class C2:
+    >>> class C2(object):
     ...     implements(I2)
     >>> obj2 = C2()
     >>> c2_ctype = queryType(obj2, IContentType)
     >>> c2_ctype.__name__
     'I'
 
-    >>> class C3:
+    >>> class C3(object):
     ...     implements(I3)
     >>> obj3 = C3()
 
@@ -71,7 +71,7 @@ def queryType(object, interface):
     >>> class I4(I):
     ...     pass
     >>> directlyProvides(I4, IContentType)
-    >>> class C4:
+    >>> class C4(object):
     ...     implements(I4)
     >>> obj4 = C4()
     >>> c4_ctype = queryType(obj4, IContentType)

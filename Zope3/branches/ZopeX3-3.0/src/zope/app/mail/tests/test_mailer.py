@@ -57,7 +57,7 @@ class TestSMTPMailer(unittest.TestCase):
     def setUp(self, port=None):
         from zope.app.mail.mailer import SMTPMailer
 
-        class SMTP:
+        class SMTP(object):
 
             def __init__(myself, h, p):
                 myself.hostname = h

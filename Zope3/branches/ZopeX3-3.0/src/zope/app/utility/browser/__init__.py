@@ -170,7 +170,7 @@ class Utilities(object):
         return [d for ifname, name, d in L]
 
 
-class ConfigureUtility:
+class ConfigureUtility(object):
     def update(self):
         folder = zapi.getParent(self.context)
         iface = folder.resolve(self.request['interface'])

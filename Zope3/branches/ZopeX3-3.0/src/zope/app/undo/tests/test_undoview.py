@@ -27,7 +27,7 @@ from zope.app.undo.interfaces import IUndoManager
 from zope.app.undo.browser import UndoView
 from zope.app.security.principalregistry import principalRegistry
 
-class TestIUndoManager:
+class TestIUndoManager(object):
     implements(IUndoManager)
 
     def __init__(self):

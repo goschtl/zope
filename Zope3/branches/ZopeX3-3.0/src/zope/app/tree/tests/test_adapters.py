@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Tree adapter tests
+
 $Id$
 """
-
 import unittest
 
 from zope.interface import implements, directlyProvides
@@ -37,9 +37,7 @@ from zope.app.tree.utils import TreeStateEncoder
 from zope.app.tree.adapters import StubUniqueId, StubChildObjects, \
      LocationUniqueId, ContainerChildObjects, ContainerSiteChildObjects
 
-__metaclass__ = type
-
-class SampleContent:
+class SampleContent(object):
     pass
 
 class SampleSite(SampleContainer):

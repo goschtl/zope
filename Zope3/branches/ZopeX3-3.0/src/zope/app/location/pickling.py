@@ -81,7 +81,7 @@ def locationCopy(loc):
 
     return unpickler.load()
 
-class CopyPersistent:
+class CopyPersistent(object):
     """Persistence hooks for copying locations
 
     See locationCopy above.
@@ -156,7 +156,7 @@ class CopyPersistent:
         return None
 
 
-class PathPersistent:
+class PathPersistent(object):
     """Persistence hooks for pickling locations
 
     See locationCopy above.

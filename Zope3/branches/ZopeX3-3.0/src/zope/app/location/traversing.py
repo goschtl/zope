@@ -24,7 +24,7 @@ from zope.app.traversing.api import getParents
 from zope.app.location.location import Location
 
 
-class LocationPhysicallyLocatable:
+class LocationPhysicallyLocatable(object):
     """Provide location information for location objects
     """
 

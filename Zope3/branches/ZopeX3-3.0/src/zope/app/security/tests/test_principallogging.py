@@ -18,7 +18,7 @@ $Id$
 import unittest
 from zope.interface.verify import verifyObject
 
-class PrincipalStub:
+class PrincipalStub(object):
 
     id = 42
 

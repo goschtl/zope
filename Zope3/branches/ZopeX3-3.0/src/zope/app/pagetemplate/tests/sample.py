@@ -17,5 +17,5 @@ $Id$
 """
 from zope.app.pagetemplate import ViewPageTemplateFile
 
-class C:
+class C(object):
     index = ViewPageTemplateFile('test.pt')

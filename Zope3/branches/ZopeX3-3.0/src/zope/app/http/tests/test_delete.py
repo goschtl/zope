@@ -15,8 +15,6 @@
 
 $Id$
 """
-__metaclass__ = type
-
 from unittest import TestCase, TestSuite, makeSuite
 import zope.app.http.delete
 from zope.publisher.browser import TestRequest
@@ -25,7 +23,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 from zope.app.container.contained import contained
 
-class Container:
+class Container(object):
 
     implements(IWriteDirectory, IFileFactory)
 

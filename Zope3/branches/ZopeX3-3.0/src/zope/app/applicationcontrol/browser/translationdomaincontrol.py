@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Server Control View
+"""Server Control View
 
 $Id$
 """
@@ -19,7 +19,7 @@ from zope.i18n.interfaces import ITranslationDomain
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-class TranslationDomainControlView:
+class TranslationDomainControlView(object):
 
     def getCatalogsInfo(self):
         info = []

@@ -38,14 +38,14 @@ from zope.schema import vocabulary
 class ISampleObject(interfaces.IField):
     pass
 
-class SampleObject:
+class SampleObject(object):
     implements(ISampleObject)
 
 class ISampleVocabulary(
     interfaces.IVocabularyTokenized, interfaces.IVocabulary):
     pass
 
-class SampleVocabularyQuery:
+class SampleVocabularyQuery(object):
     implements(interfaces.IIterableVocabularyQuery)
     def __init__(self, vocabulary):
         self.vocabulary = vocabulary    
@@ -64,7 +64,7 @@ def setUp():
     context = xmlconfig.file("tests/registerWidgets.zcml",
                              zope.app.form.browser)
 
-class Tests:
+class Tests(object):
     """Documents and tests widgets registration for specific field types.
     
     Standard Widgets

@@ -35,7 +35,7 @@ from zope.app.tests import ztapi
 import zope.app.mail.tests
 
 
-class MaildirStub:
+class MaildirStub(object):
 
     def __init__(self, path, create=False):
         self.path = path
@@ -47,7 +47,7 @@ class MaildirStub:
     def newMessage(self):
         return None
 
-class Mailer:
+class Mailer(object):
     implements(IMailer)
 
 

@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Base Test Case for Tree Tests
+
 $Id$
 """
-
 import unittest
 from zope.interface import implements, Interface, Attribute
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -25,22 +25,20 @@ from zope.app.tree.interfaces import IUniqueId, IChildObjects, \
 from zope.app.tree.node import Node
 from zope.app.tree.utils import TreeStateEncoder
 
-__metaclass__ = type
-
 class IItem(Interface):
     """Simple object that can have an id and a set of children
     """
     id = Attribute("id")
     children = Attribute("children")
 
-class Item:
+class Item(object):
     implements(IItem)
 
     def __init__(self, id, children=[]):
         self.id = id
         self.children = children
 
-class ItemUniqueId:
+class ItemUniqueId(object):
     """Simplistic adapter from IItem to IUniqueId
     """
     implements(IUniqueId)
@@ -51,7 +49,7 @@ class ItemUniqueId:
     def getId(self):
         return self.id
 
-class ItemChildObjects:
+class ItemChildObjects(object):
     """Simplistic adapter from IItem to IChildObjects
     """
     implements(IChildObjects)

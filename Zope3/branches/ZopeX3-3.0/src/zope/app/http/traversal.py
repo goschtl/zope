@@ -16,15 +16,13 @@ We also never traverse to views.
 
 $Id$
 """
-__metaclass__ = type
-
 from zope.publisher.interfaces.http import IHTTPPublisher
 from zope.app.container.interfaces import ISimpleReadContainer, IItemContainer
 from zope.app.http.put import NullResource
 from zope.exceptions import NotFoundError
 from zope.interface import implements
 
-class ContainerTraverser:
+class ContainerTraverser(object):
     implements(IHTTPPublisher)
     __used_for__ = ISimpleReadContainer
 

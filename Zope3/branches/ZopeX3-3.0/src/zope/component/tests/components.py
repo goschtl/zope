@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Components for testing
 
 $Id$
 """
-__metaclass__ = type # All classes are new style when run with Python 2.2+
-
 from zope.interface import Interface, Attribute, implements
 
-class RecordingAdapter:
+class RecordingAdapter(object):
 
     def __init__(self):
         self.record = []
@@ -48,10 +46,10 @@ class IApp(Interface):
 
 class IContent(Interface): pass
 
-class Content:
+class Content(object):
     implements(IContent)
 
-class Comp:
+class Comp(object):
     __used_for__ = IContent
     implements(IApp)
 

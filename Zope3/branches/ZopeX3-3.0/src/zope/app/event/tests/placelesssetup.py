@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 from zope.app.event.interfaces import IObjectEvent
 from zope.app.event.objectevent import objectEventNotify
 from zope.interface import implements
@@ -38,7 +37,7 @@ def getEvents(event_type=None, filter=None):
 def clearEvents():
     del events[:]
 
-class PlacelessSetup:
+class PlacelessSetup(object):
 
     def setUp(self):
         clearEvents()

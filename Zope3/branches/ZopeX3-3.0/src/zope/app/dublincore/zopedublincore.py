@@ -15,9 +15,6 @@
 
 $Id$
 """
-
-__metaclass__ = type
-
 from datetime import datetime
 
 from zope.interface import implements
@@ -25,7 +22,7 @@ from zope.interface import implements
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.datetimeutils import parseDatetimetz
 
-class SimpleProperty:
+class SimpleProperty(object):
 
     def __init__(self, name):
         self.__name__ = name
@@ -92,7 +89,7 @@ class SequenceProperty(SimpleProperty):
         inst._changed()
         inst._mapping[self.__name__] = value
 
-class ZopeDublinCore:
+class ZopeDublinCore(object):
     """Zope Dublin Core Mixin
 
     Subclasses should define either _changed() or _p_changed.

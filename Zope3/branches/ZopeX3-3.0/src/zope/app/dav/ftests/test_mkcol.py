@@ -15,28 +15,28 @@
 
 $Id$
 """
-
 import unittest
 
 from zope.app.dav.ftests.dav import DAVTestCase
 from transaction import get_transaction
-
-__metaclass__ = type
 
 class TestMKCOL(DAVTestCase):
 
     def test_mkcol_not_folderish(self):
         self.addPage('/bar/pt', u'<span />')
         get_transaction().commit()
-        self.verifyStatus(path='/bar/pt/foo', body='', basic='mgr:mgrpw', expected=404)
+        self.verifyStatus(path='/bar/pt/foo', body='', basic='mgr:mgrpw',
+                          expected=404)
 
     def test_mkcol_not_folderish_existing(self):
         self.addPage('/bar/pt', u'<span />')
         get_transaction().commit()
-        self.verifyStatus(path='/bar/pt', body='', basic='mgr:mgrpw', expected=405)
+        self.verifyStatus(path='/bar/pt', body='', basic='mgr:mgrpw',
+                          expected=405)
 
     def test_mkcol_not_existing(self):
-        self.verifyStatus(path='/mkcol_test', body='', basic='mgr:mgrpw', expected=201)
+        self.verifyStatus(path='/mkcol_test', body='', basic='mgr:mgrpw',
+                          expected=201)
 
     def test_mkcol_parent_not_existing(self):
         self.verifyStatus(path='/bar/mkcol_test', body='', basic='mgr:mgrpw',
@@ -49,7 +49,7 @@ class TestMKCOL(DAVTestCase):
                           expected=405)
 
     def test_mkcol_with_body(self):
-        self.verifyStatus(path='/mkcol_test', body='bla', basic='mgr:mgrpw', \
+        self.verifyStatus(path='/mkcol_test', body='bla', basic='mgr:mgrpw',
                           expected=415)
 
     def verifyStatus(self, path, body, basic, expected=201):

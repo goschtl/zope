@@ -31,7 +31,7 @@ from zope.app.security.principalregistry import PrincipalRegistry
 from zope.app.security.principalregistry import DuplicateLogin, DuplicateId
 
 
-class Request:
+class Request(object):
 
     implements(IHTTPCredentials)
 

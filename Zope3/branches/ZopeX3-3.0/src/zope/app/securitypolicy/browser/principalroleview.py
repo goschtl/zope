@@ -27,7 +27,7 @@ from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
 
-class PrincipalRoleView:
+class PrincipalRoleView(object):
 
     def getAllPrincipals(self):
         principals = getattr(self, '_principals', None)
@@ -94,7 +94,7 @@ class PrincipalRoleView:
 
         return status
 
-class PrincipalRoleGrid:
+class PrincipalRoleGrid(object):
 
     def __init__(self, principals, roles, context):
         self._principals = principals

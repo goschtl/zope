@@ -19,8 +19,6 @@ sub transactions need to implement their own proxy.
 
 $Id$
 """
-__metaclass__ = type
-
 import types, string
 from types import StringTypes
 
@@ -240,7 +238,7 @@ def parseDSN(dsn):
     return result
 
 
-class ZopeCursor:
+class ZopeCursor(object):
     implements(IZopeCursor)
 
     def __init__(self, cursor, connection):
@@ -290,7 +288,7 @@ class ZopeCursor:
 
         return map(convertRow, results)
 
-class ZopeConnection:
+class ZopeConnection(object):
 
     implements(IZopeConnection)
 
@@ -352,7 +350,7 @@ def queryForResults(conn, query):
     return ResultSet(columns, results)
 
 
-class ZopeDBTransactionManager:
+class ZopeDBTransactionManager(object):
 
     implements(IDataManager)
 
@@ -425,7 +423,7 @@ class Row(object):
                 return c
         return 0
 
-class InstanceOnlyDescriptor:
+class InstanceOnlyDescriptor(object):
     __marker = object()
     def __init__(self, value=__marker):
         if value is not self.__marker:

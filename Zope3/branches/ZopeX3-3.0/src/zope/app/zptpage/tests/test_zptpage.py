@@ -114,7 +114,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         self.assertEquals(page.render(request), 'zpt\n')
 
 
-class DummyZPT:
+class DummyZPT(object):
 
     def __init__(self, source):
         self.source = source

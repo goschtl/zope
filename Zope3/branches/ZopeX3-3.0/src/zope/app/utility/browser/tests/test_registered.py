@@ -38,7 +38,7 @@ class IBar(IFoo):
 class IStub(Interface):
     """Interface used to bind an absolute_url view to stub objects."""
 
-class Stub:
+class Stub(object):
     # Does triple duty as a stub for a registration, ay registration
     # stack, and a component!
 
@@ -71,7 +71,7 @@ class StubAbsoluteURL(BrowserView):
     def __str__(self):
         return self.context.url
 
-class StubLocalUtilityService:
+class StubLocalUtilityService(object):
     def registrations(self, localOnly=False):
         return iter([
             Stub('', IFoo, "1"),

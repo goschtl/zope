@@ -30,7 +30,7 @@ from zope.security.management import newInteraction, endInteraction
 class IDummyContent(Interface):
     pass
 
-class DummyEvent:
+class DummyEvent(object):
     pass
 
 class DummyDCAdapter(object):
@@ -50,13 +50,13 @@ class DummyDCAdapter(object):
         self.creators = context.creators
 
 
-class DummyDublinCore:
+class DummyDublinCore(object):
 
     implements(IDummyContent)
 
     creators = ()
 
-class DummyPrincipal:
+class DummyPrincipal(object):
     implements(IPrincipal)
 
     def __init__(self, id, title, description):
@@ -64,7 +64,7 @@ class DummyPrincipal:
         self.title = title
         self.description = description
 
-class DummyRequest:
+class DummyRequest(object):
 
     def __init__(self, principal):
         self.principal = principal

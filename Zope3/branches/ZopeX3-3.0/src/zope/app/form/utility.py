@@ -32,8 +32,6 @@ fields, or widgets.
 
 $Id$
 """
-__metaclass__ = type
-
 from zope.schema import getFieldsInOrder
 from zope.app import zapi
 from zope.app.form.interfaces import IWidget

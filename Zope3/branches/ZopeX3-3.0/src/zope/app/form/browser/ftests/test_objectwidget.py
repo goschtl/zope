@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test object widget
+
 $Id$
 """
-
 import unittest, doctest
 
 from zope.interface import Interface, implements
@@ -29,7 +29,7 @@ class ITestContact(Interface):
     name = TextLine()
     email = TextLine()
     
-class TestContact:
+class TestContact(object):
     implements(ITestContact)
 
 class Test(BrowserTestCase, support.VerifyResults):

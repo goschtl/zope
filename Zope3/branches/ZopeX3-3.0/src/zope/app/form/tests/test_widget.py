@@ -27,7 +27,7 @@ from zope.app.form import Widget, CustomWidgetFactory
 from zope.app.form.interfaces import IWidget
 from zope.app.tests.placelesssetup import setUp, tearDown
 
-class TestContext:
+class TestContext(object):
     __name__ = 'Test'
     title = 'My Test Context'
     description = 'A test context.'
@@ -38,7 +38,7 @@ class FooWidget(Widget):
 context = TestContext()
 request = TestRequest()
 
-class TestWidget:
+class TestWidget(object):
     """Tests basic widget characteristics.
 
     Widget implements IWidget:
@@ -76,7 +76,7 @@ class TestWidget:
     browser widget will render the specified value in HTML.
     """
 
-class TestInputWidget:
+class TestInputWidget(object):
     """Tests the input widget mixin.
 
     InputWidget is a simple mixin that provides default implementations for
@@ -145,7 +145,7 @@ class TestInputWidget:
         True
     """
 
-class TestCustomWidgetFactory:
+class TestCustomWidgetFactory(object):
     """Tests the custom widget factory.
 
     Custom widgets can be created using a custom widget factory. Factories

@@ -48,7 +48,7 @@ class RadioWidgetTest(SimpleInputWidgetTest):
                     description=desc,
                     values=(u'foo', u'bar')
                     )
-        class TestObject:
+        class TestObject(object):
             implements(ITestContent)
 
         self.content = TestObject()

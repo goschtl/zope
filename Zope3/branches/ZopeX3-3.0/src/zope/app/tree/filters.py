@@ -24,13 +24,10 @@ interface.
 
 $Id$
 """
-
 from zope.interface import implements
 from zope.app.container.interfaces import IObjectFindFilter
 
-__metaclass__ = type
-
-class OnlyInterfacesFilter:
+class OnlyInterfacesFilter(object):
     """Only match objects that implement one of the given interfaces.
     """
     implements(IObjectFindFilter)

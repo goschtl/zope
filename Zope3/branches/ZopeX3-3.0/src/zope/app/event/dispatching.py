@@ -21,7 +21,7 @@ So, to subscribe to an event, use a subscription adapter to None:
   >>> from zope.app.tests.placelesssetup import setUp, tearDown
   >>> setUp()
 
-  >>> class E1:
+  >>> class E1(object):
   ...     pass
 
   >>> class E2(E1):

@@ -20,7 +20,6 @@ up with ComponentLookupErrors whenever encounter unknown objects.
 
 $Id$
 """
-
 from zope.interface import Interface, implements
 from zope.component.exceptions import ComponentLookupError
 
@@ -31,9 +30,7 @@ from zope.app.site.interfaces import ISite
 
 from zope.app.tree.interfaces import IUniqueId, IChildObjects
 
-__metaclass__ = type
-
-class StubUniqueId:
+class StubUniqueId(object):
     implements(IUniqueId)
     __used_for__ = Interface
 
@@ -44,7 +41,7 @@ class StubUniqueId:
         # this does not work for persistent objects
         return str(id(self.context))
 
-class StubChildObjects:
+class StubChildObjects(object):
     implements(IChildObjects)
     __used_for__ = Interface
 
@@ -57,7 +54,7 @@ class StubChildObjects:
     def getChildObjects(self):
         return ()
 
-class LocationUniqueId:
+class LocationUniqueId(object):
     implements(IUniqueId)
     __used_for__ = ILocation
 
@@ -74,7 +71,7 @@ class LocationUniqueId:
                     if parent.__name__]
         return '\\'.join(parents)
 
-class ContainerChildObjects:
+class ContainerChildObjects(object):
     implements(IChildObjects)
     __used_for__ = IReadContainer
 

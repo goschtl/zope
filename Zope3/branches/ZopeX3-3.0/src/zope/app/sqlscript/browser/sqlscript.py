@@ -24,9 +24,7 @@ from zope.app import zapi
 from zope.app.sqlscript.sqlscript import SQLScript
 from zope.app.sqlscript.interfaces import ISQLScript
 
-__metaclass__ = type
-
-class SQLScriptTest:
+class SQLScriptTest(object):
     """Test the SQL inside the SQL Script
     """
 
@@ -60,7 +58,7 @@ class SQLScriptTest:
     def getRenderedSQL(self):
         return self.context.getTemplate()(**self.getArguments())
 
-class SQLScriptAdd:
+class SQLScriptAdd(object):
     """Provide interface to add SQL Script
     """
 
@@ -135,7 +133,7 @@ class SQLScriptAdd:
         else:
             return super(SQLScriptAdd, self).nextURL()
 
-class SQLScriptEdit:
+class SQLScriptEdit(object):
     """Provide interface to Edit and Test  SQL Script
     """        
 

@@ -31,7 +31,7 @@ class DummyAnnotationsClass(dict):
     implements(IAnnotations)
 
 
-class DummyEvent:
+class DummyEvent(object):
     implements(IObjectAddedEvent)
     
 def test_handle():
@@ -111,7 +111,7 @@ def test_notify():
 
     """
 
-class DummyObservable:
+class DummyObservable(object):
     implements(IObservable)
 
     def __init__(self):
@@ -120,7 +120,7 @@ class DummyObservable:
     def notify(self, event):
         self.flag = True
 
-class DummyNotObservable:
+class DummyNotObservable(object):
     
     def __init__(self):
         self.flag = False
@@ -128,13 +128,13 @@ class DummyNotObservable:
     def notify(self, event):
         self.flag = True
 
-class DummyObservableEvent:
+class DummyObservableEvent(object):
     implements(IObjectRemovedEvent, IObservable)
 
     def __init__(self):
         self.object = DummyObservable()
 
-class DummyNotObservableEvent:
+class DummyNotObservableEvent(object):
     implements(IObjectRemovedEvent)
     
     def __init__(self):

@@ -25,7 +25,7 @@ class Permission(schema.Id):
 
     Let's look at an example:
 
-    >>> class FauxContext:
+    >>> class FauxContext(object):
     ...     permission_mapping = {'zope.ManageCode':'zope.private'}
     ...     _actions = []
     ...     def action(self, **kws):

@@ -18,7 +18,7 @@ $Id$
 from ZODB.FileStorage.FileStorage import FileStorageError
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-class ZODBControlView:
+class ZODBControlView(object):
 
     def getName(self):
         """Get the database name."""

@@ -90,7 +90,7 @@ class UtilityDetails(object):
           >>> class Foo(object):
           ...     pass
 
-          >>> class Bar:
+          >>> class Bar(object):
           ...     pass
 
           >>> details = UtilityDetails()

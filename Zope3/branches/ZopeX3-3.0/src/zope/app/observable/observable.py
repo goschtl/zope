@@ -22,7 +22,7 @@ from zope.app.observable.observers import Observers
 
 key = 'zope.app.observable'
 
-class ObservableAdapter:
+class ObservableAdapter(object):
 
     implements(IObservable)
     

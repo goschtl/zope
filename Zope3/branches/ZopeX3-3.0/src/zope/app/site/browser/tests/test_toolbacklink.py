@@ -32,10 +32,10 @@ from zope.app.tests import ztapi
 class IDummyUtility(Interface):
     pass
 
-class DummyUtility:
+class DummyUtility(object):
     implements(IDummyUtility, ILocalUtility)
 
-class Locatable:
+class Locatable(object):
     def __init__(self, context):
         pass
     

@@ -25,7 +25,7 @@ from zope.interface import Interface
 from zope.app.basicskin.standardmacros import Macros
 
 
-class ViewWithMacros:
+class ViewWithMacros(object):
     implements(IBrowserView)
 
     def __init__(self, context, request):
@@ -42,7 +42,7 @@ class ViewWithMacros:
 
 class I(Interface): pass
 
-class C:
+class C(object):
     implements(I)
 
 class page1(ViewWithMacros):

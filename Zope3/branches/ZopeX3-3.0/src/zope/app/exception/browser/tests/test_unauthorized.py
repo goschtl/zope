@@ -31,7 +31,7 @@ class Unauthorized(Unauthorized):
         self.request = request
 
 
-class DummyPrincipal:
+class DummyPrincipal(object):
     implements(IPrincipal)  # this is a lie
 
     def __init__(self, id):
@@ -40,14 +40,14 @@ class DummyPrincipal:
     def getId(self):
         return self.id
 
-class DummyAuthService:
+class DummyAuthService(object):
     implements(IAuthenticationService)  # this is a lie
 
     def unauthorized(self, principal_id, request):
         self.principal_id = principal_id
         self.request = request
 
-class DummyPrincipalSource:
+class DummyPrincipalSource(object):
     pass
 
 class Test(TestCase, PlacelessSetup):

@@ -439,7 +439,7 @@ class MakeSite(BrowserView):
         >>> from zope.app.traversing.interfaces import IContainmentRoot
         >>> from zope.interface import implements
 
-        >>> class PossibleSite:
+        >>> class PossibleSite(object):
         ...     implements(IContainmentRoot)
         ...     def setSiteManager(self, sm):
         ...         from zope.interface import directlyProvides
@@ -490,7 +490,7 @@ class MakeSite(BrowserView):
             "++etc++site/@@SelectedManagementView.html")
 
 
-class Interfaces:
+class Interfaces(object):
     """Interface service view
 
     >>> from zope.interface import Interface
@@ -501,7 +501,7 @@ class Interfaces:
     ...     This is a multi-line doc string.
     ...     '''
     ... 
-    >>> class DummyInterface:
+    >>> class DummyInterface(object):
     ...     def items(self):
     ...         return [('DCInterface', DCInterface)]
     ...
@@ -531,7 +531,7 @@ class Interfaces:
         L.sort()
         return [{"id": id, "name": name, "doc": doc} for name, id, doc in L]
 
-class Detail:
+class Detail(object):
     """Interface Details
 
     >>> from zope.schema import TextLine
@@ -546,7 +546,7 @@ class Detail:
     ...     def testMethod():
     ...         'Returns test name'
     ...
-    >>> class TestClass:
+    >>> class TestClass(object):
     ...     def getInterface(self, id=None):
     ...         return TestInterface
     ...
@@ -623,7 +623,7 @@ class Detail:
                         yield {"name": name, "registrations": regs}
             
 
-class MethodDetail:
+class MethodDetail(object):
     """Interface Method Details
 
     >>> from zope.interface import Interface
@@ -634,7 +634,7 @@ class MethodDetail:
     ...     def testMethod():
     ...         'Returns test name'
     ...
-    >>> class TestClass:
+    >>> class TestClass(object):
     ...     def getInterface(self, id=None):
     ...         return TestInterface
     ...

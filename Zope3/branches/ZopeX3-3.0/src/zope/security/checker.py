@@ -44,8 +44,6 @@ from zope.security.interfaces import Unauthorized, ForbiddenAttribute
 from zope.security.management import thread_local
 from zope.security._proxy import _Proxy as Proxy, getChecker
 
-__metaclass__ = type
-
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
     try:
         WATCH_CHECKERS = int(os.environ.get('ZOPE_WATCH_CHECKERS'))
@@ -173,7 +171,7 @@ class Checker(object):
 
 
 # Helper class for __traceback_supplement__
-class TracebackSupplement:
+class TracebackSupplement(object):
 
     def __init__(self, obj):
         self.obj = obj
@@ -427,7 +425,7 @@ class CombinedChecker(Checker):
             except ForbiddenAttribute:
                 raise unauthorized_exception
 
-class CheckerLoggingMixin:
+class CheckerLoggingMixin(object):
     """Debugging mixin for checkers.
 
     Prints verbose debugging information about every performed check to

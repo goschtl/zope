@@ -23,7 +23,7 @@ class Test(TestCase):
 
     def test(self):
 
-        class Template:
+        class Template(object):
             def render(self, request, **kw):
                 self.called = request, kw
                 request.response.setHeader('content-type', self.content_type)
@@ -31,7 +31,7 @@ class Test(TestCase):
 
             content_type = 'text/x-test'
 
-        class Folder:
+        class Folder(object):
             name='zope'
 
         folder = Folder()

@@ -15,13 +15,12 @@
 
 $Id$
 """
-
 from unittest import TestSuite, main
 from zope.interface.verify import verifyObject
 from zope.app.cache.interfaces import ICache
 
 
-class BaseICacheTest:
+class BaseICacheTest(object):
     """Base class for ICache unit tests.  Subclasses should provide a
     _Test__new() method that returns a new empty cache object.
     """

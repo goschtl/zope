@@ -27,7 +27,7 @@ from zope.app.security.settings import Unset, Allow, Deny
 from zope.app.security.interfaces import IPermission
 from zope.app.securitypolicy.interfaces import IRole, IRolePermissionManager
 
-class RolePermissionView:
+class RolePermissionView(object):
 
     def roles(self):
         roles = getattr(self, '_roles', None)

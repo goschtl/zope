@@ -31,7 +31,7 @@ from zope.app.securitypolicy.interfaces import IRole
 from zope.app.securitypolicy.rolepermission \
      import AnnotationRolePermissionManager
 
-class Manageable:
+class Manageable(object):
     implements(IAttributeAnnotatable)
 
 class Test(PlacefulSetup, unittest.TestCase):

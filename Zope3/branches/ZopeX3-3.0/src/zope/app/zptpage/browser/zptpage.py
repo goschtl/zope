@@ -15,7 +15,7 @@
 
 $Id$
 """
-class ZPTPageEval:
+class ZPTPageEval(object):
 
     def index(self, **kw):
         """Call a Page Template"""

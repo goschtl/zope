@@ -20,10 +20,7 @@ import traceback
 
 from zope.interface.common.interfaces import IException
 
-__metaclass__ = type
-
-
-class ExceptionDebugView:
+class ExceptionDebugView(object):
     """ Render exceptions for debugging."""
     __used_for__ = IException
 

@@ -47,7 +47,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
                     title=title,
                     description=desc,
                     )
-        class TestObject:
+        class TestObject(object):
             implements(ITestContent)
 
         self.content = TestObject()

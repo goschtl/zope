@@ -56,7 +56,7 @@ class IContent(Interface):
     foo = Foo()
     bar = Bar()
     
-class Content:
+class Content(object):
     implements(IContent)
     foo = 'Foo'
     
@@ -93,7 +93,7 @@ def assertRaises(exceptionType, callable, *args):
     except Exception, e:
         return isinstance(e, exceptionType)
        
-class TestSetUpWidget:
+class TestSetUpWidget(object):
     
     def test_typical(self):
         """Documents and tests the typical uses of setUpWidget.
@@ -130,7 +130,7 @@ class TestSetUpWidget:
         to create a widget:
            
             >>> widget = FooWidget(IContent['foo'], request)
-            >>> class Factory:
+            >>> class Factory(object):
             ...     implements(IViewFactory)
             ...     def __call__(self, request, context):
             ...         return widget
@@ -182,7 +182,7 @@ class TestSetUpWidget:
         Similarly, if a view has a widget attribute that implements 
         IViewFactory, the object created by the factory must implement IWidget.
         
-            >>> class Factory:
+            >>> class Factory(object):
             ...     implements(IViewFactory)
             ...     def __call__(self, request, context):
             ...         return 'not a widget'
@@ -398,7 +398,7 @@ class TestSetUpWidget:
         >>> tearDown()
         """
 
-class TestSetUpWidgets:
+class TestSetUpWidgets(object):
     
     def test_typical(self):
         """Tests the typical use of setUpWidgets.
@@ -528,7 +528,7 @@ class TestSetUpWidgets:
         >>> tearDown()
         """
         
-class TestFormSetUp:
+class TestFormSetUp(object):
     
     def test_setUpEditWidgets(self):
         """Documents and tests setUpEditWidgets.
@@ -659,7 +659,7 @@ class TestFormSetUp:
         >>> tearDown()
         """
         
-class TestForms:
+class TestForms(object):
     
     def test_viewHasInput(self):
         """Tests viewHasInput.
@@ -764,7 +764,7 @@ class TestForms:
         >>> tearDown()
         """
         
-class TestGetWidgetsData:
+class TestGetWidgetsData(object):
     
     def test_typical(self):
         """Documents and tests the typical use of getWidgetsData.

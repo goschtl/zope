@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test tree item filters.
+
 $Id$
 """
-
 import unittest
 
 from zope.interface import implements, directlyProvides
@@ -24,8 +24,6 @@ from zope.app import zapi
 from zope.app.tree.filters import OnlyInterfacesFilter, AllButInterfacesFilter
 
 from test_adapters import SampleContent
-
-__metaclass__ = type
 
 IRobot = InterfaceClass('IRobot', (), {})
 IHuman = InterfaceClass('IHuman', (), {})
@@ -67,16 +65,20 @@ class FilterTestCase(unittest.TestCase):
 
     def test_only_interfaces_filter(self):
         filter = OnlyInterfacesFilter(IHuman)
-        self.assert_(self.filterAndCompare(filter, ('fry', 'farnesworth', 'zapp')))
+        self.assert_(self.filterAndCompare(filter,
+                                           ('fry', 'farnesworth', 'zapp')))
 
         # even if we add delivery boy to it, the list shouldn't change
         filter = OnlyInterfacesFilter(IHuman, IDeliveryBoy)
-        self.assert_(self.filterAndCompare(filter, ('fry', 'farnesworth', 'zapp')))
+        self.assert_(self.filterAndCompare(filter,
+                                           ('fry', 'farnesworth', 'zapp')))
 
         # Lur from Omicron Persei 8 is a starship captain too
         # (he also likes to eating hippies and destroying earth)
         filter = OnlyInterfacesFilter(IHuman, ISpaceShipCaptain)
-        self.assert_(self.filterAndCompare(filter, ('fry', 'farnesworth', 'zapp', 'lur')))
+        self.assert_(
+            self.filterAndCompare(filter,
+                                  ('fry', 'farnesworth', 'zapp', 'lur')))
 
     def test_all_but_interfaces_filter(self):
         # "death to all humans!"

@@ -21,7 +21,7 @@ from zope.app.securitypolicy.interfaces import IRolePermissionMap
 from zope.app.securitypolicy.securitymap import SecurityMap
 from zope.app.security.settings import Allow, Deny, Unset
 
-class RolePermissionManager:
+class RolePermissionManager(object):
     """
     provide adapter that manages role permission data in an object attribute
     """

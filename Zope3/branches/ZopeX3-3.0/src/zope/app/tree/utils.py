@@ -15,13 +15,12 @@
 
 $Id$
 """
-
 import zlib
 
 from zope.interface import implements
 from zope.app.tree.interfaces import ITreeStateEncoder
 
-class TreeStateEncoder:
+class TreeStateEncoder(object):
     """Encodes tree state
 
     >>> expanded_nodes = ['a', 'c', 'foobar']

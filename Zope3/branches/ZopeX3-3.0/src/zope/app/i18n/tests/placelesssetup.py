@@ -21,7 +21,7 @@ from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.publisher.browser import BrowserLanguages
 from zope.publisher.http import HTTPCharsets, IHTTPRequest
 
-class PlacelessSetup:
+class PlacelessSetup(object):
 
     def setUp(self):
         ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,

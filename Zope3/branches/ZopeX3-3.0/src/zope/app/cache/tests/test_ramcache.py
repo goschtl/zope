@@ -28,7 +28,7 @@ from zope.app.cache.interfaces.ram import IRAMCache
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-class Locatable:
+class Locatable(object):
 
     __name__ = __parent__ = None
 

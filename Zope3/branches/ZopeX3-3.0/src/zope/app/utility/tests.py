@@ -41,7 +41,7 @@ class IFoo(IFo):
 class IBar(Interface): pass
 
 
-class Foo:
+class Foo(object):
     # We implement IRegistered and IDependable directly to
     # depend as little  as possible on other infrastructure.
     __name__ = __parent__ = None

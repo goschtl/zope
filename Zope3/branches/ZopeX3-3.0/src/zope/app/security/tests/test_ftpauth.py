@@ -11,16 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""FTP Authentication Test
+
 $Id$
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.interfaces.ftp import IFTPCredentials
 from zope.app.security.ftpauth import FTPAuth
 from zope.interface import implements
 
-class FTPCredentials:
+class FTPCredentials(object):
     __doc__ = IFTPCredentials.__doc__
 
     implements(IFTPCredentials)

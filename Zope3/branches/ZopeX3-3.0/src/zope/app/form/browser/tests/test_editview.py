@@ -42,7 +42,7 @@ class EV(EditView):
     schema = I
     object_factories = []
 
-class C:
+class C(object):
     implements(I)
     foo = u"c foo"
     bar = u"c bar"
@@ -60,7 +60,7 @@ class IFoo(Interface):
 class IBar(Interface):
     bar = TextLine(title=u"Bar")
 
-class Foo:
+class Foo(object):
     implements(IFoo)
 
     foo = u'Foo foo'

@@ -35,7 +35,7 @@ from zope.app.dependable.interfaces import IDependable, DependencyError
 class ITestService(Interface):
     pass
 
-class TestServiceBase:
+class TestServiceBase(object):
     __name__ = __parent__ = None
     implements(ITestService, IBindingAware, IDependable)
     

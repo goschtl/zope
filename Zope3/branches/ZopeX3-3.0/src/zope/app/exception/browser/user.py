@@ -13,9 +13,7 @@
 
 $Id$
 """
-__metaclass__ = type
-
-class UserErrorView:
+class UserErrorView(object):
 
     def title(self):
         return self.context.__class__.__name__

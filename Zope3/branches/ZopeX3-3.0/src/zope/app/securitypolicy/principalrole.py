@@ -15,9 +15,6 @@
 
 $Id$
 """
-
-__metaclass__ = type
-
 from zope.interface import implements
 
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager

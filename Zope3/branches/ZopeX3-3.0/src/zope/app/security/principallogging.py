@@ -18,7 +18,7 @@ $Id$
 from zope.interface import implements
 from zope.publisher.interfaces.logginginfo import ILoggingInfo
 
-class PrincipalLogging:
+class PrincipalLogging(object):
 
     implements(ILoggingInfo)
 

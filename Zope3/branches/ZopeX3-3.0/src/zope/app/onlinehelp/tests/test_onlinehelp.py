@@ -30,10 +30,10 @@ from zope.app.location.traversing import LocationPhysicallyLocatable
 class I1(Interface):
     pass
 
-class Dummy1:
+class Dummy1(object):
     implements(I1)
 
-class Dummy2:
+class Dummy2(object):
     pass
 
 def testdir():

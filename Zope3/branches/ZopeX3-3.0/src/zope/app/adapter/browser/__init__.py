@@ -23,7 +23,6 @@
 
 $Id$
 """
-__metaclass__ = type
 
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 

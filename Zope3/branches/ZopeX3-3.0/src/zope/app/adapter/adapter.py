@@ -15,7 +15,6 @@
 
 $Id$
 """
-__metaclass__ = type
 
 from persistent.dict import PersistentDict
 from persistent import Persistent

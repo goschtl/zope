@@ -20,7 +20,7 @@ from zope.app.applicationcontrol.interfaces import IServerControl
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-class ServerControlView:
+class ServerControlView(object):
 
     def serverControl(self):
         return zapi.getUtility(IServerControl)

@@ -33,7 +33,7 @@ class ParseError(Exception):
         return "state %s, line %s" % (self.state, self.lineno)
 
 
-class GettextExportFilter:
+class GettextExportFilter(object):
 
     implements(IMessageExportFilter)
     __used_for__ = ILocalTranslationDomain
@@ -70,7 +70,7 @@ class GettextExportFilter:
 
 
 
-class GettextImportFilter:
+class GettextImportFilter(object):
 
     implements(IMessageImportFilter)
     __used_for__ = ILocalTranslationDomain

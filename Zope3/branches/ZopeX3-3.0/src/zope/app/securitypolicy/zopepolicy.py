@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Define Zope\'s default security policy
+"""Define Zope's default security policy
 
 $Id$
 """

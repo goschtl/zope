@@ -34,7 +34,7 @@ path = os.path.join(os.path.dirname(zope.app.__file__),
 help = OnlineHelp('Online Help', path)
 
 
-class helpNamespace:
+class helpNamespace(object):
     """ help namespace handler """
 
     def __init__(self, context, request=None):
