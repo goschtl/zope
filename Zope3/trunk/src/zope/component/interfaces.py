@@ -554,7 +554,7 @@ class IAdapterService(Interface):
         """Get subscribers
 
         Subscribers are returned that provide the provided interface
-        and that depend on and are comuted from the sequence of
+        and that depend on and are computed from the sequence of
         required objects.
         """
 

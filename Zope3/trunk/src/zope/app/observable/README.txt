@@ -1,10 +1,9 @@
-Instance Based Event Subscription Support
+Instance-based Event Subscription Support
 =========================================
 
 This package implements support for subscribing to events for a
-particular instance of an object.  This package
-implements the proposal found at
-http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions .
+particular instance of an object.  This package implements the proposal
+found at http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions .
 
 The package provides an event channel for dispatching events to the
 appropriate instance as well as an adapter from `IAnnotatable` to

@@ -13,7 +13,7 @@
 ##############################################################################
 """Implement zope-specific event dispatching, based on subscription adapters
 
-This package instals an event dispatcher that calls event handlers,
+This package installs an event dispatcher that calls event handlers,
 registered as subscription adapters providing ``None``.
 
 So, to subscribe to an event, use a subscription adapter to ``None``:

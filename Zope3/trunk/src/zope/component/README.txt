@@ -3,7 +3,7 @@ Zope Component Architecture
 
 This package, together with `zope.interface`, provides facilities for
 defining, registering and looking up components.  There are two basic
-kinds of components, adapters and utilities.  
+kinds of components: adapters and utilities.
 
 Utilities
 ---------
@@ -93,7 +93,7 @@ for different people:
     ...         print "Hello", self.person.name
 
 The class defines a constructor that takes an argument for every
-object adapted. 
+object adapted.
 
 We use `zope.component.adapts` to declare what we adapt.  If we
 declare the interfaces adapted and if we provide only one interface,
@@ -107,7 +107,7 @@ interface:
 
     >>> class Person:
     ...     zope.interface.implements(IPerson)
-    ... 
+    ...
     ...     def __init__(self, name):
     ...         self.name = name
 
@@ -131,7 +131,7 @@ The arguments can also be provided as keyword arguments:
     ...     name = "Ted"
 
     >>> zope.component.provideAdapter(
-    ...     factory=TedPersonGreeter, adapts=[IPerson], 
+    ...     factory=TedPersonGreeter, adapts=[IPerson],
     ...     provides=IGreeter, name='ted')
 
 For named adapters, use `queryAdapter`, or `getAdapter`:
@@ -141,7 +141,7 @@ For named adapters, use `queryAdapter`, or `getAdapter`:
 
     >>> zope.component.getAdapter(Person("Sally"), IGreeter, 'ted').greet()
     Hello Sally my name is Ted
-    
+
 If an adapter can't be found, `queryAdapter` returns a default value
 and `getAdapter` raises an error:
 
@@ -181,6 +181,6 @@ To look up a multi-adapter, use either `queryMultiAdapter` or
 
 
 .. [1] CAUTION: This API should only be used from test or
-       application-setup code. This api shouldn't be used by regular
+       application-setup code. This API shouldn't be used by regular
        library modules, as component registration is a configuration
-       activity. 
+       activity.
