@@ -21,7 +21,9 @@ from zope.component import ComponentLookupError
 
 def getCacheForObject(obj):
     """Returns the cache associated with obj or None."""
-    adapter = ICacheable(obj)
+    adapter = ICacheable(obj, None)
+    if adapter is None:
+        return None
     cache_id = adapter.getCacheId()
     if not cache_id:
         return None
