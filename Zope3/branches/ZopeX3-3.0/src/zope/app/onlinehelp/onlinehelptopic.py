@@ -47,7 +47,7 @@ class OnlineHelpResource(Persistent):
 
     def __init__(self, path='', contentType=''):
         self.path = path
-        _data = open(os.path.normpath(self.path)).read()
+        _data = open(os.path.normpath(self.path), 'rb').read()
         self._size=len(path)
 
         if contentType=='':
