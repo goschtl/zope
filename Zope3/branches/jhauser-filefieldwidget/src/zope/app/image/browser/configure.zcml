@@ -1,0 +1,62 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <browser:editform
+      schema="zope.app.image.interfaces.IImage"
+      name="upload.html"
+      menu="zmi_views" title="Upload"
+      label="Upload an image"
+      permission="zope.ManageContent"
+      class=".image.ImageUpload"
+      template="image_edit.pt"
+      />
+
+  <browser:page
+      name="index.html"
+      for="zope.app.image.interfaces.IImage"
+      permission="zope.View"
+      allowed_attributes="__call__ tag"
+      class=".image.ImageData"
+      />
+
+  <browser:icon
+      name="zmi_icon"
+      for="zope.app.image.interfaces.IImage"
+      file="image_icon.gif"
+      />
+
+  <browser:addMenuItem
+      class="zope.app.image.image.Image"
+      title="Image"
+      description="An Image"
+      permission="zope.ManageContent"
+      view="zope.app.image.Image"
+      />
+
+  <browser:addform
+      schema="zope.app.image.interfaces.IImage"
+      label="Add an Image"
+      content_factory="zope.app.image.image.Image"
+      name="zope.app.image.Image"
+      permission="zope.ManageContent"
+      />
+
+
+  <!-- Preview views - requires zope.app.preview -->
+
+  <configure package="zope.app.preview">
+
+    <browser:page
+        for="zope.app.image.interfaces.IImage"
+        name="preview.html"
+        template="preview.pt"
+        permission="zope.ManageContent"
+        menu="zmi_views" title="Preview"
+        />
+
+  </configure>
+
+</configure>

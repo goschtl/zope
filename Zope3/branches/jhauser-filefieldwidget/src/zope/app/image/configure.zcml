@@ -1,0 +1,60 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain='zope'
+    >
+
+  <!-- setting up content types -->
+
+  <interface 
+      interface=".interfaces.IImage" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <permission
+      id="zope.AddImages"
+      title="[add-images-permission] Add Images"
+      />
+
+
+  <!-- content classes -->
+
+  <content class=".image.Image">
+    <factory
+        id="zope.app.content.Image"
+        title="Image"
+        description="An Image"
+        />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.file.interfaces.IImage"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema="zope.app.file.interfaces.IFile"
+        />
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+        />
+  </content>
+
+  <adapter
+      factory=".image.ImageSized"
+      provides="zope.app.size.interfaces.ISized"
+      for=".interfaces.IImage"
+      />
+
+  <adapter
+      for="zope.app.folder.interfaces.IFolder"
+      provides="zope.app.filerepresentation.interfaces.IFileFactory"
+      factory=".image.FileFactory"
+      permission="zope.ManageContent"
+      />
+
+  <!-- include browser package -->
+
+  <include package=".browser" />
+
+</configure>

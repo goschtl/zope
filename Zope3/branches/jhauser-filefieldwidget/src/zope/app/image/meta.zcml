@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain='zope'
+    >
+
+  <!-- BBB: 2005/01/20 -->
+  <!-- provide old Image class and getImageInfo method -->
+  <modulealias
+    module="zope.app.image.image"
+    alias="zope.app.file.image" />
+
+</configure>
