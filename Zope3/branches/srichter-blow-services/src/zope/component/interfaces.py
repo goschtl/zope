@@ -225,6 +225,13 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
         and this adapter's 'Adapters' service is used.
         """
 
+    def adapts(*interfaces):
+        """Declare that a class adapts the given interfaces.
+
+        This function can only be used in a class definition.
+
+        (TODO, allow classes to be passed as well as interfaces.)
+        """
 
     # Factory service
 
@@ -290,14 +297,6 @@ class ISiteManager(Interface):
         Subscribers are returned that provide the provided interface
         and that depend on and are comuted from the sequence of
         required objects.
-        """
-
-    def adapts(*interfaces):
-        """Declare that a class adapts the given interfaces.
-
-        This function can only be used in a class definition.
-
-        (TODO, allow classes to be passed as well as interfaces.)
         """
 
     def queryUtility(interface, name='', default=None):
