@@ -15,14 +15,13 @@
 
 $Id$
 """
-from zope.exceptions import ZopeError, IZopeError
 from zope.interface.common.interfaces import IKeyError
 from zope.interface import implements
 
-class INotFoundError(IZopeError, IKeyError):
+class INotFoundError(IKeyError):
     pass
 
-class NotFoundError(ZopeError, KeyError):
+class NotFoundError(KeyError):
     """A resource could not be found.
     """
     implements(INotFoundError)
