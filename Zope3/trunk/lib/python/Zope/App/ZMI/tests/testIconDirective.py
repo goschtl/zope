@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testIconDirective.py,v 1.1 2002/06/13 23:15:45 jim Exp $
+$Id: testIconDirective.py,v 1.2 2002/06/17 19:12:32 bwarsaw Exp $
 """
 import os
 from StringIO import StringIO
@@ -31,7 +31,7 @@ from Zope.ComponentArchitecture import queryView, getView, getResource
 from Zope.Security.Proxy import ProxyFactory
 
 import Zope.App.ZMI as p
-defs_path = os.path.join(os.path.split(p.__file__)[0], 'zmi-meta.zcml')
+defs_path = os.path.join(os.path.split(p.__file__)[0], 'meta.zcml')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'

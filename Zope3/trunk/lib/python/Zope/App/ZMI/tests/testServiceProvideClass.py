@@ -13,7 +13,7 @@
 ##############################################################################
 """ ZMI unit tests
 
-$Id: testServiceProvideClass.py,v 1.2 2002/06/10 23:29:19 jim Exp $
+$Id: testServiceProvideClass.py,v 1.3 2002/06/17 19:12:32 bwarsaw Exp $
 """
 
 
@@ -30,7 +30,7 @@ from Zope.ComponentArchitecture import getService
 import Zope.App.ZMI
 defs_path = os.path.join(
     os.path.split(Zope.App.ZMI.__file__)[0],
-    'zmi-meta.zcml')
+    'meta.zcml')
 
 
 class MyAddableService:
