@@ -158,7 +158,7 @@ class SetupContext:
         # for installing documentation other than for RPMs.
         #
         relbase = posixpath.join(reldir, "")
-        pkgfiles = self.package_data.get(reldir, [])
+        pkgfiles = self.package_data.get(name, [])
         non_pkgdata = pkginfo.script + pkginfo.header
         for dir, files in pkginfo.data_files:
             non_pkgdata.extend(files)
