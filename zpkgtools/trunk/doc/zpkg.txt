@@ -1,15 +1,15 @@
-====================
-Configuring **zpkg**
-====================
+=========================
+Running the **zpkg** tool
+=========================
 
 Overview and the Command Line
 -----------------------------
 
-Configuration of **zpkg** is required since **zpkg** always refers to
-a `resource map` to provide information about the resource its
-packaging.  Regardless of the availability of an appropriate checkout,
-**zpkg** always uses the resource map to locate the components it's
-adding to the release.
+Configuration of **zpkg** is generally required since **zpkg** always
+refers to a `resource map` to provide information about the resource
+its packaging.  Regardless of the availability of an appropriate
+checkout, **zpkg** always uses the resource map to locate the
+components it's adding to the release.
 
 The **zpkg** command provides some command line options to control
 configuration, and a very simple configuration file to allow
@@ -54,6 +54,10 @@ default configuration file is loaded if it exists.  This is
 that there's no dot in the directory name for Windows).  The directory
 containing the default configuration file can be used to store
 resource maps.
+
+If the **-f** option is used to disallow reading the configuration
+file, the only way to initialize the resource map is by using the
+**-m** option.
 
 
 Configuration File Format
