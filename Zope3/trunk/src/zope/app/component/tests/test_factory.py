@@ -24,9 +24,9 @@ from zope.security.management import newSecurityManager, system_user
 
 import zope.configuration
 import zope.app.security
-import zope.app.contentdirective
+import zope.app.component
 
-from zope.app.contentdirective.tests.exampleclass import ExampleClass
+from zope.app.component.tests.exampleclass import ExampleClass
 
 def configfile(s):
     return StringIO("""<zopeConfigure
@@ -40,7 +40,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         PlacelessSetup.setUp(self)
         newSecurityManager(system_user)
         XMLConfig('metameta.zcml', zope.configuration)()
-        XMLConfig('meta.zcml', zope.app.contentdirective)()
+        XMLConfig('meta.zcml', zope.app.component)()
         XMLConfig('meta.zcml', zope.app.security)()
 
 
@@ -49,7 +49,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         from zope.proxy.introspection import removeAllProxies
         f = configfile("""
 <permission id="zope.Foo" title="Zope Foo Permission" />
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
     <factory
       id="Example"
       permission="zope.Foo"
@@ -68,7 +68,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         from zope.proxy.introspection import removeAllProxies
         f = configfile("""
 <permission id="zope.Foo" title="Zope Foo Permission" />
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
     <factory
       permission="zope.Foo"
       title="Example content"
@@ -78,7 +78,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                        """)
         xmlconfig(f)
         obj = getService(None, Factories).createObject(
-            'zope.app.contentdirective.tests.exampleclass.ExampleClass')
+            'zope.app.component.tests.exampleclass.ExampleClass')
         obj = removeAllProxies(obj)
         self.failUnless(isinstance(obj, ExampleClass))
 

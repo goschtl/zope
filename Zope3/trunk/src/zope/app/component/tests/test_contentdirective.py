@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_directives.py,v 1.9 2003/05/01 19:35:14 faassen Exp $
+$Id: test_contentdirective.py,v 1.1 2003/05/12 16:32:40 stevea Exp $
 """
 
 import unittest
@@ -25,7 +25,7 @@ from zope.security.management import newSecurityManager, system_user
 from zope.security.proxy import Proxy
 import zope.configuration
 import zope.app.security
-import zope.app.contentdirective
+import zope.app.component
 from zope.app.security.exceptions import UndefinedPermissionError
 from zope.component import getService
 from zope.app.services.servicenames import Factories
@@ -33,8 +33,8 @@ from zope.app.component.globalinterfaceservice import queryInterface
 
 # explicitly import ExampleClass and IExample using full paths
 # so that they are the same objects as resolve will get.
-from zope.app.contentdirective.tests.exampleclass import ExampleClass
-from zope.app.contentdirective.tests.exampleclass import IExample, IExample2
+from zope.app.component.tests.exampleclass import ExampleClass
+from zope.app.component.tests.exampleclass import IExample, IExample2
 
 
 def configfile(s):
@@ -49,7 +49,7 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
         PlacelessSetup.setUp(self)
         newSecurityManager(system_user)
         XMLConfig('metameta.zcml', zope.configuration)()
-        XMLConfig('meta.zcml', zope.app.contentdirective)()
+        XMLConfig('meta.zcml', zope.app.component)()
         XMLConfig('meta.zcml', zope.app.security)()
 
         try:
@@ -59,7 +59,7 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
 
     def testEmptyDirective(self):
         f = configfile("""
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
 </content>
                        """)
         xmlconfig(f)
@@ -67,31 +67,31 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
 
     def testImplements(self):
         self.assertEqual(queryInterface(
-            "zope.app.contentdirective.tests.exampleclass.IExample"), None)
+            "zope.app.component.tests.exampleclass.IExample"), None)
 
         f = configfile("""
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
-  <implements interface="zope.app.contentdirective.tests.exampleclass.IExample" />
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
+  <implements interface="zope.app.component.tests.exampleclass.IExample" />
 </content>
                        """)
         xmlconfig(f)
         self.failUnless(IExample.isImplementedByInstancesOf(ExampleClass))
 
         self.assertEqual(queryInterface(
-            "zope.app.contentdirective.tests.exampleclass.IExample"), IExample)
+            "zope.app.component.tests.exampleclass.IExample"), IExample)
 
 
     def testMulImplements(self):
         self.assertEqual(queryInterface(
-            "zope.app.contentdirective.tests.exampleclass.IExample"), None)
+            "zope.app.component.tests.exampleclass.IExample"), None)
         self.assertEqual(queryInterface(
-            "zope.app.contentdirective.tests.exampleclass.IExample2"), None)
+            "zope.app.component.tests.exampleclass.IExample2"), None)
 
         f = configfile("""
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
   <implements interface="
-           zope.app.contentdirective.tests.exampleclass.IExample
-           zope.app.contentdirective.tests.exampleclass.IExample2
+           zope.app.component.tests.exampleclass.IExample
+           zope.app.component.tests.exampleclass.IExample2
                        " />
 </content>
                        """)
@@ -100,15 +100,15 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
         self.failUnless(IExample2.isImplementedByInstancesOf(ExampleClass))
 
         self.assertEqual(queryInterface(
-            "zope.app.contentdirective.tests.exampleclass.IExample"), IExample)
+            "zope.app.component.tests.exampleclass.IExample"), IExample)
         self.assertEqual(queryInterface(
-            "zope.app.contentdirective.tests.exampleclass.IExample2"),
+            "zope.app.component.tests.exampleclass.IExample2"),
                          IExample2)
 
     def testRequire(self):
         f = configfile("""
 <permission id="zope.View" title="Zope view permission" />
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
     <require permission="zope.View"
                       attributes="anAttribute anotherAttribute" />
 </content>
@@ -117,7 +117,7 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
 
     def testAllow(self):
         f = configfile("""
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
     <allow attributes="anAttribute anotherAttribute" />
 </content>
                        """)
@@ -125,8 +125,8 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
 
     def testMimic(self):
         f = configfile("""
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
-    <require like_class="zope.app.contentdirective.tests.exampleclass.ExampleClass" />
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
+    <require like_class="zope.app.component.tests.exampleclass.ExampleClass" />
 </content>
                        """)
         xmlconfig(f)
@@ -137,14 +137,14 @@ class TestFactorySubdirective(PlacelessSetup, unittest.TestCase):
         PlacelessSetup.setUp(self)
         newSecurityManager(system_user)
         XMLConfig('metameta.zcml', zope.configuration)()
-        XMLConfig('meta.zcml', zope.app.contentdirective)()
+        XMLConfig('meta.zcml', zope.app.component)()
         XMLConfig('meta.zcml', zope.app.security)()
 
     def testFactory(self):
         f = configfile("""
 <permission id="zope.Foo" title="Zope Foo Permission" />
 
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
     <factory
       id="Example"
       permission="zope.Foo"
@@ -161,7 +161,7 @@ class TestFactorySubdirective(PlacelessSetup, unittest.TestCase):
         f = configfile("""
 <permission id="zope.Foo" title="Zope Foo Permission" />
 
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
     <factory
       id="Example"
       permission="UndefinedPermission"
@@ -179,7 +179,7 @@ class TestFactorySubdirective(PlacelessSetup, unittest.TestCase):
         f = configfile("""
 <permission id="zope.Foo" title="Zope Foo Permission" />
 
-<content class="zope.app.contentdirective.tests.exampleclass.ExampleClass">
+<content class="zope.app.component.tests.exampleclass.ExampleClass">
     <factory
       id="Example"
       permission="zope.Public"

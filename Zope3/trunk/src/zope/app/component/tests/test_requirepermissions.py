@@ -15,11 +15,11 @@
 
 from cStringIO import StringIO
 from zope.app.component.globalinterfaceservice import queryInterface
-from zope.app.contentdirective.tests import module
+from zope.app.component.tests import module
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.security.checker import selectChecker
 import unittest
-import zope.app.contentdirective
+import zope.app.component
 import zope.app.security
 import zope.configuration
 
@@ -31,7 +31,7 @@ PREFIX = module.__name__ + '.'
 
 def defineDirectives():
     XMLConfig('metameta.zcml', zope.configuration)()
-    XMLConfig('meta.zcml', zope.app.contentdirective)()
+    XMLConfig('meta.zcml', zope.app.component)()
     XMLConfig('meta.zcml', zope.app.security)()
     xmlconfig(StringIO("""<zopeConfigure
         xmlns='http://namespaces.zope.org/zope' >
@@ -49,7 +49,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         defineDirectives()
-        
+
         class B:
             def m1(self):
                 return "m1"

@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.13 2003/05/01 19:35:13 faassen Exp $
+$Id: contentdirective.py,v 1.1 2003/05/12 16:32:39 stevea Exp $
 """
 from zope.interface import classProvides
 from types import ModuleType
