@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+    - http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions
+
+      - Added ZCML to create subscription adapters by creating a new
+        directive (subscriber).
+
     - Redesigned the undo functionality according to
       http://dev.zope.org/Zope3/SimplifyUndoModel. There are three types
       of undo now:
