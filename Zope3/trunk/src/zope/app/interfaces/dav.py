@@ -1,5 +1,6 @@
 from zope.interface import Interface
 from zope.schema import Text
+from zope.app.interfaces.form import IWidget
 
 class IDAVCreationDate(Interface):
 
@@ -159,5 +160,10 @@ class IDAV2Schema(IDAV1Schema):
 
 class IDAVSchema(IOptionalDAVSchema, IDAV2Schema):
     """ Full DAV properties schema """
+    pass
+
+class ISimpleDAVWidget(IWidget):
+    """A specialized widget used to render DAV properties output (eg:
+    for the response of a PROPFIND request)"""
     pass
 

@@ -2,42 +2,50 @@
    xmlns='http://namespaces.zope.org/zope'
    xmlns:dav='http://namespaces.zope.org/zope/dav'>
 
+ <view for="*"
+	 name="PROPFIND"
+	 type="zope.publisher.interfaces.http.IHTTPPresentation"
+	 factory=".propfind.PROPFIND"
+	 permission="zope.ManageContent"
+	 allowed_attributes="PROPFIND setDepth getDepth"
+	 />
 
-<!-- not finished yet
-<view for="*"
- 	name="PROPFIND"
-	type="zope.publisher.interfaces.http.IHTTPPresentation"
-	factory=".propfind.PROPFIND"
-	permission="zope.ManageContent"
-	allowed_attributes="PROPFIND setDepth getDepth"
-/>
+ <defaultView
+       for="zope.schema.interfaces.IText"
+       name="view"
+       permission="zope.Public"
+       type="zope.publisher.interfaces.http.IHTTPPresentation"
+       factory="zope.app.dav.widget.SimpleDAVWidget"
+       allowed_attributes="getData haveData setData __call__"
+       />
 
-<adapter
-     provides="zope.app.interfaces.dav.IDAVSchema"
-     for="*"
-     permission="zope.Public"
-     factory=".adapter.DAVSchemaAdapter"
-     />
+ <adapter
+      provides="zope.app.interfaces.dav.IDAVSchema"
+      for="*"
+      permission="zope.Public"
+      factory=".adapter.DAVSchemaAdapter"
+      />
 
--->
 
-<serviceType
-    id='DAVSchema'
-    interface='zope.app.interfaces.component.IDAVSchemaService' />
+ <serviceType
+	id='DAVSchema'
+	interface='zope.app.interfaces.component.IDAVSchemaService'
+	/>
 
-<service
-   serviceType='DAVSchema'
-   permission='zope.Public'
-   component='zope.app.dav.globaldavschemaservice.davSchemaService' />
+ <service
+	serviceType='DAVSchema'
+	permission='zope.Public'
+	component='zope.app.dav.globaldavschemaservice.davSchemaService'
+	/>
 
-<dav:provideInterface
-   for="http://purl.org/dc/1.1"
-   interface="zope.app.interfaces.dublincore.IZopeDublinCore"
-/>
+ <dav:provideInterface
+	for="http://purl.org/dc/1.1"
+ 	interface="zope.app.interfaces.dublincore.IZopeDublinCore"
+	/>
 
-<dav:provideInterface
-   for="DAV:"
-   interface="zope.app.interfaces.dav.IDAVSchema"
-/>
+ <dav:provideInterface
+	for="DAV:"
+	interface="zope.app.interfaces.dav.IDAVSchema"
+	/>
 
 </zopeConfigure>

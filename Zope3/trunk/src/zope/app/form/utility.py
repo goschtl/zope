@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.18 2003/05/01 19:35:16 faassen Exp $
+$Id: utility.py,v 1.19 2003/05/21 16:10:07 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -217,7 +217,7 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
 
     Normaly, readonly fields are included. To exclude readonly fields,
     provide a exclude_readonly keyword argument with a true value.
-    
+
     """
 
     result = {}
@@ -247,10 +247,10 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
 def getWidgetsDataForContent(view, schema, content=None, strict=True,
                              names=None, set_missing=True):
     """Collect the user-entered data defined by a schema
-    
+
     Data is collected from view widgets. For every field in the
     schema, we look for a view of the same name and get it's data.
-    
+
     The data are assigned to the given content object.
 
     If the strict argument is true, then if some required data are
@@ -283,3 +283,56 @@ def getWidgetsDataForContent(view, schema, content=None, strict=True,
 
     if errors:
         raise WidgetsError(*errors)
+
+def getWidgetsDataFromAdapter(adapter, schema, strict=True,
+                              names=None, set_missing=True,
+                              do_not_raise=True):
+    """Collect the user-entered data defined by a schema
+
+    Data is collected from adapter properties. For every field in the
+    schema, we look for a property of the same name and get it's data.
+
+    The data are returned in a mapping from field name to value.
+
+    If the strict argument is true, then all of the data defined by
+    the schema will be returned. If some required data are missing
+    from the input, an error will be raised.
+
+    If set_missing is true and the widget has no data, then the
+    field's value is set to its missing value.  Otherwise, a widget
+    with no data is ignored. (However, if that field is required and
+    strict is true, an error will be raised.)
+
+    E.g., a typical text line widget should have a min_length of 1,
+    and if it is required, it has got to have something in, otherwise
+    WidgetsError is raised.  If it's not required and it's empty, its
+    value will be the appropriate missing value.  Right now this is
+    hardcoded as None, but it should be changed so the field can
+    provide it as an empty string.
+
+    do_not_raise is used if a call to getWidgetsData raises an exception,
+    and you want to make use of the data that *is* available in your
+    error-handler.
+    """
+
+    result = {}
+    errors = []
+
+    for name, field in _fieldlist(names, schema):
+        prop = getattr(adapter, name, None)
+        if prop is not None:
+            if callable(prop):
+                value = prop()
+            else:
+                value = prop
+            result[name] = value
+        elif strict and field.required:
+            errors.append(MissingInputError(name, name,
+                                            'the field is required'))
+        elif set_missing:
+            result[name] = None # XXX field.missing_value
+
+    if errors and not do_not_raise:
+        raise WidgetsError(*errors)
+
+    return result
