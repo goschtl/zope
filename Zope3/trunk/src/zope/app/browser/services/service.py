@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding components for components and configuration
 
-$Id: service.py,v 1.4 2003/02/03 16:36:02 stevea Exp $
+$Id: service.py,v 1.5 2003/02/03 19:01:21 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding as ContentAdding
@@ -38,6 +38,9 @@ class ComponentAdding(ContentAdding):
         if not id:
             # Generate an id from the type name
             id = type_name
+            l = id.rfind('.')
+            if l >= 0:
+                id = id[l+1:]
             if id in self.context:
                 i=2
                 while ("%s-%s" % (id, i)) in self.context:
