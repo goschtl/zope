@@ -27,7 +27,7 @@ For now, the only global option is -h/--help; there are no local
 options yet except for diff, which supports a small subset of the
 options of GNU diff.
 
-$Id: main.py,v 1.8 2003/05/13 21:16:22 gvanrossum Exp $
+$Id: main.py,v 1.9 2003/05/13 21:45:53 gvanrossum Exp $
 """
 
 import os
@@ -123,12 +123,12 @@ def main(argv=None):
 
 def checkout(opts, args):
     if not args:
-        raise Usage("commit requires a URL argument")
+        raise Usage("checkout requires a URL argument")
     rooturl = args[0]
     if len(args) > 1:
         target = args[0]
         if len(args) > 2:
-            raise Usage("commit requires at most one TARGETDIR argument")
+            raise Usage("checkout requires at most one TARGETDIR argument")
     else:
         target = os.curdir
     fs = FSSync(rooturl=rooturl)
