@@ -1,6 +1,9 @@
 CMF 1.3
 
   Bug Fixes
+
+    - Updated initial action reported by CMFDefault's DefaultWorkflow:
+      was "joined", now "created".
   
     - Fix 'index_html' template to filter using 'View' permission
       (folders which were not viewable were triggering authentication,
