@@ -41,6 +41,7 @@ from zope.schema import getFields
 from zope.security.management import getSecurityManager
 from zope.security.checker import CheckerPublic, Checker
 from zope.security.proxy import Proxy
+from zope.security import checkPermission
 from zope.tales.engine import Engine
 
 
@@ -273,7 +274,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         return script(contexts)
 
     def _outgoingTransitions(self, clean_pd):
-        sm = getSecurityManager()
         ret = []
         contexts = self._getContext()
 
@@ -281,11 +281,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             if self.status == trans.sourceState:
                 # check permissions
                 permission = trans.permission
-                #
-                if (permission is not None
-                    and permission is not CheckerPublic
-                    and not sm.checkPermission(permission, self)
-                    ):
+                if not checkPermission(permission, self):
                     continue
 
                 ctx = self._extendContext(trans, contexts)
