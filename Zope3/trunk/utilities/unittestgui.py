@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.8 $"[11:-2]
+__version__ = "$Revision: 1.9 $"[11:-2]
 
 import linecache
 import unittest
@@ -248,7 +248,9 @@ class TkTestRunner(BaseGUITestRunner):
         self.remainingCountVar = tk.IntVar()
         self.toggleVar = tk.StringVar()
         self.toggleVar.set(minimal and '>' or '<')
+        self.root.withdraw()
         self.createWidgets()
+        self.root.deiconify()
 
     def createWidgets(self):
         """Creates and packs the various widgets.
@@ -358,6 +360,9 @@ class TkTestRunner(BaseGUITestRunner):
                                lambda e, self=self: self.showSelectedWarning())
         self.warningListbox.configure(yscrollcommand=wListScroll.set)
 
+        # Necessary for certain X servers; X-Win32 in particular.
+        self.rePack(minimal=0, with_idle_wait=1)
+        self.rePack(minimal=1, with_idle_wait=1)
         self.rePack()
 
     def toggleMinimal(self):
@@ -376,7 +381,7 @@ class TkTestRunner(BaseGUITestRunner):
         pb.setProgressFraction(pb.fraction, progressText, pb.color)
         self.rePack()
 
-    def rePack(self, minimal=None):
+    def rePack(self, minimal=None, with_idle_wait=0):
         if minimal is None:
             minimal = self.minimal
         for widget, layoutattr, do_hide in self.packWidgets:
@@ -386,6 +391,8 @@ class TkTestRunner(BaseGUITestRunner):
                 if not do_hide:
                     widget.pack_forget()
                 apply(widget.pack, (), layoutattr)
+            if with_idle_wait and not minimal:
+                self.top.update_idletasks()
         self.root.geometry("")
 
     def getSelectedTestName(self):
