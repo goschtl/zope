@@ -14,16 +14,9 @@
 ##############################################################################
 import unittest
 
-from Acquisition import Implicit, aq_base, aq_parent
-from AccessControl.SecurityManagement import newSecurityManager
-from AccessControl.SecurityManagement import noSecurityManager
-from AccessControl.SecurityManager import setSecurityPolicy
-from OFS.ObjectManager import ObjectManager
-from OFS.Folder import Folder
+from Acquisition import aq_base
 from OFS.Cache import isCacheable
-from zExceptions import Unauthorized, Redirect
 
-from Products.PluggableAuthService.utils import directlyProvides
 from Products.PluggableAuthService.PASCache import PASRAMCacheManager
 
 class FauxRequest:
@@ -89,15 +82,6 @@ class PluggableAuthServiceCachingTests( unittest.TestCase ):
         reg._plugins = {}
 
         return reg
-
-    def _makeTree( self ):
-
-        rc = FauxObject( 'rc' )
-        root = FauxRoot( 'root' ).__of__( rc )
-        folder = FauxContainer( 'folder' ).__of__( root )
-        object = FauxObject( 'object' ).__of__( folder )
-
-        return rc, root, folder, object
 
     def _makeAndFill(self):
 
