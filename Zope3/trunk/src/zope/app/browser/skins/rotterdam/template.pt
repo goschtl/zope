@@ -71,7 +71,7 @@
 
         <h4>Common Tasks</h4>
         <div class="body">
-          span tal:replace="structure view" />
+          <span tal:replace="structure view" />
         </div>
       </div>
 
