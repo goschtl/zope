@@ -1,15 +1,38 @@
-<html metal:use-macro="views/standard_macros/dialog">
+<html metal:use-macro="views/standard_macros/page">
+
 <head>
+
 <style metal:fill-slot="headers" type="text/css" ></style>
+
 </head>
-<body bgcolor="#ffffff" link="#000099" alink="#000099" vlink="#000099">
+
+<body>
+
+<!-- XXX : This is just a temporary way of overriding the elements not needed,
+            only done for visual purposes. Do not clone this ;)
+						- Alexander
+						-->
+<div metal:fill-slot="tabs" />
+
+<div metal:fill-slot="actions" />
+
 <div metal:fill-slot="body">
+
     <p>
+
     <a href="@@AllRolePermissions.html">Grant permissions to roles</a>
+
     </p>
+
     <p>
+
     <a href="@@PrincipalRoles.html">Grant roles to principals</a>
+
     </p>
+
 </div>
+
 </body>
+
 </html>
+

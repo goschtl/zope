@@ -99,7 +99,7 @@
     <div id="workspace">
 
         <div class="itemViews"
-           metal:define-macro="zmi_tabs">
+             metal:define-slot="tabs">
 
         <tal:block repeat="view context/@@view_get_menu/zmi_views">
 
@@ -119,6 +119,7 @@
 			<div id="actions"
           tal:define="actions context/@@view_get_menu/zmi_actions"
           tal:condition="actions"
+					metal:define-slot="tabs"
            >
 
   					<a href="#" 
