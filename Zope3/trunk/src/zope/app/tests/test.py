@@ -127,6 +127,9 @@ the test runner script (see the list of global variables in process_args().).
     Keep running the selected tests in a loop.  You may experience
     memory leakage.
 
+--module modfilter
+    Provide a module filter (see modfilter below)
+
 -N n
 --repeat n
     Run the selected tests n times.
@@ -152,6 +155,9 @@ the test runner script (see the list of global variables in process_args().).
 --top-fifty
     Time the individual tests and print a list of the top 50, sorted from
     longest to shortest.
+
+--test testfilter
+    Provide a test filter (see testfilter below)
 
 --times n
 --times outfile
@@ -219,7 +225,7 @@ testfilter...
 
     testfilter is applied to the (method) name of the unittest methods
     contained in the test files whose paths modfilter matched.
-    Additional testfilters can be specified with the --method option;
+    Additional testfilters can be specified with the --test option;
     methods are matched if they match at least one testfilter.
 
 Extreme (yet useful) examples:
@@ -1004,7 +1010,7 @@ def process_args(argv=None):
                 TIMESFN = v
         elif k in ('-s', '--dir'):
             TEST_DIRS.append(v)
-        elif k == "method":
+        elif k == "--test":
             TEST_FILTERS.append(v)
         elif k == "--module":
             MODULE_FILTERS.append(v)
