@@ -13,7 +13,7 @@
 ##############################################################################
 """Objects that take care of annotating dublin core meta data times
 
-$Id: TimeAnnotators.py,v 1.3 2002/11/18 22:37:30 jim Exp $
+$Id: TimeAnnotators.py,v 1.4 2002/12/11 13:29:42 jim Exp $
 """
 __metaclass__ = type
 
@@ -30,8 +30,8 @@ class DCTimeAnnotatorClass:
     def __init__(self, property):
         self.property = property
 
-    def notify(self, modified_event):
-        dc = queryAdapter(modified_event.object, IZopeDublinCore)
+    def notify(self, event):
+        dc = queryAdapter(event.object, IZopeDublinCore)
         if dc is not None:
             setattr(dc, self.property, datetime.utcnow())
 
