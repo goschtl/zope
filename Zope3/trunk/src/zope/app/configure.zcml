@@ -7,8 +7,6 @@
   <!-- Meta configuration (new directives) -->
   <include file="meta.zcml" />
 
-  <!-- For backward compatibility -->
-
   <!-- Note that we need to do this early, as later startup
        subscribers may break without fixups -->
  
