@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.31 2003/07/30 17:01:36 srichter Exp $
+$Id: interfacewidget.py,v 1.32 2003/08/05 07:35:50 anthony Exp $
 """
 
 import sys
@@ -95,7 +95,10 @@ class InterfaceWidget(BrowserWidget, BrowserView):
             interfaces = ['None'] + interfaces
 
         marker = self
-        selected = marker
+        if field.default:
+            selected = field.default
+        else:
+            selected = marker
         if self._data is None:
             value = self.request.form.get(self.name, marker)
             if value is not marker:
