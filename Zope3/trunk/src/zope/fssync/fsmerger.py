@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.7 2003/06/03 18:24:35 gvanrossum Exp $
+$Id: fsmerger.py,v 1.8 2003/06/03 20:01:37 gvanrossum Exp $
 """
 
 import os
@@ -21,6 +21,8 @@ import shutil
 
 from os.path import exists, isfile, isdir, split, join
 from os.path import realpath, normcase, normpath
+
+from zope.xmlpickle import dumps
 
 from zope.fssync.merger import Merger
 from zope.fssync import fsutil
@@ -95,10 +97,11 @@ class FSMerger(object):
                         self.reportdir("?", localdir)
                 else:
                     if not exists(localdir):
-                        fsutil.ensuredir(localdir)
+                        self.make_dir(localdir)
                         lentry.update(rentry)
                         self.reportdir("N", localdir)
                     else:
+                        self.make_dir(localdir)
                         self.reportdir("*", localdir)
                 return
 
@@ -147,7 +150,7 @@ class FSMerger(object):
                 self.reportdir("R", localdir)
                 return # There's no point in recursing down!
             if rentry or rentrynames:
-                fsutil.ensuredir(localdir)
+                self.make_dir(localdir)
                 lentry.update(rentry)
                 self.reportdir("N", localdir)
             lnames = {}
@@ -176,7 +179,33 @@ class FSMerger(object):
             name = names[ncname]
             self.merge(join(localdir, name), join(remotedir, name))
 
+    def make_dir(self, localdir):
+        """Helper to create a local directory.
+
+        This also creates the @@Zope subdirectory and places an empty
+        Entries.xml file in it.
+        """
+        fsutil.ensuredir(localdir)
+        localzopedir = join(localdir, "@@Zope")
+        fsutil.ensuredir(localzopedir)
+        efile = join(localzopedir, "Entries.xml")
+        if not os.path.exists(efile):
+            data = dumps({})
+            f = open(efile, "w")
+            try:
+                f.write(data)
+            finally:
+                f.close()
+
     def clear_dir(self, localdir):
+        """Helper to get rid of a local directory.
+
+        This zaps the directory's @@Zope subdirectory, but not other
+        files/directories that might still exist.
+
+        It doesn't deal with extras and annotations for the directory
+        itself, though.
+        """
         lentry = self.metadata.getentry(localdir)
         lentry.clear()
         localzopedir = join(localdir, "@@Zope")
