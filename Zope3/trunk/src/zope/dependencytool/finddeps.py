@@ -139,7 +139,7 @@ def filterStandardModules(deps):
     filteredDeps = []
     for dep in deps:
         try:
-            module = __import__(dep.path)
+            module = __import__(dep.name)
         except ImportError:
             continue
         # built-ins (like sys) do not have a file associated
@@ -161,7 +161,7 @@ def filterLocalModules(deps, path):
     # Filter relative imports
     filteredDeps = []
     for dep in deps:
-        module = dep.path.split('.')[0]
+        module = dep.name.split('.')[0]
         modulePath = os.path.join(path, module)
         if not (os.path.exists(modulePath)
                 or os.path.exists(modulePath+'.py')):
@@ -172,7 +172,7 @@ def filterLocalModules(deps, path):
     dottedName = makeDottedName(path)
     filteredDeps = []
     for dep in deps:
-        if not dep.path.startswith(dottedName):
+        if not dep.name.startswith(dottedName):
             filteredDeps.append(dep)
 
     return filteredDeps
@@ -199,10 +199,10 @@ def makeUnique(deps):
     """Remove entries that appear multiple times"""
     uniqueDeps = {}
     for dep in deps:
-        if not dep.path in uniqueDeps.keys():
-            uniqueDeps[dep.path] = dep
+        if not dep.name in uniqueDeps.keys():
+            uniqueDeps[dep.name] = dep
         else:
-            uniqueDeps[dep.path].addOccurence(*dep.occurences[0])
+            uniqueDeps[dep.name].addOccurence(*dep.occurences[0])
 
     return uniqueDeps.values()
 
@@ -269,10 +269,10 @@ def getAllCleanedDependencies(path, zcml=False, deps=None, paths=None):
 
     newdeps = getCleanedDependencies(path)
     for dep in newdeps:
-        if dep.path not in paths:
+        if dep.name not in paths:
             deps.append(dep)
-            paths.append(dep.path)
-            modulePath = __import__(dep.path).__file__
+            paths.append(dep.name)
+            modulePath = __import__(dep.name).__file__
             dirname, basename = os.path.split(modulePath)
             if basename in ('__init__.py', '__init__.pyc', '__init__.pyo'):
                 modulePath = os.path.join(dirname, '')
@@ -294,9 +294,9 @@ def showDependencies(path, zcml=False, long=False, all=False):
         print "Module: " + path
         print '='*(8+len(path))
     for dep in deps:
-        print dep.path
+        print dep.name
         if long:
-            print '-'*len(dep.path)
+            print '-'*len(dep.name)
             for file, lineno in dep.occurences:
                 file = stripZopePrefix(file)
                 if len(file) >= 69:

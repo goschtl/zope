@@ -20,19 +20,19 @@ $Id$
 class Dependency(object):
     """Object representing a dependency."""
 
-    def __init__(self, path, file, lineno):
+    def __init__(self, name, file, lineno):
         """Initialize a Dependency instance.
 
-        path -- dotted name of the module
+        name -- dotted name of the module
 
         file -- full path of a source file that depends on the module
-        named by path
+        named by `name`
 
         lineno -- line number within file where the dependency was
         identified (import or ZCML reference)
 
         """
-        self.path = path
+        self.name = name
         self.occurences = [(file, lineno)]
 
     def addOccurence(self, file, lineno):
@@ -40,9 +40,9 @@ class Dependency(object):
         self.occurences.append((file, lineno))
 
     def isSubPackageOf(self, dep):
-        """Return True if this dependency's path is a sub-package of dep."""
-        return self.path.startswith(dep.path + ".")
+        """Return True if this dependency's module is a sub-package of dep."""
+        return self.name.startswith(dep.name + ".")
 
     def __cmp__(self, other):
         """Compare dependecies by module name."""
-        return cmp(self.path, other.path)
+        return cmp(self.name, other.name)
