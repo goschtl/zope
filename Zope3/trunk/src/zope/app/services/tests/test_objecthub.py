@@ -14,35 +14,43 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.12 2003/08/07 15:32:47 garrett Exp $
+$Id: test_objecthub.py,v 1.13 2003/09/21 17:33:15 jim Exp $
 """
 
 import unittest
+from zope.app import zapi
 from zope.app.services.tests.objecthubsetup import ObjectHubSetup
 
-from zope.app.interfaces.event\
-        import IObjectAddedEvent, IObjectRemovedEvent, IObjectModifiedEvent,\
-               IObjectMovedEvent
-from zope.app.event.objectevent\
-        import ObjectAddedEvent, ObjectModifiedEvent, ObjectRemovedEvent,\
-               ObjectMovedEvent, ObjectCreatedEvent
-from zope.app.interfaces.services.hub import ObjectHubError
-from zope.app.interfaces.services.hub import \
-     IObjectRemovedHubEvent, IObjectModifiedHubEvent, \
-     IObjectMovedHubEvent, IObjectRegisteredHubEvent, \
-     IObjectUnregisteredHubEvent
+from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.interfaces.container import IObjectAddedEvent
+from zope.app.interfaces.container import IObjectRemovedEvent
+from zope.app.interfaces.container import IObjectMovedEvent
 
-from zope.app.services.hub \
-        import ObjectModifiedHubEvent, ObjectRemovedHubEvent, \
-        ObjectMovedHubEvent, ObjectRegisteredHubEvent, \
-        ObjectUnregisteredHubEvent
+from zope.app.container.contained import ObjectAddedEvent, ObjectRemovedEvent
+from zope.app.container.contained import ObjectMovedEvent
+from zope.app.event.objectevent import ObjectModifiedEvent, ObjectCreatedEvent
+
+from zope.app.interfaces.services.hub import ObjectHubError
+from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
+from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
+from zope.app.interfaces.services.hub import IObjectMovedHubEvent
+from zope.app.interfaces.services.hub import IObjectRegisteredHubEvent
+from zope.app.interfaces.services.hub import IObjectUnregisteredHubEvent
+
+from zope.app.services.hub import ObjectModifiedHubEvent, ObjectRemovedHubEvent
+from zope.app.services.hub import ObjectMovedHubEvent, ObjectRegisteredHubEvent
+from zope.app.services.hub import ObjectUnregisteredHubEvent
+
+from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.location import Location
 
 from zope.exceptions import NotFoundError
 
 from zope.app.traversing import canonicalPath, traverse
-from zope.context import Wrapper
 
-from zope.interface import implements
+from zope.interface import implements, directlyProvides
+
+from zope.app.container.contained import Contained
 
 # while these tests don't really test much of the placeful aspect of the
 # object hub, they do at least test basic functionality.
@@ -53,8 +61,7 @@ from zope.interface import implements
 
 class TransmitHubEventTest(ObjectHubSetup, unittest.TestCase):
     hubid = 23
-    location = '/foo/bar'
-    obj = object()
+    location = '/folder1/folder1_1'
     # Don't test the HubEvent base class.
     # See below for testing subclasses / subinterfaces
     # klass = HubEvent
@@ -63,6 +70,8 @@ class TransmitHubEventTest(ObjectHubSetup, unittest.TestCase):
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.setUpLoggingSubscriber()
+        self.obj = zapi.traverse(self.rootFolder, self.location)
+        
         self.hub_event = self.klass(self.object_hub,
                                     self.hubid,
                                     self.location,
@@ -91,6 +100,7 @@ class TransmitObjectMovedHubEventTest(TransmitHubEventTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.setUpLoggingSubscriber()
+        self.obj = zapi.traverse(self.rootFolder, self.location)
         self.hub_event = self.klass(
                 self.object_hub, self.hubid,
                 '/old/location', self.location, self.obj)
@@ -103,26 +113,32 @@ class TransmitObjectUnregisteredHubEventTest(TransmitHubEventTest):
     interface = IObjectUnregisteredHubEvent
     klass = ObjectUnregisteredHubEvent
 
+class Folder(Location):
+    pass
+
 class BasicHubTest(ObjectHubSetup, unittest.TestCase):
-    location = '/foo/bar'
-    obj = object()
-    new_location = '/baz/spoo'
+    location = '/folder1/folder1_1'
+    new_location = '/folder2/folder2_1'
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.setUpLoggingSubscriber()
+        self.obj = zapi.traverse(self.rootFolder, self.location)
         self.setEvents()
 
     def setEvents(self):
-        self.created_event = ObjectCreatedEvent(object())
-        self.added_event = ObjectAddedEvent(self.obj, self.location)
-        self.added_new_location_event = ObjectAddedEvent(
-            self.obj, self.new_location)
-        self.removed_event = ObjectRemovedEvent(self.obj, self.location)
-        self.modified_event = ObjectModifiedEvent(self.obj, self.location)
-        self.moved_event = ObjectMovedEvent(self.obj,
-                                            self.location,
-                                            self.new_location)
+        obj = self.obj
+        self.created_event = ObjectCreatedEvent(obj)
+        self.added_event = ObjectAddedEvent(obj)
+        newobj = zapi.traverse(self.rootFolder, self.new_location)
+        self.added_new_location_event = ObjectAddedEvent(newobj)
+        self.removed_event = ObjectRemovedEvent(obj)
+        self.modified_event = ObjectModifiedEvent(obj)
+        self.moved_event = ObjectMovedEvent(
+            obj,
+            obj.__parent__, obj.__name__,
+            newobj.__parent__, newobj.__name__,
+            )
 
 class TestRegistrationEvents(BasicHubTest):
     def testRegistration(self):
@@ -285,6 +301,7 @@ class TestObjectAddedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.setUpRegistrationSubscriber()
+        self.obj = zapi.traverse(self.rootFolder, self.location)
         self.setEvents()
 
     def testLookingUpLocation(self):
@@ -341,6 +358,7 @@ class TestObjectAddedEvent(BasicHubTest):
 class TestObjectRemovedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
+        self.obj = zapi.traverse(self.rootFolder, self.location)
         self.setUpRegistrationSubscriber()
         self.setEvents()
 
@@ -393,6 +411,7 @@ class TestObjectModifiedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.setUpRegistrationSubscriber()
+        self.obj = zapi.traverse(self.rootFolder, self.location)
         self.setEvents()
 
     def testModifiedLocation(self):
@@ -450,6 +469,7 @@ class TestObjectMovedEvent(BasicHubTest):
     def setUp(self):
         ObjectHubSetup.setUp(self)
         self.setUpRegistrationSubscriber()
+        self.obj = zapi.traverse(self.rootFolder, self.location)
         self.setEvents()
 
     def testMovedLocation(self):
@@ -462,6 +482,16 @@ class TestObjectMovedEvent(BasicHubTest):
 
         hub.notify(added_event)
         hubid = hub.getHubId(location)
+
+        self.subscriber.verifyEventsReceived(self, [
+                (IObjectAddedEvent, location),
+                (IObjectRegisteredHubEvent, hubid, location),
+            ])
+
+        # simulate moving the object
+        self.obj.__parent__ = zapi.traverse(self.rootFolder, "folder2")
+        self.obj.__name__ = "folder2_1"
+
         hub.notify(moved_event)
 
         location_from_hub = hub.getPath(hubid)
@@ -473,8 +503,6 @@ class TestObjectMovedEvent(BasicHubTest):
         self.assertEqual(hubid2, hubid)
 
         self.subscriber.verifyEventsReceived(self, [
-                (IObjectAddedEvent, location),
-                (IObjectRegisteredHubEvent, hubid, location),
                 (IObjectMovedEvent, new_location),
                 (IObjectMovedHubEvent, hubid, new_location)
             ])
@@ -495,6 +523,10 @@ class TestObjectMovedEvent(BasicHubTest):
         self.assertRaises(NotFoundError, hub.getHubId, location)
         self.assertRaises(NotFoundError, hub.getHubId, new_location)
 
+        # simulate moving the object
+        self.obj.__parent__ = zapi.traverse(self.rootFolder, "folder2")
+        self.obj.__name__ = "folder2_1"
+
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectMovedEvent, new_location),
                 ])
@@ -512,13 +544,20 @@ class TestObjectMovedEvent(BasicHubTest):
         hub.notify(added_event)
         hub.notify(added_event2)
 
-        self.assertRaises(ObjectHubError, hub.notify, moved_event)
-
         self.subscriber.verifyEventsReceived(self, [
                 (IObjectAddedEvent, location),
                 (IObjectRegisteredHubEvent, None, location),
                 (IObjectAddedEvent, new_location),
                 (IObjectRegisteredHubEvent, None, new_location),
+            ])
+
+        # simulate moving the object
+        self.obj.__parent__ = zapi.traverse(self.rootFolder, "folder2")
+        self.obj.__name__ = "folder2_1"
+
+        self.assertRaises(ObjectHubError, hub.notify, moved_event)
+
+        self.subscriber.verifyEventsReceived(self, [
                 (IObjectMovedEvent, new_location),
             ])
 
@@ -546,11 +585,11 @@ class TestLazyUnregistration(BasicHubTest):
 
     def setUp(self):
         ObjectHubSetup.setUp(self)
-        self.rootFolder.setObject('deleted', self.obj)
-        self.deleted_obj = Wrapper(object(), self.rootFolder, name='deleted')
+        self.rootFolder['deleted'] = Contained()
+        self.deleted_obj = self.rootFolder['deleted']
         self.deleted_path = '/deleted'
-        self.rootFolder.setObject('valid', self.obj)
-        self.valid_obj = Wrapper(object(), self.rootFolder, name='valid')
+        self.rootFolder['valid'] = Contained()
+        self.valid_obj = self.rootFolder['valid']
         self.valid_path = '/valid'
 
         # register the objects
@@ -582,7 +621,7 @@ class TestLazyUnregistration(BasicHubTest):
     def testGetHubId(self):
         # no lazy unregistration
         self.assert_(self.object_hub.getHubId(self.deleted_path))
-        self.assert_(self.object_hub.getHubId(self.deleted_obj))
+        #self.assert_(self.object_hub.getHubId(self.deleted_obj))
         self.assertEqual(self.object_hub.numRegistrations(), 2)
 
 
@@ -605,14 +644,19 @@ class TestLazyUnregistration(BasicHubTest):
         # for valid paths, so it doesn't make sense to unregister
         self.assertRaises(ObjectHubError, self.object_hub.register, 
             self.deleted_path)
-        self.assertRaises(ObjectHubError, self.object_hub.register, 
-            self.deleted_obj)
+
+        # The deleted object now (after parentgeddon) has no path, so
+        # this assertion no longer makes sense.
+##         self.assertRaises(ObjectHubError, self.object_hub.register, 
+##             self.deleted_obj)
 
 
-    def testUnregister(self):
-        # no lazy unregistration
-        self.object_hub.unregister(self.deleted_obj)
-        self.assertEqual(self.object_hub.numRegistrations(), 1)
+    # We can't unregister an object *after* it has been deleted, because
+    # it has no location at that point.
+##     def testUnregister(self):
+##         # no lazy unregistration
+##         self.object_hub.unregister(self.deleted_obj)
+##         self.assertEqual(self.object_hub.numRegistrations(), 1)
 
 
     def numRegistrations(self):
