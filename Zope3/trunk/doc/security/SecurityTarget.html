@@ -1,0 +1,806 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.2.8: http://docutils.sourceforge.net/" />
+<title>Zope X3 Security Target for EAL 1</title>
+<meta name="date" content="$Date: 2003/07/14 21:14:12 $" />
+<meta name="author" content="Steve Alexander &lt;steve&#64;catbox.net&gt;" />
+<meta name="author" content="Christian Theune &lt;ct&#64;gocept.com&gt;" />
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="zope-x3-security-target-for-eal-1">
+<h1 class="title">Zope X3 Security Target for EAL 1</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Version:</th>
+<td>$Version$ (Draft)</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>$Date: 2003/07/14 21:14:12 $</td></tr>
+<tr><th class="docinfo-name">Author:</th>
+<td>Steve Alexander &lt;steve&#64;catbox.net&gt;</td></tr>
+<tr><th class="docinfo-name">Author:</th>
+<td>Christian Theune &lt;ct&#64;gocept.com&gt;</td></tr>
+<tr class="field"><th class="docinfo-name">DocumentID:</th><td class="field-body">ST_ZOPE_001</td>
+</tr>
+</tbody>
+</table>
+<div class="contents topic" id="contents">
+<p class="topic-title"><a name="contents">Contents</a></p>
+<ul class="simple">
+<li><a class="reference" href="#st-introduction" id="id1" name="id1">ST introduction</a><ul>
+<li><a class="reference" href="#st-identification" id="id2" name="id2">ST identification</a></li>
+<li><a class="reference" href="#st-overview" id="id3" name="id3">ST overview</a></li>
+<li><a class="reference" href="#iso-iec-15408-cc-conformance" id="id4" name="id4">ISO/IEC 15408 (CC) Conformance</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#toe-description" id="id5" name="id5">TOE description</a><ul>
+<li><a class="reference" href="#overview" id="id6" name="id6">Overview</a></li>
+<li><a class="reference" href="#toe-definition" id="id7" name="id7">TOE definition</a></li>
+<li><a class="reference" href="#toe-development-and-production" id="id8" name="id8">TOE Development and Production</a></li>
+<li><a class="reference" href="#toe-life-cycle" id="id9" name="id9">TOE Life Cycle</a></li>
+<li><a class="reference" href="#toe-boundaries" id="id10" name="id10">TOE Boundaries</a><ul>
+<li><a class="reference" href="#physical-boundaries" id="id11" name="id11">Physical Boundaries</a></li>
+<li><a class="reference" href="#toe-logical-boundaries" id="id12" name="id12">TOE Logical Boundaries</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference" href="#toe-security-environment" id="id13" name="id13">TOE security environment</a><ul>
+<li><a class="reference" href="#assets" id="id14" name="id14">Assets</a></li>
+<li><a class="reference" href="#subjects" id="id15" name="id15">Subjects</a></li>
+<li><a class="reference" href="#operations" id="id16" name="id16">Operations</a></li>
+<li><a class="reference" href="#assumptions-about-the-environment" id="id17" name="id17">Assumptions (about the environment)</a></li>
+<li><a class="reference" href="#threats" id="id18" name="id18">Threats</a></li>
+<li><a class="reference" href="#organisational-security-policies" id="id19" name="id19">Organisational security policies</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#security-objectives" id="id20" name="id20">Security Objectives</a><ul>
+<li><a class="reference" href="#security-objectives-for-the-toe" id="id21" name="id21">Security objectives for the TOE</a></li>
+<li><a class="reference" href="#security-objectives-for-the-environment" id="id22" name="id22">Security objectives for the environment</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#security-requirements" id="id23" name="id23">Security requirements</a><ul>
+<li><a class="reference" href="#toe-security-requirements" id="id24" name="id24">TOE security requirements</a><ul>
+<li><a class="reference" href="#toe-security-functional-requirements" id="id25" name="id25">TOE security functional requirements</a><ul>
+<li><a class="reference" href="#class-fau-audit-data-generation" id="id26" name="id26">Class FAU: Audit data generation</a></li>
+<li><a class="reference" href="#class-fdp-data-protection" id="id27" name="id27">Class FDP: Data protection</a><ul>
+<li><a class="reference" href="#fdp-acc-2-complete-access-control" id="id28" name="id28">FDP_ACC.2 Complete access control</a></li>
+<li><a class="reference" href="#fdp-acf-1" id="id29" name="id29">FDP_ACF.1</a></li>
+<li><a class="reference" href="#fdp-etc-2" id="id30" name="id30">FDP_ETC.2</a></li>
+<li><a class="reference" href="#fdp-itc-1" id="id31" name="id31">FDP_ITC.1</a></li>
+<li><a class="reference" href="#fdp-itc-2" id="id32" name="id32">FDP_ITC.2</a></li>
+<li><a class="reference" href="#fdp-rip-1-subset-residual-information-protection" id="id33" name="id33">FDP_RIP.1 Subset residual information protection</a></li>
+<li><a class="reference" href="#fdp-rol-2-transactions-advanced-rollback" id="id34" name="id34">FDP_ROL.2_TRANSACTIONS Advanced Rollback</a></li>
+<li><a class="reference" href="#fdp-rol-1-undo-basic-rollback" id="id35" name="id35">FDP_ROL.1_UNDO Basic rollback</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#class-fia-identification-and-authentication" id="id36" name="id36">Class FIA: Identification and authentication</a><ul>
+<li><a class="reference" href="#fia-atd-1-user-attribute-definition" id="id37" name="id37">FIA_ATD.1 User attribute definition</a></li>
+<li><a class="reference" href="#fia-uau-1-timing-of-authentication" id="id38" name="id38">FIA_UAU.1 Timing of authentication</a></li>
+<li><a class="reference" href="#fia-uau-5" id="id39" name="id39">FIA.UAU.5</a></li>
+<li><a class="reference" href="#fia-uau-6-re-authentication" id="id40" name="id40">FIA.UAU.6 Re-authentication</a></li>
+<li><a class="reference" href="#fia-uid-1" id="id41" name="id41">FIA_UID.1</a></li>
+<li><a class="reference" href="#fia-usb-1-user-subject-binding" id="id42" name="id42">FIA_USB.1 User-subject binding</a></li>
+<li><a class="reference" href="#xxx-nice-to-have" id="id43" name="id43">XXX Nice to have:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference" href="#toe-security-assurance-requirements" id="id44" name="id44">TOE security assurance requirements</a></li>
+<li><a class="reference" href="#security-requirements-for-the-it-environment" id="id45" name="id45">Security requirements for the IT environment</a></li>
+</ul>
+</li>
+<li><a class="reference" href="#todo" id="id46" name="id46">TODO</a></li>
+</ul>
+</div>
+<p>$Changes$</p>
+<div class="section" id="st-introduction">
+<h1><a class="toc-backref" href="#id1" name="st-introduction">ST introduction</a></h1>
+<div class="section" id="st-identification">
+<h2><a class="toc-backref" href="#id2" name="st-identification">ST identification</a></h2>
+<table class="field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Document Title:</th><td class="field-body">Zope X3, Security target</td>
+</tr>
+<tr class="field"><th class="field-name">Document ID:</th><td class="field-body">ST_ZOPE_001</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Document Version:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">$Version$</td>
+</tr>
+<tr class="field"><th class="field-name">Origin:</th><td class="field-body"></td>
+</tr>
+<tr class="field"><th class="field-name">TOE Reference:</th><td class="field-body">Zope X3</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">TOE Commercial Name:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Zope X3</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">TOE Short Description:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Platform independent, Python, XXX feature article from zope.org</td>
+</tr>
+<tr class="field"><th class="field-name">Product Type:</th><td class="field-body">Web Application Server</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Evaluation Body:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Evaluation Body of TUV Informationstechnik GmbH, Germany</td>
+</tr>
+<tr class="field"><th class="field-name" colspan="2">Certification Body:</th></tr>
+<tr><td>&nbsp;</td><td class="field-body">Certification Body of TUV Informationstechnik GmbH, Germany</td>
+</tr>
+</tbody>
+</table>
+<p>This ST is based upon Common Criteria, Version 2.1 ([CC]).
+The TOE consists of the following component:</p>
+<blockquote>
+<table class="table" frame="border" rules="all">
+<colgroup>
+<col width="30%" />
+<col width="27%" />
+<col width="43%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>Component</th>
+<th>Version</th>
+<th>Supplier</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Zope</td>
+<td>X3</td>
+<td>Zope Corporation</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="st-overview">
+<h2><a class="toc-backref" href="#id3" name="st-overview">ST overview</a></h2>
+<p>The main objectives of this Security Target are:</p>
+<blockquote>
+<ul class="simple">
+<li>To describe the Target of Evaluation (TOE).</li>
+<li>To describe the security environment of the TOE including the assets to
+be protected and the threats to be countered by the TOE and its
+environment.</li>
+<li>To describe the security objectives of the TOE and its supporting
+environment.</li>
+<li>To specify the Security Requirements, which include the TOE security
+functional requirements as of CC, part 2 and the assurance requirements as
+of CC, part 3.</li>
+<li>To set up the TOE summary specification, which includes the TOE
+security functions specifications and the assurance measures.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="iso-iec-15408-cc-conformance">
+<h2><a class="toc-backref" href="#id4" name="iso-iec-15408-cc-conformance">ISO/IEC 15408 (CC) Conformance</a></h2>
+<p>This ST is claimed to be conformant with the ISO/IEC 15408:1999 (Common
+Criteria, Version 2.1 with final interpretations, see [CC]) and its following
+parts:</p>
+<blockquote>
+<ul class="simple">
+<li>Part 2 and</li>
+<li>Part 3, EAL1.</li>
+</ul>
+</blockquote>
+<p>The assurance level is EAL 1.</p>
+</div>
+</div>
+<div class="section" id="toe-description">
+<h1><a class="toc-backref" href="#id5" name="toe-description">TOE description</a></h1>
+<div class="section" id="overview">
+<h2><a class="toc-backref" href="#id6" name="overview">Overview</a></h2>
+<p>For b uilding Web application, framework, ...
+Functionality should be provided, main structure</p>
+</div>
+<div class="section" id="toe-definition">
+<h2><a class="toc-backref" href="#id7" name="toe-definition">TOE definition</a></h2>
+<p>Product type: Web application server software that provides functionality for
+restricting operations on objects based on permissions declared to protect
+those operations.</p>
+<p>Principals are granted permissions both statically via configuration files and
+dynamically via settings in the object database.</p>
+<p>You can use roles to mediate between principals and permissions.</p>
+<p>Principals are authenticated in various way depending on the means of
+connection to a server.  Authentication usually envolves a username-password
+such as for FTP-Authentication and HTTP-Basic-Authentication.  Other
+authentication mechanisms are possible.</p>
+</div>
+<div class="section" id="toe-development-and-production">
+<h2><a class="toc-backref" href="#id8" name="toe-development-and-production">TOE Development and Production</a></h2>
+<p>Only authorised persons can modify the Zope source code.</p>
+<p>The official / canonical version of Zope is held by Zope Corporation (ZC) in
+the ZC the repository.</p>
+<p>The certified version is held as a named branch in the ZC repository.</p>
+<p>Open source</p>
+<p>All changes to source code and other files in the repository are reported
+publically to interested persons including those persons that are responsible
+for overseeing the quality and direction of parts of Zope.</p>
+<p>Any change to a file in the repository causes that file to have a new version
+number and the exact change is recorded.</p>
+</div>
+<div class="section" id="toe-life-cycle">
+<h2><a class="toc-backref" href="#id9" name="toe-life-cycle">TOE Life Cycle</a></h2>
+<p>describe releases here</p>
+</div>
+<div class="section" id="toe-boundaries">
+<h2><a class="toc-backref" href="#id10" name="toe-boundaries">TOE Boundaries</a></h2>
+<div class="section" id="physical-boundaries">
+<h3><a class="toc-backref" href="#id11" name="physical-boundaries">Physical Boundaries</a></h3>
+<p>The whole Zope package.</p>
+</div>
+<div class="section" id="toe-logical-boundaries">
+<h3><a class="toc-backref" href="#id12" name="toe-logical-boundaries">TOE Logical Boundaries</a></h3>
+<p>Access Control functionality.</p>
+<p>Default username-password authentication mechanism.</p>
+<p>Publishing mechanism.</p>
+</div>
+</div>
+</div>
+<div class="section" id="toe-security-environment">
+<h1><a class="toc-backref" href="#id13" name="toe-security-environment">TOE security environment</a></h1>
+<div class="section" id="assets">
+<h2><a class="toc-backref" href="#id14" name="assets">Assets</a></h2>
+<p>The following assets have been identified:</p>
+<blockquote>
+<table class="table" frame="border" rules="all">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>Asset Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Content-Objects</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>Operations</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>Principals</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>Role grants</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>Permission grants</td>
+<td>&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="subjects">
+<h2><a class="toc-backref" href="#id15" name="subjects">Subjects</a></h2>
+<p>Outside of Zope the &quot;system-administrator&quot; configures the Config-files as an
+initial step before the first starting of Zope occurs.</p>
+<p>Subjects are instantiated principals.</p>
+<p>Principals are represented by a unique ID, credentials and metadata.</p>
+<p>Credentials are identification and authentication data like username and
+password.</p>
+<p>Metadata are related information of the principal, just additional information
+to the principal.</p>
+<p>The ID is the data the system internally identifies the user.</p>
+<p>There are two kinds of principals: The anybody-user and the authenticated user.</p>
+<p>If a principal has the permission to grant permissions/roles he can grant
+permissions/roles to himself and other principals.</p>
+<p>Roles are used in applications of Zope to express the different tasks and
+responsibilities of users. Permissions are granted to roles and roles are
+granted to principals. Therefore roles serve as an indirect means of granting
+permissions to principals. Permissions can also be granted directly to
+principals.</p>
+<p>Permissions guard operations on objects. A permission has an unique ID.</p>
+</div>
+<div class="section" id="operations">
+<h2><a class="toc-backref" href="#id16" name="operations">Operations</a></h2>
+<p>Operations are performed on objects. They are defined in an objects class. A
+class is defined in the Python programming language and is identified by a
+fully qualified name.</p>
+<p>A operation is a name defined in a class. It may take a form of an attribute, a
+method or some other related python thing.</p>
+<p>There are two possible kinds of access to an operation: Reading such as reading
+an attribute or calling a method. Writing such as setting or deleting an
+attribute. Reading is guarded with a different permission than writing.</p>
+</div>
+<div class="section" id="assumptions-about-the-environment">
+<h2><a class="toc-backref" href="#id17" name="assumptions-about-the-environment">Assumptions (about the environment)</a></h2>
+<p>The following assumptions need to be made about the TOE environment:</p>
+<blockquote>
+<table class="table" frame="border" rules="all">
+<colgroup>
+<col width="23%" />
+<col width="77%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>Assumption Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>A.OS</td>
+<td>The machine and the operating system Zope is
+running on is physical secure.</td>
+</tr>
+<tr><td>A.Admin</td>
+<td>The &quot;system-administrator&quot; of the above
+mentioned machine is trustworthy.</td>
+</tr>
+<tr><td>A.Network</td>
+<td>A network connection to the Zope services is
+present. All The other network connection are
+secure in such a way that the integrity of
+the machine and operating system is preserved.</td>
+</tr>
+<tr><td>A.Client</td>
+<td>The connection between client and Zope server is
+secure in a sense the the identification and
+authentication data is not monitored or interfered.</td>
+</tr>
+<tr><td>A.Credential</td>
+<td>The user is keeping the credential to authenticate
+secret.</td>
+</tr>
+<tr><td>A.Integrity</td>
+<td>The system is administrated such that the system is
+free from malicious software like viruses and
+Trojan horses.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="threats">
+<h2><a class="toc-backref" href="#id18" name="threats">Threats</a></h2>
+<p>The following threat agents have been identified:</p>
+<p>...</p>
+<p>The following threats against the assets have been identified:</p>
+<blockquote>
+<table class="table" frame="border" rules="all">
+<colgroup>
+<col width="15%" />
+<col width="59%" />
+<col width="25%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>Threat</th>
+<th>Threat description</th>
+<th>Asset</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>T.IA</td>
+<td>An attacker might impersonate an authorised
+principal without providing the necessary
+credentials.</td>
+<td>Principal</td>
+</tr>
+<tr><td>T.PermRole</td>
+<td>A principal changes the role grants or
+permission grants without having that right.</td>
+<td>Permission grants,
+Role grants</td>
+</tr>
+<tr><td>T.Operation</td>
+<td>A principal performs an operation on an object
+without having the correct permission.</td>
+<td>Operation, Object</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="organisational-security-policies">
+<h2><a class="toc-backref" href="#id19" name="organisational-security-policies">Organisational security policies</a></h2>
+<p>The following OSP have been identified:</p>
+<blockquote>
+<table class="table" frame="border" rules="all">
+<colgroup>
+<col width="34%" />
+<col width="66%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>OSP</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>OSP.Source_code_changes</td>
+<td>Changes to source code can only be made by
+persons who have signed an agreement with Zope
+Corporation, Virginia USA. They must preserve a
+cryptographic key in order to change code.</td>
+</tr>
+<tr><td>OSP.Version_numbre</td>
+<td>Released versions of Zope cannot be modified.
+Any modification would imply a new release
+number.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+</div>
+<div class="section" id="security-objectives">
+<h1><a class="toc-backref" href="#id20" name="security-objectives">Security Objectives</a></h1>
+<div class="section" id="security-objectives-for-the-toe">
+<h2><a class="toc-backref" href="#id21" name="security-objectives-for-the-toe">Security objectives for the TOE</a></h2>
+<p>The following security objectives have been defined for the TOE:</p>
+<blockquote>
+<table class="table" frame="border" rules="all">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>Objective Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>O.IA</td>
+<td>All principals must be identified and authenticated
+with the exception of &quot;anybody&quot;-principal.</td>
+</tr>
+<tr><td>O.Objects</td>
+<td>A principal can perform an operation on an object
+only if he has the permission.</td>
+</tr>
+<tr><td>O.Grants</td>
+<td>Only principals having the permission to change
+permission/role grants can change the
+permission/role grants.</td>
+</tr>
+<tr><td>O.Access</td>
+<td>Access to objects is only possible via operations.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="security-objectives-for-the-environment">
+<h2><a class="toc-backref" href="#id22" name="security-objectives-for-the-environment">Security objectives for the environment</a></h2>
+<p>The following security objectives have been defined for the TOE environment:</p>
+<blockquote>
+<table class="table" frame="border" rules="all">
+<colgroup>
+<col width="21%" />
+<col width="79%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>Assumption Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>OE.OS</td>
+<td>The machine and the operating system Zope is running
+on is physical secure.</td>
+</tr>
+<tr><td>OE.Admin</td>
+<td>The &quot;system-administrator&quot; of the above mentioned
+machine is trustworthy.</td>
+</tr>
+<tr><td>OE.Network</td>
+<td>A network connection to the Zope services is present.
+All The other network connection are secure in such a
+way that the integrity of the machien and operating
+system is preserved.</td>
+</tr>
+<tr><td>OE.Client</td>
+<td>The connection between client and Zope server is secure
+in a sense the the identification and authentication
+data is not monitored or interfered.</td>
+</tr>
+<tr><td>OE.Credential</td>
+<td>The user is keeping the credential to authenticate
+secret.</td>
+</tr>
+<tr><td>OE.Integrity</td>
+<td>The system is administrated such that the system is
+free from malicious software like viruses and Trojan
+horses.</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+</div>
+<div class="section" id="security-requirements">
+<h1><a class="toc-backref" href="#id23" name="security-requirements">Security requirements</a></h1>
+<div class="section" id="toe-security-requirements">
+<h2><a class="toc-backref" href="#id24" name="toe-security-requirements">TOE security requirements</a></h2>
+<div class="section" id="toe-security-functional-requirements">
+<h3><a class="toc-backref" href="#id25" name="toe-security-functional-requirements">TOE security functional requirements</a></h3>
+<p>The following functional requirements identify the TOE functional requirements.
+They have beend drawn from the CC Part 2 functional requirements components.</p>
+<div class="section" id="class-fau-audit-data-generation">
+<h4><a class="toc-backref" href="#id26" name="class-fau-audit-data-generation">Class FAU: Audit data generation</a></h4>
+<dl>
+<dt>FAU_GEN.1 </dt>
+<dd>(select: level of detail)</dd>
+</dl>
+<p>FAU_GEN.2</p>
+</div>
+<div class="section" id="class-fdp-data-protection">
+<h4><a class="toc-backref" href="#id27" name="class-fdp-data-protection">Class FDP: Data protection</a></h4>
+<div class="section" id="fdp-acc-2-complete-access-control">
+<h5><a class="toc-backref" href="#id28" name="fdp-acc-2-complete-access-control">FDP_ACC.2 Complete access control</a></h5>
+<dl>
+<dt>FDP_ACC.2.1</dt>
+<dd>The TSF shall enforce the [formal security policy] on
+[subjects: principals and objects: operations on content objects, role
+grants, permission grants] and all operations among subjects and
+objects covered by the SFP.</dd>
+<dt>FDP_ACC.2.2</dt>
+<dd>The TSF shall ensure that all operations between any
+subject in the TSC and any object within the TSC are covered by an
+access control SFP.</dd>
+</dl>
+</div>
+<div class="section" id="fdp-acf-1">
+<h5><a class="toc-backref" href="#id29" name="fdp-acf-1">FDP_ACF.1</a></h5>
+<dl>
+<dt>FDP_ACF.1.1</dt>
+<dd>The TSF shall enforce the [formal security policy] to objects
+based on [context, object, operation, principal].</dd>
+<dt>FDP_ACF.1.2</dt>
+<dd>The TSF shall enforce the following rules to determine
+if an operation among controlled subjects and controlled objects is
+allowed: [The principal has been granted the required permission to
+perform the operation on that object in that context. A special
+permission is required to rollback to historical versions of content
+objects.]</dd>
+<dt>FDP_ACF.1.3</dt>
+<dd>The TSF shall explicitly authorise access of subjects to
+objects based on the following additional rules:</dd>
+<dt>FDP_ACF.1.4</dt>
+<dd>The TSF shall explicitly deny access of subjcets to objects
+based on the following additional rules: [none]</dd>
+</dl>
+</div>
+<div class="section" id="fdp-etc-2">
+<h5><a class="toc-backref" href="#id30" name="fdp-etc-2">FDP_ETC.2</a></h5>
+<p>(als standardoperation beschreiben (TOE description), eventueller threat)</p>
+</div>
+<div class="section" id="fdp-itc-1">
+<h5><a class="toc-backref" href="#id31" name="fdp-itc-1">FDP_ITC.1</a></h5>
+<p>XXX provide details (data import)</p>
+</div>
+<div class="section" id="fdp-itc-2">
+<h5><a class="toc-backref" href="#id32" name="fdp-itc-2">FDP_ITC.2</a></h5>
+<p>XXX provide details (data import)</p>
+</div>
+<div class="section" id="fdp-rip-1-subset-residual-information-protection">
+<h5><a class="toc-backref" href="#id33" name="fdp-rip-1-subset-residual-information-protection">FDP_RIP.1 Subset residual information protection</a></h5>
+<dl>
+<dt>FDP_RIP.1.1</dt>
+<dd>The TSF shall ensure that any previous information content
+of a resource is made unavailable upon the [allocation of the resource
+to, deallocation of the resource from] the following objects:
+[principals, permission grants, role grants, permission definition and
+role definition].</dd>
+</dl>
+</div>
+<div class="section" id="fdp-rol-2-transactions-advanced-rollback">
+<h5><a class="toc-backref" href="#id34" name="fdp-rol-2-transactions-advanced-rollback">FDP_ROL.2_TRANSACTIONS Advanced Rollback</a></h5>
+<dl>
+<dt>FDP_ROL.2.1 </dt>
+<dd>The TSF shall permit [the rollback of all
+operations on all objects].</dd>
+<dt>FDP_ROL.2.2 </dt>
+<dd>The TSF shall permit operations to be rolled
+back [at any time before the transaction in which the operation was
+performed is committed].</dd>
+</dl>
+</div>
+<div class="section" id="fdp-rol-1-undo-basic-rollback">
+<h5><a class="toc-backref" href="#id35" name="fdp-rol-1-undo-basic-rollback">FDP_ROL.1_UNDO Basic rollback</a></h5>
+<dl>
+<dt>FDP_ROL.1.1 </dt>
+<dd>The TSF shall enforce [formal security policy] to permit
+the rollback of the [operations cause changes] on the [content
+objects].</dd>
+<dt>FDP_ROL.1.2 </dt>
+<dd>The TSF shall permit operations to be rolled back
+within the [period of time for which the old revisions of the objects
+exist].</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="class-fia-identification-and-authentication">
+<h4><a class="toc-backref" href="#id36" name="class-fia-identification-and-authentication">Class FIA: Identification and authentication</a></h4>
+<div class="section" id="fia-atd-1-user-attribute-definition">
+<h5><a class="toc-backref" href="#id37" name="fia-atd-1-user-attribute-definition">FIA_ATD.1 User attribute definition</a></h5>
+<dl>
+<dt>FIA_ATD.1.1 </dt>
+<dd>The TSF shall maintain the following list of security
+attributes belonging to individual principals [uniqueid, credentials,
+role grants, permission grants]</dd>
+</dl>
+</div>
+<div class="section" id="fia-uau-1-timing-of-authentication">
+<h5><a class="toc-backref" href="#id38" name="fia-uau-1-timing-of-authentication">FIA_UAU.1 Timing of authentication</a></h5>
+<dl>
+<dt>FIA_UAU.1.1 </dt>
+<dd><p class="first">The TSF shall allow [only those operations granted to the
+anonymous principal] on behalf of the user before the [principal] is
+authenticated.</p>
+<p class="last">[Note: It is possible to deny all operations to the anonymous
+principal. This means that a user must login before any actions may
+performed on their behalf. This fullfills the terms of FIA_UAU.2]</p>
+</dd>
+<dt>FIA_UAU.1.2 </dt>
+<dd>The TSF shall require each [principal] to be successfully
+authenticated before allowing any other TSF-mediated actions on behalf
+of that user.</dd>
+</dl>
+</div>
+<div class="section" id="fia-uau-5">
+<h5><a class="toc-backref" href="#id39" name="fia-uau-5">FIA.UAU.5</a></h5>
+<blockquote>
+XXX (basic auth, diget, cookie ... look that up)</blockquote>
+</div>
+<div class="section" id="fia-uau-6-re-authentication">
+<h5><a class="toc-backref" href="#id40" name="fia-uau-6-re-authentication">FIA.UAU.6 Re-authentication</a></h5>
+<dl>
+<dt>FIA_UAU.6.1 </dt>
+<dd>The TSF shall re-authenticate the user under the conditions
+[a) that he is trying to perform an action that has been unauthorised and
+is offered the opportunity to present other credentials, if it possible
+that presenting other credentials may result in authorisation. 
+b) If the credentials held by the user agent have expired due to a time 
+limit encoded in those credentials. E.g. a cookie held by a web browser].</dd>
+</dl>
+</div>
+<div class="section" id="fia-uid-1">
+<h5><a class="toc-backref" href="#id41" name="fia-uid-1">FIA_UID.1</a></h5>
+<blockquote>
+XXX (copy FIA_UAU.1 here)</blockquote>
+</div>
+<div class="section" id="fia-usb-1-user-subject-binding">
+<h5><a class="toc-backref" href="#id42" name="fia-usb-1-user-subject-binding">FIA_USB.1 User-subject binding</a></h5>
+<dl>
+<dt>FIA_USB.1.1</dt>
+<dd><p class="first">The TSF shall associate the appropriate user security
+attributes with subjects acting on behalf of that user.</p>
+<p class="last">[Note: This has to do with ownership in the sense of responsibility for
+executable code.]</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="xxx-nice-to-have">
+<h5><a class="toc-backref" href="#id43" name="xxx-nice-to-have">XXX Nice to have:</a></h5>
+<blockquote>
+<p>This is currently not sure if it is going to be implemented. Ask someone who knows.</p>
+<p>FIA_SOS.1
+FIA_AFL.1</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="toe-security-assurance-requirements">
+<h2><a class="toc-backref" href="#id44" name="toe-security-assurance-requirements">TOE security assurance requirements</a></h2>
+<p>The Evaluation Assurance Level chosen for this Evaluation is EAL 1.</p>
+<p>The following TOE assurance requirements drawn from CC Part 3 are valid:</p>
+<blockquote>
+<table class="table" frame="border" rules="all">
+<colgroup>
+<col width="20%" />
+<col width="54%" />
+<col width="27%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th>Identification</th>
+<th>Description</th>
+<th>Direct dependencies</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><strong>ACM</strong></td>
+<td>Configuration management (CM)</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>ACM_CAP.1</td>
+<td>Version numbers</td>
+<td>None</td>
+</tr>
+<tr><td><strong>ADO</strong></td>
+<td>Delivery and Operation</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>ADO_IGS.1</td>
+<td>Installation, generation and start-up</td>
+<td>AGD_ADM.1</td>
+</tr>
+<tr><td><strong>ADV</strong></td>
+<td>Development</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>ADV_FSP.1</td>
+<td>Informal Functional specification</td>
+<td>ADV_RCR.1</td>
+</tr>
+<tr><td>ADV_RCR.1</td>
+<td>Representation correspondence:
+Information correspondence
+demonstration</td>
+<td>None</td>
+</tr>
+<tr><td><strong>AGD</strong></td>
+<td>Guidance documents</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>AGD_ADM.1</td>
+<td>Administrator guidance</td>
+<td>ADV_FSP.1</td>
+</tr>
+<tr><td>AGD_USR.1</td>
+<td>User guidance</td>
+<td>ADV_FSP.1</td>
+</tr>
+<tr><td><strong>ATE</strong></td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td>ATE_IND.1</td>
+<td>Independent testing - conformance</td>
+<td>ADV_FSP.1
+AGD_ADM.1
+AGD_USR.1</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="security-requirements-for-the-it-environment">
+<h2><a class="toc-backref" href="#id45" name="security-requirements-for-the-it-environment">Security requirements for the IT environment</a></h2>
+<p>The following security requirements exist for the IT environment:</p>
+<p>Security requirements for the non-IT environment</p>
+<p>TOE security functions</p>
+<blockquote>
+<p>TSF_AUD Audit</p>
+<p>TSF_DATA Data im-/export</p>
+<p>TSF_RIP Residual information protection</p>
+<p>TSF_IA Identification and authentication</p>
+<blockquote>
+<em>example</em>
+The TSF does not allow any kind of transactions until the principal has
+presented his username and password. The length of the password is at
+least 6 characters.</blockquote>
+<p>TSF_ACC Access control</p>
+<p>TSF_ROLL Rollback</p>
+</blockquote>
+<p>Operating Environment Boundaries:</p>
+<blockquote>
+Operating System
+Python Version
+Browsers (Can't assure about browser behaviour)
+ZODB Storage</blockquote>
+</div>
+</div>
+<div class="section" id="todo">
+<h1><a class="toc-backref" href="#id46" name="todo">TODO</a></h1>
+<blockquote>
+<ul class="simple">
+<li>Bibliographic references</li>
+<li>Threat agents</li>
+<li>RST table formatting</li>
+<li>Put in the rest of the Security Target template from word document</li>
+<li>Numbering of sections would be fine</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,578 @@
+===================================
+ Zope X3 Security Target for EAL 1
+===================================
+
+:Version: $Version$ (Draft)
+:Date: $Date: 2003/07/14 21:14:12 $
+:Authors: Steve Alexander <steve@catbox.net>, Christian Theune <ct@gocept.com>
+:DocumentID: ST_ZOPE_001
+
+.. contents::
+
+$Changes$
+
+ST introduction
+===============
+
+ST identification
+-----------------
+
+:Document Title: Zope X3, Security target
+
+:Document ID: ST_ZOPE_001
+
+:Document Version: $Version$
+
+:Origin: 
+
+:TOE Reference: Zope X3
+
+:TOE Commercial Name: Zope X3
+
+:TOE Short Description: Platform independent, Python, XXX feature article from zope.org
+
+:Product Type: Web Application Server
+
+:Evaluation Body: Evaluation Body of TUV Informationstechnik GmbH, Germany
+
+:Certification Body: Certification Body of TUV Informationstechnik GmbH, Germany
+
+This ST is based upon Common Criteria, Version 2.1 ([CC]).
+The TOE consists of the following component:
+
+    ===========     ==========  ================
+    Component       Version     Supplier
+    ===========     ==========  ================
+    Zope            X3          Zope Corporation
+    ===========     ==========  ================
+
+ST overview
+-----------
+
+The main objectives of this Security Target are:
+
+    *   To describe the Target of Evaluation (TOE).
+
+    *   To describe the security environment of the TOE including the assets to
+        be protected and the threats to be countered by the TOE and its
+        environment.
+
+    *   To describe the security objectives of the TOE and its supporting
+        environment.
+    
+    *   To specify the Security Requirements, which include the TOE security
+        functional requirements as of CC, part 2 and the assurance requirements as
+        of CC, part 3.
+    
+    *   To set up the TOE summary specification, which includes the TOE
+        security functions specifications and the assurance measures.
+
+ISO/IEC 15408 (CC) Conformance
+------------------------------
+
+This ST is claimed to be conformant with the ISO/IEC 15408:1999 (Common
+Criteria, Version 2.1 with final interpretations, see [CC]) and its following
+parts:
+
+    *   Part 2 and
+    
+    *   Part 3, EAL1.
+    
+The assurance level is EAL 1.
+
+TOE description
+===============
+
+Overview
+--------
+
+For b uilding Web application, framework, ...
+Functionality should be provided, main structure
+
+TOE definition
+--------------
+
+Product type: Web application server software that provides functionality for
+restricting operations on objects based on permissions declared to protect
+those operations. 
+
+Principals are granted permissions both statically via configuration files and
+dynamically via settings in the object database.  
+
+You can use roles to mediate between principals and permissions. 
+
+Principals are authenticated in various way depending on the means of
+connection to a server.  Authentication usually envolves a username-password
+such as for FTP-Authentication and HTTP-Basic-Authentication.  Other
+authentication mechanisms are possible.
+
+TOE Development and Production
+------------------------------
+
+Only authorised persons can modify the Zope source code.
+
+The official / canonical version of Zope is held by Zope Corporation (ZC) in
+the ZC the repository.
+
+The certified version is held as a named branch in the ZC repository.
+
+Open source
+
+All changes to source code and other files in the repository are reported
+publically to interested persons including those persons that are responsible
+for overseeing the quality and direction of parts of Zope.
+
+Any change to a file in the repository causes that file to have a new version
+number and the exact change is recorded.
+
+TOE Life Cycle
+--------------
+
+describe releases here
+
+TOE Boundaries
+--------------
+
+Physical Boundaries
+^^^^^^^^^^^^^^^^^^^
+
+The whole Zope package.
+
+TOE Logical Boundaries
+^^^^^^^^^^^^^^^^^^^^^^
+
+Access Control functionality.
+
+Default username-password authentication mechanism.
+
+Publishing mechanism.
+
+TOE security environment
+========================
+
+Assets
+------
+
+The following assets have been identified:
+
+    =================   ===========================================
+    Asset Name          Description                 
+    =================   ===========================================
+    Content-Objects
+    Operations
+    Principals
+    Role grants
+    Permission grants
+    =================   ===========================================
+
+Subjects
+--------
+
+Outside of Zope the "system-administrator" configures the Config-files as an
+initial step before the first starting of Zope occurs.
+
+Subjects are instantiated principals.
+
+Principals are represented by a unique ID, credentials and metadata.
+
+Credentials are identification and authentication data like username and
+password.
+
+Metadata are related information of the principal, just additional information
+to the principal.
+
+The ID is the data the system internally identifies the user.
+
+There are two kinds of principals: The anybody-user and the authenticated user.
+
+If a principal has the permission to grant permissions/roles he can grant
+permissions/roles to himself and other principals.
+
+Roles are used in applications of Zope to express the different tasks and
+responsibilities of users. Permissions are granted to roles and roles are
+granted to principals. Therefore roles serve as an indirect means of granting
+permissions to principals. Permissions can also be granted directly to
+principals. 
+
+Permissions guard operations on objects. A permission has an unique ID.
+
+Operations
+----------
+
+Operations are performed on objects. They are defined in an objects class. A
+class is defined in the Python programming language and is identified by a
+fully qualified name.
+
+A operation is a name defined in a class. It may take a form of an attribute, a
+method or some other related python thing.
+
+There are two possible kinds of access to an operation: Reading such as reading
+an attribute or calling a method. Writing such as setting or deleting an
+attribute. Reading is guarded with a different permission than writing.  
+
+Assumptions (about the environment)
+-----------------------------------
+
+The following assumptions need to be made about the TOE environment:
+
+    ===============     ==================================================
+    Assumption Name     Description
+    ===============     ==================================================
+    A.OS                The machine and the operating system Zope is 
+                        running on is physical secure.
+    A.Admin             The "system-administrator" of the above 
+                        mentioned machine is trustworthy.
+    A.Network           A network connection to the Zope services is 
+                        present. All The other network connection are 
+                        secure in such a way that the integrity of 
+                        the machine and operating system is preserved.
+    A.Client            The connection between client and Zope server is 
+                        secure in a sense the the identification and 
+                        authentication data is not monitored or interfered.
+    A.Credential        The user is keeping the credential to authenticate 
+                        secret.
+    A.Integrity         The system is administrated such that the system is 
+                        free from malicious software like viruses and 
+                        Trojan horses.
+    ===============     ==================================================
+
+Threats
+-------
+
+The following threat agents have been identified:
+
+...
+
+The following threats against the assets have been identified:
+
+    ============    ===============================================     ====================
+    Threat          Threat description                                  Asset
+    ============    ===============================================     ====================
+    T.IA            An attacker might impersonate an authorised         Principal
+                    principal without providing the necessary 
+                    credentials.              
+    T.PermRole      A principal changes the role grants or              Permission grants,
+                    permission grants without having that right.        Role grants
+    T.Operation     A principal performs an operation on an object      Operation, Object
+                    without having the correct permission.               
+    ============    ===============================================     ====================
+
+Organisational security policies
+--------------------------------
+
+The following OSP have been identified:
+
+    ========================    ===============================================
+    OSP                         Description
+    ========================    ===============================================
+    OSP.Source_code_changes     Changes to source code can only be made by 
+                                persons who have signed an agreement with Zope 
+                                Corporation, Virginia USA. They must preserve a 
+                                cryptographic key in order to change code.
+    OSP.Version_numbre          Released versions of Zope cannot be modified. 
+                                Any modification would imply a new release 
+                                number.
+    ========================    ===============================================
+
+Security Objectives
+===================
+
+Security objectives for the TOE
+-------------------------------
+
+The following security objectives have been defined for the TOE:
+
+    ==============          ===================================================
+    Objective Name          Description
+    ==============          ===================================================
+    O.IA                    All principals must be identified and authenticated
+                            with the exception of "anybody"-principal.
+    O.Objects               A principal can perform an operation on an object 
+                            only if he has the permission.
+    O.Grants                Only principals having the permission to change 
+                            permission/role grants can change the 
+                            permission/role grants.
+    O.Access                Access to objects is only possible via operations.
+    ==============          ===================================================
+
+Security objectives for the environment
+---------------------------------------
+
+The following security objectives have been defined for the TOE environment:
+
+
+    ===============     =======================================================
+    Assumption Name     Description
+    ===============     =======================================================
+    OE.OS               The machine and the operating system Zope is running 
+                        on is physical secure.
+    OE.Admin            The "system-administrator" of the above mentioned 
+                        machine is trustworthy.
+    OE.Network          A network connection to the Zope services is present. 
+                        All The other network connection are secure in such a 
+                        way that the integrity of the machien and operating 
+                        system is preserved.
+    OE.Client           The connection between client and Zope server is secure 
+                        in a sense the the identification and authentication 
+                        data is not monitored or interfered.
+    OE.Credential       The user is keeping the credential to authenticate 
+                        secret.
+    OE.Integrity        The system is administrated such that the system is 
+                        free from malicious software like viruses and Trojan 
+                        horses.
+    ===============     =======================================================
+
+Security requirements
+=====================
+
+TOE security requirements
+-------------------------
+
+TOE security functional requirements
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following functional requirements identify the TOE functional requirements.
+They have beend drawn from the CC Part 2 functional requirements components.
+
+Class FAU: Audit data generation
+********************************
+
+FAU_GEN.1 
+    (select: level of detail)
+    
+FAU_GEN.2
+
+Class FDP: Data protection
+***************************
+
+FDP_ACC.2 Complete access control
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FDP_ACC.2.1
+    The TSF shall enforce the [formal security policy] on
+    [subjects: principals and objects: operations on content objects, role
+    grants, permission grants] and all operations among subjects and
+    objects covered by the SFP.
+
+FDP_ACC.2.2
+    The TSF shall ensure that all operations between any
+    subject in the TSC and any object within the TSC are covered by an
+    access control SFP.
+
+FDP_ACF.1 
+~~~~~~~~~
+
+FDP_ACF.1.1
+    The TSF shall enforce the [formal security policy] to objects
+    based on [context, object, operation, principal].
+
+FDP_ACF.1.2
+    The TSF shall enforce the following rules to determine
+    if an operation among controlled subjects and controlled objects is
+    allowed: [The principal has been granted the required permission to
+    perform the operation on that object in that context. A special
+    permission is required to rollback to historical versions of content
+    objects.]
+
+FDP_ACF.1.3
+    The TSF shall explicitly authorise access of subjects to
+    objects based on the following additional rules: 
+
+FDP_ACF.1.4
+    The TSF shall explicitly deny access of subjcets to objects
+    based on the following additional rules: [none]
+
+FDP_ETC.2
+~~~~~~~~~
+         
+(als standardoperation beschreiben (TOE description), eventueller threat)
+    
+FDP_ITC.1
+~~~~~~~~~
+
+XXX provide details (data import)
+
+FDP_ITC.2
+~~~~~~~~~
+
+XXX provide details (data import)
+    
+FDP_RIP.1 Subset residual information protection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+FDP_RIP.1.1
+    The TSF shall ensure that any previous information content
+    of a resource is made unavailable upon the [allocation of the resource
+    to, deallocation of the resource from] the following objects:
+    [principals, permission grants, role grants, permission definition and
+    role definition].
+
+FDP_ROL.2_TRANSACTIONS Advanced Rollback
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FDP_ROL.2.1 
+    The TSF shall permit [the rollback of all
+    operations on all objects].
+
+FDP_ROL.2.2 
+    The TSF shall permit operations to be rolled
+    back [at any time before the transaction in which the operation was
+    performed is committed].
+
+FDP_ROL.1_UNDO Basic rollback 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FDP_ROL.1.1 
+    The TSF shall enforce [formal security policy] to permit
+    the rollback of the [operations cause changes] on the [content
+    objects].
+
+FDP_ROL.1.2 
+    The TSF shall permit operations to be rolled back
+    within the [period of time for which the old revisions of the objects
+    exist].
+
+Class FIA: Identification and authentication
+********************************************
+
+FIA_ATD.1 User attribute definition
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FIA_ATD.1.1 
+    The TSF shall maintain the following list of security
+    attributes belonging to individual principals [uniqueid, credentials,
+    role grants, permission grants]
+
+FIA_UAU.1 Timing of authentication
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FIA_UAU.1.1 
+    The TSF shall allow [only those operations granted to the
+    anonymous principal] on behalf of the user before the [principal] is
+    authenticated.
+
+    [Note: It is possible to deny all operations to the anonymous
+    principal. This means that a user must login before any actions may
+    performed on their behalf. This fullfills the terms of FIA_UAU.2]
+
+FIA_UAU.1.2 
+    The TSF shall require each [principal] to be successfully
+    authenticated before allowing any other TSF-mediated actions on behalf
+    of that user.
+
+FIA.UAU.5
+~~~~~~~~~
+
+    XXX (basic auth, diget, cookie ... look that up)
+    
+FIA.UAU.6 Re-authentication
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FIA_UAU.6.1 
+    The TSF shall re-authenticate the user under the conditions
+    [a) that he is trying to perform an action that has been unauthorised and
+    is offered the opportunity to present other credentials, if it possible
+    that presenting other credentials may result in authorisation. 
+    b) If the credentials held by the user agent have expired due to a time 
+    limit encoded in those credentials. E.g. a cookie held by a web browser].
+
+FIA_UID.1
+~~~~~~~~~
+
+ XXX (copy FIA_UAU.1 here)
+
+FIA_USB.1 User-subject binding
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    
+FIA_USB.1.1
+    The TSF shall associate the appropriate user security
+    attributes with subjects acting on behalf of that user.
+
+    [Note: This has to do with ownership in the sense of responsibility for
+    executable code.]
+
+XXX Nice to have:
+~~~~~~~~~~~~~~~~~
+
+    This is currently not sure if it is going to be implemented. Ask someone who knows.
+
+    FIA_SOS.1
+    FIA_AFL.1
+
+TOE security assurance requirements
+-----------------------------------
+
+The Evaluation Assurance Level chosen for this Evaluation is EAL 1.
+
+The following TOE assurance requirements drawn from CC Part 3 are valid:
+
+    ==============          ======================================  ===================
+    Identification          Description                             Direct dependencies
+    ==============          ======================================  ===================
+    **ACM**                 Configuration management (CM)   
+        ACM_CAP.1           Version numbers                         None
+    **ADO**                 Delivery and Operation          
+        ADO_IGS.1           Installation, generation and start-up   AGD_ADM.1
+    **ADV**                 Development
+        ADV_FSP.1           Informal Functional specification       ADV_RCR.1
+        ADV_RCR.1           Representation correspondence:          None
+                            Information correspondence 
+                            demonstration         
+    **AGD**                 Guidance documents
+        AGD_ADM.1           Administrator guidance                  ADV_FSP.1
+        AGD_USR.1           User guidance                           ADV_FSP.1
+    **ATE**
+        ATE_IND.1           Independent testing - conformance       ADV_FSP.1
+                                                                    AGD_ADM.1
+                                                                    AGD_USR.1
+    ==============          ======================================  ===================
+
+Security requirements for the IT environment
+--------------------------------------------
+
+The following security requirements exist for the IT environment:
+
+Security requirements for the non-IT environment
+
+
+TOE security functions
+
+    TSF_AUD Audit
+
+    TSF_DATA Data im-/export
+
+    TSF_RIP Residual information protection
+
+    TSF_IA Identification and authentication
+
+        *example*
+        The TSF does not allow any kind of transactions until the principal has
+        presented his username and password. The length of the password is at
+        least 6 characters.
+
+    TSF_ACC Access control
+
+    TSF_ROLL Rollback
+
+
+
+Operating Environment Boundaries:
+
+    Operating System
+    Python Version
+    Browsers (Can't assure about browser behaviour)
+    ZODB Storage
+
+
+TODO
+====
+
+    *   Bibliographic references
+
+    *   Threat agents
+
+    *   RST table formatting
+
+    *   Put in the rest of the Security Target template from word document
+
+    *   Numbering of sections would be fine
