@@ -13,41 +13,30 @@
 ##############################################################################
 """
 
-$Id: testImage.py,v 1.2 2002/06/10 23:28:05 jim Exp $
+$Id: testImage.py,v 1.3 2002/07/24 22:25:33 jeremy Exp $
 """
 
 import unittest
 from Interface.Verify import verifyClass
 
-class Test( unittest.TestCase ):
-
+class Test(unittest.TestCase):
 
     def _makeImage(self, *args, **kw):
-        """ """
         from Zope.App.OFS.Content.Image.Image import Image
-
         return Image(*args, **kw)
         
 
-    def testEmpty( self ):
-
+    def testEmpty(self):
         file = self._makeImage()
-
         self.assertEqual(file.getContentType(), '')
         self.assertEqual(file.getData(), None)
 
-
     def testConstructor(self):
-
         file = self._makeImage('Data')
         self.assertEqual(file.getContentType(), '')
         self.assertEqual(file.getData(), 'Data')
-    
-
-
         
     def testMutators(self):
-
         # XXX What's the point of this test? Does it test that data
         # contents override content-type? Or not? If the former, then
         # real image data should be used.
@@ -64,19 +53,14 @@ class Test( unittest.TestCase ):
         self.assertEqual(file.getContentType(), 'text/html')
         self.assertEqual(file.getData(), 'Blah')
 
-
     def testInterface(self):
-        
         from Zope.App.OFS.Content.Image.Image import Image, IImage
 
         self.failUnless(IImage.isImplementedByInstancesOf(Image))
         self.failUnless(verifyClass(IImage, Image))        
-        
-
 
 def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( Test )
+    return unittest.makeSuite(Test)
 
 if __name__=='__main__':
-    unittest.TextTestRunner().run( test_suite() )
+    unittest.TextTestRunner().run(test_suite())

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: PublicationTraverse.py,v 1.4 2002/07/13 14:18:36 jim Exp $
+$Id: PublicationTraverse.py,v 1.5 2002/07/24 22:28:13 jeremy Exp $
 """
 
 from Zope.ComponentArchitecture import queryView, getService
@@ -38,7 +38,6 @@ class UnknownNamespace(Exception):
 class PublicationTraverse:
 
     def traverseName(self, request, ob, name):
-
         nm = name # the name to look up the object with
 
         if name and name[:1] in '@+':
@@ -47,9 +46,7 @@ class PublicationTraverse:
 
             unknown_parms = ()
             for pname, pval in parms:
-                pset = getattr(self, "_parameterSet%s" % pname,
-                               self # marker
-                               )
+                pset = getattr(self, "_parameterSet%s" % pname, self) # marker
                 if pset is self:
                     # We don't know about this one
                     unknown_parms += ((pname, pval),)
@@ -77,11 +74,10 @@ class PublicationTraverse:
         if IPublishTraverse.isImplementedBy(removeAllProxies(ob)):
             ob2 = ob.publishTraverse(request, nm)
         else:
-            adapter = queryView(ob, '_traverse', request, self # marker
-                                     ) 
-
+            adapter = queryView(ob, '_traverse', request, self) # marker
             if adapter is not self:
-                ob2 =  adapter.publishTraverse(request, nm)
+                print ob, adapter, nm
+                ob2 = adapter.publishTraverse(request, nm)
             else:
                 raise NotFound(ob, name, request)
 
