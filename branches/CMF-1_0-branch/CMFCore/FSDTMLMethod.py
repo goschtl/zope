@@ -248,6 +248,11 @@ class FSDTMLMethod (HTML, Acquisition.Implicit, Item_w__name__):
         '''
         return DateTime(self.file_mod_time)
 
+    security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource',
+        'document_src')
+
+    PrincipiaSearchSource = DTMLMethod.PrincipiaSearchSource
+
 Globals.InitializeClass(FSDTMLMethod)
 
 registerFileExtension('dtml', FSDTMLMethod)
