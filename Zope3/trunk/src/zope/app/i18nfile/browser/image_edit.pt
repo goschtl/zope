@@ -84,7 +84,7 @@
     <div class="row">
       <div class="label" i18n:translate="">Dimensions</div>
       <div class="field"
-          tal:content="python:view.getImageSize(request.get('language'))">
+          tal:content="python:view.size(request.get('language'))">
         40 x 40 pixels, 10 kB
       </div>
     </div>

@@ -15,11 +15,13 @@
 
 $Id$
 """
+from urllib import quote
+
 from zope.i18n.negotiator import negotiator
+
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.file.browser.image import ImageData
 from zope.app.size import byteDisplay
-from urllib import quote
 
 class I18nImageEdit(object):
 
@@ -28,16 +30,9 @@ class I18nImageEdit(object):
     description = _('This edit form allows you to make changes to the ' +
                    'properties of this image.')
 
-    def getImageSize(self, language=None):
-        # XXX Change to ISizeable adapter
-        size = self.context.getImageSize(language)
-        sx, sy = size
-        if sx < 0:
-            sx = '?'
-        if sy < 0:
-            sy = '?'
-        return "%s x %s pixels, %s" % (sx, sy,
-            byteDisplay(self.context.getSize()))
+    def size(self, language=None):
+        sized = ISized(self.context._get(language))
+        return sized.sizeForDisplay()
 
     def action(self, contentType, data, language, defaultLanguage,
                selectLanguage=None, removeLanguage=None,
@@ -65,9 +60,7 @@ class I18nImageData(ImageData):
         if self.request is not None:
             langs = self.context.getAvailableLanguages()
             language = negotiator.getLanguage(langs, self.request)
-
             self.request.response.setHeader('content-type', image.contentType)
-            # XXX: no content-length?  See ImageData.__call__
         return image.getData(language)
 
 
