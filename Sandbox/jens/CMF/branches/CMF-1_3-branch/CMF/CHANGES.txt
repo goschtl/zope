@@ -7,6 +7,11 @@ After 1.3
 
   Bug Fixes
 
+    - Remove bizarre, shadowing import of CMFCore.utils as 'utils'
+      into package namespace of CMFDefault;  instead, import specific
+      names from that package directly (thanks to Paul Winkler for
+      pointing out the incongruity).
+
     - Fix (theoretical) bug in CMFCore.DirectoryView which allowed
       non-registered directories to slip through (UI didn't exercise it).
 
