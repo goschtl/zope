@@ -6,18 +6,27 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Zope X3.0.0 Beta 2
+  Some future release
 
     New features
 
       - Added ++debug++ traversal adapter that allows you to turn on debugging
-        flags in request.debug.  Currently there is only one flag named
-        "source" that adds HTML comments to rendered page templates showing
-        where each code snippet came from.  Try
+        flags in request.debug.  Currently there are two debug flags:
 
-          http://localhost:8080/++debug++source/@@contents.html
+        + "source" adds HTML comments to rendered page templates showing
+           where each code snippet came from.
 
+        + "tal" leaves TAL/METAL markup in rendered page templates allowing
+          you to see how it was generated.
+
+        Try http://localhost:8080/++debug++source,tal/@@contents.html
         and view the source of the resulting page.
+
+    Restructuring
+
+      - Templated Pages are now called ZPT Pages.
+
+  Zope X3.0.0 Beta 2
 
     Bug fixes
 
@@ -38,10 +47,6 @@ Zope Changes
         of outdated getContentType method.
 
       - ZopeVersion now know about Subversion.
-
-    Restructuring
-
-      - Templated Pages are now called ZPT Pages.
 
     Much thanks to everyone who contributed to this release:
 

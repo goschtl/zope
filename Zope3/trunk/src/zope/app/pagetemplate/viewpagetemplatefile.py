@@ -45,8 +45,9 @@ class ViewPageTemplateFile(AppPT, PageTemplateFile):
         namespace = self.pt_getContext(
             request=instance.request,
             instance=instance, args=args, options=keywords)
-        return self.pt_render(namespace,
-                    sourceAnnotations=instance.request.debug.sourceAnnotations)
+        debug_flags = instance.request.debug
+        return self.pt_render(namespace, showtal=debug_flags.showTAL,
+                              sourceAnnotations=debug_flags.sourceAnnotations)
 
     def __get__(self, instance, type=None):
         return BoundPageTemplate(self, instance)
