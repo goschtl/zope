@@ -1,4 +1,5 @@
 ^test ${CVSROOT}/CVSROOT/postcommit_actions --verbose %{sVv}
 ^CVSROOT ${CVSROOT}/CVSROOT/postcommit_actions --verbose %{sVv}
+^Zope2 ${CVSROOT}/CVSROOT/postcommit_actions --verbose %{sVv}
 
-DEFAULT ${CVSROOT}/CVSROOT/postcommit_actions --verbose %{sVv}
+DEFAULT ${CVSROOT}/CVSROOT/postcommit_actions %{sVv}
