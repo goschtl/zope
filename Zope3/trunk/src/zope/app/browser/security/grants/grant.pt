@@ -1,0 +1,15 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+<style metal:fill-slot="headers" type="text/css" ></style>
+</head>
+<body bgcolor="#ffffff" link="#000099" alink="#000099" vlink="#000099">
+<div metal:fill-slot="body">
+    <p>
+    <a href="@@AllRolePermissions.html">Grant permissions to roles</a>
+    </p>
+    <p>
+    <a href="@@PrincipalRoles.html">Grant roles to principals</a>
+    </p>
+</div>
+</body>
+</html>

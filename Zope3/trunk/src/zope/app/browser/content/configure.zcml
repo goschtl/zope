@@ -46,10 +46,6 @@
           action="upload.html" 
           />
       <browser:menuItem
-          title="Role Permissions" 
-          action="AllRolePermissions.html" 
-          />
-      <browser:menuItem
           title="View" 
           action="index.html" 
           />
@@ -142,11 +138,6 @@
         title="View" 
         action="."
         />
-     <browser:menuItem 
-       title="Role Permissions"
-       action="AllRolePermissions.html"
-       />
-
     </browser:menuItems>
 
   <browser:icon 
@@ -226,10 +217,6 @@
      for="zope.app.content.zpt.IZPTPage">
 
      <browser:menuItem title="Edit" action="edit.html"/>
-     <browser:menuItem
-         title="Role Permissions"
-         action="AllRolePermissions.html"
-         />
      <browser:menuItem title="View" action="."/>
   </browser:menuItems>
 
@@ -265,10 +252,6 @@
   <browser:menuItems menu="zmi_views"
            for="zope.app.interfaces.content.folder.IFolder">
     <browser:menuItem title="Contents" action="@@contents.html"/>
-    <browser:menuItem title="Role Permissions" 
-        action="@@AllRolePermissions.html"/>
-    <browser:menuItem title="Principal Roles" 
-        action="@@PrincipalRoles.html"/>
     <browser:menuItem title="View" action="@@index.html"/>
     </browser:menuItems>
 
@@ -373,9 +356,6 @@
       >
     <browser:menuItem title="Edit" action="edit.html"/>
     <browser:menuItem title="View" action="."/>
-    <browser:menuItem title="Role Permissions"
-                      action="AllRolePermissions.html"
-                      />
     </browser:menuItems>
 
   <browser:icon 

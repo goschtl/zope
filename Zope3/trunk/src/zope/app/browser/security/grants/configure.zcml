@@ -24,12 +24,25 @@
                   attribute="update_permission" />
   </browser:view>
 
-  <browser:menuItem
+  <!--browser:menuItem
       for="zope.app.interfaces.annotation.IAnnotatable"
-      menu="zmi_views"
+      menu="zmi_actions"
       title="Role Permissions"
       action="@@AllRolePermissions.html"
+      /-->
+
+  <browser:menuItem
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      menu="zmi_actions"
+      title="Grant"
+      action="@@grant.html"
       />
+
+  <browser:view 
+    for="zope.app.interfaces.annotation.IAnnotatable"
+    name="grant.html"
+    permission="zope.Security"
+    template="grant.pt" />
 
 <!-- Principal Roles -->
 
@@ -42,12 +55,12 @@
                   attribute="action" />
     </browser:view>
 
-  <browser:menuItem
+  <!--browser:menuItem
       for="zope.app.interfaces.annotation.IAnnotatable"
-      menu="zmi_views"
-      title="Principal Role"
-      action="PrincipalRoles.html"
-      />
+      menu="zmi_actions"
+      title="Principal Roles"
+      action="@@PrincipalRoles.html"
+      /-->
 
 <!-- Principal Permission (not working) -->
 
