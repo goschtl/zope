@@ -14,14 +14,14 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.3 2002/12/30 14:01:45 stevea Exp $
+$Id: interface.py,v 1.4 2003/01/20 20:02:29 jim Exp $
 """
 
 
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.3 2002/12/30 14:01:45 stevea Exp $
+$Id: interface.py,v 1.4 2003/01/20 20:02:29 jim Exp $
 """
 
 from inspect import currentframe
@@ -134,7 +134,7 @@ class InterfaceClass(Element):
 
     def extends(self, other, strict=True):
         """Does an interface extend another?"""
-        if not strict and self is other:
+        if not strict and self == other:
             return True
 
         for b in self.__bases__:
@@ -150,11 +150,28 @@ class InterfaceClass(Element):
 
     def isImplementedBy(self, object):
         """Does the given object implement the interface?"""
-        i = getImplements(object)
-        if i is not None:
-            return visitImplements(
-                i, object, self.isEqualOrExtendedBy, self._getInterface)
-        return False
+        
+        # OPT Cache implements lookups
+        implements = getImplements(object)
+        if implements is None:
+            return False
+
+        cache = getattr(self, '_v_cache', self)
+        if cache is self:
+            cache = self._v_cache = {}
+
+        key = `implements`
+
+        r = cache.get(key)
+        if r is None:
+            r = bool(
+                visitImplements(
+                  implements, object, self.isEqualOrExtendedBy,
+                  self._getInterface)
+                )
+            cache[key] = r
+            
+        return r
 
     def isImplementedByInstancesOf(self, klass):
         """Do instances of the given class implement the interface?"""
@@ -250,11 +267,15 @@ class InterfaceClass(Element):
         for b in self.__bases__: b.__d(dict)
 
     def __repr__(self):
-        name = self.__name__
-        m = self.__module__
-        if m:
-            name = '%s.%s' % (m, name)
-        return "<%s %s at %x>" % (self.__class__.__name__, name, id(self))
+        r = getattr(self, '_v_repr', self)
+        if r is self:
+            name = self.__name__
+            m = self.__module__
+            if m:
+                name = '%s.%s' % (m, name)
+            r = "<%s %s at %x>" % (self.__class__.__name__, name, id(self))
+            self._v_repr = r
+        return r
 
     def __reduce__(self):
         return self.__name__
