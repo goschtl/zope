@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - Change addMenuItem directive. Make use of class and menu attributes.
+        This makes it possible to use the directive for own IAdding menu
+        implementation. The addMenuItem directive supports now also the order
+        layer, extra and icon attributes.
+
       - Added the HTTP request recorder, which lets you inspect raw HTTP
         requests and responses.  It can be used to create functional doctests
         without requiring third-party tools such as TCPWatch.  See the
@@ -516,6 +521,17 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix: Pagelet directive was inoring the permission. Pagelets which
+        not the right permission are not shwon if calling via the Tales 
+        expression "pagelets:". If calling named pagelets directly via the
+        Tales expression "pagelet:" we raise a Unauthorized exception if
+        the permission ins't right.
+
+      - Fix: Register the zmi_actions on the right layer if the layer attribute
+        is used in the containerViews directive
+
+      - Fix: Make use of the layer attribute in the menuItemDirective
+
       - Fixed issue #345: Using response.write should not involve unicode 
                           conversion
 
@@ -623,7 +639,7 @@ Zope Changes
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
       Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
-      Bishop
+      Bishop, Dominik Huber
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
