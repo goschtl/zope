@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: interfaces.py,v 1.9 2003/05/12 14:59:37 stevea Exp $
+$Id: interfaces.py,v 1.10 2003/05/28 13:16:09 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -130,112 +130,6 @@ class IWrapper(Interface):
         """Raises AttributeError if called (to prevent pickling)"""
 
 
-class IDecoratorFuncs(Interface):
-    """Interface implemented by callables in 'decorator' module"""
-
-    def Decorator(object, context=None, mixinfactory=None, names=(),
-                  attrdict={}, inner=None, **data):
-        """Create and return a new decorator for object.
-
-        Decorator is a subtype of Wrapper.
-
-        If context is not None, context will be the context object.
-
-        If mixinfactory is not None, mixinfactory is a callable that need
-        take no arguments for creating the decorator mixin.
-
-        'names' is a tuple of names that are dispatched to the mixin rather
-        than to the object. The mixin is instantiated from the factory
-        before the first dispatch of one of the names.
-        If names is passed in with a None value, it is the same as ().
-
-        'attrdict' is a dict of name:value. Values may take any value
-        including None. If an attribute with a name in 'attrdict' is
-        sought from the decorator, the value from the attrdict will be
-        returned. Attempting to setattr or delattr with this name results in
-        an AttributeError. If attrdict is passed in with a None value, it is
-        the same as {}.
-
-        If the same name appears in names and in attrdict, the behaviour is
-        as if the name appeared only in attrdict.
-
-        'inner' is the decorated object that is to be passed to the
-        mixinfactory callable. If 'inner' is None, then object is passed
-        instead.
-
-        Wrapper data may be passed as keyword arguments. The data are added
-        to the context dictionary.
-
-        Note that the arguments object, context, mixinfactory, names,
-        attrdict, and inner must be given as positional arguments. All
-        keyword arguments are taken to be part of **data.
-        """
-
-    def getmixin(obj):
-        """Returns the mixin object.
-
-        Returns None if the mixin is not instantiated.
-        """
-
-    def getmixinfactory(obj):
-        """Returns the mixin factory."""
-
-    def getnames(obj):
-        """Returns the tuple of names."""
-
-    def getnamesdict(obj):
-        """Returns a read-only dict used for fast lookup of names.
-
-        This method is provided so that unit-tests can check that the
-        dict is created properly. It should otherwise be considered
-        a private API.
-        """
-
-    def getinner(obj):
-        """Returns the 'inner' that is passed to a mixin factory callable.
-
-        If no 'inner' object was given when the decorator was created,
-        this function is equivalent to IWrapperFuncs.getobject(obj).
-        """
-
-
-class IDecorator(IWrapper):
-    """A Decorator is a subtype of Wrapper.
-
-    In addition to the description in IWrapper's docstring, a decorator
-    dispatches certain names to a separate "mixin" instance, rather than
-    to the wrapped object.
-    """
-
-
-class IDecoratorMixinFactory(Interface):
-    """The callable that creates a mixin.
-    """
-    def __call__(inner, outer):
-        """Create a new mixin instance.
-
-        inner is the object being decorated.
-        outer is the decorator wrapper.
-        """
-
-class IDecoratorMixinEnvironment(Interface):
-    """The attributes that an instantiated mixin can expect to have available.
-
-    In a mixin, the 'self' of a method is always the normal unwrapped
-    self of the mixin instance. ContextMethods and other ContextDescriptors
-    will work, but should not be necessary.
-
-    When the mixin needs context, for example for using a local service,
-    it can use self.outer.
-    self.inner is a shortcut for getobject(self.outer).
-
-    This is the application api for writing simple decorator classes.
-    """
-
-    inner = Attribute('The object that is being decorated')
-    outer = Attribute('The Decorator instance')
-
-
 class IContextWrapper(Interface):
     """Wrapper API provided to applications."""
 
@@ -283,19 +177,5 @@ class IContextWrapper(Interface):
         The iteration starts at ob and proceeds through ob's containers.
         As with getWrapperContainer, the container is the context of the
         innermost wrapper.
-        """
-
-class IContextDecorator(IContextWrapper):
-    """Wrapper and Decorator API provided to applications."""
-
-    def ContextWrapper(object, parent, **data):
-        """Create a context wrapper for object in parent
-
-        If the object is in a security proxy, then result will be
-        a security proxy for the unproxied object in context.
-
-        The object is examined to see if it should be wrapped with
-        a Wrapper or with a Decorator. How this is done is up to the
-        implementation.
         """
 

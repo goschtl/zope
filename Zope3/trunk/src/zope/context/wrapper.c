@@ -633,6 +633,9 @@ wrap_dealloc(PyObject *self)
  *
  * _PyType_Lookup is about 20 lines of code, so we could reproduce it here if
  * we don't want to depend on the Internal API.
+ *
+ * However, Guido says that it is ok to use _PyType_Lookup, and that the
+ * function isn't going to go away.
  */
 static PyObject *
 wrap_getattro(PyObject *self, PyObject *name)

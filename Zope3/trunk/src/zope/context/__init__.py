@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.14 2003/05/27 22:28:32 jim Exp $
+$Id: __init__.py,v 1.15 2003/05/28 13:16:09 stevea Exp $
 """
 __metaclass__ = type
 
@@ -28,13 +28,12 @@ from zope.context.wrapper import getinnerwrapper, getbaseobject
 from zope.context.wrapper import ContextDescriptor, ContextAware
 from zope.context.wrapper import ContextMethod, ContextProperty
 from zope.context.wrapper import Wrapper
-from zope.context.decorator import Decorator
 from zope.security.checker import defineChecker, selectChecker, BasicTypes
-from zope.context.interfaces import IContextDecorator
+from zope.context.interfaces import IContextWrapper
 from zope.hookable import hookable
 
-moduleProvides(IContextDecorator)
-__all__ = tuple(IContextDecorator)
+moduleProvides(IContextWrapper)
+__all__ = tuple(IContextWrapper)
 
 def ContextWrapper(_ob, _parent, **kw):
     if type(_ob) in BasicTypes:
@@ -45,17 +44,13 @@ def ContextWrapper(_ob, _parent, **kw):
         # insert into proxies
         checker = getChecker(_ob)
         _ob = getObject(_ob)
-        _ob = Proxy(makeWrapper(_ob, _parent, kw, checker), checker)
+        _ob = Proxy(Wrapper(_ob, _parent, **kw), checker)
     else:
-        _ob = makeWrapper(_ob, _parent, kw)
+        _ob = Wrapper(_ob, _parent, **kw)
 
     return _ob
-
 ContextWrapper = hookable(ContextWrapper)
 
-def makeWrapper(ob, parent, kw, checker=None):
-    return Wrapper(ob, parent, **kw)
-makeWrapper = hookable(makeWrapper)
 
 def getWrapperObject(_ob):
     """Remove a context wrapper around an object with data
@@ -144,10 +139,9 @@ def queryAttr(collection, name, default=None):
     return ContextWrapper(getattr(collection, name, default),
                           collection, name=name)
 
-wrapperTypes = (Wrapper, Decorator)
+wrapperTypes = (Wrapper, )
 
 defineChecker(Wrapper, _contextWrapperChecker)
-defineChecker(Decorator, _contextWrapperChecker)
 
 class ContextSuper:
 

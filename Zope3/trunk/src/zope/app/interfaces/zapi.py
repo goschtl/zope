@@ -13,16 +13,16 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.2 2003/05/27 14:18:18 jim Exp $
+$Id: zapi.py,v 1.3 2003/05/28 13:16:08 stevea Exp $
 """
 from zope.component.interfaces import IComponentArchitecture
-from zope.context.interfaces import IContextDecorator
+from zope.context.interfaces import IContextWrapper
 
 class IZAPI(
     IComponentArchitecture,
-    IContextDecorator,
+    IContextWrapper,
     ):
-    """Convenmience API for creating Zope applications.
+    """Convenience API for use with Zope applications.
     """
 
     def name(object):
@@ -30,6 +30,4 @@ class IZAPI(
 
         This is the name the object is stored under in the container
         it was accessed in.  If the name is unknown, None is returned.
-
         """
-        
