@@ -38,12 +38,12 @@
   
   <subscriber
      for="..registration.interfaces.IRegistrationActivatedEvent"
-     factory=".translationdomain.setDomainOnActivation"
+     handler=".translationdomain.setDomainOnActivation"
      />
 
   <subscriber
      for="..registration.interfaces.IRegistrationDeactivatedEvent"
-     factory=".translationdomain.unsetDomainOnDeactivation"
+     handler=".translationdomain.unsetDomainOnDeactivation"
      />  
 
   <!-- Setup Message Catalogs -->

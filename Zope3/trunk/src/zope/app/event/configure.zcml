@@ -5,7 +5,7 @@
 
 <subscriber
     for="zope.app.event.interfaces.IObjectEvent" 
-    factory=".objectevent.objectEventNotify"
+    handler=".objectevent.objectEventNotify"
     />
 
 </configure>

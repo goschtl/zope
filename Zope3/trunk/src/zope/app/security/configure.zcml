@@ -41,12 +41,12 @@
 
   <subscriber
      for="..registration.interfaces.IRegistrationActivatedEvent"
-     factory=".permission.setIdOnActivation"
+     handler=".permission.setIdOnActivation"
      />
 
   <subscriber
      for="..registration.interfaces.IRegistrationDeactivatedEvent"
-     factory=".permission.unsetIdOnDeactivation"
+     handler=".permission.unsetIdOnDeactivation"
      />
 
   <content class=".permission.Permission">

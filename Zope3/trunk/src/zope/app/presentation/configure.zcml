@@ -20,13 +20,13 @@
 </content>
 
 <subscriber
-    factory=".presentation.PageRegistrationAddSubscriber"
+    handler=".presentation.PageRegistrationAddSubscriber"
     for=".presentation.IPageRegistration 
          zope.app.container.interfaces.IObjectAddedEvent"
     />
 
 <subscriber
-    factory=".presentation.PageRegistrationRemoveSubscriber"
+    handler=".presentation.PageRegistrationRemoveSubscriber"
     for=".presentation.IPageRegistration 
          zope.app.container.interfaces.IObjectRemovedEvent"
     />

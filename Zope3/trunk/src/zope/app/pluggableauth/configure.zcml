@@ -29,7 +29,7 @@
   <subscriber
         for=".interfaces.IPluggableAuthenticationService
              zope.app.container.interfaces.IObjectAddedEvent"
-        factory=".PluggableAuthenticationServiceAddSubscriber"
+        handler=".PluggableAuthenticationServiceAddSubscriber"
         />
 
   <content class=".BTreePrincipalSource">

@@ -18,7 +18,7 @@
 </content>
     
 <subscriber
-    factory=".groupfolder.setGroupsForPrincipal"
+    handler=".groupfolder.setGroupsForPrincipal"
     for=".interfaces.IPrincipalCreated"
     />
 

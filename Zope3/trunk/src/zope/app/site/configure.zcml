@@ -8,12 +8,12 @@
 
   <subscriber
      for="..registration.interfaces.IRegistrationActivatedEvent"
-     factory=".service.handleActivated"
+     handler=".service.handleActivated"
      />
 
   <subscriber
      for="..registration.interfaces.IRegistrationDeactivatedEvent"
-     factory=".service.handleDeactivated"
+     handler=".service.handleDeactivated"
      />
 
   <!-- Service Manager -->

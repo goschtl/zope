@@ -372,7 +372,7 @@
 
   <!-- Register event listener for change mails -->
   <subscriber
-      factory=".mail.Mailer"
+      handler=".mail.Mailer"
       for="zope.app.event.interfaces.IObjectCreatedEvent
            zope.app.event.interfaces.IObjectModifiedEvent" />
 

@@ -36,24 +36,6 @@ Features
   interfaces. This has been done for page directives but needs to be
   done for other adapter directives.
 
-- Add a handler attribute to the subscriber directive.  Deprecate use
-  of `factory` attribute without a `provides` attribute.  So, you can
-  have::
-
-    <subscriber handler=".myfunc" for="ISomeEvent" />
-
-  or::
-
-    <subscriber factory=".myclass" for="IFoo" provides="IBar" />
-
-  But not::
-
-    <subscriber factory=".myfunc" for="ISomeEvent" />
-
-  or::
-
-    <subscriber handler=".myclass" for="IFoo" provides="IBar" />
-
 
 Miscellaneous
 -------------

@@ -70,12 +70,12 @@
 
   <subscriber
      for="..registration.interfaces.IRegistrationActivatedEvent"
-     factory=".role.setIdOnActivation"
+     handler=".role.setIdOnActivation"
      />
 
   <subscriber
      for="..registration.interfaces.IRegistrationDeactivatedEvent"
-     factory=".role.unsetIdOnDeactivation"
+     handler=".role.unsetIdOnDeactivation"
      />
 
   <!-- Include browser package -->

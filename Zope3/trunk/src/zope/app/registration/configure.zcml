@@ -62,25 +62,25 @@
   </content>
 
   <subscriber
-      factory=".registration.SimpleRegistrationRemoveSubscriber"
+      handler=".registration.SimpleRegistrationRemoveSubscriber"
       for=".interfaces.IRegistration
            zope.app.container.interfaces.IObjectRemovedEvent"
       />
 
   <subscriber
-      factory=".registration.ComponentRegistrationRemoveSubscriber"
+      handler=".registration.ComponentRegistrationRemoveSubscriber"
       for=".interfaces.IComponentRegistration
            zope.app.container.interfaces.IObjectRemovedEvent"
       />
 
   <subscriber
-      factory=".registration.ComponentRegistrationAddSubscriber"
+      handler=".registration.ComponentRegistrationAddSubscriber"
       for=".interfaces.IComponentRegistration
            zope.app.container.interfaces.IObjectAddedEvent"
       />
 
   <subscriber
-      factory=".registration.RegisterableMoveSubscriber"
+      handler=".registration.RegisterableMoveSubscriber"
       for=".interfaces.IRegisterable
            zope.app.container.interfaces.IObjectMovedEvent"
       />

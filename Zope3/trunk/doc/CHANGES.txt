@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+      - A handler attribute is now used in subscriber directives for
+        event subscribers that don't create objects, which is the case
+        for most subscribers.  Using the factory attribute without a
+        provides attribute to register a handler is deprecated.
+         
+
       - It is no longer necessary to supply a for attribute in adapter
         directives if the factory declares the interfaces or classes that it
         adapts.
