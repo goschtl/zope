@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.13 2003/05/13 20:56:44 gvanrossum Exp $
+$Id: fssync.py,v 1.14 2003/05/14 14:42:43 gvanrossum Exp $
 """
 
 import os
@@ -408,8 +408,7 @@ class FSSync(object):
             return
         if not isfile(target):
             raise Error("diff target '%s' is file nor directory", target)
-        head, tail = self.split(target)
-        orig = join(head, "@@Zope", "Original", tail)
+        orig = self.getorig(target)
         if not isfile(orig):
             raise Error("can't find original for diff target '%s'", target)
         if self.cmp(target, orig):
@@ -530,18 +529,14 @@ class FSSync(object):
         self.metadata.flush()
 
     def merge_extra(self, local, remote):
-        lhead, ltail = split(local)
-        rhead, rtail = split(remote)
-        lextra = join(lhead, "@@Zope", "Extra", ltail)
-        rextra = join(rhead, "@@Zope", "Extra", rtail)
+        lextra = self.getextra(local)
+        rextra = self.getextra(remote)
         if isdir(rextra):
             self.merge_dirs(lextra, rextra)
 
     def merge_annotations(self, local, remote):
-        lhead, ltail = split(local)
-        rhead, rtail = split(remote)
-        lannotations = join(lhead, "@@Zope", "Annotations", ltail)
-        rannotations = join(rhead, "@@Zope", "Annotations", rtail)
+        lannotations = self.getannotations(local)
+        rannotations = self.getannotations(remote)
         if isdir(rannotations):
             self.merge_dirs(lannotations, rannotations)
 
@@ -578,12 +573,22 @@ class FSSync(object):
         except (os.error, IOError):
             return False
 
-    def copyfile(self, src, dst):
-        shutil.copyfile(src, dst)
-
     def ensuredir(self, dir):
         if not isdir(dir):
             os.makedirs(dir)
+
+    def getextra(self, path):
+        return self.getspecial(path, "Extra")
+
+    def getannotations(self, path):
+        return self.getspecial(path, "Annotations")
+
+    def getorig(self, path):
+        return self.getspecial(path, "Original")
+
+    def getspecial(self, path, what):
+        head, tail = self.split(path)
+        return join(head, "@@Zope", what, tail)
 
     def split(self, path):
         head, tail = split(path)
