@@ -13,16 +13,6 @@
 ##############################################################################
 """
 
-$Id: LoadedFolderFields.py,v 1.2 2002/06/10 23:28:00 jim Exp $
+$Id: LoadedFolderFields.py,v 1.3 2002/07/19 13:21:09 srichter Exp $
 """
 
-
-from Zope.App.Formulator import getField
-
-
-LimitField = getField('IntegerField')(
-    id='limit',
-    title='Limit',
-    description='Limit of objects in the container.',
-    start=1,
-    default=1000 )

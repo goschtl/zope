@@ -68,11 +68,6 @@
 
 </browser:view>
 
-<browser:view name="LimitFieldView"
-    for="Zope.App.OFS.Container.IContainerLimit."
-    factory=".LoadedFolderFields.LimitField. 
-             Zope.App.Formulator.Widgets.Browser.TextWidget." />
-
 <browser:menuItems menu="zmi_views"
     for="Zope.App.OFS.Container.IContainerLimit.">
   <browser:menuItem title="Limit" action="@@FolderLimitEditForm.html"/>
