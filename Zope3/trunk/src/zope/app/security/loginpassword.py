@@ -12,10 +12,11 @@
 #
 ##############################################################################
 from zope.app.interfaces.security import ILoginPassword
+from zope.interface import implements
 
 class LoginPassword:
 
-    __implements__ = ILoginPassword
+    implements(ILoginPassword)
 
     def __init__(self, login, password):
         self.__login = login

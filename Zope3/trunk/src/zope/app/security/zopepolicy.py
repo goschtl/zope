@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.10 2003/06/02 16:55:47 jim Exp $
+$Id: zopepolicy.py,v 1.11 2003/06/03 15:45:10 stevea Exp $
 """
-__version__='$Revision: 1.10 $'[11:-2]
+__version__='$Revision: 1.11 $'[11:-2]
 
 from zope.component import queryAdapter
 from zope.context import ContainmentIterator
@@ -30,6 +30,7 @@ from zope.app.security.grants.principalpermission \
 from zope.app.security.grants.rolepermission import rolePermissionManager
 from zope.app.security.grants.principalrole import principalRoleManager
 from zope.app.security.settings import Allow, Deny
+from zope.interface import implements
 
 getPermissionsForPrincipal = \
                 principalPermissionManager.getPermissionsForPrincipal
@@ -39,12 +40,11 @@ getRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 globalContext = object()
 
 
-
 class ZopeSecurityPolicy:
 
-    __implements__ = ISecurityPolicy
+    implements(ISecurityPolicy)
 
-    def __init__(self, ownerous=1, authenticated=1):
+    def __init__(self, ownerous=True, authenticated=True):
         """
             Two optional keyword arguments may be provided:
 
@@ -76,7 +76,7 @@ class ZopeSecurityPolicy:
         # mapping from principal to set of roles
         user = context.user
         if user is system_user:
-            return 1
+            return True
 
         roledict = {'Anonymous': Allow}
         principals = {user.getId() : roledict}
@@ -92,9 +92,9 @@ class ZopeSecurityPolicy:
                 getPermissionsForPrincipal(principal)):
                 if principal_permission == permission:
                     if setting is Deny:
-                        return 0
+                        return False
                     assert setting is Allow
-                    remove[principal] = 1
+                    remove[principal] = True
 
         # Clean out removed principals
         if remove:
@@ -105,8 +105,7 @@ class ZopeSecurityPolicy:
                 remove.clear()
             else:
                 # we've eliminated all the principals
-                return 1
-
+                return True
 
         # get placeless principal roles
         for principal in principals:
@@ -133,8 +132,8 @@ class ZopeSecurityPolicy:
                     if permission in role_permissions[role]:
                         setting = role_permissions[role][permission]
                         if setting is Deny:
-                            return 0
-                        remove[principal] = 1
+                            return False
+                        remove[principal] = True
 
 
         # Clean out removed principals
@@ -146,7 +145,7 @@ class ZopeSecurityPolicy:
                 remove.clear()
             else:
                 # we've eliminated all the principals
-                return 1
+                return True
 
         # Look for placeful grants
         for place in ContainmentIterator(object):
@@ -159,10 +158,10 @@ class ZopeSecurityPolicy:
                         prinper.getPermissionsForPrincipal(principal)):
                         if principal_permission == permission:
                             if setting is Deny:
-                                return 0
+                                return False
 
                             assert setting is Allow
-                            remove[principal] = 1
+                            remove[principal] = True
 
             # Clean out removed principals
             if remove:
@@ -173,7 +172,7 @@ class ZopeSecurityPolicy:
                     remove.clear()
                 else:
                     # we've eliminated all the principals
-                    return 1
+                    return True
 
             # Collect principal roles
             prinrole = queryAdapter(place, IPrincipalRoleMap)
@@ -205,8 +204,8 @@ class ZopeSecurityPolicy:
                         if permission in role_permissions[role]:
                             setting = role_permissions[role][permission]
                             if setting is Deny:
-                                return 0
-                            remove[principal] = 1
+                                return False
+                            remove[principal] = True
 
             # Clean out removed principals
             if remove:
@@ -217,9 +216,9 @@ class ZopeSecurityPolicy:
                     remove.clear()
                 else:
                     # we've eliminated all the principals
-                    return 1
+                    return True
 
-        return 0 # deny by default
+        return False # deny by default
 
 
 def permissionsOfPrincipal(principal, object):

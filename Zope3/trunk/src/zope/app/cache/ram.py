@@ -13,7 +13,7 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.5 2003/05/01 19:35:06 faassen Exp $
+$Id: ram.py,v 1.6 2003/06/03 15:45:11 stevea Exp $
 """
 
 from time import time
@@ -26,6 +26,7 @@ from zope.app.interfaces.cache.ram import IRAMCache
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.services.configuration import \
      IAttributeUseConfigurable
+from zope.interface import implements
 
 # A global caches dictionary shared between threads
 caches = {}
@@ -55,7 +56,7 @@ class RAMCache(Persistent):
     handle their blocking internally.
     """
 
-    __implements__ = (IRAMCache, IAttributeUseConfigurable)
+    implements(IRAMCache, IAttributeUseConfigurable)
 
     def __init__(self):
 
@@ -83,7 +84,6 @@ class RAMCache(Persistent):
         return s.getStatistics()
 
     def update(self,  maxEntries=None, maxAge=None, cleanupInterval=None):
-
         if maxEntries is not None:
             self.maxEntries = maxEntries
 
@@ -95,7 +95,6 @@ class RAMCache(Persistent):
 
         self._getStorage().update(maxEntries, maxAge, cleanupInterval)
 
-
     def invalidate(self, ob, key=None):
         s = self._getStorage()
         if key:
@@ -104,11 +103,9 @@ class RAMCache(Persistent):
         else:
             s.invalidate(ob)
 
-
     def invalidateAll(self):
         s = self._getStorage()
         s.invalidateAll()
-
 
     def query(self, ob, key=None, default=None):
         s = self._getStorage()
@@ -268,7 +265,6 @@ class Storage:
         else:
             self._invalidate_queue.append((ob,key))
 
-
     def invalidateAll(self):
         """Drop all the cached values.
         """
@@ -279,7 +275,6 @@ class Storage:
             self._invalidate_queue = []
         finally:
             self.writelock.release()
-
 
     def removeStaleEntries(self):
         "Remove the entries older than maxAge"

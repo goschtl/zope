@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.interface import Interface, Attribute
+from zope.interface import Interface, Attribute, implements
 
 class ITestClass(Interface):
     def drool():
@@ -23,7 +23,7 @@ class BaseTestClass:
 
 class TestClass(BaseTestClass):
     """This is my stupid doc string"""
-    __implements__ = ITestClass
+    implements(ITestClass)
     def drool(self):
         pass
 
@@ -49,7 +49,7 @@ class I3(I, I2):
 """
 
 Revision information:
-$Id: test_introspector.py,v 1.2 2002/12/25 14:13:26 jim Exp $
+$Id: test_introspector.py,v 1.3 2003/06/03 15:45:09 stevea Exp $
 """
 
 from zope.interface import Interface
