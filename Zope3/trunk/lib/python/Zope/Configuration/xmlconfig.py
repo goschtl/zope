@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.10 2002/11/19 23:18:48 jim Exp $
+$Id: xmlconfig.py,v 1.11 2002/12/09 15:59:12 rdmurray Exp $
 """
 
 import os
@@ -52,7 +52,8 @@ class ZopeXMLConfigurationError(ConfigurationError):
         self.mess = mess
 
     def __str__(self):
-        return 'File "%s", line %s, column %s\n\t%s' % (            self.sid, self.lno, self.cno, self.mess)
+        return 'File "%s", line %s, column %s\n\t%s' % (
+            self.sid, self.lno, self.cno, self.mess)
 
 class ConfigurationExecutionError(ZopeXMLConfigurationError):
     """An error occurred during execution of a configuration action
