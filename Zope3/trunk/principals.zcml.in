@@ -1,6 +1,0 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-
-<unauthenticatedPrincipal  id="anybody" 
-                           title="Unauthenticated User" />
-
-</zopeConfigure>
