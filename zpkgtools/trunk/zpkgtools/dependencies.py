@@ -11,7 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Support for handling dependency information."""
+"""Support for handling dependency information.
+
+Dependencies are stored in a file format with one dependency per line.
+Leading and trailing whitespace is ignored.  Blank lines and lines
+with "\#" as the first non-blank character are ignored.  Dependencies
+are identified using resource identifiers; these are normalized using
+the `locationmap.normalizeResourceId()` function.
+
+"""
 
 import sets
 
@@ -19,6 +27,14 @@ from zpkgtools import locationmap
 
 
 def load(f):
+    """Load a set of dependencies from an open file.
+
+    :return: A set of dependencies listed in `f`.
+    :rtype: `sets.Set`
+
+    :param f: File object to read from.
+
+    """
     deps = sets.Set()
     for line in f:
         line = line.strip()
