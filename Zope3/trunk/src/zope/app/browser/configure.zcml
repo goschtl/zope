@@ -43,6 +43,15 @@
      allowed_attributes="__call__"
      />
 
+  <!-- Make manage an alias for same -->
+  <view
+     name="manage"
+     permission="zope.Public"
+     factory=".managementviewselector.ManagementViewSelector" 
+     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+     allowed_attributes="__call__"
+     />
+
   <!-- Menu access -->
   <view
      name="view_get_menu"
