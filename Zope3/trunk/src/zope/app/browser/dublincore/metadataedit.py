@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadataedit.py,v 1.2 2002/12/25 14:12:31 jim Exp $
+$Id: metadataedit.py,v 1.3 2002/12/30 21:42:19 jeremy Exp $
 """
 
 from zope.component import getAdapter
@@ -22,8 +22,7 @@ from datetime import datetime
 __metaclass__ = type
 
 class MetaDataEdit:
-    """Provide view for editing basic dublin-core meta-data
-    """
+    """Provide view for editing basic dublin-core meta-data."""
 
     def __init__(self, context, request):
         self.context = context

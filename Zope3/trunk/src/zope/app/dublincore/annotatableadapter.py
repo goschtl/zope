@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: annotatableadapter.py,v 1.2 2002/12/25 14:12:50 jim Exp $
+$Id: annotatableadapter.py,v 1.3 2002/12/30 21:42:28 jeremy Exp $
 """
 
 __metaclass__ = type
@@ -26,8 +26,7 @@ from persistence.dict import PersistentDict
 DCkey = "zope.app.dublincore.ZopeDublinCore"
 
 class ZDCAnnotatableAdapter(ZopeDublinCore):
-    """Adapt annotatable objects to Zope Dublin Core
-    """
+    """Adapt annotatable objects to Zope Dublin Core."""
 
     __used_for__ = IAnnotatable
 

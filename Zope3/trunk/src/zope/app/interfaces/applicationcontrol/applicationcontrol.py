@@ -11,16 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-__doc__ = """ Application Control Interface
+""" Application Control Interface
 
-$Id: applicationcontrol.py,v 1.2 2002/12/25 14:12:57 jim Exp $"""
+$Id: applicationcontrol.py,v 1.3 2002/12/30 21:43:24 jeremy Exp $"""
 
 from zope.interface import Interface
 
 class IApplicationControl(Interface):
-    """ """
 
     def getStartTime():
-        """Return the time the application started
-
-           in seconds since the epoch"""
+        """Return time the application started in seconds since the epoch."""
