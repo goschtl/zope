@@ -30,7 +30,7 @@ Subdirectives
   allow
   
     Use only one of the following attributes to declare what part
-    of this class is publicly viewable (that is, requires the Zope.Public
+    of this class is publicly viewable (that is, requires the zope.Public
     permission).
   
     * attributes, space-separated list of attribute names 
@@ -61,28 +61,28 @@ Examples
     
   A content directive that contains security assertions::
   
-    <content class=".Contact.">
-      <allow interface=".IContact.IViewContact" />
-      <require permission="Zope.ManageContent" interface=".IContact." />
+    <content class=".contact.Contact">
+      <allow interface=".interfaces.IContactInfo" />
+      <require permission="zope.ManageContent" interface=".interfaces.IContact" />
     </content>
     
   A content directive that makes an interface implementation assertion::
   
-    <content class=".Contact.">
-      <implements interface=".IContact." />
+    <content class=".contact.Contact">
+      <implements interface=".interfaces.IContact" />
     </content>
     
   A rather full content directive::
   
-    <content class=".Contact.">
-      <implements interface=".IContact." />
+    <content class=".contact.Contact">
+      <implements interface=".interfaces.IContact" />
       <factory
-          permission="ZopeProducts.Contact.ManageContacts"
+          permission="contact.ManageContacts"
           title="Personal Contact Information" />
       <require
-          permission="Zope.View"
-          interface=".IContact.IContactInfo." />
+          permission="zope.View"
+          interface=".interfaces.IContactInfo." />
       <require
-          permission="ZopeProducts.Contact.ManageContacts"
+          permission="contact.ManageContacts"
           attributes="update"/>
     </content>

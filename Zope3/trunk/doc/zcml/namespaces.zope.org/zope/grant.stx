@@ -38,7 +38,7 @@ Examples
 
   Here are some examples of using the grant directive::
   
-    <grant permission="Zope.View" principal="Bob" />
+    <grant permission="zope.View" principal="zope.Bob" />
   
-    <grant role="Zope.Manager" principal="Bob" />
+    <grant role="zope.Manager" principal="zope.Bob" />
     

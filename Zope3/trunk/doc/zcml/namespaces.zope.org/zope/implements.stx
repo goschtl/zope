@@ -13,8 +13,8 @@ Attributes
   
 Example::
 
-  <content class=".Contact.">
-    <implements interface=".IContact." />
+  <content class=".contact.Contact">
+    <implements interface=".interfaces.IContact" />
   </content>
 
 

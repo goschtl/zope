@@ -14,15 +14,15 @@ Example
 
   Including the Contact zcml file from the ZopeProducts.Contact package::
 
-    <include package=".Contact" file="Contact.zcml" />
+    <include package=".contact" file="contact.zcml" />
 
   Another spelling of the same thing::
 
-    <include package="ZopeProducts.Contact" file="Contact.zcml" />
+    <include package="zopeproducts.contact" file="contact.zcml" />
 
   Including every package in ZopeProducts::
 
-    <include package="ZopeProducts.*" />
+    <include package="zopeproducts.*" />
 
   Including meta.zcml from every subpackage of the current package::
 
