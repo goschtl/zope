@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editwizard.py,v 1.5 2003/07/14 15:28:23 Zen Exp $
+$Id: editwizard.py,v 1.6 2003/07/15 14:09:27 Zen Exp $
 """
 
 import logging
@@ -37,6 +37,8 @@ from zope.app.interfaces.form import WidgetInputError
 from submit import Next, Previous, Update
 from zope.app.interfaces.form import WidgetsError
 from zope.i18n import MessageIDFactory
+from zope.app.event import publish
+from zope.app.event.objectevent import ObjectModifiedEvent
 
 PaneNumber = 'CURRENT_PANE_IDX'
 
@@ -176,10 +178,16 @@ class EditWizardView(EditView):
         ''' Save changes to our content object '''
         for k,v in storage.items():
             getattr(self,k).setData(v)
-        return not applyWidgetsChanges(
-                self, self.adapted, self.schema,
+        content = self.adapted
+        changed = applyWidgetsChanges(
+                self, content, self.schema,
                 names=self.fieldNames, exclude_readonly=True
                 )
+        # We should not generate events when an adapter is used.
+        # That's the adapter's job
+        if changed and self.context is self.adapted:
+            publish(content, ObjectModifiedEvent(content))
+        return not changed
 
     def renderHidden(self):
         ''' Render state as hidden fields. Also render hidden fields to 
