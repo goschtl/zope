@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Converter.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+$Id: Converter.py,v 1.2 2002/07/14 17:31:17 faassen Exp $
 """
 from Zope.App.Forms.Converter import *
 from Schema.IField import *
@@ -34,18 +34,18 @@ class RequestToFieldConverter(Converter):
         return raw_value
 
 
-class RequestToStringConverter(Converter):
+class RequestToStrConverter(Converter):
     """A specific class converting the in the request contained variable to
     a string."""
     __convert_from__ = IRequest
-    __convert_to__ = IString
+    __convert_to__ = IStr
 
 
-class RequestToIntegerConverter(ContainerConverter):
-    """Convert from Request to an Integer."""
-    converters = [RequestToStringConverter, StringToIntegerConverter]
+class RequestToIntConverter(ContainerConverter):
+    """Convert from Request to an Int."""
+    converters = [RequestToStrConverter, StrToIntrConverter]
 
 
 class RequestToFloatConverter(ContainerConverter):
     """Convert from Request to an Float."""
-    converters = [RequestToStringConverter, StringToFloatConverter]
+    converters = [RequestToStrConverter, StrToFloatConverter]

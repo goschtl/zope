@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Converter.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+$Id: Converter.py,v 1.2 2002/07/14 17:31:17 faassen Exp $
 """
 from Zope.App.Forms.IConverter import IConverter
 from Schema.IField import *
@@ -42,29 +42,29 @@ class FieldToFieldConverter(Converter):
         return value
 
 
-class StringToIntegerConverter(FieldConverter):
+class StrToIntConverter(FieldConverter):
     """ """
-    __convert_from__ = IString
-    __convert_to__ = IInteger
+    __convert_from__ = IStr
+    __convert_to__ = IInt
 
 
-class StringToFloatConverter(FieldConverter):
+class StrToFloatConverter(FieldConverter):
     """ """
-    __convert_from__ = IString
+    __convert_from__ = IStr
     __convert_to__ = IFloat
 
 
-class StringToBooleanConverter(FieldConverter):
+class StrToBoolConverter(FieldConverter):
     """ """
-    __convert_from__ = IString
-    __convert_to__ = IBoolean
+    __convert_from__ = IStr
+    __convert_to__ = IBool
 
 
 
 class RequestConverter(Converter):
     """ """
     __convert_from__ = IRequest
-    __convert_to__ = IString
+    __convert_to__ = IStr
     
     field_prefix = 'field_'        
 

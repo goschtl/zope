@@ -7,13 +7,13 @@
   <!-- Form Widget View Directives -->
   <browser:view
       permission="Zope.View"
-      for="Schema.IField.IString"
+      for="Schema.IField.IStr"
       name="normal"
       factory=".TextWidget." />
 
   <browser:view
       permission="Zope.View"
-      for="Schema.IField.IBoolean"
+      for="Schema.IField.IBool"
       name="normal"
       factory=".CheckboxWidget." />
 
