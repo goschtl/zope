@@ -654,6 +654,11 @@ Zope Changes
         HTTPResponse.getHeaders(). Do it only in output(), where the
         size of the data is known.
 
+      - Let the determination of an HTTP request's locale be handled
+        by an adapter that is actually looked up by interface
+        (``IUserPreferredLanguages``), instead of hard-wiring the
+        default one.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
