@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileResource.py,v 1.5 2002/07/13 18:00:12 jim Exp $
+$Id: FileResource.py,v 1.6 2002/07/17 23:18:05 jeremy Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -24,8 +24,8 @@ from Zope.Publisher.Browser.IBrowserResource import IBrowserResource
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 
 from Zope.App.Publisher.FileResource import File, Image
-
 from Zope.App.Publisher.Browser.Resource import Resource
+from Zope.Misc.DateTimeParse import time as timeFromDateTimeString
 
 class FileResource(BrowserView, Resource):
 
