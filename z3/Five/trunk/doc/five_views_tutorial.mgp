@@ -30,3 +30,28 @@ Martijn Faassen, Infrae
 faassen@infrae.com
 Five developer
 
+%page
+
+Views with Five
+
+	What are views?
+
+	Why?
+
+	How to make them work?
+
+%page
+
+Actually
+
+
+	This tutorial contains only a few Five specific bits
+
+	Otherwise it applies to Zope 3 as much as to Five
+
+	The Five specific bits are just some extra ZCML statements
+
+%page
+
+View example
+
