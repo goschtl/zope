@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventpublisher.py,v 1.1 2002/12/30 14:03:05 stevea Exp $
+$Id: test_eventpublisher.py,v 1.2 2003/01/27 18:23:00 stevea Exp $
 """
 
 import unittest, sys
@@ -27,6 +27,7 @@ from zope.app.event.objectevent import ObjectAddedEvent, ObjectModifiedEvent
 from zope.app.event.globalservice import GlobalEventPublisher
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.event import IEvent
+from zope.component.tests.placelesssetup import PlacelessSetup
 
 from zope.app.event.tests.subscriber import DummySubscriber, DummyFilter
 
@@ -38,10 +39,10 @@ class ObjectEvent:
 
     __implements__ = IObjectEvent
 
-class TestEventService(CleanUp, unittest.TestCase):
+class TestEventService(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        CleanUp.setUp(self)
+        PlacelessSetup.setUp(self)
         self.service = GlobalEventPublisher()
         self.event = ObjectAddedEvent(None, '/foo')
         self.subscriber = DummySubscriber()
