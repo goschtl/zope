@@ -14,19 +14,20 @@
 """
 
 Revision information:
-$Id: test_browsermarshalling.py,v 1.1 2003/02/13 05:06:27 tseaver Exp $
+$Id: test_fieldconverters.py,v 1.1 2003/02/13 17:46:20 tseaver Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
-class TestBrowserMarshalling(TestCase):
+class TestFieldConverters(TestCase):
 
     def test_field2date_dateonly(self):
 
-        from zope.publisher.browser import field2date
+        from zope.app.publisher.fieldconverters \
+            import field2date_via_datetimeutils
 
-        dt = field2date('2003/05/04')
+        dt = field2date_via_datetimeutils('2003/05/04')
         self.failUnless(isinstance(dt, datetime))
         self.assertEqual(dt.year, 2003)
         self.assertEqual(dt.month, 5)
@@ -38,9 +39,10 @@ class TestBrowserMarshalling(TestCase):
 
     def test_field2date_timestamp(self):
 
-        from zope.publisher.browser import field2date
+        from zope.app.publisher.fieldconverters \
+            import field2date_via_datetimeutils
 
-        dt = field2date('2003/05/04 19:26:54')
+        dt = field2date_via_datetimeutils('2003/05/04 19:26:54')
         self.failUnless(isinstance(dt, datetime))
         self.assertEqual(dt.year, 2003)
         self.assertEqual(dt.month, 5)
@@ -52,7 +54,7 @@ class TestBrowserMarshalling(TestCase):
 
 def test_suite():
     suite = TestSuite()
-    suite.addTest(makeSuite(TestBrowserMarshalling))
+    suite.addTest(makeSuite(TestFieldConverters))
     return suite
 
 
