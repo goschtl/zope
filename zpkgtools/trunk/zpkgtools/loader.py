@@ -313,6 +313,9 @@ class FileProxy(object):
     def __getattr__(self, name):
         return getattr(self._file, name)
 
+    def __iter__(self):
+        return iter(self._file)
+
     def close(self):
         if not self._file.closed:
             self._file.close()

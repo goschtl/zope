@@ -242,6 +242,16 @@ class FileProxyTestCase(unittest.TestCase):
         finally:
             fp.close()
 
+    def test_iter(self):
+        firstline = None
+        for line in self.fp:
+            if firstline is None:
+                firstline = line
+        f = open(self.fp.name, "rU")
+        expected = f.readline()
+        f.close()
+        self.assertEqual(firstline, expected)
+
 
 def test_suite():
     suite = unittest.makeSuite(FileProxyTestCase)
