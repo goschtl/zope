@@ -457,7 +457,7 @@ class DocumentPUTTests(RequestTest):
         self.assertEqual( r.status, 204 )
 
     def test_default_format( self ):
-        d = self._makeOne('foo', text='')
+        d = self.d
         self.assertEqual( d.Format(), 'text/plain' )
         self.assertEqual( d.text_format, 'structured-text' )
 
