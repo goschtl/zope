@@ -29,15 +29,6 @@
     </div>
 
     <div class="row">
-      <div class="controls">
-        <input type="submit" value="Refresh" 
-            i18n:attributes="value refresh-button" />
-        <input type="submit" name="save" value="Save" 
-            i18n:attributes="value save-changes-button"/>
-      </div>
-    </div>
-
-    <div class="row">
       <div class="label" i18n:translate="">Created</div>
       <div class="field" tal:content="data/created">2000-01-01 01:01:01</div>
     </div>
@@ -50,6 +41,15 @@
       <div class="field">
         <span tal:repeat="creator data/creators"
               tal:content="creator">Bart Simpson</span>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="controls">
+        <input type="submit" value="Refresh" 
+            i18n:attributes="value refresh-button" />
+        <input type="submit" name="save" value="Save" 
+            i18n:attributes="value save-changes-button"/>
       </div>
     </div>
 
