@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.16 2003/02/20 15:36:34 stevea Exp $
+$Id: widget.py,v 1.17 2003/02/20 16:46:05 stevea Exp $
 """
 
 __metaclass__ = type
@@ -427,7 +427,13 @@ class SingleItemsWidget(ItemsWidget):
     """A widget with a number of items that has only a single
     selectable item."""
     default = ""
-    firstItem = 0
+    firstItem = False
+
+    def textForValue(self, value):
+        '''Returns the text for the given value.
+
+        Override this in subclasses.'''
+        return value
 
     def renderItems(self, value):
         name = self.name
@@ -435,24 +441,17 @@ class SingleItemsWidget(ItemsWidget):
         items = self.context.allowed_values
 
         # check if we want to select first item
-        if (not value and getattr(self.context, 'firstItem', None)
+        if (not value and getattr(self.context, 'firstItem', False)
             and len(items) > 0):
-            try:
-                text, value = items[0]
-            except ValueError:
-                value = items[0]
+            value = items[0]
 
         cssClass = self.getValue('cssClass')
 
         # FIXME: what if we run into multiple items with same value?
         rendered_items = []
         count = 0
-        for item in items:
-            try:
-                item_value, item_text = item
-            except ValueError:
-                item_value = item
-                item_text = item
+        for item_value in items:
+            item_text = self.textForValue(item_value)
 
             if item_value == value:
                 rendered_item = self.renderSelectedItem(count,

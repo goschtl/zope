@@ -142,7 +142,7 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: sql.py,v 1.3 2003/02/20 16:46:07 stevea Exp $
 """
 
 import re
@@ -347,6 +347,7 @@ class SQLVar:
                     int(v)
                 else:
                     v = str(int(v))
+                # XXX Bare except!
             except:
                 if not v and args.has_key('optional') and args['optional']:
                     return 'null'
@@ -359,6 +360,7 @@ class SQLVar:
                     float(v)
                 else:
                     v = str(float(v))
+                # XXX Bare except!
             except:
                 if not v and args.has_key('optional') and args['optional']:
                     return 'null'
@@ -450,6 +452,7 @@ class SQLTest:
                         int(v)
                     else:
                         v = str(int(v))
+                    # XXX Bare except!
                 except:
                     raise ValueError, (
                         'Invalid integer value for **%s**' % name)
@@ -462,6 +465,7 @@ class SQLTest:
                         float(v)
                     else:
                         v = str(float(v))
+                    # XXX Bare except!
                 except:
                     raise ValueError, (
                         'Invalid floating-point value for **%s**' % name)
@@ -576,6 +580,7 @@ class SQLVar:
                 v = md[expr]
             else:
                 v = expr(md)
+            # XXX Bare except!
         except:
             if args.has_key('optional') and args['optional']:
                 return 'null'
@@ -605,6 +610,7 @@ class SQLVar:
                     float(v)
                 else:
                     v = str(float(v))
+                # XXX Bare except!
             except:
                 if not v and args.has_key('optional') and args['optional']:
                     return 'null'
@@ -654,8 +660,9 @@ class SQLScript(SQLCommand, Persistent):
 
     def setArguments(self, arguments):
         'See ISQLScript'
-        assert isinstance(arguments, StringTypes), \
+        assert isinstance(arguments, StringTypes), (
                '"arguments" argument of setArguments() must be a string'
+               )
         self._arg_string = arguments
         self._arguments = parseArguments(arguments)
 
@@ -713,16 +720,19 @@ class SQLScript(SQLCommand, Persistent):
             try:
                 # Try to find argument in keywords
                 arg_values[name] = kw[name]
+                # XXX Bare except!
             except:
                 # Okay, the first try failed, so let's try to find the default
                 arg = self._arguments[name]
                 try:
                     arg_values[name] = arg['default']
+                    # XXX Bare except!
                 except:
                     # Now the argument might be optional anyways; let's check
                     try:
                         if not arg['optional']:
                             missing.append(name)
+                        # XXX Bare except!
                     except:
                         missing.append(name)
 
@@ -846,16 +856,19 @@ class SQLScript(SQLCommand, Persistent):
             try:
                 # Try to find argument in keywords
                 arg_values[name] = kw[name]
+                # XXX Bare Except!
             except:
                 # Okay, the first try failed, so let's try to find the default
                 arg = self._arguments[name]
                 try:
                     arg_values[name] = arg['default']
+                    # XXX Bare except!
                 except:
                     # Now the argument might be optional anyways; let's check
                     try:
                         if not arg['optional']:
                             missing.append(name)
+                        # XXX Bare except!
                     except:
                         missing.append(name)
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.4 2003/01/24 14:54:09 ryzaja Exp $
+$Id: sql.py,v 1.5 2003/02/20 16:46:04 stevea Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.content.sql import ISQLScript
@@ -31,7 +31,7 @@ class SQLScriptTest(BrowserView):
     # __implements__ of the newly created class (see SimpleViewClass in the
     # same module) ought to be a union of __implements__ of all the base
     # classes.  Or perhaps it should be done by zope.app.browser.form.editview?
-    
+
     __used_for__ = ISQLScript
 
     error = None
@@ -39,6 +39,7 @@ class SQLScriptTest(BrowserView):
     def getArguments(self):
         form = self.request.form
         arguments = {}
+        # XXX does anyone know what arg[0] and arg[1] are supposed to be?
         for arg in self.context.getArguments().items():
             value = form.get(arg[0])
             if value is None:
