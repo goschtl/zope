@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.6 2003/03/23 22:03:28 jim Exp $
+$Id: test_configurationmanager.py,v 1.7 2003/04/28 18:40:04 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -349,9 +349,9 @@ class ConfigurationManagerContainerTests(placefulsetup.PlacefulSetup):
         sm = placefulsetup.createServiceManager(self.rootFolder)
         default = traverse(sm, 'default')
         self.assertEqual(default.getConfigurationManager(),
-                         default['ConfigurationManager'])
+                         default['RegistrationManager'])
         default.setObject('xxx', ConfigurationManager())
-        del default['ConfigurationManager']
+        del default['RegistrationManager']
         self.assertEqual(default.getConfigurationManager(),
                          default['xxx'])
 
@@ -368,7 +368,7 @@ class ConfigurationManagerContainerTests(placefulsetup.PlacefulSetup):
         self.assertRaises(Exception,
                           default.__delitem__, 'configuration')
         default.setObject('xxx', ConfigurationManager())
-        del default['ConfigurationManager']
+        del default['RegistrationManager']
         
 
 
