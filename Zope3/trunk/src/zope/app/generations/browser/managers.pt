@@ -5,7 +5,7 @@
 <body>
 <div metal:fill-slot="body">
 
-Database generations
+<span i18n:translate="">Database generations</span>
 
 <form tal:attributes="action request/URL"
       tal:define="status view/evolve" 
@@ -29,11 +29,11 @@ Database generations
 <table border="1">
 
 <tr>
-    <th>Application</th>
-    <th>Minimum Generation</th>
-    <th>Maximum Generation</th>
-    <th>Current Database Generation</th>
-    <th>Evolve?</th>
+    <th i18n:translate="">Application</th>
+    <th i18n:translate="">Minimum Generation</th>
+    <th i18n:translate="">Maximum Generation</th>
+    <th i18n:translate="">Current Database Generation</th>
+    <th i18n:translate="">Evolve?</th>
 </tr>
 <tr tal:repeat="app view/applications">
     <td tal:content="app/id">foo.bar</td>
