@@ -1,43 +1,29 @@
 import Zope
-import OFS.Folder, OFS.SimpleItem
+import OFS.Folder
 from unittest import TestCase, TestSuite, makeSuite, main
 from Acquisition import Implicit
-from Products.CMFCore.TypesTool import *
-from Products.CMFCore.PortalContent import PortalContent
-from Products.CMFCore.CMFCorePermissions import AddPortalContent
-from Products.CMFCore.CMFCorePermissions import ModifyPortalContent
-from Products.CMFCore.PortalFolder import *
-from Products.CMFCore import utils
-from Products.CMFCore.tests.base.testcase import SecurityRequestTest
-from Products.CMFCore.tests.base.security import OmnipotentUser, UserWithRoles
+
+from Products.CMFCore.TypesTool import\
+     FactoryTypeInformation as FTI,\
+     ScriptableTypeInformation as STI,\
+     TypesTool,addTypeFactory,Unauthorized
+
+from Products.CMFCore.PortalFolder import PortalFolder
+from Products.CMFCore.utils import _getViewFor
+
+from Products.CMFCore.tests.base.testcase import \
+     SecurityRequestTest
+from Products.CMFCore.tests.base.security import \
+     OmnipotentUser, UserWithRoles
+from Products.CMFCore.tests.base.dummy import \
+     DummyMethod, DummyContent, addDummy, DummyTypeInfo
+
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
 
 from Products.PythonScripts.standard import url_quote
 from webdav.NullResource import NullResource
 from Acquisition import aq_base
-
-class DummyMethod:
-    def __init__(self, name):
-        self.name = name
-    def __str__(self):
-        return self.name
-    def __call__(self):
-        return self.name
-
-class DummyContent( PortalContent, OFS.SimpleItem.Item ):
-    """
-    """
-    meta_type = 'Dummy'
-
-def addDummy( self, id ):
-    """
-    """
-    self._setObject( id, DummyContent() )
-
-class DummyTypeInfo(TypeInformation):
-    """ new class of type info object """
-    meta_type = "Dummy Test Type Info"
 
 class TypesToolTests( SecurityRequestTest ):
 
@@ -48,8 +34,7 @@ class TypesToolTests( SecurityRequestTest ):
 
         root._setObject( 'portal_types', TypesTool() )
         tool = root.portal_types
-        FTI = FactoryTypeInformation
-        tool._setObject( 'Dummy'
+        tool._setObject( 'Dummy' 
                        , FTI( 'Dummy'
                             , meta_type=DummyContent.meta_type
                             , product='CMFDefault'
@@ -68,11 +53,10 @@ class TypesToolTests( SecurityRequestTest ):
                               )
                          )
     
-    def off_test_otherFolderTypes( self ):
+    def test_otherFolderTypes( self ):
         """
             Does 'invokeFactory' work when invoked from non-PortalFolder?
-            Currently tests a bug which hasn't been fixed (remove 'off_'
-            from name to activate)            
+            Currently tests a bug which hasn't been fixed
         """
         self.root._setObject( 'portal', PortalFolder( 'portal', '' ) )
         portal = self.root.portal
@@ -97,8 +81,8 @@ class TypesToolTests( SecurityRequestTest ):
         dummy.edit = DummyMethod("edit")
 
         default_view = dummy()
-        custom_view = utils._getViewFor( dummy, view='view2' )()
-        unpermitted_view = utils._getViewFor( dummy, view='edit' )()
+        custom_view = _getViewFor( dummy, view='view2' )()
+        unpermitted_view = _getViewFor( dummy, view='edit' )()
 
         self.failUnlessEqual(default_view, 'view')
         self.failUnlessEqual(custom_view, 'view2')
@@ -121,7 +105,7 @@ class TypesToolTests( SecurityRequestTest ):
 
         tool.manage_addTypeInformation(id='foo_default', type_type=None)
         fd = tool.foo_default
-        self.failUnless(isinstance(fd, FactoryTypeInformation))
+        self.failUnless(isinstance(fd, FTI))
         self.failIf(isinstance(fd, DummyTypeInfo))
 
         tool.manage_addTypeInformation(id='foo_sub', type_type=type_type)
@@ -307,7 +291,7 @@ class TypeInfoTests( TestCase ):
 class FTIDataTests( TypeInfoTests ):
 
     def _makeInstance( self, id, **kw ):
-        return apply( FactoryTypeInformation, ( id, ), kw )
+        return apply( FTI, ( id, ), kw )
 
     def test_properties( self ):
         ti = self._makeInstance( 'Foo' )
@@ -325,7 +309,7 @@ class FTIDataTests( TypeInfoTests ):
 class STIDataTests( TypeInfoTests ):
 
     def _makeInstance( self, id, **kw ):
-        return apply( ScriptableTypeInformation, ( id, ), kw )
+        return apply( STI, ( id, ), kw )
 
     def test_properties( self ):
         ti = self._makeInstance( 'Foo' )
@@ -392,7 +376,7 @@ class FTIConstructionTests( TestCase ):
         noSecurityManager()
 
     def _makeInstance( self, id, **kw ):
-        return apply( FactoryTypeInformation, ( id, ), kw )
+        return apply( FTI, ( id, ), kw )
 
     def _makeFolder( self, fake_product=0 ):
         return FauxFolder( fake_product )
@@ -444,10 +428,10 @@ class FTIConstructionTests_w_Roles( TestCase ):
 
     def _makeStuff( self, prefix='' ):
 
-        ti = FactoryTypeInformation( 'Foo'
-                                   , product='FooProduct'
-                                   , factory='addFoo'
-                                   )
+        ti = FTI( 'Foo'
+                  , product='FooProduct'
+                  , factory='addFoo'
+                  )
         folder = FauxFolder( fake_product=1, prefix=prefix )
         
         return ti, folder
