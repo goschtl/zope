@@ -112,7 +112,7 @@ class ReviewMessages:
 
 def hasMessageStatus(msg, status, workflow='publish-message'):
     """Check whether a particular message matches a given status"""
-    adapter = zapi.queryAdapter(msg, IProcessInstanceContainer)
+    adapter = IProcessInstanceContainer(msg)
     if adapter:
         # No workflow is defined, so the message is always shown.
         if not adapter.keys():
