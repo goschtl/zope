@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.3 2004/03/11 16:50:21 fdrake Exp $
+$Id: finddeps.py,v 1.4 2004/03/11 17:07:25 fdrake Exp $
 """
 import sys
 import getopt
@@ -47,7 +47,7 @@ import re
 
 # Get the Zope base path
 import zope
-ZOPESRC=os.path.split(os.path.split(zope.__file__)[0])[0]
+ZOPESRC = os.path.dirname(os.path.dirname(zope.__file__))
 
 # Matching expression for python files.
 pythonfile = re.compile(r'[a-zA-Z][a-zA-Z0-9_]*\.py')
