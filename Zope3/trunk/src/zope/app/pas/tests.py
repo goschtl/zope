@@ -38,8 +38,7 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     ztapi.provideAdapter(IRequest, ISession, Session)
     ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
     sdc = session_data_container_class()
-    for product_id in ('', 'products.foo', 'products.bar', 'products.baz'):
-        ztapi.provideUtility(ISessionDataContainer, sdc, product_id)
+    ztapi.provideUtility(ISessionDataContainer, sdc, 'pas_credentials')
     request = HTTPRequest(None, None, {}, None)
     return request
 
@@ -52,7 +51,7 @@ def test_suite():
                              globs={'provideUtility': ztapi.provideUtility,
                                     'getEvents': getEvents,
                                     }),
-        doctest.DocTestSuite('zope.app.pas.extractionplugins'),
+        doctest.DocTestSuite('zope.app.pas.browserplugins'),
         ))
 
 if __name__ == '__main__':

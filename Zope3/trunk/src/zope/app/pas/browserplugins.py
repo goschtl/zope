@@ -11,7 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Implementations of standard credentials extractor plugins.
+""" Implementations of the session-based and cookie-based extractor and
+    challenge plugins.
 
 $Id$
 """
