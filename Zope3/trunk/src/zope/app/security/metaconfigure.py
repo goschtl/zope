@@ -13,7 +13,7 @@
 ##############################################################################
 """Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.7 2004/03/20 19:52:48 srichter Exp $
+$Id: metaconfigure.py,v 1.8 2004/05/06 10:07:46 philikon Exp $
 """
 from zope.app.component.metaconfigure import utility
 
@@ -119,5 +119,3 @@ def redefinePermission(_context, from_, to):
         _context.permission_mapping={}
 
     _context.permission_mapping[from_] = to
-    
-

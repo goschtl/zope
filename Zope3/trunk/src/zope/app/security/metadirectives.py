@@ -13,7 +13,7 @@
 ##############################################################################
 """securityPolicy Directive Schema
 
-$Id: metadirectives.py,v 1.3 2004/03/20 19:52:48 srichter Exp $
+$Id: metadirectives.py,v 1.4 2004/05/06 10:07:46 philikon Exp $
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
@@ -128,7 +128,6 @@ class IDefinePrincipalDirective(IBasePrincipalDirective):
         description=u"Specifies the Principal's Password.",
         required=True)
 
-
 class IDefineUnauthenticatedPrincipalDirective(IBasePrincipalDirective):
     """Define a new unauthenticated principal."""
 
@@ -136,12 +135,11 @@ class IRedefinePermission(Interface):
     """Define a permission to replace another permission."""
 
     from_ = Permission(
-        title=u"from",
+        title=u"Original permission",
         description=u"Original permission id to redefine.",
         required=True)
     
     to = Permission(
-        title=u"to",
+        title=u"Substituted permission",
         description=u"Substituted permission id.",
         required=True)
-
