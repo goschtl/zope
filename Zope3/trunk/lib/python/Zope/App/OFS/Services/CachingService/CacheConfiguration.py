@@ -13,7 +13,7 @@
 ##############################################################################
 """A configuration for a cache.
 
-$Id: CacheConfiguration.py,v 1.1 2002/12/12 15:28:16 mgedmin Exp $
+$Id: CacheConfiguration.py,v 1.2 2002/12/18 17:35:04 stevea Exp $
 """
 
 from ICacheConfiguration import ICacheConfiguration
@@ -37,17 +37,15 @@ class CacheConfiguration(NamedComponentConfiguration):
     def __init__(self, *args, **kw):
         super(CacheConfiguration, self).__init__(*args, **kw)
 
-    def activated(self):
-        cache = self.getComponent()
-        service = getService(self, 'Caching')
+    def activated(wrapped_self):
+        cache = wrapped_self.getComponent()
+        service = getService(wrapped_self, 'Caching')
         service.subscribe(cache, IObjectModifiedEvent)
-
     activated = ContextMethod(activated)
 
-    def deactivated(self):
-        cache = self.getComponent()
-        service = getService(self, 'Caching')
+    def deactivated(wrapped_self):
+        cache = wrapped_self.getComponent()
+        service = getService(wrapped_self, 'Caching')
         service.unsubscribe(cache, IObjectModifiedEvent)
         cache.invalidateAll()
-
     deactivated = ContextMethod(deactivated)

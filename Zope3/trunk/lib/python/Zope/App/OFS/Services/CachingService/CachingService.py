@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: CachingService.py,v 1.6 2002/12/18 17:32:26 stevea Exp $
+$Id: CachingService.py,v 1.7 2002/12/18 17:35:04 stevea Exp $
 """
 from Persistence import Persistent
 from Zope.App.Caching.ICachingService import ICachingService
@@ -43,33 +43,33 @@ class CachingService(ProtoServiceEventChannel, NameConfigurable):
         ProtoServiceEventChannel.__init__(self)
         NameConfigurable.__init__(self)
 
-    def getCache(self, name):
+    def getCache(wrapped_self, name):
         'See Zope.App.Caching.ICachingService.ICachingService'
-        cache = self.queryActiveComponent(name)
+        cache = wrapped_self.queryActiveComponent(name)
         if cache:
             return cache
-        service = queryNextService(self, "Caching")
+        service = queryNextService(wrapped_self, "Caching")
         if service is not None:
             return service.getCache(name)
         raise KeyError, name
     getCache = ContextMethod(getCache)
 
-    def queryCache(self, name, default=None):
+    def queryCache(wrapped_self, name, default=None):
         'See Zope.App.Caching.ICachingService.ICachingService' 
         try:
-            return self.getCache(name)
+            return wrapped_self.getCache(name)
         except KeyError:
             return default
     queryCache = ContextMethod(queryCache)
 
-    def getAvailableCaches(self):
+    def getAvailableCaches(wrapped_self):
         'See Zope.App.Caching.ICachingService.ICachingService'
         caches = {}
-        for name in self.listConfigurationNames():
-            registry = self.queryConfigurations(name)
+        for name in wrapped_self.listConfigurationNames():
+            registry = wrapped_self.queryConfigurations(name)
             if registry.active() is not None:
                 caches[name] = 0
-        service = queryNextService(self, "Caching")
+        service = queryNextService(wrapped_self, "Caching")
         if service is not None:
             for name in service.getAvailableCaches():
                 caches[name] = 0
