@@ -9,7 +9,7 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""Specific HTTP
+"""Specific HTTP Traverser
 
 $Id$
 """
@@ -36,9 +36,6 @@ class SchemaFieldTraverser:
 
     def publishTraverse(self, request, name):
         subob = self.context.get(name, None)
-
-        # XXX: Check that subobj has self.context as parent!
-        # YYY: Why?
 
         if subob is None:
 
