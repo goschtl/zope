@@ -11,14 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""RAM cache interface.
+
+$Id: ram.py,v 1.4 2003/04/24 21:01:25 gvanrossum Exp $
 """
-$Id: ram.py,v 1.3 2002/12/30 14:03:12 stevea Exp $
-"""
-from zope.app.interfaces.cache.cache import ICache
-from zope.app.interfaces.event import ISubscriber
+
 from zope.interface import Attribute
 
-class IRAMCache(ICache, ISubscriber):
+from zope.app.interfaces.cache.cache import ICache
+from zope.app.interfaces.event import ISubscriber
+from zope.app.interfaces.services.configuration import IUseConfigurable
+
+class IRAMCache(ICache, ISubscriber, IUseConfigurable):
     """Interface for the RAM Cache."""
 
     maxEntries = Attribute("""A maximum number of cached values.""")

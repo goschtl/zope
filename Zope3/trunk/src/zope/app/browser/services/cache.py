@@ -13,10 +13,33 @@
 ##############################################################################
 """Cache configuration support classes.
 
-$Id: cache.py,v 1.4 2003/04/24 20:28:50 gvanrossum Exp $
+$Id: cache.py,v 1.5 2003/04/24 21:01:25 gvanrossum Exp $
 """
 
 from zope.app.browser.services.configuration import AddComponentConfiguration
+from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.component import getAdapter, getServiceManager, getView
+from zope.publisher.browser import BrowserView
+from zope.app.traversing import traverse
+
+class UseConfiguration(BrowserView):
+
+    """View for displaying the configurations for a connection."""
+
+    def uses(self):
+        """Get a sequence of configuration summaries."""
+        component = self.context
+        useconfig = getAdapter(component, IUseConfiguration)
+        result = []
+        for path in useconfig.usages():
+            config = traverse(component, path)
+            url = getView(config, 'absolute_url', self.request)
+            result.append({'name': config.name,
+                           'path': path,
+                           'url': url(),
+                           'status': config.status,
+                           })
+        return result
 
 class AddCacheConfiguration(AddComponentConfiguration):
 

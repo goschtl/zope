@@ -22,6 +22,18 @@
       description="A Persistent Caching Service for TTW development"
       />
 
+  <!-- ZMI tab named "Configurations" for cache objects.
+       Given a cache object this lets you view all configurations
+       available for it. -->
+  <page
+      for="zope.app.interfaces.cache.cache.ICache"
+      name="cacheConfiguration.html"
+      template="cacheConfiguration.pt"
+      class=".cache.UseConfiguration"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Configurations"
+      />
+
   <!-- When creating a new cache object, you are taken to this
        form to configure it.  The form lets you choose a name,
        an interface, a permission, and a registration status

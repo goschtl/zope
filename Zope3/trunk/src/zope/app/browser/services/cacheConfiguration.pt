@@ -1,0 +1,22 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+  <div metal:fill-slot="body">
+
+    <p>Configurations for this cache:</p>
+
+    <ul>
+
+      <li tal:repeat="use view/uses">
+
+	<a href="."
+	   tal:attributes="href use/url"><span tal:replace="use/name" /></a>
+	(<span tal:replace="use/status">Active</span>)
+
+      </li>
+    </ul>
+
+    <p><a href="addConfiguration.html">Add a configuration for this connection</a>
+
+  </div>
+</body>
+</html>

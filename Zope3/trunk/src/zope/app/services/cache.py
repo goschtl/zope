@@ -13,22 +13,27 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.6 2003/03/11 16:11:22 jim Exp $
+$Id: cache.py,v 1.7 2003/04/24 21:01:26 gvanrossum Exp $
 """
-__metaclass__ = type
 
 from persistence import Persistent
-from zope.app.interfaces.cache.cache import ICachingService
-from zope.app.component.nextservice import queryNextService
-from zope.app.interfaces.services.configuration \
-        import INameComponentConfigurable
-from zope.app.services.configuration import NameComponentConfigurable
-from zope.app.services.event import ServiceSubscriberEventChannel
-from zope.proxy.context import ContextMethod
-from zope.app.interfaces.services.event import IEventChannel
-from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.app.interfaces.services.service import ISimpleService
 
+from zope.component import getAdapter, getService
+from zope.proxy.context import ContextMethod
+
+from zope.app.component.nextservice import queryNextService
+from zope.app.interfaces.cache.cache import ICache, ICachingService
+from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.interfaces.services.cache import ICacheConfiguration
+from zope.app.interfaces.services.configuration \
+     import INameComponentConfigurable, IUseConfiguration
+from zope.app.interfaces.services.event import IEventChannel
+from zope.app.interfaces.services.service import ISimpleService
+from zope.app.services.configuration import ConfigurationStatusProperty
+from zope.app.services.configuration import NameComponentConfigurable
+from zope.app.services.configuration import NamedComponentConfiguration
+from zope.app.services.event import ServiceSubscriberEventChannel
+from zope.app.traversing import getPath
 
 class ILocalCachingService(ICachingService, IEventChannel,
                            INameComponentConfigurable):
@@ -86,20 +91,6 @@ class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
     getAvailableCaches = ContextMethod(getAvailableCaches)
 
 
-
-"""A configuration for a cache.
-
-$Id: cache.py,v 1.6 2003/03/11 16:11:22 jim Exp $
-"""
-
-from zope.app.interfaces.services.cache import ICacheConfiguration
-from zope.app.services.configuration import NamedComponentConfiguration
-from zope.app.services.configuration import ConfigurationStatusProperty
-from zope.component import getService
-from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.proxy.context import ContextMethod
-from zope.app.interfaces.cache.cache import ICache
-
 class CacheConfiguration(NamedComponentConfiguration):
 
     __doc__ = ICacheConfiguration.__doc__
@@ -129,3 +120,17 @@ class CacheConfiguration(NamedComponentConfiguration):
 
     def getInterface(self):
         return ICache
+
+    def afterAddHook(self, configuration, container):
+        super(CacheConfiguration, self).afterAddHook(configuration,
+                                                     container)
+        component = configuration.getComponent()
+        adapter = getAdapter(component, IUseConfiguration)
+        adapter.addUsage(getPath(configuration))
+
+    def beforeDeleteHook(self, configuration, container):
+        component = configuration.getComponent()
+        adapter = getAdapter(component, IUseConfiguration)
+        adapter.removeUsage(getPath(configuration))
+        super(CacheConfiguration, self).beforeDeleteHook(configuration,
+                                                         container)

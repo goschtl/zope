@@ -11,18 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""RAM cache implementation.
+
+$Id: ram.py,v 1.4 2003/04/24 21:01:25 gvanrossum Exp $
 """
-$Id: ram.py,v 1.3 2002/12/28 14:13:22 stevea Exp $
-"""
+
 from time import time
 from thread import allocate_lock
 from pickle import dumps
+
 from persistence import Persistent
-from zope.app.interfaces.cache.ram import IRAMCache
+
 from zope.component import getAdapter
 from zope.component.exceptions import ComponentLookupError
-from zope.app.interfaces.traversing import IPhysicallyLocatable
+
+from zope.app.interfaces.cache.ram import IRAMCache
 from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.interfaces.services.configuration \
+     import IAttributeUseConfigurable
+from zope.app.interfaces.traversing import IPhysicallyLocatable
 
 # A global caches dictionary shared between threads
 caches = {}
@@ -52,7 +59,7 @@ class RAMCache(Persistent):
     handle their blocking internally.
     """
 
-    __implements__ = IRAMCache
+    __implements__ = (IRAMCache, IAttributeUseConfigurable)
 
     def __init__(self):
 
