@@ -5,6 +5,7 @@ if __name__ == '__main__':
 
 import unittest
 from Testing import ZopeTestCase
+from Testing.ZopeTestCase.functional import Functional
 
 ZopeTestCase.installProduct('Five')
 ZopeTestCase.installProduct('FiveTest')
@@ -108,10 +109,25 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 ## </ul>
 ## """
 ##         self.assertEquals(expected, view())    
-        
+
+class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
+    """Test a few publishing features"""
+
+    def afterSetUp(self):
+        self.folder.manage_addProduct['FiveTest'].manage_addSimpleContent(
+            'testoid', 'Testoid')
+        uf = self.folder.acl_users
+        uf._doAddUser('viewer', 'secret', [], [])
+        uf._doAddUser('manager', 'r00t', ['Manager'], [])
+
+    def test_no_doc_string(self):
+	response = self.publish('/test_folder_1_/testoid/no_doc_string')
+	self.assertEquals("No docsring", response.getBody())
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(FiveTestCase))
+    suite.addTest(unittest.makeSuite(PublishTestCase))
     return suite
 
 if __name__ == '__main__':

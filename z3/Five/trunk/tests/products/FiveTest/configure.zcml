@@ -17,6 +17,14 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <browser:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    attribute="no_doc_string"
+    name="no_doc_string"
+    permission="zope.Public"
+    />
+
   <!-- attribute page -->
   <browser:pages
     for=".interfaces.ISimpleContent"

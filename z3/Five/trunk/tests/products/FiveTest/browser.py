@@ -10,3 +10,6 @@ class SimpleContentView(BrowserView):
     def mouse(self):
 	"""Docstring"""
 	return "The mouse has been eaten by the eagle"""
+
+    def no_doc_string(self):
+	return "No docstring"
