@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.13 2003/08/19 07:09:57 srichter Exp $
+$Id: test_connectionservice.py,v 1.14 2003/08/21 12:01:21 BjornT Exp $
 """
 
 import unittest
@@ -90,30 +90,30 @@ class TestConnectionService(unittest.TestCase):
         conn = addConnection(mgr, 'conn4', DAStub(4))
 
     def testGetConnection(self):
-        self.assertEqual('DA #1', self.service.getConnection('conn1')())
-        self.assertEqual('DA #2', self.service.getConnection('conn2')())
+        self.assertEqual('DA #1', self.service.getConnection('conn1'))
+        self.assertEqual('DA #2', self.service.getConnection('conn2'))
         self.assertRaises(KeyError, self.service.getConnection, 'conn3')
         self.assertRaises(KeyError, self.service.getConnection, 'conn4')
 
-        self.assertEqual('DA #3', self.service1.getConnection('conn1')())
-        self.assertEqual('DA #2', self.service1.getConnection('conn2')())
+        self.assertEqual('DA #3', self.service1.getConnection('conn1'))
+        self.assertEqual('DA #2', self.service1.getConnection('conn2'))
         self.assertRaises(KeyError, self.service1.getConnection, 'conn3')
-        self.assertEqual('DA #4', self.service1.getConnection('conn4')())
+        self.assertEqual('DA #4', self.service1.getConnection('conn4'))
         self.assertRaises(KeyError, self.service1.getConnection, 'conn5')
 
     def testQueryConnection(self):
-        self.assertEqual('DA #1', self.service.queryConnection('conn1')())
-        self.assertEqual('DA #2', self.service.queryConnection('conn2')())
+        self.assertEqual('DA #1', self.service.queryConnection('conn1'))
+        self.assertEqual('DA #2', self.service.queryConnection('conn2'))
         self.assertEqual(None, self.service.queryConnection('conn3'))
         self.assertEqual('xx', self.service.queryConnection('conn3', 'xx'))
         self.assertEqual(None, self.service.queryConnection('conn4'))
         self.assertEqual('xx', self.service.queryConnection('conn4', 'xx'))
 
-        self.assertEqual('DA #3', self.service1.queryConnection('conn1')())
-        self.assertEqual('DA #2', self.service1.queryConnection('conn2')())
+        self.assertEqual('DA #3', self.service1.queryConnection('conn1'))
+        self.assertEqual('DA #2', self.service1.queryConnection('conn2'))
         self.assertEqual(None, self.service1.queryConnection('conn3'))
         self.assertEqual('xx', self.service1.queryConnection('conn3', 'xx'))
-        self.assertEqual('DA #4', self.service1.queryConnection('conn4')())
+        self.assertEqual('DA #4', self.service1.queryConnection('conn4'))
         self.assertEqual(None, self.service1.queryConnection('conn5'))
         self.assertEqual('xx', self.service1.queryConnection('conn5', 'xx'))
 

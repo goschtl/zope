@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection service
 
-$Id: connection.py,v 1.19 2003/08/19 23:11:05 srichter Exp $
+$Id: connection.py,v 1.20 2003/08/21 12:01:21 BjornT Exp $
 """
 from persistence import Persistent
 from zope.app import zapi
@@ -31,13 +31,18 @@ class ConnectionService(Persistent):
     def getConnection(self, name):
         'See IConnectionService'
         utilities = zapi.getService(self, Utilities)
-        return utilities.getUtility(IZopeDatabaseAdapter, name)
+        dbadapter = utilities.getUtility(IZopeDatabaseAdapter, name)
+        return dbadapter()
     getConnection = zapi.ContextMethod(getConnection)
 
     def queryConnection(self, name, default=None):
         'See IConnectionService'
         utilities = zapi.getService(self, Utilities)
-        return utilities.queryUtility(IZopeDatabaseAdapter, default, name)
+        dbadapter = utilities.queryUtility(IZopeDatabaseAdapter, None, name)
+        if dbadapter:
+            return dbadapter()
+        else:
+            return default
     queryConnection = zapi.ContextMethod(queryConnection)
 
     def getAvailableConnections(self):
