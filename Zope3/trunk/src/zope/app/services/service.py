@@ -23,7 +23,7 @@ A service manager has a number of roles:
   - A registry for persistent modules.  The Zope import hook uses the
     ServiceManager to search for modules.
 
-$Id: service.py,v 1.7 2003/02/03 15:08:48 jim Exp $
+$Id: service.py,v 1.8 2003/02/04 10:26:00 runyaga Exp $
 """
 
 import sys
@@ -51,36 +51,6 @@ from zope.app.interfaces.services.service import IServiceManagerContainer
 
 ModuleType = type(INameResolver)
 ModuleType = ModuleType, PersistentModule
-
-class ServiceManagerContainer:
-
-    __implements__ =  IServiceManagerContainer
-
-    def hasServiceManager(self):
-        '''See interface IReadServiceManagerContainer'''
-        return hasattr(self, '_ServiceManagerContainer__sm')
-
-    def getServiceManager(self):
-        '''See interface IReadServiceManagerContainer'''
-
-        try:
-            return self.__sm
-        except AttributeError:
-            raise ComponentLookupError('no service manager defined')
-
-    def queryServiceManager(self, default=None):
-        '''See interface IReadServiceManagerContainer'''
-
-        return getattr(self, '_ServiceManagerContainer__sm', default)
-
-    def setServiceManager(self, sm):
-        '''See interface IWriteServiceManagerContainer'''
-
-        if IServiceService.isImplementedBy(sm):
-            self.__sm = sm
-        else:
-            raise ValueError('setServiceManager requires an IServiceService')
-
 
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import NameComponentConfigurable
