@@ -1,28 +1,27 @@
-<zope:configure
+<configure 
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
-
 <!-- Cookie Browser Id Manager -->
 
   <addMenuItem
     title="Cookie Browser Id Manager"
     description="Uses a cookie to uniquely identify a browser, allowing 
       state to be maintained between requests"
-    class="zope.app.utilities.session.CookieBrowserIdManager"
+    class=".CookieBrowserIdManager"
     permission="zope.ManageContent" />
 
   <!-- XXX: We want an add form, but namespace needs to default to a unique 
     cookie name
   <addform
-    schema="zope.app.interfaces.utilities.session.ICookieBrowserIdManager"
+    schema=".interfaces.ICookieBrowserIdManager"
     label="Add a Cookie Browser ID Manager"
-    content_factory="zope.app.utilities.session.CookieBrowserIdManager"
+    content_factory=".CookieBrowserIdManager"
     name="zope.app.interfaces.utilities.session" 
     permission="zope.ManageContent" />
   -->
 
   <editform
-    schema="zope.app.interfaces.utilities.session.ICookieBrowserIdManager"
+    schema=".interfaces.ICookieBrowserIdManager"
     label="Cookie Browser ID Manager Properties"
     name="edit.html" menu="zmi_views" title="Edit"
     permission="zope.ManageContent" />
@@ -32,15 +31,13 @@
   <addMenuItem
     title="Persistent Session Data Container"
     description="Stores session data persistently in the ZODB"
-    class="zope.app.utilities.session.PersistentSessionDataContainer"
+    class=".PersistentSessionDataContainer"
     permission="zope.ManageContent" />
 
   <editform
-    schema="zope.app.interfaces.utilities.session.ISessionDataContainer"
+    schema=".interfaces.ISessionDataContainer"
     label="Persistent Session Data Container Properties"
     name="edit.html" menu="zmi_views" title="Edit"
     permission="zope.ManageContent" />
 
-
-
-</zope:configure>
+</configure>

@@ -10,7 +10,6 @@
   <include package=".container" />
   <include package=".form" />
   <include package=".services" />
-  <include package=".utilities" />
   <include file="traversal.zcml" />
   <include file="auth.zcml" />
 

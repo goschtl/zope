@@ -13,9 +13,8 @@
 #
 ##############################################################################
 '''
-$Id: test_session.py,v 1.5 2004/03/05 22:09:21 jim Exp $
+$Id: tests.py,v 1.1 2004/03/10 12:11:19 srichter Exp $
 '''
-
 import unittest, doctest, time, rfc822
 from zope.app import zapi
 from zope.app.tests import ztapi
@@ -26,10 +25,10 @@ from zope.app.services.utility import LocalUtilityService
 from zope.app.services.servicenames import Utilities
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 
-from zope.app.interfaces.utilities.session import \
+from zope.app.session.interfaces import \
         IBrowserId, IBrowserIdManager, ISession, ISessionDataContainer
 
-from zope.app.utilities.session import \
+from zope.app.session import \
         CookieBrowserIdManager, Session, SessionData, getSession, \
         PersistentSessionDataContainer
 

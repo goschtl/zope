@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for session service.
 
-$Id: session.py,v 1.6 2004/03/03 10:38:47 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/03/10 12:11:19 srichter Exp $
 """
 import re
 from zope.interface import Interface

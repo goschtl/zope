@@ -16,7 +16,7 @@
 This is more of a demonstration than a full implementation, but it should
 work.
 
-$Id: session.py,v 1.10 2004/03/05 22:09:21 jim Exp $
+$Id: __init__.py,v 1.1 2004/03/10 12:11:19 srichter Exp $
 """
 import sha, time, string, random, hmac, logging
 from UserDict import IterableUserDict
@@ -31,9 +31,8 @@ from BTrees.OOBTree import OOBTree
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 
-from zope.app.interfaces.utilities.session import \
-        IBrowserIdManager, IBrowserId, ICookieBrowserIdManager, \
-        ISessionDataContainer, ISession
+from interfaces import IBrowserIdManager, IBrowserId, ICookieBrowserIdManager, \
+                       ISessionDataContainer, ISession
 from zope.app.container.interfaces import IContained
 
 cookieSafeTrans = string.maketrans("+/", "-.")
