@@ -173,8 +173,12 @@ class TestFileFinder:
             return
         # ignore tests that aren't in packages
         if not "__init__.py" in files:
+            if not files or files == ['CVS']:
+                return
+
             print "not a package", dir
             return
+
         for file in files:
             if file[:4] == "test" and file[-3:] == ".py":
                 path = join(dir, file)
