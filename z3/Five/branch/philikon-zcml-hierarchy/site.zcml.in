@@ -1,10 +1,13 @@
 <configure xmlns="http://namespaces.zope.org/zope"
 	   xmlns:five="http://namespaces.zope.org/five">
 
+  <!-- Copy this file to your INSTANCE_HOME directory and name it
+      'site.zcml' -->
+
   <include package="Products.Five" />
 
-  <include files="../package-includes/*-meta.zcml" />
-  <include files="../package-includes/*-configure.zcml" />
+  <include files="package-includes/*-meta.zcml" />
+  <include files="package-includes/*-configure.zcml" />
 
   <five:loadProducts />
 
