@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Network class.
 
-$Id: test_network.py,v 1.2 2003/05/13 17:39:12 gvanrossum Exp $
+$Id: test_network.py,v 1.3 2003/05/15 20:03:05 gvanrossum Exp $
 """
 
 import os
@@ -79,6 +79,15 @@ class TestNetwork(unittest.TestCase):
         self.assertEqual(self.network.rooturl, sample_rooturl)
         self.assertEqual(self.network.roottype, "http")
         self.assertEqual(self.network.rootpath, "/path")
+        self.assertEqual(self.network.user_passwd, "user:passwd")
+        self.assertEqual(self.network.host_port, "host:8080")
+
+    def test_setrooturl_nopath(self):
+        rooturl = "http://user:passwd@host:8080"
+        self.network.setrooturl(rooturl)
+        self.assertEqual(self.network.rooturl, rooturl)
+        self.assertEqual(self.network.roottype, "http")
+        self.assertEqual(self.network.rootpath, "/")
         self.assertEqual(self.network.user_passwd, "user:passwd")
         self.assertEqual(self.network.host_port, "host:8080")
 
