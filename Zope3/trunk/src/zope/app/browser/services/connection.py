@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection View classes
 
-$Id: connection.py,v 1.18 2003/08/19 23:10:55 srichter Exp $
+$Id: connection.py,v 1.19 2003/09/21 17:30:50 jim Exp $
 """
 from zope.app import zapi
 from zope.app.browser.services.service import ComponentAdding
@@ -56,4 +56,4 @@ class ConnectionAdding(ComponentAdding):
             error = _("${object} is not a Zope database adapter.")
             error.mapping['object'] = str(content)
 
-        return zapi.ContextSuper(ConnectionAdding, self).add(content)
+        return super(ConnectionAdding, self).add(content)

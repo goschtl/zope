@@ -13,7 +13,7 @@
 ##############################################################################
 """Cache registry support classes.
 
-$Id: cache.py,v 1.14 2003/08/19 23:10:55 srichter Exp $
+$Id: cache.py,v 1.15 2003/09/21 17:30:50 jim Exp $
 """
 from zope.app import zapi
 from zope.app.browser.services.service import ComponentAdding
@@ -56,4 +56,4 @@ class CacheAdding(ComponentAdding):
             error.mapping['object'] = str(content)
             raise TypeError(error)
 
-        return zapi.ContextSuper(CacheAdding, self).add(content)
+        return super(CacheAdding, self).add(content)
