@@ -10,8 +10,10 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""A utility module for content-type handling."""
-__version__='$Revision: 1.5 $'[11:-2]
+"""A utility module for content-type handling.
+
+$Id: content_types.py,v 1.6 2003/11/20 07:29:24 philikon Exp $
+"""
 
 import re, mimetypes
 
@@ -28,8 +30,6 @@ def text_type(s):
 
     else:
         return 'text/plain'
-
-
 
 # This gives us a hook to add content types that
 # aren't currently listed in the mimetypes module.
