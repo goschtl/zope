@@ -103,12 +103,19 @@ Zope Changes
         registered "active" and the id value is the registration name for the
         utility.
 
-      o Interfaces are now registered as and looked up as utilities.
-        The local interface service, which *only* provided an
-        interface browsing UI has been replaced by an
-        interface-browsing view on site managers.
+      o Permissions are now stored as utitlities. As for roles, I schemafied
+        the API to use 'id', 'title', and 'description'.
+
+      o Interfaces are now registered and looked up as utilities. The local
+        interface service, which *only* provided an interface browsing UI has
+        been replaced by an interface-browsing view on site managers.
 
       o SQL database connections are now managed as named utilities.
+
+    - The IPrincipal now uses 'id', 'title' and 'description instead of
+      'getId()', 'getTitle()', and 'getDescription()'. For
+      backwards-compatiblity 'getTitle()' and 'getDescription()' are available
+      with a deprecation warning.
 
     - Converted local Workflow Definitions from being registerable components
       to be local utilities. Therefore, **a lot** of boiler-plate registration

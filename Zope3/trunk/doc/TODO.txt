@@ -61,8 +61,6 @@ Things to do for the next release (in no particular order)
 
   - Caching (Naveen is working on this)
 
-  - Permissions
-
   - Session data managers
 
   - Query
