@@ -50,7 +50,7 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
                              HTTPCharsets)
 
         ztapi.provideUtility(IFactory, Factory(MessageCatalog),
-                             'Message Catalog')
+                             'zope.app.MessageCatalog')
 
         domain = TranslationDomain()
         domain.domain = 'default'
