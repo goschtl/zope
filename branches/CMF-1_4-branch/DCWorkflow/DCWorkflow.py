@@ -19,12 +19,11 @@ $Id$
 from string import join
 
 # Zope
-from ZODB import Persistent
 from AccessControl import getSecurityManager, ClassSecurityInfo
 from OFS.Folder import Folder
 from OFS.ObjectManager import bad_id
 from OFS.Traversable import Traversable
-from Globals import DTMLFile, PersistentMapping
+from Globals import DTMLFile
 import Acquisition
 from Acquisition import aq_inner, aq_parent
 import Globals
