@@ -19,8 +19,8 @@ principal information.  We create principal information using the
 Authentication
 --------------
 
-Principal folders provide the `IAuthenticationPlugin' interface.
-When we provide suitable credentials:
+Principal folders provide the `IAuthenticationPlugin` interface. When we provide suitable credentials:
+
 
   >>> from zope.testing.doctestunit import pprint
   >>> pprint(principals.authenticateCredentials({'login': 'login1', 
@@ -29,8 +29,9 @@ When we provide suitable credentials:
    {'description': u'',
     'login': 'login1',
     'title': 'Principal 1'})
-
-we get back a principal id and supplementary information, including the
+  
+ 
+We get back a principal id and supplementary information, including the
 principal title and description.  Note that the principal id is a
 concatenation of the principal-folder prefix and the name of the
 principal-information object within the folder.
