@@ -22,8 +22,8 @@ from Acquisition import aq_base, aq_inner, aq_parent
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 
-from interfaces.portal_actions import ActionInfo as IActionInfo
 from Expression import Expression
+from interfaces.portal_actions import ActionInfo as IActionInfo
 from permissions import View
 from utils import _checkPermission
 from utils import getToolByName
@@ -34,7 +34,9 @@ _unchanged = [] # marker
 class ActionInfo(UserDict):
     """ A lazy dictionary for Action infos.
     """
+
     __implements__ = IActionInfo
+
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, action, ec):
@@ -52,7 +54,6 @@ class ActionInfo(UserDict):
 
         else:
             self._action = action
-            self._ec = ec
             UserDict.__init__( self, action.getMapping() )
             self.data['name'] = self.data['title']
             del self.data['description']
@@ -77,6 +78,7 @@ class ActionInfo(UserDict):
         else:
             self.data['allowed'] = True
 
+        self._ec = ec
         self._lazy_keys = lazy_keys
 
     def __getitem__(self, key):

@@ -9,7 +9,9 @@ from Products.PythonScripts.PythonScript import manage_addPythonScript
 from Products.CMFCore.Expression import createExprContext
 from Products.CMFCore.Expression import Expression
 from Products.CMFCore.tests.base.dummy import DummyContent
+from Products.CMFCore.tests.base.dummy import DummySite
 from Products.CMFCore.tests.base.dummy import DummyTool as DummyMembershipTool
+from Products.CMFCore.tests.base.testcase import SecurityTest
 from Products.CMFCore.tests.base.testcase import TransactionalTest
 
 
@@ -66,6 +68,37 @@ class ActionInfoTests(TestCase):
         self.assertEqual( ai['available'], wanted['available'] )
         self.assertEqual( ai['allowed'], wanted['allowed'] )
         self.assertEqual( ai, wanted )
+
+
+class ActionInfoSecurityTests(SecurityTest):
+
+    def setUp(self):
+        SecurityTest.setUp(self)
+        self.site = DummySite('site').__of__(self.root)
+        self.site._setObject( 'portal_membership', DummyMembershipTool() )
+
+    def _makeOne(self, *args, **kw):
+        from Products.CMFCore.ActionInformation import ActionInfo
+
+        return ActionInfo(*args, **kw)
+
+    def test_create_from_dict(self):
+        WANTED = {'allowed': True, 'available': True, 'category': 'object',
+                  'id': 'foo', 'name': 'foo', 'permissions': ('View',),
+                  'title': 'foo', 'url': '', 'visible': True}
+
+        action = {'name': 'foo', 'url': '', 'permissions': ('View',)}
+        ec = createExprContext(self.site, self.site, None)
+        ai = self._makeOne(action, ec)
+
+        self.assertEqual( ai['id'], WANTED['id'] )
+        self.assertEqual( ai['title'], WANTED['title'] )
+        self.assertEqual( ai['url'], WANTED['url'] )
+        self.assertEqual( ai['category'], WANTED['category'] )
+        self.assertEqual( ai['visible'], WANTED['visible'] )
+        self.assertEqual( ai['available'], WANTED['available'] )
+        self.assertEqual( ai['allowed'], WANTED['allowed'] )
+        self.assertEqual( ai, WANTED )
 
 
 class ActionInformationTests(TransactionalTest):
@@ -164,6 +197,7 @@ class ActionInformationTests(TransactionalTest):
 def test_suite():
     return TestSuite((
         makeSuite(ActionInfoTests),
+        makeSuite(ActionInfoSecurityTests),
         makeSuite(ActionInformationTests),
         ))
 
