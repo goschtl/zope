@@ -89,12 +89,16 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.assert_(join(self.source, "ignorethis.txt")
                      in self.spec.excludes)
 
-    def test_normalizePath(self):
-        normalize = include.Specification("foo").normalizePath
+    # These two tests are really checking internal helpers, but
+    # they're a lot more reasonable to express separately from the
+    # public API.
+
+    def test_normalize_path(self):
+        normalize = self.spec.normalize_path
         self.check_normalize_paths(normalize)
 
-    def test_normalizePathOrURL(self):
-        normalize = include.Specification("foo").normalizePathOrURL
+    def test_normalize_path_or_url(self):
+        normalize = self.spec.normalize_path_or_url
         self.check_normalize_paths(normalize)
         self.check_normalize_urls(normalize)
 

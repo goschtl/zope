@@ -89,8 +89,8 @@ class Specification:
                     " both target and source parts",
                     filename, lineno)
             dest, src = parts
-            dest = self.normalizePath(dest, "destination", filename, lineno)
-            src = self.normalizePathOrURL(src, "source", filename, lineno)
+            dest = self.normalize_path(dest, "destination", filename, lineno)
+            src = self.normalize_path_or_url(src, "source", filename, lineno)
             if src == "-":
                 path = os.path.join(self.source, dest)
                 expansions = filter_names(glob.glob(path))
@@ -103,7 +103,7 @@ class Specification:
             else:
                 self.includes[dest] = src
 
-    def normalizePath(self, path, type, filename, lineno):
+    def normalize_path(self, path, type, filename, lineno):
         if ":" in path:
             scheme, rest = urllib.splittype(path)
             if len(scheme) == 1:
@@ -122,13 +122,13 @@ class Specification:
                 filename, lineno)
         return np.replace("/", os.sep)
 
-    def normalizePathOrURL(self, path, type, filename, lineno):
+    def normalize_path_or_url(self, path, type, filename, lineno):
         if ":" in path:
             scheme, rest = urllib.splittype(path)
             if len(scheme) != 1:
                 # should normalize the URL, but skip that for now
                 return path
-        return self.normalizePath(path, type, filename, lineno)
+        return self.normalize_path(path, type, filename, lineno)
 
 
 class InclusionProcessor:
