@@ -14,10 +14,9 @@
 """
 Setup for Placeful Worfklow Tests
 Revision information:
-$Id: workflowsetup.py,v 1.1 2003/05/08 17:27:20 jack-e Exp $
+$Id: workflowsetup.py,v 1.2 2003/06/03 14:38:29 stevea Exp $
 """
 from zope.app.traversing import traverse, getPath
-from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceConfiguration
 
@@ -28,14 +27,11 @@ from zope.app.services.servicenames import Authentication, Workflows
 from zope.app.interfaces.security import IAuthenticationService
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IPermissionService
-from zope.app.security.registries.principalregistry \
-     import principalRegistry
-from zope.app.security.registries.permissionregistry \
-     import permissionRegistry
+from zope.app.security.registries.principalregistry import principalRegistry
+from zope.app.security.registries.permissionregistry import permissionRegistry
 
 from zope.app.interfaces.dependable import IDependable
-from zope.app.services.tests.placefulsetup \
-     import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.attributeannotations import AttributeAnnotations
@@ -52,14 +48,11 @@ from zope.app.interfaces.services.configuration \
 
 from zope.app.workflow.service import WorkflowService
 
-
-
+from zope.interface import implements
 
 class WorkflowServiceForTests(WorkflowService):
 
-    __implements__ = WorkflowService.__implements__, IAttributeAnnotatable
-
-
+    implements(IAttributeAnnotatable)
 
 
 class WorkflowSetup(PlacefulSetup):
@@ -73,7 +66,7 @@ class WorkflowSetup(PlacefulSetup):
                        IAnnotations, AttributeAnnotations)
         provideAdapter(IAnnotatable, IDependable, Dependable)
         provideAdapter(IUseConfigurable, IUseConfiguration, UseConfiguration)
-        
+
         # Set up a local workflow service
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
@@ -103,17 +96,16 @@ class WorkflowSetup(PlacefulSetup):
         # XXX change to unique name
         self.service1 = traverse(self.default1, service_name1)
         path1 = "%s/%s" % (getPath(default1), service_name1)
-        configuration1 = ServiceConfiguration(Workflows, path1, self.rootFolder)
+        configuration1 = ServiceConfiguration(Workflows, path1,
+                                              self.rootFolder)
         self.cm1 = default1.getConfigurationManager()
         self.cm1.setObject('', configuration1)
         traverse(self.cm1, '1').status = Active
-
 
     def setupAuthService(self):
         self.root_sm.defineService(Authentication, IAuthenticationService)
         self.root_sm.provideService(Authentication, principalRegistry)
         return getService(self.rootFolder, Authentication)
-
 
     def setupRoleService(self):
         self.root_sm.defineService(Roles, IRoleService)
@@ -124,6 +116,4 @@ class WorkflowSetup(PlacefulSetup):
         self.root_sm.defineService(Permissions, IPermissionService)
         self.root_sm.provideService(Permissions, permissionRegistry)
         return getService(self.rootFolder, Permissions)
-
-        
 
