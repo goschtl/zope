@@ -11,6 +11,14 @@
       />
 
   <page
+       for="*"
+       name="getTopicTree"
+       class=".onlinehelp.OnlineHelpTopicView"
+       permission="zope.Public"
+       allowed_attributes="getTopicTree" 
+       />
+
+  <page
       name="+"
       menu="zmi_actions" title="Add"
       for="zope.app.interfaces.onlinehelp.IOnlineHelpTopic"

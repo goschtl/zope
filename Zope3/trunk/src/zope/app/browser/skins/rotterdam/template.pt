@@ -167,19 +167,14 @@
               </div>
             </div>
 
+            <!-- Tree of the help topics that appears on the help namespace -->
             <div class="box" id="help"
-                tal:define="results view/@@find_help_topics|nothing"
-                tal:condition="results">
-              <h4>Online Help</h4>
+                 tal:define="tree view/getTopicTree|nothing"
+                 tal:condition="tree">
+              <h4>Online Help</h4>              
               <div class="body">
-                <a href="#"
-                    tal:repeat="entry results"
-                            tal:attributes="href entry/url">
-                  <div tal:define="oddrow repeat/entry/odd"
-                      tal:attributes="class python:oddrow and 'even' or 'odd'"
-                      tal:content="entry/topic/title">Topic Title
-                  </div>
-                </a>
+                <div tal:content="structure tree"
+                     tal:omit-tag="">content of topicTree</div>
               </div>
             </div>
 
