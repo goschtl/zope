@@ -192,6 +192,30 @@ class DiscussionTests( SecurityTest ):
             assert has_path( catalog
                            , '/test/talkback/%s' % reply.getId() )
 
+    def test_itemWorkflowNotification(self):
+        test = self.root.test
+        test.allow_discussion = 1
+        talkback = self.discussion_tool.getDiscussionFor(test)
+
+        # Monkey patch into the class to test, urgh.
+        def notifyWorkflowCreated(self):
+            self.test_wf_notified = 1
+            DiscussionItem.inheritedAttribute('notifyWorkflowCreated')(self)
+        old_method = getattr(DiscussionItem, 'notifyWorkflowCreated', None)
+        DiscussionItem.notifyWorkflowCreated = notifyWorkflowCreated
+        DiscussionItem.test_wf_notified = 0
+
+        try:
+            reply_id = talkback.createReply(title='test', text='blah')
+            reply = talkback.getReplies()[0]
+            self.assertEqual(reply.test_wf_notified, 1)
+        finally:
+            delattr(DiscussionItem, 'test_wf_notified')
+            if old_method is None:
+                delattr(DiscussionItem, 'notifyWorkflowCreated')
+            else:
+                DiscussionItem.notifyWorkflowCreated = old_method
+
     def test_deletePropagation( self ):
 
         test = self.root.test
