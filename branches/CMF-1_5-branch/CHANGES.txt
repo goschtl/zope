@@ -28,6 +28,14 @@ After CMF-1.5.1beta
 
   Bug Fixes
 
+    - CMFCore.SkinsTool: Prevent adding skin layers with invalid path elements
+      There is a disconnect between the ability to define what can be ignored
+      inside DirectoryViews and what can be put into skins paths in
+      the SkinsTool. Now a check is done inside addSkinSelection that makes 
+      sure the same ignore-policy that is used for the DirectoryView is 
+      applied to the elements of a skin path.
+      (http://www.zope.org/Collectors/CMF/336)
+
     - CMFCore.FSZSQLMethod: Added configuration parameters that were left out.
       Some of the configuration parameters to ZSQL methods, specifically 
       those describing custom pluggable brains classes and the
