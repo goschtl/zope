@@ -2,59 +2,19 @@
 
   <adapter
       for="persistent.interfaces.IPersistent"
-      provides=".interfaces.IReference"
-      factory=".ReferenceToPersistent"
+      provides=".interfaces.IKeyReference"
+      factory=".persistent.KeyReferenceToPersistent"
       trusted="y"
       />
 
-  <class class=".ReferenceToPersistent">
-    <require permission="zope.Public" interface=".interfaces.IReference" />
+  <class class=".persistent.KeyReferenceToPersistent">
+    <require permission="zope.Public" interface=".interfaces.IKeyReference" />
   </class>
 
   <adapter
       for="persistent.interfaces.IPersistent"
       provides="ZODB.interfaces.IConnection"
-      factory="zope.app.uniqueid.connectionOfPersistent"
+      factory=".persistent.connectionOfPersistent"
       />
-
-  <localUtility class=".UniqueIdUtility">
-    <factory
-        id="zope.app.uniqueid.UniqueIdUtility"
-        />
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
-        />
-
-    <require
-        permission="zope.Public"
-        interface=".interfaces.IUniqueIdUtilityQuery"
-        />
-
-    <require
-        permission="zope.ManageContent"
-        interface=".interfaces.IUniqueIdUtilitySet"
-        />
-    <require
-        permission="zope.Public"
-        interface=".interfaces.IUniqueIdUtilityManage"
-        />
-
-  </localUtility>
-
-  <subscriber
-      factory=".removeUniqueIdSubscriber"
-      for="zope.app.location.interfaces.ILocation
-           zope.app.container.interfaces.IObjectRemovedEvent"
-      />
-
-  <subscriber
-      factory=".addUniqueIdSubscriber"
-      for="zope.app.location.interfaces.ILocation
-           zope.app.container.interfaces.IObjectAddedEvent"
-      />
-
-  <!-- Views -->
-  <include package=".browser" />
 
 </configure>

@@ -29,22 +29,23 @@ from zope.event import notify
 from zope.interface import implements
 from zope.security.proxy import removeSecurityProxy
 
-from zope.app.container.contained import Contained
-from zope.app.uniqueid.interfaces import IUniqueIdUtility, IReference
-from zope.app.uniqueid.interfaces import UniqueIdRemovedEvent
-from zope.app.uniqueid.interfaces import UniqueIdAddedEvent
 from zope.app import zapi
+
+from zope.app.container.contained import Contained
+from zope.app.keyreference.interfaces import IKeyReference
 from zope.app.location.interfaces import ILocation
 
+from zope.app.intid.interfaces import IIntIds
+from zope.app.intid.interfaces import IntIdRemovedEvent
+from zope.app.intid.interfaces import IntIdAddedEvent
 
-
-class UniqueIdUtility(Persistent, Contained):
+class IntIds(Persistent, Contained):
     """This utility provides a two way mapping between objects and
     integer ids.
 
-    IReferences to objects are stored in the indexes.
+    IKeyReferences to objects are stored in the indexes.
     """
-    implements(IUniqueIdUtility)
+    implements(IIntIds)
 
     _v_nextid = None
 
@@ -68,11 +69,11 @@ class UniqueIdUtility(Persistent, Contained):
         return default
 
     def getId(self, ob):
-        ref = IReference(ob)
+        ref = IKeyReference(ob)
         return self.ids[ref]
 
     def queryId(self, ob, default=None):
-        ref = IReference(ob)
+        ref = IKeyReference(ob)
         return self.ids.get(ref, default)
 
     def _generateId(self):
@@ -94,7 +95,7 @@ class UniqueIdUtility(Persistent, Contained):
     def register(self, ob):
         # Note that we'll still need to keep this proxy removal.
         ob = removeSecurityProxy(ob)
-        ref = IReference(ob)
+        ref = IKeyReference(ob)
         if ref in self.ids:
             return self.ids[ref]
         uid = self._generateId()
@@ -103,54 +104,12 @@ class UniqueIdUtility(Persistent, Contained):
         return uid
 
     def unregister(self, ob):
-        ref = IReference(ob)
+        ref = IKeyReference(ob)
         uid = self.ids[ref]
         del self.refs[uid]
         del self.ids[ref]
 
-
-class ReferenceToPersistent(object):
-    """An IReference for persistent object which is comparable.
-
-    These references compare by _p_oids of the objects they reference.
-    """
-    implements(IReference)
-
-    def __init__(self, object):
-        if not getattr(object, '_p_oid', None):
-            IConnection(object).add(object)
-        self.object = object
-
-    def __call__(self):
-        return self.object
-
-    def __hash__(self):
-        return hash(self.object._p_oid)
-
-    def __cmp__(self, other):
-        if not isinstance(other, ReferenceToPersistent):
-            raise TypeError("Cannot compare ReferenceToPersistent with %r" %
-                            (other,))
-        return cmp(self.object._p_oid, other.object._p_oid)
-
-
-def connectionOfPersistent(ob):
-    """An adapter which gets a ZODB connection of a persistent object.
-
-    We are assuming the object has a parent if it has been created in
-    this transaction.
-
-    Raises ValueError if it is impossible to get a connection.
-    """
-    cur = ob
-    while not getattr(cur, '_p_jar', None):
-        cur = getattr(cur, '__parent__', None)
-        if cur is None:
-            raise ValueError('Can not get connection of %r' % (ob,))
-    return cur._p_jar
-
-
-def removeUniqueIdSubscriber(ob, event):
+def removeIntIdSubscriber(ob, event):
     """A subscriber to ObjectRemovedEvent
 
     Removes the unique ids registered for the object in all the unique
@@ -158,21 +117,29 @@ def removeUniqueIdSubscriber(ob, event):
     """
 
     # Notify the catalogs that this object is about to be removed.
-    notify(UniqueIdRemovedEvent(ob, event))
+    notify(IntIdRemovedEvent(ob, event))
 
-    for utility in zapi.getAllUtilitiesRegisteredFor(IUniqueIdUtility):
+    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds):
         try:
             utility.unregister(ob)
         except KeyError:
             pass
 
-def addUniqueIdSubscriber(ob, event):
+def addIntIdSubscriber(ob, event):
     """A subscriber to ObjectAddedEvent
 
     Registers the object added in all unique id utilities and fires
     an event for the catalogs.
     """
-    for utility in zapi.getAllUtilitiesRegisteredFor(IUniqueIdUtility):
+    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds):
         utility.register(ob)
 
-    notify(UniqueIdAddedEvent(ob, event))
+    notify(IntIdAddedEvent(ob, event))
+
+# BBB
+UniqueIdUtility = IntIds
+import zope.app.keyreference
+ReferenceToPersistent = zope.app.keyreference.KeyReferenceToPersistent
+import sys
+sys.modules['zope.app.uniqueid'] = sys.modules['zope.app.intid']
+del sys

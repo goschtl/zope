@@ -44,29 +44,30 @@ class ConnectionStub(object):
 class ReferenceSetupMixin(object):
     """Registers adapters ILocation->IConnection and IPersistent->IReference"""
     def setUp(self):
-        from zope.app.uniqueid import connectionOfPersistent
-        from zope.app.uniqueid import ReferenceToPersistent
-        from zope.app.uniqueid.interfaces import IReference
+        from zope.app.keyreference.persistent import connectionOfPersistent
+        from zope.app.keyreference.persistent import KeyReferenceToPersistent
+        from zope.app.keyreference.interfaces import IKeyReference
         self.root = setup.placefulSetUp(site=True)
         ztapi.provideAdapter(ILocation, IConnection, connectionOfPersistent)
-        ztapi.provideAdapter(IPersistent, IReference, ReferenceToPersistent)
+        ztapi.provideAdapter(IPersistent, IKeyReference,
+                             KeyReferenceToPersistent)
 
     def tearDown(self):
         setup.placefulTearDown()
 
 
-class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
+class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
     def test_interface(self):
-        from zope.app.uniqueid.interfaces import IUniqueIdUtility
-        from zope.app.uniqueid import UniqueIdUtility
+        from zope.app.intid.interfaces import IIntIds
+        from zope.app.intid import IntIds
 
-        verifyObject(IUniqueIdUtility, UniqueIdUtility())
+        verifyObject(IIntIds, IntIds())
 
     def test(self):
-        from zope.app.uniqueid import UniqueIdUtility
+        from zope.app.intid import IntIds
 
-        u = UniqueIdUtility()
+        u = IntIds()
         obj = P()
         obj._p_jar = ConnectionStub()
 
@@ -89,9 +90,9 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(KeyError, u.getId, obj)
 
     def test_len_items(self):
-        from zope.app.uniqueid import UniqueIdUtility
-        from zope.app.uniqueid import ReferenceToPersistent
-        u = UniqueIdUtility()
+        from zope.app.intid import IntIds
+        from zope.app.keyreference.persistent import KeyReferenceToPersistent
+        u = IntIds()
         obj = P()
         obj._p_jar = ConnectionStub()
 
@@ -99,7 +100,7 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(u.items(), [])
 
         uid = u.register(obj)
-        ref = ReferenceToPersistent(obj)
+        ref = KeyReferenceToPersistent(obj)
         self.assertEquals(len(u), 1)
         self.assertEquals(u.items(), [(uid, ref)])
 
@@ -107,7 +108,7 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         obj2.__parent__ = obj
 
         uid2 = u.register(obj2)
-        ref2 = ReferenceToPersistent(obj2)
+        ref2 = KeyReferenceToPersistent(obj2)
         self.assertEquals(len(u), 2)
         result = u.items()
         expected = [(uid, ref), (uid2, ref2)]
@@ -121,9 +122,9 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(u.items(), [])
 
     def test_getenrateId(self):
-        from zope.app.uniqueid import UniqueIdUtility
+        from zope.app.intid import IntIds
 
-        u = UniqueIdUtility()
+        u = IntIds()
         self.assertEquals(u._v_nextid, None)
         id1 = u._generateId()
         self.assert_(u._v_nextid is not None)
@@ -136,73 +137,11 @@ class TestUniqueIdUtility(ReferenceSetupMixin, unittest.TestCase):
         self.assertNotEqual(id3, id1)
 
 
-class TestReferenceToPersistent(ReferenceSetupMixin, unittest.TestCase):
-
-    def test(self):
-        from zope.app.uniqueid.interfaces import IReference
-        from zope.app.uniqueid import ReferenceToPersistent
-
-        ob = P()
-        ob._p_oid = 'x' * 20
-        ref = ReferenceToPersistent(ob)
-        verifyObject(IReference, ref)
-        self.assert_(ref() is ob)
-
-        parent = P()
-        conn = ConnectionStub()
-        parent._p_jar = conn
-        ob2 = P()
-        ob2.__parent__ = parent
-        ref = ReferenceToPersistent(ob2)
-        ob = ref()
-        self.assert_(ob is ob2)
-        self.assertEquals(ob._p_jar, conn)
-
-    def test_compare(self):
-        from zope.app.uniqueid import ReferenceToPersistent
-
-        ob1 = Persistent()
-        ob2 = Persistent()
-        ob3 = Persistent()
-        ob1._p_oid = 'x' * 20
-        ob2._p_oid = ob3._p_oid = 'y' * 20
-        ref1 = ReferenceToPersistent(ob1)
-        ref2 = ReferenceToPersistent(ob2)
-        ref3 = ReferenceToPersistent(ob3)
-        self.assert_(ref1 < ref2)
-        self.assert_(ref2 == ref3)
-        self.assertRaises(TypeError, ref1.__cmp__, object())
-
-
-class TestConnectionOfPersistent(unittest.TestCase):
-
-    def test(self):
-        from zope.app.uniqueid import connectionOfPersistent
-
-        conn = object()
-
-        ob1 = P()
-        ob1._p_jar = conn
-
-        ob2 = P()
-        ob2.__parent__ = ob1
-
-        ob3 = P()
-
-        self.assertEquals(connectionOfPersistent(ob1), conn)
-        self.assertEquals(connectionOfPersistent(ob2), conn)
-        self.assertRaises(ValueError, connectionOfPersistent, ob3)
-
-        ob3.__parent__ = object()
-        self.assertRaises(ValueError, connectionOfPersistent, ob3)
-        self.assertRaises(ValueError, connectionOfPersistent, object())
-
-
 class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
     def setUp(self):
-        from zope.app.uniqueid.interfaces import IUniqueIdUtility
-        from zope.app.uniqueid import UniqueIdUtility
+        from zope.app.intid.interfaces import IIntIds
+        from zope.app.intid import IntIds
         from zope.app.folder import Folder, rootFolder
 
         ReferenceSetupMixin.setUp(self)
@@ -210,7 +149,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         sm = zapi.getServices(self.root)
         setup.addService(sm, Utilities, LocalUtilityService())
         self.utility = setup.addUtility(sm, '1',
-                                        IUniqueIdUtility, UniqueIdUtility())
+                                        IIntIds, IntIds())
 
         self.root['folder1'] = Folder()
         self.root._p_jar = ConnectionStub()
@@ -219,13 +158,13 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
         sm1_1 = setup.createServiceManager(self.folder1_1)
         setup.addService(sm1_1, Utilities, LocalUtilityService())
-        self.utility1 = setup.addUtility(sm1_1, '2', IUniqueIdUtility,
-                                         UniqueIdUtility())
+        self.utility1 = setup.addUtility(sm1_1, '2', IIntIds,
+                                         IntIds())
 
-    def test_removeUniqueIdSubscriber(self):
-        from zope.app.uniqueid import removeUniqueIdSubscriber
+    def test_removeIntIdSubscriber(self):
+        from zope.app.intid import removeIntIdSubscriber
         from zope.app.container.contained import ObjectRemovedEvent
-        from zope.app.uniqueid.interfaces import IUniqueIdRemovedEvent
+        from zope.app.intid.interfaces import IIntIdRemovedEvent
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
         id = self.utility.register(folder)
@@ -235,11 +174,11 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         setSite(self.folder1_1)
 
         events = []
-        ztapi.handle([IUniqueIdRemovedEvent], events.append)
+        ztapi.handle([IIntIdRemovedEvent], events.append)
 
         # This should unregister the object in all utilities, not just the
         # nearest one.
-        removeUniqueIdSubscriber(folder, ObjectRemovedEvent(parent_folder))
+        removeIntIdSubscriber(folder, ObjectRemovedEvent(parent_folder))
 
         self.assertRaises(KeyError, self.utility.getObject, id)
         self.assertRaises(KeyError, self.utility1.getObject, id1)
@@ -248,20 +187,20 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(events[0].object, folder)
         self.assertEquals(events[0].original_event.object, parent_folder)
 
-    def test_addUniqueIdSubscriber(self):
-        from zope.app.uniqueid import addUniqueIdSubscriber
+    def test_addIntIdSubscriber(self):
+        from zope.app.intid import addIntIdSubscriber
         from zope.app.container.contained import ObjectAddedEvent
-        from zope.app.uniqueid.interfaces import IUniqueIdAddedEvent
+        from zope.app.intid.interfaces import IIntIdAddedEvent
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
         setSite(self.folder1_1)
 
         events = []
-        ztapi.handle([IUniqueIdAddedEvent], events.append)
+        ztapi.handle([IIntIdAddedEvent], events.append)
 
         # This should unregister the object in all utilities, not just the
         # nearest one.
-        addUniqueIdSubscriber(folder, ObjectAddedEvent(parent_folder))
+        addIntIdSubscriber(folder, ObjectAddedEvent(parent_folder))
 
         # Check that the folder got registered
         id = self.utility.getId(folder)
@@ -274,9 +213,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUniqueIdUtility))
-    suite.addTest(unittest.makeSuite(TestReferenceToPersistent))
-    suite.addTest(unittest.makeSuite(TestConnectionOfPersistent))
+    suite.addTest(unittest.makeSuite(TestIntIds))
     suite.addTest(unittest.makeSuite(TestSubscribers))
     return suite
 

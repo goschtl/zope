@@ -26,7 +26,7 @@ from zope.interface.verify import verifyObject
 from zope.app.tests import ztapi, setup
 from zope.app.tests.placelesssetup import PlacelessSetup
 from BTrees.IIBTree import IISet
-from zope.app.uniqueid.interfaces import IUniqueIdUtility
+from zope.app.intid.interfaces import IIntIds
 
 from zope.index.interfaces import IInjection, ISimpleQuery
 from zope.app.catalog.interfaces import ICatalog
@@ -45,9 +45,9 @@ class ReferenceStub:
         return self.obj
 
 
-class UniqueIdUtilityStub:
-    """A stub for UniqueIdUtility."""
-    implements(IUniqueIdUtility)
+class IntIdsStub:
+    """A stub for IntIds."""
+    implements(IIntIds)
 
     def __init__(self):
         self.ids = {}
@@ -132,9 +132,9 @@ class Test(PlacelessSetup, unittest.TestCase):
         del catalog['author']
         self.assertEqual(list(catalog.keys()), ['title'])
 
-    def _frob_uniqueidutil(self, ints=True, apes=True):
-        uidutil = UniqueIdUtilityStub()
-        ztapi.provideUtility(IUniqueIdUtility, uidutil)
+    def _frob_intidutil(self, ints=True, apes=True):
+        uidutil = IntIdsStub()
+        ztapi.provideUtility(IIntIds, uidutil)
         # whack some objects in our little objecthub
         if ints:
             for i in range(10):
@@ -151,7 +151,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_updateindexes(self):
         """Test a full refresh."""
-        self._frob_uniqueidutil()
+        self._frob_intidutil()
         catalog = Catalog()
         catalog['author'] = StubIndex('author', None)
         catalog['title'] = StubIndex('author', None)
@@ -162,7 +162,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_updateindex(self):
         """Test a full refresh."""
-        self._frob_uniqueidutil()
+        self._frob_intidutil()
         catalog = Catalog()
         catalog['author'] = StubIndex('author', None)
         catalog['title'] = StubIndex('author', None)
@@ -174,7 +174,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_basicsearch(self):
         """Test the simple search results interface."""
-        self._frob_uniqueidutil(ints=0)
+        self._frob_intidutil(ints=0)
         catalog = Catalog()
         catalog['simiantype'] = StubIndex('simiantype', None)
         catalog['name'] = StubIndex('name', None)
@@ -230,7 +230,7 @@ class TestEventSubscribers(unittest.TestCase):
         sm = zapi.getServices(self.root)
         setup.addService(sm, Utilities, LocalUtilityService())
         self.utility = setup.addUtility(
-            sm, '', IUniqueIdUtility, UniqueIdUtilityStub())
+            sm, '', IIntIds, IntIdsStub())
         self.cat = setup.addUtility(sm, '', ICatalog, CatalogStub())
 
     def tearDown(self):
@@ -239,13 +239,13 @@ class TestEventSubscribers(unittest.TestCase):
     def test_indexDocSubscriber(self):
         from zope.app.catalog.catalog import indexDocSubscriber
         from zope.app.container.contained import ObjectAddedEvent
-        from zope.app.uniqueid.interfaces import UniqueIdAddedEvent
+        from zope.app.intid.interfaces import IntIdAddedEvent
 
         ob = Stub()
         ob2 = Stub()
 
         id = self.utility.register(ob)
-        indexDocSubscriber(UniqueIdAddedEvent(ob, ObjectAddedEvent(ob2)))
+        indexDocSubscriber(IntIdAddedEvent(ob, ObjectAddedEvent(ob2)))
 
         self.assertEqual(self.cat.regs, [(id, ob)])
         self.assertEqual(self.cat.unregs, [])
@@ -271,7 +271,7 @@ class TestEventSubscribers(unittest.TestCase):
     def test_unindexDocSubscriber(self):
         from zope.app.catalog.catalog import unindexDocSubscriber
         from zope.app.container.contained import ObjectRemovedEvent
-        from zope.app.uniqueid.interfaces import UniqueIdRemovedEvent
+        from zope.app.intid.interfaces import IntIdRemovedEvent
 
         ob = Stub()
         ob2 = Stub()
@@ -279,12 +279,12 @@ class TestEventSubscribers(unittest.TestCase):
         id = self.utility.register(ob)
 
         unindexDocSubscriber(
-            UniqueIdRemovedEvent(ob2, ObjectRemovedEvent(ob3)))
+            IntIdRemovedEvent(ob2, ObjectRemovedEvent(ob3)))
         self.assertEqual(self.cat.unregs, [])
         self.assertEqual(self.cat.regs, [])
 
         unindexDocSubscriber(
-            UniqueIdRemovedEvent(ob, ObjectRemovedEvent(ob3)))
+            IntIdRemovedEvent(ob, ObjectRemovedEvent(ob3)))
         self.assertEqual(self.cat.unregs, [id])
         self.assertEqual(self.cat.regs, [])
 

@@ -19,7 +19,7 @@ from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
     
 
-class UniqueIdUtilityView(object):
+class IntIdsView(object):
 
     def len(self):
         return len(removeSecurityProxy(self.context).refs)

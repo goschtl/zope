@@ -14,7 +14,7 @@ TODO: Filters
       to spcify a names filter adapter.
 
 Catalogs use a unique-id tool to assign short (integer) ids to
-objects.  Before creating a catalog, you must create a uniqueid tool:
+objects.  Before creating a catalog, you must create a intid tool:
 
   >>> print http(r"""
   ... POST /++etc++site/default/AddUtility/action.html HTTP/1.1
@@ -23,17 +23,17 @@ objects.  Before creating a catalog, you must create a uniqueid tool:
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/AddUtility
   ... 
-  ... type_name=BrowserAdd__zope.app.uniqueid.UniqueIdUtility&id=&add=+Add+""")
+  ... type_name=BrowserAdd__zope.app.intid.IntIds&id=&add=+Add+""")
   HTTP/1.1 303 ...
 
 And register it:
 
   >>> print http(r"""
-  ... POST /++etc++site/default/UniqueIdUtility/addRegistration.html HTTP/1.1
+  ... POST /++etc++site/default/IntIds/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
   ... Content-Length: 864
   ... Content-Type: multipart/form-data; boundary=---------------------------68417209514430962931254091825
-  ... Referer: http://localhost:8081/++etc++site/default/UniqueIdUtility/addRegistration.html
+  ... Referer: http://localhost:8081/++etc++site/default/IntIds/addRegistration.html
   ... 
   ... -----------------------------68417209514430962931254091825
   ... Content-Disposition: form-data; name="field.name"
@@ -42,7 +42,7 @@ And register it:
   ... -----------------------------68417209514430962931254091825
   ... Content-Disposition: form-data; name="field.interface"
   ... 
-  ... zope.app.uniqueid.interfaces.IUniqueIdUtility
+  ... zope.app.intid.interfaces.IIntIds
   ... -----------------------------68417209514430962931254091825
   ... Content-Disposition: form-data; name="field.interface-empty-marker"
   ... 

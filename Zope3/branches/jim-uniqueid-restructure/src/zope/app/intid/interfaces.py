@@ -6,20 +6,7 @@ $Id$
 from zope.interface import Interface, Attribute, implements
 
 
-class IReference(Interface):
-    """A reference to an object (similar to a weak reference).
-
-    The references are compared by their hashes.
-    """
-
-    def __call__():
-        """Get the object this reference is linking to."""
-
-    def __hash__():
-        """Get a unique identifier of the referenced object."""
-
-
-class IUniqueIdUtilityQuery(Interface):
+class IIntIdsQuery(Interface):
 
     def getObject(uid):
         """Return an object by its unique id"""
@@ -40,7 +27,7 @@ class IUniqueIdUtilityQuery(Interface):
         Return the default if the object isn't registered
         """
 
-class IUniqueIdUtilitySet(Interface):
+class IIntIdsSet(Interface):
 
     def register(ob):
         """Register an object and returns a unique id generated for it.
@@ -54,7 +41,7 @@ class IUniqueIdUtilitySet(Interface):
         ValueError is raised if ob is not registered previously.
         """
 
-class IUniqueIdUtilityManage(Interface):
+class IIntIdsManage(Interface):
     """Some methods used by the view."""
 
     def __len__():
@@ -64,15 +51,14 @@ class IUniqueIdUtilityManage(Interface):
         """Return a list of (id, object) pairs."""
 
 
-class IUniqueIdUtility(IUniqueIdUtilitySet, IUniqueIdUtilityQuery,
-                       IUniqueIdUtilityManage):
+class IIntIds(IIntIdsSet, IIntIdsQuery, IIntIdsManage):
     """A utility that assigns unique ids to objects.
 
     Allows to query object by id and id by object.
     """
 
 
-class IUniqueIdRemovedEvent(Interface):
+class IIntIdRemovedEvent(Interface):
     """A unique id will be removed
 
     The event is published before the unique id is removed
@@ -84,19 +70,19 @@ class IUniqueIdRemovedEvent(Interface):
     original_event = Attribute("The IObjectRemoveEvent related to this event")
 
 
-class UniqueIdRemovedEvent:
+class IntIdRemovedEvent:
     """The event which is published before the unique id is removed
     from the utility so that the catalogs can unindex the object.
     """
 
-    implements(IUniqueIdRemovedEvent)
+    implements(IIntIdRemovedEvent)
 
     def __init__(self, object, event):
         self.object = object
         self.original_event = event
 
 
-class IUniqueIdAddedEvent(Interface):
+class IIntIdAddedEvent(Interface):
     """A unique id has been added
 
     The event gets sent when an object is registered in a
@@ -108,12 +94,12 @@ class IUniqueIdAddedEvent(Interface):
     original_event = Attribute("The ObjectAddedEvent related to this event")
 
 
-class UniqueIdAddedEvent:
+class IntIdAddedEvent:
     """The event which gets sent when an object is registered in a
     unique id utility.
     """
 
-    implements(IUniqueIdAddedEvent)
+    implements(IIntIdAddedEvent)
 
     def __init__(self, object, event):
         self.object = object

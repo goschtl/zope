@@ -35,7 +35,7 @@
 
 <subscriber
     factory=".catalog.indexDocSubscriber"
-    for="zope.app.uniqueid.interfaces.IUniqueIdAddedEvent"
+    for="zope.app.intid.interfaces.IIntIdAddedEvent"
     />
 
 <subscriber
@@ -45,7 +45,7 @@
 
 <subscriber
     factory=".catalog.unindexDocSubscriber"
-    for="zope.app.uniqueid.interfaces.IUniqueIdRemovedEvent"
+    for="zope.app.intid.interfaces.IIntIdRemovedEvent"
     />
 
 

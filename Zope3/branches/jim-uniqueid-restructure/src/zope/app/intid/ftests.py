@@ -26,11 +26,11 @@ from zope.app.tests.setup import addUtility
 from zope.app.tests.functional import BrowserTestCase
 
 
-class TestUniqueIdUtility(BrowserTestCase):
+class TestIntIds(BrowserTestCase):
 
     def setUp(self):
-        from zope.app.uniqueid import UniqueIdUtility
-        from zope.app.uniqueid.interfaces import IUniqueIdUtility
+        from zope.app.intid import IntIds
+        from zope.app.intid.interfaces import IIntIds
 
         BrowserTestCase.setUp(self)
 
@@ -38,10 +38,10 @@ class TestUniqueIdUtility(BrowserTestCase):
         root = self.getRootFolder()
 
         sm = zapi.traverse(root, '/++etc++site')
-        addUtility(sm, 'uniqueid', IUniqueIdUtility, UniqueIdUtility())
+        addUtility(sm, 'intid', IIntIds, IntIds())
         commit()
 
-        type_name = 'BrowserAdd__zope.app.uniqueid.UniqueIdUtility'
+        type_name = 'BrowserAdd__zope.app.intid.IntIds'
 
         response = self.publish(
             self.basepath + '/contents.html',
@@ -53,12 +53,12 @@ class TestUniqueIdUtility(BrowserTestCase):
 #        default = zapi.traverse(root, '/++etc++site/default')
 #        rm = default.getRegistrationManager()
 #        registration = UtilityRegistration(
-#            'cwm', IUniqueIdUtility, self.basepath+'/uniqueid')
+#            'cwm', IIntIds, self.basepath+'/intid')
 #        pd_id = rm.addRegistration(registration)
 #        zapi.traverse(rm, pd_id).status = ActiveStatus
 
     def test(self):
-        response = self.publish(self.basepath + '/uniqueid/@@index.html',
+        response = self.publish(self.basepath + '/intid/@@index.html',
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 200)
         # The utility registers in itself when it is being added
@@ -66,11 +66,11 @@ class TestUniqueIdUtility(BrowserTestCase):
         self.assert_('<a href="/++etc++site">/++etc++site</a>'
                      not in response.getBody())
 
-        response = self.publish(self.basepath + '/uniqueid/@@populate',
+        response = self.publish(self.basepath + '/intid/@@populate',
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 302)
 
-        response = self.publish(self.basepath + '/uniqueid/@@index.html',
+        response = self.publish(self.basepath + '/intid/@@index.html',
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 200)
         body = response.getBody()
@@ -81,7 +81,7 @@ class TestUniqueIdUtility(BrowserTestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestUniqueIdUtility))
+    suite.addTest(unittest.makeSuite(TestIntIds))
     return suite
 
 
