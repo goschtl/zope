@@ -13,7 +13,7 @@
 // A library for manipulating objects on a page with object selection,
 // context menus, and drag and drop.  Mostly DOM 2 oriented, with bits
 // for IE compatibility.
-// $Id: pdlib.js,v 1.2 2002/11/21 19:57:39 shane Exp $
+// $Id: pdlib.js,v 1.3 2002/12/02 20:59:10 shane Exp $
 
 // The following variables and functions are documented for use by
 // scripts that use this library:
@@ -21,6 +21,7 @@
 //   pd_node_setup
 //   pd_selected_item
 //   pd_selected_items
+//   pd_library_version
 //
 //   pd_stopEvent()
 //   pd_findEventTarget()
@@ -38,11 +39,12 @@
 // See the documentation for descriptions.
 // All other names are subject to change in future revisions.
 
+var pd_library_version = '0.1';  // The pdlib version.  Avoid using this!
 var pd_open_context_menu = null; // The context menu node being displayed
 var pd_drag_event = null;        // A pd_DragEvent object while dragging
 var pd_selected_items = null;    // List of selected items
 var pd_selected_item = null;     // Non-null when exactly one item is selected
-var pd_drag_select_mode = null; // In drag-select mode, -1 or 1, otherwise null
+var pd_drag_select_mode = null;  // -1 or 1 in drag-select mode, otherwise null
 var pd_node_setup = {};          // Object containing node setup functions
 var pd_max_contextmenu_width = 250; // Threshold for faulty browsers
 var pd_invisible_targets = [];   // A list of normally invisible drop targets
@@ -133,7 +135,7 @@ function pd_showContextMenu(menunode, e) {
   return false;
 }
 
-function pd_hideContextMenu(e) {
+function pd_hideContextMenu() {
   if (pd_open_context_menu) {
     pd_open_context_menu.style.visibility = "hidden";
     pd_open_context_menu = null;
@@ -355,6 +357,7 @@ function pd_select(node) {
       pd_selected_items.push(node);
     else
       pd_selected_items = pd_selected_items.concat([node]);
+    pd_changedSelection();
   }
   pd_highlight(node, true);
 }
@@ -496,13 +499,14 @@ function pd_setupPage(node) {
   pd_setupNodeAndDescendants(node);
 }
 
-function pd_setupDropTarget(node) {
+function pd_setupDropTarget(node, selectable) {
   function call_highlight() {
     return pd_highlightDropTarget(node);
   }
   node.onmouseover = call_highlight;
   node.onmouseout = pd_unhighlightDropTarget;
-  node.onmousedown = pd_stopEvent; // Prevent accidental selection
+  if (!selectable)
+    node.onmousedown = pd_stopEvent; // Prevent accidental selection
 }
 
 function pd_setupContextMenuDefinition(node) {
