@@ -5,10 +5,6 @@ Things to do for the next release (in no particular order)
 Features
 --------
 
-- Finish simplification of component architecture.
-
-  o Convert services to utilities (Stephan)
-
 - Finish new Message support (Phillip)
 
 - Fix final issues relating the new PAS and related UIs
@@ -48,9 +44,6 @@ Miscellaneous
 
   o Run book sources against source tree (Stephan and Phillip)
 
-- Create a new ZODB generation for the following objects:
-
-    - PluggableAuthenticationService --> PAS
 
 Bug Fixes
 ---------
@@ -72,8 +65,6 @@ Bug Fixes
 * 306: page/view-menu-layer configuration
 
 * 307: browser:addMenuItem and broken view references
-
-* 310: Two test failures under Python 2.4 (Stephan)
 
 * 313: importchecker.py ignores assignment to module attributes 
 
