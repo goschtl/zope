@@ -161,6 +161,10 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
             int i;
 
             if (names_dict == NULL) goto finally;
+            /* names_dict is private to this type, so there really shouldn't
+             * be anything in it already.
+             */
+            decorator->names_dict = names_dict;
             for (i=0; i<size; ++i) {
                 temp = PySequence_Fast_GET_ITEM(fast_names, i);
                 if (!PyString_CheckExact(temp)) {
@@ -172,10 +176,6 @@ decorate_init(PyObject *self, PyObject *args, PyObject *kwds)
                     goto finally;
                 }
             }
-            /* names_dict is private to this type, so there really shouldn't
-             * be anything in it already.
-             */
-            decorator->names_dict = names_dict;
         }
         /* otherwise, names == (), and names_dict == NULL */
 
