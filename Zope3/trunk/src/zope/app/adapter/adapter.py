@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.9 2004/04/17 14:33:06 srichter Exp $
+$Id: adapter.py,v 1.10 2004/04/23 13:43:33 hdima Exp $
 """
 __metaclass__ = type
 
@@ -35,6 +35,7 @@ import zope.component.interfaces
 import zope.component.adapter
 import zope.interface
 import zope.schema
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class LocalSurrogate(Surrogate):
     """Local surrogates
@@ -276,39 +277,39 @@ class IAdapterRegistration(
     zope.app.registration.interfaces.IRegistration):
 
     required = zope.app.component.interfacefield.InterfaceField(
-        title = u"For interface",
-        description = u"The interface of the objects being adapted",
+        title = _(u"For interface"),
+        description = _(u"The interface of the objects being adapted"),
         readonly = True,
         basetype = None,
         )
 
     provided = zope.app.component.interfacefield.InterfaceField(
-        title = u"Provided interface",
-        description = u"The interface provided",
+        title = _(u"Provided interface"),
+        description = _(u"The interface provided"),
         readonly = True,
         required = True,
         )
 
     name = zope.schema.TextLine(
-        title=u"Name",
+        title=_(u"Name"),
         readonly=True,
         required=False,
         )
 
     factoryName = zope.schema.BytesLine(
-        title=u"The dotted name of a factory for creating the adapter",
+        title=_(u"The dotted name of a factory for creating the adapter"),
         readonly = True,
         required = True,
         )
 
     permission = zope.app.security.permission.PermissionField(
-        title=u"The permission required for use",
+        title=_(u"The permission required for use"),
         readonly=False,
         required=False,
         )
         
     factory = zope.interface.Attribute(
-        "Factory to be called to construct the component"
+        _("Factory to be called to construct the component")
         )
 
 class AdapterRegistration(

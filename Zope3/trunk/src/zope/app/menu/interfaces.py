@@ -13,9 +13,10 @@
 ##############################################################################
 """Locale Menu Service interfaces
 
-$Id: interfaces.py,v 1.1 2004/03/10 23:10:43 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/04/23 13:43:35 hdima Exp $
 """
 from zope.schema import Bool
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.publisher.interfaces.browser import \
      IBrowserMenu, IBrowserMenuService
 
@@ -24,9 +25,9 @@ class ILocalBrowserMenu(IBrowserMenu):
     same name that are higher up the chain."""
 
     inherit = Bool(
-        title=u"Inherit Items",
-        description=u"If true, this menu will inherit menu items from menus"
-                    u"higher up.",
+        title=_(u"Inherit Items"),
+        description=_(u"If true, this menu will inherit menu items from menus"
+                    u"higher up."),
         default=True,
         required=True)
 

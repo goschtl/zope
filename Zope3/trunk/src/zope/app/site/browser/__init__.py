@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.7 2004/04/08 21:02:41 jim Exp $
+$Id: __init__.py,v 1.8 2004/04/23 13:43:36 hdima Exp $
 """
 from zope.proxy import removeAllProxies
 from zope.app import zapi
@@ -327,7 +327,8 @@ def gatherConfiguredServices(sm, request, items=None):
             if sm.queryService(type_name) is not None:
                 names.append(type_name)
                 items[type_name] = {'name': type_name, 'url': '',
-                    'parent': 'global', 'disabled': False, 'manageable': False}
+                    'parent': _('global'), 'disabled': False,
+                    'manageable': False}
         return
 
     for name in sm.listRegistrationNames():

@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.4 2004/04/17 15:13:10 jim Exp $
+$Id: pagefolder.py,v 1.5 2004/04/23 13:43:36 hdima Exp $
 """
 from zope.interface import Interface, implements
 from zope.schema import BytesLine, Bool, Field
@@ -44,6 +44,7 @@ from zope.app.container.interfaces import IContainer
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
 from zope.fssync.server.interfaces import IObjectDirectory
 from zope.app.registration.interfaces import IRegisterableContainer
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IPageFolderInfo(Interface):
     """Default registration information for page folders
@@ -52,32 +53,32 @@ class IPageFolderInfo(Interface):
     """
 
     required = InterfaceField(
-        title = u"For interface",
-        description = u"The interface of the objects being viewed",
+        title = _(u"For interface"),
+        description = _(u"The interface of the objects being viewed"),
         required = True,
         )
 
     factoryName = BytesLine(
-        title=u"The dotted name of a factory for creating the view",
+        title=_(u"The dotted name of a factory for creating the view"),
         required = False,
         )
 
     layer = BytesLine(
-        title = u"Layer",
-        description = u"The skin layer the view is registered for",
+        title = _(u"Layer"),
+        description = _(u"The skin layer the view is registered for"),
         required = False,
         min_length = 1,
         default = "default",
         )
 
     permission = PermissionField(
-        title=u"Permission",
-        description=u"The permission required to use the view",
+        title=_(u"Permission"),
+        description=_(u"The permission required to use the view"),
         required = True,
         )
 
     apply = Bool(
-        title=u"Apply changes to existing pages",
+        title=_(u"Apply changes to existing pages"),
         required = True,
         )
 

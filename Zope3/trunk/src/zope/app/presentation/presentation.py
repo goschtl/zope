@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.16 2004/04/17 14:33:09 srichter Exp $
+$Id: presentation.py,v 1.17 2004/04/23 13:43:36 hdima Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -297,23 +297,23 @@ class LocalLayer(
 class IViewRegistration(zope.app.adapter.IAdapterRegistration):
 
     required = zope.app.component.interfacefield.InterfaceField(
-        title = u"For interface",
-        description = u"The interface of the objects being viewed",
+        title = _(u"For interface"),
+        description = _(u"The interface of the objects being viewed"),
         readonly = True,
         required = True,
         basetype = None
         )
 
     requestType = zope.app.component.interfacefield.InterfaceField(
-        title = u"Request type",
-        description = u"The type of requests the view works with",
+        title = _(u"Request type"),
+        description = _(u"The type of requests the view works with"),
         readonly = True,
         required = True,
         )
 
     layer = zope.schema.BytesLine(
-        title = u"Layer",
-        description = u"The skin layer the view is registered for",
+        title = _(u"Layer"),
+        description = _(u"The skin layer the view is registered for"),
         required = False,
         readonly = True,
         min_length = 1,
@@ -373,22 +373,22 @@ class ViewRegistration(zope.app.registration.registration.SimpleRegistration):
 class IPageRegistration(IViewRegistration):
 
     factoryName = zope.schema.BytesLine(
-        title=u"Page class",
+        title=_(u"Page class"),
         required = False,
         )
 
     template = zope.app.registration.interfaces.ComponentPath(
-        title = u"Page template",
+        title = _(u"Page template"),
         required = False,
         )
 
     attribute = zope.schema.TextLine(
-        title = u"Class attribute",
+        title = _(u"Class attribute"),
         required = False,
         )
 
     factory = zope.interface.Attribute(
-        "Factory to be called to construct an adapter"
+        _("Factory to be called to construct an adapter")
         )
 
     def validate(self):

@@ -5,12 +5,12 @@
 <body>
 <div metal:fill-slot="body">
 
-  <h1>Local Menus</h1>
+  <h1 i18n:translate="">Local Menus</h1>
   <ul>
     <li tal:repeat="menu view/getLocalMenus">
       <b tal:content="menu/id" /> (<span tal:replace="menu/title"/>)
       <br />
-      <em>Local Items</em> 
+      <em i18n:translate="">Local Items</em> 
       <ul>
         <li tal:repeat="item menu/local_items">
           <em tal:replace="item/title"/>
@@ -18,7 +18,7 @@
         </li>          
       </ul>
       <div tal:condition="menu/inherit">
-        <em>Inherited Items</em>
+        <em i18n:translate="">Inherited Items</em>
         <ul>
           <li tal:repeat="item menu/inherited_items">
             <em tal:replace="item/title"/>
@@ -29,7 +29,7 @@
     </li>
   </ul>
 
-  <h2>Inherited Menus</h2>
+  <h2 i18n:translate="">Inherited Menus</h2>
   <ul>
     <li tal:repeat="menu view/getInheritedMenus">
       <b tal:content="menu/id" /> (<span tal:replace="menu/title"/>)
