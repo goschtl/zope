@@ -16,7 +16,10 @@
 Update -- Name of the standard update submit button
 
 
-$Id: submit.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: submit.py,v 1.3 2003/07/12 06:18:40 Zen Exp $
 """
 
+Next = "NEXT_SUBMIT"
+Previous = "PREVIOUS_SUBMIT"
 Update = "UPDATE_SUBMIT"
+
