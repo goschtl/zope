@@ -329,6 +329,71 @@ class SingleSelectionTests(SingleSelectionTestsBase):
     singleSelectionEditWidget = vocabularywidget.SelectListWidget
 
 
+class RadioSelectionTests(SingleSelectionTests):
+    
+    singleSelectionEditWidget = vocabularywidget.RadioWidget
+
+    # override three tests
+
+    def test_edit_with_form_value(self):
+        bound = self.makeField()
+        request = self.makeRequest('field.f=foobar')
+        w = getView(bound, "edit", request)
+        self.assert_(w.hasInput())
+        self.assertEqual(w.getInputValue(), "foobar")
+        self.assert_(isinstance(w, vocabularywidget.RadioWidget))
+
+    def test_edit(self, extraChecks=[]):
+        w = self.setup_edit(self.makeField())
+        self.assertEqual(w.getInputValue(), None)
+        self.verifyResult(w(), [
+            'checked="checked"',
+            'id="field.f"',
+            'name="field.f"',
+            'value="splat"',
+            '&nbsp;splat',
+            'value="foobar"',
+            '&nbsp;foobar',
+            ] + extraChecks)
+        s0, s1, s2 = w.renderItems("foobar")
+        self.verifyResult(s0, [
+            'value=""',
+            "no value",
+            ])
+        self.verifyResult(s1, [
+            'value="splat"',
+            '&nbsp;splat',
+            ])
+        self.assert_(s1.find('selected') < 0)
+        self.verifyResult(s2, [
+            'checked="checked"',
+            'value="foobar"',
+            '&nbsp;foobar',
+            ])
+
+    def test_edit_required(self, extraChecks=[]):
+        w = self.setup_edit(self.makeField(required=True))
+        self.verifyResult(w(), [
+            'checked="checked"',
+            'id="field.f"',
+            'name="field.f"',
+            'value="splat"',
+            '&nbsp;splat',
+            'value="foobar"',
+            '&nbsp;foobar',
+            ] + extraChecks)
+        s1, s2 = w.renderItems("foobar")
+        self.verifyResult(s1, [
+            'value="splat"',
+            '&nbsp;splat',
+            ])
+        self.assert_(s1.find('selected') < 0)
+        self.verifyResult(s2, [
+            'checked="checked"',
+            'value="foobar"',
+            '&nbsp;foobar',
+            ])
+
 class DropdownSelectionTests(SingleSelectionTestsBase):
     """Test single-selection with the dropdown-list widget."""
 
@@ -521,6 +586,7 @@ class MultiSelectionQuerySupportTests(MultiSelectionViews,
 
 def test_suite():
     suite = unittest.makeSuite(SingleSelectionTests)
+    suite.addTest(unittest.makeSuite(RadioSelectionTests))
     suite.addTest(unittest.makeSuite(DropdownSelectionTests))
     suite.addTest(unittest.makeSuite(MultiSelectionTests))
     suite.addTest(unittest.makeSuite(SingleSelectionQuerySupportTests))

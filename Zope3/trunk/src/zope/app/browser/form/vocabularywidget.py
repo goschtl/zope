@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.62 2004/01/28 20:55:42 fdrake Exp $
+$Id: vocabularywidget.py,v 1.63 2004/02/05 14:55:46 poster Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -499,8 +499,79 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
                                     contents=text,
                                     value=value,
                                     cssClass=cssClass,
-                                    selected=None)
+                                    selected='selected')
 
+class RadioWidget(SingleDataHelper, VocabularyEditWidgetBase):
+    """Vocabulary-backed single-selection edit widget.
+
+    This widget can be used when the number of selections is going
+    to be small.
+    """
+    implements(implementedBy(widget.SingleItemsWidget))
+    propertyNames = VocabularyEditWidgetBase.propertyNames + ['firstItem']
+    firstItem = False
+
+    _msg_no_value = _msg_missing_single_value_edit
+    
+    _join_button_to_message_template = u"%s&nbsp;%s"
+    _join_messages_template = u"<br />\n"
+
+    def renderItem(self, index, text, value, name, cssClass):
+        elem = widget.renderElement('input',
+                                    value=value,
+                                    name=name,
+                                    cssClass=cssClass,
+                                    type='radio')
+        return self._join_button_to_message_template % (elem, text)
+
+    def renderSelectedItem(self, index, text, value, name, cssClass):
+        elem = widget.renderElement('input',
+                                    value=value,
+                                    name=name,
+                                    cssClass=cssClass,
+                                    checked=None,
+                                    type='radio')
+        return self._join_button_to_message_template % (elem, text)
+
+    def renderValue(self, value):
+        return "\n%s\n" % self._join_messages_template.join(
+            self.renderItems(value))
+    
+    def renderItems(self, value):
+        # XXX this should be rolled into renderValue; separate only
+        # for the convenience of leveraging the already existing test
+        # framework
+        vocabulary = self.context.vocabulary
+        # check if we want to select first item
+        no_value = None
+        if (value == self.context.missing_value
+            and getattr(self.context, 'firstItem', False)
+            and len(vocabulary) > 0):
+            if self.context.required:
+                # Grab the first item from the iterator:
+                values = [iter(vocabulary).next().value]
+            else:
+                # the "no value" option will be checked
+                no_value = 'checked'
+        elif value != self.context.missing_value:
+            values = [value]
+        else:
+            values = ()
+        L = self.renderItemsWithValues(values)
+        if not self.context.required:
+            cssClass = self.getValue('cssClass')
+            kwargs = {
+                'value':'',
+                'name':self.name,
+                'cssClass':cssClass,
+                'type':'radio'}
+            if no_value:
+                kwargs['checked']=None
+            option = widget.renderElement('input', **kwargs)
+            option = self._join_button_to_message_template % (
+                option, self.translate(self._msg_no_value))
+            L.insert(0, option)
+        return L
 
 class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
     """Vocabulary-backed single-selection edit widget.
