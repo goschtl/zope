@@ -13,7 +13,10 @@
 ##############################################################################
 """Schema package constructor
 
-$Id: __init__.py,v 1.2 2002/09/07 16:18:51 jim Exp $
+$Id: __init__.py,v 1.3 2002/10/04 18:24:55 jim Exp $
 """
-from _Field import Field, Bytes, Text, Bool, Int, Float, Tuple, List, Dict
+
+from _Field import Field, Container, Iteratable, Orderable, Sized, Enumeratable
+from _Field import Sequence
+from _Field import Bytes, Text, Bool, Int, Float, Tuple, List, Dict, Datetime
 from _Schema import validateMapping, validateMappingAll, getFields

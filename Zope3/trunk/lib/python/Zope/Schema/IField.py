@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.5 2002/10/03 19:44:26 efge Exp $
+$Id: IField.py,v 1.6 2002/10/04 18:24:55 jim Exp $
 """
 from Interface import Interface
 
@@ -169,6 +169,9 @@ class IInt(IEnumeratable, IOrderable):
         
 class IFloat(IEnumeratable, IOrderable):
     u"""Describes the footprint of a Float variable."""
+        
+class IDatetime(IEnumeratable, IOrderable):
+    u"""Describes the footprint of a datetime variable."""
 
 def _fields(values):
     for value in values:

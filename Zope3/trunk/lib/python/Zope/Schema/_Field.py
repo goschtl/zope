@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.3 2002/09/11 22:06:41 jim Exp $
+$Id: _Field.py,v 1.4 2002/10/04 18:24:55 jim Exp $
 """
 __metaclass__ = object
 
@@ -26,6 +26,7 @@ import IField
 from _bootstrapFields import Field, Container, Iteratable, Orderable, Sized
 from _bootstrapFields import Enumeratable, Text, Bool, Int
 from FieldProperty import FieldProperty
+from datetime import datetime
 
 # Fix up bootstrap field types
 Field.title       = FieldProperty(IField.IField['title'])
@@ -59,6 +60,11 @@ class Float(Enumeratable, Orderable):
     __doc__ = IField.IFloat.__doc__
     __implements__ = IField.IFloat
     _type = float
+
+class Datetime(Enumeratable, Orderable):
+    __doc__ = IField.IDatetime.__doc__
+    __implements__ = IField.IDatetime
+    _type = datetime
 
 def _validate_sequence(value_types, value, errors=None):
     if errors is None:
@@ -142,3 +148,4 @@ class Dict(Sized, Iteratable):
                 
         finally:
             errors = None
+
