@@ -102,6 +102,91 @@ def is_repository(path):
     return True
 
 
+class SubversionUrl:
+    def __init__(self, prefix, tail, tag=None):
+        self.prefix = prefix
+        self.tail = tail
+        self.tag = tag or None
+
+    def getUrl(self):
+        if self.tag and self.tag != "HEAD":
+            return "%s/tags/%s/%s" % (self.prefix, self.tag, self.tail)
+        else:
+            return "%s/trunk/%s" % (self.prefix, self.tail)
+
+    def join(self, relurl):
+        tag = relurl.tag
+        if relurl.path:
+            if posixpath.isabs(relurl.path):
+                raise ValueError("cannot join an absolute path with a"
+                                 " Subversion URL")
+            parts = split_on_tag(relurl.path)
+            if parts is None:
+                path = posixpath.join(tail, relurl.path)
+                if path == ".." or path.startswith("../"):
+                    raise ValueError("could not join with repository: URL")
+                prefix = self.prefix
+                tail = self.path
+            else:
+                prefix, tail, tag = parts
+            if tag and relurl.tag and tag != relurl.tag:
+                raise ValueError(
+                    "inconsistent tags identified by repository: URL")
+            if not tag:
+                tag = relurl.tag
+        else:
+            prefix = self.prefix
+            tail = self.tail
+        return SubversionUrl(prefix, tail, tag)
+
+
+class TaglessSubversionUrl:
+    def __init__(self, url):
+        self.url = url
+        self.prefix = url
+        self.tail = None
+        self.tag = None
+
+    def getUrl(self):
+        return self.url
+
+    def join(self, relurl):
+        if relurl.tag:
+            raise ValueError("cannot join a tagged relative URL with an"
+                             " unconventional Subversion URL")
+        if posixpath.isabs(relurl.path):
+            raise ValueError("cannot join an absolute path with a"
+                             " Subversion URL")
+        url = posixpath.join(self.url, relurl.path)
+        return TaglessSubversionUrl(url)
+
+
+def parse(url):
+    if not is_subversion_url(url):
+        raise ValueError("not a Subversion URL")
+
+    parts = split_on_tag(url)
+    if parts is None:
+        return TaglessSubversionUrl(url)
+    return SubversionUrl(*parts)
+
+
+def split_on_tag(url):
+    if "/tags/*/" in url:
+        parts = url.split("/tags/*/", 1)
+        tag = None
+    elif "/trunk/" in url:
+        parts = url.split("/trunk/", 1)
+        tag = "HEAD"
+    elif "/tags/" in url:
+        parts = url.split("/tags/", 1)
+        tag, rest = parts[1].split("/", 1)
+        parts[1] = rest
+    else:
+        return None
+    return parts[0], parts[1], tag
+
+
 class SubversionLoader:
     # This is really only an object so the API mirrors the CvsLoader.
     """Simpler loader object that loads from Subversion."""
