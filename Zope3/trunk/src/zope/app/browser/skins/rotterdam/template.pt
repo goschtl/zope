@@ -7,7 +7,8 @@
     tal:define="sitemgmt python:'/++etc++site/' in str(request.URL)">
 
   <head>
-    <title metal:define-slot="title" i18n:translate="">Z3 UI</title>
+    <title metal:define-slot="title"
+           tal:content="string:Z3: ${context/zope:title_or_name}">Z3 UI</title>
 
     <style type="text/css" media="all"
            tal:content="string:@import url(${context/++resource++zope3.css});">
