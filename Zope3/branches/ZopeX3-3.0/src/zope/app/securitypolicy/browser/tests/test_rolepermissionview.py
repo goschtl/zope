@@ -17,7 +17,12 @@ $Id$
 """
 import unittest
 
+from zope.i18n.interfaces import ITranslationDomain
+from zope.i18nmessageid import MessageID
+import zope.interface
 from zope.publisher.browser import TestRequest
+
+from zope.app.exception.interfaces import UserError
 from zope.app.publisher.browser import BrowserView
 from zope.app.tests import ztapi
 from zope.app.security.permission import Permission
@@ -31,8 +36,20 @@ from zope.app.securitypolicy.browser.tests.rolepermissionmanager import \
 from zope.app.securitypolicy.browser.rolepermissionview \
      import RolePermissionView
 
+from zope.app.tests import ztapi
+
 class RolePermissionView(RolePermissionView, BrowserView):
     """Adding BrowserView to Utilities; this is usually done by ZCML."""
+
+class TranslationDomain:
+    zope.interface.implements(ITranslationDomain)
+
+    def __init__(self, **translations):
+        self.translations = translations
+
+    def translate(self, msgid, *ignored, **also_ignored):
+        return self.translations.get(msgid, msgid)
+
 
 def defineRole(id, title=None, description=None):
     role = Role(id, title, description)
@@ -48,33 +65,24 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        defineRole('manager', 'Manager')
-        defineRole('member', 'Member')
-        definePermission('read', 'Read')
-        definePermission('write', 'Write')
+        defineRole('manager', MessageID('Manager', 'testdomain'))
+        defineRole('member',  MessageID('Member', 'testdomain'))
+        definePermission('read', MessageID('Read', 'testdomain'))
+        definePermission('write', MessageID('Write', 'testdomain'))
         self.view = RolePermissionView(RolePermissionManager(), None)
+        ztapi.provideUtility(ITranslationDomain,
+                             TranslationDomain(Member="A Member",
+                                               Write="A Write",
+                                               ),
+                             'testdomain')
 
     def testRoles(self):
-        roles = list(self.view.roles())
-        ids = ['manager', 'member']
-        titles = ['Manager', 'Member']
-        for role in roles:
-            i=ids.index(role.id)
-            self.failIf(i < 0)
-            self.assertEqual(role.title, titles[i])
-            del ids[i]
-            del titles[i]
+        self.assertEqual([role.title for role in self.view.roles()],
+                         ["Member", "Manager"])
 
     def testPermisssions(self):
-        permissions = list(self.view.permissions())
-        ids = ['read', 'write', 'zope.Public']
-        titles = ['Read', 'Write', 'Public']
-        for permission in permissions:
-            i=ids.index(permission.id)
-            self.failIf(i < 0)
-            self.assertEqual(permission.title, titles[i])
-            del ids[i]
-            del titles[i]
+        self.assertEqual([role.title for role in self.view.permissions()],
+                         ["Write", "Read"])
 
     def testMatrix(self):
         roles = self.view.roles()
@@ -190,6 +198,15 @@ class Test(PlacefulSetup, unittest.TestCase):
                 self.assertEquals(pinfo['setting'], 'Deny')
             if pid == 'write':
                 self.assertEquals(pinfo['setting'], 'Unset')
+
+
+    def testRolePermissions_UserError(self):
+        env={'Allow': ['read'],
+             'Deny': ['read'],
+             'SUBMIT_ROLE': 1,
+             'role_id': 'member'}
+        self.view.request = TestRequest(environ=env)
+        self.assertRaises(UserError, self.view.update, 1)
 
 
 def test_suite():
