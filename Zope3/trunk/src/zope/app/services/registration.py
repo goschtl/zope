@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.3 2003/06/24 22:38:26 jim Exp $
+$Id: registration.py,v 1.4 2003/06/30 16:24:14 jim Exp $
 """
 __metaclass__ = type
 
@@ -28,26 +28,8 @@ from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
 from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.interfaces.dependable import IDependable, DependencyError
-
-from zope.app.interfaces.services.registration import IRegistrationManager
-from zope.app.interfaces.services.registration import IRegistrationStack
-from zope.app.interfaces.services.registration \
-     import INameComponentRegistry
-from zope.app.interfaces.services.registration import INamedRegistration
-from zope.app.interfaces.services.registration import IRegistration
-from zope.app.interfaces.services.registration \
-     import INamedComponentRegistration
-from zope.app.interfaces.services.registration import INameRegistry
-from zope.app.interfaces.services.registration \
-     import INamedComponentRegistration, IComponentRegistration
-from zope.app.interfaces.services.registration import IRegistered
-from zope.app.interfaces.services.registration \
-     import NoRegistrationManagerError
-from zope.app.interfaces.services.registration import NoLocalServiceError
-
-from zope.app.interfaces.services.registration import UnregisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.services.registration import RegisteredStatus
+from zope.app.interfaces.services import registration as interfaces
+from zope.app.interfaces.services.module import IModuleManager
 from zope.proxy import removeAllProxies
 from zope.security.checker import InterfaceChecker
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
@@ -68,11 +50,11 @@ class RegistrationStatusProperty(zapi.ContextDescriptor):
         if registry:
 
             if registry.active() == registration:
-                return ActiveStatus
+                return interfaces.ActiveStatus
             if registry.registered(registration):
-                return RegisteredStatus
+                return interfaces.RegisteredStatus
 
-        return UnregisteredStatus
+        return interfaces.UnregisteredStatus
 
     def __set__(self, inst, value):
         registration = inst
@@ -82,13 +64,13 @@ class RegistrationStatusProperty(zapi.ContextDescriptor):
 
         registry = service and service.queryRegistrationsFor(registration)
 
-        if value == UnregisteredStatus:
+        if value == interfaces.UnregisteredStatus:
             if registry:
                 registry.unregister(registration)
 
         else:
             if not service:
-                raise NoLocalServiceError(
+                raise interfaces.NoLocalServiceError(
                     "This registration change cannot be performed because "
                     "there isn't a corresponding %s service defined in this "
                     "site. To proceed, first add a local %s service."
@@ -97,13 +79,13 @@ class RegistrationStatusProperty(zapi.ContextDescriptor):
             if registry is None:
                 registry = service.createRegistrationsFor(registration)
 
-            if value == RegisteredStatus:
+            if value == interfaces.RegisteredStatus:
                 if registry.active() == registration:
                     registry.deactivate(registration)
                 else:
                     registry.register(registration)
 
-            elif value == ActiveStatus:
+            elif value == interfaces.ActiveStatus:
                 if not registry.registered(registration):
                     registry.register(registration)
                 registry.activate(registration)
@@ -123,7 +105,7 @@ class RegistrationStack(Persistent):
             service manager to an object implementing IRegistration
     """
 
-    implements(IRegistrationStack)
+    implements(interfaces.IRegistrationStack)
 
     _data = ()
 
@@ -312,7 +294,7 @@ class SimpleRegistration(Persistent):
     IDeleteNotifiable.
     """
 
-    implements(IRegistration, IDeleteNotifiable,
+    implements(interfaces.IRegistration, IDeleteNotifiable,
                       # We are including this here because we want all of the
                       # subclasses to get it and we don't really need to be
                       # flexible about the policy here. At least we don't
@@ -344,22 +326,22 @@ class SimpleRegistration(Persistent):
 
         objectstatus = registration.status
 
-        if objectstatus == ActiveStatus:
+        if objectstatus == interfaces.ActiveStatus:
             try:
                 objectpath = zapi.getPath(registration)
             except: # XXX
                 objectpath = str(registration)
             raise DependencyError("Can't delete active registration (%s)"
                                   % objectpath)
-        elif objectstatus == RegisteredStatus:
-            registration.status = UnregisteredStatus
+        elif objectstatus == interfaces.RegisteredStatus:
+            registration.status = interfaces.UnregisteredStatus
 
 
 class NamedRegistration(SimpleRegistration):
     """Named registration
     """
 
-    implements(INamedRegistration)
+    implements(interfaces.INamedRegistration)
 
     def __init__(self, name):
         self.name = name
@@ -377,7 +359,7 @@ class ComponentRegistration(SimpleRegistration):
 
     # SimpleRegistration implements IDeleteNotifiable, so we don't need
     # it below.
-    implements(IComponentRegistration, IAddNotifiable)
+    implements(interfaces.IComponentRegistration, IAddNotifiable)
 
     def __init__(self, component_path, permission=None):
         self.componentPath = component_path
@@ -441,7 +423,7 @@ class ComponentRegistration(SimpleRegistration):
         objectpath = zapi.getPath(registration)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
-        adapter = zapi.queryAdapter(component, IRegistered)
+        adapter = zapi.queryAdapter(component, interfaces.IRegistered)
         if adapter is not None:
             adapter.addUsage(zapi.getPath(registration))
 
@@ -454,7 +436,7 @@ class ComponentRegistration(SimpleRegistration):
         objectpath = zapi.getPath(registration)
         dependents.removeDependent(objectpath)
         # Also update usage, if supported
-        adapter = zapi.queryAdapter(component, IRegistered)
+        adapter = zapi.queryAdapter(component, interfaces.IRegistered)
         if adapter is not None:
             adapter.removeUsage(zapi.getPath(registration))
 
@@ -463,7 +445,7 @@ class NamedComponentRegistration(NamedRegistration, ComponentRegistration):
 
     This configures components that live in folders, by name.
     """
-    implements(INamedComponentRegistration)
+    implements(interfaces.INamedComponentRegistration)
 
     def __init__(self, name, component_path, permission=None):
         NamedRegistration.__init__(self, name)
@@ -473,7 +455,7 @@ class NamedComponentRegistration(NamedRegistration, ComponentRegistration):
 class NameRegistry:
     """Mixin for implementing INameRegistry
     """
-    implements(INameRegistry)
+    implements(interfaces.INameRegistry)
 
     def __init__(self, *args, **kw):
         self._bindings = {}
@@ -514,7 +496,7 @@ class NameRegistry:
 class NameComponentRegistry(NameRegistry):
     """Mixin for implementing INameComponentRegistry
     """
-    implements(INameComponentRegistry)
+    implements(interfaces.INameComponentRegistry)
 
     def queryActiveComponent(wrapped_self, name, default=None):
         """See INameComponentRegistry"""
@@ -536,7 +518,7 @@ class Registered(PathSetAnnotation):
     data is represented.
     """
 
-    implements(IRegistered)
+    implements(interfaces.IRegistered)
 
     # We want to use this key:
     #   key = "zope.app.services.registration.Registered"
@@ -555,7 +537,7 @@ class RegistrationManager(Persistent):
     Manages registrations within a package.
     """
 
-    implements(IRegistrationManager, IDeleteNotifiable)
+    implements(interfaces.IRegistrationManager, IDeleteNotifiable)
 
     def __init__(self):
         self._data = ()
@@ -692,6 +674,8 @@ class RegistrationManagerContainer(object):
     """Mix-in to implement IRegistrationManagerContainer
     """
 
+    implements(interfaces.IRegistrationManagerContainer)
+
     def __init__(self):
         super(RegistrationManagerContainer, self).__init__()
         self.setObject('RegistrationManager', RegistrationManager())
@@ -700,11 +684,13 @@ class RegistrationManagerContainer(object):
         """Delete an item, but not if it's the last registration manager
         """
         item = self[name]
-        if IRegistrationManager.isImplementedBy(item):
+        if interfaces.IRegistrationManager.isImplementedBy(item):
             # Check to make sure it's not the last one
             if len([i for i in self.values()
-                    if IRegistrationManager.isImplementedBy(i)]) < 2:
-                raise NoRegistrationManagerError(
+                    if interfaces.IRegistrationManager.isImplementedBy(i)
+                    ]
+                   ) < 2:
+                raise interfaces.NoRegistrationManagerError(
                     "Can't delete the last registration manager")
         super(RegistrationManagerContainer, self).__delitem__(name)
 
@@ -714,13 +700,52 @@ class RegistrationManagerContainer(object):
         # Get the registration manager for this folder
         for name in self:
             item = self[name]
-            if IRegistrationManager.isImplementedBy(item):
+            if interfaces.IRegistrationManager.isImplementedBy(item):
                 # We found one. Get it in context
                 return zapi.ContextWrapper(item, self, name=name)
         else:
-            raise NoRegistrationManagerError(
+            raise interfaces.NoRegistrationManagerError(
                 "Couldn't find an registration manager")
     getRegistrationManager = zapi.ContextMethod(getRegistrationManager)
+
+    def findModule(self, name):
+        # Used by the persistent modules import hook
+
+        # Look for a .py file first:
+        manager = self.get(name+'.py')
+        if manager is not None:
+            # found an item with that name, make sure it's a module(manager):
+            if IModuleManager.isImplementedBy(manager):            
+                return manager.getModule()
+
+        # Look for the module in this folder:
+        manager = self.get(name)
+        if manager is not None:
+            # found an item with that name, make sure it's a module(manager):
+            if IModuleManager.isImplementedBy(manager):            
+                return manager.getModule()
+
+
+        # See if out container is a RegistrationManagerContainer:
+        c = zapi.getWrapperContainer(self)
+        if interfaces.IRegistrationManagerContainer.isImplementedBy(c):
+            return c.findModule(name)
+
+        # Use sys.modules in leu of module service:
+        module = sys.modules.get(name)
+        if module is not None:
+            return module
+        
+        raise ImportError(name)
+        
+    findModule = zapi.ContextMethod(findModule)
+
+    def resolve(self, name):
+        l = name.rfind('.')
+        mod = self.findModule(name[:l])
+        return getattr(mod, name[l+1:])
+
+    resolve = zapi.ContextMethod(resolve)
 
 
 from zope.xmlpickle import dumps, loads

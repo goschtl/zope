@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.2 2003/06/22 14:02:20 jim Exp $
+$Id: registration.py,v 1.3 2003/06/30 16:24:14 jim Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -406,13 +406,23 @@ class NoRegistrationManagerError(Exception):
 class IRegistrationManagerContainer(IContainer):
     """Containers with registration managers
 
-    The container provides clients to access the registration manager
+    These are site-management folders of one sort or another.
+
+    The container allows clients to access the registration manager
     without knowing it's name.
 
+    XXX at this point, it doesn't really make sense for regsitration
+    managers to be items.  It would probably be better to expose the
+    registrations as a separate tab.
+
     The container prevents deletion of the last registration manager.
+
     The container may allow more than one registration manager. If it
     has more than one, the one returned from an unnamed access is
-    undefined.
+    undefined. XXX the container should allow one and only one.
+
+    The registration manager container *also* supports local-module
+    lookup.
 
     """
 
@@ -425,6 +435,27 @@ class IRegistrationManagerContainer(IContainer):
         one, this method willl return one; which one is undefined.
 
         An error is raised if no registration manager can be found.
+        """
+
+    def findModule(name):
+        """Find the module of the given name
+
+        If the module can be find in the folder or a parent folder
+        (within the site manager), then return it, otherwise, delegate
+        to the module service.
+
+        """
+
+    def resolve(name):
+        """Resolve a dotted object name
+
+        A dotted opject nanem is a dotted module name and an object
+        name within the module.
+
+        XXX we really should switch to using some other character than
+        a dot for the delimiter between the module and the object
+        name.
+        
         """
 
 
