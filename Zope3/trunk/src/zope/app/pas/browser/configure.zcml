@@ -6,28 +6,45 @@
       name="loginForm.html" 
       for="*"
       template="loginform.pt"
-      permission="zope.Public" />
-
+      permission="zope.Public" 
+      />
 
   <addform
-      schema="..zodb.IInternalPrincipal"
-      label="Add Internal Principal"
-      content_factory="..zodb.InternalPrincipal"
-      arguments="id login password title"
-      keyword_arguments="description"
-      name="AddInternalPrincipalForm.html"
+      schema="..principalfolder.IInternalPrincipalContainer"
+      label="Add Principal Folder"
+      content_factory="..principalfolder.PrincipalFolder"
+      keyword_arguments="prefix"
+      name="AddPrincipalFolder.html"
       permission="zope.ManageServices"
       />
 
   <addMenuItem
-      title="Persistent Principal" 
-      class="..zodb.InternalPrincipal"
+      title="Principal Folder"
+      description="A PAS Persistent Authentication Plugin"
+      class="zope.app.pas.principalfolder.PrincipalFolder"
       permission="zope.ManageServices"
-      view="AddInternalPrincipalForm.html"
+      view="AddPrincipalFolder.html"
+      />
+
+  <addform
+      schema="..principalfolder.IInternalPrincipal"
+      label="Add Principal Information"
+      content_factory="..principalfolder.PrincipalInformation"
+      arguments="login password title"
+      keyword_arguments="description"
+      name="AddPrincipalInformation.html"
+      permission="zope.ManageServices"
+      />
+
+  <addMenuItem
+      title="Principal Information" 
+      class="..principalfolder.PrincipalInformation"
+      permission="zope.ManageServices"
+      view="AddPrincipalInformation.html"
       />
 
   <editform
-      schema="..zodb.IInternalPrincipal"
+      schema="..principalfolder.IInternalPrincipal"
       label="Change Internal Principal"
       name="edit.html"
       fields="login password title description"
@@ -35,7 +52,7 @@
       menu="zmi_views" title="Edit" />
 
   <containerViews
-      for="..zodb.IInternalPrincipalContainer"
+      for="..principalfolder.IInternalPrincipalContainer"
       add="zope.ManageServices"
       contents="zope.ManageServices"
       index="zope.ManageServices"
