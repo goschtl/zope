@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.38 2003/08/15 19:49:55 garrett Exp $
+$Id: checker.py,v 1.39 2003/09/02 20:47:22 jim Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -482,6 +482,10 @@ class Global(object):
     def __reduce__(self):
         return self.__name__
 
+    def __repr__(self):
+        return "%s(%s,%s)" % (self.__class__.__name__,
+                              self.__name__, self.__module__)
+
 CheckerPublic = Global('CheckerPublic')
 
 # Now we wrap it in a security proxy so that it retains it's
@@ -641,8 +645,8 @@ def _classChecker(class_):
 
     return _typeChecker
 
-def _moduleChecker(module):
-    return _checkers.get(module, _typeChecker)
+def moduleChecker(module):
+    return _checkers.get(module)
 
 
 # The variable '_always_available' should really be called
@@ -658,6 +662,7 @@ _always_available = ['__lt__', '__le__', '__eq__',
 _callableChecker = NamesChecker(['__str__', '__name__', '__call__'])
 _typeChecker = NamesChecker(
     ['__str__', '__name__', '__module__', '__bases__', '__mro__'])
+_namedChecker = NamesChecker(['__name__'])
 
 _iteratorChecker = NamesChecker(['next', '__iter__'])
 
@@ -676,6 +681,7 @@ BasicTypes = {
     datetime.date: NoProxy,
     datetime.time: NoProxy,
 }
+
 # Available for tests. Located here so it can be kept in sync with BasicTypes.
 BasicTypes_examples = {
     object: object(),
@@ -726,7 +732,7 @@ _default_checkers = {
     types.BuiltinMethodType: _callableChecker,
     type(().__getslice__): _callableChecker, # slot description
     type: _typeChecker,
-    types.ModuleType: _moduleChecker,
+    types.ModuleType: lambda module: _checkers.get(module, _namedChecker),
     type(iter([])): _iteratorChecker, # Same types in Python 2.2.1,
     type(iter(())): _iteratorChecker, # different in Python 2.3.
     type(iter({})): _iteratorChecker,
