@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/local/bin/python2.1
 
 """Apply actions dictated by traffic_table.py to checkins as they occur.
 
