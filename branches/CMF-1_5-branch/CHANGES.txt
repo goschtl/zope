@@ -3,7 +3,7 @@ CMF 1.5.1beta (unreleased)
   New Features
 
     - CachePolicyManager: You can now set a ETag using a TALES expression
-      (http://www.zope.org/Collectors/CMF/236) 
+      (http://collector.zope.org/CMF/236) 
 
     - RegistrationTool: The regular expression that limits what people
       can put in as a valid member ID is now configurable TTW in the
@@ -11,15 +11,19 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - CMFSetup: Fixed import of workflow bindings.
+      The 'workflow' import step has to be run after the 'typeinfo' step.
+      (http://collector.zope.org/CMF/265)
+
     - CMFCore.CatalogTool: Take into account query restrictions on
       'effective' or 'expires' attributes during a search.
-      (http://zope.org/Collectors/CMF/120)
+      (http://collector.zope.org/CMF/120)
 
     - WorkflowTool: Fixed 'setChainForPortalTypes'.
       If 'chain' was an empty string, it wasn't set correctly.
 
     - FSFile, FSImage: Made available to caching policy manager as
-      standard content. (http://zope.org/Collectors/CMF/299)
+      standard content. (http://collector.zope.org/CMF/299)
 
     - FSDTMLMethod: Small code cleanup to remove duplicate variable
       definition (http://collector.zope.org/CMF/291)
