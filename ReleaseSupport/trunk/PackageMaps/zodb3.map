@@ -6,13 +6,15 @@
 # This group is maintained as part of the ZODB project:
 #
 BTrees          svn://svn.zope.org/repos/main/ZODB/tags/*/src/BTrees
+Persistence     svn://svn.zope.org/repos/main/ZODB/tags/*/src/Persistence
 persistent      svn://svn.zope.org/repos/main/ZODB/tags/*/src/persistent
 transaction     svn://svn.zope.org/repos/main/ZODB/tags/*/src/transaction
 ThreadedAsync   svn://svn.zope.org/repos/main/ZODB/tags/*/src/ThreadedAsync
 ZEO             svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZEO
 ZODB            svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZODB
+ZopeUndo        svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZopeUndo
 
 # These are copied in from the ZConfig and zdaemon projects:
 #
-ZConfig         svn://svn.zope.org/repos/main/ZODB/tags/*/
+ZConfig         svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZConfig
 zdaemon         svn://svn.zope.org/repos/main/ZODB/tags/*/src/zdaemon
