@@ -84,6 +84,19 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         views = namespace['views']
         self.failUnless(the_view is views[the_view_name])
 
+    def test_debug_flags(self):
+        from zope.publisher.browser import TestRequest
+        self.request = TestRequest()
+        self.request.debug.sourceAnnotations = False
+        self.assert_('test.pt' not in self.t(self))
+        self.request.debug.sourceAnnotations = True
+        self.assert_('test.pt' in self.t(self))
+
+        t = ViewPageTemplateFile('testsimpleviewclass.pt')
+        self.request.debug.showTAL = False
+        self.assert_('metal:' not in t(self))
+        self.request.debug.showTAL = True
+        self.assert_('metal:' in t(self))
 
 class TestViewZPTContentType(unittest.TestCase):
 
