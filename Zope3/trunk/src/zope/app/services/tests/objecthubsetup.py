@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.3 2002/12/30 14:03:17 stevea Exp $
+$Id: objecthubsetup.py,v 1.4 2002/12/30 15:08:17 stevea Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup
@@ -99,26 +99,4 @@ class ObjectHubSetup(EventSetup):
     def setUp(self):
         EventSetup.setUp(self)
         self.object_hub = getService(self.rootFolder, 'HubIds')
-        #from zope.app.interfaces.services.hub import IObjectHub
-        #global_service_manager = getServiceManager(None)
-        #global_service_manager.defineService("HubIds", IObjectHub)
 
-    def createObjectHub(self, path):
-        raise "HELL!"
-        #folder = self.rootFolder
-        if path is not None:
-            folder = traverse(folder, path)
-
-        if not folder.hasServiceManager():
-            self.createServiceManager(folder)
-
-        sm = traverse(folder, '++etc++Services')
-        default = traverse(sm, 'Packages/default')
-        default.setObject("myObjectHub", ObjectHub())
-
-        path = "%s/Packages/default/myObjectHub" % getPhysicalPathString(sm)
-        configuration = ServiceConfiguration("HubIds", path)
-
-        configure = traverse(default, 'configure')
-        key = configure.setObject("myObjectHubDir", configuration)
-        traverse(configure, key).status = Active
