@@ -1,0 +1,23 @@
+<zopeConfigure
+     xmlns='http://namespaces.zope.org/zope'>
+
+  <content class=".SmtpService.">
+    <factory id="SmtpService" permission="Zope.ManageServices" />
+      <require
+          permission="Zope.ManageServices"
+          interface="Zope.App.OFS.Container.IContainer." />
+      <require 
+          permission="Zope.ManageServices"
+	  set_attributes="smtphost smtpport" />
+      <require
+        permission="Zope.ManageServices"
+        interface=".ISMTPService." />
+  </content>
+
+<serviceType id="SMTPService" interface=".ISMTPService."
+/> 
+
+  <include package=".Views" />
+
+</zopeConfigure>
+
