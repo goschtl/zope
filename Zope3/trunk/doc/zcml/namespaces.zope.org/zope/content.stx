@@ -1,14 +1,69 @@
 The content directive.
 
+Attributes
+
+  * class, resolvable name of a class
+
 Subdirectives
 
   implements
-
-  require
   
-  allow
+    Declare that this class (as given in the content directive) implements
+    the given interface.
+  
+    * interface, resolvable name of an interface
+
+  security:require
+  
+    Say that names specified by attributes or the names in an interface require
+    the given permission for access.
+  
+    * permission, a permission id
+    
+    * attributes, optional, space-separate list of attribute names
+    
+    * interface, optional, the resolvable name of an interface
+    
+  security:mimic
+  
+    Say that the security requirements for this class are to be based on
+    the given class
+  
+    * class, the resolvable name of a class
+  
+  security:allow
+  
+    Use only one of the following attributes to declare what part
+    of this class is publicly viewable (that is, requires the Zope.Public
+    permission).
+  
+    * attributes, space-separated list of attribute names 
+    
+    * interface, the resolvable name of an interface
   
   zmi:factory
+  
+    * permission, optional but usually desired, the permission id for using
+      this factory
+    
+    * title, the text given in the "add content" menu of the management
+      interface
+    
+    * id, optional, the identifier for this factory in the ZMI factory
+      identification scheme. If not given, defaults to the literal string
+      given as the content directive's "class" attribute.
+       
+    * description, optional, longer narrative description of what this 
+      factory does.
+      
+    * for_container, optional, space-separated resolvable names of interfaces.
+      This factory is willing to be used only in the context of a container
+      that implements any of these interfaces.
+      
+    * creation_markers, optional, this attribute will be changed to work
+      differently soon. See the PreCreationRehash proposal.
+
+      http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/PreCreationRehash
   
 
 Examples
