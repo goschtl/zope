@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: testZPTPage.py,v 1.5 2002/12/05 12:36:48 bcsaller Exp $
+$Id: testZPTPage.py,v 1.6 2002/12/05 17:37:42 fdrake Exp $
 """
 
 import unittest
@@ -37,9 +37,9 @@ from Zope.Security.Checker import NamesChecker, defineChecker
 class Data(object):
     def __init__(self, **kw):
         self.__dict__.update(kw)
-    
 
-    
+
+
 class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
@@ -48,24 +48,19 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         provideAdapter(None, ITraversable, DefaultTraversable)
         provideAdapter(IZPTPage, ISearchableText, SearchableText)
         defineChecker(Data, NamesChecker(['URL', 'name']))
-    
+
     def testSearchableText(self):
         page = ZPTPage()
-        text = 'this is a test\n' ## The source will return with a newline if its ommited
-        utext = u'another test\n'
-        
-        page.setSource(text)
-        searchableText = getAdapter(page, ISearchableText)
-        self.failUnlessEqual(searchableText.getSearchableText(), [unicode(text)])
+        utext = u'another test\n' # The source will grow a newline if ommited
 
         page.setSource(utext)
+        searchableText = getAdapter(page, ISearchableText)
         self.failUnlessEqual(searchableText.getSearchableText(), [utext])
-        
-        
-        
+
     def testZPTRendering(self):
         page = ZPTPage()
         page.setSource(
+            u''
             '<html>'
             '<head><title tal:content="options/title">blah</title></head>'
             '<body>'

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.15 2002/12/05 15:52:44 fdrake Exp $
+$Id: ZPTPage.py,v 1.16 2002/12/05 17:37:31 fdrake Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -36,7 +36,10 @@ class IZPTPage(Interface):
     """
 
     def setSource(text, content_type='text/html'):
-        """Save the source of the page template."""
+        """Save the source of the page template.
+
+        'text' must be Unicode.
+        """
 
     def getSource():
         """Get the source of the page template."""
@@ -72,10 +75,10 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
 
     def setSource(self, text, content_type='text/html'):
         '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
-        if isinstance(text, unicode):
-            text = text.encode('utf-8')
+        if not isinstance(text, unicode):
+            raise TypeError("source text must be Unicode")
 
-        self.pt_edit(text, content_type)
+        self.pt_edit(text.encode('utf-8'), content_type)
 
     def pt_getContext(self, instance, request, **_kw):
         # instance is a View component
@@ -85,7 +88,6 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
         return namespace
 
     def render(self, request, *args, **keywords):
-
         instance = getWrapperContainer(self)
 
         request = ProxyFactory(request)
@@ -116,11 +118,11 @@ class SearchableText:
         self.page = page
 
     def getSearchableText(self):
-        try:
-            # XXX check about encoding here and in the ZPTPage.read
-            #     the exception should go away when we know how this
-            #     works in terms of conversion, for now on problems
-            #     don't index the object
-            return [unicode(self.page.source)]
-        except:
-            return None
+        text = self.page.getSource()
+        if isinstance(text, str):
+            text = unicode(self.page.source, 'utf-8')
+        # else:
+        #   text was already Unicode, which happens, but unclear how it
+        #   gets converted to Unicode since the ZPTPage stores UTF-8 as
+        #   an 8-bit string.
+        return [text]
