@@ -921,7 +921,7 @@ def process_args(argv=None):
                                     "pychecker", "debug", "pdebug",
                                     "gc-threshold=", "gc-option=",
                                     "loop", "gui", "minimal-gui",
-                                    "method=", "module=",
+                                    "test=", "module=",
                                     "profile", "progress", "refcount", "trace",
                                     "top-fifty", "verbose", "repeat="
                                     ])
