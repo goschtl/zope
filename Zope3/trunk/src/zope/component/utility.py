@@ -13,14 +13,14 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.11 2004/04/12 17:28:55 jim Exp $
+$Id: utility.py,v 1.12 2004/04/15 15:29:46 jim Exp $
 """
 
 from zope.component.exceptions import Invalid, ComponentLookupError
 from zope.component.interfaces import IUtilityService, IComponentRegistry
 from zope.component.service import GlobalService
 from zope.interface.adapter import AdapterRegistry
-from zope.interface import implements
+import zope.interface
 
 class IGlobalUtilityService(IUtilityService, IComponentRegistry):
 
@@ -30,27 +30,12 @@ class IGlobalUtilityService(IUtilityService, IComponentRegistry):
         A utility is a component that provides an interface.
         """
 
-class GlobalUtilityService(AdapterRegistry, GlobalService):
-
-    implements(IGlobalUtilityService)
-
-    def __init__(self):
-        AdapterRegistry.__init__(self)
-        self._registrations = {}
-
-    def provideUtility(self, providedInterface, component, name='', info=''):
+class UtilityService(AdapterRegistry):
+    """Provide IUtilityService
     
-        if not providedInterface.providedBy(component):
-            raise Invalid("The registered component doesn't implement "
-                          "the promised interface.")
-
-        self.register((), providedInterface, name, component)
-
-        self._registrations[(providedInterface, name)] = UtilityRegistration(
-            providedInterface, name, component, info)
-
-    def registrations(self):
-        return self._registrations.itervalues()
+    Mixin that superimposes utility management on adapter registery
+    implementation
+    """
 
     def getUtility(self, interface, name=''):
         """See IUtilityService interface"""
@@ -73,9 +58,33 @@ class GlobalUtilityService(AdapterRegistry, GlobalService):
         if byname:
             for item in byname.iteritems():
                 yield item
+    
+
+class GlobalUtilityService(UtilityService, GlobalService):
+
+    zope.interface.implementsOnly(IGlobalUtilityService)
+
+    def __init__(self):
+        UtilityService.__init__(self)
+        self._registrations = {}
+
+    def provideUtility(self, providedInterface, component, name='', info=''):
+    
+        if not providedInterface.providedBy(component):
+            raise Invalid("The registered component doesn't implement "
+                          "the promised interface.")
+
+        self.register((), providedInterface, name, component)
+
+        self._registrations[(providedInterface, name)] = UtilityRegistration(
+            providedInterface, name, component, info)
+
+    def registrations(self):
+        return self._registrations.itervalues()
+        
 
     def getRegisteredMatching(self, interface=None, name=None):
-        # doomed method
+        # doomed lame depreceated method
         lameresult = []
         for registration in self.registrations():
             if (interface is not None
@@ -85,22 +94,21 @@ class GlobalUtilityService(AdapterRegistry, GlobalService):
                 and registration.name.find(name) < 0):
                 continue
             lameresult.append((registration.provided, registration.name,
-                               registration.value))
+                               registration.component))
         return lameresult
-        
 
 class UtilityRegistration(object):
 
-    def __init__(self, provided, name, value, doc):
+    def __init__(self, provided, name, component, doc):
         self.provided = provided
         self.name = name
-        self.value = value
+        self.component = component
         self.doc = doc
 
     def __repr__(self):
         return '%s(%r, %r, %r, %r)' % (
             self.__class__.__name__,
             self.provided.__name__, self.name,
-            getattr(self.value, '__name__', self.value), self.doc,
+            getattr(self.component, '__name__', self.component), self.doc,
             )
 
