@@ -31,7 +31,7 @@ class LocalSecurityMap(object):
 
     def addCell(self, rowentry, colentry, value):
         # setdefault may get expensive if an empty mapping is
-        # expensive to create, for PersistentMapping for instance.
+        # expensive to create, for PersistentDict for instance.
         row = self._byrow.setdefault(rowentry, self._empty_mapping())
         row[colentry] = value
 

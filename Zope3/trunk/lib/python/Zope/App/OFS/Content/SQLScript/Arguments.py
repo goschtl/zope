@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: Arguments.py,v 1.2 2002/07/22 20:15:28 jeremy Exp $
+$Id: Arguments.py,v 1.3 2002/08/05 20:08:39 jeremy Exp $
 """
 
 import re
-from Persistence.PersistentMapping import PersistentMapping
+from Persistence.PersistentDict import PersistentDict
 from Interface.Common.Mapping import IEnumerableMapping
 
 unparmre = re.compile(r'([\000- ]*([^\000- ="]+))')
@@ -26,7 +26,7 @@ qparmre = re.compile(r'([\000- ]*([^\000- ="]+)="([^"]*)")')
 
 InvalidParameter = 'Invalid Parameter'
 
-class Arguments(PersistentMapping):
+class Arguments(PersistentDict):
     """Hold arguments of SQL Script"""
 
     __implements__ = IEnumerableMapping

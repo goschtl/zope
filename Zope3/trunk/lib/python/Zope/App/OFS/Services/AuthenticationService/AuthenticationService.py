@@ -12,11 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: AuthenticationService.py,v 1.3 2002/07/22 20:15:29 jeremy Exp $
+$Id: AuthenticationService.py,v 1.4 2002/08/05 20:08:39 jeremy Exp $
 """
 from types import TupleType
 
-from Persistence.PersistentMapping import PersistentMapping
 from Zope.Exceptions import NotFoundError
 from Zope.ComponentArchitecture import getAdapter, queryAdapter
 

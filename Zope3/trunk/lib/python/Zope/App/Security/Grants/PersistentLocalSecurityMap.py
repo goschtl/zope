@@ -14,7 +14,7 @@
 """ Generic two-dimensional array type """
 
 from Persistence import Persistent
-from Persistence.PersistentMapping import PersistentMapping
+from Persistence.PersistentDict import PersistentDict
 from Zope.App.Security.Grants.ILocalSecurityMap import ILocalSecurityMap
 from Zope.App.Security.Grants.LocalSecurityMap import LocalSecurityMap
 
@@ -23,9 +23,9 @@ class PersistentLocalSecurityMap(LocalSecurityMap, Persistent):
     __implements__ = ILocalSecurityMap
 
     def _clear(self):
-        self._byrow = PersistentMapping()
-        self._bycol = PersistentMapping()
+        self._byrow = PersistentDict()
+        self._bycol = PersistentDict()
 
     def _empty_mapping(self):
-        return PersistentMapping()
+        return PersistentDict()
 
