@@ -45,9 +45,9 @@ class TransitionsContainerAdding(Adding):
         return self.context.getProcessDefinition()
 
 
-# XXX Temporary ...
+# TODO: Temporary ...
 class StateAddFormHelper:
-    # XXX Hack to prevent from displaying an empty addform
+    # Hack to prevent from displaying an empty addform
     def __call__(self, template_usage=u'', *args, **kw):
         if not len(self.fieldNames):
             self.request.form[Update] = 'submitted'
@@ -166,7 +166,7 @@ class AddState(BrowserView):
 
 class AddTransition(BrowserView):
 
-    # XXX This could and should be handled by a Vocabulary Field/Widget
+    # TODO: This could and should be handled by a Vocabulary Field/Widget
     def getStateNames(self):
         pd = self.context.getProcessDefinition()
         states = removeAllProxies(pd.getStateNames())
