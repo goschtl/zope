@@ -12,7 +12,7 @@ Zope Changes
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
-      Stephan Richter, Dmitry Vasiliev
+      Stephan Richter, Dmitry Vasiliev, Scott Pascoe
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
@@ -95,7 +95,7 @@ Zope Changes
 
       o Undo one or more of anybody's transactions
 
-      By default, transactions are loooked up by location and can
+      By default, transactions are looked up by location and can
       optionally be looked up everywhere. Undo security is
       permission-driven now.
 
@@ -118,7 +118,7 @@ Zope Changes
     - Implemented Permission Redefinition portion of ZCMLEnhancements.
 
     - Implemented http://dev.zope.org/Zope3/MinimalDefaultViewDirectives
-      'zope:defaultView' canno longer *define* a view. It also only accepts
+      'zope:defaultView' can no longer *define* a view. It also only accepts
       one "for" interface.
 
     - Implemented http://dev.zope.org/Zope3/Use303RedirectsByDefault
@@ -143,10 +143,10 @@ Zope Changes
     - Removed source type service and replaced source types by source
       factories. Updated the vocabulary accordingly.
 
-    - Import checker utilitiy that can tell you which import statements in
+    - Import checker utility that can tell you which import statements in
       your Python files are unused.
 
-    - New dependency finder utilitiy for determining dependencies of Python
+    - New dependency finder utility for determining dependencies of Python
       packages and modules.
 
     - Renamed the "Common Tasks" box in the default skin to "Add:",
@@ -456,7 +456,7 @@ Zope Changes
 
     Miscellaneous
 
-    - Keep Zope3 Wiki product uptodate with API changes. Furthermore update
+    - Keep Zope3 Wiki product up-to-date with API changes. Furthermore update
       code to implement "modern" patterns.
 
     - Gave many empty module doc strings a title. There are still many files
