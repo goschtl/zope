@@ -54,7 +54,6 @@ class FieldPermissions(unittest.TestCase):
     def setUp(self):
         setup.placefulSetUp()
         self.context = xmlconfig.file("fields.zcml", zope.app.schema.tests)
-        newInteraction(ParticipationStub(system_user))
 
     def test_wrapped_field_checker(self):
         f1 = Text(title=u'alpha')

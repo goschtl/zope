@@ -87,9 +87,7 @@
   <include package=".browser"/>
 
 
-  <securityPolicy
-      component=".zopepolicy.zopeSecurityPolicy"
-      />
+  <securityPolicy component=".zopepolicy.ZopeSecurityPolicy" />
 
   <role id="zope.Anonymous" title="Everybody" 
                  description="All users have this role implicitly" />

@@ -49,6 +49,9 @@ class PlacelessSetup(CAPlacelessSetup,
         from zope.app.security.tests import addCheckerPublic
         addCheckerPublic()
 
+        from zope.security.management import newInteraction
+        newInteraction()
+
         setVocabularyRegistry(None)
 
 

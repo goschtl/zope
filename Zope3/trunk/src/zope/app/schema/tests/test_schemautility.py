@@ -19,7 +19,6 @@ from unittest import TestCase, makeSuite, TestSuite
 
 from zope.configuration import xmlconfig
 from zope.schema import Text, getFieldNamesInOrder, getFieldsInOrder
-from zope.security.management import system_user, newInteraction
 from zope.security.checker import getChecker, _defaultChecker, ProxyFactory
 from zope.app.schema.schema import SchemaUtility
 from zope.app.tests import setup
@@ -190,7 +189,6 @@ class SchemaUtilityTests(TestCase):
         s = self.s
         s.addField(u'alpha', self.alpha)
         s = ProxyFactory(s)
-        newInteraction(ParticipationStub(system_user))
         f1 = ProxyFactory(s[u'alpha'])
         order = f1.order
         f1 = zapi.traverse(s, 'alpha')

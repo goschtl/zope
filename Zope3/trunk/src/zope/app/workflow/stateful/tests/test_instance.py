@@ -26,7 +26,7 @@ from zope.app.event.tests.placelesssetup import events, clearEvents
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
 from zope.security.checker import CheckerPublic
-from zope.security.management import newInteraction
+from zope.security.management import newInteraction, endInteraction
 
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.registration.interfaces import IRegisterable
@@ -363,6 +363,7 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         ztapi.provideUtility(IPermission, Permission('deny', 'Deny'), 'deny')
 
+        endInteraction()
         newInteraction(ParticipationStub('test'))
 
         pd = TestProcessDefinition()

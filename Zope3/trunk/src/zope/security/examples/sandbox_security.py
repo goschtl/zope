@@ -30,7 +30,7 @@ $Id$
 """
 import sandbox
 from zope.security.interfaces import ISecurityPolicy, IParticipation
-from zope.security import checker, management, simpleinteraction
+from zope.security import checker, management, simplepolicies
 from zope.interface import implements
 
 
@@ -73,17 +73,13 @@ class SimulationSecurityDatabase(object):
         }
 
 
-class SimulationSecurityPolicy(object):
+class SimulationSecurityPolicy(simplepolicies.ParanoidSecurityPolicy):
     """Security Policy during the Simulation.
 
     A very simple security policy that is specific to the simulations.
     """
 
-    implements(ISecurityPolicy)
-
-    createInteraction = staticmethod(simpleinteraction.createInteraction)
-
-    def checkPermission(self, permission, object, interaction):
+    def checkPermission(self, permission, object):
         """See zope.security.interfaces.ISecurityPolicy"""
         home = object.getHome()
         db = getattr(SimulationSecurityDatabase, home.getId(), None)
@@ -95,11 +91,10 @@ class SimulationSecurityPolicy(object):
         if permission in allowed or ALL in allowed:
             return True
 
-        if interaction is None:
+        if not self.participations:
             return False
-        if not interaction.participations:
-            return False
-        for participation in interaction.participations:
+
+        for participation in self.participations:
             token = participation.principal.getAuthenticationToken()
             allowed = db.get(token, ())
             if permission not in allowed:
@@ -159,7 +154,7 @@ agent_service_checker = PermissionMapChecker(aservice_security)
 
 def wire_security():
 
-    management.setSecurityPolicy(SimulationSecurityPolicy())
+    management.setSecurityPolicy(SimulationSecurityPolicy)
 
     checker.defineChecker(sandbox.Sandbox, sandbox_checker)
     checker.defineChecker(sandbox.TimeService, time_service_checker)

@@ -94,7 +94,6 @@ class Test(PlacefulSetup, TestCase, CleanUp):
                                     'this is a very bad author')
 
         # Check what happens if no user is there
-        newInteraction(None)
         CreatorAnnotator(event)
         self.assertEqual(data.creators,())
         endInteraction()

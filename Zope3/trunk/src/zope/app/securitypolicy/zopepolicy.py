@@ -15,21 +15,18 @@
 
 $Id$
 """
-from zope.interface import implements
-from zope.security.interfaces import ISecurityPolicy
 from zope.security.management import system_user
-from zope.security.simpleinteraction import createInteraction \
-                                            as _createInteraction
+import zope.security.simplepolicies
+from zope.security.interfaces import ISecurityPolicy
 
 from zope.app.location import LocationIterator
-
+from zope.app.security.settings import Allow, Deny
 from zope.app.securitypolicy.interfaces import \
      IRolePermissionMap, IPrincipalPermissionMap, IPrincipalRoleMap
 from zope.app.securitypolicy.principalpermission \
      import principalPermissionManager
 from zope.app.securitypolicy.rolepermission import rolePermissionManager
 from zope.app.securitypolicy.principalrole import principalRoleManager
-from zope.app.security.settings import Allow, Deny
 
 getPermissionsForPrincipal = \
                 principalPermissionManager.getPermissionsForPrincipal
@@ -39,39 +36,13 @@ getRolesForPrincipal = principalRoleManager.getRolesForPrincipal
 globalContext = object()
 
 
-class ZopeSecurityPolicy(object):
-    implements(ISecurityPolicy)
+class ZopeSecurityPolicy(zope.security.simplepolicies.ParanoidSecurityPolicy):
+    zope.interface.classProvides(ISecurityPolicy)
 
-    def __init__(self, ownerous=True, authenticated=True):
-        """
-        Two optional keyword arguments may be provided:
-
-        ownerous -- Untrusted users can create code (e.g. Python
-            scripts or templates), so check that code owners can
-            access resources.  The argument must have a truth value.
-            The default is true.
-
-        authenticated -- Allow access to resources based on the
-
-            privileges of the authenticated user.  The argument must
-            have a truth value.  The default is true.
-
-            This (somewhat experimental) option can be set to false on
-            sites that allow only public (unauthenticated) access. An
-            anticipated scenario is a ZEO configuration in which some
-            clients allow only public access and other clients allow
-            full management.
-        """
-
-        self._ownerous = ownerous
-        self._authenticated = authenticated
-
-    createInteraction = staticmethod(_createInteraction)
-
-    def checkPermission(self, permission, object, interaction):
+    def checkPermission(self, permission, object):
         # XXX We aren't really handling multiple principals yet
-        assert len(interaction.participations) == 1 # XXX
-        user = interaction.participations[0].principal
+        assert len(self.participations) == 1 # XXX
+        user = self.participations[0].principal
 
         # mapping from principal to set of roles
         if user is system_user:
@@ -287,4 +258,3 @@ def permissionsOfPrincipal(principal, object):
 
     return result
 
-zopeSecurityPolicy=ZopeSecurityPolicy()
