@@ -294,19 +294,19 @@
   <!-- browser:page directives with new style classes are ignored -->
 
   <browser:page
-    for=".interfaces.ISimpleContent"
-    class=".browser.NewStyleClass"
-    name="invalid_page"
-    attribute="method"
-    permission="zope2.Public"
-    />
+      for=".interfaces.ISimpleContent"
+      class=".browser.NewStyleClass"
+      name="invalid_page"
+      attribute="method"
+      permission="zope2.Public"
+      />
     
   <!-- browser menu support -->
   <browser:menu
-    id="testmenu"
-    title="Test menu" />
+      id="testmenu"
+      title="Test menu" />
 
-   <browser:menuItem
+  <browser:menuItem
       for=".interfaces.ISimpleContent"
       menu="testmenu"
       title="Test Menu Item"
