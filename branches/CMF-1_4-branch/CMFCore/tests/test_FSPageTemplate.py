@@ -1,11 +1,13 @@
 import unittest
 import Zope
 
+from Products.CMFCore.tests.base.testcase import RequestTest
+from Products.CMFCore.tests.base.testcase import SecurityTest
+from Products.CMFCore.tests.base.testcase import FSDVTest
+
 class DummyCachingManager:
     def getHTTPCachingHeaders( self, content, view_name, keywords, time=None ):
         return ( ( 'foo', 'Foo' ), ( 'bar', 'Bar' ) )
-
-from Products.CMFCore.tests.base.testcase import RequestTest, SecurityTest, FSDVTest
 
 class FSPTMaker(FSDVTest):
 
