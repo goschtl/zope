@@ -102,17 +102,7 @@ class Application:
             sys.exit(1)
         pkgdir = os.path.join(self.destination, pkgname)
         pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
-        if pkginfo.documentation:
-            setup_cfg = os.path.join(self.destination, "setup.cfg")
-            self.ip.add_output(setup_cfg)
-            prefix = "doc_files = "
-            s = "\n" + (" " * len(prefix))
-            f = open(setup_cfg, "w")
-            f.write("[bdist_rpm]\n")
-            f.write(prefix)
-            f.write(s.join(pkginfo.documentation))
-            f.write("\n")
-            f.close()
+        self.generate_setup_cfg(self.destination, pkginfo)
         self.generate_package_setup()
 
     def build_collection_distribution(self):
@@ -206,7 +196,7 @@ class Application:
 
     def generate_package_setup(self):
         """Generate the setup.py file for a package distribution."""
-        self.generate_setup("Package")
+        self.generate_setup_py("Package")
 
     def generate_collection_setup(self, packages, collections):
         """Generate the setup.py file for a collection distribution.
@@ -219,9 +209,39 @@ class Application:
         of ``self.destination``; the directory name should match the
         component name in these lists.
         """
-        self.generate_setup("Collection")
+        self.generate_setup_py("Collection")
 
-    def generate_setup(self, typename):
+    def generate_setup_cfg(self, destination, pkginfo):
+        """Write a setup.cfg file for a distribution component.
+
+        :Parameters:
+          - `destination`: Directory the setup.cfg file should be
+            written to.
+          - `pkginfo`: Package information loaded from a package's
+            package.conf file.
+
+        The generated setup.cfg will contain some settings applied for
+        all packages, and the list of documentation files from the
+        component.
+        """
+        setup_cfg = os.path.join(destination, "setup.cfg")
+        self.ip.add_output(setup_cfg)
+        f = open(setup_cfg, "w")
+        if pkginfo.documentation:
+            prefix = "doc_files = "
+            s = "\n" + (" " * len(prefix))
+            f.write("[bdist_rpm]\n")
+            f.write(prefix)
+            f.write(s.join(pkginfo.documentation))
+            f.write("\n\n")
+        f.write("[install_lib]\n")
+        # generate .pyc files
+        f.write("compile = 1\n")
+        # generate .pyo files using "python -O"
+        f.write("optimize = 1\n")
+        f.close()
+
+    def generate_setup_py(self, typename):
         setup_py = os.path.join(self.destination, "setup.py")
         self.ip.add_output(setup_py)
         type = self.resource_type
