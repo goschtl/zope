@@ -13,9 +13,8 @@
 ##############################################################################
 """Define view component for naive file editing.
 
-$Id: image.py,v 1.6 2003/09/21 17:30:22 jim Exp $
+$Id: image.py,v 1.7 2004/02/04 19:17:16 jim Exp $
 """
-from zope.app.browser.content.file import FileUpload
 from zope.app.size import byteDisplay
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event import publish
@@ -86,7 +85,7 @@ class ImageData(BrowserView):
         return '%s />' % result
 
 
-class ImageUpload(FileUpload):
+class ImageUpload:
     """Image edit view mix-in that provides access to image size info"""
 
     def size(self):

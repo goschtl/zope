@@ -13,9 +13,9 @@
 ##############################################################################
 """File views.
 
-$Id: file.py,v 1.5 2004/01/16 13:09:06 philikon Exp $
+$Id: file.py,v 1.6 2004/02/04 19:17:16 jim Exp $
 """
-from zope.app.browser.form.widget import FileWidget
+from zope.app.browser.form.widget import BytesAreaWidget
 from zope.app.form.widget import CustomWidgetFactory
 
 __metaclass__ = type
@@ -34,7 +34,7 @@ class FileView:
         return self.context.getData()
 
 
-class FileUpload:
+class FileTextEdit:
     """File editing mix-in that uses a file-upload widget."""
 
-    data_widget = CustomWidgetFactory(FileWidget)
+    data_widget = CustomWidgetFactory(BytesAreaWidget)

@@ -11,7 +11,9 @@
       schema="zope.app.interfaces.content.file.IFile"
       label="Change a file"
       usage="objectview"
-      permission="zope.ManageContent" />
+      permission="zope.ManageContent" 
+      class=".file.FileTextEdit" 
+      />
 
   <menuItem
       menu="zmi_views" title="Edit"
@@ -27,7 +29,7 @@
       schema="zope.app.interfaces.content.file.IFile"
       label="Upload a file"
       permission="zope.ManageContent"
-      class=".file.FileUpload" />
+      />
 
   <page
       for="zope.app.interfaces.content.file.IFile"
