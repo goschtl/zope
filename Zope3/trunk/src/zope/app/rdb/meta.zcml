@@ -1,11 +1,5 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-<serviceType id='SQLDatabaseConnections'
-             interface='zope.app.interfaces.rdb.IGlobalConnectionService' />
-<service serviceType='SQLDatabaseConnections'
-         permission='zope.ManageContent'
-         component='zope.app.rdb.connectionService' />
-
 <directives namespace="http://namespaces.zope.org/rdb">
 
   <directive name="provideConnection" attributes="name component dsn"

@@ -124,4 +124,8 @@
 
   <include package="zope.app.dav" />
 
+<!-- Services -->
+
+  <include package="zope.app.rdb" file="service.zcml" />
+
 </zopeConfigure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_connectiondirective.py,v 1.1 2003/07/07 17:14:59 sidnei Exp $
+$Id: test_connectiondirective.py,v 1.2 2003/07/07 18:06:08 sidnei Exp $
 """
 
 import unittest
@@ -43,6 +43,7 @@ class TestConnectionDirective(PlacelessSetup, unittest.TestCase):
         XMLConfig('metameta.zcml', zope.configuration)()
         XMLConfig('meta.zcml', zope.app.component)()
         XMLConfig('meta.zcml', zope.app.rdb)()
+        XMLConfig('service.zcml', zope.app.rdb)()
 
     def testEmptyDirective(self):
         f = configfile("""
