@@ -21,6 +21,12 @@
     - (__future__) Added DCWorkflow (through-the-web configurable
       workflows) to the core set of CMF products.
 
+    - Added 'portal_textmanager', a registry for filters which can be
+      used both to munge inbound text content (e.g., decapitating
+      HTML, extracting RFC822-style STX headers, etc.) and to render
+      outbout content (e.g., rendering STX to HTML).  Implemented
+      several "stock" handlers.
+
   Bug Fixes
 
     - Made links emitted by 'topic_view' play nice with virtual hosting
