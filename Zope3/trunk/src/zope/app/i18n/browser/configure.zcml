@@ -1,6 +1,6 @@
 <zope:configure 
-  xmlns:zope="http://namespaces.zope.org/zope"
-  xmlns="http://namespaces.zope.org/browser">
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser">
 
   <tool
       interface="zope.i18n.interfaces.ITranslationDomain"
