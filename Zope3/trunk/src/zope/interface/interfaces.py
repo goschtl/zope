@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.14 2003/06/02 11:08:13 jim Exp $
+$Id: interfaces.py,v 1.15 2003/09/08 09:15:54 anthony Exp $
 """
 
 from zope.interface import Interface
@@ -168,7 +168,7 @@ class IInterface(IElement):
         """Test whether the interface is implemented by the object
 
         Return true of the object asserts that it implements the
-        interface, including asseting that it implements an extended
+        interface, including asserting that it implements an extended
         interface.
         """
 
@@ -176,7 +176,7 @@ class IInterface(IElement):
         """Test whether the interface is implemented by instances of the class
 
         Return true of the class asserts that its instances implement the
-        interface, including asseting that they implement an extended
+        interface, including asserting that they implement an extended
         interface.
         """
 
@@ -188,7 +188,7 @@ class IInterface(IElement):
 
         Normally, only directly defined attributes are included. If
         a true positional or keyword argument is given, then
-        attributes defined by nase classes will be included.
+        attributes defined by base classes will be included.
         """
 
     def namesAndDescriptions(all=False):
@@ -200,7 +200,7 @@ class IInterface(IElement):
 
         Normally, only directly defined attributes are included. If
         a true positional or keyword argument is given, then
-        attributes defined by nase classes will be included.
+        attributes defined by base classes will be included.
         """
 
     def getDescriptionFor(name):
@@ -349,7 +349,7 @@ class IAdapterRegistry(Interface):
         attempt will be made to find the component that most closely
         matches the input arguments.
 
-        The object returned could have been registred to require None.
+        The object returned could have been registered to require None.
 
         Note that the implements may be None, it which case a
         component will be returned only if it was registered with a
@@ -370,7 +370,7 @@ class IAdapterRegistry(Interface):
         """
 
     def getRegistered(require, provide):
-        """return data registred specificly for the given interfaces
+        """return data registered specifically for the given interfaces
 
         None is returned if nothing is registered.
         """
@@ -399,7 +399,7 @@ class IAdapterRegistry(Interface):
         We've registered C to require R1 and provide P2.  Given this,
         if we call getRegisteredMatching:
 
-          registery.getRegisteredMatching([R2], [P1])
+          registry.getRegisteredMatching([R2], [P1])
 
         the returned value will include:
 
@@ -493,7 +493,7 @@ class IInterfaceSpecification(Interface):
         Removing an interface that is not in the specification does
         not raise an error. Doing so has no effect.
 
-        Removing an interface also removes subinterfaces of the interface.
+        Removing an interface also removes sub-interfaces of the interface.
 
         """
 
