@@ -57,7 +57,7 @@ def buildDatabaseRoot():
     connection = db.open()
     return connection.root()
 
-def buildRepository(factory=zope.app.versioncontrol.repository.Repository):
+def buildRepository(factory=zope.app.versioncontrol.repository.Repository, interaction=True):
     """Setup a zope.app.versioncontrol repository
     
     Placing an object under version control requires an instance of an
@@ -74,27 +74,29 @@ def buildRepository(factory=zope.app.versioncontrol.repository.Repository):
     assert zope.interface.verify.verifyObject(
                interfaces.IVersionControl,
                repository)
+               
+    if interaction :
 
-    # In order to actually use version control, there must be an
-    # interaction.  This is needed to allow the framework to determine the
-    # user making changes.  Let's set up an interaction now. First we need a
-    # principal. For our purposes, a principal just needs to have an id:
-    class FauxPrincipal:
-       def __init__(self, id):
-           self.id = id
-    principal = FauxPrincipal('bob')
-
-    # Then we need to define an participation for the principal in the
-    # interaction:
-    class FauxParticipation:
-        interaction=None
-        def __init__(self, principal):
-            self.principal = principal
-    participation = FauxParticipation(principal)
-
-    # Finally, we can create the interaction:
-    import zope.security.management
-    zope.security.management.newInteraction(participation)
+        # In order to actually use version control, there must be an
+        # interaction.  This is needed to allow the framework to determine the
+        # user making changes.  Let's set up an interaction now. First we need a
+        # principal. For our purposes, a principal just needs to have an id:
+        class FauxPrincipal:
+           def __init__(self, id):
+               self.id = id
+        principal = FauxPrincipal('bob')
+    
+        # Then we need to define an participation for the principal in the
+        # interaction:
+        class FauxParticipation:
+            interaction=None
+            def __init__(self, principal):
+                self.principal = principal
+        participation = FauxParticipation(principal)
+    
+        # Finally, we can create the interaction:
+        import zope.security.management
+        zope.security.management.newInteraction(participation)
 
     return repository
 

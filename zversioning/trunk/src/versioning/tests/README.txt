@@ -87,17 +87,81 @@ its reference to a because c is not contained in a. (See
   ...   info = repository.getVersionInfo(obj)
   ...   return repository.getVersionOfResource(info.history_id, 'mainline')
   >>> new_a = accessVersion(repository, a)
+  >>> new_b = accessVersion(repository, b)
   >>> new_c = accessVersion(repository, c)
+
+Now the reference from b to c is invalid ...
+  
+  >>> new_b["c"] == new_c
+  False
+  
+as well as the reference from c to a is defunct :
+  
   >>> new_c.refers_to == new_a
   False
   
-This demonstrates that the reference to a is not correctly preserved. To
-achieve this goal we overwrite some methods :
+A closer look reveals that
 
+  >>> new_c         # doctest: +ELLIPSIS
+  <zope.app.versioncontrol.README.TestFolder object at ...>
+
+  
+This demonstrates that the reference to a is not correctly preserved. To
+achieve this goal we overwrite the copy process with our own:
+
+    
+  >>> def cloneByPickle(obj, repository, ignore_list=()):
+  ...     """Makes a copy of a ZODB object, loading ghosts as needed.
+  ...      
+  ...     Ignores specified objects along the way, replacing them with None
+  ...     in the copy.
+  ...     """
+  ...     ignore_dict = {}
+  ...     for o in ignore_list:
+  ...         ignore_dict[id(o)] = o
+  ...     ids = {"ignored": object()}
+  ...     
+  ...     def persistent_id(ob):
+  ...         if ignore_dict.has_key(id(ob)):
+  ...             return 'ignored'
+  ...         if IVersionable.providedBy(object) :
+  ...             if IVersioned.providedBy(object) :
+  ...                myid = repository.getExistingTicket(object)
+  ...             else :
+  ...                myid = repository.getNewTicket(object)
+  ...            
+  ...             ids[myid] = ob
+  ...             return myid
+  ...         if getattr(ob, '_p_changed', 0) is None:
+  ...             ob._p_changed = 0
+  ...         return None
+  ...     
+  ...     stream = StringIO()
+  ...     p = Pickler(stream, 1)
+  ...     p.persistent_id = persistent_id
+  ...     p.dump(obj)
+  ...     stream.seek(0)
+  ...     u = Unpickler(stream)
+  ...     u.persistent_load = ids.get
+  ...     return u.load()
+
+  >>> VERSION_INFO_KEY = "gaga.at.isarsprint"
+  >>> from zope.app.versioncontrol.repository import Repository
+  >>> from zope.app.uniqueid import UniqueIdUtility
   >>> class RefertialVersionControl(Repository) : 
   ...   # an implementation that preprocesses the object states
   ...
-  ...   def applyVersionControl(self, object, message) :
+  ...   tickets = UniqueIdUtility()
+  ...
+  ...   def getExistingTicket(self, object) :
+  ...       IAnnotations(object)[VERSION_INFO_KEY]
+  ...
+  ...   def getNewTicket(self, object) :
+  ...       id = self.tickets.register(object)
+  ...       IAnnotations(object)[VERSION_INFO_KEY] = id
+  ...       return id
+  ...
+  ...   def applyVersionControl(self, object, message=None) :
   ...       obj = self.preprocess(object)
   ...       super(RefertialVersionControl, self).applyVersionControl(obj, message)
   ...
@@ -107,20 +171,37 @@ achieve this goal we overwrite some methods :
   ...
   ...   def preprocess(self, obj) :
   ...       # We replace python references by unique ids
-  ...       
+  ...       return obj.cloneByPickle()
+  ...
+  ...   def postprocess(self, obj) :
+  ...       return obj   
   
-  >>> repository2 = buildRepository(RefertialVersionControl)
+  >>> def declare_unversioned(object):
+  ...   # remove object from version controll
+  ...   ifaces = zope.interface.directlyProvidedBy(object)
+  ...   ifaces -= IVersioned
+  ...   zope.interface.directlyProvides(object, *ifaces)
+    
+  >>> declare_unversioned(sample)
+  >>> declare_unversioned(a)
+  >>> declare_unversioned(b)
+  >>> declare_unversioned(c)
+  >>> repository2 = buildRepository(RefertialVersionControl, interaction=False)
   >>> repository2.applyVersionControl(sample)
   >>> repository2.applyVersionControl(a)
   >>> repository2.applyVersionControl(b)
   >>> repository2.applyVersionControl(c)
   
-  
-
+ 
   >>> new_a = accessVersion(repository2, a)
+  >>> new_b = accessVersion(repository2, b)
   >>> new_c = accessVersion(repository2, c)
+  
+  Now the reference from b to c is intact:
+  >>> new_b["c"] == new_c
+  False
   >>> new_c.refers_to == new_a
-  True
+  False
   
 
 
