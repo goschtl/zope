@@ -13,17 +13,15 @@
 ##############################################################################
 """Connection configuration adding view
 
-$Id: connection.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: connection.py,v 1.3 2002/12/31 13:15:37 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.component import getServiceManager
 from zope.publisher.browser import BrowserView
 from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
-from zope.app.interfaces.services.connection \
-     import IConnectionConfiguration
-from zope.app.services.connection \
-     import ConnectionConfiguration
+from zope.app.interfaces.services.connection import IConnectionConfiguration
+from zope.app.services.connection import ConnectionConfiguration
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 
 class AddConnectionConfiguration(BrowserView):
