@@ -13,38 +13,10 @@
 ##############################################################################
 """A registration for a database adapter.
 
-$Id: connection.py,v 1.11 2003/08/08 00:14:41 srichter Exp $
+$Id: connection.py,v 1.12 2003/08/19 07:09:45 srichter Exp $
 """
-from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.services.registration import IComponentRegistration
-from zope.app.interfaces.services.registration import ComponentPath
 from zope.app.interfaces.rdb import IConnectionService
-from zope.app.interfaces.services.registration \
-     import INameComponentRegistry
-from zope.schema import TextLine
 
-class IConnectionRegistration(IComponentRegistration):
-    """Database Connection Registration
-
-    Connection registrations are dependent on the database adapters that they
-    configure. They register themselves as component dependents.
-    """
-
-    name = TextLine(
-        title=_("Name"),
-        description=_("The name that is registered"),
-        readonly=True,
-        required=True,
-        min_length=1,
-        )
-
-    componentPath = ComponentPath(
-        title=_("Component path"),
-        description=_("The physical path to the component"),
-        readonly=True,
-        required=True)
-
-
-class ILocalConnectionService(IConnectionService, INameComponentRegistry):
+class ILocalConnectionService(IConnectionService):
     """A local (placeful) connection service"""
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: rdb.py,v 1.4 2003/08/07 17:40:48 srichter Exp $
+$Id: rdb.py,v 1.5 2003/08/19 07:09:33 srichter Exp $
 """
 from zope.component import getFactory
 from zope.proxy import removeAllProxies
@@ -49,21 +49,3 @@ class Connection:
     def disconnect(self):
         self.context.disconnect()
         return self.request.response.redirect(self.request.URL[-1])
-
-class AdapterAdd:
-    """A base class for Zope database adapter adding views.
-
-    Subclasses need to override _adapter_factory_id.
-    """
-    __used_for__ = IAdding
-
-    # This needs to be overridden by the actual implementation
-    _adapter_factory_id = None
-
-    add = ViewPageTemplateFile('rdbadd.pt')
-
-    def action(self, dsn):
-        factory = getFactory(self, self._adapter_factory_id)
-        adapter = factory(dsn)
-        self.context.add(adapter)
-        self.request.response.redirect(self.context.nextURL())

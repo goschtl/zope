@@ -19,7 +19,7 @@
         </span>
         <br />
         <input type="text" name="dsn" size="40" value=""
-               tal:attributes="value context/getDSN" />
+               tal:attributes="value context/dsn" />
       </div>
     </div>
 

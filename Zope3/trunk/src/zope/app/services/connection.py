@@ -13,32 +13,30 @@
 ##############################################################################
 """Connection service
 
-$Id: connection.py,v 1.17 2003/07/03 22:46:15 sidnei Exp $
+$Id: connection.py,v 1.18 2003/08/19 07:09:53 srichter Exp $
 """
-
 from persistence import Persistent
+from zope.app import zapi
 from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
-from zope.app.interfaces.services.connection import IConnectionRegistration
 from zope.app.interfaces.services.connection import ILocalConnectionService
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.services.servicenames import SQLDatabaseConnections
-from zope.app.services.registration import NameComponentRegistry
-from zope.app.services.registration import NamedComponentRegistration
-from zope.app import zapi
+from zope.app.services.servicenames import SQLDatabaseConnections, Utilities
 from zope.interface import implements
 
-class ConnectionService(Persistent, NameComponentRegistry):
-
-    __doc__ = ILocalConnectionService.__doc__
+class ConnectionService(Persistent):
+    """This is a local relational database connection service."""
 
     implements(ILocalConnectionService, ISimpleService)
 
     def getConnection(self, name):
         'See IConnectionService'
-        dbadapter = self.queryActiveComponent(name)
-        if dbadapter is not None:
-            return dbadapter()
+        utilities = zapi.getService(self, Utilities)
+        matching = utilities.getRegisteredMatching(IZopeDatabaseAdapter)
+        matching = filter(lambda m: m[1] == name, matching)
+        if matching and matching[0][2].active() is not None:
+            return matching[0][2].active().getComponent()
         service = queryNextService(self, SQLDatabaseConnections)
         if service is not None:
             return service.getConnection(name)
@@ -57,37 +55,17 @@ class ConnectionService(Persistent, NameComponentRegistry):
 
     def getAvailableConnections(self):
         'See IConnectionService'
-        connections = {}
-        for name in self.listRegistrationNames():
-            registry = self.queryRegistrations(name)
-            if registry.active() is not None:
-                connections[name] = 0
+        connections = []
+        utilities = zapi.getService(self, Utilities)
+        matching = utilities.getRegisteredMatching(IZopeDatabaseAdapter)
+        for match in matching:
+            if match[2].active() is not None:
+                connections.append(match[1])
         service = queryNextService(self, SQLDatabaseConnections)
         if service is not None:
-            # Note that this works because we're only interested in the names
-            # of connections. If we wanted other data about connections, we'd
-            # have to be careful not to override this service's connections
-            # with higher-up connections.
             for name in service.getAvailableConnections():
-                connections[name] = 0
-        return connections.keys()
+                if name not in connections:
+                    connections.append(name)
+        return connections
 
     getAvailableConnections = zapi.ContextMethod(getAvailableConnections)
-
-
-class ConnectionRegistration(NamedComponentRegistration):
-
-    __doc__ = IConnectionRegistration.__doc__
-
-    implements(IConnectionRegistration)
-
-    serviceType = SQLDatabaseConnections
-
-    label = "Connection"
-
-    def getInterface(self):
-        return IZopeDatabaseAdapter
-
-
-# XXX Pickle backward compatability
-ConnectionConfiguration = ConnectionRegistration

@@ -13,11 +13,12 @@
 ##############################################################################
 """Relational Database Adapter interfaces.
 
-$Id: rdb.py,v 1.3 2003/07/07 17:14:50 sidnei Exp $
+$Id: rdb.py,v 1.4 2003/08/19 07:09:43 srichter Exp $
 """
 from zope.interface import Interface
 from zope.interface import Attribute
-
+from zope.schema import TextLine
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IDBITypeInfoProvider(Interface):
     """This object can get the Type Info for a particular DBI
@@ -382,6 +383,21 @@ class IZopeDatabaseAdapter(IDBITypeInfo):
 
     def getDSN():
         """Get the DSN of the Adapter instance"""
+
+    dsn = TextLine(
+        title=_("DSN"),
+        description=_(
+        "Specify the DSN (Data Source Name) of the database. "
+        "Examples include:\n"
+        "\n"
+        "dbi://dbname\n"
+        "dbi://dbname;param1=value...\n"
+        "dbi://user:passwd/dbname\n"
+        "dbi://user:passwd/dbname;param1=value...\n"
+        "dbi://user:passwd@host:port/dbname\n"
+        "dbi://user:passwd@host:port/dbname;param1=value...\n"),
+        default=u"dbi://dbname",
+        required=True)
 
     def connect():
         """Connect to the specified database."""

@@ -4,11 +4,17 @@
 
   <!-- XXX need an index.html that gives the source and is the def view -->
 
+  <view
+      name="+"
+      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      class="zope.app.browser.container.adding.Adding" 
+      permission="zope.ManageContent" />
+
   <pages
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
       permission="zope.View"
-      class=".rdb.Connection"
-      >
+      class=".Connection">
+
     <page name="editForm.html" template="rdbconnection.pt" 
           menu="zmi_views" title="Edit"/>
     <page name="edit.html" attribute="edit" />
@@ -31,33 +37,18 @@
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
       name="editForm.html" />
 
-<!-- Gadfly DA -->
+  <addform
+      label="Add Database Connection Registration"
+      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      name="addRegistration.html"
+      schema="zope.app.interfaces.services.utility.IUtilityRegistration"
+      class="zope.app.browser.services.utility.AddRegistration"
+      permission="zope.ManageServices"
+      content_factory="zope.app.services.utility.UtilityRegistration"
+      arguments="name interface componentPath"
+      set_after_add="status"
+      fields="name interface componentPath permission status" />
 
-  <view
-      name="zope.app.rdb.gadflyda.GadflyAdapter"
-      for="zope.app.interfaces.container.IAdding"
-      class=".gadflyda.GadflyDAAddView"
-      permission="zope.ManageServices">
-
-    <page name="+" attribute="add" />
-    <page name="action.html" attribute="action" />
-
-  </view>
-
-  <!-- Menu entry for "add component" menu -->
-  <menuItem
-      menu="add_component"
-      for="zope.app.interfaces.container.IAdding"
-      title="Gadfly DA" 
-      description="A DA for the built-in 100% Pure Python Gadfly Database"
-      action="zope.app.rdb.gadflyda.GadflyAdapter" />
-
-  <!-- Menu entry for "add connection" menu -->
-  <menuItem
-      menu="add_connection"
-      for="zope.app.interfaces.container.IAdding"
-      title="Gadfly DA" 
-      description="A DA for the built-in 100% Pure Python Gadfly Database"
-      action="zope.app.rdb.gadflyda.GadflyAdapter" />
+  <include file="gadflyda.zcml" />
 
 </configure>

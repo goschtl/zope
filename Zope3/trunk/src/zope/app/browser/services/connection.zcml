@@ -2,18 +2,34 @@
 
 <!-- Browser directives for the connection service -->
 
+  <view
+      for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+      name="AddSQLConnection"
+      class=".connection.ConnectionAdding"
+      permission="zope.ManageContent"
+      allowed_attributes="addingInfo">
+      
+    <page name="index.html"  attribute="index" />
+    <page name="action.html" attribute="action" />
+      
+  </view>
+
+  <menuItem
+      for="zope.app.interfaces.services.connection.ILocalConnectionService"
+      menu="zmi_actions" title="Add DA"
+      action="../AddSQLConnection"
+      permission="zope.ManageServices" />
+
   <!-- "Add service" menu entry to add a connection service.
        The action attribute matches a factory name defined in
        zope/app/services/configure.zcml. -->
   <menuItem
       for="zope.app.interfaces.container.IAdding"
       menu="add_service" title="SQL Connection Service"
-      action="ConnectionService"
       description="A Persistent SQL Connection Service for TTW development"
-      permission="zope.ManageServices"
-      />
+      action="zope.services.ConnectionService"
+      permission="zope.ManageServices" />
 
-  <!-- ZMI tab named "Connections" for the connection service -->
   <page
       for="zope.app.interfaces.services.connection.ILocalConnectionService"
       name="index.html"
@@ -21,50 +37,5 @@
       class=".connection.Connections"
       permission="zope.ManageServices"
       menu="zmi_views" title="Connections" />
-
-<!-- Browser directives for registering individual connection objects -->
-
-  <!-- Registration page for connection objects.  You get here by
-       clicking on the (change registration) link for a particular
-       connection in the "Connections" tab of the connection service.
-       It shows a menu of different registration, at most one of which
-       is active.  You can activate a different registration, or click
-       on an individual registration to edit it.  (Note that this page
-       doesn't really apply to a single connection, it applies to a
-       single connection name. -->
-  <page
-      for="zope.app.interfaces.services.connection.ILocalConnectionService"
-      name="configureConnection.html"
-      template="configureConnection.pt"
-      class=".connection.ConfigureConnection"
-      permission="zope.ManageServices" />
-
-  <!-- When creating a new connection object, you are taken to this
-       form to register it.  The form lets you define the connection
-       name, a permission, and a registration status (Unregistered,
-       Registered or Active). -->
-  <addform
-      label="New Connection Registration"
-      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
-      name="addRegistration.html"
-      schema="zope.app.interfaces.services.connection.IConnectionRegistration"
-      class=".connection.AddConnectionRegistration"
-      permission="zope.ManageServices"
-      content_factory="zope.app.services.connection.ConnectionRegistration"
-      arguments="name componentPath"
-      set_after_add="status"
-      fields="name componentPath permission status" />
-
-  <!-- When editing the registration of an existing connection object,
-       you are taken to this form.  It is similar to the above add
-       form, but doesn't let you change the name or path.
-       (Thus leaving only permission and registration status.) -->
-  <editform
-      menu="zmi_views" title="Edit"
-      label="Edit Connection Registration"
-      name="index.html"
-      schema="zope.app.interfaces.services.connection.IConnectionRegistration"
-      permission="zope.ManageServices"
-      fields="name componentPath permission status" />
 
 </configure>

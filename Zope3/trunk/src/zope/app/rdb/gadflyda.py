@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Gadfly Database Adapter (batteries included)
+"""Gadfly Database Adapter (batteries included)
 
-$Id: gadflyda.py,v 1.4 2003/06/04 10:46:36 stevea Exp $
+$Id: gadflyda.py,v 1.5 2003/08/19 07:09:48 srichter Exp $
 """
-
 import gadfly
 import os
 

@@ -1,63 +1,25 @@
 <html metal:use-macro="context/@@standard_macros/page">
 <body>
-<div metal:fill-slot="body"
-     tal:define="message view/update; configs view/getConfigs">
+<div metal:fill-slot="body">
 
-  <h2 i18n:translate="">Connections registered in this connection service:</h2>
+  <h2 i18n:translate="">Local Connections</h2>
+  <ul>
+    <li tal:repeat="conn view/getLocalConnections">
+      <a href="" tal:attributes="href conn/url">
+        <b tal:content="conn/id" /> (<span tal:replace="conn/dsn"/>)
+      </a>
+    </li>
+  </ul>
+  <a href="../AddSQLConnection">Add Connection</a>
 
-  <div class="message" tal:condition="message">
-     <span tal:replace="message">view/update message here</span>
-     <br /><br />
-     <i><a href="" i18n:translate="">(click to clear message)</a></i>
-  </div>
-
-  <p tal:condition="not:configs">None</p>
-
-  <form method="POST" action="index.html" tal:condition="configs">
-
-    <table>
-      <tr tal:repeat="config configs">
-        <td><input type="checkbox" name="selected:list"
-                   tal:attributes="value config/name" />
-        </td>
-        <td>
-
-          <a href="."
-             tal:condition="config/url"
-             tal:attributes="href config/url">
-            <span tal:replace="config/name" />
-          </a>
-
-          <span tal:condition="not:config/url">
-            <span tal:replace="config/name" />
-            <span i18n:translate="">(inactive)</span>
-          </span>
-
-        </td>
-        <td>
-          <a href="."
-             tal:attributes="href config/configurl"
-             i18n:translate="">(change registration)</a>
-        </td>
-      </tr>
-    </table>
-
-    <input type="submit" name="Activate" value="Activate" 
-           i18n:attributes="value activate-button"/>
-    <input type="submit" name="Deactivate" value="Deactivate"
-           i18n:attributes="value deactivate-button"/>
-    &nbsp;
-    <input type="submit" name="Delete" value="Delete"
-           i18n:attributes="value delete-button"/>
-    &nbsp;
-    <input type="submit" name="Refresh" value="Refresh"
-           i18n:attributes="value refresh-button"/>
-
-  </form>
-
-  <p><a href="../AddConnection" i18n:translate="">Add a connection to this
-  connection service</a></p>
-
+  <h2 i18n:translate="">Inherited Connections</h2>
+  <ul>
+    <li tal:repeat="conn view/getInheritedConnections">
+      <a href="" tal:attributes="href conn/url">
+        <b tal:content="conn/id" /> (<span tal:replace="conn/dsn"/>)
+      </a>
+    </li>
+  </ul>
 
 </div>
 </body>

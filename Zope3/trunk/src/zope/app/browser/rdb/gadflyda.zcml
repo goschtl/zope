@@ -1,0 +1,36 @@
+<configure xmlns="http://namespaces.zope.org/browser">
+
+  <addform
+      name="AddGadflyDA"
+      schema="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      label="Add Gadfly Database Adapter"
+      content_factory="zope.app.rdb.gadflyda.GadflyAdapter"
+      arguments="dsn"
+      fields="dsn"
+      permission="zope.ManageContent" />
+
+  <!-- Menu entry for "add component" menu -->
+  <menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_component"
+      action="AddGadflyDA"
+      title="Gadfly DA" 
+      description="A DA for the built-in 100% Pure Python Gadfly Database" />
+
+  <!-- Menu entry for "add utility" menu -->
+  <menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_utility"
+      action="AddGadflyDA"
+      title="Gadfly DA" 
+      description="A DA for the built-in 100% Pure Python Gadfly Database" />
+
+  <!-- Menu entry for "add connection" menu -->
+  <menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_connection"
+      action="AddGadflyDA"
+      title="Gadfly DA" 
+      description="A DA for the built-in 100% Pure Python Gadfly Database" />
+
+</configure>

@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.35 2003/08/17 06:05:47 philikon Exp $
+$Id: service.py,v 1.36 2003/08/19 07:09:38 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -99,10 +99,6 @@ class UtilityAdding(ComponentAdding):
             raise TypeError("%s is not a local utility" % content)
         return zapi.ContextSuper(UtilityAdding, self).add(content)
 
-class ConnectionAdding(ComponentAdding):
-    """Adding subclass used for adding database connections."""
-
-    menu_id = "add_connection"
 
 class CacheAdding(ComponentAdding):
     """Adding subclass used for adding caches."""

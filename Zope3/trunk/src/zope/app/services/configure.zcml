@@ -325,41 +325,23 @@
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
         />
-    </content>
+  </content>
 
-<!-- Page Folder --> <include file="pagefolder.zcml" />
+<!-- Page Folder --> 
+  <include file="pagefolder.zcml" />
 
 <!-- Connection Service -->
 
   <content class="zope.app.services.connection.ConnectionService">
     <factory
-       id="ConnectionService"
-       permission="zope.ManageServices"
-       />
+       id="zope.services.ConnectionService"
+       permission="zope.ManageServices" />
+
     <require
         permission="zope.View"
-        interface="zope.app.interfaces.rdb.IConnectionService"
-        attributes="queryRegistrations queryRegistrationsFor
-                    listRegistrationNames" />
-    </content>
+        interface="zope.app.interfaces.rdb.IConnectionService" />
 
-  <content class="zope.app.services.connection.ConnectionRegistration">
-    <require
-        permission="zope.ManageServices"
-        interface=
-        "zope.app.interfaces.services.connection.IConnectionRegistration"
-        set_attributes="name componentPath"
-        set_schema="zope.app.interfaces.services.view.IPageRegistration"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IAddNotifiable"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IDeleteNotifiable"
-        />
-    </content>
+  </content>
 
 <!-- Principal annotations (user data) service -->
 
@@ -506,11 +488,6 @@
 
 <fssync:adapter
     class=".cache.CacheRegistration"
-    factory=".registration.ComponentRegistrationAdapter"
-    />
-
-<fssync:adapter
-    class=".connection.ConnectionRegistration"
     factory=".registration.ComponentRegistrationAdapter"
     />
 

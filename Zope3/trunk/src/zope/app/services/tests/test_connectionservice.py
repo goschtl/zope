@@ -12,26 +12,24 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.12 2003/06/21 21:22:13 jim Exp $
+$Id: test_connectionservice.py,v 1.13 2003/08/19 07:09:57 srichter Exp $
 """
 
 import unittest
 
+from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
-from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.services.registration import IAttributeRegisterable
-from zope.app.services.connection import ConnectionRegistration
+from zope.app.interfaces.services.connection import ILocalConnectionService
+from zope.app.interfaces.services.registration import \
+     ActiveStatus, RegisteredStatus
+from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.services.connection import ConnectionService
-from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.app.services.servicenames import SQLDatabaseConnections, Utilities
+from zope.app.services.utility import LocalUtilityService, UtilityRegistration
 from zope.app.tests import setup
-from zope.app import zapi
+from zope.component import getServiceManager
 from zope.interface import implements
-
-class ConnectionServiceForTests(ConnectionService):
-
-    implements(IAttributeRegisterable)
 
 class DAStub:
 
@@ -49,75 +47,73 @@ def sort(list):
     return list
 
 
-class TestConnectionService(unittest.TestCase, PlacefulSetup):
+def addConnection(servicemanager, name, connection, status=ActiveStatus):
+    """Add a menu to the service manager's default package."""
+    default = zapi.traverse(servicemanager, 'default')
+    default.setObject(name, connection)
+    path = "%s/default/%s" % (zapi.getPath(servicemanager), name)
+    registration = UtilityRegistration(name, IZopeDatabaseAdapter, path)
+    key = default.getRegistrationManager().setObject("", registration)
+    zapi.traverse(default.getRegistrationManager(), key).status = status
+    return zapi.traverse(default, name)    
+
+
+class TestConnectionService(unittest.TestCase):
 
     def setUp(self):
-        sm = PlacefulSetup.setUp(self, site=True)
-        self.service = setup.addService(sm, 'SQLDatabaseConnections',
-                                        ConnectionServiceForTests())
-        self.default = zapi.traverse(sm, 'default')
+        setup.placefulSetUp()
+        self.rootFolder = setup.buildSampleFolderTree()
 
-        self.default.setObject('da1', DAStub(1))
-        self.default.setObject('da2', DAStub(2))
+        # Define Connection Service
+        sm=getServiceManager(None)
+        sm.defineService(SQLDatabaseConnections, ILocalConnectionService)
 
-        self.cm = self.default.getRegistrationManager()
+        # Create Components in root folder
+        mgr = setup.createServiceManager(self.rootFolder)
+        setup.addService(mgr, Utilities, LocalUtilityService())
 
-        k = self.cm.setObject('', ConnectionRegistration('conn1',
-                                '/++etc++site/default/da1'))
-        zapi.traverse(self.default.getRegistrationManager(), k).status = ActiveStatus
-        k = self.cm.setObject('', ConnectionRegistration('conn2',
-                                '/++etc++site/default/da2'))
-        zapi.traverse(self.default.getRegistrationManager(), k).status = ActiveStatus
-        k = self.cm.setObject('', ConnectionRegistration('conn3',
-                                '/++etc++site/default/da1'))
-        zapi.traverse(self.default.getRegistrationManager(),
-                 k).status = RegisteredStatus
-        # Now self.service has conn1 and conn2 available and knows about conn3
+        self.service = setup.addService(mgr, SQLDatabaseConnections,
+                                        ConnectionService())
 
-        sm = self.makeSite('folder1')
-        self.service1 = setup.addService(sm, 'SQLDatabaseConnections',
-                                         ConnectionServiceForTests())
+        conn = addConnection(mgr, 'conn1', DAStub(1))
+        conn = addConnection(mgr, 'conn2', DAStub(2))
+        conn = addConnection(mgr, 'conn3', DAStub(3), RegisteredStatus)
 
-        default1 = zapi.traverse(sm, 'default')
-        default1.setObject('da3', DAStub(3))
-        default1.setObject('da4', DAStub(4))
+        mgr = setup.createServiceManager(
+            zapi.traverse(self.rootFolder, 'folder1'))
+        setup.addService(mgr, Utilities, LocalUtilityService())
 
-        cm1 = default1.getRegistrationManager()
+        self.service1 = setup.addService(mgr, SQLDatabaseConnections,
+                                         ConnectionService())
 
-        k = cm1.setObject('', ConnectionRegistration('conn1',
-                            '/folder1/++etc++site/default/da3'))
-        zapi.traverse(default1.getRegistrationManager(), k).status = ActiveStatus
-        k = cm1.setObject('', ConnectionRegistration('conn4',
-                            '/folder1/++etc++site/default/da4'))
-        zapi.traverse(default1.getRegistrationManager(), k).status = ActiveStatus
-        # Now self.service1 overrides conn1, adds new conn4 available, and
-        # inherits conn2 from self.service
+        conn = addConnection(mgr, 'conn1', DAStub(3))
+        conn = addConnection(mgr, 'conn4', DAStub(4))
 
     def testGetConnection(self):
-        self.assertEqual('DA #1', self.service.getConnection('conn1'))
-        self.assertEqual('DA #2', self.service.getConnection('conn2'))
+        self.assertEqual('DA #1', self.service.getConnection('conn1')())
+        self.assertEqual('DA #2', self.service.getConnection('conn2')())
         self.assertRaises(KeyError, self.service.getConnection, 'conn3')
         self.assertRaises(KeyError, self.service.getConnection, 'conn4')
 
-        self.assertEqual('DA #3', self.service1.getConnection('conn1'))
-        self.assertEqual('DA #2', self.service1.getConnection('conn2'))
+        self.assertEqual('DA #3', self.service1.getConnection('conn1')())
+        self.assertEqual('DA #2', self.service1.getConnection('conn2')())
         self.assertRaises(KeyError, self.service1.getConnection, 'conn3')
-        self.assertEqual('DA #4', self.service1.getConnection('conn4'))
+        self.assertEqual('DA #4', self.service1.getConnection('conn4')())
         self.assertRaises(KeyError, self.service1.getConnection, 'conn5')
 
     def testQueryConnection(self):
-        self.assertEqual('DA #1', self.service.queryConnection('conn1'))
-        self.assertEqual('DA #2', self.service.queryConnection('conn2'))
+        self.assertEqual('DA #1', self.service.queryConnection('conn1')())
+        self.assertEqual('DA #2', self.service.queryConnection('conn2')())
         self.assertEqual(None, self.service.queryConnection('conn3'))
         self.assertEqual('xx', self.service.queryConnection('conn3', 'xx'))
         self.assertEqual(None, self.service.queryConnection('conn4'))
         self.assertEqual('xx', self.service.queryConnection('conn4', 'xx'))
 
-        self.assertEqual('DA #3', self.service1.queryConnection('conn1'))
-        self.assertEqual('DA #2', self.service1.queryConnection('conn2'))
+        self.assertEqual('DA #3', self.service1.queryConnection('conn1')())
+        self.assertEqual('DA #2', self.service1.queryConnection('conn2')())
         self.assertEqual(None, self.service1.queryConnection('conn3'))
         self.assertEqual('xx', self.service1.queryConnection('conn3', 'xx'))
-        self.assertEqual('DA #4', self.service1.queryConnection('conn4'))
+        self.assertEqual('DA #4', self.service1.queryConnection('conn4')())
         self.assertEqual(None, self.service1.queryConnection('conn5'))
         self.assertEqual('xx', self.service1.queryConnection('conn5', 'xx'))
 

@@ -455,19 +455,6 @@
 
   </view>
 
-<!-- "Add Connection" menu -->
-
-  <view
-    name="AddConnection"
-     for="zope.app.interfaces.services.folder.ISiteManagementFolder"
-     permission="zope.ManageServices"
-     class="zope.app.browser.services.service.ConnectionAdding">
-
-    <page name="index.html"  attribute="index"  />
-    <page name="action.html" attribute="action" />
-
-  </view>
-
 <!-- "Add Cache" menu -->
 
   <view
