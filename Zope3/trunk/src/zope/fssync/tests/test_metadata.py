@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Metadata class.
 
-$Id: test_metadata.py,v 1.1 2003/05/12 20:19:39 gvanrossum Exp $
+$Id: test_metadata.py,v 1.2 2003/05/12 20:41:23 gvanrossum Exp $
 """
 
 import os
@@ -37,13 +37,10 @@ class TestMetadata(unittest.TestCase):
     def tearDown(self):
         # Clean up temporary files (or directories)
         for fn in self.tempfiles:
-            try:
-                if isdir(fn):
-                    shutil.rmtree(fn)
-                else:
-                    os.unlink(fn)
-            except os.error:
-                pass
+            if isdir(fn):
+                shutil.rmtree(fn)
+            elif isfile(fn):
+                os.remove(fn)
         unittest.TestCase.tearDown(self)
 
     def adddir(self):
