@@ -13,10 +13,8 @@
 ##############################################################################
 """Tests for the RegistrationView view class.
 
-$Id: test_registrationview.py,v 1.1 2003/09/24 20:43:08 fdrake Exp $
+$Id: test_registrationview.py,v 1.2 2004/02/25 23:02:19 faassen Exp $
 """
-
-import unittest
 
 from zope.interface import implements
 from zope.publisher.browser import TestRequest

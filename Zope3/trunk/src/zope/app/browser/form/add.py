@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.37 2003/12/16 20:33:36 garrett Exp $
+$Id: add.py,v 1.38 2004/02/25 23:02:17 faassen Exp $
 """
 import sys
 
@@ -27,7 +27,6 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.form import WidgetsError
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.component.servicenames import Presentation
 from zope.component import getAdapter
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import ValidationError

@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.5 2003/10/18 18:56:23 sidnei Exp $
+$Id: traversal.py,v 1.6 2004/02/25 23:02:21 faassen Exp $
 """
 from zope.interface import implements
 from zope.component import getDefaultViewName, queryView
@@ -19,8 +19,6 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.app.interfaces.utilities.schema import IMutableSchema
 
 from zope.exceptions import NotFoundError
-
-from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.traversing import ITraversable
 from zope.app.traversing.namespace import UnexpectedParameters

@@ -13,16 +13,12 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: rdb.py,v 1.5 2003/08/19 07:09:33 srichter Exp $
+$Id: rdb.py,v 1.6 2004/02/25 23:02:18 faassen Exp $
 """
-from zope.component import getFactory
 from zope.proxy import removeAllProxies
 
-from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.rdb import queryForResults
-
 
 class TestSQL:
 

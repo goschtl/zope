@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.24 2004/02/13 16:46:26 jim Exp $
+$Id: test_adding.py,v 1.25 2004/02/25 23:02:16 faassen Exp $
 """
 
 import unittest
@@ -22,10 +22,8 @@ from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.browser.container.adding import Adding
-from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.container import IObjectAddedEvent
-from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.exceptions import UserError
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.tests.placelesssetup import PlacelessSetup, setUp, tearDown
@@ -42,7 +40,6 @@ from zope.app.interfaces.container import IContainerNamesContainer
 import zope.interface
 from zope.app.interfaces.container import INameChooser
 from zope.app.interfaces.container import IContainer
-from zope.app.browser.container.contents import Contents
 
 class Root:
     implements(IContainmentRoot)

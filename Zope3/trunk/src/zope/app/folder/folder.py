@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: folder.py,v 1.2 2004/02/24 16:49:59 philikon Exp $
+$Id: folder.py,v 1.3 2004/02/25 23:02:25 faassen Exp $
 """
 
 from persistent import Persistent
@@ -20,7 +20,6 @@ from BTrees.OOBTree import OOBTree
 from zope.exceptions import DuplicationError
 from zope.interface import implements, directlyProvides
 
-from zope.app.interfaces.services.service import ISite
 from zope.app.container.contained import Contained, setitem, uncontained
 from zope.app.services.servicecontainer import ServiceManagerContainer
 

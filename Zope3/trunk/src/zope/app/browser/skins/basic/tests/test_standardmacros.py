@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.8 2003/11/21 17:11:58 jim Exp $
+$Id: test_standardmacros.py,v 1.9 2004/02/25 23:02:20 faassen Exp $
 """
 
 import unittest
@@ -21,7 +21,6 @@ from zope.app.tests import ztapi
 from zope.interface import implements
 from zope.app.services.tests.placefulsetup \
            import PlacefulSetup
-from zope.component import getService
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.interface import Interface

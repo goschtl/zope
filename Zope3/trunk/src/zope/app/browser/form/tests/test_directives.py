@@ -20,33 +20,20 @@ from zope.app import zapi
 from zope.interface import Interface, implements
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-from zope.configuration.exceptions import ConfigurationError
-from zope.component import getView, queryView, queryResource
+from zope.component import queryView
 from zope.component import getDefaultViewName, getResource
-from zope.app.services.servicenames import Permissions
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.security.proxy import ProxyFactory
-from zope.proxy import removeAllProxies
 
 from zope.component.exceptions import ComponentLookupError
 
-
-from zope.app.publisher.browser.globalbrowsermenuservice import \
-    globalBrowserMenuService
 from zope.publisher.browser import TestRequest
 
-from zope.app.publisher.browser.i18nfileresource import I18nFileResource
-
 import zope.app.publisher.browser
-from zope.component.service import serviceManager
 from zope.app.interfaces.security import IPermissionService
 from zope.app.security.registries.permissionregistry import permissionRegistry
-
 from zope.component.service import serviceManager
-from zope.app.security.registries.permissionregistry import permissionRegistry
-from zope.app.interfaces.security import IPermissionService
 
-from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.schema import TextLine
 
 tests_path = os.path.join(

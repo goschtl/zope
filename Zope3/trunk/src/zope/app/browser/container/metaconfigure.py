@@ -14,7 +14,7 @@
 
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject
-from zope.schema import TextLine, Text, Id
+from zope.schema import Id
 from zope.app.publisher.browser.viewmeta import page, view
 from zope.app.browser.container.contents import Contents
 from zope.app.browser.container.adding import Adding

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.8 2004/02/09 09:07:43 dunny Exp $
+$Id: objectevent.py,v 1.9 2004/02/25 23:02:25 faassen Exp $
 """
 
 __metaclass__ = type
@@ -24,12 +24,10 @@ from zope.app.interfaces.event import IObjectCopiedEvent
 from zope.app.interfaces.event import IObjectAnnotationsModifiedEvent
 from zope.app.interfaces.event import IObjectContentModifiedEvent
 from zope.app.interfaces.event import ISubscriber
-from zope.app.traversing import getPath
 from zope.interface import implements
 from zope.app.event import publish
 from zope.component import querySubscriptionMultiAdapter
 from zope.component import getService
-from zope.app.services.servicenames import Adapters
 
 _marker = object()
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service Views
 
-$Id: menu.py,v 1.6 2004/02/05 22:52:19 srichter Exp $
+$Id: menu.py,v 1.7 2004/02/25 23:02:18 faassen Exp $
 """
 
 from zope.app import zapi
@@ -22,7 +22,6 @@ from zope.app.component.nextservice import queryNextService
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.services.menu import ILocalBrowserMenu
 from zope.app.services.servicenames import Utilities, BrowserMenu
-from zope.security.proxy import trustedRemoveSecurityProxy
 
 class MenuContents(Contents):
 

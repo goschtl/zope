@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.25 2004/02/24 16:50:53 philikon Exp $
+$Id: test_committer.py,v 1.26 2004/02/25 23:02:26 faassen Exp $
 """
 
 import os
@@ -24,7 +24,7 @@ import unittest
 from zope.component.service import serviceManager
 from zope.app.tests import ztapi
 from zope.exceptions import NotFoundError
-from zope.interface import implements, directlyProvides
+from zope.interface import implements
 
 from zope.xmlpickle import loads, dumps
 from zope.fssync import fsutil

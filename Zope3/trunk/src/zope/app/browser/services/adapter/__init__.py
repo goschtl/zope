@@ -21,28 +21,21 @@
 
   AdapterRegistrationAdd
 
-$Id: __init__.py,v 1.2 2003/11/21 17:11:11 jim Exp $
+$Id: __init__.py,v 1.3 2004/02/25 23:02:19 faassen Exp $
 """
 __metaclass__ = type
 
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 
-
-import md5
-
-from zope.interface import Interface
 from zope.schema import getFieldNamesInOrder
-from zope.component import getView
 from zope.publisher.browser import BrowserView
 
-from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.services.adapter import IAdapterRegistration
 from zope.app.interfaces.services.registration import IRegistration
 from zope.app.form.utility import getWidgetsDataForContent
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.services.adapter import AdapterRegistration
-from zope.app.component.interfacefield import InterfaceField
 
 class AdapterRegistrationAdd(BrowserView):
 

@@ -13,9 +13,9 @@
 ##############################################################################
 """Index-relevant adapters.
 
-$Id: adapters.py,v 1.7 2004/02/20 22:02:29 fdrake Exp $
+$Id: adapters.py,v 1.8 2004/02/25 23:02:26 faassen Exp $
 """
-from zope.index.interfaces import IQuerying, ISimpleQuery, IKeywordQuerying
+from zope.index.interfaces import IQuerying, IKeywordQuerying
 from BTrees.IIBTree import IISet
 
 class SimpleQuery:

@@ -12,16 +12,14 @@
 #
 ##############################################################################
 """
-$Id: tests.py,v 1.2 2004/02/24 16:49:59 philikon Exp $
+$Id: tests.py,v 1.3 2004/02/25 23:02:25 faassen Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.testing.doctestunit import DocTestSuite
-from zope.component import getAdapter
 
 from zope.app.tests import ztapi
-from zope.app.traversing import traverse
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.folder.interfaces import IFolder
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter

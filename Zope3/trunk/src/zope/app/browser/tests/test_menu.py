@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_menu.py,v 1.10 2003/11/21 17:11:59 jim Exp $
+$Id: test_menu.py,v 1.11 2004/02/25 23:02:20 faassen Exp $
 """
 
 import unittest
@@ -21,7 +21,7 @@ import unittest
 from zope.app.tests import ztapi
 from zope.interface import Interface, implements
 
-from zope.component import getService, getServiceManager
+from zope.component import getServiceManager
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
 from zope.app.browser.menu import MenuAccessView

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.11 2004/02/24 16:51:30 philikon Exp $
+$Id: test_propfind.py,v 1.12 2004/02/25 23:02:24 faassen Exp $
 """
 __metaclass__ = type
 
@@ -21,7 +21,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
 from zope.interface import implements
-from zope.component import getService, getView, getAdapter
+from zope.component import getView, getAdapter
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
@@ -30,7 +30,6 @@ from zope.schema.interfaces import IText, ITextLine, IDatetime, ISequence
 from zope.app import zapi
 from zope.app.tests import ztapi
 
-from zope.app.services.servicenames import Adapters
 from zope.app.traversing import traverse
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.file import IWriteFile

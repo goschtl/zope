@@ -13,21 +13,18 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.28 2003/11/21 17:11:05 jim Exp $
+$Id: test_interfacewidget.py,v 1.29 2004/02/25 23:02:15 faassen Exp $
 """
 
 __metaclass__ = type
 
 from zope.interface import Interface
 from unittest import TestCase, TestSuite, makeSuite
-from zope.testing.cleanup import CleanUp
-from zope.app.component.globalinterfaceservice import InterfaceService
-from zope.app.interfaces.component import IInterfaceService
 from zope.app.component.interfacefield import InterfaceField, InterfacesField
 from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.component.interfacewidget import MultiInterfaceWidget
 from zope.publisher.browser import TestRequest
-from zope.component.service import serviceManager, defineService
+from zope.component.service import serviceManager
 from zope.app.services.servicenames import Interfaces
 from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.app.tests import setup

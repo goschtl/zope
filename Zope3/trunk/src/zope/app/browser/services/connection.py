@@ -13,14 +13,14 @@
 ##############################################################################
 """Connection View classes
 
-$Id: connection.py,v 1.19 2003/09/21 17:30:50 jim Exp $
+$Id: connection.py,v 1.20 2004/02/25 23:02:18 faassen Exp $
 """
 from zope.app import zapi
 from zope.app.browser.services.service import ComponentAdding
 from zope.app.component.nextservice import queryNextService
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
-from zope.app.services.servicenames import SQLDatabaseConnections, Utilities
+from zope.app.services.servicenames import Utilities
 
 class Connections:
     """Connection Overview"""

@@ -13,7 +13,7 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.11 2004/02/20 16:57:19 fdrake Exp $
+$Id: ram.py,v 1.12 2004/02/25 23:02:21 faassen Exp $
 """
 from time import time
 from thread import allocate_lock
@@ -22,7 +22,6 @@ from persistent import Persistent
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.interfaces.cache.ram import IRAMCache
-from zope.app.interfaces.cache import ICache
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.interface import implements
 

@@ -13,14 +13,14 @@
 ##############################################################################
 """Cache registry support classes.
 
-$Id: cache.py,v 1.15 2003/09/21 17:30:50 jim Exp $
+$Id: cache.py,v 1.16 2004/02/25 23:02:18 faassen Exp $
 """
 from zope.app import zapi
 from zope.app.browser.services.service import ComponentAdding
 from zope.app.component.nextservice import queryNextService
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.cache import ICache
-from zope.app.services.servicenames import Caching, Utilities
+from zope.app.services.servicenames import Utilities
 
 class Caches:
     """View for local caching services."""
