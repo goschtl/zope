@@ -35,6 +35,9 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - FSPageTemplate: Ensure that if a content type is specified using a
+      .metadata file we respect it (http://www.zope.org/Collectors/CMF/320)
+
     - CMFCore.tests.test_PortalFolder:  fixed testing bug copied forward
       from OFS.tests.testCopySupport.
 
