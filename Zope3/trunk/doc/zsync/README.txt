@@ -166,6 +166,10 @@ To Do
 
 - In the sync application (nice-to-haves):
 
+  * The **checkout** command should allow a -u/--user option similar
+    to the **login** command, since most people aren't familiar with
+    the username-in-the-URL syntax.
+
   * More **diff** options:
 
     -2 diffs between local and remote
