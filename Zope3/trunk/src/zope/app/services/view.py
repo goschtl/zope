@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.27 2003/06/23 16:38:03 mgedmin Exp $
+$Id: view.py,v 1.28 2003/06/24 15:38:04 jeremy Exp $
 """
 __metaclass__ = type
 
@@ -23,12 +23,16 @@ from persistence.dict import PersistentDict
 
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
-from zope.component.interfaces import IViewService
+from zope.component.interfaces import IViewService, IGlobalViewService
 from zope.component.exceptions import ComponentLookupError
+
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.services.interface import IInterfaceBasedRegistry
-from zope.app.interfaces.services.registration import IRegistry
+from zope.app.interfaces.services.registration \
+     import IRegistry, IRegistration, ActiveStatus
 from zope.app.services.registration import RegistrationStack
 from zope.app.services.registration import SimpleRegistration
+from zope.app.services.servicenames import Views
 from zope.app.component.nextservice import getNextService
 from zope.app import zapi
 from zope.interface import implements
@@ -38,6 +42,7 @@ from zope.security.checker import NamesChecker, ProxyFactory
 from zope.proxy import removeAllProxies
 from zope.exceptions import NotFoundError
 
+from zope.app.interfaces.services.interface import IInterfaceBasedRegistry
 from zope.app.interfaces.services.view import IViewRegistration
 from zope.app.interfaces.services.view import IPageRegistration
 from zope.app.interfaces.services.view import ILocalViewService
@@ -47,7 +52,8 @@ from zope.app.interfaces.services.service import ISimpleService
 
 class ViewService(Persistent):
 
-    implements(IViewService, ILocalViewService, IRegistry, ISimpleService)
+    implements(IViewService, ILocalViewService, IRegistry, ISimpleService,
+               IInterfaceBasedRegistry)
 
     def __init__(self):
         self._layers = PersistentDict()
@@ -142,7 +148,7 @@ class ViewService(Persistent):
             view = registry.active().getView(object, request)
             return view
 
-        views = getNextService(self, 'Views')
+        views = getNextService(self, Views)
 
         return views.queryView(object, name, request, default)
 
@@ -152,8 +158,8 @@ class ViewService(Persistent):
         name = self.queryDefaultViewName(object, request)
 
         if name is None:
-            raise NotFoundError, \
-                  'No default view name found for object %s' % object
+            raise NotFoundError(
+                "No default view name found for object %s" % object)
 
         return name
 
@@ -161,7 +167,7 @@ class ViewService(Persistent):
         "See IViewService"
 
         # XXX: need to do our own defaults as well.
-        views = getNextService(self, 'Views')
+        views = getNextService(self, Views)
         return views.queryDefaultViewName(object, request, default)
 
     def getRegisteredMatching(self, required_interfaces=None,
@@ -204,13 +210,62 @@ class ViewService(Persistent):
             for info in reg.info():
                 yield info["registration"]
 
+        next = getNextService(self, Views)
+        next = zapi.queryAdapter(next, IInterfaceBasedRegistry)
+        if next is None:
+            return
+        for r in next.getRegistrationsForInterface(iface):
+            yield r
+
+class RegistrationAdapter:
+    """Adapter to create registrations from factory chains."""
+
+    implements(IInterfaceBasedRegistry)
+    __used_for__ = IGlobalViewService
+
+    def __init__(self, gvs):
+        self.gvs = gvs
+
+    def getRegistrationsForInterface(self, iface):
+        for t in self.gvs.getRegisteredMatching(required_interfaces=[iface]):
+            yield GlobalViewRegistration(*t)
+            
+class GlobalViewRegistration:
+    """Registrations representing global view service thingies."""
+
+    implements(IRegistration)
+
+    serviceType = Views
+    status = ActiveStatus
+
+    def __init__(self, req, ptype, factories, layer, viewName):
+        self.forInterface = req
+        self.ptype = ptype
+        self.factories = factories
+        self.layer = layer
+        self.viewName = viewName
+
+    def usageSummary(self):
+        if self.forInterface is None:
+            ifname = _("(Anything)")
+        else:
+            ifname = self.forInterface.__name__
+        L = [self.viewName, self.ptype.__name__, _("View"), _("for"), ifname]
+        if self.layer and self.layer != "default":
+            L.extend([_("in layer"), self.layer])
+        return " ".join(L)
+
+    def implementationSummary(self):
+        # XXX This should report the ZCML that it came from.
+        return _("Registered by ZCML")
+
 class ViewRegistration(SimpleRegistration):
 
     implements(IViewRegistration)
 
-    serviceType = 'Views'
+    serviceType = Views
 
-    _what = "View" # For usageSummary(); subclass may override
+    _what = _("View") # For usageSummary(); subclass may override
 
     def __init__(self,
                  forInterface, viewName, presentationType,
@@ -230,13 +285,16 @@ class ViewRegistration(SimpleRegistration):
     getView = zapi.ContextMethod(getView)
 
     def usageSummary(self):
-        # XXX L10N This should be localizable.
-        ifname = getattr(self.forInterface, '__name__', "(Anything)")
-        s = "%s %s for %s" % (self.viewName, self._what, ifname)
+        if self.forInterface is None:
+            ifname = _("(Anything)")
+        else:
+            ifname = self.forInterface.__name__
+        pname = self.presentationType.__name__
+        L = [self.viewName, _("for"), pname, self._what, ifname]
         if self.layer and self.layer != "default":
-            s = "%s in layer %s" % (s, self.layer)
-        return s
-
+            L.extend([_("in layer"), self.layer])
+        return " ".join(L)
+    
 class PageRegistration(ViewRegistration):
 
     implements(IPageRegistration)
@@ -244,7 +302,7 @@ class PageRegistration(ViewRegistration):
     # We only care about browser pages
     presentationType = IBrowserPresentation
 
-    _what = "Page" # For usageSummary()
+    _what = _("Page") # For usageSummary()
 
     def __init__(self,
                  forInterface, viewName, permission,

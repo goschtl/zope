@@ -77,6 +77,13 @@
       />
 </content>
 
+<adapter
+   for="zope.component.interfaces.IGlobalViewService"
+   provides="zope.app.interfaces.services.interface.IInterfaceBasedRegistry"
+   factory=".view.RegistrationAdapter"
+   />
+
+
 <!-- Page Templates -->
 
 <content class="zope.app.services.zpt.ZPTTemplate">

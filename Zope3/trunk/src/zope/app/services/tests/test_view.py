@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.18 2003/06/23 16:20:08 jeremy Exp $
+$Id: test_view.py,v 1.19 2003/06/24 15:38:04 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -129,8 +129,6 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
                           service.getView, O(), 'test', request)
 
     def test_queryView_and_getView(self):
-        service = self._service
-
         sm = traverse(self.rootFolder, '++etc++site')
 
         registration_manager = traverse(sm, 'default').getRegistrationManager()
@@ -142,7 +140,7 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
 
         registration.factory = A
 
-        registry = service.createRegistrationsFor(registration)
+        registry = self._service.createRegistrationsFor(registration)
         registry.register(registration)
         registry.activate(registration)
 
@@ -154,7 +152,7 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
                 o = O()
                 directlyProvides(o, r)
 
-                view = getattr(service, m)(o, 'test', request)
+                view = getattr(self._service, m)(o, 'test', request)
                 self.assertEqual(view.__class__, A)
                 self.assertEqual(view.context, o)
                 self.assertEqual(view.request, request)

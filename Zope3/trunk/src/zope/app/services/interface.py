@@ -83,4 +83,3 @@ class LocalInterfaceService(object):
         # Return id, interface pairs for all items matching criteria.
         next = getNextService(self, Interfaces)
         return next.items(search_string, base)
-        
