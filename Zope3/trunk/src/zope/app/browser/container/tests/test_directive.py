@@ -21,7 +21,7 @@ from zope.interface import Interface
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.browser.container.metaconfigure import containerViews
 
-atre = re.compile(' at [0-9a-fx]+')
+atre = re.compile(' at [0-9a-fA-Fx]+')
 
 class Context:
     actions = ()
