@@ -369,7 +369,7 @@ class PathInit:
                 self.inplace = True
         # Calculate which directories we're going to add to sys.path, and cd
         # to the appropriate working directory
-        org_cwd = os.getcwd()
+        self.org_cwd = os.getcwd()
         if self.inplace:
             self.libdir = "src"
         else:
@@ -382,7 +382,7 @@ class PathInit:
         global functional
         kind = functional and "functional" or "unit"
         if libdir:
-            extra = os.path.join(org_cwd, libdir)
+            extra = os.path.join(self.org_cwd, libdir)
             print "Running %s tests from %s" % (kind, extra)
             self.libdir = extra
             sys.path.insert(0, extra)
@@ -697,6 +697,8 @@ def main(module_filter, test_filter, libdir):
     else:
         runner(files, test_filter, debug)
 
+    os.chdir(pathinit.org_cwd)
+
 
 def process_args(argv=None):
     import getopt
@@ -765,7 +767,7 @@ def process_args(argv=None):
         elif k in ("-b", "--build"):
             build = True
         elif k == "-B":
-             build = build_inplace = True
+            build = build_inplace = True
         elif k == "-c":
             # make sure you have a recent version of pychecker
             if not os.environ.get("PYCHECKER"):
