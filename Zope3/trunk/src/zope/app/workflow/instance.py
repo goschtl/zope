@@ -69,10 +69,6 @@ class ProcessInstanceContainerAdapter(object):
 
     def __init__(self, context):
         self.context = context
-        # Band-aid, so that the process instance can have a valid
-        # path. Eventually the pi should have context as parent directly. 
-        self.__parent__ = context
-        self.__name__ = "processInstances"
         annotations = IAnnotations(context)
         wfdata = annotations.get(WFKey)
         if not wfdata:
@@ -115,7 +111,11 @@ class ProcessInstanceContainerAdapter(object):
 
     def __setitem__(self, key, object):
         "See IProcessInstanceContainer"
+        # We cannot make the message the parent right away, since it is not
+        # added to any message board yet;
         setitem(self, self.wfdata.__setitem__, key, object)
+        # Set the final parent to be the message.
+        object.__parent__ = self.context
 
     def __delitem__(self, key):
         "See IZopeWriteContainer"

@@ -113,6 +113,13 @@
     />
 </content>
 
+<class class=".instance.StatefulProcessInstance">
+  <require
+    permission="zope.workflow.UseProcessInstances"
+    interface=".interfaces.IStatefulProcessInstance"
+    />  
+</class>
+
 <!-- Stateful workflow import/Export -->
 <adapter
    for=".interfaces.IStatefulProcessDefinition"
