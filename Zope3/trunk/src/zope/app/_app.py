@@ -13,10 +13,10 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.7 2003/03/21 19:29:11 alga Exp $
+$Id: _app.py,v 1.8 2003/05/02 17:53:36 jim Exp $
 """
 
-import base64
+import base64, time
 from StringIO import StringIO
 from zope.publisher.publish import publish as _publish, debug_call
 from zope.publisher.browser import TestRequest
@@ -137,6 +137,7 @@ class Application:
         return request
 
     def publish(self, path='/', stdin='', stdout=None, *args, **kw):
+        t, c = time.time(), time.clock()
 
         if stdout is None:
             stdout = StringIO()
@@ -145,10 +146,13 @@ class Application:
         _publish(request)
         stdout.seek(0)
         print stdout.read()
+        return time.time()-t, time.clock()-c
 
     def run(self, *args, **kw):
+        t, c = time.time(), time.clock()
         request = self._request(*args, **kw)
         _publish(request, handle_errors = 0)
+        return time.time()-t, time.clock()-c
 
     def debug(self, *args, **kw):
 
