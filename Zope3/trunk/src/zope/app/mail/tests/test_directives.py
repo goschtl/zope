@@ -16,6 +16,7 @@
 $Id$
 """
 import os
+import shutil
 import unittest
 import threading
 import time
@@ -52,6 +53,8 @@ class Mailer:
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
+    mailbox = os.path.join(os.path.dirname(__file__), 'mailbox')
+
     def setUp(self):
         super(DirectivesTest, self).setUp()
         self.testMailer = Mailer()
@@ -62,7 +65,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         self.context = xmlconfig.file("mail.zcml", zope.app.mail.tests)
         self.orig_maildir = delivery.Maildir
         delivery.Maildir = MaildirStub
-        
+
     def tearDown(self):
         delivery.Maildir = self.orig_maildir
 
@@ -74,13 +77,13 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
             if isinstance(thread, QueueProcessorThread):
                 thread.stop()
                 thread.join()
-                
+
+        shutil.rmtree(self.mailbox, True)
+
     def testQueuedDelivery(self):
         delivery = zapi.getUtility(None, IMailDelivery, "Mail")
         self.assertEqual('QueuedMailDelivery', delivery.__class__.__name__)
-        testdir = os.path.dirname(zope.app.mail.tests.__file__)
-        self.assertEqual(os.path.join(testdir, 'mailbox'),
-                         delivery.queuePath)
+        self.assertEqual(self.mailbox, delivery.queuePath)
 
     def testDirectDelivery(self):
         delivery = zapi.getUtility(None, IMailDelivery, "Mail2")
