@@ -12,9 +12,8 @@
 ##############################################################################
 """
 
-$Id: test_batchedrankedprocessor.py,v 1.11 2004/03/06 16:50:26 jim Exp $
+$Id: test_batchedrankedprocessor.py,v 1.12 2004/03/13 20:24:11 srichter Exp $
 """
-
 from unittest import TestCase, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
 
@@ -24,7 +23,7 @@ from zope.interface import implements
 from zope.index.interfaces import IQuerying
 from zope.app.index.interfaces.interfaces import \
     IBatchedResult, IRankedHubIdList
-from zope.app.interfaces.services.query import IQueryProcessor
+from zope.app.index.interfaces import IQueryProcessor
 from zope.app.index.text.processors import BatchedRankedProcessor
 from zope.app.index.text.queries import BatchedTextIndexQuery
 

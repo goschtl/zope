@@ -8,7 +8,7 @@
       />
 
   <implements
-      interface="zope.app.interfaces.services.query.IQueryProcessable"
+      interface="zope.app.index.interfaces.IQueryProcessable"
       />
 
 </content>

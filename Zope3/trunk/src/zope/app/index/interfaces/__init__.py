@@ -13,12 +13,30 @@
 ##############################################################################
 """Index Interfaces
 
-$Id: __init__.py,v 1.1 2004/03/02 14:40:10 philikon Exp $
+$Id: __init__.py,v 1.2 2004/03/13 20:24:09 srichter Exp $
 """
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 
 class IInterfaceIndexer(Interface):
     """I index objects by first adapting them to an interface, then
        retrieving a field on the adapted object.
     """
     
+class IQueryProcessable(Interface):
+    """Query Processor
+
+    Marker interface that says that the implementing component is adaptable
+    to IQueryProcessor, although maybe only via a named adapter."""
+
+class IQueryProcessor(IQueryProcessable):
+
+    inputInterfaces = Attribute("Sequence of input interfaces")
+    outputInterfaces = Attribute("Sequence of output interfaces")
+
+    def __call__(query):
+        """Processes the query returning the result.
+
+           The query must be adaptable to each interface in input_interface.
+           The output should be adaptable to each interface in the
+           output_interface.
+        """

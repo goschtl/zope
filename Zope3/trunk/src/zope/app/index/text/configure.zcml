@@ -10,7 +10,7 @@
       attributes="query"
       />
   <implements
-      interface="zope.app.interfaces.services.query.IQueryProcessable"
+      interface="zope.app.index.interfaces.IQueryProcessable"
       />
 </content>
 
@@ -29,14 +29,14 @@
       set_schema="zope.app.index.interfaces.text.IUITextCatalogIndex"
       />
   <implements
-      interface="zope.app.interfaces.services.query.IQueryProcessable"
+      interface="zope.app.index.interfaces.IQueryProcessable"
       />
 </content>
 
 
 <adapter
     factory="zope.app.index.text.processors.BatchedRankedProcessor"
-    provides="zope.app.interfaces.services.query.IQueryProcessor"
+    provides="zope.app.index.interfaces.IQueryProcessor"
     for="zope.index.interfaces.IQuerying"
     />
 

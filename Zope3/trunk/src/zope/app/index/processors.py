@@ -13,12 +13,12 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.14 2004/03/06 16:50:25 jim Exp $
+$Id: processors.py,v 1.15 2004/03/13 20:24:08 srichter Exp $
 """
 from zope.app.index.interfaces.interfaces import \
     IRankedObjectIterator, IRankedObjectRecord, \
     IRankedHubIdList, IBatchedResult
-from zope.app.interfaces.services.query import IQueryProcessor
+from zope.app.index.interfaces import IQueryProcessor
 
 from zope.component import getService
 from zope.app.services.servicenames import HubIds
