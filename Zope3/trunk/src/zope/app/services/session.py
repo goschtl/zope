@@ -97,3 +97,11 @@ class CookieSessionService(Persistent):
 
     def unregisterDataManager(self, name):
         del self.dataManagers[name]
+
+
+
+def getSessionDataObject(context, request, name):
+    """Get data object from appropriate ISessionDataManager."""
+    service = getService(context, "SessionService")
+    sid = service.getSessionId(request)
+    return service.getDataManager(name).getDataObject(sid)
