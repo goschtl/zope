@@ -11,7 +11,7 @@
 #
 ##############################################################################
 """A utility module for content-type handling."""
-__version__='$Revision: 1.2 $'[11:-2]
+__version__='$Revision: 1.3 $'[11:-2]
 
 import re, mimetypes
 
@@ -72,6 +72,7 @@ _addtypes=(
     ('.xml', 'text/xml'),
     ('.xsl', 'text/xsl'),
     ('.xul', 'text/xul'),
+    ('.swf', 'application/x-shockwave-flash'),
     )
 for name, val in _addtypes:
     mimetypes.types_map[name] = val
