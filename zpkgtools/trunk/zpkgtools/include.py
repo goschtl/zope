@@ -113,7 +113,7 @@ class InclusionProcessor:
             src = self.normalizePathOrURL(src, "source", filename, lineno)
             if src == "-":
                 path = os.path.join(self.source, dest)
-                expansions = self.filterNames(glob.glob(path))
+                expansions = self.filter_names(glob.glob(path))
                 if not expansions:
                     raise InclusionSpecificationError(
                         "exclusion %r doesn't match any files" % dest,
@@ -122,16 +122,6 @@ class InclusionProcessor:
                     self.excludes[fn] = fn
             else:
                 self.includes[dest] = src
-
-    def filterNames(self, names):
-        names = [n for n in names
-                 if n not in EXCLUDE_NAMES]
-        # This is needed when building a distro from a working
-        # copy (likely a checkout) rather than a pristine export:
-        for pattern in EXCLUDE_PATTERNS:
-            names = [n for n in names
-                     if not fnmatch.fnmatch(n, pattern)]
-        return names
 
     def normalizePath(self, path, type, filename, lineno):
         if ":" in path:
@@ -182,8 +172,8 @@ class InclusionProcessor:
             os.mkdir(destination)
         prefix = os.path.join(source, "")
         for dirname, dirs, files in os.walk(source):
-            dirs[:] = self.filterNames(dirs)
-            files = self.filterNames(files)
+            dirs[:] = self.filter_names(dirs)
+            files = self.filter_names(files)
 
             # remove excluded directories:
             for dir in dirs[:]:
@@ -206,7 +196,7 @@ class InclusionProcessor:
                 destname = os.path.join(destdir, file)
                 # Copy file data, permission bits, and stat info;
                 # owner/group are not copied.
-                shutil.copy2(srcname, destname)
+                self.copy_file(srcname, destname)
 
             for dir in dirs:
                 srcname = os.path.join(dirname, dir)
@@ -216,6 +206,24 @@ class InclusionProcessor:
                 os.mkdir(destname)
                 shutil.copymode(srcname, destname)
                 shutil.copystat(srcname, destname)
+
+    def copy_file(self, source, destination):
+        shutil.copy2(source, destination)
+        self.add_output(destination)
+
+    def add_output(self, path):
+        # we're going to build the manifest here
+        pass
+
+    def filter_names(self, names):
+        names = [n for n in names
+                 if n not in EXCLUDE_NAMES]
+        # This is needed when building a distro from a working
+        # copy (likely a checkout) rather than a pristine export:
+        for pattern in EXCLUDE_PATTERNS:
+            names = [n for n in names
+                     if not fnmatch.fnmatch(n, pattern)]
+        return names
 
     def addSingleInclude(self, relpath, source):
         dirname, basename = os.path.split(relpath)
@@ -254,7 +262,7 @@ class InclusionProcessor:
         # Check for file-ness here since copyTree() doesn't handle
         # individual files at all.
         if os.path.isfile(source):
-            shutil.copy2(source, destination)
+            self.copy_file(source, destination)
         else:
             self.copyTree(source, destination)
 
@@ -267,6 +275,7 @@ class InclusionProcessor:
                 shutil.copyfileobj(inf, outf)
             finally:
                 outf.close()
+            self.add_output(destination)
         finally:
             inf.close()
 
