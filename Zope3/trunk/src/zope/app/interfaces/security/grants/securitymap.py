@@ -16,7 +16,7 @@
 from zope.interface import Interface
 
 
-class ILocalSecurityMap(Interface):
+class ISecurityMap(Interface):
     """Security map to hold matrix-like relationships."""
 
     def addCell(rowentry, colentry, value):
