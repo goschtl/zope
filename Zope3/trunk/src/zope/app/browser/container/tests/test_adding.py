@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.8 2003/08/16 00:42:42 srichter Exp $
+$Id: test_adding.py,v 1.9 2003/08/16 14:08:15 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -47,6 +47,8 @@ class Container(dict):
     implements(IZopeContainer)
 
     def setObject(self, name, obj):
+        if name is None:
+            name = 'chosen'
         self[name] = obj
         return name
 
@@ -162,8 +164,12 @@ class Test(PlacelessSetup, TestCase):
         self.assert_('baz' in container)
 
         # alternative add w/missing contentName
+        # Note: Passing is None as object name might be okay, if the container
+        #       is able to hand out ids itself. Let's not require a content
+        #       name to be specified!
         adding.contentName = None
-        self.assertRaises(ValueError, adding.action, type_name='foo')
+        adding.action(type_name='foo')
+        self.assert_('chosen' in container)
         
 
     def test_action(self):
