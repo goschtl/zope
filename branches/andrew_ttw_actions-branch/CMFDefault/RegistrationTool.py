@@ -20,6 +20,8 @@ __version__='$Revision$'[11:-2]
 
 from Products.CMFCore.utils import UniqueObject
 from Products.CMFCore.utils import _checkPermission, getToolByName
+from Products.CMFCore.ActionInformation import ActionInformation
+from Products.CMFCore.Expression import Expression
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 from Products.CMFCore.RegistrationTool import RegistrationTool
 
@@ -31,7 +33,16 @@ from utils import _dtmldir
 class RegistrationTool (RegistrationTool, ActionProviderBase):
     meta_type = 'Default Registration Tool'
 
-    _actions = []
+    _actions = [ActionInformation(id='join'
+                            , title='Join'
+                            , description='Click here to Join'
+                            , action=Expression(
+            text='string: ${portal_url}/join_form')
+                            , permissions=(CMFCorePermissions.View,)
+                            , category='user'
+                            , condition=Expression(text='not: member')
+                            , visible=1
+                             )]
 
     security = ClassSecurityInfo()
 

@@ -63,13 +63,13 @@ class ActionsTool(UniqueObject, OFS.Folder.Folder, ActionProviderBase):
     meta_type = 'CMF Actions Tool'
 
     action_providers = ('portal_membership'
-                      , 'portal_memberdata'
                       , 'portal_actions'
                       , 'portal_registration'
                       , 'portal_discussion'
                       , 'portal_undo'
                       , 'portal_syndication'
-                      , 'portal_workflow')
+                      , 'portal_workflow'
+                      , 'portal_properties')
 
     security = ClassSecurityInfo()
 

@@ -161,10 +161,7 @@ class ActionInformation(SimpleItemWithProperties):
         Return boolean for whether the action
         is visible in the UI
         """
-        if self.visible:
-            return self.visible
-        else:
-            return 1
+        return self.visible
 
     security.declarePublic('getPriority')
     def getPriority(self):

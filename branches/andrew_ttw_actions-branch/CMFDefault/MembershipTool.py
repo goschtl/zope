@@ -45,17 +45,7 @@ default_member_content = '''Default page for %s
 class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
     """
     """
-    _actions =[ActionInformation(id='join'
-                            , title='Join'
-                            , description='Click here to Join'
-                            , action=Expression(
-            text='string: ${portal_url}/join_form')
-                            , permissions=(View,)
-                            , category='user'
-                            , condition=Expression(text='not: member')
-                            , visible=1
-                             )
-          , ActionInformation(id='login'
+    _actions =[ActionInformation(id='login'
                             , title='Login'
                             , description='Click here to Login'
                             , action=Expression(
@@ -83,16 +73,6 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
                             , permissions=(View,)
                             , category='user'
                             , condition=Expression(text='member')
-                            , visible=1
-                             )
-          , ActionInformation(id='configPortal'
-                            , title='Reconfigure Portal'
-                            , description='Reconfigure the portal'
-                            , action=Expression(
-            text='string: ${portal_url}/reconfig_form')
-                            , permissions=(ManagePortal,)
-                            , category='global'
-                            , condition=None
                             , visible=1
                              )
           , ActionInformation(id='addFavorite'

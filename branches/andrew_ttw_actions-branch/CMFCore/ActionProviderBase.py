@@ -64,14 +64,8 @@ class ActionProviderBase:
                     a1['permission'] = p[0]
                 else:
                     a1['permission'] = ''
-                if not a.getCategory():
-                    a1['category'] = 'object'
-                else:
-                    a1['category'] = a.getCategory()
-                if not a.getVisibility():
-                    a1['visible'] = 1
-                else:
-                    a1['visible'] = a.getVisibility()
+                a1['category'] = a.getCategory() or 'object'
+                a1['visible'] = a.getVisibility()
                 if a._action:
                     a1['action'] = a._action.text
                 else:
@@ -145,7 +139,7 @@ class ActionProviderBase:
                 'permissions':
                 (properties.get('permission_' + s_idx, ()),),
                 'category': str(properties.get('category_' + s_idx, 'object')),
-                'visible': not not properties.get('visible_' + s_idx, 0),
+                'visible': properties.get('visible_' + s_idx, 0),
                 }
             if not action['name']:
                 raise ValueError('A name is required.')
@@ -156,11 +150,10 @@ class ActionProviderBase:
                 a._action = Expression(text=action['action'])
             else:
                 a._action.text = action['action']
-            if not a.condition:
+            if action['condition'] is not '':
                 a.condition = Expression(text=action['condition'])
             else:
-                del(a.condition)
-                a.condition= Expression(text = action['condition'])
+                a.condition = ''
             a.permissions = action['permissions']
             a.category = action['category']
             a.visible = action['visible']
