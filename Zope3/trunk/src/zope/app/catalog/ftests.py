@@ -22,8 +22,8 @@ from zope.app.tests.functional import BrowserTestCase
 class TestCatalogAdd(BrowserTestCase):
 
     def testAddCatalog(self):
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'zope.app.catalog', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'zope.app.catalog',
                                       'id':u'felix_the'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
@@ -37,18 +37,18 @@ class TestCatalogAdd(BrowserTestCase):
         self.assert_(response.getBody().find('Advanced Catalog Thingies') != -1)
 
         # first test the multi-page add screens work
-        response = self.publish("/felix_the/+/action.html", 
-                        basic='mgr:mgrpw', 
+        response = self.publish("/felix_the/+/action.html",
+                        basic='mgr:mgrpw',
                         form={'type_name':u'AddFieldIndexToCatalog',
                               'id':u'dctitle',})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
                  'http://localhost/felix_the/+/AddFieldIndexToCatalog=dctitle')
         response = self.publish("/felix_the/+/AddFieldIndexToCatalog=dctitle",
-                        basic='mgr:mgrpw', 
-                        form={'field.interface': 
+                        basic='mgr:mgrpw',
+                        form={'field.interface':
                               u'zope.app.dublincore.interfaces.IZopeDublinCore',
-                              'field.field_name':u'Title', 
+                              'field.field_name':u'Title',
                               'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
@@ -56,7 +56,7 @@ class TestCatalogAdd(BrowserTestCase):
 
         # and a couple more indexes now - first a full text index
         response = self.publish("/felix_the/+/AddTextIndexToCatalog=fulltext",
-                        basic='mgr:mgrpw', 
+                        basic='mgr:mgrpw',
                         form={'field.interface':
                                'zope.app.index.interfaces.text.ISearchableText',
                               'field.field_name':'getSearchableText',
@@ -67,7 +67,7 @@ class TestCatalogAdd(BrowserTestCase):
 
         # Single page submit
         response = self.publish("/felix_the/+/AddFieldIndexToCatalog=name",
-                        basic='mgr:mgrpw', 
+                        basic='mgr:mgrpw',
                         form={'field.interface.search': '',
                               'field.field_name':'id',
                                'UPDATE_SUBMIT': u'Submit'})
@@ -75,12 +75,12 @@ class TestCatalogAdd(BrowserTestCase):
         self.assertEqual(response.getHeader('Location'),
                  'http://localhost/felix_the/@@contents.html')
 
-        # keyword index 
+        # keyword index
         response = self.publish("/felix_the/+/AddKeywordIndexToCatalog=dccreator",
-                        basic='mgr:mgrpw', 
-                        form={'field.interface': 
+                        basic='mgr:mgrpw',
+                        form={'field.interface':
                               u'zope.app.dublincore.interfaces.IZopeDublinCore',
-                              'field.field_name':u'Creator', 
+                              'field.field_name':u'Creator',
                               'UPDATE_SUBMIT': u'Submit'})
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
@@ -95,8 +95,8 @@ class TestCatalogAdd(BrowserTestCase):
         self.assert_(response.getBody().find('name') != -1)
 
         # Now add some content
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'zope.app.content.File', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'zope.app.content.File',
                                       'id':u'First'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/First/@@EditMetaData.html",basic='mgr:mgrpw',
@@ -105,8 +105,8 @@ class TestCatalogAdd(BrowserTestCase):
                                       'save':u'Save Changes',
                                       })
         self.assertEqual(response.getStatus(), 200)
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'zope.app.content.File', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'zope.app.content.File',
                                       'id':u'Second'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/Second/@@EditMetaData.html",basic='mgr:mgrpw',
@@ -116,8 +116,8 @@ class TestCatalogAdd(BrowserTestCase):
                                       })
         self.assertEqual(response.getStatus(), 200)
 
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'zope.app.content.File', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'zope.app.content.File',
                                       'id':u'Third'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/Third/@@EditMetaData.html",basic='mgr:mgrpw',
@@ -126,8 +126,8 @@ class TestCatalogAdd(BrowserTestCase):
                                       'save':u'Save Changes',
                                       })
         self.assertEqual(response.getStatus(), 200)
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'zope.app.content.File', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'zope.app.content.File',
                                       'id':u'Thirda'})
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/Thirda/@@EditMetaData.html",basic='mgr:mgrpw',
@@ -136,32 +136,32 @@ class TestCatalogAdd(BrowserTestCase):
                                       'save':u'Save Changes',
                                       })
         self.assertEqual(response.getStatus(), 200)
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'ZPTPage', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'ZPTPage',
                                       'id':u'Page1'})
         self.assertEqual(response.getStatus(), 302)
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'ZPTPage', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'ZPTPage',
                                       'id':u'Page2'})
         self.assertEqual(response.getStatus(), 302)
-        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
-                                form={'type_name':u'ZPTPage', 
+        response = self.publish("/+/action.html", basic='mgr:mgrpw',
+                                form={'type_name':u'ZPTPage',
                                       'id':u'Page3'})
         self.assertEqual(response.getStatus(), 302)
 
-        response = self.publish("/Page1/@@edit.html", basic='mgr:mgrpw', 
+        response = self.publish("/Page1/@@edit.html", basic='mgr:mgrpw',
                                 form={'field.source':u'Some sample text',
                                       'field.expand':u'',
                                       'field.expand.used':u'',
                                       'UPDATE_SUBMIT':u'Submit'})
         self.assertEqual(response.getStatus(), 200)
-        response = self.publish("/Page2/@@edit.html", basic='mgr:mgrpw', 
+        response = self.publish("/Page2/@@edit.html", basic='mgr:mgrpw',
                                 form={'field.source':u'Some other text',
                                       'field.expand':u'',
                                       'field.expand.used':u'',
                                       'UPDATE_SUBMIT':u'Submit'})
         self.assertEqual(response.getStatus(), 200)
-        response = self.publish("/Page3/@@edit.html", basic='mgr:mgrpw', 
+        response = self.publish("/Page3/@@edit.html", basic='mgr:mgrpw',
                                 form={'field.source':u'Different sample text',
                                       'field.expand':u'',
                                       'field.expand.used':u'',
@@ -175,8 +175,10 @@ class TestCatalogAdd(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
 
         root = self.getRootFolder()
+
         cat = root['felix_the']
         name = cat['dctitle']
+        self.setSite(root)
         self.assertEquals(name.documentCount(), 8)
         res = cat.searchResults(dctitle='Second File')
         self.assertEquals(len(res), 1)
