@@ -1,25 +1,4 @@
 <html metal:use-macro="views/standard_macros/dialog">
-<head>
-<style metal:fill-slot="headers" type="text/css">
-
-.Selector {
-    width: 10px;
-}
-
-.TypeIcon {
-    width: 20px;
-}
-
-.TypeName {
-    text-align: left;
-}
-
-.TypeDescription {
-    text-align: left;
-    font-style: italic;
-}
-</style>
-</head>
 <body>
 
 <div metal:fill-slot="body">
@@ -28,12 +7,6 @@
 
   <caption>Add Content</caption>
 
-    <!--
-      ** addingInfo returns a sequence of mappings, containing:
-      **   'id'    : the id of the addable type
-      **   'title' : the title of the addable type
-      **   'description'  : the description of the addable type
-      -->
     <tbody tal:repeat="info view/addingInfo">
 
     <tr>
@@ -48,11 +21,9 @@
                tal:attributes="for info/action">
           <span tal:replace="info/title" >Folder</span>
         </label>
-        <div class="TypeDescription">
-          <label tal:attributes="for info/action" tal:content="info/description">
-            Folders are generic containers for content, including other
-            folders.
-          </label>
+        <div class="TypeDescription" tal:content="info/description">
+          Folders are generic containers for content, including other
+          folders.
         </div>
       </td>
     </tr>
