@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Checkbox Widget tests
 
-$Id: test_checkboxwidget.py,v 1.2 2004/03/17 17:37:05 philikon Exp $
+$Id: test_checkboxwidget.py,v 1.3 2004/03/17 17:59:35 srichter Exp $
 """
-
 import unittest
 from persistence import Persistent
 from transaction import get_transaction
@@ -24,7 +23,7 @@ from zope.interface import Interface
 from zope.interface import implements
 
 from zope.schema import Bool
-from zope.app.form.browser.itemwidgets import CheckBoxWidget
+from zope.app.form.browser import CheckBoxWidget
 
 from support import *
 from zope.app.traversing import traverse

@@ -1,18 +1,35 @@
+##############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Test widget registrations.
+
+$Id: test_registrations.py,v 1.3 2004/03/17 17:59:35 srichter Exp $
+"""
 import unittest, doctest
 
 from zope.interface import implements
 from zope.app import zapi
 from zope.publisher.browser import TestRequest
 
+# import all widgets (in this case, importing * is ok, since we
+# absolutely know what we're importing)
+from zope.app.form.browser import *
+
 import zope.schema as fields
 from zope.schema import interfaces
 from zope.schema import vocabulary
 
 import zope.app.form.browser.vocabularywidget as vocabwidgets
-
-# import all widgets (in this case, importing * is ok, since we
-# absolutely know what we're importing)
-from zope.app.form.browser import *
 
 from zope.app.form.interfaces import IDisplayWidget
 from zope.app.form.interfaces import IInputWidget
