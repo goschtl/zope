@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.10 2004/03/23 22:07:58 srichter Exp $
+$Id: presentation.py,v 1.11 2004/03/31 23:26:25 jim Exp $
 """
 
 from types import ClassType
@@ -378,8 +378,9 @@ class GlobalPresentationService(GlobalService):
         return default
         
 
-    def queryMultiView(self, objects, name, request,
-                       providing=zope.interface.Interface, default=None):
+    def queryMultiView(self, objects, request,
+                       providing=zope.interface.Interface, name='',
+                       default=None):
         """Adapt the given objects and request
 
         The first argument is a sequence of objects to be adapted with the

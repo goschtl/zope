@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_presentation.py,v 1.3 2004/03/15 20:42:28 jim Exp $
+$Id: test_presentation.py,v 1.4 2004/03/31 23:26:26 jim Exp $
 """
 import unittest
 from doctest import DocTestSuite
@@ -91,7 +91,7 @@ def test_multi_views():
     >>> bob = Contact()
     >>> acme = Company()
     
-    >>> v = s.queryMultiView((bob, acme), 'foo', request)
+    >>> v = s.queryMultiView((bob, acme), request, name='foo')
     >>> v.__class__.__name__
     'ContactInCompanyView'
     >>> v.contact is bob
@@ -105,7 +105,7 @@ def test_multi_views():
     ...                  contexts=[IContact, IFamily], name='foo')
     
     >>> smith = Family()
-    >>> v = s.queryMultiView((bob, smith), 'foo', request)
+    >>> v = s.queryMultiView((bob, smith), request, name='foo')
     >>> v.__class__.__name__
     'ContactInFamilyView'
     >>> v.contact is bob

@@ -286,12 +286,12 @@ class Test(PlacelessSetup, unittest.TestCase):
                self.context, self.other, self.request = context, other, request
 
         self.assertEquals(
-            queryMultiView((ob, ob2), 'foo', request, I3, 42), 42)
+            queryMultiView((ob, ob2), request, I3, 'foo', 42), 42)
 
         getService(None, servicenames.Presentation).provideAdapter(
             IRequest, MV, 'foo', (I1, I2), I3)
 
-        view = queryMultiView((ob, ob2), 'foo', request, I3)
+        view = queryMultiView((ob, ob2), request, I3, 'foo')
         self.assertEquals(view.__class__, MV)
         self.assertEquals(view.context, ob)
         self.assertEquals(view.other, ob2)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.27 2004/03/28 23:42:23 srichter Exp $
+$Id: __init__.py,v 1.28 2004/03/31 23:26:25 jim Exp $
 """
 import sys
 import warnings
@@ -213,21 +213,20 @@ def queryView(object, name, request,
 
 queryView = hookable(queryView)
 
-def getMultiView(objects, name, request, providing=Interface, context=None):
-    view = queryMultiView(objects, name, request, context=context,
-                          providing=providing)
+def getMultiView(objects, request, providing=Interface, name='', context=None):
+    view = queryMultiView(objects, request, providing, name, context=context)
     if view is not None:
         return view
 
     raise ComponentLookupError("Couldn't find view",
                                name, object, context, request)
 
-def queryMultiView(objects, name, request, providing=Interface,
+def queryMultiView(objects, request, providing=Interface, name='',
                    default=None, context=None):
     if context is None:
         context = objects[0]
     s = getService(context, Presentation)
-    return s.queryMultiView(objects, name, request, providing, default)
+    return s.queryMultiView(objects, request, providing, name, default)
 
 def getViewProviding(object, providing, request, context=None):
     return getView(object, '', request, context, providing)

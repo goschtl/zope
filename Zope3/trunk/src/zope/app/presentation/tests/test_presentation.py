@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.10 2004/03/29 15:08:58 srichter Exp $
+$Id: test_presentation.py,v 1.11 2004/03/31 23:26:24 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -179,7 +179,8 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         x = X()
         y = Y()
         r = TestRequest()
-        self.assertEqual(self._service.queryMultiView((x, y), 'foo.html', r),
+        self.assertEqual(self._service.queryMultiView((x, y), r,
+                                                      name='foo.html'),
                          None)
         globalService = zapi.getService(None, Presentation)
 
@@ -189,7 +190,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
                 
         globalService.provideAdapter(IBrowserRequest, MV, 'foo.html',
                                      contexts=(I1, I3))
-        v = self._service.queryMultiView((x, y), 'foo.html', r)
+        v = self._service.queryMultiView((x, y), r, name='foo.html')
         self.assertEqual(v.__class__, MV)
         self.assertEqual(v.request, r)
         self.assertEqual(v.x, x)

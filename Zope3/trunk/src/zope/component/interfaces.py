@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.28 2004/03/18 16:08:52 philikon Exp $
+$Id: interfaces.py,v 1.29 2004/03/31 23:26:25 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -240,7 +240,7 @@ class IComponentArchitecture(Interface):
         a context.
         """
 
-    def getMultiView(objects, name, request, providing=Interface,
+    def getMultiView(objects, request, providing=Interface, name='',
                      context=None):
         """Look for a multi-view for given objects
 
@@ -253,7 +253,7 @@ class IComponentArchitecture(Interface):
         to specify a context.
         """
 
-    def queryMultiView(objects, name, request, providing=Interface,
+    def queryMultiView(objects, request, providing=Interface, name='',
                        default=None, context=None):
         """Look for a multi-view for given objects
 
@@ -541,7 +541,7 @@ class IPresentationService(Interface):
         The default will be returned if the component can't be found.
         """
 
-    def queryMultiView(objects, name, request, providing=Interface,
+    def queryMultiView(objects, request, providing=Interface, name='',
                        default=None):
         """Adapt the given objects and request
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.12 2004/03/29 15:08:58 srichter Exp $
+$Id: presentation.py,v 1.13 2004/03/31 23:26:23 jim Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -141,8 +141,9 @@ class LocalPresentationService(
 
         return default
 
-    def queryMultiView(self, objects, name, request,
-                       providing=zope.interface.Interface, default=None):
+    def queryMultiView(self, objects, request,
+                       providing=zope.interface.Interface, name='',
+                       default=None):
         """Adapt the given objects and request
 
         The first argument is a sequence of objects to be adapted with the
