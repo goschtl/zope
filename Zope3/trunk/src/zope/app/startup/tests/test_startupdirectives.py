@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_startupdirectives.py,v 1.3 2002/12/30 14:03:20 stevea Exp $
+$Id: test_startupdirectives.py,v 1.4 2003/02/28 22:37:51 jim Exp $
 """
 
 import unittest, sys, tempfile, os
@@ -89,9 +89,9 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(sd.addServer(ContextStub(), 'Browser',
                                       '8081', 'true'), [])
         self.assertEqual(len(sd._servers), 1)
-        self.assertEqual(sd._servers.keys(), ['Browser'])
 
-        server_info = sd._servers['Browser']
+        [(name, server_info)] = sd._servers
+        self.assertEqual(name, 'Browser')
         self.assertEqual(server_info['port'], 8081)
         self.assertEqual(server_info['verbose'], 1)
 

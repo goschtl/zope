@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.9 2003/02/25 21:49:24 jeremy Exp $
+$Id: sitedefinition.py,v 1.10 2003/02/28 22:37:51 jim Exp $
 """
 
 import logging
@@ -77,7 +77,7 @@ class SiteDefinition:
 
         self._zodb = None
         self.useLog(_context)
-        self._servers = {}
+        self._servers = []
 
         self._started = 0
 
@@ -161,8 +161,7 @@ class SiteDefinition:
             else: verbose = 0
 
         if type is not None:
-            self._servers[type] = {'port': port,
-                                   'verbose': verbose}
+            self._servers.append((type, {'port': port, 'verbose': verbose}))
         else:
             sys.stderr.out('Warning: Server of Type %s does not exist. ' +
                            'Directive neglected.')
@@ -191,7 +190,7 @@ class SiteDefinition:
         self._initDB()
 
         # Start the servers
-        for type, server_info in self._servers.items():
+        for type, server_info in self._servers:
 
             server = getServerType(type)
             server.create(td, self._zodb, server_info['port'],
