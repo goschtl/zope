@@ -15,7 +15,7 @@
 
 This is a port of the Zope 2 error reporting object
 
-$Id: error.py,v 1.2 2003/08/12 21:26:26 gotcha Exp $
+$Id: error.py,v 1.3 2003/09/21 17:32:49 jim Exp $
 """
 
 from persistence import Persistent
@@ -25,11 +25,11 @@ from types import StringTypes
 from zope.app.interfaces.services.error import IErrorReportingService
 from zope.app.interfaces.services.error import ILocalErrorReportingService
 from zope.app.interfaces.services.service import ISimpleService
-from zope.context import ContextMethod
 from zope.exceptions.exceptionformatter import format_exception
 from zope.interface import implements
 import logging
 import time
+from zope.app.container.contained import Contained
 
 #Restrict the rate at which errors are sent to the Event Log
 _rate_restrict_pool = {}
@@ -48,7 +48,7 @@ _temp_logs = {}  # { oid -> [ traceback string ] }
 
 cleanup_lock = allocate_lock()
 
-class ErrorReportingService(Persistent):
+class ErrorReportingService(Persistent, Contained):
     """Error Reporting Service
     """
     implements(IErrorReportingService,
@@ -109,11 +109,11 @@ class ErrorReportingService(Persistent):
                         login = request.user.getLogin()
                     else:
                         login = 'unauthenticated'
-                    username = ', '.join((login,
+                    username = ', '.join(map(str, (login,
                                           request.user.getId(),
                                           request.user.getTitle(),
                                           request.user.getDescription()
-                                         ))
+                                         )))
                 # When there's an unauthorized access, request.user is
                 # not set, so we get an AttributeError
                 # XXX is this right? Surely request.user should be set!
@@ -165,7 +165,6 @@ class ErrorReportingService(Persistent):
                 self._do_copy_to_zlog(now, strtype, str(url), info)
         finally:
             info = None
-    raising = ContextMethod(raising)
 
     def _do_copy_to_zlog(self, now, strtype, url, info):
         # XXX info is unused; logging.exception() will call sys.exc_info()
@@ -187,7 +186,6 @@ class ErrorReportingService(Persistent):
             'copy_to_zlog': self.copy_to_zlog,
             'ignored_exceptions': self._ignored_exceptions,
             }
-    getProperties = ContextMethod(getProperties)
 
     def setProperties(self, keep_entries, copy_to_zlog=0,
                       ignored_exceptions=()):
@@ -199,7 +197,7 @@ class ErrorReportingService(Persistent):
         self._ignored_exceptions = tuple(
                 filter(None, map(str, ignored_exceptions))
                 )
-    setProperties = ContextMethod(setProperties)
+
     def getLogEntries(self):
         """Returns the entries in the log, most recent first.
 
@@ -208,7 +206,6 @@ class ErrorReportingService(Persistent):
         res = [entry.copy() for entry in self._getLog()]
         res.reverse()
         return res
-    getLogEntries = ContextMethod(getLogEntries)
 
     def getLogEntryById(self, id):
         """Returns the specified log entry.
@@ -218,7 +215,6 @@ class ErrorReportingService(Persistent):
             if entry['id'] == id:
                 return entry.copy()
         return None
-    getLogEntryById = ContextMethod(getLogEntryById)
 
 class RootErrorReportingService(ErrorReportingService):
     rootId = 'root'
