@@ -15,12 +15,13 @@
 
 Makes imports easier
 
-$Id: __init__.py,v 1.1 2004/03/15 12:03:45 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/21 17:09:43 srichter Exp $
 """
 
 from interfaces import IZAPI
 from zope.interface import moduleProvides
 from zope.app import servicenames
+from zope.app.interface import queryType
 
 moduleProvides(IZAPI)
 __all__ = tuple(IZAPI)

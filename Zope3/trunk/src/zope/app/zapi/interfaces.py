@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: interfaces.py,v 1.1 2004/03/15 12:03:45 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/03/21 17:09:43 srichter Exp $
 """
 from zope.interface import Attribute
 from zope.component.interfaces import IComponentArchitecture
@@ -58,4 +58,13 @@ class IZAPI(
         
         """
 
+    def queryType(object, type):
+        """Returns the interface implemented by object that provides type.
+
+        For example, if you have an Image, you often would like to know
+        which interface is recognized as a Content Type interface
+        (IContentType).  So you would call queryType(myImage, IContentType)
+        which would return IImage.
+        """
+        
     servicenames = Attribute("Service Names")
