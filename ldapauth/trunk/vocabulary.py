@@ -13,7 +13,7 @@
 ##############################################################################
 """Vocabulary for the search scope.
 
-$Id: vocabulary.py 25177 2004-06-02 13:17:31Z rogerineichen $
+$Id$
 """
 import ldapurl
 

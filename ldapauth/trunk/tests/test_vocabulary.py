@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2003 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for Global Wiki Source Type Service.
+"""Tests for ldapauth vocabulary
 
-$Id: test_vocabulary.py 26248 2004-07-08 22:26:40Z srichter $
+$Id$
 """
 import unittest
 
