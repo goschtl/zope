@@ -14,7 +14,7 @@
 """Management view component for principal-role management (Zope2's
 'local roles').
 
-$Id: principalroleview.py,v 1.5 2004/03/13 23:55:24 srichter Exp $
+$Id: principalroleview.py,v 1.6 2004/04/11 18:16:33 jim Exp $
 """
 from datetime import datetime
 
@@ -41,7 +41,8 @@ class PrincipalRoleView:
         roles = getattr(self, '_roles', None)
         if roles is None:
             roles = self._roles = \
-              [role for name, role in zapi.getUtilitiesFor(self.context, IRole)]
+              [role
+               for name, role in zapi.getUtilitiesFor(self.context, IRole)]
         return roles
 
     def createGrid(self, principals=None, roles=None):
