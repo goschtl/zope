@@ -26,17 +26,11 @@ from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.container.interfaces import INameChooser
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.uniqueid.interfaces import IUniqueIdUtility
-from zope.app.servicenames import Authentication
 
 from versioning.interfaces import IVersionHistory
 from versioning.interfaces import IHistoryStorage
 from versioning.interfaces import IVersion
 from versioning.interfaces import ICheckoutAware
-
-
-class VersionPrincipalNotFound(Exception):
-    pass
-    
 
 
 class VersionHistory(Folder) :
@@ -158,17 +152,11 @@ class Version(object) :
     def getName(self):
         return 'Version %d' % int(self.getLabel())
         
-        
     def getComment(self):
         return 'no comment'
     
     def getPrincipal(self):
-        """ Returns the id of the principal that is versioning the data. """  
-        auth = zapi.getService(Authentication)
-        for principal in auth.getPrincipals('') :
-            return principal.getLogin()
-        return VersionPrincipalNotFound
- 
+        raise NotImplementedError
     
     data = property(getData)
     timestamp = property(getTimestamp)

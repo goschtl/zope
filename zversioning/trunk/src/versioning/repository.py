@@ -95,7 +95,7 @@ class CopyModifyMergeRepository(object):
         """
         versionable_state = zapi.getMultiAdapter(
             (obj, self.histories), interfaces.IVersionableAspects)
-        versionable_state.updateAspects(specifier)
+        versionable_state.updateAspects(selector)
         
     def getTicket(self, obj):
         return self.histories.getTicket(obj)
