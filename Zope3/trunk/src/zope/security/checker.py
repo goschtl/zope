@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.32 2003/06/05 11:56:25 mgedmin Exp $
+$Id: checker.py,v 1.33 2003/06/07 18:58:13 stevea Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -369,14 +369,18 @@ class CheckerLoggingMixin:
             super(CheckerLoggingMixin, self).check(object, name)
             if self.verbosity > 1:
                 if name in _always_available:
-                    print >> sys.stderr, '[CHK] + Always available: %s on %r' % (name, object)
+                    print >> sys.stderr, (
+                        '[CHK] + Always available: %s on %r' % (name, object))
                 else:
-                    print >> sys.stderr, '[CHK] + Granted: %s on %r' % (name, object)
+                    print >> sys.stderr, (
+                        '[CHK] + Granted: %s on %r' % (name, object))
         except Unauthorized:
-            print >> sys.stderr, '[CHK] - Unauthorized: %s on %r' % (name, object)
+            print >> sys.stderr, (
+                '[CHK] - Unauthorized: %s on %r' % (name, object))
             raise
         except ForbiddenAttribute:
-            print >> sys.stderr, '[CHK] - Forbidden: %s on %r' % (name, object)
+            print >> sys.stderr, (
+                '[CHK] - Forbidden: %s on %r' % (name, object))
             raise
 
     def check_getattr(self, object, name):
@@ -384,26 +388,35 @@ class CheckerLoggingMixin:
             super(CheckerLoggingMixin, self).check(object, name)
             if self.verbosity > 1:
                 if name in _always_available:
-                    print >> sys.stderr, '[CHK] + Always available getattr: %s on %r' % (name, object)
+                    print >> sys.stderr, (
+                        '[CHK] + Always available getattr: %s on %r'
+                        % (name, object))
                 else:
-                    print >> sys.stderr, '[CHK] + Granted getattr: %s on %r' % (name, object)
+                    print >> sys.stderr, (
+                        '[CHK] + Granted getattr: %s on %r'
+                        % (name, object))
         except Unauthorized:
-            print >> sys.stderr, '[CHK] - Unauthorized getattr: %s on %r' % (name, object)
+            print >> sys.stderr, (
+                '[CHK] - Unauthorized getattr: %s on %r' % (name, object))
             raise
         except ForbiddenAttribute:
-            print >> sys.stderr, '[CHK] - Forbidden getattr: %s on %r' % (name, object)
+            print >> sys.stderr, (
+                '[CHK] - Forbidden getattr: %s on %r' % (name, object))
             raise
 
     def check_setattr(self, object, name):
         try:
             super(CheckerLoggingMixin, self).check_setattr(object, name)
             if self.verbosity > 1:
-                print >> sys.stderr, '[CHK] + Granted setattr: %s on %r' % (name, object)
+                print >> sys.stderr, (
+                    '[CHK] + Granted setattr: %s on %r' % (name, object))
         except Unauthorized:
-            print >> sys.stderr, '[CHK] - Unauthorized setattr: %s on %r' % (name, object)
+            print >> sys.stderr, (
+                '[CHK] - Unauthorized setattr: %s on %r' % (name, object))
             raise
         except ForbiddenAttribute:
-            print >> sys.stderr, '[CHK] - Forbidden setattr: %s on %r' % (name, object)
+            print >> sys.stderr, (
+                '[CHK] - Forbidden setattr: %s on %r' % (name, object))
             raise
 
 
