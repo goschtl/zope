@@ -15,6 +15,8 @@
 
 $Id: test_directives.py 25177 2004-06-02 13:17:31Z jim $
 """
+
+import os
 import unittest
 
 from zope.configuration import xmlconfig
@@ -28,7 +30,10 @@ class DirectiveTest(unittest.TestCase):
 
         self.assertEqual(getGadflyRoot(), 'gadfly')
         self.context = xmlconfig.file("gadflyroot.zcml", zope.app.rdb.tests)
-        self.assert_('src/zope/app/rdb/tests/test/dir' in getGadflyRoot())
+        self.assert_(
+            os.path.join('zope', 'app', 'rdb', 'tests', 'test', 'dir')
+            in getGadflyRoot()
+            )
 
 
 def test_suite():
