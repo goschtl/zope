@@ -169,7 +169,7 @@ ext_modules = [
     Extension("BDBStorage._helper", ["lib/python/BDBStorage/_helper.c"]),
     Extension("Zope.ContextWrapper.wrapper",
               ["lib/python/Zope/ContextWrapper/wrapper.c"],
-              include_dirs = ["include"],
+              include_dirs = ["lib/python"],
               depends = ["lib/python/Zope/ContextWrapper/wrapper.h",
                          "lib/python/Zope/Proxy/proxy.h"]),
     Extension("Zope.Proxy.proxy", ["lib/python/Zope/Proxy/proxy.c"],
