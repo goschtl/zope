@@ -59,16 +59,6 @@
       />
 </content>
 
-<content class=".keyword.KeywordIndex">
-  <require
-      permission="zope.ManageServices"
-      interface=".interfaces.IAttributeIndex
-                 zope.index.interfaces.IStatistics
-                "
-      set_schema=".interfaces.IAttributeIndex"
-      />
-</content>
-
 <content class=".text.TextIndex">
   <require
       permission="zope.ManageServices"

@@ -20,14 +20,14 @@ from zope.interface import implements
 from zope.app.zapi import getUtility
 from zope.security.proxy import removeSecurityProxy
 from zope.app.container.btree import BTreeContainer
+import zope.index.interfaces
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainer
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.intid.interfaces import IIntIds
-from zope.index.interfaces import ISimpleQuery
-
+from BTrees.IIBTree import weightedIntersection
 
 class ResultSet:
     """Lazily accessed set of objects."""
@@ -47,7 +47,11 @@ class ResultSet:
 
 class Catalog(BTreeContainer):
 
-    implements(ICatalog, IContainer, IAttributeAnnotatable)
+    implements(ICatalog,
+               IContainer,
+               IAttributeAnnotatable,
+               zope.index.interfaces.IIndexSearch,
+               )
 
     def clear(self):
         for index in self.values():
@@ -76,28 +80,35 @@ class Catalog(BTreeContainer):
             for index in self.values():
                 index.index_doc(uid, obj)
 
+    def apply(self, query):
+        results = []
+        for index_name, index_query in query.items():
+            index = self[index_name]
+            r = index.apply(index_query)
+            if r is None:
+                continue
+            if not r:
+                # empty results
+                return r
+            results.append((len(r), r))
+
+        if not results:
+            # no applicable indexes, so catalog was not applicable
+            return None
+
+        results.sort() # order from smallest to largest
+        
+        _, result = results.pop(0)
+        for _, r in results:
+            _, result = weightedIntersection(result, r)
+            
+        return result
+
     def searchResults(self, **searchterms):
-        from BTrees.IIBTree import intersection
-        pendingResults = None
-        for key, value in searchterms.items():
-            index = self.get(key)
-            if not index:
-                raise ValueError, "no such index %s" % (key, )
-            index = ISimpleQuery(index)
-            results = index.query(value)
-            # Hm. As a result of calling getAdapter, I get back
-            # security proxy wrapped results from anything that
-            # needed to be adapted.
-            results = removeSecurityProxy(results)
-            if pendingResults is None:
-                pendingResults = results
-            else:
-                pendingResults = intersection(pendingResults, results)
-            if not pendingResults:
-                break # nothing left, short-circuit
-        # Next we turn the IISet of docids into a generator of objects
-        uidutil = zapi.getUtility(IIntIds)
-        results = ResultSet(pendingResults, uidutil)
+        results = self.apply(searchterms)
+        if results is not None:
+            uidutil = zapi.getUtility(IIntIds)
+            results = ResultSet(results, uidutil)
         return results
 
 def indexAdded(index, event):
