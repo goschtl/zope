@@ -1,4 +1,5 @@
 import unittest
+import Testing
 import Zope
 try:
     Zope.startup()
