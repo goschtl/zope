@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.15 2003/05/28 15:46:00 jim Exp $
+$Id: test_contents.py,v 1.16 2003/05/29 18:16:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -179,6 +179,12 @@ class Document:
     __implements__ = IDocument
 
 
+class Principal:
+
+    def getId(self):
+        return 'bob'
+
+
 class TestCutCopyPaste(PlacefulSetup, TestCase):
     
     def setUp(self):
@@ -297,7 +303,9 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
     def _TestView__newView(self, container):
         from zope.app.browser.container.contents import Contents
         from zope.publisher.browser import TestRequest
-        return Contents(container, TestRequest())
+        request = TestRequest()
+        request.user = Principal()
+        return Contents(container, request)
 
 class Test(BaseTestContentsBrowserView, TestCase):
 
