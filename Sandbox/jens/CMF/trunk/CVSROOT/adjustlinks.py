@@ -22,7 +22,6 @@ import string
 SCRIPT_DIR = os.path.abspath(os.path.split(sys.argv[0])[0])
 # Assume the repository root dir contains the CVSROOT script dir.
 REPO_ROOT = os.path.split(SCRIPT_DIR)[0]
-
 RECIPE_PATH = os.path.join(SCRIPT_DIR, RECIPE_NAME)
 
 EMPTY_DIR = REPO_ROOT + "/CVSROOT/Emptydir"
@@ -230,27 +229,28 @@ class LinkManager:
         # path, and identify all those links whose targets are one of those
         # directories.
 
+        got = {path: 1}
+
         if path[:len(os.sep)] == os.sep:
             path = path[len(os.sep):]
         path = os.path.join(REPO_ROOT, path)
 
-        got = []
         element_inodes = path_element_inodes(path)
         if element_inodes:
             for link, target, lineno in self._recipe_lines:
                 if (exists(target)
                     and (os.stat(target)[ST_INO] in element_inodes)):
                     # (Strip the REPO_ROOT prefix.)
-                    got.append(link[len(REPO_ROOT)+1:])
+                    got[link[len(REPO_ROOT)+1:]] = 1
 
-        return got
+        return got.keys()
 
 def path_element_inodes(path, split=os.path.split,
                         stat=os.stat, ST_INO=stat.ST_INO):
     """Return inodes of directory elements leading to path's physical location.
     We return the empty list if path doesn't actually exist."""
     got = []
-    if os.path.exists(path):
+    if (os.path.exists(path) or os.path.exists(split(path)[0])):
         origdir = os.getcwd()
         try:
             if os.path.isdir(path):
