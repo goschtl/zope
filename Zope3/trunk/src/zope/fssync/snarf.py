@@ -16,19 +16,18 @@
 This is for transferring collections of files over HTTP where the key
 need is for simple software.
 
-The format is as follows:
+The format is dead simple: each file is represented by the string
 
-- for directory entries:
-  '/ <pathname>\n'
+    '<size> <pathname>\n'
 
-- for file entries:
-  '<size> <pathname>\n' followed by exactly <size> bytes
+followed by exactly <size> bytes.  Directories are not represented
+explicitly.
 
 Pathnames are always relative and always use '/' for delimiters, and
 should not use '.' or '..' or '' as components.  All files are read
 and written in binary mode.
 
-$Id: snarf.py,v 1.1 2003/05/20 19:09:15 gvanrossum Exp $
+$Id: snarf.py,v 1.2 2003/05/27 14:03:04 gvanrossum Exp $
 """
 
 import os
@@ -112,16 +111,13 @@ class Unsnarfer(object):
             if not infoline.endswith("\n"):
                 raise IOError("incomplete info line %r" % infoline)
             infoline = infoline[:-1]
-            what, path = infoline.split(" ", 1)
-            if what == "/":
-                self.makedir(path)
-            else:
-                size = int(what)
-                f = self.createfile(path)
-                try:
-                    copybytes(size, self.istr, f)
-                finally:
-                    f.close()
+            sizestr, path = infoline.split(" ", 1)
+            size = int(sizestr)
+            f = self.createfile(path)
+            try:
+                copybytes(size, self.istr, f)
+            finally:
+                f.close()
 
     def makedir(self, path):
         fspath = self.translatepath(path)
