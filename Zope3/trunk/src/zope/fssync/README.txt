@@ -124,9 +124,11 @@ To Do
   to ZConfig for this file, primarily to make it easier to support
   additional data.
 
-  The format for the RegistrationManager, on the other hand, may well
-  do well as a ZConfig format, since each entry is very much like a
-  dictionary.
+  The format for the RegistrationManager, on the other hand, may do
+  well as a ZConfig format, since each entry is very much like a
+  dictionary.  The catch is that the registrations define their own
+  fields, even though their pretty much all the same, and the current
+  implmementation relies on them being indivudually serialized.
 
 - Figure out how to write meaningful adapter tests.
 
@@ -178,9 +180,6 @@ To Do
   * Unit tests for the **zsync** and **zbundle** utilities.
 
   * Add unit tests for ``zope.app.fssync.syncer``.
-
-  * More refactoring and cleanup of the **zsync** utility (the
-    ``zope.fssync.main`` module; mostly done)
 
   * Use camelCase for public method names.
 
