@@ -31,6 +31,7 @@ from zope.publisher.browser import BrowserRequest
 from zope.publisher.http import HTTPRequest
 from zope.publisher.publish import publish
 from zope.exceptions import Forbidden, Unauthorized
+from zope.security.management import endInteraction
 
 from zope.app import Application
 from zope.app.publication.zopepublication import ZopePublication
@@ -263,6 +264,9 @@ class BrowserTestCase(FunctionalTestCase):
                 # __del__ methods happen if request.close() is not called here
                 if request:
                     request.close()
+                # Make sure the interaction is ended
+                try: endInteraction()
+                except: pass
         if errors:
             self.fail("%s contains broken links:\n" % path
                       + "\n".join(["  %s:\t%s" % (a, e) for a, e in errors]))
