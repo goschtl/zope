@@ -528,15 +528,14 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def testDefaultViewName(self):
         from zope.component import getService
-        from zope.exceptions import NotFoundError
         getService(Adapters).register((I1, I2), IDefaultViewName,
                                       '', 'sample_name')
-        self.assertRaises(NotFoundError,
+        self.assertRaises(ComponentLookupError,
                           getDefaultViewName,
                           ob, Request(I1))
         self.assertEquals(getDefaultViewName(ob, Request(I2)),
                           'sample_name')
-        self.assertRaises(NotFoundError,
+        self.assertRaises(ComponentLookupError,
                           getDefaultViewName,
                           ob, Request(I1))
 

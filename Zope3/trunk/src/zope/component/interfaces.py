@@ -338,7 +338,7 @@ class IComponentArchitecture(Interface):
         The request must implement IPresentationRequest, and provides the
         desired view type.  The nearest one to the object is found.
         If a matching default view name cannot be found, raises
-        NotFoundError.
+        ComponentLookupError.
 
         If context is not specified, attempts to use
         object to specify a context.
