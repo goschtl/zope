@@ -46,6 +46,11 @@ Things that need to be done
 
     It's not clear these remaining issues are particularly important.
 
+  - We should have a way to express dependence on particular versions
+    of Python, and a way to say which is preferred.  (This can be used
+    when building an "application" distribution since that has some
+    support to select from different available Python interpreters.)
+
   - Use delayed loading of resource maps, especially those that need to
     be retrieved from remote systems.  The basic model of the resource
     map allows this strategy to be employed effectively.  Low priority.
