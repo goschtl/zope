@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.6 2003/03/13 16:28:16 alga Exp $
+$Id: zopepolicy.py,v 1.7 2003/03/20 12:00:04 mgedmin Exp $
 """
-__version__='$Revision: 1.6 $'[11:-2]
+__version__='$Revision: 1.7 $'[11:-2]
 
 from zope.component import queryAdapter, getService
 from zope.app.services.servicenames import Authentication
@@ -73,7 +73,7 @@ class ZopeSecurityPolicy:
                 The default is true.
 
             authenticated -- Allow access to resources based on the
-                privaledges of the authenticated user.
+                privileges of the authenticated user.
                 The argument must have a truth value.
                 The default is true.
 
