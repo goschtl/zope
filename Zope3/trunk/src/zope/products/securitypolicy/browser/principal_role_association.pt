@@ -58,7 +58,7 @@
            </tr>
 
            <tr class="principalRoleRow" tal:repeat="principal listPrincipals">
-             <td class="principalLabel" tal:content="principal/getTitle">
+             <td class="principalLabel" tal:content="string:${principal/getLogin} (${principal/getTitle|principal/getLogin})">
                Principal Id
              </td>
 
