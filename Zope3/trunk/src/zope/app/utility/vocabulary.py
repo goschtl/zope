@@ -80,7 +80,7 @@ class UtilityTerm(object):
 
 
 class UtilityVocabulary(object):
-    """Vocabulary that provides utilities of a specified.
+    """Vocabulary that provides utilities of a specified interface.
 
     Here is a short example of how the vocabulary should work.
 
