@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.16 2003/06/23 16:41:50 mgedmin Exp $
+$Id: test_add.py,v 1.17 2003/08/02 07:03:59 philikon Exp $
 """
 
 import sys
@@ -37,14 +37,8 @@ from zope.app.browser.form.tests.test_editview import FooBarAdapter
 
 class Context:
 
-    def resolve(self, name):
-        l = name.rfind('.')
-        if l >= 0:
-            # eek, we got a real dotted name
-            m = sys.modules[name[:l]]
-            return getattr(m, name[l+1:])
-        else:
-            return globals()[name]
+    def action(self, discriminator, callable, args=(), kw={}):
+        self.last_action = (discriminator, callable, args, kw)
 
 class I(Interface):
 
@@ -96,16 +90,17 @@ class SampleData:
 class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
+        self._context = Context()
         PlacelessSetup.setUp(self)
         provideAdapter(IFoo, IBar, FooBarAdapter)
 
-    def _invoke_add(self, schema="I", name="addthis", permission="zope.Public",
-                    label="Add this", content_factory="C", class_="V",
-                    arguments="first last", keyword_arguments="email",
-                    set_before_add="getfoo", set_after_add="extra1",
+    def _invoke_add(self, schema=I, name="addthis", permission="zope.Public",
+                    label="Add this", content_factory=C, class_=V,
+                    arguments=['first', 'last'], keyword_arguments=['email'],
+                    set_before_add=['getfoo'], set_after_add=['extra1'],
                     fields=None):
         """ Call the 'add' factory to process arguments into 'args'."""
-        return add(Context(),
+        return add(self._context,
                    schema=schema,
                    name=name,
                    permission=permission,
@@ -120,31 +115,31 @@ class Test(PlacelessSetup, unittest.TestCase):
                    )
 
     def test_add_no_fields(self):
-
-        result1 = self._invoke_add()
-        result2 = self._invoke_add(
-            fields="name first last email address getfoo extra1 extra2",
+        _context = self._context
+        self._invoke_add()
+        result1 = _context.last_action
+        self._invoke_add(
+            fields="name first last email address getfoo extra1 extra2".split(),
             )
+        result2 = _context.last_action
 
         self.assertEqual(result1, result2)
 
     def test_add_error_handling(self):
-
-        result1 = self._invoke_add(fields="first last email getfoo extra1")
         # cannot use a field in arguments if it is not mentioned in fields
-        self.assertRaises(ValueError, self._invoke_add, fields="first email getfoo extra1")
+        self.assertRaises(ValueError, self._invoke_add, fields="first email getfoo extra1".split())
         # cannot use a field in keyword_arguments if it is not mentioned in fields
-        self.assertRaises(ValueError, self._invoke_add, fields="first last getfoo extra1")
+        self.assertRaises(ValueError, self._invoke_add, fields="first last getfoo extra1".split())
         # cannot use a field in set_before_add if it is not mentioned in fields
-        self.assertRaises(ValueError, self._invoke_add, fields="first last email extra1")
+        self.assertRaises(ValueError, self._invoke_add, fields="first last email extra1".split())
         # cannot use a field in set_after_add if it is not mentioned in fields
-        self.assertRaises(ValueError, self._invoke_add, fields="first last email getfoo")
+        self.assertRaises(ValueError, self._invoke_add, fields="first last email getfoo".split())
         # cannot use an optional field in arguments
-        self.assertRaises(ValueError, self._invoke_add, arguments="extra2")
+        self.assertRaises(ValueError, self._invoke_add, arguments=["extra2"])
 
     def test_add(self, args=None):
-
-        [(descriminator, callable, args, kw)] = self._invoke_add()
+        self._invoke_add()
+        (descriminator, callable, args, kw) = self._context.last_action
 
         self.assertEqual(descriminator,
                          ('view', IAdding, "addthis", IBrowserPresentation,
@@ -202,7 +197,8 @@ class Test(PlacelessSetup, unittest.TestCase):
                 return "."
 
         adding = Adding(self)
-        [(descriminator, callable, args, kw)] = self._invoke_add()
+        self._invoke_add()
+        (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
         view = getView(adding, 'addthis', request)
@@ -234,7 +230,8 @@ class Test(PlacelessSetup, unittest.TestCase):
                 return "."
 
         adding = Adding(self)
-        [(descriminator, callable, args, kw)] = self._invoke_add()
+        self._invoke_add()
+        (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
         view = getView(adding, 'addthis', request)
@@ -263,12 +260,14 @@ class Test(PlacelessSetup, unittest.TestCase):
                 return "."
 
         adding = Adding(self)
-        [(descriminator, callable, args, kw)] = self._invoke_add(
-            schema="IBar", name="addthis", permission="zope.Public",
-            label="Add this", content_factory="Foo", class_="FooV",
-            arguments="", keyword_arguments="",
-            set_before_add="bar", set_after_add="",
-            fields=None)
+        self._invoke_add(
+            schema=IBar, name="addthis", permission="zope.Public",
+            label="Add this", content_factory=Foo, class_=FooV,
+            arguments=None, keyword_arguments=None,
+            set_before_add=["bar"], set_after_add=None,
+            fields=None
+            )
+        (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
         view = getView(adding, 'addthis', request)
@@ -281,7 +280,8 @@ class Test(PlacelessSetup, unittest.TestCase):
             implements(IAdding)
 
         adding = Adding()
-        [(descriminator, callable, args, kw)] = self._invoke_add()
+        self._invoke_add()
+        (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()
 

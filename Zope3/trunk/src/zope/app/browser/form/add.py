@@ -12,18 +12,18 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.24 2003/07/14 09:45:02 Zen Exp $
+$Id: add.py,v 1.25 2003/08/02 07:03:55 philikon Exp $
 """
 
 import sys
 
 from zope.schema.interfaces import ValidationError
 
+from zope.app.interfaces.container import IAdding
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
-from zope.configuration.action import Action
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component import getAdapter
@@ -81,13 +81,15 @@ class AddView(EditView):
         """
         
         args = []
-        for name in self._arguments:
-            args.append(data[name])
+        if self._arguments:
+            for name in self._arguments:
+                args.append(data[name])
 
         kw = {}
-        for name in self._keyword_arguments:
-            if name in data:
-                kw[str(name)] = data[name]
+        if self._keyword_arguments:
+            for name in self._keyword_arguments:
+                if name in data:
+                    kw[str(name)] = data[name]
 
         content = self.create(*args, **kw)
         adapted = getAdapter(content, self.schema, context=self.context)
@@ -165,12 +167,10 @@ def AddViewFactory(name, schema, label, permission, layer,
 
 def add(_context, name, schema, content_factory='', label='',
         permission = 'zope.Public', layer = "default",
-        class_ = None, for_ = 'zope.app.interfaces.container.IAdding',
-        template = None, omit=None, fields=None,
-        arguments='', keyword_arguments='',
-        set_before_add='', set_after_add='',
-        menu=None, title=None, description='',
-        ):
+        class_ = None, for_ = IAdding,
+        template = None, fields=None, arguments=None, keyword_arguments=None,
+        set_before_add=None, set_after_add=None,
+        menu=None, title=None, description=''):
 
     # Handle menu attrs. We do this now to rather than later becaise
     # menuItemDirective expects a dotted name for for_. 
@@ -178,24 +178,16 @@ def add(_context, name, schema, content_factory='', label='',
         if (not menu) or (not title):
             raise ValueError("If either menu or title are specified, "
                              "they must both be specified")
-        actions = menuItemDirective(
+        menuItemDirective(
             _context, menu, for_, '@@' + name, title,
             permission=permission, description=description)
-    else:
-        actions = []
 
-
-    content_factory = (content_factory and _context.resolve(content_factory)
-                       or None)
-
-    schema, for_, bases, template, fields = normalize(
-        _context, schema, for_, class_, template, 'add.pt', fields, omit,
-        AddView)
+    for_, bases, template, fields = normalize(
+        for_, schema, class_, template, 'add.pt', fields, AddView)
 
     leftover = fields
 
     if arguments:
-        arguments = arguments.split()
         missing = [n for n in arguments if n not in fields]
         if missing:
             raise ValueError("Some arguments are not included in the form",
@@ -208,7 +200,6 @@ def add(_context, name, schema, content_factory='', label='',
         leftover = [n for n in leftover if n not in arguments]
 
     if keyword_arguments:
-        keyword_arguments = keyword_arguments.split()
         missing = [n for n in keyword_arguments if n not in fields]
         if missing:
             raise ValueError(
@@ -217,7 +208,6 @@ def add(_context, name, schema, content_factory='', label='',
         leftover = [n for n in leftover if n not in keyword_arguments]
 
     if set_before_add:
-        set_before_add = set_before_add.split()
         missing = [n for n in set_before_add if n not in fields]
         if missing:
             raise ValueError(
@@ -226,7 +216,6 @@ def add(_context, name, schema, content_factory='', label='',
         leftover = [n for n in leftover if n not in set_before_add]
 
     if set_after_add:
-        set_after_add = set_after_add.split()
         missing = [n for n in set_after_add if n not in fields]
         if missing:
             raise ValueError(
@@ -237,19 +226,12 @@ def add(_context, name, schema, content_factory='', label='',
         set_after_add += leftover
 
     else:
-
         set_after_add = leftover
 
-        
-
-    actions += [
-        Action(
+    _context.action(
         discriminator = ('view', for_, name, IBrowserPresentation, layer),
         callable = AddViewFactory,
         args = (name, schema, label, permission, layer, template, 'add.pt',
                 bases, for_, fields, content_factory, arguments,
                 keyword_arguments, set_before_add, set_after_add),
         )
-        ]
-
-    return actions
