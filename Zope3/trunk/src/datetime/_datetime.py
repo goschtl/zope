@@ -1275,7 +1275,7 @@ class datetime(date):
     def fromtimestamp(cls, t):
         "Construct a datetime from a POSIX timestamp (like time.time())."
         y, m, d, hh, mm, ss, weekday, jday, dst = _time.localtime(t)
-        us = int((t % 1.0) * 1000000)
+        us = int(round((t % 1.0) * 1000000))
         return cls(y, m, d, hh, mm, ss, us)
     fromtimestamp = classmethod(fromtimestamp)
 
