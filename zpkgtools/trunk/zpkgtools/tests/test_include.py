@@ -34,9 +34,13 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.destination = tempfile.mkdtemp(prefix="test_include_")
         self.processor = include.InclusionProcessor(self.source)
         self.source = os.path.abspath(self.source)
+        self.files_written = []
 
     def tearDown(self):
         shutil.rmtree(self.destination)
+        for path in self.files_written:
+            if os.path.exists(path):
+                os.unlink(path)
 
     def write_file(self, name, text):
         path = join(self.source, name)
@@ -45,6 +49,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
         f = open(path, "w")
         f.write(text)
         f.close()
+        self.files_written.append(path)
 
     def test_simple_includespec(self):
         self.write_file(include.PACKAGE_CONF, """\
@@ -90,7 +95,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
             self.fail("expected InclusionSpecificationError")
 
     def test_error_on_omitted_source(self):
-        f = StringIO("""\
+        self.write_file(include.PACKAGE_CONF, """\
             <collection>
               whatzit.txt
             </collection>
