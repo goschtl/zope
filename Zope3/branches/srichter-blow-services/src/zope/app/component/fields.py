@@ -28,7 +28,7 @@ from zope.app import zapi
 
 
 class LayerField(GlobalObject):
-    r"""This fields represents a layer.
+    r"""This field represents a layer.
 
     Besides being able to look up the layer by importing it, we also try
     to look up the name in the utility service.
