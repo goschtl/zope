@@ -14,7 +14,7 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.10 2002/11/26 15:09:59 jeremy Exp $
+$Id: z3.py,v 1.11 2002/12/19 21:06:42 gvanrossum Exp $
 """
 
 import os, sys
@@ -38,6 +38,14 @@ def run(argv=sys.argv):
     here = os.path.join(os.getcwd(), os.path.split(program)[0])
     libpython = os.path.join(here, 'lib', 'python') 
     sys.path = [libpython, here] + basepath
+
+    # Initialize the logging module.
+    import logging.config
+    logging.basicConfig()
+    logging.root.setLevel(logging.CRITICAL)
+    # If log.ini exists, use it
+    if os.path.exists("log.ini"):
+        logging.config.fileConfig("log.ini")
 
     # temp hack
     dir = os.getcwd()
