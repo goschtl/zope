@@ -11,7 +11,7 @@
       for="*"
       name="standard_macros"
       permission="zope.View"
-      class="zope.app.browser.skins.zopetop.standardmacros.StandardMacros"
+      class=".standardmacros.StandardMacros"
       allowed_interface="zope.interface.common.mapping.IItemMapping"
       layer="templates" />
 
