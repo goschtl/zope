@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.4 2003/05/12 20:19:38 gvanrossum Exp $
+$Id: fssync.py,v 1.5 2003/05/12 22:23:42 gvanrossum Exp $
 """
 
 import os
@@ -84,11 +84,65 @@ class FSSync(object):
     def __init__(self, topdir, verbose=False):
         self.topdir = topdir
         self.verbose = verbose
-        self.rooturl = self.findrooturl()
+        self.setrooturl(self.findrooturl())
         self.metadata = Metadata()
 
     def setrooturl(self, rooturl):
         self.rooturl = rooturl
+        if self.rooturl is None:
+            self.roottype = self.rootpath = None
+            self.user_passwd = self.host_port = None
+            return
+        self.roottype, rest = urllib.splittype(self.rooturl)
+        if self.roottype not in ("http", "https"):
+            raise Error("root url must be 'http' or 'https'", self.rooturl)
+        if self.roottype == "https" and not hasattr(httplib, "HTTPS"):
+            raise Error("https not supported by this Python build")
+        netloc, self.rootpath = urllib.splithost(rest)
+        self.user_passwd, self.host_port = urllib.splituser(netloc)
+
+    def httpreq(self, path, view, datafp=None, content_type="application/zip"):
+        if not path.endswith("/"):
+            path += "/"
+        path += view
+        if self.roottype == "https":
+            h = httplib.HTTPS(self.host_port)
+        else:
+            h = httplib.HTTP(self.host_port)
+        if datafp is None:
+            h.putrequest("GET", path)
+            filesize = 0   # for PyChecker
+        else:
+            datafp.seek(0, 2)
+            filesize = datafp.tell()
+            datafp.seek(0)
+            h.putrequest("POST", path)
+            h.putheader("Content-type", content_type)
+            h.putheader("Content-length", str(filesize))
+        if self.user_passwd:
+            auth = base64.encodestring(self.user_passwd).strip()
+            h.putheader('Authorization', 'Basic %s' % auth)
+        h.putheader("Host", self.host_port)
+        h.endheaders()
+        if datafp is not None:
+            nbytes = 0
+            while True:
+                buf = datafp.read(8192)
+                if not buf:
+                    break
+                nbytes += len(buf)
+                h.send(buf)
+            assert nbytes == filesize
+        errcode, errmsg, headers = h.getreply()
+        fp = h.getfile()
+        if errcode != 200:
+            raise Error("HTTP error %s (%s); error document:\n%s",
+                        errcode, errmsg,
+                        self.slurptext(fp, headers))
+        if headers["Content-type"] != "application/zip":
+            raise Error("The request didn't return a zipfile:\n%s",
+                        self.slurptext(fp, headers).strip())
+        return fp, headers
 
     def checkout(self):
         fspath = self.topdir
@@ -96,105 +150,96 @@ class FSSync(object):
             raise Error("root url not found nor explicitly set")
         if os.path.exists(fspath):
             raise Error("can't checkout into existing directory", fspath)
-        url = self.rooturl
-        if not url.endswith("/"):
-            url += "/"
-        url += "@@toFS.zip?writeOriginals=True"
-        filename, headers = urllib.urlretrieve(url)
-        if headers["Content-Type"] != "application/zip":
-            raise Error("The request didn't return a zipfile; contents:\n%s",
-                        self.slurptext(self.readfile(filename),
-                                       headers).strip())
+        fp, headers = self.httpreq(self.rootpath,
+                                   "@@toFS.zip?writeOriginals=False")
         try:
-            os.mkdir(fspath)
-            sts = os.system("cd %s; unzip -q %s" % (fspath, filename))
-            if sts:
-                raise Error("unzip command failed")
-            self.saverooturl()
-            print "All done"
+            self.merge_zipfile(fp)
         finally:
-            os.unlink(filename)
+            fp.close()
+        self.saverooturl()
 
     def commit(self):
-        fspath = self.topdir
-        if not self.rooturl:
-            raise Error("root url not found")
-        (scheme, netloc, url, params,
-         query, fragment) = urlparse.urlparse(self.rooturl)
-        if scheme != "http":
-            raise Error("root url must start with http", rooturl)
-        user_passwd, host_port = urllib.splituser(netloc)
+        names = self.metadata.getnames(self.topdir)
+        if len(names) != 1:
+            raise Error("can only commit from toplevel directory")
+        entry = self.metadata.getentry(join(self.topdir, names[0]))
+        path = entry["path"]
         zipfile = tempfile.mktemp(".zip")
-        sts = os.system("cd %s; zip -q -r %s ." % (fspath, zipfile))
-        if sts:
-            raise Error("zip command failed")
-        zipdata = self.readfile(zipfile, "rb")
-        os.unlink(zipfile)
-        # XXX Use urllib2 and then set Content-type header.
-        # That should take care of proxies and https.
-        h = httplib.HTTP(host_port)
-        h.putrequest("POST", url + "/@@fromFS.zip")
-        h.putheader("Content-Type", "application/zip")
-        h.putheader("Content-Length", str(len(zipdata)))
-        if user_passwd:
-            auth = base64.encodestring(user_passwd).strip()
-            h.putheader('Authorization', 'Basic %s' % auth)
-        h.putheader("Host", host_port)
-        h.endheaders()
-        h.send(zipdata)
-        errcode, errmsg, headers = h.getreply()
-        if errcode != 200:
-            raise Error("HTTP error %s (%s); error document:\n%s",
-                        errcode, errmsg,
-                        self.slurptext(h.getfile().read(), headers))
-        if headers["Content-Type"] != "application/zip":
-            raise Error("The request didn't return a zipfile; contents:\n%s",
-                        self.slurptext(h.getfile().read(), headers))
-        f = open(zipfile, "wb")
-        shutil.copyfileobj(h.getfile(), f)
-        f.close()
-        tmpdir = tempfile.mktemp()
-        os.mkdir(tmpdir)
-        sts = os.system("cd %s; unzip -q %s" % (tmpdir, zipfile))
-        if sts:
-            raise Error("unzip command failed")
-        self.merge_dirs(self.topdir, tmpdir)
-        shutil.rmtree(tmpdir)
-        os.unlink(zipfile)
-        print "All done"
+        try:
+            sts = os.system("cd %s; zip -q -r %s ." %
+                            (commands.mkarg(self.topdir), zipfile))
+            if sts:
+                raise Error("zip command failed")
+            infp = open(zipfile, "rb")
+            try:
+                outfp, headers = self.httpreq(path, "@@fromFS.zip", infp)
+            finally:
+                infp.close()
+        finally:
+            pass
+            if isfile(zipfile):
+                os.remove(zipfile)
+        try:
+            self.merge_zipfile(outfp)
+        finally:
+            outfp.close()
 
     def update(self):
-        url = self.rooturl
-        if not url.endswith("/"):
-            url += "/"
-        url += "@@toFS.zip?writeOriginals=False"
-        filename, headers = urllib.urlretrieve(url)
+        fp, headers = self.httpreq(self.rootpath,
+                                   "@@toFS.zip?writeOriginals=False")
         try:
             if headers["Content-Type"] != "application/zip":
-                raise Error("The request didn't return a zipfile; "
-                            "contents:\n%s",
-                            self.slurptext(self.readfile(filename),
-                                           headers).strip())
-            tmpdir = tempfile.mktemp()
-            os.mkdir(tmpdir)
-            try:
-                sts = os.system("cd %s; unzip -q %s" % (tmpdir, filename))
-                if sts:
-                    raise Error("unzip command failed")
-                self.merge_dirs(self.topdir, tmpdir)
-                print "All done"
-            finally:
-                shutil.rmtree(tmpdir)
+                raise Error("The request didn't return a zipfile:\n%s",
+                            self.slurptext(fp, headers).strip())
+            self.merge_zipfile(fp)
         finally:
-            os.unlink(filename)
+            fp.close()
+
+    def merge_zipfile(self, fp):
+        zipfile = tempfile.mktemp(".zip")
+        try:
+            tfp = open(zipfile, "wb")
+            try:
+                shutil.copyfileobj(fp, tfp)
+            finally:
+                tfp.close()
+            tmpdir = tempfile.mktemp()
+            try:
+                os.mkdir(tmpdir)
+                cmd = "cd %s; unzip -q %s" % (tmpdir, zipfile)
+                sts, output = commands.getstatusoutput(cmd)
+                self.merge_dirs(self.topdir, tmpdir)
+                print "All done."
+            finally:
+                if isdir(tmpdir):
+                    shutil.rmtree(tmpdir)
+        finally:
+            if isfile(zipfile):
+                os.remove(zipfile)
 
     def add(self, path):
         if not exists(path):
             raise Error("nothing known about '%s'", path)
         entry = self.metadata.getentry(path)
         if entry:
-            raise Error("path '%s' is already registered", name)
-        entry["path"] = '/'+path
+            raise Error("path '%s' is already registered", path)
+        head, tail = split(path)
+        unwanted = ("", os.curdir, os.pardir)
+        if tail in unwanted:
+            path = realpath(path)
+            head, tail = split(path)
+            if head == path or tail in unwanted:
+                raise Error("can't add '%s': it is the system root directory")
+        pentry = self.metadata.getentry(head)
+        if not pentry:
+            raise Error("can't add '%s': its parent is not registered", path)
+        if "path" not in pentry:
+            raise Error("can't add '%s': its parent has no 'path' key", path)
+        zpath = pentry["path"]
+        if not zpath.endswith("/"):
+            zpath += "/"
+        zpath += tail
+        entry["path"] = zpath
         entry["flag"] = "added"
         if isdir(path):
             entry["type"] = "zope.app.content.folder.Folder"
@@ -208,7 +253,7 @@ class FSSync(object):
         self.metadata.flush()
 
     def merge_dirs(self, localdir, remotedir):
-        merger = Merger(self.metadata)
+        self.ensuredir(localdir)
 
         ldirs, lnondirs = classifyContents(localdir)
         rdirs, rnondirs = classifyContents(remotedir)
@@ -222,6 +267,8 @@ class FSSync(object):
         nondirs.update(rnondirs)
 
         def sorted(d): keys = d.keys(); keys.sort(); return keys
+
+        merger = Merger(self.metadata)
 
         for x in sorted(dirs):
             local = join(localdir, x)
@@ -255,6 +302,10 @@ class FSSync(object):
         self.merge_extra(localdir, remotedir)
         self.merge_annotations(localdir, remotedir)
 
+        lentry = self.metadata.getentry(localdir)
+        rentry = self.metadata.getentry(remotedir)
+        lentry.update(rentry)
+
         self.metadata.flush()
 
     def merge_extra(self, local, remote):
@@ -263,7 +314,6 @@ class FSSync(object):
         lextra = join(lhead, "@@Zope", "Extra", ltail)
         rextra = join(rhead, "@@Zope", "Extra", rtail)
         if isdir(rextra):
-            self.ensuredir(lextra)
             self.merge_dirs(lextra, rextra)
 
     def merge_annotations(self, local, remote):
@@ -272,12 +322,9 @@ class FSSync(object):
         lannotations = join(lhead, "@@Zope", "Annotations", ltail)
         rannotations = join(rhead, "@@Zope", "Annotations", rtail)
         if isdir(rannotations):
-            self.ensuredir(lannotations)
             self.merge_dirs(lannotations, rannotations)
 
     def report(self, action, state, local):
-        if action != "Nothing":
-            print action, local
         letter = None
         if state == "Conflict":
             letter = "C"
@@ -300,6 +347,8 @@ class FSSync(object):
             print letter, local
 
     def ignore(self, path):
+        # XXX This should have a larger set of default patterns to
+        # ignore, and honor .cvsignore
         return path.endswith("~")
 
     def cmp(self, f1, f2):
@@ -315,8 +364,9 @@ class FSSync(object):
         if not isdir(dir):
             os.makedirs(dir)
 
-    def slurptext(self, data, headers):
-        ctype = headers["content-type"]
+    def slurptext(self, fp, headers):
+        data = fp.read()
+        ctype = headers["Content-type"]
         if ctype == "text/html":
             s = StringIO()
             f = formatter.AbstractFormatter(formatter.DumbWriter(s))
@@ -345,6 +395,8 @@ class FSSync(object):
         if self.rooturl:
             self.writefile(self.rooturl + "\n",
                            join(self.topdir, "@@Zope", "Root"))
+        else:
+            print "No root url saved"
 
     def readfile(self, file, mode="r"):
         f = open(file, mode)
