@@ -35,7 +35,7 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             "Adapted: The method",
             adapted.adaptedMethod())
 
-    def test_view1(self):        
+    def test_attribute_view(self):        
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
         test = self.root.test
@@ -44,6 +44,14 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         data = view()
         self.assertEquals('The eagle has landed', data)
 
+    def test_template_view(self):
+        self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
+            'testoid', 'Testoid')
+        view = self.root.unrestrictedTraverse('testoid/falcon.html')
+        self.assert_(isinstance(view, SimpleContentView))
+        data = view()
+        self.assertEquals(u'<p>The falcon has taken flight</p>\n\n', data)
+        
     def test_view_backwards_compatibility(self):
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')

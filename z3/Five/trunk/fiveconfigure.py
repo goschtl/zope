@@ -8,8 +8,9 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.component.servicenames import Adapters, Presentation
 from zope.publisher.interfaces.browser import IBrowserRequest
 from provideinterface import provideInterface
-from viewattribute import ViewAttribute
 from viewable import Viewable
+from api import BrowserView
+from metaclass import makeClass
 
 #def handler(serviceName, methodName, *args, **kwargs):
 #    method=getattr(getService(serviceName), methodName)
@@ -57,17 +58,10 @@ def page(_context, name, for_,
             new_class = SimpleViewClass(
                 template, bases=(class_, ))
         else:
-            #if not hasattr(class_, 'browserDefault'):
-            #    cdict = {
-            #        'browserDefault':
-            #        lambda self, request: (getattr(self, attribute), ())
-            #        }
-            #else:
-            #    cdict = {}
-                
-            #cdict['__page_attribute__'] = attribute
-            class_.__page_attribute__ = attribute
-            new_class = class_
+            cdict = {'__page_attribute__': attribute }
+            new_class = makeClass(class_.__name__,
+                             (class_, simple),
+                             cdict)
 
     else:
         # template
@@ -141,3 +135,35 @@ def defaultSkin(_context, name):
         callable = handler,
         args = (Presentation, 'setDefaultSkin', name, _context.info)
         )
+
+class simple(BrowserView):
+
+    def __call__(self, *a, **k):
+        # If a class doesn't provide it's own call, then get the attribute
+        # given by the browser default.
+
+        attr = self.__page_attribute__
+        if attr == '__call__':
+            raise AttributeError("__call__")
+
+        meth = getattr(self, attr)
+        return meth(*a, **k)
+
+import sys
+from zope.app.pagetemplate.simpleviewclass import simple as svc_simple
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+
+def SimpleViewClass(src, offering=None, used_for=None, bases=()):
+    if offering is None:
+        offering = sys._getframe(1).f_globals
+        
+    #bases += (svc_simple, )
+
+    class_ = makeClass("SimpleViewClass from %s" % src, bases,
+                       {'index': ViewPageTemplateFile(src, offering),
+                        })
+
+    if used_for is not None:
+        class_.__used_for__ = used_for
+
+    return class_

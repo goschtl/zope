@@ -17,3 +17,10 @@ def monkeyPatch():
         
     HTTPRequest.getPresentationSkin = getPresentationSkin
     HTTPRequest.setPresentationSkin = setPresentationSkin
+    HTTPRequest.debug = DebugFlags()
+    
+class DebugFlags(object):
+    """Debugging flags."""
+
+    sourceAnnotations = False
+    showTAL = False

@@ -13,6 +13,8 @@ class BrowserView(Acquisition.Explicit):
     # as this makes Zope 2 traverse into that first!
     
     def __call__(self, *args, **kw):
+        if hasattr(self, 'index'):
+            return self.index(self, *args, **kw)
         attr = self.__page_attribute__
         if attr == '__call__':
             raise AttributeError("__call__")

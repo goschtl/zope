@@ -2,9 +2,12 @@ from webdav.NullResource import NullResource
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
+from monkey import DebugFlags
 
 class FakeRequest:
     implements(IBrowserRequest)
+
+    debug = DebugFlags()
     
     def getPresentationSkin(self):
         return None
@@ -29,9 +32,9 @@ class Viewable:
             except (AttributeError, KeyError):
                 pass
             # XXX not sure this is very useful
-            method = REQUEST.get('REQUEST_METHOD', 'GET')
-            if not method in ('GET', 'POST'):
-                return NullResource(self, name, REQUEST).__of__(self)
+            #method = REQUEST.get('REQUEST_METHOD', 'GET')
+            #if not method in ('GET', 'POST'):
+            #    return NullResource(self, name, REQUEST).__of__(self)
 
             # Waaa. See Application.py
             try:

@@ -13,4 +13,11 @@
     name="eagle.txt"
     />
 
+  <five:page
+    for=".interfaces.ISimpleContent"
+    class=".browser.SimpleContentView"
+    template="falcon.pt"
+    name="falcon.html"
+    />
+
 </configure>
