@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IObjectHub.py,v 1.1 2002/10/30 03:47:47 poster Exp $
+$Id: IObjectHub.py,v 1.2 2002/11/11 08:35:28 stevea Exp $
 """
 
 from Zope.Event.IEventChannel import IEventChannel
@@ -108,7 +108,6 @@ class IObjectHub(IEventChannel):
         '/whatever/whatever2'
         
         If there is no hub id, raise Zope.Exceptions.NotFoundError.
-        
         """
         
     def getLocation(hubid):
@@ -134,8 +133,7 @@ class IObjectHub(IEventChannel):
         """
 
     def unregister(obj_or_loc_or_hubid):
-        """Unregister an object by wrapped object, by location, or by
-        hubid.
+        """Unregister an object by wrapped object, by location, or by hubid.
 
         It also emits a HubIdObjectUnregisteredEvent. 
         If the hub id or location wasn't registered a 

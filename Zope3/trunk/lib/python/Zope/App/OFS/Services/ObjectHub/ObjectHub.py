@@ -14,11 +14,9 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.1 2002/10/30 03:47:47 poster Exp $
+$Id: ObjectHub.py,v 1.2 2002/11/11 08:35:28 stevea Exp $
 """
 
-from Zope.App.OFS.Services.LocalEventService.LocalServiceSubscribable \
-     import LocalServiceSubscribable
 from Zope.App.OFS.Services.LocalEventService.ProtoServiceEventChannel \
      import ProtoServiceEventChannel
 
@@ -28,12 +26,11 @@ from HubEvent import ObjectUnregisteredHubEvent
 from HubEvent import ObjectModifiedHubEvent
 from HubEvent import ObjectMovedHubEvent
 from HubEvent import ObjectRemovedHubEvent
-from IHubEvent import IHubEvent
 
 from Zope.Exceptions import NotFoundError
 
 from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectEvent
-from Zope.Event.IObjectEvent import IObjectMovedEvent, IObjectAddedEvent
+from Zope.Event.IObjectEvent import IObjectMovedEvent
 from Zope.Event.IObjectEvent import IObjectModifiedEvent
 
 from Persistence.BTrees.IOBTree import IOBTree
@@ -48,6 +45,7 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ComponentArchitecture import getAdapter
 
 import random
+
 def randid():
     # Return a random number between -2*10**9 and 2*10**9, but not 0.
     abs = random.randrange(1, 2000000001)
@@ -76,13 +74,11 @@ class ObjectHub(ProtoServiceEventChannel):
     # with moving LocalEventChannel.notify to this _notify via a simple
     # assignment, i.e. _notify = LocalEventChannel.notify
     def _notify(clean_self, wrapped_self, event):
-        
         subscriptionses = clean_self.subscriptionsForEvent(event)
         # that's a non-interface shortcut for
         # subscriptionses = clean_self._registry.getAllForObject(event)
 
         for subscriptions in subscriptionses:
-            
             for subscriber, filter in subscriptions:
                 if filter is not None and not filter(event):
                     continue
@@ -120,13 +116,10 @@ class ObjectHub(ProtoServiceEventChannel):
                         canonical_new_location,
                         event.object)
                     clean_self._notify(wrapped_self, event)
-            
             else: 
-                
                 canonical_location = locationAsUnicode(event.location)
                 hubid = clean_self._lookupHubId(canonical_location)
                 if hubid is not None:
-                    
                     if IObjectModifiedEvent.isImplementedBy(event):
                         # send out IObjectModifiedHubEvent to plugins
                         event = ObjectModifiedHubEvent(
@@ -135,7 +128,6 @@ class ObjectHub(ProtoServiceEventChannel):
                             canonical_location,
                             event.object)
                         clean_self._notify(wrapped_self, event)
-
                     elif IObjectRemovedEvent.isImplementedBy(event):
                         del clean_self.__hubid_to_location[hubid]
                         del clean_self.__location_to_hubid[canonical_location]
@@ -181,7 +173,7 @@ class ObjectHub(ProtoServiceEventChannel):
             location = getPhysicalPathString(location)
         else:
             obj = None
-        canonical_location=locationAsUnicode(location)
+        canonical_location = locationAsUnicode(location)
         if not location.startswith(u'/'):
             raise ValueError("Location must be absolute")
         location_to_hubid = clean_self.__location_to_hubid
@@ -200,7 +192,6 @@ class ObjectHub(ProtoServiceEventChannel):
             obj)
         clean_self._notify(wrapped_self, event)
         return hubid
-    
     register = ContextMethod(register)
     
     def unregister(wrapped_self, location):
@@ -209,16 +200,16 @@ class ObjectHub(ProtoServiceEventChannel):
         if isWrapper(location):
             location = getPhysicalPathString(location)
         elif isinstance(location, int):
-            canonical_location=clean_self.getLocation(location)
+            canonical_location = clean_self.getLocation(location)
         else:
-            canonical_location=locationAsUnicode(location)
+            canonical_location = locationAsUnicode(location)
         location_to_hubid = clean_self.__location_to_hubid
         hubid_to_location = clean_self.__hubid_to_location
         try:
             hubid = location_to_hubid[canonical_location]
         except KeyError:
-            raise NotFoundError, 'location %s is not in object hub' % \
-                canonical_location
+            raise NotFoundError('location %s is not in object hub' % 
+                canonical_location)
         else:
             del hubid_to_location[hubid]
             del location_to_hubid[canonical_location]
@@ -229,18 +220,18 @@ class ObjectHub(ProtoServiceEventChannel):
                 hubid,
                 canonical_location)
             clean_self._notify(wrapped_self, event)
-    
     unregister = ContextMethod(unregister)
     
     ############################################################
 
     def _generateHubId(self, location):
-        index=getattr(self, '_v_nextid', 0)
-        if index%4000 == 0: index = randid()
-        hubid_to_location=self.__hubid_to_location
+        index = getattr(self, '_v_nextid', 0)
+        if index%4000 == 0:
+            index = randid()
+        hubid_to_location = self.__hubid_to_location
         while not hubid_to_location.insert(index, location):
-            index=randid()
-        self._v_nextid=index+1
+            index = randid()
+        self._v_nextid = index + 1
         return index
 
     def _lookupHubId(self, location):
