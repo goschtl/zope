@@ -9,7 +9,7 @@
       requestFactory="BrowserRequestFactory"
       logFactory="zope.server.http.commonhitlogger.CommonHitLogger"
       defaultPort="8080"
-      defaultVerbose="true" />'''
+      defaultVerbose="true" />
 
   <startup:registerRequestFactory
       name="BrowserRequestFactory"
