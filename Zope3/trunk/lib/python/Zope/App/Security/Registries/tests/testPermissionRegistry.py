@@ -13,13 +13,14 @@
 ##############################################################################
 """ Test handler for 'definePermission' directive
 
-$Id: testPermissionRegistry.py,v 1.1 2002/06/20 15:55:02 jim Exp $
+$Id: testPermissionRegistry.py,v 1.2 2002/11/25 15:23:21 ryzaja Exp $
 """
 
 
 import unittest, sys
 
 from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry
+from Zope.App.Security.Exceptions import UndefinedPermissionError
 from Zope.App.Security.IPermission import IPermission
 from Interface.Verify import verifyObject
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
@@ -61,6 +62,15 @@ class Test(CleanUp, unittest.TestCase):
         eq(permission.getTitle(), 'Foo-able')
         eq(permission.getDescription(), 'A foo-worthy permission')
 
+    def testEnsurePermissionDefined(self):
+        permissionRegistry.definePermission('Foo', 'Foo-able',
+                                            'A foo-worthy permission')
+        self.assertEqual(None,
+                         permissionRegistry.ensurePermissionDefined('Foo'))
+        self.assertRaises(UndefinedPermissionError,
+                          permissionRegistry.ensurePermissionDefined,
+                          'Foo.Bar.Spam.Undefined')
+       
 
 def test_suite():
     loader=unittest.TestLoader()

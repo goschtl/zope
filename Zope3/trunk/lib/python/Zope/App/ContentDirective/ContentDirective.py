@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.11 2002/11/19 23:25:12 jim Exp $
+$Id: ContentDirective.py,v 1.12 2002/11/25 15:23:20 ryzaja Exp $
 """
 from types import ModuleType
 from Interface.Implements import implements
@@ -25,6 +25,7 @@ from Zope.Configuration.Action import Action
 from Zope.App.ComponentArchitecture.ClassFactory import ClassFactory
 from Zope.App.Security.protectClass \
     import protectLikeUnto, protectName, checkPermission, protectSetAttribute
+from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry
 from Zope.Security.Proxy import ProxyFactory
 from Zope.Security.Checker import NamesChecker
 from Zope.Schema.IField import IField
@@ -38,6 +39,11 @@ class ProtectionDeclarationException(Exception):
 def handler(serviceName, methodName, *args, **kwargs):
     method=getattr(getService(None, serviceName), methodName)
     method(*args, **kwargs)
+
+def assertPermission(permission=None, *args, **kw):
+    """Check if permission is defined"""
+    if permission is not None:
+        permissionRegistry.ensurePermissionDefined(permission)
 
 class ContentDirective:
 
@@ -188,7 +194,8 @@ def provideClass(id, _class, permission=None,
 
     - set component permission
     """
-
+    
+    assertPermission(permission)
     factory = ClassFactory(_class)
     if permission and (permission != 'Zope.Public'):
         # XXX should getInterfaces be public, as below?

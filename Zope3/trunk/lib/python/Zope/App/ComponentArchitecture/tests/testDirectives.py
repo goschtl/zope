@@ -19,6 +19,7 @@ from cStringIO import StringIO
 
 from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Configuration.Exceptions import ConfigurationError
+from Zope.App.Security.Exceptions import UndefinedPermissionError
 
 from Zope.Security.Proxy import getTestProxyItems, getObject as proxiedObject
 
@@ -43,6 +44,9 @@ template = """<zopeConfigure
 class Ob:
     __implements__ = IC
 
+def definePermissions():
+    XMLConfig('meta.zcml', Zope.App.ContentDirective)()
+
 class Test(PlacelessSetup, unittest.TestCase):
 
     # XXX: tests for other directives needed
@@ -50,6 +54,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         XMLConfig('meta.zcml', Zope.App.ComponentArchitecture)()
+        XMLConfig('meta.zcml', Zope.App.Security)()
 
     def testAdapter(self):
         from Zope.ComponentArchitecture import getAdapter, queryAdapter
@@ -96,6 +101,20 @@ class Test(PlacelessSetup, unittest.TestCase):
         items = [item[0] for item in getTestProxyItems(adapter)]
         self.assertEqual(items, ['a', 'f'])
         self.assertEqual(proxiedObject(adapter).__class__, Comp)
+
+    def testAdapterUndefinedPermission(self):
+        config = StringIO(template % (
+             """
+             <adapter
+              factory="Zope.ComponentArchitecture.tests.TestComponents.Comp"
+              provides="Zope.ComponentArchitecture.tests.TestComponents.IApp"
+              for="Zope.ComponentArchitecture.tests.TestComponents.IContent"
+              permission="UndefinedPermission"
+              />
+            """
+            ))
+        self.assertRaises(UndefinedPermissionError, xmlconfig, config,
+                          testing=1)
 
     def testUtility(self):
         from Zope.ComponentArchitecture import getUtility, queryUtility
@@ -161,6 +180,19 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(items, ['a', 'f'])
         self.assertEqual(proxiedObject(utility), comp)
         
+    def testUtilityUndefinedPermission(self):
+        config = StringIO(template % (
+             """
+             <utility
+              component="Zope.ComponentArchitecture.tests.TestComponents.comp"
+              provides="Zope.ComponentArchitecture.tests.TestComponents.IApp"
+              permission="UndefinedPermission"
+              />
+            """
+            ))
+        self.assertRaises(UndefinedPermissionError, xmlconfig, config,
+                          testing=1)
+
 
     def testView(self):
 
@@ -263,6 +295,24 @@ class Test(PlacelessSetup, unittest.TestCase):
                   /> 
             """
             ))
+
+    def testViewUndefinedPermission(self):
+        config = StringIO(template % (
+            """
+            <view name="test"
+                  factory="Zope.ComponentArchitecture.tests.TestViews.V1"
+                  for="Zope.ComponentArchitecture.tests.TestViews.IC" 
+                  type="Zope.ComponentArchitecture.tests.TestViews.IV"
+                  permission="UndefinedPermission"
+                  allowed_attributes="action index"
+              allowed_interface="Zope.ComponentArchitecture.tests.TestViews.IV"
+                  /> 
+            """
+            ))
+        self.assertRaises(UndefinedPermissionError, xmlconfig, config,
+                          testing=1)
+
+
         
     def testDefaultView(self):
 
@@ -298,7 +348,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(queryView(ob, 'test', Request(IV), None), None)
         self.assertEqual(getDefaultViewName(ob, Request(IV)), 'test')
          
-    def testSKinView(self):
+    def testSkinView(self):
 
         ob = Ob()
         self.assertEqual(queryView(ob, 'test', Request(IV), None), None)
@@ -340,7 +390,21 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(queryResource(ob, 'test', Request(IV), None
                                        ).__class__,
                          R1)
+                         
+    def testResourceUndefinedPermission(self):
          
+        config = StringIO(template % (
+            """
+            <resource name="test"
+                  factory="Zope.ComponentArchitecture.tests.TestViews.R1"
+                  type="Zope.ComponentArchitecture.tests.TestViews.IV"
+                  permission="UndefinedPermission"/> 
+            """
+            ))
+        self.assertRaises(UndefinedPermissionError, xmlconfig, config,
+                          testing=1)
+
+        
     def testSkinResource(self):
 
         ob = Ob()
@@ -388,7 +452,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(createObject(
             None,
             'Zope.ComponentArchitecture.tests.TestFactory.f').__class__, X)
-    
+
+
 def test_suite():
     loader=unittest.TestLoader()
     return loader.loadTestsFromTestCase(Test)

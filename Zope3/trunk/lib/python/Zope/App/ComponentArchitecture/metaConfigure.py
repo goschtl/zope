@@ -20,6 +20,7 @@ from Interface import Interface
 from Zope.Configuration.Action import Action
 from Zope.Security.Checker \
      import InterfaceChecker, CheckerPublic, NamesChecker, Checker
+from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry
 from Zope.ComponentArchitecture.GlobalServiceManager \
      import UndefinedService
 
@@ -32,13 +33,20 @@ from Zope.ComponentArchitecture.GlobalServiceManager \
 # But these services aren't placeful! And we need to get at things that
 # normal service clients don't need!   Jim
 
+
 def handler(serviceName, methodName, *args, **kwargs):
     method=getattr(getService(None, serviceName), methodName)
     method(*args, **kwargs)
-
+    
 # We can't use the handler for serviceType, because serviceType needs
 # the interface service.
 from Zope.App.ComponentArchitecture.InterfaceService import provideInterface
+
+def checkingHandler(permission=None, *args, **kw):
+    """Check if permission is defined"""
+    if permission is not None:
+        permissionRegistry.ensurePermissionDefined(permission)
+    handler(*args, **kw)
 
 def managerHandler(methodName, *args, **kwargs):
     method=getattr(getServiceManager(None), methodName)
@@ -55,10 +63,11 @@ def adapter(_context, factory, provides, for_=None, permission=None):
         checker = InterfaceChecker(provides, permission)
         factory.append(lambda c: Proxy(c, checker))
     actions=[
-         Action(
+        Action(
             discriminator = ('adapter', for_, provides),
-            callable = handler,
-            args = ('Adapters', 'provideAdapter', for_, provides, factory),
+            callable = checkingHandler,
+            args = (permission, 'Adapters', 'provideAdapter', 
+                    for_, provides, factory),
                ),
         Action(
             discriminator = None,
@@ -102,8 +111,9 @@ def utility(_context, provides, component=None, factory=None, permission=None):
     return [
         Action(
             discriminator = ('utility', provides),
-            callable = handler,
-            args = ('Utilities', 'provideUtility', provides, component),
+            callable = checkingHandler,
+            args = (permission, 'Utilities', 'provideUtility',
+                    provides, component),
             ),
         Action(
             discriminator = None,
@@ -175,8 +185,8 @@ def resource(_context, factory, type, name, layer='default',
     return [
         Action(
             discriminator = ('resource', name, type, layer),
-            callable = handler,
-            args = ('Resources','provideResource',
+            callable = checkingHandler,
+            args = (permission, 'Resources','provideResource',
                     name, type, factory, layer),
             ),
         Action(
@@ -217,8 +227,9 @@ def view(_context, factory, type, name, for_=None, layer='default',
     actions=[
         Action(
             discriminator = ('view', for_, name, type, layer),
-            callable = handler,
-            args = ('Views','provideView',for_, name, type, factory, layer),
+            callable = checkingHandler,
+            args = (permission, 'Views','provideView', for_, name,
+                    type, factory, layer),
             ),
         Action(
             discriminator = None,

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.9 2002/11/06 22:30:21 rdmurray Exp $
+$Id: testDirectives.py,v 1.10 2002/11/25 15:23:20 ryzaja Exp $
 """
 
 import unittest
@@ -29,6 +29,7 @@ import Zope.Configuration
 import Zope.App.ComponentArchitecture
 import Zope.App.Security
 import Zope.App.ContentDirective
+from Zope.App.Security.Exceptions import UndefinedPermissionError
 
 # explicitly import ExampleClass and IExample using full paths
 # so that they are the same objects as resolve will get.
@@ -122,6 +123,25 @@ class TestFactorySubdirective(PlacelessSetup, unittest.TestCase):
 </content>
                        """)
         xmlconfig(f)
+
+
+    def testFactoryUndefinedPermission(self):
+         
+        f = configfile("""
+<permission id="Zope.Foo" title="Zope Foo Permission" />
+
+<content class="Zope.App.ContentDirective.tests.ExampleClass.">
+    <factory 
+      id="Example" 
+      permission="UndefinedPermission"
+      title="Example content"
+      description="Example description"
+    />
+</content>
+            """)
+        self.assertRaises(UndefinedPermissionError, xmlconfig, f,
+                          testing=1)
+
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -21,6 +21,9 @@ from Zope.App.Security.Registries.RegisteredObject import RegisteredObject
 from Zope.App.Security.Registries.Registry import Registry
 from Zope.App.Security.IPermission import IPermission
 from Zope.App.Security.IPermissionService import IPermissionService
+from Zope.Security.Checker import CheckerPublic
+from Zope.App.Security.Exceptions import UndefinedPermissionError
+
 
 
 class Permission(RegisteredObject):
@@ -52,6 +55,16 @@ class PermissionRegistry(Registry):
         false
         """
         return self.is_registered(permission_id)
+
+    def ensurePermissionDefined(self, permission_id):
+        """Check to make sure permission is defined.
+        
+        If it isn't, an error is raised
+        """
+        if permission_id == CheckerPublic:
+            return
+        if not self.definedPermission(permission_id):
+            raise UndefinedPermissionError(permission_id)
 
     def getPermission(self, permission_id):
         """Return permission object registered as permission_id.
