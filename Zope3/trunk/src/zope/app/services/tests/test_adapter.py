@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.19 2003/06/21 21:22:13 jim Exp $
+$Id: test_adapter.py,v 1.20 2003/06/30 16:37:14 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -268,37 +268,30 @@ class TestAdapterService(PlacefulSetup, TestingIRegistry, TestCase):
             r = self._service.getRegisteredMatching(*args)
             self.assertEqual(list(r), [(I1, I2, registry)])
 
-class PhonyServiceManager:
-
-    implements(IServiceService)
+class ModuleFinder:
 
     def resolve(self, name):
-        if name == 'Foo.Bar.A':
+        if name == "Foo.Bar.A":
             return A
+        raise ImportError(name)
 
-    def getService(self, name):
-        return serviceManager.getService(name)
-
-
-class TestAdapterRegistration(PlacefulSetup, TestCase):
-
-    def setUp(self):
-        PlacefulSetup.setUp(self)
-        rootFolder = RootFolder()
-        rootFolder.setServiceManager(PhonyServiceManager())
-
-        self.registration = ContextWrapper(
-            AdapterRegistration(I1, I2, "Foo.Bar.A", "adapter"),
-            rootFolder,
-            )
+class TestAdapterRegistration(TestCase):
 
     def test_getAdapter(self):
+        folder = ModuleFinder()
+        folder = ContextWrapper(folder, folder)
+
+        registration = ContextWrapper(
+            AdapterRegistration(I1, I2, "Foo.Bar.A", "adapter"),
+            folder,
+            )
+
         c = C()
-        adapter = self.registration.getAdapter(c)
+        adapter = registration.getAdapter(c)
         self.assertEqual(adapter.__class__, A)
         self.assertEqual(adapter.context, c)
-        self.assertEqual(self.registration.forInterface, I1)
-        self.assertEqual(self.registration.providedInterface, I2)
+        self.assertEqual(registration.forInterface, I1)
+        self.assertEqual(registration.providedInterface, I2)
 
 def test_suite():
     return TestSuite((

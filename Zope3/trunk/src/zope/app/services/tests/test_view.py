@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.19 2003/06/24 15:38:04 jeremy Exp $
+$Id: test_view.py,v 1.20 2003/06/30 16:37:14 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -197,6 +197,7 @@ class TestViewService(PlacefulSetup, TestingIRegistry, TestCase):
         for reg in self._service.getRegistrationsForInterface(I1E):
             self.assertEqual(reg.forInterface, I1)
 
+
 class PhonyServiceManager(ServiceManager):
 
     implements(IServiceService)
@@ -205,27 +206,33 @@ class PhonyServiceManager(ServiceManager):
         if name == 'Foo.Bar.A':
             return A
 
-class TestViewRegistration(PlacefulSetup, TestCase):
+class ModuleFinder:
 
-    def setUp(self):
-        PlacefulSetup.setUp(self)
-        rootFolder = RootFolder()
-        rootFolder.setServiceManager(PhonyServiceManager())
-        self.registration = ContextWrapper(
-            ViewRegistration(I1, 'test', IBrowserPresentation, "Foo.Bar.A",
-                              'zope.View'),
-            rootFolder,
-            )
+    def resolve(self, name):
+        if name == "Foo.Bar.A":
+            return A
+        raise ImportError(name)
+
+
+class TestViewRegistration(TestCase):
 
     def test_getView(self):
+        folder = ModuleFinder()
+        folder = ContextWrapper(folder, folder)
+        registration = ContextWrapper(
+            ViewRegistration(I1, 'test', IBrowserPresentation, "Foo.Bar.A",
+                              'zope.View'),
+            folder,
+            )
+
         c = C()
         request = TestRequest()
-        view = self.registration.getView(c, request)
+        view = registration.getView(c, request)
         self.assertEqual(view.__class__, A)
         self.assertEqual(view.context, c)
         self.assertEqual(view.request, request)
-        self.assertEqual(self.registration.forInterface, I1)
-        self.assertEqual(self.registration.presentationType, I2)
+        self.assertEqual(registration.forInterface, I1)
+        self.assertEqual(registration.presentationType, I2)
 
 
 class TestPageRegistration(PlacefulSetup, TestCase):

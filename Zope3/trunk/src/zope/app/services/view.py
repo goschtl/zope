@@ -12,12 +12,13 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.28 2003/06/24 15:38:04 jeremy Exp $
+$Id: view.py,v 1.29 2003/06/30 16:37:13 jim Exp $
 """
 __metaclass__ = type
 
 from __future__ import generators
 
+from zope.app import zapi
 from persistence import Persistent
 from persistence.dict import PersistentDict
 
@@ -28,8 +29,8 @@ from zope.component.exceptions import ComponentLookupError
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.services.interface import IInterfaceBasedRegistry
-from zope.app.interfaces.services.registration \
-     import IRegistry, IRegistration, ActiveStatus
+from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.interfaces.services.registration import IRegistry, IRegistration
 from zope.app.services.registration import RegistrationStack
 from zope.app.services.registration import SimpleRegistration
 from zope.app.services.servicenames import Views
@@ -278,8 +279,8 @@ class ViewRegistration(SimpleRegistration):
         self.permission = permission
 
     def getView(self, object, request):
-        sm = zapi.getServiceManager(self)
-        factory = sm.resolve(self.class_)
+        folder = zapi.getWrapperContainer(zapi.getWrapperContainer(self))
+        factory = folder.resolve(self.class_)
         return factory(object, request)
 
     getView = zapi.ContextMethod(getView)
