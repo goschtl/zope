@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.4 2002/09/01 18:29:58 rdmurray Exp $
+$Id: SiteDefinition.py,v 1.5 2002/10/08 19:41:59 jeremy Exp $
 """
 
 import sys
@@ -86,7 +86,7 @@ class SiteDefinition:
         if file in self._special_log_files.keys():
             file = self._special_log_files[file]
         else:
-            file = open(file, 'w')
+            file = open(file, 'a')
 
         zLOG._set_log_dest(file)
         return []
