@@ -2,6 +2,7 @@ include MANIFEST
 include Makefile
 include test.py
 include log.ini
+
 recursive-include src *.h *.c 
 recursive-include src *.txt
 recursive-include src *.conf *.zcml 
