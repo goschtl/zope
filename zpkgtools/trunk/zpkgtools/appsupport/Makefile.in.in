@@ -20,5 +20,5 @@ build:
 install: build
 	$(PYTHON) install.py -q install --home "$(prefix)"
 
-test: build
+check test: build
 	$(PYTHON) test.py $(TESTOPTS)

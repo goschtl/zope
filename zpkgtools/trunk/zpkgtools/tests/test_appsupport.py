@@ -83,6 +83,8 @@ class AppsupportTestBase(unittest.TestCase):
             self.assertEqual(rc, 0)
             rc = os.system("make -n install >/dev/null")
             self.assertEqual(rc, 0)
+            rc = os.system("make -n check >/dev/null")
+            self.assertEqual(rc, 0)
             rc = os.system("make -n test >/dev/null")
             self.assertEqual(rc, 0)
         finally:
