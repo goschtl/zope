@@ -40,16 +40,6 @@
 
 <form action="@@bundle.html" method="GET">
 
-  <p><input type="submit" value="Submit all changes" /></p>
-
-  <p><input type="reset" value="Reset form" /></p>
-
-  <p>
-    <input type="checkbox" name="allclear" value="1" />
-    Unregister all configurations in this bundle (ignoring the rest of
-    this form).
-  </p>
-
   <tal:block tal:repeat="svc view/listServices">
 
     <p>For <i tal:content="svc/service">Foo</i> service</p>
@@ -58,37 +48,51 @@
       <tal:block tal:repeat="cnf view/listConfigurations">
         <li tal:condition="python: cnf['service'] == svc['service']">
           <a tal:content="cnf/path" tal:attributes="href cnf/path">path</a>
+          (current status: <span tal:replace="cnf/status">Active</span>)
           <br>
           <i tal:content="cnf/usage">Usage summary</i>
           implemented by
           <i tal:content="cnf/implementation">Implementation summary</i>
           <br>
           <span tal:condition="not:cnf/conflict">
-            Advice:
+            Action:
             <b><input type="radio" tal:attributes="name cnf/path"
-                   value="Registered" />Registered</b>
+                   value="Registered" />Register only</b>
             <b><input type="radio" tal:attributes="name cnf/path"
-                   value="Active" checked />Active</b>
+                   value="Active" checked />Register and activate</b>
 	  </span>
           <span tal:condition="cnf/conflict">
             <font color="red">
               Conflicts with <a tal:content="cnf/conflict"
                                  tal:attributes="href cnf/conflict">path</a>
             </font>
-            <br>Advice:
+            <br>Action:
             <b><input type="radio" tal:attributes="name cnf/path"
-                   value="Registered" checked />Registered</b>
+                   value="Registered" checked />Register only</b>
             <b><input type="radio" tal:attributes="name cnf/path"
-                   value="Active" />Active</b>
+                   value="Active" />Register and activate</b>
           </span>
-          (currently <span tal:replace="cnf/status">Active</span>)
         </li>
       </tal:block>
     </ul>
 
   </tal:block>
 
-  <p><input type="submit" value="Submit all changes" /></p>
+  <p>Click "Activate bundle" to perform the above actions.</p>
+
+  <p><input type="submit" value="Activate bundle" /></p>
+
+  <p><input type="reset" value="Reset form" /></p>
+
+</form>
+
+<form action="@@bundle.html" method="GET">
+
+  <p>Click "Deactivate bundle" to remove all of the above registrations.</p>
+
+  <p><input type="submit" value="Deactivate bundle" /></p>
+
+  <input type="hidden" name="allclear" value="1" />
 
 </form>
 
