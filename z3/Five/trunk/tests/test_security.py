@@ -25,40 +25,12 @@ ZopeTestCase.installProduct('Five')
 
 from zope.configuration import xmlconfig
 from zope.component import getView
-from zope.interface import Interface, implements
 from zope.testing.cleanup import CleanUp
 from Products.Five import zcml
-from Products.Five.browser import BrowserView
 from Products.Five.viewable import FakeRequest
 from Products.Five.security.permission import clearSecurityInfo
-from AccessControl import ClassSecurityInfo
-from AccessControl.PermissionRole import PermissionRole
+from Products.Five.tests.dummy import Dummy1, Dummy2
 from Globals import InitializeClass
-
-class IDummy(Interface):
-    """Just a marker interface"""
-
-class DummyView(BrowserView):
-    """A dummy view"""
-
-    def foo(self):
-        """A foo"""
-        return 'A foo view'
-
-class Dummy1:
-    implements(IDummy)
-    def foo(self): pass
-    def bar(self): pass
-    def baz(self): pass
-    def keg(self): pass
-    def wot(self): pass
-
-class Dummy2(Dummy1):
-    security = ClassSecurityInfo()
-    security.declarePublic('foo')
-    security.declareProtected('View management screens', 'bar')
-    security.declarePrivate('baz')
-    security.declareProtected('View management screens', 'keg')
 
 class PageSecurityTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
 
@@ -81,8 +53,8 @@ class PageSecurityTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
             xmlns:browser="http://namespaces.zope.org/browser">
 
           <browser:page
-             for="Five.tests.test_security.IDummy"
-             class="Five.tests.test_security.DummyView"
+             for="Products.Five.tests.dummy.IDummy"
+             class="Products.Five.tests.dummy.DummyView"
              attribute="foo"
              name="foo.txt"
              permission="zope.ViewManagementScreens"
@@ -125,7 +97,7 @@ class SecurityEquivalenceTestCase(CleanUp, ZopeTestCase.ZopeTestCase):
         <configure xmlns="http://namespaces.zope.org/zope">
 
         <content
-            class="Five.tests.test_security.Dummy1">
+            class="Products.Five.tests.dummy.Dummy1">
 
           <allow attributes="foo" />
 
