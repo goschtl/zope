@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.17 2003/12/10 07:44:46 sraju Exp $
+$Id: test_adding.py,v 1.18 2003/12/12 15:39:18 pnaveen Exp $
 """
 
 import unittest
@@ -323,8 +323,205 @@ def test_renderAddButton():
 
     """
 
+def test_SingleMenuItem_and_CustomAddView_NonICNC():
+    """
+    This tests the condition if the content has Custom Add views and
+    the container contains only a single content object
+    
+    >>> setUp()
+    >>> serviceService = zapi.getService(None, zapi.servicenames.Services)
+    >>> from zope.app.interfaces.publisher.browser import IBrowserMenuService
+    >>> serviceService.defineService(zapi.servicenames.BrowserMenu,
+    ...                              IBrowserMenuService)
+    >>> from zope.app.publisher.browser.globalbrowsermenuservice """ \
+                             """import globalBrowserMenuService
+    >>> serviceService.provideService(zapi.servicenames.BrowserMenu,
+    ...                               globalBrowserMenuService)
+
+    >>> menuService = zapi.getService(None, zapi.servicenames.BrowserMenu)
+    >>> menuService.menu('zope.app.container.add', '')
+    >>> menuService.menuItem('zope.app.container.add', IAdding, '', 'item3',
+    ...                      None, extra={'factory': 'f1'})
+
+    >>> class F1:
+    ...     pass
+
+    >>> class F2:
+    ...     pass
+
+    >>> def pre(container, name, object):
+    ...     if not isinstance(object, F1):
+    ...         raise zope.interface.Invalid()
+    >>> def prefactory(container, name, factory):
+    ...     if factory._class is not F1:
+    ...         raise zope.interface.Invalid()
+    >>> pre.factory = prefactory
 
 
+    >>> class IContainer(zope.interface.Interface):
+    ...     def __setitem__(name, object):
+    ...         pass
+    ...     __setitem__.precondition = pre
+
+
+    >>> class Container:
+    ...     zope.interface.implements(IContainer)
+
+    >>> from zope.app.component.classfactory import ClassFactory
+    >>> factoryService = zapi.getService(None, zapi.servicenames.Factories)
+    >>> factoryService.provideFactory('f1', ClassFactory(F1))
+    >>> factoryService.provideFactory('f2', ClassFactory(F2))
+
+    >>> from zope.app.browser.container.adding import Adding
+    >>> adding = Adding(Container(), TestRequest())
+    >>> items = adding.addingInfo()
+    >>> len(items)
+    1
+
+    isSingleMenuItem returns True if there is only one content class
+    inside the Container
+    
+    >>> adding.isSingleMenuItem()
+    True
+
+    hasCustomAddView will return False as the content does not have
+    a custom Add View
+    
+    >>> adding.hasCustomAddView()
+    True
+    
+    >>> tearDown()    
+    """
+
+def test_SingleMenuItem_and_NoCustomAddView_NonICNC():
+    """
+    
+    This function checks the case where there is a single content object
+    and there is non custom add view . Also the container does not
+    implement IContainerNamesContainer
+    
+    >>> setUp()
+    >>> serviceService = zapi.getService(None, zapi.servicenames.Services)
+    >>> from zope.app.interfaces.publisher.browser import IBrowserMenuService
+    >>> serviceService.defineService(zapi.servicenames.BrowserMenu,
+    ...                              IBrowserMenuService)
+    >>> from zope.app.publisher.browser.globalbrowsermenuservice """ \
+                             """import globalBrowserMenuService
+    >>> serviceService.provideService(zapi.servicenames.BrowserMenu,
+    ...                               globalBrowserMenuService)
+
+    >>> menuService = zapi.getService(None, zapi.servicenames.BrowserMenu)
+    >>> menuService.menu('zope.app.container.add', '')
+    >>> menuService.menuItem('zope.app.container.add', None, '', 'item3',
+    ...                      None, extra={'factory': ''})
+    >>> class F1:
+    ...     pass
+
+    >>> class F2:
+    ...     pass
+
+    >>> def pre(container, name, object):
+    ...     if not isinstance(object, F1):
+    ...         raise zope.interface.Invalid()
+    >>> def prefactory(container, name, factory):
+    ...     if factory._class is not F1:
+    ...         raise zope.interface.Invalid()
+    >>> pre.factory = prefactory
+
+
+    >>> class IContainer(zope.interface.Interface):
+    ...     def __setitem__(name, object):
+    ...         pass
+    ...     __setitem__.precondition = pre
+
+
+    >>> class Container:
+    ...     zope.interface.implements(IContainer)
+
+    >>> from zope.app.component.classfactory import ClassFactory
+    >>> factoryService = zapi.getService(None, zapi.servicenames.Factories)
+    >>> factoryService.provideFactory('f1', ClassFactory(F1))
+    >>> factoryService.provideFactory('f2', ClassFactory(F2))
+    
+    >>> from zope.app.browser.container.adding import Adding
+    >>> adding = Adding(Container(), TestRequest())
+    >>> items = adding.addingInfo()
+    >>> len(items)
+    1
+
+    The isSingleMenuItem will return True if there is one single content
+    that can be added inside the Container
+    
+    >>> adding.isSingleMenuItem()
+    True
+
+    hasCustomAddView will return False as the content does not have
+    a custom Add View
+
+    >>> adding.hasCustomAddView()
+    False
+    
+    >>> tearDown()
+    """
+
+def test_isSingleMenuItem_with_ICNC():
+    """
+    This test checks for whether there is a single content that can be added
+    and the container uses IContainerNamesContaienr
+
+    
+    >>> setUp()
+    >>> serviceService = zapi.getService(None, zapi.servicenames.Services)
+    >>> from zope.app.interfaces.publisher.browser import IBrowserMenuService
+    >>> serviceService.defineService(zapi.servicenames.BrowserMenu,
+    ...                              IBrowserMenuService)
+    >>> from zope.app.publisher.browser.globalbrowsermenuservice \
+                      import globalBrowserMenuService
+    >>> serviceService.provideService(zapi.servicenames.BrowserMenu,
+    ...                               globalBrowserMenuService)
+    
+    >>> menuService = zapi.getService(None, zapi.servicenames.BrowserMenu)
+    >>> menuService.menu('zope.app.container.add', '')
+    >>> menuService.menuItem('zope.app.container.add', None, '', 'item3',
+    ...                      None, extra={'factory': ''})
+    
+    >>> class F1:
+    ...     pass
+
+    >>> class F2:
+    ...     pass
+
+    >>> def pre(container, name, object):
+    ...     if not isinstance(object, F1):
+    ...         raise zope.interface.Invalid()
+    >>> def prefactory(container, name, factory):
+    ...     if factory._class is not F1:
+    ...         raise zope.interface.Invalid()
+    >>> pre.factory = prefactory
+
+
+    >>> class IContainer(zope.interface.Interface):
+    ...     def __setitem__(name, object):
+    ...         pass
+    ...     __setitem__.precondition = pre
+
+
+    >>> class Container:
+    ...     zope.interface.implements(IContainer, IContainerNamesContainer)
+
+    >>> from zope.app.browser.container.adding import Adding
+    >>> adding = Adding(Container(), TestRequest())
+    >>> items = adding.addingInfo()
+    >>> len(items)
+    1
+    >>> adding.isSingleMenuItem()
+    True
+    >>> adding.hasCustomAddView()
+    False
+    
+    >>> tearDown()
+    
+    """
 
 def test_suite():
     return unittest.TestSuite((

@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.27 2003/12/10 09:04:36 sraju Exp $
+$Id: adding.py,v 1.28 2003/12/12 15:39:18 pnaveen Exp $
 """
 __metaclass__ = type
 
@@ -199,11 +199,25 @@ class Adding(BasicAdding):
                         factory = zapi.getFactory(container, factory)
                         if not checkFactory(container, None, factory):
                             continue
+                        elif item['extra']['factory'] != item['action']:
+                            item['has_custom_add_view']=True
                 result.append(item)
                 
         result.sort(lambda a, b: cmp(a['title'], b['title']))
         return result
+    
+    def isSingleMenuItem(self):
+        "Return whether there is single menu item or not."
+        return len(self.addingInfo()) == 1
 
+    def hasCustomAddView(self):
+       "This should be called only if there is singleMenuItem else return 0"
+       if self.isSingleMenuItem():
+           menu_item = self.addingInfo()[0]
+           if 'has_custom_add_view' in menu_item:
+               return True
+       return False
+           
 class ContentAdding(Adding):
 
     menu_id = "add_content"

@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.28 2003/10/02 16:23:19 garrett Exp $
+$Id: contents.py,v 1.29 2003/12/12 15:39:18 pnaveen Exp $
 """
 
 from zope.app import zapi
@@ -30,6 +30,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.browser.container.adding import BasicAdding
 from zope.app.copypastemove import rename
 from zope.exceptions import NotFoundError
+from zope.app.interfaces.container import IContainerNamesContainer
 
 class Contents(BrowserView):
 
@@ -56,7 +57,17 @@ class Contents(BrowserView):
 
         elif "container_rename_button" in request and not request.get("ids"):
             self.error = _("You didn't specify any ids to rename.")
-
+        elif "container_add_button" in request:
+            if "single_type_name" in request \
+                   and "single_new_value" in request:
+                request.form['type_name'] = request['single_type_name']
+                request.form['new_value'] = request['single_new_value']
+                self.addObject()
+            elif 'single_type_name' in request \
+                     and 'single_new_value' not in request:
+                request.form['type_name'] = request['single_type_name']
+                request.form['new_value'] = ""
+                self.addObject()
         elif "type_name" in request and "new_value" in request:
             self.addObject()
         elif "rename_ids" in request and "new_value" in request:
@@ -103,7 +114,9 @@ class Contents(BrowserView):
         self.supportsCut = info
         self.supportsCopy = info
         self.supportsPaste = self.pasteable()
-        self.supportsRename = self.supportsCut
+        self.supportsRename = (
+            self.supportsCut and not IContainerNamesContainer.isImplementedBy(self.context)
+            )
 
         return info
 
@@ -188,20 +201,23 @@ class Contents(BrowserView):
 
     def addObject(self):
         request = self.request
-        new = request["new_value"]
-        if new:
-            adding = zapi.queryView(self.context, "+", request)
-            if adding is None:
-                adding = BasicAdding(self.context, request)
-            else:
-                # Set up context so that the adding can build a url
-                # if the type name names a view.
-                # Note that we can't so this for the "adding is None" case
-                # above, because there is no "+" view.
-                adding.__parent__ = self.context
-                adding.__name__ = '+'
+        if IContainerNamesContainer.isImplementedBy(self.context):
+            new = ""
+        else:
+            new = request["new_value"]
 
-            adding.action(request['type_name'], new)
+        adding = zapi.queryView(self.context, "+", request)
+        if adding is None:
+            adding = BasicAdding(self.context, request)
+        else:
+            # Set up context so that the adding can build a url
+            # if the type name names a view.
+            # Note that we can't so this for the "adding is None" case
+            # above, because there is no "+" view.
+            adding.__parent__ = self.context
+            adding.__name__ = '+'
+             
+        adding.action(request['type_name'], new)
 
     def removeObjects(self):
         """Remove objects specified in a list of object ids"""
