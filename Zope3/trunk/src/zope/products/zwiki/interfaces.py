@@ -15,24 +15,21 @@
 
 This module defines the ZWiki relevant interfaces.
 
-$Id: interfaces.py,v 1.1 2003/12/16 10:05:52 nmurthy Exp $
+$Id: interfaces.py,v 1.2 2003/12/16 12:10:38 krishna_m Exp $
 """
 from zope.interface import Interface
 from zope.schema import TextLine, List, SourceText
 from zope.schema.vocabulary import VocabularyField
 
-from zope.app.interfaces.container import IContentContainer
-
+#from zope.app.interfaces.container import IContentContainer
+from zope.schema import Field
+from zope.app.interfaces.container import IContained
+from zope.app.container.constraints import ContainerTypesConstraint
+from zope.app.container.constraints import ItemTypePrecondition
+from zope.app.interfaces.container import IContainer
 from zope.i18n import MessageIDFactory
+
 _ = MessageIDFactory('wiki')
-
-
-class IWiki(IContentContainer):
-    """A simple Wiki Page container.
-
-    A simple marker interface, so that we can define special views on
-    Wikis."""
-
 
 class IWikiPage(Interface):
     """A single Wiki Page content object.
@@ -101,6 +98,17 @@ class IWikiPageHierarchy(Interface):
         returned.
         """
     
+class IWiki(IContainer):
+    def __setitem__(name, object):
+        """Add a poll"""
+    __setitem__.precondition = ItemTypePrecondition(IWikiPage)
+
+
+class IWikiContained(IContained):
+    __parent__ = Field(
+        constraint = ContainerTypesConstraint(IWiki))
+
+
 
 class IMailSubscriptions(Interface):
     """This interface allows you to retrieve a list of E-mails for
