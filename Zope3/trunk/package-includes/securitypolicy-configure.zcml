@@ -1,0 +1,5 @@
+<configure>
+<include file="workflow-configure.zcml" />
+<include file="undo-configure.zcml" />
+<include package="zope.app.securitypolicy" />
+</configure>
