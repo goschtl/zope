@@ -13,9 +13,9 @@
 ##############################################################################
 """More convenience functions for dealing with proxies.
 
-$Id: __init__.py,v 1.4 2003/04/17 15:19:00 bwarsaw Exp $
+$Id: __init__.py,v 1.5 2003/04/19 10:34:38 srichter Exp $
 """
-
+from types import ClassType
 from zope.proxy.introspection import removeAllProxies
 
 
@@ -27,6 +27,10 @@ def proxy_compatible_isinstance(obj, cls):
     """
     if isinstance(obj, cls):
         return True
+    # Check whether the object is a class itself, if so abort, otherwise the
+    # next check will fail.
+    if type(removeAllProxies(obj)) == ClassType:
+        return False
     oclass = removeAllProxies(obj.__class__)
     if type(obj) is oclass:
         # Nothing more will help
