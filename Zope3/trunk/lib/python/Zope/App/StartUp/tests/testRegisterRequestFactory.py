@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: testRegisterRequestFactory.py,v 1.3 2002/11/08 18:55:37 rdmurray Exp $
+$Id: testRegisterRequestFactory.py,v 1.2 2002/11/19 23:25:14 jim Exp $
 """
 
 import unittest
 from cStringIO import StringIO
 from Zope.Configuration.xmlconfig import xmlconfig
 from Zope.Configuration.tests.BaseTestDirectivesXML import makeconfig
-from Zope.StartUp.RequestFactoryRegistry import getRequestFactory
+from Zope.App.StartUp.RequestFactoryRegistry import getRequestFactory
 
 
 class Test( unittest.TestCase ):
@@ -32,11 +32,12 @@ class Test( unittest.TestCase ):
                    name="registerRequestFactory"
                    attributes="name publication request"
                    handler=
-                     "Zope.StartUp.metaConfigure.registerRequestFactory" />''',
+                   "Zope.App.StartUp.metaConfigure.registerRequestFactory"
+                   />''',
             '''<test:registerRequestFactory
                    name="BrowserRequestFactory"
                    publication= 
-                   "Zope.App.ZopePublication.Browser.Publication.BrowserPublication"
+             "Zope.App.ZopePublication.Browser.Publication.BrowserPublication"
                    request = "Zope.Publisher.Browser.BrowserRequest." />
             '''
             ))

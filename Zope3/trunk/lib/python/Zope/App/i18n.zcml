@@ -1,7 +1,9 @@
 <zopeConfigure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:service="http://namespaces.zope.org/service"
-   xmlns:gts="http://namespaces.zope.org/gts">
+   xmlns:gts="http://namespaces.zope.org/gts"
+   package="Zope.I18n"
+   >
 
 <!-- Setup language negotiation -->
 <serviceType id="LanguageNegotiation" interface=".INegotiator." />

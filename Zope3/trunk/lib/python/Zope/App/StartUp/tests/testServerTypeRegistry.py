@@ -15,13 +15,13 @@
 I do not think it is necessary to do the entire SimpleRegistry tests again.
 Instead we will test whether the module in itself works.
 
-$Id: testServerTypeRegistry.py,v 1.2 2002/06/10 23:29:43 jim Exp $
+$Id: testServerTypeRegistry.py,v 1.2 2002/11/19 23:25:14 jim Exp $
 """
 
 import unittest
-from Zope.StartUp.ServerTypeRegistry import \
+from Zope.App.StartUp.ServerTypeRegistry import \
      registerServerType, getServerType
-from Zope.StartUp.ServerType import IServerType
+from Zope.App.StartUp.ServerType import IServerType
 
 
 class ServerType:

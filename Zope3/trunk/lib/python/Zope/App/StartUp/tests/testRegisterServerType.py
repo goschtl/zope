@@ -18,7 +18,7 @@ import unittest
 from cStringIO import StringIO
 from Zope.Configuration.xmlconfig import xmlconfig
 from Zope.Configuration.tests.BaseTestDirectivesXML import makeconfig
-from Zope.StartUp.ServerTypeRegistry import getServerType
+from Zope.App.StartUp.ServerTypeRegistry import getServerType
 
 
 class Test( unittest.TestCase ):
@@ -28,7 +28,8 @@ class Test( unittest.TestCase ):
             '''<directive
                    name="registerServerType"
                    attributes="name publication request"
-                   handler="Zope.StartUp.metaConfigure.registerServerType" />''',
+                   handler="Zope.App.StartUp.metaConfigure.registerServerType"
+                   />''',
             '''<test:registerServerType 
                  name = "Browser"
                  factory = "Zope.Server.HTTP.PublisherHTTPServer."

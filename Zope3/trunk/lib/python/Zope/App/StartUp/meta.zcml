@@ -4,7 +4,7 @@
 
     <directive name="defineSite"
                attributes="name threads"
-               handler="Zope.StartUp.metaConfigure.defineSite">
+               handler="Zope.App.StartUp.metaConfigure.defineSite">
 
       <subdirective name="useFileStorage"
                     attributes="file" />
@@ -20,11 +20,13 @@
 
     <directive name="registerRequestFactory"
                attributes="name publication request"
-               handler="Zope.StartUp.metaConfigure.registerRequestFactory" />
+               handler="Zope.App.StartUp.metaConfigure.registerRequestFactory"
+               />
 
     <directive name="registerServerType"
                attributes="name publication request"
-               handler="Zope.StartUp.metaConfigure.registerServerType" />
+               handler="Zope.App.StartUp.metaConfigure.registerServerType"
+               />
 
   </directives>
 

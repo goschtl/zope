@@ -14,7 +14,7 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+$Id: _protections.py,v 1.3 2002/11/19 23:25:14 jim Exp $
 """
 
 def protect():
@@ -51,5 +51,22 @@ def protect():
     for which in 'OO', 'II', 'OI', 'IO':
         _protect(which)
 
+    from Persistence.PersistentList import PersistentList
+
+    defineChecker(PersistentList,
+                  NamesChecker(
+                     ['__getitem__', '__getslice__', '__len__', '__iter__',
+                      '__contains__', 'index', 'count'])
+                  )
+
+    from Persistence.PersistentDict import PersistentDict
+
+    defineChecker(PersistentDict,
+                  NamesChecker(['__getitem__', '__len__', '__iter__',
+                        'get', 'has_key', '__copy__',
+                        'keys', 'values', 'items',
+                        'iterkeys', 'iteritems', 'itervalues', '__contains__',
+                        ]
+                     )
+                  )
     
-                      

@@ -53,17 +53,17 @@ class RequestFactory:
 
     ############################################################
     # Implementation methods for interface
-    # Zope.StartUp.RequestFactory.IRequestFactory
+    # Zope.App.StartUp.RequestFactory.IRequestFactory
 
     def realize(self, db):
-        'See Zope.StartUp.RequestFactory.IRequestFactory'
+        'See Zope.App.StartUp.RequestFactory.IRequestFactory'
         realized = copy.copy(self)
         realized._publication = realized._pubFactory(db)
         return realized
     
 
     def __call__(self, input_stream, output_steam, env):
-        'See Zope.StartUp.RequestFactory.IRequestFactory'
+        'See Zope.App.StartUp.RequestFactory.IRequestFactory'
         request = self._request(input_stream, output_steam, env)
         request.setPublication(self._publication)
         return request

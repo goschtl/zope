@@ -13,7 +13,7 @@
 ##############################################################################
 """XMLRPC configuration code
 
-$Id: metaConfigure.py,v 1.3 2002/11/06 22:30:22 rdmurray Exp $
+$Id: metaConfigure.py,v 1.4 2002/11/19 23:25:14 jim Exp $
 """
 
 from Zope.Security.Proxy import Proxy
@@ -29,6 +29,7 @@ from Zope.Publisher.XMLRPC.IXMLRPCPresentation import IXMLRPCPresentation
 
 from Zope.App.ComponentArchitecture.metaConfigure \
      import defaultView as _defaultView, handler
+from Interface import Interface
 
 
 class view(object):
@@ -158,12 +159,23 @@ class view(object):
 
             factory[-1] =  proxyView
 
-        return [
+        actions = [
             Action(
-                discriminator = ('view', self.for_, self.name, self.type),
-                callable = handler,
-                args = ('Views', 'provideView', self.for_, self.name,
-                        self.type, factory),
-                )
+            discriminator = ('view', self.for_, self.name, self.type),
+            callable = handler,
+            args = ('Views', 'provideView', self.for_, self.name,
+                    self.type, factory),
+            )
             ]
-
+        if self.for_ is not None:
+            actions.append
+            (
+                Action(
+                discriminator = None,
+                callable = handler,
+                args = ('Interfaces', 'provideInterface',
+                        self.for_.__module__+'.'+self.for_.__name__, self.for_)
+                )
+                )
+        return actions        
+               

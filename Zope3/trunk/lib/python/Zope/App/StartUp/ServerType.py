@@ -46,10 +46,10 @@ class ServerType:
 
     ############################################################
     # Implementation methods for interface
-    # Zope.StartUp.ServerType.IServerType
+    # Zope.App.StartUp.ServerType.IServerType
 
     def create(self, task_dispatcher, db, port=None, verbose=None):
-        'See Zope.StartUp.ServerType.IServerType'
+        'See Zope.App.StartUp.ServerType.IServerType'
 
         request_factory = getRequestFactory(self._requestFactory)
         request_factory = request_factory.realize(db)

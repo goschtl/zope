@@ -1,7 +1,7 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
 <include package="Zope/Configuration" file="metameta.zcml" />
-<include package="Zope" />
+<include package="Zope.App" />
 
 <role id="Manager" title="Site Manager" />
 <role id="Member" title="Site Member" />

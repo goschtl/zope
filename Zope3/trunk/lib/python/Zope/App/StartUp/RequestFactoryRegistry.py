@@ -12,10 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: RequestFactoryRegistry.py,v 1.3 2002/07/19 13:12:34 srichter Exp $
+$Id: RequestFactoryRegistry.py,v 1.2 2002/11/19 23:25:14 jim Exp $
 """
-from Zope.StartUp.SimpleRegistry import SimpleRegistry
-from Zope.StartUp.ISimpleRegistry import ISimpleRegistry
+from Zope.App.StartUp.SimpleRegistry import SimpleRegistry
+from Zope.App.StartUp.ISimpleRegistry import ISimpleRegistry
 from RequestFactory import IRequestFactory 
 
 class IRequestFactoryRegistry(ISimpleRegistry):

@@ -14,13 +14,22 @@
 """
 Test class for use by test modules
 
-$Id: Directives.py,v 1.5 2002/11/06 22:30:22 rdmurray Exp $
+$Id: Directives.py,v 1.6 2002/11/19 23:25:15 jim Exp $
 """
 
 from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
 from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 
 protections=[]
+
+count = 0
+
+def _increment():
+    global count
+    count += 1
+
+def increment(_context):
+    return [(None, _increment, (), )]
 
 class protectClass:
 

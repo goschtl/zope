@@ -1,3 +1,4 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope' >
+  <include file="http.zcml" />
   <include package=".Browser" />
 </zopeConfigure>

@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: metaConfigure.py,v 1.2 2002/06/10 23:29:43 jim Exp $
+$Id: metaConfigure.py,v 1.2 2002/11/19 23:25:14 jim Exp $
 """
 
 from SiteDefinition import SiteDefinition

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IconDirective.py,v 1.2 2002/06/25 15:26:12 mgedmin Exp $
+$Id: IconDirective.py,v 1.3 2002/11/19 23:25:13 jim Exp $
 """
 import os
 import re
@@ -91,5 +91,12 @@ def IconDirective(_context, name, for_, file=None, resource=None,
         callable = handler,
         args = ('Views', 'provideView',
                 for_, name, IBrowserPresentation,
-                vfactory, layer))
+                vfactory, layer)),
+        Action(
+        discriminator = None,
+        callable = handler,
+        args = ('Interfaces', 'provideInterface',
+                for_.__module__+'.'+for_.__name__,
+                for_)
+        )
         ]

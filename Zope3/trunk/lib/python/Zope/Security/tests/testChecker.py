@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testChecker.py,v 1.5 2002/10/01 12:47:50 jim Exp $
+$Id: testChecker.py,v 1.6 2002/11/19 23:25:18 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -42,6 +42,14 @@ class SecurityPolicy:
     #
     ############################################################
 
+
+class TransparentProxy(object):
+    def __init__(self, ob):
+        self._ob = ob
+
+    def __getattribute__(self, name):
+        ob = object.__getattribute__(self, '_ob')
+        return getattr(ob, name)
 
 class OldInst:
     a=1
@@ -187,15 +195,16 @@ class Test(TestCase, CleanUp):
             special = NamesChecker(['a', 'b'], 'test_allowed')
             defineChecker(class_, special)
 
-            proxy = checker.proxy(inst)
-            self.failUnless(getObject(proxy) is inst)
+            for ob in inst, TransparentProxy(inst):
+                proxy = checker.proxy(ob)
+                self.failUnless(getObject(proxy) is ob)
 
-                
-            checker = getChecker(proxy)
-            self.failUnless(checker is special, checker.__dict__)
+                checker = getChecker(proxy)
+                self.failUnless(checker is special,
+                                checker.getPermission_func().__self__)
 
-            proxy2 = checker.proxy(proxy)
-            self.failUnless(proxy2 is proxy, [proxy, proxy2])
+                proxy2 = checker.proxy(proxy)
+                self.failUnless(proxy2 is proxy, [proxy, proxy2])
 
     def testMultiChecker(self):
         from Interface import Interface

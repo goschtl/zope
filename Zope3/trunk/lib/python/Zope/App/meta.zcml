@@ -1,5 +1,8 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
+<!-- Standard configuration directives -->
+<include package="Zope.Configuration" file="meta.zcml" />
+
 <include package=".ComponentArchitecture" file="meta.zcml" />
 <include package=".Publisher" file="meta.zcml" />
 <include package=".Traversing" file="meta.zcml" />
@@ -7,5 +10,8 @@
 <include package=".Forms.Browser" file="meta.zcml" />
 <include package=".OFS" file="meta.zcml" />
 <include package=".ContentDirective" file="meta.zcml" />
+<include file="event-meta.zcml" />
+<include file="i18n-meta.zcml" />
+<include package=".StartUp" file="meta.zcml" />
 
 </zopeConfigure>

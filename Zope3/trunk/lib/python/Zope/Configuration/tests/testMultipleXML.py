@@ -13,6 +13,7 @@
 ##############################################################################
 import unittest, sys, os
 from tempfile import mktemp
+import Zope.Configuration.tests.Directives
 from Zope.Configuration.tests.Directives import protections, done
 from Zope.Configuration.xmlconfig import XMLConfig
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
@@ -47,11 +48,19 @@ class Test(CleanUp, unittest.TestCase):
             '''<directive name="protectClass" namespace="%s"
             handler="Zope.Configuration.tests.Directives.protectClass">
             <subdirective name="protect" namespace="%s" />
-            </directive>''' % (ns, ns),
+            </directive>
+            <directive name="increment" namespace="%s"
+            handler="Zope.Configuration.tests.Directives.increment">
+            </directive>
+            ''' % (ns, ns, ns),
+
             '''
             <test:protectClass
             name=".Contact" permission="splat" names="update"
             />
+            <test:increment />
+            <test:increment />
+            <test:increment />
             <include file="%s"/>
             ''' % f2), 'f1')
 
@@ -61,6 +70,8 @@ class Test(CleanUp, unittest.TestCase):
             (".Contact", "splat", 'update'),
             (".Contact", "splat", 'update2'),
             ])
+
+        self.assertEquals(Zope.Configuration.tests.Directives.count, 3)
         
     def testConflicting(self):
         f2=tfile(template % ('',
@@ -91,6 +102,30 @@ class Test(CleanUp, unittest.TestCase):
             <include file="%s"/>
             <include file="%s"/>
             ''' % (f2, f3)), 'f1')
+
+        x=XMLConfig(str(f1))
+
+        from Zope.Configuration.xmlconfig import ZopeConfigurationConflictError
+
+        self.assertRaises(ZopeConfigurationConflictError, x)
+        
+        self.assertEquals(protections, [])
+        
+        
+    def testConflicting_in_same_location(self):
+        f1=tfile(template % (
+            '''<directive name="protectClass" namespace="%s"
+            handler="Zope.Configuration.tests.Directives.protectClass">
+            <subdirective name="protect" namespace="%s" />
+            </directive>''' % (ns, ns),
+            '''
+            <test:protectClass
+            name=".Contact" permission="splat" names="update"
+            />
+            <test:protectClass
+            name=".Contact" permission="splat" names="update"
+            />
+            '''), 'f1')
 
         x=XMLConfig(str(f1))
 

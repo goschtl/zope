@@ -1,12 +1,10 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
-  
-  <!-- Zope.Event -->
+
   <directives namespace="http://namespaces.zope.org/event">
+
     <directive name="subscribe" attributes="subscriber event_types filter"
        handler="Zope.Event.metaConfigure.subscribe" />
+
   </directives>
 
-
 </zopeConfigure>
-
-

@@ -21,6 +21,7 @@ from Zope.Exceptions import DuplicationError, Unauthorized, Forbidden
 from Zope.App.PageTemplate.Engine import Engine
 from Zope.App.ZopePublication.Browser.PublicationTraverse \
      import PublicationTraverser
+from Zope.App.ComponentArchitecture.metaConfigure import handler
 
 class GlobalBrowserMenuService:
     """Global Browser Menu Service
@@ -134,16 +135,26 @@ class menuItemsDirective:
         self.interface = _context.resolve(for_)
 
     def menuItem(self, _context, action, title, description='', filter=None):
-        return [Action(
-            discriminator = ('browser:menuItem',
-                             self.menu, self.interface, title),
-            callable = globalBrowserMenuService.menuItem,
-            args = (self.menu, self.interface,
-                    action, title, description, filter),
-            )]
+        return [
+            Action(
+              discriminator = ('browser:menuItem',
+                               self.menu, self.interface, title),
+              callable = globalBrowserMenuService.menuItem,
+              args = (self.menu, self.interface,
+                      action, title, description, filter),
+              ),
+                ]
         
     def __call__(self):
-        return ()
+        return [
+            Action(
+              discriminator = None,
+              callable = handler,
+              args = ('Interfaces', 'provideInterface',
+                      self.interface.__module__+'.'+self.interface.__name__,
+                      self.interface)
+              )
+            ]
 
 
 globalBrowserMenuService = GlobalBrowserMenuService()
@@ -157,5 +168,5 @@ del addCleanUp
 
 __doc__ = GlobalBrowserMenuService.__doc__ + """
 
-$Id: GlobalBrowserMenuService.py,v 1.7 2002/11/11 20:20:27 jim Exp $
+$Id: GlobalBrowserMenuService.py,v 1.8 2002/11/19 23:25:13 jim Exp $
 """

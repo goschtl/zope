@@ -244,8 +244,24 @@ def selectChecker(object):
     The appropriate checker is returned or None is returned. If the
     return value is None, then object should not be wrapped in a proxy.
     """
-    checker = _getChecker(type(object), _defaultChecker)
+
+    # We need to be careful here. We might have a proxy, in which case
+    # we can't use the type.  OTOH, we might not be able to use the
+    # __class__ either, since not everything has one.
+
+    # XXX we really need formal proxy introspection
+
+    if type(object) is Proxy:
+        # Is this already a security proxy?
+        return None
+    
+    checker = _getChecker(getattr(object, '__class__', type(object)),
+                          _defaultChecker)
+    
     if checker is NoProxy:
+        return None
+
+    if checker is _defaultChecker and isinstance(object, Exception):
         return None
 
     while not isinstance(checker, Checker):

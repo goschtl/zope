@@ -1,0 +1,8 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+  
+  <directives namespace="http://namespaces.zope.org/vfs">
+    <directive name="view" attributes="factory name for"
+       handler=".metaConfigure.view" />
+  </directives>
+
+</zopeConfigure>

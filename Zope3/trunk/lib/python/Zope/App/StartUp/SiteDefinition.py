@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.10 2002/11/06 22:30:22 rdmurray Exp $
+$Id: SiteDefinition.py,v 1.2 2002/11/19 23:25:14 jim Exp $
 """
 
 import sys

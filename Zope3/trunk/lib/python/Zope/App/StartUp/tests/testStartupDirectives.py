@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: testStartupDirectives.py,v 1.3 2002/10/17 13:31:58 jim Exp $
+$Id: testStartupDirectives.py,v 1.2 2002/11/19 23:25:14 jim Exp $
 """
 
 import unittest, sys, tempfile, os
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
-from Zope.StartUp.metaConfigure import SiteDefinition
+from Zope.App.StartUp.metaConfigure import SiteDefinition
 from Zope.Configuration.name import resolve
 
 _fsname = tempfile.mktemp()+'.fs'

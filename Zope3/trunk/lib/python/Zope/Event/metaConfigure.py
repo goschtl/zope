@@ -14,17 +14,18 @@
 """
 
 Revision information:
-$Id: metaConfigure.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: metaConfigure.py,v 1.3 2002/11/19 23:25:15 jim Exp $
 """
 
 from Zope.Configuration.Action import Action
 
 from Zope.Event import subscribeMany
 from Zope.Event.IEvent import IEvent
+from Interface import Interface
 
 counter = 0
 
-def subscribe(_context, subscriber, event_types=(IEvent,), filter=None):
+def subscribe(_context, subscriber, event_types=(IEvent), filter=None):
     global counter
     counter += 1
 
@@ -44,5 +45,11 @@ def subscribe(_context, subscriber, event_types=(IEvent,), filter=None):
              discriminator = ('subscribe', counter),
              callable = subscribeMany,
              args = (subscriber, event_types, filter)
-             )
+             ),
+        Action(
+            discriminator = None,
+            callable = subscribeMany,
+            args = ('Interfaces', 'provideInterface',
+                    type.__module__+'.'+type.__name__, type)
+              )      
         ]

@@ -1,11 +1,15 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope' >
 
+  <include file="meta.zcml" />
+
   <include package=".ComponentArchitecture" />
+  <include file="event.zcml" />
+  <include file="i18n.zcml" />
+  <include package=".Security" />
   <include package=".Publisher" />
   <include package=".ZMI" />
   <include package=".OFS" />
   <include package=".RDB" />
-  <include package=".Security" />
   <include package=".Traversing" />
   <include package=".ZopePublication" />
   <include package=".Undo" />
@@ -13,5 +17,6 @@
   <include package=".Caching" />
   <include package=".DublinCore" />
   <include package=".DependencyFramework" />
+  <include package=".StartUp" />
 
 </zopeConfigure>

@@ -1,0 +1,18 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   package="Zope.Publisher.HTTP"
+>
+
+  <content class=".HTTPRequest.">
+    <require
+        permission="Zope.View"
+        interface=".IHTTPApplicationRequest."/>
+  </content>
+
+  <content class=".HTTPRequest.URLGetter">
+    <require
+        permission="Zope.View" 
+        attributes="get __getitem__ __str__" />
+  </content>
+
+</zopeConfigure>

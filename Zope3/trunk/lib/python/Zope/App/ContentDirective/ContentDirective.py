@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.10 2002/11/11 20:13:49 jim Exp $
+$Id: ContentDirective.py,v 1.11 2002/11/19 23:25:12 jim Exp $
 """
 from types import ModuleType
 from Interface.Implements import implements
@@ -34,6 +34,10 @@ PublicPermission = 'Zope.Public'
 class ProtectionDeclarationException(Exception):
     """Security-protection-specific exceptions."""
     pass
+
+def handler(serviceName, methodName, *args, **kwargs):
+    method=getattr(getService(None, serviceName), methodName)
+    method(*args, **kwargs)
 
 class ContentDirective:
 
@@ -59,7 +63,16 @@ class ContentDirective:
                 # the last argument is check=1, which causes implements
                 # to verify that the class does implement the interface
                 args = (self.__class, resolved_interface, 1),
-                )
+                ),
+            Action(
+               discriminator = None,
+               callable = handler,
+               args = ('Interfaces', 'provideInterface',
+                       resolved_interface.__module__+
+                       '.'+
+                       resolved_interface.__name__,
+                       resolved_interface)
+               )
             ]
 
     def require(self, _context,

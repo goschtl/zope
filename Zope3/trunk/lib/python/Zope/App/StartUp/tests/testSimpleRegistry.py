@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: testSimpleRegistry.py,v 1.1 2002/07/19 13:12:34 srichter Exp $
+$Id: testSimpleRegistry.py,v 1.2 2002/11/19 23:25:14 jim Exp $
 """
 
 import unittest
 from Interface import Interface
-from Zope.StartUp.SimpleRegistry import SimpleRegistry, \
+from Zope.App.StartUp.SimpleRegistry import SimpleRegistry, \
      ZopeDuplicateRegistryEntryError, ZopeIllegalInterfaceError
 
 

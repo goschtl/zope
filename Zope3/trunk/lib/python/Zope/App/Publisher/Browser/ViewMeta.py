@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ViewMeta.py,v 1.7 2002/11/06 22:30:21 rdmurray Exp $
+$Id: ViewMeta.py,v 1.8 2002/11/19 23:25:13 jim Exp $
 """
 
 # XXX this will need to be refactored soon. :)
@@ -141,7 +141,7 @@ class view(resource):
             callable = handler,
             args = ('Views','setDefaultViewName', self.for_, self.type, name),
             )]
-        
+    
 
     def _factory(self, _context, factory):
 
@@ -295,11 +295,23 @@ def defaultView(_context, name, for_=None, **__kw):
 
     type = IBrowserPresentation
 
-    actions += [Action(
+    actions += [
+        Action(
         discriminator = ('defaultViewName', for_, type, name),
         callable = handler,
         args = ('Views','setDefaultViewName', for_, type, name),
         )]
+
+    if for_ is not None:
+        actions += [
+        Action(
+        discriminator = None,
+        callable = handler,
+        args = ('Interfaces', 'provideInterface',
+                for_.__module__+'.'+for_.__name__,
+                for_)
+        )
+        ]
 
     return actions
 
