@@ -67,6 +67,7 @@
 /Zope/lib/python/zdaemon                        /Packages/zdaemon
 /Zope/lib/python/zLOG                           /Packages/zLOG
 /Zope/lib/python/ZTUtils                        /Packages/ZTUtils
+/Zope/lib/python/Products/CoreSessionTracking   /Products/CoreSessionTracking
 /Zope/lib/python/Products/ExternalMethod        /Products/ExternalMethod
 /Zope/lib/python/Products/MailHost              /Products/MailHost
 /Zope/lib/python/Products/MIMETools             /Products/MIMETools
