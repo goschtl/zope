@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.5 2002/06/20 15:54:08 jim Exp $
+$Id: xmlconfig.py,v 1.6 2002/06/23 16:20:21 stevea Exp $
 """
 
 import os
@@ -26,6 +26,11 @@ from keyword import iskeyword
 import sys, os
 from types import StringType
 from Exceptions import ConfigurationError
+
+# marker used in Context class and XMLConfig class to indicate
+# that a particular zcml file was given no "package" attribute 
+# when included, and the same went for all of its parents.
+_NO_MODULE_GIVEN = object()
 
 class ZopeXMLConfigurationError(ConfigurationError):
     "Zope XML Configuration error"
@@ -46,8 +51,7 @@ class ZopeXMLConfigurationError(ConfigurationError):
         self.mess = mess
 
     def __str__(self):
-        return 'File "%s", line %s, column %s\n\t%s' % (
-            self.sid, self.lno, self.cno, self.mess)
+        return 'File "%s", line %s, column %s\n\t%s' % (            self.sid, self.lno, self.cno, self.mess)
 
 class ConfigurationExecutionError(ZopeXMLConfigurationError):
     """An error occurred during execution of a configuration action
@@ -170,9 +174,9 @@ class ZopeConflictingConfigurationError(ZopeXMLConfigurationError):
         """ % ((self.des,) + self.l1 + self.l2)
         
 class Context:
-    def __init__(self, stack, module=None):
+    def __init__(self, stack, module):
         self.__stackcopy = tuple(stack)
-        if module is None:
+        if module is _NO_MODULE_GIVEN:
             self.__package = None
         elif module is None:
             self.__package = 'ZopeProducts'
@@ -252,11 +256,12 @@ class ZopeConfigurationConflictError(ZopeXMLConfigurationError):
                 r.append("  at line %s column %s of %s" % loc)
         
         return "\n".join(r)
-    
+        
+
 class XMLConfig:
 
-    def __init__(self, file_name, module=None):
-        if module is not None:
+    def __init__(self, file_name, module=_NO_MODULE_GIVEN):
+        if module is not None and module is not _NO_MODULE_GIVEN:
             module_dir = os.path.split(module.__file__)[0]
             file_name = os.path.join(module_dir, file_name)
 

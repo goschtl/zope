@@ -127,7 +127,27 @@ class Test(CleanUp, unittest.TestCase):
             </zopeConfigure>""")
 
         from Zope.Configuration.xmlconfig import XMLConfig
-        x=XMLConfig(name)
+        x = XMLConfig(name)
+        x()
+
+    def testIncludeNoPackageAndIncluderNoPackage(self):
+        from tempfile import mktemp
+        from os.path import split
+        full_name = mktemp()
+        full_name1 = mktemp()
+        name1 = split(full_name1)[-1]
+        
+        open(full_name, 'w').write(
+            """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+            <include file="%s" />
+            </zopeConfigure>""" % name1)
+        open(full_name1, 'w').write(
+            """<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+            <include package="Zope.Configuration.tests.Contact"
+                     file="contact.zcml" />
+            </zopeConfigure>""")
+        from Zope.Configuration.xmlconfig import XMLConfig
+        x = XMLConfig(full_name)
         x()
         
 
