@@ -14,7 +14,7 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.11 2003/03/28 18:17:02 jack-e Exp $
+$Id: stateful.py,v 1.12 2003/04/10 21:35:54 jack-e Exp $
 """
 import zope.schema
 from zope.proxy.context import ContextProperty
@@ -85,8 +85,14 @@ class ITransition(Interface):
                         transition can be fired or not.""",
         required=False)
 
+    # XXX cannot add a default value -> raises
+    # ComponentLookupError: Permissions
+    # required=False does not help as well
+    # so for now the permission needs to be set ttw
+    # till we found another solution
     permission = PermissionField(
-        title=u"The permission needed to fire the Transition.")
+        title=u"The permission needed to fire the Transition.",
+        required=True)
 
 
     triggerMode = TriggerModeField(
