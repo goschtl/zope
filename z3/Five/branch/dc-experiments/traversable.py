@@ -40,13 +40,12 @@ class Traversable:
         """Method hook for fallback traversal
 
         This method is called by __bobo_traverse___ when Zope3-style
-        ITraverser traversal fails. By default, we do what Zope 2 would do,
-        raise a NotFound error.
+        ITraverser traversal fails.
+
+        By default, we raise a KeyError error. This should be enough
+        as far as Zope 2 is concerned to trigger acquisition.
         """
-        try:
-            REQUEST.RESPONSE.notFoundError("%s " % name)
-        except AttributeError:
-            raise KeyError, name
+        raise KeyError, name
 
     def __bobo_traverse__(self, REQUEST, name):
         """Hook for Zope 2 traversal
