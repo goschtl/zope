@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schemaspec.py,v 1.3 2002/12/12 18:54:20 faassen Exp $
+$Id: test_schemaspec.py,v 1.4 2002/12/19 22:40:40 jeremy Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -186,7 +186,7 @@ class SchemaSpecTests(TestCase):
         self.assertEquals(history, s.getHistory())
 
         # check whether generated source is as we expect
-        f = openInTests('setstate.py.gen', 'r')
+        f = openInTests('setstate.py.txt', 'r')
         source = f.read()
         f.close()
         self.assertEquals(source, s.generateSetstateSource())
@@ -195,7 +195,7 @@ class SchemaSpecTests(TestCase):
         s = self.s
         s.addField('alpha', self.alpha)
         
-        f = openInTests('setstatemodule.py.gen', 'r')
+        f = openInTests('setstatemodule.py.txt', 'r')
         source = f.read()
         f.close()
         self.assertEquals(source, s.generateModuleSource())
@@ -203,7 +203,7 @@ class SchemaSpecTests(TestCase):
     def test_generateModuleSource(self):
         s = self.s
         # no history, so expect no setstate
-        f = openInTests('setstatemodule_no_history.py.gen', 'r')
+        f = openInTests('setstatemodule_no_history.py.txt', 'r')
         source = f.read()
         f.close()
         self.assertEquals(source.strip(), s.generateModuleSource().strip())
