@@ -246,6 +246,11 @@ Zope Changes
 
     Restructuring
 
+    - Removed __doc__ keyword argument from Field constructor. Moved __name__
+      behind title and description. However, values should always be inserted
+      as keywords, since a lot of mixins to the field base class do not honor
+      the order.
+
     - All enumerated fields are gone. Instead there is now a 'Choice' field
       that can take a listing of values, vocabulary or vocabulary name as
       source for the choices. The Sequence field has been improved to cope
