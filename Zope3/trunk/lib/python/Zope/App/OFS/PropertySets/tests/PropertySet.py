@@ -29,7 +29,6 @@ class PropertySet:
         ps = PSFactory.setfactory('myset', psd, mycontent)
         self.ps = ps
 
-
     def testGetField(self):
         self.assertUnlessNotEqual(self.ps.getField('field1'), self.field1)
         
