@@ -80,3 +80,14 @@ class DAVOpaqueNamespacesAdapter(DictMixin, Location):
     def __delitem__(self, key):
         del self._mapping[key]
         self._changed()
+        
+    # Convenience methods; storing and retrieving properties through WebDAV
+    def renderProperty(self, ns, nsprefix, prop, propel):
+        """Render a property as DOM elements"""
+        value = self.get(ns, {}).get(prop)
+        if value is None:
+            return
+        el = propel.ownerDocument.createElement('%s' % prop)
+        el.setAttribute('xmlns', nsprefix)
+        el.appendChild(el.ownerDocument.createTextNode(value[1]))
+        propel.appendChild(el)

@@ -112,36 +112,31 @@ class PROPFIND(object):
                     count += 1
                     prop.setAttribute('xmlns:%s' % attr_name, ns)
                 iface = _props[ns]['iface']
-                initial = {}
 
-                if iface:
-                    # The registered namespace case
-                    adapter = iface(self.context, None)
-                    for name in avail.get(ns):
-                        value = getattr(adapter, name, None)
-                        if value is not None:
-                            initial[name] = value
-                    setUpWidgets(self, iface, IDAVWidget,
-                        ignoreStickyValues=True, initial=initial, 
-                        names=avail.get(ns))
-                else:
-                    # The opaque properties case
+                if not iface:
+                    # The opaque properties case, hand it off
                     oprops = IDAVOpaqueNamespaces(self.context, {})
                     for name in avail.get(ns):
-                        value = oprops.get(ns, {}).get(name)
-                        if value is not None:
-                            initial[name] = value[1]
+                        oprops.renderProperty(ns, attr_name, name, prop)
+                    continue
+                
+                # The registered namespace case
+                initial = {}
+                adapter = iface(self.context, None)
+                for name in avail.get(ns):
+                    value = getattr(adapter, name, None)
+                    if value is not None:
+                        initial[name] = value
+                setUpWidgets(self, iface, IDAVWidget,
+                    ignoreStickyValues=True, initial=initial, 
+                    names=avail.get(ns))
                             
                 for p in avail.get(ns):
                     el = response.createElement('%s' % p )
                     if ns is not None and ns != self.default_ns:
                         el.setAttribute('xmlns', attr_name)
                     prop.appendChild(el)
-                    if iface:
-                        # A registered namespace property
-                        value = getattr(self, p+'_widget')()
-                    else:
-                        value = initial[p]
+                    value = getattr(self, p+'_widget')()
                         
                     if isinstance(value, (unicode, str)):
                         # Get the widget value here
