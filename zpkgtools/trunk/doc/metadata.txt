@@ -59,11 +59,11 @@ Package Construction Information
 --------------------------------
 
   The `PACKAGE.cfg` file can contain three distinct sections; the
-  <load> section identifies files that need to be loaded from other
-  sources, the <distribution> section is used to include files in the
-  distribution root, and the <collection> section is used to include
-  files in the component itself (even if the component isn't a
-  collection; this name is used since it usually will be a
+  ``<load>`` section identifies files that need to be loaded from
+  other sources, the ``<distribution>`` section is used to include
+  files in the distribution root, and the ``<collection>`` section is
+  used to include files in the component itself (even if the component
+  isn't a collection; this name is used since it usually will be a
   collection).
 
   As an example, this is the `PACKAGE.cfg` being used for the
@@ -93,6 +93,20 @@ Package Construction Information
       # We'll remove this too, since it's only of interest to CVS users:
       BRANCHES.txt -
     </collection>
+
+  Note that when excluding files from the collection, wildcards are
+  supported using the convention POSIX globbing syntax.  The
+  ``<collection>`` section above could have been written as::
+
+    <collection>
+      doc          -
+      *.txt        -
+    </collection>
+
+  This wouldn't have made it as screamingly obvious that we were
+  dropping a text file from the finished package that wasn't already
+  mentioned, however.
+
 
 Embedded Package Definitions
 ----------------------------
