@@ -39,7 +39,7 @@ z Components/GreyThing \
 zs Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
   &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay \
-  &Shared &DC \
-  &Products &OFSP &MailHost &ExternalMethod 
+  &Shared &DC &ZRDB \
+  &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
 
 pcgi Components/pcgi2 pcgi_publisher.py
