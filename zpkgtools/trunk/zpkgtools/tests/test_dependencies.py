@@ -70,20 +70,22 @@ class DependenciesTestCase(unittest.TestCase):
         self.assert_("feature:not-a-module" in deps)
         self.assert_("feature:zope.bar" in deps)
 
-    def test_blank_line_ends_data(self):
+    def test_blank_line_is_ignored(self):
         sio = StringIO("""\
             zope.app
             zope.schema
             feature:foo
 
-            feature:but-not-really
-            zope.yeahright
+            feature:yes-really
+            zope.yes_again
             """)
         deps = dependencies.load(sio)
-        self.assertEqual(len(deps), 3)
+        self.assertEqual(len(deps), 5)
         self.assert_("feature:foo" in deps)
         self.assert_("package:zope.app" in deps)
         self.assert_("package:zope.schema" in deps)
+        self.assert_("feature:yes-really" in deps)
+        self.assert_("package:zope.yes_again" in deps)
 
 
 def test_suite():

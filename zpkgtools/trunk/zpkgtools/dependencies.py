@@ -20,11 +20,9 @@ from zpkgtools import locationmap
 
 def load(f):
     deps = sets.Set()
-    while True:
-        line = f.readline().strip()
-        if not line:
-            return deps
-        if line[0] == "#":
+    for line in f:
+        line = line.strip()
+        if line[:1] in ("", "#"):
             continue
         dep = locationmap.normalizeResourceId(line)
         deps.add(dep)
