@@ -1,3 +1,4 @@
+# -*- coding: ISO-8859-1 -*-
 ##############################################################################
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
@@ -13,7 +14,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.27 2004/01/16 13:38:20 philikon Exp $
+$Id: _field.py,v 1.28 2004/01/22 16:31:27 philikon Exp $
 """
 __metaclass__ = type
 
@@ -96,6 +97,31 @@ class ASCII(Bytes):
     __doc__ = IASCII.__doc__
     implements(IASCII)
 
+    def _validate(self, value):
+        """
+        >>> ascii = ASCII()
+
+        Make sure we accept empty strings:
+
+        >>> empty = ''
+        >>> ascii._validate(empty)
+
+        and all kinds of alphanumeric strings:
+
+        >>> alphanumeric = "Bob\'s my 23rd uncle"
+        >>> ascii._validate(alphanumeric)
+
+        >>> umlauts = "Köhlerstraße"
+        >>> ascii._validate(umlauts)
+        Traceback (most recent call last):
+        ...
+        ValidationError: Invalid value
+        """
+        super(ASCII, self)._validate(value)
+        if not value:
+            return
+        if not max(map(ord, value)) < 128:
+            raise ValidationError(errornames.InvalidValue)
 
 class BytesLine(Bytes):
     """A Text field with no newlines."""

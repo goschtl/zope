@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.38 2004/01/16 13:38:20 philikon Exp $
+$Id: interfaces.py,v 1.39 2004/01/22 16:31:27 philikon Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -260,8 +260,9 @@ class IBytes(IMinMaxLen, IIterable, IField):
     The value might be constrained to be with length limits.
     """
 
-class IASCII(IMinMaxLen, IIterable, IField):
-    u"""Field containing a byte string (like the python str).
+class IASCII(IBytes):
+    u"""Field containing a 7-bit ASCII string. No characters > DEL
+    (chr(127)) are allowed
 
     The value might be constrained to be with length limits.
     """
