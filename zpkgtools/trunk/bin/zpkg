@@ -1,0 +1,157 @@
+#! /usr/bin/env python2.3
+
+import optparse
+import os
+import shutil
+import sys
+import tempfile
+
+try:
+    __file__
+except NameError:
+    __file__ = sys.argv[0]
+
+script = os.path.realpath(__file__)
+here = os.path.dirname(script)
+
+try:
+    import zpkgtools
+except ImportError:
+    # Not installed; running from development copy:
+    basedir = os.path.dirname(here)
+    sys.path.append(basedir)
+    import zpkgtools
+
+from zpkgtools import publication
+from zpkgtools import setup
+from zpkgtools.include import InclusionProcessor
+
+
+class Application:
+    def __init__(self, options, source, program=None):
+        if program is None:
+            program = os.path.basename(__file__)
+        self.options = options
+        self.source = source
+        # Create a new directory for all temporary files to go in:
+        self.tmpdir = tempfile.mkdtemp(prefix=program + "-")
+        tempfile.tempdir = self.tmpdir
+
+        self.loadMetadata()
+        self.target_name = "%s-%s" % (self.metadata.name, options.version)
+        self.target_file = self.target_name + ".tar.bz2"
+        self.destination = os.path.join(self.tmpdir, self.target_name)
+        self.ip = None
+
+    def buildDistribution(self):
+        # This could be either a package distribution or a collection
+        # distribution; it's the former if there's an __init__.py in
+        # the source directory.
+        if os.path.exists(os.path.join(self.source, "__init__.py")):
+            self.buildPackageDistribution()
+        else:
+            self.buildCollectionDistribution()
+        self.generateSetup()
+
+    def buildPackageDistribution(self):
+        os.mkdir(self.destination)
+        
+
+    def buildCollectionDistribution(self):
+        # Build the destination directory:
+        self.ip = InclusionProcessor(self.source,
+                                     self.destination,
+                                     self.options.include_spec)
+        try:
+            self.ip.createDistributionTree()
+        except cvsloader.CvsLoadingError, e:
+            print >>sys.stderr, e
+            sys.exit(1)
+
+    def loadMetadata(self):
+        metadata_file = os.path.join(self.source, "PUBLICATION.txt")
+        if not os.path.isfile(metadata_file):
+            print >>sys.stderr, \
+                  "source-dir does not contain required publication data file"
+            sys.exit(1)
+        self.metadata = publication.load(open(metadata_file))
+
+    def generateSetup(self):
+        setup.generate(self.destination,
+                       self.metadata,
+                       self.options.version)
+
+    def createTarball(self):
+        pwd = os.getcwd()
+        os.chdir(self.tmpdir)
+        try:
+            rc = os.spawnlp(os.P_WAIT, "tar",
+                            "tar", "cjf", self.target_file, self.target_name)
+        finally:
+            os.chdir(pwd)
+        if rc:
+            print >>sys.stderr, "error generating", self.target_file
+            sys.exit(1)
+        # We have a tarball; clear some space, then copy the tarball
+        # to the current directory:
+        shutil.rmtree(self.destination)
+        if self.ip is not None and self.ip.cvs_loader is not None:
+            self.ip.cvs_loader.cleanup()
+        shutil.copy(os.path.join(self.tmpdir, self.target_file),
+                    self.target_file)
+
+    def cleanup(self):
+        shutil.rmtree(self.tmpdir)
+
+    def run(self):
+        try:
+            self.buildDistribution()
+            self.createTarball()
+            self.cleanup()
+        except:
+            print >>sys.stderr, "temporary files are in", self.tmpdir
+            raise
+
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    program = os.path.basename(argv[0])
+    parser = optparse.OptionParser(
+        usage="usage: %prog [-i file] [-r tag] [-v version] [source-dir]")
+    parser.add_option(
+        "-i", "--include", dest="include_spec",
+        help="specification file for inclusions")
+    parser.add_option(
+        "-r", "--revision-tag", dest="revision_tag",
+        help="default CVS tag to use (default: HEAD)",
+        default="HEAD")
+    parser.add_option(
+        "-v", dest="version",
+        help="version label for the new distribution",
+        default="0.0.0")
+    options, args = parser.parse_args(argv[1:])
+    if not args:
+        source = "."
+    elif len(args) > 1:
+        print >>sys.stderr, "too many arguments"
+        return 2
+    else:
+        source = args[0]
+        if not os.path.isdir(source):
+            print >>sys.stderr, "source-dir must be a directory"
+            return 1
+
+    try:
+        app = Application(options, source, program)
+        app.run()
+    except SystemExit, e:
+        return e.code
+    except KeyboardInterrupt:
+        return 1
+    else:
+        return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
