@@ -30,7 +30,10 @@ from Globals import MessageDialog
 from Globals import PersistentMapping
 
 from ActionProviderBase import ActionProviderBase
+from CMFCoreExceptions import CMFNotImplementedError
+from CMFCoreExceptions import CMFUnauthorizedError
 from CMFCorePermissions import AccessContentsInformation
+from CMFCorePermissions import ChangeLocalRoles
 from CMFCorePermissions import ManagePortal
 from CMFCorePermissions import ManageUsers
 from CMFCorePermissions import SetOwnPassword
@@ -389,7 +392,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
         """ What local roles can I assign? """
         member = self.getAuthenticatedMember()
 
-        if 'Manager' in member.getRoles():
+        if _checkPermission(ManageUsers, obj):
             return self.getPortalRoles()
         else:
             member_roles = list( member.getRolesInContext( obj ) )
@@ -401,7 +404,8 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
     def setLocalRoles(self, obj, member_ids, member_role, reindex=1):
         """ Add local roles on an item.
         """
-        if _checkPermission(ManageUsers, obj):
+        if ( _checkPermission(ChangeLocalRoles, obj)
+             and member_role in self.getCandidateLocalRoles(obj) ):
             for member_id in member_ids:
                 roles = list(obj.get_local_roles_for_userid( userid=member_id ))
 
@@ -419,7 +423,7 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
     def deleteLocalRoles(self, obj, member_ids, reindex=1, recursive=0):
         """ Delete local roles of specified members.
         """
-        if _checkPermission(ManageUsers, obj):
+        if _checkPermission(ChangeLocalRoles, obj):
             for member_id in member_ids:
                 if obj.get_local_roles_for_userid(userid=member_id):
                     obj.manage_delLocalRoles(userids=member_ids)
@@ -470,10 +474,12 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
                     member_ids.remove(member_id)
             try:
                 acl_users.userFolderDelUsers(member_ids)
-            except 'NotImplemented':
-                return ()
+            except (NotImplementedError, 'NotImplemented'):
+                raise CMFNotImplementedError('The underlying User Folder '
+                                         'doesn\'t support deleting members.')
         else:
-            return ()
+            raise CMFUnauthorizedError('You need the \'Manage users\' '
+                                 'permission for the underlying User Folder.')
 
         # Delete member data in portal_memberdata.
         mdtool = getToolByName(self, 'portal_memberdata', None)
