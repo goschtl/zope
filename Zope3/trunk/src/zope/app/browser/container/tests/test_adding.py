@@ -13,10 +13,11 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.13 2003/11/27 13:59:11 philikon Exp $
+$Id: test_adding.py,v 1.14 2003/12/03 05:40:49 jim Exp $
 """
 
-from unittest import TestCase, main, makeSuite
+import unittest
+from zope.testing.doctestunit import DocTestSuite
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.browser.absoluteurl import AbsoluteURL
@@ -27,7 +28,7 @@ from zope.app.interfaces.container import IObjectAddedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.exceptions import UserError
 from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.tests.placelesssetup import PlacelessSetup, setUp, tearDown
 from zope.component.factory import provideFactory
 from zope.component.interfaces import IFactory
 from zope.component.exceptions import ComponentLookupError
@@ -38,6 +39,7 @@ import zope.security.checker
 from zope.exceptions import ForbiddenAttribute
 from zope.app.interfaces.container import IWriteContainer
 from zope.app.interfaces.container import IContainerNamesContainer
+import zope.interface
 
 class Root:
     implements(IContainmentRoot)
@@ -77,7 +79,7 @@ class AbsoluteURL(BrowserView):
         return url
 
 
-class Test(PlacelessSetup, TestCase):
+class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
@@ -177,8 +179,86 @@ class Test(PlacelessSetup, TestCase):
                          '/container/+/Thing/screen1=foo')
 
 
+
+def test_constraint_driven_adding():
+    """
+    >>> setUp()
+    >>> serviceService = zapi.getService(None, zapi.servicenames.Services)
+    >>> from zope.app.interfaces.publisher.browser import IBrowserMenuService
+    >>> serviceService.defineService(zapi.servicenames.BrowserMenu,
+    ...                              IBrowserMenuService)
+    >>> from zope.app.publisher.browser.globalbrowsermenuservice """ \
+                             """import globalBrowserMenuService
+    >>> serviceService.provideService(zapi.servicenames.BrowserMenu,
+    ...                               globalBrowserMenuService)
+
+    >>> menuService = zapi.getService(None, zapi.servicenames.BrowserMenu)
+    >>> menuService.menu('test', '')
+    >>> menuService.menuItem('test', IAdding, '', 'item1', None)
+    >>> menuService.menuItem('test', IAdding, '', 'item2', None)
+    >>> menuService.menu('zope.app.container.add', '')
+    >>> menuService.menuItem('zope.app.container.add', IAdding, '', 'item3',
+    ...                      None, extra={'factory': 'f1'})
+    >>> menuService.menuItem('zope.app.container.add', IAdding, '', 'item4',
+    ...                      None, extra={'factory': 'f2'})
+
+    >>> class F1:
+    ...     pass
+
+    >>> class F2:
+    ...     pass
+
+    >>> def pre(container, name, object):
+    ...     if not isinstance(object, F1):
+    ...         raise zope.interface.Invalid()
+    >>> def prefactory(container, name, factory):
+    ...     if factory._class is not F1:
+    ...         raise zope.interface.Invalid()
+    >>> pre.factory = prefactory
+
+    >>> class IContainer(zope.interface.Interface):
+    ...     def __setitem__(name, object):
+    ...         pass
+    ...     __setitem__.precondition = pre
+
+    >>> class Container:
+    ...     zope.interface.implements(IContainer)
+
+    >>> from zope.app.component.classfactory import ClassFactory
+    >>> factoryService = zapi.getService(None, zapi.servicenames.Factories)
+    >>> factoryService.provideFactory('f1', ClassFactory(F1))
+    >>> factoryService.provideFactory('f2', ClassFactory(F2))
+
+    >>> from zope.app.browser.container.adding import Adding
+    >>> adding = Adding(Container(), TestRequest())
+    >>> items = adding.addingInfo()
+    >>> len(items)
+    1
+    >>> items[0]['title']
+    'item3'
+    
+    >>> adding.menu_id = 'test'
+    >>> items = adding.addingInfo()
+    >>> len(items)
+    3
+    >>> items[0]['title']
+    'item1'
+    >>> items[1]['title']
+    'item2'
+    >>> items[2]['title']
+    'item3'
+
+    
+    >>> tearDown()
+    """
+
+
+
 def test_suite():
-    return makeSuite(Test)
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+        DocTestSuite(),
+        ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

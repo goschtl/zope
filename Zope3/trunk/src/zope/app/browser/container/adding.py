@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.22 2003/10/06 22:08:51 sidnei Exp $
+$Id: adding.py,v 1.23 2003/12/03 05:40:49 jim Exp $
 """
 __metaclass__ = type
 
@@ -41,6 +41,8 @@ from zope.app.location import LocationProxy
 import zope.security.checker
 
 from zope.proxy import removeAllProxies
+
+from zope.app.container.constraints import checkFactory
 
 class BasicAdding(BrowserView):
 
@@ -151,18 +153,34 @@ class BasicAdding(BrowserView):
 
 class Adding(BasicAdding):
 
-    menu_id = "add_content"
+    menu_id = None
 
     index = ViewPageTemplateFile("add.pt")
 
-    def addingInfo(wrapped_self):
+    def addingInfo(self):
         """Return menu data.
 
         This is sorted by title.
         """
-        menu_service = zapi.getService(wrapped_self.context, "BrowserMenu")
-        result = menu_service.getMenu(wrapped_self.menu_id,
-                                      wrapped_self,
-                                      wrapped_self.request)
+        container = self.context
+        menu_service = zapi.getService(container, "BrowserMenu")
+        result = []
+        for menu_id in (self.menu_id, 'zope.app.container.add'):
+            if not menu_id:
+                continue
+            for item in menu_service.getMenu(menu_id, self, self.request):
+                extra = item.get('extra')
+                if extra:
+                    factory = extra.get('factory')
+                    if factory:
+                        factory = zapi.getFactory(container, factory)
+                        if not checkFactory(container, None, factory):
+                            continue
+                result.append(item)
+                
         result.sort(lambda a, b: cmp(a['title'], b['title']))
         return result
+
+class ContentAdding(Adding):
+
+    menu_id = "add_content"
