@@ -97,28 +97,20 @@ def fromPathOrUrl(path, mapping=None):
     # still need to support Subversion here
     if os.path.isfile(path):
         # prefer a revision-control URL over a local path if possible:
-        cvsurl = cvsloader.fromPath(path)
-        if cvsurl is None:
+        rcurl = loader.fromPath(path)
+        if rcurl is None:
             base = os.path.dirname(path)
         else:
-            cvsurl.path = posixpath.dirname(cvsurl.path)
-            base = cvsurl.getUrl()
+            base = loader.baseUrl(rcurl)
         f = open(path, "rU")
     else:
         try:
-            cvsurl = cvsloader.parse(path)
+            cvsurl = loader.parse(path)
         except ValueError:
-            f = urllib2.urlopen(path)
-            parts = list(urlparse.urlparse(path))
-            if parts[2]:
-                parts[2] = posixpath.join(posixpath.dirname(parts[2]), "")
-                base = urlparse.urlunparse(parts)
-            else:
-                base = path
+            f = urllib2.urlopen(path, "rU")
         else:
             f = loader.open(path, "rU")
-            cvsurl.path = posixpath.dirname(cvsurl.path)
-            base = cvsurl.getUrl()
+        base = loader.baseUrl(path)
     try:
         return load(f, base, mapping)
     finally:
