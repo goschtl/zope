@@ -120,7 +120,7 @@
   <class class=".opaquenamespaces.DAVOpaqueNamespacesAdapter">
     <require
         permission="zope.ManageContent"
-        interface=".interfaces.IDAVOpaqueNamespaces"
+        interface=".opaquenamespaces.IDAVOpaqueNamespaces"
         />
   </class>
 
