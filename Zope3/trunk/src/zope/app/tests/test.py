@@ -801,8 +801,7 @@ def runner(files, test_filter, debug):
 
     if DEBUG:
         print "Ran %s tests in debug mode" % run_debug(suite, VERBOSE)
-        numbad = len(result.failures) + len(result.errors)
-        return numbad
+        return 0
 
     r = runner.run(suite)
     if TIMESFN:
