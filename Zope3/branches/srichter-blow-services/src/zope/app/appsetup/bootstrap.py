@@ -30,19 +30,11 @@ from zope.app import zapi
 from zope.app.traversing.api import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.folder import rootFolder
-from zope.app.servicenames import PrincipalAnnotation
 from zope.app.servicenames import Utilities
 from zope.app.site.service import ServiceManager, ServiceRegistration
 from zope.app.container.interfaces import INameChooser
 from zope.app.utility import UtilityRegistration, LocalUtilityService
 from zope.app.utility.interfaces import ILocalUtilityService
-
-# XXX It should be possible to remove each of these from the basic
-# bootstrap, at which point we can remove the
-# zope.app.principalannotation packages from
-# zope.app.
-
-from zope.app.principalannotation import PrincipalAnnotationService
 
 def ensureObject(root_folder, object_name, object_type, object_factory):
     """Check that there's a basic object in the service
@@ -144,10 +136,10 @@ def addConfigureUtility(
     return name
 
 def addUtility(root_folder, utility_type, utility_factory, **kw):
-    """ Add a Utility to the root folders Utility Service.
+    """ Add a Utility to the root folder's Utility Service.
 
     The utility is added to the default package and activated.
-    This assumes the root folder already as a Utility Service
+    This assumes that the root folder already has a Utility Service.
     """
     package = getServiceManagerDefault(root_folder)
     chooser = INameChooser(package)
@@ -223,8 +215,6 @@ def bootStrapSubscriber(event):
         service_manager = getServiceManager(root_folder)
 
         # Sundry other services
-        ensureService(service_manager, root_folder, PrincipalAnnotation,
-                      PrincipalAnnotationService)
         ensureService(service_manager, root_folder, Utilities,
                       LocalUtilityService)
 

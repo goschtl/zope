@@ -11,21 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""ZTAPI Tests
 
 $Id$
 """
 import unittest
 from zope.app.tests import placelesssetup
 from zope.app import zapi
-from zope.app.security.interfaces import IAuthenticationService
 
 
 def setUp(test):
     placelesssetup.setUp()
-    services = zapi.getGlobalServices()
-    services.defineService(zapi.servicenames.Authentication,
-                           IAuthenticationService)
 
 def test_suite():
     from zope.testing import doctest

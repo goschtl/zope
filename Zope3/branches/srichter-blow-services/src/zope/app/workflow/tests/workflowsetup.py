@@ -15,17 +15,12 @@
 
 $Id$
 """
-from zope.interface import implements
-from zope.component.interfaces import IUtilityService
-
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.security.interfaces import IAuthenticationService
-from zope.app.security.principalregistry import principalRegistry
-from zope.app.servicenames import Authentication, Utilities
+from zope.app.servicenames import Utilities
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.utility import LocalUtilityService
 from zope.app.tests import setup
+from zope.app.utility import LocalUtilityService
 
 
 class WorkflowSetup(PlacefulSetup):
@@ -44,9 +39,3 @@ class WorkflowSetup(PlacefulSetup):
 
         self.default1 = zapi.traverse(self.sm1, "default")
         self.cm1 = self.default1.getRegistrationManager()
-
-
-    def setupAuthService(self):
-        self.root_sm.defineService(Authentication, IAuthenticationService)
-        self.root_sm.provideService(Authentication, principalRegistry)
-        return zapi.getService(Authentication, self.rootFolder)

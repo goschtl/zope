@@ -18,7 +18,7 @@ $Id$
 from zope.interface import implements
 from zope.i18n import translate
 from zope.app.publisher.interfaces.http import ILogin, ILogout
-from zope.app.security.interfaces import IAuthenticationService
+from zope.app.security.interfaces import IAuthenticationUtility
 from zope.app.security.principalregistry import UnauthenticatedPrincipal
 from zope.app.pagetemplate import ViewPageTemplateFile
 from zope.proxy import removeAllProxies
@@ -27,8 +27,8 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 
 search_label = _('search-button', 'Search')
 
-class AuthServiceSearchView(object):
-    __used_for__ = IAuthenticationService
+class AuthUtilitySearchView(object):
+    __used_for__ = IAuthenticationUtility
 
     def __init__(self, context, request):
         self.context = context

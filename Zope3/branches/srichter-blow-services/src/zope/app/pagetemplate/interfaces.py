@@ -17,32 +17,10 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.dublincore.interfaces import IDCDescriptiveProperties
-from zope.app.dublincore.interfaces import IDCTimes
-from zope.interface import Interface
+import zope.interface
 
-class IZopeTalesAPI(IDCDescriptiveProperties, IDCTimes):
 
-    def name():
-        """Return the object's name
-
-        This is the name the object is stored under in the container
-        it was accessed in.
-        """
-
-    def title_or_name():
-        """Return the title, if the is one, or the name otherwise
-        """
-
-    def size():
-        """Return a string representing the size of the object
-
-        This string could be a collection of digits or a descriptive
-        string of some sort.  If the size can't be determined
-        (e.g. the object has no size), an empty string is returned.
-        """
-    
-class IURLQuote(Interface):
+class IURLQuote(zope.interface.Interface):
 
     def quote():
         """Return the objects URL quote representation."""
@@ -55,4 +33,3 @@ class IURLQuote(Interface):
 
     def unquote_plus():
         """Return the objects URL unquote_plus  representation."""
-

@@ -260,6 +260,9 @@ def test_suite():
         unittest.makeSuite(TestUtilityService),
         unittest.makeSuite(TestLocalUtilityDirective),
         DocTestSuite('zope.app.utility.metaconfigure'),
+        DocTestSuite('zope.app.utility.utility',
+                     setUp=setup.placelessSetUp,
+                     tearDown=setup.placelessTearDown),
         DocTestSuite('zope.app.utility.vocabulary',
                      setUp=setup.placelessSetUp,
                      tearDown=setup.placelessTearDown)

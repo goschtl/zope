@@ -20,9 +20,8 @@ import unittest
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.servicenames import Authentication
 
-from zope.app.security.interfaces import IAuthenticationService
+from zope.app.security.interfaces import IAuthenticationUtility
 from zope.app.security.settings import Allow, Deny
 from zope.app.security.principalregistry import principalRegistry
 
@@ -39,10 +38,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        services = zapi.getGlobalServices()
-
-        services.defineService(Authentication, IAuthenticationService)
-        services.provideService(Authentication, principalRegistry)
+        ztapi.provideUtility(IAuthenticationUtility, principalRegistry)
 
     def _make_principal(self, id=None, title=None):
         p = principalRegistry.definePrincipal(

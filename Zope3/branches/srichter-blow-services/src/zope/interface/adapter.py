@@ -196,17 +196,18 @@ class Surrogate(object):
 
         # Now flatten with mappings to tuples
         for key, v in implied.iteritems():
-            if isinstance(key, tuple) and key[0] == 's':
-                # subscriptions
-                if isinstance(v, dict):
-                    implied[key] = v.items()
-            else:
-                byname = v
-                for name, value in byname.iteritems():
-                    if isinstance(value, dict):
-                        # We have {with -> value}
-                        # convert it to sorted [(with, value]
-                        byname[name] = orderwith(value)
+            if isinstance(key, tuple):
+                if key[0] == 's':
+                    # subscriptions
+                    if isinstance(v, dict):
+                        implied[key] = v.items()
+                else:
+                    byname = v
+                    for name, value in byname.iteritems():
+                        if isinstance(value, dict):
+                            # We have {with -> value}
+                            # convert it to sorted [(with, value]
+                            byname[name] = orderwith(value)
 
         self.get = implied.get
 
@@ -296,9 +297,9 @@ class AdapterLookup(object):
     # Adapter lookup support
     # We have a class here because we want to provide very
     # fast lookup support in C and making this part of the adapter
-    # registry itself would provide problems if someone wanted to
+    # registry itself would provide problems if someone wanted
     # persistent adapter registries, because we want C slots for fast
-    # lookup that would clash with persistence-suppplied slots.
+    # lookup that would clash with persistence-supplied slots.
     # so this class acts a little bit like a lookup adapter for the adapter
     # registry.
 

@@ -43,8 +43,7 @@ either `queryUtility` or `getUtility`:
     >>> zope.component.getUtility(IGreeter, 'robert').greet()
     Hello bob
 
-`queryUtility` and `getUtility` differ in how failed lookups are
-handled:
+`queryUtility` and `getUtility` differ in how failed lookups are handled:
 
     >>> zope.component.queryUtility(IGreeter, 'ted')
     >>> zope.component.queryUtility(IGreeter, 'ted', 42)
@@ -56,8 +55,7 @@ handled:
     ComponentLookupError: (<InterfaceClass ...IGreeter>, 'ted')
 
 If a component provides only one interface, as in the example above,
-then we can ommit the provided interface from the call to
-`provideUtility`:
+then we can omit the provided interface from the call to `provideUtility`:
 
     >>> ted = Greeter('ted')
     >>> zope.component.provideUtility(ted, name='ted')

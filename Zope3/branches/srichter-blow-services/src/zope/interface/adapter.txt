@@ -244,6 +244,17 @@ same as registering them for a class::
   >>> registry.lookup([zope.interface.implementedBy(C2)], IP1, '')
   'C21'
 
+Dict adapters
+-------------
+
+At some point it was impossible to register dictionary-based adapters due a
+bug. Let's make sure this works now:
+
+  >>> adapter = {}
+  >>> registry.register((), IQ, '', adapter)
+  >>> registry.lookup((), IQ, '') is adapter
+  True
+
 Unregistering
 -------------
 
@@ -482,7 +493,7 @@ Handlers
 
 A handler is a subscriber factory that doesn't produce any normal
 output.  It returns None.  A handler is unlike adapters in that it does
-all of it's work when the factory is called.
+all of its work when the factory is called.
 
 To register a handler, simply provide None as the provided interface::
 

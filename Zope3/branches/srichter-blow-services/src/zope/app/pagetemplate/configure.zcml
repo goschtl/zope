@@ -6,12 +6,6 @@
 
   <adapter
       for="*"
-      provides=".interfaces.IZopeTalesAPI"
-      factory=".talesapi.ZopeTalesAPI" 
-      />
-
-  <adapter
-      for="*"
       provides="zope.app.traversing.interfaces.IPathAdapter"
       factory=".talesapi.ZopeTalesAPI"
       name="zope" 

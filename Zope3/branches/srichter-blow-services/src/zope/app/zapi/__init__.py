@@ -17,7 +17,6 @@ Makes imports easier
 
 $Id$
 """
-
 from interfaces import IZAPI
 from zope.interface import moduleProvides
 
@@ -38,5 +37,6 @@ from zope.app.exception.interfaces import UserError
 name = getName
 
 def principals():
-    return getServices().getService(servicenames.Authentication)
+    from zope.app.security.interfaces import IAuthenticationUtility
+    return getUtility(IAuthenticationUtility)
 

@@ -17,17 +17,19 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.app.dublincore.interfaces import IDCDescriptiveProperties
+from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.size.interfaces import ISized
 from zope.app import zapi
 from zope.interface import implements
 from zope.security.interfaces import Unauthorized
 from zope.tales.interfaces import ITALESFunctionNamespace
-from interfaces import IZopeTalesAPI
+
 
 class ZopeTalesAPI(object):
 
-    implements(IZopeTalesAPI, ITALESFunctionNamespace)
+    implements(IDCTimes, IDCDescriptiveProperties, ITALESFunctionNamespace)
 
     def __init__(self, context):
         self.context = context
@@ -77,4 +79,3 @@ class ZopeTalesAPI(object):
         if a is None:
             raise AttributeError, 'created'
         return a.sizeForDisplay()
-

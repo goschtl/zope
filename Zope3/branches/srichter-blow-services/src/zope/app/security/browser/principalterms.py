@@ -42,7 +42,7 @@ class PrincipalTerms(object):
         if principal_id not in self.context:
             raise LookupError, principal_id
 
-        auth = zapi.getService(zapi.servicenames.Authentication)
+        auth = zapi.principals()
         principal = auth.getPrincipal(principal_id)
 
         if principal is None:

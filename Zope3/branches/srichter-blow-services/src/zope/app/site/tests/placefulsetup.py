@@ -16,8 +16,8 @@
 $Id$
 """
 from zope.app import zapi
-from zope.app.tests import setup
-from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.app.testing import setup
+from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.folder import rootFolder
 
 class Place(object):

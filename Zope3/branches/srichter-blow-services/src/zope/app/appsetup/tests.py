@@ -23,7 +23,6 @@ from zope.app.error.error import ErrorReportingUtility
 from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.folder import rootFolder
 from zope.app.folder.interfaces import IRootFolder
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.servicenames import Utilities
 from zope.app.site.service import ServiceManager

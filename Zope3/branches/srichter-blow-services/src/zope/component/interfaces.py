@@ -37,6 +37,24 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
     and Utiltities. Both are managed by site managers. All other components
     build on top of them.
     """
+    # Site Manager API
+
+    def getGlobalSiteManager():
+        """Return the global site manager.
+
+        This function should never fail and always return an object that
+        provides `IGlobalSiteManager`.
+        """
+
+    def getSiteManager(context=None):
+        """Get the nearest site manager in the given context.
+
+        If `context` is `None`, return the global site manager.
+
+        If the `context` is not `None`, it is expected that an adapter from
+        the `context` to `ISiteManager` can be found. If no adapter is found,
+        a `ComponentLookupError` is raised.
+        """
 
     # Utility API
 
@@ -72,7 +90,7 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
 
     # Adapter API
 
-    def getAdapter(object, interface, name, context=''):
+    def getAdapter(object, interface=Interface, name=u'', context=None):
         """Get a named adapter to an interface for an object
 
         Returns an adapter that can adapt object to interface.  If a matching
@@ -107,7 +125,7 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
         returned.
         """
 
-    def getMultiAdapter(objects, interface, name='', context=None):
+    def getMultiAdapter(objects, interface=Interface, name='', context=None):
         """Look for a multi-adapter to an interface for an objects
 
         Returns a multi-adapter that can adapt objects to interface.  If a
@@ -124,7 +142,8 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
         named adapter methods with an empty string for a name.
         """
 
-    def queryAdapter(object, interface, name, default=None, context=None):
+    def queryAdapter(object, interface=Interface, name=u'', default=None,
+                     context=None):
         """Look for a named adapter to an interface for an object
 
         Returns an adapter that can adapt object to interface.  If a matching
@@ -159,7 +178,7 @@ class IComponentArchitecture(Interface, IBBBComponentArchitecture):
         returned.
         """
 
-    def queryMultiAdapter(objects, interface, name='', default=None,
+    def queryMultiAdapter(objects, interface=Interface, name=u'', default=None,
                           context=None):
         """Look for a multi-adapter to an interface for objects
 

@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - Added new `getNextUtility()`, `queryNextUtility()`, and
+        `testingNextUtility()` functions to make it easier to find and test
+        for utilities in higher-up sites. These mimic their service-based
+        equivalents.
+
       - Added `getInfo(generation)` method to `zope.app.generations`'s
         `ISchemaManager`. It will return some information about the evolver
         that brings the database to the specified generation. This way we can
@@ -164,7 +169,15 @@ Zope Changes
       - Removal of Services.
 
         + Converted Error Reporting Service to a utility. Added database
-          evolution code to convert all serice instances to utilities.
+          evolution code to convert all service instances to utilities.
+
+        + Converted Authentication Service to be a utility. Renamed PAS to
+          PAU.
+
+        + Converted Principal Annotation Service to be a utility. Added
+          database evolution code to convert all service instances to
+          utilities.
+ 
 
       - The `pluggableauth` package has been deprecated. The `pas` module
         provides a much more modular approach with many more capabilities.
@@ -254,6 +267,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed a bug in the adapter registry that would prevent `dict`-derived
+        utilites from being retrieved correctly.
+
       - Resolved issue 304 (Slash involve dbname). We require now that all
         values in a DSN are properly URL-encoded, so that all values can
         contain any special character, except for the hostname and the port.
@@ -287,11 +303,18 @@ Zope Changes
       - Small but important fix to security map. It was not marking objects
         with modified permissions as changed, due to a missing assignment.
 
+      - Contents/contents.pt didn't quote the values that were used in
+        href:s, thus it couldn't function properly if the items contained
+        certain characters.
+
+      - If the content-type was text/*, HTTPResponse.write re-set the
+        content-length header to the first chunk of data.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
-      Shane Hathaway
+      Shane Hathaway, Bjorn Tillenius
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.

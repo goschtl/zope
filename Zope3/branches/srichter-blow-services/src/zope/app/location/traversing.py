@@ -73,7 +73,7 @@ class LocationPhysicallyLocatable(object):
         >>> LocationPhysicallyLocatable(o1).getRoot()
         Traceback (most recent call last):
         ...
-        TypeError: Maximim location depth exceeded, """ \
+        TypeError: Maximum location depth exceeded, """ \
                 """probably due to a a location cycle.
         """
         context = self.context
@@ -84,7 +84,7 @@ class LocationPhysicallyLocatable(object):
             context = context.__parent__
             max -= 1
             if max < 1:
-                raise TypeError("Maximim location depth exceeded, "
+                raise TypeError("Maximum location depth exceeded, "
                                 "probably due to a a location cycle.")
 
         raise TypeError("Not enough context to determine location root")

@@ -132,25 +132,26 @@ def queryAdapterInContext(object, interface, context, default=None):
 
     return getSiteManager(context).queryAdapter(object, interface, '', default)
 
-def getAdapter(object, interface, name, context=None):
+def getAdapter(object, interface=Interface, name=u'', context=None):
     adapter = queryAdapter(object, interface, name, None, context)
     if adapter is None:
         raise ComponentLookupError(object, interface)
     return adapter
 
-def queryAdapter(object, interface, name, default=None, context=None):
+def queryAdapter(object, interface=Interface, name=u'', default=None,
+                 context=None):
     if context is None:
         return adapter_hook(interface, object, name, default)
     return getSiteManager(context).queryAdapter(object, interface, name,
                                                 default)
 
-def getMultiAdapter(objects, interface, name=u'', context=None):
+def getMultiAdapter(objects, interface=Interface, name=u'', context=None):
     adapter = queryMultiAdapter(objects, interface, name, context=context)
     if adapter is None:
         raise ComponentLookupError(objects, interface)
     return adapter
 
-def queryMultiAdapter(objects, interface, name=u'', default=None,
+def queryMultiAdapter(objects, interface=Interface, name=u'', default=None,
                       context=None):
     try:
         sitemanager = getSiteManager(context)

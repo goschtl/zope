@@ -24,7 +24,6 @@ from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.security.interfaces import IAuthenticationService
 from zope.app.securitypolicy.interfaces import IGrantInfo
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
@@ -57,8 +56,6 @@ def setUp(test):
     ztapi.provideAdapter(
         IAnnotatable, IGrantInfo,
         AnnotationGrantInfo)
-    zapi.getGlobalServices().defineService('Authentication',
-                                           IAuthenticationService)
 
 
 def test_suite():

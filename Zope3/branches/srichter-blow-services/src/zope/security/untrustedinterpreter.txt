@@ -197,7 +197,7 @@ a basic object would need to be obtained by making a call on a proxied
 object.  Therefore, the access to the basic object in the first place
 is mediated by the security functions.
 
-Rational for mutable safe objects
+Rationale for mutable safe objects
 *********************************
 
 Some safe objects are not basic. For these objects, we proxy the

@@ -19,7 +19,7 @@ $Id$
 import unittest
 from zope.publisher.browser import TestRequest
 from zope.app import zapi
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 
 from zope.app.tree.utils import TreeStateEncoder
 from zope.app.tree.browser import StatefulTreeView
@@ -55,7 +55,8 @@ class CookieTreeViewTest(StatefulTreeViewTest):
 
     def test_cookie_tree_pre_expanded(self):
         request = self.makeRequestWithVar()
-        view = zapi.getView(self.root_obj, 'cookie_tree', request)
+        view = zapi.getMultiAdapter((self.root_obj, request),
+                                    name='cookie_tree')
         cookie_tree = view.cookieTree()
         self.assert_(self.root_node.expanded)
         for node in self.root_node.getFlatNodes():
@@ -63,7 +64,8 @@ class CookieTreeViewTest(StatefulTreeViewTest):
 
     def test_cookie_tree_sets_cookie(self):
         request = self.makeRequestWithVar()
-        view = zapi.getView(self.root_obj, 'cookie_tree', request)
+        view = zapi.getMultiAdapter((self.root_obj, request),
+                                    name='cookie_tree')
         cookie_tree = view.cookieTree()
         self.failIf(request.response.getCookie(view.request_variable) is None)
 

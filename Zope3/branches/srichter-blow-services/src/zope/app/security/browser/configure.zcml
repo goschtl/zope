@@ -3,10 +3,10 @@
    xmlns:browser="http://namespaces.zope.org/browser">
 
   <adapter
-      for="zope.app.security.interfaces.IAuthenticationService
+      for="zope.app.security.interfaces.IAuthenticationUtility
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.ISourceQueryView"
-      factory="zope.app.security.browser.auth.AuthServiceSearchView" 
+      factory="zope.app.security.browser.auth.AuthUtilitySearchView" 
       />
 
   <adapter
@@ -51,7 +51,7 @@
 
  <browser:addMenuItem
      title="Permission"
-     description="A Secutiry Permission"
+     description="A Security Permission"
      class="..permission.LocalPermission"
      permission="zope.ManageServices"
      view="AddPermission.html"

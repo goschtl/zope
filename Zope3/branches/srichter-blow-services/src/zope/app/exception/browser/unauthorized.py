@@ -18,7 +18,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.app import zapi
-from zope.app.security.interfaces import IAuthenticationService
 
 
 class Unauthorized(object):
@@ -28,5 +27,5 @@ class Unauthorized(object):
         # challenge the user
         self.request.response.setStatus(403)
         principal = self.request.principal
-        auth = zapi.getService(zapi.servicenames.Authentication)
+        auth = zapi.principals()
         auth.unauthorized(principal.id, self.request)

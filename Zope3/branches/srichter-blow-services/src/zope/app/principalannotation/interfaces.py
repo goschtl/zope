@@ -20,7 +20,7 @@ __docformat__ = 'restructuredtext'
 from zope.interface import Interface
 
 
-class IPrincipalAnnotationService(Interface):
+class IPrincipalAnnotationUtility(Interface):
     """Stores `IAnnotations` for `IPrinicipals`."""
 
     def getAnnotations(principal):
@@ -40,3 +40,8 @@ class IPrincipalAnnotationService(Interface):
     def hasAnnotations(principal):
         """Return boolean indicating if given `IPrincipal` has
         `IAnnotations`."""
+
+#############################################################################
+# BBB: 12/20/2004
+IPrincipalAnnotationService = IPrincipalAnnotationUtility
+#############################################################################

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Authentication Service Tests
+"""Homefolder Tests
 
 $Id: tests.py 28311 2004-11-01 19:03:56Z jim $
 """

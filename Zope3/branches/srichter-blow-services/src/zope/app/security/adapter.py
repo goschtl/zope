@@ -24,7 +24,7 @@ class TrustedAdapterFactory(object):
     """Adapt an adapter factory to to provide trusted adapters
 
        Trusted adapters always adapt unproxied objects.  If asked to
-       adapt any proxid objects, it will unproxy them and then proxy the
+       adapt any proxied objects, it will unproxy them and then proxy the
        resulting adapter.
 
        Suppose we have an adapter factory:

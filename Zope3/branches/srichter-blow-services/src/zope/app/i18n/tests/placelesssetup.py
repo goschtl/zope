@@ -15,7 +15,7 @@
 
 $Id$
 """
-from zope.app.tests import ztapi
+from zope.app.testing import ztapi
 from zope.i18n.interfaces import IUserPreferredCharsets
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.publisher.browser import BrowserLanguages

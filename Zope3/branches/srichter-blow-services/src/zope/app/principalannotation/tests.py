@@ -16,16 +16,18 @@
 $Id$
 """
 from unittest import TestCase, TestLoader, TextTestRunner
-from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.principalannotation import \
-     PrincipalAnnotationService, AnnotationsForPrincipal
-from interfaces import IPrincipalAnnotationService
-from zope.app.tests import ztapi
-from zope.app.annotation.interfaces import IAnnotations
-from zope.app.security.interfaces import IPrincipal
-from zope.app.tests import setup
+from zope import component as capi
 from zope.interface import implements
 from zope.app import zapi
+from zope.app.annotation.interfaces import IAnnotations
+from zope.app.principalannotation import PrincipalAnnotationUtility
+from zope.app.principalannotation import AnnotationsForPrincipal
+from zope.app.security.interfaces import IPrincipal
+from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.tests import setup
+from zope.app.tests import ztapi
+from zope.app.utility.utility import LocalUtilityService
+from interfaces import IPrincipalAnnotationUtility
 
 class Principal(object):
 
@@ -41,48 +43,42 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         sm = self.buildFolders(site='/')
 
-        root_sm = zapi.getGlobalServices()
-
-        svc = PrincipalAnnotationService()
-
-        root_sm.defineService("PrincipalAnnotation",
-                              IPrincipalAnnotationService)
-        root_sm.provideService("PrincipalAnnotation", svc)
-
-        self.svc = setup.addService(sm, 'PrincipalAnnotation', svc)
+        self.util = PrincipalAnnotationUtility()
+        capi.provideUtility(self.util, IPrincipalAnnotationUtility)
 
     def testGetSimple(self):
         prince = Principal('somebody')
-        self.assert_(not self.svc.hasAnnotations(prince))
+        self.assert_(not self.util.hasAnnotations(prince))
 
-        princeAnnotation = self.svc.getAnnotations(prince)
+        princeAnnotation = self.util.getAnnotations(prince)
         # Just getting doesn't actualy store. We don't want to store unless
         # we make a change.
-        self.assert_(not self.svc.hasAnnotations(prince))
+        self.assert_(not self.util.hasAnnotations(prince))
 
         princeAnnotation['something'] = 'whatever'
 
         # But now we should have the annotation:
-        self.assert_(self.svc.hasAnnotations(prince))
+        self.assert_(self.util.hasAnnotations(prince))
 
     def testGetFromLayered(self):
         princeSomebody = Principal('somebody')
         sm1 = self.makeSite('folder1')
-        subService = setup.addService(sm1, 'PrincipalAnnotation',
-                                      PrincipalAnnotationService())
+        setup.addService(sm1, 'Utilities', LocalUtilityService())
+        subUtil = setup.addUtility(sm1, '', IPrincipalAnnotationUtility,
+                                   PrincipalAnnotationUtility())
 
-        parentAnnotation = self.svc.getAnnotations(princeSomebody)
+        parentAnnotation = self.util.getAnnotations(princeSomebody)
 
         # Just getting doesn't actualy store. We don't want to store unless
         # we make a change.
-        self.assert_(not subService.hasAnnotations(princeSomebody))
+        self.assert_(not subUtil.hasAnnotations(princeSomebody))
 
         parentAnnotation['hair_color'] = 'blue'
 
         # But now we should have the annotation:
-        self.assert_(self.svc.hasAnnotations(princeSomebody))
+        self.assert_(self.util.hasAnnotations(princeSomebody))
 
-        subAnnotation = subService.getAnnotations(princeSomebody)
+        subAnnotation = subUtil.getAnnotations(princeSomebody)
         self.assertEquals(subAnnotation['hair_color'], 'blue')
 
         subAnnotation['foo'] = 'bar'
@@ -93,7 +89,7 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
     def testAdapter(self):
         p = Principal('somebody')
         ztapi.provideAdapter(IPrincipal, IAnnotations,
-                             AnnotationsForPrincipal(self.svc))
+                             AnnotationsForPrincipal(self.util))
         annotations = IAnnotations(p)
         annotations["test"] = "bar"
         annotations = IAnnotations(p)

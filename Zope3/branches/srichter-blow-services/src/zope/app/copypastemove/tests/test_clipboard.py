@@ -19,8 +19,8 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.principalannotation import PrincipalAnnotationService
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
+from zope.app.principalannotation import PrincipalAnnotationUtility
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 from zope.app.annotation.interfaces import IAnnotations
 
 from zope.app.copypastemove.interfaces import IPrincipalClipboard
@@ -36,17 +36,14 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
 
         ztapi.provideAdapter(IAnnotations, IPrincipalClipboard,
                              PrincipalClipboard)
-        root_sm = zapi.getGlobalServices()
-        svc = PrincipalAnnotationService()
-        root_sm.defineService("PrincipalAnnotation", \
-            IPrincipalAnnotationService)
-        root_sm.provideService("PrincipalAnnotation", svc)
+        ztapi.provideUtility(IPrincipalAnnotationUtility,
+                             PrincipalAnnotationUtility())
 
     def testAddItems(self):
         user = self._auth['one']['srichter']
 
-        annotationsvc = zapi.getService('PrincipalAnnotation', self)
-        annotations = annotationsvc.getAnnotations(user)
+        annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
+        annotations = annotationutil.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
         clipboard.addItems('move', ['bla', 'bla/foo', 'bla/bar'])
         expected = ({'action':'move', 'target':'bla'},
@@ -61,8 +58,8 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
     def testSetContents(self):
         user = self._auth['one']['srichter']
 
-        annotationsvc = zapi.getService('PrincipalAnnotation', self)
-        annotations = annotationsvc.getAnnotations(user)
+        annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
+        annotations = annotationutil.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
 
         expected = ({'action':'move', 'target':'bla'},
@@ -77,8 +74,8 @@ class PrincipalClipboardTest(AuthSetup, TestCase):
     def testClearContents(self):
         user = self._auth['one']['srichter']
 
-        annotationsvc = zapi.getService('PrincipalAnnotation', self)
-        annotations = annotationsvc.getAnnotations(user)
+        annotationutil = zapi.getUtility(IPrincipalAnnotationUtility)
+        annotations = annotationutil.getAnnotations(user)
         clipboard = IPrincipalClipboard(annotations)
         clipboard.clearContents()
         self.failUnless(clipboard.getContents() == ())

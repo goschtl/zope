@@ -112,8 +112,9 @@ class GlobalSiteManager(SiteManager):
 
     implements(IGlobalSiteManager)
 
-    def __init__(self):
+    def __init__(self, name=None):
         super(GlobalSiteManager, self).__init__()
+        self.__name__ = None
         self._registrations = {}
 
     def provideAdapter(self, required, provided, name, factory, info=''):
@@ -241,9 +242,13 @@ class GlobalSiteManager(SiteManager):
             else:
                 yield registration
 
+    def __reduce__(self):
+        # Global service managers are pickled as global objects
+        return self.__name__
+
 
 # Global Site Manager Instance
-globalSiteManager = GlobalSiteManager()
+globalSiteManager = GlobalSiteManager('globalSiteManager')
 
 # Register our cleanup with zope.testing.cleanup to make writing unit tests
 # simpler.

@@ -17,16 +17,16 @@ $Id$
 """
 import unittest
 
+from zope.configuration import xmlconfig
+from zope.configuration.config import ConfigurationConflictError
+
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.servicenames import Authentication
-from zope.app.security.interfaces import IAuthenticationService
 
-from zope.configuration.config import ConfigurationConflictError
-from zope.configuration import xmlconfig
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.app.security.interfaces import IPermission
+from zope.app.security.interfaces import IAuthenticationUtility
 from zope.app.security.permission import Permission
 from zope.app.security.settings import Allow
 from zope.app.security.principalregistry import principalRegistry
@@ -52,10 +52,7 @@ class TestBase(PlacelessSetup):
 
     def setUp(self):
         super(TestBase, self).setUp()
-        services = zapi.getGlobalServices()
-
-        services.defineService(Authentication, IAuthenticationService)
-        services.provideService(Authentication, principalRegistry)
+        ztapi.provideUtility(IAuthenticationUtility, principalRegistry)
 
 
 class TestRoleDirective(TestBase, unittest.TestCase):

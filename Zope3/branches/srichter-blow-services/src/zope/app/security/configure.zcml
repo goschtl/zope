@@ -22,12 +22,8 @@
   <include file="globalmodules.zcml" />
   <include file="_protections.zcml" />
 
-  <serviceType
-      id="Authentication" 
-      interface=".interfaces.IAuthenticationService" />
-
-  <service
-      serviceType="Authentication" 
+  <utility
+      provides=".interfaces.IAuthenticationUtility" 
       component=".principalregistry.principalRegistry" />
 
   <localUtility class=".permission.LocalPermission">
