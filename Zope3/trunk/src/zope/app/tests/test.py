@@ -1109,5 +1109,11 @@ def process_args(argv=None):
             raise
 
 
+def test_suite():
+    """Return an empty test suite to avoid complaints about this
+    module not having a 'test_suite' attribute."""
+    return unittest.TestSuite()
+
+
 if __name__ == "__main__":
     process_args()
