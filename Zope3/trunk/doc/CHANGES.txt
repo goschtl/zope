@@ -52,16 +52,34 @@ Zope Changes
       - Implemented the `zope:localUtility` directive, so that you can use it
         instead of the `zope:content` directive, which we had to use
         before. The new directive automatically makes the utility implement
-        `ILocalUtility`. I also changed all the local utility declarations to
-        use this new directive.
+        `ILocalUtility` and `IAttributeAnnotatable`. I also changed all the
+        local utility declarations to use this new directive.
 
       - The `Attribute` and `Method` class of the `zope.interface` have now a
         new public `interface` attribute that stores the interface they are
         defined in.  
 
-      - New Pluggable Authentication Service, which is similar in
-        philosophy to the Zope 2 PAS.  One of the main reasons for
-        this is to support principal groups.
+      - New Pluggable Authentication Service, which is similar in philosophy to
+        the Zope 2 PAS.  One of the main reasons for this is to support 
+        principal groups. The following features are available in the core:
+
+        o Extraction Plugins: Basic HTTP Auth, Session
+
+        o Challenger Plugins: Basic HTTP Auth, No Challenge if Authenticated,
+          Form Challenger
+
+        o Authentication Plugins: Persistent (ZODB), SQL-based (LDAP is also
+          available, but needs to be separately be downloaded)
+        
+        o Principal Factory Plugins: Default factory
+
+        o Principal Search Plugins: Persistent (ZODB), SQL-based
+
+        o Group Folder: The group folder allows the developer to assign groups
+          to principals.
+
+        o Home Folder: This utility allows you assign a home folder to a
+          principal.
 
       - Added "sources", which are like vocabularies except that they
         support very large collections of values that must be
