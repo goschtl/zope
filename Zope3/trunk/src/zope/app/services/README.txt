@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.5 $
+:Version: $Revision: 1.6 $
 
 .. contents::
 
@@ -47,37 +47,37 @@ service above it, in the file ``utility.py``::
 
   from persistence import Persistent
   from zope.component.exceptions import ComponentLookupError
-  from zope.context import ContextAware
+  from zope.context import ContextMethod
   from zope.app.component.nextservice import getNextService
   from zope.component.interfaces import IUtilityService
   from zope.app.interfaces.services.interfaces import ISimpleService
+  from zope.interface import implements
 
-  class LocalUtilityService(Persistent, ContextAware):
+  class LocalUtilityService(Persistent):
 
-      __implements__ = IUtilityService, ISimpleService
+      implements(IUtilityService, ISimpleService)
 
       def getUtility(self, interface, name=''):
           utility = self.queryUtility(interface, name=name)
           if utility is None:
               raise ComponentLookupError("utility", interface, name)
           return utility
+      getUtility = ContextMethod(getUtility)
 
       def queryUtility(self, interface, default=None, name=''):
           next = getNextService(self, "Utilities")
           return next.queryUtility(interface, default, name)
+      queryUtility = ContextMethod(queryUtility)
 
 The local service subclasses two classes:
 
 ``Persistent``
   Provides support for transparent persistent in the ZODB.
 
-``ContextAware``
-  Causes all of the methods or properties defined in
-  the class (or base classes) to be bound to context-wrapped
-  instances.  This is needed if the methods or properties are going to
-  call APIs that need acquisition context.  We could convert each of
-  the methods to context methods individually, but it's easier to just
-  mix-in context aware.
+``ContextMethod``
+  Causes the method's self to be bound to the context-wrapped instance.
+  This is needed if the methods or properties are going to call APIs
+  that need acquisition context.
 
 The ``getUtility`` method simply delegates to ``queryUtility``.  The
 ``queryUtility`` method delegates to the next utility service using
