@@ -32,6 +32,7 @@
   <include package="zope.app.mail" />
   <include package="zope.app.annotation" />
   <include package="zope.app.dependable" />
+  <include package="zope.app.server" />
   
 
   <!-- Usages and Menus -->
