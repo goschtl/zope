@@ -14,7 +14,7 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.4 2003/05/03 16:33:39 jim Exp $
+$Id: placelesssetup.py,v 1.5 2003/05/22 22:48:07 jim Exp $
 """
 
 from zope.component.tests.placelesssetup \
@@ -40,3 +40,8 @@ class PlacelessSetup(CAPlacelessSetup,
         I18nPlacelessSetup.setUp(self)
         # Register app-specific security declarations
         protect()
+
+ps = PlacelessSetup()
+setUp = ps.setUp
+tearDown = ps.tearDown
+del ps
