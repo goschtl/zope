@@ -25,7 +25,7 @@ from zope.app.tests import ztapi, placelesssetup, setup
 from book.photodavns.interfaces import IPhoto
 from book.photodavns import ImagePhotoNamespace
 
-def setUp():
+def setUp(test):
     placelesssetup.setUp()
     ztapi.provideAdapter(IImage, IPhoto, ImagePhotoNamespace)
     setup.setUpAnnotations()

@@ -35,7 +35,7 @@ from zope.app.tests.placelesssetup import setUp, tearDown
 from book.keeperannotations.interfaces import IKeeperAnnotatable 
 from book.keeperannotations import KeeperAnnotations 
   
-def customSetUp():
+def customSetUp(test):
     setUp()
     classImplements(Folder, IAttributeAnnotatable)
     ztapi.provideAdapter(IKeeperAnnotatable, IAnnotations,

@@ -17,7 +17,7 @@ $Id: tests.py 25177 2004-06-02 13:17:31Z jim $
 """
 import unittest
 from zope.app.container.tests import test_containertraverser  
-from book.insensitivefolder import CaseInsensitiveContainerTraverser
+from book.insensitivefolder import CaseInsensitiveFolderTraverser
 
 class Container(test_containertraverser.TestContainer):
 
@@ -31,7 +31,7 @@ class Container(test_containertraverser.TestContainer):
 class InsensitiveCaseTraverserTest(test_containertraverser.TraverserTest):
 
     def _getTraverser(self, context, request):
-        return CaseInsensitiveContainerTraverser(context, request)
+        return CaseInsensitiveFolderTraverser(context, request)
 
     def _getContainer(self, **kw):
         return Container(**kw)
