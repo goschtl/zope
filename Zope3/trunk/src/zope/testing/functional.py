@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.15 2003/09/21 17:31:16 jim Exp $
+$Id: functional.py,v 1.16 2003/09/22 20:30:16 jim Exp $
 """
 
 import logging
@@ -117,6 +117,7 @@ class FunctionalTestSetup:
         if self.connection:
             self.connection.close()
             self.connection = None
+        self.db.close()
 
     def getRootFolder(self):
         """Returns the Zope root folder."""
