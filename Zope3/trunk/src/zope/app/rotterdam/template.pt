@@ -62,7 +62,9 @@
           </metal:macro>
         </metal:block>
       </div>
-      <img tal:attributes="src context/++resource++zope3logo.gif" />
+      <metal:slot define-slot="logo">
+        <img tal:attributes="src context/++resource++zope3logo.gif" />
+      </metal:slot>
     </div>
     </metal:slot>
 
