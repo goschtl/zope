@@ -57,10 +57,10 @@ class RegistryTests(BaseTest):
 
     # TODO: still need to test the default implementation
 
-class SampleTerm:
+class SampleTerm(object):
     pass
 
-class SampleVocabulary:
+class SampleVocabulary(object):
     implements(interfaces.IVocabulary)
 
     def __iter__(self):
@@ -152,7 +152,7 @@ class SimpleVocabularyTests(unittest.TestCase):
             [(1, 'one'), ('1', 'another one')])
 
     def test_overriding_createTerm(self):
-        class MyTerm:
+        class MyTerm(object):
             def __init__(self, value):
                 self.value = value
                 self.token = repr(value)

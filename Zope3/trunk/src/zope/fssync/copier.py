@@ -15,14 +15,13 @@
 
 $Id$
 """
-
 import os
 import shutil
 
 from zope.fssync import fsutil
 
 
-class FileCopier:
+class FileCopier(object):
     """Copy from a normal file tree into an fssync checkout."""
 
     def __init__(self, sync):

@@ -19,7 +19,7 @@ $Id$
 """
 from zope.security.builtins import RestrictedBuiltins
 
-class RestrictedInterpreter:
+class RestrictedInterpreter(object):
 
     def __init__(self):
         self.globals = {}

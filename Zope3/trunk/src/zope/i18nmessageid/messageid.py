@@ -93,7 +93,7 @@ class MessageID(unicode):
         self.mapping = mapping
 
 
-class MessageIDFactory:
+class MessageIDFactory(object):
     """Factory for creating MessageIDs."""
 
     def __init__(self, domain):

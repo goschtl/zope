@@ -11,16 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Unique id utility views.
+"""Unique id utility views.
 
 $Id$
 """
-
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app import zapi
 
-class UniqueIdUtilityView:
+class UniqueIdUtilityView(object):
 
     def len(self):
         return len(trustedRemoveSecurityProxy(self.context).refs)

@@ -67,7 +67,7 @@ def testIEnumerableMapping(self, inst, state):
     test___len__(self, inst, state)
 
 
-class BaseTestIReadMapping:
+class BaseTestIReadMapping(object):
     def testIReadMapping(self):
         inst = self._IReadMapping__sample()
         state = self._IReadMapping__stateDict()

@@ -11,6 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Security proxy tests
+
+$Id$
+"""
+
 import unittest
 from zope.security.proxy import getChecker, ProxyFactory
 from zope.proxy import ProxyBase as proxy, getProxiedObject
@@ -223,7 +228,7 @@ class ProxyTests(unittest.TestCase):
         self.assertEqual(self.c, getChecker(self.p))
 
     def testProxiedClassicClassAsDictKey(self):
-        class C:
+        class C(object):
             pass
         d = {C: C()}
         pC = ProxyFactory(C, self.c)

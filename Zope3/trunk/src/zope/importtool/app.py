@@ -48,7 +48,7 @@ def run(options):
     options.reporter.display_report()
 
 
-class Options:
+class Options(object):
 
     known_options = ["--first-import", "--cyclic-imports"]
 

@@ -105,7 +105,7 @@ class TupleTest(FieldTestBase):
 
         # however, allow anything that implements IField
         Tuple(value_type=Field())
-        class FakeField:
+        class FakeField(object):
             implements(IField)
         Tuple(value_type=FakeField())
 

@@ -11,8 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for the general synchronizer."""
+"""Tests for the general synchronizer.
 
+$Id$
+"""
 import os
 import shutil
 import tempfile
@@ -26,7 +28,7 @@ class MyError(Exception):
     pass
 
 
-class MySerializer:
+class MySerializer(object):
 
     implements(interfaces.IObjectDirectory)
 

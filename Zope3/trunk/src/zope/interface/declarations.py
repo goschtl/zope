@@ -350,7 +350,7 @@ def implementedByFallback(cls):
         ...
         >>> class I4(I3): pass
         ...
-        >>> class C1:
+        >>> class C1(object):
         ...   implements(I2)
         >>> class C2(C1):
         ...   implements(I3)
@@ -456,9 +456,9 @@ def classImplementsOnly(cls, *interfaces):
           ...
           >>> class I4(Interface): pass
           ...
-          >>> class A:
+          >>> class A(object):
           ...   implements(I3)
-          >>> class B:
+          >>> class B(object):
           ...   implements(I4)
           >>> class C(A, B):
           ...   pass
@@ -500,9 +500,9 @@ def classImplements(cls, *interfaces):
       ...
       >>> class I5(Interface): pass
       ...
-      >>> class A:
+      >>> class A(object):
       ...   implements(I3)
-      >>> class B:
+      >>> class B(object):
       ...   implements(I4)
       >>> class C(A, B):
       ...   pass
@@ -597,9 +597,9 @@ def implements(*interfaces):
         ...
         >>> class IC(Interface): pass
         ...
-        >>> class A: implements(IA1, IA2)
+        >>> class A(object): implements(IA1, IA2)
         ...
-        >>> class B: implements(IB)
+        >>> class B(object): implements(IB)
         ...
 
         >>> class C(A, B):
@@ -654,9 +654,9 @@ def implementsOnly(*interfaces):
         ...
         >>> class IC(Interface): pass
         ...
-        >>> class A: implements(IA1, IA2)
+        >>> class A(object): implements(IA1, IA2)
         ...
-        >>> class B: implements(IB)
+        >>> class B(object): implements(IB)
         ...
 
         >>> class C(A, B):
@@ -708,7 +708,7 @@ class Provides(Declaration):  # Really named ProvidesClass
           >>> class IFooFactory(Interface): pass
           ...
           
-          >>> class C:
+          >>> class C(object):
           ...   pass
 
           >>> C.__provides__ = ProvidesClass(C, IFooFactory)
@@ -757,7 +757,7 @@ def Provides(*interfaces):
       >>> collect()
       >>> before = len(InstanceDeclarations)
 
-      >>> class C:
+      >>> class C(object):
       ...    pass
 
       >>> from zope.interface import Interface
@@ -825,9 +825,9 @@ def directlyProvides(object, *interfaces):
         ...
         >>> class IC(Interface): pass
         ...
-        >>> class A: implements(IA1, IA2)
+        >>> class A(object): implements(IA1, IA2)
         ...
-        >>> class B: implements(IB)
+        >>> class B(object): implements(IB)
         ...
 
         >>> class C(A, B):
@@ -946,7 +946,7 @@ class ClassProvides(Declaration, ClassProvidesBase):
           ...     pass
           >>> class IFoo(Interface):
           ...     pass
-          >>> class C:
+          >>> class C(object):
           ...     implements(IFoo)
           ...     classProvides(IFooFactory)
           >>> [i.getName() for i in C.__provides__]
@@ -1026,7 +1026,7 @@ def classProvides(*interfaces):
             ...
             >>> class IFooFactory(Interface): pass
             ...
-            >>> class C:
+            >>> class C(object):
             ...   implements(IFoo)
             ...   classProvides(IFooFactory)
             >>> [i.getName() for i in C.__providedBy__]
@@ -1041,7 +1041,7 @@ def classProvides(*interfaces):
             ...
             >>> class IFooFactory(Interface): pass
             ...
-            >>> class C:
+            >>> class C(object):
             ...   implements(IFoo)
             >>> directlyProvides(C, IFooFactory)
             >>> [i.getName() for i in C.__providedBy__]
@@ -1138,9 +1138,9 @@ def ObjectSpecification(direct, cls):
         ...
         >>> class I5(Interface): pass
         ...
-        >>> class A: implements(I1)
+        >>> class A(object): implements(I1)
         ...
-        >>> class B: __implemented__ = I2
+        >>> class B(object): __implemented__ = I2
         ...
         >>> class C(A, B): implements(I31)
         ...
@@ -1191,7 +1191,7 @@ def ObjectSpecification(direct, cls):
         ...     pass
         >>> class I2(Interface):
         ...     pass
-        >>> class C:
+        >>> class C(object):
         ...     implements(I1)
         >>> c = C()
         >>> int(bool(providedBy(c)))
@@ -1199,7 +1199,7 @@ def ObjectSpecification(direct, cls):
         >>> directlyProvides(c, I2)
         >>> int(bool(providedBy(c)))
         1
-        >>> class C:
+        >>> class C(object):
         ...     pass
         >>> c = C()
         >>> int(bool(providedBy(c)))
@@ -1295,7 +1295,7 @@ class ObjectSpecificationDescriptorPy(object):
           ...
           >>> class IFooFactory(Interface): pass
           ...
-          >>> class C:
+          >>> class C(object):
           ...   implements(IFoo)
           ...   classProvides(IFooFactory)
           >>> [i.getName() for i in C.__providedBy__]

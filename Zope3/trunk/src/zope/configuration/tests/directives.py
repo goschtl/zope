@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 from zope.interface import Interface, implements
 from zope.schema import Text, BytesLine
 from zope.configuration.config import GroupingContextDecorator
@@ -23,7 +22,7 @@ from zope.configuration.interfaces import IConfigurationContext
 from zope.configuration.fields import GlobalObject
 
 
-class F:
+class F(object):
     def __repr__(self):
         return 'f'
     def __call__(self, *a, **k):
@@ -63,7 +62,7 @@ class IFactory(Interface):
 def factory(context, factory):
     context.action(('factory', 1,2), factory)
 
-class Complex:
+class Complex(object):
 
     def __init__(self, context, a, c, b=u"xxx"):
         self.a, self.b, self.c = a, b, c

@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import sys
 import token
 import tokenize
@@ -39,7 +38,7 @@ TOK_ENDMARK = (token.ENDMARKER, "")
 dotjoin = ".".join
 
 
-class ImportFinder:
+class ImportFinder(object):
 
     def __init__(self, packages=False):
         """Initialize the import finder.

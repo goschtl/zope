@@ -20,7 +20,7 @@ from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.registration.registration import RegistrationStack
 from zope.app.traversing.api import traverse
 
-class Registration:
+class Registration(object):
 
     active = 0
     registry = None

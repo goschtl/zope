@@ -188,7 +188,7 @@ class IRegisterFile(interface.Interface):
         required = False
         )
 
-class FileInfo:
+class FileInfo(object):
 
     def __init__(self, path, title, description, info):
         (self.path, self.title, self.description, self.info

@@ -84,7 +84,7 @@ class Metadata(object):
                 raise IOError, tuple(errors)
 
 
-class DirectoryManager:
+class DirectoryManager(object):
     def __init__(self, dir):
         self.zdir = join(dir, "@@Zope")
         self.efile = join(self.zdir, "Entries.xml")

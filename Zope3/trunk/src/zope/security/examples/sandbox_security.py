@@ -50,7 +50,7 @@ ALL='All'
 NoSetAttr = lambda name: NotAllowed
 
 
-class SimulationSecurityDatabase:
+class SimulationSecurityDatabase(object):
     """Security Database
 
     In the database, locations are mapped to authentication tokens to
@@ -73,7 +73,7 @@ class SimulationSecurityDatabase:
         }
 
 
-class SimulationSecurityPolicy:
+class SimulationSecurityPolicy(object):
     """Security Policy during the Simulation.
 
     A very simple security policy that is specific to the simulations.
@@ -108,7 +108,7 @@ class SimulationSecurityPolicy:
         return True
 
 
-class AgentParticipation:
+class AgentParticipation(object):
     """Agent Participation during the Simulation.
 
     A very simple participation that is specific to the simulations.

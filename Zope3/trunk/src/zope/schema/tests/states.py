@@ -84,7 +84,7 @@ _states = {
     }
 
 
-class State:
+class State(object):
     __slots__ = 'value', 'title'
     implements(interfaces.ITerm)
 

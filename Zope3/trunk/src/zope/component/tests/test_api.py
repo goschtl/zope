@@ -39,17 +39,17 @@ class I2(Interface):
 class I3(Interface):
     pass
 
-class Comp:
+class Comp(object):
     implements(I2)
     def __init__(self, context, request=None): self.context = context
 
-class Comp2:
+class Comp2(object):
     implements(I3)
     def __init__(self, context, request=None): self.context = context
 
 comp = Comp(1)
 
-class Ob:
+class Ob(object):
     implements(I1)
     def __conform__(self, i):
         if i is IServiceService:
@@ -64,7 +64,7 @@ class Conforming(Ob):
         else:
             return Ob.__conform__(self, i)
 
-class StubServiceService:
+class StubServiceService(object):
     implements(IServiceService)  # This is a lie.
 
     def __init__(self):
@@ -80,7 +80,7 @@ class StubServiceService:
             raise ComponentLookupError, name
 
 
-class ConformsToIServiceService:
+class ConformsToIServiceService(object):
 
     def __init__(self, serviceservice):
         self.serviceservice = serviceservice
@@ -156,7 +156,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             pass
         class I2(Interface):
             pass
-        class C:
+        class C(object):
             implements(I1)
             def __conform__(self, iface, default=None):
                 if iface == I2:
@@ -168,7 +168,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         context = ConformsToIServiceService(servicemanager)
         class I3(Interface):
             pass
-        class StubAdapterService:
+        class StubAdapterService(object):
             def queryAdapter(self, ob, iface, name, default=None):
                 if iface is I3:
                     return 43
@@ -238,12 +238,12 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def testQueryMultiAdapter(self):
         # Adapting a combination of 2 objects to an interface
-        class DoubleAdapter:
+        class DoubleAdapter(object):
             implements(I3)
             def __init__(self, first, second):
                 self.first = first
                 self.second = second
-        class Ob2:
+        class Ob2(object):
             implements(I2)
         ob2 = Ob2()
         context = None
@@ -372,7 +372,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         from zope.component import queryMultiView, getService
         from zope.component.exceptions import ComponentLookupError
 
-        class Ob2:
+        class Ob2(object):
             implements(I2)
 
         ob2 = Ob2()
@@ -382,7 +382,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         request = Request(IRequest)
 
-        class MV:
+        class MV(object):
             implements(I3)
             def __init__(self, context, other, request):
                self.context, self.other, self.request = context, other, request

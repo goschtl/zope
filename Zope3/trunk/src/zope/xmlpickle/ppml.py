@@ -710,7 +710,7 @@ def ToXMLloads(str):
     file = StringIO(str)
     return ToXMLUnpickler(file).load()
 
-class xmlPickler:
+class xmlPickler(object):
 
     binary = 1
 

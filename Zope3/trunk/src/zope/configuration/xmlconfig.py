@@ -79,7 +79,7 @@ class ZopeSAXParseException(ConfigurationError):
         else:
             return str(v)
 
-class ParserInfo:
+class ParserInfo(object):
     """Information about a directive based on parser data
 
     This includes the directive location, as well as text data
@@ -472,7 +472,7 @@ def _getContext():
         addCleanUp(_clearContext)
     return _context
 
-class XMLConfig:
+class XMLConfig(object):
     """Provide high-level handling of configuration files.
 
     See examples in tests/text_xmlconfig.py

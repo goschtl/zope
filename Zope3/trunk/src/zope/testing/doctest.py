@@ -382,7 +382,7 @@ def _extract_examples(s):
 
 # Capture stdout when running examples.
 
-class _SpoofOut:
+class _SpoofOut(object):
     def __init__(self):
         self.clear()
     def write(self, s):
@@ -602,7 +602,7 @@ def _from_module(module, object):
         return module.__name__ == object.__module__
     raise ValueError("object must be a class or function")
 
-class Tester:
+class Tester(object):
     """Class Tester -- runs docstring examples and accumulates stats.
 
 In normal use, function doctest.testmod() hides all this from you,
@@ -866,7 +866,7 @@ See doctest.testmod docs for the meaning of optionflags.
         ... def g():
         ...    '''>>> assert 2 != 1
         ...    '''
-        ... class H:
+        ... class H(object):
         ...    '''>>> assert 2 > 1
         ...    '''
         ...    def bar(self):
@@ -1444,7 +1444,7 @@ def debug(module, name):
 
 
 
-class _TestClass:
+class _TestClass(object):
     """
     A pointless class, for sanity-checking of docstring testing.
 

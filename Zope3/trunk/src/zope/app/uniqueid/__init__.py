@@ -11,8 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Unique id utility.
+"""Unique id utility.
 
 This utility assigns unique integer ids to objects and allows lookups
 by object and by id.
@@ -32,7 +31,7 @@ from zope.app.location.interfaces import ILocation
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.event import notify
 
-class UniqueIdUtility:
+class UniqueIdUtility(object):
     """This utility provides a two way mapping between objects and
     integer ids.
 
@@ -95,7 +94,7 @@ class UniqueIdUtility:
         del self.ids[ref]
 
 
-class ReferenceToPersistent:
+class ReferenceToPersistent(object):
     """An IReference for persistent object which is comparable.
 
     These references compare by _p_oids of the objects they reference.

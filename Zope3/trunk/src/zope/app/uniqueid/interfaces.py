@@ -70,7 +70,7 @@ class  IUniqueIdRemovedEvent(Interface):
         """The IObjectRemoveEvent related to this event""")
 
 
-class UniqueIdRemovedEvent:
+class UniqueIdRemovedEvent(object):
     """The event which get published before the unique id is removed
     from the utility so that the catalogs can unindex  the object.
     """

@@ -23,9 +23,9 @@ from zope.testing.doctestunit import DocTestSuite
 from zope.proxy import ProxyBase
 
 class Thing:
-    pass
+    """This class is expected to be a classic class."""
 
-class Comparable:
+class Comparable(object):
     def __init__(self, value):
         self.value = value
 
@@ -199,7 +199,7 @@ class ProxyTestCase(unittest.TestCase):
         # still to work.  PyObject_GetIter() will not be called on the
         # proxy, so the tp_iter slot won't unwrap it.
 
-        class Iterable:
+        class Iterable(object):
             def __init__(self, test, data):
                 self.test = test
                 self.data = data
@@ -346,7 +346,7 @@ def test_isProxy():
     ...     pass
     >>> class P2(ProxyBase):
     ...     pass
-    >>> class C:
+    >>> class C(object):
     ...     pass
     >>> c = C()
     >>> int(isProxy(c))
@@ -369,7 +369,7 @@ def test_isProxy():
 def test_getProxiedObject():
     """
     >>> from zope.proxy import ProxyBase, getProxiedObject
-    >>> class C:
+    >>> class C(object):
     ...     pass
     >>> c = C()
     >>> int(getProxiedObject(c) is c)
@@ -386,7 +386,7 @@ def test_getProxiedObject():
 def test_ProxyIterator():
     """
     >>> from zope.proxy import ProxyBase, ProxyIterator
-    >>> class C:
+    >>> class C(object):
     ...     pass
     >>> c = C()
     >>> p1 = ProxyBase(c)
@@ -401,7 +401,7 @@ def test_ProxyIterator():
 def test_removeAllProxies():
     """
     >>> from zope.proxy import ProxyBase, removeAllProxies
-    >>> class C:
+    >>> class C(object):
     ...     pass
     >>> c = C()
     >>> int(removeAllProxies(c) is c)
@@ -422,7 +422,7 @@ def test_queryProxy():
     ...    pass
     >>> class P2(ProxyBase):
     ...    pass
-    >>> class C:
+    >>> class C(object):
     ...     pass
     >>> c = C()
     >>> queryProxy(c, P1)
@@ -451,7 +451,7 @@ def test_queryInnerProxy():
     ...    pass
     >>> class P2(ProxyBase):
     ...    pass
-    >>> class C:
+    >>> class C(object):
     ...     pass
     >>> c = C()
     >>> queryInnerProxy(c, P1)
@@ -484,7 +484,7 @@ def test_queryInnerProxy():
 def test_sameProxiedObjects():
     """
     >>> from zope.proxy import ProxyBase, sameProxiedObjects
-    >>> class C:
+    >>> class C(object):
     ...     pass
     >>> c1 = C()
     >>> c2 = C()

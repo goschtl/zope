@@ -14,14 +14,13 @@
 
 $Id$
 """
-
 import unittest
 from zope.documenttemplate.tests.dtmltestbase import DTMLTestBase
 
 class TestDT_With(DTMLTestBase):
 
     def testBasic(self):
-        class person:
+        class person(object):
             name=u'Jim'
             height_inches=73
 

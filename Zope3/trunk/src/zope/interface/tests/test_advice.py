@@ -88,7 +88,7 @@ class AdviceTests(TestCase):
 
     def checkOrder(self):
         log = []
-        class Foo:
+        class Foo(object):
             ping(log, 1)
             ping(log, 2)
             ping(log, 3)

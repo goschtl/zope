@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Object Event Tests
 
-Revision information:
 $Id$
 """
-
 import unittest
 import doctest
 

@@ -18,7 +18,6 @@ zope.security.checkers._default_checkers.
 
 $Id$
 """
-
 from zope.security.checker import ProxyFactory, NamesChecker
 from zope.exceptions import ForbiddenAttribute
 
@@ -356,7 +355,7 @@ def test_classic_class():
 def test_classic_instance():
     """
 
-    >>> class C:
+    >>> class C(object):
     ...    x, y = 1, 2
     >>> c = ProxyFactory(C(), NamesChecker(['x']))
     >>> check_forbidden_get(c, 'y')
@@ -423,7 +422,7 @@ def test_rocks():
 
 def test_iter_of_sequences():
     """
-    >>> class X:
+    >>> class X(object):
     ...   d = 1, 2, 3
     ...   def __getitem__(self, i):
     ...      return self.d[i]

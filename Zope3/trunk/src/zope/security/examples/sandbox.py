@@ -69,7 +69,7 @@ class SandboxError(Exception):
     pass
 
 
-class Identity:
+class Identity(object):
     """Mixin for pretty printing and identity method"""
     def __init__(self, id, *args, **kw):
         self.id = id
@@ -164,7 +164,7 @@ class Sandbox(Identity):
                 agent, destination)
                                )
 
-class Service:
+class Service(object):
     implements(IService)
     def getId(self):
         return self.__class__.__name__
@@ -212,9 +212,8 @@ def action_find_time(agent, home):
     time_service = home.getService('TimeService')
     return time_service.getTime()
 
-class TimeGenerator:
-    """
-    Represents the passage of time in the agent simulation.
+class TimeGenerator(object):
+    """Represents the passage of time in the agent simulation.
 
     each turn represents some discrete unit of time, during
     which all agents attempt to perform their action. Additionally,

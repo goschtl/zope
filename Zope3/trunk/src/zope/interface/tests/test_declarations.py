@@ -13,10 +13,8 @@
 ##############################################################################
 """Test the new API for making and checking interface declarations
 
-
 $Id$
 """
-
 import unittest
 from zope.interface import *
 from zope.testing.doctestunit import DocTestSuite
@@ -28,9 +26,9 @@ class I3(Interface): pass
 class I4(Interface): pass
 class I5(Interface): pass
 
-class A:
+class A(object):
     implements(I1)
-class B:
+class B(object):
     implements(I2)
 class C(A, B):
     implements(I3)
@@ -76,7 +74,7 @@ class Test(unittest.TestCase):
 
     def test_backward_compat(self):
 
-        class C1: __implemented__ = I1
+        class C1(object): __implemented__ = I1
         class C2(C1): __implemented__ = I2, I5
         class C3(C2): __implemented__ = I3, C2.__implemented__
 
@@ -149,7 +147,7 @@ class Test(unittest.TestCase):
 def test_signature_w_no_class_interfaces():
     """
     >>> from zope.interface import *
-    >>> class C:
+    >>> class C(object):
     ...     pass
     >>> c = C()
     >>> list(providedBy(c))
@@ -167,13 +165,13 @@ def test_classImplement_on_deeply_nested_classes():
     contrived
 
     >>> from zope.interface import *
-    >>> class B1:
+    >>> class B1(object):
     ...     pass
     >>> class B2(B1):
     ...     pass
     >>> class B3(B2):
     ...     pass
-    >>> class D:
+    >>> class D(object):
     ...     implements()
     >>> class S(B3, D):
     ...     implements()
@@ -200,7 +198,7 @@ def test_pickle_provides_specs():
 
 def test_that_we_dont_inherit_class_provides():
     """
-    >>> class X:
+    >>> class X(object):
     ...     classProvides(I1)
     >>> class Y(X):
     ...     pass
@@ -220,10 +218,10 @@ def test_that_we_dont_inherit_provides_optimizations():
     descriptors that provides a default for instances that don't have
     instance-specific declarations:
     
-    >>> class A:
+    >>> class A(object):
     ...     implements(I1)
 
-    >>> class B:
+    >>> class B(object):
     ...     implements(I2)
 
     >>> [i.__name__ for i in A().__provides__]
@@ -270,7 +268,7 @@ def test_classProvides_before_implements():
           ...     pass
           >>> class IFoo(Interface):
           ...     pass
-          >>> class C:
+          >>> class C(object):
           ...     classProvides(IFooFactory)
           ...     implements(IFoo)
           >>> [i.getName() for i in C.__provides__]

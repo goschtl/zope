@@ -38,7 +38,7 @@ class ExceptionForTesting (Exception):
 
 
 
-class TestingTracebackSupplement:
+class TestingTracebackSupplement(object):
 
     source_url = '/somepath'
     line = 634
@@ -127,7 +127,7 @@ class Test(CleanUp, TestCase):
             self.fail('no exception occurred')
 
     def testQuoteLastLine(self):
-        class C: pass
+        class C(object): pass
         try: raise TypeError, C()
         except:
             s = tb(1)

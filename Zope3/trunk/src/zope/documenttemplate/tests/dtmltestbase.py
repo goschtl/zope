@@ -32,7 +32,7 @@ def read_file(name):
     return res
 
 
-class ObjectStub:
+class ObjectStub(object):
     def __init__(self, **kw):
         for k, v in kw.items():
             self.__dict__[k]=v

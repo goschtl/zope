@@ -31,7 +31,7 @@ class PythonIdentifier(schema.TextLine):
 
     Let's look at an example:
 
-    >>> class FauxContext:
+    >>> class FauxContext(object):
     ...     pass
     >>> context = FauxContext()
     >>> field = PythonIdentifier().bind(context)
@@ -214,7 +214,7 @@ class Path(schema.Text):
 
     We'll be careful to do this in an os-independent fashion.
 
-    >>> class FauxContext:
+    >>> class FauxContext(object):
     ...    def path(self, p):
     ...       return os.path.join(os.sep, 'faux', 'context', p)
     
@@ -286,11 +286,11 @@ class MessageID(schema.Text):
     When a string is converted to a message ID, it is also
     recorded in the context.
 
-    >>> class Info:
+    >>> class Info(object):
     ...     file = 'file location'
     ...     line = 8
     
-    >>> class FauxContext:
+    >>> class FauxContext(object):
     ...     i18n_strings = {}
     ...     info = Info()
 

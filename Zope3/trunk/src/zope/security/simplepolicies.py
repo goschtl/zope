@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 from zope.interface import implements
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.management import system_user
@@ -23,7 +22,7 @@ from zope.security.simpleinteraction import createInteraction \
                                             as _createInteraction
 import zope.security.checker
 
-class ParanoidSecurityPolicy:
+class ParanoidSecurityPolicy(object):
     """Deny all access."""
     implements(ISecurityPolicy)
 
@@ -43,7 +42,7 @@ class ParanoidSecurityPolicy:
         return False
 
 
-class PermissiveSecurityPolicy:
+class PermissiveSecurityPolicy(object):
     """Allow all access."""
     implements(ISecurityPolicy)
 

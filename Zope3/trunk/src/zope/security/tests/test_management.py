@@ -70,10 +70,10 @@ class Test(CleanUp, unittest.TestCase):
         obj = object()
         interaction = object()
 
-        class InteractionStub:
+        class InteractionStub(object):
             pass
 
-        class PolicyStub:
+        class PolicyStub(object):
             def createInteraction(s, r):
                 return InteractionStub()
 

@@ -11,8 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Basic server-side synchronizer."""
+"""Basic server-side synchronizer.
 
+$Id$
+"""
 import os
 
 from zope.fssync import metadata
@@ -27,7 +29,7 @@ def writeFile(data, path, mode="wb"):
         f.close()
 
 
-class Syncer:
+class Syncer(object):
 
     def __init__(self, getObjectId, getSerializer,
                  getAnnotations=lambda obj: None):

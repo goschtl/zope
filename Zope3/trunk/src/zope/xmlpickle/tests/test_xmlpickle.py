@@ -251,6 +251,8 @@ class Test(unittest.TestCase):
 
 
 class Simple:
+    """This class is expected to be a classic class."""
+    
     def __init__(self, *a):
         self.spam, self.eggs = a
 

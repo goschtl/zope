@@ -97,7 +97,7 @@ class GlobalPresentationService(GlobalService):
        >>> class IRequest(zope.interface.Interface):
        ...     "Demonstration request type"
 
-       >>> class Request:
+       >>> class Request(object):
        ...     zope.interface.implements(IRequest)
        ...     def getPresentationSkin(self):
        ...         return getattr(self, 'skin', None)
@@ -108,7 +108,7 @@ class GlobalPresentationService(GlobalService):
        With this in place, we can start registering resources. A resource
        is just a request adapter.
 
-       >>> class MyResource:
+       >>> class MyResource(object):
        ...    def __init__(self, request):
        ...        self.request = request
 
@@ -145,7 +145,7 @@ class GlobalPresentationService(GlobalService):
        >>> class IContact(zope.interface.Interface):
        ...     "Demonstration content type"
 
-       >>> class MyView:
+       >>> class MyView(object):
        ...     def __init__(self, context, request):
        ...         self.context, self.request = context, request
 
@@ -155,7 +155,7 @@ class GlobalPresentationService(GlobalService):
        When defining views, we provide one or more (typically 1) context
        interfaces, corresponding to the contexts of the view.
 
-       >>> class Contact:
+       >>> class Contact(object):
        ...     zope.interface.implements(IContact)
 
        >>> c = Contact()
@@ -177,7 +177,7 @@ class GlobalPresentationService(GlobalService):
        >>> class ITraverse(zope.interface.Interface):
        ...     "Sample traversal interface (imagine interesting methods :)"
 
-       >>> class Traverser:
+       >>> class Traverser(object):
        ...     zope.interface.implements(ITraverse)
        ...     def __init__(self, context, request):
        ...         self.context, self.request = context, request

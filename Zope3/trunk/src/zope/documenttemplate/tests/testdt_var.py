@@ -93,7 +93,7 @@ class TestDT_Var(DTMLTestBase):
 
     def testRender(self):
         # Test automatic rendering of callable objects
-        class C:
+        class C(object):
             x = 1
             def y(self): return self.x * 2
             h = self.doc_class(u"The h method, <dtml-var x> <dtml-var y>")

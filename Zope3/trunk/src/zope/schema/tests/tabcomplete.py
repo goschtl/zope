@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Example vocabulary for tab completion.
 
-"""Example vocabulary for tab completion."""
-
-
+$Id$
+"""
 from zope.schema.interfaces import ITerm, IVocabulary, IVocabularyQuery
 from zope.interface import implements
 
@@ -27,7 +27,7 @@ class IPrefixQuery(IVocabularyQuery):
         prefix."""
 
 
-class Term:
+class Term(object):
     implements(ITerm)
 
     def __init__(self, value):
@@ -62,7 +62,7 @@ class CompletionVocabulary(object):
         raise LookupError(value)
 
 
-class PrefixQuery:
+class PrefixQuery(object):
     implements(IPrefixQuery)
 
     def __init__(self, vocabulary):

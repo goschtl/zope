@@ -167,7 +167,7 @@ class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
         self.assertEquals(result, component)
         self.failUnless(type(result) is Proxy)
 
-class TestComponentRegistrationEvents:
+class TestComponentRegistrationEvents(object):
     def test_addNotify(self):
         """
         First we create a dummy registration
@@ -210,7 +210,7 @@ class TestComponentRegistrationEvents:
 
         """
 
-class TestRegisterableEvents:
+class TestRegisterableEvents(object):
     """Tests handling of registered component rename.
 
     >>> sm = PlacefulSetup().setUp(site=True)
@@ -264,7 +264,7 @@ class TestRegisterableEvents:
     >>> PlacefulSetup().tearDown()
     """
 
-class TestRegisterableCopier:
+class TestRegisterableCopier(object):
     """Tests the copier for registerable components.
 
     >>> sm = PlacefulSetup().setUp(site=True)

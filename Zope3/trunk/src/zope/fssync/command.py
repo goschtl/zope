@@ -18,7 +18,6 @@ found in the standard CVS and Subversion client applications.
 
 $Id$
 """
-
 import getopt
 import os.path
 import sys
@@ -34,7 +33,7 @@ class Usage(Error):
     """
 
 
-class Command:
+class Command(object):
 
     def __init__(self, name=None, usage=None):
         if name is None:

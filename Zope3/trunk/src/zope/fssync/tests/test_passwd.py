@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import os
 import tempfile
 import unittest
@@ -23,7 +22,7 @@ import unittest
 from zope.fssync import passwd
 
 
-class PasswordGetter:
+class PasswordGetter(object):
     """PasswordManager.getPassword() replacement to use in the tests."""
 
     def __call__(self, user, host_port):

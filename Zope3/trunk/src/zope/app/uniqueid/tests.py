@@ -11,8 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Tests for the unique id utility.
+"""Tests for the unique id utility.
 
 $Id$
 """
@@ -34,7 +33,7 @@ class P(Persistent):
     implements(ILocation)
 
 
-class ConnectionStub:
+class ConnectionStub(object):
     next = 1
     def add(self, ob):
         ob._p_jar = self
@@ -42,7 +41,7 @@ class ConnectionStub:
         self.next += 1
 
 
-class ReferenceSetupMixin:
+class ReferenceSetupMixin(object):
     """Registers adapters ILocation->IConnection and IPersistent->IReference"""
     def setUp(self):
         from zope.app.uniqueid import connectionOfPersistent
