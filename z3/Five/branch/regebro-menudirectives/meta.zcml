@@ -140,6 +140,18 @@
         handler=".browserconfigure.resourceDirectory"
         />
 
+    <meta:directive
+        name="menu"
+        schema="zope.app.publisher.browser.metadirectives.IMenuDirective"
+        handler=".globalbrowsermenuservice.menuDirective"
+        />
+
+    <meta:directive
+        name="menuItem"
+        schema="zope.app.publisher.browser.metadirectives.IMenuItemDirective"
+        handler=".globalbrowsermenuservice.menuItemDirective"
+        />
+                
   </meta:directives>
 
   <meta:directives namespace="http://namespaces.zope.org/five">
