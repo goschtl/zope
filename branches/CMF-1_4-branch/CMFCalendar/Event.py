@@ -27,6 +27,7 @@ from Products.CMFCore.CMFCorePermissions import View, ModifyPortalContent
 from Products.CMFDefault.utils import formatRFC822Headers, html_headcheck
 from Products.CMFDefault.utils import SimpleHTMLParser, bodyfinder, parseHeadersBody
 from Products.CMFCore.utils import keywordsplitter
+from Products.CMFCore.utils import contributorsplitter
 
 import EventPermissions
 
@@ -206,9 +207,9 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         start_date = end_date = None
 
         if effectiveDay and effectiveMo and effectiveYear and start_time:
-            efdate = '%s/%s/%s %s %s' % (effectiveDay
+            efdate = '%s/%s/%s %s %s' % (effectiveYear
                                          , effectiveMo
-                                         , effectiveYear
+                                         , effectiveDay
                                          , start_time
                                          , startAMPM
                                          )
@@ -216,9 +217,9 @@ class Event(PortalContent, DefaultDublinCoreImpl):
 
         if expirationDay and expirationMo and expirationYear and stop_time:
 
-            exdate = '%s/%s/%s %s %s' % (expirationDay
+            exdate = '%s/%s/%s %s %s' % (expirationYear
                                          , expirationMo
-                                         , expirationYear
+                                         , expirationDay
                                          , stop_time
                                          , stopAMPM
                                          )
@@ -343,9 +344,11 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         headers['Format'] = self.Format()
         new_subject = keywordsplitter(headers)
         headers['Subject'] = new_subject or self.Subject()
+        new_contrib = contributorsplitter(headers)
+        headers['Contributors'] = new_contrib or self.Contributors()
         haveheader = headers.has_key
         for key, value in self.getMetadataHeaders():
-            if key != 'Format' and not haveheader(key):
+            if not haveheader(key):
                 headers[key] = value
         self._editMetadata(title=headers['Title'],
                           subject=headers['Subject'],

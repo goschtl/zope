@@ -1,5 +1,10 @@
 import unittest
 import Zope
+try:
+    Zope.startup()
+except AttributeError:
+    pass
+
 from Products.CMFCalendar.Event import Event
 from DateTime import DateTime
 
