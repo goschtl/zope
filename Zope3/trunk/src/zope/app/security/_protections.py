@@ -14,7 +14,7 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.3 2003/03/12 10:11:14 stevea Exp $
+$Id: _protections.py,v 1.4 2003/08/06 14:37:52 srichter Exp $
 """
 
 def protect():
@@ -107,3 +107,7 @@ def protect():
     if PersistentMetaClass != type:
         from zope.security.checker import _typeChecker
         defineChecker(PersistentMetaClass, _typeChecker)
+
+    # Make sure the message id gets never proxied
+    from zope.i18n.messageid import MessageID
+    defineChecker(MessageID, NoProxy)
