@@ -124,6 +124,10 @@ def init_table():
         {'path': "Packages/Products/ImageCache",
          'addrs': None,
          'remote': products_remote},
+
+        {'path': "Packages/Products/ParsedXML",
+         'addrs': None,
+         'remote': products_remote},
     ])
 
 init_table()
