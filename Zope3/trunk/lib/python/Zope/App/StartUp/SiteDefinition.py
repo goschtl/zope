@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.12 2002/12/20 02:39:30 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.13 2002/12/20 19:46:01 jeremy Exp $
 """
 
 import sys
@@ -74,10 +74,16 @@ class SiteDefinition:
 
         self._started = 0
 
+    def close(self):
+        if self._zodb is not None:
+            self._zodb.close()
+            self._zodb = None
 
     def useFileStorage(self, _context, file=DEFAULT_STORAGE_FILE):
         """Lets you specify the ZODB to use."""
         from ZODB.FileStorage import DB
+        if self._zodb is not None:
+            raise RuntimeError("Database already open")
         self._zodb = DB(file)
         return []
 
@@ -85,6 +91,8 @@ class SiteDefinition:
     def useMappingStorage(self, _context):
         """Lets you specify the ZODB to use."""
         from ZODB.MappingStorage import DB
+        if self._zodb is not None:
+            raise RuntimeError("Database already open")
         self._zodb = DB()
         return []
 
