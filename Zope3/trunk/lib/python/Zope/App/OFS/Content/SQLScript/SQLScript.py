@@ -2,17 +2,17 @@
 #
 # Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
-$Id: SQLScript.py,v 1.5 2002/07/25 22:09:31 faassen Exp $
+$Id: SQLScript.py,v 1.6 2002/08/08 11:05:54 ersab Exp $
 """
 from types import StringTypes
 
@@ -51,7 +51,7 @@ class SQLDTML(HTML):
 class SQLScript(SQLCommand, Persistent):
 
     __implements__ = ISQLScript, IFileContent
-    
+
     def __init__(self, connectionName='', source='', arguments=''):
         self.template = SQLDTML(source)
         self.setConnectionName(connectionName)
@@ -61,7 +61,7 @@ class SQLScript(SQLCommand, Persistent):
     def setArguments(self, arguments):
         'See Zope.App.OFS.Content.SQLScript.ISQLScript.ISQLScript'
         assert isinstance(arguments, StringTypes), \
-               '"arguments" argument of setArguments() must be a string' 
+               '"arguments" argument of setArguments() must be a string'
         self._arg_string = arguments
         self._arguments = parseArguments(arguments)
 
@@ -135,7 +135,7 @@ class SQLScript(SQLCommand, Persistent):
         if connection is None:
             raise 'Database Error', (
                 '%s is not connected to a database' %'foo')# self.id)
-        
+
         query = apply(self.template, (), arg_values)
 
         return queryForResults(connection, query)
@@ -150,4 +150,4 @@ class SQLScript(SQLCommand, Persistent):
                       "Set the SQL template source.")
     connectionName = property(getConnectionName, setConnectionName, None,
                               "Connection Name for the SQL scripts.")
-                              
+
