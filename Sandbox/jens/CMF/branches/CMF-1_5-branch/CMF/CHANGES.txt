@@ -8,6 +8,9 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - UniqueIdAnnotation: Fixed manage_after* methods.
+      They didn't work correctly in nested folders.
+
     - Workflow: Marked WorkflowMethod alias WorkflowAction as deprecated.
 
     - ZPT skin: Improved folder_copy_control and folder_cut_control.
