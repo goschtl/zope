@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.8 2003/05/02 17:53:36 jim Exp $
+$Id: _app.py,v 1.9 2003/05/02 18:00:10 jim Exp $
 """
 
 import base64, time
@@ -143,16 +143,18 @@ class Application:
             stdout = StringIO()
 
         request = self._request(path, stdin, stdout, *args, **kw)
+        getStatus = getattr(request.response, 'getStatus', lambda: None)
         _publish(request)
         stdout.seek(0)
         print stdout.read()
-        return time.time()-t, time.clock()-c
+        return time.time()-t, time.clock()-c, getStatus()
 
     def run(self, *args, **kw):
         t, c = time.time(), time.clock()
         request = self._request(*args, **kw)
+        getStatus = getattr(request.response, 'getStatus', lambda: None)
         _publish(request, handle_errors = 0)
-        return time.time()-t, time.clock()-c
+        return time.time()-t, time.clock()-c, getStatus()
 
     def debug(self, *args, **kw):
 
