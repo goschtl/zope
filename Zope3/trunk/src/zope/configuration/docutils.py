@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper Utility to wrap a text to a set width of characters
 
-$Id: docutils.py,v 1.3 2004/03/17 17:59:30 srichter Exp $
+$Id: docutils.py,v 1.4 2004/03/29 15:09:05 srichter Exp $
 """
 import re
 
@@ -69,18 +69,19 @@ def makeDocStructures(context):
 
     'namespaces' is a dictionary that maps namespaces to a directives
     dictionary with the key being the name of the directive and the value is a
-    tuple: (schema, info).
+    tuple: (schema, handler, info).
 
     'subdirs' maps a (namespace, name) pair to a list of subdirectives that
     have the form (namespace, name, schema, info).
     """
     namespaces = {}
     subdirs = {}
-    for (namespace, name), schema, usedIn, info, parent in context._docRegistry:
+    registry = context._docRegistry
+    for (namespace, name), schema, usedIn, handler, info, parent in registry:
         if not parent:
             ns_entry = namespaces.setdefault(namespace, {})
-            ns_entry[name] = (schema, info)
+            ns_entry[name] = (schema, handler, info)
         else:
             sd_entry = subdirs.setdefault((parent.namespace, parent.name), [])
-            sd_entry.append((namespace, name, schema, info))
+            sd_entry.append((namespace, name, schema, handler, info))
     return namespaces, subdirs    

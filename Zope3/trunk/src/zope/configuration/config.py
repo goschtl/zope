@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.24 2004/03/15 20:42:30 jim Exp $
+$Id: config.py,v 1.25 2004/03/29 15:09:05 srichter Exp $
 """
 
 import os.path
@@ -369,16 +369,19 @@ class ConfigurationAdapterRegistry(object):
 
     >>> r._docRegistry
     []
-    >>> r.document(('ns', 'dir'), IFullInfo, IConfigurationContext, 'inf', None)
+    >>> r.document(('ns', 'dir'), IFullInfo, IConfigurationContext, None,
+    ...            'inf', None)
     >>> r._docRegistry[0][0] == ('ns', 'dir')
     1
     >>> r._docRegistry[0][1] is IFullInfo
     1
     >>> r._docRegistry[0][2] is IConfigurationContext
     1
-    >>> r._docRegistry[0][3] == 'inf'
+    >>> r._docRegistry[0][3] is None
     1
-    >>> r._docRegistry[0][4] is None
+    >>> r._docRegistry[0][4] == 'inf'
+    1
+    >>> r._docRegistry[0][5] is None
     1
     >>> r.document('all-dir', None, None, None, None)
     >>> r._docRegistry[1][0]
@@ -401,10 +404,10 @@ class ConfigurationAdapterRegistry(object):
 
         r.register([interface], Interface, '', factory)
 
-    def document(self, name, schema, usedIn, info, parent=None):
+    def document(self, name, schema, usedIn, handler, info, parent=None):
         if isinstance(name, (str, unicode)):
             name = ('', name)
-        self._docRegistry.append((name, schema, usedIn, info, parent))
+        self._docRegistry.append((name, schema, usedIn, handler, info, parent))
 
     def factory(self, context, name):
         r = self._registry.get(name)
@@ -1064,7 +1067,7 @@ def defineSimpleDirective(context, name, schema, handler,
         return SimpleStackItem(context, handler, info, schema, data)
 
     context.register(usedIn, name, factory)
-    context.document(name, schema, usedIn, context.info)
+    context.document(name, schema, usedIn, handler, context.info)
 
 def defineGroupingDirective(context, name, schema, handler,
                             namespace='', usedIn=IConfigurationContext):
@@ -1123,7 +1126,7 @@ def defineGroupingDirective(context, name, schema, handler,
         return GroupingStackItem(newcontext)
 
     context.register(usedIn, name, factory)
-    context.document(name, schema, usedIn, context.info)
+    context.document(name, schema, usedIn, handler, context.info)
 
 
 class IComplexDirectiveContext(IFullInfo, IConfigurationContext):
@@ -1144,10 +1147,11 @@ class ComplexDirectiveDefinition(GroupingContextDecorator, dict):
 
         self.register(self.usedIn, (self.namespace, self.name), factory)
         self.document((self.namespace, self.name), self.schema, self.usedIn,
-                      self.info)
+                      self.handler, self.info)
 
 def subdirective(context, name, schema):
     context.document((context.namespace, name), schema, context.usedIn,
+                     getattr(context.handler, name, context.handler),
                      context.info, context.context)
     context.context[name] = schema, context.info
 
