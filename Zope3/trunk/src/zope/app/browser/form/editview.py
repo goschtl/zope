@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.7 2003/01/28 02:56:40 rdmurray Exp $
+$Id: editview.py,v 1.8 2003/01/28 04:57:30 rdmurray Exp $
 """
 
 from datetime import datetime
@@ -20,18 +20,19 @@ from datetime import datetime
 from zope.schema.interfaces import ValidationError
 from zope.schema import getFieldNamesInOrder
 
-from zope.app.event import publish
-from zope.app.event.objectevent import ObjectModifiedEvent
-from zope.publisher.browser import BrowserView
-from zope.app.interfaces.form import WidgetsError
-from zope.app.form.utility import setUpEditWidgets, getWidgetsData
 from zope.configuration.action import Action
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component.view import provideView
-from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+
+from zope.app.interfaces.form import WidgetsError
+from zope.app.form.utility import setUpEditWidgets, getWidgetsData
 from zope.app.browser.form.submit import Update
+from zope.app.event import publish
+from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 
 from zope.app.publisher.browser.globalbrowsermenuservice \
      import menuItemDirective
@@ -77,7 +78,6 @@ class EditView(BrowserView):
         unchanged = True
 
         for name in data:
-            # OK, we really got a field
             try:
                 newvalue = data[name]
 
