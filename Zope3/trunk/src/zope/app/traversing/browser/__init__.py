@@ -13,7 +13,7 @@
 ##############################################################################
 """Absolute URL View components
 
-$Id: absoluteurl.py,v 1.17 2003/09/24 21:00:39 sidnei Exp $
+$Id: __init__.py,v 1.1 2004/03/14 03:44:08 srichter Exp $
 """
 
 from zope.app import zapi

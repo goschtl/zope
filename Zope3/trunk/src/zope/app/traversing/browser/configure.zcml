@@ -26,35 +26,35 @@
   <view
       for="*"
       name="absolute_url"
-      factory=".absoluteurl.AbsoluteURL"
+      factory=".AbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
-      allowed_interface="zope.app.browser.interfaces.absoluteurl.IAbsoluteURL"
+      allowed_interface=".interfaces.IAbsoluteURL"
       />
 
   <view
       for="zope.app.traversing.interfaces.IContainmentRoot"
       name="absolute_url"
-      factory=".absoluteurl.SiteAbsoluteURL"
+      factory=".SiteAbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
-      allowed_interface="zope.app.browser.interfaces.absoluteurl.IAbsoluteURL"
+      allowed_interface=".interfaces.IAbsoluteURL"
       />
 
   <browser:page
       for="*"
       name="absolute_url"
-      class=".absoluteurl.AbsoluteURL"
+      class=".AbsoluteURL"
       permission="zope.Public"
-      allowed_interface="zope.app.browser.interfaces.absoluteurl.IAbsoluteURL"
+      allowed_interface=".interfaces.IAbsoluteURL"
       />
 
   <browser:page
       for="zope.app.traversing.interfaces.IContainmentRoot"
       name="absolute_url"
-      class=".absoluteurl.SiteAbsoluteURL"
+      class=".SiteAbsoluteURL"
       permission="zope.Public"
-      allowed_interface="zope.app.browser.interfaces.absoluteurl.IAbsoluteURL"
+      allowed_interface=".interfaces.IAbsoluteURL"
       />
 
 </configure>

@@ -137,6 +137,8 @@
 
   <!-- Browser Configurations -->
 
+  <include package="zope.app.traversing.browser" />
+
   <include package="zope.app.component.browser" />
   <include package="zope.app.container.browser" />
   <include package="zope.app.event.browser" />

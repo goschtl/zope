@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: absoluteurl.py,v 1.1 2004/03/02 18:27:38 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/03/14 03:44:08 srichter Exp $
 """
 from zope.interface import Interface
 

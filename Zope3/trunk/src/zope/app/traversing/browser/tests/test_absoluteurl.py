@@ -13,10 +13,8 @@
 ##############################################################################
 """Test the AbsoluteURL view
 
-Revision information:
-$Id: test_absoluteurl.py,v 1.19 2004/02/25 23:02:20 faassen Exp $
+$Id: test_absoluteurl.py,v 1.1 2004/03/14 03:44:09 srichter Exp $
 """
-
 from unittest import TestCase, main, makeSuite
 
 from zope.app.tests import ztapi
@@ -28,8 +26,7 @@ from zope.component import getService, getView
 from zope.i18n.interfaces import IUserPreferredCharsets
 
 from zope.publisher.browser import TestRequest
-from zope.publisher.http import IHTTPRequest
-from zope.publisher.http import HTTPCharsets
+from zope.publisher.http import IHTTPRequest, HTTPCharsets
 from zope.app.container.contained import contained
 
 
@@ -45,8 +42,7 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
 
     def setUp(self):
         super(TestAbsoluteURL, self).setUp()
-        from zope.app.browser.absoluteurl \
-             import AbsoluteURL, SiteAbsoluteURL
+        from zope.app.traversing.browser import AbsoluteURL, SiteAbsoluteURL
         ztapi.browserView(None, 'absolute_url', [AbsoluteURL])
         ztapi.browserView(IRoot, 'absolute_url', [SiteAbsoluteURL])
         ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,
