@@ -16,15 +16,13 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
-from persistent import Persistent
 
 from zope.event import notify
 from zope.interface import implements
 
-from zope.app.container.contained import Contained
 from zope.app.security.interfaces import IPrincipal
 
-import interfaces
+from zope.app.pas import interfaces
 
 class Principal:
     """A simple Principal
@@ -52,7 +50,7 @@ class Principal:
         return 'Principal(%r)' %self.id
 
 
-class PrincipalFactory(Persistent, Contained):
+class PrincipalFactory:
     """A simple principal factory.
 
     First we need to register a simple subscriber that records all events.
@@ -103,3 +101,43 @@ class PrincipalFactory(Persistent, Contained):
         principal = Principal(id)
         notify(interfaces.FoundPrincipalCreated(principal, info))
         return principal
+
+def addTitleAndDescription(event):
+    """Set title and description from info
+
+    We can set title and description information for principals if keys
+    can be found in the info:
+
+      >>> principal = Principal('3')
+      >>> event = interfaces.FoundPrincipalCreated(
+      ...    principal, {'title': u'Bob', 'description': u'Eek'})
+      >>> addTitleAndDescription(event)
+      
+      >>> principal.title
+      u'Bob'
+      >>> principal.description
+      u'Eek'
+
+    Note that the attributes are only set if they aren't set already:  
+
+      >>> event = interfaces.FoundPrincipalCreated(
+      ...    principal, {'title': u'Fred', 'description': u'Dude'})
+      >>> addTitleAndDescription(event)
+      
+      >>> principal.title
+      u'Bob'
+      >>> principal.description
+      u'Eek'
+
+    """
+
+    principal = event.principal
+    info = event.info
+
+    title = info.get('title')
+    if title and not principal.title:
+        principal.title = title
+
+    description = info.get('description')
+    if description and not principal.description:
+        principal.description = description
