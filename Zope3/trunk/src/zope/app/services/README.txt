@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.3 $
+:Version: $Revision: 1.4 $
 
 .. contents::
 
@@ -478,7 +478,9 @@ To do:
   Describe the demo utility
 
   Need a UI for browsing registered utilities in the utility service.
+  (Done, need to describe it.)
 
+  XXX We decided not to do this after all:
   Configuration of module globals
 
     - Need the configuration object class that keeps track of:
