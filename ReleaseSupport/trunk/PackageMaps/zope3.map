@@ -59,7 +59,6 @@ zope.app.i18nfile          svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/a
 zope.app.rdb               svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/rdb
 zope.app.index             svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/index
 zope.app.pagetemplate      svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/pagetemplate
-zope.publisher.browser     svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/publisher/browser
 
 
 
