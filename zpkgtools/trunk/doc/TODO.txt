@@ -3,6 +3,13 @@
 
 - need to add support for Subversion checkouts
 
+- We should have some way to wildcard an entire hierarchy of packages
+  in resource maps.  Something like
+
+    zope.*  cvs://cvs.zope.org/cvs-repository:Zope3/src/zope/
+
+  would make the resource map for Zope 3 much more concise.
+
 - There needs to be a better error message when two resources use the
   same name part.  The problem is that package:foo and collection:foo
   both have the same name, and zpkg tries to create two different
