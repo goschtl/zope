@@ -85,6 +85,38 @@ Zope Changes
     - Removed session-specific mapping interfaces. The two that were not yet
       available in zope.interface.common.mapping were added there.
 
+    - Reorganize software into a much flatter package structure.
+
+      o Folded interfaces and browser back into packages. For example 
+
+        zope.app.foo
+        zope.app.interfaces.foo
+        zope.app.browser.foo
+
+        became
+
+        zope.app.foo
+        zope.app.foo.interfaces
+        zope.app.foo.browser
+
+      o Moved packages from the following container packages to zope.app:
+
+        zope.app.content
+        zope.app.services
+        zope.app.utilities
+
+      o Created a bunch of new packages:
+
+        dependable (formerly just a file-based module)
+        exception (was scattered everywhere before)
+        errorservice (contains error reporting service)
+        module
+        principalannotation (Principal Annotation Service)
+        session
+        site (contains 'folder' and 'service' from zope.app.services)
+        utility (Utility service)
+        ...
+
     - Converting Service-managed components to be utilities:
 
       o Various Code Interpreters were managed by a special service. They are

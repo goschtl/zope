@@ -11,8 +11,6 @@ Things to do for the next release (in no particular order)
   These were broken (I think) by recent interface and adapter
   refactoring.
 
-- Reorganize software into a much flatter package structure.
-
 - Redo event service
 
   o Simplify publication/registration framework
