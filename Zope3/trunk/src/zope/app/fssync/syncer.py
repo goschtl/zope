@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.10 2003/05/10 22:00:53 gvanrossum Exp $
+$Id: syncer.py,v 1.11 2003/05/11 00:16:05 gvanrossum Exp $
 """
 
 import os
@@ -256,10 +256,11 @@ def fromFS(container, name, location):
     extra_entries_path = os.path.join(extra_dir, "@@Zope", "Entries.xml")
     if extra:
         if not os.path.exists(extra_entries_path):
-            # The file system has no extras, so delete all of the object's
-            # extras.
-            for key in extra:
-                del extra[key]
+            if entry.get("flag") != "added":
+                # The file system has no extras, so delete all of the
+                # object's extras.
+                for key in list(extra):
+                    del extra[key]
         else:
             extra_entries = loadFile(extra_entries_path)
             for ename in extra_entries:
@@ -277,10 +278,11 @@ def fromFS(container, name, location):
         annotation_dir, "@@Zope", "Entries.xml")
     if annotations is not None:
         if not os.path.exists(annotation_entries_path):
-            # The file system has no annotations, so delete all of the object's
-            # annotations.
-            for key in annotations:
-                del annotations[key]
+            if entry.get("flag") != "added":
+                # The file system has no annotations, so delete all of
+                # the object's annotations.
+                for key in list(annotations):
+                    del annotations[key]
         else:
             annotation_entries = loadFile(annotation_entries_path)
             for ename in annotation_entries:

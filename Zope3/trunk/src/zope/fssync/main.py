@@ -27,7 +27,7 @@ fssync status [FILE_OR_DIR ...]
 fssync commit [FILE_OR_DIR ...]
 fssync diff [FILE_OR_DIR ...]
 
-$Id: main.py,v 1.1 2003/05/09 20:54:15 gvanrossum Exp $
+$Id: main.py,v 1.2 2003/05/11 00:16:06 gvanrossum Exp $
 """
 
 import os
@@ -82,6 +82,8 @@ def main(argv=None):
             args = args or [os.curdir]
             [fspath] = args
             commit(fspath)
+        elif command == "add":
+            add(args)
         else:
             raise Usage("command %r not recognized" % command)
     except Usage, msg:
@@ -106,6 +108,11 @@ def commit(fspath):
 def update(fspath):
     fs = FSSync(fspath)
     fs.update()
+
+def add(args):
+    fs = FSSync(os.curdir)
+    for a in args:
+        fs.add(a)
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))

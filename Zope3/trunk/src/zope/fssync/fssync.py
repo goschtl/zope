@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.1 2003/05/09 20:54:15 gvanrossum Exp $
+$Id: fssync.py,v 1.2 2003/05/11 00:16:06 gvanrossum Exp $
 """
 
 import os
@@ -126,6 +126,8 @@ class FSSync(object):
             raise Error("zip command failed")
         zipdata = self.readfile(zipfile, "rb")
         os.unlink(zipfile)
+        # XXX Use urllib2 and then set Content-type header.
+        # That should take care of proxies and https.
         h = httplib.HTTP(host_port)
         h.putrequest("POST", url + "/@@fromFS.zip")
         h.putheader("Content-Type", "application/zip")
@@ -182,6 +184,36 @@ class FSSync(object):
         finally:
             os.unlink(filename)
 
+    def add(self, path):
+        path = realpath(path)
+        if not exists(path):
+            raise Error("nothing known about '%s'", path)
+        dir, name = split(path)
+        if name in ("", os.curdir, os.pardir):
+            raise Error("can't add path '%s'", path)
+        entries = self.loadentries(dir)
+        if name in entries:
+            raise Error("path '%s' is already registered", name)
+        pdir = self.parent(dir)
+        dname = basename(dir)
+        pentries = self.loadentries(pdir)
+        if dname not in pentries:
+            raise Error("directory '%s' unknown", dname)
+        dpath = pentries[dname]['path']
+        if dpath == "/":
+            ourpath = "/" + name
+        else:
+            ourpath = dpath + "/" + name
+        entries[name] = d = {"path": ourpath, "flag": "added"}
+        if isdir(path):
+            d["type"] = "zope.app.content.folder.Folder"
+        else:
+            # XXX Need to guess better based on extension
+            d["type"] = "zope.app.content.file.File"
+        if "factory" not in d:
+            d["factory"] = str(unicode(d["type"]))
+        self.dumpentries(entries, dir)
+
     def merge(self, ours, server):
         # XXX This method is way too long, and still not complete :-(
         for (left, right, common, lentries, rentries, ldirs, lnondirs,
@@ -230,7 +262,6 @@ class FSSync(object):
                             print "U", lx
                         elif self.cmp(lx, rx):
                             # Only the original is out of date
-                            print "file '%s' already contains changes" % lx
                             self.copyfile(rx, origx)
                             print "U", lx
                         else:
