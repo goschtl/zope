@@ -50,7 +50,7 @@ if not "depends" in Extension.__init__.func_code.co_varnames:
 # doing a non-build-in-place.
 EXTS = ['.conf', '.css', '.gif', '.html',
         '.js',   '.mo',  '.png', '.pt',
-        '.txt',  '.xml', '.zcml',
+        '.txt',  '.xml', '.zcml', '.mar',
         ]
 
 
