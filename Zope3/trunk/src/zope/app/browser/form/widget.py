@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.62 2004/01/20 18:56:32 garrett Exp $
+$Id: widget.py,v 1.63 2004/01/20 20:14:53 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -312,18 +312,12 @@ class BrowserWidget(Widget, BrowserView):
         self.setRenderedValue(value)
         return self.hidden()
 
-    def _tooltip(self, txt, description):
-        if description:
-            return '<span title="%s">%s</span>' % (
-                cgi.escape(description, quote=1), txt
-                )
-        else:
-            return txt
-
     def label(self):
-        return '<label for="%s">%s</label>' % (
-            self.name, self._tooltip(self.title,
-                                     self.context.description))
+        kw = {"for": self.name,
+              "contents": cgi.escape(self.title)}
+        if self.context.description:
+            kw["title"] = self.context.description
+        return renderElement("label", **kw)
 
     def error(self):
         if self._error:
@@ -1441,21 +1435,25 @@ def renderTag(tag, **kw):
 
     # special case handling for extra 'raw' code
     if 'extra' in kw:
-        extra = kw['extra'] # could be empty string but we don't care
+        extra = " " + kw['extra'] # could be empty string but we don't care
         del kw['extra']
     else:
         extra = ""
 
     # handle other attributes
-    items = kw.items()
-    items.sort()
-    for key, value in items:
-        if value == None:
-            value = key
-        attr_list.append('%s=%s' % (key, quoteattr(unicode(value))))
+    if kw:
+        items = kw.items()
+        items.sort()
+        for key, value in items:
+            if value == None:
+                value = key
+            attr_list.append('%s=%s' % (key, quoteattr(unicode(value))))
 
-    attr_str = " ".join(attr_list)
-    return "<%s %s %s" % (tag, attr_str, extra)
+    if attr_list:
+        attr_str = " ".join(attr_list)
+        return "<%s %s%s" % (tag, attr_str, extra)
+    else:
+        return "<%s%s" % (tag, extra)
 
 
 def renderElement(tag, **kw):
