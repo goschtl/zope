@@ -1,4 +1,4 @@
-<html metal:use-macro="context/@@standard_macros/page">
+<html metal:use-macro="context/@@standard_macros/view">
 
 <div metal:fill-slot="body">
 

@@ -42,8 +42,6 @@
         >
 
     <div id="global">
-       <!--div tal:content="string:Usage:${usage}"></div>  
-       <div tal:content="nocall:view"></div-->
        <img tal:attributes="src context/++resource++zope3logo.gif" />
     </div>
 

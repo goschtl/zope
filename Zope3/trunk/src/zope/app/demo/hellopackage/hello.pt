@@ -1,4 +1,4 @@
-<html metal:use-macro="context/@@standard_macros/page" 
+<html metal:use-macro="context/@@standard_macros/view" 
 	i18n:domain="hellopackage">
 <head>
   <body>
