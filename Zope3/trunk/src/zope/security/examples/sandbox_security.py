@@ -1,6 +1,6 @@
 import sandbox
 from zope.security.interfaces import ISecurityPolicy, IChecker
-from zope.security import securitymanagement, checker
+from zope.security import management, checker
 
 #################################
 # 1. map permissions to actions
@@ -118,8 +118,7 @@ agent_service_checker = PermissionMapChecker(aservice_security)
 
 def wire_security():
 
-    from zope.security import securitymanagement
-    securitymanagement.setSecurityPolicy(SimulationSecurityPolicy())
+    management.setSecurityPolicy(SimulationSecurityPolicy())
 
     import zope.security.examples.sandbox
 
@@ -141,7 +140,7 @@ def wire_security():
     sandbox.Sandbox.addAgent = addAgent
 
     def setupAgent(self, agent):
-        securitymanagement.newSecurityManager(agent)
+        management.newSecurityManager(agent)
 
     sandbox.TimeGenerator.setupAgent = setupAgent
 

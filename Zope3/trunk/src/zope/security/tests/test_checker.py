@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.2 2002/12/25 14:15:22 jim Exp $
+$Id: test_checker.py,v 1.3 2002/12/31 03:35:15 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -22,7 +22,7 @@ from zope.security.checker import Checker, NamesChecker, CheckerPublic
 from zope.testing.cleanup import CleanUp
 from zope.security.interfaces import ISecurityPolicy
 from zope.exceptions import Forbidden, Unauthorized
-from zope.security.securitymanagement import setSecurityPolicy
+from zope.security.management import setSecurityPolicy
 from zope.security.proxy import getChecker, getObject
 from zope.security.checker import defineChecker
 import types

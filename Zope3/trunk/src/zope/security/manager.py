@@ -14,7 +14,7 @@
 """ Default ISecurityManager implementation """
 
 import os
-from zope.security.simplesecuritypolicies import ParanoidSecurityPolicy
+from zope.security.simplepolicies import ParanoidSecurityPolicy
 
 MAX_STACK_SIZE = 100
 

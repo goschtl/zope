@@ -5,7 +5,7 @@ from zope.interface.interfaces import IInterface
 from zope.interface import Interface
 from zope.security._proxy import _Proxy as Proxy
 from zope.security.interfaces import ISecurityProxyFactory
-from zope.security.securitymanagement import getSecurityManager
+from zope.security.management import getSecurityManager
 import sys, os, types
 import datetime
 

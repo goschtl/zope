@@ -1,6 +1,6 @@
 import unittest
 
-from zope.security.restrictedinterpreter import RestrictedInterpreter
+from zope.security.interpreter import RestrictedInterpreter
 from zope.security.proxy import ProxyFactory
 from zope.security.checker import defineChecker
 

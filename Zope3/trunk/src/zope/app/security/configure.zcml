@@ -46,7 +46,7 @@
   <include package=".grants" />
 
   <securityPolicy 
-      name="zope.app.security.zopesecuritypolicy.zopeSecurityPolicy" />
+      name="zope.app.security.zopepolicy.zopeSecurityPolicy" />
 
   <adapter factory="zope.app.security.basicauthadapter.BasicAuthAdapter"
            provides="zope.app.interfaces.security.ILoginPassword"

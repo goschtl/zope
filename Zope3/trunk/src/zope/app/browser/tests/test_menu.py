@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_menu.py,v 1.2 2002/12/25 14:12:44 jim Exp $
+$Id: test_menu.py,v 1.3 2002/12/31 03:35:06 jim Exp $
 """
 
 import unittest
@@ -28,7 +28,7 @@ from zope.app.browser.menu import MenuAccessView
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.publication.traversers import TestTraverser
-from zope.security.securitymanagement import newSecurityManager
+from zope.security.management import newSecurityManager
 from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
 from zope.security.proxy import ProxyFactory
 from zope.app.interfaces.publisher.browser import IBrowserMenuService

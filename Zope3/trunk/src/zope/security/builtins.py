@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: restrictedbuiltins.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: builtins.py,v 1.1 2002/12/31 03:35:13 jim Exp $
 """
 import sys
 

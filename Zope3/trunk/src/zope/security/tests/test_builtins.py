@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_restrictedbuiltins.py,v 1.2 2002/12/25 14:15:22 jim Exp $
+$Id: test_builtins.py,v 1.1 2002/12/31 03:35:15 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 class Test(CleanUp, TestCase):
 
     def test(self):
-        from zope.security.restrictedbuiltins import RestrictedBuiltins
+        from zope.security.builtins import RestrictedBuiltins
         from zope.security.proxy import Proxy
         from zope.exceptions import Forbidden
 

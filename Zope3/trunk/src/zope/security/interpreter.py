@@ -14,13 +14,13 @@
 """
 
 Revision information:
-$Id: restrictedinterpreter.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: interpreter.py,v 1.1 2002/12/31 03:35:13 jim Exp $
 """
 
 import sys
 
 from zope.security.proxy import ProxyFactory
-from zope.security.restrictedbuiltins import RestrictedBuiltins
+from zope.security.builtins import RestrictedBuiltins
 
 class RestrictedInterpreter:
 

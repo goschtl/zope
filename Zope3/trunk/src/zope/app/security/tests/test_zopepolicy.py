@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopesecuritypolicy.py,v 1.2 2002/12/28 01:39:55 rdmurray Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.1 2002/12/31 03:35:12 jim Exp $
 """
 
 import unittest
@@ -49,7 +49,7 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
-from zope.app.security.zopesecuritypolicy import permissionsOfPrincipal
+from zope.app.security.zopepolicy import permissionsOfPrincipal
 
 class Context:
     def __init__(self, user, stack=[]):
@@ -146,7 +146,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def _makePolicy( self ):
 
-        from zope.app.security.zopesecuritypolicy import ZopeSecurityPolicy
+        from zope.app.security.zopepolicy import ZopeSecurityPolicy
         return ZopeSecurityPolicy()
 
     def __assertPermissions(self, user, expected, object=None):
@@ -155,7 +155,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(permissions, expected)
 
     def testImport( self ):
-        from zope.app.security.zopesecuritypolicy import ZopeSecurityPolicy
+        from zope.app.security.zopepolicy import ZopeSecurityPolicy
 
     def testGlobalCheckPermission(self):
         self.failUnless(

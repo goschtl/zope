@@ -15,7 +15,7 @@
 
 from zope.security.interfaces import ISecurityPolicy
 from zope.exceptions import Unauthorized
-from zope.security.securitymanagement import system_user
+from zope.security.management import system_user
 
 class ParanoidSecurityPolicy:
     """

@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopesecuritypolicy.py,v 1.4 2002/12/28 01:36:00 rdmurray Exp $
+$Id: zopepolicy.py,v 1.1 2002/12/31 03:35:10 jim Exp $
 """
-__version__='$Revision: 1.4 $'[11:-2]
+__version__='$Revision: 1.1 $'[11:-2]
 
 from zope.component import queryAdapter, getService
 
@@ -24,7 +24,7 @@ from zope.proxy.context import ContainmentIterator
 from zope.exceptions import Unauthorized, Forbidden
 
 from zope.security.interfaces import ISecurityPolicy
-from zope.security.securitymanagement import system_user
+from zope.security.management import system_user
 
 from zope.app.interfaces.security \
      import IRolePermissionManager, IRolePermissionMap
@@ -302,7 +302,5 @@ def permissionsOfPrincipal(principal, object):
               if permissions[permission] is Allow]
 
     return result
-
-
 
 zopeSecurityPolicy=ZopeSecurityPolicy()

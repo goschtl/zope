@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_directives.py,v 1.2 2002/12/25 14:12:49 jim Exp $
+$Id: test_directives.py,v 1.3 2002/12/31 03:35:07 jim Exp $
 """
 
 import unittest
@@ -24,7 +24,7 @@ from StringIO import StringIO
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
 from zope.configuration.xmlconfig import ZopeXMLConfigurationError
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.security.securitymanagement import newSecurityManager, system_user
+from zope.security.management import newSecurityManager, system_user
 import zope.configuration
 import zope.app.security
 import zope.app.contentdirective

@@ -21,7 +21,7 @@ from cStringIO import StringIO
 from zope.configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
 from zope.configuration.xmlconfig import XMLConfig
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.security.securitymanagement import newSecurityManager, system_user
+from zope.security.management import newSecurityManager, system_user
 
 import zope.configuration
 import zope.app.security

@@ -13,11 +13,11 @@
 ##############################################################################
 """ Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.2 2002/12/25 14:13:15 jim Exp $
+$Id: metaconfigure.py,v 1.3 2002/12/31 03:35:10 jim Exp $
 """
 
 from zope.configuration.action import Action
-from zope.security.securitymanager import setSecurityPolicy
+from zope.security.manager import setSecurityPolicy
 
 def securityPolicy(_context, name):
     policy = _context.resolve(name)

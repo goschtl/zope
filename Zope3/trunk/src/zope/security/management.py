@@ -17,9 +17,9 @@ system_user = object() # Special system user that has all permissions
 
 
 from zope.security.interfaces import ISecurityManagement, ISecurityManagementSetup
-from zope.security.securitymanager import SecurityManager
-from zope.security.securitymanager import setSecurityPolicy as _setSecurityPolicy
-from zope.security.securitycontext import SecurityContext
+from zope.security.manager import SecurityManager
+from zope.security.manager import setSecurityPolicy as _setSecurityPolicy
+from zope.security.context import SecurityContext
 
 __implements__ = ( ISecurityManagement, ISecurityManagementSetup )
 
