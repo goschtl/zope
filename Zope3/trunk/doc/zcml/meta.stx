@@ -47,7 +47,7 @@ The Meta Configuration System
 
       <ZopeConfigure
           xmlns='http://namespaces.zope.org/zope"
-          startup='http://namespaces.zope.org/startup"
+          xmlns:startup='http://namespaces.zope.org/startup"
       >
       <startup:registerRequestFactory ....>
       </ZopeConfigure>
@@ -64,7 +64,7 @@ The Meta Configuration System
 
       <ZopeConfigure
           xmlns='http://namespaces.zope.org/zope"
-          startup='http://namespaces.zope.org/startup"
+          xmlns:startup='http://namespaces.zope.org/startup"
       >
       <startup:registerRequestFactory
           name="VFSRequestFactory"
@@ -100,7 +100,7 @@ The Meta Configuration System
 
       <ZopeConfigure
           xmlns='http://namespaces.zope.org/zope"
-          startup='http://namespaces.zope.org/startup"
+          xmlns:startup='http://namespaces.zope.org/startup"
       >
       <startup:defineSite name="Zope 3 Default" threads="4">
         <startup:useFileStorage file="Data.fs">
