@@ -510,7 +510,7 @@ class TestFileFinder:
             self.dirname = "tests"
 
     def visit(self, rx, dir, files):
-        if os.path.split(dir)[1] != self.dirname:
+        if os.path.basename(dir) != self.dirname:
             # Allow tests/ftests module rather than package.
             modfname = self.dirname + '.py'
             if modfname in files:
@@ -598,10 +598,8 @@ def find_tests(rx):
     return finder.files
 
 def package_import(modname):
-    mod = __import__(modname)
-    for part in modname.split(".")[1:]:
-        mod = getattr(mod, part)
-    return mod
+    __import__(modname)
+    return sys.modules[modname]
 
 class PseudoTestCase:
     """Minimal test case objects to create error reports.
