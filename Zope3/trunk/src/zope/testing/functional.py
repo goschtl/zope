@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.5 2003/04/25 19:28:41 jeremy Exp $
+$Id: functional.py,v 1.6 2003/05/01 14:07:29 mgedmin Exp $
 """
 
 import logging
@@ -34,6 +34,7 @@ from zope.app.publication.zopepublication import ZopePublication
 from zope.app.traversing import traverse
 from zope.publisher.browser import BrowserRequest
 from zope.publisher.publish import publish
+from zope.exceptions import Forbidden, Unauthorized
 
 
 class ResponseWrapper:
@@ -190,40 +191,60 @@ class BrowserTestCase(FunctionalTestCase):
         publish(request, handle_errors=handle_errors)
         return response
 
-    def checkForBrokenLinks(self, body, path):
+    def checkForBrokenLinks(self, body, path, basic=None):
         """Looks for broken links in a page by trying to traverse relative
         URIs.
         """
         if not body: return
+
         from htmllib import HTMLParser
         from formatter import NullFormatter
-        parser = HTMLParser(NullFormatter())
+        class SimpleHTMLParser(HTMLParser):
+            def __init__(self, fmt, base):
+                HTMLParser.__init__(self, fmt)
+                self.base = base
+            def do_base(self, attrs):
+                self.base = dict(attrs).get('href', self.base)
+
+        parser = SimpleHTMLParser(NullFormatter(), path)
         parser.feed(body)
         parser.close()
-
-        root = self.getRootFolder()
-        base = path
-        if not base.startswith('/'):
-            base = '/' + base
+        base = parser.base
         while not base.endswith('/'):
             base = base[:-1]
+        if base.startswith('http://localhost/'):
+            base = base[len('http://localhost/') - 1:]
+
         errors = []
         for a in parser.anchorlist:
             if a.startswith('http://localhost/'):
                 a = a[len('http://localhost/') - 1:]
             elif a.find(':') != -1:
-                # XXX assume it is "proto:someuri"
+                # Assume it is an external link
                 continue
             elif not a.startswith('/'):
                 a = base + a
             if a.find('#') != -1:
                 a = a[:a.index('#') - 1]
-            rq = self.makeRequest()
+            # XXX what about queries (/path/to/foo?bar=baz&etc)?
+            request = None
             try:
-                rq.traverse(a)
-            except (KeyError, NameError, AttributeError):
-                e = traceback.format_exception_only(*sys.exc_info()[:2])[-1]
-                errors.append((a, e.strip()))
+                try:
+                    request = self.makeRequest(a, basic=basic)
+                    publication = request.publication
+                    request.processInputs()
+                    publication.beforeTraversal(request)
+                    object = publication.getApplication(request)
+                    object = request.traverse(object)
+                    publication.afterTraversal(request, object)
+                except (KeyError, NameError, AttributeError, Unauthorized, Forbidden):
+                    e = traceback.format_exception_only(*sys.exc_info()[:2])[-1]
+                    errors.append((a, e.strip()))
+            finally:
+                # Bad Things(TM) related to garbage collection and special
+                # __del__ methods happen if request.close() is not called here
+                if request:
+                    request.close()
         if errors:
             self.fail("%s contains broken links:\n" % path
                       + "\n".join(["  %s:\t%s" % (a, e) for a, e in errors]))
