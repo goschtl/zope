@@ -31,6 +31,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 
 from zope.app.pau import interfaces
 
+
 class IInternalPrincipal(zope.interface.Interface):
     """Principal information"""
 
@@ -94,10 +95,10 @@ class ISearchSchema(zope.interface.Interface):
         missing_value=u'',
         )
 
+
 class PrincipalInformation(
     persistent.Persistent,
-    zope.app.container.contained.Contained,
-    ):
+    zope.app.container.contained.Contained,):
     """An internal principal for Persistent Principal Folder.
     """
     zope.interface.implements(IInternalPrincipal, IInternalPrincipalContained)
@@ -127,9 +128,10 @@ class PrincipalInformation(
         if attr in ('title', 'description'):
             return getattr(self, attr)
 
+
 class PrincipalFolder(zope.app.container.btree.BTreeContainer):
-    """A Persistent Principal Folder and Authentication plugin
-    """
+    """A Persistent Principal Folder and Authentication plugin."""
+
     zope.interface.implements(interfaces.ISearchableAuthenticationPlugin,
                               interfaces.IQuerySchemaSearch,
                               IInternalPrincipalContainer)
@@ -150,10 +152,9 @@ class PrincipalFolder(zope.app.container.btree.BTreeContainer):
 
         del self.__id_by_login[oldLogin]
         self.__id_by_login[principal.login] = principal.__name__
-        
+
     def __setitem__(self, id, principal):
-        """Add principal information
-        """
+        """Add principal information."""
         # A user with the new login already exists
         if principal.login in self.__id_by_login:
             raise ValueError, 'Principal Login already taken!'
@@ -167,7 +168,6 @@ class PrincipalFolder(zope.app.container.btree.BTreeContainer):
         principal = self[id]
         super(PrincipalFolder, self).__delitem__(id)
         del self.__id_by_login[principal.login]
-
 
     def authenticateCredentials(self, credentials):
         """Return principal info if credentials can be authenticated
@@ -186,27 +186,24 @@ class PrincipalFolder(zope.app.container.btree.BTreeContainer):
         if principal.password != credentials['password']:
             return None
 
-        id = self.prefix+id
+        id = self.prefix + id
 
-        return id, {'login': principal.login, 'title': principal.title,
+        return id, {'login': principal.login,
+                    'title': principal.title,
                     'description': principal.description}
 
     def principalInfo(self, principal_id):
         if principal_id.startswith(self.prefix):
             principal = self.get(principal_id[len(self.prefix):])
             if principal is not None:
-                return {
-                    'login': principal.login,
-                    'title': principal.title,
-                    'description': principal.description,
-                    }
-            
+                return {'login': principal.login,
+                        'title': principal.title,
+                        'description': principal.description}
 
     schema = ISearchSchema
 
     def search(self, query, start=None, batch_size=None):
-        """Search through this principal provider.
-        """
+        """Search through this principal provider."""
         search = query.get('search')
         if search is None:
             return

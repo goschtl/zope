@@ -48,7 +48,7 @@ class Principal:
         self.groups = []
 
     def __repr__(self):
-        return 'Principal(%r)' %self.id
+        return 'Principal(%r)' % self.id
 
 
 class PrincipalFactory:
@@ -87,7 +87,7 @@ class PrincipalFactory:
     >>> event.info
     {}
     """
-    implements(interfaces.IPrincipalFactoryPlugin)           
+    implements(interfaces.IPrincipalFactoryPlugin)
 
     def createAuthenticatedPrincipal(self, id, info, request):
         """See zope.app.pau.interfaces.IPrincipalFactoryPlugin"""
@@ -102,6 +102,7 @@ class PrincipalFactory:
         principal = Principal(id)
         notify(interfaces.FoundPrincipalCreated(principal, info))
         return principal
+
 
 def addTitleAndDescription(event):
     """Set title and description from info

@@ -86,8 +86,7 @@ class IPrincipalIdAwarePlugin(IPlugin):
     """
 
 class IExtractionPlugin(IPlugin):
-    """Extracts authentication credentials from a request.
-    """
+    """Extracts authentication credentials from a request."""
 
     def extractCredentials(request):
         """Try to extract credentials from a request
@@ -97,8 +96,7 @@ class IExtractionPlugin(IPlugin):
         """
 
 class IAuthenticationPlugin(IPrincipalIdAwarePlugin):
-    """Authenticate credentials
-    """
+    """Authenticate credentials."""
 
     def authenticateCredentials(credentials):
         """Authenticate credentials
@@ -109,8 +107,7 @@ class IAuthenticationPlugin(IPrincipalIdAwarePlugin):
         """
 
 class IChallengePlugin(IPlugin):
-    """Initiate a challenge to the user to provide credentials.
-    """
+    """Initiate a challenge to the user to provide credentials."""
 
     protocol = zope.interface.Attribute("""Optional Challenger protocol
 
@@ -129,11 +126,10 @@ class IChallengePlugin(IPlugin):
         """
 
 class IPrincipalFactoryPlugin(IPlugin):
-    """Create a principal object
-    """
+    """Create a principal object."""
 
     def createAuthenticatedPrincipal(principal_id, info, request):
-        """Create a principal authenticated against a request
+        """Create a principal authenticated against a request.
 
         The info argument is a dictionary containing supplemental
         information that can be used by the factory and by event
@@ -160,7 +156,7 @@ class IPrincipalFactoryPlugin(IPlugin):
         """
 
 class IPrincipalSearchPlugin(IPrincipalIdAwarePlugin):
-    """Find principals
+    """Find principals.
 
     Principal search plugins provide two functions:
 
@@ -194,7 +190,7 @@ class IQuerySchemaSearch(IPrincipalSearchPlugin):
     """)
 
     def search(query, start=None, batch_size=None):
-        """Search for principals
+        """Search for principals.
 
         The query argument is a mapping object with items defined by
         the plugins.  An iterable of principal ids should be returned.
@@ -210,14 +206,13 @@ class IQuerySchemaSearch(IPrincipalSearchPlugin):
 
 class ISearchableAuthenticationPlugin(IAuthenticationPlugin,
                                       IPrincipalSearchPlugin):
-    """Components that provide authentication ans searching
+    """Components that provide authentication and searching.
 
     This interface exists to make component registration a little bit easier.
     """
 
 class IExtractionAndChallengePlugin(IExtractionPlugin, IChallengePlugin):
-    """Components that provide credential extraction and challenge
+    """Components that provide credential extraction and challenge.
 
     This interface exists to make component registration a little bit easier.
     """
-    
