@@ -46,6 +46,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
     meta_type = 'CMF Membership Tool'
     _actions = []
     security = ClassSecurityInfo()
+    memberareaCreationFlag = 1
 
     manage_options=( ({ 'label' : 'Configuration'
                      , 'action' : 'manage_mapRoles'
@@ -205,9 +206,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         an underlying user folder logs in first without going 
         through the join process
         """
-        if not hasattr(self, 'memberareaCreationFlag'):
-            self.memberareaCreationFlag = 0
-
+        import pdb; pdb.set_trace()
         return self.memberareaCreationFlag
 
     security.declareProtected(ManagePortal, 'setMemberareaCreationFlag')
@@ -218,6 +217,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         an underlying user folder logs in first without going
         through the join process
         """
+        import pdb; pdb.set_trace()
         if not hasattr(self, 'memberareaCreationFlag'):
             self.memberareaCreationFlag = 0
 
