@@ -59,15 +59,20 @@ class Loader:
                     os.unlink(path)
 
     def load(self, url):
-        if ":" in url:
+        if ":" in url and url.find(":") != 1:
             type, rest = urllib.splittype(url)
-            methodname = "load_" + type
+            # the replace() is to support svn+ssh: URLs
+            methodname = "load_" + type.replace("+", "_")
             method = getattr(self, methodname, None)
             if method is None:
                 method = self.unknown_load
         else:
             method = self.file_load
         return method(url)
+
+    def file_load(self, path):
+        """Load using a local path."""
+        raise NotImplementedError("is this ever used?")
 
     def load_file(self, url):
         parts = urlparse.urlsplit(url)
