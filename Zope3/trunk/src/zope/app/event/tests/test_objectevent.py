@@ -33,7 +33,6 @@ from zope.app.container.sample import SampleContainer
 from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.servicenames import Adapters, EventPublication
 from zope.component import getService
-from zope.app.observable.interfaces import IObservable
 
 class TestObjectModifiedEvent(unittest.TestCase):
 
@@ -71,7 +70,7 @@ class TestObjectEventNotifications(unittest.TestCase):
         event = ObjectRemovedEvent(item)
         notifier.notify(event)
         self.assertEqual([event], events)
-                
+
     def testNotifyNobody(self):
         # Check that notify won't raise an exception in absence of
         # of subscribers.

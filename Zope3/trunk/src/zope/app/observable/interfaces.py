@@ -16,14 +16,12 @@
 $Id$
 """
 
-from zope.interface import implements
-from zope.interface.interfaces import Interface, IInterface
+from zope.interface.interfaces import Interface
 
 class IObservable(Interface):
-    
+
     def notify(event, provided):
         """Notify all subscribers that the event provided has occured."""
 
     def subscribe(required, provided, subscriber):
         """Subscribe to an event for a particular instance."""
-        

@@ -24,7 +24,6 @@ from zope.app.event.interfaces import IObjectCopiedEvent
 from zope.app.event.interfaces import IObjectAnnotationsModifiedEvent
 from zope.app.event.interfaces import IObjectContentModifiedEvent
 from zope.app.event.interfaces import ISubscriber
-from zope.app.observable.interfaces import IObservable
 from zope.interface import implements
 from zope.app.event import publish
 from zope.app import zapi

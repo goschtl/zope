@@ -41,19 +41,16 @@ class ObservableAdapter:
     def unsubscribe(self, required, provided, subscriber):
         annotations = IAnnotations(self.context)
         registry = annotations.get(key)
-        
+
         if registry is not None:
             # if there is no registry, we can't unsubscribe
             registry.unsubscribe(required, provided, subscriber)
-        
+
     def notify(self, event, provided):
         annotations = IAnnotations(self.context)
         registry = annotations.get(key)
-        
+
         if registry is not None:
             for subscriber in registry.subscriptions([providedBy(event)],
                                                      provided):
                 subscriber.notify(event)
-
-        
-
