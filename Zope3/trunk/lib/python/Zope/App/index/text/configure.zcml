@@ -1,10 +1,9 @@
 <zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
 >
 
-  <content
-    class=".index.TextIndex"
-    >
+  <content class=".index.TextIndex">
 
     <require
       permission="Zope.ManageServices"
@@ -18,6 +17,22 @@
 
   </content>
 
-  <include package=".browser" />
+  <browser:menuItem
+    menu="add_component"
+    for="Zope.App.OFS.Container.IAdding."
+    action="Zope.App.index.text.factory"
+    title="Text Index"
+    description="An index to support full-text search"
+    />
+
+  <browser:defaultView
+    for="Zope.TextIndex.TextIndexInterfaces.IStatistics"
+    name="control.html" />
+
+  <browser:view
+    for="Zope.TextIndex.TextIndexInterfaces.IStatistics"
+    permission="Zope.View"
+    name="control.html"
+    template="control.pt" />
 
 </zopeConfigure>
