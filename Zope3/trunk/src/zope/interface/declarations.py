@@ -1255,7 +1255,7 @@ def providedBy(ob):
 
         # The object's class doesn't understand descriptors.
         # Sigh. We need to get an object descriptor, but we have to be
-        # careful.  We want to use the instance's __provides__,l if
+        # careful.  We want to use the instance's __provides__, if
         # there is one, but only if it didn't come from the class.
 
         try:
