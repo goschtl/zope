@@ -60,6 +60,12 @@ class TestUtilityTool(BrowserTestCase):
         tools = zapi.traverse(root, '/++etc++site/tools')
         self.assert_('zope' in tools.keys())
 
+        # Make sure that the new utility has a parent and a name
+        zope = zapi.getUtility(ITranslationDomain, 'zope', context=tools)
+        self.assertEqual(zapi.getParent(zope), tools)
+        self.assertEqual(zapi.getName(zope), 'zope')
+        
+
     def testDelete(self):
         path = '/++etc++site/@@AddITranslationDomainTool'
         # create the view
