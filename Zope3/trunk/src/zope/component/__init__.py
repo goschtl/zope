@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.22 2004/03/09 12:41:15 srichter Exp $
+$Id: __init__.py,v 1.23 2004/03/10 00:58:31 srichter Exp $
 """
 import sys
 import warnings
@@ -187,7 +187,7 @@ def queryFactory(context, name, default=None):
     warnings.warn(
         "Use getUtility(context, IFactory, name) instead of getFactory(...)",
         DeprecationWarning, 2)
-    return queryUtility(context, IFactory, name)
+    return queryUtility(context, IFactory, name=name)
 
 
 # Presentation service
