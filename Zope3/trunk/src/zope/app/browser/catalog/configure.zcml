@@ -20,8 +20,17 @@
       action="zope.app.catalogutility"
       title="Catalog"
       for="zope.app.interfaces.container.IAdding"
+      description="A Catalog allows indexing and searching of objects"
       permission="zope.ManageServices" />
-  
+
+  <menuItem
+      menu="add_utility"
+      action="zope.app.catalogutility"
+      title="Catalog"
+      for="zope.app.interfaces.container.IAdding"
+      description="A Catalog allows indexing and searching of objects"
+      permission="zope.ManageServices" />
+
   <!-- Standard container 'contents' tab -->
   <page
       for="zope.app.interfaces.catalog.catalog.ICatalog"
