@@ -11,6 +11,7 @@ zope.app              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app
 zope.app.container    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/container
 zope.app.mail         svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/mail
 zope.app.presentation svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/presentation
+zope.app.server       svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/server
 zope.app.sqlscript    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/sqlscript
 zope.cachedescriptors svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/cachedescriptors
 zope.component        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/component
