@@ -9,14 +9,6 @@ Features
 
 - Fix final issues relating the new PAS and related UIs
 
-- The API Doc Tool needs to be updated to reflect latest design changes
-
-  o Better support for multi-adapters
-
-  o Presentation components are now just adapters
-
-  o Services will be utilities
-
 - Develop a generic browser:form directive
 
 - Support for iterable sources

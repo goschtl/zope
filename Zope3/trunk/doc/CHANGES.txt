@@ -29,6 +29,8 @@ Zope Changes
 
       - API doctool has received some upgrades:
 
+        * Code Browser now also shows interfaces and text files.
+
         * A new `bookmodule` compiles all our README.txt and other text
           documentation files to a nice book-like format.
 
@@ -284,6 +286,9 @@ Zope Changes
         the type of object you're interested in configuring.
 
       - Several changes have been made to the API doc tool:
+
+        + Rewrote the ZCML file parser to reuse the zope.configuration
+          code. This makes the code much more stable and predictable.
 
         + General inspection utilities are now *publically* available in the
           modules: utilities, interface, component, presentation,
