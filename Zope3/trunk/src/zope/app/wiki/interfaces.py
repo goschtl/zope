@@ -93,7 +93,7 @@ class IWikiPageHierarchy(Interface):
 
     parents = List(
         title = _(u"Wiki Page Parents"),
-        description = _(u"Parents of a a Wiki"),
+        description = _(u"Parents of a Wiki"),
         value_type = TextLine(title=_(u"Parent Name"),
                               description=_(u"Name of the parent wiki page.")),
         required=False)

@@ -16,7 +16,7 @@
     </div>
 
     <div class="row">
-      <div class="label" i18n:translate="">Source Satte</div>
+      <div class="label" i18n:translate="">Source State</div>
       <div class="field">
         <select name="source">
           <option tal:repeat="state states"
@@ -26,7 +26,7 @@
     </div>
 
     <div class="row">
-      <div class="label" i18n:translate="">Destination Satte</div>
+      <div class="label" i18n:translate="">Destination State</div>
       <div class="field">
         <select name="destination">
           <option tal:repeat="state states"
