@@ -16,4 +16,8 @@
       interface="zope.app.interfaces.talesapi.IZopeTalesAPI"
       />
 
+ <content class="zope.tales.tales.Iterator">
+    <allow interface="zope.tales.interfaces.ITALESIterator" />
+ </content>
+
 </zopeConfigure>
