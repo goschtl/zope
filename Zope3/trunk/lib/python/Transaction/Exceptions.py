@@ -11,12 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-class TransactionError(Exception):
-    """An error occured due to normal transaction processing
-    """
+class TransactionError(StandardError):
+    """An error occured due to normal transaction processing."""
 
 class ConflictError(TransactionError):
     """Two transactions tried to modify the same object at once
 
     This transaction should be resubmitted.
     """
+
+class RollbackError(TransactionError):
+    """An error occurred rolling back a savepoint."""
+
