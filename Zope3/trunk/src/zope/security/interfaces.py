@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for security machinery.
 
-$Id: interfaces.py,v 1.6 2003/03/13 16:28:14 alga Exp $
+$Id: interfaces.py,v 1.7 2003/06/05 11:45:03 mgedmin Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -148,6 +148,22 @@ class IChecker(Interface):
 
     def proxy(value):
         """Return a security proxy for the value."""
+
+
+class INameBasedChecker(IChecker):
+    """Security checker that uses permissions to check attribute access."""
+
+    def permission_id(name):
+        """Return the permission used to check attribute access on name.
+
+        This permission is used by both check and check_getattr.
+        """
+
+    def setattr_permission_id(name):
+        """Return the permission used to check attribute assignment on name.
+
+        This permission is used by check_setattr.
+        """
 
 
 class ISecurityPolicy(Interface):

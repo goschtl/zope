@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.30 2003/06/05 09:47:37 ryzaja Exp $
+$Id: checker.py,v 1.31 2003/06/05 11:45:03 mgedmin Exp $
 """
 
 import os
@@ -27,7 +27,7 @@ from zope.interface.declarations import ProvidesSpecification
 from zope.interface.declarations import ImplementsOnlySpecification
 from zope.interface.declarations import ImplementsSpecification
 from zope.interface.declarations import InterfaceSpecification
-from zope.security.interfaces import IChecker
+from zope.security.interfaces import IChecker, INameBasedChecker
 from zope.security.interfaces import ISecurityProxyFactory
 from zope.security.management import getSecurityManager
 from zope.security._proxy import _Proxy as Proxy, getChecker
@@ -71,11 +71,13 @@ def ProxyFactory(object, checker=None):
 
 directlyProvides(ProxyFactory, ISecurityProxyFactory)
 
+
 class TrustedCheckerBase:
     """Marker type used by zope.security.proxy.trustedRemoveSecurityProxy"""
 
+
 class Checker(TrustedCheckerBase):
-    implements(IChecker)
+    implements(INameBasedChecker)
 
     def __init__(self, permission_func,
                  setattr_permission_func=lambda name: None
@@ -108,13 +110,11 @@ class Checker(TrustedCheckerBase):
         return self._setattr_permission_func
 
     def permission_id(self, name):
-        """Return the result of calling the permission func
-        """
+        'See INameBasedChecker'
         return self._permission_func(name)
 
     def setattr_permission_id(self, name):
-        """Return the result of calling the permission func
-        """
+        'See INameBasedChecker'
         return self._setattr_permission_func(name)
 
     def check_getattr(self, object, name):
@@ -165,47 +165,62 @@ class Checker(TrustedCheckerBase):
 
         return Proxy(value, checker)
 
+
 class CombinedChecker(TrustedCheckerBase):
-    """A checker that combines two other checkers."""
+    """A checker that combines two other checkers in a logical-or fashion.
+
+    The following table describes the result of a combined checker in detail.
+
+    checker1           checker2           CombinedChecker(checker1, checker2)
+    ------------------ ------------------ -----------------------------------
+    ok                 anything           ok (checker2 is never called)
+    Unauthorized       ok                 ok
+    Unauthorized       Unauthorized       Unauthorized
+    Unauthorized       ForbiddenAttribute Unauthorized
+    ForbiddenAttribute ok                 ok
+    ForbiddenAttribute Unauthorized       Unauthorized
+    ForbiddenAttribute ForbiddenAttribute ForbiddenAttribute
+    ------------------ ------------------ -----------------------------------
+    """
     implements(IChecker)
 
     def __init__(self, checker1, checker2):
-        """Create a combined checker
-
-        checker1 takes precedence over checker2.
-        """
+        """Create a combined checker."""
         self._checker1 = checker1
         self._checker2 = checker2
 
-    def permission_id(self, name):
-        permission = self._permission_func(name)
-        if permission is None:
-            permission = self._original_checker.permission_id(name)
-        return permission
-
-    def setattr_permission_id(self, name):
-        permission = self._setattr_permission_func(name)
-        if permission is None:
-            permission = self._original_checker.setattr_permission_id(name)
-        return permission
-
     def check(self, object, name):
+        'See IChecker'
         try:
             self._checker1.check(object, name)
-        except (Unauthorized, ForbiddenAttribute):
+        except ForbiddenAttribute:
             self._checker2.check(object, name)
+        except Unauthorized, unauthorized_exception:
+            try: self._checker2.check(object, name)
+            except ForbiddenAttribute:
+                raise unauthorized_exception
 
     def check_getattr(self, object, name):
+        'See IChecker'
         try:
             self._checker1.check_getattr(object, name)
-        except (Unauthorized, ForbiddenAttribute):
+        except ForbiddenAttribute:
             self._checker2.check_getattr(object, name)
+        except Unauthorized, unauthorized_exception:
+            try: self._checker2.check_getattr(object, name)
+            except ForbiddenAttribute:
+                raise unauthorized_exception
 
     def check_setattr(self, object, name):
+        'See IChecker'
         try:
             self._checker1.check_setattr(object, name)
-        except (Unauthorized, ForbiddenAttribute):
+        except ForbiddenAttribute:
             self._checker2.check_setattr(object, name)
+        except Unauthorized, unauthorized_exception:
+            try: self._checker2.check_setattr(object, name)
+            except ForbiddenAttribute:
+                raise unauthorized_exception
 
     def proxy(self, value):
         'See IChecker'
@@ -248,19 +263,25 @@ class DecoratedChecker(TrustedCheckerBase):
             setattr_permission_func = setattr_permission_func.get
         self._setattr_permission_func = setattr_permission_func
 
+        if INameBasedChecker.isImplementedBy(original_checker):
+            directlyProvides(self, INameBasedChecker)
+
     def permission_id(self, name):
+        'See INameBasedChecker'
         permission = self._permission_func(name)
         if permission is None:
             permission = self._original_checker.permission_id(name)
         return permission
 
     def setattr_permission_id(self, name):
+        'See INameBasedChecker'
         permission = self._setattr_permission_func(name)
         if permission is None:
             permission = self._original_checker.setattr_permission_id(name)
         return permission
 
     def check(self, object, name):
+        'See IChecker'
         permission = self._permission_func(name)
         if permission is not None:
             if permission is CheckerPublic:
@@ -277,6 +298,7 @@ class DecoratedChecker(TrustedCheckerBase):
             return
 
     def check_getattr(self, object, name):
+        'See IChecker'
         permission = self._permission_func(name)
         if permission is not None:
             if permission is CheckerPublic:
@@ -293,6 +315,7 @@ class DecoratedChecker(TrustedCheckerBase):
             return
 
     def check_setattr(self, object, name):
+        'See IChecker'
         permission = self._setattr_permission_func(name)
         if permission is not None:
             if permission is CheckerPublic:
@@ -320,13 +343,10 @@ class DecoratedChecker(TrustedCheckerBase):
 
 
 class CheckerLoggingMixin:
-    """Debugging mixin for Checker.
+    """Debugging mixin for checkers.
 
     Prints verbose debugging information about every performed check to
     sys.stderr.
-
-    This class relies on the class it's mixed into having permission_id
-    and setattr_permission_id methods.
     """
 
     def check(self, object, name):
@@ -334,8 +354,6 @@ class CheckerLoggingMixin:
             super(CheckerLoggingMixin, self).check(object, name)
             if name in _always_available:
                 print >> sys.stderr, '[CHK] + Always available: %s on %r' % (name, object)
-            elif self.permission_id(name) is CheckerPublic:
-                print >> sys.stderr, '[CHK] + Public: %s on %r' % (name, object)
             else:
                 print >> sys.stderr, '[CHK] + Granted: %s on %r' % (name, object)
         except Unauthorized:
@@ -350,8 +368,6 @@ class CheckerLoggingMixin:
             super(CheckerLoggingMixin, self).check(object, name)
             if name in _always_available:
                 print >> sys.stderr, '[CHK] + Always available getattr: %s on %r' % (name, object)
-            elif self.permission_id(name) is CheckerPublic:
-                print >> sys.stderr, '[CHK] + Public getattr: %s on %r' % (name, object)
             else:
                 print >> sys.stderr, '[CHK] + Granted getattr: %s on %r' % (name, object)
         except Unauthorized:
@@ -364,10 +380,7 @@ class CheckerLoggingMixin:
     def check_setattr(self, object, name):
         try:
             super(CheckerLoggingMixin, self).check_setattr(object, name)
-            if self.setattr_permission_id(name) is CheckerPublic:
-                print >> sys.stderr, '[CHK] + Public setattr: %s on %r' % (name, object)
-            else:
-                print >> sys.stderr, '[CHK] + Granted setattr: %s on %r' % (name, object)
+            print >> sys.stderr, '[CHK] + Granted setattr: %s on %r' % (name, object)
         except Unauthorized:
             print >> sys.stderr, '[CHK] - Unauthorized setattr: %s on %r' % (name, object)
             raise
@@ -375,11 +388,15 @@ class CheckerLoggingMixin:
             print >> sys.stderr, '[CHK] - Forbidden setattr: %s on %r' % (name, object)
             raise
 
+
 if WATCH_CHECKERS:
     class Checker(CheckerLoggingMixin, Checker):
         pass
+    class CombinedChecker(CheckerLoggingMixin, CombinedChecker):
+        pass
     class DecoratedChecker(CheckerLoggingMixin, DecoratedChecker):
         pass
+
 
 # Helper class for __traceback_supplement__
 class TracebackSupplement:

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.13 2003/06/02 17:43:04 stevea Exp $
+$Id: test_checker.py,v 1.14 2003/06/05 11:45:03 mgedmin Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -475,6 +475,11 @@ class TestCombinedChecker(TestMixinDecoratedChecker, TestCase):
         self.assert_(
             self.policy.checkChecked(['dc_get_permission', 'get_permission'])
             )
+
+        # This should raise Unauthorized instead of ForbiddenAttribute, since
+        # access can be granted if you e.g. login with different credentials.
+        self.assertRaises(Unauthorized, cc.check_getattr, self.obj, 'd_only')
+        self.assertRaises(Unauthorized, cc.check, self.obj, 'd_only')
 
     def test_interface(self):
         from zope.security.checker import CombinedChecker
