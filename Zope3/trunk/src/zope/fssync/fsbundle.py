@@ -13,7 +13,7 @@
 ##############################################################################
 """High-level class to support bundle management on an fssync checkout.
 
-$Id: fsbundle.py,v 1.2 2003/08/15 22:23:15 fdrake Exp $
+$Id: fsbundle.py,v 1.3 2003/08/28 17:22:30 fdrake Exp $
 """
 
 import os
@@ -37,7 +37,6 @@ class FSBundle(object):
     # bundle operations
 
     def create(self, path, type, factory, source=None):
-        print (path, source)
         if os.path.exists(path):
             raise Error("%r already exists", path)
         dir, name = os.path.split(path)
