@@ -67,6 +67,35 @@ def filter_names(names):
     return names
 
 
+def normalize_path(path, type, filename, lineno):
+    if ":" in path:
+        scheme, rest = urllib.splittype(path)
+        if len(scheme) == 1:
+            # looks like a drive letter for Windows; scream,
+            # 'cause that's not allowable:
+            raise InclusionSpecificationError(
+                "drive letters are not allowed in inclusions: %r"
+                % path,
+                filename, lineno)
+    np = posixpath.normpath(path)
+    if posixpath.isabs(np) or np[:1] == ".":
+        raise InclusionSpecificationError(
+            "%s path must not be absolute or refer to a location"
+            " not contained in the source directory"
+            % path,
+            filename, lineno)
+    return np.replace("/", os.sep)
+
+
+def normalize_path_or_url(path, type, filename, lineno):
+    if ":" in path:
+        scheme, rest = urllib.splittype(path)
+        if len(scheme) != 1:
+            # should normalize the URL, but skip that for now
+            return path
+    return normalize_path(path, type, filename, lineno)
+
+
 class Specification:
     """Specification for files to include and exclude.
 
@@ -131,8 +160,8 @@ class Specification:
                     " both target and source parts",
                     filename, lineno)
             dest, src = parts
-            dest = self.normalize_path(dest, "destination", filename, lineno)
-            src = self.normalize_path_or_url(src, "source", filename, lineno)
+            dest = normalize_path(dest, "destination", filename, lineno)
+            src = normalize_path_or_url(src, "source", filename, lineno)
             if src == "-":
                 path = os.path.join(self.source, dest)
                 expansions = filter_names(glob.glob(path))
@@ -144,33 +173,6 @@ class Specification:
                     self.excludes[fn] = fn
             else:
                 self.includes[dest] = src
-
-    def normalize_path(self, path, type, filename, lineno):
-        if ":" in path:
-            scheme, rest = urllib.splittype(path)
-            if len(scheme) == 1:
-                # looks like a drive letter for Windows; scream,
-                # 'cause that's not allowable:
-                raise InclusionSpecificationError(
-                    "drive letters are not allowed in inclusions: %r"
-                    % path,
-                    filename, lineno)
-        np = posixpath.normpath(path)
-        if posixpath.isabs(np) or np[:1] == ".":
-            raise InclusionSpecificationError(
-                "%s path must not be absolute or refer to a location"
-                " not contained in the source directory"
-                % path,
-                filename, lineno)
-        return np.replace("/", os.sep)
-
-    def normalize_path_or_url(self, path, type, filename, lineno):
-        if ":" in path:
-            scheme, rest = urllib.splittype(path)
-            if len(scheme) != 1:
-                # should normalize the URL, but skip that for now
-                return path
-        return self.normalize_path(path, type, filename, lineno)
 
 
 class InclusionProcessor:

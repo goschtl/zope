@@ -93,11 +93,11 @@ class InclusionProcessorTestCase(unittest.TestCase):
     # public API.
 
     def test_normalize_path(self):
-        normalize = self.spec.normalize_path
+        normalize = include.normalize_path
         self.check_normalize_paths(normalize)
 
     def test_normalize_path_or_url(self):
-        normalize = self.spec.normalize_path_or_url
+        normalize = include.normalize_path_or_url
         self.check_normalize_paths(normalize)
         self.check_normalize_urls(normalize)
 
