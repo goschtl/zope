@@ -2,8 +2,6 @@
 
 The global var 'table' contains a list of entries identifying where
 change-notifications for particular sections of the repository are sent.
-(You can also use the entries to identify mirroring target hosts, but
-that's not longer used.)
 
 Each 'table' entry is a dictionary containing some mandatory and some
 optional fields (optional fields have default values described)
@@ -49,13 +47,15 @@ def init_table():
     add_to_table([
         {'path': "CVSROOT",
          'addrs': ["digicool-cvs@zope.org"],
-         'specials': [("repolinks", "adjustlinks.py")]},
+         'specials': [("repolinks", "adjustlinks.py")],
+         'verbose': 1},
 
 ##       {'path': "test",
 ##        'addrs': "klm@zope.com"},
 
         # Catchall for when *no other entry* matches:
         {'path': None,
+         'verbose': 1,
          'addrs': ["digicool-cvs@zope.org"]},
 
         {'path': "Operations",
