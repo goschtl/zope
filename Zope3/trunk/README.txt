@@ -1,4 +1,4 @@
-Welcome to the Zope3 source
+Welcome to the Zope 3 source
 
   The file provides some basic hints for people developing Zope3
   software.  There is more developer info in the Zope3 Wiki:
