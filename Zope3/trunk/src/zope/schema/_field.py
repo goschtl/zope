@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.13 2003/05/03 16:36:05 jim Exp $
+$Id: _field.py,v 1.14 2003/05/12 10:02:41 ryzaja Exp $
 """
 __metaclass__ = type
 
@@ -24,8 +24,8 @@ from zope.interface.interfaces import IInterface
 from zope.schema.interfaces import ValidationError
 from zope.schema.errornames import WrongContainedType, WrongType
 
-from zope.schema.interfaces import IField, IContainer, IIterable, IOrderable
-from zope.schema.interfaces import IMinMaxLen, IEnumerated, IText, ITextLine
+from zope.schema.interfaces import IField
+from zope.schema.interfaces import IMinMaxLen, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_accessors.py,v 1.1 2003/04/14 08:21:17 jim Exp $
+$Id: test_accessors.py,v 1.2 2003/05/12 10:02:41 ryzaja Exp $
 """
 
 import unittest
@@ -62,7 +62,7 @@ class Test(unittest.TestCase):
             self.assertEqual(getattr(I['getFoo'], attr), getattr(field, attr))
 
         self.assert_(IText.isImplementedBy(I['getFoo']))
-        
+
         self.assertEqual(I['setFoo'].field, field)
         self.assertEqual(I['setFoo'].__name__, 'setFoo')
         self.assertEqual(I['setFoo'].__doc__, u'set Foo thing')
@@ -70,7 +70,7 @@ class Test(unittest.TestCase):
 
         self.assertRaises(Exception, verifyClass, I, Bad)
         self.assertRaises(Exception, verifyObject, I, Bad())
-        
+
         verifyClass(I, Good)
         verifyObject(I, Good())
 

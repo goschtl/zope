@@ -12,10 +12,8 @@
 #
 ##############################################################################
 """
-$Id: _schema.py,v 1.6 2003/01/28 02:56:45 rdmurray Exp $
+$Id: _schema.py,v 1.7 2003/05/12 10:02:41 ryzaja Exp $
 """
-from zope.interface import Interface
-from zope.schema.interfaces import ValidationError
 
 def getFieldNames(schema):
     """Return a list of all the Field names in a schema.

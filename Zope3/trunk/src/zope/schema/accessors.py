@@ -33,17 +33,14 @@ readaccessor is defined for read-only fields.
 Read accessors function as access method sepcifications and as field
 specifications.  Write accessors are solely method specifications.
 
-$Id: accessors.py,v 1.3 2003/05/03 16:36:05 jim Exp $
+$Id: accessors.py,v 1.4 2003/05/12 10:02:41 ryzaja Exp $
 """
-
-
 
 from __future__ import generators
 
 from zope.interface import providedBy
-from zope.interface import directlyProvides
 from zope.interface.interface import Method
-        
+
 
 class FieldReadAccessor(Method):
     """Field read accessor
@@ -119,4 +116,4 @@ def accessors(field):
         reader.writer = writer
         yield writer
 
-    
+

@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_equality.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: test_equality.py,v 1.3 2003/05/12 10:02:41 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, makeSuite
-from zope.schema import Field, Text, Int
+from zope.schema import Text, Int
 
 class FieldEqualityTests(TestCase):
 

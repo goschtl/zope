@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.15 2003/05/03 16:36:05 jim Exp $
+$Id: _bootstrapfields.py,v 1.16 2003/05/12 10:02:41 ryzaja Exp $
 """
 __metaclass__ = type
 
@@ -108,7 +108,7 @@ class Field(Attribute):
         names = {} # used as set of property names, ignoring values
         for interface in providedBy(self):
             names.update(getFields(interface))
-            
+
         # order will be different always, don't compare it
         if 'order' in names:
             del names['order']
