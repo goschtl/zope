@@ -28,7 +28,7 @@ from zope.schema import Int
 
 class IntWidgetTest(SimpleInputWidgetTest):
     """Documents and tests the int widget.
-        
+
         >>> verifyClass(IInputWidget, IntWidget)
         True
     """
