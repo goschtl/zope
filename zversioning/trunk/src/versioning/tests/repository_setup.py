@@ -14,8 +14,19 @@ def buildDatabaseRoot():
     from zope.app.tests import ztapi
     ztapi.provideAdapter(zope.app.annotation.interfaces.IAttributeAnnotatable,
                          zope.app.annotation.interfaces.IAnnotations,
-                         zope.app.annotation.attribute.AttributeAnnotations)
-    
+                         zope.app.annotation.attribute.AttributeAnnotations,
+    ztapi.provideAdapter(zope.app.traversing.interfaces.IPhysicallyLocatable,
+                         zope.app.location.interfaces.ILocation,
+                         zope.app.location.traversing.LocationPhysicallyLocatable)
+
+  <adapter 
+      for="zope.app.location.interfaces.ILocation"
+      provides="zope.app.traversing.interfaces.IPhysicallyLocatable"
+      factory="zope.app.location.traversing.LocationPhysicallyLocatable" 
+      />
+
+
+
     # Now we need to create a database with an instance of our sample object 
     # to work with:
     
