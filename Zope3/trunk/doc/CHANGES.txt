@@ -60,7 +60,7 @@ Zope Changes
 
         * User Preferences allow you to customize the behavior while using the
           tool.
-         
+
         * Using the preferences, you can select which views and adapters you
           want to see by default in the interface details screen.
 
@@ -80,7 +80,7 @@ Zope Changes
           of formatting fields should be accepted by the formatter and parser.
 
         * Implemented formatting of several missing formatting fields. Now all
-          fields are correctly implemented. 
+          fields are correctly implemented.
 
       - Added pytz to the repository. Stuart Bishop licensed it for us under
         ZPL 2.1. Thanks!
@@ -331,7 +331,7 @@ Zope Changes
 
         + Converted most tests to text files.
 
-        + Moved code from `__init__.py` files to modules. 
+        + Moved code from `__init__.py` files to modules.
 
         + Removed `viewmodule`, since its functionality has been merged into
           the interface details view.
@@ -357,7 +357,7 @@ Zope Changes
         + Converted Principal Annotation Service to be a utility. Added
           database evolution code to convert all service instances to
           utilities.
-        
+
         + Converted FSSync Service to be a utility.
 
         + Created the concept of a global site manager. The adapter and
@@ -493,6 +493,12 @@ Zope Changes
         Instead of `rename(container, oldName, newName)`, one should use
         `IContainerItemRenamer(container).renameItem(oldName, newName)`.
 
+      - Added capi in zope.component, a short form of zope.component, that can
+        be in instead of zapi when zapi cannot be used. This would be the case
+        for packages that don't want to create a dependency on zope.app or
+        cannot access zope.app.zapi directly (e.g. zope.app.traversing). If
+        your use case doesn't apply to this, continue using zope.app.zapi.
+
     Bug Fixes
 
       - Fixed issue #345: Using response.write should not involve unicode 
@@ -523,7 +529,7 @@ Zope Changes
 
         Thanks to "foom" for the report and the fix.
 
-      - Fixed issue #354 (apidoc: 'SubscriptionRegistration' object has no 
+      - Fixed issue #354 (apidoc: 'SubscriptionRegistration' object has no
                           attribute 'name')
 
       - Fixed issue #366 (_zope_interface_coptimizations.c compilation error)
