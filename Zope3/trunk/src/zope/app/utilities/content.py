@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.4 2003/08/18 18:55:37 srichter Exp $
+$Id: content.py,v 1.5 2003/09/21 17:33:49 jim Exp $
 """
 __metaclass__ = type
 
@@ -35,10 +35,10 @@ from zope.app.services.service import ServiceRegistration
 from zope.app.services.servicenames import BrowserMenu
 from zope.app.services.utility import UtilityRegistration
 from zope.component.exceptions import ComponentLookupError
-from zope.context import ContextMethod, ContextProperty
 from zope.interface import directlyProvides, implements
 from zope.schema import getFields
 from zope.security.checker import CheckerPublic, Checker, defineChecker
+
 
 MenuItemKey = 'http://www.zope.org/utilities/content/menuitem'
 
@@ -96,11 +96,11 @@ class ContentComponentDefinitionMenuItem:
         sm = zapi.getServiceManager(self.context)
         # Get the default package and add a menu service called 'Menus-1'
         default = zapi.traverse(sm, 'default')
-        default.setObject('Menus-1', LocalBrowserMenuService())
+        default['Menus-1'] = LocalBrowserMenuService()
         # Register the service and set it to active
         path = "%s/default/%s" % (zapi.getPath(sm), 'Menus-1')
         reg = ServiceRegistration(BrowserMenu, path, sm)
-        key = default.getRegistrationManager().setObject("", reg)
+        key = default.getRegistrationManager().addRegistration(reg)
         reg = zapi.traverse(default.getRegistrationManager(), key)
         reg.status = ActiveStatus
         return zapi.traverse(default, 'Menus-1')    
@@ -112,11 +112,11 @@ class ContentComponentDefinitionMenuItem:
         menu = LocalBrowserMenu()
         sm = zapi.getServiceManager(self.context)
         default = zapi.traverse(sm, 'default')
-        default.setObject(self.menuId, menu)
+        default[self.menuId] = menu
         # Register th emenu as a utility and activate it.
         path = "%s/default/%s" % (zapi.getPath(sm), self.menuId)
         reg = UtilityRegistration(self.menuId, ILocalBrowserMenu, path)
-        key = default.getRegistrationManager().setObject("", reg)
+        key = default.getRegistrationManager().addRegistration(reg)
         reg = zapi.traverse(default.getRegistrationManager(), key)
         reg.status = ActiveStatus
         return zapi.traverse(default, self.menuId)    
@@ -166,9 +166,7 @@ class ContentComponentDefinitionMenuItem:
         for name in ('interface', 'action', 'title', 'description',
                      'permission', 'filter_string'):
             setattr(item, name, getattr(self, name))
-        self._data['menuItemId'] = menu.setObject('something', item)
-
-    createMenuItem = ContextMethod(createMenuItem)
+        self._data['menuItemId'] = menu.addItem(item)
 
 
     def removeMenuItem(self):
@@ -176,7 +174,6 @@ class ContentComponentDefinitionMenuItem:
         self._data['menu'].__delitem__(self._data['menuItemId'])
         self._data['menu'] = None
         self._data['menuItemId'] = None
-    removeMenuItem = ContextMethod(removeMenuItem)
 
 
     def _setMenuId(self, value):
@@ -186,8 +183,7 @@ class ContentComponentDefinitionMenuItem:
             self.removeMenuItem()
             self.createMenuItem()
 
-    menuId = ContextProperty(
-        lambda self: self._data['menuId'], _setMenuId)
+    menuId = property(lambda self: self._data['menuId'], _setMenuId)
 
 
     def _setInterface(self, value):
@@ -197,8 +193,7 @@ class ContentComponentDefinitionMenuItem:
             if self._menuItem is not None:
                 self._menuItem.interface = value
 
-    interface = ContextProperty(
-        lambda self: self._data['interface'], _setInterface)
+    interface = property(lambda self: self._data['interface'], _setInterface)
 
 
     def _getAction(self):
@@ -217,7 +212,7 @@ class ContentComponentDefinitionMenuItem:
             if self._menuItem is not None:
                 self._menuItem.title = value
 
-    title = ContextProperty(_getTitle, _setTitle)
+    title = property(_getTitle, _setTitle)
 
 
     def _setDescription(self, value):
@@ -227,8 +222,8 @@ class ContentComponentDefinitionMenuItem:
             if self._menuItem is not None:
                 self._menuItem.description = value
 
-    description = ContextProperty(
-        lambda self: self._data['description'], _setDescription)
+    description = property(lambda self: self._data['description'],
+                           _setDescription)
 
     def _setPermission(self, value):
         if self._data['permission'] != value:
@@ -237,8 +232,8 @@ class ContentComponentDefinitionMenuItem:
             if self._menuItem is not None:
                 self._menuItem.permission = value
 
-    permission = ContextProperty(
-        lambda self: self._data['permission'], _setPermission)
+    permission = property(lambda self: self._data['permission'],
+                          _setPermission)
 
 
     def _setFilterString(self, value):
@@ -248,8 +243,8 @@ class ContentComponentDefinitionMenuItem:
             if self._menuItem is not None:
                 self._menuItem.filter = value
 
-    filter_string = ContextProperty(
-        lambda self: self._data['filter_string'], _setFilterString)
+    filter_string = property(lambda self: self._data['filter_string'],
+                             _setFilterString)
 
 
     def _setCreate(self, value):
@@ -258,8 +253,8 @@ class ContentComponentDefinitionMenuItem:
             self._data['create'] = value
             self.createMenuItem()
 
-    create = ContextProperty(
-        lambda self: self._data['create'], _setCreate)
+    create = property(lambda self: self._data['create'],
+                      _setCreate)
 
 
 
@@ -273,7 +268,6 @@ class ContentComponentDefinitionRegistration(UtilityRegistration):
         component = self.getComponent()
         component.name = self.name
         zapi.getAdapter(component, IContentComponentMenuItem).createMenuItem()
-    activated = ContextMethod(activated)
 
     def deactivated(self):
         """Once activated, we have to unregister the new Content Object with
@@ -281,7 +275,6 @@ class ContentComponentDefinitionRegistration(UtilityRegistration):
         component = self.getComponent()
         component.name = None
         zapi.getAdapter(component, IContentComponentMenuItem).removeMenuItem()
-    deactivated = ContextMethod(deactivated)
 
 
 class ContentComponentInstance(Persistent):

@@ -16,7 +16,7 @@
 This the default implmentation of the OnlineHelp. It defines the global
 OnlineHelp in which all basic Zope-core help screens are registered.
 
-$Id: __init__.py,v 1.12 2003/08/17 06:07:19 philikon Exp $
+$Id: __init__.py,v 1.13 2003/09/21 17:32:31 jim Exp $
 """
 import os
 
@@ -24,7 +24,6 @@ import zope.app
 from zope.app.container.sample import SampleContainer
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.traversing import traverse
-from zope.app.context import ContextWrapper
 
 from zope.app.interfaces.onlinehelp import IOnlineHelpTopic, IOnlineHelp
 from zope.interface import implements
@@ -89,8 +88,8 @@ class OnlineHelp(OnlineHelpTopic):
         "See Zope.App.OnlineHelp.interfaces.IOnlineHelp"
         parent = traverse(self, parent_path)
         # Create and add topic
-        id = parent.setObject(id, OnlineHelpTopic(title, doc_path, doc_type))
-        topic = ContextWrapper(parent[id], parent, name=id)
+        parent[id] = OnlineHelpTopic(title, doc_path, doc_type)
+        topic = parent[id]
         # Add topic to registry
         if not self._registry.has_key((interface, view)):
             self._registry[(interface, view)] = []

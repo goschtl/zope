@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_interfaceutility.py,v 1.4 2003/08/16 00:44:27 srichter Exp $
+$Id: test_interfaceutility.py,v 1.5 2003/09/21 17:33:49 jim Exp $
 """
 
 import unittest
@@ -38,7 +38,6 @@ from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.utility import ILocalUtility
 from zope.app.interfaces.services.registration import IRegistered
 from zope.app.interfaces.dependable import IDependable
-from zope.context import getWrapperContainer
 from zope.app.tests import setup
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
@@ -226,7 +225,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
     def test_registrationsFor_methods(self):
         utilities = getService(self.rootFolder, Utilities)
         default = traverse(self.rootFolder, "++etc++site/default")
-        default.setObject('foo', Foo("local"))
+        default['foo'] = Foo("local")
         path = "/++etc++site/default/foo"
 
         for name in ('', 'bob'):
@@ -246,18 +245,19 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
         utilities = getService(self.rootFolder, Utilities)
         default = traverse(self.rootFolder, "++etc++site/default")
-        default.setObject('foo', Foo("local"))
+        default['foo'] = Foo("local")
         path = "/++etc++site/default/foo"
         cm = default.getRegistrationManager()
 
         for name in ('', 'bob'):
             registration = utility.UtilityRegistration(name, IInterface, path)
-            cname = cm.setObject('', registration)
+            cname = cm.addRegistration(registration)
             registration = traverse(cm, cname)
 
             gout = name and "foo global "+name or "foo global"
 
-            self.assertEqual(utilities.getUtility(IInterface, name=name).foo(), gout)
+            self.assertEqual(utilities.getUtility(IInterface, name=name).foo(),
+                             gout)
 
             registration.status = ActiveStatus
 
@@ -266,7 +266,8 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
             registration.status = RegisteredStatus
 
-            self.assertEqual(utilities.getUtility(IInterface, name=name).foo(), gout)
+            self.assertEqual(utilities.getUtility(IInterface, name=name).foo(),
+                             gout)
 
     def test_getRegisteredMatching(self):
         self.test_local_utilities()
@@ -279,8 +280,8 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         cr2 = utilities.queryRegistrationsFor(
             utility.UtilityRegistration("bob", IInterface, path))
         self.assertEqual(r, [(IInterface, "", cr1), (IInterface, "bob", cr2)])
-        self.assertEqual(getWrapperContainer(r[0][2]), utilities)
-        self.assertEqual(getWrapperContainer(r[1][2]), utilities)
+        self.assertEqual(r[0][2].__parent__, utilities)
+        self.assertEqual(r[1][2].__parent__, utilities)
         # Now test that an empty registry doesn't show up
         for cd in cr1.info(): # Remove everything from cr1
             cd['registration'].status = UnregisteredStatus

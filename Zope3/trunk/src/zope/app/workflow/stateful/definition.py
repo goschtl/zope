@@ -14,16 +14,14 @@
 
 """Stateful workflow process definition.
 
-$Id: definition.py,v 1.6 2003/07/31 15:01:36 srichter Exp $
+$Id: definition.py,v 1.7 2003/09/21 17:33:56 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
 
-from zope.app.context import ContextWrapper
-from zope.context import getWrapperContainer
-from zope.context import ContextMethod
+from zope.app.container.contained import Contained
 
 from zope.app.interfaces.container import IReadContainer
 
@@ -36,9 +34,10 @@ from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 from zope.app.workflow.stateful.instance import StatefulProcessInstance
 from zope.interface import implements
+from zope.app.container.contained import Contained
 
 
-class State(Persistent):
+class State(Persistent, Contained):
     """State."""
     implements(IState)
 
@@ -48,7 +47,7 @@ class StatesContainer(ProcessDefinitionElementContainer):
     implements(IStatefulStatesContainer)
 
 
-class Transition(Persistent):
+class Transition(Persistent, Contained):
     """Transition from one state to another."""
 
     implements(ITransition)
@@ -119,8 +118,7 @@ class Transition(Persistent):
                            "TriggerMode for Transition.")
 
     def getProcessDefinition(self):
-        return getWrapperContainer(self).getProcessDefinition()
-    getProcessDefinition = ContextMethod(getProcessDefinition)
+        return self.__parent__.getProcessDefinition()
 
 
 class TransitionsContainer(ProcessDefinitionElementContainer):
@@ -137,7 +135,7 @@ class StatefulProcessDefinition(ProcessDefinition):
         super(StatefulProcessDefinition, self).__init__()
         self.__states = StatesContainer()
         initial = State()
-        self.__states.setObject(self.getInitialStateName(), initial)
+        self.__states[self.getInitialStateName()] = initial
         self.__transitions = TransitionsContainer()
         self.__schema = None
         # See workflow.stateful.IStatefulProcessDefinition
@@ -167,12 +165,11 @@ class StatefulProcessDefinition(ProcessDefinition):
         """See workflow.stateful.IStatefulProcessDefinition"""
         if name in self.states:
             raise KeyError, name
-        self.states.setObject(name, state)
+        self.states[name] = state
 
     def getState(self, name):
         """See workflow.stateful.IStatefulProcessDefinition"""
         return self.states[name]
-    getState = ContextMethod(getState)
 
     def removeState(self, name):
         """See workflow.stateful.IStatefulProcessDefinition"""
@@ -190,12 +187,11 @@ class StatefulProcessDefinition(ProcessDefinition):
         """See workflow.stateful.IStatefulProcessDefinition"""
         if name in self.transitions:
             raise KeyError, name
-        self.transitions.setObject(name, transition)
+        self.transitions[name] = transition
 
     def getTransition(self, name):
         """See workflow.stateful.IStatefulProcessDefinition"""
         return self.transitions[name]
-    getTransition = ContextMethod(getTransition)
 
     def removeTransition(self, name):
         """See workflow.stateful.IStatefulProcessDefinition"""
@@ -208,9 +204,15 @@ class StatefulProcessDefinition(ProcessDefinition):
     def createProcessInstance(self, definition_name):
         """See workflow.IProcessDefinition"""
         pi_obj = StatefulProcessInstance(definition_name)
-        ContextWrapper(pi_obj, self).initialize()
+
+        # XXX
+        # Process instances need to have a place, so they can look things
+        # up.  It's not clear to me (Jim) what place they should have.
+        pi_obj.__parent__ = self
+
+
+        pi_obj.initialize()
         return pi_obj
-    createProcessInstance = ContextMethod(createProcessInstance)
 
 
     def __getitem__(self, key):
@@ -222,7 +224,6 @@ class StatefulProcessDefinition(ProcessDefinition):
 
         return result
 
-    __getitem__ = ContextMethod(__getitem__)
 
     def get(self, key, default=None):
         "See Interface.Common.Mapping.IReadMapping"
@@ -235,7 +236,6 @@ class StatefulProcessDefinition(ProcessDefinition):
 
         return default
 
-    get = ContextMethod(get)
 
     def __contains__(self, key):
         "See Interface.Common.Mapping.IReadMapping"
@@ -253,12 +253,10 @@ class StatefulProcessDefinition(ProcessDefinition):
     def values(self):
         """See zope.app.interfaces.container.IReadContainer"""
         return map(self.get, self.keys())
-    values = ContextMethod(values)
 
     def items(self):
         """See zope.app.interfaces.container.IReadContainer"""
         return [(key, self.get(key)) for key in self.keys()]
-    items = ContextMethod(items)
 
     def __len__(self):
         """See zope.app.interfaces.container.IReadContainer"""

@@ -15,14 +15,13 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.7 2003/07/30 00:00:25 srichter Exp $
+$Id: contentworkflow.py,v 1.8 2003/09/21 17:33:56 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.component import getService, queryAdapter
-from zope.context import ContextMethod
 
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.event import IObjectCreatedEvent
@@ -32,9 +31,10 @@ from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
 from zope.app.interfaces.workflow.stateful import IContentWorkflowsManager
 from zope.interface import implements, providedBy
+from zope.app.container.contained import Contained
 
 
-class ContentWorkflowsManager(Persistent):
+class ContentWorkflowsManager(Persistent, Contained):
 
     implements(IContentWorkflowsManager, ISubscriber)
 
@@ -75,9 +75,8 @@ class ContentWorkflowsManager(Persistent):
                 except KeyError:
                     # No registered PD with that name..
                     continue
-                pi_container.setObject(pd_name, pi)
+                pi_container[pd_name] = pi
 
-    notify = ContextMethod(notify)
 
 
     def subscribe(self):
@@ -87,7 +86,6 @@ class ContentWorkflowsManager(Persistent):
         channel = self._getChannel(None)
         channel.subscribe(self, IObjectCreatedEvent)
         self.currentlySubscribed = True
-    subscribe = ContextMethod(subscribe)
 
     def unsubscribe(self):
         """See interfaces.workflows.stateful.IContentWorkflowsManager"""
@@ -96,7 +94,6 @@ class ContentWorkflowsManager(Persistent):
         channel = self._getChannel(None)
         channel.unsubscribe(self, IObjectCreatedEvent)
         self.currentlySubscribed = False
-    unsubscribe = ContextMethod(unsubscribe)
 
     def isSubscribed(self):
         """See interfaces.workflows.stateful.IContentWorkflowsManager"""
@@ -106,7 +103,6 @@ class ContentWorkflowsManager(Persistent):
         if channel is None:
             channel = getService(self, EventSubscription)
         return channel
-    _getChannel = ContextMethod(_getChannel)
 
     def getProcessDefinitionNamesForObject(self, object):
         """See interfaces.workflows.stateful.IContentWorkflowsManager"""

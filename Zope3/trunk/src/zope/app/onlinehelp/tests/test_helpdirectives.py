@@ -13,18 +13,18 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_helpdirectives.py,v 1.5 2003/08/02 11:19:25 srichter Exp $
+$Id: test_helpdirectives.py,v 1.6 2003/09/21 17:32:31 jim Exp $
 """
 import unittest
 
-from zope.app.interfaces.traversing import \
-     ITraverser, ITraversable, IPhysicallyLocatable
+from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.app.onlinehelp import tests
 from zope.app.onlinehelp import help
-from zope.app.traversing.adapters import \
-     Traverser, DefaultTraversable, WrapperPhysicallyLocatable
+from zope.app.location import LocationPhysicallyLocatable
+from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.component.adapter import provideAdapter
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
 from zope.interface import Interface
 
@@ -39,7 +39,7 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         PlacelessSetup.setUp(self)
         provideAdapter(None, ITraverser, Traverser)
         provideAdapter(None, ITraversable, DefaultTraversable)
-        provideAdapter(None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
+        provideAdapter(None, IPhysicallyLocatable, LocationPhysicallyLocatable)
 
     def test_register(self):
         self.assertEqual(help.keys(), [])
