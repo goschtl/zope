@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.15 2003/06/06 21:35:17 philikon Exp $
+$Id: test_add.py,v 1.16 2003/06/23 16:41:50 mgedmin Exp $
 """
 
 import sys
@@ -55,7 +55,7 @@ class I(Interface):
     address = TextLine()
     getfoo, setfoo = accessors(TextLine())
     extra1 = TextLine()
-    extra2 = TextLine()
+    extra2 = TextLine(required=False)
 
 class C:
 
@@ -127,6 +127,20 @@ class Test(PlacelessSetup, unittest.TestCase):
             )
 
         self.assertEqual(result1, result2)
+
+    def test_add_error_handling(self):
+
+        result1 = self._invoke_add(fields="first last email getfoo extra1")
+        # cannot use a field in arguments if it is not mentioned in fields
+        self.assertRaises(ValueError, self._invoke_add, fields="first email getfoo extra1")
+        # cannot use a field in keyword_arguments if it is not mentioned in fields
+        self.assertRaises(ValueError, self._invoke_add, fields="first last getfoo extra1")
+        # cannot use a field in set_before_add if it is not mentioned in fields
+        self.assertRaises(ValueError, self._invoke_add, fields="first last email extra1")
+        # cannot use a field in set_after_add if it is not mentioned in fields
+        self.assertRaises(ValueError, self._invoke_add, fields="first last email getfoo")
+        # cannot use an optional field in arguments
+        self.assertRaises(ValueError, self._invoke_add, arguments="extra2")
 
     def test_add(self, args=None):
 

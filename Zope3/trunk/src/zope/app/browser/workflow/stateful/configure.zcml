@@ -124,7 +124,8 @@
   schema="zope.app.interfaces.workflow.stateful.ITransition"
   permission="zope.workflow.ManageProcessDefinitions"
   content_factory="zope.app.workflow.stateful.definition.Transition"
-  arguments="sourceState destinationState condition script permission triggerMode"
+  arguments="sourceState destinationState"
+  keyword_arguments="condition script permission triggerMode"
   fields="sourceState destinationState condition script permission triggerMode"
   />
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.22 2003/04/30 19:36:23 gvanrossum Exp $
+$Id: add.py,v 1.23 2003/06/23 16:41:49 mgedmin Exp $
 """
 
 import sys
@@ -200,6 +200,11 @@ def add(_context, name, schema, content_factory='', label='',
         if missing:
             raise ValueError("Some arguments are not included in the form",
                              missing)
+        optional = [n for n in arguments if not schema[n].required]
+        if optional:
+            raise ValueError("Some arguments are optional, use"
+                             " keyword_arguments for them",
+                             optional)
         leftover = [n for n in leftover if n not in arguments]
 
     if keyword_arguments:
