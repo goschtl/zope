@@ -49,7 +49,7 @@ Zope Changes
     Restructuring
 
     - Moved the i18n message string extraction utility to the
-      'utitilies' directory
+      'utilities' directory
 
   Zope X3.0.0 Milestone 4
 
@@ -62,8 +62,8 @@ Zope Changes
     Backward compatibility notes
 
     - If you have any add-on products that used the old context-wrapper or
-      "context awareness" APIs, you will need to update them to use the new, and
-      much simpler, location API. See zope/app/interfaces/location.py.
+      "context awareness" APIs, you will need to update them to use the new,
+      and much simpler, location API. See zope/app/interfaces/location.py.
 
     - If you have add-on products that register views or resources using the
       view or resource directives from the zope ZCML namespace, you will need
