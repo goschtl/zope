@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.21 2003/06/01 15:59:41 jim Exp $
+$Id: interfaces.py,v 1.22 2003/06/11 17:00:28 fdrake Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -70,11 +70,11 @@ class IField(Interface):
     """
 
     def bind(object):
-        """Return a copy of this field which is bound to an object.
+        """Return a copy of this field which is bound to context.
 
         The copy of the Field will have the 'context' attribute set
         to 'object'.  This way a Field can implement more complex
-        checks involving the object and its location.
+        checks involving the object's location/environment.
 
         Many fields don't need to be bound. Only fields that condition
         validation or properties on an object containing the field
