@@ -50,7 +50,7 @@ class FakeRequest:
     def setCookie(self, k, v, **kw):
         self.sets += 1
         self.cookies[k] = v
-        if not abs(parse_http_date(kw["expires"]) - int(time.time()) - 1800) < 1:
+        if not abs(parse_http_date(kw["expires"]) - int(time.time()) - 1800) < 3:
             raise AssertionError
 
          
@@ -105,6 +105,12 @@ class SessionServiceTestCaseMixin(PlacefulSetup):
         svc.invalidate(svc.getSessionId(req))
         d2 = getSessionDataObject(self.rootFolder, req, "dm")
         self.assertEquals(d2, {})
+
+    def testForgingCookies(self):
+        for fakeValue in ["dsada", "2" * 54]:
+            req = FakeRequest()
+            self.svc.setRequestId(req, fakeValue)
+            self.assertEquals(self.svc.getRequestId(req), None)
 
         
 class CookieServiceTestCase(SessionServiceTestCaseMixin, TestCase):

@@ -19,7 +19,7 @@ work.
 """
 
 # System imports
-import sha, time, string, random
+import sha, time, string, random, hmac
 
 # Zope3 imports
 from Persistence import Persistent
@@ -32,6 +32,10 @@ from ISessions import ISessionService, IConfigureSessionService
 
 cookieSafeTrans = string.maketrans("+/", "-.")
 
+def digestEncode(s):
+    """Encode SHA digest for cookie."""
+    return s.encode("base64")[:-2].translate(cookieSafeTrans)
+
 
 class CookieSessionService(Persistent):
     """Session service implemented using cookies."""
@@ -41,17 +45,25 @@ class CookieSessionService(Persistent):
     def __init__(self):
         self.dataManagers = PersistentDict()
         self.namespace = "zope3-cs-%x" % (int(time.time()) - 1000000000)
+        self.secret = "%.20f" % random.random()
     
     def generateUniqueId(self):
         """Generate a new, random, unique id."""
         data = "%.20f%.20f%.20f" % (random.random(), time.time(), time.clock())
         digest = sha.sha(data).digest()
-        return digest.encode("base64")[:-2].translate(cookieSafeTrans)
+        s = digestEncode(digest)
+        # we store a HMAC of the random value together with it, which makes
+        # our session ids unforgeable.
+        mac = hmac.new(s, self.secret, digestmod=sha).digest()
+        return s + digestEncode(mac)
 
     def getRequestId(self, request):
         """Return the sessionId encoded in request or None if it's non-existent."""
         sid = request.cookies.get(self.namespace)
-        if sid is None or len(sid) != 27:
+        if sid is None or len(sid) != 54:
+            return None
+        s, mac = sid[:27], sid[27:]
+        if digestEncode(hmac.new(s, self.secret, digestmod=sha).digest()) != mac:
             return None
         else:
             return sid
