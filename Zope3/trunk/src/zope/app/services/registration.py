@@ -13,11 +13,13 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.2 2003/06/23 00:31:31 jim Exp $
+$Id: registration.py,v 1.3 2003/06/24 22:38:26 jim Exp $
 """
 __metaclass__ = type
 
 
+
+from zope.app import zapi
 
 from persistence import Persistent
 from zope.interface import implements
@@ -46,17 +48,12 @@ from zope.app.interfaces.services.registration import NoLocalServiceError
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import RegisteredStatus
-from zope.app.traversing import getRoot, getPath, traverse
-from zope.component import getAdapter, queryAdapter
-from zope.component import getServiceManager
-from zope.app.context import ContextWrapper
-from zope.context import ContextMethod, ContextDescriptor, getWrapperContainer
 from zope.proxy import removeAllProxies
 from zope.security.checker import InterfaceChecker
 from zope.security.proxy import Proxy, trustedRemoveSecurityProxy
 from zope.proxy import getProxiedObject
 
-class RegistrationStatusProperty(ContextDescriptor):
+class RegistrationStatusProperty(zapi.ContextDescriptor):
 
     def __get__(self, inst, klass):
         if inst is None:
@@ -64,7 +61,7 @@ class RegistrationStatusProperty(ContextDescriptor):
 
         registration = inst
 
-        sm = getServiceManager(registration)
+        sm = zapi.getServiceManager(registration)
         service = sm.queryLocalService(registration.serviceType)
         registry = service and service.queryRegistrationsFor(registration)
 
@@ -80,7 +77,7 @@ class RegistrationStatusProperty(ContextDescriptor):
     def __set__(self, inst, value):
         registration = inst
 
-        sm = getServiceManager(registration)
+        sm = zapi.getServiceManager(registration)
         service = sm.queryLocalService(registration.serviceType)
 
         registry = service and service.queryRegistrationsFor(registration)
@@ -133,7 +130,7 @@ class RegistrationStack(Persistent):
     def _id(self, ob):
 
         # Get and check relative path
-        path = getPath(ob)
+        path = zapi.getPath(ob)
         prefix = "/++etc++site/"
         lpackages = path.rfind(prefix)
         if lpackages < 0:
@@ -164,7 +161,7 @@ class RegistrationStack(Persistent):
             wrapped_self._data = (None, )
 
         wrapped_self._data += (cid, )
-    register = ContextMethod(register)
+    register = zapi.ContextMethod(register)
 
     def unregister(wrapped_self, registration):
         cid = wrapped_self._id(registration)
@@ -184,18 +181,18 @@ class RegistrationStack(Persistent):
 
             if data and data[0] is not None:
                 # Activate the newly active component
-                sm = getServiceManager(wrapped_self)
-                new = traverse(sm, data[0])
+                sm = zapi.getServiceManager(wrapped_self)
+                new = zapi.traverse(sm, data[0])
                 new.activated()
 
             # Write data back
             wrapped_self._data = data
-    unregister = ContextMethod(unregister)
+    unregister = zapi.ContextMethod(unregister)
 
     def registered(wrapped_self, registration):
         cid = wrapped_self._id(registration)
         return cid in wrapped_self._data
-    registered = ContextMethod(registered)
+    registered = zapi.ContextMethod(registered)
 
     def activate(wrapped_self, registration):
         if registration is None:
@@ -214,8 +211,8 @@ class RegistrationStack(Persistent):
 
             if data[0] is not None:
                 # Deactivate the currently active component
-                sm = getServiceManager(wrapped_self)
-                old = traverse(sm, data[0])
+                sm = zapi.getServiceManager(wrapped_self)
+                old = zapi.traverse(sm, data[0])
                 old.deactivated()
 
             # Insert it in front, removing it from back
@@ -236,7 +233,7 @@ class RegistrationStack(Persistent):
             raise ValueError(
                 "Registration to be activated is not registered",
                 registration)
-    activate = ContextMethod(activate)
+    activate = zapi.ContextMethod(activate)
 
     def deactivate(wrapped_self, registration):
         cid = wrapped_self._id(registration)
@@ -262,31 +259,31 @@ class RegistrationStack(Persistent):
 
         if data[0] is not None:
             # Activate the newly active component
-            sm = getServiceManager(wrapped_self)
-            new = traverse(sm, data[0])
+            sm = zapi.getServiceManager(wrapped_self)
+            new = zapi.traverse(sm, data[0])
             new.activated()
 
         # Write data back
         wrapped_self._data = data
-    deactivate = ContextMethod(deactivate)
+    deactivate = zapi.ContextMethod(deactivate)
 
     def active(wrapped_self):
         if wrapped_self._data:
             path = wrapped_self._data[0]
             if path is not None:
-                # Make sure we can traverse to it.
-                sm = getServiceManager(wrapped_self)
-                registration = traverse(sm, path)
+                # Make sure we can zapi.traverse to it.
+                sm = zapi.getServiceManager(wrapped_self)
+                registration = zapi.traverse(sm, path)
                 return registration
 
         return None
-    active = ContextMethod(active)
+    active = zapi.ContextMethod(active)
 
     def __nonzero__(self):
         return bool(self._data)
 
     def info(wrapped_self, keep_dummy=False):
-        sm = getServiceManager(wrapped_self)
+        sm = zapi.getServiceManager(wrapped_self)
 
         data = wrapped_self._data
         if not data and keep_dummy:
@@ -294,7 +291,7 @@ class RegistrationStack(Persistent):
 
         result = [{'id': path or "",
                    'active': False,
-                   'registration': (path and traverse(sm, path))
+                   'registration': (path and zapi.traverse(sm, path))
                   }
                   for path in data if path or keep_dummy
                  ]
@@ -303,7 +300,7 @@ class RegistrationStack(Persistent):
             result[0]['active'] = True
 
         return result
-    info = ContextMethod(info)
+    info = zapi.ContextMethod(info)
 
 
 class SimpleRegistration(Persistent):
@@ -349,7 +346,7 @@ class SimpleRegistration(Persistent):
 
         if objectstatus == ActiveStatus:
             try:
-                objectpath = getPath(registration)
+                objectpath = zapi.getPath(registration)
             except: # XXX
                 objectpath = str(registration)
             raise DependencyError("Can't delete active registration (%s)"
@@ -392,7 +389,7 @@ class ComponentRegistration(SimpleRegistration):
         return self.componentPath
 
     def getComponent(wrapped_self):
-        service_manager = getServiceManager(wrapped_self)
+        service_manager = zapi.getServiceManager(wrapped_self)
 
         # The user of the registration object may not have permission
         # to traverse to the component.  Yet they should be able to
@@ -411,18 +408,15 @@ class ComponentRegistration(SimpleRegistration):
 
         path = wrapped_self.componentPath
         # Get the root and unproxy it
-        root = removeAllProxies(getRoot(service_manager))
         if path.startswith("/"):
             # Absolute path
-            component = traverse(root, path)
+            root = removeAllProxies(zapi.getRoot(service_manager))
+            component = zapi.traverse(root, path)
         else:
             # Relative path.
-            # XXX We do a strange little dance because we want the
-            #     context to inherit the unproxied root, and this is
-            #     the only way to keep it.
-            ancestor = getWrapperContainer(getWrapperContainer(wrapped_self))
-            ancestor = traverse(root, getPath(ancestor))
-            component = traverse(ancestor, path)
+            ancestor = zapi.getWrapperContainer(
+                zapi.getWrapperContainer(wrapped_self))
+            component = zapi.traverse(ancestor, path)
 
         if wrapped_self.permission:
             if type(component) is Proxy:
@@ -438,31 +432,31 @@ class ComponentRegistration(SimpleRegistration):
             component = Proxy(component, checker)
 
         return component
-    getComponent = ContextMethod(getComponent)
+    getComponent = zapi.ContextMethod(getComponent)
 
     def afterAddHook(self, registration, container):
         "See IAddNotifiable"
         component = registration.getComponent()
-        dependents = getAdapter(component, IDependable)
-        objectpath = getPath(registration)
+        dependents = zapi.getAdapter(component, IDependable)
+        objectpath = zapi.getPath(registration)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
-        adapter = queryAdapter(component, IRegistered)
+        adapter = zapi.queryAdapter(component, IRegistered)
         if adapter is not None:
-            adapter.addUsage(getPath(registration))
+            adapter.addUsage(zapi.getPath(registration))
 
     def beforeDeleteHook(self, registration, container):
         "See IDeleteNotifiable"
         super(ComponentRegistration, self).beforeDeleteHook(registration,
                                                              container)
         component = registration.getComponent()
-        dependents = getAdapter(component, IDependable)
-        objectpath = getPath(registration)
+        dependents = zapi.getAdapter(component, IDependable)
+        objectpath = zapi.getPath(registration)
         dependents.removeDependent(objectpath)
         # Also update usage, if supported
-        adapter = queryAdapter(component, IRegistered)
+        adapter = zapi.queryAdapter(component, IRegistered)
         if adapter is not None:
-            adapter.removeUsage(getPath(registration))
+            adapter.removeUsage(zapi.getPath(registration))
 
 class NamedComponentRegistration(NamedRegistration, ComponentRegistration):
     """Registrations for named components.
@@ -488,18 +482,18 @@ class NameRegistry:
     def queryRegistrationsFor(wrapped_self, cfg, default=None):
         """See IRegistry"""
         return wrapped_self.queryRegistrations(cfg.name, default)
-    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
+    queryRegistrationsFor = zapi.ContextMethod(queryRegistrationsFor)
 
     def queryRegistrations(wrapped_self, name, default=None):
         """See INameRegistry"""
         registry = wrapped_self._bindings.get(name, default)
-        return ContextWrapper(registry, wrapped_self)
-    queryRegistrations = ContextMethod(queryRegistrations)
+        return zapi.ContextWrapper(registry, wrapped_self)
+    queryRegistrations = zapi.ContextMethod(queryRegistrations)
 
     def createRegistrationsFor(wrapped_self, cfg):
         """See IRegistry"""
         return wrapped_self.createRegistrations(cfg.name)
-    createRegistrationsFor = ContextMethod(createRegistrationsFor)
+    createRegistrationsFor = zapi.ContextMethod(createRegistrationsFor)
 
     def createRegistrations(wrapped_self, name):
         """See INameRegistry"""
@@ -508,8 +502,8 @@ class NameRegistry:
         except KeyError:
             wrapped_self._bindings[name] = registry = RegistrationStack()
             wrapped_self._p_changed = 1
-        return ContextWrapper(registry, wrapped_self)
-    createRegistrations = ContextMethod(createRegistrations)
+        return zapi.ContextWrapper(registry, wrapped_self)
+    createRegistrations = zapi.ContextMethod(createRegistrations)
 
     def listRegistrationNames(wrapped_self):
         """See INameRegistry"""
@@ -530,7 +524,7 @@ class NameComponentRegistry(NameRegistry):
             if registration is not None:
                 return registration.getComponent()
         return default
-    queryActiveComponent = ContextMethod(queryActiveComponent)
+    queryActiveComponent = zapi.ContextMethod(queryActiveComponent)
 
 
 from zope.app.dependable import PathSetAnnotation
@@ -689,7 +683,7 @@ class RegistrationManager(Persistent):
 
     def beforeDeleteHook(self, object, container):
         assert object == self
-        container = getAdapter(object, IZopeWriteContainer)
+        container = zapi.getAdapter(object, IZopeWriteContainer)
         for k, v in self._data:
             del container[k]
 
@@ -722,11 +716,11 @@ class RegistrationManagerContainer(object):
             item = self[name]
             if IRegistrationManager.isImplementedBy(item):
                 # We found one. Get it in context
-                return ContextWrapper(item, self, name=name)
+                return zapi.ContextWrapper(item, self, name=name)
         else:
             raise NoRegistrationManagerError(
                 "Couldn't find an registration manager")
-    getRegistrationManager = ContextMethod(getRegistrationManager)
+    getRegistrationManager = zapi.ContextMethod(getRegistrationManager)
 
 
 from zope.xmlpickle import dumps, loads
