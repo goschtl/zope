@@ -12,10 +12,9 @@
 #
 ##############################################################################
 """
-$Id: editwizard.py,v 1.1 2003/07/12 06:18:40 Zen Exp $
+$Id: editwizard.py,v 1.2 2003/07/13 00:36:15 Zen Exp $
 """
 
-import logging
 from UserDict import UserDict
 from zope.interface import implements, classProvides
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -32,6 +31,7 @@ from zope.security.checker import defineChecker, NamesChecker
 from zope.app.context import ContextWrapper
 from zope.component.view import provideView
 from zope.app.form.utility import setUpEditWidgets, getWidgetsData
+from zope.app.interfaces.form import WidgetInputError
 from submit import Next, Previous, Update
 from zope.app.interfaces.form import WidgetsError
 
@@ -53,6 +53,7 @@ class WizardStorage(dict):
     def __setattr__(self, key, value):
         self[key] = value
 
+
 class WizardEditView(EditView):
 
     def _setUpWidgets(self):
@@ -62,7 +63,9 @@ class WizardEditView(EditView):
         self.adapted = adapted
 
         if self.use_session:
-            raise NotImplementedError, 'use_storage'
+            # Need session for File upload fields
+            raise NotImplementedError, \
+                'Cannot be implemented until we have an ISessionDataManager'
         else:
             self.storage = WizardStorage(self.fieldNames, adapted)
 
@@ -85,21 +88,11 @@ class WizardEditView(EditView):
 
     def update(self):
         '''
-        if not pane submitted, 
-            current_pane = 0
-        else
-            if current_pane is valid:
-                if submit == 'Next':
-                    current_pane += 1
-                elif submit == 'Previous':
-                    current_pane -= 1
-                elif submit == 'Submit':
-                    apply_changes()
-                    return redirect(next_pane())
-        assert current_pane > 0
-        assert current_pane < len(self.panes())
-        display current_pane
+        Called before rendering each pane. It is responsible
+        for extracting data into temporary storage, and selecting
+        which pane should be rendered.
         '''
+        # Calling twice does nothing
         if self._update_called:
             return
         self._update_called = 1
@@ -123,10 +116,6 @@ class WizardEditView(EditView):
                 names = self.currentPane().names
             else:
                 names = self.fieldNames
-            #data = getWidgetsData(
-            #    self, self.schema, strict=False, set_missing=True, 
-            #    names=names, exclude_readonly=True
-            #    )
             data = getWidgetsData(
                 self, self.schema, strict=True, set_missing=True, 
                 names=names, exclude_readonly=True
@@ -136,14 +125,6 @@ class WizardEditView(EditView):
         except WidgetsError, errors:
             self.errors = errors
             valid = 0
-            data = getWidgetsData(
-                self, self.schema, strict=False, set_missing=True,
-                names=names, exclude_readonly=True, do_not_raise=True
-                )
-            logging.fatal('data is %r' % (data,))
-            self.storage.update(data)
-            for k,v in self.storage.items():
-                getattr(self,k).setData(v)
 
         else:
             self.storage.update(data)
@@ -169,14 +150,22 @@ class WizardEditView(EditView):
         self._choose_buttons()
 
     def _choose_buttons(self):
-        # TODO: show_submit should be true if all fields on every pane 
-        # except the current one are valid
-        self.show_submit = 1 
+        '''Determine what buttons appear when we render the current pane'''
+
+        # The submit button appears if every field on every pane except the
+        # current one has valid input or a valid default value.
+        # This is almost always the case for edit forms.
+        try:
+            for k in self.fieldNames:
+                if k not in self.currentPane().names:
+                    getattr(self, k).getData(1)
+            self.show_submit = 1 
+        except WidgetInputError,x:
+            self.show_submit = 0
 
         self.show_next = (self._current_pane_idx < len(self.panes) - 1)
 
         self.show_previous = self._current_pane_idx > 0
-
 
     def renderHidden(self):
         ''' Render state as hidden fields. Also render hidden fields to 
@@ -184,22 +173,31 @@ class WizardEditView(EditView):
         '''
         olist = []
         out = olist.append
+
+        # the index of the pane being rendered needs to be propagated
         out('<input class="hiddenType" type="hidden" name="%s" value="%d" />'%(
             PaneNumber, self._current_pane_idx
             ))
 
         if self.use_session:
-            ''.join(olist)
+            # Need to output a unique key as a hidden field to identity this 
+            # particular wizard. We use this to ensure data for this view 
+            # doesn't conflict with other wizards in progress in other 
+            # browser windows.
+            # Otherwise, no more state to propagate
+            raise NotImplementedError, 'use_session'
 
-        current_fields = self.currentPane().names
-        for k in self.fieldNames:
-            if k not in current_fields:
-                widget = getattr(self, k)
-                out(widget.hidden())
-        return ''.join(olist)
+        else:
+            current_fields = self.currentPane().names
+            for k in self.fieldNames:
+                if k not in current_fields:
+                    widget = getattr(self, k)
+                    out(widget.hidden())
+            return ''.join(olist)
 
 
 class Pane:
+    # TODO: Add more funky stuff to each pane, such as a validator
     def __init__(self, field_names, label):
         self.names = field_names
         self.label = label
