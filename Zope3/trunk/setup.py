@@ -234,7 +234,18 @@ ext_modules = [
               ["src/zope/interface/_zope_interface_ospec.c"]),
 
     Extension("zope.hookable._zope_hookable",
-              ["src/zope/hookable/_zope_hookable.c"])
+              ["src/zope/hookable/_zope_hookable.c"]),
+
+
+    Extension("zope.app.container._zope_app_container_contained",
+              ["src/zope/app/container/_zope_app_container_contained.c"],
+              include_dirs = include_dirs,
+              depends = [
+                 "src/persistence/persistence.h",
+                 "src/persistence/persistenceAPI.h",
+                 "src/zope/proxy/_zope_proxy_proxy.c",
+                 ]),
+    
     ]
 
 if sys.version_info[:2] == (2, 2):
