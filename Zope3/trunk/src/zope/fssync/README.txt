@@ -107,7 +107,8 @@ TO DO
   * Should produce a single file (.zip or .tgz maybe)
 
 - Improve some common data file formats (for example, simplify the
-  Entries.xml file, possibly using ZConfig instead of XML).
+  Entries.xml file, possibly using ZConfig instead of XML, or at least
+  something more speciallized than an XML pickle).
 
 - Figure out how to write meaningful adapter tests.
 
@@ -140,8 +141,6 @@ TO DO
 
 - In the sync application (nice-to-haves):
 
-  * Implement diff using difflib.  (is this really needed?)
-
   * More diff options:
     -2 diffs between local and remote
     -3 diffs between original and remote
@@ -154,6 +153,8 @@ TO DO
     is more similar.
 
   * Add support for HTTP proxies.
+
+  * Implement diff using difflib.  (is this really needed?)
 
 - Code maintenance:
 
