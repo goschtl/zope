@@ -260,15 +260,15 @@ def getWidgetsData(view, schema, names=None):
     """
     result = {}
     errors = []
-    
+
     for name, field in _fieldlist(names, schema):
         widget = getattr(view, name + '_widget')
         if IInputWidget.providedBy(widget):
             if widget.hasInput():
                 try:
                     result[name] = widget.getInputValue()
-                except InputErrors, v:
-                    errors.append(v)
+                except InputErrors, error:
+                    errors.append(error)
             elif field.required:
                 errors.append(MissingInputError(
                     name, widget.label, 'the field is required'))
