@@ -12,9 +12,9 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
+"""Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.8 2002/11/25 17:08:02 jeremy Exp $
+$Id: z3.py,v 1.9 2002/11/25 17:08:32 jeremy Exp $
 """
 
 import os, sys
