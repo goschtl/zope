@@ -52,22 +52,33 @@ then we can get a view:
 This allows us to render a search form.
 
   >>> print view.render('test') # doctest: +NORMALIZE_WHITESPACE
-  <h4 i18n:translate="">searchplugin /searchplugin</h4>
+  <h4>searchplugin</h4>
   <div class="row">
-  <div class="label">
-  <label for="test.field.search" title="">
-  Search String
-  </label>
+    <div class="label">
+      <label for="searchplugin" title="Path to the source utility">
+        Source path
+      </label>
+    </div>
+    <div class="field">
+        /searchplugin
+      </field>
+    </div>
   </div>
-  <div class="field">
-  <input class="textType" id="test.field.search" name="test.field.search"
+  <div class="row">
+    <div class="label">
+      <label for="test.field.search" title="">
+        Search String
+      </label>
+    </div>
+    <div class="field">
+      <input class="textType" id="test.field.search" name="test.field.search"
          size="20" type="text" value=""  />
-  </div>
+    </div>
   </div>
   <div class="row">
-  <div class="field">
-  <input type="submit" name="test.search" value="Search" />
-  </div>
+    <div class="field">
+      <input type="submit" name="test.search" value="Search" />
+    </div>
   </div>
 
 If we ask for results:

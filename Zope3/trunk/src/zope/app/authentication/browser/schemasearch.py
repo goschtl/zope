@@ -44,7 +44,25 @@ class QuerySchemaSearchView(object):
         html = []
         
         # add sub title for source search field
-        html.append('<h4 i18n:translate="">%s %s</h4>' % (sourcename, sourcepath))
+        html.append('<h4>%s</h4>' % sourcename)
+        
+        # start row for path display field
+        html.append('<div class="row">')
+        
+        # for each source add path of source
+        html.append('  <div class="label">')
+        label = _(u"Source path")
+        title = _(u"Path to the source utility")
+        html.append('    <label for="%s" title="%s">' % (sourcename, title))
+        html.append('      %s' % label)
+        html.append('    </label>')
+        html.append('  </div>')
+        html.append('  <div class="field">')
+        html.append('      %s' % sourcepath)
+        html.append('    </field>')
+        html.append('  </div>')
+        html.append('</div>')
+        
         # start row for search fields
         html.append('<div class="row">')
 
@@ -52,34 +70,33 @@ class QuerySchemaSearchView(object):
             widget = getattr(self, field_name+'_widget')
             
             # for each field add lable...
-            html.append('<div class="label">')
-            html.append('<label for="%s" title="%s">'
+            html.append('  <div class="label">')
+            html.append('    <label for="%s" title="%s">'
                         % (widget.name, widget.hint))
-            html.append(widget.label)
-            html.append('</label>')
-            html.append('</div>')
+            html.append('      %s' % widget.label)
+            html.append('    </label>')
+            html.append('  </div>')
             
             # ...and field widget
-            html.append('<div class="field">')
-            html.append(widget())
+            html.append('  <div class="field">')
+            html.append('    %s' % widget())
 
             if widget.error():
-                html.append('<div class="error">')
-                html.append(widget.error())
-                html.append('</div>')
-            html.append('</div>')
+                html.append('    <div class="error">')
+                html.append('      %s' % widget.error())
+                html.append('    </div>')
+            html.append('  </div>')
         # end row
         html.append('</div>')
 
         # add search button for search fields
         html.append('<div class="row">')
-        html.append('<div class="field">')
-        html.append('<input type="submit" name="%s" value="%s" />'
+        html.append('  <div class="field">')
+        html.append('    <input type="submit" name="%s" value="%s" />'
                      % (name+'.search',
                         translate(search_label, context=self.request)))
+        html.append('  </div>')
         html.append('</div>')
-        html.append('</div>')
-
 
         return '\n'.join(html)
 

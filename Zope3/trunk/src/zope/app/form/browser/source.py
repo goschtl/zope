@@ -149,6 +149,12 @@ class SourceInputWidget(zope.app.form.InputWidget):
         term = None
         if value == field.missing_value:
             result.append('  <div class="row">')
+            result.append('    <div class="label">')
+            result.append(u'     ' +
+                          self._translate(_("SourceDisplayWidget-label",
+                                            default="Selected"))
+                          )
+            result.append('    </div>')
             result.append('    <div class="field">')
             result.append(u'     ' +
                           self._translate(_("SourceDisplayWidget-missing",
@@ -166,6 +172,12 @@ class SourceInputWidget(zope.app.form.InputWidget):
                               )
             else:
                 result.append('  <div class="row">')
+                result.append('    <div class="label">')
+                result.append(u'     ' +
+                              self._translate(_("SourceDisplayWidget-label",
+                                                default="Selected"))
+                              )
+                result.append('    </div>')
                 result.append('    <div class="field">')
                 result.append(u'     ' + cgi.escape(term.title))
                 result.append('    </div>')

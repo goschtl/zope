@@ -59,6 +59,12 @@ def formAuthTearDown(self):
 def groupSetUp(test):
     placelesssetup.setUp()
 
+def searcheableSetUp(self):
+    placefulSetUp(site=True)
+
+def searcheableTearDown(self):
+    placefulTearDown()
+
 
 def test_suite():
     return unittest.TestSuite((
@@ -71,8 +77,8 @@ def test_suite():
                              setUp=formAuthSetUp,
                              tearDown=formAuthTearDown),
         doctest.DocFileSuite('README.txt',
-                             setUp=placelesssetup.setUp,
-                             tearDown=placelesssetup.tearDown,
+                             setUp=searcheableSetUp,
+                             tearDown=searcheableTearDown,
                              globs={'provideUtility': ztapi.provideUtility,
                                     'getEvents': getEvents,
                                     }),

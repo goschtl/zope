@@ -15,7 +15,7 @@
 
 This vocabulary provides permission IDs.
 
-$Id: $
+$Id$
 """
 from zope.security.checker import CheckerPublic
 from zope.app import zapi
@@ -207,13 +207,18 @@ class PrincipalSource(object):
         """
         i = 0
         auth = zapi.getUtility(IAuthentication)
+        yielded = []
         while True:
             queriables = ISourceQueriables(auth, None)
             if queriables is None:
                 yield unicode(i), auth
             else:
                 for qid, queriable in queriables.getQueriables():
-                    yield unicode(i)+'.'+unicode(qid), queriable
+                    # ensure that we dont return same yielded utility more 
+                    # then once
+                    if queriable not in yielded:
+                        yield unicode(i)+'.'+unicode(qid), queriable
+                        yielded.append(queriable)
             auth = queryNextUtility(auth, IAuthentication)
             if auth is None:
                 break

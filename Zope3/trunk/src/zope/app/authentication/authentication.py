@@ -103,7 +103,10 @@ class PluggableAuthentication(object):
 
     def getQueriables(self):
         for searcher_id in self.searchers:
-            searcher = queryUtility(IPrincipalSearchPlugin, searcher_id)
+            # ensure with context=self that we call it in the context if
+            # we call it form a PrincipalSource vocabulary
+            searcher = queryUtility(IPrincipalSearchPlugin, searcher_id, 
+                                    context=self)
             yield searcher_id, searcher
         
 

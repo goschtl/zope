@@ -128,6 +128,9 @@ nothing) and a form elements for seaching for values:
   >>> print widget()
   <div class="value">
     <div class="row">
+      <div class="label">
+       Selected
+      </div>
       <div class="field">
        Nothing
       </div>
@@ -185,6 +188,9 @@ Now if we render the widget, we'll see the search results:
   >>> print widget()
   <div class="value">
     <div class="row">
+      <div class="label">
+       Selected
+      </div>
       <div class="field">
        Nothing
       </div>
@@ -220,6 +226,9 @@ Then we'll show the newly selected value:
   >>> print widget()
   <div class="value">
     <div class="row">
+      <div class="label">
+       Selected
+      </div>
       <div class="field">
        spot
       </div>
@@ -301,6 +310,9 @@ and cats:
   >>> print widget()
   <div class="value">
     <div class="row">
+      <div class="label">
+       Selected
+      </div>
       <div class="field">
        Nothing
       </div>
@@ -333,6 +345,9 @@ In which case, we'll get some results:
   >>> print widget() # doctest:
   <div class="value">
     <div class="row">
+      <div class="label">
+       Selected
+      </div>
       <div class="field">
        Nothing
       </div>
@@ -376,6 +391,9 @@ and get a selection:
   >>> print widget()
   <div class="value">
     <div class="row">
+      <div class="label">
+       Selected
+      </div>
       <div class="field">
        tabby
       </div>

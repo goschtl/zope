@@ -4,11 +4,12 @@
   <h2 i18n:translate="">Granting Roles and Permissions to Principals</h2>
   <p tal:define="status view/status"
      tal:condition="status"
-     tal:content="status" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     tal:content="status" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
   <form action="" method="POST">
-    <h4 i18n:translate="">Selected principal:</h4>
+
     <div tal:content="structure view/principal_widget">...</div>
+
     <div tal:condition="view/principal">
 
       <h2 i18n:translate="">Grants for the selected principal</h2>
