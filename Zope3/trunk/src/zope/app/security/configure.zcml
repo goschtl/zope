@@ -21,8 +21,6 @@
 
   <include file="globalmodules.zcml" />
   <include file="_protections.zcml" />
-  <include package=".browser" />
-
 
   <serviceType
       id="Authentication" 
@@ -31,6 +29,29 @@
   <service
       serviceType="Authentication" 
       component=".principalregistry.principalRegistry" />
+
+  <localUtility class=".permission.LocalPermission">
+    <factory
+        id="zope.app.security.Permission"
+        />
+    <allow 
+        interface=".interfaces.IPermission" 
+        />
+    <require
+        permission="zope.Security"
+        set_schema=".interfaces.IPermission"
+        />
+  </localUtility>
+
+  <subscriber
+     for="..registration.interfaces.IRegistrationActivatedEvent"
+     factory=".permission.setIdOnActivation"
+     />
+
+  <subscriber
+     for="..registration.interfaces.IRegistrationDeactivatedEvent"
+     factory=".permission.unsetIdOnDeactivation"
+     />
 
   <content class=".permission.Permission">
     <allow interface=".interfaces.IPermission" />

@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - Implemented local permission. This is not really that interesting
+        right now, since we do not support TTW development yet, but it will
+        become important somewhen.
+
       - Page templates now allow metal:define-macro and
         metal:use-macro in the same tag.  This allows a macro to
         extend another macro, which is particularly useful for writing
