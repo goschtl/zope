@@ -20,6 +20,12 @@
       factory=".preference.preferencesNamespace"
       />
 
+  <adapter
+      for="zope.app.location.interfaces.ILocation"
+      provides=".interfaces.IUserPreferences"
+      factory=".preference.UserPreferences"
+      />
+
   <!-- Root preference group -->
   <preferenceGroup
       id=""
