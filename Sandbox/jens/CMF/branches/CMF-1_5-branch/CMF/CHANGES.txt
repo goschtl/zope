@@ -35,6 +35,10 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - CMFDefault.RegistrationTool: Allow email addresses with an underscore
+      as the last element of the alias part.
+      (http://www.zope.org/Collectors/CMF/326)
+
     - FSPageTemplate: Ensure that if a content type is specified using a
       .metadata file we respect it (http://www.zope.org/Collectors/CMF/320)
 
