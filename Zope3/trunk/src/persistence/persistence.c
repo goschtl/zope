@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.20 2003/07/03 19:12:56 jeremy Exp $\n";
+"$Id: persistence.c,v 1.21 2003/11/21 17:10:18 jim Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -1061,8 +1061,8 @@ init_persistence(void)
     PyPersist_Type.tp_new = PyType_GenericNew;
     if (PyType_Ready(&PyPersist_Type) < 0)
 	return;
-    if (persist_set_interface(&PyPersist_Type) < 0)
-	return;
+/*     if (persist_set_interface(&PyPersist_Type) < 0) */
+/* 	return; */
 
     Py_INCREF(&PyPersist_Type);
     if (PyDict_SetItemString(d, "Persistent", (PyObject *)&PyPersist_Type) < 0)
