@@ -22,8 +22,8 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.component.metaconfigure import handler
+from zope.app.component.interface import provideInterface
 
-from provideinterface import provideInterface
 from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass

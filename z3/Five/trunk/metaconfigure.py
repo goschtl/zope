@@ -12,7 +12,6 @@ $Id$
 """
 from types import ModuleType
 
-from provideinterface import provideInterface
 from zope.interface import classImplements
 from zope.configuration.exceptions import ConfigurationError
 

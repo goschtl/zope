@@ -15,8 +15,8 @@ $Id$
 from zope.interface import classImplements
 from zope.component.servicenames import Presentation
 from zope.app.component.metaconfigure import handler
+from zope.app.component.interface import provideInterface
 
-from provideinterface import provideInterface
 from viewable import Viewable
 
 def implements(_context, class_, interface):
