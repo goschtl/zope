@@ -39,8 +39,6 @@ Navigation Tree
 FTP Server
 ~~~~~~~~~~
 
-  * 287: Active ftp seems broken 
-
   * 350: ServerChannelBase does not update last_activity
 
   * 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
