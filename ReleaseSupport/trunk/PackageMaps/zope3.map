@@ -39,6 +39,7 @@ zope.xmlpickle        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/xmlpic
 #
 BTrees                svn://svn.zope.org/repos/main/Zope3/tags/*/src/BTrees
 persistent            svn://svn.zope.org/repos/main/Zope3/tags/*/src/persistent
+ThreadedAsync         svn://svn.zope.org/repos/main/Zope3/tags/*/src/ThreadedAsync
 transaction           svn://svn.zope.org/repos/main/Zope3/tags/*/src/transaction
 ZConfig               svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZConfig
 zdaemon               svn://svn.zope.org/repos/main/Zope3/tags/*/src/zdaemon
