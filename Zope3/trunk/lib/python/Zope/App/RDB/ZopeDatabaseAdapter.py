@@ -13,12 +13,17 @@
 ##############################################################################
 """The connection adapters contained by ConnectionService.
 
-$Id: ZopeDatabaseAdapter.py,v 1.4 2002/07/17 23:16:20 jeremy Exp $
+$Id: ZopeDatabaseAdapter.py,v 1.5 2002/08/08 16:55:27 srichter Exp $
 """
 from types import StringTypes
 from Persistence import Persistent
 from Zope.App.RDB.IZopeDatabaseAdapter import IZopeDatabaseAdapter
 from Zope.App.RDB.ZopeConnection import ZopeConnection
+
+
+class DatabaseAdapterError(Exception):
+    pass
+
 
 class ZopeDatabaseAdapter(Persistent):
 
