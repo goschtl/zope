@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testHookRegistry.py,v 1.2 2002/06/10 23:29:24 jim Exp $
+$Id: testHookRegistry.py,v 1.3 2002/07/11 22:42:33 jeremy Exp $
 """
 
 import unittest, sys
@@ -71,34 +71,37 @@ class HookRegistryTest(unittest.TestCase):
         from Zope.Configuration.HookRegistry import \
              HookRegistry, BadHookError, DuplicateHookError, \
              MissingHookableError
-        from Zope.Configuration.tests.hookTestDummyModule import associatedDummy
-        hookableParent='Zope.Configuration.tests.hookTestDummyModule'
-        hookableLast='dummyHookable'
-        hookableAddr='%s.%s' % (hookableParent, hookableLast)
-        old=__import__(hookableParent,{},{}, ('__dict__',)) # for cleanup
-        old=getattr(old, hookableLast)
-        self.assertEquals(old(),"original implementation")
+        from Zope.Configuration.tests.hookTestDummyModule \
+             import associatedDummy
+
+        dummyHook = 'Zope.Configuration.tests.testHookRegistry.dummyHook'
+        suite = 'Zope.Configuration.tests.testHookRegistry.test_suite'
+        hookableParent = 'Zope.Configuration.tests.hookTestDummyModule'
+        hookableLast = 'dummyHookable'
+        hookableAddr = '%s.%s' % (hookableParent, hookableLast)
+        old = __import__(hookableParent, {}, {}, ('__dict__',)) # for cleanup
+        old = getattr(old, hookableLast)
+        self.assertEquals(old(), "original implementation")
         
-        hookRegistry=HookRegistry()
+        hookRegistry = HookRegistry()
         hookRegistry.addHookable(hookableAddr)
         self.assertRaises(BadHookError, hookRegistry.addHook,
-                          hookableAddr, 'foo.bar.this.should.not.resolve.anywhere')
-        hookRegistry.addHook(hookableAddr,
-                             'Zope.Configuration.tests.testHookRegistry.dummyHook')
-        new=__import__(hookableParent,{},{}, ('__dict__',))
-        new=getattr(new, hookableLast)
+                          hookableAddr,
+                          'foo.bar.this.should.not.resolve.anywhere')
+        hookRegistry.addHook(hookableAddr, dummyHook)
+        new = __import__(hookableParent, {}, {}, ('__dict__',))
+        new = getattr(new, hookableLast)
         self.assertEquals(new(), "hooked implementation")
         self.assertEquals(associatedDummy(), "hooked implementation")
-        from Zope.Configuration.tests.hookTestDummyModule import associatedDummy as associatedDummyAgain
+        from Zope.Configuration.tests.hookTestDummyModule \
+             import associatedDummy as associatedDummyAgain
         self.assertEquals(associatedDummyAgain(), "hooked implementation")
         self.assertRaises(DuplicateHookError, hookRegistry.addHook,
-                          hookableAddr, 'Zope.Configuration.tests.testHookRegistry.test_suite')
+                          hookableAddr, suite)
         self.assertRaises(MissingHookableError, hookRegistry.addHook,
-                          'Zope.Configuration.tests.testHookRegistry.test_suite',
-                          'Zope.Configuration.tests.testHookRegistry.dummyHook')
-        
-        setattr(__import__(hookableParent,{},{}, ('__dict__',)), hookableLast, old) # cleanup
-
+                          suite, dummyHook)
+        setattr(__import__(hookableParent, {}, {}, ('__dict__',)),
+                hookableLast, old) # cleanup
 
 def test_suite():
     loader=unittest.TestLoader()
