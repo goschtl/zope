@@ -15,7 +15,16 @@ node 'loginfo' for more format-string details.)
 Currently the actions are emailing checkin messages and doing an rsync 
 to the public repository."""
 
-mail_cmd = "/bin/mail -v"
+MAIL_CMD = "/bin/mail"
+SYNC_CMD = "/usr/bin/rsync"
+
+# XXX IDENTITY_FILE must be readable by the process of anyone doing a
+#     checkin that uses the rsync mechanism.  Ideally, that would be by
+#     virtue of a particular group membership - world readable opens up the 
+#     rsync privilege to everyone on the system.
+IDENTITY_ACCT = "dccvs"
+IDENTITY_FILE = "/home/dccvs/cvsidentity"
+
 
 VERBOSE = 1
 SCRIPT = "postcommit_actions"           # Changes to args[0], when obtained.
@@ -55,11 +64,12 @@ def main(args):
 
     got = find_entries(repo)
     for entry in got:
-        (nm, expr, addrs, accts) = entry
+        (nm, expr, addrs, remote) = entry
         if addrs:
+            print "Addrs:", addrs
             do_mail(nm, repo, addrs, subjs)
-        if accts:
-            do_sync(repo, accts, subjs)
+        if remote:
+            do_sync(repo, remote, subjs)
 
     do_chmod(subjs)
 
@@ -79,17 +89,38 @@ def do_mail(name, repo, addrs, subjs):
         complain("Notice to %s for %s / %s\n", addrs, repo, fnames)
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS: %s %s" % (repo, fnames)
-    os.system("%s -s '%s' %s" % (mail_cmd,
-                                 subject,
-                                 string.join(addrs, ",")))
+    os.system("%s %s -s '%s' %s" % (MAIL_CMD,
+                                    (VERBOSE and "-v") or "",
+                                    subject,
+                                    string.join(addrs, ",")))
 
-def do_sync(repo, accts, subjs):
+def do_sync(repo, remote, subjs=None):
     """Instigate repository mirror synchronize."""
-    #/usr/bin/rsync --verbose --archive --delete test dccvs@www.zope.org
     if VERBOSE:
         fnames = string.join(map(lambda x: x[0], subjs), ",")
         complain("Sync for %s of %s/ %s / %s\n",
-                 accts, os.environ["CVSROOT"], repo, fnames)
+                 remote, os.environ["CVSROOT"], repo, fnames)
+    ssh_fragment = ('--rsh="/usr/bin/ssh -v -i %s -l %s"'
+                    % (IDENTITY_FILE, IDENTITY_ACCT))
+    cmd = (RSYNC_CMD
+           + " %s " % ssh_fragment
+           + " --update"                # Preserve newer files
+           + " --recursive"
+           + ' --exclude "#cvs.*"'      # Do not dup cvs lock files
+           + " --links"                 # preserve soft-links
+           + " --hard-links"            #    "     hard-links
+           + " --perms"                 #    "     permissions
+           + " --times"                 #    "     times
+           + " --sparse"                # handle sparse files efficiently
+           + " --delete"                # keep remote directory in sync
+           + " --compress"              # (more compression context than ssh)
+           )
+    if subjs != None:
+        cmd = basecmd + ' --exclude "/*/*"'
+
+    entire =("echo %s %s %s:%s"
+             % (cmd, repo, remote['host'], remote['repodir']))
+    print "The whole shebang:", entire
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
@@ -112,5 +143,6 @@ def complain(msg, *args):
     sys.stderr.write(msg % args)
 
 if __name__ == "__main__":
+    print "sys.argv:", sys.argv
     main(sys.argv)
 
