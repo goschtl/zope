@@ -122,12 +122,13 @@ class Application:
         # Similar to shutil.copytree(), but doesn't care about
         # symlinks, doesn't collect errors, and uses self.copyfile()
         # instead of shutil.copy2().
-        assert os.path.isdir(dst)
+        assert os.path.isdir(dst), dst
         names = os.listdir(src)
         for name in names:
             srcname = os.path.join(src, name)
             dstname = os.path.join(dst, name)
             if os.path.isdir(srcname):
+                os.mkdir(dstname)
                 self.copytree(srcname, dstname)
             else:
                 self.copyfile(srcname, dstname)
