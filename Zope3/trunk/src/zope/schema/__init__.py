@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema package constructor
 
-$Id: __init__.py,v 1.11 2003/04/24 20:51:58 poster Exp $
+$Id: __init__.py,v 1.12 2003/07/13 06:47:28 richard Exp $
 """
 
 from zope.schema._field import Field, Container, Iterable, Orderable
@@ -21,6 +21,7 @@ from zope.schema._field import MinMaxLen, Enumerated, Sequence
 from zope.schema._field import Bytes, BytesLine
 from zope.schema._field import Text, TextLine, Bool, Int, Float, Tuple, List
 from zope.schema._field import Password, Dict, Datetime, SourceText
+from zope.schema._field import Object
 from zope.schema._field import EnumeratedTextLine, EnumeratedInt
 from zope.schema._field import EnumeratedDatetime, EnumeratedFloat
 from zope.schema._field import InterfaceField

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.5 2003/06/04 11:13:48 stevea Exp $
+$Id: widget.py,v 1.6 2003/07/13 06:47:21 richard Exp $
 """
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
@@ -56,20 +56,33 @@ class Widget:
     def getData(self):
         raise TypeError("getData has not been implemented")
 
+    def validate(self):
+        raise TypeError("validate has not been implemented")
+
+    def applyChanges(self, content):
+        raise TypeError("applyChanges has not been implemented")
+
     title = property(lambda self: self.context.title)
 
     required = property(lambda self: self.context.required)
 
+# XXX CustomWidget *should* be called CustomWidgetFactory
 class CustomWidget:
     """Custom Widget."""
     implements(IViewFactory)
 
-    def __init__(self, widget, **kw):
-        self.widget = widget
+    def __init__(self, *args, **kw):
+        self._widget_factory = args[0]
+        if len(args) > 1:
+            self.args = args[1:]
+        else:
+            self.args = ()
         self.kw = kw
 
     def __call__(self, context, request):
-        instance = self.widget(context, request)
+        args = (context, request) + self.args
+        instance = self._widget_factory(*args)
         for item in self.kw.items():
             setattr(instance, item[0], item[1])
         return instance
+

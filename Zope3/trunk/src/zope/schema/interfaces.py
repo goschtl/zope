@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.25 2003/07/12 02:47:22 richard Exp $
+$Id: interfaces.py,v 1.26 2003/07/13 06:47:28 richard Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -343,6 +343,12 @@ class ITuple(ISequence):
 class IList(ISequence):
     u"""Field containing a conventional list."""
 
+class IObject(IField):
+    u"""Field containing an Object value."""
+
+    schema = Attribute("schema",
+        _(u"The Interface that defines the Fields comprising the Object."))
+
 class IDict(IMinMaxLen, IIterable, IContainer):
     u"""Field containing a conventional dict.
 
@@ -359,7 +365,6 @@ class IDict(IMinMaxLen, IIterable, IContainer):
         _(u"""Field values must conform to the given type, expressed
            via a Field.
         """))
-
 
 class IVocabularyQuery(Interface):
     """Query object for a vocabulary.

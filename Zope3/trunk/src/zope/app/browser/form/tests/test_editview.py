@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.11 2003/07/12 01:29:01 richard Exp $
+"""$Id: test_editview.py,v 1.12 2003/07/13 06:47:18 richard Exp $
 """
 import unittest
 
@@ -33,11 +33,12 @@ class I(Interface):
     foo = TextLine(title=u"Foo")
     bar = TextLine(title=u"Bar")
     a   = TextLine(title=u"A")
-    b   = TextLine(title=u"B", min_length=0)
+    b   = TextLine(title=u"B", min_length=0, required=False)
     getbaz, setbaz = accessors(TextLine(title=u"Baz"))
 
 class EV(EditView):
     schema = I
+    object_factories = []
 
 class C:
     implements(I)
@@ -91,79 +92,6 @@ class Test(PlacelessSetup, unittest.TestCase):
             [w.name for w in v.widgets()],
             ['test.foo', 'test.bar', 'test.a', 'test.b', 'test.getbaz']
             )
-
-    def test_apply_update_no_data(self):
-        c = C()
-        request = TestRequest()
-        v = EV(c, request)
-        d = {}
-        d['foo'] = u'c foo'
-        d['bar'] = u'c bar'
-        d['getbaz'] = u'c baz'
-        self.failUnless(v.apply_update(d))
-        self.assertEqual(c.foo, u'c foo')
-        self.assertEqual(c.bar, u'c bar')
-        self.assertEqual(c.a  , u'c a')
-        self.assertEqual(c.b  , u'c b')
-        self.assertEqual(c.getbaz(), u'c baz')
-        self.failIf(getEvents())
-
-    def test_apply_update(self):
-        c = C()
-        request = TestRequest()
-        v = EV(c, request)
-        d = {}
-        d['foo'] = u'd foo'
-        d['bar'] = u'd bar'
-        d['getbaz'] = u'd baz'
-        d['b'] = u''
-        self.failIf(v.apply_update(d))
-        self.assertEqual(c.foo, u'd foo')
-        self.assertEqual(c.bar, u'd bar')
-        self.assertEqual(c.a  , u'c a')
-        self.assertEqual(c.b  , u'')
-        self.assertEqual(c.getbaz(), u'd baz')
-        self.failUnless(getEvents(filter=lambda event: event.object == c))
-
-    def test_apply_update_changed(self):
-        class EVc(EV):
-            _changed = 0
-            def changed(self):
-                self._changed += 1
-        
-        c = C()
-        request = TestRequest()
-        v = EVc(c, request)
-        oldchanged = v._changed
-        d = {}
-        d['foo'] = u'd foo'
-        d['bar'] = u'd bar'
-        d['getbaz'] = u'd baz'
-        self.failIf(v.apply_update(d))
-        self.assertEqual(c.foo, u'd foo')
-        self.assertEqual(c.bar, u'd bar')
-        self.assertEqual(c.a  , u'c a')
-        self.assertEqual(c.b  , u'c b')
-        self.assertEqual(c.getbaz(), u'd baz')
-        self.failUnless(getEvents(filter=lambda event: event.object == c))
-
-        # make sure that changed was called
-        self.assertEqual(v._changed, oldchanged + 1)
-        self.failUnless(v.apply_update(d))
-        self.assertEqual(v._changed, oldchanged + 1)
-
-    def test_apply_update_w_adapter(self):
-        c = Foo()
-        request = TestRequest()
-        v = BarV(c, request)
-        d = {}
-        d['bar'] = u'd bar'
-        self.failIf(v.apply_update(d))
-        self.assertEqual(c.foo, u'd bar')
-
-        # We should not get events whan an adapter is used. That's the
-        # adapter's job.
-        self.failIf(getEvents())
 
     def test_fail_wo_adapter(self):
         c = Foo()

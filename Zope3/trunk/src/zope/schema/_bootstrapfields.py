@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.18 2003/06/13 15:25:45 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.19 2003/07/13 06:47:28 richard Exp $
 """
 __metaclass__ = type
 
@@ -43,6 +43,10 @@ class Field(Attribute):
     # Type restrictions, if any
     _type = None
     context = None
+
+    # if input for this Field is missing, and that's ok, then this is the
+    # value to use
+    missing_value = None
 
     # Note that the "order" field has a dual existance:
     # 1. The class variable Field.order is used as a source for the

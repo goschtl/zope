@@ -97,6 +97,14 @@
   <browser:page
       permission="zope.Public"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IObject"
+      name="edit"
+      class="zope.app.browser.form.widget.ObjectWidget"
+      />
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.interfaces.IPassword"
       name="edit"
       class="zope.app.browser.form.widget.PasswordWidget"

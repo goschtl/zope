@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.21 2003/06/18 10:10:25 stevea Exp $
+$Id: utility.py,v 1.22 2003/07/13 06:47:21 richard Exp $
 """
 __metaclass__ = type
 
@@ -253,6 +253,33 @@ def haveWidgetsData(view, schema, names=None):
 
     return False
 
+def applyWidgetsChanges(view, content, schema, strict=True,
+        names=None, set_missing=True, do_not_raise=False,
+        exclude_readonly=False):
+    """Apply changes in widgets to the object."""
+    errors = []
+
+    changed = False
+    for name, field in _fieldlist(names, schema):
+        widget = getattr(view, name+'_widget')
+        if exclude_readonly and field.readonly:
+            continue
+        if widget.haveData():
+            try:
+                changed = widget.applyChanges(content) or changed
+            except InputErrors, v:
+                errors.append(v)
+        elif strict and field.required:
+            err = MissingInputError(name, widget.title, 'the field is required')
+            errors.append(err)
+        elif set_missing:
+            field.set(content, field.missing_value)
+
+    if errors and not do_not_raise:
+        raise WidgetsError(*errors)
+
+    return changed
+
 def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
                    do_not_raise=False, exclude_readonly=False):
     """Collect the user-entered data defined by a schema
@@ -304,7 +331,7 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
                                             'the field is required')
                           )
         elif set_missing:
-            result[name] = None # XXX field.missing_value
+            result[name] = field.missing_value
 
     if errors and not do_not_raise:
         raise WidgetsError(*errors)
@@ -397,7 +424,7 @@ def getWidgetsDataFromAdapter(adapter, schema, strict=True,
             errors.append(MissingInputError(name, name,
                                             'the field is required'))
         elif set_missing:
-            result[name] = None # XXX field.missing_value
+            result[name] = field.missing_value
 
     if errors and not do_not_raise:
         raise WidgetsError(*errors)

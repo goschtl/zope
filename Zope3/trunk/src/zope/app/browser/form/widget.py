@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.37 2003/07/12 02:47:07 richard Exp $
+$Id: widget.py,v 1.38 2003/07/13 06:47:16 richard Exp $
 """
 
 __metaclass__ = type
@@ -20,17 +20,23 @@ __metaclass__ = type
 import re
 import warnings
 from zope.app import zapi
-from zope.interface import implements
+
+from zope.component import getService
+from zope.component.interfaces import IViewFactory
+
+from zope.interface import implements, directlyProvides
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.form.widget import Widget
+from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
+from zope.app.form.utility import setUpWidget
 from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.app.interfaces.form import MissingInputError
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
+from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import ValidationError
-from zope.component import getService
 
 ListTypes = list, tuple
 
@@ -109,7 +115,6 @@ class BrowserWidget(Widget, BrowserView):
 
         value = self._convert(value)
         if value is not None and not optional:
-
             try:
                 field.validate(value)
             except ValidationError, v:
@@ -117,6 +122,17 @@ class BrowserWidget(Widget, BrowserView):
                                        self.title, str(v))
 
         return value
+
+    def validate(self):
+        self.getData()
+
+    def applyChanges(self, content):
+        field = self.context
+        value = self.getData()
+        change = field.query(content, self) != value
+        if change:
+            field.set(content, value)
+        return change
 
     def _convert(self, value):
         if value == self._missing:
@@ -131,7 +147,7 @@ class BrowserWidget(Widget, BrowserView):
     def _showData(self):
         if self._data is None:
             if self.haveData():
-                data = self.getData(1)
+                data = self.getData(optional=1)
             else:
                 data = self._getDefault()
         else:
@@ -937,13 +953,18 @@ class MultiCheckBoxWidget(MultiItemsWidget):
 class SequenceWidget(BrowserWidget):
     """A sequence of fields.
 
-    Contains a sequence of *Widgets which have a numeric __name__ which
-    represents their position in the sequence.
+    subwidget  - Optional CustomWidget used to generate widgets for the
+                 items in the sequence
     """
     _type = tuple
     _stored = ()        # pre-existing sequence items (from setData)
     _sequence = ()      # current list of sequence items (existing & request)
     _sequence_generated = False
+
+    def __init__(self, context, request, subwidget=None):
+        super(SequenceWidget, self).__init__(context, request)
+
+        self.subwidget = None
 
     def __call__(self):
         """Render the widget
@@ -957,9 +978,6 @@ class SequenceWidget(BrowserWidget):
 
         render = []
         r = render.append
-
-        # prefix for form elements
-        prefix = self._prefix + self.context.__name__
 
         # length of sequence info
         sequence = list(self._sequence)
@@ -975,14 +993,12 @@ class SequenceWidget(BrowserWidget):
 
         # generate each widget from items in the _sequence - adding a
         # "remove" button for each one
-        field = self.context.value_type
         for i in range(num_items):
             value = sequence[i]
             r('<tr><td>')
             if num_items > min_length:
-                r('<input type="checkbox" name="%s.remove_%d">'%(prefix, i))
-            widget = zapi.getView(field, 'edit', self.request, self.context)
-            widget.setPrefix('%s.%d.'%(prefix, i))
+                r('<input type="checkbox" name="%s.remove_%d">'%(self.name, i))
+            widget = self._getWidget(i)
             widget.setData(value)
             r(widget()+'</td></tr>')
             
@@ -991,17 +1007,25 @@ class SequenceWidget(BrowserWidget):
         if render and num_items > min_length:
             s += '<input type="submit" value="Remove Selected Items">'
         if max_length is None or num_items < max_length:
-            s += '<input type="submit" name="%s.add" value="Add %s">'%(prefix,
-                field.title or field.__name__)
+            field = self.context.value_type
+            s += '<input type="submit" name="%s.add" value="Add %s">'%(
+                self.name, field.title or field.__name__)
         if s:
             r('<tr><td>%s</td></tr>'%s)
 
         return '<table border="0">' + ''.join(render) + '</table>'
 
+    def _getWidget(self, i):
+        field = self.context.value_type
+        if self.subwidget:
+            widget = self.subwidget(field, self.request)
+        else:
+            widget = zapi.getView(field, 'edit', self.request, self.context)
+        widget.setPrefix('%s.%d.'%(self.name, i))
+        return widget
 
     def hidden(self):
         ''' Render the list as hidden fields '''
-        prefix = self._prefix + self.context.__name__
         # length of sequence info
         sequence = list(self._sequence)
         num_items = len(sequence)
@@ -1015,12 +1039,10 @@ class SequenceWidget(BrowserWidget):
         num_items = len(sequence)
 
         # generate hidden fields for each value
-        field = self.context.value_type
         s = ''
         for i in range(num_items):
             value = sequence[i]
-            widget = zapi.getView(field, 'edit', self.request, self.context)
-            widget.setPrefix('%s.%d.'%(prefix, i))
+            widget = self._getWidget(i)
             widget.setData(value)
             s += widget.hidden()
         return s
@@ -1037,13 +1059,21 @@ class SequenceWidget(BrowserWidget):
         A WidgetInputError is returned in the case of one or more
         errors encountered, inputting, converting, or validating the data.
         """
-        # XXX enforce required
         if not self._sequence_generated:
             self._generateSequenceFromRequest()
         # validate the input values
         for value in self._sequence:
             self.context.value_type.validate(value)
         return self._type(self._sequence)
+
+    # XXX applyChanges isn't reporting "change" correctly
+    def applyChanges(self, content):
+        field = self.context
+        value = self.getData()
+        change = field.query(content, self) != value
+        if change:
+            field.set(content, value)
+        return change
 
     def haveData(self):
         """Is there input data for the field
@@ -1069,8 +1099,7 @@ class SequenceWidget(BrowserWidget):
 
         This is kinda expensive, so we only do it once.
         """
-        prefix = self._prefix + self.context.__name__
-        len_prefix = len(prefix)
+        len_prefix = len(self.name)
         adding = False
         removing = []
         subprefix = re.compile(r'(\d+)\.(.+)')
@@ -1087,31 +1116,26 @@ class SequenceWidget(BrowserWidget):
             found[i] = entry
 
         # now look through the request for interesting values
-        have_request_data = False
         for k, v in self.request.items():
-            if not k.startswith(prefix):
+            if not k.startswith(self.name):
                 continue
             s = k[len_prefix+1:]        # skip the '.'
             if s == 'add':
                 # append a new blank field to the sequence
                 adding = True
-                have_request_data = True
             elif s.startswith('remove_'):
                 # remove the index indicated
                 removing.append(int(s[7:]))
-                have_request_data = True
             else:
                 m = subprefix.match(s)
                 if m is None:
                     continue
                 # key refers to a sub field
                 i = int(m.group(1))
-                have_request_data = True
 
                 # find a widget for the sub-field and use that to parse the
                 # request data
-                widget = zapi.getView(field, 'edit', self.request, self.context)
-                widget.setPrefix('%s.%d.'%(prefix, i))
+                widget = self._getWidget(i)
                 value = widget.getData()
                 found[i] = value
 
@@ -1136,6 +1160,124 @@ class TupleSequenceWidget(SequenceWidget):
 class ListSequenceWidget(SequenceWidget):
     _type = list
 
+class ObjectWidget(BrowserWidget):
+    """A widget over an Interface that contains Fields.
+
+    "factory"  - factory used to create content that this widget (field)
+                 represents
+    *_widget   - Optional CustomWidgets used to generate widgets for the
+                 fields in this widget
+    """
+    _object = None      # the object value (from setData & request)
+    _request_parsed = False
+
+    def __init__(self, context, request, factory, **kw):
+        super(ObjectWidget, self).__init__(context, request)
+
+        # factory used to create content that this widget (field)
+        # represents
+        self.factory = factory
+
+        # handle foo_widget specs being passed in
+        self.names = getFieldNamesInOrder(self.context.schema)
+        for k, v in kw.items():
+            if k.endswith('_widget'):
+                setattr(self, k, v)
+
+        # set up my subwidgets
+        self._setUpEditWidgets()
+
+    def setPrefix(self, prefix):
+        super(ObjectWidget, self).setPrefix(prefix)
+        self._setUpEditWidgets()
+
+    def _setUpEditWidgets(self):
+        # subwidgets need a new name
+        setUpEditWidgets(self, self.context.schema, content=None,
+            prefix=self.name, names=self.names, context=self.context)
+
+    def __call__(self):
+        """Render the widget
+        """
+        render = []
+        r = render.append
+
+        # XXX see if there's some widget layout already
+
+        # generate each widget from fields in the schema
+        field = self.context
+        title = field.title or field.__name__
+        r('<fieldset><legend>%s</legend>'%title)
+        for name, widget in self.getSubWidgets():
+            r(widget.row())
+        r('</fieldset>')
+            
+        return '\n'.join(render)
+
+    def getSubWidgets(self):
+        l = []
+        for name in self.names:
+            l.append((name, getattr(self, '%s_widget'%name)))
+        return l
+
+    def hidden(self):
+        ''' Render the list as hidden fields '''
+        for name, widget in self.getSubWidgets():
+            s += widget.hidden()
+        return s
+
+    def getData(self):
+        """Return converted and validated widget data.
+
+        The value for this field will be represented as an ObjectStorage
+        instance which holds the subfield values as attributes. It will
+        need to be converted by higher-level code into some more useful
+        object (note that the default EditView calls applyChanges, which
+        does this).
+        """
+        content = self.factory()
+        for name, widget in self.getSubWidgets():
+            setattr(content, name, widget.getData())
+        return content
+
+    def applyChanges(self, content):
+        field = self.context
+
+        # create our new object value
+        value = field.query(content, None)
+        if value is None:
+            value = self.factory()
+
+        # apply sub changes, see if there *are* any changes
+        changes = applyWidgetsChanges(self, value, field.schema,
+            names=self.names, exclude_readonly=True)
+
+        # if there's changes, then store the new value on the content
+        if changes:
+            field.set(content, value)
+
+        return changes
+
+    def haveData(self):
+        """Is there input data for the field
+
+        Return True if there is data and False otherwise.
+        """
+        for name, widget in self.getSubWidgets():
+            if widget.haveData():
+                return True
+        return False
+
+    def setData(self, value):
+        """Set the default data for the widget.
+
+        The given value should be used even if the user has entered
+        data.
+        """
+        # re-call setupwidgets with the content
+        self._setUpEditWidgets()
+        for name, widget in self.getSubWidgets():
+            widget.setData(getattr(value, name, None))
 
 # XXX Note, some HTML quoting is needed in renderTag and renderElement.
 

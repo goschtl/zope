@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.3 2003/05/22 22:49:29 jim Exp $
+$Id: form.py,v 1.4 2003/07/13 06:47:25 richard Exp $
 """
 
 from zope.schema.interfaces import ValidationError
@@ -92,8 +92,8 @@ class IWidget(IView):
     def getValue(name):
         """Look up a Widget configuration setting by name."""
 
-    def getData():
-        """Return converted and validated widget data.
+    def validate():
+        """Validate the widget data.
 
         If there is no user input and the field is required, then a
         MissingInputError will be raised.
@@ -104,6 +104,19 @@ class IWidget(IView):
         A WidgetInputError is returned in the case of one or more
         errors encountered, inputting, converting, or validating the data.
         """
+
+    def getData():
+        """Return converted and validated widget data.
+
+        See validate() for validation performed.
+        """
+
+    def applyChanges(content):
+        """Validate the widget data and apply it to the content.
+
+        See validate() for validation performed.
+        """
+
 
     def haveData():
         """Is there input data for the field

@@ -13,9 +13,10 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.12 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_browserwidget.py,v 1.13 2003/07/13 06:47:18 richard Exp $
 """
 
+from zope.interface import Interface, implements
 from zope.app.browser.form.widget import BrowserWidget
 from zope.app.interfaces.form import ConversionError
 from zope.app.interfaces.form import WidgetInputError, MissingInputError
@@ -33,16 +34,24 @@ import zope.app.browser.form.tests
 class BrowserWidgetTest(PlacelessSetup,
                         support.VerifyResults,
                         unittest.TestCase):
-
     _FieldFactory = Text
     _WidgetFactory = BrowserWidget
 
-    def setUp(self):
-        PlacelessSetup.setUp(self)
-        field = self._FieldFactory(__name__ = 'foo', title = u"Foo Title")
+    def setUpContent(self):
+        class ITestContent(Interface):
+            foo = self._FieldFactory(title = u"Foo Title")
+        class TestObject:
+            implements(ITestContent)
+
+        self.content = TestObject()
+        field = ITestContent['foo']
         request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(field, request)
+
+    def setUp(self):
+        PlacelessSetup.setUp(self)
+        self.setUpContent()
 
     def test_required(self):
         self._widget.context.required = False
@@ -145,6 +154,8 @@ class Test(BrowserWidgetTest):
         self.assertEqual(self._widget.getData(optional=1), None)
         self.assertEqual(self._widget.getData(), None)
 
+    def test_applyChanges(self):
+        self.assertEqual(self._widget.applyChanges(self.content), True)
 
     def test_haveData(self):
         self.failUnless(self._widget.haveData())

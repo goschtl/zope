@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.27 2003/07/02 22:10:37 jim Exp $
+$Id: editview.py,v 1.28 2003/07/13 06:47:16 richard Exp $
 """
 
 import os
@@ -22,6 +22,8 @@ from zope.configuration.exceptions import ConfigurationError
 
 from zope.schema.interfaces import ValidationError
 from zope.schema import getFieldNamesInOrder
+
+from zope.interface import classProvides, implements
 
 from zope.configuration.action import Action
 from zope.app.context import ContextWrapper
@@ -33,7 +35,7 @@ from zope.component import getAdapter
 
 from zope.app.interfaces.form import WidgetsError
 from zope.app.component.metaconfigure import resolveInterface
-from zope.app.form.utility import setUpEditWidgets, getWidgetsData
+from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.browser.form.submit import Update
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
@@ -79,57 +81,6 @@ class EditView(BrowserView):
         return [getattr(self, name+'_widget')
                 for name in self.fieldNames]
 
-    def apply_update(self, data):
-        """Apply data updates
-
-        Return true if data were unchanged and false otherwise.
-        This sounds backwards, but it allows lazy implementations to
-        avoid tracking changes.
-        """
-
-        content = self.adapted
-
-        errors = []
-        unchanged = True
-
-        for name in data:
-            field = self.schema[name]
-            try:
-                newvalue = data[name]
-
-                # We want to see if the data changes. Unfortunately,
-                # we don't know enough to know that we won't get some
-                # strange error, so we'll carefully ignore errors and
-                # assume we should update the data if we can't be sure
-                # it's the same.
-
-                change = True
-
-                # Use self as a marker
-                change = field.query(content, self) != newvalue
-
-                if change:
-                    field.set(content, data[name])
-                    unchanged = False
-
-            except ValidationError, v:
-                errors.append(v)
-
-        if not unchanged:
-            # XXX need better error handling here. We should catch
-            # and display errors for which there are views.
-            self.changed()
-
-        if errors:
-            raise WidgetsError(*errors)
-
-        # We should not generate events whan an adapter is used. That's the
-        # adapter's job.
-        if not unchanged and self.context is self.adapted:
-            publish(content, ObjectModifiedEvent(content))
-
-        return unchanged
-
     def changed(self):
         # This method is overridden to execute logic *after* changes
         # have been made.
@@ -143,24 +94,20 @@ class EditView(BrowserView):
 
         status = ''
 
+        content = self.adapted
+
         if Update in self.request:
-            unchanged = True
+            changed = False
             try:
-                data = getWidgetsData(self, self.schema,
-                                      strict=False,
-                                      set_missing=True,
-                                      names=self.fieldNames,
-                                      exclude_readonly=True)
-                unchanged = self.apply_update(data)
+                changed = applyWidgetsChanges(self, content, self.schema,
+                    names=self.fieldNames, exclude_readonly=True)
             except WidgetsError, errors:
                 self.errors = errors
                 status = u"An error occured."
             else:
                 setUpEditWidgets(self, self.schema, force=1,
                                  names=self.fieldNames)
-
-                if not unchanged:
-                    
+                if changed:
                     status = "Updated %s" % datetime.utcnow()
 
         self.update_status = status

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.17 2003/07/12 02:47:22 richard Exp $
+$Id: _field.py,v 1.18 2003/07/13 06:47:28 richard Exp $
 """
 __metaclass__ = type
 
@@ -30,7 +30,7 @@ from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
-from zope.schema.interfaces import IPassword
+from zope.schema.interfaces import IPassword, IObject
 from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
 from zope.schema.interfaces import IEnumeratedInt, IEnumeratedFloat
 
@@ -171,12 +171,51 @@ class Tuple(Sequence):
     """A field representing a Tuple."""
     implements(ITuple)
     _type = tuple
+    missing_value = ()
 
 
 class List(Sequence):
     """A field representing a List."""
     implements(IList)
     _type = list
+    missing_value = []
+
+
+def _validate_fields(schema, value, errors=None):
+    if errors is None:
+        errors = []
+
+    for name, item in value.__dict__.items():
+        field = schema[name]
+        error = None
+        try:
+            field.validate(item)
+        except ValidationError, error:
+            pass
+        else:
+            # We validated, so clear error (if any) and done with
+            # this value
+            error = None
+            break
+
+        if error is not None:
+            errors.append(error)
+
+    return errors
+
+class Object(Field):
+    __doc__ = IObject.__doc__
+    implements(IObject)
+
+    def __init__(self, schema, **kw):
+        super(Object, self).__init__(**kw)
+        self.schema = schema
+
+    def _validate(self, value):
+        super(Object, self)._validate(value)
+        errors = _validate_fields(self.schema, value)
+        if errors:
+            raise ValidationError(WrongContainedType, errors)
 
 
 class Dict(MinMaxLen, Iterable, Field):

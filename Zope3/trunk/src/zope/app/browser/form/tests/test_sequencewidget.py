@@ -1,5 +1,19 @@
-__rcs_id__ = '$Id'
-__version__ = '$Revision: 1.2 $'[11:-2]
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""
+$Id: test_sequencewidget.py,v 1.3 2003/07/13 06:47:18 richard Exp $
+"""
 
 import unittest
 
@@ -15,16 +29,13 @@ from zope.app.browser.form.widget import TupleSequenceWidget, \
 
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 
-
 class SequenceWidgetTest(BrowserWidgetTest):
     def _FieldFactory(self, **kw):
         kw.update({'__name__': u'foo', 'value_type': TextLine(__name__=u'bar')})
         return Tuple(**kw)
     _WidgetFactory = TupleSequenceWidget
 
-    def verifyResult(self, result, check_list, inorder=False):
-        pass
-    def verifyResultMissing(self, result, check_list):
+    def testRender(self):
         pass
 
     def setUp(self):
@@ -71,7 +82,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         self.assertEquals(int(widget.haveData()), 1)
         self.assertRaises(ValidationError, widget.getData)
         check_list = (
-            'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar'
+            'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
             'submit', 'submit', 'field.foo.add'
         )
         self.verifyResult(widget(), check_list, inorder=True)
@@ -127,8 +138,8 @@ class SequenceWidgetTest(BrowserWidgetTest):
         self.assertEquals(widget.getData(), (u'existing',))
         check_list = (
             'input', 'field.foo.0.bar', 'existing',
-            'input', 'field.foo.0.bar', 'value=""',
-            'submit', 'submit', 'field.foo.add'
+            'input', 'field.foo.1.bar', 'value=""',
+            'submit', 'field.foo.add'
         )
         s = widget()
         self.verifyResult(s, check_list, inorder=True)
@@ -143,6 +154,18 @@ class SequenceWidgetTest(BrowserWidgetTest):
         s = widget()
         self.assertEquals(s.find('field.foo.add'), -1)
 
+    def test_anonymousfield(self):
+        self.field = Tuple(__name__=u'foo', value_type=TextLine())
+        request = TestRequest()
+        widget = TupleSequenceWidget(self.field, request)
+        widget.setData((u'existing',))
+        s = widget()
+        check_list = (
+            'input', '"field.foo.0."', 'existing',
+            'submit', 'submit', 'field.foo.add'
+        )
+        s = widget()
+        self.verifyResult(s, check_list, inorder=True)
 
 def test_suite():
     return unittest.makeSuite(SequenceWidgetTest)
