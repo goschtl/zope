@@ -13,11 +13,11 @@
 ##############################################################################
 """ProcessDefinition configuration adding view
  
-$Id: definition.py,v 1.1 2003/05/08 17:27:17 jack-e Exp $
+$Id: definition.py,v 1.2 2003/05/28 15:46:03 jim Exp $
 """
 __metaclass__ = type
 
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.component import getServiceManager
 from zope.publisher.browser import BrowserView
 from zope.app.browser.container.adding import Adding

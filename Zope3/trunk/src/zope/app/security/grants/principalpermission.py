@@ -90,7 +90,7 @@ class AnnotationPrincipalPermissionManager:
         # need to remove security proxies here, otherwise we enter
         # an infinite loop, becuase checking security depends on
         # getting PrincipalPermissions.
-        from zope.proxy.introspection import removeAllProxies
+        from zope.proxy import removeAllProxies
         context = removeAllProxies(self._context)
         annotations = getAdapter(context, IAnnotations)
         try:

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.19 2003/05/27 14:18:24 jim Exp $
+$Id: view.py,v 1.20 2003/05/28 15:46:11 jim Exp $
 """
 __metaclass__ = type
 
@@ -35,7 +35,7 @@ from zope.component import getSkin
 
 from zope.security.checker import NamesChecker, ProxyFactory
 
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.app.traversing import getRoot, traverse
 from zope.exceptions import NotFoundError
 

@@ -13,9 +13,9 @@
 ##############################################################################
 """
 
-$Id: methods.py,v 1.2 2002/12/25 14:13:24 jim Exp $
+$Id: methods.py,v 1.3 2003/05/28 15:46:12 jim Exp $
 """
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 from zope.publisher.xmlrpc import XMLRPCView
 

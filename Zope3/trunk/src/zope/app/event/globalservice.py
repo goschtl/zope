@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.8 2003/05/01 19:35:15 faassen Exp $
+$Id: globalservice.py,v 1.9 2003/05/28 15:46:07 jim Exp $
 """
 
 __metaclass__ = type
@@ -22,7 +22,7 @@ __metaclass__ = type
 from zope.interface.type import TypeRegistry
 from zope.component import queryAdapter
 from zope.exceptions import NotFoundError
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribingAware
 from zope.app.interfaces.event import IGlobalSubscribable, IPublisher

@@ -13,7 +13,7 @@
 ##############################################################################
 """OnlineHelp views
 
-$Id: onlinehelp.py,v 1.4 2003/05/27 14:18:06 jim Exp $
+$Id: onlinehelp.py,v 1.5 2003/05/28 15:45:59 jim Exp $
 """
 from zope.interface.implements import flattenInterfaces
 
@@ -22,7 +22,7 @@ from zope.publisher.browser import BrowserView
 from zope.app.traversing import getRoot
 from zope.context import ContextWrapper
 from zope.app.traversing import getParents, objectName
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 class OnlineHelpTopicView(BrowserView):
 

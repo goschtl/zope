@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.21 2003/05/27 19:47:28 gvanrossum Exp $
+$Id: syncer.py,v 1.22 2003/05/28 15:46:08 jim Exp $
 """
 
 import os
@@ -30,7 +30,7 @@ from zope.app.fssync.classes import Default
 from zope.app.traversing import getPath
 from zope.app.fssync.fsregistry import getSynchronizer
 from zope.app.interfaces.file import IFileFactory
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 def readFile(path, mode="rb"):
     f = open(path, mode)

@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.3 2003/05/27 14:18:12 jim Exp $
+$Id: instance.py,v 1.4 2003/05/28 15:46:03 jim Exp $
 """
 __metaclass__ = type
 
@@ -27,7 +27,7 @@ from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
 from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.interfaces.workflow.stateful import IStatefulProcessInstance
 from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.context import getWrapperData
  
 class ManagementView(BrowserView):

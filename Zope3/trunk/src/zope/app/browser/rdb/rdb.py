@@ -13,10 +13,10 @@
 ##############################################################################
 """Zope database adapter views
 
-$Id: rdb.py,v 1.2 2003/03/25 11:43:07 tseaver Exp $
+$Id: rdb.py,v 1.3 2003/05/28 15:46:01 jim Exp $
 """
 from zope.component import getFactory
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 
 from zope.app.interfaces.container import IAdding

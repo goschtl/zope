@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: absoluteurl.py,v 1.7 2003/05/27 14:18:06 jim Exp $
+$Id: absoluteurl.py,v 1.8 2003/05/28 15:45:59 jim Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.context import getWrapperContainer, getInnerWrapperData
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.component import getView
 
 class AbsoluteURLBase(BrowserView):

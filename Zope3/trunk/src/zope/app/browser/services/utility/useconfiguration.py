@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Configuration view for utilities.
 
-$Id: useconfiguration.py,v 1.7 2003/05/01 16:28:28 gvanrossum Exp $
+$Id: useconfiguration.py,v 1.8 2003/05/28 15:46:02 jim Exp $
 """
 
 from zope.app.browser.component.interfacewidget import InterfaceWidget
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.configuration \
 from zope.app.traversing import getPath, getParent, objectName
 from zope.component import getServiceManager, getView, getAdapter
 from zope.interface.implements import flattenInterfaces
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 
 

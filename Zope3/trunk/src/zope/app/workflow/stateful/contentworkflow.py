@@ -15,7 +15,7 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.2 2003/05/27 14:18:28 jim Exp $
+$Id: contentworkflow.py,v 1.3 2003/05/28 15:46:14 jim Exp $
 """
 __metaclass__ = type
 
@@ -24,7 +24,7 @@ from persistence import Persistent
 from zope.component import getService, queryAdapter
 from zope.component.exceptions import ComponentLookupError
 from zope.context import ContextMethod
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.event import IObjectCreatedEvent

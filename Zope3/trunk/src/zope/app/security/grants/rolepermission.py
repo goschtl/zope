@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: rolepermission.py,v 1.1 2002/12/26 18:49:07 jim Exp $
+$Id: rolepermission.py,v 1.2 2003/05/28 15:46:10 jim Exp $
 """
 from zope.component import getAdapter
 
@@ -104,7 +104,7 @@ class AnnotationRolePermissionManager:
         # need to remove security proxies here, otherwise we enter
         # an infinite loop, becuase checking security depends on
         # getting RolePermissions.
-        from zope.proxy.introspection import removeAllProxies
+        from zope.proxy import removeAllProxies
         context = removeAllProxies(self._context)
         annotations = getAdapter(context, IAnnotations)
         try:

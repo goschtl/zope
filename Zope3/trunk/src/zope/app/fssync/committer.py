@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.1 2003/05/27 19:41:44 gvanrossum Exp $
+$Id: committer.py,v 1.2 2003/05/28 15:46:08 jim Exp $
 """
 
 import os
@@ -22,7 +22,7 @@ import shutil
 from zope.component import queryAdapter, getService
 from zope.xmlpickle import dumps, loads
 from zope.configuration.name import resolve
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 from zope.fssync.metadata import Metadata
 from zope.fssync import fsutil

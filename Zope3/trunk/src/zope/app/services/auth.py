@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.16 2003/05/27 14:18:24 jim Exp $
+$Id: auth.py,v 1.17 2003/05/28 15:46:11 jim Exp $
 """
 
 from persistence import Persistent
@@ -30,7 +30,7 @@ from zope.app.interfaces.security import IAuthenticationService
 
 from zope.app.interfaces.services.auth import IAnnotatableUser
 
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.component.nextservice import getNextService
 from zope.context import ContextMethod

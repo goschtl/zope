@@ -18,7 +18,7 @@ from zope.app.interfaces.introspector import IIntrospector
 from zope.app.interfaces.services.module import IModuleService
 from zope.component import getServiceManager, getAdapter, \
      getServiceDefinitions
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 
 class Introspector:

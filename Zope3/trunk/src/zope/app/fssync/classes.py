@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.4 2003/05/15 16:19:04 gvanrossum Exp $
+$Id: classes.py,v 1.5 2003/05/28 15:46:08 jim Exp $
 """
 
 import os
@@ -23,7 +23,7 @@ from zope.app.content.folder import Folder
 from zope.app.interfaces.fssync import IFSAddView, IObjectFile
 from zope.component.interfaces import IPresentationRequest
 from zope.xmlpickle import dumps
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 class FSAddView(object):
     """See IFSAddView."""

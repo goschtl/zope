@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.32 2003/05/27 21:14:11 jim Exp $
+$Id: widget.py,v 1.33 2003/05/28 15:46:00 jim Exp $
 """
 
 __metaclass__ = type
 
 import warnings
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.form.widget import Widget

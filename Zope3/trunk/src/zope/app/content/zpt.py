@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.11 2003/05/27 14:18:14 jim Exp $
+$Id: zpt.py,v 1.12 2003/05/28 15:46:06 jim Exp $
 """
 
 import re
@@ -21,7 +21,7 @@ from persistence import Persistent
 
 from zope.context import ContextMethod
 from zope.context import getWrapperContainer
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 
 from zope.pagetemplate.pagetemplate import PageTemplate

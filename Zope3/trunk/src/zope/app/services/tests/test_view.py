@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.12 2003/05/27 14:18:25 jim Exp $
+$Id: test_view.py,v 1.13 2003/05/28 15:46:11 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -35,7 +35,7 @@ from zope.app.interfaces.services.view import IZPTTemplate
 from zope.app.services.view import PageConfiguration, BoundTemplate
 from zope.interface.verify import verifyObject
 from zope.component.interfaces import IViewService
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.configuration.exceptions import ConfigurationError
 
 class I1(Interface):

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.14 2003/05/27 14:18:07 jim Exp $
+$Id: test_contents.py,v 1.15 2003/05/28 15:46:00 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -49,7 +49,7 @@ from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectModifiedEvent
 from zope.interface import Interface
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard

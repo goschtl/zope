@@ -16,7 +16,7 @@
 Page folders support easy creation and configuration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.6 2003/05/27 14:18:24 jim Exp $
+$Id: pagefolder.py,v 1.7 2003/05/28 15:46:11 jim Exp $
 """
 __metaclass__ = type
 
@@ -27,7 +27,7 @@ from zope.app.traversing import getPath
 from zope.context import getItem, ContextMethod
 from zope.app.interfaces.services.configuration import Active
 from zope.app.services.configuration import ConfigurationManagerContainer
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy import removeAllProxies
 from zope.app.services.view import PageConfiguration
 from zope.app.interfaces.services.pagefolder import IPageFolder
 from zope.app.interfaces.services.configuration import IConfigurationManager
