@@ -269,19 +269,19 @@ pre {
     text-align: right;
     border-left: 1px solid #369;
     border-right: 1px solid #369;
-	border-collapse: collapse;
-	padding: 0.3em 0.2em;
+    border-collapse: collapse;
+    padding: 0.3em 0.2em;
 }
 
 #actions a {
-	color: White;
-	border-left: 1px dashed white;
-	padding: 0 0.5em;
+    color: White;
+    border-left: 1px dashed white;
+    padding: 0 0.5em;
 }
 
 #actions a:hover {
-	color: black;
-	background-color: White;
+    color: black;
+    background-color: White;
 }
 
 #breadcrumbs {
@@ -296,7 +296,7 @@ pre {
 #navigators {
     float: left;
     width: 15%;
-	padding: 1em;
+    padding: 1em;
     overflow: hidden;
 }
 
