@@ -31,6 +31,7 @@ from zpkgtools import loader
 from zpkgtools import locationmap
 from zpkgtools import package
 from zpkgtools import publication
+from zpkgtools import runlog
 
 
 class Application:
@@ -174,6 +175,7 @@ class BuilderApplication(Application):
         deps = self.add_component("collection",
                                   self.resource_name,
                                   self.source,
+                                  self.resource_url,
                                   distribution=True)
         remaining = deps - self.handled_resources
         collections = []
@@ -206,7 +208,7 @@ class BuilderApplication(Application):
                               resource, location)
             source = self.loader.load_mutable_copy(location)
             self.handled_resources.add(resource)
-            deps = self.add_component(type, name, source)
+            deps = self.add_component(type, name, source, location)
             if type == "package" and "." in name:
                 # this is a sub-package; always depend on the parent package
                 i = name.rfind(".")
@@ -225,7 +227,7 @@ class BuilderApplication(Application):
             f.close()
         return packages, collections
 
-    def add_component(self, type, name, source, distribution=False):
+    def add_component(self, type, name, source, url, distribution=False):
         """Add a single component to a collection.
 
         :return: Set of dependencies for the added component.
@@ -243,6 +245,7 @@ class BuilderApplication(Application):
           Directory containing the source of the component.
 
         """
+        self.logger.debug("adding %s:%s (%s) from %s", type, name, url, source)
         if name in self.name_parts:
             self.error("resources of different types share the name %r;"
                        " could not create component directories for each"
@@ -250,7 +253,7 @@ class BuilderApplication(Application):
         self.name_parts.add(name)
         destination = os.path.join(self.destination, name)
         self.ip.add_manifest(destination)
-        specs = include.load(source)
+        specs = include.load(source, url=url)
         self.ip.addIncludes(source, specs.loads)
         specs.collection.cook()
         specs.distribution.cook()
@@ -533,7 +536,7 @@ class BuilderApplication(Application):
             self.create_tarball()
             self.cleanup()
         except:
-            print >>sys.stderr, "temporary files are in", self.tmpdir
+            print >>sys.stderr, "----\ntemporary files are in", self.tmpdir
             raise
 
 

@@ -29,6 +29,7 @@
 
 import fnmatch
 import glob
+import logging
 import os
 import posixpath
 import shutil
@@ -37,7 +38,11 @@ import urllib
 from zpkgtools import Error
 
 from zpkgtools import cfgparser
+from zpkgtools import loader
 from zpkgtools import publication
+
+
+logger = logging.getLogger(__name__)
 
 
 # Names that are exluded from globbing results:
@@ -63,14 +68,19 @@ class InclusionSpecificationError(cfgparser.ConfigurationError,
         self.lineno = lineno
 
 
-def load(sourcedir):
+def load(sourcedir, url=None):
     """Return the specifications for populating the distribution and
     collection directories.
+
+    :param sourcedir: Directory we're loading the specifications for.
+
+    :param url: URL used to retrieve `sourcedir`; this is needed to
+      resolve repository: references.
 
     If there is not specification file, return empty specifications.
     """
     package_conf = os.path.join(sourcedir, PACKAGE_CONF)
-    schema = SpecificationSchema(sourcedir, package_conf)
+    schema = SpecificationSchema(sourcedir, package_conf, baseurl=url)
     if os.path.isfile(package_conf):
         f = open(package_conf, "rU")
         try:
@@ -116,11 +126,13 @@ def normalize_path(path, type, group):
     return np.replace("/", os.sep)
 
 
-def normalize_path_or_url(path, type, group):
+def normalize_path_or_url(path, type, group, baseurl=None):
     if ":" in path:
         scheme, rest = urllib.splittype(path)
         if len(scheme) != 1:
             # should normalize the URL, but skip that for now
+            if baseurl and scheme == "repository":
+                path = loader.join(baseurl, path)
             return path
     return normalize_path(path, type, group)
 
@@ -129,7 +141,8 @@ class SpecificationSchema(cfgparser.Schema):
     """Specialized schema that handles populating a set of Specifications.
     """
 
-    def __init__(self, source, filename):
+    def __init__(self, source, filename, baseurl=None):
+        self.baseurl = baseurl
         self.filename = filename
         self.source = source
 
@@ -177,7 +190,8 @@ class SpecificationSchema(cfgparser.Schema):
                     " in <load> section")
             # perhaps should make sure workfile and other don't refer
             # to the same file
-            other = normalize_path_or_url(other, "source", section.group)
+            other = normalize_path_or_url(other, "source", section.group,
+                                          self.baseurl)
         elif other:
             other = normalize_path(other, "destination", section.group)
 
@@ -383,10 +397,12 @@ class InclusionProcessor:
 
     def addIncludes(self, destination, spec):
         """Process all the inclusion from a specification."""
+        logger.debug("processing <%s> from %s (dest = %s)",
+                     spec.group, spec.filename, destination)
         for source, relpath in spec.includes.iteritems():
-            self.addSingleInclude(relpath, source, destination)
+            self.addSingleInclude(relpath, source, destination, spec.source)
 
-    def addSingleInclude(self, relpath, source, destination):
+    def addSingleInclude(self, relpath, source, destination, dir=None):
         """Process a single include specification line.
 
         :Parameters:
@@ -400,6 +416,8 @@ class InclusionProcessor:
             used as a base directory for `relpath`.
 
         """
+        logger.debug("adding include %s from %s (dest = %s)",
+                     relpath, source, destination)
         dirname, basename = os.path.split(relpath)
         if dirname:
             destdir = os.path.join(destination, dirname)
@@ -415,7 +433,7 @@ class InclusionProcessor:
         type = urllib.splittype(source)[0] or ''
         if len(type) in (0, 1):
             # figure it's a path ref, possibly w/ a Windows drive letter
-            source = os.path.join(self.source, source)
+            source = os.path.join(dir or self.source, source)
             source = "file://" + urllib.pathname2url(source)
             type = "file"
         try:

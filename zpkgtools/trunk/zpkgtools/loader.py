@@ -17,6 +17,7 @@ This handles tag insertion and URL type dispatch.
 """
 
 import errno
+import logging
 import os
 import posixpath
 import shutil
@@ -27,6 +28,15 @@ import urlparse
 
 from zpkgtools import cvsloader
 from zpkgtools import svnloader
+
+
+logger = logging.getLogger(__name__)
+
+def trace(msg, *args, **kw):
+    logger.log(5, msg, *args, **kw)
+
+def debug(msg, *args, **kw):
+    logger.debug(msg, *args, **kw)
 
 
 def open(url, mode="r"):
@@ -100,8 +110,10 @@ class Loader:
             url, (directory, path, istemporary) = self.workdirs.popitem()
             if istemporary:
                 if directory:
+                    trace("removing temp dir %s (%s)", directory, url)
                     shutil.rmtree(directory)
                 else:
+                    trace("removing temp file %s (%s)", path, url)
                     os.unlink(path)
 
     def transform_url(self, url):
@@ -157,6 +169,7 @@ class Loader:
             raise ValueError("can only load from URLs, not path references")
         path = method(url)
         assert path == self.workdirs[url][1]
+        trace("LOADED %s -> %s", url, path)
         return path
 
     def load_mutable_copy(self, url):
@@ -182,6 +195,7 @@ class Loader:
             path = p
         assert path == self.workdirs[url][1]
         assert self.workdirs[url][2]
+        trace("LOADED %s -> %s", url, path)
         return path
 
     def create_copy(self, url, path):
@@ -203,6 +217,8 @@ class Loader:
         path = os.path.normpath(path)
         basename = os.path.basename(path)
         filename = os.path.join(tmpdir, basename)
+        trace("creating mutable copy of %s by copying %s -> %s",
+              url, path, filename)
         if os.path.isfile(path):
             shutil.copy2(path, filename)
         else:
@@ -309,3 +325,25 @@ class FileProxy(object):
                          doc="Boolean that indicates whether a space"
                          " character needs to be printed before another"
                          " value when using the ``print`` statement.")
+
+
+#################################################################
+#
+# Generalized URL-handling utilities for CVS and Subversion URLs:
+#
+#################################################################
+
+
+def parse(url):
+    try:
+        return cvsloader.parse(url)
+    except ValueError:
+        return svnloader.parse(url)
+
+def join(base, relurl):
+    r = parse(relurl)
+    if isinstance(r, cvsloader.RepositoryUrl):
+        b = parse(base)
+        return b.join(r).getUrl()
+    else:
+        return relurl
