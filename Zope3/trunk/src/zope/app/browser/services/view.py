@@ -21,7 +21,7 @@
 
   PageConfigurationView -- calls validation on PageConfiguration.
 
-$Id: view.py,v 1.7 2003/02/21 14:50:05 alga Exp $
+$Id: view.py,v 1.8 2003/04/11 19:05:08 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -58,7 +58,7 @@ class IViewSearch(Interface):
 
     layer = BytesLine(title=u'Layer',
                       required=False,
-                        )
+                      )
 
 
 class ViewServiceView(BrowserView):
