@@ -14,11 +14,12 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.3 2003/02/02 18:57:46 jack-e Exp $
+$Id: __init__.py,v 1.4 2003/02/04 21:35:42 jack-e Exp $
 """
 
 from zope.interface import Interface
 from zope.interface import Attribute
+from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.configuration \
      import INamedComponentConfiguration
 
@@ -83,33 +84,16 @@ class IProcessInstance(Interface):
     Represents the instance of a process defined by a ProcessDefinition.
     """
 
-    name = Attribute("The Name of the ProcessInstance.")
-
-    status = Attribute("The state in which the workitem is.")
+    status = Attribute("The status in which the workitem is.")
 
     processDefinitionName = Attribute("The process definition Name.")
 
 
 
-class IProcessInstanceContainer(Interface):
+class IProcessInstanceContainer(IContainer):
     """Workflow process instance container.
     """
 
-    def addProcessInstance(name, pi):
-        """Add the process instance, associated to name.
-        """
-
-    def getProcessInstance(name):
-        """Get the process instance associated to the given name.
-        """
-
-    def getProcessInstanceNames():
-        """Get the names associated to all process instances.
-        """
-
-    def delProcessInstance(name):
-        """Remove the process instance associated to name.
-        """
 
 
 class IProcessInstanceContainerAdaptable(Interface):
