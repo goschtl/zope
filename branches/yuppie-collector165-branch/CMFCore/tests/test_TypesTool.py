@@ -60,7 +60,6 @@ class TypesToolTests(SecurityTest):
         SecurityTest.setUp(self)
         self.site = DummySite('site').__of__(self.root)
         self.acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
-        setattr( self.acl_users, 'all_powerful_Oz', OmnipotentUser() )
         self.ttool = self.site._setObject( 'portal_types', TypesTool() )
         self.ttool._setObject( 'Dummy Content', DummyFTI ) 
  

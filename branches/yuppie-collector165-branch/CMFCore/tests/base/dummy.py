@@ -3,6 +3,7 @@ from OFS.SimpleItem import Item
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.TypesTool import FactoryTypeInformation as FTI
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
+from security import OmnipotentUser
 
 
 class DummyObject(Implicit):
@@ -12,14 +13,14 @@ class DummyObject(Implicit):
     methods.
     """
     def __init__(self, id='dummy',**kw):
-        self.id = id
+        self._id = id
         self.__dict__.update( kw )
         
     def __str__(self):
-        return self.id
+        return self._id
     
     def __call__(self):
-        return self.id
+        return self._id
 
     def restrictedTraverse( self, path ):
         return path and getattr( self, path ) or self
@@ -28,7 +29,7 @@ class DummyObject(Implicit):
         return 'Site: %s' % relative
     
     def getId(self):
-        return self.id
+        return self._id
 
 
 class DummyContent( PortalContent, Item ):
@@ -147,7 +148,7 @@ class DummyFolder( Implicit ):
     """
     def __init__( self, id='dummy', fake_product=0, prefix='' ):
         self._prefix = prefix
-        self.id = id
+        self._id = id
 
         if fake_product:
             self.manage_addProduct = { 'FooProduct' : DummyFactory( self ) }
@@ -161,10 +162,25 @@ class DummyFolder( Implicit ):
 
     _setObject = _setOb
 
+    def getPhysicalPath(self):
+        return self.aq_inner.aq_parent.getPhysicalPath() + ( self._id, )
+
+    def getId(self):
+        return self._id
+
 
 class DummySite(DummyFolder):
     """ A dummy portal folder.
     """
+
+    _domain = 'http://www.foobar.com'
+    _path = 'bar'
+
+    def absolute_url(self, relative=0):
+        return '/'.join( (self._domain, self._path, self._id) )
+
+    def getPhysicalPath(self):
+        return ('', self._path, self._id)
 
     def getPhysicalRoot(self):
         return self
@@ -203,6 +219,7 @@ class DummyUserFolder(Implicit):
     def __init__(self):
         setattr( self, 'user_foo', DummyUser(id='user_foo') )
         setattr( self, 'user_bar', DummyUser(id='user_bar') )
+        setattr( self, 'all_powerful_Oz', OmnipotentUser() )
 
     def getUsers(self):
         pass
