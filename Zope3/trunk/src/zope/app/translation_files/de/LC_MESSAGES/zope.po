@@ -1,48 +1,215 @@
+# translation of zope.po to 
+# translation of zope.po to
 # translation of zope.po to English US
 # This file is distributed under the same license as the PACKAGE package.
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
+# Philipp von Weitershause, 2003
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER.
 # Stephan Richter <stephan.richter@tufts.edu>, 2003.
+# Philipp von Weitershause, 2003
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
 "POT-Creation-Date: Wed Aug  6 09:06:36 2003\n"
-"PO-Revision-Date: 2003-08-06 10:03-0400\n"
-"Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
-"Language-Team: English US <en@li.org>\n"
+"PO-Revision-Date: 2003-08-06 11:20-0500\n"
+"Last-Translator: Philipp von Weitershause\n"
+"Language-Team:  <C@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.2beta3\n"
+"X-Generator: KBabel 1.0.1\n"
 
 #: /home/srichter/Zope3/Zope3-Fresh/site.zcml:8
 msgid "Site Manager"
-msgstr "Site Verwalter"
+msgstr "Webseiten-Verwalter"
 
 #: /home/srichter/Zope3/Zope3-Fresh/site.zcml:9
 msgid "Site Member"
-msgstr "Site Mitglied"
+msgstr "Webseiten-Mitglied"
 
 #: zope/app/browser/absoluteurl.py:25
 msgid ""
 "There isn't enough context to get URL information. This is probably due to a "
 "bug in setting up context wrappers."
 msgstr ""
-"Es gibt nicht genug Kontext um die URL Informationen abzurufen. Dies ist "
-"wahrscheinlich auf einen Fehler im Setup von Kontext-Umschlägen "
+"Es gibt nicht genug Kontext um die URL-Informationen abzurufen. Dies ist "
+"wahrscheinlich auf einen Fehler in der Installation von Kontext-Umschlägen "
 "zurückzuführen."
 
 #: zope/app/browser/applicationcontrol/configure.zcml:14
 msgid "Runtime Information"
-msgstr "Laufzeit Informationen"
+msgstr "Laufzeit-Informationen"
 
 #: zope/app/browser/applicationcontrol/configure.zcml:23
 msgid "ZODB Control"
-msgstr "ZODB Kontrolle"
+msgstr "ZODB-Kontrolle"
 
 #: zope/app/browser/applicationcontrol/configure.zcml:9
 msgid "Server Control"
-msgstr "Server Kontrolle"
+msgstr "Serverkontrolle"
 
 #: zope/app/browser/applicationcontrol/runtimeinfo.pt:10
 msgid "Zope version:"
@@ -54,7 +221,7 @@ msgstr "Python Version:"
 
 #: zope/app/browser/applicationcontrol/runtimeinfo.pt:18
 msgid "System platform:"
-msgstr "System Plattform:"
+msgstr "Systemplattform:"
 
 #: zope/app/browser/applicationcontrol/runtimeinfo.pt:22
 msgid "Command line:"
@@ -62,7 +229,7 @@ msgstr "Kommandozeile:"
 
 #: zope/app/browser/applicationcontrol/runtimeinfo.pt:26
 msgid "Process id:"
-msgstr "Prozess-Id:"
+msgstr "Prozessnummer:"
 
 #: zope/app/browser/applicationcontrol/runtimeinfo.pt:3
 msgid "Zope Runtime Information"
@@ -70,7 +237,7 @@ msgstr "Zope Laufzeitinformationen"
 
 #: zope/app/browser/applicationcontrol/runtimeinfo.pt:30
 msgid "Uptime:"
-msgstr "Betriebszeit:"
+msgstr "Laufzeit:"
 
 #: zope/app/browser/applicationcontrol/runtimeinfo.pt:34
 msgid "Python path:"
@@ -90,11 +257,11 @@ msgstr "Zope Stub Server Controller"
 
 #: zope/app/browser/applicationcontrol/server-control.pt:9
 msgid "Restart server"
-msgstr "Server neu starten"
+msgstr "Server neustarten"
 
 #: zope/app/browser/applicationcontrol/servercontrol.py:36
 msgid "You restarted the server."
-msgstr "Sie haben den Server neu gestartet."
+msgstr "Sie haben den Server neugestartet."
 
 #: zope/app/browser/applicationcontrol/servercontrol.py:39
 msgid "You shut down the server."
@@ -114,7 +281,7 @@ msgstr "Packen"
 
 #: zope/app/browser/applicationcontrol/zodbcontrol.pt:3
 msgid "ZODB Controller"
-msgstr "ZODB Kontrolleur"
+msgstr "ZODB-Verwalter"
 
 #: zope/app/browser/applicationcontrol/zodbcontrol.pt:9
 msgid "Size of file: ${size}"
@@ -138,7 +305,7 @@ msgstr "ZODB erfolgreich gepackt."
 
 #: zope/app/browser/cache/cacheable.py:60
 msgid "Invalidated."
-msgstr "Invalidiert."
+msgstr "Cache ungültig gemacht."
 
 #: zope/app/browser/cache/cacheable.py:62
 msgid "No cache associated with object."
@@ -167,7 +334,7 @@ msgstr "Änderungen speichern"
 
 #: zope/app/browser/cache/cacheableedit.pt:47
 msgid "invalidate-cache-button"
-msgstr "Cache invalidieren"
+msgstr "Cache ungültig machen"
 
 #: zope/app/browser/cache/cacheableedit.pt:5
 msgid "This edit form allows you to associate a cache with this object."
@@ -450,7 +617,7 @@ msgstr "Hochladen"
 
 #: zope/app/browser/content/configure.zcml:217
 msgid "An object for dynamic content based on Page Templates."
-msgstr "Ein auf Page Templates basierendes Objekt zum Erstellen dynamischer Inhalte"
+msgstr "Ein auf Seitenschablonen basierendes Objekt zum Erstellen dynamischer Inhalte"
 
 #: zope/app/browser/content/configure.zcml:217
 msgid "Templated Page"
@@ -498,31 +665,31 @@ msgstr "SQLSkript"
 
 #: zope/app/browser/content/configure.zcml:287
 msgid "A content object getting its data from a RDB."
-msgstr "Ein Content-Objekt das seine Daten von eine RDB bekommt."
+msgstr "Ein Inhaltsobjekt, dessen Daten aus einer RDB kommen."
 
 #: zope/app/browser/content/configure.zcml:304
 msgid "Edit a DTML page"
-msgstr "Eine DTML Seite editieren"
+msgstr "Eine DTML-Seite bearbeiten"
 
 #: zope/app/browser/content/configure.zcml:323
 msgid "An object for dynamic content based on Document Templates."
-msgstr "Ein Objekt für dynamischen Inhalt auf der Basis von Dokumenten Schablonen."
+msgstr "Ein Objekt für dynamischen Inhalt auf der Basis von Dokumentenschablonen."
 
 #: zope/app/browser/content/configure.zcml:341
 msgid "Edit an XML document"
-msgstr "Ein XML Dokument bearbeiten"
+msgstr "Ein XML-Dokument bearbeiten"
 
 #: zope/app/browser/content/configure.zcml:353
 msgid "An object storing XML text."
-msgstr "Ein Objekt das XML Text speichert."
+msgstr "Ein Objekt das XML-Text speichert."
 
 #: zope/app/browser/content/configure.zcml:42
 msgid "A file object, suitable for large data."
-msgstr "Eine Datei Objekt, gut für große Datenmengen."
+msgstr "Ein Dateiobjekt, welches sich für große Datenmengen eignet."
 
 #: zope/app/browser/content/configure.zcml:54
 msgid "File Upload Screen"
-msgstr "Datei Hochladen"
+msgstr "Datei hochladen"
 
 #: zope/app/browser/content/configure.zcml:7
 msgid "Change a file"
@@ -530,7 +697,7 @@ msgstr "Eine Datei ändern"
 
 #: zope/app/browser/content/configure.zcml:92
 msgid "A file that supports multiple locales."
-msgstr "Eine Datei die mehrere Lokale unterstützt."
+msgstr "Eine Datei die mehrere Ländereinstellungen unterstützt."
 
 #: zope/app/browser/content/fromFS.pt:11
 msgid "Commit results: ${results}"
@@ -538,7 +705,7 @@ msgstr "Ergebnisse einchecken: ${results}"
 
 #: zope/app/browser/content/fromFS.pt:16
 msgid "Upload a zipfile in the following form"
-msgstr "Eine ZIP Datei in der folgenden Form hochladen "
+msgstr "Eine ZIP-Datei in dem folgenden Formular hochladen"
 
 #: zope/app/browser/content/fromFS.pt:20
 msgid "upload-button"
@@ -550,7 +717,7 @@ msgstr "Aktion einchecken"
 
 #: zope/app/browser/content/fssync.py:120
 msgid "Content-Type is not application/x-snarf"
-msgstr "Der Kontent Typ ist nicht application/x-snarf"
+msgstr "Der Inhaltstyp ist nicht application/x-snarf"
 
 #: zope/app/browser/content/fssync.py:162
 msgid "required argument 'name' missing"
@@ -597,7 +764,7 @@ msgstr "Ausmaße"
 
 #: zope/app/browser/content/sqltest.pt:14
 msgid "Argument Name"
-msgstr "Argument-Name"
+msgstr "Argumentname"
 
 #: zope/app/browser/content/sqltest.pt:15
 msgid "Type"
@@ -633,7 +800,7 @@ msgstr "Inhalt wurde zuletzt geändert am"
 
 #: zope/app/browser/dublincore/edit.pt:47
 msgid "Creator"
-msgstr "Erschaffer"
+msgstr "Autor"
 
 #: zope/app/browser/dublincore/metadataedit.py:40
 msgid "Changed data ${datetime}"
@@ -678,7 +845,7 @@ msgstr "Entfernen"
 
 #: zope/app/browser/form/complexsample/complexsample.py:47
 msgid "sampleWidget-button-add-done"
-msgstr "Hinzufügen und Fertig"
+msgstr "Hinzufügen und fertig"
 
 #: zope/app/browser/form/complexsample/complexsample.py:48
 msgid "sampleWidget-button-add-more"
@@ -714,7 +881,7 @@ msgstr "Inhaltstyp auswählen"
 
 #: zope/app/browser/form/complexsample/complexsample.py:60
 msgid "sampleWidget-label-any-content-type"
-msgstr "Irgend ein Inhaltstyp"
+msgstr "Irgendein Inhaltstyp"
 
 #: zope/app/browser/form/complexsample/complexsample.py:62
 msgid "sampleWidget-label-inaccessable-object"
@@ -754,7 +921,7 @@ msgstr "(Keine Werte)"
 
 #: zope/app/browser/form/vocabularywidget.py:627
 msgid "vocabulary-query-button-add-done"
-msgstr "Hinzufügen und Fertig"
+msgstr "Hinzufügen und fertig"
 
 #: zope/app/browser/form/vocabularywidget.py:629
 msgid "vocabulary-query-button-add-more"
@@ -1467,26 +1634,35 @@ msgid ""
 "shown below, you may not be able to undo it if later transactions modified "
 "objects that were modified by a selected transaction."
 msgstr ""
+"Wählen Sie eine oder mehrere Transaktionen aus und klicken sie auf "
+"&quot;Rückgängig&quot;, um diese rückgängig zu machen. Bitte beachten "
+"Sie, dass, obwohl eine Transaktion unten aufgeführt ist, sie evtl. nicht "
+"rückgängig gemacht werden kann, da spätere Transaktionen die betroffenen "
+"Objekte bereits modifiziert haben."
 
 #: zope/app/browser/undo_log.pt:33
 msgid ""
 "You are ${username}, looking at all transactions. <a href=\"?\">View only "
 "your own transactions</a>."
 msgstr ""
+"Sie sind ${username} und sehen alle Transaktionen. <a href=\"?\">Nur eigene "
+"Transaktionen anzeigen</a>."
 
 #: zope/app/browser/undo_log.pt:4
 msgid "Undo Title"
-msgstr ""
+msgstr "Wiederherstellen"
 
 #: zope/app/browser/undo_log.pt:44
 msgid ""
 "You are ${username}, looking at your own transactions. <a href=\"?all=yes"
 "\">View everyone's transactions</a>."
 msgstr ""
+"Sie sind ${username} und sehen nur Ihre Transaktionen. <a href=\"?all=yes"
+"\">Alle Transaktionen anzeigen</a>."
 
 #: zope/app/browser/undo_log.pt:55
 msgid "View 20 earlier transactions"
-msgstr ""
+msgstr "20 frühere Transaktionen anzeigen"
 
 #: zope/app/browser/undo_log.pt:81
 msgid "no description available"
@@ -1494,83 +1670,83 @@ msgstr ""
 
 #: zope/app/browser/undo_log.pt:89
 msgid "by ${username}"
-msgstr ""
+msgstr "von ${username}"
 
 #: zope/app/browser/workflow/configure.zcml:20
 msgid "A workflow service"
-msgstr ""
+msgstr "Ein Arbeitsablaufdienst"
 
 #: zope/app/browser/workflow/configure.zcml:20
 msgid "'Workflow Service"
-msgstr ""
+msgstr "Arbeitsablaufdienst"
 
 #: zope/app/browser/workflow/configure.zcml:54
 msgid "ProcessDefinition Registration"
-msgstr ""
+msgstr "Prozessdefinitionen-Registrierung"
 
 #: zope/app/browser/workflow/configure.zcml:9
 msgid "Processes"
-msgstr ""
+msgstr "Prozesse"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:10
 msgid "A stateful workflow process definition"
-msgstr ""
+msgstr "Eine zustandsbasierte Arbeitsablauf-Prozessdefinition"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:10
 msgid "Stateful Process Definition"
-msgstr ""
+msgstr "Zustandsbasierte Prozessdefinition"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:112
 msgid "Edit a Transition"
-msgstr ""
+msgstr "Übergang bearbeiten"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:120
 msgid "Stateful Transition"
-msgstr ""
+msgstr "Zustandsbasierter Übergang"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:133
 msgid "An utility to manage content and workflow interaction."
-msgstr ""
+msgstr "Ein Werkzeug, um Inhalt und Arbeitsläufe zu verwalten."
 
 #: zope/app/browser/workflow/stateful/configure.zcml:133
 msgid "Content Workflows Manager"
-msgstr ""
+msgstr "Verwalter von Arbeitsabläufen von Inhalten"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:146
 msgid "Overview"
-msgstr ""
+msgstr "Überblick"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:156
 msgid "Content/Process Registry"
-msgstr ""
+msgstr "Inhalt/Prozess-Registrierung"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:168
 msgid "Workflows"
-msgstr ""
+msgstr "Arbeitsabläufe"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:28
 msgid "Relevant Data Schema"
-msgstr ""
+msgstr "Revelantes Datenschema"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:41
 msgid "Manage States"
-msgstr ""
+msgstr "Zustände verwalten"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:43
 msgid "Manage Transitions"
-msgstr ""
+msgstr "Übergänge verwalten"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:50
 msgid "State Items"
-msgstr ""
+msgstr "Zustände"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:51
 msgid "Transition Items"
-msgstr ""
+msgstr "Übergänge"
 
 #: zope/app/browser/workflow/stateful/configure.zcml:82
 msgid "Stateful State"
-msgstr ""
+msgstr "Zustandsbasierter Zustand"
 
 #: zope/app/container/size.py:40
 msgid "1 item"
@@ -1595,7 +1771,7 @@ msgstr "Bild"
 
 #: zope/app/content/configure.zcml:162
 msgid "An Internationalized Image"
-msgstr ""
+msgstr "Ein internationalisiertes Bild"
 
 #: zope/app/content/configure.zcml:162
 #: zope/app/browser/content/configure.zcml:175
@@ -1613,11 +1789,11 @@ msgstr "Ordner"
 
 #: zope/app/content/configure.zcml:190
 msgid "ZPT Page"
-msgstr ""
+msgstr "ZPT-Seite"
 
 #: zope/app/content/configure.zcml:190 zope/app/content/configure.zcml:246
 msgid "A simple, content-based Page Template"
-msgstr ""
+msgstr "Eine einfache, auf Inhalt basierte Page Template"
 
 #: zope/app/content/configure.zcml:246
 #: zope/app/browser/content/configure.zcml:323
@@ -1635,7 +1811,7 @@ msgstr "Datei"
 
 #: zope/app/content/configure.zcml:317
 msgid "An Internationalized File"
-msgstr ""
+msgstr "Eine internationalisierte Datei"
 
 #: zope/app/content/configure.zcml:317
 #: zope/app/browser/content/configure.zcml:92
@@ -1644,24 +1820,24 @@ msgstr "I18n Datei"
 
 #: zope/app/content/configure.zcml:347
 msgid "Add SQL Scripts"
-msgstr "SQL Skripte hinzufügen"
+msgstr "SQL-Skripte hinzufügen"
 
 #: zope/app/content/configure.zcml:351
 msgid "Dynamic SQL Script"
-msgstr "Dynamisches SQL Skript"
+msgstr "Dynamisches SQL-Skript"
 
 #: zope/app/content/configure.zcml:351
 msgid "SQL Script"
-msgstr "SQL Skript"
+msgstr "SQL-Skript"
 
 #: zope/app/content/configure.zcml:394
 msgid "A simple XML Document"
-msgstr "Ein einfaches XML Dokument"
+msgstr "Ein einfaches XML-Dokument"
 
 #: zope/app/content/configure.zcml:394
 #: zope/app/browser/content/configure.zcml:353
 msgid "XML Document"
-msgstr "XML Dokument"
+msgstr "XML-Dokument"
 
 #: zope/app/content/image.py:75
 msgid " ${width}x${height}"
@@ -1694,7 +1870,7 @@ msgstr "Inhaltstyp"
 
 #: zope/app/interfaces/content/file.py:26
 msgid "The content type identifies the type of data."
-msgstr "Der Inhaltstyp definiert die Art von Daten."
+msgstr "Der Inhaltstyp identifiziert den Typ der Daten."
 
 #: zope/app/interfaces/content/file.py:31
 #: zope/app/browser/content/i18n_edit.pt:78
@@ -1704,7 +1880,7 @@ msgstr "Daten"
 
 #: zope/app/interfaces/content/file.py:32
 msgid "The actual content of the object."
-msgstr "Der eigentliche Inhlat des Objects."
+msgstr "Der eigentliche Inhlat des Objekts."
 
 #: zope/app/interfaces/content/sql.py:46
 msgid "Connection Name"
@@ -1712,7 +1888,7 @@ msgstr "Verbindungsname"
 
 #: zope/app/interfaces/content/sql.py:47
 msgid "The Connection Name for the connection to be used."
-msgstr "Der Verbindungsname fuer die zu benutzende Verbindung."
+msgstr "Der Verbindungsname für die zu benutzende Verbindung."
 
 #: zope/app/interfaces/content/sql.py:51
 msgid "Arguments"
@@ -1723,16 +1899,16 @@ msgid ""
 "A set of attributes that can be used during the SQL command rendering "
 "process to provide dynamic data."
 msgstr ""
-"Eine Sammlung von Attributen die waehrend des SQL Befehls Rendering Prozesses als "
+"Eine Sammlung von Attributen, die, während der SQL-Befehl zusammengestellt wird, als "
 "dynamische Variablen verfügbar sind."
 
 #: zope/app/interfaces/content/sql.py:58
 msgid "The SQL command to be run."
-msgstr ""
+msgstr "Der auszuführende SQL-Befehl"
 
 #: zope/app/interfaces/content/xmldocument.py:26
 msgid "The text source of the XML document."
-msgstr "Der Quellcode des XML Dokumentes"
+msgstr "Der Quellcode des XML-Dokumentes"
 
 #: zope/app/interfaces/content/zpt.py:41
 msgid "The source of the page template."
@@ -1740,282 +1916,282 @@ msgstr "Der Quellcode der Page Template."
 
 #: zope/app/interfaces/content/zpt.py:45
 msgid "Expand macros"
-msgstr "Erweitere Macros"
+msgstr "Makros anzeigen"
 
 #: zope/app/interfaces/mail.py:106
 msgid "Queue path"
-msgstr ""
+msgstr "Warteschlangenpfad"
 
 #: zope/app/interfaces/mail.py:107 zope/app/interfaces/mail.py:116
 msgid "Pathname of the directory used to queue mail."
-msgstr ""
+msgstr "Verzeichnispfad der Email-Warteschlange."
 
 #: zope/app/interfaces/mail.py:115
 msgid "Queue Path"
-msgstr ""
+msgstr "Warteschlangenpfad"
 
 #: zope/app/interfaces/mail.py:119
 msgid "Polling Interval"
-msgstr ""
+msgstr "Abfrageintervall"
 
 #: zope/app/interfaces/mail.py:120
 msgid "How often the queue is checked for new messages (in milliseconds)"
-msgstr ""
+msgstr "Gibt an wie oft die Warteschlange für neue Nachrichten abgefragt wird (in Millisekunden)"
 
 #: zope/app/interfaces/mail.py:152
 msgid "Hostname"
-msgstr ""
+msgstr "Servername"
 
 #: zope/app/interfaces/mail.py:153
 msgid "Name of server to be used as SMTP server."
-msgstr ""
+msgstr "Name des Servers, der als SMTP-Server benutzt werden soll."
 
 #: zope/app/interfaces/mail.py:156
 msgid "Port"
-msgstr ""
+msgstr "Port"
 
 #: zope/app/interfaces/mail.py:157
 msgid "Port of SMTP service"
-msgstr ""
+msgstr "Port des SMTP-Dienstes"
 
 #: zope/app/interfaces/mail.py:161
 msgid "Username"
-msgstr ""
+msgstr "Benutzername"
 
 #: zope/app/interfaces/mail.py:162
 msgid "Username used for optional SMTP authentication."
-msgstr ""
+msgstr "Benutzername, der für die optionale SMTP-Authentifzierung benutzt wird"
 
 #: zope/app/interfaces/mail.py:165
 #: zope/app/interfaces/services/pluggableauth/__init__.py:33
 msgid "Password"
-msgstr ""
+msgstr "Passwort"
 
 #: zope/app/interfaces/mail.py:166
 msgid "Password used for optional SMTP authentication."
-msgstr ""
+msgstr "Passwort, das für die optionale SMTP-Authentifzierung benutzt wird."
 
 #: zope/app/interfaces/mail.py:173
 msgid "Command"
-msgstr ""
+msgstr "Befehl"
 
 #: zope/app/interfaces/mail.py:174
 msgid "Command used to send email."
-msgstr ""
+msgstr "Befehl zum Emai versenden"
 
 #: zope/app/interfaces/services/pluggableauth/__init__.py:29
 msgid "Id"
-msgstr ""
+msgstr "Id"
 
 #: zope/app/interfaces/services/pluggableauth/__init__.py:31
 #: zope/app/browser/dublincore/edit.pt:22
 msgid "Description"
-msgstr ""
+msgstr "Beschreibung"
 
 #: zope/app/interfaces/services/pluggableauth/__init__.py:32
 msgid "Login"
-msgstr ""
+msgstr "Anmeldung"
 
 #: zope/app/mail/configure.zcml:11
 msgid "Send out mail with arbitrary from and to addresses"
-msgstr ""
+msgstr "Emails mit beliebiger Absender- und Empfängeradresse verschicken"
 
 #: zope/app/onlinehelp/configure.zcml:22
 msgid "Zope UI Help"
-msgstr ""
+msgstr "Zope-Oberflächenhilfe"
 
 #: zope/app/onlinehelp/configure.zcml:27
 msgid "Welcome"
-msgstr ""
+msgstr "Willkommen"
 
 #: zope/app/onlinehelp/configure.zcml:33
 msgid "Online help system"
-msgstr ""
+msgstr "Onlinehilfesystem"
 
 #: zope/app/schema/fields.zcml:109
 msgid "BytesLine Field"
-msgstr ""
+msgstr "Byteszeilenfeld"
 
 #: zope/app/schema/fields.zcml:120
 msgid "Text Field"
-msgstr ""
+msgstr "Textfeld"
 
 #: zope/app/schema/fields.zcml:131
 msgid "Text Line Field"
-msgstr ""
+msgstr "Textzeilenfeld"
 
 #: zope/app/schema/fields.zcml:142
 msgid "Boolean Field"
-msgstr ""
+msgstr "Boolsches Feld"
 
 #: zope/app/schema/fields.zcml:153
 msgid "Integer Field"
-msgstr ""
+msgstr "Ganzahlfeld"
 
 #: zope/app/schema/fields.zcml:164
 msgid "Float Field"
-msgstr ""
+msgstr "Fließkommazahlenfeld"
 
 #: zope/app/schema/fields.zcml:175
 msgid "Tuple Field"
-msgstr ""
+msgstr "Tupelfeld"
 
 #: zope/app/schema/fields.zcml:186
 msgid "List Field"
-msgstr "List Feld"
+msgstr "Listenfeld"
 
 #: zope/app/schema/fields.zcml:197
 msgid "Password Field"
-msgstr ""
+msgstr "Passwortfeld"
 
 #: zope/app/schema/fields.zcml:208
 msgid "Dict Field"
-msgstr ""
+msgstr "Dict-Feld"
 
 #: zope/app/schema/fields.zcml:219
 msgid "Datetime Field"
-msgstr ""
+msgstr "Zeitdatumfeld"
 
 #: zope/app/schema/fields.zcml:230
 msgid "SourceText Field"
-msgstr ""
+msgstr "Quelltextfeld"
 
 #: zope/app/schema/fields.zcml:241
 msgid "Object Field"
-msgstr ""
+msgstr "Objektfeld"
 
 #: zope/app/schema/fields.zcml:252
 msgid "URI Field"
-msgstr ""
+msgstr "URI-Feld"
 
 #: zope/app/schema/fields.zcml:263
 msgid "Id Field"
-msgstr ""
+msgstr "ID-Feld"
 
 #: zope/app/schema/fields.zcml:274
 msgid "EnumeratedTextLine Field"
-msgstr ""
+msgstr "Aufzählendes Textzeilenfeld"
 
 #: zope/app/schema/fields.zcml:285
 msgid "EnumeratedInt Field"
-msgstr ""
+msgstr "Aufzählendes Ganzzahlfeld"
 
 #: zope/app/schema/fields.zcml:296
 msgid "EnumeratedFloat Field"
-msgstr ""
+msgstr "Aufzählendes Fließkommazahlenfeld"
 
 #: zope/app/schema/fields.zcml:307
 msgid "Interface Field"
-msgstr ""
+msgstr "Interface-Feld"
 
 #: zope/app/schema/fields.zcml:32
 msgid "Container Field"
-msgstr ""
+msgstr "Behälterfeld"
 
 #: zope/app/schema/fields.zcml:43
 msgid "Iterable Field"
-msgstr ""
+msgstr "Wiederholendes Feld"
 
 #: zope/app/schema/fields.zcml:5
 msgid "Basic Field"
-msgstr ""
+msgstr "Grundfeld"
 
 #: zope/app/schema/fields.zcml:54
 msgid "Orderable Field"
-msgstr ""
+msgstr "Sortierbares Feld"
 
 #: zope/app/schema/fields.zcml:65
 msgid "MinMaxLen Field"
-msgstr ""
+msgstr "MinMaxLen-Feld"
 
 #: zope/app/schema/fields.zcml:76
 msgid "Enumerated Field"
-msgstr ""
+msgstr "Aufzählendes Feld"
 
 #: zope/app/schema/fields.zcml:87
 msgid "Sequence Field"
-msgstr ""
+msgstr "Folgenfeld"
 
 #: zope/app/schema/fields.zcml:98
 msgid "Bytes Field"
-msgstr ""
+msgstr "Bytesfeld"
 
 #: zope/app/security/configure.zcml:14
 msgid "Change security settings"
-msgstr ""
+msgstr "Aktuelle Einstellungen ändern"
 
 #: zope/app/security/configure.zcml:18
 msgid "Manage Content"
-msgstr ""
+msgstr "Inhalt verwalten"
 
 #: zope/app/security/configure.zcml:22
 msgid "Manage Service Bindings"
-msgstr ""
+msgstr "Dienstebindungen verwalten"
 
 #: zope/app/security/configure.zcml:26
 msgid "Manage executable code, including Python, SQL, ZPT, etc."
-msgstr ""
+msgstr "Ausführbaren Code (inkl. Python, SQL, ZPT etc.) verwalten"
 
 #: zope/app/security/configure.zcml:26
 msgid "Manage Code"
-msgstr ""
+msgstr "Code verwalten"
 
 #: zope/app/security/configure.zcml:31
 msgid "Manage Services"
-msgstr ""
+msgstr "Dienste verwalten"
 
 #: zope/app/security/configure.zcml:35
 msgid ""
 "Manage the Zope Application, such as Restart/Shutdown or                     "
 "packing the ZODB."
-msgstr ""
+msgstr "Zope-Anwedung verwalten (z.B. neustarten/runterfahren/ZODB packen)"
 
 #: zope/app/security/configure.zcml:35
 msgid "Manage Application"
-msgstr ""
+msgstr "Anwendung verwalten"
 
 #: zope/app/services/configure.zcml:109
 msgid "Page Template"
-msgstr ""
+msgstr "Seitenschablone"
 
 #: zope/app/services/configure.zcml:109
 #: zope/app/browser/services/configure.zcml:199
 #: zope/app/browser/services/configure.zcml:207
 msgid "ZPT Template"
-msgstr ""
+msgstr "ZPT Schablone"
 
 #: zope/app/services/configure.zcml:289
 msgid "Registration Manager"
-msgstr ""
+msgstr "Registrierungsverwalter"
 
 #: zope/app/services/pagefolder.zcml:10
 msgid "View Folder"
-msgstr ""
+msgstr "Ansichtenordner"
 
 #: zope/app/services/view.py:250 zope/app/services/view.py:289
 msgid "(Anything)"
-msgstr ""
+msgstr "jegliches"
 
 #: zope/app/services/view.py:253 zope/app/services/view.py:268
 #: zope/app/security/configure.zcml:10
 msgid "View"
-msgstr ""
+msgstr "Ansicht"
 
 #: zope/app/services/view.py:253 zope/app/services/view.py:293
 msgid "for"
-msgstr ""
+msgstr "für"
 
 #: zope/app/services/view.py:255 zope/app/services/view.py:295
 msgid "in layer"
-msgstr ""
+msgstr "in Ebene"
 
 #: zope/app/services/view.py:260
 msgid "Registered by ZCML"
-msgstr ""
+msgstr "Registriert durch ZCML"
 
 #: zope/app/services/view.py:305
 msgid "Page"
-msgstr ""
+msgstr "Seite"
 
 #: zope/app/size.py:44
 msgid "n/a"
@@ -2027,7 +2203,7 @@ msgstr "0 KB"
 
 #: zope/app/size.py:50
 msgid "1 KB"
-msgstr ""
+msgstr "1 KB"
 
 #: zope/app/size.py:55
 msgid "${size} KB"
@@ -2063,41 +2239,41 @@ msgstr ""
 
 #: zope/app/translation_files/pygettext.py:451
 msgid "Invalid value for --style: %s"
-msgstr ""
+msgstr "Ungültiger Wert für --style: %s"
 
 #: zope/app/translation_files/pygettext.py:459
 msgid "pygettext.py (xgettext for Python) %s"
-msgstr ""
+msgstr "pygettext.py (xgettext für Python) %s"
 
 #: zope/app/translation_files/pygettext.py:465
 msgid "--width argument must be an integer: %s"
-msgstr ""
+msgstr "--width Argument muss eine Ganzzahl sein: %s"
 
 #: zope/app/translation_files/pygettext.py:492
 msgid "Can't read --exclude-file: %s"
-msgstr ""
+msgstr "--exclude-file kann nicht gelesen werden: %s"
 
 #: zope/app/translation_files/pygettext.py:503
 msgid "Reading standard input"
-msgstr ""
+msgstr "Standardeingabe wird gelesen"
 
 #: zope/app/translation_files/pygettext.py:508
 msgid "Working on %s"
-msgstr ""
+msgstr "Bearbeite %s"
 
 #: zope/app/translation_files/pygettext.py:541
 msgid "a unicode string"
-msgstr ""
+msgstr "eine Unicode-Zeichenkette"
 
 #: zope/app/workflow/configure.zcml:13
 msgid "Create Workflow ProcessInstances"
-msgstr ""
+msgstr "Arbeitsablauf-Prozessinstanzen erstellen"
 
 #: zope/app/workflow/configure.zcml:17
 msgid "Use Workflow ProcessInstances"
-msgstr ""
+msgstr "Arbeitsablauf-Prozessinstanzen benutzen"
 
 #: zope/app/workflow/configure.zcml:9
 msgid "Manage Workflow ProcessDefinitions"
-msgstr ""
+msgstr "Arbeitsablauf-Prozessdefinitionen verwalten"
 
