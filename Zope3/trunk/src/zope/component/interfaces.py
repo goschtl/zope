@@ -25,33 +25,53 @@ class IComponentArchitecture(Interface):
 
     # basic service manager tools
 
-    def getServiceManager(context):
+    def getGlobalServices():
+        """Get the global service manager."""
+
+    def getServices(context=None):
         """Get the service manager
 
-        Return the nearest service manager to the context; if the
-        context is None the global service manager is always returned
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager.
+
+        If 'context' is not None, context is adapted to IServiceService, and
+        this adapter is returned.
         """
 
-    def getService(context, name):
+    def getServiceManager(context):
+        """Backwards compatibility for getServices()"""
+
+    def getService(name, context=None):
         """Get a named service.
 
-        Returns the service defined by 'name' nearest to the context;
-        if the context is None the pertinent global service is always
-        returned"""
+        Returns the service defined by 'name' from the service manager.
 
-    def getServiceDefinitions(context):
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager.
+
+        If 'context' is not None, context is adapted to IServiceService, and
+        this adapter is returned.
+        """
+
+    def getServiceDefinitions(context=None):
         """Get service definitions
 
-        Returns a dictionary of the service definitions pertinent to
-        the given context, in the format {nameString: serviceInterface}.
-        If the context is None the global definitions will be returned.
+        Returns a dictionary of the service definitions from the service
+        manager in the format {nameString: serviceInterface}.
+
         The default behavior of placeful service managers is to include
         service definitions above them, but this can be overridden.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager.
+
+        If 'context' is not None, context is adapted to IServiceService, and
+        this adapter is returned.
         """
 
     # Utility service
 
-    def getUtility(context, interface, name=''):
+    def getUtility(interface, name='', context=None):
         """Get the utility that provides interface
 
         Returns the nearest utility to the context that implements the
@@ -59,7 +79,7 @@ class IComponentArchitecture(Interface):
         ComponentLookupError.
         """
 
-    def queryUtility(context, interface, default=None, name=''):
+    def queryUtility(interface, default=None, name='', context=None):
         """Look for the utility that provides interface
 
         Returns the nearest utility to the context that implements
@@ -67,20 +87,24 @@ class IComponentArchitecture(Interface):
         """
 
     def getUtilitiesFor(context, interface):
-        """Return the utilitis that provide an interface
+        """Return the utilities that provide an interface
 
         An iterable of utility name-value pairs is returned.
         """
-        
+
     # Adapter service
 
     def getAdapter(object, interface, context=None):
         """Get an adapter to an interface for an object
 
-        Returns the nearest adapter to the context that can adapt
-        object to interface.  If context is not specified, attempts to
-        use  object to specify a context.  If a
-        matching adapter cannot be found, raises ComponentLookupError.
+        Returns an adapter that can adapt object to interface.  If a matching
+        adapter cannot be found, raises ComponentLookupError.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters' service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
 
         If the object has a __conform__ method, this method will be
         called with the requested interface.  If the method returns a
@@ -92,10 +116,14 @@ class IComponentArchitecture(Interface):
     def getNamedAdapter(object, interface, name, context=None):
         """Get a named adapter to an interface for an object
 
-        Returns the nearest named adapter to the context that can adapt
-        object to interface.  If context is not specified, attempts to
-        use  object to specify a context.  If a
+        Returns a named adapter that can adapt object to interface.  If a
         matching adapter cannot be found, raises ComponentLookupError.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters' service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
 
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
@@ -105,10 +133,14 @@ class IComponentArchitecture(Interface):
     def getMultiAdapter(objects, interface, name='', context=None):
         """Look for a multi-adapter to an interface for an objects
 
-        Returns the nearest multi-adapter to the context that can
-        adapt objects to interface.  If context is not specified, the
-        first object, if any, is used.  If a matching adapter cannot
-        be found, raises ComponentLookupError.
+        Returns a multi-adapter that can adapt objects to interface.  If a
+        matching adapter cannot be found, raises ComponentLookupError.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters' service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
 
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
@@ -118,10 +150,14 @@ class IComponentArchitecture(Interface):
     def queryAdapter(object, interface, default=None, context=None):
         """Look for an adapter to an interface for an object
 
-        Returns the nearest adapter to the context that can adapt
-        object to interface.  If context is not specified, attempts to
-        use  object to specify a context.  If a matching
+        Returns an adapter that can adapt object to interface.  If a matching
         adapter cannot be found, returns the default.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters' service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
 
         If the object has a __conform__ method, this method will be
         called with the requested interface.  If the method returns a
@@ -134,10 +170,15 @@ class IComponentArchitecture(Interface):
                           context=None):
         """Look for a named adapter to an interface for an object
 
-        Returns the nearest named adapter to the context that can adapt
-        object to interface.  If context is not specified, attempts to
-        use  object to specify a context.  If a matching
-        adapter cannot be found, returns the default.
+        Returns a named adapter that can adapt object to interface.  If a
+        matching adapter cannot be found, returns the default.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters'
+        service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
 
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
@@ -148,10 +189,14 @@ class IComponentArchitecture(Interface):
                           context=None):
         """Look for a multi-adapter to an interface for objects
 
-        Returns the nearest multi-adapter to the context that can
-        adapt objects to interface.  If context is not specified, the
-        first object, if any, is used.  If a matching adapter cannot
-        be found, returns the default.
+        Returns a multi-adapter that can adapt objects to interface.  If a
+        matching adapter cannot be found, returns the default.
+
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters' service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
 
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
@@ -162,16 +207,21 @@ class IComponentArchitecture(Interface):
         """Get subscribers
 
         Subscribers are returned that provide the provided interface
-        and that depend on and are comuted from the sequence of
+        and that depend on and are computed from the sequence of
         required objects.
 
-        Returns the subscribers for the context.  If context is not
-        specified, attempts to use object to specify a context.
+        If context is None, an application-defined policy is used to choose
+        an appropriate service manager from which to get an 'Adapters'
+        service.
+
+        If 'context' is not None, context is adapted to IServiceService,
+        and this adapter's 'Adapters' service is used.
         """
 
 
     # Factory service
 
+    # XXX:  Hard to make context a keyword, leaving as it is
     def createObject(context, name, *args, **kwargs):
         """Create an object using a factory
 
@@ -182,15 +232,15 @@ class IComponentArchitecture(Interface):
         ComponentLookupError
         """
 
-    def getFactoryInterfaces(context, name):
+    def getFactoryInterfaces(name, context=None):
         """Get interfaces implemented by a factory
 
-        finds the factory of the given name that is nearest to the
+        Finds the factory of the given name that is nearest to the
         context, and returns the interface or interface tuple that
         object instances created by the named factory will implement.
         """
 
-    def getFactoriesFor(context, interface):
+    def getFactoriesFor(interface, context=None):
         """Return a tuple (name, factory) of registered factories that
         create objects which implement the given interface.
         """
@@ -215,21 +265,17 @@ class IComponentArchitecture(Interface):
 
     # Presentation service
 
-    def getView(object, name, request, context=None,
-                providing=Interface):
+    def getView(object, name, request, providing=Interface, context=None):
         """Get a named view for a given object.
 
         The request must implement IPresentationRequest: it provides
         the view type and the skin name.  The nearest one to the
         object is found. If a matching view cannot be found, raises
         ComponentLookupError.
-
-        If context is not specified, attempts to use 
-        object to specify a context.
         """
 
     def queryView(object, name, request,
-                  default=None, context=None, providing=Interface):
+                  default=None, providing=Interface, context=None):
         """Look for a named view for a given object.
 
         The request must implement IPresentationRequest: it provides
@@ -275,7 +321,7 @@ class IComponentArchitecture(Interface):
             getView(object, '', request, context, providing)
         """
 
-    def queryViewProviding(object, providing, request, 
+    def queryViewProviding(object, providing, request,
                            default=None, context=None):
         """Look for a view that provides the specified interface.
 
@@ -292,7 +338,7 @@ class IComponentArchitecture(Interface):
         If a matching default view name cannot be found, raises
         NotFoundError.
 
-        If context is not specified, attempts to use 
+        If context is not specified, attempts to use
         object to specify a context.
         """
 
@@ -308,27 +354,28 @@ class IComponentArchitecture(Interface):
         a context.
         """
 
-    def getResource(wrapped_object, name, request, providing=Interface):
+    def getResource(name, request, providing=Interface, context=None):
         """Get a named resource for a given request
 
         The request must implement IPresentationRequest.
 
-        The object provides a place to look for placeful resources.
+        The context provides a place to look for placeful resources.
 
         A ComponentLookupError will be raised if the component can't
         be found.
         """
 
-    def queryResource(wrapped_object, name, request,
-                      default=None, providing=Interface):
+    def queryResource(name, request, default=None, providing=Interface,
+                      context=None):
         """Get a named resource for a given request
 
         The request must implement IPresentationRequest.
 
-        The object provides a place to look for placeful resources.
+        The context provides a place to look for placeful resources.
 
         If the component can't be found, the default is returned.
         """
+
 
 class IRegistry(Interface):
     """Object that supports component registry
@@ -337,6 +384,7 @@ class IRegistry(Interface):
     def registrations():
         """Return an iterable of component registrations
         """
+
 
 class IServiceService(Interface):
     """A service to manage Services."""
@@ -363,6 +411,7 @@ class IServiceService(Interface):
         Return the default if the service can't be found.
         """
 
+
 class IFactory(Interface):
     """A factory is responsible for creating other components."""
 
@@ -370,11 +419,6 @@ class IFactory(Interface):
 
     description = Attribute("A brief description of the factory.")
 
-    # XXX Because __call__ does not receive a context, it is not possible
-    #     to write a factory that does its job in terms of another factory.
-    #     This functionality is needed for making advanced factories that
-    #     do what other factories do, and then mark the resultant object
-    #     with an interface.
     def __call__(*args, **kw):
         """Return an instance of the objects we're a factory for."""
 
@@ -409,6 +453,7 @@ class IUtilityService(Interface):
         Returns an iterable of name-utility pairs.
         """
 
+
 class IContextDependent(Interface):
     """Components implementing this interface must have a context component.
 
@@ -422,6 +467,7 @@ class IContextDependent(Interface):
 
         This is the object being adapted, viewed, extended, etc.
         """)
+
 
 class IAdapterService(Interface):
     """A service to manage Adapters."""
@@ -460,6 +506,7 @@ class IAdapterService(Interface):
         required objects.
         """
 
+
 class IPresentation(Interface):
     """Presentation components provide interfaces to external actors
 
@@ -475,6 +522,7 @@ class IPresentation(Interface):
         IPresentationRequest.
         """)
 
+
 class IPresentationRequest(Interface):
     """An IPresentationRequest provides methods for getting view meta data."""
 
@@ -485,8 +533,10 @@ class IPresentationRequest(Interface):
         to IViewService.getView.
         """
 
+
 class IResource(IPresentation):
     """Resources provide data to be used for presentation."""
+
 
 class IResourceFactory(Interface):
     """A factory to create factories using the request."""
@@ -497,8 +547,10 @@ class IResourceFactory(Interface):
         The request must be an IPresentationRequest.
         """
 
+
 class IView(IPresentation, IContextDependent):
     """Views provide a connection between an external actor and an object"""
+
 
 class IViewFactory(Interface):
     """Objects for creating views"""
@@ -510,6 +562,7 @@ class IViewFactory(Interface):
         request argument is an object, such as a web request, that
         "stands in" for the user.
         """
+
 
 class IPresentationService(Interface):
     """A service to manage Presentation components."""

@@ -18,7 +18,7 @@ $Id$
 from unittest import TestCase, main, makeSuite
 from zope.component import \
      getUtility, getUtilitiesFor, getService, queryUtility, \
-     getServiceManager, getUtilitiesFor
+     getServices, getUtilitiesFor, getGlobalServices
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Utilities
 from zope.interface import Interface, implements
@@ -46,9 +46,9 @@ class Test(TestCase, CleanUp):
 
     def setUp(self):
         CleanUp.setUp(self)
-        sm=getServiceManager(None)
-        defineService=sm.defineService
-        provideService=sm.provideService
+        sm = getGlobalServices()
+        defineService = sm.defineService
+        provideService = sm.provideService
         from zope.component.interfaces import IUtilityService
         defineService('Utilities',IUtilityService)
         from zope.component.utility import GlobalUtilityService
@@ -57,16 +57,16 @@ class Test(TestCase, CleanUp):
     def testGetUtility(self):
         us = getService(None, Utilities)
         self.assertRaises(
-            ComponentLookupError, getUtility, None, IDummyUtility)
+            ComponentLookupError, getUtility, IDummyUtility)
         us.provideUtility(IDummyUtility, dummyUtility)
-        self.assertEqual(getUtility(None, IDummyUtility), dummyUtility)
+        self.assertEqual(getUtility(IDummyUtility), dummyUtility)
 
     def testQueryUtility(self):
         us = getService(None, Utilities)
-        self.assertEqual(queryUtility(None, IDummyUtility), None)
-        self.assertEqual(queryUtility(None, IDummyUtility, self), self)
+        self.assertEqual(queryUtility(IDummyUtility), None)
+        self.assertEqual(queryUtility(IDummyUtility, default=self), self)
         us.provideUtility(IDummyUtility, dummyUtility)
-        self.assertEqual(queryUtility(None, IDummyUtility), dummyUtility)
+        self.assertEqual(queryUtility(IDummyUtility), dummyUtility)
 
     def testgetUtilitiesFor(self):
         us = getService(None, Utilities)

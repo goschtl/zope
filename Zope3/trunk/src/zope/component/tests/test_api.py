@@ -21,12 +21,15 @@ from zope.component import getService
 from zope.component import getUtility, queryUtility
 from zope.component import getDefaultViewName
 from zope.component import queryMultiAdapter
+from zope.component.service import serviceManager
 from zope.component.exceptions import ComponentLookupError
 from zope.component.servicenames import Adapters
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component.tests.request import Request
+from zope.component.interfaces import IComponentArchitecture, IServiceService
 
 from zope.interface import Interface, implements
+from zope.interface.verify import verifyObject
 
 class I1(Interface):
     pass
@@ -47,6 +50,9 @@ comp = Comp(1)
 
 class Ob:
     implements(I1)
+    def __conform__(self, i):
+        if i is IServiceService:
+            return serviceManager
 
 ob = Ob()
 
@@ -54,12 +60,99 @@ class Conforming(Ob):
     def __conform__(self, i):
         if i is I3:
             return Comp(self)
+        else:
+            return Ob.__conform__(self, i)
+
+class StubServiceService:
+    implements(IServiceService)  # This is a lie.
+
+    def __init__(self):
+        self.services = {}
+
+    def setService(self, name, service):
+        self.services[name] = service
+
+    def getService(self, name):
+        try:
+            return self.services[name]
+        except KeyError:
+            raise ComponentLookupError, name
+
+
+class ConformsToIServiceService:
+
+    def __init__(self, serviceservice):
+        self.serviceservice = serviceservice
+
+    def __conform__(self, interface):
+        if interface is IServiceService:
+            return self.serviceservice
 
 
 class Test(PlacelessSetup, unittest.TestCase):
 
-    def testAdapter_via_conform(self):
+    def testInterfaces(self):
+        import zope.component
+        self.failUnless(verifyObject(IComponentArchitecture, zope.component))
 
+
+    def test_getGlobalServices(self):
+        from zope.component import getGlobalServices
+        from zope.component.service import IGlobalServiceManager
+
+        gsm = getGlobalServices()
+        self.assert_(IGlobalServiceManager.providedBy(gsm))
+        self.assert_(getGlobalServices() is gsm)
+
+    def test_getServices(self):
+        from zope.component import getServices
+
+        # We don't know anything about the default service manager, except
+        # that it is an IServiceService.
+        self.assert_(IServiceService.providedBy(getServices()))
+
+        # Calling getServices with no args is equivalent to calling it
+        # with a context of None.
+        self.assert_(getServices() is getServices(None))
+
+        # If the context passed to getServices is not None, it is
+        # adapted to IServiceService and this adapter returned.
+        # So, we create a context that can be adapted to IServiceService
+        # using the __conform__ API.
+        servicemanager = StubServiceService()
+        context = ConformsToIServiceService(servicemanager)
+        self.assert_(getServices(context) is servicemanager)
+
+        # XXX enable this test before checking in
+        # Using a context that is not adaptable to IServiceService should
+        # fail.
+        ##self.assertRaises(ComponentLookupError, getServices, object())
+
+    def test_getService(self):
+        from zope.component import getService, getServices
+
+        # Getting the adapter service with no context given is the same
+        # as getting the adapter service from the no-context service manager.
+        self.assert_(getService(Adapters) is
+                     getServices().getService(Adapters))
+        # And, a context of 'None' is the same as not providing a context.
+        self.assert_(getService(Adapters, None) is getService(Adapters))
+
+        # If the context is adaptable to IServiceService then we use that
+        # adapter.
+        servicemanager = StubServiceService()
+        adapterservice = object()
+        servicemanager.setService(Adapters, adapterservice)
+        context = ConformsToIServiceService(servicemanager)
+        self.assert_(getService(Adapters, context) is adapterservice)
+
+        # XXX enable this test before checking in
+        # Using a context that is not adaptable to IServiceService should
+        # fail.
+        ##self.assertRaises(ComponentLookupError,
+        ##                  getService, Adapters, object())
+
+    def testAdapter_via_conform(self):
         ob = Conforming()
 
         # If an object implements the interface you want to adapt to,
@@ -137,7 +230,6 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(c.context, ob)
 
     def testNamedAdapter(self):
-
         self.testAdapter()
 
         # If an object implements the interface you want to adapt to,
@@ -188,13 +280,12 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(c.context, ob)
 
     def testUtility(self):
-
-        self.assertRaises(ComponentLookupError, getUtility, ob, I1)
-        self.assertRaises(ComponentLookupError, getUtility, ob, I2)
-        self.assertEquals(queryUtility(ob, I2, Test), Test)
+        self.assertRaises(ComponentLookupError, getUtility, I1, context=ob)
+        self.assertRaises(ComponentLookupError, getUtility, I2, context=ob)
+        self.assertEquals(queryUtility(I2, Test, context=ob), Test)
 
         getService(None, 'Utilities').provideUtility(I2, comp)
-        self.assertEquals(id(getUtility(ob, I2)), id(comp))
+        self.assertEquals(id(getUtility(I2, context=ob)), id(comp))
 
     def testNamedUtility(self):
         from zope.component import getUtility, queryUtility
@@ -203,12 +294,15 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         self.testUtility()
 
-        self.assertRaises(ComponentLookupError, getUtility, ob, I1, 'test')
-        self.assertRaises(ComponentLookupError, getUtility, ob, I2, 'test')
-        self.assertEquals(queryUtility(ob, I2, Test, 'test'), Test)
+        self.assertRaises(ComponentLookupError,
+                          getUtility, I1, 'test', context=ob)
+        self.assertRaises(ComponentLookupError,
+                          getUtility, I2, 'test', context=ob)
+        self.assertEquals(queryUtility(I2, Test, name='test', context=ob),
+                          Test)
 
         getService(None, 'Utilities').provideUtility(I2, comp, 'test')
-        self.assertEquals(id(getUtility(ob, I2, 'test')), id(comp))
+        self.assertEquals(id(getUtility(I2, 'test', ob)), id(comp))
 
     def testView(self):
         from zope.component import getView, queryView, getService
@@ -313,11 +407,11 @@ class Test(PlacelessSetup, unittest.TestCase):
             object='object', providing='providing', request='request', 
             context='context')
         self.assertEquals(self.args, 
-            ['object', '', 'request', 'context', 'providing'])
+            ['object', '', 'request', 'providing', 'context'])
 
         # hack zope.component.queryView
-        def queryView(object, name, request, default, context, providing):
-            self.args = [object, name, request, default, context, providing]
+        def queryView(object, name, request, default, providing, context):
+            self.args = [object, name, request, default, providing, context]
         savedQueryView = zope.component.queryView
         zope.component.queryView = queryView
 
@@ -326,35 +420,34 @@ class Test(PlacelessSetup, unittest.TestCase):
             object='object', providing='providing', request='request', 
             default='default', context='context')
         self.assertEquals(self.args, 
-            ['object', '', 'request', 'default', 'context', 'providing'])
+            ['object', '', 'request', 'default', 'providing', 'context'])
 
         # restore zope.component
         zope.component.getView = savedGetView
         zope.component.queryView = savedQueryView
 
     def testResource(self):
-
         from zope.component import getResource, queryResource, getService
         from zope.component.exceptions import ComponentLookupError
 
         r1 = Request(I1)
         r2 = Request(I2)
 
-        self.assertRaises(ComponentLookupError, getResource, ob, 'foo', r1)
-        self.assertRaises(ComponentLookupError, getResource, ob, 'foo', r2)
-        self.assertEquals(queryResource(ob, 'foo', r2, Test), Test)
+        self.assertRaises(ComponentLookupError, getResource, 'foo', r1)
+        self.assertRaises(ComponentLookupError, getResource, 'foo', r2)
+        self.assertEquals(queryResource('foo', r2, Test), Test)
 
         getService(None, servicenames.Presentation).provideResource(
             'foo', I2, Comp)
-        c = getResource(ob, 'foo', r2)
+        c = getResource('foo', r2)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, r2)
 
-        self.assertRaises(ComponentLookupError, getResource, ob, 'foo2', r1)
-        self.assertRaises(ComponentLookupError, getResource, ob, 'foo2', r2)
-        self.assertEquals(queryResource(ob, 'foo2', r2, Test), Test)
+        self.assertRaises(ComponentLookupError, getResource, 'foo2', r1, ob)
+        self.assertRaises(ComponentLookupError, getResource, 'foo2', r2)
+        self.assertEquals(queryResource('foo2', r2, Test, ob), Test)
 
-        self.assertEquals(queryResource(ob, 'foo2', r1, None), None)
+        self.assertEquals(queryResource('foo2', r1, None), None)
 
     def testResource_w_provided(self):
         from zope.component import getResource, queryResource, getService
@@ -364,27 +457,27 @@ class Test(PlacelessSetup, unittest.TestCase):
         r2 = Request(I2)
 
         self.assertRaises(ComponentLookupError,
-                          getResource, ob, 'foo', r1, providing=I3)
+                          getResource, 'foo', r1, providing=I3)
         self.assertRaises(ComponentLookupError,
-                          getResource, ob, 'foo', r2, providing=I3)
-        self.assertEquals(queryResource(ob, 'foo', r2, Test, providing=I3),
+                          getResource, 'foo', r2, providing=I3)
+        self.assertEquals(queryResource('foo', r2, Test, providing=I3),
                           Test)
 
         getService(None, servicenames.Presentation).provideResource(
             'foo', I2, Comp)
 
         self.assertRaises(ComponentLookupError,
-                          getResource, ob, 'foo', r1, providing=I3)
+                          getResource, 'foo', r1, providing=I3)
         self.assertRaises(ComponentLookupError,
-                          getResource, ob, 'foo', r2, providing=I3)
-        self.assertEquals(queryResource(ob, 'foo', r2, Test, providing=I3),
+                          getResource, 'foo', r2, providing=I3)
+        self.assertEquals(queryResource('foo', r2, Test, providing=I3),
                           Test)
 
 
         getService(None, servicenames.Presentation).provideResource(
             'foo', I2, Comp, providing=I3)
 
-        c = getResource(ob, 'foo', r2, providing=I3)
+        c = getResource('foo', r2, providing=I3)
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, r2)
 
@@ -438,9 +531,10 @@ class Test(PlacelessSetup, unittest.TestCase):
 class TestNoSetup(unittest.TestCase):
 
     def testNotBrokenWhenNoService(self):
+        # Both of those things emit DeprecationWarnings.
         self.assertRaises(TypeError, I2, ob)
         self.assertEquals(I2(ob, 42), 42)
-
+        pass
 
 def test_suite():
     return unittest.TestSuite((

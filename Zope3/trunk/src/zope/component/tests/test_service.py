@@ -20,11 +20,10 @@ import unittest
 import pickle
 from zope.interface import Interface, implements
 
-
 from zope.exceptions import DuplicationError
 from zope.testing.cleanup import CleanUp
 
-from zope.component import getServiceDefinitions, getService, getServiceManager
+from zope.component import getServiceDefinitions, getService, getGlobalServices
 from zope.component.service import UndefinedService, InvalidService
 from zope.component.service import GlobalServiceManager, GlobalService
 from zope.component.exceptions import ComponentLookupError
@@ -46,9 +45,10 @@ class ServiceTwo(GlobalService):
 class Test(CleanUp, unittest.TestCase):
 
     def testNormal(self):
-        getServiceManager(None).defineService('one', IOne)
+        ss = getGlobalServices()
+        ss.defineService('one', IOne)
         c = ServiceOne()
-        getServiceManager(None).provideService('one', c)
+        ss.provideService('one', c)
         self.assertEqual(id(getService(None, 'one')), id(c))
 
     def testFailedLookup(self):
@@ -56,17 +56,17 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(queryService(None, 'two'), None)
 
     def testDup(self):
-        getServiceManager(None).defineService('one', IOne)
+        getGlobalServices().defineService('one', IOne)
         self.assertRaises(DuplicationError,
-                          getServiceManager(None).defineService,
+                          getGlobalServices().defineService,
                           'one', ITwo)
 
         c = ServiceOne()
-        getServiceManager(None).provideService('one', c)
+        getGlobalServices().provideService('one', c)
 
         c2 = ServiceOne()
         self.assertRaises(DuplicationError,
-                          getServiceManager(None).provideService,
+                          getGlobalServices().provideService,
                           'one', c2)
 
         self.assertEqual(id(getService(None, 'one')), id(c))
@@ -75,30 +75,28 @@ class Test(CleanUp, unittest.TestCase):
     def testUndefined(self):
         c = ServiceOne()
         self.assertRaises(UndefinedService,
-                          getServiceManager(None).provideService,
+                          getGlobalServices().provideService,
                           'one', c)
 
     def testInvalid(self):
-        getServiceManager(None).defineService('one', IOne)
-        getServiceManager(None).defineService('two', ITwo)
+        getGlobalServices().defineService('one', IOne)
+        getGlobalServices().defineService('two', ITwo)
         c = ServiceOne()
         self.assertRaises(InvalidService,
-                          getServiceManager(None).provideService,
+                          getGlobalServices().provideService,
                           'two', c)
 
     def testGetService(self):
         # Testing looking up a service from a service manager container that
         # doesn't have a service manager.
-        getServiceManager(None).defineService('one', IOne)
+        getGlobalServices().defineService('one', IOne)
         c = ServiceOne()
-        getServiceManager(None).provideService('one', c)
-        class C: pass
-        foo = C()
-        self.assertEqual(id(getService(foo, 'one')), id(c))
+        getGlobalServices().provideService('one', c)
+        self.assertEqual(id(getService('one')), id(c))
 
     def testGetServiceDefinitions(self):
         # test that the service definitions are the ones we added
-        sm = getServiceManager(None)
+        sm = getGlobalServices()
         sm.defineService('one', IOne)
         c = ServiceOne()
         sm.provideService('one', c)
@@ -110,7 +108,6 @@ class Test(CleanUp, unittest.TestCase):
         defs.sort()
         self.assertEqual(defs,
             [('Services', IServiceService), ('one', IOne), ('two', ITwo)])
-
 
     def testPickling(self):
         self.assertEqual(testServiceManager.__reduce__(), 'testServiceManager')

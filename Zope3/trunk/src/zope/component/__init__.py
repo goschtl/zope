@@ -18,12 +18,14 @@ $Id$
 import sys
 import warnings
 from zope.interface import moduleProvides, Interface
+from zope.interface.interfaces import IInterface
 from zope.component.interfaces import IComponentArchitecture, IFactory
+from zope.component.interfaces import IServiceService
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
 from zope.component.servicenames import Adapters, Presentation, Utilities
 
-# Try to be hookable. Do so in a try/except to avoid a hard dependence
+# Try to be hookable. Do so in a try/except to avoid a hard dependency.
 try:
     from zope.hookable import hookable
 except ImportError:
@@ -33,27 +35,93 @@ except ImportError:
 moduleProvides(IComponentArchitecture)
 __all__ = tuple(IComponentArchitecture)
 
-def getServiceManager(context):
-    return serviceManager
-getServiceManager = hookable(getServiceManager)
+def warningLevel():
+    """Returns the number of the first stack frame outside of zope.component"""
+    try:
+        level = 2
+        while sys._getframe(level).f_globals['__name__'] == 'zope.component':
+            level += 1
+        return level
+    except ValueError:
+        return 2
 
-def getService(context, name):
-    return getServiceManager(context).getService(name)
+def getGlobalServices():
+    return serviceManager
+
+def getServiceManager(context):
+    # Backwards compatibility stub
+    warnings.warn("getServiceManager(context) is  deprecated,"
+                  " use getServices(context=None) instead.",
+                  DeprecationWarning, 2)
+    return getServices(context)
+
+
+def getServices(context=None):
+    if context is None:
+        return serviceManager
+    else:
+        # Use the global service manager to adapt context to IServiceService
+        # to avoid the recursion implied by using a local getAdapter call.
+
+        # We should be using the line of code below.
+        ## return getAdapter(context, IServiceService, context=None)
+        #
+        # Instead, we need to support code that has passed in an object
+        # as context, at least until the whole component API is fixed up.
+        # XXX try ripping this code out.
+        sm = queryAdapter(context, IServiceService, context=None)
+        if sm is None:
+            # Deprecated support for a context that isn't adaptable to
+            # IServiceService.  Return the default service manager.
+            # warnings.warn("getServices' context arg must be None or"
+            #               "  adaptable to IServiceService.",
+            #               DeprecationWarning, warningLevel())
+            return serviceManager
+        else:
+            return sm
+
+getServices = hookable(getServices)
+
+def getService(name, context=None):
+    # Deprecated backwards-compatibility hack.
+    if isinstance(context, basestring) and not isinstance(name, basestring):
+        name, context = context, name
+        ##warnings.warn("getService(context, name) is deprecated."
+        ##              "  Use getService(name, context=context).",
+        ##              DeprecationWarning, warningLevel())
+    return getServices(context).getService(name)
 
 def queryService(context, name, default=None):
-    sm = getServiceManager(context)
-    return sm.queryService(name, default)
+    # Leaving the API in the older style of context, name, default because
+    # this function is deprecated anyway.
+    ##warnings.warn("queryService is deprecated.  Client code should depend"
+    ##              "  on the service existing.  Use getService instead.",
+    ##              DeprecationWarning, warningLevel())
+    return getServices(context).queryService(name, default)
 
-def getServiceDefinitions(context):
-    return getServiceManager(context).getServiceDefinitions()
+def getServiceDefinitions(context=None):
+    return getServices(context).getServiceDefinitions()
 
 # Utility service
 
-def getUtility(context, interface, name=''):
-    return getService(context, Utilities).getUtility(interface, name)
+def getUtility(interface, name='', context=None):
+    if not isinstance(name, basestring):
+        context, interface, name = interface, name, context
+        if name is None:
+            name = ''
+            warnings.warn("getUtility(context, interface, name) is deprecated."
+                          "  Use getUtility(interface, name, context=context).",
+                          DeprecationWarning, warningLevel())
+    return getService(Utilities, context=context).getUtility(interface, name)
 
-def queryUtility(context, interface, default=None, name=''):
-    return getService(context, Utilities).queryUtility(
+def queryUtility(interface, default=None, name='', context=None):
+    ## XXX this check is for migration.  Remove soon.
+    if (not IInterface.providedBy(interface) or
+        not isinstance(name, basestring)):
+        raise TypeError("queryUtility got nonsense arguments."
+                        " Check that you are updated with the"
+                        " component API change.")
+    return getService(Utilities, context).queryUtility(
         interface, default, name)
 
 def getUtilitiesFor(context, interface):
@@ -70,7 +138,7 @@ def getAdapter(object, interface, name='', context=None):
 def queryAdapter(object, interface, default=None, name='', context=None):
     if name:
         warnings.warn("The name argument to queryAdapter is deprecated",
-                      DeprecationWarning, 2)
+                      DeprecationWarning, warningLevel())
         return queryNamedAdapter(object, interface, name, default, context)
 
     conform = getattr(object, '__conform__', None)
@@ -99,7 +167,6 @@ def queryAdapter(object, interface, default=None, name='', context=None):
 
     return queryNamedAdapter(object, interface, name, default, context)
 
-
 def getNamedAdapter(object, interface, name, context=None):
     adapter = queryNamedAdapter(object, interface, name, context=context)
     if adapter is None:
@@ -107,12 +174,12 @@ def getNamedAdapter(object, interface, name, context=None):
     return adapter
 
 def queryNamedAdapter(object, interface, name, default=None, context=None):
-    if context is None:
-        context = object
     try:
-        adapters = getService(context, Adapters)
+        adapters = getService(Adapters, context)
     except ComponentLookupError:
         # Oh blast, no adapter service. We're probably just running from a test
+        #warnings.warn("There is no adapters service.  Returning the default.",
+        #              DeprecationWarning, warningLevel())
         return default
 
     return adapters.queryNamedAdapter(object, interface, name, default)
@@ -121,12 +188,12 @@ queryNamedAdapter = hookable(queryNamedAdapter)
 
 def interfaceAdapterHook(iface, ob):
     try:
-        adapters = getService(ob, Adapters)
+        adapters = getService(Adapters)
     except ComponentLookupError:
-
         # Oh blast, no adapter service. We're probably just running
         # from a test
-
+        #warnings.warn("There is no adapters service.  Returning the default.",
+        #              DeprecationWarning, warningLevel())
         return None
 
     return adapters.queryNamedAdapter(ob, iface, '')
@@ -143,11 +210,8 @@ def getMultiAdapter(objects, interface, name=u'', context=None):
 
 def queryMultiAdapter(objects, interface, name=u'', default=None,
                       context=None):
-    if context is None and objects:
-        context = objects[0]
-
     try:
-        adapters = getService(context, Adapters)
+        adapters = getService(Adapters, context)
     except ComponentLookupError:
         # Oh blast, no adapter service. We're probably just running from a test
         return default
@@ -155,10 +219,8 @@ def queryMultiAdapter(objects, interface, name=u'', default=None,
     return adapters.queryMultiAdapter(objects, interface, name, default)
 
 def subscribers(objects, interface, context=None):
-    if context is None and objects:
-        context = objects[0]
     try:
-        adapters = getService(context, Adapters)
+        adapters = getService(Adapters, context=context)
     except ComponentLookupError:
         # Oh blast, no adapter service. We're probably just running from a test
         return []
@@ -168,13 +230,13 @@ def subscribers(objects, interface, context=None):
 # Factories
 
 def createObject(context, name, *args, **kwargs):
-    return getUtility(context, IFactory, name)(*args, **kwargs)
+    return getUtility(IFactory, name, context)(*args, **kwargs)
 
-def getFactoryInterfaces(context, name):
-    return getUtility(context, IFactory, name).getInterfaces()
+def getFactoryInterfaces(name, context=None):
+    return getUtility(IFactory, name, context).getInterfaces()
 
-def getFactoriesFor(context, interface):
-    utils = getService(context, Utilities)
+def getFactoriesFor(interface, context=None):
+    utils = getService(Utilities, context)
     for (name, factory) in utils.getUtilitiesFor(IFactory):
         interfaces = factory.getInterfaces()
         try:
@@ -190,18 +252,25 @@ def getFactory(context, name):
     warnings.warn(
         "Use getUtility(context, IFactory, name) instead of getFactory(...)",
         DeprecationWarning, 2)
-    return getUtility(context, IFactory, name)
+    return getUtility(IFactory, name, context=context)
 
 def queryFactory(context, name, default=None):
     warnings.warn(
         "Use getUtility(context, IFactory, name) instead of getFactory(...)",
         DeprecationWarning, 2)
-    return queryUtility(context, IFactory, name=name)
+    return queryUtility(IFactory, name=name, context=context)
 
 
 # Presentation service
 
-def getView(object, name, request, context=None, providing=Interface):
+def getView(object, name, request, providing=Interface, context=None):
+    if not IInterface.providedBy(providing):
+        providing, context = context, providing
+        warnings.warn("Use getView(object, name, request,"
+                      " prodiving=Interface, context=Interface)"
+                      " instead of getView(object, name, request,"
+                      " context=None, prodiving=Interface)",
+                      DeprecationWarning, 2)
     view = queryView(object, name, request, context=context,
                      providing=providing)
     if view is not None:
@@ -211,10 +280,8 @@ def getView(object, name, request, context=None, providing=Interface):
                                name, object, context, request)
 
 def queryView(object, name, request,
-              default=None, context=None, providing=Interface):
-    if context is None:
-        context = object
-    s = getService(context, Presentation)
+              default=None, providing=Interface, context=None):
+    s = getService(Presentation, context=context)
     return s.queryView(object, name, request,
                        default=default, providing=providing)
 
@@ -230,17 +297,15 @@ def getMultiView(objects, request, providing=Interface, name='', context=None):
 
 def queryMultiView(objects, request, providing=Interface, name='',
                    default=None, context=None):
-    if context is None:
-        context = objects[0]
-    s = getService(context, Presentation)
+    s = getService(Presentation, context)
     return s.queryMultiView(objects, request, providing, name, default)
 
 def getViewProviding(object, providing, request, context=None):
-    return getView(object, '', request, context, providing)
+    return getView(object, '', request, providing, context)
 
 def queryViewProviding(object, providing, request, default=None, 
                        context=None):
-    return queryView(object, '', request, default, context, providing)
+    return queryView(object, '', request, default, providing, context)
 
 def getDefaultViewName(object, request, context=None):
     view = queryDefaultViewName(object, request, context=context)
@@ -251,18 +316,23 @@ def getDefaultViewName(object, request, context=None):
                                context, request)
 
 def queryDefaultViewName(object, request, default=None, context=None):
-    if context is None:
-        context = object
-    s = getService(context, Presentation)
+    s = getService(Presentation, context)
     return s.queryDefaultViewName(object, request, default)
 
-def getResource(wrapped_object, name, request, providing=Interface):
-    view = queryResource(wrapped_object, name, request, providing=providing)
+def getResource(name, request, providing=Interface, context=None):
+    if isinstance(request, basestring):
+        # "Backwards compatibility"
+        raise TypeError("getResource got incorrect arguments.")
+    view = queryResource(name, request, providing=providing, context=context)
     if view is not None:
         return view
 
     raise ComponentLookupError("Couldn't find resource", name, request)
 
-def queryResource(context, name, request, default=None, providing=Interface):
-    s = getService(context, Presentation)
+def queryResource(name, request, default=None, providing=Interface,
+                  context=None):
+    if isinstance(request, basestring):
+        # "Backwards compatibility"
+        raise TypeError("queryResource got incorrect arguments.")
+    s = getService(Presentation, context)
     return s.queryResource(name, request, default, providing=providing)

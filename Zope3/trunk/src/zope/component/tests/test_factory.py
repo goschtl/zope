@@ -76,12 +76,12 @@ class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
         self.assertEqual(kl.kw, {'foo': 4})
 
     def testGetFactoryInterfaces(self):
-        implemented = getFactoryInterfaces(None, 'klass')
+        implemented = getFactoryInterfaces('klass')
         self.assert_(implemented.isOrExtends(IKlass))
         self.assertEqual([iface for iface in implemented], [IKlass])
 
     def testGetFactoriesFor(self):
-        self.assertEqual(list(getFactoriesFor(None, IKlass)),
+        self.assertEqual(list(getFactoriesFor(IKlass)),
                          [('klass', self.factory)])
 
 

@@ -20,13 +20,14 @@ $Id$
 # A mix-in class inheriting from CleanUp that also connects the CA services
 
 from zope.testing.cleanup import CleanUp
-from zope.component import getServiceManager
+from zope.component import getGlobalServices
 from zope.component.servicenames import Adapters, Utilities, Presentation
 
 class PlacelessSetup(CleanUp):
+
     def setUp(self):
         CleanUp.setUp(self)
-        sm = getServiceManager(None)
+        sm = getGlobalServices()
         defineService = sm.defineService
         provideService = sm.provideService
 
