@@ -92,3 +92,22 @@ Others
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well.
+
+Done
+----
+
+85:  Close this issue. Jim agreed that this isn't requiered. I don't 
+     think SteveA is refactoring this part. Perhaps we can open another 
+     issue for Metadata, I think the Metadata views should also make use
+     of the form framwork, there are still implemented as normal pages.
+
+216: Close this issue, the preview is working correctly.
+
+243: This seems a old issue which was done for the 3.0 release, ri
+
+328 + 333: Replaced the xmltree with the static tree, don't close 
+     this is only not relevant for the 3.1 release since we use the 
+     static tree, ri
+
+378: It's not a bug, he just tries to use a Object field without the 
+     CustomWidgetFactory, ri
