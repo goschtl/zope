@@ -54,6 +54,8 @@ Test harness.
     run. The debug (-d), verbose (-v), and Loop (-L) options will be
     ignored. The testfilter filter is also not applied.
 
+-C  use pychecker
+
 modfilter
 testfilter
     Case-sensitive regexps to limit which tests are run, used in search
@@ -272,6 +274,8 @@ def runner(files, test_filter, debug):
     suite = unittest.TestSuite()
     for file in files:
         s = get_suite(file)
+        if s is None:
+            continue
         if test_filter is not None:
             s = filter_testcases(s, test_filter)
         suite.addTest(s)
@@ -334,6 +338,7 @@ def process_args():
     for k, v in opts:
         if k == '-v':
             VERBOSE += 1
+
         elif k == '-d':
             debug = 1
         elif k == '-L':
@@ -344,6 +349,7 @@ def process_args():
             print __doc__
             sys.exit(0)
         elif k == '-C':
+            os.environ['PYCHECKER'] = "-e -q"
             import pychecker.checker
         elif k == '-g':
             gcthresh = int(v)
