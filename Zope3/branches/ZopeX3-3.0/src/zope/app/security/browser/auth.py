@@ -17,17 +17,15 @@ $Id$
 """
 from zope.interface import implements
 from zope.app.publisher.interfaces.http import ILogin, ILogout
-from zope.app.security.principalregistry import UnauthenticatedPrincipal
+from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.proxy import removeAllProxies
 
 class HTTPAuthenticationLogin(object):
     implements(ILogin)
 
     def login(self, nextURL=None):
         """See zope.app.security.interfaces.ILogin"""
-        if isinstance(removeAllProxies(self.request.principal), \
-                      UnauthenticatedPrincipal):
+        if IUnauthenticatedPrincipal.providedBy(self.request.principal):
             self.request.unauthorized("basic realm='Zope'")
             return self.failed()
         else:
@@ -53,7 +51,7 @@ class HTTPAuthenticationLogout(object):
 
     def logout(self, nextURL=None):
         """See zope.app.security.interfaces.ILogout"""
-        if not isinstance(self.request.principal, UnauthenticatedPrincipal):
+        if not IUnauthenticatedPrincipal.providedBy(self.request.principal):
             self.request.unauthorized("basic realm='Zope'")
             if nextURL:
                 return self.redirect()
