@@ -26,7 +26,6 @@ from zope.app.pluggableauth import SimplePrincipal
 from zope.exceptions import NotFoundError
 from zope.interface import implements
 
-from zope.app.cache.ram import RAMCache
 from zope.app.cache.caching import getCacheForObject, getLocationForCache
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 
@@ -61,12 +60,9 @@ class LDAPPrincipalSource(Contained, Persistent):
     ### TODO: add the principal to the ldap server if it is a new one.
     def __setitem__(self, login, obj):
         obj.id = login
-        try:
-            setitem(self, self._setitem, login, obj)
-            if login not in self.__cached:
-                self.__cached.append(login)
-        except DuplicationError, msg:
-            pass
+        setitem(self, self._setitem, login, obj)
+        if login not in self.__cached:
+            self.__cached.append(login)
 
     def _setitem(self, key, obj):
         cache = getCacheForObject(self)
@@ -161,7 +157,11 @@ class LDAPPrincipalSource(Contained, Persistent):
             principal = SimplePrincipal(
                     login = node_dict[self.login_attribute][0],
                     password = node_dict['userPassword'][0])
-            self[principal.login] = principal
+            try:
+                self[principal.login] = principal
+            except DuplicationError, msg:
+                # There is already a principal with this login in the cache
+                principal = self[principal.login]
             principals.append(principal)
 
         return principals
@@ -173,7 +173,12 @@ class LDAPPrincipalSource(Contained, Persistent):
             try:
                 l.simple_bind_s(dn, password)
                 principal = SimplePrincipal(login = uid, password = password)
-                self.__setitem__(uid, principal)
+                try:
+                    self[uid] = principal
+                except DuplicationError, msg:
+                    # There is already a principal with this login in
+                    # the cache
+                    principal = self[uid]
                 return principal
             except ldap.INVALID_CREDENTIALS:
                 return None
