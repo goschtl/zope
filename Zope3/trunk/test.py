@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-test.py [-abCdgGLvvt] [modfilter [testfilter]]
+test.py [-aBbcdDgGhLmprtTuv] [modfilter [testfilter]]
 
 Test harness.
 
@@ -54,12 +54,6 @@ Test harness.
     Set the garbage collection debugging flags.  The argument must be one
     of the DEBUG_ flags defined bythe Python gc module.  Multiple options
     can be specified by using "-G OPTION1 -G OPTION2."
-
--v
-    With one -v, unittest prints a dot (".") for each test run.  With
-    -vv, unittest prints the name of each test (for some definition of
-    "name" ...).  Witn no -v, unittest is silent until the end of the
-    run, except when errors occur.
 
 --libdir test_root
     Search for tests starting in the specified start directory
@@ -652,9 +646,11 @@ def process_args(argv=None):
             GUI = "minimal"
         elif k == "-p":
             progress = True
-        elif k == "-r" and hasattr(sys, "gettotalrefcount"):
-            # REFCOUNT can only be true in a debug build.
-            REFCOUNT = True
+        elif k == "-r":
+            if hasattr(sys, "gettotalrefcount"):
+                REFCOUNT = True
+            else:
+                print "-r ignored, because it needs a debug build of Python"
         elif k == "-T":
             TRACE = True
         elif k == "-t":
