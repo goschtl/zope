@@ -21,7 +21,7 @@ optional fields (optional fields have default values described)
 \(Most of the original ssh/rsync-based mirroring was stripped out of this
 file after version 1.87.)"""
 
-zopeaddr = ["zope-checkins@zope.org"]
+default = ["zc-checkins@my.zope.com"]
 
 _TABLE = []
 
@@ -46,7 +46,7 @@ def get_table():
 def init_table():
     add_to_table([
         {'path': "CVSROOT",
-         'addrs': ["zope-cvs@zope.org"],
+         'addrs': ["zc-checkins@my.zope.com"],
          'specials': [("repolinks", "adjustlinks.py")],
          'verbose': 1},
 
@@ -56,77 +56,77 @@ def init_table():
         # Catchall for when *no other entry* matches:
         {'path': None,
          'verbose': 1,
-         'addrs': ["zope-cvs@zope.org"]},
+         'addrs': ["zc-checkins@my.zope.com"]},
 
         {'path': "Operations",
-         'addrs': ["support@zope.com"]},
-
-        {'path': "Zope(/|$)",
-         'addrs': zopeaddr},
-
-##        {'path': "Products(/|$)",
-##         'addrs': zopeaddr},
-
-        {'path': "Zope3(/|$)",
-         'addrs': ["zope3-checkins@zope.org"]},
-
-        {'path': "Zope27(/|$)",
-         'addrs': ["zope-checkins@zope.org"]},
-
-        {'path': "Products3(/|$)",
-         'addrs': ["zope3-checkins@zope.org"]},
-
-        {'path': "Packages3(/|$)",
-         'addrs': ["zope3-checkins@zope.org"]},
-
-        {'path': "ZODB3",
-         'addrs': ["zodb-checkins@zope.org"]},
-        {'path': "ZODB4",
-         'addrs': ["zodb-checkins@zope.org"]},
-        {'path': "ZEO",
-         'addrs': ['zodb-checkins@zope.org']},
-
-        {'path': "CMF",
-         'addrs': ['cmf-checkins@zope.org']},
-
-        {'path': "Products/CMFDemo",
-         'addrs': ["cmf-checkins@zope.org"]},
-
-        {'path': "Packages/TAL",
-         'addrs': ["zpt-cvs@zope.org"]},
-        {'path': "Products/PageTemplates",
-         'addrs': ["zpt-cvs@zope.org"]},
-        {'path': "Packages/ZTUtils",
-         'addrs': ["zpt-cvs@zope.org"]},
-        {'path': "Products/PresentationTemplates",
-         'addrs': ["zpt-cvs@zope.org"]},
+         'addrs': ["sa@zope.com"]},
 
         {'path': "Packages/Spread",
          'addrs': ["pythonlabs@zope.com"]},
 
-        {'path': "Products/ParsedXML",
-         'addrs': ["parsed-xml-dev@zope.org"]},
+##        {'path': "Zope(/|$)",
+##         'addrs': zopeaddr},
 
-        {'path': "ZopeDocs",
-         'addrs': ['zopedocs-checkins@zope.org']},
+##        {'path': "Products(/|$)",
+##         'addrs': zopeaddr},
 
-        {'path': "Docs",
-         'addrs': ['zope-book@zope.org']},
+##        {'path': "Zope3(/|$)",
+##         'addrs': ["zope3-checkins@zope.org"]},
 
-        {'path': "ZopeMozilla",
-         'addrs': ['zope-mozilla@zope.org']},
+##        {'path': "Zope27(/|$)",
+##         'addrs': ["zope-checkins@zope.org"]},
 
-        {'path': "Products/TrackerBase",
-         'addrs': ['tracker-dev@zope.org']},
+##        {'path': "Products3(/|$)",
+##         'addrs': ["zope3-checkins@zope.org"]},
 
-        {'path': "Projects/python-site",
-         'addrs': ["pythonlabs@zope.com"]},
+##        {'path': "Packages3(/|$)",
+##         'addrs': ["zope3-checkins@zope.org"]},
 
-        {'path': "Products/DCOracle2",
-         'addrs': ["zope-checkins@zope.org"]},
+##        {'path': "ZODB3",
+##         'addrs': ["zodb-checkins@zope.org"]},
+##        {'path': "ZODB4",
+##         'addrs': ["zodb-checkins@zope.org"]},
+##        {'path': "ZEO",
+##         'addrs': ['zodb-checkins@zope.org']},
 
-        {'path': 'Packages/ZConfig',
-         'addrs': ['zope-checkins@zope.org']},
+##        {'path': "CMF",
+##         'addrs': ['cmf-checkins@zope.org']},
+
+##        {'path': "Products/CMFDemo",
+##         'addrs': ["cmf-checkins@zope.org"]},
+
+##        {'path': "Packages/TAL",
+##         'addrs': ["zpt-cvs@zope.org"]},
+##        {'path': "Products/PageTemplates",
+##         'addrs': ["zpt-cvs@zope.org"]},
+##        {'path': "Packages/ZTUtils",
+##         'addrs': ["zpt-cvs@zope.org"]},
+##        {'path': "Products/PresentationTemplates",
+##         'addrs': ["zpt-cvs@zope.org"]},
+
+##        {'path': "Products/ParsedXML",
+##         'addrs': ["parsed-xml-dev@zope.org"]},
+
+##        {'path': "ZopeDocs",
+##         'addrs': ['zopedocs-checkins@zope.org']},
+
+##        {'path': "Docs",
+##         'addrs': ['zope-book@zope.org']},
+
+##        {'path': "ZopeMozilla",
+##         'addrs': ['zope-mozilla@zope.org']},
+
+##        {'path': "Products/TrackerBase",
+##         'addrs': ['tracker-dev@zope.org']},
+
+##        {'path': "Projects/python-site",
+##         'addrs': ["pythonlabs@zope.com"]},
+
+##        {'path': "Products/DCOracle2",
+##         'addrs': ["zope-checkins@zope.org"]},
+
+##        {'path': 'Packages/ZConfig',
+##         'addrs': ['zope-checkins@zope.org']},
     ])
 
 init_table()
