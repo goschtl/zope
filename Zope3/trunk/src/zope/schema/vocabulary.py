@@ -24,7 +24,7 @@ from zope.schema.interfaces import IVocabularySetField
 from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm
-from zope.interface.declarations import directlyProvides
+from zope.interface.declarations import directlyProvides, implements
 from zope.schema import MinMaxLen, TextLine
 
 try:
@@ -38,7 +38,7 @@ class VocabularyField(Field):
 
     The value is a single value from the vocabulary.
     """
-    __implements__ = IVocabularyField
+    implements(IVocabularyField)
 
     def __init__(self, vocabulary=None, **kw):
         # set up the vocabulary:
@@ -121,19 +121,19 @@ class UniqueElements(object):
         super(UniqueElements, self)._validate(value)
 
 class VocabularyBagField(VocabularyMultiField):
-    __implements__ = IVocabularyBagField
+    implements(IVocabularyBagField)
     __doc__ = IVocabularyBagField.__doc__
 
 class VocabularyListField(VocabularyMultiField):
-    __implements__ = IVocabularyListField
+    implements(IVocabularyListField)
     __doc__ = IVocabularyListField.__doc__
 
 class VocabularySetField(UniqueElements, VocabularyMultiField):
-    __implements__ = IVocabularySetField
+    implements(IVocabularySetField)
     __doc__ = IVocabularySetField.__doc__
 
 class VocabularyUniqueListField(UniqueElements, VocabularyMultiField):
-    __implements__ = IVocabularyUniqueListField
+    implements(IVocabularyUniqueListField)
     __doc__ = IVocabularyUniqueListField.__doc__
 
 
@@ -142,7 +142,7 @@ class VocabularyUniqueListField(UniqueElements, VocabularyMultiField):
 class SimpleTerm:
     """Simple tokenized term used by SimpleVocabulary"""
     
-    __implements__ = ITokenizedTerm
+    implements(ITokenizedTerm)
 
     def __init__(self, value, token=None):
         """Create a term for value and token. If token is omitted, 
@@ -156,7 +156,7 @@ class SimpleTerm:
 class SimpleVocabulary(object):
     """vocabulary that uses a list or tuple"""
 
-    __implements__ = IVocabulary, IVocabularyTokenized
+    implements(IVocabulary, IVocabularyTokenized)
 
     def __init__(self, data, *interfaces):
         """Construct a vocabulary from a simple list. Values of the list become
@@ -235,7 +235,7 @@ class VocabularyRegistryError(LookupError):
 
 class VocabularyRegistry(object):
     __slots__ = '_map',
-    __implements__ = IVocabularyRegistry
+    implements(IVocabularyRegistry)
 
     def __init__(self):
         self._map = {}
