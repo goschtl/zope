@@ -401,6 +401,18 @@ class DisplayWidget(BrowserWidget):
             return escape(self.context.default)
 
 
+class UnicodeDisplayWidget(BrowserWidget):
+    """Display widget that converts the value to unicode before display."""
+
+    def __call__(self):
+        if self._renderedValueSet():
+            if self._data == self.context.missing_value:
+                return ""
+            return escape(unicode(self._data))
+        else:
+            return escape(unicode(self.context.default))
+
+
 def renderTag(tag, **kw):
     """Render the tag. Well, not all of it, as we may want to / it."""
     attr_list = []
