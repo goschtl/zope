@@ -14,16 +14,20 @@
 <div metal:fill-slot="body">
 
   <h2>
-    <span tal:replace="request/type|string:No service type specified" />
+    <span tal:replace="request/type|default">No service type specified</span>
   </h2>
 
-  <p tal:content="view/action">Message from action() goes here</p>
+  <p tal:content="view/update">Message from update() goes here</p>
 
-  <form action="@@serviceActivation.html" method="POST">
+  <form action="." method="POST"
+        tal:attributes="action request/URL">
     <table tal:define="registry view/listRegistry">
 
       <thead>
-        <tr> <td></td> <td>service</td> <td>configure</td> </tr>
+        <tr> <td></td> 
+             <th align="left">Service</th> 
+             <th align="left">Configuration</th>
+        </tr>
       </thead>
 
       <tbody>
@@ -54,7 +58,7 @@
 
     <input type="hidden" name="type" value="Events"
            tal:attributes="value request/type|nothing" />
-    <input type="submit" value="Update">
+    <input type="submit" value="Submit">
 
   </form>
 
