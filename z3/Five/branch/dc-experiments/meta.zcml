@@ -122,6 +122,12 @@
         handler=".browserconfigure.resource"
         />
 
+    <meta:directive
+        name="resourceDirectory"
+        schema="zope.app.publisher.browser.metadirectives.IResourceDirectoryDirective"
+        handler=".browserconfigure.resourceDirectory"
+        />
+
   </meta:directives>
 
   <meta:directives namespace="http://namespaces.zope.org/five">
