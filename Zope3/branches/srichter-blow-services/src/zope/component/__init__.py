@@ -39,6 +39,14 @@ sys.modules['zope.component.servicenames'] = servicenames
 from zope.component.bbb import contextdependent
 sys.modules['zope.component.contextdependent'] = contextdependent
 
+from zope.component.bbb.tests import placelesssetup
+sys.modules['zope.component.tests.placelesssetup'] = placelesssetup
+from zope.component.bbb.tests import request
+sys.modules['zope.component.tests.request'] = request
+from zope.component.bbb.tests import components
+sys.modules['zope.component.tests.components'] = components
+
+
 service.__warn__ = False
 service.serviceManager = service.GlobalServiceManager(
     'serviceManager', __name__, globalSiteManager)
