@@ -32,12 +32,12 @@
 
   <interface 
       interface=".interfaces.IFile" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
   <interface 
       interface=".interfaces.IImage" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
   <permission

@@ -80,7 +80,7 @@
 
   <interface 
       interface=".interfaces.IWiki" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
  <content class=".wiki.Wiki">
@@ -116,7 +116,7 @@
 
   <interface 
       interface=".interfaces.IWikiPage" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
   <content class=".wikipage.WikiPage">
@@ -147,7 +147,7 @@
 
   <interface 
       interface=".interfaces.IComment" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
   <content class=".wikipage.Comment">

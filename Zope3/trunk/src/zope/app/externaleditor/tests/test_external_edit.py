@@ -10,7 +10,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_external_edit.py,v 1.1 2004/02/27 14:23:17 philikon Exp $
+$Id: test_external_edit.py,v 1.2 2004/03/02 18:16:13 philikon Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.app import zapi
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import ztapi
 from zope.app.container.contained import contained
-from zope.app.interfaces.content import IContentType
+from zope.app.content.interfaces import IContentType
 from zope.app.interfaces.file import IReadFile
 from zope.app.file.file import File, FileReadFile
 

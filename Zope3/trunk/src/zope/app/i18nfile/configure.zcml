@@ -32,12 +32,12 @@
 
   <interface 
       interface=".i18nfile.II18nFile" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       />
 
   <interface 
       interface=".interfaces.II18nImage" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       />
 
 

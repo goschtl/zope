@@ -22,7 +22,7 @@
 
   <interface 
       interface=".interfaces.IDTMLPage" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
   <content class=".dtmlpage.DTMLPage">

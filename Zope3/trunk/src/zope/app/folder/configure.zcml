@@ -21,7 +21,7 @@
 
   <interface 
       interface=".interfaces.IFolder" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
   <content class=".folder.Folder">

@@ -25,7 +25,7 @@
 
   <interface 
       interface=".interfaces.ISQLScript" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
   <content class=".sqlscript.SQLScript">

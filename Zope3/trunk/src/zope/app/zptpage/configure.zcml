@@ -21,7 +21,7 @@
 
   <interface 
       interface=".interfaces.IZPTPage" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
 
   <content class=".zptpage.ZPTPage">

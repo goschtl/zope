@@ -5,7 +5,7 @@
 
   <interface 
       interface=".IPythonPage" 
-      type="zope.app.interfaces.content.IContentType"
+      type="zope.app.content.interfaces.IContentType"
       /> 
   
   <content class=".PythonPage">

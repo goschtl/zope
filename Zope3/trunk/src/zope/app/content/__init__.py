@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: content.py,v 1.2 2004/02/24 16:50:14 philikon Exp $
+$Id: __init__.py,v 1.5 2004/03/02 18:16:12 philikon Exp $
 """
-from zope.app.interfaces.content import IContentType
+from zope.app.content.interfaces import IContentType
 from zope.interface.declarations import providedBy
 
 def queryContentType(object):

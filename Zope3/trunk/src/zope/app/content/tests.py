@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,18 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Content-related interfaces.
-
-$Id: content.py,v 1.2 2004/02/24 16:50:18 philikon Exp $
 """
-from zope.interface.interfaces import IInterface
+$Id: tests.py,v 1.1 2004/03/02 18:16:12 philikon Exp $
+"""
+import unittest
+from zope.testing.doctestunit import DocTestSuite
 
-class IContentType(IInterface):
-    """This interface represents a content type.
+def test_suite():
+    return unittest.TestSuite((
+        DocTestSuite('zope.app.content'),
+        ))
 
-    If an **interface** implements this interface type, then all object
-    implementing the interface are considered content objects.
-    """
-    
-
-
+if __name__ == '__main__': unittest.main()
