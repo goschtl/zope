@@ -25,6 +25,7 @@ from zope.schema.interfaces import IIterableVocabularyQuery
 from zope.schema.interfaces import ITokenizedTerm
 
 from zope.app import zapi
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interface.vocabulary import ObjectInterfacesVocabulary
 
 from interfaces import IUtilityRegistration
@@ -248,3 +249,144 @@ class UtilityComponentInterfacesVocabulary(ObjectInterfacesVocabulary):
             context = context.getComponent()
         super(UtilityComponentInterfacesVocabulary, self).__init__(
             context)
+
+
+class UtilityNameTerm:
+    r"""Simple term that provides a utility name as a value.
+
+    >>> t1 = UtilityNameTerm('abc')
+    >>> t2 = UtilityNameTerm(u'\xC0\xDF\xC7')
+    >>> t1.value
+    u'abc'
+    >>> t2.value
+    u'\xc0\xdf\xc7'
+    >>> t1.title()
+    u'abc'
+    >>> repr(t2.title())
+    "u'\\xc0\\xdf\\xc7'"
+
+    The tokens used for form values are Base-64 encodings of the
+    names, with the letter 't' prepended to ensure the unnamed utility
+    is supported:
+
+    >>> t1.token()
+    'tYWJj'
+    >>> t2.token()
+    'tw4DDn8OH'
+
+
+    The unnamed utility is given an artificial title for use in user
+    interfaces:
+
+    >>> t3 = UtilityNameTerm(u'')
+    >>> t3.title()
+    u'(unnamed utility)'
+
+    """
+
+    implements(ITokenizedTerm)
+
+    def __init__(self, value):
+        self.value = unicode(value)
+
+    def token(self):
+        # Return our value as a token.  This is required to be 7-bit
+        # printable ascii. We'll use base64 generated from the UTF-8
+        # representation.  (The default encoding rules should not be
+        # allowed to apply.)
+        return "t" + self.value.encode('utf-8').encode('base64')[:-1]
+
+    def title(self):
+        return self.value or _("(unnamed utility)")
+
+
+class UtilityNames:
+    """Vocabulary with utility names for a single interface as values.
+
+    >>> class IMyUtility(Interface):
+    ...     pass
+
+    >>> class MyUtility(object):
+    ...     implements(IMyUtility)
+
+    >>> vocab = UtilityNames(IMyUtility)
+
+    >>> IVocabulary.providedBy(vocab)
+    True
+    >>> IVocabularyTokenized.providedBy(vocab)
+    True
+
+    >>> from zope.app.tests import placelesssetup
+    >>> from zope.app.tests import ztapi
+    >>> placelesssetup.setUp()
+
+    >>> ztapi.provideUtility(IMyUtility, MyUtility(), 'one')
+    >>> ztapi.provideUtility(IMyUtility, MyUtility(), 'two')
+
+    >>> unames = UtilityNames(IMyUtility)
+    >>> len(list(unames))
+    2
+    >>> L = [t.value for t in unames]
+    >>> L.sort()
+    >>> L
+    [u'one', u'two']
+
+    >>> u'one' in vocab
+    True
+    >>> u'three' in vocab
+    False
+    >>> ztapi.provideUtility(IMyUtility, MyUtility(), 'three')
+    >>> u'three' in vocab
+    True
+
+    >>> ztapi.provideUtility(IMyUtility, MyUtility())
+    >>> u'' in vocab
+    True
+    >>> term1 = vocab.getTerm(u'')
+    >>> term2 = vocab.getTermByToken(term1.token())
+    >>> term2.value
+    u''
+
+    There is no special query support for `UtilityNames`:
+
+    >>> vocab.getQuery()
+
+    >>> placelesssetup.tearDown()
+
+    """
+
+    implements(IVocabulary, IVocabularyTokenized)
+
+    def __init__(self, interface):
+        self.interface = interface
+
+    def __contains__(self, value):
+        return zapi.queryUtility(self.interface, value) is not None
+
+    def getQuery(self):
+        return None
+
+    def getTerm(self, value):
+        if value in self:
+            return UtilityNameTerm(value)
+        raise ValueError(value)
+
+    def getTermByToken(self, token):
+        for name, ut in zapi.getUtilitiesFor(self.interface):
+            name = unicode(name)
+            if token == "t":
+                if not name:
+                    break
+            elif name.encode('utf-8').encode('base64')[:-1] == token:
+                break
+        else:
+            raise LookupError("no matching token: %r" % token)
+        return self.getTerm(name)
+
+    def __iter__(self):
+        for name, ut in zapi.getUtilitiesFor(self.interface):
+            yield UtilityNameTerm(name)
+
+    def __len__(self):
+        """Return the number of valid terms, or sys.maxint."""
+        return len(list(zapi.getUtilitiesFor(self.interface)))
