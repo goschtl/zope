@@ -16,7 +16,7 @@
 This module contains advanced core query mechanisms. See the
 docstrings and interfaces.py for more information.
 
-$Id: query.py,v 1.6 2004/04/01 18:26:43 sidnei Exp $
+$Id: query.py,v 1.7 2004/04/01 19:21:59 philikon Exp $
 """
 
 __metaclass__ = type
@@ -140,7 +140,7 @@ def alternateQueryMechanism(context, adapter, view):
         )
         )
 
-class AdvancedSuperClass:
+class AdvancedSuperClass(object):
 
     def superHasAttr(self,attr):
         obj=self
