@@ -56,10 +56,8 @@ Actually
 
 %page
 
-Page template view example
-
-
 overview.pt
+
 
 %size 4, fore "blue"
 <html>
@@ -70,10 +68,8 @@ overview.pt
 
 %page
 
-Hooking up the page
-
-
 configure.zcml
+
 
 %size 4, fore "blue"
 <configure 
@@ -110,3 +106,5 @@ Hooking up the page, explanation
 	View provides new interface (UI) for user
 
 	Only five-specific thing is making Folder Zope-3 traversable
+
+        Well, and the Zope 2 permission.
