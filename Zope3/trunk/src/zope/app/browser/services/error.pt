@@ -40,6 +40,7 @@
             tal:content="python: '\n'.join(props['ignored_exceptions'])" />
       </div>
     </div>
+    <div class="separator"></div>
 
     <div class="row">
       <div class="controls">
@@ -47,6 +48,7 @@
                 i18n:attributes="value save-changes-button"/>
       </div>
     </div>
+    <div class="separator"></div>
 
     <h3 i18n:translate="">Exception Log (most recent first)</h3>
 
