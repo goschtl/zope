@@ -1,0 +1,7 @@
+# This map contains only the psycopgda package.
+#
+# This package map can be addressed as
+#
+#   svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/mysqldbda.map
+#
+mysqldbda         svn://svn.zope.org/repos/main/mysqldbda/tags/*/
