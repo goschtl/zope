@@ -14,12 +14,16 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.13 2002/12/20 19:46:01 jeremy Exp $
+$Id: SiteDefinition.py,v 1.14 2002/12/20 22:30:29 gvanrossum Exp $
 """
 
 import sys
 import logging
 import asyncore
+
+# Importing ZLogIntegration redirects asyncore's logging to the
+# logging module
+from Zope.Server import ZLogIntegration
 
 # Import Configuration-related classes
 from Zope.Configuration.Action import Action
