@@ -124,8 +124,7 @@ class InclusionProcessor:
                 self.includes[dest] = src
 
     def glob(self, pattern):
-        return [n for n in glob.glob(pattern)
-                if os.path.basename(n) not in EXCLUDE_NAMES]
+        return self.filterNames(glob.glob(pattern))
 
     def filterNames(self, names):
         names = [n for n in names
