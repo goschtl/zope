@@ -13,7 +13,7 @@
 ##############################################################################
 """Higher-level three-way file and directory merger.
 
-$Id: fsmerger.py,v 1.12 2003/06/10 19:12:26 gvanrossum Exp $
+$Id: fsmerger.py,v 1.13 2003/07/08 17:33:39 fdrake Exp $
 """
 
 import os
@@ -54,6 +54,9 @@ class FSMerger(object):
             # One is a file, the other is a directory
             # XXX We should be able to deal with this case, too
             self.reporter("XXX %s" % local)
+            # XXX probably for the best; we *don't* know the right
+            # thing to do anyway
+            return
         self.merge_extra(local, remote)
         self.merge_annotations(local, remote)
         if not exists(local) and not self.metadata.getentry(local):
@@ -124,6 +127,7 @@ class FSMerger(object):
                         lentry.update(rentry)
                         self.reportdir("N", localdir)
                     else:
+                        # call make_dir() to create @@Zope and store metadata
                         self.make_dir(localdir)
                         self.reportdir("*", localdir)
                 return
@@ -161,6 +165,9 @@ class FSMerger(object):
                 else:
                     # Tree removed remotely, must recurse down locally
                     for name in lentrynames:
+                        # merge() removes the local copies since the
+                        # remote versions are gone, unless there have
+                        # been local changes.
                         self.merge(join(localdir, name), join(remotedir, name))
                     self.clear_dir(localdir)
                     return
@@ -173,6 +180,7 @@ class FSMerger(object):
                 self.reportdir("R", localdir)
                 return # There's no point in recursing down!
             if rentry or rentrynames:
+                # remote directory is new
                 self.make_dir(localdir)
                 lentry.update(rentry)
                 self.reportdir("N", localdir)
@@ -285,8 +293,7 @@ class FSMerger(object):
         elif state == "Nonexistent":
             if action == "Delete":
                 letter = "D"
-        if letter:
-            self.reporter("%s %s" % (letter, local))
+        self.reporter("%s %s" % (letter, local))
 
     def ignore(self, path):
         # XXX This should have a larger set of default patterns to
