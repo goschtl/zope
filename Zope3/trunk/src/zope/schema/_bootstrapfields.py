@@ -12,12 +12,8 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.28 2004/04/11 10:35:04 srichter Exp $
+$Id: _bootstrapfields.py,v 1.29 2004/04/24 23:20:42 srichter Exp $
 """
-__metaclass__ = type
-
-import warnings
-
 from zope.interface import Attribute, providedBy, implements
 from zope.schema._bootstrapinterfaces import StopValidation
 from zope.schema._bootstrapinterfaces import IFromUnicode
@@ -30,7 +26,7 @@ from zope.schema._bootstrapinterfaces import InvalidValue
 
 from zope.schema._schema import getFields
 
-class ValidatedProperty:
+class ValidatedProperty(object):
 
     def __init__(self, name, check=None):
         self._info = name, check
@@ -230,7 +226,7 @@ class Iterable(Container):
             raise NotAnIterator(value)
 
 
-class Orderable:
+class Orderable(object):
     """Values of ordered fields can be sorted.
 
     They can be restricted to a range of values.
@@ -269,7 +265,7 @@ class Orderable:
             raise TooBig(value, self.max)
 
 
-class MinMaxLen:
+class MinMaxLen(object):
     """Expresses constraints on the length of a field.
 
     MinMaxLen is a mixin used in combination with Field.
@@ -290,53 +286,6 @@ class MinMaxLen:
 
         if self.max_length is not None and len(value) > self.max_length:
             raise TooLong(value, self.max_length)
-
-
-class Enumerated:
-    """Enumerated fields can have a value found in a constant set of
-    values given by the field definition.
-
-    Enumerated is a mixin used in combination with Field.
-    """
-
-    def __init__(self, allowed_values=None, default=None, **kw):
-        # Set allowed_values to None so that we can validate if
-        # one of the super methods invoke validation.
-        self.__dict__['allowed_values'] = None
-        super(Enumerated, self).__init__(**kw)
-        if allowed_values is not None:
-            self.allowed_values = allowed_values
-
-        # We've taken over setting default so it can be limited by min
-        # and max.
-        self.default = default
-
-    def allowed_values(self, values):
-        # This method checks that each of the given allowed values
-        # are valid potential values.
-
-        if not values:
-            return
-
-        # Reset current value of allowed_values to not constrain allowed
-        # values. If we didn't do this, we'd only be able to allow a subset
-        # of the values currently allowed.
-        old_allowed = getattr(self, 'allowed_values', None)
-        self.allowed_values = None
-        try:
-            for value in values:
-                self.validate(value)
-        finally:
-            # restore the old value
-            self.allowed_values = old_allowed
-
-    allowed_values = ValidatedProperty('allowed_values', allowed_values)
-
-    def _validate(self, value):
-        super(Enumerated, self)._validate(value)
-        if self.allowed_values:
-            if not value in self.allowed_values:
-                raise InvalidValue(value, self.allowed_values)
 
 class Text(MinMaxLen, Field):
     """A field containing text used for human discourse."""
@@ -369,9 +318,6 @@ class TextLine(Text):
 
     def constraint(self, value):
         return '\n' not in value and '\r' not in value
-
-class EnumeratedTextLine(Enumerated, TextLine):
-    """TextLine with a value from a list of allowed values."""
 
 class Password(TextLine):
     """A text field containing a text used as a password."""
@@ -419,6 +365,3 @@ class Int(Orderable, Field):
         v = int(str)
         self.validate(v)
         return v
-
-class EnumeratedInt(Enumerated, Int):
-    """A field representing one of a selected set of Integers."""
