@@ -41,6 +41,7 @@ def setUpDependable():
 
 #------------------------------------------------------------------------
 # Traversal
+from zope.app.traversing.browser.interfaces import IAbsoluteURL
 from zope.app.traversing.browser import SiteAbsoluteURL, AbsoluteURL
 from zope.app.container.traversal import ContainerTraversable
 from zope.app.container.interfaces import ISimpleReadContainer
@@ -69,6 +70,11 @@ def setUpTraversal():
 
     ztapi.browserView(None, "absolute_url", AbsoluteURL)
     ztapi.browserView(IContainmentRoot, "absolute_url", SiteAbsoluteURL)
+
+    ztapi.browserView(None, '', AbsoluteURL, providing=IAbsoluteURL)
+    ztapi.browserView(IContainmentRoot, '', SiteAbsoluteURL,
+                      providing=IAbsoluteURL)
+
 
 #------------------------------------------------------------------------
 # Use registration
