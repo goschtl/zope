@@ -106,6 +106,12 @@ wrap_iter(PyObject *self)
     return PyObject_GetIter(Proxy_GET_OBJECT(self));
 }
 
+static PyObject *
+wrap_iternext(PyObject *self)
+{
+    return PyIter_Next(Proxy_GET_OBJECT(self));
+}
+
 static void
 wrap_dealloc(PyObject *self)
 {
@@ -626,7 +632,7 @@ ProxyType = {
     wrap_richcompare,			/* tp_richcompare */
     0,					/* tp_weaklistoffset */
     wrap_iter,				/* tp_iter */
-    0,					/* tp_iternext */
+    wrap_iternext,			/* tp_iternext */
     wrap_methods,			/* tp_methods */
     0,					/* tp_members */
     0,					/* tp_getset */
