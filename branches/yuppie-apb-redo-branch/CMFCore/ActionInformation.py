@@ -20,6 +20,7 @@ from Acquisition import aq_base, aq_inner, aq_parent
 from Globals import InitializeClass
 from OFS.SimpleItem import SimpleItem
 
+from interfaces.portal_actions import ActionInfo as IActionInfo
 from Expression import Expression
 from permissions import View
 from utils import _checkPermission
@@ -31,7 +32,7 @@ _unchanged = [] # marker
 class ActionInfo(dict):
     """ A lazy dictionary for Action infos.
     """
-
+    __implements__ = IActionInfo
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, action, ec):

@@ -57,18 +57,8 @@ class portal_actions(Interface):
     def listFilteredActionsFor(object=None):
         """ List all actions available to the user.
 
-        Each action has the following keys:
-
-        - name: An identifying action name
-
-        - url: The URL to visit to access the action
-
-        - permissions: A list. The user must have at least one of the listed
-          permissions to access the action. If the list is empty, the user is
-          allowed. (Note that listFilteredActionsFor() filters out actions
-          according to this field.)
-
-        - category: One of "user", "folder", "object", "global" or "workflow"
+        See the ActionInfo interface for provided keys. 'visible', 'available'
+        and 'allowed' are always True in actions returned by this method.
 
         Permission -- Always available
 
@@ -132,3 +122,33 @@ class ActionProvider(Interface):
 
         Returns -- ActionInfo object
         """
+
+
+class ActionInfo(Interface):
+    """ A lazy dictionary for Action infos.
+
+    Each ActionInfo object has the following keys:
+
+      - id (string): not unique identifier
+
+      - title (string)
+
+      - url (string): URL to access the action
+
+      - category (string): one of "user", "folder", "object", "global",
+        "workflow" or a custom category
+
+      - visible (boolean)
+
+      - available (boolean): the result of checking the condition
+
+      - allowed (boolean): the result of checking permissions
+
+    Deprecated keys:
+        
+      - name (string): use 'id' or 'title' instead
+
+      - permissions (tuple): use 'allowed' instead; The user must have at
+        least one of the listed permissions to access the action. If the list
+        is empty, the user is allowed.
+    """
