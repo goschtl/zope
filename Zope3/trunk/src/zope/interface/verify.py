@@ -15,7 +15,7 @@
 from zope.interface.exceptions import BrokenImplementation, DoesNotImplement
 from zope.interface.exceptions import BrokenMethodImplementation
 from types import FunctionType, MethodType
-from zope.interface.interface import fromMethod, fromFunction
+from zope.interface.interface import fromMethod, fromFunction, Method
 
 # This will be monkey-patched when running under Zope 2, so leave this
 # here:
@@ -49,6 +49,11 @@ def _verify(iface, candidate, tentative=0, vtype=None):
 
     for n, d in iface.namesAndDescriptions(1):
         if not hasattr(candidate, n):
+            if (not isinstance(d, Method)) and vtype == 'c':
+                # We can't verify non-methods on classes, since the
+                # class may provide attrs in it's __init__.
+                continue
+            
             raise BrokenImplementation(iface, n)
 
         attr = getattr(candidate, n)

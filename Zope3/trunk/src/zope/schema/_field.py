@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.12 2003/04/24 20:51:58 poster Exp $
+$Id: _field.py,v 1.13 2003/05/03 16:36:05 jim Exp $
 """
 __metaclass__ = type
 
 import warnings
 
-from zope.interface.implements import implements
+from zope.interface import classImplements
 from zope.interface.interfaces import IInterface
 
 from zope.schema.interfaces import ValidationError
@@ -47,18 +47,18 @@ Field.description = FieldProperty(IField['description'])
 Field.required    = FieldProperty(IField['required'])
 Field.readonly    = FieldProperty(IField['readonly'])
 # Default is already taken care of
-implements(Field, IField)
+classImplements(Field, IField)
 
 MinMaxLen.min_length = FieldProperty(IMinMaxLen['min_length'])
 MinMaxLen.max_length = FieldProperty(IMinMaxLen['max_length'])
 
-implements(Text, IText)
-implements(TextLine, ITextLine)
-implements(Password, IPassword)
-implements(Bool, IBool)
-implements(Int, IInt)
-implements(EnumeratedInt, IEnumeratedInt)
-implements(EnumeratedTextLine, IEnumeratedTextLine)
+classImplements(Text, IText)
+classImplements(TextLine, ITextLine)
+classImplements(Password, IPassword)
+classImplements(Bool, IBool)
+classImplements(Int, IInt)
+classImplements(EnumeratedInt, IEnumeratedInt)
+classImplements(EnumeratedTextLine, IEnumeratedTextLine)
 
 class SourceText(Text):
     __doc__ = ISourceText.__doc__

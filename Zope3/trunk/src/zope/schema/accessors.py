@@ -33,15 +33,17 @@ readaccessor is defined for read-only fields.
 Read accessors function as access method sepcifications and as field
 specifications.  Write accessors are solely method specifications.
 
-$Id: accessors.py,v 1.2 2003/04/18 22:12:33 jim Exp $
+$Id: accessors.py,v 1.3 2003/05/03 16:36:05 jim Exp $
 """
 
 
 
 from __future__ import generators
 
+from zope.interface import providedBy
 from zope.interface import directlyProvides
 from zope.interface.interface import Method
+        
 
 class FieldReadAccessor(Method):
     """Field read accessor
@@ -51,11 +53,14 @@ class FieldReadAccessor(Method):
     # A read accessor is a decorator of a field, using the given
     # fields proprtyoes to provide meta data.
 
+    def __provides__(self):
+        return providedBy(self.field)
+    __provides__ = property(__provides__)
+
     def __init__(self, field):
         self.field = field
         Method.__init__(self, '')
         self.__doc__ = 'get %s' % field.__doc__
-        directlyProvides(self, field.__implements__, Method.__implements__)
 
     def getSignatureString(self):
         return '()'

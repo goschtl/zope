@@ -15,20 +15,21 @@
 
 See Adapter class.
 
-$Id: adapter.py,v 1.3 2003/01/20 20:02:52 jim Exp $
+$Id: adapter.py,v 1.4 2003/05/03 16:36:05 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-from zope.interface import Interface
+from zope.interface import Interface, implements, providedBy
+from zope.interface import InterfaceSpecification
 from zope.interface.interfaces import IInterface
-from zope.interface._flatten import _flatten
 from zope.interface.interfaces import IAdapterRegistry
+from _flatten import _flatten
 
 class AdapterRegistry:
     """Adapter-style interface registry
     """
 
-    __implements__ = IAdapterRegistry
+    implements(IAdapterRegistry)
 
     # The implementation uses a mapping:
     #
@@ -90,7 +91,18 @@ class AdapterRegistry:
             cache = getattr(self, '_v_cache', self)
             if cache is self:
                 cache = self._v_cache = {}
-            key = `ob_interface_provide`
+
+            # get the cache key
+            interfaces, provide = ob_interface_provide
+            try:
+                key = interfaces.__signature__
+            except AttributeError:
+                if interfaces is None:
+                    key = None
+                else:
+                    key = InterfaceSpecification(interfaces).__signature__
+            key = key, provide.__identifier__
+                
             cached = cache.get(key, self)
             if cached is self:
                 cached = self._uncached_get(ob_interface_provide,
@@ -102,8 +114,20 @@ class AdapterRegistry:
                                   default, filter)
 
     def _uncached_get(self, (ob_interface, provide), default, filter):
+
+        try:
+            flattened = ob_interface.flattened
+        except AttributeError:
+            # Somebodey (probably a test) passed us a bare interface
+            if ob_interface is not None:
+                flattened = InterfaceSpecification(ob_interface).flattened()
+            else:
+                flattened = None,
+        else:
+            flattened = flattened()
         
-        for interface in _flatten(ob_interface, 1):
+
+        for interface in flattened:
             c = self._reg.get((interface, provide))
             if c:
                 c = c[1]
@@ -111,12 +135,21 @@ class AdapterRegistry:
                     return c
                 if filter(c):
                     return c
+        
+        c = self._reg.get((None, provide))
+        if c:
+            c = c[1]
+            if filter is None:
+                return c
+            if filter(c):
+                return c
+
+
 
         return default
 
     def getForObject(self, object, interface, filter=None):
-        return self.get((getattr(object, '__implements__', None), interface),
-                        filter=filter)
+        return self.get((providedBy(object), interface), filter=filter)
 
     def getRegistered(self, require, provide):
         data = self._reg.get((require, provide))

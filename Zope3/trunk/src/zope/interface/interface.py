@@ -14,9 +14,10 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.8 2003/04/14 08:29:09 jim Exp $
+$Id: interface.py,v 1.9 2003/05/03 16:36:05 jim Exp $
 """
 
+import sys
 from inspect import currentframe
 from types import FunctionType
 
@@ -75,17 +76,22 @@ class InterfaceClass(Element):
                  __module__=None):
 
         if __module__ is None:
-            if attrs is not None and ('__module__' in attrs):
+            if (attrs is not None and
+                ('__module__' in attrs) and
+                isinstance(attrs['__module__'], str)
+                ):
                 __module__ = attrs['__module__']
                 del attrs['__module__']
             else:
+
                 try:
                     # Figure out what module defined the interface.
                     # This is how cPython figures out the module of
                     # a class, but of course it does it in C. :-/
-                    __module__ = currentframe().f_back.f_globals['__name__']
+                    __module__ = sys._getframe(1).f_globals['__name__']
                 except (AttributeError, KeyError):
                     pass
+
         self.__module__ = __module__
 
         for b in bases:
@@ -108,6 +114,8 @@ class InterfaceClass(Element):
 
         Element.__init__(self, name, __doc__)
 
+        self.__iro__ = mergeOrderings([_flattenInterface(self, [])])
+
         for k, v in attrs.items():
             if isinstance(v, Attribute):
                 v.interface = name
@@ -119,6 +127,9 @@ class InterfaceClass(Element):
                 raise InvalidInterface("Concrete attribute, %s" % k)
 
         self.__attrs = attrs
+
+        self.__identifier__ = "%s.%s" % (self.__module__, self.__name__)
+
 
     def getBases(self):
         return self.__bases__
@@ -143,34 +154,25 @@ class InterfaceClass(Element):
         """Does the given object implement the interface?"""
 
         # OPT Cache implements lookups
-        implements = getImplements(object)
-        if implements is None:
-            return False
-
+        implements = providedBy(object)
         cache = getattr(self, '_v_cache', self)
         if cache is self:
             cache = self._v_cache = {}
 
-        key = `implements`
+
+        key = implements.__signature__
 
         r = cache.get(key)
         if r is None:
-            r = bool(
-                visitImplements(
-                  implements, object, self.isEqualOrExtendedBy,
-                  self._getInterface)
-                )
+            r = bool(implements.extends(self))
             cache[key] = r
 
         return r
 
     def isImplementedByInstancesOf(self, klass):
         """Do instances of the given class implement the interface?"""
-        i = getImplementsOfInstances(klass)
-        if i is not None:
-            return visitImplements(
-                i, klass, self.isEqualOrExtendedBy, self._getInterface)
-        return False
+        i = implementedBy(klass)
+        return bool(i.extends(self))
 
     def names(self, all=False):
         """Return the attribute names defined by the interface."""
@@ -329,7 +331,48 @@ class InterfaceClass(Element):
         return c > 0
 
 
-Interface = InterfaceClass("Interface")
+def mergeOrderings(orderings, seen=None):
+    """Merge multiple orderings so that within-ordering order is preserved
+
+    Orderings are constrained in such a way that if an object appears
+    in two or more orderings, then the suffix that begins with the
+    object must be in both orderings.
+
+    For example:
+
+    >>> _mergeOrderings([
+    ... ['x', 'y', 'z'],
+    ... ['q', 'z'],
+    ... [1, 3, 5],
+    ... ['z']
+    ... ])
+    ['x', 'y', 'q', 1, 3, 5, 'z']
+
+    """
+
+    if seen is None:
+        seen = {}
+    result = []
+    orderings.reverse()
+    for ordering in orderings:
+        ordering = list(ordering)
+        ordering.reverse()
+        for o in ordering:
+            if o not in seen:
+                seen[o] = 1
+                result.append(o)
+
+    result.reverse()
+    return result
+
+def _flattenInterface(iface, result):
+    result.append(iface)
+    for base in iface.__bases__:
+        _flattenInterface(base, result)
+
+    return result
+
+Interface = InterfaceClass("Interface", __module__ = 'zope.interface')
 
 class Attribute(Element):
     """Attribute descriptions
@@ -427,23 +470,21 @@ def fromMethod(meth, interface=''):
     func = meth.im_func
     return fromFunction(func, interface, imlevel=1)
 
+
 # Now we can create the interesting interfaces and wire them up:
 def _wire():
-
-    from zope.interface.implements import implements
+    from zope.interface.declarations import classImplements
 
     from zope.interface.interfaces import IAttribute
-    implements(Attribute, IAttribute)
+    classImplements(Attribute, IAttribute)
 
     from zope.interface.interfaces import IMethod
-    implements(Method, IMethod)
+    classImplements(Method, IMethod)
 
     from zope.interface.interfaces import IInterface
-    implements(InterfaceClass, IInterface)
+    classImplements(InterfaceClass, IInterface)
 
 # We import this here to deal with module dependencies.
-from zope.interface.implements import getImplementsOfInstances
-from zope.interface.implements import visitImplements, getImplements
-from zope.interface.implements import instancesOfObjectImplements
+from zope.interface.declarations import providedBy, implementedBy
 from zope.interface.exceptions import InvalidInterface
 from zope.interface.exceptions import BrokenImplementation

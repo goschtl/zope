@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.14 2003/04/22 18:02:56 gvanrossum Exp $
+$Id: _bootstrapfields.py,v 1.15 2003/05/03 16:36:05 jim Exp $
 """
 __metaclass__ = type
 
 import warnings
 
-from zope.interface import Attribute
-from zope.interface.implements import visitImplements
+from zope.interface import Attribute, providedBy
 
 from zope.schema.interfaces import StopValidation, ValidationError
 from zope.schema._schema import getFields
@@ -104,10 +103,12 @@ class Field(Attribute):
         # should be the same type
         if type(self) != type(other):
             return False
+
         # should have the same properties
         names = {} # used as set of property names, ignoring values
-        visitImplements(self.__implements__, self,
-                        lambda interface: names.update(getFields(interface)))
+        for interface in providedBy(self):
+            names.update(getFields(interface))
+            
         # order will be different always, don't compare it
         if 'order' in names:
             del names['order']

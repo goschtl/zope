@@ -15,11 +15,11 @@
 
 See Adapter class.
 
-$Id: implementor.py,v 1.4 2003/04/03 22:05:35 fdrake Exp $
+$Id: implementor.py,v 1.5 2003/05/03 16:36:05 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.interface.interfaces import IInterface
 from zope.interface.interfaces import IImplementorRegistry
 
@@ -27,7 +27,7 @@ class ImplementorRegistry:
     """Implementor-style interface registry
     """
 
-    __implements__ = IImplementorRegistry
+    implements(IImplementorRegistry)
 
     # The implementation uses a mapping:
     #

@@ -15,8 +15,8 @@
 import unittest
 from zope.interface.tests.unitfixtures import *  # hehehe
 from zope.interface.exceptions import BrokenImplementation
-from zope.interface.implements import instancesOfObjectImplements
-from zope.interface.implements import objectImplements
+from zope.interface import implementedBy
+from zope.interface import providedBy
 from zope.interface import Interface
 from zope.interface.interface import Attribute
 
@@ -40,18 +40,21 @@ class InterfaceTests(unittest.TestCase):
         assert not I2.isImplementedByInstancesOf(A)
         assert I2.isImplementedByInstancesOf(B)
         assert not I2.isImplementedByInstancesOf(C)
-        assert not I2.isImplementedByInstancesOf(D)
+
+        # No longer after interfacegeddon
+        # assert not I2.isImplementedByInstancesOf(D)
+
         assert not I2.isImplementedByInstancesOf(E)
 
     def testUtil(self):
-        f = instancesOfObjectImplements
+        f = implementedBy
         assert IC in f(C)
         assert I1 in f(A)
         assert not I1 in f(C)
         assert I2 in f(B)
         assert not I2 in f(C)
 
-        f = objectImplements
+        f = providedBy
         assert IC in f(C())
         assert I1 in f(A())
         assert not I1 in f(C())
@@ -71,7 +74,10 @@ class InterfaceTests(unittest.TestCase):
         assert not I2.isImplementedBy(A())
         assert I2.isImplementedBy(B())
         assert not I2.isImplementedBy(C())
-        assert not I2.isImplementedBy(D())
+
+        # Not after interface geddon
+        # assert not I2.isImplementedBy(D())
+
         assert not I2.isImplementedBy(E())
 
     def testDeferredClass(self):

@@ -15,12 +15,12 @@
 
 See Adapter class.
 
-$Id: type.py,v 1.7 2003/05/01 19:35:44 faassen Exp $
+$Id: type.py,v 1.8 2003/05/03 16:36:05 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
+from zope.interface import Interface, providedBy
 from zope.interface.interfaces import IInterface
-from zope.interface._flatten import _flatten
 from zope.interface.interfaces import ITypeRegistry
 
 class TypeRegistry:
@@ -72,7 +72,7 @@ class TypeRegistry:
 
     def getAll(self, interface_spec):
         result = []
-        for interface in _flatten(interface_spec):
+        for interface in interface_spec.flattened():
             object = self._reg.get(interface)
             if object is not None:
                 result.append(object)
@@ -88,7 +88,7 @@ class TypeRegistry:
         # XXX This isn't quite right, since it doesn't take into
         # account implementation registries for objects that can't
         # have '__implements__' attributes.
-        return self.getAll(getattr(object, '__implements__', None))
+        return self.getAll(providedBy(object))
 
     def getTypesMatching(self, interface):
         if interface is None:
