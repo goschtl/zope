@@ -13,7 +13,7 @@
 ##############################################################################
 """A site management folder contains components and component registrations.
 
-$Id: folder.py,v 1.4 2004/04/17 15:13:13 jim Exp $
+$Id: folder.py,v 1.5 2004/05/06 10:20:43 philikon Exp $
 """
 from zope.interface import implements
 from zope.app.component.nextservice import getNextServiceManager
@@ -23,15 +23,14 @@ from zope.app.registration.registration import RegisterableContainer
 from zope.app.traversing import getPath
 from zope.app.container.contained import setitem
 
-from interfaces import ISiteManagementFolders, ISiteManagementFolder
-from interfaces import IComponentManager
-
+from zope.app.site.interfaces import ISiteManagementFolders
+from zope.app.site.interfaces import ISiteManagementFolder
+from zope.app.site.interfaces import IComponentManager
 
 class SiteManagementFolder(RegisterableContainer, BTreeContainer):
     implements(ISiteManagementFolder)
 
 class SMFolderFactory(object):
-
     implements(IDirectoryFactory)
 
     def __init__(self, context):
@@ -40,12 +39,8 @@ class SMFolderFactory(object):
     def __call__(self, name):
         return SiteManagementFolder()
 
-# XXX Backward compatability. This is needed to support old pickles.
-Package = SiteManagementFolder
-
 class SiteManagementFolders(BTreeContainer):
     pass 
-Packages = SiteManagementFolders
 
 import sys
 
