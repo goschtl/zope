@@ -1,0 +1,10 @@
+# This map contains only the ZConfig package.  What's interesting is
+# that it's the ZConfig package from the ZConfig project, not the copy
+# in Zope 3 or ZODB.  This is what's used to create the separate
+# ZConfig distributions.
+#
+# This package map can be addressed as
+#
+#   svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/zconfig.map
+#
+ZConfig         svn://svn.zope.org/repos/main/ZConfig/tags/*/

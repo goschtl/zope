@@ -1,0 +1,41 @@
+# These packages are used to provide the Zope 3 distributions.
+# This package map can be addressed as
+#
+#   svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/zope3.map
+
+# These packages are the Zope 3 components.
+#
+zope                  svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope
+zope.app              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app
+zope.app.container    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/container
+zope.app.presentation svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/presentation
+zope.app.sqlscript    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/sqlscript
+zope.cachedescriptors svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/cachedescriptors
+zope.component        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/component
+zope.configuration    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/configuration
+zope.exceptions       svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/exceptions
+zope.fssync           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/fssync
+zope.hookable         svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/hookable
+zope.i18n             svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/i18n
+zope.i18nmessageid    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/i18nmessageid
+zope.interface        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/interface
+zope.modulealias      svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/modulealias
+zope.pagetemplate     svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/pagetemplate
+zope.proxy            svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/proxy
+zope.publisher        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/publisher
+zope.schema           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/schema
+zope.security         svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/security
+zope.server           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/server
+zope.tal              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/tal
+zope.tales            svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/tales
+zope.testing          svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/testing
+
+# These packages are copied from the ZConfig, zdaemon, and ZODB projects:
+#
+BTrees                svn://svn.zope.org/repos/main/Zope3/tags/*/src/BTrees
+persistent            svn://svn.zope.org/repos/main/Zope3/tags/*/src/persistent
+transaction           svn://svn.zope.org/repos/main/Zope3/tags/*/src/transaction
+ZConfig               svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZConfig
+zdaemon               svn://svn.zope.org/repos/main/Zope3/tags/*/src/zdaemon
+ZEO                   svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZEO
+ZODB                  svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZODB
