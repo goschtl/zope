@@ -96,11 +96,8 @@ class BuilderApplication(Application):
     def build_distribution(self):
         """Create the distribution tree.
 
-        This method performs common actions for both types of
-        distribution, and then dispatches to either
-        `build_collection_distribution()` or
-        `build_package_distribution()` based on the type of the
-        primary resource.
+        This method does everything needed to knit a distribution
+        together; it should be refactored substantially.
         """
         top = Component(self.resource, self.resource_url, self.ip)
         top.write_package(self.destination)
@@ -136,8 +133,6 @@ class BuilderApplication(Application):
                 component.write_setup_py()
                 component.write_setup_cfg()
                 component.write_manifest()
-        if required:
-            top.write_dependencies(required)
         if self.options.build_type == "application":
             top.write_setup_py(filename="install.py")
             self.write_application_support(top)
