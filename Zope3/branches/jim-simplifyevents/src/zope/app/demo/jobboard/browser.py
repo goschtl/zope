@@ -1,6 +1,6 @@
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 
 
@@ -38,7 +38,7 @@ class JobCreateView(BrowserView):
         # Validation code should go here
         job = Job(submitter, summary, description, contact)
         self.context.add(job)
-        publish(self.context,ObjectModifiedEvent(self.context))
+        notify(ObjectModifiedEvent(self.context))
         return self.thanks()
         
         
@@ -100,5 +100,5 @@ class ApproveJobsView(BrowserView):
             response.redirect('review.html')
         else:
             response.redirect('.')
-        publish(self.context,ObjectModifiedEvent(self.context))
+        notify(ObjectModifiedEvent(self.context))
 

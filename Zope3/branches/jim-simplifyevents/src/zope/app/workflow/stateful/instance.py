@@ -19,7 +19,7 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 
 from zope.app import zapi
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.stateful.interfaces import AUTOMATIC
 from zope.app.workflow.stateful.interfaces import IAfterTransitionEvent
@@ -125,14 +125,14 @@ class RelevantData(Persistent, Contained):
             process = self.__parent__ 
             # Send an Event before RelevantData changes
             oldvalue = getattr(self, key, None)
-            publish(self, BeforeRelevantDataChangeEvent(
+            notify(BeforeRelevantDataChangeEvent(
                 process, self.__schema, key, oldvalue, value))
 
         super(RelevantData, self).__setattr__(key, value)
 
         if is_schema_field:
             # Send an Event after RelevantData has changed
-            publish(self, AfterRelevantDataChangeEvent(
+            notify(AfterRelevantDataChangeEvent(
                 process, self.__schema, key, oldvalue, value))
 
     def getChecker(self):
@@ -204,13 +204,13 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         obj = getParent(self)
 
         # Send an event before the transition occurs.
-        publish(self, BeforeTransitionEvent(obj, self, transition))
+        notify(BeforeTransitionEvent(obj, self, transition))
 
         # change status
         self._status = transition.destinationState
 
         # Send an event after the transition occured.
-        publish(self, AfterTransitionEvent(obj, self, transition))
+        notify(AfterTransitionEvent(obj, self, transition))
 
         # check for automatic transitions and fire them if necessary
         self._checkAndFireAuto(clean_pd)

@@ -17,7 +17,7 @@ from zope.component import queryNamedAdapter
 from zope.app.http.interfaces import INullResource
 from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.filerepresentation.interfaces import IWriteDirectory, IFileFactory
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.interface import implements
 
@@ -76,7 +76,7 @@ class NullPUT(object):
         data = body.read()
 
         newfile = factory(name, request.getHeader('content-type', ''), data)
-        publish(self.context, ObjectCreatedEvent(newfile))
+        notify(ObjectCreatedEvent(newfile))
 
         dir[name] = newfile
 

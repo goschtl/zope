@@ -34,7 +34,7 @@ from zope.app.adapter.adapter import IAdapterRegistration
 from zope.app.registration.interfaces import IRegistration
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.utility import applyWidgetsChanges
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.adapter.adapter import AdapterRegistration
 
@@ -48,7 +48,7 @@ class AdapterRegistrationAdd(BrowserView):
         if "FINISH" in self.request:
             data = getWidgetsData(self, IAdapterRegistration)
             registration = AdapterRegistration(**data)
-            publish(self.context.context, ObjectCreatedEvent(registration))
+            notify(ObjectCreatedEvent(registration))
             registration = self.context.add(registration)
             applyWidgetsChanges(view, IRegistration, target=registration) 
             self.request.response.redirect(self.context.nextURL())

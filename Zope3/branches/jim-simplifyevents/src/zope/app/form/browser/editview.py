@@ -23,7 +23,7 @@ from zope.security.checker import defineChecker, NamesChecker
 from zope.component import getAdapter
 
 from zope.app import zapi
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.interfaces import WidgetsError
@@ -100,7 +100,7 @@ class EditView(BrowserView):
                 # We should not generate events when an adapter is used.
                 # That's the adapter's job.
                 if changed and self.context is self.adapted:
-                    publish(content, ObjectModifiedEvent(content))
+                    notify(ObjectModifiedEvent(content))
             except WidgetsError, errors:
                 self.errors = errors
                 status = _("An error occured.")

@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.app.module import Manager
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.publisher.browser import BrowserView
 from zope.proxy import removeAllProxies
@@ -35,7 +35,7 @@ class AddModule(BrowserView):
         mgr = self.context.add(mgr)  # local registration
         mgr.execute()
         self.request.response.redirect(self.context.nextURL())
-        publish(self.context.context, ObjectCreatedEvent(mgr))
+        notify(ObjectCreatedEvent(mgr))
 
 class EditModule(BrowserView):
 

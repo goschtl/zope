@@ -29,7 +29,7 @@ from zope.app.filerepresentation.interfaces import IWriteDirectory
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.filerepresentation.interfaces import IDirectoryFactory
 
-from zope.app.event import publish
+from zope.event import notify
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.copypastemove import rename
@@ -144,7 +144,7 @@ class FTPView:
         dir = IWriteDirectory(self.context, None)
         factory = IDirectoryFactory(self.context)
         newdir = factory(name)
-        publish(self.context, ObjectCreatedEvent(newdir))
+        notify(ObjectCreatedEvent(newdir))
         dir[name] = newdir
 
     def remove(self, name):
@@ -213,7 +213,7 @@ class FTPView:
             factory = IFileFactory(self.context)
 
         newfile = factory(name, '', data)
-        publish(self.context, ObjectCreatedEvent(newfile))
+        notify(ObjectCreatedEvent(newfile))
         dir[name] = newfile
 
     def writable(self, name):

@@ -24,7 +24,7 @@ from zope.app.event.interfaces import IObjectCopiedEvent
 from zope.app.event.interfaces import IObjectAnnotationsModifiedEvent
 from zope.app.event.interfaces import IObjectContentModifiedEvent
 from zope.interface import implements
-from zope.app.event import publish
+from zope.event import notify
 from zope.component import subscribers
 
 _marker = object()
@@ -48,7 +48,7 @@ class ObjectModifiedEvent(ObjectEvent):
     implements(IObjectModifiedEvent)
 
 def modified(object):
-    publish(object, ObjectModifiedEvent(object))
+    notify(ObjectModifiedEvent(object))
 
 class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
     """An object's annotations have been modified"""
@@ -56,7 +56,7 @@ class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
     implements(IObjectAnnotationsModifiedEvent)
 
 def annotationModified(object):
-    publish(object, ObjectAnnotationModifiedEvent(object))
+    notify(ObjectAnnotationModifiedEvent(object))
 
 class ObjectContentModifiedEvent(ObjectModifiedEvent):
     """An object's content has been modified"""
@@ -64,7 +64,7 @@ class ObjectContentModifiedEvent(ObjectModifiedEvent):
     implements(IObjectContentModifiedEvent)
 
 def contentModified(object):
-    publish(object, ObjectContentModifiedEvent(object))
+    notify(ObjectContentModifiedEvent(object))
 
 class ObjectCopiedEvent(ObjectCreatedEvent):
     """An object has been copied"""

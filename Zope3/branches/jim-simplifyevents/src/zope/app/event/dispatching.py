@@ -56,6 +56,7 @@ So, to subscribe to an event, use a subscription adapter to None:
 $Id$
 """
 
+from warnings import warn
 from zope.component import subscribers
 import zope.event
 
@@ -66,4 +67,6 @@ def dispatch(*event):
 zope.event.subscribers.append(dispatch)
 
 def publish(context, event):
+    warn("Use zope.event.notify rather than zope.app.event.publish",
+         DeprecationWarning, 2)
     zope.event.notify(event)

@@ -88,7 +88,7 @@ def database(db):
             db = DB(storage, cache_size=4000)
 
     # The following will fail unless the application has been configured.
-    from zope.app.event import publish
-    publish(None, DatabaseOpened(db))
+    from zope.event import notify
+    notify(DatabaseOpened(db))
 
     return db
