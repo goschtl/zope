@@ -32,7 +32,7 @@ MIRROR = {'host': "www.zope.org",
 
 MIRROR = {'host': "www.zope.org",
           'acct': "anonymous",
-          'repodir': "/cvs-repository/%s"}
+          'repodir': "/cvs-repository"}
 
 table = [
     ("test", "^test", ["klm@digicool.com"], MIRROR),
