@@ -13,18 +13,20 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: InterfaceWidget.py,v 1.2 2002/12/04 09:54:05 jim Exp $
+$Id: InterfaceWidget.py,v 1.3 2002/12/11 13:36:05 jim Exp $
 """
 
 from Zope.App.Forms.Views.Browser.IBrowserWidget import IBrowserWidget
-from Zope.App.Forms.Views.Browser.Widget import BrowserWidget
+from Zope.App.Forms.Views.Browser import Widget
 from Zope.ComponentArchitecture import getService
 from Zope.Exceptions import NotFoundError
 from Zope.Schema.Exceptions import ValidationError
 
-class SingleInterfaceWidget(BrowserWidget):    
+class BaseWidget:
 
     def _convert(self, name):
+        if not name:
+            return None
         service = getService(self.context.context, "Interfaces")
         return service.getInterface(name)
 
@@ -32,6 +34,8 @@ class SingleInterfaceWidget(BrowserWidget):
         if interface is None:
             return interface
         return interface.__module__ + '.' + interface.__name__
+
+class SingleInterfaceWidget(BaseWidget, Widget.BrowserWidget):    
 
     def __call__(self):
         search_name = self.name + ".search"
@@ -61,3 +65,8 @@ class SingleInterfaceWidget(BrowserWidget):
         
         HTML = search_field + select_field
         return HTML
+
+class DisplayWidget(BaseWidget, Widget.DisplayWidget):
+    pass
+
+    

@@ -6,9 +6,13 @@
 <browser:view 
 	factory = ".InterfaceWidget.SingleInterfaceWidget"
 	for = "Zope.App.ComponentArchitecture.InterfaceField.IInterfaceField"
-	name = "single"
-/>
+	name = "edit"
+        />
 
-<browser:defaultView for="Zope.App.ComponentArchitecture.InterfaceField.IInterfaceField" name="single" />
+<browser:view 
+	factory = ".InterfaceWidget.DisplayWidget"
+	for = "Zope.App.ComponentArchitecture.InterfaceField.IInterfaceField"
+	name = "display"
+        />
 
 </zopeConfigure>
