@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.27 2003/09/21 17:30:26 jim Exp $
+$Id: contents.py,v 1.28 2003/10/02 16:23:19 garrett Exp $
 """
 
 from zope.app import zapi
@@ -29,6 +29,7 @@ from zope.app.interfaces.dublincore import IDCDescriptiveProperties
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.browser.container.adding import BasicAdding
 from zope.app.copypastemove import rename
+from zope.exceptions import NotFoundError
 
 class Contents(BrowserView):
 
@@ -265,19 +266,24 @@ class Contents(BrowserView):
         clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
         items = clipboard.getContents()
         for item in items:
-            obj = zapi.traverse(target, item['target'])
-            if item['action'] == 'cut':
-                mover = zapi.getAdapter(obj, IObjectMover)
-                if not mover.moveableTo(target):
-                    return False
-            elif item['action'] == 'copy':
-                copier = zapi.getAdapter(obj, IObjectCopier)
-                if not copier.copyableTo(target):
-                    return False
+            try:
+                obj = zapi.traverse(target, item['target'])
+            except NotFoundError:
+                pass
             else:
-                raise
+                if item['action'] == 'cut':
+                    mover = zapi.getAdapter(obj, IObjectMover)
+                    if not mover.moveableTo(target):
+                        return False
+                elif item['action'] == 'copy':
+                    copier = zapi.getAdapter(obj, IObjectCopier)
+                    if not copier.copyableTo(target):
+                        return False
+                else:
+                    raise
 
         return True
+
 
     def pasteObjects(self):
         """Paste ojects in the user clipboard to the container
@@ -290,21 +296,24 @@ class Contents(BrowserView):
         items = clipboard.getContents()
         moved = False
         for item in items:
-            obj = zapi.traverse(target, item['target'])
-            if item['action'] == 'cut':
-                mover = zapi.getAdapter(obj, IObjectMover)
-                mover.moveTo(target)
-                moved = True
-            elif item['action'] == 'copy':
-                copier = zapi.getAdapter(obj, IObjectCopier)
-                copier.copyTo(target)
+            try:
+                obj = zapi.traverse(target, item['target'])
+            except NotFoundError:
+                pass
             else:
-                raise
+                if item['action'] == 'cut':
+                    mover = zapi.getAdapter(obj, IObjectMover)
+                    mover.moveTo(target)
+                    moved = True
+                elif item['action'] == 'copy':
+                    copier = zapi.getAdapter(obj, IObjectCopier)
+                    copier.copyTo(target)
+                else:
+                    raise
 
         if moved:
             # Clear the clipboard if we do a move, but not if we only do a copy
             clipboard.clearContents()
-
 
 
     def hasClipboardContents(self):
@@ -319,10 +328,16 @@ class Contents(BrowserView):
         annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
 
+        # touch at least one item to in clipboard confirm contents
         clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
-
-        if clipboard.getContents():
-            return True
+        items = clipboard.getContents()
+        for item in items:
+            try:
+                zapi.traverse(self.context, item['target'])
+            except NotFoundError:
+                pass
+            else:
+                return True
 
         return False
 

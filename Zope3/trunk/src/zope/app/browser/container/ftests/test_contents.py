@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_contents.py,v 1.4 2003/09/21 17:30:27 jim Exp $
+$Id: test_contents.py,v 1.5 2003/10/02 16:23:19 garrett Exp $
 """
 
 import unittest
@@ -159,6 +159,97 @@ class Test(BrowserTestCase):
         dc = zapi.getAdapter(root['foo'], IZopeDublinCore)
         self.assert_(dc.title == 'test title')
 
+
+    def test_pasteable_for_deleted_clipboard_item(self):
+        """Tests Paste button visibility when copied item is deleted."""
+
+        root = self.getRootFolder()
+        root['foo'] = File()    # item to be copied/deleted
+        root['bar'] = File()    # ensures that there's always an item in
+                                # the collection view
+        get_transaction().commit()
+
+        # confirm foo in contents, Copy button visible, Paste not visible
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        self.assert_(response.getBody().find(
+            '<a href="foo/@@SelectedManagementView.html">foo</a>') != -1)
+        self.assert_(response.getBody().find(
+            '<input type="submit" name="container_copy_button"') != -1)
+        self.assert_(response.getBody().find(
+            '<input type="submit" name="container_paste_button"') == -1)
+
+        # copy foo - confirm Paste visible
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw', form={
+            'ids' : ('foo',),
+            'container_copy_button' : '' })
+        self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.getHeader('Location'),
+            'http://localhost/@@contents.html')
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        self.assert_(response.getBody().find(
+            '<input type="submit" name="container_paste_button"') != -1)
+
+        # delete foo -> nothing valid to paste -> Paste should not be visible
+        del root['foo']
+        get_transaction().commit()
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        self.assert_(response.getBody().find(
+            '<input type="submit" name="container_paste_button"') == -1)      
+
+
+    def test_paste_for_deleted_clipboard_item(self):
+        """Tests paste operation when one of two copied items is deleted."""
+
+        root = self.getRootFolder()
+        root['foo'] = File()
+        root['bar'] = File()
+        get_transaction().commit()
+
+        # confirm foo/bar in contents, Copy button visible, Paste not visible
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        self.assert_(response.getBody().find(
+            '<a href="foo/@@SelectedManagementView.html">foo</a>') != -1)
+        self.assert_(response.getBody().find(
+            '<a href="bar/@@SelectedManagementView.html">bar</a>') != -1)
+        self.assert_(response.getBody().find(
+            '<input type="submit" name="container_copy_button"') != -1)
+        self.assert_(response.getBody().find(
+            '<input type="submit" name="container_paste_button"') == -1)
+
+        # copy foo and bar - confirm Paste visible
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw', form={
+            'ids' : ('foo', 'bar'),
+            'container_copy_button' : '' })
+        self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.getHeader('Location'),
+            'http://localhost/@@contents.html')
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        self.assert_(response.getBody().find(
+            '<input type="submit" name="container_paste_button"') != -1)
+
+        # delete only foo -> bar still available -> Paste should be visible
+        del root['foo']
+        get_transaction().commit()
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        self.assert_(response.getBody().find(
+            '<input type="submit" name="container_paste_button"') != -1)
+
+        # paste clipboard contents - only bar should be copied
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw', form={
+            'container_paste_button' : '' })
+        self.assertEqual(response.getStatus(), 302)
+        self.assertEqual(response.getHeader('Location'),
+            'http://localhost/@@contents.html')
+        response = self.publish('/@@contents.html', basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        root._p_jar.sync()
+        self.assertEqual(tuple(root.keys()), ('bar', 'bar-2'))
 
 
 def test_suite():
