@@ -26,6 +26,8 @@ from zope.app.security.permission import checkPermission
 
 from zope.app.securitypolicy.securitymap import SecurityMap
 
+# This is misspelled, but that's OK. It just has to be unique.
+# we'll keep it as is, to prevent breaking on data:
 annotation_key = 'zopel.app.security.AnnotationPrincipalPermissionManager'
 
 class AnnotationPrincipalPermissionManager:
