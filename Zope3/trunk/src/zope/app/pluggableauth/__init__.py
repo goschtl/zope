@@ -46,7 +46,6 @@ from zope.app.container.ordered import OrderedContainer
 
 from zope.app.servicenames import Authentication
 from zope.app.security.interfaces import ILoginPassword
-from zope.app.site.interfaces import ISimpleService
 from zope.app.component.localservice import queryNextService
 
 from interfaces import IUserSchemafied, IPluggableAuthenticationService
@@ -60,8 +59,7 @@ def gen_key():
 
 class PluggableAuthenticationService(OrderedContainer):
 
-    implements(IPluggableAuthenticationService, ISimpleService,
-               IOrderedContainer)
+    implements(IPluggableAuthenticationService, IOrderedContainer)
 
     def __init__(self, earmark=None):
         self.earmark = earmark

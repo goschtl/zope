@@ -22,7 +22,6 @@ from zope.app import zapi
 from zope.app.security.interfaces import ILoginPassword
 from zope.app.security.interfaces import IAuthenticationService, IPrincipal
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
-from zope.app.site.interfaces import ISimpleService
 from zope.app.container.contained import Contained, contained
 from warnings import warn
 
@@ -31,7 +30,7 @@ class DuplicateId(Exception): pass
 
 class PrincipalRegistry(object):
 
-    implements(IAuthenticationService, ISimpleService)
+    implements(IAuthenticationService)
 
     # Methods implementing IAuthenticationService
 

@@ -261,7 +261,6 @@ class LocalAdapterService(LocalAdapterRegistry,
 
     zope.interface.implements(
         zope.component.interfaces.IAdapterService,
-        zope.app.site.interfaces.ISimpleService,
         )
 
     serviceType = zapi.servicenames.Adapters

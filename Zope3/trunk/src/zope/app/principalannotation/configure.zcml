@@ -7,7 +7,7 @@
       id="PrincipalAnnotation"
       interface=".interfaces.IPrincipalAnnotationService" />
 
-  <content class=".PrincipalAnnotationService">
+  <localService class=".PrincipalAnnotationService">
     <factory
         id="zope.app.PrincipalAnnotationService"
         />
@@ -15,7 +15,7 @@
         permission="zope.View"
         interface=".interfaces.IPrincipalAnnotationService"
         />
-    </content>
+    </localService>
 
   <!-- Principal annotations (user data) service -->
 

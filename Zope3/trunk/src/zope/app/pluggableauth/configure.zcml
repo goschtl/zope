@@ -2,7 +2,7 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser">
 
-  <content class=".PluggableAuthenticationService">
+  <localService class=".PluggableAuthenticationService">
     <factory
         id="zope.app.services.PluggableAuthenticationService"
         />
@@ -24,7 +24,7 @@
         permission="zope.ManageServices"
         interface="zope.app.site.interfaces.ISimpleService"
         />
-  </content>
+  </localService>
 
   <subscriber
         for=".interfaces.IPluggableAuthenticationService

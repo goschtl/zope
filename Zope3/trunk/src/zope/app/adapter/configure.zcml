@@ -6,13 +6,13 @@
 
 <!-- Adapter Service -->
 
-<content class=".adapter.LocalAdapterService">
+<localService class=".adapter.LocalAdapterService">
   <factory />
   <require
       permission="zope.ManageServices"
       interface="zope.app.registration.interfaces.IRegistry"
       />
-</content>
+</localService>
 
 <content class=".adapter.AdapterRegistration">
   <require

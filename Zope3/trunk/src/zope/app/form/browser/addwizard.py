@@ -135,5 +135,5 @@ def AddWizardViewFactory(
                     )
                   )
 
-    s = zapi.getGlobalService(zapi.servicenames.Presentation)
-    s.provideView(for_, name, IBrowserRequest, class_, layer)
+    s = zapi.getGlobalService(zapi.servicenames.Adapter)
+    s.register((for_, layer or IBrowserRequest), Interface, name, class_)

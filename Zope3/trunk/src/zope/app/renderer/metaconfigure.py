@@ -45,6 +45,6 @@ def renderer(_context, sourceType, for_, factory):
     _context.action(
         discriminator = ('view', sourceType, u'', for_, 'default'),
         callable = handler,
-        args = (zapi.servicenames.Presentation, 'provideView',
-                sourceType, u'', for_, factory, 'default')
+        args = (zapi.servicenames.Adapter, 'register',
+                (sourceType,), for_, u'', factory, 'default')
         )

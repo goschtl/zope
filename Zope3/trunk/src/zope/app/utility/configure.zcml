@@ -1,7 +1,7 @@
 <configure 
   xmlns="http://namespaces.zope.org/zope">
 
-  <content class=".LocalUtilityService">
+  <localService class=".LocalUtilityService">
     
     <factory id="zope.app.services.UtilityService" />
     
@@ -10,7 +10,7 @@
       attributes="queryRegistrations"
       interface="zope.app.registration.interfaces.IRegistry" />
       
-  </content>
+  </localService>
 
   <content class=".UtilityRegistration">
     
