@@ -8,7 +8,7 @@
       />
   
   <adapter factory="zope.publisher.browser.BrowserLanguages"
-      for="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
       provides="zope.i18n.interfaces.IUserPreferredLanguages" 
       />
   

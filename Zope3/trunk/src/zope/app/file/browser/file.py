@@ -128,6 +128,18 @@ class FileUpload(FileUpdateView):
     >>> sio = StringIO.StringIO("some data")
     >>> sio.filename = 'abc.txt'
 
+    Before we instanciate the request, we need to make sure that the
+    ``IUserPreferredLanguages`` adapter exists, so that the request's
+    locale exists.  This is necessary because the ``update_object``
+    method uses the locale formatter for the status message:
+
+    >>> from zope.app.testing import ztapi
+    >>> from zope.publisher.browser import BrowserLanguages
+    >>> from zope.publisher.interfaces.http import IHTTPRequest
+    >>> from zope.i18n.interfaces import IUserPreferredLanguages
+    >>> ztapi.provideAdapter(IHTTPRequest, IUserPreferredLanguages,
+    ...                      BrowserLanguages)
+
     Let's make sure we can use the uploaded file name if one isn't
     specified by the user, and can use the content type when
     specified.
