@@ -13,23 +13,28 @@
 ##############################################################################
 """A small, secure sandbox application.
 
-$Id: sandbox_security.py,v 1.8 2004/02/16 22:04:18 srichter Exp $
+This module is responsible of securing the sandbox application and run it in a
+secure mode. There are several steps that are taken to set up the security
+
+  1. map permissions to actions
+  
+  2. map authentication tokens/principals onto permissions
+  
+  3. implement checker and security policies that affect 1,2
+  
+  4. bind checkers to classes/instances
+  
+  5. proxy wrap as necessary
+
+$Id: sandbox_security.py,v 1.9 2004/02/20 20:39:07 srichter Exp $
 """
 import sandbox
 from zope.security.interfaces import ISecurityPolicy
 from zope.security import checker, management
 from zope.interface import implements
 
-#################################
-# 1. map permissions to actions
-# 2. map authentication tokens/principals onto permissions
-# 3. implement checker and security policies that affect 1,2
-# 4. bind checkers to classes/instances
-# 5. proxy wrap as nesc.
-#################################
 
-#################################
-# permissions
+# Define all permissions that will be available 
 NotAllowed = 'Not Allowed'
 Public = checker.CheckerPublic
 TransportAgent = 'Transport Agent'
@@ -44,43 +49,40 @@ ALL='All'
 
 NoSetAttr = lambda name: NotAllowed
 
-#################################
-# location -> auth token -> permission mapping
 
 class SimulationSecurityDatabase:
+    """Security Database
 
+    In the database, locations are mapped to authentication tokens to
+    permissions.
+    """
     origin = {
-        'any':[ALL]
+        'any' : [ALL]
         }
 
     jail = {
-        'norse legend':[TransportAgent,
-                         AccessServices,
-                         AccessAgentService,
-                         AccessHomeService,
-                         TransportAgent,
-                         AccessAgents,],
-
-        'any':[AccessTimeService, AddAgent],
-
+        'norse legend' : [TransportAgent, AccessServices, AccessAgentService,
+                          AccessHomeService, TransportAgent, AccessAgents],
+        'any' : [AccessTimeService, AddAgent]
         }
 
     valhalla = {
-        'norse legend':[AddAgent],
-        'any': [AccessServices,
-               AccessTimeService,
-               AccessAgentService,
-               AccessHomeService,
-               TransportAgent,
-               AccessAgents,]
+        'norse legend' : [AddAgent],
+        'any' : [AccessServices, AccessTimeService, AccessAgentService,
+                 AccessHomeService, TransportAgent, AccessAgents]
         }
 
 
 class SimulationSecurityPolicy:
+    """Security Policy during the Simulation.
+
+    A very simple security policy that is specific to the simulations.
+    """
 
     implements(ISecurityPolicy)
 
     def checkPermission(self, permission, object, context):
+        """See zope.security.interfaces.ISecurityPolicy"""
         token = context.user.getAuthenticationToken()
         home = object.getHome()
         db = getattr(SimulationSecurityDatabase, home.getId(), None)
@@ -99,23 +101,24 @@ class SimulationSecurityPolicy:
         return False
 
 
-
 def PermissionMapChecker(permissions_map={}, setattr_permission_func=NoSetAttr):
+    """Create a checker from using the 'permission_map.'"""
     res = {}
-    for k,v in permissions_map.items():
-        for iv in v:
-            res[iv]=k
+    for key, value in permissions_map.items():
+        for method in value:
+            res[method] = key
     return checker.Checker(res.get, setattr_permission_func)
 
 
 #################################
 # sandbox security settings
-sandbox_security = {AccessServices:['getService', 'addService', 'getServiceIds'],
-                    AccessAgents:['getAgentsIds', 'getAgents'],
-                    AddAgent:['addAgent'],
-                    TransportAgent:['transportAgent'],
-                    Public:['getId','getHome']
-                    }
+sandbox_security = {
+    AccessServices : ['getService', 'addService', 'getServiceIds'],
+    AccessAgents : ['getAgentsIds', 'getAgents'],
+    AddAgent : ['addAgent'],
+    TransportAgent : ['transportAgent'],
+    Public : ['getId','getHome']
+    }
 sandbox_checker = PermissionMapChecker(sandbox_security)
 
 #################################
@@ -151,7 +154,7 @@ def wire_security():
             wrapped_home = agentChecker.proxy(self)
             agent.setHome(wrapped_home)
         else:
-            raise sandbox.SandboxError("couldn't add agent %s"%agent)
+            raise sandbox.SandboxError("couldn't add agent %s" %agent)
 
     sandbox.Sandbox.addAgent = addAgent
 

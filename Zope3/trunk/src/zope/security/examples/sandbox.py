@@ -13,88 +13,102 @@
 ##############################################################################
 """A small sandbox application.
 
-$Id: sandbox.py,v 1.5 2004/02/16 22:04:18 srichter Exp $
+$Id: sandbox.py,v 1.6 2004/02/20 20:39:07 srichter Exp $
 """
 import time, whrandom
 
 from zope.interface import Interface, implements
 
 class IAgent(Interface):
+    """A player/agent in the world.
+    
+    The agent represents an autonomous unit, that lives in various
+    homes/sandboxes and accesses services present at the sandboxes. Agents are
+    imbued with a sense of wanderlust and attempt to find new homes after a
+    few turns of the time generator (think turn based games).
     """
-    represents an autonomous unit, that lives in
-    various homes/sandboxes and accesses services
-    present at the sandboxes. agents are imbued with
-    a sense of wanderlust and attempt to find new homes
-    after a few turns of the time generator
-    (think turn based games).
-    """
-
     def action():
-        " agent performs their action "
-    def setHome(self, home):
-        " agent moves from home to home"
+        """Perform agent's action."""
+
+    def setHome(home):
+        """Move to a different home."""
+
     def getHome():
-        " where does this agent live "
-    def getAuthenticationToken(self):
-        " by what authority should the agent perform actions "
+        """Return the place where the agent currently lives."""
+
+    def getAuthenticationToken():
+        """Return the authority by which the agent perform actions."""
+
 
 class IService(Interface):
+    """Marker to designate some form of functionality.
+    
+    Services are available from sandboxes, examples include time service,
+    agent discovery, and sandbox discovery.
     """
-    marker interface. services are available from sandboxes,
-    examples include time service, agent discovery, and sandbox
-    discovery.
-    """
+
 
 class ISandbox(Interface):
-    """
-    a container for agents and services.
-    """
+    """A container for agents to live in and services to be available."""
+
     def getService(service_id):
-        " retrieve a service offered by this sandbox "
+        """Get the service having the provided id in this sandbox."""
+
     def getAgents():
-        " what agents live in this sandbox "
+        """Return a list of agents living in this sandbox."""
+
     def addAgent(agent):
-        " add an agent to this sandbox "
+        """Add a new agent to the sandbox."""
+
     def transportAgent(agent, destination):
-        " move an agent to the destination sandbox "
+        """Move the specified agent to the destination sandbox."""
+
+
+class SandboxError(Exception):
+    """A sandbox error is thrown, if any action could not be performed.""" 
+    pass
+
 
 class Identity:
-    """
-    mixin for pretty printing and identity method
-    """
+    """Mixin for pretty printing and identity method"""
     def __init__(self, id, *args, **kw):
         self.id = id
+
     def getId(self):
         return self.id
+
     def __str__ (self):
         return "<%s> %s"%(str(self.__class__.__name__), str(self.id))
+
     __repr__ = __str__
 
+
 class Agent(Identity):
-    """
-    see IAgent doc
-    """
     implements(IAgent)
 
     def __init__(self, id, home, auth_token, action):
+        """Initialize agent."""
         self.id = id
         self.auth_token = auth_token
         self.home = home
         self._action = action
 
     def action(self):
+        """See IAgent."""
         self._action(self, self.getHome())
 
     def setHome(self, home):
+        """See IAgent."""
         self.home = home
 
     def getHome(self):
+        """See IAgent."""
         return self.home
 
     def getAuthenticationToken(self):
+        """See IAgent."""
         return self.auth_token
 
-class SandboxError(Exception): pass
 
 class Sandbox(Identity):
     """
