@@ -125,7 +125,7 @@ KNOWN_HOSTS_FILE = "%s/cvs-known_hosts" % CVSROOT
 WAIT = 0                                # Fork unless --wait is requested.
 RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
-VERBOSE = 1                             # '--verbose' option
+VERBOSE = 0                             # '--verbose' option
 SYNCREPO = 0                            # '--syncrepo' option
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
@@ -378,6 +378,8 @@ def do_mail(name, remote, repo, addrs, subjs,
         except KeyError: fullname = ''
         if fullname:
             mailcmd = "%s %s" % (MAIL_CMD, MAIL_CMD_FULLNAME_SLOT % fullname)
+    else:
+        user = "<unknown>"
 
     cmd = ("%s%s%s %s %s" % ((VERBOSE and "set -x; ") or "",
                                      (DRYRUN and "echo Would do: ") or "",
