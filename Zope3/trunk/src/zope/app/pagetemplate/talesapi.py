@@ -14,12 +14,13 @@
 """Implementation of the Zope TALES API
 
 
-$Id: talesapi.py,v 1.1 2003/04/15 18:52:57 matth Exp $
+$Id: talesapi.py,v 1.2 2003/05/23 22:18:38 jim Exp $
 """
 
 from zope.app.interfaces.talesapi import IZopeTalesAPI
-from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.component import queryAdapter
+from zope.app.interfaces.dublincore import IDCDescriptiveProperties, IDCTimes
+from zope.app.interfaces.size import ISized
+from zope.app import zapi
 
 class ZopeTalesAPI(object):
 
@@ -29,7 +30,44 @@ class ZopeTalesAPI(object):
         self.context = context
 
     def title(self):
-        a = queryAdapter(self.context, IZopeDublinCore)
+        a = zapi.queryAdapter(self.context, IDCDescriptiveProperties)
         if a is None:
             raise AttributeError, 'title'
         return a.title
+    title = property(title)
+
+    def description(self):
+        a = zapi.queryAdapter(self.context, IDCDescriptiveProperties)
+        if a is None:
+            raise AttributeError, 'description'
+        return a.description
+    description = property(description)
+
+    def created(self):
+        a = zapi.queryAdapter(self.context, IDCTimes)
+        if a is None:
+            raise AttributeError, 'created'
+        return a.created
+    created = property(created)
+
+    def modified(self):
+        a = zapi.queryAdapter(self.context, IDCTimes)
+        if a is None:
+            raise AttributeError, 'modified'
+        return a.modified
+    modified = property(modified)
+
+    def name(self):
+        return zapi.name(self.context)
+
+    def title_or_name(self):
+        return getattr(self, 'title', '') or zapi.name(self.context)
+
+    def size(self):
+        a = zapi.queryAdapter(self.context, ISized)
+        if a is None:
+            raise AttributeError, 'created'
+        return a.sizeForDisplay()
+
+    
+    

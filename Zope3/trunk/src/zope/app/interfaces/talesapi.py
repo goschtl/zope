@@ -13,13 +13,29 @@
 ##############################################################################
 """Interfaces for apis to make available to TALES
 
-$Id: talesapi.py,v 1.2 2003/04/16 08:26:34 matth Exp $
+$Id: talesapi.py,v 1.3 2003/05/23 22:18:38 jim Exp $
 """
+from zope.app.interfaces.dublincore import IDCDescriptiveProperties
+from zope.app.interfaces.dublincore import IDCTimes
 
-from zope.interface import Interface
+class IZopeTalesAPI(IDCDescriptiveProperties, IDCTimes):
 
-class IZopeTalesAPI(Interface):
+    def name():
+        """Return the object's name
 
-    def title():
-        """Return an object title
+        This is the name the object is stored under in the container
+        it was accessed in.
         """
+
+    def title_or_name():
+        """Return the title, if the is one, or the name otherwise
+        """
+
+    def size():
+        """Return a string representing the size of the object
+
+        This string could be a collection of digits or a descriptive
+        string of some sort.  If the size can't be determined
+        (e.g. the object has no size), an empty string is returned.
+        """
+    
