@@ -21,6 +21,7 @@ from utils import getToolByName, _dtmldir
 from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass, DTMLFile, MessageDialog, \
      PersistentMapping
+from ZODB.POSException import ConflictError
 from Acquisition import aq_base
 from AccessControl.User import nobody
 from AccessControl import ClassSecurityInfo
@@ -136,7 +137,8 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
                         self.createMemberarea(portal_user.getId())
 
                 return portal_user
-
+            except ConflictError:
+                raise
             except:
                 from zLOG import LOG, ERROR
                 import sys
