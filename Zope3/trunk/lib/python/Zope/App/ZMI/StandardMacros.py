@@ -15,10 +15,11 @@
 
 The macros are drawn from various different page templates.
 
-$Id: StandardMacros.py,v 1.3 2002/10/28 11:21:13 stevea Exp $
+$Id: StandardMacros.py,v 1.4 2002/12/20 23:00:25 jim Exp $
 """
-from ZMIViewUtility import ZMIViewUtility, IZMIViewUtility
+from Interface import Interface
 from Zope.ComponentArchitecture import getView
+from Zope.Publisher.Browser.BrowserView import BrowserView
 
 class Macros:
 
@@ -38,13 +39,13 @@ class Macros:
         raise KeyError, key
     
 
-class IStandardMacros(IZMIViewUtility):
+class IStandardMacros(Interface):
 
     def __getitem__(key):
         """Return the macro named 'key'"""
 
 
-class StandardMacros(ZMIViewUtility, Macros):
+class StandardMacros(BrowserView, Macros):
 
     __implements__ = IStandardMacros
 

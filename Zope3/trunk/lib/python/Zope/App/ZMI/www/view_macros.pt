@@ -27,16 +27,32 @@
          tal:content="string: ${breadcrumb/name} / "
          >name</a>&nbsp</span>
 
-  <table metal:define-macro="zmi_tabs"><tr>
-    <td tal:repeat="view views/standard_macros/getZMIViews">
+  <table metal:define-macro="zmi_tabs"
+         frame="void" border="1" cellpadding="5"><tr>
+    <td tal:repeat="view context/@@view_get_menu/zmi_views">
     <a href="" tal:attributes="href view/action" tal:content="view/title">
 	label</a>
-    <tal:block condition="not: repeat/view/end">'</tal:block>
     </td>
    </tr></table>
 
   <div metal:define-slot="body">
      <p>Body here</p>
+  </div>
+
+  <div metal:define-macro="actions_menu"
+       tal:define="actions context/@@view_get_menu/zmi_actions"
+       tal:condition="actions"
+       >
+       Actions:
+       <ul>
+          <li tal:repeat="action actions">
+             <a href="." 
+                tal:attributes="href action/action" 
+                tal:content="action/title" 
+                >Do something
+             </a>
+          </li>
+       </ul>
   </div>
 
   <div metal:define-macro="logged_user">

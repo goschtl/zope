@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -12,35 +12,26 @@
 # 
 ##############################################################################
 """
-
-$Id: ZMIViewUtility.py,v 1.5 2002/10/22 19:16:32 stevea Exp $
+$Id: menu.py,v 1.1 2002/12/20 23:00:25 jim Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
+from Zope.App.ZMI.Browser.IMenu import IMenuAccessView
 from Zope.ComponentArchitecture import getService
 
-from Interface import Interface
+class MenuAccessView(BrowserView):
+    __doc__ = IMenuAccessView.__doc__
 
+    __implements__ = BrowserView.__implements__, IMenuAccessView
 
-class IZMIViewUtility(Interface):
-    def getZMIViews():
-        """Get available view information
-
-        Return a sequence of dictionaries with view labels and
-        actions, where actions are relative URLs.
-        """
-
-
-class ZMIViewUtility(BrowserView):
-
-    __implements__ = IZMIViewUtility
-
-    def getZMIViews(self):
-
+    def __getitem__(self, menu_id):
         context = self.context
         request = self.request
         browser_menu_service = getService(context, 'BrowserMenu')
-        return browser_menu_service.getMenu('zmi_views',
+        return browser_menu_service.getMenu(menu_id,
                                             self.context,
                                             self.request)
     
+
+__doc__ = MenuAccessView.__doc__ + __doc__
+

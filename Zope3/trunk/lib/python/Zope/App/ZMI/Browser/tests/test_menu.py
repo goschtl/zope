@@ -13,16 +13,18 @@
 ##############################################################################
 """
 
-$Id: testZMIViewUtility.py,v 1.4 2002/10/28 11:31:58 stevea Exp $
+$Id: test_menu.py,v 1.1 2002/12/20 23:00:26 jim Exp $
 """
 
 import unittest
 from Interface import Interface
 
 from Zope.ComponentArchitecture import getService, getServiceManager
-from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup\
+from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
            import PlacefulSetup
-from Zope.App.ZMI.ZMIViewUtility import ZMIViewUtility
+
+from Zope.App.ZMI.Browser.menu import MenuAccessView
+
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.App.ZopePublication.Traversers import TestTraverser
@@ -88,8 +90,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def test(self):
         newSecurityManager('who')
-        v = ZMIViewUtility(ProxyFactory(ob), Request())
-        self.assertEqual(v.getZMIViews(),
+        v = MenuAccessView(ProxyFactory(ob), Request())
+        self.assertEqual(v['zmi_views'],
                          [{'description': '', 'title':'l1', 'action':'a1'},
                           {'description': '', 'title':'l2', 'action':'a2/a3'},
                           {'description': '', 'title':'l3', 'action':'@@a3'}

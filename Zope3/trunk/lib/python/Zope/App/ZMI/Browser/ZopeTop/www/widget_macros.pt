@@ -97,7 +97,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr tal:repeat="view views/standard_macros/getZMIViews"> 
+      <tr tal:repeat="view context/@@view_get_menu/zmi_views"> 
 	<td colspan="2"> <a href="" 
 	  tal:attributes="href view/action">
 	  <span style="color: #E9A90F; font-size: 15px;
