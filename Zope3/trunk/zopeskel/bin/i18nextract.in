@@ -45,8 +45,8 @@ $Id$
 """
 import os, sys, getopt
 
-SOFTWARE_HOME = "<<SOFTWARE_HOME>>"
-INSTANCE_HOME = "<<INSTANCE_HOME>>"
+SOFTWARE_HOME = r"<<SOFTWARE_HOME>>"
+INSTANCE_HOME = r"<<INSTANCE_HOME>>"
 
 def usage(code, msg=''):
     # Python 2.1 required

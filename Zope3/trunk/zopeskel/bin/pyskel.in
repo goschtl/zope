@@ -29,8 +29,8 @@ $Id: pyskel.py 26446 2004-07-13 16:11:36Z philikon $
 import sys, os, re
 from types import ModuleType
 
-SOFTWARE_HOME = "<<SOFTWARE_HOME>>"
-INSTANCE_HOME = "<<INSTANCE_HOME>>"
+SOFTWARE_HOME = r"<<SOFTWARE_HOME>>"
+INSTANCE_HOME = r"<<INSTANCE_HOME>>"
 
 sys.path.insert(0, os.getcwd())
 
