@@ -1,4 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+<configure
+    xmlns='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 
 <!-- Browser directives for the utility service -->
 
@@ -72,4 +75,4 @@
       fields="name interface componentPath permission status"
       />
 
-</zopeConfigure>
+</configure>

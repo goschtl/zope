@@ -1,6 +1,7 @@
-<zopeConfigure
+<configure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
+   i18n_domain='zope'
    >
 
 <!-- XXX We shouldn't have to repeat the skin definition to set the default -->
@@ -12,4 +13,4 @@
 <include package=".debug" />
 <include package=".onlinehelp" />
 
-</zopeConfigure>
+</configure>

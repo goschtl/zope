@@ -1,4 +1,7 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
 
     <menu id="zmi_views" 
           title="Menu for displaying alternate representations of an object"
@@ -78,4 +81,4 @@
      allowed_interface="zope.app.interfaces.browser.menu.IMenuAccessView"
      />
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+<configure
+    xmlns='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 
 <!-- For services, just treat @@manage as @@index.html by default -->
 
@@ -512,4 +515,4 @@
 <!-- Local Interface Service -->
 <include package=".interface" />
 
-</zopeConfigure>
+</configure>

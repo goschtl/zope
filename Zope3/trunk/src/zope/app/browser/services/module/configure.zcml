@@ -1,4 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+<configure
+    xmlns='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 
 <!-- Persistent Modules -->
 
@@ -27,4 +30,4 @@
       title="Module" 
       />
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,7 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain='zope'
+    >
 
 <page
     for="zope.exceptions.IUnauthorized"
@@ -16,4 +19,4 @@
     class=".user.UserErrorView"
     />
 
-</zopeConfigure>
+</configure>

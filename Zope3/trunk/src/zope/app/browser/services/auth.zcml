@@ -1,4 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+<configure
+    xmlns='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 
 <!-- Authentication Service  -->
 
@@ -50,4 +53,4 @@
     <menuItem title="Edit" action="editForm.html"/>
   </menuItems>
 
-</zopeConfigure>
+</configure>

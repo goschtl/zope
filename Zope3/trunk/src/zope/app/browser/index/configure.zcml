@@ -1,8 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
-
-
+<configure
+    xmlns='http://namespaces.zope.org/browser'>
 
   <include package=".text" />
   <include package=".field" />
  
-</zopeConfigure>
+</configure>

@@ -1,4 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+<configure
+    xmlns='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 <!-- Introspection -->
 
   <!--page
@@ -34,4 +37,4 @@
       class="zope.app.browser.introspector.IntrospectorView"
       />
 
-</zopeConfigure>
+</configure>

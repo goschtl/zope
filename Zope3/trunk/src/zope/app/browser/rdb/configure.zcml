@@ -1,4 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+<configure
+    xmlns='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 
 <!-- ZopeDatabaseAdapter default views -->
 
@@ -66,4 +69,4 @@
       action="zope.app.rdb.gadflyda.GadflyAdapter"
       />
 
-</zopeConfigure>
+</configure>

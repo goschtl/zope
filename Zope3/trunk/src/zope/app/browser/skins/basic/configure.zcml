@@ -1,7 +1,8 @@
-<zopeConfigure
+<configure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
->
+   i18n_domain='zope'
+   >
 
   <browser:skin name="Basic" layers="default" />
   
@@ -44,4 +45,4 @@
 
   <browser:resource name="arrowUp.gif" file="www/arrowup.gif"/>
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,7 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain='zope'
+    >
 
 <menuItem 
     menu="add_service"
@@ -28,4 +31,4 @@
     title="Detail"
     />
 
-</zopeConfigure>
+</configure>

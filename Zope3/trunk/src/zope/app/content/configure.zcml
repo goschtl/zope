@@ -1,8 +1,9 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   xmlns:fssync='http://namespaces.zope.org/fssync'
->
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    xmlns:fssync='http://namespaces.zope.org/fssync'
+    i18n_domain='zope'
+    >
 
 <!-- Simple Folder Directives -->
 
@@ -437,4 +438,4 @@
 
 <!-- Further Directives -->
 
-</zopeConfigure>
+</configure>

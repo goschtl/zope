@@ -1,7 +1,8 @@
-<zopeConfigure
+<configure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
->
+   i18n_domain='zope'
+   >
 
   <!-- Menu entry for "add component" menu -->
   <browser:menuItem
@@ -51,4 +52,4 @@
                   attribute="invalidate" />
   </browser:pages>
 
-</zopeConfigure>
+</configure>

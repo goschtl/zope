@@ -1,4 +1,7 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+<configure
+    xmlns='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 
 <!-- Browser directives for the cache service -->
 
@@ -58,4 +61,4 @@
       fields="name componentPath permission status"
       />
 
-</zopeConfigure>
+</configure>

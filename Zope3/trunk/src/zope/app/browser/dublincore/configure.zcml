@@ -1,6 +1,8 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser">
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain='zope'
+   >
 
   <browser:pages
       for="zope.app.interfaces.annotation.IAnnotatable"
@@ -15,6 +17,6 @@
     <browser:page name="MetaDataBox"
                   template="box.pt" />
 
-    </browser:pages>
+  </browser:pages>
 
-</zopeConfigure>
+</configure>

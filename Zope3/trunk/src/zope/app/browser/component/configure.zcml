@@ -1,7 +1,8 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
->
+   i18n_domain='zope'
+   >
 
 <browser:page 
     class=".interfacewidget.InterfaceWidget"
@@ -30,4 +31,5 @@
     name="display"
     permission='zope.Public'
     />
-</zopeConfigure>
+
+</configure>

@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.3 2003/08/03 02:13:02 philikon Exp $
+$Id: metadirectives.py,v 1.4 2003/08/03 17:49:03 philikon Exp $
 """
 
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
-     Bool, PythonIdentifier
+     Bool, PythonIdentifier, MessageID
 from zope.schema import Text, TextLine, Id
 
 from zope.app.component.metadirectives import IBasicViewInformation
@@ -87,13 +87,13 @@ class ICommonFormInformation(ICommonInformation):
     Common information for browser forms
     """
 
-    title = TextLine(
+    title = MessageID(
         title=u"Title",
         description=u"The browser menu label for the form.",
         required=False
         )
 
-    label = TextLine(
+    label = MessageID(
         title=u"Label",
         description=u"A label to be used as the heading for the form.",
         required=False
@@ -225,7 +225,7 @@ class IEditWizardDirective(ICommonWizardInformation):
     an object based on a schema.
     """
 
-    title = TextLine(
+    title = MessageID(
         title=u"The browser menu label for the edit form",
         description=u"This attribute defaults to 'Edit'.",
         required=False
@@ -236,7 +236,7 @@ class IPaneSubdirective(Interface):
     Define a Pane (page) of the wizard
     """
 
-    label = TextLine(
+    label = MessageID(
         title=u"Label",
         description=u"The label used as the heading on this pane",
         required=False,
@@ -299,7 +299,7 @@ class ISchemaDisplayDirective(ICommonFormInformation):
     displaying an object based on a schema.
     """
 
-    title = TextLine(
+    title = MessageID(
         title=u"The browser menu label for the edit form",
         description=u"This attribute defaults to 'Edit'.",
         required=False

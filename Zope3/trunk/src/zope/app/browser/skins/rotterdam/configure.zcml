@@ -1,7 +1,8 @@
-<zopeConfigure
+<configure
     xmlns='http://namespaces.zope.org/zope'
     xmlns:browser='http://namespaces.zope.org/browser'
->
+    i18n_domain='zope'
+    >
 
 <browser:skin
     name="Rotterdam" layers="rotterdam default" />
@@ -87,5 +88,4 @@
     class="zope.app.browser.skins.rotterdam.editingwidgets.SimpleEditingWidget" 
     />
 
-
-</zopeConfigure>
+</configure>

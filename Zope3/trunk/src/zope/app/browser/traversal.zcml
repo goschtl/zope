@@ -1,5 +1,8 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'
-               xmlns:browser='http://namespaces.zope.org/browser'>
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
 
 <browser:page 
     name="_traverse" 
@@ -63,4 +66,4 @@
     allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
     />
 
-</zopeConfigure>
+</configure>

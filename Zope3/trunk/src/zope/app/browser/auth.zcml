@@ -1,5 +1,7 @@
-<zopeConfigure 
-    xmlns:browser="http://namespaces.zope.org/browser">
+<configure 
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain='zope'
+    >
 
 <browser:page 
     name="login.html"
@@ -19,4 +21,4 @@
     allowed_interface="zope.app.interfaces.publisher.http.ILogout"
     />
 
-</zopeConfigure>
+</configure>

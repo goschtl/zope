@@ -1,7 +1,9 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/zope"
-               xmlns:browser="http://namespaces.zope.org/browser"
-	       xmlns:global_translation="http://namespaces.zope.org/gts"
->
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:global_translation="http://namespaces.zope.org/gts"
+    i18n_domain='zope'
+    >
 
 <global_translation:registerTranslations directory="translation_files"/>
 
@@ -87,15 +89,17 @@
 
 <!-- the Advanced tab of the Catalog -->
 <browser:pages
-  for="zope.app.interfaces.catalog.catalog.ICatalog"
-  class="zope.app.browser.catalog.catalog.CatalogEditView"
-  permission="zope.ManageContent">
+    for="zope.app.interfaces.catalog.catalog.ICatalog"
+    class="zope.app.browser.catalog.catalog.CatalogEditView"
+    permission="zope.ManageContent">
+
   <browser:page name="index.html" template="advanced.pt"
-   menu="zmi_views" title="Advanced"/>
+      menu="zmi_views" title="Advanced"/>
+
   <browser:page name="subscribe.html" attribute="subscribe"/>
   <browser:page name="unsubscribe.html" attribute="unsubscribe"/>
   <browser:page name="clear.html" attribute="clear"/>
   <browser:page name="reindex.html" attribute="reindex"/>
 </browser:pages>
 
-</zopeConfigure>
+</configure>

@@ -1,7 +1,8 @@
-<zopeConfigure
+<configure
     xmlns='http://namespaces.zope.org/zope'
     xmlns:event='http://namespaces.zope.org/event'
     xmlns:fssync='http://namespaces.zope.org/fssync'
+    i18n_domain='zope'
     >
 
 <!-- Registration registries -->
@@ -493,4 +494,4 @@
 <!-- Local Module Support -->
 <include file="module.zcml" />
 
-</zopeConfigure>
+</configure>

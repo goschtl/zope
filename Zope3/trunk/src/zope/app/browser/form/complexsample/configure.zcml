@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    i18n_domain='zope'
+    >
 
 <!-- Sample vocabulary support -->
 
@@ -87,4 +90,4 @@
     factory=".complexsample.FancySampleUniqueListQueryView"
     />
 
-</zopeConfigure>
+</configure>

@@ -1,6 +1,8 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser">
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
 
   <!-- ServerControl View Directives -->
   <browser:pages
@@ -31,4 +33,4 @@
       permission="zope.ManageApplication"
       menu="zmi_views" title="ZODB Control"/>
 
-</zopeConfigure>
+</configure>

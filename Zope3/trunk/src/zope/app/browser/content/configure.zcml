@@ -1,7 +1,8 @@
-<zopeConfigure
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
    xmlns:help="http://namespaces.zope.org/help"
+   i18n_domain='zope'
    >
 
 <!-- File View Directives -->
@@ -429,4 +430,4 @@
       attribute="checkin"
       />
 
-</zopeConfigure>
+</configure>

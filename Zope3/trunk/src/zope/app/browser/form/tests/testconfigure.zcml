@@ -1,7 +1,8 @@
-<zopeConfigure
+<configure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
->
+   i18n_domain='zope'
+   >
 
   <!-- Test view for folders -->
   <browser:pages
@@ -12,4 +13,4 @@
       <browser:page name="testSchemaFormAction.html" attribute="action" />
   </browser:pages>
 
-</zopeConfigure>
+</configure>

@@ -1,4 +1,4 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+<configure xmlns="http://namespaces.zope.org/browser">
 
 <defaultView name="index.html" />
 
@@ -25,4 +25,4 @@
 
 <include package=".exception" />
 
-</zopeConfigure>
+</configure>

@@ -1,5 +1,8 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/browser"
-     xmlns:global_translation="http://namespaces.zope.org/gts">
+<configure
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:global_translation="http://namespaces.zope.org/gts"
+    i18n_domain='zope'
+    >
 
 <!-- Pluggable Authentication Service -->
 
@@ -86,4 +89,4 @@
 
 <!-- Principals -->
 
-</zopeConfigure>
+</configure>

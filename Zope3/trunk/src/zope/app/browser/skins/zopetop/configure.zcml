@@ -1,7 +1,8 @@
-<zopeConfigure
+<configure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:browser='http://namespaces.zope.org/browser'
->
+   i18n_domain='zope'
+   >
 
   <browser:skin name="ZopeTop" layers="templates images css rotterdam default" />
 
@@ -201,4 +202,4 @@
       />
 
 
-</zopeConfigure>
+</configure>
