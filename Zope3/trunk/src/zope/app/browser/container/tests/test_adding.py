@@ -13,17 +13,17 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.10 2003/08/17 06:05:39 philikon Exp $
+$Id: test_adding.py,v 1.11 2003/09/21 17:30:25 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.app import zapi
 from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.browser.container.adding import Adding
-from zope.app.context import ContextWrapper
 from zope.app.event.tests.placelesssetup import getEvents
-from zope.app.interfaces.container import IAdding, IZopeContainer
-from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
+from zope.app.interfaces.container import IAdding
+from zope.app.interfaces.container import IObjectAddedEvent
+from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.exceptions import UserError
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -31,32 +31,29 @@ from zope.component.view import provideView
 from zope.component.factory import provideFactory
 from zope.component.interfaces import IFactory
 from zope.component.exceptions import ComponentLookupError
-from zope.context import getWrapperContainer, getWrapperData
-from zope.context import \
-     getWrapperContainer, getWrapperData, getInnerWrapperData
-from zope.interface import implements, Interface
+from zope.interface import implements, Interface, directlyProvides
 from zope.publisher.browser import TestRequest, BrowserView
 from zope.publisher.interfaces.browser import IBrowserPresentation
+from zope.app.container.contained import contained
+import zope.security.checker
+from zope.exceptions import ForbiddenAttribute
+from zope.app.interfaces.container import IWriteContainer
+from zope.app.interfaces.container import IContainerNamesContainer
 
 class Root:
     implements(IContainmentRoot)
 
 class Container(dict):
-
-    implements(IZopeContainer)
-
-    def setObject(self, name, obj):
-        if name is None:
-            name = 'chosen'
-        self[name] = obj
-        return name
-
+    implements(IWriteContainer)
 
 class CreationView(BrowserView):
 
     def action(self):
         return 'been there, done that'
 
+
+class Content:
+    pass
 
 class Factory:
 
@@ -66,7 +63,7 @@ class Factory:
         return ()
 
     def __call__(self):
-        return 'some_content'
+        return Content()
 
 
 class AbsoluteURL(BrowserView):
@@ -74,7 +71,7 @@ class AbsoluteURL(BrowserView):
     def __str__(self):
         if IContainmentRoot.isImplementedBy(self.context):
             return ''
-        name = getInnerWrapperData(self.context)['name']
+        name = self.context.__name__
         url = str(zapi.getView(
             zapi.getParent(self.context), 'absolute_url', self.request))
         url += '/' + name
@@ -88,8 +85,6 @@ class Test(PlacelessSetup, TestCase):
 
     def test(self):
         container = Container()
-        # ensure container provides IZopeContainer
-        container = ContextWrapper(container, None)
         request = TestRequest()
         adding = Adding(container, request)
         provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
@@ -98,32 +93,12 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(view.action(), 'been there, done that')
         self.assertEqual(adding.contentName, 'foo')
 
-        # Make sure we don't have any events yet:
-        self.failIf(getEvents(IObjectModifiedEvent))
-        self.failIf(getEvents(IObjectAddedEvent))
-
-        o = Container() # any old instance will do
+        o = object()
         result = adding.add(o)
-
-        # Make sure the right events were generated:
-        self.failUnless(
-            getEvents(IObjectAddedEvent,
-                      filter =
-                      lambda event:
-                      event.object == o)
-            )
-        self.failUnless(
-            getEvents(IObjectModifiedEvent,
-                      filter =
-                      lambda event:
-                      event.object == container)
-            )
 
         # Check the state of the container and result
         self.assertEqual(container["foo"], o)
-        self.assertEqual(getWrapperContainer(result), container)
         self.assertEqual(result, o)
-        self.assertEqual(getWrapperData(result)["name"], "foo")
 
     def testNoNameGiven(self):
         container = Container()
@@ -136,11 +111,22 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(adding.contentName, '')
 
     def testAction(self):
-        provideFactory('foo', Factory())
+        # make a private factory
+        provideFactory('fooprivate', Factory())
+
+        factory = Factory()
+        factory.__Security_checker__ = zope.security.checker.NamesChecker(
+            ['__call__'])
+        provideFactory('foo', factory)
+
         container = Container()
         adding = Adding(container, TestRequest())
         adding.nextURL = lambda: '.'
         adding.namesAccepted = lambda: True
+
+        # we can't use a private factory:
+        self.assertRaises(ForbiddenAttribute, 
+                          adding.action, type_name='fooprivate', id='bar')
 
         # typical add - id is provided by user
         adding.action(type_name='foo', id='bar')
@@ -166,18 +152,20 @@ class Test(PlacelessSetup, TestCase):
         # Note: Passing is None as object name might be okay, if the container
         #       is able to hand out ids itself. Let's not require a content
         #       name to be specified!
+        # For the container, (or really, the chooser, to choose, we have to
+        # marke the container as a ContainerNamesContainer
+        directlyProvides(container, IContainerNamesContainer)
         adding.contentName = None
         adding.action(type_name='foo')
-        self.assert_('chosen' in container)
+        self.assert_('Content' in container)
         
 
     def test_action(self):
         container = Container()
-        # ensure container provides IZopeContainer
-        container = ContextWrapper(container, Root(), name="container")
+        container = contained(container, Root(), "container")
         request = TestRequest()
         adding = Adding(container, request)
-        adding = ContextWrapper(adding, container, name="+")
+        adding.__name__ = '+'
         provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
         provideView(Interface, "absolute_url", IBrowserPresentation,
                     AbsoluteURL)

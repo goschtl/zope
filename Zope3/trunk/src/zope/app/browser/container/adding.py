@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.19 2003/09/03 18:33:55 sidnei Exp $
+$Id: adding.py,v 1.20 2003/09/21 17:30:24 jim Exp $
 """
 __metaclass__ = type
 
@@ -26,16 +26,21 @@ from zope.app.interfaces.exceptions import UserError
 
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.container import IContainerNamesContainer
-from zope.app.interfaces.container import IZopeContainer
+from zope.app.interfaces.container import INameChooser
 
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.event import publish
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.interface import implements
+
+from zope.app.location import LocationProxy
+import zope.security.checker
+
+from zope.proxy import removeAllProxies
 
 class BasicAdding(BrowserView):
 
@@ -45,8 +50,20 @@ class BasicAdding(BrowserView):
 
     def add(self, content):
         """See zope.app.interfaces.container.IAdding"""
-        container = zapi.getAdapter(self.context, IZopeContainer)
-        name = container.setObject(self.contentName, content)
+
+        container = self.context
+        name = self.contentName
+        
+        chooser = zapi.getAdapter(container, INameChooser)
+        if IContainerNamesContainer.isImplementedBy(container):
+            # The container pick's it's own names.
+            # We need to ask it to pick one.
+            name = chooser.chooseName(self.contentName or '', content)
+        else:
+            chooser.checkName(name, container)
+
+        container[name] = content
+
         return container[name]
 
     contentName = None # usually set by Adding traverser
@@ -81,13 +98,9 @@ class BasicAdding(BrowserView):
 
         factory = zapi.queryFactory(self.context, name)
         if factory is None:
-            return zapi.ContextSuper(BasicAdding, self).publishTraverse(
-                request, name)
+            return super(BasicAdding, self).publishTraverse(request, name)
 
         return factory
-
-    # See zope.app.interfaces.container.IAdding
-    publishTraverse = zapi.ContextMethod(publishTraverse)
 
     def action(self, type_name='', id=''):
         if not type_name:
@@ -113,14 +126,21 @@ class BasicAdding(BrowserView):
                 raise UserError(_(u"You must specify an id"))
             self.contentName = id
 
-        content = zapi.createObject(self, type_name)
+        factory = zapi.getFactory(self, type_name)
+        factory = LocationProxy(factory, self, type_name)
+        factory = zope.security.checker.ProxyFactory(factory)
+        content = factory()
+
+        # Can't store security proxies.
+        # Note that it is important to do this here, rather than
+        # in add, otherwise, someone might be able to trick add
+        # into unproxying an existing object,
+        content = removeAllProxies(content)
+
         publish(self.context, ObjectCreatedEvent(content))
 
         self.add(content)
         self.request.response.redirect(self.nextURL())
-
-    action = zapi.ContextMethod(action)
-
 
     def namesAccepted(self):
         return not IContainerNamesContainer.isImplementedBy(self.context)
@@ -142,4 +162,3 @@ class Adding(BasicAdding):
                                       wrapped_self.request)
         result.sort(lambda a, b: cmp(a['title'], b['title']))
         return result
-    addingInfo = zapi.ContextMethod(addingInfo)
