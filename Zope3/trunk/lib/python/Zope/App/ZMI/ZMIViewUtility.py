@@ -13,15 +13,11 @@
 ##############################################################################
 """
 
-$Id: ZMIViewUtility.py,v 1.3 2002/06/18 19:34:57 jim Exp $
+$Id: ZMIViewUtility.py,v 1.4 2002/10/22 12:11:12 stevea Exp $
 """
 
-from Zope.ComponentArchitecture.ContextDependent import ContextDependent
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.ComponentArchitecture import getService
-from Zope.App.ZopePublication.PublicationTraverse \
-     import PublicationTraverser
-from Zope.Exceptions import Unauthorized, Forbidden
 
 from Interface import Interface
 
