@@ -254,3 +254,16 @@ class IExtractionAndChallengePlugin(IExtractionPlugin, IChallengePlugin):
 
     This interface exists to make component registration a little bit easier.
     """
+
+class IGroupAdded(zope.interface.Interface):
+
+    group = zope.interface.Attribute("""The group that was defined""")
+    
+class GroupAdded:
+    zope.interface.implements(IGroupAdded)
+
+    def __init__(self, principal):
+        self.principal = principal
+
+    def __repr__(self):
+        return "<GroupAdded %r>" % self.principal.id

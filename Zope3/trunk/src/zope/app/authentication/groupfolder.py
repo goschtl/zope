@@ -22,50 +22,50 @@ try:
 except NameError:
     from sets import Set as set
 
-from BTrees.OOBTree import OOBTree
-from persistent import Persistent
+import BTrees.OOBTree
+import persistent
 
-import zope.interface
+from zope import interface, event, schema
+
 from zope.interface import alsoProvides
-import zope.schema
 
 from zope.security.interfaces import IGroup
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 import zope.app.container.constraints
-from zope.app.container.interfaces import IContained, IContainer
+import zope.app.container.interfaces
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.authentication.interfaces import IAuthenticatedPrincipalCreated
-from zope.app.authentication.interfaces import IPrincipalSearchPlugin
-from zope.app.authentication.interfaces import IQuerySchemaSearch
 import zope.app.security.vocabulary
-        
-class IGroupInformation(zope.interface.Interface):
 
-    title = zope.schema.TextLine(
+from zope.app.authentication import principalplugins, interfaces
+        
+class IGroupInformation(interface.Interface):
+
+    title = schema.TextLine(
         title=_("Title"),
         description=_("Provides a title for the permission."),
         required=True)
 
-    description = zope.schema.Text(
+    description = schema.Text(
         title=_("Description"),
         description=_("Provides a description for the permission."),
         required=False)
 
-    principals = zope.schema.List(
+    principals = schema.List(
         title=_("Principals"),
-        value_type=zope.schema.Choice(
+        value_type=schema.Choice(
             source=zope.app.security.vocabulary.PrincipalSource()),
         description=_(
         "List of principal ids of principals which belong to the group"),
         required=False)
         
-class IGroupFolder(IContainer, IQuerySchemaSearch):
+class IGroupFolder(zope.app.container.interfaces.IContainer,
+                   interfaces.IQuerySchemaSearch):
 
     zope.app.container.constraints.contains(IGroupInformation)
 
-    prefix = zope.schema.TextLine(
+    prefix = schema.TextLine(
         title=u"Group ID prefix",
         description=u"Prefix added to IDs of groups in this folder",
         readonly=True,
@@ -77,14 +77,14 @@ class IGroupFolder(IContainer, IQuerySchemaSearch):
     def getPrincipalsForGroup(groupid):
         """Get principals which belong to the group"""
         
-class IGroupContained(IContained):
+class IGroupContained(zope.app.container.interfaces.IContained):
 
     zope.app.container.constraints.containers(IGroupFolder)
              
 
-class IGroupSearchCriteria(zope.interface.Interface):
+class IGroupSearchCriteria(interface.Interface):
 
-    search = zope.schema.TextLine(
+    search = schema.TextLine(
         title=u"Group Search String",
         required=False,
         missing_value=u'',
@@ -93,20 +93,22 @@ class IGroupSearchCriteria(zope.interface.Interface):
 
 class GroupFolder(BTreeContainer):
 
-    zope.interface.implements(IGroupFolder)
+    interface.implements(IGroupFolder)
     schema = (IGroupSearchCriteria)
     
     def __init__(self, prefix=u''):
         self.prefix=prefix
         super(BTreeContainer,self).__init__()
         # __inversemapping is used to map principals to groups
-        self.__inverseMapping = OOBTree()
+        self.__inverseMapping = BTrees.OOBTree.OOBTree()
 
     def __setitem__(self, name, value):
         BTreeContainer.__setitem__(self, name, value)
         group_id = self._groupid(value)
         for principal_id in value.principals:
             self._addPrincipalToGroup(principal_id, group_id)
+        group = principalplugins.Principal(self.prefix+name)
+        event.notify(interfaces.GroupAdded(group))
 
     def __delitem__(self, name):
         value = self[name]
@@ -186,9 +188,9 @@ def nocycles(principal_id, seen, getPrincipal):
         nocycles(group_id, seen, getPrincipal)
     seen.pop()
 
-class GroupInformation(Persistent):
+class GroupInformation(persistent.Persistent):
 
-    zope.interface.implements(IGroupInformation, IGroupContained)
+    interface.implements(IGroupInformation, IGroupContained)
     
     __parent__ = __name__ = None
 
@@ -233,7 +235,7 @@ def setGroupsForPrincipal(event):
         # If the principal doesn't support groups. then do nothing
         return
     
-    groupfolders = zapi.getUtilitiesFor(IPrincipalSearchPlugin)
+    groupfolders = zapi.getUtilitiesFor(interfaces.IPrincipalSearchPlugin)
     for name, groupfolder in groupfolders:
         # It's annoying that we have to filter here, but there isn't
         # a good reason for people to register group folder utilities.

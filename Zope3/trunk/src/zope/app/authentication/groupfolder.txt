@@ -15,6 +15,13 @@ information.  We create group information using the `GroupInformation` class:
   >>> groups = zope.app.authentication.groupfolder.GroupFolder('group.')
   >>> groups['g1'] = g1
 
+Note that when group-info is added, a GroupAdded event is generated:
+
+  >>> from zope.app.authentication import interfaces
+  >>> from zope.app.event.tests.placelesssetup import getEvents
+  >>> getEvents(interfaces.IGroupAdded)
+  [<GroupAdded 'group.g1'>]
+
 Groups are defined with respect to an authentication service.  Groups
 must be accessible via an authentication service and can contain
 principals accessible via an authentication service.
