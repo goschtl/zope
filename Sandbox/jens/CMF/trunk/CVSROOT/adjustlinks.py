@@ -216,12 +216,12 @@ class LinkManager:
     def all_containers(self, path,
                        exists=os.path.exists, ST_INO=stat.ST_INO):
         """Given a repo-relative path, return *all* the repository paths that
-        contain it - both direct containers, and containers by virtue of
-        symlinks in the repolinks map.
+        contain it - direct containers *and* directories that container it by
+        virtue of symlinks in the repolinks map.
 
-        Used to identify all the checkin-notification subscriber entries that
-        qualify for a particular file, not just the direct containers of the
-        file.
+        This is used in postcommit_actions to identify all the
+        checkin-notification subscriber entries that qualify for a particular
+        file, not just the containers obvious from the checkin path.
 
         We expect a path relative to the repository root, and return paths
         relative to the repository root."""
@@ -235,8 +235,10 @@ class LinkManager:
             path = path[len(os.sep):]
         path = os.path.join(REPO_ROOT, path)
 
-        element_inodes = path_element_inodes(path)
+        actual_path, element_inodes = path_element_inodes(path)
         if element_inodes:
+            # Include actual path - it may be different than specified one.
+            got[actual_path[len(REPO_ROOT)+1:]] = 1
             for link, target, lineno in self._recipe_lines:
                 if (exists(target)
                     and (os.stat(target)[ST_INO] in element_inodes)):
@@ -249,6 +251,7 @@ def path_element_inodes(path, split=os.path.split,
                         stat=os.stat, ST_INO=stat.ST_INO):
     """Return inodes of directory elements leading to path's physical location.
     We return the empty list if path doesn't actually exist."""
+    actual_path = None
     got = []
     if (os.path.exists(path) or os.path.exists(split(path)[0])):
         origdir = os.getcwd()
@@ -258,14 +261,14 @@ def path_element_inodes(path, split=os.path.split,
             else:
                 os.chdir(split(path)[0])
 
-            here = os.getcwd()
+            here = actual_path = os.getcwd()
             while here and (here != '/'):
                 got.insert(0, stat(here)[ST_INO])
                 here = split(here)[0]
 
         finally:
             os.chdir(origdir)
-    return got
+    return (actual_path, got)
     
 
 def find_fs_links(dir,
