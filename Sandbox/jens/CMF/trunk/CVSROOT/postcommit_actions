@@ -107,11 +107,12 @@ def find_entries(repo):
 
 def do_mail(name, repo, addrs, subjs):
     """Send notice about checkin to addresses dictated by traffic table."""
-    fnames = string.join(map(lambda x: x[0], subjs), ",")
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, fnames)
     # The message contents are on stdin, just _yearning_ to be sent...-)
-    subject = "CVS checkin: %s %s" % (repo, fnames)
+    subject = "CVS checkin: %s -"
+    for nm, old, new in subjs:
+        subject = subject + " %s:%s" % (nm, new)
     os.system("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
                                         (DRYRUN and "echo ") or "",
                                         MAIL_CMD,
@@ -162,7 +163,7 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
                  (DRYRUN and "echo ") or "",
                  cmd,
                  os.environ["CVSROOT"], repo,
-                 remote['host'], repodir)
+                 remote['host'], repodir))
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
