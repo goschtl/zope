@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.3 2002/12/31 03:35:15 jim Exp $
+$Id: test_checker.py,v 1.4 2003/03/07 18:39:44 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,7 +25,7 @@ from zope.exceptions import Forbidden, Unauthorized
 from zope.security.management import setSecurityPolicy
 from zope.security.proxy import getChecker, getObject
 from zope.security.checker import defineChecker
-import types
+import types, pickle
 
 class SecurityPolicy:
 
@@ -289,9 +289,18 @@ class Test(TestCase, CleanUp):
             self.assertRaises(Forbidden, checker.check_setattr, inst, 'z')
 
 
+class TestCheckerPublic(TestCase):
+
+    def test_that_pickling_retains_identity(self):
+        self.assert_(pickle.loads(pickle.dumps(CheckerPublic))
+                     is
+                     CheckerPublic)                                  
 
 def test_suite():
-    return makeSuite(Test)
+    return TestSuite((
+        makeSuite(Test),
+        makeSuite(TestCheckerPublic),
+        ))
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

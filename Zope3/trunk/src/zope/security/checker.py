@@ -16,7 +16,20 @@ else:
 
 
 # Marker for public attributes
-CheckerPublic = object()
+
+class Global(object):
+
+    def __init__(self, name, module=None):
+        if module is None:
+            module = sys._getframe(1).f_locals['__name__']
+            
+        self.__name__ = name
+        self.__module__ = module
+
+    def __reduce__(self):
+        return self.__name__
+
+CheckerPublic = Global('CheckerPublic')
 
 def ProxyFactory(object, checker=None):
     """Factory function that creates a proxy for an object
