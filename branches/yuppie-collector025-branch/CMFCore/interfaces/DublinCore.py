@@ -99,7 +99,7 @@ class DublinCore(Interface):
     def Contributors():
         """ Deprecated alias of listContributors.
 
-        'initial caps' names are reserved for strings. 
+        'initial caps' names are reserved for strings.
         """
 
     def Date():
