@@ -12,8 +12,8 @@
     />
 
   <browser:page
-    for="zope.textindex.textindexinterfaces.IStatistics"
-    name="index.html" 
+    for="zope.app.interfaces.index.text.IUITextIndex"
+    name="index.html"
     menu="zmi_views"
     title="Control"
     permission="zope.ManageServices"
