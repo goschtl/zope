@@ -42,7 +42,7 @@ class TALESTests(unittest.TestCase):
         for c in 'text':
             context._assert_('setLocal', 'text', c)
         for c in 'text':
-            assert it.next(), "Multi-element iterator"
+            self.assert_(it.next(), "Multi-element iterator")
         self.assert_( not it.next(), "Multi-element iterator")
         context._complete_()
 
@@ -136,7 +136,8 @@ class Harness:
         self._callstack.append((name, args, kwargs))
 
     def _complete_(self):
-        assert len(self._callstack) == 0, "Harness methods called"
+        self._testcase.assert_(len(self._callstack) == 0,
+                               "Harness methods called")
 
     def __getattr__(self, name):
         return HarnessMethod(self, name)
