@@ -1,5 +1,4 @@
-<configure xmlns='http://namespaces.zope.org/zope'
-               xmlns:tales='http://namespaces.zope.org/tales'>
+<configure xmlns="http://namespaces.zope.org/zope">
 
   <content class=".viewpagetemplatefile.BoundPageTemplate">
     <allow attributes="__call__ __str__ __name__" />
