@@ -17,9 +17,9 @@ $Id: ftests.py 25177 2004-06-02 13:17:31Z jim $
 """
 import unittest
 from zope.publisher.interfaces import NotFound
-from zope.app.tests.functional import BrowserTestCase
+from zope.app.tests import functional
 
-class TestNotFound(BrowserTestCase):
+class TestNotFound(functional.BrowserTestCase):
 
     def testNotFound(self):
         response = self.publish('/foobar', basic='mgr:mgrpw',
@@ -32,6 +32,7 @@ class TestNotFound(BrowserTestCase):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestNotFound),
+        functional.FunctionalDocFileSuite('systemerror.txt'),
         ))
 
 if __name__ == '__main__':
