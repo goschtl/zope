@@ -14,23 +14,34 @@
 ##############################################################################
 """
 
-$Id: makezcmldocs.py,v 1.5 2002/12/25 14:15:36 jim Exp $
+$Id: makezcmldocs.py,v 1.6 2002/12/27 23:31:06 jim Exp $
 """
 
 from types import UnicodeType, FunctionType, TypeType, ClassType
-import os, sys
-try: from textwrap import TextWrapper
-except:
-    class TextWrapper:
-        def __init__(self,initial_indent='',**kw):
-            self.initial_indent = initial_indent
-        def fill(self,txt):
-            t = txt.split()
-            i = 0; res = []
-            while i*10 <= len(t):
-                res.append(self.initial_indent+' '.join(t[i*10:(i+1)*10]))
-                i += 1
-            return '\n'.join(res)
+import os, sys, re
+spaces = re.compile(' *')
+
+def format(text, initial):
+    lines = [line.rstrip().expandtabs()
+             for line in text.rstrip().split('\n')]
+
+    # Remove leading blank lines
+    while lines and not lines[0]:
+        lines.pop(0)
+
+    # Get minimum indentation
+    indent = len(text)
+    for line in lines:
+        # skip blank lines
+        if not line:
+            continue
+        indent = min(indent, len(spaces.match(line).group()))
+
+    # Now, normalize, by removing the minimum indentation
+    lines = [(initial + line[indent:])
+             for line in lines]
+
+    return '\n'.join(lines)
 
 # Get Zope3 stuff in the pythonpath.  Note that we use 'here' later as well.
 basepath = filter(None, sys.path)
@@ -48,10 +59,8 @@ from zope.configuration.metametaconfigurefordocgen import _metadataKey
 
 # Some additional useful names.
 treeroot = os.path.join(root,'doc','zcml.new')   #Where we put the docs.
-wrapper = TextWrapper(width=75, replace_whitespace=False)
-paragraph = wrapper.fill
 
-def handlerData(handler,metadata):
+def handlerData(handler, metadata):
     """Normalize information about the handler for a directive
 
     Returns a tuple of a path and a description.  The path is an
@@ -87,36 +96,52 @@ def handlerData(handler,metadata):
 # going on here.
 def printdirective(outfile, name, handler, registry, level=0):
     global curpath
-    if level>10: return
-    wrapper.initial_indent = wrapper.subsequent_indent = ' '*level
+    if level>10:
+        return
+    
     fileshortname = outfile.name[len(treeroot)+1:-4]
     ns, name = name
     md = registry[_metadataKey]
     path, handlerstring = handlerData(handler,md)
-    if path: curpath = path
+    if path:
+        curpath = path
     outfile.write("%s%s (%s)\n\n" % (' '*level, name, handlerstring))
-    wrapper.initial_indent = wrapper.subsequent_indent = ' '*(level+2)
+
+    initial = ' '*(level+2)
+    initial4 = ' '*(level+4)
+    initial6 = ' '*(level+6)
+
     description = md.get('description','')
-    if description: outfile.write(paragraph(description)+'\n\n')
-    else: sys.stderr.write("%s in %s has no description\n" % (name, curpath))
-    wrapper.subsequent_indent = ' '*(level+4)
+    if description:
+        outfile.write(format(description, initial)+'\n\n')
+    else:
+        sys.stderr.write("%s in %s has no description\n" % (name, curpath))
+
+    outfile.write(initial+'Attributes\n\n')
+
     for attr in md['attributes']:
         amd = md['attributes'][attr]
         description = amd.get('description','')
-        if not description: sys.stderr.write(("%s in %s has no description " +
-            "for the %s attribute\n") % (name, curpath, attr))
+        if 0 and not description:
+            sys.stderr.write(("%s in %s has no description " +
+                              "for the %s attribute\n") %
+                             (name, curpath, attr))
         required = amd.get('required')
         required = (required=='yes' and '(required) ' or required=='no' and
             '(optional) ' or '')
-        outfile.write(paragraph("%s -- %s%s" % (attr,required,
-            description))+'\n\n')
+
+        outfile.write(initial4)
+        outfile.write(
+            "%s -- %s\n\n%s\n\n"
+            % (attr,required, format(description, initial6)))
+
     if (level<9 and len(registry)>1 or len(registry)==1 and not
             registry.keys()==[_metadataKey]):
-        outfile.write(' '*level+'Subdirectives\n\n')
+        outfile.write(initial+'Subdirectives\n\n')
     for subdir in registry:
         if subdir==_metadataKey: continue
         subs, handler = registry[subdir]
-        printdirective(outfile, subdir, handler, subs, level+2)
+        printdirective(outfile, subdir, handler, subs, level+4)
 
 
 def run(argv=sys.argv):
@@ -125,12 +150,14 @@ def run(argv=sys.argv):
     config(os.path.join(here, 'makezcmldocs.zcml'))
 
     # Build the meta docs from the contents of the directive registry.
-    if not os.path.exists(treeroot): os.mkdir(treeroot)
+    if not os.path.exists(treeroot):
+        os.mkdir(treeroot)
     for directive in _directives:
         ns, name = directive
         ns = ns[7:]
         nspath = os.path.join(treeroot,ns)
-        if not os.path.exists(nspath): os.makedirs(nspath)
+        if not os.path.exists(nspath):
+            os.makedirs(nspath)
         filepath = os.path.join(nspath,'%s.stx' % name)
         dirfile = open(filepath,'w')
         callable, subs = _directives[directive]
