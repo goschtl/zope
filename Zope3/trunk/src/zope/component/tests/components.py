@@ -13,12 +13,35 @@
 ##############################################################################
 """
 
-$Id: components.py,v 1.2 2002/12/25 14:13:32 jim Exp $
+$Id: components.py,v 1.3 2003/01/27 17:32:10 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
 from zope.interface import Interface
 from zope.interface import Attribute
+
+class RecordingAdapter:
+
+    def __init__(self):
+        self.record = []
+
+    def __call__(self, context):
+        # Note that this sets the context rather than appending to the record
+        # so as not to assume things about adapters being cached, if this
+        # happens in the future.
+        self.context = context
+        return self
+
+    def check(self, *args):
+        record = self.record
+        if len(args) != len(record):
+            raise AssertionError('wrong number of entries in record',
+                                 args, record)
+        for arg, entry in zip(args, record):
+            if arg != entry:
+                raise AssertionError('record entry does not match',
+                                     args, record)
+
 
 class IApp(Interface):
     a = Attribute('test attribute')
