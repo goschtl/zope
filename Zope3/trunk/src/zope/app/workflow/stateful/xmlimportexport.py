@@ -171,13 +171,14 @@ class XMLExportHandler(object):
         return IZopeDublinCore(obj)
 
     def getPermissionId(self, permission):
-        if isinstance(permission, str):
+        if isinstance(permission, str) or isinstance(permission, unicode):
             return permission
         if permission is CheckerPublic:
             return 'zope.Public'
         if permission is None:
             return ''
-        return removeAllProxies(permission)
+        permission = removeAllProxies(permission)
+        return permission.id
 
     def getSchemaPermissions(self):
         info = []
@@ -192,7 +193,7 @@ class XMLExportHandler(object):
         return info
 
     def relevantDataSchema(self):
-        schema = self.context.relevantDataSchema
+        schema = removeAllProxies(self.context.relevantDataSchema)
         if schema is None:
             return 'None'
         return schema.__module__ + '.' + schema.getName()
