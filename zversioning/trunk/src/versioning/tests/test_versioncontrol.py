@@ -32,7 +32,7 @@ from zope.testing import doctest
 
 from zope.app.tests.setup import buildSampleFolderTree
 
-def buildSite(items=None) :
+def setUpOldStyleVersionControl() :
     """ Returns s small test site of original content objects:
     
         >>> folders = buildSampleFolderTree()

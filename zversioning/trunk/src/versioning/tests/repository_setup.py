@@ -7,26 +7,48 @@ import zope.app.annotation.attribute
 import zope.app.annotation.interfaces
 import zope.app.traversing.interfaces
 from zope.app.versioncontrol import interfaces
+from zope.app.tests import ztapi
+
+from zope.interface import classImplements
+
+from zope.app.traversing.interfaces import ITraversable, ITraverser
+from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.app.traversing.interfaces import IContainmentRoot
+from zope.app.traversing.adapters import DefaultTraversable
+from zope.app.location.traversing import LocationPhysicallyLocatable
+from zope.app.traversing.adapters import RootPhysicallyLocatable
+from zope.app.traversing.adapters import Traverser
+
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.app.container.interfaces import IContainer
+from zope.app.file.interfaces import IFile
+from zope.app.file.file import File
+from zope.app.folder.folder import Folder
+
+
+def registerAdapter() :
+    """ Register some common adapter. """ 
+
+    classImplements(File, IAttributeAnnotatable)
+    classImplements(Folder, IAttributeAnnotatable)
+
+    ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations, AttributeAnnotations)
+    ztapi.provideAdapter(None, ITraverser, Traverser)
+    ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
+    ztapi.provideAdapter(None, IPhysicallyLocatable, LocationPhysicallyLocatable)
+    ztapi.provideAdapter(IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
+    ztapi.provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
+
+
 
 def buildDatabaseRoot():
     """Opens a connection to a test database and returns the root object
     """
-    from zope.app.tests import ztapi
-    ztapi.provideAdapter(zope.app.annotation.interfaces.IAttributeAnnotatable,
-                         zope.app.annotation.interfaces.IAnnotations,
-                         zope.app.annotation.attribute.AttributeAnnotations,
-    ztapi.provideAdapter(zope.app.traversing.interfaces.IPhysicallyLocatable,
-                         zope.app.location.interfaces.ILocation,
-                         zope.app.location.traversing.LocationPhysicallyLocatable)
-
-  <adapter 
-      for="zope.app.location.interfaces.ILocation"
-      provides="zope.app.traversing.interfaces.IPhysicallyLocatable"
-      factory="zope.app.location.traversing.LocationPhysicallyLocatable" 
-      />
-
-
-
+     
     # Now we need to create a database with an instance of our sample object 
     # to work with:
     
@@ -75,3 +97,5 @@ def buildOldStyleRepository():
     zope.security.management.newInteraction(participation)
 
     return repository
+
+
