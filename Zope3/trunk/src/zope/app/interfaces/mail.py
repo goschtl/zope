@@ -15,10 +15,11 @@
 
 Interfaces relevant for the MailService
 
-$Id: mail.py,v 1.1 2003/04/16 13:45:43 srichter Exp $
+$Id: mail.py,v 1.2 2003/04/17 17:45:45 bwarsaw Exp $
 """
+
 from zope.interface import Interface, Attribute
-import zope.schema 
+import zope.schema
 
 from zope.app.interfaces.event import IEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -27,7 +28,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 class IMailService(Interface):
     """A mail service allows someone to send an email to a group of people.
 
-    Note: This interface is purposfully held very simple, so that it is easy
+    Note: This interface is purposefully held very simple, so that it is easy
     to provide a basic mail service implementation.
     """
 
@@ -43,7 +44,7 @@ class IMailService(Interface):
     username = zope.schema.TextLine(
         title=_(u"Username"),
         description=_(u"Username used for optional SMTP authentication."))
-    
+
     password = zope.schema.Password(
         title=_(u"Password"),
         description=_(u"Password used for optional SMTP authentication."))
@@ -54,13 +55,14 @@ class IMailService(Interface):
         """
 
 
-# XXX: Needs better name: AsyncMailService, MailerMailService, ... 
+# XXX: Needs better name: AsyncMailService, MailerMailService, ...
 class IAsyncMailService(IMailService):
     """This mail service handles mail delivery using so called Mailer objects.
 
-    The policies for sending the mail are encoded in the Mailer object. Also,
+    The policies for sending the mail are encoded in the Mailer object.  Also,
     it is recommended that the mailer is called in a different thread, so that
-    the request is not blocked."""
+    the request is not blocked.
+    """
 
     def createMailer(name):
         """Create a Mailer object which class was registered under the passed
@@ -70,12 +72,13 @@ class IAsyncMailService(IMailService):
         """Return a list of the names of all registered mailers."""
 
     def getDefaultMailerName():
-        """Return the name of the default Mailer. None, means there is no
-        defaulter mailer class defined."""
+        """Return the name of the default Mailer.  None, means there is no
+        default mailer class defined.
+        """
 
     def send(fromaddr, toaddrs, message, mailer=None):
         """This interface extends the send method by an optional mailer
-        attribute. If the mailer is None, an object from the default mailer
+        attribute.  If the mailer is None, an object from the default mailer
         class is created and used.
         """
 
@@ -84,16 +87,19 @@ class IMailer(Interface):
     """This is a generic Mailer interface.
 
     Mailers implement mailing policies, such as batching, scheduling and so
-    on."""
+    on.
+    """
 
     def send(fromaddr, toaddrs, message, hostname, port, username, password):
-        """Send a set of messages. How and when the mailer is going to send
-        out the mail is purely up to the mailer's policy."""
+        """Send a message.  How and when the mailer is going to send
+        out the mail is purely up to the mailer's policy.
+        """
 
 
 class IBatchMailer(IMailer):
-    """The Batch Mailer allows to send E-mails in batches, so that the server
-    loaad will not be too high."""
+    """The Batch Mailer allows for sending emails in batches, so that the
+    server load will not be too high.
+    """
 
     batchSize = zope.schema.Int(
         title=_(u"Batch Size"),
@@ -108,16 +114,18 @@ class IBatchMailer(IMailer):
 
 class IScheduleMailer(IMailer):
     """This mailer allows you to specify a specific date/time to send the
-    mails."""
-    
+    mails.
+    """
+
     sendAt = zope.schema.Datetime(
         title=_(u"Send at"),
         description=_(u"Date/time the message should be send."))
 
 
 class IMailEvent(IEvent):
-    """Generic Mailer event that can be snet from the mailer or the mail
-    service."""
+    """Generic Mailer event that can be sent from the mailer or the mail
+    service.
+    """
 
     mailer = Attribute("Mailer object that is used to send the mail.")
 
@@ -126,4 +134,5 @@ class IMailSentEvent(IMailEvent):
     """Event that is fired when all the mail in the mailer was sent.
 
     Note: Subscribing to this event eliminates the need for implementing
-    callback functions for the async delivery."""
+    callback functions for the asynchronous delivery.
+    """
