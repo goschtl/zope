@@ -10,6 +10,17 @@ Zope Changes
 
     New features
 
+    - Implemented Tools
+
+      o Implement the tool ZCML directive. 
+
+      o Register utility interface as 'IToolType'.
+
+      o Implement tools overview. 
+
+    - Write generic get/queryType(object, type) that returns the interface of
+      the 'object' that provides 'type'.
+      
     - Implemented Permission Redefinition portion of ZCMLEnhancements.
 
     - Implemented http://dev.zope.org/Zope3/MinimalDefaultViewDirectives

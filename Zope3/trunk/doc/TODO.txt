@@ -55,17 +55,6 @@ Things to do for the next release (in no particular order)
 
   http://dev.zope.org/Zope3/TheBrowserToolDirective
 
-  o Write generic get/queryType(object, type) that returns the interface of
-    the 'object' that provides 'type'. (done)
-
-    Get rid of queryContentType(object). (not happening)
-
-  o Implement the tool ZCML directive. 
-
-    Register utility interface as 'IToolType'.
-
-  o Implement tools overview. 
-
   o Implement tool management screen. We need an overview, add, delete,
     rename.
 
