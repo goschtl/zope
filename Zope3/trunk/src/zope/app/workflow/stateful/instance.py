@@ -13,27 +13,27 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.17 2004/02/27 16:50:40 philikon Exp $
+$Id: instance.py,v 1.18 2004/04/15 22:11:34 srichter Exp $
 """
-__metaclass__ = type
-
 from persistent import Persistent
 from persistent.dict import PersistentDict
 
 from zope.app import zapi
 from zope.app.event import publish
+from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces.stateful import AUTOMATIC
 from zope.app.workflow.interfaces.stateful import IAfterTransitionEvent
 from zope.app.workflow.interfaces.stateful import IBeforeTransitionEvent
 from zope.app.workflow.interfaces.stateful import IRelevantDataChangeEvent
 from zope.app.workflow.interfaces.stateful import IStatefulProcessInstance
 from zope.app.workflow.interfaces.stateful import ITransitionEvent
-from zope.app.workflow.interfaces.stateful import \
-     IBeforeRelevantDataChangeEvent, IAfterRelevantDataChangeEvent
+from zope.app.workflow.interfaces.stateful import IBeforeRelevantDataChangeEvent
+from zope.app.workflow.interfaces.stateful import IAfterRelevantDataChangeEvent
+from zope.app.servicenames import Utilities
 from zope.app.traversing import getParent
 from zope.app.workflow.instance import ProcessInstance
-from zope.component import getService, getServiceManager
 from zope.app.container.contained import Contained
+
 from zope.exceptions import Unauthorized
 from zope.interface import directlyProvides, implements
 from zope.proxy import removeAllProxies
@@ -44,7 +44,7 @@ from zope.security.proxy import Proxy
 from zope.tales.engine import Engine
 
 
-class TransitionEvent:
+class TransitionEvent(object):
     """A simple implementation of the transition event."""
     implements(ITransitionEvent)
 
@@ -60,7 +60,7 @@ class AfterTransitionEvent(TransitionEvent):
     implements(IAfterTransitionEvent)
 
 
-class RelevantDataChangeEvent:
+class RelevantDataChangeEvent(object):
     """A simple implementation of the transition event."""
     implements(IRelevantDataChangeEvent)
 
@@ -142,7 +142,7 @@ class RelevantData(Persistent, Contained):
         return self.__schema
 
 
-class StateChangeInfo:
+class StateChangeInfo(object):
     """Immutable StateChangeInfo."""
 
     def __init__(self, transition):
@@ -216,8 +216,8 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
 
     def getProcessDefinition(self):
         """Get the ProcessDefinition object from WorkflowService."""
-        svc =  getService(self, "Workflows")
-        return svc.getProcessDefinition(self.processDefinitionName)
+        utils = zapi.getService(self, Utilities)
+        return utils.getUtility(IProcessDefinition, self.processDefinitionName)
 
     # XXX this is not entirely tested
     def _getContext(self):
@@ -268,7 +268,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if not script:
             return True
         if isinstance(script, (str, unicode)):
-            sm = getServiceManager(self)
+            sm = zapi.getServiceManager(self)
             script = sm.resolve(script)
         return script(contexts)
 
