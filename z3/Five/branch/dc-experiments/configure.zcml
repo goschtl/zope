@@ -12,7 +12,7 @@
   <!-- do 'traditional' traversing by default; needed by ZPT -->
   <adapter
       for="*"
-      factory="zope.app.traversing.adapters.DefaultTraversable"
+      factory=".traversable.FiveTraversable"
       provides="zope.app.traversing.interfaces.ITraversable" />
 
   <adapter
