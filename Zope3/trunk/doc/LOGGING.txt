@@ -6,6 +6,9 @@ Zope 3 Logging
 
  Configuring the logging package for z3.py
 
+  XXX This is out of date; see zope.conf.in for an example of the
+  current way of configuring logging.
+
   The log file used by z3.py can be configured in the zserver.zcml
   file with this directive::
 
