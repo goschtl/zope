@@ -169,14 +169,6 @@
 <!-- PageFolder --> 
   <zope:include file="pagefolder.zcml" />
 
-<!-- Session service -->
-
-  <menuItem
-     menu="add_service"
-     for="zope.app.interfaces.container.IAdding"
-     action="ISessionService" title="Cookie Session Service"
-     description="Simplistic session support using cookies" />
-
 <!-- Principal annotations (user data) service -->
 
   <addMenuItem

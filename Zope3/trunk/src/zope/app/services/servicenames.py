@@ -14,7 +14,7 @@
 """
 Default service names
 
-$Id: servicenames.py,v 1.14 2004/02/08 03:46:20 anthony Exp $
+$Id: servicenames.py,v 1.15 2004/02/09 05:16:29 Zen Exp $
 """
 
 from zope.component.servicenames import *

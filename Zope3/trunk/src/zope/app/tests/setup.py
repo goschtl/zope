@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.9 2004/02/02 20:48:01 sidnei Exp $
+$Id: setup.py,v 1.10 2004/02/09 05:16:31 Zen Exp $
 """
 
 import zope.component
@@ -159,9 +159,10 @@ def addUtility(servicemanager, name, iface, utility, suffix=''):
 
     This utility is useful for tests that need to set up utilities.
     """
+    folder_name = name + suffix
     default = zapi.traverse(servicemanager, 'default')
-    default[name+suffix] = utility
-    path = "%s/default/%s" % (zapi.getPath(servicemanager), name+suffix)
+    default[folder_name] = utility
+    path = "%s/default/%s" % (zapi.getPath(servicemanager), folder_name)
     registration = UtilityRegistration(name, iface, path)
     key = default.getRegistrationManager().addRegistration(registration)
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
@@ -172,8 +173,11 @@ from zope.app.interfaces.services.hub import IObjectHub
 from zope.app.interfaces.services.event import ISubscriptionService
 from zope.app.services.event import EventService
 from zope.app.services.hub import ObjectHub
+from zope.app.interfaces.services.utility import ILocalUtilityService
+from zope.app.services.utility import LocalUtilityService
 from zope.app.services.servicenames import HubIds
 from zope.app.services.servicenames import EventPublication, EventSubscription
+from zope.app.services.servicenames import Utilities
 def createStandardServices(folder, hubids=None):
     '''Create a bunch of standard placeful services
 
@@ -199,3 +203,7 @@ def createStandardServices(folder, hubids=None):
         hubids = ObjectHub()
 
     addService(sm, HubIds, hubids)
+
+    # Utilities service
+    defineService(LocalUtilityService, ILocalUtilityService)
+    addService(sm, Utilities, LocalUtilityService())

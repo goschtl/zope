@@ -1,4 +1,40 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- Session machinery -->
+
+  <content class=".session.CookieBrowserIdManager">
+    <implements
+      interface="zope.app.interfaces.services.utility.ILocalUtility" />
+    <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+    <require
+      interface="zope.app.interfaces.utilities.session.ICookieBrowserIdManager"
+      permission="zope.Public" />
+    <require
+      set_schema="zope.app.interfaces.utilities.session.ICookieBrowserIdManager"
+      permission="zope.ManageContent" />
+  </content>
+
+  <content class=".session.SessionData">
+    <allow interface="zope.app.interfaces.utilities.session.IFullMapping" />
+  </content>
+
+  <content class=".session.PersistentSessionDataContainer">
+    <implements
+      interface="zope.app.interfaces.utilities.session.ISessionDataContainer"/>
+    <implements
+      interface="zope.app.interfaces.services.utility.ILocalUtility" />
+    <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+    <require
+      interface="zope.app.interfaces.utilities.session.ISessionDataContainer"
+      permission="zope.Public" />
+    <require
+      set_schema="zope.app.interfaces.utilities.session.ISessionDataContainer"
+      permission="zope.ManageContent" />
+  </content>
 
 <!-- Mutable Schema -->
 

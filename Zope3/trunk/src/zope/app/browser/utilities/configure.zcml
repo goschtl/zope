@@ -2,6 +2,43 @@
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
+<!-- Cookie Browser Id Manager -->
+
+  <addMenuItem
+    title="Cookie Browser Id Manager"
+    class="zope.app.utilities.session.CookieBrowserIdManager"
+    permission="zope.ManageContent" />
+
+  <!-- XXX: We want an add form, but namespace needs to default to a unique 
+    cookie name
+  <addform
+    schema="zope.app.interfaces.utilities.session.ICookieBrowserIdManager"
+    label="Add a Cookie Browser ID Manager"
+    content_factory="zope.app.utilities.session.CookieBrowserIdManager"
+    name="zope.app.interfaces.utilities.session" 
+    permission="zope.ManageContent" />
+  -->
+
+  <editform
+    schema="zope.app.interfaces.utilities.session.ICookieBrowserIdManager"
+    label="Cookie Browser ID Manager Properties"
+    name="edit.html" menu="zmi_views" title="Edit"
+    permission="zope.ManageContent" />
+
+<!-- PersistentSessionDataContainer -->
+
+  <addMenuItem
+    title="Persistent Session Data Container"
+    class="zope.app.utilities.session.PersistentSessionDataContainer"
+    permission="zope.ManageContent" />
+
+  <editform
+    schema="zope.app.interfaces.utilities.session.ISessionDataContainer"
+    label="Persistent Session Data Container Properties"
+    name="edit.html" menu="zmi_views" title="Edit"
+    permission="zope.ManageContent" />
+
+
 <!-- Mutable Schema -->
 
   <menu

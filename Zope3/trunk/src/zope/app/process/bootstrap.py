@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.13 2004/02/08 03:46:20 anthony Exp $
+$Id: bootstrap.py,v 1.14 2004/02/09 05:16:28 Zen Exp $
 """
 
 from zope.app import zapi

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,7 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Simplistic session service implemented using cookies.
 
 This is more of a demonstration than a full implementation, but it should
@@ -19,7 +18,8 @@ work.
 """
 
 # System imports
-import sha, time, string, random, hmac
+import sha, time, string, random, hmac, logging
+from UserDict import IterableUserDict
 
 # Zope3 imports
 from persistence import Persistent
@@ -27,12 +27,14 @@ from persistence.dict import PersistentDict
 from zope.server.http.http_date import build_http_date
 from zope.component import getService
 from zope.interface import implements
+from zope.app import zapi
+from zodb.btrees.OOBTree import OOBTree
 
 # Sibling imports
-from zope.app.interfaces.services.session import ISessionService
-from zope.app.interfaces.services.session import IConfigureSessionService
-from zope.app.interfaces.services.service import ISimpleService
-from zope.app.container.contained import Contained
+from zope.app.interfaces.utilities.session import \
+        IBrowserIdManager, IBrowserId, ICookieBrowserIdManager, \
+        ISessionDataContainer, ISession, IFullMapping
+from zope.app.interfaces.container import IContained
 
 cookieSafeTrans = string.maketrans("+/", "-.")
 
@@ -41,16 +43,22 @@ def digestEncode(s):
     return s.encode("base64")[:-2].translate(cookieSafeTrans)
 
 
-class CookieSessionService(Persistent, Contained):
+class BrowserId(str):
+    """A browser id"""
+    implements(IBrowserId)
+
+
+class CookieBrowserIdManager(Persistent):
     """Session service implemented using cookies."""
 
-    implements(ISessionService, IConfigureSessionService, ISimpleService)
+    implements(IBrowserIdManager, ICookieBrowserIdManager, IContained)
+
+    __parent__ = __name__ = None
 
     def __init__(self):
-        self.dataManagers = PersistentDict()
-        self.namespace = "zope3-cs-%x" % (int(time.time()) - 1000000000)
+        self.namespace = "zope3_cs_%x" % (int(time.time()) - 1000000000)
         self.secret = "%.20f" % random.random()
-        self.cookieLifeSeconds = 1800
+        self.cookieLifeSeconds = 3600
 
     def generateUniqueId(self):
         """Generate a new, random, unique id."""
@@ -60,10 +68,10 @@ class CookieSessionService(Persistent, Contained):
         # we store a HMAC of the random value together with it, which makes
         # our session ids unforgeable.
         mac = hmac.new(s, self.secret, digestmod=sha).digest()
-        return s + digestEncode(mac)
+        return BrowserId(s + digestEncode(mac))
 
     def getRequestId(self, request):
-        """Return the sessionId encoded in request or None if it's
+        """Return the IBrowserId encoded in request or None if it's
         non-existent."""
         # If there is an id set on the response, use that but don't trust it.
         # We need to check the response in case there has already been a new
@@ -80,7 +88,7 @@ class CookieSessionService(Persistent, Contained):
             != mac):
             return None
         else:
-            return sid
+            return BrowserId(sid)
 
     def setRequestId(self, request, id):
         """Set cookie with id on request."""
@@ -92,6 +100,12 @@ class CookieSessionService(Persistent, Contained):
         #     have to be altered to take virtual hosting into account.
         #     Seeing as this service instance has a unique namespace for its
         #     cookie, using ApplicationURL shouldn't be a problem.
+
+        # XXX: Fix this as per documentation in ICookieBrowserIdManager
+        if self.cookieLifeSeconds == 0 or self.cookieLifeSeconds is None:
+            raise NotImplementedError, \
+                    'Need to implement advanced cookie lifetime'
+
         if self.cookieLifeSeconds:
             expires = build_http_date(time.time() + self.cookieLifeSeconds)
         else:
@@ -104,35 +118,71 @@ class CookieSessionService(Persistent, Contained):
                 )
 
 
-    #####################################
-    # Implementation of ISessionService #
+    #######################################
+    # Implementation of IBrowserIdManager #
 
-    def getSessionId(self, request):
+    def getBrowserId(self, request):
         sid = self.getRequestId(request)
         if sid is None:
             sid = self.generateUniqueId()
         self.setRequestId(request, sid)
         return sid
 
-    def invalidate(self, sessionId):
-        for d in self.dataManagers.values():
-            d.deleteData(sessionId)
 
-    def getDataManager(self, name):
-        return self.dataManagers[name]
+class PersistentSessionDataContainer(Persistent, IterableUserDict):
+    ''' A SessionDataContainer that stores data in the ZODB '''
+    __parent__ = __name__ = None
+    implements(ISessionDataContainer, IContained)
 
-    def registerDataManager(self, name, dataManager):
-        if self.dataManagers.has_key(name):
-            raise ValueError(
-                    "DataManager already registered with name %r" % name)
-        self.dataManagers[name] = dataManager
+    def __init__(self):
+        self.data = OOBTree()
 
-    def unregisterDataManager(self, name):
-        del self.dataManagers[name]
+class SessionData(Persistent, IterableUserDict):
+    ''' Mapping nodes in the ISessionDataContainer tree '''
+    implements(IFullMapping)
+    def __init__(self):
+        self.data = OOBTree()
+    def __setitem__(self, key, value):
+        self.data[key] = value
+        self.data._p_changed = 1
+    def __delitem__(self, key):
+        del self.data[key]
+        self.data._p_changed = 1
+
+class Session(IterableUserDict):
+    implements(ISession)
+    def __init__(self, data_manager, browser_id, product_id):
+        browser_id = str(browser_id)
+        product_id = str(product_id)
+        try:
+            data = data_manager[browser_id]
+        except KeyError:
+            data_manager[browser_id] = SessionData()
+            data_manager[browser_id][product_id] = SessionData()
+            self.data = data_manager[browser_id][product_id]
+        else:
+            try:
+                self.data = data[product_id]
+            except KeyError:
+                data[product_id] = SessionData()
+                self.data = data[product_id]
 
 
-def getSessionDataObject(context, request, name):
-    """Get data object from appropriate ISessionDataManager."""
-    service = getService(context, "Sessions")
-    sid = service.getSessionId(request)
-    return service.getDataManager(name).getDataObject(sid)
+def getSession(context, request, product_id, session_data_container=None):
+    ''' Retrieve an ISession. session_data_container defaults to 
+        an ISessionDataContainer utility registered with the name product_id
+    '''
+    if session_data_container is None:
+        dc = zapi.getUtility(context, ISessionDataContainer, product_id)
+    elif ISessionDataContainer.isImplementedBy(session_data_container):
+        dc = session_data_container
+    else:
+        dc = zapi.getUtility(
+                context, ISessionDataContainer, session_data_container
+                )
+
+    bim = zapi.getUtility(context, IBrowserIdManager)
+    browser_id = bim.getBrowserId(request)
+    return Session(dc, browser_id, product_id)
+
+
