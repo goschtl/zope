@@ -13,14 +13,13 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.21 2003/08/17 06:08:20 philikon Exp $
+$Id: test_adapter.py,v 1.22 2003/09/21 17:33:11 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.iregistry import TestingIRegistry
 from zope.app.services.adapter import AdapterService
 from zope.interface import Interface, directlyProvides, implements
-from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.adapter import AdapterRegistration
@@ -46,6 +45,10 @@ class I4(Interface):
     pass
 
 
+def contained(o1, o2):
+    o1.__parent__ = o2
+    return o1
+
 class Registration:
     forInterface = I1
     providedInterface = I2
@@ -68,7 +71,8 @@ class TestAdapterService(PlacefulSetup, TestingIRegistry, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
-        self._service = ContextWrapper(AdapterService(), self.rootFolder)
+        self._service = AdapterService()
+        self._service.__parent__ = self.rootFolder
 
     def test_implements_IAdapterService(self):
         from zope.component.interfaces import IAdapterService
@@ -77,7 +81,7 @@ class TestAdapterService(PlacefulSetup, TestingIRegistry, TestCase):
         verifyObject(IAdapterService, self._service)
 
     def createTestingRegistry(self):
-        return ContextWrapper(AdapterService(), C())
+        return contained(AdapterService(), C())
 
     def createTestingRegistration(self):
         return Registration()
@@ -131,8 +135,8 @@ class TestAdapterService(PlacefulSetup, TestingIRegistry, TestCase):
 
         registration_manager = traverse(sm, 'default').getRegistrationManager()
         registration = Registration()
-        registration_manager.setObject('', registration)
-        registration = traverse(registration_manager, '1')
+        name = registration_manager.addRegistration(registration)
+        registration = traverse(registration_manager, name)
 
         class O:
             implements(I1)
@@ -170,8 +174,8 @@ class TestAdapterService(PlacefulSetup, TestingIRegistry, TestCase):
         registration_manager = traverse(sm, 'default').getRegistrationManager()
         registration = Registration()
         registration.adapterName = u"Yatta!"
-        registration_manager.setObject('', registration)
-        registration = traverse(registration_manager, '1')
+        key = registration_manager.addRegistration(registration)
+        registration = traverse(registration_manager, key)
 
         class O:
             implements(I1)
@@ -219,8 +223,8 @@ class TestAdapterService(PlacefulSetup, TestingIRegistry, TestCase):
 
         registration_manager = traverse(sm, 'default').getRegistrationManager()
         registration = Registration()
-        registration_manager.setObject('', registration)
-        registration = traverse(registration_manager, '1')
+        name = registration_manager.addRegistration(registration)
+        registration = traverse(registration_manager, name)
 
         class O:
             implements(I1)
@@ -276,9 +280,9 @@ class TestAdapterRegistration(TestCase):
 
     def test_getAdapter(self):
         folder = ModuleFinder()
-        folder = ContextWrapper(folder, folder)
+        folder = contained(folder, folder)
 
-        registration = ContextWrapper(
+        registration = contained(
             AdapterRegistration(I1, I2, "Foo.Bar.A", "adapter"),
             folder,
             )
