@@ -169,10 +169,15 @@ Zope Changes
       - Removal of Services.
 
         + Converted Error Reporting Service to a utility. Added database
-          evolution code to convert all serice instances to utilities.
+          evolution code to convert all service instances to utilities.
 
         + Converted Authentication Service to be a utility. Renamed PAS to
           PAU.
+
+        + Converted Principal Annotation Service to be a utility. Added
+          database evolution code to convert all service instances to
+          utilities.
+ 
 
       - The `pluggableauth` package has been deprecated. The `pas` module
         provides a much more modular approach with many more capabilities.

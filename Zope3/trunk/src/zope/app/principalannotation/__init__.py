@@ -11,37 +11,34 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Implementation of `IPrincipalAnnotationService`.
+"""Implementation of `IPrincipalAnnotationUtility`.
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
 
-# TODO: register service as adapter for IAnnotations on service activation
+# TODO: register utility as adapter for IAnnotations on utility activation
 # this depends on existence of LocalAdapterService, so once that's done
 # implement this.
 
-# Zope3 imports
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from BTrees.OOBTree import OOBTree
-from zope.app.component.localservice import queryNextService
-from zope.app.annotation.interfaces import IAnnotations
 from zope.interface import implements
 
-# Sibling imports
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
-from zope.app.site.interfaces import ISimpleService
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.contained import Contained
 from zope.app.location import Location
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
+from zope.app.utility.utility import queryNextUtility
 
-class PrincipalAnnotationService(Persistent, Contained):
+class PrincipalAnnotationUtility(Persistent, Contained):
     """Stores `IAnnotations` for `IPrinicipals`.
 
-    The service ID is 'PrincipalAnnotation'.
+    The utility ID is 'PrincipalAnnotation'.
     """
 
-    implements(IPrincipalAnnotationService, ISimpleService)
+    implements(IPrincipalAnnotationUtility)
 
     def __init__(self):
         self.annotations = OOBTree()
@@ -89,10 +86,10 @@ class Annotations(Persistent, Location):
         try:
             return self.data[key]
         except KeyError:
-            # We failed locally: delegate to a higher-level service.
-            service = queryNextService(self, 'PrincipalAnnotation')
-            if service is not None:
-                annotations = service.getAnnotationsById(self.principalId)
+            # We failed locally: delegate to a higher-level utility.
+            utility = queryNextUtility(self, IPrincipalAnnotationUtility)
+            if utility is not None:
+                annotations = utility.getAnnotationsById(self.principalId)
                 return annotations[key]
             raise
 
@@ -114,13 +111,19 @@ class Annotations(Persistent, Location):
 
 class AnnotationsForPrincipal(object):
     """Adapter from IPrincipal to `IAnnotations` for a
-    `PrincipalAnnotationService`.
+    `PrincipalAnnotationUtility`.
 
     Register an *instance* of this class as an adapter.
     """
 
-    def __init__(self, service):
-        self.service = service
+    def __init__(self, utility):
+        self.utility = utility
 
     def __call__(self, principal):
-        return self.service.getAnnotationsById(principal.id)
+        return self.utility.getAnnotationsById(principal.id)
+
+
+#############################################################################
+# BBB: 12/20/2004
+PrincipalAnnotationService = PrincipalAnnotationUtility
+#############################################################################
