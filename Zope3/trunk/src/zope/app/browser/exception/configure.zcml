@@ -19,4 +19,12 @@
     class=".user.UserErrorView"
     />
 
+<page
+    for="zope.app.interfaces.form.IWidgetInputError"
+    name="snippet"
+    permission="zope.Public"
+    class=".form.WidgetInputErrorView"
+    attribute="snippet"
+    />
+
 </configure>
