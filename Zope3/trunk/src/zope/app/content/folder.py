@@ -18,12 +18,12 @@ from zope.app.interfaces.content.folder import IFolder, IRootFolder, \
      ICloneWithoutChildren
 from zope.app.services.servicecontainer import ServiceManagerContainer
 from zope.exceptions import DuplicationError
-
+from zope.interface import implements
 
 class Folder(Persistent, ServiceManagerContainer):
     """The standard Zope Folder implementation."""
 
-    __implements__ = IFolder, ICloneWithoutChildren
+    implements(IFolder, ICloneWithoutChildren)
 
     def __init__(self):
         self.data = OOBTree()
@@ -107,7 +107,7 @@ class Folder(Persistent, ServiceManagerContainer):
 class RootFolder(Folder):
     """The standard Zope root Folder implementation."""
 
-    __implements__ = Folder.__implements__, IRootFolder
+    implements(IRootFolder)
 
 
 class RootDirectoryFactory:
@@ -159,6 +159,5 @@ class ReadDirectory:
         return [(key, get(key)) for key in self.keys()]
 
     def __contains__(self, key):
-        return self.get(key) is not None  
-    
+        return self.get(key) is not None
 
