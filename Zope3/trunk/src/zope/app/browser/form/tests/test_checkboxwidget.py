@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.3 2002/12/30 19:39:48 alga Exp $
+$Id: test_checkboxwidget.py,v 1.4 2003/01/15 15:44:33 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import CheckBoxWidget
@@ -33,8 +33,8 @@ class CheckBoxWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 1
-        check_list = ('type="checkbox"', 'name="field.foo"',
-                      'checked="checked"')
+        check_list = ('type="checkbox"', 'id="field.foo"',
+                      'name="field.foo"', 'checked="checked"')
         self._verifyResult(self._widget.render(value), check_list)
         value = 0
         check_list = check_list[:-1]

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_multilistwidget.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: test_multilistwidget.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import MultiListWidget
@@ -53,13 +53,14 @@ class MultiListWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'foo'
-        check_list = ('select', 'name="field.foo"', 'size="5"',
-                      'option', 'value="foo"', '>foo<',
+        check_list = ('select', 'id="field.foo"', 'name="field.foo"',
+                      'size="5"', 'option', 'value="foo"', '>foo<',
                       'value="foo"', '>bar<', 'selected="selected"',
                       'multiple="multiple"')
         self._verifyResult(self._widget.render(value), check_list)
 
-        check_list = ('type="hidden"', 'name="field.foo"', 'value="foo"')
+        check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
+                      'value="foo"')
         self._verifyResult(self._widget.renderHidden(value), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'

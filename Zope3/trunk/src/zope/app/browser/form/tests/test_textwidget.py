@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textwidget.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: test_textwidget.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import TextWidget
@@ -35,8 +35,8 @@ class TextWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'Foo Value'
-        check_list = ('type="text"', 'name="field.foo"', 'value="Foo Value"',
-                      'size="20"')
+        check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
+                      'value="Foo Value"', 'size="20"')
         self._verifyResult(self._widget.render(value), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]
         self._verifyResult(self._widget.renderHidden(value), check_list)

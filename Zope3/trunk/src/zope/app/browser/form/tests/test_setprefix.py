@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_setprefix.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: test_setprefix.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import TextWidget
@@ -35,8 +35,8 @@ class Test(TestCase):
 
     def testRender(self):
         value = 'Foo Value 2'
-        check_list = ('type="text"', 'name="spam.foo"', 'value="Foo Value 2"',
-                      'size="20"')
+        check_list = ('type="text"', 'id="spam.foo"', 'name="spam.foo"',
+                      'value="Foo Value 2"', 'size="20"')
         self._widget.setData(value)
         self._verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]

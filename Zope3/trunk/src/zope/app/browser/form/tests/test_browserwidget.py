@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.4 2003/01/09 14:13:06 jim Exp $
+$Id: test_browserwidget.py,v 1.5 2003/01/15 15:44:33 ryzaja Exp $
 """
 import unittest
 from zope.app.browser.form.widget import BrowserWidget
@@ -56,7 +56,8 @@ class BrowserWidgetTest(unittest.TestCase):
 
     def testRender(self):
         value = 'Foo Value'
-        check_list = ('type="text"', 'name="field.foo"', 'value="Foo Value"')
+        check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
+                      'value="Foo Value"')
         self._verifyResult(self._widget.render(value), check_list)
         check_list = ('type="hidden"',) + check_list[1:]
         self._verifyResult(self._widget.renderHidden(value), check_list)

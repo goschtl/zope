@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: test_radiowidget.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import RadioWidget
@@ -35,8 +35,8 @@ class RadioWidgetTest(BrowserWidgetTest):
 
 
     def testRenderItem(self):
-        check_list = ('type="radio"', 'name="field.bar"', 'value="foo"',
-                      'Foo')
+        check_list = ('type="radio"', 'id="field.bar"', 'name="field.bar"',
+                      'value="foo"', 'Foo')
         self._verifyResult(
             self._widget.renderItem('Foo', 'foo', 'field.bar', None),
             check_list)
@@ -47,19 +47,22 @@ class RadioWidgetTest(BrowserWidgetTest):
 
 
     def testRenderItems(self):
-        check_list = ('type="radio"', 'name="field.foo"', 'value="bar"',
-                      'bar', 'value="foo"', 'foo', 'checked="checked"')
+        check_list = ('type="radio"', 'id="field.foo"', 'name="field.foo"',
+                      'value="bar"', 'bar', 'value="foo"', 'foo',
+                      'checked="checked"')
         self._verifyResult('\n'.join(self._widget.renderItems('bar')),
                            check_list)
 
 
     def testRender(self):
         value = 'bar'
-        check_list = ('type="radio"', 'name="field.foo"', 'value="bar"',
-                      'bar', 'value="foo"', 'foo', 'checked="checked"')
+        check_list = ('type="radio"', 'id="field.foo"', 'name="field.foo"',
+                      'value="bar"', 'bar', 'value="foo"', 'foo',
+                      'checked="checked"')
         self._verifyResult(self._widget.render(value), check_list)
 
-        check_list = ('type="hidden"', 'name="field.foo"', 'value="bar"')
+        check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
+                      'value="bar"')
         self._verifyResult(self._widget.renderHidden(value), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'

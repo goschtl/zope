@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textareawidget.py,v 1.2 2002/12/25 14:12:32 jim Exp $
+$Id: test_textareawidget.py,v 1.3 2003/01/15 15:44:33 ryzaja Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.widget import TextAreaWidget
@@ -34,12 +34,14 @@ class TextAreaWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = "Foo Value"
-        check_list = ('rows="15"', 'cols="60"', 'name="field.foo"', 'textarea')
+        check_list = ('rows="15"', 'cols="60"', 'id="field.foo"',
+                      'name="field.foo"', 'textarea')
         self._verifyResult(self._widget.render(value), check_list)
         check_list = ('style="color: red"',) + check_list
         self._widget.extra = 'style="color: red"'
         self._verifyResult(self._widget.render(value), check_list)
-        check_list = ('type="hidden"', 'name="field.foo"', 'value="Foo Value"')
+        check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',
+                      'value="Foo Value"')
         self._verifyResult(self._widget.renderHidden(value), check_list)
 
     def testRow(self):

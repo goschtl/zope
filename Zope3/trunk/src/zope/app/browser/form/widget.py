@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.7 2003/01/09 14:13:04 jim Exp $
+$Id: widget.py,v 1.8 2003/01/15 15:43:17 ryzaja Exp $
 """
 
 __metaclass__ = type
@@ -95,6 +95,7 @@ class BrowserWidget(Widget, BrowserView):
         return renderElement(self.getValue('tag'),
                              type = self.getValue('type'),
                              name = self.name,
+                             id = self.name,
                              value = self._showData(),
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
@@ -103,6 +104,7 @@ class BrowserWidget(Widget, BrowserView):
         return renderElement(self.getValue('tag'),
                              type = 'hidden',
                              name = self.name,
+                             id = self.name,
                              value = self._showData(),
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
@@ -147,6 +149,7 @@ class CheckBoxWidget(BrowserWidget):
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.name,
+                                 id = self.name,
                                  checked = None,
                                  cssClass = self.getValue('cssClass'),
                                  extra = self.getValue('extra'))
@@ -154,6 +157,7 @@ class CheckBoxWidget(BrowserWidget):
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.name,
+                                 id = self.name,
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
@@ -224,8 +228,8 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
 
     def _select(self):
         selected = self._showData()
-        result = ['<select name="%s">'
-                  % (self.name)]
+        result = ['<select id="%s" name="%s">'
+                  % (self.name, self.name)]
 
         values = self.__values
 
@@ -250,6 +254,7 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.name,
+                                 id = self.name,
                                  value = self._showData(),
                                  cssClass = self.getValue('cssClass'),
                                  style = self.style,
@@ -260,6 +265,7 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.name,
+                                 id = self.name,
                                  value = self._showData(),
                                  cssClass = self.getValue('cssClass'),
                                  style = self.style,
@@ -324,6 +330,7 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     def __call__(self):
         return renderElement("textarea",
                              name = self.name,
+                             id = self.name,
                              cssClass = self.getValue('cssClass'),
                              rows = self.getValue('height'),
                              cols = self.getValue('width'),
@@ -352,6 +359,7 @@ class FileWidget(TextWidget):
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.name,
+                                 id = self.name,
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  maxlength = displayMaxWidth,
@@ -360,6 +368,7 @@ class FileWidget(TextWidget):
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.name,
+                                 id = self.name,
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
@@ -462,6 +471,7 @@ class ListWidget(SingleItemsWidget):
         renderedItems = self.renderItems(self._showData())
         return renderElement('select',
                               name = self.name,
+                              id = self.name,
                               cssClass = self.getValue('cssClass'),
                               size = self.getValue('size'),
                               contents = "\n".join(renderedItems),
@@ -495,6 +505,7 @@ class RadioWidget(SingleItemsWidget):
                               type = "radio",
                               cssClass = cssClass,
                               name = name,
+                              id = name,
                               value = value) + text
 
     def renderSelectedItem(self, text, value, name, cssClass):
@@ -502,6 +513,7 @@ class RadioWidget(SingleItemsWidget):
                               type="radio",
                               cssClass=cssClass,
                               name = name,
+                              id = name,
                               value = value,
                               checked = None) + text
 
@@ -560,6 +572,7 @@ class MultiListWidget(MultiItemsWidget):
         rendered_items = self.renderItems(self._showData())
         return renderElement('select',
                               name = self.name,
+                              id = self.name,
                               multiple = None,
                               cssClass = self.getValue('cssClass'),
                               size = self.getValue('size'),
@@ -593,6 +606,7 @@ class MultiCheckBoxWidget(MultiItemsWidget):
                               type = "checkbox",
                               cssClass = cssClass,
                               name = name,
+                              id = name,
                               value = value) + text
 
     def renderSelectedItem(self, text, value, name, cssClass):
@@ -600,6 +614,7 @@ class MultiCheckBoxWidget(MultiItemsWidget):
                               type = "checkbox",
                               cssClass = cssClass,
                               name = name,
+                              id = name,
                               value = value,
                               checked = None) + text
 
