@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: addwizard.py,v 1.6 2003/08/02 09:11:08 anthony Exp $
+$Id: addwizard.py,v 1.7 2003/08/03 02:13:02 philikon Exp $
 """
 
 import sys
@@ -24,7 +24,6 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidgets, getWidgetsData
-from zope.configuration.action import Action
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component import getAdapter
@@ -176,21 +175,16 @@ class AddWizardDirective:
             if (not menu) or (not title):
                 raise ValueError("If either menu or title are specified, "
                                 "they must both be specified")
-            actions = menuItemDirective(
+            menuItemDirective(
                 _context, menu, for_, '@@' + name, title,
                 permission=permission, description=description)
-        else:
-            actions = []
 
-        self.content_factory = (
-            content_factory and _context.resolve(content_factory) or None
-            )
+        self.content_factory = content_factory
 
-        schema, for_, bases, template, fields = normalize(
-            _context, schema, for_, class_, template, 'addwizard.pt', 
-            fields=None, omit=None, view=AddWizardView
-            )
+        for_, bases, template, fields = normalize(
+            for_, schema, class_, template, 'addwizard.pt', view=AddWizardView)
 
+        self._context = _context
         self.schema = schema
         self.for_ = for_
         self.bases = bases
@@ -201,10 +195,8 @@ class AddWizardDirective:
         self.keyword_arguments = keyword_arguments
  
         self.panes = []
-        self.actions = actions
 
     def pane(self, _context, fields, label=''):
-        fields = [str(f) for f in fields.split(' ')]
         for f in fields:
             if f not in self.all_fields:
                 raise ValueError(
@@ -212,7 +204,6 @@ class AddWizardDirective:
                     name, self.schema
                     )
         self.panes.append(Pane(fields, label))
-        return []
 
     def __call__(self):
 
@@ -224,7 +215,6 @@ class AddWizardDirective:
 
         arguments = self.arguments
         if arguments:
-            arguments = arguments.split()
             missing = [n for n in arguments if n not in fields]
             if missing:
                 raise ValueError("Some arguments are not included in the form",
@@ -238,7 +228,6 @@ class AddWizardDirective:
 
         keyword_arguments = self.keyword_arguments
         if keyword_arguments:
-            keyword_arguments = keyword_arguments.split()
             missing = [n for n in keyword_arguments if n not in fields]
             if missing:
                 raise ValueError(
@@ -248,7 +237,6 @@ class AddWizardDirective:
 
         set_before_add = self.set_before_add
         if set_before_add:
-            set_before_add = set_before_add.split()
             missing = [n for n in set_before_add if n not in fields]
             if missing:
                 raise ValueError(
@@ -258,7 +246,6 @@ class AddWizardDirective:
 
         set_after_add = self.set_after_add
         if set_after_add:
-            set_after_add = set_after_add.split()
             missing = [n for n in set_after_add if n not in fields]
             if missing:
                 raise ValueError(
@@ -272,22 +259,13 @@ class AddWizardDirective:
 
             set_after_add = leftover
 
-        self.actions.append(
-            Action(
-                discriminator=(
-                    'view', self.for_, self.name, IBrowserPresentation, 
-                    self.layer
-                    ),
-                callable=AddWizardViewFactory,
-                args=(
-                    self.name, self.schema, self.permission, self.layer, 
-                    self.panes, self.all_fields, self.template, 'editwizard.pt',
-                    self.bases, self.for_, self.content_factory, arguments,
-                    keyword_arguments, self.set_before_add, self.set_after_add,
-                    self.use_session,
-                    )
-                )
+        self._context.action(
+            discriminator=('view', self.for_, self.name, IBrowserPresentation, 
+                           self.layer),
+            callable=AddWizardViewFactory,
+            args=(self.name, self.schema, self.permission, self.layer, 
+                  self.panes, self.all_fields, self.template, 'editwizard.pt',
+                  self.bases, self.for_, self.content_factory, arguments,
+                  keyword_arguments, self.set_before_add, self.set_after_add,
+                  self.use_session)
             )
-        return self.actions
-
-
