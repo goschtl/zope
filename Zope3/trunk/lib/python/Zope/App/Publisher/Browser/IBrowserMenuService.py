@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IBrowserMenuService.py,v 1.2 2002/10/01 12:49:08 jim Exp $
+$Id: IBrowserMenuService.py,v 1.3 2002/12/17 19:16:47 stevea Exp $
 """
 
 from Interface import Interface
@@ -32,7 +32,6 @@ class IBrowserMenuService(Interface):
 
         The entries returned are accessable to the current user and
         have passed any menu item filters, if any.
-
         """
 
     def getFirstMenuItem(menu_id, object, request):
