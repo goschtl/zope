@@ -20,7 +20,10 @@ __docformat__ = 'restructuredtext'
 import unittest
 from StringIO import StringIO
 
+import transaction
+
 from zope.interface import Interface, implements, directlyProvides
+from zope.schema import Text
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.http import status_reasons
 from zope.pagetemplate.tests.util import normalize_xml
@@ -35,8 +38,10 @@ from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing.browser import AbsoluteURL
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.app.dublincore.zopedublincore import ScalarProperty
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
+from zope.schema.interfaces import IText, ISequence
 
 import zope.app.dav.tests
 from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
@@ -44,6 +49,8 @@ from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
 from zope.app.dav import proppatch
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dav.interfaces import IDAVNamespace
+from zope.app.dav.interfaces import IDAVWidget
+from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 
@@ -86,6 +93,44 @@ def _createRequest(body=None, headers=None, skip_headers=None,
     request = TestRequest(StringIO(body), StringIO(), _environ)
     return request
 
+
+class ITestSchema(Interface):
+    requiredNoDefault = Text(required=True, default=None)
+    requiredDefault = Text(required=True, default=u'Default Value')
+    unusualMissingValue = Text(required=False, missing_value=u'Missing Value')
+    constrained = Text(required=False, min_length=5)
+
+EmptyTestValue = object()
+TestKey = 'zope.app.dav.tests.test_proppatch'
+TestURI = 'uri://proppatch_tests'
+
+class TestSchemaAdapter(object):
+    implements(ITestSchema)
+    __used_for__ = IAnnotatable
+    annotations = None
+    
+    def __init__(self, context):
+        annotations = IAnnotations(context)
+        data = annotations.get(TestKey)
+        if data is None:
+            self.annotations = annotations
+            data =  {u'requiredNoDefault': (EmptyTestValue,),
+                     u'requiredDefault': (EmptyTestValue,),
+                     u'unusualMissingValue': (EmptyTestValue,),
+                     u'constrained': (EmptyTestValue,)}
+        self._mapping = data
+        
+    def _changed(self):
+        if self.annotations is not None:
+            self.annotations[TestKey] = self._mapping
+            self.annotations = None
+
+    requiredNoDefault = ScalarProperty(u'requiredNoDefault')
+    requiredDefault = ScalarProperty(u'requiredDefault')
+    unusualMissingValue = ScalarProperty(u'unusualMissingValue')
+    constrained = ScalarProperty(u'constrained')
+
+
 class PropFindTests(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
@@ -105,17 +150,22 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
                           'absolute_url', AbsoluteURL)
         ztapi.provideView(None, IHTTPRequest, Interface,
                           'PROPPATCH', proppatch.PROPPATCH)
+        ztapi.browserViewProviding(IText, TextDAVWidget, IDAVWidget)
+        ztapi.browserViewProviding(ISequence, SequenceDAVWidget, IDAVWidget)
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
                              ZDCAnnotatableAdapter)
         ztapi.provideAdapter(IAnnotatable, IDAVOpaqueNamespaces,
                              DAVOpaqueNamespacesAdapter)
+        ztapi.provideAdapter(IAnnotatable, ITestSchema, TestSchemaAdapter)
         utils = zapi.getGlobalService('Utilities')
         directlyProvides(IDAVSchema, IDAVNamespace)
         utils.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
         directlyProvides(IZopeDublinCore, IDAVNamespace)
         utils.provideUtility(IDAVNamespace, IZopeDublinCore,
                              'http://www.purl.org/dc/1.1')
+        directlyProvides(ITestSchema, IDAVNamespace)
+        utils.provideUtility(IDAVNamespace, ITestSchema, TestURI)
         self.db = DB()
         self.conn = self.db.open()
         root = self.conn.root()
@@ -296,20 +346,90 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
                                 {u'uri://foo': {u'bar': '<bar>spam</bar>'}})
         
     def test_proppatch_failure(self):
-        # XXX: This relies on the fact that only opaque properties can be set 
-        # for now. As soon as registered interfaces support is implemented, 
-        # this test will need to be rewritten.
         expect = self._makePropstat(
             ('uri://foo',), '<bar xmlns="a0"/>', 424)
         expect += self._makePropstat(
-            ('http://www.purl.org/dc/1.1',), '<title xmlns="a0"/>', 403)
+            ('http://www.purl.org/dc/1.1',), '<nonesuch xmlns="a0"/>', 403)
         self._checkProppatch(self.zpt, 
             ns=(('foo', 'uri://foo'), ('DC', 'http://www.purl.org/dc/1.1')),
-            set=('<foo:bar>spam</foo:bar>', '<DC:title>Test</DC:title>'),
+            set=('<foo:bar>spam</foo:bar>', '<DC:nonesuch>Test</DC:nonesuch>'),
             expect=expect)
         self._assertOPropsEqual(self.zpt, {})
+        
+    def test_nonexistent_dc(self):
+        expect = self._makePropstat(
+            ('http://www.purl.org/dc/1.1',), '<nonesuch xmlns="a0"/>', 403)
+        self._checkProppatch(self.zpt, 
+            ns=(('DC', 'http://www.purl.org/dc/1.1'),),
+            set=('<DC:nonesuch>Test</DC:nonesuch>',), expect=expect)
+        
+    def test_set_readonly(self):
+        expect = self._makePropstat((), '<getcontentlength/>', 409)
+        self._checkProppatch(self.zpt, 
+            set=('<getcontentlength>Test</getcontentlength>',), expect=expect)
+        
+    def test_remove_readonly(self):
+        expect = self._makePropstat((), '<getcontentlength/>', 409)
+        self._checkProppatch(self.zpt, rm=('<getcontentlength/>',), 
+                             expect=expect)
 
-    
+    def test_remove_required_no_default(self):
+        testprops = ITestSchema(self.zpt)
+        testprops.requiredNoDefault = u'foo'
+        transaction.commit()
+        expect = self._makePropstat((TestURI,), 
+                                    '<requiredNoDefault xmlns="a0"/>', 409)
+        self._checkProppatch(self.zpt, 
+            ns=(('tst', TestURI),), rm=('<tst:requiredNoDefault/>',), 
+            expect=expect)
+        self.assertEqual(ITestSchema(self.zpt).requiredNoDefault, u'foo')
+
+    def test_remove_required_default(self):
+        testprops = ITestSchema(self.zpt)
+        testprops.requiredDefault = u'foo'
+        transaction.commit()
+        expect = self._makePropstat((TestURI,), 
+                                    '<requiredDefault xmlns="a0"/>', 200)
+        self._checkProppatch(self.zpt, 
+            ns=(('tst', TestURI),), rm=('<tst:requiredDefault/>',), 
+            expect=expect)
+        self.assertEqual(testprops.requiredDefault, u'Default Value')
+
+    def test_remove_required_missing_value(self):
+        testprops = ITestSchema(self.zpt)
+        testprops.unusualMissingValue = u'foo'
+        transaction.commit()
+        expect = self._makePropstat((TestURI,), 
+                                    '<unusualMissingValue xmlns="a0"/>', 200)
+        self._checkProppatch(self.zpt, 
+            ns=(('tst', TestURI),), rm=('<tst:unusualMissingValue/>',), 
+            expect=expect)
+        self.assertEqual(testprops.unusualMissingValue, u'Missing Value')
+
+    def test_set_dctitle(self):
+        dc = IZopeDublinCore(self.zpt)
+        dc.title = u'Test Title'
+        transaction.commit()
+        expect = self._makePropstat(('http://www.purl.org/dc/1.1',), 
+                                    '<title xmlns="a0"/>', 200)
+        self._checkProppatch(self.zpt, 
+            ns=(('DC', 'http://www.purl.org/dc/1.1'),), 
+            set=('<DC:title>Foo Bar</DC:title>',), 
+            expect=expect)
+        self.assertEqual(dc.title, u'Foo Bar')
+
+    def test_set_dcsubjects(self):
+        dc = IZopeDublinCore(self.zpt)
+        dc.subjects = (u'Bla', u'Ble', u'Bli')
+        transaction.commit()
+        expect = self._makePropstat(('http://www.purl.org/dc/1.1',), 
+                                    '<subjects xmlns="a0"/>', 200)
+        self._checkProppatch(self.zpt, 
+            ns=(('DC', 'http://www.purl.org/dc/1.1'),), 
+            set=('<DC:subjects>Foo, Bar</DC:subjects>',), 
+            expect=expect)
+        self.assertEqual(dc.subjects, (u'Foo', u'Bar'))
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(PropFindTests),
