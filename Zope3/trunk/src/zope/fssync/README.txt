@@ -92,23 +92,26 @@ TO DO
 
 - Implement bundle commands.
 
-- On the server side:
+  * Need a way to turn site-management folders into bundles, and
+    vice-versa; could be from command-line/fssync or more directly
+    through the ZMI.
 
-  * Nothing ATM.
+  * Once something is "marked" as a bundle, it should be read-only.
 
 - In the sync application:
 
-  * Implement diff using difflib.
+  * Implement diff using difflib.  (is this really needed?)
 
   * More diff options:
     -2 diffs between local and remote
     -3 diffs between original and remote
     -N shows diffs for added/removed files as diffs with /dev/null
 
-  * More GNU diff options?  e.g. --ignore-space-change etc.
-
   * Something akin to cvs -n update, which shows what update would do
     without actually doing it.
+
+  * Make the commands more closely match Subversion, since the model
+    is more similar.
 
 - Code maintenance:
 
@@ -126,13 +129,13 @@ TO DO LATER
 
 * Work out security details.
 
-* A commit unpickles user-provided data.  Unpickling is not a safe
-  operation.  Possible solution: have an unpickler that finds globals
-  in a secure way.  Use an import on a security proxy for sys.modules.
+  * A commit unpickles user-provided data.  Unpickling is not a safe
+    operation.  Possible solution: have an unpickler that finds globals
+    in a secure way.  Use an import on a security proxy for sys.modules.
 
-* The adapters returned by the fs registry should optionally have
-  a permission associated with them.  If you have an adapter that
-  calls removeAllProxies, the adapter should require a permission.
+  * The adapters returned by the fs registry should optionally have
+    a permission associated with them.  If you have an adapter that
+    calls removeAllProxies, the adapter should require a permission.
 
 * Refine the fssync adapter protocol or implementation to leverage the
   file-system representation (== FTP, WebDAV) protocol.
@@ -141,10 +144,7 @@ TO DO LATER
   in the entries file to simplify representation and updates.  Maybe
   do something similar w annotations.
 
-* Maybe do some more xmlpickle refinement with an eye toward
-  improving the usability of simple dictionary pickles.
-
-* Maybe leverage adaptable storage ideas to assure losslessness.
+* Maybe leverage adaptable storage (APE) ideas to assure losslessness.
 
 * Export and import as a special case.
 
