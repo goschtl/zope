@@ -82,11 +82,11 @@ def dochttp(args=sys.argv[1:], default=None):
 
     for name in names:
         requests =  Requests(
-                        open(os.path.join(directory, name + ".request")),
+                        open(os.path.join(directory, name + ".request"), 'rb'),
                         options.skip_request_header,
                         )
         responses = Responses(
-                        open(os.path.join(directory, name + ".response")),
+                        open(os.path.join(directory, name + ".response"), 'rb'),
                         options.skip_response_header,
                         )
 
