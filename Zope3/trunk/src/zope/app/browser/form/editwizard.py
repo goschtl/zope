@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.14 2003/08/13 21:27:50 garrett Exp $
+$Id: editwizard.py,v 1.15 2003/09/21 17:30:36 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -23,7 +23,6 @@ from zope.app.publisher.browser.globalbrowsermenuservice import \
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.security.checker import defineChecker, NamesChecker
-from zope.app.context import ContextWrapper
 from zope.component.view import provideView
 from zope.app.form.utility \
         import setUpEditWidgets, getWidgetsData, applyWidgetsChanges
@@ -60,7 +59,7 @@ class EditWizardView(EditView):
     def _setUpWidgets(self):
         adapted = getAdapter(self.context, self.schema)
         if adapted is not self.context:
-            adapted = ContextWrapper(adapted, self.context, name='(adapted)')
+            adapted.__parent__ = self.context
         self.adapted = adapted
 
         if self.use_session:

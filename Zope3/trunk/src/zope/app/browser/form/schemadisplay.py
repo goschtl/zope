@@ -13,13 +13,12 @@
 ##############################################################################
 """Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.10 2003/08/07 17:40:28 srichter Exp $
+$Id: schemadisplay.py,v 1.11 2003/09/21 17:30:36 jim Exp $
 """
 from zope.schema import getFieldNamesInOrder
 
-from zope.app.context import ContextWrapper
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component.view import provideView
 from zope.component import getAdapter
@@ -49,7 +48,7 @@ class DisplayView(BrowserView):
     def _setUpWidgets(self):
         adapted = getAdapter(self.context, self.schema)
         if adapted is not self.context:
-            adapted = ContextWrapper(adapted, self.context, name='(adapted)')
+            adapted.__parent__ = self.context
         self.adapted = adapted
         setUpDisplayWidgets(self, self.schema, names=self.fieldNames,
                             content=adapted)

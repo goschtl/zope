@@ -13,11 +13,10 @@
 ##############################################################################
 """SQL Script Views
 
-$Id: sql.py,v 1.10 2003/08/06 14:41:41 srichter Exp $
+$Id: sql.py,v 1.11 2003/09/21 17:30:31 jim Exp $
 """
 from zope.app.interfaces.content.sql import ISQLScript
 from zope.app.interfaces.rdb import DatabaseException
-from zope.context import ContextMethod
 
 class SQLScriptTest:
     """Test the SQL inside the SQL Script"""
@@ -44,8 +43,6 @@ class SQLScriptTest:
         except (DatabaseException, AttributeError, Exception), error:
             self.error = error
             return []
-
-    getTestResults = ContextMethod(getTestResults)
 
     def getFormattedError(self):
         error = str(self.error)
