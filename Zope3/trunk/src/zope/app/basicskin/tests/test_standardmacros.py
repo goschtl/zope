@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.2 2004/03/13 15:21:08 srichter Exp $
+$Id: test_standardmacros.py,v 1.3 2004/03/15 20:41:58 jim Exp $
 """
 
 import unittest
@@ -72,9 +72,9 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        ztapi.browserView(I, 'page1', [page1])
-        ztapi.browserView(I, 'collides_with_page1', [collides_with_page1])
-        ztapi.browserView(I, 'works_with_page1',  [works_with_page1])
+        ztapi.browserView(I, 'page1', page1)
+        ztapi.browserView(I, 'collides_with_page1', collides_with_page1)
+        ztapi.browserView(I, 'works_with_page1',  works_with_page1)
 
     def testSinglePage(self):
         macros = createMacrosInstance(('page1',))

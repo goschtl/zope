@@ -13,7 +13,7 @@
 ##############################################################################
 """View ZPT Tests
 
-$Id: test_viewzpt.py,v 1.12 2004/03/13 15:21:24 srichter Exp $
+$Id: test_viewzpt.py,v 1.13 2004/03/15 20:42:07 jim Exp $
 """
 import unittest
 
@@ -70,7 +70,7 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
             I1,
             name=the_view_name,
             type=IPresentationRequest,
-            maker=[ViewMaker])
+            maker=ViewMaker)
 
         class MyRequest:
             implements(IPresentationRequest)

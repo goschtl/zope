@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_traverser.py,v 1.2 2004/03/13 23:55:29 srichter Exp $
+$Id: test_traverser.py,v 1.3 2004/03/15 20:42:12 jim Exp $
 """
 
 import unittest, sys
@@ -72,7 +72,8 @@ class TestTraverser(PlacelessSetup, unittest.TestCase):
         request = Request(I, '')
 
         T = WikiPageTraverser(page1, request)
-        getService(None, Presentation).provideView(IWikiPage, 'viewfoo', I, [View])
+        getService(None, Presentation).provideView(
+            IWikiPage, 'viewfoo', I, View)
 
         self.failUnless(
             T.publishTraverse(request, 'viewfoo').__class__ is View )

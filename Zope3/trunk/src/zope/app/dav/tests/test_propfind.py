@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.21 2004/03/15 13:10:46 srichter Exp $
+$Id: test_propfind.py,v 1.22 2004/03/15 20:42:05 jim Exp $
 """
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -134,9 +134,9 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         self.file = traverse(root, 'file')
         ps = zapi.getService(None, zapi.servicenames.Presentation)
         ps.provideView(None, 'absolute_url', IHTTPRequest,
-                       [AbsoluteURL])
+                       AbsoluteURL)
         ps.provideView(None, 'PROPFIND', IHTTPRequest,
-                       [propfind.PROPFIND])
+                       propfind.PROPFIND)
         ztapi.browserViewProviding(IText, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(ITextLine, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(IDatetime, TextDAVWidget, IDAVWidget)

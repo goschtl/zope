@@ -13,8 +13,9 @@
 ##############################################################################
 """Browser Menu Browser Tests
 
-$Id: tests.py,v 1.2 2004/03/13 15:21:23 srichter Exp $
+$Id: tests.py,v 1.3 2004/03/15 20:42:06 jim Exp $
 """
+
 import unittest
 
 from zope.app.tests import ztapi
@@ -79,8 +80,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         defineService('BrowserMenu', IBrowserMenuService)
         provideService('BrowserMenu', Service())
-        ztapi.browserView(I, 'a3', [V])
-        ztapi.browserView(None, '_traverse', [TestTraverser])
+        ztapi.browserView(I, 'a3', V)
+        ztapi.browserView(None, '_traverse', TestTraverser)
         defineChecker(C, NamesChecker(['a1', 'a2', 'a3', '__call__'],
                                       CheckerPublic,
                                       abad='waaa'))

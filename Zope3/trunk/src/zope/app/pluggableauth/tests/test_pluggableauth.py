@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Auth Tests
 
-$Id: test_pluggableauth.py,v 1.2 2004/03/13 15:21:26 srichter Exp $
+$Id: test_pluggableauth.py,v 1.3 2004/03/15 20:42:08 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
@@ -51,7 +51,7 @@ class Setup(placefulsetup.PlacefulSetup, TestCase):
         ztapi.provideAdapter(IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
         ztapi.browserView(IPrincipalSource, "login",
-                          (PrincipalAuthenticationView,))
+                          PrincipalAuthenticationView)
 
         auth = setup.addService(sm, "TestPluggableAuthenticationService",
                                 PluggableAuthenticationService())

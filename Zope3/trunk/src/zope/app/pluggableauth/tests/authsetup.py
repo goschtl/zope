@@ -16,7 +16,7 @@
 This setup class can be used, if a set of local principals are required for a
 test.
 
-$Id: authsetup.py,v 1.2 2004/03/13 15:21:26 srichter Exp $
+$Id: authsetup.py,v 1.3 2004/03/15 20:42:08 jim Exp $
 """
 import base64
 from zope.publisher.browser import TestRequest as Request
@@ -38,7 +38,7 @@ class AuthSetup(placefulsetup.PlacefulSetup):
         ztapi.provideAdapter(IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
         ztapi.browserView(IPrincipalSource, "login",
-                          (PrincipalAuthenticationView,))
+                          PrincipalAuthenticationView)
 
         auth = setup.addService(sm, "PluggableAuthService",
                                 PluggableAuthenticationService())

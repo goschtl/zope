@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: tests.py,v 1.1 2004/02/19 20:43:05 philikon Exp $
+$Id: tests.py,v 1.2 2004/03/15 20:42:11 jim Exp $
 """
 
 import unittest
@@ -31,7 +31,7 @@ class StatefulTreeViewTest(BaseTestCase):
         super(StatefulTreeViewTest, self).setUp()
         self.makeItems()
         # provide the view for all objects (None)
-        ztapi.browserView(None, 'stateful_tree', [StatefulTreeView])
+        ztapi.browserView(None, 'stateful_tree', StatefulTreeView)
 
     def makeRequest(self):
         request = self.request = TestRequest()
@@ -42,7 +42,7 @@ class CookieTreeViewTest(StatefulTreeViewTest):
 
     def setUp(self):
         super(CookieTreeViewTest, self).setUp()
-        ztapi.browserView(None, 'cookie_tree', [CookieTreeView])
+        ztapi.browserView(None, 'cookie_tree', CookieTreeView)
 
     def makeRequestWithVar(self):
         varname = CookieTreeView.request_variable 
