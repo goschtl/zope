@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: interfaces.py,v 1.2 2004/03/14 04:44:49 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/04/11 10:34:48 srichter Exp $
 """
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
@@ -30,7 +30,10 @@ class WidgetInputError(UserError):
     implements(IWidgetInputError)
 
     def __init__(self, field_name, widget_title, errors):
-        ''' errors is a ValidationError '''
+        """Initialize Error
+
+        'errors' is a ValidationError or a list of ValidationError objects
+        """
         UserError.__init__(self, field_name, widget_title, errors)
         self.field_name = field_name
         self.widget_title = widget_title
