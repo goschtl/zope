@@ -140,7 +140,8 @@ class Macros:
 
 class StandardMacros(BrowserView, Macros):
     macro_pages = ('five_template',
-                   'widget_macros',) 
+                   'widget_macros',
+                   'form_macros',) 
 
 class EditView(BrowserView):
     """Simple edit-view base class
