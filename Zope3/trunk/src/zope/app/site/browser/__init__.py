@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.5 2004/03/19 20:26:36 srichter Exp $
+$Id: __init__.py,v 1.6 2004/03/31 23:35:41 jim Exp $
 """
 from zope.proxy import removeAllProxies
 from zope.app import zapi
@@ -31,6 +31,7 @@ from zope.app.site.interfaces import ISite, ISiteManager
 from zope.app.site.service import SiteManager
 from zope.app.component.nextservice import getNextServiceManager
 from zope.component.service import IGlobalServiceManager
+from zope.component.interfaces import IFactory
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
 from zope.app.interface.interfaces import IInterfaceBasedRegistry
@@ -86,7 +87,8 @@ class ComponentAdding(Adding):
             if extra:
                 factoryname = extra.get('factory')
                 if factoryname:
-                    factory = zapi.getFactory(self.context, factoryname)
+                    factory = zapi.getUtility(self.context, IFactory,
+                                              factoryname)
                     intf = factory.getInterfaces()
                     if not intf.extends(self._addFilterInterface):
                         # We only skip new addMenuItem style objects
