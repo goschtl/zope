@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testZopeDatabaseAdapter.py,v 1.1 2002/07/10 23:37:26 srichter Exp $
+$Id: testZopeDatabaseAdapter.py,v 1.2 2002/11/05 12:09:49 alga Exp $
 """
 import unittest
 from Zope.App.RDB.ZopeDatabaseAdapter import ZopeDatabaseAdapter
@@ -62,6 +62,12 @@ class TestZopeDatabaseAdapter(unittest.TestCase):
         da = self._da
         conn = da()
         self.assertEqual(ZopeConnection, conn.__class__)
+
+    def testGetConverter(self):
+        from Zope.App.RDB.ZopeDatabaseAdapter import identity
+        da = self._da
+        conv = da.getConverter('any')
+        self.assert_(conv is identity, "default converter is wrong")
 
 
 def test_suite():

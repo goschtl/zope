@@ -13,7 +13,7 @@
 ##############################################################################
 """The connection adapters contained by ConnectionService.
 
-$Id: ZopeDatabaseAdapter.py,v 1.6 2002/08/12 15:07:30 alga Exp $
+$Id: ZopeDatabaseAdapter.py,v 1.7 2002/11/05 12:09:49 alga Exp $
 """
 from types import StringTypes
 from Persistence import Persistent
@@ -83,12 +83,15 @@ class ZopeDatabaseAdapter(Persistent):
     paramstyle = 'pyformat'
     threadsafety = 0
 
-    def getConverter(type):
+    def getConverter(self, type):
         'See Zope.App.RDB.IDBITypeInfo.IDBITypeInfo'
-        return lambda x: x
+        return identity
 
     #
     ############################################################
+
+def identity(x):
+    return x
 
 def parseDSN(dsn):
     """We could have the following cases:
