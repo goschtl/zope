@@ -23,5 +23,6 @@
 <include package="zope.app.rdb" file="meta.zcml" />
 <include package="zope.app.schema" file="meta.zcml" />
 <include package="zope.app.container.browser" file="meta.zcml" />
+<include package="zope.app.site.browser" file="meta.zcml" />
 
 </configure>
