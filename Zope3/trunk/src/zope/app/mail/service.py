@@ -15,7 +15,7 @@
 
 This module contains various implementations of MailServices.
 
-$Id: service.py,v 1.4 2003/06/23 15:45:39 alga Exp $
+$Id: service.py,v 1.5 2003/07/15 14:17:42 srichter Exp $
 """
 import rfc822
 import threading
@@ -175,6 +175,8 @@ class QueueProcessorThread(threading.Thread):
                     # Blanket except because we don't want this thread to ever die
                 except:
                     # XXX maybe throw away erroring messages here?
+                    # XXX: Note that fromaddr and toaddr is not available
+                    #      here! This needs fixing. (SR)
                     self.log.error("Error while sending mail from %s to %s.",
                                    fromaddr, ", ".join(toaddrs), exc_info=1)
             else:
