@@ -29,8 +29,14 @@ class DirectoryViewPathTests( TestCase ):
         self.ob = DummyFolder()
         addDirectoryViews(self.ob, 'fake_skins', _prefix)
 
-    # These, in effect, test the minimalpath and expandpath functions
-    # from CMFCore.utils in combination. See DirectoryView.py for details
+    def test_getDirectoryInfo(self):
+        skin = self.ob.fake_skin
+        skin.manage_properties('CMFCore/tests/fake_skins/fake_skin')
+        self.failUnless( hasattr(self.ob.fake_skin, 'test1'),
+                         self.ob.fake_skin.getDirPath() )
+
+    # 1 - 7, in effect, test the pre CMF 1.5 backwards compatibility code in
+    # DirectoryView's __of__ method. See DirectoryView.py for details
 
     # windows INSTANCE_HOME
     def test_getDirectoryInfo1(self):
