@@ -310,7 +310,7 @@ def _validate_uniqueness(value):
 
         temp_values.append(item)
 
-class AbstractCollection(MinMaxLen, Iterable, Field):
+class AbstractCollection(MinMaxLen, Iterable):
     value_type = None
     unique = False
 
@@ -401,7 +401,7 @@ class Object(Field):
             raise WrongContainedType(errors)
 
 
-class Dict(MinMaxLen, Iterable, Field):
+class Dict(MinMaxLen, Iterable):
     """A field representing a Dict."""
     implements(IDict)
     _type = dict
