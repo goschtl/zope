@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.12 2002/12/03 14:02:56 runyaga Exp $
+Revision information: $Id: Contents.py,v 1.13 2002/12/03 14:32:38 runyaga Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -23,6 +23,7 @@ from Zope.ComponentArchitecture \
 from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
+from Zope.App.ZMI.ZMIViewUtility import ZMIViewUtility
 
 class Contents(BrowserView):
 
@@ -81,9 +82,3 @@ class Contents(BrowserView):
 
         return self._index()
 
-    time_undefined=u'N/A'
-    time_format='%Y/%m/%d'
-    def formatTime(self, in_date):
-        if hasattr(in_date, 'strftime'):
-            return in_date.strftime(self.time_format) 
-        return self.time_undefined

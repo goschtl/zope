@@ -41,7 +41,7 @@
 
         <tbody>
 
-        <metal:block tal:repeat="item container_contents"> 
+        <metal:block tal:repeat="item container_contents">
           <tr tal:define="oddrow repeat/item/odd; url item/url"
               tal:attributes="class python:oddrow and 'even' or 'odd'" > 
             <td>
@@ -68,9 +68,9 @@
             </td>          
             <td><span tal:content="item/title|default">&nbsp;</span></td>
             <td><span tal:define="created item/created|default"
-                      tal:content="python:view.formatTime(created)">&nbsp;</span></td>
+                      tal:content="created">&nbsp;</span></td>
             <td><span tal:define="modified item/modified|default"
-                      tal:content="python:view.formatTime(modified)">&nbsp;</span></td>
+                      tal:content="modified">&nbsp;</span></td>
           </tr>
         </metal:block>
         </tbody> 
