@@ -5,6 +5,7 @@
 
 # These packages are the Zope 3 components.
 #
+zodbcode              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zodbcode
 zope                  svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope
 zope.app              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app
 zope.app.container    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/container
