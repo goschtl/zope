@@ -36,17 +36,21 @@ from zope.schema.interfaces import ValidationError
 
 # These widget factories delegate to the vocabulary on the field.
 
+# Display
+
 def VocabularyFieldDisplayWidget(field, request):
     """Return a display widget based on a vocabulary field."""
     return _get_vocabulary_widget(field, request, "display")
 
-def VocabularyFieldEditWidget(field, request):
-    """Return a value-selection widget based on a vocabulary field."""
-    return _get_vocabulary_edit_widget(field, request)
-
 def VocabularyMultiFieldDisplayWidget(field, request):
     """Return a display widget based on a vocabulary field."""
     return _get_vocabulary_widget(field, request, "display-multi")
+
+# Edit
+
+def VocabularyFieldEditWidget(field, request):
+    """Return a value-selection widget based on a vocabulary field."""
+    return _get_vocabulary_edit_widget(field, request)
 
 def VocabularyMultiFieldEditWidget(field, request):
     """Return a value-selection widget based on a vocabulary field."""
@@ -80,10 +84,10 @@ def _get_vocabulary_edit_widget(field, request, modifier=''):
     if modifier:
         modifier = "-" + modifier
     viewname = "edit" + modifier
-    queryname = "widget-query%s-helper" % modifier
     view = _get_vocabulary_widget(field, request, viewname)
     query = field.vocabulary.getQuery()
     if query is not None:
+        queryname = "widget-query%s-helper" % modifier
         queryview = getView(query, queryname, request)
         view.setQuery(query, queryview)
     return view
@@ -147,6 +151,12 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
         assert field.context is not None
         self.context = field
         self.setPrefix(self._prefix)
+        assert self.name
+
+    def setPrefix(self, prefix):
+        super(VocabularyWidgetBase, self).setPrefix(prefix)
+        # names for other information from the form
+        self.empty_marker_name = self.name + "-empty-marker"
 
     def __call__(self):
         if self._data is None:
@@ -193,11 +203,6 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
                 raise WidgetInputError(self.context.__name__,
                                        self.title, str(v))
         return data
-
-    def setPrefix(self, prefix):
-        super(VocabularyWidgetBase, self).setPrefix(prefix)
-        # names for other information from the form
-        self.empty_marker_name = self.name + "-empty-marker"
 
     def _emptyMarker(self):
         return "<input name='%s' type='hidden' value='1' />" % (
@@ -314,6 +319,8 @@ class ActionHelper(object):
         self.__actions[action] = msgid
 
     def getAction(self):
+        assert self.__actions is not None, \
+               "getAction() called on %r with no actions defined" % self
         get = self.request.form.get
         for action in self.__actions.iterkeys():
             name = "%s.action-%s" % (self.name, action)
@@ -568,8 +575,6 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
     __implements__ = IVocabularyQueryView
 
     queryResultBatchSize = 8
-
-    action = None
 
     _msg_add_done   = _message(_("vocabulary-query-button-add-done"),
                                "Add")
