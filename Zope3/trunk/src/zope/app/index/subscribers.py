@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.3 2002/12/30 14:03:06 stevea Exp $
+$Id: subscribers.py,v 1.4 2003/02/06 01:26:13 seanb Exp $
 """
 __metaclass__ = type
 
@@ -70,16 +70,16 @@ class Registration(Persistent):
     def subscribe(wrapped_self):
         if wrapped_self.currentlySubscribed:
             raise RuntimeError, "already subscribed; please unsubscribe first"
-        channel = wrapped_self._getChannel(None)
-        channel.subscribe(wrapped_self, IObjectAddedEvent)
+        events = getService(wrapped_self, "Events")
+        events.subscribe(wrapped_self, IObjectAddedEvent)
         wrapped_self.currentlySubscribed = True
     subscribe = ContextMethod(subscribe)
 
     def unsubscribe(wrapped_self):
         if not wrapped_self.currentlySubscribed:
             raise RuntimeError, "not subscribed; please subscribe first"
-        channel = wrapped_self._getChannel(None)
-        channel.unsubscribe(wrapped_self, IObjectAddedEvent)
+        events = getService(wrapped_self, "Events")
+        events.unsubscribe(wrapped_self, IObjectAddedEvent)
         wrapped_self.currentlySubscribed = False
     unsubscribe = ContextMethod(unsubscribe)
 
@@ -114,12 +114,6 @@ class Registration(Persistent):
             # Already registered
             pass
     _registerObject = ContextMethod(_registerObject)
-
-    def _getChannel(wrapped_self, channel):
-        if channel is None:
-            channel = getService(wrapped_self, "HubIds")
-        return channel
-    _getChannel = ContextMethod(_getChannel)
 
 def findContentObject(context):
     # We want to find the (content) Folder in whose service manager we
