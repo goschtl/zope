@@ -178,6 +178,12 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
 
     _have_field_data = False
 
+    def getData(self, optional=0):
+        data = getattr(self, "_field_data", self)
+        if data is self:
+            data = self._compute_data(self)
+        return data
+
     def haveData(self):
         self.getData()
         return self._have_field_data
@@ -186,51 +192,63 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
         self._field_data = value
         self._have_field_data = True
 
+    def _compute_data(self, optional):
+        raise NotImplementedError(
+            "_compute_data() must be implemented by a subclass\n"
+            "It may be inherited from the mix-in classes SingleDataHelper\n"
+            "or MultiDataHelper (from zope.app.browser.form.vocabularywidget)")
+
+    def _setup_default_data(self, optional):
+        # not on the content object either
+        if self.context.required and not optional:
+            raise MissingInputError(self.context.__name__,
+                                    self.title,
+                                    "required field not present")
+        return self._getDefault()
+
+    def _showData(self):
+        raise NotImplementedError(
+            "vocabulary-based widgets don't use the _showData() method")
+
+    def _convert(self, value):
+        raise NotImplementedError(
+            "vocabulary-based widgets don't use the _convert() method")
+
+    def _unconvert(self, value):
+        raise NotImplementedError(
+            "vocabulary-based widgets don't use the _unconvert() method")
+
 class SingleDataHelper:
 
-    def getData(self, optional=0):
-        data = getattr(self, "_field_data", self)
+    def _compute_data(self, optional):
+        if self.name in self.request.form:
+            token = self.request.form[self.name]
+            data = self.convertTokensToValues([token])[0]
+            self.setData(data)
+            return data
+        data = self.context.query(self.context.context, self)
         if data is self:
-            if self.name in self.request.form:
-                token = self.request.form[self.name]
-                data = self.convertTokensToValues([token])[0]
-                self.setData(data)
-                return data
-            data = self.context.query(self.context.context, self)
-            if data is self:
-                # not on the content object either
-                if self.context.required and not optional:
-                    raise MissingInputError(self.context.__name__,
-                                            self.title,
-                                            "required field not present")
-                data = self._getDefault()
-            else:
-                self.setData(data)
+            data = self._setup_default_data(optional)
+        else:
+            self.setData(data)
         return data
 
 class MultiDataHelper:
 
-    def getData(self, optional=0):
-        data = getattr(self, "_field_data", self)
+    def _compute_data(self, optional):
+        if self.name in self.request.form:
+            tokens = self.request.form[self.name]
+            if not isinstance(tokens, list):
+                tokens = [tokens]
+            data = self.convertTokensToValues(tokens)
+            self.setData(data)
+            return data
+        data = self.context.query(self.context.context, self)
         if data is self:
-            if self.name in self.request.form:
-                tokens = self.request.form[self.name]
-                if not isinstance(tokens, list):
-                    tokens = [tokens]
-                data = self.convertTokensToValues(tokens)
-                self.setData(data)
-                return data
-            data = self.context.query(self.context.context, self)
-            if data is self:
-                # not on the content object either
-                if self.context.required and not optional:
-                    raise MissingInputError(self.context.__name__,
-                                            self.title,
-                                            "required field not present")
-                data = self._getDefault()
-            else:
-                data = []
-                self.setData(data)
+            data = self._setup_default_data(optional)
+        else:
+            data = []
+            self.setData(data)
         return data
 
 
