@@ -6,10 +6,10 @@
 
     <form action=".">   
 
-      <table class="EditTable">
-        <tr metal:fill-slot="extra_top">
-          <td class="EditAttributeName">Size</td>
-	  <td class="EditAttributeValue" tal:content="view/size"
+      <table metal:fill-slot="extra_top">
+        <tr>
+          <td>Size</td>
+	  <td tal:content="view/size"
              >103 x 45 pixels, 43KB</td>            
         </tr>
       </table>
