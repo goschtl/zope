@@ -67,9 +67,6 @@ def init_table():
         {'path': "StandaloneZODB",
          'addrs': ["zodb-checkins@zope.org"]},
         
-        {'path': "ZEO",
-         'addrs': ["zodb-checkins@zope.org"]},
-
         {'path': "CMF",
          'addrs': ['cmf-checkins@zope.org']},
 
@@ -92,7 +89,8 @@ def init_table():
          'addrs': ["parsed-xml-dev@mail.zope.org"]},
 
         {'path': "ZEO",
-         'addrs': ['zeo-checkins@zope.org']},
+         'addrs': ['zeo-checkins@zope.org',
+                   'zodb-checkins@zope.org']},
 
         {'path': "ZopeDocs",
          'addrs': 'zopedocs-checkins@zope.org'},
