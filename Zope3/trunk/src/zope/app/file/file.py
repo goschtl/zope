@@ -20,7 +20,6 @@ from transaction import get_transaction
 from zope.interface import implements
 
 from zope.publisher.browser import FileUpload
-from zope.app.index.interfaces.text import ISearchableText
 from interfaces import IFile, IFileContent
 
 # set the size of the chunks
@@ -214,22 +213,6 @@ class File(Persistent):
 
     # See IFile.
     data = property(_getData, _setData)
-
-
-class SearchableText(object):
-    """Make File objects searchable."""
-
-    implements(ISearchableText)
-    __used_for__ = IFile
-
-    def __init__(self, file):
-        self.file = file
-
-    def getSearchableText(self):
-        if self.file.contentType == "text/plain":
-            return [unicode(self.file.data)]
-        else:
-            return None
 
 
 class FileChunk(Persistent):

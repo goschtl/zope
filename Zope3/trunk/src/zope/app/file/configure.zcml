@@ -92,12 +92,6 @@
       permission="zope.ManageContent"
       />
 
-  <adapter
-      for=".interfaces.IFile"
-      provides="zope.app.index.interfaces.text.ISearchableText"
-      factory=".file.SearchableText"
-      />
-
   <fssync:adapter
       class=".file.File"
       factory=".fssync.FileAdapter"
