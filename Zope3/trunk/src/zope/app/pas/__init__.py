@@ -17,4 +17,4 @@ $Id$
 """
 
 import interfaces
-from zope.app.pas.pas import PAS
+from zope.app.pas.pas import PAS, LocalPAS

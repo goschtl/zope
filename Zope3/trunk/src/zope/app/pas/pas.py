@@ -19,8 +19,15 @@ $Id$
 from zope.event import notify
 import zope.interface
 import zope.schema
+from persistent import Persistent
 
 from zope.app import zapi
+
+from zope.app.servicenames import Authentication
+from zope.app.component.localservice import queryNextService
+from zope.app.container.contained import Contained
+from zope.app.site.interfaces import ISimpleService
+from zope.app.location.interfaces import ILocation
 
 from zope.app.pas import vocabularies, interfaces
 from zope.app.pas.interfaces import IExtractionPlugin
@@ -115,7 +122,7 @@ class PAS:
 
     def getPrincipal(self, id):
         if not id.startswith(self.prefix):
-            return
+            return self._delegate('getPrincipal', id)
         id = id[len(self.prefix):]
 
         for searcher in self.searchers:
@@ -128,6 +135,8 @@ class PAS:
                 continue
 
             return self._create('createFoundPrincipal', self.prefix+id, info)
+
+        return self._delegate('getPrincipal', self.prefix+id)
 
     def unauthenticatedPrincipal(self):
         pass
@@ -148,6 +157,14 @@ class PAS:
                     elif protocol is None:
                         protocol = challenger_protocol
 
-        # XXX Fallback code.  This will call unauthorized on higher-level
-        # authentication services.
+        return self._delegate('unauthorized', id, request)
+
+    def _delegate(self, meth, *args):
+        # delegate to next AS
+        next = queryNextService(self, Authentication, None)
+        if next is not None:
+            return getattr(next, meth)(*args)
         
+
+class LocalPAS(PAS, Persistent, Contained):
+    zope.interface.implements(IPAS, ILocation, ISimpleService)

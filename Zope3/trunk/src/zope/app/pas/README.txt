@@ -21,7 +21,7 @@ steps:
 2. It constructs a principal from the given ID, combining information
    from a number of sources.
 
-It uses plug-ins in both phases of it's work. Plugins are named
+It uses plug-ins in both phases of its work. Plugins are named
 utilities that the service is configured to use in some order.
 
 In the first phase, the PAS iterates through a sequence of extractor
@@ -105,7 +105,7 @@ We provide a principal factory plugin:
 Finally, we create a PAS instance:
 
   >>> from zope.app import pas
-  >>> service = pas.PAS()
+  >>> service = pas.LocalPAS()
 
 Now, we'll create a request and try to authenticate:
 
@@ -318,6 +318,32 @@ In addition to returning a principal, this will generate an event:
   >>> event.info
   {'domain': 42}
 
+Our PAS will not find a principal with the ID '123'. Therefore it will
+delegate to the next service. To make sure that it's delegated, we put in place
+a fake service.
+
+  >>> from zope.app.component.localservice import testingNextService
+  >>> from zope.app.site.interfaces import ISiteManager
+  >>> from zope.app import servicenames
+
+  >>> class FakeService:
+  ...
+  ...     zope.interface.implements(ISiteManager)
+  ...
+  ...     lastGetPrincipalCall = lastUnauthorizedCall = None
+  ...
+  ...     def getPrincipal(self, name):
+  ...         self.lastGetPrincipalCall = name
+  ...
+  ...     def unauthorized(self, id, request):
+  ...         self.lastUnauthorizedCall = id
+
+  >>> nextservice = FakeService()
+  >>> testingNextService(service, nextservice, servicenames.Authentication)
+
+  >>> service.getPrincipal('123')
+  >>> '123' == nextservice.lastGetPrincipalCall
+  True
 
 Issuing a challenge
 ===================
@@ -331,7 +357,12 @@ Nothing will happen if there are no plugins registered.
 
   >>> service.unauthorized(42, request)
 
-What happens if a plugin is registered depends on the plugin.  Lets
+However, our next service was asked:
+
+  >>> 42 == nextservice.lastUnauthorizedCall
+  True
+
+What happens if a plugin is registered depends on the plugin.  Let's
 create a plugin that sets a response header:
 
   >>> class Challenge:
@@ -371,7 +402,7 @@ code, then the following things happen:
 3. The view gets the authentication service and calls it's
    'unauthorized' method.
 
-4. The PAS will call it's challenge plugins.  If none return a value,
+4. The PAS will call its challenge plugins.  If none return a value,
    then the PAS delegates to the next authentication service above it
    in the containment hierarchy, or to the global authentication
    service.
@@ -385,9 +416,9 @@ Sometimes, we want multiple challengers to work together.  For
 example, the HTTP specification allows multiple challenges to be isued
 in a response.  A challenge plugin can provide a `protocol`
 attribute.  If multiple challenge plugins have the same protocol,
-then, if any of them are caled and return True, then they will all be
+then, if any of them are called and return True, then they will all be
 called.  Let's look at an example.  We'll define two challengers that
-add chalenges to a X-Challenges headers:
+add challenges to a X-Challenges headers:
 
   >>> class ColorChallenge:
   ...     zope.interface.implements(interfaces.IChallengePlugin)
@@ -489,8 +520,3 @@ Searching
 =========
 
   XXX Still workin this out
-
-Delegation
-==========
-
-  XXX Still need to write this
