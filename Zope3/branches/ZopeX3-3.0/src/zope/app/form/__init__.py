@@ -42,8 +42,7 @@ class Widget(object):
         self.context.description))
     
     def _translate(self, text):
-        return translate(self.context, text, "zope",
-                         context=self.request, default=text)
+        return translate(text, "zope", context=self.request, default=text)
             
     def _renderedValueSet(self):
         """Returns True if the the widget's rendered value has been set.
