@@ -61,6 +61,9 @@ Zope Changes
       attribute anymore, since all factories are publically available,
       i.e. all attributes/methods have the permission 'zope.Public'.
 
+    - Traversing views and schema field widgets are no longer looked
+      up by name but by a providing interface.
+
     Bug fixes
     
     - The configuration machinery's resolve() method  can now handle single
