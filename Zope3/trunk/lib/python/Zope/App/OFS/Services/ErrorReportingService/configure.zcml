@@ -14,6 +14,7 @@
     <factory
         id='ErrorReportingService'
         permission='Zope.Public' />
+    <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." /> 
   </content>
 
   <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding." 
