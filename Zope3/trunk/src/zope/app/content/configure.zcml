@@ -139,7 +139,7 @@
   <require
       permission="zope.ManageContent"
       interface="zope.app.interfaces.content.zpt.IZPTPage"
-      set_attributes="source" />
+      set_attributes="source expand" />
 
   <require
       permission="zope.View"

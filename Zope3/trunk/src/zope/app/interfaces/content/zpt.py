@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.1 2002/12/27 20:33:50 stevea Exp $
+$Id: zpt.py,v 1.2 2002/12/30 19:44:56 alga Exp $
 """
 
 import zope.schema
@@ -41,6 +41,9 @@ class IZPTPage(Interface):
         description=u"""The source of the page template.""",
         required=True)
 
+    expand = zope.schema.Bool(
+        title=u"Expand macros",
+        )
 
 class IRenderZPTPage(Interface):
 
