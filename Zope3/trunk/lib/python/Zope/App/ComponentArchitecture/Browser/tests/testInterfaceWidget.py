@@ -13,11 +13,10 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: testInterfaceWidget.py,v 1.2 2002/12/05 13:27:04 dannu Exp $
+$Id: testInterfaceWidget.py,v 1.3 2002/12/21 19:50:29 stevea Exp $
 """
 
 __metaclass__ = type
-
 
 from Interface import Interface
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -54,7 +53,7 @@ class Test(CleanUp, TestCase):
     """Test Interface for InterfaceService Instance.
     """
 
-    def testInterfaceField(self):
+    def testInterfaceWidget(self):
         service = InterfaceService()
         defineService('Interfaces', IInterfaceService)
         serviceManager.provideService('Interfaces', service)
@@ -181,19 +180,7 @@ class Test(CleanUp, TestCase):
         self.assertEqual(widget(), out)
 
        
-        
-
 def test_suite():
     return TestSuite((makeSuite(Test),))
 
-if __name__=='__main__':
-    main(defaultTest='test_suite')
-    self.assertEqual(list(service.searchInterface('two')), [I3])
-                
-
-def test_suite():
-    return TestSuite((makeSuite(Test),))
-
-if __name__=='__main__':
-    main(defaultTest='test_suite')
 
