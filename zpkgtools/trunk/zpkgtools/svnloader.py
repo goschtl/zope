@@ -183,6 +183,14 @@ def parse(url):
 
 
 def split_on_tag(url):
+    """Try to split a Subversion URL into a prefix, tagname, and tail.
+
+    :param url: The URL to split.
+
+    This assumes the standard layout for projects in Subversion
+    repositories.  Returns `None` if the standard layout appears not
+    to apply.
+    """
     if "/tags/*/" in url:
         parts = url.split("/tags/*/", 1)
         tag = None
