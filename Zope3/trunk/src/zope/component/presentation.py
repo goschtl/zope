@@ -24,7 +24,7 @@ service. Additionally it contains all registration classes that can occur:
 
   - PresentationRegistration
 
-$Id: presentation.py,v 1.15 2004/04/20 11:01:09 stevea Exp $
+$Id: presentation.py,v 1.16 2004/04/23 19:18:17 jim Exp $
 """
 from types import ClassType
 from zope.component.interfaces import IPresentationService, IRegistry
@@ -34,7 +34,6 @@ from zope.interface import providedBy
 from zope.interface.interfaces import IInterface
 import zope.interface
 import zope.interface.adapter
-import zope.schema
 
 class IGlobalPresentationService(zope.interface.Interface):
     """Provide ability to update the global presentation service

@@ -13,7 +13,7 @@
 ##############################################################################
 """Global Adapter Service
 
-$Id: adapter.py,v 1.13 2004/04/20 11:01:09 stevea Exp $
+$Id: adapter.py,v 1.14 2004/04/23 19:18:17 jim Exp $
 """
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IAdapterService, IRegistry
@@ -22,7 +22,6 @@ from zope.interface.adapter import AdapterRegistry
 from zope.interface import implements, providedBy, Interface
 import sys
 import warnings
-import zope.schema
 
 class IGlobalAdapterService(IAdapterService, IRegistry):
 
