@@ -14,7 +14,7 @@
 import unittest
 
 from persistent import Persistent, GHOST, UPTODATE
-from persistent.tests.test_persistent import DM as BaseDM, BrokenDM
+from persistent.tests.persistenttestbase import DM as BaseDM, BrokenDM
 
 from zope.interface import Interface, directlyProvides, directlyProvidedBy
 
