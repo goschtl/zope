@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.11 2003/05/23 22:17:53 jim Exp $
+$Id: __init__.py,v 1.12 2003/05/27 13:12:10 jim Exp $
 """
 __metaclass__ = type
 
@@ -157,8 +157,8 @@ def queryAttr(collection, name, default=None):
 
 wrapperTypes = (Wrapper, Decorator)
 
-defineChecker(Wrapper, _contextWrapperChecker)
-defineChecker(Decorator, _contextWrapperChecker)
+#defineChecker(Wrapper, _contextWrapperChecker)
+#defineChecker(Decorator, _contextWrapperChecker)
 
 class ContextSuper:
 
