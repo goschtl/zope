@@ -73,9 +73,9 @@ class FakeOsModule(object):
         '/path/to/emptydirectory': stat.S_IFDIR,
     }
     _listdir = {
-        '/path/to/maildir/new': ['1', '2'],
-        '/path/to/maildir/cur': ['2', '1'],
-        '/path/to/maildir/tmp': ['1', '2'],
+        '/path/to/maildir/new': ['1', '2', '.svn'],
+        '/path/to/maildir/cur': ['2', '1', '.tmp'],
+        '/path/to/maildir/tmp': ['1', '2', '.ignore'],
     }
 
     path = FakeOsPathModule(_stat_mode, _listdir)

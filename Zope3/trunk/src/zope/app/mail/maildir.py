@@ -60,12 +60,14 @@ class Maildir(object):
         join = os.path.join
         subdir_cur = join(self.path, 'cur')
         subdir_new = join(self.path, 'new')
-        new_messages = [join(subdir_new, x) for x in os.listdir(subdir_new)]
-        cur_messages = [join(subdir_cur, x) for x in os.listdir(subdir_cur)]
-        # XXX http://www.qmail.org/man/man5/maildir.html says:
+        # http://www.qmail.org/man/man5/maildir.html says:
         #     "It is a good idea for readers to skip all filenames in new
         #     and cur starting with a dot.  Other than this, readers
         #     should not attempt to parse filenames."
+        new_messages = [join(subdir_new, x) for x in os.listdir(subdir_new)
+                        if not x.startswith('.')]
+        cur_messages = [join(subdir_cur, x) for x in os.listdir(subdir_cur)
+                        if not x.startswith('.')]
         return iter(new_messages + cur_messages)
 
     def newMessage(self):
