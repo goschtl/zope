@@ -102,7 +102,7 @@ def isNewObject(targetfile):
 def getObjectData(ob):
     """Returns the data of a ZODB object.
     """
-    adapter = adapter = getObjectAdapter(ob)
+    adapter = getObjectAdapter(ob)
     return adapter.getBody()
 
 def getObjectDataTempfile(targetfile, objpath, dbpath, siteconfpath):
@@ -192,18 +192,12 @@ def traverseFS(fspath, mapping_paths):
 def checkConflictData(sandbox_path, zopedb_path):
     """Checks for conflict data in the filesystem.
     """
-    isConflict = 0
     f = open(sandbox_path,'r')
     data = f.read()
     f.close()
     filter1 = '<<<<<<< %s' % (sandbox_path)
     filter2 = '>>>>>>> %s' % (zopedb_path)
-    if data.find(filter1) >= 0 and data.find(filter2) >= 0:
-        isConflict = 1
-    else:
-        isConflict = 0
-
-    return isConflict
+    return data.find(filter1) >= 0 and data.find(filter2) >= 0
 
 def makeNewEntry(admin_dir, name=None, type=None, factory=None,
                  objpath=None, isNew=None):
