@@ -330,7 +330,7 @@ Finally, we need to hook up the pages through ZCML::
     class=".browser.SimpleFolderView"
     attribute="eagle"
     name="eagle.txt"
-    permission="zope.ViewManagementScreens"
+    permission="zope2.ViewManagementScreens"
     />
 
 ``browser`` in this refers to the XML namespace of Zope 3 for browser
