@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.4 2003/01/06 18:39:37 stevea Exp $
+$Id: service.py,v 1.5 2003/01/08 17:40:56 stevea Exp $
 """
 __metaclass__ = type
 
@@ -117,6 +117,8 @@ class INameResolver(Interface):
 
         If the name ends with a trailing dot, the last name segment
         may be repeated.
+
+        XXX Say what errors are raised if the name is not resolvable.
         """
 
 class IServiceConfiguration(INamedComponentConfiguration):
