@@ -12,20 +12,21 @@
 #
 ##############################################################################
 """
-Revision information:
-
-$Id: test_rename.py,v 1.5 2004/03/03 10:38:54 philikon Exp $
+$Id: tests.py,v 1.1 2004/03/03 10:52:04 philikon Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
+
+from zope.testing.doctestunit import DocTestSuite
+from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.tests import ztapi
+
+from zope.component import getAdapter
+from zope.exceptions import NotFoundError, DuplicationError
 from zope.app.traversing import traverse
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.component import getAdapter
-from zope.app.tests import ztapi
-from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.container.interfaces import IContainer
+from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.copypastemove import ObjectMover
-from zope.exceptions import NotFoundError, DuplicationError
 from zope.app.copypastemove import rename
 
 class File:
@@ -63,9 +64,12 @@ class RenameTest(PlacefulSetup, TestCase):
         self.assertRaises(DuplicationError, rename, folder1, 'file1', 'file2')
 
 def test_suite():
-    return TestSuite((
-        makeSuite(RenameTest),
-        ))
+    suite = makeSuite(RenameTest)
+    suite.addTest(
+        DocTestSuite('zope.app.copypastemove',
+                     setUp=setUp, tearDown=tearDown),
+        )
+    return suite
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

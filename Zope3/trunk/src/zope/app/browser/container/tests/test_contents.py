@@ -13,17 +13,17 @@
 ##############################################################################
 """Test Container Contents
 
-$Id: test_contents.py,v 1.32 2004/03/03 10:38:34 philikon Exp $
+$Id: test_contents.py,v 1.33 2004/03/03 10:52:02 philikon Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
-from zope.app.interfaces.copypastemove import IObjectMover
+from zope.app.copypastemove.interfaces import IObjectMover
 
 from zope.app.traversing import traverse
-from zope.app.interfaces.copypastemove import IObjectMover
-from zope.app.interfaces.copypastemove import IObjectCopier
+from zope.app.copypastemove.interfaces import IObjectMover
+from zope.app.copypastemove.interfaces import IObjectCopier
 
 from zope.app.copypastemove import ObjectMover
 from zope.app.copypastemove import ObjectCopier
@@ -31,7 +31,7 @@ from zope.app.copypastemove import ObjectCopier
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.interface import Interface, implements
 
-from zope.app.interfaces.copypastemove import IPrincipalClipboard
+from zope.app.copypastemove.interfaces import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
 from zope.component import getServiceManager
 from zope.app.services.principalannotation import PrincipalAnnotationService

@@ -31,20 +31,23 @@
 
   <adapter
       factory="zope.app.copypastemove.ObjectMover"
-      provides="zope.app.interfaces.copypastemove.IObjectMover"
+      provides="zope.app.copypastemove.interfaces.IObjectMover"
       permission="zope.ManageContent"
-      for="*" />
+      for="*"
+      />
 
   <adapter
       factory="zope.app.copypastemove.ObjectCopier"
-      provides="zope.app.interfaces.copypastemove.IObjectCopier"
+      provides="zope.app.copypastemove.interfaces.IObjectCopier"
       permission="zope.ManageContent"
-      for="*" />
+      for="*"
+      />
 
   <adapter
       factory="zope.app.copypastemove.PrincipalClipboard"
-      provides="zope.app.interfaces.copypastemove.IPrincipalClipboard"
-      for="zope.app.interfaces.annotation.IAnnotations" />
+      provides="zope.app.copypastemove.interfaces.IPrincipalClipboard"
+      for="zope.app.interfaces.annotation.IAnnotations"
+      />
 
   <include package="zope.app.location" />
   <include package="zope.app.container" />

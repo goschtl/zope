@@ -13,7 +13,7 @@
 ##############################################################################
 """Copy and Move support
 
-$Id: copypastemove.py,v 1.7 2003/09/21 17:30:09 jim Exp $
+$Id: interfaces.py,v 1.1 2004/03/03 10:52:04 philikon Exp $
 """
 
 from zope.interface import Interface

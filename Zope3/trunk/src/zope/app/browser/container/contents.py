@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.32 2004/03/03 10:38:33 philikon Exp $
+$Id: contents.py,v 1.33 2004/03/03 10:52:01 philikon Exp $
 """
 
 from zope.exceptions import NotFoundError
@@ -25,9 +25,9 @@ from zope.app.publisher.browser import BrowserView
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.interfaces import IDCDescriptiveProperties
-from zope.app.interfaces.copypastemove import IPrincipalClipboard
-from zope.app.interfaces.copypastemove import IObjectCopier
-from zope.app.interfaces.copypastemove import IObjectMover
+from zope.app.copypastemove.interfaces import IPrincipalClipboard
+from zope.app.copypastemove.interfaces import IObjectCopier
+from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.copypastemove import rename
 
 from zope.app.browser.container.adding import BasicAdding

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: copypastemove.py,v 1.17 2004/03/03 10:38:29 philikon Exp $
+$Id: __init__.py,v 1.1 2004/03/03 10:52:04 philikon Exp $
 """
 from zope.interface import implements, Invalid
 from zope.exceptions import NotFoundError, DuplicationError
@@ -22,8 +22,8 @@ from zope.app import zapi
 from zope.app.container.sample import SampleContainer
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCopiedEvent
-from zope.app.interfaces.copypastemove import IObjectMover
-from zope.app.interfaces.copypastemove import IObjectCopier
+from zope.app.copypastemove.interfaces import IObjectMover
+from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.location import locationCopy
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.constraints import checkObject
