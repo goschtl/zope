@@ -57,6 +57,9 @@ class SOAPRequest(HTTPRequest):
     _root = None
     _args = ()
 
+    def _getPositionalArguments(self):
+        return self._args
+
     def _createResponse(self, outstream):
         """Create a specific SOAP response object."""
         return SOAPResponse(outstream)
@@ -66,7 +69,8 @@ class SOAPRequest(HTTPRequest):
 
     def processInputs(self):
         try:
-            parsed = ParsedSoap(self._body_instream.read())
+            input = self._body_instream.read()
+            parsed = ParsedSoap(input)
 
             # We do not currently handle actors or mustUnderstand elements.
             actors = parsed.WhatActorsArePresent()
@@ -115,6 +119,7 @@ class SOAPRequest(HTTPRequest):
                     except ZSI.EvaluateException, e:
                         self._error = ZSI.FaultFromZSIException(e)
                     return
+
         except Exception, e:
             self._setError(ZSI.FaultFromException(e, 0))
 
