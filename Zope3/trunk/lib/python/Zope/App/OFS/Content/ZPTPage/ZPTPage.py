@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.12 2002/11/12 17:02:49 stevea Exp $
+$Id: ZPTPage.py,v 1.13 2002/11/12 17:30:09 stevea Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -70,14 +70,12 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
         '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
         return self.read()
 
-
     def setSource(self, text, content_type='text/html'):
         '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
         if isinstance(text, unicode):
             text = text.encode('utf-8')
         
         self.pt_edit(text, content_type)
-
 
     def pt_getContext(self, instance, request, **_kw):
         # instance is a View component
@@ -101,7 +99,6 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
         return self.pt_render(namespace)
 
     render = ContextMethod(render)
-    
 
     source = property(getSource, setSource, None,
                       """Source of the Page Template.""")

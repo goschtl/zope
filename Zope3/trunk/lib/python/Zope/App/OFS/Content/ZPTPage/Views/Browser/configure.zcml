@@ -2,7 +2,8 @@
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser"
    xmlns:form="http://namespaces.zope.org/form"
-   package="Zope.App.OFS.Content.ZPTPage">
+   package="Zope.App.OFS.Content.ZPTPage"
+>
 
 <!-- ZPT Page View Directives -->
 
@@ -20,10 +21,10 @@
 </browser:view>
 
 <form:edit
-    schema = ".ZPTPage.IZPTPage."
-    name = "edit.html"
-    label = "Edit a ZPT page"
-    permission = "Zope.ManageContent"
+    schema=".ZPTPage.IZPTPage."
+    name="edit.html"
+    label="Edit a ZPT page"
+    permission="Zope.ManageContent"
     />
 
 <!-- tabs for ZPT Page -->
@@ -36,7 +37,8 @@
 
 <browser:icon name="zmi_icon" for=".ZPTPage.IZPTPage." file="zpt.gif" />
 
-<browser:menuItem menu="add_content"
+<browser:menuItem
+    menu="add_content"
     for="Zope.App.OFS.Container.IAdding."
     title="Zope Page Template Page" action="ZPTPage"
     description="An object for dynamic content based on Page Templates." />
