@@ -46,6 +46,12 @@ realclean: clean
 	rm -f TAGS
 	$(PYTHON) setup.py clean -a
 
+zcmldocs:
+	PYTHONPATH=`pwd`/src:$(PYTHONPATH) $(PYTHON) \
+	./src/zope/configuration/stxdocs.py \
+	-f ./src/zope/app/meta.zcml -o ./doc/zcml/namespaces.zope.org
+
+
 #
 #   Naughty, naughty!  How many Zope3 developers are going to have
 #   that directory structure?  The 'ctags' package is capable of generating
