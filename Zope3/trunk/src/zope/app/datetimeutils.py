@@ -15,10 +15,10 @@
 
 Encapsulation of date/time values
 
-$Id: datetimeutils.py,v 1.4 2003/01/08 20:18:26 tim_one Exp $
+$Id: datetimeutils.py,v 1.5 2003/01/09 18:29:48 jim Exp $
 """
 
-__version__='$Revision: 1.4 $'[11:-2]
+__version__='$Revision: 1.5 $'[11:-2]
 
 import math
 import re
@@ -954,30 +954,53 @@ parser = DateTimeParser()
 parse = parser.parse
 time = parser.time
 
+######################################################################
+# Time-zone info based soley on offsets
+#
+# Share tzinfos for the same offset 
+
 from datetime import tzinfo as _tzinfo, timedelta as _timedelta
-_ZERO = _timedelta(0)
-class tzinfo(_tzinfo):
 
-    __slots__ = ('offset', )
+class _tzinfo(_tzinfo):
 
-    def __init__(self, offset):
-        if isinstance(offset, int):
-            offset = _timedelta(minutes=offset)
-        self.offset = offset
+    def __init__(self, minutes):
+        if abs(minutes) > 1439:
+            raise ValueError("Time-zone offset is too large,", minutes)
+        self.__minutes = minutes
+        self.__offset = _timedelta(minutes=minutes)
 
-    def utcoffset(self, dt=None):
-        return self.offset
+    def utcoffset(self, dt):
+        return self.__offset
 
-    __getstate__ = utcoffset
-    __setstate__ = __init__
+    def __reduce__(self):
+        return tzinfo, (self.__minutes, )
 
-    def dst(self, dt): return _ZERO
-    def tzname(self, dt): return ''
+    def dst(self, dt):
+        return None
+    
+    def tzname(self, dt):
+        return None
 
     def __repr__(self):
-        minutes = self.offset.days * 24 * 60  + self.offset.seconds // 60
-        return 'tzinfo(%d)' % minutes
+        return 'tzinfo(%d)' % self.__minutes
 
+
+def tzinfo(offset, _tzinfos = {}):
+
+    info = _tzinfos.get(offset)
+    if info is None:
+        # We haven't seen this one before. we need to save it.
+
+        # Use setdefault to avoid a race condition and make sure we have
+        # only one
+        info = _tzinfos.setdefault(offset, _tzinfo(offset))
+
+    return info
+
+tzinfo.__safe_for_unpickling__ = True
+
+#
+######################################################################
 
 from datetime import datetime as _datetime
 def parseDatetimetz(string):
