@@ -74,6 +74,11 @@ Zope Changes
 
     Bug fixes
     
+    - Fixed issue 80. There were only a few very contained spots that made
+      DTML non-unicode aware. Once I removed these spots, unicode input works
+      like a charm. I converted all the tests to use unicode, so that
+      everything is well-tested.
+
     - Fixed issue 140. The problem was that a 'FileUpload' object was created,
       even though no file was uploaded. On top of it the underlying
       'FieldStorage' object provided an empty filename and the data of the
