@@ -6,7 +6,9 @@ Versioning means different things to different people and there is no common opt
 solution for all the problems that are related to the history of evolving data.
 Therefore we want to provide a flexible framework that is pluggable in its
 most important parts and reduces the problem of different versioning schemes
-to a few reusable patterns. These patterns are implemented in versioning.repository.
+to a few reusable patterns. These patterns as we conceive them are implemented 
+in versioning.repository.
+
 The main API is defined in versioning.interfaces.IVersionControl.
 
 The pattern common to all implementation variants is roughly as follows:
