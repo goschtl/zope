@@ -53,6 +53,15 @@ class ConfigurationError(Exception):
         self.url = url
         self.lineno = lineno
 
+    def __str__(self):
+        s = Exception.__str__(self)
+        if self.url:
+            s = "%s\n(%s" % (s, self.url)
+            if self.lineno is not None:
+                s = "%s, line %s" % (s, self.lineno)
+            s += ")"
+        return s
+
 
 class Schema:
     """Schema definition that can be used by the Parser class to
