@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - Separated the trusted and untrusted behaviors of page
+        templates in the application server.  File-system-based
+        templates are trusted, and database-based templates are
+        untrusted.
+
       - Implemented rdb:gadflyRoot directive.    
 
       - Schemas are now copied before they are appended to content type or
