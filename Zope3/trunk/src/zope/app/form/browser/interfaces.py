@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.3 2004/04/24 23:19:42 srichter Exp $
+$Id: interfaces.py,v 1.4 2004/05/07 19:39:44 garrett Exp $
 """
 from zope.interface import Interface
 from zope.app.form.interfaces import IWidget
 
 class IAddFormCustomization(Interface):
-    """This interface defined methods of add forms that can be overridden
+    """API for add form customization.
 
     Classes supplied when defining add forms may need to override some
     of these methods.
@@ -39,7 +39,6 @@ class IAddFormCustomization(Interface):
         content = <create the content from the data>
         content = self.add(content) # content wrapped in some context
         <set after-add attributes on content>
-
     """
 
     def createAndAdd(data):
@@ -54,7 +53,7 @@ class IAddFormCustomization(Interface):
         """
 
     def add(content):
-        """Add the given content
+        """Add the given content.
 
         This method is overridden when the context of the add form is
         not an IAdding.  In this case, the class that customizes the
@@ -76,40 +75,22 @@ class IAddFormCustomization(Interface):
         i.e. it delegates to the IAdding view.
         """
 
-
 class IBrowserWidget(IWidget):
-    """A field widget contains all the properties that are required
-       to represent a field. Properties include css_sheet,
-       default value and so on.
-    """
+    """A widget for use in a web browser UI."""
 
-    def __call__(): # XXX promote to IWidget?
-        """Render the widget
-        """
+    def __call__():
+        """Render the widget."""
 
     def hidden():
-        """Render the widget as a hidden field
-        """
+        """Render the widget as a hidden field."""
 
-    def label():
-        """Render a label tag"""
-
-    def error(): # XXX promote to IWidget?
+    def error():
         """Render the validation error for the widget, or return
         an empty string if no error"""
 
-    def row():
-        """Render the widget as two or three div elements,
-           for the label, the field and possibly the validation error
-
-        For example:
-          <div class="label">label</div><div class="field">field</div>
-          <div class="error">Validation error message</div>
-        """
-
 
 class IFormCollaborationView(Interface):
-    """Views that collaborate to create a single form
+    """Views that collaborate to create a single form.
 
     When a form is applied, the changes in the form need to
     be applied to individual views, which update objects as
@@ -134,8 +115,7 @@ class IFormCollaborationView(Interface):
         """
 
     def update():
-        """Update the form with data from the request.
-        """
+        """Update the form with data from the request."""
 
 
 class IVocabularyQueryView(Interface):
