@@ -13,7 +13,7 @@
 ##############################################################################
 """Resource URL acess
 
-$Id: Resources.py,v 1.2 2002/06/14 09:25:20 stevea Exp $
+$Id: Resources.py,v 1.3 2002/10/28 11:41:34 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -34,13 +34,13 @@ class Resources(BrowserView):
     # Implementation methods for interface
     # Zope.Publisher.Browser.IBrowserPublisher.
 
-    def publishTraverse(self, request, name):
+    def publishTraverse(wrapped_self, request, name):
         '''See interface IBrowserPublisher'''
         
-        resource_service = getService(self, 'Resources')
-        resource = resource_service.queryResource(self, name, request)
+        resource_service = getService(wrapped_self, 'Resources')
+        resource = resource_service.queryResource(wrapped_self, name, request)
         if resource is None:
-            raise NotFoundError(self, name)
+            raise NotFoundError(wrapped_self, name)
         return ContextWrapper(resource, resource_service)
 
     publishTraverse = ContextMethod(publishTraverse)
