@@ -18,12 +18,22 @@ $Id$
 import unittest
 from zope.app.testing import placelesssetup
 from zope.app import zapi
+from zope.app.zapi.interfaces import IZAPI
 from zope.interface.verify import verifyObject
+from zope.proxy import removeAllProxies, isProxy
 
 class TestIZAPI(unittest.TestCase):
 
     def test_izapi(self):
-        self.assert_(verifyObject(zapi.interfaces.IZAPI, zapi))
+        """
+        Ensure that the zapi module provides the IZAPI interface
+        """
+        from zope.app import zapi
+        # deprecation proxies don't seem to always work with
+        # verifyObject, so remove any proxies
+        if isProxy(zapi):
+            zapi = removeAllProxies(zapi)
+        verifyObject(IZAPI, zapi)
         
 
 def setUp(test):
