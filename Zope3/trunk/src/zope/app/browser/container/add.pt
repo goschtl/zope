@@ -7,19 +7,15 @@
 
   <caption i18n:translate="">Add Content</caption>
 
-  <tbody tal:define="infos view/addingInfo; checked python:len(infos)==1">
+  <tbody tal:define="infos view/addingInfo">
 
     <tr tal:repeat="info infos">
 
       <td class="Selector">
-        <input tal:condition="checked"
-               type="radio" name="type_name" checked
+        <input type="radio" name="type_name" checked
                tal:attributes="value   info/action;
-                               id      info/action" />
-        <input tal:condition="not:checked"
-               type="radio" name="type_name"
-               tal:attributes="value   info/action;
-                               id      info/action" />
+                               id      info/action;
+                               checked python:len(infos)==1" />
       </td>
 
       <td class="TypeName">
