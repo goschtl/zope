@@ -38,7 +38,7 @@ class ZopeConnectionTests(TestCase):
         cursor.execute('select * from blah')
 
         self.assertEqual(zc._txn_registered, True)
-        self.assertEqual(len(transaction.get_transaction()._resources), 1)
+        self.assertEqual(len(transaction.get()._resources), 1)
 
     def test_commit(self):
         transaction.begin()

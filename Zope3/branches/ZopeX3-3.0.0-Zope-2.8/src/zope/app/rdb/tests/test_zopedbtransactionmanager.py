@@ -16,7 +16,7 @@
 $Id$
 """
 from unittest import TestCase, main, makeSuite, TestSuite
-from transaction import get_transaction
+import transaction
 from transaction.tests.abstestIDataManager import IDataManagerTests
 from zope.app.rdb import ZopeDBTransactionManager
 from zope.app.rdb import ZopeConnection
@@ -29,18 +29,18 @@ class TxnMgrTest(IDataManagerTests, TestCase):
         zc = ZopeConnection(self.conn, TypeInfoStub())
         self.datamgr = ZopeDBTransactionManager(zc)
         zc.registerForTxn()
-        self.txn_factory = get_transaction
+        self.txn_factory = transaction.get
 
     def tearDown(self):
         """ make sure the global env is clean"""
-        get_transaction().abort()
+        transaction.abort()
 
     def test_abort(self):
-        get_transaction().abort()
+        transaction.abort()
         self.assertEqual(self.conn._called.get('rollback'), 1)
 
     def test_commit(self):
-        get_transaction().commit()
+        transaction.commit()
         self.assertEqual(self.conn._called.get('commit'), 1)
 
 
@@ -58,19 +58,19 @@ class TwoTxnMgrSortKeyTest(TestCase):
         self.datamgr1 = ZopeDBTransactionManager(zc2)
         zc1.registerForTxn()
         zc2.registerForTxn()
-        self.txn_factory = get_transaction
+        self.txn_factory = transaction.get
 
     def tearDown(self):
         """ make sure the global env is clean"""
-        get_transaction().abort()
+        transaction.abort()
 
     def test_abort(self):
-        get_transaction().abort()
+        transaction.abort()
         self.assertEqual(self.conn1._called.get('rollback'), 1)
         self.assertEqual(self.conn2._called.get('rollback'), 1)
 
     def test_commit(self):
-        get_transaction().commit()
+        transaction.commit()
         self.assertEqual(self.conn1._called.get('commit'), 1)
         self.assertEqual(self.conn2._called.get('commit'), 1)
 

@@ -26,7 +26,6 @@ A service manager has a number of roles:
 $Id$
 """
 import sys
-from transaction import get_transaction
 
 import zope.event
 import zope.interface

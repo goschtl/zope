@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from transaction import get_transaction
+import transaction
 from ZODB.tests.util import DB
 from zope.exceptions import NotFoundError
 
@@ -52,7 +52,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
         root = cx.root()
         self.root_folder = rootFolder()
         root[ZopePublication.root_name] = self.root_folder
-        get_transaction().commit()
+        transaction.commit()
         cx.close()
 
     def createRFAndSM(self):
@@ -62,7 +62,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
         root[ZopePublication.root_name] = self.root_folder
         self.service_manager = ServiceManager(self.root_folder)
         self.root_folder.setSiteManager(self.service_manager)
-        get_transaction().commit()
+        transaction.commit()
         cx.close()
 
 
@@ -108,7 +108,7 @@ class TestBootstrapSubscriberBase(PlacefulSetup, unittest.TestCase):
 
             self.assert_(IErrorReportingService.providedBy(
                 traverse(package, 'ErrorLogging')))
-            get_transaction().commit()
+            transaction.commit()
             cx.close()
 
 class TestBootstrapInstance(TestBootstrapSubscriberBase):

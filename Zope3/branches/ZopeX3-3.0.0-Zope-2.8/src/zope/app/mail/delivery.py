@@ -33,7 +33,7 @@ from zope.interface import implements
 from zope.app.mail.interfaces import IDirectMailDelivery, IQueuedMailDelivery
 from zope.app.mail.maildir import Maildir
 from transaction.interfaces import IDataManager
-from transaction import get_transaction
+import transaction
 from transaction.util import NoSavepointSupportRollback
 
 class MailDataManager(object):
@@ -80,7 +80,7 @@ class AbstractMailDelivery(object):
         else:
             messageid = self.newMessageId()
             message = 'Message-Id: <%s>\n%s' % (messageid, message)
-        get_transaction().join(
+        transaction.get().join(
             self.createDataManager(fromaddr, toaddrs, message))
         return messageid
 

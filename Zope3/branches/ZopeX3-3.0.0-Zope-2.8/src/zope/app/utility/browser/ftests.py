@@ -40,7 +40,7 @@ class UtilityViewTestCase(functional.BrowserTestCase):
         rm = default.getRegistrationManager()
         rm.addRegistration(reg)
         reg.status = "Active"
-        transaction.get_transaction().commit()
+        transaction.commit()
         # now let's take a look at the Utilities page:
         response = self.publish(
             "/++etc++site/default/Utilities/@@utilities.html",

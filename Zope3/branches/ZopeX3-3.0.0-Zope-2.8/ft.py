@@ -38,8 +38,8 @@ class TestSomething(FunctionalTestCase):
         #
         # If you add something to the root folder or in general change
         # anything in the ZODB, you might need to perform a
-        #   from zope.transaction import get_transaction
-        #   get_transaction().commit()
+        #   import transaction
+        #   transaction.commit()
         # for those changes to become visible to the publisher.
 
     def tearDown(self):

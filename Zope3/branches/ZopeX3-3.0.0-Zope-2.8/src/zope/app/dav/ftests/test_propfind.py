@@ -17,7 +17,7 @@ $Id$
 """
 import unittest
 from datetime import datetime
-from transaction import get_transaction
+import transaction
 from zope.pagetemplate.tests.util import normalize_xml
 
 from zope.app import zapi
@@ -37,7 +37,7 @@ class TestPROPFIND(DAVTestCase):
         pt = traverse(self.getRootFolder(), '/pt')
         adapted = IZopeDublinCore(pt)
         adapted.title = u'Test Title'
-        get_transaction().commit()
+        transaction.commit()
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='title', expect='Test Title', basic='mgr:mgrpw')
 
@@ -46,7 +46,7 @@ class TestPROPFIND(DAVTestCase):
         pt = traverse(self.getRootFolder(), '/pt')
         adapted = IZopeDublinCore(pt)
         adapted.created = datetime.utcnow()
-        get_transaction().commit()
+        transaction.commit()
         expect = str(adapted.created)
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='created', expect=expect, basic='mgr:mgrpw')
@@ -56,7 +56,7 @@ class TestPROPFIND(DAVTestCase):
         pt = traverse(self.getRootFolder(), '/pt')
         adapted = IZopeDublinCore(pt)
         adapted.subjects = (u'Bla', u'Ble', u'Bli')
-        get_transaction().commit()
+        transaction.commit()
         expect = ', '.join(adapted.subjects)
         self.verifyPropOK(path='/pt', ns='http://purl.org/dc/1.1',
                           prop='subjects', expect=expect, basic='mgr:mgrpw')

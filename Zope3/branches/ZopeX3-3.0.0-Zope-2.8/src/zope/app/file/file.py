@@ -16,7 +16,7 @@
 $Id$
 """
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 from zope.interface import implements
 
 from zope.publisher.browser import FileUpload
@@ -163,7 +163,7 @@ class File(Persistent):
 
         # Make sure we have an _p_jar, even if we are a new object, by
         # doing a sub-transaction commit.
-        get_transaction().commit(1)
+        transaction.commit(1)
 
         jar = self._p_jar
 
@@ -195,7 +195,7 @@ class File(Persistent):
             data.next = next
 
             # Now make it get saved in a sub-transaction!
-            get_transaction().commit(1)
+            transaction.commit(1)
 
             # Now make it a ghost to free the memory.  We
             # don't need it anymore!
