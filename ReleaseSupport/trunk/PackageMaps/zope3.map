@@ -44,7 +44,7 @@ zope.app.ftp               svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/a
 zope.app.externaleditor    svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/externaleditor
 zope.app.apidoc            svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/apidoc
 zope.app.generations       svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/generations
-zope.documenttemplate      svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/zope
+zope.documenttemplate      svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/documenttemplate
 zope.app.sqlexpr           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/sqlexpr
 zope.app.file              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/file
 zope.app.zptpage           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/app/zptpage
