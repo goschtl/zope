@@ -18,12 +18,13 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
+from zope.proxy import isProxy
+from zope.security import canAccess
+from zope.security.interfaces import Unauthorized
 
 from zope.app import zapi
-
 from zope.app.pagelet.interfaces import IPagelet
 from zope.app.pagelet.collector import MacroCollector
-
 from zope.app.pageletchooser.interfaces import IMacroChooser
 from zope.app.pageletchooser.interfaces import IPageletNameManager
 
@@ -38,10 +39,11 @@ class MacroChooser(MacroCollector):
         the given key and has to return a existing pagelet macro name.
 
     Imports:
-    
+
         >>> from zope.interface import Interface
+        >>> from zope.security.checker import defineChecker
         >>> from zope.publisher.browser import TestRequest
-        >>> from zope.publisher.interfaces.browser import IBrowserRequest
+        >>> from zope.publisher.interfaces.browser import IDefaultBrowserLayer
         >>> from zope.component.interfaces import IView
         >>> from zope.app.publisher.browser import BrowserView
         >>> from zope.app.pagelet.interfaces import IPagelet
@@ -49,6 +51,7 @@ class MacroChooser(MacroCollector):
         >>> from zope.app.pagelet.tests import TestPagelet
         >>> from zope.app.pagelet.tests import TestContext
         >>> from zope.app.pagelet.tests import TestSlot
+        >>> from zope.app.pagelet.tests import testChecker
         >>> from zope.app.pageletchooser.tests import TestMapping
 
     Setup pagelet:
@@ -61,13 +64,14 @@ class MacroChooser(MacroCollector):
 
         >>> from zope.app.testing import placelesssetup, ztapi
         >>> placelesssetup.setUp()
+        >>> defineChecker(factory, testChecker)
         >>> gsm = zapi.getGlobalSiteManager()
         >>> gsm.provideAdapter(
-        ...        (Interface, IBrowserRequest, IView, IPageletSlot)
+        ...        (Interface, IDefaultBrowserLayer, IView, IPageletSlot)
         ...        , IPagelet, name, factory)
 
     Setup macro chooser:
-        
+
         >>> request = TestRequest()
         >>> view = BrowserView(ob, request)
         >>> slot = TestSlot()
@@ -91,7 +95,7 @@ class MacroChooser(MacroCollector):
       >>> placelesssetup.tearDown()
 
     """
-             
+
     implements(IMacroChooser)
 
     _defaultmacroname = 'notfoundmacro'
@@ -102,8 +106,13 @@ class MacroChooser(MacroCollector):
             macroname = getattr(adapter, key)
         except:
             macroname = self._defaultmacroname
-        
+
         objects = self.context, self.request, self.view, self.slot
         pagelet = zapi.getMultiAdapter(objects, IPagelet, macroname)
-        
-        return pagelet[macroname]
+
+        # rasie Unauthorized exception if we don't have the permission for 
+        # calling the pagelet's macro code
+        if canAccess(pagelet, '__getitem__'):
+                return pagelet[macroname]
+        else:
+            raise Unauthorized(key)
