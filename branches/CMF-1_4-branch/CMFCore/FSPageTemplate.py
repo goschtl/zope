@@ -120,27 +120,13 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
 
     def pt_render(self, source=0, extra_context={}):
         self._updateFromFS()  # Make sure the template has been loaded.
-        try:
-            result = FSPageTemplate.inheritedAttribute('pt_render')(
-                                    self, source, extra_context
-                                    )
-            if not source:
-                _setCacheHeaders(self, extra_context)
-            return result
+        result = FSPageTemplate.inheritedAttribute('pt_render')(
+                                self, source, extra_context
+                                )
+        if not source:
+            _setCacheHeaders(self, extra_context)
+        return result
 
-        except RuntimeError:
-            if Globals.DevelopmentMode:
-                err = FSPageTemplate.inheritedAttribute( 'pt_errors' )( self )
-                if not err:
-                    err = sys.exc_info()
-                err_type = err[0]
-                err_msg = '<pre>%s</pre>' % replace( str(err[1]), "\'", "'" )
-                msg = 'FS Page Template %s has errors: %s.<br>%s' % (
-                    self.id, err_type, html_quote(err_msg) )
-                raise RuntimeError, msg
-            else:
-                raise
-                
     security.declarePrivate( '_ZPT_exec' )
     _ZPT_exec = ZopePageTemplate._exec
 
