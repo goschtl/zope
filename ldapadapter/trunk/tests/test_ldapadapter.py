@@ -23,6 +23,10 @@ from zope.app.tests import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
 
 
+def populateFake():
+    import fakeldap
+    fakeldap.addTreeItems('o=test,dc=org')
+
 def setUp(test):
     import fakeldap
     if sys.modules.has_key('_ldap'):
@@ -37,6 +41,7 @@ def setUp(test):
         test.old_ldap = None
     sys.modules['ldap'] = fakeldap
     import ldap
+    populateFake()
 
 def tearDown(test):
     del sys.modules['ldap']
