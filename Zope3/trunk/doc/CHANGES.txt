@@ -10,6 +10,14 @@ Zope Changes
 
     New features
 
+      - It is no longer necessary to supply a for attribute in adapter
+        directives if the factory declares the interfaces or classes that it
+        adapts.
+
+      - It is no longer necessary to specify a provides attribute in
+        an adapter or utility directive if the factory/component
+        implements/provides a single interface.
+
       - Added `zope.security.canAccess` and `zope.security.canWrite`
         convenience methods.  Often code wants to check if a certain option is 
         open to a user before presenting it.  If the code relies on a certain
