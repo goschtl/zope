@@ -19,6 +19,67 @@ Zope Changes
 
   ------------------------------------------------------------------
 
+  Zope X3.0.0 Beta 1
+
+    New features
+
+      - Event handlers can no be implemented as regular Python
+        functions. 
+
+    Bug fixes
+
+    Restructuring
+
+      - The event system was completely reimplemented:
+
+        - Converted event subscribers to simple handlers implemented as
+          simple Python functions.
+
+        - Now all handlers are registered as subscription adapters using the
+          subscriber directive (rather than event:subscribe).
+
+        - No longer have IEvent.  There's no need for a common base
+          interface. 
+
+        - No longer have event publication or subscription services.
+
+
+      - We had an object hub service. The object hub service was responsible
+        for:
+
+        - Managing short ids for objects, useful for indexing
+
+        - Keeping track of object locations.  This was important when the
+          object hub was created, because it wasn't practical to use direct
+          object references. No it is, so hub ids are no-longer useful for
+          implementing location-independent object references.
+
+        The object hub service is dead.
+
+        In the future, there will be a utility for use by indexes, that
+        maintains short ids for objects. Perhaps this will be an indexing id
+        service.
+
+        The index and catalog machinery depend heavily on a facility for
+        assigning shot ids to objects, currently the hub.  Rather than trying
+        to remove this dependency now, and ad it back later when we have an
+        index-id utility, it makes more sense to just remove the index and
+        catalog facilities for now.
+
+        Later, when we create an index-id utility, we'll port the code, which
+        will still be in the repository, back.
+
+  Zope X3.0.0 Alpha 2
+
+    New features
+
+      - It is no longer necessary to pass context arguments to api
+        functions to provide a place to look up services.  
+
+    Bug fixes
+
+    Restructuring
+
 
   Zope X3.0.0 Alpha 1
 
