@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.38 2003/08/08 21:45:01 fdrake Exp $
+$Id: fssync.py,v 1.39 2003/08/11 14:55:01 fdrake Exp $
 """
 
 import os
@@ -93,8 +93,12 @@ class Network(object):
         <target>/@@Zope must already exist.
         """
         if self.rooturl:
+            dir = join(target, "@@Zope")
+            if not os.path.exists(dir):
+                os.mkdir(dir)
+            fn = join(dir, "Root")
             self.writefile(self.rooturl + "\n",
-                           join(target, "@@Zope", "Root"))
+                           fn)
 
     def findrooturl(self, target):
         """Find the root url for the given target.
@@ -107,8 +111,7 @@ class Network(object):
         """
         dir = realpath(target)
         while dir:
-            zopedir = join(dir, "@@Zope")
-            rootfile = join(zopedir, "Root")
+            rootfile = join(dir, "@@Zope", "Root")
             try:
                 data = self.readfile(rootfile)
             except IOError:
