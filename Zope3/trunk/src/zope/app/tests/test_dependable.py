@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for Dependable class.
 
-$Id: test_dependable.py,v 1.4 2003/09/21 17:33:35 jim Exp $
+$Id: test_dependable.py,v 1.5 2004/03/13 22:02:09 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -31,7 +31,7 @@ class Test(PlacelessSetup, TestCase):
 
     def testVerifyInterface(self):
         from zope.interface.verify import verifyObject
-        from zope.app.interfaces.dependable import IDependable
+        from zope.app.dependable.interfaces import IDependable
         object = self.factory()
         verifyObject(IDependable, object)
 

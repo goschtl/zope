@@ -13,7 +13,7 @@
 ##############################################################################
 """Page folder tests.
 
-$Id: test_pagefolder.py,v 1.3 2004/03/13 18:01:16 srichter Exp $
+$Id: test_pagefolder.py,v 1.4 2004/03/13 22:02:06 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
@@ -29,7 +29,7 @@ from zope.app.registration.tests.test_registrationmanager \
      import RegistrationManagerContainerTests
 from zope.component.servicenames import Presentation
 
-from zope.app.interfaces.dependable import IDependable
+from zope.app.dependable.interfaces import IDependable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.dependable import Dependable
 from zope.app import zapi

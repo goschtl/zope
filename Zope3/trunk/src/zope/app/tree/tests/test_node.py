@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_node.py,v 1.1 2004/02/19 20:43:06 philikon Exp $
+$Id: test_node.py,v 1.2 2004/03/13 22:02:11 srichter Exp $
 """
 
 import unittest
 from basetest import BaseTestCase
 from zope.interface import implements
-from zope.app.interfaces.find import IObjectFindFilter
+from zope.app.container.interfaces import IObjectFindFilter
 from zope.app.tree.node import Node
 
 __metaclass__ = type

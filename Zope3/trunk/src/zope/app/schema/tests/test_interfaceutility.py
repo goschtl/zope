@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: test_interfaceutility.py,v 1.4 2004/03/13 18:01:19 srichter Exp $
+$Id: test_interfaceutility.py,v 1.5 2004/03/13 22:02:08 srichter Exp $
 """
 import unittest
 from zope.app.tests import setup
@@ -33,7 +33,7 @@ from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.registration.interfaces import IRegistered
 from zope.app.utility.interfaces import ILocalUtility
-from zope.app.interfaces.dependable import IDependable
+from zope.app.dependable.interfaces import IDependable
 from zope.app.tests import setup
 from zope.interface.interface import InterfaceClass
 from zope.interface.interfaces import IInterface
@@ -68,16 +68,16 @@ class Baz:
         return self._usages
 
     def addDependent(self, location):
-        "See zope.app.interfaces.dependable.IDependable"
+        "See zope.app.dependable.interfaces.IDependable"
         if location not in self._dependents:
             self._dependents.append(location)
 
     def removeDependent(self, location):
-        "See zope.app.interfaces.dependable.IDependable"
+        "See zope.app.dependable.interfaces.IDependable"
         self._dependents.remove(location)
 
     def dependents(self):
-        "See zope.app.interfaces.dependable.IDependable"
+        "See zope.app.dependable.interfaces.IDependable"
         return self._dependents
 
 class Foo(InterfaceClass, Baz, Contained):

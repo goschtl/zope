@@ -21,7 +21,7 @@
 
   <adapter
       factory="zope.app.dependable.Dependable"
-      provides="zope.app.interfaces.dependable.IDependable"
+      provides="zope.app.dependable.interfaces.IDependable"
       for="zope.app.interfaces.annotation.IAnnotatable" />
 
   <!-- Usages and Menus -->

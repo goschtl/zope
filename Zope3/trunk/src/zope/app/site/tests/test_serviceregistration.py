@@ -13,7 +13,7 @@
 ##############################################################################
 """Service Registration tests.
 
-$Id: test_serviceregistration.py,v 1.2 2004/03/13 18:01:22 srichter Exp $
+$Id: test_serviceregistration.py,v 1.3 2004/03/13 22:02:09 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -31,7 +31,7 @@ from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import IRegistered
 from zope.app.site.interfaces import ISimpleService
 
-from zope.app.interfaces.dependable import IDependable, DependencyError
+from zope.app.dependable.interfaces import IDependable, DependencyError
 
 class ITestService(Interface):
     pass

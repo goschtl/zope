@@ -22,11 +22,11 @@ find machinery may be used with statictree just as well.
 Since commonly needed, this module provides two filters that filter by
 interface.
 
-$Id: filters.py,v 1.2 2004/03/05 22:09:20 jim Exp $
+$Id: filters.py,v 1.3 2004/03/13 22:02:10 srichter Exp $
 """
 
 from zope.interface import implements
-from zope.app.interfaces.find import IObjectFindFilter
+from zope.app.container.interfaces import IObjectFindFilter
 
 __metaclass__ = type
 

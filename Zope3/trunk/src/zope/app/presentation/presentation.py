@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.7 2004/03/13 19:26:04 srichter Exp $
+$Id: presentation.py,v 1.8 2004/03/13 22:02:05 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -36,7 +36,7 @@ import zope.proxy
 import zope.publisher.interfaces.browser
 import zope.schema
 from zope.app.container.interfaces import IAddNotifiable
-from zope.app.interfaces.dependable import IDependable, DependencyError
+from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.registration.interfaces import IRegistered
 
 # XXX How do we define skins and layers here?

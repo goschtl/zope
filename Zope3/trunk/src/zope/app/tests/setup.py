@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.20 2004/03/13 21:03:22 srichter Exp $
+$Id: setup.py,v 1.21 2004/03/13 22:02:09 srichter Exp $
 """
 
 import zope.component
@@ -33,7 +33,7 @@ def setUpAnnotations():
 #------------------------------------------------------------------------
 # Dependencies
 from zope.app.dependable import Dependable
-from zope.app.interfaces.dependable import IDependable
+from zope.app.dependable.interfaces import IDependable
 def setUpDependable():
     ztapi.provideAdapter(IAttributeAnnotatable, IDependable,
                          Dependable)

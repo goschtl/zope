@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.2 2004/03/13 18:10:52 srichter Exp $
+$Id: registration.py,v 1.3 2004/03/13 22:02:07 srichter Exp $
 """
 from persistent import Persistent
 from zope.app.container.contained import Contained
@@ -21,7 +21,7 @@ from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.container.interfaces import IAddNotifiable, IRemoveNotifiable
 from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.dependable import IDependable, DependencyError
+from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.module.interfaces import IModuleManager
 from zope.exceptions import DuplicationError
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
