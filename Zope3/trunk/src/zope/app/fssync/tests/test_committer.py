@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.12 2003/06/03 19:42:19 gvanrossum Exp $
+$Id: test_committer.py,v 1.13 2003/06/05 18:51:07 gvanrossum Exp $
 """
 
 import os
@@ -196,12 +196,23 @@ class TestCommitterModule(TestBase):
         self.assertRaises(SynchronizationError, committer.set_item,
                           container, "Foo", 42)
 
-    def test_create_object_factory(self):
+    def test_create_object_factory_file(self):
         container = {}
         entry = {"flag": "added", "factory": "__builtin__.int"}
         tfn = os.path.join(self.tempdir(), "foo")
+        self.writefile(dumps(0), tfn)
         committer.create_object(container, "foo", entry, tfn)
         self.assertEqual(container, {"foo": 0})
+
+    def test_create_object_factory_directory(self):
+        provideSynchronizer(PretendContainer, DirectoryAdapter)
+        container = {}
+        entry = {"flag": "added", "factory": PCname}
+        tfn = os.path.join(self.tempdir(), "foo")
+        os.mkdir(tfn)
+        committer.create_object(container, "foo", entry, tfn)
+        self.assertEqual(container.keys(), ["foo"])
+        self.assertEqual(container["foo"].__class__, PretendContainer)
 
     def test_create_object_default(self):
         container = {}

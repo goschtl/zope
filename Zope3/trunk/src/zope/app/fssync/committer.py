@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.8 2003/06/03 17:08:52 gvanrossum Exp $
+$Id: committer.py,v 1.9 2003/06/05 18:50:57 gvanrossum Exp $
 """
 
 import os
@@ -315,6 +315,10 @@ def create_object(container, name, entry, fspath, replace=False):
         # A given factory overrides everything
         factory = resolve(factory_name)
         obj = factory()
+        adapter = get_adapter(obj)
+        if IObjectFile.isImplementedBy(adapter):
+            data = read_file(fspath)
+            adapter.setBody(data)
     else:
         # No factory; try using IFileFactory or IDirectoryFactory
         as = getService(container, "Adapters")
