@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: FileResource.py,v 1.4 2002/06/25 14:30:08 mgedmin Exp $
+$Id: FileResource.py,v 1.5 2002/07/13 18:00:12 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -93,6 +93,9 @@ class FileResource(BrowserView, Resource):
 
         response.setHeader('Content-Type', file.content_type)
         response.setHeader('Last-Modified', file.lmh)
+
+        # Cache for one day
+        response.setHeader('Cache-Control', 'public,max-age=86400')
         f=open(file.path,'rb')
         data=f.read()
         f.close()
@@ -105,6 +108,8 @@ class FileResource(BrowserView, Resource):
         response = self.request.response
         response.setHeader('Content-Type', file.content_type)
         response.setHeader('Last-Modified', file.lmh)
+        # Cache for one day
+        response.setHeader('Cache-Control', 'public,max-age=86400')
         return ''
     
 
