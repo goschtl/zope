@@ -180,6 +180,10 @@ Zope Changes
 
     - Removed the simple local authentication service
       zope.app.services.auth. It was deprecated for a while already.
+      
+    - Removed all fixup entries in zope/app/backward.zcml. backward.zcml was
+      not included anywhere anyways, so that this should not pose a
+      problem. Removed all fixup code as well. 
 
     Much thanks to everyone who contributed to this release:
 

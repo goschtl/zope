@@ -13,14 +13,13 @@
 ##############################################################################
 """ServiceManagerContainer implementation.
 
-$Id: servicecontainer.py,v 1.1 2004/03/13 15:21:47 srichter Exp $
+$Id: servicecontainer.py,v 1.2 2004/03/14 04:03:31 srichter Exp $
 """
 
 import zope.interface
 
 from transaction import get_transaction
 from zope.app.container.contained import Contained
-from zope.app.event.function import Subscriber
 from zope.app import zapi
 from zope.app.site.interfaces import IPossibleSite, ISite
 from zope.component.exceptions import ComponentLookupError
@@ -60,36 +59,3 @@ class ServiceManagerContainer(Contained):
             self,
             ISite,
             zope.interface.directlyProvidedBy(self))
-
-def fixup(event):
-        database = event.database
-        connection = database.open()
-        app = connection.root().get('Application')
-        if app is None or ISite.providedBy(app):
-            # No old data
-            return
-        print "Fixing up sites that don't implement ISite"
-        fixfolder(app)
-        get_transaction().commit()
-        connection.close()
-
-fixup = Subscriber(fixup)
-
-def fixfolder(folder):
-    if ISite.providedBy(folder):
-        # No need to do more, the conversion already happened!
-        return
-    try:
-        folder.getSiteManager()
-    except ComponentLookupError:
-        pass # nothing to do
-    else:
-        zope.interface.directlyProvides(
-            folder,
-            ISite,
-            zope.interface.directlyProvidedBy(folder),
-            )
-
-    for item in folder.values():
-        if IPossibleSite.providedBy(item):
-            fixfolder(item)

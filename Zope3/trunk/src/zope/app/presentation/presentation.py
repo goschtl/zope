@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.8 2004/03/13 22:02:05 srichter Exp $
+$Id: presentation.py,v 1.9 2004/03/14 04:03:31 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -546,26 +546,3 @@ class BoundTemplate:
         if not template_usage:
             kw["template_usage"] = template_usage
         return self.template.render(self.view, *args, **kw)
-
-#BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-
-from zope.app.event.function import Subscriber
-import persistent
-import sys
-from zope.interface.adapter import ReadProperty
-
-ViewRegistration.required    = ReadProperty(lambda self: self.forInterface)
-ViewRegistration.factoryName = ReadProperty(lambda self: self.class_)
-ViewRegistration.name        = ReadProperty(lambda self: self.viewName)
-
-class ViewService(persistent.Persistent):
-    pass
-
-def fixup(event):
-    # We delay this evil hackery until database open to prevent someone
-    # successfully importing IBrowserPresentation through a normal import
-    sys.modules['zope.app.services.view'] = sys.modules[__name__]
-    IBrowserRequest = zope.publisher.interfaces.browser.IBrowserRequest
-    zope.publisher.interfaces.browser.IBrowserPresentation = IBrowserRequest 
-    
-fixup = Subscriber(fixup)

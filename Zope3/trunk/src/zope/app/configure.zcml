@@ -147,4 +147,8 @@
 
   <include package="zope.app.site.browser" />  
 
+
+  <!-- Fixup ZODB - For backward-compatibility -->
+  <include file="backward.zcml" />
+
 </configure>

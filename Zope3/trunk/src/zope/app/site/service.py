@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.3 2004/03/13 21:03:21 srichter Exp $
+$Id: service.py,v 1.4 2004/03/14 04:03:31 srichter Exp $
 """
 from transaction import get_transaction
 from zodbcode.module import PersistentModuleRegistry
@@ -330,9 +330,6 @@ class ServiceRegistration(ComponentRegistration):
         return self.name + " Service"
 
 
-# XXX Pickle backward compatability
-ServiceConfiguration = ServiceRegistration
-
 # Fssync stuff
 
 _smattrs = (
@@ -345,47 +342,3 @@ class ServiceManagerAdapter(DirectoryAdapter):
     def extra(self):
         obj = removeAllProxies(self.context)
         return AttrMapping(obj, _smattrs)
-
-#BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-
-
-def fixup(event):
-    database = event.database
-    connection = database.open()
-    app = connection.root().get('Application')
-    if app is None:
-        # no old site
-        return
-
-    try:
-        sm = app.getSiteManager()
-    except ComponentLookupError:
-        # no old site
-        return
-
-    if hasattr(sm, 'next'):
-        # already done
-        return
-    
-    print "Fixing up sites that don't have next pointers"
-    fixfolder(app)
-    get_transaction().commit()
-    connection.close()
-    
-fixup = Subscriber(fixup)
-
-def fixfolder(folder):
-    try:
-        sm = folder.getSiteManager()
-    except ComponentLookupError:
-        pass # nothing to do
-    else:
-        sm._setNext(folder)
-        sm.subSites = ()
-        for name in ('Views', 'Adapters'):
-            if name in sm._bindings:
-                del sm._bindings[name]
-
-    for item in folder.values():
-        if IPossibleSite.providedBy(item):
-            fixfolder(item)
