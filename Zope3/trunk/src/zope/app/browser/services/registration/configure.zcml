@@ -87,4 +87,17 @@
       template="../../exception/user.pt"
       class="zope.app.browser.exception.user.UserErrorView" />
 
+
+<!-- Generic page for objects that keep track of their registrations -->
+
+  <page
+      for="zope.app.interfaces.services.registration.IRegisterable"
+      name="registrations.html"
+      template="registered.pt"
+      class=".NameRegistered"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Registrations" 
+      />
+
+
 </zope:configure>
