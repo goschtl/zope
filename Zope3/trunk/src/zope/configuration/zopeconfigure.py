@@ -99,13 +99,24 @@ which isn't supported using the meta-configuration directives.)
 
 $Id$
 """
-
+__docformat__ = 'restructuredtext'
 import os
 import zope.configuration.config as config
 from zope import schema
 from zope.interface import Interface
 
 class IZopeConfigure(Interface):
+    """The ``zope:configure`` Directive
+
+    The zope configuration directive is a pure grouping directive.  It
+    doesn't compute any actions on it's own. Instead, it allows a package to
+    be specified, affecting the interpretation of relative dotted names and
+    file paths. It also allows an i18n domain to be specified.  The
+    information collected is used by subdirectives.
+
+    It may seem that this directive can only be used once per file, but it can
+    be applied whereever it is convenient. 
+    """
 
     package = config.fields.GlobalObject(
         title=u"Package",
@@ -123,7 +134,9 @@ class IZopeConfigure(Interface):
                     u"used by a project.",
         required=False)
 
+
 class ZopeConfigure(config.GroupingContextDecorator):
+    __doc__ = __doc__
 
     def __init__(self, context, **kw):
         super(ZopeConfigure, self).__init__(context, **kw)
@@ -131,3 +144,4 @@ class ZopeConfigure(config.GroupingContextDecorator):
             # if we have a package, we want to also define basepath
             # so we don't acquire one
             self.basepath = os.path.split(self.package.__file__)[0]
+
