@@ -3,13 +3,13 @@ import sys
 import threading
 import time
 
-import ZODB
-from PersistentMapping import PersistentMapping
+from persistent.mapping import PersistentMapping
+import transaction
 
+import ZODB
 from ZODB.tests.StorageTestBase \
-     import StorageTestBase, zodb_pickle, zodb_unpickle, handle_serials
+     import zodb_pickle, zodb_unpickle, handle_serials
 from ZODB.tests.MinPO import MinPO
-from ZODB.Transaction import Transaction
 from ZODB.POSException import ConflictError
 
 SHORT_DELAY = 0.01
@@ -30,10 +30,8 @@ class TestThread(threading.Thread):
     method.
     """
 
-    def __init__(self, test):
+    def __init__(self):
         threading.Thread.__init__(self)
-        self.test = test
-        self._fail = None
         self._exc_info = None
 
     def run(self):
@@ -41,9 +39,6 @@ class TestThread(threading.Thread):
             self.runtest()
         except:
             self._exc_info = sys.exc_info()
-
-    def fail(self, msg=""):
-        self._test.fail(msg)
 
     def join(self, timeout=None):
         threading.Thread.join(self, timeout)
@@ -55,7 +50,7 @@ class ZODBClientThread(TestThread):
     __super_init = TestThread.__init__
 
     def __init__(self, db, test, commits=10, delay=SHORT_DELAY):
-        self.__super_init(test)
+        self.__super_init()
         self.setDaemon(1)
         self.db = db
         self.test = test
@@ -64,6 +59,7 @@ class ZODBClientThread(TestThread):
 
     def runtest(self):
         conn = self.db.open()
+        conn.sync()
         root = conn.root()
         d = self.get_thread_dict(root)
         if d is None:
@@ -102,7 +98,7 @@ class StorageClientThread(TestThread):
     __super_init = TestThread.__init__
 
     def __init__(self, storage, test, commits=10, delay=SHORT_DELAY):
-        self.__super_init(test)
+        self.__super_init()
         self.storage = storage
         self.test = test
         self.commits = commits
@@ -131,7 +127,7 @@ class StorageClientThread(TestThread):
 
     def dostore(self, i):
         data = zodb_pickle(MinPO((self.getName(), i)))
-        t = Transaction()
+        t = transaction.Transaction()
         oid = self.oid()
         self.pause()
 
@@ -154,9 +150,12 @@ class StorageClientThread(TestThread):
 class ExtStorageClientThread(StorageClientThread):
 
     def runtest(self):
-        # pick some other storage ops to execute
-        ops = [getattr(self, meth) for meth in dir(ExtStorageClientThread)
-               if meth.startswith('do_')]
+        # pick some other storage ops to execute, depending in part
+        # on the features provided by the storage.
+        names = ["do_load", "do_modifiedInVersion"]
+        if self.storage.supportsUndo():
+            names += ["do_loadSerial", "do_undoLog", "do_iterator"]
+        ops = [getattr(self, meth) for meth in names]
         assert ops, "Didn't find an storage ops in %s" % self.storage
         # do a store to guarantee there's at least one oid in self.oids
         self.dostore(0)

@@ -11,13 +11,7 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-
-"""
-Revision information:
-$Id: testTransaction.py,v 1.1 2004/04/01 18:26:43 sidnei Exp $
-"""
-
-"""
+"""Test tranasction behavior for variety of cases.
 
 I wrote these unittests to investigate some odd transaction
 behavior when doing unittests of integrating non sub transaction
@@ -42,27 +36,24 @@ TODO
     add in tests for objects which are modified multiple times,
     for example an object that gets modified in multiple sub txns.
 
+$Id: testTransaction.py,v 1.2 2004/04/01 18:34:39 sidnei Exp $
 """
 
-import random
-from types import TupleType
 import unittest
-
-from ZODB import Transaction
+import transaction
 
 class TransactionTests(unittest.TestCase):
 
     def setUp(self):
-
-        Transaction.hosed = 0
+        self.orig_tm = transaction.manager
+        transaction.manager = transaction.TransactionManager()
         self.sub1 = DataObject()
         self.sub2 = DataObject()
         self.sub3 = DataObject()
         self.nosub1 = DataObject(nost=1)
 
     def tearDown(self):
-
-        Transaction.free_transaction()
+        transaction.manager = self.orig_tm
 
     # basic tests with two sub trans jars
     # really we only need one, so tests for
@@ -125,18 +116,12 @@ class TransactionTests(unittest.TestCase):
         assert self.sub1._p_jar.cabort_sub == 1
 
     def testMultipleSubTransactionCommitCommit(self):
-
-        # add it
         self.sub1.modify()
-
         get_transaction().commit(1)
 
-        # add another
         self.sub2.modify()
-
         # reset a flag on the original to test it again
         self.sub1.ctpc_finish = 0
-
         get_transaction().commit(1)
 
         # this is interesting.. we go through
@@ -151,7 +136,7 @@ class TransactionTests(unittest.TestCase):
 
         get_transaction().commit()
 
-        # we did an implicit sub commit, is this impl artifiact?
+        # we did an implicit sub commit, is this impl artifact?
         assert self.sub3._p_jar.ccommit_sub == 1
         assert self.sub1._p_jar.ctpc_finish > 1
 
@@ -351,7 +336,6 @@ class TransactionTests(unittest.TestCase):
         assert self.nosub1._p_jar.ctpc_finish == 0
         assert self.nosub1._p_jar.ccommit == 1
         assert self.nosub1._p_jar.ctpc_abort == 1
-        assert Transaction.hosed == 0
 
     def testExceptionInTpcVote(self):
 
@@ -368,7 +352,6 @@ class TransactionTests(unittest.TestCase):
         assert self.nosub1._p_jar.ccommit == 1
         assert self.nosub1._p_jar.ctpc_abort == 1
         assert self.sub1._p_jar.ctpc_abort == 1
-        assert Transaction.hosed == 0
 
     def testExceptionInTpcBegin(self):
         """
@@ -407,29 +390,18 @@ class TransactionTests(unittest.TestCase):
         except TestTxnException: pass
 
         assert self.nosub1._p_jar.ctpc_abort == 1
-        assert Transaction.hosed == 0
 
     ### More Failure modes...
     # now we mix in some sub transactions
     ###
 
     def testExceptionInSubCommitSub(self):
-        """
-        this tests exhibits some odd behavior,
-        nothing thats technically incorrect...
-
-        basically it seems non deterministic, even
-        stranger the behavior seems dependent on what
-        values i test after the fact... very odd,
-        almost relativistic.
-
-        in-retrospect this is from the fact that
-        dictionaries are used to store jars at some point
-
-        """
+        # It's harder than normal to verify test results, because
+        # the subtransaction jars are stored in a dictionary.  The
+        # order in which jars are processed depends on the order
+        # they come out of the dictionary.
 
         self.sub1.modify()
-
         get_transaction().commit(1)
 
         self.nosub1.modify()
@@ -443,24 +415,30 @@ class TransactionTests(unittest.TestCase):
 
         try:
             get_transaction().commit()
-        except TestTxnException: pass
+        except TestTxnException:
+            pass
 
-
-        # odd this doesn't seem to be entirely deterministic..
         if self.sub1._p_jar.ccommit_sub:
-            assert self.sub1._p_jar.ctpc_abort == 1
+            self.assertEqual(self.sub1._p_jar.ctpc_abort, 1)
         else:
-            assert self.sub1._p_jar.cabort_sub == 1
+            self.assertEqual(self.sub1._p_jar.cabort_sub, 1)
+
+        self.assertEqual(self.sub2._p_jar.ctpc_abort, 1)
+        self.assertEqual(self.nosub1._p_jar.ctpc_abort, 1)
 
         if self.sub3._p_jar.ccommit_sub:
-            assert self.sub3._p_jar.ctpc_abort == 1
+            self.assertEqual(self.sub3._p_jar.ctpc_abort, 1)
         else:
-            assert self.sub3._p_jar.cabort_sub == 1
-
-        assert self.sub2._p_jar.ctpc_abort == 1
-        assert self.nosub1._p_jar.ctpc_abort == 1
+            self.assertEqual(self.sub3._p_jar.cabort_sub, 1)
 
     def testExceptionInSubAbortSub(self):
+        # This test has two errors.  When commit_sub() is called on
+        # sub1, it will fail.  If sub1 is handled first, it will raise
+        # an except and abort_sub() will be called on sub2.  If sub2
+        # is handled first, then commit_sub() will fail after sub2 has
+        # already begun its top-level transaction and tpc_abort() will
+        # be called.
+
         self.sub1._p_jar = SubTransactionJar(errors='commit_sub')
         self.sub1.modify(nojar=1)
         get_transaction().commit(1)
@@ -483,51 +461,47 @@ class TransactionTests(unittest.TestCase):
         # called, then tpc_abort() should be called to abort the
         # actual transaction.  If not, then calling abort_sub() is
         # sufficient.
-        if self.sub3._p_jar.ccommit_sub == 1:
+        if self.sub3._p_jar.ccommit_sub:
             self.assertEqual(self.sub3._p_jar.ctpc_abort, 1)
         else:
             self.assertEqual(self.sub3._p_jar.cabort_sub, 1)
 
     # last test, check the hosing mechanism
 
-    def testHoserStoppage(self):
-        # XXX We should consult ZConfig to decide whether we can get into a
-        # hosed state or not.
-        return
+##    def testHoserStoppage(self):
+##        # It's hard to test the "hosed" state of the database, where
+##        # hosed means that a failure occurred in the second phase of
+##        # the two phase commit.  It's hard because the database can
+##        # recover from such an error if it occurs during the very first
+##        # tpc_finish() call of the second phase.
 
-        # It's hard to test the "hosed" state of the database, where
-        # hosed means that a failure occurred in the second phase of
-        # the two phase commit.  It's hard because the database can
-        # recover from such an error if it occurs during the very first
-        # tpc_finish() call of the second phase.
+##        for obj in self.sub1, self.sub2:
+##            j = HoserJar(errors='tpc_finish')
+##            j.reset()
+##            obj._p_jar = j
+##            obj.modify(nojar=1)
 
-        for obj in self.sub1, self.sub2:
-            j = HoserJar(errors='tpc_finish')
-            j.reset()
-            obj._p_jar = j
-            obj.modify(nojar=1)
+##        try:
+##            get_transaction().commit()
+##        except TestTxnException:
+##            pass
 
-        try:
-            get_transaction().commit()
-        except TestTxnException:
-            pass
+##        self.assert_(Transaction.hosed)
 
-        self.assert_(Transaction.hosed)
+##        self.sub2.modify()
 
-        self.sub2.modify()
-
-        try:
-            get_transaction().commit()
-        except Transaction.POSException.TransactionError:
-            pass
-        else:
-            self.fail("Hosed Application didn't stop commits")
+##        try:
+##            get_transaction().commit()
+##        except Transaction.POSException.TransactionError:
+##            pass
+##        else:
+##            self.fail("Hosed Application didn't stop commits")
 
 
 class DataObject:
 
     def __init__(self, nost=0):
-        self.nost= nost
+        self.nost = nost
         self._p_jar = None
 
     def modify(self, nojar=0, tracing=0):
@@ -544,7 +518,7 @@ class TestTxnException(Exception):
 class BasicJar:
 
     def __init__(self, errors=(), tracing=0):
-        if not isinstance(errors, TupleType):
+        if not isinstance(errors, tuple):
             errors = errors,
         self.errors = errors
         self.tracing = tracing
@@ -558,7 +532,12 @@ class BasicJar:
         self.ccommit_sub = 0
 
     def __repr__(self):
-        return "<jar %X %s>" % (id(self), self.errors)
+        return "<%s %X %s>" % (self.__class__.__name__, id(self), self.errors)
+
+    def sortKey(self):
+        # All these jars use the same sort key, and Python's list.sort()
+        # is stable.  These two
+        return self.__class__.__name__
 
     def check(self, method):
         if self.tracing:
@@ -628,9 +607,39 @@ class HoserJar(BasicJar):
         HoserJar.committed += 1
 
 
-def test_suite():
+def test_join():
+    """White-box test of the join method
 
-    return unittest.makeSuite(TransactionTests)
+    The join method is provided for "backward-compatability" with ZODB 4
+    data managers.
+
+    The argument to join must be a zodb4 data manager,
+    transaction.interfaces.IDataManager.
+
+    >>> from ZODB.tests.sampledm import DataManager
+    >>> from transaction._transaction import DataManagerAdapter
+    >>> t = transaction.Transaction()
+    >>> dm = DataManager()
+    >>> t.join(dm)
+
+    The end result is that a data manager adapter is one of the
+    transaction's objects:
+
+    >>> isinstance(t._resources[0], DataManagerAdapter)
+    True
+    >>> t._resources[0]._datamanager is dm
+    True
+
+    """
+
+def test_suite():
+    from doctest import DocTestSuite
+    return unittest.TestSuite((
+        DocTestSuite(),
+        unittest.makeSuite(TransactionTests),
+        ))
+
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(test_suite())
+

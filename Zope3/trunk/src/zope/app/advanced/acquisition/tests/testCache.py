@@ -17,21 +17,19 @@ Each DB Connection has a separate PickleCache.  The Cache serves two
 purposes. It acts like a memo for unpickling.  It also keeps recent
 objects in memory under the assumption that they may be used again.
 """
-from __future__ import nested_scopes
 
+import gc
 import time
-import types
 import unittest
 
 import ZODB
 import ZODB.MappingStorage
-from ZODB.cPickleCache import PickleCache
-from ZODB.POSException import ConflictError
-from ZODB.PersistentMapping import PersistentMapping
+from persistent.cPickleCache import PickleCache
+from persistent.mapping import PersistentMapping
 from ZODB.tests.MinPO import MinPO
 from ZODB.utils import p64
 
-from Persistence import Persistent
+from persistent import Persistent
 
 class CacheTestBase(unittest.TestCase):
 
@@ -82,8 +80,8 @@ class DBMethods(CacheTestBase):
 
     def checkCacheDetail(self):
         for name, count in self.db.cacheDetail():
-            self.assert_(isinstance(name, types.StringType))
-            self.assert_(isinstance(count, types.IntType))
+            self.assert_(isinstance(name, str))
+            self.assert_(isinstance(count, int))
 
     def checkCacheExtremeDetail(self):
         expected = ['conn_no', 'id', 'oid', 'rc', 'klass', 'state']
@@ -103,14 +101,14 @@ class DBMethods(CacheTestBase):
     def checkFullSweep(self):
         old_size = self.db.cacheSize()
         time.sleep(3)
-        self.db.cacheFullSweep(0)
+        self.db.cacheFullSweep()
         new_size = self.db.cacheSize()
         self.assert_(new_size < old_size, "%s < %s" % (old_size, new_size))
 
     def checkMinimize(self):
         old_size = self.db.cacheSize()
         time.sleep(3)
-        self.db.cacheMinimize(0)
+        self.db.cacheMinimize()
         new_size = self.db.cacheSize()
         self.assert_(new_size < old_size, "%s < %s" % (old_size, new_size))
 
@@ -179,13 +177,19 @@ class LRUCacheTests(CacheTestBase):
         CONNS = 3
         for i in range(CONNS):
             self.noodle_new_connection()
-
+        
         self.assertEquals(self.db.cacheSize(), CACHE_SIZE * CONNS)
         details = self.db.cacheDetailSize()
         self.assertEquals(len(details), CONNS)
         for d in details:
             self.assertEquals(d['ngsize'], CACHE_SIZE)
-            self.assertEquals(d['size'], CACHE_SIZE)
+
+            # The assertion below is non-sensical
+            # The (poorly named) cache size is a target for non-ghosts.
+            # The cache *usually* contains non-ghosts, so that the
+            # size normally exceeds the target size.
+            
+            #self.assertEquals(d['size'], CACHE_SIZE)
 
     def checkDetail(self):
         CACHE_SIZE = 10
@@ -194,6 +198,28 @@ class LRUCacheTests(CacheTestBase):
         CONNS = 3
         for i in range(CONNS):
             self.noodle_new_connection()
+
+        gc.collect()
+
+        # XXX The above gc.collect call is necessary to make this test
+        # pass.
+        #
+        # This test then only works because the other of computations
+        # and object accesses in the "noodle" calls is such that the
+        # persistent mapping containing the MinPO objects is
+        # deactivated before the MinPO objects.
+        #
+        # - Without the gc call, the cache will contain ghost MinPOs
+        #   and the check of the MinPO count below will fail. That's 
+        #   because the counts returned by cacheDetail include ghosts.
+        #
+        # - If the mapping object containing the MinPOs isn't
+        #   deactivated, there will be one fewer non-ghost MinPO and
+        #   the test will fail anyway.
+        #
+        # This test really needs to be thought through and documented
+        # better. 
+
 
         for klass, count in self.db.cacheDetail():
             if klass.endswith('MinPO'):
@@ -224,7 +250,7 @@ class CacheErrors(unittest.TestCase):
         self.cache = PickleCache(self.jar)
 
     def checkGetBogusKey(self):
-        self.assertRaises(KeyError, self.cache.get, p64(0))
+        self.assertEqual(self.cache.get(p64(0)), None)
         try:
             self.cache[12]
         except KeyError:

@@ -17,10 +17,9 @@ import os
 import random
 import stat
 import tempfile
-import unittest
 
 import ZODB, ZODB.FileStorage
-from StorageTestBase import StorageTestBase, removefs
+from StorageTestBase import StorageTestBase
 
 class FileStorageCorruptTests(StorageTestBase):
 
@@ -30,7 +29,7 @@ class FileStorageCorruptTests(StorageTestBase):
 
     def tearDown(self):
         self._storage.close()
-        removefs(self.path)
+        self._storage.cleanup()
 
     def _do_stores(self):
         oids = []

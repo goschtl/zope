@@ -12,23 +12,24 @@
 #
 ##############################################################################
 
-import os
-import errno
-import shutil
 import tempfile
 import unittest
 
 import ZODB.config
-import ZODB.tests
 from ZODB.POSException import ReadOnlyError
-from ZEO.ClientStorage import ClientDisconnected
+
 
 class ConfigTestBase(unittest.TestCase):
     def _opendb(self, s):
         return ZODB.config.databaseFromString(s)
 
+    def tearDown(self):
+        if getattr(self, "storage", None) is not None:
+            self.storage.cleanup()
+
     def _test(self, s):
         db = self._opendb(s)
+        self.storage = db._storage
         # Do something with the database to make sure it works
         cn = db.open()
         rt = cn.root()
@@ -56,7 +57,6 @@ class ZODBConfigTest(ConfigTestBase):
             """)
 
     def test_file_config1(self):
-        import ZODB.FileStorage
         path = tempfile.mktemp()
         self._test(
             """
@@ -66,10 +66,8 @@ class ZODBConfigTest(ConfigTestBase):
               </filestorage>
             </zodb>
             """ % path)
-        ZODB.FileStorage.cleanup(path)
 
     def test_file_config2(self):
-        import ZODB.FileStorage
         path = tempfile.mktemp()
         cfg = """
         <zodb>
@@ -81,23 +79,6 @@ class ZODBConfigTest(ConfigTestBase):
         </zodb>
         """ % path
         self.assertRaises(ReadOnlyError, self._test, cfg)
-        ZODB.FileStorage.cleanup(path)
-
-    def test_zeo_config(self):
-        # We're looking for a port that doesn't exist so a connection attempt
-        # will fail.  Instead of elaborate logic to loop over a port
-        # calculation, we'll just pick a simple "random", likely to not-exist
-        # port number and add an elaborate comment explaining this instead.
-        # Go ahead, grep for 9.
-        cfg = """
-        <zodb>
-          <zeoclient>
-            server localhost:56897
-            wait false
-          </zeoclient>
-        </zodb>
-        """
-        self.assertRaises(ClientDisconnected, self._test, cfg)
 
     def test_demo_config(self):
         cfg = """
@@ -110,46 +91,31 @@ class ZODBConfigTest(ConfigTestBase):
         """
         self._test(cfg)
 
-class BDBConfigTest(ConfigTestBase):
-    def setUp(self):
-        self._path = tempfile.mktemp()
-        try:
-            os.mkdir(self._path)
-        except OSError, e:
-            if e.errno <> errno.EEXIST:
-                raise
 
-    def tearDown(self):
-        shutil.rmtree(self._path)
-
-    def test_bdbfull_simple(self):
+class ZEOConfigTest(ConfigTestBase):
+    def test_zeo_config(self):
+        # We're looking for a port that doesn't exist so a
+        # connection attempt will fail.  Instead of elaborate
+        # logic to loop over a port calculation, we'll just pick a
+        # simple "random", likely to not-exist port number and add
+        # an elaborate comment explaining this instead.  Go ahead,
+        # grep for 9.
+        from ZEO.ClientStorage import ClientDisconnected
         cfg = """
         <zodb>
-          <fullstorage>
-             envdir %s
-          </fullstorage>
+          <zeoclient>
+            server localhost:56897
+            wait false
+          </zeoclient>
         </zodb>
-        """ % self._path
-        self._test(cfg)
-
-    def test_bdbminimal_simple(self):
-        cfg = """
-        <zodb>
-          <minimalstorage>
-            envdir %s
-          </minimalstorage>
-        </zodb>
-        """ % self._path
-        self._test(cfg)
+        """
+        self.assertRaises(ClientDisconnected, self._test, cfg)
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZODBConfigTest))
-    # Only run the Berkeley tests if they are available
-    import BDBStorage
-    if BDBStorage.is_available:
-        suite.addTest(unittest.makeSuite(BDBConfigTest))
+    suite.addTest(unittest.makeSuite(ZEOConfigTest))
     return suite
 
 

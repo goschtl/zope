@@ -20,8 +20,8 @@ all these tests.
 from ZODB.tests.MinPO import MinPO
 from ZODB.tests.StorageTestBase import zodb_pickle, zodb_unpickle
 from ZODB.utils import U64, p64
-from ZODB.Transaction import Transaction
 
+from transaction import Transaction
 
 class IteratorCompare:
 
@@ -33,7 +33,7 @@ class IteratorCompare:
             eq(reciter.tid, revid)
             for rec in reciter:
                 eq(rec.oid, oid)
-                eq(rec.serial, revid)
+                eq(rec.tid, revid)
                 eq(rec.version, '')
                 eq(zodb_unpickle(rec.data), MinPO(val))
                 val = val + 1
@@ -100,7 +100,7 @@ class IteratorStorage(IteratorCompare):
         # Undo the creation of the object, rendering it a zombie
         t = Transaction()
         self._storage.tpc_begin(t)
-        oids = self._storage.transactionalUndo(tid, t)
+        oids = self._storage.undo(tid, t)
         self._storage.tpc_vote(t)
         self._storage.tpc_finish(t)
         # Now attempt to iterator over the storage
@@ -146,6 +146,20 @@ class IteratorStorage(IteratorCompare):
                 pass
         finally:
             self._storage.tpc_finish(t)
+
+    def checkLoadEx(self):
+        oid = self._storage.new_oid()
+        self._dostore(oid, data=42)
+        data, tid, ver = self._storage.loadEx(oid, "")
+        self.assertEqual(zodb_unpickle(data), MinPO(42))
+        match = False
+        for txn in self._storage.iterator():
+            for rec in txn:
+                if rec.oid == oid and rec.tid == tid:
+                    self.assertEqual(txn.tid, tid)
+                    match = True
+        if not match:
+            self.fail("Could not find transaction with matching id")
 
 
 class ExtendedIteratorStorage(IteratorCompare):
@@ -202,7 +216,7 @@ class IteratorDeepCompare:
             eq(txn1._extension,  txn2._extension)
             for rec1, rec2 in zip(txn1, txn2):
                 eq(rec1.oid,     rec2.oid)
-                eq(rec1.serial,  rec2.serial)
+                eq(rec1.tid,  rec2.tid)
                 eq(rec1.version, rec2.version)
                 eq(rec1.data,    rec2.data)
             # Make sure there are no more records left in rec1 and rec2,

@@ -13,16 +13,11 @@
 ##############################################################################
 """Tests for application-level conflict resolution."""
 
-from ZODB.Transaction import Transaction
 from ZODB.POSException import ConflictError, UndoError
-from Persistence import Persistent
+from persistent import Persistent
+from transaction import Transaction
 
 from ZODB.tests.StorageTestBase import zodb_unpickle, zodb_pickle
-
-import sys
-import types
-from cPickle import Pickler, Unpickler
-from cStringIO import StringIO
 
 class PCounter(Persistent):
 
@@ -94,14 +89,17 @@ class ConflictResolvingStorage:
         # pickle is to commit two different transactions relative to
         # revid1 that add two to _value.
         revid2 = self._dostoreNP(oid, revid=revid1, data=zodb_pickle(obj))
-        self.assertRaises(ConflictError,
-                          self._dostoreNP,
-                          oid, revid=revid1, data=zodb_pickle(obj))
+        try:
+            self._dostoreNP(oid, revid=revid1, data=zodb_pickle(obj))
+        except ConflictError, err:
+            self.assert_("PCounter2" in str(err))
+        else:
+            self.fail("Expected ConflictError")
 
     def checkZClassesArentResolved(self):
-        from ZODB.ConflictResolution import bad_class
+        from ZODB.ConflictResolution import find_global, BadClassName
         dummy_class_tuple = ('*foobar', ())
-        assert bad_class(dummy_class_tuple) == 1
+        self.assertRaises(BadClassName, find_global, '*foobar', ())
 
     def checkBuggyResolve1(self):
         obj = PCounter3()
@@ -159,7 +157,7 @@ class ConflictResolvingTransUndoStorage:
         tid = info[1]['id']
         t = Transaction()
         self._storage.tpc_begin(t)
-        self._storage.transactionalUndo(tid, t)
+        self._storage.undo(tid, t)
         self._storage.tpc_finish(t)
 
     def checkUndoUnresolvable(self):
@@ -180,6 +178,6 @@ class ConflictResolvingTransUndoStorage:
         tid = info[1]['id']
         t = Transaction()
         self._storage.tpc_begin(t)
-        self.assertRaises(UndoError, self._storage.transactionalUndo,
+        self.assertRaises(UndoError, self._storage.undo,
                           tid, t)
         self._storage.tpc_abort(t)

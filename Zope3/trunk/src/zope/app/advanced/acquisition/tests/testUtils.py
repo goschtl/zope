@@ -15,6 +15,7 @@
 
 import random
 import unittest
+from persistent import Persistent
 
 NUM = 100
 
@@ -43,6 +44,14 @@ class TestUtils(unittest.TestCase):
         self.assertEquals(U64("\000\000\000\000\000\000\000\001"), 1)
         self.assertEquals(u64("\000\000\000\001\000\000\000\000"), 1L<<32)
         self.assertEquals(U64("\000\000\000\001\000\000\000\000"), 1L<<32)
+
+    def checkPersistentIdHandlesDescriptor(self):
+        from ZODB.serialize import BaseObjectWriter
+        class P(Persistent):
+            pass
+
+        writer = BaseObjectWriter(None)
+        self.assertEqual(writer.persistent_id(P), None)
 
 def test_suite():
     return unittest.makeSuite(TestUtils, 'check')

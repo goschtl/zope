@@ -11,8 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from ZODB.POSException import ReadOnlyError
-from ZODB.Transaction import Transaction
+from ZODB.POSException import ReadOnlyError, Unsupported
+import transaction
 
 class ReadOnlyStorage:
 
@@ -26,7 +26,7 @@ class ReadOnlyStorage:
 
     def _make_readonly(self):
         self._storage.close()
-        self.open(read_only=1)
+        self.open(read_only=True)
         self.assert_(self._storage.isReadOnly())
 
     def checkReadMethods(self):
@@ -37,13 +37,17 @@ class ReadOnlyStorage:
             data, revid = self._storage.load(oid, '')
             self.assertEqual(revid, self.oids[oid])
             self.assert_(not self._storage.modifiedInVersion(oid))
-            _data = self._storage.loadSerial(oid, revid)
-            self.assertEqual(data, _data)
+            # Storages without revisions may not have loadSerial().
+            try:
+                _data = self._storage.loadSerial(oid, revid)
+                self.assertEqual(data, _data)
+            except Unsupported:
+                pass
 
     def checkWriteMethods(self):
         self._make_readonly()
         self.assertRaises(ReadOnlyError, self._storage.new_oid)
-        t = Transaction()
+        t = transaction.Transaction()
         self.assertRaises(ReadOnlyError, self._storage.tpc_begin, t)
 
         if self._storage.supportsVersions():
@@ -56,5 +60,5 @@ class ReadOnlyStorage:
                           '\000' * 8, None, '', '', t)
 
         if self._storage.supportsTransactionalUndo():
-            self.assertRaises(ReadOnlyError, self._storage.transactionalUndo,
+            self.assertRaises(ReadOnlyError, self._storage.undo,
                               '\000' * 8, t)

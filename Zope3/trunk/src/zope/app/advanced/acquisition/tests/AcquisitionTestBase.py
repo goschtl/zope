@@ -19,10 +19,6 @@ method _dostore() which performs a complete store transaction for a
 single object revision.
 """
 
-import errno
-import os
-import pickle
-import string
 import sys
 import time
 import types
@@ -30,9 +26,9 @@ import unittest
 from cPickle import Pickler, Unpickler
 from cStringIO import StringIO
 
-from ZODB.Transaction import Transaction
-from ZODB.utils import u64
+import transaction
 
+from ZODB.utils import u64
 from ZODB.tests.MinPO import MinPO
 
 ZERO = '\0'*8
@@ -46,11 +42,18 @@ def snooze():
     while now == time.time():
         time.sleep(0.1)
 
+def _persistent_id(obj):
+    oid = getattr(obj, "_p_oid", None)
+    if getattr(oid, "__get__", None) is not None:
+        return None
+    else:
+        return oid
+
 def zodb_pickle(obj):
     """Create a pickle in the format expected by ZODB."""
     f = StringIO()
     p = Pickler(f, 1)
-    p.persistent_id = lambda obj: getattr(obj, '_p_oid', None)
+    p.persistent_id = _persistent_id
     klass = obj.__class__
     assert not hasattr(obj, '__getinitargs__'), "not ready for constructors"
     args = None
@@ -76,22 +79,24 @@ def zodb_unpickle(data):
     u.persistent_load = persistent_load
     klass_info = u.load()
     if isinstance(klass_info, types.TupleType):
-        if isinstance(klass_info[0], types.TupleType):
-            modname, klassname = klass_info[0]
-            args = klass_info[1]
+        if isinstance(klass_info[0], type):
+            # XXX what is the second part of klass_info?
+            klass, xxx = klass_info
+            assert not xxx
         else:
-            modname, klassname = klass_info
-            args = None
-        if modname == "__main__":
-            ns = globals()
-        else:
-            mod = import_helper(modname)
-            ns = mod.__dict__
-        try:
-            klass = ns[klassname]
-        except KeyError:
-            sys.stderr.write("can't find %s in %s" % (klassname,
-                                                      repr(ns)))
+            if isinstance(klass_info[0], tuple):
+                modname, klassname = klass_info[0]
+            else:
+                modname, klassname = klass_info
+            if modname == "__main__":
+                ns = globals()
+            else:
+                mod = import_helper(modname)
+                ns = mod.__dict__
+            try:
+                klass = ns[klassname]
+            except KeyError:
+                print >> sys.stderr, "can't find %s in %r" % (klassname, ns)
         inst = klass()
     else:
         raise ValueError, "expected class info: %s" % repr(klass_info)
@@ -133,18 +138,8 @@ def handle_serials(oid, *args):
     return handle_all_serials(oid, *args)[oid]
 
 def import_helper(name):
-    mod = __import__(name)
+    __import__(name)
     return sys.modules[name]
-
-def removefs(base):
-    """Remove all files created by FileStorage with path base."""
-    for ext in '', '.old', '.tmp', '.lock', '.index', '.pack':
-        path = base + ext
-        try:
-            os.remove(path)
-        except os.error, err:
-            if err[0] != errno.ENOENT:
-                raise
 
 
 class StorageTestBase(unittest.TestCase):
@@ -189,7 +184,7 @@ class StorageTestBase(unittest.TestCase):
         if version is None:
             version = ''
         # Begin the transaction
-        t = Transaction()
+        t = transaction.Transaction()
         if user is not None:
             t.user = user
         if description is not None:
@@ -213,34 +208,35 @@ class StorageTestBase(unittest.TestCase):
 
     # The following methods depend on optional storage features.
 
-    def _undo(self, tid, oid=None):
+    def _undo(self, tid, expected_oids=None, note=None):
         # Undo a tid that affects a single object (oid).
         # XXX This is very specialized
-        t = Transaction()
-        t.note("undo")
+        t = transaction.Transaction()
+        t.note(note or "undo")
         self._storage.tpc_begin(t)
-        oids = self._storage.transactionalUndo(tid, t)
+        tid, oids = self._storage.undo(tid, t)
         self._storage.tpc_vote(t)
         self._storage.tpc_finish(t)
-        if oid is not None:
-            self.assertEqual(len(oids), 1)
-            self.assertEqual(oids[0], oid)
+        if expected_oids is not None:
+            self.assertEqual(len(oids), len(expected_oids), repr(oids))
+            for oid in expected_oids:
+                self.assert_(oid in oids)
         return self._storage.lastTransaction()
 
     def _commitVersion(self, src, dst):
-        t = Transaction()
+        t = transaction.Transaction()
         t.note("commit %r to %r" % (src, dst))
         self._storage.tpc_begin(t)
-        oids = self._storage.commitVersion(src, dst, t)
+        tid, oids = self._storage.commitVersion(src, dst, t)
         self._storage.tpc_vote(t)
         self._storage.tpc_finish(t)
         return oids
 
     def _abortVersion(self, ver):
-        t = Transaction()
+        t = transaction.Transaction()
         t.note("abort %r" % ver)
         self._storage.tpc_begin(t)
-        oids = self._storage.abortVersion(ver, t)
+        tid, oids = self._storage.abortVersion(ver, t)
         self._storage.tpc_vote(t)
         self._storage.tpc_finish(t)
         return oids
