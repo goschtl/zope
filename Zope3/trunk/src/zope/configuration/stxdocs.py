@@ -53,7 +53,7 @@ def _directiveDocs(name, schema, handler, info, indent_offset=0):
     if isinstance(info, xmlconfig.ParserInfo):
         # We do not want to specify the whole path; starting at the 'zope'
         # package is enough.
-        base_dir = os.path.split(zope.__file__)[0][:-4]
+        base_dir = os.path.dirname(zope.__file__)[:-4]
         file = info.file.replace(base_dir, '')
 
         info_text = 'File %s, lines %i - %i.' %(file, info.line, info.eline)

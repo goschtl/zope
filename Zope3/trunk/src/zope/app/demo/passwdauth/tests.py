@@ -23,7 +23,7 @@ from unittest import TestCase, main, makeSuite
 class PasswdPrincipalSourceTest(TestCase):
 
     def setUp(self):
-        dir = os.path.split(passwdauth.__file__)[0]
+        dir = os.path.dirname(passwdauth.__file__)
         self.source = passwdauth.PasswdPrincipalSource(
             os.path.join(dir, 'passwd.sample'))
 

@@ -30,7 +30,7 @@ def DocFileSuite(*paths):
     # that failed.
     t = doctest.Tester(globs={'__name__': '__main__'})
     suite = unittest.TestSuite()
-    dir = os.path.split(__file__)[0]
+    dir = os.path.dirname(__file__)
     for path in paths:
         path = os.path.join(dir, path)
         source = open(path).read()

@@ -46,7 +46,7 @@ class FauxContext(object):
     self.end_called = 1
 
 def path(*p):
-    return os.path.join(os.path.split(__file__)[0], *p)
+    return os.path.join(os.path.dirname(__file__), *p)
 
 def test_ConfigurationHandler_normal():
     """
@@ -245,7 +245,7 @@ def test_include_by_file():
     """
     >>> context = config.ConfigurationMachine()
     >>> xmlconfig.registerCommonDirectives(context)
-    >>> here = os.path.split(__file__)[0]
+    >>> here = os.path.dirname(__file__)
     >>> path = os.path.join(here, "samplepackage", "foo.zcml")
     >>> xmlconfig.include(context, path)
     >>> context.execute_actions()
@@ -275,7 +275,7 @@ def test_include_by_file_glob():
     """
     >>> context = config.ConfigurationMachine()
     >>> xmlconfig.registerCommonDirectives(context)
-    >>> here = os.path.split(__file__)[0]
+    >>> here = os.path.dirname(__file__)
     >>> path = os.path.join(here, "samplepackage/baz*.zcml")
     >>> xmlconfig.include(context, files=path)
     >>> context.execute_actions()
@@ -363,7 +363,7 @@ def test_includeOverrides():
     >>> context = config.ConfigurationMachine()
     >>> xmlconfig.registerCommonDirectives(context)
     
-    >>> here = os.path.split(__file__)[0]
+    >>> here = os.path.dirname(__file__)
     >>> path = os.path.join(here, "samplepackage", "bar.zcml")
     >>> xmlconfig.include(context, path)
 
@@ -498,7 +498,7 @@ def test_XMLConfig():
 
     We'll use the same example from test_includeOverrides:
 
-    >>> here = os.path.split(__file__)[0]
+    >>> here = os.path.dirname(__file__)
     >>> path = os.path.join(here, "samplepackage", "baro.zcml")
 
     First, process the configuration file:

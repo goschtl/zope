@@ -111,7 +111,7 @@ def DocFileTest(path, package=None, globs=None,
     
     package = _normalizeModule(package)
     name = path.split('/')[-1]
-    dir = os.path.split(package.__file__)[0]
+    dir = os.path.dirname(package.__file__)
     path = os.path.join(dir, *(path.split('/')))
     doc = open(path).read()
     tester = doctest.Tester(globs=(globs or {}))

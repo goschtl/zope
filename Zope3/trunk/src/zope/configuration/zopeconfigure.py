@@ -143,5 +143,5 @@ class ZopeConfigure(config.GroupingContextDecorator):
         if 'package' in kw:
             # if we have a package, we want to also define basepath
             # so we don't acquire one
-            self.basepath = os.path.split(self.package.__file__)[0]
+            self.basepath = os.path.dirname(self.package.__file__)
 

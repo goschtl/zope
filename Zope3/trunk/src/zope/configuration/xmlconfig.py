@@ -140,7 +140,7 @@ class ParserInfo(object):
         file = self.file
         if file == 'tests//sample.zcml':
             # special case for testing
-            file = os.path.join(os.path.split(__file__)[0],
+            file = os.path.join(os.path.dirname(__file__),
                                 'tests', 'sample.zcml')
 
         try:
@@ -262,7 +262,7 @@ def openInOrPlain(filename):
 
     If we open configure.zcml, we'll get that file:
 
-    >>> here = os.path.split(__file__)[0]
+    >>> here = os.path.dirname(__file__)
     >>> path = os.path.join(here, 'tests', 'samplepackage', 'configure.zcml')
     >>> f = openInOrPlain(path)
     >>> f.name[-14:]
@@ -377,7 +377,7 @@ def include(_context, file=None, package=None, files=None):
             f = openInOrPlain(path)
             logger.debug("include %s" % f.name)
 
-            context.basepath = os.path.split(path)[0]
+            context.basepath = os.path.dirname(path)
             context.includepath = _context.includepath + (f.name, )
             _context.stack.append(config.GroupingStackItem(context))
 

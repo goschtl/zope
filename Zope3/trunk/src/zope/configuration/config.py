@@ -228,7 +228,7 @@ class ConfigurationContext(object):
         >>> import zope.configuration
         >>> c.package = zope.configuration
         >>> import os
-        >>> d = os.path.split(zope.configuration.__file__)[0]
+        >>> d = os.path.dirname(zope.configuration.__file__)
         >>> c.path("y/z") == d + os.path.normpath("/y/z")
         1
         >>> c.path("y/./z") == d + os.path.normpath("/y/z")
@@ -251,7 +251,7 @@ class ConfigurationContext(object):
             if self.package is None:
                 basepath = os.getcwd()
             else:
-                basepath = os.path.split(self.package.__file__)[0]
+                basepath = os.path.dirname(self.package.__file__)
             self.basepath = basepath
 
         return os.path.join(basepath, filename)
@@ -276,7 +276,7 @@ class ConfigurationContext(object):
         >>> import zope.configuration
         >>> c.package = zope.configuration
         >>> import os
-        >>> d = os.path.split(zope.configuration.__file__)[0]
+        >>> d = os.path.dirname(zope.configuration.__file__)
         >>> c.checkDuplicate('bar.zcml')
         >>> try:
         ...   c.checkDuplicate(d + os.path.normpath('/bar.zcml'))
@@ -310,7 +310,7 @@ class ConfigurationContext(object):
         >>> import zope.configuration
         >>> c.package = zope.configuration
         >>> import os
-        >>> d = os.path.split(zope.configuration.__file__)[0]
+        >>> d = os.path.dirname(zope.configuration.__file__)
         >>> c.processFile('bar.zcml')
         True
         >>> c.processFile('bar.zcml')

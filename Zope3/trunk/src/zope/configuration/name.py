@@ -79,7 +79,7 @@ def path(file='', package = 'zopeproducts', _silly=('__doc__',), _globals={}):
             return file
         raise
 
-    path = os.path.split(package.__file__)[0]
+    path = os.path.dirname(package.__file__)
     if file:
         path = os.path.join(path, file)
     return path

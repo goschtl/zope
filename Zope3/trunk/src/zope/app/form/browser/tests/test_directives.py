@@ -37,7 +37,7 @@ from zope.schema import TextLine, Int
 from zope.app.form.browser import TextWidget
 
 tests_path = os.path.join(
-    os.path.split(zope.app.publisher.browser.__file__)[0],
+    os.path.dirname(zope.app.publisher.browser.__file__),
     'tests')
 
 template = """<configure
