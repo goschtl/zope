@@ -12,15 +12,19 @@
 #
 ##############################################################################
 """
-$Id: annotatableadapter.py,v 1.3 2002/12/30 21:42:28 jeremy Exp $
+$Id: annotatableadapter.py,v 1.4 2003/08/19 19:01:52 fdrake Exp $
 """
 
 __metaclass__ = type
 
 from zope.component import getAdapter
+from zope.interface import implements
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.interfaces.fssync import IObjectFile
 from zope.app.dublincore.zopedublincore import ZopeDublinCore
+from zope.app.fssync.classes import ObjectEntryAdapter
+from zope.xmlpickle import dumps, loads
 from persistence.dict import PersistentDict
 
 DCkey = "zope.app.dublincore.ZopeDublinCore"
@@ -37,7 +41,16 @@ class ZDCAnnotatableAdapter(ZopeDublinCore):
         dcdata = annotations.get(DCkey)
         if not dcdata:
             self.annotations = annotations
-            dcdata = PersistentDict()
+            dcdata = ZDCAnnotationData()
+        elif not isinstance(dcdata, ZDCAnnotationData):
+            # Convert mapping to a ZDCAnnotationData, and set things
+            # up so that the annotations object is only updated the
+            # first time we're writing to it; this avoids converting
+            # it when we wouldn't otherwise write to the object.
+            self.annotations = annotations
+            d = ZDCAnnotationData()
+            d.update(dcdata)
+            dcdata = d
 
         super(ZDCAnnotatableAdapter, self).__init__(dcdata)
 
@@ -47,3 +60,20 @@ class ZDCAnnotatableAdapter(ZopeDublinCore):
             self.annotations = None
 
 __doc__ = ZDCAnnotatableAdapter.__doc__ + __doc__
+
+
+class ZDCAnnotationData(PersistentDict):
+    pass
+
+
+class ZDCAnnotationDataAdapter(ObjectEntryAdapter):
+
+    implements(IObjectFile)
+
+    def getBody(self):
+        return dumps(self.context.data)
+
+    def setBody(self, data):
+        data = loads(data)
+        self.context.clear()
+        self.context.update(data)
