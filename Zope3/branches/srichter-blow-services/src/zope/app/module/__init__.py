@@ -31,7 +31,8 @@ class ZopeModuleRegistry(object):
 
     def findModule(self, name):
         """See zodbcode.interfaces.IPersistentModuleImportRegistry"""
-        return zapi.queryUtility(IModuleManager, name)
+        manager = zapi.queryUtility(IModuleManager, name)
+        return manager and manager.getModule() or manager
 
     def modules(self):
         """See zodbcode.interfaces.IPersistentModuleImportRegistry"""
