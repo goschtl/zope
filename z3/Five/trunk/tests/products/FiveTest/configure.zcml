@@ -17,13 +17,23 @@
     permission="zope.ViewManagementScreens"
     />
 
-  <browser:page
+  <browser:pages
     for=".interfaces.ISimpleContent"
-    class=".browser.SimpleContentView"
-    attribute="no_doc_string"
-    name="no_doc_string"
-    permission="zope.Public"
-    />
+    class=".browser.NoDocstringView"
+    permission="zope.Public">
+    <browser:page
+      name="nodoc-method"
+      attribute="method"
+      />
+    <browser:page
+      name="nodoc-function"
+      attribute="function"
+      />
+    <browser:page
+      name="nodoc-object"
+      attribute="object"
+      />
+  </browser:pages>
 
   <!-- attribute page -->
   <browser:pages

@@ -9,7 +9,21 @@ class SimpleContentView(BrowserView):
 
     def mouse(self):
 	"""Docstring"""
-	return "The mouse has been eaten by the eagle"""
+        return "The mouse has been eaten by the eagle"""
 
-    def no_doc_string(self):
-	return "No docstring"
+class CallableNoDocstring:
+
+    def __call__(self):
+        return "No docstring"
+
+def function_no_docstring(self):
+    return "No docstring"
+
+class NoDocstringView(BrowserView):
+
+    def method(self):
+        return "No docstring"
+
+    function = function_no_docstring
+
+    object = CallableNoDocstring()

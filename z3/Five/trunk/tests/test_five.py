@@ -121,8 +121,9 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
 
     def test_no_doc_string(self):
-	response = self.publish('/test_folder_1_/testoid/no_doc_string')
-	self.assertEquals("No docstring", response.getBody())
+	for view_name in ['nodoc-function', 'nodoc-method', 'nodoc-object']:
+	    response = self.publish('/test_folder_1_/testoid/%s' % view_name)
+	    self.assertEquals("No docstring", response.getBody())
 
 def test_suite():
     suite = unittest.TestSuite()
