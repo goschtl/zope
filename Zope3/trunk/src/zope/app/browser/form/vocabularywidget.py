@@ -25,11 +25,12 @@ from xml.sax.saxutils import quoteattr
 from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IVocabularyQueryView
+from zope.app.interfaces.form import WidgetInputError
 from zope.publisher.browser import BrowserView
 from zope.component import getView
 from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
 from zope.schema.interfaces import IIterableVocabularyQuery
-from zope.schema.interfaces import IVocabularyTokenized, ValidationError
+from zope.schema.interfaces import IVocabularyTokenized
 
 
 # These widget factories delegate to the vocabulary on the field.
@@ -379,6 +380,9 @@ class DropdownListWidget(SelectListWidget):
 class VocabularyMultiEditWidget(VocabularyEditWidgetBase):
     """Vocabulary-backed widget supporting multiple selections."""
 
+    def haveData(self):
+        return True
+
     def renderItems(self, value):
         if value == self._missing:
             values = ()
@@ -516,7 +520,11 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
             try:
                 term = self.vocabulary.getTermByToken(token)
             except LookupError:
-                raise ValidationError, "token %r not in vocabulary" % token
+                # XXX unsure what to pass to exception constructor
+                raise WidgetInputError(
+                    "(query view for %s)" % self.context,
+                    "(query view for %s)" % self.context,
+                    "token %r not in vocabulary" % token)
             else:
                 self.query_selections.append(term.value)
 
