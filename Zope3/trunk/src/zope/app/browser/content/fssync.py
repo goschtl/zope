@@ -14,16 +14,17 @@
 
 """Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.6 2003/05/08 22:20:05 gvanrossum Exp $
+$Id: fssync.py,v 1.7 2003/05/09 20:55:37 gvanrossum Exp $
 """
 
 import os
 import shutil
 import tempfile
 
+from zope.fssync.compare import checkUptodate
+
 from zope.publisher.browser import BrowserView
 from zope.app.fssync.syncer import toFS, fromFS
-from zope.app.fssync.compare import checkUptodate
 from zope.app.traversing import objectName, getParent
 from zope.app.interfaces.exceptions import UserError
 
