@@ -5,8 +5,8 @@ var COLLECTION = 'COLLECTION';
 var TITLE = 'TITLE';
 var ICON = 'ICON';
 var EXPAND = 'EXPAND';
-var XML_CHILDREN_VIEW = 'children.xml';
-var SINGLE_BRANCH_TREE_VIEW = 'singleBranchTree.xml';
+var XML_CHILDREN_VIEW = '@@children.xml';
+var SINGLE_BRANCH_TREE_VIEW = '@@singleBranchTree.xml';
 var CONTENT_VIEW = '@@contents.html';
 
 
