@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.11 2003/06/30 17:52:22 jeremy Exp $
+$Id: classes.py,v 1.12 2003/07/07 16:35:50 fdrake Exp $
 """
 
 from zope.app.interfaces.fssync import IObjectFile
@@ -37,7 +37,7 @@ class AttrMapping(object):
             return getattr(self.context, name)
         raise KeyError, name
 
-    def get(self, name, default):
+    def get(self, name, default=None):
         if name in self.attrs:
             return getattr(self.context, name, default)
         return default
@@ -111,4 +111,8 @@ class Default(ObjectEntryAdapter):
 
     def annotations(self):
         # The annotations are already stored in the pickle.
+        # This is only the right thing if the annotations are
+        # stored in the object's attributes (such as IAttributeAnnotatable);
+        # if that's not the case, then either this method needs to be
+        # overridden or this class shouldn't be used.
         return None
