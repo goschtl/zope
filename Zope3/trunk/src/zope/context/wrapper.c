@@ -22,6 +22,22 @@ static PyTypeObject ContextAwareType;
 static PyObject *
 empty_tuple = NULL;
 
+/* We need to use PyStrings for the various python special method names,
+ * such as __len__ and next and __getitem__.
+ * At module initialisation, we create the strings, and cache them here.
+ */
+static PyObject *SlotStrings[9];
+#define LEN_IDX 0
+#define GETITEM_IDX 1
+#define SETITEM_IDX 2
+#define DELITEM_IDX 3
+#define ITER_IDX 4
+#define NEXT_IDX 5
+#define CONTAINS_IDX 6
+#define CALL_IDX 7
+#define STR_IDX 8
+
+
 /* ContextAware type
  *
  * This is a 'marker' type with no methods or members.
@@ -658,9 +674,10 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
  */
 #define FILLSLOTDEFS \
     PyObject *wrapped; \
-    PyObject *descriptor;
+    PyObject *descriptor; \
+    PyObject *name;
 
-#define FILLSLOT(NAME, BADVAL) \
+#define FILLSLOT(NAME, IDX, BADVAL) \
     wrapped = Proxy_GET_OBJECT(self); \
     if (wrapped == NULL) { \
         PyErr_Format(PyExc_RuntimeError, \
@@ -668,21 +685,21 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
                      (NAME)); \
             return (BADVAL); \
     } \
-    descriptor = _PyType_Lookup(wrapped->ob_type,\
-                    PyString_FromString((NAME))); \
+    name = SlotStrings[IDX]; \
+    descriptor = _PyType_Lookup(wrapped->ob_type, name);\
     if (descriptor != NULL && \
         descriptor->ob_type->tp_descr_get != NULL && \
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) || \
             PyObject_TypeCheck(wrapped, &ContextAwareType))\
         )
 
-#define FILLSLOTBASE(NAME) \
+#define FILLSLOTBASE(NAME, IDX) \
     FILLSLOTDEFS \
-    FILLSLOT(NAME, NULL)
+    FILLSLOT(NAME, IDX, NULL)
 
-#define FILLSLOTBASEINT(NAME) \
+#define FILLSLOTBASEINT(NAME, IDX) \
     FILLSLOTDEFS \
-    FILLSLOT(NAME, -1)
+    FILLSLOT(NAME, IDX, -1)
 
 #define REBOUNDDESCRIPTOR \
     descriptor->ob_type->tp_descr_get( \
@@ -697,7 +714,7 @@ wrap_length(PyObject *self)
 {
     PyObject *res;
     int len;
-    FILLSLOTBASEINT("__len__") {
+    FILLSLOTBASEINT("__len__", LEN_IDX) {
         res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
         if (res == NULL)
             return -1;
@@ -710,7 +727,7 @@ wrap_length(PyObject *self)
 
 static PyObject *
 wrap_getitem(PyObject *self, PyObject *v) {
-    FILLSLOTBASE("__getitem__")
+    FILLSLOTBASE("__getitem__", GETITEM_IDX)
         return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, v, NULL);
     return PyObject_GetItem(wrapped, v);
 }
@@ -722,7 +739,7 @@ wrap_setitem(PyObject *self, PyObject *key, PyObject *value)
     FILLSLOTDEFS
 
     if (value == NULL) {
-        FILLSLOT("__delitem__", -1) {
+        FILLSLOT("__delitem__", DELITEM_IDX, -1) {
             res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, key, NULL);
             if (res == NULL)
                 return -1;
@@ -731,7 +748,7 @@ wrap_setitem(PyObject *self, PyObject *key, PyObject *value)
         }
         return PyObject_DelItem(wrapped, key);
     } else {
-        FILLSLOT("__setitem__", -1) {
+        FILLSLOT("__setitem__", SETITEM_IDX, -1) {
             res = PyObject_CallFunctionObjArgs(
                             REBOUNDDESCRIPTOR, key, value, NULL);
             if (res == NULL)
@@ -749,7 +766,7 @@ wrap_setitem(PyObject *self, PyObject *key, PyObject *value)
 static PyObject *
 wrap_iter(PyObject *self)
 {
-    FILLSLOTBASE("__iter__")
+    FILLSLOTBASE("__iter__", ITER_IDX)
         return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
     return PyObject_GetIter(wrapped);
 }
@@ -757,7 +774,7 @@ wrap_iter(PyObject *self)
 static PyObject *
 wrap_iternext(PyObject *self)
 {
-    FILLSLOTBASE("next")
+    FILLSLOTBASE("next", NEXT_IDX)
         return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
     return PyIter_Next(Proxy_GET_OBJECT(self));
 }
@@ -770,7 +787,7 @@ wrap_contains(PyObject *self, PyObject *value)
 {
     PyObject *res;
     int result;
-    FILLSLOTBASEINT("__contains__") {
+    FILLSLOTBASEINT("__contains__", CONTAINS_IDX) {
         res = PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, value, NULL);
         if (res == NULL)
             return -1;
@@ -790,11 +807,11 @@ wrap_call(PyObject *self, PyObject *args, PyObject *kw)
     FILLSLOTDEFS
 
     if (kw) {
-        FILLSLOT("__call__", NULL)
+        FILLSLOT("__call__", CALL_IDX, NULL)
             return PyEval_CallObjectWithKeywords(REBOUNDDESCRIPTOR, args, kw);
         return PyEval_CallObjectWithKeywords(wrapped, args, kw);
     } else {
-        FILLSLOT("__call__", NULL)
+        FILLSLOT("__call__", CALL_IDX, NULL)
             return PyObject_CallObject(REBOUNDDESCRIPTOR, args);
         return PyObject_CallObject(wrapped, args);
     }
@@ -802,7 +819,7 @@ wrap_call(PyObject *self, PyObject *args, PyObject *kw)
 
 static PyObject *
 wrap_str(PyObject *self) {
-    FILLSLOTBASE("__str__")
+    FILLSLOTBASE("__str__", STR_IDX)
         return PyObject_CallFunctionObjArgs(REBOUNDDESCRIPTOR, NULL);
     return PyObject_Str(wrapped);
 }
@@ -1353,6 +1370,16 @@ initwrapper(void)
     m = Py_InitModule3("wrapper", module_functions, module___doc__);
     if (m == NULL)
         return;
+
+    SlotStrings[LEN_IDX] = PyString_InternFromString("__len__");
+    SlotStrings[GETITEM_IDX] = PyString_InternFromString("__getitem__");
+    SlotStrings[SETITEM_IDX] = PyString_InternFromString("__setitem__");
+    SlotStrings[DELITEM_IDX] = PyString_InternFromString("__delitem__");
+    SlotStrings[ITER_IDX] = PyString_InternFromString("__iter__");
+    SlotStrings[NEXT_IDX] = PyString_InternFromString("next");
+    SlotStrings[CONTAINS_IDX] = PyString_InternFromString("__contains__");
+    SlotStrings[CALL_IDX] = PyString_InternFromString("__call__");
+    SlotStrings[STR_IDX] = PyString_InternFromString("__str__");
 
     WrapperType.tp_base = ProxyType;
     WrapperType.tp_alloc = PyType_GenericAlloc;
