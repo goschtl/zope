@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection configuration support classes.
 
-$Id: connection.py,v 1.7 2003/04/23 21:06:07 gvanrossum Exp $
+$Id: connection.py,v 1.8 2003/04/24 18:02:12 gvanrossum Exp $
 """
 
 from zope.app.browser.services.configuration import AddComponentConfiguration
@@ -72,5 +72,4 @@ class UseConfiguration(BrowserView):
 
 class AddConnectionConfiguration(AddComponentConfiguration):
 
-    def nextURL(self):
-        return "@@connectionConfiguration.html"
+    pass
