@@ -43,6 +43,10 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         self.assert_(isinstance(view, SimpleContentView))
         self.assertEquals('The eagle has landed', view())
 
+    def test_existing_docstrings_arent_modified(self):
+        view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
+	self.assertEquals(view.eagle.__doc__, SimpleContentView.eagle.__doc__)
+
     def test_pages_view(self):
         view = self.folder.unrestrictedTraverse('testoid/eagle-page.txt')
         self.assert_(isinstance(view, SimpleContentView))
@@ -108,7 +112,7 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 ## <li>2</li>
 ## </ul>
 ## """
-##         self.assertEquals(expected, view())    
+##         self.assertEquals(expected, view())
 
 class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
     """Test a few publishing features"""
