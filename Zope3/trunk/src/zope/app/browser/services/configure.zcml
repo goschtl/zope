@@ -93,9 +93,6 @@
 
     </pages>
 
-<!-- Deprecated Simple Authentication Service --> 
-  <zope:include file="auth.zcml" />
-
 <!-- Pluggable Authentication Service --> 
   <zope:include package=".pluggableauth" />
 
