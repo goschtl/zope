@@ -92,9 +92,9 @@ def fromPath(path):
             entries = open(entries, "rU")
             for line in entries:
                 parts = line.split("/")
-                if os.path.normcase(parts[1]) == os.path.normcase(basename):
-                    if len(parts) >= 6:
-                        tag = parts[5][1:].rstrip() or tag
+                if (len(parts) >= 6 and
+                    os.path.normcase(parts[1]) == os.path.normcase(basename)):
+                    tag = parts[5][1:].rstrip() or tag
                     break
     modpath = _read_one_line(os.path.join(cvsdir, "Repository"))
     repo = _read_one_line(os.path.join(cvsdir, "Root"))
