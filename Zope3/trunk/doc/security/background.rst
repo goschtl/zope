@@ -19,7 +19,13 @@ Introduction
 1a. "Zope" is available in several different versions. In this document,
    we are concerned only with Zope version 3X.x.x and Zope version 3.x.x.
 
-   TODO: briefly explain Zope 3X and Zope 3.
+1b. "Zope 3X" is the preliminary version of Zope 3. It is built from the ground
+    up, paying attention to the lessons learned from Zope 2 and CMF. It is not a
+    product but intended to let developers get familiar with the new architecture
+    early.
+    
+1c. "Zope 3" is the mainline release intended for production use and including
+    backwards compatibility to Zope 2. 
 
 2. Python is an object-oriented language suitable both for writing stand-alone
    scripts and for large-scale software projects. It is implemented in C,
@@ -41,10 +47,6 @@ Introduction
 4a. Zope runs in a single process, with multiple threads. So, all software
    calls within zope occur in-process. There's no CORBA or DCOM style
    server sitting around waiting for calls. (XXX rewrite this.)
-
-x. "Publishing" is the process where, upon receiving a request from a client,
-   Zope renders a view on an object and returns this to the client.
-   For HTTP and FTP, the response takes the form of a sequence of bytes.
 
 5. A Python object is a building-block of a software system. An object
    has a set of attributes, identified by name. An attribute represents
@@ -79,7 +81,27 @@ x. "Publishing" is the process where, upon receiving a request from a client,
 Publishing
 ----------
 
-  write more here about the publication process
+10. "Publishing" is the process where, upon receiving a request from a client,
+   Zope renders a view on an object and returns this to the client.
+   For HTTP and FTP, the response takes the form of a sequence of bytes.
+
+10a. To actually publish an object several steps need to be taken. First the
+    incoming request needs to be transformed into a standard data structure
+    independent of the actual protocol used. Using the information from the
+    request we can associate a principal responsible for it and identify the
+    requested object using a mechanism called "traversal". 
+    Before responding to the request and actually retrieving data from the
+    object, the object is wrapped with a security proxy that intermediates
+    access to the object using the security management APIs. 
+
+    
+    security
+    assertions are applied paying respect to the parameters of the principal
+    and the object and his context. After retrieving information from the
+    object the result needs to be 
+
+    
+    form the requests
 
   convert URL into a sequence of path segments
   traverse from the root to the next object based on the first path segment.
