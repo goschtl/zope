@@ -287,11 +287,18 @@ Zope Changes
       - Small but important fix to security map. It was not marking objects
         with modified permissions as changed, due to a missing assignment.
 
+      - Contents/contents.pt didn't quote the values that were used in
+        href:s, thus it couldn't function properly if the items contained
+        certain characters.
+
+      - If the content-type was text/*, HTTPResponse.write re-set the
+        content-length header to the first chunk of data.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
-      Shane Hathaway
+      Shane Hathaway, Bjorn Tillenius
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
