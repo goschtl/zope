@@ -48,7 +48,7 @@ handled by applications or other components to interact with the locking
 system in a loosely-coupled way.
 
 Lock information is accessible through an object that supports the
-`ILockInfo` interface. The `ILockInfo` interface implies IAnnotatable,
+`ILockInfo` interface. The `ILockInfo` interface implies `IAnnotatable`,
 so that other locking implementations (superseding or complementing the
 default implementation) can store more information if needed to support
 extended locking semantics.
