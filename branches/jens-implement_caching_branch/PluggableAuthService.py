@@ -71,6 +71,7 @@ from PropertiedUser import PropertiedUser
 from PASCache import PASRAMCacheManager
 from PASCache import PASCacheable
 from utils import _wwwdir
+from utils import createViewName
 
 
 security = ModuleSecurityInfo(
@@ -912,6 +913,7 @@ class PluggableAuthService( Folder, PASCacheable ):
                                            , view_name=view_name
                                            , keywords=criteria
                                            )
+                        return id
 
                 except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                     LOG('PluggableAuthService', WARNING,
