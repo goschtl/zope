@@ -192,6 +192,11 @@ Zope Changes
 
     Bug Fixes
 
+      - Changed negotiator import with "INegotiator" utility lookup in
+        default global "TranslationDomain". This makes it possible to
+        use local INegotiator utilities with the standard translation
+        domain. 
+
       - contents.html no longer breaks when no IAdding is available.
 
       - Fixed the page that reports "system errors", errors that

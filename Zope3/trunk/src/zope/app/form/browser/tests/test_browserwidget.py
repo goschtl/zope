@@ -26,6 +26,8 @@ from zope.app.form.interfaces import ConversionError
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.i18n.interfaces import ITranslationDomain
+from zope.i18n.interfaces import INegotiator
+from zope.i18n.negotiator import negotiator
 from zope.i18n.gettextmessagecatalog import GettextMessageCatalog
 from zope.i18n.translationdomain import TranslationDomain
 from zope.publisher.browser import TestRequest
@@ -110,6 +112,7 @@ class SimpleInputWidgetTest(BrowserWidgetTest):
         domain = TranslationDomain('zope')
         domain.addCatalog(catalog)
         ztapi.provideUtility(ITranslationDomain, domain, 'zope')
+        ztapi.provideUtility(INegotiator, negotiator)
         self.assertEqual(self._widget.label, 'oofay itletay')
 
 
