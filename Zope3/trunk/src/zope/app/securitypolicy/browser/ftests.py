@@ -81,7 +81,9 @@ class RolePermissionsTest(BrowserTestCase):
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('Permissions assigned to the role' in body)
+        self.assert_(
+            'This page shows the permissions allowed and denied the role'
+            in body)
         self.assert_('Allow' in body)
         self.assert_('Deny' in body)
         self.checkForBrokenLinks(body, '/@@RolesPermissions.html',
