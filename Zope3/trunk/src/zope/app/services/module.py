@@ -13,49 +13,66 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.4 2003/05/29 20:38:57 gvanrossum Exp $
+$Id: module.py,v 1.5 2003/05/29 21:08:34 gvanrossum Exp $
 """
 
 from persistence import Persistent
 from zodb.code.module import PersistentModuleManager
 from zodb.code.interfaces import IPersistentModuleManager
+from zodb.code.interfaces import IPersistentModuleImportRegistry
+from zodb.code.interfaces import IPersistentModuleUpdateRegistry
 
 from zope.component import getServiceManager
 from zope.context import ContextMethod
 
-class Registry(Persistent):
+from zope.interface import implements
 
-    # The registry is found via context, but the PersistentModuleManager
-    # doesn't know about context.  To make it behave contextually, this
-    # Registry class collaborates with Manager to delegate to the
-    # registry found via context.
+
+class Registry:
+
+    # This is a wrapper around the module service, which is actually
+    # the service manager.  The service manager is found via context,
+    # but the PersistentModuleManager doesn't know about context.  To
+    # make it behave contextually, this Registry class collaborates
+    # with the Manager class below to delegate to the registry found
+    # via context.
+
+    implements(IPersistentModuleImportRegistry,
+               IPersistentModuleUpdateRegistry)
 
     def __init__(self):
-        self._v_manager = None
+        self._v_module_service = None
 
-    def setManager(self, ctx):
-        self._v_manager = ctx
+    def setModuleService(self, ms):
+        # This method is called by methods of Manager below
+        self._v_module_service = ms
+
+    # The next three methods are called by the persistent module manager
 
     def findModule(self, name):
-        return self._v_manager.findModule(name)
+        return self._v_module_service.findModule(name)
 
     def setModule(self, name, module):
-        return self._v_manager.setModule(name, module)
+        return self._v_module_service.setModule(name, module)
 
     def delModule(self, name):
-        return self._v_manager.delModule(name)
+        return self._v_module_service.delModule(name)
+
+    def __getstate__(self):
+        # So pickling this object doesn't include the module service
+        return {}
 
 class Manager(Persistent):
 
-    __implements__ = IPersistentModuleManager
+    implements(IPersistentModuleManager)
 
     # The registry for the manager is the ServiceManager.
     # The association between this manager and the registry
     # is static, but the static association can't be stored
     # explicitly in Zope.
 
-    # XXX There is no locking, but every call to setManager() for a
-    # particular instance should have the same manager argument.
+    # XXX There is no locking, but every call to setModuleService()
+    # for a particular instance should have the same manager argument.
 
     # XXX It would be nice if the lookup via getServiceManager()
     # occurred less often.  Best would be to do it only when the
@@ -66,15 +83,15 @@ class Manager(Persistent):
         self._manager = PersistentModuleManager(self._registry)
 
     def new(self, name, source):
-        self._registry.setManager(getServiceManager(self))
+        self._registry.setModuleService(getServiceManager(self))
         self._manager.new(name, source)
 
     def update(self, source):
-        self._registry.setManager(getServiceManager(self))
+        self._registry.setModuleService(getServiceManager(self))
         self._manager.update(source)
 
     def remove(self, source):
-        self._registry.setManager(getServiceManager(self))
+        self._registry.setModuleService(getServiceManager(self))
         self._manager.remove(source)
 
     new = ContextMethod(new)
