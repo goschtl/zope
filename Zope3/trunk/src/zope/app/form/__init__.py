@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.form.interfaces import IWidget, InputErrors
 from zope.component.interfaces import IViewFactory
 from zope.interface import implements
@@ -46,10 +48,10 @@ class Widget(object):
         return translate(text, "zope", context=self.request, default=text)
             
     def _renderedValueSet(self):
-        """Returns True if the the widget's rendered value has been set.
+        """Returns ``True`` if the the widget's rendered value has been set.
         
         This is a convenience method that widgets can use to check whether
-        or not setRenderedValue was called.
+        or not `setRenderedValue` was called.
         """
         return self._data is not self._data_marker
 

@@ -11,13 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Alternate base classes for IBrowserWidget implementations.
+"""Alternate base classes for `IBrowserWidget` implementations.
 
-The base classes provided here implement the IBrowserWidget API and
+The base classes provided here implement the `IBrowserWidget` API and
 provide a simpler API that derived classes are expected to implement.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from xml.sax.saxutils import escape, quoteattr
 
 from zope.interface import implements
@@ -140,10 +142,10 @@ class BaseWidget(object):
 
         This method should not load values from the request.
 
-        Derived classes should call the base class initialize() before
+        Derived classes should call the base class `initialize()` before
         performing specialized initialization.  This requirement is
         waived for classes which inherit directly from, and *only*
-        from, BaseWidget.
+        from, `BaseWidget`.
         """
 
     def label(self):
@@ -153,11 +155,11 @@ class BaseWidget(object):
     def loadValueFromRequest(self):
         """Load the value from data in the request."""
         raise NotImplementedError(
-            "BaseWidget subclasses must implement loadValueFromRequest()")
+            "BaseWidget subclasses must implement `loadValueFromRequest()`")
 
     def render(self, value):
         raise NotImplementedError(
-            "BaseWidget subclasses must implement render()")
+            "BaseWidget subclasses must implement `render()`")
 
 
 class BaseVocabularyWidget(BaseWidget):
@@ -201,8 +203,8 @@ class BaseVocabularyWidget(BaseWidget):
     def loadValueFromRequest(self):
         """Load the value from data in the request.
 
-        If self.queryview is not None, this method is responsible for
-        calling the query view's performAction() method with the value
+        If `self.queryview` is not ``None``, this method is responsible for
+        calling the query view's `performAction()` method with the value
         loaded, and returning the result::
 
             value = ...load value from request data...
@@ -217,7 +219,7 @@ class BaseVocabularyWidget(BaseWidget):
     def convertTokensToValues(self, tokens):
         """Convert a list of tokens to a list of values.
 
-        If an invalid token is encountered, WidgetInputError is raised.
+        If an invalid token is encountered, `WidgetInputError` is raised.
         """
         L = []
         for token in tokens:
@@ -319,7 +321,7 @@ class BaseQueryView(object):
     def initialize(self):
         """Initialization which does not require reading the request.
 
-        Derived classes should call the base class initialize() before
+        Derived classes should call the base class `initialize()` before
         performing specialized initialization.
         """
         # Should loading from the request happen here?
@@ -351,25 +353,25 @@ class BaseQueryView(object):
     # Methods which must be overriden by subclasses:
 
     def getResults(self):
-        """Perform the query, or return None.
+        """Perform the query, or return ``None``.
 
-        The return value should be None if there is no query to
+        The return value should be ``None` if there is no query to
         execute, or an object that can be rendered as a set of results
-        by renderQueryResults().
+        by `renderQueryResults()`.
 
         If the query results in an empty set of results, some value
-        other than None should be used to represent the results so
-        that renderQueryResults() can provide a helpful message.
+        other than ``None`` should be used to represent the results so
+        that `renderQueryResults()` can provide a helpful message.
         """
         raise NotImplementedError(
-            "BaseQueryView subclasses must implement getResults()")
+            "`BaseQueryView` subclasses must implement `getResults()`")
 
     def renderInput(self):
         """Render the input area of the query view."""
         raise NotImplementedError(
-            "BaseQueryView subclasses must implement renderInput()")
+            "`BaseQueryView` subclasses must implement `renderInput()`")
 
     def renderQueryResults(self, results, value):
-        """Render the results returned by getResults()."""
+        """Render the results returned by `getResults()`."""
         raise NotImplementedError(
-            "BaseQueryView subclasses must implement renderQueryResults()")
+            "`BaseQueryView` subclasses must implement `renderQueryResults()`")

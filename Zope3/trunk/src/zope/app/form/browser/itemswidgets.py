@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from xml.sax.saxutils import escape
 from zope.interface import implements
 from zope.i18n import translate
@@ -96,11 +98,11 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
             "__call__() must be implemented by a subclass; use _getFormValue()")
 
     def textForValue(self, term):
-        """Extract a string from the term.
+        """Extract a string from the `term`.
 
-        The term must be a vocabulary tokenized term. 
+        The `term` must be a vocabulary tokenized term. 
 
-        This can be overridden to support more complex term objects. The token
+        This can be overridden to support more complex `term` objects. The token
         is returned here since it's the only thing known to be a string, or
         str()able."""
         if ITitledTokenizedTerm.providedBy(term):
@@ -162,7 +164,7 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
         self._data = value
 
     def _toFieldValue(self, input):
-        """See SimpleInputWidget"""
+        """See `SimpleInputWidget`"""
         raise NotImplementedError(
             "_toFieldValue(input) must be implemented by a subclass\n"
             "It may be inherited from the mix-in classes SingleDataHelper\n"
@@ -375,7 +377,7 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
 
     def renderItemsWithValues(self, values):
         """Render the list of possible values, with those found in
-        'values' being marked as selected."""
+        `values` being marked as selected."""
 
         cssClass = self.cssClass
 
@@ -405,14 +407,14 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
         return rendered_items
 
     def renderItem(self, index, text, value, name, cssClass):
-        """Render an item for a particular value."""
+        """Render an item for a particular `value`."""
         return renderElement('option',
                              contents=escape(text),
                              value=value,
                              cssClass=cssClass)
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
-        """Render an item for a particular value that is selected."""
+        """Render an item for a particular `value` that is selected."""
         return renderElement('option',
                              contents=escape(text),
                              value=value,

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -28,7 +30,7 @@ class CheckBoxWidget(SimpleInputWidget):
     """A checkbox widget used to display Bool fields.
     
     For more detailed documentation, including sample code, see
-    tests/test_checkboxwidget.py.
+    ``tests/test_checkboxwidget.py``.
     """    
     type = 'checkbox'
     default = 0
@@ -71,13 +73,13 @@ class CheckBoxWidget(SimpleInputWidget):
             super(CheckBoxWidget, self).hasInput()
 
     def _getFormInput(self):
-        """Returns the form input used by _toFieldValue.
+        """Returns the form input used by `_toFieldValue`.
         
         Return values:
         
-          'on'  checkbox is checked
-          ''    checkbox is not checked
-          None  form input was not provided
+          ``'on'``  checkbox is checked
+          ``''``    checkbox is not checked
+          ``None``  form input was not provided
 
         """
         if self.request.get(self.name) == 'on':

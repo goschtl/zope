@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.schema import BytesLine
 from zope.schema.interfaces import IVocabularyQuery
 from zope.schema.interfaces import IVocabularyTokenized, IBaseVocabulary
@@ -24,7 +26,7 @@ from zope.app.form.browser.complexsample.widgetapi import _
 
 
 class ITitledTokenizedTerm(ITokenizedTerm):
-    """ITokenizedTerm that also has a title attribute."""
+    """`ITokenizedTerm` that also has a title attribute."""
 
     title = BytesLine(title=_(u"Title"))
 

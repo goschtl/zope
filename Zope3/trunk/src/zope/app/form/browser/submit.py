@@ -17,6 +17,7 @@ Update -- Name of the standard update submit button
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
 Next = "NEXT_SUBMIT"
 Previous = "PREVIOUS_SUBMIT"

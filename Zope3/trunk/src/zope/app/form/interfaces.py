@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
 from zope.interface import Attribute, Interface, implements
@@ -35,7 +37,7 @@ class WidgetInputError(UserError):
     def __init__(self, field_name, widget_title, errors):
         """Initialize Error
 
-        'errors' is a ValidationError or a list of ValidationError objects
+        `errors` is a ``ValidationError`` or a list of ValidationError objects
         """
         UserError.__init__(self, field_name, widget_title, errors)
         self.field_name = field_name
@@ -157,12 +159,12 @@ class IInputWidget(IWidget):
         """Validate the widget data.
 
         If there is no user input and the field is required, then a
-        MissingInputError will be raised.
+        ``MissingInputError`` will be raised.
 
         If there is no user input and the field is not required, then
         the field default value will be returned.
 
-        A WidgetInputError is returned in the case of one or more
+        A ``WidgetInputError`` is returned in the case of one or more
         errors encountered, inputting, converting, or validating the data.
         """
 
@@ -170,7 +172,7 @@ class IInputWidget(IWidget):
         """Return value suitable for the widget's field.
 
         The widget must return a value that can be legally assigned to
-        its bound field or otherwise raise WidgetInputError.
+        its bound field or otherwise raise ``WidgetInputError``.
 
         See validate() for validation performed.
         """
@@ -178,18 +180,18 @@ class IInputWidget(IWidget):
     def applyChanges(content):
         """Validate the widget data and apply it to the content.
 
-        See validate() for validation performed.
+        See `validate()` for validation performed.
         """
 
     def hasInput():
-        """Returns True if the widget has input.
+        """Returns ``True`` if the widget has input.
 
         Input is used by the widget to calculate an 'input value', which is
         a value that can be legally assigned to a field.
 
-        Note that the widget may return True, indicating it has input, but
-        still be unable to return a value from getInputValue. Use
-        hasValidInput to determine whether or not getInputValue will return
+        Note that the widget may return ``True``, indicating it has input, but
+        still be unable to return a value from `getInputValue`. Use
+        `hasValidInput` to determine whether or not `getInputValue` will return
         a valid value.
 
         A widget that does not have input should generally not be used to
@@ -197,9 +199,9 @@ class IInputWidget(IWidget):
         """
 
     def hasValidInput():
-        """Returns True is the widget has valid input.
+        """Returns ``True`` is the widget has valid input.
 
-        This method is similar to hasInput but it also confirms that the
+        This method is similar to `hasInput` but it also confirms that the
         input provided by the user can be converted to a valid field value
         based on the field constraints.
         """

@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
      Bool, PythonIdentifier, MessageID
@@ -218,7 +220,7 @@ class IAddWizardDirective(ICommonWizardInformation, ICommonAddInformation):
 
     Adding an object is a bit trickier than editing an object, because
     the object the schema applies to isn't available when forms are
-    being rendered.  The addwizard directive provides an customization
+    being rendered.  The addwizard directive provides a customization
     interface to overcome this difficulty.
 
     See zope.app.browser.form.interfaces.IAddFormCustomization.
@@ -294,7 +296,7 @@ class IAddFormDirective(ICommonFormInformation, ICommonAddInformation):
 
     Adding an object is a bit trickier than editing an object, because
     the object the schema applies to isn't available when forms are
-    being rendered.  The addform directive provides an customization
+    being rendered.  The addform directive provides a customization
     interface to overcome this difficulty.
 
     See zope.app.browser.form.interfaces.IAddFormCustomization.

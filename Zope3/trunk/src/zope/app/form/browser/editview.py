@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from datetime import datetime
 from transaction import get_transaction
 
@@ -42,11 +44,12 @@ from zope.app.form.browser.submit import Update
 class EditView(BrowserView):
     """Simple edit-view base class
 
-    Subclasses should provide a schema attribute defining the schema
+    Subclasses should provide a `schema` attribute defining the schema
     to be edited.
 
     The automatically generated widgets are available by name through
-    the attributes *_widget. (E.g. view.title_widget for the title widget)
+    the attributes `*_widget`.
+    (E.g. ``view.title_widget for the title widget``)
     """
 
     errors = ()

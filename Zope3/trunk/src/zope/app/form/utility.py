@@ -32,6 +32,8 @@ fields, or widgets.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.schema import getFieldsInOrder
 from zope.app import zapi
 from zope.app.form.interfaces import IWidget
@@ -53,16 +55,16 @@ def _fieldlist(names, schema):
     
     
 def _createWidget(context, field, viewType, request):
-    """Creates a widget given a context, field, and viewType.
+    """Creates a widget given a `context`, `field`, and `viewType`.
     
-    Uses zapi.getViewProviding to lookup a view for the field and the
+    Uses ``zapi.getViewProviding`` to lookup a view for the field and the
     viewType.
     """    
     field = field.bind(context)
     return zapi.getViewProviding(field, viewType, request)        
 
 def _widgetHasStickyValue(widget):
-    """Returns True if the widget has a sticky value.
+    """Returns ``True`` if the widget has a sticky value.
     
     A sticky value is input from the user that should not be overridden
     by an object's current field value. E.g. a user may enter an invalid
@@ -76,11 +78,11 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
                 ignoreStickyValues=False, context=None):
     """Sets up a single view widget.
 
-    The widget will be an attribute of the view. If there is already
+    The widget will be an attribute of the `view`. If there is already
     an attribute of the given name, it must be a widget and it will be
-    initialized with the given value if not no_value.
+    initialized with the given `value` if not ``no_value``.
 
-    If there isn't already a view attribute of the given name, then a
+    If there isn't already a `view` attribute of the given name, then a
     widget will be created and assigned to the attribute.
     """
     if context is None:
@@ -114,27 +116,27 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
 
 def setUpWidgets(view, schema, viewType, prefix=None, ignoreStickyValues=False,
                  initial={}, names=None, context=None):
-    """Sets up widgets for the fields defined by a schema.
+    """Sets up widgets for the fields defined by a `schema`.
 
-    view is the view that will be configured with widgets. 
+    `view` is the view that will be configured with widgets. 
 
-    schema is an interface containing the fields that widgets will be
+    `schema` is an interface containing the fields that widgets will be
     created for.
 
-    prefix is a string that is prepended to the widget names in the generated
+    `prefix` is a string that is prepended to the widget names in the generated
     HTML. This can be used to differentiate widgets for different schemas.
 
-    ignoreStickyValues is a flag that, when True, will cause widget sticky
+    `ignoreStickyValues` is a flag that, when ``True``, will cause widget sticky
     values to be replaced with the context field value or a value specified
     in initial.
 
-    initial is a mapping of field names to initial values.
+    `initial` is a mapping of field names to initial values.
 
-    names is an optional iterable that provides an ordered list of field
-    names to use. If names is None, the list of fields will be defined by
+    `names` is an optional iterable that provides an ordered list of field
+    names to use. If names is ``None``, the list of fields will be defined by
     the schema.
 
-    context provides an alternative context for acquisition.
+    `context` provides an alternative context for acquisition.
     """
     for (name, field) in _fieldlist(names, schema):
         setUpWidget(view, name, field, viewType, 
@@ -147,10 +149,10 @@ def setUpEditWidgets(view, schema, source=None, prefix=None,
                      ignoreStickyValues=False, names=None, context=None):
     """Sets up widgets to collect input on a view.
     
-    See setUpWidgets for details on view, schema, prefix, ignoreStickyValues,
-    names, and context.
+    See `setUpWidgets` for details on `view`, `schema`, `prefix`,
+    `ignoreStickyValues`, `names`, and `context`.
     
-    source, if specified, is an object from which initial widget values are
+    `source`, if specified, is an object from which initial widget values are
     read. If source is not specified, the view context is used as the source.
     """
     _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
@@ -160,10 +162,10 @@ def setUpDisplayWidgets(view, schema, source=None, prefix=None,
                         ignoreStickyValues=False, names=None, context=None):
     """Sets up widgets to display field values on a view.
     
-    See setUpWidgets for details on view, schema, prefix, ignoreStickyValues,
-    names, and context.
+    See `setUpWidgets` for details on `view`, `schema`, `prefix`,
+    `ignoreStickyValues`, `names`, and `context`.
     
-    source, if specified, is an object from which initial widget values are
+    `source`, if specified, is an object from which initial widget values are
     read. If source is not specified, the view context is used as the source.
     """
     _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
@@ -171,7 +173,7 @@ def setUpDisplayWidgets(view, schema, source=None, prefix=None,
 
 def _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
                       names, context, displayType, inputType):
-    """A helper function used by setUpDisplayWidget and setUpEditWidget."""
+    """A helper function used by `setUpDisplayWidget` and `setUpEditWidget`."""
     if context is None:
         context = view.context
     if source is None:
@@ -189,10 +191,11 @@ def _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
                     ignoreStickyValues, context)
 
 def viewHasInput(view, schema, names=None):
-    """Returns True if the any of the view's widgets contain user input.
+    """Returns ``True`` if the any of the view's widgets contain user input.
     
-    schema specifies the set of fields that correspond to the view widgets.
-    names can be specified to provide a subset of these fields.
+    `schema` specifies the set of fields that correspond to the view widgets.
+    
+    `names` can be specified to provide a subset of these fields.
     """
     for name, field in _fieldlist(names, schema):
         if  getattr(view, name + '_widget').hasInput():
@@ -202,13 +205,15 @@ def viewHasInput(view, schema, names=None):
 def applyWidgetsChanges(view, schema, target=None, names=None):
     """Updates an object with values from a view's widgets.
     
-    view contained the widgets that perform the update. By default, the widgets
-    will update the view's context. target can be specified as an alternative
-    object to update.
+    `view` contained the widgets that perform the update. By default, the
+    widgets will update the view's context.
     
-    schema contrains the values provided by the widgets.
+    `target` can be specified as an alternative object to update.
     
-    names can be specified to update a subset of the schema constrained values.
+    `schema` contrains the values provided by the widgets.
+    
+    `names` can be specified to update a subset of the schema constrained
+    values.
     """
     errors = []
     changed = False
@@ -228,15 +233,15 @@ def applyWidgetsChanges(view, schema, target=None, names=None):
     return changed
 
 def getWidgetsData(view, schema, names=None):
-    """Returns user entered data for a set of schema fields.
+    """Returns user entered data for a set of `schema` fields.
     
     The return value is a map of field names to data values.
     
-    view is the view containing the widgets. schema is the schema that
-    defines the widget fields. An optional names argument can be provided
-    to specify an alternate list of field values to return. If names is
-    not specified, or is None, getWidgetsData will attempt to return values
-    for all of the fields in the schema.
+    `view` is the view containing the widgets. `schema` is the schema that
+    defines the widget fields. An optional `names` argument can be provided
+    to specify an alternate list of field values to return. If `names` is
+    not specified, or is ``None``, `getWidgetsData` will attempt to return
+    values for all of the fields in the schema.
     
     A requested field value may be omitted from the result for one of two
     reasons:
@@ -247,14 +252,14 @@ def getWidgetsData(view, schema, names=None):
         - The field is editable and not required but its widget does not 
           contain user input.
     
-    If a field is required and its widget does not have input, getWidgetsData
+    If a field is required and its widget does not have input, `getWidgetsData`
     raises an error.
     
     A widget may raise a validation error if it cannot return a value that
     satisfies its field's contraints.
     
     Errors, if any, are collected for all fields and reraised as a single
-    WidgetsError.
+    `WidgetsError`.
     """
     result = {}
     errors = []

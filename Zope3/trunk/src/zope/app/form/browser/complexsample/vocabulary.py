@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface.declarations import implements
 from zope.schema.interfaces import ITokenizedTerm, IIterableVocabulary
 
