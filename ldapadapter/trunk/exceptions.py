@@ -24,7 +24,7 @@ _ = MessageIDFactory("ldapadapter")
 from zope.schema._bootstrapinterfaces import ValidationError
 
 
-class URIParseError(Exception):
+class LDAPURIParseError(Exception):
     """The given ldap uri is not valid."""
 
 LDAP_uri_parse_error = _(u'The LDAP URI could not be parsed.')
