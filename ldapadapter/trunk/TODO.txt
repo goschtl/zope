@@ -5,9 +5,9 @@ LDAPAdapter TODO
 ================================================================================
 task                                           | assigned to   | timeline | done
 ================================================================================
-Add a generic validating input widget for URLs | torsten/roger | 10/10/04 | [ ]
+Add a generic validating input widget for URLs | torsten/roger | 10/10/04 | [x]
 -----------------------------------------------+---------------+----------+-----
-Complete regex for validation LDAP uri         | torsten/roger | 10/10/04 | [ ]
+Complete regex for validation LDAP uri         | torsten/roger | 10/10/04 | [x]
 -----------------------------------------------+---------------+----------+-----
 Add exceptions                                 | torsten/roger | 10/10/04 | [ ]
 -----------------------------------------------+---------------+----------+-----
@@ -16,4 +16,45 @@ Add i18n translation files                     | torsten/roger | 10/10/04 | [ ]
 Move LDAPURI field to zope.schema._fields.py   | torsten/roger | 10/10/04 | [ ]
 -----------------------------------------------+---------------+----------+-----
 Connection tracer (for validating connections) | torsten/roger | 10/10/04 | [ ]
+-----------------------------------------------+---------------+----------+-----
+Enable querying of the server's LDAP schema    | florent       | 10/10/04 | [ ]
+(see hints below)                              |               |          |
 ================================================================================
+
+Hints:
+======
+
+LDAP schema query:
+
+First query base dn of Schema entries
+
+ > ldapsearch -x -s base subschemaSubentry
+ 
+ # extended LDIF
+ #
+ # LDAPv3
+ # base <> with scope base
+ # filter: (objectclass=*)
+ # requesting: subschemaSubentry
+ #
+
+ # IsarSprint, zope.org
+ dn: o=IsarSprint,dc=zope,dc=org
+ subschemaSubentry: cn=Subschema
+
+ # search result
+ search: 2
+ result: 0 Success
+
+ # numResponses: 2
+ # numEntries: 1
+
+Second query the schema values
+
+ > ldapsearch -x -s base -b "cn=Subschema" objectClasses attributeTypes \
+ >   ldapSyntaxes matchingRules matchingRuleUse
+ 
+ [ ... lots of output ... ]
+ 
+Probably split last query and make a dictionary for each query element
+ (objectClasses={...}, attributeTypes={...}, ...)
