@@ -90,7 +90,7 @@ MAIL_CMD = "/usr/lib/sendmail -t -f %s"
 
 WAIT = 0                                # Fork unless --wait is requested.
 DRYRUN = 0                              # '--dryrun' option
-VERBOSE = 1                             # '--verbose' option default value
+VERBOSE = 0                             # '--verbose' option default value
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
 sVv_re = re.compile("(.*),([^,]+),([^,]+)")
@@ -238,11 +238,9 @@ def find_entries(repo=None):
     entries = []
     catchall = None
     linkmgr = adjustlinks.LinkManager()
+    gotaddrs = []
 
     containers = linkmgr.all_containers(repo)
-    if VERBOSE:
-        complain("find_entries - repo: %s, entries: %s, containers: %s\n",
-                 repo, entries, containers)
     for it in traffic_table.get_table():
         if it['path'] == None:
             # Retain the catchall entry in case no regular ones qualify.
@@ -250,13 +248,16 @@ def find_entries(repo=None):
         else:
             # Obtain qualifying candidates:
             for candidate in containers:
+
                 if (re.match(it['path'], candidate)
-                    and it not in entries):
+                    and it.get('addrs') not in gotaddrs):
                     entries.append(it)
+                    gotaddrs.append(it.get('addrs'))
 
     if entries:
         if VERBOSE > 1:
-            complain("Resolved table entry:\n  %s\n", entries)
+            complain("find_entries: repo: %s, containers: %s\n entries: %s\n",
+                     repo, containers, entries)
     elif catchall:
         entries.append(catchall)
         if VERBOSE > 1:
@@ -277,7 +278,7 @@ def do_mail(repo, addrs, subjs,
 
     We include a diff."""
     if VERBOSE:
-        complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
+        complain("Notice to %s\n for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS: %s " % repo
 
@@ -296,14 +297,27 @@ def do_mail(repo, addrs, subjs,
                 new_msg = ('=== Removed File %s/%s ===\n'
                            % (repo, fn))
             else:
-                new_msg = "\n" + create_diff(repo, fn, old, new)
+                try:
+                    new_msg = "\n" + create_diff(repo, fn, old, new)
+                except IOError:
+                    if DRYRUN:
+                        text = "[Contrived diff]"
+                    else:
+                        raise
+                    
 
             diff_msg = diff_msg + new_msg + '\n'
 
-    # Prepend the Subject and From lines, and append the diff:
-    mf = open(msgfilenm, 'r')
-    text = mf.read() + diff_msg
-    mf.close()
+    try:
+        # Prepend the Subject and From lines, and append the diff:
+        mf = open(msgfilenm, 'r')
+        text = mf.read() + diff_msg
+        mf.close()
+    except IOError:
+        if DRYRUN and WAIT:
+            text = "[Contrived content]\n" + diff_msg
+        else:
+            raise
 
     send_mail(addrs, text, subject)
 
@@ -397,7 +411,7 @@ def send_mail(addrs, text, subject):
     cmd = ("%(verbose1)s%(dryrun)s%(mailcmd)s %(verbose2)s" % cmd_info)
 
     if VERBOSE:
-        complain("%sDid mail cmd for user %s:\n\t%s\n",
+        complain("%sDoing mail cmd for user %s:\n\t%s\n",
                  ((DRYRUN and "NOT ") or ""), user, cmd)
 
     envelope_info = {'subject': subject,
@@ -413,13 +427,19 @@ def send_mail(addrs, text, subject):
 
     notice = header + '\n' + text
 
-    cmd_in, cmd_out = os.popen2(cmd, 'rw')
-    cmd_in.write(notice)
-    cmd_in.close()
-    output = cmd_out.read()
-    result = cmd_out.close()
+    if not DRYRUN:
+        cmd_in, cmd_out = os.popen2(cmd, 'rw')
+        cmd_in.write(notice)
+        cmd_in.close()
+        output = cmd_out.read()
+        result = cmd_out.close()
+    else:
+        result = None
+
     if VERBOSE:
-        complain(header)
+        complain(string.join(map(lambda x: '= ' + x,
+                                 string.split(header, '\n')),
+                             '\n'))
     if result:
         note_failure("*** Mail cmd yielded unexpected result %s:\n%s\n",
                      result, output)
