@@ -13,10 +13,9 @@
 ##############################################################################
 """ Server Control View
 
-$Id: zodbcontrol.py,v 1.2 2003/08/06 14:41:20 srichter Exp $
+$Id: zodbcontrol.py,v 1.3 2003/08/08 13:27:39 gotcha Exp $
 """
 from zodb.storage.file.errors import FileStorageError
-from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.applicationcontrol import IZODBControl
 from zope.component import getAdapter
 
