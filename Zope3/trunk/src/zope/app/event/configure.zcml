@@ -3,11 +3,11 @@
 >
 
 <serviceType
-    id='Events' 
+    id='EventPublication' 
     interface='zope.app.interfaces.event.IPublisher' />
 
 <service
-    serviceType='Events'
+    serviceType='EventPublication'
     component='zope.app.event.globalservice.eventPublisher' />
 
 </zopeConfigure>
