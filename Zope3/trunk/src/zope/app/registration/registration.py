@@ -727,6 +727,15 @@ class ComponentRegistration(SimpleRegistration):
         self._BBB_componentPath = path
 
     componentPath = property(__BBB_getComponentPath, __BBB_setComponentPath)
+
+    def __setstate__(self, dict):
+        super(ComponentRegistration, self).__setstate__(dict)
+        # For some reason the component path is not set correctly by the
+        # default __setstate__ mechanism. 
+        if 'componentPath' in dict:
+            self._component = NULL_COMPONENT
+            self._BBB_componentPath = dict['componentPath']
+    
     ###########################################################################
 
 
