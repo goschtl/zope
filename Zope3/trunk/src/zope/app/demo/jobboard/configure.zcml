@@ -5,11 +5,11 @@
     i18n_domain="jobboardi18n"
     >
 
-<content class="zopeproducts.demo.jobboard.job.JobList">
+<content class="zope.app.demo.jobboard.job.JobList">
   <implements interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
   />
   <factory
-      id="zopeproducts.demo.jobboard.job.JobList"
+      id="zope.app.demo.jobboard.job.JobList"
       title="I18n Job List"
       />
   <allow interface=".interfaces.IJobList" />
@@ -19,23 +19,23 @@
 <browser:addMenuItem
     title="I18N Job Board"
     description="Internationalized board for posting and searching jobs."
-    class="zopeproducts.demo.jobboard.job.JobList"
+    class="zope.app.demo.jobboard.job.JobList"
     permission="zope.ManageContent"
     />
 
 <content class=".job.Job">
-  <allow interface="zopeproducts.demo.jobboard.interfaces.IJob" />
+  <allow interface="zope.app.demo.jobboard.interfaces.IJob" />
 </content>
 
 <browser:page
     name="index.html"
-    for="zopeproducts.demo.jobboard.interfaces.IJobList"
+    for="zope.app.demo.jobboard.interfaces.IJobList"
     template="joblistview.pt"
     permission="zope.View"
     />
 
 <browser:pages
-    for="zopeproducts.demo.jobboard.interfaces.IJobList"
+    for="zope.app.demo.jobboard.interfaces.IJobList"
     class=".browser.JobCreateView"
     permission="zope.View"
     >
@@ -47,13 +47,13 @@
 
 <browser:page
     name="index.html"
-    for="zopeproducts.demo.jobboard.interfaces.IJob"
+    for="zope.app.demo.jobboard.interfaces.IJob"
     template="jobview.pt"
     permission="zope.View"
     />
 
 <browser:pages
-    for="zopeproducts.demo.jobboard.job.IJobList"
+    for="zope.app.demo.jobboard.job.IJobList"
     class=".browser.ApproveJobsView"
     permission="zope.ManageContent"
     >
@@ -64,7 +64,7 @@
 
 <browser:icon
     name="zmi_icon"
-    for="zopeproducts.demo.jobboard.interfaces.IJobList"
+    for="zope.app.demo.jobboard.interfaces.IJobList"
     file="./joblist.gif"
     />
 
