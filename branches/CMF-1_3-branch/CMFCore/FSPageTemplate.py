@@ -40,6 +40,8 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
      
     meta_type = 'Filesystem Page Template'
 
+    _owner = None  # Unowned
+
     manage_options=(
         (
             {'label':'Customize', 'action':'manage_main'},

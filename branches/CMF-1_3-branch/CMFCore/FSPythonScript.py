@@ -38,6 +38,8 @@ class FSPythonScript (FSObject, Script):
     _params = _body = ''
     _v_f = None
 
+    _owner = None
+
     manage_options=(
         (
             {'label':'Customize', 'action':'manage_main'},
