@@ -65,10 +65,10 @@ import sys, os, tempfile, time
 import string
 import getopt
 import smtplib
-import socket,whrandom
+import socket, whrandom, getpass
 
-SMTP_SERVER = 'smtp.digicool.com'
-SENDER_ADDR = '"Digicool CVS" <cvs@digicool.com>'
+#SMTP_SERVER = 'smtp.digicool.com'
+#SENDER_ADDR = '"Digicool CVS" <cvs@digicool.com>'
 CUSTOM_TRAFFIC_TABLE = "/cvs-repository/custom_traffic_table.py"
 
 try:
@@ -357,39 +357,21 @@ def do_mail(name, remote, repo, addrs, subjs,
 
             diff_msg = diff_msg + new_msg + '\n\n'
 
+    cmd = ("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
+                                     (DRYRUN and "echo Would do: ") or "",
+                                     MAIL_CMD,
+                                     (VERBOSE and "-v") or "",
+                                     subject,
+                                     string.join(addrs, ",")))
     if msgfilenm:
-        msg_handle = open(msgfilenm, 'r')
-        message    = msg_handle.read()
-        msg_handle.close()
-    else:
-        message = ''
+        cmd = cmd + "< %s" % msgfilenm
 
-    header = ('From: ' + SENDER_ADDR
-              + '\012To: ' + string.join(addrs, ',')
-              + '\012Subject: ' + subject + '\012')
-
-    try:
-        mail_server = smtplib.SMTP(SMTP_SERVER)
-        mail_server.sendmail(SENDER_ADDR, addrs, header + message + diff_msg)
-        mail_server.quit()
-    except:
-        note_failure("*** Mail returned %s...", str(sys.exc_info()))
-
-##    cmd = ("%s%s%s %s -s '%s' %s" % ((VERBOSE and "set -x; ") or "",
-##                                     (DRYRUN and "echo Would do: ") or "",
-##                                     MAIL_CMD,
-##                                     (VERBOSE and "-v") or "",
-##                                     subject,
-##                                     string.join(addrs, ",")))
-##    if msgfilenm:
-##        cmd = cmd + "< %s" % msgfilenm
-
-##    if VERBOSE:
-##        complain("%sDoing mail cmd:\n\t%s\n",
-##                 ((DRYRUN and "NOT ") or ""), cmd)
-##    result = os.system(cmd)
-##    if result:
-##        note_failure("*** Mail returned %s...", result)
+    if VERBOSE:
+        complain("%sDoing mail cmd:\n\t%s\n",
+                 ((DRYRUN and "NOT ") or ""), cmd)
+    result = os.system(cmd)
+    if result:
+        note_failure("*** Mail failed with error %s...", result)
 
 
 
@@ -601,12 +583,10 @@ def handle_failures(argstring):
         if not host:
             host = "nohost.digicool.com"
 
-    if os.environ.has_key('LOGNAME'):
-        user = os.environ['LOGNAME']
-    elif os.environ.has_key('USER'):
-        user = os.environ['USER']
-    else:
-        user = "<unidentified user>"
+    user = None
+    try: user = getpass.getuser()
+    except: pass
+    if not user: user = "unidentified"
 
     if os.path.isfile(OUTPUT_LOG):
         log_file_expr = ("\n\tSee log file for application errors:\n\t\t%s"
