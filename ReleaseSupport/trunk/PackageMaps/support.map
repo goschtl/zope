@@ -1,0 +1,10 @@
+# These packages are used to provide the zpkg "runtime" support; they
+# are loaded into the distributed packages and are used by the
+# generated setup.py.
+#
+# This package map can be addressed as
+#
+#   svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/support.map
+
+zpkgsetup   svn://svn.zope.org/repos/main/zpkgtools/tags/*/zpkgsetup
+setuptools  cvs://anonymous@cvs.sourceforge.net:pserver/cvsroot/python:python/nondist/sandbox/setuptools/setuptools
