@@ -100,6 +100,8 @@ class Cache(object):
         for oid, ob in self.__active.items():
             if ob is not None:
                 ob = ob()
+            if ob is None:
+                continue
             # The _p_atime field is seconds since the start of the day.
             # When we start a new day, we'll expect to see most of the
             # _p_atime values be greater than now.
