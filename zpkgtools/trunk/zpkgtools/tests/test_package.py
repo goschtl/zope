@@ -35,7 +35,10 @@ class PackageInfoTestCase(unittest.TestCase):
         shutil.rmtree(self.tmpdir)
 
     def write_config(self, text):
-        f = open(os.path.join(self.tmpdir, package.PACKAGE_CONF), "w")
+        self.write_file(package.PACKAGE_CONF, text)
+
+    def write_file(self, name, text):
+        f = open(os.path.join(self.tmpdir, name), "w")
         f.write(text)
         f.close()
 
@@ -66,6 +69,12 @@ class PackageInfoTestCase(unittest.TestCase):
                           "  depends-on innerds.c\n"
                           "  language   C\n"
                           "</extension>\n")
+        os.mkdir(os.path.join(self.tmpdir, "doc"))
+        self.write_file(os.path.join("doc", "README.txt"),
+                        "docs go here")
+        os.mkdir(os.path.join(self.tmpdir, "bin"))
+        self.write_file(os.path.join("bin", "runme.py"),
+                        "#!/bin/sh\nexit\n")
         pkginfo = package.loadPackageInfo("foo", self.tmpdir, "bar")
         eq = self.assertEqual
         eq(len(pkginfo.extensions), 1)
