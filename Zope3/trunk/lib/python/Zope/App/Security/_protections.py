@@ -14,7 +14,7 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.3 2002/11/19 23:25:14 jim Exp $
+$Id: _protections.py,v 1.4 2002/11/30 13:11:49 jim Exp $
 """
 
 def protect():
@@ -47,9 +47,10 @@ def protect():
         defineChecker(type(items),
                       getCheckerForInstancesOf(tuple))
         
-        
-    for which in 'OO', 'II', 'OI', 'IO':
-        _protect(which)
+
+# These now conflict with assertions elsewhere.
+##     for which in 'OO', 'II', 'OI', 'IO':
+##         _protect(which)
 
     from Persistence.PersistentList import PersistentList
 
