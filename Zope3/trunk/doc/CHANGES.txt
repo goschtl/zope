@@ -32,6 +32,10 @@ Zope Changes
       - The request's PATH_INFO variable is a unicode string now, so that
         the error service doesn't bail out when unicode urls are used.
 
+      - Made AbsoluteURL handle unicode names. __str__ and __call__ encode
+        the name into UTF-8 and url quote it to convert the name to ASCII.
+        Also added __unicode__ to get a unicode representation of the url.
+
     Restructuring
 
       - New api for getting sublocations and adapters for containers
