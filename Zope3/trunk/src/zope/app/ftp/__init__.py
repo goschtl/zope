@@ -14,11 +14,11 @@
 These views implement ftp commands using file-system representation
 and meta-data apis.
 
-$Id: __init__.py,v 1.2 2003/03/13 18:49:07 alga Exp $
+$Id: __init__.py,v 1.3 2003/05/21 20:29:10 jim Exp $
 """
 __metaclass__ = type
 
-from zope.component import queryAdapter, getAdapter
+from zope.component import queryAdapter, getAdapter, queryNamedAdapter
 from zope.app.interfaces.file import IReadFile, IWriteFile
 from zope.app.interfaces.file import IReadDirectory, IWriteDirectory
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
@@ -209,7 +209,7 @@ class FTPView:
         dir = queryAdapter(self.context, IWriteDirectory)
         dir = getAdapter(dir, IZopeWriteContainer)
 
-        factory = queryAdapter(self.context, IFileFactory, name=ext)
+        factory = queryNamedAdapter(self.context, IFileFactory, ext)
         if factory is None:
             factory = getAdapter(self.context, IFileFactory)
 

@@ -13,11 +13,11 @@
 
 XXX longer description goes here.
 
-$Id: put.py,v 1.4 2003/05/20 19:43:27 sidnei Exp $
+$Id: put.py,v 1.5 2003/05/21 20:29:11 jim Exp $
 """
 __metaclass__ = type
 
-from zope.component import getAdapter, queryAdapter
+from zope.component import getAdapter, queryAdapter, queryNamedAdapter
 from zope.app.interfaces.http import INullResource
 from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
 from zope.app.interfaces.container import IZopeWriteContainer
@@ -72,7 +72,7 @@ class NullPUT:
         dir = getAdapter(dir, IZopeWriteContainer)
 
         # Now try to get a custom factory for he container
-        factory = queryAdapter(container, IFileFactory, name=ext)
+        factory = queryNamedAdapter(container, IFileFactory, ext)
 
         # Fall back to a non-custom one
         if factory is None:
