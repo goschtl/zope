@@ -3,6 +3,14 @@
     i18n_domain="zope"
     >
 
+  <permission
+      id="zope.Public"
+      title="[view-permission] Public"
+      description="Special permission indicating unconditional access
+Public resources are always accessable.
+"
+      />
+
   <include file="globalmodules.zcml" />
   <include file="_protections.zcml" />
   <include package=".browser" />

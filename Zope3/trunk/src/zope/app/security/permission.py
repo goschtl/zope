@@ -13,14 +13,14 @@
 ##############################################################################
 """Permissions
 
-$Id: permission.py,v 1.11 2004/03/08 12:06:01 srichter Exp $
+$Id: permission.py,v 1.12 2004/04/11 18:16:31 jim Exp $
 """
 from zope.interface import implements
 from zope.schema import Enumerated, Field
 from zope.schema.interfaces import ValidationError
 from zope.security.checker import CheckerPublic
 from zope.app import zapi
-from interfaces import IPermission, IPermissionField
+from zope.app.security.interfaces import IPermission, IPermissionField
 
 
 class Permission(object):
@@ -50,23 +50,3 @@ class PermissionField(Enumerated, Field):
         super(PermissionField, self)._validate(value)
         if zapi.queryUtility(self.context, IPermission, name=value) is None:
             raise ValidationError("Unknown permission", value)
-
-
-def _addCheckerPublic():
-    """Add the CheckerPublic permission as 'zope.Public'"""
-    from zope.component.utility import utilityService
-    perm = Permission('zope.Public', 'Public',
-            """Special permission used for resources that are always public
-
-            The public permission is effectively an optimization, sine
-            it allows security computation to be bypassed.
-            """
-            )
-    utilityService.provideUtility(IPermission, perm, perm.id)
-
-_addCheckerPublic()
-
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-from zope.testing.cleanup import addCleanUp
-addCleanUp(_addCheckerPublic)
-del addCleanUp
