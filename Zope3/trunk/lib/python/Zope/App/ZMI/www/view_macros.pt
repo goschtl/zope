@@ -32,7 +32,7 @@
       <a href="" 
          tal:attributes="href 
                     string:${breadcrumb/url}/@@SelectedManagementView.html"
-         tal:content="string:${breadcrumb/name}/"
+         tal:content="string: ${breadcrumb/name} / "
          >name</a>&nbsp</span>
 
   <div metal:define-slot="body">
