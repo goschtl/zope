@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalSubscribable.py,v 1.5 2002/10/21 06:14:46 poster Exp $
+$Id: LocalSubscribable.py,v 1.6 2002/11/28 02:45:47 poster Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -26,7 +26,7 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Event.Subscribable import Subscribable
 from Persistence import Persistent
 
-class LocalSubscribable(Subscribable, Persistent):
+class LocalSubscribable(Persistent, Subscribable):
     """a local mix-in"""
     
     __implements__ = (

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.7 2002/11/11 08:38:36 stevea Exp $
+$Id: LocalEventService.py,v 1.8 2002/11/28 02:45:47 poster Exp $
 """
 
 from Zope.Event.GlobalEventService import eventService
@@ -106,15 +106,20 @@ class LocalEventService(ProtoServiceEventChannel):
     def unbound(wrapped_self, name):
         "see IBindingAware"
         clean_self = removeAllProxies(wrapped_self)
-        clean_self._v_unbinding = 1
+        clean_self._v_unbinding = True # [XXX not thread-safe; ok?  it
+        # seems unlikely to cause problems in real-life usage]
         # this flag is used by the unsubscribedFrom method (below) to
         # determine that it doesn't need to further unsubscribe beyond
         # what we're already doing.
-        # wrapped_self._unbound(name) # or, instead, ...
-        # ... this seems fine also, even though it's a ContextMethod:
-        # ProtoServiceEventChannel.unbound(wrapped_self, name)
-        # but in actuality we're doing a copy and paste because of
-        # various wrapper/security problems:
+        
+        # Both of the following approaches have wrapper/security
+        # problems:
+        #
+        #  wrapped_self._unbound(name) # using _unbound above
+        # and
+        #  ProtoServiceEventChannel.unbound(wrapped_self, name)
+        #
+        # so we're doing a copy and paste from ProtoServiceEventChannel:
         # start copy/paste
         subscriber = PathSubscriber(wrapped_self)
         for subscription in clean_self._subscriptions:
