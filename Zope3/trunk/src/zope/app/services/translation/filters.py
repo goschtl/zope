@@ -13,20 +13,20 @@
 ##############################################################################
 """Translation Service Message Export and Import Filters
 
-$Id: filters.py,v 1.1 2003/03/25 18:21:35 srichter Exp $
+$Id: filters.py,v 1.2 2003/03/25 23:25:12 bwarsaw Exp $
 """
 import time, re
 from types import StringTypes
 
 from zope.i18n.interfaces import IMessageExportFilter
 from zope.i18n.interfaces import IMessageImportFilter
-from zope.i18n.interfaces import IWriteTranslationService
+from zope.app.interfaces.services.translation import ILocalTranslationService
 
 
 class GettextExportFilter:
 
     __implements__ =  IMessageExportFilter
-    __used_for__ = IWriteTranslationService
+    __used_for__ = ILocalTranslationService
 
 
     def __init__(self, service):
@@ -72,7 +72,7 @@ class GettextExportFilter:
 class GettextImportFilter:
 
     __implements__ =  IMessageImportFilter
-    __used_for__ = IWriteTranslationService
+    __used_for__ = ILocalTranslationService
 
 
     def __init__(self, service):
