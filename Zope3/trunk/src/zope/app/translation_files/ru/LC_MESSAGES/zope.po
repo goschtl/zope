@@ -4954,7 +4954,7 @@ msgid "Root Folder"
 msgstr "Корневая папка"
 
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "Templated Page"
+msgid "ZPT Page"
 msgstr "Шаблон страницы"
 
 #: src/zope/app/zptpage/browser/configure.zcml:31

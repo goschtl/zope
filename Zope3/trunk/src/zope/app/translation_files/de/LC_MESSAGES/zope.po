@@ -4932,7 +4932,7 @@ msgid "Root Folder"
 msgstr "Wurzelordner"
 
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "Templated Page"
+msgid "ZPT Page"
 msgstr "Dynamische Seite"
 
 #: src/zope/app/zptpage/browser/configure.zcml:31

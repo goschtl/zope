@@ -5179,7 +5179,7 @@ msgid "Root Folder"
 msgstr "Cartella radice"
 
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "Templated Page"
+msgid "ZPT Page"
 msgstr ""
 
 #: src/zope/app/zptpage/browser/configure.zcml:31

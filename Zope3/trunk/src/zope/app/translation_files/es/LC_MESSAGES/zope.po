@@ -4736,7 +4736,7 @@ msgid "Root Folder"
 msgstr ""
 
 #: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "Templated Page"
+msgid "ZPT Page"
 msgstr "Página plantillada"
 
 #: src/zope/app/zptpage/browser/configure.zcml:31
