@@ -13,13 +13,13 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: PermissionField.py,v 1.1 2002/12/21 19:56:36 stevea Exp $
+$Id: PermissionField.py,v 1.2 2002/12/22 21:03:44 stevea Exp $
 """
 
 from Zope.Schema.IField import IValueSet
 from Zope.Schema import ValueSet
 from Zope.Schema.Exceptions import ValidationError
-from Zope.ComponentArchitecture import queryService
+from Zope.ComponentArchitecture import getService
 
 class IPermissionField(IValueSet):
     u"""Fields with Permissions as values
@@ -31,15 +31,7 @@ class PermissionField(ValueSet):
 
     def _validate(self, value):
         super(PermissionField, self)._validate(value)
-        # XXX I'd like to use getService here, but _validate is called
-        #     before the zcml actions are executed, so this gets
-        #     called before even the Permissions service is set up.
-        service = queryService(self.context, 'Permissions', None)
-        if service is None:
-            # XXX Permissions service not found, so we can't validate.
-            #     Perhaps log some message here.
-            pass
-        else:
-            if service.getPermission(value.getId()) is None:
-                raise ValidationError("Unknown permission", value)
+        service = getService(self.context, 'Permissions')
+        if service.getPermission(value.getId()) is None:
+            raise ValidationError("Unknown permission", value)
 
