@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.13 2003/05/01 19:35:25 faassen Exp $
+$Id: engine.py,v 1.14 2003/05/20 20:27:28 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -56,6 +56,10 @@ class ZopePythonExpr(PythonExpr):
         return eval(self._code, vars)
 
 class ZopeContext(Context):
+        
+    def setContext(self, name, value):
+        # Hook to allow subclasses to do things like adding security proxies
+        Context.setContext(self, name, ProxyFactory(value))
 
     def evaluateMacro(self, expr):
         macro = Context.evaluateMacro(self, expr)
