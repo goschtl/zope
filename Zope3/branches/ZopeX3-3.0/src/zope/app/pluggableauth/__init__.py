@@ -48,8 +48,8 @@ from zope.app.site.interfaces import ISimpleService
 from zope.app.component.localservice import queryNextService
 
 from interfaces import IUserSchemafied, IPluggableAuthenticationService
-from interfaces import \
-     IPrincipalSource, ILoginPasswordPrincipalSource, IContainerPrincipalSource
+from interfaces import IPrincipalSource, ILoginPasswordPrincipalSource
+from interfaces import IContainedPrincipalSource, IContainerPrincipalSource
 
 def gen_key():
     """Return a random int (1, MAXINT), suitable for use as a BTree key."""
@@ -231,6 +231,7 @@ def PluggableAuthenticationServiceAddSubscriber(self, event):
 class IBTreePrincipalSource(
     ILoginPasswordPrincipalSource,
     IContainerPrincipalSource,
+    IContainedPrincipalSource,
     INameChooser,
     IContainerNamesContainer,
     ):
