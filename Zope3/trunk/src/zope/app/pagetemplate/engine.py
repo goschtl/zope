@@ -29,7 +29,7 @@ from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
 from zope.component.exceptions import ComponentLookupError
-from zope.exceptions import NotFoundError
+from zope.app.traversing.interfaces import TraversalError
 from zope.security.untrustedpython import rcompile
 from zope.security.proxy import ProxyFactory
 from zope.security.untrustedpython.builtins import SafeBuiltins
@@ -222,7 +222,7 @@ class ZopeEngine(ExpressionEngine):
       KeyError: 'zope.app.pagetemplate.tests.trusted'
 
     (The use of ``KeyError`` is an unfortunate implementation detail; I
-    think this should be a ``NotFoundError``.)
+    think this should be a ``TraversalError``.)
 
     Modules which have already been imported by trusted code are
     available, wrapped in security proxies::
@@ -362,7 +362,7 @@ class TraversableModuleImporter(SimpleModuleImporter):
         try:
             return self[name]
         except KeyError:
-            raise NotFoundError(name)
+            raise TraversalError(name)
 
 
 def _Engine(engine=None):

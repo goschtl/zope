@@ -24,7 +24,7 @@ __docformat__ = 'restructuredtext'
 from transaction import get_transaction
 from zope.app.publication.zopepublication import ZopePublication
 from zope.interface import implements
-from zope.component.exceptions import ComponentLookupError
+from zope.app.traversing.interfaces import TraversalError
 
 from zope.app import zapi
 from zope.app.traversing.api import traverse, traverseName
@@ -195,7 +195,7 @@ def getServiceManager(root_folder):
     """
     try:
         service_manager = traverse(root_folder, '++etc++site')
-    except ComponentLookupError:
+    except TraversalError:
         service_manager = ServiceManager(root_folder)
         root_folder.setSiteManager(service_manager)
     return service_manager

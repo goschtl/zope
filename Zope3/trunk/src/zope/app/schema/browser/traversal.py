@@ -18,7 +18,7 @@ from zope.component import getDefaultViewName, queryView
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from zope.app.schema.interfaces import IMutableSchema
 
-from zope.exceptions import NotFoundError
+from zope.app.traversing.interfaces import TraversalError
 from zope.publisher.interfaces import NotFound
 
 from zope.app.traversing.interfaces import ITraversable
@@ -71,6 +71,6 @@ class SchemaFieldTraversable(object):
     def traverse(self, name, furtherPath):
         subobj = self._context.get(name, _marker)
         if subobj is _marker:
-            raise NotFoundError, name
+            raise TraversalError, name
 
         return subobj

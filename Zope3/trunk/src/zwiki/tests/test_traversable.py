@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest, sys
-from zope.exceptions import NotFoundError
+from zope.app.traversing.interfaces import TraversalError
 from zope.testing.cleanup import CleanUp
 
 from zwiki.wiki import Wiki
@@ -44,7 +44,7 @@ class TestTraversable(PlacefulSetup, CleanUp, unittest.TestCase):
         T = WikiPageTraversable(page1)
         self.failUnless(T.traverse('FooBar', []) is page2)
 
-        self.assertRaises(NotFoundError , T.traverse, 'morebar', [])
+        self.assertRaises(TraversalError , T.traverse, 'morebar', [])
 
 
 def test_suite():

@@ -23,7 +23,7 @@ import unittest
 
 from zope.component.service import serviceManager
 from zope.app.tests import ztapi
-from zope.exceptions import NotFoundError
+from zope.app.traversing.interfaces import TraversalError
 from zope.interface import implements
 
 from zope.xmlpickle import loads, dumps
@@ -91,7 +91,7 @@ class PretendContainer(Location):
         try:
             return self[name]
         except KeyError:
-            raise NotFoundError
+            raise TraversalError
 
 PCname = PretendContainer.__module__ + "." + PretendContainer.__name__
 

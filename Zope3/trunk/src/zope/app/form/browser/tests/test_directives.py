@@ -21,7 +21,7 @@ from cStringIO import StringIO
 
 from zope.component.exceptions import ComponentLookupError
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-from zope.exceptions import NotFoundError
+from zope.app.traversing.interfaces import TraversalError
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, Int
@@ -111,7 +111,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         v = zapi.queryView(ob, 'add.html', request)
         # expect to fail as standard macros are not configured
-        self.assertRaises(NotFoundError, v)
+        self.assertRaises(TraversalError, v)
 
     def testEditForm(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),
@@ -136,7 +136,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         v = zapi.queryView(ob, 'edit.html', request)
         # expect to fail as standard macros are not configured
-        self.assertRaises(NotFoundError, v)
+        self.assertRaises(TraversalError, v)
 
     def testEditFormWithMenu(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),
@@ -164,7 +164,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         v = zapi.queryView(ob, 'edit.html', request)
         # expect to fail as standard macros are not configured
-        self.assertRaises(NotFoundError, v)
+        self.assertRaises(TraversalError, v)
 
     def testAddFormWithWidget(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),

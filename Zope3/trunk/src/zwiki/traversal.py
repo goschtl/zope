@@ -18,7 +18,7 @@ from zope.proxy import removeAllProxies
 from zope.component import getDefaultViewName, queryView
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
-from zope.exceptions import NotFoundError
+from zope.app.traversing.interfaces import TraversalError
 
 from zope.app import zapi
 from zope.app.traversing.api import getParent
@@ -78,6 +78,6 @@ class WikiPageTraversable:
         if subobj is _marker:
             subobj = getattr(self._page, name, _marker)
             if subobj is _marker:
-                raise NotFoundError, name
+                raise TraversalError, name
 
         return subobj
