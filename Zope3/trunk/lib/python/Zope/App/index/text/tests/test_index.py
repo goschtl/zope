@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.3 2002/12/04 14:22:59 gvanrossum Exp $
+$Id: test_index.py,v 1.4 2002/12/04 14:30:47 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -56,6 +56,9 @@ class FakeTraverser:
             return self.__object
         raise KeyError, (path, canonical_path)
 
+Bruce = u"Bruce"
+Sheila = u"Sheila"
+
 class Test(PlacefulSetup, TestCase):
 
     def setUp(self):
@@ -63,27 +66,32 @@ class Test(PlacefulSetup, TestCase):
         self.index = TextIndex()
         self.object = FakeSearchableObject()
 
+    def assertPresent(self, word, docid):
+        results, total = self.index.query(word)
+        self.assertEqual(total, 1)
+        self.assertEqual(results[0][0], docid)
+
+    def assertAbsent(self, word):
+        self.assertEqual(self.index.query(word), ([], 0))
+
     def testNotification(self):
-        event = ObjectRegisteredHubEvent(None, 1000, object=self.object)
+        docid = 1000
+        event = ObjectRegisteredHubEvent(None, docid, object=self.object)
         self.index.notify(event)
-        results, total = self.index.query(u"Bruce")
-        self.assertEqual(total, 1)
-        self.assertEqual(results[0][0], 1000)
+        self.assertPresent(Bruce, docid)
 
-        self.object.texts = [u"Sheila"]
-        event = ObjectModifiedHubEvent(None, 1000, object=self.object)
+        self.object.texts = [Sheila]
+        event = ObjectModifiedHubEvent(None, docid, object=self.object)
         self.index.notify(event)
-        self.assertEqual(self.index.query(u"Bruce"), ([], 0))
-        results, total = self.index.query(u"Sheila")
-        self.assertEqual(total, 1)
-        self.assertEqual(results[0][0], 1000)
+        self.assertPresent(Sheila, docid)
+        self.assertAbsent(Bruce)
 
-        event = ObjectUnregisteredHubEvent(None, 1000,
+        event = ObjectUnregisteredHubEvent(None, docid,
                                            location="fake",
                                            object=self.object)
         self.index.notify(event)
-        self.assertEqual(self.index.query(u"Bruce"), ([], 0))
-        self.assertEqual(self.index.query(u"Sheila"), ([], 0))
+        self.assertAbsent(Bruce)
+        self.assertAbsent(Sheila)
 
     def testHubMachinery(self):
         # Technically this is a functional test
@@ -95,21 +103,17 @@ class Test(PlacefulSetup, TestCase):
         provideAdapter(None, ITraverser, lambda dummy: traverser)
 
         hubid = hub.register(location)
-        results, total = self.index.query(u"Bruce")
-        self.assertEqual(total, 1)
-        self.assertEqual(results[0][0], hubid)
+        self.assertPresent(Bruce, hubid)
 
-        self.object.texts = [u"Sheila"]
+        self.object.texts = [Sheila]
         event = ObjectModifiedEvent(self.object, location)
         hub.notify(event)
-        self.assertEqual(self.index.query(u"Bruce"), ([], 0))
-        results, total = self.index.query(u"Sheila")
-        self.assertEqual(total, 1)
-        self.assertEqual(results[0][0], hubid)
+        self.assertPresent(Sheila, hubid)
+        self.assertAbsent(Bruce)
 
         hub.unregister(location)
-        self.assertEqual(self.index.query(u"Bruce"), ([], 0))
-        self.assertEqual(self.index.query(u"Sheila"), ([], 0))
+        self.assertAbsent(Bruce)
+        self.assertAbsent(Sheila)
 
     def testBootstrap(self):
         hub = ObjectHub()
@@ -118,22 +122,17 @@ class Test(PlacefulSetup, TestCase):
         provideAdapter(None, ITraverser, lambda dummy: traverser)
         hubid = hub.register(location)
         self.index.subscribe(hub)
-        results, total = self.index.query(u"Bruce")
-        self.assertEqual(total, 1)
-        self.assertEqual(results[0][0], hubid)
+        results, total = self.index.query(Bruce)
+        self.assertPresent(Bruce, hubid)
 
         self.index.unsubscribe(hub)
-        results, total = self.index.query(u"Bruce")
-        self.assertEqual(total, 1)
-        self.assertEqual(results[0][0], hubid)
+        self.assertPresent(Bruce, hubid)
 
-        self.object.texts = [u"Sheila"]
+        self.object.texts = [Sheila]
         event = ObjectModifiedEvent(self.object, location)
         hub.notify(event)
-        results, total = self.index.query(u"Bruce")
-        self.assertEqual(total, 1)
-        self.assertEqual(results[0][0], hubid)
-        self.assertEqual(self.index.query(u"Sheila"), ([], 0))
+        self.assertPresent(Bruce, hubid)
+        self.assertAbsent(Sheila)
 
 def test_suite():
     return makeSuite(Test)
