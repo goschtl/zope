@@ -34,7 +34,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.security.interfaces import ForbiddenAttribute
+from zope import security
+from zope.security.proxy import Proxy
+from zope.proxy import isProxy
+from zope.interface.interfaces import IMethod
+from zope.security.interfaces import ForbiddenAttribute, Unauthorized
 from zope.schema import getFieldsInOrder
 from zope.app import zapi
 from zope.app.form.interfaces import IWidget
@@ -114,6 +118,9 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
 def setUpWidgets(view, schema, viewType, prefix=None, ignoreStickyValues=False,
                  initial={}, names=None, context=None):
     """Sets up widgets for the fields defined by a `schema`.
+    
+    Appropriate for collecting input without a current object implementing
+    the schema (such as an add form).
 
     `view` is the view that will be configured with widgets. 
 
@@ -146,7 +153,8 @@ def setUpWidgets(view, schema, viewType, prefix=None, ignoreStickyValues=False,
                     context=context)
 
 def setUpEditWidgets(view, schema, source=None, prefix=None,
-                     ignoreStickyValues=False, names=None, context=None):
+                     ignoreStickyValues=False, names=None, context=None,
+                     degradeInput=False, degradeDisplay=False):
     """Sets up widgets to collect input on a view.
     
     See `setUpWidgets` for details on `view`, `schema`, `prefix`,
@@ -154,12 +162,72 @@ def setUpEditWidgets(view, schema, source=None, prefix=None,
     
     `source`, if specified, is an object from which initial widget values are
     read. If source is not specified, the view context is used as the source.
+    
+    `degradeInput` is a flag that changes the behavior when a user does not
+    have permission to edit a field in the names.  By default, the function
+    raises Unauthorized.  If degradeInput is True, the field is changed to
+    an IDisplayWidget.
+    
+    `degradeDisplay` is a flag that changes the behavior when a user does not
+    have permission to access a field in the names.  By default, the function
+    raises Unauthorized.  If degradeDisplay is True, the field is removed from
+    the form.
+    
+    Returns a list of names, equal to or a subset of the names that were 
+    supposed to be drawn, with uninitialized undrawn fields missing.
     """
-    _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
-                      names, context, IDisplayWidget, IInputWidget)
+    if context is None:
+        context = view.context
+    if source is None:
+        source = view.context
+    security_proxied = isProxy(source, Proxy)
+    res_names = []
+    for name, field in _fieldlist(names, schema):
+        try:
+            value = field.get(source)
+        except ForbiddenAttribute:
+            raise
+        except AttributeError, v:
+            value = no_value
+        except Unauthorized:
+            if degradeDisplay:
+                continue
+            else:
+                raise
+        if field.readonly:
+            viewType = IDisplayWidget
+        else:
+            if security_proxied:
+                is_accessor = IMethod.providedBy(field)
+                if is_accessor:
+                    set_name = field.writer.__name__
+                    authorized = security.canAccess(source, set_name)
+                else:
+                    set_name = name
+                    authorized = security.canWrite(source, name)
+                if not authorized:
+                    if degradeInput:
+                        viewType = IDisplayWidget
+                    else:
+                        raise Unauthorized(set_name)
+                else:
+                    viewType = IInputWidget
+            else:
+                # if object is not security proxied, might be a standard
+                # adapter without a registered checker.  If the feature of
+                # paying attention to the users ability to actually set a
+                # field is decided to be a must-have for the form machinery,
+                # then we ought to change this case to have a deprecation
+                # warning.
+                viewType = IInputWidget
+        setUpWidget(view, name, field, viewType, value, prefix,
+                    ignoreStickyValues, context)
+        res_names.append(name)
+    return res_names
 
 def setUpDisplayWidgets(view, schema, source=None, prefix=None, 
-                        ignoreStickyValues=False, names=None, context=None):
+                        ignoreStickyValues=False, names=None, context=None,
+                        degradeDisplay=False):
     """Sets up widgets to display field values on a view.
     
     See `setUpWidgets` for details on `view`, `schema`, `prefix`,
@@ -167,30 +235,36 @@ def setUpDisplayWidgets(view, schema, source=None, prefix=None,
     
     `source`, if specified, is an object from which initial widget values are
     read. If source is not specified, the view context is used as the source.
+    
+    `degradeDisplay` is a flag that changes the behavior when a user does not
+    have permission to access a field in the names.  By default, the function
+    raises Unauthorized.  If degradeDisplay is True, the field is removed from
+    the form.
+    
+    Returns a list of names, equal to or a subset of the names that were 
+    supposed to be drawn, with uninitialized undrawn fields missing.
     """
-    _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
-                      names, context, IDisplayWidget, IDisplayWidget)
-
-def _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
-                      names, context, displayType, inputType):
-    """A helper function used by `setUpDisplayWidget` and `setUpEditWidget`."""
     if context is None:
         context = view.context
     if source is None:
         source = view.context
+    res_names = []
     for name, field in _fieldlist(names, schema):
-        if field.readonly:
-            viewType = displayType
-        else:
-            viewType = inputType
         try:
             value = field.get(source)
         except ForbiddenAttribute:
             raise
         except AttributeError, v:
             value = no_value
-        setUpWidget(view, name, field, viewType, value, prefix,
+        except Unauthorized:
+            if degradeDisplay:
+                continue
+            else:
+                raise
+        setUpWidget(view, name, field, IDisplayWidget, value, prefix,
                     ignoreStickyValues, context)
+        res_names.append(name)
+    return res_names
 
 def viewHasInput(view, schema, names=None):
     """Returns ``True`` if the any of the view's widgets contain user input.

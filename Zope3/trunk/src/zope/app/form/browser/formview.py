@@ -18,9 +18,9 @@ $Id: editview.py 29143 2005-02-14 22:43:16Z srichter $
 __docformat__ = 'restructuredtext'
 from transaction import get_transaction
 
-from zope.app.form.interfaces import WidgetsError
+from zope.app.form.interfaces import WidgetsError, IInputWidget
 
-from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
+from zope.app.form.utility import setUpWidgets, applyWidgetsChanges
 from zope.app.form.browser.editview import EditView
 from zope.app.form.browser.submit import Update
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -54,8 +54,9 @@ class FormView(EditView):
     
     def _setUpWidgets(self):
         self.data = Data(self.getData())
-        setUpEditWidgets(
-            self, self.schema, source=self.data, names=self.fieldNames)
+        setUpWidgets(
+            self, self.schema, IInputWidget, initial=self.data, 
+            names=self.fieldNames)
 
     def update(self):
         if self.update_status is not None:
@@ -76,8 +77,8 @@ class FormView(EditView):
             else:
                 if changed:
                     self.setData(self.data)
-                setUpEditWidgets(
-                    self, self.schema, source=self.data,
+                setUpWidgets(
+                    self, self.schema, IInputWidget, initial=self.data,
                     ignoreStickyValues=True, names=self.fieldNames)
 
         self.update_status = status

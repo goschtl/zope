@@ -35,7 +35,8 @@ from editview import EditView
 from submit import Next, Previous, Update
 from zope.app.form.interfaces import WidgetInputError, WidgetsError
 from zope.app.form.utility \
-        import setUpEditWidgets, getWidgetsData, applyWidgetsChanges
+        import setUpWidgets, getWidgetsData, applyWidgetsChanges
+from zope.app.form.interfaces import IInputWidget
 
 
 PaneNumber = 'CURRENT_PANE_IDX'
@@ -76,7 +77,7 @@ class EditWizardView(EditView):
             self.storage = WizardStorage(self.fieldNames, adapted)
 
         # Add all our widgets as attributes on this view
-        setUpEditWidgets(self, self.schema, source=self.storage,
+        setUpWidgets(self, self.schema, IInputWidget, initial=self.storage,
                          names=self.fieldNames)
 
     def widgets(self):

@@ -27,7 +27,8 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.form.browser.editwizard import EditWizardView
 from zope.app.form.browser import TextWidget
 from zope.app.form.interfaces import IInputWidget
-
+from zope.app.location.interfaces import ILocation
+from zope.app.form.tests import utils
 
 class I(Interface):
     foo = TextLine(title=u"Foo")
@@ -43,11 +44,11 @@ class EV(EditWizardView):
 
 class C(object):
     implements(I)
+    __Security_checker__ = utils.SchemaChecker(I)
     foo = u"c foo"
     bar = u"c bar"
     a   = u"c a"
     b   = u"c b"
-
     _baz = u"c baz"
     def getbaz(self): return self._baz
     def setbaz(self, v): self._baz = v
@@ -61,7 +62,7 @@ class IBar(Interface):
 
 class Foo(object):
     implements(IFoo)
-
+    __Security_checker__ = utils.SchemaChecker(IFoo)
     foo = u'Foo foo'
     
 class ConformFoo(object):
@@ -70,16 +71,14 @@ class ConformFoo(object):
     foo = u'Foo foo'
 
     def __conform__(self, interface):
-        # fake proxied adapter (attention only read proxy)        
         if interface is IBar:
-            checker = InterfaceChecker(IBar)
-            return ProxyFactory(OtherFooBarAdapter(self), checker)
+            return OtherFooBarAdapter(self)
 
             
 class FooBarAdapter(object):
-    implements(IBar)
+    implements(IBar, ILocation)
     __used_for__ = IFoo
-
+    __Security_checker__ = utils.SchemaChecker(IBar)
     def __init__(self, context):
         self.context = context
 

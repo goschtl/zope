@@ -25,6 +25,7 @@ import zope.schema
 import zope.app.container.interfaces
 import zope.app.form.browser.interfaces
 import zope.app.form.interfaces
+from zope.app.form.tests import utils
 import zope.app.testing.placelesssetup
 
 from zope.app import zapi
@@ -44,6 +45,7 @@ class IContent(zope.interface.Interface):
 class Content(object):
 
     zope.interface.implements(IContent)
+    __Security_checker__ = utils.SchemaChecker(IContent)
 
     __parent__ = None
     __name__ = "sample-content"

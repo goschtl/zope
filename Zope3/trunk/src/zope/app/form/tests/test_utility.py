@@ -21,9 +21,11 @@ from zope.interface import Interface, implements
 from zope.component.interfaces import IViewFactory
 from zope.component.exceptions import ComponentLookupError
 from zope.publisher.browser import TestRequest
-from zope.security.interfaces import ForbiddenAttribute
+import zope.security.checker
+from zope.security.interfaces import ForbiddenAttribute, Unauthorized
+import zope.security.checker
 
-from zope.schema import Field, Int
+from zope.schema import Field, Int, accessors
 from zope.schema.interfaces import IField, IInt
 
 from zope.app.testing import ztapi, placelesssetup
@@ -36,6 +38,8 @@ from zope.app.form.utility import no_value, setUpWidget, setUpWidgets
 from zope.app.form.utility import setUpEditWidgets, setUpDisplayWidgets
 from zope.app.form.utility import getWidgetsData, viewHasInput
 from zope.app.form.utility import applyWidgetsChanges
+
+from zope.app.form.tests import utils
 
 request = TestRequest()
 
@@ -60,9 +64,11 @@ class Baz(Int):
 class IContent(Interface):
     foo = Foo()
     bar = Bar()
+
     
 class Content(object):
     implements(IContent)
+    __Security_checker__ = utils.SchemaChecker(IContent)
     foo = 'Foo'
 
 class IFooWidget(IWidget):
@@ -85,6 +91,24 @@ class BarWidget(Widget):
 class BazWidget(Widget):
     def getRenderedValue(self): return self._data # exposes _data for testing
     def renderedValueSet(self): return self._renderedValueSet() # for testing
+
+class IExtendedContent(IContent):
+    getBaz, setBaz = accessors(Baz())
+    getAnotherBaz, setAnotherBaz = accessors(Baz())
+    shazam = Foo()
+
+class ExtendedContent(Content):
+    implements(IExtendedContent)
+    _baz = _anotherbaz = shazam = None
+    def getBaz(self): return self._baz
+    def setBaz(self, value): self._baz = value
+    def getAnotherBaz(self): return self._anotherbaz
+    def setAnotherBaz(self, value): self._anotherbaz = value
+
+extended_checker = utils.DummyChecker(
+        {'foo':True, 'bar': True, 'getBaz': True, 'setBaz': True, 
+         'getAnotherBaz': True, 'setAnotherBaz': False, 'shazam': False},
+        {'foo':True, 'bar': False, 'shazam': True})
 
 def setUp():
     """Setup for tests."""
@@ -607,6 +631,7 @@ class TestFormSetUp(object):
         A call to setUpEditWidgets with the view:
             
             >>> setUpEditWidgets(view, IContent)
+            ['foo', 'bar']
             
         configures the view with widgets that accept input for the context 
         field values:
@@ -628,6 +653,7 @@ class TestFormSetUp(object):
             >>> source.foo = 'abc2'
             >>> source.bar = 'def2'
             >>> setUpEditWidgets(view, IContent, source=source)
+            ['foo', 'bar']
             >>> view.foo_widget.getRenderedValue()
             'abc2'
             >>> view.bar_widget.getRenderedValue()
@@ -643,9 +669,114 @@ class TestFormSetUp(object):
             >>> IContent['foo'].readonly = True
             >>> delattr(view, 'foo_widget')
             >>> setUpEditWidgets(view, IContent)
+            ['foo', 'bar']
             >>> isinstance(view.foo_widget, DisplayWidget)
             True
             >>> IContent['foo'].readonly = save  # restore readonly value
+        
+        By default, setUpEditWidgets raises Unauthorized if it is asked to
+        set up a field to which the user does not have permission to
+        access or to change.  In the definition of the ExtendedContent
+        interface, notice the __Security_checker__ attribute, which stubs
+        out a checker that allows the user to view the bar attribute,
+        but not set it, and call getAnotherBaz but not setAnotherBaz.
+        
+            >>> view.context = context = zope.security.checker.Proxy(
+            ...     ExtendedContent(), extended_checker)
+            >>> setUpEditWidgets(view, IExtendedContent, names=['bar'])
+            ... # can' write to bar
+            Traceback (most recent call last):
+            ...
+            Unauthorized: bar
+            >>> setUpEditWidgets(
+            ... view, IExtendedContent, names=['getAnotherBaz'])
+            ... # can't access the setter, setAnotherBaz
+            Traceback (most recent call last):
+            ...
+            Unauthorized: setAnotherBaz
+            >>> setUpEditWidgets(
+            ... view, IExtendedContent, names=['shazam'])
+            ... # can't even access shazam
+            Traceback (most recent call last):
+            ...
+            Unauthorized
+        
+        Two optional flags can change this behavior.  degradeDisplay=True 
+        causes the form machinery to skip fields silently that the user may
+        not access.  In this case, the return value of setUpEditWidgets--
+        a list of the field names set up--will be different that the names
+        provided to the function.
+        
+            >>> delattr(view, 'foo_widget')
+            >>> delattr(view, 'bar_widget')
+            >>> ztapi.browserViewProviding(IBaz, InputWidget, IInputWidget)
+            >>> setUpEditWidgets(
+            ...     view, IExtendedContent, names=['foo', 'shazam', 'getBaz'],
+            ...     degradeDisplay=True)
+            ['foo', 'getBaz']
+            >>> IInputWidget.providedBy(view.foo_widget)
+            True
+            >>> IInputWidget.providedBy(view.getBaz_widget)
+            True
+            >>> view.shazam_widget
+            Traceback (most recent call last):
+            ...
+            AttributeError: 'BrowserView' object has no attribute 'shazam_widget'
+        
+        Similarly, degradeInput=True causes the function to degrade to
+        display widgets for any fields that the current user cannot change,
+        but can see.
+        
+            >>> delattr(view, 'foo_widget')
+            >>> delattr(view, 'getBaz_widget')
+            >>> ztapi.browserViewProviding(IBar, DisplayWidget, IDisplayWidget)
+            >>> ztapi.browserViewProviding(IBaz, DisplayWidget, IDisplayWidget)
+            >>> setUpEditWidgets(
+            ...     view, IExtendedContent, 
+            ...     names=['foo', 'bar', 'getBaz', 'getAnotherBaz'],
+            ...     degradeInput=True)
+            ['foo', 'bar', 'getBaz', 'getAnotherBaz']
+            >>> IInputWidget.providedBy(view.foo_widget)
+            True
+            >>> IDisplayWidget.providedBy(view.bar_widget)
+            True
+            >>> IInputWidget.providedBy(view.getBaz_widget)
+            True
+            >>> IDisplayWidget.providedBy(view.getAnotherBaz_widget)
+            True
+        
+        Note that if the user cannot view the current value then they cannot
+        view the input widget.  The two flags can then, of course, be used 
+        together.
+        
+            >>> delattr(view, 'foo_widget')
+            >>> delattr(view, 'bar_widget')
+            >>> delattr(view, 'getBaz_widget')
+            >>> delattr(view, 'getAnotherBaz_widget')
+            >>> setUpEditWidgets(
+            ...     view, IExtendedContent, 
+            ...     names=['foo', 'bar', 'shazam', 'getBaz', 'getAnotherBaz'],
+            ...     degradeInput=True)
+            Traceback (most recent call last):
+            ...
+            Unauthorized
+            >>> setUpEditWidgets(
+            ...     view, IExtendedContent, 
+            ...     names=['foo', 'bar', 'shazam', 'getBaz', 'getAnotherBaz'],
+            ...     degradeInput=True, degradeDisplay=True)
+            ['foo', 'bar', 'getBaz', 'getAnotherBaz']
+            >>> IInputWidget.providedBy(view.foo_widget)
+            True
+            >>> IDisplayWidget.providedBy(view.bar_widget)
+            True
+            >>> IInputWidget.providedBy(view.getBaz_widget)
+            True
+            >>> IDisplayWidget.providedBy(view.getAnotherBaz_widget)
+            True
+            >>> view.shazam_widget
+            Traceback (most recent call last):
+            ...
+            AttributeError: 'BrowserView' object has no attribute 'shazam_widget'
         
         >>> tearDown()
         """
@@ -659,7 +790,7 @@ class TestFormSetUp(object):
         The function looks up widgets of type IDisplayWidget for the specified
         schema.
         
-        We'll first create and register widgets for the schame fields
+        We'll first create and register widgets for the schema fields
         we want to edit:
             
             >>> class DisplayWidget(Widget):
@@ -675,9 +806,10 @@ class TestFormSetUp(object):
             >>> context.bar = 'def'
             >>> view = BrowserView(context, request)
             
-        A call to setUpEditWidgets with the view:
+        A call to setUpDisplayWidgets with the view:
             
             >>> setUpDisplayWidgets(view, IContent)
+            ['foo', 'bar']
             
         configures the view with widgets that display the context fields:
             
@@ -698,10 +830,43 @@ class TestFormSetUp(object):
             >>> source.foo = 'abc2'
             >>> source.bar = 'def2'
             >>> setUpDisplayWidgets(view, IContent, source=source)
+            ['foo', 'bar']
             >>> view.foo_widget.getRenderedValue()
             'abc2'
             >>> view.bar_widget.getRenderedValue()
             'def2'
+        
+        Also like setUpEditWidgets, the degradeDisplay flag allows widgets
+        to silently disappear if they are unavailable.
+        
+            >>> view.context = context = zope.security.checker.Proxy(
+            ...     ExtendedContent(), extended_checker)
+            >>> delattr(view, 'foo_widget')
+            >>> delattr(view, 'bar_widget')
+            >>> ztapi.browserViewProviding(IBaz, DisplayWidget, IDisplayWidget)
+            >>> setUpDisplayWidgets(
+            ...     view, IExtendedContent, 
+            ...     names=['foo', 'bar', 'shazam', 'getBaz', 'getAnotherBaz'])
+            Traceback (most recent call last):
+            ...
+            Unauthorized
+            >>> setUpDisplayWidgets(
+            ...     view, IExtendedContent, 
+            ...     names=['foo', 'bar', 'shazam', 'getBaz', 'getAnotherBaz'],
+            ...     degradeDisplay=True)
+            ['foo', 'bar', 'getBaz', 'getAnotherBaz']
+            >>> IDisplayWidget.providedBy(view.foo_widget)
+            True
+            >>> IDisplayWidget.providedBy(view.bar_widget)
+            True
+            >>> IDisplayWidget.providedBy(view.getBaz_widget)
+            True
+            >>> IDisplayWidget.providedBy(view.getAnotherBaz_widget)
+            True
+            >>> view.shazam_widget
+            Traceback (most recent call last):
+            ...
+            AttributeError: 'BrowserView' object has no attribute 'shazam_widget'
         
         >>> tearDown()
         """
@@ -728,6 +893,7 @@ class TestForms(object):
             >>> ztapi.browserViewProviding(IBar, InputWidget, IInputWidget)
             >>> view = BrowserView(Content(), request)
             >>> setUpEditWidgets(view, IContent)
+            ['foo', 'bar']
             
         Because InputWidget is configured to not have input by default, the
         view does not have input:
@@ -776,7 +942,9 @@ class TestForms(object):
             
             >>> context = Content()
             >>> view = BrowserView(context, request)
-            >>> setUpEditWidgets(view, IContent, names=('foo',))
+            >>> setUpEditWidgets(
+            ...     view, IContent, context=context, names=('foo',))
+            ['foo']
             
         We now specify new widget input and apply the changes: 
 
@@ -813,12 +981,16 @@ class TestForms(object):
             AttributeError: 'BrowserView' object has no attribute 'foo_widget'
 
         When applyWidgetsChanges is called with multiple form
-        fields, some with valid data and some with invalid data, none
-        of the data is applied:
+        fields, some with valid data and some with invalid data, 
+        *changes may be applied*.  For instance, below see that context.foo
+        changes from 'Foo' to 'a' even though trying to change context.bar
+        fails.  Generally, ZODB transactional behavior is expected to
+        correct this sort of problem.
 
             >>> context = Content()
             >>> view = BrowserView(context, request)
             >>> setUpEditWidgets(view, IContent, names=('foo', 'bar'))
+            ['foo', 'bar']
             >>> view.foo_widget.input = 'a'
             >>> view.bar_widget.input = 'b'
             >>> view.bar_widget.valid = False
@@ -863,6 +1035,7 @@ class TestGetWidgetsData(object):
         
             >>> view = BrowserView(Content(), request)
             >>> setUpEditWidgets(view, IContent)
+            ['foo', 'bar']
             
         The simplest form of getWidgetsData requires a view and a schema:
             

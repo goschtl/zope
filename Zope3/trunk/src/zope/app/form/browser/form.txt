@@ -45,7 +45,7 @@ store the data in a global attribute called name:
   ...         name[1] = data['last']
 
 
-We now immitate the form-directive's behavior and create the view class:
+We now imitate the form-directive's behavior and create the view class:
 
   >>> from zope.app.form.browser.formview import FormView
   >>> View = type('View', bases=(DataHandler, FormView), 
@@ -86,7 +86,7 @@ the global name variable is changed:
   >>> name
   [u'Stephan', u'Richter']
 
-And that's pretty much all that there is to it. The rest behaves exactely like
+And that's pretty much all that there is to it. The rest behaves exactly like
 an edit form, from which the form view was derived. 
 
 Of course you can also completely overwrite the `update()` method like for the

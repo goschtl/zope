@@ -32,6 +32,8 @@ from zope.app.form.browser.editview import EditView
 from zope.app.form.browser.submit import Update
 from zope.component.exceptions import ComponentLookupError
 from zope.app.form.interfaces import IInputWidget
+from zope.app.form.tests import utils
+from zope.app.location.interfaces import ILocation
 
 class I(Interface):
     foo = TextLine(title=u"Foo")
@@ -50,6 +52,7 @@ class C(object):
     bar = u"c bar"
     a   = u"c a"
     b   = u"c b"
+    __Security_checker__ = utils.SchemaChecker(I)
 
     _baz = u"c baz"
     def getbaz(self): return self._baz
@@ -64,6 +67,7 @@ class IBar(Interface):
 
 class Foo(object):
     implements(IFoo)
+    __Security_checker__ = utils.SchemaChecker(IFoo)
 
     foo = u'Foo foo'
     
@@ -73,17 +77,12 @@ class ConformFoo(object):
     foo = u'Foo foo'
 
     def __conform__(self, interface):
-        # fake proxied adapter (attention only read proxy)
-        from zope.security.checker import InterfaceChecker
-        from zope.security.checker import ProxyFactory
-        
         if interface is IBar:
-            checker = InterfaceChecker(IBar)
-            return ProxyFactory(OtherFooBarAdapter(self), checker)
+            return OtherFooBarAdapter(self)
 
             
 class FooBarAdapter(object):
-    implements(IBar)
+    implements(IBar, ILocation)
     __used_for__ = IFoo
 
     def __init__(self, context):
@@ -93,6 +92,8 @@ class FooBarAdapter(object):
     def setbar(self, v): self.context.foo = v
 
     bar = property(getbar, setbar)
+    
+    __Security_checker__ = utils.SchemaChecker(IBar)
     
 class OtherFooBarAdapter(FooBarAdapter):
     pass

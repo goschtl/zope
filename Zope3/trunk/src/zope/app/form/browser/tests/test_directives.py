@@ -33,7 +33,7 @@ import zope.app.form.browser
 import zope.app.publisher.browser
 from zope.app.form.browser import TextWidget
 from zope.app.testing.placelesssetup import PlacelessSetup
-
+from zope.app.form.tests import utils
 
 tests_path = os.path.join(
     os.path.dirname(zope.app.publisher.browser.__file__),
@@ -61,7 +61,8 @@ class IC(Schema): pass
 class Ob(object):
     implements(IC)
 
-ob = Ob()
+unwrapped_ob = Ob()
+ob = utils.securityWrap(unwrapped_ob, IC)
 
 class ISomeWidget(Interface):
     displayWidth = Int(
@@ -110,7 +111,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               permission="zope.Public" />
             """)))
 
-        v = zapi.queryMultiAdapter((ob, request), name='add.html')
+        v = zapi.getMultiAdapter((ob, request), name='add.html')
         # expect to fail as standard macros are not configured
         self.assertRaises(TraversalError, v)
 
@@ -136,7 +137,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               permission="zope.Public" />
             """)))
 
-        v = zapi.queryMultiAdapter((ob, request), name='edit.html')
+        v = zapi.getMultiAdapter((ob, request), name='edit.html')
         # expect to fail as standard macros are not configured
         self.assertRaises(TraversalError, v)
 

@@ -23,7 +23,7 @@ from zope.schema import getFieldNamesInOrder
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
-from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
+from zope.app.form.utility import setUpWidgets, applyWidgetsChanges
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 
@@ -78,7 +78,7 @@ class ObjectWidget(BrowserWidget, InputWidget):
 
     def _setUpEditWidgets(self):
         # subwidgets need a new name
-        setUpEditWidgets(self, self.context.schema, source=self.context,
+        setUpWidgets(self, self.context.schema, IInputWidget,
                          prefix=self.name, names=self.names, 
                          context=self.context)
 
@@ -132,7 +132,9 @@ class ObjectWidget(BrowserWidget, InputWidget):
         # if there's changes, then store the new value on the content
         if changes:
             field.set(content, value)
-
+        # TODO: If value implements ILocation, set name to field name and
+        # parent to content
+        
         return changes
 
     def hasInput(self):
