@@ -14,7 +14,7 @@
           <tr>
             <th>Id:</th>
             <td>
-              <input type="text" name="id" size="40" value="">
+              <input type="text" name="id" size="40" value="" />
             </td>
           </tr>
  

@@ -2,7 +2,7 @@
 <body>
 
 <div metal:fill-slot="body">
-<form action="action.html" method="POST">
+<form action="action.html" method="post">
 <table class="TypeListing" cellpadding="3">
 
   <caption>Add Content</caption>

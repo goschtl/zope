@@ -35,7 +35,7 @@
             <tr>
               <th class="EditAttributeName">Content Type</th>
               <td class="EditAttributeValue">
-                <input name="contentType" type="text" size=20
+                <input name="contentType" type="text" size="20"
                        tal:attributes="value context/getContentType" />
               </td>
             </tr>
@@ -58,8 +58,8 @@
               </td>
             </tr>
             <tr>
-              <td colspan=2>
-                <hr>
+              <td colspan="2">
+                <hr/>
               </td>
             </tr>
             <tr>
@@ -115,12 +115,10 @@
 	  </tbody>
       </table>
 
-      <input type="submit" name="edit" value="Save Changes">
+      <input type="submit" name="edit" value="Save Changes" />
 
       </form>
 
     </div>
   </body>
 </html>
-
-

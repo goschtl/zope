@@ -13,7 +13,7 @@
 
       <div class="message" tal:condition="message">
          <span tal:replace="message">view/update message here</span>
-         <br><br><i><a href="">(click to clear message)</a></i>
+         <br/><br/><i><a href="">(click to clear message)</a></i>
       </div>
 
       <p tal:condition="not:registries">No services are registered.</p>

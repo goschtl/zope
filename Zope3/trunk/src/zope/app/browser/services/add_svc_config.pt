@@ -4,7 +4,7 @@
 
       <form action="add_svc_config.html">
 
-        <p>Register this object to provide the following service(s):
+        <p>Register this object to provide the following service(s):</p>
 
         <table>
 
@@ -20,16 +20,15 @@
 	    <tr tal:repeat="item view/listServiceTypes">
 
 	      <td>
-		<input type="checkbox" name="name:list" value="value" checked
-		       tal:attributes="value item/name">
+		<input type="checkbox" name="name:list" value="value"
+                       checked="checked" tal:attributes="value item/name" />
               </td>
-	      <td tal:content="item/name">Events
-	      </td>
+              <td tal:content="item/name">Events</td>
 
 	      <td>
 		<input type="checkbox" name="active:list" value="value"
 		       tal:attributes="value item/name;
-				       checked item/checked">
+				       checked item/checked" />
 	      </td>
 
 	    </tr>
@@ -37,8 +36,8 @@
 
 	</table>
 
-	<input type="reset" value="Reset form">
-        <input type="submit" value="Submit">
+	<input type="reset" value="Reset form" />
+        <input type="submit" value="Submit" />
 
 
       </form>

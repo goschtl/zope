@@ -31,7 +31,7 @@
 </table>
 <input class="form-element" type="submit" 
        name="@@editMessage.html:method" value="Edit Message"
-       i18n:attributes="value">
+       i18n:attributes="value" />
 </form>
 
 </span>

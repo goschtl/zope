@@ -40,7 +40,7 @@
           <div>Select Domains:</div>
           <div>
             <select name="sync_domains:list" size="6" style="width: 80%" 
-                    multiple>
+                    multiple="multiple">
               <tal:block repeat="domain view/getAllDomains">
               <option value="" 
 		      tal:attributes="value domain"
@@ -60,7 +60,7 @@
           <div>Select Languages:</div>
           <div>
             <select name="sync_languages:list" size="6" style="width: 80%" 
-                    multiple>
+                    multiple="multiple">
               <tal:block repeat="language view/getAllLanguages">
               <option value="" 
 		      tal:attributes="value language"
@@ -77,17 +77,17 @@
           </div>
         </td>
         <td width="20%">
-          <center>
+          <div align="center">
             <div><input type="submit" name="saveSettings.html:method" 
-                        value="Save Settings"></div><br>
+                        value="Save Settings" /></div><br/>
             <div><input type="submit" name="synchronize.html:method" 
-                        value="Synchronize"></div>
-          </center>
+                        value="Synchronize" /></div>
+          </div>
         </td>
       </tr>
     </form>
   </table>
-  <br>
+  <br/>
 
 <form action="./"
       tal:condition="view/canConnect">
@@ -107,15 +107,15 @@
         <td width="16">
           <input type="hidden"
       	       tal:attributes="name python: 'update-msgid-%i' %number;
-                                 value python: message[0][0]">
+                                 value python: message[0][0]" />
           <input type="hidden"
       	       tal:attributes="name python: 'update-domain-%i' %number;
-                                 value python: message[0][1]">
+                                 value python: message[0][1]" />
           <input type="hidden"
       	       tal:attributes="name python: 'update-language-%i' %number;
-                                 value python: message[0][2]">
+                                 value python: message[0][2]" />
           <input type="checkbox" name="message_ids:list"
-      	       tal:attributes="value python: number">
+      	       tal:attributes="value python: number" />
         </td>
         <td tal:content="python: message[0][0]">Hello World!</td>
         <td tal:content="python: message[0][1]">default</td>
@@ -130,7 +130,7 @@
     </tal:block>
   </table>
   <div><input type="submit" name="@@synchronizeMessages.html:method" 
-              value="Update"></div>
+              value="Update" /></div>
 
 </form>
 

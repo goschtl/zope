@@ -17,7 +17,7 @@
         <span tal:define="dummy context/unsubscribe" tal:omit-tag=""/>
     </span>
  
-    <form method="POST">
+    <form method="post">
        <span tal:condition="context/isSubscribed" tal:omit-tag="">
            Subscription state: ON
            <input type="submit" value="Unsubscribe" name="callUnsubscribe" />

@@ -14,7 +14,8 @@
       <form action="./" method="post">
         <div class="form-label" i18n:translate="">Select Languages:</div>
         <div>
-          <select name="languages:list" size="3" style="width: 80%" multiple>
+          <select name="languages:list" size="3" style="width: 80%"
+                  multiple="multiple">
             <tal:block repeat="language view/getAllLanguages">
               <option value="" 
 		      tal:attributes="value language"
@@ -32,10 +33,10 @@
         <div>
           <input class="form-element" type="submit" 
                  name="@@changeEditLanguages.html:method" value="Edit"
-		 i18n:attributes="value">
+		 i18n:attributes="value" />
           <input class="form-element" type="submit" 
                  name="@@deleteLanguages.html:method" value="Delete"
-		 i18n:attributes="value">
+		 i18n:attributes="value" />
         </div>
       </form>
     </td>
@@ -43,7 +44,8 @@
       <form action="./" method="post">
         <div class="form-label" i18n:translate="">Select Domains:</div>
         <div>
-          <select name="domains:list" size="3" style="width: 80%" multiple>
+          <select name="domains:list" size="3" style="width: 80%"
+                  multiple="multiple">
             <tal:block repeat="domain view/getAllDomains">
               <option value="" 
 		      tal:attributes="value domain"
@@ -61,10 +63,10 @@
           <div>
             <input class="form-element" type="submit" 
                    name="@@changeEditDomains.html:method" value="Edit"
-                   i18n:attributes="value">
+                   i18n:attributes="value" />
             <input class="form-element" type="submit" 
                    name="@@deleteDomains.html:method" value="Delete"
-                   i18n:attributes="value">
+                   i18n:attributes="value" />
           </div>
         </form>
       </td>
@@ -72,13 +74,13 @@
         <form action="." method="post">
           <div class="form-label" i18n:translate="">New Language:</div>
           <div>
-            <input type="text" name="language" size="20" value="">
-            <input type="submit" name="@@addLanguage.html:method" value="Add">
+            <input type="text" name="language" size="20" value="" />
+            <input type="submit" name="@@addLanguage.html:method" value="Add" />
           </div>
           <div class="form-label" i18n:translate="">New Domain:</div>
           <div>
-            <input type="text" name="domain" size="20" value="">
-            <input type="submit" name="@@addDomain.html:method" value="Add">
+            <input type="text" name="domain" size="20" value="" />
+            <input type="submit" name="@@addDomain.html:method" value="Add" />
           </div>
         </form>
       </td>
@@ -116,12 +118,12 @@
       	<td>
       	  <input type="hidden"
                  tal:attributes="name python: 'edit-msg_id-%i' %message[2];
-                                 value python: message[0]">
+                                 value python: message[0]" />
           <input type="hidden"
                  tal:attributes="name python: 'edit-domain-%i' %message[2];
-                                 value python: message[1]">
+                                 value python: message[1]" />
           <input type="checkbox" name="message_ids:list"
-                 tal:attributes="value python: message[2]">
+                 tal:attributes="value python: message[2]" />
         </td>
         <td>
           <a href=""
@@ -174,10 +176,10 @@
   <div>
     <input class="form-element" type="submit" 
            name="@@editMessages.html:method" value="Edit Messages"
-           i18n:attributes="value">&nbsp;
+           i18n:attributes="value" />&nbsp;
     <input class="form-element" type="submit" 
            name="@@deleteMessages.html:method" value="Delete Messages"
-           i18n:attributes="value">
+           i18n:attributes="value" />
   </div>
   </form>
 

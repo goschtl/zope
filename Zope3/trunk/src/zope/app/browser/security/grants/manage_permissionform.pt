@@ -33,7 +33,7 @@ Roles assigned to the permission
     tal:attributes="value perm/getId" />
 <div class="form-element">
 
-<table width="100%" cellspacing="0" cellpadding="2" border="0" nowrap>
+<table width="100%" cellspacing="0" cellpadding="2" border="0" nowrap="nowrap">
 <tr class="list-header">
   <td align="left" valign="top">
     <div class="form-label">

@@ -17,7 +17,7 @@
               Template: 
               dbi://username:password@host:port/dbname;param1=value...<br />
 	      <input type="text" name="dsn" size="40" value=""
-                  tal:attributes="value context/getDSN">  
+                  tal:attributes="value context/getDSN" />
             </td>
     	  </tr>
     	    	

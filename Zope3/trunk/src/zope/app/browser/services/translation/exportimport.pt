@@ -17,7 +17,8 @@
       <td width="25%">
         <div class="form-label" i18n:translate="">Select Languages:</div>
         <div>
-          <select name="languages:list" size="3" style="width: 80%" multiple>
+          <select name="languages:list" size="3" style="width: 80%"
+                  multiple="multiple">
             <option value="" 
                     tal:attributes="value language"
                     tal:content="language"
@@ -28,7 +29,8 @@
       <td width="25%">
         <div class="form-label" i18n:translate="">Select Domains:</div>
         <div>
-          <select name="domains:list" size="3" style="width: 80%" multiple>
+          <select name="domains:list" size="3" style="width: 80%"
+                  multiple="multiple">
             <option value="" 
                     tal:attributes="value domain"
                     tal:content="domain"
@@ -39,11 +41,11 @@
       <td width="25%" valign="top">
         <div class="form-label" i18n:translate="">Import File Name:</div>
         <div>
-          <input type="file" name="file" size="20" value="">
+          <input type="file" name="file" size="20" value="" />
         </div>
         <div>
-          <input type="submit" name="@@import.html:method" value="Import">
-          <input type="submit" name="@@export.html:method" value="Export">
+          <input type="submit" name="@@import.html:method" value="Import" />
+          <input type="submit" name="@@export.html:method" value="Export" />
         </div>
       </td>
     </tr>

@@ -2,7 +2,7 @@
 <body>
 
 <div metal:fill-slot="body">
-<form action="action.html" method="POST">
+<form action="action.html" method="post">
 <table class="TypeListing" cellpadding="3">
 
   <caption i18n:translate="">Add Content</caption>
@@ -12,7 +12,7 @@
     <tr tal:repeat="info infos">
 
       <td class="Selector">
-        <input type="radio" name="type_name" checked
+        <input type="radio" name="type_name"
                tal:attributes="value   info/action;
                                id      info/action;
                                checked python:len(infos)==1" />

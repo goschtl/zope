@@ -6,7 +6,7 @@
 <div metal:fill-slot="body">
 <h1>Header</h1>
 <h3>Exception traceback</h3>
-<hr>
+<hr />
 <div tal:define="entry python:context.getLogEntryById(request.get('id'))">
 <em tal:condition="not:entry">
 The specified log entry was not found.  It may have expired.
@@ -53,17 +53,19 @@ Traceback (text)
 
 <div tal:condition="entry/req_html">
 <h3>REQUEST</h3>
-<hr>
+<hr />
 <div tal:replace="structure entry/req_html"></div>
 </div>
 
 </div>
 
 <p>
-<form action="index.html" method="GET">
+<form action="index.html" method="get">
 <input type="submit" name="submit" value=" Return to log " />
 </form>
 </p>
+
 </div>
 </div>
+</body>
 </html>

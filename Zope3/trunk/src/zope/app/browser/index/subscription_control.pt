@@ -23,7 +23,7 @@
         Registration done.
     </span>
 
-    <form method="POST">
+    <form method="post">
        <span tal:condition="context/isSubscribed" tal:omit-tag="">
            Subscription state: ON
            <input type="submit" value="Unsubscribe" name="callUnsubscribe" />
@@ -34,7 +34,7 @@
        </span>
     </form>
 
-    <form method="POST">
+    <form action="" method="post">
         <input type="submit" value="Register Existing Objects"
                name="callRegisterExisting" />
     </form>

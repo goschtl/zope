@@ -23,7 +23,7 @@
         <tbody>
           <tr tal:repeat="config view/configInfo">
             <td valign="top">
-              <input type=checkbox name='keys:list' value='1'
+              <input type="checkbox" name='keys:list' value='1'
                      tal:attributes="value config/name" />
             </td>
             <td>
@@ -33,7 +33,7 @@
                 </span>
               </a>
               <span tal:condition="not:config/active">(disabled)</span>
-              <br>
+              <br/>
               <span tal:content="config/line2|default">
                 (No implementation summary)
               </span>
@@ -43,14 +43,14 @@
       </table>
 
       <div class="row">
-        <input type=submit name='refresh_submit' value="Refresh">
-        <input type=submit name='UPDATE_SUBMIT' value="Submit">
-        <input type=submit name='remove_submit' value="Remove">
+        <input type="submit" name='refresh_submit' value="Refresh" />
+        <input type="submit" name='UPDATE_SUBMIT' value="Submit" />
+        <input type="submit" name='remove_submit' value="Remove" />
         &nbsp;&nbsp;
-        <input type=submit name='top_submit' value="Top">
-        <input type=submit name='up_submit' value="Up">
-        <input type=submit name='down_submit' value="Down">
-        <input type=submit name='bottom_submit' value="Bottom">
+        <input type="submit" name='top_submit' value="Top" />
+        <input type="submit" name='up_submit' value="Up" />
+        <input type="submit" name='down_submit' value="Down" />
+        <input type="submit" name='bottom_submit' value="Bottom" />
       </div>
 
     </form>

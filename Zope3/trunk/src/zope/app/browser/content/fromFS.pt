@@ -14,10 +14,10 @@ Status from update method goes here.
 
 <p>Upload a zipfile in the following form</p>
 
-<form method="POST" action="@@fromFS.html" enctype="multipart/form-data">
+<form method="post" action="@@fromFS.html" enctype="multipart/form-data">
 
   <input type="file" name="zipfile" size="40" />
-  <input type="submit">
+  <input type="submit" />
 
 </form>
 

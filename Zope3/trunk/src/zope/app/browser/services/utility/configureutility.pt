@@ -15,7 +15,7 @@
   <span tal:replace="request/interface" i18n:name="interface"/>
 </h2>
 
-<form method="POST"
+<form method="post"
       action="."
       tal:attributes="action request/URL"
       tal:define="form view/update"

@@ -44,7 +44,7 @@
 
         <tr tal:condition="request/type_name|nothing">
           <td></td>
-          <td><input name="new_value" id="focusid" value=""></td>
+          <td><input name="new_value" id="focusid" value="" /></td>
           <td></td>
           <td></td>
           <td></td>

@@ -3,30 +3,30 @@
 <body>
 <div metal:fill-slot="body">
 
-<form action="." method="GET"
+<form action="." method="get"
       tal:attributes="action request/URL"
       >
     <div class="row" tal:content="structure view/forInterface/row" />
     <div class="row" tal:content="structure view/providedInterface/row" />
       <div class="controls"> 
-         <input type="submit" value="Refresh">
-         <input type="submit" value="Search" name="SEARCH">
+         <input type="submit" value="Refresh" />
+         <input type="submit" value="Search" name="SEARCH" />
       </div>
 </form>
 
-<form action="." method="POST"
+<form action="." method="post"
       tal:attributes="action request/URL"
       tal:condition="request/SEARCH|nothing"
       >
   <table>
     <tr>
-       <th>For/<br>Provided</th>
+       <th>For/<br/>Provided</th>
        <th>Configuration</th>
     </tr>
 
     <tr tal:repeat="config view/configInfo">
-      <td> <span tal:content="config/forInterface" />/<br>
-           <span tal:content="config/providedInterface" />
+      <td><span tal:replace="config/forInterface" />/<br/>
+          <span tal:replace="config/providedInterface" />
       </td>
       <td tal:content="structure config/view" />
     </tr>
@@ -34,7 +34,7 @@
       <td></td>
       <td></td>
       <td> 
-         <input type="submit" value="Update" name="UPDATE_SUBMIT">
+         <input type="submit" value="Update" name="UPDATE_SUBMIT" />
       </td>
     </tr>
   </table>

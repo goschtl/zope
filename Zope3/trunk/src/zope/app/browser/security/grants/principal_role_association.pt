@@ -11,7 +11,7 @@
         <span class="message"> Apply filter </span>
         <form method="POST" action="@@PrincipalRoles.html">
            Principal(s):
-            <select name="principals:list" multiple>
+            <select name="principals:list" multiple="multiple">
              <option tal:repeat="principal view/getAllPrincipals"
                      tal:attributes="value principal/getId"
                      tal:content="principal/getTitle">my title</option>

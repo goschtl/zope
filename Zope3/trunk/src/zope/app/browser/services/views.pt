@@ -8,7 +8,7 @@
 
       <div class="message" tal:condition="message">
          <span tal:replace="message">view/update message here</span>
-         <br><br><i><a href="">(click to clear message)</a></i>
+         <br/><br/><i><a href="">(click to clear message)</a></i>
       </div>
 
 <p tal:condition="not:configs">None</p>
@@ -21,7 +21,7 @@
         <td>
           <input type="checkbox" name="selected:list"
                  tal:attributes="value config/key" />
-          <br>
+          <br/>
         </td>
         <td>
           <a tal:condition="config/url" tal:attributes="href config/url">
@@ -63,8 +63,8 @@ Add a page to this views service</a></p>
     -->
     <div class="row">
     <div class="controls"> 
-         <input type="submit" value="Refresh">
-         <input type="submit" value="Search" name="SEARCH">
+         <input type="submit" value="Refresh" />
+         <input type="submit" value="Search" name="SEARCH" />
      </div>
     </div>
 </form>

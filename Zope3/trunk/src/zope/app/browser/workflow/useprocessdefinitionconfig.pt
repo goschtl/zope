@@ -17,7 +17,9 @@
       </li>
     </ul>
 
-    <p><a href="addConfiguration.html">Add a configuration for this process definition</a>
+    <p><a href="addConfiguration.html">
+      Add a configuration for this process definition
+    </a></p>
 
   </div>
 </body>

@@ -16,7 +16,7 @@
 
 <form action="ChangeAllRolePermissions.html" method="post">
 
-<table width="100%" cellspacing="0" cellpadding="2" border="0" nowrap>
+<table width="100%" cellspacing="0" cellpadding="2" border="0" nowrap="nowrap">
 <tr class="list-header">
     <td align="left" valign="top">
       <div class="form-label">
@@ -41,7 +41,7 @@
       <input type="hidden" name="r0" value=""
         tal:attributes="
         name string:r${repeat/role/index};
-        value  string:${role/getId}">
+        value  string:${role/getId}" />
 
     </div>
   </td>
@@ -51,7 +51,7 @@
 <tr class="row-normal"
     tal:attributes="class python:path('repeat/perm/even') and 'row-normal' or 'row-hilite'"
     >
-  <td align="left" nowrap>
+  <td align="left" nowrap="nowrap">
     <div class="list-item">
        <a href="RolesWithPermission.html"
        tal:attributes="
@@ -61,7 +61,7 @@
        <input type="hidden" name="r0" value=""
          tal:attributes="
          name string:p${repeat/perm/index};
-         value  string:${perm/getId}">
+         value  string:${perm/getId}" />
     </div>
   </td>
   <td align="center" tal:repeat="setting perm/roleSettings">

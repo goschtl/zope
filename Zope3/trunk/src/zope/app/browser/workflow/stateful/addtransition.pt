@@ -14,7 +14,7 @@
           <tr>
             <th>Id:</th>
             <td>
-              <input type="text" name="id" size="40" value="">
+              <input type="text" name="id" size="40" value="" />
             </td>
           </tr>
 
@@ -41,14 +41,14 @@
           <tr>
             <th>Condition:</th>
             <td>
-              <input type="text" name="condition" size="40" value="">
+              <input type="text" name="condition" size="40" value="" />
             </td>
           </tr>
 
           <tr>
             <th>Permission:</th>
             <td>
-              <input type="text" name="permission" size="40" value="">
+              <input type="text" name="permission" size="40" value="" />
             </td>
           </tr>
 

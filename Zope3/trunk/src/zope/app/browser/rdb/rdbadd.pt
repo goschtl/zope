@@ -16,7 +16,7 @@
             <td>
               Template:
               dbi://username:password@host:port/dbname;param1=value...<br />
-              <input type="text" name="dsn" size="40" value="dbi://dbname">
+              <input type="text" name="dsn" size="40" value="dbi://dbname" />
             </td>
           </tr>
 

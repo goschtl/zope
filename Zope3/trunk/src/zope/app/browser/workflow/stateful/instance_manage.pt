@@ -36,15 +36,17 @@
             <br/>
             Possible State Changes:
             <form action="@@fireTransition.html" method="get">
-            <input type="hidden" name="workflow" tal:attributes="value request/workflow | nothing">
+            <input type="hidden" name="workflow"
+                   tal:attributes="value request/workflow | nothing" />
               <div tal:repeat="trans info/transitions" 
                    tal:condition="info/transitions | nothing"
                    tal:omit-tag="">
                 <input type="radio"
                        name="selTransition"
-                       tal:attributes="value trans/name"/> <span tal:replace="trans/title"/><br/>
+                       tal:attributes="value trans/name"/>
+                <span tal:replace="trans/title"/><br/>
               </div>
-              <input type="submit" value="do it">
+              <input type="submit" value="do it" />
               </form>
         </div>
       </div>

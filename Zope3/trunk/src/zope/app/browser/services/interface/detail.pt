@@ -36,8 +36,8 @@
 
     <ul>
     <li tal:repeat="reg service/registrations">
-        <emph tal:content="reg/status">status</emph>
-        <strong tal:content="reg/usageSummary">usage</strong><br>
+        <em tal:content="reg/status">status</em>
+        <strong tal:content="reg/usageSummary">usage</strong><br/>
 	<span tal:content="reg/implementationSummary">impl</span>
     </li>
     </ul>

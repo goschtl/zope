@@ -23,7 +23,7 @@
         <font size="+1" color="red">
           <b>UNFULFILLED DEPENDENCY</b>
         </font>
-        <br><b>(You must <a href="../default/AddService">add a
+        <br/><b>(You must <a href="../default/AddService">add a
         <i tal:content="svc/service">Foo</i>
         service to this site</a> before you can activate this bundle)</b>
       </span>
@@ -35,7 +35,7 @@
 
   <div class="message" tal:condition="message">
     <span tal:replace="message">view/update message here</span>
-    <br><br><i><a href="@@bundle.html">(click to clear message)</a></i>
+    <br/><br/><i><a href="@@bundle.html">(click to clear message)</a></i>
   </div>
 
 <form action="@@bundle.html" method="GET">
@@ -54,14 +54,14 @@
             <i tal:content="cnf/implementation">Implementation summary</i>
           </a>
           <span tal:condition="cnf/conflict">
-            <br>
+            <br/>
             <font color="red" tal:condition="not:activate">Conflicts
                                                            with</font>
             <font color="green" tal:condition="activate">Overrides</font>
             <a tal:content="cnf/conflict"
                tal:attributes="href cnf/conflict">path</a>
           </span>
-          <br>
+          <br/>
           <span tal:condition="python: cnf['advice'] == 'Active'">
             <input type="radio" tal:attributes="name cnf/path"
                    value="Registered" />Register only
@@ -70,7 +70,7 @@
           </span>
           <span tal:condition="python: cnf['advice'] == 'Registered'">
             <b><input type="radio" tal:attributes="name cnf/path"
-                   value="Registered" checked />Register only</b>
+                   value="Registered" checked="checked" />Register only</b>
             <input type="radio" tal:attributes="name cnf/path"
                    value="Active" />Register and activate
           </span>

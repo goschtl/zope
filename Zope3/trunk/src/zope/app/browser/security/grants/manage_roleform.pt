@@ -20,7 +20,7 @@ Permissions assigned to the role
 <input type="hidden" name="role_id" value="Role ID"
     tal:attributes="value role/getId" />
 
-<table width="100%" cellspacing="0" cellpadding="2" border="0" nowrap
+<table width="100%" cellspacing="0" cellpadding="2" border="0" nowrap="nowrap"
        tal:define="availableSettings python:view.availableSettings(noacquire=1)">
 <tr class="list-header">
   <td align="left" valign="top"
@@ -35,7 +35,7 @@ Permissions assigned to the role
   <td align="left" valign="top"
       tal:repeat="settinginfo availableSettings">
     <div class="form-element">
-      <select name="Unset:list" multiple size="20"
+      <select name="Unset:list" multiple="multiple" size="20"
               tal:define="setting settinginfo/id"
               tal:attributes="name string:${setting}:list">
       <option tal:repeat="permissioninfo role/permissionsInfo"

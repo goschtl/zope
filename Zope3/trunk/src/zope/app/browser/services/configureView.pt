@@ -5,7 +5,7 @@
 <h2>View registrations for
     <i tal:content="view/summary">key</i></h2>
 
-<form method="POST"
+<form method="post"
       action="."
       tal:attributes="action request/URL"
       tal:define="form view/update"
