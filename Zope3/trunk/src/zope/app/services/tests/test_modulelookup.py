@@ -16,16 +16,16 @@
 Note that when we get around to implementing module services, those
 tests will go here too.
 
-$Id: test_modulelookup.py,v 1.3 2003/07/03 15:42:48 srichter Exp $
+$Id: test_modulelookup.py,v 1.4 2003/09/21 17:33:17 jim Exp $
 """
 
 from zope.testing.doctestunit import DocTestSuite
-from zope.context import Wrapper
 
 from zope.app.services.registration import RegistrationManagerContainer
 from zope.app.interfaces.services.module import IModuleManager
 from zope.interface import implements
-
+from zope.app.container.contained import Contained, setitem
+from zope.app.tests.placelesssetup import setUp, tearDown
 
 class MyModuleManager(object):
     implements(IModuleManager)
@@ -36,10 +36,9 @@ class MyModuleManager(object):
     def getModule(self):
         return self.module
 
-class MyFolder(RegistrationManagerContainer, dict):
-    def setObject(self, name, object):
-        self[name] = object
-        return name
+class MyFolder(RegistrationManagerContainer, dict, Contained):
+    def __setitem__(self, name, object):
+        setitem(self, super(MyFolder, self).__setitem__, name, object)
 
 
 def test_findMoule():
@@ -52,7 +51,7 @@ def test_findMoule():
     >>> next = MyFolder()
     >>> next['m3'] = MyModuleManager(3)
     >>> next['z.y.m4'] = MyModuleManager(4)
-    >>> folder = Wrapper(folder, next)
+    >>> folder.__parent__ = next
 
     >>> folder.findModule('m1')
     1
@@ -84,5 +83,7 @@ def test_resolve():
     1
     """
 
-def test_suite(): return DocTestSuite()
+def test_suite():
+    return DocTestSuite(setUp=setUp, tearDown=tearDown)
+
 if __name__ == '__main__': unittest.main()
