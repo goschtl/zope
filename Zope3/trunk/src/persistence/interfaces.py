@@ -17,7 +17,7 @@ from zope.interface import Attribute
 class IPersistent(Interface):
     """Python persistence interface
 
-    A persistent object can eb in one of several states:
+    A persistent object can be in one of several states:
 
     - Unsaved
 
@@ -65,7 +65,7 @@ class IPersistent(Interface):
 
       This transition occurs when an object is saved in the
       database. This usually happens when an unsaved object is added
-      to (e.g. as an attribute ot item of) a saved (or changed) object
+      to (e.g. as an attribute or item of) a saved (or changed) object
       and the transaction is committed.
 
     - Saved  -> Changed
@@ -111,7 +111,7 @@ class IPersistent(Interface):
 
     Note that there is a separate C API that is not included here.
     The C API requires a specific data layout and defines the sticky
-    state that is used to pevent object deactivation while in C
+    state that is used to prevent object deactivation while in C
     routines.
 
     """
@@ -127,7 +127,7 @@ class IPersistent(Interface):
         """The object id
 
         It is up to the data manager to assign this.
-        The special value None is resrved to indicate that an object
+        The special value None is reserved to indicate that an object
         id has not been assigned.
         """)
 
@@ -176,7 +176,7 @@ class IPersistent(Interface):
     def __getstate__():
         """Get the object state data
 
-        The state should not include peristent attributes ("_p_name")
+        The state should not include persistent attributes ("_p_name")
         """
 
     def __setstate__(state):
@@ -269,7 +269,7 @@ class ICache(Interface):
     def incrgc(multiple=1):
         """Perform incremental garbage collection
 
-        An positive integer argument can be provided to speify a
+        An positive integer argument can be provided to specify a
         number of incremental steps to take.
         """
 
@@ -286,9 +286,9 @@ class ICache(Interface):
         """
 
     def invalidateMany(oids):
-        """Invalidate the objects for the given colection of object ids
+        """Invalidate the objects for the given collection of object ids
 
-        If oids is None, all of the objets in the cache are
+        If oids is None, all of the objects in the cache are
         invalidated.
 
         The collection must be iterable as if it was a sequence of oids.
