@@ -25,7 +25,7 @@ from zope.fssync.fsutil import Error
 from zope.fssync.metadata import Metadata
 
 BUNDLE_TYPE = "zope.app.services.bundle.Bundle"
-FOLDER_TYPE = "zope.app.services.folder.SiteManagementFolder"
+FOLDER_TYPE = "zope.app.component.site.SiteManagementFolder"
 
 
 class FSBundle(object):

@@ -66,7 +66,7 @@ class IInternalPrincipalContainer(zope.interface.Interface):
         title=_("Prefix"),
         description=_(
         "Prefix to be added to all principal ids to assure "
-        "that all ids are unique within the authentication service"
+        "that all ids are unique within the authentication utility"
         ),
         required=False,
         missing_value=u"",

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Manager for persistent modules associated with a service manager.
+"""Manager for persistent modules associated with a site manager.
 
 $Id$
 """

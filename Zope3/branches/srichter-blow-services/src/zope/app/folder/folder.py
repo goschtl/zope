@@ -111,8 +111,8 @@ def rootFolder():
 class FolderSublocations(object):
     """Get the sublocations of a folder
 
-    The subobjects of a folder include it's contents and it's service
-    manager if it is a site.
+    The subobjects of a folder include it's contents and it's site manager if
+    it is a site.
 
       >>> folder = Folder()
       >>> folder['ob1'] = Contained()

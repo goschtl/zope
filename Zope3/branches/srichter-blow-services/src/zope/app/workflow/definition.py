@@ -25,7 +25,6 @@ from zope.schema.interfaces import IVocabularyTokenized
 
 from zope.app import zapi
 from zope.app.container.contained import Contained, setitem, uncontained
-from zope.app.servicenames import Utilities
 from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 from zope.app.workflow.interfaces import IProcessDefinition
 

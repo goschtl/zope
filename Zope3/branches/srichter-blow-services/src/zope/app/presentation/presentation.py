@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Local presentation service
+"""Local presentation components
 
 $Id$
 """
@@ -37,7 +37,7 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dependable.interfaces import IDependable, DependencyError
 
 class GlobalViewRegistration(object):
-    """Registrations representing global view service thingies."""
+    """Registrations representing global view thingies."""
 
     implements(zope.app.component.interfaces.registration.IRegistration)
 
@@ -247,7 +247,7 @@ class PageRegistration(ViewRegistration):
 
     def factory(self):
         self.validate()
-        sm = zapi.getServices(self)
+        sm = zapi.getSiteManager(self)
 
         if self.factoryName:
             folder = self.__parent__.__parent__

@@ -32,7 +32,6 @@ from zope.app.dependable import Dependable
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
-from zope.app.adapter.adapter import LocalAdapterService
 
 
 class I(Interface):
@@ -45,8 +44,6 @@ class Test(RegisterableContainerTests, PlacefulSetup, TestCase):
 
     def setUp(self):
         sm = PlacefulSetup.setUp(self, site=True)
-        setup.addService(sm, zapi.servicenames.Adapters,
-                         LocalAdapterService(), suffix='service')        
         default = zapi.traverse(self.rootFolder, '++etc++site/default')
 
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)

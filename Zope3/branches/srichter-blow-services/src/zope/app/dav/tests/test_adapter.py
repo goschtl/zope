@@ -65,8 +65,7 @@ class RobotDirectory(object):
 
 def test_DAVSchemaAdapter():
     """Before we can start off, we need to provide a few basic components.
-    Let's setup the necessary services and a minimum of the location
-    machinery:
+    Let's setup a minimum of the location machinery:
 
     >>> setUp()
     >>> ztapi.provideAdapter(ILocation, IPhysicallyLocatable,

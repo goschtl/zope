@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Service manager interfaces
+"""Support classes for XML-based tree
 
 $Id$
 """
@@ -70,7 +70,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
         keys = list(container.keys())
 
-        # include the service manager
+        # include the site manager
         keys.append('++etc++site')
 
         for name in keys:
@@ -123,7 +123,7 @@ class ReadContainerXmlObjectView(BrowserView):
             else:
                 keys = []
 
-            # include the service manager
+            # include the site manager
             keys.append('++etc++site')
 
             for name in keys:

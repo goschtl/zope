@@ -66,13 +66,13 @@ class FSBundleTestCase(unittest.TestCase):
         self.add_metadata(
             self.etcdir,
             path="/++etc++site",
-            type="zope.app.services.service.ServiceManager",
-            factory="zope.app.services.service.ServiceManager")
+            type="zope.app.component.site.LocalSiteManager",
+            factory="zope.app.component.site.LocalSiteManager")
         self.add_metadata(
             os.path.join(self.etcdir, "site-folder"),
             path="/++etc++site/site-folder",
-            type="zope.app.services.folder.SiteManagementFolder",
-            factory="zope.app.services.folder.SiteManagementFolder")
+            type="zope.app.component.site.SiteManagementFolder",
+            factory="zope.app.component.site.SiteManagementFolder")
         self.metadata.flush()
 
     def add_metadata(self, name, **kw):
@@ -125,8 +125,8 @@ class FSBundleTestCase(unittest.TestCase):
                         "++etc++site", "site-folder", "dummy.py")
         self.add_metadata(os.path.join(self.etcdir, "site-folder", "dummy.py"),
                           path="/++etc++site/default/sample",
-                          type="zope.app.services.module.Manager",
-                          factory="zope.app.services.module.Manager")
+                          type="zope.app.module.manager.ModuleManager",
+                          factory="zope.app.module.manager.ModuleManager")
         self.metadata.flush()
         self.assertRaises(Error, self.fsbundle.create,
                           target, "foo", "bar", source)

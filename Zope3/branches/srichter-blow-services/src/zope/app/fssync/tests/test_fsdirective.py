@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test FSRegistry File-system synchronization services
+"""Test FSRegistry File-system synchronization utilities
 
 $Id$
 """

@@ -76,14 +76,10 @@ class Registration(object):
     requestType = I2
     name = 'test'
     layer = 'default'
-    serviceType = zapi.servicenames.Adapters
     provided = Interface
 
     with = property(lambda self: (self.requestType, ))
     factories = property(lambda self: (self.factory, ))
-
-    def activated(self): pass
-    def deactivated(self): pass
 
     def __repr__(self):
         return 'Registration(%s)' % self.factory.__name__

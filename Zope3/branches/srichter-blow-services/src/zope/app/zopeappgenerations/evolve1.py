@@ -18,12 +18,10 @@ $Id$
 __docformat__ = "reStructuredText"
 from zope.app import zapi
 from zope.app.error.error import ErrorReportingUtility
-from zope.app.error.interfaces import IErrorReportingService
 from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.generations.utility import findObjectsProviding
 from zope.app.principalannotation import PrincipalAnnotationUtility
 from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
-from zope.app.principalannotation.interfaces import IPrincipalAnnotationService
 from zope.app.registration.interfaces import IComponentRegistration
 from zope.app.registration.interfaces import ActiveStatus, UnregisteredStatus
 from zope.app.site.interfaces import ISite, IServiceRegistration

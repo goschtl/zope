@@ -49,10 +49,10 @@ class IContentComponentMenuItem(IBrowserMenuItem):
 
     create = Bool(
         title=_("Create Menu"),
-        description=_("If set to True, the system will create a local Browser "
-                      "Menu Service and local Browser Menu for you. If this "
+        description=_("If set to True, the system will create a local Browser"
+                      "local browser menu item for you. If this "
                       "option is set to False, the system will try to find "
-                      "the next local browser menu service that has a menu "
+                      "the next site manager that has a menu "
                       "with the specifed id. If no menu was found or the menu "
                       "is a global menu, then an error is created."),
         default=True,

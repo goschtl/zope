@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Synchronize with Foreign Translation Services
+"""Synchronize with Foreign Translation Domains
 
 $Id$
 """

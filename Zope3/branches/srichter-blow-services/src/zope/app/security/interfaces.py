@@ -40,15 +40,15 @@ class IAuthenticationUtility(Interface):
     issuing challenges or providing login interfaces.
 
     `IAuthenticationUtility` objects are used to implement authentication
-    utilities. Because they implement services, they are expected to
-    collaborate with services in other contexts. Client code doesn't search a
-    context and call multiple services. Instead, client code will call the
-    most specific service in a place and rely on the service to delegate to
-    other services as necessary.
+    utilities. Because they implement utilities, they are expected to
+    collaborate with utilities in other contexts. Client code doesn't search a
+    context and call multiple utilities. Instead, client code will call the
+    most specific utility in a place and rely on the utility to delegate to
+    other utilities as necessary.
 
-    The interface doesn't include methods for data management. Services may
+    The interface doesn't include methods for data management. Utilities may
     use external data and not allow management in Zope. Simularly, the data to
-    be managed may vary with different implementations of a service.
+    be managed may vary with different implementations of a utility.
     """
 
     def authenticate(request):
@@ -96,10 +96,10 @@ class IAuthenticationUtility(Interface):
         as issuing an HTTP authentication challenge or
         displaying a login interface.
 
-        Note that the authentication service nearest to the
+        Note that the authentication utility nearest to the
         requested resource is called. It is up to
-        authentication service implementations to
-        collaborate with services higher in the object
+        authentication utility implementations to
+        collaborate with utilities higher in the object
         hierarchy.
 
         If no principal has been identified, id will be
@@ -113,9 +113,9 @@ class IAuthenticationUtility(Interface):
         id. A PrincipalLookupError is raised if the principal cannot be
         found.
 
-        Note that the authentication service nearest to the requested
-        resource is called. It is up to authentication service
-        implementations to collaborate with services higher in the
+        Note that the authentication utility nearest to the requested
+        resource is called. It is up to authentication utility
+        implementations to collaborate with utilities higher in the
         object hierarchy.
         """
 

@@ -17,9 +17,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-# TODO: register utility as adapter for IAnnotations on utility activation
-# this depends on existence of LocalAdapterService, so once that's done
-# implement this.
+# TODO: register utility as adapter for IAnnotations on utility activation.
 
 from persistent import Persistent
 from persistent.dict import PersistentDict

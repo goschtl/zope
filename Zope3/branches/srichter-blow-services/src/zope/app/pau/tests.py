@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Authentication Service Tests
+"""Pluggable Authentication Tests
 
 $Id$
 """

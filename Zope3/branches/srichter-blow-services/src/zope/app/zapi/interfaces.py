@@ -70,6 +70,7 @@ class IZAPI(
         which would return IImage.
         """
         
+    # XXX: Deprecate
     servicenames = Attribute("Service Names")
 
     def isinstance(object, cls):
@@ -84,6 +85,6 @@ class IZAPI(
         """
 
     def principals():
-        """Return the authentication service (someday utility)
+        """Return the authentication utility
         """
         

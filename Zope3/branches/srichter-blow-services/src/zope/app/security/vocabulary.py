@@ -119,7 +119,7 @@ class PrincipalSource(object):
         principal. Whether the utility consults other utilities to give an
         answer is up to the utility itself.
 
-        First we need to create a dummy service that will return a user, if
+        First we need to create a dummy utility that will return a user, if
         the id is 'bob'.
         
         >>> class DummyUtility:

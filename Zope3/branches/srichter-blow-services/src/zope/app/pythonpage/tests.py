@@ -25,7 +25,6 @@ from zope.app.interpreter.python import PythonInterpreter
 from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.testing import placelesssetup, ztapi
 from zope.app.traversing.adapters import RootPhysicallyLocatable
-from zope.component.servicenames import Utilities
 from zope.interface import implements
 from zope.testing.doctestunit import DocTestSuite
 

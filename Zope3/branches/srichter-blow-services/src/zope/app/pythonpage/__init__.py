@@ -20,7 +20,6 @@ from persistent import Persistent
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.interpreter.interfaces import IInterpreter
-from zope.component.servicenames import Utilities
 from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _

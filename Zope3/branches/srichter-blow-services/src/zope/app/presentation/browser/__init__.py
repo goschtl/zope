@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Presentation-service presentations
+"""Presentation-component presentations
 
 $Id$
 """

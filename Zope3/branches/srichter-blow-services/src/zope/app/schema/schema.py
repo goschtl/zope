@@ -266,8 +266,7 @@ class SchemaAdding(Adding):
 
     def nextURL(self):
         """See zope.app.container.interfaces.IAdding"""
-        return (str(zapi.getView(self.context, "absolute_url", self.request))
-                + '/@@editschema.html')
+        return zapi.absoluteURL(self.context, self.request)+'/@@editschema.html'
 
 
 class SchemaRegistration(UtilityRegistration):

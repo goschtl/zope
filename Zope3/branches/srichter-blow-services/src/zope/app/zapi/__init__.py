@@ -22,7 +22,9 @@ from zope.interface import moduleProvides
 
 from zope.security.proxy import isinstance
 
+# XXX: Deprecate
 from zope.app import servicenames
+
 from zope.app.interface import queryType
 
 moduleProvides(IZAPI)

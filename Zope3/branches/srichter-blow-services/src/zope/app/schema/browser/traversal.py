@@ -14,16 +14,14 @@
 $Id$
 """
 from zope.interface import implements
-from zope.component import getDefaultViewName, queryView
 from zope.publisher.interfaces.browser import IBrowserPublisher
-from zope.app.schema.interfaces import IMutableSchema
-
-from zope.app.traversing.interfaces import TraversalError
 from zope.publisher.interfaces import NotFound
 
-from zope.app.traversing.interfaces import ITraversable
-from zope.app.traversing.namespace import UnexpectedParameters
+from zope.app import zapi
 from zope.app.location.interfaces import ILocation
+from zope.app.schema.interfaces import IMutableSchema
+from zope.app.traversing.interfaces import TraversalError, ITraversable
+from zope.app.traversing.namespace import UnexpectedParameters
 
 _marker = object()
 
@@ -40,7 +38,7 @@ class SchemaFieldTraverser(object):
 
         if subob is None:
 
-            view = queryView(self.context, name, request)
+            view = zapi.queryMultiAdapter((self.context, request), name=name)
             if view is not None:
                 if ILocation.providedBy(view):
                     view.__parent__ = self.context
@@ -54,7 +52,7 @@ class SchemaFieldTraverser(object):
 
     def browserDefault(self, request):
         c = self.context
-        view_name = getDefaultViewName(c, request)
+        view_name = zapi.getDefaultViewName(c, request)
         view_uri = "@@%s" % view_name
         return c, (view_uri,)
 

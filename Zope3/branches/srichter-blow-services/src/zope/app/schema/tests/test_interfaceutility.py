@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Utility service tests
+"""Interfaces as Utilities tests
 
 $Id$
 """

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interfaces for workflow service, definition and instance.
+"""Interfaces for workflow components, definition and instance.
 
 $Id$
 """

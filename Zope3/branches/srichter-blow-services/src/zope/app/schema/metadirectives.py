@@ -22,7 +22,7 @@ from zope.schema import TextLine
 class IVocabularyDirective(Interface):
     '''Define a named vocabulary.
 
-    This associates a vocabulary name in the global vocabulary service with a
+    This associates a vocabulary name in the global vocabulary registry with a
     factory.  Each name may only be defined once.
 
     Additional keyword arguments may be passed to the factory by adding

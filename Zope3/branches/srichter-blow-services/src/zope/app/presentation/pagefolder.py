@@ -198,6 +198,3 @@ class PageFolderFactory(object):
     def __call__(self, name):
         return PageFolder()
 
-import sys
-sys.modules['zope.app.services.viewpackage'
-            ] = sys.modules['zope.app.presentation.pagefolder']

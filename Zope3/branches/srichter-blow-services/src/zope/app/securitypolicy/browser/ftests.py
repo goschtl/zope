@@ -28,7 +28,7 @@ class RolePermissionsTest(functional.BrowserTestCase):
         body = response.getBody()
         self.assert_('Permissions' in body)
         self.assert_('Manage Content' in body)
-        self.assert_('Manage Services' in body)
+        self.assert_('Manage Site' in body)
         self.assert_('Roles' in body)
         self.assert_('Site Manager' in body)
         self.assert_('Site Member' in body)

@@ -215,7 +215,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         self._checkAndFireAuto(clean_pd)
 
     def getProcessDefinition(self):
-        """Get the ProcessDefinition object from WorkflowService."""
+        """Get the ProcessDefinition object from Workflow Utility."""
         return zapi.getUtility(IProcessDefinition, self.processDefinitionName)
 
     def _getContext(self):
@@ -273,7 +273,8 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if not script:
             return True
         if isinstance(script, (str, unicode)):
-            sm = zapi.getServices(self)
+            sm = zapi.getSiteManager(self)
+            # XXX: Code broken; not test
             script = sm.resolve(script)
         return script(contexts)
 

@@ -23,7 +23,6 @@ from zope.app.form.browser.submit import Update
 from zope.app.form.utility import setUpWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.schemacontent.interfaces import IContentComponentDefinition
-from zope.app.servicenames import Utilities
 from zope.app.schemacontent.content import ContentComponentInstance
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import implements
@@ -141,9 +140,8 @@ class AddContentComponentInstanceView(AddView):
             type_name, content_name = name.split("=", 1)
             self.context.contentName = content_name
 
-        utilities = zapi.getService(Utilities)
         matching = [util
-                    for name, util in utilities.getUtilitiesFor(
+                    for name, util in zapi.getUtilitiesFor(
                                                   IContentComponentDefinition)
                     if name == type_name]
             

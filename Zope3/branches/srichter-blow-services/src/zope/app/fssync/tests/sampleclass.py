@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test SampleClass for testing File-system synchronization services
+"""Test SampleClass for testing File-system synchronization utilities
 
 $Id$
 """

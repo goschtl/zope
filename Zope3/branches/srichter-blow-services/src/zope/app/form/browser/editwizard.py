@@ -235,7 +235,8 @@ def EditWizardViewFactory(name, schema, permission, layer,
     if layer is None:
         layer = IDefaultBrowserLayer
 
-    s = zapi.getGlobalService(zapi.servicenames.Adapter)
-    s.register((for_, layer), Interface, name, class_)
+    # XXX: untested
+    sm = zapi.getGlobalSiteManager()
+    sm.provideAdapter((for_, layer), Interface, name, class_)
 
 

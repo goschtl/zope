@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for Global Wiki Source Type Service.
+"""Tests for Renderer Vocabulary.
 
 $Id$
 """

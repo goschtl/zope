@@ -77,7 +77,7 @@ class Test(PlacelessSetup, TestCase):
         # Make sure the response status was set
         self.assertEqual(request.response.getStatus(), 403)
 
-        # Make sure the auth service was called
+        # Make sure the auth utility was called
         self.failUnless(self.auth.request is request)
         self.assertEqual(self.auth.principal_id, 23)
 
@@ -96,7 +96,7 @@ class Test(PlacelessSetup, TestCase):
         # Make sure the response status was set
         self.assertEqual(request.response.getStatus(), 403)
 
-        # Make sure the auth service was called
+        # Make sure the auth utility was called
         self.failUnless(self.auth.request is request)
         self.assertEqual(self.auth.principal_id, 23)
 

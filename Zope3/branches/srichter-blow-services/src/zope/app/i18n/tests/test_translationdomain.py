@@ -231,23 +231,21 @@ class TestTranslationDomainInAction(unittest.TestCase):
     def setUp(self):
         setup.placefulSetUp()
         self.rootFolder = setup.buildSampleFolderTree()
-        sm = zapi.getGlobalServices()
+        sm = zapi.getGlobalSiteManager()
         de_catalog = MessageCatalog('de', 'default')
         de_catalog.setMessage('short_greeting', 'Hallo!', 10)
 
         # Create global translation domain and add the catalog.
         domain = GlobalTranslationDomain('default')
         domain.addCatalog(de_catalog)
-        utils = sm.getService(Utilities)
-        utils.provideUtility(ITranslationDomain, domain, 'default')
+        sm.provideUtility(ITranslationDomain, domain, 'default')
 
         # Create Domain in root folder
-        mgr = setup.createServiceManager(self.rootFolder)
+        mgr = setup.createSiteManager(self.rootFolder)
         self.trans = setup.addDomain(mgr, Translation, TranslationDomain())
 
         # Create Domain in folder1
-        mgr = setup.createServiceManager(
-            zapi.traverse(self.rootFolder, 'folder1'))
+        mgr = setup.createSiteManager(zapi.traverse(self.rootFolder, 'folder1'))
         td = TranslationDomain()
         td.domain = 'default'
         de_catalog = MessageCatalog('de', 'default')

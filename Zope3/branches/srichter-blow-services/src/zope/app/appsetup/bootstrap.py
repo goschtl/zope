@@ -29,7 +29,7 @@ from zope.app.publication.zopepublication import ZopePublication
 from zope.app.traversing.api import traverse
 
 def ensureObject(root_folder, object_name, object_type, object_factory):
-    """Check that there's a basic object in the service
+    """Check that there's a basic object in the site
     manager. If not, add one.
 
     Return the name abdded, if we added an object, otherwise None.
@@ -47,7 +47,7 @@ def ensureObject(root_folder, object_name, object_type, object_factory):
 
 def ensureUtility(root_folder, interface, utility_type,
                   utility_factory, name='', **kw):
-    """Add a utility to the top Utility Service
+    """Add a utility to the top site manager
 
     Returns the name added or ``None`` if nothing was added.
     """
@@ -64,16 +64,15 @@ def ensureUtility(root_folder, interface, utility_type,
 
 def addConfigureUtility(
         root_folder, interface, utility_type, utility_factory, name='', **kw):
-    """Add and configure a service to the root folder."""
+    """Add and configure a utility to the root folder."""
     utility_name = addUtility(root_folder, utility_type, utility_factory, **kw)
     configureUtility(root_folder, interface, utility_type, name, utility_name)
     return name
 
 def addUtility(root_folder, utility_type, utility_factory, **kw):
-    """ Add a Utility to the root folder's Utility Service.
+    """ Add a Utility to the root folder's site manager.
 
     The utility is added to the default package and activated.
-    This assumes that the root folder already has a Utility Service.
     """
     package = getSiteManagerDefault(root_folder)
     chooser = INameChooser(package)

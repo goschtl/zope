@@ -20,7 +20,7 @@ _allowed_methods = ['PUT', 'DELETE', 'CONNECT', \
            'COPY', 'MOVE', 'LOCK', 'UNLOCK', 'TRACE']
            # 'GET', 'HEAD', 'POST' are always available. See OPTIONS() method.
 
-from zope.component import queryView
+from zope.app import zapi
 
 class OPTIONS(object):
     """`OPTIONS` handler for all objects
@@ -36,7 +36,7 @@ class OPTIONS(object):
         # interfaces for HTTP methods. This way we can even list verbs that
         # are not in the lists above.
         for m in _allowed_methods:
-            view = queryView(self.context, m, self.request, None)
+            view = zapi.queryMultiAdapter((self.context, self.request), name=m)
             if view is not None:
                 allowed.append(m)
 

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Authentication Service Tests
+"""Pluggable Authentication Browser Tests
 
 $Id: tests.py 27985 2004-10-12 08:00:42Z srichter $
 """

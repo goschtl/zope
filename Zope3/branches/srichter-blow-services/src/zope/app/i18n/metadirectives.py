@@ -20,7 +20,7 @@ from zope.interface import Interface
 from zope.configuration.fields import Path
 
 class IRegisterTranslationsDirective(Interface):
-    """Register translations with the global Translation Service."""
+    """Register translations with the global site manager."""
 
     directory = Path(
         title=u"Directory",

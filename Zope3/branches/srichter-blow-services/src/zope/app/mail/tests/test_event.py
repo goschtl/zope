@@ -11,9 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""MailService Implementation
-
-Simple implementation of the MailService, Mailers and MailEvents.
+"""Mailer Events Tests
 
 $Id$
 """

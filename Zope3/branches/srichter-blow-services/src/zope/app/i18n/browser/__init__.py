@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Translation Service Views
+"""Translation Domain Views
 
 $Id$
 """

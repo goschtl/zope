@@ -112,7 +112,7 @@ class MacrosCollector(object):
 class MacroCollector(object):
     """Replaceable sample implementation of IMacroCollector.
     
-    Collect a single pagelet from the adapter service and returns 
+    Collect a single pagelet from the site manager and returns 
     a macro by name.
     Pagelet adapters are registred on context, request, view and slot
     interfaces. Use your own IMacroCollector implementation for
