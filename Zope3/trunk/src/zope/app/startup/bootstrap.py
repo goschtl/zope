@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.6 2003/02/12 02:17:36 seanb Exp $
+$Id: bootstrap.py,v 1.7 2003/02/23 15:09:54 stevea Exp $
 """
 from transaction import get_transaction
 
@@ -32,6 +32,7 @@ from zope.app.services.hub import ObjectHub
 from zope.app.services.event import EventService
 from zope.app.services.errorr import ErrorReportingService
 from zope.app.services.principalannotation import PrincipalAnnotationService
+from zope.proxy.introspection import removeAllProxies
 
 def bootstrapInstance(db):
     """Bootstrap a Zope3 instance given a database object.
@@ -66,11 +67,11 @@ def addEssentialServices(root_folder):
     root_folder.setServiceManager(service_manager)
     name = addConfigureService(root_folder, Events, EventService)
     configureService(root_folder, Subscription, name)
-    
+
     addConfigureService(root_folder, HubIds, ObjectHub)
     addConfigureService(root_folder, ErrorReports,
                         ErrorReportingService, copy_to_zlog=True)
-    addConfigureService(root_folder, 'PrincipalAnnotation', \
+    addConfigureService(root_folder, 'PrincipalAnnotation',
                         PrincipalAnnotationService)
 
 def addConfigureService(root_folder, service_type, service_factory, **kw):
@@ -85,23 +86,24 @@ def addService(root_folder, service_type, service_factory, **kw):
     The service is added to the default package and activated.
     This assumes the root folder already has a service manager,
     and that we add at most one service of each type.
-    
+
     Returns the name of the service implementation in the default package.
     """
     # The code here is complicated by the fact that the registry
     # calls at the end require a fully context-wrapped
-    # configuration; hence all the traverse[Name]() calls.
+    # configuration; hence all the traverse() and traverseName() calls.
     package_name = ('', '++etc++Services', 'Packages', 'default')
     package = traverse(root_folder, package_name)
     name = service_type + '-1'
     service = service_factory()
+    service = removeAllProxies(service)
     package.setObject(name, service)
 
     # Set additional attributes on the service
     for k, v in kw.iteritems():
         setattr(service, k, v)
     return name
-        
+
 def configureService(root_folder, service_type, name,
                      initial_status='Active'):
     """Configure a service in the root folder."""
