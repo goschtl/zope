@@ -5,22 +5,22 @@
   <h1 tal:content="context/title">Versionable Proposal</h1>
 
     <div><h4 i18n:translate="">Use Cases</h4>
-        <div tal:content="structure context/rusecase | nothing">
+        <div tal:content="structure view/usecase | nothing">
            What Situations we will solve
         </div><a href="./@@EditUseCase.html" i18n:translate="">Edit</a>
         </div>
     <div><h4 i18n:translate="">Concept</h4>
-        <div tal:content="structure context/rconcept | nothing">
+        <div tal:content="structure view/concept | nothing">
            Technical Concept
         </div><a href="./@@EditConcept.html" i18n:translate="">Edit</a>
         </div>
     <div><h4 i18n:translate="">Todo</h4>
-        <div tal:content="structure context/rtodo | nothing">
+        <div tal:content="structure view/todo | nothing">
            Steps to go
         </div><a href="./@@EditTodo.html" i18n:translate="">Edit</a>
         </div>
     <div><h4 i18n:translate="">Issues</h4>
-        <div tal:content="structure context/rissues | nothing">
+        <div tal:content="structure view/issues | nothing">
            Open Issues
         </div><a href="./@@EditIssues.html" i18n:translate="">Edit</a>
         </div>

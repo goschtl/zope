@@ -12,15 +12,3 @@ class IVProposal(zope.interface.Interface):
     concept = Text(title=_("Concept"),required=False)
     todo = Text(title=_("Todo"),required=False)
     issues = Text(title=_("Open Issues"),required=False)
-        
-    def rusecase():
-        """Render usecase to HTML"""    
-        
-    def rconcept():
-        """Render usecase to HTML"""    
-
-    def rtodo():
-        """Render usecase to HTML"""
-        
-    def rissues():
-        """Render usecase to HTML"""        

@@ -8,6 +8,7 @@
 <browser:page
     for="..interfaces.IVProposal"
     name="index.html"
+    class=".view.RenderReST"
     template="info.pt"
     permission="zope.View"
     menu="zmi_views"
