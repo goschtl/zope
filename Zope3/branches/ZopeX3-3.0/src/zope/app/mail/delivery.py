@@ -35,7 +35,6 @@ from transaction import get_transaction
 from transaction.util import NoSavepointSupportRollback
 
 class MailDataManager(object):
-
     implements(IDataManager)
 
     def __init__(self, callable, args=(), onAbort=None):
@@ -56,6 +55,8 @@ class MailDataManager(object):
     def savepoint(self, transaction):
         return NoSavepointSupportRollback(self)
 
+    def sortKey(self):
+        return id(self)
 
 class AbstractMailDelivery(object):
 
