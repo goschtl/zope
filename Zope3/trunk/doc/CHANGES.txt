@@ -10,10 +10,17 @@ Zope Changes
 
     New features
 
+      - Added lazy properties. (See zope/cachedescriptors/README.txt)
+
       - Added new `getNextUtility()`, `queryNextUtility()`, and
         `testingNextUtility()` functions to make it easier to find and test
         for utilities in higher-up sites. These mimic their service-based
         equivalents.
+
+      - Added an API for declaring interfaces adapted by classes
+
+      - Added a simplified Python API for registering global utilities
+        and adapters.
 
       - Added initial indexing and cataloging support
 
@@ -173,6 +180,10 @@ Zope Changes
         expressing containment constraints.
 
     Restructuring
+
+      - Changed the test-counting mechanism for doctests.  Now a
+        doctest count a test for every example that is preceeded by
+        prose. (Although a doctest will never count less than 1 test.)
 
       - Removal of Services.
 
