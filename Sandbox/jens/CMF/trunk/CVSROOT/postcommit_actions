@@ -240,14 +240,15 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     except TypeError:
         repodir = remote['repodir']
 
+    cmd = ("%s%s%s %s/%s/ %s:%s" % ((VERBOSE and "set -x; ") or "",
+                                    (DRYRUN and "echo ") or "",
+                                    cmd,
+                                    os.environ["CVSROOT"], repo,
+                                    remote['host'], repodir))
     if VERBOSE:
         complain("Doing rsync cmd:\n\t%s\n", cmd)
 
-    os.system("%s%s%s %s/%s/ %s:%s" % ((VERBOSE and "set -x; ") or "",
-                                       (DRYRUN and "echo ") or "",
-                                       cmd,
-                                       os.environ["CVSROOT"], repo,
-                                       remote['host'], repodir))
+    os.system(cmd)
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
