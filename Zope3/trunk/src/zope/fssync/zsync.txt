@@ -43,7 +43,9 @@ parentheses are aliases supported for convenience:
 
 **diff**
   Report differences between the local representation and the data
-  from which the modified copy was generated..
+  from which the modified copy was generated.  This command can be run
+  *offline* (without any network access), so is useful when working
+  from a disconnected system.
 
 **add**
   Mark an object for addition to the object database.  The change is
