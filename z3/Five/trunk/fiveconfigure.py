@@ -20,6 +20,7 @@ from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
 from viewable import Viewable
 from traversable import Traversable
+from bridge import fromZ2Interface
 
 def findProducts():
     import Products
@@ -148,4 +149,27 @@ def viewable(_context, class_):
         discriminator = None,
         callable = classTraversable,
         args=(class_,)
+        )
+
+def createZope2Bridge(zope2, package, name):
+    # Map a Zope 2 interface into a Zope3 interface, seated within 'package'
+    # as 'name'.
+    z3i = fromZ2Interface(zope2)
+
+    if name is not None:
+        z3i.__dict__['__name__'] = name
+
+    z3i.__dict__['__module__'] = package.__name__
+    setattr(package, z3i.getName(), z3i)
+
+def bridge(_context, zope2, package, name=None):
+    # Directive handler for <five:bridge> directive.
+
+    # N.B.:  We have to do the work early, or else we won't be able
+    #        to use the synthesized interface in other ZCML directives.
+    createZope2Bridge(zope2, package, name)
+
+    # Faux action, only for conflict resolution.
+    _context.action(
+        discriminator = (zope2,),
         )

@@ -4,6 +4,9 @@ Five Changes
 Five 0.2 (in development)
 -------------------------
 
+* Added utility module, 'bridge', allowing reuse of Zope 2 interfaces
+  (by introspecting them to create equivalent Zope 3 interfaces).
+
 * five:viewable was renamed to five:traversable, five:viewable still
   works but is deprecated; a deprecation warning is emitted when it is
   used.
@@ -45,6 +48,7 @@ Five 0.2 (in development)
 * Expose the Zope 3 event system to Five. A class can be made to send
   out event notifications using the five:sendEvents directive. Events can
   be subscribed to using the subscriber directive.
+
 
 Five 0.1
 --------

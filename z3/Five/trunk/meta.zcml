@@ -190,6 +190,12 @@
        handler=".fiveconfigure.viewable"
        />
 
+    <meta:directive
+       name="bridge"
+       schema=".fivedirectives.IBridgeDirective"
+       handler=".fiveconfigure.bridge"
+       />
+
   </meta:directives>
 
 </configure>
