@@ -29,7 +29,7 @@ msgstr "Titel"
 
 #: src/versioning/demo/interfaces.py:11
 msgid "Use Case"
-msgstr "Anwendungsbeispiel"
+msgstr "Konkrete Anwendung"
 
 #: src/versioning/demo/interfaces.py:12
 msgid "Concept"
@@ -46,3 +46,19 @@ msgstr "Offene Fragen"
 #: 
 msgid "Edit"
 msgstr "Bearbeiten"
+
+#:
+msgid "Edit UseCase"
+msgstr "Konkrete Anwendung bearbeiten"
+
+#:
+msgid "Edit Concept"
+msgstr "Technisches Konzept bearbeiten"
+
+#:
+msgid "Edit Todo"
+msgstr "Arbeitsschritte bearbeiten"
+
+#:
+msgid "Edit Issues"
+msgstr "Offene Fragen bearbeiten"
