@@ -232,6 +232,16 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
         """
         return self.global_allow
 
+    security.declarePublic('listActions')
+    def listActions( self, info=None ):
+
+        """ Return a sequence of the action info objects for this type.
+        """
+        if self._actions and type( self._actions[0] ) == type( {} ):
+            self._convertActions()
+
+        return self._actions or ()
+
     security.declarePublic('getActionById')
     def getActionById( self, id, default=_marker ):
         """
@@ -272,7 +282,7 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
 
                 self.addAction( id=action['id']
                             , name=action['name']
-                            , action=action.get( 'action' )
+                            , action='string:%s' % action.get( 'action' )
                             , condition=action.get( 'condition' )
                             , permission=action.get('permissions', () )
                             , category=action.get( 'category', 'object' )

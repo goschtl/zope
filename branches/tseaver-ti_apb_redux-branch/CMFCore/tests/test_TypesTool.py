@@ -136,9 +136,10 @@ class TypeInfoTests( unittest.TestCase ):
     def test_GlobalHide( self ):
         self.tool = TypesTool()        
         tnf = self._makeAndSetInstance( 'Folder', filter_content_types=0)
-        taf = self._makeAndSetInstance( 'Allowing Folder',
-                                  allowed_content_types=('Hidden','Not Hidden'))
-        tih = self._makeAndSetInstance( 'Hidden'     ,global_allow=0)
+        taf = self._makeAndSetInstance( 'Allowing Folder'
+                                      , allowed_content_types=( 'Hidden'
+                                                              ,'Not Hidden'))
+        tih = self._makeAndSetInstance( 'Hidden', global_allow=0)
         tnh = self._makeAndSetInstance( 'Not Hidden')
         # make sure we're normally hidden but everything else is visible
         self.failIf     ( tnf.allowType( 'Hidden' ) )
@@ -148,9 +149,12 @@ class TypeInfoTests( unittest.TestCase ):
         self.failUnless ( taf.allowType( 'Not Hidden') )
         # make sure we're available in a non-content-type-filtered type
         # where we have been explicitly allowed
-        taf2 = self._makeAndSetInstance( 'Allowing Folder2',
-                                   allowed_content_types=('Hidden','Not Hidden'),
-                                   filter_content_types=0)
+        taf2 = self._makeAndSetInstance( 'Allowing Folder2'
+                                       , allowed_content_types=( 'Hidden'
+                                                               , 'Not Hidden'
+                                                               )
+                                       , filter_content_types=0
+                                       )
         self.failUnless ( taf2.allowType( 'Hidden' ) )
         self.failUnless ( taf2.allowType( 'Not Hidden') )
         
@@ -241,6 +245,37 @@ class TypeInfoTests( unittest.TestCase ):
         
         action = ti.getActionById( 'slot' )
         self.assertEqual( action, 'foo_slot' )
+
+    def test__convertActions_from_dict( self ):
+
+        from Products.CMFCore.ActionInformation import ActionInformation
+
+        ti = self._makeInstance( 'Foo' )
+        ti._actions = ( { 'id' : 'bar'
+                        , 'name' : 'Bar'
+                        , 'action' : 'bar_action'
+                        , 'permissions' : ( 'Bar permission', )
+                        , 'category' : 'baz'
+                        , 'visible' : 0
+                        }
+                      ,
+                      )
+
+        actions = ti.listActions()
+        self.assertEqual( len( actions ), 1 )
+
+        action = actions[0]
+
+        self.failUnless( isinstance( action, ActionInformation ) )
+        self.assertEqual( action.getId(), 'bar' )
+        self.assertEqual( action.Title(), 'Bar' )
+        self.assertEqual( action.getActionExpression(), 'string:bar_action' )
+        self.assertEqual( action.getCondition(), '' )
+        self.assertEqual( action.getPermissions(), ( 'Bar permission', ) )
+        self.assertEqual( action.getCategory(), 'baz' )
+        self.assertEqual( action.getVisibility(), 0 )
+
+        self.failUnless( isinstance( ti._actions[0], ActionInformation ) )
 
 
 class FTIDataTests( TypeInfoTests ):
