@@ -15,7 +15,7 @@
 """Extract message strings from python modules, page template files
 and ZCML files.
 
-$Id: extract.py,v 1.17 2004/04/02 14:03:29 mgedmin Exp $
+$Id: extract.py,v 1.18 2004/04/30 14:28:51 fdrake Exp $
 """
 
 import os, sys, fnmatch
@@ -117,12 +117,8 @@ class POTMaker:
         if os.path.exists(fn):
             return open(fn, 'r').read().strip()
         # Second, try to find a Zope version
-        import zope
-        fn = os.path.join(os.path.dirname(zope.__file__), 'version.txt')
-        if os.path.exists(fn):
-            return open(fn, 'r').read().strip()
-        else:
-            return 'Zope 3 (unknown version)'
+        from zope.app.applicationcontrol.zopeversion import ZopeVersionUtility
+        return ZopeVersionUtility.getZopeVersion()
 
     def write(self):
         file = open(self._output_filename, 'w')
