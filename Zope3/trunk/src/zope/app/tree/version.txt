@@ -1,1 +1,1 @@
-statictree 1.1
+ZopeTree 1.2
