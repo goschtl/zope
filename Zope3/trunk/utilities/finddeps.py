@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.9 2004/03/11 20:23:35 fdrake Exp $
+$Id: finddeps.py,v 1.10 2004/03/11 22:59:35 fdrake Exp $
 """
 import sys
 import getopt
@@ -78,8 +78,7 @@ class Dependency(object):
         self.occurences.append((file, lineno))
 
     def isSubPackageOf(self, dep):
-        """Check wether this dependency's path is represents a sub-package of
-        dep's path."""
+        """Return True if this dependency's path is a sub-package of dep."""
         path = self.path.split('.')
         deppath = dep.path.split('.')
         for i in range(len(path)):
