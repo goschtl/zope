@@ -895,9 +895,9 @@ Example tzinfo classes:
 
         def utcoffset(self, dt):
             if self._isdst(dt):
-                return timedelta(seconds=-time.timezone//60)
+                return timedelta(seconds=-time.timezone)
             else:
-                return timedelta(seconds=-time.altzone//60)
+                return timedelta(seconds=-time.altzone)
 
         def tzname(self, dt):
             return time.tzname[self._isdst(dt)]
