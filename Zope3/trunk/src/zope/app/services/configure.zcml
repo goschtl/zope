@@ -437,42 +437,8 @@
                     unsubscribedFrom subscribedTo" />
     </content>
 
-<!-- Authentication Service -->
-
-  <content class="zope.app.services.auth.AuthenticationService">
-
-    <factory id="AuthenticationService" permission="zope.ManageServices" />
-
-    <!-- XXX Should you *really* be able to get all this with just the
-         view permission? -->
-    <require
-        permission="zope.View"
-        interface="zope.app.interfaces.security.IAuthenticationService" />
-    <require
-        permission="zope.View"
-        attributes="getAllUsers" />
-
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IContainer" />
-
-    </content>
-
-  <content class="zope.app.services.auth.User">
-    <factory id="User" permission="zope.ManageServices" />
-      <require
-          permission="zope.View"
-          interface="zope.app.interfaces.services.auth.IReadUser" />
-      <require
-          permission="zope.ManageContent"
-          interface="zope.app.interfaces.services.auth.IWriteUser" />
-      <implements
-          interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-    </content>
-
-<!-- Pluggable Authentication Service -->
-
-<include package=".pluggableauth" />
+<!-- Old simple auth service --> <include file="auth.zcml" />
+<!-- Pluggable Authentication Service --> <include package=".pluggableauth" />
 
 <!-- Event Service -->
 <content class='zope.app.services.event.EventService'>
