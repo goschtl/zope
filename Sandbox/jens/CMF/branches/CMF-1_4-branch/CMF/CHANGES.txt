@@ -1,4 +1,4 @@
-Post CMF 1.4.7
+CMF 1.4.8 (2005/03/18)
 
   Bug Fixes
 
