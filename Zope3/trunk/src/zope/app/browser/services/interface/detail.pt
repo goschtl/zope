@@ -28,6 +28,23 @@
     </ul>
 </div>
 
+<div tal:repeat="service view/getServices">
+    <h3 i18n:translate="">Registrations for 
+        <span tal:content="service/name" i18n:name="name">Name</span> 
+        service
+    </h3>
+
+    <ul>
+    <li tal:repeat="reg service/registrations">
+        <emph tal:content="reg/status">status</emph>
+        <strong tal:content="reg/usageSummary">usage</strong><br>
+	<span tal:content="reg/implementationSummary">impl</span>
+    </li>
+    </ul>
+
+</div>
+    
+
 </div>
 
 </html>
