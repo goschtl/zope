@@ -97,20 +97,18 @@ lExtensionClass  -d lib/Components/ExtensionClass Components/ExtensionClass
 lBTree  -d lib/Components/BTree Components/BTree
 lcPickle  -d lib/Components/cPickle Components/cPickle
 lzlib  -d lib/Components/zlib Components/zlib
-
 pcgi  -d pcgi Components/pcgi2
 
 utilities   ZUtil
 ZopeHTTPServer Components/ZopeHTTPServer
+ZServer Publishers/ZServer
 
 # '-l' in GreyThing entry is to prevent recusion, excluding the webdav
 # symlink.  The symlink is there for people who checked out when the
 # actual webdav directory lived in GreyThing...  klm 03/26/1999.
 GreyThing -d lib/python -l Components/GreyThing
-ZServer Publishers/ZServer
 
 ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
-  &lExtensionClass &lBTree &lcPickle &lzlib \
   &lpZClasses &lpWebdav \
   &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
   &lpHelpSys \
@@ -121,7 +119,8 @@ ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZSQLMethods &lpZGadflyDA \
   &ZServer 
 
-Zope2 ZSrc &ZopeBase
+Zope2 ZSrc &ZopeBase \
+  &lExtensionClass &lBTree &lcPickle &lzlib \
 
 Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
