@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Converter.py,v 1.2 2002/07/14 17:31:17 faassen Exp $
+$Id: Converter.py,v 1.3 2002/07/16 14:03:01 srichter Exp $
 """
 from Zope.App.Forms.IConverter import IConverter
 from Schema.IField import *
@@ -40,25 +40,6 @@ class FieldToFieldConverter(Converter):
         value = self.__convert_to__.type(value)
         assert isinstance(value, self.__convert_to__.type), 'Wrong Type'
         return value
-
-
-class StrToIntConverter(FieldConverter):
-    """ """
-    __convert_from__ = IStr
-    __convert_to__ = IInt
-
-
-class StrToFloatConverter(FieldConverter):
-    """ """
-    __convert_from__ = IStr
-    __convert_to__ = IFloat
-
-
-class StrToBoolConverter(FieldConverter):
-    """ """
-    __convert_from__ = IStr
-    __convert_to__ = IBool
-
 
 
 class RequestConverter(Converter):

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IBrowserWidget.py,v 1.1 2002/07/14 13:32:53 srichter Exp $
+$Id: IBrowserWidget.py,v 1.2 2002/07/16 14:03:02 srichter Exp $
 """
 
 from Zope.App.Forms.IWidget import IWidget
@@ -26,7 +26,7 @@ class IBrowserWidget(IWidget):
     """
 
 
-    def render(field, key, value):
+    def render(value):
         """Renders this widget as HTML using property values in field."""
 
         

@@ -12,19 +12,22 @@
 # 
 ##############################################################################
 """
-$Id: Widget.py,v 1.2 2002/07/14 19:26:19 efge Exp $
+$Id: Widget.py,v 1.3 2002/07/16 14:03:02 srichter Exp $
 """
-from types import ListTypes
-
+from types import ListType, TupleType
+ListTypes = (ListType, TupleType)
 from Zope.ComponentArchitecture import getAdapter
+from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.Forms.Views.Browser.IBrowserWidget import IBrowserWidget
-from Zope.App.Forms.IPropertyFieldAdapter import IPropertyFieldAdapter
 from Zope.App.Forms.Widget import Widget
 
 
 class BrowserWidget(Widget, BrowserView):
     """A field widget that knows how to display itself as HTML."""
+
     __implements__ = IBrowserWidget
+    converter = None
+
     propertyNames = Widget.propertyNames + \
                     ['tag', 'type', 'cssClass', 'hidden', 'extra']
     
@@ -34,33 +37,21 @@ class BrowserWidget(Widget, BrowserView):
     hidden = 0
     extra = ''
 
-    def _getValueToInsert(self):
-        """Get a value to be inserted as the value of the input"""
-        request = self.request
-        field = self.context
-        if request and (('field_'+field.id) in request):
-            return request['field_'+field.id]
-        else:
-            return getAdapter(field, IPropertyFieldAdapter).\
-                   getPropertyInContext()
-        
-            
-    def render(self, field, key, value):
+    def render(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         return renderElement(self.getValue('tag'),
                              type = self.getValue('type'),
                              name = self.context.id,
-                             value = self._getValueToInsert(),
+                             value = value,
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
 
-
-    def render_hidden(self, field, key, value):
+    def renderHidden(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         return renderElement(self.getValue('tag'),
                              type = 'hidden',
                              name = self.context.id,
-                             value = self._getValueToInsert(),
+                             value = value,
                              cssClass = self.getValue('cssClass'),
                              extra = self.getValue('extra'))
 
@@ -74,9 +65,9 @@ class CheckBoxWidget(BrowserWidget):
     default = 0
     extra = ''
 
-    def render(self, REQUEST=None):
+    def render(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
-        if self._getValueToInsert(REQUEST):
+        if value:
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.context.id,
@@ -92,17 +83,23 @@ class CheckBoxWidget(BrowserWidget):
                                  extra = self.getValue('extra'))
 
 
-class FileWidget(TextWidget):
-    """File Widget"""
-    type = 'file'
+class TextWidget(BrowserWidget):
+    """Text widget."""
+    propertyNames = BrowserWidget.propertyNames + \
+                     ['displayWidth', 'displayMaxWidth', 'extra', 'default']
+    default = ''
+    displayWidth = 20
+    displayMaxWidth = ""
+    extra = ''
 
-    def render(self, REQUEST=None):
+    def render(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         displayMaxWidth = self.getValue('displayMaxWidth') or 0
         if displayMaxWidth > 0:
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.context.id,
+                                 value = value,
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  maxlength = displayMaxWidth,
@@ -111,234 +108,10 @@ class FileWidget(TextWidget):
             return renderElement(self.getValue('tag'),
                                  type = self.getValue('type'),
                                  name = self.context.id,
+                                 value = value,
                                  cssClass = self.getValue('cssClass'),
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
-
-
-class ItemsWidget(Widget):
-    """A widget that has a number of items in it."""
-    items = []
-
-
-class ListWidget(SingleItemsWidget):
-    """List widget."""
-    __implements__ = SingleItemsWidget.__implements__
-    property_names = Widget.property_names +\
-                     ['firstItem', 'items', 'size', 'extra']
-    size = 5
-
-    def render(self, REQUEST=None):
-        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
-        renderedItems = self.renderItems(field, key, value, REQUEST)
-        return render_element('select',
-                              name='',
-                              cssClass=field.get_value('cssClass'),
-                              size=field.get_value('size'),
-                              contents=string.join(renderedItems, "\n"),
-                              extra=field.get_value('extra'))
-
-    
-    def renderItem(self, text, value, key, css_class):
-        return render_element('option', contents=text, value=value)
-
-
-    def renderSelectedItem(self, text, value, key, css_class):
-        return render_element('option', contents=text, value=value,
-                              selected=None)
-
-        
-class MultiItemsWidget(ItemsWidget):
-    """A widget with a number of items that has multiple selectable items."""
-    default = []
-        
-    def render_items(self, field, key, value):
-        # need to deal with single item selects
-        if not isinstance(values, ListTypes):
-            value = [value]
-        items = field.get_value('items')
-        css_class = field.get_value('css_class')
-        rendered_items = []
-        for item in items:
-            try:
-                item_text, item_value = item
-            except ValueError:
-                item_text = item
-                item_value = item
-
-            if item_value in value:
-                rendered_item = self.render_selected_item(item_text,
-                                                          item_value,
-                                                          key,
-                                                          css_class)
-            else:
-                rendered_item = self.render_item(item_text,
-                                                 item_value,
-                                                 key,
-                                                 css_class)
-
-            rendered_items.append(rendered_item)
-
-        return rendered_items
-
-
-class MultiListWidget(MultiItemsWidget):
-    """List widget with multiple select."""
-    property_names = Widget.property_names +\
-                     ['items', 'size', 'extra']
-    size = 5
-
-    def render(self, ):
-        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
-        rendered_items = self.render_items(field, key, value)
-
-        return render_element('select',
-                              name=key,
-                              multiple=None,
-                              css_class=field.get_value('css_class'),
-                              size=field.get_value('size'),
-                              contents=string.join(rendered_items, "\n"),
-                              extra=field.get_value('extra'))
-    
-    def render_item(self, text, value, key, css_class):
-        return render_element('option', contents=text, value=value)
-
-    def render_selected_item(self, text, value, key, css_class):
-        return render_element('option', contents=text, value=value,
-                              selected=None)
-    
-
-class MultiCheckBoxWidget(MultiItemsWidget):
-    """Multiple checkbox widget."""
-    property_names = Widget.property_names +\
-                     ['items', 'orientation']
-    orientation = "vertical"
-                                   
-    def render(self):
-        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
-        field = self.context
-        rendered_items = self.render_items(field, key, value)
-        orientation = field.get_value('orientation')
-        if orientation == 'horizontal':
-            return string.join(rendered_items, "&nbsp;&nbsp;")
-        else:
-            return string.join(rendered_items, "<br />")
-    
-    def render_item(self, text, value, key, css_class):
-        return render_element('input',
-                              type="checkbox",
-                              css_class=css_class,
-                              name=key,
-                              value=value) + text
-    
-    def render_selected_item(self, text, value, key, css_class):
-        return render_element('input',
-                              type="checkbox",
-                              css_class=css_class,
-                              name=key,
-                              value=value,
-                              checked=None) + text
-
-
-class PasswordWidget(TextWidget):
-    """Password Widget"
-    def render(self):
-        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
-        field = self.context
-        display_maxwidth = field.get_value('display_maxwidth') or 0
-        if display_maxwidth > 0:
-            return render_element("input",
-                                  type="password",
-                                  name=key,
-                                  css_class=field.get_value('css_class'),
-                                  value=value,
-                                  size=field.get_value('display_width'),
-                                  maxlength=display_maxwidth,
-                                  extra=field.get_value('extra'))
-        else:
-            return render_element("input",
-                                  type="password",
-                                  name=key,
-                                  css_class=field.get_value('css_class'),
-                                  value=value,
-                                  size=field.get_value('display_width'),
-                                  extra=field.get_value('extra'))
-
-
-class RadioWidget(SingleItemsWidget):
-    """Radio buttons widget."""
-    property_names = Widget.property_names +\
-                     ['first_item', 'items', 'orientation']
-    orientation = "vertical"
-                                   
-    def render(self):
-        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
-        field = self.context
-        rendered_items = self.render_items(field, key, value)
-        orientation = field.get_value('orientation')
-        if orientation == 'horizontal':
-            return string.join(rendered_items, "&nbsp;&nbsp;")
-        else:
-            return string.join(rendered_items, "<br />")
-
-    def render_item(self, text, value, key, css_class):
-        return render_element('input',
-                              type="radio",
-                              css_class=css_class,
-                              name=key,
-                              value=value) + text
-    
-    def render_selected_item(self, text, value, key, css_class):
-        return render_element('input',
-                              type="radio",
-                              css_class=css_class,
-                              name=key,
-                              value=value,
-                              checked=None) + text
-
-
-class SingleItemsWidget(ItemsWidget):
-    """A widget with a number of items that has only a single
-    selectable item."""
-    default = ""
-    first_item = 0    
-
-    def render_items(self, field, key, value):
-        # get items
-        items = field.get_value('items')
-    
-        # check if we want to select first item
-        if not value and field.get_value('first_item') and len(items) > 0:
-            try:
-                text, value = items[0]
-            except ValueError:
-                value = items[0]
-                
-        css_class = field.get_value('css_class')
-        
-        # FIXME: what if we run into multiple items with same value?
-        rendered_items = []
-        for item in items:
-            try:
-                item_text, item_value = item
-            except ValueError:
-                item_text = item
-                item_value = item
-
-            if item_value == value:
-                rendered_item = self.render_selected_item(item_text,
-                                                          item_value,
-                                                          key,
-                                                          css_class)
-            else:
-                rendered_item = self.render_item(item_text,
-                                                 item_value,
-                                                 key,
-                                                 css_class)
-                
-            rendered_items.append(rendered_item)
-
-        return rendered_items
 
 
 class TextAreaWidget(BrowserWidget):
@@ -351,58 +124,235 @@ class TextAreaWidget(BrowserWidget):
     height = 15
     extra=""
     
-    def render(self):
+    def render(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
         return renderElement("textarea",
                              name=self.context.id,
-                             css_class=self.getValue('cssClass'),
+                             cssClass=self.getValue('cssClass'),
                              cols=self.getValue('width'),
                              rows=self.getValue('height'),
-                             contents=self._getValueToInsert(),
+                             contents=value,
                              extra=self.getValue('extra'))
 
 
-class TextWidget(BrowserWidget):
-    """Text widget."""
-    propertyNames = BrowserWidget.propertyNames + \
-                     ['displayWidth', 'displayMaxWidth', 'extra', 'default']
-    default = ''
-    displayWidth = 20
-    displayMaxWidth = ''
-    extra = ''
+class PasswordWidget(TextWidget):
+    """Password Widget"""
+    type='password'
 
-    def render(self):
+
+class FileWidget(TextWidget):
+    """File Widget"""
+    type = 'file'
+
+
+class ItemsWidget(BrowserWidget):
+    """A widget that has a number of items in it."""
+    items = []
+
+
+class SingleItemsWidget(ItemsWidget):
+    """A widget with a number of items that has only a single
+    selectable item."""
+    default = ""
+    firstItem = 0    
+
+    def renderItems(self, value):
+        name = self.context.id
+        # get items
+        items = self.context.get('items')
+        # check if we want to select first item
+        if not value and self.context.get_value('firstItem') and \
+               len(items) > 0:
+            try:
+                text, value = items[0]
+            except ValueError:
+                value = items[0]
+                
+        cssClass = self.getValue('cssClass')
+        
+        # FIXME: what if we run into multiple items with same value?
+        rendered_items = []
+        for item in items:
+            try:
+                item_text, item_value = item
+            except ValueError:
+                item_text = item
+                item_value = item
+
+            if item_value == value:
+                rendered_item = self.renderSelectedItem(item_text,
+                                                        item_value,
+                                                        name,
+                                                        cssClass)
+            else:
+                rendered_item = self.renderItem(item_text,
+                                                item_value,
+                                                name,
+                                                cssClass)
+                
+            rendered_items.append(rendered_item)
+
+        return rendered_items
+
+
+class ListWidget(SingleItemsWidget):
+    """List widget."""
+    __implements__ = SingleItemsWidget.__implements__
+    propertyNames = SingleItemsWidget.propertyNames +\
+                     ['firstItem', 'items', 'size', 'extra']
+    size = 5
+
+    def render(self, value):
         'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
-        displayMaxWidth = self.getValue('displayMaxWidth') or 0
-        if displayMaxWidth > 0:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.context.id,
-                                 value = self._getValueToInsert(REQUEST),
-                                 cssClass = self.getValue('cssClass'),
-                                 size = self.getValue('displayWidth'),
-                                 maxlength = displayMaxWidth,
-                                 extra = self.getValue('extra'))
+        renderedItems = self.renderItems(value)
+        return renderElement('select',
+                              name=self.context.id,
+                              cssClass=self.getValue('cssClass'),
+                              size=self.getValue('size'),
+                              contents="\n".join(renderedItems),
+                              extra=self.getValue('extra'))
+
+    def renderItem(self, text, value, name, cssClass):
+        return renderElement('option', contents=text, value=value,
+                              cssClass=cssClass)
+
+    def renderSelectedItem(self, text, value, name, cssClass):
+        return renderElement('option', contents=text, value=value,
+                              cssClass=cssClass, selected=None)
+
+
+class RadioWidget(SingleItemsWidget):
+    """Radio buttons widget."""
+    propertyNames = SingleItemsWidget.propertyNames +\
+                     ['firstItem', 'items', 'orientation']
+    orientation = "vertical"
+                                   
+    def render(self, value):
+        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
+        rendered_items = self.renderItems(value)
+        orientation = self.getValue('orientation')
+        if orientation == 'horizontal':
+            return "&nbsp;&nbsp;".join(rendered_items)
         else:
-            return renderElement(self.getValue('tag'),
-                                 type = self.getValue('type'),
-                                 name = self.context.id,
-                                 value = self._getValueToInsert(REQUEST),
-                                 cssClass = self.getValue('cssClass'),
-                                 size = self.getValue('displayWidth'),
-                                 extra = self.getValue('extra'))
+            return '<br />'.join(rendered_items)
+
+    def renderItem(self, text, value, name, cssClass):
+        return renderElement('input',
+                              type="radio",
+                              cssClass=cssClass,
+                              name=name,
+                              value=value) + text
+    
+    def renderSelectedItem(self, text, value, name, cssClass):
+        return renderElement('input',
+                              type="radio",
+                              cssClass=cssClass,
+                              name=name,
+                              value=value,
+                              checked=None) + text
+
+
+class MultiItemsWidget(ItemsWidget):
+    """A widget with a number of items that has multiple selectable items."""
+    default = []
+        
+    def renderItems(self, value):
+        # need to deal with single item selects
+        if not isinstance(value, ListTypes):
+            value = [value]
+        name = self.context.id
+        items = self.context.get('items')
+        cssClass = self.getValue('cssClass')
+        rendered_items = []
+        for item in items:
+            try:
+                item_text, item_value = item
+            except ValueError:
+                item_text = item
+                item_value = item
+
+            if item_value in value:
+                rendered_item = self.renderSelectedItem(item_text,
+                                                        item_value,
+                                                        name,
+                                                        cssClass)
+            else:
+                rendered_item = self.renderItem(item_text,
+                                                item_value,
+                                                name,
+                                                cssClass)
+
+            rendered_items.append(rendered_item)
+
+        return rendered_items
+
+
+class MultiListWidget(MultiItemsWidget):
+    """List widget with multiple select."""
+    propertyNames = MultiItemsWidget.propertyNames +\
+                     ['items', 'size', 'extra']
+    size = 5
+
+    def render(self, value):
+        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
+        rendered_items = self.renderItems(value)
+        return renderElement('select',
+                              name=self.context.id,
+                              multiple=None,
+                              cssClass=self.getValue('cssClass'),
+                              size=self.getValue('size'),
+                              contents="\n".join(rendered_items),
+                              extra=self.getValue('extra'))
+    
+    def renderItem(self, text, value, name, cssClass):
+        return renderElement('option', contents=text, value=value)
+
+    def renderSelectedItem(self, text, value, name, cssClass):
+        return renderElement('option', contents=text, value=value,
+                              selected=None)
+    
+
+class MultiCheckBoxWidget(MultiItemsWidget):
+    """Multiple checkbox widget."""
+    propertyNames = MultiItemsWidget.propertyNames +\
+                     ['items', 'orientation']
+    orientation = "vertical"
+                                   
+    def render(self, value):
+        'See Zope.App.Forms.Views.Browser.IBrowserWidget.IBrowserWidget'
+        rendered_items = self.renderItems(value)
+        orientation = self.getValue('orientation')
+        if orientation == 'horizontal':
+            return "&nbsp;&nbsp;".join(rendered_items)
+        else:
+            return "<br />".join(rendered_items)
+    
+    def renderItem(self, text, value, name, cssClass):
+        return renderElement('input',
+                              type="checkbox",
+                              cssClass=cssClass,
+                              name=name,
+                              value=value) + text
+    
+    def renderSelectedItem(self, text, value, name, cssClass):
+        return renderElement('input',
+                              type="checkbox",
+                              cssClass=cssClass,
+                              name=name,
+                              value=value,
+                              checked=None) + text
 
 
 # XXX Note, some HTML quoting is needed in renderTag and renderElement.
 
 def renderTag(tag, **kw):
-    """Render the tag. Well, not all of it, as we may want to / it.
-    """
+    """Render the tag. Well, not all of it, as we may want to / it."""
     attr_list = []
 
-    kw['name'] = 'field_' + kw['name']
+    if kw.has_key('name'):
+        kw['name'] = 'field_' + kw['name']
 
-    # special case handling for css_class
+    # special case handling for cssClass
     if 'cssClass' in kw:
         if kw['cssClass'] != "":
             attr_list.append('class="%s"' % kw['cssClass'])

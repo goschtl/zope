@@ -12,31 +12,63 @@
 # 
 ##############################################################################
 """
-$Id: FormView.py,v 1.3 2002/07/14 13:32:53 srichter Exp $
+$Id: FormView.py,v 1.4 2002/07/16 14:03:02 srichter Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Interface import Interface
 from Schema.IField import IField
 from Zope.ComponentArchitecture import getView
 import Schema
+from IForm import IForm
 
 class FormView(BrowserView):
-    def getWidgetsForSchema(self, schema, view_name):
-        """Given a schema and a desired field name, get a list of
-        widgets for it.
-        """
-        result = []
+
+    __implements__ = IForm, BrowserView.__implements__
+
+    schema = None
+    custom_widgets = None
+
+    def getWidgetForFieldId(self, id):
+        field = self.schema[id]
+        return self.getWidgetForField(field)
+
+
+    def getWidgetForField(self, field):
+        if self.custom_widgets is not None and \
+           field.getValue('id') in custom_widgets.keys():
+            return custom_widgets[field.getValue('id')](field)
+
+        return getView(field, 'widget', self.request)
+
+    def getFieldData(self):
+        result = {}
+        request = self.request
+
         for name in schema.names(1):
-            attr = schema.getDescriptionFor(name)
-            if IField.isImplementedBy(attr):
-                widget = getView(attr, view_name, self.request)
-                result.append(widget)
+            field = schema.getDescriptionFor(name)
+
+            if IField.isImplementedBy(field):
+                widget = self.getWidgetForField(field)
+                result[field.getValue(id)] = widget.convert(request)
+
         return result
 
-    def getFields(self):
-        """XXX just a test method.
-        """
-        result = self.getWidgetsForSchema(ITestSchema, 'normal')
-        print result
-        return result
-    
+
+    def saveValuesInContext(self, mapping):
+        """Store all the new data inside the context object."""
+        for item in mapping.items():
+            if getattr(self.context, item[0]) != item[1]:
+                setattr(self.context, attr, mapping[attr])
+
+
+    def action(self):
+        """Execute the form. By default it tries to save the values back
+           into the content object."""
+        data = self.getFieldData()
+        try:
+            Schema.validateMappingAll(self.schema, self.getFieldData())
+        except ValidationErrorsAll, errors:
+            # display the form again
+            pass
+        else:
+            self.saveValuesInContext(data)
