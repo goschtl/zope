@@ -80,6 +80,14 @@ class FieldIndexTest(TestCase):
         self._search('sucks', IISet([]))
 
 
+    def test_indexdoc(self):
+
+        self._populate_index()
+
+        self._search(('the','quick') , IISet([1,2]))
+        self._search(('the','fox','sucks',-2) , IISet([1,4,5]))
+
+
     def test_reindexdoc(self):
 
         self._populate_index()

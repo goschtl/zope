@@ -20,9 +20,11 @@ from persistence import Persistent
 
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OOBTree import OOBTree
-from zodb.btrees.IIBTree import IITreeSet, IISet
+from zodb.btrees.IIBTree import IITreeSet, IISet, union
 
 from zope.fieldindex.ifieldindex import IFieldIndex
+from types import ListType, TupleType
+
 
 class FieldIndex(Persistent):
 
@@ -77,14 +79,32 @@ class FieldIndex(Persistent):
             self._fwd_index[value].remove(docid)
             if len(self._fwd_index[value]) == 0:
                 del self._fwd_index[value]
-        except:
-            pass
+        except: pass
 
 
-    def search(self, value):
+    def search(self, values):
 
-        try:
-            return IISet(self._fwd_index[value])
-        except KeyError:
-            return IISet()
+
+        # values can either be a single value or a sequence of
+        # values to be searched.
+
+        if isinstance(values , (ListType, TupleType)):
+           
+            result = IISet()
+
+            for value in values:
+
+                try: r = IISet(self._fwd_index[value])
+                except KeyError: continue
+
+                # the results of all subsearches are combined using OR
+                result = union(result, r)
+
+        else:
+        
+            try: result = IISet(self._fwd_index[values])
+            except: result = IISet()    
+            
+
+        return result 
 
