@@ -14,18 +14,15 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.16 2003/11/27 13:59:17 philikon Exp $
+$Id: test_zptpage.py,v 1.2 2004/02/24 16:50:48 philikon Exp $
 """
 
 import unittest
 
-from zope.app.tests import ztapi
 from zope.interface.verify import verifyClass
 from zope.exceptions import Forbidden
 
-import zope.app.content.zpt
-from zope.app.content.zpt import ZPTPage, SearchableText, ZPTSourceView
-from zope.app.interfaces.content.zpt import IZPTPage
+from zope.app.tests import ztapi
 from zope.app.interfaces.index.text import ISearchableText
 from zope.component import getAdapter, getView
 from zope.publisher.browser import TestRequest, BrowserView
@@ -38,6 +35,11 @@ from zope.app.interfaces.traversing import ITraversable
 from zope.app.tests import ztapi
 from zope.security.checker import NamesChecker, defineChecker
 from zope.app.container.contained import contained
+
+from zope.app.zptpage.interfaces import IZPTPage
+from zope.app.zptpage.zptpage import ZPTPage, ZPTSourceView,\
+     ZPTReadFile, ZPTWriteFile, ZPTFactory
+from zope.app.zptpage.zptpage import Sized, SearchableText
 
 
 class Data(object):
@@ -142,25 +144,21 @@ class SizedTests(unittest.TestCase):
 
     def testInterface(self):
         from zope.app.interfaces.size import ISized
-        from zope.app.content.zpt import Sized
         self.failUnless(ISized.isImplementedByInstancesOf(Sized))
         self.failUnless(verifyClass(ISized, Sized))
 
     def test_zeroSized(self):
-        from zope.app.content.zpt import Sized
         s = Sized(DummyZPT(''))
         self.assertEqual(s.sizeForSorting(), ('line', 0))
         self.assertEqual(s.sizeForDisplay(), u'${lines} lines')
         self.assertEqual(s.sizeForDisplay().mapping, {'lines': '0'})
 
     def test_oneSized(self):
-        from zope.app.content.zpt import Sized
         s = Sized(DummyZPT('one line'))
         self.assertEqual(s.sizeForSorting(), ('line', 1))
         self.assertEqual(s.sizeForDisplay(), u'1 line')
 
     def test_arbitrarySize(self):
-        from zope.app.content.zpt import Sized
         s = Sized(DummyZPT('some line\n'*5))
         self.assertEqual(s.sizeForSorting(), ('line', 5))
         self.assertEqual(s.sizeForDisplay(), u'${lines} lines')
@@ -170,23 +168,23 @@ class SizedTests(unittest.TestCase):
 class TestFileEmulation(unittest.TestCase):
 
     def test_ReadFile(self):
-        page = zope.app.content.zpt.ZPTPage()
+        page = ZPTPage()
         content = u"<p></p>"
         page.setSource(content)        
-        f = zope.app.content.zpt.ZPTReadFile(page)
+        f = ZPTReadFile(page)
         self.assertEqual(f.read(), content)
         self.assertEqual(f.size(), len(content))
 
     def test_WriteFile(self):
-        page = zope.app.content.zpt.ZPTPage()
-        f = zope.app.content.zpt.ZPTWriteFile(page)
+        page = ZPTPage()
+        f = ZPTWriteFile(page)
         content = "<p></p>"
         f.write(content)
         self.assertEqual(page.getSource(), content)
 
     def test_factory(self):
         content = "<p></p>"
-        page = zope.app.content.zpt.ZPTFactory(None)('foo', '', content)
+        page = ZPTFactory(None)('foo', '', content)
         self.assertEqual(page.getSource(), content)
 
 

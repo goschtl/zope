@@ -11,16 +11,14 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""Test ZPT Page Evaluation of code
-
-$Id: test_zptpageeval.py,v 1.9 2004/02/14 03:27:13 srichter Exp $
+"""
+$Id: test_zptpageeval.py,v 1.2 2004/02/24 16:50:48 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-
-from zope.app.browser.content.zpt import ZPTPageEval
 from zope.app.container.contained import contained
+from zope.app.zptpage.browser.zptpage import ZPTPageEval
 
 class Test(CleanUp, TestCase):
 
@@ -33,7 +31,8 @@ class Test(CleanUp, TestCase):
 
             content_type = 'text/x-test'
 
-        class Folder: name='zope'
+        class Folder:
+            name='zope'
         folder = Folder()
 
         class Request(object):
@@ -46,7 +45,6 @@ class Test(CleanUp, TestCase):
                 setattr(self, name, value)
 
         request = Request()
-
         template = contained(Template(), folder)
 
         view = ZPTPageEval()

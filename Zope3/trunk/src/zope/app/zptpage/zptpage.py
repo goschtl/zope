@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.18 2004/02/20 16:57:24 fdrake Exp $
+$Id: zptpage.py,v 1.2 2004/02/24 16:50:47 philikon Exp $
 """
 import re
 
@@ -20,17 +20,17 @@ from persistent import Persistent
 
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
-
+from zope.interface import implements
 from zope.pagetemplate.pagetemplate import PageTemplate
+
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.index.text import ISearchableText
 from zope.app.interfaces.size import ISized
-from zope.app.interfaces.content.zpt import IZPTPage, IRenderZPTPage
-
 from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
-from zope.interface import implements
 from zope.app.container.contained import Contained
+
+from interfaces import IZPTPage, IRenderZPTPage
 
 __metaclass__ = type
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Templated Page Content Component Interfaces
 
-$Id: zpt.py,v 1.5 2003/08/21 14:19:24 srichter Exp $
+$Id: interfaces.py,v 1.2 2004/02/24 16:50:47 philikon Exp $
 """
 from zope.schema import SourceText, Bool
 from zope.interface import Interface, Attribute

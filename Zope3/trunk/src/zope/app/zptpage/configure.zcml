@@ -1,0 +1,100 @@
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:fssync='http://namespaces.zope.org/fssync'
+    i18n_domain='zope'
+    >
+
+  <!-- Module alias for backward compat
+       Will go away once we have a conversion script -->
+
+  <modulealias
+      module=".zptpage"
+      alias="zope.app.content.zpt"
+      />
+
+  <modulealias
+      module=".interfaces"
+      alias="zope.app.interfaces.content.zpt"
+      />
+
+
+
+  <interface 
+      interface=".interfaces.IZPTPage" 
+      type="zope.app.interfaces.content.IContentType"
+      /> 
+
+  <content class=".zptpage.ZPTPage">
+    <factory
+        id="ZPTPage"
+        permission="zope.ManageContent"
+        title="ZPT Page"
+        description="A simple, content-based Page Template"
+        />
+
+    <require
+        permission="zope.View"
+        attributes="__call__ macros"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IZPTPage"
+        set_attributes="source expand evaluateInlineCode"
+        />
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.IRenderZPTPage"
+        />
+
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+        />
+  </content>
+
+  <adapter 
+      for="zope.app.folder.interfaces.IFolder"
+      provides="zope.app.interfaces.file.IFileFactory"
+      name=".pt"
+      factory=".zptpage.ZPTFactory"
+      permission="zope.ManageContent"
+      />
+
+  <adapter 
+      for=".interfaces.IZPTPage"
+      provides="zope.app.interfaces.file.IReadFile"
+      factory=".zptpage.ZPTReadFile"
+      permission="zope.ManageContent"
+      />
+
+  <adapter 
+      for=".interfaces.IZPTPage"
+      provides="zope.app.interfaces.file.IWriteFile"
+      factory=".zptpage.ZPTWriteFile"
+      permission="zope.ManageContent"
+      />
+
+  <adapter
+      for=".interfaces.IZPTPage"
+      provides="zope.app.interfaces.index.text.ISearchableText"
+      factory=".zptpage.SearchableText"
+      />
+
+  <adapter
+      for=".interfaces.IZPTPage"
+      provides="zope.app.interfaces.size.ISized"
+      factory=".zptpage.Sized"
+      />
+
+  <fssync:adapter
+      class=".zptpage.ZPTPage"
+      factory=".fssync.ZPTPageAdapter"
+      />
+
+
+  <!-- include browser package -->
+
+  <include package=".browser" />
+
+</configure>

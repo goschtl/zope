@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,19 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Define view component for ZPT page eval results.
-
-$Id: zpt.py,v 1.4 2003/08/06 14:41:41 srichter Exp $
 """
-class ZPTPageEval:
+$Id: __init__.py,v 1.2 2004/02/24 16:50:47 philikon Exp $
+"""
 
-    def index(self, **kw):
-        """Call a Page Template"""
-
-        template = self.context
-        request = self.request
-
-        request.response.setHeader('content-type',
-                                   template.content_type)
-
-        return template.render(request, **kw)
+from zptpage import ZPTPage
