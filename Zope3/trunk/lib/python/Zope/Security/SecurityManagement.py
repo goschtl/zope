@@ -78,7 +78,7 @@ def getSecurityManager():
     if manager is None:
         newSecurityManager( None )
         manager=_managers.get( thread_id, None )
-        
+
     return manager
 
 def setSecurityPolicy( aSecurityPolicy ):
@@ -86,7 +86,7 @@ def setSecurityPolicy( aSecurityPolicy ):
         Set the system default security policy, and return the previous
         value.
 
-        This method should only be caused by system startup code.
+        This method should only be called by system startup code.
         It should never, for example, be called during a web request.
     """
     return _setSecurityPolicy( aSecurityPolicy )

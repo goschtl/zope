@@ -48,6 +48,6 @@ class ISecurityManagement( Interface ):
         """
             Set the system default security policy. 
 
-            This method should only be caused by system startup code.
+            This method should only be called by system startup code.
             It should never, for example, be called during a web request.
         """
