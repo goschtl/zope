@@ -28,6 +28,7 @@ $Id$
 import sys
 from transaction import get_transaction
 
+import zope.event
 import zope.interface
 from zope.component.exceptions import ComponentLookupError
 
@@ -39,6 +40,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.contained import Contained
 from zope.app.container.interfaces import IContainer
+from zope.app.event import objectevent
 from zope.app.registration.interfaces import IRegistry
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing.api import getPath
@@ -77,7 +79,9 @@ class SiteManager(
         BTreeContainer.__init__(self)
         self.subSites = ()
         self._setNext(site)
-        self['default'] = SiteManagementFolder()
+        folder = SiteManagementFolder()
+        zope.event.notify(objectevent.ObjectCreatedEvent(folder))
+        self['default'] = folder
 
     def _setNext(self, site):
         """Find set the next service manager
