@@ -80,6 +80,34 @@ def test_multi_adapter_get_best_match():
     'A1'
     """
 
+def test_multi_adapter_lookupAll_get_best_matches():
+    """
+    >>> registry = AdapterRegistry()
+
+    >>> class IB2(IB0):
+    ...     pass
+    >>> class IB3(IB2, IB1):
+    ...     pass
+    >>> class IB4(IB1, IB2):
+    ...     pass
+
+    >>> registry.register([None, IB1], IR0, '', 'A1')
+    >>> registry.register([None, IB0], IR0, '', 'A0')
+    >>> registry.register([None, IB2], IR0, '', 'A2')
+
+    >>> registry.lookupAll((IF1, IB1), IR0).next()[1]
+    'A1'
+    >>> registry.lookupAll((IF1, IB2), IR0).next()[1]
+    'A2'
+    >>> registry.lookupAll((IF1, IB0), IR0).next()[1]
+    'A0'
+    >>> registry.lookupAll((IF1, IB3), IR0).next()[1]
+    'A2'
+    >>> registry.lookupAll((IF1, IB4), IR0).next()[1]
+    'A1'
+    """
+
+
 def test_multi_adapter_w_default():
     """
     >>> registry = AdapterRegistry()
