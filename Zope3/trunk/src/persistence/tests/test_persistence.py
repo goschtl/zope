@@ -241,6 +241,3 @@ def test_suite():
     for klass in PersistentTest, BasePersistentTest:
         s.addTest(unittest.makeSuite(klass))
     return s
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
