@@ -40,14 +40,8 @@
         permission="zope.ManageServices"
         interface="zope.app.interfaces.container.IWriteContainer"
         />
-    <require
-        permission="zope.ManageServices"
-        interface="
-  zope.app.interfaces.services.pluggableauth.IWritePrincipalSource"
-        />
     <allow
-        interface="
-  zope.app.interfaces.services.pluggableauth.IReadPrincipalSource"
+        interface="zope.app.interfaces.services.pluggableauth.IPrincipalSource"
         />
 </content>
 

@@ -1,4 +1,5 @@
 from zope.interface import Interface
+from zope.app.interfaces.container import IContainer 
 from zope.app.interfaces.security import IAuthenticationService
 from zope.schema import TextLine, Password
 from zope.i18n import MessageIDFactory
@@ -37,7 +38,7 @@ class IPluggableAuthenticationService(IAuthenticationService):
         If id is not present, raise KeyError.
         """
 
-class IReadPrincipalSource(Interface):
+class IPrincipalSource(Interface):
     """A read-only source of IPrincipals.
     """
 
@@ -61,14 +62,7 @@ class IReadPrincipalSource(Interface):
         similar to (e.g. contain) the given name.
         """
 
-class IWritePrincipalSource(Interface):
-    """A write-only source of IPrincipals.
-    """
-
-class IPrincipalSource(IReadPrincipalSource, IWritePrincipalSource):
-    """A read-write principal source."""
-
-class ILoginPasswordPrincipalSource(Interface):
+class ILoginPasswordPrincipalSource(IPrincipalSource):
     """ A principal source which can authenticate a user given a
     login and a password """
 
@@ -85,3 +79,6 @@ class ILoginPasswordPrincipalSource(Interface):
         effecting his security profile on the site.  """
 
 
+class IContainerPrincipalSource(IPrincipalSource, IContainer):
+    """This is a marker interface for specifying principal sources that are
+    also containers. """

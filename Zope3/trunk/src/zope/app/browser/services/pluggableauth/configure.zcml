@@ -49,7 +49,7 @@
 <page
      name="contents.html" 
      menu="zmi_views" title="Contents"
-     for="zope.app.services.pluggableauth.IPrincipalSource"
+     for="zope.app.services.pluggableauth.IContainerPrincipalSource"
      permission="zope.ManageServices" 
      class="zope.app.browser.container.contents.Contents"
      attribute="contents"
@@ -57,13 +57,13 @@
 
 <view
     name="+"  
-    for="zope.app.services.pluggableauth.IPrincipalSource"
+    for="zope.app.services.pluggableauth.IContainerPrincipalSource"
     permission="zope.ManageContent"
     class="zope.app.browser.container.adding.Adding"/>
 
 <menuItem
     menu="zmi_actions" title="Add Principal"
-    for="zope.app.services.pluggableauth.IPrincipalSource"
+    for="zope.app.services.pluggableauth.IContainerPrincipalSource"
     action="+/AddPrincipalForm"
     />
 

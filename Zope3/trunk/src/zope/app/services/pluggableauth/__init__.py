@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.3 2003/06/24 02:34:29 chrism Exp $
+$Id: __init__.py,v 1.4 2003/07/03 21:45:30 srichter Exp $
 """
 
 from __future__ import generators
@@ -40,9 +40,8 @@ from zope.app.interfaces.services.pluggableauth import IUserSchemafied
 from zope.app.interfaces.security import ILoginPassword
 from zope.app.interfaces.services.pluggableauth \
      import IPluggableAuthenticationService
-from zope.app.interfaces.services.pluggableauth import IPrincipalSource
-from zope.app.interfaces.services.pluggableauth import IReadPrincipalSource,\
-     ILoginPasswordPrincipalSource, IWritePrincipalSource
+from zope.app.interfaces.services.pluggableauth import IPrincipalSource, \
+     ILoginPasswordPrincipalSource, IContainerPrincipalSource
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.component.nextservice import queryNextService
 from zope.app import zapi
@@ -132,6 +131,7 @@ class PluggableAuthenticationService(OrderedContainer):
         dereferenceable.
 
         """
+
         next = None
         
         try:
@@ -181,8 +181,8 @@ class PluggableAuthenticationService(OrderedContainer):
         ['simple', 'not_quite_so_simple']
         """
 
-        if not IReadPrincipalSource.isImplementedBy(principal_source):
-            raise TypeError("Source must implement IReadPrincipalSource")
+        if not IPrincipalSource.isImplementedBy(principal_source):
+            raise TypeError("Source must implement IPrincipalSource")
         self.setObject(id, principal_source)
         
     def removePrincipalSource(self, id):
@@ -207,7 +207,7 @@ class PluggableAuthenticationService(OrderedContainer):
 class BTreePrincipalSource(Persistent):
     """An efficient, scalable provider of Authentication Principals."""
 
-    implements(ILoginPasswordPrincipalSource, IPrincipalSource,
+    implements(ILoginPasswordPrincipalSource, IContainerPrincipalSource,
                IContainerNamesContainer)
 
     def __init__(self):
@@ -391,7 +391,7 @@ class BTreePrincipalSource(Persistent):
     # PrincipalSource-related methods
 
     def getPrincipal(self, id):
-        """ See IReadPrincipalSource.
+        """ See IPrincipalSource.
 
         'id' is the id as returned by principal.getId(),
         not a login.
@@ -407,7 +407,7 @@ class BTreePrincipalSource(Persistent):
             raise NotFoundError, id
 
     def getPrincipals(self, name):
-        """ See IReadPrincipalSource.
+        """ See IPrincipalSource.
 
         >>> sps = BTreePrincipalSource()
         >>> prin1 = SimplePrincipal('gandalf', 'shadowfax')
