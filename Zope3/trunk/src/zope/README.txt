@@ -12,5 +12,4 @@ The one subpackage that's not usable outside the application server is
 the app subpackage, zope.app, which *is* the application
 server. Sub-packages of zope.app are not usable outside of the application
 server. If there's something in zope.app you want to use elsewhere, let us
-know and we can talk about abstracting some of it up put of zope.app.
-
+know and we can talk about abstracting some of it up out of zope.app.
