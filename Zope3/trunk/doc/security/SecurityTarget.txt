@@ -2,8 +2,8 @@
  Zope X3 Security Target for EAL 1
 ===================================
 
-:Version: $Revision: 1.3 $ (Draft)
-:Date: $Date: 2003/07/16 21:13:30 $
+:Version: $Revision: 1.4 $ (Draft)
+:Date: $Date: 2003/07/22 17:27:51 $
 :Authors: Steve Alexander <steve@catbox.net>, Christian Theune <ct@gocept.com>
 :DocumentID: ST_ZOPE_001
 
@@ -167,7 +167,7 @@ The following assets have been identified:
     =================   ===========================================
     Content-Objects     
     Operations
-    Principals
+    Principals          Principals 
     Role grants
     Permission grants
     Audit data
@@ -324,7 +324,7 @@ The following OSP have been identified:
                                 number.
     ========================    ===============================================
 
-Security Objectives
+Security objectives
 ===================
 
 Security objectives for the TOE
@@ -947,6 +947,8 @@ FPT_TDC.1.1
 
 FPT_TDC.1.2
     Describe the rules that apply for interpretation of data.
+
+What about the "nice to have" functions?
 
 Questions to TUV-IT
 ===================
