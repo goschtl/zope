@@ -78,6 +78,7 @@ class ToolsOverview:
             tools.append({'title':view.title,
                           'description':view.description,
                           'action':'./@@manage%sTool.html' % name })
+        tools.sort(lambda x, y: cmp(x['title'], y['title']))
         return tools
 
 class ToolsBacklink:
