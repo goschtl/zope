@@ -231,6 +231,7 @@ class Path(schema.Text):
     [u'', u'a', u'b']
 
     This should also work with extra spaces around the path:
+
     >>> p = "   \n   %s   \n\n   " % p
     >>> n = field.fromUnicode(p)
     >>> n.split(os.sep)
