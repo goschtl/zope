@@ -89,6 +89,11 @@ class SimpleHistoryStorage(Folder) :
         ticket = self.getTicket(obj)
         return self[ticket]
         
+    def getVersion(self, obj, selector) :
+        """ Returns the version of an object that is specified by selector. """
+        history = self.getHistory(obj)
+        return history[selector]
+        
   
              
    

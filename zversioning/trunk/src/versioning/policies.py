@@ -76,8 +76,9 @@ class VersionableAspectsAdapter(object) :
         history = self.histories.getHistory(self.versionable)
         version = history[version_specifier]
         parent = self.versionable.__parent__
-        del parent[self.versionable.__name__]
-        IObjectCopier(self.versionable).copyTo(parent)
+        name = self.versionable.__name__       
+        del parent[name]
+        IObjectCopier(version).copyTo(parent, name)
 
 
   

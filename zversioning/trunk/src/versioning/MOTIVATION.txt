@@ -1,5 +1,6 @@
-Versioning
-==========
+======================================
+Motivation for a new Versioning Scheme
+======================================
 
 
 We start by testing some of the existing infrastructure from zope.app.versioncontrol
@@ -35,6 +36,9 @@ folder tree with the following structure :
   >>> c = b["c"] = TestFolder()
   >>> for x in (sample, a, b, c) :
   ...     directlyProvides(x, zope.app.versioncontrol.interfaces.IVersionable)
+  >>> [x for x in sample.keys()]
+  [u'a', u'b']
+  
   
 The interesting test case is the reference that uses references outside
 the hierarchical ones, which should be naturally handled in Zope3:
@@ -75,7 +79,9 @@ Now we can put our example data under version control:
   >>> util.commit()
   >>> [IVersioned.providedBy(x) for x in (sample, a, b, c)]
   [True, True, True, True]
-    
+  >>> [x for x in sample.keys()]
+  [u'a', u'b']
+  
 
 The implementation in zope.app.versioncontrol breaks any database identity references
 because a pickle version is used that ignores all references that point
@@ -89,6 +95,8 @@ its reference to a because c is not contained in a. (See
   >>> new_a = accessVersion(repository, a)
   >>> new_b = accessVersion(repository, b)
   >>> new_c = accessVersion(repository, c)
+  >>> [x for x in sample.keys()]
+  [u'a', u'b']
 
 Now the reference from b to c is invalid ...
   
@@ -106,47 +114,110 @@ motivation for a new implementation.
 
 
 
-
-Alternative implementation
---------------------------
+A First Implementation
+======================
 
 We want to use versioning with objects other than standard zope objects that use
 only the standard containment structure meachanism. In the same time some parts
 of the versioning system should be pluggable, e.g. the storage for the object histories,
 the locking mechanism etc.
 
-We start with the basic building blocks, a storage that holds version histories
+Let's set up some initial content :
+
+    >>> a.text = "First text version of a"
+    >>> c.text = "First text version of c"
+
+To achieve this goal we refactored the components of the versioning system.
+Let's start with the basic building block, a storage that holds version histories
 of several objects. Note that this implementation does not collide with the
 implementation in zope.app.versioncontrol. This versioning scheme does not attach any
 information to the versioned objects and keeps the necessary bookeeping information 
 encapsulated in the storage of object histories.
 
+
     >>> from versioning.storage import SimpleHistoryStorage
-    >>> from versioning.policies import VersionableAspectsAdapter
     >>> histories = SimpleHistoryStorage()
+    
+The versioning system that puts object under versioning control must register
+the object in the histories storage (this will be called later on by
+IVersionControl.applyVersionControl) :
+
+    >>> histories.register(sample)
+    '\x00\x00\x00\x00\x00\x00\x00\x01'
     >>> histories.register(a)
     '\x00\x00\x00\x00\x00\x00\x00\x04'
     >>> histories.register(b)
     '\x00\x00\x00\x00\x00\x00\x00\x05'
+    >>> histories.register(c)
+    '\x00\x00\x00\x00\x00\x00\x00\t'
     >>> util.commit()
     >>> len(histories.values())
-    2
-    >>> [x for x in histories.keys()]
-    [u'\x00\x00\x00\x00\x00\x00\x00\x04', u'\x00\x00\x00\x00\x00\x00\x00\x05']
-    >>> adapter = VersionableAspectsAdapter(a, histories)
-    >>> adapter.writeAspects()
+    4
+    
+The SimpleHistoryStorage.register method copies nothing. The copy process is 
+managed by a multi adapter that implements a versioning policy, i.e. determines
+how and what is versioned. The implementation here uses zope.app.copypastemove 
+to save each version as a normal copy of the original content object.
+    
+    >>> from versioning.policies import VersionableAspectsAdapter
+    >>> def saveAsVersion(obj, histories) :       # a helper method XXX remove later
+    ...     adapter = VersionableAspectsAdapter(obj, histories)
+    ...     return adapter.writeAspects()
+    >>> saveAsVersion(sample, histories)
     '001'
+    >>> saveAsVersion(a, histories)
+    '001'
+    >>> saveAsVersion(b, histories)
+    '001'
+    >>> saveAsVersion(c, histories)
+    '001'
+    >>> version = histories[a._p_oid]['001']
+    >>> version.text
+    'First text version of a'
     
+Add some additional content versions :
+
+    >>> a.text = "Second text version of a"
+    >>> c.text = "Second text version of c"
+    >>> saveAsVersion(a, histories)
+    '002'
+    >>> version = histories[a._p_oid]['002']
+    >>> version.text
+    'Second text version of a'
+    >>> saveAsVersion(c, histories)
+    '002'
+
+Now let's update the original object with versioned data. This again is a matter
+of the policy. The simple implementation here replaces the original data
+with a copy of the versioned data. 
     
+    >>> def revertToVersion(obj, histories, selector) :
+    ...     adapter = VersionableAspectsAdapter(obj, histories)
+    ...     adapter.updateAspects(selector)
+    >>> revertToVersion(c, histories, '001')
+
+The fact that we used copies here requires 
+that we use new references that are established via traversal: 
+
+    >>> new_c = b["c"]
+    >>> new_c.text
+    'First text version of c'
+
+When we get back a version the reference to an old and untouced items is still
+intact :
     
-    
+    >>> new_c.refers_to == a
+    True
+   
+The more interesting case arises if we update the refered object too :
+   
+    >>> revertToVersion(a, histories, '001')
+    >>> new_a = sample["a"]
+    >>> new_c.refers_to == a
+    True
+    >>> new_c.refers_to == new_a
+    False
 
-
-
-    
-
-
-
-
+Depending on the use case this might be what you want. 
 
 
