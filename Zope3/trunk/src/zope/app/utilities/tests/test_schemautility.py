@@ -12,47 +12,50 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.3 2003/08/17 06:08:36 philikon Exp $
+$Id: test_schemautility.py,v 1.4 2003/09/25 16:56:42 sidnei Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
+
 from zope.app.utilities.schema import SchemaUtility
-from zope.schema import Text, getFieldsInOrder
+from zope.app.tests import setup
+from zope.schema import Text, getFieldNamesInOrder
 
 class SchemaUtilityTests(TestCase):
 
     def setUp(self):
+        setup.placefulSetUp()
         self.s = SchemaUtility()
         self.s.setName('IFoo')
         self.alpha = Text(title=u"alpha")
 
     def test_addField(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         self.assertEquals(
-            [('alpha', self.alpha)],
-            getFieldsInOrder(s))
+            [u'alpha',],
+            getFieldNamesInOrder(s))
 
     def test_addFieldInsertsAtEnd(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         beta = Text(title=u"Beta")
-        s.addField('beta', beta)
+        s.addField(u'beta', beta)
         self.assertEquals(
-            [('alpha', self.alpha),('beta', beta)],
-            getFieldsInOrder(s))
+            [u'alpha', u'beta'],
+            getFieldNamesInOrder(s))
 
     def test_removeField(self):
         s = self.s
-        s.addField('alpha', self.alpha)
-        s.removeField('alpha')
+        s.addField(u'alpha', self.alpha)
+        s.removeField(u'alpha')
         self.assertEquals(
             [],
-            getFieldsInOrder(s))
+            getFieldNamesInOrder(s))
 
     def test_addFieldCollision(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         self.assertRaises(KeyError, s.addField, 'alpha', self.alpha)
 
     def test_removeFieldNotPresent(self):
@@ -60,16 +63,16 @@ class SchemaUtilityTests(TestCase):
 
     def test_renameField(self):
         s = self.s
-        s.addField('alpha', self.alpha)
-        s.renameField('alpha', 'beta')
+        s.addField(u'alpha', self.alpha)
+        s.renameField(u'alpha', 'beta')
         self.assertEquals(
-            [('beta', self.alpha)],
-            getFieldsInOrder(s))
+            [u'beta'],
+            getFieldNamesInOrder(s))
 
     def test_renameFieldCollision(self):
         s = self.s
-        s.addField('alpha', self.alpha)
-        s.addField('beta', Text(title=u"Beta"))
+        s.addField(u'alpha', self.alpha)
+        s.addField(u'beta', Text(title=u"Beta"))
         self.assertRaises(KeyError, s.renameField, 'alpha', 'beta')
 
     def test_renameFieldNotPresent(self):
@@ -77,17 +80,16 @@ class SchemaUtilityTests(TestCase):
 
     def test_insertField(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         beta = Text(title=u"Beta")
-        s.insertField('beta', beta, 0)
+        s.insertField(u'beta', beta, 0)
         self.assertEquals(
-            [('beta', beta),
-             ('alpha', self.alpha)],
-            getFieldsInOrder(s))
+            [u'beta', u'alpha'],
+            getFieldNamesInOrder(s))
 
     def test_insertFieldCollision(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         beta = Text(title=u"Beta")
         self.assertRaises(KeyError, s.insertField, 'alpha', beta, 0)
 
@@ -95,69 +97,66 @@ class SchemaUtilityTests(TestCase):
         s = self.s
         gamma = Text(title=u"Gamma")
         # it's still possible to insert at beginning
-        s.insertField('gamma', gamma, 0)
+        s.insertField(u'gamma', gamma, 0)
         self.assertEquals(
-            [('gamma', gamma)],
-            getFieldsInOrder(s))
+            [u'gamma'],
+            getFieldNamesInOrder(s))
         # should be allowed to insert field at the end
-        s.insertField('alpha', self.alpha, 1)
+        s.insertField(u'alpha', self.alpha, 1)
         self.assertEquals(
-            [('gamma', gamma),
-             ('alpha', self.alpha)],
-            getFieldsInOrder(s))
+            [u'gamma', u'alpha'],
+            getFieldNamesInOrder(s))
         # should be allowed to insert field at the beginning still
         delta = Text(title=u"Delta")
-        s.insertField('delta', delta, 0)
+        s.insertField(u'delta', delta, 0)
         self.assertEquals(
-            [('delta', delta),
-             ('gamma', gamma),
-             ('alpha', self.alpha)],
-            getFieldsInOrder(s))
+            [u'delta', u'gamma', u'alpha'],
+            getFieldNamesInOrder(s))
 
     def test_insertFieldBeyondEnd(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         beta = Text(title=u"Beta")
         self.assertRaises(IndexError, s.insertField,
                           'beta', beta, 100)
 
     def test_insertFieldBeforeBeginning(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         beta = Text(title=u"Beta")
         self.assertRaises(IndexError, s.insertField,
                           'beta', beta, -1)
 
     def test_moveField(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         beta = Text(title=u'Beta')
-        s.addField('beta', beta)
+        s.addField(u'beta', beta)
         gamma = Text(title=u'Gamma')
-        s.addField('gamma', gamma)
-        s.moveField('beta', 3)
+        s.addField(u'gamma', gamma)
+        s.moveField(u'beta', 3)
         self.assertEquals(
-            [('alpha', self.alpha),
-             ('gamma', gamma),
-             ('beta', beta)],
-            getFieldsInOrder(s))
+            [u'alpha', u'gamma', u'beta'],
+            getFieldNamesInOrder(s))
 
     def test_moveFieldBeyondEnd(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         beta = Text(title=u"Beta")
-        s.addField('beta', beta)
+        s.addField(u'beta', beta)
         self.assertRaises(IndexError, s.moveField,
                           'beta', 100)
 
     def test_moveFieldBeforeBeginning(self):
         s = self.s
-        s.addField('alpha', self.alpha)
+        s.addField(u'alpha', self.alpha)
         beta = Text(title=u"Beta")
-        s.addField('beta', beta)
+        s.addField(u'beta', beta)
         self.assertRaises(IndexError, s.moveField,
                           'beta', -1)
 
+    def tearDown(self):
+        setup.placefulTearDown()
 
 def test_suite():
     return TestSuite(
