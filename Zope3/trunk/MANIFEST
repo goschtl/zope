@@ -549,6 +549,10 @@ src/zope/app/browser/skins/zopetop/standardmacros.py
 src/zope/app/browser/skins/zopetop/www/__init__.py
 src/zope/app/browser/skins/zopetop/www/add_more.gif
 src/zope/app/browser/skins/zopetop/www/arrowup.gif
+src/zope/app/browser/skins/zopetop/www/bg_bar.jpg
+src/zope/app/browser/skins/zopetop/www/bg_content.jpg
+src/zope/app/browser/skins/zopetop/www/bg_root_folder.jpg
+src/zope/app/browser/skins/zopetop/www/bg_top.jpg
 src/zope/app/browser/skins/zopetop/www/closed_folder.gif
 src/zope/app/browser/skins/zopetop/www/control_panels.gif
 src/zope/app/browser/skins/zopetop/www/control_panels_folder.gif
@@ -575,6 +579,7 @@ src/zope/app/browser/skins/zopetop/www/website_settings.gif
 src/zope/app/browser/skins/zopetop/www/widget_macros.pt
 src/zope/app/browser/skins/zopetop/www/x.gif
 src/zope/app/browser/skins/zopetop/www/zmi_stylesheet.css
+src/zope/app/browser/skins/zopetop/www/zope3logo.jpg
 src/zope/app/browser/skins/zopetop/www/zopetop_scripts.js
 src/zope/app/browser/skins/zopetop/www/zopetopbasic.css
 src/zope/app/browser/skins/zopetop/www/zopetopstructure.css
