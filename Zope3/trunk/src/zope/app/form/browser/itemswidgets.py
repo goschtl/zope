@@ -536,7 +536,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
 
 class MultiSelectWidget(ItemsMultiEditWidgetBase):
     """Provide a selection list for the list to be selected."""
-    
+
 
 class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
     """A multi-selection widget with ordering support."""
@@ -553,7 +553,7 @@ class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
         return [{'text': self.textForValue(term), 'value': term.token}
                 for term in self.vocabulary
                 if term.value not in available_values]
-        
+
     def selected(self):
         """Return a list of tuples (text, value) that are selected."""
         # Get form values
@@ -564,15 +564,15 @@ class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
             for value in self.context.get(self.context.context):
                 if value not in values:
                     values.append(value)
-                
+
         terms = [self.vocabulary.getTerm(value)
                  for value in values]
         return [{'text': self.textForValue(term), 'value': term.token}
                 for term in terms]
-    
+
     def __call__(self):
         return self.template()
-    
+
 
 class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
     """Provide a list of checkboxes that provide the choice for the list."""
@@ -608,4 +608,3 @@ class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
                              value=value,
                              checked="checked")
         return self._joinButtonToMessageTemplate %(elem, text)
-
