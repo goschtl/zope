@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Base Mix-in class for Placeful Setups 
 
-Revision information:
-$Id: placefulsetup.py,v 1.26 2003/06/12 18:48:02 gvanrossum Exp $
+$Id: placefulsetup.py,v 1.27 2003/07/31 21:35:16 srichter Exp $
 """
-
 from zope.app import zapi
 from zope.app.tests import setup
 from zope.app.tests.placelesssetup import PlacelessSetup
