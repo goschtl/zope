@@ -90,8 +90,31 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         self.failUnless(the_view is views[the_view_name])
 
 
+class TestViewZPTUsage(PlacefulSetup, unittest.TestCase):
+
+    def setUp(self):
+        PlacefulSetup.setUp(self)
+        self.context = C1()
+        self.context.request = None
+
+    def checkInitWithUsage(self):
+        self.t = ViewPageTemplateFile('testusage.pt', usage="test")
+        result = self.t(self.context)
+        self.assertEquals(result, "<html><body>test</body></html>")
+        result = self.t(self.context, template_usage="other")
+        self.assertEquals(result, "<html><body>other</body></html>")
+
+    def checkInitWithoutUsage(self):
+        self.t = ViewPageTemplateFile('testusage.pt')
+        result = self.t(self.context)
+        self.assertEquals(result, "<html><body></body></html>")
+        result = self.t(self.context, template_usage="other")
+        self.assertEquals(result, "<html><body>other</body></html>")
+
+
 def test_suite():
     return unittest.makeSuite(TestViewZPT, 'check')
+    return unittest.makeSuite(TestViewZPTUsage, 'check')
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(test_suite())

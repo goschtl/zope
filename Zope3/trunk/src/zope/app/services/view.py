@@ -12,9 +12,7 @@
 #
 ##############################################################################
 """View Service
-
-
-$Id: view.py,v 1.13 2003/03/23 22:35:41 jim Exp $
+$Id: view.py,v 1.14 2003/03/25 11:23:09 gotcha Exp $
 """
 __metaclass__ = type
 
@@ -346,5 +344,7 @@ class BoundTemplate:
         self.template = template
         self.view = view
 
-    def __call__(self, *args, **kw):
+    def __call__(self, template_usage=u'', *args, **kw):
+        if not template_usage:
+            kw["template_usage"] = template_usage
         return self.template.render(self.view, *args, **kw)

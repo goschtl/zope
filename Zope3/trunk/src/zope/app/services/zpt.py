@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.7 2003/03/11 16:11:22 jim Exp $
+$Id: zpt.py,v 1.8 2003/03/25 11:23:09 gotcha Exp $
 """
 
 import re
@@ -46,6 +46,22 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent):
         lambda self, text: self.pt_edit(text.encode('utf-8'), self.contentType)
         )
 
+    def setUsage(self, usage):
+        self._usage = usage
+
+    def getUsage(self):
+        usage = ''
+        if hasattr(self, "_usage"):
+            usage = self._usage
+        return usage
+
+    usage = property(
+        # get
+        getUsage,
+        # set
+        setUsage
+        )
+
     def pt_getContext(self, view, **_kw):
         # instance is a View component
         namespace = super(ZPTTemplate, self).pt_getContext(**_kw)
@@ -58,6 +74,8 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent):
 
         if args:
             args = ProxyFactory(args)
+        if not hasattr(keywords, "template_usage"):
+            keywords["template_usage"] = view.request.get("template_usage", self.usage)
         kw = ProxyFactory(keywords)
 
         namespace = self.pt_getContext(view, args=args, options=kw)

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: simpleviewclass.py,v 1.3 2003/01/31 10:46:18 alga Exp $
+$Id: simpleviewclass.py,v 1.4 2003/03/25 11:23:08 gotcha Exp $
 """
 
 import sys
@@ -40,17 +40,17 @@ class simple(ContextAware, BrowserView):
     def __getitem__(self, name):
         return self.index.macros[name]
 
-    def __call__(self, *args, **kw):
-        return self.index(self.request, *args, **kw)
+    def __call__(self, template_usage=u'', *args, **kw):
+        return self.index(template_usage, *args, **kw)
 
-def SimpleViewClass(src, offering=None, used_for=None, bases=()):
+def SimpleViewClass(src, offering=None, used_for=None, bases=(), usage=u''):
     if offering is None:
         offering = sys._getframe(1).f_globals
 
     bases += (simple, )
 
     class_ = type("SimpleViewClass from %s" % src, bases,
-                  {'index': ViewPageTemplateFile(src, offering)})
+                  {'index': ViewPageTemplateFile(src, offering, usage)})
 
     if used_for is not None:
         class_.__used_for__ = used_for
