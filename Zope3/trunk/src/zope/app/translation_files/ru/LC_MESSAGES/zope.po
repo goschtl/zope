@@ -1022,7 +1022,7 @@ msgstr ""
 #: src/zope/app/schema/browser/schema_edit.pt:20
 #: src/zope/app/zptpage/browser/inlinecode.pt:49
 msgid "There are ${num_errors} input errors."
-msgstr ""
+msgstr "Обнаружено ошибок при вводе: ${num_errors}"
 
 #: src/zope/app/form/browser/add.py:61
 #: src/zope/app/form/browser/editview.py:106
@@ -1030,7 +1030,7 @@ msgstr ""
 #: src/zope/app/schema/browser/__init__.py:64
 #: src/zope/app/schema/browser/__init__.py:70
 msgid "An error occured."
-msgstr ""
+msgstr "Ошибка"
 
 # Default: "Previous"
 #: src/zope/app/form/browser/addwizard.pt:59
