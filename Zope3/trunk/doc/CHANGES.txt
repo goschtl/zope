@@ -10,6 +10,14 @@ Zope Changes
 
     New features
 
+    - Hard restart and shutdown works now. A utility is used to do the work
+      and is server specific. So if someone uses Twisted instead of
+      zope.server they just need to provide their own implementation of the
+      utility. 
+
+    - You can run Zope 3 using zdaemon now. Thanks to Chris McDonough for his
+      help there. Just use 'make runners' and start with 'bin/zopectl start'.   
+
     - http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions
 
       - Added ZCML to create subscription adapters by creating a new
@@ -182,6 +190,10 @@ Zope Changes
       LocationProxies for all adapters which do not implement ILocation itself.
 
     Restructuring
+
+    - The application control has been cleanup to mostly use views and not do
+      the adapter redirection. Only the runtime info control still uses an
+      adapter, since its information might be otherwise useful.
 
     - Modernized File and Image (as well as their I18n equivalent) to use
       schemas. I also removed a lot of unnecessary methods in the objects and
