@@ -53,6 +53,13 @@ class TestDSNParser(unittest.TestCase):
                   'host': '', 'port': ''}
         self.assertEqual(result, parseDSN(dsn))
 
+
+    def testUserPasswordAndHostWithoutPort(self):
+        dsn = 'dbi://mike:muster@bohr/test'
+        result = {'parameters': {}, 'dbname': 'test', 'username': 'mike',
+                  'password': 'muster', 'host': 'bohr', 'port': ''}
+        self.assertEqual(result, parseDSN(dsn))
+
     def testAllOptions(self):
         dsn = 'dbi://mike:muster@bohr:5432/test'
         result = {'parameters': {}, 'dbname': 'test', 'username': 'mike',
