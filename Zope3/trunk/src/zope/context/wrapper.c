@@ -644,7 +644,7 @@ wrap_dealloc(PyObject *self)
  * If argument search_wrappertype is nonzero, we can look in WrapperType.
  */
 PyObject *
-WrapperType_Lookup(PyTypeObject *type, PyObject *name, int search_wrappertype)
+WrapperType_Lookup(PyTypeObject *type, PyObject *name)
 {
     int i, n;
     PyObject *mro, *res, *base, *dict;
@@ -659,13 +659,19 @@ WrapperType_Lookup(PyTypeObject *type, PyObject *name, int search_wrappertype)
         return NULL;
 
     assert(PyTuple_Check(mro));
-    n = PyTuple_GET_SIZE(mro);
+
+    n = PyTuple_GET_SIZE(mro) 
+      - 1; /* We don't want to look at the last item, which is object. */
 
     for (i = 0; i < n; i++) {
         base = PyTuple_GET_ITEM(mro, i);
 
-        if (((PyTypeObject *)base) != &ProxyType &&
-            (((PyTypeObject *)base) != &WrapperType || search_wrappertype)) {
+        if (
+            ((PyTypeObject *)base) != &ProxyType 
+            &&
+            ((PyTypeObject *)base) != &WrapperType
+            
+            ) {
             if (PyClass_Check(base))
                 dict = ((PyClassObject *)base)->cl_dict;
             else {
@@ -718,22 +724,12 @@ wrap_getattro(PyObject *self, PyObject *name)
             name_as_string);
         goto finally;
     }
+
     maybe_special_name = name_as_string[0] == '_' && name_as_string[1] == '_';
 
     if (!(maybe_special_name && strcmp(name_as_string, "__class__") == 0)) {
 
-        descriptor = WrapperType_Lookup(
-                self->ob_type, name,
-                (maybe_special_name &&
-                 (
-                  strcmp(name_as_string, "__reduce__") == 0
-                  ||
-                  strcmp(name_as_string, "__reduce_ex__") == 0
-                  ||
-                  strcmp(name_as_string, "__providedBy__") == 0
-                  )
-                 )
-                 );
+        descriptor = WrapperType_Lookup(self->ob_type, name);
 
         if (descriptor != NULL) {
             if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS)
@@ -797,7 +793,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
     else
         Py_INCREF(name);
 
-    descriptor = WrapperType_Lookup(self->ob_type, name, 0);
+    descriptor = WrapperType_Lookup(self->ob_type, name);
     if (descriptor != NULL) {
         if (PyType_HasFeature(descriptor->ob_type, Py_TPFLAGS_HAVE_CLASS) &&
             descriptor->ob_type->tp_descr_set != NULL) {
@@ -926,7 +922,7 @@ wrap_nonzero(PyObject *self)
                      );
             return -1;
     }
-    descriptor = WrapperType_Lookup(self->ob_type, SlotStrings[LEN_IDX], 0);
+    descriptor = WrapperType_Lookup(self->ob_type, SlotStrings[LEN_IDX]);
     if (descriptor != NULL) {
         /* There's a __len__ defined in a wrapper subclass, so we need
          * to call that.
@@ -1091,53 +1087,6 @@ wrap_str(PyObject *self) {
     return PyObject_Str(wrapped);
 }
 
-/*
- * Normal methods
- */
-
-static char
-reduce__doc__[] =
-"__reduce__()\n"
-"Raise an exception; this prevents wrappers from being picklable by\n"
-"default, even if the underlying object is picklable.";
-
-static char
-reduce_ex__doc__[] =
-"__reduce_ex__()\n"
-"Raise an exception; this prevents wrappers from being picklable by\n"
-"default, even if the underlying object is picklable.";
-
-static PyObject *
-wrap_reduce(PyObject *self, PyObject *ignored_args)
-{
-    PyObject *pickle_error = NULL;
-    PyObject *pickle = PyImport_ImportModule("pickle");
-
-    if (pickle == NULL)
-        PyErr_Clear();
-    else {
-        pickle_error = PyObject_GetAttrString(pickle, "PicklingError");
-        if (pickle_error == NULL)
-            PyErr_Clear();
-    }
-    if (pickle_error == NULL) {
-        pickle_error = PyExc_RuntimeError;
-        Py_INCREF(pickle_error);
-    }
-    PyErr_SetString(pickle_error,
-                    "Wrapper instances cannot be pickled.");
-    Py_DECREF(pickle_error);
-    return NULL;
-}
-
-static PyMethodDef
-wrap_methods[] = {
-    {"__reduce__", (PyCFunction)wrap_reduce, METH_VARARGS, reduce__doc__},
-    {"__reduce_ex__", (PyCFunction)wrap_reduce, METH_VARARGS, 
-      reduce_ex__doc__},
-    {NULL, NULL},
-};
-
 static PySequenceMethods
 wrap_as_sequence = {
     wrap_length,				/* sq_length */
@@ -1236,7 +1185,7 @@ WrapperType = {
     0,							/* tp_weaklistoffset */
     wrap_iter,						/* tp_iter */
     wrap_iternext,					/* tp_iternext */
-    wrap_methods,					/* tp_methods */
+    0,							/* tp_methods */
     0,							/* tp_members */
     0,							/* tp_getset */
     0,							/* tp_base */
@@ -1686,16 +1635,7 @@ static PyObject *api_object = NULL;
 void
 initwrapper(void)
 {
-    PyObject *m, *descr;
-
-    /* Get the __providedBy__ descr */
-    m = PyImport_ImportModule("zope.context.declarations");
-    if (m == NULL)
-        return;
-    descr = PyObject_GetAttrString(m, "decoratorSpecificationDescriptor");
-    Py_DECREF(m);
-    if (descr == NULL) 
-        return;
+    PyObject *m;
     
 
     if (Proxy_Import() < 0)
@@ -1720,10 +1660,6 @@ initwrapper(void)
     WrapperType.tp_alloc = PyType_GenericAlloc;
     WrapperType.tp_free = _PyObject_GC_Del;
     if (PyType_Ready(&WrapperType) < 0)
-        return;
-
-    /* Install the __providedBy__ descr */
-    if (PyDict_SetItemString(WrapperType.tp_dict, "__providedBy__", descr) < 0)
         return;
 
     Py_INCREF(&WrapperType);
