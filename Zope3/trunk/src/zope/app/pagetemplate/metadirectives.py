@@ -14,7 +14,7 @@
 """ZCML configuration directives for configuring the default zope:
 namespace in TALES.
 
-$Id: metadirectives.py,v 1.1 2003/08/03 20:43:35 philikon Exp $
+$Id: metadirectives.py,v 1.2 2004/03/04 02:10:09 philikon Exp $
 """
 
 from zope.interface import Interface
@@ -44,5 +44,22 @@ class INamespaceDirective(Interface):
         This is an interface that the namespace must provide.  we'll
         get the namespace by getting an adapter for this
         interface.""",
+        required=True
+        )
+
+class IExpressionTypeDirective(Interface):
+    """Register a new TALES expression type"""
+
+    name = TextLine(
+        title=u"Name",
+        description=u"""Name of the expression. This will also be used
+        as the prefix in actual TALES expressions.""",
+        required=True
+        )
+
+    handler = GlobalObject(
+        title=u"Handler",
+        description=u"""Handler is class that implements
+        zope.tales.interfaces.ITALESExpression.""",
         required=True
         )

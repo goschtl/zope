@@ -14,7 +14,7 @@
 """ZCML configuration directives for configuring the default zope:
 namespace in TALES.
 
-$Id: metaconfigure.py,v 1.4 2003/09/16 22:04:17 srichter Exp $
+$Id: metaconfigure.py,v 1.5 2004/03/04 02:10:09 philikon Exp $
 """
 from zope.app.pagetemplate.engine import Engine
 from zope.testing.cleanup import addCleanUp
@@ -27,4 +27,18 @@ def namespace(_context, prefix, interface):
         args = (prefix, lambda ob: getAdapter(ob, interface)),
         )
 
+def expressiontype(_context, name, handler):
+    _context.action(
+        discriminator = ("tales:expressiontype", name),
+        callable = Engine.registerType,
+        args = (name, handler)
+        )
+
+
+def clearExprTypes():
+    import zope.app.pagetemplate.engine
+    from zope.app.pagetemplate.engine import _Engine
+    zope.app.pagetemplate.engine.Engine = _Engine()
+
 addCleanUp(Engine.namespaces.clear)
+addCleanUp(clearExprTypes)

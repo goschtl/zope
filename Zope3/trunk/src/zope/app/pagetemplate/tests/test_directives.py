@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.8 2003/11/27 13:59:22 philikon Exp $
+$Id: test_directives.py,v 1.9 2004/03/04 02:10:10 philikon Exp $
 """
 
 import unittest
@@ -24,6 +24,7 @@ from zope.interface import Interface, implements
 from zope.app.tests import ztapi
 
 import zope.app.pagetemplate
+from zope.app.pagetemplate.engine import Engine
 
 from zope.app.interfaces.traversing import ITraversable
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -33,10 +34,6 @@ template = """<configure
    xmlns:tales='http://namespaces.zope.org/tales'>
    %s
    </configure>"""
-
-
-def definePermissions():
-    XMLConfig('meta.zcml', zope.app.pagetemplate)()
 
 
 class I(Interface):
@@ -54,37 +51,47 @@ class Adapter:
     def traverse(self, name, *args):
         return getattr(self, name)
 
-class Test(PlacelessSetup, unittest.TestCase):
+class Handler:
+    pass
 
-    # XXX: tests for other directives needed
+class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
         XMLConfig('meta.zcml', zope.app.pagetemplate)()
 
     def testTalesAPI1(self):
-        from zope.app.pagetemplate.engine import Engine
-
         ztapi.provideAdapter(None, I, Adapter)
 
         xmlconfig(StringIO(template % (
             """
-            <tales:namespace 
+            <tales:namespace
               prefix="zope"
               interface="zope.app.pagetemplate.tests.test_directives.I"
               />
             """
             )))
 
-
         e = Engine.compile('context/zope:title')
-        res = e(Engine.getContext(context = None))
+        res = e(Engine.getContext(context=None))
 
         self.assertEqual(res, '42')
 
+    def testExpressionType(self):
+        xmlconfig(StringIO(template % (
+            """
+            <tales:expressiontype
+              name="test"
+              handler="zope.app.pagetemplate.tests.test_directives.Handler"
+              />
+            """
+            )))
+        self.assert_("test" in Engine.getTypes())
+        self.assert_(Handler is Engine.getTypes()['test'])
 
 def test_suite():
     loader=unittest.TestLoader()
     return loader.loadTestsFromTestCase(Test)
+
 if __name__=='__main__':
     unittest.TextTestRunner().run(test_suite())
