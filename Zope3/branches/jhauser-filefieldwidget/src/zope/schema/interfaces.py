@@ -19,6 +19,7 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope.schema._bootstrapfields import Field, Text, TextLine, Bool, Int
 from zope.schema._bootstrapfields import Container, Iterable
+from zope.schema._bootstrapfields import MimeData, MimeDataEncoding, MimeType
 
 from zope.i18nmessageid import MessageIDFactory
 _ = MessageIDFactory("zope")
@@ -274,8 +275,7 @@ class IBytes(IMinMaxLen, IIterable, IField):
     The value might be constrained to be with length limits.
     """
 
-class IMime(IField):
-    u"""Field describing the subwidgets of IMime used in IFile."""
+
 
 # TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
 class IMimeData(IBytes):
@@ -291,6 +291,35 @@ class IMimeDataEncoding(IBytes):
 # TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
 class IMimeType(IBytes):
     u"""Field containing the mime-type for a file."""
+
+class IMime(IField):
+    u"""Field describing the subwidgets of IMime used in IFile."""
+
+    contentType = MimeType(
+        title = _(u'Content type'),
+        description=_(u'The content type identifies the type of data.'),
+        default='',
+        required=False,
+        missing_value=''
+        )
+
+    encoding = MimeDataEncoding(
+        title = _(u'Encoding type'),
+        description=_(u'The encoding of the data if it is text.'),
+        default='',
+        required=False,
+        missing_value=''
+        )
+
+    data = MimeData (
+        title=_(u'Data'),
+        description=_(u'The actual content of the file.'),
+        default='',
+        missing_value='',
+        required=False,
+        )
+
+
     
 class IASCII(IBytes):
     u"""Field containing a 7-bit ASCII string. No characters > DEL
@@ -438,6 +467,24 @@ class IObject(IField):
 
     schema = Attribute("schema",
         _(u"The Interface that defines the Fields comprising the Object."))
+
+class ISchema(IField):
+    u"""Field containing an schema descriping the fields.
+    
+    This is like a IObject field which defines and handles the factory itself.
+    The Schema field is used for Object values. It gives a powerfull bridge
+    to not only attributes as values. This makes it possible to define a simply
+    interface schema for schema based values.
+    """
+
+    interface = Attribute("interface",
+        _(u"The Interface that defines the Fields comprising the Object."))
+
+    factoryId = TextLine(
+        title=u"factoryId",
+        description=(u"The factory id which is used for to initalize the object."),
+        required=False,
+        default=None)
 
 class IDict(IMinMaxLen, IIterable, IContainer):
     u"""Field containing a conventional dict.

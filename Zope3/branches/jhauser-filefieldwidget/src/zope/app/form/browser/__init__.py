@@ -29,6 +29,9 @@ from zope.app.form.browser.textwidgets import DatetimeDisplayWidget
 from zope.app.form.browser.textwidgets import DateDisplayWidget
 from zope.app.form.browser.textwidgets import BytesDisplayWidget
 
+# Widgets for schema-based fields
+from zope.app.form.browser.schemawidgets import SchemaWidget
+
 # Widgets for file-based fields
 from zope.app.form.browser.filewidgets import FileWidget
 from zope.app.form.browser.filewidgets import MimeWidget

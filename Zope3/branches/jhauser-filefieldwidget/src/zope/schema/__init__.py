@@ -23,6 +23,7 @@ from zope.schema._field import Text, TextLine, Bool, Int, Float
 from zope.schema._field import Tuple, List, Set
 from zope.schema._field import Password, Dict, Datetime, Date, SourceText
 from zope.schema._field import Object, URI, Id, DottedName
+from zope.schema._field import Schema
 from zope.schema._field import InterfaceField
 from zope.schema._schema import getFields, getFieldsInOrder
 from zope.schema._schema import getFieldNames, getFieldNamesInOrder

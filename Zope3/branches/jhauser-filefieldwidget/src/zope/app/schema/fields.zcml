@@ -264,6 +264,19 @@
 
   </content>
 
+  <content class="zope.schema.Schema">
+
+    <factory
+	id="zope.schema.Schema"
+	title="Schema Field"
+	description="Schema Field" />
+
+    <require
+       permission="zope.ManageContent"
+       interface="zope.schema.interfaces.ISchema" />
+
+  </content>
+
   <content class="zope.schema.URI">
 
     <factory

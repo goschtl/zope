@@ -19,6 +19,7 @@ __docformat__ = 'restructuredtext'
 
 from zope.schema import Bytes
 from zope.schema import Mime, MimeData, MimeDataEncoding, MimeType
+from zope.schema import Schema
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _
 
@@ -89,7 +90,7 @@ class IMime(Interface):
 
 class IFile(Interface):
 
-    contents = Mime(
+    contents = Schema(IMime, "zope.app.file.Mime",
         title = _(u'The file data'),
         description = _(u'The mime information and file data, which can be '
                          'read as a file.'),

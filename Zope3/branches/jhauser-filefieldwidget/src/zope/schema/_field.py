@@ -33,6 +33,7 @@ from zope.schema.interfaces import IMime, IMimeData, IMimeDataEncoding, IMimeTyp
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate
+from zope.schema.interfaces import ISchema
 from zope.schema.interfaces import IURI, IId, IFromUnicode
 from zope.schema.interfaces import ISource, IVocabulary
 
@@ -47,6 +48,7 @@ from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
 from zope.schema._bootstrapfields import MinMaxLen
 from zope.schema._bootstrapfields import Text, TextLine, Bool, Int, Password
 from zope.schema._bootstrapfields import MinMaxLen, ValidatedProperty
+from zope.schema._bootstrapfields import MimeData, MimeDataEncoding, MimeType
 from zope.schema.fieldproperty import FieldProperty
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
@@ -67,6 +69,9 @@ classImplements(TextLine, ITextLine)
 classImplements(Password, IPassword)
 classImplements(Bool, IBool)
 classImplements(Int, IInt)
+classImplements(MimeData, IMimeData)
+classImplements(MimeDataEncoding, IMimeDataEncoding)
+classImplements(MimeType, IMimeType)
 
 
 class SourceText(Text):
@@ -119,116 +124,6 @@ class Mime(Field):
         errors = _validate_fields(self.schema, value)
         if errors:
             raise WrongContainedType(errors)
-
-
-class MimeData(Field):
-    __doc__ = IMimeData.__doc__
-    implements(IMimeData)
-
-    def set(self, obj, value):
-        """
-        Do a two phase save, first create an empty file-like object, make it
-        persistent, than read the data into it in chunks, to reduce memory
-        consumption.
-
-        'value' is a file-like, most often an FileUpload() object.
-        """
-        if self.readonly:
-            raise TypeError("Can't set values on read-only fields "
-                            "(name=%s, class=%s.%s)"
-                            % (self.__name__,
-                               obj.__class__.__module__,
-                               obj.__class__.__name__))
-        # now create an empty file object and store it at the persistent object
-        setattr(obj, self.__name__, MimeData())
-        file = getattr(obj, self.__name__)
-        # now do the upload in chunks
-        file.data = value
-        # save additional information 
-        file.filename = self._extractFilename(value)
-        small_body = file.read(64)
-        file.seek(0) # XXX needed?
-        file.contentType = guess_content_type(name=file.filename, body=small_body)
-
-    def _validate(self, value):
-        # just test that there is a read method, more is not needed.
-        if getattr(value, 'read',''):
-            return
-        super(Bytes, self)._validate(value)
-
-    def _validate(self, value):
-        if self._type is not None and not isinstance(value, self._type):
-            raise WrongType(value, self._type)
-
-        if not self.constraint(value):
-            raise ConstraintNotSatisfied(value)
-
-    def _extractFilename(self, data):
-        # if it is a fileupload object
-        if hasattr(data,'filename'):
-            fid = data.filename
-            # sometimes the full pathname is included
-            fid=fid[max(fid.rfind('/'),
-                        fid.rfind('\\'), # escaped backslash
-                        fid.rfind(':'))+1:]
-            return fid
-        else:
-            return ''
-
-
-# TODO: add encodng vocabulary for selecting possible mime-types
-class MimeDataEncoding(Field):
-    __doc__ = IMimeDataEncoding.__doc__
-    implements(IMimeDataEncoding, IFromUnicode)
-
-    _type = str
-
-    def fromUnicode(self, u):
-        """
-        >>> b = Bytes(constraint=lambda v: 'x' in v)
-
-        >>> b.fromUnicode(u" foo x.y.z bat")
-        ' foo x.y.z bat'
-        >>> b.fromUnicode(u" foo y.z bat")
-        Traceback (most recent call last):
-        ...
-        ConstraintNotSatisfied:  foo y.z bat
-
-        """
-        v = str(u)
-        self.validate(v)
-        return v
-
-    def constraint(self, value):
-        return '\n' not in value
-
-
-# TODO: perhaps add mime-type vocabulary for possible mime-types.
-# If so, we need also to list the mime-types from the python lib mimetypes
-class MimeType(Field):
-    __doc__ = IMimeType.__doc__
-    implements(IMimeType, IFromUnicode)
-
-    _type = str
-
-    def fromUnicode(self, u):
-        """
-        >>> b = Bytes(constraint=lambda v: 'x' in v)
-
-        >>> b.fromUnicode(u" foo x.y.z bat")
-        ' foo x.y.z bat'
-        >>> b.fromUnicode(u" foo y.z bat")
-        Traceback (most recent call last):
-        ...
-        ConstraintNotSatisfied:  foo y.z bat
-
-        """
-        v = str(u)
-        self.validate(v)
-        return v
-
-    def constraint(self, value):
-        return '\n' not in value
 
 
 class ASCII(Bytes):
@@ -539,6 +434,34 @@ class Object(Field):
         
     def _validate(self, value):
         super(Object, self)._validate(value)
+        
+        # schema has to be provided by value
+        if not self.schema.providedBy(value):
+            raise SchemaNotProvided
+            
+        # check the value against schema
+        errors = _validate_fields(self.schema, value)
+        if errors:
+            raise WrongContainedType(errors)
+
+
+class Schema(Field):
+    __doc__ = ISchema.__doc__
+    implements(ISchema)
+
+    schema = None
+    factoryId = None
+
+    def __init__(self, schema, factoryId, **kw):
+        if not IInterface.providedBy(schema):
+            raise WrongType
+            
+        self.schema = schema
+        self.factoryId = factoryId
+        super(Schema, self).__init__(**kw)
+        
+    def _validate(self, value):
+        super(Schema, self)._validate(value)
         
         # schema has to be provided by value
         if not self.schema.providedBy(value):
