@@ -12,11 +12,15 @@
 # 
 ##############################################################################
 """
-
-$Id: IServiceAdding.py,v 1.2 2002/06/24 16:18:50 srichter Exp $
+$Id: Adding.py,v 1.1 2002/06/24 16:18:50 srichter Exp $
 """
 
-from Zope.App.OFS.Container.IAdding import IAdding
+from Zope.App.OFS.Container.Views.Browser.Adding import Adding as ContentAdding
 
-class IServiceAdding(IAdding):
-    pass
+class ConnectionAdding(ContentAdding):
+    """Adding component for service containers
+    """
+    
+    menu_id = "add_connection"
+
+__doc__ = ConnectionAdding.__doc__ + __doc__

@@ -9,6 +9,8 @@
 
 <include package=".LocalEventService" />
 
+<include package=".ConnectionService" />
+
 <include package=".RoleService" />
 
 </zopeConfigure>

@@ -11,12 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"""XXX short summary goes here.
+
+XXX longer description goes here.
+
+$Id: __init__.py,v 1.1 2002/06/24 16:18:50 srichter Exp $
 """
 
-$Id: IServiceAdding.py,v 1.2 2002/06/24 16:18:50 srichter Exp $
-"""
 
-from Zope.App.OFS.Container.IAdding import IAdding
 
-class IServiceAdding(IAdding):
-    pass
+
+    

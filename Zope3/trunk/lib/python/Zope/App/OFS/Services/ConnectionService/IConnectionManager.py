@@ -12,11 +12,12 @@
 # 
 ##############################################################################
 """
-
-$Id: IServiceAdding.py,v 1.2 2002/06/24 16:18:50 srichter Exp $
+$Id: IConnectionManager.py,v 1.1 2002/06/24 16:18:50 srichter Exp $
 """
+from Zope.App.OFS.Container.IContainer import IContainer
+from Zope.App.RDB.IConnectionService import IConnectionService
 
-from Zope.App.OFS.Container.IAdding import IAdding
+class IConnectionManager(IContainer, IConnectionService):
+    """TTW object that manages RDBMS connections"""
 
-class IServiceAdding(IAdding):
-    pass
+__doc__ = IConnectionManager.__doc__ + __doc__

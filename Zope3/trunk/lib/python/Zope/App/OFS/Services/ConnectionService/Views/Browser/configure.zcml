@@ -1,0 +1,42 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <browser:defaultView 
+     for="Zope.App.OFS.Services.ConnectionService.IConnectionManager."
+     name="index.html"
+     />
+
+  <browser:view 
+     for="Zope.App.RDB.IConnectionService."
+     permission="Zope.ManageServices" 
+     factory="Zope.App.OFS.Container.Views.Browser.Contents."
+     >
+
+    <browser:page name="index.html"
+                  attribute="index"
+                  />
+
+  </browser:view> 
+
+  <browser:menu id="add_connection"
+                title="Add an RDBMS Connection"/>
+
+  <browser:view 
+     name="+"
+     permission="Zope.ManageServices" 
+     for="Zope.App.OFS.Services.ConnectionService.IConnectionManager."
+     factory=".Adding.ConnectionAdding">
+
+    <browser:page name="index.html"  attribute="index"  />
+    <browser:page name="action.html" attribute="action" />
+
+  </browser:view> 
+  
+  <browser:menuItems menu="zmi_views" 
+    for="Zope.App.OFS.Services.ConnectionService.IConnectionManager.">
+    <browser:menuItem title="Contents" action="@@index.html"/>
+  </browser:menuItems>
+
+</zopeConfigure>
