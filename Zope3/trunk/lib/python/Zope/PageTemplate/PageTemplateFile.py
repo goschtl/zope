@@ -16,9 +16,9 @@
 Zope object encapsulating a Page Template from the filesystem.
 """
 
-__metatype__ = type
+__metaclass__ = type
 
-__version__ = '$Revision: 1.4 $'[11:-2]
+__version__ = '$Revision: 1.5 $'[11:-2]
 
 import os, sys
 from zLOG import LOG, ERROR, INFO
