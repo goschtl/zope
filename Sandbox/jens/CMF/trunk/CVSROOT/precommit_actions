@@ -6,41 +6,13 @@
 # is the repository root dir.
 
 # Expected Arguments:
-#  $1  - comma-separated list of actions to be performed.  No whitespace!
-#  $2  - the directory of the corresponding cvs repository for the checkins.
-#  $3- - the names of the files being committed, from the working directory.
-
-# Currently implemented actions:
-#
-# 'group' - enable group write on files being checked in.
-# 'rsync' - invoke rsync mirroring to remote repository.
-# 'test' - available for use in testing the precommit_actions scheme.
+#  $1  - the directory of the corresponding cvs repository for the checkins.
+#  $2- - the names of the files being committed, from the working directory.
 
 SCRIPT="$0"
-ACTIONS="$1"; shift
 REPOSITORY="$1"; shift
 FILES="$@"
 
-DO_GROUP=""
-DO_RSYNC=""
-DO_TEST=""
+echo script: $SCRIPT repo: $REPOSITORY files: $FILES
 
-parse_actions () {
-  # Distinguish the specified actions.
-  wasIFS="$IFS"
-  IFS=",$ifs"
-  for a in $1 ; do
-    case $a in
-      test ) DO_TEST=1;;
-      group ) DO_GROUP=1;;
-      rsync ) DO_RSYNC=1;;
-      * ) echo $SCRIPT - unrecognized action - $a;;
-    esac
-  done
-  IFS="$wasIFS"
-}
-parse_actions $ACTIONS
-
-if [ -n "$DO_GROUP" ]; then
-  /bin/chmod g+w $FILES
-fi
+#/bin/chmod g+w $FILES
