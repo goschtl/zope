@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.12 2003/06/11 17:21:55 gvanrossum Exp $
+$Id: cache.py,v 1.13 2003/06/11 19:24:22 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -51,6 +51,10 @@ class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
         #     __init__ with respect to calling
         #     super(ClassName, self).__init__(*args, **kw), then we can
         #     replace the following with just a call to super.
+        # XXX Disagree.  __init__ doesn't always have the same signature,
+        #     hence cllaborative super doesn't apply to __init__, at least
+        #     not in general.  (It may work by convention for Fields.)
+        #     --Guido
         Persistent.__init__(self)
         ServiceSubscriberEventChannel.__init__(self)
         NameComponentConfigurable.__init__(self)
