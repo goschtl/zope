@@ -33,14 +33,14 @@
 <!--#/if sequence-item-->
 <!--#/in manage_options-->
 
-  <td align="center" valign="top" bgcolor="#efefef">
-  <font size="-1">
-  <img align="left"  hspace="0" src="<!--#var SCRIPT_NAME-->/p_/ltab" ALT="">
-  <img align="right" hspace="0" src="<!--#var SCRIPT_NAME-->/p_/rtab" ALT="">
-  <a href="<!--#var SCRIPT_NAME-->/HelpSys/hs_index" target="z_help_wnd">
-  Help</a>
-  </font>
-  </td>
+  <TD align="center" valign="top" bgcolor="#EFEFEF">
+  <FONT size="-1">
+  <IMG align="left"  hspace="0" src="<!--#var SCRIPT_NAME-->/p_/ltab" ALT="">
+  <IMG align="right" hspace="0" src="<!--#var SCRIPT_NAME-->/p_/rtab" ALT="">
+  <A HREF="<!--#var SCRIPT_NAME-->/HelpSys/hs_index" TARGET="z_help_wnd">
+  Help</A>
+  </FONT>
+  </TD>
 
 </TR>
 </TABLE>
