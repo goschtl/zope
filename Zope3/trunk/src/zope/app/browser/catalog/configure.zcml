@@ -70,6 +70,7 @@
   content_factory="zope.app.index.field.index.FieldCatalogIndex"
   arguments="field_name"
   keyword_arguments="interface"
+  description="An index of a specific field"
 />
 
 <!-- the Advanced tab of the Catalog -->
