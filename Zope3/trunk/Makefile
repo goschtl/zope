@@ -1,5 +1,5 @@
 PYTHON=python2.2
-TESTOPTS=""
+TESTOPTS=
 
 # XXX What should the default be?
 all: inplace
