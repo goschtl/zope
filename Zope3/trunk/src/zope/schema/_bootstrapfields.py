@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.25 2003/10/20 16:11:46 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.26 2004/01/16 13:38:20 philikon Exp $
 """
 __metaclass__ = type
 
@@ -179,7 +179,6 @@ class Field(Attribute):
         return not self.__eq__(other)
 
     def _validate(self, value):
-
         if self._type is not None and not isinstance(value, self._type):
             raise ValidationError(errornames.WrongType, value, self._type)
 
@@ -334,19 +333,13 @@ class Enumerated:
                 raise ValidationError(errornames.InvalidValue, value,
                                       self.allowed_values)
 
-class Text(Enumerated, MinMaxLen, Field):
+class Text(MinMaxLen, Field):
     """A field containing text used for human discourse."""
     _type = unicode
 
     implements(IFromUnicode)
 
     def __init__(self, *args, **kw):
-        if (  kw.get("allowed_values") is not None
-              and self.__class__ in (Text, TextLine)):
-            clsname = self.__class__.__name__
-            warnings.warn("Support for allowed_values will be removed from %s;"
-                          " use Enumerated%s instead" % (clsname, clsname),
-                          DeprecationWarning, stacklevel=2)
         super(Text, self).__init__(*args, **kw)
 
     def fromUnicode(self, str):
@@ -372,7 +365,7 @@ class TextLine(Text):
     def constraint(self, value):
         return '\n' not in value and '\r' not in value
 
-class EnumeratedTextLine(TextLine):
+class EnumeratedTextLine(Enumerated, TextLine):
     """TextLine with a value from a list of allowed values."""
 
 class Password(TextLine):
@@ -399,19 +392,13 @@ class Bool(Field):
                 value = bool(value)
             Field.set(self, object, value)
 
-class Int(Enumerated, Orderable, Field):
+class Int(Orderable, Field):
     """A field representing an Integer."""
     _type = int, long
 
     implements(IFromUnicode)
 
     def __init__(self, *args, **kw):
-        if (  kw.get("allowed_values") is not None
-              and self.__class__ is Int):
-            clsname = self.__class__.__name__
-            warnings.warn("Support for allowed_values will be removed from %s;"
-                          " use Enumerated%s instead" % (clsname, clsname),
-                          DeprecationWarning, stacklevel=2)
         super(Int, self).__init__(*args, **kw)
 
     def fromUnicode(self, str):
@@ -428,5 +415,5 @@ class Int(Enumerated, Orderable, Field):
         self.validate(v)
         return v
 
-class EnumeratedInt(Int):
+class EnumeratedInt(Enumerated, Int):
     """A field representing one of a selected set of Integers."""

@@ -137,6 +137,48 @@
       class="zope.app.browser.form.widget.PasswordWidget"
       />
 
+  <!-- Widgets for enumerated field flavours -->
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IEnumeratedTextLine"
+      name="edit"
+      class=".enumerated.EnumeratedTextWidget"
+      />  
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IEnumeratedInt"
+      name="edit"
+      class=".enumerated.EnumeratedIntWidget"
+      />  
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IEnumeratedFloat"
+      name="edit"
+      class=".enumerated.EnumeratedFloatWidget"
+      />
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IEnumeratedDatetime"
+      name="edit"
+      class=".enumerated.EnumeratedDatetimeWidget"
+      />  
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IEnumeratedDate"
+      name="edit"
+      class=".enumerated.EnumeratedDateWidget"
+      />  
+
   <!-- Vocabulary fields share special widget factories that redirect
        to the vocabularies they reference. -->
 

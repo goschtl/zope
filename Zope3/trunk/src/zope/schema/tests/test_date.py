@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_date.py,v 1.1 2003/08/12 18:16:43 poster Exp $
+$Id: test_date.py,v 1.2 2004/01/16 13:38:20 philikon Exp $
 """
 from unittest import main, makeSuite
-from zope.schema import Date
+from zope.schema import Date, EnumeratedDate
 from zope.schema import errornames
 from zope.schema.tests.test_field import FieldTestBase
 from datetime import datetime, date
@@ -82,6 +82,11 @@ class DateTest(FieldTestBase):
         self.assertRaisesErrorNames(errornames.TooSmall, field.validate, d1)
         self.assertRaisesErrorNames(errornames.TooBig, field.validate, d5)
 
+class EnumeratedDateTest(DateTest):
+    """Test the EnumeratedDate Field."""
+
+    _Field_Factory = EnumeratedDate
+
     def testAllowedValues(self):
         d1 = date(2000,10,1)
         d2 = date(2000,10,2)
@@ -100,6 +105,7 @@ class DateTest(FieldTestBase):
 
 def test_suite():
     suite = makeSuite(DateTest)
+    suite.addTest(makeSuite(EnumeratedDateTest))
     return suite
 
 if __name__ == '__main__':

@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.26 2003/12/17 10:48:51 mukruthi Exp $
+$Id: _field.py,v 1.27 2004/01/16 13:38:20 philikon Exp $
 """
 __metaclass__ = type
 
@@ -34,11 +34,10 @@ from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBool, IInt, IBytes, IASCII, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
-from zope.schema.interfaces import IPassword, IObject, IDate
+from zope.schema.interfaces import IPassword, IObject, IDate, IEnumeratedDate
 from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
 from zope.schema.interfaces import IEnumeratedInt, IEnumeratedFloat
-from zope.schema.interfaces import IURI, IId
-from zope.schema.interfaces import IFromUnicode
+from zope.schema.interfaces import IURI, IId, IFromUnicode
 
 from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
 from zope.schema._bootstrapfields import MinMaxLen, Enumerated
@@ -71,7 +70,7 @@ class SourceText(Text):
     implements(ISourceText)
     _type = unicode
 
-class Bytes(Enumerated, MinMaxLen, Field):
+class Bytes(MinMaxLen, Field):
     __doc__ = IBytes.__doc__
     implements(IBytes, IFromUnicode)
 
@@ -96,7 +95,7 @@ class Bytes(Enumerated, MinMaxLen, Field):
 class ASCII(Bytes):
     __doc__ = IASCII.__doc__
     implements(IASCII)
-    
+
 
 class BytesLine(Bytes):
     """A Text field with no newlines."""
@@ -108,18 +107,12 @@ class BytesLine(Bytes):
         return '\n' not in value
 
 
-class Float(Enumerated, Orderable, Field):
+class Float(Orderable, Field):
     __doc__ = IFloat.__doc__
     implements(IFloat, IFromUnicode)
     _type = float
 
     def __init__(self, *args, **kw):
-        if (  kw.get("allowed_values") is not None
-              and self.__class__ is Float):
-            clsname = self.__class__.__name__
-            warnings.warn("Support for allowed_values will be removed from %s;"
-                          " use Enumerated%s instead" % (clsname, clsname),
-                          DeprecationWarning, stacklevel=2)
         super(Float, self).__init__(*args, **kw)
 
     def fromUnicode(self, u):
@@ -136,32 +129,30 @@ class Float(Enumerated, Orderable, Field):
         self.validate(v)
         return v
 
-class EnumeratedFloat(Float):
+class EnumeratedFloat(Enumerated, Float):
     __doc__ = IEnumeratedFloat.__doc__
     implements(IEnumeratedFloat)
 
-class Datetime(Enumerated, Orderable, Field):
+class Datetime(Orderable, Field):
     __doc__ = IDatetime.__doc__
     implements(IDatetime)
     _type = datetime
 
     def __init__(self, *args, **kw):
-        if (  kw.get("allowed_values") is not None
-              and self.__class__ is Datetime):
-            clsname = self.__class__.__name__
-            warnings.warn("Support for allowed_values will be removed from %s;"
-                          " use Enumerated%s instead" % (clsname, clsname),
-                          DeprecationWarning, stacklevel=2)
         super(Datetime, self).__init__(*args, **kw)
 
-class EnumeratedDatetime(Datetime):
+class EnumeratedDatetime(Enumerated, Datetime):
     __doc__ = IEnumeratedDatetime.__doc__
     implements(IEnumeratedDatetime)
 
-class Date(Enumerated, Orderable, Field):
+class Date(Orderable, Field):
     __doc__ = IDate.__doc__
     implements(IDate)
     _type = date
+
+class EnumeratedDate(Enumerated, Date):
+    __doc__ = IEnumeratedDate.__doc__
+    implements(IEnumeratedDate)
 
 class InterfaceField(Field):
     __doc__ = IInterfaceField.__doc__
@@ -204,7 +195,9 @@ class Sequence(MinMaxLen, Iterable, Field):
 
     def __init__(self, value_type=None, **kw):
         super(Sequence, self).__init__(**kw)
-        # XXX reject value_type of None?
+        # whine if value_type is not a field
+        if value_type is not None and not IField.isImplementedBy(value_type):
+            raise ValueError, "'value_type' must be field instance."
         self.value_type = value_type
 
     def _validate(self, value):
@@ -279,7 +272,11 @@ class Dict(MinMaxLen, Iterable, Field):
 
     def __init__(self, key_type=None, value_type=None, **kw):
         super(Dict, self).__init__(**kw)
-        # XXX reject key_type, value_type of None?
+        # whine if key_type or value_type is not a field
+        if key_type is not None and not IField.isImplementedBy(key_type):
+            raise ValueError, "'key_type' must be field instance."
+        if value_type is not None and not IField.isImplementedBy(value_type):
+            raise ValueError, "'value_type' must be field instance."
         self.key_type = key_type
         self.value_type = value_type
 

@@ -1,6 +1,9 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser">
 
+  <!-- Define add and edit forms for fields as part of a (persistent)
+       schema -->
+
   <browser:addform
       label="Add Text Field"
       name="Text Field"
@@ -12,7 +15,7 @@
       schema="zope.schema.interfaces.IText"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default min_length max_length allowed_values"
+              default min_length max_length"
     />
 
   <browser:editform
@@ -24,7 +27,7 @@
       schema="zope.schema.interfaces.IText"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default min_length max_length allowed_values"
+              default min_length max_length"
     />
 
   <browser:addform
@@ -38,11 +41,11 @@
       schema="zope.schema.interfaces.ITextLine"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default min_length max_length allowed_values"
+              default min_length max_length"
     />
 
   <browser:editform
-      label="Edit Text Line Field"
+      label="Edit TextLine Field"
       name="edit.html"
       menu="zmi_views"
       title="Edit"
@@ -50,7 +53,7 @@
       schema="zope.schema.interfaces.ITextLine"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default min_length max_length allowed_values"
+              default min_length max_length"
     />
 
   <browser:addform
@@ -90,7 +93,7 @@
       schema="zope.schema.interfaces.IInt"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default max min allowed_values"
+              default max min"
     />
 
   <browser:editform
@@ -102,7 +105,7 @@
       schema="zope.schema.interfaces.IInt"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default max min allowed_values"
+              default max min"
     />
 
   <browser:addform
@@ -116,7 +119,7 @@
       schema="zope.schema.interfaces.IFloat"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default max min allowed_values"
+              default max min"
     />
 
   <browser:editform
@@ -128,7 +131,7 @@
       schema="zope.schema.interfaces.IFloat"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default max min allowed_values"
+              default max min"
     />
 
   <browser:addform
@@ -142,7 +145,7 @@
       schema="zope.schema.interfaces.IDatetime"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default max min allowed_values"
+              default max min"
     />
 
   <browser:editform
@@ -154,7 +157,144 @@
       schema="zope.schema.interfaces.IDatetime"
       permission="zope.ManageContent"
       fields="title description required readonly
-              default max min allowed_values"
+              default max min"
+    />
+
+
+   <!-- enumerated fields -->
+
+  <browser:addform
+      label="Add Enumerated TextLine Field"
+      name="Enumerated TextLine Field"
+      menu="add_schema_field"
+      title="Enumerated TextLine Field"
+      description="An Enumerated TextLine Field"
+      content_factory="zope.schema.EnumeratedTextLine"
+      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      schema="zope.schema.interfaces.IEnumeratedTextLine"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min_length max_length allowed_values"
+    />
+
+  <browser:editform
+      label="Edit Enumerated TextLine Field"
+      name="edit.html"
+      menu="zmi_views"
+      title="Edit"
+      for="zope.schema.interfaces.IEnumeratedTextLine"
+      schema="zope.schema.interfaces.IEnumeratedTextLine"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min_length max_length allowed_values"
+    />
+
+
+  <browser:addform
+      label="Add Enumerated Integer Field"
+      name="Enumerated Integer Field"
+      menu="add_schema_field"
+      title="Enumerated Integer Field"
+      description="An Enumerated Integer Field"
+      content_factory="zope.schema.EnumeratedInt"
+      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      schema="zope.schema.interfaces.IEnumeratedInt"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min max allowed_values"
+    />
+
+  <browser:editform
+      label="Edit Enumerated Integer Field"
+      name="edit.html"
+      menu="zmi_views"
+      title="Edit"
+      for="zope.schema.interfaces.IEnumeratedInt"
+      schema="zope.schema.interfaces.IEnumeratedInt"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min max allowed_values"
+    />
+
+
+  <browser:addform
+      label="Add Enumerated Float Field"
+      name="Enumerated Float Field"
+      menu="add_schema_field"
+      title="Enumerated Float Field"
+      description="An Enumerated Float Field"
+      content_factory="zope.schema.EnumeratedFloat"
+      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      schema="zope.schema.interfaces.IEnumeratedFloat"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min max allowed_values"
+    />
+
+  <browser:editform
+      label="Edit Enumerated Float Field"
+      name="edit.html"
+      menu="zmi_views"
+      title="Edit"
+      for="zope.schema.interfaces.IEnumeratedFloat"
+      schema="zope.schema.interfaces.IEnumeratedFloat"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min max allowed_values"
+    />
+
+
+  <browser:addform
+      label="Add Enumerated Datetime Field"
+      name="Enumerated Datetime Field"
+      menu="add_schema_field"
+      title="Enumerated Datetime Field"
+      description="An Enumerated Datetime Field"
+      content_factory="zope.schema.EnumeratedDatetime"
+      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      schema="zope.schema.interfaces.IEnumeratedDatetime"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min max allowed_values"
+    />
+
+  <browser:editform
+      label="Edit Enumerated Datetime Field"
+      name="edit.html"
+      menu="zmi_views"
+      title="Edit"
+      for="zope.schema.interfaces.IEnumeratedDatetime"
+      schema="zope.schema.interfaces.IEnumeratedDatetime"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min max allowed_values"
+    />
+
+
+  <browser:addform
+      label="Add Enumerated Date Field"
+      name="Enumerated Date Field"
+      menu="add_schema_field"
+      title="Enumerated Date Field"
+      description="An Enumerated Date Field"
+      content_factory="zope.schema.EnumeratedDate"
+      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      schema="zope.schema.interfaces.IEnumeratedDate"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min max allowed_values"
+    />
+
+  <browser:editform
+      label="Edit Enumerated Date Field"
+      name="edit.html"
+      menu="zmi_views"
+      title="Edit"
+      for="zope.schema.interfaces.IEnumeratedDate"
+      schema="zope.schema.interfaces.IEnumeratedDate"
+      permission="zope.ManageContent"
+      fields="title description required readonly
+              default min max allowed_values"
     />
 
 </configure>

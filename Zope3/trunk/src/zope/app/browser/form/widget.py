@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001-2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.60 2004/01/12 22:00:20 sidnei Exp $
+$Id: widget.py,v 1.61 2004/01/16 13:38:18 philikon Exp $
 """
 __metaclass__ = type
 
@@ -537,34 +537,8 @@ class TextWidget(BrowserWidget):
 
     def __init__(self, *args):
         super(TextWidget, self).__init__(*args)
-        field = self.context
-        if field.allowed_values is not None:
-            values = []
-            # if field is optional and missing_value isn't in
-            # allowed_values, add an additional option at top to represent
-            # field.missing_value
-            if not field.required and \
-                field.missing_value not in field.allowed_values:
-                values.append(field.missing_value)
-            values += list(field.allowed_values)
-            self.__values = values
-
-    def _select(self):
-        selected = self._showData()
-        result = ['<select id="%s" name="%s">' % (self.name, self.name)]
-        for value in self.__values:
-            unconverted = self._unconvert(value)
-            selectedStr = unconverted == selected and ' selected' or ''
-            result.append('<option value="%s"%s>%s</option>' % \
-                   (unconverted, selectedStr, unconverted))
-        result.append('</select>')
-        return '\n\t'.join(result)
-
 
     def __call__(self):
-        if self.__values:
-            return self._select()
-
         displayMaxWidth = self.getValue('displayMaxWidth') or 0
         if displayMaxWidth > 0:
             return renderElement(self.getValue('tag'),
@@ -614,8 +588,8 @@ class BytesWidget(Bytes, TextWidget):
     True
     >>> widget.getInputValue()
     'Bob'
-
     """
+
 class ASCII(Bytes):
     """ ASCII
     """
@@ -638,7 +612,6 @@ class IntWidget(TextWidget):
             except ValueError, v:
                 raise ConversionError("Invalid integer data", v)
 
-
 class FloatWidget(TextWidget):
     displayWidth = 10
 
@@ -650,7 +623,6 @@ class FloatWidget(TextWidget):
                 return float(value)
             except ValueError, v:
                 raise ConversionError("Invalid floating point data", v)
-
 
 class DatetimeWidget(TextWidget):
     """Datetime entry widget."""
@@ -665,9 +637,9 @@ class DatetimeWidget(TextWidget):
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
 
-
 class DateWidget(TextWidget):
-    "Date entry widget."
+    """Date entry widget.
+    """
     displayWidth = 20
 
     def _convert(self, value):
@@ -678,7 +650,6 @@ class DateWidget(TextWidget):
                 return parseDatetimetz(value).date()
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
-
 
 class TextAreaWidget(BrowserWidget):
     """TextArea widget.

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.23 2003/12/07 10:04:50 gotcha Exp $
+$Id: test_add.py,v 1.24 2004/01/16 13:38:19 philikon Exp $
 """
 
 import unittest
@@ -28,7 +28,7 @@ from zope.component import getView
 from zope.app.browser.form.add import AddViewFactory, AddView
 from zope.app.browser.form.metaconfigure import AddFormDirective
 from zope.app.interfaces.container import IAdding
-from zope.app.form.widget import CustomWidget
+from zope.app.form.widget import CustomWidgetFactory
 from zope.app.browser.form.widget import TextWidget as Text
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.browser.form.submit import Update
@@ -64,17 +64,17 @@ class C:
     def setfoo(self, v): self._foo = v
 
 class V:
-    name_widget = CustomWidget(Text)
-    first_widget = CustomWidget(Text)
-    last_widget = CustomWidget(Text)
-    email_widget = CustomWidget(Text)
-    address_widget = CustomWidget(Text)
-    getfoo_widget = CustomWidget(Text)
-    extra1_widget = CustomWidget(Text)
-    extra2_widget = CustomWidget(Text)
+    name_widget = CustomWidgetFactory(Text)
+    first_widget = CustomWidgetFactory(Text)
+    last_widget = CustomWidgetFactory(Text)
+    email_widget = CustomWidgetFactory(Text)
+    address_widget = CustomWidgetFactory(Text)
+    getfoo_widget = CustomWidgetFactory(Text)
+    extra1_widget = CustomWidgetFactory(Text)
+    extra2_widget = CustomWidgetFactory(Text)
 
 class FooV:
-    bar_widget = CustomWidget(Text)
+    bar_widget = CustomWidgetFactory(Text)
 
 
 class SampleData:

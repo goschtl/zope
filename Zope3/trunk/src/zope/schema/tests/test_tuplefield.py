@@ -16,10 +16,13 @@ This set of tests exercises both Tuple and Sequence.  The only
 behavior Tuple adds to sequence is the restriction of the type
 to 'tuple'.
 
-$Id: test_tuplefield.py,v 1.5 2003/08/17 06:09:20 philikon Exp $
+$Id: test_tuplefield.py,v 1.6 2004/01/16 13:38:20 philikon Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from zope.schema import Sequence, Tuple, Int
+
+from zope.interface import implements
+from zope.schema import Field, Sequence, Tuple, Int
+from zope.schema.interfaces import IField
 from zope.schema import errornames
 from zope.schema.tests.test_field import FieldTestBase
 
@@ -131,6 +134,20 @@ class TupleTest(FieldTestBase):
                                     field.validate, ('',) )
         self.assertRaisesErrorNames(errornames.WrongContainedType,
                                     field.validate, (3.14159,) )
+
+    def testCorrectValueType(self):
+        # allow value_type of None (XXX)
+        Tuple(value_type=None)
+
+        # do not allow arbitrary value types
+        self.assertRaises(ValueError, Tuple, value_type=object())
+        self.assertRaises(ValueError, Tuple, value_type=Field)
+
+        # however, allow anything that implements IField
+        Tuple(value_type=Field())
+        class FakeField:
+            implements(IField)
+        Tuple(value_type=FakeField())
 
 def test_suite():
     suite = TestSuite()

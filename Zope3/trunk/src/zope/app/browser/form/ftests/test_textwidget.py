@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_textwidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
+$Id: test_textwidget.py,v 1.4 2004/01/16 13:38:18 philikon Exp $
 """
 
 import unittest
@@ -159,7 +159,7 @@ class Test(BrowserTestCase):
         self.assert_(not missingInputErrorExists('s3', response.getBody()))
 
 
-    def test_inalid_value(self):
+    def test_invalid_value(self):
         self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
