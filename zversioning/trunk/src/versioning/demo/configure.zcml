@@ -7,6 +7,8 @@
 
 <i18n:registerTranslations directory="locales" />
 
+<include package=".browser" /> 
+
 <content class=".vproposal.VProposal">
   <implements interface="zope.app.annotation.IAttributeAnnotatable"/>  
   <require permission="zope.View"
