@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_context.py,v 1.3 2003/06/02 17:43:02 stevea Exp $
+$Id: test_context.py,v 1.4 2003/06/02 19:41:14 jim Exp $
 """
 
 import pickle
@@ -156,8 +156,7 @@ def test_providedBy_signature_w_classic_class():
 
 def test_ContextWrapper_basic():
     """
-    >>> from zope.security.checker import ProxyFactory, NamesChecker
-    >>> checker = NamesChecker()
+    >>> from zope.security.checker import ProxyFactory
     >>> from zope.context import ContainmentIterator
     >>> from zope.app.context import ContextWrapper
     >>> from zope.context import getWrapperData
@@ -192,6 +191,77 @@ def test_ContextWrapper_basic():
     1
     >>> getWrapperData(w3)
     {'name': 'x'}
+
+    """
+
+def test_ContextWrapper_w_adapter():
+    """
+    >>> from zope.interface import *
+    >>> from zope.app.tests.placelesssetup import setUp, tearDown
+    >>> from zope.security.checker import ProxyFactory, NamesChecker
+    >>> from zope.context import ContainmentIterator
+    >>> from zope.app.context import ContextWrapper
+    >>> from zope.context import getWrapperData
+    >>> from zope.component.adapter import provideAdapter
+    >>> from zope.app.interfaces.context import IZopeContextWrapper
+
+    >>> setUp()
+
+
+    >>> checker = NamesChecker(['x'])
+
+    >>> class I(Interface):
+    ...    pass
+
+    >>> class D(Wrapper):
+    ...    x=1
+
+    >>> class C:
+    ...    implements(I)
+    ...    def __init__(self, name): self.name = name
+    ...    def __repr__(self): return self.name
+
+
+    >>> c1 = C('c1')
+
+    >>> c2 = C('c2')
+    >>> p2 = ProxyFactory(c2, checker)
+
+    No adapter, so we get the default Wrapper:
+
+    >>> w2 = ContextWrapper(p2, c1, name=2)
+    >>> int(type(w2) is type(p2))
+    1
+    >>> getWrapperData(w2)
+    {'name': 2}
+
+    which means we don't have an x attr
+
+    >>> getattr(w2, 'x', None)
+    
+    No add an adapter:
+
+    >>> provideAdapter(I, IZopeContextWrapper, D)
+
+    >>> c3 = C('c3')
+    >>> p3 = ProxyFactory(c3, checker)
+    >>> w3 = ContextWrapper(p3, w2, name=3)
+    >>> int(type(w3) is type(p3))
+    1
+    >>> getWrapperData(w3)
+    {'name': 3}
+
+    Now we have an x, because we have D as our wrapper type:
+
+    >>> getattr(w3, 'x', None)
+    1
+
+    But note that if we get another wrapper around w2, we'll use the
+    same type:
+
+    >>> w = ContextWrapper(w2, C(''))
+
+    >>> getattr(w, 'x', None)
 
     """
 

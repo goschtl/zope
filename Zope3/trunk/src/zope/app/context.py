@@ -16,22 +16,22 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: context.py,v 1.6 2003/06/02 17:43:02 stevea Exp $
+$Id: context.py,v 1.7 2003/06/02 19:41:14 jim Exp $
 """
 
 from pickle import PicklingError
-from zope.app.interfaces.context import IContextWrapper
-from zope.context.wrapper import getcontext
-from zope.context.wrapper import getdictcreate
+from zope.app.interfaces.context import IContextWrapper, IZopeContextWrapper
+from zope.component import queryAdapter
+from zope.context.wrapper import getcontext, setcontext, getdictcreate
 from zope.context.wrapper import Wrapper as BaseWrapper
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 from zope.interface import moduleProvides, implements, providedBy
 from zope.proxy import queryProxy, getProxiedObject
-from zope.security.proxy import Proxy, getChecker
 from zope.security.checker import defineChecker, BasicTypes
 from zope.security.checker import selectChecker, CombinedChecker, NoProxy
+from zope.security.proxy import Proxy, getChecker
 
 moduleProvides(IContextWrapper)
 __all__ = tuple(IContextWrapper)
@@ -130,25 +130,44 @@ def ContextWrapper(_ob, _parent, **kw):
         # Don't wrap basic objects
         return _ob
 
-    wrapper = queryProxy(_ob, Wrapper, kw)
-    if wrapper is not kw: # using kw as marker
+    wrapper = queryProxy(_ob, Wrapper)
+    if wrapper is not None: # using kw as marker
+        
         if _parent is getcontext(wrapper):
             # This would be a redundant wrapper. We'll just use the
             # one we've got.
 
             # But we want tp make sure we have the same data
             if kw:
-                dict = getdictcreate(wrapper)
-                dict.update(kw)
+                getdictcreate(wrapper).update(kw)
             return _ob
+        
+
 
     if type(_ob) is Proxy:
         # insert into proxies
         checker = getChecker(_ob)
         _ob = getProxiedObject(_ob)
-        _ob = Proxy(Wrapper(_ob, _parent, **kw), checker)
     else:
-        _ob = Wrapper(_ob, _parent, **kw)
+        checker = None
+
+
+    if wrapper is not None:
+        # we were already wrapped, use the same class
+        _ob = type(wrapper)(_ob, _parent, **kw)
+    else:
+        adapter = queryAdapter(_ob, IZopeContextWrapper)
+        if adapter is not None:
+            _ob = adapter
+            setcontext(_ob, _parent)
+            if kw:
+                getdictcreate(_ob).update(kw)
+        else:
+            # No specific adapter, fall back to Wrapper
+            _ob = Wrapper(_ob, _parent, **kw)
+
+    if checker is not None:
+        _ob = Proxy(_ob, checker)
 
     return _ob
 
