@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.28 2003/08/05 14:25:19 sidnei Exp $
+$Id: interfaces.py,v 1.29 2003/08/12 18:16:40 poster Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -326,6 +326,9 @@ class IEnumeratedDatetime(IEnumerated, IDatetime):
 
     The value may be constrained to an element of a specified list.
     """
+
+class IDate(IMinMax, IEnumerated, IField):
+    u"""Field containing a date."""
 
 def _is_field(value):
     if not IField.isImplementedBy(value):

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.20 2003/08/02 17:24:57 srichter Exp $
+$Id: _field.py,v 1.21 2003/08/12 18:16:40 poster Exp $
 """
 __metaclass__ = type
 
@@ -31,7 +31,7 @@ from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IInterfaceField
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
-from zope.schema.interfaces import IPassword, IObject
+from zope.schema.interfaces import IPassword, IObject, IDate
 from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
 from zope.schema.interfaces import IEnumeratedInt, IEnumeratedFloat
 from zope.schema.interfaces import IURI, IId
@@ -42,7 +42,7 @@ from zope.schema._bootstrapfields import MinMaxLen, Enumerated
 from zope.schema._bootstrapfields import Text, TextLine, Bool, Int, Password
 from zope.schema._bootstrapfields import EnumeratedTextLine, EnumeratedInt
 from zope.schema.fieldproperty import FieldProperty
-from datetime import datetime
+from datetime import datetime, date
 
 # Fix up bootstrap field types
 Field.title       = FieldProperty(IField['title'])
@@ -149,6 +149,11 @@ class Datetime(Enumerated, Orderable, Field):
 class EnumeratedDatetime(Datetime):
     __doc__ = IEnumeratedDatetime.__doc__
     implements(IEnumeratedDatetime)
+
+class Date(Enumerated, Orderable, Field):
+    __doc__ = IDate.__doc__
+    implements(IDate)
+    _type = date
 
 class InterfaceField(Field):
     __doc__ = IInterfaceField.__doc__
