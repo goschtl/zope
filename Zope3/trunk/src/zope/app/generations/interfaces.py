@@ -59,3 +59,10 @@ class ISchemaManager(zope.interface.Interface):
         a connection to make it possible to provide additional
         information later, if it becomes necessary.
         """
+
+    def getInfo(generation):
+        """Return an information string about the evolution that is used to
+        upgrade to the specified generation.
+
+        If no information is available, `None` should be returned.
+        """

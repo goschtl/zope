@@ -12,4 +12,12 @@
     permission="zope.ManageApplication"
     />
 
+<page
+    name="generations_managerdetails.html"
+    for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+    class=".managerdetails.ManagerDetails"
+    template="managerdetails.pt"
+    permission="zope.ManageApplication"
+    />
+
 </zope:configure>

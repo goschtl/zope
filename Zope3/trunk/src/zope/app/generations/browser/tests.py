@@ -22,6 +22,7 @@ from zope.testing.doctestunit import DocTestSuite
 def test_suite():
     return unittest.TestSuite((
         DocTestSuite('zope.app.generations.browser.managers'),
+        DocTestSuite('zope.app.generations.browser.managerdetails'),
         ))
 
 if __name__ == '__main__':

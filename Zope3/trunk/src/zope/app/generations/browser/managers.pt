@@ -36,7 +36,12 @@
     <th i18n:translate="">Evolve?</th>
 </tr>
 <tr tal:repeat="app view/applications">
-    <td tal:content="app/id">foo.bar</td>
+    <td>
+      <a href=""
+         tal:attributes=
+             "href string:generations_managerdetails.html?id=${app/id}"
+         tal:content="app/id">foo.bar</a>
+    </td>
     <td tal:content="app/min">1</td>
     <td tal:content="app/max">10</td>
     <td tal:content="app/generation">2</td>

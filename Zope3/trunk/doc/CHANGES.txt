@@ -10,6 +10,14 @@ Zope Changes
 
     New features
 
+      - Added `getInfo(generation)` method to `zope.app.generations`'s
+        `ISchemaManager`. It will return some information about the evolver
+        that brings the database to the specified generation. This way we can
+        document the various evolutions. The standard `ISchemaManager`
+        implementation uses the `evolve()` function's docstring to determine
+        the information string. Added a view showing the information strings
+        via the Web UI.
+
       - Implemented local permission. This is not really that interesting
         right now, since we do not support TTW development yet, but it will
         become important somewhen.

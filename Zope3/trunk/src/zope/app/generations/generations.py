@@ -64,6 +64,17 @@ class SchemaManager(object):
          >>> conn.root()[key]
          (2, 3)
 
+       You can get the information for each evolver by specifying the
+       destination generation of the evolver as argument to the `getInfo()`
+       method:
+
+         >>> manager.getInfo(1)
+         'Evolver 1'
+         >>> manager.getInfo(2)
+         'Evolver 2'
+         >>> manager.getInfo(3) is None
+         True
+
        We'd better clean up:
 
          >>> context.connection.close()
@@ -99,6 +110,15 @@ class SchemaManager(object):
             {}, {}, ['*'])
 
         evolver.evolve(context)
+
+    def getInfo(self, generation):
+        """Get the information from the evolver function's doc string."""
+        evolver = __import__(
+            "%s.evolve%d" % (self.package_name, generation),
+            {}, {}, ['*'])
+        return evolver.evolve.__doc__
+        
+        
 
 class Context(object):
     pass
