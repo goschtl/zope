@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.1 2003/06/22 16:10:55 mgedmin Exp $
+$Id: control.py,v 1.2 2003/06/23 16:44:38 mgedmin Exp $
 """
 
 from __future__ import generators
@@ -29,6 +29,7 @@ from zope.publisher.browser import BrowserView
 from zope.app.traversing import canonicalPath
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.index.text import IQueryView
+from zope.app.browser.component.interfacewidget import interfaceToName
 
 class ControlView(BrowserView):
 
@@ -37,6 +38,9 @@ class ControlView(BrowserView):
     def __init__(self, context, request):
         super(ControlView, self).__init__(context, request)
         self.hub = getService(context, HubIds)
+
+    def interface_name(self):
+        return interfaceToName(self.context.interface)
 
     def query(self):
         queryText = self.request.get('queryText', '')

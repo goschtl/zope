@@ -28,6 +28,13 @@
         Successfully unsubscribed.
     </span>
 
+    <div tal:condition="context/interface">
+        Adapting objects to: <span tal:replace="view/interface_name" />
+    </div>
+    <div>
+        Indexing on attribute: <span tal:replace="context/field_name" />
+    </div>
+
     <div>
         Documents: <span tal:replace="context/documentCount" />
     </div>

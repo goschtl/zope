@@ -13,15 +13,22 @@
 ##############################################################################
 """Interfaces related to field indexing and searching.
 
-$Id: field.py,v 1.2 2003/06/22 16:10:56 mgedmin Exp $
+$Id: field.py,v 1.3 2003/06/23 16:44:39 mgedmin Exp $
 """
 
 from zope.interface import Interface
 from zope.schema import BytesLine
+from zope.app.component.interfacefield import InterfaceField
 
 
 class IUIFieldIndex(Interface):
     """Interface for creating a FieldIndex from the ZMI."""
+
+    interface = InterfaceField(
+                    title=u"Interface",
+                    description=u"Interface to adapts objects to before"
+                                u" indexing",
+                    required=False)
 
     field_name = BytesLine(
                     title=u"Field Name",

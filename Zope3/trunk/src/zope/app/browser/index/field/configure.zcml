@@ -10,6 +10,7 @@
     permission="zope.ManageServices"
     content_factory="zope.app.index.field.index.FieldIndex"
     arguments="field_name"
+    keyword_arguments="interface"
     />
 
   <browser:page
