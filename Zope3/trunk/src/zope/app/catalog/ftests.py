@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for catalog
 
-$Id: ftests.py,v 1.3 2004/03/02 14:40:00 philikon Exp $
+$Id: ftests.py,v 1.4 2004/03/06 02:35:11 garrett Exp $
 """
 import unittest
 
@@ -91,7 +91,9 @@ class TestCatalogAdd(BrowserTestCase):
         self.assertEqual(response.getStatus(), 200)
         self.assert_(response.getBody().find('dctitle') != -1)
         self.assert_(response.getBody().find('dccreator') != -1)
-        
+        self.assert_(response.getBody().find('fulltext') != -1)
+        self.assert_(response.getBody().find('name') != -1)
+
         # Now add some content
         response = self.publish("/+/action.html", basic='mgr:mgrpw', 
                                 form={'type_name':u'File', 
@@ -175,21 +177,21 @@ class TestCatalogAdd(BrowserTestCase):
         root = self.getRootFolder()
         cat = root['felix_the']
         name = cat['dctitle']
-        self.assert_(name.documentCount()==8)
+        self.assertEquals(name.documentCount(), 8)
         res = cat.searchResults(dctitle='Second File')
-        self.assert_(len(res)==1)
+        self.assertEquals(len(res), 1)
         res = cat.searchResults(dctitle='Third File')
-        self.assert_(len(res)==3)
+        self.assertEquals(len(res), 3)
         res = cat.searchResults(fulltext='sample')
-        self.assert_(len(res)==2)
+        self.assertEquals(len(res), 2)
         res = cat.searchResults(fulltext='sample', dctitle='Third File')
-        self.assert_(len(res)==1)
+        self.assertEquals(len(res), 1)
         res = cat.searchResults(fulltext='fnargle', dctitle='Third File')
-        self.assert_(len(res)==0)
+        self.assertEquals(len(res), 0)
         res = cat.searchResults(fulltext='sample', dctitle='Zeroth File')
-        self.assert_(len(res)==0)
+        self.assertEquals(len(res), 0)
         res = cat.searchResults(dccreator='zope.mgr', dctitle='Third File')
-        self.assert_(len(res)==3)
+        self.assertEquals(len(res), 3)
 
 def test_suite():
     suite = unittest.TestSuite()
