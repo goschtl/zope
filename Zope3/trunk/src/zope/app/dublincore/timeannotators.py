@@ -19,15 +19,24 @@ __docformat__ = 'restructuredtext'
 
 from datetime import datetime
 from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.security.proxy import removeSecurityProxy
+
 
 def ModifiedAnnotator(event):
     dc = IZopeDublinCore(event.object, None)
     if dc is not None:
+        # Principals that can modify objects do not necessary have permissions
+        # to arbitrarily modify DC data, see issue 373
+        dc = removeSecurityProxy(dc)
         dc.modified = datetime.utcnow()
+
 
 def CreatedAnnotator(event):
     dc = IZopeDublinCore(event.object, None)
     if dc is not None:
+        # Principals that can create objects do not necessary have permissions
+        # to arbitrarily modify DC data, see issue 373
+        dc = removeSecurityProxy(dc)
         now = datetime.utcnow()
         dc.created = now
         dc.modified = now
