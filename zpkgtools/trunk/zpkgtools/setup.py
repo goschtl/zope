@@ -25,6 +25,9 @@ from zpkgtools import publication
 _logger = logging.getLogger(__name__)
 
 
+PUBLICATION_CONF = "PUBLICATION.cfg"
+
+
 class SetupContext:
     """Object representing the arguments to distutils.core.setup()."""
 
@@ -85,7 +88,7 @@ class SetupContext:
                 init_py = os.path.join(path, "__init__.py")
                 if os.path.isfile(init_py):
                     # if this package is published separately, skip it:
-                    if os.path.isfile(os.path.join(path, "PUBLICATION.txt")):
+                    if os.path.isfile(os.path.join(path, PUBLICATION_CONF)):
                         continue
                     pkgname = "%s.%s" % (name, fn)
                     self.packages.append(pkgname)
@@ -141,7 +144,7 @@ class PackageContext(SetupContext):
         SetupContext.__init__(self, pkgname, version, setup_file)
         self.packages.append(pkgname)
         self.load_metadata(
-            os.path.join(self._working_dir, pkgname, "PUBLICATION.txt"))
+            os.path.join(self._working_dir, pkgname, PUBLICATION_CONF))
         self.add_package_dir(pkgname, pkgname)
         self.scan_package(pkgname, os.path.join(self._working_dir, pkgname),
                           pkgname)
@@ -152,4 +155,4 @@ class CollectionContext(SetupContext):
     def __init__(self, pkgname, version, setup_file):
         SetupContext.__init__(self, pkgname, version, setup_file)
         self.load_metadata(os.path.join(self._working_dir,
-                                        "PUBLICATION.txt"))
+                                        PUBLICATION_CONF))

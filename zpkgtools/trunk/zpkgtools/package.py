@@ -36,7 +36,7 @@ from StringIO import StringIO
 from zpkgtools import cfgparser
 
 
-PACKAGE_CONF = "package.conf"
+PACKAGE_CONF = "INSTALL.cfg"
 
 # SCHEMA is defined at the end of the module to allow referenced
 # functions to be defined first.
