@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.12 2003/06/12 09:29:50 jim Exp $
+$Id: adding.py,v 1.13 2003/08/04 13:58:05 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -58,6 +58,7 @@ class BasicAdding(BrowserView):
     context = None # set in BrowserView.__init__
 
     def publishTraverse(self, request, name):
+
         if '=' in name:
             view_name, content_name = name.split("=", 1)
             self.contentName = content_name

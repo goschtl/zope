@@ -13,13 +13,14 @@
 ##############################################################################
 """Login and Logout screens
 
-$Id: auth.py,v 1.2 2003/08/01 13:47:38 srichter Exp $
+$Id: auth.py,v 1.3 2003/08/04 13:58:02 sidnei Exp $
 """
 from zope.interface import implements
 from zope.app.interfaces.publisher.http import ILogin, ILogout
 from zope.app.security.registries.principalregistry import \
      UnauthenticatedPrincipal
 from zope.app.pagetemplate import ViewPageTemplateFile
+from zope.proxy import removeAllProxies
 
 class HTTPAuthenticationLogin(object):
 
@@ -27,7 +28,8 @@ class HTTPAuthenticationLogin(object):
 
     def login(self, nextURL=None):
         """See zope.app.interfaces.security.ILogin"""
-        if isinstance(self.request.user, UnauthenticatedPrincipal):
+        if isinstance(removeAllProxies(self.request.user), \
+                      UnauthenticatedPrincipal):
             self.request.unauthorized("basic realm='Zope'")
             return self.failed()
         else:
@@ -62,7 +64,7 @@ class HTTPAuthenticationLogout(object):
             return self.confirmation()
         else:
             return self.request.response.redirect(nextURL)
-            
+
     confirmation = ViewPageTemplateFile('logout.pt')
 
     redirect = ViewPageTemplateFile('redirect.pt')
