@@ -27,11 +27,11 @@ PersistentInterface = PersistentInterfaceClass("PersistentInterface")
 
 class PersistentInterfaceWrapper(Wrapper):
 
-    def unwrap(self, bases, dict):
-        pi = PersistentInterfaceClass(self._obj.__name__, bases, {})
-        pi.__dict__.update(dict)
-        return pi
+    def unwrap(self):
+        return PersistentInterfaceClass(self._obj.__name__)
 
 def register():
     registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
-                    lambda iface: (iface.__bases__, iface.__dict__))
+                    lambda iface: (),
+                    lambda iface: iface.__dict__,
+                    )
