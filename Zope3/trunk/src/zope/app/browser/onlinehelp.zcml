@@ -33,6 +33,15 @@
       permission="zope.View"
       template="onlinehelptopic.pt"
       class="zope.app.browser.onlinehelp.OnlineHelpTopicView"
+      />
+      
+  <menuItem
+      for="*"
+      filter="python:request.getURL().find('++help++')==-1"
+      menu="zmi_actions"
+      title="Help"
+      action="++help++/@@index.html"
       /> 
+ 
 
 </zopeConfigure>
