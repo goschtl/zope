@@ -150,26 +150,32 @@ class InclusionProcessor:
     the output tree.
 
     """
-    def __init__(self, source, destination):
+    def __init__(self, source):
         if not os.path.exists(source):
             raise InclusionError("source directory does not exist: %r"
                                  % source)
         self.source = os.path.abspath(source)
-        self.destination = os.path.abspath(destination)
         self.manifests = []
         self.cvs_loader = None
 
-    def createDistributionTree(self, spec=None):
-        """Create the output tree according to the loaded specification.
+    def createDistributionTree(self, destination, spec=None):
+        """Create the output tree according to `specification`.
 
-        The destination directory will be created if it doesn't
-        already exist.
+        :Parameters:
+          - `destination`: Path of the top-level output directory.
+            This directory will be created if it doesn't exist.
+
+          - `spec`: ``Specification`` object that describes what to
+            include and exclude.  If omitted, an empty specification
+            is used.
+
         """
         if spec is None:
             spec = Specification(self.source)
-        self.copyTree(spec.source, self.destination, spec.excludes)
+        destination = os.path.abspath(destination)
+        self.copyTree(spec.source, destination, spec.excludes)
         for relpath, source in spec.includes.iteritems():
-            self.addSingleInclude(relpath, source, self.destination)
+            self.addSingleInclude(relpath, source, destination)
 
     def copyTree(self, source, destination, excludes={}):
         """Populate the destination tree from the source tree.

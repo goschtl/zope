@@ -32,8 +32,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
     def setUp(self):
         self.source = os.path.dirname(__file__)
         self.destination = tempfile.mkdtemp(prefix="test_include_")
-        self.processor = include.InclusionProcessor(self.source,
-                                                    self.destination)
+        self.processor = include.InclusionProcessor(self.source)
         self.spec = include.Specification(self.source)
         self.source = os.path.abspath(self.source)
 
@@ -129,13 +128,13 @@ class InclusionProcessorTestCase(unittest.TestCase):
 
     def test_createDistributionTree_creates_destination(self):
         os.rmdir(self.destination)
-        self.processor.createDistributionTree()
+        self.processor.createDistributionTree(self.destination)
         self.assert_(os.path.isdir(self.destination))
         self.assert_(os.path.isfile(join(self.destination, "ignorethis.txt")))
 
     def test_createDistributionTree(self):
         self.spec.load(StringIO("__init__.py -"), "<string>")
-        self.processor.createDistributionTree(self.spec)
+        self.processor.createDistributionTree(self.destination, self.spec)
         self.check_file("ignorethis.txt")
         self.check_file("somescript.py")
         self.assert_(not os.path.exists(join(self.destination, "__init__.py")))

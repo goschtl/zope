@@ -70,20 +70,20 @@ class Application:
         # This could be either a package distribution or a collection
         # distribution; it's the former if there's an __init__.py in
         # the source directory.
+        os.mkdir(self.destination)
+        self.ip = include.InclusionProcessor(self.source)
         name = "build_%s_distribution" % self.resource_type
         method = getattr(self, name)
         method()
         self.generate_setup()
 
     def build_package_distribution(self):
-        os.mkdir(self.destination)
         pkgname = self.metadata.name
 
-        self.ip = include.InclusionProcessor(
-            self.source, os.path.join(self.destination, pkgname))
         self.manifest = self.ip.add_manifest(self.destination)
+        pkgdest = os.path.join(self.destination, pkgname)
         try:
-            self.ip.createDistributionTree()
+            self.ip.createDistributionTree(pkgdest)
         except cvsloader.CvsLoadingError, e:
             print >>sys.stderr, e
             sys.exit(1)
@@ -103,11 +103,9 @@ class Application:
 
     def build_collection_distribution(self):
         # Build the destination directory:
-        self.ip = include.InclusionProcessor(self.source,
-                                             self.destination)
         self.manifest = self.ip.add_manifest(self.destination)
         try:
-            self.ip.createDistributionTree()
+            self.ip.createDistributionTree(self.destination)
         except cvsloader.CvsLoadingError, e:
             print >>sys.stderr, e
             sys.exit(1)
@@ -142,12 +140,12 @@ class Application:
     def generate_setup(self):
         setup_py = os.path.join(self.destination, "setup.py")
         self.ip.add_output(setup_py)
-        pkgname = self.resource_name
         type = self.resource_type
         f = open(setup_py, "w")
         print >>f, SETUP_HEADER
         print >>f, "context = zpkgtools.setup.%sContext(" % type.capitalize()
-        print >>f, "    %r, %r, __file__)" % (pkgname, self.options.version)
+        print >>f, "    %r, %r, __file__)" % (self.resource_name,
+                                              self.options.version)
         print >>f
         print >>f, "context.setup()"
         f.close()
