@@ -1,10 +1,6 @@
-<zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:security='http://namespaces.zope.org/security'
-   xmlns:zmi='http://namespaces.zope.org/zmi'
-   xmlns:browser='http://namespaces.zope.org/browser'
->
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-<security:defaultPrincipal id="anybody" title="Unauthenticated User" />
+<unauthenticatedPrincipal  id="anybody" 
+                           title="Unauthenticated User" />
 
 </zopeConfigure>
