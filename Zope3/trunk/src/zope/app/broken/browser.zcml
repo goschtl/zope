@@ -4,7 +4,7 @@
 
    <page
        name="index.html"
-       menu="zmi_views" title="What?"
+       menu="zmi_views" title="Broken object"
        for=".broken.IBroken"
        template="broken.pt"
        permission="zope.ManageContent"
