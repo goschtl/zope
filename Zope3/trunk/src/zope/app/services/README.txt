@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.2 $
+:Version: $Revision: 1.3 $
 
 .. contents::
 
@@ -304,7 +304,7 @@ dictionary which itself is stored as the attribute __annotations__.
 Because we don't want to stomp on a component's attributes (even if
 they have a __funky__ name) without its permission, a component must
 declare that it implements IAttributeAnnotatable; the implementation
-is registered as an adaptor from this interface to IAnnotations.
+is registered as an adapter from this interface to IAnnotations.
 
 To store the configuration back pointers on components, we use an
 annotation named "zope.app.services.configuration.UseConfiguration".
@@ -407,8 +407,8 @@ particular case, we must override ``add`` and ``nextURL`` because their
 default implementations only work when the add form is a view on an
 IAdding view.  That is the normal way to use add forms, but here we
 don't do that; this particular add form is a view on a local utility
-component.  Our ``AddConfiguration`` class subclasses 
-``zope.app.browser.services.configuration.AddComponentConfiguration``, 
+component.  Our ``AddConfiguration`` class subclasses
+``zope.app.browser.services.configuration.AddComponentConfiguration``,
 which provides the implementations of ``add`` and ``nextURL`` that we
 need. The ``add`` method defined in ``AddComponentConfiguration``
 finds the congiguration manager in the current folder and adds the new
