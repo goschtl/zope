@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPPATCH
 
-$Id: propfind.py 27237 2004-08-23 23:42:11Z jim $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
