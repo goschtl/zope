@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.13 2003/07/28 22:20:19 jim Exp $
+$Id: _app.py,v 1.14 2003/08/04 11:11:27 jim Exp $
 """
 
 import base64, time
@@ -25,7 +25,7 @@ from zope.app.publication.browser import BrowserPublication
 __metaclass__ = type
 
 _configured = 0
-def config(file):
+def config(file, execute=True):
     "Configure site globals"
     global _configured
 
@@ -40,13 +40,15 @@ def config(file):
     newSecurityManager(system_user)
 
     # Load server-independent site config
-    xmlconfig.file(file)
+    context = xmlconfig.file(file, execute=execute)
 
     # Reset user
     from zope.security.management import noSecurityManager
     noSecurityManager()
 
-    _configured = 1
+    _configured = execute
+
+    return context
 
 def database(db):
     if type(db) is str:
