@@ -10,6 +10,12 @@ Zope Changes
 
     New features
 
+    - Import checker utilitiy that can tell you which import statements in
+      your Python files are unused.
+
+    - New dependency finder utilitiy for determining dependencies of Python
+      packages and modules.
+
     - Renamed the "Common Tasks" box in the default skin to "Add:",
       since this is really just a list of things to be added.
 
@@ -38,6 +44,8 @@ Zope Changes
 
     Bug fixes
     
+    - Fixed inline-code support for Windows.
+
     - Reimplemented 'getRegisteredMatching()' of the Presentation Service,
       since it was not functioning at all.
 
@@ -51,6 +59,9 @@ Zope Changes
 
     Restructuring
 
+    - Removed session-specific mapping interfaces. The two that were not yet
+      available in zope.interface.common.mapping were added there.
+
     - Rearranged the package hierarchy below zope.app.
 
       o Moved content types, including their interfaces and browser
@@ -60,6 +71,34 @@ Zope Changes
 
     - Moved the i18n message string extraction utility to the
       'utilities' directory
+
+    Miscellaneous
+
+    - Gave many empty module doc strings a title. There are still many files
+      without titles.
+
+    - Added file headers (license) to Python and Python-C files. Still, not
+      all files have one yet.
+
+    - Gave many class and function doc strings some meaning, including some
+      that just contained XXX statements. Many more files exist that have
+      meaningless or incomplete doc strings.
+ 
+    - Removed unused imports.
+
+    Much thanks to everyone who contributed to this release:
+
+      Jim Fulton, Marius Gedminas, Jeremy Hylton, Fred Drake, Sidnei da Silva,
+      Philipp von Weitershausen, Steve Alexander, Andreas Jung, Anthony
+      Baxter, Kevin Littlejohn, Stuart Bishop, Christian Theune, Adam Summers,
+      Stephan Richter, Chris McDonough, Garrett Smith, Roger Ineichen, Gary
+      Poster, Martijn Faassen, Dominik Huber
+
+      Note: If you are not listed and contributed, please add yourself. This
+      note will be deleted before the release.
+
+  ------------------------------------------------------------------
+
 
   Zope X3.0.0 Milestone 4
 
