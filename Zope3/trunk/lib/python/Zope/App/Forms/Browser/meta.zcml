@@ -14,6 +14,14 @@
        handler=".EditView.subedit"
        />
 
+    <directive
+       name="add" 
+       attributes="name schema label for layer permission class
+                   template content_factory argument keyword_arguments
+                   set_before_add set_after_add"
+       handler=".add."
+       />
+
   </directives>
 
 </zopeConfigure>

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: EditView.py,v 1.4 2002/12/11 13:55:59 jim Exp $
+$Id: EditView.py,v 1.5 2002/12/19 20:15:30 jim Exp $
 """
 
 from datetime import datetime
@@ -151,7 +151,7 @@ def EditViewFactory(name, schema, label, permission, layer,
                   
 
 def _normalize(_context, schema_, for_, class_, template, default_template,
-               fields, omit):
+               fields, omit, view=EditView):
     schema = _context.resolve(schema_)
 
     if for_ is None:
@@ -160,9 +160,9 @@ def _normalize(_context, schema_, for_, class_, template, default_template,
         for_ = _context.resolve(for_)
 
     if class_ is None:
-        bases = (EditView, )
+        bases = (view, )
     else:
-        bases = (_context.resolve(class_), EditView)
+        bases = (_context.resolve(class_), view)
         
 
     if template is not None:
