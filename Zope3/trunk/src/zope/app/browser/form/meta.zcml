@@ -5,6 +5,10 @@
     <directive name="editform" handler=".editview.edit">
 
       <description>
+        Define an automatically generated edit form
+
+        The editForm directive creates and register's a view for
+        editing an object based on a schema.
       </description>
 
       <attribute name="name" required="yes">
@@ -21,7 +25,7 @@
         </description>
         </attribute>
 
-      <attribute name="label" required="yes">
+      <attribute name="label" required="no">
         <description>
         A label to be used as the heading for the form.
         </description>
@@ -34,8 +38,9 @@
         The view will be for all objects that implement this interface.
 
         The schema is used if the for attribute is not specified.
-        If the for attribute is specified, the given
-        interface must extend the schema.
+
+        If the for attribute is specified, then the objects views must
+        implement or be adaptable to the schema.
         </description>
         </attribute>
 
@@ -68,6 +73,9 @@
         <description>
         A class to provide custom widget definitions or methods to be
         used by a custom template.
+
+        This class is used as a mix-in class. As a result, it needn't
+        subclass any special classes, such as BrowserView.
         </description>
         </attribute>
 
@@ -101,11 +109,156 @@
 
     <directive
        name="addform" 
-       attributes="name schema label for layer permission class
-                   template content_factory argument keyword_arguments
-                   set_before_add set_after_add"
        handler="zope.app.browser.form.add.add"
-       />
+       >       
+      <description>
+        Define an automatically generated add form
+
+        The addForm directive creates and register's a view for
+        adding an object based on a schema.
+
+        Adding an object is a bit trickier than editing an object,
+        because the object the schema applies to isn't available when
+        forms are being rendered.  The addForm directive provides an
+        customization interface to overcome this difficulty.
+
+        See zope.app.interfaces.browser.form.IAddFormCustomization.
+      </description>
+
+      <attribute name="name" required="yes">
+        <description>
+        The name of the generated add view.
+        </description>
+        </attribute>
+
+      <attribute name="schema" required="yes">
+        <description>
+        The schema from which the add form is generated.
+
+        A schema is an interface that includes fields.
+        </description>
+        </attribute>
+
+      <attribute name="label" required="no">
+        <description>
+        A label to be used as the heading for the form.
+        </description>
+        </attribute>
+
+      <attribute name="for" required="no">
+        <description>
+        The interface this page (view) applies to. 
+
+        The view will be for all objects that implement this interface.
+
+        zope.app.interfaces.container.IAdding is used if this
+        attribute isn't specified.  If this attribute is specified,
+        then either the named interface must extend IAdding or a class
+        attribute must be used to supply a class implements certain
+        methods described in
+        zope.app.interfaces.browser.form.IAddFormCustomization.
+
+        The schema is used if the for attribute is not specified.
+
+        If the for attribute is specified, then the objects views must
+        implement or be adaptable to the schema.
+        </description>
+        </attribute>
+
+      <attribute name="layer" required="no">
+        <description>
+              The layer the view is in. 
+
+              A skin is composed of layers. It is common to put skin specific
+              views in a layer named after the skin. If the 'layer' attribute
+              is not supplied, it defaults to 'default'. 
+          </description>
+        </attribute>
+
+
+       <attribute name="permission" required="yes">
+        <description>
+              The permission needed to use the view. 
+          </description>
+        </attribute>
+
+      <attribute name="template" required="no">
+        <description>
+        An alternate template to use for the edit form.
+
+        XXX Need to document how to extend the default.
+        </description>
+        </attribute>
+
+      <attribute name="class" required="no">
+        <description>
+        A class to provide custom widget definitions or methods to be
+        used by a custom template.
+
+	This class can override methods defined in IAddFormCustomization.
+
+        This class is used as a mix-in class. As a result, it needn't
+        subclass any special classes, such as BrowserView.
+        </description>
+        </attribute>
+
+
+      <attribute name="content_factory" required="no">
+        <description>
+          The dotted name of an object to call to create new content objects.
+
+          This attribute isn't used if a class is specified that
+          implements createAndAdd.
+          </description>
+        </attribute>
+
+      <attribute name="arguments" required="no">
+        <description>
+          A list of field names to supply as positional arguments to
+          the factory.
+        </description>
+      </attribute>
+
+      <attribute name="keyword_arguments" required="no">
+        <description>
+          A list of field names to supply as keyword arguments to
+          the factory.
+        </description>
+      </attribute>
+
+      <attribute name="set_before_add" required="no">
+        <description>
+          A list of fields to be assigned to the newly created object
+          before it is added.
+        </description>
+      </attribute>
+
+      <attribute name="set_after_add" required="no">
+        <description>
+          A list of fields to be assigned to the newly created object
+          after it is added.
+        </description>
+      </attribute>
+
+      <attribute name="menu" required="no">
+        <description>
+          The browser menu to include the edit form in.
+
+          Many views are included in menus. It's convenient to name
+          the menu in the page directive, rather than having to give a
+          separate menuItem directive.
+          </description>
+        </attribute>
+
+      <attribute name="title" required="no">
+        <description>
+          The browser menu label for the edit form
+
+          This attribute defaults to "Edit".
+          </description>
+        </attribute>
+
+      </directive>
 
   </directives>
 

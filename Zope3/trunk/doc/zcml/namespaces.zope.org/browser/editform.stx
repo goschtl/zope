@@ -1,6 +1,9 @@
-editform (function edit)
+ZCML editform directive
 
-
+  Define an automatically generated edit form
+  
+  The editForm directive creates and register's a view for
+  editing an object based on a schema.
 
   Attributes
 
@@ -10,8 +13,7 @@ editform (function edit)
       
       A skin is composed of layers. It is common to put skin specific
       views in a layer named after the skin. If the 'layer' attribute
-      is not supplied, it defaults to
-      'default'.
+      is not supplied, it defaults to 'default'.
 
     title -- (optional) 
 
@@ -27,17 +29,16 @@ editform (function edit)
 
       The interface this page (view) applies to.
       
-      The view will be for all objects that implement this
+      The view will be for all objects that implement this interface.
       
       The schema is used if the for attribute is not specified.
-      interface. If the for attribute is specified, the given
-      interface must extend the schema.
+      
+      If the for attribute is specified, then the objects views must
+      implement or be adaptable to the schema.
 
     permission -- (required) 
 
       The permission needed to use the view.
-      
-      This attribute is required.
 
     menu -- (optional) 
 
@@ -49,14 +50,17 @@ editform (function edit)
 
     schema -- (required) 
 
-      The schema from which the edir form is generated.
+      The schema from which the edit form is generated.
       
       A schema is an interface that includes fields.
 
     class -- (optional) 
 
-      A class to provide custom widget defineitions or methods to be
+      A class to provide custom widget definitions or methods to be
       used by a custom template.
+      
+      This class is used as a mix-in class. As a result, it needn't
+      subclass any special classes, such as BrowserView.
 
     template -- (optional) 
 
@@ -64,7 +68,7 @@ editform (function edit)
       
       XXX Need to document how to extend the default.
 
-    label -- (required) 
+    label -- (optional) 
 
       A label to be used as the heading for the form.
 
