@@ -13,40 +13,136 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.20 2003/06/05 20:56:17 gvanrossum Exp $
+Revision information: $Id: contents.py,v 1.21 2003/06/12 09:30:48 jim Exp $
 """
+
+from zope.app import zapi
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-
-from zope.component import queryView, queryAdapter, getAdapter, getService
 from zope.publisher.browser import BrowserView
-from zope.app.traversing import traverse, getPath, joinPath
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.interfaces.copypastemove import IObjectCopier
 from zope.app.interfaces.copypastemove import IObjectMover
+from zope.app.interfaces.container import IPasteTarget
+from zope.app.interfaces.container import ICopySource, IMoveSource
+from zope.app.interfaces.dublincore import IDCDescriptiveProperties
+from zope.app.i18n import ZopeMessageIDFactory as _
+
+from zope.app.browser.container.adding import BasicAdding
+
 
 class Contents(BrowserView):
 
     __used_for__ = IContainer
 
+    error = ''
+    message = ''
+    normalButtons = False
+    specialButtons = False
+
+    def listContentInfo(self):
+        request = self.request
+
+        if  "container_cancel_button" in request:
+            if "type_name" in request:
+                del request.form['type_name']
+            if "rename_ids" in request and "new_value" in request:
+                del request.form['rename_ids']
+            if "retitle_id" in request and "new_value" in request:
+                del request.form['retitle_id']
+
+            return self._normalListContentsInfo()
+
+        elif "type_name" in request and "new_value" in request:
+            self.addObject()
+        elif "rename_ids" in request and "new_value" in request:
+            self.renameObjects()
+        elif "retitle_id" in request and "new_value" in request:
+            self.changeTitle()
+        elif "container_cut_button" in request:
+            self.cutObjects()
+        elif "container_copy_button" in request:
+            self.copyObjects()
+        elif "container_paste_button" in request:
+            self.pasteObjects()
+        elif "container_delete_button" in request:
+            self.removeObjects()
+        else:
+            return self._normalListContentsInfo()
+
+        if self.error:
+            return self._normalListContentsInfo()
+
+        status = request.response.getStatus()
+        if status not in (302, 303):
+            # Only redirect if nothing else has
+            request.response.redirect(request.URL)
+        return ()
+
+    def _normalListContentsInfo(self):
+        request = self.request
+
+        self.specialButtons = (
+                 'type_name' in request or
+                 'rename_ids' in request or
+                 'container_rename_button' in request or
+                 'retitle_id' in request
+                 )
+        self.normalButtons = not self.specialButtons
+
+        info = map(self._extractContentInfo,
+                   zapi.getAdapter(self.context, IZopeContainer).items())
+
+        self.supportsCut = (
+            info and zapi.queryAdapter(self.context, IMoveSource) is not None)
+        self.supportsCopy = (
+            info and zapi.queryAdapter(self.context, ICopySource) is not None)
+        self.supportsPaste = (
+            zapi.queryAdapter(self.context, IPasteTarget) is not None)
+
+        self.supportsRename = self.supportsCut and self.supportsPaste
+
+        return info
+        
+
     def _extractContentInfo(self, item):
+        request = self.request
+
+
+        rename_ids = {}
+        if "container_rename_button" in request:
+            for rename_id in request.get('ids', ()):
+                rename_ids[rename_id] = rename_id
+        elif "rename_ids" in request:
+            for rename_id in request.get('rename_ids', ()):
+                rename_ids[rename_id] = rename_id
+                
+        
+        retitle_id = request.get('retitle_id')
+        
         id, obj = item
         info = {}
-        info['id'] = id
+        info['id'] = info['cb_id'] = id
         info['object'] = obj
 
         info['url'] = id
+        info['rename'] = rename_ids.get(id)
+        info['retitle'] = id == retitle_id
+        
 
-        zmi_icon = queryView(obj, 'zmi_icon', self.request)
+        zmi_icon = zapi.queryView(obj, 'zmi_icon', self.request)
         if zmi_icon is None:
             info['icon'] = None
         else:
             info['icon'] = zmi_icon()
 
-        dc = queryAdapter(obj, IZopeDublinCore)
+        dc = zapi.queryAdapter(obj, IZopeDublinCore)
         if dc is not None:
+            info['retitleable'] = id != retitle_id
+            info['plaintitle'] = 0
+            
             title = dc.title
             if title:
                 info['title'] = title
@@ -59,59 +155,107 @@ class Contents(BrowserView):
             modified = dc.modified
             if modified is not None:
                 info['modified'] = formatter.format(modified)
+        else:
+            info['retitleable'] = 0
+            info['plaintitle'] = 1
 
-        sized_adapter = queryAdapter(obj, ISized)
+
+        sized_adapter = zapi.queryAdapter(obj, ISized)
         if sized_adapter is not None:
             info['size'] = sized_adapter
         return info
 
-    def renameObjects(self, ids, newids):
+    def renameObjects(self):
         """Given a sequence of tuples of old, new ids we rename"""
-        container = getAdapter(self.context, IZopeContainer)
-        for id, newid in zip(ids, newids):
-            if newid != id:
-                container.rename(id, newid)
-        self.request.response.redirect('@@contents.html')
+        request = self.request
+        ids = request.get("rename_ids")
+        newids = request.get("new_value")
 
-    def removeObjects(self, ids):
+        for id, newid in map(None, ids, newids):
+            if newid != id:
+                container = zapi.getAdapter(self.context, IZopeContainer)
+                container.rename(id, newid)
+
+    def changeTitle(self):
+        """Given a sequence of tuples of old, new ids we rename"""
+        request = self.request
+        id = request.get("retitle_id")
+        new = request.get("new_value")
+
+        item = self.context[id]
+        dc = zapi.getAdapter(item, IDCDescriptiveProperties)
+        dc.title = new
+
+    def addObject(self):
+        request = self.request
+        new = request["new_value"]
+        if new:
+            adding = zapi.queryView(self.context, "+", request)
+            if adding is None:
+                adding = BasicAdding(self.context, request)
+            else:
+                # Set up context so that the adding can build a url
+                # if the type name names a view.
+                # Note that we can't so this for the "adding is None" case
+                # above, because there is no "+" view.
+                adding = zapi.ContextWrapper(adding, self.context, name="+")
+
+            adding.action(request['type_name'], new)
+
+            
+
+            
+    def removeObjects(self):
         """Remove objects specified in a list of object ids"""
-        container = getAdapter(self.context, IZopeContainer)
+        request = self.request
+        ids = request.get('ids')
+        if not ids:
+            self.error = _("You didn't specify any ids to rename.")
+            return
+                 
+        container = zapi.getAdapter(self.context, IZopeContainer)
         for id in ids:
             container.__delitem__(id)
 
-        self.request.response.redirect('@@contents.html')
-
-    def copyObjects(self, ids):
+    def copyObjects(self):
         """Copy objects specified in a list of object ids"""
-        container_path = getPath(self.context)
+        request = self.request
+        ids = request.get('ids')
+        if not ids:
+            self.error = _("You didn't specify any ids to copy.")
+            return
+                 
+        container_path = zapi.getPath(self.context)
 
         user = self.request.user
-        annotationsvc = getService(self.context, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = getAdapter(annotations, IPrincipalClipboard)
+        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
         clipboard.clearContents()
         items = []
         for id in ids:
-            items.append(joinPath(container_path, id))
+            items.append(zapi.joinPath(container_path, id))
         clipboard.addItems('copy', items)
 
-        self.request.response.redirect('@@contents.html')
-
-    def cutObjects(self, ids):
+    def cutObjects(self):
         """move objects specified in a list of object ids"""
-        container_path = getPath(self.context)
+        request = self.request
+        ids = request.get('ids')
+        if not ids:
+            self.error = _("You didn't specify any ids to cut.")
+            return
+
+        container_path = zapi.getPath(self.context)
 
         user = self.request.user
-        annotationsvc = getService(self.context, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = getAdapter(annotations, IPrincipalClipboard)
+        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
         clipboard.clearContents()
         items = []
         for id in ids:
-            items.append(joinPath(container_path, id))
+            items.append(zapi.joinPath(container_path, id))
         clipboard.addItems('cut', items)
-
-        self.request.response.redirect('@@contents.html')
 
     def pasteObjects(self):
         """Iterate over clipboard contents and perform the
@@ -119,47 +263,41 @@ class Contents(BrowserView):
         target = self.context
 
         user = self.request.user
-        annotationsvc = getService(self.context, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
-        clipboard = getAdapter(annotations, IPrincipalClipboard)
+        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
         items = clipboard.getContents()
         for item in items:
-            obj = traverse(target, item['target'])
+            obj = zapi.traverse(target, item['target'])
             if item['action'] == 'cut':
-                getAdapter(obj, IObjectMover).moveTo(target)
-                # XXX need to remove the item from the clipboard here
-                # as it will not be available anymore from the old location
+                zapi.getAdapter(obj, IObjectMover).moveTo(target)
+                clipboard.clearContents()
             elif item['action'] == 'copy':
-                getAdapter(obj, IObjectCopier).copyTo(target)
+                zapi.getAdapter(obj, IObjectCopier).copyTo(target)
             else:
                 raise
-
-        self.request.response.redirect('@@contents.html')
 
     def hasClipboardContents(self):
         """ interogates the PrinicipalAnnotation to see if
            clipboard contents exist """
 
+        if not self.supportsPaste:
+            return False
+
         user = self.request.user
 
-        annotationsvc = getService(self.context, 'PrincipalAnnotation')
+        annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
         
-        clipboard = getAdapter(annotations, IPrincipalClipboard)
+        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
 
         if clipboard.getContents():
             return True
 
         return False
 
-    def listContentInfo(self):
-        return map(self._extractContentInfo,
-                   getAdapter(self.context, IZopeContainer).items())
-
-    contents = ViewPageTemplateFile('main.pt')
+    contents = ViewPageTemplateFile('contents.pt')
     contentsMacros = contents
-
-    rename = ViewPageTemplateFile('rename.pt')
 
     _index = ViewPageTemplateFile('index.pt')
 

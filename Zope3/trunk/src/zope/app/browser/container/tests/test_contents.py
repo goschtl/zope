@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.20 2003/06/09 16:39:11 alga Exp $
+$Id: test_contents.py,v 1.21 2003/06/12 09:30:49 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -145,7 +145,9 @@ class BaseTestContentsBrowserView(PlacelessSetup):
            )
         clearEvents()
 
-        fc.removeObjects(['document2'])
+        fc.request.form.update({'ids': ['document2']})
+
+        fc.removeObjects()
 
         self.failUnless(
             getEvents(IObjectRemovedEvent,
@@ -213,7 +215,10 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         for id in ids:
             document = Document()
             container.setObject(id, document)
-        fc.renameObjects(ids, ['document1_1', 'document2_2'])
+        fc.request.form.update({'rename_ids': ids,
+                                'new_value': ['document1_1', 'document2_2']
+                                })
+        fc.renameObjects()
         self.failIf('document1_1' not in container)
         self.failIf('document1' in container)
 
@@ -224,7 +229,9 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         for id in ids:
             document = Document()
             container.setObject(id, document)
-        fc.copyObjects(ids)
+
+        fc.request.form['ids'] = ids
+        fc.copyObjects()
         fc.pasteObjects()
         self.failIf('document1' not in container)
         self.failIf('document2' not in container)
@@ -235,7 +242,8 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         container = traverse(self.rootFolder, 'folder1')
         fc = self._TestView__newView(container)
         ids = ['folder1_1']
-        fc.copyObjects(ids)
+        fc.request.form['ids'] = ids
+        fc.copyObjects()
         fc.pasteObjects()
         self.failIf('folder1_1' not in container)
         self.failIf('copy_of_folder1_1' not in container)
@@ -244,7 +252,8 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         container = traverse(self.rootFolder, '/folder1/folder1_1')
         fc = self._TestView__newView(container)
         ids = ['folder1_1_1']
-        fc.copyObjects(ids)
+        fc.request.form['ids'] = ids
+        fc.copyObjects()
         fc.pasteObjects()
         self.failIf('folder1_1_1' not in container)
         self.failIf('copy_of_folder1_1_1' not in container)
@@ -255,7 +264,8 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         fc = self._TestView__newView(container)
         tg = self._TestView__newView(target)
         ids = ['folder1_1_1']
-        fc.copyObjects(ids)
+        fc.request.form['ids'] = ids
+        fc.copyObjects()
         tg.pasteObjects()
         self.failIf('folder1_1_1' not in container)
         self.failIf('folder1_1_1' not in target)
@@ -267,7 +277,8 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         for id in ids:
             document = Document()
             container.setObject(id, document)
-        fc.cutObjects(ids)
+        fc.request.form['ids'] = ids
+        fc.cutObjects()
         fc.pasteObjects()
         self.failIf('document1' not in container)
         self.failIf('document2' not in container)
@@ -276,7 +287,8 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         container = traverse(self.rootFolder, 'folder1')
         fc = self._TestView__newView(container)
         ids = ['folder1_1']
-        fc.cutObjects(ids)
+        fc.request.form['ids'] = ids
+        fc.cutObjects()
         fc.pasteObjects()
         self.failIf('folder1_1' not in container)
 
@@ -284,7 +296,8 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         container = traverse(self.rootFolder, '/folder1/folder1_1')
         fc = self._TestView__newView(container)
         ids = ['folder1_1_1']
-        fc.cutObjects(ids)
+        fc.request.form['ids'] = ids
+        fc.cutObjects()
         fc.pasteObjects()
         self.failIf('folder1_1_1' not in container)
 
@@ -294,7 +307,8 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         fc = self._TestView__newView(container)
         tg = self._TestView__newView(target)
         ids = ['folder1_1_1']
-        fc.cutObjects(ids)
+        fc.request.form['ids'] = ids
+        fc.cutObjects()
         tg.pasteObjects()
         self.failIf('folder1_1_1' in container)
         self.failIf('folder1_1_1' not in target)

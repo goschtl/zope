@@ -248,29 +248,28 @@
       file="folder_icon.gif" 
       />
 
-  <browser:menuItems menu="zmi_views"
-      for="zope.app.interfaces.content.folder.IFolder">
-
-    <browser:menuItem title="Contents" 
-        action="@@contents.html"
-        />
-
-  </browser:menuItems>
-
   <browser:menuItem menu="add_content"
       for="zope.app.interfaces.container.IAdding"
       title="Folder" action="Folder"
       description="A simple Folder." 
       />
 
-  <browser:pages
+  <browser:page
+      name="contents.html" 
+      menu="zmi_views" title="Contents"
+      for="zope.app.interfaces.content.folder.IFolder"
+      permission="zope.ManageContent" 
+      class="zope.app.browser.container.contents.Contents"
+      attribute="contents"
+      />
+
+  <browser:page
+      name="index.html" 
       for="zope.app.interfaces.content.folder.IFolder"
       permission="zope.View" 
-      class="zope.app.browser.container.contents.Contents">
-
-    <browser:page name="index.html" attribute="index" />
-
-  </browser:pages>
+      class="zope.app.browser.container.contents.Contents"
+      attribute="index" 
+      />
 
   <browser:page
       for="zope.app.interfaces.content.folder.IFolder"
