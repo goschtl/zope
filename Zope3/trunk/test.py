@@ -483,6 +483,7 @@ def get_suite(file):
     except ImportError, err:
         # print traceback
         print "Error importing %s\n%s" % (modname, err)
+        traceback.print_exc()
         if debug:
             raise
         return None
@@ -581,6 +582,8 @@ def runner(files, test_filter, debug):
             r.print_times(sys.stdout, timetests)
     except:
         if debugger:
+            print "%s:" % (sys.exc_info()[0], )
+            print sys.exc_info()[1]
             pdb.post_mortem(sys.exc_info()[2])
         else:
             raise
