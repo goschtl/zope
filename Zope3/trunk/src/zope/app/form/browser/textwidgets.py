@@ -207,6 +207,30 @@ class ASCIIWidget(BytesWidget):
     Single-line data (string) input
     """
 
+
+class URIDisplayWidget(DisplayWidget):
+    """URI display widget.
+
+    :ivar linkTarget:
+      The value of the ``target`` attribute for the generated hyperlink.
+      If this is not set, no ``target`` attribute is generated.
+
+    """
+
+    linkTarget = None
+
+    def __call__(self):
+        if self._renderedValueSet():
+            content = self._data
+        else:
+            content = self.context.default
+        content = escape(content)
+        kw = dict(contents=content, href=content)
+        if self.linkTarget:
+            kw["target"] = self.linkTarget
+        return renderElement("a", **kw)
+
+
 class TextAreaWidget(SimpleInputWidget):
     """TextArea widget.
 

@@ -23,7 +23,9 @@ from zope.publisher.browser import TestRequest
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextWidget
+from zope.app.form.browser.textwidgets import URIDisplayWidget
 from zope.app.tests.placelesssetup import setUp, tearDown
+from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.form.browser.tests.test_browserwidget import SimpleInputWidgetTest
 
 
@@ -116,9 +118,28 @@ class TextWidgetTest(SimpleInputWidgetTest):
         self._widget.extra = 'style="color: red"'
         self.verifyResult(self._widget.hidden(), check_list)
 
+
+class URIDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = URIDisplayWidget
+
+    def testProperties(self):
+        # check the default linkTarget
+        self.failIf(self._widget.linkTarget)
+
+    def testRender(self):
+        value = "uri:fake"
+        self._widget.setRenderedValue(value)
+        self.verifyResult(self._widget(), ["<a", 'href="uri:fake"'])
+        self._widget.linkTarget = "there"
+        self.verifyResult(self._widget(), ["<a", 'href="uri:fake"',
+                                           'target="there"'])
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TextWidgetTest),
+        unittest.makeSuite(URIDisplayWidgetTest),
         doctest.DocTestSuite(),
         ))
 
