@@ -13,19 +13,19 @@ Installation
   http://python-ldap.sourceforge.net/download.shtml</a>
   
   Install the downloaded package python-ldap like described in the
-  download. You can find additional information abaout the installation
+  download. You can find additional information about the installation
   of this package under 
   <a href="http://python-ldap.sourceforge.net" target="_blank">http://python-ldap.sourceforge.net</a> 
   
   Copy this package "ldapadapter" to the "src" folder of your
-  Zope installation.
+  Zope installation (or to lib/python of your instance, if you are using a Zope
+  release).
   
-  Add a file with the name "ldapadapter-configure.zcml" to the
-  package-includes folder of your installation and add the following
-  content
+  Add a file named "ldapadapter-configure.zcml" to the package-includes folder
+  of your installation and add the following content
   
   ::
 
     <include package="ldapadapter"/>
 
-  Make shure there is a LDAP server available!
+  Make shure there is an LDAP server available!
