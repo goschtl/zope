@@ -159,6 +159,8 @@ Zope Changes
     - Moved the i18n message string extraction utility to the
       'utilities' directory
 
+    - Moved placefulsetup to zope.app.site.tests.
+
     Miscellaneous
 
     - Keep Zope3 Wiki product uptodate with API changes. Furthermore update
