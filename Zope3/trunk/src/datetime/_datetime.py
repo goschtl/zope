@@ -1638,7 +1638,8 @@ class datetimetz(datetime):
         if otoff is None:
             return other
 
-        other += otoff - myoff
+        total_added_to_other = otoff - myoff
+        other += total_added_to_other
         # If tz is a fixed-offset class, we're done, but we can't know
         # whether it is.  If it's a DST-aware class, and we're not near a
         # DST boundary, we're also done.  If we crossed a DST boundary,
@@ -1649,7 +1650,9 @@ class datetimetz(datetime):
         if newoff is None:
             self._inconsistent_utcoffset_error()
         if newoff != otoff:
-            other += newoff - otoff
+            delta = newoff - otoff
+            total_added_to_other += delta
+            other += delta
             otoff = other.utcoffset()
             if otoff is None:
                 self._inconsistent_utcoffset_error()
@@ -1662,17 +1665,30 @@ class datetimetz(datetime):
         altoff = alt.utcoffset()
         if altoff is None:
             self._inconsistent_utcoffset_error()
-        # Are alt and other really the same time?  alt == other iff
+        # Are alt and other really the same time?  They are iff
         # alt - altoff == other - otoff, iff
         # (other - _HOUR) - altoff = other - otoff, iff
         # otoff - altoff == _HOUR
+        # Note that the Python comparison "alt == other" would return false,
+        # though, because they have same tzinfo member, and utcoffset() is
+        # ignored when comparing times w/ the same tzinfo.
         diff = otoff - altoff
+
+        # Enable the assert if you're dubious; it's expensive.
+        ##assert ((diff == _HOUR) ==
+        ##        (alt.replace(tzinfo=None) - alt.utcoffset() ==
+        ##         other.replace(tzinfo=None) - other.utcoffset()))
         if diff == _HOUR:
             return alt      # use the local time that makes sense
 
         # There's still a problem with the unspellable (in local time)
-        # hour after DST ends.
-        if self == other:
+        # hour after DST ends.  other's local time now is
+        # self + total_added_to_other, so self == other iff
+        # self - myoff = other - otoff, iff
+        # self - myoff = self + total_added_to_other - otoff, iff
+        # total_added_to_other == otoff - myoff
+        ##assert (self == other) == (total_added_to_other == otoff - myoff)
+        if total_added_to_other == otoff - myoff:
             return other
         # Else there's no way to spell self in zone other.tz.
         raise ValueError("astimezone():  the source datetimetz can't be "
