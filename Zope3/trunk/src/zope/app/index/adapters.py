@@ -1,4 +1,5 @@
 from zope.index.interfaces import IQuerying, ISimpleQuery
+from zodb.btrees.IIBTree import IISet
 
 
 class SimpleQuery:
@@ -10,5 +11,6 @@ class SimpleQuery:
 
     def query(self, term, start=0, count=None):
         reslist, count = self._index.query(term, start, count)
-        reslist = [ x[0] for x in reslist ]
+        # Not really optimal, this. May be a better way?
+        reslist = IISet([ x[0] for x in reslist ])
         return reslist
