@@ -16,8 +16,10 @@
 This module contains advanced core query mechanisms. See the
 docstrings and interfaces.py for more information.
 
-$Id: query.py,v 1.4 2004/04/01 17:23:28 faassen Exp $
+$Id: query.py,v 1.5 2004/04/01 17:50:19 faassen Exp $
 """
+
+from zope.interface import implements
 
 def advancedQueryMechanism(arguments,action='query',
                            tabs=''):
