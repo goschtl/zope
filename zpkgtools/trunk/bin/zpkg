@@ -97,6 +97,7 @@ class Application:
         pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
         if pkginfo.documentation:
             setup_cfg = os.path.join(self.destination, "setup.cfg")
+            self.ip.add_output(setup_cfg)
             prefix = "doc_files = "
             s = "\n" + (" " * len(prefix))
             f = open(setup_cfg, "w")
@@ -145,6 +146,7 @@ class Application:
 
     def generateSetup(self):
         setup_py = os.path.join(self.destination, "setup.py")
+        self.ip.add_output(setup_py)
         pkgname = self.resource_name
         type = self.resource_type
         f = open(setup_py, "w")
