@@ -26,17 +26,6 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 
 class ILDAPAdapter(Interface):
     """Adapter to an LDAP server."""
-    serverUrl = TextLine(
-        title=_("Server URL"),
-        description=_(
-            "Specify the LDAP URL of the server. Examples:\n"
-            "\n"
-            "ldap:///\n",
-            "ldap://localhost:389/\n",
-            ),
-        default=u"ldap://localhost",
-        required=True,
-        )
     host = TextLine(
         title=_("Host"),
         default=u'localhost',
@@ -52,11 +41,27 @@ class ILDAPAdapter(Interface):
         default=False,
         )
 
-    def connect(dn, password):
+    def connect(dn, password=None):
         """Connect to the server.
 
         Returns an ILDAPConnection.
         """
+
+class ILDAPAdapterManagement(Interface):
+    serverURL = TextLine(
+        title=_("Server URL"),
+        description=_(
+            "Specify the LDAP URL of the server. Examples:\n"
+            "\n"
+            "ldap:///\n",
+            "ldaps://localhost:389/\n",
+            ),
+        default=u"ldap://localhost",
+        )
+
+class IManageableLDAPAdapter(ILDAPAdapter,
+                             ILDAPAdapterManagement):
+    """LDAP Adapter with management functions."""
 
 
 class ILDAPConnection(Interface):
