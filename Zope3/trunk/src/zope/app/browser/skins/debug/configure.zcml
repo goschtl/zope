@@ -4,13 +4,14 @@
 >
 
   <browser:skin name="Debug" layers="debug rotterdam default" />
-  
+
   <browser:page 
       name="index.html"
       template="error_debug.pt"
       for="zope.interface.common.interfaces.IException"
-      class=".exceptions.ExceptionDebugView" 
+      class=".exceptions.ExceptionDebugView"
       permission="zope.Public"
+      layer="debug"
       />
 
 </zopeConfigure>
