@@ -13,7 +13,7 @@
 ##############################################################################
 """Functions that control how the Zope appserver knits itself together.
 
-$Id: main.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
+$Id: main.py,v 1.3 2003/10/13 21:55:12 fdrake Exp $
 """
 
 import logging
@@ -78,6 +78,9 @@ def setup(args=None):
     options.schemadir = os.path.dirname(os.path.abspath(__file__))
     options.realize(args)
     options = options.configroot
+
+    if options.path:
+        sys.path[:0] = [os.path.abspath(p) for p in options.path]
 
     sys.setcheckinterval(options.check_interval)
 
