@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.11 2003/03/11 16:11:22 jim Exp $
+$Id: adapter.py,v 1.12 2003/03/21 21:07:40 jim Exp $
 """
 __metaclass__ = type
 
@@ -156,7 +156,11 @@ class AdapterConfiguration(SimpleConfiguration):
     #     required=False,explicitly_unrequired=True in the schema field
     #     so None will get passed in.
     def __init__(self, forInterface=None, providedInterface=None,
-                 factoryName=None, adapterName=u''):
+                 factoryName=None, adapterName=u'',
+                 # XXX The permission isn't plumbed. We're going to
+                 # redo all of this anyway.  
+                 permission=None,
+                 ):
         if None in (providedInterface, factoryName):
             raise TypeError(
                 "Must provide 'providedInterface' and 'factoryName'")
