@@ -13,10 +13,12 @@
 ##############################################################################
 """Pluggable Authentication Service views.
 
-$Id: __init__.py,v 1.4 2003/07/10 09:27:40 alga Exp $
+$Id: __init__.py,v 1.5 2003/09/21 17:30:53 jim Exp $
 """
-from zope.app.browser.services.service import Adding
-from zope.context import ContextSuper
+
+from zope.app import zapi
+from zope.app.publisher.browser import BrowserView
+from zope.app.browser.container.adding import Adding
 from zope.app.interfaces.services.pluggableauth import IPrincipalSource
 
 class PrincipalSourceAdding(Adding):
@@ -29,4 +31,15 @@ class PrincipalSourceAdding(Adding):
         if not IPrincipalSource.isImplementedBy(content):
             raise TypeError("%s is not a readable principal source" % content)
 
-        return ContextSuper(PrincipalSourceAdding, self).add(content)
+        return super(PrincipalSourceAdding, self).add(content)
+
+class PrincipalAdd(BrowserView):
+
+    def add(self, content):
+        name = content.login
+        self.context[name] = content
+        return self.context[name]
+
+    def nextURL(self):
+        return "@@contents.html"
+
