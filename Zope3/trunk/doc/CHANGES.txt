@@ -74,6 +74,14 @@ Zope Changes
 
     Bug fixes
     
+    - Fixed issue 140. The problem was that a 'FileUpload' object was created,
+      even though no file was uploaded. On top of it the underlying
+      'FieldStorage' object provided an empty filename and the data of the
+      storage was '\r'. Fixed all this by not adding a 'FileUpload' object to
+      the request's form when the filename is empty. Added explanatory comment.
+      Added new functional tests for 'Image' objects to verify the correct
+      behavior.
+
     - Fixed issue 119. Unicode-based names are handled correctly now.
 
     - Fixed issue 128. The TALES Iterator class is now up-to-date.
@@ -111,6 +119,10 @@ Zope Changes
       LocationProxies for all adapters which do not implement ILocation itself.
 
     Restructuring
+
+    - Modernized File and Image (as well as their I18n equivalent) to use
+      schemas. I also removed a lot of unnecessary methods in the objects and
+      their views.
 
     - Removed session-specific mapping interfaces. The two that were not yet
       available in zope.interface.common.mapping were added there.
