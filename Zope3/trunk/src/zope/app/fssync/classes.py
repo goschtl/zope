@@ -13,40 +13,18 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.8 2003/06/09 18:48:52 gvanrossum Exp $
+$Id: classes.py,v 1.9 2003/06/09 21:38:09 gvanrossum Exp $
 """
 
 import os
 
-from zope.app.content.file import File
-from zope.app.content.folder import Folder
-from zope.app.interfaces.fssync import IFSAddView, IObjectFile
+from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.annotation import IAnnotations
 from zope.component import queryAdapter
 from zope.component.interfaces import IPresentationRequest
 from zope.xmlpickle import dumps
 from zope.proxy import removeAllProxies
 from zope.interface import implements
-
-class FSAddView(object):
-    """See IFSAddView."""
-
-    implements(IFSAddView)
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-class AddView(FSAddView):
-    """Supports to create a file system representation of zope
-       file type objects
-    """
-
-    def create(self, fs_path=None):
-        if os.path.isdir(fs_path):
-            return Folder()
-        else:
-            return File()
 
 class AttrMapping(object):
     """Convenience object implementing a mapping on selected object attributes
@@ -133,13 +111,6 @@ class Default(ObjectEntryAdapter):
         # We have no factory, cause we're a pickle.
         return None
 
-class FSAddRequest(object):
-    """XXX docstring???"""
-
-    implements(IPresentationRequest)
-
-    def getPresentationType(self):
-        return IFSAddView
-
-    def getPresentationSkin(self):
-        return 'default'
+    def annotations(self):
+        # The annotations are already stored in the pickle.
+        return None

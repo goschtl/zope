@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for filesystem synchronization.
 
-$Id: fssync.py,v 1.3 2003/06/09 18:48:52 gvanrossum Exp $
+$Id: fssync.py,v 1.4 2003/06/09 21:38:09 gvanrossum Exp $
 """
 
 from zope.component.interfaces import IView
@@ -114,14 +114,3 @@ class IGlobalFSSyncService(IFSSyncService):
         A factory for a Synchronization Adapter is provided to create
         synchronizers for instances of the class.
         """
-
-
-class IFSAddView(IView):
-    """Add objects to ZODB from file system.
-
-    Implementation of this view helps in creating
-    file system representation for zope objects.
-    """
-
-    def create(fspath=None):
-        """Create file system representation for zope objects."""
