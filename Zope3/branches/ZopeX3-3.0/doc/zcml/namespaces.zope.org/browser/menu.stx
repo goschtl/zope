@@ -1,0 +1,22 @@
+menu
+
+  File zope/app/publisher/browser/meta.zcml, lines 104 - 108.
+
+  Handler: zope.app.publisher.browser.globalbrowsermenuservice.menuDirective
+
+  Define a browser menu
+
+  Attributes
+
+    id -- TextLine (required)
+
+      The name of the menu.
+
+      This is, effectively, an id.
+
+    title -- MessageID (required)
+
+      Title
+
+      A descriptive title for documentation purposes
+
