@@ -17,9 +17,11 @@ $Id$
 """
 from datetime import datetime
 
+from zope.i18n import translate
 from zope.interface import implements
 
 from zope.app import zapi
+from zope.app.exception.interfaces import UserError
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.settings import Unset, Allow, Deny
 from zope.app.security.interfaces import IPermission
@@ -30,15 +32,26 @@ class RolePermissionView(object):
     def roles(self):
         roles = getattr(self, '_roles', None)
         if roles is None:
-            roles = self._roles = \
-              [role for name, role in zapi.getUtilitiesFor(IRole)]
+            roles = [
+                (translate(role.title, context=self.request).strip(), role)
+                for name, role in zapi.getUtilitiesFor(IRole)]
+            roles.sort()
+            roles = self._roles = [role for name, role in roles]
         return roles
 
     def permissions(self):
         permissions = getattr(self, '_permissions', None)
         if permissions is None:
-            permissions = self._permissions = \
-              [perm for name, perm in zapi.getUtilitiesFor(IPermission)]
+            permissions = [
+                (translate(perm.title, context=self.request).strip(), perm)
+                for name, perm in zapi.getUtilitiesFor(IPermission)
+                if name != 'zope.Public']
+            permissions.sort()
+            
+            
+            permissions = self._permissions = [perm
+                                               for name, perm in permissions]
+
         return permissions
 
     def availableSettings(self, noacquire=False):
@@ -123,7 +136,11 @@ class RolePermissionView(object):
             for permission in self.permissions():
                 rperm = permission.id
                 if rperm in allowed and rperm in denied:
-                    raise ValueError("Incorrect setting for %s" % rperm)
+                    raise UserError(
+                        'You chose both allow and deny for permission "%s". '
+                        'This is not allowed.'
+                        % translate(permission.title, context=self.request)
+                        )
                 if rperm in allowed:
                     prm.grantPermissionToRole(rperm, role_id)
                 elif rperm in denied:
