@@ -1,0 +1,225 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:mail="http://namespaces.zope.org/mail"
+   i18n_domain="zope"
+   >
+
+  <!-- Security definitions -->
+
+  <role
+      id="zwiki.User"
+      title="Wiki User"
+      description="Wiki visitors, which can only view and comment on wikis." />
+
+  <role
+      id="zwiki.Editor"
+      title="Wiki Editor"
+      description="The Wiki Editor can create and edit wikis." />
+
+  <role
+      id="zwiki.Admin"
+      title="Wiki Administrator"
+      description="The Wiki Admin can fully manage wiki pages." />
+
+  <permission
+      id="zope.app.wiki.ViewWikiPage"
+      title="View Wiki Page"
+      description="View a Wiki Page" />
+
+  <grant
+      permission="zope.app.wiki.ViewWikiPage"
+      role="zwiki.User" />
+
+  <permission
+      id="zope.app.wiki.CommentWikiPage"
+      title="Comment on Wiki Page"
+      description="Make a comment on Wiki Page" />
+
+  <grant
+      permission="zope.app.wiki.CommentWikiPage"
+      role="zwiki.User" />
+
+  <permission
+      id="zope.app.wiki.AddWikiPage"
+      title="Add Wiki Page"
+      description="Add Wiki Page" />
+
+  <grant
+      permission="zope.app.wiki.AddWikiPage"
+      role="zwiki.Editor" />
+
+  <permission
+      id="zope.app.wiki.EditWikiPage"
+      title="Edit Wiki Page"
+      description="Edit Wiki Page" />
+
+  <grant
+      permission="zope.app.wiki.EditWikiPage"
+      role="zwiki.Editor" />
+
+  <permission
+      id="zope.app.wiki.DeleteWikiPage"
+      title="Delete Wiki Page"
+      description="Delete Wiki Page" />
+
+  <grant
+      permission="zope.app.wiki.DeleteWikiPage"
+      role="zwiki.Admin" />
+
+  <permission
+      id="zope.app.wiki.ReparentWikiPage"
+      title="Reparent Wiki Page"
+      description="Reparent a Wiki Page" />
+
+  <grant
+      permission="zope.app.wiki.ReparentWikiPage"
+      role="zwiki.Admin"/>
+
+
+  <!-- Content declarations -->
+
+  <interface 
+      interface=".interfaces.IWiki" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+ <content class=".wiki.Wiki">
+
+    <implements interface="zope.app.container.interfaces.IContentContainer" />
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="zope.wiki.Wiki"
+        description="Minimal Wiki Page Container implementation " />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.container.interfaces.IReadContainer"/>
+
+    <require
+        permission="zope.app.wiki.AddWikiPage"
+        interface="zope.app.container.interfaces.IWriteContainer"/>
+
+  </content>
+
+  <!-- Mail Subscriptions support -->
+  <adapter
+      factory=".wikipage.MailSubscriptions"
+      provides=".interfaces.IMailSubscriptions"
+      for=".interfaces.IWiki" />
+
+
+  <!-- Wiki Page Content Type -->
+
+  <interface 
+      interface=".interfaces.IWikiPage" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".wikipage.WikiPage">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="zope.wiki.WikiPage"
+        title="Wiki Page"
+        description="A Wiki Page" />
+
+    <allow interface=".interfaces.IWikiPage" />
+
+    <require
+        permission="zope.app.wiki.AddWikiPage"
+        set_schema=".interfaces.IWikiPage" />
+
+  </content>
+
+  <adapter
+      factory=".wikipage.WikiPageHierarchyAdapter"
+      provides=".interfaces.IWikiPageHierarchy"
+      for=".interfaces.IWikiPage" />
+
+  <!-- Wiki Comments support -->
+
+  <interface 
+      interface=".interfaces.IComment" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".wikipage.Comment">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="zope.wiki.Comment"
+        title="Wiki Page Comment"
+        description="A Wiki Page Comment" />
+
+    <allow interface=".interfaces.IComment" />
+
+    <require
+        permission="zope.app.wiki.CommentWikiPage"
+        set_schema=".interfaces.IComment" />
+
+  </content>  
+
+
+  <!-- Mail Subscriptions support -->
+  <adapter
+      factory=".wikipage.MailSubscriptions"
+      provides=".interfaces.IMailSubscriptions"
+      for=".interfaces.IWikiPage" />
+
+  <adapter 
+      factory=".traversal.WikiPageTraversable"
+      provides="zope.app.traversing.interfaces.ITraversable"
+      for=".interfaces.IWikiPage" />
+
+
+  <!-- WikiPage FTP configurations -->
+  <adapter 
+     for=".interfaces.IWikiPage"
+     provides="zope.app.filerepresentation.interfaces.IReadFile"
+     factory=".wikipage.WikiPageReadFile"
+     permission="zope.app.wiki.ViewWikiPage"
+     />
+
+  <adapter 
+     for=".interfaces.IWikiPage"
+     provides="zope.app.filerepresentation.interfaces.IWriteFile"
+     factory=".wikipage.WikiPageWriteFile"
+     permission="zope.app.wiki.EditWikiPage"
+     />
+
+
+  <!-- Register mail delivery for change mails -->
+  <mail:smtpMailer name="wiki-smtp" hostname="localhost" port="25" />
+  
+  <mail:queuedDelivery 
+      name="wiki-delivery"
+      permission="zope.SendMail"
+      queuePath="./mail-queue"
+      mailer="wiki-smtp" />
+
+  <!-- Register event listener for change mails -->
+  <subscriber
+      factory=".wikipage.mailer"
+      for="zope.app.container.interfaces.IObjectAddedEvent"
+      />
+  <subscriber
+      factory=".wikipage.mailer"
+      for="zope.app.container.interfaces.IObjectRemovedEvent"
+      />
+  <subscriber
+      factory=".wikipage.mailer"
+      for=".interfaces.IWikiPageEditEvent"
+      />
+
+
+  <!-- Register various browser related components, including all views -->
+  <include package=".browser" />
+
+</configure>
