@@ -11,15 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_registration.py,v 1.1 2003/07/11 05:50:50 anthony Exp $
+$Id: test_registration.py,v 1.2 2003/09/21 17:33:20 jim Exp $
 """
 
 from unittest import makeSuite, main, TestCase
 
+from zope.app import zapi
 from zope.app.services.hub import Registration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse, canonicalPath
-from zope.app.event.objectevent import ObjectAddedEvent
+from zope.app.container.contained import ObjectAddedEvent
 from zope.component import getService
 from zope.app.services.servicenames import EventPublication, HubIds
 
@@ -29,7 +30,7 @@ class TestRegistration(PlacefulSetup, TestCase):
         self.createStandardServices()
         r = Registration()
         default = traverse(self.rootFolder, '++etc++site/default')
-        default.setObject('registrar', r)
+        default['registrar'] = r
         self.registrar = traverse(default, 'registrar')
         self.hub = getService(self.rootFolder, HubIds)
         self.events = getService(self.rootFolder, EventPublication)
@@ -47,10 +48,9 @@ class TestRegistration(PlacefulSetup, TestCase):
     def testRegister(self):
         self.registrar.subscribe()
         self.assertEqual(self.hub.numRegistrations(), 0)
-        content = object()
-        name = 'blah'
+        content = zapi.traverse(self.rootFolder, "folder1/folder1_1")
 
-        event = ObjectAddedEvent(content, canonicalPath('/%s' % name))
+        event = ObjectAddedEvent(content)
         self.events.publish(event)
         self.assertEqual(self.hub.numRegistrations(), 1)
 
