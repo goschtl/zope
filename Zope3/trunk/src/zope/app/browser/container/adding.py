@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.30 2003/12/15 11:01:39 philikon Exp $
+$Id: adding.py,v 1.31 2003/12/15 12:45:05 philikon Exp $
 """
 __metaclass__ = type
 
@@ -86,12 +86,12 @@ class BasicAdding(BrowserView):
         container = self.context
         button_label = _('add-button', 'Add')
         if IContainerNamesContainer.isImplementedBy(container):
-            return "<input type='submit' name='UPDATE_SUBMIT' value=' %s '>" \
+            return "<input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
                    % button_label
         else:
             contentName = self.contentName or ''
-            return ("<input type='submit' name='UPDATE_SUBMIT' value=' %s '>"
-                    "<input type='text' name='add_input_name' value=' %s '>"
+            return ("<input type='submit' name='UPDATE_SUBMIT' value='%s'>"
+                    "<input type='text' name='add_input_name' value='%s'>"
                     % (button_label, contentName))
 
     def publishTraverse(self, request, name):
