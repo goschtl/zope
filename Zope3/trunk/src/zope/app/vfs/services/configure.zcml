@@ -10,18 +10,6 @@
        allowed_interface="zope.publisher.interfaces.vfs.IVFSFilePublisher"
        factory="zope.app.vfs.services.zpt.ZPTTemplateView" />
 
-  <vfs:view
-      name=".pt"
-      for="zope.app.interfaces.services.package.IPackageAdding"
-      factory="zope.app.vfs.services.zpt.ZPTTemplateAdd"
-      permission="zope.ManageContent" />
-
-  <vfs:view
-      name=".zpt"
-      for="zope.app.interfaces.services.package.IPackageAdding"
-      factory="zope.app.vfs.services.zpt.ZPTTemplateAdd"
-      permission="zope.ManageContent" />
-
 <!-- XXX ???  -->
 
   <!-- Note that we have to use another Adding interface here, since 

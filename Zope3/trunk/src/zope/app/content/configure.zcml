@@ -122,16 +122,6 @@
       title="ZPT Page"
       description="A simple, content-based Page Template" />
 
-  <factory
-      id=".pt"
-      permission="zope.ManageContent"
-      title="ZPT Page" />
-
-  <factory
-      id=".zpt"
-      permission="zope.ManageContent"
-      title="ZPT Page" />
-
   <require
       permission="zope.View"
       attributes="__call__ macros" />

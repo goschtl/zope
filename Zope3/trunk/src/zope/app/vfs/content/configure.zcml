@@ -25,18 +25,6 @@
        allowed_interface="zope.publisher.interfaces.vfs.IVFSFilePublisher"
        factory="zope.app.vfs.content.zpt.ZPTPageView" />
 
-  <vfs:view
-      name=".pt"
-      for="zope.app.interfaces.container.IAdding"
-      factory="zope.app.vfs.content.zpt.ZPTPageAdd"
-      permission="zope.ManageContent" />
-
-  <vfs:view
-      name=".zpt"
-      for="zope.app.interfaces.container.IAdding"
-      factory="zope.app.vfs.content.zpt.ZPTPageAdd"
-      permission="zope.ManageContent" />
-
 <!-- Folder -->
 
   <vfs:view
