@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IconDirective.py,v 1.3 2002/11/19 23:25:13 jim Exp $
+$Id: IconDirective.py,v 1.4 2002/12/10 21:41:25 gotcha Exp $
 """
 import os
 import re
@@ -42,6 +42,11 @@ class IconView:
         
         return ('<img src="%s" alt="%s" width="16" height="16" border="0" />'
                 % (src, self.alt))
+
+    def url(self):
+        resource = getResource(self.context, self.rname, self.request)
+        src = resource()
+        return src
 
 class IconViewFactory:
 
