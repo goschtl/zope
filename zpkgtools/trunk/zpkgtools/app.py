@@ -99,7 +99,7 @@ class BuilderApplication(Application):
         This method does everything needed to knit a distribution
         together; it should be refactored substantially.
         """
-        top = Component(self.resource, self.resource_url, self.ip)
+        top = self.get_component(self.resource, self.resource_url)
         top.write_package(self.destination)
         handled = sets.Set()
         required = top.get_dependencies()
@@ -120,7 +120,7 @@ class BuilderApplication(Application):
                 location = self.locations[resource]
                 self.logger.debug("loading resource %r from %s",
                                   resource, location)
-                component = Component(resource, location, self.ip)
+                component = self.get_component(resource, location)
                 if first:
                     os.mkdir(depsdir)
                     first = False
@@ -142,6 +142,12 @@ class BuilderApplication(Application):
             top.write_setup_py(version=self.options.version)
         top.write_setup_cfg()
         top.write_manifest()
+
+    def get_component(self, resource, location):
+        try:
+            return Component(resource, location, self.ip)
+        except zpkgtools.Error, e:
+            self.error(str(e), rc=1)
 
     def add_headers(self, component):
         pkginfo = component.get_package_info()
