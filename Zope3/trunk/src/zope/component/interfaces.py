@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.13 2003/08/25 14:14:08 sidnei Exp $
+$Id: interfaces.py,v 1.14 2003/09/21 17:34:08 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -295,8 +295,13 @@ class IFactory(Interface):
 
 
     def getInterfaces():
-        """Return the interface(s) that objects created by this factory
-        will implement."""
+        """Get the interfaces implemented by the factory
+
+
+        Return the interface(s) that objects created by this factory
+        will implement.
+
+        """
 
 class IFactoryService(Interface):
 
