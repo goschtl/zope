@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Container Contents
 
-Revision information:
-$Id: test_contents.py,v 1.27 2004/02/05 22:52:17 srichter Exp $
+$Id: test_contents.py,v 1.28 2004/02/14 03:27:13 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
 from zope.app.services.tests.placefulsetup import PlacefulSetup

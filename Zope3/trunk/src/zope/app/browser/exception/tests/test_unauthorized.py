@@ -11,12 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test Unauthorized Exception Views
 
-Revision information:
-$Id: test_unauthorized.py,v 1.10 2003/09/21 17:30:34 jim Exp $
+$Id: test_unauthorized.py,v 1.11 2004/02/14 03:27:13 srichter Exp $
 """
-
 from unittest import TestCase, main, makeSuite
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal

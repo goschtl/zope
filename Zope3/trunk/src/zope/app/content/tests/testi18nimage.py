@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Test I18nImage Content Component
 
-$Id: testi18nimage.py,v 1.4 2003/03/13 18:49:06 alga Exp $
+$Id: testi18nimage.py,v 1.5 2004/02/14 03:27:14 srichter Exp $
 """
-
 import unittest
 from zope.interface.verify import verifyClass
 from zope.i18n.tests.testii18naware import TestII18nAware
@@ -26,13 +25,10 @@ def sorted(list):
     return list
 
 
-class Test(TestII18nAware):
-
+class I18nImageTest(TestII18nAware):
 
     def _makeImage(self, *args, **kw):
-        """ """
         from zope.app.content.i18nimage import I18nImage
-
         return I18nImage(*args, **kw)
 
 
@@ -44,16 +40,13 @@ class Test(TestII18nAware):
 
 
     def testEmpty(self):
-
         file = self._makeImage()
-
         self.assertEqual(file.getContentType(), '')
         self.assertEqual(file.getData(), '')
         self.assertEqual(file.getDefaultLanguage(), 'en')
 
 
     def testConstructor(self):
-
         file = self._makeImage('Data')
         self.assertEqual(file.getContentType(), '')
         self.assertEqual(file.getData(), 'Data')
@@ -72,7 +65,6 @@ class Test(TestII18nAware):
 
 
     def testMutators(self):
-
         # XXX What's the point of this test? Does it test that data
         # contents override content-type? Or not? If the former, then
         # real image data should be used.
@@ -147,10 +139,9 @@ class Test(TestII18nAware):
 
 
     def testInterface(self):
-
         from zope.app.content.image import IImage
         from zope.app.content.i18nimage import I18nImage
-        from zope.app.interfaces.content.i18nfile import II18nFile
+        from zope.app.interfaces.content.i18n import II18nFile, II18nImage
         from zope.i18n.interfaces import II18nAware
 
         self.failUnless(IImage.isImplementedByInstancesOf(I18nImage))
@@ -162,22 +153,23 @@ class Test(TestII18nAware):
         self.failUnless(II18nFile.isImplementedByInstancesOf(I18nImage))
         self.failUnless(verifyClass(II18nFile, I18nImage))
 
+        self.failUnless(II18nImage.isImplementedByInstancesOf(I18nImage))
+        self.failUnless(verifyClass(II18nImage, I18nImage))
+
 
     def testSetDefaultLanguage(self):
-
         # getDefaultLanguage and getAvailableLanguages are tested in the
         # above tests
-
         file = self._makeImage()
-
         file.setData('', language='lt')
         file.setDefaultLanguage('lt')
         self.assertEqual(file.getDefaultLanguage(), 'lt')
 
 
 def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return unittest.TestSuite((
+        unittest.makeSuite(I18nImageTest),
+        ))
 
-if __name__=='__main__':
-    unittest.TextTestRunner().run(test_suite())
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')

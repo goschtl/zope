@@ -11,28 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Revision Information:
-$Id: i18nimage.py,v 1.4 2003/06/07 06:37:23 stevea Exp $
-"""
+"""Internationalized Image Content Component.
 
+$Id: i18nimage.py,v 1.5 2004/02/14 03:27:14 srichter Exp $
+"""
 from zope.app.content.image import Image, getImageInfo
 from zope.app.content.i18nfile import I18nFile
-from zope.app.interfaces.content.i18nimage import II18nImage
+from zope.app.interfaces.content.i18n import II18nImage
 from zope.interface import implements
 
 class I18nImage(I18nFile):
-    """An internationalized Image object.  Note that images of all
-    languages share the same content type.
-    """
+    """An internationalized Image object.
 
+    Note that images of all languages share the same content type.
+    """
     implements(II18nImage)
 
     def _create(self, data):
         return Image(data)
 
     def setData(self, data, language=None):
-        '''See interface IFile'''
+        '''See zope.app.interfaces.file.IFile'''
         super(I18nImage, self).setData(data, language)
 
         if language is None or language == self.getDefaultLanguage():
@@ -44,5 +43,5 @@ class I18nImage(I18nFile):
                 self.setContentType(contentType)
 
     def getImageSize(self, language=None):
-        '''See interface IImage'''
+        '''See zope.app.interfaces.image.IImage'''
         return self._get(language).getImageSize()

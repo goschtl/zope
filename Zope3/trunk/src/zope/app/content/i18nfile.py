@@ -11,13 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""File implementation that can have its content in multiple languages.
 
-$Id: i18nfile.py,v 1.4 2003/07/23 21:46:18 philikon Exp $
+$Id: i18nfile.py,v 1.5 2004/02/14 03:27:14 srichter Exp $
 """
-
 import persistence
-from zope.app.interfaces.content.i18nfile import II18nFile
+from zope.app.interfaces.content.i18n import II18nFile
 from zope.app.content.file import File
 from zope.interface import implements
 

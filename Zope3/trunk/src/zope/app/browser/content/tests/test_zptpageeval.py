@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE
 #
 ##############################################################################
-"""
+"""Test ZPT Page Evaluation of code
 
-Revision information:
-$Id: test_zptpageeval.py,v 1.8 2003/09/21 17:30:33 jim Exp $
+$Id: test_zptpageeval.py,v 1.9 2004/02/14 03:27:13 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
