@@ -179,13 +179,15 @@ class InclusionProcessor:
     the output tree.
 
     """
-    def __init__(self, source):
+    def __init__(self, source, loader=None):
         if not os.path.exists(source):
             raise InclusionError("source directory does not exist: %r"
                                  % source)
         self.source = os.path.abspath(source)
         self.manifests = []
-        self.cvs_loader = None
+        if loader is None:
+            loader = cvsloader.CvsLoader()
+        self.cvs_loader = loader
 
     def createDistributionTree(self, destination, spec=None):
         """Create the output tree according to `spec`.
@@ -336,7 +338,9 @@ class InclusionProcessor:
                 # some sort of URL
                 self.includeFromUrl(source, destdir)
             else:
-                # local path
+                # local path; perhaps this join should be handled by
+                # the Specification to avoid having to keep
+                # self.source around?
                 self.includeFromLocalTree(os.path.join(self.source, source),
                                           destdir)
         else:
@@ -366,7 +370,5 @@ class InclusionProcessor:
             inf.close()
 
     def includeFromCvs(self, cvsurl, destination):
-        if self.cvs_loader is None:
-            self.cvs_loader = cvsloader.CvsLoader()
         source = self.cvs_loader.load(cvsurl.getUrl())
         self.includeFromLocalTree(source, destination)
