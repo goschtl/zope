@@ -13,7 +13,7 @@
 ##############################################################################
 """Fixup old utility services
 
-$Id: fixup.py,v 1.2 2004/04/15 22:11:14 srichter Exp $
+$Id: fixup.py,v 1.3 2004/04/17 11:00:54 jim Exp $
 """
 
 from zope.app import zapi
@@ -24,6 +24,7 @@ from persistent.dict import PersistentDict
 from zope.interface.adapter import Null
 from zope.app.registration.registration import NotifyingRegistrationStack
 from zope.app.container.interfaces import IContainer
+from transaction import get_transaction
 import zope.app.event.function
 
 
@@ -51,7 +52,9 @@ def notify(event):
         del sys.modules['zope.interface.implementor']
         del LocalUtilityService.base
         annotations[key] = True
+        get_transaction().commit()
     finally:
+        get_transaction().abort()
         conn.close()
 
 notify = zope.app.event.function.Subscriber(notify)
