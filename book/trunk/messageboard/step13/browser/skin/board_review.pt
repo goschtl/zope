@@ -1,0 +1,31 @@
+  <html metal:use-macro="views/standard_macros/page">
+    <body>
+      <div metal:fill-slot="body" i18n:domain="messageboard">
+  
+        <h2 i18n:translate="">Review Pending Posts</h2>
+  
+        <form action="updateStatus.html" method="POST">
+  
+          <div id="message_line" 
+              tal:repeat="post view/getPendingMessagesInfo">
+            <input type="checkbox" name="messages" value=""
+              tal:attributes="value post/path" />
+            <a href="" tal:attributes="href post/url"
+              tal:content="post/title">Message Title</a>
+            <div style="font-size: 70%">
+              (Posted by <b tal:content="post/creator">Creator</b> 
+              on <b tal:replace="post/created">2003/01/01</b>)
+            </div>
+          </div>
+          <br />
+          <input type="submit" value="Publish" 
+              i18n:attributes="value" />
+  
+        </form>
+  
+      </div>
+      <div id="actions" metal:fill-slot="actions">
+        <a href="posts.html" i18n:translate="">View Posts</a>
+      </div>
+    </body>
+  </html>
