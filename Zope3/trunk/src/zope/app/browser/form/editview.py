@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.39 2003/09/24 01:12:59 garrett Exp $
+$Id: editview.py,v 1.40 2003/10/23 14:54:32 garrett Exp $
 """
 from datetime import datetime
 
@@ -102,6 +102,7 @@ class EditView(BrowserView):
                 setUpEditWidgets(self, self.schema, force=1,
                                  names=self.fieldNames, content=self.adapted)
                 if changed:
+                    self.changed()
                     formatter = self.request.locale.getDateTimeFormatter(
                         'medium')
                     status = _("Updated on ${date_time}")
