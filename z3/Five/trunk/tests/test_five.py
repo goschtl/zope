@@ -38,7 +38,7 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
     def test_attribute_view(self):        
         self.root.manage_addProduct['FiveTest'].manage_addSimpleContent(
             'testoid', 'Testoid')
-        test = self.root.test
+        test = self.root.testoid
         view = self.root.unrestrictedTraverse('testoid/eagle.txt')
         self.assert_(isinstance(view, SimpleContentView))
         self.assertEquals('The eagle has landed', view())
