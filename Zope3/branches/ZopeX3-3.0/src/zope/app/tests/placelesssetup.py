@@ -16,6 +16,7 @@
 $Id$
 """
 from zope.app.tests import ztapi
+from zope.schema.vocabulary import setVocabularyRegistry
 from zope.component.tests.placelesssetup \
     import PlacelessSetup as CAPlacelessSetup
 from zope.app.event.tests.placelesssetup \
@@ -47,6 +48,8 @@ class PlacelessSetup(CAPlacelessSetup,
 
         from zope.app.security.tests import addCheckerPublic
         addCheckerPublic()
+
+        setVocabularyRegistry(None)
 
 
 ps = PlacelessSetup()
