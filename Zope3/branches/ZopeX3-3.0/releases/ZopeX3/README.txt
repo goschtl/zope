@@ -70,6 +70,11 @@ directory, use the "--prefix" option to specify an alternate location:
 
   The optimum Python version (2.3.4) was found at /usr/local/bin/python2.3.
 
+If you want to use the same prefix as a previous installation, you
+need to remove the original installation first.  Instances created
+using one installation may need to be modified to use a new
+installation.
+
 Once you've configured Zope, you can build the software using "make".
 No options are needed.
 
@@ -137,6 +142,9 @@ Using the source distribution on Windows is possible, but is somewhat
 different from using the distribution on Unix.  You may want to use
 the Windows installer instead of the source distribution.  If you
 don't have a supported C compiler, you need to use the installer.
+
+If you have previously installed Zope X3, either from source or using
+the installer, you will need to remove the previous installation.
 
 In using the distribution on Windows, you will need to run Python
 directly several times with various command lines; you should be
