@@ -13,11 +13,11 @@ from a newer version of Python.  You may *not* make changes to a
 module that deviates from some version in Python.
 
 For example, say that Zope's current minimal Python requirement is
-Python 2.2.2, but say that you need the ``gettext`` module from
+Python 2.2.3, but say that you need the ``gettext`` module from
 Python 2.3.  You may take the ``gettext`` module from Python 2.3
 and drop it in the pythonlib/compat22 directory and arrange your
 imports so that Zope uses this version of ``gettext`` instead of
-the Python 2.2.2 standard module (see below for details).
+the Python 2.2.3 standard module (see below for details).
 
 The problem with making changes that aren't reflected in Python
 releases is that you will not be able to remove pythonlib modules
