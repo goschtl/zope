@@ -35,17 +35,17 @@
         interface=".interfaces.IUniqueIdUtilitySet"
         />
     <require
-	permission="zope.Public"
-	interface=".interfaces.IUniqueIdUtilityManage"
-	/>
+        permission="zope.Public"
+        interface=".interfaces.IUniqueIdUtilityManage"
+        />
 
   </content>
 
   <content class=".ReferenceToPersistent">
     <require
-	permission="zope.Public"
+        permission="zope.Public"
         interface=".interfaces.IReference"
-	/>
+        />
   </content>
 
   <!-- Views -->
