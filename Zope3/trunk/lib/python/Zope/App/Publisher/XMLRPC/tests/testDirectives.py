@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.3 2002/06/20 15:54:58 jim Exp $
+$Id: testDirectives.py,v 1.4 2002/06/29 15:41:41 srichter Exp $
 """
 
 import unittest
@@ -68,24 +68,6 @@ class Test(PlacelessSetup, unittest.TestCase):
             queryView(ob, 'test', request).__class__,
             V1)
          
-    def testDefaultView(self):
-        self.assertEqual(queryView(ob, 'test', request,
-                                   None), None)
-
-        xmlconfig(StringIO(template % (
-            """
-            <xmlrpc:defaultView name="test"
-                  factory="Zope.ComponentArchitecture.tests.TestViews.V1"
-                  for="Zope.ComponentArchitecture.tests.TestViews.IC" /> 
-            """
-            ))) 
-
-        self.assertEqual(queryView(ob, 'test',
-                                   request, None
-                                 ).__class__, V1)
-        self.assertEqual(getDefaultViewName(ob, request
-                                 ), 'test')
-                                 
 
     def testInterfaceProtectedView(self):
         xmlconfig(StringIO(template %
@@ -112,7 +94,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                   factory="Zope.ComponentArchitecture.tests.TestViews.V1"
                   for="Zope.ComponentArchitecture.tests.TestViews.IC" 
                   permission="Zope.Public"
-                  allowed_attributes="action"
+                  allowed_methods="action"
                   /> 
             """
             ))
@@ -130,7 +112,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                   factory="Zope.ComponentArchitecture.tests.TestViews.V1"
                   for="Zope.ComponentArchitecture.tests.TestViews.IC" 
                   permission="Zope.Public"
-                  allowed_attributes="action"
+                  allowed_methods="action"
               allowed_interface="Zope.ComponentArchitecture.tests.TestViews.IV"
                   /> 
             """
@@ -148,7 +130,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                   factory="Zope.ComponentArchitecture.tests.TestViews.V1"
                   for="Zope.ComponentArchitecture.tests.TestViews.IC" 
                   permission="Zope.Public"
-                  allowed_attributes="action index"
+                  allowed_methods="action index"
               allowed_interface="Zope.ComponentArchitecture.tests.TestViews.IV"
                   /> 
             """
@@ -168,7 +150,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             <xmlrpc:view name="test"
                   factory="Zope.ComponentArchitecture.tests.TestViews.V1"
                   for="Zope.ComponentArchitecture.tests.TestViews.IC" 
-                  allowed_attributes="action index"
+                  allowed_methods="action index"
                   /> 
             """
             ))
@@ -194,6 +176,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(v(), 'V1 here')
         v = getView(ob, 'action.html', request)
         self.assertEqual(v(), 'done')
+
 
     def testMethodViewsWithName(self):
         self.assertEqual(queryView(ob, 'test', request),

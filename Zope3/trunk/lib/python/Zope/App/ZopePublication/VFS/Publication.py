@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: Publication.py,v 1.2 2002/06/10 23:29:22 jim Exp $
+$Id: Publication.py,v 1.3 2002/06/29 15:41:42 srichter Exp $
 """
 
 from Zope.App.ZopePublication.ZopePublication import ZopePublication
 
-from Zope.ComponentArchitecture import getView
+from Zope.ComponentArchitecture import queryView
 from Zope.Publisher.Exceptions import NotFound
 from Zope.Publisher.mapply import mapply
 
@@ -29,7 +29,7 @@ class VFSPublication(ZopePublication):
 
     def callObject(self, request, ob):
 
-        view = getView(ob, 'vfs', request, self) 
+        view = queryView(ob, 'vfs', request, self) 
 
         if view is not self:
             method = getattr(view, request.method)

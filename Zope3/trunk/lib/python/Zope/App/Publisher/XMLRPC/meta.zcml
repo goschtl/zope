@@ -1,24 +1,16 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
   
-  <directives namespace="http://namespaces.zope.org/xmlrpc">
+<directives namespace="http://namespaces.zope.org/xmlrpc">
 
-    <directive 
-         name="view" 
-         attributes="factory name for
-                     permission allowed_interface allowed_attributes"
-         handler="Zope.App.Publisher.XMLRPC.metaConfigure.view" >
-       <subdirective name="method" 
-                     attributes="name attribute permission" /> 
-       <subdirective name="defaultMethod" 
-                     attributes="name attribute permission" /> 
-    </directive>
+  <directive 
+       name="view" 
+       attributes="factory for name
+                   permission allowed_interface allowed_methods"
+       handler="Zope.App.Publisher.XMLRPC.metaConfigure.view">
+     <subdirective name="method" 
+                   attributes="name attribute permission" /> 
+  </directive>
 
-    <directive 
-       name="defaultView" 
-       attributes="factory name for layer template
-                   permission allowed_interface allowed_attributes"
-       handler="Zope.App.Publisher.XMLRPC.metaConfigure.defaultView" />
-
-  </directives>
+</directives>
 
 </zopeConfigure>

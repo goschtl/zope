@@ -9,7 +9,7 @@
       name="methods"
       for="Zope.App.OFS.Content.Folder.LoadedFolder.ILoadedFolder."
       permission="Zope.ManageContent" 
-      allowed_attributes="objectIds setLimit getLimit"
+      allowed_methods="objectIds setLimit getLimit"
       factory="Zope.App.OFS.Content.Folder.Views.XMLRPC.Methods." />
 
 </zopeConfigure>

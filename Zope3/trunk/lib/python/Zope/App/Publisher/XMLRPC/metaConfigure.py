@@ -13,7 +13,7 @@
 ##############################################################################
 """XMLRPC configuration code
 
-$Id: metaConfigure.py,v 1.1 2002/06/16 18:40:22 srichter Exp $
+$Id: metaConfigure.py,v 1.2 2002/06/29 15:41:40 srichter Exp $
 """
 
 from Zope.Security.Proxy import Proxy
@@ -30,66 +30,45 @@ from Zope.App.ComponentArchitecture.metaConfigure \
 
 
 class view(object):
+    '''This view class handles the directives for the XML-RPC Presentation'''
 
     type = IXMLRPCPresentation
 
-    def __init__(self, _context, factory=None, name=None, for_=None,
-                 permission=None,
-                 allowed_interface=None, allowed_attributes=None):
+    def __init__(self, _context, name=None, factory=None, for_=None,
+                 permission=None, allowed_interface=None,
+                 allowed_methods=None):
 
+        # Resolve and save the component these views are for
         if for_ is not None:
             for_ = _context.resolve(for_)
         self.for_ = for_
         
-        if ((allowed_attributes or allowed_interface)
+        if ((allowed_methods or allowed_interface)
             and ((name is None) or not permission)):
             raise ConfigurationError(
                 "Must use name attribute with allowed_interface or "
-                "allowed_attributes"
+                "allowed_methods"
                 )
 
         if allowed_interface is not None:
             allowed_interface = _context.resolve(allowed_interface)
 
-        self.factory = self._factory(_context, factory)
+        self.factory = map(_context.resolve, factory.strip().split())
         self.name = name
         self.permission = permission
-        self.allowed_attributes = allowed_attributes
+        self.allowed_methods = allowed_methods
         self.allowed_interface = allowed_interface
         self.methods = 0
 
 
-    def method(self, _context, name, attribute, permission=None, layer=None):
+    def method(self, _context, name, attribute, permission=None):
         permission = permission or self.permission
-        factory = self._methodFactory(self.factory, attribute, permission)
-        self.methods += 1
+        # make a copy of the factory sequence, sinc ewe might modify it
+        # specifically for this method.
+        factory = self.factory[:]        
 
-        return [
-            Action(
-                discriminator = self._discriminator(name),
-                callable = handler,
-                args = self._args(name, factory),
-                )
-            ]
-
-
-    def _factory(self, _context, factory):
-        return map(_context.resolve, factory.strip().split())
-
-
-    def _discriminator(self, name):
-        return ('view', self.for_, name, self.type)
-
-
-    def _args(self, name, factory):
-        return ('Views', 'provideView',
-                self.for_, name, self.type, factory)
-
-
-    def _methodFactory(self, factory, attribute, permission):
-
-        factory = factory[:]        
-        
+        # if a specific permission was specified for this method we have to
+        # apply a new proxy.
         if permission:
             if permission == 'Zope.Public':
                 permission = CheckerPublic
@@ -99,7 +78,6 @@ class view(object):
                          permission=permission):
                 return Proxy(getattr(factory(context, request), attribute),
                              NamesChecker(__call__ = permission))
-
         else:
 
             def methodView(context, request,
@@ -108,7 +86,16 @@ class view(object):
 
         factory[-1] = methodView
 
-        return factory
+        self.methods += 1
+
+        return [
+            Action(
+                discriminator = ('view', self.for_, name, self.type),
+                callable = handler,
+                args = ('Views', 'provideView', self.for_, name, self.type,
+                        factory),
+                )
+            ]
 
 
     def _proxyFactory(self, factory, checker):
@@ -136,19 +123,19 @@ class view(object):
 
         permission = self.permission
         allowed_interface = self.allowed_interface
-        allowed_attributes = self.allowed_attributes
-        factory = self.factory
+        allowed_methods = self.allowed_methods
+        factory = self.factory[:]
 
         if permission:
             if permission == 'Zope.Public':
                 permission = CheckerPublic
             
-            if ((not allowed_attributes) and (allowed_interface is None)
+            if ((not allowed_methods) and (allowed_interface is None)
                 and (not self.methods)):
-                allowed_attributes = self.default_allowed_attributes
+                allowed_methods = self.default_allowed_methods
 
-            require={}
-            for name in (allowed_attributes or '').split():
+            require = {}
+            for name in (allowed_methods or '').split():
                 require[name] = permission
             if allowed_interface:
                 for name in allowed_interface.names(1):
@@ -156,33 +143,22 @@ class view(object):
 
             checker = Checker(require.get)
 
-            factory = self._proxyFactory(factory, checker)
+            def proxyView(context, request,
+                          factory=factory[-1], checker=checker):
+                view = factory(context, request)
+                # We need this in case the resource gets unwrapped and
+                # needs to be rewrapped
+                view.__Security_checker__ = checker
+                return view
+
+            factory[-1] =  proxyView
 
         return [
             Action(
-                discriminator = self._discriminator(self.name),
+                discriminator = ('view', self.for_, self.name, self.type),
                 callable = handler,
-                args = self._args(self.name, factory),
+                args = ('Views', 'provideView', self.for_, self.name,
+                        self.type, factory),
                 )
             ]
 
-
-def defaultView(_context, name, for_=None, **__kw):
-
-    if __kw:
-        actions = view(_context, name=name, for_=for_, **__kw)()
-    else:
-        actions = []
-
-    if for_ is not None:
-        for_ = _context.resolve(for_)
-
-    type = IXMLRPCPresentation
-
-    actions += [Action(
-        discriminator = ('defaultViewName', for_, type, name),
-        callable = handler,
-        args = ('Views','setDefaultViewName', for_, type, name),
-        )]
-
-    return actions

@@ -27,8 +27,14 @@
       for=".IContainer.IReadContainer."
       factory=".ContainerTraverser." />
 
-  <vfs:view name="_traverse" 
-      for=".IContainer."
+  <vfs:view 
+      name="_traverse" 
+      for=".IContainer.IItemContainer."
+      factory=".ContainerTraverser." />
+
+  <vfs:view 
+      name="_traverse" 
+      for=".IContainer.IReadContainer"
       factory=".ContainerTraverser." />
 
   <adapter factory=".ContainerTraversable."

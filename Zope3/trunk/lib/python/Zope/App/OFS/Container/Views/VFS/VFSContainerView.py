@@ -13,14 +13,15 @@
 ##############################################################################
 """
 
-$Id: VFSContainerView.py,v 1.2 2002/06/10 23:27:57 jim Exp $
+$Id: VFSContainerView.py,v 1.3 2002/06/29 15:41:37 srichter Exp $
 """
 import fnmatch
 import time
 
 from Zope.ComponentArchitecture import getView
-from Zope.Publisher.VFS.IVFSView import IVFSView
+from Zope.Publisher.VFS.VFSView import VFSView
 from Zope.Publisher.VFS.IVFSPublisher import IVFSPublisher
+from Zope.Publisher.VFS.VFSRequest import VFSRequest
 
 from Zope.Publisher.VFS.IVFSDirectoryPublisher import IVFSDirectoryPublisher
 from Zope.App.OFS.Container.IContainer import IContainer 
@@ -29,26 +30,10 @@ from Zope.App.OFS.Container.IContainer import IContainer
 from Zope.App.OFS.Content.File.File import File
 from Zope.App.OFS.Content.Folder.Folder import Folder
 
-class XXXRequest:
-    def __init__(self, presentationType, skin='default'):
-        self.presentationType = presentationType
-        self.skin = skin
 
-    def getPresentationType(self):
-        return self.presentationType
+class VFSContainerView(VFSView):
 
-    def getPresentationSkin(self):
-        return self.skin
-    
-
-class VFSContainerView:
-
-    __implements__ =  IVFSDirectoryPublisher
-
-
-    def __init__(self, context):
-        """ """
-        self._container = context
+    __implements__ =  IVFSDirectoryPublisher, VFSView.__implements__
 
 
     ############################################################
@@ -57,13 +42,13 @@ class VFSContainerView:
 
     def exists(self, name):
         'See Zope.Publisher.VFS.IVFSDirectoryPublisher.IVFSDirectoryPublisher'
-        return name in self._container
+        return name in self.context
     
 
     def listdir(self, with_stats=0, pattern='*'):
         'See Zope.Publisher.VFS.IVFSDirectoryPublisher.IVFSDirectoryPublisher'
         t = time.time()
-        file_list = self._container.keys()
+        file_list = self.context.keys()
         # filter them using the pattern
         file_list = list(
             filter(lambda f, p=pattern, fnm=fnmatch.fnmatch: fnm(f, p),
@@ -75,13 +60,13 @@ class VFSContainerView:
         else:
             result = []
             for file in file_list:
-                obj = self._container[file]
+                obj = self.context[file]
                 size = 0
                 # XXX Should be much nicer
                 if IContainer.isImplementedBy(obj):
-                    dir_mode = 16384
+                    dir_mode = 16384 + 511
                 else:
-                    dir_mode = 0
+                    dir_mode = 511
                 if hasattr(obj, 'getSize'):
                     size = obj.getSize()
                 stat = (dir_mode, 0, 0, 0, 0, 0, size, t, t, t)
@@ -92,23 +77,23 @@ class VFSContainerView:
 
     def mkdir(self, name, mode=777):
         'See Zope.Publisher.VFS.IVFSDirectoryPublisher.IVFSDirectoryPublisher'
-        if not (name in self._container):
+        if not (name in self.context):
             obj = Folder()
-            self._container.setObject(name, obj)
+            self.context.setObject(name, obj)
 
     def remove(self, name):
         'See Zope.Publisher.VFS.IVFSDirectoryPublisher.IVFSDirectoryPublisher'
-        del self._container[name]
+        del self.context[name]
 
     def rmdir(self, name):
         'See Zope.Publisher.VFS.IVFSDirectoryPublisher.IVFSDirectoryPublisher'
-        del self._container[name]
+        del self.context[name]
 
     def rename(self, old, new):
         'See Zope.Publisher.VFS.IVFSDirectoryPublisher.IVFSDirectoryPublisher'
-        obj = self._container[old]
-        del self._container[old]
-        self._container.setObject(new, obj)        
+        obj = self.context[old]
+        del self.context[old]
+        self.context.setObject(new, obj)        
 
 
     def writefile(self, name, mode, instream, start=0):
@@ -116,13 +101,13 @@ class VFSContainerView:
         # XXX This should become much, much smarter later. Based on the
         # data and the file ending, it should pick the right object type. 
         # *** Waiting for Jim's file extension proposal and code to land ***
-        if not (name in self._container):
+        if not (name in self.context):
             obj = File()
-            self._container.setObject(name, obj)
+            self.context.setObject(name, obj)
         else:
-            obj = self._container[name]
+            obj = self.context[name]
 
-        vfs_view = getView(obj, 'vfs', XXXRequest(IVFSView))
+        vfs_view = getView(obj, 'vfs', self.request)
         vfs_view.write(mode, instream, start)
 
     def check_writable(self, name):
@@ -148,7 +133,7 @@ class VFSContainerView:
         t = time.time()
         uid = 0
         gid = 0
-        return (dir_mode+0, 0, 0, 0, uid, gid, 4096, t, t, t)
+        return (dir_mode+512, 0, 0, 0, uid, gid, 4096, t, t, t)
 
 
     ######################################

@@ -13,10 +13,8 @@
 ##############################################################################
 """
 
-$Id: WriteFilesystemTests.py,v 1.2 2002/06/10 23:29:37 jim Exp $
+$Id: WriteFilesystemTests.py,v 1.3 2002/06/29 15:41:44 srichter Exp $
 """
-
-
 from StringIO import StringIO
 
 from Interface.Verify import verifyClass

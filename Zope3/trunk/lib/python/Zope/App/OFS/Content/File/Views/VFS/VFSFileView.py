@@ -13,20 +13,18 @@
 ##############################################################################
 """
 
-$Id: VFSFileView.py,v 1.2 2002/06/10 23:27:59 jim Exp $
+$Id: VFSFileView.py,v 1.3 2002/06/29 15:41:37 srichter Exp $
 """
 
 import time
+from Zope.Publisher.VFS.VFSView import VFSView
 from Zope.Publisher.VFS.IVFSFilePublisher import IVFSFilePublisher
 
 
-class VFSFileView:
+class VFSFileView(VFSView):
 
-    __implements__ = IVFSFilePublisher
+    __implements__ = IVFSFilePublisher, VFSView.__implements__
 
-    def __init__(self, context):
-        """ """
-        self._object = context
 
     ############################################################
     # Implementation methods for interface
@@ -34,7 +32,7 @@ class VFSFileView:
 
     def read(self, mode, outstream, start = 0, end = -1):
         """See Zope.Publisher.VFS.IVFSFilePublisher.IVFSFilePublisher"""
-        data = self._object.getData()
+        data = self.context.getData()
         try:
             if start != 0: data = data[start:]
             if end != -1: data = data[:end]
@@ -49,7 +47,7 @@ class VFSFileView:
             instream.seek(start)
         except:
             pass
-        self._object.setData(instream.read())
+        self.context.setData(instream.read())
 
 
     def check_writable(self, mode):
@@ -73,11 +71,11 @@ class VFSFileView:
         """See Zope.Publisher.VFS.IVFSObjectPublisher.IVFSObjectPublisher"""
         t = time.time()
         size = 0
-        if hasattr(self._object, 'getSize'):
-            size = self._object.getSize()
+        if hasattr(self.context, 'getSize'):
+            size = self.context.getSize()
         uid = 0
         gid = 0
-        return (0, 0, 0, 0, uid, gid, size, t, t, t)
+        return (511, 0, 0, 0, uid, gid, size, t, t, t)
 
 
     ######################################
