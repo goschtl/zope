@@ -1,0 +1,152 @@
+An overview of aspects of Zope 3 that are pertinent to its security model
+=========================================================================
+
+This document doesn't describe the high-level security model.
+Rather, it provides the background for understanding the high-level
+security model described in highlevel.rst.
+
+Introduction
+------------
+
+1. Zope is a server that publishes Python objects to clients over a
+   variety of Internet protocols.
+
+1a. "Zope" is available in several different versions. In this document,
+   we are concerned only with Zope version 3X.x.x and Zope version 3.x.x.
+
+   TODO: briefly explain Zope 3X and Zope 3.
+
+2. Python is an object-oriented language suitable both for writing stand-alone
+   scripts and for large-scale software projects. It is implemented in C,
+   and comes with a large standard code library. It runs on a number of
+   of different operating system platforms, including Solaris, Linux and
+   Microsoft Windows.
+
+3. The implementation of Python written in C is properly called cPython.
+   There is also an implementation of Python written in Java. Zope works
+   only with cPython.
+
+4. A server is one party in the well-known client - server interaction.
+   Zope is most often used as a web server, serving HTTP responses to
+   web browsers in response to their HTTP requests.
+   Zope is also capable of being an FTP server and an XML-RPC server.
+   Users can extend Zope to work with other protocols by writing the
+   necessary code to do so.
+
+4a. Zope runs in a single process, with multiple threads. So, all software
+   calls within zope occur in-process. There's no CORBA or DCOM style
+   server sitting around waiting for calls. (XXX rewrite this.)
+
+x. "Publishing" is the process where, upon receiving a request from a client,
+   Zope renders a view on an object and returns this to the client.
+   For HTTP and FTP, the response takes the form of a sequence of bytes.
+
+5. A Python object is a building-block of a software system. An object
+   has a set of attributes, identified by name. An attribute represents
+   either a piece of data (that is, another object), or a function or
+   method that may be 'called' to carry out some instructions.
+   Actually, a function is itself a special kind of object. So another
+   way of saying the above is that a Python object has a set of attributes,
+   identified by name. Some attributes are objects that are useful in
+   themselves. Other attributes are 'callable' objects, that are 'called'
+   in order to carry out some instructions.
+
+6. Python itself provides no limits on what code may access the attributes
+   of an object. Any python code in the same process as a particular object
+   may access its attributes if that code has a reference to the object.
+
+7. A class is the template for an object. It provides the means to create
+   new objects, provides default values for an object's attributes, and
+   provides the callable methods that are available as the attributes of an
+   object.
+
+8. Zope provides a facility called "security proxies". An object is enclosed
+   in a security proxy, which stands in the way of python code accessing
+   the object's attributes. A "checker" guards access to the attributes. This
+   is a piece of code that decides whether or not to grant access to the
+   requested attribute.
+   (add footnote reference to the E language)
+
+9. Traversal, basically a simple 'query' on the components in the Zope system,
+   formatted as a URL. Traversal leads to Context. Things can be overridden
+   based on context.
+
+Publishing
+----------
+
+  write more here about the publication process
+
+  convert URL into a sequence of path segments
+  traverse from the root to the next object based on the first path segment.
+  traversal components
+
+  request
+  principal responsible for a request
+  response
+  request types for different protocols
+  error handling
+
+  policy for applying security proxies
+  security manager / security context of a request
+
+Component architecture
+----------------------
+
+  overview about the rationale for it, the purpose of it.
+  allowing reuse, and explicitly declaring the capabilities and intentions
+  for use of objects.
+  Define Component as an object with introspectable interfaces.
+
+  explain about interfaces
+  1: formal contract of fields, attributes, methods
+  2: informal contract in docstrings
+  3: type hierarchy of interfaces
+  objects implement interfaces
+  classes assert that their instances will implement interfaces
+  an object can implement interfaces in addition to those its class asserts
+  naming convention for interfaces
+
+  adapters
+  * provides interfaces for objects that implement a particular interface
+  * optional name
+  * adapter factories are registered to provide adapters
+  * an adapter registry, given an object and a desired kind of adapter, finds
+    an appropriate factory to produce that adapter
+
+  views
+  * provides a means to present an object to a client
+  * a bit like an adapter
+  * instead of "object's interface" --> "adapter's interface" we have
+    "object's interface", "type of request", "name" --> IPresentation
+
+  services
+  * provides a service
+  * the fundamentals of the zope system
+  * global services that are at the 'process' level, and have no persistent
+    state
+  * local services that have persistent state
+  * services can be overridden, but should defer to higher-up services
+  * give a simple example, such as the DB connections service -- root ones
+    are available even in lower down places. Although, some are available
+    in lower folders that are not available higher up.
+
+  utilities
+  * provides a service based on the interface you need to use.
+  * don't have the complex overriding+shadowing behaviour of Services.
+
+Transactions and Persistence
+
+  each request in its own transaction
+  transaction buzzwords (what parts of ACID do we do?)
+  transaction basics: begin(), commit(), abort()
+  persistent objects / classes, automatically _p_changed on setting attribute
+  database connections, one copy of a persistent object for each connection,
+    so no worries about concurrency -- you can write programs as if they
+    are single-threaded.
+
+ZODB
+
+  filestorage, python pickles
+  other storages
+  ZEO
+
