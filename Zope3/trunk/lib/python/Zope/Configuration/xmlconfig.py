@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.4 2002/06/18 13:07:30 stevea Exp $
+$Id: xmlconfig.py,v 1.5 2002/06/20 15:54:08 jim Exp $
 """
 
 import os
@@ -169,11 +169,10 @@ class ZopeConflictingConfigurationError(ZopeXMLConfigurationError):
         and% at line %s column %s of %s
         """ % ((self.des,) + self.l1 + self.l2)
         
-_unset = object()
 class Context:
-    def __init__(self, stack, module=_unset):
+    def __init__(self, stack, module=None):
         self.__stackcopy = tuple(stack)
-        if module is _unset:
+        if module is None:
             self.__package = None
         elif module is None:
             self.__package = 'ZopeProducts'
@@ -256,14 +255,21 @@ class ZopeConfigurationConflictError(ZopeXMLConfigurationError):
     
 class XMLConfig:
 
-    def __init__(self, file_name):
+    def __init__(self, file_name, module=None):
+        if module is not None:
+            module_dir = os.path.split(module.__file__)[0]
+            file_name = os.path.join(module_dir, file_name)
+
+        
         self._actions = []
         self._directives = {('http://namespaces.zope.org/zope', 'include'):
                             (self.include, {})}
 
         f = open(file_name)
         self._stack = [file_name]
-        xmlconfig(f, self._actions, Context(self._stack), self._directives)
+        xmlconfig(f, self._actions,
+                  Context(self._stack, module=module),
+                  self._directives)
         f.close()
 
     def include(self, _context, file='configure.zcml', package=None):
