@@ -17,26 +17,26 @@
           </thead>
 
           <tbody>
-	    <tr tal:repeat="item view/listServiceTypes">
+            <tr tal:repeat="item view/listServiceTypes">
 
-	      <td>
-		<input type="checkbox" name="name:list" value="value"
+              <td>
+                <input type="checkbox" name="name:list" value="value"
                        checked="checked" tal:attributes="value item/name" />
               </td>
               <td tal:content="item/name">Events</td>
 
-	      <td>
-		<input type="checkbox" name="active:list" value="value"
-		       tal:attributes="value item/name;
-				       checked item/checked" />
-	      </td>
+              <td>
+                <input type="checkbox" name="active:list" value="value"
+                       tal:attributes="value item/name;
+                                       checked item/checked" />
+              </td>
 
-	    </tr>
+            </tr>
           </tbody>
 
-	</table>
+        </table>
 
-	<input type="reset" value="Reset form" />
+        <input type="reset" value="Reset form" />
         <input type="submit" value="Submit" />
 
 

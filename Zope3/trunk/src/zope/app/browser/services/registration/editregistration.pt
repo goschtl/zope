@@ -29,7 +29,7 @@
             <td>
               <a href="." tal:attributes="href config/name">
                 <span tal:content="config/line1|default">
-		  Config item <span tal:content="config/name" />
+                  Config item <span tal:content="config/name" />
                 </span>
               </a>
               <span tal:condition="not:config/active">(disabled)</span>

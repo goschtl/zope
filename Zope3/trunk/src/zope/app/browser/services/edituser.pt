@@ -11,51 +11,51 @@
     <form action="." method="post" enctype="multipart/form-data">
     
       <table>      
-    	<tbody>   
-    	
-    	  <tr>
-    	    <th>Title:</th>
-    	    <td>
-	      <input type="text" name="title" size="40" value="" 
+            <tbody>   
+            
+              <tr>
+                <th>Title:</th>
+                <td>
+              <input type="text" name="title" size="40" value="" 
                   tal:attributes="value context/getTitle" />
             </td>
-    	  </tr>
-    	  <tr>
-    	    <th>Description:</th>
-    	    <td>
-	      <input type="text" name="description" size="40" value=""  
+              </tr>
+              <tr>
+                <th>Description:</th>
+                <td>
+              <input type="text" name="description" size="40" value=""  
                   tal:attributes="value context/getDescription" />
             </td>
-    	  </tr>
-    	  <tr>
-    	    <th>Login:</th>
-    	    <td>
-	      <input type="text" name="login" size="40" value=""
+              </tr>
+              <tr>
+                <th>Login:</th>
+                <td>
+              <input type="text" name="login" size="40" value=""
                   tal:attributes="value context/getLogin" />
             </td>
-    	  </tr>
-    	  <tr>
-    	    <th>Password:</th>
-    	    <td>
-	      <input type="password" name="password" size="40" value="DEFAULT" />
+              </tr>
+              <tr>
+                <th>Password:</th>
+                <td>
+              <input type="password" name="password" size="40" value="DEFAULT" />
             </td>
-    	  </tr>
-    	  <tr>
-    	    <th>Roles:</th>
-    	    <td>
-	      <select name="roles:list" size="5" multiple="multiple">
-              	<tal:block tal:repeat="role view/getAvailableRoles"
-              	           tal:define="user_roles context/getRoles"> 
-              	  <option
-              	    tal:attributes="value role/getId;
+              </tr>
+              <tr>
+                <th>Roles:</th>
+                <td>
+              <select name="roles:list" size="5" multiple="multiple">
+                      <tal:block tal:repeat="role view/getAvailableRoles"
+                                 tal:define="user_roles context/getRoles"> 
+                        <option
+                          tal:attributes="value role/getId;
                                     selected python:role.getId() in user_roles"
-              	    tal:content="role/getTitle" />
-              	</tal:block>
+                          tal:content="role/getTitle" />
+                      </tal:block>
               </select>
             </td>
-    	  </tr>
-    	    	
-    	</tbody>     
+              </tr>
+                        
+            </tbody>     
       </table>
 
       <input type="submit" name="edit.html:method" value="Edit" />

@@ -117,17 +117,17 @@
     <thead>
       <tr> 
         <th align="center" class="boxtop">Search</th>
-	<th class="empty">&nbsp;</th>
+        <th class="empty">&nbsp;</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-	<td colspan="2" nowrap="nowrap">
+        <td colspan="2" nowrap="nowrap">
           <form name="search">
           <input type="text" size="15" style="width: 85%;" />
           <input type="submit" value="Go" style="width: 15%;" />
           </form>
-	</td>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -193,7 +193,7 @@
   Location:
   <span
       metal:define-macro="breadcrumbs"
-	  tal:omit-tag=""
+          tal:omit-tag=""
       tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs"> <a href="" 
       tal:attributes="href string:${breadcrumb/url}/@@manage"
       tal:content="string:${breadcrumb/name}/"
@@ -204,6 +204,6 @@
 <div metal:define-macro="footer">
   <p>Powered by Zope</p>
 </div>
-		    
+                    
 </body>
 </html>

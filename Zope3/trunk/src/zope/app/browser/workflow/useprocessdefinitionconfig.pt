@@ -8,11 +8,11 @@
 
       <li tal:repeat="use view/uses">
 
-	<a href="."
-	   tal:attributes="href use/url">
+        <a href="."
+           tal:attributes="href use/url">
           <span tal:replace="string:process definition ${use/name}" />
-	</a>
-	(<span tal:replace="use/status">Active</span>)
+        </a>
+        (<span tal:replace="use/status">Active</span>)
 
       </li>
     </ul>

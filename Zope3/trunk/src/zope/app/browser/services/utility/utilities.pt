@@ -26,7 +26,7 @@
         <a href="."
            tal:condition="config/url"
            tal:attributes=
-	       "href string:${config/url}/@@SelectedManagementView.html"
+               "href string:${config/url}/@@SelectedManagementView.html"
            tal:content="config/summary" />
         <span tal:condition="not:config/url"
               tal:replace="config/summary" />

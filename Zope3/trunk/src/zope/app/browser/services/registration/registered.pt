@@ -6,14 +6,14 @@
 
       <ul>
 
-	<li tal:repeat="use view/uses">
+        <li tal:repeat="use view/uses">
 
-	  <a href="http://."
-	     tal:attributes="href use/url"
-	     tal:content="use/description">Description</a>
-	  (<span tal:replace="use/status">Active</span>)
+          <a href="http://."
+             tal:attributes="href use/url"
+             tal:content="use/description">Description</a>
+          (<span tal:replace="use/status">Active</span>)
 
-	</li>
+        </li>
       </ul>
 
       <p><a href="addRegistration.html">

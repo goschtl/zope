@@ -10,37 +10,37 @@
   <tr>
     <td valign="top">
       <table border="0">
-	<tr>
-	  <th colspan="2" align="center">Allowed Permissions</th>
-	</tr>
-	<tr tal:repeat="perm python:view.get_set_permissions_for_principal(rprincipal_id, 'Allow')">
-	  <td><input type="checkbox" tal:attributes="name perm/getId"/></td>
+        <tr>
+          <th colspan="2" align="center">Allowed Permissions</th>
+        </tr>
+        <tr tal:repeat="perm python:view.get_set_permissions_for_principal(rprincipal_id, 'Allow')">
+          <td><input type="checkbox" tal:attributes="name perm/getId"/></td>
           <td tal:content="perm/getTitle">Permission1</td>
-	</tr>
-	<tr tal:replace="nothing">
-	  <td><input type="checkbox" name="permission_ids" /></td><td>Permission2</td>
-	</tr>
-	<tr tal:replace="nothing">
-	  <td><input type="checkbox" name="permission_ids" /></td><td>Permission3</td>
-	</tr>
-	<tr tal:replace="nothing">
-	  <td><input type="checkbox" name="permission_ids" /></td><td>Permission5</td>
-	</tr>
+        </tr>
+        <tr tal:replace="nothing">
+          <td><input type="checkbox" name="permission_ids" /></td><td>Permission2</td>
+        </tr>
+        <tr tal:replace="nothing">
+          <td><input type="checkbox" name="permission_ids" /></td><td>Permission3</td>
+        </tr>
+        <tr tal:replace="nothing">
+          <td><input type="checkbox" name="permission_ids" /></td><td>Permission5</td>
+        </tr>
       </table>
     </td>
     <td valign="top"> 
       <table border="0">
-	<tr >
-	  <th colspan="2" align="center">Denied Permissions</th>
-	</tr>
-	<tr tal:repeat="perm python:view.get_set_permissions_for_principal(rprincipal_id, 'Deny')">
-	  <td><input type="checkbox" tal:attributes="name perm/getId" /></td>
+        <tr >
+          <th colspan="2" align="center">Denied Permissions</th>
+        </tr>
+        <tr tal:repeat="perm python:view.get_set_permissions_for_principal(rprincipal_id, 'Deny')">
+          <td><input type="checkbox" tal:attributes="name perm/getId" /></td>
           <td tal:content="perm/getTitle">Permission1</td>
-	</tr>
-	<tr tal:replace="nothing">
-	  <td><input type="checkbox" name="permission_ids" /></td>
+        </tr>
+        <tr tal:replace="nothing">
+          <td><input type="checkbox" name="permission_ids" /></td>
           <td>Permission2</td>
-	</tr>
+        </tr>
       </table>
     </td>
   </tr>
@@ -57,24 +57,24 @@
   <table>
     <tr>
       <td>
-	<select name="permissions" multiple="multiple">
-	  <option 
-	    tal:repeat="perm python:view.get_unset_permissions_for_principal(rprincipal_id)" 
-	    tal:attributes="value perm/getId"
-	    tal:content="perm/getTitle">Perm1</option>
-	  <option tal:replace="nothing">Perm2</option>
-	  <option tal:replace="nothing">Perm3</option>
-	  <option tal:replace="nothing">Perm4</option>
-	  <option tal:replace="nothing">Perm5</option>
-	</select>
-      </td>	
+        <select name="permissions" multiple="multiple">
+          <option 
+            tal:repeat="perm python:view.get_unset_permissions_for_principal(rprincipal_id)" 
+            tal:attributes="value perm/getId"
+            tal:content="perm/getTitle">Perm1</option>
+          <option tal:replace="nothing">Perm2</option>
+          <option tal:replace="nothing">Perm3</option>
+          <option tal:replace="nothing">Perm4</option>
+          <option tal:replace="nothing">Perm5</option>
+        </select>
+      </td>        
       <td valign="center">
-	<p>
-	  <input type="submit" name="grantPermissions.html:method" value="Grant" />
-	  </p>
-	<p>
-	  <input type="submit" name="denyPermissions.html:method" value="Deny" />
-	  </p>
+        <p>
+          <input type="submit" name="grantPermissions.html:method" value="Grant" />
+          </p>
+        <p>
+          <input type="submit" name="denyPermissions.html:method" value="Deny" />
+          </p>
       </td>
     </tr>
   </table>

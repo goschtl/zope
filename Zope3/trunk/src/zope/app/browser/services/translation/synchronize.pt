@@ -43,13 +43,13 @@
                     multiple="multiple">
               <tal:block repeat="domain view/getAllDomains">
               <option value="" 
-		      tal:attributes="value domain"
-		      tal:content="domain"
+                      tal:attributes="value domain"
+                      tal:content="domain"
                       tal:condition="python: domain not in
                                      view.sync_domains" ></option>
               <option value="" selected="1"
-		      tal:attributes="value domain"
-		      tal:content="domain"
+                      tal:attributes="value domain"
+                      tal:content="domain"
                       tal:condition="python: domain in
                                      view.sync_domains" ></option>
               </tal:block>
@@ -63,13 +63,13 @@
                     multiple="multiple">
               <tal:block repeat="language view/getAllLanguages">
               <option value="" 
-		      tal:attributes="value language"
-		      tal:content="language"
+                      tal:attributes="value language"
+                      tal:content="language"
                       tal:condition="python: language not in
                                      view.sync_languages" ></option>
               <option value="" selected="1"
-		      tal:attributes="value language"
-		      tal:content="language"
+                      tal:attributes="value language"
+                      tal:content="language"
                       tal:condition="python: language in
                                      view.sync_languages" ></option>
               </tal:block>
@@ -102,20 +102,20 @@
     </tr>
     <tal:block repeat="message python: view.queryMessages().items()">
       <tr tal:define="number repeat/message/number;
-	              oddrow repeat/message/odd"
+                      oddrow repeat/message/odd"
           tal:attributes="class python: oddrow and 'odd' or 'even'">
         <td width="16">
           <input type="hidden"
-      	       tal:attributes="name python: 'update-msgid-%i' %number;
+                     tal:attributes="name python: 'update-msgid-%i' %number;
                                  value python: message[0][0]" />
           <input type="hidden"
-      	       tal:attributes="name python: 'update-domain-%i' %number;
+                     tal:attributes="name python: 'update-domain-%i' %number;
                                  value python: message[0][1]" />
           <input type="hidden"
-      	       tal:attributes="name python: 'update-language-%i' %number;
+                     tal:attributes="name python: 'update-language-%i' %number;
                                  value python: message[0][2]" />
           <input type="checkbox" name="message_ids:list"
-      	       tal:attributes="value python: number" />
+                     tal:attributes="value python: number" />
         </td>
         <td tal:content="python: message[0][0]">Hello World!</td>
         <td tal:content="python: message[0][1]">default</td>

@@ -25,7 +25,7 @@
            disabling the service altogether.
         </p>
 
-	<form method="POST" action="services.html">
+        <form method="POST" action="services.html">
 
           <table>
             <tr tal:repeat="reg registries">
@@ -55,12 +55,12 @@
 
           <input type="submit" name="Activate" value="Activate" />
           <input type="submit" name="Deactivate" value="Deactivate" />
-	  &nbsp;
+          &nbsp;
           <input type="submit" name="Delete" value="Delete" />
-	  &nbsp;
+          &nbsp;
           <input type="submit" name="Refresh" value="Refresh" />
 
-	</form>
+        </form>
 
         <p><a href="default/AddService">Add a service to this service
            mananger</a></p>

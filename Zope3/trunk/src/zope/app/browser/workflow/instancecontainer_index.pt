@@ -25,12 +25,12 @@
   
       <tr tal:repeat="info view/listContentInfo">
   
-	<td class="ContentTitle">
-	  <a href="subfolder_id"
-	     tal:attributes="href info/url"
+        <td class="ContentTitle">
+          <a href="subfolder_id"
+             tal:attributes="href info/url"
              tal:content="info/id"
-	  >ID here</a>
-	</td>
+          >ID here</a>
+        </td>
 
       </tr>
   
