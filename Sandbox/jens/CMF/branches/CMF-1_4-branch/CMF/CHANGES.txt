@@ -1,3 +1,10 @@
+After CMF 1.4.8
+
+  Bug Fixes
+
+    - Fixed Creator() to not call a potentially costly method on the
+      user folder. (http://zope.org/Collectors/CMF/300)
+
 CMF 1.4.8 (2005/03/18)
 
   Bug Fixes
