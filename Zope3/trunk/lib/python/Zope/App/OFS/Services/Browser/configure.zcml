@@ -108,6 +108,7 @@
     label="Adapter"
     permission="Zope.ManageServices"
     fields="forInterface providedInterface factoryName title status"
+    fulledit="."
     />
 
 <view

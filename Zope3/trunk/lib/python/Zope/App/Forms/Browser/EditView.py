@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: EditView.py,v 1.6 2002/12/21 15:32:46 poster Exp $
+$Id: EditView.py,v 1.7 2002/12/22 21:08:32 stevea Exp $
 """
 
 from datetime import datetime
@@ -127,16 +127,22 @@ class EditView(BrowserView):
 
 
 def EditViewFactory(name, schema, label, permission, layer,
-                    template, default_template, bases, for_, fields):
+                    template, default_template, bases, for_, fields,
+                    fulledit_path=None, fulledit_label=None):
 
     class_  = SimpleViewClass(
         template,
         used_for = schema, bases = bases
         )
-
     class_.schema = schema
     class_.label = label
     class_.fieldNames = fields
+
+    class_.fulledit_path = fulledit_path
+    if fulledit_path and (fulledit_label is None):
+        fulledit_label = "Full edit"
+        
+    class_.fulledit_label = fulledit_label
 
     class_.generated_form = ViewPageTemplateFile(default_template)
 
@@ -216,12 +222,13 @@ def edit(_context, name, schema, label,
 def subedit(_context, name, schema, label,
               permission = 'Zope.Public', layer = "default",
               class_ = None, for_ = None,
-              template = None, omit=None, fields=None):
+              template = None, omit=None, fields=None,
+              fulledit=None, fulledit_label=None):
 
     (schema, for_, bases, template, fields,
      ) = _normalize(
         _context, schema, for_, class_, template, 'subedit.pt', fields, omit)
-
+    
     return [
         Action(
         discriminator = ('http://namespaces.zope.org/form/subedit',
@@ -229,7 +236,7 @@ def subedit(_context, name, schema, label,
         callable = EditViewFactory,
         args = (name, schema, label, permission, layer, template, 'subedit.pt',
                 bases,
-                for_, fields),
+                for_, fields, fulledit, fulledit_label),
         )
         ]
 
