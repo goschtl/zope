@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.13 2002/12/03 14:32:38 runyaga Exp $
+Revision information: $Id: Contents.py,v 1.14 2002/12/03 16:14:09 runyaga Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -50,11 +50,11 @@ class Contents(BrowserView):
 
             created = dc.created
             if created is not None:
-                info['created'] = created
+                info['created'] = formatTime(created)
             
             modified = dc.modified
             if modified is not None:
-                info['modified'] = modified
+                info['modified'] = formatTime(modified)
 
         return info
 
@@ -81,4 +81,11 @@ class Contents(BrowserView):
             return ''
 
         return self._index()
+
+def formatTime(in_date):
+    format='%m/%d/%Y'
+    undefined=u'N/A'
+    if hasattr(in_date, 'strftime'):
+       return in_date.strftime(format)
+    return undefined
 

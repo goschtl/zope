@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testContents.py,v 1.7 2002/11/18 23:52:59 jim Exp $
+$Id: testContents.py,v 1.8 2002/12/03 16:14:09 runyaga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -77,7 +77,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
 
         from datetime import datetime
         from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
-
+        from Zope.App.OFS.Container.Views.Browser.Contents import formatTime
         class FauxDCAdapter:
             __implements__ = IZopeDublinCore
             
@@ -86,7 +86,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
             title = 'faux title'
             created = datetime(2001, 1, 1, 1, 1, 1)
             modified = datetime(2002, 2, 2, 2, 2, 2)
-
+            
         from Zope.ComponentArchitecture.GlobalAdapterService \
              import provideAdapter
         provideAdapter(IDocument, IZopeDublinCore, FauxDCAdapter)
@@ -98,8 +98,8 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         self.assertEqual(info['url'], 'document')
         self.assertEqual(info['object'], document)
         self.assertEqual(info['title'], 'faux title')
-        self.assertEqual(info['created'], FauxDCAdapter.created)
-        self.assertEqual(info['modified'], FauxDCAdapter.modified)
+        self.assertEqual(info['created'], formatTime(FauxDCAdapter.created))
+        self.assertEqual(info['modified'], formatTime(FauxDCAdapter.modified))
 
     def testRemove( self ):
         container = self._TestView__newContext()
