@@ -13,8 +13,9 @@
 ##############################################################################
 """Content Component Views
 
-$Id: content.py,v 1.3 2003/08/17 06:06:01 philikon Exp $
+$Id: content.py,v 1.4 2003/08/18 18:55:29 srichter Exp $
 """
+import copy
 from zope.app import zapi
 from zope.app.browser.form.add import AddView
 from zope.app.browser.form.editview import EditView
@@ -107,8 +108,13 @@ class AddContentComponentInstanceView(AddView):
             self.context.contentName = content_name
 
         utilities = zapi.getService(self.context, Utilities)
-        matching = utilities.getRegisteredMatching(IContentComponentDefinition,
-                                                   type_name)
+        matching = utilities.getRegisteredMatching(IContentComponentDefinition)
+        # We do the filtering by name separately, since the
+        # getRegisteredMatching() only does a string find, not an exact match,
+        # which we desire here.
+        print matching
+        matching = filter(lambda m: m[1] == type_name, matching)
+            
         if not (matching and matching[0][2].active()):
             raise ComponentLookupError, \
                   "No Content Component Definition named '%s' found" %type_name
@@ -123,8 +129,11 @@ class AddContentComponentInstanceView(AddView):
 
     def createAndAdd(self, data):
         """Create a Content Component Instance and add it to the container."""
+        schema = self.definition.schema
+        if self.definition.copySchema:
+            schema = copy.deepcopy(schema)
         content = ContentComponentInstance(self.definition.name,
-                                           self.definition.schema,
+                                           schema,
                                            self.definition.permissions)
         errors = []
         for name, value in data.items():

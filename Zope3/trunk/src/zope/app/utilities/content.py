@@ -13,68 +13,274 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.3 2003/08/17 06:08:33 philikon Exp $
+$Id: content.py,v 1.4 2003/08/18 18:55:37 srichter Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.app import zapi
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.container import IAdding
+from zope.app.interfaces.services.menu import \
+     ILocalBrowserMenu, ILocalBrowserMenuService
+from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.utilities.content import \
-     IContentComponentDefinition, IContentComponentInstance
-from zope.app.services.menu import LocalBrowserMenuItem
+     IContentComponentDefinition, IContentComponentMenuItem
+from zope.app.interfaces.utilities.content import IContentComponentInstance
+from zope.app.services.menu import \
+     LocalBrowserMenuService, LocalBrowserMenu, LocalBrowserMenuItem
+from zope.app.services.service import ServiceRegistration
 from zope.app.services.servicenames import BrowserMenu
 from zope.app.services.utility import UtilityRegistration
-from zope.context import ContextMethod
+from zope.component.exceptions import ComponentLookupError
+from zope.context import ContextMethod, ContextProperty
 from zope.interface import directlyProvides, implements
 from zope.schema import getFields
 from zope.security.checker import CheckerPublic, Checker, defineChecker
+
+MenuItemKey = 'http://www.zope.org/utilities/content/menuitem'
 
 
 class ContentComponentDefinition(Persistent):
 
     implements(IContentComponentDefinition)
 
-    def __init__(self, name=u'', schema=None):
+    def __init__(self, name=u'', schema=None, copySchema=True):
         self.name = name
         self.schema = schema
+        self.copySchema = copySchema
         self.permissions = PersistentDict()
+        # This will set up the menu item entry.
+        adapter = zapi.getAdapter(self, IContentComponentMenuItem)
+        
+
+
+class ContentComponentDefinitionMenuItem:
+    """An adapter that takes a Content Component Defintion and provides all
+    necessary information to create a menu item for the content component."""
+
+    implements(IContentComponentMenuItem)
+    __used_for__ = IContentComponentDefinition
+
+    def __init__(self, context):
+        self.context = context
+        ann = zapi.getAdapter(context, IAnnotations)
+        if not ann.has_key(MenuItemKey):
+            ann[MenuItemKey] = PersistentDict(
+                {'interface': IAdding,
+                 'title': self.context.name,
+                 'description': '',
+                 'permission': 'zope.ManageContent',
+                 'filter_string': '',
+                 'menuId': 'add_content',
+                 'create': True,
+                 # This is not part of the interface, but we need to store
+                 # that information.
+                 'menuItemId': None,
+                 'menu': None}
+                )
+        self._data = ann[MenuItemKey]
+        self._menu = self._data['menu']
+        if self._menu:
+            self._menuItem = self._data['menu'][self._data['menuItemId']]
+        else:
+            self._menuItem = None
+
+
+    def _createMenuService(self):
+        """Create a browser menu service for the menu item."""
+        # Get the local service manager; not that we know it must exist,
+        # otherwise this object would not be called.
+        sm = zapi.getServiceManager(self.context)
+        # Get the default package and add a menu service called 'Menus-1'
+        default = zapi.traverse(sm, 'default')
+        default.setObject('Menus-1', LocalBrowserMenuService())
+        # Register the service and set it to active
+        path = "%s/default/%s" % (zapi.getPath(sm), 'Menus-1')
+        reg = ServiceRegistration(BrowserMenu, path, sm)
+        key = default.getRegistrationManager().setObject("", reg)
+        reg = zapi.traverse(default.getRegistrationManager(), key)
+        reg.status = ActiveStatus
+        return zapi.traverse(default, 'Menus-1')    
+
+
+    def _createMenu(self):
+        """Create a menu."""
+        # Create a menu and add it to the default package
+        menu = LocalBrowserMenu()
+        sm = zapi.getServiceManager(self.context)
+        default = zapi.traverse(sm, 'default')
+        default.setObject(self.menuId, menu)
+        # Register th emenu as a utility and activate it.
+        path = "%s/default/%s" % (zapi.getPath(sm), self.menuId)
+        reg = UtilityRegistration(self.menuId, ILocalBrowserMenu, path)
+        key = default.getRegistrationManager().setObject("", reg)
+        reg = zapi.traverse(default.getRegistrationManager(), key)
+        reg.status = ActiveStatus
+        return zapi.traverse(default, self.menuId)    
+
+
+    def createMenuItem(self):
+        "See zope.app.interfaces.utilities.content.IContentComponentMenuItem"
+        # If 'create' is set to true, we must generate the necessary objects
+        # locally
+        if self.create:
+            # Get the servicem manager and the default package
+            sm = zapi.getServiceManager(self.context)
+            default = zapi.traverse(sm, 'default')
+            service = sm.queryService(BrowserMenu)
+            # Check whether the service really exists locally; if not, create
+            # one for this service manager
+            if (service is None or
+                not ILocalBrowserMenuService.isImplementedBy(service) or
+                not zapi.name(service) in default):
+
+                service = self._createMenuService()
+
+            # Check whether the menu exists locally; if not create one.
+            menu = service.queryInheritedMenu(self.menuId, True)
+            if (menu is None or
+                not ILocalBrowserMenu.isImplementedBy(menu) or
+                not zapi.name(menu) in default):
+
+                menu = self._createMenu()
+
+        else:
+            # Find a browser menu service and make sure it is a local one.
+            service = zapi.getService(self, BrowserMenu)
+            if not ILocalBrowserMenuService.isImplementedBy(service):
+                raise ComponentLookupError, \
+                      _('No local/peristent Browser Menu Service found.')
+            # Find the browser menu and make sure it is a local one
+            menu = service.queryInheritedMenu(self.menuId, True)
+            if menu is None or not ILocalBrowserMenu.isImplementedBy(menu):
+                error = _('No local Browser Menu called "${name}" found.')
+                error.mapping = {'name': self.menuId}
+                raise ComponentLookupError, error
+            
+        self._data['menu'] = menu
+        # Creating the menu item
+        item = LocalBrowserMenuItem()
+        for name in ('interface', 'action', 'title', 'description',
+                     'permission', 'filter_string'):
+            setattr(item, name, getattr(self, name))
+        self._data['menuItemId'] = menu.setObject('something', item)
+
+    createMenuItem = ContextMethod(createMenuItem)
+
+
+    def removeMenuItem(self):
+        "See zope.app.interfaces.utilities.content.IContentComponentMenuItem"
+        self._data['menu'].__delitem__(self._data['menuItemId'])
+        self._data['menu'] = None
+        self._data['menuItemId'] = None
+    removeMenuItem = ContextMethod(removeMenuItem)
+
+
+    def _setMenuId(self, value):
+        if self._data['menuId'] != value:
+            self._data['menuId'] = value
+            # This is the path of least reistence
+            self.removeMenuItem()
+            self.createMenuItem()
+
+    menuId = ContextProperty(
+        lambda self: self._data['menuId'], _setMenuId)
+
+
+    def _setInterface(self, value):
+        if self._data['interface'] != value:
+            self._data['interface'] = value
+            # If a menu item exists, make sure it gets updated.
+            if self._menuItem is not None:
+                self._menuItem.interface = value
+
+    interface = ContextProperty(
+        lambda self: self._data['interface'], _setInterface)
+
+
+    def _getAction(self):
+        return 'AddContentComponent/' + self.context.name
+    
+    action = property(_getAction)
+
+
+    def _getTitle(self):
+        return self._data['title'] or self.context.name
+
+    def _setTitle(self, value):
+        if self._data['title'] != value:
+            self._data['title'] = value
+            # If a menu item exists, make sure it gets updated.            
+            if self._menuItem is not None:
+                self._menuItem.title = value
+
+    title = ContextProperty(_getTitle, _setTitle)
+
+
+    def _setDescription(self, value):
+        if self._data['description'] != value:
+            self._data['description'] = value
+            # If a menu item exists, make sure it gets updated.
+            if self._menuItem is not None:
+                self._menuItem.description = value
+
+    description = ContextProperty(
+        lambda self: self._data['description'], _setDescription)
+
+    def _setPermission(self, value):
+        if self._data['permission'] != value:
+            self._data['permission'] = value
+            # If a menu item exists, make sure it gets updated.
+            if self._menuItem is not None:
+                self._menuItem.permission = value
+
+    permission = ContextProperty(
+        lambda self: self._data['permission'], _setPermission)
+
+
+    def _setFilterString(self, value):
+        if self._data['filter_string'] != value:
+            self._data['filter_string'] = value
+            # If a menu item exists, make sure it gets updated.
+            if self._menuItem is not None:
+                self._menuItem.filter = value
+
+    filter_string = ContextProperty(
+        lambda self: self._data['filter_string'], _setFilterString)
+
+
+    def _setCreate(self, value):
+        if self._data['create'] != value:
+            self.removeMenuItem()
+            self._data['create'] = value
+            self.createMenuItem()
+
+    create = ContextProperty(
+        lambda self: self._data['create'], _setCreate)
+
 
 
 class ContentComponentDefinitionRegistration(UtilityRegistration):
     """Content Component Registration"""
 
-    menuitem_id = None
-    menu = None
-
     def activated(self):
         """Once activated, we have to register the new Content Object with the
         appropriate menu.
         """
-        service = zapi.getService(self, BrowserMenu)
-        # XXX: Should use queryInheritedMenu()
-        self.menu = service.queryLocalMenu('add_content')
-        # Creating the menu item
-        # XXX: Should be configurable
-        item = LocalBrowserMenuItem()
-        item.interface = IAdding
-        item.action = 'AddContentComponent/' + self.name
-        item.title = self.name
-        item.permission = 'zope.ManageContent'
-        self.menuitem_id = self.menu.setObject('something', item)
         component = self.getComponent()
         component.name = self.name
+        zapi.getAdapter(component, IContentComponentMenuItem).createMenuItem()
     activated = ContextMethod(activated)
 
     def deactivated(self):
         """Once activated, we have to unregister the new Content Object with
         the appropriate menu."""
-        self.menu.__delitem__(self.menuitem_id)
-        self.menu = None
-        self.menuitem_id = None
         component = self.getComponent()
-        component.name = '<component not activated>'
+        component.name = None
+        zapi.getAdapter(component, IContentComponentMenuItem).removeMenuItem()
     deactivated = ContextMethod(deactivated)
 
 
@@ -125,14 +331,16 @@ class ContentComponentInstance(Persistent):
         if is_schema_field:
             super(ContentComponentInstance, self).__setattr__(key, value)
         else:
-            raise AttributeError, 'Attribute not available'
+            raise AttributeError, 'Attribute "%s" not available' %key
 
 
     def getSchema(self):
         return self.__schema
 
+
     def __repr__(self):
         return '<ContentComponentInstance called %s>' %self.__name__
+
 
 
 def ContentComponentInstanceChecker(instance):
@@ -141,5 +349,3 @@ def ContentComponentInstanceChecker(instance):
                    instance.__checker_setattr.get)
 
 defineChecker(ContentComponentInstance, ContentComponentInstanceChecker)
-
-

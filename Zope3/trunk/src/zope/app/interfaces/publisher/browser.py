@@ -13,9 +13,10 @@
 ##############################################################################
 """Browser-Specific Publisher interfaces
 
-$Id: browser.py,v 1.5 2003/08/17 06:07:05 philikon Exp $
+$Id: browser.py,v 1.6 2003/08/18 18:55:32 srichter Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.permission import PermissionField
 from zope.interface import Interface
 from zope.schema import TextLine, Text
@@ -26,53 +27,51 @@ class IBrowserMenuItem(Interface):
     (using a filter) or being selected to be the default view of the menu."""
 
     interface = InterfaceField(
-        title=u"Interface",
-        description=u"Specifies the interface this menu item is for.",
+        title=_("Interface"),
+        description=_("Specifies the interface this menu item is for."),
         required=True)
 
     action = TextLine(
-        title=u"The relative url to use if the item is selected",
-        description=u"""
-        The url is relative to the object the menu is being displayed
-        for.""",
+        title=_("The relative url to use if the item is selected"),
+        description=_("The url is relative to the object the menu is being "
+                      "displayed for."),
         required=True)
 
     title = TextLine(
-        title=u"Title",
-        description=u"The text to be displayed for the menu item",
+        title=_("Title"),
+        description=_("The text to be displayed for the menu item"),
         required=True)
 
     description = Text(
-        title=u"A longer explanation of the menu item",
-        description=u"""
-        A UI may display this with the item or display it when the
-        user requests more assistance.""",
+        title=_("A longer explanation of the menu item"),
+        description=_("A UI may display this with the item or display it "
+                      "when the user requests more assistance."),
         required=False)
 
     permission = PermissionField(
-        title=u"The permission needed access the item",
-        description=u"""
-        This can usually be inferred by the system, however, doing so
-        may be expensive. When displaying a menu, the system tries to
-        traverse to the URLs given in each action to determine whether
-        the url is accessible to the current user. This can be
-        avoided if the permission is given explicitly.""",
+        title=_("The permission needed access the item"),
+        description=_("This can usually be inferred by the system, however, "
+                      "doing so may be expensive. When displaying a menu, "
+                      "the system tries to traverse to the URLs given in "
+                      "each action to determine whether the url is "
+                      "accessible to the current user. This can be avoided "
+                      "if the permission is given explicitly."),
         required=False)
 
     filter_string = TextLine(
-        title=u"A condition for displaying the menu item",
-        description=u"""
-        The condition is given as a TALES expression. The expression
-        has access to the variables:
-
-        context -- The object the menu is being displayed for
-
-        request -- The browser request
-
-        nothing -- None
-
-        The menu item will not be displayed if there is a filter and
-        the filter evaluates to a false value.""",
+        title=_("A condition for displaying the menu item"),
+        description=_("The condition is given as a TALES expression. The "
+                      "expression has access to the variables:\n"
+                      "\n"
+                      "context -- The object the menu is being displayed "
+                      "for\n"
+                      "\n"
+                      "request -- The browser request\n"
+                      "\n"
+                      "nothing -- None\n"
+                      "\n"
+                      "The menu item will not be displayed if there is a \n"
+                      "filter and the filter evaluates to a false value."),
         required=False)
 
 
@@ -81,30 +80,23 @@ class IBrowserMenu(Interface):
     collective."""
 
     title = TextLine(
-        title=u"Title",
-        description=u"A descriptive title for documentation purposes",
+        title=_("Title"),
+        description=_("A descriptive title for documentation purposes"),
         required=True)
 
     description = Text(
-        title=u"A longer explanation of the menu",
-        description=u"""
-        A UI may display this with the item or display it when the
-        user requests more assistance.""",
+        title=_("A longer explanation of the menu"),
+        description=_("A UI may display this with the item or display it "
+                      "when the user requests more assistance."),
         required=False)
 
     usage = TextLine(
-        title=u"The templates usage top-level variable",
-        description=u"""
-        See the usage documentation in the README.txt in the
-        zope/app/browser/skins directory. If a view is associated with
-        a menu item, the view will get its usage from the menu the
-        menu item is registered to.""",
-        required=False
-        )
-
-    # XXX: Usage as a field does not work well with the addform, so
-    # use this one for now.
-    usage_ = usage
+        title=_("The templates usage top-level variable"),
+        description=_("See the usage documentation in the README.txt in the "
+                      "zope/app/browser/skins directory. If a view is "
+                      "associated with a menu item, the view will get its "
+                      "usage from the menu the menu item is registered to."),
+        required=False)
 
     def getMenuItems(object=None):
         """Get a list of all menu entries in the usual form:

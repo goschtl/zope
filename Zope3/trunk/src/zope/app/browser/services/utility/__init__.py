@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.9 2003/08/16 00:43:05 srichter Exp $
+$Id: __init__.py,v 1.10 2003/08/18 18:55:26 srichter Exp $
 """
 from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.services.registration import AddComponentRegistration
@@ -45,7 +45,6 @@ class UtilityInterfaceWidget(InterfaceWidget):
 
 class AddRegistration(AddComponentRegistration):
     """View for adding a utility registration.
-
 
     We could just use AddComponentRegistration, except that we need a
     custom interface widget.

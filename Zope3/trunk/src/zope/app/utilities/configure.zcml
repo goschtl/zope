@@ -61,7 +61,6 @@
 
   </content>
 
-
   <content class=".content.ContentComponentDefinitionRegistration">
     <require
       permission="zope.ManageServices"
@@ -71,6 +70,25 @@
       set_schema="zope.app.interfaces.services.utility.IUtilityRegistration"
       />
   </content>
+
+
+<!-- Content Component Menu Item -->
+
+  <content class=".content.ContentComponentDefinitionMenuItem">
+
+    <require
+      permission="zope.ManageServices"
+      interface="
+          zope.app.interfaces.utilities.content.IContentComponentMenuItem"
+      set_schema="
+          zope.app.interfaces.utilities.content.IContentComponentMenuItem" />
+
+  </content>
+
+  <adapter
+     for="zope.app.interfaces.utilities.content.IContentComponentDefinition"
+     provides="zope.app.interfaces.utilities.content.IContentComponentMenuItem"
+     factory=".content.ContentComponentDefinitionMenuItem" />
 
 <!-- Content Component Instance -->
 

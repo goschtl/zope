@@ -149,19 +149,30 @@
 
   <editform
       for="zope.app.interfaces.utilities.content.IContentComponentDefinition"
-      schema="zope.app.interfaces.utilities.content.IContentComponentDefinition"
+      schema=
+          "zope.app.interfaces.utilities.content.IContentComponentDefinition"
       name="edit.html"
-      fields="schema"
+      fields="schema copySchema"
       menu="zmi_views" title="Edit"
       permission="zope.ManageContent"/>
 
   <editform
       for="zope.app.interfaces.utilities.content.IContentComponentDefinition"
-      schema="zope.app.interfaces.utilities.content.IContentComponentDefinition"
+      schema=
+          "zope.app.interfaces.utilities.content.IContentComponentDefinition"
       name="editpermissions.html"
       template="permission_edit.pt"
       class=".content.ContentComponentPermissionEdit"
       menu="zmi_views" title="Define Permissions"
+      permission="zope.ManageContent"/>
+
+  <editform
+      for="zope.app.interfaces.utilities.content.IContentComponentDefinition"
+      schema="zope.app.interfaces.utilities.content.IContentComponentMenuItem"
+      name="menuItem.html"
+      menu="zmi_views" title="Menu Item"
+      fields="menuId interface create title description permission 
+              filter_string"
       permission="zope.ManageContent"/>
 
   <defaultView
