@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Util.py,v 1.4 2002/07/12 21:37:35 srichter Exp $
+$Id: Util.py,v 1.5 2002/08/08 17:07:03 srichter Exp $
 """
 from Zope.App.RDB.DatabaseException import DatabaseException
 from Zope.App.RDB.Row import RowClassFactory
@@ -29,11 +29,17 @@ def queryForResults(conn, query):
     except Exception, error:
         raise DatabaseException(str(error))
 
-    columns = [c[0] for c in cursor.description]
+    if cursor.description is not None:
+        columns = [c[0] for c in cursor.description]
+        results = cursor.fetchall()
+    else:
+        # Handle the case that the query was not a SELECT
+        columns = []
+        results = []
 
     row_klass = RowClassFactory(columns)
     
-    return ResultSet(columns, cursor.fetchall(), row_klass)
+    return ResultSet(columns, results, row_klass)
 
 
 
