@@ -41,7 +41,17 @@ class WidgetInputErrorView:
         >>> err = WidgetInputError("foo", "Foo", TooSmallError())
         >>> view = WidgetInputErrorView(err, None)
         >>> view.snippet()
-        '<span class="error">Foo input &lt; 1</span>'
+        u'<span class="error">Foo input &lt; 1</span>'
+
+        The only method that IWidgetInputError promises to implement is
+        `doc()`. Therefore, other implementations of the interface should also
+        work.
+
+        >>> from zope.app.form.interfaces import ConversionError
+        >>> err = ConversionError('Could not convert to float.')
+        >>> view = WidgetInputErrorView(err, None)
+        >>> view.snippet()
+        u'<span class="error">Could not convert to float.</span>'
         """
-        return '<span class="error">%s</span>' %(
-            escape(self.context.errors.doc()))
+        return u'<span class="error">%s</span>' %(
+            escape(self.context.doc()))

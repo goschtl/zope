@@ -26,6 +26,8 @@ from zope.app.publisher.browser import BrowserView
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.form import Widget, InputWidget
+from zope.app.form.interfaces import ConversionError
+from zope.app.form.interfaces import InputErrors
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form.browser.interfaces import IBrowserWidget
 from zope.app.form.browser.interfaces import ISimpleInputWidget
@@ -173,7 +175,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
     to its field:
 
         >>> import re
-        >>> field.constraint = re.compile(".*hello.*").match
+        >>> field.constraint = re.compile('.*hello.*').match
 
     Because we modified the widget's name, the widget will now read different
     different form input:
@@ -226,6 +228,34 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         >>> widget.getInputValue() is field.missing_value
         True
 
+    Another type of exception is a conversion error. It is raised when a value
+    cannot be converted to the desired Python object. Here is an example of a
+    floating point.
+
+        >>> from zope.schema import Float
+        >>> field = Float(__name__='price', title=u'Price')
+
+        >>> from zope.app.form.interfaces import ConversionError
+        >>> class FloatWidget(SimpleInputWidget):
+        ...     def _toFieldValue(self, input):
+        ...         try:
+        ...             return float(input)
+        ...         except ValueError, v:
+        ...             raise ConversionError('Invalid floating point data', v)
+        
+        >>> request = TestRequest(form={'field.price': u'32.0'})
+        >>> widget = FloatWidget(field, request)
+        >>> widget.getInputValue()
+        32.0
+
+        >>> request = TestRequest(form={'field.price': u'foo'})
+        >>> widget = FloatWidget(field, request)
+        >>> try:
+        ...     widget.getInputValue()
+        ... except ConversionError, error:
+        ...     print error.doc()
+        Invalid floating point data
+
     >>> tearDown()
     """
 
@@ -259,7 +289,12 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
             raise MissingInputError(self.name, self.label, None)
 
         # convert input to suitable value - may raise conversion error
-        value = self._toFieldValue(self._getFormInput())
+        try:
+            value = self._toFieldValue(self._getFormInput())
+        except ConversionError, error:
+            # ConversionError is already a WidgetInputError
+            self._error = error
+            raise self._error            
 
         # allow missing values only for non-required fields
         if value == field.missing_value and not field.required:
@@ -330,7 +365,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
             if self.hasInput():
                 try:
                     value = self.getInputValue()
-                except WidgetInputError:
+                except InputErrors:
                     return self.request.form.get(self.name, self._missing)
             else:
                 value = self._getDefault()
