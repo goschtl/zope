@@ -143,6 +143,5 @@ def complain(msg, *args):
     sys.stderr.write(msg % args)
 
 if __name__ == "__main__":
-    print "sys.argv:", sys.argv
     main(sys.argv)
 
