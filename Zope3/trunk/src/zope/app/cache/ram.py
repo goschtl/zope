@@ -13,13 +13,13 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.8 2003/08/19 17:34:08 srichter Exp $
+$Id: ram.py,v 1.9 2003/09/21 17:31:17 jim Exp $
 """
 from time import time
 from thread import allocate_lock
 from pickle import dumps
 from persistence import Persistent
-
+from zope.app import zapi
 from zope.app.interfaces.cache.ram import IRAMCache
 from zope.app.interfaces.cache import ICache
 from zope.app.interfaces.event import IObjectModifiedEvent
@@ -152,7 +152,7 @@ class RAMCache(Persistent):
         """
 
         if IObjectModifiedEvent.isImplementedBy(event):
-            self._getStorage().invalidate(event.location)
+            self._getStorage().invalidate(zapi.getPath(event.object))
 
 
 class Storage:

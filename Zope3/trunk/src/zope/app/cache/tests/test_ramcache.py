@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_ramcache.py,v 1.9 2003/08/19 17:34:12 srichter Exp $
+$Id: test_ramcache.py,v 1.10 2003/09/21 17:31:18 jim Exp $
 """
 from time import time
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -219,11 +219,11 @@ class TestRAMCache(PlacelessSetup,
         self.assertEquals(c._getStorage().getEntry(location, key),
                           value, "doesn't ignore uninteresting events")
 
-        c.notify(ObjectEvent(ob, location))
+        c.notify(ObjectEvent(ob))
         self.assertEquals(c._getStorage().getEntry(location, key),
                           value, "doesn't ignore uninteresting events")
 
-        c.notify(ObjectModifiedEvent(ob, location))
+        c.notify(ObjectModifiedEvent(ob))
         self.assertRaises(KeyError, c._getStorage().getEntry, location, key)
 
 
