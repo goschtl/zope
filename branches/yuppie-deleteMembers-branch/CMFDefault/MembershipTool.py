@@ -177,8 +177,8 @@ class MembershipTool( BaseTool ):
         members = getattr(parent, self.membersfolder_id, None)
         return members
 
-    security.declarePublic('createMemberarea')
-    def createMemberarea(self, member_id=''):
+    security.declarePublic('createMemberArea')
+    def createMemberArea(self, member_id=''):
         """ Create a member area for 'member_id' or authenticated user.
         """
         if not self.getMemberareaCreationFlag():

@@ -32,14 +32,3 @@ class portal_membership(BaseInterface):
 
         Permission -- Manage portal
         """
-
-    def getMembersFolder():
-        """ Get the members folder object.
-
-        If no members folder is set or the set folder id doesn't exist, None
-        is returned.
-
-        Permission -- Always available
-
-        Returns -- Members folder object or None
-        """

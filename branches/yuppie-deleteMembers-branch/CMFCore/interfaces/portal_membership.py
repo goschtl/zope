@@ -68,6 +68,17 @@ class portal_membership(Interface):
         Permission -- Always available
         """
 
+    def getMembersFolder():
+        """ Get the members folder object.
+
+        If no members folder is set or the set folder id doesn't exist, None
+        is returned.
+
+        Permission -- Always available
+
+        Returns -- Members folder object or None
+        """
+
     def getHomeFolder(id=None, verifyPermission=0):
         """Returns a member's home folder object or None.
         Set verifyPermission to 1 to return None when the user
@@ -160,7 +171,7 @@ class portal_membership(Interface):
         Permission -- Manage portal
         """
 
-    def createMemberarea(member_id=''):
+    def createMemberArea(member_id=''):
         """ Create a member area for 'member_id' or authenticated user.
 
         Permission -- Always available
