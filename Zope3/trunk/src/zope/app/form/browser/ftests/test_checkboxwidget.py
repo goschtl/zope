@@ -13,10 +13,10 @@
 ##############################################################################
 """Checkbox Widget tests
 
-$Id: test_checkboxwidget.py,v 1.4 2004/04/06 20:58:08 jim Exp $
+$Id: test_checkboxwidget.py,v 1.5 2004/05/10 15:50:10 fdrake Exp $
 """
 import unittest
-from persistence import Persistent
+from persistent import Persistent
 from transaction import get_transaction
 
 from zope.interface import Interface

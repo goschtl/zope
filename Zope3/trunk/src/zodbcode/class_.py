@@ -17,7 +17,7 @@ __metaclass__ = type
 
 from zope.interface import implements
 from persistent.cPersistence import UPTODATE, CHANGED, GHOST
-from persistence.interfaces import IPersistent
+from persistent.interfaces import IPersistent
 from zodbcode.function import PersistentFunction
 
 import time

@@ -13,10 +13,10 @@
 ##############################################################################
 """Int Widget Functional Tests
 
-$Id: test_intwidget.py,v 1.4 2004/04/24 23:19:43 srichter Exp $
+$Id: test_intwidget.py,v 1.5 2004/05/10 15:50:10 fdrake Exp $
 """
 import unittest
-from persistence import Persistent
+from persistent import Persistent
 from transaction import get_transaction
 
 from support import *

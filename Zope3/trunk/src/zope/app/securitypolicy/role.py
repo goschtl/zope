@@ -13,9 +13,9 @@
 ##############################################################################
 """Role implementation
 
-$Id: role.py,v 1.4 2004/03/11 12:38:18 srichter Exp $
+$Id: role.py,v 1.5 2004/05/10 15:50:11 fdrake Exp $
 """
-from persistence import Persistent
+from persistent import Persistent
 from zope.interface import implements
 
 from zope.app import zapi

@@ -15,7 +15,7 @@ import os
 import pickle
 import unittest
 
-from persistence.dict import PersistentDict
+from persistent.dict import PersistentDict
 from persistent import UPTODATE
 from transaction import get_transaction
 

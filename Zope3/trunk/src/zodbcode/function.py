@@ -19,7 +19,7 @@ import sys
 # in 2.3, this will be spelled new.function and new.code
 from types import FunctionType as function, CodeType as code
 
-from persistence import Persistent
+from persistent import Persistent
 
 _STORE_GLOBAL = chr(dis.opname.index("STORE_GLOBAL"))
 

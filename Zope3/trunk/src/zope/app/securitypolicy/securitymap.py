@@ -13,8 +13,8 @@
 ##############################################################################
 """ Generic two-dimensional array type """
 
-from persistence import Persistent
-from persistence.dict import PersistentDict
+from persistent import Persistent
+from persistent.dict import PersistentDict
 from zope.interface import implements
 from zope.app.securitypolicy.interfaces import ISecurityMap
 

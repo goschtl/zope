@@ -13,11 +13,11 @@
 ##############################################################################
 """TextArea Functional Tests
 
-$Id: test_textareawidget.py,v 1.3 2004/04/11 10:34:56 srichter Exp $
+$Id: test_textareawidget.py,v 1.4 2004/05/10 15:50:10 fdrake Exp $
 """
 
 import unittest
-from persistence import Persistent
+from persistent import Persistent
 from transaction import get_transaction
 
 from zope.interface import Interface

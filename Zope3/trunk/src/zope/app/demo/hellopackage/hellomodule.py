@@ -12,10 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: hellomodule.py,v 1.1 2004/02/27 14:50:21 philikon Exp $
+$Id: hellomodule.py,v 1.2 2004/05/10 15:50:08 fdrake Exp $
 """
 from interfaces import IHello
-from persistence import Persistent
+from persistent import Persistent
 from zope.interface import implements
 
 

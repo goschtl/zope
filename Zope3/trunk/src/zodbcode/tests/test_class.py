@@ -169,7 +169,7 @@ class Bar(parent.Foo):
         Bar = self._load_name("child.Bar")
         self.assertEqual(Bar().meth(3), 3//2+5)
 
-    persist = """from persistence import Persistent
+    persist = """from persistent import Persistent
 class Foo(Persistent):
     pass""" "\n"
 

@@ -3,7 +3,7 @@ Job.py
 """
 
 
-from persistence import Persistent
+from persistent import Persistent
 from interfaces import IJob, JobState, IJobList
 from zope.interface import implements
 
@@ -46,7 +46,7 @@ class Job(Persistent):
 
 
 
-from persistence.dict import PersistentDict
+from persistent.dict import PersistentDict
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 
