@@ -21,6 +21,7 @@ import urllib
 from StringIO import StringIO
 
 from zpkgsetup import loggingapi as logging
+from zpkgsetup import urlutils
 
 from zpkgtools import locationmap
 from zpkgtools.tests.test_cvsloader import CvsWorkingDirectoryBase
@@ -95,9 +96,9 @@ class LoadTestCase(unittest.TestCase):
         dirname = os.path.dirname(os.path.abspath(__file__))
         dirname = os.path.join(dirname, "input")
         fn = os.path.join(dirname, "packages.map")
-        url = "file://" + urllib.pathname2url(fn)
+        url = urlutils.file_url(fn)
         map = locationmap.fromPathOrUrl(url)
-        base = "file://" + urllib.pathname2url(dirname)
+        base = urlutils.file_url(dirname)
         self.assertEqual(map["collection:collection-1"],
                          base + "/collection-1/")
         self.assertEqual(map["collection:collection-2"],

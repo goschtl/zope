@@ -20,6 +20,7 @@ import unittest
 import urllib
 
 from zpkgsetup.tests import tempfileapi as tempfile
+from zpkgsetup import urlutils
 
 from zpkgtools import loader
 from zpkgtools.tests import test_svnloader
@@ -130,7 +131,7 @@ class LoaderTestCase(LoaderTestBase,
 
     def test_load_with_file(self):
         filename = os.path.abspath(__file__)
-        URL = "file://" + urllib.pathname2url(filename)
+        URL = urlutils.file_url(filename)
         loader = self.createLoader()
         # Check that the file isn't copied if we don't ask for a mutable copy:
         p1 = loader.load(URL)
@@ -141,7 +142,7 @@ class LoaderTestCase(LoaderTestBase,
 
     def test_load_mutable_copy_with_file(self):
         filename = os.path.abspath(__file__)
-        URL = "file://" + urllib.pathname2url(filename)
+        URL = urlutils.file_url(filename)
         loader = self.createLoader()
         # Check that the file isn't copied if we don't ask for a mutable copy:
         p1 = loader.load(URL)
@@ -167,11 +168,11 @@ class LoaderTestCase(LoaderTestBase,
         self.check_load_mutable_copy_with_directory(filename)
 
     def check_load_mutable_copy_with_directory(self, filename):
-        URL = "file://" + urllib.pathname2url(filename)
+        URL = urlutils.file_url(filename)
         loader = self.createLoader()
         # Check that the file isn't copied if we don't ask for a mutable copy:
         p1 = loader.load(URL)
-        self.assertEqual(p1, filename)
+        self.assertEqual(p1, os.path.normpath(filename))
         # Check that it is copied if we do:
         common_files = [
             "packages.map",
