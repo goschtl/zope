@@ -13,9 +13,8 @@
 ##############################################################################
 """Introspector funcional tests
 
-$Id: test_introspector.py,v 1.1 2003/07/02 11:02:17 alga Exp $
+$Id: test_introspector.py,v 1.2 2004/02/14 02:57:18 srichter Exp $
 """
-
 import unittest
 from zope.testing.functional import BrowserTestCase
 
@@ -34,4 +33,4 @@ def test_suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='test_suite')
