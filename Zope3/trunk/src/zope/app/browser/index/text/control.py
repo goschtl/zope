@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.12 2003/06/04 11:13:47 stevea Exp $
+$Id: control.py,v 1.13 2003/06/22 16:09:46 mgedmin Exp $
 """
 
 from __future__ import generators
@@ -57,6 +57,9 @@ class ControlView(BrowserView):
             start = int(self.request.get('start', self.default_start))
         count = int(self.request.get('count', self.default_count))
         results, total = self.context.query(queryText, start, count)
+        # XXX Two things:
+        #     1. query can raise an exception (QueryError or ParseError)
+        #     2. query is not in the IUITextIndex interface
         nresults = len(results)
         first = start + 1
         last = first + len(results) - 1
