@@ -13,7 +13,7 @@
 ##############################################################################
 """Reusable test fictures for WebDAV tests
 
-$Id: test_propfind.py 27574 2004-09-17 16:15:46Z srichter $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
