@@ -78,6 +78,22 @@
       permission="zope.Public"
       />
 
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IDate"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".DateDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IDatetime"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".DatetimeDisplayWidget"
+      permission="zope.Public"
+      />
+
   <!-- Core edit widgets -->
 
   <view

@@ -25,6 +25,8 @@ from zope.app.form.browser.textwidgets import PasswordWidget, FileWidget
 from zope.app.form.browser.textwidgets import ASCIIWidget
 from zope.app.form.browser.textwidgets import IntWidget, FloatWidget
 from zope.app.form.browser.textwidgets import DatetimeWidget, DateWidget
+from zope.app.form.browser.textwidgets import DatetimeDisplayWidget
+from zope.app.form.browser.textwidgets import DateDisplayWidget
 from zope.app.form.browser.textwidgets import BytesDisplayWidget
 
 # Widgets for boolean fields

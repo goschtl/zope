@@ -15,7 +15,9 @@
 
 $Id$
 """
-import unittest, doctest
+import datetime
+import doctest
+import unittest
 
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine
@@ -23,6 +25,7 @@ from zope.publisher.browser import TestRequest
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextWidget
+from zope.app.form.browser import DateDisplayWidget, DatetimeDisplayWidget
 from zope.app.form.browser.textwidgets import URIDisplayWidget
 from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
@@ -136,10 +139,101 @@ class URIDisplayWidgetTest(BrowserWidgetTest):
                                            'target="there"'])
 
 
+class DateDisplayWidgetTest(BrowserWidgetTest):
+
+    _WidgetFactory = DateDisplayWidget
+
+    expected_class = "date"
+
+    def setUp(self):
+        super(DateDisplayWidgetTest, self).setUp()
+        self._value = datetime.date(2004, 12, 01)
+
+    def testDefaultDisplayStyle(self):
+        self.failIf(self._widget.displayStyle)
+
+    def testRenderDefault(self):
+        self._widget.setRenderedValue(self._value)
+        self.verifyResult(self._widget(),
+                          ["<span",
+                           'class="%s"' % self.expected_class,
+                           "2004-12-01",
+                           "</span"])
+
+    def testRenderShort(self):
+        self._widget.setRenderedValue(self._value)
+        self._widget.displayStyle = "short"
+        self.verifyResult(self._widget(),
+                          ["<span",
+                           'class="%s"' % self.expected_class,
+                           u"04-12-01",
+                           "</span"])
+
+    def testRenderMedium(self):
+        self._widget.setRenderedValue(self._value)
+        self._widget.displayStyle = "medium"
+        self.verifyResult(self._widget(),
+                          ["<span",
+                           'class="%s"' % self.expected_class,
+                           u"2004-12-01",
+                           "</span"])
+
+    def testRenderLong(self):
+        self._widget.setRenderedValue(self._value)
+        self._widget.displayStyle = "long"
+        self.verifyResult(self._widget(),
+                          ["<span",
+                           'class="%s"' % self.expected_class,
+                           u"1 grudzie\u0144 2004",
+                           "</span"])
+
+    def testRenderFull(self):
+        self._widget.setRenderedValue(self._value)
+        self._widget.displayStyle = "full"
+        self.verifyResult(self._widget(),
+                          ["<span",
+                           'class="%s"' % self.expected_class,
+                           u"1 grudzie\u0144 2004",
+                           "</span"])
+
+
+class DatetimeDisplayWidgetTest(DateDisplayWidgetTest):
+
+    _WidgetFactory = DatetimeDisplayWidget
+
+    expected_class = "dateTime"
+
+    def setUp(self):
+        super(DatetimeDisplayWidgetTest, self).setUp()
+        self._value = datetime.datetime(2004, 12, 01, 14, 39, 01)
+
+    def testRenderDefault(self):
+        super(DatetimeDisplayWidgetTest, self).testRenderDefault()
+        self.verifyResult(self._widget(), ["14:39:01"])
+
+    def testRenderShort(self):
+        super(DatetimeDisplayWidgetTest, self).testRenderShort()
+        self.verifyResult(self._widget(), ["14:39"])
+
+    def testRenderMedium(self):
+        super(DatetimeDisplayWidgetTest, self).testRenderMedium()
+        self.verifyResult(self._widget(), ["14:39:01"])
+
+    def testRenderLong(self):
+        super(DatetimeDisplayWidgetTest, self).testRenderLong()
+        self.verifyResult(self._widget(), ["14:39:01 +000"])
+
+    def testRenderFull(self):
+        super(DatetimeDisplayWidgetTest, self).testRenderFull()
+        self.verifyResult(self._widget(), ["14:39:01 +000"])
+
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TextWidgetTest),
         unittest.makeSuite(URIDisplayWidgetTest),
+        unittest.makeSuite(DateDisplayWidgetTest),
+        unittest.makeSuite(DatetimeDisplayWidgetTest),
         doctest.DocTestSuite(),
         ))
 

@@ -479,3 +479,49 @@ class DateWidget(TextWidget):
                 return parseDatetimetz(input).date()
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
+
+
+class DateDisplayWidget(DisplayWidget):
+    """Date display widget.
+
+    The `cssClass` and `displayStyle` attributes may be set to control
+    the formatting of the value.
+
+    `displayStyle` must be one of 'full', 'long', 'medium', 'short',
+    or None ('' is accepted an an alternative to None to support
+    provision of a value from ZCML).
+
+    """
+
+    cssClass = "date"
+    displayStyle = None
+
+    _category = "date"
+
+    def __call__(self):
+        if self._renderedValueSet():
+            content = self._data
+        else:
+            content = self.context.default
+        formatter = self.request.locale.dates.getFormatter(
+            self._category, (self.displayStyle or None))
+        content = formatter.format(content)
+        return renderElement("span", contents=escape(content),
+                             cssClass=self.cssClass)
+
+
+class DatetimeDisplayWidget(DateDisplayWidget):
+    """Datetime display widget.
+
+    The `cssClass` and `displayStyle` attributes may be set to control
+    the formatting of the value.
+
+    `displayStyle` must be one of 'full', 'long', 'medium', 'short',
+    or None ('' is accepted an an alternative to None to support
+    provision of a value from ZCML).
+
+    """
+
+    cssClass = "dateTime"
+
+    _category = "dateTime"
