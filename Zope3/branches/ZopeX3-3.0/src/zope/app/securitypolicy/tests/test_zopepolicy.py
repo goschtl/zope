@@ -171,6 +171,10 @@ class Test(PlacefulSetup, unittest.TestCase):
         verifyObject(IInteraction, i2)
         self.assertEquals(list(i2.participations), [rq])
 
+    def testCheckerPublic(self):
+        from zope.security.checker import CheckerPublic
+        self.failUnless(self.interaction.checkPermission(CheckerPublic, None))
+
     def testGlobalCheckPermission(self):
         r = RequestStub(self.jim)
         self.interaction.add(r)

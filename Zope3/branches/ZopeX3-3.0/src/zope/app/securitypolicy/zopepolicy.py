@@ -15,6 +15,7 @@
 
 $Id$
 """
+from zope.security.checker import CheckerPublic
 from zope.security.management import system_user
 import zope.security.simplepolicies
 from zope.security.interfaces import ISecurityPolicy
@@ -40,6 +41,8 @@ class ZopeSecurityPolicy(zope.security.simplepolicies.ParanoidSecurityPolicy):
     zope.interface.classProvides(ISecurityPolicy)
 
     def checkPermission(self, permission, object):
+        if permission is CheckerPublic:
+            return True
         # XXX We aren't really handling multiple principals yet
         assert len(self.participations) == 1 # XXX
         user = self.participations[0].principal
