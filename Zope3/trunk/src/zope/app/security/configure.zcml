@@ -4,6 +4,7 @@
     >
 
   <include package=".registries" />
+  <include file="globalmodules.zcml" />
 
   <!-- Standard Permissions -->
 
