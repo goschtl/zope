@@ -69,6 +69,7 @@ from StringIO import StringIO
 
 from zpkgsetup import cfgparser
 from zpkgsetup import dist
+from zpkgsetup import urlutils
 
 
 PACKAGE_CONF = "SETUP.cfg"
@@ -131,7 +132,7 @@ def read_package_info(directory, reldir=None):
     path = os.path.join(directory, PACKAGE_CONF)
     if os.path.exists(path):
         path = os.path.realpath(path)
-        url = "file://" + urllib.pathname2url(path)
+        url = urlutils.file_url(urllib.pathname2url(path))
         f = open(path)
     else:
         # Initialize using the cfgparser so we still get a package

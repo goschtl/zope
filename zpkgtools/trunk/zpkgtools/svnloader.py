@@ -25,6 +25,8 @@ import urlparse
 import xml.sax
 import xml.sax.handler
 
+from zpkgsetup import urlutils
+
 from zpkgtools import LoadingError
 from zpkgtools import runlog
 from zpkgtools import cvsloader
@@ -219,8 +221,7 @@ def fromPath(path):
     p = xml.sax.make_parser()
     p.setFeature(xml.sax.handler.feature_namespaces, True)
     p.setContentHandler(h)
-    s = xml.sax.xmlreader.InputSource(
-        "file://" + urllib.pathname2url(entriesfile))
+    s = xml.sax.xmlreader.InputSource(urlutils.file_url(entriesfile))
     s.setByteStream(f)
     p.parse(s)
     if basename in h.entries:

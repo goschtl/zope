@@ -29,6 +29,7 @@ from zpkgsetup import cfgparser
 from zpkgsetup import loggingapi as logging
 from zpkgsetup import publication
 from zpkgsetup import setup
+from zpkgsetup import urlutils
 
 from zpkgtools import Error
 from zpkgtools import loader
@@ -490,8 +491,7 @@ class InclusionProcessor:
         type = urllib.splittype(source)[0] or ''
         if len(type) in (0, 1):
             # figure it's a path ref, possibly w/ a Windows drive letter
-            source = os.path.join(dir, source)
-            source = "file://" + urllib.pathname2url(source)
+            source = urlutils.file_url(os.path.join(dir, source))
             type = "file"
         try:
             path = self.loader.load(source)
