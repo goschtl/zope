@@ -791,16 +791,8 @@ of aware datetime objects.  If in doubt, simply implement all of them.
         return CONSTANT  # fixed-offset class
         return CONSTANT + self.dst(dt)  # daylight-aware class
 
-  - tzname(self, dt)
-    Return the timezone name corresponding to the datetime represented
-    by dt, as a string.  Nothing about string names is defined by the
-    datetime module, and there's no requirement that it mean anything
-    in particular.  For example, "GMT", "UTC", "-500", "-5:00", "EDT",
-    "US/Eastern", "America/New York" are all valid replies.  Return
-    None if a string name isn't known.  Note that this is a method
-    rather than a fixed string primarily because some tzinfo objects
-    will wish to return different names depending on the specific value
-    of dt passed, especially if the tzinfo class is accounting for DST.
+    If utcoffset() does not return None, dst() should not return None
+    either.
 
   - dst(self, dt)
     Return the DST offset, in minutes east of UTC, or None if DST
@@ -825,6 +817,17 @@ of aware datetime objects.  If in doubt, simply implement all of them.
     time passed.  The implementation of datetimetz.astimezone() relies on
     this, but cannot detect violations; it's the programmer's
     responsibility to ensure it.
+
+  - tzname(self, dt)
+    Return the timezone name corresponding to the datetime represented
+    by dt, as a string.  Nothing about string names is defined by the
+    datetime module, and there's no requirement that it mean anything
+    in particular.  For example, "GMT", "UTC", "-500", "-5:00", "EDT",
+    "US/Eastern", "America/New York" are all valid replies.  Return
+    None if a string name isn't known.  Note that this is a method
+    rather than a fixed string primarily because some tzinfo objects
+    will wish to return different names depending on the specific value
+    of dt passed, especially if the tzinfo class is accounting for DST.
 
 These methods are called by a datetimetz or timetz object, in response to
 their methods of the same names.  A datetimetz object passes itself as the

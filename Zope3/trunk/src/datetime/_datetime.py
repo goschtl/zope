@@ -1637,7 +1637,8 @@ class datetimetz(datetime):
         # pretty intricate proof.
         otdst = other.dst()
         if otdst is None:
-            otdst = 0
+            raise ValueError("astimezone():  utcoffset() returned a duration "
+                             "but dst() returned None")
         total_added_to_other = otoff - otdst - myoff
         if total_added_to_other:
             other += total_added_to_other
@@ -1658,6 +1659,8 @@ class datetimetz(datetime):
         total_added_to_other += delta
         other += delta
         otoff = other.utcoffset()
+        if otoff is None:
+            self._inconsistent_utcoffset_error()
         ##assert (other == self) == (otoff - myoff == total_added_to_other)
         if otoff - myoff == total_added_to_other:
             return other
