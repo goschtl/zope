@@ -117,3 +117,10 @@ Caching
     caching. Both the DynamicGroupsPlugin and the ZODBUserManager are 
     cache-enabled.
 
+  CAVEATS
+
+    The Caching mechanism should not be used to cache persistent objects. So
+    if for some reason your PluggableAuthService emits user objects that are
+    persistent (which is not the default) you should not enable caching at the
+    PluggableAuthService-level.
+
