@@ -97,8 +97,8 @@ class RelevantData(Persistent, Contained):
             directlyProvides(self, schema)
 
             # Build up a Checker rules and store it for later
-            self.__checker_getattr = PersistentDict()
-            self.__checker_setattr = PersistentDict()
+            self.__checker_getattr = {}
+            self.__checker_setattr = {}
             for name in getFields(schema):
                 get_perm, set_perm = schemaPermissions.get(name, (None, None))
                 self.__checker_getattr[name] = get_perm or CheckerPublic
@@ -118,8 +118,8 @@ class RelevantData(Persistent, Contained):
                key.startswith('_p_'):
             return super(RelevantData, self).__setattr__(key, value)
 
-        is_schema_field = self.__schema is not None and \
-                          key in getFields(self.__schema).keys()
+        is_schema_field = (self.__schema is not None and 
+                           key in getFields(self.__schema).keys())
 
         if is_schema_field:
             process = self.__parent__ 
@@ -136,8 +136,7 @@ class RelevantData(Persistent, Contained):
                 process, self.__schema, key, oldvalue, value))
 
     def getChecker(self):
-        return Checker(self.__checker_getattr.get,
-                       self.__checker_setattr.get)
+        return Checker(self.__checker_getattr, self.__checker_setattr)
 
     def getSchema(self):
         return self.__schema
@@ -246,11 +245,11 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         # using a setter-method directly is not protected :((
         #try:
         #    checker = getChecker(content)
-        #    checker._setattr_permission_func = lambda x: None
+        #    checker.set_permissions = {}
         #except TypeError:
         #    # got object without Security Proxy
         #    checker = selectChecker(content)
-        #    checker._setattr_permission_func = lambda x: None
+        #    checker.set_permissions = {}
         #    content = Proxy(content, checker)
 
         #ctx['content'] = content

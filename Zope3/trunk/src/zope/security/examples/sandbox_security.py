@@ -121,13 +121,13 @@ class AgentParticipation:
         self.interaction = None
 
 
-def PermissionMapChecker(permissions_map={}, setattr_permission_func=NoSetAttr):
+def PermissionMapChecker(permissions_map={}, set_permissions=None):
     """Create a checker from using the 'permission_map.'"""
     res = {}
     for key, value in permissions_map.items():
         for method in value:
             res[method] = key
-    return checker.Checker(res.get, setattr_permission_func)
+    return checker.Checker(res, set_permissions)
 
 
 #################################

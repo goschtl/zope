@@ -238,7 +238,7 @@ class Test(TestCase, CleanUp):
             #
             #    checker = getChecker(proxy)
             #    self.failUnless(checker is special,
-            #                    checker.getPermission_func().__self__)
+            #                    checker.get_permissions)
             #
             #    proxy2 = checker.proxy(proxy)
             #    self.failUnless(proxy2 is proxy, [proxy, proxy2])
