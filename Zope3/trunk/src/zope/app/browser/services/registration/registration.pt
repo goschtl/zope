@@ -8,14 +8,17 @@
   <div tal:condition="view/registered">
     <div tal:define="registration view/registration">
       <p i18n:translate="">This object is registered as:</p>
-      <span tal:content="registration/usageSummary"
-            class="usageSummary" />
-      <br />
-      <span tal:content="registration/implementationSummary"
-            class="implementationSummary" />
-      <br />
-      <a tal:attributes="href registration/@@absolute_url"
-         i18n:translate="">(modify)</a>
+
+      <div class="registrationSummary">
+        <div tal:content="registration/usageSummary"
+             class="usageSummary" />
+        <div tal:content="registration/implementationSummary"
+             class="implementationSummary" />
+        <div class="modificationLink">
+          <a tal:attributes="href registration/@@absolute_url"
+             i18n:translate="">(modify)</a>
+        </div>
+      </div>
 
       <tal:block condition="view/active">
         <p i18n:translate="">This object is currently active.</p>

@@ -494,11 +494,20 @@ table.listing img {
 
 
 div.spacer {
-	clear: both;
+    clear: both;
 }
 
 
-
+.registrationSummary {
+    margin-left: 2em;
+    margin-bottom: 1em;
+}
+.registrationSummary .usageSummary {
+    font-weight: bold;
+}
+.registrationSummary .modificationLink {
+    display: block;
+}
 
 
 div.message {
@@ -525,9 +534,3 @@ div.page_error {
     padding: 0.5em 1em; 
     vertical-align: middle; 
 }
-
-
-
-
-
-
