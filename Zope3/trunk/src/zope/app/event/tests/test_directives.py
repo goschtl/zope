@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_directives.py,v 1.9 2003/05/01 19:35:16 faassen Exp $
+$Id: test_directives.py,v 1.10 2003/08/03 21:56:13 philikon Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -51,7 +51,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertRaises(NotFoundError, globalUnsubscribe, subscriber, IEvent)
         XMLConfig('meta.zcml', zope.app.event)()
         xmlconfig(StringIO(
-            '''<zopeConfigure xmlns='http://namespaces.zope.org/zope'
+            '''<configure xmlns='http://namespaces.zope.org/zope'
                               xmlns:test='http://namespaces.zope.org/event'>
             <test:subscribe
                    subscriber="zope.app.event.tests.subscriber.subscriber"
@@ -59,7 +59,7 @@ class Test(PlacelessSetup, TestCase):
                        "zope.app.interfaces.event.IObjectAddedEvent
                         zope.app.interfaces.event.IObjectRemovedEvent"
                    filter="zope.app.event.tests.subscriber.filter" />
-            </zopeConfigure>'''
+            </configure>'''
             ))
 
         publish(None, ObjectAddedEvent(None, 'foo'))

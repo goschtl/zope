@@ -12,9 +12,7 @@
 # 
 ##############################################################################
 """
-
-Revision information:
-$Id: globalservice.py,v 1.11 2003/06/30 17:50:28 jeremy Exp $
+$Id: globalservice.py,v 1.12 2003/08/03 21:56:10 philikon Exp $
 """
 
 __metaclass__ = type
@@ -28,8 +26,6 @@ from zope.proxy import removeAllProxies
 from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribingAware
 from zope.app.interfaces.event import IGlobalSubscribable, IPublisher
 
-from zope.configuration.action import Action
-
 import logging
 import pprint
 from StringIO import StringIO
@@ -40,31 +36,6 @@ def checkEventType(event_type, allow_none=False):
         or event_type.extends(IEvent, strict=False)
         ):
         raise TypeError('event_type must extend IEvent: %s' % repr(event_type))
-
-directive_counter = 0
-def subscribeDirective(_context, subscriber,
-                       event_types=(IEvent,), filter=None):
-    global directive_counter
-    directive_counter += 1
-
-    subscriber = _context.resolve(subscriber)
-
-    event_type_names = event_types
-    event_types=[]
-    for event_type_name in event_type_names.split():
-        event_types.append(_context.resolve(event_type_name))
-
-    if filter is not None:
-        filter = _context.resolve(filter)
-
-    return [
-        Action(
-             # subscriptions can never conflict
-             discriminator = ('subscribe', directive_counter),
-             callable = globalSubscribeMany,
-             args = (subscriber, event_types, filter)
-             )
-        ]
 
 class Logger:
     """Class to log all events sent out by an event service.

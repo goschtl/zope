@@ -1,10 +1,16 @@
-<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:meta="http://namespaces.zope.org/meta"
+    >
 
-  <directives namespace="http://namespaces.zope.org/event">
+  <meta:directives namespace="http://namespaces.zope.org/event">
 
-    <directive name="subscribe" attributes="subscriber event_types filter"
-       handler="zope.app.event.globalservice.subscribeDirective" />
+    <meta:directive
+        name="subscribe"
+        schema=".metadirectives.ISubscribeDirective"
+        handler=".metaconfigure.subscribe"
+        />
 
-  </directives>
+  </meta:directives>
 
-</zopeConfigure>
+</configure>
