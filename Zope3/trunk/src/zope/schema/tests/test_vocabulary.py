@@ -101,7 +101,7 @@ class VocabularyFieldTests(BaseTest):
         self.check_preconstructed(vocabulary.VocabularyField, 1, 42)
 
     def test_preconstructed_vocabulary_multi(self):
-        self.check_preconstructed(vocabulary.VocabularyMultiField,
+        self.check_preconstructed(vocabulary.VocabularyListField,
                                   [1], [1, 42])
 
     def check_constructed(self, cls, okval, badval):
@@ -121,8 +121,12 @@ class VocabularyFieldTests(BaseTest):
         self.check_constructed(vocabulary.VocabularyField, 1, 42)
 
     def test_constructed_vocabulary_multi(self):
-        self.check_constructed(vocabulary.VocabularyMultiField,
+        self.check_constructed(vocabulary.VocabularyListField,
                                [1], [1, 42])
+
+    def test_abstract_base_class_is_abstract(self):
+        self.assertRaises(NotImplementedError,
+                          vocabulary.VocabularyMultiField, vocabulary="foo")
 
 
 class SimpleVocabularyTests(unittest.TestCase):
