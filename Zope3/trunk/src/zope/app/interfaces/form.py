@@ -13,16 +13,15 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.9 2003/09/26 19:53:35 poster Exp $
+$Id: form.py,v 1.10 2004/02/24 14:19:07 srichter Exp $
 """
-
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IView
 from zope.interface import Attribute, Interface, implements
 from zope.app.interfaces.exceptions import UserError
 
 class IWidgetInputError(Interface):
-    'Placeholder for a snippet View'
+    """Placeholder for a snippet View"""
     pass
 
 class WidgetInputError(UserError):
