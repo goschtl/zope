@@ -106,6 +106,7 @@ class Link( PortalContent
         self.title=title
         self.remote_url=remote_url
         self.description=description
+        self.format=self.URL_FORMAT
 
     security.declareProtected( CMFCorePermissions.ModifyPortalContent
                              , 'manage_edit' )
