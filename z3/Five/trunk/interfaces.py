@@ -5,7 +5,7 @@
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
-# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
@@ -18,6 +18,63 @@ $Id$
 """
 from zope.interface import Interface, Attribute
 from zope.schema import Bool, BytesLine, Tuple
+
+try:
+    from persistent.interfaces import IPersistent
+except ImportError:
+    class IPersistent(Interface):
+	"""Persistent object"""
+
+class IPersistentExtra(Interface):
+
+    def bobobase_modification_time():
+	""" """
+
+    def locked_in_version():
+        """Was the object modified in any version?"""
+
+    def modified_in_version():
+        """Was the object modified in this version?"""
+
+class IAcquisitionWrapper(Interface):
+
+    def acquire(name, filter=0, extra=None, expl=0, default=0,
+		explicit=1, containment=0):
+	"""Get an attribute, acquiring it if necessary"""
+
+    aq_acquire = acquire
+
+    def aq_inContextOf(obj, inner=1):
+	"""Test whether the object is currently in the context of the
+	argument"""
+
+class IAcquisition(Interface):
+
+    def __of__(context):
+	"""Return the object in a context"""
+
+    def aq_acquire(name, filter=None, extra=None, explicit=None):
+	"""Get an attribute, acquiring it if necessary"""
+
+    def aq_get(name, default=None):
+	"""Get an attribute, acquiring it if necessary."""
+
+    # those are computed attributes, aren't they?
+
+    def aq_base():
+	"""Get the object unwrapped"""
+
+    def aq_parent():
+	"""Get the parent of an object"""
+
+    def aq_self():
+	"""Get the object with the outermost wrapper removed"""
+
+    def aq_inner():
+	"""Get the object with alll but the innermost wrapper removed"""
+
+    def aq_chain(containment=0):
+	"""Get a list of objects in the acquisition environment"""
 
 class IManageable(Interface):
     """Something that is manageable in the ZMI"""
@@ -62,14 +119,17 @@ class IFTPAccess(Interface):
     """Provide support for FTP access"""
 
     def manage_FTPstat(REQUEST):
-	"""FTP stat, used for directory listings"""
+        """Returns a stat-like tuple. (marshalled to a string) Used by
+        FTP for directory listings, and MDTM and SIZE"""
 
     def manage_FTPlist(REQUEST):
-        """Directory listing for FTP. In the case of non-Foldoid objects, the
-        listing should contain one object, the object itself."""
+        """Returns a directory listing consisting of a tuple of
+        (id,stat) tuples, marshaled to a string. Note, the listing it
+        should include '..' if there is a Folder above the current
+        one.
 
-    def manage_FTPget(REQUEST):
-	"""Send data to FTP clients"""
+        In the case of non-foldoid objects it should return a single
+        tuple (id,stat) representing itself."""
 
 class IWriteLock(Interface):
     """This represents the basic protocol needed to support the write lock
@@ -399,29 +459,27 @@ class IUndoSupport(Interface):
     def manage_undo_transactions(transaction_info=(), REQUEST=None):
         """ """
 
-class IRoleManager(Interface):
-    """XXX"""
-
-class ISimpleItem(IManageable, IFTPAccess, IDAVResource, ICopySource,
-		  ITraversable, IOwned, IUndoSupport, IRoleManager):
-    """Not-so-simple item"""
-
-    __name__ = BytesLine(
-	title=u"Name"
-	)
+class IZopeObject(Interface):
 
     isPrincipiaFolderish = Bool(
 	title=u"Is a folderish object",
 	description=u"Should be false for simple items",
 	)
 
-    title = BytesLine(
-	title=u"Title"
-	)
-
     meta_type = BytesLine(
 	title=u"Meta type",
 	description=u"The object's Zope2 meta type",
+	)
+
+class IItem(IZopeObject, IManageable, IFTPAccess, IDAVResource,
+	    ICopySource, ITraversable, IOwned, IUndoSupport):
+
+    __name__ = BytesLine(
+	title=u"Name"
+	)
+
+    title = BytesLine(
+	title=u"Title"
 	)
 
     icon = BytesLine(
@@ -452,25 +510,705 @@ class ISimpleItem(IManageable, IFTPAccess, IDAVResource, ICopySource,
 				   tagSearch=None, error_log_url=''):
 	"""Raise standard error message"""
 
+class IItemWithName(IItem):
+    """Item with name"""
+
     def getPhysicalPath():
         """Returns a path (an immutable sequence of strings) that can be used
         to access this object again later, for example in a copy/paste
         operation."""
 
-class ICopyContainer(Interface):
-    """XXX"""
+class IPermissionMapping(Interface):
 
-class IObjectManager(ICopyContainer): #XXX more
-    """XXX
-    """
+    def manage_getPermissionMapping():
+        """Return the permission mapping for the object
 
-class IPersistentExtra(Interface):
+        This is a list of dictionaries with:
 
-    def bobobase_modification_time():
+          permission_name -- The name of the native object permission
+
+          class_permission -- The class permission the permission is
+             mapped to.
+        """
+
+    def manage_setPermissionMapping(permission_names=[],
+                                    class_permissions=[], REQUEST=None):
+        """Change the permission mapping"""
+
+class IRoleManager(IPermissionMapping):
+    """An object that has configurable permissions"""
+
+    permissionMappingPossibleValues = Attribute("""Acquired attribute""")
+
+    def ac_inherited_permissions(all=0):
+	"""Get all permissions not defined in ourself that are inherited This
+        will be a sequence of tuples with a name as the first item and
+        an empty tuple as the second."""
+
+    def permission_settings(permission=None):
+        """Return user-role permission settings. If 'permission' is passed to
+	the method then only the settings for 'permission' returned."""
+
+    manage_roleForm = Attribute(""" """)
+
+    def manage_role(role_to_manage, permissions=[], REQUEST=None):
+        """Change the permissions given to the given role"""
+
+    manage_acquiredForm = Attribute(""" """)
+
+    def manage_acquiredPermissions(permissions=[], REQUEST=None):
+        """Change the permissions that acquire"""
+
+    manage_permissionForm = Attribute(""" """)
+
+    def manage_permission(permission_to_manage, roles=[], acquire=0,
+			  REQUEST=None):
+        """Change the settings for the given permission
+
+        If optional arg acquire is true, then the roles for the permission
+        are acquired, in addition to the ones specified, otherwise the
+        permissions are restricted to only the designated roles."""
+
+    def manage_access(REQUEST, **kw):
+        """Return an interface for making permissions settings"""
+
+    def manage_changePermissions(REQUEST):
+        """Change all permissions settings, called by management screen"""
+
+    def permissionsOfRole(role):
+        """used by management screen"""
+
+    def rolesOfPermission(permission):
+        """used by management screen"""
+
+    def acquiredRolesAreUsedBy(permission):
+        """used by management screen"""
+
+
+    # Local roles support
+    # -------------------
+    #
+    # Local roles allow a user to be given extra roles in the context
+    # of a particular object (and its children). When a user is given
+    # extra roles in a particular object, an entry for that user is made
+    # in the __ac_local_roles__ dict containing the extra roles.
+
+    __ac_local_roles__  = Attribute(""" """)
+
+    manage_listLocalRoles = Attribute(""" """)
+
+    manage_editLocalRoles = Attribute(""" """)
+
+    def has_local_roles():
 	""" """
 
-    def locked_in_version():
-        """Was the object modified in any version?"""
+    def get_local_roles():
+	""" """
 
-    def modified_in_version():
-        """Was the object modified in this version?"""
+    def users_with_local_role(role):
+	""" """
+
+    def get_valid_userids():
+	""" """
+
+    def get_local_roles_for_userid(userid):
+	""" """
+
+    def manage_addLocalRoles(userid, roles, REQUEST=None):
+        """Set local roles for a user."""
+
+    def manage_setLocalRoles(userid, roles, REQUEST=None):
+        """Set local roles for a user."""
+
+    def manage_delLocalRoles(userids, REQUEST=None):
+        """Remove all local roles for a user."""
+
+    #------------------------------------------------------------
+
+    def access_debug_info():
+        """Return debug info"""
+
+    def valid_roles():
+        """Return list of valid roles"""
+
+    def validate_roles(roles):
+        """Return true if all given roles are valid"""
+
+    def userdefined_roles():
+        """Return list of user-defined roles"""
+
+    def manage_defined_roles(submit=None, REQUEST=None):
+        """Called by management screen."""
+
+    def _addRole(role, REQUEST=None):
+	""" """
+
+    def _delRoles(roles, REQUEST=None):
+	""" """
+
+    def _has_user_defined_role(role):
+	""" """
+
+    def manage_editRoles(REQUEST, acl_type='A', acl_roles=[]):
+	""" """
+
+    def _setRoles(acl_type, acl_roles):
+	""" """
+
+    def possible_permissions():
+	""" """
+
+class ISimpleItem(IItem, IPersistent, IAcquisition, IRoleManager):
+    """Not-so-simple item"""
+
+class ICopyContainer(Interface):
+    """Interface for containerish objects which allow cut/copy/paste"""
+
+    # The following three methods should be overridden to store sub-objects
+    # as non-attributes.
+    def _setOb(id, object):
+	""" """
+
+    def _delOb(id):
+	""" """
+
+    def _getOb(id, default=None):
+	""" """
+
+    def manage_CopyContainerFirstItem(self, REQUEST):
+	""" """
+
+    def manage_CopyContainerAllItems(self, REQUEST):
+        return map(lambda i, s=self: s._getOb(i), tuple(REQUEST['ids']))
+
+    def manage_cutObjects(ids=None, REQUEST=None):
+        """Put a reference to the objects named in ids in the clip board"""
+
+    def manage_copyObjects(ids=None, REQUEST=None, RESPONSE=None):
+        """Put a reference to the objects named in ids in the clip board"""
+
+    def _get_id(id):
+        """Allow containers to override the generation of object copy id by
+        attempting to call its _get_id method, if it exists."""
+
+    def manage_pasteObjects(cb_copy_data=None, REQUEST=None):
+        """Paste previously copied objects into the current object.  If
+	calling manage_pasteObjects from python code, pass the result
+	of a previous call to manage_cutObjects or manage_copyObjects
+	as the first argument."""
+
+    manage_renameForm = Attribute("""Rename management view""")
+
+    def manage_renameObjects(ids=[], new_ids=[], REQUEST=None):
+        """Rename several sub-objects"""
+
+    def manage_renameObject(id, new_id, REQUEST=None):
+        """Rename a particular sub-object"""
+
+    def manage_clone(ob, id, REQUEST=None):
+        """Clone an object, creating a new object with the given id."""
+
+    def cb_dataValid():
+        """Return true if clipboard data seems valid."""
+
+    def cb_dataItems():
+	"""List of objects in the clip board"""
+
+    def _verifyObjectPaste(object, validate_src=1):
+	"""Verify whether the current user is allowed to paste the passed
+        object into self. This is determined by checking to see if the
+        user could create a new object of the same meta_type of the
+        object passed in and checking that the user actually is
+        allowed to access the passed in object in its existing
+        context.
+
+        Passing a false value for the validate_src argument will skip
+        checking the passed in object in its existing context. This is
+        mainly useful for situations where the passed in object has no
+        existing context, such as checking an object during an import
+        (the object will not yet have been connected to the
+        acquisition hierarchy)."""
+
+class INavigation(Interface):
+    """Basic navigation UI support"""
+
+    manage = Attribute(""" """)
+    manage_menu = Attribute(""" """)
+    manage_top_frame = Attribute(""" """)
+    manage_page_header = Attribute(""" """)
+    manage_page_footer = Attribute(""" """)
+    manage_form_title = Attribute("""Add Form""")
+    zope_quick_start = Attribute(""" """)
+    manage_copyright = Attribute(""" """)
+    manage_zmi_prefs = Attribute(""" """)
+
+    def manage_zmi_logout(REQUEST, RESPONSE):
+        """Logout current user"""
+
+INavigation.setTaggedValue('manage_page_style.css', Attribute(""" """))
+
+class IDAVCollection(IDAVResource):
+    """The Collection class provides basic WebDAV support for collection
+    objects. It provides default implementations for all supported
+    WebDAV HTTP methods. The behaviors of some WebDAV HTTP methods for
+    collections are slightly different than those for non-collection
+    resources."""
+
+    __dav_collection__ = Bool(
+	title=u"Is a DAV collection",
+	description=u"Should be true",
+	)
+
+    def dav__init(request, response):
+	""" """
+
+    def HEAD(REQUEST, RESPONSE):
+        """Retrieve resource information without a response body."""
+
+    def PUT(REQUEST, RESPONSE):
+        """The PUT method has no inherent meaning for collection
+        resources, though collections are not specifically forbidden
+        to handle PUT requests. The default response to a PUT request
+        for collections is 405 (Method Not Allowed)."""
+
+    def DELETE(REQUEST, RESPONSE):
+        """Delete a collection resource. For collection resources, DELETE
+        may return either 200 (OK) or 204 (No Content) to indicate total
+        success, or may return 207 (Multistatus) to indicate partial
+        success. Note that in Zope a DELETE currently never returns 207."""
+
+    def listDAVObjects():
+	""" """
+
+class IObjectManager(IZopeObject, ICopyContainer, INavigation, IManageable,
+		     IAcquisition, IPersistent, IDAVCollection, ITraversable):
+    """Generic object manager
+
+    This interface provides core behavior for collections of
+    heterogeneous objects."""
+
+
+    meta_types = Tuple(
+	title=u"Meta types",
+	description=u"Sub-object types that are specific to this object",
+	)
+
+    isAnObjectManager = Bool(
+	title=u"Is an object manager",
+	)
+
+    manage_main = Attribute(""" """)
+    manage_index_main = Attribute(""" """)
+    manage_addProduct = Attribute(""" """)
+    manage_importExportForm = Attribute(""" """)
+
+    def all_meta_types(interfaces=None):
+	""" """
+
+    def filtered_meta_types(user=None):
+	"""Return a list of the types for which the user has adequate
+        permission to add that type of object."""
+
+    def _setOb(id, object):
+	""" """
+
+    def _delOb(id):
+	""" """
+
+    def _getOb(id, default=None):
+	""" """
+
+    def _setObject(id, object, roles=None, user=None, set_owner=1):
+	""" """
+
+    def _delObject(id, dp=1):
+	""" """
+
+    def objectIds(spec=None):
+	"""Returns a list of subobject ids of the current object.  If 'spec'
+        is specified, returns objects whose meta_type matches 'spec'.
+        """
+
+    def objectValues(spec=None):
+        """Returns a list of actual subobjects of the current object.  If
+        'spec' is specified, returns only objects whose meta_type
+        match 'spec'."""
+
+    def objectItems(spec=None):
+        """Returns a list of (id, subobject) tuples of the current object.  If
+        'spec' is specified, returns only objects whose meta_type
+        match 'spec'"""
+
+    def objectMap():
+        """Return a tuple of mappings containing subobject meta-data"""
+
+    def superValues(t):
+        """Return all of the objects of a given type located in this object
+        and containing objects."""
+
+    def manage_delObjects(ids=[], REQUEST=None):
+        """Delete a subordinate object
+
+        The objects specified in 'ids' get deleted.
+        """
+
+    def tpValues():
+        """Return a list of subobjects, used by tree tag."""
+
+    def manage_exportObject(id='', download=None, toxml=None,
+                            RESPONSE=None,REQUEST=None):
+        """Exports an object to a file and returns that file."""
+
+    def manage_importObject(file, REQUEST=None, set_owner=1):
+        """Import an object from a file"""
+
+    def _importObjectFromFile(filepath, verify=1, set_owner=1):
+	""" """
+
+    def __getitem__(key):
+	""" """
+
+class IPropertyManager(Interface):
+    """The PropertyManager mixin class provides an object with
+    transparent property management. An object which wants to
+    have properties should inherit from PropertyManager.
+
+    An object may specify that it has one or more predefined
+    properties, by specifying an _properties structure in its
+    class::
+
+      _properties=({'id':'title', 'type': 'string', 'mode': 'w'},
+                   {'id':'color', 'type': 'string', 'mode': 'w'},
+                   )
+
+    The _properties structure is a sequence of dictionaries, where
+    each dictionary represents a predefined property. Note that if a
+    predefined property is defined in the _properties structure, you
+    must provide an attribute with that name in your class or instance
+    that contains the default value of the predefined property.
+
+    Each entry in the _properties structure must have at least an 'id'
+    and a 'type' key. The 'id' key contains the name of the property,
+    and the 'type' key contains a string representing the object's type.
+    The 'type' string must be one of the values: 'float', 'int', 'long',
+    'string', 'lines', 'text', 'date', 'tokens', 'selection', or
+    'multiple section'.
+
+    For 'selection' and 'multiple selection' properties, there is an
+    addition item in the property dictionay, 'select_variable' which
+    provides the name of a property or method which returns a list of
+    strings from which the selection(s) can be chosen.
+
+    Each entry in the _properties structure may *optionally* provide a
+    'mode' key, which specifies the mutability of the property. The 'mode'
+    string, if present, must contain 0 or more characters from the set
+    'w','d'.
+
+    A 'w' present in the mode string indicates that the value of the
+    property may be changed by the user. A 'd' indicates that the user
+    can delete the property. An empty mode string indicates that the
+    property and its value may be shown in property listings, but that
+    it is read-only and may not be deleted.
+
+    Entries in the _properties structure which do not have a 'mode' key
+    are assumed to have the mode 'wd' (writeable and deleteable).
+
+    To fully support property management, including the system-provided
+    tabs and user interfaces for working with properties, an object which
+    inherits from PropertyManager should include the following entry in
+    its manage_options structure::
+
+      {'label':'Properties', 'action':'manage_propertiesForm',}
+
+    to ensure that a 'Properties' tab is displayed in its management
+    interface. Objects that inherit from PropertyManager should also
+    include the following entry in its __ac_permissions__ structure::
+
+      ('Manage properties', ('manage_addProperty',
+                             'manage_editProperties',
+                             'manage_delProperties',
+                             'manage_changeProperties',)),
+    """
+    manage_propertiesForm = Attribute(""" """)
+    manage_propertyTypeForm = Attribute(""" """)
+
+    title = BytesLine(
+	title=u"Title"
+	)
+
+    _properties = Tuple(
+	title=u"Properties",
+	)
+
+    propertysheets = Attribute(""" """)
+
+    def valid_property_id(id):
+	""" """
+
+    def hasProperty(id):
+        """Return true if object has a property 'id'"""
+
+    def getProperty(id, d=None):
+        """Get the property 'id', returning the optional second
+           argument or None if no such property is found."""
+
+    def getPropertyType(id):
+        """Get the type of property 'id', returning None if no
+           such property exists"""
+
+    def _setProperty(id, value, type='string'):
+	""" """
+
+    def _updateProperty(id, value):
+        """Update the value of an existing property. If value is a string, an
+        attempt will be made to convert the value to the type of the
+        existing property."""
+
+    def _delProperty(id):
+	""" """
+
+    def propertyIds():
+        """Return a list of property ids """
+
+    def propertyValues():
+        """Return a list of actual property objects """
+
+    def propertyItems():
+        """Return a list of (id,property) tuples """
+
+    def _propertyMap():
+        """Return a tuple of mappings, giving meta-data for properties """
+
+    def propertyMap():
+        """Return a tuple of mappings, giving meta-data for properties.
+        Return copies of the real definitions for security.
+        """
+
+    def propertyLabel(id):
+        """Return a label for the given property id
+        """
+
+    def propdict():
+	""" """
+
+    # Web interface
+
+    def manage_addProperty(id, value, type, REQUEST=None):
+        """Add a new property via the web. Sets a new property with
+        the given id, type, and value."""
+
+    def manage_editProperties(REQUEST):
+        """Edit object properties via the web.
+        The purpose of this method is to change all property values,
+        even those not listed in REQUEST; otherwise checkboxes that
+        get turned off will be ignored.  Use manage_changeProperties()
+        instead for most situations.
+        """
+
+    def manage_changeProperties(REQUEST=None, **kw):
+        """Change existing object properties.
+
+        Change object properties by passing either a mapping object
+        of name:value pairs {'foo':6} or passing name=value parameters
+        """
+
+    def manage_changePropertyTypes(old_ids, props, REQUEST=None):
+        """Replace one set of properties with another
+
+        Delete all properties that have ids in old_ids, then add a
+        property for each item in props.  Each item has a new_id,
+        new_value, and new_type.  The type of new_value should match
+        new_type.
+        """
+
+    def manage_delProperties(ids=None, REQUEST=None):
+        """Delete one or more properties specified by 'ids'."""
+
+class IFindSupport(Interface):
+    """Find support for Zope Folders"""
+
+    manage_findFrame = Attribute(""" """)
+    manage_findForm = Attribute(""" """)
+    manage_findAdv = Attribute(""" """)
+    manage_findResult = Attribute(""" """)
+
+    def ZopeFind(obj, obj_ids=None, obj_metatypes=None,
+                 obj_searchterm=None, obj_expr=None,
+                 obj_mtime=None, obj_mspec=None,
+                 obj_permission=None, obj_roles=None,
+                 search_sub=0,
+                 REQUEST=None, result=None, pre=''):
+        """Zope Find interface"""
+
+    PrincipiaFind = ZopeFind
+
+    def ZopeFindAndApply(obj, obj_ids=None, obj_metatypes=None,
+                         obj_searchterm=None, obj_expr=None,
+                         obj_mtime=None, obj_mspec=None,
+                         obj_permission=None, obj_roles=None,
+                         search_sub=0,
+                         REQUEST=None, result=None, pre='',
+                         apply_func=None, apply_path=''):
+        """Zope Find interface and apply"""
+
+class IFolder(IObjectManager, IPropertyManager, IRoleManager,
+	      IDAVCollection, IItem, IFindSupport):
+    """Folders are basic container objects that provide a standard
+    interface for object management. Folder objects also implement a
+    management interface and can have arbitrary properties."""
+
+
+class IOrderedContainer(Interface):
+    """ Ordered Container interface.
+
+    This interface provides a common mechanism for maintaining ordered
+    collections.
+    """
+
+    def moveObjectsByDelta(ids, delta, subset_ids=None):
+        """ Move specified sub-objects by delta.
+
+        If delta is higher than the possible maximum, objects will be moved to
+        the bottom. If delta is lower than the possible minimum, objects will
+        be moved to the top.
+
+        If subset_ids is not None, delta will be interpreted relative to the
+        subset specified by a sequence of ids. The position of objects that
+        are not part of this subset will not be changed.
+
+        The order of the objects specified by ids will always be preserved. So
+        if you don't want to change their original order, make sure the order
+        of ids corresponds to their original order.
+
+        If an object with id doesn't exist an error will be raised.
+
+        Permission -- Manage properties
+
+        Returns -- Number of moved sub-objects
+        """
+
+    def moveObjectsUp(ids, delta=1, subset_ids=None):
+        """ Move specified sub-objects up by delta in container.
+
+        If no delta is specified, delta is 1. See moveObjectsByDelta for more
+        details.
+
+        Permission -- Manage properties
+
+        Returns -- Number of moved sub-objects
+        """
+
+    def moveObjectsDown(ids, delta=1, subset_ids=None):
+        """ Move specified sub-objects down by delta in container.
+
+        If no delta is specified, delta is 1. See moveObjectsByDelta for more
+        details.
+
+        Permission -- Manage properties
+
+        Returns -- Number of moved sub-objects
+        """
+
+    def moveObjectsToTop(ids, subset_ids=None):
+        """ Move specified sub-objects to top of container.
+
+        See moveObjectsByDelta for more details.
+
+        Permission -- Manage properties
+
+        Returns -- Number of moved sub-objects
+        """
+
+    def moveObjectsToBottom(ids, subset_ids=None):
+        """ Move specified sub-objects to bottom of container.
+
+        See moveObjectsByDelta for more details.
+
+        Permission -- Manage properties
+
+        Returns -- Number of moved sub-objects
+        """
+
+    def orderObjects(key, reverse=None):
+        """ Order sub-objects by key and direction.
+
+        Permission -- Manage properties
+
+        Returns -- Number of moved sub-objects
+        """
+
+    def getObjectPosition(id):
+        """ Get the position of an object by its id.
+
+        Permission -- Access contents information
+
+        Returns -- Position
+        """
+
+    def moveObjectToPosition(id, position):
+        """ Move specified object to absolute position.
+
+        Permission -- Manage properties
+
+        Returns -- Number of moved sub-objects
+        """
+
+class IOrderedFolder(IOrderedContainer, IFolder):
+    """Ordered folder"""
+
+class Application(IFolder, IFindSupport):
+    """Top-level system object"""
+
+    isTopLevelPrincipiaApplicationObject = Bool(
+	title=u"Is top level Principa application object",
+	)
+
+    HelpSys = Attribute("Help system")
+
+    p_ = Attribute(""" """)
+    misc_ = Attribute("Misc.")
+
+    def PrincipiaRedirect(destination,URL1):
+        """Utility function to allow user-controlled redirects"""
+
+    Redirect = ZopeRedirect = PrincipiaRedirect
+
+    def __bobo_traverse__(REQUEST, name=None):
+	"""Bobo traverse"""
+
+    def PrincipiaTime(*args):
+        """Utility function to return current date/time"""
+
+    ZopeTime = PrincipiaTime
+
+    def ZopeAttributionButton():
+        """Returns an HTML fragment that displays the 'powered by zope'
+        button along with a link to the Zope site."""
+
+    test_url = ZopeAttributionButton
+
+    def absolute_url(relative=0):
+        '''The absolute URL of the root object is BASE1 or "/".'''
+
+    def absolute_url_path():
+        '''The absolute URL path of the root object is BASEPATH1 or "/".'''
+
+    def virtual_url_path():
+        '''The virtual URL path of the root object is empty.'''
+
+    def getPhysicalPath():
+        '''Returns a path that can be used to access this object again
+        later, for example in a copy/paste operation.  Designed to
+        be used with getPhysicalRoot().
+        '''
+
+    def getPhysicalRoot():
+	"""Returns self"""
+
+    def fixupZClassDependencies(rebuild=0):
+	""" """
+
+    def checkGlobalRegistry():
+        """Check the global (zclass) registry for problems, which can
+        be caused by things like disk-based products being deleted.
+        Return true if a problem is found"""
