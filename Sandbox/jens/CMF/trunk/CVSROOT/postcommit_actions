@@ -3,15 +3,24 @@
 """Apply actions dictated by traffic_table.py to checkins as they occur.
 
 Normal operation is to fork into the background with stderr and stdout
-redirected to append to the file named by the OUTPUT_LOG config var (or be
-the forked version, which is reinvoked with the --wait option).
+redirected to append to the file named by the OUTPUT_LOG config var - so
+that the user doesn't have to wait for the checkin message to be collected
+and sent or for the rsync to complete.  (We can't simply fork into the
+background, because clients like emacs VC will hang waiting the close of
+sys.stdin, sys.stderr, sys.stdout, etc. - on the order of minutes.)
 
 Options:
 
- --verbose - operate in verbose mode, with output to stdout.
+ --verbose - operate in verbose mode, with output to OUTPUT_LOG in the
+             detached copy, and to stdout before the detach (and forever if 
+             --wait specified)
+
  --recurse - remote repository sync recurses into all subject dirs offspring
+
  --dryrun - do not actually do any of the activities
+
  --wait - do not fork into the background (and leave output in stdout/stderr)
+
  --msgfile MSGFILENM - get log message from MSGFILENM (and delete it!)
 
 An optional leading arg --verbose argument says operate verbosely.
