@@ -35,7 +35,7 @@ class DependencyInfo(object):
     """Dependency information."""
 
     def __init__(self):
-        self.modules = sets.Set()
+        self.packages = sets.Set()
         self.others = sets.Set()
 
     def load(self, f):
@@ -46,6 +46,6 @@ class DependencyInfo(object):
             if line[0] == "#":
                 continue
             if isModuleName(line):
-                self.modules.add(line)
+                self.packages.add(line)
             else:
                 self.others.add(line)
