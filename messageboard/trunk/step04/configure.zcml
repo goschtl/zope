@@ -71,6 +71,5 @@
   </content>
 
   <include package=".browser" />
-  <include file="security.zcml" />
 
 </configure>
