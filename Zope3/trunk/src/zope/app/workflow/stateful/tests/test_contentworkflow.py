@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.4 2003/08/03 01:33:10 philikon Exp $
+$Id: test_contentworkflow.py,v 1.5 2003/08/03 22:06:28 philikon Exp $
 """
 import unittest
 
@@ -151,11 +151,11 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
     def test_getInterfacesForProcessName(self):
         manager = self.getManager()
         ifaces = manager.getInterfacesForProcessName(u'default')
-        self.assert_(ifaces == (IFace2, IFace1) or
-                     ifaces == (IFace1, IFace2))
+        self.assertEqual(len(ifaces), 2)
+        for iface in [IFace1, IFace2]:
+            self.failUnless(iface in ifaces)
         self.assertEqual(
-            manager.getInterfacesForProcessName(u'foo'),
-            ())
+            manager.getInterfacesForProcessName(u'foo'), ())
 
     def test_notify(self):
         # setup ProcessDefinitions
