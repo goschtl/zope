@@ -451,15 +451,6 @@ def MultiChecker(specs):
 
     return Checker(data.get)
 
-def NonPrivateChecker(permission_id = CheckerPublic):
-
-    def check(name, permission_id=permission_id):
-        if name.startswith('_'):
-            return None
-        return permission_id
-
-    return Checker(check)
-
 def selectChecker(object):
     """Get a checker for the given object
 
