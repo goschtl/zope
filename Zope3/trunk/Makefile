@@ -1,5 +1,5 @@
-PYTHON=python2.3
-TESTOPTS="!(:?zeo|zodb)"
+PYTHON=python2.2
+TESTOPTS=""
 
 # XXX What should the default be?
 all: inplace
