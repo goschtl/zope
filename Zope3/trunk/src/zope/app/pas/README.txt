@@ -278,7 +278,7 @@ To do this, the PAS uses principal search plugins:
   ...
   ...     zope.interface.implements(interfaces.IPrincipalSearchPlugin)
   ...
-  ...     def get(self, principal_id):
+  ...     def principalInfo(self, principal_id):
   ...         if principal_id == '42':
   ...             return {'domain': 42}
 
@@ -289,7 +289,7 @@ To do this, the PAS uses principal search plugins:
   ...
   ...     zope.interface.implements(interfaces.IPrincipalSearchPlugin)
   ...
-  ...     def get(self, principal_id):
+  ...     def principalInfo(self, principal_id):
   ...         try:
   ...             i = int(principal_id)
   ...         except ValueError:

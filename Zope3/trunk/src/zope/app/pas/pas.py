@@ -128,7 +128,7 @@ class PAS:
             if searcher is None:
                 continue
 
-            info = searcher.get(id)
+            info = searcher.principalInfo(id)
             if info is None:
                 continue
 

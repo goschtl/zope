@@ -247,6 +247,9 @@ class PersistentPrincipalFolder(BTreeContainer):
         return id, {'login': principal.login, 'title': principal.title,
                     'description': principal.description}
 
+    def principalInfo(self, principal_id):
+        return self.get(principal_id)
+
     schema = ISearchSchema
 
     def search(self, query, start=None, batch_size=None):
