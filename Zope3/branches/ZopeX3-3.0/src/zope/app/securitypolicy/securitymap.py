@@ -40,12 +40,20 @@ class SecurityMap(object):
 
         col = self._bycol.setdefault(colentry, self._empty_mapping())
         col[rowentry] = value
+        try:
+            del self._v_cells
+        except AttributeError:
+            pass
 
     def delCell(self, rowentry, colentry):
         row = self._byrow.get(rowentry)
         if row and (colentry in row):
             del self._byrow[rowentry][colentry]
             del self._bycol[colentry][rowentry]
+        try:
+            del self._v_cells
+        except AttributeError:
+            pass
 
     def getCell(self, rowentry, colentry, default=None):
         " return the value of a cell by row, entry "
@@ -69,10 +77,15 @@ class SecurityMap(object):
 
     def getAllCells(self):
         " return a list of (rowentry, colentry, value) "
+        try:
+            return self._v_cells
+        except AttributeError:
+            pass
         res = []
         for r in self._byrow.keys():
             for c in self._byrow[r].items():
                 res.append((r,) + c)
+        self._v_cells = res
         return res
 
 
