@@ -95,11 +95,11 @@ class WidgetsError(ErrorContainer):
     """A collection of errors from widget processing.
     
     widgetValues is a map containing the list of values that were obtained
-    from the widget, keyed by field name.
+    from the widgets, keyed by field name.
     """
     
     def __init__(self, errors, widgetsData={}):
-        Exception.__init__(self, *errors)
+        ErrorContainer.__init__(self, *errors)
         self.widgetsData = widgetsData
 
 class IWidget(IView):

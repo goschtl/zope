@@ -22,14 +22,14 @@ from zope.component.interfaces import IViewFactory
 from zope.component.exceptions import ComponentLookupError
 from zope.publisher.browser import TestRequest
 
-from zope.schema import Field
-from zope.schema.interfaces import IField
+from zope.schema import Field, Int
+from zope.schema.interfaces import IField, IInt
 
 from zope.app.tests import ztapi
 from zope.app.publisher.browser import BrowserView
 from zope.app.form import Widget
-from zope.app.form.interfaces import IWidget, IInputWidget
-from zope.app.form.interfaces import IDisplayWidget, WidgetsError
+from zope.app.form.interfaces import IWidget, IInputWidget, IDisplayWidget
+from zope.app.form.interfaces import ConversionError, InputErrors, WidgetsError
 
 from zope.app.form.utility import no_value, setUpWidget, setUpWidgets
 from zope.app.form.utility import setUpEditWidgets, setUpDisplayWidgets
@@ -51,6 +51,12 @@ class IBar(IField):
     
 class Bar(Field):
     implements(IBar)
+
+class IBaz(IInt):
+    pass
+
+class Baz(Int):
+    implements(IBaz)
     
 class IContent(Interface):
     foo = Foo()
@@ -59,10 +65,10 @@ class IContent(Interface):
 class Content(object):
     implements(IContent)
     foo = 'Foo'
-    
+
 class IFooWidget(IWidget):
     pass
-    
+
 class IBarWidget(IWidget):
     pass
 
@@ -76,7 +82,11 @@ class BarWidget(Widget):
     implements(IBarWidget)
     def getRenderedValue(self): return self._data # exposes _data for testing
     def renderedValueSet(self): return self._renderedValueSet() # for testing
-        
+
+class BazWidget(Widget):
+    def getRenderedValue(self): return self._data # exposes _data for testing
+    def renderedValueSet(self): return self._renderedValueSet() # for testing
+
 def setUp():
     """Setup for tests."""
     placelesssetup.setUp()
@@ -712,13 +722,17 @@ class TestForms(object):
             >>> class InputWidget(Widget):
             ...     implements(IInputWidget)           
             ...     input = None
+            ...     valid = True
             ...     def hasInput(self):
             ...         return input is not None
             ...     def applyChanges(self, object):
+            ...         if not self.valid:
+            ...             raise ConversionError('invalid input')
             ...         field = self.context
             ...         field.set(object, self.input)
             ...         return True
             >>> ztapi.browserViewProviding(IFoo, InputWidget, IInputWidget)
+            >>> ztapi.browserViewProviding(IBar, InputWidget, IInputWidget)
             
         Before calling applyWidgetsUpdate, we need to configure a context and
         a view with edit widgets:
@@ -760,6 +774,28 @@ class TestForms(object):
             >>> applyWidgetsChanges(view, IContent, names=('foo',))
             Traceback (most recent call last):
             AttributeError: 'BrowserView' object has no attribute 'foo_widget'
+
+        When applyWidgetsChanges is called with multiple form
+        fields, some with valid data and some with invalid data, none
+        of the data is applied:
+
+            >>> context = Content()
+            >>> view = BrowserView(context, request)
+            >>> setUpEditWidgets(view, IContent, names=('foo', 'bar'))
+            >>> view.foo_widget.input = 'a'
+            >>> view.bar_widget.input = 'b'
+            >>> view.bar_widget.valid = False
+            >>> context.foo
+            'Foo'
+            >>> getattr(context, 'bar', 'not really')
+            'not really'
+            >>> applyWidgetsChanges(view, IContent, names=('foo', 'bar'))
+            Traceback (most recent call last):
+            WidgetsError: ConversionError: ('invalid input', None)
+            >>> context.foo
+            'a'
+            >>> getattr(context, 'bar', 'not really')
+            'not really'
 
         >>> tearDown()
         """
