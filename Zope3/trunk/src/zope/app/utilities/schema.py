@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.17 2004/03/03 20:20:05 srichter Exp $
+$Id: schema.py,v 1.18 2004/03/05 15:56:36 eddala Exp $
 """
 from types import FunctionType
 
@@ -26,7 +26,7 @@ from zope.interface import Interface
 from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.app import zapi
-from zope.app.introspector import nameToInterface, interfaceToName
+from zope.app.introspector import interfaceToName
 from zope.app.browser.container.adding import Adding
 from zope.app.utilities.interfaces import IMutableSchemaContent
 from zope.app.utilities.wrapper import Struct
@@ -39,6 +39,7 @@ from zope.app.container.contained import Contained, setitem, uncontained
 from zope.interface.interface import Attribute, Method, fromFunction
 from zope.interface.interface import InterfaceClass
 from zope.interface.exceptions import InvalidInterface
+from zope.app.component.interface import nameToInterface
 
 class BaseSchemaUtility(InterfaceClass):
 
