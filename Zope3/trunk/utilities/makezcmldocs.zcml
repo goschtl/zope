@@ -1,7 +1,0 @@
-<configure xmlns='http://namespaces.zope.org/zope'>
-
-<include package="zope.configuration" file="metameta.zcml" />
-<include package="zope.configuration" file="metametafordocgen.zcml" />
-<include package="zope.app" />
-
-</configure>
