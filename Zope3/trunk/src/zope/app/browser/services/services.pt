@@ -1,8 +1,24 @@
 <html metal:use-macro="views/standard_macros/page">
-<body metal:fill-slot="body">
-<div metal:use-macro="view/indexMacros/macros/body">
 
-  <h2 metal:fill-slot="heading">Services configured in this service manager.</h2>
+<tal:block  
+    metal:fill-slot="headers" 
+    tal:define="global pagetip string:
+
+    To add a service, add a service component to a package and then
+    add an active configuration for it to the package's configuration
+    object.
+
+    "
+    />
+
+
+<div metal:fill-slot="body">
+
+  <div metal:use-macro="view/indexMacros/macros/body">
+
+  <h2 metal:fill-slot="heading">
+    Services configured in this service manager.
+  </h2>
 
   <p metal:fill-slot="empty_text">No services have been configured</p>
 
@@ -20,13 +36,6 @@
 
   </div>
 
-  <p metal:fill-slot="help_text">To configure a service, add a service
-     component to a <em>package</em> in <a href="Packages">Packages</a> or to
-     the <a href="Packages/default">default package</a>. After the component is
-     added, add a service configuration that configures the
-     component to provide a service.
-  </p>
-
+  </div>
 </div>
-</body>
 </html>
