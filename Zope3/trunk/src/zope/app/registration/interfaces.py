@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.3 2004/03/13 23:01:04 srichter Exp $
+$Id: interfaces.py,v 1.4 2004/03/24 10:21:11 gintautasm Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable
@@ -90,7 +90,7 @@ class IRegistration(Interface):
     def usageSummary():
         """Single-line usage summary.
 
-        This should include the registrayion keys and the kind of
+        This should include the registration keys and the kind of
         registration. For example, a service registration will have a
         usage summary that indicates a registration for a service of
         some type.  (e.g. "View Service")
@@ -100,7 +100,7 @@ class IRegistration(Interface):
     def implementationSummary():
         """Single-line implementation summary.
 
-        This summarizes about the implementation of the thing being
+        This summarizes the implementation of the thing being
         registered. For example, for local-component registrations,
         this will include the component path. For a page registration,
         this might include a template path and a dotted class name.
