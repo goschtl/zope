@@ -103,7 +103,7 @@ IDENTITY_FILE = "/cvs-repository/cvsidentity"
 KNOWN_HOSTS_FILE = "/cvs-repository/cvs-known_hosts"
 
 
-WAIT = 0                                # Fork unless waiting is requested.
+WAIT = 0                                # Fork unless --wait is requested.
 RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
 VERBOSE = 0                             # '--verbose' option
@@ -257,7 +257,7 @@ def detach(args):
            % OUTPUT_LOG)
     
     if VERBOSE:
-        complain("Reexecing detached, cmd:\n\t%s\n", cmd)
+        complain("Reexecing detached in %s, cmd:\n\t%s\n", os.getcwd(), cmd)
 
     os.system(cmd)
     loosen_file(OUTPUT_LOG)
@@ -472,7 +472,7 @@ def do_chmod(subjs):
                                  (DRYRUN and "echo would do: ") or "",
                                  string.join(fnames, " ")))
     if VERBOSE:
-        complain("Reexecing, cmd:\n\t%s\n", cmd)
+        complain("Reexecing in %s, cmd:\n\t%s\n", os.getcwd(), cmd)
     result = os.system(cmd)
     if result:
         msg = "*** Chmod returned %s..."
