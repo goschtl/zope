@@ -4,7 +4,7 @@
 
   <vocabulary
       name="my-vocab"
-      factory="zope.app.schema.tests.test_vocabulary.MyFactory"
+      factory="zope.app.schema.tests.test_directives.MyFactory"
       filter="my-filter"
       another="keyword"/>
 

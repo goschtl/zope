@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Field Factory Tests
 
-$Id: test_fieldfactory.py,v 1.3 2003/11/27 13:59:25 philikon Exp $
+$Id: test_fieldfactory.py,v 1.4 2004/03/03 22:54:27 srichter Exp $
 """
-
 import unittest
 
 import zope.app.schema
@@ -40,7 +39,8 @@ class TestFieldFactory(PlacelessSetup, unittest.TestCase):
                                  zope.app.schema)
 
     def testRegisterFields(self):
-        factory = getService(None, Factories).getFactory('zope.schema._bootstrapfields.Text')
+        factory = getService(None, Factories).getFactory(
+            'zope.schema._bootstrapfields.Text')
         self.assertEquals(factory.title, "Text Field")
         self.assertEquals(factory.description, "Text Field")
 

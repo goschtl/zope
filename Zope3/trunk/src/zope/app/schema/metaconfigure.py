@@ -13,14 +13,13 @@
 ##############################################################################
 """ZCML special vocabulary directive handlers
 
-$Id: metaconfigure.py,v 1.1 2003/08/01 21:48:34 srichter Exp $
+$Id: metaconfigure.py,v 1.2 2004/03/03 22:54:27 srichter Exp $
 """
-import zope.app.schema.vocabulary
+from zope.interface import directlyProvides
+from vocabulary import IVocabularyFactory
+from zope.app.component.metaconfigure import utility
 
-__metaclass__ = type
-
-
-class FactoryKeywordPasser:
+class FactoryKeywordPasser(object):
     """Helper that passes additional keywords to the actual factory."""
 
     def __init__(self, factory, kwargs):
@@ -32,11 +31,8 @@ class FactoryKeywordPasser:
 
 
 def vocabulary(_context, name, factory, **kw):
-    service = zope.app.schema.vocabulary.vocabularyService
     if kw:
         factory = FactoryKeywordPasser(factory, kw)
-    _context.action(
-        discriminator=('defineVocabulary', name),
-        callable=service.register,
-        args=(name, factory) )
+    directlyProvides(factory, IVocabularyFactory)
+    utility(_context, IVocabularyFactory, factory, name=name)
 

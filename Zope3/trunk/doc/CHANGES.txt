@@ -67,18 +67,22 @@ Zope Changes
 
     - Converting Service-managed components to be utilities:
 
-      o Code Interpreter
+      o Various Code Interpreters were managed by a special service. They are
+        now registered with the utility service.
 
       o DAV Schema. The interface representing the DAV schema is the
         utility. For it to work correctly, I gave all DAV schemas the
         interface type IDAVNamespace. This is also the interface through which
         the utilities are found in the utility service.
 
-      o Language Negotiator
+      o Language Negotiator. The language negotiator is now a utility instead
+        of a service. 
 
       o Converted MailService --> MailDelivery utility; also the Mailer is now
         a utility, instead of using its own registry.
 
+      o Made Zope-specific Vocabulary Registry use utilities. The vocabulary
+        directive now registers vocabulary factories as utilities.
     
     - Converted local Workflow Definitions from being registerable components
       to be local utilities. Therefore, **a lot** of boiler-plate registration

@@ -13,38 +13,28 @@
 ##############################################################################
 """Implementation of ZCML action to register vocabulary factories.
 
-$Id: vocabulary.py,v 1.4 2003/08/01 21:48:34 srichter Exp $
+$Id: vocabulary.py,v 1.5 2004/03/03 22:54:27 srichter Exp $
 """
-from zope.interface import implements
-from zope.component import getService
-from zope.schema import vocabulary
+from zope.app import zapi
+from zope.interface import Interface, implements
 from zope.schema.interfaces import IVocabularyRegistry
-from zope.testing import cleanup
-
-__metaclass__ = type
 
 
-class ZopeVocabularyRegistry:
-    """IVocabularyRegistry that supports local vocabulary services."""
+class IVocabularyFactory(Interface):
+    """Can create vocabularies."""
+
+    def __call__(self, context):
+        """The context provides a location that the vocabulary can make use
+        of."""
+
+
+class ZopeVocabularyRegistry(object):
+    """IVocabularyRegistry that supports global and local utilities."""
 
     implements(IVocabularyRegistry)
     __slots__ = ()
 
     def get(self, context, name):
-        vr = getService(context, "Vocabularies")
-        return vr.get(context, name)
-
-
-def _clear():
-    """Re-initialize the vocabulary service."""
-    # This should normally only be needed by the testing framework,
-    # but is also used for module initialization.
-    global vocabularyService
-    vocabulary._clear()
-    vocabularyService = vocabulary.getVocabularyRegistry()
-    vocabulary._clear()
-    vocabulary.setVocabularyRegistry(ZopeVocabularyRegistry())
-
-
-_clear()
-cleanup.addCleanUp(_clear)
+        """See zope.schema.interfaces.IVocabularyRegistry"""
+        factory = zapi.getUtility(context, IVocabularyFactory, name)
+        return factory(context)

@@ -62,8 +62,6 @@ Things to do for the next release (in no particular order)
 
   - Interface (Murthy and Suresh are working on these)
 
-  - Vocabularies (warn Gary and Casey :)
-
   - Roles
 
   - Permissions

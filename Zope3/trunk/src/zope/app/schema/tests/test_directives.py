@@ -13,15 +13,21 @@
 ##############################################################################
 """Testing vocabulary directive.
 
-$Id: test_directives.py,v 1.2 2003/08/17 06:07:58 philikon Exp $
+$Id: test_directives.py,v 1.3 2004/03/03 22:54:27 srichter Exp $
 """
 import unittest
 
-from zope.component.tests.placelesssetup import PlacelessSetup
+from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
-from zope.app.schema import vocabulary
+from zope.app.schema.vocabulary import ZopeVocabularyRegistry
 
 import zope.app.schema
+
+
+class MyFactory:
+    def __init__(self, context, **kw):
+        self.ob = context
+        self.kw = kw
 
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
@@ -31,7 +37,8 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def check_vocabulary_get(self, kw={}):
         context = object()
-        vocab = vocabulary.vocabularyService.get(context, "my-vocab")
+        registry = ZopeVocabularyRegistry()
+        vocab = registry.get(context, "my-vocab")
         self.assert_(vocab.ob is context)
         self.assertEqual(vocab.kw, kw)
 
