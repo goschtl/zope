@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.5 2002/12/10 23:08:22 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.6 2002/12/11 18:00:12 gvanrossum Exp $
 """
 
 import sys
@@ -25,6 +25,7 @@ from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
 from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 
 # Import classes related to initial-services
+from Zope.App.Traversing import traverse, traverseName
 from ServerTypeRegistry import getServerType
 from Zope.App.OFS.Services.ObjectHub.ObjectHub import ObjectHub
 from Zope.App.OFS.Services.LocalEventService.LocalEventService import \
@@ -170,7 +171,7 @@ class SiteDefinition:
         imp.install()
 
 
-    def _addEssentialServices(self, app):
+    def _addEssentialServices(self, root_folder):
         """Add essential services.
 
         XXX This ought to be configurable.  For now, hardcode an Event
@@ -183,32 +184,36 @@ class SiteDefinition:
         """
 
         sm = ServiceManager()
-        app.setServiceManager(sm)
+        root_folder.setServiceManager(sm)
+        self._addService(root_folder, 'Events', LocalEventService)
+        self._addService(root_folder, 'ObjectHub', ObjectHub)
 
-        default = sm.Packages['default']
 
-        es = LocalEventService()
-        default.setObject('Events-1', es)
+    def _addService(self, root_folder, service_type, service_factory):
+        """Add and configure a service to the root folder.
 
-        hub = ObjectHub()
-        default.setObject('ObjectHub-1', hub)
-
-        configure = default['configure']
-        here = ('', '++etc++Services', 'Packages', 'default')
-
-        sc = ServiceConfiguration('Events', here + ('Events-1',))
-        configure.setObject(None, sc)
-
-        sc = ServiceConfiguration('ObjectHub', here + ('ObjectHub-1',))
-        configure.setObject(None, sc)
-
-        # XXX I want to register and possibly activate these services,
-        #     but the following code doesn't work. :-(
-        ##sc.status = "Active"
-        # XXX And the following code doesn't work either. :-(
-        registry = sm.createConfigurationsFor(sc)
-        ##registry.register(sc)
-        ##registry.activate(sc)
+        The service is added to the default package and activated.
+        This assumes the root folder already has a service manager,
+        and that we add at most one service of each type.
+        """
+        # The code here is complicated by the fact that the registry
+        # calls at the end require a fully context-wrapped
+        # configuration; hence all the traverse[Name]() calls.
+        # XXX Could we use the factory registry instead of the 3rd arg?
+        package_name = ('', '++etc++Services', 'Packages', 'default')
+        package = traverse(root_folder, package_name)
+        name = service_type + '-1'
+        service = service_factory()
+        package.setObject(name, service)
+        configuration_manager = traverseName(package, 'configure')
+        configuration =  ServiceConfiguration(service_type,
+                                              package_name + (name,))
+        key = configuration_manager.setObject(None, configuration)
+        configuration = traverseName(configuration_manager, key)
+        service_manager = traverseName(root_folder, '++etc++Services')
+        registry = service_manager.createConfigurations(service_type)
+        registry.register(configuration)
+        registry.activate(configuration)
 
 
     def __call__(self):
