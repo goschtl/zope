@@ -161,7 +161,6 @@ class InclusionProcessorTestCase(unittest.TestCase):
 
     def test_including_from_cvs_url_without_base(self):
         self.start_including_from_cvs_url()
-        self.processor.cvsurl = None
         self.processor.addSingleInclude(
             "somedir",
             "cvs://cvs.zope.org:pserver/cvs-repository:Zope3")
@@ -171,19 +170,7 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.assertEqual(destination,
                          os.path.join(self.destination, "somedir"))
 
-    def test_including_from_repository_url(self):
-        self.start_including_from_cvs_url()
-        self.processor.addSingleInclude("somedir", "repository:somedir:TAG")
-        cvsurl, destination = self.args
-        self.assertEqual(
-            cvsurl.getUrl(),
-            "cvs://cvs.example.org:ext/foo:module/dir/somedir:TAG")
-        self.assertEqual(destination,
-                         os.path.join(self.destination, "somedir"))
-
     def start_including_from_cvs_url(self):
-        self.processor.cvsurl = cvsloader.parse(
-            "cvs://cvs.example.org:ext/foo:module/dir/:TAG")
         self.processor.includeFromUrl = lambda src, dst: self.fail(
             "not expected to load via URL")
         self.processor.includeFromLocalTree = lambda src, dst: self.fail(
@@ -196,7 +183,6 @@ class InclusionProcessorTestCase(unittest.TestCase):
     def test_including_from_repository_url_without_base(self):
         # When using a repository: URL, there must be a base cvs: URL
         # for the InclusionProcessor.
-        self.processor.cvsurl = None
         self.assertRaises(include.InclusionError,
                           self.processor.addSingleInclude,
                           "somedir", "repository:somedir:TAG")

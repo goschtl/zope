@@ -145,14 +145,6 @@ class InclusionProcessor:
         self.source = os.path.abspath(source)
         self.destination = os.path.abspath(destination)
         self.manifests = []
-        prefix = os.path.commonprefix([self.source, self.destination])
-        if prefix == self.source:
-            raise InclusionError("destination directory may not be"
-                                 " contained in the source directory")
-        elif prefix == self.destination:
-            raise InclusionError("source directory may not be"
-                                 " contained in the destination directory")
-        self.cvsurl = None
         self.cvs_loader = None
 
     def createDistributionTree(self, spec=None):
@@ -163,7 +155,7 @@ class InclusionProcessor:
         """
         if spec is None:
             spec = Specification(self.source)
-        self.copyTree(self.source, self.destination, spec.excludes)
+        self.copyTree(spec.source, self.destination, spec.excludes)
         for relpath, source in spec.includes.iteritems():
             self.addSingleInclude(relpath, source)
 
@@ -277,10 +269,7 @@ class InclusionProcessor:
                                           destination)
         else:
             if isinstance(cvsurl, cvsloader.RepositoryUrl):
-                if self.cvsurl is None:
-                    raise InclusionError(
-                        "can't load repository: URL without base cvs: URL")
-                cvsurl = self.cvsurl.join(cvsurl)
+                raise InclusionError("can't load from repository: URL")
             self.includeFromCvs(cvsurl, destination)
 
     def includeFromLocalTree(self, source, destination):
