@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.6 2003/07/02 19:14:58 fdrake Exp $
+$Id: registration.py,v 1.7 2003/07/02 19:43:27 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -153,19 +153,19 @@ class RegistrationStack(Persistent):
             if data[0] == cid:
                 # Tell it that it is no longer active
                 registration.deactivated()
+                data = data[1:]
+                if data and data[0] is not None:
+                    # Activate the newly active component
+                    sm = zapi.getServiceManager(wrapped_self)
+                    new = zapi.traverse(sm, data[0])
+                    new.activated()
+            else:
+                # Remove it from our data
+                data = tuple([item for item in data if item != cid])
 
-            # Remove it from our data
-            data = tuple([item for item in data if item != cid])
-
-            # Check for trailing None
-            if data and data[-1] is None:
-                data = data[:-1]
-
-            if data and data[0] is not None:
-                # Activate the newly active component
-                sm = zapi.getServiceManager(wrapped_self)
-                new = zapi.traverse(sm, data[0])
-                new.activated()
+                # Check for trailing None
+                if data and data[-1] is None:
+                    data = data[:-1]
 
             # Write data back
             wrapped_self._data = data

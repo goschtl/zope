@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_registrationstack.py,v 1.1 2003/06/21 21:22:13 jim Exp $
+$Id: test_registrationstack.py,v 1.2 2003/07/02 19:43:32 fdrake Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -233,6 +233,23 @@ class Test(PlacefulSetup, TestCase):
                'registration': c1,
                },
               ])
+
+    def test_avoid_duplicate_activation(self):
+        # Test for a specific bug that used to exist:
+        # when unregistering an inactive registration, don't
+        # re-activate the registration that's already active
+        c1 = self.__config('1')
+        c2 = self.__config('2')
+        registry = self.__registry
+        registry.register(c1)
+        registry.register(c2)
+        registry.activate(c1)
+        self.assertEqual(c1.active, 1)
+        self.assertEqual(c2.active, 0)
+        registry.unregister(c2)
+        self.assertEqual(c1.active, 1)
+        self.assertEqual(c2.active, 0)
+
 
 def test_suite():
     return TestSuite((
