@@ -191,8 +191,7 @@ def main(args):
         complain("Initial args: %s '%s'\n",
                  string.join(orig_args[:-1], " "),
                  orig_args[-1])
-    # DEBUG - this should be within the VERBOSE condition:
-    complain("Working dir: %s\n" % safe_getcwd())
+        complain("Working dir: %s\n" % safe_getcwd())
 
     if not sync_all and len(args) != 1:
         usage(); raise SystemExit, 1
@@ -652,7 +651,11 @@ def safe_getcwd():
     try:
         return os.getcwd()
     except:
-        return "<unknown dir>"
+        os.chdir(CVSROOT)
+        try:
+            return os.getcwd()
+        except:
+            return "<unknown dir>"
 
 if __name__ == "__main__":
     main(sys.argv)
