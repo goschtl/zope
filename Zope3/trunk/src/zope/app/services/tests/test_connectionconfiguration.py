@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for ConnectionConfiguration.
 
-$Id: test_connectionconfiguration.py,v 1.7 2003/03/31 15:55:19 stevea Exp $
+$Id: test_connectionconfiguration.py,v 1.8 2003/04/24 00:25:02 gvanrossum Exp $
 """
 __metaclass__ = type
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -36,7 +36,8 @@ from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.service import ServiceConfiguration
 from zope.proxy.context import ContextMethod
 from zope.proxy.context import ContextWrapper
-from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
+from zope.app.interfaces.services.configuration \
+     import IAttributeUseConfigurable, IUseConfiguration
 
 class DependableStub:
 
@@ -54,7 +55,10 @@ class DependableStub:
 
 class TestDA(DependableStub):
 
-    __implements__ = IZopeDatabaseAdapter, IDependable
+    __implements__ = IZopeDatabaseAdapter, IDependable, IUseConfiguration
+
+    def addUsage(self, location):
+        pass
 
 
 class ConnectionServiceStub(DependableStub):
