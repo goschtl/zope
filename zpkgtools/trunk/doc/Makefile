@@ -40,7 +40,7 @@ $(LOCAL_HTML): links.rst
 
 # Need to add dependency information for this; this really depends on
 # all the modules in zpkgtools, so is tedious to spell out.
-apiref: apiref/index.html
+apiref:
 	./mkapiref.sh
 
 
