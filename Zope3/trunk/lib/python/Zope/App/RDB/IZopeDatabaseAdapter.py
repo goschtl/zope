@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IZopeDatabaseAdapter.py,v 1.4 2002/08/12 15:07:30 alga Exp $
+$Id: IZopeDatabaseAdapter.py,v 1.5 2002/11/08 12:37:13 stevea Exp $
 """
 from Zope.App.RDB.IDBITypeInfo import IDBITypeInfo
 
@@ -26,7 +26,7 @@ class IZopeDatabaseAdapter(IDBITypeInfo):
     def setDSN(dsn):
         """Set the DSN for the Adapter instance"""
 
-    def getDSN(dsn):
+    def getDSN():
         """Get the DSN of the Adapter instance"""
 
     def connect():
