@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: http.py,v 1.2 2003/02/11 15:59:49 sidnei Exp $
+$Id: http.py,v 1.3 2003/03/29 17:01:50 sidnei Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -23,3 +23,9 @@ class INullResource(Interface):
 
     container = Attribute("The container of the future resource")
     name = Attribute("The name of the object to be created.")
+
+class IHTTPException(Interface):
+    """Marker interface for http exceptions views
+    """
+    pass
+
