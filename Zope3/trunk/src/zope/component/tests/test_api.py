@@ -419,6 +419,7 @@ class TestNoSetup(unittest.TestCase):
 
     def testNotBrokenWhenNoService(self):
         self.assertRaises(TypeError, I2, ob)
+        self.assertEquals(I2(ob, 42), 42)
 
 
 
