@@ -18,7 +18,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.2 2002/12/25 14:12:13 jim Exp $\n";
+"$Id: persistence.c,v 1.3 2002/12/31 21:12:34 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -206,9 +206,11 @@ persist_setstate(PyObject *self, PyObject *state)
 static PyObject *
 persist_activate(PyPersistObject *self)
 {
-    if (self->po_state == GHOST && self->po_dm
-	&& !_PyPersist_Load((PyPersistObject *)self))
-	return NULL;
+    if (self->po_state == GHOST && self->po_dm) {
+	if (!_PyPersist_Load((PyPersistObject *)self))
+	    return NULL;
+	self->po_state = UPTODATE;
+    }
     Py_INCREF(Py_None);
     return Py_None;
 }
