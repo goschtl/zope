@@ -550,8 +550,6 @@ class ClassVisitor(AssignmentVisitor):
             # Don't bother with nested class definitions.
             return
         self.in_class = 1
-        #import mypdb as pdb
-        #pdb.set_trace()
         for base in node.bases:
             self.visit(base)
         self.klass = klass = Class(node, node.name, self.bases)
