@@ -30,7 +30,7 @@ from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.traversing.api import getName, traverse
 from zope.component import getView, getServices
 from zope.interface import implements
-from zope.proxy import removeAllProxies
+from zope.security.proxy import removeSecurityProxy
 
 class RegistrationView(BrowserView):
 
@@ -129,7 +129,7 @@ class ChangeRegistrations(BrowserView):
         registrations = self.context.info()
 
         # This is OK because registrations is just a list of dicts
-        registrations = removeAllProxies(registrations)
+        registrations = removeSecurityProxy(registrations)
 
         inactive = 1
         for info in registrations:
