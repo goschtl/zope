@@ -13,11 +13,12 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.22 2004/01/13 22:28:47 fdrake Exp $
+$Id: test_committer.py,v 1.23 2004/01/14 18:33:32 fdrake Exp $
 """
 
 import os
 import shutil
+import tempfile
 import unittest
 
 from zope.component.service import serviceManager
@@ -151,6 +152,20 @@ def sort(lst):
 
 
 class TestSyncerModule(TestBase):
+
+    def setUp(self):
+        super(TestSyncerModule, self).setUp()
+        self.location = tempfile.mktemp()
+        os.mkdir(self.location)
+
+    def tearDown(self):
+        super(TestSyncerModule, self).tearDown()
+        shutil.rmtree(self.location)
+
+    def test_toFS(self):
+        from zope.app.content.file import File
+        obj = File(contentType='text/plain')
+        syncer.toFS(obj, "foo", self.location)
 
     def test_getSerializer(self):
         obj = Sample()
