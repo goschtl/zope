@@ -286,6 +286,7 @@ BasicTypes = {
     str: NoProxy,
     unicode: NoProxy,
     type(not 1): NoProxy, # Boolean, if available :)
+    type(iter(())): NoProxy,  # iterator, needed for Python 2.3
 }
 
 _default_checkers = {
