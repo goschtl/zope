@@ -39,6 +39,7 @@ from Products.Five.traversable import Traversable
 from Products.Five.pagetemplatefile import ZopeTwoPageTemplateFile
 
 from Acquisition import Implicit
+from OFS.SimpleItem import SimpleItem
 
 class BasicAdding(Implicit, BrowserView):
     implements(IAdding, IPublishTraverse)
@@ -76,8 +77,11 @@ class BasicAdding(Implicit, BrowserView):
 
     def nextURL(self):
         """See zope.app.container.interfaces.IAdding"""
+        # XXX this is definitely not right for all or even most uses
+        # of Five, but can be overridden by an AddView subclass, using
+        # the class attribute of a zcml:addform directive
         return (str(zapi.getView(self.context, "absolute_url", self.request))
-                + '/@@contents.html')
+                + '/manage_main')
 
     # set in BrowserView.__init__
     request = None 
@@ -193,7 +197,6 @@ class Adding(BasicAdding):
                return True
        return False
 
-from OFS.SimpleItem import SimpleItem
 class ContentAdding(Adding, Traversable, SimpleItem):
 
     menu_id = "add_content"
