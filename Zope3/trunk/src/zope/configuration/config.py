@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.4 2003/07/29 20:39:37 jim Exp $
+$Id: config.py,v 1.5 2003/07/30 14:34:54 jim Exp $
 """
 
 from keyword import iskeyword
@@ -753,20 +753,15 @@ class ComplexStackItem(object):
     implements(IStackItem)
 
     def __init__(self, meta, context, data, info):
+
+        newcontext = GroupingContextDecorator(context)
+        newcontext.info = info
+        self.context = newcontext
         self.meta = meta
-        self.context = context
-        self.info = info
 
         # Call the handler contructor
-
-        # Need to save and restore old info
-        oldinfo = context.info
-        context.info = info
-        
-        args = toargs(context, meta.schema, data)
-        self.handler = self.meta.handler(context, **args)
-
-        context.info = oldinfo
+        args = toargs(newcontext, meta.schema, data)
+        self.handler = self.meta.handler(newcontext, **args)
 
     def contained(self, name, data, info):
         """Handle a subdirective
@@ -786,8 +781,6 @@ class ComplexStackItem(object):
         # when we're done, we call the handler, which might return more actions
 
         # Need to save and restore old info
-        oldinfo = self.context.info
-        self.context.info = self.info
 
         try:
             actions = self.handler()
@@ -802,8 +795,6 @@ class ComplexStackItem(object):
             # we allow the handler to return nothing
             for action in actions:
                 self.context.action(*action)
-
-        self.context.info = oldinfo
 
 ##############################################################################
 # Helper classes
