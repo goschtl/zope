@@ -159,8 +159,8 @@ etc.
 
 def parse_args(argv):
     """Parse the command line, returning an object representing the input."""
-    path, prog = os.path.split(argv[0])
-    basedir = os.path.dirname(os.path.realpath(path))
+    path, prog = os.path.split(os.path.realpath(argv[0]))
+    basedir = os.path.dirname(path)
     # no assurance that this exists!
     default_skeleton = os.path.join(basedir, "skel")
     version = "%prog for " + zopeversion.ZopeVersionUtility.getZopeVersion()
