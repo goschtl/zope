@@ -14,12 +14,10 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.23 2004/03/17 21:05:34 srichter Exp $
+$Id$
 """
-
 import os
 import sys
-
 
 basepath = filter(None, sys.path)
 
