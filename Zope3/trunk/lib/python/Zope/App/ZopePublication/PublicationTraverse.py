@@ -13,13 +13,13 @@
 ##############################################################################
 """
 
-$Id: PublicationTraverse.py,v 1.6 2002/07/29 04:45:26 tseaver Exp $
+$Id: PublicationTraverse.py,v 1.7 2002/12/17 19:03:09 stevea Exp $
 """
 
 from Zope.ComponentArchitecture import queryView, getService
 from Zope.Publisher.Exceptions import NotFound
 from types import StringTypes
-from Zope.Proxy.ContextWrapper import ContextWrapper, getWrapperContext
+from Zope.Proxy.ContextWrapper import ContextWrapper 
 
 from Zope.App.OFS.Container.IContainer import IWriteContainer
 from Zope.App.OFS.ApplicationControl.ApplicationControl \
