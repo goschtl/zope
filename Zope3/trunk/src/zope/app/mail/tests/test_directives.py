@@ -13,14 +13,17 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_directives.py,v 1.7 2003/08/17 06:07:17 philikon Exp $
+$Id: test_directives.py,v 1.8 2003/09/22 22:37:25 jim Exp $
 """
 import os
 import unittest
+import threading
+import time
 
 from zope.app.component.metaconfigure import managerHandler, provideInterface
 from zope.app.interfaces.mail import IMailService, ISMTPMailer, ISendmailMailer
 from zope.app.mail.metaconfigure import provideMailer, queryMailer
+from zope.app.mail.service import QueueProcessorThread
 from zope.app.mail import service
 from zope.component import getService
 from zope.component.tests.placelesssetup import PlacelessSetup
@@ -54,9 +57,21 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
         self.context = xmlconfig.file("mail.zcml", zope.app.mail.tests)
         self.orig_maildir = service.Maildir
         service.Maildir = MaildirStub
+        
 
     def tearDown(self):
         service.Maildir = self.orig_maildir
+
+        # Tear down the mail queue processor thread.
+        # Give the other thread a chance to start:
+        time.sleep(0.001)
+        threads = list(threading.enumerate())
+        for thread in threads:
+            if isinstance(thread, QueueProcessorThread):
+                thread.stop()
+                thread.join()
+                
+        
 
     def testQueuedService(self):
         service = getService(None, 'Mail')
