@@ -3,6 +3,7 @@ import unittest
 from Products.CMFCore.tests import test_ContentTypeRegistry
 from Products.CMFCore.tests import test_PortalFolder
 from Products.CMFCore.tests import test_TypesTool
+from Products.CMFCore.tests import test_ActionsTool
 from Products.CMFCore.tests import test_CatalogTool
 
 def test_suite():
@@ -10,6 +11,7 @@ def test_suite():
     suite.addTest( test_ContentTypeRegistry.test_suite() )
     suite.addTest( test_PortalFolder.test_suite() )
     suite.addTest( test_TypesTool.test_suite() )
+    suite.addTest( test_ActionsTool.test_suite()  )
     suite.addTest( test_CatalogTool.test_suite() )
     return suite
 

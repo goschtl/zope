@@ -70,7 +70,6 @@ def createExprContext(folder, portal, object):
         'folder_url':   folder.absolute_url(),
         'portal_url':   portal.absolute_url(),
         'object':       object,
-        'content':      object,
         'folder':       folder,
         'portal':       portal,
         'nothing':      None,

@@ -127,10 +127,23 @@ class ActionInformation(SimpleItemWithProperties):
         action['visible'] = self.getVisibility()
         return action 
 
+    security.declarePublic('getActionExpression')
+    def getActionExpression(self):
+        """
+        If not an empty string or None, return the 
+        text of the expression otherwise return '' 
+        """
+        if self._action:
+            return self._action.text
+        else:
+            return self._action
+
     security.declarePublic('getCondition')
     def getCondition(self):
         """
-        If not an empty string or None, evaluate the expression
+        If not an empty string or None, return the 
+        text of the expression otherwise
+        return ''
         """
         if self.condition:
             return self.condition.text
