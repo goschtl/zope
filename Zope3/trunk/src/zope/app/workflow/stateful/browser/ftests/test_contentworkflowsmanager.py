@@ -13,8 +13,7 @@
 ##############################################################################
 """Functional Tests for ContentWorkflowsManager
 
-   $Id$
-   
+$Id$   
 """
 import unittest
 import re
@@ -35,7 +34,7 @@ from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition,\
 class Test(BrowserTestCase):
 
     def setUp(self):
-        BrowserTestCase.setUp(self)
+        super(Test, self).setUp()
         self.basepath = '/++etc++site/default'
         root = self.getRootFolder()
 
@@ -49,13 +48,13 @@ class Test(BrowserTestCase):
         response = self.publish(
             self.basepath + '/contents.html',
             basic='mgr:mgrpw')
-        
+
         self.assertEqual(response.getStatus(), 200)
-        
+
         expr = 'zope.app.browser.add.ContentWorkflowsManager.f([0-9]*)'
         m = re.search(expr, response.getBody())
         type_name = m.group(0)
-        
+
         response = self.publish(
             self.basepath + '/contents.html',
             basic='mgr:mgrpw',
@@ -69,17 +68,12 @@ class Test(BrowserTestCase):
             'cwm', IContentWorkflowsManager, self.basepath+'/mgr')
         pd_id = rm.addRegistration(registration)
         zapi.traverse(rm, pd_id).status = ActiveStatus
-        
-
-    def tearDown(self):
-        BrowserTestCase.tearDown(self)
-
 
     def test_subscribe(self):
         response = self.publish(
             self.basepath + '/mgr/index.html',
             basic='mgr:mgrpw')
-        
+
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
         self.assert_(body.find("Subscription state: OFF") >= 0)        
@@ -88,19 +82,19 @@ class Test(BrowserTestCase):
             self.basepath + '/mgr/index.html',
             basic='mgr:mgrpw',
             form={'callSubscribe':'Subscribe'})
-        
+
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
         self.assert_(body.find("Subscription state: ON") >= 0)        
         root = self.getRootFolder()
         mgr = zapi.traverse(root, self.basepath+'/mgr')
         self.assert_(mgr.isSubscribed())
-        
+
     def test_registry(self):
         response = self.publish(
             self.basepath + '/mgr/registry.html',
             basic='mgr:mgrpw')
-        
+
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
         self.assert_(body.find(
@@ -119,7 +113,7 @@ class Test(BrowserTestCase):
             'field.name':['dummy-definition'],
             'ADD':'Add'
             })
-        
+
         self.assertEqual(response.getStatus(), 200)
         root = self.getRootFolder()
         mgr = zapi.traverse(root, self.basepath+'/mgr')
@@ -147,7 +141,6 @@ class Test(BrowserTestCase):
 
         ifaces = mgr.getInterfacesForProcessName('dummy-definition')
         self.assertEqual(len(ifaces),0)
-
 
 def test_suite():
     return unittest.makeSuite(Test)

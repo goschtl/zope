@@ -13,21 +13,19 @@
 ##############################################################################
 """Functional Tests for StatefulProcessDefinition
 
-   $Id$
-
+$Id$
 """
 import unittest
 import re
 
 from zope.app import zapi
 from zope.app.tests.functional import BrowserTestCase
-
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 
 class Test(BrowserTestCase):
 
     def setUp(self):
-        BrowserTestCase.setUp(self)
+        super(Test, self).setUp()
         self.basepath = '/++etc++site/default'
         response = self.publish(
             self.basepath + '/contents.html',
@@ -44,11 +42,6 @@ class Test(BrowserTestCase):
             basic='mgr:mgrpw',
             form={'type_name': type_name,
                   'new_value': 'pd' })
-
-
-    def tearDown(self):
-        BrowserTestCase.tearDown(self)
-
 
     def test_processdefinition(self):
         response = self.publish(
