@@ -19,8 +19,10 @@ import re
 
 from types import ListType, StringType, TupleType
 
-from zope.documenttemplate.pdocumenttemplate import \
-     InstanceDict, TemplateDict, render_blocks
+# These imports are for the use of clients of this module, as this
+# module is the canonical place to get them. 
+from zope.documenttemplate.pdocumenttemplate import TemplateDict, InstanceDict
+from zope.documenttemplate.pdocumenttemplate import render_blocks
 
 
 class ParseError(Exception):
@@ -65,8 +67,8 @@ class Eval:
 
 
     def eval(self, mapping):
-        d={'_vars': mapping,
-           '_': mapping}
+        d={'_vars': mapping._proxied(),
+           '_': mapping._proxied()}
         code = self.code
         for name in code.co_names:
             if not d.has_key(name):
@@ -79,7 +81,9 @@ class Eval:
                     # does need the name, a NameError will occur.
                     pass
 
-        return eval(code, {'__builtins__': None}, d)
+        return eval(code,
+                    {'__builtins__': getattr(mapping, '__builtins__', None)},
+                    d)
 
 
     def __call__(self, **kw):

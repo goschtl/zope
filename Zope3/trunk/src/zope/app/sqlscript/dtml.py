@@ -20,6 +20,7 @@ from types import StringTypes
 
 from zope.documenttemplate.dt_html import HTML
 from zope.documenttemplate.dt_util import ParseError, parse_params, name_param
+from zope.documenttemplate.untrusted import UntrustedHTML
 
 from interfaces import MissingInput
 
@@ -77,7 +78,10 @@ class SQLTest(object):
                 return ''
             raise KeyError, key, sys.exc_info()[2]
 
-        if isinstance(v, (list, tuple)):
+        if (list in v.__class__.__mro__  # isinstance doesn't work w 
+            or                           # security proxies, so we use
+            tuple in v.__class__.__mro__ # this __mro__ trick.
+            ):
             if len(v) > 1 and not self.multiple:
                 raise 'Multiple Values', (
                     'multiple values are not allowed for <em>%s</em>'
@@ -272,7 +276,7 @@ class SQLVar(object):
     __call__ = render
 
 
-class SQLDTML(HTML):
+class SQLDTML(UntrustedHTML):
     __name__ = 'SQLDTML'
 
     commands = HTML.commands.copy()

@@ -35,9 +35,8 @@
 $Id$
 """
 
-from zope.documenttemplate.dt_util import \
-     parse_params, name_param, InstanceDict, render_blocks
-from zope.documenttemplate.dt_util import TemplateDict
+from zope.documenttemplate.dt_util import parse_params, name_param
+from zope.documenttemplate.dt_util import render_blocks
 
 from types import StringTypes, TupleType
 
@@ -70,18 +69,19 @@ class With:
         else:
             v = expr(md)
 
-        if not self.mapping:
-            if isinstance(v, TupleType) and len(v) == 1:
-                v = v[0]
-            v = InstanceDict(v, md)
-
         if self.only:
             _md = md
-            md = TemplateDict()
+            md = md.__class__()
             if hasattr(_md, 'validate'):
                 md.validate = _md.validate
 
-        md._push(v)
+        if self.mapping:
+            md._push(v)
+        else:
+            if isinstance(v, TupleType) and len(v) == 1:
+                v = v[0]
+            md._push_instance(v)
+
         try:
             return render_blocks(self.section, md)
         finally:
