@@ -13,13 +13,13 @@
 ##############################################################################
 """Container-related interfaces
 
-$Id: container.py,v 1.9 2004/02/24 14:17:32 srichter Exp $
+$Id: container.py,v 1.10 2004/03/02 17:51:52 philikon Exp $
 """
 from zope.interface import Interface, Attribute, implements, Invalid
 from zope.component.interfaces import IView
 from zope.interface.common.mapping import IItemMapping
 from zope.interface.common.mapping import IReadMapping, IEnumerableMapping
-from zope.app.interfaces.location import ILocation
+from zope.app.location.interfaces import ILocation
 from zope.app.interfaces.event import IObjectEvent
 
 class DuplicateIDError(KeyError):

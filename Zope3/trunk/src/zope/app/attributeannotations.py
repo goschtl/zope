@@ -13,13 +13,13 @@
 ##############################################################################
 """Attribute Annotations implementation 
 
-$Id: attributeannotations.py,v 1.9 2004/02/20 22:02:27 fdrake Exp $
+$Id: attributeannotations.py,v 1.10 2004/03/02 17:51:46 philikon Exp $
 """
 from BTrees.OOBTree import OOBTree
 from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
 from zope.proxy import removeAllProxies
 from zope.interface import implements
-from zope.app.interfaces.location import ILocation
+from zope.app.location.interfaces import ILocation
 
 class AttributeAnnotations:
     """Store annotations in the __annotations__ attribute on a

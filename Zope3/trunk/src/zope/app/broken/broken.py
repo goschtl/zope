@@ -13,13 +13,13 @@
 ##############################################################################
 """Broken-object support
 
-$Id: broken.py,v 1.1 2004/02/25 12:31:49 jim Exp $
+$Id: broken.py,v 1.2 2004/03/02 17:51:49 philikon Exp $
 """
 
 
 import ZODB.broken
 import zope.interface
-import zope.app.interfaces.location
+import zope.app.location.interfaces
 import zope.app.event.function
 
 class IBroken(zope.interface.Interface):
@@ -27,7 +27,7 @@ class IBroken(zope.interface.Interface):
     """
 
 class Broken(ZODB.broken.Broken):
-    zope.interface.implements(IBroken, zope.app.interfaces.location.ILocation)
+    zope.interface.implements(IBroken, zope.app.location.interfaces.ILocation)
 
     def __parent__(self):
         return self.__Broken_state__.get('__parent__')

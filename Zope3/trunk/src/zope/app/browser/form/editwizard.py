@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.21 2004/02/26 10:27:51 dominikhuber Exp $
+$Id: editwizard.py,v 1.22 2004/03/02 17:51:49 philikon Exp $
 """
 
 from zope.component import getAdapter
@@ -24,7 +24,7 @@ from zope.app import zapi
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.location import ILocation
+from zope.app.location.interfaces import ILocation
 from zope.app.location import LocationProxy
 
 

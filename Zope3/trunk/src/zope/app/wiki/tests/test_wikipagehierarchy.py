@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikipagehierarchy.py,v 1.1 2004/02/27 11:07:01 philikon Exp $
+$Id: test_wikipagehierarchy.py,v 1.2 2004/03/02 17:51:54 philikon Exp $
 """
 import unittest
 
@@ -22,7 +22,7 @@ from zope.app.tests import ztapi
 
 from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
 from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.interfaces.location import ILocation
+from zope.app.location.interfaces import ILocation
 
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.attributeannotations import AttributeAnnotations

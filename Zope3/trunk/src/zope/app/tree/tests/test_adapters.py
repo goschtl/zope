@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_adapters.py,v 1.1 2004/02/19 20:43:06 philikon Exp $
+$Id: test_adapters.py,v 1.2 2004/03/02 17:51:54 philikon Exp $
 """
 
 import unittest
@@ -20,7 +20,7 @@ import unittest
 from zope.interface import implements, directlyProvides
 from zope.component.exceptions import ComponentLookupError
 
-from zope.app.interfaces.location import ILocation
+from zope.app.location.interfaces import ILocation
 from zope.app.interfaces.container import IReadContainer
 from zope.app.interfaces.services.service import ISite
 from zope.app.interfaces.traversing import IContainmentRoot

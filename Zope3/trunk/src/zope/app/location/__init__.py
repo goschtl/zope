@@ -13,11 +13,11 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: location.py,v 1.9 2004/03/02 14:25:21 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/02 17:51:52 philikon Exp $
 """
 import zope.interface
 from zope.app import zapi
-from zope.app.interfaces.location import ILocation
+from zope.app.location.interfaces import ILocation
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.traversing import ITraverser
