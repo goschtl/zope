@@ -1,4 +1,4 @@
-<zope:configure 
+<zope:configure
   xmlns:zope="http://namespaces.zope.org/zope"
   xmlns="http://namespaces.zope.org/browser">
 
@@ -15,21 +15,21 @@
       allowed_interface="zope.interface.common.mapping.IItemMapping"
       layer="templates" />
 
-  <page 
+  <page
       for="*"
       name="view_macros"
       permission="zope.View"
       template="view_macros.pt"
       layer="templates" />
 
-  <page 
+  <page
       for="*"
       name="widget_macros"
       permission="zope.View"
-      template="widget_macros.pt" 
+      template="widget_macros.pt"
       layer="templates" />
 
-  <page 
+  <page
       for="*"
       name="dialog_macros"
       permission="zope.View"
@@ -39,7 +39,7 @@
   <resource name="pdlib.js" file="pdlib.js"
             layer="templates" />
 
-  <resource name="zopetop.css" file="zopetop.css" 
+  <resource name="zopetop.css" file="zopetop.css"
             layer="css" />
 
   <resource name="service_manager.gif" file="service_manager.gif"
@@ -66,7 +66,7 @@
   <resource name="spacer2.gif" file="spacer2.gif"
             layer="images" />
 
-  <resource name="spacer3.gif" file="spacer3.gif" 
+  <resource name="spacer3.gif" file="spacer3.gif"
             layer="images" />
 
   <resource name="x.gif" file="x.gif"
@@ -111,10 +111,10 @@
   <resource name="website_settings.gif" file="website_settings.gif"
             layer="images"/>
 
-  <resource name="bg_content.jpg" file="bg_content.jpg" 
+  <resource name="bg_content.jpg" file="bg_content.jpg"
             layer="images"/>
 
-  <resource name="help.gif" file="help.gif" 
+  <resource name="help.gif" file="help.gif"
             layer="images"/>
 
 </zope:configure>
