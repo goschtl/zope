@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testContents.py,v 1.9 2002/12/03 17:43:48 runyaga Exp $
+$Id: testContents.py,v 1.10 2002/12/04 15:19:07 runyaga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -100,7 +100,8 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         self.assertEqual(info['url'], 'document')
         self.assertEqual(info['object'], document)
         self.assertEqual(info['title'], 'faux title')
-        self.assertEqual(info['size'], getSize(FauxDCAdapter.size))
+        size,label=info['size']['size'],info['size']['label']
+        self.assertEqual((size,label), getSize(FauxDCAdapter.size))
         self.assertEqual(info['created'], formatTime(FauxDCAdapter.created))
         self.assertEqual(info['modified'], formatTime(FauxDCAdapter.modified))
 
@@ -111,11 +112,11 @@ class BaseTestContentsBrowserView(PlacelessSetup):
                 self.size=size
             def getSize(self):
                 return self.size
-        self.assertEqual(getSize(SizeableObject(0)), u'1 KB')
-        self.assertEqual(getSize(SizeableObject(2048)), u'2 KB')
-        self.assertEqual(getSize(SizeableObject(2000000)), u'1.91 MB')
-        self.assertEqual(getSize(SizeableObject('bob')), u'N/A')
-        self.assertEqual(getSize('dobbs'), u'N/A')
+        self.assertEqual(getSize(SizeableObject(0)), (0, u'1 KB') )
+        self.assertEqual(getSize(SizeableObject(2048)), (2048, u'2 KB') )
+        self.assertEqual(getSize(SizeableObject(2000000)),(2000000,u'1.91 MB'))
+        self.assertEqual(getSize(SizeableObject('bob')), (0,u'N/A'))
+        self.assertEqual(getSize('dobbs'), (0,u'N/A'))
 
         
     def testRemove( self ):
