@@ -23,6 +23,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
+from zope.app.publisher.browser.globalbrowsermenuservice import menuItemDirective
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
 from zope.app.form.browser.metaconfigure import BaseFormDirective
@@ -33,7 +34,6 @@ from resource import DirectoryResourceFactory
 from browser import BrowserView, EditView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, protectName, initializeClass
-from globalbrowsermenuservice import menuItemDirective
 
 class FivePageTemplateFile(ViewPageTemplateFile):
 

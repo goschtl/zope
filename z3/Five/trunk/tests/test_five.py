@@ -346,7 +346,8 @@ class RecursionTest(unittest.TestCase):
         self.assertEquals(self.ob.view(), 'foo')
         self.assertEquals(self.ob(), 'foo')
 
-from Products.Five.globalbrowsermenuservice import globalBrowserMenuService
+from zope.app.publisher.browser.globalbrowsermenuservice import \
+     globalBrowserMenuService
 
 class MenuTestCase(ZopeTestCase.ZopeTestCase):
     def afterSetUp(self):
@@ -355,8 +356,8 @@ class MenuTestCase(ZopeTestCase.ZopeTestCase):
         
     def test_menu(self):
         request = FakeRequest()
-        # XXX not sure why we need a URL here
-        request.URL = 'http://www.infrae.com'
+        # XXX not sure why we need this..
+        request.getURL = lambda: 'http://www.infrae.com'
         menu = globalBrowserMenuService.getMenu('testmenu',
                                                 self.folder.test,
                                                 request)

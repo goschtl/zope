@@ -143,19 +143,19 @@
     <meta:directive
         name="menu"
         schema="zope.app.publisher.browser.metadirectives.IMenuDirective"
-        handler=".globalbrowsermenuservice.menuDirective"
+        handler="zope.app.publisher.browser.globalbrowsermenuservice.menuDirective"
         />
 
     <meta:directive
         name="menuItem"
         schema="zope.app.publisher.browser.metadirectives.IMenuItemDirective"
-        handler=".globalbrowsermenuservice.menuItemDirective"
+        handler="zope.app.publisher.browser.globalbrowsermenuservice.menuItemDirective"
         />
 
     <meta:complexDirective
         name="menuItems"
         schema="zope.app.publisher.browser.metadirectives.IMenuItemsDirective"
-        handler=".globalbrowsermenuservice.menuItemsDirective"
+        handler="zope.app.publisher.browser.globalbrowsermenuservice.menuItemsDirective"
         >
 
       <meta:subdirective
