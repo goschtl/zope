@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.9 2003/04/14 15:59:26 mgedmin Exp $
+$Id: zpt.py,v 1.10 2003/04/18 18:45:01 jim Exp $
 """
 
 import re
@@ -57,7 +57,7 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
         namespace = super(ZPTPage, self).pt_getContext(**_kw)
         namespace['template'] = wrapped_self
         namespace['request'] = request
-        namespace['context'] = instance
+        namespace['container'] = namespace['context'] = instance
         return namespace
 
     pt_getContext = ContextMethod(pt_getContext)

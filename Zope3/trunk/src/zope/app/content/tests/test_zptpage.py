@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.9 2003/04/14 15:59:26 mgedmin Exp $
+$Id: test_zptpage.py,v 1.10 2003/04/18 18:45:02 jim Exp $
 """
 
 import unittest
@@ -80,7 +80,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             '<head><title tal:content="options/title">blah</title></head>'
             '<body>'
             '<a href="foo" tal:attributes="href request/URL/1">'
-            '<span tal:replace="context/name">splat</span>'
+            '<span tal:replace="container/name">splat</span>'
             '</a></body></html>'
             )
 
