@@ -1749,12 +1749,10 @@ msgid "Edit Form"
 msgstr "Bearbeitungsformular"
 
 #: src/zope/app/i18nfile/browser/i18nfile.py:46
-#, fuzzy
-msgid ""
-"This edit form allows you to make changes to the properties of this file."
+msgid "This edit form allows you to make changes to the properties of this file."
 msgstr ""
 "Dieses Berarbeitungsformular erlaubt es Ihnen, Änderungen an den "
-"Einstellungen ihres Bildes vorzunehmen."
+"Einstellungen ihrer Datei vorzunehmen."
 
 #: src/zope/app/i18nfile/browser/i18nimage.py:28
 msgid ""
@@ -4535,14 +4533,12 @@ msgid "Minimal Wiki Page Container implementation "
 msgstr "Minimale Wikiseiten-Behälter-Implementation"
 
 #: src/zope/app/wiki/interfaces.py:150
-#, fuzzy
 msgid "Previous Source Text"
-msgstr "Quelltext"
+msgstr "Vorheriger Quelltext"
 
 #: src/zope/app/wiki/interfaces.py:151
-#, fuzzy
 msgid "Previous source text of the Wiki Page."
-msgstr "Darstellbarer Quelltext der Wiki Page."
+msgstr "Vorheriger Quelltext der Wiki Page."
 
 #: src/zope/app/wiki/interfaces.py:40
 msgid "Comment Title"
@@ -4809,9 +4805,8 @@ msgid "Workflow-relevant Data"
 msgstr "Arbeitsablauf-relevante Daten"
 
 #: src/zope/app/workflow/stateful/interfaces.py:100
-#, fuzzy
 msgid "Name of the source state."
-msgstr "Name der übergeordneten Wiki Seite."
+msgstr "Name des Ursprungsstatus."
 
 #: src/zope/app/workflow/stateful/interfaces.py:105
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:29
@@ -4819,9 +4814,8 @@ msgid "Destination State"
 msgstr "Ziel-Zustand"
 
 #: src/zope/app/workflow/stateful/interfaces.py:106
-#, fuzzy
 msgid "Name of the destination state."
-msgstr "Name der übergeordneten Wiki Seite."
+msgstr "Name des Zielstatus."
 
 #: src/zope/app/workflow/stateful/interfaces.py:111
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:39
@@ -4832,43 +4826,39 @@ msgstr "Bedingung"
 msgid ""
 "The condition that is evaluated to decide if the\n"
 "                        transition can be fired or not."
-msgstr ""
+msgstr "Die Kondition die evaluiert wird um zu entscheiden ob ein Übergang möglich ist oder nicht."
 
 #: src/zope/app/workflow/stateful/interfaces.py:117
-#, fuzzy
 msgid "Script"
-msgstr "SQL-Skript"
+msgstr "Skript"
 
 #: src/zope/app/workflow/stateful/interfaces.py:118
 msgid ""
 "The script that is evaluated to decide if the\n"
 "                        transition can be fired or not."
-msgstr ""
+msgstr "Das Skript das evaluiert wird um zu entscheiden ob ein Übergang möglich ist oder nicht."
 
 #: src/zope/app/workflow/stateful/interfaces.py:123
-#, fuzzy
 msgid "The permission needed to fire the Transition."
-msgstr "Die Berechtigung, die zur Verwendung der Komponente benötigt wird"
+msgstr "Die Berechtigung, die zum Ausführen des Überganges benötigt wird."
 
 #: src/zope/app/workflow/stateful/interfaces.py:130
 msgid "Trigger Mode"
-msgstr ""
+msgstr "Auslösemodus"
 
 #: src/zope/app/workflow/stateful/interfaces.py:131
 msgid "How the Transition is triggered (Automatic/Manual)"
-msgstr ""
+msgstr "Wie der Übergang ausgelöst wird (Automatisch/Manuell)"
 
 #: src/zope/app/workflow/stateful/interfaces.py:147
-#, fuzzy
 msgid "Workflow-Relevant Data Schema"
-msgstr "Arbeitsablauf-relevantes Datenschema bestimmen"
+msgstr "Arbeitsablauf-relevantes Datenschema"
 
 #: src/zope/app/workflow/stateful/interfaces.py:148
-#, fuzzy
 msgid ""
 "Specifies the schema that characterizes the workflow relevant data of a "
 "process instance, found in pd.data."
-msgstr "Gibt das Schema an, welches das Dokument charakterisiert."
+msgstr "Gibt das Schema an, welches die Arbeitsablauf-relevanten Daten einer Prozessinstanz charakterisiert."
 
 #: src/zope/app/workflow/stateful/interfaces.py:99
 #: src/zope/app/workflow/stateful/browser/addtransition.pt:19
@@ -4931,10 +4921,6 @@ msgstr "Mehr hinzufügen"
 msgid "Root Folder"
 msgstr "Wurzelordner"
 
-#: src/zope/app/zptpage/browser/configure.zcml:23
-msgid "Templated Page"
-msgstr "Dynamische Seite"
-
 #: src/zope/app/zptpage/browser/configure.zcml:31
 msgid "Add a ZPT Page"
 msgstr "Eine ZPT Seite hinzufügen"
@@ -4978,6 +4964,7 @@ msgstr ""
 msgid "There are ${num_errors} input errors."
 msgstr "Es gab ${num_errors} Eingabefehler."
 
+#: src/zope/app/zptpage/browser/configure.zcml:23
 #: src/zope/app/zptpage/configure.zcml:12
 msgid "ZPT Page"
 msgstr "ZPT-Seite"
