@@ -113,7 +113,7 @@
 /ZODB3/zdaemon           /Packages/zdaemon
 /ZODB3/zLOG              /Packages/zLOG
 /ZODB3/Doc/ZEO		 /ZEO/docs
-/ZODB3/ZEONEWS.txt,v	 /Packages/ZEO/NEWS.txt,v
+/ZODB3/ZEONEWS.txt,v	 /ZEO/NEWS.txt,v
 
 /ZODB4/ZODB		 /Packages3/ZODB
 /ZODB4/ZEO		 /Packages3/ZEO
