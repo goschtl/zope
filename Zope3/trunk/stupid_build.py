@@ -50,9 +50,9 @@ def main():
         open('products.zcml', 'w').write(open('products.zcml.in').read())
     setup_dirs = []
     os.path.walk(os.getcwd(), visit, setup_dirs)
-    args = tuple(sys.argv[1:])
+    args = sys.argv[1:]
     if not args:
-        args = ('clean',)
+        args = ['clean']
     try:
         __file__
     except NameError:
