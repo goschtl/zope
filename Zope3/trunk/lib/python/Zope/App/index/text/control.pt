@@ -1,8 +1,23 @@
-<html>
+<html metal:use-macro="views/standard_macros/page">
+
+  <head>
+    <title>TextIndex Control Page</title>
+  </head>
 
   <body>
 
-    <h1>TextIndex</h1>
+  <div metal:fill-slot="body">
+
+    <h1><br>TextIndex</h1>
+
+    <p class="form-help">
+        This page lets you control a text index, which is used to
+        provide a full-text searching facility.  The search box here is
+        only for debugging.  Subscription status: A "subscribed" index
+        will update itself whenever objects are added, deleted or
+        modified; an "unsubscribed" index will retain the indexing
+        information but not update itself further.
+    </p>
 
     <span tal:condition="request/callSubscribe|nothing" tal:omit-tag="">
         <span tal:define="dummy context/subscribe" tal:omit-tag=""/>
@@ -40,6 +55,8 @@
         Search results:
         <span tal:replace="python:context.query(request['queryText'])[1]" />
     </div>
+
+  </div>
 
   </body>
 
