@@ -1,0 +1,53 @@
+The review process (workflow)
+=============================
+
+Ok, here we go
+
+	>>> import zope.event
+	>>> import eventworkflow.review.definition
+	>>> pi = eventworkflow.review.definition.ReviewProcess()
+
+Check the workflow for the right initialization
+
+	>>> len(pi.activities)
+	1
+	>>> a = pi.activities[0]
+	>>> eventworkflow.review.interfaces.IAcceptResponsibilityActivity.providedBy(a)
+	True
+
+	>>> data = pi.workflowData
+	>>> data['reviewer'] = 'thomas'
+	>>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+Lets check the workflow again
+
+	 >>> len(pi.activities)
+	 1
+	 >>> a = pi.activities[0]
+	 >>> eventworkflow.review.interfaces.IDecideDraftActivity.providedBy(a)
+	 True
+
+	 >>> data = a.processInstance.workflowData
+	 >>> data['reviewDecision'] = 'reject'
+	 >>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+That article was real crap, but now I've to provide a comment
+
+     >>> len(pi.activities)
+     1
+	 >>> a = pi.activities[0]
+	 >>> eventworkflow.review.interfaces.IWriteCommentActivity.providedBy(a)
+	 True
+
+	 >>> class FakeComment: pass
+	 >>> data = a.processInstance.workflowData
+	 >>> data['reviewComment'] = FakeComment()
+
+The process is done, no activities left
+
+	 >>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+	 >>> len(pi.activities)
+	 0
+
+	 
+

@@ -1,0 +1,49 @@
+Mappings of WfMC terms -> Zope3 Event Model
+=======================================
+
+ProcessDefinition and Activity(=ActivityDefinition) map to 
+class definitions. That way its easy to instantiate them, 
+meaning that ProcessInstance and ActivityInstance map to 
+objects. Each Activity defines its own interface (mostly 
+just a marker to subscribe to).
+
+A SubProcess is a ProcessInstance that behaves like an 
+ActivityInstance in the parent process (see e.g. the reuse of the 
+review workflow within the publication workflow) Storing of the 
+results of the sub process can be done by a subscriber to 
+ProcessFinishedEvent of the sub process.
+
+Transitions are subscribers to workflow related events (process 
+started, activity finished, process finished, ...). 
+
+Splits & Joins
+--------------
+
+Since you can control the starting of activities using the full
+expressive power of Python, implementing AND, OR, XOR-Splits is
+straight forward. Just start as many activity instances as 
+needed.
+
+Joins are a bit more complicated:
+
+OR-Joins (1 of many parallel activities finished suffices to 
+start next) can be modelled using a single subscriber which is 
+subscribed to ActivityFinished events of multiple activities. 
+State has to be tracked somewhere though, if the following 
+activity should be fired once only.
+
+AND-Joins depend on the nature of the join condition
+
+a) If you just want to keep track that the all previous activities are 
+finished you can put an annotation to the follow up activity which
+is generated in an inactive state. On meeting the precondition 
+this instance is activated (i.e. generates the work items). The 
+annotation stores the state of the join. A single multiple interface 
+subscriber cares about tracking state and condition.
+
+b) The condition is about workflow data, so there is no need for the 
+annotation. State is stored implicitly in the workflow data. 
+A single subscriber is sufficient checking the precondition every 
+time one of the previous activities finishes. There is no need for 
+having a stateful follow up activity, since it is created after the
+precondition is met.

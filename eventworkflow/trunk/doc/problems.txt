@@ -1,0 +1,32 @@
+Areas in subscriber based workflow I (TF) feel uneasy about
+== i.e. need more brain storming
+
+Subprocesses
+------------
+
+A nested subprocess is mapped to a process that also implements
+IActivity. This naturally fits to the adapter model.
+
+I wasn't able yet to come up with an adapter solution though.
+
+Passing data from subprocess to parent process
+----------------------------------------------
+
+At the moment the data is just copied over the parents 
+process data. No unique ids. No removal of attributes. E.g.
+there is the reviewComment data hanging around in the workflow data 
+but it is obsolete when the object under review is accepted.
+
+AND Join
+--------
+
+The AND join is implemented using annotations. That requires 
+stateful activities (inactive -> active). Maybe we could get 
+around this storing the JOIN state somewhere else. Workflow data?
+Annotations to process instance?
+
+Workflow data handling
+----------------------
+
+This is a simple dict of the process instance as of now. Depending
+on the complexity of the data that might not be sufficient.

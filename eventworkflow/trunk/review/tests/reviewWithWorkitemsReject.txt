@@ -1,0 +1,64 @@
+Review process with workitems (rejection)
+=========================================
+
+Ok, here we go (same as in reviewWithWorkitems to the point were 
+'thomas' is to decide about the reviewed doc)
+
+	>>> import zope.event
+	>>> import eventworkflow.review.definition
+	>>> pi = eventworkflow.review.definition.ReviewProcess()
+
+	>>> from zope.app import zapi
+	>>> from eventworkflow.interfaces import IWorklistUtility
+	>>> worklist = zapi.getUtility(IWorklistUtility)
+
+	>>> len(worklist.itemsFor('thomas'))
+	1
+	>>> len(worklist.itemsFor('jim'))
+	1
+	>>> len(worklist.itemsFor('peter'))
+	0
+
+	>>> wi = worklist.itemsFor('thomas')[0]
+	>>> wi.finish('thomas')	
+
+	>>> len(worklist.itemsFor('jim'))
+	0
+	>>> len(worklist.itemsFor('thomas'))
+	1
+
+	>>> wi = worklist.itemsFor('thomas')[0]
+	>>> assert wi.__class__ == eventworkflow.review.definition.DecideReviewWI
+
+This time I'm really picky
+
+	>>> wi.finish('reject')
+
+	>>> len(worklist.itemsFor('jim'))
+	0
+	>>> len(worklist.itemsFor('thomas'))
+	1
+
+	>>> wi = worklist.itemsFor('thomas')[0]
+	>>> assert wi.__class__ == eventworkflow.review.definition.WriteCommentWI
+
+But then I'm to write a comment now
+
+	>>> class FakeComment:
+	...   def __init__(self, text):
+	...     self.text = text
+
+	>>> wi.finish(FakeComment('Your article sucks'))
+
+	>>> len(worklist.itemsFor('jim'))
+	0
+	>>> len(worklist.itemsFor('thomas'))
+	0
+
+	>> process = wi.activity.processInstance
+	>> process.workflowData['reviewDecision']
+	'reject'
+	>> process.workflowData['reviewer']
+	'thomas'
+	>> process.workflowData['reviewComment'].text
+	'Your article sucks'

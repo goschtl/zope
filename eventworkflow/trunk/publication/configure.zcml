@@ -1,0 +1,56 @@
+<configure 
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain="pubwf"
+    xmlns:i18n="http://namespaces.zope.org/i18n"
+    >
+
+<!-- remove finished activities from the process -->
+<subscriber
+	factory=".definition.cleanupFinishedActivities"
+	for="workflow.interfaces.IActivityFinishedEvent"
+	/>
+
+
+<!-- TRANSITIONS -->
+
+<!-- initialize process -->
+<subscriber
+	factory=".definition.startCreateArticle"
+	for=".interfaces.IPublicationProcessInstance
+		 workflow.interfaces.IProcessStartedEvent"
+	/>
+
+<!-- normal transitions (between activities) -->
+<!-- one per activity ? -->
+<subscriber
+	factory=".definition.handleFinishedCreateArticle"
+	for=".interfaces.ICreateArticleActivity
+		 workflow.interfaces.IActivityFinishedEvent"
+	/>
+
+<subscriber
+	factory=".definition.handleFinishedReviewArticle"
+	for=".interfaces.IReviewArticleActivity
+		 .workflow.interfaces.IActivityFinishedEvent"
+	/>
+
+<!-- going for a press release, these two subscriptions comprise a single join -->
+<subscriber
+	factory=".workflow.handlePublications"
+	for=".interfaces.IPublishOnlineActivity
+		 .workflow.interfaces.IActivityFinishedEvent"
+	/>
+
+<subscriber
+	factory=".workflow.handlePublications"
+	for=".interfaces.IPublishDeadTreeActivity
+		 .workflow.interfaces.IActivityFinishedEvent"
+	/>
+
+
+
+
+
+
+</configure>

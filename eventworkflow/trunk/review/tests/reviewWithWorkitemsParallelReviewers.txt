@@ -1,0 +1,72 @@
+Review process with workitems (2 Reviewer, straight accept)
+===========================================================
+
+Ok, here we go, starting 2 review processes
+
+	>>> import zope.event
+	>>> import eventworkflow.review.definition
+	>>> pi = eventworkflow.review.definition.ReviewProcess()
+	>>> pi2 = eventworkflow.review.definition.ReviewProcess()
+
+Lets check the workitems 
+
+	>>> from zope.app import zapi
+	>>> from eventworkflow.interfaces import IWorklistUtility
+	>>> worklist = zapi.getUtility(IWorklistUtility)
+
+	>>> len(worklist.itemsFor('thomas'))
+	2
+	>>> len(worklist.itemsFor('jim'))
+	2
+	>>> len(worklist.itemsFor('peter'))
+	0
+
+Damn, that is a really busy site. There are lots of processes 
+running in parallel. After finishing the first activity all
+subsequent activities assign their workitems to a single principal
+Therefore 2 items for thomas (1 awaiting reviewer assignment + 
+1 awaiting review decision) and 1 for jim (reviewer assignment)
+
+	>>> wi = worklist.itemsFor('thomas')[0]
+	>>> wi.finish('thomas')	
+
+	>>> len(worklist.itemsFor('thomas'))
+	2
+	>>> len(worklist.itemsFor('jim'))
+	1
+
+Now its Jim's turn (both processes now awaiting review decision)
+
+	>>> wi = worklist.itemsFor('jim')[0]
+	>>> wi.finish('jim')	
+
+	>>> len(worklist.itemsFor('thomas'))
+	1
+	>>> len(worklist.itemsFor('jim'))
+	1
+
+
+For sake of simplicity both accept (jim first)
+
+	>>> wi = worklist.itemsFor('jim')[0]
+	>>> wi.finish('accept')	
+
+	>>> len(worklist.itemsFor('thomas'))
+	1
+	>>> len(worklist.itemsFor('jim'))
+	0
+
+	>>> wi = worklist.itemsFor('thomas')[0]
+	>>> wi.finish('accept')	
+
+	>>> len(worklist.itemsFor('thomas'))
+	0
+	>>> len(worklist.itemsFor('jim'))
+	0
+
+Workflow data should reflect this session
+
+	>> pi.workflowData
+	{'reviewDecision':'accept', 'reviewer':'thomas'}
+	>> pi2.workflowData
+	{'reviewDecision':'accept', 'reviewer':'jim'}

@@ -1,0 +1,94 @@
+Review process with workitems (straight accept)
+===============================================
+
+Ok, here we go
+
+	>>> import zope.event
+	>>> import eventworkflow.review.definition
+	>>> pi = eventworkflow.review.definition.ReviewProcess()
+
+Check the workflow for the right initialization
+
+	>>> len(pi.activities)
+	1
+	>>> a = pi.activities[0]
+	>>> eventworkflow.review.interfaces.IAcceptResponsibilityActivity.providedBy(a)
+	True
+
+Lets get a workitem for us
+
+	>>> from zope.app import zapi
+	>>> from eventworkflow.interfaces import IWorklistUtility
+	>>> worklist = zapi.getUtility(IWorklistUtility)
+	>>> len(worklist.itemsFor('thomas'))
+	1
+	>>> len(worklist.itemsFor('jim'))
+	1
+	>>> len(worklist.itemsFor('peter'))
+	0
+
+Damn, that is a really busy site. There are lots of processes 
+running in parallel
+
+	>>> pi2 = eventworkflow.review.definition.ReviewProcess()
+	>>> pi3 = eventworkflow.review.definition.ReviewProcess()
+
+That should put a bit of load to the reviewers
+
+	>>> len(worklist.itemsFor('thomas'))
+	3
+
+Ok, Ok. Got me. I'm to move my ass eventually 
+
+	>>> wi = worklist.itemsFor('thomas')[0]
+	>>> process = wi.activity.processInstance
+	>>> process.workflowData.has_key('reviewer')
+	False
+	>>> wi.finish('thomas')	
+
+Lets test the progress in the workflow
+
+	>>> process.workflowData['reviewer']
+	'thomas'
+	>>> len(process.activities)
+	1
+	>>> a = process.activities[0]
+	>>> eventworkflow.review.interfaces.IDecideDraftActivity.providedBy(a)
+	True
+
+Great but theres more to it, look...
+
+	>>> len(worklist.itemsFor('stephan'))
+	2
+	>>> len(worklist.itemsFor('jim'))
+	2
+
+Any volunteers? Especially since you can't complain, see
+
+	>>> len(worklist.itemsFor('thomas'))
+	3
+
+2 of them should be the same like before for the additional processes, the 
+third being the workitem to decide about the object to be reviewed
+
+	>>> wi = worklist.itemsFor('thomas')[2]
+	>>> assert wi.__class__ == eventworkflow.review.definition.DecideReviewWI
+
+I'm pretty quick (or kind of sloppy with QA ;-)), so I accept
+
+	>>> wi.finish('accept')
+
+I'm done now, equal positions for everyone 
+
+	>>> len(worklist.itemsFor('stephan'))
+	2
+	>>> len(worklist.itemsFor('jim'))
+	2
+	>>> len(worklist.itemsFor('thomas'))
+	2
+	>>> len(worklist.itemsFor('peter'))
+	0
+
+	>> process = wi.activity.processInstance
+	>> process.workflowData
+	{'reviewDecision':'accept', 'reviewer':'thomas'}

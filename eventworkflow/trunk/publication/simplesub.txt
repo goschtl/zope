@@ -1,0 +1,138 @@
+Using the publication workflow
+==============================
+
+Ok, here we go
+	
+	>>> import eventworkflow.publication.definition
+	>>> pi = eventworkflow.publication.definition.PublicationWorkflow()
+
+Check the workflow for the right initialization
+
+	>>> len(pi.activities)
+	1
+	>>> a = pi.activities[0]
+	>>> eventworkflow.publication.interfaces.ICreateArticleActivity.providedBy(a)
+	True
+
+And now for the fun part, we're finished with that activity
+
+	>>> import zope.event
+	>>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+Lets check the workflow again. The current activity really is 
+a (sub-)process
+
+	 >>> len(pi.activities)
+	 1
+	 >>> subpi = pi.activities[0]
+	 >>> eventworkflow.review.interfaces.IReviewProcess.providedBy(subpi)
+	 True
+
+Lets drive straight through the review. We just reject this first
+try. Nothing's done right the first time. Except it is but then its 
+not worth publishing either :-)
+
+	 >>> a = subpi.activities[0] # take assignment
+	 >>> subpi.workflowData['reviewer'] = 'thomas'
+	 >>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+	 >>> a = subpi.activities[0] # decide work object
+	 >>> subpi.workflowData['reviewDecision'] = 'reject'
+	 >>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+	 >>> class FakeComment: 
+	 ...   def __init__(self, foo):
+	 ...     self.foo = foo
+
+	 >>> a = subpi.activities[0] # write comment
+	 >>> subpi.workflowData['reviewComment'] = FakeComment('You suck')
+	 >>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+That should bring us back to the create article activity, with
+all the comment and things available in the workflow data
+
+	>>> len(pi.activities)
+	1
+	>>> a = pi.activities[0]
+	>>> eventworkflow.publication.interfaces.ICreateArticleActivity.providedBy(a)
+	True
+
+Check out the workflow data
+
+	  >>> data = pi.workflowData
+	  >>> k = data.keys()
+	  >>> k.sort()
+	  >>> k
+	  ['reviewComment', 'reviewDecision', 'reviewer']
+	  >>> data['reviewer']
+	  'thomas'
+	  >>> data['reviewDecision']
+	  'reject'
+	  >>> data['reviewComment'].foo
+	  'You suck'
+
+OK, got this far. But you paid for another round. Here we go...
+
+	>>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+	
+	>>> subpi = pi.activities[0]
+	>>> a = subpi.activities[0] # take assignment
+	>>> subpi.workflowData['reviewer'] = 'jim'
+	>>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+	>>> a = subpi.activities[0] # decide work object
+	>>> subpi.workflowData['reviewDecision'] = 'accept'
+	>>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+That was the OR-split again, but now heavy publishing is going on
+	 
+	 >>> len(pi.activities)
+	 2
+	 >>> a,b = pi.activities
+	 >>> eventworkflow.publication.interfaces.IPublishOnlineActivity.providedBy(a)
+	 True
+	 >>> eventworkflow.publication.interfaces.IPublishDeadTreeActivity.providedBy(b)
+	 True
+
+But to be sure let's check the workflow data
+
+	>>> data = pi.workflowData
+	>>> k = data.keys()
+	>>> k.sort()
+	>>> k
+	['reviewComment', 'reviewDecision', 'reviewer']
+	>>> data['reviewer']
+	'jim'
+	>>> data['reviewDecision']
+	'accept'
+	>>> data['reviewComment'].foo
+	'You suck'
+	 
+Transitioning to the final state is more complicated, because this 
+involves an AND-join of the last two activities.
+
+	>>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+
+After finishing one, there should be the IDoPressReleaseActivity created
+but it is in the waiting state
+
+	>>> len(pi.activities)
+	2
+	>>> a,b = pi.activities
+	>>> eventworkflow.publication.interfaces.IPublishDeadTreeActivity.providedBy(a)
+	True
+	>>> eventworkflow.publication.interfaces.IDoPressReleaseActivity.providedBy(b)
+	True
+	>>> b.state
+	'waiting'
+
+#XXX check the annotation here
+
+Finishing the second parallel activity should start the press release
+	
+	>>> zope.event.notify(eventworkflow.event.ActivityFinishedEvent(a))
+	>>> len(pi.activities)
+	1
+	>>> a = pi.activities[0]
+	>>> eventworkflow.publication.interfaces.IDoPressReleaseActivity.providedBy(a)
+	True
