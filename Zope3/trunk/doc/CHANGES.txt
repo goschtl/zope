@@ -149,6 +149,9 @@ Zope Changes
 
     Restructuring
 
+      - Removed special `RoleRegistration` now that we have events for
+        notification. Also, renamed `PersistentRole` to `LocalRole`.
+
       - Refactored Registration component for local components
       
         + Deprecated the `activated()` and `deactivated()` method. It is now

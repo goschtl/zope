@@ -58,7 +58,7 @@
     <allow interface=".interfaces.IRole" />
   </content>
 
-  <localUtility class=".role.PersistentRole">
+  <localUtility class=".role.LocalRole">
     <factory
         id="zope.security.role.Role"
         />
@@ -68,13 +68,15 @@
         />
   </localUtility>
 
-  <content class=".role.RoleRegistration">
-    <require
-      permission="zope.ManageServices"
-      attributes="required with provided factory"
-      interface="zope.app.utility.interfaces.IUtilityRegistration"
-      set_schema="zope.app.utility.interfaces.IUtilityRegistration" />
-  </content>
+  <subscriber
+     for="..registration.interfaces.IRegistrationActivatedEvent"
+     factory=".role.setIdOnActivation"
+     />
+
+  <subscriber
+     for="..registration.interfaces.IRegistrationDeactivatedEvent"
+     factory=".role.unsetIdOnDeactivation"
+     />
 
   <!-- Include browser package -->
   <include package=".browser"/>

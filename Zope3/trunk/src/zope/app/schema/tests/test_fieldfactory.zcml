@@ -5,6 +5,7 @@
   <include package="zope.app.component" file="meta.zcml" />
   <include package="zope.app.publisher" file="meta.zcml" />
   <include package="zope.app.security" file="meta.zcml" />
+  <include package="zope.app.utility" file="meta.zcml" />
   <include package="zope.app.security" file="configure.zcml" />
 
   <content class="zope.schema.Field">
