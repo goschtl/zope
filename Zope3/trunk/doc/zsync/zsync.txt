@@ -169,12 +169,21 @@ Description
 
 Retrieve the serialized representation of a portion of the object
 database.  The database and starting path to be retrieved are
-specified as *source-url*.  The username must be specified as part of
-*source-url*; the password may be included in *source-url*, or an
-authentication token stored by **zsync login** may be used, or
-**zsync** commands that access the Zope server will request a password
-for each request.  The local representation is stored in the directory
-*dir*, which defaults to the current directory.
+specified as *source-url*.  The username may be specified as part of
+*source-url* or via the **-u** option; the password may be included in
+*source-url*, or an authentication token stored by **zsync login** may
+be used, or **zsync** commands that access the Zope server will
+request a password for each request.  The local representation is
+stored in the directory *dir*, which defaults to the current
+directory.
+
+Options
++++++++
+
+-u USER, --user USER
+  Specify the username used in basic authentication to the Zope
+  server.  This option is provided as a convenience as most people are
+  unfamiliar with the URL syntax for specifying a user name.
 
 
 The **zsync commit** Command

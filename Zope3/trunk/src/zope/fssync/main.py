@@ -35,10 +35,11 @@ Command line syntax summary:
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.37 2003/09/05 19:09:36 fdrake Exp $
+$Id: main.py,v 1.38 2003/09/05 21:52:50 fdrake Exp $
 """
 
 import os
+import urlparse
 
 from zope.fssync.command import Command, Usage
 from zope.fssync.fssync import FSSync
@@ -59,14 +60,18 @@ def main():
     return cmd.main()
 
 def checkout(opts, args):
-    """%(program)s checkout URL [TARGETDIR]
+    """%(program)s checkout [-u user] URL [TARGETDIR]
 
     URL should be of the form ``http://user:password@host:port/path''.
     Only http and https are supported (and https only where Python has
     been built to support SSL).  This should identify a Zope 3 server;
     user:password should have management privileges; /path should be
     the traversal path to an existing object, not including views or
-    skins.
+    skins.  The user may be specified using the -u option instead of
+    encoding it in the URL, since the URL syntax for username and
+    password isn't so well known.  The password may be omitted; if so,
+    an authentication token stored using '%(program)s login' will be
+    used if available; otherwise you will be propted for the password.
 
     TARGETDIR should be a directory; if it doesn't exist, it will be
     created.  The object tree rooted at /path is copied to a
@@ -83,6 +88,23 @@ def checkout(opts, args):
             raise Usage("checkout requires at most one TARGETDIR argument")
     else:
         target = os.curdir
+    user = _getuseroption(opts)
+    if user:
+        parts = list(urlparse.urlsplit(rooturl))
+        netloc = parts[1]
+        if "@" in netloc:
+            user_passwd, host_port = netloc.split("@", 1)
+            if ":" in user_passwd:
+                u, p = user_passwd.split(":", 1)
+            else:
+                u = user_passwd
+            # only scream if the -u option and the URL disagree:
+            if u != user:
+                raise Usage("-u/--user option and URL disagree on user name")
+        else:
+            # no username in URL; insert
+            parts[1] = "%s@%s" % (user, netloc)
+        rooturl = urlparse.urlunsplit(tuple(parts))
     fs = FSSync(rooturl=rooturl)
     fs.checkout(target)
 
@@ -289,10 +311,17 @@ def _loginout(opts, args, cmdname, cmdfunc):
         if len(args) > 1:
             raise Usage("%s allows at most one argument" % cmdname)
         url = args[0]
+    user = _getuseroption(opts)
+    cmdfunc(url, user)
+
+def _getuseroption(opts):
+    user = None
     for o, a in opts:
         if o in ("-u", "--user"):
+            if user:
+                raise Usage("-u/--user may only be specified once")
             user = a
-    cmdfunc(url, user)
+    return user
 
 def mkdir(opts, args):
     """%(program)s mkdir PATH ...
@@ -352,7 +381,7 @@ command_table = [
     # function, aliases,  short opts,   long opts
     (add,      "",        "f:t:",       "factory= type="),
     (checkin,  "",        "F:m:",       "file= message="),
-    (checkout, "co",      "",           ""),
+    (checkout, "co",      "u:",         "user="),
     (commit,   "ci",      "F:m:r",      "file= message= raise-on-conflicts"),
     (copy,     "cp",      "lR",         "local recursive"),
     (diff,     "di",      "bBcC:iNuU:", "brief context= unified="),
