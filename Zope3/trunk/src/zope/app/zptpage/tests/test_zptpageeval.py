@@ -35,14 +35,21 @@ class Test(CleanUp, TestCase):
             name='zope'
         folder = Folder()
 
-        class Request(object):
-            def _getResponse(self):
-                return self
+        class Response(object):
 
-            response = property(_getResponse)
+            base = None
+
+            def setBase(self, base):
+                self.base = base
 
             def setHeader(self, name, value):
                 setattr(self, name, value)
+
+        class Request(object):
+
+            response = Response()
+
+            URL = ['http://localhost', 'http://localhost/pt']
 
         request = Request()
         template = contained(Template(), folder)
@@ -53,7 +60,8 @@ class Test(CleanUp, TestCase):
         view.request = request
         self.assertEqual(view.index(), 42)
         self.assertEqual(template.called, (request, {}))
-        self.assertEqual(getattr(request, 'content-type'), 'text/x-test')
+        self.assertEqual(getattr(request.response, 'content-type'),
+                         'text/x-test')
 
 def test_suite():
     return makeSuite(Test)
