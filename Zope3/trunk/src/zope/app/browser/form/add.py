@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.21 2003/04/30 19:16:30 chrism Exp $
+$Id: add.py,v 1.22 2003/04/30 19:36:23 gvanrossum Exp $
 """
 
 import sys
@@ -58,8 +58,7 @@ class AddView(EditView):
                 data = getWidgetsData(self, self.schema,
                                       strict=True,
                                       names=self.fieldNames,
-                                      set_missing=False,
-                                      exclude_readonly=True)
+                                      set_missing=False)
                 content = self.createAndAdd(data)
             except WidgetsError, errors:
                 self.errors = errors
