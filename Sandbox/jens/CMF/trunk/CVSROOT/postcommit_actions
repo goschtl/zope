@@ -114,7 +114,6 @@ RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
 VERBOSE = 0                             # '--verbose' option
 SYNCREPO = 0                            # '--syncrepo' option
-MSGFILENM = ""                          # '--msgfile' option (value of arg)
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
 if got_re:
@@ -125,7 +124,7 @@ else:
 def main(args):
     """Grok the args and the traffic_table and process accordingly."""
 
-    global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT, MSGFILENM, SYNCREPO
+    global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT, SYNCREPO
 
     orig_args = args[:]
 
@@ -142,6 +141,7 @@ def main(args):
 
     only_sync = 0
     sync_all = 0
+    msgfilenm = ""
 
     for opt, val in opts:
         if opt == "--verbose":
@@ -158,7 +158,7 @@ def main(args):
             complain("%s: WAIT/Foreground\n", SCRIPT)
         elif opt == "--msgfile":
             # This is internal, for the script to pass itself a file.
-            MSGFILENM = val
+            msgfilenm = val
         elif opt == "--syncrepo":
             SYNCREPO = 1
             RECURSE = 1
@@ -230,7 +230,7 @@ def main(args):
         else:
             receiverid = None
         if addrs and not only_sync:
-                do_mail(path, remote, repo, addrs, subjs,
+                do_mail(path, remote, repo, addrs, subjs, msgfilenm=msgfilenm,
                         doing_directory=doing_directory, no_files=no_files)
         if remote:
             do_sync(path, repo, remote, receiverid, subjs, excludes,
@@ -248,25 +248,26 @@ def main(args):
     if failures:
         handle_failures(orig_args)
 
+    if msgfilenm:
+        os.unlink(msgfilenm)
+
 def detach(args):
     """Fork us into the background, with stdout and stderr to OUTPUT_LOG.
 
     We have to disconnect std io (in, out, and err) and run the program in
     the background - which we do using some shell wizardry."""
-    global MSGFILENM
 
     doctored_args = [args[0]]
     doctored_args.append("--wait")
-    if not MSGFILENM:
-        tempfile.mktemp()           # Throw one away, to get initial template.
-        tempfile.tempdir = "/tmp"
-        tempfile.template = "cvs-log" + tempfile.template
-        msgfile = open(tempfile.mktemp(), 'w')
-        msgfile.write(sys.stdin.read())
-        msgfile.close()
-        MSGFILENM = msgfile.name
+    tempfile.mktemp()           # Throw one away, to get initial template.
+    tempfile.tempdir = "/tmp"
+    tempfile.template = "cvs-log" + tempfile.template
+    msgfile = open(tempfile.mktemp(), 'w')
+    msgfile.write(sys.stdin.read())
+    msgfile.close()
+    msgfilenm = msgfile.name
     doctored_args.append("--msgfile")
-    doctored_args.append(MSGFILENM)
+    doctored_args.append(msgfilenm)
     for i in args[1:]:
         doctored_args.append('"%s"' % i)
     cmd = (("( exec 1>>%s 2>&1; " + string.join(doctored_args, " ") +  " &)")
@@ -314,7 +315,8 @@ def find_entries(repo=None, all=None):
         complain("Resolved table entry:\n  %s\n", entries)
     return entries
 
-def do_mail(name, remote, repo, addrs, subjs, doing_directory=0, no_files=0):
+def do_mail(name, remote, repo, addrs, subjs,
+            msgfilenm="", doing_directory=0, no_files=0):
     """Send notice about checkin to addresses dictated by traffic table."""
     if VERBOSE:
         complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
@@ -338,8 +340,8 @@ def do_mail(name, remote, repo, addrs, subjs, doing_directory=0, no_files=0):
                                      (VERBOSE and "-v") or "",
                                      subject,
                                      string.join(addrs, ",")))
-    if MSGFILENM:
-        cmd = cmd + "< %s" % MSGFILENM
+    if msgfilenm:
+        cmd = cmd + "< %s" % msgfilenm
 
     if VERBOSE:
         complain("%sDoing mail cmd:\n\t%s\n",
@@ -347,9 +349,6 @@ def do_mail(name, remote, repo, addrs, subjs, doing_directory=0, no_files=0):
     result = os.system(cmd)
     if result:
         note_failure("*** Mail returned %s...", result)
-
-    if MSGFILENM:
-        os.unlink(MSGFILENM)
 
 def do_sync(path, repo, remote, receiverid, subjs=None,
             excludes=None, recurse=0, doing_directory=0, no_files=0):
