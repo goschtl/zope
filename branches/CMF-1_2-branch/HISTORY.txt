@@ -1,4 +1,4 @@
-1.2 beta (2001/12/07)
+1.2 Final (2002/01/16)
 
  New features
 
