@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import re
 from BTrees.OOBTree import OOBTree
 from zope.interface import implements
@@ -64,7 +66,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
     def translate(self, msgid, mapping=None, context=None,
                   target_language=None, default=None):
-        """See interface ITranslationService"""
+        """See interface `ITranslationService`"""
         if target_language is None and context is not None:
             avail_langs = self.getAvailableLanguages()
             # Let's negotiate the language to translate to. :)
@@ -95,7 +97,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def getMessageIds(self, filter='%'):
-        'See IWriteTranslationDomain'
+        'See `IWriteTranslationDomain`'
         filter = filter.replace('%', '.*')
         filter_re = re.compile(filter)
 
@@ -108,7 +110,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         return msgids.keys()
 
     def getMessages(self):
-        'See IWriteTranslationDomain'
+        'See `IWriteTranslationDomain`'
         messages = []
         languages = self.getAvailableLanguages()
         for language in languages:
@@ -118,7 +120,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def getMessage(self, msgid, language):
-        'See IWriteTranslationService'
+        'See `IWriteTranslationService`'
         for name in self._catalogs.get(language, []):
             try:
                 return self[name].getFullMessage(msgid)
@@ -127,7 +129,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
         return None
 
     def getAllLanguages(self):
-        'See IWriteTranslationService'
+        'See `IWriteTranslationService`'
         languages = {}
         for key in self._catalogs.keys():
             languages[key] = None
@@ -135,12 +137,12 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def getAvailableLanguages(self):
-        'See IWriteTranslationService'
+        'See `IWriteTranslationService`'
         return list(self._catalogs.keys())
 
 
     def addMessage(self, msgid, msg, language, mod_time=None):
-        'See IWriteTranslationService'
+        'See `IWriteTranslationService`'
         if not self._catalogs.has_key(language):
             if language not in self.getAllLanguages():
                 self.addLanguage(language)
@@ -151,27 +153,27 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def updateMessage(self, msgid, msg, language, mod_time=None):
-        'See IWriteTranslationService'
+        'See `IWriteTranslationService`'
         catalog_name = self._catalogs[language][0]
         catalog = self[catalog_name]
         catalog.setMessage(msgid, msg, mod_time)
 
 
     def deleteMessage(self, msgid, language):
-        'See IWriteTranslationService'
+        'See `IWriteTranslationService`'
         catalog_name = self._catalogs[language][0]
         catalog = self[catalog_name]
         catalog.deleteMessage(msgid)
 
 
     def addLanguage(self, language):
-        'See IWriteTranslationService'
+        'See `IWriteTranslationService`'
         catalog = zapi.createObject(None, 'Message Catalog', language)
         self[language] = catalog
 
 
     def deleteLanguage(self, language):
-        'See IWriteTranslationService'
+        'See `IWriteTranslationService`'
         # Delete all catalogs from the data storage
         for name in self._catalogs[language]:
             if self.has_key(name):
@@ -181,7 +183,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def getMessagesMapping(self, languages, foreign_messages):
-        'See ISyncTranslationService'
+        'See `ISyncTranslationService`'
         mapping = {}
         # Get all relevant local messages
         local_messages = []
@@ -203,7 +205,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 
 
     def synchronize(self, messages_mapping):
-        'See ISyncTranslationService'
+        'See `ISyncTranslationService`'
 
         for value in messages_mapping.values():
             fmsg = value[0]

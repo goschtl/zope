@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 from zope.i18n.interfaces import ITranslationDomain, IMessageCatalog
 from zope.app.container.interfaces import IContainer
@@ -50,13 +52,13 @@ class IWriteTranslationDomain(Interface):
     def addMessage(msgid, msg, language, mod_time=None):
         """Add a message to the translation domain.
 
-        If mod_time is None, then the current time should be inserted.
+        If `mod_time` is ``None``, then the current time should be inserted.
         """
 
     def updateMessage(msgid, msg, language, mod_time=None):
         """Update a message in the translation domain.
 
-        If mod_time is None, then the current time should be inserted.
+        If `mod_time` is ``None``, then the current time should be inserted.
         """
 
     def deleteMessage(domain, msgid, language):
@@ -71,7 +73,7 @@ class IWriteTranslationDomain(Interface):
 
 class ISyncTranslationDomain(Interface):
     """This interface allows translation domains to be synchronized. The
-       following four synchronization states can exist:
+       following four synchronization states can exist::
 
        0 - uptodate: The two messages are in sync.
                 Default Action: Do nothing.
@@ -110,7 +112,7 @@ class ILocalTranslationDomain(ITranslationDomain,
     """This is the common and full-features translation domain. Almost all
     translation domain implementations will use this interface.
 
-    An exception to this is the GlobalMessageCatalog as it will be read-only.
+    An exception to this is the `GlobalMessageCatalog` as it will be read-only.
     """
 
 
@@ -119,21 +121,21 @@ class ILocalMessageCatalog(IMessageCatalog):
     able to update our messages.
 
     Note that not all methods here require write access, but they should
-    not be required for an IReadMessageCatalog and are used for editing
+    not be required for an `IReadMessageCatalog` and are used for editing
     only. Therefore this is the more suitable interface to put them.
     """
 
     def getFullMessage(msgid):
         """Get the message data and meta data as a nice dictionary. More
         advanced implementation might choose to return an object with
-        the data, but the object should then implement IEnumerableMapping.
+        the data, but the object should then implement `IEnumerableMapping`.
 
         An exception is raised if the message id is not found.
         """
 
     def setMessage(msgid, message, mod_time=None):
-        """Set a message to the catalog. If mod_time is None use the current
-           time instead as modification time."""
+        """Set a message to the catalog. If `mod_time` is ``None`` use the
+        current time instead as modification time."""
 
     def deleteMessage(msgid):
         """Delete a message from the catalog."""

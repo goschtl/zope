@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import httplib
 import urllib
 import xmlrpclib
@@ -68,7 +70,7 @@ class Synchronize(BaseView):
 
 
     def _disconnect(self):
-        '''Disconnect from the sever; return None'''
+        '''Disconnect from the sever; return ``None``'''
         if hasattr(self, '_connection') and self._connection is not None:
             self._connection = None
 

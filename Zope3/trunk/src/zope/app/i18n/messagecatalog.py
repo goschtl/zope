@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import classProvides, providedBy, implements
 import time
 
@@ -40,11 +42,11 @@ class MessageCatalog(Persistent):
         self._messages = OOBTree()
 
     def getMessage(self, id):
-        'See IReadMessageCatalog'
+        'See `IReadMessageCatalog`'
         return removeAllProxies(self._messages[id][0])
 
     def queryMessage(self, id, default=None):
-        'See IReadMessageCatalog'
+        'See `IReadMessageCatalog`'
         result = removeAllProxies(self._messages.get(id))
         if result is not None:
             result = result[0]
@@ -53,11 +55,11 @@ class MessageCatalog(Persistent):
         return result
 
     def getIdentifier(self):
-        'See IReadMessageCatalog'
+        'See `IReadMessageCatalog`'
         return (self.language, self.domain)
 
     def getFullMessage(self, msgid):
-        'See IWriteMessageCatalog'
+        'See `IWriteMessageCatalog`'
         message = removeAllProxies(self._messages[msgid])
         return {'domain'   : self.domain,
                 'language' : self.language,
@@ -66,13 +68,13 @@ class MessageCatalog(Persistent):
                 'mod_time' : message[1]}
 
     def setMessage(self, msgid, message, mod_time=None):
-        'See IWriteMessageCatalog'
+        'See `IWriteMessageCatalog`'
         if mod_time is None:
             mod_time = int(time.time())
         self._messages[msgid] = (message, mod_time)
 
     def deleteMessage(self, msgid):
-        'See IWriteMessageCatalog'
+        'See `IWriteMessageCatalog`'
         del self._messages[msgid]
 
     def getMessageIds(self):
@@ -80,7 +82,7 @@ class MessageCatalog(Persistent):
         return list(self._messages.keys())
 
     def getMessages(self):
-        'See IWriteMessageCatalog'
+        'See `IWriteMessageCatalog`'
         messages = []
         for message in self._messages.items():
             messages.append({'domain'   : self.domain,
@@ -91,7 +93,7 @@ class MessageCatalog(Persistent):
         return messages
 
     def getInterfaces(self):
-        'See IFactory'
+        'See `IFactory`'
         return tuple(providedBy(self))
 
     getInterfaces = classmethod(getInterfaces)

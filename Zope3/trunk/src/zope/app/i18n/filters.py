@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import time, re
 from types import StringTypes
 from zope.interface import implements

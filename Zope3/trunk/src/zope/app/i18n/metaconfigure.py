@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import os
 
 from zope.app.component.metaconfigure import utility

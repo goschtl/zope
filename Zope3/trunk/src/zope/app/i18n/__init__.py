@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.i18n.messageid import MessageIDFactory
 
 # Import _ to use to create message ids in the zope domain
