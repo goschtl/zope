@@ -1,0 +1,4 @@
+Metadata-Version: 1.0
+Name: sample-collection-1
+Maintainer: Zope Corporation & Contributors
+Maintainer-email: sample@example.org
