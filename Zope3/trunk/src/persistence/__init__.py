@@ -13,5 +13,12 @@
 ##############################################################################
 """Provide access to Persistent C extension types."""
 
+import warnings
+
 from persistent import Persistent
 
+
+_msg = "the '%s' module is obsolete; use 'persistent' instead" % __name__
+warnings.warn(_msg, DeprecationWarning)
+
+del warnings, _msg
