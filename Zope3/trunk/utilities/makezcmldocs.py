@@ -14,7 +14,7 @@
 ##############################################################################
 """
 
-$Id: makezcmldocs.py,v 1.3 2002/11/06 23:12:59 rdmurray Exp $
+$Id: makezcmldocs.py,v 1.4 2002/11/08 20:09:43 rdmurray Exp $
 """
 
 from types import UnicodeType, FunctionType, TypeType, ClassType
@@ -104,7 +104,7 @@ def printdirective(outfile, name, handler, registry, level=0):
         amd = md['attributes'][attr]
         description = amd.get('description','')
         if not description: sys.stderr.write(("%s in %s has no description " +
-            "for the %s attribute") % (fileshortname, curpath, attr))
+            "for the %s attribute\n") % (name, curpath, attr))
         required = amd.get('required')
         required = (required=='yes' and '(required) ' or required=='no' and
             '(optional) ' or '')
