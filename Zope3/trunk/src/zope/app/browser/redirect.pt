@@ -1,4 +1,4 @@
-<html metal:use-macro="context/@@standard_macros/dialog">
+<html metal:use-macro="context/@@standard_macros/page">
   <head>
     <metal:block fill-slot="headers">
       <meta http-equiv="refresh" content="0;url=./"
