@@ -13,9 +13,8 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.27 2004/03/06 17:48:53 jim Exp $
+$Id: auth.py,v 1.28 2004/03/08 12:07:02 srichter Exp $
 """
-
 from persistent import Persistent
 from BTrees.OOBTree import OOBTree
 
@@ -24,8 +23,7 @@ from zope.app.services.servicenames import Authentication
 
 from zope.app.container.interfaces import IContainer
 
-from zope.app.interfaces.security import ILoginPassword
-from zope.app.interfaces.security import IAuthenticationService
+from zope.app.security.interfaces import ILoginPassword, IAuthenticationService
 
 from zope.app.interfaces.services.auth import IAnnotatableUser
 
@@ -104,7 +102,7 @@ class AuthenticationService(Persistent, Contained):
         'See IAuthenticationService'
         name = name.lower()
         return [p for p in self._usersbylogin.values()
-                  if p.getTitle().lower().find(name) >= 0 or
+                  if p.title.lower().find(name) >= 0 or
                      p.getLogin().lower().find(name) >= 0 ]
 
     def __getitem__(self, id):
@@ -169,11 +167,21 @@ class User(Persistent):
     implements(IAnnotatableUser)
 
     def __init__(self, id, title, description, login, pw):
-        self.__id = id
-        self.__title = title
-        self.__description = description
+        self.id = id
+        self.title = title
+        self.description = description
         self.__login = login
         self.__pw = pw
+
+    def getTitle(self):
+        warn("Use principal.title instead of principal.getTitle().",
+             DeprecationWarning, 2)
+        return self.title
+
+    def getDescription(self):
+        warn("Use principal.description instead of principal.getDescription().",
+             DeprecationWarning, 2)
+        return self.description
 
     def getLogin(self):
         'See IReadUser'
@@ -189,26 +197,6 @@ class User(Persistent):
     def validate(self, pw):
         'See IReadUser'
         return pw == self.__pw
-
-    def getId(self):
-        'See IPrincipal'
-        return self.__id
-
-    def getTitle(self):
-        'See IPrincipal'
-        return self.__title
-
-    def getDescription(self):
-        'See IPrincipal'
-        return self.__description
-
-    def setTitle(self, title):
-        'See IWriteUser'
-        self.__title = title
-
-    def setDescription(self, description):
-        'See IWriteUser'
-        self.__description = description
 
     def setLogin(self, login):
         'See IWriteUser'

@@ -13,10 +13,10 @@
 ##############################################################################
 """User and Authentication Service Interfaces.
 
-$Id: auth.py,v 1.7 2004/02/24 14:24:12 srichter Exp $
+$Id: auth.py,v 1.8 2004/03/08 12:07:03 srichter Exp $
 """
 from zope.interface import Interface
-from zope.app.interfaces.security import IPrincipal
+from zope.app.security.interfaces import IPrincipal
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 class IReadUser(IPrincipal):

@@ -8,7 +8,7 @@
 
   <h1 i18n:translate="">
     User id: 
-    <span tal:replace="context/getId" i18n:name="user_id">12</span>
+    <span tal:replace="context/id" i18n:name="user_id">12</span>
   </h1>
 
   <form action="." method="post" enctype="multipart/form-data">
@@ -17,7 +17,7 @@
       <div class="label" i18n:translate="">Title</div>
       <div class="field">
         <input type="text" name="title" size="60" value=""
-               tal:attributes="value context/getTitle" />
+               tal:attributes="value context/title" />
       </div>
     </div>
 
@@ -25,7 +25,7 @@
       <div class="label" i18n:translate="">Description</div>
       <div class="field">
         <textarea name="description" rows="10" cols="60"
-                  tal:content="context/getDescription" />
+                  tal:content="context/description" />
       </div>
     </div>
 
@@ -51,9 +51,9 @@
           <tal:block tal:repeat="role view/getAvailableRoles"
                      tal:define="user_roles context/getRoles"> 
             <option
-              tal:attributes="value role/getId;
-                              selected python:role.getId() in user_roles"
-              tal:content="role/getTitle" />
+              tal:attributes="value role/id;
+                              selected python:role.id in user_roles"
+              tal:content="role/title" />
           </tal:block>
         </select>
       </div>
