@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.3 2003/06/30 16:24:14 jim Exp $
+$Id: registration.py,v 1.4 2003/07/01 21:08:27 fdrake Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -244,7 +244,7 @@ class IRegistrationStack(Interface):
         """
 
     def __nonzero__(self):
-        """The registry is true iff it has no registered registrations."""
+        """The registry is true iff it has no registrations."""
 
 
 class IRegistry(Interface):
