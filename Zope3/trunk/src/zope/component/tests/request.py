@@ -19,10 +19,9 @@ import zope.interface
 
 class Request(object):
 
-    def __init__(self, type, skin=''):
+    def __init__(self, type, skin=None):
         self._skin = skin
-        zope.interface.directlyProvides(self, type)
-
-    def getPresentationSkin(self):
-        return self._skin
-
+        if skin is None:
+            zope.interface.directlyProvides(self, type)
+        else:
+            zope.interface.directlyProvides(self, type, skin)
