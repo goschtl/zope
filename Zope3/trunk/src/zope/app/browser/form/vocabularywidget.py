@@ -410,7 +410,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
     def render(self, value):
         contents = []
         have_results = False
-        if self.queryview:
+        if self.queryview is not None:
             s = self.queryview.renderResults(value)
             if s:
                 contents.append(self._div('queryresults', s))
@@ -419,7 +419,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
                 have_results = True
         contents.append(self._div('value', self.renderValue(value)))
         contents.append(self._emptyMarker())
-        if self.queryview and not have_results:
+        if self.queryview is not None and not have_results:
             s = self.queryview.renderInput()
             if s:
                 contents.append(self._div('queryinput', s))
@@ -500,7 +500,6 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
 
     def renderItems(self, value):
         vocabulary = self.context
-
         # check if we want to select first item
         if (value == self._missing
             and getattr(self.context, 'firstItem', False)
@@ -511,8 +510,7 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
             values = [value]
         else:
             values = ()
-
-        return VocabularyEditWidgetBase.renderItemsWithValues(self, values)
+        return self.renderItemsWithValues(values)
 
 # more general alias
 VocabularyEditWidget = SelectListWidget
@@ -530,7 +528,7 @@ class VocabularyMultiEditWidget(MultiDataHelper, VocabularyEditWidgetBase):
             values = ()
         else:
             values = list(value)
-        return VocabularyEditWidgetBase.renderItemsWithValues(self, values)
+        return self.renderItemsWithValues(values)
 
     def renderValue(self, value):
         # All we really add here is the ':list' in the name argument
@@ -585,14 +583,8 @@ class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):
         # there isn't a query in the form, returns None.
         return None
 
-    _performed_action = False
-
     def performAction(self, value):
-        """Make sure the real action, performQueryAction(), only runs once."""
-        if self._performed_action:
-            return value
-        self._performed_action = True
-        return self.performQueryAction(value)
+        return value
 
 
 ADD_DONE = "adddone"
@@ -630,7 +622,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         self.addAction(MORE,     self._msg_more)
 
     def setName(self, name):
-        VocabularyQueryViewBase.setName(self, name)
+        super(IterableVocabularyQueryViewBase, self).setName(name)
         name = self.name
         self.query_index_name = name + ".start"
         self.query_selections_name = name + ".picks"
@@ -718,7 +710,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
              % (self.query_index_name, qi),
              "</div>"])
 
-    def performQueryAction(self, value):
+    def performAction(self, value):
         if self.action == ADD_DONE:
             value = self.addSelections(value)
             self.query_index = None
