@@ -77,8 +77,8 @@ Credits
     Thanks to M. Carling for making their time available.
 
   o Much thanks to Alexander Limi, Alan Runyan, Godefroid Chapelle,
-    Joachim Werner, Paul Everitt, and others for the "Rotterdam Skin"
-    the default skin in Zope 3. happen. Special thanks to Godefroid
+    Joachim Werner, Paul Everitt, and others for the "Rotterdam Skin",
+    the default skin in Zope 3.  Special thanks to Godefroid
     for the finishing work just before the alpha.
 
 
