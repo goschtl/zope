@@ -81,15 +81,15 @@ Before we can use the adapter, we have to buy it and make it part of our
 inventory. In the component architecture we do this by registering the adapter
 with the framework, more specifically with the global site manager:
 
-  >>> from zope import component as capi
-  >>> gsm = capi.getGlobalSiteManager()
+  >>> import zope.component
+  >>> gsm = zope.component.getGlobalSiteManager()
   
   >>> gsm.provideAdapter((IGermanSocket,), IUSSocket, '',
   ...                    GermanToUSSocketAdapter)
 
-`capi` is the component architecture API that is being presented by this
-file. You registered an adapter from `IGermanSocket` to `IUSSocket` having no
-name (thus the empty string).
+`zope.component` is the component architecture API that is being
+presented by this file. You registered an adapter from `IGermanSocket`
+to `IUSSocket` having no name (thus the empty string).
 
 Anyways, you finally get back to your hotel room and shave, since you have not
 been able to shave in the plane. In the bathroom you discover a socket:
@@ -100,7 +100,7 @@ been able to shave in the plane. In the bathroom you discover a socket:
 
 You now insert the adapter in the German socket
 
-  >>> bathroomUS = capi.getAdapter(bathroomDE, IUSSocket, '')
+  >>> bathroomUS = zope.component.getAdapter(bathroomDE, IUSSocket, '')
 
 so that the socket now provides the US version:
 
@@ -123,7 +123,8 @@ the Czech have yet another socket type:
 You try to find an adapter for your shaver in your bag, but you fail, since
 you do not have one:
 
-  >>> capi.getAdapter(czech, IUSSocket, '') #doctest: +NORMALIZE_WHITESPACE
+  >>> zope.component.getAdapter(czech, IUSSocket, '') \
+  ... #doctest: +NORMALIZE_WHITESPACE
   Traceback (most recent call last):
   ...
   ComponentLookupError: (<instance of CzechSocket>, 
@@ -133,7 +134,7 @@ you do not have one:
 or the more graceful way:
 
   >>> marker = object()
-  >>> socket = capi.queryAdapter(czech, IUSSocket, '', marker)
+  >>> socket = zope.component.queryAdapter(czech, IUSSocket, '', marker)
   >>> socket is marker
   True
 
@@ -168,31 +169,30 @@ a name:
 
 Now we simply look up the adapters using their labels (called *name*):
 
-  >>> socket = capi.getAdapter(bathroomDE, IUSSocket, 'shaver')
+  >>> socket = zope.component.getAdapter(bathroomDE, IUSSocket, 'shaver')
   >>> socket.__class__ is GermanToUSSocketAdapter
   True
 
-  >>> socket = capi.getAdapter(bathroomDE, IUSSocket, 'dvd')
+  >>> socket = zope.component.getAdapter(bathroomDE, IUSSocket, 'dvd')
   >>> socket.__class__ is GermanToUSSocketAdapterAndTransformer
   True
 
 Clearly, we do not have an adapter for the MP3 player
 
-  >>> capi.getAdapter(bathroomDE, IUSSocket, 
-  ...                 'mp3') #doctest: +NORMALIZE_WHITESPACE
+  >>> zope.component.getAdapter(bathroomDE, IUSSocket, 'mp3') \
+  ... #doctest: +NORMALIZE_WHITESPACE
   Traceback (most recent call last):
   ...
   ComponentLookupError: (<instance of GermanSocket>, 
                          <InterfaceClass __builtin__.IUSSocket>,
                          'mp3')
 
-
 but you could use the 'dvd' adapter in this case of course. ;)
 
 Sometimes you want to know all adapters that are available. Let's say you want
 to know about all the adapters that convert a German to a US socket type:
 
-  >>> sockets = capi.getAdapters((bathroomDE,), IUSSocket)
+  >>> sockets = zope.component.getAdapters((bathroomDE,), IUSSocket)
   >>> len(sockets)
   3
   >>> names = [name for name, socket in sockets]
@@ -200,8 +200,9 @@ to know about all the adapters that convert a German to a US socket type:
   >>> names
   [u'', u'dvd', u'shaver']
 
-`capi.getAdapters()` returns a list of tuples. The first entry of the tuple is
-the name of the adapter and the second is the adapter itself.
+`zope.component.getAdapters()` returns a list of tuples. The first
+entry of the tuple is the name of the adapter and the second is the
+adapter itself.
 
 
 Multi-Adapters
@@ -251,8 +252,8 @@ and a German socket
 
 we can now get a gounded US socket:
 
-  >>> socket = capi.getMultiAdapter((livingroom, grounder), 
-  ...                               IUSGroundedSocket, 'mp3')
+  >>> socket = zope.component.getMultiAdapter((livingroom, grounder), 
+  ...                                         IUSGroundedSocket, 'mp3')
 
   >>> socket.__class__ is GroundedGermanToUSSocketAdapter
   True
@@ -263,8 +264,9 @@ we can now get a gounded US socket:
 
 Of course, you do not have a 'dvd' grounded US socket available:
 
-  >>> capi.getMultiAdapter((livingroom, grounder), IUSGroundedSocket, 
-  ...                      'dvd') #doctest: +NORMALIZE_WHITESPACE
+  >>> zope.component.getMultiAdapter((livingroom, grounder),
+  ...                                IUSGroundedSocket, 'dvd') \
+  ... #doctest: +NORMALIZE_WHITESPACE
   Traceback (most recent call last):
   ...
   ComponentLookupError: ((<instance of GermanSocket>, 
@@ -273,8 +275,8 @@ Of course, you do not have a 'dvd' grounded US socket available:
                          'dvd')
 
 
-  >>> socket = capi.queryMultiAdapter((livingroom, grounder), 
-  ...                                 IUSGroundedSocket, 'dvd', marker)
+  >>> socket = zope.component.queryMultiAdapter(
+  ...     (livingroom, grounder), IUSGroundedSocket, 'dvd', marker)
   >>> socket is marker
   True
 
@@ -328,7 +330,7 @@ Here some specific methods to put out the fire:
 
 Now let use all these things to put out the fire:
 
-  >>> extinguishers = capi.subscribers((fire,), IFireExtinguisher)
+  >>> extinguishers = zope.component.subscribers((fire,), IFireExtinguisher)
   >>> extinguishers.sort()
   >>> for extinguisher in extinguishers:
   ...     extinguisher.extinguish()
@@ -339,7 +341,7 @@ Now let use all these things to put out the fire:
 If no subscribers are found for a particular object, then an empty list is
 returned: 
 
-  >>> capi.subscribers((object(),), IFireExtinguisher)
+  >>> zope.component.subscribers((object(),), IFireExtinguisher)
   []
 
 
@@ -380,7 +382,7 @@ inventory by registering it as a utility:
 
 We can now get the utility using
 
-  >>> utility = capi.getUtility(IUSSocket)
+  >>> utility = zope.component.getUtility(IUSSocket)
   >>> utility is generator
   True
 
@@ -388,7 +390,7 @@ As you can see, it is very simple to register and retrieve utilities. If a
 utility does not exsist for a particular interface, such as the German socket,
 then the lookup fails
 
-  >>> capi.getUtility(IGermanSocket)
+  >>> zope.component.getUtility(IGermanSocket)
   Traceback (most recent call last):
   ...
   ComponentLookupError: (<InterfaceClass __builtin__.IGermanSocket>, '')
@@ -396,7 +398,7 @@ then the lookup fails
 or more gracefully when specifying a default value:
 
   >>> default = object()
-  >>> utility = capi.queryUtility(IGermanSocket, default=default)
+  >>> utility = zope.component.queryUtility(IGermanSocket, default=default)
   >>> utility is default
   True
 
@@ -432,13 +434,13 @@ Once it arrives, we add it to our inventory:
 
 You can now access the solar panel using
 
-  >>> utility = capi.getUtility(IUSSocket, 'Solar Panel')
+  >>> utility = zope.component.getUtility(IUSSocket, 'Solar Panel')
   >>> utility is panel
   True
 
 Of course, if a utility is not available, then the lookup will simply fail
 
-  >>> capi.getUtility(IUSSocket, 'Wind Mill')
+  >>> zope.component.getUtility(IUSSocket, 'Wind Mill')
   Traceback (most recent call last):
   ...
   ComponentLookupError: (<InterfaceClass __builtin__.IUSSocket>, 'Wind Mill')
@@ -446,14 +448,15 @@ Of course, if a utility is not available, then the lookup will simply fail
 or more gracefully when specifying a default value:
 
   >>> default = object()
-  >>> utility = capi.queryUtility(IUSSocket, 'Wind Mill', default=default)
+  >>> utility = zope.component.queryUtility(IUSSocket, 'Wind Mill',
+  ...                                       default=default)
   >>> utility is default
   True
 
 Now you want to look at all the utilities you have for a particular kind. The
 following API function will return a list of name/utility pairs:
 
-  >>> utils = list(capi.getUtilitiesFor(IUSSocket))
+  >>> utils = list(zope.component.getUtilitiesFor(IUSSocket))
   >>> utils.sort()
   >>> utils #doctest: +NORMALIZE_WHITESPACE
   [(u'', <instance of Generator>), 
@@ -465,7 +468,7 @@ of utilities (without names); however, it will also return overridden
 utilities. If you are not using multiple site managers, you will not actually
 need this method.
 
-  >>> utils = list(capi.getAllUtilitiesRegisteredFor(IUSSocket))
+  >>> utils = list(zope.component.getAllUtilitiesRegisteredFor(IUSSocket))
   >>> utils.sort()
   >>> utils
   [<instance of Generator>, <instance of Solar Panel>]
@@ -502,7 +505,7 @@ implemented interface from the class. We now register the factory:
 
 We can now get a list of interfaces the produced object will provide:
 
-  >>> ifaces = capi.getFactoryInterfaces('SolarPanel')
+  >>> ifaces = zope.component.getFactoryInterfaces('SolarPanel')
   >>> IUSSocket in ifaces
   True
 
@@ -514,7 +517,7 @@ By the way, this is equivalent to
 
 Of course you can also just create an object:
 
-  >>> panel = capi.createObject('SolarPanel')
+  >>> panel = zope.component.createObject('SolarPanel')
   >>> panel.__class__ is SolarPanel
   True
 
@@ -530,7 +533,7 @@ Once you register several factories
 you can also determine, which available factories will create objects
 providing a certian interface:
 
-  >>> factories = capi.getFactoriesFor(IUSSocket)
+  >>> factories = zope.component.getFactoriesFor(IUSSocket)
   >>> factories = [(name, factory.__class__) for name, factory in factories]
   >>> factories.sort()
   >>> factories #doctest: +NORMALIZE_WHITESPACE
@@ -550,7 +553,7 @@ able to delegate requests to their parent locations. The root site manager is
 commonly known as *global site manager*, since it is always available. You can
 always get the global site manager using the API:
 
-  >>> gsm = capi.getGlobalSiteManager()
+  >>> gsm = zope.component.getGlobalSiteManager()
 
   >>> from zope.component.site import globalSiteManager
   >>> gsm is globalSiteManager
@@ -587,7 +590,7 @@ We now instantiate the `Context` with our special site manager:
 
 We can now ask for the site manager of this context:
 
-  >>> lsm = capi.getSiteManager(context)
+  >>> lsm = zope.component.getSiteManager(context)
   >>> lsm is sm
   True
 

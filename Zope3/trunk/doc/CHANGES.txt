@@ -378,8 +378,8 @@ Zope Changes
         + Updated `zope.app.pluggableauth`, so that it will work as an
           authentication utility.
 
-        + Restructured `zope.app.persentation` (a.k.a page folders) to the new
-          component API.
+        + Restructured `zope.app.presentation` (a.k.a page folders) to
+          the new component API.
 
       - Simplified the registration framework by only supporting two states:
         active and inactive. This allowed us to get rid of the registration
@@ -492,12 +492,6 @@ Zope Changes
       - Replaced copypastemove.rename with adapters to IContainerItemRenamer.
         Instead of `rename(container, oldName, newName)`, one should use
         `IContainerItemRenamer(container).renameItem(oldName, newName)`.
-
-      - Added capi in zope.component, a short form of zope.component, that can
-        be in instead of zapi when zapi cannot be used. This would be the case
-        for packages that don't want to create a dependency on zope.app or
-        cannot access zope.app.zapi directly (e.g. zope.app.traversing). If
-        your use case doesn't apply to this, continue using zope.app.zapi.
 
     Bug Fixes
 

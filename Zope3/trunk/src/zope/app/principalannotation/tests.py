@@ -17,7 +17,7 @@ $Id$
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
-from zope import component as capi
+import zope.component
 from zope.interface import implements
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
@@ -43,7 +43,7 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
         sm = self.buildFolders(site='/')
 
         self.util = PrincipalAnnotationUtility()
-        capi.provideUtility(self.util, IPrincipalAnnotationUtility)
+        zope.component.provideUtility(self.util, IPrincipalAnnotationUtility)
 
     def testGetSimple(self):
         prince = Principal('somebody')
