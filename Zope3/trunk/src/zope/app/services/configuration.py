@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.34 2003/06/12 17:03:44 gvanrossum Exp $
+$Id: configuration.py,v 1.35 2003/06/12 18:49:32 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -50,6 +50,7 @@ from zope.app.interfaces.services.configuration import NoLocalServiceError
 from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import Registered, Active
 from zope.app.traversing import getRoot, getPath, traverse
+from zope.app.traversing import getParent, canonicalPath
 from zope.component import getAdapter, queryAdapter
 from zope.component import getServiceManager
 from zope.app.context import ContextWrapper
@@ -502,32 +503,68 @@ class NameComponentConfigurable(NameConfigurable):
 USE_CONFIG_KEY = 'zope.app.services.configuration.UseConfiguration'
 
 class UseConfiguration:
-    """An adapter."""
+    """An adapter from IUseConfigurable to IUseConfiguration.
+
+    This class is the only place that knows how 'UseConfiguration'
+    data is represented.
+    """
 
     implements(IUseConfiguration)
 
     def __init__(self, context):
         self.context = context
+        try:
+            pp = getPath(getParent(self.context))
+            if not pp.endswith("/"):
+                pp += "/"
+            self.pp = pp # parentpath
+        except TypeError:
+            self.pp = ""
+        self.pplen = len(self.pp)
 
-    def addUsage(self, location):
+    def addUsage(self, path):
+        path = self._make_relative(path)
         annotations = getAdapter(self.context, IAnnotations)
-        annotations[USE_CONFIG_KEY] = (annotations.get(USE_CONFIG_KEY, ()) +
-                                       (location, ))
+        old = annotations.get(USE_CONFIG_KEY, ())
+        fixed = map(self._make_relative, old)
+        if path not in fixed:
+            fixed.append(path)
+        new = tuple(fixed)
+        if new != old:
+            annotations[USE_CONFIG_KEY] = new
 
-    def removeUsage(self, location):
+    def removeUsage(self, path):
+        path = self._make_relative(path)
         annotations = getAdapter(self.context, IAnnotations)
-        locations = annotations.get(USE_CONFIG_KEY, ())
-        if locations:
-            locs = tuple([loc for loc in locations if loc != location])
-            if locs != locations:
-                if locs:
-                    annotations[USE_CONFIG_KEY] = locs
+        old = annotations.get(USE_CONFIG_KEY, ())
+        if old:
+            fixed = map(self._make_relative, old)
+            fixed = [loc for loc in fixed if loc != path]
+            new = tuple(fixed)
+            if new != old:
+                if new:
+                    annotations[USE_CONFIG_KEY] = new
                 else:
                     del annotations[USE_CONFIG_KEY]
 
     def usages(self):
         annotations = getAdapter(self.context, IAnnotations)
-        return annotations.get(USE_CONFIG_KEY, ())
+        locs = annotations.get(USE_CONFIG_KEY, ())
+        return tuple(map(self._make_absolute, locs))
+
+    def _make_relative(self, path):
+        if path.startswith("/") and self.pp:
+            path = canonicalPath(path)
+            if path.startswith(self.pp):
+                path = path[self.pplen:]
+                while path.startswith("/"):
+                    path = path[1:]
+        return path
+
+    def _make_absolute(self, path):
+        if not path.startswith("/") and self.pp:
+            path = self.pp + path
+        return path
 
 class ConfigurationManager(Persistent):
     """Configuration manager
