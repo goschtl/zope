@@ -134,7 +134,7 @@ function selectionError()
 <table border="0">
   <tr>
     <td>
-      <select id="from" name="from" size="5" multiple="" style="width:40%"
+      <select id="from" name="from" size="5" multiple=""
           tal:attributes="name string:${view/name}.from;
                           id string:${view/name}.from">
         <option tal:repeat="entry view/choices"
@@ -154,7 +154,7 @@ function selectionError()
           >&lt;-&nbsp;</button>
     </td>
     <td>
-      <select id="to" name="to" size="5" multiple="" style="width:40%"
+      <select id="to" name="to" size="5" multiple=""
           tal:attributes="name string:${view/name}.to;
                           id string:${view/name}.to">
         <option tal:repeat="entry view/selected"
