@@ -19,7 +19,7 @@ that creates a wrapper object, and checks for misuse of ContextDescriptors
 as members of classic classes. (Descriptors generally don't work properly
 as members of classic classes.)
 
-$Id: test_wrapperinteraction.py,v 1.2 2003/04/08 12:21:39 stevea Exp $
+$Id: test_wrapperinteraction.py,v 1.3 2003/04/09 11:44:27 philikon Exp $
 """
 import sys
 import unittest
@@ -474,24 +474,29 @@ class TestWrapperOnObjectsWithDifferentSlots(unittest.TestCase):
 
 class TestContextWrapperFactory(unittest.TestCase):
 
-    def testClassicClassWarning(self):
-        from types import ClassType
-        class Classic:
-            __metaclass__ = ClassType
-            def foo(self):
-                pass
+    pass
 
-        class BadClassic:
-            __metaclass__ = ClassType
-            def foo(self):
-                pass
-            foo = ContextMethod(foo)
+# XXX commented this test out because of Jim's change in
+# src/zope/proxy/context/__init__.py
 
-        # ok if there are no ContextDescriptors 
-        w = ContextWrapper(Classic(), None)
+##     def testClassicClassWarning(self):
+##         from types import ClassType
+##         class Classic:
+##             __metaclass__ = ClassType
+##             def foo(self):
+##                 pass
 
-        # raises if there is a ContextDescriptor
-        self.assertRaises(TypeError, ContextWrapper, BadClassic(), None)
+##         class BadClassic:
+##             __metaclass__ = ClassType
+##             def foo(self):
+##                 pass
+##             foo = ContextMethod(foo)
+
+##         # ok if there are no ContextDescriptors 
+##         w = ContextWrapper(Classic(), None)
+
+##         # raises if there is a ContextDescriptor
+##         self.assertRaises(TypeError, ContextWrapper, BadClassic(), None)
 
 def test_suite():
     return unittest.TestSuite((
