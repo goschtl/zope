@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.4 2003/01/15 15:15:19 alga Exp $
+$Id: adapter.py,v 1.5 2003/01/15 16:24:00 alga Exp $
 """
 __metaclass__ = type
 
@@ -50,16 +50,17 @@ class AdapterService(Persistent):
         "See IConfigurable"
         # XXX Need to add named adapter support
         return self.queryConfigurations(
-            configuration.forInterface, configuration.providedInterface, '',
+            configuration.forInterface, configuration.providedInterface,
+            configuration.adapterName,
             default)
 
     queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
 
     def queryConfigurations(self,
-                            forInterface, providedInterface, name,
+                            forInterface, providedInterface, adapterName,
                             default=None):
 
-        adapters = self._byName.get(name)
+        adapters = self._byName.get(adapterName)
         if adapters is None:
             return default
 
@@ -75,7 +76,8 @@ class AdapterService(Persistent):
         "See IConfigurable"
         # XXX Need to add named adapter support
         return self.createConfigurations(
-            configuration.forInterface, configuration.providedInterface, '')
+            configuration.forInterface, configuration.providedInterface,
+            configuration.adapterName)
 
     createConfigurationsFor = ContextMethod(createConfigurationsFor)
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.3 2003/01/15 15:15:21 alga Exp $
+$Id: test_adapter.py,v 1.4 2003/01/15 16:24:01 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -53,6 +53,7 @@ class I4(Interface):
 class Configuration:
     forInterface = I1
     providedInterface = I2
+    adapterName = ''
 
     def getAdapter(self, object):
         return self.factory(object)
@@ -136,7 +137,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
                     o = O()
                     o.__implements__ = r
 
-                    adapter = getattr(service, m)(o, p)
+                    adapter = getattr(service, m)(o, p,)
                     self.assertEqual(adapter.__class__, A)
                     self.assertEqual(adapter.context, o)
 
@@ -145,6 +146,56 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         self.assertEqual(service.queryAdapter(o, I3), None)
         self.assertEqual(service.queryAdapter(o, I3, 42), 42)
         self.assertRaises(ComponentLookupError, service.getAdapter, O(), I3)
+
+    def test_getAdapter_with_name(self):
+        # The same as above, but with a named adapter
+        service = self._service
+
+        sm = traverse(self.rootFolder, '++etc++Services')
+
+        configure = traverse(sm, 'Packages/default/configure')
+        configuration = Configuration()
+        configuration.adapterName = u"Yatta!"
+        configure.setObject('', configuration)
+        configuration = traverse(configure, '1')
+
+        class O:
+            __implements__ = I1
+
+        configuration.factory = A
+
+        registry = service.createConfigurationsFor(configuration)
+        registry.register(configuration)
+        registry.activate(configuration)
+
+        o = O()
+
+        for r in I1, I1E:
+            for p in I2B, I2:
+                o = O()
+                o.__implements__ = r
+
+                adapter = service.getAdapter(o, p, u"Yatta!")
+                self.assertEqual(adapter.__class__, A)
+                self.assertEqual(adapter.context, o)
+
+        self.assertEqual(service.getAdapter(o, I1, u"Yatta!"), o)
+
+        for r in I1, I1E:
+            for p in I2B, I2:
+                o = O()
+                o.__implements__ = r
+
+                adapter = service.queryAdapter(o, p, None, u"Yatta!")
+                self.assertEqual(adapter.__class__, A)
+                self.assertEqual(adapter.context, o)
+
+        self.assertEqual(service.queryAdapter(o, I1, None, u"Yatta!"), o)
+
+        self.assertRaises(ComponentLookupError, service.getAdapter,
+                          O(), I3, "Yatta!")
+        self.assertEqual(service.queryAdapter(o, I3, name=u"Yatta!"), None)
+        self.assertEqual(service.queryAdapter(o, I3, 42, u"Yatta!"), 42)
 
     def test_queryAdapter_delegation(self):
         service = self._service
