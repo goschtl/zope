@@ -1,5 +1,6 @@
 PYTHON=python2.2
-TESTOPTS=
+TESTFLAGS="-p -v"
+TESTOPTS=""
 
 # XXX What should the default be?
 all: inplace
@@ -12,16 +13,16 @@ build:
 	$(PYTHON) setup.py -q build
 
 test_build: build
-	$(PYTHON) test.py -p -v $(TESTOPTS)
+	$(PYTHON) test.py $(TESTFLAGS) $(TESTOPTS)
 
 test_inplace: inplace
-	$(PYTHON) test.py -p -v $(TESTOPTS)
+	$(PYTHON) test.py $(TESTFLAGS) $(TESTOPTS)
 
 ftest_build: build
-	$(PYTHON) test.py -f -p -v $(TESTOPTS)
+	$(PYTHON) test.py -f $(TESTFLAGS) $(TESTOPTS)
 
 ftest_inplace: inplace
-	$(PYTHON) test.py -f -p -v $(TESTOPTS)
+	$(PYTHON) test.py -f $(TESTFLAGS) $(TESTOPTS)
 
 # XXX What should the default be?
 test: test_inplace
