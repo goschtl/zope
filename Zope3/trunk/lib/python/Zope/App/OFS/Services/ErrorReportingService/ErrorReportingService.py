@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ErrorReportingService.py,v 1.6 2002/11/11 08:40:06 stevea Exp $
+$Id: ErrorReportingService.py,v 1.7 2002/11/11 08:56:45 stevea Exp $
 """
 
 import sys
@@ -186,7 +186,7 @@ class ErrorReportingService(Persistent):
         self._ignored_exceptions = tuple(
                 filter(None, map(str, ignored_exceptions))
                 )
-    setProperties = ContextMethod(setProperties
+    setProperties = ContextMethod(setProperties)
     def getLogEntries(self):
         """Returns the entries in the log, most recent first.
 
