@@ -317,6 +317,12 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         response = self.publish('/test_folder_1_/testoid', basic='manager:r00t')
         self.assertEquals("The eagle has landed", response.getBody())
 
+    def test_pages_from_directory(self):
+        response = self.publish('/test_folder_1_/testoid/dirpage1')
+        self.assert_('page 1' in response.getBody())
+        response = self.publish('/test_folder_1_/testoid/dirpage2')
+        self.assert_('page 2' in response.getBody())
+        
 class IRecurse(Interface):
     pass
 
@@ -368,7 +374,7 @@ class MenuTestCase(ZopeTestCase.ZopeTestCase):
         self.assertEquals('seagull.html', menu[0]['action'])
         self.assertEquals('Test Menu Item 2', menu[1]['title'])
         self.assertEquals('parakeet.html', menu[1]['action'])
-
+        
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RecursionTest))

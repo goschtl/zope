@@ -42,7 +42,7 @@
        in five skins and layers. -->
   <five:pagesFromDirectory
       module="Products.FiveTest"
-      directory="."
+      directory="pages"
       />
 
   <browser:defaultView
@@ -365,6 +365,16 @@
       title="A page based entry"
       menu="testmenu"
       />
+
+  <browser:editform
+      schema=".interfaces.IFieldSimpleContent"
+      for=".interfaces.IFieldSimpleContent"
+      name="edit2.html"
+      permission="zope2.Public"
+      title="An edit form based entry"
+      menu="testmenu"
+      />
+
 
   <!-- subscribe to all events -->
   <five:sendEvents
