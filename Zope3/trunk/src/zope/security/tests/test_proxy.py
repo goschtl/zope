@@ -279,7 +279,7 @@ class ProxyTests(unittest.TestCase):
                         self.shouldFail(lambda x, y: eval(expr), x, y)
 
     def test_inplace(self):
-        # XXX should test all inplace operators...
+        # TODO: should test all inplace operators...
         P = self.c.proxy
 
         pa = P(1)

@@ -312,7 +312,7 @@ class Test(TestCase, CleanUp):
             self.assertRaises(Forbidden, checker.check_setattr, inst, 'a')
             self.assertRaises(Forbidden, checker.check_setattr, inst, 'z')
 
-    # XXX write a test to see that
+    # TODO: write a test to see that
     # Checker.check/check_setattr handle permission
     # values that evaluate to False
 

@@ -140,9 +140,9 @@ class ISecurityPolicy(Interface):
 
         If participation is not None, it is added to the new interaction.
 
-        XXX perhaps this should be a separate interface IInteractionFactory,
-            and the factory registered by calling
-            ISecurityManagement.global setInteractionFactory(factory).
+        TODO: perhaps this should be a separate interface IInteractionFactory,
+              and the factory registered by calling
+              ISecurityManagement.global setInteractionFactory(factory).
         """
 
     def checkPermission(permission, object, interaction):

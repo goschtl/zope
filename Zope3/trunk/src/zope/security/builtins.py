@@ -48,7 +48,7 @@ def RestrictedBuiltins():
         'True', 'False'
         ]
 
-    # XXX dir segfaults with a seg fault due to a bas tuple check in
+    # TODO: dir segfaults with a seg fault due to a bas tuple check in
     # merge_class_dict in object.c. The assert macro seems to be doing
     # the wrong think. Basically, if an object has bases, then bases
     # is assumed to be a tuple.
@@ -63,7 +63,7 @@ def RestrictedBuiltins():
     #    input does I/O
     #    raw_input does I/O
     #    intern's effect is too global
-    #    reload does import, XXX doesn't it use __import__?
+    #    reload does import, TODO: doesn't it use __import__?
 
     _builtinTypeChecker = NamesChecker(
         ['__str__', '__repr__', '__name__', '__module__',

@@ -30,7 +30,7 @@ def trustedRemoveSecurityProxy(object):
     trusted and the proxy can always be recreated by calling the
     proxy factory and getting back a proxy with the same checker.
 
-    XXX More thought needs to be given to assuring this contract.
+    TODO: More thought needs to be given to assuring this contract.
     """
     if ((type(object) is Proxy) and
         isinstance(getChecker(object), TrustedCheckerBase)

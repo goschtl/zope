@@ -13,12 +13,7 @@
 ##############################################################################
 """Restricted interpreter.
 
-XXX This code is not used!  Before using it, a serious security review
-should be undertaken.
-
-XXX (SR) Yes the code is used for the inline Python support. As far as I can
-tell the security works well, as I had to make all sorts of security
-declarations to make it work. 
+TODO: This code needs a serious security review!!!
 
 $Id$
 """
