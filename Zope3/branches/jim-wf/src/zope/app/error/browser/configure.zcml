@@ -14,7 +14,8 @@
       for="*"
       menu="zmi_actions"
       title="Errors"
-      action="@@errorRedirect.html" />
+      action="@@errorRedirect.html"
+      permission="zope.ManageServices" />
 
   <!--Error Logging Utility -->
 
