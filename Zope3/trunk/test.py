@@ -56,6 +56,9 @@ Test harness.
 -f
     Run functional tests instead of unit tests.
 
+-F
+    Run both unit and functional tests.
+
 -g threshold
     Set the garbage collector generation0 threshold.  This can be used to
     stress memory and gc correctness.  Some crashes are only reproducible when
@@ -714,7 +717,6 @@ def process_args(argv=None):
     global progress
     global build_inplace
     global keepStaleBytecode
-    global functional
     global test_dir
     global profile
 
@@ -741,12 +743,12 @@ def process_args(argv=None):
     timesfn = None
     timetests = 0
     keepStaleBytecode = 0
-    functional = False
+    kinds = 'unit'
     test_dir = None
     profile = False
 
     try:
-        opts, args = getopt.getopt(argv[1:], "a:bBcdDfg:G:hLmPprtTuv",
+        opts, args = getopt.getopt(argv[1:], "a:bBcdDfFg:G:hLmPprtTuv",
                                    ["all", "help", "libdir=", "times=",
                                     "keepbytecode", "dir=", "build"])
     except getopt.error, msg:
@@ -775,7 +777,9 @@ def process_args(argv=None):
             debug = True
             debugger = True
         elif k == "-f":
-            functional = True
+            kinds = "functional"
+        elif k == "-F":
+            kinds = "all"
         elif k in ("-h", "--help"):
             print __doc__
             sys.exit(0)
@@ -865,58 +869,68 @@ def process_args(argv=None):
             print "Build failed", hex(sts)
             sys.exit(1)
 
-    if VERBOSE:
-        kind = functional and "functional" or "unit"
-        if level == 0:
-            print "Running %s tests at all levels" % kind
-        else:
-            print "Running %s tests at level %d" % (kind, level)
+    if kinds == "unit":
+        k = [False]
+    elif kinds == "functional":
+        k = [True]
+    elif kinds == "all":
+        k = [False, True]
+    
+    global functional
+    for functional in k:
+        
+        if VERBOSE:
+            kind = functional and "functional" or "unit"
+            if level == 0:
+                print "Running %s tests at all levels" % kind
+            else:
+                print "Running %s tests at level %d" % (kind, level)
 
-    # XXX We want to change *visible* warnings into errors.  The next
-    # line changes all warnings into errors, including warnings we
-    # normally never see.  In particular, test_datetime does some
-    # short-integer arithmetic that overflows to long ints, and, by
-    # default, Python doesn't display the overflow warning that can
-    # be enabled when this happens.  The next line turns that into an
-    # error instead.  Guido suggests that a better to get what we're
-    # after is to replace warnings.showwarning() with our own thing
-    # that raises an error.
-##    warnings.filterwarnings("error")
-    warnings.filterwarnings("ignore", module="logging")
+        # XXX We want to change *visible* warnings into errors.  The next
+        # line changes all warnings into errors, including warnings we
+        # normally never see.  In particular, test_datetime does some
+        # short-integer arithmetic that overflows to long ints, and, by
+        # default, Python doesn't display the overflow warning that can
+        # be enabled when this happens.  The next line turns that into an
+        # error instead.  Guido suggests that a better to get what we're
+        # after is to replace warnings.showwarning() with our own thing
+        # that raises an error.
+        ## warnings.filterwarnings("error")
+        warnings.filterwarnings("ignore", module="logging")
 
-    if args:
-        if len(args) > 1:
-            test_filter = args[1]
-        module_filter = args[0]
-    try:
-        if TRACE:
-            # if the trace module is used, then we don't exit with
-            # status if on a false return value from main.
-            coverdir = os.path.join(os.getcwd(), "coverage")
-            import trace
-            ignoremods = ["os", "posixpath", "stat"]
-            tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix],
-                                 ignoremods=ignoremods,
-                                 trace=False, count=True)
+        if args:
+            if len(args) > 1:
+                test_filter = args[1]
+            module_filter = args[0]
+        try:
+            if TRACE:
+                # if the trace module is used, then we don't exit with
+                # status if on a false return value from main.
+                coverdir = os.path.join(os.getcwd(), "coverage")
+                import trace
+                ignoremods = ["os", "posixpath", "stat"]
+                tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix],
+                                     ignoremods=ignoremods,
+                                     trace=False, count=True)
 
-            tracer.runctx("main(module_filter, test_filter, libdir)",
-                          globals=globals(), locals=vars())
-            r = tracer.results()
-            path = "/tmp/trace.%s" % os.getpid()
-            import cPickle
-            f = open(path, "wb")
-            cPickle.dump(r, f)
-            f.close()
-            print path
-            r.write_results(show_missing=True, summary=True, coverdir=coverdir)
-        else:
-            bad = main(module_filter, test_filter, libdir)
-            if bad:
-                sys.exit(1)
-    except ImportError, err:
-        print err
-        print sys.path
-        raise
+                tracer.runctx("main(module_filter, test_filter, libdir)",
+                              globals=globals(), locals=vars())
+                r = tracer.results()
+                path = "/tmp/trace.%s" % os.getpid()
+                import cPickle
+                f = open(path, "wb")
+                cPickle.dump(r, f)
+                f.close()
+                print path
+                r.write_results(show_missing=True, summary=True, coverdir=coverdir)
+            else:
+                bad = main(module_filter, test_filter, libdir)
+                if bad:
+                    sys.exit(1)
+        except ImportError, err:
+            print err
+            print sys.path
+            raise
 
 
 if __name__ == "__main__":
