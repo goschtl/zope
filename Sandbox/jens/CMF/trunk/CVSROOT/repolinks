@@ -191,3 +191,9 @@
 /Zope27/lib/python/zLOG                           /Packages/zLOG
 /Zope27/lib/python/ZTUtils                        /Packages/ZTUtils
 /Zope27/lib/python/Products                       /Zope/Products
+/Zope27/lib/python/Zope/App                       /Zope/lib/python/Zope/App
+/Zope27/lib/python/Zope/ComponentArchitecture     /Packages3/ComponentArchitecture
+/Zope27/lib/python/Zope/Configuration     /Zope3/lib/python/Zope/Configuration
+/Zope27/lib/python/Zope/I18n              /Zope3/lib/python/Zope/I18n
+
+
