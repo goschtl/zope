@@ -209,7 +209,6 @@ class Test(TestCase, CleanUp):
 
         from zope.security.checker import BasicTypes_examples
         rocks = tuple(BasicTypes_examples.values())
-        rocks += (AttributeError(), AttributeError)
         for rock in rocks:
             proxy = checker.proxy(rock)
             self.failUnless(proxy is rock, (rock, type(proxy)))
