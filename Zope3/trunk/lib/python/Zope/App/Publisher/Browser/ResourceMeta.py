@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ResourceMeta.py,v 1.2 2002/06/19 21:31:57 jim Exp $
+$Id: ResourceMeta.py,v 1.3 2002/06/25 14:28:42 mgedmin Exp $
 """
 
 from Zope.Security.Proxy import Proxy
@@ -78,7 +78,7 @@ class resource(object):
             return FileResourceFactory(_context.path(self.__file))
 
         if self.__image is not None:
-            return FileResourceFactory(_context.path(self.__image))
+            return ImageResourceFactory(_context.path(self.__image))
 
         raise ConfigurationError(
             "At least one of the factory, file, and image "
