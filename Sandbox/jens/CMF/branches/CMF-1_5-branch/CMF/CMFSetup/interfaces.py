@@ -17,6 +17,10 @@ $Id$
 
 from Interface import Interface
 
+
+BASE, EXTENSION = range(2)
+
+
 class IPseudoInterface( Interface ):
 
     """ API documentation;  not testable / enforceable.
@@ -178,7 +182,7 @@ class IStepRegistry( Interface ):
 
     def parseXML( text ):
 
-        """ Parse 'text' into a clean registry.
+        """ Parse 'text'.
         """
 
 class IImportStepRegistry( IStepRegistry ):
@@ -344,6 +348,8 @@ class IProfileRegistry( Interface ):
 
           'product' -- the name of the product to which 'path' is
              relative (None for absolute paths).
+
+          'type' -- either BASE or EXTENSION
         """
 
     def listProfiles():
@@ -358,15 +364,16 @@ class IProfileRegistry( Interface ):
         o See 'getProfileInfo' for a description of the mappings' keys.
         """
 
-    def registerProfile( profile_id
+    def registerProfile( name
                        , title
                        , description
                        , path
                        , product=None
+                       , profile_type=BASE
                        ):
-        """ Add a new profile to tne registry.
+        """ Add a new profile to the registry.
 
-        o If an existing profile is already registered for 'profile_id',
+        o If an existing profile is already registered for 'product:name',
           raise KeyError.
 
         o If 'product' is passed, then 'path' should be interpreted as
@@ -410,7 +417,7 @@ class ISetupTool( Interface ):
         """ Return the IToolsetRegistry for the tool.
         """
 
-    def runImportStep( step_id, purge_old=True, run_dependencies=True ):
+    def runImportStep( step_id, run_dependencies=True, purge_old=None ):
 
         """ Execute a given setup step
 
@@ -431,7 +438,7 @@ class ISetupTool( Interface ):
             step
         """
 
-    def runAllImportSteps( purge_old=True ):
+    def runAllImportSteps( purge_old=None ):
 
         """ Run all setup steps in dependency order.
 

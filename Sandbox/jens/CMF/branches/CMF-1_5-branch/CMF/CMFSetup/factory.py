@@ -20,6 +20,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDefault.Portal import CMFSite
 
+from interfaces import EXTENSION
 from registry import _profile_registry as profile_registry
 from tool import SetupTool
 from utils import _wwwdir
@@ -30,9 +31,25 @@ def addConfiguredSiteForm( dispatcher ):
     """
     wrapped = PageTemplateFile( 'siteAddForm', _wwwdir ).__of__( dispatcher )
 
-    return wrapped( profiles=profile_registry.listProfileInfo() )
+    base_profiles = []
+    extension_profiles = []
 
-def addConfiguredSite( dispatcher, site_id, profile_id, RESPONSE=None ):
+    for info in profile_registry.listProfileInfo():
+        if info.get('type') == EXTENSION:
+            extension_profiles.append(info)
+        else:
+            base_profiles.append(info)
+
+    return wrapped( base_profiles=tuple(base_profiles),
+                    extension_profiles =tuple(extension_profiles) )
+
+def addConfiguredSite( dispatcher
+                     , site_id
+                     , profile_id
+                     , snapshot=True
+                     , RESPONSE=None 
+                     , extension_ids=()
+                     ):
 
     """ Add a CMFSite to 'dispatcher', configured according to 'profile_id'.
     """
@@ -46,7 +63,13 @@ def addConfiguredSite( dispatcher, site_id, profile_id, RESPONSE=None ):
 
     setup_tool.setImportContext( 'profile-%s' % profile_id )
     setup_tool.runAllImportSteps()
-    setup_tool.createSnapshot( 'initial_configuration' )
+    for extension_id in extension_ids:
+        setup_tool.setImportContext( 'profile-%s' % extension_id )
+        setup_tool.runAllImportSteps()
+    setup_tool.setImportContext( 'profile-%s' % profile_id )
+
+    if snapshot is True:
+        setup_tool.createSnapshot( 'initial_configuration' )
 
     if RESPONSE is not None:
         RESPONSE.redirect( '%s/manage_main?update_menu=1'

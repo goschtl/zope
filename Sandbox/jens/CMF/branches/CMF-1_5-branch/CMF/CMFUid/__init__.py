@@ -18,6 +18,12 @@ $Id$
 from sys import modules
 
 from Products.CMFCore import utils
+try:
+    from Products.CMFSetup import EXTENSION
+    from Products.CMFSetup import profile_registry
+    has_profile_registry = True
+except ImportError:
+    has_profile_registry = False
 
 import UniqueIdAnnotationTool
 import UniqueIdGeneratorTool
@@ -44,3 +50,11 @@ def initialize(context):
                   , product_name='CMFUid'
                   , icon='tool.gif'
                   ).initialize(context)
+
+    if has_profile_registry:
+        profile_registry.registerProfile('default',
+                                         'CMFUid',
+                                         'Adds UID support.',
+                                         'profiles/default',
+                                         'CMFUid',
+                                         EXTENSION)
