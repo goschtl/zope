@@ -16,7 +16,7 @@
 import os
 import sys
 
-from zpkgtools import loggingapi as logging
+from zpkgsetup import loggingapi as logging
 
 
 def report_command(cmd):

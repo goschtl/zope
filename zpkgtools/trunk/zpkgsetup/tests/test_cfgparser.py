@@ -17,7 +17,7 @@ import unittest
 
 from StringIO import StringIO
 
-from zpkgtools import cfgparser
+from zpkgsetup import cfgparser
 
 
 class SimpleSection:

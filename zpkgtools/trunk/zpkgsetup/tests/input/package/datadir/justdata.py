@@ -1,4 +1,3 @@
-#!/usr/bin/env python2.3
 ##############################################################################
 #
 # Copyright (c) 2004 Zope Corporation and Contributors.
@@ -12,25 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Python source file not in a package.
 
-import os
-import sys
+The distutils support code from zpkgtools.setup should regard this
+file as package data rather than as a module in a package.  This means
+that it should be mentioned in the package_data passed to
+distutils.core.setup().
 
-try:
-    import zpkgtools
-except ImportError:
-    # Not installed; running from development copy:
-    here = os.path.dirname(os.path.realpath(__file__))
-    basedir = os.path.dirname(here)
-    sys.path.append(basedir)
-    import zpkgtools
-
-from zpkgsetup import loggingapi as logging
-
-from zpkgtools import app
-
-
-if __name__ == "__main__":
-    root_logger = logging.getLogger()
-    root_logger.addHandler(logging.StreamHandler())
-    sys.exit(app.main())
+There's nothing else here.
+"""

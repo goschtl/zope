@@ -26,7 +26,7 @@ worth it.
 import os
 import urllib
 
-from zpkgtools import cfgparser
+from zpkgsetup import cfgparser
 from zpkgtools import locationmap
 
 

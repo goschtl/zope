@@ -17,7 +17,7 @@ $Id: test_publication.py,v 1.1 2004/06/14 20:46:41 fdrake Exp $
 """
 import unittest
 
-from zpkgtools import publication
+from zpkgsetup import publication
 
 
 class DevelopmentStatusTestCase(unittest.TestCase):

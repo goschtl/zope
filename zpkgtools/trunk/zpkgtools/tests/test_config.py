@@ -18,7 +18,7 @@ import unittest
 
 from StringIO import StringIO
 
-from zpkgtools import cfgparser
+from zpkgsetup import cfgparser
 from zpkgtools import config
 
 

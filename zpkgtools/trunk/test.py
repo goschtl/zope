@@ -27,8 +27,16 @@ except ImportError:
         print >>sys.stderr, \
               "arguments only supported when zope.app.tests is available"
         sys.exit(2)
-    from zpkgtools.tests import runtests
-    runtests.MyTestProgram(defaultTest="runtests.test_suite")
+
+    def test_suite():
+        from zpkgsetup.tests import runtests
+        suite = runtests.test_suite()
+        from zpkgtools.tests import runtests
+        suite.addTest(runtests.test_suite())
+        return suite
+
+    from zpkgsetup.tests import runtests
+    runtests.MyTestProgram(defaultTest="test_suite")
 else:
     # 1. search for tests in starting in this directory
     # 2. there are only unit tests, not functional tests

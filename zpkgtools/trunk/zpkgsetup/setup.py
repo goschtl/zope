@@ -11,17 +11,45 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Generator for distutils setup.py files."""
+"""Generator for distutils setup.py files.
+
+:Variables:
+  - `EXCLUDE_NAMES`: Names of files and directories that will be
+    excluded from copying.  These are generally related to source
+    management systems, but don't need to be.
+
+  - `EXCLUDE_PATTERNS`: Glob patterns used to filter the set of files
+    that are copied.  Any file with a name matching these patterns
+    will be ignored.
+
+"""
 
 import errno
+import fnmatch
 import os
 import posixpath
 import re
 import sys
 
-from zpkgtools import include
-from zpkgtools import package
-from zpkgtools import publication
+from zpkgsetup import package
+from zpkgsetup import publication
+
+
+# Names that are exluded from globbing results:
+EXCLUDE_NAMES = ["CVS", ".cvsignore", "RCS", "SCCS", ".svn"]
+EXCLUDE_PATTERNS = ["*.py[cdo]", "*.s[ol]", ".#*", "*~"]
+
+def filter_names(names):
+    """Given a list of file names, return those names that should be copied.
+    """
+    names = [n for n in names
+             if n not in EXCLUDE_NAMES]
+    # This is needed when building a distro from a working
+    # copy (likely a checkout) rather than a pristine export:
+    for pattern in EXCLUDE_PATTERNS:
+        names = [n for n in names
+                 if not fnmatch.fnmatch(n, pattern)]
+    return names
 
 
 class SetupContext:
@@ -135,7 +163,7 @@ class SetupContext:
         self.add_package_dir(name, reldir)
 
         # scan the files in the directory:
-        files = include.filter_names(os.listdir(directory))
+        files = filter_names(os.listdir(directory))
         for fn in files:
             fnbase, ext = os.path.splitext(fn)
             path = os.path.join(directory, fn)
@@ -184,7 +212,7 @@ class SetupContext:
 
     def scan_directory(self, pkgname, directory, reldir):
         """Scan a data directory, adding files to package_data."""
-        files = include.filter_names(os.listdir(directory))
+        files = filter_names(os.listdir(directory))
         for fn in files:
             path = os.path.join(directory, fn)
             if os.path.isdir(path):

@@ -60,7 +60,7 @@ The following command line options are provided:
 -S
   Don't include the required support packages in the distribution.
   This can be used to generate smaller distributions when the
-  ``setuptools`` and ``zpkgtools`` packages are known to be available
+  ``setuptools`` and ``zpkgsetup`` packages are known to be available
   on target systems.
 
 -v VERSION
@@ -97,7 +97,7 @@ The ``include-support-code`` key is used to control whether **zpkg**
 bundles the support code along with the resulting distribution.  The
 value is a boolean, where the strings ``true`` and ``false`` can be
 used in the configuration file.  If true (the default), copies of the
-``zpkgtools`` and ``setuptools`` packages will be included in the
+``zpkgsetup`` and ``setuptools`` packages will be included in the
 distribution (less their test code).  If false, the packages will be
 assumed to be available for import on target systems.
 
@@ -217,8 +217,8 @@ copy available on the local system and add a resource entry for it
 using a ``file:`` URL::
 
   setuptools  file:///home/myuser/stuff/setuptools/setuptools
-  zpkgtools   file:///home/myuser/stuff/zpkgtools/zpkgtools
+  zpkgsetup   file:///home/myuser/stuff/zpkgtools/zpkgsetup
 
 (The path should identify the directory that contains the
-``setuptools`` or ``zpkgtools`` package itself, not the directory that
+``setuptools`` or ``zpkgsetup`` package itself, not the directory that
 would be on ``sys.path`` to allow it to be importable.)

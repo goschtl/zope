@@ -23,13 +23,14 @@ import tempfile
 
 import zpkgtools
 
+from zpkgsetup import loggingapi as logging
+from zpkgsetup import package
+from zpkgsetup import publication
+
 from zpkgtools import config
 from zpkgtools import dependencies
 from zpkgtools import include
 from zpkgtools import loader
-from zpkgtools import loggingapi as logging
-from zpkgtools import package
-from zpkgtools import publication
 from zpkgtools import runlog
 
 
@@ -199,7 +200,7 @@ class BuilderApplication(Application):
         """Include any support code needed by the generated setup.py
         files.
 
-        This will add the ``setuptools`` and ``zpkgtools`` packages to
+        This will add the ``setuptools`` and ``zpkgsetup`` packages to
         the output directory if not already present, but they won't be
         added to the set of packages that will be installed by the
         resulting distribution.
@@ -210,8 +211,8 @@ class BuilderApplication(Application):
             self.loader = loader.Loader()
         os.mkdir(os.path.join(self.destination, "Support"))
         self.include_support_package(
-            "zpkgtools", ("cvs://cvs.zope.org/cvs-repository"
-                          ":Packages/zpkgtools/zpkgtools"))
+            "zpkgsetup", ("svn://svn.zope.org/repos/main/zpkgtools/tags/*/"
+                          "zpkgsetup"))
         self.include_support_package(
             "setuptools", ("cvs://cvs.python.sourceforge.net/cvsroot/python"
                            ":python/nondist/sandbox/setuptools/setuptools"))
@@ -443,7 +444,7 @@ class Component:
         self.ip.add_output(setup_py)
         f = open(setup_py, "w")
         print >>f, SETUP_HEADER
-        print >>f, "context = zpkgtools.setup.SetupContext("
+        print >>f, "context = zpkgsetup.setup.SetupContext("
         print >>f, "    %r, %r, __file__)" % (self.name, version)
         print >>f
         print >>f, "context.initialize()"
@@ -472,7 +473,7 @@ support_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
 if os.path.isdir(support_dir):
     sys.path.insert(0, support_dir)
 
-import zpkgtools.setup
+import zpkgsetup.setup
 
 """
 

@@ -16,8 +16,8 @@
 import os
 import unittest
 
-from zpkgtools import publication
-from zpkgtools import setup
+from zpkgsetup import publication
+from zpkgsetup import setup
 
 
 here = os.path.dirname(os.path.abspath(__file__))

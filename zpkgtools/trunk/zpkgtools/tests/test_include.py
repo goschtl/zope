@@ -23,7 +23,8 @@ import urllib2
 from os.path import join
 from StringIO import StringIO
 
-from zpkgtools import cfgparser
+from zpkgsetup import cfgparser
+
 from zpkgtools import include
 from zpkgtools import loader
 

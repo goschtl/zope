@@ -27,13 +27,39 @@ PKGDIR = os.path.dirname(TESTDIR) # the package directory
 TOPDIR = os.path.dirname(PKGDIR)
 
 
+def load_tests(name):
+    __import__(name)
+    mod = sys.modules[name]
+    return mod.test_suite()
+
+
+def make_directory_suite(pkgname, testdir):
+    L = []
+    for fn in os.listdir(testdir):
+        name, ext = os.path.splitext(fn)
+        if name[:4] == "test" and ext == ".py":
+            L.append(load_tests("%s.%s" % (pkgname, name)))
+    suite = L.pop()
+    for t in L:
+        suite.addTest(t)
+    return suite
+
+
 def test_suite():
-    from zpkgsetup.tests.runtests import make_directory_suite
-    return make_directory_suite("zpkgtools.tests", TESTDIR)
+    return make_directory_suite("zpkgsetup.tests", TESTDIR)
+
+
+class MyTestProgram(unittest.TestProgram):
+    """Test runner program that doesn't use docstrings as descriptions."""
+
+    def runTests(self):
+        if self.testRunner is None:
+            self.testRunner = unittest.TextTestRunner(descriptions=False,
+                                                      verbosity=self.verbosity)
+        unittest.TestProgram.runTests(self)
 
 
 if __name__ == "__main__":
     if TOPDIR not in sys.path:
         sys.path.insert(0, TOPDIR)
-    from zpkgsetup.tests.runtests import MyTestProgram
     MyTestProgram(defaultTest="test_suite")

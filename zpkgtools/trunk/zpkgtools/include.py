@@ -14,40 +14,27 @@
 """Processor for inclusions when building a release.
 
 :Variables:
-  - `EXCLUDE_NAMES`: Names of files and directories that will be
-    excluded from copying.  These are generally related to source
-    management systems, but don't need to be.
-
-  - `EXCLUDE_PATTERNS`: Glob patterns used to filter the set of files
-    that are copied.  Any file with a name matching these patterns
-    will be ignored.
-
   - `PACKAGE_CONF`: The name of the file that specifies how the
     package is assembled.
 
 """
 
-import fnmatch
 import glob
 import os
 import posixpath
 import shutil
 import urllib
 
-from zpkgtools import Error
+from zpkgsetup import cfgparser
+from zpkgsetup import loggingapi as logging
+from zpkgsetup import publication
+from zpkgsetup import setup
 
-from zpkgtools import cfgparser
+from zpkgtools import Error
 from zpkgtools import loader
-from zpkgtools import loggingapi as logging
-from zpkgtools import publication
 
 
 logger = logging.getLogger(__name__)
-
-
-# Names that are exluded from globbing results:
-EXCLUDE_NAMES = ["CVS", ".cvsignore", "RCS", "SCCS", ".svn"]
-EXCLUDE_PATTERNS = ["*.py[cdo]", "*.s[ol]", ".#*", "*~"]
 
 # Name of the configuration file:
 PACKAGE_CONF = "PACKAGE.cfg"
@@ -100,19 +87,6 @@ def load(sourcedir, url=None):
     else:
         config = schema.getConfiguration()
     return config
-
-
-def filter_names(names):
-    """Given a list of file names, return those names that should be copied.
-    """
-    names = [n for n in names
-             if n not in EXCLUDE_NAMES]
-    # This is needed when building a distro from a working
-    # copy (likely a checkout) rather than a pristine export:
-    for pattern in EXCLUDE_PATTERNS:
-        names = [n for n in names
-                 if not fnmatch.fnmatch(n, pattern)]
-    return names
 
 
 def normalize_path(path, type, group):
@@ -284,7 +258,7 @@ class Specification:
         prefix = os.path.join(source, "")
         for pat in patterns:
             path = os.path.join(source, pat)
-            expansions = filter_names(glob.glob(path))
+            expansions = setup.filter_names(glob.glob(path))
             if not expansions:
                 raise InclusionSpecificationError(
                     "%r doesn't match any files in <%s>" % (pat, self.group),
@@ -295,7 +269,7 @@ class Specification:
         excludes = []
         for pat in self.excludes:
             path = os.path.join(source, pat)
-            expansions = filter_names(glob.glob(path))
+            expansions = setup.filter_names(glob.glob(path))
             if not expansions:
                 raise InclusionSpecificationError(
                     "%r doesn't match any files in <%s>" % (pat, self.group),
@@ -374,8 +348,8 @@ class InclusionProcessor:
         # to modify the list of directories which are considered.
         #
         for dirname, dirs, files in os.walk(source, topdown=True):
-            dirs[:] = filter_names(dirs)
-            files = filter_names(files)
+            dirs[:] = setup.filter_names(dirs)
+            files = setup.filter_names(files)
 
             # reldir is the name of the directory to write to,
             # relative to destination.  It will be '' at the top

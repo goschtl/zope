@@ -22,12 +22,13 @@ import urllib
 
 from StringIO import StringIO
 
+from zpkgsetup import publication
+
 import zpkgtools
 
 from zpkgtools import app
 from zpkgtools import include
 from zpkgtools import loader
-from zpkgtools import publication
 
 
 CMD = "./foo/bar.py"

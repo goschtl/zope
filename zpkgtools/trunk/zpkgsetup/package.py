@@ -68,7 +68,7 @@ import urllib
 from distutils.core import Extension
 from StringIO import StringIO
 
-from zpkgtools import cfgparser
+from zpkgsetup import cfgparser
 
 
 PACKAGE_CONF = "SETUP.cfg"

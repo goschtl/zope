@@ -22,8 +22,8 @@ import unittest
 from distutils.core import Extension
 from StringIO import StringIO
 
-from zpkgtools import cfgparser
-from zpkgtools import package
+from zpkgsetup import cfgparser
+from zpkgsetup import package
 
 
 class PackageInfoTestCase(unittest.TestCase):
@@ -205,7 +205,7 @@ class PackageInfoTestCase(unittest.TestCase):
 
 
 def test_suite():
-    suite = doctest.DocTestSuite("zpkgtools.package")
+    suite = doctest.DocTestSuite("zpkgsetup.package")
     suite.addTest(unittest.makeSuite(PackageInfoTestCase))
     return suite
 

@@ -26,8 +26,9 @@ import urllib
 import urllib2
 import urlparse
 
+from zpkgsetup import loggingapi as logging
+
 from zpkgtools import cvsloader
-from zpkgtools import loggingapi as logging
 from zpkgtools import svnloader
 
 
