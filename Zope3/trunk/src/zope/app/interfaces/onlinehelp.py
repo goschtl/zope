@@ -15,7 +15,7 @@
 
 These are the interfaces designed for the OnlineHelp system.
 
-$Id: onlinehelp.py,v 1.1 2003/01/07 12:27:47 srichter Exp $
+$Id: onlinehelp.py,v 1.2 2003/08/02 13:05:16 srichter Exp $
 """
 from zope.app.interfaces.container import IContainer
 
@@ -80,7 +80,4 @@ class IOnlineHelp(IOnlineHelpTopic):
            view -- This attribute specifies the name of the view for which
            this topic is registered. Note that this attribute is also
            optional.
-        """  
-
-    def unregisterHelpTopic(topic_path):
-        """This method unregisters a particular topic."""
+        """
