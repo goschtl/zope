@@ -436,6 +436,7 @@ def test_suite():
     suite = unittest.makeSuite(ProxyTests)
     from doctest import DocTestSuite
     suite.addTest(DocTestSuite())
+    suite.addTest(DocTestSuite('zope.security.proxy'))
     return suite
 
 if __name__=='__main__':
