@@ -80,6 +80,9 @@ Zope Changes
 
       - Wrote tests for security map implementation.
 
+      - Factory IDs have to be real IDs now, i.e. either a dotted
+        name or a URI.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
