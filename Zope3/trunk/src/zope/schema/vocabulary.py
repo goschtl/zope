@@ -14,8 +14,13 @@
 
 """Vocabulary support for schema."""
 
-from zope.schema import Field
+import copy
+
+from zope.interface.declarations import directlyProvides, implements
 from zope.schema import errornames
+from zope.schema import Field
+from zope.schema import MinMaxLen
+from zope.schema._bootstrapfields import ValidatedProperty
 from zope.schema.interfaces import ValidationError
 from zope.schema.interfaces import IVocabularyRegistry
 from zope.schema.interfaces import IVocabularyField
@@ -24,13 +29,24 @@ from zope.schema.interfaces import IVocabularySetField
 from zope.schema.interfaces import IVocabularyUniqueListField
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.interfaces import ITokenizedTerm
-from zope.interface.declarations import directlyProvides, implements
-from zope.schema import MinMaxLen
 
 try:
     basestring  # new in Python 2.3
 except NameError:
     from types import StringTypes as basestring
+
+
+class ContainerValidatedProperty(ValidatedProperty):
+
+    def __get__(self, inst, type=None):
+        name, check = self._info
+        try:
+            value = inst.__dict__[name]
+        except KeyError:
+            raise AttributeError, name
+        if value is not None:
+            value = copy.copy(value)
+        return value
 
 
 class VocabularyField(Field):
@@ -80,6 +96,9 @@ class VocabularyMultiField(MinMaxLen, VocabularyField):
     This class cannot be used directly; a subclass must be used to
     specify concrete behavior.
     """
+
+    default = ContainerValidatedProperty("default")
+
     def __init__(self, **kw):
         if self.__class__ is VocabularyMultiField:
             raise NotImplementedError(
@@ -88,6 +107,8 @@ class VocabularyMultiField(MinMaxLen, VocabularyField):
 
     def _validate(self, value):
         vocab = self.vocabulary
+        if not value:
+            return
         if vocab is None:
             raise ValueError("can't validate value without vocabulary")
         for v in value:
