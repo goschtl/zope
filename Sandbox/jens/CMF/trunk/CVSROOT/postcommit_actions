@@ -27,10 +27,10 @@ def main(args):
     global VERBOSE, SCRIPT
 
     if VERBOSE:
-        print "Initial args:", args
+        complain("Initial args: %s\n", args)
 
-    if (len(args) < 4
-        or (args[1] == "--verbose" and (len(args) < 5))):
+    if (len(args) < 3
+        or (args[1] == "--verbose" and (len(args) < 4))):
         usage(); raise SystemExit, 1
 
     # Identify all the args - see usage() for expected layout.
@@ -72,6 +72,7 @@ def do_notice(repo, addrs, subjs):
         complain("Notice to %s for %s / %s\n", addrs, repo, fnames)
 def do_sync(repo, accts, subjs):
     """Instigate repository mirror synchronize."""
+    #/usr/bin/rsync --verbose --archive --delete test dccvs@www.zope.org
     if VERBOSE:
         fnames = string.join(map(lambda x: x[0], subjs), ",")
         complain("Sync for %s of %s/ %s / %s\n",
@@ -91,7 +92,7 @@ def grok_file(s):
     return m.groups()
 
 def usage():
-    complain("Usage: %s repository-path file,oldv,newv f2,o2,n2 ...\n",
+    complain("Usage: %s repository-path file,oldv,newv [f2,o2,n2 ...]\n",
              SCRIPT)
 
 def complain(msg, *args):
@@ -100,5 +101,3 @@ def complain(msg, *args):
 if __name__ == "__main__":
     main(sys.argv)
 
-#echo postcommit_actions: '$0': $0, '$*': $*
-#/usr/bin/rsync --verbose --archive --delete test dccvs@www.zope.org:
