@@ -208,7 +208,7 @@ a callable object adapts some interfaces (or classes):
 
 (In Python 2.4, the example can be written:
 
-    >>> @zope.interface.implementer(IJob)
+    @zope.interface.implementer(IJob)
     @zope.component.adapter(IPerson)
     def personJob(person):
         return getattr(person, 'job', None)
