@@ -163,9 +163,39 @@ class Test(CleanUp, unittest.TestCase):
 
         self.assertRaises(AssertionError, endInteraction, _thread=thread)
 
+    def test_checkPermission(self):
+        from zope.security import checkPermission
+        from zope.security.management import setSecurityPolicy
+        from zope.security.management import getInteraction
+        from zope.security.management import newInteraction
+
+        permission = 'zope.Test'
+        obj = object()
+        interaction = object()
+
+        class InteractionStub:
+            pass
+
+        class PolicyStub:
+            def createInteraction(s, r):
+                return InteractionStub()
+
+            def checkPermission(s, p, o, i):
+                self.assert_(p is permission)
+                self.assert_(o is obj)
+## XXX: transition from security contexts to interactions is not complete
+##              self.assert_(i is getInteraction() or i is interaction)
+                return i is interaction
+
+        setSecurityPolicy(PolicyStub())
+        newInteraction(None)
+        self.assertEquals(checkPermission(permission, obj), False)
+## XXX: transition from security contexts to interactions is not complete
+##      self.assertEquals(checkPermission(permission, obj, interaction), True)
+
 
 def test_suite():
-    loader=unittest.TestLoader()
+    loader = unittest.TestLoader()
     return loader.loadTestsFromTestCase(Test)
 
 if __name__=='__main__':

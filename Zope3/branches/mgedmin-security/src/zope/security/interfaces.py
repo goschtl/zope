@@ -187,7 +187,7 @@ class INameBasedChecker(IChecker):
         """
 
 
-class ISecurityPolicy(Interface):   # XXX: will change
+class ISecurityPolicy(Interface):
 
     def createInteraction(participation=None):
         """Creates a new interaction for a given request.
@@ -199,7 +199,7 @@ class ISecurityPolicy(Interface):   # XXX: will change
             ISecurityManagement.global setInteractionFactory(factory).
         """
 
-    def checkPermission(permission, object, context):
+    def checkPermission(permission, object, context):   # XXX: will change
         """Return whether security context allows permission on object.
 
         Arguments:
