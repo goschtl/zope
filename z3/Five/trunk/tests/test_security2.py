@@ -28,16 +28,25 @@ class SecurityTestCase(ZopeTestCase.ZopeTestCase):
     def assertNoPermission(self, permission, object):
          user = getSecurityManager().getUser()
          self.assert_(not user.has_permission(permission, object))
-        
-    def test_one(self):
-        self.login('viewer')
-        view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
-        self.assertNoPermission(ViewManagementScreens, view)
-        
-    def test_two(self):
+
+    paths = [
+        'testoid/eagle.txt',
+        'testoid/falcon.html',
+        'testoid/owl.html',
+        'testoid/flamingo.html',
+        'testoid/flamingo2.html',
+        'testoid/condor.html']
+    
+    def test_no_permission(self):
+        for path in self.paths:
+            view = self.folder.unrestrictedTraverse(path)
+            self.assertNoPermission(ViewManagementScreens, view)
+
+    def test_permission(self):
         self.login('manager')
-        view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
-        self.assertPermission(ViewManagementScreens, view)
+        for path in self.paths:
+            view = self.folder.unrestrictedTraverse(path)
+            self.assertPermission(ViewManagementScreens, view)
         
 def test_suite():
     suite = unittest.TestSuite()
