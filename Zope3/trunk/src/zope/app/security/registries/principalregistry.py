@@ -13,15 +13,15 @@
 ##############################################################################
 """
 
-$Id: principalregistry.py,v 1.4 2002/12/31 18:39:07 jeremy Exp $
+$Id: principalregistry.py,v 1.5 2003/02/04 10:40:11 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.security import ILoginPassword
 from zope.component import getAdapter, queryAdapter
-from zope.app.interfaces.security \
-     import IAuthenticationService, IPrincipal, IUnauthenticatedPrincipal
+from zope.app.interfaces.security import IAuthenticationService, IPrincipal
+from zope.app.interfaces.security import IUnauthenticatedPrincipal
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
@@ -109,7 +109,7 @@ class PrincipalRegistry:
     def _clear(self):
         self.__init__()
 
-principalRegistry=PrincipalRegistry()
+principalRegistry = PrincipalRegistry()
 
 # Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
 from zope.testing.cleanup import addCleanUp
