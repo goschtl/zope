@@ -24,7 +24,7 @@ from zope.app.servicenames import Utilities
 from zope.app.form.interfaces import IInputWidget
 from zope.interface import Interface
 from zope.app.publisher.browser import BrowserView
-from zope.schema import Choice
+from zope.schema import Choice, List
 from zope.security.proxy import trustedRemoveSecurityProxy 
 from zope.app.workflow.interfaces import IProcessDefinition
 
@@ -36,20 +36,22 @@ class ContentWorkflowsManagerView(object):
 
 class IContentProcessMapping(Interface):
 
-    iface = Choice(
+    iface = List(
         title=u"Content Interface",
         description=u"Specifies the interface that characterizes a particular "
                     u"content type. Select one interface at a time.",
-        vocabulary="Interfaces",        
-        required=True)
+        required=True,
+        value_type=Choice(vocabulary="Interfaces")        
+        )
     
-    name = Choice(
+    name = List(
         title = u"Process Definition Name",
         description = u"The name of the process that will be available for "
                       u"this content type. Feel free to select several at "
                       u"once.",
-        vocabulary = "ProcessDefinitions",
-        required = True)
+        required = True,
+        value_type=Choice(vocabulary = "ProcessDefinitions")
+        )
 
 
 class ManageContentProcessRegistry(BrowserView):
@@ -61,8 +63,8 @@ class ManageContentProcessRegistry(BrowserView):
 
     def getProcessInterfacesMapping(self):
         mapping = []
-        utils = zapi.getService(self.context, Utilities)
-        for name in [name for name, util in utils.getUtilitiesFor(
+        for name in [name for name, util in zapi.getUtilitiesFor(
+                                                       self.context,
                                                        IProcessDefinition)]:
             ifaces = self.context.getInterfacesForProcessName(name)
             ifaces = map(lambda i: interfaceToName(self.context, i), ifaces)
