@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Schema.py,v 1.6 2002/07/14 18:51:27 faassen Exp $
+$Id: _Schema.py,v 1.7 2002/07/14 18:54:20 faassen Exp $
 """
 from Interface import Interface
 import Validator
@@ -24,6 +24,10 @@ class Schema(Interface):
     """This is really just a marker class, but it seems more userfriendly
     this way."""
     
+
+# validate functions either return silently, or raise a ValidationError
+# or in case of the validate*All functions, a ValidationErrosAll exception.
+# this should somehow be stated in an interface.
 
 def validateMapping(schema, values):
     """Pass in field values in mapping and validate whether they
