@@ -30,15 +30,18 @@ Options:
         If long is specified, the file and line where the dependency occurs is
         reported.
 
+    -d / --dir
+        Specify the path of the module that is to be inspected.
+
     -m / --module
-        Specify the path of the module that is being inspected.
+        Specify the dotted name of the module that is to be inspected.
 
     -z / --zcml
         Also look through ZCML files for dependencies.
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.14 2004/03/12 17:35:58 fdrake Exp $
+$Id: finddeps.py,v 1.15 2004/03/25 13:47:53 philikon Exp $
 """
 import sys
 import getopt
@@ -473,14 +476,14 @@ if __name__ == '__main__':
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            'm:ahlz',
-            ['all', 'help', 'module=', 'long', 'zcml'])
+            'd:m:ahlz',
+            ['all', 'help', 'dir=', 'module=', 'long', 'zcml'])
     except getopt.error, msg:
         usage(1, msg)
 
     all = False
     long = False
-    module = None
+    path = None
     zcml = False
     for opt, arg in opts:
         if opt in ('-a', '--all'):
@@ -489,15 +492,21 @@ if __name__ == '__main__':
             usage(0)
         elif opt in ('-l', '--long'):
             long = True
-        elif opt in ('-m', '--module'):
+        elif opt in ('-d', '--dir'):
             cwd = os.getcwd()
             # This is for symlinks. Thanks to Fred for this trick.
             if os.environ.has_key('PWD'):
                 cwd = os.environ['PWD']
-            module = os.path.normpath(os.path.join(cwd, arg))
+            path = os.path.normpath(os.path.join(cwd, arg))
+        elif opt in ('-m', '--module'):
+            try:
+                module = __import__(arg, globals(), locals(), ('something',))
+                path = os.path.dirname(module.__file__)
+            except ImportError:
+                usage(1, "Could not import module %s" % module)
         elif opt in ('-z', '--zcml'):
             zcml = True
-
-    if module is None:
-        usage(1, 'The module must be specified.')
-    showDependencies(module, zcml, long, all)
+    if path is None:
+        usage(1, 'The module must be specified either by path, '
+              'dotted name or ZCML file.')
+    showDependencies(path, zcml, long, all)
