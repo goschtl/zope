@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.26 2003/04/04 15:39:28 stevea Exp $
+$Id: widget.py,v 1.27 2003/04/16 20:25:30 fdrake Exp $
 """
 
 __metaclass__ = type
@@ -747,6 +747,6 @@ def renderElement(tag, **kw):
     if 'contents' in kw:
         contents = kw['contents']
         del kw['contents']
-        return "%s>%s</%s>" % (apply(renderTag, (tag,), kw), contents, tag)
+        return "%s>%s</%s>" % (renderTag(tag, **kw), contents, tag)
     else:
-        return apply(renderTag, (tag,), kw) + " />"
+        return renderTag(tag, **kw) + " />"
