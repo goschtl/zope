@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful content workflow manager.
 
-$Id: test_contentworkflow.py,v 1.7 2003/08/17 06:08:41 philikon Exp $
+$Id: test_contentworkflow.py,v 1.8 2003/09/21 17:33:59 jim Exp $
 """
 import unittest
 
@@ -84,7 +84,7 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
     def getManager(self):
         manager = ContentWorkflowsManager()
         manager._registry = {IFace1: ('default',), IFace2: ('default',)}
-        self.default.setObject('manager', manager)
+        self.default['manager'] = manager
         return zapi.traverse(self.default, 'manager')
 
     def test_subscribe(self):
@@ -159,15 +159,17 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
 
     def test_notify(self):
         # setup ProcessDefinitions
-        self.default.setObject('pd1', DummyProcessDefinition(1))
-        self.default.setObject('pd2', DummyProcessDefinition(2))
+        self.default['pd1'] = DummyProcessDefinition(1)
+        self.default['pd2'] = DummyProcessDefinition(2)
 
-        id = self.cm.setObject('', ProcessDefinitionRegistration('definition1',
-                                '/++etc++site/default/pd1'))
+        id = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition1',
+                                          '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
                       id).status = ActiveStatus
-        id = self.cm.setObject('', ProcessDefinitionRegistration('definition2',
-                                '/++etc++site/default/pd2'))
+        id = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition2',
+                                          '/++etc++site/default/pd2'))
         zapi.traverse(self.default.getRegistrationManager(),
                       id).status = ActiveStatus
         manager = self.getManager()

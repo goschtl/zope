@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.8 2003/07/30 15:24:12 srichter Exp $
+$Id: test_instance.py,v 1.9 2003/09/21 17:34:02 jim Exp $
 """
 
 import unittest
@@ -31,8 +31,6 @@ from zope.app.security.registries.permissionregistry \
 from zope.app.services.servicenames import Permissions
 from zope.security.checker import CheckerPublic
 from zope.security.management import newSecurityManager
-
-from zope.app.context import ContextWrapper
 
 from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.interfaces.services.registration import IRegistered
@@ -53,6 +51,7 @@ from zope.app.workflow.stateful.definition \
 from zope.app.workflow.stateful.instance \
      import StatefulProcessInstance, StateChangeInfo
 from zope.app import zapi
+from zope.app.container.contained import contained
 
 
 # define and create ProcessDefinition (PD) for tests
@@ -84,35 +83,29 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         pd.setRelevantDataSchema(ITestDataSchema)
 
-        pd.states.setObject('private', State())
-        pd.states.setObject('published', State())
-        pd.states.setObject('pending', State())
+        pd.states['private'] = State()
+        pd.states['published'] = State()
+        pd.states['pending'] = State()
 
-        pd.transitions.setObject('show',
-                                 Transition('INITIAL', 'private'))
-        pd.transitions.setObject('publish_direct',
-                                 Transition('private', 'published'))
-        pd.transitions.setObject('publish_pending',
-                                 Transition('pending', 'published'))
-        pd.transitions.setObject('submit_pending',
-                                 Transition('private', 'pending'))
-        pd.transitions.setObject('retract_published',
-                                 Transition('published', 'private'))
-        pd.transitions.setObject('retract_pending',
-                                 Transition('pending', 'private'))
+        pd.transitions['show'] = Transition('INITIAL', 'private')
+        pd.transitions['publish_direct'] = Transition('private', 'published')
+        pd.transitions['publish_pending'] = Transition('pending', 'published')
+        pd.transitions['submit_pending'] = Transition('private', 'pending')
+        pd.transitions['retract_published'] = Transition(
+            'published', 'private')
+        pd.transitions['retract_pending'] = Transition('pending', 'private')
 
-        self.default.setObject('pd1', pd )
+        self.default['pd1'] = pd 
 
-        self.cm.setObject('', ProcessDefinitionRegistration('definition1',
-                                '/++etc++site/default/pd1'))
+        name = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition1',
+                                          '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
-                      '2').status = ActiveStatus
+                      name).status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
-        self.pi = ContextWrapper(
-            self.service.createProcessInstance('definition1'),
-            self.rootFolder)
+        self.pi = self.service.createProcessInstance('definition1')
         # Let's also listen to the fired events
         clearEvents()
         eventPublisher.globalSubscribe(EventRecorder)
@@ -200,37 +193,31 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         pd.setRelevantDataSchema(ITestDataSchema)
 
-        pd.states.setObject('state1', State())
-        pd.states.setObject('state2', State())
+        pd.states['state1'] = State()
+        pd.states['state2'] = State()
 
-        pd.transitions.setObject('initial_state1',
-                                 Transition('INITIAL', 'state1',
-                                            condition='data/value'))
-        pd.transitions.setObject('initial_state2',
-                                 Transition('INITIAL', 'state2',
-                                            condition='not: data/value'))
-        pd.transitions.setObject(
-            'state1_state2',
-            Transition('state1', 'state2',
-                       condition='python: data.text == "some text"'))
-        pd.transitions.setObject(
-            'state2_state1',
-            Transition('state2', 'state1',
-                       condition='python: data.text == "no text"'))
-        pd.transitions.setObject('state1_initial',
-                                 Transition('state1', 'INITIAL'))
-        pd.transitions.setObject('state2_initial',
-                                 Transition('state2', 'INITIAL'))
+        pd.transitions['initial_state1'] = Transition(
+            'INITIAL', 'state1', condition='data/value')
+        pd.transitions['initial_state2'] = Transition(
+            'INITIAL', 'state2', condition='not: data/value')
+        pd.transitions['state1_state2'] = Transition(
+            'state1', 'state2', condition='python: data.text == "some text"')
+        pd.transitions['state2_state1'] = Transition(
+            'state2', 'state1', condition='python: data.text == "no text"')
+        pd.transitions['state1_initial'] = Transition('state1', 'INITIAL')
+        pd.transitions['state2_initial'] = Transition('state2', 'INITIAL')
 
-        self.default.setObject('pd1', pd )
+        self.default['pd1'] = pd 
 
-        self.cm.setObject('', ProcessDefinitionRegistration('definition1',
-                                '/++etc++site/default/pd1'))
-        zapi.traverse(self.default.getRegistrationManager(), '2').status = ActiveStatus
+        n = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition1',
+                                          '/++etc++site/default/pd1'))
+        zapi.traverse(self.default.getRegistrationManager(), n
+                      ).status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
-        self.pi = ContextWrapper(
+        self.pi = contained(
             self.service.createProcessInstance('definition1'),
             self.rootFolder)
 
@@ -292,37 +279,31 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         pd.setRelevantDataSchema(ITestDataSchema)
 
-        pd.states.setObject('state1', State())
-        pd.states.setObject('state2', State())
+        pd.states['state1'] = State()
+        pd.states['state2'] = State()
 
-        pd.transitions.setObject('initial_state1',
-                                 Transition('INITIAL', 'state1',
-                                            script=lambda c: c['data'].value))
-        pd.transitions.setObject(
-            'initial_state2',
-            Transition('INITIAL', 'state2',
-                       script=lambda c: not c['data'].value))
-        pd.transitions.setObject('state1_state2',
-                                 Transition('state1', 'state2',
-                                            script=transition_script1))
-        pd.transitions.setObject('state2_state1',
-                                 Transition('state2', 'state1',
-                                            script=transition_script2))
-        pd.transitions.setObject('state1_initial',
-                                 Transition('state1', 'INITIAL'))
-        pd.transitions.setObject('state2_initial',
-                                 Transition('state2', 'INITIAL'))
+        pd.transitions['initial_state1'] = Transition(
+            'INITIAL', 'state1', script=lambda c: c['data'].value)
+        pd.transitions['initial_state2'] = Transition(
+            'INITIAL', 'state2', script=lambda c: not c['data'].value)
+        pd.transitions['state1_state2'] = Transition(
+            'state1', 'state2', script=transition_script1)
+        pd.transitions['state2_state1'] = Transition(
+            'state2', 'state1', script=transition_script2)
+        pd.transitions['state1_initial'] = Transition('state1', 'INITIAL')
+        pd.transitions['state2_initial'] = Transition('state2', 'INITIAL')
 
-        self.default.setObject('pd1', pd )
+        self.default['pd1'] = pd 
 
-        k = self.cm.setObject('', ProcessDefinitionRegistration('definition1',
-                                '/++etc++site/default/pd1'))
+        k = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition1',
+                                          '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
-        self.pi = ContextWrapper(
+        self.pi = contained(
             self.service.createProcessInstance('definition1'),
             self.rootFolder)
 
@@ -385,37 +366,32 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         pd.setRelevantDataSchema(ITestDataSchema)
 
-        pd.states.setObject('state1', State())
-        pd.states.setObject('state2', State())
+        pd.states['state1'] = State()
+        pd.states['state2'] = State()
 
-        pd.transitions.setObject('initial_state1',
-                                 Transition('INITIAL', 'state1',
-                                            permission=CheckerPublic))
-        pd.transitions.setObject('initial_state2',
-                                 Transition('INITIAL', 'state2',
-                                            permission='deny'))
-        pd.transitions.setObject('state1_state2',
-                                 Transition('state1', 'state2',
-                                            permission=CheckerPublic))
-        pd.transitions.setObject('state2_state1',
-                                 Transition('state2', 'state1'))
-        pd.transitions.setObject('state1_initial',
-                                 Transition('state1', 'INITIAL',
-                                            permission='deny'))
-        pd.transitions.setObject('state2_initial',
-                                 Transition('state2', 'INITIAL',
-                                            permission=CheckerPublic))
+        pd.transitions['initial_state1'] = Transition(
+            'INITIAL', 'state1', permission=CheckerPublic)
+        pd.transitions['initial_state2'] = Transition(
+            'INITIAL', 'state2', permission='deny')
+        pd.transitions['state1_state2'] = Transition(
+            'state1', 'state2', permission=CheckerPublic)
+        pd.transitions['state2_state1'] = Transition('state2', 'state1')
+        pd.transitions['state1_initial'] = Transition(
+            'state1', 'INITIAL', permission='deny')
+        pd.transitions['state2_initial'] = Transition(
+            'state2', 'INITIAL', permission=CheckerPublic)
 
-        self.default.setObject('pd1', pd )
+        self.default['pd1'] = pd 
 
-        k = self.cm.setObject('', ProcessDefinitionRegistration('definition1',
-                                '/++etc++site/default/pd1'))
+        k = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition1',
+                                          '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 
         self.pd = self.service.getProcessDefinition('definition1')
         # give the pi some context to find a service
-        self.pi = ContextWrapper(
+        self.pi = contained(
             self.service.createProcessInstance('definition1'),
             self.rootFolder)
 

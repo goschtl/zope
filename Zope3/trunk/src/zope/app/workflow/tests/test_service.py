@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_service.py,v 1.5 2003/06/21 21:22:17 jim Exp $
+$Id: test_service.py,v 1.6 2003/09/21 17:34:03 jim Exp $
 """
 
 import unittest
@@ -66,35 +66,43 @@ class WorkflowServiceTests(WorkflowSetup, unittest.TestCase):
     def setUp(self):
         WorkflowSetup.setUp(self)
         # setup ProcessDefinitions
-        self.default.setObject('pd1', DummyProcessDefinition(1))
-        self.default.setObject('pd2', DummyProcessDefinition(2))
+        self.default['pd1'] = DummyProcessDefinition(1)
+        self.default['pd2'] = DummyProcessDefinition(2)
 
-        self.cm.setObject('', ProcessDefinitionRegistration('definition1',
-                                '/++etc++site/default/pd1'))
+        n = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition1',
+                                          '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
-                      '2').status = ActiveStatus
-        self.cm.setObject('', ProcessDefinitionRegistration('definition2',
-                                '/++etc++site/default/pd2'))
+                      n).status = ActiveStatus
+        n = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition2',
+                                          '/++etc++site/default/pd2'))
         zapi.traverse(self.default.getRegistrationManager(),
-                      '3').status = ActiveStatus
-        self.cm.setObject('', ProcessDefinitionRegistration('definition3',
-                                '/++etc++site/default/pd1'))
+                      n).status = ActiveStatus
+        n = self.cm.addRegistration(
+            ProcessDefinitionRegistration('definition3',
+                                              '/++etc++site/default/pd1'))
         zapi.traverse(self.default.getRegistrationManager(),
-                 '4').status = RegisteredStatus
+                 n).status = RegisteredStatus
+
         # Now self.service has definition1 and definition2 available
         # and knows about definition3
 
-        self.default1.setObject('pd3', DummyProcessDefinition(3))
-        self.default1.setObject('pd4', DummyProcessDefinition(4))
+        self.default1['pd3'] = DummyProcessDefinition(3)
+        self.default1['pd4'] = DummyProcessDefinition(4)
 
-        self.cm1.setObject('', ProcessDefinitionRegistration('definition1',
-                            '/folder1/++etc++site/default/pd3'))
+        n = self.cm1.addRegistration(
+            ProcessDefinitionRegistration(
+                'definition1',
+                '/folder1/++etc++site/default/pd3'))
         zapi.traverse(self.default1.getRegistrationManager(),
-                      '2').status = ActiveStatus
-        self.cm1.setObject('', ProcessDefinitionRegistration('definition4',
-                            '/folder1/++etc++site/default/pd4'))
+                      n).status = ActiveStatus
+        n = self.cm1.addRegistration(
+            ProcessDefinitionRegistration(
+                     'definition4',
+                     '/folder1/++etc++site/default/pd4'))
         zapi.traverse(self.default1.getRegistrationManager(),
-                      '3').status = ActiveStatus
+                      n).status = ActiveStatus
         # Now self.service1 overrides definition1, adds new definition4
         # available, and inherits definition2 from self.service
 
