@@ -224,3 +224,64 @@ class IMoveNotifiable(IDeleteNotifiable, IAddNotifiable):
         will be None.
         """
 
+class ICopyNotifiable(IAddNotifiable):
+    def manage_afterAdd(object, container, copiedFrom=None):
+        """Hook method. Will be called after an object is added to a
+        container.
+
+        If the object is being copied, 'copiedFrom' will
+        be the unicode path the object was copied from.
+
+        If the object is simply being added and not being copied,
+        'copiedFrom' will be None.
+        
+        Clients calling this method must be careful to use
+        'copiededFrom' as a keyword argument rather than a positional
+        argument, to avoid confusion if the object is both
+        IMoveNotifiable and ICopyNotifiable.  """
+
+class IPasteTarget(Interface):
+    
+    def acceptsObject(key, obj):
+        '''Allow the container to say if it accepts the given wrapped
+        object.
+        
+        Returns True if the object would be accepted as contents of
+        this container. Otherwise, returns False.
+        '''
+
+    def pasteObject(key, obj):
+        '''Add the given object to the container under the given key.
+        
+        Raises a ValueError if key is an empty string, unless the
+        this object chooses a different key.
+        
+        Returns the key used, which might be different than the
+        given key.
+        
+        This method must not issue an IObjectAddedEvent, nor must it
+        call the manage_afterAdd hook of the object.
+        However, it must publish an IObjectModified event for the
+        container.
+        '''
+
+class IMoveSource(Interface):
+
+    def removeObject(key, movingTo):
+        '''Remove and return the object with the given key, as the
+        first part of a move.
+
+        movingTo is the unicode path for where the move is to.
+        This method should not publish an IObjectRemovedEvent, nor should  
+        it call the manage_afterDelete method of the object.
+        However, it must publish an IObjectModified event for the container.
+        '''
+
+class ICopySource(Interface):
+    
+    def copyObject(key, copyingTo):
+        '''Return the object with the given key, as the first part of a
+        copy.
+
+        copyingTo is the unicode path for where the copy is to.
+        '''

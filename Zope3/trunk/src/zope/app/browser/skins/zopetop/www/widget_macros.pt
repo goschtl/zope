@@ -26,10 +26,6 @@
       <tr>
 	<td colspan="2" nowrap="nowrap" class="highlightable">
 
-    <span tal:condition="not: context/hasServiceManager">
-    <a href="@@addServiceManager.html">Allow Services</a>
-    <br />
-    </span>
     <img src="user_accounts.gif" width="22" height="28"
       tal:attributes="src context/++resource++user_accounts.gif" />
     User Accounts
