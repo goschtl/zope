@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.9 2002/10/26 15:51:19 stevea Exp $
+$Id: Adding.py,v 1.10 2002/11/18 13:34:19 stevea Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -74,8 +74,7 @@ class Adding(BrowserView):
     def publishTraverse(self, request, name):
         if '=' in name:            
             view_name, content_name = name.split("=", 1)
-            if content_name:
-                self.contentName = content_name
+            self.contentName = content_name
 
             return getView(self, view_name, request)
 

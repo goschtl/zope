@@ -20,7 +20,7 @@ It might be useful as a mix-in for some classes, but many classes will
 need a very different implementation.
 
 Revision information:
-$Id: SampleContainer.py,v 1.2 2002/06/10 23:27:55 jim Exp $
+$Id: SampleContainer.py,v 1.3 2002/11/18 13:34:19 stevea Exp $
 """
 
 from IContainer import IContainer
@@ -89,8 +89,10 @@ class SampleContainer(object):
 
     def setObject(self, key, object):
         '''See interface IWriteContainer'''
-        if type(key) in StringTypes and len(key)==0:
-            raise ValueError("The id cannot be an empty string")
+        if not isinstance(key, StringTypes):
+            raise TypeError("The key must be an ascii or unicode string")
+        if len(key) == 0:
+            raise ValueError("The key cannot be an empty string")
         self.__data[key] = object
         return key
 

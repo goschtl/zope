@@ -22,7 +22,7 @@ from Interface.Common.Mapping import IReadMapping, IEnumerableMapping
 class IItemContainer(Interface):
 
     def __getitem__(key):
-        """Return the content for the given key
+        """Return the content for the given key.
 
         Raises KeyError if the content can't be found.
         """
@@ -44,14 +44,15 @@ class IWriteContainer(Interface):
         Raises a ValueError if key is an empty string, unless the
         container chooses a different key.
 
+        Raises a TypeError if the key is not a unicode or ascii string.
+
         Returns the key used, which might be different than the given key.
         """
 
     def __delitem__(key):
-        """Delete the keyd object from the container.
+        """Delete the keyed object from the container.
 
         Raises a KeyError if the object is not found.
-
         """
 
 class IContainer(IReadContainer, IWriteContainer):
