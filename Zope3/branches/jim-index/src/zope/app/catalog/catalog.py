@@ -19,7 +19,7 @@ from persistent import Persistent
 from zope.interface import implements
 from zope.app.zapi import getUtility
 from zope.security.proxy import trustedRemoveSecurityProxy
-from zope.app.container.sample import SampleContainer
+from zope.app.container.btree import BTreeContainer
 
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -46,7 +46,7 @@ class ResultSet:
             yield obj
 
 
-class Catalog(Persistent, SampleContainer):
+class Catalog(BTreeContainer):
 
     implements(ICatalog, IContainer, IAttributeAnnotatable, ILocalUtility)
 
@@ -134,17 +134,15 @@ def reindexDocSubscriber(event):
     """A subscriber to ObjectModifiedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
         ob = event.object
-        id = zapi.getUtility(IUniqueIdUtility, context=cat).getId(ob)
-        cat.index_doc(id, ob)
+        id = zapi.getUtility(IUniqueIdUtility, context=cat).queryId(ob)
+        if id is not None:
+            cat.index_doc(id, ob)
 
 
 def unindexDocSubscriber(event):
     """A subscriber to UniqueIdRemovedEvent"""
     for cat in zapi.getAllUtilitiesRegisteredFor(ICatalog):
         ob = event.original_event.object
-        try:
-            id = zapi.getUtility(IUniqueIdUtility, context=cat).getId(ob)
-        except KeyError:
-            pass
-        else:
+        id = zapi.getUtility(IUniqueIdUtility, context=cat).queryId(ob)
+        if id is not None:
             cat.unindex_doc(id)
