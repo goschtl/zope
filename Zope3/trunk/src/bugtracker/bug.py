@@ -112,7 +112,7 @@ class BugDependencyAdapter(object):
     __used_for__ = IBug
 
     def __init__(self, context):
-        self.context = context
+        self.context = self.__parent__ = context
         self._annotations = IAnnotations(context)
         if not self._annotations.get(DependencyKey):
             self._annotations[DependencyKey] = ()

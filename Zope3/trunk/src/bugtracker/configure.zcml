@@ -111,7 +111,7 @@
   <content class=".vocabulary.ManagableVocabulary">
     <allow interface="zope.schema.interfaces.IVocabulary"/>
     <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
-    <allow attributes="default"/>
+    <allow attributes="default title"/>
     <require
         permission="bugtracker.ManageBugTracker"
         attributes="add delete"
@@ -148,6 +148,13 @@
     <allow
         interface="zope.schema.interfaces.ITokenizedTerm"/>
     <allow attributes="principal title"/>
+  </content>
+
+  <content class=".mail.MailSubscriptions">
+    <require
+        permission="bugtracker.EditBug"
+        attributes="addSubscriptions removeSubscriptions" />
+    <allow attributes="getSubscriptions" />
   </content>
 
   <!-- Bug Tracker related configuration -->
@@ -193,27 +200,32 @@
   <adapter
       factory=".vocabulary.StatusVocabulary"
       provides=".interfaces.IStatusVocabulary"
-      for=".interfaces.IBugTracker" />
+      for=".interfaces.IBugTracker"
+      trusted="True" />
 
   <adapter
       factory=".vocabulary.ReleaseVocabulary"
       provides=".interfaces.IReleaseVocabulary"
-      for=".interfaces.IBugTracker" />
+      for=".interfaces.IBugTracker"
+      trusted="True" />
 
   <adapter
       factory=".vocabulary.PriorityVocabulary"
       provides=".interfaces.IPriorityVocabulary"
-      for=".interfaces.IBugTracker" />
+      for=".interfaces.IBugTracker"
+      trusted="True" />
 
   <adapter
       factory=".vocabulary.BugTypeVocabulary"
       provides=".interfaces.IBugTypeVocabulary"
-      for=".interfaces.IBugTracker" />
+      for=".interfaces.IBugTracker"
+      trusted="True" />
 
   <adapter
       factory=".mail.MailSubscriptions"
       provides=".interfaces.IMailSubscriptions"
-      for=".interfaces.IBugTracker" />
+      for=".interfaces.IBugTracker"
+      trusted="True" />
 
   <!-- Bug related configuration -->
 
@@ -262,7 +274,7 @@
 
     <require
         permission="bugtracker.ViewBug"
-        attributes="dependencies dependents"/>
+        attributes="dependencies dependents findChildren"/>
 
     <require
         permission="bugtracker.EditBug"
@@ -275,12 +287,14 @@
   <adapter
       factory=".bug.BugDependencyAdapter"
       provides=".interfaces.IBugDependencies"
-      for=".interfaces.IBug" />
+      for=".interfaces.IBug"
+      trusted="True" />
 
   <adapter
       factory=".mail.MailSubscriptions"
       provides=".interfaces.IMailSubscriptions"
-      for=".interfaces.IBug" />
+      for=".interfaces.IBug"
+      trusted="True" />
 
 
   <!-- File and Image Attachment related configuration -->

@@ -24,11 +24,10 @@ from zope.security.interfaces import Unauthorized, ForbiddenAttribute
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.schema.vocabulary import getVocabularyRegistry
-from zope.security.checker import getChecker, ProxyFactory
+from zope.security.checker import getChecker
 from zope.structuredtext.html import HTML
 
 from zope.app import zapi
-from zope.app.container.contained import contained
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import TextWidget, TextAreaWidget, DropdownWidget
@@ -43,19 +42,23 @@ from bugtracker.browser.comment import CommentViewBase
 class BugBaseView(object):
     """Get's all the fancy expressions for the attribute values."""
 
-    def created(self):
+    def getCreated(self):
         dc = IZopeDublinCore(self.context)
         formatter = self.request.locale.dates.getFormatter('dateTime', 'short')
         return formatter.format(dc.created)
 
-    def modified(self):
+    created = property(getCreated)
+
+    def getModified(self):
         dc = IZopeDublinCore(self.context)
         formatter = self.request.locale.dates.getFormatter('dateTime', 'short')
         if dc.modified is None:
             return self.created()
         return formatter.format(dc.modified)
 
-    def submitter(self):
+    modified = property(getModified)
+
+    def getSubmitter(self):
         registry = getVocabularyRegistry()
         users = registry.get(self.context, 'Users')
         id = self.context.submitter
@@ -65,7 +68,9 @@ class BugBaseView(object):
             # There is no principal for this id, so let's just fake one.
             return {'id': id, 'login': id, 'title': id, 'description': id}
 
-    def description(self):
+    submitter = property(getSubmitter)
+
+    def getDescription(self):
         ttype = getattr(self.context.description, 'ttype', None)
         if ttype is not None:
             source = zapi.createObject(None, self.context.description.ttype,
@@ -76,29 +81,39 @@ class BugBaseView(object):
             html = self.context.description
         return html
 
-    def status(self):
+    description = property(getDescription)
+
+    def getStatus(self):
         registry = getVocabularyRegistry()
         types = registry.get(zapi.getParent(self.context), 'Stati')
         return types.getTerm(self.context.status)
 
-    def type(self):        
+    status = property(getStatus)
+
+    def getType(self):        
         registry = getVocabularyRegistry()
         types = registry.get(zapi.getParent(self.context), 'BugTypes')
         return types.getTerm(self.context.type)
 
-    def release(self):
+    type = property(getType)
+
+    def getRelease(self):
         if self.context.release is None:
             return u'not specified'
         registry = getVocabularyRegistry()
         types = registry.get(zapi.getParent(self.context), 'Releases')
         return types.getTerm(self.context.release)
 
-    def priority(self):
+    release = property(getRelease)
+
+    def getPriority(self):
         registry = getVocabularyRegistry()
         types = registry.get(zapi.getParent(self.context), 'Priorities')
         return types.getTerm(self.context.priority)
 
-    def owners(self):
+    priority = property(getPriority)
+
+    def getOwners(self):
         registry = getVocabularyRegistry()
         vocab = registry.get(self.context, 'Users')
         userTerms = []
@@ -110,6 +125,8 @@ class BugBaseView(object):
                 userTerms.append(
                     {'id': id, 'login': id, 'title': id, 'description': id})
         return userTerms
+
+    owners = property(getOwners)
 
 
 # Make a custom widget for the vocabulary, so that default values are
@@ -291,9 +308,7 @@ class Dependencies(object):
 
     def canChangeDependencies(self):
         deps = IBugDependencies(self.context)
-        deps = contained(deps, self.context, name='Dependencies')
-        proxy = ProxyFactory(deps)
-        checker = getChecker(proxy)
+        checker = getChecker(deps)
         try:
             checker.check_setattr(deps, 'dependencies')
         except (Unauthorized, ForbiddenAttribute):

@@ -19,7 +19,7 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 
 from zope.interface import implements
-from zope.schema.interfaces import ITokenizedTerm
+from zope.schema.interfaces import ITokenizedTerm, ITitledTokenizedTerm
 from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.schema.vocabulary import getVocabularyRegistry
 from zope.security.proxy import removeSecurityProxy 
@@ -37,7 +37,7 @@ from bugtracker import TrackerMessageID as _
 
 class SimpleTerm(Persistent):
     """A persistent vocabulary term.""" 
-    implements(ITokenizedTerm)
+    implements(ITitledTokenizedTerm)
 
     def __init__(self, value, title):
         self.value = value
@@ -63,8 +63,12 @@ class ManagableVocabulary(object):
     interface = None
 
     def __init__(self, context):
-        self.context = self._getRealContext(context)
-        self.annotations = IAnnotations(self.context)
+        context = self._getRealContext(context)
+        # When we use this vocabulary as an adapter, we always get an
+        # unproxied context, but when it is used as a vocabulary, we usually
+        # get proxied context, in which case we need to unwrap it.
+        pureContext = removeSecurityProxy(context)
+        self.annotations = IAnnotations(pureContext)
         if not self.annotations.get(self.key):
             self.annotations[self.key] = PersistentDict()
             self.annotations[self.key+'/default'] = None
@@ -168,7 +172,7 @@ class BugTypeVocabulary(ManagableVocabulary):
 
 class UserTerm(Persistent):
 
-    implements(ITokenizedTerm)
+    implements(ITitledTokenizedTerm)
 
     def __init__(self, principal):
         # This is safe here, since we only read non-critical data

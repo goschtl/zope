@@ -33,17 +33,17 @@ class MailSubscriptions:
     implements(IMailSubscriptions)
 
     def __init__(self, context):
-        self.context = context
+        self.context = self.__parent__ = context
         self._annotations = IAnnotations(context)
         if not self._annotations.get(SubscriberKey):
             self._annotations[SubscriberKey] = ()
 
     def getSubscriptions(self):
-        "See zopeproducts.messageboard.interfaces.IMailSubscriptions"
+        "See bugtracker.interfaces.IMailSubscriptions"
         return self._annotations[SubscriberKey]
         
     def addSubscriptions(self, emails):
-        "See zopeproducts.messageboard.interfaces.IMailSubscriptions"
+        "See bugtracker.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
         for email in emails:
             if email not in subscribers:
@@ -51,7 +51,7 @@ class MailSubscriptions:
         self._annotations[SubscriberKey] = tuple(subscribers)
                 
     def removeSubscriptions(self, emails):
-        "See zopeproducts.messageboard.interfaces.IMailSubscriptions"
+        "See bugtracker.interfaces.IMailSubscriptions"
         subscribers = list(self._annotations[SubscriberKey])
         for email in emails:
             if email in subscribers:
