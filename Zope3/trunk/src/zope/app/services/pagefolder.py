@@ -16,7 +16,7 @@
 Page folders support easy creation and registration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.17 2004/01/13 19:32:23 fdrake Exp $
+$Id: pagefolder.py,v 1.18 2004/02/06 04:13:41 jim Exp $
 """
 __metaclass__ = type
 
@@ -26,6 +26,8 @@ from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.services.registration import IRegistrationManager
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
+from zope.app.interfaces.services.registration import IRegisterable
+from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.services.presentation import PageRegistration
 from zope.app.services.registration import RegistrationManagerContainer
 from zope.app.services.zpt import IZPTTemplate
@@ -90,6 +92,12 @@ class IPageFolder(
     def applyDefaults(self):
         """Apply the default configuration to the already-registered pages. 
         """
+
+    def __setitem__(name, template):
+        """Add a template to the folder
+        """
+
+    __setitem__.precondition = ItemTypePrecondition(IRegisterable)
 
 class PageFolder(RegistrationManagerContainer, BTreeContainer):
 
