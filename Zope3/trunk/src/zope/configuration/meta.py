@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.2 2002/12/25 14:13:33 jim Exp $
+$Id: meta.py,v 1.3 2002/12/28 00:02:29 jim Exp $
 """
 
 
@@ -202,7 +202,16 @@ def begin(_custom_directives, _name, _context, **kw):
         try:
             callable, subs = _directives[_name]
         except KeyError:
-            raise InvalidDirective(_name)
+            # Maybe the directive is a multi-namespace directive
+            # (like include)
+            try:
+                if _custom_directives:
+                    callable, subs = _custom_directives[('*', _name[1])]
+                else:
+                    raise InvalidDirective(_name)
+                
+            except KeyError:
+                raise InvalidDirective(_name)
 
     return _exe(callable, subs, _context, kw)
 

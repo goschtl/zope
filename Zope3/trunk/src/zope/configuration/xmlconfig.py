@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.3 2002/12/27 23:25:18 jim Exp $
+$Id: xmlconfig.py,v 1.4 2002/12/28 00:02:29 jim Exp $
 """
 
 import os
@@ -74,7 +74,7 @@ class ConfigurationExecutionError(ZopeXMLConfigurationError):
 
 class ConfigurationHandler(ContentHandler):
 
-    __top_name = 'http://namespaces.zope.org/zope', 'zopeConfigure'
+    __top_name = 'zopeConfigure'
 
     def __init__(self, actions, context, directives=None, testing=0):
         self.__stack = []
@@ -96,7 +96,7 @@ class ConfigurationHandler(ContentHandler):
     def startElementNS(self, name, qname, attrs):
         stack = self.__stack
         if not stack:
-            if name != self.__top_name:
+            if name[1] != self.__top_name:
                 raise ZopeXMLConfigurationError(
                     self.__locator, "Invalid top element: %s %s" % name)
 
@@ -281,7 +281,7 @@ class XMLConfig:
 
 
         self._actions = []
-        self._directives = {('http://namespaces.zope.org/zope', 'include'):
+        self._directives = {('*', 'include'):
                             (self.include, {})}
 
         f = open(file_name)
