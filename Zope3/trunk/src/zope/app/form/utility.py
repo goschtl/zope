@@ -34,9 +34,7 @@ $Id: utility.py,v 1.30 2004/05/07 19:43:49 garrett Exp $
 """
 __metaclass__ = type
 
-from warnings import warn
 from zope.schema import getFieldsInOrder
-from zope.schema.interfaces import ValidationError
 from zope.app import zapi
 from zope.app.form.interfaces import IWidget
 from zope.app.form.interfaces import WidgetsError, MissingInputError
