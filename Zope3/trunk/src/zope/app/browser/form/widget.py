@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.38 2003/07/13 06:47:16 richard Exp $
+$Id: widget.py,v 1.39 2003/07/13 07:57:43 richard Exp $
 """
 
 __metaclass__ = type
@@ -957,9 +957,7 @@ class SequenceWidget(BrowserWidget):
                  items in the sequence
     """
     _type = tuple
-    _stored = ()        # pre-existing sequence items (from setData)
-    _sequence = ()      # current list of sequence items (existing & request)
-    _sequence_generated = False
+    _data = ()          # pre-existing sequence items (from setData)
 
     def __init__(self, context, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
@@ -973,14 +971,11 @@ class SequenceWidget(BrowserWidget):
         if self.context.value_type is None:
             return ''
 
-        if not self._sequence_generated:
-            self._generateSequenceFromRequest()
-
         render = []
         r = render.append
 
         # length of sequence info
-        sequence = list(self._sequence)
+        sequence = list(self._generateSequence())
         num_items = len(sequence)
         min_length = self.context.min_length
         max_length = self.context.max_length
@@ -991,7 +986,7 @@ class SequenceWidget(BrowserWidget):
                 sequence.append(None)
         num_items = len(sequence)
 
-        # generate each widget from items in the _sequence - adding a
+        # generate each widget from items in the sequence - adding a
         # "remove" button for each one
         for i in range(num_items):
             value = sequence[i]
@@ -1027,7 +1022,7 @@ class SequenceWidget(BrowserWidget):
     def hidden(self):
         ''' Render the list as hidden fields '''
         # length of sequence info
-        sequence = list(self._sequence)
+        sequence = self._generateSequence()
         num_items = len(sequence)
         min_length = self.context.min_length
         max_length = self.context.max_length
@@ -1059,12 +1054,11 @@ class SequenceWidget(BrowserWidget):
         A WidgetInputError is returned in the case of one or more
         errors encountered, inputting, converting, or validating the data.
         """
-        if not self._sequence_generated:
-            self._generateSequenceFromRequest()
+        sequence = self._generateSequence()
         # validate the input values
-        for value in self._sequence:
+        for value in sequence:
             self.context.value_type.validate(value)
-        return self._type(self._sequence)
+        return self._type(sequence)
 
     # XXX applyChanges isn't reporting "change" correctly
     def applyChanges(self, content):
@@ -1080,9 +1074,7 @@ class SequenceWidget(BrowserWidget):
 
         Return True if there is data and False otherwise.
         """
-        if not self._sequence_generated:
-            self._generateSequenceFromRequest()
-        return len(self._sequence) != 0
+        return len(self._generateSequence()) != 0
 
     def setData(self, value):
         """Set the default data for the widget.
@@ -1091,28 +1083,22 @@ class SequenceWidget(BrowserWidget):
         data.
         """
         # the current list of values derived from the "value" parameter
-        self._stored = value
-        self._sequence_generated = False
+        self._data = value
 
-    def _generateSequenceFromRequest(self):
-        """Take sequence info in the self.request and populate our _sequence.
-
-        This is kinda expensive, so we only do it once.
-        """
+    def _generateSequence(self):
+        """Take sequence info in the self.request and _data."""
         len_prefix = len(self.name)
         adding = False
         removing = []
         subprefix = re.compile(r'(\d+)\.(.+)')
         if self.context.value_type is None:
-            self._sequence = []
-            self._sequence_generated = True
-            return
+            return []
         field = self.context.value_type
 
         # pre-populate 
         found = {}
-        for i in range(len(self._stored)):
-            entry = self._stored[i]
+        for i in range(len(self._data)):
+            entry = self._data[i]
             found[i] = entry
 
         # now look through the request for interesting values
@@ -1146,13 +1132,13 @@ class SequenceWidget(BrowserWidget):
         # generate the list, sorting the dict's contents by key
         l = found.items()
         l.sort()
-        self._sequence = [v for k,v in l]
+        sequence = [v for k,v in l]
 
         # the submission might add or remove a sequence item
         if adding:
-            self._sequence.append(None)
+            sequence.append(None)
 
-        self._sequence_generated = True
+        return sequence
 
 class TupleSequenceWidget(SequenceWidget):
     pass
