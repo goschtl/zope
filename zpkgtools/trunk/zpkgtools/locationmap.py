@@ -97,9 +97,8 @@ def fromPathOrUrl(path, mapping=None):
     # still need to support Subversion here
     if os.path.isfile(path):
         # prefer a revision-control URL over a local path if possible:
-        try:
-            cvsurl = cvsloader.fromPath(path)
-        except IOError, e:
+        cvsurl = cvsloader.fromPath(path)
+        if cvsurl is None:
             base = os.path.dirname(path)
         else:
             cvsurl.path = posixpath.dirname(cvsurl.path)
