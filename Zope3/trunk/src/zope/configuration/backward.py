@@ -33,7 +33,7 @@ There are two aspects of this:
 This file contains the implementations of the old-style meta
 configurations.
 
-$Id: backward.py,v 1.2 2003/07/30 18:35:09 jim Exp $
+$Id: backward.py,v 1.3 2003/08/02 12:46:04 jim Exp $
 """
 
 from keyword import iskeyword
@@ -267,7 +267,13 @@ class Subdirective(Attributed, Described):
     >>> len(d.subdirectives)
     1
     >>> schema, info = d.subdirectives['foo']
-    >>> list(schema)
+
+    >>> def sorted(x):
+    ...     r = list(x)
+    ...     r.sort()
+    ...     return r
+
+    >>> sorted(schema)
     ['a', 'b']
     >>> info.text
     u'spam'
