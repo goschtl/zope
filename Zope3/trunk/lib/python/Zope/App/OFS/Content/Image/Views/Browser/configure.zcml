@@ -55,10 +55,7 @@
   <browser:icon name="zmi_icon" for=".Image.IImage." file="Image_icon.gif" />
 
   <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
+                    for="Zope.App.OFS.Container.IAdding."
                     title="Image" action="Image"/>
-  
-
-
 
 </zopeConfigure>

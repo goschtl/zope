@@ -44,12 +44,11 @@
   </browser:menuItems>
 
   <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
+                    for="Zope.App.OFS.Container.IAdding."
                     title="File" action="File" />
  
-  <!-- XXX this isn't working -->
   <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
+                    for="Zope.App.OFS.Container.IAdding."
                     title="Naive File" action="NaiveFile" />
 
 

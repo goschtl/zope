@@ -27,7 +27,7 @@
   </browser:menuItems>
 
   <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
+                    for="Zope.App.OFS.Container.IAdding."
                     title="Folder" action="Folder"
                     />
 
@@ -102,7 +102,7 @@
   -->
 
   <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Content.Folder.IFolderAdding."
+                    for="Zope.App.OFS.Container.IAdding."
                     title="Loaded Folder" action="LoadedFolder"
                     description="A Folder having all the goodies."
                     />
