@@ -113,6 +113,33 @@ class Application:
 
     def build_application_distribution(self):
         packages, collections = self.assemble_collection()
+        # need to generate the configure script and Makefile.in
+        metavars = {
+            "PACKAGE_FULL_NAME": self.metadata.name,
+            "PACKAGE_SHORT_NAME": self.resource_name,
+            "PACKAGE_VERSION": self.options.version,
+            }
+        appsupport = os.path.join(zpkgtools.__path__[0], "appsupport")
+        self.copy_template(appsupport, "configure", metavars)
+        #self.copy_template(appsupport, "Makefile.in", metavars)
+        self.copy_template(appsupport, "README.txt", metavars)
+        self.generate_collection_setup(self.destination, self.resource_name,
+                                       packages, collections,
+                                       filename="install.py")
+
+    def copy_template(self, sourcedir, name, metavars):
+        template = os.path.join(sourcedir, name) + ".in"
+        output = os.path.join(self.destination, name)
+        self.ip.add_output(output)
+        f = open(template)
+        text = f.read()
+        f.close()
+        for var in metavars:
+            text = text.replace("@%s@" % var, metavars[var])
+        f = open(output, "w")
+        f.write(text)
+        f.close()
+        shutil.copymode(template, output)
 
     def build_collection_distribution(self):
         packages, collections = self.assemble_collection()
@@ -292,7 +319,7 @@ class Application:
         f.close()
 
     def generate_collection_setup(self, destination, name,
-                                  packages, collections):
+                                  packages, collections, filename="setup.py"):
         """Generate the setup.py file for a collection distribution.
 
         :Parameters:
@@ -305,7 +332,7 @@ class Application:
         of ``self.destination``; the directory name should match the
         component name in these lists.
         """
-        setup_py = os.path.join(destination, "setup.py")
+        setup_py = os.path.join(destination, filename)
         self.ip.add_output(setup_py)
         f = open(setup_py, "w")
         print >>f, SETUP_HEADER
