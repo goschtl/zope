@@ -198,7 +198,7 @@ class RepositoryUrl(UrlBase):
         self.tag = tag or None
 
     def getUrl(self):
-        url = "repository:" + self.path
+        url = "repository:" + (self.path or '')
         if self.tag:
             url = "%s:%s" % (url, self.tag)
         return url

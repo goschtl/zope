@@ -68,6 +68,10 @@ class UrlUtilitiesTestCase(unittest.TestCase):
         self.assertEqual(repo.getUrl(), "repository:/absolute/path")
         repo.tag = "TAG"
         self.assertEqual(repo.getUrl(), "repository:/absolute/path:TAG")
+        repo.path = None
+        self.assertEqual(repo.getUrl(), "repository::TAG")
+        repo.tag = None
+        self.assertEqual(repo.getUrl(), "repository:")
 
     def test_repository_join_absolute_path(self):
         repo = cvsloader.RepositoryUrl("/absolute/path")
