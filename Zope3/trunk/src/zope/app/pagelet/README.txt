@@ -4,14 +4,14 @@ Pagelets
 
 Definition
 ----------
-                      _________ 
+                      _________
                      |         |
                      | Context |
                      |_________|
                           ^
-                          | 
+                          |
                           |*
-                      ____|____ 
+                      ____|____
                      |         |
                      |   View  |
                      |_________|
@@ -31,75 +31,75 @@ Definition
                      |_________|*     |_____________|
                           ^
                          /_\
-              ____________|____________ 
-             |                         |   
+              ____________|____________
+             |                         |
          ____|____                 ____|____
         |         |               |         |
         | Pagelet |               | Portlet |
         |_________|               |_________|
 
-A view instance is associated with one context. A context may be viewed 
+A view instance is associated with one context. A context may be viewed
 with none ore more views.
 
-The distinction between Pagelet and Portlet is still fuzzy. Pagelets and 
-portlets are designed to be parts of a view. In that meaning pagelets 
-and portlets are equal. They are specialized viewlets. A view is composed 
+The distinction between Pagelet and Portlet is still fuzzy. Pagelets and
+portlets are designed to be parts of a view. In that meaning pagelets
+and portlets are equal. They are specialized viewlets. A view is composed
 of viewlets which are related to a specific slot of that view.
 
-But what is the difference between them? The reconstructed interpretation 
+But what is the difference between them? The reconstructed interpretation
 of Zope's common sense is the following::
 
-    A pagelet of a view displays the underlying context. 
+    A pagelet of a view displays the underlying context.
     A portlet of a view displays data from different contexts.
 
-    Examples: The metadata pagelet displays the metadata of 
-    the underlying context. The metadata portlet displays for 
+    Examples: The metadata pagelet displays the metadata of
+    the underlying context. The metadata portlet displays for
     example the metadata of all its children.
 
-    A calendar pagelet displays the calendar data of a content 
-    object that implements an own calendar. A calendar portlet 
-    displays global calendar data on different objects that may 
+    A calendar pagelet displays the calendar data of a content
+    object that implements an own calendar. A calendar portlet
+    displays global calendar data on different objects that may
     come from an utility for example.
 
 
 In view of the component architecture this differentiation does not make
-sense anymore, because the adaption mechanism hides such criteria 
+sense anymore, because the adaption mechanism hides such criteria
 (implementation decisions and details) transparently inside an adapter.
 
 That is the reason, why we try to provide a new definition::
 
-    A pagelet of a view operates of the underlying context. 
-    A portlet of a view operates of the underlying or a 
+    A pagelet of a view operates of the underlying context.
+    A portlet of a view operates of the underlying or a
     different context.
 
-    Examples: The metadata pagelet displays the metadata. 
-    Therefore it adapts the underlying context to IMetadata. 
-    The metadata portlet displays metadata too, but it adapts 
+    Examples: The metadata pagelet displays the metadata.
+    Therefore it adapts the underlying context to IMetadata.
+    The metadata portlet displays metadata too, but it adapts
     a context independently to the underlying view context.
 
-    Hence several pagelets of the same type composed inside 
-    one view must display always the similar content where 
-    several portlets of the same type composed inside a view 
+    Hence several pagelets of the same type composed inside
+    one view must display always the similar content where
+    several portlets of the same type composed inside a view
     can present different contents.
 
 
 Usage
 -----
-This pagelet implementation supports pagelets and portlets in respect of 
-the first definition, but it only supports pagelets in respect of the 
+This pagelet implementation supports pagelets and portlets in respect of
+the first definition, but it only supports pagelets in respect of the
 second definition.
 
 In the following text we us pagelet in the sense of the latter.
 
-Pagelets are responsible for a piece of content in a view. They can be 
+Pagelets are responsible for a piece of content in a view. They can be
 used to render additionally provided information into a pagetemplate.
 
-Pagelets are small, view-like components that can registered to 
+Pagelets are small, view-like components that can registered to
 skin layers(request)-, contenttype-, view- and slot-interfaces.
 
-Inside a pagetemplate of a view, the registered pagelets can be called by 
-the tal:pagelets command. The return value is a list of macros where each 
-macro correspondents to a registered pagelet. This macros can be used to 
+Inside a pagetemplate of a view, the registered pagelets can be called by
+the tal:pagelets command. The return value is a list of macros where each
+macro correspondents to a registered pagelet. This macros can be used to
 invoke the pagelets::
 
   <div class="row">
@@ -108,7 +108,7 @@ invoke the pagelets::
     </tal:repeat>
   </div>
 
-Such a macro may process static content or invoke the context- or 
+Such a macro may process static content or invoke the context- or
 view-namespace for dynamic contents::
 
   <div class="row">
@@ -116,11 +116,11 @@ view-namespace for dynamic contents::
     <span tal:content="view/title">title</span>
   </div>
 
-The latter is not recommended, because it glues view and pagelet together. 
+The latter is not recommended, because it glues view and pagelet together.
 That means a pagelet depends on a specific view- or context implementation.
 
-In respect of modularization we provide an additional tal:pagedata 
-command. This command allows to look up adapters providing an interface 
+In respect of modularization we provide an additional tal:pagedata
+command. This command allows to look up adapters providing an interface
 derived form IPageletData::
 
   <div class="row">
@@ -130,8 +130,8 @@ derived form IPageletData::
     </tal:define>
   </div>
 
-This is a restricted adapter invocation. It should prevent uncontrolled 
-adapter invocation inside pagetemplates, because that would glue view 
+This is a restricted adapter invocation. It should prevent uncontrolled
+adapter invocation inside pagetemplates, because that would glue view
 layer and programming layer in not appreciable manner.
 
 
@@ -157,11 +157,11 @@ Imports:
   >>> from zope.app.pagelet.tests import TestPagelet
   >>> from zope.app.pagelet.tests import TestContext
   >>> from zope.app.pagelet.tests import testChecker
-  
+
 Setup:
-  
+
   >>> gsm = zapi.getGlobalSiteManager()
-  
+
 Register slot interface:
 
   >>> from zope.app.component.interface import provideInterface
@@ -194,7 +194,7 @@ Setup a test pagelet:
   ...        , IPagelet, name, pagelet_factory)
 
 Register pagelet collector as a adapter:
-  
+
   >>> collector_factory = MacrosCollector
   >>> gsm.provideAdapter(
   ...        (Interface, IBrowserRequest, IView, IPageletSlot)
@@ -215,8 +215,8 @@ Setup a view page template called 'index':
 
 Call the 'index' (view) on the browser view instance the sample pagelet
 'index_pagelets.pt' calls pagelets registered for the slot
-'zope.app.pagelet.interfaces.IPageletSlot'. We registred the 
-'test_pagelet' for this slot in the TestPagelet class. For more info 
+'zope.app.pagelet.interfaces.IPageletSlot'. We registred the
+'test_pagelet' for this slot in the TestPagelet class. For more info
 take a look at the index_pagelets.pt' file in the tests/testfiles folder:
 
   >>> html = index(view, request)
