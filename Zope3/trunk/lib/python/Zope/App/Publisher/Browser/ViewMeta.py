@@ -13,14 +13,13 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ViewMeta.py,v 1.8 2002/11/19 23:25:13 jim Exp $
+$Id: ViewMeta.py,v 1.9 2002/12/17 19:19:37 stevea Exp $
 """
 
 # XXX this will need to be refactored soon. :)
 
 from Zope.Security.Proxy import Proxy
-from Zope.Security.Checker \
-     import CheckerPublic, NamesChecker, Checker
+from Zope.Security.Checker import CheckerPublic, NamesChecker
 
 from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
 from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
@@ -28,16 +27,16 @@ from Zope.Configuration.Action import Action
 from Zope.Configuration.Exceptions import ConfigurationError
 
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
-from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 
-from Zope.App.ComponentArchitecture.metaConfigure \
-     import defaultView as _defaultView, handler
+from Zope.App.ComponentArchitecture.metaConfigure import handler
 
 from Zope.App.PageTemplate.SimpleViewClass import SimpleViewClass
 from Zope.App.PageTemplate import ViewPageTemplateFile
 
 from ResourceMeta import resource
+
+from Zope.ContextWrapper import ContextMethod
 
 class view(resource):
 
@@ -277,10 +276,11 @@ class PageTraverser:
         return Proxy(getattr(self, attribute),
                      NamesChecker(__call__=permission)
                      )
+    publishTraverse = ContextMethod(publishTraverse)
 
     def browserDefault(self, request):
         return self, (self._PageTraverser__default, )
-
+    browserDefault = ContextMethod(browserDefault)
 
 
 def defaultView(_context, name, for_=None, **__kw):
