@@ -168,4 +168,4 @@
 /Zope3/src/ZConfig		       /Packages/ZConfig
 
 # ZopeProducts
-/ZopeProducts                   /Products3
+/zopeproducts                   /Products3
