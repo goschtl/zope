@@ -20,23 +20,23 @@
             This screen allows you to activate Inline Code Evaluation. This
             means that you can say
             <span i18n:name="code-example-1"><pre>
-               &nbsp;&lt;script type="text/server-python"&gt;<br/>
+               &lt;script type="text/server-python"&gt;<br/>
                &nbsp;&nbsp;print "Hello World!"<br/>
                &lt;/script&gt;
             </pre></span>
             or
             <span i18n:name="code-example-2"><pre>
-               &nbsp;&lt;p tal:script="text/server-python"&gt;<br/>
+               &lt;p tal:script="text/server-python"&gt;<br/>
                &nbsp;&nbsp;print "Hello World!"<br/>
                &lt;/p&gt;
             </pre></span>
           </p>
           <p i18n:translate="">
-            Now, many Zope 3 developers consider inline code blocks something
+            Many Zope 3 developers consider inline code blocks something
             very bad, since it does not follow the design of Page Templates
             or Zope 3 in general. However, application and application server
             developers are not the only audience for Zope 3. Scripters are
-            used to inline code from other technologies liek PHP and it fits
+            used to inline code from other technologies like PHP and it fits
             their brain, which is very important.
           </p>
         </div>
