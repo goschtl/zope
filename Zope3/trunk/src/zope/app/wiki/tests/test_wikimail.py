@@ -13,17 +13,19 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikimail.py,v 1.5 2004/03/13 23:01:15 srichter Exp $
+$Id: test_wikimail.py,v 1.6 2004/05/10 13:36:45 eckart Exp $
 """
 import unittest
 
-from zope.interface import classImplements 
+from zope.interface import classImplements, implements 
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.event.interfaces import ISubscriber
+from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.mail.interfaces import IMailDelivery
 
 from zope.app.wiki.interfaces import IWikiPage, IWiki, IMailSubscriptions
 from zope.app.wiki.wikipage import WikiPage
@@ -32,6 +34,7 @@ from zope.app.wiki.wiki import Wiki
 
 SubscriberKey = 'http://www.zope.org/zwiki#1.0/MailSubscriptions/emails'
 
+mail_result=[]
 
 class MailSubscriptionTest(PlacelessSetup):
 
@@ -95,6 +98,15 @@ class WikiMailSubscriptionTest(MailSubscriptionTest, unittest.TestCase):
         return Wiki()
 
 
+
+class MailDeliveryStub(object):
+  
+    implements(IMailDelivery)
+
+    def send(self, fromaddr, toaddrs, message):
+        mail_result.append((fromaddr, toaddrs, message))
+
+
 class WikiMailerTest(PlacefulSetup, unittest.TestCase):
 
     # Note: There are several other methods in this class, but they require
@@ -113,6 +125,9 @@ class WikiMailerTest(PlacefulSetup, unittest.TestCase):
                        MailSubscriptions)
         ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
                        AttributeAnnotations)
+        delivery = MailDeliveryStub()
+        ztapi.provideUtility(IMailDelivery, delivery,
+                             name='wiki-delivery')
 
     def test_Interface(self):
         self.failUnless(ISubscriber.providedBy(mailer))
@@ -129,6 +144,25 @@ class WikiMailerTest(PlacefulSetup, unittest.TestCase):
         page = wiki['page1']
         self.assertEqual(('blah@bar.com', 'foo@bar.com'),
                          mailer.getAllSubscribers(page))
+
+    def test_notify(self):
+        wiki = Wiki()
+        wiki_sub = MailSubscriptions(wiki)
+        wiki_sub.context.__annotations__[SubscriberKey] = ('foo@bar.com',)
+        page = WikiPage()
+        page_sub = MailSubscriptions(page)
+        page_sub.context.__annotations__[SubscriberKey] = ('blah@bar.com',)
+        wiki['page1'] = page
+        page.source = 'Hello World!'
+        event = ObjectModifiedEvent(page)
+        mailer.notify(event)
+        self.assertEqual('wiki@zope3.org', 
+                         mail_result[0][0])
+        self.assertEqual(('blah@bar.com', 'foo@bar.com'), mail_result[0][1])
+        self.assertEqual('Subject: Modified: page1\n\n\nHello World!',
+                         mail_result[0][2])
+  
+
 
 def test_suite():
     return unittest.TestSuite((
