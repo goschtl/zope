@@ -169,23 +169,68 @@ getObjectSpecification(PyObject *ignored, PyObject *ob)
 static PyObject *
 providedBy(PyObject *ignored, PyObject *ob)
 {
-  PyObject *result;
+  PyObject *result, *cls, *cp;
   
   result = PyObject_GetAttr(ob, str__providedBy__);
-  if (result != NULL)
+  if (result == NULL)
     {
-      /* We want to make sure we have a spec. We can't do a type check
-         because we may have a proxy, so we'll just try to get the
-         only attribute.
-      */
-      if (PyObject_HasAttr(result, strextends))
-        return result;
-      Py_DECREF(result);
+      PyErr_Clear();
+      return getObjectSpecification(NULL, ob);
+    } 
+
+  
+  /* We want to make sure we have a spec. We can't do a type check
+     because we may have a proxy, so we'll just try to get the
+     only attribute.
+  */
+  if (PyObject_HasAttr(result, strextends))
+    return result;
+    
+  /*
+    The object's class doesn't understand descriptors.
+    Sigh. We need to get an object descriptor, but we have to be
+    careful.  We want to use the instance's __provides__,l if
+    there is one, but only if it didn't come from the class.
+  */
+  Py_DECREF(result);
+
+  cls = PyObject_GetAttr(ob, str__class__);
+  if (cls == NULL)
+    return NULL;
+
+  result = PyObject_GetAttr(ob, str__provides__);
+  if (result == NULL)
+    {      
+      /* No __provides__, so just fall back to implementedBy */
+      PyErr_Clear();
+      result = implementedBy(NULL, cls);
+      Py_DECREF(cls);
+      return result;
+    } 
+
+  cp = PyObject_GetAttr(cls, str__provides__);
+  if (cp == NULL)
+    {
+      /* The the class has no provides, assume we're done: */
+      PyErr_Clear();
+      Py_DECREF(cls);
+      return result;
     }
 
-  PyErr_Clear();
+  if (cp == result)
+    {
+      /*
+        Oops, we got the provides from the class. This means
+        the object doesn't have it's own. We should use implementedBy
+      */
+      Py_DECREF(result);
+      result = implementedBy(NULL, cls);
+    }
 
-  return getObjectSpecification(NULL, ob);
+  Py_DECREF(cls);
+  Py_DECREF(cp);
+
+  return result;
 }
 
 static PyObject *
@@ -488,7 +533,7 @@ init_zope_interface_coptimizations(void)
   /* Create the module and add the functions */
   m = Py_InitModule3("_zope_interface_coptimizations", m_methods,
                      "C optimizations for zope.interface\n\n"
-                     "$Id: _zope_interface_coptimizations.c,v 1.2 2003/11/21 17:11:43 jim Exp $");  
+                     "$Id: _zope_interface_coptimizations.c,v 1.3 2004/01/21 21:58:47 jim Exp $");  
   if (m == NULL)
     return;
   

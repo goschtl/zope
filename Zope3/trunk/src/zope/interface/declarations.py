@@ -24,7 +24,7 @@ There are three flavors of declarations:
     provided by objects.
     
 
-$Id: declarations.py,v 1.18 2003/11/21 17:11:43 jim Exp $
+$Id: declarations.py,v 1.19 2004/01/21 21:58:47 jim Exp $
 """
 
 import sys
@@ -1138,9 +1138,15 @@ def providedBy(ob):
     # Here we have either a special object, an old-style declaration
     # or a descriptor
 
+    # Try to get __providedBy__
     try:
         r = ob.__providedBy__
+    except AttributeError:
+        # Not set yet. Fall back to lower-level thing that computes it
+        return getObjectSpecification(ob)
+    
 
+    try:
         # We might have gotten a descriptor from an instance of a
         # class (like an ExtensionClass) that doesn't support
         # descriptors.  We'll make sure we got one by trying to get
@@ -1148,8 +1154,33 @@ def providedBy(ob):
         r.extends
 
     except AttributeError:
-        # No descriptor, so fall back to a plain object spec
-        r = getObjectSpecification(ob)
+
+        # The object's class doesn't understand descriptors.
+        # Sigh. We need to get an object descriptor, but we have to be
+        # careful.  We want to use the instance's __provides__,l if
+        # there is one, but only if it didn't come from the class.
+
+        try:
+            r = ob.__provides__
+        except AttributeError:
+            # No __provides__, so just fall back to implementedBy
+            return implementedBy(ob.__class__)
+
+        # We need to make sure we got the __provides__ from the
+        # instance. We'll do this by making sure we don't get the same
+        # thing from the class:
+
+        try:
+            cp = ob.__class__.__provides__
+        except AttributeError:
+            # The ob doesn't have a class or the class has no
+            # provides, assume we're done:
+            return r
+
+        if r is cp:
+            # Oops, we got the provides from the class. This means
+            # the object doesn't have it's own. We should use implementedBy
+            return implementedBy(ob.__class__)
 
     return r
 
