@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: iadapter.py,v 1.3 2003/04/18 22:12:32 jim Exp $
+$Id: iadapter.py,v 1.4 2003/05/03 16:37:26 jim Exp $
 """
 
 import unittest
@@ -90,10 +90,6 @@ class TestIAdapterRegistry(unittest.TestCase):
             directlyProvides(c, R)
             for P in [P1, P2, P3]:
                 self.assertEqual(registry.getForObject(c, P), 'R2 P3')
-
-        for R in [None, R1, R2, R3, R4, (R12, R2), (R12, R4)]:
-            directlyProvides(c, R)
-            self.assertEqual(registry.getForObject(c, None), None)
 
         directlyProvides(c, R1)
         for P in [P1, P2, P3]:
