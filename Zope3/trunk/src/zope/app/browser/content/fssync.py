@@ -14,7 +14,7 @@
 
 """Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.10 2003/05/15 22:10:50 gvanrossum Exp $
+$Id: fssync.py,v 1.11 2003/05/15 22:25:46 gvanrossum Exp $
 """
 
 import os
@@ -144,7 +144,14 @@ class Commit(ZipFile):
 
     def do_commit(self, zipdata):
         # 000) Set transaction note
-        note = self.request.get("note") or "fssync"
+        note = self.request.get("note")
+        if not note:
+            # XXX Hack because cgi doesn't parse the query string
+            qs = self.request._environ.get("QUERY_STRING")
+            if qs and qs.startswith("note="):
+                note = qs[5:]
+                import urllib
+                note = urllib.unquote(note)
         if note:
             get_transaction().note(note)
         # 00) Allocate temporary names
