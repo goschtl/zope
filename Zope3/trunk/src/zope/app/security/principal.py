@@ -19,12 +19,26 @@ from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
 from zope.app.servicenames import Authentication
 
+# BBB Backward Compatibility
+from zope.exceptions import NotFoundError
+import warnings
+
 def checkPrincipal(context, principal_id):
 
+    auth = zapi.getService(Authentication, context)
     try:
-        if zapi.getService(Authentication, context).getPrincipal(principal_id):
+        if auth.getPrincipal(principal_id):
             return
     except PrincipalLookupError:
         pass
+    except NotFoundError: # BBB Backward Compatibility
+        warnings.warn(
+            "A %s instance raised a NotFoundError in "
+            "getPrincipals.  Raising NotFoundError in this "
+            "method is deprecated and will no-longer be supported "
+            "staring in ZopeX3 3.3.  PrincipalLookupError should "
+            "be raised instead."
+            % auth.__class__.__name__,
+            DeprecationWarning)
     
     raise ValueError("Undefined principal id", principal_id)

@@ -26,6 +26,10 @@ from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.interfaces import IPrincipal
 
+# BBB Backward Compatibility
+from zope.exceptions import NotFoundError
+import warnings
+
 def undoSetup(event):
     # setup undo functionality
     svc = zapi.getGlobalService(Utilities)
@@ -149,6 +153,16 @@ class ZODBUndoManager(object):
                 except PrincipalLookupError:
                     # principals might have passed away
                     pass
+                except NotFoundError: # BBB Backward Compatibility
+                    warnings.warn(
+                        "A %s instance raised a NotFoundError in "
+                        "getPrincipals.  Raising NotFoundError in this "
+                        "method is deprecated and will no-longer be supported "
+                        "staring in ZopeX3 3.3.  PrincipalLookupError should "
+                        "be raised instead."
+                        % principalRegistry.__class__.__name__,
+                        DeprecationWarning)
+                    
         return entries
 
     def undoTransactions(self, ids):

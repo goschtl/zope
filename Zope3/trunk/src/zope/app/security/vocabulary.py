@@ -26,6 +26,10 @@ from zope.app.security.interfaces import IPermission
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.component.localservice import queryNextService
 
+# BBB Backward Compatibility
+from zope.exceptions import NotFoundError
+import warnings
+
 from interfaces import IPrincipalSource
 
 class PermissionIdsVocabulary(SimpleVocabulary):
@@ -147,6 +151,16 @@ class PrincipalSource(object):
         try:
             auth.getPrincipal(id)
         except PrincipalLookupError:
+            return False
+        except NotFoundError: # BBB Backward Compatibility
+            warnings.warn(
+                "A %s instance raised a NotFoundError in "
+                "getPrincipals.  Raising NotFoundError in this "
+                "method is deprecated and will no-longer be supported "
+                "staring in ZopeX3 3.3.  PrincipalLookupError should "
+                "be raised instead."
+                % auth.__class__.__name__,
+                DeprecationWarning)
             return False
         else:
             return True
