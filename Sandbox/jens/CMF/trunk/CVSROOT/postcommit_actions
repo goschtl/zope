@@ -143,23 +143,22 @@ def main(args):
         complain("CWD: %s, Repo: %s, ", os.getcwd(), repo)
         complain("Subjects: %s\n", subjs)
 
-    got = find_entries(repo)
-
     if not WAIT:
         detach(orig_args)
+
+    entries = find_entries(repo)
 
     if not only_repo:
         do_chmod(subjs)
 
-    for entry in got:
-        (path, expr, excludes, addrs, remote) = entry
+    for entry in entries:
+        path, addrs = entry['path'], entry['addrs']
+        excludes, remote = entry['excludes'], entry['remote']
         if addrs and not only_repo:
                 do_mail(path, repo, addrs, subjs)
         if remote:
-            print "remote:", remote
             do_sync(path, repo, remote, subjs, excludes, recurse=RECURSE)
-    if not got and only_repo:
-            print "no remote"
+    if not entries and only_repo:
             note_failure("*** --syncrepo invalid - no repository"
                          " for %s in config file.\n",
                          repo)
@@ -171,7 +170,10 @@ def main(args):
         handle_failures()
 
 def detach(args):
-    """Fork us into the background, with stdout and stderr to OUTPUT_LOG."""
+    """Fork us into the background, with stdout and stderr to OUTPUT_LOG.
+
+    We have to disconnect std io (in, out, and err) and run the program in
+    the background - which we do using some shell wizardry."""
     global MSGFILENM
 
     doctored_args = [args[0]]
@@ -200,14 +202,24 @@ def detach(args):
     os._exit(0)
 
 def find_entries(repo):
-    """Return all traffic_table entries that trigger for repo."""
-    got = []
+    """Return a filled-in dictionary for all traffic_table entries that
+    trigger for repo."""
+    entries = []
     for t in traffic_table.table:
-        if re.search(t[1], repo):
-            got.append(t)
+        if re.search(t['path'], repo):
+            if not t.has_key('excludes'):
+                t['excludes'] = []
+            if not t.has_key('remote'):
+                try:
+                    t['remote'] = traffic_table.remote
+                except AttributeError:
+                    raise AttributeError, ("traffic_table must have default"
+                                           " repo setting or explicit repo"
+                                           " values on all entries")
+            entries.append(t)
     if VERBOSE > 1:
-        complain("Resolved table entry:\n  %s\n", got)
-    return got
+        complain("Resolved table entry:\n  %s\n", entries)
+    return entries
 
 def do_mail(name, repo, addrs, subjs):
     """Send notice about checkin to addresses dictated by traffic table."""
@@ -262,7 +274,10 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0):
                        IDENTITY_FILE, IDENTITY_ACCT))
     
     if excludes:
-        specific_excludes = ' --exclude "%s"' % excludes
+        specific_excludes = ''
+        for i in excludes:
+            specific_excludes = (specific_excludes
+                                 + ' --exclude "%s"' % i)
     else:
         specific_excludes = ''
 
@@ -292,13 +307,22 @@ def do_sync(name, repo, remote, subjs=None, excludes=None, recurse=0):
     except TypeError:
         repodir = remote['repodir']
 
-    cmd = ("%s%s%s %s/%s/ %s:%s/%s/" % ((VERBOSE and "set -x; ") or "",
-                                    (DRYRUN and "echo ") or "",
-                                    cmd,
-                                    os.environ["CVSROOT"], repo,
-                                    remote['host'], repodir, repo))
+    # Special case for individual file targets:
+    if os.path.isfile("%s/%s,v" % (os.environ["CVSROOT"], repo)):
+        trailing_slash_or_comma_v = ",v"
+    else:
+        trailing_slash_or_comma_v = "/"
+
+    cmd = ("%s%s%s %s/%s%s %s:%s/%s%s" % ((VERBOSE and "set -x; ") or "",
+                                          (DRYRUN and "echo ") or "",
+                                          cmd,
+                                          os.environ["CVSROOT"], repo,
+                                          trailing_slash_or_comma_v,
+                                          remote['host'], repodir, repo,
+                                          trailing_slash_or_comma_v))
     if VERBOSE:
         complain("Doing rsync cmd:\n\t%s\n", cmd)
+    raise SystemExit                    # DEBUG
 
     result = os.system(cmd)
     if result:
