@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html metal:define-macro="page">
-<head>
+<head metal:define-macro="head">
   <title 
     metal:define-slot="title"
     tal:content="options/getTitle|view/getTitle|context/getTitle|default"
@@ -38,7 +38,9 @@
      <p>Body here</p>
   </div>
 
+  <div metal:define-macro="footer">
   <p>User: <span tal:replace="request/user/getTitle">User</span><p>
+  </div>
 </body>
 </html>
 
