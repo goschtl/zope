@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.15 2004/04/23 11:38:55 jim Exp $
+$Id: test_presentation.py,v 1.16 2004/05/10 06:35:35 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -308,6 +308,9 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
              "zope.component.presentation.PresentationRegistration("
                "default, ('IContainmentRoot', 'IBrowserRequest'), "
                "'Interface', 'absolute_url', 'SiteAbsoluteURL', '')",
+             "zope.component.presentation.PresentationRegistration("
+               "default, (None, 'IBrowserRequest'), 'IAbsoluteURL', "
+               "'', 'AbsoluteURL', '')",
              "zope.component.presentation.PresentationRegistration("
                "default, (None, 'IBrowserRequest'), 'Interface', "
                "'absolute_url', 'AbsoluteURL', '')",
