@@ -3,7 +3,7 @@ embedded -a Components/principia Components/ExtensionClass \
   Packages/DocumentTemplate Packages/SearchIndex
 
 
-PrincipiaSBlib Principia/lib pledge.txt
+PrincipiaSBlib -d lib Principia/lib pledge.txt
 PrincipiaSB Principia README &PrincipiaSBlib
 
 AccessControl    Packages/AccessControl
