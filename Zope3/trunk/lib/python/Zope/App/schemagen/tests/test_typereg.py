@@ -11,11 +11,8 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: test_typereg.py,v 1.2 2002/12/12 10:45:53 faassen Exp $
+"""
+$Id: test_typereg.py,v 1.3 2002/12/12 18:28:03 faassen Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: schemaspec.py,v 1.1 2002/12/12 17:43:15 faassen Exp $
+$Id: schemaspec.py,v 1.2 2002/12/12 18:28:03 faassen Exp $
 """
 __metaclass__ = type
 
@@ -138,12 +138,19 @@ class SchemaSpec(Persistent):
         return '\n'.join(method_text_list) + '\n'
     
     def generateModuleSource(self):
-        return generateModuleSource(
-            self._schema_name, self.getFieldsInOrder(),
-            self._class_name,
-            schema_version=self._current_version,
-            extra_imports=_helper_import,
-            extra_methods=self.generateSetstateSource())
+        if not self._history:
+            # don't generate any __setstate__ when there is no history
+            # to update from
+            return generateModuleSource(
+                self._schema_name, self.getFieldsInOrder(),
+                self._class_name, schema_version=self._current_version)
+        else:
+            return generateModuleSource(
+                self._schema_name, self.getFieldsInOrder(),
+                self._class_name,
+                schema_version=self._current_version,
+                extra_imports=_helper_import,
+                extra_methods=self.generateSetstateSource())
 
 # future plans, perhaps:
 # make each of these classes have views, and a method that

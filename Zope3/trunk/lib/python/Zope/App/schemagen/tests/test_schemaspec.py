@@ -12,12 +12,16 @@
 #
 ##############################################################################
 """
-$Id: test_schemaspec.py,v 1.1 2002/12/12 17:43:16 faassen Exp $
+$Id: test_schemaspec.py,v 1.2 2002/12/12 18:28:03 faassen Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
 from Zope.App.schemagen.schemaspec import SchemaSpec
 from Zope.Schema import Text
+import os
+
+def openInTests(name, mode):
+    return open(os.path.join(os.path.dirname(__file__), name), mode)
 
 class SchemaSpecTests(TestCase):
 
@@ -148,6 +152,9 @@ class SchemaSpecTests(TestCase):
         self.assertRaises(IndexError, s.moveField,
                           'beta', -1)
 
+    # XXX the following tests compare python source text
+    # this is very dependent on whitespace issues, which we really
+    # don't care about. Is there a better way? (compare some form of AST?)
     def test_history(self):
         s = self.s
         alpha = Text(title=u'Alpha')
@@ -178,25 +185,28 @@ class SchemaSpecTests(TestCase):
         # now compare history
         self.assertEquals(history, s.getHistory())
 
-        source = """\
-    def __setstate__(self, state):
-        transformations = schemaspec.prepareSetstate(self, state, 6)
-        if transformations is None:
-            return
-        if 0 in transformations:
-            schemaspec.AddField.update(dict, state, 'alpha')
-        if 1 in transformations:
-            schemaspec.RemoveField.update(dict, state, 'alpha')
-        if 2 in transformations:
-            schemaspec.AddField.update(dict, state, 'beta')
-        if 3 in transformations:
-            schemaspec.InsertField.update(dict, state, 'gamma', 0)
-        if 4 in transformations:
-            schemaspec.MoveField.update(dict, state, 'gamma', 2)
-        if 5 in transformations:
-            schemaspec.RenameField.update(dict, state, 'gamma', 'gamma2')
-"""
+        # check whether generated source is as we expect
+        f = openInTests('setstate.py.gen', 'r')
+        source = f.read()
+        f.close()
         self.assertEquals(source, s.generateSetstateSource())
+
+    def test_generateModuleSource(self):
+        s = self.s
+        s.addField('alpha', self.alpha)
+        
+        f = openInTests('setstatemodule.py.gen', 'r')
+        source = f.read()
+        f.close()
+        self.assertEquals(source, s.generateModuleSource())
+
+    def test_generateModuleSource(self):
+        s = self.s
+        # no history, so expect no setstate
+        f = openInTests('setstatemodule_no_history.py.gen', 'r')
+        source = f.read()
+        f.close()
+        self.assertEquals(source.strip(), s.generateModuleSource().strip())
 
 def test_suite():
     return TestSuite(
