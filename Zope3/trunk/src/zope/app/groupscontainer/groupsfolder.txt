@@ -73,3 +73,52 @@ a principal belongs to by providing its id.
       ['robots']
       >>> notordinarypeople.getGroupsForPrincipal('2')
       []
+      
+      
+    Now we test the search capabilities, as in IQuerySchemaSearch example:
+    
+    We're trying to search groups in the notordinarypeople class, so first we get a view:
+      
+      >>> import zope.schema
+      >>> from zope.app.pas.browser.schemasearch import QuerySchemaSearchView 
+      >>> from zope.publisher.browser import TestRequest
+      >>> request = TestRequest()
+      >>> view = QuerySchemaSearchView(notordinarypeople, request)
+    
+    This allows us to render a search form.
+    
+      >>> print view.render('test') 
+      <div class="row">
+      <div class="label">
+      <label for="test.field.search" title="">
+      Group Search String
+      </label>
+      </div>
+      <div class="field">
+      <input class="textType" id="test.field.search" name="test.field.search" size="20" type="text" value=""  />
+      </div>
+      </div>
+      <br /><input type="submit" name="test.search" value="Search" />
+
+    If we ask for results:
+    
+      >>> view.results('test')
+    
+    We don't get any, since we did not provide any. But if we give input:
+    
+      >>> request.form['test.field.search'] = 'bo'
+    
+    we still don't get any:
+    
+      >>> view.results('test')
+    
+    because we did not press the button. So let's press the button:
+    
+      >>> request.form['test.search'] = 'Search'
+    
+    so that we now get results (!):
+    
+      >>> view.results('test')
+      [u'robots']
+      >>> request.form['test.field.search'] = 'eek'
+    

@@ -17,16 +17,19 @@ $Id: groupsfolder.py 27237 2004-10-12 09:33:00 mriya3 $
 
 """
 
-from zope.app.groupscontainer.interfaces import IGroupsFolder
+from zope.app.groupscontainer.interfaces import IGroupsFolder, IGroupSearchCriteria
+from zope.app.pas.interfaces import IQuerySchemaSearch
 from zope.app.container.btree import BTreeContainer
 from zope.interface import implements
 from BTrees.OOBTree import OOBTree
+import zope.schema
 
 
 
 class GroupsFolder(BTreeContainer):
 
-    implements(IGroupsFolder)
+    implements(IGroupsFolder, IQuerySchemaSearch)
+    schema = (IGroupSearchCriteria)
     
     def __init__(self):
         super(BTreeContainer,self).__init__()
@@ -66,3 +69,20 @@ class GroupsFolder(BTreeContainer):
             return self.__getitem__(groupid).principals
         else:
             return []
+
+    def search(self, query, start=None, batch_size=None):
+        """ Search for groups"""
+        search = query.get('search')
+        tmpResults = []
+        if search is not None:
+            i = 0
+            n = 0
+            for value in self.keys():
+                if search in value:
+                    if not ((start is not None and i < start)
+                            or
+                            (batch_size is not None and n > batch_size)):
+                        tmpResults.append(value)
+        return tmpResults
+        
+            

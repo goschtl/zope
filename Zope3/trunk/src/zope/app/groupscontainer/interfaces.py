@@ -19,7 +19,8 @@ from zope.app.container.interfaces import IContained, IContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.security.interfaces import IGroup
-from zope.schema import Field
+from zope.schema import Field, TextLine
+from zope.interface import Interface
 
 class IGroupsFolder(IContainer):
        
@@ -37,4 +38,8 @@ class IGroupsFolder(IContainer):
 class IGroupContained(IContained):
     __parent__ = Field(
              constraint = ContainerTypesConstraint(IGroupsFolder))
+             
+
+class IGroupSearchCriteria(Interface):
+    search = TextLine(title=u"Group Search String")
 
