@@ -21,6 +21,9 @@ Options:
 
  --wait - do not fork into the background (and leave output in stdout/stderr)
 
+ --syncrepo - only do the recursive repository setup (good for initting the
+              remote copy or rectifying gaps that crept in)
+
  --msgfile MSGFILENM - get log message from MSGFILENM (and delete it!)
 
 An optional leading arg --verbose argument says operate verbosely.
@@ -48,7 +51,8 @@ Currently the actions are:
  - emailing checkin messages to designated recipients
  - doing an rsync of the repository to the public repository host.
 
-... as dictated in the traffic_table.py module."""
+... with settings for the latter two configured in the traffic_table.py
+module."""
 
 import sys, os, tempfile
 import re, string
@@ -88,7 +92,7 @@ def main(args):
     try:
         opts, args = getopt.getopt(args[1:], "", ["verbose", "dryrun",
                                                   "recurse", "wait",
-                                                  "msgfile=", "initrepo"])
+                                                  "msgfile=", "syncrepo"])
     except getopt.error, err:
         complain("%s\n", err)
         raise SystemExit, 1
@@ -112,8 +116,7 @@ def main(args):
             complain("%s: Not doing activities in background...\n", SCRIPT)
         elif opt == "--msgfile":
             MSGFILENM = val
-        elif opt == "--initrepo":
-            print "initrepo..."         # DEBUG
+        elif opt == "--syncrepo":
             RECURSE = 1
             WAIT = 1
             VERBOSE = 1
@@ -152,7 +155,7 @@ def main(args):
             do_sync(nm, repo, remote, subjs, recurse=RECURSE)
     if not got and only_repo:
             print "no remote"
-            note_failure("*** --initrepo invalid - no repository"
+            note_failure("*** --syncrepo invalid - no repository"
                          " for %s in config file.\n",
                          repo)
 
