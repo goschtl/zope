@@ -140,7 +140,7 @@ class ChangeRegistrations(BrowserView):
 
             reg = info['registration']
             info['summary'] = reg.implementationSummary()
-            info['id'] = zpi.getPath(reg)
+            info['id'] = zapi.getPath(reg)
 
         # Add a dummy registration since the stack removes trailing None.
         registrations.append({"active": False,

@@ -7,10 +7,7 @@
     
     <require
       permission="zope.ManageServices"
-      attributes="queryRegistrations" />
-      
-    <require
-      permission="zope.ManageServices"
+      attributes="queryRegistrations"
       interface="zope.app.registration.interfaces.IRegistry" />
       
   </content>
@@ -19,6 +16,7 @@
     
     <require
       permission="zope.ManageServices"
+      attributes="required with provided factory"
       interface="zope.app.utility.interfaces.IUtilityRegistration"
       set_schema="zope.app.utility.interfaces.IUtilityRegistration" />
       

@@ -129,7 +129,12 @@ class IComponentRegistration(IRegistration):
 
     def getComponent():
         """Return the component named in the registration.
+
+        This is provided for backward compatibility; please use the
+        `component` attribute instead.
         """
+
+    component = Attribute(_("the component named in the registration"))
 
 
 class IRegistrationStack(Interface):
