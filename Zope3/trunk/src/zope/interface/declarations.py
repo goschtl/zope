@@ -24,7 +24,7 @@ There are three flavors of declarations:
     provided by objects.
     
 
-$Id: declarations.py,v 1.19 2004/01/21 21:58:47 jim Exp $
+$Id: declarations.py,v 1.20 2004/02/20 16:56:50 fdrake Exp $
 """
 
 import sys
@@ -664,8 +664,22 @@ def Provides(*interfaces):
       same declaration.  The declarations are cached in an weak value
       dictionary.
 
-      >>> import gc
-      >>> x = gc.collect()
+      (Note that, in the examples below, we are going to make
+       assertions about the size of the weakvalue dictionary.  For the
+       assertions to be meaningful, we need to force garbage
+       collection to make sure garbage objects are, indeed, removed
+       from the system. Depending on how Python is run, we may need to
+       make multiple calls to be sure.  We provide a collect function
+       to help with this:
+
+       >>> import gc
+       >>> def collect():
+       ...     for i in range(4):
+       ...         gc.collect()
+
+      )
+      
+      >>> collect()
       >>> before = len(InstanceDeclarations)
 
       >>> class C:
@@ -690,12 +704,12 @@ def Provides(*interfaces):
       1
 
       >>> del c1
-      >>> x = gc.collect()
+      >>> collect()
       >>> len(InstanceDeclarations) == before + 1
       1
 
       >>> del c2
-      >>> x = gc.collect()
+      >>> collect()
       >>> len(InstanceDeclarations) == before
       1
       
