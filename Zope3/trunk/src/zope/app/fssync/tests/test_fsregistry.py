@@ -13,7 +13,7 @@
 ##############################################################################
 """Test FSRegistry File-system synchronization services
 
-$Id: testFSRegistry.py,v 1.2 2003/05/05 18:01:02 gvanrossum Exp $
+$Id: test_fsregistry.py,v 1.1 2003/05/08 16:56:12 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
