@@ -17,7 +17,7 @@ import unittest
 
 from persistent.dict import PersistentDict
 from persistent import UPTODATE
-from transaction import get_transaction
+import transaction
 
 import ZODB.tests.util
 from zodbcode import tests # import this package, to get at __file__ reliably
@@ -92,14 +92,14 @@ class TestBase(unittest.TestCase):
         self.importer = TestPersistentModuleImporter(self.registry)
         self.importer.install()
         self.root["registry"] = self.registry
-        get_transaction().commit()
+        transaction.commit()
         _dir, _file = os.path.split(tests.__file__)
         self._pmtest = os.path.join(_dir, "_pmtest.py")
 
     def tearDown(self):
         self.importer.uninstall()
         # just in case
-        get_transaction().abort()
+        transaction.abort()
         self.db.close()
 
     def sameModules(self, registry):
@@ -126,14 +126,14 @@ class TestBase(unittest.TestCase):
         # modified.  need to figure out what is going wrong, but for
         # now just abort the transaction.
         ##assert not cn._registered
-        get_transaction().abort()
+        transaction.abort()
         cn.close()
 
 class TestModule(TestBase):
 
     def testModule(self):
         self.registry.newModule("pmtest", open(self._pmtest).read())
-        get_transaction().commit()
+        transaction.commit()
         self.assert_(self.registry.findModule("pmtest"))
         import pmtest
         pmtest._p_deactivate()
@@ -143,12 +143,12 @@ class TestModule(TestBase):
 
     def testUpdateFunction(self):
         self.registry.newModule("pmtest", "def f(x): return x")
-        get_transaction().commit()
+        transaction.commit()
         import pmtest
         self.assertEqual(pmtest.f(3), 3)
         copy = pmtest.f
         self.registry.updateModule("pmtest", "def f(x): return x + 1")
-        get_transaction().commit()
+        transaction.commit()
         pmtest._p_deactivate()
         self.assertEqual(pmtest.f(3), 4)
         self.assertEqual(copy(3), 4)
@@ -156,7 +156,7 @@ class TestModule(TestBase):
 
     def testUpdateClass(self):
         self.registry.newModule("pmtest", src)
-        get_transaction().commit()
+        transaction.commit()
         import pmtest
         inst = pmtest.Foo()
         v0 = inst.x
@@ -165,7 +165,7 @@ class TestModule(TestBase):
         self.assertEqual(v1 - 1, v2)
         self.assertEqual(v0 + 1, v1)
         self.registry.updateModule("pmtest", src2)
-        get_transaction().commit()
+        transaction.commit()
         self.assertRaises(AttributeError, getattr, inst, "n")
         self.useNewConnection()
 
@@ -180,7 +180,7 @@ class TestModule(TestBase):
         self.registry.newModule("baz", "from foo import *")
         import foo, bar, baz, quux
         self.assert_(foo._p_oid is None)
-        get_transaction().commit()
+        transaction.commit()
         self.assert_(foo._p_oid)
         self.assert_(bar._p_oid)
         self.assert_(baz._p_oid)
@@ -193,7 +193,7 @@ class TestModule(TestBase):
         self.assert_(foo.f is baz.f)
         foo.x = 42
         self.assertEqual(quux.f(4), 5)
-        get_transaction().commit()
+        transaction.commit()
         self.assertEqual(quux.f(4), 5)
         foo._p_deactivate()
         # foo is deactivated, which means its dict is empty when f()
@@ -209,7 +209,7 @@ class TestModule(TestBase):
         import foo
         A = foo.f.attr = "attr"
         self.assertEqual(foo.f.attr, A)
-        get_transaction().commit()
+        transaction.commit()
         self.assertEqual(foo.f.attr, A)
         foo.f._p_deactivate()
         self.assertEqual(foo.f.attr, A)
@@ -222,14 +222,14 @@ class TestModule(TestBase):
         self.registry.newModule("effect", side_effect_src)
         import effect
         effect.inc()
-        get_transaction().commit()
+        transaction.commit()
         effect.inc()
         self.assert_(effect._p_changed)
         self.useNewConnection()
 
     def testBuiltins(self):
         self.registry.newModule("test", builtin_src)
-        get_transaction().commit()
+        transaction.commit()
         import test
         self.assertEqual(test.f(), len(test.x))
         test._p_deactivate()
@@ -240,7 +240,7 @@ class TestModule(TestBase):
         self.assertRaises(TypeError,
                           self.registry.newModule, "nested", nested_err_src)
         self.registry.newModule("nested", nested_src)
-        get_transaction().commit()
+        transaction.commit()
         import nested
         g = nested.f(3)
         self.assertEqual(g(4), 7)
@@ -249,19 +249,19 @@ class TestModule(TestBase):
         # test a lambda that contains another lambda as a default
         self.registry.newModule("test",
                                 "f = lambda x, y = lambda: 1: x + y()")
-        get_transaction().commit()
+        transaction.commit()
         import test
         self.assertEqual(test.f(1), 2)
         self.useNewConnection()
 
     def testClass(self):
         self.registry.newModule("foo", src)
-        get_transaction().commit()
+        transaction.commit()
         import foo
         obj = foo.Foo()
         obj.m()
         self.root["m"] = obj
-        get_transaction().commit()
+        transaction.commit()
         foo._p_deactivate()
         o = foo.Foo()
         i = o.m()
@@ -271,7 +271,7 @@ class TestModule(TestBase):
 
     def testPackage(self):
         self.registry.newModule("A.B.C", "def f(x): return x")
-        get_transaction().commit()
+        transaction.commit()
 
         import A.B.C
         self.assert_(isinstance(A, PersistentPackage))
@@ -281,7 +281,7 @@ class TestModule(TestBase):
                           "A.B", "def f(x): return x + 1")
 
         self.registry.newModule("A.B.D", "def f(x): return x")
-        get_transaction().commit()
+        transaction.commit()
 
         from A.B import D
         self.assert_(hasattr(A.B.D, "f"))
@@ -289,12 +289,12 @@ class TestModule(TestBase):
 
     def testPackageInit(self):
         self.registry.newModule("A.B.C", "def f(x): return x")
-        get_transaction().commit()
+        transaction.commit()
 
         import A.B.C
 
         self.registry.newModule("A.B.__init__", "x = 2")
-        get_transaction().commit()
+        transaction.commit()
 
         import A.B
         self.assert_(hasattr(A.B, "C"))
@@ -306,16 +306,16 @@ class TestModule(TestBase):
 
     def testPackageRelativeImport(self):
         self.registry.newModule("A.B.C", "def f(x): return x")
-        get_transaction().commit()
+        transaction.commit()
 
         self.registry.newModule("A.Q", "from B.C import f")
-        get_transaction().commit()
+        transaction.commit()
 
         import A.Q
         self.assertEqual(A.B.C.f, A.Q.f)
 
         self.registry.updateModule("A.Q", "import B.C")
-        get_transaction().commit()
+        transaction.commit()
 
         self.assertEqual(A.B.C.f, A.Q.B.C.f)
 
@@ -328,7 +328,7 @@ class TestModule(TestBase):
     def testImportAll(self):
         self.registry.newModule("A.B.C",
                                 """__all__ = ["a", "b"]; a, b, c = 1, 2, 3""")
-        get_transaction().commit()
+        transaction.commit()
 
         d = {}
         exec "from A.B.C import *" in d
@@ -337,7 +337,7 @@ class TestModule(TestBase):
         self.assertRaises(KeyError, d.__getitem__, "c")
 
         self.registry.newModule("A.B.D", "from C import *")
-        get_transaction().commit()
+        transaction.commit()
 
         import A.B.D
         self.assert_(hasattr(A.B.D, "a"))
@@ -345,10 +345,10 @@ class TestModule(TestBase):
         self.assert_(not hasattr(A.B.D, "c"))
 
         self.registry.newModule("A.__init__", """__all__ = ["B", "F"]""")
-        get_transaction().commit()
+        transaction.commit()
 
         self.registry.newModule("A.F", "spam = 1")
-        get_transaction().commit()
+        transaction.commit()
 
         import A
         self.assertEqual(A.F.spam, 1)
@@ -364,7 +364,7 @@ class TestModuleReload(unittest.TestCase):
         self._pmtest = os.path.join(_dir, "_pmtest.py")
 
     def tearDown(self):
-        get_transaction().abort()
+        transaction.abort()
         self.db.close()
 
     def open(self):
@@ -375,7 +375,7 @@ class TestModuleReload(unittest.TestCase):
             self.root["registry"] = self.registry = ManagedRegistry()
         self.importer = TestPersistentModuleImporter(self.registry)
         self.importer.install()
-        get_transaction().commit()
+        transaction.commit()
 
     def close(self):
         self.importer.uninstall()
@@ -383,7 +383,7 @@ class TestModuleReload(unittest.TestCase):
 
     def testModuleReload(self):
         self.registry.newModule("pmtest", open(self._pmtest).read())
-        get_transaction().commit()
+        transaction.commit()
         import pmtest
         pmtest._p_deactivate()
         self.assertEqual(pmtest.a, 1)
@@ -397,13 +397,13 @@ class TestModuleReload(unittest.TestCase):
 
     def testClassReload(self):
         self.registry.newModule("foo", src)
-        get_transaction().commit()
+        transaction.commit()
         import foo
         obj = foo.Foo()
         obj.m()
         self.root["d"] = d = PersistentDict()
         d["m"] = obj
-        get_transaction().commit()
+        transaction.commit()
         self.close()
         foo._p_deactivate()
         self.importer.uninstall()

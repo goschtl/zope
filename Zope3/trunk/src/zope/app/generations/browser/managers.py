@@ -17,6 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import transaction
+
 from zope.app import zapi
 from zope.app.generations.interfaces import ISchemaManager
 from zope.app.generations.generations import generations_key, Context
@@ -177,12 +179,12 @@ class Managers(object):
                     generation += 1
                     manager.evolve(context, generation)
                     generations[key] = generation
-                    get_transaction().commit()
+                    transaction.commit()
                     return {'app': key, 'to': generation}
 
             return None
         finally:
-            get_transaction().abort()
+            transaction.abort()
             conn.close()
 
     def applications(self):

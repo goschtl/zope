@@ -18,19 +18,19 @@ $Id$
 import unittest
 
 from zope.app.dav.ftests.dav import DAVTestCase
-from transaction import get_transaction
+import transaction
 
 class TestMKCOL(DAVTestCase):
 
     def test_mkcol_not_folderish(self):
         self.addPage('/bar/pt', u'<span />')
-        get_transaction().commit()
+        transaction.commit()
         self.verifyStatus(path='/bar/pt/foo', body='', basic='mgr:mgrpw',
                           expected=404)
 
     def test_mkcol_not_folderish_existing(self):
         self.addPage('/bar/pt', u'<span />')
-        get_transaction().commit()
+        transaction.commit()
         self.verifyStatus(path='/bar/pt', body='', basic='mgr:mgrpw',
                           expected=405)
 
@@ -44,7 +44,7 @@ class TestMKCOL(DAVTestCase):
 
     def test_mkcol_existing(self):
         self.createFolders('/bar/mkcol_test')
-        get_transaction().commit()
+        transaction.commit()
         self.verifyStatus(path='/bar', body='', basic='mgr:mgrpw',
                           expected=405)
 

@@ -19,7 +19,7 @@ it makes sure a root folder exists and creates one if necessary.
 $Id$
 """
 __docformat__ = 'restructuredtext'
-from transaction import get_transaction
+import transaction
 
 import zope.event
 
@@ -142,7 +142,7 @@ def bootStrapSubscriber(event):
             site_manager = site.LocalSiteManager(root_folder)
             root_folder.setSiteManager(site_manager)
 
-        get_transaction().commit()
+        transaction.commit()
 
     connection.close()
 

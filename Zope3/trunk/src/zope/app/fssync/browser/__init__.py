@@ -22,7 +22,7 @@ import cgi
 import shutil
 import tempfile
 
-from transaction import get_transaction
+import transaction
 
 from zope.app.publisher.browser import BrowserView
 from zope.app.traversing.api import getName, getParent, getRoot
@@ -92,7 +92,7 @@ class SnarfSubmission(BrowserView):
             raise ValueError(_("Content-Type is not application/x-snarf"))
 
     def set_transaction(self):
-        self.txn = get_transaction()
+        self.txn = transaction.get()
 
     def parse_args(self):
         # The query string in the URL didn't get parsed, because we're

@@ -71,8 +71,8 @@ Zope 3 Functional Testing
      self.getRootFolder() available to an emulated request, make sure to commit
      the transaction.  Here's how you do it::
 
-       from transaction import get_transaction
-       get_transaction().commit()
+       import transaction
+       transaction.commit()
 
    - Functional tests should not change any global registries.  In particular,
      functional unit test cases should not inherit from

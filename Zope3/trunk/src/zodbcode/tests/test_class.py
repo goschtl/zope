@@ -15,7 +15,7 @@ import unittest
 
 from zodbcode.tests.test_module import TestBase
 
-from transaction import get_transaction
+import transaction
 from persistent.cPersistence import CHANGED, UPTODATE
 
 class TestClass(TestBase):
@@ -51,7 +51,7 @@ class TestClass(TestBase):
 
     def testClassWithInit(self):
         self.registry.newModule("testclass", self.class_with_init)
-        get_transaction().commit()
+        transaction.commit()
         import testclass
         x = testclass.Foo(12)
         self.assertEqual(x.var, 12)
@@ -75,7 +75,7 @@ x = Foo(12)""" "\n"
 
     def testClassAndInstance(self):
         self.registry.newModule("testclass", self.class_and_instance)
-        get_transaction().commit()
+        transaction.commit()
         import testclass
         self.assertEqual(testclass.x.var, 12)
 
@@ -98,7 +98,7 @@ x = Foo(12)""" "\n"
         # this doesn't do a proper zope interface, but we're really
         # only concerned about handling of the __implements__ attribute.
         self.registry.newModule("testclass", self.class_interface)
-        get_transaction().commit()
+        transaction.commit()
         import testclass
         obj = testclass.Foo()
         self.assertEqual(obj.__implements__, 1)
@@ -107,9 +107,9 @@ x = Foo(12)""" "\n"
 
     def testCrossModuleImport(self):
         self.registry.newModule("testclass", self.class_with_init)
-        get_transaction().commit()
+        transaction.commit()
         self.registry.newModule("another", self.cross_module_import)
-        get_transaction().commit()
+        transaction.commit()
 
     update_in_place1 = """class Foo:
     def meth(self, arg):
@@ -121,7 +121,7 @@ x = Foo(12)""" "\n"
 
     def testUpdateInPlace(self):
         self.registry.newModule("testclass", self.update_in_place1)
-        get_transaction().commit()
+        transaction.commit()
         import testclass
         inst = testclass.Foo()
         self.assertEqual(inst.meth(4), 12)
@@ -131,7 +131,7 @@ x = Foo(12)""" "\n"
         self.assertEqual(inst2.meth(4), 12)
 
         self.registry.updateModule("testclass", self.update_in_place2)
-        get_transaction().commit()
+        transaction.commit()
         self.assertEqual(inst.meth(4), 7)
 
         # The old instance's connection hasn't processed the
@@ -159,11 +159,11 @@ class Bar(parent.Foo):
     def testInheritanceAcrossModules(self):
         self.registry.newModule("parent", self.parent1)
         self.registry.newModule("child", self.child)
-        get_transaction().commit()
+        transaction.commit()
         import child
         self.assertEqual(child.Bar().meth(3), 3*2+5)
         self.registry.updateModule("parent", self.parent2)
-        get_transaction().commit()
+        transaction.commit()
         self.assertEqual(child.Bar().meth(3), 3//2+5)
 
         Bar = self._load_name("child.Bar")
@@ -175,7 +175,7 @@ class Foo(Persistent):
 
     def testPersistentSubclass(self):
         self.registry.newModule("persist", self.persist)
-        get_transaction().commit()
+        transaction.commit()
         import persist
         # Verify that the instances are persistent and that the
         # _p_ namespace is separate.
@@ -192,19 +192,19 @@ x = Foo()
 
     def testSavePersistentSubclass(self):
         self.registry.newModule("persist", self.persist)
-        get_transaction().commit()
+        transaction.commit()
         import persist
         self.registry.newModule("save_persist", self.save_persist)
-        get_transaction().commit()
+        transaction.commit()
         import save_persist
 
     def XXXtestUpdateClassAttribute(self):
         self.registry.newModule("parent", self.parent1)
-        get_transaction().commit()
+        transaction.commit()
         import parent
         parent.Foo.attr = 2
         self.assertEqual(parent.Foo._p_state, CHANGED)
-        get_transaction().commit()
+        transaction.commit()
         self.assertEqual(parent.Foo._p_state, UPTODATE)
 
         Foo = self._load_name("parent.Foo")

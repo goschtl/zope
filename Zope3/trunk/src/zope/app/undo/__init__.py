@@ -16,6 +16,9 @@
 $Id$
 """
 from datetime import datetime
+
+import transaction
+
 from zope.interface import implements
 from zope.app.security.interfaces import PrincipalLookupError
 
@@ -194,4 +197,4 @@ class ZODBUndoManager(object):
     def _undo(self, ids):
         for id in ids:
             self.__db.undo(id)
-        get_transaction().setExtendedInfo('undo', True)
+        transaction.get().setExtendedInfo('undo', True)

@@ -170,7 +170,7 @@ class PropFindTests(PlacefulSetup, unittest.TestCase):
         self.conn = self.db.open()
         root = self.conn.root()
         root['Application'] = self.rootFolder
-        get_transaction().commit()
+        transaction.commit()
         
     def tearDown(self):
         self.db.close()

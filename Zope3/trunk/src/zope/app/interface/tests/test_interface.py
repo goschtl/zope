@@ -19,7 +19,7 @@ __docformat__ = 'restructuredtext'
 
 import unittest
 
-from transaction import get_transaction
+import transaction
 
 from ZODB.tests.util import DB
 from zodbcode.module import ManagedRegistry
@@ -49,10 +49,10 @@ class PersistentInterfaceTest(unittest.TestCase):
         self.root = self.db.open().root()
         self.registry = ManagedRegistry()
         self.root["registry"] = self.registry
-        get_transaction().commit()
+        transaction.commit()
 
     def tearDown(self):
-        get_transaction().abort() # just in case
+        transaction.abort() # just in case
 
     def test_creation(self):
         class IFoo(PersistentInterface):
@@ -66,7 +66,7 @@ class PersistentInterfaceTest(unittest.TestCase):
 
     def test_patch(self):
         self.registry.newModule("imodule", code)
-        get_transaction().commit()
+        transaction.commit()
         imodule = self.registry.findModule("imodule")
 
         # test for a pickling bug

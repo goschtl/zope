@@ -16,7 +16,7 @@
 $Id: editview.py 29143 2005-02-14 22:43:16Z srichter $
 """
 __docformat__ = 'restructuredtext'
-from transaction import get_transaction
+import transaction
 
 from zope.app.form.interfaces import WidgetsError, IInputWidget
 
@@ -73,7 +73,7 @@ class FormView(EditView):
             except WidgetsError, errors:
                 self.errors = errors
                 status = _("An error occured.")
-                get_transaction().abort()
+                transaction.abort()
             else:
                 if changed:
                     self.setData(self.data)

@@ -16,6 +16,8 @@
 $Id: bootstrap.py 28023 2004-10-12 18:11:29Z anguenot $
 """
 
+import transaction
+
 from zope.app.appsetup.bootstrap import ensureUtility, getInformationFromEvent
 
 from zope.app.error.error import RootErrorReportingUtility
@@ -32,5 +34,5 @@ def bootStrapSubscriber(event):
     ensureUtility(root_folder, IErrorReportingUtility, 'ErrorReporting',
                   RootErrorReportingUtility, copy_to_zlog=False)
 
-    get_transaction().commit()
+    transaction.commit()
     connection.close()

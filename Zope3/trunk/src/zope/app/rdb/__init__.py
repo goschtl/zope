@@ -25,7 +25,7 @@ from urllib import unquote_plus
 
 from persistent import Persistent
 
-from transaction import get_transaction
+import transaction
 from transaction.interfaces import IDataManager, IRollback
 from transaction.util import NoSavepointSupportRollback
 
@@ -318,7 +318,7 @@ class ZopeConnection(object):
         'See IZopeConnection'
         if not self._txn_registered:
             tm = ZopeDBTransactionManager(self)
-            get_transaction().join(tm)
+            transaction.get().join(tm)
             self._txn_registered = True
 
     def commit(self):

@@ -75,8 +75,8 @@ let's create a database and add the root folder to it:
   >>> conn = db.open()
   >>> conn.root()['Application'] = root
 
-  >>> from transaction import get_transaction
-  >>> get_transaction().commit()
+  >>> import transaction
+  >>> transaction.commit()
 
 Let's now reopen the database to test that the module can be seen from a
 different connection.

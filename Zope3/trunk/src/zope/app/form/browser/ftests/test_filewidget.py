@@ -18,7 +18,7 @@ $Id$
 import unittest
 from StringIO import StringIO
 from persistent import Persistent
-from transaction import get_transaction
+import transaction
 
 from zope.interface import Interface
 from zope.interface import implements
@@ -83,7 +83,7 @@ class Test(BrowserTestCase):
 
     def test_display_editform(self):
         self.getRootFolder()['test'] = FileTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # display edit view
         response = self.publish('/test/edit.html')
@@ -98,7 +98,7 @@ class Test(BrowserTestCase):
 
     def test_submit_text(self):
         self.getRootFolder()['test'] = FileTest()
-        get_transaction().commit()
+        transaction.commit()
         object = traverse(self.getRootFolder(), 'test')
         self.assert_(object.f1 is None)
         self.assertEqual(object.f2, 'foo')
@@ -119,7 +119,7 @@ class Test(BrowserTestCase):
 
     def test_invalid_value(self):
         self.getRootFolder()['test'] = FileTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit an invalid file value
         response = self.publish('/test/edit.html', form={
@@ -135,7 +135,7 @@ class Test(BrowserTestCase):
     # my patience looking at it. 
     def XXX_test_required_validation(self):
         self.getRootFolder()['test'] = FileTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit missing value for required field f1
         response = self.publish('/test/edit.html', form={
@@ -151,7 +151,7 @@ class Test(BrowserTestCase):
 
     def test_empty_file(self):
         self.getRootFolder()['test'] = FileTest()
-        get_transaction().commit()
+        transaction.commit()
 
         # submit an empty text file
         response = self.publish('/test/edit.html', form={

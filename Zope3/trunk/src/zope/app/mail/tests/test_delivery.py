@@ -20,7 +20,7 @@ $Id$
 import os.path
 from tempfile import mktemp
 from unittest import TestCase, TestSuite, makeSuite
-from transaction import get_transaction
+import transaction
 
 from zope.interface import implements
 from zope.interface.verify import verifyObject
@@ -76,7 +76,7 @@ class TestDirectMailDelivery(TestCase):
         msgid = delivery.send(fromaddr, toaddrs, opt_headers + message)
         self.assertEquals(msgid, '20030519.1234@example.org')
         self.assertEquals(mailer.sent_messages, [])
-        get_transaction().commit()
+        transaction.commit()
         self.assertEquals(mailer.sent_messages,
                           [(fromaddr, toaddrs, opt_headers + message)])
 
@@ -84,7 +84,7 @@ class TestDirectMailDelivery(TestCase):
         msgid = delivery.send(fromaddr, toaddrs, message)
         self.assert_('@' in msgid)
         self.assertEquals(mailer.sent_messages, [])
-        get_transaction().commit()
+        transaction.commit()
         self.assertEquals(len(mailer.sent_messages), 1)
         self.assertEquals(mailer.sent_messages[0][0], fromaddr)
         self.assertEquals(mailer.sent_messages[0][1], toaddrs)
@@ -95,7 +95,7 @@ class TestDirectMailDelivery(TestCase):
         mailer.sent_messages = []
         msgid = delivery.send(fromaddr, toaddrs, opt_headers + message)
         self.assertEquals(mailer.sent_messages, [])
-        get_transaction().abort()
+        transaction.abort()
         self.assertEquals(mailer.sent_messages, [])
 
 
@@ -203,7 +203,7 @@ class TestQueuedMailDelivery(TestCase):
         self.assertEquals(msgid, '20030519.1234@example.org')
         self.assertEquals(MaildirWriterStub.commited_messages, [])
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
-        get_transaction().commit()
+        transaction.commit()
         self.assertEquals(MaildirWriterStub.commited_messages,
                           [zope_headers + opt_headers + message])
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
@@ -213,7 +213,7 @@ class TestQueuedMailDelivery(TestCase):
         self.assert_('@' in msgid)
         self.assertEquals(MaildirWriterStub.commited_messages, [])
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
-        get_transaction().commit()
+        transaction.commit()
         self.assertEquals(len(MaildirWriterStub.commited_messages), 1)
         self.assert_(MaildirWriterStub.commited_messages[0].endswith(message))
         new_headers = MaildirWriterStub.commited_messages[0][:-len(message)]
@@ -226,7 +226,7 @@ class TestQueuedMailDelivery(TestCase):
         msgid = delivery.send(fromaddr, toaddrs, opt_headers + message)
         self.assertEquals(MaildirWriterStub.commited_messages, [])
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
-        get_transaction().abort()
+        transaction.abort()
         self.assertEquals(MaildirWriterStub.commited_messages, [])
         self.assertEquals(len(MaildirWriterStub.aborted_messages), 1)
 

@@ -9,9 +9,10 @@ shows how they interact with the ZODB persistence machinery.
 to the database by placing it in the root folder:
 
   >>> from zope.app.container.contained import setitem
+  >>> import transaction
   >>> root_folder = getRootFolder()
   >>> setitem(root_folder, root_folder.__setitem__, u'chicken', Chicken())
-  >>> get_transaction().commit()
+  >>> transaction.commit()
   >>> chicken = root_folder['chicken']
 
 Now consider a possible subscriber for an object event:
@@ -23,7 +24,7 @@ Now we register it using the observable adapter:
   >>> from zope.app.event.interfaces import IObjectModifiedEvent
   >>> observer = IObservable(chicken)
   >>> observer.handle([IObjectModifiedEvent], chickenModified)
-  >>> get_transaction().commit()
+  >>> transaction.commit()
 
 When we now issue an ``IObjectModifiedEvent`` event, our subscriber
 will be called:

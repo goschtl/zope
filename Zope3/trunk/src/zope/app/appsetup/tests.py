@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from transaction import get_transaction
+import transaction
 from zope.testing import doctest
 
 from ZODB.tests.util import DB
@@ -60,7 +60,7 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         root = cx.root()
         self.root_folder = rootFolder()
         root[ZopePublication.root_name] = self.root_folder
-        get_transaction().commit()
+        transaction.commit()
         cx.close()
 
     def createRFAndSM(self):
@@ -70,7 +70,7 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
         root[ZopePublication.root_name] = self.root_folder
         self.site_manager = LocalSiteManager(self.root_folder)
         self.root_folder.setSiteManager(self.site_manager)
-        get_transaction().commit()
+        transaction.commit()
         cx.close()
 
     def test_notify(self):
@@ -112,7 +112,7 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
 
             self.assert_(IErrorReportingUtility.providedBy(
                 traverse(package, 'ErrorReporting')))
-            get_transaction().commit()
+            transaction.commit()
 
         cx.close()
 
