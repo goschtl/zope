@@ -96,6 +96,7 @@
       template="registered.pt"
       class=".NameRegistered"
       permission="zope.ManageServices"
+      usage="objectview"
       />
 
   <page
