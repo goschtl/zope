@@ -12,9 +12,15 @@
 
     <span tal:condition="request/callSubscribe|nothing" tal:omit-tag="">
         <span tal:define="dummy context/subscribe" tal:omit-tag=""/>
+        Successfully subscribed.
     </span>
     <span tal:condition="request/callUnsubscribe|nothing" tal:omit-tag="">
         <span tal:define="dummy context/unsubscribe" tal:omit-tag=""/>
+        Successfully unsubscribed.
+    </span>
+    <span tal:condition="request/callRegisterExisting|nothing" tal:omit-tag="">
+        <span tal:define="dummy context/registerExisting" tal:omit-tag=""/>
+        Registration done.
     </span>
 
     <form method="POST">
@@ -26,6 +32,11 @@
            Subscription state: OFF
            <input type="submit" value="Subscribe" name="callSubscribe" />
        </span>
+    </form>
+
+    <form method="POST">
+        <input type="submit" value="Register Existing Objects"
+               name="callRegisterExisting" />
     </form>
 
   </div>
