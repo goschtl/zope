@@ -15,13 +15,13 @@
 
 Command line syntax summary:
 
-%(program)s create PATH ...
+%(program)s create BUNDLE SOURCE
 
 ``%(program)s help'' prints the global help (this message)
 ``%(program)s help command'' prints the local help for the command
 """
 """
-$Id: bundle.py,v 1.3 2003/08/17 06:08:56 philikon Exp $
+$Id: bundle.py,v 1.4 2003/08/28 18:11:06 fdrake Exp $
 """
 
 from zope.fssync.command import Command, Usage
@@ -44,8 +44,17 @@ def main():
 
 
 def create(opts, args):
-    """%(program)s create PATH ...
+    """%(program)s create BUNDLE SOURCE
 
+    Create a bundle from a site management folder or another bundle.
+    The bundle will only be created if the container is a site
+    management folder.  BUNDLE must be a valid bundle name.
+
+    The contents of SOURCE are copied into the newly created bundle,
+    and are scheduled for addition to the database.  The new bundle
+    can be manipulated using 'zsync add' and 'zsync revert' (and just
+    editing the contents) as needed before committing it to the
+    database.
     """
     factory = None
     type = None
