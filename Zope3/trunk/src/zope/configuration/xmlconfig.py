@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002, 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,20 +12,20 @@
 #
 ##############################################################################
 """
-
-$Id: xmlconfig.py,v 1.4 2002/12/28 00:02:29 jim Exp $
+$Id: xmlconfig.py,v 1.5 2003/01/02 16:52:38 bwarsaw Exp $
 """
 
 import os
-from zope.configuration import name
+import sys
+from keyword import iskeyword
+from types import StringType
 from os.path import abspath
+
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 from xml.sax.handler import ContentHandler, feature_namespaces
+from zope.configuration import name
 from zope.configuration.meta import begin, sub, end
-from keyword import iskeyword
-import sys, os
-from types import StringType
 from zope.configuration.exceptions import ConfigurationError
 
 # marker used in Context class and XMLConfig class to indicate
@@ -33,8 +33,9 @@ from zope.configuration.exceptions import ConfigurationError
 # when included, and the same went for all of its parents.
 _NO_MODULE_GIVEN = object()
 
+
 class ZopeXMLConfigurationError(ConfigurationError):
-    "Zope XML Configuration error"
+    """Zope XML Configuration error"""
 
     def __init__(self, locator, mess, etype=None):
         if etype is None:
@@ -55,6 +56,7 @@ class ZopeXMLConfigurationError(ConfigurationError):
         return 'File "%s", line %s, column %s\n\t%s' % (
             self.sid, self.lno, self.cno, self.mess)
 
+
 class ConfigurationExecutionError(ZopeXMLConfigurationError):
     """An error occurred during execution of a configuration action
     """
@@ -71,6 +73,7 @@ class ConfigurationExecutionError(ZopeXMLConfigurationError):
 
         self.lno, self.cno, self.sid = locator
         self.mess = mess
+
 
 class ConfigurationHandler(ContentHandler):
 
@@ -103,7 +106,6 @@ class ConfigurationHandler(ContentHandler):
             for (ns, aname), value in attrs.items():
                 if ns is None:
                     self.__context.file_attr(aname, value)
-
 
             stack.append(None)
             return
@@ -166,6 +168,7 @@ class ConfigurationHandler(ContentHandler):
             print 'endElementNS', actions
             raise
 
+
 class ZopeConflictingConfigurationError(ZopeXMLConfigurationError):
     "Zope XML Configuration error"
 
@@ -183,6 +186,7 @@ class ZopeConflictingConfigurationError(ZopeXMLConfigurationError):
                self.l1[2], self.l1[0], self.l1[1],
                self.l2[2], self.l2[0], self.l2[1],
                )
+
 
 class Context:
     def __init__(self, stack, module):
@@ -218,8 +222,8 @@ class Context:
     def package(self):
         return self.__package
 
-def xmlconfig(file, actions=None, context=None, directives=None,
-              testing=0):
+
+def xmlconfig(file, actions=None, context=None, directives=None, testing=0):
     if context is None:
         context = name
 
@@ -249,12 +253,14 @@ def xmlconfig(file, actions=None, context=None, directives=None,
 
             callable(*args, **kw)
 
+
 def testxmlconfig(file, actions=None, context=None, directives=None):
     """xmlconfig that doesn't raise configuration errors
 
     This is useful for testing, as it doesn't mask exception types.
     """
     return xmlconfig(file, actions, context, directives, testing=1)
+
 
 class ZopeConfigurationConflictError(ZopeXMLConfigurationError):
 
@@ -278,7 +284,6 @@ class XMLConfig:
         if module is not None and module is not _NO_MODULE_GIVEN:
             module_dir = abspath(os.path.split(module.__file__)[0])
             file_name = os.path.join(module_dir, file_name)
-
 
         self._actions = []
         self._directives = {('*', 'include'):
@@ -334,7 +339,6 @@ class XMLConfig:
         return ()
 
     def _include(self, file_name, package):
-
         f = open(file_name)
         self._stack.append(file_name)
         xmlconfig(f, self._actions, Context(self._stack, package),
@@ -345,7 +349,8 @@ class XMLConfig:
     def __call__(self):
         self.organize()
 
-    def __iter__(self): return iter(self._actions)
+    def __iter__(self):
+        return iter(self._actions)
 
     def organize(self):
         actions = self._actions
