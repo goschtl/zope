@@ -12,7 +12,7 @@
         description="A simple, content-based Page Template" />
 
     <require permission="Zope.View"
-                      attributes="content_type __call__" />
+                      attributes="__call__" />
 
     <require permission="Zope.ManageContent"
                       interface=".DTMLPage.IDTMLPage" />

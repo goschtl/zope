@@ -11,6 +11,7 @@
        interface="Zope.I18n.ITranslationService." />
    <require permission="Zope.ManageServices"
        interface="Zope.App.OFS.Container.IContainer." />
+   <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
 </content>
 
 <browser:icon name="zmi_icon" for="Zope.I18n.ITranslationService."
@@ -18,9 +19,16 @@
 
 <!-- Setup Message Catalogs -->
 <content class=".MessageCatalog.">
-  <require permission="Zope.Security" interface="Zope.I18n.IMessageCatalog." />
+
+  <require permission="Zope.View" 
+      interface="Zope.I18n.IMessageCatalog.IReadMessageCatalog." />
+
   <require permission="Zope.ManageServices"
       attributes="setMessage getMessageIds" />
+  <implements interface="Zope.App.OFS.Annotation.IAttributeAnnotatable." />
+      interface="Zope.I18n.IMessageCatalog.IWriteMessageCatalog." />
+
+
 </content>
 
 <factory component=".MessageCatalog." id="Message Catalog"/>

@@ -14,11 +14,9 @@
 
     <require
         permission="Zope.View"
-        interface="Zope.App.OFS.Content.File.IFile.IReadFile" />
-
-    <require
-        permission="Zope.View"
-        interface=".Image.IImage" />
+        interface="Zope.App.OFS.Content.File.IFile.IReadFile"
+        attributes="getImageSize"
+        />
 
     <require
         permission="Zope.ManageContent"
@@ -38,10 +36,9 @@
         description="An Internationalized Image" />
     <require
         permission="Zope.View"
-        interface="Zope.App.OFS.Content.File.IFile.IReadFile" />
-    <require
-        permission="Zope.View"
-        interface=".Image.IImage" />
+        interface="Zope.App.OFS.Content.File.IFile.IReadFile"
+        attributes="getImageSize"
+        />
     <require
         permission="Zope.ManageContent"
         interface="Zope.App.OFS.Content.File.IFile.IWriteFile" />
