@@ -289,6 +289,10 @@ class InclusionProcessor:
             spec = Specification(self.source, None, "collection")
         destination = os.path.abspath(destination)
         if spec.includes:
+            if not os.path.exists(destination):
+                os.mkdir(destination)
+                shutil.copymode(spec.source, destination)
+                shutil.copystat(spec.source, destination)
             self.addIncludes(destination, spec)
         else:
             self.copyTree(spec.source, destination)
@@ -379,7 +383,7 @@ class InclusionProcessor:
 
     def addIncludes(self, destination, spec):
         """Process all the inclusion from a specification."""
-        for relpath, source in spec.includes.iteritems():
+        for source, relpath in spec.includes.iteritems():
             self.addSingleInclude(relpath, source, destination)
 
     def addSingleInclude(self, relpath, source, destination):
