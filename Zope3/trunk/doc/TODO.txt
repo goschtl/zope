@@ -163,14 +163,8 @@ The order that items are listed here is not significant.
   When an object cannot beunpickled because it's class can't be found, 
   it should be converted to a special kind of immutable object.  
 
-  This is actually more of a ZODB 4 feature than a Zope feature.
-
-  Alternatively, perhaps folders should be unwilling to include items 
-  (or maybe there should be a vetoing add subscriber) that prevents
-  adding non-persistent objects.
-
-  Alternatively, there should be a persistent wrapper used for objects
-  stored in folders that are non-persistent.
+  See http://collector.zope.org/Zope3-dev/109
+  This requires a hook in the ZODB that Zope can override.
 
 - Supply a generic property mechanism?
 
