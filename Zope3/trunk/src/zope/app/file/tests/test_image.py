@@ -13,14 +13,14 @@
 ##############################################################################
 """
 
-$Id: test_image.py,v 1.7 2003/08/06 14:45:14 srichter Exp $
+$Id: test_image.py,v 1.2 2004/02/24 16:49:50 philikon Exp $
 """
 
 import unittest
 from zope.interface.verify import verifyClass
-import test_file
-from zope.app.content.image import Image, FileFactory
-from zope.app.content.file import File
+from zope.app.file.interfaces import IImage
+from zope.app.file.image import Image, FileFactory, ImageSized
+from zope.app.file.file import File, FileWriteFile, FileReadFile
 
 zptlogo = (
     'GIF89a\x10\x00\x10\x00\xd5\x00\x00\xff\xff\xff\xff\xff\xfe\xfc\xfd\xfd'
@@ -75,16 +75,26 @@ class TestImage(unittest.TestCase):
         self.assertEqual(file.getData(), 'Blah')
 
     def testInterface(self):
-        from zope.app.content.image import Image, IImage
-
         self.failUnless(IImage.isImplementedByInstancesOf(Image))
         self.failUnless(verifyClass(IImage, Image))
 
-class TestFileAdapters(test_file.TestFileAdapters, unittest.TestCase):
+class TestFileAdapters(unittest.TestCase):
 
     def _makeFile(self, *args, **kw):
         return Image(*args, **kw)
 
+    def test_ReadFile(self):
+        file = self._makeFile()
+        content = "This is some file\ncontent."
+        file.edit(content, 'text/plain')
+        self.assertEqual(FileReadFile(file).read(), content)
+        self.assertEqual(FileReadFile(file).size(), len(content))
+
+    def test_WriteFile(self):
+        file = self._makeFile()
+        content = "This is some file\ncontent."
+        FileWriteFile(file).write(content)
+        self.assertEqual(file.getData(), content)
 
 class DummyImage:
 
@@ -128,12 +138,10 @@ class TestSized(unittest.TestCase):
 
     def testInterface(self):
         from zope.app.interfaces.size import ISized
-        from zope.app.content.image import ImageSized
         self.failUnless(ISized.isImplementedByInstancesOf(ImageSized))
         self.failUnless(verifyClass(ISized, ImageSized))
 
     def test_zeroSized(self):
-        from zope.app.content.image import ImageSized
         s = ImageSized(DummyImage(0, 0, 0))
         self.assertEqual(s.sizeForSorting(), ('byte', 0))
         self.assertEqual(s.sizeForDisplay(), u'0 KB ${width}x${height}')
@@ -141,7 +149,6 @@ class TestSized(unittest.TestCase):
         self.assertEqual(s.sizeForDisplay().mapping['height'], '0')
 
     def test_arbitrarySize(self):
-        from zope.app.content.image import ImageSized
         s = ImageSized(DummyImage(34, 56, 78))
         self.assertEqual(s.sizeForSorting(), ('byte', 78))
         self.assertEqual(s.sizeForDisplay(), u'1 KB ${width}x${height}')
@@ -149,7 +156,6 @@ class TestSized(unittest.TestCase):
         self.assertEqual(s.sizeForDisplay().mapping['height'], '56')
 
     def test_unknownSize(self):
-        from zope.app.content.image import ImageSized
         s = ImageSized(DummyImage(-1, -1, 23))
         self.assertEqual(s.sizeForSorting(), ('byte', 23))
         self.assertEqual(s.sizeForDisplay(), u'1 KB ${width}x${height}')

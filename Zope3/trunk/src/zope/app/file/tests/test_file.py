@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -12,16 +12,15 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.3 2002/12/27 20:33:50 stevea Exp $
+$Id: test_file.py,v 1.2 2004/02/24 16:49:50 philikon Exp $
 """
+import unittest
+from zope.testing.doctestunit import DocTestSuite
 
-from zope.app.interfaces.content.file import IFile
+def test_suite():
+    return unittest.TestSuite((
+        DocTestSuite('zope.app.file.file'),        
+        ))
 
-
-class IImage(IFile):
-    """This interface defines an Image that can be displayed."""
-
-    def getImageSize():
-        """Return a tuple (x, y) that describes the dimensions of
-        the object."""
-
+if __name__ == '__main__':
+    unittest.main()

@@ -11,21 +11,118 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""File content component
 
-$Id: file.py,v 1.14 2004/02/20 16:57:24 fdrake Exp $
+$Id: file.py,v 1.2 2004/02/24 16:49:48 philikon Exp $
 """
 from persistent import Persistent
 from transaction import get_transaction
 from zope.interface import implements
 
 from zope.publisher.browser import FileUpload
-from zope.app.interfaces.content.file import IFile, IReadFile, IFileContent
+from interfaces import IFile, IReadFile, IFileContent
+
+__metaclass__ = type
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
 
 class File(Persistent):
+    """A persistent content component storing binary file data
+
+    Let's test the constructor:
+
+    >>> file = File()
+    >>> file.getContentType()
+    ''
+    >>> file.getData()
+    ''
+
+    >>> file = File('Foobar')
+    >>> file.getContentType()
+    ''
+    >>> file.getData()
+    'Foobar'
+
+    >>> file = File('Foobar', 'text/plain')
+    >>> file.getContentType()
+    'text/plain'
+    >>> file.getData()
+    'Foobar'
+
+    >>> file = File(data='Foobar', contentType='text/plain')
+    >>> file.getContentType()
+    'text/plain'
+    >>> file.getData()
+    'Foobar'
+
+
+    Let's test the mutators:
+
+    >>> file = File()
+    >>> file.setContentType('text/plain')
+    >>> file.getContentType()
+    'text/plain'
+
+    >>> file.setData('Foobar')
+    >>> file.getData()
+    'Foobar'
+
+    >>> file.edit('Blah', 'text/html')
+    >>> file.getContentType()
+    'text/html'
+    >>> file.getData()
+    'Blah'
+
+    >>> file.setData(None)
+    Traceback (most recent call last):
+    ...
+    TypeError: Cannot set None data on a file.
+
+
+    Let's test large data input:
+
+    >>> file = File()
+
+    Insert as string:
+
+    >>> file.setData('Foobar'*60000)
+    >>> file.getSize()
+    360000
+    >>> file.getData() == 'Foobar'*60000
+    True
+
+    Insert data as FileChunk:
+
+    >>> fc = FileChunk('Foobar'*4000)
+    >>> file.setData(fc)
+    >>> file.getSize()
+    24000
+    >>> file.getData() == 'Foobar'*4000
+    True
+
+    Insert data from file object:
+
+    >>> import cStringIO
+    >>> sio = cStringIO.StringIO()
+    >>> sio.write('Foobar'*100000)
+    >>> sio.seek(0)
+    >>> file.setData(sio)
+    >>> file.getSize()
+    600000
+    >>> file.getData() == 'Foobar'*100000
+    True
+
+
+    Last, but not least, verify the interface:
+
+    >>> from zope.interface.verify import verifyClass
+    >>> IFile.isImplementedByInstancesOf(File)
+    True
+    >>> verifyClass(IFile, File)
+    True
+    """
+    
     implements(IFileContent, IFile)
 
     def __init__(self, data='', contentType=''):
@@ -204,9 +301,17 @@ class FileChunk(Persistent):
 
         return ''.join(result)
 
-# Adapters for file-system style access
-
 class FileReadFile:
+    """Adapter for file-system style read access.
+
+    >>> file = File()
+    >>> content = "This is some file\\ncontent."
+    >>> file.edit(content, 'text/plain')
+    >>> FileReadFile(file).read() == content
+    True
+    >>> FileReadFile(file).size() == len(content)
+    True
+    """
 
     def __init__(self, context):
         self.context = context
@@ -218,6 +323,14 @@ class FileReadFile:
         return len(self.context.getData())
 
 class FileWriteFile:
+    """Adapter for file-system style write access.
+
+    >>> file = File()
+    >>> content = "This is some file\\ncontent."
+    >>> FileWriteFile(file).write(content)
+    >>> file.getData() == content
+    True
+    """
 
     def __init__(self, context):
         self.context = context

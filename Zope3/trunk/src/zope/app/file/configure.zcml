@@ -1,0 +1,151 @@
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:fssync='http://namespaces.zope.org/fssync'
+    i18n_domain='zope'
+    >
+
+  <!-- Module alias for backward compat
+       Will go away once we have a conversion script -->
+
+  <modulealias
+      module=".file"
+      alias="zope.app.content.file"
+      />
+
+  <modulealias
+      module=".interfaces"
+      alias="zope.app.interfaces.content.file"
+      />
+
+  <modulealias
+      module=".image"
+      alias="zope.app.content.image"
+      />
+
+  <modulealias
+      module=".interfaces"
+      alias="zope.app.interfaces.content.image"
+      />
+
+
+  <!-- setting up content types -->
+
+  <interface 
+      interface=".interfaces.IFile" 
+      type="zope.app.interfaces.content.IContentType"
+      /> 
+
+  <interface 
+      interface=".interfaces.IImage" 
+      type="zope.app.interfaces.content.IContentType"
+      /> 
+
+  <permission
+      id="zope.AddImages"
+      title="[add-images-permission] Add Images"
+      />
+
+
+  <!-- content classes -->
+
+  <content class=".file.File">
+    <factory
+        id="File"
+        permission="zope.ManageContent"
+        title="File"
+        description="A File"
+        />
+
+    <require
+        permission="zope.View"
+        interface=".interfaces.IReadFile"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IWriteFile"
+        set_schema=".interfaces.IReadFile"
+        />
+
+    <implements
+       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+       />
+  </content>
+
+  <content class=".image.Image">
+    <factory
+        id="Image"
+        permission="zope.ManageContent"
+        title="Image"
+        description="An Image"
+        />
+
+    <require
+        permission="zope.View"
+        interface="zope.app.file.interfaces.IReadFile"
+        attributes="getImageSize"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.file.interfaces.IWriteFile"
+        set_schema="zope.app.file.interfaces.IReadFile"
+        />
+
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+        />
+  </content>
+
+  <adapter
+      factory=".image.ImageSized"
+      provides="zope.app.interfaces.size.ISized"
+      for=".interfaces.IImage"
+      />
+
+
+  <!-- fssync adapters -->
+
+  <adapter 
+      for=".interfaces.IFile"
+      provides="zope.app.interfaces.file.IReadFile"
+      factory=".file.FileReadFile"
+      permission="zope.View"
+      />
+
+  <adapter 
+      for=".interfaces.IFile"
+      provides="zope.app.interfaces.file.IWriteFile"
+      factory=".file.FileWriteFile"
+      permission="zope.ManageContent"
+      />
+
+  <adapter
+      for=".interfaces.IReadFile"
+      provides="zope.app.interfaces.index.text.ISearchableText"
+      factory=".file.SearchableText"
+      />
+
+  <fssync:adapter
+      class=".file.File"
+      factory=".fssync.FileAdapter"
+      />
+
+  <adapter
+      for="zope.app.folder.interfaces.IFolder"
+      provides="zope.app.interfaces.file.IFileFactory"
+      factory=".image.FileFactory"
+      permission="zope.ManageContent"
+      />
+
+  <fssync:adapter
+      class=".image.Image"
+      factory=".fssync.FileAdapter"
+      />
+
+
+  <!-- include browser package -->
+
+  <include package=".browser" />
+
+</configure>

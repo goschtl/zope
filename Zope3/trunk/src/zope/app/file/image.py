@@ -12,18 +12,20 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.10 2003/08/19 14:37:44 fdrake Exp $
+$Id: image.py,v 1.2 2004/02/24 16:49:48 philikon Exp $
 """
 import struct
-from zope.app.content.file import File
 from cStringIO import StringIO
-from zope.app.interfaces.content.image import IImage
+
+from zope.interface import implements
+
 from zope.app.interfaces.size import ISized
 from zope.app.size import byteDisplay
-
 from zope.app.content_types import guess_content_type
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.interface import implements
+
+from file import File
+from interfaces import IImage
 
 __metaclass__ = type
 
@@ -49,9 +51,7 @@ class Image(File):
     data = property(File.getData, setData, None,
                     """Contains the data of the file.""")
 
-
 class ImageSized:
-
     implements(ISized)
 
     def __init__(self, image):
@@ -76,6 +76,21 @@ class ImageSized:
         size.mapping = mapping 
         return size
 
+class FileFactory:
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, name, content_type, data):
+        if not content_type and data:
+            content_type, width, height = getImageInfo(data)
+        if not content_type:
+            content_type, encoding = guess_content_type(name, data, '')
+
+        if content_type.startswith('image/'):
+            return Image(data)
+
+        return File(data, content_type)
 
 def getImageInfo(data):
     data = str(data)
@@ -135,20 +150,3 @@ def getImageInfo(data):
             pass
 
     return content_type, width, height
-
-
-class FileFactory:
-
-    def __init__(self, context):
-        self.context = context
-
-    def __call__(self, name, content_type, data):
-        if not content_type and data:
-            content_type, width, height = getImageInfo(data)
-        if not content_type:
-            content_type, encoding = guess_content_type(name, data, '')
-
-        if content_type.startswith('image/'):
-            return Image(data)
-
-        return File(data, content_type)

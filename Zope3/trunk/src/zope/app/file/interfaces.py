@@ -13,7 +13,7 @@
 ##############################################################################
 """Basic File interfaces.
 
-$Id: file.py,v 1.6 2004/02/04 19:17:36 jim Exp $
+$Id: interfaces.py,v 1.2 2004/02/24 16:49:48 philikon Exp $
 """
 import zope.schema
 from zope.interface import Interface
@@ -67,7 +67,6 @@ class IFile(IReadFile, IWriteFile):
 
     """
 
-
 class IFileContent(Interface):
     """Marker interface for content that can be managed as files.
 
@@ -75,3 +74,13 @@ class IFileContent(Interface):
     /.  In particular, if the content included HTML, relative links in
     the HTML are relative to the container the content is in.
     """
+
+
+class IImage(IFile):
+    """This interface defines an Image that can be displayed.
+    """
+
+    def getImageSize():
+        """Return a tuple (x, y) that describes the dimensions of
+        the object.
+        """

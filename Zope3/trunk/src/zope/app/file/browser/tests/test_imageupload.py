@@ -15,22 +15,22 @@
 
 XXX longer description goes here.
 
-$Id: test_imageupload.py,v 1.6 2003/11/27 13:59:12 philikon Exp $
+$Id: test_imageupload.py,v 1.2 2004/02/24 16:49:49 philikon Exp $
 """
 
 import os
 import unittest
 
-import zope.app.browser.content # for __file__
-
 from zope.app.tests import ztapi
-from zope.app.browser.content.image import ImageUpload
 from zope.app.browser.form.editview import EditView
 from zope.app.browser.form.widget import BytesWidget, BytesAreaWidget
-from zope.app.content.image import Image, IImage
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.browser import TestRequest
 from zope.schema.interfaces import IField, IBytesLine, IBytes
+
+import zope.app.file.browser # for __file__
+from zope.app.file.image import Image, IImage
+from zope.app.file.browser.image import ImageUpload
 
 
 class IU(ImageUpload, EditView):
@@ -47,7 +47,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         ztapi.browserView(IBytesLine, 'edit', BytesWidget)
         ztapi.browserView(IBytes, 'edit', BytesAreaWidget)
 
-        icondir = os.path.split(zope.app.browser.content.__file__)[0]
+        icondir = os.path.split(zope.app.file.browser.__file__)[0]
         data = open(os.path.join(icondir, 'image_icon.gif'), 'rb').read()
         image = Image(data)
         self.__view = IU(image, TestRequest())

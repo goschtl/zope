@@ -9,13 +9,6 @@
       permission="zope.Public"
       />
 
-  <browser:view
-      name="_traverse"
-      for="zope.app.interfaces.content.file.IFileContent"
-      class="zope.app.publication.traversers.FileContentTraverser"
-      permission="zope.Public"
-      />
-
   <browser:page
       name="_traverse"
       for="zope.app.interfaces.container.IItemContainer"
