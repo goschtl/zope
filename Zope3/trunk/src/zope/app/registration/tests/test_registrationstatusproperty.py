@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Status Property Tests
 
-$Id: test_registrationstatusproperty.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
+$Id: test_registrationstatusproperty.py,v 1.2 2004/04/08 21:02:45 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.component.interfaces import IServiceService
@@ -39,8 +39,6 @@ class PassiveRegistration(TestingRegistration):
 class UtilityRegistration(TestingRegistration):
     serviceType = "Utilities"
 
-class TestingRegistrationStack(TestingRegistrationStack):
-    class_ = TestingRegistration
 
 class TestingServiceManager:
 
@@ -90,38 +88,53 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(configa.status, UnregisteredStatus)
 
         configa.status = RegisteredStatus
-        self.assertEqual(self.__sm.registry._data, (None, 'a'))
+
+        data = [(int(info['active']), info['registration'].id)
+                for info in self.__sm.registry.info()]
+        self.assertEqual(data, [(0, 'a')])
         self.assertEqual(configa.status, RegisteredStatus)
 
         configa.status = ActiveStatus
-        self.assertEqual(self.__sm.registry._data, ('a', ))
+        data = [(info['active'], info['registration'].id)
+                for info in self.__sm.registry.info()]
+        self.assertEqual(data, [(1, 'a')])
         self.assertEqual(configa.status, ActiveStatus)
 
         configb = contained(TestingRegistration('b'), self.rootFolder)
-        self.assertEqual(self.__sm.registry._data, ('a', ))
+        data = [(info['active'], info['registration'].id)
+                for info in self.__sm.registry.info()]
+        self.assertEqual(data, [(1, 'a',)])
         self.assertEqual(configb.status, UnregisteredStatus)
 
         configb.status = RegisteredStatus
-        self.assertEqual(self.__sm.registry._data, ('a', 'b'))
+        data = [(info['active'], info['registration'].id)
+                for info in self.__sm.registry.info()]
+        self.assertEqual(data, [(1, 'a'), (0, 'b')])
         self.assertEqual(configb.status, RegisteredStatus)
 
         configc = contained(TestingRegistration('c'), self.rootFolder)
         self.assertEqual(configc.status, UnregisteredStatus)
-        self.assertEqual(self.__sm.registry._data, ('a', 'b'))
+        self.assertEqual(data, [(1, 'a'), (0, 'b')])
 
         configc.status = RegisteredStatus
-        self.assertEqual(self.__sm.registry._data, ('a', 'b', 'c'))
+        data = [(info['active'], info['registration'].id)
+                for info in self.__sm.registry.info()]
+        self.assertEqual(data, [(1, 'a'), (0, 'b'), (0, 'c')])
         self.assertEqual(configc.status, RegisteredStatus)
 
         configc.status = ActiveStatus
-        self.assertEqual(self.__sm.registry._data, ('c', 'a', 'b'))
+        data = [(info['active'], info['registration'].id)
+                for info in self.__sm.registry.info()]
+        self.assertEqual(data, [(1, 'c'), (0, 'a'), (0, 'b')])
         self.assertEqual(configc.status, ActiveStatus)
 
         configc.status = UnregisteredStatus
-        self.assertEqual(self.__sm.registry._data, (None, 'a', 'b'))
+        data = [(int(info['active']), info['registration'].id)
+                for info in self.__sm.registry.info()]
+        self.assertEqual(data, [(1, 'a'), (0, 'b')])
         self.assertEqual(configc.status, UnregisteredStatus)
         self.assertEqual(configb.status, RegisteredStatus)
-        self.assertEqual(configa.status, RegisteredStatus)
+        self.assertEqual(configa.status, ActiveStatus)
 
     def test_passive(self):
         # scenario:
