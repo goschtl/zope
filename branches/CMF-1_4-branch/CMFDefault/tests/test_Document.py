@@ -71,7 +71,7 @@ class DocumentTests(RequestTest):
         self.assertEqual( len(d.Contributors()), 3 )
 
     def test_EntityInTitle(self):
-        self.REQUEST['BODY'] = ENTITY_IN_TITLE 
+        self.REQUEST['BODY'] = ENTITY_IN_TITLE
         d = self.d
         d.PUT(self.REQUEST, self.RESPONSE)
         self.assertEqual( d.title, '&Auuml;rger' )
@@ -119,17 +119,17 @@ class DocumentTests(RequestTest):
         file = StringIO( html )
         d.edit(text_format='html', text='', file=file)
         self.assertEqual( d.CookedBody(), body )
-        
+
     def test_plain_text(self):
         """test that plain text forrmat works"""
-        d = self.d 
+        d = self.d
         d.edit(text_format='plain', text='*some plain text*\nwith a newline')
         self.assertEqual( d.CookedBody(), '*some plain text*<br>with a newline')
 
     def test_EditStructuredTextWithHTML(self):
         d = self.d
         d.edit(text_format='structured-text', text=STX_WITH_HTML)
-        
+
         self.assertEqual( d.Format(), 'text/plain' )
 
     def test_StructuredText(self):
@@ -210,7 +210,7 @@ class DocumentTests(RequestTest):
         self.assertEqual( d.EditableBody(), STX_NO_HEADERS )
         self.failUnless( d.CookedBody() )
         self.assertEqual( d.Format(), 'text/plain' )
-    
+
     def test_STX_NoHeaders( self ):
         self.REQUEST['BODY']=STX_NO_HEADERS
         d = self.d
@@ -226,14 +226,14 @@ class DocumentTests(RequestTest):
         self.failUnless( 'STX' in d.Subject() )
 
         d.PUT(self.REQUEST, self.RESPONSE)
-        
+
         self.assertEqual( d.Format(), 'text/plain' )
         self.assertEqual( d.Title(), 'Plain STX' )
         self.assertEqual( d.Description(), 'Look, Ma, no headers!' )
         self.assertEqual( len( d.Subject() ), 2 )
         self.failUnless( 'plain' in d.Subject() )
         self.failUnless( 'STX' in d.Subject() )
-    
+
     def test_STX_NoHeaders_but_colon( self ):
         d = self.d
         d.editMetadata( title="Plain STX"
@@ -243,7 +243,7 @@ class DocumentTests(RequestTest):
 
         d.edit(text_format='structured-text', text=STX_NO_HEADERS_BUT_COLON)
         self.assertEqual( d.EditableBody(), STX_NO_HEADERS_BUT_COLON )
-    
+
     def test_ZMI_edit( self ):
         d = self.d
         d.editMetadata( title="Plain STX"
@@ -316,7 +316,7 @@ class DocumentFTPGetTests(RequestTest):
         title_pattern = compile( r'<title>(.*)</title>' )
         simple_headers = []
         while simple_lines and simple_lines[0] != '<BODY>':
-            header = simple_lines[0].strip().lower() 
+            header = simple_lines[0].strip().lower()
             match = meta_pattern.search( header )
             if match:
                 simple_headers.append( match.groups() )
@@ -416,7 +416,7 @@ class DocumentPUTTests(RequestTest):
         self.assertEqual( r.status, 204 )
 
     def test_PutStructuredTextWithHTML(self):
-            
+
         self.REQUEST['BODY'] = STX_WITH_HTML
 
         r = self.d.PUT(self.REQUEST, self.RESPONSE)
@@ -432,10 +432,10 @@ class DocumentPUTTests(RequestTest):
         self.assertEqual( r.status, 204 )
 
     def test_PutHtmlWithDoctype(self):
-        
+
         html = '%s\n\n  \n   %s' % (DOCTYPE, BASIC_HTML)
         self.REQUEST['BODY'] = html
-        
+
         r = self.d.PUT(self.REQUEST, self.RESPONSE)
         self.assertEqual( self.d.Format(), 'text/html' )
         self.assertEqual( self.d.Description(), 'Describe me' )
@@ -451,4 +451,3 @@ def test_suite():
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')
-

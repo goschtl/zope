@@ -109,4 +109,3 @@ setDefaultRoles(ReviewPortalContent, ('Manager',))  # + Reviewer
 
 AccessFuturePortalContent = 'Access future portal content'
 setDefaultRoles(AccessFuturePortalContent, ('Manager',))  # + Reviewer
-

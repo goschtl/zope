@@ -91,7 +91,7 @@ class NewsItemTests(RequestTest):
         self.REQUEST['BODY'] = BASIC_STRUCTUREDTEXT
         d = NewsItem('foo')
         d.PUT( self.REQUEST, self.RESPONSE )
-        
+
         self.assertEqual( d.Title(), 'My Document')
         self.assertEqual( d.Description(), 'A document by me')
         self.assertEqual( d.Format(), 'text/plain' )

@@ -450,7 +450,7 @@ class DefaultDublinCoreImpl( PropertyManager ):
         # locking interface, and fail gracefully if they dont
         if hasattr(self, 'failIfLocked'):
             self.failIfLocked()
-            
+
         self._editMetadata(title=title
                      , subject=subject
                      , description=description

@@ -1,7 +1,7 @@
 ## Script (Python) "file_edit"
 ##parameters=precondition='', file='', change_and_view=''
 ##title=Edit a file
- 
+
 context.edit(
      precondition=precondition,
      file=file)

@@ -31,7 +31,7 @@ class portal_actions(Interface):
 
     # listActionProviders__roles__ = ( 'Manager', )
     def listActionProviders():
-        """ Lists all action provider names registered with the 
+        """ Lists all action provider names registered with the
         actions tool.
         """
 
@@ -39,7 +39,7 @@ class portal_actions(Interface):
     def addActionProvider( provider_name ):
         """ Add a new action provider to the providers known by the actions
         tool. A provider must implement listActions.
-        The provider is only added is the actions tool can find the 
+        The provider is only added is the actions tool can find the
         object corresponding to the provider_name
         """
 
@@ -100,4 +100,3 @@ class ActionProvider(Interface):
           content_url
           The new way of doing this is....
         """
-

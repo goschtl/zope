@@ -50,7 +50,7 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
                                 , action=Expression(
                text='string:${folder_url}/folder_contents')
                                 , condition=Expression(
-               text='python: folder is not object') 
+               text='python: folder is not object')
                                 , permissions=('List folder contents',)
                                 , category='object'
                                 , visible=1
@@ -88,7 +88,7 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
                          , 'action' : 'manage_overview'
                          }
                      ) + Folder.manage_options
-                     ) 
+                     )
 
     #
     #   ZMI methods
@@ -255,6 +255,6 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
         else:
             for i in a:
                 append(i)
-        
+
 
 InitializeClass(ActionsTool)

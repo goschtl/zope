@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Unit tests for SortCriterion module.
 
@@ -24,7 +24,7 @@ class SortCriterionTests( unittest.TestCase ):
         from Products.CMFTopic.SortCriterion import SortCriterion
         self.failUnless(
             Criterion.isImplementedByInstancesOf( SortCriterion ) )
-    
+
     def test_Empty( self ):
 
         from Products.CMFTopic.SortCriterion import SortCriterion
@@ -40,7 +40,7 @@ class SortCriterionTests( unittest.TestCase ):
         self.assertEqual( len( items ), 1 )
         self.assertEqual( items[0][0], 'sort_on' )
         self.assertEqual( items[0][1], 'foofield' )
-    
+
     def test_Nonempty( self ):
 
         from Products.CMFTopic.SortCriterion import SortCriterion
@@ -69,4 +69,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    

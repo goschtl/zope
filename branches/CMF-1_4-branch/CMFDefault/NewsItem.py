@@ -98,4 +98,3 @@ class NewsItem( Document ):
 
 
 InitializeClass( NewsItem )
-

@@ -42,7 +42,7 @@ They may also contain HTML, or "plain" text.
   , 'product'        : 'CMFDefault'
   , 'factory'        : 'addDocument'
   , 'immediate_view' : 'metadata_edit_form'
-  , 'actions'        : ( { 'id'            : 'view' 
+  , 'actions'        : ( { 'id'            : 'view'
                          , 'name'          : 'View'
                          , 'action': 'string:${object_url}/document_view'
                          , 'permissions'   : (View,)
@@ -78,7 +78,7 @@ class CMFHtmlWithImages(HTMLWithImages):
         body parts perfectly rendered.
         """
         for c in doc.getChildNodes():
-           getattr(self, self.element_types[c.getNodeName()])(c, level, output)
+            getattr(self, self.element_types[c.getNodeName()])(c, level, output)
 
 CMFHtmlWithImages = CMFHtmlWithImages()
 
@@ -199,7 +199,7 @@ class Document(PortalContent, DefaultDublinCoreImpl):
         """ Simple stab at guessing the inner format of the text """
         if html_headcheck(text): return 'html'
         else: return 'structured-text'
-    
+
     security.declarePrivate('handleText')
     def handleText(self, text, format=None, stx_level=None):
         """ Handles the raw text, returning headers, body, format """
@@ -316,7 +316,7 @@ class Document(PortalContent, DefaultDublinCoreImpl):
     def Description(self):
         """ Dublin core description, also important for indexing """
         return self.description
-    
+
     security.declareProtected(View, 'Format')
     def Format(self):
         """ Returns a content-type style format of the underlying source """
@@ -324,7 +324,7 @@ class Document(PortalContent, DefaultDublinCoreImpl):
             return 'text/html'
         else:
             return 'text/plain'
-    
+
     security.declareProtected(ModifyPortalContent, 'setFormat')
     def setFormat(self, format):
         """ Set text format and Dublin Core resource format.

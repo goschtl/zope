@@ -116,7 +116,7 @@ class Favorite( Link ):
     security.declareProtected(View, 'getObject')
     def getObject(self):
         """
-        Return the actual object that the Favorite is 
+        Return the actual object that the Favorite is
         linking to
         """
         portal_url = getToolByName(self, 'portal_url')

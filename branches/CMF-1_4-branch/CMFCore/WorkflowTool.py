@@ -55,7 +55,7 @@ class WorkflowInformation:
 
 class WorkflowTool (UniqueObject, Folder):
 
-    """ Mediator tool, mapping workflow objects 
+    """ Mediator tool, mapping workflow objects
     """
     id = 'portal_workflow'
     meta_type = 'CMF Workflow Tool'
@@ -210,7 +210,7 @@ class WorkflowTool (UniqueObject, Folder):
         """ Returns a mapping of the catalog variables that apply to ob.
 
         o Invoked by portal_catalog.
-        
+
         o Allows workflows to add variables to the catalog based on
           workflow status, making it possible to implement queues.
         """
@@ -233,12 +233,12 @@ class WorkflowTool (UniqueObject, Folder):
         """ Returns a list of actions to be displayed to the user.
 
         o Invoked by the portal_actions tool.
-        
+
         o Allows workflows to include actions to be displayed in the
           actions box.
 
         o Object actions are supplied by workflows that apply to the object.
-        
+
         o Global actions are supplied by all workflows.
         """
         chain = self.getChainFor(info.content)
@@ -277,11 +277,11 @@ class WorkflowTool (UniqueObject, Folder):
     def doActionFor(self, ob, action, wf_id=None, *args, **kw):
 
         """ Execute the given workflow action for the object.
-        
+
         o Invoked by user interface code.
 
         o Allows the user to request a workflow action.
-        
+
         o The workflow object must perform its own security checks.
         """
         wfs = self.getWorkflowsFor(ob)
@@ -310,11 +310,11 @@ class WorkflowTool (UniqueObject, Folder):
     def getInfoFor(self, ob, name, default=_marker, wf_id=None, *args, **kw):
 
         """ Return a given workflow-specific property for an object.
-        
+
         o Invoked by user interface code.
-        
+
         o Allows the user to request information provided by the workflow.
-        
+
         o The workflow object must perform its own security checks.
         """
         if wf_id is None:
@@ -364,7 +364,7 @@ class WorkflowTool (UniqueObject, Folder):
 
         """ Notifies all applicable workflows of an action before it
             happens, allowing veto by exception.
-            
+
         o Unless an exception is thrown, either a notifySuccess() or
           notifyException() can be expected later on.
 
@@ -396,7 +396,7 @@ class WorkflowTool (UniqueObject, Folder):
     def getHistoryOf(self, wf_id, ob):
 
         """ Return the history of an object.
-        
+
         o Invoked by workflow definitions.
         """
         if hasattr(aq_base(ob), 'workflow_history'):

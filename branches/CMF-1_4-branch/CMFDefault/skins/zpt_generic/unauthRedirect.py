@@ -4,4 +4,3 @@
 ##
 REQUEST=context.REQUEST
 REQUEST.RESPONSE.redirect( context.absolute_url())
-

@@ -57,9 +57,9 @@ def addEvent(self
              , id
              , title=''
              , description=''
-             , effective_date = None 
-             , expiration_date = None 
-             , start_date = None 
+             , effective_date = None
+             , expiration_date = None
+             , start_date = None
              , end_date = None
              , location=''
              , contact_name=''
@@ -109,7 +109,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
     # Declarative security
     security = ClassSecurityInfo()
     security.declareObjectProtected(View)
-    
+
     __implements__ = ( PortalContent.__implements__
                      , DefaultDublinCoreImpl.__implements__
                      )
@@ -118,8 +118,8 @@ class Event(PortalContent, DefaultDublinCoreImpl):
                  , id
                  , title=''
                  , description=''
-                 , effective_date = None 
-                 , expiration_date = None 
+                 , effective_date = None
+                 , expiration_date = None
                  , start_date = None
                  , end_date = None
                  , location=''
@@ -140,7 +140,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
             start_date = DateTime()
         if end_date is None:
             end_date = start_date
-        
+
         if end_date < start_date:
             end_date = start_date
 
@@ -159,7 +159,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
             if attrib is not None:
                 attrib = DateTime( attrib )
         return attrib
-    
+
     security.declarePublic('getEndStrings')
     def getEndStrings(self):
         """
@@ -195,8 +195,8 @@ class Event(PortalContent, DefaultDublinCoreImpl):
             ):
         """\
         """
-        
-        if title is not None: 
+
+        if title is not None:
             self.setTitle(title)
         if description is not None:
             self.setDescription(description)
@@ -223,12 +223,12 @@ class Event(PortalContent, DefaultDublinCoreImpl):
                                          , stopAMPM
                                          )
             end_date = DateTime( exdate )
-        
+
         if start_date and end_date:
 
             if end_date < start_date:
                 end_date = start_date
- 
+
             self.setStartDate( start_date )
             self.setEndDate( end_date )
 
@@ -243,8 +243,8 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         if event_url is not None:
             self.event_url = event_url
         self.reindexObject()
-    edit = WorkflowAction(edit) 
-    
+    edit = WorkflowAction(edit)
+
     security.declarePublic('buildTimes')
     def buildTimes(self):
         result = []
@@ -252,7 +252,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
             for min in (00, 30):
                 result.append('%02d:%02d' % (hour, min))
         return result
-    
+
     security.declarePublic('buildDays')
     def buildDays(self):
         result = []
@@ -266,7 +266,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         for month in range (1, 13):
             result.append(str('%d' % (month)))
         return result
-    
+
     security.declarePublic('buildYears')
     def buildYears(self):
         result = []
@@ -282,7 +282,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
         Setting the event start date, when the event is scheduled to begin.
         """
         self.start_date = self._datify(start)
-    
+
     security.declareProtected(EventPermissions.ChangeEvents, 'setEndDate')
     def setEndDate(self, end):
         """
@@ -304,21 +304,21 @@ class Event(PortalContent, DefaultDublinCoreImpl):
             Return our stop time as a string.
         """
         date = getattr( self, 'end_date', None )
-        return date is None and self.start() or date    
+        return date is None and self.start() or date
 
     security.declarePublic('getStartTimeString')
     def getStartTimeString( self ):
         """
             Return our start time as a string.
         """
-        return self.start().AMPMMinutes() 
+        return self.start().AMPMMinutes()
 
     security.declarePublic('getStopTimeString')
     def getStopTimeString( self ):
         """
             Return our stop time as a string.
         """
-        return self.end().AMPMMinutes() 
+        return self.end().AMPMMinutes()
 
     security.declarePrivate('handleText')
     def handleText(self, text, format=None):
@@ -357,7 +357,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
                           language=headers['Language'],
                           rights=headers['Rights'],
                           )
- 
+
     security.declarePublic( 'getMetadataHeaders' )
     def getMetadataHeaders(self):
         """Return RFC-822-style header spec."""
@@ -398,7 +398,7 @@ class Event(PortalContent, DefaultDublinCoreImpl):
              , contact_phone=headers['ContactPhone']
              , event_url=headers['EventURL']
              )
-            
+
         except ResourceLockedError, msg:
             get_transaction().abort()
             RESPONSE.setStatus(423)

@@ -28,7 +28,7 @@ class TestImageElement(TestCase):
 
         assert image.get_size() > 0
         assert image.get_size() == testfilesize
-        
+
 def test_suite():
     return TestSuite((
         makeSuite(TestImageElement),
@@ -36,4 +36,4 @@ def test_suite():
     return suite
 
 if __name__ == '__main__':
-    main(defaultTest='test_suite')        
+    main(defaultTest='test_suite')

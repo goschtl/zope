@@ -27,7 +27,7 @@ from Products.CMFCore.utils import ContentInit
 from Products.CMFCore.utils import registerIcon
 
 import utils
- 
+
 import Portal
 import Document
 import Link

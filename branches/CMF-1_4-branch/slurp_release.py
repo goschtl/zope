@@ -17,7 +17,7 @@ class ReleasePackage:
     def __init__( self, args ):
 
         self._parseArgs( args )
-        
+
     #
     #   Packaging API
     #
@@ -90,7 +90,7 @@ class ReleasePackage:
 
     def run( self ):
         self._runCommand()
-    
+
     #
     #   Helper methods
     #
@@ -106,7 +106,7 @@ options:
     -?, -h, --help      Print this usage message
 
     -x, --execute       Select a particular step (def. 'doWholeEnchilada')
-    
+
     -a, --auth          Use authentication pair, in fmt 'userid:password'
 """
         values = {}

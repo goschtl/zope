@@ -43,7 +43,7 @@ if rights is None:
 
 context.portal_discussion.overrideDiscussionFor(context, allowDiscussion)
 
-try:  
+try:
     context.editMetadata( title=title
                         , description=description
                         , subject=subject

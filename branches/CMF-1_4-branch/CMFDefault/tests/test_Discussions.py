@@ -54,9 +54,9 @@ class DiscussionItemContainerTests(TestCase):
 class DiscussionTests( SecurityTest ):
 
     def setUp( self ):
-        
+
         SecurityTest.setUp(self)
-        
+
         root = self.root
         root._setObject( 'portal_discussion', DiscussionTool() )
         self.discussion_tool = root.portal_discussion
@@ -64,14 +64,14 @@ class DiscussionTests( SecurityTest ):
         self.catalog_tool = root.portal_catalog
         root._setObject( 'portal_url', URLTool() )
         self.url_tool = root.portal_url
-        root._setObject( 'portal_workflow', WorkflowTool() ) 
+        root._setObject( 'portal_workflow', WorkflowTool() )
         self.workflow_tool = root.portal_workflow
         root._setObject( 'portal_types', TypesTool() )
         types_tool = self.types_tool = root.portal_types
         try: root._delObject('test')
         except AttributeError: pass
         root._setObject( 'test', DummyContent( 'test', catalog=1 ) )
-            
+
     def test_policy( self ):
 
         test = self.root.test
@@ -110,7 +110,7 @@ class DiscussionTests( SecurityTest ):
         test.allow_discussion = 1
         assert self.discussion_tool.getDiscussionFor( test )
         assert test.talkback
-    
+
     def test_nestedReplies( self ):
         test = self.root.test
         test.allow_discussion = 1

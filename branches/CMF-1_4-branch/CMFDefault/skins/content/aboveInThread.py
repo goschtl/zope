@@ -12,6 +12,5 @@ if parents:
         breadcrumbs = breadcrumbs + p_str + ':'
 
     breadcrumbs = breadcrumbs[:-1] + '<p>'
-        
-return breadcrumbs
 
+return breadcrumbs

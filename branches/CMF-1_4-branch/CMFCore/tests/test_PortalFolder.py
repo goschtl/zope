@@ -454,7 +454,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Title: foo'
-    
+
     def test_Creator( self ):
         cfilter = ContentFilter( Creator='moe' )
         dummy = self.dummy
@@ -469,7 +469,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         self.assertEqual(len( lines ),1)
         self.assertEqual(lines[0],'Creator: moe')
-    
+
     def test_Description( self ):
         cfilter = ContentFilter( Description='funny' )
         dummy = self.dummy
@@ -484,7 +484,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Description: funny'
-    
+
     def test_Subject( self ):
         cfilter = ContentFilter( Subject=('foo',) )
         dummy = self.dummy
@@ -517,7 +517,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Subject: foo, bar'
-    
+
     def test_created( self ):
         cfilter = ContentFilter( created=DateTime( '2001/01/01' )
                                , created_usage='range:min' )
@@ -535,7 +535,7 @@ class ContentFilterTests( TestCase ):
         assert lines[0] == 'Created since: 2001/01/01'
 
     def test_created2( self ):
-        
+
         cfilter = ContentFilter( created=DateTime( '2001/01/01' )
                                , created_usage='range:max' )
 
@@ -551,7 +551,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Created before: 2001/01/01'
-    
+
     def test_modified( self ):
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
                                , modified_usage='range:min' )
@@ -570,7 +570,7 @@ class ContentFilterTests( TestCase ):
 
     def test_modified2( self ):
         cfilter = ContentFilter( modified=DateTime( '2001/01/01' )
-                               , modified_usage='range:max' )        
+                               , modified_usage='range:max' )
         dummy = self.dummy
         assert not cfilter( dummy )
         dummy.modified_date = DateTime( '2000/12/31' )
@@ -583,7 +583,7 @@ class ContentFilterTests( TestCase ):
         lines = desc.split('; ')
         assert len( lines ) == 1
         assert lines[0] == 'Modified before: 2001/01/01'
- 
+
     def test_mixed( self ):
         cfilter = ContentFilter( created=DateTime( '2001/01/01' )
                                , created_usage='range:max'

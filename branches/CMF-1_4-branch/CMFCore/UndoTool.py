@@ -45,7 +45,7 @@ class UndoTool (UniqueObject, SimpleItem, ActionProviderBase):
                                 , action=Expression(
                text='string:${portal_url}/undo_form')
                                 , condition=Expression(
-               text='member') 
+               text='member')
                                 , permissions=(ListUndoableChanges,)
                                 , category='global'
                                 , visible=1
@@ -58,7 +58,7 @@ class UndoTool (UniqueObject, SimpleItem, ActionProviderBase):
     manage_options = ( ActionProviderBase.manage_options +
                        SimpleItem.manage_options +
                        ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     , 
+                     ,
                      ))
     #
     #   ZMI methods

@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Unit tests for SimpleStringCriterion module.
 
@@ -25,7 +25,7 @@ class SimpleStringCriterionTests( unittest.TestCase ):
             import SimpleStringCriterion
         self.failUnless(
             Criterion.isImplementedByInstancesOf( SimpleStringCriterion ) )
-    
+
     def test_Empty( self ):
 
         from Products.CMFTopic.SimpleStringCriterion \
@@ -37,7 +37,7 @@ class SimpleStringCriterionTests( unittest.TestCase ):
         self.assertEqual( ssc.field, 'foofield' )
         self.assertEqual( ssc.value, '' )
         self.assertEqual( len( ssc.getCriteriaItems() ), 0 )
-    
+
     def test_Nonempty( self ):
 
         from Products.CMFTopic.SimpleStringCriterion \
@@ -65,4 +65,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    

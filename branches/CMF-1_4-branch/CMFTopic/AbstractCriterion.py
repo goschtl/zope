@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Home of the abstract Criterion base class.
 
@@ -66,7 +66,7 @@ class AbstractCriterion( Persistent, Item, Implicit ):
             attribute.
         """
         return self.meta_type
-    
+
     security.declareProtected( AccessContentsInformation, 'Field' )
     def Field( self ):
         """
@@ -84,7 +84,7 @@ class AbstractCriterion( Persistent, Item, Implicit ):
         """
         strip = string.strip
         split = string.split
-        
+
         return string.join(             # Sew a string together after we:
             filter(operator.truth,      # Filter out empty lines
                    map(strip,           # strip whitespace off each line

@@ -218,7 +218,7 @@ class SimpleHTMLParser( SGMLParser ):
 
         if name:
             self.metatags[ name ] = content
-    
+
     def unknown_startag( self, tag, attrs ):
 
         self.setliteral()

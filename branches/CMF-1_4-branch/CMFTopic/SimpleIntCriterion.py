@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Simple int-matching criterion
 
@@ -28,7 +28,7 @@ from AccessControl import ClassSecurityInfo
 class SimpleIntCriterion( AbstractCriterion ):
     """
         Represent a simple field-match for an integer value, including
-        catalog range searches.    
+        catalog range searches.
     """
     __implements__ = ( Criterion, )
 
@@ -82,7 +82,7 @@ class SimpleIntCriterion( AbstractCriterion ):
         from string import strip, split # XXX: WAAAA! 2.3 compatibility
 
         if type( value ) == type( '' ):
-           value = strip( value )
+            value = strip( value )
 
         if not value:
             # An empty string was passed in, which evals to None

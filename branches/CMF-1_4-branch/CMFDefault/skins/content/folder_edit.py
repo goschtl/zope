@@ -1,7 +1,7 @@
 ## Script (Python) "folder_edit"
 ##parameters=title, description, change_and_view=''
 ##title=Edit a folder
- 
+
 context.edit( title=title,
               description=description)
 
@@ -16,4 +16,3 @@ context.REQUEST.RESPONSE.redirect( '%s/%s?%s' % ( context.absolute_url()
                                                 , target_action
                                                 , qst
                                                 ) )
-

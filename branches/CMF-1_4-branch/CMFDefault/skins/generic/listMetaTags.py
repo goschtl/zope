@@ -39,4 +39,4 @@ hdrlist.append( ( 'DC.language', context.Language() ) )
 hdrlist.append( ( 'DC.rights', context.Rights() ) )
 
 # Strip empty values
-return filter( lambda x: x[1], hdrlist ) 
+return filter( lambda x: x[1], hdrlist )

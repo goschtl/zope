@@ -48,7 +48,7 @@ Header: value
         desc_len = len( headers[ 'Description' ].split('\n') )
         assert( desc_len == 2, '%d!' % desc_len )
         assert( len( body ) == 0, '%d!' % len( body ) )
-    
+
     def test_Body( self ):
         headers, body = parseHeadersBody( '%s\n\n%s'
                                         % ( self.COMMON_HEADERS
@@ -57,7 +57,7 @@ Header: value
                                         )
         assert( len( headers ) == 2, '%d!' % len( headers ) )
         assert( body == self.TEST_BODY )
-    
+
     def test_Preload( self ):
         preloaded = { 'Author' : 'xxx', 'text_format' : 'structured_text' }
         headers, body = parseHeadersBody( '%s\n%s\n\n%s'

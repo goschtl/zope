@@ -50,7 +50,7 @@ class FSSecurityBase( RequestTest, FSDVTest ):
     def tearDown( self ):
         RequestTest.tearDown(self)
         FSDVTest.tearDown(self)
-        
+
 class FSSecurityTests( FSSecurityBase ):
 
     def test_basicPermissions( self ):
@@ -69,7 +69,7 @@ class FSSecurityTests( FSSecurityBase ):
         self._writeFile('test5.py.security','Access stoopid contents::')
         # check baseline
         self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
-        
+
     def test_invalidAcquireNames( self ):
         """ Test for an invalid spelling of acquire """
         # baseline
@@ -82,14 +82,14 @@ class FSSecurityTests( FSSecurityBase ):
 if DevelopmentMode:
 
     class DebugModeTests( FSSecurityBase ):
-        
+
         def test_addPRM( self ):
             """ Test adding of a .security """
             # baseline
             self._checkSettings(self.ob.fake_skin.test5,'View',1,[])
             # add
             self._writeFile('test5.py.security','View:acquire:Manager')
-            # test            
+            # test
             self._checkSettings(self.ob.fake_skin.test5,'View',1,['Manager'])
 
         def test_delPRM( self ):
@@ -108,12 +108,12 @@ if DevelopmentMode:
             # we need to wait a second here or the mtime will actually
             # have the same value as set in the last test.
             # Maybe someone brainier than me can figure out a way to make this
-            # suck less :-(            
+            # suck less :-(
             sleep(1)
-            
+
             # baseline
             self._writeFile('test5.py.security','View::Manager,Anonymous')
-            self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])           
+            self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])
             # edit
             self._writeFile('test5.py.security','View:acquire:Manager')
             # test
@@ -132,7 +132,7 @@ if DevelopmentMode:
             # have the same value, no human makes two edits in less
             # than a second ;-)
             sleep(1)
-            
+
             # add back
             self._writeFile('test5.py.security','View::Manager,Anonymous')
             self._checkSettings(self.ob.fake_skin.test5,'View',0,['Manager','Anonymous'])
@@ -150,12 +150,8 @@ else:
 def test_suite():
     return TestSuite((
         makeSuite(FSSecurityTests),
-        makeSuite(DebugModeTests),        
+        makeSuite(DebugModeTests),
         ))
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')
-
-
-
-

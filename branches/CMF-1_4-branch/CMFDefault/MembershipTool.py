@@ -149,7 +149,7 @@ class MembershipTool( BaseTool ):
     security.declareProtected( ListPortalMembers, 'getRoster' )
     def getRoster(self):
         """ Return a list of mappings for 'listed' members.
-        
+
         If Manager, return a list of all usernames.  The mapping
         contains the id and listed variables.
         """

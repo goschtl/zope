@@ -5,7 +5,7 @@ try:
     from Products.CMFDefault.utils import scrubHTML
     text = scrubHTML( text ) # Strip Javascript, etc.
     description = scrubHTML( description )
- 
+
     context.edit(text=text, description=description, text_format=text_format)
 
     qst='portal_status_message=News+Item+changed.'

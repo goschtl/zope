@@ -79,15 +79,15 @@ class CachingPolicy:
             'content' -- the content object itself
 
             'view' -- the name of the view method
-           
+
             'keywords' -- keywords passed to the request
-           
+
             'request' -- the REQUEST object itself
-           
+
             'member' -- the authenticated member, or None if anonymous
-           
+
             'modules' -- usual TALES access-with-import
-           
+
             'nothing' -- None
 
           - The "Last-modified" HTTP response header will be set using
@@ -250,7 +250,7 @@ class CachingPolicyManager( SimpleItem ):
         """
             Return a sequence of tuples,
             '( policy_id, ( policy, typeObjectName ) )'
-            for all policies in the registry 
+            for all policies in the registry
         """
         result = []
         for policy_id in self._policy_ids:
@@ -279,7 +279,7 @@ class CachingPolicyManager( SimpleItem ):
                        , no_store
                        , must_revalidate
                        )
-        if REQUEST is not None: 
+        if REQUEST is not None:
             REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
                                           + '/manage_cachingPolicies'
                                           + '?manage_tabs_message='
@@ -308,7 +308,7 @@ class CachingPolicyManager( SimpleItem ):
                           , no_store
                           , must_revalidate
                           )
-        if REQUEST is not None: 
+        if REQUEST is not None:
             REQUEST[ 'RESPONSE' ].redirect( self.absolute_url()
                                           + '/manage_cachingPolicies'
                                           + '?manage_tabs_message='

@@ -118,7 +118,7 @@ class SimpleClassConverter (Converter):
         self._klass = to_class
         self._descend = descend
         self._show_dup = show_dup
-    
+
     def allowDescendChildren(self):
         return self._descend
 
@@ -148,7 +148,7 @@ class SimpleClassConverter (Converter):
             # Clear the children.
             newob._container = PersistentMapping()
         return newob
-        
+
 TupleType = type(())
 
 def setupDirectConversion(old_prod, new_prod, modname, classname,
@@ -230,7 +230,7 @@ def _cleanupOwnership(ob, res, cleanup_children):
                            'which is set to %s!%s' %
                            (join(ob.getPhysicalPath(), '/'),
                             join(old_udb, '/'), uid,))
-                
+
     if cleanup_children:
         if hasattr(ob, 'objectValues'):
             for subob in ob.objectValues():
@@ -238,7 +238,7 @@ def _cleanupOwnership(ob, res, cleanup_children):
 
     # Deactivate object if possible.
     if changed is None: ob._p_deactivate()
-    
+
     return res
 
 def _copyUsers(src_folder, dst_folder):
@@ -338,7 +338,7 @@ if BEFORE_CONTENT_MOVE:
     content_product = 'PTKBase'
 else:
     content_product = 'PTKDemo'
-    
+
 
 setupDirectConversions(content_product, 'CMFDefault', demo_conversions,
                        ptk2cmf_conversions)

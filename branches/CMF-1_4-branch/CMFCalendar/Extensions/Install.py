@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """\
 This file is an installation script for CMFCalendar (Events).  It's meant to be
@@ -24,7 +24,7 @@ configuration:
 Then go to the management screen for the newly added external method
 and click the 'Try it' tab.  The install function will execute and give
 information about the steps it took to register and install the
-CMF Events into the CMF Site instance. 
+CMF Events into the CMF Site instance.
 """
 from Products.CMFCore.TypesTool import ContentFactoryMetadata
 from Products.CMFCore.DirectoryView import addDirectoryViews
@@ -102,11 +102,11 @@ def install(self):
             )
     except: pass
     out.write('Event added to Metadata element Policies\n')
-    
+
     # Add the CMFCalendar tool to the site's root
     p = portal_url.getPortalObject()
     x = p.manage_addProduct['CMFCalendar'].manage_addTool(type="CMF Calendar Tool")
-    
+
     # Setup the skins
     # This is borrowed from CMFDefault/scripts/addImagesToSkinPaths.pys
     if 'calendar' not in skinstool.objectIds():
@@ -128,11 +128,11 @@ def install(self):
             try: path.insert(path.index('content'), 'calendar')
             except ValueError:
                 path.append('calendar')
-                
+
             try: path.insert(path.index('zpt_content'), 'zpt_calendar')
             except ValueError:
                 pass
-            
+
             path = string.join(path, ', ')
             # addSkinSelection will replace exissting skins as well.
             skinstool.addSkinSelection(skin, path)
@@ -142,4 +142,3 @@ def install(self):
                 skin))
 
     return out.getvalue()
-

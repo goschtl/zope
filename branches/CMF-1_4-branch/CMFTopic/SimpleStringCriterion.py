@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Simple string-matching criterion class
 
@@ -41,21 +41,21 @@ class SimpleStringCriterion( AbstractCriterion ):
         self.id = id
         self.field = field
         self.value = ''
-        
+
     security.declareProtected( TopicPermissions.ChangeTopics, 'getEditForm' )
     def getEditForm( self ):
         """
             Return the skinned name of the edit form.
         """
         return 'ssc_edit'
-    
+
     security.declareProtected( TopicPermissions.ChangeTopics, 'edit' )
     def edit( self, value ):
         """
             Update the value we are to match up against.
         """
         self.value = str( value )
-    
+
     security.declareProtected(View, 'getCriteriaItems')
     def getCriteriaItems( self ):
         """

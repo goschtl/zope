@@ -17,7 +17,7 @@ class PermissiveSecurityPolicy:
                 , *args
                 , **kw):
         return 1
-    
+
     def checkPermission( self, permission, object, context) :
         if permission == 'forbidden permission':
             return 0
@@ -29,7 +29,7 @@ class OmnipotentUser( Implicit ):
     """
     def getId( self ):
         return 'all_powerful_Oz'
-    
+
     getUserName = getId
 
     def allowed( self, object, object_roles=None ):
@@ -45,7 +45,7 @@ class UserWithRoles( Implicit ):
 
     def getId( self ):
         return 'high_roller'
-    
+
     getUserName = getId
 
     def allowed( self, object, object_roles=None ):
@@ -62,7 +62,7 @@ class AnonymousUser( Implicit ):
     """
     def getId( self ):
         return 'unit_tester'
-    
+
     getUserName = getId
 
     def has_permission(self, permission, obj):

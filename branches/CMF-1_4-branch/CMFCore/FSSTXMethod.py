@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """FSSTXMethod: Filesystem methodish Structured Text document.
 
@@ -91,7 +91,7 @@ class FSSTXMethod( FSObject ):
     func_code.co_varnames= ()
     func_code.co_argcount=0
     func_code.__roles__=()
-    
+
     func_defaults__roles__=()
     func_defaults=()
 
@@ -133,7 +133,7 @@ class FSSTXMethod( FSObject ):
             posargs = ( self, REQUEST )
         else:
             posargs = ()
-        
+
         return apply( template, posargs, { 'cooked' : self.cook() } )
 
     security.declareProtected( FTPAccess, 'manage_FTPget' )

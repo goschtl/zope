@@ -9,7 +9,7 @@ class TestEvent(unittest.TestCase):
         event = Event('test')
         assert event.getId() == 'test'
         assert not event.Title()
-    
+
     def test_edit(self):
         event = Event('editing')
         event.edit( title='title'
@@ -29,8 +29,8 @@ class TestEvent(unittest.TestCase):
         assert event.Title() == 'title'
         assert event.Description() == 'description'
         assert event.Subject() == ( 'eventType', ), event.Subject()
-        assert event.effective_date == None 
-        assert event.expiration_date == None 
+        assert event.effective_date == None
+        assert event.expiration_date == None
         assert event.end() == DateTime('1999/12/31 23:59')
         assert event.start() == DateTime('1999/01/01 00:00')
         assert not event.contact_name

@@ -12,7 +12,7 @@ class TestTopic(unittest.TestCase):
 
         query = topic.buildQuery()
         self.assertEqual( len( query ), 0 )
-    
+
     def test_Simple( self ):
 
         from Products.CMFTopic.Topic import Topic
@@ -31,7 +31,7 @@ class TestTopic(unittest.TestCase):
         self.assertEqual( len( query ), 2 )
         self.assertEqual( query[ 'foo' ], 'bar' )
         self.assertEqual( query[ 'baz' ], 43 )
-    
+
     def test_Nested( self ):
 
         from Products.CMFTopic.Topic import Topic

@@ -5,4 +5,3 @@
 myList=list(aList)[:]
 myList.reverse()
 return myList
-

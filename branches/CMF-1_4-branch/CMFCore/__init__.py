@@ -147,4 +147,3 @@ def initialize(context):
                            PortalFolder.manage_addPortalFolder, )
                      , fti=PortalFolder.factory_type_information
                      ).initialize( context )
-

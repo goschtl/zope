@@ -1,7 +1,7 @@
 ## Script (Python) "link_edit"
 ##parameters=remote_url, change_and_view=''
 ##title=Edit a link
- 
+
 context.edit(remote_url=remote_url)
 
 qst='portal_status_message=Link+changed.'

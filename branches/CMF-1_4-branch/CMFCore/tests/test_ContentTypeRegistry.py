@@ -112,7 +112,7 @@ class MimeTypeRegexPredicateTests( TestCase ):
         assert pred( 'foo', 'text/plain', 'asdfljksadf' )
         assert pred( 'foo', 'text/html', 'asdfljksadf' )
         assert not pred( 'foo', 'image/png', 'asdfljksadf' )
-    
+
     def test_interface(self):
         from Products.CMFCore.interfaces.ContentTypeRegistry \
                 import ContentTypeRegistryPredicate \
@@ -151,7 +151,7 @@ class NameRegexPredicateTests( TestCase ):
 
         verifyClass(IContentTypeRegistryPredicate, NameRegexPredicate)
 
-    
+
 class ContentTypeRegistryTests( TestCase ):
 
     def setUp( self ):
@@ -164,7 +164,7 @@ class ContentTypeRegistryTests( TestCase ):
         assert reg.findTypeName( 'bar', 'text/plain', 'asdfljksadf' ) is None
         assert not reg.listPredicates()
         self.assertRaises( KeyError, reg.removePredicate, 'xyzzy' )
-    
+
     def test_reorder( self ):
         reg=self.reg
         predIDs = ( 'foo', 'bar', 'baz', 'qux' )

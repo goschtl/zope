@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Customizable properties that come from the filesystem.
 
@@ -33,7 +33,7 @@ class FSPropertiesObject (FSObject, PropertyManager):
     meta_type = 'Filesystem Properties Object'
 
     manage_options = ({'label':'Customize', 'action':'manage_main'},)
-    
+
     security = ClassSecurityInfo()
 
     security.declareProtected(ViewManagementScreens, 'manage_main')
@@ -63,7 +63,7 @@ class FSPropertiesObject (FSObject, PropertyManager):
             folder = self.restrictedTraverse(fpath)
             RESPONSE.redirect('%s/%s/manage_propertiesForm' % (
                 folder.absolute_url(), self.getId()))
-    
+
     def _createZODBClone(self):
         """Create a ZODB (editable) equivalent of this object."""
         # Create a Folder to hold the properties.
@@ -83,7 +83,7 @@ class FSPropertiesObject (FSObject, PropertyManager):
 
     def _readFile(self, reparse):
         """Read the data from the filesystem.
-        
+
         Read the file (indicated by exandpath(self._filepath), and parse the
         data if necessary.
         """
@@ -110,7 +110,7 @@ class FSPropertiesObject (FSObject, PropertyManager):
             try:
                 propname, proptv = line.split(':',1)
                 #XXX multi-line properties?
-                proptype, propvstr = proptv.split( '=', 1 ) 
+                proptype, propvstr = proptv.split( '=', 1 )
                 propname = propname.strip()
                 proptype = proptype.strip()
                 propvstr = propvstr.strip()
@@ -127,7 +127,7 @@ class FSPropertiesObject (FSObject, PropertyManager):
             except:
                 raise ValueError, ( 'Error processing line %s of %s:\n%s'
                                   % (lino,fp,line) )
-        self._properties = tuple(map)            
+        self._properties = tuple(map)
 
     if Globals.DevelopmentMode:
         # Provide an opportunity to update the properties.

@@ -6,11 +6,11 @@ portal_properties = context.portal_properties
 portal_registration = context.portal_registration
 
 if not portal_properties.validate_email:
-  failMessage = portal_registration.testPasswordValidity(password, confirm)
-  if failMessage:
-      REQUEST.set( 'error', failMessage )
-      return context.join_form( context, REQUEST, error=failMessage )
-      
+    failMessage = portal_registration.testPasswordValidity(password, confirm)
+    if failMessage:
+        REQUEST.set( 'error', failMessage )
+        return context.join_form( context, REQUEST, error=failMessage )
+
 failMessage = portal_registration.testPropertiesValidity(REQUEST)
 
 if failMessage:

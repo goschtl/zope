@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Some common utilities.
 
@@ -32,13 +32,13 @@ def ac_inherited_permissions(ob, all=0):
     for p in perms: d[p[0]] = None
     r = gather_permissions(ob.__class__, [], d)
     if all:
-       if hasattr(ob, '_subobject_permissions'):
-           for p in ob._subobject_permissions():
-               pname=p[0]
-               if not d.has_key(pname):
-                   d[pname]=1
-                   r.append(p)
-       r = list(perms) + r
+        if hasattr(ob, '_subobject_permissions'):
+            for p in ob._subobject_permissions():
+                pname=p[0]
+                if not d.has_key(pname):
+                    d[pname]=1
+                    r.append(p)
+        r = list(perms) + r
     return r
 
 def modifyRolesForPermission(ob, pname, roles):

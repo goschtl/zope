@@ -12,7 +12,7 @@ from Products.CMFCore.tests.base.testcase import FSDVTest
 from Globals import DevelopmentMode
 
 from test_FSSecurity import FSSecurityBase
-        
+
 class FSMetadata(FSSecurityBase):
 
     def _checkProxyRoles(self, obj, roles):
@@ -36,9 +36,9 @@ class FSMetadata(FSSecurityBase):
             0,
             ['Manager'])
         self._checkProxyRoles(
-            self.ob.fake_skin.test6, 
+            self.ob.fake_skin.test6,
             ['Manager', 'Anonymous'])
-    
+
     def test_proxy(self):
         """ Test roles """
         ob = self.ob.fake_skin.test_dtml
@@ -51,7 +51,3 @@ def test_suite():
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')
-
-
-
-

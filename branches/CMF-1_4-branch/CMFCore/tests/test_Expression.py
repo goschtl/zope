@@ -13,7 +13,7 @@ from Products.CMFCore.Expression import Expression, createExprContext
 class ExpressionTests( SecurityTest ):
 
     def setUp( self ):
-        
+
         SecurityTest.setUp(self)
         root = self.root
         root._setObject('portal', DummyContent('portal', url='url_portal'))
@@ -57,7 +57,7 @@ class ExpressionTests( SecurityTest ):
         self.failUnless(folder)
         self.assertEqual(folder.id, 'foo')
         self.assertEqual(folder.absolute_url(), 'url_foo')
-        
+
 def test_suite():
     return TestSuite((
         makeSuite(ExpressionTests),

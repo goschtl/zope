@@ -103,7 +103,7 @@ class DummyTypesTool( SimpleItem ):
         if getattr( ob, 'meta_type', None ) is 'Dummy':
             return DummyTypeInfo( 'Dummy Content' )
         return None
-        
+
 
 class WorkflowToolTests( unittest.TestCase ):
 
@@ -315,7 +315,7 @@ class WorkflowToolTests( unittest.TestCase ):
             and then check to see that the workflows each got called;
             check the resulting count, as well.
         """
-        
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(WorkflowToolTests),

@@ -1,7 +1,7 @@
 ## Script (Python) "content_status_modify"
 ##parameters=workflow_action, comment=''
 ##title=Modify the status of a content object
- 
+
 context.portal_workflow.doActionFor(
     context,
     workflow_action,
@@ -15,4 +15,3 @@ else:
                                   )
 
 context.REQUEST[ 'RESPONSE' ].redirect( redirect_url )
-

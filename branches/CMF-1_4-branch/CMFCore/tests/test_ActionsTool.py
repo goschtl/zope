@@ -22,9 +22,9 @@ from Products.CMFCore.MembershipTool import MembershipTool
 class ActionsToolTests( SecurityRequestTest ):
 
     def setUp( self ):
-        
+
         SecurityRequestTest.setUp(self)
-        
+
         root = self.root
         root._setObject( 'portal_actions', ActionsTool() )
         root._setObject('foo', URLTool() )
@@ -75,7 +75,7 @@ class ActionsToolTests( SecurityRequestTest ):
                                       'category': 'object'}],
                           'folder': [],
                           'global': []})
-        
+
     def test_listDictionaryActions(self):
         """
         Check that listFilteredActionsFor works for objects

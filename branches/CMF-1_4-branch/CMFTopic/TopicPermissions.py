@@ -24,4 +24,3 @@ ChangeTopics = 'Change portal topics'
 # Set up default roles for permissions
 setDefaultRoles(AddTopics, ('Manager',))
 setDefaultRoles(ChangeTopics, ('Manager', 'Owner',))
-

@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Programmatically creates a workflow.
 
@@ -172,7 +172,7 @@ def setupDefaultWorkflowRev2(wf):
                        actbox_url='%(portal_url)s/search?review_state=pending',
                        props={'var_match_review_state':'pending',
                               'guard_permissions':p_review})
-    
+
 
 def createDefaultWorkflowRev2(id):
     '''
@@ -304,7 +304,7 @@ def setupDefaultWorkflowClassic(wf):
                        actbox_url='%(portal_url)s/search?review_state=pending',
                        props={'var_match_review_state':'pending',
                               'guard_permissions':p_review})
-    
+
 
 
 def createDefaultWorkflowClassic(id):
@@ -316,4 +316,3 @@ def createDefaultWorkflowClassic(id):
 
 addWorkflowFactory(createDefaultWorkflowClassic, id='default_workflow',
                    title='Web-configurable workflow [Classic]')
-

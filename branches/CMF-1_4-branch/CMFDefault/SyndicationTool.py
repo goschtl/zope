@@ -355,8 +355,8 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
         syInfo = getattr(obj, 'syndication_information',
                             None)
         if syInfo is not None:
-                when = syInfo.syUpdateBase
-                return when.ISO()
+            when = syInfo.syUpdateBase
+            return when.ISO()
         else:
             return 'Syndication is not Allowed'
 

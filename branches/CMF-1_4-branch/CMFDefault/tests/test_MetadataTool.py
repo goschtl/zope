@@ -137,7 +137,7 @@ class TestMetadataTool( TestCase ):
             pass
         else:
             assert 0, "Expected KeyError"
-        
+
         assert not self.tool.listAllowedSubjects()
         assert not self.tool.listAllowedFormats()
         assert not self.tool.listAllowedLanguages()
@@ -270,7 +270,7 @@ class TestMetadataTool( TestCase ):
         formats = ( 'text/plain', 'text/html' )
         fDef.edit( 0, 0, '', 0, ( 'text/plain', 'text/html' ) )
         assert self.tool.listAllowedFormats() == formats
-        
+
         foo = Foo()
         assert self.tool.listAllowedFormats( foo ) == formats
         fSpec.addPolicy( 'Foo' )

@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Allow topic to specify sorting.
 
@@ -44,7 +44,7 @@ class SortCriterion( AbstractCriterion ):
         self.id = id
         self.index = index
         self.reversed = 0
-        
+
     # inherit permissions
     def Field( self ):
         """
@@ -59,14 +59,14 @@ class SortCriterion( AbstractCriterion ):
             used to edit this kind of criterion.
         """
         return 'sort_edit'
-    
+
     security.declareProtected( TopicPermissions.ChangeTopics, 'edit' )
     def edit( self, reversed ):
         """
             Update the value we are to match up against.
         """
         self.reversed = not not reversed
-    
+
     security.declareProtected(View, 'getCriteriaItems')
     def getCriteriaItems( self ):
         """

@@ -136,7 +136,7 @@ class Topic( PortalFolder ):
         for mt in self._criteriaTypes:
             result.append( mt.meta_type )
         return tuple( result )
- 
+
     security.declareProtected(ChangeTopics, 'listCriteria')
     def listCriteria( self ):
         """
@@ -153,7 +153,7 @@ class Topic( PortalFolder ):
                 'name': ct.meta_type,
                 } )
         return out
-    
+
     security.declareProtected(ChangeTopics, 'listAvailableFields')
     def listAvailableFields( self ):
         """
@@ -184,7 +184,7 @@ class Topic( PortalFolder ):
         if title is not None:
             self.title = title
         self.description = description
-        
+
     security.declareProtected(View, 'buildQuery')
     def buildQuery( self ):
         """
@@ -204,9 +204,9 @@ class Topic( PortalFolder ):
         for criterion in self.listCriteria():
             for key, value in criterion.getCriteriaItems():
                 result[ key ] = value
-        
+
         return result
-    
+
     security.declareProtected(View, 'queryCatalog')
     def queryCatalog( self, REQUEST=None, **kw ):
         """
@@ -233,7 +233,7 @@ class Topic( PortalFolder ):
         if crit is None:
             # No criteria type matched passed in value
             raise NameError, 'Unknown Criterion Type: %s' % criterion_type
-        
+
         self._setObject( newid, crit )
 
     # Backwards compatibility (deprecated)

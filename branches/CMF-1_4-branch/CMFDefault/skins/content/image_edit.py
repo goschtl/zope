@@ -1,7 +1,7 @@
 ## Script (Python) "image_edit"
 ##parameters=precondition='', file='', change_and_view=''
 ##title=Edit an image
- 
+
 context.edit(
      precondition=precondition,
      file=file)

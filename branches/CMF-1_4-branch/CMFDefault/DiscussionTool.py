@@ -60,7 +60,7 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
 
     manage_options = (ActionProviderBase.manage_options +
                      ({ 'label' : 'Overview', 'action' : 'manage_overview' }
-                     , 
+                     ,
                      ) + SimpleItem.manage_options)
 
     #
@@ -96,11 +96,11 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
         """
         if not self.isDiscussionAllowedFor( content ):
             raise DiscussionNotAllowed
-            
+
         talkback = getattr( content, 'talkback', None )
         if not talkback:
             talkback = self._createDiscussionFor( content )
-        
+
         return talkback
 
     security.declarePublic( 'isDiscussionAllowedFor' )

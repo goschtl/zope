@@ -11,4 +11,3 @@ replyID = context.createReply( title = title
 target = '%s/%s' % (context.absolute_url(), replyID)
 
 context.REQUEST.RESPONSE.redirect(target)
-

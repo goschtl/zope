@@ -71,9 +71,9 @@ def addDiscussionItem(self, id, title, description, text_format, text,
 
     Otherwise, same as addDocument
     """
-    
+
     if not description: description = title
-    text = scrubHTML(text) 
+    text = scrubHTML(text)
     item = DiscussionItem( id )
     item.title = title
     item.description = description
@@ -87,7 +87,7 @@ def addDiscussionItem(self, id, title, description, text_format, text,
     if RESPONSE is not None:
         RESPONSE.redirect(self.absolute_url())
 
-    
+
 class DiscussionItem( Document
                     , DefaultDublinCoreImpl
                     ):
@@ -118,7 +118,7 @@ class DiscussionItem( Document
         """
         #   XXX:  revisit if Creator becomes "real" attribute for stock DC.
         return self.creator
-    
+
     #
     #   DiscussionResponse interface
     #
@@ -132,7 +132,7 @@ class DiscussionItem( Document
               - We are a "top-level" reply to a non-DiscussionItem piece
                 of content;  in this case, our 'in_reply_to' field will
                 be None.
-            
+
               - We are a nested reply;  in this case, our 'in_reply_to'
                 field will be the ID of the parent DiscussionItem.
         """
@@ -149,7 +149,7 @@ class DiscussionItem( Document
             self.in_reply_to = reply_to.getId()
         else:
             self.in_reply_to = None
-    
+
     security.declareProtected(View, 'parentsInThread')
     def parentsInThread( self, size=0 ):
         """
@@ -308,7 +308,7 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
         item.__of__( self ).indexObject()
 
         item.setReplyTo( self._getDiscussable() )
- 
+
         self._container[ id ] = item
 
         return id
@@ -338,10 +338,10 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
             Test to see if there are any dicussion items
         """
         outer = self._getDiscussable( outer=1 )
-        if content_obj == outer: 
+        if content_obj == outer:
             return not not len( self._container )
         else:
-            return not not len( content_obj.talkback._getReplyResults() ) 
+            return not not len( content_obj.talkback._getReplyResults() )
 
     security.declareProtected(View, 'replyCount')
     def replyCount( self, content_obj ):
@@ -390,9 +390,9 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
             Return this object's contents in a form suitable for inclusion
             as a quote in a response.
         """
- 
+
         return ""
-    
+
     #
     #   Utility methods
     #
@@ -407,7 +407,7 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
             return outer
         parent = self._container[ in_reply_to ].__of__( aq_inner( self ) )
         return parent.__of__( outer )
-        
+
 
     security.declarePrivate( '_getDiscussable' )
     def _getDiscussable( self, outer=0 ):
@@ -439,5 +439,3 @@ class DiscussionItemContainer( Persistent, Implicit, Traversable ):
         return result
 
 InitializeClass( DiscussionItemContainer )
-
-

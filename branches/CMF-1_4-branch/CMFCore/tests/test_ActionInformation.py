@@ -17,7 +17,7 @@ from Products.CMFCore.ActionInformation import ActionInformation
 from Products.CMFCore.Expression import Expression, createExprContext
 
 class ActionInformationTests(TransactionalTest):
-    
+
     def setUp( self ):
 
         TransactionalTest.setUp( self )
@@ -58,11 +58,11 @@ class ActionInformationTests(TransactionalTest):
         self.assertEqual(ai.getVisibility(), 0)
         self.assertEqual(ai.getCategory(), 'global')
         self.assertEqual(ai.getPermissions(), ())
-    
+
     def test_Condition(self):
-        portal = self.portal 
+        portal = self.portal
         folder = self.folder
-        object = self.object 
+        object = self.object
         ai = ActionInformation(id='view'
                              , title='View'
                              , action=Expression(
@@ -73,7 +73,7 @@ class ActionInformationTests(TransactionalTest):
                              , visible=1)
         ec = createExprContext(folder, portal, object)
         self.failIf(ai.testCondition(ec))
-        
+
 def test_suite():
     return TestSuite((
         makeSuite(ActionInformationTests),

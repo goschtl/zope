@@ -18,7 +18,7 @@ def update_discussion( self, split=string.split ):
 
           - Items which are replies to sibling items have the sibling's
             ID as their 'in_reply_to'.
-        
+
         The representation we are converting from was:
 
           - Items which are replies to the containing content object
@@ -54,7 +54,7 @@ def update_discussion( self, split=string.split ):
         talkback = object.aq_parent
         path = item.getPath()
         in_reply_to = object.in_reply_to
-        
+
         if in_reply_to is None: # we've been here already
             continue
 
@@ -79,6 +79,5 @@ def update_discussion( self, split=string.split ):
         object.reindexObject()
 
         a( path )
-    
-    return string.join( log, '\n' )
 
+    return string.join( log, '\n' )

@@ -94,7 +94,7 @@ def addFile( self
                , description, contributors, effective_date, expiration_date
                , format, language, rights
                )
-    
+
     # Add the File instance to self
     self._setObject(id, fobj)
 
@@ -120,7 +120,7 @@ class File( OFS.Image.File
     # gnashing of teeth and fraying of nerves.  Don't do it.
     #
     # Really.
-    # 
+    #
     # Note that if you use getId() to retrieve an object's ID, you will avoid
     # this problem altogether. getId is the new way, accessing .id is
     # deprecated.
@@ -128,7 +128,7 @@ class File( OFS.Image.File
     __implements__ = ( PortalContent.__implements__
                      , DefaultDublinCoreImpl.__implements__
                      )
-    
+
     meta_type='Portal File'
     effective_date = expiration_date = None
     _isDiscussable = 1
@@ -217,10 +217,10 @@ class File( OFS.Image.File
     security.declareProtected(View, 'download')
     def download(self, REQUEST, RESPONSE):
         """Download this item.
-        
+
         Calls OFS.Image.File.index_html to perform the actual transfer after
         first setting Content-Disposition to suggest a filename.
-        
+
         This method is deprecated, use the URL of this object itself. Because
         the default view of a File object is to download, rather than view,
         this method is obsolete. Also note that certain browsers do not deal
@@ -240,4 +240,3 @@ class File( OFS.Image.File
 
 
 InitializeClass(File)
-

@@ -177,7 +177,7 @@ class Link( PortalContent
         for key, value in self.getMetadataHeaders():
             if key != 'Format' and not haveheader(key):
                 headers[key] = value
-        
+
         self._editMetadata(title=headers['Title'],
                           subject=headers['Subject'],
                           description=headers['Description'],
@@ -188,7 +188,7 @@ class Link( PortalContent
                           language=headers['Language'],
                           rights=headers['Rights'],
                           )
-        
+
     ## FTP handlers
     security.declareProtected(ModifyPortalContent, 'PUT')
     def PUT(self, REQUEST, RESPONSE):
@@ -222,9 +222,8 @@ class Link( PortalContent
     security.declareProtected(View, 'get_size')
     def get_size( self ):
         """
-            Used for FTP and apparently the ZMI now too 
+            Used for FTP and apparently the ZMI now too
         """
         return len(self.manage_FTPget())
 
 InitializeClass( Link )
-

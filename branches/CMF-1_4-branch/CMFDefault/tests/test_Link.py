@@ -55,7 +55,7 @@ class LinkTests(TestCase):
     def test_StructuredText( self ):
         d = Link('foo')
         d._writeFromPUT( body=BASIC_STRUCTUREDTEXT )
-        
+
         self.assertEqual( d.Title(), 'Zope Community' )
         self.assertEqual( d.Description()
                         , 'Link to the Zope Community website.' )
@@ -68,7 +68,7 @@ class LinkTests(TestCase):
         d._writeFromPUT( body=STX_W_CONTINUATION )
         rnlinesplit = compile( r'\r?\n?' )
         desc_lines = rnlinesplit.split( d.Description() )
-        
+
         self.assertEqual( d.Title(), 'Zope Community' )
         self.assertEqual( desc_lines[0]
                         , 'Link to the Zope Community website,' )

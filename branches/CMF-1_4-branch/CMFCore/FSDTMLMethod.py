@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Customizable DTML methods that come from the filesystem.
 
@@ -102,7 +102,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
         return Globals.HTML.read_raw(self)
 
     #### The following is mainly taken from OFS/DTMLMethod.py ###
-        
+
     index_html=None # Prevent accidental acquisition
 
     # Documents masquerade as functions:
@@ -128,7 +128,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
         security=getSecurityManager()
         security.addContext(self)
         try:
-        
+
             if client is None:
                 # Called as subtemplate, so don't need error propagation!
                 r=apply(Globals.HTML.__call__, (self, client, REQUEST), kw)
@@ -163,7 +163,7 @@ class FSDTMLMethod(RestrictedDTML, RoleManager, FSObject, Globals.HTML):
         Returns the cacheNamespaceKeys.
         '''
         return self._cache_namespace_keys
-        
+
     def setCacheNamespaceKeys(self, keys, REQUEST=None):
         '''
         Sets the list of names that should be looked up in the

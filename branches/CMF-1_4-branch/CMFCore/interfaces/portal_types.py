@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Type registration tool interface.
 
@@ -31,7 +31,7 @@ class ContentTypeInformation(Interface):
         """
             Return the Zope 'meta_type' for this content object.
         """
-    
+
     def Title():
         """
             Return the "human readable" type name (note that it
@@ -39,13 +39,13 @@ class ContentTypeInformation(Interface):
             l10n/i18n or where a single content class is being
             used twice, under different names.
         """
-    
+
     def Description():
         """
             Textual description of the class of objects (intended
             for display in a "constructor list").
         """
-    
+
     def isConstructionAllowed(container):
         """
         Does the current user have the permission required in
@@ -113,7 +113,7 @@ class portal_types(Interface):
             the list to include only types which are addable in
             'container'.
         """
-    
+
     def constructContent(contentType, container, id, RESPONSE=None
                         , *args, **kw):
         """

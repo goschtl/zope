@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Unit tests for DateCriterion module.
 
@@ -76,7 +76,7 @@ class FriendlyDateCriterionTests( unittest.TestCase ):
 
         from Products.CMFTopic.DateCriteria import FriendlyDateCriterion
         friendly = FriendlyDateCriterion( 'foo', 'foofield' )
-        
+
         friendly.apply( self.lessThanFiveDaysOld )
         self.assertEqual( friendly.value, 4 )
         self.assertEqual( friendly.operation, 'min' )
@@ -119,7 +119,7 @@ class FriendlyDateCriterionTests( unittest.TestCase ):
         self.assertEqual( friendly.daterange, 'ahead' )
 
         now = DateTime()
-        
+
         result = friendly.getCriteriaItems()
         self.assertEqual( len( result ), 2 )
         self.assertEqual( result[0][0], 'foofield' )
@@ -135,7 +135,7 @@ class FriendlyDateCriterionTests( unittest.TestCase ):
 
         friendly.apply( self.lessThanFiveDaysOld )
         self.assertEqual( friendly.daterange, 'old' )
-        
+
         result = friendly.getCriteriaItems()
         self.assertEqual( len( result ), 2 )
         self.assertEqual( result[0][0], 'foofield' )
@@ -160,6 +160,6 @@ def test_suite():
 
 def main():
     unittest.TextTestRunner().run( test_suite() )
-    
+
 if __name__ == '__main__':
     main()

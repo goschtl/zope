@@ -5,9 +5,9 @@ mt = context.portal_membership
 failMessage=context.portal_registration.testPasswordValidity(password, confirm)
 
 if failMessage:
-  return context.password_form(context,
-                               context.REQUEST,
-                               error=failMessage)
+    return context.password_form(context,
+                                 context.REQUEST,
+                                 error=failMessage)
 member = mt.getAuthenticatedMember()
 mt.setPassword(password, domains)
 mt.credentialsChanged(password)

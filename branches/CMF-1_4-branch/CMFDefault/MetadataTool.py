@@ -82,7 +82,7 @@ class MetadataElementPolicy( SimpleItem ):
             Must this element be supplied?
         """
         return self.is_required
-    
+
     security.declareProtected(View , 'supplyDefault')
     def supplyDefault( self ):
         """
@@ -135,8 +135,8 @@ class ElementSpec( SimpleItem ):
         self.is_multi_valued  = is_multi_valued
         self.policies         = PersistentMapping()
         self.policies[ None ] = self._makePolicy()  # set default policy
-        
-    
+
+
     security.declarePrivate( '_makePolicy' )
     def _makePolicy( self ):
         return MetadataElementPolicy( self.is_multi_valued )
@@ -236,7 +236,7 @@ class MetadataTool( UniqueObject, SimpleItem, ActionProviderBase ):
     #
     #   ZMI methods
     #
-    manage_options = ( ActionProviderBase.manage_options + 
+    manage_options = ( ActionProviderBase.manage_options +
                      ( { 'label'      : 'Overview'
                          , 'action'     : 'manage_overview'
                          }
@@ -401,7 +401,7 @@ class MetadataTool( UniqueObject, SimpleItem, ActionProviderBase ):
         """
         # Don't replace.
         if self.element_specs.has_key( element ):
-           return
+            return
 
         self.element_specs[ element ] = ElementSpec( is_multi_valued )
 

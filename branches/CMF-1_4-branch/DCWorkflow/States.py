@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ States in a web-configurable workflow.
 
@@ -132,14 +132,14 @@ class StateDefinition (SimpleItem):
             return []
         else:
             return vv.items()
-    
+
     def getWorkflowVariables(self):
         ''' get all variables that are available form
             workflow and not handled yet.
         '''
         wf_vars = self.getAvailableVarIds()
         if self.var_values is None:
-                return wf_vars
+            return wf_vars
         ret = []
         for vid in wf_vars:
             if not self.var_values.has_key(vid):
@@ -151,12 +151,12 @@ class StateDefinition (SimpleItem):
         '''
         if self.var_values is None:
             self.var_values = PersistentMapping()
-        
+
         self.var_values[id] = value
-        
+
         if REQUEST is not None:
             return self.manage_variables(REQUEST, 'Variable added.')
-    
+
     def deleteVariables(self,ids=[],REQUEST=None):
         ''' delete a WorkflowVariable from State
         '''
@@ -164,7 +164,7 @@ class StateDefinition (SimpleItem):
         for id in ids:
             if vv.has_key(id):
                 del vv[id]
-                
+
         if REQUEST is not None:
             return self.manage_variables(REQUEST, 'Variables deleted.')
 
@@ -173,9 +173,9 @@ class StateDefinition (SimpleItem):
         '''
         if self.var_values is None:
             self.var_values = PersistentMapping()
- 
+
         vv = self.var_values
- 
+
         if REQUEST is not None:
             for id in vv.keys():
                 fname = 'varval_%s' % id
@@ -189,7 +189,7 @@ class StateDefinition (SimpleItem):
     def manage_permissions(self, REQUEST, manage_tabs_message=None):
         '''
         '''
-        
+
         return self._permissions_form(REQUEST,
                                      management_view='Permissions',
                                      manage_tabs_message=manage_tabs_message,

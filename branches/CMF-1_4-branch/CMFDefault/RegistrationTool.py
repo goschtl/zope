@@ -60,7 +60,7 @@ class RegistrationTool(BaseTool):
                      + ( { 'label' : 'Overview'
                          , 'action' : 'manage_overview'
                          }
-                       , 
+                       ,
                        )
                      )
     manage_overview = DTMLFile( 'explainRegistrationTool', _dtmldir )
@@ -72,7 +72,7 @@ class RegistrationTool(BaseTool):
     def testPasswordValidity(self, password, confirm=None):
 
         """ Verify that the password satisfies the portal's requirements.
-        
+
         o If the password is valid, return None.
         o If not, return a string explaining why.
         """
@@ -80,7 +80,7 @@ class RegistrationTool(BaseTool):
             return 'Your password must contain at least 5 characters.'
 
         if confirm is not None and confirm != password:
-            return ( 'Your password and confirmation did not match. ' 
+            return ( 'Your password and confirmation did not match. '
                    + 'Please try again.' )
 
         return None
@@ -118,7 +118,7 @@ class RegistrationTool(BaseTool):
     def mailPassword(self, forgotten_userid, REQUEST):
 
         """ Email a forgotten password to a member.
-        
+
         o Raise an exception if user ID is not found.
         """
         membership = getToolByName(self, 'portal_membership')
@@ -126,12 +126,12 @@ class RegistrationTool(BaseTool):
 
         if member is None:
             raise 'NotFound', 'The username you entered could not be found.'
-    
+
         # assert that we can actually get an email address, otherwise
         # the template will be made with a blank To:, this is bad
         if not member.getProperty('email'):
             raise 'ValueError', 'That user does not have an email address.'
-        
+
         # Rather than have the template try to use the mailhost, we will
         # render the message ourselves and send it from here (where we
         # don't need to worry about 'UseMailHost' permissions).
@@ -140,7 +140,7 @@ class RegistrationTool(BaseTool):
                                                , member=member
                                                , password=member.getPassword()
                                                )
-    
+
         host = self.MailHost
         host.send( mail_text )
 
@@ -163,7 +163,7 @@ class RegistrationTool(BaseTool):
         if email is None:
             raise ValueError( 'Member %s has no e-mail address!'
                             % new_member_id )
-    
+
         # Rather than have the template try to use the mailhost, we will
         # render the message ourselves and send it from here (where we
         # don't need to worry about 'UseMailHost' permissions).
@@ -173,7 +173,7 @@ class RegistrationTool(BaseTool):
                                                    , password=password
                                                    , email=email
                                                    )
-    
+
         host = self.MailHost
         host.send( mail_text )
 
@@ -192,7 +192,7 @@ class RegistrationTool(BaseTool):
         o Checks should be done before this method is called using
           testPropertiesValidity and testPasswordValidity
         """
-        
+
         mtool = getToolByName(self, 'portal_membership')
         member = mtool.getMemberById(member_id)
         member.setMemberProperties(properties)

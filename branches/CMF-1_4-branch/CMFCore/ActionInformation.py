@@ -29,7 +29,7 @@ from types import StringType
 class ActionInformation( SimpleItem ):
 
     """ Represent a single selectable action.
-    
+
     Actions generate links to views of content, or to specific methods
     of the site.  They can be filtered via their conditions.
     """
@@ -60,10 +60,10 @@ class ActionInformation( SimpleItem ):
         self.id = id
         self.title = title
         self.description = description
-        self.category = category 
+        self.category = category
         self.condition = condition
         self.permissions = permissions
-        self.priority = priority 
+        self.priority = priority
         self.visible = visible
         self.setActionExpression(action)
 
@@ -107,7 +107,7 @@ class ActionInformation( SimpleItem ):
         info['permissions'] = self.getPermissions()
         info['category'] = self.getCategory()
         info['visible'] = self.getVisibility()
-        return info 
+        return info
 
     security.declarePrivate( '_getActionObject' )
     def _getActionObject( self ):
@@ -224,4 +224,3 @@ class oai:
         if hasattr(self, name):
             return getattr(self, name)
         raise KeyError, name
-

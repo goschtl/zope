@@ -10,12 +10,12 @@ import DateTime
 current = DateTime.DateTime()
 
 if current.year()==year and current.month()==month and current.day()==int(day):
-  if event:
-    return "todayevent"
-  else:
-    return "todaynoevent"
-  
+    if event:
+        return "todayevent"
+    else:
+        return "todaynoevent"
+
 if event:
-  return "event"
+    return "event"
 else:
-  return ""
+    return ""

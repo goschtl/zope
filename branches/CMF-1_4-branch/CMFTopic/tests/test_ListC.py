@@ -1,14 +1,14 @@
 ##############################################################################
 #
 # Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE
-# 
+#
 ##############################################################################
 """ Unit tests for ListCriterion module.
 
@@ -34,7 +34,7 @@ class ListCriterionTests( unittest.TestCase ):
         self.assertEqual( listc.field, 'foofield' )
         self.assertEqual( listc.value, ('',) )
         self.assertEqual( len(listc.getCriteriaItems()), 0 )
-    
+
     def test_Edit_withString( self ):
 
         from Products.CMFTopic.ListCriterion import ListCriterion
@@ -50,7 +50,7 @@ class ListCriterionTests( unittest.TestCase ):
         self.assertEqual( len( items[0] ), 2 )
         self.assertEqual( items[0][0], 'foofield' )
         self.assertEqual( items[0][1], ( 'bar', 'baz' ) )
-    
+
     def test_Edit_withList( self ):
 
         from Products.CMFTopic.ListCriterion import ListCriterion

@@ -41,13 +41,13 @@ class FSZSQLMethod(SQL, FSObject):
 
     # Use declarative security
     security = ClassSecurityInfo()
-    
+
     security.declareObjectProtected(View)
-    
+
     # Make mutators private
     security.declarePrivate('manage_main','manage_edit','manage_advanced','manage_advancedForm')
     manage=None
-    
+
     security.declareProtected(ViewManagementScreens, 'manage_customise')
     manage_customise = Globals.DTMLFile('custzsql', _dtmldir)
 
@@ -92,16 +92,16 @@ class FSZSQLMethod(SQL, FSObject):
             parameters[pair[0].strip().lower()]=pair[1].strip()
 
         # check for required an optional parameters
-        try:            
+        try:
             title =         parameters.get('title','')
             connection_id = parameters.get('connection id',parameters['connection_id'])
             arguments =     parameters.get('arguments','')
             max_rows =      parameters.get('max_rows',1000)
             max_cache =     parameters.get('max_cache',100)
-            cache_time =    parameters.get('cache_time',0)            
+            cache_time =    parameters.get('cache_time',0)
         except KeyError,e:
             raise ValueError,"The '%s' parameter is required but was not supplied" % e
-        
+
         self.manage_edit(title,
                          connection_id,
                          arguments,

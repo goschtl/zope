@@ -11,13 +11,13 @@ class DummyContent:
     __allow_access_to_unprotected_subobjects__ = 1
 
     def __init__(self, modified ):
-        self.modified = modified 
+        self.modified = modified
 
     def Type( self ):
         return 'Dummy'
 
     def modified( self ):
-        return self.modified 
+        return self.modified
 
 
 class CachingPolicyTests( unittest.TestCase ):
@@ -36,7 +36,7 @@ class CachingPolicyTests( unittest.TestCase ):
         from Products.CMFCore.CachingPolicyManager import createCPContext
         return createCPContext( DummyContent(self._epoch)
                               , 'foo_view', kw, self._epoch )
-        
+
     def test_empty( self ):
 
         policy = self._makePolicy( 'empty' )
@@ -122,7 +122,7 @@ class CachingPolicyTests( unittest.TestCase ):
         headers = policy.getHeaders( context )
 
         self.assertEqual( len( headers ), 0 )
-        
+
     def test_mtimeFunc( self ):
 
         policy = self._makePolicy( 'mtimeFunc'
@@ -134,7 +134,7 @@ class CachingPolicyTests( unittest.TestCase ):
         self.assertEqual( headers[0][0], 'Last-modified' )
         self.assertEqual( headers[0][1]
                         , rfc1123_date(ACCLARK.timeTime()) )
-        
+
     def test_mtimeFuncNone( self ):
 
         policy = self._makePolicy( 'mtimeFuncNone'
@@ -143,7 +143,7 @@ class CachingPolicyTests( unittest.TestCase ):
         headers = policy.getHeaders( context )
 
         self.assertEqual( len( headers ), 0 )
-        
+
     def test_maxAge( self ):
 
         policy = self._makePolicy( 'aged', max_age_secs=86400 )
@@ -159,7 +159,7 @@ class CachingPolicyTests( unittest.TestCase ):
                         , rfc1123_date((self._epoch+1).timeTime()) )
         self.assertEqual( headers[2][0].lower() , 'cache-control' )
         self.assertEqual( headers[2][1] , 'max-age=86400' )
-        
+
     def test_noCache( self ):
 
         policy = self._makePolicy( 'noCache', no_cache=1 )
@@ -172,7 +172,7 @@ class CachingPolicyTests( unittest.TestCase ):
                         , rfc1123_date(self._epoch.timeTime()) )
         self.assertEqual( headers[1][0].lower() , 'cache-control' )
         self.assertEqual( headers[1][1] , 'no-cache' )
-        
+
     def test_noStore( self ):
 
         policy = self._makePolicy( 'noStore', no_store=1 )
@@ -185,7 +185,7 @@ class CachingPolicyTests( unittest.TestCase ):
                         , rfc1123_date(self._epoch.timeTime()) )
         self.assertEqual( headers[1][0].lower() , 'cache-control' )
         self.assertEqual( headers[1][1] , 'no-store' )
-        
+
     def test_mustRevalidate( self ):
 
         policy = self._makePolicy( 'mustRevalidate', must_revalidate=1 )
@@ -198,7 +198,7 @@ class CachingPolicyTests( unittest.TestCase ):
                         , rfc1123_date(self._epoch.timeTime()) )
         self.assertEqual( headers[1][0].lower() , 'cache-control' )
         self.assertEqual( headers[1][1] , 'must-revalidate' )
-        
+
     def test_combined( self ):
 
         policy = self._makePolicy( 'noStore', no_cache=1, no_store=1 )
@@ -254,7 +254,7 @@ class CachingPolicyManagerTests( unittest.TestCase ):
                          , 'xyzzy', None, None, None, None, None, None )
         self.assertRaises( KeyError, mgr._removePolicy, 'xyzzy' )
         self.assertRaises( KeyError, mgr._reorderPolicy, 'xyzzy', -1 )
-    
+
     def test_addPolicy( self ):
 
         mgr = self._makeOne()
