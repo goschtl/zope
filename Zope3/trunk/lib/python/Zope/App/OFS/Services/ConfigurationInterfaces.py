@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.3 2002/12/05 17:00:44 jim Exp $
+$Id: ConfigurationInterfaces.py,v 1.4 2002/12/07 17:23:48 ctheune Exp $
 """
 
 from Interface import Interface
@@ -81,7 +81,7 @@ class IComponentConfiguration(IConfiguration):
 class IConfigurationRegistry(Interface):
     """A registry of configurations for a set of parameters
 
-    A service will have a regsitry containing configuration registries
+    A service will have a registry containing configuration registries
     for specific parameters. For example, an adapter service will have
     a configuration registry for each given used-for and provided
     interface.
@@ -157,9 +157,9 @@ class IConfigurable(Interface):
     def queryConfigurationsFor(configuration):
         """Return an IConfigurationRegistry for the configuration
 
-        Data on the configuration is used to decide which regsitry to
+        Data on the configuration is used to decide which registry to
         return. For example, a service manager will use the
-        configuration serviceType attribute to decide which regsitry
+        configuration serviceType attribute to decide which registry
         to return.
 
         Typically, an object that implements this method will also
