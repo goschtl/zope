@@ -38,7 +38,7 @@ remote = {'host': "www.zope.org",
           'repodir': "/cvs-repository"}
 
 tmpaddr = ["klm@digicool.com"]
-zopeaddr = ["zope-checkins@digicool.com"]
+zopeaddr = ["zope-checkins@zope.org"]
 
 table = [
     {'path': "CVSROOT", 'addrs': ["digicool-cvs@zope.org"],
