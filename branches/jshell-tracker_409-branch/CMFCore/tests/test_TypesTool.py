@@ -580,6 +580,7 @@ def test_suite():
     suite.addTest( unittest.makeSuite( FTIDataTests ) )
     suite.addTest( unittest.makeSuite( STIDataTests ) )
     suite.addTest( unittest.makeSuite( FTIConstructionTests ) )
+    suite.addTest( unittest.makeSuite( FTIConstructionTests_w_Roles ) )
     return suite
 
 def run():
