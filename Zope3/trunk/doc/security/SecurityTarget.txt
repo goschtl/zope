@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.6 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Revision: 1.7 $ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.6 $ (Draft)
-:Date: $Date: 2003/10/03 20:36:11 $
-:Authors: Steve Alexander <steve@catbox.net>, Christian Theune <ct@gocept.com>
-:DocumentID: $Id: SecurityTarget.txt,v 1.6 2003/10/03 20:36:11 ctheune Exp $
+:Version: $Revision: 1.7 $ (Draft)
+:Date: $Date: 2004/05/06 07:10:10 $
+:Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>
+:DocumentID: $Id: SecurityTarget.txt,v 1.7 2004/05/06 07:10:10 jim Exp $
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.6 2003/10/03 20:36:11 ctheune Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.7 2004/05/06 07:10:10 jim Exp $
 
-:Document Version: $Revision: 1.6 $
+:Document Version: $Revision: 1.7 $
 
 :Origin: Zope Corporation public CVS server
 
@@ -94,14 +94,14 @@ Overview
 --------
 
 Zope 3 (also referred to as "Zope") is a component based framework that may be
-used to built web applications. It's development is historically focused but
+used to build web applications. It's development is historically focused but
 not limited on building content management systems.
 
 It is written as platform independent software using the Python programming
 language. Therefore it is available for Windows NT, Linux, MacOS X and other
 operating systems.
 
-Zope 3 features a set of core components that form an infrastructore for 
+Zope 3 features a set of core components that form an infrastructure for 
 building applications by reusing existing components and adding new components
 that work together by defined interfaces.
 
@@ -112,8 +112,8 @@ Other core components cover an object database, indexing mechanisms,
 workflow, a web interface, SQL support an XML-based and a non-XML based templating
 mechanism, Python Scripting, I18n and L10n support and many more.
 
-Finally Zope can be fully modified and extended by the use of "products" that
-are packages that can contain configuration directives, templates, python code
+Finally Zope can be extended by the use of packages that
+can contain configuration directives, templates, python code
 and classes. Those are intended to work together seamlessly using the
 ComponentArchitecture to plug them together into more complex systems.
 
@@ -140,6 +140,8 @@ connection to a server.  Authentication usually envolves a username-password
 pair such as for FTP-Authentication and HTTP-Basic-Authentication.  Other
 authentication mechanisms are possible.
 
+  XXX Rewrite this section in terms of the 4-part arch.
+
 TOE Development and Production
 ------------------------------
 
@@ -147,15 +149,15 @@ The development of Zope 3 is driven by the Zope Corporation together with the
 free community of Zope developers. The Zope 3 source code is free to be
 retrieved and used by everybody.
 
-The official Zope 3 source code is maintained within the revision management
-system CVS.  Everybody is free to retrieve any available version of the code
-anonymously. The certified version is available on a named branch and
-identified by a tag.
+The official Zope 3 source code is maintained within a centralized
+source-code control system.  Everybody is free to retrieve any
+available version of the code anonymously. The certified version is
+available on a named branch and identified by a tag.
 
 To ensure a stable production every developer wishing to directly access the
-repository they must retrieve authorisation from Zope Corporation. This is
-expressed by providing a signed contributors agreement. (XXX Download the
-current CA and refer to it)
+repository must retrieve authorisation from Zope Corporation. This is
+expressed by providing a signed contributors agreement,
+http://dev.zope.org/DevHome/Subversion/Contributor.pdf.
 
 Write access to the repository is only available through ssh and by providing a
 public key to the maintainer of the repository.
@@ -216,16 +218,21 @@ TOE Boundaries
 Physical Boundaries
 ^^^^^^^^^^^^^^^^^^^
 
-The whole Zope package.
+Files included in a Zope software distribution.
 
 TOE Logical Boundaries
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Access Control functionality.
+The logical boundary fopr the TOE consists of the four security
+sub-systems of Zope:
 
-Default username-password authentication mechanism.
+- permission declarations
 
-Publishing mechanism.
+- protection
+
+- authentication
+
+- authorization
 
 TOE security environment
 ========================
@@ -244,6 +251,12 @@ The following assets have been identified:
                         stored in a connected manner that is typically 
                         hierarchical and allows the derivation of 
                         information by the objects context.
+
+    host system
+
+XXX are the rest of these *really* assets?
+
+
     Operations          Operations are the way of accessing and modifying 
                         data provided by (content) objects.
     Principals          Principals are the systems representation of acting 
@@ -262,36 +275,15 @@ The following assets have been identified:
                         principal.
     =================   ====================================================
 
-Subjects
---------
+Subject
+-------
 
-Outside of Zope the "system-administrator" configures the config files as an
-initial step before the first start of Zope happens.
-
-Subjects are instantiated principals.
-
-Principals are represented by a unique ID, credentials and metadata.
-
-Credentials are identification and authentication data like username and
-password.
-
-Metadata are related information of the principal, just additional information
-to the principal.
-
-The ID is the data the system internally identifies the user.
-
-There are two kinds of principals: The anybody-user and the authenticated user.
-
-If a principal has the permission to grant permissions/roles he can grant
-permissions/roles to himself and other principals.
-
-Roles are used in applications of Zope to express the different tasks and
-responsibilities of users. Permissions are granted to roles and roles are
-granted to principals. Therefore roles serve as an indirect means of granting
-permissions to principals. Permissions can also be granted directly to
-principals. 
-
-Permissions guard operations on objects. A permission has an unique ID.
+Zope has a concept of interactions, which model the interaction of one
+or more users with the system.  An interaction keeps track of the
+users that are participating in the interaction as "participations".
+In the TOE, interactions will have single users participating through
+server request (for example, Web requests).  Interactions are refered
+to as "subjects" in the TOE.
 
 Operations
 ----------
@@ -384,9 +376,14 @@ The following threats against the assets have been identified:
                        by making the system create false timestamps
                        which would result in wrong association to a
                        user on dynamic ip address ranges.
+
     T.TrustedPath      An attacker might try to use "user data import"
                        or "user data export" without beeing a local 
                        user and using the trusted path.
+      XXX ???
+
+    T.HOST             An attacker uses Zope to gain access to the
+                       host system.
     ==============     ===============================================     ====================
 
 Organisational security policies
@@ -514,17 +511,19 @@ FAU_GEN.1.1
 
     b)  All auditable events for the *[minimum]* level of audit; and
 
-    c)  *[select: other events XXX]*
+    c)  *[select: other events XXX]* 
 
 FAU_GEN.1.2
-    The TSF shall record within each audit record at least the following information:
 
-    a)  Date and time of the event, type of event, subject identity, and the outcome
-        (success or failure) of the event; and
+    The TSF shall record within each audit record at least the
+    following information:
 
-    b)  For each audit event type, based on auditable event definitions of the
-        the the functional components included in the ST, *[assignment: other audit
-        relevant information XXX]* 
+    a) Date and time of the event, type of event, subject identity,
+        and the outcome (success or failure) of the event; and
+
+    b) For each audit event type, based on auditable event definitions
+        of the the the functional components included in the ST,
+        *[assignment: other audit relevant information XXX]*
     
 FAU_GEN.2
 ~~~~~~~~~
@@ -539,11 +538,14 @@ Class FDP: Data protection
 FDP_ACC.2 Complete access control
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-FDP_ACC.2.1
+FDP_ACC.2.1 
     The TSF shall enforce the *[formal security policy]* on
-    *[subjects: principals and objects: operations on content objects, role
-    grants, permission grants]* and all operations among subjects and
-    objects covered by the SFP.
+    *[subjects: interactions and objects: content objects]* and all
+    operations among subjects and objects covered by the SFP.
+
+    XXX
+       We now protect adapters of various kinds. This implies that
+       adapters are assets, but we think that they should not be.
 
 FDP_ACC.2.2
     The TSF shall ensure that all operations between any
@@ -555,27 +557,51 @@ FDP_ACF.1 Security attribute based access control
 
 FDP_ACF.1.1
     The TSF shall enforce the *[formal security policy]* to objects
-    based on *[context, object, operation, principal]*.
+    based on *[the interaction principal, the permission required for
+    the operation and the grants or denials of the permission for that
+    object or it's ancestor objects]*.
 
 FDP_ACF.1.2
     The TSF shall enforce the following rules to determine
     if an operation among controlled subjects and controlled objects is
-    allowed: *[The principal has been granted the required permission to
-    perform the operation on that object in that context. A special
-    permission is required to rollback to historical versions of content
-    objects.]*
+    allowed: *[
+
+    - Access is denied if there is a denial for the subject's
+      principal for the required permission on the object. 
+
+    - Access is allowed if there is a grant and there is not a denial
+      for the subject's principal for the required permission on the object.
+
+    - Access is denied if access would be denied for the subject's
+      principal for the required permission on the parent of the
+      object.
+
+    - Access is allowed if access would be allowed and would not be
+      denied for the subject's principal for the required permission
+      on the parent of the object.
+
+    where the required permission is the permission required to
+    perform the desired operation on the object.
+
+    ]*
 
 FDP_ACF.1.3
     The TSF shall explicitly authorise access of subjects to
     objects based on the following additional rules: *[none]*
 
 FDP_ACF.1.4
-    The TSF shall explicitly deny access of subjcets to objects
+    The TSF shall explicitly deny access of subjects to objects
     based on the following additional rules: *[none]*
 
 FDP_ETC.2 Export of user data with security attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         
+
+Note
+        The TOE may, initially, satisfy the requirements in this
+        function by not supporting data export, or, by only
+        supporting export from outside the TSC (outside the
+        software interfaces).
+
 FDP_ETC.2.1
     The TSF shall enforce the *[formal security policy]* when exporting user
     data, controlled under the SFP, outside the TSC.
@@ -595,6 +621,11 @@ FDP_ETC.2.4
     
 FDP_ITC.1 Import of user data without security attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Note
+        The TOE may, initially, satisfy the requirements in this
+        function by not supporting data import, or, by only
+        supporting import from outside the TSC (outside the
+        software interfaces).
 
 FDP_ITC.1.1
     The TSF shall enforce the *[formal security policy]* when importing user 
@@ -607,11 +638,25 @@ FDP_ITC.1.2
 FDP_ITC.1.3
     The TSF shall enforce the following rules when importing user data 
     controlled under the SFP from outside the TSC: 
-    *[ensure that the appropriate security attributes are applied 
-    based on the context where the user data is imported to]*.
+    *[
+
+      No security attributes will be set when importing. The imported
+      user data will have no security attributes.  
+
+      Note
+         Access to the imported data will be governed by the grants in
+         the location the data are imported into, as described in
+         FDP_ACF.1.2.
+
+      ]*.
 
 FDP_ITC.2 Import of user data with security attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Note
+        The TOE may, initially, satisfy the requirements in this
+        function by not supporting data import, or, by only
+        supporting import from outside the TSC (outside the
+        software interfaces).
 
 FDP_ITC.2.1
     The TSF shall enforce the *[formal security policy]* when importing user 
@@ -632,17 +677,25 @@ FDP_ITC.2.4
 FDP_ITC.2.5
     The TSF shall enforce the following rules when importing user data 
     controlled under the SFP from outside the TSC:
-    *[none XXX]*.
+    *[
+
+      If any imported data has security attributes that refer to
+      permissions or principals not defined in the target system, the
+      entire import will fail and an explanatory error will be provided.
+
+    ]*.
     
 FDP_RIP.1 Subset residual information protection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    
-FDP_RIP.1.1
-    The TSF shall ensure that any previous information content
-    of a resource is made unavailable upon the *[allocation of the resource
-    to, deallocation of the resource from]* the following objects:
-    *[principals, permission grants, role grants, permission definition and
-    role definition]*.
+
+FDP_RIP.2.1
+    The TSF shall ensure that any previous information content of a
+    resource is made unavailable upon the *[selection: deallocation of
+    the resource from]* all objects.
+
+XXX 
+   need to think through the implications of undo for rip -- Steve's
+   "Bob" example.
 
 FDP_ROL.2_TRANSACTIONS Advanced Rollback
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -672,20 +725,41 @@ FDP_ROL.1.2
 Class FIA: Identification and authentication
 ********************************************
 
+
+FIA_AFL_z.1 Authentication failure handling
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FIA_AFL_z.1.1
+
+    The TSF shall detect when there are configurable number of consecutive
+    unsuccessful authentication attempts for a single login name,
+    with no intermediate successful attempts.
+
+FIA_AFL_z.1.2 
+
+    When the defined number of unsuccessful authentication attempts
+    has been surpassed, the TSF shall *[assignment: 
+
+      - Disable authentication against the indicated login name for a
+        configurable period of time.
+
+    ]*.
+
+
 FIA_ATD.1 User attribute definition
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FIA_ATD.1.1 
-    The TSF shall maintain the following list of security
-    attributes belonging to individual principals *[uniqueid, credentials,
-    role grants, permission grants]*
+    The TSF shall maintain the following list of security attributes
+    belonging to individual principals *[uniqueid, credentials, grants
+    and denials]*
 
 FIA_UAU.1 Timing of authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FIA_UAU.1.1 
     The TSF shall allow *[only those operations granted to the
-    anonymous principal]* on behalf of the user before the *[principal]* is
+    unauthenticated principal]* on behalf of the user before the user is
     authenticated.
 
     *[Note: It is possible to deny all operations to the anonymous
@@ -693,49 +767,38 @@ FIA_UAU.1.1
     be performed on their behalf. This fullfills the terms of FIA_UAU.2]*
 
 FIA_UAU.1.2 
-    The TSF shall require each *[principal]* to be successfully
+    The TSF shall require each *[user]* to be successfully
     authenticated before allowing any other TSF-mediated actions on behalf
     of that user.
 
 FIA_UAU.5 Multiple authentication systems
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+XXX
+    Digest would be nice to have
+
+
 FIA_UAU.5.1
-    The TSF shall provide *[HTTP Basic Auth, HTTP Digest Auth, Cookie 
+    The TSF shall provide *[HTTP Basic Auth, Cookie 
     Authentication, FTP authentication]* 
+
 
 FIA_UAU.5.2
     The TSF shall authenticate any users claimed identity according
     to the *[transfer of a username/password pair for HTTP basic auth, cookie 
     authentication, FTP authentication]*
     
-FIA.UAU.6 Re-authentication
+FIA_UAU.6 Re-authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FIA_UAU.6.1 
     The TSF shall re-authenticate the user under the conditions
-    *[a) that he is trying to perform an action that has been unauthorised and
-    is offered the opportunity to present other credentials, if it possible
-    that presenting other credentials may result in authorisation. 
-    b) If the credentials held by the user agent have expired due to a time 
-    limit encoded in those credentials. E.g. a cookie held by a web browser]*.
+    *[
+    
+      - If the credentials held by the user agent have expired due to
+        a configurable time limit.
 
-FIA_UID.1 Timing of identification
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FIA_UID.1.1 
-    The TSF shall allow *[only those operations granted to the
-    anonymous principal]* on behalf of the user before the *[principal]* is
-    identified.
-
-    *[Note: It is possible to deny all operations to the anonymous
-    principal. This means that a user must login before any operations may
-    be performed on their behalf. This fullfills the terms of FIA_UID.2]*
-
-FIA_UID.1.2 
-    The TSF shall require each *[principal]* to be successfully
-    identified before allowing any other TSF-mediated actions on behalf
-    of that user.
+    ]*.
 
 FIA_USB.1 User-subject binding
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -744,50 +807,64 @@ FIA_USB.1.1
     The TSF shall associate the appropriate user security
     attributes with subjects acting on behalf of that user.
 
-    *[Note: This has to do with ownership in the sense of responsibility for
-    executable code.]*
-
-Class FPT: Protection of the TSF
-********************************
-
-FPT_STM.1 Reliable time stamps
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FPT_STM.1.1
-    The TSF shall be able to provide reliable time stamps for its own use.
-
-FPT_TDC.1 Inter-TSF basic TSF data consistency
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FPT_TDC.1.1
-    The TSF shall provide the capability to consistently interpret *[XXX description
-    of available data types. E.g. "python objects"]* when shared between the TSF
-    and another trusted IT product.
-
-FPT_TDC.1.2
-    The TSF shall use *[XXX python pickle module]* when interpreting the TSF 
-    data from another trusted IT product.
 
 Class FMT: Security management
 ******************************
 
-FMT_SMR.1 Security roles
-~~~~~~~~~~~~~~~~~~~~~~~~
 
-FMT_SMR.1.1
-    The TSF shall maintain *[a list of roles]*.
 
-FMT_SMR.1.2
-    The TSF shall be able to associate *[principals]* with roles.
+FMT_MOF.1 Management of security functions 
+
+
+FMT_MOF.1.1
+
+    The TSF shall restrict the ability to *[selection: determine the
+    behaviour of, disable, enable, modify the behaviour of]* the
+    functions *[assignment: authentication]* to *[assignment: 
+    authorised administrators]*.
+
+    Note 
+        This includes adding and removing principals (for example,
+        users). 
 
 FMT_MSA.1 Management of security attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FMT_MSA.1.1
-    The TSF shall enforce the *[formal security policy]* to
-    restrict the ability to *[apply operations modifying]*
-    the security attributes *[role grants, permission grants, principals,
-    permissions]* to *[principals with the appropriate permission grants]*.
+
+    The TSF shall enforce the *[formal security policy]* to restrict
+    the ability to *[selection: change_default, query, modify, delete,
+    [assignment: other operations]]* the security attributes *[]* to
+    *[]*.
+
+FMT_MSA.1.1.grants
+
+    The TSF shall enforce the *[formal security policy]* to restrict
+    the ability to *[selection: query, modify, delete,
+    and add]]* the security attributes *[permission grants and denials]* to
+    *[authorized grantors]*.
+
+FMT_MSA.1.1.loginname
+
+    The TSF shall enforce the *[formal security policy]* to restrict
+    the ability to *[selection: query and modify, ]* the security
+    attributes *[login name]* to *[authorized administrators, users
+    authorized to modify their own authentication data]*.
+
+FMT_MSA.1.1.password
+
+    The TSF shall enforce the *[formal security policy]* to restrict
+    the ability to *[selection: modify]* the security attributes
+    *[password]* to *[authorised administrators, users authorized to
+    modify their own authentication data]*.
+
+
+
+ XXX
+      In later versions of the TOE we will need to specify semantics
+      of self registration (and authenticated users who are strangers,
+      and thus "untrusted")
+
 
 FMT_MSA.3 Static attribute initialisation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -797,39 +874,119 @@ FMT_MSA.3.1
     *[restrictive]* default values for security attributes that are used to 
     enforce the SFP.
 
-FMT_MSA.3.2
-    The TSF shall allow the *[principals with appropriate permission
-    grants]* to specify alternative initial values to override the default values
-    when an object or information is created.
+FMT_MSA.3.2 
+    The TSF shall allow the *[no one]* to specify alternative
+    initial values to override the default values when an object or
+    information is created.
 
-Class FTP: Trusted path/channels
+FMT_SMR.1 Security roles
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+FMT_SMR.1.1
+    The TSF shall maintain *[
+
+    authorized administrator
+       Users who can perform system-wide security functions. These are
+       people who have the zope.ManageSercurity permission.       
+
+    Grantor 
+       Users who have the ability to grant or deny permissions to
+       users for objects.  These are users who have any of the grant
+       meta-permissions.
+
+    users authorized to modify their own authentication data
+       The role name says it all.
+    ]*.
+
+FMT_SMR.1.2
+    The TSF shall be able to associate *[principals]* with roles.
+
+
+
+
+
+
+
+
+
+
+
+
+
+Class FPT: Protection of the TSF
 ********************************
 
-FTP_TRP.1 Trusted path
-~~~~~~~~~~~~~~~~~~~~~~
+FPT_AMT.1 Abstract machine testing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-FTP_TRP.1.1
-    The TSF shall provide a communication path between itself and
-    *[local]* users that is logically distinct from other communication paths
-    and provides assured identification of its end points and protection
-    of the communicated data from modification or disclosure.
+FPT_AMT.1.1 
+    
+    The TSF shall run a suite of tests *[selection: as an offline
+    operation]* to demonstrate the correct operation of the security
+    assumptions provided by the abstract machine that underlies the
+    TSF.
 
-FTP_TRP.1.2
-    The TSF shall permit *[local users]* to initiate communication
-    via the trusted path.
+FPT_RVM.1 Non-bypassability of the TSP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-FTP_TRP.1.3
-    The TSF shall require the use of the trusted path for 
-    *[user data import, user data export]*.
+FPT_RVM.1.1 
+    The TSF shall ensure that TSP enforcement functions are invoked
+    and succeed before each function within the TSC is allowed to
+    proceed.
+
+FPT_FLS.1 Failure with preservation of secure state
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FPT_FLS.1.1 
+
+  The TSF shall preserve a secure state when the following types of
+  failures occur: [assignment: process termination, resource
+  exhaustion, host restart].
+
+FPT_SEP.1 TSF domain separation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FPT_SEP.1.1 
+    The TSF shall maintain a security domain for its own execution that
+    protects it from interference and tampering by untrusted
+    subjects. FPT_SEP.1.2 The TSF shall enforce separation between the
+    security domains of subjects in the TSC.
+
+FPT_STM.1 Reliable time stamps
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FPT_STM.1.1
+    The TSF shall be able to provide reliable time stamps for its own use.
+
+XXX
+  FPT_TST is mostly handled by unit tests. What we don't handle is
+  data integrity.  This might be something to consider for future
+  evaluations. 
+
+
+
+Class FTA: TOE access
+*********************
+
+XXX
+   Nice to have: FTA_TAH.1 TOE access history
+
+
+
+
+
+
     
 
 XXX Nice to have:
 *****************
 
-    This is currently not sure if it is going to be implemented. Ask someone who knows.
+    This is currently not sure if it is going to be implemented. Ask
+    someone who knows.
 
     FIA_SOS.1
-    FIA_AFL.1
+
+    Specification of "identification" functions.
 
 TOE security assurance requirements
 -----------------------------------
@@ -838,43 +995,62 @@ The Evaluation Assurance Level chosen for this Evaluation is EAL 1.
 
 The following TOE assurance requirements drawn from CC Part 3 are valid:
 
-    ==============          ======================================  ===================
-    Identification          Description                             Direct dependencies
-    ==============          ======================================  ===================
-    **ACM**                 Configuration management (CM)   
-        ACM_CAP.1           Version numbers                         None
-    **ADO**                 Delivery and Operation          
-        ADO_IGS.1           Installation, generation and start-up   AGD_ADM.1
-    **ADV**                 Development
-        ADV_FSP.1           Informal Functional specification       ADV_RCR.1
-        ADV_RCR.1           Representation correspondence:          None
-                            Information correspondence 
-                            demonstration         
-    **AGD**                 Guidance documents
-        AGD_ADM.1           Administrator guidance                  ADV_FSP.1
-        AGD_USR.1           User guidance                           ADV_FSP.1
+    ==============  ======================================  ===================
+    Identification  Description                             Direct dependencies
+    ==============  ======================================  ===================
+    **ACM**         Configuration management (CM)   
+        ACM_CAP.1   Version numbers                         None
+    **ADO**         Delivery and Operation          
+        ADO_IGS.1   Installation, generation and start-up   AGD_ADM.1
+    **ADV**         Development
+        ADV_FSP.1   Informal Functional specification       ADV_RCR.1
+        ADV_RCR.1   Representation correspondence:          None
+                    Information correspondence 
+                    demonstration         
+    **AGD**         Guidance documents
+        AGD_ADM.1   Administrator guidance                  ADV_FSP.1
+        AGD_USR.1   User guidance                           ADV_FSP.1
     **ATE**
-        ATE_IND.1           Independent testing - conformance       ADV_FSP.1
-                                                                    AGD_ADM.1
-                                                                    AGD_USR.1
-    ==============          ======================================  ===================
+        ATE_IND.1   Independent testing - conformance       ADV_FSP.1
+                                                            AGD_ADM.1
+                                                            AGD_USR.1
+    ==============  ======================================  ===================
 
 Security requirements for the IT environment
 --------------------------------------------
 
+
+ITITIT
+
 The following security requirements exist for the IT environment:
 
-The operating system is Windows 2000, Windows XP or Linux. Either all known security
-patches must have been installed.
+The operating system is Windows 2000, Windows XP or Linux. Either all
+known security patches must have been installed.
 
 The Python Version is 2.3.2 or a compatible Bugfix release.
 
 The ZODB storage is FSStorage or XXX ... What else?.
 
+The client software must support "protected authentication feedback"
+(FIA_UAU.7), to at least not echo a user's credentials in plain text.
+
+One or more "trusted paths" to the TOE must be provided using secure
+proxies, such as an HTTPS proxy like apache w ssl, or Pound.
+
+If external IT systems are used, a trusted channel between the TOE and
+those systems must be provided by the TOE host environment.  For
+example, while the TOE may communicate with clients on a public
+network through a specific port allowed through a firewall, all
+communication with other IT systems could be over a private network.
+
 Security requirements for the non-IT environment
 ------------------------------------------------
 
 The following security requirements exist for the IT environment:
+
+To ensure a "trusted path" to the TOE, users of the TOE must use
+secure proxies correctly (for example, being sure to accept only
+valid server certificates with HTTPS).
 
 TOE summary specification
 =========================
@@ -895,6 +1071,65 @@ The following security functions have been determined:
     TSF_ACC                   Access control
     TSF_ROLL                  Rollback
     ================          ================================
+
+TSF_AUD
+-------
+
+(FAU_GEN.1, FAU_GEN.2)
+
+The TOE provides a component "security audit logger" which listens for security
+relevant events and logs them to a plain text file (CSV?) on the file system.
+
+The logged information includes Date/Time, type of event, the principals unique
+id, the result of the event as well as additional information generated by the
+event in human readable form.
+
+Components relevant to security are have to send the required information
+through an event channel, the audit logger needs to subscribe.
+
+Following events will be logged:
+
+    - Startup and shutdown of the Zope Server
+   
+    - Startup / Shutdown of the security audit logger
+
+    - Unauthorized operations
+
+    - Rollback to historic version of an object
+
+    - Allocation of residual information
+
+    - Transactions that are rolled back
+
+    - Successful requests to perform an ooperation on an object covered by the SFP (FDP_ACF.1)
+
+    - Successful export of information (FDP_ETC.2)
+
+    - Successful import of user data, including any security attributes (FDP_ITC.1)
+
+    - All successful rollback operations (FDP_ROL.2)
+
+    - Unsuccessful use of the authentication mechanism (FIA_UAU.1)
+
+    - The final decision on authentication (FIA_UAU.5)
+
+    - Failure of reauthentication (FIA_UAU.6)
+
+    - Unsuccessful use of the user identification mechanism, including the user
+      identity provided. (FIA_UID.1)
+
+    - Unsuccessful binding of user seucirty attributes to a subject (FIA_USB.1)
+
+    - Changes to the time (FIA_STM.1)
+
+    - Successful use of TSF data consistency mechanisms (FPT_TDC.1)
+
+    - Modifications to the group of users that are part of a role (FMT_SMR.1)
+
+    - Failure of the trusted channel functions (FTP_TRP.1)
+
+    - Identification of the initiator and target of failed trusted
+        channel functions (FTP_TRP.1)
 
 *example*
 The TSF does not allow any kind of transactions until the principal has
@@ -1047,6 +1282,13 @@ Part 2
 
     *   Rationale
 
+
+Notes
+=====
+
+- The TOE will not have TTW created (untrusted) and stored code.
+  So, no TTW templates. 
+
 Questions to Zope 3 Dev
 =======================
 
@@ -1079,7 +1321,27 @@ What about the "nice to have" functions?
     FIA_AFL.1   :   authentication failure counter
     
 
+Should we refer to some "hard coded" permissions that will be required to perform
+certain tasks? (e.g. for adding/deleting users, granting permissions ...)
+This will make the evaluation more specific and/but easier.
+
+* Please look through the security functions (chapter TOE summary specification)
+  and check if there is wrong terminology. Also we probably will have to implement
+  some of the stuff i'm claiming there. :)
+
+* Do we want to include ZEO? I think FPT_TDC.1 is useful for that, but some
+  other points are relevant as well. E.g. reliable time stamps (maybe they should
+  be generated by a/the server ...)
+
+* Jim talked about something that is described in FMT_SMR.3:
+  "Assuming roles requires that an explicit request is given to the TSF to assume a Role".
+  Are we going to have that?
+
+* In TSF_AUD (summary specification): I'm guessing about the function of the security audit
+  logger (doesn't sound too hard, maybe I should/could write that thing)
+
 Questions to TUV
 ================
 
-    XXX none right now
+    -   Is there a standard format for logging audit data. maybe one that is
+        usable by audit software?
