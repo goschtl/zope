@@ -16,10 +16,6 @@ Things that need to be done
     manually.  This doesn't feel like it "plays nice" in the distutils
     world, though.
 
-  - If a version number is used which appears to indicate "alpha" or
-    "beta" status, check the Trove "Development Status" classifier to
-    see that it matches, and issue a warning if not.
-
   - Re-visit the abstractions for parsed revision control URLs:
 
     - The current abstraction is pretty painful to work with, and
@@ -82,6 +78,9 @@ Things that need to be done
 
   - Consider looking for the configuration file in the current
     directory before looking in ~/.zpkg/.
+
+- Look at the package manager used by the MacPython people to see what
+  can be/has been done.
 
 - Deal with a package tree like the zope package tree that includes
   both pure-Python and non-pure packages; these could easily land in
