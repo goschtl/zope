@@ -13,27 +13,15 @@
 ##############################################################################
 """Component location field.
 
-$Id: field.py,v 1.3 2003/01/09 17:28:44 stevea Exp $
+$Id: field.py,v 1.4 2003/01/09 19:13:49 stevea Exp $
 """
 __metaclass__ = type
 
-from zope.schema.interfaces import IField
 from zope.schema import Field
 from zope.schema.interfaces import ValidationError
 from zope.app.traversing import traverse
-from zope.app.component.interfacefield import InterfaceField
 from zope.exceptions import NotFoundError
-
-class IComponentPath(IField):
-    """A field containing a component path.
-    """
-
-    type = InterfaceField(
-        title = u"An interface that must be implemented by the component.",
-        required = True,
-        readonly = True,
-        basetype = None
-        )
+from zope.app.interfaces.services.field import IComponentPath
 
 class ComponentPath(Field):
 
@@ -58,5 +46,4 @@ class ComponentPath(Field):
 
         if not self.type.isImplementedBy(component):
             raise ValidationError("Wrong component type", value)
-
 
