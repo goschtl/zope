@@ -34,6 +34,7 @@ from zope.security.checker import NamesChecker
 
 from zope.interface import implements
 from zope.app import zapi
+from zope.app.container.contained import Contained
 from zope.app.rdb.interfaces import DatabaseException
 from zope.app.rdb.interfaces import IResultSet
 from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
@@ -107,7 +108,7 @@ class DatabaseAdapterError(Exception):
     pass
 
 
-class ZopeDatabaseAdapter(Persistent):
+class ZopeDatabaseAdapter(Persistent, Contained):
 
     implements(IZopeDatabaseAdapter)
     _v_connection =  None
