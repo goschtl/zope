@@ -2,19 +2,18 @@
 
 <!-- Browser directives for the connection service -->
 
-  <!-- "Add service" menu entry to add a connection service -->
-  <!-- XXX AFAIK the 'action' value is unused, but must be given -->
-  <!--ALL DONE-->
+  <!-- "Add service" menu entry to add a connection service.
+       The action attribute matches a factory name defined in
+       zope/app/services/configure.zcml. -->
   <menuItem
       for="zope.app.interfaces.container.IAdding"
       menu="add_service" title="SQL Connection Service"
-      action="zope.app.services.ConnectionService"
+      action="ConnectionService"
       description="A Persistent SQL Connection Service for TTW development"
       permission="zope.ManageServices"
       />
 
   <!-- ZMI tab named "Connections" for the connection service -->
-  <!--ALL DONE-->
   <page
       for="zope.app.interfaces.services.connection.ILocalConnectionService"
       name="index.html"
@@ -34,7 +33,6 @@
        click on an individual configuration to edit it.
        (Note that this page doesn't really apply to a single connection,
        it applies to a single connection name. -->
-  <!--ALL DONE-->
   <page
       for="zope.app.interfaces.services.connection.ILocalConnectionService"
       name="configureConnection.html"
@@ -46,7 +44,6 @@
   <!-- ZMI tab named "Configurations" for connection objects.
        Given a connection object this lets you view all configurations
        available for it. -->
-  <!--ALL DONE-->
   <page
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
       name="connectionConfiguration.html"
@@ -78,7 +75,6 @@
        you are taken to this form.  It is similar to the above add
        form, but doesn't let you change the name or path.
        (Thus leaving only permission and registration status.) -->
-  <!--ALL DONE-->
   <editform
       menu="zmi_views" title="Edit"
       label="Connection Configuration"
