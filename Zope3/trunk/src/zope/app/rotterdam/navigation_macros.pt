@@ -12,9 +12,14 @@
             tal:attributes="src string:${context/++resource++xmltree.js}" >
     </script>
 
+    <tal:var condition="not: body_onload | nothing" >
+    <tal:block define="global body_onload string:" />
+    </tal:var>
+      
     <tal:var define="rooturl     request/getApplicationURL;
                      thisbaseurl request/URL/-1;
-              global body_onload string:loadtree('${rooturl}/', '${thisbaseurl}/');" />
+                     loadtreejs string:loadtree('${rooturl}/', '${thisbaseurl}/');
+              global body_onload python: loadtreejs + ';; ' + body_onload" />
 
   </metal:tree>
 
