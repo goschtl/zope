@@ -558,11 +558,8 @@ class date(object):
     # Standard conversions, __cmp__, __hash__ (and helpers)
 
     def _yday(self):
-        """Return tm_yday: day within the current year, where Jan 1 == 1.
-
-        XXX This is not correct for now.  Who cares.
-        """
-        return 0
+        "Return tm_yday: day within the current year, where Jan 1 == 1."
+        return _days_before_month(self.__month, self.__year) + self.__day
 
     def timetuple(self):
         "Return local time tuple compatible with time.localtime()."

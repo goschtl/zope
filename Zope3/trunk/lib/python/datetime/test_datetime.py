@@ -291,20 +291,6 @@ class TestDate(unittest.TestCase):
         t = self.theclass(2, 3, 2)
         self.assertEqual(t.isoformat(), "0002-03-02")
 
-    def test_strftime(self):
-        # If t.strftime uses time.localtime instead of time.gmtime while west
-        # from GMT, the date will be incorrect.  If that happens east from GMT,
-        # the time will be nonzero.  If we test in GMT, we won't notice the bug.
-        t = self.theclass(2002, 3, 4)
-        self.assertEqual(t.strftime('%Y-%m-%d %H:%M:%S'), "2002-03-04 00:00:00")
-
-    def test_timetuple(self):
-        # If t.timetuple uses time.localtime instead of time.gmtime while west
-        # from GMT, the date will be incorrect.  If that happens east from GMT,
-        # the time will be nonzero.  If we test in GMT, we won't notice the bug.
-        t = self.theclass(2002, 3, 4)
-        self.assertEqual(t.timetuple()[:6], (2002, 3, 4, 0, 0, 0))
-
     def test_ctime(self):
         t = self.theclass(2002, 3, 2)
         self.assertEqual(t.ctime(), "Sat Mar  2 00:00:00 2002")
@@ -325,6 +311,21 @@ class TestDate(unittest.TestCase):
         self.assertEqual(self.theclass.min + big, self.theclass.max)
         self.assertEqual(self.theclass.max - big, self.theclass.min)
 
+    def test_timetuple(self):
+        for i in range(7):
+            # January 2, 1956 is a Monday (0)
+            d = self.theclass(1956, 1, 2+i)
+            t = d.timetuple()
+            self.assertEqual(t, (1956, 1, 2+i, 0, 0, 0, i, 2+i, -1))
+            # February 1, 1956 is a Wednesday (2)
+            d = self.theclass(1956, 2, 1+i)
+            t = d.timetuple()
+            self.assertEqual(t, (1956, 2, 1+i, 0, 0, 0, (2+i)%7, 32+i, -1))
+            # March 1, 1956 is a Thursday (3), and is the 31+29+1 = 61st day
+            # of the year.
+            d = self.theclass(1956, 3, 1+i)
+            t = d.timetuple()
+            self.assertEqual(t, (1956, 3, 1+i, 0, 0, 0, (3+i)%7, 61+i, -1))
 
 class TestDateTime(TestDate):
 
