@@ -8,6 +8,9 @@ CMF 1.5.0beta2 (unreleased)
 
   Bug Fixes
 
+    - DirectoryView: Improved createDirectoryView() backwards compatibility.
+      Using platform specific path separators is deprecated.
+
     - UniqueIdAnnotation: Fixed manage_after* methods.
       They didn't work correctly in nested folders.
 
