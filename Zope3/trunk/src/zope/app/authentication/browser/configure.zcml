@@ -58,6 +58,14 @@
       index="zope.ManageServices"
       />
 
+  <schemadisplay
+      schema="..principalfolder.IInternalPrincipalContainer"
+      label="Principal Folder Prefix"
+      name="prefix.html"
+      fields="prefix"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Prefix" />
+
   <editform
       schema="..httpplugins.IHTTPBasicAuthRealm"
       label="Change Realm"
