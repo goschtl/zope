@@ -266,7 +266,7 @@ OSpec_getsig(OSpec *self, void *closure)
       /* We have a provided sig, but the class sig was None, so make class
          sig NULL  */
       Py_DECREF(sig);
-      sig == NULL;
+      sig = NULL;
     }
 
   if (sig != NULL)
