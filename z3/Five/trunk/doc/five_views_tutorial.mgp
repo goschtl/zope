@@ -56,7 +56,7 @@ Actually
 
 %page
 
-overview.pt
+Page example: overview.pt
 
 
 %size 4, fore "blue"
@@ -68,7 +68,7 @@ overview.pt
 
 %page
 
-configure.zcml
+Page example: configure.zcml
 
 
 %size 4, fore "blue"
@@ -107,4 +107,128 @@ Hooking up the page, explanation
 
 	Only five-specific thing is making Folder Zope-3 traversable
 
-        Well, and the Zope 2 permission.
+	Well, and the Zope 2 permission.
+
+%page
+
+Hooking up a page, with class
+
+
+	We need some helper methods
+
+	Very similar to the way you'd use Python scripts in Zope 2
+
+%page
+
+View class example: overview2.pt
+
+
+%size 4, fore "blue"
+<html>
+<body>
+<p tal:content="context/objectIds"></p>
+</body>
+</html>
+
+%page
+
+View class example: browser.py
+
+
+%size 4, fore "blue"
+from Products.Five import BrowserView
+
+class Overview(BrowserView):
+    def reversedIds(self):
+        result = []
+        for id in self.context.objectIds():
+            l = list(id)
+            l.reverse()
+            reversed_id = ''.join(l)
+            result.append(reversed_id)
+        return result
+
+%page
+
+Example: configure.zcml
+
+
+%size 4, fore "blue"
+  <browser:page
+      for="Products.Five.interfaces.IFolder"
+      name="overview2.html"
+      template="overview2.pt"
+      permission="zope2.ViewManagementScreens"
+      class=".browser.OverviewHelper"
+      />
+
+%page
+
+A note on security
+
+
+	There is none: both python code and ZPT are trusted
+
+	Only checks are happening on the outside
+
+	Performance benefit
+
+	Advantage of simplicity
+
+%page
+
+Publishing an attribute
+
+
+	Expose python method on view directly to the web
+
+%page
+
+Attribute example: browser.py
+
+
+%size 4, fore "blue"
+    def directlyPublished(self):
+        return "This is directly published"
+
+%page
+
+Attribute example: configure zcml
+
+
+%size 4, fore "blue"
+  <browser:page
+    for="Products.Five.interfaces.IFolder"
+    name="test.html"
+    class=".browser.Overview"
+    attribute="directlyPublished"
+    permission="zope2.ViewManagementScreens"
+    />
+
+%page
+
+Publishing multiple pages
+
+
+	Convenience directive: browser:pages
+
+%page
+
+Multiple pages example
+
+
+%size 4, fore "blue"
+  <browser:pages
+      for="Products.Five.interfaces.IFolder"
+      class=".browser.NewExample"
+      permission="zope2.ViewManagementScreens"
+      >
+    <browser:page
+        name="one.html"
+        template="one.pt"
+        />
+    <browser:page
+        name="two.html"
+        attribute="two"
+        />
+  </browser:pages>
