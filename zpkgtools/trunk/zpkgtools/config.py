@@ -62,7 +62,7 @@ class Configuration:
         p = cfgparser.Parser(f, path, SCHEMA)
         cf = p.load()
         for value in cf.repository_map:
-            if value is None:
+            if not value:
                 raise ValueError("'repository-map' requires a location")
             type, rest = urllib.splittype(value)
             if not type:
@@ -77,10 +77,10 @@ def defaultConfigurationPath():
 
     This returns different things for Windows and POSIX systems.
     """
+    zpkgdir = "zpkg"
     if os.name == "posix":
-        name = "~/.zpkgrc"
-    else:
-        name = os.path.join("~", "zpkg.conf")
+        zpkgdir = "." + zpkgdir
+    name = os.path.join("~", zpkgdir, "zpkg.conf")
     path = os.path.expanduser(name)
     if os.path.exists(path):
         path = os.path.realpath(path)
