@@ -3,22 +3,12 @@
    xmlns="http://namespaces.zope.org/browser"
    >
 
-
-<!-- Workflow Service -->
-  <page
-      for="zope.app.workflow.interfaces.IWorkflowService"
-      name="index.html"
-      template="workflows.pt"
-      class=".workflows.WorkflowsOverview"
-      permission="zope.ManageServices"  
-      menu="zmi_views" title="Processes" />
-
-  <addMenuItem
-      class="zope.app.workflow.service.WorkflowService"
-      title="Workflow Service"
-      description="A workflow service" 
-      permission="zope.ManageServices" />
-
+  <tool
+      interface="zope.app.workflow.interfaces.IProcessDefinition"
+      title="Workflows"
+      description="Workflow Process Definitions define a particular workflow
+      for an object."
+      />
 
 <!-- Process Definition Import/Export -->
 
