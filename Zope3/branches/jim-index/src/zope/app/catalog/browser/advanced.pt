@@ -12,8 +12,8 @@
    <tr tal:repeat="indexname context"
        >
        <td tal:content="indexname">foo</td>
-       <td tal:content="index/?indexname/documentCount|nothing">42</td>
-       <td tal:content="index/?indexname/wordCount|nothing">99</td>
+       <td tal:content="context/?indexname/documentCount">42</td>
+       <td tal:content="context/?indexname/wordCount">99</td>
     </tr>
 </table>
 
