@@ -393,6 +393,41 @@ class PortalFolderTests( SecurityTest ):
         assert has_path( catalog._catalog, '/test/sub2/dummy' )
         assert has_path( catalog._catalog, '/test/sub3/dummy' )
 
+    def test_contentPasteAllowedTypes( self ):
+        #
+        #   Does _verifyObjectPaste check allowed content types?
+        #
+        test = self.root.test
+        self.root._setObject( 'portal_types', TypesTool() )
+
+        types_tool = self.root.portal_types
+        types_tool._setObject( 'Dummy Content', DummyFTI )
+        types_tool._setObject( 'Folder', FTI( id='Folder'
+                               , title='Folder or Directory'
+                               , meta_type=PortalFolder.meta_type
+                               , product='CMFCore'
+                               , factory='manage_addPortalFolder'
+                               , filter_content_types=0 ) )
+
+        test._setObject( 'sub1', PortalFolder( 'sub1', '' ) )
+        sub1 = test.sub1
+        sub1._setObject( 'dummy', DummyContent( 'dummy' ) )
+
+        test._setObject( 'sub2', PortalFolder( 'sub2', '' ) )
+        sub2 = test.sub2
+        sub2.all_meta_types = extra_meta_types()
+
+        # Copy/paste should work fine 
+        cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
+        sub2.manage_pasteObjects( cookie )
+
+        # Disallow adding of Dummy Content
+        types_tool.Folder.manage_changeProperties(filter_content_types=1)
+
+        # Now copy/paste should raise a ValueError
+        cookie = sub1.manage_copyObjects( ids = ( 'dummy', ) )
+        self.assertRaises(ValueError, sub2.manage_pasteObjects, cookie)
+
     def test_setObjectRaisesBadRequest(self):
         # _setObject() should raise zExceptions.BadRequest
         # on duplicate id.
@@ -413,6 +448,7 @@ class PortalFolderTests( SecurityTest ):
         test = self.root.test
         test._setObject('foo', DummyContent('foo'))
         self.failIf(test.checkIdAvailable('foo'))
+
 
 class ContentFilterTests( TestCase ):
 

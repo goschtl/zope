@@ -412,6 +412,7 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
         # This assists the version in OFS.CopySupport.
         # It enables the clipboard to function correctly
         # with objects created by a multi-factory.
+        securityChecksDone = 0
         if (hasattr(object, '__factory_meta_type__') and
             hasattr(self, 'all_meta_types')):
             mt = object.__factory_meta_type__
@@ -429,14 +430,16 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
                 if _checkPermission(permission_name,self):
                     if not validate_src:
                         # We don't want to check the object on the clipboard
-                        return
-                    try: parent = aq_parent(aq_inner(object))
-                    except: parent = None
-                    if getSecurityManager().validate(None, parent,
-                                                     None, object):
-                        # validation succeeded
-                        return
-                    raise 'Unauthorized', object.getId()
+                        securityChecksDone = 1
+                    else:
+                        try: parent = aq_parent(aq_inner(object))
+                        except: parent = None
+                        if getSecurityManager().validate(None, parent,
+                                                         None, object):
+                            # validation succeeded
+                            securityChecksDone = 1
+                        else:
+                            raise 'Unauthorized', object.getId()
                 else:
                     raise 'Unauthorized', permission_name
             #
@@ -454,18 +457,32 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
                     # Ensure the user is allowed to access the object on the
                     # clipboard.
                     if not validate_src:
-                        return
-                    try: parent = aq_parent(aq_inner(object))
-                    except: parent = None
-                    if getSecurityManager().validate(None, parent,
-                                                     None, object):
-                        return
-                    id = object.getId()
-                    raise 'Unauthorized', id
+                        securityChecksDone = 1
+                    else:
+                        try: parent = aq_parent(aq_inner(object))
+                        except: parent = None
+                        if getSecurityManager().validate(None, parent,
+                                                         None, object):
+                            securityChecksDone = 1
+                        else:
+                            raise 'Unauthorized', object.getId()
                 else:
                     raise 'Unauthorized', method_name
-        PortalFolder.inheritedAttribute(
-            '_verifyObjectPaste')(self, object, validate_src)
+
+        # Call OFS' _verifyObjectPaste if necessary
+        if not securityChecksDone:
+            PortalFolder.inheritedAttribute(
+                '_verifyObjectPaste')(self, object, validate_src)
+
+        # Finally, check allowed content types
+        if hasattr(aq_base(object), '_getPortalTypeName'):
+            contentType = object._getPortalTypeName()
+            if contentType is not None:
+                pt = getToolByName(self, 'portal_types')
+                myType = pt.getTypeInfo(self)
+                if myType is not None and not myType.allowType(contentType):
+                    raise ValueError, \
+                          "Disallowed to paste subobject type '%s'." % contentType
 
     security.setPermissionDefault(AddPortalContent, ('Owner','Manager'))
     security.setPermissionDefault(AddPortalFolders, ('Owner','Manager'))
