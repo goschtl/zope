@@ -1,0 +1,52 @@
+<html metal:use-macro="views/standard_macros/page">
+<body>
+<div metal:fill-slot="body">
+
+  <h2 i18n:translate="">
+    Common Site Management Tasks
+  </h2>
+
+      <p i18n:translate="">
+         The site management interface allows you to do stuff.
+         Some of this stuff is good.
+      </p>
+
+  <dl>
+
+    <dt i18n:translate=""> Tools: </dt>
+    <dd i18n:translate="">
+ 	    Tools consist of
+        <span title="Services register themselves with the ServiceService">Services</span>
+ and <span title="Utilities register themselves with the UtilityService">Utilities</span>. These perform tasks like
+        error logging, translation, authentication and so on.
+        Your site may provide new 
+        <a href="default/AddService" i18n:translate="">services</a> or
+        <a href="default/AddUtility" i18n:translate="">utilities</a>
+        (which may override existing tools). You may also configure the
+        <a href="@@services.html" i18n:translate="">services</a> and
+        <a href="default/Utilities/@@utilities.html" i18n:translate="">utilities</a>
+        already present in this site.
+    </dd>
+    <dt i18n:translate=""> Software: </dt>
+    <dd i18n:translate="">
+       The site may <a href="@@contents.html" i18n:translate="">customise
+        the behaviour of existing software</a>, or define its own.
+        The first step in creating a new software package is to
+        <a href="@@+">create a new Site Management Folder</a> to 
+        contain the software.
+        If you've already added your own software, you may 
+        <a href="@@contents.html" i18n:translate="">edit it</a>.
+   </dd>
+
+    <!-- When software bundles are more than a wiki page, revisit this.
+     <dt i18n:translate=""> Software Bundles: </dt><dd i18n:translate="">
+        Installing,
+        Removing
+     </dd>
+    -->
+
+
+    
+</div>
+</body>
+</html>

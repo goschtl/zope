@@ -44,6 +44,13 @@
 
   <page
      for="zope.app.interfaces.services.service.ISiteManager"
+     name="tasks.html"
+     menu="zmi_views" title="Tasks"
+     template="tasks.pt"
+     permission="zope.ManageServices" />
+
+  <page
+     for="zope.app.interfaces.services.service.ISiteManager"
      name="services.html"
      menu="zmi_views" title="Services"
      template="services.pt"
