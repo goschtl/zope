@@ -13,14 +13,16 @@
 ##############################################################################
 __doc__ = """ Server Control View
 
-$Id: servercontrol.py,v 1.2 2002/12/25 14:12:27 jim Exp $ """
+$Id: servercontrol.py,v 1.3 2003/04/08 20:35:25 gotcha Exp $ """
 
 from zope.publisher.browser import BrowserView
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.interfaces.applicationcontrol.servercontrol \
      import IServerControl
 from zope.component import getUtility
+from zope.i18n.messageid import MessageIDFactory
 
+_ = MessageIDFactory("zope")
 
 class ServerControlView(BrowserView):
 
@@ -35,9 +37,9 @@ class ServerControlView(BrowserView):
         """Do the shutdown/restart!"""
         if 'restart' in self.request:
             return (self.serverControl().restart()
-                    or "You restarted the server.")
+                    or _(u"You restarted the server."))
         elif 'shutdown' in self.request:
             return (self.serverControl().shutdown()
-                    or "You shut down the server.")
+                    or _("You shut down the server."))
 
     index = ViewPageTemplateFile('server-control.pt')

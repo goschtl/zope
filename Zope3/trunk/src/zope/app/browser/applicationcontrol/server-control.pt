@@ -1,13 +1,13 @@
-<html metal:use-macro="views/standard_macros/page">
+<html metal:use-macro="views/standard_macros/page" i18n:domain="zope">
 <head>
-<title>Zope Stub Server Controller</title>
+<title i18n:translate="">Zope Stub Server Controller</title>
 </head>
 <body>
 <div metal:fill-slot="body">
 
  <form name="servercontrol" action="ServerControl.html" method="post">
-  <input type="submit" name="restart" value="Restart server" /> <br />
-  <input type="submit" name="shutdown" value="Shutdown server" /> <br />
+  <input type="submit" name="restart" value="Restart server" i18n:attributes="value" /> <br />
+  <input type="submit" name="shutdown" value="Shutdown server" i18n:attributes="value" /> <br />
  </form>
  
 </div>

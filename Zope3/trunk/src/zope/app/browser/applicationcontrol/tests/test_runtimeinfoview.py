@@ -49,6 +49,24 @@ class Test(PlacefulSetup, TestCase):
         test_keys.sort()
         self.failUnless(assert_keys == test_keys)
 
+        self.failUnless(test_format["ZopeVersion"] != "N/A")
+
+    def test_RuntimeInfoFailureView(self):
+        test_runtimeinfoview = self._TestView__newView(applicationController)
+
+        test_format = test_runtimeinfoview.runtimeInfo()
+        self.failUnless(isinstance(test_format, DictType))
+
+        assert_keys = ['ZopeVersion', 'PythonVersion', 'PythonPath',
+              'SystemPlatform', 'CommandLine', 'ProcessId', 'Uptime', 'Hint']
+        test_keys = test_format.keys()
+
+        assert_keys.sort()
+        test_keys.sort()
+        self.failUnless(assert_keys == test_keys)
+
+        self.failUnless(test_format["ZopeVersion"] == "N/A")
+
 def test_suite():
     return makeSuite(Test)
 
