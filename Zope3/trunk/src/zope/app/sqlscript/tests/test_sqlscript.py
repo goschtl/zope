@@ -167,8 +167,6 @@ class SQLScriptTest(PlacelessSetup, unittest.TestCase):
 
     def tearDown(self):
         pass
-        # XXX Why?
-        ##localservice.getLocalServices = self._old_getLocalServices
 
     def _getScript(self):
         return SQLScript("my_connection",
