@@ -13,34 +13,28 @@
 ##############################################################################
 
 USAGE="""
+Usage: %s [options] operation [arguments]
 
-Usage: %s [options] operation
+Options:
+  -h / --help              -- print this help message
+  -f / --fspath FILE       -- filename for the object
+  -o / --objpath PATH      -- ZODB path for the object (checkout only)
+  -d / --dbpath FILE       -- filename for the ZODB (Data.fs file)
+  -s / --siteconfpath FILE -- filename for site.zcml (configuration file)
+  -t / --type TYPE         -- type of new object (add only)
 
-The available options are:
+Operations:
+  checkout -- initial copy from ZODB to filesystem
+  update   -- subsequent incremental copy from ZODB to filesystem
+  commit   -- incremental copy from filesystem to ZODB
+  fcommit  -- forced commit
+  diff     -- show differences between filesystem, original, and current ZODB
+  add      -- add one or more files
+  addtypes -- show the list of supported types
 
--f / --fspath=
-Set the file system path where the object is to be dumped.
-Is used with all the operation.
-
--o / --objpath=
-Looks up for the Object in the specified path in the ZODB.
-Is used with checkout operation.
-
--d / --dbpath=
-The path of ZODB.
-Is used with all the operation.
-
--s / --siteconfpath=
-The path for site.zcml.
-Is used with all the operation.
-
--t / --type=
-The type of object to be added to the file system.
-Is used with add operation.
-
-OPERATION
+FULL DOCUMENTATION
 ----------------------------------------------------------------------------
-checkout --- checks out ZODB object in File-system
+checkout --- checks out ZODB object in filesystem
              example:
                 $python sync.py -f /home/user/sandbox
                                 -d /zope3/data.fs
@@ -117,7 +111,7 @@ update   --- updates the sandbox
                 Conventionaly an update has to be done on the sandbox before
                 running commit.
 
-commit   --- A commit command copies data from the File-system samdbox
+commit   --- A commit command copies data from the filesystem samdbox
              into the ZODB
              example:
                 $python sync.py -f /home/user/sandbox/bar
@@ -215,17 +209,16 @@ add      --- Adds objects to file system and saves it to the ZODB on
 ENVIRONMENT VARIABLES
 ----------------------------------------------------------------------------
 
-SYNCROOT     --- Path for the File-system folder where the ZODB object
+SYNCROOT     --- Path for the filesystem folder where the ZODB object
                  has to be checked out.If not set it takes the default
                  directory. Or can be specified with the --fspath or -f
                  option
 
-ZODBPATH     --- Path where the Data.fs file exist in the File-system.
+ZODBPATH     --- Path where the Data.fs file exist in the filesystem.
                  if not set it takes the default is ../../Data.fs.
                  Or can be specified with the --dbpath or -d option.
 
 SITECONFPATH --- Path for the site.zcml file.if not set it takes the
                  default is ../../site.zcml. Or can be specified with
                  the --siteconfpath or -s option.
-
 """
