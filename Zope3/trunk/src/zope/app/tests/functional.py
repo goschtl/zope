@@ -49,6 +49,8 @@ from zope.app.debug import Debugger
 from zope.app.publication.http import HTTPPublication
 from zope.app.publication.browser import BrowserPublication
 from zope.app.publication.xmlrpc import XMLRPCPublication
+from zope.app.publication.soap import SOAPPublication
+from zope.app.publication.interfaces import ISOAPRequestFactory
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -583,18 +585,30 @@ class HTTPCaller(CookieHandler):
         header_output = HTTPHeaderOutput(
             protocol, ('x-content-type-warning', 'x-powered-by'))
 
+        content_type = environment.get('CONTENT_TYPE', '')
+        is_xml = content_type.startswith('text/xml')
+
         if method in ('GET', 'POST', 'HEAD'):
-            if (method == 'POST' and
-                environment.get('CONTENT_TYPE', '').startswith('text/xml')
-                ):
+            if (method == 'POST' and environment.get('HTTP_SOAPACTION', None)
+                and is_xml):
+                factory = zapi.queryUtility(ISOAPRequestFactory)
+                if factory is not None:
+                    request_cls = factory(StringIO(), StringIO(), {}).__class__
+                    publication_cls = SOAPPublication
+                else:
+                    request_cls = type(BrowserRequest.__name__,
+                                       (BrowserRequest,),
+                                       {})
+                    zope.interface.classImplements(request_cls, _getDefaultSkin())
+                    publication_cls = BrowserPublication
+            elif (method == 'POST' and is_xml):
                 request_cls = XMLRPCRequest
                 publication_cls = XMLRPCPublication
             else:
-                request_cls = type(BrowserRequest.__name__,
-                                   (BrowserRequest,),
-                                   {})
+                request_cls = type(BrowserRequest.__name__, (BrowserRequest,), {})
                 zope.interface.classImplements(request_cls, _getDefaultSkin())
                 publication_cls = BrowserPublication
+            
         else:
             request_cls = HTTPRequest
             publication_cls = HTTPPublication
