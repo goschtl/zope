@@ -15,7 +15,7 @@
 
 This implementationb is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.17 2004/04/20 11:38:04 jim Exp $
+$Id: adapter.py,v 1.18 2004/04/30 16:45:33 jim Exp $
 """
 
 
@@ -82,7 +82,6 @@ $Id: adapter.py,v 1.17 2004/04/20 11:38:04 jim Exp $
 
 
 import weakref
-from sets import Set
 from zope.interface.ro import ro
 from zope.interface.declarations import providedBy
 from zope.interface.interface import InterfaceClass, Interface
