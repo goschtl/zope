@@ -173,7 +173,20 @@ Progress made since June
 
 	As promised, moved to SVN at codespeak.net
 
-	People joined the project. Lots of excellent contributions!
+	Got website, mailing list
+
+	People joined the project
+
+%page
+
+Progress made since June, continued
+
+
+	Lots of excellent contributions!
+
+	Much better view infrastructure (traversal)
+
+	ZCML's interaction with Zope 2 products much improved
 
 	UnionCMS and other projects are starting to use it!
 
