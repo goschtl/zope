@@ -4,10 +4,7 @@ $Id$
 """
 from AccessControl import ModuleSecurityInfo
 
-try:
-    from Products.CMFCore import permissions as core_permissions
-except ImportError: # CMF < 1.5
-    from Products.CMFCore import CMFCorePermissions as core_permissions
+from Products.CMFCore import permissions as core_permissions
 
 setDefaultRoles = core_permissions.setDefaultRoles
 
