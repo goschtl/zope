@@ -10,10 +10,11 @@
   <!-- Note that we need to do this early, as later startup
        subscribers may break without fixups -->
  
+  <include package="zope.app.component" />
+
   <include package=".generations" file="subscriber.zcml" />
 
   <!-- Ordinary Application (non-view) configuration) -->
-  <include package="zope.app.component" />
   <include package="zope.app.interface" />
   <include package="zope.app.security" />
   <include package="zope.app.event" />

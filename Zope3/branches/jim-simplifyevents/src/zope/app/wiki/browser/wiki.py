@@ -22,7 +22,6 @@ from zope.app import zapi
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.traversing.api import getName, getPath
 from zope.app.container.browser.adding import Adding
-from zope.app.hub import Registration
 
 from zope.app.wiki.interfaces import IWikiPageHierarchy
 

@@ -50,12 +50,12 @@
       for="zope.app.event.interfaces.IObjectCreatedEvent"
       />
 
-  <subscribe
+  <subscriber
       factory=".creatorannotator.CreatorAnnotator"
       for="zope.app.event.interfaces.IObjectModifiedEvent"
       />
 
-  <subscribe
+  <subscriber
       factory=".creatorannotator.CreatorAnnotator"
       for="zope.app.event.interfaces.IObjectCreatedEvent"
       />

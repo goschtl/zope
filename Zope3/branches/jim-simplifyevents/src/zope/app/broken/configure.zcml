@@ -5,7 +5,7 @@
   </content>
 
   <subscriber
-      factory=".broken.installBrokenSubscriber"
+      factory=".broken.installBroken"
       for="zope.app.appsetup.IDatabaseOpenedEvent" 
       />
 

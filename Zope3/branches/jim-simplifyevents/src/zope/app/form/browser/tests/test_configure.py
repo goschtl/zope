@@ -28,7 +28,6 @@ class TestBrowserFormZCML(PlacelessSetup, unittest.TestCase):
         xmlconfig.string(
             """<configure xmlns='http://namespaces.zope.org/zope'>
                  <include package='zope.app.component' file='meta.zcml' />
-                 <include package='zope.app.event' file='meta.zcml' />
                  <include package='zope.app.publisher.browser'
                           file='meta.zcml' />
             

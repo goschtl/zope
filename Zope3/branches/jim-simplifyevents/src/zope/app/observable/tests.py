@@ -146,8 +146,7 @@ def testObservableEvents(self):
     handlers are notified.
 
     >>> event = DummyObservableEvent()
-    >>> notifier = observerevent.ObserverEventNotifier()
-    >>> notifier.notify(event)
+    >>> observerevent.observerEventNotifier(event)
     >>> event.object.flag
     True
     """
@@ -159,8 +158,7 @@ def testNotObservableEvents(self):
     ObserverEventNotifier doesn't do anything to it.
 
     >>> event = DummyNotObservableEvent()
-    >>> notifier = observerevent.ObserverEventNotifier()
-    >>> notifier.notify(event)
+    >>> observerevent.observerEventNotifier(event)
     >>> event.object.flag
     False
     """

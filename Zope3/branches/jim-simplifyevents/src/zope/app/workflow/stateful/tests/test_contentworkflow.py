@@ -159,8 +159,7 @@ class ContentWorkflowsManagerTest(WorkflowSetup, unittest.TestCase):
 
         obj = TestObject2()
         event = ObjectCreatedEvent(obj)
-        subscriber = NewObjectProcessInstanceCreator(obj, event)
-        subscriber.notify(event)
+        NewObjectProcessInstanceCreator(obj, event)
         pi = obj.__annotations__['zope.app.worfklow.ProcessInstanceContainer']
         self.assertEqual(pi.keys(), ['definition2', 'definition1'])
 

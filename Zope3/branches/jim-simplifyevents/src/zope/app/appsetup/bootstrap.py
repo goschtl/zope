@@ -30,7 +30,6 @@ from zope.app.traversing.api import traverse, traverseName
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.folder import rootFolder
 from zope.app.servicenames import PrincipalAnnotation
-from zope.app.servicenames import EventPublication, EventSubscription
 from zope.app.servicenames import ErrorLogging, Utilities
 from zope.app.site.service import ServiceManager, ServiceRegistration
 from zope.app.errorservice import RootErrorReportingService

@@ -69,7 +69,7 @@ class Broken(ZODB.broken.Broken):
             return default
         return annotations.get(key, default)
 
-def installBrokenSubscriber(event):
+def installBroken(event):
     """Install a class factory that handled broken objects
 
     This method installs a custom class factory when it gets a

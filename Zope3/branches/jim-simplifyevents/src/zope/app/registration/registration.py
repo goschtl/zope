@@ -619,7 +619,7 @@ def ComponentRegistrationRemoveSubscriber(component_registration, event):
     """Receive notification of remove event."""
     component = component_registration.getComponent()
     dependents = IDependable(component)
-    objectpath = zapi.getPath(self.component_registration)
+    objectpath = zapi.getPath(component_registration)
     dependents.removeDependent(objectpath)
     # Also update usage, if supported
     adapter = interfaces.IRegistered(component, None)
@@ -630,7 +630,7 @@ def ComponentRegistrationAddSubscriber(component_registration, event):
     """Receive notification of add event."""
     component = component_registration.getComponent()
     dependents = IDependable(component)
-    objectpath = zapi.getPath(self.component_registration)
+    objectpath = zapi.getPath(component_registration)
     dependents.addDependent(objectpath)
     # Also update usage, if supported
     adapter = interfaces.IRegistered(component, None)
