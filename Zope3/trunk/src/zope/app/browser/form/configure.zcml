@@ -232,7 +232,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       factory=".vocabularywidget.VocabularyBagDisplayWidget"
-      name="field-bag-display-widget"
+      name="field-display-bag-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
 
@@ -240,7 +240,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       factory=".vocabularywidget.VocabularyListDisplayWidget"
-      name="field-list-display-widget"
+      name="field-display-list-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
 
@@ -248,7 +248,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       factory=".vocabularywidget.VocabularyBagDisplayWidget"
-      name="field-set-display-widget"
+      name="field-display-set-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
 
@@ -256,7 +256,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       factory=".vocabularywidget.VocabularyListDisplayWidget"
-      name="field-unique-list-display-widget"
+      name="field-display-unique-list-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
 
@@ -273,7 +273,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.browser.IBrowserPresentation"
       factory=".vocabularywidget.VocabularyMultiEditWidget"
-      name="field-list-edit-widget"
+      name="field-edit-list-widget"
       for="zope.schema.interfaces.IVocabulary"
       />
 
