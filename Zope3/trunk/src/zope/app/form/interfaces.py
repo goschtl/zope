@@ -109,7 +109,7 @@ class IWidget(IView):
     """
 
     name = Attribute(
-        """The uniquewidget name
+        """The unique widget name
 
         This must be unique within a set of widgets.""")
 
