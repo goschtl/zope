@@ -36,7 +36,11 @@ ExternalMethod -d Products/ExternalMethod Packages/Products/ExternalMethod
 ZSQLMethods    -d Products/ZSQLMethods Packages/Products/ZSQLMethods
 ZGadflyDA      -d Products/ZGadflyDA Packages/Products/ZGadflyDA
 
-zsb Components/GreyThing \
+
+waaaGreyThing -l Components/GreyThing
+
+
+zsb waaaGreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
   &ZClasses &webdav \
   &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay &SearchIndex \
