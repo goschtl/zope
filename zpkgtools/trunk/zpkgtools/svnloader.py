@@ -106,7 +106,11 @@ def is_repository(path):
     return True
 
 
-class SubversionUrl(cvsloader.UrlBase):
+class SubversionUrlBase(cvsloader.UrlBase):
+    """Base class for all Subversion URL classes."""
+
+
+class SubversionUrl(SubversionUrlBase):
     """Parsed representation for a Subversion URL that appears to use the
     'standard' trunk/tags tree structure.
     """
@@ -147,7 +151,7 @@ class SubversionUrl(cvsloader.UrlBase):
         return SubversionUrl(prefix, tail, tag)
 
 
-class TaglessSubversionUrl(cvsloader.UrlBase):
+class TaglessSubversionUrl(SubversionUrlBase):
     """Parsed representation for a Subversion URL that does not appear
     to use the 'standard' trunk/tags tree structure.
 
