@@ -18,6 +18,7 @@ $Id$
 import unittest
 
 from zope.interface.verify import verifyObject
+from zope.interface.exceptions import DoesNotImplement
 from zope.interface import Interface, implements
 
 from zope.schema import interfaces
@@ -96,6 +97,17 @@ class SimpleVocabularyTests(unittest.TestCase):
         verifyObject(interfaces.ITokenizedTerm, t)
         self.assertEqual(t.value, 1)
         self.assertEqual(t.token, "One")
+
+    def test_simple_term_title(self):
+        t = vocabulary.SimpleTerm(1)
+        verifyObject(interfaces.ITokenizedTerm, t)
+        self.failUnlessRaises(DoesNotImplement, verifyObject,
+            interfaces.ITitledTokenizedTerm, t)
+        self.failUnless(t.title is None)
+        t = vocabulary.SimpleTerm(1, title="Title")
+        verifyObject(interfaces.ITokenizedTerm, t)
+        verifyObject(interfaces.ITitledTokenizedTerm, t)
+        self.failUnlessEqual(t.title, "Title")
 
     def test_order(self):
         value = 1
