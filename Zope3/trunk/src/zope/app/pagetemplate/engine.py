@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: engine.py,v 1.23 2004/03/02 14:24:31 srichter Exp $
+$Id: engine.py,v 1.24 2004/03/02 15:50:03 srichter Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -26,6 +26,7 @@ from zope.tales.expressions import PathExpr, StringExpr, NotExpr, DeferExpr
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
+from zope.component.servicenames import Utilities
 from zope.component.exceptions import ComponentLookupError
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
@@ -34,6 +35,7 @@ from zope.i18n.translate import Translator
 
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.traversing.adapters import Traverser
 
 
@@ -96,13 +98,9 @@ class ZopeContext(Context):
                   _('Inline Code Evaluation is deactivated, which means that '
                     'you cannot have inline code snippets in your Page '
                     'Template. Activate Inline Code Evaluation and try again.')
-        try:
-            service = zapi.getService(self.context, 'Interpreter')
-        except ComponentLookupError, err:
-            raise InlineCodeError, \
-                  _('No interpreter service was found. This should never '
-                    'happen, since Zope defines a global interpreter service.')
-        interpreter = service.queryInterpreter(lang)
+
+        service = zapi.getService(self.context, Utilities)
+        interpreter = service.queryUtility(IInterpreter, name=lang)
         if interpreter is None:
             error = _('No interpreter named "${lang_name}" was found.')
             error.mapping = {'lang_name': lang}

@@ -13,12 +13,14 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.3 2004/03/02 14:24:30 srichter Exp $
+$Id: __init__.py,v 1.4 2004/03/02 15:50:04 srichter Exp $
 """
 import re
 from persistent import Persistent
 from zope.app import zapi
 from zope.app.container.contained import Contained
+from zope.app.interpreter.interfaces import IInterpreter
+from zope.component.servicenames import Utilities
 from zope.interface import Interface, implements
 from zope.schema import SourceText, TextLine
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -61,8 +63,7 @@ class PythonPage(Contained, Persistent):
 
     Examples::
 
-      >>> from tests import setUp, tearDown, Root
-      >>> setUp()
+      >>> from tests import Root
 
       >>> pp = PythonPage()
       >>> pp.__parent__ = Root()
@@ -100,8 +101,6 @@ class PythonPage(Contained, Persistent):
       ... except SyntaxError, err:
       ...     print err
       invalid syntax (pp, line 1)
-
-      >>> tearDown()
     """
 
     implements(IPythonPage)
@@ -177,6 +176,7 @@ class PythonPage(Contained, Persistent):
         kw['script'] = self
         kw['context'] = zapi.getParent(self)
 
-        service = zapi.getService(self, 'Interpreter')
-        interpreter = service.queryInterpreter('text/server-python')
+        service = zapi.getService(self, Utilities)
+        interpreter = service.queryUtility(IInterpreter,
+                                           name='text/server-python')
         return interpreter.evaluate(self._v_compiled, kw)
