@@ -85,7 +85,6 @@ class BuilderApplication(Application):
         if self.resource not in self.locations:
             self.error("unknown resource: %s" % self.resource)
         self.resource_url = self.locations[self.resource]
-        self.handled_resources = sets.Set()
         #
         release_name = self.options.release_name
         self.target_name = "%s-%s" % (release_name, self.options.version)
@@ -101,12 +100,11 @@ class BuilderApplication(Application):
         """
         top = self.get_component(self.resource, self.resource_url)
         top.write_package(self.destination)
-        handled = sets.Set()
-        required = top.get_dependencies()
-        remaining = required
         if self.options.build_type in ("application", "collection"):
             depsdir = os.path.join(self.destination, "Dependencies")
             first = True
+            handled = sets.Set()
+            remaining = top.get_dependencies()
             while remaining:
                 resource = remaining.pop()
                 handled.add(resource)
@@ -114,7 +112,6 @@ class BuilderApplication(Application):
                     # it's an external dependency, so we do nothing for now
                     self.logger.warn("ignoring resource %r (no source)"
                                      % resource)
-                    required.add(resource)
                     continue
                 #
                 location = self.locations[resource]
