@@ -1,6 +1,24 @@
-After 1.3.1
+CMF 1.3.2 (2003/09/05)
 
   Bug Fixes
+
+    - Initialize class security correctly on ActionProviderBase
+      (Collector #186).
+
+    - Remove ownership from filesystem-based skin methods, which
+      can't be trojaned, and therefore need not pay the performance
+      penalty of ownership checking.
+
+    - Skinnable: Fix __of__ method so that it does not remove previous
+      acquisition wrappers, which leads to invalid UIDs in the catalog
+      when indexing objects using methods acquired from "above" the CMF
+      site.
+
+    - Sort candiate selection list when adding a FilesystemTypeInfo
+      or ScriptableTypeInfo object to the types tool.
+
+    - Open filesystem-based skin methods as text files, to avoid
+      platform-specific line-ending issues (Collector #185).
 
     - Correct security assertion on CMFDefault.Image's manage_afterAdd
       (Collector #141).
@@ -14,6 +32,9 @@ After 1.3.1
 
     - Use return instead of raise in RegistrationTool.testPropertiesValidity
       if id is incorrect (Collector #48).
+
+    - CookieCrumbler: Accept authentication on HEAD requests. 
+      Thanks to Brent Hendricks.
 
     - Correctly cleanup temporaries in CMFCore.MemberDataTool when
       wrapping a user object (Collector #136).
