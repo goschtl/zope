@@ -3,7 +3,7 @@
 <div metal:fill-slot="body"
      tal:define="message view/update; configs view/getConfigs">
 
-  <h2 i18n:translate="">Utilities registered in this utility service:</h2>
+  <h2 i18n:translate="">Utilities registered in this utility service</h2>
 
   <div class="message" tal:condition="message">
     <span tal:replace="message">view/update message here</span>
@@ -51,11 +51,6 @@
            i18n:attributes="value refresh-button"/>
 
   </form>
-
-  <p>
-    <a href="../AddUtility" i18n:translate="">
-      Add a utility to this utility service</a>
-  </p>
 
 </div>
 </body>
