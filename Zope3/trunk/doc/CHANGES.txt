@@ -429,6 +429,14 @@ Zope Changes
         rare cases when they are used by computing composite
         factories.
 
+    - http://dev.zope.org/Zope3/UnificationOfRequestsAndSecurityContextsThroughUse
+
+      - Replaced security managers and security contexts with interactions
+        and participations.
+
+      - Requests are now participations, therefore request.user is renamed to
+        request.principal.
+
 
     Miscellaneous
 
