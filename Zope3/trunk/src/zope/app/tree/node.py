@@ -13,14 +13,13 @@
 ##############################################################################
 """A node in the treee
 
-$Id: node.py,v 1.2 2004/03/06 16:50:33 jim Exp $
+$Id: node.py,v 1.3 2004/04/23 06:27:01 philikon Exp $
 """
 
 from zope.interface import implements
 from zope.app import zapi
-
-from interfaces import INode, IUniqueId, IChildObjects, \
-     ITreeStateEncoder
+from zope.app.tree.interfaces import INode, IUniqueId, IChildObjects
+from zope.app.tree.interfaces import ITreeStateEncoder
 
 __metaclass__ = type
 
@@ -31,9 +30,8 @@ class Node:
     object and provides the INode interface to be relied on. In that
     way, it works similar to an adapter.
 
-    This implementation is designed to be as lazy as
-    possible. Especially, it will only create child nodes when
-    necessary.
+    This implementation is designed to be as lazy as possible.
+    Especially, it will only create child nodes when necessary.
     """
     implements(INode)
 
@@ -82,13 +80,13 @@ class Node:
         return self._id
 
     def hasChildren(self):
-        """See the zope.app.tree.interfaces.INode"""
+        """See zope.app.tree.interfaces.INode"""
         # we could actually test for the length of the result of
         # getChildObjects(), but we need to watch performance
         return self._get_child_objects_adapter().hasChildren()
 
     def getChildObjects(self):
-        """See the zope.app.tree.interfaces.INode"""
+        """See zope.app.tree.interfaces.INode"""
         filter = self.filter
         children = self._get_child_objects_adapter().getChildObjects()
         if filter:

@@ -16,10 +16,9 @@
 This module contains adapters necessary to use common objects with
 statictree. The most prominent ones are those for ILocation and
 IContainer. We also provide adapters for any object, so we don't end
-up with ComponentLookupErrors whenever encounter unknown
-objects. Explicit is better than implement EXCEPT WHEN IT'S NOT...
+up with ComponentLookupErrors whenever encounter unknown objects.
 
-$Id: adapters.py,v 1.4 2004/03/13 15:21:37 srichter Exp $
+$Id: adapters.py,v 1.5 2004/04/23 06:27:01 philikon Exp $
 """
 
 from zope.interface import Interface, implements
@@ -30,7 +29,7 @@ from zope.app.location.interfaces import ILocation
 from zope.app.container.interfaces import IReadContainer
 from zope.app.site.interfaces import ISite
 
-from interfaces import IUniqueId, IChildObjects
+from zope.app.tree.interfaces import IUniqueId, IChildObjects
 
 __metaclass__ = type
 

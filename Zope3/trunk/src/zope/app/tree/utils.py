@@ -13,13 +13,13 @@
 ##############################################################################
 """Static tree utilities
 
-$Id: utils.py,v 1.2 2004/03/04 02:01:38 philikon Exp $
+$Id: utils.py,v 1.3 2004/04/23 06:27:01 philikon Exp $
 """
 
 import zlib
 
 from zope.interface import implements
-from interfaces import ITreeStateEncoder
+from zope.app.tree.interfaces import ITreeStateEncoder
 
 class TreeStateEncoder:
     """Encodes tree state
