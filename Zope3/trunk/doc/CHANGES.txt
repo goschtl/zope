@@ -461,7 +461,9 @@ Zope Changes
 
     Bug Fixes
 
-      - Fixed issue #349 (zapi help missing from the online help)
+      - Fixed issue #335 (debug layer does not work with Zope3-trunk)
+
+      - Fixed issue #338 (zapi help missing from the online help)
 
       - Fixed issue #349 (Adapter registry doesn't notice __bases__ changes.)
 
