@@ -30,10 +30,14 @@ table {
     font-size: 100%;
 }
 
-a, #navtreecontents title {
+a {
 	text-decoration: none;
     color: #436976;
     background-color: transparent;
+}
+
+a:hover, div.box div.body a:hover div  {
+    text-decoration: underline;
 }
 
 table {
@@ -225,11 +229,10 @@ pre {
 /*  Styles for xmltree
 */
 
-#navtreecontents title {
-	   display: inline;
+#navtreecontents a {
 	   cursor: pointer;
 	   height: 18px;
-		 }
+}
 
 #navtreecontents expand {
   	   background-repeat: no-repeat;
@@ -349,10 +352,11 @@ div.box div.body a div.odd {
 
 div.box div.body a div.even {
     padding: 0.2em 0;
-    background: #F7F9FA;
-    border-bottom: 1px groove #8CACBB;    
-    border-top: 1px groove #8CACBB;    
+/*    background: #F7F9FA; */
+    border-bottom: 1px dotted #8CACBB;    
+    border-top: 1px dotted #8CACBB;    
 }
+
 
 #metadata .label {
     font-size: 80%;
@@ -463,10 +467,6 @@ table.listing td {
     text-align: left;
 }
 
-/*table.listing a:hover { */
-a:hover {
-    text-decoration: underline;
-}
 
 table.listing img {
 	vertical-align: middle;

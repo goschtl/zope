@@ -2,7 +2,6 @@
 var ELEMENT_NODE = 1;
 var TEXT_NODE = 3;
 var COLLECTION = 'COLLECTION';
-var TITLE = 'TITLE';
 var ICON = 'ICON';
 var EXPAND = 'EXPAND';
 var XML_CHILDREN_VIEW = '@@children.xml';
@@ -167,9 +166,6 @@ function isCollection(elem) {
 	return (checkTagName(elem, COLLECTION));
 	}
 
-function isTitle(elem) {
-	return (checkTagName(elem, TITLE));
-	}
 
 function isIcon(elem) {
 	return (checkTagName(elem, ICON));
@@ -206,35 +202,10 @@ function getCollectionChildNodes(xmlDomElem) {
         }
 
 //events
-function mouseOverTree (e) {
-        prettydump('mouseOverTree', LG_TRACE_EVENTS);
-        var elem = getTreeEventTarget(e);
-        if (elem.id == 'navtree') return;
-        if (isTitle(elem)) {
-	        elem.style.textDecoration = 'underline';
-                var collectionElem = elem.parentNode.parentNode.parentNode;
-                window.status = getTargetURL(collectionElem);
-	        }
-        }
-
-function mouseOutTree (e) {
-        prettydump('mouseOutTree', LG_TRACE_EVENTS);
-        var elem = getTreeEventTarget(e);
-        if (elem.id == 'navtree') return;
-        if (isTitle(elem)) {
-	        elem.style.textDecoration = 'none';
-                window.status = '';
-	        }
-        }
-
 function treeclicked (e) {
         prettydump('treeclicked', LG_TRACE_EVENTS);
         var elem = getTreeEventTarget(e);
         if (elem.id == 'navtree') return;
-        // if node clicked is title elem, change page
-        if (isTitle(elem)) {
-	        location.href = getTargetURL(elem.parentNode.parentNode.parentNode);
-	        }
 
         // if node clicked is expand elem, toggle expansion
         if (isExpand(elem)) {
@@ -246,15 +217,6 @@ function treeclicked (e) {
         }
 
 // helpers
-
-function getTargetURL(elem) {
-        var location_href = baseurl;
-	location_href = location_href + elem.getAttribute('path');
-	location_href = location_href + CONTENT_VIEW;
-        return location_href;
-        }
-
-
 function getControlPrefix() {
         if (getControlPrefix.prefix)
                 return getControlPrefix.prefix;
@@ -352,7 +314,7 @@ function addNavigationTreeNodes(sourceNode, targetNavTreeNode, deep) {
                 }
         }       
 
-function createPresentationNodes(title, icon_url, length) {
+function createPresentationNodes(title, targetUrl, icon_url, length) {
         // create nodes hierarchy for one collection (without children)
         
         // create elem for plus/minus icon
@@ -362,13 +324,14 @@ function createPresentationNodes(title, icon_url, length) {
         expandElem.appendChild(iconElem);
         iconElem.style.backgroundImage = 'url("' + icon_url + '")';
         // create title
-        var titleElem = document.createElement('title');
-        var newtextnode = document.createTextNode(title);
+        var linkElem = document.createElement('a');
+        var titleTextNode = document.createTextNode(title);
         
-        titleElem.appendChild(newtextnode);
-        titleElem.setAttribute('title', 'Contains ' + length + ' item(s)');
+        linkElem.appendChild(titleTextNode);
+        linkElem.setAttribute('title', 'Contains ' + length + ' item(s)');
+        linkElem.setAttribute('href', targetUrl);
         
-        iconElem.appendChild(titleElem);
+        iconElem.appendChild(linkElem);
 
         return expandElem;
         }
@@ -394,12 +357,14 @@ function createNavigationTreeNode(source, basePath, deep) {
         
         //could show number of child items
         var length = source.getAttribute('length');
-        //elemTitle = elemTitle + '(' + length + ')';
         
         var icon_url = source.getAttribute('icon_url');  
 
-        
-        var expandElem = createPresentationNodes(elemTitle, icon_url, length);
+        var targetUrl = baseurl;
+	targetUrl = targetUrl + elemPath;
+	targetUrl = targetUrl + CONTENT_VIEW;        
+
+        var expandElem = createPresentationNodes(elemTitle, targetUrl, icon_url, length);
         newelem.appendChild(expandElem);
 
 

@@ -16,7 +16,11 @@
            "string: @import url(${context/++resource++zope3.css});"
            >
       @import url(zope3.css);
-    </style>
+  </style>
+
+  <link rel="alternate stylesheet" type="text/css" tal:attributes="href context/++resource++all_links.css" title="All links underlined" />
+
+  <link rel="alternate stylesheet" type="text/css" tal:attributes="href context/++resource++content_links.css" title="Content box links underlined" />
 
     <metal:block define-slot="headers" />
     <metal:block define-slot="style_slot" />
@@ -64,8 +68,6 @@
           id="navtreecontents" 
           class="body" 
           onclick="treeclicked(event);" 
-          onmouseover="mouseOverTree(event);"
-          onmouseout="mouseOutTree(event);"
           >
         </div>
 
