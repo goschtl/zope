@@ -334,8 +334,6 @@ def EditViewFactory(name, schema, label, permission, layer,
 
     class_.generated_form = ZopeTwoPageTemplateFile(default_template)
 
-    # Not the prettiest solution, but it works...
-    class_.__init__ = EditView.__init__
 #     XXX: replace with proper checks
 #     defineChecker(class_,
 #                   NamesChecker(("__call__", "__getitem__",
@@ -345,7 +343,14 @@ def EditViewFactory(name, schema, label, permission, layer,
     s.provideView(for_, name, IBrowserRequest, class_, layer)
 
 
-class EditFormDirective(BaseFormDirective):
+class FiveFormDirective(BaseFormDirective):
+
+    def _processWidgets(self):
+        if self._widgets:
+            customWidgetsObject = makeClass('CustomWidgetsMixin', (ExtensionClass.Base,), self._widgets)
+            self.bases = self.bases + (customWidgetsObject,)
+
+class EditFormDirective(FiveFormDirective):
 
     view = EditView
     default_template = 'edit.pt'
