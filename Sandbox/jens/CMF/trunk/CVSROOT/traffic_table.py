@@ -74,6 +74,7 @@ table = [
     {'path': "Packages/Shared", 'addrs': zopeaddr},
     {'path': "Packages/Products/__init__.py", 'addrs': zopeaddr},
     {'path': "Packages/Products/OFSP", 'addrs': zopeaddr},
+    {'path': "Packages/Products/IMAPAdapter", 'addrs': zopeaddr},
     {'path': "Packages/Products/MailHost", 'addrs': zopeaddr},
     {'path': "Packages/Products/ExternalMethod", 'addrs': zopeaddr},
     {'path': "Packages/Products/ZSQLMethods", 'addrs': zopeaddr},
