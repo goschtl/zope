@@ -16,6 +16,8 @@
         />
   </localService>
 
+  <interface interface=".interfaces.IPrincipalSearchPlugin" />
+  
   <browser:addMenuItem
        class=".pas.LocalPAS"
        title="Pluggable Authentication Service"

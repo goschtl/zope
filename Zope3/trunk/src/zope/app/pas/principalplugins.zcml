@@ -4,14 +4,17 @@
     i18n_domain="zope"
     >
 
+  <browser:tool
+      interface=".interfaces.IPrincipalFactoryPlugin"
+      title="PAS Principal Factory Plugin"
+      description="PAS Principal Factory Plugin"
+      />
+
+  
   <localUtility class=".principalplugins.PrincipalFactory">
 
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
-    <require
-        permission="zope.ManageContent"
-        interface=".interfaces.IPrincipalFactoryPlugin" />
 
   </localUtility>
 
@@ -20,14 +23,7 @@
       title="PAS Principal Factory Plugin"
       description="A PAS Principal Factory Plugin"
       class=".principalplugins.PrincipalFactory"
-      permission="zope.ManageContent"
+      permission="zope.ManageServices"
       />
-
-  <browser:tool
-      interface=".interfaces.IPrincipalFactoryPlugin"
-      title="PAS Principal Factory Plugin"
-      description="PAS Principal Factory Plugin"
-      />
-
 
 </configure>
