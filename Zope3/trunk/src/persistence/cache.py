@@ -90,12 +90,14 @@ class Cache(object):
         now = int(time() % 86400)
 
         # Implement a trivial LRU cache by sorting the items by access
-        # time and trundling over the list until we've reached out
+        # time and trundling over the list until we've reached our
         # target size.  The number of objects in the cache should be
         # relatively small (thousands) so the memory for the list is
-        # pretty minimal.
+        # pretty minimal.  Caution:  Don't use iteritems().  Because of
+        # weakrefs, if garbage collection happens to occur, __active
+        # can change size.
         L = []
-        for oid, ob in self.__active.iteritems():
+        for oid, ob in self.__active.items():
             if ob is not None:
                 ob = ob()
             # The _p_atime field is seconds since the start of the day.
