@@ -85,7 +85,8 @@ OUTPUT_LOG = "%s/cvs-postcommit_actions.log" % CVSROOT
 # Notices about any caught malfunctions will be sent to this address.
 CVSMASTER = "cvs-admin@zope.com"
 
-MAIL_CMD = "/usr/lib/sendmail -ba"
+# You have to plug in the recipients email address via '%' string formatting.
+MAIL_CMD = "/usr/lib/sendmail -t -f %s"
 
 WAIT = 0                                # Fork unless --wait is requested.
 DRYRUN = 0                              # '--dryrun' option
@@ -389,18 +390,21 @@ def send_mail(addrs, text, subject):
     if not email:
         email = OFFICIAL_SENDER
 
-    cmd = ("%s%s%s %s %s" % ((VERBOSE and "set -x; ") or "",
-                             (DRYRUN and "echo Would do: ") or "",
-                             mailcmd,
-                             (VERBOSE and "-v") or "",
-                             string.join(addrs, ",")))
+    cmd = ("%(verbose1)s%(dryrun)s%(mailcmd)s %(verbose2)s"
+           % {'verbose1': (VERBOSE and "set -x; ") or "",
+              'dryrun': (DRYRUN and "echo Would do: ") or "",
+              'mailcmd': mailcmd % email,
+              'verbose2': (VERBOSE and "-v") or ""})
 
     if VERBOSE:
         complain("%sDoing mail cmd for user %s:\n\t%s\n",
                  ((DRYRUN and "NOT ") or ""), user, cmd)
 
-    text = ("Subject: %(subject)s\nTo: %(to)s\n"
-            "From: %(from)s\nSender: %(sender)s\n\n"
+    text = ("Subject: %(subject)s\n"
+            "To: %(to)s\n"
+            "From: %(from)s\n"
+            "Sender: %(sender)s\n"
+            "\n"
             "%(text)s"
             % {'subject': subject,
                'to': string.join(addrs, ","),
