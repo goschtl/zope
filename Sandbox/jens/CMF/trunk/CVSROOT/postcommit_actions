@@ -2,7 +2,6 @@
 
 """Apply checkin actions dictated by traffic_table.py, as checkins occur.
 
-
 Special provisions to fork into the background, disconnected from tty, so
 the user and (more critically) CVS locks aren't held just pending completion 
 of notification and other potentially meandering actions.
