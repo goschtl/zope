@@ -17,8 +17,6 @@ Miscellaneous
 
 - Remove XXX comments (there are about 80 in zope)
 
-  o FTP interfaces (Stephan)
-
 - Ensure backward compatibility
 
   o Run book sources against source tree (Stephan and Phillip)
