@@ -1,0 +1,112 @@
+<html metal:use-macro="context/@@standard_macros/dialog">
+<body>
+<div metal:fill-slot="body">
+
+   <p tal:define="status view/update"
+      tal:condition="status"
+      tal:content="status" />
+
+   <metal:block define-macro="formbody"
+      tal:define="hasFilter python:request.get('Filter', None)">
+
+   <div tal:condition="not: hasFilter">
+     <span class="message" i18n:translate="">Apply filter</span>
+     <form action="@@PrincipalRoles.html"
+           method="POST"
+           tal:attributes="action request/URL">
+       <span i18n:translate="">Principal(s)</span>:
+       <select name="principals:list" multiple="multiple">
+         <option tal:repeat="principal view/getAllPrincipals"
+                 tal:attributes="value principal/id"
+                 tal:content="principal/title">my title</option>
+       </select>
+
+       <span i18n:translate="">Role(s)</span>:
+       <select name="roles:list" multiple="multiple">
+         <option tal:repeat="role view/getAllRoles"
+                 tal:attributes="value role/id"
+                 tal:content="role/title">my title</option>
+       </select>
+
+       <input type="submit" name="Filter" value="Filter"
+              i18n:attributes="value filter-button"/>
+     </form>
+
+   </div>
+
+   <div tal:condition="hasFilter">
+     <div class="principalRolesGrid"
+          tal:define="principalRoleGrid view/createGrid">
+
+       <span tal:define="
+           global listPrincipals principalRoleGrid/principals;
+           global listRoles principalRoleGrid/roles;
+           global listValues principalRoleGrid/listAvailableValues" />
+
+       <form action="@@PrincipalRoles.html"
+             method="POST"
+             tal:attributes="action request/URL">
+         <table>
+           <tr class="roleHeading">
+             <td class="principal">
+               &nbsp;
+             </td>
+             <td class="role" tal:repeat="role listRoles"
+                              tal:content="role/title">
+               Role Title
+             </td>
+           </tr>
+
+           <tr class="principalRoleRow" tal:repeat="principal listPrincipals">
+             <td class="principalLabel" tal:content="string:${principal/getLogin} (${principal/title|principal/getLogin})">
+               Principal Id
+             </td>
+
+             <td class="principalRole" tal:repeat="role listRoles">
+               <select name="grid.role.principal:records"
+                       tal:attributes="
+                           name string:grid.${role/id}.${principal/id}"
+                       tal:define="selectedValue
+                                   python:principalRoleGrid.getValue(
+                                              principal.id,
+                                              role.id
+                                              )" >
+                 <option value="" tal:repeat="defaultValue listValues"
+                         tal:attributes="
+                             selected python:defaultValue==selectedValue;
+                             value defaultValue;
+                             debugsel selectedValue"
+                        tal:content="defaultValue">
+                   &nbsp;
+                 </option>
+               </select>
+             </td>
+           </tr>
+
+         </table>
+
+         <input type="hidden" name="principals:list"
+                tal:repeat="principal listPrincipals"
+                tal:attributes="value principal/id" />
+
+         <input type="hidden" name="roles:list"
+                tal:repeat="role listRoles"
+                tal:attributes="value role/id" />
+
+	 <metal:block define-slot="buttons">
+
+	 <input type="submit" name="APPLY" value="Apply"
+                i18n:attributes="value apply-button"/>
+
+	 </metal:block>
+
+       </form>
+
+     </div>
+   </div>
+
+   </metal:block>
+
+</div>
+</body>
+</html>

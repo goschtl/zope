@@ -1,0 +1,162 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Job Board Example\n"
+"POT-Creation-Date: Mon Apr 14 16:35:25 2003\n"
+"PO-Revision-Date: 2003-04-11 18:03-0400\n"
+"Last-Translator: Barry Warsaw <barry@python.org>\n"
+"Language-Team: English <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: JobCreateView.py:45
+msgid "Bad date string: $date"
+msgstr "Verkeerde datum: $date"
+
+#: review.pt:11
+msgid "Action"
+msgstr "Actie"
+
+#: review.pt:15
+msgid "Approve"
+msgstr "Goedkeuren"
+
+#: preview.pt:41
+msgid "Contact:"
+msgstr "Kontakt:"
+
+#: review.pt:14
+msgid "Defer"
+msgstr "Uitstellen"
+
+#: review.pt:16
+msgid "Discard"
+msgstr "Weggooien"
+
+#: preview.pt:78
+msgid "Edit"
+msgstr ""
+
+#: preview.pt:74
+msgid "Submit"
+msgstr "Aanbieden"
+
+#: review.pt:12
+msgid "Summary"
+msgstr "Samenvatting"
+
+#: JobListView.pt:24
+msgid "approve-submitted-jobs"
+msgstr "Aangeboden banen goedkeuren"
+
+#: review.pt:3 review.pt:7
+msgid "approve-title"
+msgstr "Aangeboden banen goedkeuren"
+
+#: thanks.pt:18
+msgid "back-to-job-board"
+msgstr "Terug naar banenbord"
+
+#: JobView.pt:33
+msgid "back-to-jobs"
+msgstr "Terug naar banen"
+
+#: thanks.pt:16
+msgid "back-to-site-home"
+msgstr "Terug naar website thuispagina"
+
+#: review.pt:39
+msgid "back-to-summary"
+msgstr "Terug naar overzicht"
+
+#: edit.pt:29 JobView.pt:17
+msgid "contact"
+msgstr "Kontakt (hier solliciteren):"
+
+#: edit.pt:13
+msgid "contributor-email"
+msgstr "Email aanbieder:"
+
+#: edit.pt:3 edit.pt:6
+msgid "enter-new-job-data"
+msgstr "Informatie baan invullen"
+
+#: edit.pt:23 JobView.pt:10
+msgid "full-description"
+msgstr "Uitgebreide omschrijving (geen HTML):"
+
+#: preview.pt:10
+msgid "instructions"
+msgstr ""
+"Zo zal uw advertentie eruit zien na goedkeuring door de site beheerder\n"
+"Gebruik om uw opgave nu te veranderen de Terug knop in uw browser\n"
+"en bied de advertentie opnieuw aan. Om uw baan nu aan te bieden,\n"
+"gelieve op de knop Aanbieden hieronder te drukken."
+
+#: JobListView.pt:3 JobListView.pt:6
+msgid "job-board-title"
+msgstr "Banenbord"
+
+#: JobListView.pt:10
+msgid "job-listings"
+msgstr "Advertenties"
+
+#: edit.pt:18
+msgid "one-line-summary"
+msgstr "Korte samenvatting:"
+
+#: JobListView.pt:23
+msgid "other-operations"
+msgstr "Andere acties"
+
+#: preview.pt:3 preview.pt:8
+msgid "preview-new-job-data"
+msgstr "Voorbezichtigen nieuwe advertentie"
+
+#: edit.pt:34 JobView.pt:22 preview.pt:46
+msgid "salary"
+msgstr ""
+
+#: edit.pt:40 JobView.pt:25 preview.pt:50
+msgid "startdate"
+msgstr ""
+
+#: thanks.pt:20
+msgid "submit-another"
+msgstr "Nog een advertentie aanbieden"
+
+#: JobListView.pt:8
+msgid "submit-new-job"
+msgstr "Nieuwe advertentie aanbieden"
+
+#: thanks.pt:3 thanks.pt:7
+msgid "thank-you-title"
+msgstr "Bedankt voor uw advertentie"
+
+#: thanks.pt:9
+msgid "thank-you-wherenext"
+msgstr ""
+"Onze site beheerder zal deze binnenkort bekijken en goedkeuren.\n"
+"Gebruik een van de onderstaande links om onze site verder te\n"
+"exploreren:"
+
+#: preview.pt:17
+msgid "verify"
+msgstr ""
+"Uw email adres wordt onthouden als ${email}.\n"
+"Dit adres zal niet op de website worden gepubliceerd,\n"
+"maar we gebruiken het om u te bereiken als we vragen hebben\n"
+"over uw advertentie.\n"
+"Banenzoekers zullen u benaderen via het adres dat u hebt opgegeven\n"
+"in het Kontakt veld van het formulier."
+
+#: edit.pt:8
+msgid "when-done"
+msgstr "Bent u klaar, druk dan op de knop Voorbezichtigen hieronder."
+
+#~ msgid "Description:"
+#~ msgstr "Omschrijving:"
+
+#~ msgid "Preview"
+#~ msgstr "Voorbezichtigen"
