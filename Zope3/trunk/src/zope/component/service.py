@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.2 2002/12/25 14:13:31 jim Exp $
+$Id: service.py,v 1.3 2002/12/28 01:42:21 rdmurray Exp $
 """
 
 from zope.exceptions import DuplicationError
@@ -70,10 +70,14 @@ class GlobalServiceManager:
         """see IServiceService Interface"""
         return self.__defs.items()
 
-    def provideService(self, name, component):
-        """see IGlobalServiceManager interface, above"""
+    def provideService(self, name, component, force=False):
+        """see IGlobalServiceManager interface, above
+        
+        The force keyword allows one to replace an existing
+        service.  This is mostly useful in testing scenarios.
+        """
 
-        if name in self.__services:
+        if not force and name in self.__services:
             raise DuplicationError(name)
 
         if name not in self.__defs:
