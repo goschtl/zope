@@ -335,32 +335,6 @@ _interfaceChecker = NamesChecker(['__str__', '__repr__', '__name__',
                                   '__module__', '__bases__', 'getBases',
                                   'isImplementedBy', 'extends'])
 
-# excluding _check, _bucket_type, _firstbucket, and write operations
-_btreeChecker = NamesChecker(['__str__', '__repr__', '__contains__',
-                              '__getitem__', '__iter__', '__len__',  
-                              'byValue', 'get', 'has_key', 'items', 
-                              'iteritems', 'iterkeys', 'itervalues',
-                              'keys', 'maxKey', 'minKey', 'values'])
-
-# excluding _next
-_btreeBucketChecker = NamesChecker([
-        '__contains__', '__getitem__', '__iter__', '__len__', '__repr__',
-        '__str__', 'byValue', 'get', 'has_key', 'items', 'iteritems',
-        'iterkeys', 'itervalues', 'keys', 'maxKey','minKey', 'values'])
-
-_btreeSetChecker = NamesChecker([
-        '__contains__', '__getitem__', '__iter__', '__len__', '__repr__',
-        '__str__', 'has_key', 'insert', 'keys', 'maxKey', 'minKey'])
-
-# excluding _bucket_type, _check
-_btreeTreeSetChecker = NamesChecker([
-        '__contains__', '__iter__', '__len__', '__repr__',
-        '__str__', 'has_key', 'insert', 'keys', 'maxKey', 'minKey'])
-
-_btreeItemsChecker = NamesChecker([
-        '__iter__', '__repr__', '__str__', '__getitem__', '__len__',
-        '__contains__'])
-
 _iteratorChecker = NamesChecker(['next'])
 
 BasicTypes = {
@@ -381,16 +355,18 @@ class _Sequence(object):
 
 _default_checkers = {
     dict: NamesChecker(['__getitem__', '__len__', '__iter__',
-                        'get', 'has_key', '__copy__',
+                        'get', 'has_key', '__copy__', '__str__', '__repr__',
                         'keys', 'values', 'items',
                         'iterkeys', 'iteritems', 'itervalues', '__contains__',
                         ]),
     list: NamesChecker(['__getitem__', '__getslice__', '__len__', '__iter__',
-                        '__contains__', 'index', 'count']),
+                        '__contains__', 'index', 'count', '__str__',
+                        '__repr__']),
 
     # YAGNI: () a rock
     tuple: NamesChecker(['__getitem__', '__getslice__', '__add__',
-                         '__contains__', '__len__', '__iter__', '__iadd__']),
+                         '__contains__', '__len__', '__iter__', '__iadd__',
+                         '__str__', '__repr__']),
     types.InstanceType: _instanceChecker,
     Proxy: NoProxy,
     types.ClassType: _classChecker,
