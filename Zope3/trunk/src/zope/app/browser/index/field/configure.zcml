@@ -1,0 +1,24 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <browser:addform
+    name="AddFieldIndex"
+    menu="add_component" title="Field Index"
+    schema="zope.app.interfaces.index.field.IUIFieldIndex"
+    permission="zope.ManageServices"
+    content_factory="zope.app.index.field.index.FieldIndex"
+    arguments="field_name"
+    />
+
+  <browser:page
+    for="zope.app.interfaces.index.field.IUIFieldIndex"
+    name="index.html" 
+    menu="zmi_views"
+    title="Control"
+    permission="zope.ManageServices"
+    class=".control.ControlView"
+    template="control.pt" />
+
+</zopeConfigure>

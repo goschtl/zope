@@ -13,15 +13,19 @@
 ##############################################################################
 """Interfaces related to field indexing and searching.
 
-$Id: field.py,v 1.1 2003/03/26 16:10:09 andreasjung Exp $
+$Id: field.py,v 1.2 2003/06/22 16:10:56 mgedmin Exp $
 """
 
 from zope.interface import Interface
+from zope.schema import BytesLine
 
 
 class IUIFieldIndex(Interface):
-
     """Interface for creating a FieldIndex from the ZMI."""
+
+    field_name = BytesLine(
+                    title=u"Field Name",
+                    description=u"Name of the field to index")
 
     def subscribe():
         """Subscribe to the prevailing object hub service."""
@@ -35,3 +39,9 @@ class IUIFieldIndex(Interface):
     def documentCount():
         """Return number of indexed documents """
 
+    def search(values):
+        """Return a set of hub IDs for all documents matching the values.
+
+        'values' can be a single value or a sequence of values.  In the latter
+        case the IDs of documents matching any of the values will be returned.
+        """

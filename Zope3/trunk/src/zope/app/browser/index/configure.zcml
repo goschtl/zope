@@ -19,5 +19,6 @@
     />
 
   <include package=".text" />
+  <include package=".field" />
  
 </zopeConfigure>
