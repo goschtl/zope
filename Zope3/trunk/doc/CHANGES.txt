@@ -14,16 +14,6 @@ Zope Changes
     products, probably using conversion utilities of some sort. 
 
 
-preparing for the MS:
-
-    Stephan works here:
-
-
-
-
-
-    Jim works here:
-
     Backward compatibility notes
 
     - If you have any add-on prodycts that used the old context-wrapper or
@@ -43,7 +33,6 @@ preparing for the MS:
       resource definition:
 
         <browser:layer name="rotterdam" />
-
 
     - If you had a local (through the web) adapter service, you will
       need to recreate it and reactivate your adapter registrations.
@@ -105,20 +94,66 @@ preparing for the MS:
     - Improved forms error reporting. Error messages now appear next
       to fields where errors occured.
 
+    - Major fixes to the TAL I18n-Namespace support. Almost all fixes were
+      backported to Zope 2.7 as well.
+
+    - Templated Pages support for a <script> tag, that allows inline Python
+      code. The <script> tag can be used in other TAL sources as well, but is
+      turned off by default.
+
+    - Internationalized all Zope 3 (Python, ZCML and Page Templates)
+      user-readable strings. Zope 3 was then localized to German and partially
+      to Spanish, Brazilian Portuguese and French.
+
+    - Implemented explicit message ids in ZCML
+
+    - New Persistent/Mutable Schemas allow us to generate Schema-based
+      interfaces through the Web. 
+
+    - New local Menu Service and Content Component Definitions allow you to
+      create simple Content objects TTW. 
+
+    - Major fssync improvements. The commands to use now are "zsync" and
+      "zbundle". New flags include: copy, login (+ new options for checkout),
+      logout, mkdir, resolve, revert. fssync behaves now very similar to SVN.
+
+    - Introspector uses the Interface service now, instead of the ++module++
+      namespace.
+     
+    - Improvements to the OnlineHelp, which has been deactivated for this
+      release since it is broken since the recent geddons.
+
+    - ZODB 4: Changed serialization logic to support persistent proxies.
+      Added an add() method to Connection and allowed it to run during
+      commit().
+
+    - In the future, Zope 3 will use ZODB 3, which will support new-style
+      classes, since the development of ZODB 4 stopped in late summer.
+
+    - Various improvements to ZConfig
+
+    
+    Miscellaneous
+
+    - Progress with the TUV-IT security accredidation
+
+    - Many maintainance work and bug fixes.  
 
 
+    Much thanks to everyone who contributed to this release:
 
+      Jim Fulton, Christian Theune, Marius Gedminas, Tim Peters, Jeremy
+      Hylton, Fred Drake, Sidnei da Silva, Philipp von Weitershausen, Steve
+      Alexander, Guido van Rossum, Barry Warsaw, Albertas Agejevas, Viktorija
+      Zaksiene, Andreas Jung, Anthony Baxter, Phillip Eby, Richard Jones, Tom
+      Cameron, Kevin Littlejohn, Stuart Bishop, Andy Hird, Peter Simmons,
+      Christian Theune, Adam Summers, Stephan Richter, Chris McDonough,
+      Garrett Smith, Godefroid Chapelle, Paul Roe, Kiki Pruvot, Don Baarda,
+      David Fregon, Rob Zaar, Jan Smith, Richard Volpato, Roger Ineichen, Gary
+      Poster, Bjorn Tillenius, Martijn Faassen, Chris Withers, Paul Everitt,
+      Dominik Huber
 
-    Others work here:
-
-:)
-
-
-
-
-
-
-
+  ------------------------------------------------------------------
 
   Zope X3.0.0 Milestone 3
 

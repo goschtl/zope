@@ -141,12 +141,6 @@ The order that items are listed here is not significant.
 
 - Finish WebDAV
 
-- Finish XML-RPC
-
-  There are some issues in the current implementation.  I need to
-  review this. For one thing, object methods are implicitly published,
-  which is bad.
-
 - Finish "process control", specifically shutting down and restarting
   via the web.  The main issue here is plumbing.  How to get the
   signal from the UI to the server logic. The way to do this is via
@@ -158,10 +152,6 @@ The order that items are listed here is not significant.
 
   There is one, but I don't know what state it's in or how to write
   help for it.
-
-- I18n for ZCML
-
-- I18n-ize all of the code
 
 - Broken-object support
 
@@ -199,12 +189,3 @@ The order that items are listed here is not significant.
   Some kind of field that can contain objects that conform to a
   particular schema. And, widgets for this field.
 
-- Mailing service
-
-  Mail sending service that integrates with Zope 3 transactions and
-  only sends out email on successful commits (and no multiple emails
-  on ConflictErrors), is asynchronous (does not force the user to wait
-  until the mail is completely sent) and reliable (does not lose mail
-  on crashes, keeps a queue that can survive server restarts).
-
-  Codeworks is working on this.

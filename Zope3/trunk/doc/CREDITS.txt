@@ -62,9 +62,17 @@ sprints.
 
 - Zope Corporation hosted a sprint in F12b in late June 2003.
 
+- OzZope in combination with several sponsors held a sprint at the Trinity
+  College at the Melbourne University.
+
 
 CVS Contributors
 ----------------
+
+- Jim Fulton (a.k.a "The Pope of Zope")
+
+  Jim is the chief-architect of Zope 3. Any attempt to list his contributions
+  in a list like this would be an understatement of his work.
 
 - Steve Alexander
 
@@ -80,7 +88,7 @@ CVS Contributors
   Much work on the event services, object hub and searching
   infrastructure.
 
-  Much work on maintaining the traversal apis.
+  Much work on maintaining the traversal APIs.
 
   Helped a lot on interfacegeddon, refactoring the way that interfaces
   are declared.
@@ -114,11 +122,14 @@ CVS Contributors
   Implemented the on-line help system.
 
   Created the early formulator-inspired Zope 3 frameworks that
-  eventually because the schema system. Did much of the early schema
+  eventually became the schema system. Did much of the early schema
   implementation.  Stephan MADE ME pay attention to this. :)
 
   Created much of the i18n implementation, including the translation
   service and the ICU-based localization libraries.
+
+  Internationalized and localized Zope 3 to German with Phillip von
+  Weitershausen. 
 
   Implemented a mail service.
 
@@ -463,7 +474,7 @@ CVS Contributors
 
   Created the earliest prototypes of local services.
 
-  A number of bug fixes and cleanups.
+  A number of bug fixes and cleanups, especially for the RDB connection code.
 
 - Florent Guillaume
 
@@ -574,6 +585,8 @@ CVS Contributors
 
   Helped with the earliest security policy implementation.
 
+  Implementation of the Catalog.
+
   A number of bug fixes and cleanups.
 
 - Gregoire Weber
@@ -640,6 +653,34 @@ CVS Contributors
 - Guido Wesdorp
 
   Helped create the Rotterdam skin.
+
+- Martijn Pieters
+
+  Fixed unittest setup.
+
+- Richard Jones
+
+  Work on Schemas and Form generation: new "Object" fields, and wizards.
+
+- Paul Roe
+
+  Work on Schemas and Form generation: new "Object" fields, and wizards.
+
+- Stuart Bishop
+
+  Work on Schemas and Form generation: new "Object" fields, and wizards.
+
+- Kiki Pruvot
+
+  Work on Schemas and Form generation: new "Object" fields, and wizards.
+
+- Kevin Littlejohn
+
+  Implementation of the Catalog.
+
+- Andy Hird
+
+  Implementation of the Catalog.
 
 
 
