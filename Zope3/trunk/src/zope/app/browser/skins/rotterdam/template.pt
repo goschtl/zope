@@ -72,25 +72,38 @@
       </div>
 
 
+      <div class="box" 
+           id="Actions"
+           tal:define="actions context/@@view_get_menu/zmi_actions"
+           tal:condition="actions"
+           >
+
+        <h3>Actions</h3>
+
+        <div class="body">
+
+          <a href="#" 
+             tal:attributes="href info/action" 
+             tal:repeat="info actions"
+             >
+            <div tal:attributes="value info/id|default"
+                 tal:content="info/title">Do something
+            </div>
+          </a>
+
+        </div>
+
+      </div>
+
       <div class="box" id="commonTasks">
 
         <h3>Common Tasks</h3>
 
         <div class="body">
 
-          <div class="content odd">
-            testing testing
-          </div>
-
           <metal:block define-slot="commonTasks">
 
           </metal:block>
-
-          <div class="content even">
-
-            and some more
-
-          </div>
 
         </div>
 
