@@ -15,11 +15,12 @@
 
 $Id: interfaces.py 27514 2004-09-13 15:54:05Z fdrake $
 """
+import zope.schema
 from zope.deprecation import deprecated
 from zope.interface import Interface
+
 from zope.app.component.interfaces import registration
 from zope.app.container.interfaces import IContainer
-
 from zope.app.component.interfaces import IPossibleSite, ISite
 from zope.app.component.interfaces import ILocalSiteManager
 from zope.app.component.interfaces import ISiteManagementFolder
@@ -93,6 +94,29 @@ class IBindingAware(Interface):
 
 deprecated('IBindingAware',
            'Now that services are gone, we do not need the binding support. '
+           'The reference will be gone in X3.3.')
+
+class IServiceRegistration(registration.IComponentRegistration):
+    """Service Registration
+
+    Service registrations are dependent on the components that they
+    configure. They register themselves as component dependents.
+
+    The name of a service registration is used to determine the service
+    type.
+    """
+
+    name = zope.schema.TextLine(
+        title=u"Name",
+        description=u"The name that is registered",
+        readonly=True,
+        # Don't allow empty or missing name:
+        required=True,
+        min_length=1,
+        )
+
+deprecated('IServiceRegistration',
+           'The concept of services has been removed. Use utilities instead. '
            'The reference will be gone in X3.3.')
 
 class ISiteManagementFolders(IContainer, IComponentManager):

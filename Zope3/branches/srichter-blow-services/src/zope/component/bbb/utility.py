@@ -37,6 +37,7 @@ class UtilityService(object):
     """
 
     def __init__(self, sitemanager=None):
+        self.__parent__ = None
         if sitemanager is None:
             from zope.component.site import GlobalSiteManager
             sitemanager = GlobalSiteManager()

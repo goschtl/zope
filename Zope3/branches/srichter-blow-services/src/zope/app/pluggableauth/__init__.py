@@ -31,6 +31,7 @@ from BTrees.OIBTree import OIBTree
 
 from zope.interface import implements
 from zope.component.interfaces import IViewFactory
+from zope.deprecation import deprecated
 
 from zope.app import zapi
 from zope.app.component import queryNextUtility
@@ -188,6 +189,14 @@ class PluggableAuthentication(OrderedContainer):
 
         del self[id]
 
+
+# BBB: Gone in 3.3.
+PluggableAuthenticationService = PluggableAuthentication
+
+deprecated('PluggableAuthenticationService',
+           'The pluggable authentication service has been deprecated in '
+           'favor of authentication (aka PAS). This reference will be gone in '
+           'Zope X3.3.')
 
 def PluggableAuthenticationAddSubscriber(self, event):
     r"""Generates an earmark if one is not provided.

@@ -16,10 +16,13 @@ creating a local service; see README.txt.
 
 $Id: utility.py 28662 2004-12-21 03:29:21Z srichter $
 """
+from persistent import Persistent
 from zope.deprecation import deprecated
 
 from zope.app.component import getNextUtility, queryNextUtility
 from zope.app.component.testing import testingNextUtility
+from zope.app.component.site import UtilityRegistration
+from zope.app.container.contained import Contained
 
 deprecated(('getNextUtility', 'queryNextUtility'),
            'This function has been moved to zope.app.component. '
@@ -29,8 +32,12 @@ deprecated('testingNextUtility',
            'This function has been moved to zope.app.component.testing. '
            'The reference will be gone in X3.3.')
 
+deprecated('UtilityRegistration',
+           'This class has been moved to zope.app.component.site. '
+           'The reference will be gone in X3.3.')
 
-class LocalUtilityService(object):
+
+class LocalUtilityService(Persistent, Contained):
     # I really hope noone noone is using this class manually! 
     pass
 
