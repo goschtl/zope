@@ -15,17 +15,9 @@ Options:
              detached copy, and to stdout before the detach (and forever if 
              --wait specified)
 
- --recurse - remote repository sync recurses into all subject dirs offspring
-
  --dryrun - do not actually do any of the activities
 
  --wait - do not fork into the background (and leave output in stdout/stderr)
-
- --syncrepo - syncronize the mirror, don't do other activities - good for
-              initting the remote copy or rectifying gaps that crept in.
-              The rsync will be verbose when doing --syncrepo.
-
- --syncall - do --syncrepo for all entries in the traffic table.
 
  --msgfile MSGFILENM - internal - get log message from MSGFILENM (and delete)
 
@@ -44,28 +36,16 @@ containing multiple, space-delimited parts:
 
       filename,1.52,1.53
 
-\(See the CVS Gnu INFO file for loginfo for more format-string details.)
+\(See the CVS loginfo docs for more format-string details.)
 
 The actions are configured in traffic_table.py.  The only remaining relevant
 one is:
 
  - email checkin messages to designated recipients
 
-The following two actions are deprecated:
-
- - do an rsync of the repository to the public repository host.
-   - With the separation of the public and private repositories, and the
-     ability to checkin directly to the public repository, this is no longer
-     necessary.  The setup for it (rsync, identity files, etc) are not
-     established in the public repo.
- - do a g+w chmod of the subject files - unset CHMOD_GW to disable this
-   - This does not seem to be necessary, and has not worked for a while.
-
-Note that any intervening directories between the CVSROOT and the root of
-the repository project directory will not be created on the mirror by the
-rsync procedure - they must be created somehow else.  Though this can be
-inconvenient, it is beneficial in that it provides a sort of sanity check
-on the target directories."""
+\(Options for automatic mirroring via rsync over ssh is still present in this
+script, but the supporting code is mostly removed.  Stripping of the
+functionality was started around version 1.123.)"""
 
 import sys, os, tempfile, time, pwd
 import string
@@ -80,18 +60,13 @@ OFFICIAL_SENDER = "cvs-admin@cvs.zope.org"
 
 os.chdir('/tmp')                        # So we have a valid working directory.
 
-#SMTP_SERVER = 'smtp.digicool.com'
-#SENDER_ADDR = '"Digicool CVS" <cvs@digicool.com>'
 CUSTOM_TRAFFIC_TABLE = "%s/custom_traffic_table.py" % CVSROOT
 
-try:
-    import re
-    got_re = 1
-except ImportError:
-    import regex
-    got_re = 0
+import re
 
 import traffic_table
+import adjustlinks
+
 # Hook up with an outboard file.
 if os.path.exists(CUSTOM_TRAFFIC_TABLE):
     execfile(CUSTOM_TRAFFIC_TABLE)
@@ -102,62 +77,33 @@ OUTPUT_LOG = "%s/cvs-postcommit_actions.log" % CVSROOT
 
 # Set CVSMASTER to the email address of someone managing your CVS mirroring.
 # Notices about any caught malfunctions will be sent to this address.
-CVSMASTER = "klm@digicool.com"
-
-# Zero CHMOD_GW this if you don't want automatic chmod g+w of files that were
-# checked in. 
-CHMOD_GW = 1
-# Set if you don't care about chmod failures (apparently necessary for,
-# eg, people doing remote :ext: and :pserver: checkins).
-CHMOD_CASUAL = 1
+CVSMASTER = "cvs-admin@zope.com"
 
 MAIL_CMD = "/usr/lib/sendmail -ba"
-SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
-
-# IDENTITY_FILE must be readable by anyone doing a checkin that uses the
-# rsync mechanism.  It's better to have it group readable, and everyone
-# that needs in the group - world readable opens up the rsync privilege to
-# everyone on the system.
-# XXX It may make sense to have a fallback to individual people's identity
-#     files when no central one exists.
-
-IDENTITY_ACCT = "dccvs"
-IDENTITY_FILE = "%s/cvsidentity" % CVSROOT
-KNOWN_HOSTS_FILE = "%s/cvs-known_hosts" % CVSROOT
-
 
 WAIT = 0                                # Fork unless --wait is requested.
-RECURSE = 0                             # '--recurse' option
 DRYRUN = 0                              # '--dryrun' option
 VERBOSE = 0                             # '--verbose' option
-SYNCREPO = 0                            # '--syncrepo' option
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
-if got_re:
-    sVv_re = re.compile("(.*),([^,]+),([^,]+)")
-else:
-    sVv_re = regex.compile("\\(.*\\),\\([^,]+\\),\\([^,]+\\)")
+sVv_re = re.compile("(.*),([^,]+),([^,]+)")
 
 def main(args):
     """Grok the args and the traffic_table and process accordingly."""
 
-    global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT, SYNCREPO
+    global SCRIPT, DRYRUN, VERBOSE, WAIT
 
     orig_args = args[:]
 
     SCRIPT = args[0]
     try:
         opts, args = getopt.getopt(args[1:], "", ["verbose", "dryrun",
-                                                  "recurse", "wait",
-                                                  "msgfile=", "syncrepo",
-                                                  "syncall",
+                                                  "wait", "msgfile=",
                                                   ])
     except getopt.error, err:
         complain("%s\n", err)
         raise SystemExit, 1
 
-    only_sync = 0
-    sync_all = 0
     msgfilenm = ""
 
     for opt, val in opts:
@@ -167,28 +113,12 @@ def main(args):
         elif opt == "--dryrun":
             DRYRUN = 1
             complain("%s: DRYRUN\n", SCRIPT)
-        elif opt == "--recurse":
-            RECURSE = 1
-            complain("%s: FULL-DEPTH RECURSE\n", SCRIPT)
         elif opt == "--wait":
             WAIT = 1
             complain("%s: WAIT/Foreground\n", SCRIPT)
         elif opt == "--msgfile":
             # This is internal, for the script to pass itself a file.
             msgfilenm = val
-        elif opt == "--syncrepo":
-            SYNCREPO = 1
-            RECURSE = 1
-            WAIT = 1
-            only_sync = 1
-            complain("%s: SYNCREPO\n", SCRIPT)
-        elif opt == "--syncall":
-            SYNCREPO = 1
-            RECURSE = 1
-            WAIT = 1
-            only_sync = 1
-            sync_all = 1
-            complain("%s: SYNCALL\n", SCRIPT)
         else:
             complain("Unrecognized option '%s'\n", opt)
             raise SystemExit, 1
@@ -198,60 +128,46 @@ def main(args):
                  orig_args[-1])
         complain("Working dir: %s\n" % safe_getcwd('/tmp'))
 
-    if not sync_all and len(args) != 1:
+    if len(args) != 1:
         usage(); raise SystemExit, 1
 
     doing_directory = 0
     no_files = 1
-    if sync_all:
-        entries = all_entries()
-        repo = "DEBUG"
-        subjs = "<everything>"
+
+    # The %{sVv} args are passed in as a single token - have to split them.
+    split_args = string.split(args[0])
+    repo = split_args[0]
+
+    if len(split_args) == 0:
+        subjs = ["<no files>", "", ""]
+    elif len(split_args) == 1:
+        subjs = split_args + ["", ""]
+    elif split_args[1] == "-":
+        subjs = split_args
+        doing_directory = 1
     else:
-        # The %{sVv} args are passed in as a single token - have to split them.
-        split_args = string.split(args[0])
-        repo = split_args[0]
+        no_files = 0
+        subjs = map(grok_file, split_args[1:])
 
-        if len(split_args) == 0:
-            subjs = ["<no files>", "", ""]
-        elif len(split_args) == 1:
-            subjs = split_args + ["", ""]
-        elif split_args[1] == "-":
-            subjs = split_args
-            doing_directory = 1
-        else:
-            no_files = 0
-            subjs = map(grok_file, split_args[1:])
+    if VERBOSE:
+        complain("CWD: %s, Repo: %s, ",
+                 safe_getcwd('/tmp'), repo)
+        complain("Subjects: %s\n", subjs)
 
-        if VERBOSE:
-            complain("CWD: %s, Repo: %s, ",
-                     safe_getcwd('/tmp'), repo)
-            complain("Subjects: %s\n", subjs)
+    if not WAIT:
+        detach(orig_args)
 
-        if not WAIT:
-            detach(orig_args)
-
-        entries = find_entries(repo)
-
-##    if CHMOD_GW and not only_sync:
-##        if doing_directory:
-##            do_chmod(['.'])
-##        elif not no_files:
-##            do_chmod(subjs)
+    entries = find_entries(repo)
 
     for entry in entries:
         wasVerbose = VERBOSE
         VERBOSE = entry.get('verbose', VERBOSE)
-        selector_path, addrs = entry['path'], entry['addrs']
-        excludes, remote = entry['excludes'], entry['remote']
-        specials = entry.get('specials', None)
-        if remote:
-            receiverid = remote.get('receiverid', IDENTITY_ACCT)
-        else:
-            receiverid = None
+        selector_path = entry['path']
+        addrs = entry.get('addrs')
+        specials = entry.get('specials')
 
-        if addrs and not only_sync:
-            do_mail(remote, repo, addrs, subjs, msgfilenm=msgfilenm,
+        if addrs:
+            do_mail(repo, addrs, subjs, msgfilenm=msgfilenm,
                     doing_directory=doing_directory, no_files=no_files)
 
         if specials:
@@ -260,16 +176,7 @@ def main(args):
                 if trigger in subj_names:
                     do_special(trigger, action, addrs)
 
-        if remote:
-            do_sync(selector_path, repo, remote, receiverid, subjs, excludes,
-                    recurse=RECURSE, 
-                    doing_directory=doing_directory, no_files=no_files)
-
         VERBOSE = wasVerbose
-    if not entries and only_sync:
-            note_failure("*** --syncrepo invalid - no repository"
-                         " for %s in config file.\n",
-                         repo)
 
     if VERBOSE:
         complain("Done.\n")
@@ -307,7 +214,7 @@ def detach(args):
            % OUTPUT_LOG)
     
     if VERBOSE:
-        complain("Reexecing detached in %s, cmd:\n\t%s\n",
+        complain("Re-executing detached in %s, cmd:\n\t%s\n",
                  safe_getcwd('/tmp'), cmd)
 
     os.system(cmd)
@@ -327,18 +234,23 @@ def find_entries(repo=None, all=None):
     None."""
     entries = []
     catchall = None
-    for t in traffic_table.get_table():
-        if t['path'] == None:
-            catchall = t
-            is_match = 0
-        elif all:
-            is_match = 1
-        elif got_re:
-            is_match = re.match(t['path'], repo)
-        else:
-            is_match = (regex.match(t['path'], repo) != -1)
-        if is_match:
-            entries.append(t)
+    if not all:
+        linkmgr = adjustlinks.LinkManager()
+
+    if all:
+        entries.extend(traffic_table.get_table())
+    else:
+        containers = linkmgr.all_containers(repo)
+        for it in traffic_table.get_table():
+            if it['path'] == None:
+                # Retain the catchall entry in case no regular ones qualify.
+                catchall = it
+            else:
+                # Check whether the entry path matches *any* of the candidate
+                # containers:
+                for candidate in containers:
+                    if re.match(it['path'], candidate):
+                        entries.append(it)
 
     if entries:
         if VERBOSE > 1:
@@ -351,19 +263,13 @@ def find_entries(repo=None, all=None):
         complain("No matches, no catchall - no actions\n")
 
     for e in entries:
-        if not e.has_key('excludes'): e['excludes'] = []
-        if not e.has_key('remote'):
-            if hasattr(traffic_table, 'remote'):
-                e['remote'] = traffic_table.remote
-            else: e['remote'] = None
-        if e.has_key('addrs'):
-            if type(e['addrs']) == type(""):
-                # Be lenient - listify string args.
-                e['addrs'] = [e['addrs']]
+        if e.has_key('addrs') and (type(e['addrs']) == type("")):
+            # Be lenient - listify string args.
+            e['addrs'] = [e['addrs']]
 
     return entries
 
-def do_mail(remote, repo, addrs, subjs,
+def do_mail(repo, addrs, subjs,
             msgfilenm, doing_directory=0, no_files=0):
     """Send notice about checkin to addresses dictated by traffic table.
 
@@ -374,12 +280,6 @@ def do_mail(remote, repo, addrs, subjs,
     subject = "CVS: %s " % repo
 
     diff_msg = ''
-
-    if remote is not None and remote.has_key('leading_path'):
-        l = remote['leading_path']
-        if (len(l) > 1) and (l[-1] != '/'): l = l + '/'
-        if (len(l) > 1) and (l[0] == '/'): l = l[1:]
-        subject = subject + "(" + l + os.path.split(repo)[-1] + ")"
 
     if doing_directory or no_files:
         subject = subject + string.join(subjs, " ")
@@ -496,148 +396,6 @@ def send_mail(addrs, text, subject):
         note_failure("*** Mail cmd yielded output %s:\n%s\n",
                      result, output)
 
-### XXX 'path' is selector_path, not very useful.  I think we should be using
-###     'repo'. 
-def do_sync(path, repo, remote, receiverid, subjs=None,
-            excludes=None, recurse=0, doing_directory=0, no_files=0):
-    """Syncronize repository to mirror.
-
-    The repository directory containing the subjects is synced.  (In fact,
-    the actual setting of subjs doesn't matter.)  If recurse is set, then
-    the recursion extends to full depth below the repo dir (and the
-    activity is conducted in the foreground)."""
-
-    RSYNC_EXE = get_command("rsync", RSYNC_EXE_PATH)
-    if not RSYNC_EXE:
-        note_failure("*** Rsync executable not found, skipping it!")
-        return
-    SSH_EXE = get_command("ssh", SSH_EXE_PATH)
-    if not SSH_EXE:
-        note_failure("*** Ssh executable not found, skipping rsync!")
-        return
-
-    if VERBOSE:
-        if doing_directory:
-            fnames = "<.>"
-        elif no_files:
-            fnames = "<>"
-        else:
-            fnames = string.join(map(lambda x: x[0], subjs), ",")
-        complain("Sync for %s to %s; of %s/ %s / %s\n",
-                 path, remote, os.environ["CVSROOT"], repo, fnames)
-
-    ssh_fragment = ('--rsh="%s -o UserKnownHostsFile=%s %s -i %s -l %s -x"'
-                    % (SSH_EXE, KNOWN_HOSTS_FILE, (VERBOSE and "-v") or "",
-                       IDENTITY_FILE, receiverid))
-    
-    if excludes:
-        specific_excludes = ''
-        for i in excludes:
-            specific_excludes = (specific_excludes
-                                 + ' --exclude "%s"' % i)
-    else:
-        specific_excludes = ''
-
-    cmd = (RSYNC_EXE
-           + " %s " % ssh_fragment
-           + " --update"                # Preserve newer files
-           + " --recursive"
-           + ' --exclude "#cvs.*"'      # Do not dup cvs lock files
-           + ' --exclude ".#*"'         # Do not dup cvs backup files
-           + specific_excludes          # empty if None specified
-           + " --links"                 # preserve soft-links
-           + " --hard-links"            #    "     hard-links
-           + " --perms"                 #    "     permissions
-           + " --times"                 #    "     times
-           + " --sparse"                # handle sparse files efficiently
-           + " --delete"                # keep remote directory in sync
-           #+ " --compress"              # (more compression context than ssh)
-           )
-    if VERBOSE or SYNCREPO:
-        cmd = cmd + " --verbose"
-
-    if not recurse:
-        cmd = cmd + ' --exclude "/*/*/*"'
-
-    reposubdir = string.join(string.split(repo, '/')[1:], '/')
-
-    try:
-        repodir = remote['repodir'] % path
-    except TypeError:
-        repodir = remote['repodir']
-
-    # Special case for individual file targets:
-    if os.path.isfile("%s/%s,v" % (os.environ["CVSROOT"], path)):
-        trailing_slash_or_comma_origin = ",v"
-        trailing_slash_or_comma_dest = ",v"
-    elif doing_directory or recurse:
-        # We must have the slash on the origin dir arg, or it'll be nested
-        # in target:
-        trailing_slash_or_comma_origin = "/"
-        # If we don't have slash on target dir arg, it'll be created if
-        # it's not already there:
-        trailing_slash_or_comma_dest = ""
-    else:
-        trailing_slash_or_comma_origin = "/"
-        trailing_slash_or_comma_dest = "/"
-
-    if remote.has_key('leading_path'):
-        l = remote['leading_path']
-        if not l or l[-1] != '/': l = l + '/'
-        remotesubpath = ("%s%s%s" % (l, os.path.split(path)[-1],
-                                       trailing_slash_or_comma_dest))
-    else:
-        if path and path[0] != '/':
-            remotesubpath = '/' + path
-        else:
-            remotesubpath = path
-    remotepath = ("%s:%s%s" % (remote['host'], remote['repodir'],
-                               remotesubpath))
-
-    if VERBOSE:                         # DEBUG
-        print "Path:", path, "Repodir:", repodir, "Reposubdir:", reposubdir
-
-    cmd = ("%s%s %s/%s%s %s" % ((VERBOSE and "set -x; ") or "",
-                                cmd,
-                                os.environ["CVSROOT"], path,
-                                trailing_slash_or_comma_origin,
-                                remotepath))
-    if VERBOSE:
-        complain("%sDoing rsync cmd:\n\t%s\n",
-                 ((DRYRUN and "NOT ") or ""), cmd)
-    elif SYNCREPO:
-        complain("%sDoing syncrepo rsync of %s\n  to %s\n", 
-                 ((DRYRUN and "NOT ") or ""), path, remotepath)
-
-    if DRYRUN:
-        print "Would do:\n\t", cmd
-        result = 0
-    else:
-        result = os.system(cmd)
-    if result:
-        note_failure("*** Rsync returned %s...", result)
-
-def do_chmod(subjs):
-    # DEFUNCT.
-    fnames = []
-    for i in subjs:
-        if len(i) == 3 and i[2] != "NONE":
-            fnames.append(i[0])
-    if not fnames:
-        fnames = ["."]
-    cmd = ("%s%schmod g+w %s" % ((VERBOSE and "set -x; ") or "",
-                                 (DRYRUN and "echo would do: ") or "",
-                                 string.join(fnames, " ")))
-    if VERBOSE:
-        complain("Reexecing in %s, cmd:\n\t%s\n", safe_getcwd('/tmp'), cmd)
-    result = os.system(cmd)
-    if result:
-        msg = "*** Chmod returned %s..."
-        if CHMOD_CASUAL:
-            complain(msg, result)
-        else:
-            note_failure(msg, result)
-
 def loosen_file(fname):
     """Relax permissions on (newly created) file so others can use it too."""
     try:
@@ -648,15 +406,9 @@ def loosen_file(fname):
 def grok_file(s):
     """Separate "file,old-version,new-version"."""
     m = sVv_re.match(s)
-    if got_re:
-        if not m:
-            raise ValueError, "'%s' not in file,old-vers,new-vers format" % s
-        return m.groups()
-    else:
-        # regex instead of re.
-        if m == -1:
-            raise ValueError, "'%s' not in file,old-vers,new-vers format" % s
-        return sVv_re.group(1, 2, 3)
+    if not m:
+        raise ValueError, "'%s' not in file,old-vers,new-vers format" % s
+    return m.groups()
 
 failures = 0
 def note_failure(msg, *args):
@@ -723,7 +475,7 @@ def handle_failures(argstring):
     else:
         host = socket.gethostbyaddr(socket.gethostname())[0]
         if not host:
-            host = "nohost.digicool.com"
+            host = "nohost.zope.com"
 
     user = getuser() or "unidentified"
 
