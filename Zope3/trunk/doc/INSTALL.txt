@@ -22,7 +22,7 @@ Quick Start
       Press return when prompted for a password.
 
     * Make sure you have expat-1.95.2 installed (the easiest way to do
-      this is to install pyxml 0.8.1 or higher).
+      this is to install PyXML 0.8.1 or higher).
 
     * cd Zope3
 
@@ -30,8 +30,9 @@ Quick Start
 
       (On Unix, typing "make" will do the same thing.)
 
-    * Copy principals.zcml.in to principals.zcml, and add a manager
-      entry to it based on the examples in sample_principals.zcml.
+    * Copy sample_principals.zcml to principals.zcml, and edit the
+      entries in your new principals.zcml.  At the very least, change
+      the passwords!
 
     * python z3.py
 
@@ -40,7 +41,7 @@ Quick Start
   You should shortly see logging messages indicating Zope3 is listening on
   port 8080.  At that point you can connect to Zope3 by directing
   your browser to::
-      
+
      http://yourhost:8080/manage
 
   where yourhost is the name or address of the machine running Zope 3.
@@ -57,14 +58,15 @@ Quick Start
   You will be prompted for a user name and password. Use the user name
   and password you entered into your principals.zcml file.
 
-  Now you're off and running! 
+  Now you're off and running!
 
 Resources
-  
-  If you haven't used Zope3 before, you should head to the Zope web site
-  and read some documentation. The Zope3PythonProgrammersTutorial is a good
-  place to start.  You can access it on the Zope site at::
-  
+
+  If you haven't used Zope3 before, you should head to the Zope web
+  site and read some documentation. The Zope 3 Python Programmers
+  Tutorial is a good place to start.  You can access it on the Zope
+  site at::
+
     http://dev.zope.org/Zope3/ProgrammerTutorial
 
   You will also find some additional documentation in the 'doc'
@@ -77,12 +79,12 @@ Resources
   You may also want to subscribe to the Zope3-dev mailing list::
 
     http://lists.zope.org/mailman/listinfo/zope3-dev
-  
+
   Have fun!
 
 Random Details
-  
-    * There are some python scripts in the top-level directory that
+
+    * There are some Python scripts in the top-level directory that
       will help you track changes during the development process.
       Specifically, 'setup.py' helps you build the extension modules,
       and 'test.py' will run all of the unit tests (see UNITTEST.txt
@@ -91,19 +93,23 @@ Random Details
     * You should be using Python 2.2.3 or later to run anything
       related to Zope3.
 
-    * The python you run Zope with *must* have threads compiled in,
-      which is *not* the case for a vanilla build.  When you build the
-      python you'll use, 'configure --with-threads' does the right thing.
-      Warning: Zope will not run with a Python version that uses libpth.
-      You *must* use libpthread.
+    * The Python you run Zope with *must* have threads compiled in.
+      This is typically the case for a vanilla build on platforms that
+      support thread, but be sure this wasn't disabled if you use a
+      custom build.  (If the Python statement "import thread" raises
+      an exception, your Python interpreter does not support threads.)
+      Warning: Zope will not run with a Python version that uses
+      libpth.  You *must* use libpthread.
 
-    * To build python extensions you need to have Python configuration
-      information available. If your Python comes from an RPM you may need
-      the python-devel package installed too. If you built Python from source
-      all the configuration information should already be there.
+    * To build Python extensions you need to have Python configuration
+      information available. If your Python comes from an RPM you may
+      need the python-devel package installed too. If you built Python
+      from source all the configuration information should already be
+      there.
 
-    * If you just want to use Zope components it's not necessary to build Zope
-      but it's a good idea since it will compile Python C extensions for you.
+    * If you just want to use Zope components it's not necessary to
+      build Zope but it's a good idea since it will compile Python C
+      extensions for you.
 
 Troubleshooting
 
