@@ -107,7 +107,9 @@ class Application:
 
     def build_collection_distribution(self):
         # Build the destination directory:
-        deps = self.add_collection_component(self.resource_name, self.source)
+        deps = self.add_component("collection",
+                                  self.resource_name,
+                                  self.source)
         remaining = deps - self.handled_resources
         collections = []
         packages = []
@@ -133,19 +135,22 @@ class Application:
             #
             source = self.loader.load(self.locations[resource])
             self.handled_resources.add(resource)
-            deps = self.add_collection_component(name, source)
+            deps = self.add_component(type, name, source)
             if type == "package" and "." in name:
                 # this is a sub-package; always depend on the parent package
-                i = name.rfind()
+                i = name.rfind(".")
                 deps.add("package:" + name[:i])
             remaining |= (deps - self.handled_resources)
         self.generate_collection_setup(packages, collections)
 
-    def add_collection_component(self, name, source):
+    def add_component(self, type, name, source):
         """Add a single component to a collection.
 
         :return: Set of dependencies for the added component.
         :rtype: sets.Set
+
+        :param type:
+          The type of the resource from the resource identifier.
 
         :param name:
           The name of the resource from the resource identifier.  This
@@ -166,18 +171,41 @@ class Application:
                 spec.load(f, include_path)
             finally:
                 f.close()
+
+        if type == "package":
+            self.add_package_component(name, destination, spec)
+        elif type == "collection":
+            self.add_collection_component(name, destination, spec)
+
+        self.create_manifest(destination)
+        deps_file = os.path.join(source, "DEPENDENCIES.cfg")
+        if os.path.isfile(deps_file):
+            f = open(deps_file)
+            try:
+                return dependencies.load(f)
+            finally:
+                f.close()
+        else:
+            return sets.Set()
+
+    def add_collection_component(self, name, destination, spec):
         try:
             self.ip.createDistributionTree(destination, spec)
         except cvsloader.CvsLoadingError, e:
             print >>sys.stderr, e
             sys.exit(1)
-        self.create_manifest(destination)
-        
-        deps_file = os.path.join(self.source, "DEPENDENCIES.cfg")
-        if os.path.isfile(deps_file):
-            return dependencies.load(open(deps_file))
-        else:
-            return sets.Set()
+
+    def add_package_component(self, name, destination, spec):
+        os.mkdir(destination)
+        pkgdest = os.path.join(destination, name)
+        try:
+            self.ip.createDistributionTree(pkgdest, spec)
+        except cvsloader.CvsLoadingError, e:
+            print >>sys.stderr, e
+            sys.exit(1)
+        # load package information and generate setup.{py,cfg}
+        pkginfo = package.loadPackageInfo(name, pkgdest, name)
+        self.generate_setup_cfg(destination, pkginfo)
 
     def load_metadata(self):
         metadata_file = os.path.join(self.source, "PUBLICATION.cfg")
