@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""The standard Zope Folder.
+
 $Id$
 """
-
 from BTrees.OOBTree import OOBTree
 from interfaces import IFolder, IRootFolder
 from persistent import Persistent
