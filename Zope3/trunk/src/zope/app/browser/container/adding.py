@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.3 2002/12/30 14:02:51 stevea Exp $
+$Id: adding.py,v 1.4 2002/12/31 20:11:01 jim Exp $
 """
 from zope.app.interfaces.container import IAdding
 from zope.app.interfaces.container import IContainerNamesContainer
@@ -59,9 +59,16 @@ class Adding(BrowserView):
             view_name, content_name = name.split("=", 1)
             self.contentName = content_name
 
+            if view_name.startswith('@@'):
+                view_name = view_name[2:]
             return getView(self, view_name, request)
 
-        view = queryView(self, name, request)
+        if name.startswith('@@'):
+            view_name = name[2:]
+        else:
+            view_name = name
+            
+        view = queryView(self, view_name, request)
         if view is not None:
             return view
 
@@ -70,6 +77,7 @@ class Adding(BrowserView):
             return ContextSuper(Adding, self).publishTraverse(request, name)
 
         return factory
+
     publishTraverse = ContextMethod(publishTraverse)
 
     #
@@ -86,6 +94,9 @@ class Adding(BrowserView):
     addingInfo = ContextMethod(addingInfo)
 
     def action(self, type_name, id=''):
+        if type_name.startswith('@@'):
+            type_name = type_name[2:]
+        
         if queryView(self, type_name, self.request) is not None:
             url = "%s=%s" % (type_name, id)
             self.request.response.redirect(url)
