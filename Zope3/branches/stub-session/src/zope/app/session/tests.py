@@ -30,7 +30,7 @@ from zope.app.session.interfaces import \
 
 from zope.app.session import \
         CookieBrowserIdManager, Session, SessionData, getSession, \
-        PersistentSessionDataContainer
+        PersistentSessionDataContainer, RAMSessionDataContainer
 
 from zope.publisher.interfaces.http import IHTTPRequest
 from zope.publisher.http import HTTPRequest
@@ -117,7 +117,7 @@ def test_CookieBrowserIdManager():
     True
     """
 
-def test_PersistentSessionIdContainer():
+def test_PersistentSessionDataContainer():
     """
     Ensure mapping interface is working as expected
 
@@ -158,6 +158,13 @@ def test_PersistentSessionIdContainer():
     >>> sdc.get(2, 'stale')
     'stale'
     """
+
+def test_RAMSessionDataContainer(self):
+    pass
+test_RAMSessionDataContainer.__doc__ = \
+        test_PersistentSessionDataContainer.__doc__.replace(
+            'PersistentSessionDataContainer', 'RAMSessionDataContainer'
+            )
 
 def test_Session():
     """
@@ -241,6 +248,7 @@ def test_localutilities():
     >>> session1 = getSession(root, request, 'products.foo')
     >>> session2 = getSession(root, request, 'products.bar', 'persistent')
     >>> session3 = getSession(root, request, 'products.baz', pdc)
+    >>> session4 = getSession(root, request, 'products.foo')
 
     Make sure it returned sane values
 
@@ -251,7 +259,7 @@ def test_localutilities():
     >>> ISession.providedBy(session3)
     True
 
-    Make sure that product_ids don't share a namespace
+    Make sure that product_ids don't share a namespace, except when they should
 
     >>> session1['color'] = 'red'
     >>> session2['color'] = 'blue'
@@ -259,6 +267,8 @@ def test_localutilities():
     'red'
     >>> session2['color']
     'blue'
+    >>> session4['color']
+    'red'
 
     >>> setup.placefulTearDown()
     >>> 'Thats all folks!'

@@ -11,14 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Simplistic session service implemented using cookies.
-
-This is more of a demonstration than a full implementation, but it should
-work.
+"""
+Session implementation using cookies
 
 $Id$
 """
-import sha, time, string, random, hmac, logging
+import sha, time, string, random, hmac, logging, warnings, thread
 from UserDict import IterableUserDict
 from heapq import heapify, heappop
 
@@ -26,6 +24,7 @@ from persistent import Persistent
 from zope.server.http.http_date import build_http_date
 from zope.interface import implements
 from zope.interface.common.mapping import IMapping
+from zope.component import ComponentLookupError
 from zope.app import zapi
 from BTrees.OOBTree import OOBTree
 from zope.app.utility.interfaces import ILocalUtility
@@ -34,6 +33,9 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from interfaces import IBrowserIdManager, IBrowserId, ICookieBrowserIdManager, \
                        ISessionDataContainer, ISession
 from zope.app.container.interfaces import IContained
+
+import ZODB
+import ZODB.MappingStorage
 
 cookieSafeTrans = string.maketrans("+/", "-.")
 
@@ -117,7 +119,6 @@ class CookieBrowserIdManager(Persistent):
                     path=request.getApplicationURL(path_only=True)
                     )
 
-
     def getBrowserId(self, request):
         ''' See zope.app.interfaces.utilities.session.IBrowserIdManager '''
         sid = self.getRequestId(request)
@@ -163,6 +164,42 @@ class PersistentSessionDataContainer(Persistent, IterableUserDict):
             else:
                 return
 
+_ram_session_storages = {}
+
+class RAMSessionDataContainer(PersistentSessionDataContainer):
+    ''' A SessionDataContainer that stores data in RAM. Currently session
+        data is not shared between Zope clients, so server affinity will
+        need to be maintained to use this in a ZEO cluster.
+    '''
+    def __init__(self):
+        self.sweepInterval = 5*60
+        self.key = sha.new(str(time.time() + random.random())).hexdigest()
+
+    _ram_storage = ZODB.MappingStorage.MappingStorage()
+    _conns = {}
+
+    def _getData(self):
+
+        # XXX: Nuke
+        if not hasattr(self, 'key'):
+            self.key = sha.new(str(time.time() + random.random())).hexdigest()
+
+        # Open a connection to _ram_storage per thread
+        tid = thread.get_ident()
+        if not self._conns.has_key(tid):
+            db = ZODB.DB(self._ram_storage)
+            self._conns[tid] = db.open()
+
+        root = self._conns[tid].root()
+        if not root.has_key(self.key):
+            root[self.key] = OOBTree()
+        return root[self.key]
+
+        logger = logging.getLogger('zope.app.session')
+        logger.error('Oops %r' % (_ram_session_storages.keys(),))
+        
+    data = property(_getData, None)
+
 
 class SessionData(Persistent, IterableUserDict):
     ''' Mapping nodes in the ISessionDataContainer tree '''
@@ -202,7 +239,15 @@ def getSession(context, request, product_id, session_data_container=None):
             into a single object.
     '''
     if session_data_container is None:
-        dc = zapi.getUtility(ISessionDataContainer, product_id)
+        try:
+            dc = zapi.getUtility(ISessionDataContainer, product_id)
+        except ComponentLookupError:
+            warnings.warn(
+                    'Unable to find ISessionDataContainer named %s. '
+                    'Using default' % repr(product_id),
+                    RuntimeWarning
+                    )
+            dc = zapi.getUtility(ISessionDataContainer)
     elif ISessionDataContainer.providedBy(session_data_container):
         dc = session_data_container
     else:
