@@ -62,16 +62,16 @@ class Application:
             sys.exit(1)
         self.resource_url = self.locations[resource]
 
-    def buildDistribution(self):
+    def build_distribution(self):
         # This could be either a package distribution or a collection
         # distribution; it's the former if there's an __init__.py in
         # the source directory.
-        name = "build%sDistribution" % self.resource_type.capitalize()
+        name = "build_%s_distribution" % self.resource_type
         method = getattr(self, name)
         method()
-        self.generateSetup()
+        self.generate_setup()
 
-    def buildPackageDistribution(self):
+    def build_package_distribution(self):
         os.mkdir(self.destination)
         pkgname = self.metadata.name
 
@@ -97,7 +97,7 @@ class Application:
             f.write("\n")
             f.close()
 
-    def buildCollectionDistribution(self):
+    def build_collection_distribution(self):
         # Build the destination directory:
         self.ip = include.InclusionProcessor(self.source,
                                              self.destination)
@@ -117,7 +117,7 @@ class Application:
                     # external dependency
                     pass
 
-    def loadMetadata(self):
+    def load_metadata(self):
         metadata_file = os.path.join(self.source, "PUBLICATION.txt")
         if not os.path.isfile(metadata_file):
             print >>sys.stderr, \
@@ -125,9 +125,9 @@ class Application:
             sys.exit(1)
         self.metadata = publication.load(open(metadata_file))
 
-    def loadResource(self):
+    def load_resource(self):
         self.source = self.loader.load(self.resource_url)
-        self.loadMetadata()
+        self.load_metadata()
         if not self.options.release_name:
             self.options.release_name = self.metadata.name.replace(" ", "-")
         release_name = self.options.release_name
@@ -135,7 +135,7 @@ class Application:
         self.target_file = self.target_name + ".tar.bz2"
         self.destination = os.path.join(self.tmpdir, self.target_name)
 
-    def generateSetup(self):
+    def generate_setup(self):
         setup_py = os.path.join(self.destination, "setup.py")
         self.ip.add_output(setup_py)
         pkgname = self.resource_name
@@ -148,15 +148,15 @@ class Application:
         print >>f, "context.setup()"
         f.close()
 
-    def includeSupportCode(self):
-        self.includeSupportPackage(
+    def include_support_code(self):
+        self.include_support_package(
             "zpkgtools", ("cvs://cvs.zope.org/cvs-repository"
                           ":Packages/zpkgtools/zpkgtools"))
-        self.includeSupportPackage(
+        self.include_support_package(
             "setuptools", ("cvs://cvs.python.sourceforge.net/cvsroot/python"
                            ":python/nondist/sandbox/setuptools/setuptools"))
 
-    def includeSupportPackage(self, name, fallback):
+    def include_support_package(self, name, fallback):
         destination = os.path.join(self.destination, name)
         if os.path.exists(destination):
             # have the package as a side effect of something else
@@ -180,7 +180,7 @@ class Application:
         tests_dir = os.path.join(source, "tests")
         self.ip.copyTree(source, destination, excludes=[tests_dir])
 
-    def createManifest(self):
+    def create_manifest(self):
         if self.ip is None:
             return
         manifest_path = os.path.join(self.destination, "MANIFEST")
@@ -190,7 +190,7 @@ class Application:
             print >>f, name
         f.close()
 
-    def createTarball(self):
+    def create_tarball(self):
         pwd = os.getcwd()
         os.chdir(self.tmpdir)
         try:
@@ -213,15 +213,15 @@ class Application:
     def run(self):
         try:
             try:
-                self.loadResource()
-                self.buildDistribution()
+                self.load_resource()
+                self.build_distribution()
                 if self.options.include_support_code:
-                    self.includeSupportCode()
+                    self.include_support_code()
             except cvsloader.CvsLoadingError, e:
                 print >>sys.stderr, e
                 sys.exit(e.exitcode)
-            self.createManifest()
-            self.createTarball()
+            self.create_manifest()
+            self.create_tarball()
             self.cleanup()
         except:
             print >>sys.stderr, "temporary files are in", self.tmpdir
