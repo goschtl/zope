@@ -15,71 +15,60 @@
 
 $Id$
 """
-import re
+from zope.component.exceptions import ComponentLookupError
 from zope.interface import implements
-from zope.component import getService, createObject
-from zope.app.rdb import queryForResults
 from zope.tales.interfaces import ITALESExpression
-from zope.tales.expressions import NAME_RE
+from zope.tales.expressions import StringExpr
+from zope.app import zapi
+from zope.app.exception.interfaces import UserError 
+from zope.app.rdb import queryForResults
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter, IZopeConnection
 
-_interp = re.compile(r'\$(%(n)s)|\${(%(n)s(?:/[^}]*)*)}' % {'n': NAME_RE})
+class ConnectionError(UserError):
+    """This exception is raised when the user did not specify an RDB
+    connection."""
 
-class NoConnectionSpecified(Exception):
-    pass
-
-class SQLExpr(object):
+class SQLExpr(StringExpr):
     """SQL Expression Handler class"""
-    implements(ITALESExpression)
-
-    def __init__(self, name, expr, engine):
-        # Completely taken from StringExpr
-        self._s = expr
-        if '%' in expr:
-            expr = expr.replace('%', '%%')
-        self._vars = vars = []
-        if '$' in expr:
-            # Use whatever expr type is registered as "path".
-            path_type = engine.getTypes()['path']
-            parts = []
-            for exp in expr.split('$$'):
-                if parts: parts.append('$')
-                m = _interp.search(exp)
-                while m is not None:
-                    parts.append(exp[:m.start()])
-                    parts.append('%s')
-                    vars.append(path_type(
-                        'path', m.group(1) or m.group(2), engine))
-                    exp = exp[m.end():]
-                    m = _interp.search(exp)
-                if '$' in exp:
-                    raise CompilerError, (
-                        '$ must be doubled or followed by a simple path')
-                parts.append(exp)
-            expr = ''.join(parts)
-        self._expr = expr
 
     def __call__(self, econtext):
+        if econtext.vars.has_key('sql_conn'):
+            # TODO: It is hard-coded that the connection name variable is called
+            # 'sql_conn'. We should find a better solution.
+            conn_name = econtext.vars['sql_conn']
+            adapter = zapi.queryUtility(IZopeDatabaseAdapter, conn_name)
+            if adapter is None:
+                raise ConnectionError, \
+                      ("The RDB DA name, '%s' you specified is not "
+                       "valid." %conn_name)
+            connection = adapter()
+        elif econtext.vars.has_key('rdb') and econtext.vars.has_key('dsn'):
+            rdb = econtext.vars['rdb']
+            dsn = econtext.vars['dsn']
+            try:
+                connection = zapi.createObject(None, rdb, dsn)()
+            except ComponentLookupError:
+                raise ConnectionError, \
+                      ("The factory id, '%s', you specified in the `rdb` "
+                       "attribute did not match any registered factory." %rdb)
+            except TypeError:
+                raise ConnectionError, \
+                      ("The factory id, '%s', you specifed did not create a "
+                       "Zope Database Adapter component." %rdb)
+            if not IZopeConnection.providedBy(connection):
+                raise ConnectionError, \
+                      ("The factory id, '%s', you specifed did not create a "
+                       "Zope Database Adapter component." %rdb)
+        else:
+            raise ConnectionError, \
+                  'You did not specify a RDB connection.'
+
         vvals = []
         for var in self._vars:
             v = var(econtext)
             if isinstance(v, (str, unicode)):
                 v = sql_quote(v)
             vvals.append(v)
-
-        if econtext.vars.has_key('sql_conn'):
-            # TODO: It is hard-coded that the connection name variable is called
-            # 'sql_conn'. We should find a better solution.
-            conn_name = econtext.vars['sql_conn']
-            connection_service = getService("SQLDatabaseConnections",
-                                            econtext.context)
-            connection = connection_service.getConnection(conn_name)
-        elif econtext.vars.has_key('rdb') and econtext.vars.has_key('dsn'):
-            rdb = econtext.vars['rdb']
-            dsn = econtext.vars['dsn']
-            connection = createObject(None, rdb, dsn)()
-        else:
-            raise NoConnectionSpecified
-
         query = self._expr % tuple(vvals)
         return queryForResults(connection, query)
 

@@ -13,21 +13,34 @@
 ##############################################################################
 """SQL Expression Type Tests
 
-$Id$
+$Id: test_sqlexpr.py 26878 2004-08-03 16:25:34Z jim $
 """
 import unittest
 
 from zope.interface import implements
+from zope.component.factory import Factory
 from zope.component.interfaces import IFactory
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.tales.tests.test_expressions import Data
 from zope.tales.engine import Engine
 
 from zope.app.tests import ztapi
+from zope.app.rdb.interfaces import IZopeDatabaseAdapter, IZopeConnection
 from zope.app.rdb.tests.stubs import ConnectionStub
-from zope.app.sqlexpr.sqlexpr import SQLExpr, NoConnectionSpecified
+from zope.app.sqlexpr.sqlexpr import SQLExpr, ConnectionError
+
+
+class AdapterStub(object):
+    implements(IZopeDatabaseAdapter)
+
+    def __init__(self, dsn):
+        return
+
+    def __call__(self):
+        return ConnectionStub()
 
 class ConnectionStub(object):
+    implements(IZopeConnection)
 
     def __init__(self):
         self._called = {}
@@ -71,43 +84,59 @@ class TypeInfoStub(object):
         return lambda x: x
 
 
-class FactoryStub(object):
-    implements(IFactory)
-
-    title = ''
-    description = ''
-
-    def __call__(self, *args, **kw):
-        return ConnectionStub
-
-    def getInterfaces(self):
-        return TrueConnectionStub.__implements__
-
-
 class SQLExprTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(SQLExprTest, self).setUp()
-        self.context = Data(vars = {'rdb': 'rdb_conn',
-                                    'dsn': 'dbi://test'})
-        self.engine = Engine
-        
-        ztapi.provideUtility(IFactory, FactoryStub(), 'rdb_conn')
+        ztapi.provideUtility(IFactory, Factory(AdapterStub),
+                             'zope.da.Stub')
+        ztapi.provideUtility(IFactory, Factory(lambda x: None),
+                             'zope.Fake')
+        ztapi.provideUtility(IZopeDatabaseAdapter, AdapterStub(''),
+                             'test')
 
     def test_exprUsingRDBAndDSN(self):
-        expr = SQLExpr('name', 'SELECT num FROM hitchhike', self.engine)
-        result = expr(self.context)
+        context = Data(vars = {'rdb': 'zope.da.Stub', 'dsn': 'dbi://test'})
+        expr = SQLExpr('name', 'SELECT num FROM hitchhike', Engine)
+        result = expr(context)
         self.assertEqual(1, result[0].id)
         self.assertEqual('Stephan', result[0].name)
         self.assertEqual('srichter', result[0].email)
         self.assertEqual('Foo Bar', result[1].name)
 
+    def test_exprUsingSQLConn(self):
+        context = Data(vars = {'sql_conn': 'test'})
+        expr = SQLExpr('name', 'SELECT num FROM hitchhike', Engine)
+        result = expr(context)
+        self.assertEqual(1, result[0].id)
+        self.assertEqual('Stephan', result[0].name)
+        self.assertEqual('srichter', result[0].email)
+        self.assertEqual('Foo Bar', result[1].name)
+
+    def test_exprUsingRDBAndDSN_InvalidFactoryId(self):
+        context = Data(vars = {'rdb': 'zope.da.Stub1', 'dsn': 'dbi://test'})
+        expr = SQLExpr('name', 'SELECT num FROM hitchhike', Engine)
+        self.assertRaises(ConnectionError, expr, context)
+
+    def test_exprUsingRDBAndDSN_WrongFactory(self):
+        context = Data(vars = {'rdb': 'zope.Fake', 'dsn': 'dbi://test'})
+        expr = SQLExpr('name', 'SELECT num FROM hitchhike', Engine)
+        self.assertRaises(ConnectionError, expr, context)
+
+    def test_exprUsingSQLConn_WrongId(self):
+        context = Data(vars = {'sql_conn': 'test1'})
+        expr = SQLExpr('name', 'SELECT num FROM hitchhike', Engine)
+        self.assertRaises(ConnectionError, expr, context)
+
     def test_noRDBSpecs(self):
-        expr = SQLExpr('name', 'SELECT num FROM hitchhike', self.engine)
-        self.assertRaises(NoConnectionSpecified, expr, Data(vars={}))
+        expr = SQLExpr('name', 'SELECT num FROM hitchhike', Engine)
+        self.assertRaises(ConnectionError, expr, Data(vars={}))
+
 
 def test_suite():
-    return unittest.TestSuite((unittest.makeSuite(SQLExprTest),))
+    return unittest.TestSuite((
+        unittest.makeSuite(SQLExprTest),
+        ))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
+    unittest.main(defaultTest='test_suite')
