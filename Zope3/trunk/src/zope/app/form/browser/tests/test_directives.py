@@ -169,6 +169,32 @@ class Test(PlacelessSetup, unittest.TestCase):
         # expect to fail as standard macros are not configured
         self.assertRaises(TraversalError, v)
 
+    def testSchemaDisplay(self):
+        self.assertEqual(
+            zapi.queryMultiAdapter((ob, request), name='view.html'),
+            None)
+        xmlconfig(StringIO(template % ('''
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.IField"
+              provides="zope.app.form.interfaces.IDisplayWidget"
+              factory="zope.app.form.browser.DisplayWidget"
+              permission="zope.Public"
+              />
+
+          <browser:schemadisplay
+              for="zope.app.form.browser.tests.test_directives.IC"
+              schema="zope.app.form.browser.tests.test_directives.Schema"
+              name="view.html"
+              label="View a ZPT page"
+              fields="text"
+              permission="zope.Public" />
+            ''')))
+
+        v = zapi.queryMultiAdapter((ob, request), name='view.html')
+        # expect to fail as standard macros are not configured
+        self.assertRaises(TraversalError, v)
+
     def testAddFormWithWidget(self):
         self.assertEqual(
             zapi.queryMultiAdapter((ob, request), name='add.html'),
@@ -239,6 +265,42 @@ class Test(PlacelessSetup, unittest.TestCase):
             ''')), )
 
         view = zapi.queryMultiAdapter((ob, request), name='edit.html')
+        self.assert_(hasattr(view, 'text_widget'))
+        self.assert_(isinstance(view.text_widget, SomeWidget))
+        self.assertEqual(view.text_widget.extra, u'foo')
+        self.assertEqual(view.text_widget.displayWidth, 30)
+
+    def testSchemaDisplayWithWidget(self):
+        self.assertEqual(
+            zapi.queryMultiAdapter((ob, request), name='view.html'),
+            None)
+        xmlconfig(StringIO(template % ('''
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.IField"
+              provides="zope.app.form.interfaces.IDisplayWidget"
+              factory="zope.app.form.browser.DisplayWidget"
+              permission="zope.Public"
+              />
+
+          <browser:schemadisplay
+              for="zope.app.form.browser.tests.test_directives.IC"
+              schema="zope.app.form.browser.tests.test_directives.Schema"
+              name="view.html"
+              label="View a ZPT page"
+              fields="text"
+              permission="zope.Public">
+
+            <browser:widget
+                field="text"
+                class="zope.app.form.browser.tests.test_directives.SomeWidget"
+                displayWidth="30"
+                extra="foo"
+                />
+          </browser:schemadisplay>
+            ''')))
+
+        view = zapi.queryMultiAdapter((ob, request), name='view.html')
         self.assert_(hasattr(view, 'text_widget'))
         self.assert_(isinstance(view.text_widget, SomeWidget))
         self.assertEqual(view.text_widget.extra, u'foo')

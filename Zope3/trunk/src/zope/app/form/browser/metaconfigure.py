@@ -373,6 +373,7 @@ class SchemaDisplayDirective(EditFormDirective):
     default_template = 'display.pt'
 
     def __call__(self):
+        self._processWidgets()
         self._handle_menu()
         self._context.action(
             discriminator = self._discriminator(),

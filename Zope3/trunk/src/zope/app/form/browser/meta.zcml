@@ -92,8 +92,14 @@
     <meta:complexDirective
         name="schemadisplay"
         schema=".metadirectives.ISchemaDisplayDirective"
-        handler=".metaconfigure.SchemaDisplayDirective"
-        />
+        handler=".metaconfigure.SchemaDisplayDirective">
+
+      <meta:subdirective
+          name="widget"
+          schema=".metadirectives.IWidgetSubdirective"
+          />
+
+    </meta:complexDirective>
 
   </meta:directives>
 

@@ -15,8 +15,6 @@ Features
 
 - Issue 295: Sort out defaultView 
 
-- Issue 309: <schemadisplay> should support <widget>
-
 - Allow adapters (including views) to be registered for classes
   (really implementation specifications of classes) as well as
   interfaces. This has been done for page directives but needs to be
