@@ -27,7 +27,7 @@ Options:
         documentation is stored. Note that this tool will create
         sub-directories with files in them. 
 
-$Id: stxdocs.py,v 1.1 2004/01/22 23:53:15 srichter Exp $
+$Id: stxdocs.py,v 1.2 2004/03/29 15:09:08 srichter Exp $
 """
 import sys, os, getopt
 import zope
@@ -42,7 +42,7 @@ def usage(code, msg=''):
         print >> sys.stderr, msg
     sys.exit(code)
 
-def _directiveDocs(name, schema, info, indent_offset=0):
+def _directiveDocs(name, schema, handler, info, indent_offset=0):
     """Generate the documentation for one directive."""
 
     # Write out the name of the directive
@@ -61,6 +61,11 @@ def _directiveDocs(name, schema, info, indent_offset=0):
 
     elif isinstance(info, (str, unicode)) and info:
         text += wrap(info, 78, indent_offset+2)
+
+    # Insert Handler information
+    if handler is not None:
+        handler_path = handler.__module__ + '.' + handler.__name__
+        text += wrap('Handler: %s' %handler_path, 78, indent_offset+2)
 
     # Use the schema documentation string as main documentation text for the
     # directive.
@@ -88,8 +93,10 @@ def _subDirectiveDocs(subdirs, namespace, name):
         text = '\n  Subdirectives\n\n'
         sub_dirs = []
         # Simply walk through all sub-directives here.
-        for sd_ns, sd_name, sd_schema, sd_info in subdirs[(namespace, name)]:
-            sub_dirs.append(_directiveDocs(sd_name, sd_schema, sd_info, 4))
+        subs = subdirs[(namespace, name)]
+        for sd_ns, sd_name, sd_schema, sd_handler, sd_info in subs:
+            sub_dirs.append(_directiveDocs(
+                sd_name, sd_schema, sd_handler, sd_info, 4))
 
         return text + '\n\n'.join(sub_dirs)
     return ''
@@ -110,9 +117,9 @@ def makedocs(target_dir, zcml_file):
             os.mkdir(ns_dir)
 
         # Create a file for each directive
-        for name, (schema, info) in directives.items():
+        for name, (schema, handler, info) in directives.items():
             dir_file = os.path.join(ns_dir, name+'.stx')
-            text = _directiveDocs(name, schema, info)
+            text = _directiveDocs(name, schema, handler, info)
             text += _subDirectiveDocs(subdirs, namespace, name)
             open(dir_file, 'w').write(text)
 
