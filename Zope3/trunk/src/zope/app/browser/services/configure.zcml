@@ -502,7 +502,7 @@
   for="zope.app.interfaces.services.service.IServiceManagerContainer"
   >
 
-  <browser:menuItem title="Local Service Manager"
+  <browser:menuItem title="Manage Local Services"
             action="++etc++Services/index.html"
             filter="context/hasServiceManager"
             />
