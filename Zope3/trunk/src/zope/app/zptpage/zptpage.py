@@ -14,7 +14,6 @@
 """
 $Id$
 """
-import re
 
 from persistent import Persistent
 
@@ -25,7 +24,6 @@ from zope.pagetemplate.pagetemplate import PageTemplate
 
 from zope.app.pagetemplate.engine import AppPT
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.index.interfaces.text import ISearchableText
 from zope.app.size.interfaces import ISized
 from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IFileFactory
@@ -89,29 +87,6 @@ class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
     source = property(getSource, setSource, None,
                       """Source of the Page Template.""")
 
-
-class SearchableText:
-
-    __used_for__ = IZPTPage
-    implements(ISearchableText)
-
-    def __init__(self, page):
-        self.page = page
-
-    def getSearchableText(self):
-        text = self.page.getSource()
-        if isinstance(text, str):
-            text = unicode(self.page.source, 'utf-8')
-        # else:
-        #   text was already Unicode, which happens, but unclear how it
-        #   gets converted to Unicode since the ZPTPage stores UTF-8 as
-        #   an 8-bit string.
-
-        if self.page.content_type.startswith('text/html'):
-            tag = re.compile(r"<[^>]+>")
-            text = tag.sub('', text)
-
-        return [text]
 
 class Sized:
 

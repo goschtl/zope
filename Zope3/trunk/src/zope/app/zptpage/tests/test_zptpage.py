@@ -22,7 +22,6 @@ from zope.interface.verify import verifyClass
 from zope.exceptions import Forbidden
 
 from zope.app.tests import ztapi
-from zope.app.index.interfaces.text import ISearchableText
 from zope.component import getView
 from zope.publisher.browser import TestRequest
 from zope.app.publisher.browser import BrowserView
@@ -38,7 +37,7 @@ from zope.app.container.contained import contained
 from zope.app.zptpage.interfaces import IZPTPage
 from zope.app.zptpage.zptpage import ZPTPage, ZPTSourceView,\
      ZPTReadFile, ZPTWriteFile, ZPTFactory
-from zope.app.zptpage.zptpage import Sized, SearchableText
+from zope.app.zptpage.zptpage import Sized
 
 
 class Data(object):
@@ -52,25 +51,8 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         super(ZPTPageTests, self).setUp()
         ztapi.provideAdapter(None, ITraverser, Traverser)
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
-        ztapi.provideAdapter(IZPTPage, ISearchableText, SearchableText)
         defineChecker(Data, NamesChecker(['URL', 'name']))
         defineChecker(TestRequest, NamesChecker(['getPresentationSkin']))
-
-    def testSearchableText(self):
-        page = ZPTPage()
-        searchableText = ISearchableText(page)
-
-        utext = u'another test\n' # The source will grow a newline if ommited
-        html = u"<html><body>%s</body></html>\n" % (utext, )
-
-        page.setSource(utext)
-        self.failUnlessEqual(searchableText.getSearchableText(), [utext])
-
-        page.setSource(html, content_type='text/html')
-        self.assertEqual(searchableText.getSearchableText(), [utext+'\n'])
-
-        page.setSource(html, content_type='text/plain')
-        self.assertEqual(searchableText.getSearchableText(), [html])
 
     def testZPTRendering(self):
         page = ZPTPage()

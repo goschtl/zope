@@ -57,12 +57,6 @@
 
   <adapter
       for=".interfaces.IZPTPage"
-      provides="zope.app.index.interfaces.text.ISearchableText"
-      factory=".zptpage.SearchableText"
-      />
-
-  <adapter
-      for=".interfaces.IZPTPage"
       provides="zope.app.size.interfaces.ISized"
       factory=".zptpage.Sized"
       />
