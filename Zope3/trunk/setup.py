@@ -255,10 +255,10 @@ if sys.platform == "win32":
 doclines = __doc__.split("\n")
 
 setup(name="ZopeX3",
-      version="3.0m2",
+      version="3.0m5",
       maintainer="Zope Corporation",
       maintainer_email="zope3-dev@zope.org",
-      url = "http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture",
+      url = "http://dev.zope.org/Zope3/",
       ext_modules = ext_modules,
       # This doesn't work right at all
       headers = ["src/persistence/persistence.h",
