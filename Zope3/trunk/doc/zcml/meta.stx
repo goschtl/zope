@@ -197,7 +197,7 @@ The Meta Configuration System
 
     The simplist type of directive (or subdirective) to implement
     is one that has no subdirectives.  And the only difference
-    between to two is where the handler method is actually located.
+    between the two is where the handler method is actually located.
     In both cases, the handler must conform to the IEmptyDirective
     interface.  That interface mandates that when called, the handler
     will return a list of actions.  So, our registerRequestFactory
