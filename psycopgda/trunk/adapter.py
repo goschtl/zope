@@ -262,9 +262,10 @@ def _conv_interval(s):
         else:
             return timedelta(days=d, hours=hr, minutes=mn, seconds=sc)
 
-
-def _conv_string(str):
-    return str.decode(PG_ENCODING)
+def _conv_string(s):
+    if s is not None:
+        s = s.decode(PG_ENCODING)
+    return s
 
 # User-defined types
 DATE = psycopg.new_type((DATE_OID,), "ZDATE", _conv_date)
