@@ -21,7 +21,7 @@
 
   AdapterRegistrationAdd
 
-$Id: adapter.py,v 1.12 2003/08/07 17:41:03 srichter Exp $
+$Id: adapter.py,v 1.13 2003/08/13 21:28:14 garrett Exp $
 """
 __metaclass__ = type
 
@@ -62,8 +62,10 @@ class AdapterServiceView(BrowserView):
         setUpWidgets(self, IAdapterSearch)
 
     def configInfo(self):
-        forInterface = self.forInterface_widget.getData()
-        providedInterface = self.providedInterface_widget.getData()
+        forInterface = self.forInterface.hasInput() and \
+            self.forInterface.getInputValue() or None
+        providedInterface = self.providedInterface.hasInput() and \
+            self.providedInterface.getInputValue() or None
 
 
         result = []

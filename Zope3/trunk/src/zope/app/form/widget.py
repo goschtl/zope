@@ -12,8 +12,10 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.7 2003/07/14 15:06:10 anthony Exp $
+$Id: widget.py,v 1.8 2003/08/13 21:28:34 garrett Exp $
 """
+import traceback
+from warnings import warn
 from zope.app.interfaces.form import IWidget
 from zope.component.interfaces import IViewFactory
 from zope.interface import implements
@@ -26,7 +28,8 @@ class Widget:
     implements(IWidget)
 
     _prefix = 'field.'
-    _data = None
+    _data_marker = object()
+    _data = _data_marker
 
     def __init__(self, context, request):
         self.context = context
@@ -48,13 +51,26 @@ class Widget:
         self.name = prefix + self.context.__name__
 
     def setData(self, value):
+        if traceback.extract_stack()[-2][2] != 'setRenderedValue':
+            warn("setData is deprecated - use setRenderedValue",
+                DeprecationWarning, 2)
+        
+        # XXX - move this implementation to setRenderedValue when 
+        # deprecation is removed
+
         self._data = value
 
-    def haveData(self):
-        raise TypeError("haveData has not been implemented")
+    def setRenderedValue(self, value):
+        self.setData(value)
 
-    def getData(self):
-        raise TypeError("getData has not been implemented")
+    def hasInput(self):
+        raise TypeError("hasInput has not been implemented")
+
+    def hasValidInput(self):
+        raise TypeError("hasValidInput has not been implemented")
+    
+    def getInputValue(self):
+        raise TypeError("getInputValue has not been implemented")
 
     def validate(self):
         raise TypeError("validate has not been implemented")

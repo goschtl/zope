@@ -13,7 +13,7 @@
 ##############################################################################
 """Helper classes for local view registry.
 
-$Id: view.py,v 1.22 2003/08/07 17:41:03 srichter Exp $
+$Id: view.py,v 1.23 2003/08/13 21:28:14 garrett Exp $
 """
 import md5
 
@@ -184,10 +184,15 @@ class ViewServiceView(_SharedBase):
 
     def configInfo(self):
         """Do a search, or (by default) return all view pages."""
-        input_for = self.forInterface_widget.getData()
-        input_type = self.presentationType_widget.getData()
-        input_name = self.viewName_widget.getData()
-        input_layer = self.layer_widget.getData()
+
+        input_for = self.forInterface.hasInput() and \
+            self.forInterface.getInputValue() or None
+        input_type = self.presentationType.hasInput() and \
+            self.presentationType.getInputValue() or None
+        input_name = self.viewName.hasInput() and \
+            self.viewName.getInputValue() or None
+        input_layer = self.layer.hasInput() and \
+            self.layer.getInputValue() or None
 
         result = []
         for info in self.context.getRegisteredMatching(

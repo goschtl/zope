@@ -13,7 +13,7 @@
 ##############################################################################
 """Validation Exceptions
 
-$Id: form.py,v 1.6 2003/08/07 21:34:49 jim Exp $
+$Id: form.py,v 1.7 2003/08/13 21:28:42 garrett Exp $
 """
 
 import cgi
@@ -112,8 +112,11 @@ class IWidget(IView):
         errors encountered, inputting, converting, or validating the data.
         """
 
-    def getData():
-        """Return converted and validated widget data.
+    def getInputValue():
+        """Return value suitable for the widget's field.
+
+        The widget must return a value that can be legally assigned to 
+        its bound field or otherwise raise WidgetInputError.
 
         See validate() for validation performed.
         """
@@ -125,10 +128,27 @@ class IWidget(IView):
         """
 
 
-    def haveData():
-        """Is there input data for the field
+    def hasInput():
+        """Returns True if the widget has input.
 
-        Return True if there is data and False otherwise.
+        Input is used by the widget to calculate an 'input value', which is
+        a value that can be legally assigned to a field.
+
+        Note that the widget may return True, indicating it has input, but
+        still be unable to return a value from getInputValue. Use
+        hasValidInput to determine whether or not getInputValue will return
+        a valid value.
+
+        A widget that does not have input should generally not be used to 
+        update its bound field.
+        """
+
+    def hasValidInput():
+        """Returns True is the widget has valid input.
+
+        This method is similar to hasInput but it also confirms that the
+        input provided by the user can be converted to a valid field value
+        based on the field constraints.
         """
 
     name = Attribute("""The uniquewidget name
@@ -140,11 +160,10 @@ class IWidget(IView):
 
     required = Attribute("Flag indicating whether the field is required")
 
-    def setData(value):
-        """Set the default data for the widget.
+    def setRenderedValue(value):
+        """Set the value to be rendered by the widget.
 
-        The given value should be used even if the user has entered
-        data.
+        Calling this method will override any values provided by the user.
         """
 
     def setPrefix(prefix):

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_filewidget.py,v 1.6 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_filewidget.py,v 1.7 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -43,7 +43,7 @@ class FileWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'Foo Value'
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         check_list = ('type="file"', 'id="field.foo"', 'name="field.foo"',
                       'size="20"')
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.14 2003/07/15 16:08:51 Zen Exp $
+$Id: test_browserwidget.py,v 1.15 2003/08/13 21:28:04 garrett Exp $
 """
 
 from zope.interface import Interface, implements
@@ -62,10 +62,10 @@ class BrowserWidgetTest(PlacelessSetup,
         self._widget.context.required = True
         self.failUnless(self._widget.required)
 
-    def test_haveData(self):
-        self.failUnless(self._widget.haveData())
+    def test_hasInput(self):
+        self.failUnless(self._widget.hasInput())
         del self._widget.request.form['field.foo']
-        self.failIf(self._widget.haveData())
+        self.failIf(self._widget.hasInput())
 
     def testProperties(self):
         self.assertEqual(self._widget.getValue('tag'), 'input')
@@ -77,7 +77,7 @@ class BrowserWidgetTest(PlacelessSetup,
         value = 'Foo Value'
         check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
                       'value="Foo Value"')
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:]
         self.verifyResult(self._widget.hidden(), check_list)
@@ -148,36 +148,55 @@ class Test(BrowserWidgetTest):
         request.form['field.foo'] = 'val'
         self.assertEqual(w._showData(), 'val')
 
-        w.setData('Xfoo')
+        w.setRenderedValue('Xfoo')
         self.assertEqual(w._showData(), 'foo')
 
-    def test_getData(self):
-        self.assertEqual(self._widget.getData(), u'Foo Value')
+    def test_hasValidInput(self):
+        self.assertEqual(self._widget.getInputValue(), u'Foo Value')
 
         self._widget.request.form['field.foo'] = (1, 2)
-        self.assertRaises(WidgetInputError, self._widget.getData)
+        self.failIf(self._widget.hasValidInput())
 
         self._widget.request.form['field.foo'] = u'barf!'
-        self.assertRaises(ConversionError, self._widget.getData)
+        self.failIf(self._widget.hasValidInput())
 
         del self._widget.request.form['field.foo']        
         self._widget.context.required = True
-        self.assertEqual(self._widget.getData(optional=1), None)
-        self.assertRaises(MissingInputError, self._widget.getData)
+        self.failIf(self._widget.hasValidInput())
 
         self._widget.context.required = False
-        self.assertEqual(self._widget.getData(optional=1), None)
-        self.assertEqual(self._widget.getData(), None)
+        self._widget.request.form['field.foo'] = u''
+        self.failUnless(self._widget.hasValidInput())
+
+    def test_getInputValue(self):
+        self.assertEqual(self._widget.getInputValue(), u'Foo Value')
+
+        self._widget.request.form['field.foo'] = (1, 2)
+        self.assertRaises(WidgetInputError, self._widget.getInputValue)
+
+        self._widget.request.form['field.foo'] = u'barf!'
+        self.assertRaises(ConversionError, self._widget.getInputValue)
+
+        del self._widget.request.form['field.foo']        
+        self._widget.context.required = True
+        self.assertRaises(MissingInputError, self._widget.getInputValue)
+
+        self._widget.context.required = False
+        self._widget.request.form['field.foo'] = u''
+        self.assertEqual(self._widget.getInputValue(), None)
 
     def test_applyChanges(self):
         self.assertEqual(self._widget.applyChanges(self.content), True)
 
-    def test_haveData(self):
-        self.failUnless(self._widget.haveData())
+    def test_hasInput(self):
+        self.failUnless(self._widget.hasInput())
         del self._widget.request.form['field.foo']
-        self.failIf(self._widget.haveData())
+        self.failIf(self._widget.hasInput())
+        self._widget.request.form['field.foo'] = u'foo'
+        self.failUnless(self._widget.hasInput())
+        # widget has input, even if input is an empty string
         self._widget.request.form['field.foo'] = u''
-        self.failIf(self._widget.haveData())
+        self.failUnless(self._widget.hasInput())
 
     def test_showData_w_default(self):
         field = Text(__name__ = 'foo', title = u"Foo Title", default=u"def")

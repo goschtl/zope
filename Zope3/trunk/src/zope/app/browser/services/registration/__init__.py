@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.5 2003/08/08 00:14:36 srichter Exp $
+$Id: __init__.py,v 1.6 2003/08/13 21:28:17 garrett Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -232,7 +232,7 @@ class ComponentPathWidget(BrowserWidget):
         "See zope.app.interfaces.browser.form.IBrowserWidget"
         return ''
 
-    def getData(self):
+    def getInputValue(self):
         "See zope.app.interfaces.form.IWidget"
         field = self.context
         context = field.context 
@@ -246,10 +246,6 @@ class ComponentPathWidget(BrowserWidget):
             path = getName(context)
 
         return path
-
-    def haveData(self):
-        "See zope.app.interfaces.form.IWidget"
-        return True
 
 
 class AddComponentRegistration(BrowserView):

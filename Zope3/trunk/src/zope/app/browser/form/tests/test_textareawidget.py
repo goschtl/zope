@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textareawidget.py,v 1.7 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_textareawidget.py,v 1.8 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -34,7 +34,7 @@ class TextAreaWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = "Foo Value"
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         check_list = ('rows="15"', 'cols="60"', 'id="field.foo"',
                       'name="field.foo"', 'textarea')
         self.verifyResult(self._widget(), check_list)

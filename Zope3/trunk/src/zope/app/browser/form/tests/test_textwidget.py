@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_textwidget.py,v 1.6 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_textwidget.py,v 1.7 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -35,7 +35,7 @@ class TextWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'Foo Value'
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         check_list = ('type="text"', 'id="field.foo"', 'name="field.foo"',
                       'value="Foo Value"', 'size="20"')
         self.verifyResult(self._widget(), check_list)

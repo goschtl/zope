@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_datetimewidget.py,v 1.1 2003/03/26 11:28:53 tseaver Exp $
+$Id: test_datetimewidget.py,v 1.2 2003/08/13 21:28:04 garrett Exp $
 """
 from unittest import main, makeSuite
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.browser.form.widget import DatetimeWidget
-from zope.app.interfaces.form import ConversionError
+from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.schema import Datetime
 
 
@@ -27,22 +27,23 @@ class DatetimeWidgetTest(BrowserWidgetTest):
     _FieldFactory = Datetime
     _WidgetFactory = DatetimeWidget
 
-    def test_haveData(self):
+    def test_hasInput(self):
         del self._widget.request.form['field.foo']
-        self.failIf(self._widget.haveData())
+        self.failIf(self._widget.hasInput())
+        # widget has input, even if input is an empty string
         self._widget.request.form['field.foo'] = u''
-        self.failIf(self._widget.haveData())
+        self.failUnless(self._widget.hasInput())
         self._widget.request.form['field.foo'] = u'2003/03/26 12:00:00'
-        self.failUnless(self._widget.haveData())
+        self.failUnless(self._widget.hasInput())
 
-    def test_getData(self):
+    def test_getInputValue(self):
         TEST_DATE= u'2003/03/26 12:00:00'
         self._widget.request.form['field.foo'] = u''
-        self.assertEquals(self._widget.getData(optional=1), None)
+        self.assertRaises(WidgetInputError, self._widget.getInputValue)
         self._widget.request.form['field.foo'] = TEST_DATE
-        self.assertEquals(self._widget.getData(), parseDatetimetz(TEST_DATE))
+        self.assertEquals(self._widget.getInputValue(), parseDatetimetz(TEST_DATE))
         self._widget.request.form['field.foo'] = u'abc'
-        self.assertRaises(ConversionError, self._widget.getData)
+        self.assertRaises(ConversionError, self._widget.getInputValue)
 
 
 def test_suite():

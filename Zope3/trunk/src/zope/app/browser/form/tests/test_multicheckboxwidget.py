@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.7 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_multicheckboxwidget.py,v 1.8 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -56,7 +56,7 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'bar'
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         check_list = ('type="checkbox"', 'id="field.foo"',
                       'name="field.foo"', 'value="bar"', 'bar',
                       'value="foo"', 'foo', 'checked="checked"')

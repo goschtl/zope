@@ -175,8 +175,8 @@ class SampleListTestBase(TestBase):
 
     def test_without_form_data(self):
         w = self.createWidget()
-        self.assertEqual(w.getData(), [])
-        self.failIf(w.haveData())
+        self.assertEqual(w.getInputValue(), [])
+        self.failIf(w.hasInput())
         self.verifyResult(w(), [
             "no values",
             ])
@@ -191,8 +191,8 @@ class SampleListTestBase(TestBase):
             "</%s>" % self.topElementName,
             ]
         w = self.createWidget(QUERY_STRING=qs)
-        self.assertEqual(w.getData(), value)
-        self.assert_(w.haveData())
+        self.assertEqual(w.getInputValue(), value)
+        self.assert_(w.hasInput())
         self.verifyResult(w(), checks + extra_checks)
 
     def test_with_form_data_1(self):
@@ -211,8 +211,8 @@ class SampleListTestBase(TestBase):
     def test_with_bad_form_data(self):
         w = self.createWidget(
             QUERY_STRING="field.paths-marker=x&field.paths=/bad/path")
-        self.assertEqual(w.getData(), ["/bad/path"])
-        self.assert_(w.haveData())
+        self.assertEqual(w.getInputValue(), ["/bad/path"])
+        self.assert_(w.hasInput())
         self.verifyResult(w(), [
             "<" + self.topElementName,
             'class="valueList"',
@@ -249,7 +249,7 @@ class SampleListEditTests(SampleListTestBase):
             QUERY_STRING=("field.paths-marker=x"
                           "&field.paths=/a/path&field.paths-query=1%202"
                           "&field.paths-query.action-query=yep"))
-        value = w.getData()
+        value = w.getInputValue()
         r = w.queryview.renderResults(value)
         self.verifyResult(r, [
             "class='results'",
@@ -271,7 +271,7 @@ class SampleListEditTests(SampleListTestBase):
             QUERY_STRING=("field.paths-marker=x"
                           "&field.paths=/a/path&field.paths-query=0%201%202"
                           "&field.paths-query.start=1"))
-        value = w.getData()
+        value = w.getInputValue()
         r = w.queryview.renderResults(value)
         self.verifyResult(r, [
             "class='results'",
@@ -291,7 +291,7 @@ class SampleListEditTests(SampleListTestBase):
             QUERY_STRING=("field.paths-marker=x"
                           "&field.paths=/a/path&field.paths-query=0%201%202"
                           "&field.paths-query.start=2"))
-        value = w.getData()
+        value = w.getInputValue()
         r = w.queryview.renderResults(value)
         self.verifyResult(r, [
             "class='results'",
@@ -312,7 +312,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths=/a/path&field.paths-query=0%201%202"
                           "&field.paths-query.action-query=yep"))
         w.queryview.queryResultBatchSize = 2
-        value = w.getData()
+        value = w.getInputValue()
         r = w.queryview.renderResults(value)
         self.verifyResult(r, [
             "class='results'",
@@ -342,7 +342,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths-query.action-more=more"
                           "&field.paths-query.start=0"))
         w.queryview.queryResultBatchSize = 2
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(w.queryview.query_index, 2)
         r = w.queryview.renderResults(value)
         self.verifyResult(r, [
@@ -374,7 +374,7 @@ class SampleListEditTests(SampleListTestBase):
             QUERY_STRING=("field.paths-marker=x"
                           "&field.paths=/a/path&field.paths=/b/path"
                           "&field.paths.picks=/b/path"))
-        value = w.getData()
+        value = w.getInputValue()
         self.verifyResult(w.renderValueArea(value), [
             "class='value'",
             "value='/a/path'",
@@ -392,7 +392,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths.picks=/b/path"
                           "&field.paths-query.start=0"
                           "&field.paths-query.picks=/b/path"))
-        r = w.queryview.renderResults(w.getData())
+        r = w.queryview.renderResults(w.getInputValue())
         self.verifyResult(r, [
             "<div",
             "class='results'",
@@ -411,7 +411,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths-query=0%201%202"
                           "&field.paths-query.start=1"
                           "&field.paths-query.action-query=Search"))
-        value = w.getData()
+        value = w.getInputValue()
         r = w.queryview.renderResults(value)
         self.verifyResult(r, [
             "<div",
@@ -434,7 +434,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths.action-remove=Remove"
                           "&field.paths-query.start=0"
                           "&field.paths-query.picks=/b/path"))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, ['/a/path'])
         # Make sure /a/path is still presented properly as part of the
         # value, and receives the proper decorations in the query
@@ -464,7 +464,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths.picks=/a/path"
                           "&field.paths-query.start=0"
                           "&field.paths-query.picks=/b/path"))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, [])
         # Make sure /a/path is still presented properly as part of the
         # value, and receives the proper decorations in the query
@@ -492,7 +492,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths.picks=/a/path"
                           "&field.paths.picks=/c/path"
                           "&field.paths-query.picks=/b/path"))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, ['/b/path'])
         # Make sure /a/path is still presented properly as part of the
         # value, and receives the proper decorations in the query
@@ -525,7 +525,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths.action-remove=Remove"
                           "&field.paths.picks=/some/other/path"
                           "&field.paths-query.picks=/b/path"))
-        self.assertEqual(w.getData(), ["/b/path", "/a/path"])
+        self.assertEqual(w.getInputValue(), ["/b/path", "/a/path"])
 
     def test_add_0(self):
         # submit an "add+done" request with nothing selected from the value
@@ -533,7 +533,7 @@ class SampleListEditTests(SampleListTestBase):
             QUERY_STRING=("field.paths-marker=x"
                           "&field.paths=/a/path&field.paths-query=0%201%202"
                           "&field.paths-query.action-adddone=Add"))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, ['/a/path'])
         self.assert_(w.queryview.query_index is None)
         # Make sure /a/path is still presented properly as part of the
@@ -553,7 +553,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths.picks=/c/path"
                           "&field.paths-query.start=0"
                           "&field.paths-query.picks=/b/path"))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(w.queryview.selections, ["/b/path"])
         self.assertEqual(value, ['/a/path', '/b/path'])
         # Make sure /a/path is still presented properly as part of the
@@ -589,7 +589,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths.picks=/c/path"
                           "&field.paths-query.picks=/b/path"
                           "&field.paths-query.picks=/c/path"))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, ['/a/path', '/b/path', '/c/path'])
         # Make sure /a/path is still presented properly as part of the
         # value, and receives the proper decorations in the query
@@ -623,7 +623,7 @@ class SampleListEditTests(SampleListTestBase):
               "&field.paths.picks=/c/path"
               "&field.paths-query.picks=/not/a/path")
         w = self.createWidget(QUERY_STRING=qs)
-        self.assertRaises(WidgetInputError, w.getData)
+        self.assertRaises(WidgetInputError, w.getInputValue)
 
     def test_add_duplicate(self):
         # Submit an "add+more" request for a term that's already in the value.
@@ -635,7 +635,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths-query.action-adddone=Add"
                           "&field.paths.picks=/c/path"
                           "&field.paths-query.picks=/a/path"))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, ['/a/path'])
 
     def test_add_more_1(self):
@@ -648,7 +648,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths.picks=/c/path"
                           "&field.paths-query.picks=/b/path"))
         w.queryview.queryResultBatchSize = 2
-        value = w.getData()
+        value = w.getInputValue()
         query = w.queryview.query_text
         self.assertEqual(value, ['/a/path', '/b/path'])
         text = w.renderValueArea(value)
@@ -680,7 +680,7 @@ class SampleListEditTests(SampleListTestBase):
                           "&field.paths-query.start=0"
                           "&field.paths.picks=/c/path"
                           "&field.paths-query.picks=/b/path"))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, ['/a/path'])
         text = w.renderValueArea(value)
         self.verifyResultMissing(text, [
@@ -699,7 +699,7 @@ class SampleListEditTests(SampleListTestBase):
                                             "&field.paths=/c/path"
                                             "&field.paths.action-%s=yep"
                                             % direction))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, ['/a/path', '/b/path', '/c/path'])
 
     def test_movedown_no_selections(self):
@@ -715,7 +715,7 @@ class SampleListEditTests(SampleListTestBase):
                                             "&field.paths.picks=/b/path"
                                             "&field.paths.action-%s=yep"
                                             % direction))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, expected)
 
     def test_moveup_leading_selections(self):
@@ -735,7 +735,7 @@ class SampleListEditTests(SampleListTestBase):
                                             "&field.paths.picks=/b/path"
                                             "&field.paths.action-%s=yep"
                                             % direction))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, expected)
 
     def test_moveup_middle_selection(self):
@@ -756,7 +756,7 @@ class SampleListEditTests(SampleListTestBase):
                                             "&field.paths.picks=/c/path"
                                             "&field.paths.action-%s=yep"
                                             % direction))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, expected)
 
     def test_moveup_trailing_selections(self):
@@ -787,7 +787,7 @@ class SampleListEditTests(SampleListTestBase):
                                             "&field.paths.picks=/i/path"
                                             "&field.paths.action-%s=yep"
                                             % direction))
-        value = w.getData()
+        value = w.getInputValue()
         self.assertEqual(value, expected)
 
     def test_moveup_mixed_selections(self):
@@ -813,7 +813,7 @@ class SampleListEditTests(SampleListTestBase):
                                             "&field.paths.picks=/that/path"
                                             "&field.paths.action-%s=yep"
                                             % direction))
-        self.assertEqual(w.getData(), ["/a/path", "/b/path", "/c/path"])
+        self.assertEqual(w.getInputValue(), ["/a/path", "/b/path", "/c/path"])
 
     def test_moveup_missing_selections(self, direction="moveup"):
         self.check_move_missing_selections("moveup")
@@ -823,7 +823,7 @@ class SampleListEditTests(SampleListTestBase):
 
     def test_query_form_without_type(self):
         w = self.createWidget(QUERY_STRING="field.paths-query=0")
-        value = w.getData()
+        value = w.getInputValue()
         text = w.queryview.renderInput()
         self.verifyResult(text, [
             "<select",
@@ -859,7 +859,7 @@ class SampleListQueryTests(TestBase):
         if querytype is not None:
             qs += "&field.paths-query.type=" + querytype
         w = self.createWidget(QUERY_STRING=qs)
-        w.getData()
+        w.getInputValue()
         try:
             w.queryview.getResults()
         except QueryComplainer, e:
@@ -877,18 +877,18 @@ class SampleListQueryTests(TestBase):
     def test_call_with_unknown_type(self):
         self.checkQuery("splay", None)
 
-    def test_setData_doesnt_suppress_supplemental_form_data_1(self):
+    def test_setRenderedValue_doesnt_suppress_supplemental_form_data_1(self):
         w = self.createWidget(QUERY_STRING=("field.paths-marker=x"
                                             "&field.paths=/a/path"
                                             "&field.paths=/b/path"
                                             "&field.paths.picks=/a/path"))
-        self.assertEqual(w.getData(), ['/a/path','/b/path'])
+        self.assertEqual(w.getInputValue(), ['/a/path','/b/path'])
         self.assertEqual(w.selections, ['/a/path'])
 
-    def test_setData_doesnt_suppress_supplemental_form_data_2(self):
+    def test_setRenderedValue_doesnt_suppress_supplemental_form_data_2(self):
         w = self.createWidget()
-        w.setData(['/c/path'])
-        self.assertEqual(w.getData(), ['/c/path'])
+        w.setRenderedValue(['/c/path'])
+        self.assertEqual(w.getInputValue(), ['/c/path'])
         r = w()
         self.verifyResult(r, ["/c/path"])
         self.verifyResultMissing(r, ["/a/path", "/b/path"])
@@ -958,7 +958,7 @@ class SingleSampleTests(TestBase):
     def test_edit_without_form_data(self):
         self.viewName = "edit"
         w = self.createWidget()
-        self.assert_(not w.haveData())
+        self.assert_(not w.hasInput())
         self.verifyResult(w(), [
             "no value",
             "field.path.action-clear",
@@ -980,7 +980,7 @@ class SingleSampleTests(TestBase):
                                             "&field.path-query.action-select=x"
                                             "&field.path-query.picks=/a/path"
                                             "&field.path-query=0%201"))
-        self.assertEqual(w.getData(), "/a/path")
+        self.assertEqual(w.getInputValue(), "/a/path")
         r = w()
         self.verifyResult(r, [
             "a path",
@@ -1000,7 +1000,7 @@ class SingleSampleTests(TestBase):
                           "&field.path-query.action-dismiss=x"
                           "&field.path-query.picks=/a/path"
                           "&field.path-query=0%201"))
-        self.assertEqual(w.getData(), "/b/path")
+        self.assertEqual(w.getInputValue(), "/b/path")
         r = w()
         self.verifyResult(r, [
             "b path",
@@ -1017,7 +1017,7 @@ class SingleSampleTests(TestBase):
         w = self.createWidget(QUERY_STRING=("field.path-marker=x"
                                             "&field.path.action-clear=x"
                                             "&field.path=/a/path"))
-        self.assertEqual(w.getData(), None)
+        self.assertEqual(w.getInputValue(), None)
         # Make sure Clear is disabled in the resulting form:
         self.verifyResult(w(), [
             "no value",
@@ -1063,7 +1063,7 @@ class SingleSampleTests(TestBase):
                                             "&field.path=/a/path"
                                             "&field.path-query.start=0"
                                             "&field.path-query=0%201"))
-        value = w.getData()
+        value = w.getInputValue()
         r = w.queryview.renderResults(value)
         self.verifyResult(r, [
             "<input",

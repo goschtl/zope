@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.15 2003/06/05 20:13:09 jim Exp $
+$Id: test_utility.py,v 1.16 2003/08/13 21:28:38 garrett Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -31,7 +31,7 @@ from zope.schema.interfaces import IText
 from zope.app.interfaces.form import WidgetsError
 from zope.app.form.utility import setUpWidget, setUpWidgets, setUpEditWidgets
 from zope.app.form.utility import getWidgetsData, getWidgetsDataForContent
-from zope.app.form.utility import haveWidgetsData
+from zope.app.form.utility import viewHasInput
 from zope.schema.interfaces import ValidationError
 from zope.component.interfaces import IViewFactory
 
@@ -87,7 +87,7 @@ def kw(**kw):
 
 class W(TextWidget):
 
-    def setData(self, v):
+    def setRenderedValue(self, v):
         self.context.validate(v)
         self._data = v
 
@@ -96,14 +96,10 @@ class W(TextWidget):
 
     def __call__(self):
         name = self.name
-        v = getattr(self, '_data', None)
-        if (v is None) and (name in self.request):
-            v = self.request[name]
-
-
+        v = self._showData()
         return unicode(self.context.__name__) + u': ' + (v or '')
 
-    def getData(self):
+    def getInputValue(self):
         v = self.request.get(self.name, self)
         if v is self:
             if self.context.required:
@@ -111,7 +107,7 @@ class W(TextWidget):
             v = self.context.default
         return v
 
-    def haveData(self):
+    def hasInput(self):
         if self.name in self.request and self.request[self.name]:
             return True
         return False
@@ -130,7 +126,7 @@ class Test(PlacelessSetup, TestCase):
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'])
         self.assertEqual(view.title_widget(), u'title: ')
-        self.assertEqual(view.title_widget.getData(), None)
+        self.assertEqual(view.title_widget.getInputValue(), None)
 
 
     def test_setUpWidget_w_request_data(self):
@@ -140,7 +136,7 @@ class Test(PlacelessSetup, TestCase):
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'])
         self.assertEqual(view.title_widget(), u'title: xxx')
-        self.assertEqual(view.title_widget.getData(), u'xxx')
+        self.assertEqual(view.title_widget.getInputValue(), u'xxx')
 
     def test_setUpWidget_w_request_data_and_initial_data(self):
         c = C()
@@ -149,7 +145,7 @@ class Test(PlacelessSetup, TestCase):
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'], u'yyy')
         self.assertEqual(view.title_widget(), u'title: xxx')
-        self.assertEqual(view.title_widget.getData(), u'xxx')
+        self.assertEqual(view.title_widget.getInputValue(), u'xxx')
 
     def test_setUpWidget_w_request_data_and_initial_data_force(self):
         c = C()
@@ -158,7 +154,7 @@ class Test(PlacelessSetup, TestCase):
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'], u'yyy', force=1)
         self.assertEqual(view.title_widget(), u'title: yyy')
-        self.assertEqual(view.title_widget.getData(), u'xxx')
+        self.assertEqual(view.title_widget.getInputValue(), u'xxx')
 
     def test_setUpWidget_w_initial_data(self):
         c = C()
@@ -166,7 +162,7 @@ class Test(PlacelessSetup, TestCase):
         view = BrowserView(c, request)
         setUpWidget(view, 'title', I['title'], u'yyy')
         self.assertEqual(view.title_widget(), u'title: yyy')
-        self.assertEqual(view.title_widget.getData(), None)
+        self.assertEqual(view.title_widget.getInputValue(), None)
 
     def test_setUpWidget_w_bad_initial_data(self):
         c = C()
@@ -182,7 +178,7 @@ class Test(PlacelessSetup, TestCase):
         view.title_widget = w = W(I['title'], request)
         setUpWidget(view, 'title', I['title'], u'yyy')
         self.assertEqual(view.title_widget(), u'title: yyy')
-        self.assertEqual(view.title_widget.getData(), None)
+        self.assertEqual(view.title_widget.getInputValue(), None)
         self.assertEqual(view.title_widget, w)
 
     def test_setUpWidget_w_Custom_widget(self):
@@ -191,7 +187,7 @@ class Test(PlacelessSetup, TestCase):
         view = ViewWithCustomTitleWidgetFactory(c, request)
         setUpWidget(view, 'title', I['title'], u'yyy')
         self.assertEqual(view.title_widget(), u'title: yyy')
-        self.assertEqual(view.title_widget.getData(), None)
+        self.assertEqual(view.title_widget.getInputValue(), None)
         self.assertEqual(view.title_widget.custom, 1)
 
     def test_setupWidgets(self):
@@ -452,28 +448,28 @@ class Test(PlacelessSetup, TestCase):
                            exclude_readonly=True),
             {'title': u'ft'})
 
-    def test_haveWidgetsData(self):
+    def test_viewHasInput(self):
         c = C()
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
-        self.failIf(haveWidgetsData(view, I))
+        self.failIf(viewHasInput(view, I))
 
         request.form['field.description'] = u'fd'
-        self.failUnless(haveWidgetsData(view, I))
+        self.failUnless(viewHasInput(view, I))
 
-    def test_haveWidgetsData_w_names(self):
+    def test_viewHasInput_w_names(self):
         c = C()
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
-        self.failIf(haveWidgetsData(view, I))
+        self.failIf(viewHasInput(view, I))
 
         request.form['field.description'] = u'fd'
-        self.failUnless(haveWidgetsData(view, I))
-        self.failIf(haveWidgetsData(view, I, names=['title']))
-        self.assertRaises(KeyError, haveWidgetsData, view, I, names=['bar'])
-        self.assertRaises(AttributeError, haveWidgetsData, view, I,
+        self.failUnless(viewHasInput(view, I))
+        self.failIf(viewHasInput(view, I, names=['title']))
+        self.assertRaises(KeyError, viewHasInput, view, I, names=['bar'])
+        self.assertRaises(AttributeError, viewHasInput, view, I,
                           names=['foo'])
 
     def test_getWidgetsData_w_default(self):

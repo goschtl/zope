@@ -52,7 +52,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.http.IHTTPPresentation"
       factory="zope.app.dav.widget.TextDAVWidget"
-      allowed_attributes="getData haveData setData __call__ __str__" />
+      allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
   
   <defaultView
       for="zope.schema.interfaces.ITextLine"
@@ -60,7 +60,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.http.IHTTPPresentation"
       factory="zope.app.dav.widget.TextDAVWidget"
-      allowed_attributes="getData haveData setData __call__ __str__" />
+      allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
   
   <defaultView
       for="zope.schema.interfaces.IDatetime"
@@ -68,7 +68,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.http.IHTTPPresentation"
       factory="zope.app.dav.widget.TextDAVWidget"
-      allowed_attributes="getData haveData setData __call__ __str__" />
+      allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
   
   <defaultView
       for="zope.schema.interfaces.ISequence"
@@ -76,7 +76,7 @@
       permission="zope.Public"
       type="zope.publisher.interfaces.http.IHTTPPresentation"
       factory="zope.app.dav.widget.SequenceDAVWidget"
-      allowed_attributes="getData haveData setData __call__ __str__" />
+      allowed_attributes="getData hasInput setRenderedValue __call__ __str__" />
   
   <adapter
       provides="zope.app.interfaces.dav.IDAVSchema"

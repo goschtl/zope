@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_floatwidget.py,v 1.1 2003/01/20 16:23:38 mgedmin Exp $
+$Id: test_floatwidget.py,v 1.2 2003/08/13 21:28:04 garrett Exp $
 """
 from unittest import main, makeSuite
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.browser.form.widget import FloatWidget
-from zope.app.interfaces.form import ConversionError
+from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.schema import Float
 
 
@@ -26,21 +26,22 @@ class FloatWidgetTest(BrowserWidgetTest):
     _FieldFactory = Float
     _WidgetFactory = FloatWidget
 
-    def test_haveData(self):
+    def test_hasInput(self):
         del self._widget.request.form['field.foo']
-        self.failIf(self._widget.haveData())
+        self.failIf(self._widget.hasInput())
+        # widget has input, even if input is an empty string
         self._widget.request.form['field.foo'] = u''
-        self.failIf(self._widget.haveData())
+        self.failUnless(self._widget.hasInput())
         self._widget.request.form['field.foo'] = u'123'
-        self.failUnless(self._widget.haveData())
+        self.failUnless(self._widget.hasInput())
 
-    def test_getData(self):
+    def test_getInputValue(self):
         self._widget.request.form['field.foo'] = u''
-        self.assertEquals(self._widget.getData(optional=1), None)
+        self.assertRaises(WidgetInputError, self._widget.getInputValue)
         self._widget.request.form['field.foo'] = u'123.45'
-        self.assertEquals(self._widget.getData(), 123.45)
+        self.assertEquals(self._widget.getInputValue(), 123.45)
         self._widget.request.form['field.foo'] = u'abc'
-        self.assertRaises(ConversionError, self._widget.getData)
+        self.assertRaises(ConversionError, self._widget.getInputValue)
 
 
 def test_suite():

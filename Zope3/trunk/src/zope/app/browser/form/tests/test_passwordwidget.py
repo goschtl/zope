@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_passwordwidget.py,v 1.7 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_passwordwidget.py,v 1.8 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -35,7 +35,7 @@ class PasswordWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'Foo Value'
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         check_list = ('type="password"', 'id="field.foo"',
                       'name="field.foo"', 'value=""', 'size="20"')
         self.verifyResult(self._widget(), check_list)

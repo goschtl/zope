@@ -13,14 +13,15 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.48 2003/08/12 18:18:02 poster Exp $
+$Id: widget.py,v 1.49 2003/08/13 21:27:50 garrett Exp $
 """
 
 __metaclass__ = type
 
 import re, cgi
 from xml.sax.saxutils import quoteattr
-import warnings
+import traceback
+from warnings import warn
 from zope.app import zapi
 from zope.component import getService
 from zope.interface import implements
@@ -53,16 +54,16 @@ class BrowserWidget(Widget, BrowserView):
     'field.foo'
     >>> widget.title
     u'Foo'
-    >>> int(widget.haveData())
+    >>> int(widget.hasInput())
     1
-    >>> widget.getData()
+    >>> widget.getInputValue()
     u'hello\\r\\nworld'
     >>> int(widget.required)
     1
     >>> widget.error is None
     1
-    >>> widget.setData('Hey\\nfolks')
-    >>> widget.getData()
+    >>> widget.setRenderedValue('Hey\\nfolks')
+    >>> widget.getInputValue()
     u'hello\\r\\nworld'
     >>> widget.error is None
     1
@@ -72,18 +73,17 @@ class BrowserWidget(Widget, BrowserView):
     'test.foo'
     >>> widget.error is None
     1
-    >>> int(widget.haveData())
+    >>> int(widget.hasInput())
     0
-    >>> widget.getData()
+    >>> widget.getInputValue()
     Traceback (most recent call last):
     ...
-    MissingInputError: ('foo', u'Foo', u'Input is required')
-    >>> widget.error is not None
-    1
+    MissingInputError: ('test.foo', u'Foo', None)
     >>> field.required = False
+    >>> widget.request.form['test.foo'] = u''
     >>> int(widget.required)
     0
-    >>> widget.getData() is None
+    >>> int(widget.getInputValue() == field.missing_value)
     1
     >>> widget.error is None
     1
@@ -107,68 +107,131 @@ class BrowserWidget(Widget, BrowserView):
     type = 'text'
     cssClass = ''
     extra = ''
-    _missing = None
+    _missing = ''
     error = None
 
     def haveData(self):
-        if self.name in self.request.form:
-            return self._convert(self.request[self.name]) != self._missing
-        return False
+        if traceback.extract_stack()[-2][2] != 'hasInput':
+            warn("haveData is deprecated - use hasInput",
+                DeprecationWarning, 2)
 
-    def getData(self, optional=0):
-        field = self.context
-        value = self.request.form.get(self.name, self) # self used as marker
+        # XXX - move this implementation to hasInput when deprecation is
+        # removed
+
+        return self.name in self.request.form
+
+    def hasInput(self):
+        """See IWidget.hasInput.
+        
+        Returns True if the submitted request form contains a value for
+        the widget, otherwise returns False.
+
+        Some browser widgets may need to implement a more sophisticated test
+        for input. E.g. checkbox values are not supplied in submitted
+        forms when their value is 'off' -- in this case the widget will
+        need to add a hidden element to signal its presence in the form.
+        """
+        return self.haveData()
+
+    def hasValidInput(self):
+        try:
+            self.getInputValue()
+            return True
+        except WidgetInputError:
+            return False
+
+    def getData(self):
+        if traceback.extract_stack()[-2][2] != 'getInputValue':
+            warn("getData is deprecated - use getInputValue",
+                DeprecationWarning, 2)
+
+        # XXX - move this implementation to getInputValue when deprecation
+        # is removed
+
         self.error = None
-        if value is self:
-            # No user input
-            if field.required and not optional:
-                self.error = MissingInputError(
-                        field.__name__, field.title,  RequiredMissing
-                        )
-                raise self.error
-            return field.default
+        field = self.context
 
-        value = self._convert(value)
-        if value is not None and not optional:
-            try:
-                field.validate(value)
-            except ValidationError, v:
-                self.error = WidgetInputError(self.context.__name__,
-                                       self.title, v)
-                raise self.error
+        # form input is required, otherwise raise an error
+        input = self.request.form.get(self.name)
+        if input is None:
+            raise MissingInputError(self.name, self.title, None)
+
+        # convert input to suitable value - may raise conversion error
+        value = self._convert(input)
+
+        # allow missing values only for non-required fields
+        if value == field.missing_value and not field.required:
+            return value
+
+        # value must be valid per the field contraints
+        try:
+            field.validate(value)
+        except ValidationError, v:
+            self.error = WidgetInputError(
+                self.context.__name__, self.title, v)
+            raise self.error
         return value
 
+    def getInputValue(self):
+        return self.getData()
+
     def validate(self):
-        self.getData()
+        self.getInputValue()
 
     def applyChanges(self, content):
         field = self.context
-        value = self.getData()
-        change = field.query(content, self) != value
-        if change:
+        value = self.getInputValue()
+        if field.query(content, self) != value:
             field.set(content, value)
-        return change
+            return True
+        else:
+            return False
 
-    def _convert(self, value):
-        if value == self._missing:
-            return None
-        return value
+    def _convert(self, input):
+        """Converts input to a value appropriate for the field type.
+        
+        Widgets for non-string fields should override this method to
+        perform an appropriate conversion.
+
+        This method is used by getInputValue to perform the conversion
+        of a form input value (keyed by the widget's name) to an appropriate
+        field value. Widgets that require a more complex conversion process
+        (e.g. utilize more than one form field) should override getInputValue
+        and disregard this method.
+        """
+        if input == self._missing:
+            return self.context.missing_value
+        else:
+            return input
 
     def _unconvert(self, value):
-        if value is None:
-            return ''
-        return value
+        """Converts a field value to a string used as an HTML form value.
+
+        This method is used in the default rendering of widgets that can
+        represent their values in a single HTML form value. Widgets whose
+        fields have more complex data structures should disregard this
+        method and override the default rendering method (__call__).
+        """
+        if value == self.context.missing_value:
+            return self._missing
+        else:
+            return value
 
     def _showData(self):
-        if self._data is None:
-            if self.haveData():
-                data = self.getData(optional=1)
-            else:
-                data = self._getDefault()
-        else:
-            data = self._data
+        """Returns a value suitable for use as an HTML form value."""
 
-        return self._unconvert(data)
+        if self._data is self._data_marker:
+            if self.hasInput():
+                try:
+                    value = self.getInputValue()
+                except WidgetInputError:
+                    return self.request.form.get(self.name, self._missing)
+            else:
+                value = self._getDefault()
+        else:
+            value = self._data
+
+        return self._unconvert(value)
 
     def _getDefault(self):
         # Return the default value for this widget;
@@ -194,16 +257,16 @@ class BrowserWidget(Widget, BrowserView):
                              extra = self.getValue('extra'))
 
     def render(self, value):
-        warnings.warn("The widget render method is deprecated",
-                      DeprecationWarning, 2)
+        warn("The widget render method is deprecated",
+            DeprecationWarning, 2)
 
-        self.setData(value)
+        self.setRenderedValue(value)
         return self()
 
     def renderHidden(self, value):
-        warnings.warn("The widget render method is deprecated",
-                      DeprecationWarning, 2)
-        self.setData(value)
+        warn("The widget render method is deprecated",
+            DeprecationWarning, 2)
+        self.setRenderedValue(value)
         return self.hidden()
 
     def _tooltip(self, txt, description):
@@ -251,9 +314,9 @@ class CheckBoxWidget(BrowserWidget):
     >>> request = TestRequest(form={'field.foo.used': u'on',
     ...                             'field.foo': u'on'})
     >>> widget = CheckBoxWidget(field, request)
-    >>> int(widget.haveData())
+    >>> int(widget.hasInput())
     1
-    >>> int(widget.getData())
+    >>> int(widget.getInputValue())
     1
     
     >>> def normalize(s):
@@ -284,9 +347,9 @@ class CheckBoxWidget(BrowserWidget):
       value="on"
       />
 
-    Calling setData will change what gets output:
+    Calling setRenderedValue will change what gets output:
     
-    >>> widget.setData(False)
+    >>> widget.setRenderedValue(False)
     >>> print normalize( widget() )
     <input
       class="hiddenType"
@@ -339,28 +402,18 @@ class CheckBoxWidget(BrowserWidget):
         return value and "on" or ""
         return value == 'on'
 
-    def haveData(self):
-        return (
-            self.name+".used" in self.request.form
-            or
-            self.name in self.request.form
-            )
+    def hasInput(self):
+        return self.name + ".used" in self.request.form or \
+            super(CheckBoxWidget, self).hasInput()
 
-    def getData(self, optional=0):
+    def getInputValue(self):
         # When it's checked, its value is 'on'.
         # When a checkbox is unchecked, it does not appear in the form data.
         value = self.request.form.get(self.name, 'off')
         return value == 'on'
 
-class PossiblyEmptyMeansMissing(BrowserWidget):
 
-    def _convert(self, value):
-        value = super(PossiblyEmptyMeansMissing, self)._convert(value)
-        if not value and getattr(self.context, 'min_length', 1) > 0:
-            return None
-        return value
-
-class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
+class TextWidget(BrowserWidget):
     """Text widget.
 
     Single-line text (unicode) input
@@ -370,9 +423,9 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     >>> field = TextLine(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Bob'})
     >>> widget = TextWidget(field, request)
-    >>> int(widget.haveData())
+    >>> int(widget.hasInput())
     1
-    >>> widget.getData()
+    >>> widget.getInputValue()
     u'Bob'
     
     >>> def normalize(s):
@@ -397,9 +450,9 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
       value="Bob"
       />
 
-    Calling setData will change what gets output:
+    Calling setRenderedValue will change what gets output:
     
-    >>> widget.setData("Barry")
+    >>> widget.setRenderedValue("Barry")
     >>> print normalize( widget() )
     <input
       class="textType"
@@ -425,41 +478,29 @@ class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
 
     def __init__(self, *args):
         super(TextWidget, self).__init__(*args)
-
-        if self.context.allowed_values is not None:
-            values = list(self.context.allowed_values)
-            values.sort()
+        field = self.context
+        if field.allowed_values is not None:
+            values = []
+            # if field is optional and missing_value isn't in
+            # allowed_values, add an additional option at top to represent 
+            # field.missing_value
+            if not field.required and \
+                field.missing_value not in field.allowed_values:
+                values.append(field.missing_value)
+            values += list(field.allowed_values)
             self.__values = values
-            if values:
-                self._missing = values[-1]+'x'
-            else:
-                self._missing = ''
-
-    def haveData(self):
-        if super(TextWidget, self).haveData():
-            if (self.request.get(self.name)
-                != self._missing):
-                return True
-        return False
 
     def _select(self):
         selected = self._showData()
-        result = ['<select id="%s" name="%s">'
-                  % (self.name, self.name)]
-
-        values = self.__values
-
-        if not self.context.required or selected is None:
-            result.append('<option value="%s"></option>' % self._missing)
-
-        for value in values:
-            if value == selected:
-                result.append("<option selected>%s</option>" % value)
-            else:
-                result.append("<option>%s</option>" % value)
-
+        result = ['<select id="%s" name="%s">' % (self.name, self.name)]
+        for value in self.__values:
+            unconverted = self._unconvert(value)
+            selectedStr = unconverted == selected and ' selected' or ''
+            result.append('<option value="%s"%s>%s</option>' % \
+                   (unconverted, selectedStr, unconverted))
         result.append('</select>')
         return '\n\t'.join(result)
+
 
     def __call__(self):
         if self.__values is not None:
@@ -510,9 +551,9 @@ class BytesWidget(Bytes, TextWidget):
     >>> field = BytesLine(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Bob'})
     >>> widget = BytesWidget(field, request)
-    >>> int(widget.haveData())
+    >>> int(widget.hasInput())
     1
-    >>> widget.getData()
+    >>> widget.getInputValue()
     'Bob'
 
     """
@@ -521,7 +562,9 @@ class IntWidget(TextWidget):
     displayWidth = 10
 
     def _convert(self, value):
-        if value:
+        if value == self._missing:
+            return self.context.missing_value
+        else:
             try:
                 return int(value)
             except ValueError, v:
@@ -532,35 +575,44 @@ class FloatWidget(TextWidget):
     displayWidth = 10
 
     def _convert(self, value):
-        if value:
+        if value == self._missing:
+            return self.context.missing_value
+        else:
             try:
                 return float(value)
             except ValueError, v:
                 raise ConversionError("Invalid floating point data", v)
+
 
 class DatetimeWidget(TextWidget):
     """Datetime entry widget."""
     displayWidth = 20
 
     def _convert(self, value):
-        if value:
+        if value == self._missing:
+            return self.context.missing_value
+        else:
             try:
                 return parseDatetimetz(value)
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
+
 
 class DateWidget(TextWidget):
     "Date entry widget."
     displayWidth = 20
 
     def _convert(self, value):
-        if value:
+        if value == self._missing:
+            return self.context.missing_value
+        else:
             try:
                 return parseDatetimetz(value).date()
             except (DateTimeError, ValueError, IndexError), v:
                 raise ConversionError("Invalid datetime data", v)
+                
 
-class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
+class TextAreaWidget(BrowserWidget):
     """TextArea widget.
 
     Multi-line text (unicode) input.
@@ -570,9 +622,9 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     >>> field = Text(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
     >>> widget = TextAreaWidget(field, request)
-    >>> int(widget.haveData())
+    >>> int(widget.hasInput())
     1
-    >>> widget.getData()
+    >>> widget.getInputValue()
     u'Hello\\nworld!'
     
     >>> def normalize(s):
@@ -597,9 +649,9 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     world!"
       />
 
-    Calling setData will change what gets output:
+    Calling setRenderedValue will change what gets output:
     
-    >>> widget.setData("Hey\\ndude!")
+    >>> widget.setRenderedValue("Hey\\ndude!")
     >>> print normalize( widget() )
     <textarea
       cols="60"
@@ -651,9 +703,9 @@ class BytesAreaWidget(Bytes, TextAreaWidget):
     >>> field = Bytes(__name__='foo', title=u'on')
     >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
     >>> widget = BytesAreaWidget(field, request)
-    >>> int(widget.haveData())
+    >>> int(widget.hasInput())
     1
-    >>> widget.getData()
+    >>> widget.getInputValue()
     'Hello\\nworld!'
 
     """
@@ -714,7 +766,7 @@ class FileWidget(TextWidget):
                                  size = self.getValue('displayWidth'),
                                  extra = self.getValue('extra'))
 
-    def haveData(self):
+    def hasInput(self):
         file = self.request.form.get(self.name)
         if file is None:
             return False
@@ -746,7 +798,7 @@ class FileWidget(TextWidget):
             if data or getattr(value, 'filename', ''):
                 return data
             else:
-                return None
+                return self.context.missing_value
 
 
 class ItemsWidget(BrowserWidget):
@@ -895,7 +947,7 @@ class MultiItemsWidget(ItemsWidget):
     default = []
 
     def _convert(self, value):
-        if value is None:
+        if not value:
             return []
         if isinstance(value, ListTypes):
             return value
@@ -946,13 +998,13 @@ class MultiListWidget(MultiItemsWidget):
     def __call__(self):
         rendered_items = self.renderItems(self._showData())
         return renderElement('select',
-                              name = self.name,
-                              id = self.name,
-                              multiple = None,
-                              cssClass = self.getValue('cssClass'),
-                              size = self.getValue('size'),
-                              contents = "\n".join(rendered_items),
-                              extra = self.getValue('extra'))
+                              name=self.name,
+                              id=self.name,
+                              multiple=None,
+                              cssClass=self.getValue('cssClass'),
+                              size=self.getValue('size'),
+                              contents="\n".join(rendered_items),
+                              extra=self.getValue('extra'))
 
     def renderItem(self, index, text, value, name, cssClass):
         return renderElement('option', contents=text, value=value)
@@ -977,20 +1029,20 @@ class MultiCheckBoxWidget(MultiItemsWidget):
 
     def renderItem(self, index, text, value, name, cssClass):
         return renderElement('input',
-                              type = "checkbox",
-                              cssClass = cssClass,
-                              name = name,
-                              id = name,
-                              value = value) + text
+                              type="checkbox",
+                              cssClass=cssClass,
+                              name=name,
+                              id=name,
+                              value=value) + text
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
         return renderElement('input',
-                              type = "checkbox",
-                              cssClass = cssClass,
-                              name = name,
-                              id = name,
-                              value = value,
-                              checked = None) + text
+                              type="checkbox",
+                              cssClass=cssClass,
+                              name=name,
+                              id=name,
+                              value=value,
+                              checked=None) + text
 
 class SequenceWidget(BrowserWidget):
     """A sequence of fields.
@@ -999,7 +1051,7 @@ class SequenceWidget(BrowserWidget):
                  items in the sequence
     """
     _type = tuple
-    _data = ()          # pre-existing sequence items (from setData)
+    _data = () # pre-existing sequence items (from setRenderedValue)
 
     def __init__(self, context, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
@@ -1036,7 +1088,7 @@ class SequenceWidget(BrowserWidget):
             if num_items > min_length:
                 r('<input type="checkbox" name="%s.remove_%d">'%(self.name, i))
             widget = self._getWidget(i)
-            widget.setData(value)
+            widget.setRenderedValue(value)
             r(widget()+'</td></tr>')
             
         # possibly generate the "remove" and "add" buttons
@@ -1080,11 +1132,11 @@ class SequenceWidget(BrowserWidget):
         for i in range(num_items):
             value = sequence[i]
             widget = self._getWidget(i)
-            widget.setData(value)
+            widget.setRenderedValue(value)
             s += widget.hidden()
         return s
 
-    def getData(self):
+    def getInputValue(self):
         """Return converted and validated widget data.
 
         If there is no user input and the field is required, then a
@@ -1106,20 +1158,20 @@ class SequenceWidget(BrowserWidget):
     # re-generating the sequence with every edit, and need to be smarter)
     def applyChanges(self, content):
         field = self.context
-        value = self.getData()
+        value = self.getInputValue()
         change = field.query(content, self) != value
         if change:
             field.set(content, value)
         return change
 
-    def haveData(self):
+    def hasInput(self):
         """Is there input data for the field
 
         Return True if there is data and False otherwise.
         """
         return len(self._generateSequence()) != 0
 
-    def setData(self, value):
+    def setRenderedValue(self, value):
         """Set the default data for the widget.
 
         The given value should be used even if the user has entered
@@ -1165,7 +1217,7 @@ class SequenceWidget(BrowserWidget):
                 # find a widget for the sub-field and use that to parse the
                 # request data
                 widget = self._getWidget(i)
-                value = widget.getData()
+                value = widget.getInputValue()
                 found[i] = value
 
         # remove the indicated indexes 
@@ -1197,7 +1249,7 @@ class ObjectWidget(BrowserWidget):
     *_widget   - Optional CustomWidgets used to generate widgets for the
                  fields in this widget
     """
-    _object = None      # the object value (from setData & request)
+    _object = None      # the object value (from setRenderedValue & request)
     _request_parsed = False
 
     def __init__(self, context, request, factory, **kw):
@@ -1255,7 +1307,7 @@ class ObjectWidget(BrowserWidget):
             s += widget.hidden()
         return s
 
-    def getData(self):
+    def getInputValue(self):
         """Return converted and validated widget data.
 
         The value for this field will be represented as an ObjectStorage
@@ -1266,7 +1318,7 @@ class ObjectWidget(BrowserWidget):
         """
         content = self.factory()
         for name, widget in self.getSubWidgets():
-            setattr(content, name, widget.getData())
+            setattr(content, name, widget.getInputValue())
         return content
 
     def applyChanges(self, content):
@@ -1289,17 +1341,17 @@ class ObjectWidget(BrowserWidget):
 
         return changes
 
-    def haveData(self):
+    def hasInput(self):
         """Is there input data for the field
 
         Return True if there is data and False otherwise.
         """
         for name, widget in self.getSubWidgets():
-            if widget.haveData():
+            if widget.hasInput():
                 return True
         return False
 
-    def setData(self, value):
+    def setRenderedValue(self, value):
         """Set the default data for the widget.
 
         The given value should be used even if the user has entered
@@ -1308,7 +1360,7 @@ class ObjectWidget(BrowserWidget):
         # re-call setupwidgets with the content
         self._setUpEditWidgets()
         for name, widget in self.getSubWidgets():
-            widget.setData(getattr(value, name, None))
+            widget.setRenderedValue(getattr(value, name, None))
 
 # XXX Note, some HTML quoting is needed in renderTag and renderElement.
 

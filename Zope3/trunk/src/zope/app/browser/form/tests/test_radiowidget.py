@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.8 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_radiowidget.py,v 1.9 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -57,7 +57,7 @@ class RadioWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 'bar'
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         check_list = ('type="radio"', 'id="field.foo.0"',
                       'name="field.foo"', 'value="bar"', 'bar',
                       'value="foo"', 'foo', 'checked="checked"')

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_setprefix.py,v 1.5 2003/04/30 23:37:52 faassen Exp $
+$Id: test_setprefix.py,v 1.6 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -30,13 +30,13 @@ class Test(unittest.TestCase):
         self._widget.setPrefix('spam')
 
     def testGetData(self):
-        self.assertEqual(self._widget.getData(), u'Foo Value')
+        self.assertEqual(self._widget.getInputValue(), u'Foo Value')
 
     def testRender(self):
         value = 'Foo Value 2'
         check_list = ('type="text"', 'id="spam.foo"', 'name="spam.foo"',
                       'value="Foo Value 2"', 'size="20"')
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         self._verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]
         self._verifyResult(self._widget.hidden(), check_list)

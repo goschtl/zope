@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.50 2003/08/07 17:40:28 srichter Exp $
+$Id: vocabularywidget.py,v 1.51 2003/08/13 21:27:50 garrett Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -187,14 +187,14 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
         self.empty_marker_name = self.name + "-empty-marker"
 
     def __call__(self):
-        if self._data is None:
-            if self.haveData():
-                data = self.getData(True)
+        if self._data is self._data_marker:
+            if self.hasInput():
+                value = self.getInputValue()
             else:
-                data = self._getDefault()
+                value = self._getDefault()
         else:
-            data = self._data
-        return self.render(data)
+            value = self._data
+        return self.render(value)
 
     def render(self, value):
         raise NotImplementedError(
@@ -216,30 +216,31 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
 
     _have_field_data = False
 
-    def getData(self, optional=False):
-        data = self._compute_data()
+    def getInputValue(self):        
+        value = self._compute_data()
         field = self.context
-        if data is None:
-            if field.required and not optional:
-                raise MissingInputError(field.__name__, field.title,
-                                        'the field is required')
-            return self._getDefault()
-        elif not optional:
-            try:
-                field.validate(data)
-            except ValidationError, v:
-                raise WidgetInputError(self.context.__name__, self.title, v)
-        return data
+
+        # missing value is okay if field is not required
+        if value == field.missing_value and not field.required:
+            return value
+
+        # all other values must be valid
+        try:
+            field.validate(value)
+        except ValidationError, v:
+            raise WidgetInputError(self.context.__name__, self.title, v)
+
+        return value
 
     def _emptyMarker(self):
         return "<input name='%s' type='hidden' value='1' />" % (
             self.empty_marker_name)
 
-    def haveData(self):
+    def hasInput(self):
         return (self.name in self.request.form or
                 self.empty_marker_name in self.request.form)
 
-    def setData(self, value):
+    def setRenderedValue(self, value):
         self._data = value
 
     def _compute_data(self):

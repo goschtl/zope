@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Widget Tests
 
-$Id: test_registrationstatuswidget.py,v 1.2 2003/08/08 00:14:38 srichter Exp $
+$Id: test_registrationstatuswidget.py,v 1.3 2003/08/13 21:28:20 garrett Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -63,7 +63,7 @@ class Test(PlacelessSetup, TestCase):
             u'type="radio" value="Active" /><label '
             u'for="f.status.2">Active</label>')
 
-        widget.setData("Active")
+        widget.setRenderedValue("Active")
         text = ' '.join(widget().split())
         self.assertEqual(
             text,
@@ -80,7 +80,7 @@ class Test(PlacelessSetup, TestCase):
             u'<label for="f.status.2">Active</label>'
             )
 
-        widget.setData(u"Unregistered")
+        widget.setRenderedValue(u"Unregistered")
         text = ' '.join(widget().split())
         self.assertEqual(
             text,

@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: test_datewidget.py,v 1.1 2003/08/12 18:18:05 poster Exp $
+$Id: test_datewidget.py,v 1.2 2003/08/13 21:28:04 garrett Exp $
 """
 from unittest import main, makeSuite
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.browser.form.tests.test_browserwidget import BrowserWidgetTest
 from zope.app.browser.form.widget import DateWidget
-from zope.app.interfaces.form import ConversionError
+from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.schema import Date
 
 
@@ -27,24 +27,24 @@ class DateWidgetTest(BrowserWidgetTest):
     _FieldFactory = Date
     _WidgetFactory = DateWidget
 
-    def test_haveData(self):
+    def test_hasInput(self):
         del self._widget.request.form['field.foo']
-        self.failIf(self._widget.haveData())
+        self.failIf(self._widget.hasInput())
         self._widget.request.form['field.foo'] = u''
-        self.failIf(self._widget.haveData())
+        self.failUnless(self._widget.hasInput())
         self._widget.request.form['field.foo'] = u'2003/03/26'
-        self.failUnless(self._widget.haveData())
+        self.failUnless(self._widget.hasInput())
 
-    def test_getData(self):
+    def test_getInputValue(self):
         TEST_DATE= u'2003/03/26'
         self._widget.request.form['field.foo'] = u''
-        self.assertEquals(self._widget.getData(optional=1), None)
+        self.assertRaises(WidgetInputError, self._widget.getInputValue)
         self._widget.request.form['field.foo'] = TEST_DATE
         self.assertEquals(
-            self._widget.getData(), 
+            self._widget.getInputValue(), 
             parseDatetimetz(TEST_DATE).date())
         self._widget.request.form['field.foo'] = u'abc'
-        self.assertRaises(ConversionError, self._widget.getData)
+        self.assertRaises(ConversionError, self._widget.getInputValue)
 
 
 def test_suite():

@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.13 2003/06/30 16:23:33 jim Exp $
+$Id: test_field_widget.py,v 1.14 2003/08/13 21:28:23 garrett Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -29,6 +29,7 @@ class FakeComponentPath:
     def __init__(self, context, type):
         self.context = context
         self.type = type
+        self.missing_value = None
 
     def validate(self, value):
         pass
@@ -105,21 +106,20 @@ class TestComponentPathWidget(BaseTest):
         self.assertEqual(widget._convert(u''), None)
         self.assertEqual(widget._convert(u'/a'), u'/a')
 
-    def test_haveData(self):
+    def test_hasInput(self):
 
-        # Empty string means we don't have data
         fake = FakeComponentPath(None, I1)
-        self.request.form['field.X'] = ''
+        self.assert_('field.X' not in self.request.form)
         widget = self.createWidget(fake, self.request)
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
 
         self.request.form['field.X'] = '/foo'
         widget = self.createWidget(fake, self.request)
-        self.failUnless(widget.haveData())
+        self.failUnless(widget.hasInput())
 
-        self.request.form['field.X'] = None
+        del self.request.form['field.X']
         widget = self.createWidget(fake, self.request)
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
 
 
 def test_suite():

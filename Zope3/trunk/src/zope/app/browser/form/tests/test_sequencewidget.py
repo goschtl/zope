@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_sequencewidget.py,v 1.3 2003/07/13 06:47:18 richard Exp $
+$Id: test_sequencewidget.py,v 1.4 2003/08/13 21:28:04 garrett Exp $
 """
 
 import unittest
@@ -45,42 +45,42 @@ class SequenceWidgetTest(BrowserWidgetTest):
         provideView(ITextLine, 'edit', IBrowserPresentation, [TextWidget])
 
     def test_haveNoData(self):
-        self.failIf(self._widget.haveData())
+        self.failIf(self._widget.hasInput())
 
-    def test_haveData(self):
+    def test_hasInput(self):
         self._widget.request.form['field.foo.0.bar'] = u'hi, mum'
-        self.failUnless(self._widget.haveData())
+        self.failUnless(self._widget.hasInput())
 
     def test_list(self):
         self.field = List(__name__=u'foo', value_type=TextLine(__name__=u'bar'))
         request = TestRequest()
         widget = ListSequenceWidget(self.field, request)
-        self.assertEquals(int(widget.haveData()), 0)
-        self.assertEquals(widget.getData(), [])
+        self.assertEquals(int(widget.hasInput()), 0)
+        self.assertEquals(widget.getInputValue(), [])
 
         request = TestRequest(form={'field.foo.add': u'Add bar'})
         widget = ListSequenceWidget(self.field, request)
-        self.assertEquals(int(widget.haveData()), 1)
-        self.assertRaises(ValidationError, widget.getData)
+        self.assertEquals(int(widget.hasInput()), 1)
+        self.assertRaises(ValidationError, widget.getInputValue)
 
         request = TestRequest(form={'field.foo.0.bar': u'Hello world!'})
         widget = ListSequenceWidget(self.field, request)
-        self.assertEquals(int(widget.haveData()), 1)
-        self.assertEquals(widget.getData(), [u'Hello world!'])
+        self.assertEquals(int(widget.hasInput()), 1)
+        self.assertEquals(widget.getInputValue(), [u'Hello world!'])
 
     def test_new(self):
         request = TestRequest()
         widget = TupleSequenceWidget(self.field, request)
-        self.assertEquals(int(widget.haveData()), 0)
-        self.assertEquals(widget.getData(), ())
+        self.assertEquals(int(widget.hasInput()), 0)
+        self.assertEquals(widget.getInputValue(), ())
         check_list = ('input', 'name="field.foo.add"')
         self.verifyResult(widget(), check_list)
 
     def test_add(self):
         request = TestRequest(form={'field.foo.add': u'Add bar'})
         widget = TupleSequenceWidget(self.field, request)
-        self.assertEquals(int(widget.haveData()), 1)
-        self.assertRaises(ValidationError, widget.getData)
+        self.assertEquals(int(widget.hasInput()), 1)
+        self.assertRaises(ValidationError, widget.getInputValue)
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
             'submit', 'submit', 'field.foo.add'
@@ -90,24 +90,24 @@ class SequenceWidgetTest(BrowserWidgetTest):
     def test_request(self):
         request = TestRequest(form={'field.foo.0.bar': u'Hello world!'})
         widget = TupleSequenceWidget(self.field, request)
-        self.assertEquals(int(widget.haveData()), 1)
-        self.assertEquals(widget.getData(), (u'Hello world!',))
+        self.assertEquals(int(widget.hasInput()), 1)
+        self.assertEquals(widget.getInputValue(), (u'Hello world!',))
 
     def test_existing(self):
         request = TestRequest()
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData((u'existing',))
-        self.assertEquals(int(widget.haveData()), 1)
-        self.assertEquals(widget.getData(), (u'existing',))
+        widget.setRenderedValue((u'existing',))
+        self.assertEquals(int(widget.hasInput()), 1)
+        self.assertEquals(widget.getInputValue(), (u'existing',))
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
                 'existing',
             'submit', 'submit', 'field.foo.add'
         )
         self.verifyResult(widget(), check_list, inorder=True)
-        widget.setData((u'existing', u'second'))
-        self.assertEquals(int(widget.haveData()), 1)
-        self.assertEquals(widget.getData(), (u'existing', u'second'))
+        widget.setRenderedValue((u'existing', u'second'))
+        self.assertEquals(int(widget.hasInput()), 1)
+        self.assertEquals(widget.getInputValue(), (u'existing', u'second'))
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
                 'existing',
@@ -121,8 +121,8 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest(form={'field.foo.remove_0': u'Hello world!',
             'field.foo.0.bar': u'existing', 'field.foo.1.bar': u'second'})
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData((u'existing', u'second'))
-        self.assertEquals(widget.getData(), (u'second',))
+        widget.setRenderedValue((u'existing', u'second'))
+        self.assertEquals(widget.getInputValue(), (u'second',))
         check_list = (
             'checkbox', 'field.foo.remove_0', 'input', 'field.foo.0.bar',
                 'second',
@@ -134,8 +134,8 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest()
         self.field.min_length = 2
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData((u'existing',))
-        self.assertEquals(widget.getData(), (u'existing',))
+        widget.setRenderedValue((u'existing',))
+        self.assertEquals(widget.getInputValue(), (u'existing',))
         check_list = (
             'input', 'field.foo.0.bar', 'existing',
             'input', 'field.foo.1.bar', 'value=""',
@@ -149,8 +149,8 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest()
         self.field.max_length = 1
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData((u'existing',))
-        self.assertEquals(widget.getData(), (u'existing',))
+        widget.setRenderedValue((u'existing',))
+        self.assertEquals(widget.getInputValue(), (u'existing',))
         s = widget()
         self.assertEquals(s.find('field.foo.add'), -1)
 
@@ -158,7 +158,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         self.field = Tuple(__name__=u'foo', value_type=TextLine())
         request = TestRequest()
         widget = TupleSequenceWidget(self.field, request)
-        widget.setData((u'existing',))
+        widget.setRenderedValue((u'existing',))
         s = widget()
         check_list = (
             'input', '"field.foo.0."', 'existing',

@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.11 2003/05/22 22:50:09 jim Exp $
+$Id: test_permissionwidget.py,v 1.12 2003/08/13 21:28:11 garrett Exp $
 """
 
 __metaclass__ = type
@@ -29,6 +29,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.services.servicenames import Permissions
 from zope.app.interfaces.security import IPermissionService
+from zope.app.interfaces.form import WidgetInputError
 
 class TestPermissionWidget(PlacelessSetup, TestCase):
 
@@ -49,7 +50,7 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
 
         widget = SinglePermissionWidget(permissionField, request)
 
-        self.assertEqual(widget.getData(), None)
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         out = (
         '<input type="text" name="field.TestName.search" value="">'
@@ -106,17 +107,17 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
         '</select>'
         )
 
-        widget.setData(read_permission.getId())
+        widget.setRenderedValue(read_permission.getId())
         self.assertEqual(widget(), out)
 
-        self.assertEqual(widget.getData(), None)
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         widget = SinglePermissionWidget(permissionField, request)
 
         request.form["field.TestName"] = (
         'read'
         )
-        self.assertEqual(widget.getData(), read_permission.getId())
+        self.assertEqual(widget.getInputValue(), read_permission.getId())
 
         self.assertEqual(widget(), out)
 
@@ -186,22 +187,22 @@ class TestPermissionWidget(PlacelessSetup, TestCase):
         '</select>'
         )
 
-        widget.setData(CheckerPublic)
+        widget.setRenderedValue(CheckerPublic)
         self.assertEqual(widget(), out)
 
-        self.assertEqual(widget.getData(), None)
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         widget = SinglePermissionWidget(permissionField, request)
 
         request.form["field.TestName"] = 'zope.Public'
 
-        self.assertEqual(widget.getData(), CheckerPublic)
+        self.assertEqual(widget.getInputValue(), CheckerPublic)
 
         self.assertEqual(widget(), out)
 
         request.form["field.TestName"] = ''
 
-        self.assertEqual(widget.getData(), None)
+        self.assertEqual(widget.getInputValue(), None)
 
 
 def test_suite():

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_listwidget.py,v 1.7 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_listwidget.py,v 1.8 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -58,7 +58,7 @@ class ListWidgetTest(BrowserWidgetTest):
         check_list = ('select', 'id="field.foo"', 'name="field.foo"',
                       'size="5"', 'option', 'value="foo"', '>foo<',
                       'value="foo"', '>bar<', 'selected="selected"')
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         self.verifyResult(self._widget(), check_list)
 
         check_list = ('type="hidden"', 'id="field.foo"', 'name="field.foo"',

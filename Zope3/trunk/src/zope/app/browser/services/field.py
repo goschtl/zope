@@ -13,7 +13,7 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.12 2003/08/07 17:41:03 srichter Exp $
+$Id: field.py,v 1.13 2003/08/13 21:28:14 garrett Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -25,13 +25,6 @@ __metaclass__ = type
 
 
 class ComponentPathWidget(BrowserWidget):
-
-    def haveData(self):
-        value = self.request.form.get(self.name, None)
-        if not value:
-            return False
-        else:
-            return super(ComponentPathWidget, self).haveData()
 
     def _convert(self, value):
         return value or None

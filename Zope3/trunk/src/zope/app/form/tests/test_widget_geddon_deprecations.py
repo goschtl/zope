@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_widget_geddon_deprecations.py,v 1.1 2003/06/05 20:13:09 jim Exp $
+$Id: test_widget_geddon_deprecations.py,v 1.2 2003/08/13 21:28:38 garrett Exp $
 """
 
 from zope.testing.doctestunit import DocTestSuite
@@ -27,20 +27,25 @@ from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 import warnings
 
-class TestView:
-
-    bar = CustomWidget(Widget, uncle='bob')
-    
-    def __init__(self, context, request):
-        self.context, self.request = context, request
-
-class TestWidget:
+class TestWidget(Widget):
     
     def __init__(self, context, request):
         self.context, self.request = context, request
 
     def __call__(self):
         return '42'
+
+    def hasInput(self):
+        return True
+
+
+class TestView:
+
+    bar = CustomWidget(TestWidget, uncle='bob')
+    
+    def __init__(self, context, request):
+        self.context, self.request = context, request
+
 
 theField = Text(__name__="foo")
 
@@ -56,7 +61,7 @@ def test_widget_in_wrong_name():
     
     >>> request = TestRequest()
     >>> view = TestView(None, request)
-    >>> view.foo = Widget(theField, request)
+    >>> view.foo = TestWidget(theField, request)
     >>> int(hasattr(view, 'foo_widget'))
     0
 

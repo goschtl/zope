@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition registration adding view
  
-$Id: definition.py,v 1.5 2003/07/31 15:01:27 srichter Exp $
+$Id: definition.py,v 1.6 2003/08/13 21:28:28 garrett Exp $
 """
 __metaclass__ = type
 
@@ -102,8 +102,10 @@ class RelevantDataSchemaEdit(EditView):
             schema = self.context.relevantDataSchema
             perms = trustedRemoveSecurityProxy(self.context.schemaPermissions)
             for name, field in getFields(schema).items():
-                getPerm = getattr(self, name+'_get_perm_widget').getData()
-                setPerm = getattr(self, name+'_set_perm_widget').getData()
+                getPerm = getattr(
+                    self, name+'_get_perm_widget').getInputValue()
+                setPerm = getattr(
+                    self, name+'_set_perm_widget').getInputValue()
                 perms[name] = (getPerm, setPerm)
             status = 'Fields permissions mapping updated.'
 

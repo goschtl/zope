@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.23 2003/05/13 17:08:33 alga Exp $
+$Id: test_interfacewidget.py,v 1.24 2003/08/13 21:27:47 garrett Exp $
 """
 
 __metaclass__ = type
@@ -29,7 +29,7 @@ from zope.app.browser.component.interfacewidget import MultiInterfaceWidget
 from zope.publisher.browser import TestRequest
 from zope.component.service import serviceManager, defineService
 from zope.app.services.servicenames import Interfaces
-from zope.app.interfaces.form import ConversionError
+from zope.app.interfaces.form import ConversionError, WidgetInputError
 
 class I(Interface):
     """bah blah
@@ -54,9 +54,12 @@ class BaseInterfaceWidgetTest(CleanUp, TestCase):
         service = InterfaceService()
         defineService(Interfaces, IInterfaceService)
         serviceManager.provideService(Interfaces, service)
-        service.provideInterface(I.__module__+'.'+I.__name__, I)
-        service.provideInterface(I2.__module__+'.'+I2.__name__, I2)
-        service.provideInterface(I3.__module__+'.'+I3.__name__, I3)
+        service.provideInterface(
+            'zope.app.browser.component.tests.test_interfacewidget.I', I)
+        service.provideInterface(
+            'zope.app.browser.component.tests.test_interfacewidget.I2', I2)
+        service.provideInterface(
+            'zope.app.browser.component.tests.test_interfacewidget.I3', I3)
 
         request = TestRequest()
 
@@ -73,8 +76,8 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
         widget = InterfaceWidget(field, request)
 
-        self.assertEqual(widget.getData(), None)
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         out = (
         '<input type="text" name="field.TestName.search" value="">'
@@ -130,16 +133,16 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '</select>'
         )
 
-        self.assertEqual(widget.getData(), None)
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         widget = InterfaceWidget(field, request)
 
         request.form["field.TestName"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         )
-        self.assertEqual(widget.getData(), I2)
-        self.failUnless(widget.haveData())
+        self.assertEqual(widget.getInputValue(), I2)
+        self.failUnless(widget.hasInput())
 
         out = (
         '<input type="text" name="field.TestName.search" value="">'
@@ -195,8 +198,8 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
         widget = InterfaceWidget(field, request)
 
-        self.assertEqual(widget.getData(), None)
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         out = (
         '<input type="text" name="field.TestName.search" value="">'
@@ -228,8 +231,8 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
 
         widget = InterfaceWidget(field, request)
 
-        self.assertEqual(widget.getData(), None)
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         out = (
         '<input type="text" name="field.TestName.search" value="">'
@@ -268,8 +271,8 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         request.form["field.TestName"] = (
         'None'
         )
-        self.assertEqual(widget.getData(), None)
-        self.failUnless(widget.haveData())
+        self.assertEqual(widget.getInputValue(), None)
+        self.failUnless(widget.hasInput())
 
         out = (
         '<input type="text" name="field.TestName.search" value="">'
@@ -337,7 +340,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         widget = InterfaceWidget(field, request)
 
         request.form["field.TestName"] = ('bad interface name')
-        self.assertRaises(ConversionError, widget.getData)
+        self.assertRaises(ConversionError, widget.getInputValue)
 
     def testHidden(self):
         request = self.request
@@ -355,7 +358,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         request.form["field.TestName"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         )
-        self.assertEqual(widget.getData(), I2)
+        self.assertEqual(widget.getInputValue(), I2)
         out = (
         '<input type="hidden" name="field.TestName"'
         ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
@@ -378,7 +381,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         request.form["field.TestName"] = (
         'None'
         )
-        self.assertEqual(widget.getData(), None)
+        self.assertEqual(widget.getInputValue(), None)
         out = (
         '<input type="hidden" name="field.TestName" value="None" />'
         )
@@ -396,8 +399,8 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
                                 required=False)
         widget = MultiInterfaceWidget(field, request)
 
-        self.assertEqual(widget.getData(), ())
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         out = (
         'Use refresh to enter more interfaces'
@@ -452,15 +455,15 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '</select>'
         )
         self.assertEqual(widget(), out)
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
 
         widget = MultiInterfaceWidget(field, request)
 
         request.form["field.TestName.i1"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         )
-        self.assertEqual(widget.getData(), (I2,))
-        self.failUnless(widget.haveData())
+        self.assertEqual(widget.getInputValue(), (I2,))
+        self.failUnless(widget.hasInput())
         out = (
         'Use refresh to enter more interfaces'
         '<br />'
@@ -512,7 +515,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '</select>'
         )
         self.assertEqual(widget(), out)
-        self.failUnless(widget.haveData())
+        self.failUnless(widget.hasInput())
 
         # There is no selected option because the option that would be
         # selected has been filtered out by the search.
@@ -559,7 +562,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         '</select>'
         )
         self.assertEqual(widget(), out)
-        self.failUnless(widget.haveData())
+        self.failUnless(widget.hasInput())
         label = '<label for="field.TestName">This is a test</label>'
         self.assertEqual(widget.label(), label)
         self.assertEqual(widget.row(),
@@ -574,8 +577,8 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
                                 basetype=None)
         widget = MultiInterfaceWidget(field, request)
 
-        self.assertEqual(widget.getData(), ())
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         out = (
         'Use refresh to enter more interfaces'
@@ -642,8 +645,8 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         self.assertEqual(widget(), out)
 
         request.form["field.TestName.i1"] = 'None'
-        self.assertEqual(widget.getData(), (None,))
-        self.failUnless(widget.haveData())
+        self.assertEqual(widget.getInputValue(), (None,))
+        self.failUnless(widget.hasInput())
 
         out = (
         'Use refresh to enter more interfaces'
@@ -771,7 +774,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         widget = MultiInterfaceWidget(field, request)
 
         request.form["field.TestName.i0"] = ('bad interface name')
-        self.assertRaises(ConversionError, widget.getData)
+        self.assertRaises(ConversionError, widget.getInputValue)
 
     def testHidden(self):
         request = self.request
@@ -786,7 +789,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         request.form["field.TestName.i0"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         )
-        self.assertEqual(widget.getData(), (I2,))
+        self.assertEqual(widget.getInputValue(), (I2,))
         out = (
         '<input type="hidden" name="field.TestName.i0"'
         ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
@@ -796,7 +799,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         request.form["field.TestName.i1"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I3'
         )
-        self.assertEqual(widget.getData(), (I2, I3))
+        self.assertEqual(widget.getInputValue(), (I2, I3))
         out = (
         '<input type="hidden" name="field.TestName.i0"'
         ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
@@ -818,7 +821,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         request.form["field.TestName.i0"] = (
         'None'
         )
-        self.assertEqual(widget.getData(), (None,))
+        self.assertEqual(widget.getInputValue(), (None,))
         out = (
         '<input type="hidden" name="field.TestName.i0" value="None" />'
         )
@@ -831,15 +834,15 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
                                 required=False)
         widget = MultiInterfaceWidget(field, request)
 
-        self.assertEqual(widget.getData(), ())
-        self.failIf(widget.haveData())
+        self.failIf(widget.hasInput())
+        self.assertRaises(WidgetInputError, widget.getInputValue)
 
         request.form["field.TestName.i1"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         )
         request.form["field.TestName.i0"] = ''
-        self.assertEqual(widget.getData(), (I2,))
-        self.failUnless(widget.haveData())
+        self.assertEqual(widget.getInputValue(), (I2,))
+        self.failUnless(widget.hasInput())
 
 class TestRenderInterfaceSelect(TestCase):
 

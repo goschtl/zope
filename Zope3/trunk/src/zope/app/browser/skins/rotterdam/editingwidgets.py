@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editingwidgets.py,v 1.2 2003/04/30 23:37:58 faassen Exp $
+$Id: editingwidgets.py,v 1.3 2003/08/13 21:28:25 garrett Exp $
 """
 
 __metaclass__ = type
@@ -20,11 +20,10 @@ __metaclass__ = type
 from types import ListType, TupleType
 ListTypes = (ListType, TupleType)
 
-from zope.app.browser.form.widget import PossiblyEmptyMeansMissing,\
-     BrowserWidget, renderElement
+from zope.app.browser.form.widget import BrowserWidget, renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-class SimpleEditingWidget(PossiblyEmptyMeansMissing, BrowserWidget):
+class SimpleEditingWidget(BrowserWidget):
     """Improved textarea editing, with async saving using JavaScript."""
     propertyNames = BrowserWidget.propertyNames + ['width', 'height', 'extra']
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.37 2003/08/11 16:56:16 sidnei Exp $
+$Id: interfacewidget.py,v 1.38 2003/08/13 21:27:44 garrett Exp $
 """
 import sys
 from zope.interface import Interface, implements
@@ -30,49 +30,23 @@ from zope.app.browser.form.widget import BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.traversing import getPath
 from zope.app.introspector import nameToInterface, interfaceToName
+from zope.app.interfaces.form import WidgetInputError, MissingInputError
 
 class InterfaceWidget(BrowserWidget, BrowserView):
+
     implements(IBrowserWidget)
 
-    def haveData(self):
-        field = self.context
-        if self.name in self.request.form:
-            v = self.request.form[self.name]
-            return v and (v == 'None' or \
-                          nameToInterface(field.context, v))
-        return False
 
-    def getData(self, optional=0):
-        field = self.context
-        value = self.request.form.get(self.name, self) # self used as marker
-        if value is self or value == '':
-            # No user input
-            if field.required and not optional:
-                self.error = MissingInputError(field.__name__, field.title,
-                                               [_(u'the field is required')])
-                raise self.error
-            return field.default
-        if value == 'None':
-            value = None
+    def _convert(self, value):
+        if value and value != 'None':
+            try:
+                field = self.context
+                return nameToInterface(field.context, value)
+            except ComponentLookupError, e:
+                raise ConversionError('unknown interface', e)
         else:
-            try:
-                value = nameToInterface(field.context, value)
-            except ComponentLookupError:
-                # Convert to conversion error
-                exc = ConversionError(sys.exc_info()[1])
-                self.error = ConversionError, exc, sys.exc_info()[2]
-                # XXX: Error message should be better
-                raise self.error, 'Conversion Error'
+            return None
 
-        if not optional:
-            try:
-                field.validate(value)
-            except ValidationError, v:
-                self.error =  WidgetInputError(self.context.__name__,
-                                               self.title, [str(v)])
-                raise self.error
-
-        return value
 
     def __call__(self):
         name = self.name
@@ -104,10 +78,14 @@ class InterfaceWidget(BrowserWidget, BrowserView):
             selected = field.default
         else:
             selected = marker
-        if self._data is None:
+        if self._data is self._data_marker:
             value = self.request.form.get(self.name, marker)
             if value is not marker:
-                selected = self.getData(1)
+                try:
+                    selected = self.getInputValue()
+                except WidgetInputError, e:
+                    self.error = e
+                    selected = value
         else:
             selected = self._data
 
@@ -120,23 +98,12 @@ class InterfaceWidget(BrowserWidget, BrowserView):
     def hidden(self):
         'See IBrowserWidget'
         field = self.context
-        if self._data is None:
-            data = self.getData(1)
-        else:
-            data = self._data
-        return ('<input type="hidden" name="%s" value="%s" />'
-                        % (self.name, interfaceToName(field.context, data))
-                        )
-
-    # --- deprecated methods of IBrowserWidget
-
-    def renderHidden(self, value):
-        'See IBrowserWidget'
-        raise NotImplementedError
-
-    def render(self, value):
-        'See IBrowserWidget'
-        raise NotImplementedError
+        try:
+            iface = self.getInputValue()
+        except WidgetInputError:
+            iface = None
+        return '<input type="hidden" name="%s" value="%s" />' % \
+            (self.name, interfaceToName(field.context, iface))
 
 
 # A MultiInterfaceWidget is for use with an InterfacesField,
@@ -150,7 +117,7 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
     #  name.i0, name.i1, ...  the value of the interfaces
     #  name.search.i0, ...    the search box for that interface
     #
-    def haveData(self):
+    def hasInput(self):
         name_i = self.name+'.i'
         field = self.context
         for k,v in self.request.form.iteritems():
@@ -159,7 +126,8 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
                     return True
         return False
 
-    def getData(self, optional=0):
+
+    def getInputValue(self):
         field = self.context
         name_i = self.name+'.i'
         items_sorted = self.request.form.items()
@@ -169,30 +137,18 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
                   for k,v in items_sorted
                   if k.startswith(name_i)
                   if v]
-        if not values:
-            # No user input
-            if field.required and not optional:
-                self.error = MissingInputError(field.__name__, field.title,
-                                               [_(u'the field is required')])
-                raise self.error
-            return field.default
-        try:
-            values = tuple([nameToInterface(field, value) for value in values])
-        except ComponentLookupError:
-            # Convert to conversion error
-            exc = ConversionError(sys.exc_info()[1])
-            self.error = ConversionError, exc, sys.exc_info()[2]
-            # XXX: Error message should be better
-            raise self.error, 'Conversion Error'
 
-        if not optional:
-            try:
-                field.validate(values)
-            except ValidationError, v:
-                self.error = WidgetInputError(self.context.__name__,
-                                              self.title, str(v))
-                raise self.error
-        return values
+        # form input is required, otherwise raise an error
+        if not values:
+            raise MissingInputError(self.name, self.title, None)    # XXX
+
+        # convert input to a tuple of interfaces
+        try:
+            values = [nameToInterface(field, value) for value in values]
+            return tuple(values)
+        except ComponentLookupError, e:
+            raise ConversionError('unknown interface', e)
+
 
     def __call__(self):
         'See IBrowserWidget'
@@ -209,8 +165,9 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
             base = None
 
         first_is_blank = False
-        if self._data is None:  # no data has been set with Widget.setData(),
-                                # so use the data in the form
+        if self._data is self._data_marker:  # no data has been set with 
+                                             # Widget.setRenderedValue(),
+                                             # so use the data in the form
 
             # If a search term is entered, that interface selection remains.
             # If an interface is selected, that interface selection remains.
@@ -255,7 +212,7 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
                 selections = [('', interfaceToName(field.context, interface))
                               for interface in field.default]
         else:
-            # data has been set with Widget.setData()
+            # data has been set with Widget.setRenderedValue()
             selections = [('', interfaceToName(field.context, interface))
                           for interface in self._data]
 
@@ -294,8 +251,11 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
     def hidden(self):
         'See IBrowserWidget'
         field = self.context
-        if self._data is None:
-            data = self.getData(1)
+        if self._data is self._data_marker:
+            try:
+                data = self.getInputValue()
+            except WidgetInputError:
+                data = self.request.form.get(self.name, '')
         else:
             data = self._data
         name = self.name
@@ -329,8 +289,11 @@ class MultiInterfaceWidget(BrowserWidget, BrowserView):
 class InterfaceDisplayWidget(InterfaceWidget):
     def __call__(self):
         field = self.context
-        if self._data is None:
-            data = self.getData(1)
+        if self._data is self._data_marker:
+            try:
+                data = self.getInputValue()
+            except WidgetInputError:
+                data = self.request.form.get(self.name, '')
         else:
             data = self._data
         return interfaceToName(field.context, data)
@@ -338,8 +301,8 @@ class InterfaceDisplayWidget(InterfaceWidget):
 class MultiInterfaceDisplayWidget(MultiInterfaceWidget):
     def __call__(self):
         field = self.context
-        if self._data is None:
-            data = self.getData(1)
+        if self._data is self._data_marker:
+            data = self._showData()
         else:
             data = self._data
         return ', '.join([interfaceToName(field.context, interface)

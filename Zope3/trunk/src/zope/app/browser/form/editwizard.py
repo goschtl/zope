@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.13 2003/08/12 12:47:55 Zen Exp $
+$Id: editwizard.py,v 1.14 2003/08/13 21:27:50 garrett Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -159,7 +159,7 @@ class EditWizardView(EditView):
         try:
             for k in self.fieldNames:
                 if k not in self.currentPane().names:
-                    debug = getattr(self, k).getData(1)
+                    getattr(self, k).getInputValue()
             self.show_submit = 1 
         except WidgetInputError,x:
             self.show_submit = 0
@@ -171,7 +171,7 @@ class EditWizardView(EditView):
     def apply_update(self, storage):
         ''' Save changes to our content object '''
         for k,v in storage.items():
-            getattr(self,k).setData(v)
+            getattr(self,k).setRenderedValue(v)
         content = self.adapted
         changed = applyWidgetsChanges(
                 self, content, self.schema,

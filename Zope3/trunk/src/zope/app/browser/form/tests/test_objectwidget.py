@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_objectwidget.py,v 1.3 2003/08/04 14:54:28 philikon Exp $
+$Id: test_objectwidget.py,v 1.4 2003/08/13 21:28:04 garrett Exp $
 """
 
 import unittest
@@ -57,7 +57,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
         self.request.form['field.foo'] = u'Foo Value'
         self._widget = self._WidgetFactory(self.field, self.request)
 
-    def test_haveData(self):
+    def test_hasInput(self):
         # doesn't work with subfields
         pass
 
@@ -89,7 +89,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
         self.request.form['field.foo.name'] = u'Foo Name'
         self.request.form['field.foo.email'] = u'foo@foo.test'
         widget = self._WidgetFactory(self.field, self.request)
-        widget.setData(self.content.foo)
+        widget.setRenderedValue(self.content.foo)
 
         self.assertEqual(widget.applyChanges(self.content), False)
         self.assertEqual(hasattr(self.content, 'foo'), True)
@@ -100,7 +100,7 @@ class ObjectWidgetTest(BrowserWidgetTest):
     def test_new(self):
         request = TestRequest()
         widget = ObjectWidget(self.field, request, TestContact)
-        self.assertEquals(int(widget.haveData()), 0)
+        self.assertEquals(int(widget.hasInput()), 0)
         check_list = (
             'input', 'name="field.foo.name"',
             'input', 'name="field.foo.email"'
@@ -113,8 +113,8 @@ class ObjectWidgetTest(BrowserWidgetTest):
             'field.foo.email': u'fred@fred.com'
             })
         widget = ObjectWidget(self.field, request, TestContact)
-        self.assertEquals(int(widget.haveData()), 1)
-        o = widget.getData()
+        self.assertEquals(int(widget.hasInput()), 1)
+        o = widget.getInputValue()
         self.assertEquals(hasattr(o, 'name'), 1)
         self.assertEquals(o.name, u'fred')
         self.assertEquals(o.email, u'fred@fred.com')

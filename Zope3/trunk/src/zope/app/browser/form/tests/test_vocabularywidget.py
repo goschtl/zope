@@ -240,25 +240,25 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
     def test_display(self):
         bound = self.makeField()
         w = getView(bound, "display", self.makeRequest())
-        w.setData(bound.context.f)
+        w.setRenderedValue(bound.context.f)
         self.assertEqual(w(), "splat")
 
     def test_display_with_form_value(self):
         bound = self.makeField()
         request = self.makeRequest('field.f=foobar')
         w = getView(bound, "display", request)
-        self.assert_(w.haveData())
+        self.assert_(w.hasInput())
         self.assertEqual(w(), "foobar")
 
     def setup_edit(self, bound):
         w = getView(bound, "edit", self.makeRequest())
-        w.setData(bound.context.f)
-        self.assert_(not w.haveData())
+        w.setRenderedValue(bound.context.f)
+        self.assert_(not w.hasInput())
         return w
 
     def test_edit(self, extraChecks=[]):
         w = self.setup_edit(self.makeField())
-        self.assertEqual(w.getData(), None)
+        self.assertEqual(w.getInputValue(), None)
         self.verifyResult(w(), [
             'selected="selected"',
             'id="field.f"',
@@ -311,20 +311,20 @@ class SingleSelectionTestsBase(SingleSelectionViews, SelectionTestBase):
         bound = self.makeField()
         request = self.makeRequest('field.f=foobar')
         w = getView(bound, "edit", request)
-        self.assert_(w.haveData())
-        self.assertEqual(w.getData(), "foobar")
+        self.assert_(w.hasInput())
+        self.assertEqual(w.getInputValue(), "foobar")
         self.assert_(isinstance(w, vocabularywidget.VocabularyEditWidget))
 
     def test_edit_with_modified_empty_value(self):
         # This tests that emptying a value via the form when there's a
         # non-empty value for the field on the content object will
-        # report haveData() properly.
+        # report hasInput() properly.
         bound = self.makeField()
         bound.context.f = "splat"
         w = getView(bound, "edit", self.makeRequest(
             'field.f-empty-marker='))
-        self.assert_(w.haveData())
-        self.assertEqual(w.getData(), None) # XXX might be []...
+        self.assert_(w.hasInput())
+        self.assertEqual(w.getInputValue(), None) # XXX might be []...
 
 class SingleSelectionTests(SingleSelectionTestsBase):
     """Test single-selection with the selection-box widget."""
@@ -357,7 +357,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         bound = self.makeField()
         del bound.context.f
         w = getView(bound, "display", self.makeRequest())
-        self.assert_(not w.haveData())
+        self.assert_(not w.hasInput())
         self.verifyResult(w(), [
             '<span',
             'id="field.f"',
@@ -368,8 +368,8 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
     def test_display_with_value(self):
         bound = self.makeField(value=["foobar", "frob"])
         w = getView(bound, "display", self.makeRequest())
-        w.setData(bound.context.f)
-        self.assert_(not w.haveData())
+        w.setRenderedValue(bound.context.f)
+        self.assert_(not w.hasInput())
         self.verifyResult(w(), [
             '<ol',
             'id="field.f"',
@@ -390,7 +390,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         bound = self.makeField(value=["foobar", "frob"])
         request = self.makeRequest('field.f:list=splat')
         w = getView(bound, "display", request)
-        self.assert_(w.haveData())
+        self.assert_(w.hasInput())
         s = w()
         self.verifyResult(s, [
             '<ol',
@@ -407,7 +407,7 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
     def test_edit(self):
         bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest())
-        self.assert_(not w.haveData())
+        self.assert_(not w.hasInput())
         self.verifyResult(w(), [
             'id="field.f"',
             'name="field.f:list"',
@@ -439,8 +439,8 @@ class MultiSelectionTests(MultiSelectionViews, SelectionTestBase):
         bound = self.makeField()
         request = self.makeRequest('field.f:list=foobar&field.f:list=splat')
         w = getView(bound, "edit", request)
-        self.assert_(w.haveData())
-        L = w.getData()
+        self.assert_(w.hasInput())
+        L = w.getInputValue()
         L.sort()
         self.assertEqual(L, ["foobar", "splat"])
 
@@ -468,7 +468,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
     def test_query_input_section(self):
         bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest())
-        w.setData(bound.context.f)
+        w.setRenderedValue(bound.context.f)
         checks = [
             "this-is-query-input",
             ]
@@ -478,7 +478,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
     def test_query_output_section_without_results(self):
         bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest())
-        w.setData(bound.context.f)
+        w.setRenderedValue(bound.context.f)
         checks = [
             "query-results-go-here",
             ]
@@ -488,7 +488,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
     def test_query_output_section_with_results(self):
         bound = self.makeField()
         w = getView(bound, "edit", self.makeRequest("field.f-query=foo"))
-        w.setData(bound.context.f)
+        w.setRenderedValue(bound.context.f)
         checks = [
             "query-results-go-here",
             ]

@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.22 2003/07/13 06:47:21 richard Exp $
+$Id: utility.py,v 1.23 2003/08/13 21:28:34 garrett Exp $
 """
 __metaclass__ = type
 
@@ -161,18 +161,8 @@ def setUpWidget(view, name, field, value=None, prefix=None,
     if prefix:
         widget.setPrefix(prefix)
 
-    # XXX
-    # Only set data if the widget doesn't have any itself already from the
-    # request. This is a problem for something like a checkbox, where it
-    # always claims to have data, becuase when there is no name in the request
-    # for it, its value is False.
-    # This is only a problem when force is False.
-    #
-    # It took me a while to work out what 'force' means in all these methods.
-    # Perhaps it should be renamed 'preserveExistingData', and have the
-    # opposite meaning.
-    if value is not None and (force or not widget.haveData()):
-        widget.setData(value)
+    if force or not widget.hasInput():
+        widget.setRenderedValue(value)
 
 
 def setUpWidgets(view, schema, prefix=None, force=False,
@@ -241,39 +231,35 @@ def _setUpWidgets(view, schema, content, prefix, force,
         setUpWidget(view, name, field, value,
                     prefix=prefix, force=force, vname=vname, context=context)
 
-def haveWidgetsData(view, schema, names=None):
-    """Check if we have any user-entered data defined by a schema
+def viewHasInput(view, schema, names=None):
+    """Check if we have any user-entered data defined by a schema.
 
-    Returns true if any schema field related widget has data
-    that was entered by the user.
+    Returns True if any schema field related widget has input provided by 
+    the user.
     """
     for name, field in _fieldlist(names, schema):
-        if  getattr(view, name+'_widget').haveData():
+        if  getattr(view, name+'_widget').hasInput():
             return True
-
     return False
 
 def applyWidgetsChanges(view, content, schema, strict=True,
         names=None, set_missing=True, do_not_raise=False,
         exclude_readonly=False):
-    """Apply changes in widgets to the object."""
+    """Apply changes in widgets to the object.
+    
+    XXX this needs to be thoroughly documented.
+    """
     errors = []
-
     changed = False
     for name, field in _fieldlist(names, schema):
         widget = getattr(view, name+'_widget')
         if exclude_readonly and field.readonly:
             continue
-        if widget.haveData():
+        if widget.hasInput():
             try:
                 changed = widget.applyChanges(content) or changed
             except InputErrors, v:
                 errors.append(v)
-        elif strict and field.required:
-            err = MissingInputError(name, widget.title, 'the field is required')
-            errors.append(err)
-        elif set_missing:
-            field.set(content, field.missing_value)
 
     if errors and not do_not_raise:
         raise WidgetsError(*errors)
@@ -321,9 +307,9 @@ def getWidgetsData(view, schema, strict=True, names=None, set_missing=True,
         widget = getattr(view, name+'_widget')
         if exclude_readonly and widget.context.readonly:
             continue
-        if widget.haveData():
+        if widget.hasInput():
             try:
-                result[name] = widget.getData()
+                result[name] = widget.getInputValue()
             except InputErrors, v:
                 errors.append(v)
         elif strict and field.required:

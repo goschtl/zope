@@ -74,16 +74,16 @@ class BaseWidget(object):
     # Form management methods.
     # Subclasses should not to override these.
 
-    def getData(self):
+    def getInputValue(self):
         if not self.__initialized:
             self.__initialize()
         return self.__computed_value
 
-    def haveData(self):
+    def hasInput(self):
         marker_name = self.name + "-marker"
         return marker_name in self.request.form
 
-    def setData(self, value):
+    def setRenderedValue(self, value):
         assert (self.__initial_value is NullValue
                 or (not self.__initialized)
                 or self.__initial_value == value)
@@ -98,7 +98,7 @@ class BaseWidget(object):
     def __initialize(self):
         self.__initialized = True
         self.initialize()
-        if self.haveData():
+        if self.hasInput():
             self.__computed_value = self.loadValueFromRequest()
         elif self.__initial_value is NullValue:
             self.__computed_value = self.context.default
@@ -107,7 +107,7 @@ class BaseWidget(object):
 
     def applyChanges(self, content):
         field = self.context
-        value = self.getData()
+        value = self.getInputValue()
         change = field.query(content, self) != value
         if change:
             field.set(content, value)

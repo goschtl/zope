@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_checkboxwidget.py,v 1.8 2003/06/05 14:23:05 fdrake Exp $
+$Id: test_checkboxwidget.py,v 1.9 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -36,12 +36,12 @@ class CheckBoxWidgetTest(BrowserWidgetTest):
 
     def testRender(self):
         value = 1
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         check_list = ('type="checkbox"', 'id="field.foo"',
                       'name="field.foo"', 'checked="checked"')
         self.verifyResult(self._widget(), check_list)
         value = 0
-        self._widget.setData(value)
+        self._widget.setRenderedValue(value)
         check_list = check_list[:-1]
         self.verifyResult(self._widget(), check_list)
         check_list = ('type="hidden"',) + check_list[1:-1]
@@ -50,13 +50,13 @@ class CheckBoxWidgetTest(BrowserWidgetTest):
         self._widget.extra = 'style="color: red"'
         self.verifyResult(self._widget.hidden(), check_list)
 
-    def test_getData(self):
+    def test_getInputValue(self):
         self._widget.request.form['field.foo'] = 'on'
-        self.assertEqual(self._widget.getData(), True)
+        self.assertEqual(self._widget.getInputValue(), True)
         self._widget.request.form['field.foo'] = 'positive'
-        self.assertEqual(self._widget.getData(), False)
+        self.assertEqual(self._widget.getInputValue(), False)
         del self._widget.request.form['field.foo']
-        self.assertEqual(self._widget.getData(), False)
+        self.assertEqual(self._widget.getInputValue(), False)
 
 
 def test_suite():

@@ -13,7 +13,7 @@
 ##############################################################################
 """ContentWorkflow Manager views
  
-$Id: contentworkflow.py,v 1.5 2003/08/11 16:56:49 sidnei Exp $
+$Id: contentworkflow.py,v 1.6 2003/08/13 21:28:28 garrett Exp $
 """
 from zope.app.introspector import interfaceToName, nameToInterface
 from zope.app.component.interfacefield import InterfaceField
@@ -80,8 +80,8 @@ class ManageContentProcessRegistry(BrowserView):
     def update(self):
         status = ''
         if 'ADD' in self.request:
-            for name in self.name_widget.getData():
-                self.context.register(self.iface_widget.getData(), name)
+            for name in self.name_widget.getInputValue():
+                self.context.register(self.iface_widget.getInputValue(), name)
             status = _('Mapping(s) added.')
         elif 'REMOVE' in self.request:
             mappings = self.request.get('mappings', [])

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.12 2003/07/13 06:47:18 richard Exp $
+"""$Id: test_editview.py,v 1.13 2003/08/13 21:28:04 garrett Exp $
 """
 import unittest
 
@@ -136,7 +136,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(c.foo, u'r foo')
         self.assertEqual(c.bar, u'r bar')
         self.assertEqual(c.a  , u'c a')
-        self.assertEqual(c.b  , None)
+        self.assertEqual(c.b  , u'c b') # missing from form - unchanged
         self.assertEqual(c.getbaz(), u'r baz')
 
         # Verify that calling update multiple times has no effect
