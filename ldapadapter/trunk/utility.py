@@ -50,7 +50,7 @@ class LDAPAdapter(object):
         # TODO: conn.set_option(OPT_REFERRALS, 1)
 
         # Bind the connection to the dn
-        conn.simple_bind_s(db, password)
+        conn.simple_bind_s(dn, password)
         # May raise INVALID_CREDENTIALS, SERVER_DOWN, ...
 
         return LDAPConnection(conn)
