@@ -41,6 +41,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from ZTUtils import Batch
 from App.class_init import default__class_init__ as InitializeClass
 from Products.PluginRegistry.PluginRegistry import PluginRegistry
+from Products.StandardCacheManagers.RAMCacheManager import RAMCacheManager
 import Products
 
 from interfaces.authservice import IUserFolder
@@ -67,6 +68,8 @@ from interfaces.plugins import IRoleAssignerPlugin
 from permissions import SearchPrincipals
 
 from PropertiedUser import PropertiedUser
+from PASCache import PASRAMCacheManager
+from PASCache import PASCacheable
 from utils import _wwwdir
 
 
@@ -152,7 +155,7 @@ class EmergencyUserAuthenticator( Implicit ):
 InitializeClass( EmergencyUserAuthenticator )
 
 
-class PluggableAuthService( Folder ):
+class PluggableAuthService( Folder, PASCacheable ):
 
     """ All-singing, all-dancing user folder.
     """
@@ -196,9 +199,7 @@ class PluggableAuthService( Folder ):
         if not user_id:
             return None
 
-        return self._findUser( plugins, user_id, name
-                           # , cache=self._getUserCache()
-                             )
+        return self._findUser( plugins, user_id, name )
 
     security.declareProtected( ManageUsers, 'getUserById' )
     def getUserById( self, id, default=None ):
@@ -231,9 +232,7 @@ class PluggableAuthService( Folder ):
         if not user_id:
             return default
 
-        return self._findUser( plugins, user_id
-                           # , cache=self._getUserCache()
-                             )
+        return self._findUser( plugins, user_id )
 
     security.declarePublic( 'validate' )     # XXX: public?
     def validate( self, request, auth='', roles=_noroles ):
@@ -567,6 +566,7 @@ class PluggableAuthService( Folder ):
                         ,
                         )
                       + Folder.manage_options[2:]
+                      + PASCacheable.manage_options
                       )
 
     security.declareProtected(ManageUsers, 'resultsBatch')
@@ -844,10 +844,15 @@ class PluggableAuthService( Folder ):
         if user_id == self._emergency_user.getUserName():
             return self._emergency_user
 
-        if cache is None:
-            cache = {}
-
-        user = cache.get( user_id )
+        # See if the user can be retrieved from the cache
+        view_name = '_findUser-%s' % user_id
+        keywords = { 'user_id' : user_id
+                   , 'name' : name
+                   }
+        user = self.ZCacheable_get( view_name=view_name
+                                  , keywords=keywords
+                                  , default=None
+                                  )
 
         if user is None:
 
@@ -876,7 +881,12 @@ class PluggableAuthService( Folder ):
                     user._addRoles( roles )
 
             user._addRoles( ['Authenticated'] )
-            cache[ user_id ] = user
+
+            # Cache the user if caching is enabled
+            self.ZCacheable_set( aq_base(user)
+                               , view_name=view_name
+                               , keywords=keywords
+                               )
 
         return user.__of__( self )
 
@@ -1067,7 +1077,7 @@ class PluggableAuthService( Folder ):
     def all_meta_types(self):
         """ What objects can be put in here?
         """
-        allowed_types = tuple(MultiPlugins)
+        allowed_types = tuple(MultiPlugins) + (PASRAMCacheManager.meta_type,)
 
         return [x for x in Products.meta_types if x['name'] in allowed_types]
 

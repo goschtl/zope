@@ -17,6 +17,7 @@
 $Id$
 """
 import sha
+import copy
 
 from AccessControl import ClassSecurityInfo, AuthEncoding
 from AccessControl.SecurityManagement import getSecurityManager
@@ -25,6 +26,8 @@ from BTrees.OOBTree import OOBTree
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from Products.PluggableAuthService.PASCache import PASCacheable
+from Products.PluggableAuthService.utils import createViewName
 from Products.PluggableAuthService.interfaces.plugins \
     import IAuthenticationPlugin
 from Products.PluggableAuthService.interfaces.plugins \
@@ -34,6 +37,7 @@ from Products.PluggableAuthService.interfaces.plugins \
 
 from Products.PluggableAuthService.permissions import ManageUsers
 from Products.PluggableAuthService.permissions import SetOwnPassword
+
 
 manage_addZODBUserManagerForm = PageTemplateFile(
     'www/zuAdd', globals(), __name__='manage_addZODBUserManagerForm' )
@@ -51,7 +55,7 @@ def addZODBUserManager( dispatcher, id, title=None, REQUEST=None ):
                                 'ZODBUserManager+added.'
                             % dispatcher.absolute_url())
 
-class ZODBUserManager( BasePlugin ):
+class ZODBUserManager( BasePlugin, PASCacheable ):
 
     """ PAS plugin for managing users in the ZODB.
     """
@@ -122,12 +126,30 @@ class ZODBUserManager( BasePlugin ):
         user_info = []
         user_ids = []
         plugin_id = self.getId()
+        view_name = createViewName('enumerateUsers', id or login)
+
 
         if isinstance( id, str ):
             id = [ id ]
 
         if isinstance( login, str ):
             login = [ login ]
+
+        # Look in the cache first...
+        keywords = copy.deepcopy(kw)
+        keywords.update( { 'id' : id
+                         , 'login' : login
+                         , 'exact_match' : exact_match
+                         , 'sort_by' : sort_by
+                         , 'max_results' : max_results
+                         }
+                       )
+        cached_info = self.ZCacheable_get( view_name=view_name
+                                         , keywords=keywords
+                                         , default=None
+                                         )
+        if cached_info is not None:
+            return tuple(cached_info)
 
         if exact_match and ( id or login ):
 
@@ -158,6 +180,9 @@ class ZODBUserManager( BasePlugin ):
 
                 if not user_filter or user_filter( info ):
                     user_info.append( info )
+
+        # Put the computed value into the cache
+        self.ZCacheable_set(user_info, view_name=view_name, keywords=keywords)
 
         return tuple( user_info )
 
@@ -247,6 +272,10 @@ class ZODBUserManager( BasePlugin ):
         del self._login_to_userid[ login_name ]
         del self._userid_to_login[ user_id ]
 
+        # Also, remove from the cache
+        view_name = createViewName('enumerateUsers', user_id)
+        self.ZCacheable_invalidate(view_name=view_name)
+
     security.declarePrivate( 'updateUserPassword' )
     def updateUserPassword( self, user_id, login_name, password ):
 
@@ -272,6 +301,7 @@ class ZODBUserManager( BasePlugin ):
                          ,
                        )
                      + BasePlugin.manage_options
+                     + PASCacheable.manage_options
                      )
 
     security.declarePublic( 'manage_widgets' )
