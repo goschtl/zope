@@ -19,6 +19,7 @@ import __builtin__
 import unittest
 
 from zope.importtool import hook
+from zope.importtool import reporter
 
 
 real__import__ = __import__
@@ -32,6 +33,18 @@ class TestException(Exception):
     """Exception raised in the tests."""
 
 
+class ReporterRaiseOnFound(reporter.Reporter):
+
+    def found(self, *args):
+        raise TestException("found")
+
+
+class ReporterRaiseOnRequest(reporter.Reporter):
+
+    def request(self, *args):
+        raise TestException("request")
+
+
 class HookTestCase(unittest.TestCase):
 
     def setUp(self):
@@ -40,8 +53,12 @@ class HookTestCase(unittest.TestCase):
     def tearDown(self):
         hook.reset()
 
-    def report(self, *args):
-        self.reports.append(args)
+    def request(self, importer, name, fromlist):
+        self.reports.append(name)
+
+    def found(self, importer, imported, fromlist):
+        name = self.reports.pop()
+        self.reports.append((importer, imported, name, fromlist))
 
     def raise_error(self, *args):
         self.reports.append(args)
@@ -49,36 +66,36 @@ class HookTestCase(unittest.TestCase):
 
     def test_normal_installation(self):
         self.failIf(hook.active())
-        hook.install_reporter(self.report)
+        hook.install_reporter(self)
         self.failIf(not hook.active())
         hook.uninstall_reporter()
         self.failIf(hook.active())
         # now do it again, to make sure we really can re-install the hook
-        hook.install_reporter(self.report)
+        hook.install_reporter(self)
         self.failIf(not hook.active())
 
     def test_reinstall_fails_if_active(self):
-        hook.install_reporter(self.report)
-        self.assertRaises(RuntimeError, hook.install_reporter, self.report)
+        hook.install_reporter(self)
+        self.assertRaises(RuntimeError, hook.install_reporter, self)
 
     def test_uninstall_fails_if_never_active(self):
         self.assertRaises(RuntimeError, hook.uninstall_reporter)
 
     def test_uninstall_fails_if_no_longer_active(self):
-        hook.install_reporter(self.report)
+        hook.install_reporter(self)
         hook.uninstall_reporter()
         self.assertRaises(RuntimeError, hook.uninstall_reporter)
 
     def test_wrap_other_hook(self):
         __builtin__.__import__ = alternate_hook
-        hook.install_reporter(self.report)
+        hook.install_reporter(self)
         self.failUnless(hook.active())
         hook.uninstall_reporter()
         self.failIf(hook.active())
         self.failUnless(__builtin__.__import__ is alternate_hook)
 
     def test_report_record(self):
-        hook.install_reporter(self.report)
+        hook.install_reporter(self)
         import sys
         import sys
         from sample import THE_ANSWER
@@ -90,12 +107,21 @@ class HookTestCase(unittest.TestCase):
               ("THE_ANSWER",)),
              ])
 
-    def test_exception_from_reporter(self):
-        hook.install_reporter(self.raise_error)
+    def test_exception_on_request(self):
+        hook.install_reporter(ReporterRaiseOnRequest())
         try:
             import sys
-        except TestException:
-            self.assertEqual(len(self.reports), 1)
+        except TestException, e:
+            self.assertEqual(e[0], "request")
+        else:
+            self.fail("expected TestException")
+
+    def test_exception_on_found(self):
+        hook.install_reporter(ReporterRaiseOnFound())
+        try:
+            import sys
+        except TestException, e:
+            self.assertEqual(e[0], "found")
         else:
             self.fail("expected TestException")
 

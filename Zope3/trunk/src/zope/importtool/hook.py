@@ -33,26 +33,26 @@ import __builtin__
 __all__ = "install_reporter", "uninstall_reporter"
 
 
-
 previous__import__ = None
 current__import__ = None
 
 
-def install_reporter(report):
+def install_reporter(reporter):
     global current__import__
     global previous__import__
     if previous__import__ is not None:
         raise RuntimeError("import reporting hook already installed")
 
     def importhook(name, globals, locals, fromlist):
-        v = previous__import__(name, globals, locals, fromlist)
         importer = globals.get("__name__")
+        reporter.request(importer, name, fromlist)
+        v = previous__import__(name, globals, locals, fromlist)
         if fromlist:
             imported = getattr(v, "__name__", None)
         else:
             mod = previous__import__(name, globals, locals, ("foo",))
             imported = getattr(mod, "__name__", None)
-        report(importer, imported, name, fromlist)
+        reporter.found(importer, imported, fromlist)
         return v
 
     previous__import__ = __builtin__.__import__
