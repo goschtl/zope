@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.2 2003/05/11 00:16:06 gvanrossum Exp $
+$Id: fssync.py,v 1.3 2003/05/11 00:23:23 gvanrossum Exp $
 """
 
 import os
@@ -207,6 +207,8 @@ class FSSync(object):
         entries[name] = d = {"path": ourpath, "flag": "added"}
         if isdir(path):
             d["type"] = "zope.app.content.folder.Folder"
+            self.ensuredir(join(path, "@@Zope"))
+            self.dumpentries({}, path)
         else:
             # XXX Need to guess better based on extension
             d["type"] = "zope.app.content.file.File"
