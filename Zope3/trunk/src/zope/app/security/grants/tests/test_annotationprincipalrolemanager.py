@@ -47,8 +47,13 @@ class Test(PlacefulSetup, unittest.TestCase):
             login = id or 'APrincipal')
         return p.getId()
 
+    def _make_roleManager(self, obj=None):
+        if obj is None:
+            obj = Manageable()
+        return AnnotationPrincipalRoleManager(obj)
+
     def testUnboundPrincipalRole(self):
-        principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
+        principalRoleManager = self._make_roleManager()
         role = rregistry.defineRole('ARole', 'A Role').getId()
         principal = self._make_principal()
         self.assertEqual(principalRoleManager.getPrincipalsForRole(role), [])
@@ -56,7 +61,7 @@ class Test(PlacefulSetup, unittest.TestCase):
                          [])
 
     def testPrincipalRoleAllow(self):
-        principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
+        principalRoleManager = self._make_roleManager()
         role = rregistry.defineRole('ARole', 'A Role').getId()
         principal = self._make_principal()
         principalRoleManager.assignRoleToPrincipal(role, principal)
@@ -66,7 +71,7 @@ class Test(PlacefulSetup, unittest.TestCase):
                          [(role, Allow)])
 
     def testPrincipalRoleDeny(self):
-        principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
+        principalRoleManager = self._make_roleManager()
         role = rregistry.defineRole('ARole', 'A Role').getId()
         principal = self._make_principal()
         principalRoleManager.removeRoleFromPrincipal(role, principal)
@@ -76,7 +81,7 @@ class Test(PlacefulSetup, unittest.TestCase):
                          [(role, Deny)])
 
     def testPrincipalRoleUnset(self):
-        principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
+        principalRoleManager = self._make_roleManager()
         role = rregistry.defineRole('ARole', 'A Role').getId()
         principal = self._make_principal()
         principalRoleManager.removeRoleFromPrincipal(role, principal)
@@ -87,7 +92,7 @@ class Test(PlacefulSetup, unittest.TestCase):
                          [])
 
     def testManyRolesOnePrincipal(self):
-        principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
+        principalRoleManager = self._make_roleManager()
         role1 = rregistry.defineRole('Role One', 'Role #1').getId()
         role2 = rregistry.defineRole('Role Two', 'Role #2').getId()
         prin1 = self._make_principal()
@@ -99,7 +104,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.failUnless((role2, Allow) in roles)
 
     def testManyPrincipalsOneRole(self):
-        principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
+        principalRoleManager = self._make_roleManager()
         role1 = rregistry.defineRole('Role One', 'Role #1').getId()
         prin1 = self._make_principal()
         prin2 = self._make_principal('Principal 2', 'Principal Two')
@@ -111,7 +116,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.failUnless((prin2, Allow) in principals)
 
     def testPrincipalsAndRoles(self):
-        principalRoleManager = AnnotationPrincipalRoleManager(Manageable())
+        principalRoleManager = self._make_roleManager()
         principalsAndRoles = principalRoleManager.getPrincipalsAndRoles()
         self.assertEqual(len(principalsAndRoles), 0)
         role1 = rregistry.defineRole('Role One', 'Role #1').getId()
@@ -126,7 +131,6 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.failUnless((role1, prin1, Allow) in principalsAndRoles)
         self.failUnless((role1, prin2, Allow) in principalsAndRoles)
         self.failUnless((role2, prin1, Allow) in principalsAndRoles)
-
 
 def test_suite():
     loader=unittest.TestLoader()
