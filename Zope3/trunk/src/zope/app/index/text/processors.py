@@ -13,7 +13,7 @@
 ##############################################################################
 """A query processor to the TextIndex that supports batching and ranking.
 
-$Id: processors.py,v 1.2 2002/12/25 14:12:55 jim Exp $
+$Id: processors.py,v 1.3 2002/12/30 18:43:07 stevea Exp $
 """
 
 from zope.component import getAdapter
@@ -35,8 +35,8 @@ class BatchedRankedProcessor:
     __implements__ = IBatchedRankedProcessor
     __used_for__ = IQuerying
 
-    input_interface = IBatchedTextIndexQuery
-    output_interface = (IRankedHubIdList, IBatchedResult)
+    inputInterfaces = (IBatchedTextIndexQuery,)
+    outputInterfaces = (IRankedHubIdList, IBatchedResult)
 
     def __init__(self, textindex):
         self.__textindex = textindex

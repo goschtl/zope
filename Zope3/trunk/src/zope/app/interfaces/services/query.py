@@ -11,21 +11,21 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""
 
-XXX longer description goes here.
-
-$Id: query.py,v 1.2 2002/12/25 14:13:02 jim Exp $
+$Id: query.py,v 1.3 2002/12/30 18:43:08 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
+from zope.app.security.permission import PermissionField
+from zope.app.interfaces.services.configuration \
+    import INamedConfigurationInfo, INamedConfiguration
+from zope.app.component.interfacefield import InterfacesField
 
 class IQueryProcessor(Interface):
 
-    input_interface = Attribute("The __implements__-like specification "
-                                "for the input interfaces.")
-    output_interface = Attribute("The __implements__-like specification "
-                                 "for the output interfaces.")
+    inputInterfaces = Attribute("Sequence of input interfaces")
+    outputInterfaces = Attribute("Sequence of output interfaces")
 
     def __call__(query):
         """Processes the query returning the result.
@@ -34,15 +34,6 @@ class IQueryProcessor(Interface):
            The output should be adaptable to each interface in the
            output_interface.
         """
-
-
-"""XXX short summary goes here.
-
-XXX longer description goes here.
-
-$Id: query.py,v 1.2 2002/12/25 14:13:02 jim Exp $
-"""
-from zope.interface import Interface
 
 class IQueryService(Interface):
 
@@ -54,5 +45,16 @@ class IQueryService(Interface):
     def processQuery(query_id, input):
         '''Processes the input, using the query registered with query_id.
 
-        The input is adapted to the input interface that is registered for
+        The input must be adaptable to the input interfaces registered for
         the query_id.'''
+
+class IQueryConfigurationInfo(INamedConfigurationInfo):
+
+    permission = PermissionField(title=u'Required permission')
+    inputInterfaces = InterfacesField(title=u'Input interfaces')
+    outputInterfaces = InterfacesField(title=u'Output interfaces')
+
+class IQueryConfiguration(IQueryConfigurationInfo, INamedConfiguration):
+
+    pass
+

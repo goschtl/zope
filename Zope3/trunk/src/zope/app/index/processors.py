@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.4 2002/12/30 14:03:06 stevea Exp $
+$Id: processors.py,v 1.5 2002/12/30 18:43:06 stevea Exp $
 """
 
 from __future__ import generators
@@ -26,8 +26,6 @@ from zope.app.interfaces.services.query import IQueryProcessor
 from zope.component import getAdapter, getService
 from zope.proxy.context import ContextMethod
 
-
-
 class ObjectRetrievingProcessor:
     """Converts a RankedHubIdList into an iteratable
        list of ranked objects by retrieving the objects
@@ -36,8 +34,8 @@ class ObjectRetrievingProcessor:
 
     __implements__ = IQueryProcessor
 
-    input_interface = IRankedHubIdList, IBatchedResult
-    output_interface = IRankedObjectIterator
+    inputInterfaces = (IRankedHubIdList, IBatchedResult)
+    outputInterfaces = (IRankedObjectIterator,)
 
     def __call__(wrapped_self, query):
         list = getAdapter(query, IRankedHubIdList)
@@ -46,8 +44,10 @@ class ObjectRetrievingProcessor:
         objectHub = getService(wrapped_self, "HubIds")
 
         # XXX do we need wrapping for the objects returned by the hub?
-        iterator = RankedObjectIterator(list, objectHub.getObject, batch.startPosition,
-                                        batch.batchSize, batch.totalSize)
+        iterator = RankedObjectIterator(
+                        list,objectHub.getObject, batch.startPosition,
+                        batch.batchSize, batch.totalSize
+                        )
 
         return iterator
     __call__ = ContextMethod(__call__)
@@ -57,7 +57,8 @@ class RankedObjectIterator:
 
     __implements__ = IRankedObjectIterator, IBatchedResult
 
-    def __init__(self, recordlist, objectfetcher, startposition, batchsize, totalsize):
+    def __init__(self, recordlist, objectfetcher, startposition,
+                 batchsize, totalsize):
         self._records = recordlist
         self.startPosition = startposition
         self.batchSize = batchsize
