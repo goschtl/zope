@@ -122,7 +122,13 @@ class FunctionalTestSetup(object):
             self._init = True
 
             # Make a local grant for the test user
+            # TODO, find a better way to make this grant happen.
+            # The way I did this is way too messy, given how
+            # strang FunctionalTestSetup is.  Later, when we
+            # have time, we should clean up this (perhaps with an
+            # event) and clean up FunctionalTestSetup.
             response = http(grant_request, handle_errors=False)
+            FunctionalTestSetup().connection = None
             
         elif config_file and config_file != self._config_file:
             # Running different tests with different configurations is not
@@ -133,9 +139,11 @@ class FunctionalTestSetup(object):
     def setUp(self):
         """Prepares for a functional test case."""
         # Tear down the old demo storage (if any) and create a fresh one
+        abort()
         self.db.close()
         storage = DemoStorage("Demo Storage", self.base_storage)
         self.db = self.app.db = DB(storage)
+        self.connection = None
 
     def tearDown(self):
         """Cleans up after a functional test case."""
