@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.7 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Revision: 1.8 $ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.7 $ (Draft)
-:Date: $Date: 2004/05/06 07:10:10 $
+:Version: $Revision: 1.8 $ (Draft)
+:Date: $Date: 2004/05/06 14:23:36 $
 :Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>
-:DocumentID: $Id: SecurityTarget.txt,v 1.7 2004/05/06 07:10:10 jim Exp $
+:DocumentID: $Id: SecurityTarget.txt,v 1.8 2004/05/06 14:23:36 jim Exp $
 
 .. contents::
 
@@ -26,13 +26,13 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.7 2004/05/06 07:10:10 jim Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.8 2004/05/06 14:23:36 jim Exp $
 
-:Document Version: $Revision: 1.7 $
+:Document Version: $Revision: 1.8 $
 
 :Origin: Zope Corporation public CVS server
 
-:TOE Reference: Zope X3
+:TOE Reference: Zope X3 TOE.0 (??? Need a name, issue, naming of X3 family)
 
 :TOE Commercial Name: Zope X3
 
@@ -411,39 +411,54 @@ Security objectives for the TOE
 
 The following security objectives have been defined for the TOE:
 
-    ==============          ===================================================
-    Objective Name          Description
-    ==============          ===================================================
-    O.IA                    All principals must be identified and authenticated
-                            with the exception of "anybody"-principal.
-    O.Objects               A principal can perform an operation on an object 
-                            only if he has the permission.
-    O.Grants                Only principals having the permission to change 
-                            permission/role grants can change the 
-                            permission/role grants.
-    
-                            XXX O.Grants is too specific IMHO
+    ==============  ===================================================
+    Objective Name  Description
+    ==============  ===================================================
 
-    O.Audit                 The TOE will provide the means of recording any 
-                            security relevant events, so as to assist an 
-                            administrator in the detection of potential attacks 
-                            or misconfiguration of the TOE security features 
-                            that would leave the TOE susceptible to attack, and 
-                            also to hold users accountable for any actions 
-                            they perform that are relevant to security.
-    O.Protect               ?? See Guide B.4
-    O.Rollback              The TOE will provide the means of returning to a 
-                            well-defined state by permitting a user to undo 
-                            transactions in the case of an incomplete series 
-                            of operations.
-    O.Access                The TOE ensures that access to objects is
-                            mediated by operations and guarded by permissions.
-    O.Integrity             Whenever an error within the context of a running
-                            transaction occurs (related or unrelated to
-                            security) the transaction will be rolled back
-                            and the system will be in the state before the
-                            transaction started.
-    ==============          ===================================================
+    O.IA            All principals must be accurately identified and
+                    authenticated with the exception of the "unauthenticated
+                    principal.
+
+    O.Grants        Provide the ability to delegate control. Users can
+                    delegate the ability to control access to selected
+                    operations to others.
+    
+    O.Audit         The TOE will provide the means of recording any 
+                    security relevant events, so as to assist an 
+                    administrator in the detection of potential attacks 
+                    or misconfiguration of the TOE security features 
+                    that would leave the TOE susceptible to attack, and 
+                    also to hold users accountable for any actions 
+                    they perform that are relevant to security.
+
+    O.Protect       The TOE will protect itself against external
+                    interference or tampering by untrusted subjects or
+                    attempts by untrusted subjects to bypass the TOE
+                    security functions. See Guide B.4
+
+    O.Access        The TOE ensures that access to objects is
+                    mediated by operations and guarded by permissions.
+
+    O.Integrity     Whenever an unhandled error within the context of a
+                    running transaction occurs (related or unrelated
+                    to security) the transaction will be rolled back
+                    and the system will be in the state before the
+                    transaction started.
+
+    O.Attributes    Whenever attributes are set using identifiers
+                    (e.g. principal, or permission identifiers), the
+                    identifiers must be defined.
+ 
+    O.ManageRisk    Provide the ability to manage risk by trading off
+                    functionality against risk. For example, we can
+                    make it easier to access the system to perform 
+                    operations whos potentional negative impact is
+                    low, but make it more difficult to access the
+                    system in a way that allows operations with high
+                    negative impact.
+                    
+
+    ==============  ===================================================
 
 Security objectives for the environment
 ---------------------------------------
@@ -709,6 +724,10 @@ FDP_ROL.2.2
     back *[at any time before the transaction in which the operation was
     performed is committed]*.
 
+    Note 
+        This statement may not apply to cached data created
+        during the course of a transaction.
+
 FDP_ROL.1_UNDO Basic rollback 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -778,15 +797,17 @@ XXX
     Digest would be nice to have
 
 
-FIA_UAU.5.1
-    The TSF shall provide *[HTTP Basic Auth, Cookie 
-    Authentication, FTP authentication]* 
+FIA_UAU.5.1 
+    The TSF shall provide *[extensible support for multiple
+    authentication mechanisms. The default mechanism uses login names
+    and passwords in combination with HTTP Baic Authorization and FTP
+    authorization]*
 
 
 FIA_UAU.5.2
-    The TSF shall authenticate any users claimed identity according
-    to the *[transfer of a username/password pair for HTTP basic auth, cookie 
-    authentication, FTP authentication]*
+    The TSF shall authenticate any users claimed identity according to
+    the *[system configuration, provided credentials, such as a
+    username/password pair and the protocol used]*
     
 FIA_UAU.6 Re-authentication
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -830,13 +851,6 @@ FMT_MOF.1.1
 FMT_MSA.1 Management of security attributes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-FMT_MSA.1.1
-
-    The TSF shall enforce the *[formal security policy]* to restrict
-    the ability to *[selection: change_default, query, modify, delete,
-    [assignment: other operations]]* the security attributes *[]* to
-    *[]*.
-
 FMT_MSA.1.1.grants
 
     The TSF shall enforce the *[formal security policy]* to restrict
@@ -874,10 +888,18 @@ FMT_MSA.3.1
     *[restrictive]* default values for security attributes that are used to 
     enforce the SFP.
 
+    Note
+        Security attributes are expressed as collections of grants or
+        denials. The default is an empty collection.
+
 FMT_MSA.3.2 
     The TSF shall allow the *[no one]* to specify alternative
     initial values to override the default values when an object or
     information is created.
+
+
+XXX
+        What objective goes with this?
 
 FMT_SMR.1 Security roles
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -900,17 +922,6 @@ FMT_SMR.1.1
 
 FMT_SMR.1.2
     The TSF shall be able to associate *[principals]* with roles.
-
-
-
-
-
-
-
-
-
-
-
 
 
 Class FPT: Protection of the TSF
@@ -1057,6 +1068,42 @@ TOE summary specification
 
 TOE security functions
 ----------------------
+
+Zope's security functions are provided via four independent subsystems:
+
+
+- permission declarations
+
+- protection
+
+- authentication
+
+- authorization
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 The following security functions have been determined:
 
@@ -1288,6 +1335,25 @@ Notes
 
 - The TOE will not have TTW created (untrusted) and stored code.
   So, no TTW templates. 
+
+- There should be some advice somewhere of the importance of having
+  universal (as opposed to system) principal and permission
+  identifiers if "export of user data with security attributes" is
+  supported.  We might want to think about using guids in auth
+  services.
+
+- There must be no operations inder the control of the TSF that cause
+  data to be modified non-transactionally.  An exception to this rule
+  is that cache data are not transactional.
+
+- It would be useful, when time allows (hehe) to abstract the security
+  policy into a profile and then see if other security-profiles could
+  be "substituted".
+
+- We will need to define events that the auditing system can subscribe
+  to to do what it wants.  Ideally, these events should not be defined
+  by the auditing system, so as not to create dependencies of other
+  systems on the logging system.
 
 Questions to Zope 3 Dev
 =======================
