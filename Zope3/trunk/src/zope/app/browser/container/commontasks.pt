@@ -11,8 +11,17 @@
 
       <a href="#"
         tal:define="baseurl python:request.getURL(1)"
+        tal:condition="python: not info['action'].startswith('../')"
         tal:attributes="
           href string:${baseurl}/@@contents.html?type_name=${info/action};
+          class info/selected"
+        tal:content="info/title" i18n:translate="">Folder
+      </a>
+      <a href="#"
+        tal:define="baseurl python:request.getURL(1)"
+        tal:condition="python: info['action'].startswith('../')"
+        tal:attributes="
+          href python: info['action'][3:];
           class info/selected"
         tal:content="info/title" i18n:translate="">Folder
       </a>
