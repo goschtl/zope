@@ -18,7 +18,7 @@
 
  KNOWN BUG: The selected tab cannot have image backdrop. FIXME
 
- $Id: zopetopStructure.css,v 1.1 2002/07/12 16:17:53 sidnei Exp $
+ $Id: zopetopStructure.css,v 1.2 2002/07/13 00:44:37 sidnei Exp $
 */
 
 div.top {
@@ -223,6 +223,17 @@ div.message a {
     text-decoration: underline;
 }
 
+.darker {
+	background: #7B7AC6;
+}
+
+.hilite {
+    background: #DFDEFF;
+}
+
+.background {
+    background: #CCCCFF;
+}
 
 .description {
 /* The summary text describing the document */

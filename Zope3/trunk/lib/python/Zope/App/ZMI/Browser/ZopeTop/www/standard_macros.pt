@@ -71,10 +71,10 @@
 
             <img src="spacer3.gif" width="176" height="12"
              tal:attributes="src context/++resource++spacer3.gif"/> </td>
-          <td width="1" bgcolor="#7B7AC6"> <img src="x.gif" 
+          <td width="1" class="darker"> <img src="x.gif" 
             alt="" width="1" height="400"
              tal:attributes="src context/++resource++x.gif"/></td>
-          <td valign="top" bgcolor="#DFDEFF">
+          <td valign="top" class="hilite">
             <table width="100%" border="0" cellspacing="0" cellpadding="0">
               <tr> 
                 <td background="bg_content.jpg"
@@ -86,7 +86,7 @@
             </table>
             <table width="100%" border="0" align="center" cellpadding="0" cellspacing="10">
               <tr> 
-                <td bgcolor="#CCCCFF">
+                <td class="background">
 		  <span metal:use-macro="views/standard_widgets/content_header_bar" />
 		</td>
               </tr>

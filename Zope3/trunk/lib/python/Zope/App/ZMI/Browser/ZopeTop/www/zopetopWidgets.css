@@ -17,7 +17,7 @@
  TODO: table.listing, 
        table.box
 
- $Id: zopetopWidgets.css,v 1.1 2002/07/12 16:17:53 sidnei Exp $
+ $Id: zopetopWidgets.css,v 1.2 2002/07/13 00:44:37 sidnei Exp $
 */
 
 input.standalone {
@@ -349,4 +349,3 @@ div.workspace span.big {
     margin-right: 1em;
     margin-bottom: 1em;
 }
-

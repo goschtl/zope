@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
+<head>
+<link href="zopetopBasic.css" rel="stylesheet" type="text/css" />
+<link href="zopetopStructure.css" rel="stylesheet" type="text/css" />
+<link href="zopetopWidgets.css" rel="stylesheet" type="text/css" />
+</head>
 <body>
+
+
 <span metal:define-macro="logged_user">Logged in as dtremea</span>
 
 <table metal:define-macro="services_bar" border="0" cellspacing="0" cellpadding="0">
@@ -112,15 +119,14 @@
     <td width="26"> <img src="closed_folder.gif" width="26" height="25"
       tal:attributes="src context/++resource++closed_folder.gif"/>
     </td>
-    <td width="95">Folder at - </td>
+    <td width="95">Folder at </td>
     <td><span
       metal:define-macro="breadcrumbs"
-      tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs">
-      <a href="" 
+	  tal:omit-tag=""
+      tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs"> <a href="" 
       tal:attributes="href breadcrumb/url"
       tal:content="string:${breadcrumb/name}/"
-      >name</a>&nbsp</span>
-    </td>
+      >name</a></span></td>
     <td width="45" align="right">Help </td>
     <td width="25"> <img src="help.gif" width="25" height="25"
       tal:attributes="src context/++resource++help.gif"/>
