@@ -11,39 +11,45 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""ServiceManagerContainer implementation.
+
+$Id: servicecontainer.py,v 1.4 2003/06/11 17:44:34 gvanrossum Exp $
+"""
 
 from zope.component.exceptions import ComponentLookupError
-from zope.app.interfaces.services.service import IServiceManagerContainer  
+from zope.app.interfaces.services.service import IServiceManagerContainer
 from zope.component.interfaces import IServiceService
 from zope.interface import implements
 
 class ServiceManagerContainer:
 
+    """Implement access to the service manager (++etc++site).
+
+    This is a mix-in that implements the IServiceManagerContainer
+    interface; for example, it is used by the Folder implementation.
+    """
+
     implements(IServiceManagerContainer)
 
+    __sm = None
+
     def hasServiceManager(self):
-        '''See interface IReadServiceManagerContainer'''
-        return hasattr(self, '_ServiceManagerContainer__sm')
+        return self.__sm is not None
 
     def getServiceManager(self):
-        '''See interface IReadServiceManagerContainer'''
-
-        try:
+        if self.__sm is not None:
             return self.__sm
-        except AttributeError:
+        else:
             raise ComponentLookupError('no service manager defined')
 
     def queryServiceManager(self, default=None):
-        '''See interface IReadServiceManagerContainer'''
-
-        return getattr(self, '_ServiceManagerContainer__sm', default)
+        if self.__sm is not None:
+            return self.__sm
+        else:
+            return default
 
     def setServiceManager(self, sm):
-        '''See interface IWriteServiceManagerContainer'''
-
         if IServiceService.isImplementedBy(sm):
             self.__sm = sm
         else:
             raise ValueError('setServiceManager requires an IServiceService')
-
-
