@@ -727,7 +727,7 @@ msgstr "1 элемент"
 
 #: src/zope/app/container/size.py:41
 msgid "${items} items"
-msgstr "${items} элемента(ов)"
+msgstr "${items} элементов(а)"
 
 #: src/zope/app/debugskin/error_debug.pt:12
 msgid "Error object: ${error_object}"
@@ -1102,59 +1102,59 @@ msgstr "Следующий"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:45
 msgid "sampleWidget-button-move-up"
-msgstr ""
+msgstr "Переместить вверх"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:46
 msgid "sampleWidget-button-move-down"
-msgstr ""
+msgstr "Переместить вниз"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:47
 msgid "sampleWidget-button-remove"
-msgstr ""
+msgstr "Удалить"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:48
 msgid "sampleWidget-button-add-done"
-msgstr ""
+msgstr "Добавить и завершить"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:49
 msgid "sampleWidget-button-add-more"
-msgstr ""
+msgstr "Добавить и продолжить"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:50
 msgid "sampleWidget-button-more"
-msgstr ""
+msgstr "Еще"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:51
 msgid "sampleWidget-button-clear"
-msgstr ""
+msgstr "Сбросить значение"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:52
 msgid "sampleWidget-button-query"
-msgstr ""
+msgstr "Искать"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:53
 msgid "sampleWidget-button-select"
-msgstr ""
+msgstr "Выбрать"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:54
 msgid "sampleWidget-button-dismiss"
-msgstr ""
+msgstr "Отказаться"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:57
 msgid "sampleWidget-label-enter-search-text"
-msgstr ""
+msgstr "Текст для поиска:"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:59
 msgid "sampleWidget-label-select-content-type"
-msgstr ""
+msgstr "Выберите тип контента:"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:61
 msgid "sampleWidget-label-any-content-type"
-msgstr ""
+msgstr "(любой)"
 
 #: src/zope/app/form/browser/complexsample/complexsample.py:63
 msgid "sampleWidget-label-inaccessable-object"
-msgstr ""
+msgstr "(недоступный или отсутствующий объект)"
 
 #: src/zope/app/form/browser/complexsample/interfaces.py:29
 #: src/zope/app/publisher/interfaces/browser.py:45
@@ -1173,11 +1173,11 @@ msgstr "Заголовок"
 
 #: src/zope/app/form/browser/complexsample/widgetapi.py:56
 msgid "widget-missing-single-value"
-msgstr ""
+msgstr "(нет значения)"
 
 #: src/zope/app/form/browser/complexsample/widgetapi.py:58
 msgid "widget-missing-multiple-value"
-msgstr ""
+msgstr "(нет значений)"
 
 #: src/zope/app/form/browser/editview.py:115
 msgid "Updated on ${date_time}"
@@ -1202,39 +1202,39 @@ msgstr "Добавить %s"
 
 #: src/zope/app/form/browser/vocabularywidget.py:273
 msgid "vocabulary-missing-single-value-for-display"
-msgstr ""
+msgstr "(нет значения)"
 
 #: src/zope/app/form/browser/vocabularywidget.py:275
 msgid "vocabulary-missing-multiple-value-for-display"
-msgstr ""
+msgstr "(нет значений)"
 
 #: src/zope/app/form/browser/vocabularywidget.py:278
 msgid "vocabulary-missing-single-value-for-edit"
-msgstr ""
+msgstr "(нет значения)"
 
 #: src/zope/app/form/browser/vocabularywidget.py:280
 msgid "vocabulary-missing-multiple-value-for-edit"
-msgstr ""
+msgstr "(нет значений)"
 
 #: src/zope/app/form/browser/vocabularywidget.py:709
 msgid "vocabulary-query-button-add-done"
-msgstr ""
+msgstr "Добавить и завершить"
 
 #: src/zope/app/form/browser/vocabularywidget.py:711
 msgid "vocabulary-query-button-add-more"
-msgstr ""
+msgstr "Добавить и продолжить"
 
 #: src/zope/app/form/browser/vocabularywidget.py:713
 msgid "vocabulary-query-button-more"
-msgstr ""
+msgstr "Еще"
 
 #: src/zope/app/form/browser/vocabularywidget.py:715
 msgid "vocabulary-query-message-no-results"
-msgstr ""
+msgstr "Нет результатов"
 
 #: src/zope/app/form/browser/vocabularywidget.py:717
 msgid "vocabulary-query-header-results"
-msgstr ""
+msgstr "Результаты поиска"
 
 #: src/zope/app/fssync/browser/__init__.py:156
 msgid "required argument 'name' missing"
@@ -1242,19 +1242,19 @@ msgstr "отсутствует необходимый аргумент 'name'"
 
 #: src/zope/app/fssync/browser/__init__.py:215
 msgid "Up-to-date check failed:"
-msgstr ""
+msgstr "Сервер имеет более свежие версии:"
 
 #: src/zope/app/fssync/browser/__init__.py:90
 msgid "Content-Type is not application/x-snarf"
-msgstr ""
+msgstr "Тип контента не application/x-snarf"
 
 #: src/zope/app/fssync/browser/fromFS.pt:11
 msgid "Commit results: ${results}"
-msgstr ""
+msgstr "Результаты сделанных изменений: ${results}"
 
 #: src/zope/app/fssync/browser/fromFS.pt:16
 msgid "Upload a zipfile in the following form"
-msgstr ""
+msgstr "Загрузите zip-файл в следующей форме"
 
 # Default: "Upload"
 #: src/zope/app/fssync/browser/fromFS.pt:20
@@ -1263,7 +1263,7 @@ msgstr "Загрузить"
 
 #: src/zope/app/fssync/browser/fromFS.pt:5
 msgid "Commit Action"
-msgstr ""
+msgstr "Загрузить изменения"
 
 #: src/zope/app/hub/browser/__init__.py:47
 msgid "OK"
@@ -1278,18 +1278,20 @@ msgid ""
 "An object hub, for cataloging, unique object ids, and                    "
 "more: use sparingly"
 msgstr ""
+"Концентратор объектов предназначен для хранения уникальных идентификаторов объектов "
+"и более: используется скупо"
 
 #: src/zope/app/hub/browser/configure.zcml:13
 msgid "HubIds Service"
-msgstr ""
+msgstr "Концентратор объектов"
 
 #: src/zope/app/hub/browser/configure.zcml:27
 msgid "Registration subscriber"
-msgstr ""
+msgstr "Подписчик регистрации"
 
 #: src/zope/app/hub/browser/configure.zcml:27
 msgid "An event subscriber that registers content with the objecthub"
-msgstr ""
+msgstr "Подписчик сообщений регистрирующий контент для концентратора объектов"
 
 #: src/zope/app/hub/browser/configure.zcml:5
 #: src/zope/app/hub/browser/configure.zcml:36
@@ -1406,7 +1408,7 @@ msgstr "Хранимый сервис переводов"
 
 #: src/zope/app/i18n/browser/configure.zcml:69
 msgid "New Translation Domain Registration"
-msgstr ""
+msgstr "Регистрация нового сервиса переводов"
 
 #: src/zope/app/i18n/browser/exportimport.pt:10
 msgid "Import and Export Messages"
@@ -1618,7 +1620,7 @@ msgstr "Следующая --&gt;"
 
 #: src/zope/app/index/browser/field/control.pt:12
 msgid "FieldIndex"
-msgstr ""
+msgstr "Индекс по заданному полю"
 
 #: src/zope/app/index/browser/field/control.pt:14
 msgid ""
@@ -1628,18 +1630,23 @@ msgid ""
 "objects are added, deleted or modified; an \"unsubscribed\" index will "
 "retain the indexing information but not update itself further."
 msgstr ""
+"Данная страница позволяет контролировать индекс по полю, предоставляющий "
+"возможность поиска по отдельному полю. Поле для поиска здесь только для отладки. "
+"Статус подписки: \"Подписан\" - индекс будет обновляться когда объект добавляется, "
+"удаляется и модифицируется; \"Отписан\" - индекс сохранит свою информацию но не "
+"будет обновляться автоматически."
 
 #: src/zope/app/index/browser/field/control.pt:3
 msgid "FieldIndex Control Page"
-msgstr ""
+msgstr "Страница управления индексом по заданному полю"
 
 #: src/zope/app/index/browser/field/control.pt:36
 msgid "Adapting objects to: ${iface_name}"
-msgstr ""
+msgstr "Адаптировать объект к: ${iface_name}"
 
 #: src/zope/app/index/browser/field/control.pt:41
 msgid "Indexing on attribute: ${field_name}"
-msgstr ""
+msgstr "Индексирование по атрибуту: ${field_name}"
 
 #: src/zope/app/index/browser/field/control.pt:46
 #: src/zope/app/index/browser/text/control.pt:36
@@ -1667,7 +1674,7 @@ msgstr "&lt;--Предыдущая"
 
 #: src/zope/app/index/browser/text/control.pt:12
 msgid "TextIndex"
-msgstr ""
+msgstr "Текстовый индекс"
 
 #: src/zope/app/index/browser/text/control.pt:14
 msgid ""
@@ -1677,10 +1684,15 @@ msgid ""
 "objects are added, deleted or modified; an \"unsubscribed\" index will "
 "retain the indexing information but not update itself further."
 msgstr ""
+"Данная страница позволяет контролировать текстовыq индекс, предоставляющий возможность"
+"поиска по тексту. Поле для поиска здесь только для отладки. Статус подписки: "
+"\"Подписан\" - индекс будет обновляться когда объект добавляется, "
+"удаляется и модифицируется; \"Отписан\" - индекс сохранит свою информацию но не "
+"будет обновляться автоматически."
 
 #: src/zope/app/index/browser/text/control.pt:3
 msgid "TextIndex Control Page"
-msgstr ""
+msgstr "Страница управления текстовым индексом"
 
 #: src/zope/app/index/browser/text/control.pt:41
 msgid "Words: ${word_count}"
@@ -1758,7 +1770,7 @@ msgstr "Модуль Python"
 # Default: "Send out mail with arbitrary from and to addresses"
 #: src/zope/app/mail/configure.zcml:7
 msgid "send-mail-permission"
-msgstr ""
+msgstr "Возможность посылать почту с произвольными адресами в полях \"From\" и \"To\""
 
 #: src/zope/app/mail/interfaces.py:107
 msgid "Queue path"
@@ -1896,11 +1908,11 @@ msgstr "Добавить пункт меню"
 
 #: src/zope/app/menu/browser/menu_contents.pt:32
 msgid "Action"
-msgstr ""
+msgstr "Действие"
 
 #: src/zope/app/menu/browser/menu_overview.pt:3
 msgid "Menu Service"
-msgstr ""
+msgstr "Сервис меню"
 
 #: src/zope/app/menu/configure.zcml:20
 #: src/zope/app/menu/browser/configure.zcml:5
@@ -1932,35 +1944,35 @@ msgstr "Сервиc меню"
 
 #: src/zope/app/menus.zcml:13
 msgid "Menu of caches to be added"
-msgstr ""
+msgstr "Меню кэшей для добавления"
 
 #: src/zope/app/menus.zcml:17
 msgid "Menu of objects to be added to content folders"
-msgstr ""
+msgstr "Меню объектов для добавления к папкам контента"
 
 #: src/zope/app/menus.zcml:21
 msgid "Menu for objects to be added according to containment constraints"
-msgstr ""
+msgstr "Меню объектов для добавления в соответствии с указанными ограничениями"
 
 #: src/zope/app/menus.zcml:26
 msgid "Menu of objects to be added to site management folders"
-msgstr ""
+msgstr "Меню объектов для добавления к папкам управления сайтами"
 
 #: src/zope/app/menus.zcml:30
 msgid "Menu of database connections to be added"
-msgstr ""
+msgstr "Меню соединений с базами данных для добавления"
 
 #: src/zope/app/menus.zcml:34
 msgid "Menu of addable configuration objects"
-msgstr ""
+msgstr "Меню добавляемых конфигурационных объектов"
 
 #: src/zope/app/menus.zcml:5
 msgid "Menu for displaying alternate representations of an object"
-msgstr ""
+msgstr "Меню для показа альтернативного представления объекта"
 
 #: src/zope/app/menus.zcml:9
 msgid "Menu for displaying actions to be performed"
-msgstr ""
+msgstr "Меню для показа выполняемого действия"
 
 #: src/zope/app/module/browser/__init__.py:33
 msgid "module name must be provided"
@@ -1986,7 +1998,7 @@ msgstr "Введите исходный код модуля python."
 
 #: src/zope/app/module/browser/browse_module.pt:3
 msgid "View Module Names"
-msgstr ""
+msgstr "Просмотр имен модулей"
 
 #: src/zope/app/module/browser/configure.zcml:24
 msgid "Browse"
@@ -1998,7 +2010,7 @@ msgstr "Модуль Python"
 
 #: src/zope/app/module/browser/edit_module.pt:3
 msgid "Edit a Module"
-msgstr ""
+msgstr "Редактировать модуль"
 
 #: src/zope/app/onlinehelp/browser/configure.zcml:33
 #: src/zope/app/zopetop/widget_macros.pt:215
@@ -2007,7 +2019,7 @@ msgstr "Справка"
 
 #: src/zope/app/onlinehelp/browser/configure.zcml:7
 msgid "Menu for displaying help actions to be performed with popup"
-msgstr ""
+msgstr "Меню для показа справочной информации в виде popup"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:100
 #: src/zope/app/zopetop/widget_macros.pt:176
@@ -2018,7 +2030,7 @@ msgstr "Путь:"
 #: src/zope/app/onlinehelp/browser/skin/template.pt:54
 #: src/zope/app/rotterdam/template.pt:87
 msgid "Online Help - TOC"
-msgstr ""
+msgstr "Встроенная справка - Содержание"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:55
 msgid ""
@@ -2026,30 +2038,33 @@ msgid ""
 "address in the URL.<br> And use the own help skin like:<br> ../++help++/+"
 "+skin++Onlinehelp/"
 msgstr ""
+"Вы не используете пространство имен ++help++.<br> Добавьте /++help++/ после "
+"адреса хоста в URL.<br> И используйте свой собственный скин следующим образом:<br> "
+"../++help++/++skin++Onlinehelp/"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:68
 msgid "Close this window"
-msgstr ""
+msgstr "Закрыть окно"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:71
 msgid "Blur"
-msgstr ""
+msgstr "Размазать"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:74
 msgid "view 800x600"
-msgstr ""
+msgstr "просмотр 800x600"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:77
 msgid "view 1024x768"
-msgstr ""
+msgstr "просмотр 1024x768"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:80
 msgid "Print"
-msgstr ""
+msgstr "Печать"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:9
 msgid "Z3 UI Onlinehelp"
-msgstr ""
+msgstr "Интерфейс встроенной справки Zope 3"
 
 #: src/zope/app/onlinehelp/browser/skin/view_macros.pt:28
 msgid "User: ${user_title}"
@@ -2058,23 +2073,23 @@ msgstr "Пользователь: ${user_title}"
 #: src/zope/app/onlinehelp/browser/skin/view_macros.pt:34
 #: src/zope/app/rotterdam/view_macros.pt:41
 msgid "Powered by Zope"
-msgstr ""
+msgstr "Основано на Zope"
 
 #: src/zope/app/onlinehelp/configure.zcml:22
 msgid "Zope UI Help"
-msgstr ""
+msgstr "Интерфейс справки Zope"
 
 #: src/zope/app/onlinehelp/configure.zcml:27
 msgid "Welcome"
-msgstr ""
+msgstr "Добро пожаловать"
 
 #: src/zope/app/onlinehelp/configure.zcml:33
 msgid "Online help system"
-msgstr ""
+msgstr "Встроенная система справки"
 
 #: src/zope/app/pagetemplate/engine.py:100
 msgid "No interpreter named \"${lang_name}\" was found."
-msgstr ""
+msgstr "Не было найдено интерпретатора с именем \"${lang_name}\"."
 
 #: src/zope/app/pagetemplate/engine.py:94
 msgid ""
@@ -2082,46 +2097,49 @@ msgid ""
 "inline code snippets in your Page Template. Activate Inline Code Evaluation "
 "and try again."
 msgstr ""
+"Выполнение встроенного кода было деактивировано, соответственно Вы не можете "
+"использовать встроенный в Ваших шаблонах. Активируйте выполнение встроенного "
+"кода и повторите попытку."
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:22
 msgid "Add Principal Source"
-msgstr ""
+msgstr "Добавить исходный канал для субъектов"
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:36
 msgid "Add Simple User with details"
-msgstr ""
+msgstr "Добавить пользователя с деталями"
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:47
 msgid "Principal"
-msgstr ""
+msgstr "Субъект"
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:54
 msgid "Edit User Information"
-msgstr ""
+msgstr "Редактировать информацию пользователя"
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:7
 msgid "Authentication Service"
-msgstr ""
+msgstr "Сервис аутентификации"
 
 #: src/zope/app/pluggableauth/browser/configure.zcml:7
 msgid "A Pluggable Authentication uses plug-in principal sources."
-msgstr ""
+msgstr "Подключаемая аутентификация использует подключаемые исходные каналы для субъектов."
 
 #: src/zope/app/pluggableauth/interfaces.py:30
 msgid "Login"
-msgstr ""
+msgstr "Пользовательский идентификатор"
 
 #: src/zope/app/pluggableauth/interfaces.py:31
 msgid "The Login/Username of the user. This value can change."
-msgstr ""
+msgstr "Идентификатор/имя пользователя. Данное значение может быть изменено."
 
 #: src/zope/app/pluggableauth/interfaces.py:37
 msgid "The password for the user."
-msgstr ""
+msgstr "Пароль пользователя."
 
 #: src/zope/app/presentation/browser/configure.zcml:11
 msgid "Change page"
-msgstr ""
+msgstr "Изменить страницу"
 
 #: src/zope/app/presentation/browser/configure.zcml:19
 msgid "Register a view page"
@@ -3367,7 +3385,7 @@ msgstr "Участник сайта"
 
 #: src/zope/app/session/browser.zcml:23
 msgid "Cookie Browser ID Manager Properties"
-msgstr "Свойства менеджера идентификационной куки браузера"
+msgstr "Свойства менеджера идентификационной cookie"
 
 #: src/zope/app/session/browser.zcml:31
 msgid "Stores session data persistently in the ZODB"
@@ -3386,12 +3404,12 @@ msgid ""
 "Uses a cookie to uniquely identify a browser, allowing        state to be "
 "maintained between requests"
 msgstr ""
-"Использует куку для уникальной идентификации браузера, позволяет сохранять "
+"Использует cookie для уникальной идентификации браузера, позволяет сохранять "
 "состояние между запросами"
 
 #: src/zope/app/session/browser.zcml:6
 msgid "Cookie Browser Id Manager"
-msgstr "Менеджер идентификациооной куки браузера"
+msgstr "Менеджер идентификационной cookie"
 
 #: src/zope/app/session/interfaces.py:100
 msgid "Timeout"
@@ -3415,27 +3433,27 @@ msgstr ""
 
 #: src/zope/app/session/interfaces.py:53
 msgid "Cookie Name"
-msgstr "Имя куки"
+msgstr "Имя cookie"
 
 #: src/zope/app/session/interfaces.py:54
 msgid ""
 "Name of cookie used to maintain state. Must be unique to the site domain "
 "name, and only contain ASCII letters, digits and '_'"
 msgstr ""
-"Имя куки используемой для сохранения состояния. Должно быть уникально для "
-"доменного имени сайта и содержать только символы ASCII, цифры и '_'"
+"Имя cookie используемой для сохранения состояния. Должно быть уникально для "
+"доменного имени сайта и содержать только символы ASCII, цифры и символ '_'"
 
 #: src/zope/app/session/interfaces.py:66
 msgid "Cookie Lifetime"
-msgstr "Время жизни куки"
+msgstr "Время жизни cookie"
 
 #: src/zope/app/session/interfaces.py:67
 msgid ""
 "Number of seconds until the browser expires the cookie. Leave blank expire "
 "the cookie when the browser is quit. Set to 0 to never expire. "
 msgstr ""
-"Количество секунд прежде чем браузер не удалить куку. При пустом значении "
-"кука будет удалена при выходе из браузера. При значении 0 кука не будет "
+"Количество секунд прежде чем браузер удалит cookie. При пустом значении "
+"cookie будет удалена при выходе из браузера. При значении 0 cookie не будет "
 "удалена."
 
 #: src/zope/app/site/browser/__init__.py:107
