@@ -137,6 +137,12 @@ def fromPathOrUrl(path, mapping=None):
             cvsurl = cvsloader.parse(path)
         except ValueError:
             f = urllib2.urlopen(path)
+            parts = list(urlparse.urlparse(path))
+            if parts[2]:
+                parts[2] = posixpath.join(posixpath.dirname(parts[2]), "")
+                base = urlparse.urlunparse(parts)
+            else:
+                base = path
         else:
             f = cvsloader.open(path, "rU")
             cvsurl.path = posixpath.dirname(cvsurl.path)

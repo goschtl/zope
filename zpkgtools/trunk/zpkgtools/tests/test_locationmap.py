@@ -17,6 +17,7 @@ import doctest
 import logging
 import os.path
 import unittest
+import urllib
 
 from StringIO import StringIO
 
@@ -82,6 +83,18 @@ class LoadTestCase(unittest.TestCase):
         mapping = locationmap.load(
             sio, "cvs://cvs.example.org:ext/cvsroot:module")
         self.check_sample_results(mapping)
+
+    def test_load_with_file_base(self):
+        dirname = os.path.dirname(os.path.abspath(__file__))
+        dirname = os.path.join(dirname, "input")
+        fn = os.path.join(dirname, "packages.map")
+        url = "file://" + urllib.pathname2url(fn)
+        map = locationmap.fromPathOrUrl(url)
+        base = "file://" + urllib.pathname2url(dirname)
+        self.assertEqual(map["collection:collection-1"],
+                         base + "/collection-1/")
+        self.assertEqual(map["collection:collection-2"],
+                         base + "/collection-2/")
 
     def check_sample_results(self, mapping):
         d = {}
