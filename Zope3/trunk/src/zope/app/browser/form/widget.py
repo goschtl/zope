@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.46 2003/08/07 17:40:28 srichter Exp $
+$Id: widget.py,v 1.47 2003/08/08 00:14:28 srichter Exp $
 """
 
 __metaclass__ = type
@@ -33,6 +33,7 @@ from zope.app.interfaces.form import ConversionError, WidgetInputError
 from zope.app.interfaces.form import MissingInputError
 from zope.app.datetimeutils import parseDatetimetz
 from zope.app.datetimeutils import DateTimeError
+from zope.app.services.servicenames import Translation
 from zope.schema import getFieldNamesInOrder
 from zope.schema.interfaces import ValidationError
 from zope.schema.errornames import RequiredMissing
@@ -216,7 +217,7 @@ class BrowserWidget(Widget, BrowserView):
             return txt
 
     def label(self):
-        ts = getService(self.context, "Translation")
+        ts = getService(self.context, Translation)
         # Note that the domain is not that important here, since the title
         # is most likely a message id carrying the domain anyways.
         title = ts.translate(self.title, "zope", context=self.request)
@@ -753,13 +754,19 @@ class SingleItemsWidget(ItemsWidget):
         '''Returns the text for the given value.
 
         Override this in subclasses.'''
+        # The text could be a MessageID, in which case we should try to
+        # translate it.
+        ts = getService(self.context.context, Translation)
+        trans = ts.translate(value, "zope", context=self.request)
+        if trans is not None:
+            value = trans
         return value
 
     def renderItems(self, value):
         name = self.name
         # get items
-        items = self.context.allowed_values
-
+        items = self.context.allowed_values        
+        
         # check if we want to select first item
         if (not value and getattr(self.context, 'firstItem', False)
             and len(items) > 0):
@@ -859,7 +866,7 @@ class RadioWidget(SingleItemsWidget):
         return self._renderItem(index, text, value, name, cssClass, True)
 
     def label(self):
-        ts = getService(self.context.context, "Translation")
+        ts = getService(self.context.context, Translation)
         title = ts.translate(self.title, "zope", context=self.request)
         if title is None:
             title  = self.title

@@ -13,7 +13,7 @@
 ##############################################################################
 """Widget for selecting permissions.
 
-$Id: permissionwidget.py,v 1.10 2003/08/07 17:40:53 srichter Exp $
+$Id: permissionwidget.py,v 1.11 2003/08/08 00:14:31 srichter Exp $
 """
 from zope.app.browser.form import widget
 from zope.component import getService
@@ -64,7 +64,9 @@ class SinglePermissionWidget(BaseWidget, widget.BrowserWidget):
 
         ts = getService(self.context.context, Translation)
         sel_perm = _('---select permission---')
-        sel_perm = ts.translate(sel_perm, "zope")
+        trans = ts.translate(sel_perm, "zope", context=self.request)
+        if trans is not None:
+            sel_perm = trans
         
         options = ['<option value=\"\">'+sel_perm+'</option>']
         for permission in permissions:

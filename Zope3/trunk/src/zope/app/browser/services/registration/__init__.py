@@ -13,11 +13,11 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.4 2003/08/07 20:27:33 srichter Exp $
+$Id: __init__.py,v 1.5 2003/08/08 00:14:36 srichter Exp $
 """
 
 from zope.app.browser.container.adding import Adding
-from zope.app.browser.form.widget import BrowserWidget
+from zope.app.browser.form.widget import RadioWidget, BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IBrowserWidget
 from zope.app.interfaces.container import IZopeContainer
@@ -183,21 +183,14 @@ class ChangeRegistrations(BrowserView):
         self.message = message
 
 
-class RegistrationStatusWidget(BrowserWidget):
+class RegistrationStatusWidget(RadioWidget):
 
+    def _getDefault(self):
+        return UnregisteredStatus
+        
     def __call__(self):
-        checked = self._showData() or UnregisteredStatus
-        result = [
-            ('<label>'
-             '<input type="radio" name="%s" value="%s"%s>'
-             '&nbsp;'
-             '%s'
-             '</label>'
-             % (self.name, v, (v == checked and ' checked' or ''), v)
-             )
-            for v in (UnregisteredStatus, RegisteredStatus, ActiveStatus)
-            ]
-        return ' '.join(result)
+        rendered_items = self.renderItems(self._showData())
+        return "&nbsp;&nbsp;".join(rendered_items)
 
 
 class ComponentPathWidget(BrowserWidget):

@@ -13,15 +13,15 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: utility.py,v 1.8 2003/08/06 21:16:38 sidnei Exp $
+$Id: utility.py,v 1.9 2003/08/08 00:14:41 srichter Exp $
 """
-
-from zope.app.interfaces.services.registration import IComponentRegistration
 from zope.app.component.interfacefield import InterfaceField
-from zope.schema import TextLine
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.services.registration import IComponentRegistration
 from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.interfaces.services.registration import ComponentPath
 from zope.component.interfaces import IUtilityService
+from zope.schema import TextLine
 
 class IUtilityRegistration(IComponentRegistration):
     """Utility registration object.
@@ -31,22 +31,23 @@ class IUtilityRegistration(IComponentRegistration):
     getComponent() method.
     """
 
-    name = TextLine(title=u"Name",
-                    description=u"The name that is registered",
-                    readonly=True,
-                    required=True,
-                    )
+    name = TextLine(
+        title=_("Name"),
+        description=_("The name that is registered"),
+        readonly=True,
+        required=True,
+        )
 
     interface = InterfaceField(
-        title = u"Provided interface",
-        description = u"The interface provided by the adapter",
+        title = _("Provided interface"),
+        description = _("The interface provided by the adapter"),
         readonly = True,
         required = True,
         )
 
     componentPath = ComponentPath(
-        title=u"Component path",
-        description=u"The physical path to the component",
+        title=_("Component path"),
+        description=_("The physical path to the component"),
         required=True,
         readonly=True,
         )
@@ -64,7 +65,6 @@ class ILocalUtility(IRegisterable):
     IRegistered can be used; otherwise, they must provide
     another way to be adaptable to IRegistered.
     """
-
 
 
 class ILocalUtilityService(IUtilityService):

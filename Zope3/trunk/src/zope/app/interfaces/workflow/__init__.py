@@ -11,14 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-    Interfaces for workflow service, definition and instance.
+"""Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.17 2003/07/30 15:24:06 srichter Exp $
+$Id: __init__.py,v 1.18 2003/08/08 00:14:44 srichter Exp $
 """
-
 from zope.interface import Interface
 from zope.interface import Attribute
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.event import IEvent
 from zope.app.interfaces.services.registration \
@@ -55,8 +54,8 @@ class IProcessDefinitionRegistration(INamedComponentRegistration):
     """Registration for a workflow process definition."""
 
     componentPath = ComponentPath(
-        title=u"Component path",
-        description=u"The physical path to the component",
+        title=_("Component path"),
+        description=_("The physical path to the component"),
         required=True,
         readonly=True,
         )

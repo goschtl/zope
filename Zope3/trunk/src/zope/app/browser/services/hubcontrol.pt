@@ -9,7 +9,7 @@
   </div>
 
   <p i18n:translate="">
-    This is an object hub.  There are 
+    This is an object hub. There are 
     <span tal:replace="context/numRegistrations" 
           i18n:name="num_objects">42</span>
     objects registered.
@@ -24,7 +24,3 @@
 </div>
 </body>
 </html>
-
-
-
-

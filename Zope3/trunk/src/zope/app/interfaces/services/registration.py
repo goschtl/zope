@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.6 2003/08/07 20:27:36 srichter Exp $
+$Id: registration.py,v 1.7 2003/08/08 00:14:41 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -34,7 +34,12 @@ class IRegistrationStatus(ITextLine):
 
 class RegistrationStatus(TextLine):
     implements(IRegistrationStatus)
-    allowed_values = UnregisteredStatus, RegisteredStatus, ActiveStatus
+
+    def __init__(self, *args, **kw):
+        super(RegistrationStatus, self).__init__(*args, **kw)
+        self.allowed_values = (UnregisteredStatus,
+                               RegisteredStatus,
+                               ActiveStatus)
 
 class INoLocalServiceError(Interface):
     """No local service to register with.
@@ -67,7 +72,9 @@ class IRegistration(Interface):
                             "this registration type")
     # A string; typically a class attribute
 
-    status = RegistrationStatus(title = u"Registration status")
+    status = RegistrationStatus(
+        title=_("Registration status")
+        )
 
     def activated():
         """Method called when a registration is made active
@@ -101,13 +108,14 @@ class INamedRegistration(IRegistration):
     """Registration object that is registered only by name.
     """
 
-    name = TextLine(title=u"Name",
-                    description=u"The name that is registered",
-                    readonly=True,
-                    # Don't allow empty or missing name:
-                    required=True,
-                    min_length=1,
-                    )
+    name = TextLine(
+        title=_("Name"),
+        description=_("The name that is registered"),
+        readonly=True,
+        # Don't allow empty or missing name:
+        required=True,
+        min_length=1,
+        )
 
     # The label is generally set as a class attribute on the
     # registration class.
@@ -134,13 +142,13 @@ class IComponentRegistration(IRegistration):
     """Registration object that uses a component path and a permission."""
 
     componentPath = ComponentPath(
-        title=u"Component path",
-        description=u"The path to the component; this may be absolute, "
-                    u"or relative to the nearest site management folder",
+        title=_("Component path"),
+        description=_("The path to the component; this may be absolute, "
+                      "or relative to the nearest site management folder"),
         required=True)
 
     permission = PermissionField(
-        title=u"The permission needed to use the component",
+        title=_("The permission needed to use the component"),
         required=False,
         )
 
