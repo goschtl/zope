@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.34 2003/07/02 21:13:14 fdrake Exp $
+$Id: fssync.py,v 1.35 2003/08/07 19:06:33 fdrake Exp $
 """
 
 import os
@@ -44,6 +44,13 @@ from zope.fssync.fsmerger import FSMerger
 from zope.fssync.fsutil import Error
 from zope.fssync import fsutil
 from zope.fssync.snarf import Snarfer, Unsnarfer
+
+
+if sys.platform[:3].lower() == "win":
+    DEV_NULL = r".\nul"
+else:
+    DEV_NULL = "/dev/null"
+
 
 class Network(object):
 
@@ -395,36 +402,43 @@ class FSSync(object):
         if msg[0] not in "/*":
             print msg
 
-    def diff(self, target, mode=1, diffopts=""):
+    def diff(self, target, mode=1, diffopts="", need_original=True):
         assert mode == 1, "modes 2 and 3 are not yet supported"
         entry = self.metadata.getentry(target)
         if not entry:
             raise Error("diff target '%s' doesn't exist", target)
-        if "flag" in entry:
+        if "flag" in entry and need_original:
             raise Error("diff target '%s' is added or deleted", target)
         if isdir(target):
-            self.dirdiff(target, mode, diffopts)
+            self.dirdiff(target, mode, diffopts, need_original)
             return
-        if not isfile(target):
-            raise Error("diff target '%s' is file nor directory", target)
         orig = fsutil.getoriginal(target)
+        if not isfile(target):
+            if entry.get("flag") == "removed":
+                target = DEV_NULL
+            else:
+                raise Error("diff target '%s' is file nor directory", target)
+        have_original = True
         if not isfile(orig):
-            raise Error("can't find original for diff target '%s'", target)
-        if filecmp.cmp(target, orig, shallow=False):
+            if entry.get("flag") != "added":
+                raise Error("can't find original for diff target '%s'", target)
+            have_original = False
+            orig = DEV_NULL
+        if have_original and filecmp.cmp(target, orig, shallow=False):
             return
         print "Index:", target
         sys.stdout.flush()
         cmd = ("diff %s %s %s" % (diffopts, quote(orig), quote(target)))
         os.system(cmd)
 
-    def dirdiff(self, target, mode=1, diffopts=""):
+    def dirdiff(self, target, mode=1, diffopts="", need_original=True):
         assert isdir(target)
         names = self.metadata.getnames(target)
         for name in names:
             t = join(target, name)
             e = self.metadata.getentry(t)
-            if e and "flag" not in e:
-                self.diff(t, mode, diffopts)
+            if e and (("flag" not in e) or not need_original):
+                self.diff(t, mode, diffopts, need_original)
 
     def add(self, path, type=None, factory=None):
         if not exists(path):

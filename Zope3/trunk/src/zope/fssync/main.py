@@ -29,7 +29,7 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.22 2003/07/25 15:09:26 fdrake Exp $
+$Id: main.py,v 1.23 2003/08/07 19:06:33 fdrake Exp $
 """
 
 import os
@@ -259,6 +259,7 @@ def diff(opts, args):
     """
     diffopts = []
     mode = 1
+    need_original = True
     for o, a in opts:
         if o == '-1':
             mode = 1
@@ -266,6 +267,8 @@ def diff(opts, args):
             mode = 2
         elif o == '-3':
             mode = 3
+        elif o == '-N':
+            need_original = False
         elif o in diffflags:
             if a:
                 diffopts.append(o + " " + a)
@@ -273,7 +276,7 @@ def diff(opts, args):
                 diffopts.append(o)
     diffopts = " ".join(diffopts)
     fs = FSSync()
-    fs.multiple(args, fs.diff, mode, diffopts)
+    fs.multiple(args, fs.diff, mode, diffopts, need_original)
 
 def status(opts, args):
     """%(program)s status [TARGET ...]
@@ -323,7 +326,7 @@ command_table = {
     "remove":   ("", [], remove),
     "rm":       ("", [], remove),
     "r":        ("", [], remove),
-    "diff":     ("bBcC:iuU:", ["brief", "context=", "unified="], diff),
+    "diff":     ("bBcC:iNuU:", ["brief", "context=", "unified="], diff),
     "status":   ("", [], status),
     "checkin":  ("m:", ["message="], checkin),
     "ci":       ("m:", ["message="], checkin),

@@ -161,8 +161,6 @@ To Do
 
     -3 diffs between original and remote
 
-    -N shows diffs for added/removed files as diffs with ``/dev/null``
-
   * Something akin to **cvs -n** update, which shows what update would
     do without actually doing it.
 
