@@ -18,6 +18,7 @@ $Id: $
 """
 
 import sys, ZSI
+import warnings
 from zope.app.publication.interfaces import ISOAPRequestFactory
 from zope.publisher.http import HTTPRequest, HTTPResponse
 from soap.interfaces import ISOAPRequest, ISOAPResponse
@@ -27,6 +28,9 @@ from zope.security.proxy import isinstance
 from zope.publisher.xmlrpc import premarshal
 from zope.interface import implements
 from StringIO import StringIO
+
+
+warnings.filterwarnings("ignore", category=FutureWarning, module="ZSI.TC")
 
 
 class SOAPRequestFactory(object):
