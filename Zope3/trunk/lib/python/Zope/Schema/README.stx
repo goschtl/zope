@@ -1,40 +1,46 @@
 Zope 3 Schemas
 
+Table of contents
+
+ Introduction
+
+ What is a schema, how does it compare to an interface and why should you care?
+
+ What does a Schema look like
+ 
+ Where Schemas make sense: Providing views from Schemas
+
+ Issues
+
+
+
 Introduction
 
-Zope 3 schemas were born when Jim Fulton and Martijn Faassenwere thinking about Formulator for Zope3 and PropertySets while at the Zope3 sprint at the Zope BBQ in Berlin. We realized that forms stripped of all logic to view them look suspiciously similar to Zope 3 interfaces. And thus schemas were born.
+ Zope 3 schemas were born when Jim Fulton and Martijn Faassen were thinking about Formulator for Zope3 and PropertySets while at the Zope3 sprint at the Zope BBQ in Berlin. They realized that forms stripped of all logic to view them look suspiciously similar to Zope 3 interfaces. And thus schemas were born.
 
-What is a schema?
+What is a schema, how does it compare to an interface and why should you care?
 
- A schema is a definition of an object's properties. A property is an attribute of an object that is intended to be public; it is part of the interface of the object. While properties generally look and feel like normal attributes to the Python programmer, they are often implemented with a hidden getter and setter instead.
+ A schema is a definition of an object's properties, while interface is a definition of an object's methods. A property is an attribute of an object that is intended to be public; it is part of the interface of the object. While properties generally look and feel like normal attributes to the Python programmer, they are often implemented with a hidden getter and setter instead. In a way interface and schema look at the object from two different viewpoints.
 
  To make things more clear, let's compare schemas with normal Zope 3 interfaces. What are Zope 3 interfaces used for?
 
-documentation: by writing an interface, we can tell programmers what methods are available for them to use, and provide documentation on what these methods do. Similarly, a class documents itself by advertising what interfaces it is implementing. Only publically available methods (useable by the programmer as well as other components) are advertised this way.
+   o documentation: by writing an interface, we can tell programmers what methods are available for them to use, and provide documentation on what these methods do. Similarly, a class documents itself by advertising what interfaces it is implementing. Only publically available methods (useable by the programmer as well as other components) are advertised this way.
 
+   o error checking: interfaces can do some minimal verification to see whether a class that advertises it implements methods with these names and signatures.
 
-error checking: interfaces can do some minimal verification to see whether a class that advertises it implements methods with these names and signatures.
+   o introspection: a programmer can check whether an object implements a certain interface. This allows robust and clear introspection.
 
-
-introspection: a programmer can check whether an object implements a certain interface. This allows robust and clear introspection.
-
-
-component architecture: Zope 3's component architecture uses these introspection facilities to plug objects together by their interfaces. The component architecture can for instance be asked to supply an object with another interface (adapters) or end-user presentation (views).
+   o component architecture: Zope 3's component architecture uses these introspection facilities to plug objects together by their interfaces. The component architecture can for instance be asked to supply an object with another interface (adapters) or end-user presentation (views).
 
  Schemas are used in much the same way, substituting property for method. What are schemas used for?
 
+   o documentation: by writing a schema, we can tell programmers what public properties are available for them to use (get or set), and to provide documentation on what these properties are to be used for. Classes document themselves by advertising what schemas they are implementing.
 
+   o error checking: schemas can do some minimal verification to see whether a class actually implements it (supplies these properties).
 
-documentation: by writing a schema, we can tell programmers what public properties are available for them to use (get or set), and to provide documentation on what these properties are to be used for. Classes document themselves by advertising what schemas they are implementing.
+   o introspection: a programmer can check whether an object implements a certain schema.
 
-
-error checking: schemas can do some minimal verification to see whether a class actually implements it (supplies these properties).
-
-
-introspection: a programmer can check whether an object implements a certain schema.
-
-
-component architecture: we can look up adapters and views for schemas; we could for instance have a view for the Dublin Core schema. In some senses we can do even more here than we can do with normal interfaces; we can in fact create objects that implement a schema, as we will see later.
+   o component architecture: we can look up adapters and views for schemas; we could for instance have a view for the Dublin Core schema. In some senses we can do even more here than we can do with normal interfaces; we can in fact create objects that implement a schema, as we will see later.
 
 What does a schema look like?
 
@@ -48,7 +54,7 @@ What does a schema look like?
 
           initials = StringField(
              title="Initials",
-             description="Initials.",
+             description="Initials to be used in portal emails.",
              )
 
           last_name = StringField(
@@ -66,8 +72,6 @@ What does a schema look like?
              description="Is this person a zope user?",
              )
 
-
-
  Now we need a class that implements this interface:
 
       class MyPerson:
@@ -82,24 +86,79 @@ What does a schema look like?
               self.date_of_birth = date_of_birth
               self.is_zope_user = is_zope_user
 
+ Note that in this example a MyPerson instance may in fact not conform to the schema anymore, as it does no checking whether the values of the properties are in fact the ones specified in the schema.
+
+ Another example comes from the ZPTPage ( Zope3/lib/python/Zope/App/OFS/ZPTPage ):
+ 
+    class IZPTPage(Interface):
+    """ZPT Pages are a persistent implementation of Page Templates.   """
+
+    def setSource(text, content_type='text/html'):
+        """Save the source of the page template."""
+
+    def getSource():
+        """Get the source of the page template."""
+
+    source = Zope.Schema.Text(
+        title=u"Source",
+        description=u"""The source of the page template.""",
+        required=True)
+
+ And the class itself starts with:
+
+    class ZPTPage(AppPT, PageTemplate, Persistent):
+
+    # XXX Putting IFileContent at the end gives an error!
+    __implements__ = IFileContent, IZPTPage, IRenderZPTPage
+
+    def getSource(self):
+        '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
+        return self.read()
+
+    def setSource(self, text, content_type='text/html'):
+        '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
+        if isinstance(text, unicode):
+            text = text.encode('utf-8')
+        
+        self.pt_edit(text, content_type)
 
 
- This is a very simple class, but we can make much fancier ones by using Python 2.2's facilities for defining properties.
-
- Note that in this example a MyPerson instance may in fact not conform to the schema anymore, as it does no checking whether the values of the properties are in fact the ones specified in the schema. .. more herex
-
-Providing a view
+Where Schemas make sense: Providing views from Schemas
 
  We can now proceed to provide a view for this schema in much the same way we provide a view for any Zope 3 interface. What would such a view actually look like? A view could be used just to display the values of properties. Often, we'd also like to provide an edit facility such as a web form. This is where Formulator comes in; Formulator provides views (widgets) for each type of field; say an input box for a StringFieldx and a check box for a BooleanFieldx. 
 
- ..more..
+ And here is an example of how configuration happens(Zope3/lib/python/Zope/App/OFS/ZPTPage ):
+ 
+ EditView and form:edit directive provide automatic, but customizable edit views.
+ 
+ In the base configuration (configure.zcml ) views configuration is included to configuration:
+  
+ **NOTE** Views are destined to change in near future. Reference talks and Martijn Faassen's presentation in Rotterdam Sprint. 
+  
+  
+  <include package=".Views" />
+  
+  In Views Browser configuration is included:  
+  
+  <include package=".Browser" />
+  
+  Which then has:
+  
+  <form:edit
+    schema=".ZPTPage.IZPTPage."
+    name="edit.html"
+    label="Edit a ZPT page"
+    permission="Zope.ManageContent"
+  />
+  
 
-More magic
+Issues
 
- The MyPersonx class is of course only a very minimal implementation of the IPersonx schema. The following will talk about another implementation that is more involved, demonstrating some of the power of what one can do with schemas. To be written: stuff about properties adapter automagic creation for IMementoBagx..
+ These issues were written up at Rotterdam Sprint
+ 
+  
 
-Ideas
 
- Schemas are useful beyond just providing views and and attaching metadata to an object. Another possible use is in the area of relational database integration; a schema could be used to generate an SQL query automatically, for instance.
 
- What about argument list schemas? Could be used to specify what fields arguments of some methods should take. Could then be used to create views for methods, also for documentation and introspection. Though this may lean too much towards static typing. :) 
+
+
