@@ -50,9 +50,11 @@ def valuesToUTF8(values):
 class LDAPAdapter(object):
     implements(ILDAPAdapter)
 
-    def __init__(self, host='localhost', port=389, useSSL=False):
+    def __init__(self, host='localhost', port=389, bindDN='', bindPassword='', useSSL=False):
         self.host = host
         self.port = port
+        self.bindDN = bindDN
+        self.bindPassword = bindPassword
         self.useSSL = useSSL
 
     def connect(self, dn, password=None):
@@ -68,6 +70,8 @@ class LDAPAdapter(object):
         # TODO: conn.set_option(OPT_REFERRALS, 1)
 
         # Bind the connection to the dn
+        if not dn:
+            dn = self.bindDN
         conn.simple_bind_s(dn, password)
         # May raise INVALID_CREDENTIALS, SERVER_DOWN, ...
 

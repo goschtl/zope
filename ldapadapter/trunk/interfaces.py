@@ -36,6 +36,14 @@ class ILDAPAdapter(Interface):
         default=389,
         required=True,
         )
+    bindDN = TextLine(
+        title=_("Bind DN"),
+        default=u'',
+        )
+    bindPassword = TextLine(
+        title=_("Bind password"),
+        default=u'',
+        )
     useSSL = Bool(
         title=_("Use SSL"),
         default=False,
