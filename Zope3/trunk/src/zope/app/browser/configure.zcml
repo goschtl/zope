@@ -18,7 +18,6 @@
   <include package=".skins" />
   <include package=".index" />
   <include package=".rdb" />
-  <include package=".catalog" />
   <include file="traversal.zcml" />
   <include file="undo.zcml" />
   <include file="auth.zcml" />

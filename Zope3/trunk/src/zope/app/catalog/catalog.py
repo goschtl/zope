@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog
 
-$Id: catalog.py,v 1.17 2004/03/01 11:09:56 philikon Exp $
+$Id: catalog.py,v 1.18 2004/03/01 11:46:22 philikon Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
@@ -33,7 +33,7 @@ from zope.app.interfaces.container import IContainer
 import zope.app.interfaces.services.hub as IHub
 import zope.app.services.hub as Hub
 from zope.app.container.sample import SampleContainer
-from zope.app.interfaces.catalog.catalog import ICatalog
+from zope.app.catalog.interfaces.catalog import ICatalog
 
 class ResultSet:
     "Lazily accessed set of objects"

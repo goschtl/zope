@@ -107,9 +107,6 @@
   <!-- WebDAV Support -->
   <include package="zope.app.dav" />
 
-   <!-- Services -->
-  <include package="zope.app.catalog"/>
-
   <!-- Utilities -->
 
   <include package="zope.app.utilities" />
@@ -133,6 +130,7 @@
 
   <include package="zope.app.cache" />
   <include package="zope.app.workflow" />
+  <include package="zope.app.catalog"/>
   <include package="zope.app.securitypolicy" />
   <include package="zope.app.tree" />
   <include package="zope.app.introspector" />

@@ -13,7 +13,7 @@
 ##############################################################################
 """Functional tests for catalog
 
-$Id: test_catalog.py,v 1.7 2004/03/01 11:09:56 philikon Exp $
+$Id: ftests.py,v 1.1 2004/03/01 11:46:22 philikon Exp $
 """
 import unittest
 

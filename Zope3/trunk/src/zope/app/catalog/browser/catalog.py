@@ -13,10 +13,10 @@
 ##############################################################################
 """Catalog Views
 
-$Id: catalog.py,v 1.4 2003/08/17 06:05:29 philikon Exp $
+$Id: catalog.py,v 1.1 2004/03/01 11:46:23 philikon Exp $
 """
 from zope.app.browser.container.adding import Adding
-from zope.app.interfaces.catalog.catalog import ICatalog
+from zope.app.catalog.interfaces.catalog import ICatalog
 
 class CatalogEditView:
     "Provides a user interface for configuring a catalog"

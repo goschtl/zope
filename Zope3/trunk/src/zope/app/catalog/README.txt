@@ -37,7 +37,7 @@ Add a module to ++etc++site/default called 'module'. Insert code:
 
 """
 from zope.app import zapi 
-from zope.app.interfaces.catalog.catalog import ICatalogQuery
+from zope.app.catalog.interfaces.catalog import ICatalogQuery
 
 class CatalogView: 
     def search(self): 

@@ -1,17 +1,18 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-               xmlns:browser="http://namespaces.zope.org/browser"
->
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
 
 <content class=".catalog.Catalog">
   <implements 
            interface="zope.app.interfaces.annotation.IAttributeAnnotatable"/>
   <factory id="zope.app.catalog" 
            permission="zope.ManageContent"/>
-  <require interface="zope.app.interfaces.catalog.catalog.ICatalogView"
+  <require interface="zope.app.catalog.interfaces.catalog.ICatalogView"
            permission="zope.View" />
-  <require interface="zope.app.interfaces.catalog.catalog.ICatalogQuery"
+  <require interface="zope.app.catalog.interfaces.catalog.ICatalogQuery"
            permission="zope.Public" />
-  <require interface="zope.app.interfaces.catalog.catalog.ICatalogEdit"
+  <require interface="zope.app.catalog.interfaces.catalog.ICatalogEdit"
            permission="zope.ManageContent" />
   <require interface="zope.app.interfaces.container.IContainer"
            permission="zope.ManageContent" />
@@ -20,11 +21,11 @@
 <content class=".catalog.CatalogUtility">
   <factory id="zope.app.catalogutility" 
            permission="zope.ManageContent"/>
-  <require interface="zope.app.interfaces.catalog.catalog.ICatalogView"
+  <require interface="zope.app.catalog.interfaces.catalog.ICatalogView"
            permission="zope.View"/>
-  <require interface="zope.app.interfaces.catalog.catalog.ICatalogQuery"
+  <require interface="zope.app.catalog.interfaces.catalog.ICatalogQuery"
            permission="zope.View"/>
-  <require interface="zope.app.interfaces.catalog.catalog.ICatalogEdit"
+  <require interface="zope.app.catalog.interfaces.catalog.ICatalogEdit"
            permission="zope.ManageContent"/>
   <require interface="zope.app.interfaces.container.IContainer"
            permission="zope.ManageContent"/>
@@ -34,5 +35,10 @@
   <require attributes="__iter__ __len__"
            permission="zope.Public"/>
 </content>
+
+
+  <!-- Include browser package -->
+
+  <include package=".browser" />
 
 </configure>

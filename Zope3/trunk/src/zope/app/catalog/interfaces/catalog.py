@@ -13,7 +13,7 @@
 ##############################################################################
 """Catalog Interfaces
 
-$Id: catalog.py,v 1.3 2004/02/20 20:33:36 srichter Exp $
+$Id: catalog.py,v 1.1 2004/03/01 11:46:24 philikon Exp $
 """
 from zope.interface import Interface
 
