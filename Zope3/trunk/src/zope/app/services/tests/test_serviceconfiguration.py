@@ -15,22 +15,24 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.3 2003/02/26 16:11:37 gvanrossum Exp $
+$Id: test_serviceconfiguration.py,v 1.4 2003/03/03 23:16:14 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.interface import Interface
 
-from zope.component import getServiceManager
+from zope.component import getServiceManager, getAdapter
 from zope.app.traversing import traverse
 from zope.app.services.service import ServiceConfiguration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.service import ServiceManager
-from zope.component.service import serviceManager
+from zope.component.service import defineService
 from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.configuration import Active, Unregistered
 from zope.app.interfaces.services.configuration import Registered
+from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.dependable import DependencyError
@@ -41,8 +43,8 @@ from zope.app.container.zopecontainer import ZopeContainerAdapter
 class ITestService(Interface):
     pass
 
-class TestService:
-    __implements__ = ITestService, IBindingAware, IDependable
+class TestServiceBase:
+    __implements__ = (ITestService, IBindingAware, IDependable)
 
     _bound = _unbound = ()
 
@@ -69,13 +71,16 @@ class TestService:
     def dependents(self):
         return self._dependents
 
+class TestService(TestServiceBase):
+    __implements__ = TestServiceBase.__implements__, ISimpleService
+
 class Test(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
-        serviceManager.defineService('test_service', ITestService)
+        defineService('test_service', ITestService)
         default = traverse(self.rootFolder,
                            '++etc++Services/Packages/default')
         self.__default = default
@@ -115,6 +120,9 @@ class Test(PlacefulSetup, TestCase):
     def test_afterAddHook(self):
         self.assertEqual(self.__c._dependents,
                          ('/++etc++Services/Packages/default/configure/1', ))
+        u = getAdapter(self.__c, IUseConfiguration)
+        self.assertEqual(list(u.usages()),
+                         ['/++etc++Services/Packages/default/configure/1'])
 
     def test_beforeDeleteHook_and_unregistered(self):
         self.__config.status = Registered
@@ -125,6 +133,8 @@ class Test(PlacefulSetup, TestCase):
 
         del self.__cm['1']
         self.assertEqual(self.__c._dependents, ())
+        u = getAdapter(self.__c, IUseConfiguration)
+        self.assertEqual(len(u.usages()), 0)
 
         self.failIf(registry, "The components should not be registered")
 
@@ -136,6 +146,18 @@ class Test(PlacefulSetup, TestCase):
             pass # OK
         else:
             self.failUnless(0, "Should have gotten a depency error")
+
+    def test_not_a_local_service(self):
+        defineService('test_service_2', ITestService)
+        self.__default.setObject('c2', TestServiceBase())
+
+        self.assertRaises(
+            TypeError,
+            ServiceConfiguration,
+            'test_service',
+            '/++etc++Services/Packages/default/c2',
+            self.__default
+            )
 
 
 def test_suite():

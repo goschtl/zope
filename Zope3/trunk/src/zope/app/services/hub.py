@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.4 2002/12/30 14:03:16 stevea Exp $
+$Id: hub.py,v 1.5 2003/03/03 23:16:13 gvanrossum Exp $
 """
 
 from __future__ import generators
@@ -46,6 +46,7 @@ from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
 from zope.app.interfaces.services.hub import IObjectMovedHubEvent
 from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
 from zope.app.interfaces.traversing import ITraverser
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 class HubEvent:
     """Convenient mix-in for HubEvents"""
@@ -162,6 +163,7 @@ def randid():
     else:
         return abs
 
+
 class ObjectHub(ServiceSubscriberEventChannel, ):
 
     # this implementation makes the decision to not interact with any
@@ -171,6 +173,7 @@ class ObjectHub(ServiceSubscriberEventChannel, ):
 
     __implements__ = (
         IObjectHub,
+        ISimpleService,
         ServiceSubscriberEventChannel.__implements__)
 
     def __init__(self):

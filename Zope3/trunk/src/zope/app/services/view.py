@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.7 2003/02/21 14:50:04 alga Exp $
+$Id: view.py,v 1.8 2003/03/03 23:16:13 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -44,10 +44,11 @@ from zope.exceptions import NotFoundError
 from zope.app.interfaces.services.interfaces import IViewConfiguration, IPageConfiguration
 from zope.app.services.adapter import PersistentAdapterRegistry
 from zope.configuration.exceptions import ConfigurationError
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 class ViewService(Persistent):
 
-    __implements__ = IViewService, IConfigurable
+    __implements__ = IViewService, IConfigurable, ISimpleService
 
     def __init__(self):
         self._layers = PersistentDict()

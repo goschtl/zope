@@ -30,6 +30,7 @@ from zope.component import getService
 # Sibling imports
 from zope.app.interfaces.services.session import ISessionService
 from zope.app.interfaces.services.session import IConfigureSessionService
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 
 cookieSafeTrans = string.maketrans("+/", "-.")
@@ -43,7 +44,7 @@ class CookieSessionService(Persistent):
     """Session service implemented using cookies."""
 
     __implements__ = (Persistent.__implements__, ISessionService,
-                      IConfigureSessionService)
+                      IConfigureSessionService, ISimpleService)
 
     def __init__(self):
         self.dataManagers = PersistentDict()

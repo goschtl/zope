@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_sqlcommand.py,v 1.2 2002/12/25 14:13:14 jim Exp $
+$Id: test_sqlcommand.py,v 1.3 2003/03/03 23:16:11 gvanrossum Exp $
 """
 
 import unittest
@@ -24,6 +24,7 @@ from zope.app.interfaces.rdb import IZopeCursor
 from zope.app.rdb import SQLCommand
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component.service import serviceManager as sm
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 
 # Make some fixes, so that we overcome some of the natural ZODB properties
@@ -53,7 +54,7 @@ class ConnectionStub:
 
 class ConnectionServiceStub:
 
-    __implements__ = IConnectionService
+    __implements__ = IConnectionService, ISimpleService
 
     def getConnection(self, name):
         return ConnectionStub()

@@ -23,7 +23,7 @@ A service manager has a number of roles:
   - A registry for persistent modules.  The Zope import hook uses the
     ServiceManager to search for modules.
 
-$Id: service.py,v 1.8 2003/02/04 10:26:00 runyaga Exp $
+$Id: service.py,v 1.9 2003/03/03 23:16:13 gvanrossum Exp $
 """
 
 import sys
@@ -31,6 +31,7 @@ import sys
 from zodb.code.module import PersistentModule
 from zodb.code.module import PersistentModuleRegistry
 
+from zope.component import getAdapter
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService
@@ -48,6 +49,7 @@ from zope.app.interfaces.services.service import INameResolver
 from zope.app.interfaces.services.service import IServiceConfiguration
 from zope.app.interfaces.services.service import IServiceManager
 from zope.app.interfaces.services.service import IServiceManagerContainer
+from zope.app.interfaces.services.configuration import IUseConfiguration
 
 ModuleType = type(INameResolver)
 ModuleType = ModuleType, PersistentModule
@@ -56,6 +58,10 @@ from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.services.configuration import NameComponentConfigurable
 from zope.app.services.configuration import NamedComponentConfiguration
 from zope.app.services.package import Packages
+from zope.app.interfaces.services.configuration import IUseConfigurable
+from zope.app.interfaces.services.interfaces import ILocalService
+
+from zope.app.traversing import getPhysicalPathString
 
 class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
@@ -256,8 +262,16 @@ class ServiceConfiguration(NamedComponentConfiguration):
 
     label = "Service"
 
-    def __init__(self, *args, **kw):
-        super(ServiceConfiguration, self).__init__(*args, **kw)
+    def __init__(self, name, path, context=None):
+        super(ServiceConfiguration, self).__init__(name, path)
+        if context is not None:
+            # Check that the object implements stuff we need
+            wrapped_self = ContextWrapper(self, context)
+            service = wrapped_self.getComponent()
+            if not ILocalService.isImplementedBy(service):
+                raise TypeError("service %r doesn't implement ILocalService" %
+                                service)
+        # Else, this must be a hopeful test invocation
 
     def getInterface(self):
         service_manager = getServiceManager(self)
@@ -279,3 +293,18 @@ class ServiceConfiguration(NamedComponentConfiguration):
 
     deactivated = ContextMethod(deactivated)
 
+    def afterAddHook(self, configuration, container):
+        NamedComponentConfiguration.afterAddHook(self,
+                                                 configuration,
+                                                 container)
+        service = configuration.getComponent()
+        adapter = getAdapter(service, IUseConfiguration)
+        adapter.addUsage(getPhysicalPathString(configuration))
+
+    def beforeDeleteHook(self, configuration, container):
+        service = configuration.getComponent()
+        adapter = getAdapter(service, IUseConfiguration)
+        adapter.removeUsage(getPhysicalPathString(configuration))
+        NamedComponentConfiguration.beforeDeleteHook(self,
+                                                     configuration,
+                                                     container)

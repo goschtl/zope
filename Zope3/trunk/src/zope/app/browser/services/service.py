@@ -13,10 +13,10 @@
 ##############################################################################
 """Adding components for components and configuration
 
-$Id: service.py,v 1.6 2003/02/21 14:53:34 alga Exp $
+$Id: service.py,v 1.7 2003/03/03 23:16:04 gvanrossum Exp $
 """
 
-from zope.app.browser.container.adding import Adding as ContentAdding
+from zope.app.browser.container.adding import Adding
 from zope.component import getView, getAdapter
 from zope.proxy.context import ContextWrapper, ContextSuper
 from zope.app.interfaces.container import IZopeContainer
@@ -25,30 +25,68 @@ from zope.publisher.browser import BrowserView
 from zope.app.services.service import ServiceConfiguration
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
+from zope.app.traversing import traverse, getPhysicalPathString
+from zope.app.interfaces.services.interfaces import ILocalService
+from zope.proxy.context import getWrapperContainer
+from zope.app.interfaces.services.configuration \
+     import Unregistered, Registered, Active
 
 __metaclass__ = type
 
-class ComponentAdding(ContentAdding):
+class ComponentAdding(Adding):
     """Adding component for components
     """
 
     menu_id = "add_component"
 
     def action(self, type_name, id):
+        if type_name == "../AddService":
+            # Special case
+            url = type_name
+            if id:
+                url += "?id=" + id
+            self.request.response.redirect(url)
+            return
+
         if not id:
             # Generate an id from the type name
             id = type_name
             l = id.rfind('.')
             if l >= 0:
                 id = id[l+1:]
-            if id in self.context:
-                i=2
-                while ("%s-%s" % (id, i)) in self.context:
-                    i=i+1
-                id = "%s-%s" % (id, i)
-        return ContextSuper(ComponentAdding, self).action(type_name, id)
+            i = 1
+            while ("%s-%s" % (id, i)) in self.context:
+                i=i+1
+            id = "%s-%s" % (id, i)
 
-class ConfigurationAdding(ContentAdding):
+        # Call the superclass action() method.
+        # As a side effect, self.added_object is set by add() above.
+        ContextSuper(ComponentAdding, self).action(type_name, id)
+
+
+class ServiceAdding(ComponentAdding):
+    """Adding a service."""
+
+    menu_id = "add_service"
+
+    def add(self, content):
+        # Override so as to save a reference to the added object
+        self.added_object = ContextSuper(ComponentAdding, self).add(content)
+        return self.added_object
+
+    def action(self, type_name, id):
+        # Call the superclass action() method.
+        # As a side effect, self.added_object is set by add() above.
+        ContextSuper(ServiceAdding, self).action(type_name, id)
+
+        if not ILocalService.isImplementedBy(self.added_object):
+            raise TypeError("%s is not a local service" % self.added_object)
+
+        url = getPhysicalPathString(self.added_object)
+        self.request.response.redirect(url + "/addConfiguration.html")
+
+
+class ConfigurationAdding(Adding):
     """Adding component for configuration
     """
 
@@ -116,31 +154,38 @@ class EditConfiguration(BrowserView):
             r.append({'key': name, 'view': view})
         return r
 
-class AddServiceConfiguration(BrowserView):
 
-    def __init__(self, *args):
-        super(AddServiceConfiguration, self).__init__(*args)
-        setUpWidgets(self, IConfiguration)
+class AddServiceConfiguration:
+    """A mixin class."""
 
-    def services(self):
-        service = getServiceManager(self.context.context)
-        definitions = service.getServiceDefinitions()
-        names = [name for (name, interface) in definitions]
-        names.sort()
-        return names
+    def listServiceTypes(self):
 
-    def components(self):
-        service_type = self.request['service_type']
-        service = getServiceManager(self.context.context)
-        type = service.getInterfaceFor(service_type)
-        paths = [info['path']
-                 for info in service.queryComponent(type=type)
-                 ]
-        paths.sort()
-        return paths
+        # Collect all defined services interfaces that it implements.
+        sm = getServiceManager(self.context)
+        lst = []
+        for servicename, interface in sm.getServiceDefinitions():
+            if interface.isImplementedBy(self.context):
+                registry = sm.queryConfigurations(servicename)
+                checked = True
+                if registry and registry.active():
+                    checked = False
+                d = {'name': servicename, 'checked': checked}
+                lst.append(d)
+        return lst
 
-    def action(self, service_type, component_path):
-        sd = ServiceConfiguration(service_type, component_path)
-        sd = self.context.add(sd)
-        getWidgetsDataForContent(self, IConfiguration, sd, strict=False)
-        self.request.response.redirect(self.context.nextURL())
+    def action(self, name=[], active=[]):
+        path = getPhysicalPathString(self.context)
+        configure = traverse(getWrapperContainer(self.context), 'configure')
+        container = getAdapter(configure, IZopeContainer)
+
+        for nm in name:
+            # XXX Shouldn't hardcode 'configure'
+            sc = ServiceConfiguration(nm, path, self.context)
+            name = container.setObject("", sc)
+            sc = container[name]
+            if nm in active:
+                sc.status = Active
+            else:
+                sc.status = Registered
+
+        self.request.response.redirect("@@useConfiguration.html")

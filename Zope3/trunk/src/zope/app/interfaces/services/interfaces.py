@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.14 2003/02/21 14:50:04 alga Exp $
+$Id: interfaces.py,v 1.15 2003/03/03 23:16:10 gvanrossum Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -24,6 +24,27 @@ from zope.interface import Interface
 from zope.app.services.field import ComponentPath
 from zope.component.interfaces import IPresentation
 from zope.app.interfaces.container import IDeleteNotifiable
+from zope.app.interfaces.services.configuration \
+     import IUseConfigurable, IAttributeUseConfigurable
+
+
+class ILocalService(IUseConfigurable):
+    """A local service isn't a local service if it doesn't implement this.
+
+    The contract of a local service includes collaboration with
+    services above it.  A local service should also implement
+    IUseConfigurable (which implies that it is adaptable to
+    IUseConfiguration).  Implementing ILocalService implies this.
+    """
+
+
+class ISimpleService(ILocalService, IAttributeUseConfigurable):
+    """Most local services should implement this instead of ILocalService.
+
+    It implies a specific way of implementing IUseConfigurable,
+    by subclassing IAttributeUseConfigurable.
+    """
+
 
 class IAdapterConfigurationInfo(Interface):
 

@@ -3,10 +3,12 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
-  <browser:menuItem menu="add_component"
+  <browser:menuItem
+      menu="add_component"
       for="zope.app.interfaces.container.IAdding"
-      title="RAM Cache" action="zope.app.caching.RAMCache"
-      description="RAM Cache"/>
+      title="RAM Cache"
+      action="zope.app.caching.RAMCache"
+      />
 
   <browser:pages for="zope.app.interfaces.cache.ram.IRAMCache"
 		class="zope.app.browser.cache.ram.RAMCacheView"

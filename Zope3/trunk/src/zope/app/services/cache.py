@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.4 2003/01/23 09:53:28 ryzaja Exp $
+$Id: cache.py,v 1.5 2003/03/03 23:16:13 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -27,6 +27,7 @@ from zope.app.services.event import ServiceSubscriberEventChannel
 from zope.proxy.context import ContextMethod
 from zope.app.interfaces.services.event import IEventChannel
 from zope.app.interfaces.event import IObjectModifiedEvent
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 
 class ILocalCachingService(ICachingService, IEventChannel,
@@ -37,6 +38,7 @@ class ILocalCachingService(ICachingService, IEventChannel,
 class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
 
     __implements__ = (ILocalCachingService,
+                      ISimpleService,
                       ServiceSubscriberEventChannel.__implements__)
 
     _subscribeToServiceInterface = IObjectModifiedEvent
@@ -87,7 +89,7 @@ class CachingService(ServiceSubscriberEventChannel, NameComponentConfigurable):
 
 """A configuration for a cache.
 
-$Id: cache.py,v 1.4 2003/01/23 09:53:28 ryzaja Exp $
+$Id: cache.py,v 1.5 2003/03/03 23:16:13 gvanrossum Exp $
 """
 
 from zope.app.interfaces.services.cache import ICacheConfiguration

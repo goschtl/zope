@@ -13,13 +13,15 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: configuration.py,v 1.3 2002/12/26 18:55:35 jim Exp $
+$Id: configuration.py,v 1.4 2003/03/03 23:16:10 gvanrossum Exp $
 """
 
 from zope.interface import Interface, Attribute
 from zope.schema import Text, TextLine
 from zope.schema.interfaces import ITextLine
 from zope.app.security.permission import PermissionField
+from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 Unregistered = u'Unregistered'
 Registered = u'Registered'
@@ -252,3 +254,35 @@ class INameComponentConfigurable(INameConfigurable):
         an active configuration, and if so, returns its component.  Otherwise
         returns default.
         """
+
+class IUseConfigurable(IAnnotatable):
+    """A marker interface."""
+
+class IUseConfiguration(IUseConfigurable):
+    """An object that can keep track of its configured uses.
+
+    The object need not implement this functionality itself, but must at
+    least support doing so via an adapter.
+    """
+
+    def addUsage(location):
+        """Add a usage by location.
+
+        The location is the physical path to the configuration object that
+        configures the usage.
+        """
+    def removeUsage(location):
+        """Remove a usage by location.
+
+        The location is the physical path to the configuration object that
+        configures the usage.
+        """
+    def usages():
+        """Return a sequence of locations.
+
+        A location is a physical path to a configuration object that
+        configures a usage.
+        """
+
+class IAttributeUseConfigurable(IAttributeAnnotatable, IUseConfigurable):
+    """A marker interface."""

@@ -13,11 +13,12 @@
 ##############################################################################
 """RoleService implementation for testing
 
-$Id: roleservice.py,v 1.2 2002/12/25 14:12:35 jim Exp $
+$Id: roleservice.py,v 1.3 2003/03/03 23:16:04 gvanrossum Exp $
 """
 
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.security import IRole
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 class Role:
 
@@ -30,7 +31,7 @@ class Role:
 
 class RoleService:
 
-    __implements__ = IRoleService
+    __implements__ = IRoleService, ISimpleService
 
     def __init__(self, **kw):
         self._roles = r = {}

@@ -1,0 +1,48 @@
+<html metal:use-macro="context/@@standard_macros/page">
+  <body>
+    <div metal:fill-slot="body">
+
+      <form action="add_svc_config.html">
+
+        <p>Configure this object to provide the following service(s):
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Configure</th>
+              <th>Service name</th>
+              <th>Activate</th>
+            </tr>
+          </thead>
+
+          <tbody>
+	    <tr tal:repeat="item view/listServiceTypes">
+
+	      <td>
+		<input type="checkbox" name="name:list" value="value" checked
+		       tal:attributes="value item/name">
+              </td>
+	      <td tal:content="item/name">Events
+	      </td>
+
+	      <td>
+		<input type="checkbox" name="active:list" value="value"
+		       tal:attributes="value item/name;
+				       checked item/checked">
+	      </td>
+
+	    </tr>
+          </tbody>
+
+	</table>
+
+	<input type="reset" value="Reset form">
+        <input type="submit" value="Submit">
+
+
+      </form>
+
+    </div>
+  </body>
+</html>

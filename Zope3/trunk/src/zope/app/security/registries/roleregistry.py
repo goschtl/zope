@@ -19,13 +19,14 @@ from zope.app.security.registries.registeredobject import RegisteredObject
 from zope.app.security.registries.registry import Registry
 from zope.app.interfaces.security import IRole
 from zope.app.interfaces.security import IRoleService
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 class Role(RegisteredObject):
     __implements__ = IRole
 
 
 class RoleRegistry(Registry):
-    __implements__ = IRoleService
+    __implements__ = IRoleService, ISimpleService
 
     def __init__(self, prefix=PREFIX):
         Registry.__init__(self, Role)

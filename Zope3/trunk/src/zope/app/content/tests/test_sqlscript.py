@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.6 2003/02/12 02:17:18 seanb Exp $
+$Id: test_sqlscript.py,v 1.7 2003/03/03 23:16:08 gvanrossum Exp $
 """
 
 import unittest
@@ -38,6 +38,7 @@ from zope.app.interfaces.cache.cache import ICacheable
 from zope.app.interfaces.cache.cache import ICachingService
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 
 # Make spme fixes, so that we overcome some of the natural ZODB properties
@@ -73,7 +74,7 @@ class ConnectionStub:
 
 
 class ConnectionServiceStub:
-    __implements__ = IConnectionService
+    __implements__ = IConnectionService, ISimpleService
 
     def getConnection(self, name):
         return ConnectionStub()
@@ -101,7 +102,7 @@ class CacheStub:
 
 class CachingServiceStub:
 
-    __implements__ = ICachingService
+    __implements__ = ICachingService, ISimpleService
 
     def __init__(self):
         self.caches = {}

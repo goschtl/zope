@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.4 2003/02/12 02:17:33 seanb Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.5 2003/03/03 23:16:12 gvanrossum Exp $
 """
 
 import unittest
@@ -52,6 +52,7 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.services.tests.placefulsetup\
            import PlacefulSetup
 from zope.app.security.zopepolicy import permissionsOfPrincipal
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 class Context:
     def __init__(self, user, stack=[]):
@@ -65,7 +66,7 @@ class Principal(PrincipalBase):
 
 class AuthService:
     """we only implement what we need for testing here"""
-    __implements__ = IAuthenticationService
+    __implements__ = IAuthenticationService, ISimpleService
     def __init__(self):
         self.data = {'jim': Principal('jim','Jim','Jim Fulton')}
     def getPrincipal(self, id):

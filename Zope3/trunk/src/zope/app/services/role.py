@@ -14,35 +14,27 @@
 """
 
 Revision information:
-$Id: role.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: role.py,v 1.3 2003/03/03 23:16:13 gvanrossum Exp $
 """
 
-from zope.app.security.registries.roleregistry import Role
 from persistence import Persistent
-
-class Role(Role, Persistent):
-    "Persistent Role"
-
-
-
-
-"""
-
-Revision information:
-$Id: role.py,v 1.2 2002/12/25 14:13:19 jim Exp $
-"""
+from zope.app.security.registries.roleregistry import Role
 from zope.app.container.btree import BTreeContainer
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.container import IContainer
 from zope.proxy.context import ContextMethod
 from zope.app.component.nextservice import getNextService
+from zope.app.interfaces.services.interfaces import ISimpleService
+
+class Role(Role, Persistent):
+    "Persistent Role"
 
 class ILocalRoleService(IRoleService, IContainer):
     """TTW manageable role service"""
 
 class RoleService(BTreeContainer):
 
-    __implements__ = ILocalRoleService
+    __implements__ = ILocalRoleService, ISimpleService
 
     def getRole(wrapped_self, rid):
         '''See interface IRoleService'''
@@ -64,6 +56,3 @@ class RoleService(BTreeContainer):
             roles.extend(roleserv.getRoles())
         return roles
     getRoles = ContextMethod(getRoles)
-
-    #
-    ############################################################

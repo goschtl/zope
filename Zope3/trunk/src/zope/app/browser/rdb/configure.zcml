@@ -51,10 +51,11 @@
 
     </view>
 
-  <menuItem menu="add_component"
+  <menuItem
+      menu="add_component"
       for="zope.app.interfaces.container.IAdding"
-      title="Gadfly DA" 
+      title="Gadfly Database Adapter" 
       action="zope.app.rdb.gadflyda.GadflyAdapter"
-      description="A Gadfly Database Adapter"/>
+      />
 
 </zopeConfigure>

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.8 2003/02/12 02:17:34 seanb Exp $
+$Id: placefulsetup.py,v 1.9 2003/03/03 23:16:14 gvanrossum Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -38,6 +38,14 @@ from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
 from zope.app.traversing import traverse, getPhysicalPathString
 from zope.app.services.service import ServiceManager, ServiceConfiguration
 from zope.app.interfaces.services.configuration import Active
+from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
+from zope.app.interfaces.services.configuration import IUseConfiguration
+from zope.app.services.configuration import UseConfiguration
+from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.annotation import IAnnotations
+from zope.app.interfaces.dependable import IDependable
+from zope.app.dependable import Dependable
 
 class PlacefulSetup(PlacelessSetup):
 
@@ -59,6 +67,13 @@ class PlacefulSetup(PlacelessSetup):
             None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
         provideAdapter(
             IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
+
+        provideAdapter(IAttributeUseConfigurable, IUseConfiguration,
+                       UseConfiguration)
+        provideAdapter(IAttributeAnnotatable, IAnnotations,
+                       AttributeAnnotations)
+
+        provideAdapter(IAttributeAnnotatable, IDependable, Dependable)
 
         # set up etc namespace
         provideNamespaceHandler("etc", etc)
@@ -156,12 +171,13 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject(service_name, EventService())
 
         path = "%s/%s" % (getPhysicalPathString(default), service_name)
-        configuration = ServiceConfiguration(Events, path)
+        configuration = ServiceConfiguration(Events, path, self.rootFolder)
         default['configure'].setObject(
                 "%sEventsDir" % service_name, configuration)
         traverse(default, 'configure/1').status = Active
 
-        configuration = ServiceConfiguration(Subscription, path)
+        configuration = ServiceConfiguration(Subscription, path,
+                                             self.rootFolder)
         default['configure'].setObject(
                 "%sSubscriptionServiceDir" % service_name, configuration)
         traverse(default, 'configure/2').status = Active
@@ -175,7 +191,7 @@ class PlacefulSetup(PlacelessSetup):
             raise RuntimeError('ServiceManager already exists, so cannot '
                                'create standard services')
         root.setServiceManager(ServiceManager())
-        from zope.component import getServiceManager        
+        from zope.component import getServiceManager
         defineService = getServiceManager(None).defineService
 
         from zope.app.interfaces.services.hub import IObjectHub
@@ -194,17 +210,18 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject("myObjectHub", self.getObjectHub())
 
         path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
-        configuration = ServiceConfiguration(Events, path)
+        configuration = ServiceConfiguration(Events, path, self.rootFolder)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
 
-        configuration = ServiceConfiguration(Subscription, path)
+        configuration = ServiceConfiguration(Subscription, path,
+                                             self.rootFolder)
         default['configure'].setObject(
                 "mySubscriptionServiceDir", configuration)
         traverse(default, 'configure/2').status = Active
 
         path = "%s/Packages/default/myObjectHub" % getPhysicalPathString(sm)
-        configuration = ServiceConfiguration(HubIds, path)
+        configuration = ServiceConfiguration(HubIds, path, self.rootFolder)
         default['configure'].setObject("myHubIdsServiceDir", configuration)
         traverse(default, 'configure/3').status = Active
 

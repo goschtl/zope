@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_connectionservice.py,v 1.3 2003/03/03 23:16:14 gvanrossum Exp $
 """
 
 import unittest
@@ -42,11 +42,12 @@ from zope.app.interfaces.services.configuration \
      import Active, Unregistered, Registered
 from zope.app.services.connection \
      import ConnectionConfiguration
+from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
 
 
 class ConnectionServiceForTests(ConnectionService):
 
-    __implements__ = ConnectionService.__implements__, IAttributeAnnotatable
+    __implements__ = ConnectionService.__implements__, IAttributeUseConfigurable
 
 class DAStub:
 

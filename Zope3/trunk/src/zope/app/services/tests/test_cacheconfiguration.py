@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: test_cacheconfiguration.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_cacheconfiguration.py,v 1.3 2003/03/03 23:16:14 gvanrossum Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -27,6 +27,7 @@ from zope.app.interfaces.cache.cache import ICache
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.cache.cache import ICachingService
 from zope.app.interfaces.services.configuration import IConfigurable
+from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
 from zope.app.services.configuration import ConfigurationRegistry
 from zope.app.services.service import ServiceConfiguration
 from zope.proxy.context import ContextMethod
@@ -58,7 +59,8 @@ class TestCache(DependableStub):
 
 class CachingServiceStub(DependableStub):
 
-    __implements__ = ICachingService, IConfigurable, IDependable
+    __implements__ = (ICachingService, IConfigurable, IDependable,
+                      IAttributeUseConfigurable)
 
     def __init__(self):
         self.bindings = {}

@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.9 2003/02/12 02:17:34 seanb Exp $
+$Id: adapter.py,v 1.10 2003/03/03 23:16:13 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -31,6 +31,7 @@ from zope.proxy.context import ContextWrapper
 from zope.proxy.context import ContextMethod
 from zope.app.services.configuration import ConfigurationStatusProperty
 from zope.app.component.nextservice import getNextService
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 from zope.app.interfaces.services.interfaces import IAdapterConfiguration
 
@@ -42,7 +43,7 @@ class PersistentAdapterRegistry(Persistent, AdapterRegistry):
 
 class AdapterService(Persistent):
 
-    __implements__ = IAdapterService, IConfigurable
+    __implements__ = IAdapterService, IConfigurable, ISimpleService
 
     def __init__(self):
         self._byName = PersistentDict()

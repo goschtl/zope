@@ -17,7 +17,7 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.7 2003/02/23 15:09:54 stevea Exp $
+$Id: bootstrap.py,v 1.8 2003/03/03 23:16:14 gvanrossum Exp $
 """
 from transaction import get_transaction
 
@@ -32,6 +32,7 @@ from zope.app.services.hub import ObjectHub
 from zope.app.services.event import EventService
 from zope.app.services.errorr import ErrorReportingService
 from zope.app.services.principalannotation import PrincipalAnnotationService
+from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.proxy.introspection import removeAllProxies
 
 def bootstrapInstance(db):
@@ -65,14 +66,21 @@ def addEssentialServices(root_folder):
     """
     service_manager = ServiceManager()
     root_folder.setServiceManager(service_manager)
+
+    # Add the HubIds service first; some of the others need it
+    name = addService(root_folder, HubIds, ObjectHub)
+    configureService(root_folder, HubIds, name)
+
+    # The EventService class implements two services
     name = addConfigureService(root_folder, Events, EventService)
     configureService(root_folder, Subscription, name)
 
-    addConfigureService(root_folder, HubIds, ObjectHub)
+    # Sundry other services
     addConfigureService(root_folder, ErrorReports,
                         ErrorReportingService, copy_to_zlog=True)
     addConfigureService(root_folder, 'PrincipalAnnotation',
                         PrincipalAnnotationService)
+
 
 def addConfigureService(root_folder, service_type, service_factory, **kw):
     """Add and configure a service to the root folder."""
@@ -111,8 +119,9 @@ def configureService(root_folder, service_type, name,
     package = traverse(root_folder, package_name)
     configuration_manager = traverseName(package, 'configure')
     configuration =  ServiceConfiguration(service_type,
-                                          package_name + (name,))
-    key = configuration_manager.setObject(None, configuration)
+                                          package_name + (name,),
+                                          root_folder)
+    cm = ZopeContainerAdapter(configuration_manager)
+    key = cm.setObject("", configuration)
     configuration = traverseName(configuration_manager, key)
     configuration.status = initial_status
-

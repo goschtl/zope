@@ -20,6 +20,11 @@
         title="Menu of objects to be added to service manager packages"
         />
 
+   <menu
+        id="add_service"
+	title="Menu of services to be added"
+	/>
+
    <menu id="add_configuration"
         title="Menu of addable configuration objects"
         />

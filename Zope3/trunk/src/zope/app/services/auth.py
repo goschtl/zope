@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.12 2003/02/12 02:17:34 seanb Exp $
+$Id: auth.py,v 1.13 2003/03/03 23:16:13 gvanrossum Exp $
 """
 
 from types import TupleType
@@ -37,6 +37,7 @@ from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.security.grants.principalrole import principalRoleManager
 from zope.app.component.nextservice import getNextService
 from zope.proxy.context import ContextMethod
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 
 class DuplicateLogin(Exception):
@@ -48,7 +49,7 @@ class DuplicateId(Exception):
 
 class AuthenticationService(Persistent):
 
-    __implements__ = IAuthenticationService, IContainer
+    __implements__ = IAuthenticationService, IContainer, ISimpleService
 
     def __init__(self):
         self._usersbylogin = OOBTree()

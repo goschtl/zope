@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.14 2003/02/18 15:19:22 stevea Exp $
+$Id: event.py,v 1.15 2003/03/03 23:16:13 gvanrossum Exp $
 """
 
 from __future__ import generators
@@ -294,11 +294,14 @@ class ServiceSubscribable(Subscribable):
     iterSubscriptions = ContextMethod(iterSubscriptions)
 
 
+from zope.app.interfaces.services.interfaces import ISimpleService
+
 class EventService(ServiceSubscriberEventChannel, ServiceSubscribable):
 
     __implements__ = (
         IEventService,
         ISubscriptionService,
+        ISimpleService,
         ServiceSubscribable.__implements__,
         ServiceSubscriberEventChannel.__implements__
         )

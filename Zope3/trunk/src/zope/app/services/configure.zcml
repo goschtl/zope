@@ -13,9 +13,6 @@
 <!-- Adapter Service -->
 
 <content class="zope.app.services.adapter.AdapterService">
-  <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-      />
   <factory
       id="zope.app.services.AdapterService"
       permission="zope.ManageServices"
@@ -42,8 +39,6 @@
 <!-- View Service -->
 
 <content class="zope.app.services.view.ViewService">
-  <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
   <factory
       id="zope.app.services.ViewService"
       permission="zope.ManageServices"
@@ -102,25 +97,31 @@
       />
 </content>
 
-<adapter 
+<adapter
   for="zope.app.interfaces.services.interfaces.IZPTTemplate"
   provides="zope.app.interfaces.file.IReadFile"
   factory=".zpt.ReadFile"
   permission="zope.ManageServices"
   />
 
-<adapter 
+<adapter
   for="zope.app.interfaces.services.interfaces.IZPTTemplate"
   provides="zope.app.interfaces.file.IWriteFile"
   factory=".zpt.WriteFile"
   permission="zope.ManageServices"
   />
 
-<adapter 
+<adapter
   for="zope.app.interfaces.services.service.IViewPackage"
   provides="zope.app.interfaces.file.IFileFactory"
   factory=".zpt.ZPTFactory"
   permission="zope.ManageServices"
+  />
+
+<adapter
+  for="zope.app.interfaces.services.configuration.IUseConfigurable"
+  provides="zope.app.interfaces.services.configuration.IUseConfiguration"
+  factory="zope.app.services.configuration.UseConfiguration"
   />
 
 <!-- Role Templates -->
@@ -138,9 +139,6 @@
       permission="zope.ManageServices"
       interface="zope.app.interfaces.container.IContainer"
       />
-  <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-      />
 </content>
 
 <content class="zope.app.services.role.Role">
@@ -154,7 +152,7 @@
 <!-- Session Templates -->
 
 <serviceType
-    id="Sessions" 
+    id="Sessions"
     interface="zope.app.interfaces.services.session.ISessionService"
     />
 
@@ -166,9 +164,6 @@
   <factory
       id="ISessionService"
       permission="zope.ManageServices"
-      />
-  <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
       />
 </content>
 
@@ -184,8 +179,6 @@
       <require
           permission="zope.ManageServices"
           interface="zope.app.interfaces.container.IContainer" />
-      <implements
-          interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>
 
   <content class="zope.app.services.cache.CacheConfiguration">
@@ -298,18 +291,15 @@
         permission="zope.ManageCode"
         interface="zodb.code.interfaces.IPersistentModuleManager"
         />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-        />
     </content>
 
 <!-- View Packages -->
 
   <content class="zope.app.services.viewpackage.ViewPackage">
     <factory
-      id = "zope.app.services.ViewPackage" 
+      id = "zope.app.services.ViewPackage"
       permission = "zope.ManageServices"
-      title = "View Package" 
+      title = "View Package"
       />
     <require
         permission="zope.View"
@@ -333,10 +323,7 @@
   <content class="zope.app.services.connection.ConnectionService">
     <factory
        id="ConnectionService"
-       permission="zope.ManageServices" 
-       />
-    <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+       permission="zope.ManageServices"
        />
     <require
         permission="zope.View"
@@ -351,15 +338,15 @@
         interface=
         "zope.app.interfaces.services.connection.IConnectionConfiguration"
         set_attributes="name componentPath"
-        set_schema="zope.app.interfaces.services.interfaces.IPageConfiguration" 
+        set_schema="zope.app.interfaces.services.interfaces.IPageConfiguration"
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IAddNotifiable" 
+        interface="zope.app.interfaces.container.IAddNotifiable"
         />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IDeleteNotifiable" 
+        interface="zope.app.interfaces.container.IDeleteNotifiable"
         />
     </content>
 
@@ -384,15 +371,12 @@
         id="IPrincipalAnnotationService"
         permission="zope.ManageServices"
         />
-    <implements 
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-       />
     </content>
 
 <!-- Error reporting service -->
 
   <serviceType
-      id="ErrorReportingService" 
+      id="ErrorReportingService"
       interface="zope.app.interfaces.services.error.IErrorReportingService" />
 
   <content class='zope.app.services.errorr.ErrorReportingService'>
@@ -403,15 +387,12 @@
     <factory
         id='ErrorReportingService'
         permission='zope.Public' />
-    <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-        />
     </content>
 
 <!-- Object Hub -->
 
   <serviceType
-      id='HubIds' 
+      id='HubIds'
       interface='zope.app.interfaces.services.hub.IObjectHub' />
 
   <content class='zope.app.services.hub.ObjectHub'>
@@ -422,13 +403,11 @@
         permission="zope.View"
 	attributes="notify getHubId getLocation getObject
                     register unregister numRegistrations
-                    getRegistrations" />		   
+                    getRegistrations" />
     <require
         permission="zope.ManageServices"
         attributes="bound unbound subscribe unsubscribe subscribeOnBind
                     unsubscribedFrom subscribedTo" />
-    <implements 
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>
 
 <!-- Authentication Service -->
@@ -449,9 +428,6 @@
     <require
         permission="zope.ManageServices"
         interface="zope.app.interfaces.container.IContainer" />
-
-    <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
     </content>
 
@@ -481,9 +457,6 @@
       permission="zope.ManageServices"
       attributes="bound unbound subscribe unsubscribe subscribeOnBind
                   unsubscribedFrom subscribedTo"
-      />
-  <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable."
       />
 </content>
 

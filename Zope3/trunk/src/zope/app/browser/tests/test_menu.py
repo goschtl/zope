@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_menu.py,v 1.6 2003/02/12 02:17:14 seanb Exp $
+$Id: test_menu.py,v 1.7 2003/03/03 23:16:06 gvanrossum Exp $
 """
 
 import unittest
@@ -33,12 +33,13 @@ from zope.security.management import newSecurityManager
 from zope.security.checker import defineChecker, NamesChecker, CheckerPublic
 from zope.security.proxy import ProxyFactory
 from zope.app.interfaces.publisher.browser import IBrowserMenuService
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 def d(title, action):
     return {'action': action, 'title': title, 'description': ''}
 
 class Service:
-    __implements__ = IBrowserMenuService
+    __implements__ = IBrowserMenuService, ISimpleService
 
     def getMenu(self, name, ob, req):
         return [d('l1', 'a1'),

@@ -28,7 +28,7 @@ from zope.app.interfaces.annotation import IAnnotations
 
 # Sibling imports
 from zope.app.interfaces.services.principalannotation import IPrincipalAnnotationService
-
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 class PrincipalAnnotationService(Persistent):
     """Stores IAnnotations for IPrinicipals.
@@ -36,7 +36,8 @@ class PrincipalAnnotationService(Persistent):
     The service ID is 'PrincipalAnnotation'.
     """
 
-    __implements__ = IPrincipalAnnotationService, Persistent.__implements__
+    __implements__ = (IPrincipalAnnotationService, Persistent.__implements__,
+                      ISimpleService)
 
     def __init__(self):
         self.annotations = OOBTree()

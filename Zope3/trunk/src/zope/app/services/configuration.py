@@ -13,32 +13,36 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.7 2003/02/26 16:11:36 gvanrossum Exp $
+$Id: configuration.py,v 1.8 2003/03/03 23:16:13 gvanrossum Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
+
+from zope.component \
+     import getAdapter, getService, queryService, getServiceManager
+
+from zope.proxy.context import ContextMethod, ContextWrapper
+from zope.proxy.introspection import removeAllProxies
+
+from zope.security.checker import InterfaceChecker
+from zope.security.proxy import Proxy
+
+from zope.app.interfaces.annotation import IAnnotations
+from zope.app.interfaces.container import IAddNotifiable, IDeleteNotifiable
+from zope.app.interfaces.dependable import IDependable, DependencyError
+
 from zope.app.interfaces.services.configuration import IConfigurationRegistry
 from zope.app.interfaces.services.configuration \
-    import INamedComponentConfiguration, INameConfigurable
+     import INameComponentConfigurable, INamedConfiguration, IConfiguration
 from zope.app.interfaces.services.configuration \
-    import INameComponentConfigurable, INamedConfiguration, IConfiguration
-from zope.component import getService, queryService
-from zope.component import getServiceManager
-from zope.component import getAdapter
-from zope.proxy.context import ContextMethod
-from zope.proxy.context import ContextWrapper
-from zope.proxy.introspection import removeAllProxies
-from zope.security.proxy import Proxy
-from zope.security.checker import InterfaceChecker
-from zope.app.interfaces.container import IAddNotifiable
-from zope.app.interfaces.container import IDeleteNotifiable
-from zope.app.interfaces.dependable import IDependable
-from zope.app.interfaces.dependable import DependencyError
-from zope.app.traversing import getPhysicalPathString, traverse
-from zope.app.traversing import getPhysicalRoot
+     import INamedComponentConfiguration, INameConfigurable
+from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active
+
+from zope.app.traversing \
+     import getPhysicalRoot, getPhysicalPathString, traverse
 
 
 class ConfigurationStatusProperty:
@@ -272,7 +276,7 @@ class SimpleConfiguration(Persistent):
             try:
                 objectpath = getPhysicalPathString(configuration)
             except: # XXX
-                objectpath = str(configuration) 
+                objectpath = str(configuration)
             raise DependencyError("Can't delete active configuration (%s)"
                                   % objectpath)
         elif objectstatus == Registered:
@@ -285,9 +289,9 @@ class NamedConfiguration(SimpleConfiguration):
 
     __implements__ = INamedConfiguration, SimpleConfiguration.__implements__
 
-    def __init__(self, name, *args, **kw):
+    def __init__(self, name):
         self.name = name
-        super(NamedConfiguration, self).__init__(*args, **kw)
+        super(NamedConfiguration, self).__init__()
 
 
 class NamedComponentConfiguration(NamedConfiguration):
@@ -301,14 +305,12 @@ class NamedComponentConfiguration(NamedConfiguration):
     __implements__ = (INamedComponentConfiguration,
                       NamedConfiguration.__implements__, IAddNotifiable)
 
-    # XXX is all this '*args, **kw' business the right way to use super?
-
-    def __init__(self, name, component_path, permission=None, *args, **kw):
+    def __init__(self, name, component_path, permission=None):
         self.componentPath = component_path
         if permission == 'zope.Public':
             permission = CheckerPublic
         self.permission = permission
-        super(NamedComponentConfiguration, self).__init__(name, *args, **kw)
+        super(NamedComponentConfiguration, self).__init__(name)
 
     def getComponent(wrapped_self):
         service_manager = getServiceManager(wrapped_self)
@@ -416,3 +418,29 @@ class NameComponentConfigurable(NameConfigurable):
                 return configuration.getComponent()
         return default
     queryActiveComponent = ContextMethod(queryActiveComponent)
+
+
+USE_CONFIG_KEY = 'zope.app.services.configuration.UseConfiguration'
+
+class UseConfiguration:
+    """An adapter."""
+
+    __implements__ = IUseConfiguration
+
+    def __init__(self, context):
+        self.context = context
+
+    def addUsage(self, location):
+        annotations = getAdapter(self.context, IAnnotations)
+        annotations[USE_CONFIG_KEY] = (annotations.get(USE_CONFIG_KEY, ()) +
+                                       (location, ))
+
+    def removeUsage(self, location):
+        annotations = getAdapter(self.context, IAnnotations)
+        locs = [loc for loc in annotations.get(USE_CONFIG_KEY, ())
+                    if loc != location]
+        annotations[USE_CONFIG_KEY] = tuple(locs)
+
+    def usages(self):
+        annotations = getAdapter(self.context, IAnnotations)
+        return annotations.get(USE_CONFIG_KEY, ())

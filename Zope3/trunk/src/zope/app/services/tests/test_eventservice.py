@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.10 2003/02/12 02:17:34 seanb Exp $
+$Id: test_eventservice.py,v 1.11 2003/03/03 23:16:14 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -42,6 +42,7 @@ from zope.proxy.context import ContextWrapper
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.component.tests.components import RecordingAdapter
 from zope.component.adapter import provideAdapter
+from zope.app.interfaces.services.interfaces import ISimpleService
 
 class UnpromotingEventService(EventService):
 
@@ -68,7 +69,7 @@ class IObjectHub(Interface):
         "gets location"
 
 class DumbObjectHub:
-    __implements__ = IObjectHub
+    __implements__ = IObjectHub, ISimpleService
 
     def __init__(self):
         # (location, object)
