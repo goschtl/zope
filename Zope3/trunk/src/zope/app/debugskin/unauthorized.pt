@@ -7,6 +7,8 @@
   <h1 i18n:translate="">Unauthorized</h1>
   <p i18n:translate="">You're not allowed in here.</p>
 
+  <p tal:content="context"/>
+
 </div>
 </body>
 </html>
