@@ -21,7 +21,7 @@ way to access information outside the environment.  Because these
 functions are proxied, as described below, any access to objects
 outside the environment is mediated by the target security functions.
 
-Safe objects are objects who's operations, except for attribute
+Safe objects are objects whose operations, except for attribute
 retrieval, and methods access only information stored within the
 objects or passed as arguments.  Safe objects contained within the
 interpreter environment can contain only information that is already
@@ -47,7 +47,7 @@ detail in a later section.  Any operation on a security proxy that
 results in a non-basic object is also security proxied.
 
 All external resources needed to perform an operation are security
-proxied.  
+proxied.
 
 Let's consider the trusted interpreter for evaluating URLs.  In
 operation 1 of the example, the interpreter uses a proxied method for
@@ -177,9 +177,9 @@ subobjects. Examples of basic objects include:
 
 - Floating-point objects,
 
-- Date-time objects, 
+- Date-time objects,
 
-- Boolean objects (True and False), and 
+- Boolean objects (True and False), and
 
 - The special (nil) object, None.
 

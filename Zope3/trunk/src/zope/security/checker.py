@@ -86,7 +86,7 @@ directlyProvides(ProxyFactory, ISecurityProxyFactory)
 
 def canWrite(obj, name):
     """Check whether the interaction may write an attribute named name on obj.
-    
+
     Convenience method.  Rather than using checkPermission in high level code,
     use canWrite and canAccess to avoid binding code to permissions.
     """
@@ -96,17 +96,17 @@ def canWrite(obj, name):
         checker.check_setattr(obj, name)
     except Unauthorized:
         return False
-    # if it is Forbidden (or anything else), let it be raised: it probably 
+    # if it is Forbidden (or anything else), let it be raised: it probably
     # indicates a programming or configuration error
     return True
 
 def canAccess(obj, name):
     """Check whether the interaction may access an attribute named name on obj.
-    
+
     Convenience method.  Rather than using checkPermission in high level code,
     use canWrite and canAccess to avoid binding code to permissions.
     """
-    # access attributes and methods, including, in the current checker 
+    # access attributes and methods, including, in the current checker
     # implementation, special names like __getitem__
     obj = ProxyFactory(obj)
     checker = getChecker(obj)
@@ -114,7 +114,7 @@ def canAccess(obj, name):
         checker.check_getattr(obj, name)
     except Unauthorized:
         return False
-    # if it is Forbidden (or anything else), let it be raised: it probably 
+    # if it is Forbidden (or anything else), let it be raised: it probably
     # indicates a programming or configuration error
     return True
 
@@ -135,7 +135,6 @@ class Checker(object):
         set attribute access.
 
         """
-
         assert isinstance(get_permissions, dict)
         self.get_permissions = get_permissions
         if set_permissions is not None:

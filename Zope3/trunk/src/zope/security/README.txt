@@ -162,8 +162,8 @@ Loosely we define a process for implementing this security model
     agents as the active principal in an interaction.
 
 
-Defining Permission Model
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Defining a Permission Model
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 We define the following permissions::
 
