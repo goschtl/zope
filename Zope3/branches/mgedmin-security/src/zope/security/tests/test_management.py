@@ -183,15 +183,13 @@ class Test(CleanUp, unittest.TestCase):
             def checkPermission(s, p, o, i):
                 self.assert_(p is permission)
                 self.assert_(o is obj)
-## XXX: transition from security contexts to interactions is not complete
-##              self.assert_(i is getInteraction() or i is interaction)
+                self.assert_(i is getInteraction() or i is interaction)
                 return i is interaction
 
         setSecurityPolicy(PolicyStub())
         newInteraction(None)
         self.assertEquals(checkPermission(permission, obj), False)
-## XXX: transition from security contexts to interactions is not complete
-##      self.assertEquals(checkPermission(permission, obj, interaction), True)
+        self.assertEquals(checkPermission(permission, obj, interaction), True)
 
 
 def test_suite():

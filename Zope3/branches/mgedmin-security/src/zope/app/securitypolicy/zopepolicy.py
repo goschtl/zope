@@ -18,6 +18,8 @@ $Id: zopepolicy.py,v 1.4 2004/03/08 12:06:03 srichter Exp $
 from zope.interface import implements
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.management import system_user
+from zope.security.simpleinteraction import createInteraction \
+                                            as _createInteraction
 
 from zope.app.location import LocationIterator
 
@@ -64,11 +66,14 @@ class ZopeSecurityPolicy:
         self._ownerous = ownerous
         self._authenticated = authenticated
 
-    def checkPermission(self, permission, object, context):
+    createInteraction = staticmethod(_createInteraction)
+
+    def checkPermission(self, permission, object, interaction):
         # XXX We aren't really handling multiple principals yet
+        assert len(interaction.participations) == 1 # XXX
+        user = interaction.participations[0].principal
 
         # mapping from principal to set of roles
-        user = context.user
         if user is system_user:
             return True
 

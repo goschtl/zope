@@ -7,7 +7,8 @@
 import zope.proxy
 
 from zope.security.checker import CheckerPublic as _CheckerPublic
-from zope.security.management import getSecurityManager as _getSecurityManager
+from zope.security.management import getInteraction as _getInteraction
+from zope.security.management import getSecurityPolicy as _getSecurityPolicy
 
 def checkPermission(permission, object, interaction=None):
     """Return whether security policy allows permission on object.
@@ -24,9 +25,8 @@ def checkPermission(permission, object, interaction=None):
     """
     if permission is None or permission is _CheckerPublic:
         return True
-    if interaction is not None:
-        # XXX: transition from contexts to interactions is not complete
-        raise NotImplementedError
-    sm = _getSecurityManager()
-    return sm.checkPermission(permission, object)
+    if interaction is None:
+        interaction = _getInteraction()
+    policy = _getSecurityPolicy()
+    return policy.checkPermission(permission, object, interaction)
 

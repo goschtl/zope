@@ -37,7 +37,7 @@ from zope.interface.declarations import Implements
 from zope.interface.declarations import Declaration
 from zope.security.interfaces import IChecker, INameBasedChecker
 from zope.security.interfaces import ISecurityProxyFactory
-from zope.security.management import getSecurityManager
+from zope.security.management import getSecurityPolicy, getInteraction
 from zope.security._proxy import _Proxy as Proxy, getChecker
 from zope.exceptions import Unauthorized, ForbiddenAttribute, DuplicationError
 
@@ -143,8 +143,9 @@ class Checker(TrustedCheckerBase):
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
-            manager = getSecurityManager()
-            if manager.checkPermission(permission, object):
+            policy = getSecurityPolicy()
+            interaction = getInteraction()
+            if policy.checkPermission(permission, object, interaction):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
@@ -159,8 +160,9 @@ class Checker(TrustedCheckerBase):
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
-            manager = getSecurityManager()
-            if manager.checkPermission(permission, object):
+            policy = getSecurityPolicy()
+            interaction = getInteraction()
+            if policy.checkPermission(permission, object, interaction):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
@@ -303,8 +305,9 @@ class DecoratedChecker(TrustedCheckerBase):
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
-            manager = getSecurityManager()
-            if manager.checkPermission(permission, object):
+            policy = getSecurityPolicy()
+            interaction = getInteraction()
+            if policy.checkPermission(permission, object, interaction):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
@@ -320,8 +323,9 @@ class DecoratedChecker(TrustedCheckerBase):
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
-            manager = getSecurityManager()
-            if manager.checkPermission(permission, object):
+            policy = getSecurityPolicy()
+            interaction = getInteraction()
+            if policy.checkPermission(permission, object, interaction):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
@@ -337,8 +341,9 @@ class DecoratedChecker(TrustedCheckerBase):
         if permission is not None:
             if permission is CheckerPublic:
                 return # Public
-            manager = getSecurityManager()
-            if manager.checkPermission(permission, object):
+            policy = getSecurityPolicy()
+            interaction = getInteraction()
+            if policy.checkPermission(permission, object, interaction):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)

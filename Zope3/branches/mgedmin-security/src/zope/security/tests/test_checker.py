@@ -34,7 +34,7 @@ __metaclass__ = type
 class SecurityPolicy:
     implements(ISecurityPolicy)
 
-    def checkPermission(self, permission, object, context):
+    def checkPermission(self, permission, object, interaction):
         'See ISecurityPolicy'
         return permission == 'test_allowed'
 
@@ -45,7 +45,7 @@ class RecordedSecurityPolicy:
         self._checked = []
         self.permissions = {}
 
-    def checkPermission(self, permission, object, context):
+    def checkPermission(self, permission, object, interaction):
         'See ISecurityPolicy'
         self._checked.append(permission)
         return self.permissions.get(permission, True)

@@ -89,8 +89,9 @@ class SecurityManager:
 
             object -- The object being accessed according to the permission
         """
+        from zope.security.management import getInteraction # this is temporary
         return self._getPolicy().checkPermission(permission, object,
-                                                 self._context)
+                                                 getInteraction())
 
     def pushExecutable(self, anExecutableObject):
         """Push an ExecutableObject onto the manager's stack, and

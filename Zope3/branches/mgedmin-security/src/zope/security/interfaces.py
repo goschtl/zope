@@ -199,14 +199,14 @@ class ISecurityPolicy(Interface):
             ISecurityManagement.global setInteractionFactory(factory).
         """
 
-    def checkPermission(permission, object, context):   # XXX: will change
+    def checkPermission(permission, object, interaction):
         """Return whether security context allows permission on object.
 
         Arguments:
         permission -- A permission name
         object -- The object being accessed according to the permission
-        context -- A SecurityContext, which provides access to information
-            such as the context stack and AUTHENTICATED_USER.
+        interaction -- An interaction, which provides access to information
+            such as authenticated principals.
         """
 
 
