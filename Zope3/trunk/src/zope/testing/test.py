@@ -488,16 +488,6 @@ class PathInit:
             sys.path.insert(0, extra)
         else:
             print "Running %s tests from %s" % (kind, self.cwd)
-        # Make sure functional tests find ftesting.zcml
-        if functional:
-            config_file = FTESTING
-            if not self.inplace:
-                # We chdired into build, so ftesting.zcml is in the
-                # parent directory
-                config_file = os.path.join('..', FTESTING)
-            print "Parsing %s" % config_file
-            from zope.app.tests.functional import FunctionalTestSetup
-            FunctionalTestSetup(config_file)
 
 def match(rx, s):
     if not rx:
@@ -765,6 +755,18 @@ def main(module_filter, test_filter, libdir):
 
     files = find_tests(module_filter)
     files.sort()
+
+    # Make sure functional tests find ftesting.zcml
+    if files and functional:
+        config_file = FTESTING
+        if not pathinit.inplace:
+            # We chdired into build, so ftesting.zcml is in the
+            # parent directory
+            config_file = os.path.join('..', FTESTING)
+        print "Parsing %s" % config_file
+        from zope.app.tests.functional import FunctionalTestSetup
+        FunctionalTestSetup(config_file)
+    
 
     if GUI:
         gui_runner(files, test_filter)
