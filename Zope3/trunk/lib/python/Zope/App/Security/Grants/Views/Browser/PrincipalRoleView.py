@@ -14,7 +14,7 @@
 """ Management view component for principal-role management (Zope2's
     "local roles").
 
-$Id: PrincipalRoleView.py,v 1.4 2002/07/16 23:41:17 jim Exp $
+$Id: PrincipalRoleView.py,v 1.5 2002/12/07 17:22:39 ctheune Exp $
 """
 
 import time
@@ -29,7 +29,7 @@ from Zope.App.Security.IPrincipalRoleMap import IPrincipalRoleMap
 from Zope.App.Security.IPermission import IPermission
 from Zope.App.Security.IRole import IRole
 
-from Zope.App.Security.Settings import Unset
+from Zope.App.Security.Settings import Unset, Deny, Allow
 
 
 class PrincipalRoleView(BrowserView):
@@ -128,6 +128,5 @@ class PrincipalRoleGrid:
         return self._grid[(principal_id, role_id)]
 
     def listAvailableValues(self):
-        # XXX rather use Allow.getName() & co
-        return ('Unset', 'Allow', 'Deny')
+        return (Unset.getName(), Allow.getName(), Deny.getName())
 
