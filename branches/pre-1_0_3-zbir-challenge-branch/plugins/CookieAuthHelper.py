@@ -18,6 +18,7 @@ $Id$
 """
 
 from base64 import encodestring, decodestring
+from urllib import quote
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from OFS.Folder import Folder
@@ -163,11 +164,13 @@ class CookieAuthHelper(Folder, BasePlugin):
                               , title='Login Form'
                               , text=BASIC_LOGIN_FORM
                               )
+        self.login_form.__roles__ = []
 
 
     security.declarePrivate('unauthorized')
     def unauthorized(self):
-        resp = self.REQUEST['RESPONSE']
+        req = self.REQUEST
+        resp = req['RESPONSE']
         # If we set the auth cookie before, delete it now.
         if resp.cookies.has_key(self.cookie_name):
             del resp.cookies[self.cookie_name]
@@ -175,6 +178,15 @@ class CookieAuthHelper(Folder, BasePlugin):
         # Redirect if desired.
         url = self.getLoginURL()
         if url is not None:
+            came_from = req.get('came_from', None)
+            if came_from is None:
+                came_from = req.get('URL', '')
+                query = req.get('QUERY_STRING')
+                if query:
+                    if not query.startswith('?'):
+                        query = '?' + query
+                    came_from = came_from + query
+            url = url + '?came_from=%s' % quote(came_from)
             resp.redirect(url, lock=1)
             return 1
 
@@ -192,6 +204,18 @@ class CookieAuthHelper(Folder, BasePlugin):
         else:
             return None
 
+    security.declarePublic('login')
+    def login(self):
+        """ Set a cookie and redirect to the url that we tried to
+        authenticate against originally.
+        """
+        request = self.REQUEST
+        response = request['RESPONSE']
+
+        came_from = request.form['came_from']
+
+        return response.redirect(came_from)
+
 
 InitializeClass(CookieAuthHelper)
 
@@ -206,9 +230,10 @@ BASIC_LOGIN_FORM = """<html>
     <h3> Please log in </h3>
 
     <form method="post" action=""
-          tal:define="acl_path here/acl_users/absolute_url"
-          tal:attributes="action string:${acl_path}/login">
+          tal:attributes="action string:${here/absolute_url}/login">
 
+      <input type="hidden" name="came_from" value=""
+             tal:attributes="value request/came_from | string:"/>
       <table cellpadding="2">
         <tr>
           <td><b>Login:</b> </td>
