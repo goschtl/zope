@@ -17,8 +17,10 @@ This module contains code to bootstrap a Zope3 instance.  For example
 it makes sure a root folder exists and creates and configures some
 essential services.
 
-$Id: bootstrap.py,v 1.4 2003/07/11 05:50:44 anthony Exp $
+$Id: bootstrap.py,v 1.5 2003/07/11 07:16:55 jim Exp $
 """
+
+from zope.app import zapi
 from transaction import get_transaction
 from zope.interface import implements
 from zope.app.interfaces.event import ISubscriber
@@ -132,7 +134,11 @@ class BootstrapInstance(BootstrapSubscriberBase):
         name = self.ensureService(EventPublication, EventService)
         if name:
             configureService(self.root_folder, EventSubscription, name)
-
+        elif not self.service_manager.queryLocalService(EventSubscription):
+            pub = self.service_manager.queryLocalService(EventPublication)
+            name = zapi.getName(pub)
+            configureService(self.root_folder, EventSubscription, name)
+    
         # Add the HubIds service, which subscribes itself to the event service
         name = self.ensureService(HubIds, ObjectHub)
         # Add a Registration object so that the Hub has something to do.
