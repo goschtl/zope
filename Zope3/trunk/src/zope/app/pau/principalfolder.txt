@@ -9,7 +9,7 @@ principal information.  We create principal information using the
   >>> p1 = zope.app.pau.principalfolder.PrincipalInformation(
   ...     'login1', '123', "Principal 1")
   >>> p2 = zope.app.pau.principalfolder.PrincipalInformation(
-  ...     'login2', '456', "The other one")
+  ...     'login2', '456', "The Other One")
 
   >>> principals = zope.app.pau.principalfolder.PrincipalFolder('principal.')
   >>> principals['p1'] = p1
@@ -56,6 +56,9 @@ supports both finding principal information based on their ids:
 and searching for principals based on a search string:
 
   >>> list(principals.search({'search': 'other'}))
+  [u'principal.p2']
+
+  >>> list(principals.search({'search': 'OTHER'}))
   [u'principal.p2']
 
   >>> list(principals.search({'search': ''}))

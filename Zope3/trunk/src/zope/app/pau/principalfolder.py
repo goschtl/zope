@@ -210,12 +210,13 @@ class PrincipalFolder(zope.app.container.btree.BTreeContainer):
         search = query.get('search')
         if search is None:
             return
+        search = search.lower()
         i = 0
         n = 1
         for value in self.values():
-            if (search in value.title or
-                search in value.description or
-                search in value.login):
+            if (search in value.title.lower() or
+                search in value.description.lower() or
+                search in value.login.lower()):
                 if not ((start is not None and i < start)
                         or
                         (batch_size is not None and n > batch_size)):
