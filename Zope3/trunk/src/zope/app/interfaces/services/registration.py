@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.7 2003/08/08 00:14:41 srichter Exp $
+$Id: registration.py,v 1.8 2003/08/21 22:04:39 fdrake Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.annotation import IAnnotatable
@@ -77,15 +77,15 @@ class IRegistration(Interface):
         )
 
     def activated():
-        """Method called when a registration is made active
+        """Method called when a registration is made active.
         """
 
     def deactivated():
-        """Method called when a registration is made inactive
+        """Method called when a registration is made inactive.
         """
 
     def usageSummary():
-        """Single-line usage summary
+        """Single-line usage summary.
 
         This should include the registrayion keys and the kind of
         registration. For example, a service registration will have a
@@ -95,7 +95,7 @@ class IRegistration(Interface):
         """
 
     def implementationSummary():
-        """Single-line implementation summary
+        """Single-line implementation summary.
 
         This summarizes about the implementation of the thing being
         registered. For example, for local-component registrations,
@@ -259,7 +259,7 @@ class IRegistry(Interface):
     """A component that can be configured using a registration manager."""
 
     def queryRegistrationsFor(registration, default=None):
-        """Return an IRegistrationStack for the registration
+        """Return an IRegistrationStack for the registration.
 
         Data on the registration is used to decide which registry to
         return. For example, a service manager will use the
@@ -277,7 +277,7 @@ class IRegistry(Interface):
         """
 
     def createRegistrationsFor(registration):
-        """Create and return an IRegistrationStack for the registration
+        """Create and return an IRegistrationStack for the registration.
 
         Data on the registration is used to decide which regsitry to
         create. For example, a service manager will use the
@@ -307,7 +307,7 @@ class INameRegistry(IRegistry):
     """
 
     def queryRegistrations(name, default=None):
-        """Return an IRegistrationRegistry for the registration name
+        """Return an IRegistrationRegistry for the registration name.
 
         queryRegistrationsFor(cfg, default) is equivalent to
         queryRegistrations(cfg.name, default)
@@ -315,14 +315,14 @@ class INameRegistry(IRegistry):
 
     def createRegistrationsFor(registration):
         """Create and return an IRegistrationRegistry for the registration
-        name
+        name.
 
         createRegistrationsFor(cfg, default) is equivalent to
         createRegistrations(cfg.name, default)
         """
 
     def listRegistrationNames():
-        """Return a list of all registered registration names
+        """Return a list of all registered registration names.
         """
 
 class INameComponentRegistry(INameRegistry):
@@ -378,19 +378,19 @@ class IOrderedContainer(Interface):
     """
 
     def moveTop(names):
-        """Move the objects corresponding to the given names to the top
+        """Move the objects corresponding to the given names to the top.
         """
 
     def moveUp(names):
-        """Move the objects corresponding to the given names up
+        """Move the objects corresponding to the given names up.
         """
 
     def moveBottom(names):
-        """Move the objects corresponding to the given names to the bottom
+        """Move the objects corresponding to the given names to the bottom.
         """
 
     def moveDown(names):
-        """Move the objects corresponding to the given names down
+        """Move the objects corresponding to the given names down.
         """
 
 class IRegistrationManager(IContainerNamesContainer, IOrderedContainer):
@@ -435,7 +435,7 @@ class IRegistrationManagerContainer(IContainer):
     """
 
     def getRegistrationManager():
-        """get a registration manager
+        """get a registration manager.
 
         Find a registration manager.  Clients can get the
         registration manager without knowing it's name. Normally,
@@ -446,16 +446,18 @@ class IRegistrationManagerContainer(IContainer):
         """
 
     def findModule(name):
-        """Find the module of the given name
+        """Find the module of the given name.
 
         If the module can be find in the folder or a parent folder
         (within the site manager), then return it, otherwise, delegate
         to the module service.
 
+        This must return None when the module is not found.
+
         """
 
     def resolve(name):
-        """Resolve a dotted object name
+        """Resolve a dotted object name.
 
         A dotted object name is a dotted module name and an object
         name within the module.
