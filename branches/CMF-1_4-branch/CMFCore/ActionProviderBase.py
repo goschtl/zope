@@ -119,7 +119,7 @@ class ActionProviderBase:
                                       , condition=c_expr
                                       , permissions=permission
                                       , category=str(category)
-                                      , visible=int(visible)
+                                      , visible= not not visible
                                       )
 
         new_actions.append( new_action )
