@@ -82,6 +82,14 @@ class NBestTest(TestCase):
                     self.assertEqual(nb.pop_smallest(), expected[-i])
                 self.assertRaises(IndexError, nb.pop_smallest)
 
+    def testAllSameScore(self):
+        inputs = [(i, 0) for i in range(10)]
+        for n in range(1, 12):
+            nb = NBest(n)
+            nb.addmany(inputs)
+            outputs = nb.getbest()
+            self.assertEqual(outputs, inputs[:len(outputs)])
+
 def test_suite():
     return makeSuite(NBestTest)
 

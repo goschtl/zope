@@ -18,7 +18,7 @@ An NBest object remembers the N best-scoring items ever passed to its
 number of comparisons performed overall is M * log2(N).
 """
 
-from bisect import bisect
+from bisect import bisect_left as bisect
 
 from Zope.TextIndex.INBest import INBest
 
