@@ -301,7 +301,7 @@ msgstr "Einträge"
 
 #: src/zope/app/browser/catalog/advanced.pt:10
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
-msgstr "Katalog ist dezeit bei der Objekt Hub <strong>aboniert</strong>."
+msgstr "Der Katalog ist derzeit bei dem Objekt Hub <strong>abonniert</strong>."
 
 #: src/zope/app/browser/catalog/advanced.pt:30
 msgid "(and reindex all objects, if checked)"
@@ -330,7 +330,7 @@ msgstr "Schlüsselwort-Index"
 
 #: src/zope/app/browser/catalog/configure.zcml:89
 msgid "Advanced"
-msgstr "Fortgescrittenes"
+msgstr "Fortgeschrittenes"
 
 #: src/zope/app/browser/component/interfacewidget.py:242
 msgid "Use refresh to enter more interfaces"
