@@ -374,14 +374,14 @@ def do_mail(remote, repo, addrs, subjs,
     if doing_directory or no_files:
         subject = subject + string.join(subjs, " ")
         if subjs[2] == 'New':
-            new_msg = ('--- Added directory %s ---\n' % repo)
+            new_msg = ('=== Added directory %s ===\n' % repo)
             diff_msg = diff_msg + new_msg + '\n'
     else:
         subject = subject + "-"
         for fn, old, new in subjs:
             subject = subject + " %s:%s" % (fn, new)
             if new == 'NONE':
-                new_msg = ('--- Removed file %s/%s --\n'
+                new_msg = ('=== Removed file %s/%s ===\n'
                            % (repo, fn))
             else:
                 new_msg = "\n" + create_diff(repo, fn, old, new)
@@ -430,7 +430,7 @@ def create_diff(repo, file, old, new):
             handle = os.popen(co_stdout_cmd)
             lines = handle.readlines()
             handle.close()
-            insert_str = ("--- Added File %s/%s ---\n"
+            insert_str = ("=== Added File %s/%s ===\n"
                           % (repo, file))
             lines.insert(0, insert_str)
         except IOError, e:
@@ -444,7 +444,7 @@ def create_diff(repo, file, old, new):
         file_handle = os.popen(diff_cmd)
         lines = file_handle.readlines()[6:]
         file_handle.close()
-        insert_str = ("====== Updated %s/%s, %s => %s ======\n"
+        insert_str = ("=== %s/%s %s => %s ===\n"
                       % (str(repo), str(file), old, new))
         lines.insert(0, insert_str) 
 
