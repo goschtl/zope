@@ -130,6 +130,26 @@
     for=".interfaces.IAfterTransitionEvent"
     />
 
+<!-- Stateful proces definition subscriber -->
+
+<subscriber
+    factory=".pd_subscribers.processDefinitionAddPermissionsSusbcriber"
+    for=".interfaces.IProcessDefinitionAddPermissionsEvent"
+    />
+
+<subscriber
+    factory=".pd_subscribers.processDefinitionDelPermissionsSusbcriber"
+    for=".interfaces.IProcessDefinitionDelPermissionsEvent"
+    />
+
+
+<!-- State related susbscribers -->
+
+<subscriber
+    factory=".state_subscribers.statePermisssionsRolesMappingUpdateSubscriber"
+    for=".interfaces.IStatePermissionsRolesMappingUpdateEvent"
+    />
+
 <!-- Stateful workflow import/Export -->
 <adapter
    for=".interfaces.IStatefulProcessDefinition"
