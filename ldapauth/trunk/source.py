@@ -81,7 +81,7 @@ class LDAPPrincipalSource(Contained, Persistent):
         return logins
 
     def __iter__(self):
-        return self.keys()
+        return iter(self.keys())
 
     ### return a cached principal, if the principal is not in the cache
     ### then return None
