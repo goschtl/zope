@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.9 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Revision: 1.10 $ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.9 $ (Draft)
-:Date: $Date: 2004/05/06 14:24:13 $
+:Version: $Revision: 1.10 $ (Draft)
+:Date: $Date: 2004/05/06 14:39:12 $
 :Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>
-:DocumentID: $Id: SecurityTarget.txt,v 1.9 2004/05/06 14:24:13 jim Exp $
+:DocumentID: $Id: SecurityTarget.txt,v 1.10 2004/05/06 14:39:12 jim Exp $
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.9 2004/05/06 14:24:13 jim Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.10 2004/05/06 14:39:12 jim Exp $
 
-:Document Version: $Revision: 1.9 $
+:Document Version: $Revision: 1.10 $
 
 :Origin: Zope Corporation public CVS server
 
@@ -1080,6 +1080,20 @@ Zope's security functions are provided via four independent subsystems:
 
 - authorization
 
+Definitions
+^^^^^^^^^^^
+
+Principal
+        An object, managed by an Authentication service that
+        represents a user of the system.  Principal have 
+        system-unique identifiers that aree used by other systems to maintain
+        information about them.
+
+Permission
+        An object, managed by the Zope application that represents the
+        ability to perform one or more operations.
+
+
 
 Christian
 
@@ -1103,7 +1117,8 @@ Steve
 Jim
 
 
-
+Protection subsystem
+^^^^^^^^^^^^^^^^^^^^
 
 
 
