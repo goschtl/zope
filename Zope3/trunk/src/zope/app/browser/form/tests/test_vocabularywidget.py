@@ -79,8 +79,12 @@ class MyVocabularyQuery:
         self.vocabulary = vocabulary
 
 
-class MyQueryViewBase(vocabularywidget.VocabularyQueryViewBase):
-    """Base class for test query views."""
+class MyQueryViewSingle(vocabularywidget.VocabularyQueryViewBase):
+    """Single-selection vocabulary query view."""
+
+    implements(IVocabularyQueryView)
+
+    label = "single"
 
     def getResults(self):
         return self.request.form.get(self.name)
@@ -92,22 +96,10 @@ class MyQueryViewBase(vocabularywidget.VocabularyQueryViewBase):
         return "query-results-go-here"
 
 
-class MyQueryViewSingle(MyQueryViewBase):
-    """Single-selection vocabulary query view."""
-
-    implements(IVocabularyQueryView)
-
-    def getLabel(self):
-        return "single"
-
-
-class MyQueryViewMulti(MyQueryViewBase):
+class MyQueryViewMulti(MyQueryViewSingle):
     """Multi-selection vocabulary query view."""
 
-    implements(IVocabularyQueryView)
-
-    def getLabel(self):
-        return "multi"
+    label = "multi"
 
 
 class VocabularyWidgetTestBase(PlacelessSetup,
@@ -436,7 +428,7 @@ class QuerySupportTestBase(VocabularyWidgetTestBase):
         w = getView(bound, "edit", request)
         self.assert_(isinstance(w.query, MyVocabularyQuery))
         self.assertEqual(w.queryview.name, w.name + "-query")
-        self.assertEqual(w.queryview.getLabel(), self.queryViewLabel)
+        self.assertEqual(w.queryview.label, self.queryViewLabel)
 
     def test_query_input_section(self):
         bound = self.makeField()
