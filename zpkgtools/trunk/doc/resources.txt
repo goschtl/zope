@@ -9,7 +9,7 @@ Overview
 --------
 
 The |zpkg|_ tool uses URLs to identify external resources.  In most
-cases, any URL type supported by Python's "urllib2" module is
+cases, any URL type supported by Python's ``urllib2`` module is
 supported if the identified resource is a simple file.  (Directories
 are *not* handled well via HTTP or FTP in the current implementation,
 but that's considered a quality-of-implementation issue that can be
@@ -21,6 +21,11 @@ repository (either local or remote), and the ``repository:`` scheme
 provides a way to spell a location relative to another in a CVS
 repository.  (It makes sense to 'join' a ``cvs:`` and a
 ``repository:`` URL to generate a new ``cvs:`` URL.)
+
+Subversion is supported using the ``svn:``, ``svn+ssh:``, and
+``file:`` schemes.  |zpkg|_ is able to determine whether a ``file:``
+URL refers to a Subversion repository or refers to a normal
+filesystem path and will handle either appropriately.
 
 
 Absolute Locations and the ``cvs:`` Scheme
@@ -121,15 +126,18 @@ cvs:///cvsroot:module:FOO repository:README.txt:BAR  cvs:///cvsroot:module/READM
 ========================= ========================== ====================================
 
 
+Joining Subversion and ``repository:`` URLs
+-------------------------------------------
+
+XXX To be written
+
+
 Supporting Other Revision Control Systems
 -----------------------------------------
 
-Currently, only CVS locations are supported.  It should not be too
-difficult to add support for Subversion's ``svn:`` URLs if a reasonable
-way to map the notion of a tag onto the paths in a Subversion
-repository; this could rely on heuristics, configuration, or possibly
-additional metadata stored in the Subversion repository.
+Currently, CVS is supported generally, and Subversion is supported in
+a somewhat limited fashion.
 
-Support for additional systems would basically hinge on creating new
-URL schemes for each system, and an appropriate join operation if
-``repository:`` URLs need to be usable with them.
+Support for additional systems hinges on creating new URL schemes for
+each system, and an appropriate join operation if ``repository:`` URLs
+need to be usable with them.
