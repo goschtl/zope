@@ -52,7 +52,7 @@ to have millions of entries; 50 may be enough.
 
 The very least a vocabulary can support is a membership test.  That
 is, given a vocabulary object *v* and a candidate value *c*, *c*
-``in`` *v* will return true iff value is a member of the vocabulary.
+``in`` *v* will return true if value is a member of the vocabulary.
 It may not be inexpensive or even meaningful to determine the size of
 the vocabulary.  This is described by the ``IBaseVocabulary``
 interface.
