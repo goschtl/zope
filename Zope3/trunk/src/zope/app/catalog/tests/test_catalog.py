@@ -15,7 +15,7 @@
 
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
-$Id: test_catalog.py,v 1.7 2003/08/17 06:06:11 philikon Exp $
+$Id: test_catalog.py,v 1.8 2003/09/21 17:30:42 jim Exp $
 """
 
 from __future__  import generators
@@ -84,19 +84,13 @@ class stoopid(object):
 
 class Test(PlacelessSetup, unittest.TestCase):
 
-    def setUp(self):
-	pass
-
-    def teardown(self):
-	pass
-
     def test_catalog_add_del_indexes(self):
 	catalog = Catalog()
 	index = StubIndex('author', None)
-	catalog.setObject('author', index)
+	catalog['author'] = index
 	self.assertEqual(catalog.keys(), ['author'])
 	index = StubIndex('title', None)
-	catalog.setObject('title', index)
+	catalog['title'] = index
 	indexes = catalog.keys()
 	indexes.sort()
 	self.assertEqual(indexes, ['author', 'title'])
@@ -105,8 +99,8 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def test_catalog_notification_passing(self):
 	catalog = Catalog()
-	catalog.setObject('author', StubIndex('author', None))
-	catalog.setObject('title', StubIndex('title', None))
+	catalog['author'] = StubIndex('author', None)
+	catalog['title'] = StubIndex('title', None)
         catalog.notify(regEvt(None, None, 'reg1', 1))
         catalog.notify(regEvt(None, None, 'reg2', 2))
         catalog.notify(regEvt(None, None, 'reg3', 3))
@@ -149,8 +143,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         "test a full refresh"
         self._frob_objecthub()
         catalog = Catalog()
-	catalog.setObject('author', StubIndex('author', None))
-	catalog.setObject('title', StubIndex('author', None))
+	catalog['author'] = StubIndex('author', None)
+	catalog['title'] = StubIndex('author', None)
         catalog.updateIndexes()
         for index in catalog.values():
             checkNotifies = index._notifies
@@ -165,8 +159,8 @@ class Test(PlacelessSetup, unittest.TestCase):
         "test the simple searchresults interface"
         self._frob_objecthub(ints=0)
         catalog = Catalog()
-	catalog.setObject('simiantype', StubIndex('simiantype', None))
-	catalog.setObject('name', StubIndex('name', None))
+	catalog['simiantype'] = StubIndex('simiantype', None)
+	catalog['name'] = StubIndex('name', None)
         catalog.updateIndexes()
         res = catalog.searchResults(simiantype='monkey')
         names = [ x.name for x in res ]

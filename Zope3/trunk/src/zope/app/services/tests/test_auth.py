@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.18 2003/07/28 11:45:31 srichter Exp $
+$Id: test_auth.py,v 1.19 2003/09/21 17:30:46 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -58,12 +58,11 @@ class AuthSetup(EventSetup):
         sm = traverse(self.rootFolder, '++etc++site')
         auth = setup.addService(sm, Authentication, AuthenticationService())
 
-        auth.setObject('srichter', User('srichter', 'Stephan', 'Richter',
-                                        'srichter', 'hello'))
-        auth.setObject('jim', User('jim', 'Jim', 'Fulton',
-                                   'jim', 'hello2'))
-        auth.setObject('stevea', User('stevea', 'Steve', 'Alexander',
-                                      'stevea', 'hello3'))
+        auth['srichter'] = User('srichter', 'Stephan', 'Richter',
+                                'srichter', 'hello')
+        auth['jim'] = User('jim', 'Jim', 'Fulton', 'jim', 'hello2')
+        auth['stevea'] = User('stevea', 'Steve', 'Alexander',
+                              'stevea', 'hello3')
 
         self._auth = auth
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.5 2003/07/20 12:17:16 srichter Exp $
+$Id: test_translate.py,v 1.6 2003/09/21 17:30:41 jim Exp $
 """
 
 import unittest
@@ -62,8 +62,8 @@ class TranslateTest(unittest.TestCase, PlacelessSetup):
         en_catalog.setMessage('greeting', 'Hello $name, how are you?')
         de_catalog.setMessage('greeting', 'Hallo $name, wie geht es Dir?')
 
-        service.setObject('en-default-1', en_catalog)
-        service.setObject('de-default-1', de_catalog)
+        service['en-default-1'] = en_catalog
+        service['de-default-1'] = de_catalog
 
         self._view = Translate(service, self._getRequest())
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """ Define view component for service manager contents.
 
-$Id: role.py,v 1.4 2003/08/08 23:28:42 srichter Exp $
+$Id: role.py,v 1.5 2003/09/21 17:30:40 jim Exp $
 """
 from zope.app.browser.container.contents import Contents
 from zope.app.services.role import Role, ILocalRoleService
@@ -25,7 +25,7 @@ class Add:
     def action(self, id, title, description):
         "Add a contact"
         role = Role(id, title, description)
-        self.context.setObject(id, role)
+        self.context[id] = role
         self.request.response.redirect('.')
 
 

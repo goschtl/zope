@@ -57,9 +57,9 @@ class ProcessInstanceContainerAdapterTests(PlacelessSetup, unittest.TestCase):
         self.assertEqual(pica.items(), [])
         self.assertEqual(pica.values(), [])
         self.assertEqual(pica.get('nothing', 1), 1)
-        self.assertRaises(TypeError, pica.setObject, 123, None)
+        self.assertRaises(TypeError, pica.__setitem__, 123, None)
 
-        pica.setObject('dummy', di)
+        pica['dummy'] = di
         self.assertEqual(len(pica), 1)
         self.assertEqual(pica.keys(), ['dummy'])
         self.assertEqual(pica.values(), [di])

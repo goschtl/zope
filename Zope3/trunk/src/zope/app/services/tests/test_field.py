@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for ComponentPath field.
 
-$Id: test_field.py,v 1.11 2003/08/17 06:08:20 philikon Exp $
+$Id: test_field.py,v 1.12 2003/09/21 17:30:46 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -39,8 +39,8 @@ class TestComponentPath(PlacefulSetup, TestCase):
 
     def createObjects(self):
         self.buildFolders()
-        self.folder1.setObject('c', C())
-        self.folder1.setObject('d', D())
+        self.folder1['c'] = C()
+        self.folder1['d'] = D()
 
     def createFields(self):
         from zope.app.services.field import ComponentPath

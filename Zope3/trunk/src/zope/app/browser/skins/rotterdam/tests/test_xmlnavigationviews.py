@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_xmlnavigationviews.py,v 1.7 2003/06/06 21:35:19 philikon Exp $
+$Id: test_xmlnavigationviews.py,v 1.8 2003/09/21 17:30:41 jim Exp $
 """
 
 #import sys
@@ -53,7 +53,7 @@ class TestXmlObject(EventSetup, TestCase):
         from zope.app.content.file import File
         from zope.app.traversing import traverse
         file1 = File()
-        self.folder1_1_1.setObject("file1", file1)
+        self.folder1_1_1["file1"] = file1
         self.file1 = traverse(self.rootFolder,
                               '/folder1/folder1_1/folder1_1_1/file1')
         from zope.component.view import provideView

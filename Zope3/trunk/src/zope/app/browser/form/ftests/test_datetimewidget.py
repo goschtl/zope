@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_datetimewidget.py,v 1.2 2003/08/13 21:27:58 garrett Exp $
+$Id: test_datetimewidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
 """
 
 import unittest
@@ -95,7 +95,7 @@ class Test(BrowserTestCase):
 
 
     def test_display_editform(self):
-        self.getRootFolder().setObject('test', DatetimeTest())
+        self.getRootFolder()['test'] = DatetimeTest()
         get_transaction().commit()
         object = traverse(self.getRootFolder(), 'test')
 
@@ -110,7 +110,7 @@ class Test(BrowserTestCase):
 
 
     def test_submit_editform(self):
-        self.getRootFolder().setObject('test', DatetimeTest())
+        self.getRootFolder()['test'] = DatetimeTest()
         get_transaction().commit()
 
         d1 = datetime(2003, 2, 1, tzinfo=tzinfo(0))
@@ -136,7 +136,7 @@ class Test(BrowserTestCase):
 
 
     def test_missing_value(self):
-        self.getRootFolder().setObject('test', DatetimeTest())
+        self.getRootFolder()['test'] = DatetimeTest()
         get_transaction().commit()
 
         # submit missing values for d2 and d3
@@ -156,7 +156,7 @@ class Test(BrowserTestCase):
 
 
     def test_required_validation(self):
-        self.getRootFolder().setObject('test', DatetimeTest())
+        self.getRootFolder()['test'] = DatetimeTest()
         get_transaction().commit()
 
         # submit missing values for required field d1
@@ -174,7 +174,7 @@ class Test(BrowserTestCase):
 
 
     def test_inalid_value(self):
-        self.getRootFolder().setObject('test', DatetimeTest())
+        self.getRootFolder()['test'] = DatetimeTest()
         get_transaction().commit()
 
         # submit a value for d3 that isn't allowed
@@ -186,7 +186,7 @@ class Test(BrowserTestCase):
 
 
     def test_min_max_validation(self):
-        self.getRootFolder().setObject('test', DatetimeTest())
+        self.getRootFolder()['test'] = DatetimeTest()
         get_transaction().commit()
 
         # submit value for d1 that is too low
@@ -207,7 +207,7 @@ class Test(BrowserTestCase):
 
 
     def test_omitted_value(self):
-        self.getRootFolder().setObject('test', DatetimeTest())
+        self.getRootFolder()['test'] = DatetimeTest()
         get_transaction().commit()
 
         # remember default values

@@ -14,7 +14,7 @@
 
 """Stateful workflow process definition.
 
-$Id: test_definition.py,v 1.2 2003/06/06 19:29:07 stevea Exp $
+$Id: test_definition.py,v 1.3 2003/09/21 17:34:00 jim Exp $
 """
 import unittest
 
@@ -24,7 +24,7 @@ from zope.schema import TextLine
 
 from zope.app.interfaces.workflow.stateful import IStatefulProcessDefinition
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
-
+from zope.app.tests.placelesssetup import PlacelessSetup
 
 class IDummyState(Interface):
     """A really dummy state"""
@@ -50,9 +50,10 @@ class IDummyDataSchema(Interface):
 # Transition Class/Interface
 
 
-class StatefulProcessDefinitionTests(unittest.TestCase):
+class StatefulProcessDefinitionTests(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
+        PlacelessSetup.setUp(self)
         self.pd = pd = StatefulProcessDefinition()
         self.doMinimalSetup()
 
@@ -133,9 +134,11 @@ class StatefulProcessDefinitionTests(unittest.TestCase):
     def tobedone_testCreateProcessInstance(self):
         pass
 
-class StatefulProcessDefinitionAttributesTests(unittest.TestCase):
+class StatefulProcessDefinitionAttributesTests(PlacelessSetup,
+                                               unittest.TestCase):
 
     def setUp(self):
+        PlacelessSetup.setUp(self)
         self.pd = pd = StatefulProcessDefinition()
         self.doMinimalSetup()
 
@@ -143,13 +146,13 @@ class StatefulProcessDefinitionAttributesTests(unittest.TestCase):
         pd = self.pd
         self.st1 = st1 = DummyState()
         self.st2 = st2 = DummyState()
-        pd.states.setObject('st1', st1)
-        pd.states.setObject('st2', st2)
+        pd.states['st1'] = st1
+        pd.states['st2'] = st2
 
         self.tr1 = tr1 = DummyTransition()
         self.tr2 = tr2 = DummyTransition()
-        pd.transitions.setObject('tr1', tr1)
-        pd.transitions.setObject('tr2', tr2)
+        pd.transitions['tr1'] = tr1
+        pd.transitions['tr2'] = tr2
 
     def testInterface(self):
         verifyClass(IStatefulProcessDefinition, StatefulProcessDefinition)

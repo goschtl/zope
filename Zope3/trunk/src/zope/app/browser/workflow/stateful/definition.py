@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessDefinition registration adding view
 
-$Id: definition.py,v 1.7 2003/08/16 00:43:16 srichter Exp $
+$Id: definition.py,v 1.8 2003/09/21 17:30:42 jim Exp $
 """
 __metaclass__ = type
 
@@ -130,7 +130,7 @@ class AddState(BrowserView):
 
     def action(self, id):
         state = State()
-        self.context.setObject(id, state)
+        self.context[id] = state
         return self.request.response.redirect(self.request.URL[-2])
 
 
@@ -147,5 +147,5 @@ class AddTransition(BrowserView):
         condition = condition or None
         permission = permission or None
         transition = Transition(source, destination, condition, permission)
-        self.context.setObject(id, transition)
+        self.context[id] = transition
         return self.request.response.redirect(self.request.URL[-2])

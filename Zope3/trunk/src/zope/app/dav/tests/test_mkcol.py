@@ -13,7 +13,7 @@
 ##############################################################################
 """MKCOL tests
 
-$Id: test_mkcol.py,v 1.3 2003/08/17 06:06:29 philikon Exp $
+$Id: test_mkcol.py,v 1.4 2003/09/21 17:30:45 jim Exp $
 """
 __metaclass__ = type
 
@@ -50,7 +50,7 @@ class TestPlacefulMKCOL(PlacefulSetup, TestCase):
         request = _createRequest('')
         container = traverse(root, 'folder1')
         file = File('bla', 'text/plain', 'bla')
-        container.setObject('bla', file)
+        container['bla'] = file
         file = traverse(container, 'bla')
         nr = NullResource(file, 'mkcol_test')
         mkcol.NullResource(nr, request).MKCOL()

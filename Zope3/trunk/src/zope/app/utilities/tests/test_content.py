@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Tests
 
-$Id: test_content.py,v 1.3 2003/08/18 18:55:40 srichter Exp $
+$Id: test_content.py,v 1.4 2003/09/21 17:30:46 jim Exp $
 """
 import unittest
 
@@ -77,13 +77,13 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
         classImplements(ContentComponentDefinition, ILocalUtility)
         classImplements(ContentComponentDefinition, IAttributeAnnotatable)
         default = zapi.traverse(mgr, 'default')
-        default.setObject('TestDoc', ContentComponentDefinition())
+        default['TestDoc'] = ContentComponentDefinition()
 
         # Setup Definition Registration
         path = "%s/default/%s" % (zapi.getPath(mgr), 'TestDoc')
         reg = ContentComponentDefinitionRegistration(
             'TestDoc', IContentComponentDefinition, path)
-        key = default.getRegistrationManager().setObject("", reg)
+        key = default.getRegistrationManager().addRegistration(reg)
         self.reg = zapi.traverse(default.getRegistrationManager(), key)
         
     def tearDown(self):
@@ -128,7 +128,7 @@ class ContentComponentDefinitionMenuItemTests(unittest.TestCase):
         setup.addService(self.mgr, Utilities, LocalUtilityService())
         ccd = ContentComponentDefinition('TestDoc', IDocument)
         self.default = zapi.traverse(self.mgr, 'default')
-        self.default.setObject('Document', ccd)
+        self.default['Document'] = ccd
         ccd = zapi.traverse(self.default, 'Document')
         
         self.mi = ContentComponentDefinitionMenuItem(ccd)

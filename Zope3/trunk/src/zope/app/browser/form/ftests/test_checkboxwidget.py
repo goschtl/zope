@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_checkboxwidget.py,v 1.2 2003/08/13 21:27:58 garrett Exp $
+$Id: test_checkboxwidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
 """
 
 import unittest
@@ -59,7 +59,7 @@ class Test(BrowserTestCase):
 
 
     def test_display_editform(self):
-        self.getRootFolder().setObject('test', BoolTest())
+        self.getRootFolder()['test'] = BoolTest()
         get_transaction().commit()
 
         # display edit view
@@ -82,7 +82,7 @@ class Test(BrowserTestCase):
 
 
     def test_submit_editform(self):
-        self.getRootFolder().setObject('test', BoolTest())
+        self.getRootFolder()['test'] = BoolTest()
         get_transaction().commit()
 
         # submit edit view
@@ -104,7 +104,7 @@ class Test(BrowserTestCase):
         object = BoolTest()
         object.b1 = True
         object.b2 = True
-        self.getRootFolder().setObject('test', object)
+        self.getRootFolder()['test'] = object
         get_transaction().commit()
 
         # submit invalud type for text line
@@ -126,7 +126,7 @@ class Test(BrowserTestCase):
         # Note: checkbox widget doesn't support a missing value. This
         # test confirms that one cannot set a Bool field to None.
 
-        self.getRootFolder().setObject('test', BoolTest())
+        self.getRootFolder()['test'] = BoolTest()
         get_transaction().commit()
 
         # confirm default value of b1 is True

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_textareawidget.py,v 1.2 2003/08/13 21:27:58 garrett Exp $
+$Id: test_textareawidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
 """
 
 import unittest
@@ -64,7 +64,7 @@ class Test(BrowserTestCase):
 
 
     def test_display_editform(self):
-        self.getRootFolder().setObject('test', TextTest())
+        self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
         # display edit view
@@ -84,7 +84,7 @@ class Test(BrowserTestCase):
 
 
     def test_submit_editform(self):
-        self.getRootFolder().setObject('test', TextTest())
+        self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
         # submit edit view
@@ -105,7 +105,7 @@ class Test(BrowserTestCase):
 
 
     def test_inalid_type(self):
-        self.getRootFolder().setObject('test', TextTest())
+        self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
         # submit invalid type for text
@@ -119,7 +119,7 @@ class Test(BrowserTestCase):
 
 
     def test_missing_value(self):
-        self.getRootFolder().setObject('test', TextTest())
+        self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
         # submit missing values for s2 and s3
@@ -140,7 +140,7 @@ class Test(BrowserTestCase):
 
 
     def test_required_validation(self):
-        self.getRootFolder().setObject('test', TextTest())
+        self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
         # submit missing values for required field s1
@@ -158,7 +158,7 @@ class Test(BrowserTestCase):
 
 
     def test_length_validation(self):
-        self.getRootFolder().setObject('test', TextTest())
+        self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
         # submit value for s1 that is too short
@@ -179,7 +179,7 @@ class Test(BrowserTestCase):
 
 
     def test_omitted_value(self):
-        self.getRootFolder().setObject('test', TextTest())
+        self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
         # confirm default values
@@ -205,7 +205,7 @@ class Test(BrowserTestCase):
 
 
     def test_conversion(self):
-        self.getRootFolder().setObject('test', TextTest())
+        self.getRootFolder()['test'] = TextTest()
         get_transaction().commit()
 
         # confirm that line terminators are converted correctly on post

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_roleservice.py,v 1.4 2003/06/03 22:46:22 jim Exp $
+$Id: test_roleservice.py,v 1.5 2003/09/21 17:30:46 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -46,7 +46,7 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         self.roleRegistry.defineRole('Manager', 'Manager', '')
 
         r = Role("Hacker","","")
-        self.rs.setObject("Hacker", r)
+        self.rs["Hacker"] = r
         self.assertEqual(self.rs.getRole('Hacker').getId(), 'Hacker')
         self.assertEqual(self.rs.getRole('Manager').getId(), 'Manager')
 
@@ -59,13 +59,13 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         self.roleRegistry.defineRole('Manager', 'Manager', '')
 
         r = Role("Hacker","","")
-        self.rs.setObject("Hacker", r)
+        self.rs["Hacker"] = r
 
         sm1 = self.makeSite('folder1')
         rs1 = setup.addService(sm1, 'Roles', RoleService())
 
         r1 = Role("Reviewer",'','')
-        rs1.setObject("Reviewer", r1)
+        rs1["Reviewer"] = r1
 
         self.assertEqual(rs1.getRole('Hacker').getId(), 'Hacker')
         self.assertEqual(rs1.getRole('Manager').getId(), 'Manager')

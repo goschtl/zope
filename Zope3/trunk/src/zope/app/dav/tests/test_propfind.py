@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.8 2003/06/23 17:17:03 sidnei Exp $
+$Id: test_propfind.py,v 1.9 2003/09/21 17:30:45 jim Exp $
 """
 __metaclass__ = type
 
@@ -119,9 +119,9 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         self.content = "some content\n for testing"
         file = File('spam', 'text/plain', self.content)
         folder = Folder('bla')
-        root.setObject('file', file)
-        root.setObject('zpt', zpt)
-        root.setObject('folder', folder)
+        root['file'] = file
+        root['zpt'] = zpt
+        root['folder'] = folder
         self.zpt = traverse(root, 'zpt')
         self.file = traverse(root, 'file')
         provideView = getService(None, Views).provideView

@@ -13,7 +13,7 @@
 ##############################################################################
 """Base class for DAV functional tests.
 
-$Id: dav.py,v 1.1 2003/06/23 17:21:08 sidnei Exp $
+$Id: dav.py,v 1.2 2003/09/21 17:30:44 jim Exp $
 """
 
 from zope.testing.functional import HTTPTestCase
@@ -37,13 +37,13 @@ class DAVTestCase(HTTPTestCase):
             try:
                 folder = folder[id]
             except KeyError:
-                folder.setObject(id, Folder())
+                folder[id] = Folder()
                 folder = folder[id]
         return folder, path[-1]
 
     def createObject(self, path, obj):
         folder, id = self.createFolders(path)
-        folder.setObject(id, obj)
+        folder[id] = obj
         get_transaction().commit()
 
     def addPage(self, path, content):

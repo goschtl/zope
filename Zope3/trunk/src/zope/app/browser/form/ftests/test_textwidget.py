@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_textwidget.py,v 1.2 2003/08/13 21:27:58 garrett Exp $
+$Id: test_textwidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
 """
 
 import unittest
@@ -65,7 +65,7 @@ defineSecurity(TextLineTest, ITextLineTest)
 class Test(BrowserTestCase):
 
     def test_display_editform(self):
-        self.getRootFolder().setObject('test', TextLineTest())
+        self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # display edit view
@@ -86,7 +86,7 @@ class Test(BrowserTestCase):
 
 
     def test_submit_editform(self):
-        self.getRootFolder().setObject('test', TextLineTest())
+        self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # submit edit view
@@ -107,7 +107,7 @@ class Test(BrowserTestCase):
 
 
     def test_inalid_type(self):
-        self.getRootFolder().setObject('test', TextLineTest())
+        self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # submit invalud type for text line
@@ -121,7 +121,7 @@ class Test(BrowserTestCase):
 
 
     def test_missing_value(self):
-        self.getRootFolder().setObject('test', TextLineTest())
+        self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # submit missing values for s2 and s3
@@ -142,7 +142,7 @@ class Test(BrowserTestCase):
 
 
     def test_required_validation(self):
-        self.getRootFolder().setObject('test', TextLineTest())
+        self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # submit missing values for required field s1
@@ -160,7 +160,7 @@ class Test(BrowserTestCase):
 
 
     def test_inalid_value(self):
-        self.getRootFolder().setObject('test', TextLineTest())
+        self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # submit a value for s3 that isn't allowed
@@ -172,7 +172,7 @@ class Test(BrowserTestCase):
 
 
     def test_length_validation(self):
-        self.getRootFolder().setObject('test', TextLineTest())
+        self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # submit value for s1 that is too short
@@ -193,7 +193,7 @@ class Test(BrowserTestCase):
 
 
     def test_omitted_value(self):
-        self.getRootFolder().setObject('test', TextLineTest())
+        self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # confirm default values

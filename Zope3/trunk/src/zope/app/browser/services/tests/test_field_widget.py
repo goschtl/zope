@@ -13,7 +13,7 @@
 ##############################################################################
 """ComponentPathWidget tests.
 
-$Id: test_field_widget.py,v 1.14 2003/08/13 21:28:23 garrett Exp $
+$Id: test_field_widget.py,v 1.15 2003/09/21 17:30:40 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -59,12 +59,12 @@ class BaseTest(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
         default = traverse(self.rootFolder, '++etc++site/default')
-        default.setObject('c1', C())
-        default.setObject('c2', C())
-        default.setObject('c3', C())
-        default.setObject('d1', D())
-        default.setObject('d2', D())
-        default.setObject('d3', D())
+        default['c1'] = C()
+        default['c2'] = C()
+        default['c3'] = C()
+        default['d1'] = D()
+        default['d2'] = D()
+        default['d3'] = D()
 
         self.request = TestRequest()
         self.defaultpackage = default

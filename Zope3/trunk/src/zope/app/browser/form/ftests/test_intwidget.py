@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_intwidget.py,v 1.2 2003/08/13 21:27:58 garrett Exp $
+$Id: test_intwidget.py,v 1.3 2003/09/21 17:30:39 jim Exp $
 """
 
 import unittest
@@ -89,7 +89,7 @@ class Test(BrowserTestCase):
 
 
     def test_display_editform(self):
-        self.getRootFolder().setObject('test', IntTest())
+        self.getRootFolder()['test'] = IntTest()
         get_transaction().commit()
 
         # display edit view
@@ -110,7 +110,7 @@ class Test(BrowserTestCase):
 
 
     def test_submit_editform(self):
-        self.getRootFolder().setObject('test', IntTest())
+        self.getRootFolder()['test'] = IntTest()
         get_transaction().commit()
 
         # submit edit view
@@ -131,7 +131,7 @@ class Test(BrowserTestCase):
 
 
     def test_missing_value(self):
-        self.getRootFolder().setObject('test', IntTest())
+        self.getRootFolder()['test'] = IntTest()
         get_transaction().commit()
 
         # submit missing values for i2 and i3
@@ -156,7 +156,7 @@ class Test(BrowserTestCase):
         that, when selected, updates the field with field.missing_value.
         """
     
-        self.getRootFolder().setObject('test', IntTest2()) # note alt. class
+        self.getRootFolder()['test'] = IntTest2() # note alt. class
         get_transaction().commit()
 
         # display edit form
@@ -186,7 +186,7 @@ class Test(BrowserTestCase):
 
 
     def test_required_validation(self):
-        self.getRootFolder().setObject('test', IntTest())
+        self.getRootFolder()['test'] = IntTest()
         get_transaction().commit()
 
         # submit missing values for required field i1
@@ -204,7 +204,7 @@ class Test(BrowserTestCase):
 
 
     def test_invalid_allowed_value(self):
-        self.getRootFolder().setObject('test', IntTest())
+        self.getRootFolder()['test'] = IntTest()
         get_transaction().commit()
 
         # submit a value for i3 that isn't allowed
@@ -216,7 +216,7 @@ class Test(BrowserTestCase):
 
 
     def test_min_max_validation(self):
-        self.getRootFolder().setObject('test', IntTest())
+        self.getRootFolder()['test'] = IntTest()
         get_transaction().commit()
 
         # submit value for i1 that is too low
@@ -237,7 +237,7 @@ class Test(BrowserTestCase):
 
 
     def test_omitted_value(self):
-        self.getRootFolder().setObject('test', IntTest())
+        self.getRootFolder()['test'] = IntTest()
         get_transaction().commit()
 
         # confirm default values
@@ -263,7 +263,7 @@ class Test(BrowserTestCase):
 
 
     def test_conversion(self):
-        self.getRootFolder().setObject('test', IntTest())
+        self.getRootFolder()['test'] = IntTest()
         get_transaction().commit()
 
         # submit value for i1 that cannot be convert to an int

@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection Management GUI
 
-$Id: auth.py,v 1.4 2003/08/07 17:41:03 srichter Exp $
+$Id: auth.py,v 1.5 2003/09/21 17:30:40 jim Exp $
 """
 from zope.app.services.auth import User
 from zope.app.services.servicenames import Roles
@@ -23,7 +23,7 @@ class AddUser:
 
     def action(self, id, title, description, login, password, roles):
         user = User(id, title, description, login, password)
-        self.context.setObject(id, user)
+        self.context[id] = user
         return self.request.response.redirect(self.request.URL[-2])
 
 class EditUser:

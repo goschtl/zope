@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_module.py,v 1.10 2003/06/30 16:25:23 jim Exp $
+$Id: test_module.py,v 1.11 2003/09/21 17:30:46 jim Exp $
 """
 
 import unittest
@@ -58,7 +58,7 @@ class LocalModuleTests(PlacefulSetup, unittest.TestCase):
         self.sm = traverse(self.rootFolder, "++etc++site")
         default = traverse(self.sm, "default")
         old_called = called
-        default.setObject(NAME, Manager(NAME, SOURCE))
+        default[NAME] = Manager(NAME, SOURCE)
         self.manager = traverse(default, NAME)
         self.assertEqual(called, old_called)
         self.manager.execute()
