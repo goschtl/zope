@@ -55,19 +55,11 @@ Things to do for the next release (in no particular order)
 
   http://dev.zope.org/Zope3/TheBrowserToolDirective
 
-- Rework undo
+- Simplify the undo model.
 
-  Simplify the undo model. Two kinds of undo:
+  http://dev.zope.org/Zope3/SimplifyUndoModel
 
-  * Undo my changes
-
-  * Undo everybody
-
-  * Undo optionally takes place into account.
-
-  * Should be an undo last. 
-
-  Make sure we handle multiple undos properly.
+  Philipp is working on this.
 
 - Finish "process control", specifically shutting down and restarting
   via the web.  The main issue here is plumbing.  How to get the
