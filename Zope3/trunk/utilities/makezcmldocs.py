@@ -14,7 +14,7 @@
 ##############################################################################
 """
 
-$Id: makezcmldocs.py,v 1.2 2002/11/06 22:30:23 rdmurray Exp $
+$Id: makezcmldocs.py,v 1.3 2002/11/06 23:12:59 rdmurray Exp $
 """
 
 from types import UnicodeType, FunctionType, TypeType, ClassType
@@ -42,6 +42,8 @@ sys.path=[libpython] + basepath
 
 # Now for the z3 imports.
 from Zope.Configuration.meta import _directives
+from Zope.Configuration.xmlconfig import XMLConfig
+from Zope.App import config
 from Zope.Configuration.metametaConfigureForDocgen import _metadataKey
 
 # Some additional useful names.
@@ -119,16 +121,9 @@ def printdirective(outfile, name, handler, registry, level=0):
 
 def run(argv=sys.argv):
 
-    from Zope.Configuration.xmlconfig import XMLConfig
+    # Do global software config for Zope package in docgen mode.
+    config(os.path.join(here, 'makezcmldocs.zcml'))
 
-    # Set user to system_user, so we can do anything we want
-    from Zope.Security.SecurityManagement import system_user
-    from Zope.Security.SecurityManagement import newSecurityManager
-    newSecurityManager(system_user)
-
-    # Load the zcml for the Zope package in docgen mode.
-    XMLConfig(os.path.join(here, 'makezcmldocs.zcml'))()
-    
     # Build the meta docs from the contents of the directive registry.
     if not os.path.exists(treeroot): os.mkdir(treeroot)
     for directive in _directives:
