@@ -13,28 +13,26 @@
 ##############################################################################
 """General registry-related views
 
-$Id: __init__.py,v 1.5 2004/03/17 17:37:07 philikon Exp $
+$Id: __init__.py,v 1.6 2004/04/08 21:02:40 jim Exp $
 """
-from zope.component import getView, getServiceManager
-from zope.proxy import removeAllProxies
-from zope.interface import implements
-
-from zope.app.publisher.browser import BrowserView
 from zope.app.container.browser.adding import Adding
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.container.interfaces import INameChooser
 from zope.app.form.browser import BrowserWidget, RadioWidget
 from zope.app.form.browser.interfaces import IBrowserWidget
 from zope.app.form.interfaces import IInputWidget
-from zope.app.container.interfaces import INameChooser
-
-from zope.app.registration.interfaces import IRegistration
-from zope.app.registration.interfaces import IRegistered
-from zope.app.registration.interfaces import UnregisteredStatus
-from zope.app.registration.interfaces import RegisteredStatus
-from zope.app.registration.interfaces import ActiveStatus
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.publisher.browser import BrowserView
+from zope.app.registration.interfaces import ActiveStatus
+from zope.app.registration.interfaces import IRegistered
+from zope.app.registration.interfaces import IRegistration
+from zope.app.registration.interfaces import RegisteredStatus
+from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.traversing import getName, traverse
-
+from zope.component import getView, getServiceManager
+from zope.interface import implements
+from zope.proxy import removeAllProxies
 
 class RegistrationView(BrowserView):
 
@@ -115,7 +113,8 @@ class ChangeRegistrations(BrowserView):
                     message = _("Disabled")
             else:
                 for info in self.context.info():
-                    if info['id'] == id and not info['active']:
+                    infoid = zapi.getPath(info['registration'])
+                    if infoid == id and not info['active']:
                         self.context.activate(info['registration'])
                         message = _("Updated")
                         break
@@ -130,32 +129,26 @@ class ChangeRegistrations(BrowserView):
                                       'absolute_url', self.request)
                               )
 
-        registrations = self.context.info(True)
+        registrations = self.context.info()
 
         # This is OK because registrations is just a list of dicts
         registrations = removeAllProxies(registrations)
 
         inactive = 1
-        have_none = False
         for info in registrations:
             if info['active']:
                 inactive = None
             else:
-                info['active'] = None
+                info['active'] = False
 
             reg = info['registration']
-            if reg is not None:
-                info['summary'] = reg.implementationSummary()
-            else:
-                info['summary'] = ""
-                info['id'] = 'disable'
-                have_none = True
-
-        if not have_none:
-            # Add a dummy registration since the stack removes trailing None.
-            registrations.append({"active": False,
-                                  "id": "disable",
-                                  "summary": ""})
+            info['summary'] = reg.implementationSummary()
+            info['id'] = zpi.getPath(reg)
+            
+        # Add a dummy registration since the stack removes trailing None.
+        registrations.append({"active": False,
+                              "id": "disable",
+                              "summary": ""})
 
         self.inactive = inactive
         self.registrations = registrations

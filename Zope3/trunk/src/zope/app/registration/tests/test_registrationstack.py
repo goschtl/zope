@@ -13,7 +13,7 @@
 ##############################################################################
 """Registration Stack tests
 
-$Id: test_registrationstack.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
+$Id: test_registrationstack.py,v 1.2 2004/04/08 21:02:41 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.site.tests.placefulsetup import PlacefulSetup
@@ -194,12 +194,10 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(
             info,
             [
-              {'id': 'default/1',
-               'active': True,
+              {'active': True,
                'registration': c1,
                },
-              {'id': 'default/2',
-               'active': False,
+              {'active': False,
                'registration': c2,
                },
               ])
@@ -210,30 +208,10 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(
             info,
             [
-              {'id': 'default/2',
-               'active': True,
+              {'active': True,
                'registration': c2,
                },
-              {'id': 'default/1',
-               'active': False,
-               'registration': c1,
-               },
-              ])
-
-        info = registry.info(True)
-        self.assertEqual(
-            info,
-            [
-              {'id': 'default/2',
-               'active': True,
-               'registration': c2,
-               },
-              {'id': '',
-               'active': False,
-               'registration': None,
-               },
-              {'id': 'default/1',
-               'active': False,
+              {'active': False,
                'registration': c1,
                },
               ])

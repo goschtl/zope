@@ -13,7 +13,7 @@
              />
      </td>
      <td tal:condition="python: registration['id'] != 'disable'"><a href="."
-            tal:attributes="href string:${view/configBase}/${registration/id}"
+            tal:attributes="href registration/registration/@@absolute_url"
             tal:content="registration/id"
          >foo/bar</a></td>
      <td tal:condition="python: registration['id'] == 'disable'"

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.4 2004/03/24 10:21:11 gintautasm Exp $
+$Id: interfaces.py,v 1.5 2004/04/08 21:02:39 jim Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable
@@ -211,24 +211,15 @@ class IRegistrationStack(Interface):
         Otherwise, returns None.
         """
 
-    def info(keep_dummy=False):
+    def info():
         """Return a sequence of registration information.
 
         The sequence items are mapping objects with keys:
-
-        id -- A string that can be used to uniquely identify the
-              registration.
 
         active -- A boolean indicating whether the registration is
                   active.
 
         registration -- The registration object.
-
-        If keep_dummy is true, an entry corresponding to the dummy
-        entry's position is returned whose value is
-        {id: '',
-         active: (True iff it is the first entry),
-         registration: None}.
         """
 
     def __nonzero__(self):

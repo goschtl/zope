@@ -13,19 +13,23 @@
 ##############################################################################
 """Registration Change Tests
 
-$Id: test_changeregistrations.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
+$Id: test_changeregistrations.py,v 1.2 2004/04/08 21:02:40 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.publisher.browser import TestRequest
 from zope.app.registration.tests.registrationstack \
-     import TestingRegistrationStack
+     import TestingRegistrationStack, TestingRegistration
 from zope.app.registration.browser import ChangeRegistrations
+
+a = TestingRegistration('a')
+b = TestingRegistration('b')
+c = TestingRegistration('c')
 
 class Test(TestCase):
 
     def test_applyUpdates_and_setPrefix(self):
-        registry = TestingRegistrationStack('a', 'b', 'c')
+        registry = TestingRegistrationStack(a, b, c)
         request = TestRequest()
         view = ChangeRegistrations(registry, request)
         view.setPrefix("Pigs")
@@ -33,17 +37,23 @@ class Test(TestCase):
         # Make sure we don't apply updates unless asked to
         request.form = {'Pigs.active': 'disable'}
         view.applyUpdates()
-        self.assertEqual(registry._data, ('a', 'b', 'c'))
+        data = [(info['active'], info['registration'])
+                for info in registry.info()]
+        self.assertEqual(data, [(True, a), (False, b), (False, c)])
 
         # Now test disabling
         request.form = {'submit_update': '', 'Pigs.active': 'disable'}
         view.applyUpdates()
-        self.assertEqual(registry._data, (None, 'a', 'b', 'c'))
+        data = [(info['active'], info['registration'])
+                for info in registry.info()]
+        self.assertEqual(data, [(False, a), (False, b), (False, c)])
 
         # Now test enabling c
         request.form = {'submit_update': '', 'Pigs.active': 'c'}
         view.applyUpdates()
-        self.assertEqual(registry._data, ('c', 'a', 'b'))
+        data = [(info['active'], info['registration'])
+                for info in registry.info()]
+        self.assertEqual(data, [(True, c), (False, a), (False, b)])
 
 
 def test_suite():

@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.6 2004/03/31 23:35:41 jim Exp $
+$Id: __init__.py,v 1.7 2004/04/08 21:02:41 jim Exp $
 """
 from zope.proxy import removeAllProxies
 from zope.app import zapi
@@ -377,32 +377,26 @@ class ServiceActivation(BrowserView):
 
         # XXX this code path is not being tested
         result = []
-        dummy = {'id': 'None',
-                 'active': False,
-                 'registration': None,
-                 'name': '',
-                 'url': '',
-                 'config': '',
-                }
-        for info in registry.info(True):
+        for info in registry.info():
             configobj = info['registration']
-            if configobj is None:
-                info = dummy
-                dummy = None
-                if not result:
-                    info['active'] = True
-            else:
-                component = configobj.getComponent()
-                path = zapi.getPath(component)
-                path = path.split("/")
-                info['name'] = "/".join(path[-2:])
-                info['url'] = str(
-                    zapi.getView(component, 'absolute_url', self.request))
-                info['config'] = str(zapi.getView(configobj, 'absolute_url',
-                                             self.request))
+            component = configobj.getComponent()
+            path = zapi.getPath(component)
+            path = path.split("/")
+            info['id'] = zapi.getPath(configobj)
+            info['name'] = "/".join(path[-2:])
+            info['url'] = str(
+                zapi.getView(component, 'absolute_url', self.request))
+            info['config'] = str(zapi.getView(configobj, 'absolute_url',
+                                         self.request))
             result.append(info)
-        if dummy:
-            result.append(dummy)
+
+        result.append({'id': 'None',
+                       'active': False,
+                       'registration': None,
+                       'name': '',
+                       'url': '',
+                       'config': '',
+                       })
         return result
 
     def update(self):
