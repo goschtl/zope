@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ResultSet.py,v 1.4 2002/12/02 20:03:49 alga Exp $
+$Id: ResultSet.py,v 1.5 2002/12/13 22:53:44 gvanrossum Exp $
 """
 from IResultSet import IResultSet
 from Row import RowClassFactory
@@ -46,6 +46,8 @@ class ResultSet(list):
                   for row in self]
                 ))
 
+    # XXX __basicnew__ is deprecated in Python 2.3.
+    #     What to do instead?
     def __basicnew__():
         return ResultSet((), ())
     __basicnew__ = staticmethod(__basicnew__)
