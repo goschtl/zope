@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.2 2003/05/21 17:26:37 sidnei Exp $
+$Id: propfind.py,v 1.3 2003/05/21 20:29:46 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -32,7 +32,7 @@ class PROPFIND:
         self.context = context
         self.request = request
         self.setDepth(request.getHeader('depth', 'infinity'))
-        self.content_type = request.getHeader('content-type', '')
+        self.content_type = request.getHeader('content-type', 'text/xml')
         self.default_ns = 'DAV:'
 
     def getDepth(self):

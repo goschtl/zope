@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.2 2003/05/21 17:26:37 sidnei Exp $
+$Id: test_propfind.py,v 1.3 2003/05/21 20:29:46 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -81,7 +81,7 @@ class FooZPT:
         return 'bla bla bla'
 
 
-def _createRequest(body=None, headers=None):
+def _createRequest(body=None, headers=None, skip_headers=None):
     if body is None:
         body = '''<?xml version="1.0" encoding="utf-8" ?>
 
@@ -101,6 +101,11 @@ def _createRequest(body=None, headers=None):
     if headers is not None:
         for key, value in headers.items():
             _environ[key.upper()] = value
+
+    if skip_headers is not None:
+        for key in skip_headers:
+            if _environ.has_key(key.upper()):
+                del _environ[key.upper()]
 
     request = TestRequest(StringIO(body), StringIO(), _environ)
     return request
@@ -166,6 +171,16 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         pfind.PROPFIND()
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 207)
+
+    def test_no_contenttype(self):
+        file = self.file
+        request = _createRequest(skip_headers=('content-type'))
+
+        pfind = propfind.PROPFIND(file, request)
+        pfind.PROPFIND()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(pfind.content_type, 'text/xml')
 
     def test_nodepth(self):
         file = self.file
