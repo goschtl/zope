@@ -1,0 +1,55 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:startup="http://namespaces.zope.org/startup">
+
+  <!-- Define a specific site. The name of the site is used for server
+       messages only. The number of threads specifies the number of
+       threads the server should maximally use. -->
+
+  <startup:defineSite name="Zope 3 Default"
+                      threads="4">
+
+    <!-- You can choose between several storages.
+
+         At the moment only two storages are supported:
+             FileStorage - Saves data in a specified file
+             MappingStorage - Saves data in a dictionary. No saving. -->
+
+    <startup:useFileStorage file = "Data.fs" />
+    <!--startup:useMappingStorage /-->
+
+
+    <!-- Setup the log file.
+
+         There are two special file names:
+             STDERR - sends output to standard error
+             STDOUT - sends output to standard output -->
+
+    <startup:useLog file="STDERR" />
+
+
+    <!-- Now define the servers you would like to start. All you need
+    to specify is the server type. Both, the port and verbose option,
+    are optional.
+
+    The following types are currently available: 
+        Browser - A standard HTML/XUL server
+        XML-RPC - An XML-RPC server, for calling objects remotely
+        FTP - A server to access the ZODB via the FTP protocol
+    Soon:
+        SOAP - An SOAP server for Zope based on ZSI
+
+    The 'port' option specifies the port the server should run on of course.
+
+    The 'verbose' option specifies whether any logs should be written. If
+    set to false, nothing is reported. -->
+
+    <startup:addServer type = "Browser" port = "8080" />
+    <startup:addServer type = "XML-RPC" port = "8081" verbose="true" />
+    <startup:addServer type = "FTP" port = "8021" />
+
+
+  </startup:defineSite>
+
+
+</zopeConfigure>

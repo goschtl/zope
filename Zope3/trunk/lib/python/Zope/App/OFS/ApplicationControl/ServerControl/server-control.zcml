@@ -1,0 +1,22 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:server-control='http://namespaces.zope.org/server-control'
+>
+
+  <utility factory=".ServerControl.ServerControl"
+           permission="Zope.ManageApplication"
+           provides=".IServerControl." />
+
+  <!-- Hint: Here you see how to register something on Zope shutdown -->
+  <server-control:registerShutdownHook
+       name="Shutdown logger"
+       priority="0"
+       call=".ServerControl.shutdownLogger"
+       />
+
+  <include package=".Views" file="views.zcml" />
+
+</zopeConfigure>

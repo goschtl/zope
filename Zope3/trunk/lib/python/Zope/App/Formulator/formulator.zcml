@@ -1,0 +1,28 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+>
+
+  <include package="Zope.App.Formulator" file="formulator-meta.zcml" />
+
+  <include package="Zope.App.Formulator.Fields" file="fields.zcml" />
+  <include package="Zope.App.Formulator.Validators" file="validators.zcml" />
+  <include package="Zope.App.Formulator.Widgets" file="widgets.zcml" />
+
+  <adapter factory="Zope.App.Formulator.PropertyFieldAdapter."
+           provides="Zope.App.Formulator.IPropertyFieldAdapter."
+           for="Zope.App.Formulator.IField." />
+
+  <content class=".Field.">
+    <security:require
+        permission="Zope.View" 
+        interface=".IField." />
+  </content>
+  
+  <content class=".Form.">
+    <security:require
+        permission="Zope.View" 
+        attributes="index action getFieldViews getContext" />
+  </content>
+
+</zopeConfigure>

@@ -1,0 +1,10 @@
+The factory directive.
+
+See lib/python/Zope/App/ComponentArchitecture/component-meta.zcml
+
+Attributes
+
+  * component
+  
+  * id, optional
+  

@@ -1,0 +1,44 @@
+[Scenario]
+Title: Edit content instance 
+Use_case: EditContentInstance
+
+[Setup]
+URL: %(portal_url)s/%(site_path)s/contents;view/remove?name=contact_1&silent=yes
+[Homepage]
+URL: %(portal_url)s/%(site_path)s
+Expected_response: 200
+
+[Adder]
+URL: %(portal_url)s/%(site_path)s/adder;view
+Expected_response: 200
+
+[DoAdd]
+URL: %(portal_url)s/%(site_path)s/adder;view/action.html
+Field_1: type_name=Zope.Products.Contact.Contact.Contact
+Field_2: id=contact_1
+Expected_response: 200
+
+[View_1]
+URL: %(portal_url)s/%(site_path)s/contact_1
+Expected_response: 200
+
+[EditForm]
+URL: %(portal_url)s/%(site_path)s/contact_1/edit;view
+Expected_response: 200
+
+[EditAction]
+URL: %(portal_url)s/%(site_path)s/contact_1/edit;view/action.html
+Field_1: first_name=Tres
+Field_2: last_name=Seaver
+Field_3: email=tseaver@zope.com
+Field_4: address=Zope Corporation
+                    535 Prince Edward Boulevard
+Field_1: postal_code=22401
+Expected_response: 200
+
+[View_2]
+URL: %(portal_url)s/%(site_path)s/contact_1
+Expected_response: 200
+
+[Teardown]
+URL: %(portal_url)s/%(site_path)s/contents;view/remove?name=contact_1&silent=yes

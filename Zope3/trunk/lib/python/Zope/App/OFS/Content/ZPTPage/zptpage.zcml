@@ -1,0 +1,43 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+>
+
+  <content class=".ZPTPage.">
+    <zmi:factory
+        id="ZPTPage"
+        permission="Zope.ManageContent"
+        title="ZPT Page"
+        description="A simple, content-based Page Template" />
+    <security:require permission="Zope.View"
+                      attributes="content_type __call__" />
+
+    <security:require permission="Zope.ManageContent"
+                      interface=".ZPTPage.IZPTPage" />
+    <security:require permission="Zope.View"
+                      interface=".ZPTPage.IRenderZPTPage" />
+  </content>
+
+
+  <adapter
+      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
+      provides="Zope.App.OFS.Annotation.IAnnotations."
+      for=".ZPTPage." />
+
+
+  <!-- tabs for ZPT Page -->
+
+  <zmi:tabs for=".ZPTPage.IZPTPage.">
+    <zmi:tab label="Edit" action="editForm.html"/>
+    <zmi:tab label="View" action="."/>
+    <!-- XXX This isn't working
+    <zmi:tab label="Role Permissions"
+             action="AllRolePermissions.html"/>
+    -->
+  </zmi:tabs>
+
+  <include package=".Views" file="views.zcml" />
+
+</zopeConfigure>

@@ -1,0 +1,28 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+>
+
+<include package="Zope" file="zope.zcml" />
+
+<security:role id="Manager" title="Site Manager" />
+<security:role id="Member" title="Site Member" />
+
+<include file="principals.zcml" />
+
+<security:grantPermissionToRole permission="Zope.View" 
+                                role="Manager" />
+<security:grantPermissionToRole permission="Zope.ManageContent"
+                                role="Manager" />
+<security:grantPermissionToRole permission="Zope.Security" 
+                                role="Manager" />
+
+<security:grantPermissionToRole permission="Zope.ManageServices" 
+                                role="Manager" />
+
+<security:grantPermissionToRole permission="Zope.ManageApplication" 
+                                role="Manager" />
+
+<include file="products.zcml" />
+
+</zopeConfigure>

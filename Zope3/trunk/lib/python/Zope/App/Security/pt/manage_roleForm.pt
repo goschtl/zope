@@ -1,0 +1,40 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+<style metal:fill-slot="headers" type="text/css" ></style>
+</head>
+<body bgcolor="#ffffff" link="#000099" alink="#000099" vlink="#000099">
+<div metal:fill-slot="body">
+<p class="form-help">
+Helpful message explaing about how to set specific roles
+</p>
+
+<div tal:define="role python:view.roleForID(request.get('role_to_manage'))" tal:omit-tag="">
+<p class="form-text">
+Permissions assigned to the role
+<strong tal:content="role/getTitle">Great Master Guru</strong>
+(id: <strong tal:content="role/getId">Zope.Some.Role</strong>)
+</p>
+
+
+<form action="update_role" method="get">
+<input type="hidden" name="role_id" value="Role ID"
+    tal:attributes="value role/getId" />
+<div class="form-element">
+<select name="permissions:list" multiple size="20">
+<option tal:repeat="permission role/permissionsInfo"
+        tal:content="permission/title"
+        tal:attributes="selected permission/checked;
+                        value permission/id"
+        >Sample Permission</option>
+</select>
+</div>
+
+<div class="form-element">
+<input class="form-element" type="submit" name="submit" value="Save Changes" />
+</div>
+</form>
+
+</div>
+</div>
+</body>
+</html>

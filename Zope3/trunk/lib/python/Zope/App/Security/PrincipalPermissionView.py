@@ -1,0 +1,113 @@
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+# 
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+##############################################################################
+"""
+
+$Id: PrincipalPermissionView.py,v 1.2 2002/06/10 23:28:16 jim Exp $
+"""
+import time
+
+from Zope.App.PageTemplate import ViewPageTemplateFile
+from Zope.Publisher.Browser.BrowserView import BrowserView
+from Zope.ComponentArchitecture.ContextDependent import ContextDependent
+from Zope.ComponentArchitecture import getService, getAdapter
+from IPrincipalPermissionMap import IPrincipalPermissionMap
+from IPrincipalPermissionManager import IPrincipalPermissionManager
+from Settings import Allow, Deny, Unset
+
+class PrincipalPermissionView(BrowserView):
+
+    index = ViewPageTemplateFile('pt/principal_permission_edit.pt')
+
+    def get_permission_service(self):
+        return getService(self.context, 'PermissionService')
+
+    def get_principal(self, principal_id):
+        return getService(self.context,
+                          'AuthenticationService'
+                          ).getPrincipal(principal_id)
+
+    def unsetPermissions(self, principal_id, permission_ids, REQUEST=None):
+        """Form action unsetting a principals permissions"""
+        permission_service = self.get_permission_service()
+        principal = self.get_principal(principal_id)
+        ppm = getAdapter(self.context, IPrincipalPermissionManager)
+
+        for perm_id in permission_ids:
+            permission = permission_service.getPermission(perm_id)
+            ppm.unsetPermissionForPrincipal(permission , principal)
+
+        if REQUEST is not None:
+            return self.index(message="Settings changed at %s"
+                                        % time.ctime(time.time()))
+
+    def grantPermissions(self, principal_id, permission_ids, REQUEST=None):
+        """Form action granting a list of permissions to a principal"""
+        permission_service = self.get_permission_service()
+        principal = self.get_principal(principal_id)
+        ppm = getAdapter(self.context, IPrincipalPermissionManager)
+
+        for perm_id in permission_ids:
+            permission = permission_service.getPermission(perm_id)
+            ppm.grantPermissionToPrincipal(permission , principal)
+        if REQUEST is not None:
+            return self.index(message="Settings changed at %s"
+                                        % time.ctime(time.time()))
+
+    def denyPermissions(self, principal_id, permission_ids, REQUEST=None):
+        """Form action denying a list of permissions for a principal"""
+        permission_service = self.get_permission_service()
+        principal = self.get_principal(principal_id)
+        ppm = getAdapter(self.context, IPrincipalPermissionManager)
+
+        for perm_id in permission_ids:
+            permission = permission_service.getPermission(perm_id)
+            ppm.denyPermissionToPrincipal(permission , principal)
+        if REQUEST is not None:
+            return self.index(message="Settings changed at %s"
+                                        % time.ctime(time.time()))
+
+    # Methods only called from the zpt view
+    def getUnsetPermissionsForPrincipal(self, principal_id):
+        """Returns all unset permissions for this principal"""
+
+        ppmap = getAdapter(self.context, IPrincipalPermissionMap)
+        principal = self.get_principal(principal_id)
+        perm_serv = getService(self.context, 'PermissionService')
+        result = []
+        for perm in perm_serv.getPermissions():
+            if ppmap.getSetting(perm, principal) == Unset:
+                result.append(perm)
+
+        return result
+        
+    def getPermissionsForPrincipal(self, principal_id, setting_name):
+        """Return a list of permissions with the given setting_name
+           string for the principal.
+           
+           Return empty list if there are no permissions.
+        """
+    
+        ppmap = getAdapter(self.context, IPrincipalPermissionMap)
+        principal = self.get_principal(principal_id)
+        
+        permission_settings = ppmap.getPermissionsForPrincipal(principal)
+        setting_map = {'Deny': Deny, 'Allow':Allow}
+        asked_setting = setting_map[setting_name]
+
+        result = []
+        for permission, setting in permission_settings:
+            if asked_setting == setting:
+                result.append(permission)
+            
+        return result

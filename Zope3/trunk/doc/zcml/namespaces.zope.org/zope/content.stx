@@ -1,0 +1,48 @@
+The content directive.
+
+Subdirectives
+
+  implements
+
+  require
+  
+  allow
+  
+  zmi:factory
+  
+
+Examples
+
+  An empty content directive::
+  
+    <content class=".Contact."/>
+    
+  A content directive that contains security assertions::
+  
+    <content class=".Contact.">
+      <allow interface=".IContact.IViewContact" />
+      <require permission="Zope.ManageContent" interface=".IContact." />
+    </content>
+    
+  A content directive that makes an interface implementation assertion::
+  
+    <content class=".Contact.">
+      <implements interface=".IContact." />
+    </content>
+    
+  A rather full content directive::
+  
+    <content class=".Contact.">
+      <implements interface=".IContact." />
+      <zmi:factory
+          permission="ZopeProducts.Contact.ManageContacts"
+          title="Personal Contact Information" />
+
+      <security:require
+          permission="Zope.View"
+          interface=".IContact.IContactInfo." />
+
+      <security:require
+          permission="ZopeProducts.Contact.ManageContacts"
+          attributes="update"/>
+    </content>

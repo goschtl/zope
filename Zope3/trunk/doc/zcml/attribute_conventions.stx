@@ -1,0 +1,37 @@
+Terms used
+
+  Dotted name
+  
+    XXX: explain resolution of ".Foo.Bar." and ".Foo.Bar+"
+    
+
+The attributes used in zcml usually follow this convention
+
+  component
+  
+    A dotted name that resolves to an object
+    
+  class
+  
+    A dotted name that resolves to a class
+    
+  permission
+  
+    The id of a permission
+    
+  principal
+  
+    The id of a principal
+    
+  role
+  
+    The id of a role
+    
+  factory
+  
+    A dotted name that resolves to a callable that acts as a factory.
+    A factory can also be made of several callables chained together.
+    In this case, the factory attribute is a whitespace separated list
+    of dotted-names.
+    
+    

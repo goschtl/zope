@@ -1,0 +1,10 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+>
+
+  <include package=".File" file="file.zcml" />
+  <include package=".Folder" file="folder.zcml" />
+  <include package=".Image" file="image.zcml" />
+  <include package=".ZPTPage" file="zptpage.zcml" />
+
+</zopeConfigure>

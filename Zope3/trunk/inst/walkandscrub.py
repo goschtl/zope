@@ -1,16 +1,16 @@
 ##############################################################################
 #
-# Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE
+# FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-
 import os, sys
 DEBUG = 0
 if os.name in ('posix', 'nt', 'dos'):
@@ -40,6 +40,7 @@ def scrub(list, dirname, filelist):
         if ext == '.pyo' or ext == '.pyc':
             full = os.path.join(dirname, name)
             os.unlink(full)
+            filelist.remove(name)
             if DEBUG: print full
             
 if __name__ == '__main__':

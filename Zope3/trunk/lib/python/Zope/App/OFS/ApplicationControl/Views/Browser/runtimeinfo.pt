@@ -1,0 +1,23 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+<title>Zope Runtime Information</title>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+<ul tal:define="runtime_info view/runtimeInfo">
+   <li>Zope version: <span tal:replace="runtime_info/ZopeVersion" />
+   <li>Python version: <span tal:replace="runtime_info/PythonVersion" />
+   <li>System platform: <span tal:replace="runtime_info/SystemPlatform" />
+   <li>Command line: <span tal:replace="runtime_info/CommandLine" />
+   <li>Process id: <span tal:replace="runtime_info/ProcessId" />
+   <li>Uptime: <span tal:replace="runtime_info/Uptime" />
+   <li>Python path:</li>
+      <ul>
+        <li tal:repeat="path runtime_info/PythonPath" tal:content="path">path</li>
+      </ul>
+</ul>
+
+</div>
+</body>
+</html>

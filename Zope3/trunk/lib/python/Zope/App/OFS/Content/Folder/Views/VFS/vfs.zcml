@@ -1,0 +1,15 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:security="http://namespaces.zope.org/security"
+   xmlns:vfs="http://namespaces.zope.org/vfs"
+>
+
+  <vfs:view
+      name="vfs"
+      for="Zope.App.OFS.Container.IContainer."
+      permission="Zope.ManageContent" 
+      allowed_interface="Zope.Publisher.VFS.IVFSDirectoryPublisher." 
+      factory="Zope.App.OFS.Container.Views.VFS.VFSContainerView." 
+      />
+
+</zopeConfigure>

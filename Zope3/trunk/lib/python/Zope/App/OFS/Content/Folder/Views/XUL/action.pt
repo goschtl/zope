@@ -1,0 +1,44 @@
+
+// Passed in as the response handler in the asynchronous case
+// and called directly (see below) in the synchronous case
+function oncompletion(resp, call, status) { 
+  if (status != 0) {
+    alert("Error completion: " + status);
+    return true;
+  }
+
+  // Was there a SOAP fault in the response?
+  if (resp.fault != null) {
+    var f = resp.fault;
+    var detail = f.detail;
+    var ds = new XMLSerializer();
+    var detailStr = detail ? ds.serializeToString(detail) : "";
+    alert("Fault namespace: " + f.faultNamespaceURI + "\nFault code: " + 
+          f.faultCode + "\nFault string: " + f.faultString + 
+          "\nFault actor: "  + f.faultActor + "\nDetail: " + detailStr);
+  }
+  else {
+    var ret = resp.getParameters(true, {})[0];
+    var val = ret.value;
+    var retStr = "Success:\nName: " + ret.name + "\nValue: " + val;
+    alert(retStr);
+  }
+  return true;
+}
+
+function action(limit) {
+  var s = new SOAPCall();
+  s.transportURI = "http://physics.cbu.edu:8082/loaded/@@methods/";
+  s.verifySourceHeader = true;
+  if (!s.verifySourceHeader)
+    netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+
+  var p1 = new SOAPParameter(parseInt(limit), "limit");
+  s.encode(0, "setLimit", "http://physics.cbu.edu:8082/loaded/@@methods/", 0, null, 1, new Array(p1));
+  s.invoke();
+
+  s.encode(0, "getLimit", "http://physics.cbu.edu:8082/loaded/@@methods/", 0, null, 0, new Array());
+  var r = s.invoke();
+  oncompletion(r, s, 0);
+ 
+}

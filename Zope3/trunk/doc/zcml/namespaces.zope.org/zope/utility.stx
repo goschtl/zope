@@ -1,0 +1,19 @@
+The utility directive.
+
+See lib/python/Zope/App/ComponentArchitecture/component-meta.zcml
+
+Attributes
+
+  * factory
+  
+  * component
+  
+  * provides, the interface this utility provides
+  
+  * permission, optional, the permission id required to use this utility
+  
+  
+  Either component or factory must be given, not both.
+  If component is given, it is a resolvable name to an object.
+  If factory is given, it is a callable object that provides a component.
+  

@@ -1,0 +1,16 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
+>
+
+  <!-- Folder View Directives -->
+
+  <xmlrpc:view
+      name="methods"
+      for="Zope.App.OFS.Content.Folder.LoadedFolder.ILoadedFolder."
+      permission="Zope.ManageContent" 
+      allowed_attributes="objectIds setLimit getLimit"
+      factory="Zope.App.OFS.Content.Folder.Views.XMLRPC.Methods." />
+
+</zopeConfigure>

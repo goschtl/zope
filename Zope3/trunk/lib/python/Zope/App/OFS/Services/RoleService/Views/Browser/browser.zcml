@@ -1,0 +1,42 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <browser:defaultView 
+     for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
+     name="index.html"
+     />
+
+  <browser:view 
+     permission="Zope.ManageServices" 
+     for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
+     factory="Zope.App.OFS.Services.RoleService.Views.Browser.Contents.">
+
+     <browser:page name="index.html" attribute="index" />
+
+  </browser:view>
+
+  <browser:view 
+     name="adder"
+     permission="Zope.ManageServices" 
+     for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService"
+     factory="Zope.App.OFS.Services.RoleService.Views.Browser.Adder."
+     >
+
+    <browser:page name="addForm.html"
+                  attribute="index"
+                  />
+    <browser:page name="add.html"
+                  attribute="action"
+                  />
+
+  </browser:view>
+
+  <zmi:tabs for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService.">
+    <zmi:tab label="Contents" action="@@index.html"/>
+  </zmi:tabs>
+
+</zopeConfigure>

@@ -1,0 +1,40 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <!-- ZPT Page View Directives -->
+
+  <browser:defaultView
+      name="index.html"
+      for="Zope.App.OFS.Content.ZPTPage.ZPTPage.IZPTPage."
+      />
+
+  <browser:view
+      permission="Zope.View"
+      for="Zope.App.OFS.Content.ZPTPage.ZPTPage.IZPTPage."
+      factory=".ZPTPageEval.">
+      
+      <browser:page name="index.html" attribute="index" />
+  </browser:view>
+
+  <browser:view
+      permission="Zope.ManageContent"
+      for="Zope.App.OFS.Content.ZPTPage.ZPTPage.IZPTPage."
+      factory=".ZPTPageEdit." >
+
+      <browser:page name="editForm.html" attribute="index" />
+      <browser:page name="edit.html" attribute="action" />
+
+  </browser:view>
+
+  <!-- Registering all the field views for the browser -->
+
+  <browser:view
+      name="SourceFieldView"
+      for="Zope.App.OFS.Content.ZPTPage.ZPTPage.IZPTPage."
+      factory="Zope.App.OFS.Content.ZPTPage.ZPTPageFields.SourceField. 
+               Zope.App.Formulator.Widgets.Browser.TextAreaWidget." />
+
+</zopeConfigure>

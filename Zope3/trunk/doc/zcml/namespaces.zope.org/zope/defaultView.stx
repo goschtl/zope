@@ -1,0 +1,15 @@
+The defaultView directive.
+
+Assuming the MinimalDefaultViewDirectives proposal is accepted, the following
+will hold.
+
+Attributes
+
+  * for, a component
+  
+  * name, the name of the view that is to be the default
+
+
+References
+
+  http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/MinimalDefaultViewDirectives

@@ -1,0 +1,19 @@
+The adapter directive.
+
+See lib/python/Zope/App/ComponentArchitecture/component-meta.zcml
+
+Attributes
+
+  * factory, a callable or list of callables, that realises the adaption
+  
+  * provides, the interface this adapter adapts to
+  
+  * for, optional, the interface this adapter adapts from.
+  
+  * permission, optional, the permission required to use this adapter
+  
+  If the 'for' attribute is not present, the adapter can adapt from any
+  component.
+  
+  
+  

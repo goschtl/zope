@@ -1,0 +1,21 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+  <browser:defaultView 
+      name="control.html"
+      for="Zope.Event.IEventService+"
+      permission="Zope.ManageServices" 
+      factory=".Control." />
+
+  <zmi:tabs for="Zope.Event.IEventService+">
+    <zmi:tab label="Control" action="@@control.html" />
+  </zmi:tabs>
+
+</zopeConfigure>
+
+
+
+

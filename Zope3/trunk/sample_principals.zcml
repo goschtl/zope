@@ -1,0 +1,24 @@
+<!--# Use this as an example for setting up your principals file.
+      Don't simply copy this file to principals.zcml unless you
+      absolutely know it will only be used for development.
+   -->
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+
+<security:defaultPrincipal id="anybody" 
+                           title="Unauthenticated User" />
+
+<security:principal id="stupid" title="Stupid, replace me"
+                    login="stupid" password="123" />
+<security:principal id="idiot" title="I'm an idiot, replace me"
+                    login="idiot" password="456" />
+
+<security:assignRoleToPrincipal role="Manager" principal="stupid" />
+<security:assignRoleToPrincipal role="Member"  principal="idiot" />
+
+</zopeConfigure>

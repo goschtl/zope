@@ -1,0 +1,42 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
+   xmlns:vfs='http://namespaces.zope.org/vfs'
+   xmlns:security='http://namespaces.zope.org/security'
+>
+
+  <browser:view
+      name="_traverse" 
+      for=".IContainer.IReadContainer"
+      factory=".ContainerTraverser." />
+
+  <xmlrpc:view
+      name="_traverse" 
+      for=".IContainer.IReadContainer."
+      factory=".ContainerTraverser." />
+
+  <adapter factory=".ContainerTraversable."
+           provides="Zope.App.Traversing.ITraversable."
+           for=".IContainer.IReadContainer." />
+
+  <browser:view name="_traverse" 
+      for=".IContainer."
+      factory=".ContainerTraverser." />
+
+  <xmlrpc:view name="_traverse" 
+      for=".IContainer."
+      factory=".ContainerTraverser." />
+
+  <vfs:view name="_traverse" 
+      for=".IContainer."
+      factory=".ContainerTraverser." />
+
+  <adapter factory=".ContainerTraversable."
+           provides="Zope.App.Traversing.ITraversable."
+           for=".IContainer.IReadContainer." />
+
+
+  <include package=".Find" file="find.zcml" />
+
+</zopeConfigure>

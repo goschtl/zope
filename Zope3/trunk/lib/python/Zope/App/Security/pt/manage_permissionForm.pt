@@ -1,0 +1,40 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+<style metal:fill-slot="headers" type="text/css" ></style>
+</head>
+<body bgcolor="#ffffff" link="#000099" alink="#000099" vlink="#000099">
+<div metal:fill-slot="body">
+<p class="form-help">
+Helpful message.
+</p>
+
+<div tal:define="perm python:view.permissionForID(request.get('permission_to_manage'))">
+<p class="form-text">
+Roles assigned to the permission
+<strong tal:content="perm/getTitle">Change DTML Methods</strong>
+(id: <strong tal:content="perm/getId">Zope.Some.Permission</strong>)
+</p>
+
+
+<form action="update_permission" method="post">
+<input type="hidden" name="permission_id" value="Permission Name"
+    tal:attributes="value perm/getId" />
+<div class="form-element">
+<select name="roles:list" multiple size="10">
+<option tal:repeat="role perm/rolesInfo"
+        tal:content="role/title"
+        tal:attributes="selected role/checked;
+                        value role/id"
+        >Sample</option>
+</select>
+</div>
+
+<div class="form-element">
+<input class="form-element" type="submit" name="submit" value="Save Changes" />
+</div>
+</form>
+
+</div>
+</div>
+</body>
+</html>

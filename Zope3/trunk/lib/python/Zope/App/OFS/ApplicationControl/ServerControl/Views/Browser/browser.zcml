@@ -1,0 +1,23 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:application-control='http://namespaces.zope.org/application-control'
+>
+
+  <!-- ServerControl View Directives -->
+  <browser:view
+      for="Zope.App.OFS.ApplicationControl.IApplicationControl."
+      permission="Zope.ManageApplication"
+      factory=".ServerControlView.">
+    
+    <browser:page name="ServerControlForm.html" attribute="index" />
+    <browser:page name="ServerControl.html"     attribute="action" />
+  </browser:view>
+    
+
+  <application-control:registerView
+      name="ServerControlForm.html"
+      title="Server control" />
+    
+</zopeConfigure>

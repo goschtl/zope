@@ -1,0 +1,63 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <browser:defaultView 
+     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
+     name="index.html"
+     />
+
+  <browser:view 
+     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
+     permission="Zope.ManageServices" 
+     factory=".Contents."
+     >
+
+    <browser:page name="index.html"
+                  attribute="index"
+                  />
+    <browser:page name="addServiceManager.html"
+                  attribute="addServiceManager"
+                  />
+
+  </browser:view> 
+
+  <browser:view 
+     permission="Zope.ManageServices" 
+     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
+     factory=".Adder.">
+
+    <browser:page name="addForm.html"
+                  attribute="index"
+                  />
+    <browser:page name="add.html"
+                  attribute="action"
+                  />
+
+  </browser:view> 
+  
+  <browser:view 
+     permission="Zope.ManageServices" 
+     for="Zope.App.OFS.Services.ServiceManager.IServiceManager."
+     factory=".Bindings." >
+
+    <browser:page name="bindings.html"
+                  attribute="index"
+                  />
+    <browser:page name="changeBindings.html"
+                  attribute="action"
+                  />
+
+  </browser:view> 
+
+
+  <zmi:tabs 
+    for="Zope.App.OFS.Services.ServiceManager.ServiceManager.IServiceManager.">
+    <zmi:tab label="Contents" action="@@index.html"/>
+    <zmi:tab label="Bindings" action="@@bindings.html"/>
+  </zmi:tabs>
+
+</zopeConfigure>

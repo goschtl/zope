@@ -1,22 +1,24 @@
 ##############################################################################
 #
-# Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
-# FOR A PARTICULAR PURPOSE
+# FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
 """
-$Id: unauthorized.py,v 1.4 2001/11/28 15:51:23 matt Exp $
+$Id: unauthorized.py,v 1.5 2002/06/10 23:29:26 jim Exp $
 """
 
 from types import StringType
+from Zope.Exceptions import ZopeError
 
-class Unauthorized(Exception):
+class Unauthorized(ZopeError):
     """Some user wasn't allowed to access a resource"""
 
     def __init__(self, message=None, value=None, needed=None, name=None, **kw):

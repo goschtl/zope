@@ -1,0 +1,14 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security' 
+>
+ 
+  <adapter 
+     provides=".IFind."
+     for="Zope.App.OFS.Container.IContainer.IReadContainer"
+     permission="Zope.ManageContent" 
+     factory=".FindAdapter." />
+ 
+  <include package=".Views" file="views.zcml" />
+
+</zopeConfigure>

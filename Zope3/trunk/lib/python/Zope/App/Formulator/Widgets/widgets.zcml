@@ -1,0 +1,8 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+>
+
+  <include package="Zope.App.Formulator.Widgets.Browser" file="browser.zcml" />
+  <include package="Zope.App.Formulator.Widgets.XUL" file="xul.zcml" />
+
+</zopeConfigure>

@@ -1,0 +1,24 @@
+The securityPolicy directive
+
+Overview
+
+  Sets the security policy that Zope will use.
+  
+  XXX: Explain what this means.
+  
+Attributes
+
+  The securityPolicy directive takes these attributes
+  
+    * component, the component that implements the security policy
+    
+    * factory, a callable that returns a security policy
+    
+    
+  The security policy component should implement the interface
+  "Zope.Security.ISecurityPolicy."
+  
+  
+  
+  
+  

@@ -1,0 +1,17 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <include package=".ComponentArchitecture" file="component.zcml" />
+  <include package=".ZMI" file="zmi.zcml" />
+  <include package=".Formulator" file="formulator.zcml" />
+  <include package=".OFS" file="ofs.zcml" />
+  <include package=".Security" file="security.zcml" />
+  <include package=".Traversing" file="traversing.zcml" />
+  <include package=".ZopePublication" file="zopepublication.zcml" />
+  <include package=".Undo" file="undo.zcml" />
+
+</zopeConfigure>

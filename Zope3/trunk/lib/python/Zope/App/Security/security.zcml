@@ -1,0 +1,103 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+  <serviceType
+      id="RoleService" 
+      interface="Zope.App.Security.IRoleService." />
+  <service
+      serviceType="RoleService" 
+      component="Zope.App.Security.RoleRegistry.roleRegistry" />
+
+  <serviceType
+      id="PermissionService" 
+      interface="Zope.App.Security.IPermissionService." />
+  <service
+      serviceType="PermissionService" 
+      component="Zope.App.Security.PermissionRegistry.permissionRegistry" />
+
+  <serviceType
+      id="AuthenticationService" 
+      interface="Zope.App.Security.IAuthenticationService." />
+  <service
+      serviceType="AuthenticationService" 
+      component="Zope.App.Security.PrincipalRegistry.principalRegistry" />
+
+  <security:defaultPolicy 
+      name="Zope.App.Security.ZopeSecurityPolicy.zopeSecurityPolicy" />
+
+  <adapter factory="Zope.App.Security.BasicAuthAdapter."
+           provides="Zope.App.Security.ILoginPassword."
+           for="Zope.Publisher.HTTP.IHTTPCredentials." />
+
+  <adapter factory="Zope.App.Security.BasicVFSAuthAdapter."
+           provides="Zope.App.Security.ILoginPassword."
+           for="Zope.Publisher.VFS.IVFSCredentials." />
+
+  <adapter factory="Zope.App.Security.BasicVFSAuthAdapter."
+           provides="Zope.App.Security.ILoginPassword."
+           for="Zope.Publisher.VFS.IVFSCredentials." />
+
+
+<!-- Role-Permission management view -->
+
+  <content class=".RolePermissionView.PermissionRoles.">
+    <security:require   
+        permission="Zope.Security"
+        attributes="roles rolesInfo"
+        interface="Zope.App.Security.IRegisteredObject." />
+  </content>
+  
+  <browser:view for="Zope.App.OFS.Annotation.IAnnotatable."
+                permission="Zope.Security"
+                factory="Zope.App.Security.RolePermissionView.">
+
+    <browser:page name="AllRolePermissions.html" 
+                  attribute="index" />
+    <browser:page name="ChangeAllRolePermissions.html" 
+                  attribute="action" />
+    <browser:page name="RolePermissions.html" 
+                  attribute="manage_RoleForm" />
+    <browser:page name="ChangeRolePermissions.html" 
+                  attribute="update_role" />
+    <browser:page name="RolesWithPermission.html" 
+                  attribute="manage_permissionForm" />
+    <browser:page name="ChangeRolesWithPermission.html" 
+                  attribute="update_permission" />
+  </browser:view>
+
+  <adapter factory=".AnnotationRolePermissionManager."
+           provides=".IRolePermissionManager."
+           for="Zope.App.OFS.Annotation.IAnnotatable." />
+
+
+<!-- Principal-Permission management view -->
+
+  <content class=".PrincipalPermissionView.">
+    <security:require
+        permission="Zope.Security"
+        attributes="index get_principal unsetPermissions denyPermissions
+                    grantPermissions getUnsetPermissionsForPrincipal
+                    getPermissionsForPrincipal" />
+  </content>
+
+  <browser:view
+      name="PrincipalPermissionsManagement"
+      for="Zope.App.OFS.Annotation.IAnnotatable."
+      factory=".PrincipalPermissionView." />
+
+  <adapter factory=".AnnotationPrincipalPermissionManager."
+           provides=".IPrincipalPermissionManager."
+           for="Zope.App.OFS.Annotation.IAnnotatable." />
+
+
+  <!-- protect Roles and Permissions -->
+  <content class=".RoleRegistry.Role">
+    <security:allow
+        interface="Zope.App.Security.IRegisteredObject." />
+  </content>
+  
+</zopeConfigure>
+

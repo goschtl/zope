@@ -1,0 +1,5 @@
+The registerShutdownHook directive.
+
+See 
+lib/python/
+Zope/App/OFS/ApplicationControl/ServerControl/server-control-meta.zcml

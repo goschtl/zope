@@ -1,0 +1,51 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:formulator='http://namespaces.zope.org/formulator'
+>
+
+  <formulator:registerValidator name="BooleanValidator"
+    validator="Zope.App.Formulator.Validators.BooleanValidator." />
+
+  <formulator:registerValidator name="DateTimeValidator"
+    validator="Zope.App.Formulator.Validators.DateTimeValidator." />
+
+  <formulator:registerValidator name="EmailValidator"
+    validator="Zope.App.Formulator.Validators.EmailValidator." />
+
+  <formulator:registerValidator name="FileValidator"
+    validator="Zope.App.Formulator.Validators.FileValidator." />
+
+  <formulator:registerValidator name="FloatValidator"
+    validator="Zope.App.Formulator.Validators.FloatValidator." />
+
+  <formulator:registerValidator name="IntegerValidator"
+    validator="Zope.App.Formulator.Validators.IntegerValidator." />
+
+  <formulator:registerValidator name="LinesValidator"
+    validator="Zope.App.Formulator.Validators.LinesValidator." />
+
+  <formulator:registerValidator name="LinkValidator"
+    validator="Zope.App.Formulator.Validators.LinkValidator." />
+
+  <formulator:registerValidator name="ListLinesValidator"
+    validator="Zope.App.Formulator.Validators.ListLinesValidator." />
+
+  <formulator:registerValidator name="MultiSelectionValidator"
+    validator="Zope.App.Formulator.Validators.MultiSelectionValidator." />
+
+  <formulator:registerValidator name="PatternValidator"
+    validator="Zope.App.Formulator.Validators.PatternValidator." />
+
+  <formulator:registerValidator name="SelectionValidator"
+    validator="Zope.App.Formulator.Validators.SelectionValidator." />
+
+  <formulator:registerValidator name="StringBaseValidator"
+    validator="Zope.App.Formulator.Validators.StringBaseValidator." />
+
+  <formulator:registerValidator name="StringValidator"
+    validator="Zope.App.Formulator.Validators.StringValidator." />
+
+  <formulator:registerValidator name="TextValidator"
+    validator="Zope.App.Formulator.Validators.TextValidator." />
+
+</zopeConfigure>

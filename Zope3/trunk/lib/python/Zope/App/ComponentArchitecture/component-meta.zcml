@@ -1,0 +1,41 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <directives namespace="http://namespaces.zope.org/zope">
+
+    <directive name="adapter" attributes="factory provides for permission"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.adapter" />
+
+    <directive name="utility" attributes="component provides permission"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.utility" />
+
+    <directive name="factory" attributes="component id"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.factory" />
+
+    <directive 
+       name="view" 
+       attributes="component type name for layer
+                   permission allowed_interface allowed_attributes"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.view" />
+
+    <directive name="defaultView" 
+               attributes="component type name for layer"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.defaultView" />
+
+    <directive 
+       name="resource" 
+       attributes="component type name layer
+                   permission allowed_interface allowed_attributes"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.resource" />
+
+    <directive name="skin" attributes="name type layers" 
+        handler="Zope.App.ComponentArchitecture.metaConfigure.skin" />
+    
+    <directive name="serviceType" attributes="id interface"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.serviceType" />
+
+    <directive name="service" attributes="serviceType component permission"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.service" />
+
+  </directives>
+
+</zopeConfigure>

@@ -1,0 +1,290 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+<style metal:fill-slot="headers" type="text/css">
+<!--
+
+h1 {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-size: 24pt; 
+  font-weight: bold; 
+}
+
+h2 {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-size: 18pt; 
+  font-weight: bold; 
+}
+
+h3 {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-size: 14pt; 
+  font-weight: bold; 
+}
+
+a:hover {  
+  font-family: Verdana, Helvetica, sans-serif; 
+  text-decoration: underline;
+  color: #333333; 
+}
+
+a:link {
+  font-family: Verdana, Helvetica, sans-serif; 
+  text-decoration: none;
+  color: #000099;
+}
+
+a {
+  font-family: Verdana, Helvetica, sans-serif; 
+  text-decoration: none;
+  color: #000099;
+}
+
+a.strong-link {
+  font-family: Verdana, Helvetica, sans-serif;
+  text-decoration: underline;
+  color: #000099;
+}
+
+p {
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 10pt;
+  color: #333333;
+}
+
+th {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-weight: bold;
+  font-size: 10pt; 
+  color: #333333;
+}
+
+.form-help {
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 10pt;
+  color: #333333;
+}
+
+.std-text {
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 10pt;
+  color: #333333;
+}
+
+.tab-small {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-size: 8pt; 
+  color: #333333;
+}
+
+.location-bar {
+  background-color: #efefef;
+  border: none;
+}
+
+.strong-header {
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 12pt;
+  font-weight: bold;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.list-header {
+  background-color: #c0c0c0;
+  border: none;
+}
+
+.list-item {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-size: 10pt; 
+}
+
+.list-nav {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-size: 10pt; 
+  font-weight: bold;
+}
+
+.row-normal {
+  background-color: #ffffff;
+  border: none;
+
+}
+
+.row-hilite {
+  background-color: #efefef;
+  border: none;
+}
+
+.section-bar {
+  background-color: #c0c0c0;
+  border: none;
+}
+
+.system-msg {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-size: 10pt; 
+  background-color: #ffffff;
+  border:  1px solid #000000;
+  margin-bottom: 6px;
+  margin-top: 6px;
+  padding: 4px;
+  width: 100%;
+  color: #660033;
+}
+
+.form-title {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-weight: bold;
+  font-size: 12pt; 
+  color: #333333;
+}
+
+.form-label {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-weight: bold;
+  font-size: 10pt; 
+  color: #333333;
+}
+
+.form-optional {
+  font-family: Verdana, Helvetica, sans-serif; 
+  font-weight: bold;
+  font-style: italic;
+  font-size: 10pt; 
+  color: #333333;
+}
+
+.form-element {
+  font-family: Verdana, Helvetica, aans-serif;
+  font-size: 10pt;
+  color: #000000;
+}
+
+.form-text {
+  font-family: Verdana, Helvetica, sans-serif;
+  font-size: 10pt;
+  color: #333333;
+}
+
+.form-mono {
+  font-family: monospace;
+  font-size: 12px;
+  text-decoration: none;
+}
+
+-->
+</style>
+
+</head>
+<body bgcolor="#ffffff" link="#000099" alink="#000099" vlink="#000099">
+<div metal:fill-slot="body">
+<p class="form-help">
+a helpful message
+</p>
+
+<p class="form-help">  
+another helpful message
+</p>
+
+<form action="action.html" method="post">
+
+<table width="100%" cellspacing="0" cellpadding="2" border="0" nowrap>
+<tr class="list-header">
+    <td align="left" valign="top">
+      <div class="form-label">
+        <strong>Permission</strong>
+      </div>
+  </td>
+  <td align="left">
+  <div class="form-label">
+  <strong>Roles</strong>
+  </div>
+  </td>
+</tr>
+
+<tr class="row-normal">
+  <td></td>
+  <td align="center" tal:repeat="role view/roles">
+    <div class="list-item">
+      <a href="manage_roleForm.pt"
+        tal:attributes="
+        href string:manage_roleForm?role_to_manage=${role/getId}" 
+        tal:content="role/getTitle">Anonymous</a>
+      <input type="hidden" name="r0" value=""
+        tal:attributes="
+        name string:r${repeat/role/index};
+        value  string:${role/getId}">
+
+    </div>
+  </td>
+</tr>
+
+<tbody tal:repeat="perm view/permissionRoles">
+<tr class="row-hilite" 
+    tal:condition="repeat/perm/odd"
+    >
+  <td align="left" nowrap>
+    <div class="list-item">
+       <a
+       href="manage_permissionForm.pt"
+       tal:attributes="
+         href string:manage_permissionForm?permission_to_manage=${perm/getId}"
+       tal:content="perm/getTitle"
+       >Access Transient Objects</a>
+       <input type="hidden" name="r0" value=""
+         tal:attributes="
+         name string:p${repeat/perm/index};
+         value  string:${perm/getId}">
+    </div>
+  </td>
+  <td align="center" tal:repeat="role perm/roles">
+    <input type="checkbox" name="p0r0"
+           tal:attributes="
+           CHECKED role; 
+           name string:p${repeat/perm/index}r${repeat/role/index}"
+           />
+  </td>
+</tr>
+<tr class="row-normal" 
+    tal:condition="repeat/perm/even"
+    >
+  <td align="left" nowrap>
+    <div class="list-item">
+       <a
+       href="manage_permissionForm.pt"
+       tal:attributes="
+         href string:manage_permissionForm?permission_to_manage=${perm/getId}"
+       tal:content="perm/getTitle"
+       >Access Transient Objects</a>
+       <input type="hidden" name="r0" value=""
+         tal:attributes="
+         name string:p${repeat/perm/index};
+         value  string:${perm/getId}">
+    </div>
+  </td>
+  <td align="center" tal:repeat="role perm/roles">
+    <input type="checkbox" name="p0r0"
+           tal:attributes="
+           CHECKED role; 
+           name string:p${repeat/perm/index}r${repeat/role/index}"
+            />
+  </td>
+</tr>
+</tbody>
+
+<tr>
+<td colspan="5" align="left">
+<div class="form-element">
+<input class="form-element" type="submit" name="submit" value="Save Changes" />
+<div tal:replace="options/message|nothing" />
+</div>
+</td>
+</tr>
+</table>
+</form>
+</div>
+</body>
+</html>
+
+

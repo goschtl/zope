@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<tal:dummy
+  replace="python:request.response.setHeader('content-type', 'application/vnd.mozilla.xul+xml')" />
+
+<window id="id-window"
+    	title="Window Title"
+    	orient="vertical"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+    	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+>
+
+<box width="150" height="600">
+  <tree>
+    <treechildren id="menuItems" flex="1">
+      <treeitem tal:repeat="view views/ZMIUtility/getZMIViews">
+        <treerow>
+          <treecell label="Menu Item "
+            tal:attributes="label view/label"/>
+        </treerow>
+      </treeitem>
+    </treechildren>
+  </tree>
+</box>
+
+</window>

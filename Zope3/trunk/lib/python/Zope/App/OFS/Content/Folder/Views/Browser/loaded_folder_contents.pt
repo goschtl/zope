@@ -1,0 +1,100 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+<style metal:fill-slot="headers" type="text/css">
+<!--
+.ContentListing {
+    width: 100%;
+}
+
+.ContentIcon {
+    width: 20px;
+}
+
+.ContentTitle {
+    text-align: left;
+}
+-->
+</style>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+<form action="@@index.html" method="post">
+  <table class="ContentListing">
+  
+    <caption>Folder Contents 
+             <a href="@@addForm.html"> Add... </a> </caption>
+  
+    <tbody>
+  
+      <tr>
+	<td class="ContentIcon"><br /> </td>
+	<th class="ContentTitle">Title</th>
+        <th class="ContentTitle">Order</th>
+      </tr>
+  
+      <!--
+	** listContentInfo returns a sequence of mappings, containing:
+	**   'id'    : the ID of the contained within the container
+	**   'url'   : the absolute URL of the contained object
+	**   'title' : the title of the contained object
+	**   'icon'  : the absolute URL of the icon, for the contained object
+		       (may be None)
+	-->
+      <tr tal:repeat="info view/listContentInfo">
+  
+	<td class="ContentSelect">
+	  <input type="checkbox" name="ids:list" value="id"
+		 tal:attributes="value info/id" />
+	</td>
+  
+	<td class="ContentIcon">
+	  <img alt="Folder" src="../../ZMI/www/folder_icon.gif"
+	       tal:condition="info/url"
+	       tal:attributes="src info/url" />
+	</td>
+  
+	<td class="ContentTitle">
+	  <a href="subfolder_id"
+	     tal:attributes="href string:../${info/url}"
+	     tal:content="info/title"
+	  >Folder Title or ID here</a>
+	</td>
+        <td>
+          <a href="" tal:attributes="href string:moveObjectsUp?ids=${info/id}">
+            up</a>&nbsp;|
+          <a href="" tal:attributes="href string:moveObjectsDown?ids=${info/id}">
+            down</a>&nbsp;|
+          <a href="" tal:attributes="href string:moveObjectsToTop?ids=${info/id}">
+            top</a>&nbsp;|
+          <a href="" tal:attributes="href string:moveObjectsToBottom?ids=${info/id}">
+            bottom</a>&nbsp;|
+        </td>
+      </tr>
+	  
+      <tr tal:condition="nothing">
+  
+	<td class="ContentIcon">
+	  <img alt="Document" src="../../ZMI/www/document_icon.gif" />
+	</td>
+  
+	<td class="ContentTitle">
+	   <a href="document_id">Document Title or ID here</a>
+	</td>
+      </tr>
+    </tbody>
+  
+  </table>
+  <br />
+
+  <input type="submit" name="removeObjects:method" value="Delete"
+         i18n:attributes="value string:menu_delete_button">&nbsp;
+  <input type="submit" name="moveObjectsUp:method" value="Move Up" />&nbsp;
+  <input type="submit" name="moveObjectsDown:method" value="Move Down" />&nbsp;
+  <input type="submit" name="moveObjectsToTop:method" value="Move To Top" />&nbsp;
+  <input type="submit" name="moveObjectsToBottom:method" value="Move To Bottom" />
+</form>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+>
+
+  <!-- NaiveFile Directives -->
+
+  <security:permission id="Zope.AddNaiveFiles" 
+                       title="Add Naive Files" />
+
+  <content class=".NaiveFile.">
+    <zmi:factory
+        id="NaiveFile"
+        permission="Zope.AddNaiveFiles"
+        title="Naive File"
+        description="This is a simple file" />
+    <security:require
+        permission="Zope.View" />
+  </content>
+
+
+  <!-- File Directives -->
+
+  <security:permission id="Zope.AddFiles" title="Add Files" />
+
+  <content class=".File.">
+    <zmi:factory
+        id="File"
+        permission="Zope.ManageContent"
+        title="File"
+        description="A File" />
+    <security:require
+        permission="Zope.View" />
+    <security:require
+        permission="Zope.View"
+        interface=".IFile.IReadFile" />
+    <security:require
+        permission="Zope.ManageContent"
+        interface=".IFile.IWriteFile" />
+  </content>
+
+  <adapter
+      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
+      provides="Zope.App.OFS.Annotation.IAnnotations."
+      for=".IFile." />
+
+
+  <!-- tabs for folder -->
+
+  <zmi:tabs for=".IFile.">
+    <zmi:tab label="View" action="."/>
+    <zmi:tab label="Edit" action="editForm.html"/>
+    <zmi:tab label="Role Permissions" 
+             action="AllRolePermissions.html"/>
+  </zmi:tabs>
+
+  <!-- Further Directives -->
+
+  <include package=".Views" file="views.zcml" />
+
+</zopeConfigure>
+
+

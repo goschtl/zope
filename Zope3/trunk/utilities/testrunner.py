@@ -1,3 +1,16 @@
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+# 
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+##############################################################################
 """testrunner - a Zope test suite utility.
 
 The testrunner utility is used to execute PyUnit test suites. You can find
@@ -53,20 +66,10 @@ class TestRunner:
         name, ext=os.path.splitext(filename)
         file, pathname, desc=imp.find_module(name, [path])
         saved_syspath = sys.path[:]
-        module = None
         try:
-            sys.path.append(path)       # let module find things in its dir
-	    try:
-            	module=imp.load_module(name, file, pathname, desc)
-	    except:
-	    	(tb_t, tb_v, tb_tb) = sys.exc_info()
-		self.report("Module %s failed to load\n%s: %s" % (pathname,
-			tb_t, tb_v))
-		self.report(string.join(traceback.format_tb(tb_tb)) + '\n')
-		del tb_tb
+            module=imp.load_module(name, file, pathname, desc)
         finally:
             file.close()
-            sys.path.pop()              # Remove module level path
             sys.path[:] = saved_syspath
         function=getattr(module, 'test_suite', None)
         if function is None:
@@ -90,7 +93,7 @@ class TestRunner:
         return 0
 
     def runSuite(self, suite):
-        runner=unittest.TextTestRunner(stream=sys.stderr, verbosity=self.verbosity)
+        runner=unittest.TextTestRunner(verbosity=self.verbosity)
         self.results.append(runner.run(suite))
 
     def report(self, message):
@@ -192,15 +195,6 @@ class TestRunner:
             sys.stderr.write( '*** Restoring directory to: %s\n' % working_dir )
         os.chdir(working_dir)
 
-def remove_stale_bytecode(arg, dirname, names):
-    names = map(os.path.normcase, names)
-    for name in names:
-        if name.endswith(".pyc") or name.endswith(".pyo"):
-            srcname = name[:-1]
-            if srcname not in names:
-                fullname = os.path.join(dirname, name)
-                print "Removing stale bytecode file", fullname
-                os.unlink(fullname)
 
 def main(args):
 
@@ -266,11 +260,6 @@ def main(args):
           whether it succeeded.  Running with -q is the same as
           running with -v1.
 
-       -o filename
-
-          Output test results to the specified file rather than
-          to stderr.
-
        -h
 
           Display usage information.
@@ -283,7 +272,7 @@ def main(args):
     mega_suite = 1
     set_python_path = 1
 
-    options, arg=getopt.getopt(args, 'amPhd:f:v:qMo:')
+    options, arg=getopt.getopt(args, 'amPhd:f:v:qM')
     if not options:
         err_exit(usage_msg)
     for name, value in options:
@@ -308,13 +297,8 @@ def main(args):
             verbosity = int(value)
         elif name == 'q':
             verbosity = 1
-        elif name == 'o':
-            f = open(value,'w')
-            sys.stderr = f
         else:
             err_exit(usage_msg)
-
-    os.path.walk(os.curdir, remove_stale_bytecode, None)
 
     testrunner = TestRunner( os.getcwd()
                            , verbosity=verbosity
@@ -329,13 +313,6 @@ def main(args):
             testrunner.report( "Adding %s to sys.path." % sw_home )
         sys.path.insert( 0, sw_home )
         os.environ['SOFTWARE_HOME'] = sw_home
-
-    try:
-        # Try to set up the testing environment (esp. INSTANCE_HOME,
-        # so we use the right custom_zodb.py.)
-        import Testing
-    except ImportError:
-        pass
 
     if test_all:
         testrunner.runAllTests()

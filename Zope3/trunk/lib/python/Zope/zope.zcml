@@ -1,0 +1,55 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+  
+<!-- Standard configuration directives -->
+<include package=".Configuration" file="configuration-meta.zcml" />
+<include package=".App" file="app-meta.zcml" />
+<include package=".Publisher" file="publisher-meta.zcml" />
+<include package=".Event" file="event-meta.zcml" />
+<include package=".StartUp" file="startup-meta.zcml" />
+
+
+<!-- Standard Permissions -->
+
+<security:permission id="Zope.View"
+                     title="View"
+                     />
+
+<security:permission id="Zope.Security"
+                     title="Change security settings"
+                     />
+
+<security:permission id="Zope.ManageContent" 
+                     title="Manage Content"
+                     />
+
+<security:permission id="Zope.ManageBindings" 
+                     title="Manage Service Bindings"
+                     />
+
+<security:permission id="Zope.ManageServices" 
+                     title="Manage Services"
+                      />
+
+<security:permission id="Zope.ManageApplication" 
+                     title="Manage Application"
+                     />
+
+<!-- XXX What is this for? -->
+<security:permission id="Zope.I18n" 
+                     title="Manage Application"
+                     />
+
+<!-- Configuration -->
+<include package=".App" file="app.zcml" />
+<include package=".I18n" file="i18n.zcml" />
+<include package=".Publisher" file="publisher.zcml" />
+<include package=".Event" file="event.zcml" />
+<include package=".StartUp" file="startup-registry.zcml" />
+
+
+</zopeConfigure>

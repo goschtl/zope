@@ -14,7 +14,7 @@
 """An exception formatter that shows traceback supplements and traceback info,
 optionally in HTML.
 
-$Id: ExceptionFormatter.py,v 1.3 2002/04/08 12:41:52 htrd Exp $
+$Id: ExceptionFormatter.py,v 1.4 2002/06/10 23:29:26 jim Exp $
 """
 
 import sys
@@ -59,22 +59,36 @@ class TextExceptionFormatter:
                 revision = '???'
         return revision
 
+    def getObjectPath(self, o):
+        """Returns an informal path to an object.
+        """
+        try:
+            from Zope.ContextWrapper import wrapper
+        except ImportError:
+            # Not available.
+            return None
+
+        res = []
+        while o is not None:
+            d = wrapper.getdict(o)
+            if d:
+                name = d.get('name', None)
+                if name:
+                    res.append(name)
+            o = wrapper.getcontext(o)
+
+        res.reverse()
+        return res
+
     def formatSupplementLine(self, line):
         return '   - %s' % line
 
-    def formatObject(self, object):
-        return [self.formatSupplementLine(repr(object))]
-
     def formatSourceURL(self, url):
-        return [self.formatSupplementLine('URL: %s' % url)]
+        return [self.formatSupplementLine(url)]
 
     def formatSupplement(self, supplement, tb):
         result = []
         fmtLine = self.formatSupplementLine
-
-        object = getattr(supplement, 'object', None)
-        if object is not None:
-            result.extend(self.formatObject(object))
 
         url = getattr(supplement, 'source_url', None)
         if url is not None:
@@ -102,21 +116,21 @@ class TextExceptionFormatter:
             for warning in warnings:
                 result.append(fmtLine('Warning: %s' % warning))
 
-        extra = self.formatExtraInfo(supplement)
-        if extra:
-            result.append(extra)
-        return result
-
-    def formatExtraInfo(self, supplement):
         getInfo = getattr(supplement, 'getInfo', None)
         if getInfo is not None:
-            extra = getInfo()
-            if extra:
-                return extra
-        return None        
+            try:
+                extra = getInfo()
+                if extra:
+                    result.append(extra)
+            except:
+                if DEBUG_EXCEPTION_FORMATTER:
+                    import traceback
+                    traceback.print_exc()
+                # else just swallow the exception.
+        return result
 
     def formatTracebackInfo(self, tbi):
-        return self.formatSupplementLine('__traceback_info__: %s' % (tbi,))
+        return self.formatSupplementLine('__traceback_info__: %s' % tbi)
 
     def formatLine(self, tb):
         f = tb.tb_frame
@@ -140,10 +154,10 @@ class TextExceptionFormatter:
         result.append(self.escape(s))
 
         # Output a traceback supplement, if any.
-        if locals.has_key('__traceback_supplement__'):
+        if '__traceback_supplement__' in locals:
             # Use the supplement defined in the function.
             tbs = locals['__traceback_supplement__']
-        elif globals.has_key('__traceback_supplement__'):
+        elif '__traceback_supplement__' in globals:
             # Use the supplement defined in the module.
             # This is used by Scripts (Python).
             tbs = globals['__traceback_supplement__']
@@ -166,7 +180,10 @@ class TextExceptionFormatter:
             if tbi is not None:
                 result.append(self.formatTracebackInfo(tbi))
         except:
-            pass
+            if DEBUG_EXCEPTION_FORMATTER:
+                import traceback
+                traceback.print_exc()
+            # else just swallow the exception.
 
         return self.line_sep.join(result)
 
@@ -178,12 +195,11 @@ class TextExceptionFormatter:
     def formatLastLine(self, exc_line):
         return self.escape(exc_line)
 
-    def formatException(self, etype, value, tb, limit=None):
+    def formatException(self, etype, value, tb):
         # The next line provides a way to detect recursion.
         __exception_formatter__ = 1
         result = [self.getPrefix() + '\n']
-        if limit is None:
-            limit = self.getLimit()
+        limit = self.getLimit()
         n = 0
         while tb is not None and (limit is None or n < limit):
             if tb.tb_frame.f_locals.get('__exception_formatter__'):
@@ -225,14 +241,6 @@ class HTMLExceptionFormatter (TextExceptionFormatter):
     def formatLastLine(self, exc_line):
         return '</ul>%s</p>' % self.escape(exc_line)
 
-    def formatExtraInfo(self, supplement):
-        getInfo = getattr(supplement, 'getInfo', None)
-        if getInfo is not None:
-            extra = getInfo(1)
-            if extra:
-                return extra
-        return None        
-
 
 
 limit = 200
@@ -249,5 +257,5 @@ def format_exception(t, v, tb, limit=None, as_html=0):
         fmt = html_formatter
     else:
         fmt = text_formatter
-    return fmt.formatException(t, v, tb, limit=limit)
+    return fmt.formatException(t, v, tb)
 

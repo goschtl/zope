@@ -1,0 +1,10 @@
+<zopeConfigure
+    xmlns='http://namespaces.zope.org/zope'
+>
+
+  <adapter
+      factory=".AttributeAnnotations."
+      provides=".IAnnotations."
+      for=".IAttributeAnnotatable." />
+
+</zopeConfigure>

@@ -1,0 +1,8 @@
+#! /bin/sh
+
+files=`find -name \*.o -o -name \*.so`
+if [ ! -z "$files" ] ; then
+    rm $files
+fi
+
+

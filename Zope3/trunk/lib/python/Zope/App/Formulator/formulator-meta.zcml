@@ -1,0 +1,13 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <directives namespace="http://namespaces.zope.org/formulator">
+
+    <directive name="registerField" attributes="name field"
+       handler="Zope.App.Formulator.metaConfigure.field" />
+
+    <directive name="registerValidator" attributes="name validator"
+       handler="Zope.App.Formulator.metaConfigure.validator" />
+
+  </directives>
+
+</zopeConfigure>

@@ -1,0 +1,11 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <!-- Zope.App.OFS.ApplicationControl -->
+  <directives namespace="http://namespaces.zope.org/application-control">
+    <directive name="registerView"
+               attributes="name title"
+               handler=".metaConfigure.registerView" />
+  </directives>
+
+  <include package=".ServerControl" file="server-control-meta.zcml" />
+</zopeConfigure>

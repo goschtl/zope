@@ -1,0 +1,34 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+
+   xmlns:service='http://namespaces.zope.org/service'
+>
+  <content class=".RoleService.">
+    <security:require
+        permission="Zope.Security"
+        interface="Zope.App.Security.IRoleService." />
+    <security:require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IContainer." />
+  </content>
+  
+  <content class=".Role.">
+    <security:require
+        permission="Zope.Security"
+        interface="Zope.App.Security.IRole." />
+  </content>
+
+  <service:factoryFromClass
+      id="RoleService"
+      class=".RoleService."
+      permission="Zope.ManageServices"
+      title="Role Service" />
+
+  <factory component=".Role." />
+
+  <include package=".Views" file="views.zcml" />
+
+</zopeConfigure>

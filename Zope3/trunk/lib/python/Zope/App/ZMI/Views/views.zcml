@@ -1,0 +1,10 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+>
+
+  <include package=".Browser" file="browser.zcml" />
+  <!--include package=".XMLRPC" file="xmlrpc.zcml" /-->
+  <!--include package=".SOAP" file="soap.zcml" /-->
+  <!--include package=".XUL" file="xul.zcml" /-->
+
+</zopeConfigure>

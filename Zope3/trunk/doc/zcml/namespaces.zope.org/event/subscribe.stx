@@ -1,0 +1,22 @@
+The subscribe directive.
+
+see lib/python/Zope/Event/event-meta.zcml
+
+Attributes
+
+  * subscriber, dotted name that resolves to a component
+  
+  * event_types, whitespace-separated list of interfaces
+  
+  * filter, dotted name that resolves to a component
+  
+  The event_types and filter attributes are optional. If the
+  filter attribute is omitted, it defaults to no filter.
+  If the event_types attribute is omitted, it defaults to
+  subscribe for all events.
+  
+Notes
+
+  This directive should only be used to subscribe non-persistent
+  filesystem-level components to the non-persistent file-system
+  global event service.

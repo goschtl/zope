@@ -1,0 +1,20 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+<title>Zope Application Controller</title>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+<ul>
+  <!-- XXX /ApplicationController;etc/${info/name} is a workaround for the unavailable
+       absolute_url function. -->
+  <li tal:repeat="info context/getListOfViews"><a 
+     tal:attributes="href
+                     string:/++etc++ApplicationController/@@${info/name}"
+   tal:content="info/title"
+   >Foo Title</a></li>
+</ul>
+
+</div>
+</body>
+</html>

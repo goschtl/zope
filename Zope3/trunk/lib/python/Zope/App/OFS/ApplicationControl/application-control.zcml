@@ -1,0 +1,26 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
+>
+
+  <content class=".ApplicationControl.">
+    <security:require
+        permission="Zope.ManageApplication"
+        interface=".IApplicationControl." />
+  </content>
+
+  <adapter factory=".RuntimeInfo."
+           permission="Zope.ManageApplication"
+           provides=".IRuntimeInfo."
+           for=".IApplicationControl." />
+
+  <utility component=".ZopeVersion.ZopeVersionUtility"
+           provides=".IZopeVersion." />
+
+  <include package=".Views" file="views.zcml" />   
+  <include package=".ServerControl" file="server-control.zcml" />
+
+</zopeConfigure>

@@ -1,0 +1,13 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:security="http://namespaces.zope.org/security"
+   xmlns:vfs="http://namespaces.zope.org/vfs"
+>
+
+  <vfs:view name="vfs" 
+            for="Zope.App.OFS.Content.File.IFile."
+            permission="Zope.ManageContent" 
+            allowed_interface="Zope.Publisher.VFS.IVFSFilePublisher."
+            factory=".VFSFileView." />
+
+</zopeConfigure>

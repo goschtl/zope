@@ -15,21 +15,15 @@
 ExceptionFormatter tests.
 
 Revision information:
-$Id: testExceptionFormatter.py,v 1.3 2002/06/10 20:18:45 shane Exp $
+$Id: testExceptionFormatter.py,v 1.4 2002/06/10 23:29:27 jim Exp $
 """
 
-from __future__ import nested_scopes
-
 from unittest import TestCase, TestSuite, main, makeSuite
-
-try:
-    from Testing.CleanUp import CleanUp # Base class w registry cleanup
-except ImportError:
-    class CleanUp:
-        pass
+from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 
 import sys
-from zExceptions.ExceptionFormatter import format_exception
+from Zope.ContextWrapper import wrapper
+from Zope.Exceptions.ExceptionFormatter import format_exception
 
 
 def tb(as_html=0):

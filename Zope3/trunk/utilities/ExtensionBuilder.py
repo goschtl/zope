@@ -1,3 +1,16 @@
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+# 
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+# 
+##############################################################################
 """Build Python extension modules from Setup files. Particularly
    designed for building extensions for Zope in a way that works
    the same way for *nix and win32. Note that for building Zope
@@ -437,7 +450,7 @@ def main():
 
 
 win32_def="""EXPORTS
-	init%(module)s
+        init%(module)s
 """
 
 win32_mak="""# Microsoft Developer Studio Generated NMAKE File, Format Version 4.00
@@ -497,11 +510,11 @@ INTDIR=%(srcdir)s\\Release
 ALL : "$(OUTDIR)\\%(module)s.dll"
 
 CLEAN : 
-	-@erase "$(OUTDIR)\\%(module)s.dll"
-	-@erase "$(OUTDIR)\\%(module)s.obj"%(other_clean_release)s
-	-@erase "$(OUTDIR)\\%(module)s.lib"
-	-@erase "$(OUTDIR)\\%(module)s.exp"
-	-@erase "$(OUTDIR)\\%(module)s.pch"
+        -@erase "$(OUTDIR)\\%(module)s.dll"
+        -@erase "$(OUTDIR)\\%(module)s.obj"%(other_clean_release)s
+        -@erase "$(OUTDIR)\\%(module)s.lib"
+        -@erase "$(OUTDIR)\\%(module)s.exp"
+        -@erase "$(OUTDIR)\\%(module)s.pch"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -531,10 +544,10 @@ LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\\
  /pdb:"$(OUTDIR)\\%(module)s.pdb" /machine:I386 /def:".\\%(module)s.def"\\
  /out:"$(OUTDIR)\\%(module)s.dll" /implib:"$(OUTDIR)\\%(module)s.lib" %(libdirs)s
 DEF_FILE= \\
-	".\\%(module)s.def"
+        ".\\%(module)s.def"
 LINK32_OBJS= \\
-	"$(INTDIR)\\%(module)s.obj" \\%(other_link)s
-	"%(pyhome)s\\libs\\%(pythonlib)s"
+        "$(INTDIR)\\%(module)s.obj" \\%(other_link)s
+        "%(pyhome)s\\libs\\%(pythonlib)s"
 
 "$(OUTDIR)\\%(module)s.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<
@@ -559,15 +572,15 @@ INTDIR=%(srcdir)s\\Debug
 ALL : "$(OUTDIR)\\%(module)s.dll"
 
 CLEAN : 
-	-@erase "$(OUTDIR)\\%(module)s.dll"
-	-@erase "$(OUTDIR)\\%(module)s.obj"%(other_clean_debug)s
-	-@erase "$(OUTDIR)\\%(module)s.ilk"
-	-@erase "$(OUTDIR)\\%(module)s.lib"
-	-@erase "$(OUTDIR)\\%(module)s.exp"
-	-@erase "$(OUTDIR)\\%(module)s.pdb"
-	-@erase "$(OUTDIR)\\%(module)s.pch"
-	-@erase "$(OUTDIR)\\pcbuild.pdb"
-	-@erase "$(OUTDIR)\\pcbuild.idb"
+        -@erase "$(OUTDIR)\\%(module)s.dll"
+        -@erase "$(OUTDIR)\\%(module)s.obj"%(other_clean_debug)s
+        -@erase "$(OUTDIR)\\%(module)s.ilk"
+        -@erase "$(OUTDIR)\\%(module)s.lib"
+        -@erase "$(OUTDIR)\\%(module)s.exp"
+        -@erase "$(OUTDIR)\\%(module)s.pdb"
+        -@erase "$(OUTDIR)\\%(module)s.pch"
+        -@erase "$(OUTDIR)\\pcbuild.pdb"
+        -@erase "$(OUTDIR)\\pcbuild.idb"
 
 "$(OUTDIR)" :
     if not exist "$(OUTDIR)/$(NULL)" mkdir "$(OUTDIR)"
@@ -598,10 +611,10 @@ LINK32_FLAGS=kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib\\
  /pdb:"$(OUTDIR)\\%(module)s.pdb" /debug /machine:I386 /def:".\\%(module)s.def"\\
  /out:"$(OUTDIR)\\%(module)s.dll" /implib:"$(OUTDIR)\\%(module)s.lib" %(libdirs)s
 DEF_FILE= \\
-	".\\%(module)s.def"
+        ".\\%(module)s.def"
 LINK32_OBJS= \\
-	"$(INTDIR)\\%(module)s.obj" \\%(other_link)s
-	"%(pyhome)s\\libs\\%(pythonlib)s"
+        "$(INTDIR)\\%(module)s.obj" \\%(other_link)s
+        "%(pyhome)s\\libs\\%(pythonlib)s"
 
 "$(OUTDIR)\\%(module)s.dll" : "$(OUTDIR)" $(DEF_FILE) $(LINK32_OBJS)
     $(LINK32) @<<

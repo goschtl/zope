@@ -1,0 +1,11 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <!-- Zope.Configure -->
+  <directives namespace="http://namespaces.zope.org/zope">
+    <directive name="hookable" attributes="name module"
+       handler="Zope.Configuration.metaConfigure.provideHookable" />
+    <directive name="hook" attributes="name implementation module"
+       handler="Zope.Configuration.metaConfigure.provideHook" />
+  </directives>
+
+</zopeConfigure>

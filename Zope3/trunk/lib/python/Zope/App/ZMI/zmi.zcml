@@ -1,0 +1,31 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <serviceType id="ZMIViewService"
+               interface=".IZMIViewService." />
+
+  <service serviceType="ZMIViewService"
+           component=".ZMIViewService.ZMIViews" />
+
+  <browser:view name="standard_macros"
+                permission="Zope.View"
+                template="www/standard_macros.pt" />
+
+  <browser:view name="ZMIUtility"
+                permission="Zope.View"
+                allowed_interface=".ZMIViewUtility.IZMIViewUtility"
+                factory=".ZMIViewUtility." />
+  
+  <content class=".IGenericCreatorMarker.">
+    <security:require  
+        permission="Zope.ManageContent"
+        interface=".IGenericCreatorMarker." />
+  </content>
+  
+  <include package=".Views" file="views.zcml" />
+
+</zopeConfigure>

@@ -1,0 +1,24 @@
+<html metal:use-macro="views/standard_macros/page">
+  <head>
+    <style metal:fill-slot="headers" type="text/css"> </style>
+  </head>
+  <body metal:fill-slot="body" >
+    <form action="changeBindings.html" method="post">
+    <table>
+    <tr><th>Name</th><th>boundService</th></tr>
+     <tr tal:repeat="service view/getServicesTable">
+       <td tal:content="service/name">Name</td>
+       <td>
+         <select tal:attributes="name string:boundService.${service/name}:record">
+           <option tal:repeat="available service/services"
+                   tal:attributes="value available;
+                                   selected python:service['bound'] == available or None"
+                   tal:content="available">Service</option>
+         </select>
+       </td>
+     </tr>
+    </table>
+    <input type=submit value="change bindings">
+    </form>
+  </body>
+</html>

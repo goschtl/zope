@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+
+<tal:dummy
+  replace="python:request.response.setHeader('content-type', 'application/vnd.mozilla.xul+xml')" />
+
+<window id="id-window"
+    	title="Window Title"
+    	orient="vertical"
+	xmlns:html="http://www.w3.org/1999/xhtml"
+    	xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        tal:attributes="id string:${view/name}-window;
+                        title view/title">
+
+  <script src="http://physics.cbu.edu:8080/loaded/@@limit_xul/action_js" />
+
+  <description tal:content="view/description">
+    Form Description
+  </description>
+
+  <box tal:repeat="fieldView python:view.getFieldViews(request)">
+    <label control="some-text" value="Label"
+           tal:attributes="value python: fieldView.context.getValue('title')" />
+    <textbox tal:replace="structure fieldView/render" />
+  </box>
+
+  <button id="limitaction" class="dialog" label="Change"
+          onclick="action(document.getElementById('field_limit').value)" />
+
+</window>
+

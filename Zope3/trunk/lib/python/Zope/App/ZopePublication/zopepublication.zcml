@@ -1,0 +1,22 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
+>
+
+<browser:view name="_traverse" 
+ for="Interface.Interface"
+ factory="Zope.App.ZopePublication.Traversers.SimpleComponentTraverser" />
+
+<browser:view name="_traverse" 
+ for="Zope.App.OFS.Content.IFileContent."
+ factory="Zope.App.ZopePublication.Traversers.FileContentTraverser" />
+
+  <xmlrpc:view name="_traverse" 
+   for="Interface.Interface"
+   factory=".Traversers.SimpleComponentTraverser." />
+
+<include package=".AbsoluteURL" file="config.zcml" />
+
+</zopeConfigure>

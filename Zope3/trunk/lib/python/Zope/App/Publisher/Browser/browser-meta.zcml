@@ -1,0 +1,39 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+  
+  <directives namespace="http://namespaces.zope.org/browser">
+
+    <directive 
+       name="view" 
+       attributes="factory name for layer template
+                   permission allowed_interface allowed_attributes"
+       handler="Zope.App.Publisher.Browser.metaConfigure.view" >
+       <subdirective name="page" 
+                     attributes="name attribute permission layer" 
+       /> 
+       <subdirective name="defaultPage" 
+                     attributes="name attribute permission" 
+       /> 
+    </directive>
+
+    <directive 
+       name="defaultView" 
+       attributes="factory name for layer template
+                   permission allowed_interface allowed_attributes"
+       handler="Zope.App.Publisher.Browser.metaConfigure.defaultView" />
+
+    <directive
+        name="resource"
+        attributes="factory name layer
+                    permission allowed_interface allowed_attributes"
+        handler="Zope.App.Publisher.Browser.metaConfigure.resource">
+       <subdirective name="page" 
+                     attributes="name attribute permission layer" 
+       /> 
+    </directive>
+
+    <directive name="skin" attributes="name layers" 
+        handler="Zope.App.Publisher.Browser.metaConfigure.skin" />
+
+  </directives>
+
+</zopeConfigure>

@@ -1,0 +1,23 @@
+<zopeConfigure 
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'>
+
+  <security:permission
+     id="Zope.App.OFS.Introspector.View" 
+     title="View Component Description" />
+
+  <browser:view
+    name="api"
+     permission="Zope.View"
+    factory="Zope.App.OFS.Introspector.
+             Zope.App.OFS.Introspector.Views.Browser.IntrospectorView." />
+
+  <adapter
+      factory="Zope.App.OFS.Introspector."
+      permission="Zope.View"
+      provides="Zope.App.OFS.Introspector.IIntrospector." />
+
+</zopeConfigure>
+

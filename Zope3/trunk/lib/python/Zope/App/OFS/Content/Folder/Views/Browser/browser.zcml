@@ -1,0 +1,74 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <!-- Folder View Directives -->
+     
+  <browser:defaultView
+       for="Zope.App.OFS.Content.Folder.Folder.IFolder." 
+       name="index.html" />
+
+  <browser:view
+      for="Zope.App.OFS.Content.Folder.Folder.IFolder."
+      permission="Zope.ManageContent" 
+      factory=".FolderContents.">
+
+    <browser:page name="index.html"
+                  attribute="index"
+                  />
+    <browser:page name="addServiceManager.html"
+                  attribute="addServiceManager"
+                  />
+  </browser:view>
+
+  <browser:view
+      for="Zope.App.OFS.Content.Folder.Folder.IFolder."
+      permission="Zope.ManageContent" 
+      factory=".FolderAdder." >
+
+    <browser:page name="addForm.html"
+                  attribute="index"
+                  />
+    <browser:page name="add.html"
+                  attribute="action"
+                  />
+  </browser:view>
+
+
+  <!-- Loaded Folder View Directives -->
+     
+  <browser:defaultView
+       for="Zope.App.OFS.Content.Folder.LoadedFolder.ILoadedFolder."
+       name="index.html" />
+
+  <browser:view
+      for="Zope.App.OFS.Content.Folder.LoadedFolder.ILoadedFolder."
+      permission="Zope.View" 
+      factory=".LoadedFolderContents.">
+
+    <browser:page name="index.html"
+                  attribute="index"
+                  />
+  </browser:view>
+
+  <browser:view
+      for="Zope.App.OFS.Container.IContainerLimit."
+      permission="Zope.ManageContent" 
+      factory=".FolderLimitEdit.">
+
+    <browser:page name="FolderLimitEditForm.html"
+                  attribute="index"
+                  />
+    <browser:page name="SetFolderLimit.html"
+                  attribute="action"
+                  />
+  </browser:view>
+
+  <browser:view name="LimitFieldView"
+      for="Zope.App.OFS.Container.IContainerLimit."
+      factory="Zope.App.OFS.Content.Folder.LoadedFolderFields.LimitField. 
+               Zope.App.Formulator.Widgets.Browser.TextWidget." />
+
+</zopeConfigure>

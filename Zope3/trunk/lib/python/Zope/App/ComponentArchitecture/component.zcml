@@ -1,0 +1,48 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   package="Zope.ComponentArchitecture"
+>
+
+  <serviceType id='Utilities'
+               interface='.IUtilityService.' />
+  <service serviceType='Utilities'
+           permission='Zope.Public'
+           component='.GlobalUtilityService.utilityService' />
+             
+  <serviceType id='Adapters'
+               interface='.IAdapterService.' />
+  <service serviceType='Adapters'
+           permission='Zope.Public'
+           component='.GlobalAdapterService.adapterService' />
+
+  <serviceType id='Factories'
+               interface='.IFactoryService.' />
+  <service serviceType='Factories'
+           permission='Zope.Public'
+           component='.GlobalFactoryService.factoryService' />
+
+  <serviceType id='Skins'
+               interface='.ISkinService.' />
+  <service serviceType='Skins'
+           permission='Zope.Public'
+           component='.GlobalSkinService.skinService' />
+
+  <serviceType id='Views' 
+               interface='.IViewService.' />
+  <service serviceType='Views'
+           permission='Zope.Public'
+           component='.GlobalViewService.viewService' />
+           
+  <serviceType id='Resources'
+               interface='.IResourceService.' />
+  <service serviceType='Resources'
+           permission='Zope.Public'
+           component='.GlobalResourceService.resourceService' />
+           
+  <hookable name=".getServiceManager" />
+  <hookable name=".getNextServiceManager" />
+
+</zopeConfigure>

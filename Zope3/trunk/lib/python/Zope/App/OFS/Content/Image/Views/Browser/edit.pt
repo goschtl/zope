@@ -1,0 +1,68 @@
+<html metal:use-macro="views/standard_macros/page">
+  <head>
+    <style metal:fill-slot="headers" type="text/css">
+      <!--
+      .ContentIcon {
+	  width: 20px;
+      }
+      
+      .ContentTitle {
+	  text-align: left;
+      }
+      -->
+    </style>
+  </head>
+
+  <body>
+    <div metal:fill-slot="body">
+
+ 
+      <p tal:content="options/msg | nothing">
+        Message will go here.
+      </p>
+
+      <p tal:content="view/description">
+        Description of the Form.
+      </p>
+
+
+      <div tal:condition="python: options.has_key('errors') 
+                                  and options['errors']">
+        Errors:
+        <div tal:repeat="error options/errors | nothing"
+             tal:content="error">Foo </div>
+      </div>
+
+      <form action="edit.html" method="post" enctype="multipart/form-data">
+
+        <table class="EditTable">      
+	  <tbody>   
+  
+	    <tr>
+	      <th class="EditAttributeName">Size</th>
+	      <td class="EditAttributeValue"
+          	  tal:content="view/getImageSize">
+              </td>
+	    </tr>
+  
+	    <tr tal:repeat="fieldView python:view.getFieldViews(request)">
+	      <th class="EditAttributeName"
+                tal:content="python: fieldView.context.getValue('title')">
+                Title</th>
+	      <td class="EditAttributeValue"
+	          tal:content="structure fieldView/render"><input />
+              </td>
+	    </tr>
+  
+	  </tbody>     
+      </table>
+
+      <input type="submit" name="edit" value="Save Changes">
+
+      </form> 
+
+    </div>
+  </body>
+</html>
+
+

@@ -13,7 +13,7 @@
 ##############################################################################
 """ITracebackSupplement interface definition.
 
-$Id: ITracebackSupplement.py,v 1.2 2002/04/03 20:44:00 shane Exp $
+$Id: ITracebackSupplement.py,v 1.3 2002/06/10 23:29:26 jim Exp $
 """
 
 
@@ -35,15 +35,6 @@ class ITracebackSupplement(Interface):
         Normally this generates a URL in the traceback that the user
         can visit to manage the object.  Set to None if unknown or
         not available.
-        """
-        )
-
-    object = Attribute(
-        'object',
-        """Optional.  Set to the script or template where the exception
-        occurred.
-
-        Set to None if unknown or not available.
         """
         )
 

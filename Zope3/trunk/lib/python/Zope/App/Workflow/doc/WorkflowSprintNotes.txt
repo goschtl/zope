@@ -1,0 +1,240 @@
+
+Workflow Sprint
+
+  Dates were Mar 4-6.  Attendees were Alastair Burt, Florent
+  Guillaume, Vincenzo di Somma, Daniele Tarini, Tres Seaver, Paul
+  Everitt.
+
+Agenda
+
+  o Bootstrapping (getting CVS setup, etc.)
+
+  o Planning game
+
+  o Lunch
+
+  o Zope3 tutorial
+
+  o Task signup
+
+  o Pairing
+
+Scope
+
+  o Workflow architecture proposal
+
+  o Exploratory code for architecture
+
+Stories
+
+  o WorkflowShepherdWritesProposal
+
+    - IWorkflowDefinition
+
+  o SiteManagerConfiguresWorkflowEnactmentService
+
+    - Global/placeless
+
+    - Placeful
+
+  o WorkflowDesignerCreatedProcessDefinition
+
+  o WorkflowDeveloperImplementsProcessDefinition (import?)
+
+  o SiteManagerInstallsProcessDefinition
+
+  o SiteManagerIntegratesWorkflowService
+
+  o WorkflowDeveloperTestsProcessDefinition
+
+  o ExternalProcessInitiatesWorkflowAction
+
+  o WorkflowEngineInitiatesRemoteProcessInst
+
+  o UserInitiatesWorkflowActivity
+
+  o UserQueriesWorklist
+
+  o UserCompletesActivity
+
+  o SiteManagerQueriesAggregatedHistory
+
+Notes
+
+  Started with configuration.
+
+  (Tres) This sprint model came out of a desire to do XP, but only for
+  a short period of time.  The first when at ZC in Nov was less than a
+  week.  How to do XP for just a short period of time?  Worked pretty
+  well.  XP worked and Zope3 got started.
+
+  Third goal became to open the base of people contributing to Zope3.
+  This includes growing leadership.
+
+  Some sprints are topic-focused.  They need to focus on an achievable
+  goal, a small step, rather than trying to accomplish too much.  Thus
+  planning is important to make sure something important but
+  realistically accomplishable is targetted.
+
+  For this sprint, a document needs to describe the workflow
+  architecture.  Hopefully, people in the room will take over the
+  leadership of workflow in Zope3.
+
+  Classic XP says the customer needs to be in the room.  We have to
+  pretend to proxy for the customer.  So we need a mental image of the
+  customer.  Who will that be?
+
+  Tres speculates that, in OpenFlow, the site manager is the workflow
+  customer.
+
+  (Daniele).  The life of a process instance is connected to the
+  content, but also to resources outside.  That is, there is content
+  in the process instance as well as the item moving through the
+  workflow.
+
+  (Vincenzo) Usually you put in the process instance what is called
+  "workflow relevant data".  Every other object or information you
+  want to store, you are free to use the process instance.
+
+  (Tres) In the CMF, a workflow is bound to a piece of content.  The
+  idea is that the workflow itself, all objects of the same content
+  type share a process definition (a "workflow").  The data you track
+  in a process instance can be stored in a number of ways, like
+  stashing it in the content instance.  *Note*: in the CMF
+  architecture, there isn't really a process instance.
+
+  (Florent) First, they didn't want strict association of content type
+  to workflow.  Not flexible enough.  They changed to workflow tool.
+  A workflow aware object is consulted by the workflow tool.  It can
+  add or remove steps.  Second, they are working on non-local
+  workflows.  If you have a resource deep in a tree, workflow managers
+  can be stored in a parent rather than a content type.
+
+  Acronym alert!  PI is *process instance*.  PD is *process
+  definition*.
+
+  Tres wrote up agreement on jargon between CMF and OpenFlow:
+
+    o workflow == process definition
+
+    o monitor events == process instance
+
+  There was a discussion about the object hub and the event channel,
+  what they are, and how they might impact workflow for Zope 3.
+
+  Back to workflow customer.  The site manager has to be able to
+  configure workflows or PD and make sure that all policies are moved
+  into configuration files.  The developer has to design applications
+  that are workflow aware.
+
+  Paul asks if the audience of workflow implentors is valid?  That is,
+  besides the basic idea of Zope 3 to allow multiple implementations
+  of an interface, should this project do extra work to address this
+  audience?  Will there be extra use cases if there is more than one
+  workflow engine used in a site?  The consensus seems to be that no
+  special work will be needed for this audience.
+
+  Decision: two main audiences are site managers and component
+  developers.
+  
+Interfaces (derived from OpenFlow, might change)
+
+  o IWorkflowService
+
+  o IWorkflowProcessInstance
+
+  o IWorkflowProcessDefinition
+
+  o IWorkflowActivity
+
+  o IWorkflowTransition
+
+  o IWorkflowWorkItem
+
+Events
+
+  o objectCreation
+
+  o objectDestruction
+
+  o objectRename/Move
+
+  o objectModification
+
+  o objectExpiration?
+
+  o timeTick
+
+  o userRoleModification
+
+    - scheduled
+
+  o workflowActionBegin
+
+  o workflowActionComplete
+
+  o workflowActionSuspended
+
+  o workflowItemAssign
+
+  o WPIActivated
+
+  o WPITerminated
+
+  o WPICompleted
+
+  o WPISuspended
+
+UI Synthesis
+
+  o listObjectActions -> [ActivityInfo]
+
+  o listUserActions -> [ActivityInfo]
+
+  IActivityInfo
+
+    o getID()
+
+    o getCategory()
+
+    o getTitle()
+
+    o getDescription()
+
+    o getActionURL()
+
+    o getPermission()
+
+    o getRole()
+
+    o getCondition()
+
+    o getSource()
+
+      - kickdown to work item, transition, etc.
+
+Goals
+
+  o Shared understanding of OpenFlow and DCWorkflow.
+
+  o Bootstrap more people for Zope 3.
+
+  o Establish leadership for Zope 3 workflow.
+
+  o Proposal for workflow in Zope 3.
+
+Lessons Learned
+
+  o Try to get people setup with contributor forms and writeable
+  checkouts (with correct Python etc.) beforehand.
+
+  o Remind people about the convention of XXX in comments.
+
+  o When doing a build, rm the .so and .o files.
+
+  o Should we buy a wireless hub with 4 fast ethernet ports?
+
+  o Update tutorial presentation, wiki pages, etc. to point out the
+  mailing lists that people should subscribe to
+
+  o Mention the tkinter pyunit

@@ -1,0 +1,107 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:security='http://namespaces.zope.org/security'
+   xmlns:zmi='http://namespaces.zope.org/zmi'
+>
+
+  <!-- Simple Folder Directives -->
+
+  <content class=".Folder.">
+    <zmi:factory
+        id="Folder"
+        permission="Zope.ManageContent"
+        title="Son of Folder"
+        description="Minimal folder" />
+    <security:require
+        permission="Zope.View" />
+    <security:allow
+        interface="Zope.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" 
+        />
+    <security:require
+        permission="Zope.ManageServices"
+        interface="Zope.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" 
+        />
+    <security:require
+        permission="Zope.View"
+        interface="Zope.App.OFS.Container.IContainer.IReadContainer" />
+    <security:require
+        permission="Zope.ManageContent"
+        interface="Zope.App.OFS.Container.IContainer.IWriteContainer" />
+  </content>
+
+  <!-- XXX Do we really need RootFolder? -->
+  <content class=".RootFolder.">
+    <security:mimic class=".Folder." />
+  </content>
+
+  <zmi:tabs for=".Folder.IFolder.">
+    <zmi:tab label="Contents" action="@@index.html"/>
+    <zmi:tab label="Role Permissions" 
+             action="@@AllRolePermissions.html"/>
+  </zmi:tabs>
+
+
+  <!-- Loaded Folder Directives -->
+  <content class=".LoadedFolder.">
+    <zmi:factory
+        id="LoadedFolder"
+        permission="Zope.ManageContent"
+        title="Loaded Folder"
+        description="A Folder having all the goodies." />
+
+    <security:require
+        permission="Zope.View" />
+    <security:allow
+        interface="Zope.ComponentArchitecture.IServiceManagerContainer.IReadServiceManagerContainer" 
+        />
+    <security:require
+        permission="Zope.ManageServices"
+        interface="Zope.ComponentArchitecture.IServiceManagerContainer.IWriteServiceManagerContainer" 
+        />
+    <security:require
+        permission="Zope.View"
+        interface="Zope.App.OFS.Container.IContainer.IReadContainer"
+        />
+    <security:require
+        permission="Zope.ManageContent"
+        interface="Zope.App.OFS.Container.IContainer.IWriteContainer"
+        />
+    <security:require
+        permission="Zope.View"
+        interface="Zope.App.OFS.Container.IOrderedContainer.IReadOrderedContainer"
+         />
+    <security:require
+        permission="Zope.ManageContent"
+        interface="Zope.App.OFS.Container.IOrderedContainer.IWriteOrderedContainer"
+        />
+    <security:require
+        permission="Zope.View"
+        interface="Zope.App.OFS.Container.IContainerLimit.IReadContainerLimit"
+        />
+    <security:require
+        permission="Zope.ManageContent"
+        interface="Zope.App.OFS.Container.IContainerLimit.IWriteContainerLimit"
+        />
+  </content>
+  
+  <adapter
+      factory="Zope.App.OFS.Annotation.AttributeAnnotations."
+      provides="Zope.App.OFS.Annotation.IAnnotations."
+      for=".Folder.IFolder." />
+
+  <zmi:tabs for="Zope.App.OFS.Container.IContainerLimit.">
+    <zmi:tab label="Limit" action="@@FolderLimitEditForm.html"/>
+  </zmi:tabs>
+
+  <zmi:tabs for=".LoadedFolder.ILoadedFolder.">
+    <zmi:tab label="Contents" action="@@index.html"/>
+    <zmi:tab label="Role Permissions" 
+             action="@@AllRolePermissions.html"/>
+  </zmi:tabs>
+
+
+  <!-- Further Directives -->
+
+  <include package=".Views" file="views.zcml" />
+
+</zopeConfigure>

@@ -1,0 +1,44 @@
+The grant directive
+
+Overview
+
+  It is used to do the following:
+
+    * grant permissions to principals
+
+    * associate permissions with roles
+
+    * assign roles to principals
+
+  Ultimately, this is all to do with granting permissions, so the grant
+  directive is used for all of these.
+
+Attributes
+
+  The grant directive has three possible attributes
+  
+    * permission, a permission's id
+  
+    * principal, a principal's id
+  
+    * role, a role's id
+  
+  However, only these combinations are valid
+  
+    * permission - role
+    
+    * permission - principal
+    
+    * role - principal
+
+  Note that the permissions, principals and roles need to be defined
+  elsewhere using the permission, role and principal directives.
+
+Examples
+
+  Here are some examples of using the grant directive::
+  
+    <grant permission="Zope.View" principal="Bob" />
+  
+    <grant role="Zope.Manager" principal="Bob" />
+    
