@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.31 2003/05/22 22:49:04 jim Exp $
+$Id: widget.py,v 1.32 2003/05/27 21:14:11 jim Exp $
 """
 
 __metaclass__ = type
@@ -230,7 +230,7 @@ class CheckBoxWidget(BrowserWidget):
       id="field.foo"
       name="field.foo"
       type="hidden"
-      value="1"
+      value="on"
       />
 
     Calling setData will change what gets output:
@@ -282,6 +282,10 @@ class CheckBoxWidget(BrowserWidget):
             )
 
     def _convert(self, value):
+        return value == 'on'
+
+    def _unconvert(self, value):
+        return value and "on" or ""
         return value == 'on'
 
     def haveData(self):

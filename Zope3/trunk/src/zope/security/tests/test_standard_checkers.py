@@ -16,7 +16,7 @@
 This is a test of the assertions made in
 zope.security.checkers._default_checkers.
 
-$Id: test_standard_checkers.py,v 1.1 2003/05/22 19:40:32 jim Exp $
+$Id: test_standard_checkers.py,v 1.2 2003/05/27 21:14:11 jim Exp $
 """
 
 from zope.security.checker import ProxyFactory, NamesChecker
@@ -45,7 +45,7 @@ def test_dict():
     ['a', 'b']
     >>> d.get('a')
     1
-    >>> d.has_key('a')
+    >>> int(d.has_key('a'))
     1
     
     >>> c = d.copy()
@@ -81,21 +81,21 @@ def test_dict():
 
     Always available:
     
-    >>> d < d
+    >>> int(d < d)
     0
-    >>> d > d
+    >>> int(d > d)
     0
-    >>> d <= d
+    >>> int(d <= d)
     1
-    >>> d >= d
+    >>> int(d >= d)
     1
-    >>> d == d
+    >>> int(d == d)
     1
-    >>> d != d
+    >>> int(d != d)
     0
     >>> int(bool(d))
     1
-    >>> d.__class__ == dict
+    >>> int(d.__class__ == dict)
     1
 
     """
@@ -126,7 +126,7 @@ def test_list():
     2
     >>> tuple(l)
     (1, 2)
-    >>> 1 in l
+    >>> int(1 in l)
     1
     >>> l.index(2)
     1
@@ -141,21 +141,21 @@ def test_list():
 
     Always available:
     
-    >>> l < l
+    >>> int(l < l)
     0
-    >>> l > l
+    >>> int(l > l)
     0
-    >>> l <= l
+    >>> int(l <= l)
     1
-    >>> l >= l
+    >>> int(l >= l)
     1
-    >>> l == l
+    >>> int(l == l)
     1
-    >>> l != l
+    >>> int(l != l)
     0
     >>> int(bool(l))
     1
-    >>> l.__class__ == list
+    >>> int(l.__class__ == list)
     1
 
         
@@ -175,7 +175,7 @@ def test_tuple():
     2
     >>> list(l)
     [1, 2]
-    >>> 1 in l
+    >>> int(1 in l)
     1
     >>> str(l)
     '(1, 2)'
@@ -186,21 +186,21 @@ def test_tuple():
 
     Always available:
     
-    >>> l < l
+    >>> int(l < l)
     0
-    >>> l > l
+    >>> int(l > l)
     0
-    >>> l <= l
+    >>> int(l <= l)
     1
-    >>> l >= l
+    >>> int(l >= l)
     1
-    >>> l == l
+    >>> int(l == l)
     1
-    >>> l != l
+    >>> int(l != l)
     0
     >>> int(bool(l))
     1
-    >>> l.__class__ == tuple
+    >>> int(l.__class__ == tuple)
     1
         
     """
@@ -230,21 +230,21 @@ def test_new_class():
     
     Always available:
     
-    >>> C < C
+    >>> int(C < C)
     0
-    >>> C > C
+    >>> int(C > C)
     0
-    >>> C <= C
+    >>> int(C <= C)
     1
-    >>> C >= C
+    >>> int(C >= C)
     1
-    >>> C == C
+    >>> int(C == C)
     1
-    >>> C != C
+    >>> int(C != C)
     0
     >>> int(bool(C))
     1
-    >>> C.__class__ == type
+    >>> int(C.__class__ == type)
     1
     
     """
@@ -270,21 +270,21 @@ def test_new_instance():
     
     Always available:
     
-    >>> c < c
+    >>> int(c < c)
     0
-    >>> c > c
+    >>> int(c > c)
     0
-    >>> c <= c
+    >>> int(c <= c)
     1
-    >>> c >= c
+    >>> int(c >= c)
     1
-    >>> c == c
+    >>> int(c == c)
     1
-    >>> c != c
+    >>> int(c != c)
     0
     >>> int(bool(c))
     1
-    >>> c.__class__ == C
+    >>> int(c.__class__ == C)
     1
     
     """
@@ -312,17 +312,17 @@ def test_classic_class():
     
     Always available:
     
-    >>> C < C
+    >>> int(C < C)
     0
-    >>> C > C
+    >>> int(C > C)
     0
-    >>> C <= C
+    >>> int(C <= C)
     1
-    >>> C >= C
+    >>> int(C >= C)
     1
-    >>> C == C
+    >>> int(C == C)
     1
-    >>> C != C
+    >>> int(C != C)
     0
     >>> int(bool(C))
     1
@@ -350,21 +350,21 @@ def test_classic_instance():
     
     Always available:
     
-    >>> c < c
+    >>> int(c < c)
     0
-    >>> c > c
+    >>> int(c > c)
     0
-    >>> c <= c
+    >>> int(c <= c)
     1
-    >>> c >= c
+    >>> int(c >= c)
     1
-    >>> c == c
+    >>> int(c == c)
     1
-    >>> c != c
+    >>> int(c != c)
     0
     >>> int(bool(c))
     1
-    >>> c.__class__ == C
+    >>> int(c.__class__ == C)
     1
     
     """
