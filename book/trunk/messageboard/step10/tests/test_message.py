@@ -41,7 +41,7 @@ class Test(TestSampleContainer):
         return Message()
 
 
-def setUp():
+def setUp(test):
     placelesssetup.setUp()
     classImplements(Message, IAttributeAnnotatable)
     ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,

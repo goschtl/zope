@@ -71,7 +71,7 @@ class SmileyThemeSpecification(object):
     __used_for__ = IMessageBoard
 
     def __init__(self, context):
-        self.context = context
+        self.context = self.__parent__ = context
         self._annotations = IAnnotations(context)
         if self._annotations.get(ThemeKey, None) is None:
             self._annotations[ThemeKey] = 'default'

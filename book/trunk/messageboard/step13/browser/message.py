@@ -60,7 +60,7 @@ class MessageDetails:
         
         # Find the messageboard and get the theme preference
         obj = self.context
-        while not IMessageBoard.isImplementedBy(obj) and \
+        while not IMessageBoard.providedBy(obj) and \
                   obj is not None:
             obj = zapi.getParent(obj)
 

@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.event import notify
-from zope.publisher.xmlrpc import MethodPublisher
+from zope.app.publisher.xmlrpc import MethodPublisher
 
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 

@@ -204,7 +204,7 @@ class MailSubscriptions:
     __used_for__ = IMessage
 
     def __init__(self, context):
-        self.context = context
+        self.context = self.__parent__ = context
         self._annotations = IAnnotations(context)
         if not self._annotations.get(SubscriberKey):
             self._annotations[SubscriberKey] = ()

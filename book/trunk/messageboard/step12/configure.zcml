@@ -155,28 +155,18 @@
   </content>
 
   <xmlrpc:view
-      name="methods"
       for=".interfaces.IMessageBoard"
       permission="book.messageboard.Edit" 
-      allowed_attributes="getMessageNames addMessage deleteMessage 
-                          getDescription setDescription"
+      methods="getMessageNames addMessage deleteMessage 
+               getDescription setDescription"
       class=".xmlrpc.MessageBoardMethods" />
-
-  <xmlrpc:defaultView
-      for=".interfaces.IMessageBoard"
-      name="methods" />
       
   <xmlrpc:view
-      name="methods"
       for=".interfaces.IMessage"
       permission="book.messageboard.Edit" 
-      allowed_attributes="getMessageNames addMessage deleteMessage 
-                          getTitle setTitle getBody setBody"
+      methods="getMessageNames addMessage deleteMessage 
+               getTitle setTitle getBody setBody"
       class=".xmlrpc.MessageMethods" />
-
-  <xmlrpc:defaultView
-      for=".interfaces.IMessage"
-      name="methods" />
 
   <mail:smtpMailer name="msgboard-smtp" hostname="localhost" port="25" />
   
