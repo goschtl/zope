@@ -106,6 +106,9 @@ class XMLRPCResponse(HTTPResponse):
         If is_error is true then the HTML will be formatted as a Zope error
         message instead of a generic HTML page.
         """
+        # We have to call removeAllProxies() to allow the type
+        # introspection to work, and allow the serialization provided
+        # by the xmlrpclib module to operate on the actual object.
         body = removeAllProxies(body)
         if isinstance(body, xmlrpclib.Fault):
             # Convert Fault object to XML-RPC response.
