@@ -18,7 +18,7 @@ registered as subscription adapters providing None.
 
 So, to subscribe to an event, use a subscription adapter to None:
 
-  >>> from zope.app.tests.placelesssetup import SetUp, tearDown
+  >>> from zope.app.tests.placelesssetup import setUp, tearDown
   >>> setUp()
 
   >>> class E1:
@@ -35,8 +35,9 @@ So, to subscribe to an event, use a subscription adapter to None:
   ...     called.append(2)
 
   >>> from zope.app.tests import ztapi
-  >>> ztapi.subscribe(E1, None, handler1)
-  >>> ztapi.subscribe(E2, None, handler2)
+  >>> from zope.interface import implementedBy
+  >>> ztapi.handle([implementedBy(E1)], handler1)
+  >>> ztapi.handle([implementedBy(E2)], handler2)
 
   >>> from zope.event import notify
 
@@ -54,3 +55,15 @@ So, to subscribe to an event, use a subscription adapter to None:
 
 $Id$
 """
+
+from zope.component import subscribers
+import zope.event
+
+def dispatch(*event):
+    for ignored in subscribers(event, None):
+        pass
+
+zope.event.subscribers.append(dispatch)
+
+def publish(context, event):
+    zope.event.notify(event)

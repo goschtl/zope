@@ -56,24 +56,25 @@ class TestObjectEventNotifications(unittest.TestCase):
         setUp()
 
     def testNotify(self):
-        notifier = objectevent.ObjectEventNotifier()
         events = []
 
-        ztapi.handle([IContained, IObjectRemovedEvent], events.append)
+        def record(*args):
+            events.append(args)
+
+        ztapi.handle([IContained, IObjectRemovedEvent], record)
 
         item = Contained()
         event = ObjectRemovedEvent(item)
-        notifier.notify(event)
-        self.assertEqual([event], events)
+        objectevent.objectEventNotify(event)
+        self.assertEqual([(item, event)], events)
 
     def testNotifyNobody(self):
         # Check that notify won't raise an exception in absence of
         # of subscribers.
-        notifier = objectevent.ObjectEventNotifier()
         events = []
         item = Contained()
         evt = ObjectRemovedEvent(item)
-        notifier.notify(evt)
+        objectevent.objectEventNotify(evt)
         self.assertEqual([], events)
 
     def testVeto(self):
@@ -87,7 +88,7 @@ class TestObjectEventNotifications(unittest.TestCase):
         class Veto(Exception):
             pass
         
-        def callback(event):
+        def callback(item, event):
             self.callbackTriggered = True
             self.assertEqual(item, event.object)
             raise Veto
