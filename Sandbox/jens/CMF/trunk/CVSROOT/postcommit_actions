@@ -138,7 +138,7 @@ def main(args):
             do_sync(nm, repo, remote, subjs, recurse=RECURSE)
 
     if VERBOSE:
-        complain("Th th th th that's all folks.")
+        complain("Th th th th that's all folks.\n")
 
 def detach(args):
     """Fork us into the background, with stdout and stderr to OUTPUT_LOG."""
