@@ -25,11 +25,12 @@ not require) Zope 3 and Twisted.  It provides tools for manipulating UML
 models, object-relational persistence, aspect-oriented programming, and more.
 Visit the PEAK home page at http://peak.telecommunity.com for more information.
 
-$Id: test_advice.py,v 1.3 2003/06/04 13:23:06 stevea Exp $
+$Id: test_advice.py,v 1.4 2003/06/04 13:58:43 stevea Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
 from zope.interface.advice import *
+from types import ClassType
 import sys
 
 def ping(log, value):
@@ -40,6 +41,13 @@ def ping(log, value):
 
     addClassAdvisor(pong)
 
+class ClassicClass:
+    __metaclass__ = ClassType
+    classLevelFrameInfo = getFrameInfo(sys._getframe())
+
+class NewStyleClass:
+    __metaclass__ = type
+    classLevelFrameInfo = getFrameInfo(sys._getframe())
 
 moduleLevelFrameInfo = getFrameInfo(sys._getframe())
 
@@ -48,17 +56,23 @@ class FrameInfoTest(TestCase):
     classLevelFrameInfo = getFrameInfo(sys._getframe())
 
     def checkModuleInfo(self):
-        kind,module,f_locals,f_globals = moduleLevelFrameInfo
-        self.assert_(kind=="module")
+        kind, module, f_locals, f_globals = moduleLevelFrameInfo
+        self.assertEquals(kind, "module")
         for d in module.__dict__, f_locals, f_globals:
             self.assert_(d is globals())
 
-    def checkClassInfo(self):
-        kind,module,f_locals,f_globals = self.classLevelFrameInfo
+    def checkClassicClassInfo(self):
+        kind, module, f_locals, f_globals = ClassicClass.classLevelFrameInfo
         self.assertEquals(kind, "class")
 
-        # Next assert fails on Python2.3
-        #assert f_locals is self.__class__.__dict__  # ???
+        self.assert_(f_locals is ClassicClass.__dict__)  # ???
+        for d in module.__dict__, f_globals:
+            self.assert_(d is globals())
+
+    def checkNewStyleClassInfo(self):
+        kind, module, f_locals, f_globals = NewStyleClass.classLevelFrameInfo
+        self.assertEquals(kind, "class")
+
         for d in module.__dict__, f_globals:
             self.assert_(d is globals())
 
