@@ -43,7 +43,7 @@ class BaseFormDirective(object):
 
     # default basic information
     for_ = None
-    layer = 'default'
+    layer = IBrowserRequest
     permission = 'zope.Public'
     template = None
     class_ = None

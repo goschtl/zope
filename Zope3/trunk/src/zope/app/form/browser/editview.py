@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 from datetime import datetime
 from transaction import get_transaction
 
+from zope.interface import Interface
 from zope.schema import getFieldNamesInOrder
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.security.checker import defineChecker, NamesChecker
@@ -130,7 +131,6 @@ class EditView(BrowserView):
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u''):
-    s = zapi.getGlobalService(zapi.servicenames.Presentation)
     class_ = SimpleViewClass(template, used_for=schema, bases=bases)
     class_.schema = schema
     class_.label = label
@@ -148,5 +148,8 @@ def EditViewFactory(name, schema, label, permission, layer,
                   NamesChecker(("__call__", "__getitem__",
                                 "browserDefault", "publishTraverse"),
                                permission))
+    if layer is None:
+        layer = IBrowserRequest
 
-    s.provideView(for_, name, IBrowserRequest, class_, layer)
+    s = zapi.getGlobalService(zapi.servicenames.Adapters)
+    s.register((for_, layer), Interface, name, class_)

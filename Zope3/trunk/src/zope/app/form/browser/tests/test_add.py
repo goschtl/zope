@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import unittest
 
 from zope.app.tests import ztapi
@@ -157,7 +156,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         self.assertEqual(descriminator,
                          ('view', IAdding, "addthis", IBrowserRequest,
-                          "default"))
+                          IBrowserRequest))
         self.assertEqual(callable, AddViewFactory)
 
         (name, schema, label, permission, layer, template,
@@ -169,7 +168,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(schema, I)
         self.assertEqual(label, 'Add this')
         self.assertEqual(permission, 'zope.Public')
-        self.assertEqual(layer, 'default')
+        self.assertEqual(layer, IBrowserRequest)
         self.assertEqual(template, 'add.pt')
         self.assertEqual(default_template, 'add.pt')
         self.assertEqual(bases, (V, AddView, ))
