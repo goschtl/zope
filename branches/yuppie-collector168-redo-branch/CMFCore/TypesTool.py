@@ -435,6 +435,8 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
             dict['(Default)'] = 'index_html'
             if viewmethod == '(Default)':
                 dict['view'] = 'index_html'
+        if self.content_meta_type in ('Document', 'News Item'):
+            dict['gethtml'] = 'source_html'
 
         self.setMethodAliases(dict)
         return 1
