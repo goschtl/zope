@@ -35,8 +35,9 @@ as an example :
 
   >>> from versioning.tests.test_versioncontrol import buildRepository, buildDatabaseRoot
   >>> db_root = buildDatabaseRoot()
-
-
+ 
+  
+  
 CopyModifyMergeRepository Setup Explained
 -----------------------------------------
 
@@ -115,8 +116,7 @@ a '_p_oid'.
 XXX We know this is an implementation detail. We probably should think
 more about this and then talk about this in the interfaces.
 
-  >>> util.commit()
-
+ 
 Now let's put our example data under version control:
 
   >>> repo.applyVersionControl(sample)

@@ -75,7 +75,7 @@ class SimpleHistoryStorage(Folder) :
             a ticket that remains stable across time.
         """
         if obj._p_oid is None :
-            raise RuntimeError("cannot version unsaved objects")
+            raise RuntimeError("cannot version uncommited objects")
         return str(obj._p_oid)
  
     def register(self, obj):
