@@ -1,0 +1,7 @@
+From: John Doe <john@example.com>
+Subject: Something happened!
+Date: Wed, 29 Jul 2003 14:42:11 +0200
+Message-Id: <q$w$e$r$t$y@example.com>
+
+This is just a simple message.
+
