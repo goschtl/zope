@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: Subscribable.py,v 1.3 2002/08/01 15:33:45 jim Exp $
+$Id: Subscribable.py,v 1.4 2002/09/05 21:30:09 jeremy Exp $
 """
 
 from Interface.Registry.TypeRegistry import TypeRegistry
@@ -27,40 +27,35 @@ from Zope.Proxy.ProxyIntrospection import removeAllProxies
 class Subscribable(object): # do we need this to be a type?
     """a global mix-in"""
     
-    __implements__=ISubscribable
+    __implements__ = ISubscribable
 
     def __init__(self):
         self._registry = TypeRegistry()
-        self._subscribers = [] # using an array rather than a dict so
+        self._subscribers = [] # using a list rather than a dict so
         # that subscribers may define custom __eq__ methods
         
     _clear = __init__
 
     def subscribe(self, subscriber, event_type=IEvent, filter=None):
-        
-        clean_subscriber=removeAllProxies(subscriber)
+        clean_subscriber = removeAllProxies(subscriber)
         
         if ISubscriptionAware.isImplementedBy(subscriber):
             subscriber.subscribedTo(self, event_type, filter)
         
-        ev_type=event_type
-        if ev_type is IEvent: ev_type=None # optimization
+        if event_type is IEvent:
+            event_type = None # optimization
         
-        subscribers = self._registry.get(ev_type)
-        if subscribers is None:
-            subscribers = []
-            self._registry.register(ev_type, subscribers)
+        subscribers = self._registry.setdefault(event_type, [])
         subscribers.append((clean_subscriber, filter))
 
-        subs = self._subscribers
-        for sub in subs:
-            if sub[0]==clean_subscriber:
-                sub[1][ev_type]=1
+        for sub in self._subscribers:
+            if sub[0] == clean_subscriber:
+                sub[1][event_type] = 1
                 break
         else:
-            subs.append((clean_subscriber,{ev_type:1}))
-        
-        self._registry=self._registry #trigger persistence, if pertinent
+            self._subscribers.append((clean_subscriber, {event_type: 1}))
+
+        self._registry = self._registry #trigger persistence, if pertinent
         
     
     def unsubscribe(self, subscriber, event_type=None, filter=None):
