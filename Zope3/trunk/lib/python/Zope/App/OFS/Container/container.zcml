@@ -8,6 +8,11 @@
 
   <browser:view
       name="_traverse" 
+      for=".IContainer.IItemContainer."
+      factory=".ContainerTraverser.ItemTraverser" />
+
+  <browser:view
+      name="_traverse" 
       for=".IContainer.IReadContainer"
       factory=".ContainerTraverser." />
 
@@ -16,21 +21,13 @@
       for=".IContainer.IReadContainer."
       factory=".ContainerTraverser." />
 
-  <adapter factory=".ContainerTraversable."
-           provides="Zope.App.Traversing.ITraversable."
-           for=".IContainer.IReadContainer." />
-
-  <browser:view name="_traverse" 
-      for=".IContainer."
-      factory=".ContainerTraverser." />
-
-  <xmlrpc:view name="_traverse" 
-      for=".IContainer."
-      factory=".ContainerTraverser." />
-
   <vfs:view name="_traverse" 
       for=".IContainer."
       factory=".ContainerTraverser." />
+
+  <adapter factory=".ContainerTraversable."
+           provides="Zope.App.Traversing.ITraversable."
+           for=".IContainer.IReadContainer." />
 
   <adapter factory=".ContainerTraversable."
            provides="Zope.App.Traversing.ITraversable."

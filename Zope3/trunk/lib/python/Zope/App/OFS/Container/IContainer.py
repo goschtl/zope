@@ -11,24 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"""
+
+"""
+
+
 from Interface import Interface
-from Interface.Common.Mapping import IEnumerableMapping
+from Interface.Common.Mapping import IReadMapping, IEnumerableMapping
 
-class IReadContainer(IEnumerableMapping):
+class IItemContainer(Interface):
+
+    def __getitem__(key):
+        """Return the content for the given key
+
+        Raises KeyError if the content can't be found.
+        """
+
+class ISimpleReadContainer(IItemContainer, IReadMapping):
     """Readable content containers
+    """
 
-       For all methods that return a sequence of values, the return
-       value is guaranteed to support the read-only semantics of a
-       Python sequence (indexing, slicing, len). The return value is
-       not, however, required to be an actual native sequence type
-       (list or tuple).
-
-       Note that the IReadContainer interface implies a collection of
-       objects that are exposed via various publishing mechanisms.
-       Collections of object that *do not* want to be traversed should
-       not implement this.
-
-       """
+class IReadContainer(ISimpleReadContainer, IEnumerableMapping):
+    """Readable containers that can be enumerated.
+    """
 
 class IWriteContainer(Interface):
     """An interface for the write aspects of a container."""
