@@ -135,9 +135,9 @@ class ZODBUndoManager(object):
 
             user_name = entry['user_name']
             if user_name:
-                # XXX this is because of ZODB3/Zope2 cruft regarding
-                # the user path (see comment above). This 'if' block
-                # will hopefully go away.
+                # TODO: This is because of ZODB3/Zope2 cruft regarding
+                # the user path (see comment above).  This 'if' block
+                # should go away.
                 split = user_name.split()
                 if len(split) == 2:
                     user_name = split[1]
