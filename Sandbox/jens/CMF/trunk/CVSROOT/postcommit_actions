@@ -89,7 +89,7 @@ MAIL_CMD = "/usr/lib/sendmail -ba"
 
 WAIT = 0                                # Fork unless --wait is requested.
 DRYRUN = 0                              # '--dryrun' option
-VERBOSE = 0                             # '--verbose' option
+VERBOSE = 1                             # '--verbose' option
 SCRIPT = "postcommit_actions"           # Will b set to argv[0], when obtained.
 
 sVv_re = re.compile("(.*),([^,]+),([^,]+)")
@@ -320,8 +320,12 @@ def create_diff(repo, file, old, new):
             origdir = os.getcwd()
             os.chdir('/tmp')
 
+            revclause = ''
+            if new and new != 'NONE':
+                revclause = '-r ' + new
+
             # "Checkout" to stdout, so we can collect the lines to return.
-            co_stdout_cmd = 'cvs -fn co -p %s/%s' % (repo, file)
+            co_stdout_cmd = 'cvs -fn co -p %s %s/%s' % (revclause, repo, file)
             handle = os.popen(co_stdout_cmd)
             lines = handle.readlines()
             handle.close()
