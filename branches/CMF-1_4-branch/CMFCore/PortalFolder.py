@@ -31,7 +31,11 @@ from AccessControl import getSecurityManager, ClassSecurityInfo, Unauthorized
 from Acquisition import aq_parent, aq_inner, aq_base
 from DynamicType import DynamicType
 from utils import getToolByName, _checkPermission
-from zExceptions import BadRequest
+
+try:
+    from zExceptions import BadRequest
+except ImportError:
+    BadRequest = 'BadRequest'
 
 factory_type_information = (
   { 'id'             : 'Folder'

@@ -24,7 +24,11 @@ from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.PortalFolder import ContentFilter
 from Products.CMFCore.interfaces.Dynamic import DynamicType as IDynamicType
 from webdav.WriteLockInterface import WriteLockInterface
-from zExceptions import BadRequest
+
+try:
+    from zExceptions import BadRequest
+except ImportError:
+    BadRequest = 'BadRequest'
 
 def extra_meta_types():
     return [  { 'name' : 'Dummy', 'action' : 'manage_addFolder' } ]
