@@ -20,9 +20,6 @@ from Zope.App.ComponentArchitecture.ServiceManagerContainer \
 
 from Zope.App.ComponentArchitecture.IServiceManagerContainer import \
      IServiceManagerContainer
-from types import StringTypes
-from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
-from Zope.App.OFS.Container.Exceptions import UnaddableError
 from Zope.Exceptions import DuplicationError
 
 class IFolder(IContainer, IServiceManagerContainer):
