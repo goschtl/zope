@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection configuration adding view
 
-$Id: AddConnectionConfiguration.py,v 1.3 2002/12/12 11:32:31 mgedmin Exp $
+$Id: AddConnectionConfiguration.py,v 1.4 2002/12/21 20:00:40 stevea Exp $
 """
 __metaclass__ = type
 
@@ -39,9 +39,11 @@ class AddConnectionConfiguration(BrowserView):
         paths.sort()
         return paths
 
-    def action(self, connection_name, component_path):
+    def action(self, connection_name, component_path=None):
         if not connection_name:
-            raise ValueError, 'You must specify a connection name'
+            raise ValueError('You must specify a connection name')
+        if not component_path:
+            raise ValueError('You must specify a component path')
         cd = ConnectionConfiguration(connection_name, component_path)
         cd = self.context.add(cd)
         getWidgetsDataForContent(self, IConnectionConfiguration, content=cd)
