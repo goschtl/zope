@@ -19,6 +19,8 @@ CMFSetup Product README
 
       - (x) the role / permission map on the site object
 
+      - (x) properties of the site object
+
       - (x) 'portal_actions'
             (Products.CMFCore.ActionsTool.ActionsTool)
 
@@ -97,10 +99,10 @@ CMFSetup Product README
       - (x) Display / download diffs between configurations (profiles
             and shapshots) Done 2004/07/20, TS.
 
-      - (_) Modify profile selection to use a drop-down list of registered
+      - (x) Modify profile selection to use a drop-down list of registered
             profiles.
 
-      - (_) Allow import from snapshots.
+      - (x) Allow import from snapshots.
 
   Extending The Tool
 
