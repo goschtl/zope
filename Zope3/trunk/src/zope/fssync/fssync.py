@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.27 2003/05/27 20:36:48 gvanrossum Exp $
+$Id: fssync.py,v 1.28 2003/05/29 16:29:21 gvanrossum Exp $
 """
 
 import os
@@ -405,8 +405,6 @@ class FSSync(object):
         zpath += tail
         entry["path"] = zpath
         entry["flag"] = "added"
-        if isdir(path):
-            entry["type"] = entry["factory"] = "zope.app.content.folder.Folder"
         self.metadata.flush()
         if isdir(path):
             # Force Entries.xml to exist, even if it wouldn't normally
