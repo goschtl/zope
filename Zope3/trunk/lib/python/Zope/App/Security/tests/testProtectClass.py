@@ -19,6 +19,7 @@ from TestModuleHookup import *
 from Zope.App.Security.Registries.PermissionRegistry import permissionRegistry
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 from Zope.App.Security.protectClass import protectName, protectLikeUnto
+from Zope.App.Security.protectClass import protectSetAttribute
 
 NOTSET = []
 
@@ -51,8 +52,7 @@ class Test(CleanUp, unittest.TestCase):
         CleanUp.tearDown(self)
         TestModule.test_class = None
 
-    def assertState(self, instP=NOTSET,
-                    m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
+    def assertState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
         "Verify that class, instance, and methods have expected permissions."
 
         from Zope.Security.Checker import selectChecker
@@ -69,7 +69,7 @@ class Test(CleanUp, unittest.TestCase):
     def testSimpleMethodsPlural(self):
         protectName(TestModule.test_class, 'm1', P1)
         protectName(TestModule.test_class, 'm3', P1)
-        self.assertState(instP=P1, m1P=P1, m3P=P1)
+        self.assertState(m1P=P1, m3P=P1)
 
     def testLikeUntoOnly(self):
         protectName(TestModule.test_base, 'm1', P1)
@@ -77,7 +77,22 @@ class Test(CleanUp, unittest.TestCase):
         protectLikeUnto(TestModule.test_class, TestModule.test_base)
         # m1 and m2 are in the interface, so should be set, and m3 should not:
         self.assertState(m1P=P1, m2P=P1)
-        
+
+    def assertSetattrState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
+        "Verify that class, instance, and methods have expected permissions."
+
+        from Zope.Security.Checker import selectChecker
+        from Zope.Exceptions import Forbidden
+
+        checker = selectChecker(TestModule.test_instance)
+        self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))
+        self.assertEqual(checker.setattr_permission_id('m2'), (m2P or None))
+        self.assertEqual(checker.setattr_permission_id("m3"), (m3P or None))
+
+    def testSetattr(self):
+        protectSetAttribute(TestModule.test_class, 'm1', P1)
+        protectSetAttribute(TestModule.test_class, 'm3', P1)
+        self.assertSetattrState(m1P=P1, m3P=P1)
 
     def testLikeUntoAsDefault(self):
         protectName(TestModule.test_base, 'm1', P1)

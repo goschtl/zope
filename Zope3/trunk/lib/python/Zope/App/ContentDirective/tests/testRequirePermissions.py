@@ -79,9 +79,24 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(checker.permission_id('m2'), (m2P or None))
         self.assertEqual(checker.permission_id('m3'), (m3P or None))
 
+    def assertSetattrState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
+        "Verify that class, instance, and methods have expected permissions."
+
+        from Zope.Security.Checker import selectChecker
+        from Zope.Exceptions import Forbidden
+
+        checker = selectChecker(TestModule.test_instance)
+        self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))
+        self.assertEqual(checker.setattr_permission_id('m2'), (m2P or None))
+        self.assertEqual(checker.setattr_permission_id('m3'), (m3P or None))
+
     def assertDeclaration(self, declaration, **state):
         apply_declaration(template_bracket % declaration)
         self.assertState(**state)
+
+    def assertSetattrDeclaration(self, declaration, **state):
+        apply_declaration(template_bracket % declaration)
+        self.assertSetattrState(**state)
 
     # "testSimple*" exercises tags that do NOT have children.  This mode
     # inherently sets the instances as well as the class attributes.
@@ -94,6 +109,15 @@ class Test(CleanUp, unittest.TestCase):
                           </content>"""
                        % (PREFIX+"test_class", P1))
         self.assertDeclaration(declaration, m1P=P1, m3P=P1)
+
+    def test_set_attributes(self):
+        declaration = ("""<content class="%s">
+                            <require
+                                permission="%s" 
+                                set_attributes="m1 m3"/>
+                          </content>"""
+                       % (PREFIX+"test_class", P1))
+        self.assertSetattrDeclaration(declaration, m1P=P1, m3P=P1)
 
     def testSimpleInterface(self):
         declaration = ("""<content class="%s">

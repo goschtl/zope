@@ -33,15 +33,33 @@ def protectName(class_, name, permission):
     
     checker = getCheckerForInstancesOf(class_)
     if checker is None:
-        checker = Checker({}.get)
+        checker = Checker({}.get, {}.get)
         defineChecker(class_, checker)
 
     if permission == 'Zope.Public':
         # Translate public permission to CheckerPublic
         permission = CheckerPublic
 
-    # OK, so it's a hack.
+    # We know a dictionart get method was used because we set it
     protections = checker.getPermission_func().__self__    
+    protections[name] = permission
+
+def protectSetAttribute(class_, name, permission):
+    "Set a permission on a particular name."
+    
+    checkPermission(permission)
+    
+    checker = getCheckerForInstancesOf(class_)
+    if checker is None:
+        checker = Checker({}.get, {}.get)
+        defineChecker(class_, checker)
+
+    if permission == 'Zope.Public':
+        # Translate public permission to CheckerPublic
+        permission = CheckerPublic
+
+    # We know a dictionart get method was used because we set it
+    protections = checker.getSetattrPermission_func().__self__    
     protections[name] = permission
 
 def protectLikeUnto(class_, like_unto):
@@ -52,7 +70,7 @@ def protectLikeUnto(class_, like_unto):
     if unto_checker is None:
         return
 
-    # OK, so it's a hack.
+    # We know a dictionart get method was used because we set it
     unto_protections = unto_checker.getPermission_func().__self__
     
     checker = getCheckerForInstancesOf(class_)

@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: testChecker.py,v 1.4 2002/09/05 20:46:29 jeremy Exp $
+$Id: testChecker.py,v 1.5 2002/10/01 12:47:50 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from Zope.Security.Checker import NamesChecker, CheckerPublic
+from Zope.Security.Checker import Checker, NamesChecker, CheckerPublic
 from Zope.Testing.CleanUp import CleanUp
 from Zope.Security.ISecurityPolicy import ISecurityPolicy
 from Zope.Exceptions import Forbidden, Unauthorized
@@ -111,6 +111,52 @@ class Test(TestCase, CleanUp):
             self.assertRaises(Forbidden, checker.check_getattr, inst, 'd')
             self.assertRaises(Forbidden, checker.check_getattr, inst, 'e')
             self.assertRaises(Forbidden, checker.check_getattr, inst, 'f')
+
+            checker = NamesChecker(['a', 'b', 'c', '__getitem__'],
+                                   CheckerPublic)
+
+            checker.check_getattr(inst, 'a')
+            checker.check_getattr(inst, 'b')
+            checker.check_getattr(inst, 'c')
+            checker.check(inst, '__getitem__')
+            self.assertRaises(Forbidden, checker.check, inst, '__setitem__')
+            self.assertRaises(Forbidden, checker.check_getattr, inst, 'd')
+            self.assertRaises(Forbidden, checker.check_getattr, inst, 'e')
+            self.assertRaises(Forbidden, checker.check_getattr, inst, 'f')
+
+    def test_check_setattr(self):        
+
+        oldinst = OldInst()
+        oldinst.d = OldInst()
+
+        newinst = NewInst()
+        newinst.d = NewInst()
+
+        for inst in oldinst, newinst:
+            checker = Checker({}, {'a': 'perm', 'z': 'perm'})
+
+            self.assertRaises(Unauthorized, checker.check_setattr, inst, 'a')
+            self.assertRaises(Unauthorized, checker.check_setattr, inst, 'z')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'c')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'd')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'e')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'f')
+
+            checker = Checker({}, {'a': 'test_allowed', 'z': 'test_allowed'})
+
+            checker.check_setattr(inst, 'a')
+            checker.check_setattr(inst, 'z')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'd')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'e')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'f')
+
+            checker = Checker({}, {'a': CheckerPublic, 'z': CheckerPublic})
+
+            checker.check_setattr(inst, 'a')
+            checker.check_setattr(inst, 'z')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'd')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'e')
+            self.assertRaises(Forbidden, checker.check_setattr, inst, 'f')
 
     def test_proxy(self):
         checker = NamesChecker(())

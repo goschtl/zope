@@ -46,27 +46,46 @@ class Checker:
 
     __implements__ =  IChecker
 
-    def __init__(self, permission_func):
+    def __init__(self, permission_func,
+                 setattr_permission_func=lambda name: None
+                 ):
         """Create a checker
 
-        A callable must be provided for computing permissions for
-        names. The callable will be called with attribute names and
-        must return a permission id, None, or the special marker,
-        CheckerPublic. If None is returned, then access to the name is
-        forbidden. If CheckerPublic is returned, then access will be
-        granted without checking a permission.
+        A dictionary or a callable must be provided for computing
+        permissions for names. The callable will be called with
+        attribute names and must return a permission id, None, or the
+        special marker, CheckerPublic. If None is returned, then
+        access to the name is forbidden. If CheckerPublic is returned,
+        then access will be granted without checking a permission.
+
+        An optional setattr permission function or dictionary may be
+        provided for checking set attribute access. 
         """
 
-        self.__permission_func = permission_func
+        if type(permission_func) is dict:
+            permission_func = permission_func.get
+        self._permission_func = permission_func
+
+        if type(setattr_permission_func) is dict:
+            setattr_permission_func = setattr_permission_func.get
+        self._setattr_permission_func = setattr_permission_func
 
 
     def getPermission_func(self):
-        return self.__permission_func
+        return self._permission_func
+
+    def getSetattrPermission_func(self):
+        return self._setattr_permission_func
 
     def permission_id(self, name):
         """Return the result of calling the permission func
         """
-        return self.__permission_func(name)
+        return self._permission_func(name)
+
+    def setattr_permission_id(self, name):
+        """Return the result of calling the permission func
+        """
+        return self._setattr_permission_func(name)
 
     ############################################################
     # Implementation methods for interface
@@ -78,8 +97,31 @@ class Checker:
 
     def check_setattr(self, object, name):
         'See Zope.Security.IChecker.IChecker'
-        # YAGNI
-        raise Forbidden("Can't set attributes in untrusted code.")
+
+        if WATCH_CHECKERS:
+            print >> sys.stderr, ('Checking %r.%s:' % (object, name)),
+
+        # We have the information we need already
+        permission = self._setattr_permission_func(name)
+        if permission:
+            if permission is CheckerPublic:
+                if WATCH_CHECKERS:
+                    print >> sys.stderr, 'Public.'
+                return # Public
+            manager = getSecurityManager()
+            if manager.checkPermission(permission, object):
+                if WATCH_CHECKERS:
+                    print >> sys.stderr, 'Granted.'
+                return
+            else:
+                if WATCH_CHECKERS:
+                    print >> sys.stderr, 'Unauthorized.'
+                raise Unauthorized(name=name)
+
+        if WATCH_CHECKERS:
+            print >> sys.stderr, 'Forbidden.'
+
+        raise ForbiddenAttribute(name)
 
     def check(self, object, name):
         'See Zope.Security.IChecker.IChecker'
@@ -88,7 +130,7 @@ class Checker:
             print >> sys.stderr, ('Checking %r.%s:' % (object, name)),
 
         # We have the information we need already
-        permission = self.__permission_func(name)
+        permission = self._permission_func(name)
         if permission:
             if permission is CheckerPublic:
                 if WATCH_CHECKERS:

@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.7 2002/09/01 18:29:57 rdmurray Exp $
+$Id: ContentDirective.py,v 1.8 2002/10/01 12:47:49 jim Exp $
 """
 from types import ModuleType
 from Interface.Implements import implements
@@ -23,7 +23,7 @@ from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.Configuration.Action import Action
 from Zope.App.ComponentArchitecture.ClassFactory import ClassFactory
 from Zope.App.Security.protectClass \
-    import protectLikeUnto, protectName, checkPermission
+    import protectLikeUnto, protectName, checkPermission, protectSetAttribute
 from Zope.Security.Proxy import ProxyFactory
 from Zope.Security.Checker import NamesChecker
 
@@ -61,7 +61,7 @@ class ContentDirective:
 
     def require(self, _context,
                 permission=None, attributes=None, interface=None,
-                like_class=None):
+                like_class=None, set_attributes=None):
         """Require a the permission to access a specific aspect"""
 
         if like_class:
@@ -69,7 +69,7 @@ class ContentDirective:
         else:
             r = []
 
-        if not (interface or attributes):
+        if not (interface or attributes or set_attributes):
             if r:
                 return r
             raise ConfigurationError("Nothing required")
@@ -82,6 +82,8 @@ class ContentDirective:
             self.__protectByInterface(interface, permission, r)
         if attributes:
             self.__protectNames(attributes, permission, r)
+        if set_attributes:
+            self.__protectSetAttributes(set_attributes, permission, r)
 
 
         return r
@@ -118,6 +120,13 @@ class ContentDirective:
         "Set a permission on a bunch of names."
         for name in names.split():
             self.__protectName(name.strip(), permission_id, r)
+            
+    def __protectSetAttributes(self, names, permission_id, r):
+        "Set a permission on a bunch of names."
+        for name in names.split():
+            r.append((
+                ('protectSetAttribute', self.__class, name),
+                protectSetAttribute, (self.__class, name, permission_id)))
 
 
     def __call__(self):

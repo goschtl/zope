@@ -8,7 +8,8 @@
       <subdirective name="implements"
                     attributes="interface" />
       <subdirective name="require"
-                    attributes="permission attributes interface like_class" />
+                    attributes="permission attributes interface
+                                like_class set_attributes" />
       <subdirective name="allow"
                     attributes="attributes interface" />
       <subdirective name="factory"
