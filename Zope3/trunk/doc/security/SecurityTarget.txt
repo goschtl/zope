@@ -1,11 +1,11 @@
 ===============================================================================
- Zope X3 Security Target for EAL 1 ($Revision: 1.11 $ - Draft)
+ Zope X3 Security Target for EAL 1 ($Revision: 1.12 $ - Draft)
 ===============================================================================
 
-:Version: $Revision: 1.11 $ (Draft)
-:Date: $Date: 2004/05/06 15:06:16 $
-:Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>
-:DocumentID: $Id: SecurityTarget.txt,v 1.11 2004/05/06 15:06:16 spascoe Exp $
+:Version: $Revision: 1.12 $ (Draft)
+:Date: $Date: 2004/05/06 17:09:56 $
+:Authors: Christian Theune <ct@gocept.com>, Steve Alexander <steve@catbox.net>, Jim Fulton <jim@zope.com>
+:DocumentID: $Id: SecurityTarget.txt,v 1.12 2004/05/06 17:09:56 ctheune Exp $
 
 .. contents::
 
@@ -26,9 +26,9 @@ ST identification
 
 :Document Title: Zope X3, Security target
 
-:Document ID: $Id: SecurityTarget.txt,v 1.11 2004/05/06 15:06:16 spascoe Exp $
+:Document ID: $Id: SecurityTarget.txt,v 1.12 2004/05/06 17:09:56 ctheune Exp $
 
-:Document Version: $Revision: 1.11 $
+:Document Version: $Revision: 1.12 $
 
 :Origin: Zope Corporation public CVS server
 
@@ -337,7 +337,6 @@ The following threat agents have been identified:
         
     *   Users without correct authentication credentials for a certain
         principal trying to authenticate as this.
-        
 
 The following threats against the assets have been identified:
 
@@ -832,13 +831,10 @@ FIA_USB.1.1
 Class FMT: Security management
 ******************************
 
-
-
 FMT_MOF.1 Management of security functions 
-
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 FMT_MOF.1.1
-
     The TSF shall restrict the ability to *[selection: determine the
     behaviour of, disable, enable, modify the behaviour of]* the
     functions *[assignment: authentication]* to *[assignment: 
@@ -872,13 +868,10 @@ FMT_MSA.1.1.password
     *[password]* to *[authorized administrators, users authorized to
     modify their own authentication data]*.
 
-
-
  XXX
       In later versions of the TOE we will need to specify semantics
       of self registration (and authenticated users who are strangers,
       and thus "untrusted")
-
 
 FMT_MSA.3 Static attribute initialisation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -900,6 +893,9 @@ FMT_MSA.3.2
 
 XXX
         What objective goes with this?
+
+        A hint that we don't need this actually is the fact that we won't have
+        any data to send for auditing ...
 
 FMT_SMR.1 Security roles
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -937,14 +933,6 @@ FPT_AMT.1.1
     assumptions provided by the abstract machine that underlies the
     TSF.
 
-FPT_RVM.1 Non-bypassability of the TSP
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FPT_RVM.1.1 
-    The TSF shall ensure that TSP enforcement functions are invoked
-    and succeed before each function within the TSC is allowed to
-    proceed.
-
 FPT_FLS.1 Failure with preservation of secure state
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -953,6 +941,14 @@ FPT_FLS.1.1
   The TSF shall preserve a secure state when the following types of
   failures occur: [assignment: process termination, resource
   exhaustion, host restart].
+
+FPT_RVM.1 Non-bypassability of the TSP
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FPT_RVM.1.1 
+    The TSF shall ensure that TSP enforcement functions are invoked
+    and succeed before each function within the TSC is allowed to
+    proceed.
 
 FPT_SEP.1 TSF domain separation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -969,35 +965,6 @@ FPT_STM.1 Reliable time stamps
 FPT_STM.1.1
     The TSF shall be able to provide reliable time stamps for its own use.
 
-XXX
-  FPT_TST is mostly handled by unit tests. What we don't handle is
-  data integrity.  This might be something to consider for future
-  evaluations. 
-
-
-
-Class FTA: TOE access
-*********************
-
-XXX
-   Nice to have: FTA_TAH.1 TOE access history
-
-
-
-
-
-
-    
-
-XXX Nice to have:
-*****************
-
-    This is currently not sure if it is going to be implemented. Ask
-    someone who knows.
-
-    FIA_SOS.1
-
-    Specification of "identification" functions.
 
 TOE security assurance requirements
 -----------------------------------
@@ -1097,6 +1064,81 @@ Permission
 
 Christian
 
+The auditing subsystem
+**********************
+
+Zope provides an auditing system that listens for events within Zope according
+to the SFRs described above. It is implemented using the internal "event
+service" of Zope 3 to subscribe to the audit relevant events and log them
+appropriately.
+
+XXX talk about the format here
+
+The events are defined outside the TSC within ZCML configuration statements
+within the other Zope packages that are relevant for the events defined by the
+SFRs.
+
+Events supported by Zope
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+Following events are supported by Zope:
+
+    -   IAuditStartup, IAuditShutdown for startup and shutdown of the audit
+        function (FAU_GEN.1)
+
+    -   IOperationAllowed, IOperationDenied for a successfull/unsuccessfull
+        request to perform an operation on an object covered by the SFP
+        (FAU_ACF.1)
+
+    -   IExportSuccess, IExportFailure for a successfull/unsuccessfull attempt to
+        export user data. (FDP_ETC.2)
+
+    -   IImportSuccess, IImportFailure which detail imported security attributes
+        for a successfull/unsuccessfull attempt to import user data (FDP_ITC.1,
+        FDP_ITC.2)
+
+    -   ITransactionAbortSuccess, ITransactionAbortFailure for a
+        successfull/unsuccessfull attempt to abort a transaction.
+        (FDP_ROL.2_TRANSACTIONS)
+
+    -   IUndoSuccess, IUndoFailure for a successfull/unsuccessfull attempt to
+        undo former transactions within Zope. (FDP_ROL.1_UNDO)
+
+    -   IFailedAuthenticationThresholdfor surpassing the threshold of
+        authentication failures and IAuthenticationFailureReset for re-enabling
+        a disabled login name after the configured period of time. (FIA_AFL_z.1)
+
+    -   IAuthenticationFailure for unsuccessfull use of the authentication mechanism. (FIA_UAU.1)
+
+    -   IAuthenticationDecision for a final authentication decision (FIA_UAU.5)
+
+    -   IReauthenticationFailure for unsuccessfull re-authentication attempts (FIA_UAU.6)
+        XXX Could that be covered by IAuthenticationFailure? Or is this maybe a derived interface?
+
+    -   IUSBFailure for unsuccessfull binding of user security attributes to an interaction (FIA_USB.1)
+        XXX urks ... i wonder about an actual example for that ...
+        
+    -   IAuthenticationManagement for changes to the authentication functions
+        (like adding/removing principals, exchanging authentication modules
+        ...) (FMT_MOF.1) XXX not required by minimal auditing
+
+    -   ISecurityAttributeModification for modifications to security attributes (grants, denies, login names, passwords)
+        (FMT_MSA.1, FMT_SMR.1) XXX FMT_MSA.1 is not required by minimal auditing
+        
+Exceptions from the functional requirements for auditing
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+As Zope relies on Python and the host environment to provide reliable time
+stamps, we regard auditing adjustments to the time beeing out of scope.
+Therefore external log mechanisms (Syslog on Unix hosts or the Event log on
+Windows hosts) should be consulted to detect those changes. (FPT_STM.1)
+
+Jim
+
+
+Protection subsystem
+^^^^^^^^^^^^^^^^^^^^
+
 
 
 
@@ -1117,8 +1159,6 @@ Steve
 Jim
 
 
-Protection subsystem
-^^^^^^^^^^^^^^^^^^^^
 
 
 
@@ -1135,88 +1175,6 @@ Protection subsystem
 
 
 
-
-
-
-
-
-The following security functions have been determined:
-
-
-    ================          ================================
-    TSF                       Description
-    ================          ================================
-    TSF_AUD                   Audit
-    TSF_DATA                  Data im-/export
-    TSF_RIP                   Residual information protection
-    TSF_IA                    Identification and authentication
-    TSF_ACC                   Access control
-    TSF_ROLL                  Rollback
-    ================          ================================
-
-TSF_AUD
--------
-
-(FAU_GEN.1, FAU_GEN.2)
-
-The TOE provides a component "security audit logger" which listens for security
-relevant events and logs them to a plain text file (CSV?) on the file system.
-
-The logged information includes Date/Time, type of event, the principals unique
-id, the result of the event as well as additional information generated by the
-event in human readable form.
-
-Components relevant to security are have to send the required information
-through an event channel, the audit logger needs to subscribe.
-
-Following events will be logged:
-
-    - Startup and shutdown of the Zope Server
-   
-    - Startup / Shutdown of the security audit logger
-
-    - Unauthorized operations
-
-    - Rollback to historic version of an object
-
-    - Allocation of residual information
-
-    - Transactions that are rolled back
-
-    - Successful requests to perform an ooperation on an object covered by the SFP (FDP_ACF.1)
-
-    - Successful export of information (FDP_ETC.2)
-
-    - Successful import of user data, including any security attributes (FDP_ITC.1)
-
-    - All successful rollback operations (FDP_ROL.2)
-
-    - Unsuccessful use of the authentication mechanism (FIA_UAU.1)
-
-    - The final decision on authentication (FIA_UAU.5)
-
-    - Failure of reauthentication (FIA_UAU.6)
-
-    - Unsuccessful use of the user identification mechanism, including the user
-      identity provided. (FIA_UID.1)
-
-    - Unsuccessful binding of user seucirty attributes to a subject (FIA_USB.1)
-
-    - Changes to the time (FIA_STM.1)
-
-    - Successful use of TSF data consistency mechanisms (FPT_TDC.1)
-
-    - Modifications to the group of users that are part of a role (FMT_SMR.1)
-
-    - Failure of the trusted channel functions (FTP_TRP.1)
-
-    - Identification of the initiator and target of failed trusted
-        channel functions (FTP_TRP.1)
-
-*example*
-The TSF does not allow any kind of transactions until the principal has
-presented his username and password. The length of the password is at
-least 6 characters.
 
 Assurance measures
 ------------------
@@ -1365,6 +1323,17 @@ Part 2
     *   Rationale
 
 
+Nice to have / Future
+=====================
+
+  * FPT_TST is mostly handled by unit tests. What we don't handle is
+    data integrity.  This might be something to consider for future
+    evaluations. 
+
+  * FTA_TAH.1 TOE access history
+
+  * FIA_SOS.1 Specification of "identification" functions.
+
 Notes
 =====
 
@@ -1389,6 +1358,9 @@ Notes
   to to do what it wants.  Ideally, these events should not be defined
   by the auditing system, so as not to create dependencies of other
   systems on the logging system.
+
+
+
 
 Questions to Zope 3 Dev
 =======================
