@@ -393,7 +393,7 @@ class ObjectCopier(object):
         new_name = chooser.chooseName(new_name, obj)
 
         copy = locationCopy(obj)
-        self._configureCopy(copy, target, new_name)
+        copy.__parent__ = copy.__name__ = None
         notify(ObjectCopiedEvent(copy))
 
         target[new_name] = copy
@@ -409,6 +409,11 @@ class ObjectCopier(object):
         Subclasses may override this method to perform additional
         configuration of the copied object.
         """
+        # BBB (remove in 3.3)
+        warnings.warn(
+            "_configureCopy is deprecated -- to configure a recently copied"
+            "object, register a handler for IObjectCopiedEvent",
+            DeprecationWarning)
         copy.__parent__ = copy.__name__ = None
 
     def copyable(self):
