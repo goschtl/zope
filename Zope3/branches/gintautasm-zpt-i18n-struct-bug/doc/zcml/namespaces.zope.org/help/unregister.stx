@@ -1,9 +1,0 @@
-unregister (class zope.app.onlinehelp.metaconfigure)
-
-  This directive unregisters a particular help topic.
-
-  Attributes
-
-    path --  (required)
-
-      Specifies the path to the help topic that needs to be unregistered.
