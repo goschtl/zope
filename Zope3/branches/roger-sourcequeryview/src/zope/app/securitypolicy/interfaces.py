@@ -222,3 +222,6 @@ class IGrantInfo(Interface):
         The role grants are an iterable of role, setting tuples, where
         setting is either Allow or Deny.
         """
+
+class IGrantVocabulary(Interface):
+    """Marker interface for register the RadioWidget."""

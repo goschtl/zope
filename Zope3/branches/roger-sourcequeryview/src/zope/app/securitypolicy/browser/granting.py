@@ -21,20 +21,112 @@ from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.app import zapi
 from zope.app.security.vocabulary import PrincipalSource
 from zope.app.form.utility import setUpWidget
+from zope.app.form.browser import RadioWidget
+from zope.app.form.browser.widget import renderElement
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 from zope.app.form.interfaces import IInputWidget
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IRole
+from zope.app.securitypolicy.vocabulary import GrantVocabulary
 from zope.app.security.interfaces import IPermission
 from zope.app.security import settings
 
-settings_vocabulary = SimpleVocabulary(
+settings_vocabulary = GrantVocabulary(
     [SimpleTerm(settings.Allow, token="allow", title=_('Allow')),
      SimpleTerm(settings.Unset, token="unset", title=_('Unset')),
      SimpleTerm(settings.Deny,  token='deny',  title=_('Deny')),
      ])
+
+
+class GrantWidget(RadioWidget):
+    """Garnt widget for build a colorized matrix.
+    
+    The matrix shows anytime the status if you edit the radio widgets.
+    This special widget shows the radio input field without labels.
+    The labels are added in the header of the table. The order of the radio
+    input fields is 'Allowed', 'Unset', 'Deny'.
+    
+    """
+    orientation = "horizontal"
+    _tdTemplate = u'\n<td class="%s">\n<center>\n<label for="%s" title="%s">\n%s\n</label>\n</center>\n</td>\n'
+
+    def __call__(self):
+        """See IBrowserWidget."""
+        value = self._getFormValue()
+        contents = []
+        have_results = False
+
+        return self.renderValue(value)
+
+
+    def renderItem(self, index, text, value, name, cssClass):
+        """Render an item of the list. 
+        
+        Revert the order of label and text. Added field id to the lable 
+        attribute.
+        
+        Added tabel td tags for fit in the matrix table.
+        
+        """
+        
+        tdClass = ''
+        id = '%s.%s' % (name, index)
+        elem = renderElement(u'input',
+                             value=value,
+                             name=name,
+                             id=id,
+                             cssClass=cssClass,
+                             type='radio',
+                             extra = 'onclick="changeMatrix(this);"')
+        return self._tdTemplate % (tdClass, id, text, elem)
+
+    def renderSelectedItem(self, index, text, value, name, cssClass):
+        """Render a selected item of the list. 
+        
+        Revert the order of label and text. Added field id to the lable 
+        attribute.
+        """
+
+        tdClass = 'default'
+        id = '%s.%s' % (name, index)
+        elem = renderElement(u'input',
+                             value=value,
+                             name=name,
+                             id=id,
+                             cssClass=cssClass,
+                             checked="checked",
+                             type='radio',
+                             extra = 'onclick="changeMatrix(this);"')
+        return self._tdTemplate %(tdClass, id, text, elem)
+
+    def renderItems(self, value):
+        # check if we want to select first item, the previously selected item
+        # or the "no value" item.
+        no_value = None
+        if (value == self.context.missing_value
+            and getattr(self, 'firstItem', False)
+            and len(self.vocabulary) > 0):
+            if self.context.required:
+                # Grab the first item from the iterator:
+                values = [iter(self.vocabulary).next().value]
+            else:
+                # the "no value" option will be checked
+                no_value = 'checked'
+        elif value != self.context.missing_value:
+            values = [value]
+        else:
+            values = []
+
+        items = self.renderItemsWithValues(values)
+        return items
+
+    def renderValue(self, value):
+        rendered_items = self.renderItems(value)
+        return " ".join(rendered_items)
+
+
 
 class Granting(object):
 
