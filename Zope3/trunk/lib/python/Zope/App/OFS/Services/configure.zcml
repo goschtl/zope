@@ -1,6 +1,7 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
 <include package=".ServiceManager" />
+<include package=".AuthenticationService" />
 <include package=".LocalEventService" />
 <include package=".ConnectionService" />
 <include package=".RoleService" />

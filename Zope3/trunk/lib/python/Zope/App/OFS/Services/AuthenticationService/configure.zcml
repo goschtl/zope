@@ -1,0 +1,34 @@
+<zopeConfigure
+     xmlns='http://namespaces.zope.org/zope'>
+
+<!-- Authentication Service Directives -->
+
+<content class=".AuthenticationService.">
+  <factory id="AuthenticationService" permission="Zope.ManageServices" />
+    <require
+        permission="Zope.View"
+        interface="Zope.App.Security.IAuthenticationService." />
+    <require
+        permission="Zope.ManageServices"
+        interface="Zope.App.OFS.Container.IContainer." />
+</content>
+
+
+<!-- User Directives -->
+
+<content class=".User.">
+  <factory id="User" permission="Zope.ManageServices" />
+    <require
+        permission="Zope.View"
+        interface=".IUser.IReadUser" />
+    <require
+        permission="Zope.ManageContent"
+        interface=".IUser.IWriteUser" />
+</content>
+
+
+<!-- Further directives -->
+
+<include package=".Views" />
+
+</zopeConfigure>

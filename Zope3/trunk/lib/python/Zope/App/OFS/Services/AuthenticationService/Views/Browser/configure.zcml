@@ -1,0 +1,61 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   package="Zope.App.OFS.Services.AuthenticationService">
+
+<!-- Handle all Authentication Service configuration -->
+
+  <browser:menu id="add_user" 
+      title="Menu for adding new User." />
+
+  <browser:defaultView 
+     for=".AuthenticationService.ILocalAuthenticationService"
+     name="index.html" />
+
+  <browser:view 
+     permission="Zope.ManageServices" 
+     for=".AuthenticationService.ILocalAuthenticationService"
+     factory="Zope.App.OFS.Container.Views.Browser.Contents.">
+
+     <browser:page name="index.html" attribute="index" />
+
+  </browser:view>
+
+  <browser:view
+      name="+"  
+      for=".AuthenticationService.ILocalAuthenticationService"
+      permission="Zope.ManageContent"
+      factory=".Views.Browser.AddUser." >
+
+    <browser:page name="index.html"  template="Views/Browser/addUser.pt" />
+    <browser:page name="action.html" attribute="action" />
+
+  </browser:view>
+
+  <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
+       action="AuthenticationService"  title="Simple Authentication Service"
+       description="A Persistent Authentication Service"
+       />
+
+
+  <!-- Handle User configuration -->
+
+  <browser:defaultView for="Zope.App.Security.IPrincipal." 
+      name="editForm.html" />
+
+  <browser:view
+      for="Zope.App.Security.IPrincipal."
+      permission="Zope.View"
+      factory=".Views.Browser.EditUser.">
+
+    <browser:page name="editForm.html" 
+        template="Views/Browser/editUser.pt" />
+    <browser:page name="edit.html" attribute="action" />
+
+  </browser:view>
+
+  <browser:menuItems menu="zmi_views" for="Zope.App.Security.IPrincipal.">
+    <browser:menuItem title="Edit" action="editForm.html"/>
+  </browser:menuItems>
+
+</zopeConfigure>
