@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.15 2003/01/17 16:31:33 stevea Exp $
+$Id: test_interfacewidget.py,v 1.16 2003/01/25 13:09:57 jim Exp $
 """
 
 __metaclass__ = type
@@ -183,7 +183,43 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         )
         self.assertEqual(widget(), out)
 
-    def testInterfaceWidgetNone(self):
+    def testInterfaceWidget_w_constraint(self):
+        request = self.request
+        field = InterfaceField(
+            __name__='TestName',
+            title=u"This is a test",
+            required=False,
+            constraint=lambda i: not (i.__name__.endswith("2")),
+            )
+
+        widget = InterfaceWidget(field, request)
+
+        self.assertEqual(widget.getData(), None)
+        self.failIf(widget.haveData())
+
+        out = (
+        '<input type="text" name="field.TestName.search" value="">'
+        '<select name="field.TestName">'
+        '<option value="">---select interface---</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I'
+        '</option>'
+
+        '<option value="'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '">'
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        '</option>'
+
+        '</select>'
+        )
+
+        self.assertEqual(widget(), out)
+
+    def testInterfaceWidget_allow_None_as_well_as_interfaces(self):
         request = self.request
         field = InterfaceField(__name__='TestName',
                                title=u"This is a test",
@@ -346,6 +382,9 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         '<input type="hidden" name="field.TestName" value="None" />'
         )
         self.assertEqual(widget.hidden(), out)
+
+
+# XXX Note that MultiInterface widgets should be for multi-interface fields
 
 class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
@@ -812,7 +851,7 @@ class TestRenderInterfaceSelect(TestCase):
         search_string = 'foo"blee'
         select_name = 'selectname'
         out = (
-        '''<input type="text" name="searchname" value='foo"blee'>'''
+        '''<input type="text" name="searchname" value=\'foo"blee\'>'''
         '''<select name="selectname">'''
         '''<option value="">---select interface---</option>'''
         '''<option value="foo">foo</option>'''

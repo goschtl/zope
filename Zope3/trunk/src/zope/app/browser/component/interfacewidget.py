@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.21 2003/01/20 14:36:12 stevea Exp $
+$Id: interfacewidget.py,v 1.22 2003/01/25 13:09:56 jim Exp $
 """
 
 import sys
@@ -77,7 +77,14 @@ class InterfaceWidget(Widget, BrowserView):
         include_none = base is None
         if base == Interface:
             base = None
+
         interfaces = list(service.searchInterface(search_string, base=base))
+            
+        if field.constraint is not None:
+            interfaces = [i
+                          for i in interfaces
+                          if field.constraint(i)
+                         ]
         interfaces.sort()
         interfaces = map(interfaceToName, interfaces)
         # Only include None if there is no search string, and include_none
@@ -129,6 +136,8 @@ class InterfaceWidget(Widget, BrowserView):
         'See IBrowserWidget'
         raise NotImplementedError
 
+
+# XXX Note that MultiInterface widgets should be for multi-interface fields
 
 class MultiInterfaceWidget(Widget, BrowserView):
 
