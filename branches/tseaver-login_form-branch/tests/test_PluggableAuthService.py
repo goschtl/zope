@@ -153,12 +153,16 @@ class DummyCounterChallenger( DummyChallenger ):
         self.count += 1
         return True
 
+class FauxResponse:
+
+    pass
+
 class FauxRequest:
 
     def __init__( self, steps=(), **kw ):
 
         self.steps = steps
-        self._dict = {}
+        self._dict = { 'RESPONSE' : FauxResponse() }
         self._dict.update( kw )
         self._held = []
 
@@ -439,6 +443,8 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin, IAuthenticationPlugin
 
+        PLUGIN_ID = 'login_plugin'
+
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
 
@@ -446,11 +452,11 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID, login )
 
         plugins = zcuf._getOb( 'plugins' )
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID )
 
         request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
 
@@ -459,12 +465,15 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'login__foo' )
+        self.assertEqual( user_ids[ 0 ][0], '%s__foo' % PLUGIN_ID )
 
     def test__extractUserIds_one_extractor_two_authenticators( self ):
 
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin, IAuthenticationPlugin
+
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'always_plugin'
 
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
@@ -474,19 +483,19 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
 
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID_1, login )
 
         always = DummyPlugin()
         directlyProvides( always, ( IAuthenticationPlugin, ) )
         always.authenticateCredentials = lambda creds: ('baz', None)
 
-        zcuf._setObject( 'always', always )
+        zcuf._setObject( PLUGIN_ID_2, always )
 
         plugins = zcuf._getOb( 'plugins' )
 
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'always' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_2 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
 
         request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
 
@@ -495,13 +504,16 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 2 )
-        self.assertEqual( user_ids[ 0 ][0], 'always__baz' )
-        self.assertEqual( user_ids[ 1 ][0], 'login__foo' )
+        self.assertEqual( user_ids[ 0 ][0], '%s__baz' % PLUGIN_ID_2 )
+        self.assertEqual( user_ids[ 1 ][0], '%s__foo' % PLUGIN_ID_1 )
 
     def test__extractUserIds_two_extractors_two_authenticators( self ):
 
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin, IAuthenticationPlugin
+
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'extra_plugin'
 
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
@@ -511,21 +523,21 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
 
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID_1, login )
 
         extra = DummyPlugin()
         directlyProvides( extra, ( IExtractionPlugin, IAuthenticationPlugin ) )
         extra.extractCredentials = _extractExtra
         extra.authenticateCredentials = _authExtra
 
-        zcuf._setObject( 'extra', extra )
+        zcuf._setObject( PLUGIN_ID_2, extra )
 
         plugins = zcuf._getOb( 'plugins' )
 
-        plugins.activatePlugin( IExtractionPlugin, 'extra' )
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'extra' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_2 )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_2 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
 
         request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
 
@@ -534,7 +546,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'login__foo' )
+        self.assertEqual( user_ids[ 0 ][0], '%s__foo' % PLUGIN_ID_1 )
 
         request[ 'extra' ] = 'qux'
 
@@ -543,13 +555,16 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 2, user_ids )
-        self.assertEqual( user_ids[ 0 ][0], 'extra__qux' )
-        self.assertEqual( user_ids[ 1 ][0], 'login__foo' )
+        self.assertEqual( user_ids[ 0 ][0], '%s__qux' % PLUGIN_ID_2 )
+        self.assertEqual( user_ids[ 1 ][0], '%s__foo' % PLUGIN_ID_1 )
 
     def test__extractUserIds_broken_extractor( self ):
 
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin, IAuthenticationPlugin
+
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'borked_plugin'
 
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
@@ -559,19 +574,19 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
 
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID_1, login )
 
         borked = DummyPlugin()
         directlyProvides( borked, ( IExtractionPlugin, ) )
         borked.extractCredentials = lambda req: 'abc'
 
-        zcuf._setObject( 'borked', borked )
+        zcuf._setObject( PLUGIN_ID_2, borked )
 
         plugins = zcuf._getOb( 'plugins' )
 
-        plugins.activatePlugin( IExtractionPlugin, 'borked' )
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_2 )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
 
         request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
 
@@ -580,7 +595,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'login__foo' )
+        self.assertEqual( user_ids[ 0 ][0], '%s__foo' % PLUGIN_ID_1 )
 
     def test_authenticate_emergency_user_with_broken_extractor( self ):
 
@@ -590,6 +605,8 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         from AccessControl.User import UnrestrictedUser
 
         from Products.PluggableAuthService import PluggableAuthService
+
+        PLUGIN_ID = 'borked_plugin'
 
         old_eu = PluggableAuthService.emergency_user
 
@@ -604,11 +621,11 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( borked, ( IExtractionPlugin, ) )
         borked.extractCredentials = lambda req: 'abc'
 
-        zcuf._setObject( 'borked', borked )
+        zcuf._setObject( PLUGIN_ID, borked )
 
         plugins = zcuf._getOb( 'plugins' )
 
-        plugins.activatePlugin( IExtractionPlugin, 'borked' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID )
 
         request = FauxRequest( form={ 'login' : eu.getUserName()
                                     , 'password' : eu._getPassword() } )
@@ -627,6 +644,9 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin, IAuthenticationPlugin
 
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'borked_plugin'
+
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
 
@@ -635,19 +655,19 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
 
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID_1, login )
 
         borked = DummyPlugin()
         directlyProvides( borked, ( IAuthenticationPlugin, ) )
         borked.authenticateCredentials = lambda creds: creds['nonesuch']
 
-        zcuf._setObject( 'borked', borked )
+        zcuf._setObject( PLUGIN_ID_2, borked )
 
         plugins = zcuf._getOb( 'plugins' )
 
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'borked' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_2 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
 
         request = FauxRequest( form={ 'login' : 'foo', 'password' : 'bar' } )
 
@@ -656,7 +676,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'login__foo' )
+        self.assertEqual( user_ids[ 0 ][0], '%s__foo' % PLUGIN_ID_1 )
 
     def test__getObjectContext_no_steps( self ):
 
@@ -1198,6 +1218,9 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                    IAuthenticationPlugin, \
                    IUserEnumerationPlugin
 
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'foo_plugin'
+
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
 
@@ -1205,18 +1228,18 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID_1, login )
 
         foo = DummyPlugin()
         directlyProvides( foo, ( IUserEnumerationPlugin, ) )
         foo.enumerateUsers = lambda id: id == 'foo' or None
 
-        zcuf._setObject( 'foo', foo )
+        zcuf._setObject( PLUGIN_ID_2, foo )
 
         plugins = zcuf._getOb( 'plugins' )
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
-        plugins.activatePlugin( IUserEnumerationPlugin, 'foo' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IUserEnumerationPlugin, PLUGIN_ID_2 )
 
         rc, root, folder, object = self._makeTree()
 
@@ -1245,6 +1268,9 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                    IAuthenticationPlugin, \
                    IUserEnumerationPlugin
 
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'foo_plugin'
+
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
 
@@ -1252,18 +1278,18 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID_1, login )
 
         foo = DummyPlugin()
         directlyProvides( foo, ( IUserEnumerationPlugin, ) )
         foo.enumerateUsers = lambda id: id == 'foo' or None
 
-        zcuf._setObject( 'foo', foo )
+        zcuf._setObject( PLUGIN_ID_2, foo )
 
         plugins = zcuf._getOb( 'plugins' )
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
-        plugins.activatePlugin( IUserEnumerationPlugin, 'foo' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IUserEnumerationPlugin, PLUGIN_ID_2 )
 
         rc, root, folder, object = self._makeTree()
 
@@ -1291,6 +1317,9 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                    IUserEnumerationPlugin, \
                    IRolesPlugin
 
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'olivier_plugin'
+
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
 
@@ -1298,21 +1327,22 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID_1, login )
 
         olivier = DummyPlugin()
         directlyProvides( olivier, ( IUserEnumerationPlugin, IRolesPlugin ) )
         olivier.enumerateUsers = lambda id: id == 'foo' or None
         olivier.getRolesForPrincipal = lambda user, req: (
-                     user.getId() == 'login__olivier' and ( 'Hamlet', ) or () )
+                     user.getId() == '%s__olivier' % PLUGIN_ID_1
+                        and ( 'Hamlet', ) or () )
 
-        zcuf._setObject( 'olivier', olivier )
+        zcuf._setObject( PLUGIN_ID_2, olivier )
 
         plugins = zcuf._getOb( 'plugins' )
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
-        plugins.activatePlugin( IUserEnumerationPlugin, 'olivier' )
-        plugins.activatePlugin( IRolesPlugin, 'olivier' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IUserEnumerationPlugin, PLUGIN_ID_2 )
+        plugins.activatePlugin( IRolesPlugin, PLUGIN_ID_2 )
 
         rc, root, folder, object = self._makeTree()
 
@@ -1340,6 +1370,8 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         from Products.PluggableAuthService.interfaces.plugins \
             import IAnonymousUserFactoryPlugin
 
+        PLUGIN_ID = 'anon_plugin'
+
         def _makeAnon():
             user = FauxUser( None
                            , name='New Anonymous User'
@@ -1354,10 +1386,10 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         anon = DummyPlugin()
         directlyProvides( anon, ( IAnonymousUserFactoryPlugin, ) )
         anon.createAnonymousUser = _makeAnon
-        zcuf._setObject( 'anon', anon )
+        zcuf._setObject( PLUGIN_ID, anon )
 
         plugins = zcuf._getOb( 'plugins' )
-        plugins.activatePlugin( IAnonymousUserFactoryPlugin, 'anon' )
+        plugins.activatePlugin( IAnonymousUserFactoryPlugin, PLUGIN_ID )
 
         rc, root, folder, object = self._makeTree()
 
@@ -1415,6 +1447,9 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                    IAuthenticationPlugin, \
                    IUserEnumerationPlugin
 
+        PLUGIN_ID_1 = 'login_plugin'
+        PLUGIN_ID_2 = 'foo_plugin'
+
         plugins = self._makePlugins()
         zcuf = self._makeOne( plugins )
 
@@ -1422,30 +1457,30 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
-        zcuf._setObject( 'login', login )
+        zcuf._setObject( PLUGIN_ID_1, login )
 
         foo = DummyPlugin()
         directlyProvides( foo, ( IUserEnumerationPlugin, ) )
         foo.enumerateUsers = lambda id: id == 'foo' or None
 
-        zcuf._setObject( 'foo', foo )
+        zcuf._setObject( PLUGIN_ID_2, foo )
 
         plugins = zcuf._getOb( 'plugins' )
-        plugins.activatePlugin( IExtractionPlugin, 'login' )
-        plugins.activatePlugin( IAuthenticationPlugin, 'login' )
-        plugins.activatePlugin( IUserEnumerationPlugin, 'foo' )
+        plugins.activatePlugin( IExtractionPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IAuthenticationPlugin, PLUGIN_ID_1 )
+        plugins.activatePlugin( IUserEnumerationPlugin, PLUGIN_ID_2 )
 
         self.failUnless( plugins.listPlugins( IExtractionPlugin ) )
         self.failUnless( plugins.listPlugins( IAuthenticationPlugin ) )
         self.failUnless( plugins.listPlugins( IUserEnumerationPlugin ) )
 
-        zcuf._delOb( 'foo' )
+        zcuf._delOb( PLUGIN_ID_2 )
 
         self.failUnless( plugins.listPlugins( IExtractionPlugin ) )
         self.failUnless( plugins.listPlugins( IAuthenticationPlugin ) )
         self.failIf( plugins.listPlugins( IUserEnumerationPlugin ) )
 
-        zcuf._delOb( 'login' )
+        zcuf._delOb( PLUGIN_ID_1 )
 
         self.failIf( plugins.listPlugins( IExtractionPlugin ) )
         self.failIf( plugins.listPlugins( IAuthenticationPlugin ) )
