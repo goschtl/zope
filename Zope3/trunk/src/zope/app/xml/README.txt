@@ -38,7 +38,6 @@ XML Schema Interface
 
     <zopexml:schemaInterface
       uri="http://xml.zope.org/hypothetical/invoice.xsd"
-      id="zopeproducts.invoice.IInvoiceSchema"
     />
 
   This interface defines no methods. In order to provide a Pythonic
