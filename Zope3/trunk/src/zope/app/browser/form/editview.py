@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.21 2003/04/16 16:23:12 fdrake Exp $
+$Id: editview.py,v 1.22 2003/04/16 21:51:27 fdrake Exp $
 """
 
 from datetime import datetime
@@ -157,10 +157,7 @@ def EditViewFactory(name, schema, label, permission, layer,
                     fulledit_path=None, fulledit_label=None, menu=u'',
                     usage=u''):
     # XXX What about the __implements__ of the bases?
-    class_  = SimpleViewClass(
-        template,
-        used_for = schema, bases = bases
-        )
+    class_ = SimpleViewClass(template, used_for=schema, bases=bases)
     class_.schema = schema
     class_.label = label
     class_.fieldNames = fields
@@ -174,21 +171,17 @@ def EditViewFactory(name, schema, label, permission, layer,
     class_.generated_form = ViewPageTemplateFile(default_template)
 
     class_.usage = usage or (
-        menu and globalBrowserMenuService.getMenuUsage(menu)
-        )
+        menu and globalBrowserMenuService.getMenuUsage(menu))
 
     defineChecker(class_,
-                  NamesChecker(
-                    ("__call__", "__getitem__", "browserDefault"),
-                    permission,
-                    )
-                  )
+                  NamesChecker(("__call__", "__getitem__", "browserDefault"),
+                               permission))
 
     provideView(for_, name, IBrowserPresentation, class_, layer)
 
 
-def _normalize(_context, schema_, for_, class_, template, default_template,
-               fields, omit, view=EditView):
+def normalize(_context, schema_, for_, class_, template, default_template,
+              fields, omit, view=EditView):
     schema = resolveInterface(_context, schema_)
 
     if for_ is None:
@@ -243,39 +236,34 @@ def edit(_context, name, schema, permission, label='',
     else:
         actions = []
 
-
-    (schema, for_, bases, template, fields,
-     ) = _normalize(
+    schema, for_, bases, template, fields = normalize(
         _context, schema, for_, class_, template, 'edit.pt', fields, omit)
 
     actions.append(
         Action(
-        discriminator = ('view', for_, name, IBrowserPresentation, layer),
-        callable = EditViewFactory,
-        args = (name, schema, label, permission, layer, template, 'edit.pt',
-                bases,
-                for_, fields, menu, usage),
+        discriminator=('view', for_, name, IBrowserPresentation, layer),
+        callable=EditViewFactory,
+        args=(name, schema, label, permission, layer, template, 'edit.pt',
+              bases, for_, fields, menu, usage),
         )
         )
 
     return actions
 
 def subedit(_context, name, schema, label,
-              permission = 'zope.Public', layer = "default",
-              class_ = None, for_ = None,
-              template = None, omit=None, fields=None,
-              fulledit=None, fulledit_label=None):
+            permission='zope.Public', layer="default",
+            class_=None, for_=None,
+            template=None, omit=None, fields=None,
+            fulledit=None, fulledit_label=None):
 
-    (schema, for_, bases, template, fields,
-     ) = _normalize(
+    schema, for_, bases, template, fields = normalize(
         _context, schema, for_, class_, template, 'subedit.pt', fields, omit)
 
     return [
         Action(
-        discriminator = ('view', for_, name, IBrowserPresentation, layer),
-        callable = EditViewFactory,
-        args = (name, schema, label, permission, layer, template, 'subedit.pt',
-                bases,
-                for_, fields, fulledit, fulledit_label),
+        discriminator=('view', for_, name, IBrowserPresentation, layer),
+        callable=EditViewFactory,
+        args=(name, schema, label, permission, layer, template, 'subedit.pt',
+              bases, for_, fields, fulledit, fulledit_label),
         )
         ]
