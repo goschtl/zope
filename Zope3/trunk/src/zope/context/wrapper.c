@@ -1590,7 +1590,7 @@ module_functions[] = {
      setobject__doc__},
     {"setcontext",      wrapper_setcontext,      METH_VARARGS,
      setcontext__doc__},
-    {"getdescriptor",   wrapper_getdescriptor, METH_VARARGS,
+    {"getdescriptor",   wrapper_getdescriptor,   METH_VARARGS,
      getdescriptor__doc__},
     {NULL, NULL, 0, NULL}
 };
