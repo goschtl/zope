@@ -10,12 +10,12 @@
 
   <subscriber
      for="..component.interfaces.registration.IRegistrationActivatedEvent"
-     factory=".manager.setNameOnActivation"
+     handler=".manager.setNameOnActivation"
      />
 
   <subscriber
      for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
-     factory=".manager.unsetNameOnDeactivation"
+     handler=".manager.unsetNameOnDeactivation"
      />
 
   <adapter

@@ -24,13 +24,13 @@
       />
 
   <subscriber
-      factory=".registration.PageRegistrationAddSubscriber"
+      handler=".registration.PageRegistrationAddSubscriber"
       for=".interfaces.IPageRegistration 
            zope.app.container.interfaces.IObjectAddedEvent"
       />
   
   <subscriber
-      factory=".registration.PageRegistrationRemoveSubscriber"
+      handler=".registration.PageRegistrationRemoveSubscriber"
       for=".interfaces.IPageRegistration 
            zope.app.container.interfaces.IObjectRemovedEvent"
       />
@@ -73,13 +73,13 @@
       />
   
   <subscriber
-      factory=".pagefolder.templateAddedSubscriber"
+      handler=".pagefolder.templateAddedSubscriber"
       for=".interfaces.IZPTTemplate
            zope.app.container.interfaces.IObjectAddedEvent"
       />
   
   <subscriber
-      factory=".pagefolder.templateRemovedSubscriber"
+      handler=".pagefolder.templateRemovedSubscriber"
       for=".interfaces.IZPTTemplate
            zope.app.container.interfaces.IObjectRemovedEvent"
       />
