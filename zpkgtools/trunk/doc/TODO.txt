@@ -1,6 +1,36 @@
 - need name + acronym to describe what gets built, not normal words
   (Jim sez)
 
+- need to add support for Subversion checkouts
+
+- extract version number from revision control tag names
+
+- There needs to be a better error message when two resources use the
+  same name part.  The problem is that package:foo and collection:foo
+  both have the same name, and zpkg tries to create two different
+  directories of the same name as children of the distribution root.
+
+  Other ways to solve the problem:
+
+  - Remove the resource type from the resource identifier, so names
+    have to be unique to begin with.  Each resource will be expected
+    to identify itself in some way (possibly implicitly, such as by
+    the presence of an __init__.py file).  This would mean we need an
+    explicit control of how we deal with dependencies (whether or not
+    we include them in the distribution package, in particular); this
+    would likely be a good thing, but doesn't depend on the change in
+    the resource identifiers.
+
+  - Change the structure of the distribution, so that collection and
+    package resources are located in different directories; for
+    collection:foo and package:foo, we could end up with::
+
+      foo-x.y/
+          collections/
+              foo/
+          packages/
+              foo/
+
 - support for installation of packages that don't exist at the top
   level of the package hierarchy (really a distutils problem)
 
