@@ -1316,6 +1316,10 @@ class datetime(date):
             return other
 
         another = other + otdst
+        return another
+
+        # XXX Leaving this unreachable code here for a while.  It may be
+        # XXX needed again real soon <wink>.
         anotherdst = another.dst()
         if anotherdst is None:
             self._inconsistent_dst()
