@@ -2102,7 +2102,24 @@ def set_unittest_reportflags(flags):
     _unittest_reportflags = flags
     return old
 
-
+_para_re = re.compile('\s*\n\s*\n\s*')
+def _unittest_count(docstring):
+    words = 0
+    count = 0
+    for p in _para_re.split(docstring):
+        p = p.strip()
+        if not p:
+            continue
+        if p.startswith('>>> '):
+            if words:
+                count += 1
+                words = 0
+        else:
+            words = 1
+            
+    return count or 1
+            
+    
 class DocTestCase(unittest.TestCase):
 
     def __init__(self, test, optionflags=0, setUp=None, tearDown=None,
@@ -2114,6 +2131,11 @@ class DocTestCase(unittest.TestCase):
         self._dt_test = test
         self._dt_setUp = setUp
         self._dt_tearDown = tearDown
+
+        self._dt_count = _unittest_count(test.docstring)
+
+    def countTestCases(self):
+        return self._dt_count
 
     def setUp(self):
         test = self._dt_test
