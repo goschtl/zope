@@ -11,6 +11,13 @@
         />
   </content>
 
+  <content class=".registration.NotifyingRegistrationStack">
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IRegistrationStack"
+        />
+  </content>
+
   <adapter
       for=".interfaces.IRegisterable"
       provides=".interfaces.IRegistered"
