@@ -13,7 +13,7 @@
 ##############################################################################
 """A package contains components and component configurations.
 
-$Id: folder.py,v 1.7 2003/05/27 14:18:24 jim Exp $
+$Id: folder.py,v 1.8 2003/05/29 19:55:42 gvanrossum Exp $
 """
 
 __metaclass__ = type
@@ -23,6 +23,7 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.interfaces.services.folder import ISiteManagementFolders
 from zope.app.interfaces.services.folder import ISiteManagementFolder
 from zope.app.interfaces.services.service import IComponentManager
+from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.services.configuration import ConfigurationManagerContainer
 from zope.app.traversing import getPath
 from zope.context import ContextMethod, ContextWrapper
@@ -69,6 +70,16 @@ class SiteManagementFolders(BTreeContainer):
         if not ISiteManagementFolder.isImplementedBy(obj):
             raise TypeError("Can only add packages")
         return super(SiteManagementFolders, self).setObject(name, obj)
+
+class SMFolderFactory(object):
+
+    __implements__ = IDirectoryFactory
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, name):
+        return SiteManagementFolder()
 
 # XXX Backward compatability. This is needed to support old pickles.
 Package = SiteManagementFolder

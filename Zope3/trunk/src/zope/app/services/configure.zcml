@@ -491,4 +491,29 @@
     factory="zope.app.content.fssync.DirectoryAdapter"
     />
 
+<fssync:adapter
+    class=".pagefolder.PageFolder"
+    factory=".pagefolder.PageFolderAdapter"
+    />
+
+<fssync:adapter
+    class=".zpt.ZPTTemplate"
+    factory=".zpt.ZPTPageAdapter"
+    />
+
+<adapter 
+  for="zope.app.interfaces.services.service.IServiceManager"
+  provides="zope.app.interfaces.file.IDirectoryFactory"
+  factory=".folder.SMFolderFactory"
+  permission="zope.ManageContent"
+  />
+
+<adapter 
+  for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+  provides="zope.app.interfaces.file.IDirectoryFactory"
+  factory=".pagefolder.PageFolderFactory"
+  permission="zope.ManageContent"
+  />
+
+
 </zopeConfigure>

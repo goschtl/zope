@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.10 2003/05/01 19:35:34 faassen Exp $
+$Id: zpt.py,v 1.11 2003/05/29 19:55:42 gvanrossum Exp $
 """
 
 import re
@@ -25,6 +25,8 @@ from zope.app.pagetemplate.engine import AppPT
 from zope.app.interfaces.services.view import IZPTTemplate
 from zope.app.interfaces.index.text import ISearchableText
 from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
+from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
+from zope.app.interfaces.fssync import IObjectFile
 
 class ZPTTemplate(AppPT, PageTemplate, Persistent):
 
@@ -129,3 +131,21 @@ class ZPTFactory:
         r = ZPTTemplate()
         r.source = data
         return r
+
+
+class ZPTPageAdapter(ObjectEntryAdapter):
+    """ObjectFile adapter for ZPTTemplate objects."""
+
+    __implements__ =  IObjectFile
+
+    def getBody(self):
+        return self.context.source
+
+    def setBody(self, data):
+        # Convert the data to Unicode, since that's what ZPTTemplate
+        # wants; it's normally read from a file so it'll be bytes.
+        # XXX This will die if it's not ASCII.  Guess encoding???
+        self.context.source = unicode(data)
+
+    def extra(self):
+        return AttrMapping(self.context, ('contentType',))

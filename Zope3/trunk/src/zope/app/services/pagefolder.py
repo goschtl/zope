@@ -16,7 +16,7 @@
 Page folders support easy creation and configuration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.7 2003/05/28 15:46:11 jim Exp $
+$Id: pagefolder.py,v 1.8 2003/05/29 19:55:42 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -31,6 +31,9 @@ from zope.proxy import removeAllProxies
 from zope.app.services.view import PageConfiguration
 from zope.app.interfaces.services.pagefolder import IPageFolder
 from zope.app.interfaces.services.configuration import IConfigurationManager
+from zope.app.interfaces.file import IDirectoryFactory
+from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
+from zope.app.interfaces.fssync import IObjectDirectory
 
 class PageFolder(ConfigurationManagerContainer, BTreeContainer):
 
@@ -84,6 +87,36 @@ class PageFolder(ConfigurationManagerContainer, BTreeContainer):
 
     def deactivated(self):
         "See IConfiguration"
+
+
+_attrNames = (
+    'factoryName',
+    'forInterface',
+    'layer',
+    'permission',
+    )
+
+class PageFolderAdapter(ObjectEntryAdapter):
+    """ObjectFile adapter for PageFolder objects."""
+
+    __implements__ =  IObjectDirectory
+
+    def contents(self):
+        return self.context.items()
+
+    def extra(self):
+        return AttrMapping(self.context, _attrNames)
+
+
+class PageFolderFactory(object):
+
+    __implements__ = IDirectoryFactory
+
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, name):
+        return PageFolder()
 
 # XXX Backward compatibility. This is needed to support old pickles.
 ViewPackage = PageFolder
