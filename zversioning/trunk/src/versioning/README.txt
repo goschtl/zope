@@ -45,8 +45,8 @@ as an example :
   >>> db_root["sample"] = sample 
 
 
-CopyModifyMergeRepository explained
------------------------------------
+CopyModifyMergeRepository Setup Explained
+-----------------------------------------
 
 In this architecture we can choose between several repositories. We take a
 CopyModifyMergeRepository without check in and check out as an example.
@@ -92,6 +92,10 @@ can be used with the same storage:
 Now we adapt our history storage to the chosen repository strategy:
 
   >>> repository = interfaces.ICopyModifyMergeRepository(histories_storage)
+
+
+CopyModifyMergeRepository Usage Explained
+-----------------------------------------
 
 An object that isn't 'IVersionable' can't be put under version control.
 Applying version control should raise an exception:
