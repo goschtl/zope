@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.16 2003/03/23 16:45:43 jim Exp $
+$Id: service.py,v 1.17 2003/03/23 22:03:27 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -111,11 +111,10 @@ class AddServiceConfiguration(BrowserView):
 
     def action(self, name=[], active=[]):
         path = getPath(self.context)
-        configure = traverse(getWrapperContainer(self.context), 'configure')
+        configure = getWrapperContainer(self.context).getConfigurationManager()
         container = getAdapter(configure, IZopeContainer)
 
         for nm in name:
-            # XXX Shouldn't hardcode 'configure'
             sc = ServiceConfiguration(nm, path, self.context)
             name = container.setObject("", sc)
             sc = container[name]

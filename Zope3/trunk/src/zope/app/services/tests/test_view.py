@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.7 2003/03/18 21:02:23 jim Exp $
+$Id: test_view.py,v 1.8 2003/03/23 22:03:28 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -128,7 +128,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++Services')
 
-        configure = traverse(sm, 'default/configure')
+        configure = traverse(sm, 'default').getConfigurationManager()
         configuration = Configuration()
         configure.setObject('', configuration)
         configuration = traverse(configure, '1')
@@ -163,7 +163,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++Services')
 
-        configure = traverse(sm, 'default/configure')
+        configure = traverse(sm, 'default').getConfigurationManager()
         configuration = Configuration()
         configure.setObject('', configuration)
         configuration = traverse(configure, '1')

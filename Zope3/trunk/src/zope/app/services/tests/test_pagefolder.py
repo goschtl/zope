@@ -13,7 +13,7 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_pagefolder.py,v 1.1 2003/03/23 19:24:46 jim Exp $
+$Id: test_pagefolder.py,v 1.2 2003/03/23 22:03:28 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -46,7 +46,7 @@ class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
 
         #set up view service
         default.setObject('ViewService', ViewService())
-        configure = traverse(default, 'configure')
+        configure = default.getConfigurationManager()
         configuration = ServiceConfiguration(
             'Views',
             '/++etc++Services/default/ViewService')
@@ -56,7 +56,7 @@ class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
 
         views.setObject('foo.html', ZPTTemplate())
 
-        configuration = traverse(views, 'configure/1')
+        configuration = traverse(views.getConfigurationManager(), '1')
         self.assertEqual(configuration.status, Active)
         self.assertEqual(configuration.forInterface, I)
         self.assertEqual(configuration.presentationType, IBrowserPresentation)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: test_cacheconfiguration.py,v 1.4 2003/03/18 21:02:23 jim Exp $
+$Id: test_cacheconfiguration.py,v 1.5 2003/03/23 22:03:28 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -109,17 +109,17 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         self.default.setObject('cch', TestCache())
         self.cch = traverse(self.default, 'cch')
 
-        self.cm = ZopeContainerAdapter(traverse(self.default, "configure"))
+        self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
         self.cm.setObject('', CacheConfiguration('cache_name',
                             '/++etc++Services/default/cch'))
-        self.config = traverse(self.default, 'configure/1')
+        self.config = traverse(self.default.getConfigurationManager(), '1')
 
         self.default.setObject('cache_srv', CachingServiceStub())
         self.service = traverse(self.default, 'cache_srv')
 
         self.cm.setObject('', ServiceConfiguration('Caching',
                             '/++etc++Services/default/cache_srv'))
-        traverse(self.default, 'configure/2').status = Active
+        traverse(self.default.getConfigurationManager(), '2').status = Active
 
     def tearDown(self):
         PlacefulSetup.tearDown(self)

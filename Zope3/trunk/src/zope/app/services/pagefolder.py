@@ -16,7 +16,7 @@
 Page folders support easy creation and configuration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.2 2003/03/23 19:24:46 jim Exp $
+$Id: pagefolder.py,v 1.3 2003/03/23 22:03:28 jim Exp $
 """
 __metaclass__ = type
 
@@ -69,7 +69,7 @@ class PageFolder(ConfigurationManagerContainer, BTreeContainer):
             template=template,
             layer=self.layer,
             )
-        configure = traverse(self, 'configure')
+        configure = self.getConfigurationManager()
         id = configure.setObject('', config)
         config = getItem(configure, id)
         config.status = Active

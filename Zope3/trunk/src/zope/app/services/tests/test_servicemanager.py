@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.4 2003/03/23 16:45:45 jim Exp $
+$Id: test_servicemanager.py,v 1.5 2003/03/23 22:03:28 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -64,8 +64,8 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
             'test_service',
             '/++etc++Services/default/test_service1')
 
-        default['configure'].setObject('', configuration)
-        traverse(default, 'configure/1').status = Active
+        default.getConfigurationManager().setObject('', configuration)
+        traverse(default.getConfigurationManager(), '1').status = Active
 
         testOb = getService(self.rootFolder, 'test_service')
         c = getWrapperContainer
@@ -89,16 +89,16 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         configuration = ServiceConfiguration(
             'test_service',
             '/++etc++Services/default/test_service1')
-        default['configure'].setObject('', configuration)
-        traverse(default, 'configure/1').status = Active
+        default.getConfigurationManager().setObject('', configuration)
+        traverse(default.getConfigurationManager(), '1').status = Active
 
         ts2 = TestService()
         default.setObject('test_service2', ts2)
         configuration = ServiceConfiguration(
             'test_service',
             '/++etc++Services/default/test_service2')
-        default['configure'].setObject('', configuration)
-        traverse(default, 'configure/2').status = Registered
+        default.getConfigurationManager().setObject('', configuration)
+        traverse(default.getConfigurationManager(), '2').status = Registered
 
         testOb = getService(self.rootFolder, 'test_service')
         self.assertEqual(testOb, ts1)
@@ -113,7 +113,8 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.testGetService() # set up localservice
 
         sm = traverse(self.rootFolder, '++etc++Services')
-        traverse(sm, 'default/configure/1').status = Unregistered
+        cm = traverse(sm, 'default').getConfigurationManager()
+        traverse(cm, '1').status = Unregistered
 
         self.assertEqual(getService(self.rootFolder, 'test_service'), root_ts)
 

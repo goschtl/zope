@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.6 2003/03/19 19:57:32 alga Exp $
+$Id: test_cachingservice.py,v 1.7 2003/03/23 22:03:28 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -63,7 +63,7 @@ class CachingServiceSetup(EventSetup):
 
         path = getPath(service)
         configuration = ServiceConfiguration("Caching", path)
-        configure = traverse(default, 'configure')
+        configure = default.getConfigurationManager()
         key = configure.setObject(None, configuration)
         traverse(configure, key).status = Active
 
@@ -78,7 +78,7 @@ class CachingServiceSetup(EventSetup):
                            folder +'/++etc++Services/default')
         key = default.setObject(cname, cache)
         cache = traverse(default, key)
-        configure = traverse(default, 'configure')
+        configure = default.getConfigurationManager()
         key = configure.setObject(None, CacheConfiguration(name,
                                                            getPath(cache)))
         traverse(configure, key).status = status

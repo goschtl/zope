@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.15 2003/03/23 17:13:42 jim Exp $
+$Id: placefulsetup.py,v 1.16 2003/03/23 22:03:28 jim Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -173,15 +173,15 @@ class PlacefulSetup(PlacelessSetup):
 
         path = "%s/%s" % (getPath(default), service_name)
         configuration = ServiceConfiguration(EventPublication, path, self.rootFolder)
-        default['configure'].setObject(
+        default.getConfigurationManager().setObject(
                 "%sEventsDir" % service_name, configuration)
-        traverse(default, 'configure/1').status = Active
+        traverse(default.getConfigurationManager(), '1').status = Active
 
         configuration = ServiceConfiguration(EventSubscription, path,
                                              self.rootFolder)
-        default['configure'].setObject(
+        default.getConfigurationManager().setObject(
                 "%sSubscriptionServiceDir" % service_name, configuration)
-        traverse(default, 'configure/2').status = Active
+        traverse(default.getConfigurationManager(), '2').status = Active
 
     def createStandardServices(self):
         '''Create a bunch of standard placeful services'''
@@ -212,19 +212,19 @@ class PlacefulSetup(PlacelessSetup):
 
         path = "%s/default/myEventService" % getPath(sm)
         configuration = ServiceConfiguration(EventPublication, path, self.rootFolder)
-        default['configure'].setObject("myEventServiceDir", configuration)
-        traverse(default, 'configure/1').status = Active
+        default.getConfigurationManager().setObject("myEventServiceDir", configuration)
+        traverse(default.getConfigurationManager(), '1').status = Active
 
         configuration = ServiceConfiguration(EventSubscription, path,
                                              self.rootFolder)
-        default['configure'].setObject(
+        default.getConfigurationManager().setObject(
                 "mySubscriptionServiceDir", configuration)
-        traverse(default, 'configure/2').status = Active
+        traverse(default.getConfigurationManager(), '2').status = Active
 
         path = "%s/default/myObjectHub" % getPath(sm)
         configuration = ServiceConfiguration(HubIds, path, self.rootFolder)
-        default['configure'].setObject("myHubIdsServiceDir", configuration)
-        traverse(default, 'configure/3').status = Active
+        default.getConfigurationManager().setObject("myHubIdsServiceDir", configuration)
+        traverse(default.getConfigurationManager(), '3').status = Active
 
 
 def createServiceManager(folder):

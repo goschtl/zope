@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.6 2003/03/18 21:02:23 jim Exp $
+$Id: test_serviceconfiguration.py,v 1.7 2003/03/23 22:03:28 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import Interface
 
 from zope.component import getServiceManager, getAdapter
-from zope.app.traversing import traverse
+from zope.app.traversing import traverse, getPath
 from zope.app.services.service import ServiceConfiguration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.service import ServiceManager
@@ -92,11 +92,12 @@ class Test(PlacefulSetup, TestCase):
             'test_service', '/++etc++Services/default/c')
 
         self.__c = traverse(default, 'c')
-        self.__cm = ZopeContainerAdapter(traverse(default, "configure"))
+        self.__cm = ZopeContainerAdapter(default.getConfigurationManager())
 
         self.__cm.setObject('', configuration)
 
-        self.__config = traverse(default, 'configure/1')
+        self.__config = traverse(default.getConfigurationManager(), '1')
+        self.__configpath = getPath(self.__config)
 
     def test_activated(self):
         old = self.__c._bound
@@ -119,10 +120,10 @@ class Test(PlacefulSetup, TestCase):
 
     def test_afterAddHook(self):
         self.assertEqual(self.__c._dependents,
-                         ('/++etc++Services/default/configure/1', ))
+                         (self.__configpath, ))
         u = getAdapter(self.__c, IUseConfiguration)
         self.assertEqual(list(u.usages()),
-                         ['/++etc++Services/default/configure/1'])
+                         [self.__configpath])
 
     def test_beforeDeleteHook_and_unregistered(self):
         self.__config.status = Registered

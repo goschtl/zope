@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.10 2003/03/19 19:57:32 alga Exp $
+$Id: test_auth.py,v 1.11 2003/03/23 22:03:28 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -68,7 +68,7 @@ class AuthSetup(EventSetup):
 
         path = getPath(auth)
         configuration = ServiceConfiguration(Authentication, path)
-        configure = traverse(default, 'configure')
+        configure = default.getConfigurationManager()
         key = configure.setObject(None, configuration)
         traverse(configure, key).status = Active
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.17 2003/03/19 19:57:32 alga Exp $
+$Id: test_eventservice.py,v 1.18 2003/03/23 22:03:28 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -839,15 +839,13 @@ class TestEventPublisher(EventSetup, TestCase):
 
         path = "%s/default/myEventService" % getPath(sm)
         configuration = ServiceConfiguration(EventPublication, path)
-        default['configure'].setObject("myEventServiceDir", configuration)
-        traverse(default, 'configure/1').status = Active
+        default.getConfigurationManager().setObject("myEventServiceDir", configuration)
+        traverse(default.getConfigurationManager(), '1').status = Active
 
         configuration = ServiceConfiguration(EventSubscription, path)
-        default['configure'].setObject("mySubscriptionServiceDir",
+        default.getConfigurationManager().setObject("mySubscriptionServiceDir",
                                        configuration)
-        traverse(
-            default,
-            'configure/2').status = Active
+        traverse(default.getConfigurationManager(), '2').status = Active
 
         subscribe(
             self.rootFolderSubscriber,

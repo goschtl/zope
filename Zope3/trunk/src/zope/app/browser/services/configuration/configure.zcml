@@ -52,30 +52,25 @@
 
 <!-- ConfigurationManager -->
 
-  <page
-     name="index.html" 
-     for="zope.app.interfaces.services.configuration.IConfigurationManager"
-     menu="zmi_views" title="Configuration"
-     permission="zope.ManageServices"
-     class=".EditConfiguration"
-     template="editconfiguration.pt" 
-     />
+<page
+   name="index.html" 
+   for="zope.app.interfaces.services.configuration.IConfigurationManager"
+   menu="zmi_views" title="Configuration"
+   permission="zope.ManageServices"
+   class=".EditConfiguration"
+   template="editconfiguration.pt" 
+   />
 
-  <view
-     for="zope.app.interfaces.services.configuration.IConfigurationManager"
-     name="+"
-     permission="zope.ManageServices"
-     class=".ConfigurationAdding">
-    <page name="index.html"  attribute="index"  />
-    <page name="action.html" attribute="action" />
-  </view>
-
-  <menuItem
-        menu="add_component"
-        for="zope.app.interfaces.container.IAdding"
-        action="zope.app.services.ConfigurationManager"
-        title="Configuration"
-        />
+<!-- For now, we'll allow CMs to be added, but we won't include them
+     in the add_component menu. -->
+<view
+   for="zope.app.interfaces.services.configuration.IConfigurationManager"
+   name="+"
+   permission="zope.ManageServices"
+   class=".ConfigurationAdding">
+  <page name="index.html"  attribute="index"  />
+  <page name="action.html" attribute="action" />
+</view>
 
 
 <page
@@ -86,6 +81,5 @@
     template="../../exception/user.pt"
     class="zope.app.browser.exception.user.UserErrorView"
     />
-
 
 </zopeConfigure>
