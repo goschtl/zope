@@ -140,8 +140,7 @@ class PROPFIND(object):
                         
                     if isinstance(value, (unicode, str)):
                         # Get the widget value here
-                        value = response.createTextNode(value)
-                        el.appendChild(value)
+                        el.appendChild(response.createTextNode(value))
                     else:
                         if zapi.isinstance(value, minidom.Node):
                             el.appendChild(value)
@@ -149,8 +148,7 @@ class PROPFIND(object):
                             # Try to string-ify
                             value = str(getattr(self, p+'_widget'))
                             # Get the widget value here
-                            value = response.createTextNode(value)
-                            el.appendChild(value)
+                            el.appendChild(response.createTextNode(value))
 
         if not_avail:
             re.appendChild(response.createElement('propstat'))
