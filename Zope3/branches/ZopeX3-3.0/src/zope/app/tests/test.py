@@ -281,10 +281,9 @@ class ImmediateTestResult(unittest._TextTestResult):
     __super_startTest = unittest._TextTestResult.startTest
     __super_printErrors = unittest._TextTestResult.printErrors
 
-    def __init__(self, stream, descriptions, verbosity, debug=False,
+    def __init__(self, stream, descriptions, verbosity,
                  count=None, progress=False):
         self.__super_init(stream, descriptions, verbosity)
-        self._debug = debug
         self._progress = progress
         self._progressWithNames = False
         self.count = count
@@ -385,16 +384,12 @@ class ImmediateTestResult(unittest._TextTestResult):
     def addError(self, test, err):
         if self._progress:
             self.stream.write("\r")
-        if self._debug:
-            raise err[0], err[1], err[2]
         self._print_traceback("Error in test %s" % test, err,
                               test, self.errors)
 
     def addFailure(self, test, err):
         if self._progress:
             self.stream.write("\r")
-        if self._debug:
-            raise err[0], err[1], err[2]
         self._print_traceback("Failure in test %s" % test, err,
                               test, self.failures)
 
@@ -416,9 +411,6 @@ class ImmediateTestRunner(unittest.TextTestRunner):
     __super_init = unittest.TextTestRunner.__init__
 
     def __init__(self, **kwarg):
-        debug = kwarg.get("debug")
-        if debug is not None:
-            del kwarg["debug"]
         progress = kwarg.get("progress")
         if progress is not None:
             del kwarg["progress"]
@@ -426,7 +418,6 @@ class ImmediateTestRunner(unittest.TextTestRunner):
         if profile is not None:
             del kwarg["profile"]
         self.__super_init(**kwarg)
-        self._debug = debug
         self._progress = progress
         self._profile = profile
         # Create the test result here, so that we can add errors if
@@ -434,7 +425,7 @@ class ImmediateTestRunner(unittest.TextTestRunner):
         # attribute must be set in run(), because we won't know the
         # count until all test suites have been found.
         self.result = ImmediateTestResult(
-            self.stream, self.descriptions, self.verbosity, debug=self._debug,
+            self.stream, self.descriptions, self.verbosity,
             progress=self._progress)
 
     def _makeResult(self):
@@ -443,8 +434,6 @@ class ImmediateTestRunner(unittest.TextTestRunner):
 
     def run(self, test):
         self.result.count = test.countTestCases()
-        if self._debug:
-            club_debug(test)
         if self._profile:
             prof = hotshot.Profile("tests_profile.prof")
             args = (self, test)
@@ -455,15 +444,6 @@ class ImmediateTestRunner(unittest.TextTestRunner):
             stats.print_stats(50)
             return r
         return unittest.TextTestRunner.run(self, test)
-
-def club_debug(test):
-    # Beat a debug flag into debug-aware test cases
-    setDebugModeOn = getattr(test, 'setDebugModeOn', None)
-    if setDebugModeOn is not None:
-        setDebugModeOn()
-
-    for subtest in getattr(test, '_tests', ()):
-        club_debug(subtest)
 
 # setup list of directories to put on the path
 class PathInit:
@@ -640,14 +620,16 @@ class PseudoTestCase:
     def __str__(self):
         return "Invalid Test (%s)" % self.name
 
-def get_suite(file, result):
+def get_suite(file, result=None):
     modname = finder.module_from_path(file)
     try:
         mod = package_import(modname)
         return mod.test_suite()
     except:
-        result.addError(PseudoTestCase(modname), sys.exc_info())
-        return None
+        if result is not None:
+            result.addError(PseudoTestCase(modname), sys.exc_info())
+            return None
+        raise
 
 def filter_testcases(s, rx):
     new = unittest.TestSuite()
@@ -724,33 +706,99 @@ class TrackRefs:
         self.type2count = type2count
         self.type2all = type2all
 
+def print_doctest_location(err):
+    # This mimicks pdb's output, which gives way cool results in emacs :)
+    filename = err.test.filename
+    if filename.endswith('.pyc'):
+        filename = filename[:-1]
+    print "> %s(%s)_()" % (filename, err.test.lineno+err.example.lineno+1)
+
+def post_mortem(exc_info):
+    from zope.testing import doctest
+    err = exc_info[1]
+    if isinstance(err, (doctest.UnexpectedException, doctest.DocTestFailure)):
+
+        if isinstance(err, doctest.UnexpectedException):
+            exc_info = err.exc_info
+
+            # Print out location info if the error was in a doctest
+            if exc_info[2].tb_frame.f_code.co_filename == '<string>':
+                print_doctest_location(err)
+            
+        else:
+            print_doctest_location(err)
+            # Hm, we have a DocTestFailure exception.  We need to
+            # generate our own traceback
+            try:
+                exec ('raise ValueError'
+                      '("Expected and actual output are different")'
+                      ) in err.test.globs
+            except:
+                exc_info = sys.exc_info()
+        
+    print "%s:" % (exc_info[0], )
+    print exc_info[1]
+    pdb.post_mortem(exc_info[2])
+    sys.exit()
+
+def run_debug(test_or_suite, verbosity):
+    if isinstance(test_or_suite, unittest.TestCase):
+        # test
+        if verbosity > 1:
+            print test_or_suite
+        elif verbosity > 0:
+            print '.',
+
+        try:
+            test_or_suite.debug()
+        except:
+            if DEBUGGER:
+                post_mortem(sys.exc_info())
+            raise
+        return 1
+
+    else:
+        r = 0
+        for t in test_or_suite._tests: # Ick _tests
+            r += run_debug(t, verbosity)
+        return r
+            
 def runner(files, test_filter, debug):
-    runner = ImmediateTestRunner(verbosity=VERBOSE, debug=DEBUG,
-                                 progress=PROGRESS, profile=PROFILE,
-                                 descriptions=False)
+
+    if DEBUG:
+        runner = result = None 
+    else:
+        runner = ImmediateTestRunner(verbosity=VERBOSE,
+                                     progress=PROGRESS, profile=PROFILE,
+                                     descriptions=False)
+        result = runner.result
+
     suite = unittest.TestSuite()
     for file in files:
-        s = get_suite(file, runner.result)
+        try:
+            s = get_suite(file, result)
+        except:
+            if DEBUGGER:
+                post_mortem(sys.exc_info())
+            raise
+            
         # See if the levels match
         dolevel = (LEVEL == 0) or LEVEL >= getattr(s, "level", 0)
         if s is not None and dolevel:
             s = filter_testcases(s, test_filter)
             suite.addTest(s)
-    try:
-        r = runner.run(suite)
-        if TIMESFN:
-            r.print_times(open(TIMESFN, "w"))
-            if VERBOSE:
-                print "Wrote timing data to", TIMESFN
-        if TIMETESTS:
-            r.print_times(sys.stdout, TIMETESTS)
-    except:
-        if DEBUGGER:
-            print "%s:" % (sys.exc_info()[0], )
-            print sys.exc_info()[1]
-            pdb.post_mortem(sys.exc_info()[2])
-        else:
-            raise
+
+    if DEBUG:
+        print "Ran %s tests in debug mode" % run_debug(suite, VERBOSE)
+        return
+
+    r = runner.run(suite)
+    if TIMESFN:
+        r.print_times(open(TIMESFN, "w"))
+        if VERBOSE:
+            print "Wrote timing data to", TIMESFN
+    if TIMETESTS:
+        r.print_times(sys.stdout, TIMETESTS)
 
 def remove_stale_bytecode(arg, dirname, names):
     names = map(os.path.normcase, names)
