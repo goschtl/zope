@@ -213,29 +213,15 @@ class UrlUtilitiesTestCase(unittest.TestCase):
                           cvsloader.parse, "http://www.example.org/")
 
 
-class CvsWorkingDirectoryTestCase(unittest.TestCase):
+class CvsWorkingDirectoryBase(unittest.TestCase):
 
     def setUp(self):
-        self.destination = tempfile.mkdtemp(prefix="test_cvsloader_")
-        self.cvsdir = os.path.join(self.destination, "CVS")
+        self.workingdir = tempfile.mkdtemp(prefix="test-workdir-")
+        self.cvsdir = os.path.join(self.workingdir, "CVS")
         os.mkdir(self.cvsdir)
-        self.filename = os.path.join(self.destination, "file.txt")
-        f = open(self.filename, "w")
-        f.close()
 
     def tearDown(self):
-        shutil.rmtree(self.destination)
-
-    def check(self, filename,
-              type, username, password, host, cvsroot, path, tag):
-        cvsurl = cvsloader.fromPath(filename)
-        self.assertEqual(cvsurl.type, type)
-        self.assertEqual(cvsurl.username, username)
-        self.assertEqual(cvsurl.password, password)
-        self.assertEqual(cvsurl.host, host)
-        self.assertEqual(cvsurl.cvsroot, cvsroot)
-        self.assertEqual(cvsurl.path, path)
-        self.assertEqual(cvsurl.tag, tag)
+        shutil.rmtree(self.workingdir)
 
     def initialize(self, root, repository, tag=None):
         self.writeCvsFile("Root", root + "\n")
@@ -248,13 +234,33 @@ class CvsWorkingDirectoryTestCase(unittest.TestCase):
         f.write(content)
         f.close()
 
+
+class CvsWorkingDirectoryTestCase(CvsWorkingDirectoryBase):
+
+    def setUp(self):
+        super(CvsWorkingDirectoryTestCase, self).setUp()
+        self.filename = os.path.join(self.workingdir, "file.txt")
+        f = open(self.filename, "w")
+        f.close()
+
+    def check(self, filename,
+              type, username, password, host, cvsroot, path, tag):
+        cvsurl = cvsloader.fromPath(filename)
+        self.assertEqual(cvsurl.type, type)
+        self.assertEqual(cvsurl.username, username)
+        self.assertEqual(cvsurl.password, password)
+        self.assertEqual(cvsurl.host, host)
+        self.assertEqual(cvsurl.cvsroot, cvsroot)
+        self.assertEqual(cvsurl.path, path)
+        self.assertEqual(cvsurl.tag, tag)
+
     # tests
 
     def test_without_tag(self):
         self.initialize(":ext:cvs.example.org:/cvsroot",
                         "module/package")
         # Check the directory itself:
-        self.check(self.destination,
+        self.check(self.workingdir,
                    "ext", None, None, "cvs.example.org", "/cvsroot",
                    "module/package/", None)
         # And for a contained file:
@@ -267,7 +273,7 @@ class CvsWorkingDirectoryTestCase(unittest.TestCase):
                         "module/package",
                         "TAG")
         # Check the directory itself:
-        self.check(self.destination,
+        self.check(self.workingdir,
                    "ext", None, None, "cvs.example.org", "/cvsroot",
                    "module/package/", "TAG")
         # And for a contained file:
@@ -278,7 +284,7 @@ class CvsWorkingDirectoryTestCase(unittest.TestCase):
     def test_without_username(self):
         self.initialize(":ext:myuser@cvs.example.org:/cvsroot",
                         "module/package")
-        self.check(self.destination,
+        self.check(self.workingdir,
                    "ext", "myuser", None, "cvs.example.org", "/cvsroot",
                    "module/package/", None)
 
