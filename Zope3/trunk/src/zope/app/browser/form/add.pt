@@ -35,17 +35,16 @@
             <div class="label"><input type="text" style="width:100%" /></div>
         </div>
         <div class="row"
-               metal:define-macro="widget_rows" tal:repeat="widget view/widgets"
-               tal:content="structure widget/row">
-              <div class="label">Name</div>
-              <div class="field"><input type="text" style="width:100%"/>
-              </div>
+            metal:define-macro="widget_rows" tal:repeat="widget view/widgets"
+            tal:content="structure widget/row">
+          <div class="label">Name</div>
+          <div class="field"><input type="text" style="width:100%"/></div>
          </div>
         <div class="separator"></div>
         <div class="row"
-             metal:define-slot="extra_bottom" tal:replace="nothing">
-            <div class="label">Extra bottom</div>
-            <div class="field"><input type="text" style="width:100%" /></div>
+            metal:define-slot="extra_bottom" tal:replace="nothing">
+          <div class="label">Extra bottom</div>
+          <div class="field"><input type="text" style="width:100%" /></div>
         </div>
         <div class="separator"></div>
       </div>
@@ -54,9 +53,9 @@
         <div class="controls">
           <input type="submit" value="Refresh"
               i18n:attributes="value refresh-button" />
-          <input type='submit' name="UPDATE_SUBMIT" value=" Add "
-            i18n:attributes="value add-button"
-            tal:replace="structure context/renderAddButton|default"/> 
+          <input type="submit" name="UPDATE_SUBMIT" value=" Add "
+              i18n:attributes="value add-button"
+              tal:replace="structure view/renderAddButton|default"/> 
         </div>
       </div>
       <div class="separator"></div>
