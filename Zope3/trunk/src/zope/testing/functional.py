@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.10 2003/06/24 16:35:28 mgedmin Exp $
+$Id: functional.py,v 1.11 2003/07/22 09:33:46 ryzaja Exp $
 """
 
 import logging
@@ -42,8 +42,7 @@ __metaclass__ = type
 
 class HTTPTaskStub(StringIO):
 
-    def setAuthUserName(self, user):
-        pass
+    pass
 
 
 class ResponseWrapper:
