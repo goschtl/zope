@@ -148,10 +148,10 @@ Shouldn't the ``implements()`` function on the interface package be
 named ``setImplements()`` as opposed to ``getImplements()``?  This way
 if you write::
 
-    setImplements(klass, interface)
+    setImplements(cls, interface)
 
-it is obvious what you mean (as opposed to ``implements(klass,
-interface)`` which could mean *asking* if ``klass`` implements the
+it is obvious what you mean (as opposed to ``implements(cls,
+interface)`` which could mean *asking* if ``cls`` implements the
 interface.
 
 Clarify and clean up use cases
