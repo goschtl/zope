@@ -43,9 +43,24 @@ PACKAGE_CONF = "INSTALL.cfg"
 
 
 def loadPackageInfo(pkgname, directory, reldir, file=None):
-    if not file:
-        file = PACKAGE_CONF
-    path = os.path.join(directory, file)
+    pkginfo = read_package_info(directory, reldir, file)
+    pkginfo.extensions = [create_extension(ext, pkgname, reldir)
+                          for ext in pkginfo.extension]
+    return pkginfo
+
+
+def loadCollectionInfo(directory, file=None):
+    pkginfo = read_package_info(directory, "", file)
+    if pkginfo.extension:
+        raise ValueError("extensions cannot be defined in collections")
+    pkginfo.extensions = []
+    return pkginfo
+
+
+def read_package_info(directory, reldir, filename):
+    if not filename:
+        filename = PACKAGE_CONF
+    path = os.path.join(directory, filename)
     if os.path.exists(path):
         path = os.path.realpath(path)
         url = "file://" + urllib.pathname2url(path)
@@ -60,12 +75,9 @@ def loadPackageInfo(pkgname, directory, reldir, file=None):
         pkginfo = p.load()
     finally:
         f.close()
-    pkginfo.extensions = [create_extension(ext, pkgname, reldir)
-                          for ext in pkginfo.extension]
-    if reldir:
-        pkginfo.documentation = expand_globs(directory, reldir,
-                                             pkginfo.documentation)
-        pkginfo.script = expand_globs(directory, reldir, pkginfo.script)
+    pkginfo.documentation = expand_globs(directory, reldir,
+                                         pkginfo.documentation)
+    pkginfo.script = expand_globs(directory, reldir, pkginfo.script)
     return pkginfo
 
 
@@ -134,8 +146,10 @@ def expand_globs(directory, reldir, globlist):
             if not filenames:
                 raise ValueError(
                     "filename pattern %r doesn't match any files" % g)
-            results += [posixpath.join(reldir, fn.replace(os.sep, "/"))
-                        for fn in filenames]
+            filenames = [fn.replace(os.sep, "/") for fn in filenames]
+            if reldir:
+                filenames = [posixpath.join(reldir, fn) for fn in filenames]
+            results += filenames
     finally:
         os.chdir(pwd)
     return results

@@ -111,6 +111,42 @@ class PackageInfoTestCase(unittest.TestCase):
         self.assertRaises(cfgparser.ConfigurationError,
                           package.loadPackageInfo, "foo", self.tmpdir, "bar")
 
+    def test_collection_empty_pkginfo(self):
+        self.write_config("# empty configuration file\n")
+        pkginfo = package.loadCollectionInfo(self.tmpdir)
+        eq = self.assertEqual
+        eq(pkginfo.extensions, [])
+        eq(pkginfo.documentation, [])
+        eq(pkginfo.script, [])
+
+    def test_collection_missing_pkginfo(self):
+        pkginfo = package.loadCollectionInfo(self.tmpdir)
+        eq = self.assertEqual
+        eq(pkginfo.extensions, [])
+        eq(pkginfo.documentation, [])
+        eq(pkginfo.script, [])
+
+    def test_collection_pkginfo(self):
+        self.write_config("documentation  doc/*\n"
+                          "script         bin/*.py\n")
+        os.mkdir(os.path.join(self.tmpdir, "doc"))
+        self.write_file(os.path.join("doc", "README.txt"),
+                        "docs go here")
+        os.mkdir(os.path.join(self.tmpdir, "bin"))
+        self.write_file(os.path.join("bin", "runme.py"),
+                        "#!/bin/sh\nexit\n")
+        pkginfo = package.loadCollectionInfo(self.tmpdir)
+        eq = self.assertEqual
+        eq(len(pkginfo.extensions), 0)
+        eq(pkginfo.documentation, ["doc/README.txt"])
+        eq(pkginfo.script, ["bin/runme.py"])
+
+    def test_collection_pkginfo_disallows_extensions(self):
+        self.write_config("<extension foo>\n"
+                          "  source  foo.c\n"
+                          "</extension>\n")
+        self.assertRaises(ValueError, package.loadCollectionInfo, self.tmpdir)
+
 
 def test_suite():
     suite = doctest.DocTestSuite("zpkgtools.package")
