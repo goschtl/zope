@@ -24,7 +24,7 @@ from zope.interface.verify import verifyObject
 from zope.app.onlinehelp import OnlineHelp, IOnlineHelp
 from zope.app.traversing.interfaces import ITraversable, IPhysicallyLocatable
 from zope.app.traversing.interfaces import IContainmentRoot, ITraverser
-from zope.app.location import LocationPhysicallyLocatable
+from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from test_onlinehelptopic import TestOnlineHelpTopic, testdir
 

@@ -25,7 +25,8 @@ passing an object to use as the parent as the second argument to the
 loads() function.  The name of the outermost object is not stored in
 the pickle unless it is stored in the object.
 
->>> root = location.TLocation()
+>>> from zope.app.location.tests import TLocation
+>>> root = TLocation()
 >>> zope.interface.directlyProvides(root, IContainmentRoot)
 >>> o1 = DataLocation('o1', root, 12)
 >>> o2 = DataLocation('o2', root, 24)
@@ -70,6 +71,8 @@ import zope.interface
 from zope.app import location
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
+from zope.app.location.traversing import LocationPhysicallyLocatable
+from zope.app.location.tests import TLocation
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing.interfaces import ITraverser
 
@@ -107,7 +110,7 @@ def loads(data, location, parent=None):
 class ParentPersistentIdGenerator:
     """
 
-    >>> from zope.app.location import TLocation
+    >>> from zope.app.location.tests import TLocation
     >>> root = TLocation()
     >>> zope.interface.directlyProvides(root, IContainmentRoot)
     >>> o1 = TLocation(); o1.__parent__ = root; o1.__name__ = 'o1'
@@ -135,7 +138,7 @@ class ParentPersistentIdGenerator:
     def __init__(self, top):
         self.location = top
         self.parent = getattr(top, "__parent__", None)
-        self.root = location.LocationPhysicallyLocatable(top).getRoot()
+        self.root = LocationPhysicallyLocatable(top).getRoot()
 
     def id(self, object):
         if ILocation.providedBy(object):
@@ -145,7 +148,7 @@ class ParentPersistentIdGenerator:
                 # XXX emit special parent marker
                 return PARENT_MARKER
             elif location.inside(object, self.root):
-                return location.LocationPhysicallyLocatable(object).getPath()
+                return LocationPhysicallyLocatable(object).getPath()
             raise ValueError(
                 "object implementing ILocation found outside tree")
         else:
@@ -155,7 +158,7 @@ class ParentPersistentIdGenerator:
 class PersistentLoader:
 
     def __init__(self, context):
-        locatable = location.LocationPhysicallyLocatable(context)
+        locatable = LocationPhysicallyLocatable(context)
         __traceback_info__ = (context, locatable),
         self.root = locatable.getRoot()
         self.traverse = ITraverser(self.root).traverse
@@ -183,7 +186,7 @@ class ParentPersistentLoader(PersistentLoader):
             return PersistentLoader.load(self, path)
 
 
-class DataLocation(location.TLocation):
+class DataLocation(TLocation):
     """Sample data container class used in doctests."""
 
     def __init__(self, name, parent, data):

@@ -18,7 +18,7 @@ $Id$
 import unittest
 
 from zope.app.traversing.interfaces import IContainmentRoot
-from zope.app.location import TLocation
+from zope.app.location.tests import TLocation
 from zope.app.fssync import fspickle
 from zope.interface import directlyProvides
 

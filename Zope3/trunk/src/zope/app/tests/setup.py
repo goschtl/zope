@@ -49,7 +49,7 @@ from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
-from zope.app.location import LocationPhysicallyLocatable
+from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.traversing.namespace import etc
 
 def setUpTraversal():

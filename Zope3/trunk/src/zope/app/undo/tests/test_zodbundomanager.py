@@ -83,7 +83,7 @@ class Test(PlacelessSetup, TestCase):
         super(Test, self).setUp()
 
         # provide location adapter
-        from zope.app.location import LocationPhysicallyLocatable
+        from zope.app.location.traversing import LocationPhysicallyLocatable
         from zope.app.location.interfaces import ILocation
         from zope.app.traversing.interfaces import IPhysicallyLocatable
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,

@@ -24,7 +24,7 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.app.copypastemove.interfaces import IObjectMover
 from zope.app.copypastemove.interfaces import IObjectCopier
-from zope.app.location import locationCopy
+from zope.app.location.pickling import locationCopy
 from zope.app.container.interfaces import INameChooser
 from zope.app.container.constraints import checkObject
 

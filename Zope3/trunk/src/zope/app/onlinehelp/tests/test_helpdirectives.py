@@ -21,7 +21,7 @@ from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.onlinehelp import tests
 from zope.app.onlinehelp import help
-from zope.app.location import LocationPhysicallyLocatable
+from zope.app.location.traversing import LocationPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
