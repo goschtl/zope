@@ -14,15 +14,14 @@
 """
 Revision information:
 
-$Id: placelesssetup.py,v 1.7 2003/11/21 17:09:32 jim Exp $
+$Id: placelesssetup.py,v 1.8 2004/03/09 12:40:33 srichter Exp $
 """
 
 # A mix-in class inheriting from CleanUp that also connects the CA services
 
 from zope.testing.cleanup import CleanUp
 from zope.component import getServiceManager
-from zope.component.servicenames import Adapters, Utilities
-from zope.component.servicenames import Factories, Presentation
+from zope.component.servicenames import Adapters, Utilities, Presentation
 
 class PlacelessSetup(CleanUp):
     def setUp(self):
@@ -30,12 +29,6 @@ class PlacelessSetup(CleanUp):
         sm = getServiceManager(None)
         defineService = sm.defineService
         provideService = sm.provideService
-
-        # factory service
-        from zope.component.interfaces import IFactoryService
-        defineService(Factories, IFactoryService)
-        from zope.component.factory import factoryService
-        provideService(Factories, factoryService)
 
         # utility service
         from zope.component.interfaces import IUtilityService
