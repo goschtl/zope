@@ -13,9 +13,9 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.8 2003/08/04 11:12:06 jim Exp $
+$Id: fields.py,v 1.9 2003/08/04 16:57:39 philikon Exp $
 """
-import os, re
+import os, re, warnings
 from zope import schema
 from zope.schema.interfaces import IFromUnicode
 from zope.configuration.exceptions import ConfigurationError
@@ -293,15 +293,21 @@ class MessageID(schema.Text):
     >>> context = FauxContext()
     >>> field = MessageID().bind(context)
 
-    We can't do anything if we don't have a domain:
+    There is a fallback domain when no domain has been specified.
+    Suppress warnings so they won't show up when running unit tests.
 
-    >>> i = field.fromUnicode("Hello world!")
-    Traceback (most recent call last):
-    ...
-    ConfigurationError: You must specify a an i18n translation domain
+    >>> import warnings
+    >>> warnings.filterwarnings('ignore')
+
+    >>> i = field.fromUnicode(u"Hello world!")
+    >>> i
+    u'Hello world!'
+    >>> i.domain
+    'untranslated'
 
     With the domain specified:
 
+    >>> context.i18n_strings = {}
     >>> context.i18n_domain = 'testing'
 
     We can get a message id:
@@ -335,8 +341,10 @@ class MessageID(schema.Text):
         context = self.context
         domain = getattr(context, 'i18n_domain', '')
         if not domain:
-            raise ConfigurationError(
-                "You must specify a an i18n translation domain")
+            domain = 'untranslated'
+            warnings.warn(
+                "You did not specify an i18n translation domain for the "\
+                "'%s' field in %s" % (self.getName(), context.info ))
         v = super(MessageID, self).fromUnicode(u)
 
         # Record the string we got for the domain
