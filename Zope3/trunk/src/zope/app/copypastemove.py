@@ -14,10 +14,11 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.14 2003/12/11 12:06:10 jace Exp $
+$Id: copypastemove.py,v 1.15 2004/02/20 16:56:47 fdrake Exp $
 """
 
 from zope.app import zapi
+from zope.app.container.sample import SampleContainer
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCopiedEvent
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -40,17 +41,10 @@ class ObjectMover:
     The contained object should implement IContained.  It should be
     contained in a container that has an adapter to INameChooser.
 
-    >>> from zope.app.container.sample import SampleContainer
-    >>> class SampleContainer(SampleContainer):
-    ...     implements(INameChooser)
-    ...     def chooseName(self, name, ob):
-    ...        while name in self:
-    ...           name += '_'
-    ...        return name
 
     >>> from zope.app.container.contained import Contained
     >>> ob = Contained()
-    >>> container = SampleContainer()
+    >>> container = ExampleContainer()
     >>> container[u'foo'] = ob
     >>> mover = ObjectMover(ob)
 
@@ -64,7 +58,7 @@ class ObjectMover:
     ask is whether we can move to a particular container. Right now,
     we can always move to a container of the same class:
 
-    >>> container2 = SampleContainer()
+    >>> container2 = ExampleContainer()
     >>> mover.moveableTo(container2)
     1
     >>> mover.moveableTo({})
@@ -225,17 +219,9 @@ class ObjectCopier:
     The contained object should implement IContained.  It should be
     contained in a container that has an adapter to INameChooser.
 
-    >>> from zope.app.container.sample import SampleContainer
-    >>> class SampleContainer(SampleContainer):
-    ...     implements(INameChooser)
-    ...     def chooseName(self, name, ob):
-    ...        while name in self:
-    ...           name += '_'
-    ...        return name
-
     >>> from zope.app.container.contained import Contained
     >>> ob = Contained()
-    >>> container = SampleContainer()
+    >>> container = ExampleContainer()
     >>> container[u'foo'] = ob
     >>> copier = ObjectCopier(ob)
 
@@ -249,7 +235,7 @@ class ObjectCopier:
     ask is whether we can copy to a particular container. Right now,
     we can always copy to a container of the same class:
 
-    >>> container2 = SampleContainer()
+    >>> container2 = ExampleContainer()
     >>> copier.copyableTo(container2)
     1
     >>> copier.copyableTo({})
@@ -459,3 +445,13 @@ def rename(container, oldid, newid):
 
     if mover.moveable() and mover.moveableTo(container, newid):
         mover.moveTo(container, newid)
+
+class ExampleContainer(SampleContainer):
+    # Sample container used for examples in doc stringss in this module
+
+    implements(INameChooser)
+
+    def chooseName(self, name, ob):
+       while name in self:
+          name += '_'
+       return name
