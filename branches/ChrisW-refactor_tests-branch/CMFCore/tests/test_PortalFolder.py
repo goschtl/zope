@@ -1,5 +1,12 @@
 import Zope
-import unittest
+from unittest import TestCase, TestSuite, makeSuite, main
+
+from Products.CMFCore.tests.base.security import \
+     OmnipotentUser, PermissiveSecurityPolicy
+
+from Products.CMFCore.tests.base.dummy import \
+     DummyContent
+
 import re, new
 import OFS.Folder, OFS.SimpleItem
 from AccessControl import SecurityManager
@@ -11,81 +18,18 @@ from Products.CMFCore.CatalogTool import CatalogTool
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.PortalFolder import *
 
-class UnitTestSecurityPolicy:
-    """
-        Stub out the existing security policy for unit testing purposes.
-    """
-    #
-    #   Standard SecurityPolicy interface
-    #
-    def validate( self
-                , accessed=None
-                , container=None
-                , name=None
-                , value=None
-                , context=None
-                , roles=None
-                , *args
-                , **kw):
-        return 1
-    
-    def checkPermission( self, permission, object, context) :
-        return 1
-
-class UnitTestUser( Acquisition.Implicit ):
-    """
-        Stubbed out manager for unit testing purposes.
-    """
-    def getId( self ):
-        return 'unit_tester'
-    
-    getUserName = getId
-
-    def allowed( self, object, object_roles=None ):
-        return 1
-
-class DummyContent( PortalContent, OFS.SimpleItem.Item ):
-    """
-    """
-    meta_type = 'Dummy'
-    after_add_called = before_delete_called = 0
-
-    def __init__( self, id, catalog=0 ):
-        self.id = id
-        self.reset()
-        self.catalog = catalog
-
-    def manage_afterAdd( self, item, container ):
-        self.after_add_called = 1
-        if self.catalog:
-            PortalContent.manage_afterAdd( self, item, container )
-
-    def manage_beforeDelete( self, item, container ):
-        self.before_delete_called = 1
-        if self.catalog:
-            PortalContent.manage_beforeDelete( self, item, container )
-    
-    def reset( self ):
-        self.after_add_called = self.before_delete_called = 0
-
-    # WAAAAAAAAA!  we don't want the Database export/import crap in the way.
-    def _getCopy( self, container ):
-        return DummyContent( self.id, self.catalog )
-
-
-
 def extra_meta_types():
     return [  { 'name' : 'Dummy', 'action' : 'manage_addFolder' } ]
 
-class PortalFolderTests( unittest.TestCase ):
+class PortalFolderTests( TestCase ):
 
     def setUp( self ):
         get_transaction().begin()
-        self._policy = UnitTestSecurityPolicy()
+        self._policy = PermissiveSecurityPolicy()
         self._oldPolicy = SecurityManager.setSecurityPolicy(self._policy)
         self.connection = Zope.DB.open()
         self.root = root = self.connection.root()[ 'Application' ]
-        newSecurityManager( None, UnitTestUser().__of__( self.root ) )
+        newSecurityManager( None, OmnipotentUser().__of__( self.root ) )
         try: root._delObject('test')
         except AttributeError: pass
         root._setObject( 'test', PortalFolder( 'test','' ) )
@@ -144,7 +88,7 @@ class PortalFolderTests( unittest.TestCase ):
         catalog = self.root.portal_catalog
         assert len( catalog ) == 0
 
-        test._setObject( 'foo', DummyContent( 'foo' , 1 ) )
+        test._setObject( 'foo', DummyContent( 'foo' , catalog=1 ) )
         foo = test.foo
         assert foo.after_add_called
         assert not foo.before_delete_called
@@ -175,7 +119,7 @@ class PortalFolderTests( unittest.TestCase ):
         test._setObject( 'sub', PortalFolder( 'sub', '' ) )
         sub = test.sub
 
-        sub._setObject( 'foo', DummyContent( 'foo', 1 ) )
+        sub._setObject( 'foo', DummyContent( 'foo', catalog=1 ) )
         foo = sub.foo
 
         assert foo.after_add_called
@@ -207,7 +151,7 @@ class PortalFolderTests( unittest.TestCase ):
         folder._setObject( 'sub', PortalFolder( 'sub', '' ) )
         sub = folder.sub
 
-        sub._setObject( 'foo', DummyContent( 'foo', 1 ) )
+        sub._setObject( 'foo', DummyContent( 'foo', catalog=1 ) )
         foo = sub.foo
         assert len( catalog ) == 1
         assert 'foo' in catalog.uniqueValuesFor( 'id' )
@@ -218,7 +162,7 @@ class PortalFolderTests( unittest.TestCase ):
         assert len( catalog ) == 1
         assert has_path( catalog._catalog, '/test/folder/new_sub/foo' )
 
-        folder._setObject( 'bar', DummyContent( 'bar', 1 ) )
+        folder._setObject( 'bar', DummyContent( 'bar', catalog=1 ) )
         bar = folder.bar
         assert 'bar' in catalog.uniqueValuesFor( 'id' )
         assert len( catalog ) == 2
@@ -329,7 +273,7 @@ class PortalFolderTests( unittest.TestCase ):
         test._setObject( 'sub3', PortalFolder( 'sub3', '' ) )
         sub3 = test.sub3
 
-        sub1._setObject( 'dummy', DummyContent( 'dummy', 1 ) )
+        sub1._setObject( 'dummy', DummyContent( 'dummy', catalog=1 ) )
         assert 'dummy' in sub1.objectIds()
         assert 'dummy' in sub1.contentIds()
         assert not 'dummy' in sub2.objectIds()
@@ -398,15 +342,15 @@ class LimitedUnitTestUser( Acquisition.Implicit ):
             object_roles = ()
         return 'Member' in object_roles
 
-class PortalFolderPermissionTests( unittest.TestCase ):
+class PortalFolderPermissionTests( TestCase ):
 
     def setUp( self ):
         get_transaction().begin()
-        self._policy = UnitTestSecurityPolicy()
+        self._policy = PermissiveSecurityPolicy()
         self._oldPolicy = SecurityManager.setSecurityPolicy(self._policy)
         self.connection = Zope.DB.open()
         self.root = self.connection.root()[ 'Application' ]
-        self.manager = UnitTestUser().__of__( self.root )
+        self.manager = OmnipotentUser().__of__( self.root )
         self.member = LimitedUnitTestUser().__of__( self.root )
         self.root._setObject( 'folder', PortalFolder( 'folder', '' ) )
         self.folder = self.root.folder
@@ -445,7 +389,7 @@ class DummyContentWithMetadata( DummyContent ):
     def Type( self ):
         return 'Dummy Content'
 
-class ContentFilterTests( unittest.TestCase ):
+class ContentFilterTests( TestCase ):
 
     def setUp( self ):
         get_transaction().begin()
@@ -655,14 +599,11 @@ class ContentFilterTests( unittest.TestCase ):
         assert 'Title: foo' in lines
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest( unittest.makeSuite( PortalFolderTests ) )
-    suite.addTest( unittest.makeSuite( PortalFolderPermissionTests ) )
-    suite.addTest( unittest.makeSuite( ContentFilterTests ) )
-    return suite
-
-def run():
-    unittest.TextTestRunner().run(test_suite())
+    return TestSuite((
+        makeSuite( PortalFolderTests ),
+        makeSuite( PortalFolderPermissionTests ),
+        makeSuite( ContentFilterTests ),
+        ))
 
 if __name__ == '__main__':
-    run()
+    main(defaultTest='test_suite')

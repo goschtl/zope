@@ -19,12 +19,33 @@ class DummyContent( PortalContent, Item ):
     A Dummy piece of PortalContent
     """
     meta_type = 'Dummy'
+    after_add_called = before_delete_called = 0
 
     def __init__( self, id='dummy', *args, **kw ):
         self.id = id
         self._args = args
         self._kw = {}
         self._kw.update( kw )
+
+        self.reset()
+        self.catalog = kw.get('catalog',0)
+
+    def manage_afterAdd( self, item, container ):
+        self.after_add_called = 1
+        if self.catalog:
+            PortalContent.manage_afterAdd( self, item, container )
+
+    def manage_beforeDelete( self, item, container ):
+        self.before_delete_called = 1
+        if self.catalog:
+            PortalContent.manage_beforeDelete( self, item, container )
+    
+    def reset( self ):
+        self.after_add_called = self.before_delete_called = 0
+
+    # WAAAAAAAAA!  we don't want the Database export/import crap in the way.
+    def _getCopy( self, container ):        
+        return DummyContent( self.id, catalog=self.catalog )
 
 def addDummy( self, id ):
     """

@@ -16,7 +16,7 @@ from Products.CMFCore.tests.base.security import \
      OmnipotentUser, UserWithRoles
 from Products.CMFCore.tests.base.dummy import \
      DummyMethod, DummyContent, addDummy, DummyTypeInfo,\
-     DummyFactory, DummyFolder
+     DummyFolder
 
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
