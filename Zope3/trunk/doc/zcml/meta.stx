@@ -1,0 +1,304 @@
+The Meta Configuration System
+
+  Meta configuration is the configuration of the configuration
+  system.  In the case of zcml, this means using the "bootstrap"
+  zcml configuration directives to define the configuration directives
+  that will actually be used to configure the system.
+
+  The Meta Configuration Directives
+
+    The "bootstrap" directives are 'directives', 'directive', and
+    'subdirective'.  We'll use a shortened version of the
+    meta-configuration for the Zope StartUp system to explain the
+    concepts::
+
+      <ZopeConfigure xmlns='http://namespaces.zope.org/zope">
+      <directives namespace="http://namespaces.zope.org/startup">
+        <directive
+            name="registerRequestFactory"
+            attributes="name publication request"
+            handler="Zope.StartUp.metaConfigure.registerRequestFactory" />
+        <directive
+            name="defineSite"
+            attributes="name threads"
+            handler="Zope.Startup.metaConfigure.defineSite">
+          <subdirective name="useFileStorage" attributes="file" />
+          <subdirective name="useMappingStorage" />
+        </directive>
+      </directives>
+      </ZopeConfigure>
+
+    The ZopeConfigure is the standard boilerplate.  Inside this we
+    have a 'directives' directive.  This directive basically gives
+    us a place to declare the namespace the contained directives
+    will be in so we don't have to repeat it on each directive
+    declaration.  The namespace attribute gives the XML namespace
+    for the directives.  You do not have to use 'directives',
+    'directive' is also valid as a top level directive, although
+    in that case the 'namespace' attribute is required rather
+    than optional.
+
+    The first example directive directive defines a directive that
+    has no subdirectives.  The 'name' attribute gives the name of
+    the directive.  So in this case we are defining the
+    'registerRequestFactory' directive.  Combining the namespace
+    with this name, this means we are defining a directive that
+    would look something like this when used::
+
+      <ZopeConfigure
+          xmlns='http://namespaces.zope.org/zope"
+          startup='http://namespaces.zope.org/startup"
+      >
+      <startup:registerRequestFactory ....>
+      </ZopeConfigure>
+
+    The "attributes" attribute of the directive directive allows
+    us to fill in the "...." in the example above.  It lists the
+    names of the attributes that will be valid for this directive.
+    So this meta-configuration is saying that the registerRequestFactory
+    directive can have attributes named 'name', 'publication', or
+    'request'.
+
+    The directive we are defining can thus look something like this
+    when used::
+
+      <ZopeConfigure
+          xmlns='http://namespaces.zope.org/zope"
+          startup='http://namespaces.zope.org/startup"
+      >
+      <startup:registerRequestFactory
+          name="VFSRequestFactory"
+          publication="Zope.App.Publication.VFS.Publication.VFSPublication"
+          request="Zope.Publisher.VFS.VFSRequest." />
+      </ZopeConfigure>
+
+    Which attributes are optional and which are required is controlled
+    by the python code that implements the directive.
+
+    The 'handler' attribute is what defines which python code will
+    handle the directive.  It must be a resolvable name following
+    the standard zcml rules.
+
+    The second directive example shows how to define a directive
+    that can take subdirectives.  Subdirectives are only meaningful
+    when they appear inside their enclosing directive, and in fact
+    each directive is effectively its own namespace from this point
+    of view.
+
+    There is no need to specify a handler method explicitly for a
+    subdirective.  By default, the configuration system will look
+    for a method with the same name as the subdirective on an object
+    specified by the handler for the enclosing directive.  If this
+    is not correct, and the handler method is named something else,
+    you can use the 'handler_method' attribute to specify the correct
+    name to be looked up.
+
+    Note that subdirectives may have subdirectives.
+
+    So, given the zcml above, we have defined a directive and
+    subdirective that would look something like this when used::
+
+      <ZopeConfigure
+          xmlns='http://namespaces.zope.org/zope"
+          startup='http://namespaces.zope.org/startup"
+      >
+      <startup:defineSite name="Zope 3 Default" threads="4">
+        <startup:useFileStorage file="Data.fs">
+      </startup:defineSite>
+      </ZopeConfigure>
+
+
+  How Configuration Directives Become Actions
+
+    When the configuration system processes configuration directives,
+    it calls the handlers for each directive or subdirective it
+    encounters.  But the handler method is *not* responsible for
+    taking whatever action it is that the directive is supposed to
+    accomplish.  Instead, the handler is responsible for the
+    generation of a list of "actions" accompanied by "discriminators".
+    The configuration system uses the discriminators to resolve
+    conflicts between directives.  (Recall that in case of conflict,
+    an action returned by an included file will be overridden, while
+    conflicts generated within the same file will be treated as
+    errors.)
+
+    An "action" is a python tuple with the following elements
+    (IEmptyDirective is the canonical source for this definition)::
+
+      - the discriminator
+
+      - a callable object
+
+      - an argument tuple
+
+      - an optional keyword argument dictionary
+
+    Once conflict resolution has been done, the configuration system
+    processes the actions one by one by calling each callable and
+    passing it the provided argument tuple and keyword dictionary.
+
+    Thus, to implement directives, we implement handlers that manage
+    the generation of action tuples encoding the calls to the methods
+    that will actually perform the configuration actions.
+
+    To aid python code in generating correctly formed Actions, there
+    is an Action function defined in Zope.Configuration.Action.  It
+    takes four keyword arguments, 'discriminator', 'callable', 'args',
+    and 'kw', which have the obvious meanings, and returns a properly
+    arranged tuple.
+
+
+  Implementing Directives with No Subdirectives
+
+    The simplist type of directive (or subdirective) to implement
+    is one that has no subdirectives.  And the only difference
+    between to two is where the handler method is actually located.
+    In both cases, the handler must conform to the IEmptyDirective
+    interface.  That interface mandates that when called, the handler
+    will return a list of actions.  So, our registerRequestFactory
+    directive above might have implementation code that looks
+    something like this::
+
+      from Zope.Configuration.Action import Action
+      from Zope.StartUp.RequestFactory import RequestFactory
+      def registerRequestFactory(_context, name, publication, request):
+        publication = _context.resolve(publication)
+        request = _context.resolve(request)
+        return [
+            Action(
+                discriminator = ('startup:registerRequestFactory', name),
+                callable = RequestFactoryRegistry.registerRequestFactory
+                args = (name, publication, request),
+            )
+        ]
+      registerRequestFactory.__implements__ = IEmptyDirective
+
+    The first argument passed to the handler is an "execution
+    context".  The most important method it provides is 'resolve',
+    which will take a dotted string and resolve it into a python
+    object using the standard zcml rules.  This method uses it to
+    turn the values of the directive's publication and request
+    attributes into python objects.  The callable for the action
+    is obtained from one of the other modules in the package.  It's
+    the code that will do the actual setup work this directive is
+    intended to accomplish.  The values of the 'name', 'publication',
+    and 'request' attributes, in resolved form, are included in the
+    Action to be passed to it as arguments.
+
+    Note that we include the name of the directive, including the
+    conventional short form of its namespace name, as part of a
+    tuple to be used as the discriminator.  This gives us reasonable
+    assurance that this discriminator will match only other instances
+    of registerRequestFactory directives that the configuration
+    user might be specifying as overrides.  The discriminator is
+    arbitrary, but the programmer needs to take care that it is
+    exactly as unique as it needs to be within the set of all actions
+    the configuration system may need to deal with.
+
+    Also note that by using positional arguments only we have made
+    all the attributes required.  If any are omitted from the
+    directive, python will complain about missing arguments.  Making
+    an argument a keyword argument makes the correspondingly named
+    attribute optional.
+
+  Implementing Directives that have Subdirectives
+
+    The handler for a directive that has subdirectives must conform
+    to the INonEmptyDirective Interface.  This means that when
+    called it must return an object that implements the
+    ISubdirectiveHandler Interface.
+
+    When a subdirective is defined, a handler method for the
+    subdirective is either specified or defaults to the name of the
+    subdirective.  This handler will be looked up on the
+    ISubdirectiveHandler that the INonEmptyDirective returns.
+
+    When a directive with subdirectives is processed, first the
+    INonEmptyDirective is called to get the ISubdirectiveHandler.
+    Then each subdirective is processed by calling the appropriate
+    method on the ISubdirectiveHandler.  Finally, the ISubdirectiveHandler
+    itself is called, to give it an opportunity to specify
+    directive-level actions (it does not have to, it can return an
+    empty action list).
+
+    The easiest way to implement an INonEmptyDirective is to create
+    a class with the subdirective methods and a '__call__' method
+    on it.  'Calling' the class (that is, instantiating an instance)
+    then results in an object that implements ISubdirectiveHandler.
+
+    For example, 'Zope.Startup.metaConfigure.defineSite' might be
+    defined as follows::
+
+        from Zope.StartUp.SiteDefinition import SiteDefinition
+        class defineSite:
+
+            __class_implements__ = INonEmptyDirective
+            __implements__ = ISubdirectiveHandler
+
+            def __init__(self, _context, name="default" threads=4):
+                SiteDefinition.registerSite(name)
+                self._name = name
+                self._threads = int(threads)
+
+            def useFileStorage(self, _context, file=DEFAULT_STORAGE_FILE):
+                return [
+                    Action(
+                        discriminator=('startup:defineSite','storage',name),
+                        callable=SiteDefinition.useFileStorage,
+                        args=(self._name,file,)
+                    )
+                ]
+
+            def useMappingStorage(self, _context):
+                return [
+                    Action(
+                        discriminator=('startup:defineSite','storage',name),
+                        callable=SiteDefinition.useMappingStorage,
+                        args=(self._name,)
+                    )
+                ]
+
+            def __call__(self):
+                return [
+                    Action(
+                        discriminator=('startup:defineSite','threads',name),
+                        callable=SiteDefinition.setThreads,
+                        args=self._name,self._threads)
+                    )
+                ]
+
+    The two implements equates document the fact that the class
+    implements INonEmptyDirective, while the objects returned by
+    it implement ISubdirectiveHandler.
+
+    In the init, we save the attribute information we've been passed
+    so we can use it both in processing the subdirectives and in
+    the actions returned by the final call.  We also call the object
+    that manages the actual configuration to tell it to initialize
+    a configuration for the site that has been named.  (Note: an
+    alternative implementation would be to make the ISubdireciveHandler
+    a singleton, in which case it could store the configuration
+    information directly on itself).
+
+    The two subdirective methods use the same discriminator, and
+    the name of the site being defined is included in the discriminator.
+    This means that a given site can only use one or the other
+    storage.  If both subdirectives are specified for the same site
+    in the same configuration file, we'll get a configuration error.
+    On the other hand, if one storage is specified in a given
+    configuration file, but the configuration file that includes
+    it (or some file above it) specifies a different storage, then
+    the conflict resolution will allow the upper level file to
+    override the lower.
+
+    The action method returned by the storage directives will
+    actually set the configuration to the specified storage type.
+    Only the storage setting action that has made it through conflict
+    resolution will get executed.
+
+    The '__call__' method of the ISubdirectiveHandler returns an
+    action that will tell the configuration object to set the thread
+    count for the site being defined.  Again, if a site definition
+    in an included file specifies a thread count, it will get
+    overridden by a site definition in an upper level file because
+    of the discriminator conflict resolution.
