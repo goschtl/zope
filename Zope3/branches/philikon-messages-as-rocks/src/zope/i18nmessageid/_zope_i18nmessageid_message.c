@@ -152,11 +152,11 @@ Message_reduce(Message *self)
   value = PyObject_CallFunctionObjArgs((PyObject *)&PyUnicode_Type, self, NULL);
   if (value == NULL)
     return NULL;
-  result = Py_BuildValue("O(OOOO)", self->base.ob_type,
+  result = Py_BuildValue("(O(OOOO))", self->base.ob_type,
 			 value,
-			 self->domain || Py_None,
-			 self->default_ || Py_None,
-			 self->mapping || Py_None);
+			 self->domain ? self->domain : Py_None,
+			 self->default_ ? self->default_ : Py_None,
+			 self->mapping ? self->mapping : Py_None);
   Py_DECREF(value);
   return result;
 }
