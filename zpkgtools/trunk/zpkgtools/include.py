@@ -157,7 +157,7 @@ class InclusionProcessor:
             spec = Specification(self.source)
         self.copyTree(spec.source, self.destination, spec.excludes)
         for relpath, source in spec.includes.iteritems():
-            self.addSingleInclude(relpath, source)
+            self.addSingleInclude(relpath, source, self.destination)
 
     def copyTree(self, source, destination, excludes={}):
         """Populate the destination tree from the source tree.
@@ -242,18 +242,18 @@ class InclusionProcessor:
                 return
         raise ValueError("no manifest for %s" % destination)
 
-    def addSingleInclude(self, relpath, source):
+    def addSingleInclude(self, relpath, source, destination):
         dirname, basename = os.path.split(relpath)
         if dirname:
-            destdir = os.path.join(self.destination, dirname)
+            destdir = os.path.join(destination, dirname)
             if not os.path.exists(destdir):
                 os.makedirs(destdir)
         else:
             # Known to exist, so no need to create it.
-            destdir = self.destination
+            destdir = destination
 
         # This is what we want to create:
-        destination = os.path.join(destdir, basename)
+        destdir = os.path.join(destdir, basename)
 
         try:
             cvsurl = cvsloader.parse(source)
@@ -262,15 +262,15 @@ class InclusionProcessor:
             type, rest = urllib.splittype(source)
             if type:
                 # some sort of URL
-                self.includeFromUrl(source, destination)
+                self.includeFromUrl(source, destdir)
             else:
                 # local path
                 self.includeFromLocalTree(os.path.join(self.source, source),
-                                          destination)
+                                          destdir)
         else:
             if isinstance(cvsurl, cvsloader.RepositoryUrl):
                 raise InclusionError("can't load from repository: URL")
-            self.includeFromCvs(cvsurl, destination)
+            self.includeFromCvs(cvsurl, destdir)
 
     def includeFromLocalTree(self, source, destination):
         # Check for file-ness here since copyTree() doesn't handle

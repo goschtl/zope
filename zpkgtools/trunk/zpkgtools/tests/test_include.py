@@ -156,7 +156,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.start_including_from_cvs_url()
         self.processor.addSingleInclude(
             "somedir",
-            "cvs://cvs.zope.org:pserver/cvs-repository:Zope3")
+            "cvs://cvs.zope.org:pserver/cvs-repository:Zope3",
+            self.destination)
         cvsurl, destination = self.args
         self.assertEqual(cvsurl.getUrl(),
                          "cvs://cvs.zope.org:pserver/cvs-repository:Zope3")
@@ -167,7 +168,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.start_including_from_cvs_url()
         self.processor.addSingleInclude(
             "somedir",
-            "cvs://cvs.zope.org:pserver/cvs-repository:Zope3")
+            "cvs://cvs.zope.org:pserver/cvs-repository:Zope3",
+            self.destination)
         cvsurl, destination = self.args
         self.assertEqual(cvsurl.getUrl(),
                          "cvs://cvs.zope.org:pserver/cvs-repository:Zope3")
@@ -189,7 +191,9 @@ class InclusionProcessorTestCase(unittest.TestCase):
         # for the InclusionProcessor.
         self.assertRaises(include.InclusionError,
                           self.processor.addSingleInclude,
-                          "somedir", "repository:somedir:TAG")
+                          "somedir",
+                          "repository:somedir:TAG",
+                          self.destination)
 
     def test_including_from_url(self):
         URL = "http://www.example.org/"
@@ -201,7 +205,9 @@ class InclusionProcessorTestCase(unittest.TestCase):
             return StringIO("my_urlopen_data\n")
         urllib2.urlopen = my_urlopen
         try:
-            self.processor.addSingleInclude("somefile.txt", URL)
+            self.processor.addSingleInclude("somefile.txt",
+                                            URL,
+                                            self.destination)
         finally:
             urllib2.urlopen = old_urlopen
         self.assert_(self.called)
@@ -220,7 +226,9 @@ class InclusionProcessorTestCase(unittest.TestCase):
             "not expected to load from CVS")
         self.processor.includeFromUrl = lambda src, dst: self.fail(
             "not expected to load via URL")
-        self.processor.addSingleInclude("foo/splat.txt", FILENAME)
+        self.processor.addSingleInclude("foo/splat.txt",
+                                        FILENAME,
+                                        self.destination)
         sourcefile = os.path.join(self.source, FILENAME)
         resultfile = os.path.join(self.destination, "foo", "splat.txt")
         self.assert_(os.path.isfile(resultfile))
