@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.11 2004/03/05 22:09:02 jim Exp $
+$Id: objectevent.py,v 1.12 2004/03/15 20:41:42 jim Exp $
 """
 
 __metaclass__ = type
@@ -26,8 +26,7 @@ from zope.app.event.interfaces import IObjectContentModifiedEvent
 from zope.app.event.interfaces import ISubscriber
 from zope.interface import implements
 from zope.app.event import publish
-from zope.component import querySubscriptionMultiAdapter
-from zope.component import getService
+from zope.app import zapi
 
 _marker = object()
 
@@ -80,8 +79,7 @@ class ObjectEventNotifier:
 
     def notify(self, event):
         assert IObjectEvent.providedBy(event)
-        adapters = querySubscriptionMultiAdapter((event.object, event),
-                                                 ISubscriber, context=None)
+        adapters = zapi.subscribers((event.object, event), ISubscriber)
         for adapter in adapters:
             adapter.notify(event)
 
@@ -94,8 +92,8 @@ def objectEventCallbackHelper(callback):
     callback will be called with an ObjectEvent instance. Example usage:
 
     factory = objectEventCallbackHelper(events.append)
-    getService(None, Adapters).provideSubscriptionAdapter(
-        MyObjectType, ISubscriber, [factory], with=[IObjectRemovedEvent]
+    getService(None, Adapters).subscribe(
+        [MyObjectType, IObjectRemovedEvent], ISubscriber, factory
     )
     """
     class _CallbackHelper:

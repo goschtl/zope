@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_objectevent.py,v 1.8 2004/03/13 23:55:00 srichter Exp $
+$Id: test_objectevent.py,v 1.9 2004/03/15 20:41:43 jim Exp $
 """
 
 import unittest
@@ -61,8 +61,8 @@ class TestObjectEventNotifications(unittest.TestCase):
         events = []
 
         factory = objectevent.objectEventCallbackHelper(events.append)
-        getService(None, Adapters).provideSubscriptionAdapter(
-            IContained, ISubscriber, [factory], with=[IObjectRemovedEvent]
+        getService(None, Adapters).subscribe(
+            [IContained, IObjectRemovedEvent], ISubscriber, factory
         )
 
         item = Contained()
@@ -99,8 +99,8 @@ class TestObjectEventNotifications(unittest.TestCase):
             raise Veto
 
         factory = objectevent.objectEventCallbackHelper(callback)
-        getService(None, Adapters).provideSubscriptionAdapter(
-            IContained, ISubscriber, [factory], with=[IObjectRemovedEvent]
+        getService(None, Adapters).subscribe(
+            [IContained, IObjectRemovedEvent], ISubscriber, factory
         )
 
         # del container['Fred'] will fire an ObjectRemovedEvent event.
