@@ -164,7 +164,7 @@ def _format_time(hh, mm, ss, us):
 
 # Correctly substitute for %z and %Z escapes in strftime formats.
 def _wrap_strftime(object, format, timetuple):
-    # Don't call utcoffset() or tzname() unless actually needed.
+    # Don't call _utcoffset() or tzname() unless actually needed.
     zreplace = None # the string to use for %z
     Zreplace = None # the string to use for %Z
 
@@ -182,8 +182,8 @@ def _wrap_strftime(object, format, timetuple):
                 if ch == 'z':
                     if zreplace is None:
                         zreplace = ""
-                        if hasattr(object, "utcoffset"):
-                            offset = object.utcoffset()
+                        if hasattr(object, "_utcoffset"):
+                            offset = object._utcoffset()
                             if offset is not None:
                                 sign = '+'
                                 if offset < 0:
@@ -217,20 +217,40 @@ def _call_tzinfo_method(self, tzinfo, methname):
         return None
     return getattr(tzinfo, methname)(self)
 
-def _check_utc_offset(name, offset):
-    if offset is None:
-        return
-    if not isinstance(offset, (int, long, timedelta)):
-        raise TypeError("tzinfo.%s() must return None, integer "
-                        "or timedelta, not '%s'" % (name, type(offset)))
-    if -1440 < offset < 1440:
-        return
-    raise ValueError("%s()=%d, must be in -1439..1439" % (name, offset))
-
+# Just raise TypeError if the arg isn't None or a string.
 def _check_tzname(name):
     if name is not None and not isinstance(name, str):
         raise TypeError("tzinfo.tzname() must return None or string, "
                         "not '%s'" % type(name))
+
+# name is the offset-producing method, "utcoffset" or "dst".
+# offset is what it returned.
+# If offset isn't None, int, long, or timedelta, raises TypeError.
+# If offset is None, returns None.
+# Else offset is checked for being in range, and a whole # of minutes.
+# If it is, its integer value is returned.  Else ValueError is raised.
+def _check_utc_offset(name, offset):
+    assert name in ("utcoffset", "dst")
+    if offset is None:
+        return None
+    if not isinstance(offset, (int, long, timedelta)):
+        raise TypeError("tzinfo.%s() must return None, integer "
+                        "or timedelta, not '%s'" % (name, type(offset)))
+    if isinstance(offset, timedelta):
+        days = offset.days
+        if days < -1 or days > 0:
+            offset = 1440  # trigger out-of-range
+        else:
+            seconds = days * 86400 + offset.seconds
+            minutes, seconds = divmod(seconds, 60)
+            if seconds or offset.microseconds:
+                raise ValueError("tzinfo.%s() must return a whole number "
+                                 "of minutes" % name)
+            offset = minutes
+    if -1440 < offset < 1440:
+        return offset
+    raise ValueError("%s()=%d, must be in -1439..1439" % (name, offset))
+
 
 # This is a start at a struct tm workalike.  Goals:
 #
@@ -1007,8 +1027,8 @@ class timetz(time):
             ottz = other.__tzinfo
         if mytz is ottz:
             return supercmp(other)
-        myoff = self.utcoffset()
-        otoff = other.utcoffset()
+        myoff = self._utcoffset()
+        otoff = other._utcoffset()
         if myoff == otoff:
             return supercmp(other)
         if myoff is None or otoff is None:
@@ -1020,7 +1040,7 @@ class timetz(time):
 
     def __hash__(self):
         """Hash."""
-        tzoff = self.utcoffset()
+        tzoff = self._utcoffset()
         if not tzoff: # zero or None!
             return super(timetz, self).__hash__()
         h, m = divmod(self.hour * 60 + self.minute - tzoff, 60)
@@ -1034,7 +1054,7 @@ class timetz(time):
 
     def _tzstr(self, sep=":"):
         """Return formatted timezone offset (+xx:xx) or None."""
-        off = self.utcoffset()
+        off = self._utcoffset()
         if off is not None:
             if off < 0:
                 sign = "-"
@@ -1042,8 +1062,7 @@ class timetz(time):
             else:
                 sign = "+"
             hh, mm = divmod(off, 60)
-            if hh >= 24:
-                raise ValueError("utcoffset must be in -1439 .. 1439")
+            assert 0 <= hh < 24
             off = "%s%02d%s%02d" % (sign, hh, sep, mm)
         return off
 
@@ -1074,7 +1093,15 @@ class timetz(time):
         """Return the timezone offset in minutes east of UTC (negative west of
         UTC)."""
         offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
-        _check_utc_offset("utcoffset", offset)
+        offset = _check_utc_offset("utcoffset", offset)
+        if offset is not None:
+            offset = timedelta(minutes=offset)
+        return offset
+
+    # Return an integer (or None) instead of a timedelta (or None).
+    def _utcoffset(self):
+        offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
+        offset = _check_utc_offset("utcoffset", offset)
         return offset
 
     def tzname(self):
@@ -1098,13 +1125,21 @@ class timetz(time):
         info.
         """
         offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
-        _check_utc_offset("dst", offset)
+        offset = _check_utc_offset("dst", offset)
+        if offset is not None:
+            offset = timedelta(minutes=offset)
+        return offset
+
+    # Return an integer (or None) instead of a timedelta (or None).
+    def _dst(self):
+        offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
+        offset = _check_utc_offset("dst", offset)
         return offset
 
     def __nonzero__(self):
         if self.second or self.microsecond:
             return 1
-        offset = self.utcoffset() or 0
+        offset = self._utcoffset() or 0
         return self.hour * 60 + self.minute - offset != 0
 
     # Pickle support.
@@ -1429,7 +1464,7 @@ class datetimetz(datetime):
 
     def timetuple(self):
         "Return local time tuple compatible with time.localtime()."
-        dst = self.dst()
+        dst = self._dst()
         if dst is None:
             dst = -1
         elif dst:
@@ -1442,7 +1477,7 @@ class datetimetz(datetime):
         "Return UTC time tuple compatible with time.gmtime()."
         y, m, d = self.year, self.month, self.day
         hh, mm, ss = self.hour, self.minute, self.second
-        offset = self.utcoffset()
+        offset = self._utcoffset()
         if offset:  # neither None nor 0
             tm = tmxxx(y, m, d, hh, mm - offset)
             y, m, d = tm.year, tm.month, tm.day
@@ -1456,7 +1491,7 @@ class datetimetz(datetime):
 
     def isoformat(self, sep='T'):
         s = super(datetimetz, self).isoformat(sep)
-        off = self.utcoffset()
+        off = self._utcoffset()
         if off is not None:
             if off < 0:
                 sign = "-"
@@ -1478,7 +1513,15 @@ class datetimetz(datetime):
         """Return the timezone offset in minutes east of UTC (negative west of
         UTC)."""
         offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
-        _check_utc_offset("utcoffset", offset)
+        offset = _check_utc_offset("utcoffset", offset)
+        if offset is not None:
+            offset = timedelta(minutes=offset)
+        return offset
+
+    # Return an integer (or None) instead of a timedelta (or None).
+    def _utcoffset(self):
+        offset = _call_tzinfo_method(self, self.__tzinfo, "utcoffset")
+        offset = _check_utc_offset("utcoffset", offset)
         return offset
 
     def tzname(self):
@@ -1502,7 +1545,15 @@ class datetimetz(datetime):
         info.
         """
         offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
-        _check_utc_offset("dst", offset)
+        offset = _check_utc_offset("dst", offset)
+        if offset is not None:
+            offset = timedelta(minutes=offset)
+        return offset
+
+    # Return an integer (or None) instead of a timedelta (or None).1573
+    def _dst(self):
+        offset = _call_tzinfo_method(self, self.__tzinfo, "dst")
+        offset = _check_utc_offset("dst", offset)
         return offset
 
     def __add__(self, other):
@@ -1523,8 +1574,8 @@ class datetimetz(datetime):
             ottz = other.__tzinfo
         if mytz is ottz:
             return supersub(other)
-        myoff = self.utcoffset()
-        otoff = other.utcoffset()
+        myoff = self._utcoffset()
+        otoff = other._utcoffset()
         if myoff == otoff:
             return supersub(other)
         if myoff is None or otoff is None:
@@ -1537,10 +1588,10 @@ class datetimetz(datetime):
                             type(other).__name__)
         superself = super(datetimetz, self)
         supercmp = superself.__cmp__
-        myoff = self.utcoffset()
+        myoff = self._utcoffset()
         otoff = None
         if isinstance(other, datetimetz):
-            otoff = other.utcoffset()
+            otoff = other._utcoffset()
         if myoff == otoff:
             return supercmp(other)
         if myoff is None or otoff is None:
@@ -1554,7 +1605,7 @@ class datetimetz(datetime):
         return 1
 
     def __hash__(self):
-        tzoff = self.utcoffset()
+        tzoff = self._utcoffset()
         if tzoff is None:
             return super(datetimetz, self).__hash__()
         days = _ymd2ord(self.year, self.month, self.day)

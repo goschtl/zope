@@ -759,9 +759,10 @@ an exception should be raised.
     is intended to be the total offset from UTC; for example, if a
     tzinfo object represents both time zone and DST adjustments,
     utcoffset() should return their sum.  If the UTC offset isn't known,
-    return None.  Else the value returned must be an int (or long), in
-    the range -1439 to 1439 inclusive (1440 = 24*60; the magnitude of
-    the offset must be less than one day).
+    return None.  Else the value returned must be an int, long, or
+    timedelta object, in the range -1439 to 1439 inclusive (1440 = 24*60;
+    the magnitude of the offset must be less than one day, and must be
+    a whole number of minutes).
 
   - tzname(dt)
     Return the timezone name corresponding to the datetime represented
@@ -777,13 +778,14 @@ an exception should be raised.
   - dst(dt)
     Return the DST offset, in minutes east of UTC, or None if DST
     information isn't known.  Return 0 if DST is not in effect.
-    If DST is in effect, return an int (or long), in the range
-    -1439 to 1439 inclusive.  Note that DST offset, if applicable,
-    has already been added to the UTC offset returned by utcoffset(),
-    so there's no need to consult dst() unless you're interested in
-    displaying DST info separately.  For example, datetimetz.timetuple()
-    calls its tzinfo object's dst() method to determine how the tm_isdst
-    flag should be set.
+    If DST is in effect, return an int, long, or timedelta object, in
+    the range -1439 to 1439 inclusive.  This must be a whole number of
+    minutes.  Note that DST offset, if applicable, has already been added
+    to the UTC offset returned by utcoffset(), so there's no need to
+    consult dst() unless you're interested in displaying DST info
+    separately.  For example, datetimetz.timetuple() calls its
+    tzinfo object's dst() method to determine how the tm_isdst flag
+    should be set.
 
 Example tzinfo classes:
 
@@ -923,19 +925,19 @@ Instance methods:
     format string.  See the section on strftime() behavior.
 
   - utcoffset()
-    If self.tzinfo is None, returns None, else self.tzinfo.utcoffset(self).
+    If self.tzinfo is None, returns None, else self.tzinfo.utcoffset(self),
+    converted a timedelta object.
 
   - tzname():
     If self.tzinfo is None, returns None, else self.tzinfo.tzname(self).
 
   - dst()
-    If self.tzinfo is None, returns None, else self.tzinfo.dst(self).
+    If self.tzinfo is None, returns None, else self.tzinfo.dst(self),
+    converted to a timedelta object.
 
 
 class datetimetz
 ================
-XXX I think this is *still* missing some methods from the
-XXX Python implementation.
 A datetimetz object is a single object containing all the information
 from a date object and a timetz object.
 
@@ -1072,12 +1074,14 @@ Instance methods:
 
   - utcoffset()
     If self.tzinfo is None, returns None, else self.tzinfo.utcoffset(self).
+    converted to a timedelta object.
 
   - tzname():
     If self.tzinfo is None, returns None, else self.tzinfo.tzname(self).
 
   - dst()
-    If self.tzinfo is None, returns None, else self.tzinfo.dst(self).
+    If self.tzinfo is None, returns None, else self.tzinfo.dst(self),
+    converted to a timedelta object.
 
   - timetuple()
     Like datetime.timetuple(), but sets the tm_isdst flag according to
