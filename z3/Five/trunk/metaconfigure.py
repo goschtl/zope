@@ -212,10 +212,16 @@ def initializeClass(klass):
     InitializeClass(klass)
 
 def _getSecurity(klass):
+    # a Zope 2 class can contain some attribute that is an instance
+    # of ClassSecurityInfo. Zope 2 scans through things looking for
+    # an attribute that has the name __security_info__ first
     info = vars(klass)
     for k, v in info.items():
         if hasattr(v, '__security_info__'):
             return v
+    # we stuff the name ourselves as __security__, not security, as this
+    # could theoretically lead to name clashes, and doesn't matter for
+    # zope 2 anyway.
     security = ClassSecurityInfo()
     setattr(klass, '__security__', security)
     return security
