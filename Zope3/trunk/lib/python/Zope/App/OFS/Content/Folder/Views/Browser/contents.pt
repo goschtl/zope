@@ -18,69 +18,10 @@
 <body>
 <div metal:fill-slot="body">
 
-<div>Folder Contents <a href="+"> Add... </a> </div>
+  <div metal:use-macro="view/contentsMacros/macros/contents" />
 
-  <form name="folderContentsForm" method="get" action="." 
-        tal:define="folder_contents view/listContentInfo">
-
-    <metal:block tal:condition="folder_contents">
-
-      <table id="sortable" class="listing" summary="Content listing"
-             cellpadding="2" cellspacing="0"
-             metal:define-macro="folder_listing">
-    
-        <thead> 
-          <tr>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
-            <th>Title 
-              <img src="/@@/arrowUp.gif" alt="Sort" height="6" width="9" />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-        <metal:block tal:repeat="item folder_contents"> 
-          <tr tal:define="oddrow repeat/item/odd; url item/url"
-              tal:attributes="class python:oddrow and 'even' or 'odd'" > 
-            <td>
-              <input type="checkbox" class="noborder" name="ids:list" id="#"
-                     value="#"
-                     tal:attributes="value item/id;
-                                     id python: 'cb_'+item['id'];
-                                     checked request/ids_checked|nothing;"/>
-            </td>
-            <td> 
-              <a href="#" 
-                 tal:attributes="href 
-                                 string:${url}/@@SelectedManagementView.html"
-                 tal:content="structure item/icon|default"
-                 >
-              </a> 
-            </td>
-            <td> 
-              <a href="#" 
-                 tal:attributes="href 
-                                 string:${url}/@@SelectedManagementView.html"
-                 >
-                <span tal:replace="item/id">Id</span>
-                <span tal:condition="item/title"
-                      tal:replace="string: (${item/title})">(Title)</span>
-              </a> 
-            </td>          
-          </tr>
-        </metal:block>
-        </tbody> 
-      </table>
-      <br />
-
-      <input type="submit" name="@@removeObjects.html:method" value="Delete"
-             tal:attributes="value string:menu_delete_button"
-             i18n:attributes="value" /> 
-
-    </metal:block>
-  </form>
-
-  <p><a href="./++etc++Services/"
+  <p>
+    <a href="./++etc++Services/"
         tal:condition="context/hasServiceManager">Services</a>
     <a href="@@addServiceManager.html" 
        tal:condition="not: context/hasServiceManager">Allow Services</a>
