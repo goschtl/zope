@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.17 2002/12/04 14:11:53 runyaga Exp $
+Revision information: $Id: Contents.py,v 1.18 2002/12/20 23:04:11 jim Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -23,7 +23,6 @@ from Zope.ComponentArchitecture \
 from Zope.App.DublinCore.IZopeDublinCore import IZopeDublinCore
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
-from Zope.App.ZMI.ZMIViewUtility import ZMIViewUtility
 
 class Contents(BrowserView):
 
