@@ -3,26 +3,29 @@
  */
 
 #include <Python.h>
+#include "Zope/Proxy/proxy.h"
 
 static PyObject *__class__str = 0, *__name__str = 0, *__module__str = 0;
 
 typedef struct {
-	PyObject_HEAD
-	PyObject *proxy_object;
+	ProxyObject proxy;
 	PyObject *proxy_checker;
-} ProxyObject;
+} SecurityProxy;
 
+#undef Proxy_Check
 #define Proxy_Check(proxy) \
-	PyObject_TypeCheck(proxy, &ProxyType)
-
-#define Proxy_GetObject(proxy) \
-        (((ProxyObject *)proxy)->proxy_object)
+	PyObject_TypeCheck(proxy, &SecurityProxyType)
 
 #define Proxy_GetChecker(proxy) \
-        (((ProxyObject *)proxy)->proxy_checker)
+        (((SecurityProxy *)proxy)->proxy_checker)
+
+/* Replace the "safe" version from the proxy.h API with a faster version. */
+#undef Proxy_GetObject
+#define Proxy_GetObject(o) \
+        (((SecurityProxy *)o)->proxy.proxy_object)
 
 
-static PyTypeObject ProxyType;
+static PyTypeObject SecurityProxyType;
 
 
 /*
@@ -59,11 +62,11 @@ checkattr(PyObject *checker, char *check_method,
 }
 
 static PyObject *
-check1(ProxyObject *self, char *opname, function1 operation)
+check1(SecurityProxy *self, char *opname, function1 operation)
 {
 	PyObject *result = NULL;
-	PyObject *object = self->proxy_object;
-	PyObject *checker = self->proxy_checker;
+	PyObject *object = Proxy_GetObject(self);
+	PyObject *checker = Proxy_GetChecker(self);
 
 	if (check(checker, opname, object)) {
 		result = operation(object);
@@ -104,12 +107,12 @@ check2(PyObject *self, PyObject *other,
 }
 
 static PyObject *
-check2i(ProxyObject *self, PyObject *other,
+check2i(SecurityProxy *self, PyObject *other,
 	char *opname, binaryfunc operation)
 {
 	PyObject *result = NULL;
-	PyObject *object = self->proxy_object;
-	PyObject *checker = self->proxy_checker;
+	PyObject *object = Proxy_GetObject(self);
+	PyObject *checker = Proxy_GetChecker(self);
 
 	if (check(checker, opname, object)) {
 		result = operation(object, other);
@@ -117,7 +120,7 @@ check2i(ProxyObject *self, PyObject *other,
 			/* If the operation was really carried out inplace,
 			   don't create a new proxy, but use the old one. */
 			Py_DECREF(object);
-			Py_INCREF(self);
+			Py_INCREF((PyObject *)self);
 			result = (PyObject *)self;
 		}
 		else if (result != NULL)
@@ -129,7 +132,7 @@ check2i(ProxyObject *self, PyObject *other,
 
 #define UNOP(NAME, CALL) \
 	static PyObject *proxy_##NAME(PyObject *self) \
-	{ return check1((ProxyObject *)self, "__"#NAME"__", CALL); }
+	{ return check1((SecurityProxy *)self, "__"#NAME"__", CALL); }
 
 #define BINOP(NAME, CALL) \
 	static PyObject *proxy_##NAME(PyObject *self, PyObject *other) \
@@ -137,7 +140,7 @@ check2i(ProxyObject *self, PyObject *other,
 
 #define INPLACE(NAME, CALL) \
 	static PyObject *proxy_i##NAME(PyObject *self, PyObject *other) \
-	{ return check2i((ProxyObject *)self, other, "__i"#NAME"__", CALL); }
+	{ return check2i((SecurityProxy *)self, other, "__i"#NAME"__", CALL); }
 
 
 /*
@@ -148,7 +151,7 @@ static PyObject *
 proxy_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 {
 	static char *kwlist[] = {"object", "checker", 0};
-	ProxyObject *self;
+	SecurityProxy *self;
 	PyObject *object;
 	PyObject *checker;
 
@@ -156,22 +159,29 @@ proxy_new(PyTypeObject *type, PyObject *args, PyObject *kwds)
 					 "OO:_Proxy.__new__", kwlist,
 					 &object, &checker))
 		return NULL;
-	self = (ProxyObject *)type->tp_alloc(type, 0);
+	self = (SecurityProxy *)type->tp_alloc(type, 0);
 	if (self == NULL)
 		return NULL;
 	Py_INCREF(object);
 	Py_INCREF(checker);
-	self->proxy_object = object;
+	self->proxy.proxy_object = object;
 	self->proxy_checker = checker;
 	return (PyObject *)self;
+}
+
+/* This is needed to avoid calling the base class tp_init, which we
+   don't need. */
+static int
+proxy_init(PyObject *self, PyObject *args, PyObject *kw)
+{
+	return 0;
 }
 
 static void
 proxy_dealloc(PyObject *self)
 {
-	Py_DECREF(Proxy_GetObject(self));
 	Py_DECREF(Proxy_GetChecker(self));
-	self->ob_type->tp_free(self);
+	SecurityProxyType.tp_base->tp_dealloc(self);
 }
 
 static int
@@ -797,11 +807,11 @@ if one is needed, otherwise the object itself.\n\
 ";
 
 statichere PyTypeObject
-ProxyType = {
+SecurityProxyType = {
 	PyObject_HEAD_INIT(NULL)
 	0,
 	"Zope.Security._Proxy._Proxy",
-	sizeof(ProxyObject),
+	sizeof(SecurityProxy),
 	0,
 	proxy_dealloc,				/* tp_dealloc */
 	0,					/* tp_print */
@@ -835,7 +845,7 @@ ProxyType = {
 	0,					/* tp_descr_get */
 	0,					/* tp_descr_set */
 	0,					/* tp_dictoffset */
-	0,					/* tp_init */
+	proxy_init,				/* tp_init */
 	0, /*PyType_GenericAlloc,*/		/* tp_alloc */
 	proxy_new,				/* tp_new */
 	0, /*_PyObject_GC_Del,*/		/* tp_free */
@@ -886,6 +896,9 @@ init_Proxy(void)
 {
 	PyObject *m;
 
+	if (Proxy_Import() < 0)
+		return;
+
 	__class__str = PyString_FromString("__class__");
 	if (! __class__str) return;
 
@@ -895,16 +908,17 @@ init_Proxy(void)
 	__module__str = PyString_FromString("__module__");
 	if (! __module__str) return;
 
-	ProxyType.ob_type = &PyType_Type;
-	ProxyType.tp_alloc = PyType_GenericAlloc;
-	ProxyType.tp_free = _PyObject_GC_Del;
-	if (PyType_Ready(&ProxyType) < 0)
+	SecurityProxyType.ob_type = &PyType_Type;
+	SecurityProxyType.tp_alloc = PyType_GenericAlloc;
+	SecurityProxyType.tp_free = _PyObject_GC_Del;
+	SecurityProxyType.tp_base = ProxyType;
+	if (PyType_Ready(&SecurityProxyType) < 0)
 		return;
 
 	m = Py_InitModule3("_Proxy", module_functions, module___doc__);
 	if (m == NULL)
 		return;
 
-	Py_INCREF(&ProxyType);
-	PyModule_AddObject(m, "_Proxy", (PyObject *)&ProxyType);
+	Py_INCREF(&SecurityProxyType);
+	PyModule_AddObject(m, "_Proxy", (PyObject *)&SecurityProxyType);
 }

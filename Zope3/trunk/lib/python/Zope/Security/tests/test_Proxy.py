@@ -1,6 +1,7 @@
 import unittest
 from Zope.Exceptions import Forbidden
 from Zope.Security.Proxy import getObject, getChecker, ProxyFactory
+from Zope.Proxy.proxy import proxy
 
 class Checker:
 
@@ -67,6 +68,9 @@ class ProxyTests(unittest.TestCase):
         self.c.ok = 0
         self.assertRaises(RuntimeError, *args)
         self.c.ok = 1
+
+    def testDerivation(self):
+        self.assert_(isinstance(self.p, proxy))
 
     def testStr(self):
         self.assertEqual(str(self.p), str(self.x))
