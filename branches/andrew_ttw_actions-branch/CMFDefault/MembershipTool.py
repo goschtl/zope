@@ -89,7 +89,8 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
           , ActionInformation(id='mystuff'
                             , title='my stuff'
                             , description='Goto your home folder'
-                            , action=Expression(text='member/getHomeUrl')
+                            , action=Expression(
+          text='python: portal.portal_membership.getHomeUrl()')
                             , permissions=(View,)
                             , category='user'
                             , condition=Expression(
@@ -100,7 +101,7 @@ class MembershipTool ( Products.CMFCore.MembershipTool.MembershipTool ):
                             , title='My favorites'
                             , description='Browser your favorites'
                             , action=Expression(
-           text='python: member.getHomeUrl() + \'/Favorites/folder_contents\'')
+           text='python: portal.portal_membership.getHomeUrl() + \'/Favorites/folder_contents\'')
                             , permissions=(View,)
                             , category='user'
                             , condition=Expression(
