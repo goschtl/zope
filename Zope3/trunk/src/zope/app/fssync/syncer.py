@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.13 2003/05/13 19:50:49 gvanrossum Exp $
+$Id: syncer.py,v 1.14 2003/05/13 19:58:56 gvanrossum Exp $
 """
 
 import os
@@ -187,7 +187,12 @@ def fromFS(container, name, location):
 
     # See if this is an existing object
     if name in container:
-        # Yup, let's see if we have the same kind of object
+        # Yup, let's see if we need to delete it
+        if entry.get("flag") == "removed":
+            del container[name]
+            return # That was easy!
+
+        # No, updating.  Let's see if we have the same kind of object
 
         # Get the object adapter
         ob = container[name]
