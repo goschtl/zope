@@ -1,26 +1,24 @@
-import Zope, unittest
+import Zope
+from unittest import TestCase,TestSuite,makeSuite,main
 from Products.CMFCore.ActionsTool import *
 from Products.CMFDefault.URLTool import *
 import ZPublisher.HTTPRequest
+from Testing.makerequest import makerequest
 
-class ActionsToolTests( unittest.TestCase ):
+class ActionsToolTests( TestCase ):
 
     def setUp( self ):
-        get_transaction().begin()
-        self.connection = Zope.DB.open()
-        root = self.root = self.connection.root()[ 'Application' ]
-
-        env = { 'SERVER_NAME' : 'http://localhost'
-              , 'SERVER_PORT' : '80'
-              }
-        root.REQUEST = ZPublisher.HTTPRequest.HTTPRequest( None, env, None )
         
+        root = self.root = makerequest(Zope.app())
         root._setObject( 'portal_actions', ActionsTool() )
         root._setObject('foo', URLTool() )
         self.tool = root.portal_actions
         self.ut = root.foo
         self.tool.action_providers = ('portal_actions',)
 
+    def tearDown(self):
+        get_transaction().abort()
+        
     def test_actionProviders(self):
         tool = self.tool
         self.assertEqual(tool.listActionProviders(), ('portal_actions',))
@@ -37,17 +35,13 @@ class ActionsToolTests( unittest.TestCase ):
         self.assertEqual(tool.listActionProviders(),
                           ('portal_actions',))
 
-    def tearDown( self ):
-        get_transaction().abort()
-        self.connection.close()
-
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ActionsToolTests))
-    return suite
+    return TestSuite((
+        makeSuite(ActionsToolTests),
+        ))
 
 def run():
-    unittest.TextTestRunner().run(test_suite())
+    main(defaultTest='test_suite')
 
 if __name__ == '__main__':
     run()
