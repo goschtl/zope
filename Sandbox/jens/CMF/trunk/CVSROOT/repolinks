@@ -144,7 +144,7 @@
 /ZODB4/Interface	 /Packages3/Interface
 /ZODB4/Persistence	 /Packages3/Persistence
 /ZODB4/ThreadedAsync     /Packages/ThreadedAsync
-/ZODB4/Transaction	 /Zope3/lib/python/Transaction
+#/ZODB4/Transaction	 /Zope3/lib/python/Transaction
 /ZODB4/zdaemon           /Packages3/zdaemon
 /ZODB4/zLOG		 /Packages3/zLOG
 /ZODB4/ZConfig		 /Packages/ZConfig
@@ -165,78 +165,4 @@
 /ZEO/ZEO                          /Packages/ZEO
 
 # Zope 3 layout.
-
-#/Zope3/lib/python/Interface                    /Packages3/Interface
-#/Zope3/lib/python/Persistence                  /Packages3/Persistence
-#/Zope3/lib/python/ThreadedAsync                /Packages/ThreadedAsync
-#/Zope3/lib/python/ZConfig		       /Packages/ZConfig
-#/Zope3/lib/python/logging                      /Packages/logging
-#/Zope3/lib/python/ZEO                          /Packages3/ZEO
-#/Zope3/lib/python/zLOG                         /Packages3/zLOG
-#/Zope3/lib/python/ZODB                         /Packages3/ZODB
-#/Zope3/lib/python/Zope/ComponentArchitecture   /Packages3/ComponentArchitecture
-#/Zope3/lib/python/Zope/TAL                     /Packages3/TAL
-#/Zope3/lib/python/Zope/Testing                 /Packages3/Testing
-#/Zope3/lib/python/Zope/ZLogger                 /Packages3/ZLogger
-#/Zope3/lib/python/pre_python_2_2               /Packages3/pre_python_2_2
-#/Zope3/lib/python/Zope/Publisher               /Packages3/Publisher
-#/Zope3/lib/python/Zope/ContextWrapper          /Packages3/ContextWrapper
-#/Zope3/lib/python/BDBStorage                   /Packages3/bsddb3Storage/bsddb3Storage
-
-#/Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
-# Zope 3 products
-/ZopeProducts                                  /Products3
-/Products3/JobBoardEx                          /Packages/JobBoardEx
-
-# Zope3 new world order
 /Zope3/src/ZConfig		       /Packages/ZConfig
-
-
-# Zope 2.7 development tree (until 2.6 beta, waaa)
-/Zope27/ZServer                                   /Packages/ZServer
-/Zope27/utilities                                 /Zope/utilities
-/Zope27/doc                                       /Zope/doc
-/Zope27/Extensions                                /Zope/Extensions
-/Zope27/import                                    /Zope/import
-/Zope27/inst                                      /Zope/inst
-/Zope27/var                                       /Zope/var
-
-/Zope27/lib/Components                            /Zope/lib/Components
-
-/Zope27/lib/python/AccessControl                  /Packages/AccessControl
-/Zope27/lib/python/App                            /Packages/App
-/Zope27/lib/python/BTrees                         /Packages/BTrees
-/Zope27/lib/python/DateTime                       /Packages/DateTime
-/Zope27/lib/python/DocumentTemplate               /Packages/DocumentTemplate
-/Zope27/lib/python/HelpSys                        /Packages/HelpSys
-/Zope27/lib/python/Interface                      /Packages3/Interface
-/Zope27/lib/python/Locales                        /Packages/Locales
-/Zope27/lib/python/OFS                            /Packages/OFS
-/Zope27/lib/python/RestrictedPython               /Packages/RestrictedPython
-/Zope27/lib/python/SearchIndex                    /Packages/SearchIndex
-/Zope27/lib/python/Shared                         /Packages/Shared
-/Zope27/lib/python/SkinnableAndLocalizable    /Packages/SkinnableAndLocalizable
-/Zope27/lib/python/Skins                          /Packages/Skins
-/Zope27/lib/python/StructuredText                 /Packages/StructuredText
-/Zope27/lib/python/TAL                            /Packages/TAL
-/Zope27/lib/python/Testing                        /Packages/Testing
-/Zope27/lib/python/TreeDisplay                    /Packages/TreeDisplay
-/Zope27/lib/python/ZClasses                       /Packages/ZClasses
-/Zope27/lib/python/ZDom                           /Packages/ZDom
-/Zope27/lib/python/ZLogger                        /Packages/ZLogger
-/Zope27/lib/python/ZODB                           /Packages/ZODB
-/Zope27/lib/python/ZPublisher                     /Packages/ZPublisher
-/Zope27/lib/python/zExceptions                    /Zope/lib/python/zExceptions
-/Zope27/lib/python/webdav                         /Packages/webdav
-/Zope27/lib/python/Persistence                    /Packages/Persistence
-/Zope27/lib/python/ThreadedAsync                  /Packages/ThreadedAsync
-/Zope27/lib/python/zdaemon                        /Packages/zdaemon
-/Zope27/lib/python/zLOG                           /Packages/zLOG
-/Zope27/lib/python/ZTUtils                        /Packages/ZTUtils
-/Zope27/lib/python/Products                       /Zope/lib/python/Products
-/Zope27/lib/python/Zope/App2                      /Zope/lib/python/Zope/App
-/Zope27/lib/python/Zope/ComponentArchitecture  /Packages3/ComponentArchitecture
-/Zope27/lib/python/Zope/Configuration     /Zope3/lib/python/Zope/Configuration
-/Zope27/lib/python/Zope/I18n              /Zope3/lib/python/Zope/I18n
-/Zope27/lib/python/Zope/Exceptions        /Zope3/lib/python/Zope/Exceptions
-/Zope27/lib/python/Zope/Testing           /Zope3/lib/python/Zope/Testing
