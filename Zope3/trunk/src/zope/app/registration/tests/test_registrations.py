@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for registration classes
 
-$Id: test_registrations.py,v 1.3 2004/03/23 15:15:06 mmceahern Exp $
+$Id: test_registrations.py,v 1.4 2004/04/15 15:29:40 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -180,7 +180,8 @@ def test_suite():
         makeSuite(TestSimpleRegistration),
         makeSuite(TestComponentRegistration),
         makeSuite(TestSimpleRegistrationEvents),
-        DocTestSuite(sys.modules[__name__]),
+        DocTestSuite(),
+        DocTestSuite('zope.app.registration.registration'),
         ))
 
 if __name__=='__main__':

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.6 2004/04/08 21:02:42 jim Exp $
+$Id: registration.py,v 1.7 2004/04/15 15:29:39 jim Exp $
 """
 from persistent import Persistent
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -92,18 +92,144 @@ class RegistrationStatusProperty(object):
 
 
 class RegistrationStack(Persistent, Contained):
+    """Registration registry implemention
 
-    """Registration registry implementation.
+       A registration stack provides support for a collection of
+       registrations such that, at any time, at most one is active.  The
+       "stack" aspect of the api is designed to support "uninstallation",
+       as will be described below.
 
-    The invariants for _data are as follows:
+       Registration stacks manage registrations.  They don't really care
+       what registrations are, as long as they can be activated and
+       deactivated:
 
-        (1) The last element (if any) is not None
+         >>> class Registration(object):
+         ...
+         ...     def __init__(self, name):
+         ...         self.name = name
+         ...         self.active = False
+         ...
+         ...     def __repr__(self):
+         ...         return self.name
+         ...
+         ...     def activated(self):
+         ...         self.active = True
+         ...
+         ...     def deactivated(self):
+         ...         self.active = False
 
-        (2) No value occurs more than once
+       We create a registration stack by providing it with a parent:
 
-        (3) Each value except None is a relative path from the nearest
-            service manager to an object implementing IRegistration
-    """
+         >>> stack = RegistrationStack(42)
+         >>> stack.__parent__
+         42
+
+       If a stack doesn't have any registrations, it's false:
+
+         >>> bool(stack)
+         False
+
+       And it has no active registration:
+
+         >>> stack.active()
+
+       We can register a registration:
+
+         >>> r1 = Registration('r1')
+         >>> stack.register(r1)
+
+       and then the stack is true:
+
+         >>> bool(stack)
+         True
+
+       But we still don't have an active registration:
+
+         >>> stack.active()
+
+       Until we activate one:
+
+         >>> stack.activate(r1)
+         >>> stack.active()
+         r1
+
+       at which point, the registration has been notified that it is
+       active:
+
+         >>> r1.active
+         True
+
+       We can't activate a registration unless it's registered:
+
+         >>> r2 = Registration('r2')
+         >>> stack.activate(r2)
+         Traceback (most recent call last):
+         ...
+         ValueError: ('Registration to be activated is not registered', r2)
+
+         >>> stack.register(r2)
+         >>> stack.activate(r2)
+
+       Note that activating r2, deactivated r1:
+
+         >>> r1.active
+         False
+
+       We can get status on the stack by calling it's info method:
+
+         >>> for info in stack.info():
+         ...     print info['registration'], info['active']
+         r2 True
+         r1 False
+
+       So why is this a stack? Unregistering an object is a bit like
+       poping an element. Suppose we unrgister r2:
+
+         >>> stack.unregister(r2)
+
+       Whenever we unregister an object, we make the object that was
+       previously active active again:
+
+         >>> stack.active()
+         r1
+
+         >>> r1.active
+         True
+
+       Now, let's deactivate r1:
+
+         >>> stack.deactivate(r1)
+         >>> stack.active()
+         >>> r1.active
+         False
+
+       And register and activate r2:
+       
+         >>> stack.register(r2)
+         >>> stack.activate(r2)
+         >>> stack.active()
+         r2
+
+       Now, if we unregister r2:
+
+         >>> stack.unregister(r2)
+
+       We won't have an active registration:
+
+         >>> stack.active()
+
+       Because there wasn't an active registration before we made r2
+       active. 
+       """
+
+#     The invariants for _data are as follows:
+#
+#         (1) The last element (if any) is not None
+#
+#         (2) No value occurs more than once
+#
+#         (3) Each value except None is a relative path from the nearest
+#             service manager to an object implementing IRegistration
 
     implements(interfaces.IRegistrationStack)
 
@@ -133,11 +259,11 @@ class RegistrationStack(Persistent, Contained):
                 self.data = data
 
                 # Tell it that it is no longer active
-                registration.deactivated()
+                self._deactivate(registration)
 
                 if data and data[0] is not None:
                     # Activate the newly active component
-                    data[0].activated()
+                    self._activate(data[0])
             else:
                 # Remove it from our data
                 data = tuple([item for item in data if item != registration])
@@ -150,6 +276,12 @@ class RegistrationStack(Persistent, Contained):
 
     def registered(self, registration):
         return registration in self.data
+
+    def _activate(self, registration):
+        registration.activated()
+
+    def _deactivate(self, registration):
+        registration.deactivated()
 
     def activate(self, registration):
         data = self.data
@@ -176,11 +308,11 @@ class RegistrationStack(Persistent, Contained):
 
             if old is not None:
                 # Deactivated the currently active component
-                old.deactivated()
+                self._deactivate(old)
 
             if registration is not None:
                 # Tell it that it is now active
-                registration.activated()
+                self._activate(registration)
 
         else:
             raise ValueError(
@@ -209,11 +341,11 @@ class RegistrationStack(Persistent, Contained):
         self.data = data
 
         # Tell it that it is no longer active
-        registration.deactivated()
+        self._deactivate(registration)
 
         if data[0] is not None:
             # Activate the newly active component
-            data[0].activated()
+            self._activate(data[0])
 
     def active(self):
         data = self.data
@@ -265,13 +397,124 @@ class RegistrationStack(Persistent, Contained):
     #########################################################################
 
 class NotifyingRegistrationStack(RegistrationStack):
+    """Notifying registration registry implemention
 
-    def activate(self, registration):
-        RegistrationStack.activate(self, registration)
+       First, see RegistrationStack.
+
+       A notifying registration stack notifies both the registration
+       *and* the stacks parent when it changes.  It notifies the
+       parent by calling nothingActivated and notifyDeactivated:
+
+         >>> class Parent(object):
+         ...
+         ...     active = deactive = None
+         ...
+         ...     def notifyActivated(self, stack, registration):
+         ...         self.active = registration
+         ...
+         ...     def notifyDeactivated(self, stack, registration):
+         ...         self.active = None
+         ...         self.deactive = registration
+
+
+       To see this, we'll go through the same scenario we went through
+       in the RegistrationStack documentation.
+       A registration stack provides support for a collection of
+
+         >>> class Registration(object):
+         ...
+         ...     def __init__(self, name):
+         ...         self.name = name
+         ...         self.active = False
+         ...
+         ...     def __repr__(self):
+         ...         return self.name
+         ...
+         ...     def activated(self):
+         ...         self.active = True
+         ...
+         ...     def deactivated(self):
+         ...         self.active = False
+
+       We create a registration stack by providing it with a parent:
+
+         >>> parent = Parent()
+         >>> stack = NotifyingRegistrationStack(parent)
+
+       We can register a registration:
+
+         >>> r1 = Registration('r1')
+         >>> stack.register(r1)
+
+       But we still don't have an active registration:
+
+         >>> stack.active()
+         >>> parent.active
+
+       Until we activate one:
+
+         >>> stack.activate(r1)
+         >>> parent.active
+         r1
+
+       if we activate a new registration:
+
+         >>> r2 = Registration('r2')
+         >>> stack.register(r2)
+         >>> stack.activate(r2)
+
+       The parent will be notified of the activation and the
+       deactivation: 
+
+         >>> parent.active
+         r2
+         >>> parent.deactive
+         r1
+
+       If we unregister r2, it will become inactive and the parent
+       will be notified, but whenever we unregister an object, we make
+       the object that was previously active active again:
+
+         >>> stack.unregister(r2)
+         >>> parent.active
+         r1
+         >>> parent.deactive
+         r2
+
+       Now, let's deactivate r1:
+
+         >>> stack.deactivate(r1)
+         >>> parent.active
+         >>> parent.deactive
+         r1
+
+       And register and activate r2:
+       
+         >>> stack.register(r2)
+         >>> stack.activate(r2)
+         >>> parent.active
+         r2
+
+       Now, if we unregister r2:
+
+         >>> stack.unregister(r2)
+
+       We won't have an active registration:
+
+         >>> parent.active
+         >>> parent.deactive
+         r2
+
+       Because there wasn't an active registration before we made r2
+       active. 
+       """
+
+    def _activate(self, registration):
+        registration.activated()
         self.__parent__.notifyActivated(self, registration)
 
-    def deactivate(self, registration):
-        RegistrationStack.deactivate(self, registration)
+    def _deactivate(self, registration):
+        registration.deactivated()
         self.__parent__.notifyDeactivated(self, registration)
 
 class SimpleRegistrationRemoveSubscriber:
