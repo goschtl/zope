@@ -14,7 +14,7 @@
 """
 Default service names
 
-$Id: servicenames.py,v 1.2 2003/02/06 06:50:06 seanb Exp $
+$Id: servicenames.py,v 1.3 2003/02/06 20:40:55 jack-e Exp $
 """
 
 HubIds = 'HubIds'
@@ -31,3 +31,4 @@ Skins = 'Skins'
 Views = 'Views'
 ResourceService = 'Resources'
 Factories = 'Factories'
+Workflows = 'Workflows'
