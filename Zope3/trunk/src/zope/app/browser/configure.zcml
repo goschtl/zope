@@ -234,4 +234,6 @@
     allowed_interface="zope.app.interfaces.traversing.IObjectName" 
     />
 
+<include package=".exception" />
+
 </zopeConfigure>

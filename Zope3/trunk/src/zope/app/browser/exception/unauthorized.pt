@@ -1,0 +1,8 @@
+<html>
+<body>
+<tal:tag condition="view/issueChallenge" />
+<h1>Unauthorized</h1>
+<p>You're not allowed in here. Here's a traceback.</p>
+<tal:tag replace="structure view/traceback" />
+</body>
+</html>
