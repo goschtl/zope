@@ -5,15 +5,16 @@ Welcome to the Zope3 source
 
   http://dev.zope.org/Zope3/Zope3DeveloperInfo
 
-  For information about the current release, see CHANGES.txt.
+  For information about the current release, see doc/CHANGES.txt.
 
-  Zope 3 is in an early stage of development. See CHANGES.txt to find
-  out more!
+  Zope 3 is in an early stage of development. See doc/CHANGES.txt to
+  find out more!
 
 Building and running tests
 
   Zope3 requires Python 2.2.3 or later and PyXML 0.8.1 or higher.
   PyXML can be downloaded from http://sf.net/projects/pyxml.
+  (PyXML is not required if you're using the Python 2.3.)
 
   In the top-level Zope3 directory, you should find a script called
   setup.py.  Run it to build the extension modules needed by
@@ -29,8 +30,8 @@ Building and running tests
   isn't free).
 
   Zope3 includes unit tests based on the Python unittest module.  If
-  you checkin changes, you should verify that all the tests succeed
-  before you checkin.
+  you check in changes, you should verify that all the tests succeed
+  before you commit changes.
 
   To run all the tests, use the script test.py::
 
@@ -42,7 +43,7 @@ Building and running tests
 Starting Zope3
 
   Before running Zope, you need to create one or more bootstrap
-  users. Try copying and editing the file sample_principals.zcml to
+  users.  Try copying and editing the file sample_principals.zcml to
   principals.zcml.  Make sure you change the passwords.
 
   To run Zope just run the z3.py script:
@@ -62,10 +63,7 @@ Starting Zope3
 
     http://localhost:8080/++skin++basic/manage
 
-  Copy principals.zcml.in to principals.zcml, and add a manager
-  entry to it based on the examples in sample_principals.zcml.
-
-  see doc/INSTALL for more information
+  See doc/INSTALL.txt for more information.
 
 Finding out how to develop new content types:
 
