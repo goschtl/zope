@@ -78,6 +78,14 @@
       class="zope.app.browser.form.widget.TextAreaWidget" 
       />
 
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IPassword"
+      name="edit"
+      class="zope.app.browser.form.widget.PasswordWidget" 
+      />
+      
   <!-- Default simple display view -->
   <browser:page
       permission="zope.Public"
@@ -86,5 +94,6 @@
       name="display"
       class="zope.app.browser.form.widget.DisplayWidget" 
       />
+
   
 </zopeConfigure>
