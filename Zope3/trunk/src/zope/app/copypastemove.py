@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.13 2003/12/10 13:07:53 jace Exp $
+$Id: copypastemove.py,v 1.14 2003/12/11 12:06:10 jace Exp $
 """
 
 from zope.app import zapi
@@ -215,8 +215,8 @@ class ObjectMover:
         try:
             checkObject(target, name, self.context)
         except Invalid:
-            return 0
-        return 1
+            return False
+        return True
 
 class ObjectCopier:
     """Adapter for copying objects between containers
@@ -413,8 +413,8 @@ class ObjectCopier:
         try:
             checkObject(target, name, self.context)
         except Invalid:
-            return 0
-        return 1
+            return False
+        return True
 
 
 class PrincipalClipboard:
