@@ -12,24 +12,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Classes: PASCacheable, PASRAMCacheManager
+""" Classes: PASRAMCacheManager
 
 $Id$
 """
 
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-from OFS.Cache import Cacheable
 from AccessControl.Permissions import manage_users
 from Products.StandardCacheManagers.RAMCacheManager import RAMCacheManager
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-
-class PASCacheable(Cacheable):
-
-    security = ClassSecurityInfo()
-
-
-InitializeClass(PASCacheable)
 
 
 manage_addPASRAMCacheManagerForm = PageTemplateFile(

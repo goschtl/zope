@@ -37,6 +37,7 @@ from zLOG import LOG, WARNING
 from zExceptions import Unauthorized
 from Persistence import PersistentMapping
 from OFS.Folder import Folder
+from OFS.Cache import Cacheable
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from ZTUtils import Batch
 from App.class_init import default__class_init__ as InitializeClass
@@ -68,7 +69,6 @@ from permissions import SearchPrincipals
 
 from PropertiedUser import PropertiedUser
 from PASCache import PASRAMCacheManager
-from PASCache import PASCacheable
 from utils import _wwwdir
 from utils import createViewName
 
@@ -155,7 +155,7 @@ class EmergencyUserAuthenticator( Implicit ):
 InitializeClass( EmergencyUserAuthenticator )
 
 
-class PluggableAuthService( Folder, PASCacheable ):
+class PluggableAuthService( Folder, Cacheable ):
 
     """ All-singing, all-dancing user folder.
     """
@@ -557,7 +557,7 @@ class PluggableAuthService( Folder, PASCacheable ):
                         ,
                         )
                       + Folder.manage_options[2:]
-                      + PASCacheable.manage_options
+                      + Cacheable.manage_options
                       )
 
     security.declareProtected(ManageUsers, 'resultsBatch')

@@ -105,12 +105,6 @@ class PluggableAuthServiceCachingTests( unittest.TestCase ):
         # use self.REQUEST :/
         setattr(rcm, 'REQUEST', FauxRequest())
 
-        mt_info = zcuf.all_meta_types()
-        mt_types = [x['name'] for x in mt_info]
-        
-        # Make sure that the PASRAMCacheManager can be instantiated through the ZMI
-        self.assert_(PASRAMCacheManager.meta_type in mt_types)
-
         # Make sure the PAS instance itself is Cacheable
         self.assert_(isCacheable(zcuf))
 

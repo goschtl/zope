@@ -23,10 +23,10 @@ from AccessControl import ClassSecurityInfo, AuthEncoding
 from AccessControl.SecurityManagement import getSecurityManager
 from App.class_init import default__class_init__ as InitializeClass
 from BTrees.OOBTree import OOBTree
+from OFS.Cache import Cacheable
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-from Products.PluggableAuthService.PASCache import PASCacheable
 from Products.PluggableAuthService.utils import createViewName
 from Products.PluggableAuthService.interfaces.plugins \
     import IAuthenticationPlugin
@@ -55,7 +55,7 @@ def addZODBUserManager( dispatcher, id, title=None, REQUEST=None ):
                                 'ZODBUserManager+added.'
                             % dispatcher.absolute_url())
 
-class ZODBUserManager( BasePlugin, PASCacheable ):
+class ZODBUserManager( BasePlugin, Cacheable ):
 
     """ PAS plugin for managing users in the ZODB.
     """
@@ -311,7 +311,7 @@ class ZODBUserManager( BasePlugin, PASCacheable ):
                          ,
                        )
                      + BasePlugin.manage_options
-                     + PASCacheable.manage_options
+                     + Cacheable.manage_options
                      )
 
     security.declarePublic( 'manage_widgets' )

@@ -23,6 +23,7 @@ from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import SimpleItem
 from OFS.PropertyManager import PropertyManager
 from OFS.Folder import Folder
+from OFS.Cache import Cacheable
 from Globals import InitializeClass
 from Persistence import PersistentMapping
 
@@ -39,7 +40,6 @@ from Products.PluggableAuthService.permissions import ManageGroups
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 
-from Products.PluggableAuthService.PASCache import PASCacheable
 from Products.PluggableAuthService.utils import createViewName
 
 
@@ -60,7 +60,7 @@ def addDynamicGroupsPlugin( dispatcher, id, title='', RESPONSE=None ):
                            )
                          )
 
-class DynamicGroupDefinition( SimpleItem, PropertyManager, PASCacheable ):
+class DynamicGroupDefinition( SimpleItem, PropertyManager, Cacheable ):
 
     """ Represent a single dynamic group.
     """
@@ -162,7 +162,7 @@ class DynamicGroupDefinition( SimpleItem, PropertyManager, PASCacheable ):
 InitializeClass( DynamicGroupDefinition )
 
 
-class DynamicGroupsPlugin( Folder, BasePlugin, PASCacheable ):
+class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
 
     """ Define groups via business rules.
 

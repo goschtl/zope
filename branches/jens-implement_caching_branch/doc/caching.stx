@@ -40,7 +40,7 @@ Caching
     these records where necessary. In a nutshell, these are the steps needed
     to enable cacheability at the plugin level:
 
-    o Add the PASCacheable mix-in class to the list of classes your plugin
+    o Add the Cacheable mix-in class to the list of classes your plugin
       subclasses from
 
     o Determine which method calls should have their return values cached, 
@@ -57,11 +57,11 @@ Caching
 
     A little illustration using code snippets::
 
+      from OFS.Cache import Cacheable
       from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-      from Products.PluggableAuthService.PASCache import PASCacheable
       from Products.PluggableAuthService.utils import createViewName
 
-      class MyPlugin(BasePlugin, PASCacheable):
+      class MyPlugin(BasePlugin, Cacheable):
 
           def retrieveData(self, key):
               """ Get data for the given key """
