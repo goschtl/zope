@@ -65,6 +65,12 @@ parentheses are aliases supported for convenience:
   not made to the object database itself until the next **zsync
   commit**.
 
+**login**
+  Store a basic authenication token for a server.
+
+**logout**
+  Discard a stored authenication token.
+
 **resolve**
   Remove a conflict indicator for a file that has been updated on
   both the server and the working copy.  (This does not actually
@@ -167,8 +173,12 @@ Description
 
 Retrieve the serialized representation of a portion of the object
 database.  The database and starting path to be retrieved are
-specified as *source-url*.  The local representation is stored in the
-directory *dir*, which defaults to the current directory.
+specified as *source-url*.  The username must be specified as part of
+*source-url*; the password may be included in *source-url*, or an
+authentication token stored by **zsync login** may be used, or
+**zsync** commands that access the Zope server will request a password
+for each request.  The local representation is stored in the directory
+*dir*, which defaults to the current directory.
 
 
 The **zsync commit** Command
@@ -289,6 +299,78 @@ using **zsync**.  When *command* is given, information about each
 command list is presented.
 
 
+The **zsync login** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**login** [**-u** *user*] [*url*]
+
+Description
++++++++++++
+
+Store a basic authentication token in a per-user persistent cache.
+This can be used to avoid storing the password as part of the URL used
+to check out an object tree.  For example, to check out a portion of a
+Zope site without storing the password in the tree, "log in" to the
+site and then perform the checkout::
+
+  % zsync login -u username http://example.com/
+  Password for username at example.com:
+  % zsync checkout http://username@example.com/some/directory/
+  ...
+
+If *user* or *url* are omitted, the values are selected from an
+existing checkout in the current directory, if any.  If there is no
+checkout in the current directory but *url* is given, the user will be
+prompted for *user* interactively.  The only information used from the
+URL are the protocol scheme (HTTP or HTTPS), the host and port, and
+the username.
+
+Options
++++++++
+
+-u USER, --user USER
+  Use *USER* for the username.  This overrides the username given via
+  the URL; this is mostly intended for people who don't know (or don't
+  want to admit knowing!) the obscure URL syntax for encoding the
+  username for a site.
+
+
+The **zsync logout** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**logout** [**-u** *user*] [*url*]
+
+Description
++++++++++++
+
+Remove an authentication token from the persistent storage created by
+**zsync login**.
+
+If *user* or *url* are omitted, the values are selected from an
+existing checkout in the current directory, if any.  If there is no
+checkout in the current directory but *url* is given, the user will be
+prompted for *user* interactively.
+
+After removing a token from the cache, **zsync** commands that access
+the Zope server via a checkout URL that doesn't include a password
+will require the user to enter their password interactively.
+
+Options
++++++++
+
+-u USER, --user USER
+  Use *USER* for the username.  This overrides the username given via
+  the URL; this is mostly intended for people who don't know (or don't
+  want to admit knowing!) the obscure URL syntax for encoding the
+  username for a site.
+
+
 The **zsync mkdir** Command
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -371,10 +453,16 @@ The **update** command has no specific options.
 Security Notes
 --------------
 
-- The ``@@Zope/Root`` file contains the username and password with
+- The ``@@Zope/Root`` file can contain the username and password with
   which the checkout was made.  Since this will typically allow access
   with content management priviledges, this file should not be shared
-  carelessly.
+  carelessly.  The **zsync login** command can be used to avoid
+  including the password in this file.
+
+- The ``~/.zsyncpass`` file contains basic authentication tokens; the
+  permissions on that file should be protected against unintentional
+  modification.  See the description of this file in `~/.zsyncpass`_
+  below.
 
 
 Files
@@ -436,6 +524,20 @@ An ``@@Zope/`` directory contains the following:
   password needed for authentication, so care must be taken in sharing
   access to a checkout.  This only exists in the ``@@Zope/`` directory
   for the top-level checkout.
+
+One additional file is used if the **zsync login** command is used:
+
+.. _~/.zsyncpass:
+
+``~/.zsyncpass``
+  Cache of authentication tokens.  The tokens stored in this file are
+  unlikely to be particularly useful if you aren't creating HTTP
+  requests directly, but are not stored in a secure manner.  You
+  should be careful about the permissions on this file: it should be
+  readable and writable by the owner, and not be anyone else.  The
+  file is created with the correct permissions by **zsync**, but
+  **zsync** will not complain or ignore the file if the permissions
+  are more permissive than necessary.
 
 
 Reporting Bugs
