@@ -45,3 +45,18 @@ class Reporter:
 
         This method may veto the import by raising an exception.
         """
+
+    def exception(self, importer, name, fromlist, exc_info):
+        """Called after an attempted import has failed.
+
+        `importer` is the full name of the module performing the import.
+
+        `name` is the module name requested for the import.  This may
+        be a relative module name.  It may represent a module that has
+        already been loaded.
+
+        `fromlist` is the `fromlist` argument to `__import__()`.
+
+        `exc_info` is the return value from sys.exc_info(), indicating
+        the error that occurred.
+        """
