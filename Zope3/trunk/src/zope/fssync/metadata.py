@@ -20,15 +20,16 @@ under the key 'base'.  The metadata entry is itself a dict.  An empty
 entry is considered non-existent, and will be deleted upon flush.  If
 no entries remain, the Entries.xml file will be removed.
 
-$Id: metadata.py,v 1.5 2003/06/05 14:04:25 gvanrossum Exp $
+$Id: metadata.py,v 1.6 2003/07/25 20:18:48 fdrake Exp $
 """
 
 import os
 import copy
 
+from cStringIO import StringIO
 from os.path import exists, isdir, isfile, split, join, realpath, normcase
-
-from zope.xmlpickle import loads, dumps
+from xml.sax import ContentHandler, parseString
+from xml.sax.saxutils import quoteattr
 
 case_insensitive = (normcase("ABC") == normcase("abc"))
 
@@ -85,7 +86,7 @@ class Metadata(object):
                     data = f.read()
                 finally:
                     f.close()
-                self.cache[key] = entries = loads(data)
+                self.cache[key] = entries = load_entries(data)
             else:
                 self.cache[key] = entries = {}
             self.originals[key] = copy.deepcopy(entries)
@@ -115,7 +116,7 @@ class Metadata(object):
             zdir = join(key, "@@Zope")
             efile = join(zdir, "Entries.xml")
             if exists(efile) or live:
-                data = dumps(live)
+                data = dump_entries(live)
                 if not exists(zdir):
                     os.makedirs(zdir)
                 f = open(efile, "w")
@@ -124,3 +125,84 @@ class Metadata(object):
                 finally:
                     f.close()
             self.originals[key] = copy.deepcopy(live)
+
+
+def dump_entries(entries):
+    sio = StringIO()
+    sio.write("<?xml version='1.0' encoding='utf-8'?>\n")
+    sio.write("<entries>\n")
+    names = entries.keys()
+    names.sort()
+    for name in names:
+        entry = entries[name]
+        sio.write("  <entry name=")
+        sio.write(quoteattr(name).encode('utf-8'))
+        for k, v in entry.iteritems():
+            if v is None:
+                continue
+            sio.write("\n         %s=%s"
+                      % (k.encode('utf-8'), quoteattr(v).encode('utf-8')))
+        sio.write("\n         />\n")
+    sio.write("</entries>\n")
+    return sio.getvalue()
+
+def load_entries(text):
+    ch = EntriesHandler()
+    try:
+        parseString(text, ch)
+    except FoundXMLPickle:
+        from zope.xmlpickle import loads
+        return loads(text)
+    else:
+        return ch.entries
+
+
+class EntriesHandler(ContentHandler):
+    def __init__(self):
+        self.first = True
+        self.stack = []
+        self.entries = {}
+
+    def startElement(self, name, attrs):
+        if self.first:
+            if name == "pickle":
+                raise FoundXMLPickle()
+            elif name != "entries":
+                raise InvalidEntriesFile()
+            else:
+                self.first = False
+        if name == "entry":
+            if self.stack[-1] != "entries":
+                raise InvalidEntriesFile("illegal element nesting")
+            else:
+                entryname = attrs.getValue("name")
+                entry = {}
+                for n in attrs.getNames():
+                    if n != "name":
+                        entry[n] = attrs.getValue(n)
+                self.entries[entryname] = entry
+        elif name == "entries":
+            if self.stack:
+                raise InvalidEntriesFile(
+                    "<entries> must be the document element")
+        else:
+            raise InvalidEntriesFile("unknown element <%s>" % name)
+        self.stack.append(name)
+
+    def endElement(self, name):
+        old = self.stack.pop()
+        assert name == old, "%r != %r" % (name, old)
+
+    def characters(self, data):
+        if data.strip():
+            raise InvalidEntriesFile(
+                "arbitrary character data not supported: %r" % data.strip())
+
+
+class FoundXMLPickle(Exception):
+    """Raised by EntriesHandler when the document appears to be an XML
+    pickle."""
+
+class InvalidEntriesFile(Exception):
+    """Raised by EntriesHandler when the document has an unsupposed
+    document element."""

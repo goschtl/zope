@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Metadata class.
 
-$Id: test_metadata.py,v 1.5 2003/07/25 19:34:51 fdrake Exp $
+$Id: test_metadata.py,v 1.6 2003/07/25 20:18:50 fdrake Exp $
 """
 
 import os
@@ -23,7 +23,7 @@ from os.path import dirname, isfile, join
 
 from zope.xmlpickle import loads
 
-from zope.fssync.metadata import Metadata
+from zope.fssync.metadata import Metadata, load_entries
 from zope.fssync.tests.tempfiles import TempFiles
 
 class TestMetadata(TempFiles):
@@ -61,13 +61,13 @@ class TestMetadata(TempFiles):
         efile = join(dir, "@@Zope", "Entries.xml")
         self.assert_(isfile(efile))
         data = self.readfile(efile)
-        entries = loads(data)
+        entries = load_entries(data)
         self.assertEqual(entries, {"foo": {"hello": "world"}})
         md.getentry(foo).clear()
         md.flush()
         self.assert_(isfile(efile))
         data = self.readfile(efile)
-        entries = loads(data)
+        entries = load_entries(data)
         self.assertEqual(entries, {})
 
 def test_suite():

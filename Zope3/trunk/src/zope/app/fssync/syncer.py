@@ -13,23 +13,18 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.26 2003/07/18 13:39:04 fdrake Exp $
+$Id: syncer.py,v 1.27 2003/07/25 20:18:53 fdrake Exp $
 """
 
 import os
 
 from zope.component import queryAdapter, getService
-from zope.xmlpickle import dumps, loads
-from zope.app.interfaces.fssync \
-     import IObjectEntry, IObjectDirectory, IObjectFile
+from zope.app.interfaces.fssync import IObjectDirectory, IObjectFile
 
-from zope.app.interfaces.container import IContainer
-from zope.configuration.name import resolve
-from zope.app.fssync.classes import Default
 from zope.app.traversing import getPath
 from zope.app.fssync.fsregistry import getSynchronizer
-from zope.app.interfaces.file import IFileFactory
-from zope.proxy import removeAllProxies
+from zope.fssync import metadata
+
 
 def readFile(path, mode="rb"):
     f = open(path, mode)
@@ -46,10 +41,10 @@ def writeFile(data, path, mode="wb"):
         f.close()
 
 def loadFile(path):
-    return loads(readFile(path, "r"))
+    return metadata.load_entries(readFile(path, "r"))
 
 def dumpFile(obj, path):
-    writeFile(dumps(obj), path, "w")
+    writeFile(metadata.dump_entries(obj), path, "w")
 
 def toFS(ob, name, location):
     """Check an object out to the file system
