@@ -35,7 +35,7 @@ class ConfigTestCase(unittest.TestCase):
         cf = config.Configuration(path)
         self.assertEqual(
             cf.location_maps,
-            ["cvs://cvs.example.org/cvsroot:module/package/PACAGES.txt",
+            ["cvs://cvs.example.org/cvsroot:module/package/PACKAGES.txt",
              os.path.join(here, "relative/path.txt")])
 
     def test_constructor_bad_config_setting(self):
