@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_browserwidget.py,v 1.3 2004/04/24 23:19:43 srichter Exp $
+$Id: test_browserwidget.py,v 1.4 2004/05/07 19:43:26 garrett Exp $
 """
 import os
 import unittest
@@ -38,11 +38,11 @@ class BrowserWidgetTest(PlacelessSetup,
     _FieldFactory = Text
     _WidgetFactory = BrowserWidget
 
-    def setUpContent(self, desc=u''):
+    def setUpContent(self, desc=u'', title=u'Foo Title'):
         class ITestContent(Interface):
             foo = self._FieldFactory(
-                    title = u"Foo Title",
-                    description = desc,
+                    title=title,
+                    description=desc,
                     )
         class TestObject:
             implements(ITestContent)
@@ -88,20 +88,12 @@ class BrowserWidgetTest(PlacelessSetup,
         self.verifyResult(self._widget.hidden(), check_list)
 
     def testLabel(self):
-        label = ' '.join(self._widget.label().strip().split())
-        self.assertEqual(label, '<label for="field.foo">Foo Title</label>')
+        self.setUpContent(title=u'Foo:')
+        self.assertEqual(self._widget.label, u'Foo:')
 
-        self.setUpContent(desc=u"Foo Description")
-        label = ' '.join(self._widget.label().strip().split())
-        self.assertEqual(label,
-                         '<label for="field.foo" title="Foo Description">'
-                         'Foo Title</label>'
-                         )
-
-    def testDescription(self):
+    def testHint(self):
         self.setUpContent(desc=u'Foo Description')
-        description = ' '.join(self._widget.description.strip().split())
-        self.assertEqual(description, u'Foo Description')
+        self.assertEqual(self._widget.hint, u'Foo Description')
 
     def testTranslatedLabel(self):
         path = os.path.dirname(zope.app.form.browser.tests.__file__)
@@ -110,26 +102,8 @@ class BrowserWidgetTest(PlacelessSetup,
         domain = TranslationDomain('zope')
         domain.addCatalog(catalog)
         ztapi.provideUtility(ITranslationDomain, domain, 'zope')
-        label = ' '.join(self._widget.label().strip().split())
-        self.assertEqual(label, '<label for="field.foo">oofay itletay</label>')
+        self.assertEqual(self._widget.label, 'oofay itletay')
 
-    def testRowRequired(self):
-        self._widget.request.form.clear()
-        self._widget.context.required = True
-        label = ''.join(self._widget.label().strip().split())
-        value = ''.join(self._widget().strip().split())
-        row = ''.join(self._widget.row().strip().split())
-        self.assertEqual(row, '<divclass="labelrequired">%s</div>'
-                              '<divclass="field">%s</div>' % (label, value))
-
-    def testRowNonRequired(self):
-        self._widget.request.form.clear()
-        self._widget.context.required = False
-        label = ''.join(self._widget.label().strip().split())
-        value = ''.join(self._widget().strip().split())
-        row = ''.join(self._widget.row().strip().split())
-        self.assertEqual(row, '<divclass="label">%s</div>'
-                              '<divclass="field">%s</div>' % (label, value))
 
 class TestWidget(BrowserWidget):
 

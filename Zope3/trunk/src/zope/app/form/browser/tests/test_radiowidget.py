@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_radiowidget.py,v 1.3 2004/04/24 23:19:43 srichter Exp $
+$Id: test_radiowidget.py,v 1.4 2004/05/07 19:43:26 garrett Exp $
 """
 import os
 import unittest, doctest
@@ -33,7 +33,7 @@ import zope.app.form.browser.tests
 
 class RadioWidgetTest(BrowserWidgetTest):
     """Documents and tests the radio widget.
-        
+
         >>> verifyClass(IInputWidget, RadioWidget)
         True
     """
@@ -41,11 +41,11 @@ class RadioWidgetTest(BrowserWidgetTest):
     _FieldFactory = Choice
     _WidgetFactory = RadioWidget
 
-    def setUpContent(self, desc=u''):
+    def setUpContent(self, desc=u'', title=u'Foo Title'):
         class ITestContent(Interface):
             foo = self._FieldFactory(
-                    title = u"Foo Title",
-                    description = desc,
+                    title=title,
+                    description=desc,
                     values=(u'foo', u'bar')
                     )
         class TestObject:
@@ -101,33 +101,6 @@ class RadioWidgetTest(BrowserWidgetTest):
         self._widget.extra = 'style="color: red"'
         self.verifyResult(self._widget.hidden(), check_list)
 
-    def testLabel(self):
-        self.assertEqual(self._widget.label(),
-                         '<label for="field.foo">Foo Title</label>')
-
-    def testTranslatedLabel(self):
-        path = os.path.dirname(zope.app.form.browser.tests.__file__)
-        catalog = GettextMessageCatalog(
-            'pl', 'zope', os.path.join(path, 'testlabeltranslation.mo'))
-        domain = TranslationDomain('zope')
-        domain.addCatalog(catalog)
-        ztapi.provideUtility(ITranslationDomain, domain, 'zope')
-        label = ' '.join(self._widget.label().strip().split())
-        self.assertEqual(label, '<label for="field.foo">oofay itletay</label>')
-
-    def testRowRequired(self):
-        self._widget.request.form.clear()
-        self._widget.context.required = True
-        self.verifyResultMissing(self._widget(),
-                          ['<input name="field.foo-empty-marker" '
-                           'type="hidden" value="1" />\n</div>'])
-
-    def testRowNonRequired(self):
-        self._widget.request.form.clear()
-        self._widget.context.required = False
-        self.verifyResult(self._widget(),
-                          ['<input name="field.foo-empty-marker" '
-                           'type="hidden" value="1" />\n</div>'])
 
 def test_suite():
     return unittest.TestSuite((

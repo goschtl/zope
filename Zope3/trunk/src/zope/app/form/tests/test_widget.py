@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic Widget Tests
 
-$Id: test_widget.py,v 1.9 2004/03/18 17:01:12 philikon Exp $
+$Id: test_widget.py,v 1.10 2004/05/07 19:43:26 garrett Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
@@ -53,9 +53,9 @@ class TestWidget:
         
         >>> widget.name
         'field.Test'
-        >>> widget.title
+        >>> widget.label
         'My Test Context'
-        >>> widget.description
+        >>> widget.hint
         'A test context.'
         >>> widget.visible
         True

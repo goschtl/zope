@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_multicheckboxwidget.py,v 1.4 2004/05/06 16:13:41 poster Exp $
+$Id: test_multicheckboxwidget.py,v 1.5 2004/05/07 19:43:26 garrett Exp $
 """
 import unittest, doctest
 from zope.interface import Interface, implements
@@ -34,10 +34,10 @@ class MultiCheckBoxWidgetTest(BrowserWidgetTest):
     _WidgetFactory = MultiCheckBoxWidget
     _FieldFactory = List
 
-    def setUpContent(self, desc=u''):
+    def setUpContent(self, desc=u'', title=u'Foo Title'):
         class ITestContent(Interface):
             foo = self._FieldFactory(
-                    title = u'Foo Title',
+                    title=title,
                     description=desc,
                     value_type=Choice(values=[u'foo', u'bar'])
                     )

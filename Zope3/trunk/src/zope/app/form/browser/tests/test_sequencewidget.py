@@ -13,7 +13,7 @@
 ##############################################################################
 """Sequence Field Widget tests.
 
-$Id: test_sequencewidget.py,v 1.4 2004/05/06 16:13:41 poster Exp $
+$Id: test_sequencewidget.py,v 1.5 2004/05/07 19:43:26 garrett Exp $
 """
 import unittest, doctest
 
@@ -41,11 +41,11 @@ class SequenceWidgetTest(BrowserWidgetTest):
         True
     """
 
-    def setUpContent(self, desc=u''):
+    def setUpContent(self, desc=u'', title=u'Foo Title'):
         class ITestContent(Interface):
             foo = self._FieldFactory(
-                    title = u"Foo Title",
-                    description = desc,
+                    title=title,
+                    description=desc,
                     )
         class TestObject:
             implements(ITestContent)
