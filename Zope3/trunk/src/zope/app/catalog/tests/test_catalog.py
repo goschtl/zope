@@ -15,7 +15,7 @@
 
 Note that indexes &c already have test suites, we only have to check that
 a catalog passes on events that it receives.
-$Id: test_catalog.py,v 1.5 2003/07/13 08:30:01 anthony Exp $
+$Id: test_catalog.py,v 1.6 2003/07/14 08:31:09 anthony Exp $
 """
 
 from __future__  import generators
@@ -27,7 +27,7 @@ from zope.app.interfaces.index.field import IUIFieldCatalogIndex
 from zope.app.interfaces.catalog.index import ICatalogIndex
 from zope.app.interfaces.event import ISubscriber
 from zope.app.interfaces.services.hub import IObjectHub
-from zope.index.interfaces.index import ISimpleQuery
+from zope.index.interfaces import ISimpleQuery
 
 from zope.app.catalog.catalog import Catalog
 from zope.app.tests.placelesssetup import PlacelessSetup

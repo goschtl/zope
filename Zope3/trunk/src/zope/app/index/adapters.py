@@ -1,4 +1,4 @@
-from zope.index.interfaces.index import IQuerying, ISimpleQuery
+from zope.index.interfaces import IQuerying, ISimpleQuery
 
 
 class SimpleQuery:

@@ -14,7 +14,7 @@ from zope.app.interfaces.services.utility import ILocalUtility
 
 from zope.app.interfaces.container import IDeleteNotifiable, IAddNotifiable
 from zope.app.interfaces.container import IContainer
-from zope.index.interfaces.index import ISimpleQuery
+from zope.index.interfaces import ISimpleQuery
 
 from zope.app.container.sample import SampleContainer
 
