@@ -18,4 +18,8 @@
       event_types = "zope.app.interfaces.event.IObjectCreatedEvent"
       />
 
+  <event:subscribe
+    subscriber=".creatorannotator.CreatorAnnotator"
+    event_types="zope.app.interfaces.event.IObjectModifiedEvent zope.app.interfaces.event.IObjectCreatedEvent"/>
+
 </zopeConfigure>

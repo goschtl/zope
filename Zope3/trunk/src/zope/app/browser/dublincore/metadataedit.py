@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadataedit.py,v 1.3 2002/12/30 21:42:19 jeremy Exp $
+$Id: metadataedit.py,v 1.4 2003/03/27 12:51:46 ctheune Exp $
 """
 
 from zope.component import getAdapter
@@ -44,6 +44,7 @@ class MetaDataEdit:
             'dcdescription': dc.description,
             'modified': dc.modified,
             'created': dc.created,
+            'creators': dc.creators
             }
 
 __doc__ = MetaDataEdit.__doc__ + __doc__
