@@ -2,10 +2,13 @@
 
   <directives namespace="http://namespaces.zope.org/zope">
 
-    <directive name="adapter" attributes="factory provides for permission"
-       handler="Zope.App.ComponentArchitecture.metaConfigure.adapter" />
+    <directive 
+       name="adapter"
+       attributes="factory provides for permission name"
+       handler="Zope.App.ComponentArchitecture.metaConfigure.adapter"
+       />
 
-    <directive name="utility" attributes="component provides permission"
+    <directive name="utility" attributes="component provides permission name"
        handler="Zope.App.ComponentArchitecture.metaConfigure.utility" />
 
     <directive name="factory" attributes="component id"

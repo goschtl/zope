@@ -52,7 +52,7 @@ def managerHandler(methodName, *args, **kwargs):
     method=getattr(getServiceManager(None), methodName)
     method(*args, **kwargs)
 
-def adapter(_context, factory, provides, for_=None, permission=None):
+def adapter(_context, factory, provides, for_=None, permission=None, name=''):
     if for_ is not None: for_ = _context.resolve(for_)
     provides = _context.resolve(provides)
     factory = map(_context.resolve, factory.split())
@@ -64,10 +64,10 @@ def adapter(_context, factory, provides, for_=None, permission=None):
         factory.append(lambda c: Proxy(c, checker))
     actions=[
         Action(
-            discriminator = ('adapter', for_, provides),
+            discriminator = ('adapter', for_, provides, name),
             callable = checkingHandler,
             args = (permission, 'Adapters', 'provideAdapter', 
-                    for_, provides, factory),
+                    for_, provides, factory, name),
                ),
         Action(
             discriminator = None,
@@ -90,7 +90,8 @@ def adapter(_context, factory, provides, for_=None, permission=None):
     return actions
 
 
-def utility(_context, provides, component=None, factory=None, permission=None):
+def utility(_context, provides, component=None, factory=None,
+            permission=None, name=''):
     provides = _context.resolve(provides)
 
     if factory:
@@ -110,10 +111,10 @@ def utility(_context, provides, component=None, factory=None, permission=None):
 
     return [
         Action(
-            discriminator = ('utility', provides),
+            discriminator = ('utility', provides, name),
             callable = checkingHandler,
             args = (permission, 'Utilities', 'provideUtility',
-                    provides, component),
+                    provides, component, name),
             ),
         Action(
             discriminator = None,

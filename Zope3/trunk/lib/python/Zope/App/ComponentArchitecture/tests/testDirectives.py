@@ -77,6 +77,33 @@ class Test(PlacelessSetup, unittest.TestCase):
         
         self.assertEqual(getAdapter(Content(), IApp).__class__, Comp)
 
+    def testNamedAdapter(self):
+        
+        from Zope.ComponentArchitecture import getAdapter, queryAdapter
+
+        # Full import is critical!
+        from Zope.ComponentArchitecture.tests.TestComponents \
+             import Content, IApp, Comp
+             
+        self.testAdapter()
+        self.assertEqual(getAdapter(Content(), IApp).__class__, Comp)
+        self.assertEqual(queryAdapter(Content(), IV, None, name='test'),
+                         None)
+
+        xmlconfig(StringIO(template % (
+            """
+            <adapter
+              factory="Zope.ComponentArchitecture.tests.TestComponents.Comp"
+              provides="Zope.ComponentArchitecture.tests.TestComponents.IApp"
+              for="Zope.ComponentArchitecture.tests.TestComponents.IContent"
+              name="test"
+              />
+            """
+            ))) 
+        
+        self.assertEqual(getAdapter(Content(), IApp, name="test").__class__,
+                         Comp)
+
     def testProtectedAdapter(self):
         from Zope.ComponentArchitecture import getAdapter, queryAdapter
 
@@ -135,6 +162,29 @@ class Test(PlacelessSetup, unittest.TestCase):
             ))) 
         
         self.assertEqual(getUtility(None, IApp), comp)
+
+    def testNamedUtility(self):
+        from Zope.ComponentArchitecture import getUtility, queryUtility
+
+        # Full import is critical!
+        from Zope.ComponentArchitecture.tests.TestComponents \
+             import IApp, comp
+
+        self.testUtility()
+        
+        self.assertEqual(queryUtility(None, IV, None, name='test'), None)
+
+        xmlconfig(StringIO(template % (
+            """
+            <utility
+              component="Zope.ComponentArchitecture.tests.TestComponents.comp"
+              provides="Zope.ComponentArchitecture.tests.TestComponents.IApp"
+              name="test"
+              />
+            """
+            ))) 
+        
+        self.assertEqual(getUtility(None, IApp, "test"), comp)
 
     def testUtilityFactory(self):
         from Zope.ComponentArchitecture import getUtility, queryUtility
