@@ -12,12 +12,11 @@
 #
 ##############################################################################
 """
-$Id: testListField.py,v 1.4 2002/07/14 20:00:56 faassen Exp $
+$Id: testListField.py,v 1.5 2002/07/14 21:54:42 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import List, Int, Float, ErrorNames
 from testField import FieldTest
-from Schema.Exceptions import ValidationError
 
 class ListTest(FieldTest):
     """Test the List Field."""
@@ -25,23 +24,17 @@ class ListTest(FieldTest):
     def testValidate(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0)
-        try:
-            field.validate(None)
-            field.validate([])
-            field.validate([1, 2])
-            field.validate([3,])
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
-            
+        field.validate(None)
+        field.validate([])
+        field.validate([1, 2])
+        field.validate([3,])
+        
     def testValidateRequired(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=1)
-        try:
-            field.validate([])
-            field.validate([1, 2])
-            field.validate([3,])
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate([])
+        field.validate([1, 2])
+        field.validate([3,])
             
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
@@ -49,12 +42,10 @@ class ListTest(FieldTest):
     def testValidateMinValues(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0, min_values=2)
-        try:
-            field.validate(None)
-            field.validate([1, 2])
-            field.validate([1, 2, 3])
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate([1, 2])
+        field.validate([1, 2, 3])
+    
         self.assertRaisesErrorNames(ErrorNames.NotEnoughElements,
                                     field.validate, [])
         self.assertRaisesErrorNames(ErrorNames.NotEnoughElements,
@@ -63,12 +54,10 @@ class ListTest(FieldTest):
     def testValidateMaxValues(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0, max_values=2)
-        try:
-            field.validate(None)
-            field.validate([])
-            field.validate([1, 2])
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate([])
+        field.validate([1, 2])
+    
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
                                     field.validate, [1, 2, 3, 4])
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
@@ -77,12 +66,10 @@ class ListTest(FieldTest):
     def testValidateMinValuesAndMaxValues(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0, min_values=1, max_values=2)
-        try:
-            field.validate(None)
-            field.validate([1, ])
-            field.validate([1, 2])
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate([1, ])
+        field.validate([1, 2])
+
         self.assertRaisesErrorNames(ErrorNames.NotEnoughElements,
                                     field.validate, [])
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
@@ -91,17 +78,14 @@ class ListTest(FieldTest):
     def testValidateValueTypes(self):
         field = List(id="field", title='List field', description='',
                         readonly=0, required=0, value_types=(Int, Float))
-        try:
-            field.validate(None)
-            field.validate([5.3,])
-            field.validate([2, 2.3])
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate([5.3,])
+        field.validate([2, 2.3])
+
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
                                     field.validate, ['',] )
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
                                     field.validate, [2, ''] )
-
 
 def test_suite():
     return TestSuite((

@@ -12,36 +12,29 @@
 #
 ##############################################################################
 """
-$Id: testBoolField.py,v 1.1 2002/07/14 18:51:27 faassen Exp $
+$Id: testBoolField.py,v 1.2 2002/07/14 21:54:42 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from Schema import Bool, ErrorNames, ValidationError
+from Schema import Bool, ErrorNames
 from testField import FieldTest
-from Schema.Exceptions import ValidationError
 
 class BoolTest(FieldTest):
     """Test the Bool Field."""
 
     def testValidate(self):
         field = Bool(id="field", title='Bool field', description='',
-                        readonly=0, required=0)
-        try:
-            field.validate(None)
-            field.validate(1)
-            field.validate(0)
-            field.validate(10)
-            field.validate(-10)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+                        readonly=0, required=0)        
+        field.validate(None)
+        field.validate(1)
+        field.validate(0)
+        field.validate(10)
+        field.validate(-10)
 
     def testValidateRequired(self):
         field = Bool(id="field", title='Bool field', description='',
                         readonly=0, required=1)
-        try:
-            field.validate(1)
-            field.validate(0)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(1)
+        field.validate(0)
 
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
@@ -49,12 +42,9 @@ class BoolTest(FieldTest):
     def testAllowedValues(self):
         field = Bool(id="field", title='Bool field', description='',
                         readonly=0, required=0, allowed_values=(0,))
-        try:
-            field.validate(None)
-            field.validate(0)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
-        
+        field.validate(None)
+        field.validate(0)
+
         self.assertRaisesErrorNames(ErrorNames.InvalidValue,
                                     field.validate, 1)
 

@@ -12,12 +12,11 @@
 #
 ##############################################################################
 """
-$Id: testDictField.py,v 1.2 2002/07/14 20:00:56 faassen Exp $
+$Id: testDictField.py,v 1.3 2002/07/14 21:54:42 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import Dict, Int, Float, ErrorNames
 from testField import FieldTest
-from Schema.Exceptions import ValidationError
 
 class DictTest(FieldTest):
     """Test the Dict Field."""
@@ -25,36 +24,29 @@ class DictTest(FieldTest):
     def testValidate(self):
         field = Dict(id="field", title='Dict field',
                            description='', readonly=0, required=0)
-        try:
-            field.validate(None)
-            field.validate({})
-            field.validate({1: 'foo'})
-            field.validate({'a': 1})
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate({})
+        field.validate({1: 'foo'})
+        field.validate({'a': 1})
             
     def testValidateRequired(self):
         field = Dict(id="field", title='Dict field',
                            description='', readonly=0, required=1)
-        try:
-            field.validate({})
-            field.validate({1: 'foo'})
-            field.validate({'a': 1})
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate({})
+        field.validate({1: 'foo'})
+        field.validate({'a': 1})
+    
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
 
     def testValidateMinValues(self):
         field = Dict(id="field", title='Dict field',
                            description='', readonly=0, required=0,
-                           min_values=1)
-        try:
-            field.validate(None)
-            field.validate({1: 'a'})
-            field.validate({1: 'a', 2: 'b'})
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+                           min_values=1)    
+        field.validate(None)
+        field.validate({1: 'a'})
+        field.validate({1: 'a', 2: 'b'})
+    
         self.assertRaisesErrorNames(ErrorNames.NotEnoughElements,
                                     field.validate, {})
 
@@ -62,12 +54,10 @@ class DictTest(FieldTest):
         field = Dict(id="field", title='Dict field',
                            description='', readonly=0, required=0,
                            max_values=1)
-        try:
-            field.validate(None)
-            field.validate({})
-            field.validate({1: 'a'})
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate({})
+        field.validate({1: 'a'})
+    
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
                                     field.validate, {1: 'a', 2: 'b'})
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
@@ -77,12 +67,10 @@ class DictTest(FieldTest):
         field = Dict(id="field", title='Dict field',
                            description='', readonly=0, required=0,
                            min_values=1, max_values=2)
-        try:
-            field.validate(None)
-            field.validate({1: 'a'})
-            field.validate({1: 'a', 2: 'b'})
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate({1: 'a'})
+        field.validate({1: 'a', 2: 'b'})
+    
         self.assertRaisesErrorNames(ErrorNames.NotEnoughElements,
                                     field.validate, {})
         self.assertRaisesErrorNames(ErrorNames.TooManyElements,
@@ -92,13 +80,10 @@ class DictTest(FieldTest):
         field = Dict(id="field", title='Dict field',
                            description='', readonly=0, required=0,
                            value_types=(Int, Float))
-        #try:
         field.validate(None)
         field.validate({'a': 5.3})
         field.validate({'a': 2, 'b': 2.3})
-
-        #except ValidationError, e:
-        #    self.unexpectedValidationError(e)
+        
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
                                     field.validate, {1: ''} )
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
@@ -108,12 +93,10 @@ class DictTest(FieldTest):
         field = Dict(id="field", title='Dict field',
                            description='', readonly=0, required=0,
                            key_types=(Int, Float))
-        try:
-            field.validate(None)
-            field.validate({5.3: 'a'})
-            field.validate({2: 'a', 2.3: 'b'})
-        except ValidationError, e:
-            self.unexpectedValidsationError(e)
+        field.validate(None)
+        field.validate({5.3: 'a'})
+        field.validate({2: 'a', 2.3: 'b'})
+    
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,
                                     field.validate, {'': 1} )
         self.assertRaisesErrorNames(ErrorNames.WrongContainedType,

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testField.py,v 1.5 2002/07/14 18:51:27 faassen Exp $
+$Id: testField.py,v 1.6 2002/07/14 21:54:42 faassen Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Schema import Field, IField, ErrorNames
@@ -30,31 +30,22 @@ class FieldTest(TestCase):
             return
         self.fail('Expected ValidationError')
 
-    def unexpectedValidationError(self, e):
-        self.fail("Expected no ValidationError, but we got %s" % e.error_name)
-        
     def testValidate(self):
         field = Field(id="field", title='Not required field', description='',
                       readonly=0, required=0)
-        try:
-            field.validate(None)
-            field.validate('foo')
-            field.validate(1)
-            field.validate(0)
-            field.validate('')
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate('foo')
+        field.validate(1)
+        field.validate(0)
+        field.validate('')
     
     def testValidateRequired(self):
         field = Field(id="field", title='Required field', description='',
                       readonly=0, required=1)
-        try:
-            field.validate('foo')
-            field.validate(1)
-            field.validate(0)
-            field.validate('')
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate('foo')
+        field.validate(1)
+        field.validate(0)
+        field.validate('')
             
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)

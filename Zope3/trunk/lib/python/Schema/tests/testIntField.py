@@ -12,12 +12,11 @@
 #
 ##############################################################################
 """
-$Id: testIntField.py,v 1.1 2002/07/14 18:51:27 faassen Exp $
+$Id: testIntField.py,v 1.2 2002/07/14 21:54:42 faassen Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Schema import Int, ErrorNames
 from testField import FieldTest
-from Schema.Exceptions import ValidationError
 
 class IntTest(FieldTest):
     """Test the Int Field."""
@@ -25,75 +24,58 @@ class IntTest(FieldTest):
     def testValidate(self):
         field = Int(id="field", title='Int field', description='',
                         readonly=0, required=0)
-        try:
-            field.validate(None)
-            field.validate(10)
-            field.validate(0)
-            field.validate(-1)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
-            
+        field.validate(None)
+        field.validate(10)
+        field.validate(0)
+        field.validate(-1)
+        
     def testValidateRequired(self):
         field = Int(id="field", title='Int field', description='',
-                        readonly=0, required=1)
-        try:
-            field.validate(10)
-            field.validate(0)
-            field.validate(-1)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
-            
+                    readonly=0, required=1)
+        field.validate(10)
+        field.validate(0)
+        field.validate(-1)
+        
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
 
     def testAllowedValues(self):
         field = Int(id="field", title='Int field', description='',
                         readonly=0, required=0, allowed_values=(-1, 2))
-        try:
-            field.validate(None)
-            field.validate(2)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
-            
+        field.validate(None)
+        field.validate(2)
+    
         self.assertRaisesErrorNames(ErrorNames.InvalidValue,
                                     field.validate, 4)
 
     def testValidateMin(self):
         field = Int(id="field", title='Int field', description='',
                         readonly=0, required=0, min=10)
-        try:
-            field.validate(None)
-            field.validate(10)
-            field.validate(20)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
+        field.validate(None)
+        field.validate(10)
+        field.validate(20)
+        
         self.assertRaisesErrorNames(ErrorNames.TooSmall, field.validate, 9)
         self.assertRaisesErrorNames(ErrorNames.TooSmall, field.validate, -10)
 
     def testValidateMax(self):
         field = Int(id="field", title='Int field', description='',
                         readonly=0, required=0, max=10)
-        try:
-            field.validate(None)
-            field.validate(5)
-            field.validate(9)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
-            
+        field.validate(None)
+        field.validate(5)
+        field.validate(9)
+    
         self.assertRaisesErrorNames(ErrorNames.TooBig, field.validate, 11)
         self.assertRaisesErrorNames(ErrorNames.TooBig, field.validate, 20)
 
     def testValidateMinAndMax(self):
         field = Int(id="field", title='Int field', description='',
                         readonly=0, required=0, min=0, max=10)
-        try:
-            field.validate(None)
-            field.validate(0)
-            field.validate(5)
-            field.validate(10)
-        except ValidationError, e:
-            self.unexpectedValidationError(e)
-            
+        field.validate(None)
+        field.validate(0)
+        field.validate(5)
+        field.validate(10)
+
         self.assertRaisesErrorNames(ErrorNames.TooSmall, field.validate, -10)
         self.assertRaisesErrorNames(ErrorNames.TooSmall, field.validate, -1)
         self.assertRaisesErrorNames(ErrorNames.TooBig, field.validate, 11)
