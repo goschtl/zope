@@ -2,7 +2,7 @@
 
   <layer name="tracker" />
 
-  <skin name="tracker" layers="tracker zope.app.rotterdam.rotterdam" />
+  <skin name="tracker" layers="tracker zope.app.rotterdam.rotterdam default" />
 
   <page 
       for="*"
