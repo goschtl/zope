@@ -65,9 +65,14 @@ Zope Changes
     - Removed session-specific mapping interfaces. The two that were not yet
       available in zope.interface.common.mapping were added there.
 
-    - Converting Service-managed compoents to utilities:
+    - Converting Service-managed components to be utilities:
 
       o Code Interpreter
+
+      o DAV Schema. The interface representing the DAV schema is the
+        utility. For it to work correctly, I gave all DAV schemas the
+        interface type IDAVNamespace. This is also the interface through which
+        the utilities are found in the utility service.
 
       o Language Negotiator
 

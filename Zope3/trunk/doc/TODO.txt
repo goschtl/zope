@@ -60,8 +60,6 @@ Things to do for the next release (in no particular order)
   - SQL Database connections (Mostly done, but Madhavi and Mohan
     working on new UI).
 
-  - DAV schema
-
   - Interface (Murthy and Suresh are working on these)
 
   - Vocabularies (warn Gary and Casey :)
