@@ -13,7 +13,7 @@
 ##############################################################################
 """Tools View
 
-$Id: tools.py,v 1.4 2004/04/06 08:34:07 hdima Exp $
+$Id: tools.py,v 1.5 2004/04/17 14:33:38 srichter Exp $
 """
 from zope.interface import implements, Attribute
 from zope.interface.interfaces import IInterface
@@ -21,9 +21,10 @@ from zope.component.interfaces import IFactory
 from zope.app.pagetemplate.simpleviewclass import simple as SimpleView
 from zope.app.publisher.interfaces.browser import IBrowserView
 from zope.app import zapi
+from zope.app.copypastemove import rename
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.site.folder import SiteManagementFolder 
-from zope.app.servicenames import Services
+from zope.app.servicenames import Services, Utilities
 from zope.app.utility.browser import AddRegistration
 from zope.app.utility import UtilityRegistration
 from zope.app.site.browser import ComponentAdding
@@ -32,7 +33,6 @@ from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.site.interfaces import ILocalService
-from zope.app.copypastemove import rename
 from zope.app.site.browser import ServiceAdding
 
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -232,7 +232,7 @@ class UtilityToolView(SimpleView):
 
     def delete(self):
         for name in self.request.form['selected']:
-            utils = zapi.getService(self, 'Utilities')
+            utils = zapi.getService(self, Utilities)
             reg = utils.queryRegistrations(name, self.interface)
 
             del_objs = []
@@ -318,19 +318,20 @@ class UtilityToolView(SimpleView):
         return status
     
     def getComponents(self):
-        utils = zapi.getService(self.context, 'Utilities')
+        utils = zapi.getService(self.context, Utilities)
         items = []
-        for iface, reg_name, stack in \
-                utils.getRegisteredMatching(self.interface):
-            info = stack.info()
-            component = info[0]['registration'].getComponent()
-            parent = zapi.getParent(component)
+        for registration in [reg for reg in utils.registrations(localOnly=True)
+                             if reg.provided == self.interface]:
+
+            stack = utils.queryRegistrationsFor(registration)
+            parent = zapi.getParent(registration.component)
             items.append({
-                'name': reg_name,
-                'url': zapi.getPath(component),
+                'name': registration.name,
+                'url': zapi.getPath(registration.component),
                 'parent_url': zapi.getPath(parent),
                 'parent_name': zapi.name(parent),                
                 'active': stack.active()})
+
         return items
 
 
