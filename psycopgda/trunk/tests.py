@@ -150,6 +150,12 @@ class TestPsycopgTypeConversion(TestCase):
         self.assertRaises(ValueError, c, '2days')
         self.assertRaises(ValueError, c, '123')
 
+    def test_conv_string(self):
+        from psycopgda.adapter import _conv_string
+        self.assertEquals(_conv_string(''), u'')
+        self.assertEquals(_conv_string('c'), u'c')
+        self.assertEquals(_conv_string('\xc3\x82\xc2\xa2'), u'\xc2\xa2')
+        self.assertEquals(_conv_string('c\xc3\x82\xc2\xa2'), u'c\xc2\xa2')
 
 class TestPsycopgAdapter(TestCase):
 

@@ -21,7 +21,9 @@ from datetime import date, time, datetime, timedelta
 import psycopg
 import re
 
-# These OIDs are taken from pg_types.h from PostgreSQL headers.
+PG_ENCODING = 'utf8'
+
+# These OIDs are taken from include/server/pg_type.h from PostgreSQL headers.
 # Unfortunatelly psycopg does not export them as constants, and
 # we cannot use psycopg.FOO.values because they overlap.
 DATE_OID        = 1082
@@ -30,6 +32,12 @@ TIMETZ_OID      = 1266
 TIMESTAMP_OID   = 1114
 TIMESTAMPTZ_OID = 1184
 INTERVAL_OID    = 1186
+
+CHAR_OID = 18
+TEXT_OID = 25
+BPCHAR_OID = 1042
+VARCHAR_OID = 1043
+
 # The following ones are obsolete and we don't handle them
 #ABSTIME_OID     = 702
 #RELTIME_OID     = 703
@@ -255,6 +263,9 @@ def _conv_interval(s):
             return timedelta(days=d, hours=hr, minutes=mn, seconds=sc)
 
 
+def _conv_string(str):
+    return str.decode(PG_ENCODING)
+
 # User-defined types
 DATE = psycopg.new_type((DATE_OID,), "ZDATE", _conv_date)
 TIME = psycopg.new_type((TIME_OID,), "ZTIME", _conv_time)
@@ -263,6 +274,9 @@ TIMESTAMP = psycopg.new_type((TIMESTAMP_OID,), "ZTIMESTAMP", _conv_timestamp)
 TIMESTAMPTZ = psycopg.new_type((TIMESTAMPTZ_OID,), "ZTIMESTAMPTZ",
                                 _conv_timestamptz)
 INTERVAL = psycopg.new_type((INTERVAL_OID,), "ZINTERVAL", _conv_interval)
+
+STRING = psycopg.new_type((CHAR_OID, TEXT_OID, BPCHAR_OID, VARCHAR_OID),
+                          "ZSTRING", _conv_string)
 
 
 dsn2option_mapping = {'host': 'host',
@@ -306,3 +320,5 @@ class PsycopgAdapter(ZopeDatabaseAdapter):
         psycopg.register_type(TIMESTAMP)
         psycopg.register_type(TIMESTAMPTZ)
         psycopg.register_type(INTERVAL)
+        psycopg.register_type(STRING)
+            
