@@ -6,13 +6,13 @@
        once on a class; SimpleContent inherits from api.Viewable, so
        one directive suffices here -->
 
-  <five:viewable class=".simplecontent.SimpleContent" />
+  <five:traversable class=".simplecontent.SimpleContent" />
 
 
   <!-- this tests whether five:viewable can be called on a class that
        already provides __bobo_traverse__, such as our FancyContent -->
 
-  <five:viewable class=".fancycontent.FancyContent" />
+  <five:traversable class=".fancycontent.FancyContent" />
 
 
   <adapter
