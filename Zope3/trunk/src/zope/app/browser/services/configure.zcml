@@ -181,6 +181,12 @@
 
     </view>
 
+  <menuItems
+      menu="zmi_views"
+      for="zope.app.services.auth.IAuthenticationService">
+      <menuItem title="Contents" action="@@index.html"/>
+  </menuItems>
+
   <menuItem
        menu="add_service"
        for="zope.app.interfaces.container.IAdding"
