@@ -71,7 +71,53 @@ Bug Fixes
 * 321: TravelsalError after renaming or moving Sites with local services 
 
 * 323: Permission zope.Public in addfrom does not work
- 
+
+* 327: File type change clears object content
+
+* 328: site & Navigation tree & Virtual Host 
+
+* 332: Death to IContentContainer
+
+* 333: XML Tree doesn't load if some item contains non-ASCII characters 
+
+* 334: Failing RuntimeInfo tests 
+
+* 335: debug layer does not work with Zope3-trunk
+
+* 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
+
+* 339: Improvements to generated forms
+
+* 340: Adding a big file eats a lot of memory / memory leak? 
+
+* 343: Services API not backward compatible
+
+* 344: PAU registration error
+
+* 345: Using response.write should not involve unicode conversion
+
+* 348: ZCML hides import errors 
+
+* 350: ServerChannelBase does not update last_activity
+
+* 352: documentation for zope.app.form.interfaces.IInputWidget.validate is
+       wrong
+
+* 356: Copy and Paste does not handle exceptions raised by __setitem__ 
+
+* 360: MultiSelectWidget configured for ISet but creates list
+
+* 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
+
+* 369: DAV is hosed on the trunk
+
+* 370: ZCML: Second 'packages-includes' 
+
+* 371: OrderedMultiSelectWidget ignores setRenderedValue
+
+* 372: WidgetInputError.doc is broken
+
+* 373: Adding objects requires permission zope.app.dublincore.change 
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well.
