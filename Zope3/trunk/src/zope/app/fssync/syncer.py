@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.25 2003/07/18 04:18:25 fdrake Exp $
+$Id: syncer.py,v 1.26 2003/07/18 13:39:04 fdrake Exp $
 """
 
 import os
@@ -89,7 +89,9 @@ def toFS(ob, name, location):
     try:
         objectPath = str(getPath(ob))
     except (TypeError, KeyError):
-        objectPath = ''
+        # this case can be triggered for persistent objects that don't
+        # have a name in the content space (annotations, extras)
+        pass
     else:
         entries[name]['path'] = objectPath
 
@@ -118,25 +120,16 @@ def toFS(ob, name, location):
         annotation_dir = os.path.join(annotation_dir, name)
         if not os.path.exists(annotation_dir):
             os.mkdir(annotation_dir)
-
-        # XXX This doesn't allow an interface that's implemented as an
-        # adapter that uses annotations to store data to affect the
-        # serialized representation of the data.  Case in point: the
-        # IAnnotatable --> ZopeDublinCore adapter
-        # (zope.app.dublincore.annotatableadapter.ZDCAnnotationAdapter)
-        # uses a PersistentDict as the storage format, but could
-        # benefit by storing the data as RDF encoded in XML (for
-        # example).  Perhaps marker interfaces could be used on in
-        # PersistentDict instance to support this?
-
         for key in annotations:
             annotation = annotations[key]
             toFS(annotation, key, annotation_dir)
 
     # Handle data
     if IObjectFile.isImplementedBy(adapter):
+        assert not IObjectDirectory.isImplementedBy(adapter)
         # File
         data = ''
+        # XXX shouldn't need this if
         if not os.path.exists(path):
             data = adapter.getBody()
             writeFile(data, path)
