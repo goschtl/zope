@@ -16,13 +16,13 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.9 2003/05/18 18:06:45 jim Exp $
+$Id: __init__.py,v 1.10 2003/05/23 17:51:05 jim Exp $
 """
 __metaclass__ = type
 
 from zope.interface import moduleProvides
 from zope.security.proxy import Proxy, getChecker, getObject
-from zope.proxy.context.wrapper import getobject, getdict
+from zope.proxy.context.wrapper import getobject, getdict, getdictcreate
 from zope.proxy.context.wrapper import getcontext, getinnercontext
 from zope.proxy.context.wrapper import getinnerwrapper, getbaseobject
 from zope.proxy.context.wrapper import ContextDescriptor, ContextAware
@@ -47,6 +47,17 @@ def ContextWrapper(_ob, _parent, **kw):
         _ob = Proxy(makeWrapper(_ob, _parent, kw, checker), checker)
     else:
         _ob = makeWrapper(_ob, _parent, kw)
+
+    if type(_ob) in wrapperTypes:
+        #print 'wrapped', _ob
+        if getcontext(_ob) == _parent:
+            dict = getdictcreate(_ob)
+            #print 'avoided rewrapping', dict, kw
+            dict.update(kw)
+            return _ob
+
+
+
 
     return _ob
 
@@ -79,10 +90,14 @@ def getWrapperObject(_ob):
 def _contextWrapperChecker(ob):
     return selectChecker(getobject(ob))
 
-def getWrapperData(_ob):
+def getWrapperData(_ob, create=False):
     if type(_ob) is Proxy:
+        _orig = _ob
         _ob = getObject(_ob)
-    return getdict(_ob)
+    if create:
+        return getdictcreate(_ob)
+    else:
+        return getdict(_ob)
 
 def getInnerWrapperData(_ob):
     if type(_ob) is Proxy:
