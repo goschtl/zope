@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.9 2002/12/20 19:34:43 bwarsaw Exp $
+$Id: testEventService.py,v 1.10 2002/12/21 15:32:55 poster Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -35,13 +35,13 @@ from Zope.Exceptions import NotFoundError
 from Zope.Event import subscribe, unsubscribe, listSubscriptions, publish
 from Zope.Event import getEventService
 from Zope.Event.tests.subscriber import DummySubscriber, DummyFilter
-from Zope.Event.IObjectEvent import IObjectEvent
-from Zope.Event.IObjectEvent import IObjectAddedEvent
-from Zope.Event.IObjectEvent import IObjectRemovedEvent
-from Zope.Event.IObjectEvent import IObjectModifiedEvent
-from Zope.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
-from Zope.Event.ObjectEvent import ObjectAddedEvent
-from Zope.Event.GlobalEventService import GlobalEventService
+from Zope.App.Event.IObjectEvent import IObjectEvent
+from Zope.App.Event.IObjectEvent import IObjectAddedEvent
+from Zope.App.Event.IObjectEvent import IObjectRemovedEvent
+from Zope.App.Event.IObjectEvent import IObjectModifiedEvent
+from Zope.App.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
+from Zope.App.Event.ObjectEvent import ObjectAddedEvent
+from Zope.App.Event.GlobalEventService import GlobalEventService
 from Zope.Event.IEvent import IEvent
 from Zope.Event.ISubscriptionAware import ISubscriptionAware
 from Zope.App.OFS.Services.ConfigurationInterfaces \

@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: CachingService.py,v 1.8 2002/12/18 20:23:04 stevea Exp $
+$Id: CachingService.py,v 1.9 2002/12/21 15:32:54 poster Exp $
 """
 __metaclass__ = type
 
@@ -27,7 +27,7 @@ from Zope.App.OFS.Services.LocalEventService.ProtoServiceEventChannel \
         import ProtoServiceEventChannel
 from Zope.ContextWrapper import ContextMethod
 from Zope.Event.IEventChannel import IEventChannel
-from Zope.Event.IObjectEvent import IObjectModifiedEvent
+from Zope.App.Event.IObjectEvent import IObjectModifiedEvent
 
 
 class ILocalCachingService(ICachingService, IEventChannel,

@@ -13,12 +13,12 @@
 ##############################################################################
 """VFS ZPTPage Add View
 
-$Id: ZPTPageAdd.py,v 1.1 2002/12/20 10:31:49 srichter Exp $
+$Id: ZPTPageAdd.py,v 1.2 2002/12/21 15:32:53 poster Exp $
 """
 from Zope.Publisher.VFS.VFSView import VFSView
 
 from Zope.Event import publish
-from Zope.Event.ObjectEvent import ObjectCreatedEvent
+from Zope.App.Event.ObjectEvent import ObjectCreatedEvent
 
 from Zope.App.OFS.Container.IAdding import IAdding
 from Zope.App.OFS.Content.ZPTPage.ZPTPage import ZPTPage

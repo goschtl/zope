@@ -14,16 +14,16 @@
 """testObjectHub
 
 Revision information:
-$Id: testObjectHub.py,v 1.4 2002/12/05 21:32:37 stevea Exp $
+$Id: testObjectHub.py,v 1.5 2002/12/21 15:32:56 poster Exp $
 """
 
 import unittest, sys
 from ObjectHubSetup import ObjectHubSetup
 
-from Zope.Event.IObjectEvent\
+from Zope.App.Event.IObjectEvent\
         import IObjectAddedEvent, IObjectRemovedEvent, IObjectModifiedEvent,\
                IObjectMovedEvent
-from Zope.Event.ObjectEvent\
+from Zope.App.Event.ObjectEvent\
         import ObjectAddedEvent, ObjectModifiedEvent, ObjectRemovedEvent,\
                ObjectMovedEvent, ObjectCreatedEvent
 from Zope.Event.ISubscriber import ISubscriber

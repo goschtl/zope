@@ -13,12 +13,12 @@
 ##############################################################################
 """VFS Folder Add View
 
-$Id: FolderAdd.py,v 1.1 2002/12/20 10:31:47 srichter Exp $
+$Id: FolderAdd.py,v 1.2 2002/12/21 15:32:50 poster Exp $
 """
 from Zope.Publisher.VFS.VFSView import VFSView
 
 from Zope.Event import publish
-from Zope.Event.ObjectEvent import ObjectCreatedEvent
+from Zope.App.Event.ObjectEvent import ObjectCreatedEvent
 
 from Zope.App.OFS.Container.IAdding import IAdding
 from Zope.App.OFS.Content.Folder.Folder import Folder

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test suite for Zope.Event.Logger.
 
-$Id: testLogger.py,v 1.9 2002/12/20 15:58:21 gvanrossum Exp $
+$Id: testLogger.py,v 1.1 2002/12/21 15:32:45 poster Exp $
 """
 
 import unittest
@@ -22,11 +22,12 @@ import logging
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture import getServiceManager, getService
 
-from Zope.Event import globalSubscribe, unsubscribe, publish
-from Zope.Event.ObjectEvent import ObjectAddedEvent
-from Zope.Event.Logger import Logger
+from Zope.App.Event import globalSubscribe
+from Zope.Event import unsubscribe, publish
+from Zope.App.Event.ObjectEvent import ObjectAddedEvent
+from Zope.App.Event.Logger import Logger
 
-from Zope.Event.GlobalEventService import GlobalEventService
+from Zope.App.Event.GlobalEventService import GlobalEventService
 
 class DopeyHandler(logging.Handler):
 
@@ -45,7 +46,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         PlacelessSetup.setUp(self)
         from Zope.Event.IEventService import IEventService
         getServiceManager(None).defineService("Events", IEventService)
-        from Zope.Event.GlobalEventService import eventService
+        from Zope.App.Event.GlobalEventService import eventService
         getServiceManager(None).provideService("Events", eventService)
         # futz a handler in for testing
         self.logger = logging.getLogger("Event.Logger")
@@ -75,7 +76,7 @@ class TestLogger1(PlacelessSetup,unittest.TestCase):
         self.assertEqual(result.name, "Event.Logger")
         self.assertEqual(result.levelno, logging.INFO)
         self.assertEqual(result.getMessage(),
-                         "Zope.Event.ObjectEvent.ObjectAddedEvent: "
+                         "Zope.App.Event.ObjectEvent.ObjectAddedEvent: "
                          "XXX detail temporarily disabled\n")
         self.assertEqual(result.exc_info, None)
 
@@ -91,7 +92,7 @@ class TestLogger2(TestLogger1):
         self.assertEqual(result.name, "Event.Logger")
         self.assertEqual(result.levelno, logging.CRITICAL)
         self.assertEqual(result.getMessage(),
-                         "Zope.Event.ObjectEvent.ObjectAddedEvent: "
+                         "Zope.App.Event.ObjectEvent.ObjectAddedEvent: "
                          "XXX detail temporarily disabled\n")
         self.assertEqual(result.exc_info, None)
 

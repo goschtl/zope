@@ -37,7 +37,7 @@
 
   <event:subscribe 
       subscriber = ".DependencyChecker.CheckDependency"
-      event_types = "Zope.Event.IObjectEvent.IObjectRemovedEvent"
+      event_types = "Zope.App.Event.IObjectEvent.IObjectRemovedEvent"
       />
 
 

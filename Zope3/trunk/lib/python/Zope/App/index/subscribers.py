@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.5 2002/12/09 22:24:50 gvanrossum Exp $
+$Id: subscribers.py,v 1.6 2002/12/21 15:32:57 poster Exp $
 """
 __metaclass__ = type
 
@@ -33,7 +33,7 @@ from Interface import Interface
 from Persistence import Persistent
 
 from Zope.Event.ISubscriber import ISubscriber
-from Zope.Event.IObjectEvent import IObjectAddedEvent
+from Zope.App.Event.IObjectEvent import IObjectAddedEvent
 from Zope.App.OFS.Content.Folder.Folder import IFolder
 from Zope.ContextWrapper import ContextMethod
 from Zope.ComponentArchitecture import getService, queryAdapter

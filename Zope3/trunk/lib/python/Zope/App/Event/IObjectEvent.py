@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: IObjectEvent.py,v 1.5 2002/12/05 10:34:47 bcsaller Exp $
+$Id: IObjectEvent.py,v 1.1 2002/12/21 15:32:45 poster Exp $
 """
 
-from IEvent import IEvent
+from Zope.Event.IEvent import IEvent
 from Interface.Attribute import Attribute
 
 class IObjectEvent(IEvent):

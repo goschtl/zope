@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testDirectives.py,v 1.1 2002/12/18 23:36:58 jim Exp $
+$Id: testDirectives.py,v 1.2 2002/12/21 15:32:45 poster Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,10 +24,10 @@ from Zope.Configuration.xmlconfig import xmlconfig
 
 from Zope.Exceptions import NotFoundError
 from Zope.Event import subscribe, unsubscribe, publish
-from Zope.Event.ObjectEvent import ObjectAddedEvent
-from Zope.Event.ObjectEvent import ObjectRemovedEvent
-from Zope.Event.ObjectEvent import ObjectModifiedEvent
-from Zope.Event.tests.testEventService \
+from Zope.App.Event.ObjectEvent import ObjectAddedEvent
+from Zope.App.Event.ObjectEvent import ObjectRemovedEvent
+from Zope.App.Event.ObjectEvent import ObjectModifiedEvent
+from Zope.App.Event.tests.testEventService \
      import DummySubscriber, DummyFilter, DummyEvent
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
 from Zope.ComponentArchitecture import getServiceManager, getService
@@ -40,7 +40,7 @@ class Test(PlacelessSetup, TestCase):
         PlacelessSetup.setUp(self)
         from Zope.Event.IEventService import IEventService
         getServiceManager(None).defineService("Events", IEventService)
-        from Zope.Event.GlobalEventService import eventService
+        from Zope.App.Event.GlobalEventService import eventService
         getServiceManager(None).provideService("Events", eventService)
 
     def testSubscribe(self):
@@ -56,8 +56,8 @@ class Test(PlacelessSetup, TestCase):
             '''<test:subscribe
                    subscriber="Zope.Event.tests.subscriber.subscriber"
                    event_types=
-                       "Zope.Event.IObjectEvent.IObjectAddedEvent
-                        Zope.Event.IObjectEvent.IObjectRemovedEvent"
+                       "Zope.App.Event.IObjectEvent.IObjectAddedEvent
+                        Zope.App.Event.IObjectEvent.IObjectRemovedEvent"
                    filter="Zope.Event.tests.subscriber.filter" />'''
             ))
 

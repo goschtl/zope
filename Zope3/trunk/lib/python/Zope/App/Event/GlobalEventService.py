@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: GlobalEventService.py,v 1.5 2002/12/05 17:20:29 stevea Exp $
+$Id: GlobalEventService.py,v 1.1 2002/12/21 15:32:45 poster Exp $
 """
 
-from IEventService import IGlobalEventService
-from Subscribable import Subscribable
+from Zope.App.Event.IGlobalEventService import IGlobalEventService
+from Zope.Event.Subscribable import Subscribable
 
 class GlobalEventService(Subscribable):
     

@@ -10,12 +10,12 @@
 
   <event:subscribe 
       subscriber = ".TimeAnnotators.ModifiedAnnotator"
-      event_types = "Zope.Event.IObjectEvent.IObjectModifiedEvent"
+      event_types = "Zope.App.Event.IObjectEvent.IObjectModifiedEvent"
       />
 
   <event:subscribe 
       subscriber = ".TimeAnnotators.CreatedAnnotator"
-      event_types = "Zope.Event.IObjectEvent.IObjectCreatedEvent"
+      event_types = "Zope.App.Event.IObjectEvent.IObjectCreatedEvent"
       />
 
   <include package=".Browser" />

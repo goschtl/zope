@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testEditConfiguration.py,v 1.2 2002/11/30 18:39:17 jim Exp $
+$Id: testEditConfiguration.py,v 1.3 2002/12/21 15:32:57 poster Exp $
 """
 __metaclass__ = type
 
@@ -29,8 +29,9 @@ from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.ComponentArchitecture.GlobalViewService import provideView
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
 from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.Event.tests.PlacelessSetup import getEvents
-from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectModifiedEvent
+from Zope.App.Event.tests.PlacelessSetup import getEvents
+from Zope.App.Event.IObjectEvent import IObjectRemovedEvent
+from Zope.App.Event.IObjectEvent import IObjectModifiedEvent
 from Zope.App.OFS.Container.IContainer import IContainer
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
 from Zope.App.OFS.Container.ZopeContainerAdapter import ZopeContainerAdapter

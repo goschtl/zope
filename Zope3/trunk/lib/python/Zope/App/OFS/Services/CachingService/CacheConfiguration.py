@@ -13,14 +13,14 @@
 ##############################################################################
 """A configuration for a cache.
 
-$Id: CacheConfiguration.py,v 1.2 2002/12/18 17:35:04 stevea Exp $
+$Id: CacheConfiguration.py,v 1.3 2002/12/21 15:32:54 poster Exp $
 """
 
 from ICacheConfiguration import ICacheConfiguration
 from Zope.App.OFS.Services.Configuration import NamedComponentConfiguration
 from Zope.App.OFS.Services.Configuration import ConfigurationStatusProperty
 from Zope.ComponentArchitecture import getService
-from Zope.Event.IObjectEvent import IObjectModifiedEvent
+from Zope.App.Event.IObjectEvent import IObjectModifiedEvent
 from Zope.ContextWrapper import ContextMethod
 
 class CacheConfiguration(NamedComponentConfiguration):

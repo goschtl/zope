@@ -14,10 +14,10 @@
 """
 
 Revision information:
-$Id: LocalEventService.py,v 1.12 2002/12/12 20:27:39 jack-e Exp $
+$Id: LocalEventService.py,v 1.13 2002/12/21 15:32:55 poster Exp $
 """
 
-from Zope.Event.GlobalEventService import eventService
+from Zope.App.Event.GlobalEventService import eventService
 from Zope.Event.IEvent import IEvent
 from Zope.Event.IEventService import IEventService
 from Zope.Event.ISubscriptionAware import ISubscriptionAware

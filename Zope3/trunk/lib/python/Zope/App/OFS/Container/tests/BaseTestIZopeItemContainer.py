@@ -14,14 +14,14 @@
 """
 
 Revision information:
-$Id: BaseTestIZopeItemContainer.py,v 1.2 2002/11/18 23:52:59 jim Exp $
+$Id: BaseTestIZopeItemContainer.py,v 1.3 2002/12/21 15:32:49 poster Exp $
 """
 
 from Zope.Proxy.ContextWrapper import getWrapperContainer, getWrapperData
 from Interface.Common.tests.BaseTestMapping \
      import BaseTestIReadMapping, BaseTestIEnumerableMapping
-from Zope.Event.tests.PlacelessSetup import getEvents
-from Zope.Event.IObjectEvent \
+from Zope.App.Event.tests.PlacelessSetup import getEvents
+from Zope.App.Event.IObjectEvent \
      import IObjectRemovedEvent, IObjectModifiedEvent, IObjectAddedEvent
 
 

@@ -7,6 +7,6 @@
              interface='Zope.Event.IEventService.' />
 
 <service serviceType='Events'
-         component='Zope.Event.GlobalEventService.eventService' />
+         component='Zope.App.Event.GlobalEventService.eventService' />
 
 </zopeConfigure>

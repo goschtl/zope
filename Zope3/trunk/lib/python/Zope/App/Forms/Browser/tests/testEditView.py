@@ -11,11 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: testEditView.py,v 1.4 2002/12/09 16:09:18 jim Exp $
+"""$Id: testEditView.py,v 1.5 2002/12/21 15:32:46 poster Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
-from Zope.Event.tests.PlacelessSetup import getEvents
+from Zope.App.Event.tests.PlacelessSetup import getEvents
 from Interface import Interface
 from Zope.Schema import TextLine
 from Zope.Schema.IField import ITextLine

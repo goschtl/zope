@@ -13,16 +13,12 @@
 ##############################################################################
 """Unit test logic for setting up and tearing down basic infrastructure
 
-$Id: PlacelessSetup.py,v 1.3 2002/12/05 17:15:40 stevea Exp $
+$Id: PlacelessSetup.py,v 1.4 2002/12/21 15:32:44 poster Exp $
 """
 
 from Zope.ComponentArchitecture import getServiceManager
 from Zope.App.ComponentArchitecture.IInterfaceService import IInterfaceService
 from Zope.App.ComponentArchitecture.InterfaceService import interfaceService
-
-from Zope.Event.IEventService import IEventService
-from Zope.Event.GlobalEventService import eventService
-from Interface import Interface
 
 class PlacelessSetup:
 

@@ -13,11 +13,11 @@
 ##############################################################################
 """Define view component for image editing.
 
-$Id: ImageUpload.py,v 1.3 2002/12/03 14:01:42 runyaga Exp $
+$Id: ImageUpload.py,v 1.4 2002/12/21 15:32:52 poster Exp $
 """
 from Zope.App.OFS.Content.File.Views.Browser.FileUpload import FileUpload
 from Zope.Event import publish
-from Zope.Event.ObjectEvent import ObjectModifiedEvent
+from Zope.App.Event.ObjectEvent import ObjectModifiedEvent
 
 class ImageUpload(FileUpload):
     """Image edit view mix-in that provides access to image size info"""

@@ -21,7 +21,7 @@
 
   AdapterConfigrationAdd
 
-$Id: adapter.py,v 1.2 2002/12/19 20:38:23 jim Exp $
+$Id: adapter.py,v 1.3 2002/12/21 15:32:54 poster Exp $
 """
 __metaclass__ = type
 
@@ -32,7 +32,7 @@ from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.OFS.Services.interfaces \
      import IAdapterConfiguration, IAdapterConfigurationInfo
 from Zope.Event import publish
-from Zope.Event.ObjectEvent import ObjectCreatedEvent
+from Zope.App.Event.ObjectEvent import ObjectCreatedEvent
 from Zope.App.OFS.Services.ConfigurationInterfaces import IConfiguration
 from Zope.App.OFS.Services.adapter import AdapterConfiguration
 from Zope.App.ComponentArchitecture.InterfaceField import InterfaceField

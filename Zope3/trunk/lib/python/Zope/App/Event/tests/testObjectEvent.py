@@ -14,14 +14,17 @@
 """
 
 Revision information:
-$Id: testObjectEvent.py,v 1.5 2002/12/05 10:34:47 bcsaller Exp $
+$Id: testObjectEvent.py,v 1.1 2002/12/21 15:32:45 poster Exp $
 """
 
 import unittest, sys
 
-from Zope.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
-from Zope.Event.ObjectEvent import ObjectRemovedEvent, ObjectMovedEvent
-from Zope.Event.ObjectEvent import ObjectAnnotationsModifiedEvent, ObjectContentModifiedEvent
+from Zope.App.Event.ObjectEvent import ObjectAddedEvent
+from Zope.App.Event.ObjectEvent import ObjectModifiedEvent
+from Zope.App.Event.ObjectEvent import ObjectRemovedEvent
+from Zope.App.Event.ObjectEvent import ObjectMovedEvent
+from Zope.App.Event.ObjectEvent import ObjectAnnotationsModifiedEvent
+from Zope.App.Event.ObjectEvent import ObjectContentModifiedEvent
 
 class TestObjectAddedEvent(unittest.TestCase):
     

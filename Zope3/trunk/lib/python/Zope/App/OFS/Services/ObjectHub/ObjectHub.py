@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.6 2002/12/06 13:23:45 gvanrossum Exp $
+$Id: ObjectHub.py,v 1.7 2002/12/21 15:32:56 poster Exp $
 """
 
 from __future__ import generators
@@ -30,9 +30,9 @@ from HubEvent import ObjectRemovedHubEvent
 
 from Zope.Exceptions import NotFoundError
 
-from Zope.Event.IObjectEvent import IObjectRemovedEvent, IObjectEvent
-from Zope.Event.IObjectEvent import IObjectMovedEvent, IObjectCreatedEvent
-from Zope.Event.IObjectEvent import IObjectModifiedEvent
+from Zope.App.Event.IObjectEvent import IObjectRemovedEvent, IObjectEvent
+from Zope.App.Event.IObjectEvent import IObjectMovedEvent, IObjectCreatedEvent
+from Zope.App.Event.IObjectEvent import IObjectModifiedEvent
 
 from Persistence.BTrees.IOBTree import IOBTree
 from Persistence.BTrees.OIBTree import OIBTree
@@ -225,7 +225,9 @@ class ObjectHub(ProtoServiceEventChannel):
         '''See interface ILocalObjectHub'''
         clean_self = removeAllProxies(wrapped_self)
         if isWrapper(location):
-            location = getPhysicalPath(location)
+            location = getPhysicalPath(location) # XXX this branch is
+            # not exercised: needs unit test
+            canonical_location = locationAsTuple(location)
         elif isinstance(location, int):
             canonical_location = clean_self.getLocation(location)
         else:

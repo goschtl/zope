@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: testCacheConfiguration.py,v 1.2 2002/12/18 17:39:09 stevea Exp $
+$Id: testCacheConfiguration.py,v 1.3 2002/12/21 15:32:55 poster Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -38,7 +38,7 @@ from Zope.App.OFS.Services.ServiceManager.ServiceConfiguration \
      import ServiceConfiguration
 from Zope.ContextWrapper import ContextMethod
 from Zope.Proxy.ContextWrapper import ContextWrapper
-from Zope.Event.IObjectEvent import IObjectModifiedEvent
+from Zope.App.Event.IObjectEvent import IObjectModifiedEvent
 
 
 class DependableStub:

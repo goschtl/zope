@@ -13,13 +13,13 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.7 2002/12/05 13:50:30 bcsaller Exp $
+$Id: test_index.py,v 1.8 2002/12/21 15:32:58 poster Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from Zope.ComponentArchitecture.GlobalAdapterService import provideAdapter
-from Zope.Event.ObjectEvent import ObjectModifiedEvent
+from Zope.App.Event.ObjectEvent import ObjectModifiedEvent
 
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup import \
      PlacefulSetup

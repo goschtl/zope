@@ -13,14 +13,14 @@
 ##############################################################################
 """Helper class to log all events sent out by an event service.
 
-$Id: Logger.py,v 1.6 2002/12/20 15:58:20 gvanrossum Exp $
+$Id: Logger.py,v 1.1 2002/12/21 15:32:45 poster Exp $
 """
 
 import logging
 import pprint
 from StringIO import StringIO
 
-from ISubscriber import ISubscriber
+from Zope.Event.ISubscriber import ISubscriber
 
 class Logger:
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: testAdding.py,v 1.7 2002/12/12 11:32:30 mgedmin Exp $
+$Id: testAdding.py,v 1.8 2002/12/21 15:32:48 poster Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -27,8 +27,8 @@ from Zope.Proxy.ContextWrapper \
 from Zope.Publisher.Browser.BrowserRequest import TestRequest
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
-from Zope.Event.tests.PlacelessSetup import getEvents
-from Zope.Event.IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
+from Zope.App.Event.tests.PlacelessSetup import getEvents
+from Zope.App.Event.IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
 
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
 from Zope.App.OFS.Container.IContainer import IContainer

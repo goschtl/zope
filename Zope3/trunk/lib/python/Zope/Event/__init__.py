@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: __init__.py,v 1.5 2002/12/05 17:20:29 stevea Exp $
+$Id: __init__.py,v 1.6 2002/12/21 15:32:59 poster Exp $
 """
 
 from Zope.ComponentArchitecture import getService
@@ -41,19 +41,6 @@ def subscribeMany(subscriber, event_types=(IEvent,),
     for event_type in event_types:
         subscribe(subscriber, event_type, filter)
 
-def globalSubscribe(subscriber, event_type=IEvent, filter=None, context=None):
-    if context is None:
-        context = subscriber
-    return getEventService(None).globalSubscribe(
-        subscriber, event_type, filter)
-
-def globalSubscribeMany(subscriber, event_types=(IEvent,),
-                        filter=None, context=None):
-    if context is None: context=subscriber
-    subscribe_func = getEventService(None).globalSubscribe
-    for event_type in event_types:
-        subscribe_func(subscriber, event_type, filter)
-
 def unsubscribe(subscriber, event_type=None, filter=None, context=None):
     if context is None: context=subscriber
     return getEventService(context).unsubscribe(
@@ -64,7 +51,3 @@ def listSubscriptions(subscriber, event_type=None, context=None):
     return getEventService(context).listSubscriptions(
         subscriber, event_type)
 
-
-
-def _clear():
-    from EventService import _clear; _clear()

@@ -14,22 +14,22 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.7 2002/12/20 19:34:46 bwarsaw Exp $
+$Id: testEventService.py,v 1.1 2002/12/21 15:32:45 poster Exp $
 """
 
 import unittest, sys
 from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 
-from Zope.Event.IObjectEvent import IObjectEvent
-from Zope.Event.IObjectEvent import IObjectAddedEvent
-from Zope.Event.IObjectEvent import IObjectRemovedEvent
-from Zope.Event.IObjectEvent import IObjectModifiedEvent
-from Zope.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
-from Zope.Event.GlobalEventService import GlobalEventService
+from Zope.App.Event.IObjectEvent import IObjectEvent
+from Zope.App.Event.IObjectEvent import IObjectAddedEvent
+from Zope.App.Event.IObjectEvent import IObjectRemovedEvent
+from Zope.App.Event.IObjectEvent import IObjectModifiedEvent
+from Zope.App.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
+from Zope.App.Event.GlobalEventService import GlobalEventService
 from Zope.Exceptions import NotFoundError
 from Zope.Event.IEvent import IEvent
 
-from subscriber import DummySubscriber, DummyFilter
+from Zope.Event.tests.subscriber import DummySubscriber, DummyFilter
 
 class DummyEvent:
 

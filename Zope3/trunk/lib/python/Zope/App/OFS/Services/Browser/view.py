@@ -21,7 +21,7 @@
 
   ViewConfigrationAdd
 
-$Id: view.py,v 1.2 2002/12/19 20:38:23 jim Exp $
+$Id: view.py,v 1.3 2002/12/21 15:32:54 poster Exp $
 """
 __metaclass__ = type
 
@@ -34,7 +34,7 @@ from Zope.App.OFS.Services.interfaces \
 from Zope.App.OFS.Services.interfaces \
      import IPageConfiguration, IPageConfigurationInfo
 from Zope.Event import publish
-from Zope.Event.ObjectEvent import ObjectCreatedEvent
+from Zope.App.Event.ObjectEvent import ObjectCreatedEvent
 from Zope.App.OFS.Services.ConfigurationInterfaces import IConfiguration
 from Zope.App.OFS.Services.view import ViewConfiguration, PageConfiguration
 from Zope.App.ComponentArchitecture.InterfaceField import InterfaceField

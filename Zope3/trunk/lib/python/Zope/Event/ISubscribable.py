@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ISubscribable.py,v 1.5 2002/11/11 08:33:45 stevea Exp $
+$Id: ISubscribable.py,v 1.6 2002/12/21 15:32:59 poster Exp $
 """
 
 from Interface import Interface
@@ -27,31 +27,6 @@ class ISubscribable(Interface):
         """Add subscriber to the list of subscribers for the channel.
         
         subscriber must implement ISubscriber.
-        Probable subscriber types include the following:
-        
-            o Hard Reference (for placeless, global objects and event service)
-
-                Simply register the subscriber directly, in which
-                case, the subscription, and possibly the subscriber,
-                is as persistent as the subscribable.  The subscriber
-                will not be wrapped for context or security when
-                called.
-
-            o Soft reference (for placeful, local objects and event service)
-
-                Register an object with a notify method and a path that
-                dereferences the path and delegates notifications.
-
-            o Location-independent reference (for placeful)
-
-                Register an object with a notify method and an
-                ObjectHub ruid that dereferences the ruid via the hub
-                and delegates notifications.
-
-            o Abstract reference (for both)
-
-                Register an object with a notify method and an IReference that
-                dereferences the IReference and delegates notifications.
         
         event_type, if supplied, is the event interface
         about which subscriber should be notified, and must implement
@@ -75,8 +50,6 @@ class ISubscribable(Interface):
     def unsubscribe(subscriber, event_type=None, filter=None):
         """Unsubscribe subscriber from receiving event types from this
         subscribable.
-        
-        The subscriber is matched via equality (not identity).
         
         If event_type is None, the default value, the subscriber is
         unsubscribed completely for all event types from this

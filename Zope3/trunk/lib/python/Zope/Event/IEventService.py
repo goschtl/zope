@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IEventService.py,v 1.6 2002/12/05 17:20:29 stevea Exp $
+$Id: IEventService.py,v 1.7 2002/12/21 15:32:59 poster Exp $
 """
 
 from ISubscribable import ISubscribable
@@ -35,19 +35,4 @@ class IEventService(ISubscribable):
         Events will often be propagated to higher level IEventServices;
         This is a policy decision for the IEventService.
         """
-
-class IGlobalEventService(IEventService):
-    """The global event-service does not allow normal subscriptions.
-
-    Subscriptions to the global event-service are not persistent.
-    If you want to subscribe to the global event-service, you need
-    to use the 'globalSubscribe' method instead of the 'subscribe'
-    method.
-    """
-
-    def subscribe(subscriber, event_type=IEvent, filter=None):
-        """Raises NotImplementedError."""
-
-    def globalSubscribe(subscriber, event_type=IEvent, filter=None):
-        """Add subscriber to the list of subscribers for the channel."""
 

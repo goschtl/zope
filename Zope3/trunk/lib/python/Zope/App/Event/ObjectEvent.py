@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectEvent.py,v 1.8 2002/12/05 13:44:13 stevea Exp $
+$Id: ObjectEvent.py,v 1.1 2002/12/21 15:32:45 poster Exp $
 """
 
 __metaclass__ = type
@@ -24,9 +24,6 @@ from IObjectEvent import IObjectAddedEvent, IObjectModifiedEvent
 from IObjectEvent import IObjectRemovedEvent, IObjectMovedEvent
 from IObjectEvent \
     import IObjectContentModifiedEvent, IObjectAnnotationsModifiedEvent
-
-# XXX: this is a dependency on Zope.App.... so we need to move
-#      these event definitions into there.
 from Zope.App.Traversing import getPhysicalPath
 
 _marker = object()

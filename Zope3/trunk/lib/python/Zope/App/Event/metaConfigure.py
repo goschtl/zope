@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: metaConfigure.py,v 1.1 2002/12/18 23:36:58 jim Exp $
+$Id: metaConfigure.py,v 1.2 2002/12/21 15:32:45 poster Exp $
 """
 
 from Zope.Configuration.Action import Action
 
-from Zope.Event import globalSubscribeMany
+from Zope.App.Event import globalSubscribeMany
 from Zope.Event.IEvent import IEvent
 from Interface import Interface
 

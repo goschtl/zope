@@ -14,14 +14,14 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: PlacelessSetup.py,v 1.3 2002/11/19 23:25:15 jim Exp $
+$Id: PlacelessSetup.py,v 1.4 2002/12/21 15:32:58 poster Exp $
 """
 
 from Zope.ComponentArchitecture.tests.PlacelessSetup \
      import PlacelessSetup as CAPlacelessSetup
 from Zope.App.ComponentArchitecture.tests.PlacelessSetup \
      import PlacelessSetup as ACAPlacelessSetup
-from Zope.Event.tests.PlacelessSetup \
+from Zope.App.Event.tests.PlacelessSetup \
      import PlacelessSetup as EventPlacelessSetup
 
 

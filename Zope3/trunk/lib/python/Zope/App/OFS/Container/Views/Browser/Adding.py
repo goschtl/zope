@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.16 2002/12/17 19:13:32 stevea Exp $
+$Id: Adding.py,v 1.17 2002/12/21 15:32:47 poster Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -26,7 +26,7 @@ from Zope.ComponentArchitecture \
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.ContextWrapper import ContextMethod 
 from Zope.Event import publish
-from Zope.Event.ObjectEvent import ObjectCreatedEvent
+from Zope.App.Event.ObjectEvent import ObjectCreatedEvent
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
 from Zope.ContextWrapper import ContextSuper
 
