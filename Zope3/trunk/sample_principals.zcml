@@ -8,10 +8,23 @@
 <unauthenticatedPrincipal  id="anybody" 
                            title="Unauthenticated User" />
 
-<principal id="stupid" title="Stupid, replace me"
-                    login="stupid" password="123" />
-<principal id="idiot" title="I'm an idiot, replace me"
-                    login="idiot" password="456" />
+<principal
+    id="stupid"
+    title="Stupid, replace me"
+
+    login="stupid"
+    password="123"
+
+    />
+
+<principal
+    id="idiot"
+    title="I'm an idiot, replace me"
+
+    login="idiot"
+    password="456"
+
+    />
 
 <grant role="Manager" principal="stupid" />
 <grant role="Member"  principal="idiot" />
