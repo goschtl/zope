@@ -27,7 +27,7 @@ class Transaction:
 
     def __init__(self, manager=None, parent=None):
         self._manager = manager
-        self._parent = None
+        self._parent = parent
         self._status = Status.ACTIVE
         self._resources = Set()
 
