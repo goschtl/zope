@@ -62,6 +62,12 @@ Test harness.
 
 -C  use pychecker
 
+-T  use trace module from Python for code coverage
+    XXX This only works if trace.py is explicitly added to PYTHONPATH.
+    The current utility writes coverage files to a directory named
+    coverage that is parallel to build.  It also prints a summary
+    to stdout.
+
 modfilter
 testfilter
     Case-sensitive regexps to limit which tests are run, used in search
@@ -362,6 +368,15 @@ def main(module_filter, test_filter):
     elif LOOP:
         while 1:
             runner(files, test_filter, debug)
+    elif TRACE:
+        coverdir = os.path.join(os.getcwd(),"coverage")
+        import trace
+        tracer = trace.Trace(ignoredirs=[sys.prefix, sys.exec_prefix],
+                             trace=0, count=1)
+        tracer.runctx("runner(files, test_filter, debug)",
+                      globals=globals(), locals=vars())
+        r = tracer.results()
+        r.write_results(show_missing=True, summary=True, coverdir=coverdir)
     else:
         runner(files, test_filter, debug)
 
@@ -376,6 +391,7 @@ def process_args(argv=None):
     global VERBOSE
     global LOOP
     global GUI
+    global TRACE
     global debug
     global debugger
     global build
@@ -395,7 +411,7 @@ def process_args(argv=None):
     progress = 0
 
     try:
-        opts, args = getopt.getopt(argv[1:], 'vpdDLbhCumg:G:', ['help'])
+        opts, args = getopt.getopt(argv[1:], 'vpdDLbhCumg:G:T', ['help'])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
@@ -432,6 +448,8 @@ def process_args(argv=None):
                 print "-G argument must be DEBUG_ flag, not", repr(v)
                 sys.exit(1)
             gcflags.append(v)
+        elif k == '-T':
+            TRACE = 1
 
     if gcthresh is not None:
         import gc
