@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_try.py,v 1.4 2003/05/01 19:35:41 faassen Exp $
+$Id: testdt_try.py,v 1.5 2004/03/19 04:26:25 srichter Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ class TestDT_Try(DTMLTestBase):
     def testBasic(self):
 
         html = self.doc_class(
-            """
+            u"""
             <dtml-try>
               foo = <dtml-var value>
             <dtml-except>
@@ -31,8 +31,8 @@ class TestDT_Try(DTMLTestBase):
             </dtml-try>
             """)
 
-        result1 = "foo = bar"
-        result2 = "There is no bar variable."
+        result1 = u"foo = bar"
+        result2 = u"There is no bar variable."
 
         self.assertEqual(html(value='bar').strip(), result1.strip())
         self.assertEqual(html().strip(), result2.strip())

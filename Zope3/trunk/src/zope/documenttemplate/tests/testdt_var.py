@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_var.py,v 1.4 2003/05/01 19:35:41 faassen Exp $
+$Id: testdt_var.py,v 1.5 2004/03/19 04:26:25 srichter Exp $
 """
 
 # XXX Don't normalize whitespace in this file -- the tests depend on the
@@ -25,15 +25,15 @@ class TestDT_Var(DTMLTestBase):
 
     def testFmt(self):
         html = self.doc_class (
-            '''<dtml-var spam fmt="$%.2f bob\'s your uncle"
+            u'''<dtml-var spam fmt="$%.2f bob\'s your uncle"
                               null="spam%eggs!|">''')
 
-        self.assertEqual(html(spam=42), '$42.00 bob\'s your uncle')
-        self.assertEqual(html(spam=None), 'spam%eggs!|')
+        self.assertEqual(html(spam=42), u'$42.00 bob\'s your uncle')
+        self.assertEqual(html(spam=None), u'spam%eggs!|')
 
     def testDefaultFmt(self):
         html = self.doc_class (
-            """
+            u"""
                       <dtml-var spam >
             html:     <dtml-var spam fmt=html-quote>
             url:      <dtml-var spam fmt=url-quote>
@@ -46,7 +46,7 @@ class TestDT_Var(DTMLTestBase):
             """)
 
         result1 = (
-            """
+            u"""
                       4200000
             html:     4200000
             url:      4200000
@@ -61,7 +61,7 @@ class TestDT_Var(DTMLTestBase):
         # Caution:  Some of these lines have significant trailing whitespace.
         # Necessary trailing blanks are explicitly forced via \x20.
         result2 = (
-            """
+            u"""
                       None
             html:     None
             url:      None
@@ -74,7 +74,7 @@ class TestDT_Var(DTMLTestBase):
             """)
 
         result3 = (
-            """
+            u"""
                       <a href="spam">\nfoo bar
             html:     &lt;a href=&quot;spam&quot;&gt;\nfoo bar
             url:      %3Ca%20href%3D%22spam%22%3E%0Afoo%20bar
@@ -88,7 +88,7 @@ class TestDT_Var(DTMLTestBase):
 
         self.assertEqual(html(spam=4200000), result1)
         self.assertEqual(html(spam=None), result2)
-        self.assertEqual(html(spam='<a href="spam">\nfoo bar'), result3)
+        self.assertEqual(html(spam=u'<a href="spam">\nfoo bar'), result3)
 
 
     def testRender(self):
@@ -96,20 +96,20 @@ class TestDT_Var(DTMLTestBase):
         class C:
             x = 1
             def y(self): return self.x * 2
-            h = self.doc_class("The h method, <dtml-var x> <dtml-var y>")
-            h2 = self.doc_class("The h2 method")
+            h = self.doc_class(u"The h method, <dtml-var x> <dtml-var y>")
+            h2 = self.doc_class(u"The h2 method")
 
-        res1 = self.doc_class("<dtml-var x>, <dtml-var y>, <dtml-var h>")(C())
+        res1 = self.doc_class(u"<dtml-var x>, <dtml-var y>, <dtml-var h>")(C())
         res2 = self.doc_class(
-           """
+           u"""
            <dtml-var expr="_.render(i.x)">,
            <dtml-var expr="_.render(i.y)">,
 
            <dtml-var expr="_.render(i.h2)">""")(i=C())
 
-        expected = '1, 2, The h method, 1 2'
+        expected = u'1, 2, The h method, 1 2'
         expected2 = (
-            """
+            u"""
            1,
            2,
 

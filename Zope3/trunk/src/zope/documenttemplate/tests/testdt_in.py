@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_in.py,v 1.3 2003/03/13 18:49:13 alga Exp $
+$Id: testdt_in.py,v 1.4 2004/03/19 04:26:25 srichter Exp $
 """
 
 import unittest
@@ -24,19 +24,19 @@ class TestDT_In(DTMLTestBase):
 
     def testMapping(self):
         data = (
-            dict(name='jim', age=39),
-            dict(name='kak', age=29),
-            dict(name='will', age=8),
-            dict(name='andrew', age=5),
-            dict(name='chessie',age=2),
+            dict(name=u'jim', age=39),
+            dict(name=u'kak', age=29),
+            dict(name=u'will', age=8),
+            dict(name=u'andrew', age=5),
+            dict(name=u'chessie',age=2),
             )
 
-        html="""
+        html=u"""
 <dtml-in data mapping>
    <dtml-var name>, <dtml-var age>
 </dtml-in>
 """
-        expected = """
+        expected = u"""
    jim, 39
    kak, 29
    will, 8
@@ -49,7 +49,7 @@ class TestDT_In(DTMLTestBase):
 
     def testObjectSequence(self):
         seq = (ObjectStub(name=1), ObjectStub(name=2), ObjectStub(name=3))
-        html = """
+        html = u"""
 <dtml-in seq>
    <dtml-var name>
 </dtml-in>
@@ -65,7 +65,7 @@ class TestDT_In(DTMLTestBase):
 
     def testSequenceNamespace(self):
         ns = {'prop_ids': ('name', 'id'), 'name': 'good', 'id': 'times'}
-        html = """:<dtml-in prop_ids><dtml-var sequence-item>=<dtml-var
+        html = u""":<dtml-in prop_ids><dtml-var sequence-item>=<dtml-var
         expr="_[_['sequence-item']]">:</dtml-in>"""
 
         result = self.doc_class(html)(None, ns)
@@ -75,8 +75,8 @@ class TestDT_In(DTMLTestBase):
 
 
     def testElse(self):
-        seq=(ObjectStub(name=1), ObjectStub(name=2), ObjectStub(name=3))
-        html="""
+        seq = (ObjectStub(name=1), ObjectStub(name=2), ObjectStub(name=3))
+        html = u"""
 <dtml-in data mapping>
 <dtml-var name>, <dtml-var age>
 <dtml-else>
@@ -85,7 +85,7 @@ class TestDT_In(DTMLTestBase):
 </dtml-in>
 </dtml-in>
 """
-        expected = """
+        expected = u"""
 1
 2
 3
@@ -95,19 +95,19 @@ class TestDT_In(DTMLTestBase):
 
 
     def testStringSyntax(self):
-        data=(
-            dict(name='jim', age=39),
-            dict(name='kak', age=29),
-            dict(name='will', age=8),
-            dict(name='andrew', age=5),
-            dict(name='chessie',age=2),
+        data = (
+            dict(name=u'jim', age=39),
+            dict(name=u'kak', age=29),
+            dict(name=u'will', age=8),
+            dict(name=u'andrew', age=5),
+            dict(name=u'chessie',age=2),
             )
-        s="""
+        s = u"""
 %(in data mapping)[
    %(name)s, %(age)s
 %(in)]
 """
-        expected = """
+        expected = u"""
    jim, 39
    kak, 29
    will, 8

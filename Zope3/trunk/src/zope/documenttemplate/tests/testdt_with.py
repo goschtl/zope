@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_with.py,v 1.3 2003/03/13 18:49:13 alga Exp $
+$Id: testdt_with.py,v 1.4 2004/03/19 04:26:25 srichter Exp $
 """
 
 import unittest
@@ -22,15 +22,15 @@ class TestDT_With(DTMLTestBase):
 
     def testBasic(self):
         class person:
-            name='Jim'
+            name=u'Jim'
             height_inches=73
 
-        result = self.doc_class("""<dtml-with person>
+        result = self.doc_class(u'''<dtml-with person>
         Hi, my name is <dtml-var name>
         My height is <dtml-var "height_inches*2.54"> centimeters.
-        </dtml-with>""")(person=person)
+        </dtml-with>''')(person=person)
 
-        expected = """        Hi, my name is Jim
+        expected = u"""        Hi, my name is Jim
         My height is 185.42 centimeters.
         """
 

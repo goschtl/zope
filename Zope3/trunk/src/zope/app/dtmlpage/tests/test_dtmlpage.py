@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_dtmlpage.py,v 1.3 2004/03/13 21:03:09 srichter Exp $
+$Id: test_dtmlpage.py,v 1.4 2004/03/19 04:26:24 srichter Exp $
 """
 
 import unittest
@@ -49,27 +49,27 @@ class DTMLPageTests(PlacelessSetup, unittest.TestCase):
     def test(self):
         page = DTMLPage()
         page.setSource(
-            '<html>'
-            '<head><title><dtml-var title></title></head>'
-            '<body>'
-            '<a href="<dtml-var "REQUEST.URL[\'1\']">">'
-            '<dtml-var name>'
-            '</a></body></html>'
+            u'<html>'
+            u'<head><title><dtml-var title></title></head>'
+            u'<body>'
+            u'<a href="<dtml-var "REQUEST.URL[\'1\']">">'
+            u'<dtml-var name>'
+            u'</a></body></html>'
             )
 
-        page = contained(page, Data(name='zope'))
+        page = contained(page, Data(name=u'zope'))
 
-        out = page.render(Data(URL={'1': 'http://foo.com/'}),
-                          title="Zope rules")
+        out = page.render(Data(URL={u'1': u'http://foo.com/'}),
+                          title=u"Zope rules")
         out = ' '.join(out.split())
 
 
         self.assertEqual(
             out,
-            '<html><head><title>Zope rules</title></head><body>'
-            '<a href="http://foo.com/">'
-            'zope'
-            '</a></body></html>'
+            u'<html><head><title>Zope rules</title></head><body>'
+            u'<a href="http://foo.com/">'
+            u'zope'
+            u'</a></body></html>'
             )
 
 def test_suite():

@@ -12,9 +12,8 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_if.py,v 1.4 2003/05/01 19:35:41 faassen Exp $
+$Id: testdt_if.py,v 1.5 2004/03/19 04:26:25 srichter Exp $
 """
-
 import unittest
 from zope.documenttemplate.tests.dtmltestbase import DTMLTestBase
 
@@ -24,14 +23,14 @@ class TestDT_If(DTMLTestBase):
     def testBasic(self):
 
         html = self.doc_class(
-            """\
+            u"""\
              <dtml-if value>
                The arguments were: <dtml-var value>
              </dtml-if>
             """)
 
-        result1 = "The arguments were: foo"
-        result2 = ""
+        result1 = u"The arguments were: foo"
+        result2 = u""
 
         self.assertEqual(html(value='foo').strip(), result1.strip())
         self.assertEqual(html().strip(), result2.strip())
@@ -40,7 +39,7 @@ class TestDT_If(DTMLTestBase):
     def testElse(self):
 
         html = self.doc_class(
-            """\
+            u"""\
              <dtml-if value>
                The arguments were: <dtml-var value>
              <dtml-else>
@@ -48,8 +47,8 @@ class TestDT_If(DTMLTestBase):
              </dtml-if>
             """)
 
-        result1 = "The arguments were: foo"
-        result2 = "No arguments were given."
+        result1 = u"The arguments were: foo"
+        result2 = u"No arguments were given."
 
         self.assertEqual(html(value='foo').strip(), result1.strip())
         self.assertEqual(html().strip(), result2.strip())
@@ -57,7 +56,7 @@ class TestDT_If(DTMLTestBase):
     def testElIf(self):
 
         html = self.doc_class(
-            """\
+            u"""\
              <dtml-if value>
                The arguments were: <dtml-var value>
              <dtml-elif attribute>
@@ -65,8 +64,8 @@ class TestDT_If(DTMLTestBase):
              </dtml-if>
             """)
 
-        result1 = "The arguments were: foo"
-        result2 = "The attributes were: bar"
+        result1 = u"The arguments were: foo"
+        result2 = u"The attributes were: bar"
 
         self.assertEqual(html(value='foo', attribute='').strip(),
                          result1.strip())

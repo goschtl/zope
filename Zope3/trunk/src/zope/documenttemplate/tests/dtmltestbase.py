@@ -12,9 +12,8 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: dtmltestbase.py,v 1.2 2002/12/25 14:13:37 jim Exp $
+$Id: dtmltestbase.py,v 1.3 2004/03/19 04:26:25 srichter Exp $
 """
-
 import os
 import unittest
 from zope.documenttemplate.dt_html import HTML
