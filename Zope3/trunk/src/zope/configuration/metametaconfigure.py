@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigure.py,v 1.6 2003/05/01 19:35:39 faassen Exp $
+$Id: metametaconfigure.py,v 1.7 2003/05/03 16:34:15 jim Exp $
 """
-from zope.interface import directlyProvides
+from zope.interface import directlyProvides, classProvides
 from zope.configuration.meta \
      import DirectiveNamespace as bootstrapDirectiveNamespace
 from zope.configuration.meta import Subdirective as bootstrapSubdirective
@@ -28,7 +28,7 @@ from zope.configuration.interfaces import ISubdirectiveHandler
 
 class DirectiveNamespace(bootstrapDirectiveNamespace):
 
-    __class_implements_ = INonEmptyDirective
+    classProvides(INonEmptyDirective)
     __implements__ = ISubdirectiveHandler
 
     def _Subdirective(self, *args, **kw):

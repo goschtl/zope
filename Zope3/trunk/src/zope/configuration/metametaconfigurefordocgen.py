@@ -12,10 +12,13 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigurefordocgen.py,v 1.4 2002/12/31 02:52:10 jim Exp $
+$Id: metametaconfigurefordocgen.py,v 1.5 2003/05/03 16:34:31 jim Exp $
 """
-from zope.configuration.metametaconfigure import DirectiveNamespace as baseDirectiveNamespace
-from zope.configuration.metametaconfigure import Subdirective as baseSubdirective
+from zope.interface import classProvides
+from zope.configuration.metametaconfigure \
+     import DirectiveNamespace as baseDirectiveNamespace
+from zope.configuration.metametaconfigure \
+     import Subdirective as baseSubdirective
 from zope.configuration.interfaces import INonEmptyDirective
 from zope.configuration.interfaces import ISubdirectiveHandler
 
@@ -76,7 +79,7 @@ def _recordCommandMetadata(subs, description, handler=None):
 class DirectiveNamespace(baseDirectiveNamespace):
     """An extended class that handles descriptions and attributes"""
 
-    __class_implements_ = INonEmptyDirective
+    classProvides(INonEmptyDirective)
     __implements__ = ISubdirectiveHandler
 
     def _Subdirective(self, *args, **kw):
