@@ -13,7 +13,7 @@
 ##############################################################################
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: __init__.py,v 1.2 2004/02/24 16:49:13 philikon Exp $
+$Id: __init__.py,v 1.1 2004/03/01 13:07:17 philikon Exp $
 """
 import os
 import cgi

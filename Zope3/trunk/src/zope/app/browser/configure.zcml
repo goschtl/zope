@@ -11,7 +11,6 @@
   <include package=".container" />
   <include package=".dublincore" />
   <include package=".form" />
-  <include package=".fssync" />
   <include package=".security" />
   <include package=".services" />
   <include package=".utilities" />

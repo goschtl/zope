@@ -10,7 +10,8 @@
       name="toFS.snarf"
       permission="zope.ManageServices"
       class=".SnarfFile"
-      attribute="show" />
+      attribute="show"
+      />
 
   <!-- fssync commit -->
   <page
@@ -18,7 +19,8 @@
       name="fromFS.snarf"
       permission="zope.ManageServices"
       class=".SnarfCommit"
-      attribute="run" />
+      attribute="run"
+      />
 
   <!-- fssync checkin -->
   <page
@@ -26,6 +28,7 @@
       name="checkin.snarf"
       permission="zope.ManageServices"
       class=".SnarfCheckin"
-      attribute="run" />
+      attribute="run"
+      />
 
 </zope:configure>

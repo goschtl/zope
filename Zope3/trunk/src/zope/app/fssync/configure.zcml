@@ -5,14 +5,21 @@
 
   <serviceType
       id="FSRegistryService"
-      interface="zope.app.interfaces.fssync.IGlobalFSSyncService"/>
+      interface="zope.app.fssync.interfaces.IGlobalFSSyncService"
+      />
   
   <service
       serviceType="FSRegistryService"
-      component="zope.app.fssync.fsregistry.fsRegistry"/>
+      component="zope.app.fssync.fsregistry.fsRegistry"
+      />
 
   <fssync:adapter
       factory="zope.fssync.server.entryadapter.DefaultFileAdpater"
       />
+
+
+  <!-- Include browser package -->
+
+  <include package=".browser" />
 
 </configure>

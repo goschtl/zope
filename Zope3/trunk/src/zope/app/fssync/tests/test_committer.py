@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.26 2004/02/25 23:02:26 faassen Exp $
+$Id: test_committer.py,v 1.27 2004/03/01 13:07:17 philikon Exp $
 """
 
 import os
@@ -43,7 +43,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.fssync import committer, syncer # The module
 from zope.app.fssync.committer import Checker, Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
-from zope.app.interfaces.fssync import IGlobalFSSyncService
+from zope.app.fssync.interfaces import IGlobalFSSyncService
 
 
 class Sample(object):

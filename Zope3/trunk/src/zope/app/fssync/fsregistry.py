@@ -15,12 +15,12 @@
 
 This acts as a global (placeless) service.
 
-$Id: fsregistry.py,v 1.5 2004/01/15 19:47:14 fdrake Exp $
+$Id: fsregistry.py,v 1.6 2004/03/01 13:07:16 philikon Exp $
 """
 
-from zope.app.interfaces.fssync import IGlobalFSSyncService
 from zope.exceptions import DuplicationError, NotFoundError
 from zope.interface import implements
+from zope.app.fssync.interfaces import IGlobalFSSyncService
 
 class FSRegistry(object):
     """Registry Wrapper class.
