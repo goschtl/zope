@@ -92,6 +92,8 @@ lpMailHost        -d lib/python/Products/MailHost Packages/Products/MailHost
 lpExternalMethod  -d lib/python/Products/ExternalMethod Packages/Products/ExternalMethod
 lpZSQLMethods     -d lib/python/Products/ZSQLMethods Packages/Products/ZSQLMethods
 lpZGadflyDA       -d lib/python/Products/ZGadflyDA Packages/Products/ZGadflyDA
+lpMIMETools       -d lib/python/Products/MIMETools Packages/Products/MIMETools
+
 
 lExtensionClass  -d lib/Components/ExtensionClass Components/ExtensionClass
 lBTree  -d lib/Components/BTree Components/BTree
@@ -120,7 +122,7 @@ ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpSharedInit &lpDCInit &lpProductsInit \
   &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZSQLMethods &lpZGadflyDA \
-  &ZServer 
+  &ZServer &lpMIMETools 
 
 Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
