@@ -39,9 +39,6 @@ class IDAVOpaqueNamespaces(IMapping):
     Any unknown (no interface registered) DAV properties are stored opaquely
     keyed on their namespace URI, so we can return them later when requested.
     Thus this is a mapping of a mapping. 
-
-    Property values themselves consist of an attributes structure and the 
-    actual opaque value, of the form (((attr1, val1), (attr2, val2)), value) 
     
     """
     
