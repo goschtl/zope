@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.8 2003/03/25 11:23:09 gotcha Exp $
+$Id: zpt.py,v 1.9 2003/04/02 19:48:20 jim Exp $
 """
 
 import re
@@ -38,28 +38,13 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent):
 
     contentType = 'text/html'
     expand = False
+    usage = u''
 
     source = property(
         # get
         lambda self: self.read(),
         # set
         lambda self, text: self.pt_edit(text.encode('utf-8'), self.contentType)
-        )
-
-    def setUsage(self, usage):
-        self._usage = usage
-
-    def getUsage(self):
-        usage = ''
-        if hasattr(self, "_usage"):
-            usage = self._usage
-        return usage
-
-    usage = property(
-        # get
-        getUsage,
-        # set
-        setUsage
         )
 
     def pt_getContext(self, view, **_kw):
@@ -74,8 +59,13 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent):
 
         if args:
             args = ProxyFactory(args)
-        if not hasattr(keywords, "template_usage"):
-            keywords["template_usage"] = view.request.get("template_usage", self.usage)
+
+        if self.usage:
+            if "template_usage" not in keywords:
+                kw = {'template_usage': self.usage}
+                kw.update(keywords)
+                keywords = kw
+
         kw = ProxyFactory(keywords)
 
         namespace = self.pt_getContext(view, args=args, options=kw)

@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_zpt.py,v 1.2 2003/02/11 15:59:58 sidnei Exp $
+$Id: test_zpt.py,v 1.3 2003/04/02 19:48:21 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 import zope.app.services.zpt
+from zope.publisher.browser import BrowserView, TestRequest
 
 class Test(TestCase):
 
@@ -44,6 +45,38 @@ class Test(TestCase):
         source = '<p>Test content</p>'
         template = factory('foo', 'text/html', source)
         self.assertEqual(template.source, source)
+
+    def test_usage(self):
+        template = zope.app.services.zpt.ZPTTemplate()
+        template.source = ('usage: <span tal:replace="usage" />\n'
+                           'options: <span tal:replace="options" />'
+                           )
+        view = BrowserView(42, TestRequest())
+
+        self.assertEqual(template.render(view),
+                         'usage: \n'
+                         'options: {}\n'
+                         )
+
+        self.assertEqual(template.render(view, template_usage=u"spam"),
+                         "usage: spam\n"
+                         "options: {'template_usage': u'spam'}\n"
+                         )
+                           
+        template.usage = u'eggs'
+
+        self.assertEqual(template.render(view, template_usage=u"spam"),
+                         "usage: spam\n"
+                         "options: {'template_usage': u'spam'}\n"
+                         )
+
+        self.assertEqual(template.render(view),
+                         "usage: eggs\n"
+                         "options: {'template_usage': u'eggs'}\n"
+                         )
+                           
+        
+    
 
 def test_suite():
     return TestSuite((
