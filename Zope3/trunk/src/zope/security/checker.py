@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.16 2003/04/21 21:04:37 gvanrossum Exp $
+$Id: checker.py,v 1.17 2003/04/22 16:22:37 gvanrossum Exp $
 """
 
 import os
@@ -197,14 +197,20 @@ class TracebackSupplement:
         result = []
         try:
             cls = self.obj.__class__
-        except:
-            cls = type(self.obj)
-        try:
             if hasattr(cls, "__module__"):
                 s = "%s.%s" % (cls.__module__, cls.__name__)
             else:
                 s = str(cls.__name__)
             result.append("   - class: " + s)
+        except:
+            pass
+        try:
+            cls = type(self.obj)
+            if hasattr(cls, "__module__"):
+                s = "%s.%s" % (cls.__module__, cls.__name__)
+            else:
+                s = str(cls.__name__)
+            result.append("   - type: " + s)
         except:
             pass
         return "\n".join(result)
