@@ -20,6 +20,7 @@ from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.errorservice import ErrorReportingService
 from zope.testing.cleanup import CleanUp
 from zope.exceptions.exceptionformatter import format_exception
+from zope.publisher.tests.httprequest import TestRequest
 
 
 class C1:
@@ -66,8 +67,24 @@ class ErrorReportingServiceTests(CleanUp, TestCase):
         self.assertEquals(tb_text,
                           errService.getLogEntryById(err_id)['tb_text'])
 
+    def test_ErrorLog_Unicode_urls(self):
+        # Emulate a unicode url, it gets encoded to utf-8 before it's passed
+        # to the request. Also add some unicode field to the request's
+        # environment
+        request = TestRequest(environ={'PATH_INFO': '/\xd1\x82',
+                                       'SOME_UNICODE': u'\u0441'})
+        errService = ErrorReportingService()
+        exc_info = C1().getAnErrorInfo()
+        errService.raising(exc_info, request=request)
+        getErrLog = errService.getLogEntries()
+        self.assertEquals(1, len(getErrLog))
 
+        tb_text = ''.join(format_exception(*exc_info, **{'as_html': 0}))
 
+        err_id =  getErrLog[0]['id']
+        self.assertEquals(tb_text,
+                          errService.getLogEntryById(err_id)['tb_text'])
+        
 
 def test_suite():
     loader=TestLoader()

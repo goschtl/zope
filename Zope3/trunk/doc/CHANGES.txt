@@ -29,6 +29,9 @@ Zope Changes
       - Changed ILocation interface: __name__ is not required anymore
         and its default is None.
 
+      - The request's PATH_INFO variable is a unicode string now, so that
+        the error service doesn't bail out when unicode urls are used.
+
     Restructuring
 
       - New api for getting sublocations and adapters for containers
