@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: testZPTPage.py,v 1.3 2002/10/04 18:37:18 jim Exp $
+$Id: testZPTPage.py,v 1.4 2002/12/03 21:34:47 jeremy Exp $
 """
 
 import unittest
@@ -45,7 +45,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         provideAdapter(None, ITraversable, DefaultTraversable)
         defineChecker(Data, NamesChecker(['URL', 'name']))
 
-    def test(self):
+    def testZPTRendering(self):
         page = ZPTPage()
         page.setSource(
             '<html>'

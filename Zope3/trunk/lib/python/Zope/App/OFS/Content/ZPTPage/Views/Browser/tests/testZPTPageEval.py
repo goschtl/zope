@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testZPTPageEval.py,v 1.4 2002/07/17 16:54:18 jeremy Exp $
+$Id: testZPTPageEval.py,v 1.5 2002/12/03 21:34:47 jeremy Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,7 +26,7 @@ from Zope.Proxy.ContextWrapper import ContextWrapper
 
 class Test(CleanUp, TestCase):
 
-    def test(self):
+    def testTemplateRendering(self):
 
         class Template:
             def render(self, request, **kw):
