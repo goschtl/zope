@@ -85,7 +85,6 @@
   <adapter
       factory="zope.app.copypastemove.PrincipalClipboard"
       provides="zope.app.interfaces.copypastemove.IPrincipalClipboard"
-      permission="zope.ManageContent" 
       for="zope.app.interfaces.annotation.IAnnotations" />
 
   <include package="zope.app.container" />
