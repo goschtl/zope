@@ -12,10 +12,17 @@ Zope Changes
 
       - Backported several bug fixes made to the DSN parser, including issue
         304.
+      
+      - Contents/contents.pt didn't quote the values that were used in
+        href:s, thus it couldn't function properly if the items contained
+        certain characters.
+
+      - If the content-type was text/*, HTTPResponse.write re-set the
+        content-length header to the first chunk of data.
 
     Much thanks to everyone who contributed to this release:
 
-      Jim Fulton, Stephan Richter
+      Jim Fulton, Stephan Richter, Bjorn Tillenius
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
