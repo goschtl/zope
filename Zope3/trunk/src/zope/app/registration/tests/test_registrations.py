@@ -298,6 +298,7 @@ class TestRegisterableCopier(object):
 
         >>> copier = RegisterableCopier(component)
         >>> copier.copyTo(sm['default'], 'bar')
+        'bar'
 
     The copied component is not used:
 
