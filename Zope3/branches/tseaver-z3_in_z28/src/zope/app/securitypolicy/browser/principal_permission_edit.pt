@@ -1,0 +1,105 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+<div metal:fill-slot="body"
+  tal:define="rprincipal_id python:request['principal_id']">
+
+  <h1 i18n:translate="">Permission settings for
+    <span tal:replace="python:view.get_principal(rprincipal_id).title" 
+          i18n:name="principal_title"/>
+  </h1>
+
+  <form action="unsetPermissions.html" method="post">
+    <h2 i18n:translate="">Permission Settings</h2>
+
+    <table>
+      <tr>
+        <td valign="top">
+          <table border="0">
+            <tr>
+              <th colspan="2" align="center" 
+                  i18n:translate="">Allowed Permissions</th>
+            </tr>
+            <tr tal:repeat="perm 
+       python:view.get_set_permissions_for_principal(rprincipal_id, 'Allow')">
+              <td><input type="checkbox" tal:attributes="name perm/id"/></td>
+              <td tal:content="perm/title">Permission1</td>
+            </tr>
+            <tr tal:replace="nothing">
+              <td><input type="checkbox" name="permission_ids" /></td>
+              <td>Permission2</td>
+            </tr>
+            <tr tal:replace="nothing">
+              <td><input type="checkbox" name="permission_ids" /></td>
+              <td>Permission3</td>
+            </tr>
+            <tr tal:replace="nothing">
+              <td><input type="checkbox" name="permission_ids" /></td>
+              <td>Permission5</td>
+            </tr>
+          </table>
+        </td>
+        <td valign="top"> 
+          <table border="0">
+            <tr >
+              <th colspan="2" align="center" 
+                  i18n:translate="">Denied Permissions</th>
+            </tr>
+            <tr tal:repeat="perm 
+       python:view.get_set_permissions_for_principal(rprincipal_id, 'Deny')">
+              <td>
+                <input type="checkbox" tal:attributes="name perm/id" />
+              </td>
+              <td tal:content="perm/title">Permission1</td>
+            </tr>
+            <tr tal:replace="nothing">
+              <td><input type="checkbox" name="permission_ids" /></td>
+              <td>Permission2</td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+          <input type="submit" name="unset" 
+                 value="Remove selected permission settings" 
+                 i18n:attributes="value"/>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+  <p>&nbsp;</p>
+
+  <form action="./" method="post">
+    <h2 i18n:translate="">Add permission settings</h2>
+
+    <table>
+      <tr>
+        <td>
+          <select name="permissions" multiple="multiple">
+            <option 
+              tal:repeat="perm 
+                python:view.get_unset_permissions_for_principal(rprincipal_id)"
+              tal:attributes="value perm/id"
+              tal:content="perm/title">Perm1</option>
+            <option tal:replace="nothing">Perm2</option>
+            <option tal:replace="nothing">Perm3</option>
+          </select>
+        </td>        
+        <td valign="center">
+          <p>
+            <input type="submit" name="grantPermissions.html:method" 
+                   value="Grant" i18n:attributes="value grant-button"/>
+          </p>
+          <p>
+            <input type="submit" name="denyPermissions.html:method"
+                   value="Deny" i18n:attributes="value grant-button"/>
+          </p>
+        </td>
+      </tr>
+    </table>
+  </form>
+
+</div>
+</body>
+</html>
