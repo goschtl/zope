@@ -16,13 +16,13 @@ Credits
     - Chris Wither's and NIP hosted the first European sprint in
       London in February 2002.
 
-    - Somebody (somebody help me) hosted a workflow sprint in
-      Saarbruecken, Germany, in March 2002. 
+    - Alastair Burt hosted a workflow sprint in Saarbruecken, Germany,
+      in March 2002. 
 
     - NetAid (Josh Kutz, Nikheel Dhekne) hosted a sprint in New York
       in March 2002.
 
-    - Bee Hive hosted a sprint in Berlin in April 2002.
+    - Beehive hosted a sprint in Berlin in April 2002.
 
     - EuroPython/EuroZope hosted a large sprint in conjunction with
       the EuroPython conference.
@@ -51,7 +51,7 @@ Credits
 
   o Shane Hathaway created some of the initial prototypes of Zope 3
     and was an important brainstorming partner before we went "public"
-    with Zope 3. He has remained a stalwart but quite contributor,
+    with Zope 3. He has remained a stalwart but quiet contributor,
     despite his heavy workload at Zope Corporation.
 
   o Python Labs: Guido van Rossum, Fred Drake, Jeremy Hylton, Tim
