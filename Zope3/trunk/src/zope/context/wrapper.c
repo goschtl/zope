@@ -26,16 +26,17 @@ empty_tuple = NULL;
  * such as __len__ and next and __getitem__.
  * At module initialisation, we create the strings, and cache them here.
  */
-static PyObject *SlotStrings[9];
+static PyObject *SlotStrings[10];
 #define LEN_IDX 0
-#define GETITEM_IDX 1
-#define SETITEM_IDX 2
-#define DELITEM_IDX 3
-#define ITER_IDX 4
-#define NEXT_IDX 5
-#define CONTAINS_IDX 6
-#define CALL_IDX 7
-#define STR_IDX 8
+#define NONZERO_IDX 1
+#define GETITEM_IDX 2
+#define SETITEM_IDX 3
+#define DELITEM_IDX 4
+#define ITER_IDX 5
+#define NEXT_IDX 6
+#define CONTAINS_IDX 7
+#define CALL_IDX 8
+#define STR_IDX 9
 
 
 /* ContextAware type
@@ -706,15 +707,7 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
     PyObject *descriptor; \
     PyObject *wrapped_type;
 
-#define FILLSLOT(NAME, IDX, BADVAL) \
-    wrapped = Proxy_GET_OBJECT(self); \
-    if (wrapped == NULL) { \
-        PyErr_Format(PyExc_RuntimeError, \
-                     "object is NULL; requested to get attribute '%s'",\
-                     (NAME)); \
-            return (BADVAL); \
-    } \
-    descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[IDX]);\
+#define FILLSLOTIF(BADVAL) \
     if (descriptor != NULL && \
         descriptor->ob_type->tp_descr_get != NULL && \
         (PyObject_TypeCheck(descriptor, &ContextDescriptorType) || \
@@ -727,6 +720,17 @@ wrap_setattro(PyObject *self, PyObject *name, PyObject *value)
                     descriptor, self, wrapped_type); \
         if (descriptor == NULL) \
              return (BADVAL);
+
+#define FILLSLOT(NAME, IDX, BADVAL) \
+    wrapped = Proxy_GET_OBJECT(self); \
+    if (wrapped == NULL) { \
+        PyErr_Format(PyExc_RuntimeError, \
+                     "object is NULL; requested to get attribute '%s'",\
+                     (NAME)); \
+            return (BADVAL); \
+    } \
+    descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[IDX]);\
+    FILLSLOTIF(BADVAL)
 
 /* Concerning the last two lines of the above macro:
  * Calling tp_descr_get returns a new reference.
@@ -763,6 +767,37 @@ wrap_length(PyObject *self)
         return len;
     }
     return PyObject_Length(wrapped);
+}
+
+static int
+wrap_nonzero(PyObject *self)
+{
+    PyObject *res;
+    int result;
+    PyObject *wrapped;
+    PyObject *descriptor;
+    PyObject *wrapped_type;
+
+    wrapped = Proxy_GET_OBJECT(self);
+    if (wrapped == NULL) {
+        PyErr_Format(PyExc_RuntimeError,
+                     "object is NULL; requested to get attribute '__nonzero__'"
+                     );
+            return -1;
+    }
+    descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[NONZERO_IDX]);
+    if (descriptor == NULL)
+        descriptor = _PyType_Lookup(wrapped->ob_type, SlotStrings[LEN_IDX]);
+    FILLSLOTIF(-1)
+        res = PyObject_CallFunctionObjArgs(descriptor, NULL);
+        Py_DECREF(descriptor);
+        if (res == NULL)
+            return -1;
+        result = PyObject_IsTrue(res);
+        Py_DECREF(res);
+        return result;
+    }
+    return PyObject_IsTrue(wrapped);
 }
 
 static PyObject *
@@ -948,6 +983,54 @@ wrap_as_mapping = {
     wrap_setitem,				/* mp_ass_subscript */
 };
 
+static PyNumberMethods
+wrap_as_number ={
+    0,					/* nb_add */
+    0,					/* nb_subtract */
+    0,					/* nb_multiply */
+    0,					/* nb_divide */
+    0,					/* nb_remainder */
+    0,					/* nb_divmod */
+    0,					/* nb_power */
+    0,					/* nb_negative */
+    0,					/* nb_positive */
+    0,					/* nb_absolute */
+    wrap_nonzero,			/* nb_nonzero */
+    0,					/* nb_invert */
+    0,					/* nb_lshift */
+    0,					/* nb_rshift */
+    0,					/* nb_and */
+    0,					/* nb_xor */
+    0,					/* nb_or */
+    0,					/* nb_coerce */
+    0,					/* nb_int */
+    0,					/* nb_long */
+    0,					/* nb_float */
+    0,					/* nb_oct */
+    0,					/* nb_hex */
+
+    /* Added in release 2.0 */
+    /* These require the Py_TPFLAGS_HAVE_INPLACEOPS flag */
+    0,					/* nb_inplace_add */
+    0,					/* nb_inplace_subtract */
+    0,					/* nb_inplace_multiply */
+    0,					/* nb_inplace_divide */
+    0,					/* nb_inplace_remainder */
+    0,					/* nb_inplace_power */
+    0,					/* nb_inplace_lshift */
+    0,					/* nb_inplace_rshift */
+    0,					/* nb_inplace_and */
+    0,					/* nb_inplace_xor */
+    0,					/* nb_inplace_or */
+
+    /* Added in release 2.2 */
+    /* These require the Py_TPFLAGS_HAVE_CLASS flag */
+    0,					/* nb_floor_divide */
+    0,					/* nb_true_divide */
+    0,					/* nb_inplace_floor_divide */
+    0,					/* nb_inplace_true_divide */
+};
+
 statichere PyTypeObject
 WrapperType = {
     PyObject_HEAD_INIT(NULL)
@@ -955,42 +1038,42 @@ WrapperType = {
     "wrapper.Wrapper",
     sizeof(WrapperObject),
     0,
-    wrap_dealloc,				/* tp_dealloc */
-    0,						/* tp_print */
-    0,						/* tp_getattr */
-    0,						/* tp_setattr */
-    0,						/* tp_compare */
-    0,						/* tp_repr */
-    0,						/* tp_as_number */
-    &wrap_as_sequence,				/* tp_as_sequence */
-    &wrap_as_mapping,				/* tp_as_mapping */
-    0,						/* tp_hash */
-    wrap_call,					/* tp_call */
-    wrap_str,					/* tp_str */
-    wrap_getattro,				/* tp_getattro */
-    wrap_setattro,				/* tp_setattro */
-    0,						/* tp_as_buffer */
+    wrap_dealloc,					/* tp_dealloc */
+    0,							/* tp_print */
+    0,							/* tp_getattr */
+    0,							/* tp_setattr */
+    0,							/* tp_compare */
+    0,							/* tp_repr */
+    &wrap_as_number,					/* tp_as_number */
+    &wrap_as_sequence,					/* tp_as_sequence */
+    &wrap_as_mapping,					/* tp_as_mapping */
+    0,							/* tp_hash */
+    wrap_call,						/* tp_call */
+    wrap_str,						/* tp_str */
+    wrap_getattro,					/* tp_getattro */
+    wrap_setattro,					/* tp_setattro */
+    0,							/* tp_as_buffer */
     Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC
-        | Py_TPFLAGS_BASETYPE,			/* tp_flags */
-    0,						/* tp_doc */
-    wrap_traverse,				/* tp_traverse */
-    wrap_clear,					/* tp_clear */
-    0,						/* tp_richcompare */
-    0,						/* tp_weaklistoffset */
-    wrap_iter,					/* tp_iter */
-    wrap_iternext,				/* tp_iternext */
-    wrap_methods,				/* tp_methods */
-    0,						/* tp_members */
-    0,						/* tp_getset */
-    0,						/* tp_base */
-    0,						/* tp_dict */
-    0,						/* tp_descr_get */
-    0,						/* tp_descr_set */
-    0,						/* tp_dictoffset */
-    wrap_init,					/* tp_init */
-    0, /*PyType_GenericAlloc,*/			/* tp_alloc */
-    wrap_new,					/* tp_new */
-    0, /*_PyObject_GC_Del,*/			/* tp_free */
+        | Py_TPFLAGS_CHECKTYPES | Py_TPFLAGS_BASETYPE,	/* tp_flags */
+    0,							/* tp_doc */
+    wrap_traverse,					/* tp_traverse */
+    wrap_clear,						/* tp_clear */
+    0,							/* tp_richcompare */
+    0,							/* tp_weaklistoffset */
+    wrap_iter,						/* tp_iter */
+    wrap_iternext,					/* tp_iternext */
+    wrap_methods,					/* tp_methods */
+    0,							/* tp_members */
+    0,							/* tp_getset */
+    0,							/* tp_base */
+    0,							/* tp_dict */
+    0,							/* tp_descr_get */
+    0,							/* tp_descr_set */
+    0,							/* tp_dictoffset */
+    wrap_init,						/* tp_init */
+    0, /*PyType_GenericAlloc,*/				/* tp_alloc */
+    wrap_new,						/* tp_new */
+    0, /*_PyObject_GC_Del,*/				/* tp_free */
 };
 
 
@@ -1438,6 +1521,7 @@ initwrapper(void)
         return;
 
     SlotStrings[LEN_IDX] = PyString_InternFromString("__len__");
+    SlotStrings[NONZERO_IDX] = PyString_InternFromString("__nonzero__");
     SlotStrings[GETITEM_IDX] = PyString_InternFromString("__getitem__");
     SlotStrings[SETITEM_IDX] = PyString_InternFromString("__setitem__");
     SlotStrings[DELITEM_IDX] = PyString_InternFromString("__delitem__");

@@ -11,6 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: test_wrapper.py,v 1.10 2003/05/07 09:32:59 stevea Exp $
+"""
 import pickle
 import unittest
 
@@ -18,10 +21,10 @@ from zope.proxy.context import wrapper, getcontext, getobject, ContextWrapper
 from zope.proxy.context import ContextMethod, ContextProperty, ContextAware
 from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
-
 _marker = object()
 
 class WrapperTestCase(ProxyTestCase):
+
     def new_proxy(self, o, c=None):
         return wrapper.Wrapper(o, c)
 
@@ -32,7 +35,6 @@ class WrapperTestCase(ProxyTestCase):
         w = self.new_proxy((o1, o2), o3)
         self.assertEquals(wrapper.getobject(w), (o1, o2))
         self.assert_(wrapper.getcontext(w) is o3)
-
 
     def test_subclass_constructor(self):
         class MyWrapper(wrapper.Wrapper):
@@ -162,7 +164,6 @@ class WrapperTestCase(ProxyTestCase):
     def test_ContextAware_doesnt_mess_up___class__(self):
         class C(ContextAware): pass
         self.assertEqual(ContextWrapper(C(), None).__class__, C)
-
 
     def test_ContextMethod_getattr(self):
         class Z(object):
@@ -329,6 +330,72 @@ class WrapperTestCase(ProxyTestCase):
         self.assertEquals(p1.retval, (None, ()))
         self.assertEquals(p2.retval, (context, ()))
         self.assertEquals(p3.retval, (context, ()))
+
+        p1, p2, p3, context = self.make_proxies('__len__', 5)
+        self.assertEquals(bool(p1), True)
+        self.assertEquals(bool(p2), True)
+        self.assertEquals(bool(p3), True)
+        self.assertEquals(p1.retval, (None, ()))
+        self.assertEquals(p2.retval, (context, ()))
+        self.assertEquals(p3.retval, (context, ()))
+
+        p1, p2, p3, context = self.make_proxies('__len__', 0)
+        self.assertEquals(bool(p1), False)
+        self.assertEquals(bool(p2), False)
+        self.assertEquals(bool(p3), False)
+        self.assertEquals(p1.retval, (None, ()))
+        self.assertEquals(p2.retval, (context, ()))
+        self.assertEquals(p3.retval, (context, ()))
+
+    def test_nonzero(self):
+        p1, p2, p3, context = self.make_proxies('__nonzero__', True)
+        self.assertEquals(bool(p1), True)
+        self.assertEquals(bool(p2), True)
+        self.assertEquals(bool(p3), True)
+        self.assertEquals(p1.retval, (None, ()))
+        self.assertEquals(p2.retval, (context, ()))
+        self.assertEquals(p3.retval, (context, ()))
+
+        p1, p2, p3, context = self.make_proxies('__nonzero__', False)
+        self.assertEquals(bool(p1), False)
+        self.assertEquals(bool(p2), False)
+        self.assertEquals(bool(p3), False)
+        self.assertEquals(p1.retval, (None, ()))
+        self.assertEquals(p2.retval, (context, ()))
+        self.assertEquals(p3.retval, (context, ()))
+
+    def test_nonzero_with_len(self):
+        class ThingWithLenAndNonzero(object):
+            len_called = False
+            nonzero_called = False
+            retval = None
+
+            def __len__(self):
+                self.len_called = True
+                self.retval = self
+                return 0
+
+            def __nonzero__(self):
+                self.nonzero_called = True
+                self.retval = self
+                return False
+
+        obj = ThingWithLenAndNonzero()
+        w = self.new_proxy(obj)
+        self.assertEquals(bool(w), False)
+        self.assertEquals(obj.nonzero_called, True)
+        self.assertEquals(obj.len_called, False)
+        self.assert_(obj.retval is obj)
+
+        ThingWithLenAndNonzero.__nonzero__ = ContextMethod(
+            ThingWithLenAndNonzero.__nonzero__.im_func)
+
+        obj = ThingWithLenAndNonzero()
+        w = self.new_proxy(obj)
+        self.assertEquals(bool(w), False)
+        self.assertEquals(obj.nonzero_called, True)
+        self.assertEquals(obj.len_called, False)
+        self.assert_(obj.retval is w)
 
     # Tests for wrapper module globals
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: context.py,v 1.3 2003/05/06 13:54:30 stevea Exp $
+$Id: context.py,v 1.4 2003/05/07 09:33:00 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -106,6 +106,7 @@ class IWrapper(Interface):
     the following 'slot descriptors'.
 
     __len__
+    __nonzero__
     __getitem__
     __setitem__
     __delitem__
