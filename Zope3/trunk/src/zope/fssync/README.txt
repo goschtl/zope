@@ -59,9 +59,17 @@ BUGS
   tries to send the request to a view of the corresponding object,
   which doesn't exist yet.
 
+* When dealing with additions or removals, sometimes multiple updates
+  are required to get the Extra stuff to be updated.
+
+* Removing a directory tree doesn't work intuitively.
+
 
 TO DO
 -----
+
+* Should be able to add various standard object types based on
+  filename extension.
 
 * When committing a change, shouldn't the mtime in the DC metadata be
   updated?
