@@ -18,7 +18,7 @@ from persistent.tests.persistenttestbase import DM as BaseDM, BrokenDM
 
 from zope.interface import Interface, directlyProvides, directlyProvidedBy
 
-from zope.app.utilities.wrapper import Struct
+from zope.app.schema.wrapper import Struct
 from zope.app.container.contained import ContainedProxy, getProxiedObject
 
 

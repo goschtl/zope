@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Views
 
-$Id: content.py,v 1.6 2004/03/06 04:17:21 garrett Exp $
+$Id: __init__.py,v 1.1 2004/03/10 00:58:00 srichter Exp $
 """
 import copy
 from zope.app import zapi
@@ -22,10 +22,10 @@ from zope.app.browser.form.editview import EditView
 from zope.app.browser.form.submit import Update
 from zope.app.form.utility import setUpWidget
 from zope.app.interfaces.form import IInputWidget
-from zope.app.interfaces.utilities.content import IContentComponentDefinition
+from zope.app.schemacontent.interfaces import IContentComponentDefinition
 from zope.app.security.permission import PermissionField
 from zope.app.services.servicenames import Utilities
-from zope.app.utilities.content import ContentComponentInstance
+from zope.app.schemacontent.content import ContentComponentInstance
 from zope.component.exceptions import ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse

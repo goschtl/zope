@@ -13,10 +13,8 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.11 2004/03/06 16:50:34 jim Exp $
+$Id: content.py,v 1.1 2004/03/10 00:57:59 srichter Exp $
 """
-__metaclass__ = type
-
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.app import zapi
@@ -26,10 +24,7 @@ from zope.app.container.interfaces import IAdding
 from zope.app.interfaces.services.menu import \
      ILocalBrowserMenu, ILocalBrowserMenuService
 from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.interfaces.utilities.content import \
-     IContentComponentDefinition, IContentComponentMenuItem
 from zope.app.container.contained import Contained
-from zope.app.interfaces.utilities.content import IContentComponentInstance
 from zope.app.services.menu import \
      LocalBrowserMenuService, LocalBrowserMenu, LocalBrowserMenuItem
 from zope.app.services.service import ServiceRegistration
@@ -39,6 +34,9 @@ from zope.component.exceptions import ComponentLookupError
 from zope.interface import directlyProvides, implements
 from zope.schema import getFields
 from zope.security.checker import CheckerPublic, Checker, defineChecker
+
+from interfaces import IContentComponentDefinition, IContentComponentMenuItem
+from interfaces import IContentComponentInstance
 
 
 MenuItemKey = 'http://www.zope.org/utilities/content/menuitem'
@@ -58,7 +56,7 @@ class ContentComponentDefinition(Persistent, Contained):
         
 
 
-class ContentComponentDefinitionMenuItem:
+class ContentComponentDefinitionMenuItem(object):
     """An adapter that takes a Content Component Defintion and provides all
     necessary information to create a menu item for the content component."""
 
@@ -124,7 +122,7 @@ class ContentComponentDefinitionMenuItem:
 
 
     def createMenuItem(self):
-        "See zope.app.interfaces.utilities.content.IContentComponentMenuItem"
+        "See .interfaces.IContentComponentMenuItem"
         # If 'create' is set to true, we must generate the necessary objects
         # locally
         if self.create:
@@ -171,7 +169,7 @@ class ContentComponentDefinitionMenuItem:
 
 
     def removeMenuItem(self):
-        "See zope.app.interfaces.utilities.content.IContentComponentMenuItem"
+        "See .interfaces.IContentComponentMenuItem"
         self._data['menu'].__delitem__(self._data['menuItemId'])
         self._data['menu'] = None
         self._data['menuItemId'] = None

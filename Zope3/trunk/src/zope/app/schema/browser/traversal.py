@@ -11,12 +11,12 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.8 2004/03/05 22:08:57 jim Exp $
+$Id: traversal.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
 """
 from zope.interface import implements
 from zope.component import getDefaultViewName, queryView
 from zope.publisher.interfaces import IPublishTraverse
-from zope.app.interfaces.utilities.schema import IMutableSchema
+from zope.app.schema.interfaces import IMutableSchema
 
 from zope.exceptions import NotFoundError
 

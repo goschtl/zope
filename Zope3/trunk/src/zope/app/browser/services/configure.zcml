@@ -204,6 +204,7 @@
     action="zope.app.services.hub.Registration"
     title="Registration subscriber"
     description="An event subscriber that registers content with the objecthub"
+    permission="zope.ManageServices" />
     />
 
   <page

@@ -4,9 +4,11 @@
 
     <include package="zope.app.component" file="meta.zcml" />
     <include package="zope.app.publisher" file="meta.zcml" />
+    <include package="zope.app.browser.form" file="meta.zcml" />
     <include package="zope.app.security" file="meta.zcml"/>
     <include package="zope.app.security" file="configure.zcml"/>
-    <include package="zope.app.schema" file="fields.zcml" />
-    <include package="zope.app.utilities" file="configure.zcml" />
+    <include package="zope.app.browser" file="usages.zcml" />
+    <include package="zope.app.browser" file="menus.zcml" />
+    <include package="zope.app.schema" file="configure.zcml" />
 
 </configure>

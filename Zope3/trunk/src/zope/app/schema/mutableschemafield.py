@@ -13,16 +13,14 @@
 ##############################################################################
 """Defines fields that are used in mutable schemas.
 
-$Id: mutableschemafield.py,v 1.4 2004/03/05 22:09:21 jim Exp $
+$Id: mutableschemafield.py,v 1.1 2004/03/10 00:57:56 srichter Exp $
 """
-
-from zope.interface import implements
+from zope.interface import implements, providedBy
 from zope.interface.interfaces import IInterface
-from zope.interface import providedBy
 from zope.schema.interfaces import ValidationError
-from zope.app.interfaces.utilities.schema import IMutableSchemaField, \
-     IMutableSchemasField, IMutableSchema
 from zope.app.component.interfacefield import InterfaceField, InterfacesField
+
+from interfaces import IMutableSchemaField, IMutableSchemasField, IMutableSchema
 
 class MutableSchemaField(InterfaceField):
 

@@ -13,33 +13,29 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.19 2004/03/06 16:50:34 jim Exp $
+$Id: schema.py,v 1.1 2004/03/10 00:57:56 srichter Exp $
 """
 from types import FunctionType
 
 from persistent import Persistent
 from persistent.dict import PersistentDict
+from zope.interface import Interface, implements
 
 from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.proxy import removeAllProxies
-from zope.interface import Interface
-from zope.interface import implements
-from zope.interface import directlyProvides, directlyProvidedBy
 from zope.app import zapi
-from zope.app.introspector import interfaceToName
 from zope.app.browser.container.adding import Adding
-from zope.app.utilities.interfaces import IMutableSchemaContent
-from zope.app.utilities.wrapper import Struct
-from zope.app.interfaces.utilities.schema import \
-     ISchemaAdding, IMutableSchema, ISchemaUtility
 from zope.app.services.interface import PersistentInterfaceClass
 from zope.app.services.utility import UtilityRegistration
-from zope.schema import getFieldsInOrder, getFieldNamesInOrder
 from zope.app.container.contained import Contained, setitem, uncontained
+
 from zope.interface.interface import Attribute, Method, fromFunction
 from zope.interface.interface import InterfaceClass
 from zope.interface.exceptions import InvalidInterface
-from zope.app.component.interface import nameToInterface
+from zope.schema import getFieldsInOrder, getFieldNamesInOrder
+
+from wrapper import Struct
+from interfaces import ISchemaAdding, IMutableSchema, ISchemaUtility
 
 class BaseSchemaUtility(InterfaceClass):
 
@@ -288,25 +284,3 @@ class SchemaRegistration(UtilityRegistration):
     def deactivated(self):
         schema = self.getComponent()
         schema.setName('<schema not activated>')
-
-
-# XXX: This needs refactoring
-class MutableSchemaContent(Contained):
-
-    implements(IMutableSchemaContent)
-
-    schema_id = None
-
-    def _set_schema(self, iface):
-        directlyProvides(self, iface)
-        self.schema_id = interfaceToName(self, iface)
-
-    def _get_schema(self):
-        provided = list(directlyProvidedBy(self))
-        schema = self.schema_id and \
-                 nameToInterface(self, self.schema_id) or None
-        if not schema in provided and schema is not None:
-            directlyProvides(self, schema)
-        return schema or provided and provided[0] or None
-
-    mutableschema = property(_get_schema, _set_schema)

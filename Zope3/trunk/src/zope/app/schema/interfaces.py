@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema Interfaces
 
-$Id: schema.py,v 1.6 2004/03/03 10:38:47 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/03/10 00:57:56 srichter Exp $
 """
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
@@ -95,5 +95,3 @@ class IMutableSchemaField(IInterfaceField):
 
 class IMutableSchemasField(IInterfaceField):
     """A type of Field that has a tuple of IMutableSchemas as its value."""
-
-

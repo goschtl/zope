@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Definition and Instance Interfaces
 
-$Id: content.py,v 1.6 2004/03/03 10:38:47 philikon Exp $
+$Id: interfaces.py,v 1.1 2004/03/10 00:57:59 srichter Exp $
 """
 from zope.app.container.interfaces import IAdding
 from zope.app.component.interfacefield import InterfaceField

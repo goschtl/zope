@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Field Tests
+
+$Id: test_field.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
+"""
 import unittest
 
 from persistent.tests.persistenttestbase import DM
@@ -20,9 +24,9 @@ from zope.schema import Text, getFieldsInOrder
 from zope.security.checker import ProxyFactory
 from zope.security.management import system_user, newSecurityManager
 from zope.app.tests import setup
-from zope.app.utilities.wrapper import Struct
+from zope.app.schema.wrapper import Struct
 from zope.security.checker import getChecker, _defaultChecker
-import zope.app.utilities.tests
+import zope.app.schema.tests
 
 class FieldPersistence(unittest.TestCase):
 
@@ -41,7 +45,7 @@ class FieldPermissions(unittest.TestCase):
 
     def setUp(self):
         setup.placefulSetUp()
-        self.context = xmlconfig.file("fields.zcml", zope.app.utilities.tests)
+        self.context = xmlconfig.file("fields.zcml", zope.app.schema.tests)
         newSecurityManager(system_user)
 
     def test_wrapped_field_checker(self):

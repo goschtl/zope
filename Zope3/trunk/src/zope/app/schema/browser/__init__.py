@@ -13,20 +13,20 @@
 ##############################################################################
 """Mutable Schema (as Utility) Views
 
-$Id: schema.py,v 1.7 2004/03/06 16:50:16 jim Exp $
+$Id: __init__.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.browser.form.editview import EditView
 from zope.app.form.utility import setUpEditWidgets
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.utilities.schema import IMutableSchema
+from zope.app.schema.interfaces import IMutableSchema
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.publisher.browser import BrowserView
 from zope.schema import getFieldNamesInOrder, getFieldsInOrder
 
 class EditSchema(BrowserView):
 
-    edit = ViewPageTemplateFile('edit.pt')
+    edit = ViewPageTemplateFile('schema_edit.pt')
     errors = ()
     update_status = None
 

@@ -13,10 +13,8 @@
 ##############################################################################
 """Content Object Instance
 
-$Id: instance.py,v 1.4 2004/02/20 16:57:33 fdrake Exp $
+$Id: instance.py,v 1.1 2004/03/10 00:57:59 srichter Exp $
 """
-__metaclass__ = type
-
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.app.component.interfacefield import InterfaceField

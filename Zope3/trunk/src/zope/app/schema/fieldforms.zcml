@@ -11,7 +11,7 @@
       title="Text Field"
       description="A Text Field"
       content_factory="zope.schema.Text"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IText"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -37,7 +37,7 @@
       title="TextLine Field"
       description="A TextLine Field"
       content_factory="zope.schema.TextLine"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.ITextLine"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -63,7 +63,7 @@
       title="Boolean Field"
       description="A Boolean Field"
       content_factory="zope.schema.Bool"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IBool"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -89,7 +89,7 @@
       title="Integer Field"
       description="An Integer Field"
       content_factory="zope.schema.Int"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IInt"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -115,7 +115,7 @@
       title="Float Field"
       description="A Float Field"
       content_factory="zope.schema.Float"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IFloat"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -141,7 +141,7 @@
       title="Datetime Field"
       description="A Datetime Field"
       content_factory="zope.schema.Datetime"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IDatetime"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -170,7 +170,7 @@
       title="Enumerated TextLine Field"
       description="An Enumerated TextLine Field"
       content_factory="zope.schema.EnumeratedTextLine"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IEnumeratedTextLine"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -197,7 +197,7 @@
       title="Enumerated Integer Field"
       description="An Enumerated Integer Field"
       content_factory="zope.schema.EnumeratedInt"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IEnumeratedInt"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -224,7 +224,7 @@
       title="Enumerated Float Field"
       description="An Enumerated Float Field"
       content_factory="zope.schema.EnumeratedFloat"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IEnumeratedFloat"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -251,7 +251,7 @@
       title="Enumerated Datetime Field"
       description="An Enumerated Datetime Field"
       content_factory="zope.schema.EnumeratedDatetime"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IEnumeratedDatetime"
       permission="zope.ManageContent"
       fields="title description required readonly
@@ -278,7 +278,7 @@
       title="Enumerated Date Field"
       description="An Enumerated Date Field"
       content_factory="zope.schema.EnumeratedDate"
-      for="zope.app.interfaces.utilities.schema.ISchemaAdding"
+      for=".interfaces.ISchemaAdding"
       schema="zope.schema.interfaces.IEnumeratedDate"
       permission="zope.ManageContent"
       fields="title description required readonly

@@ -12,20 +12,18 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.8 2003/12/17 21:27:33 sidnei Exp $
+$Id: test_schemautility.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
 """
-
 from unittest import TestCase, makeSuite, TestSuite
 
 from zope.configuration import xmlconfig
 from zope.schema import Text, getFieldNamesInOrder, getFieldsInOrder
 from zope.security.management import system_user, newSecurityManager
-from zope.security.checker import getChecker, _defaultChecker
-from zope.security.checker import ProxyFactory
-from zope.app.utilities.schema import SchemaUtility
+from zope.security.checker import getChecker, _defaultChecker, ProxyFactory
+from zope.app.schema.schema import SchemaUtility
 from zope.app.tests import setup
 from zope.app import zapi
-import zope.app.utilities.tests
+import zope.app.schema.tests
 
 class SchemaUtilityTests(TestCase):
 
@@ -180,7 +178,7 @@ class SchemaUtilityTests(TestCase):
                           'beta', -1)
 
     def test_traverseToField(self):
-        context = xmlconfig.file("fields.zcml", zope.app.utilities.tests)
+        context = xmlconfig.file("fields.zcml", zope.app.schema.tests)
         s = self.s
         s.addField(u'alpha', self.alpha)
         s = ProxyFactory(s)
@@ -198,8 +196,8 @@ class SchemaUtilityTests(TestCase):
     def tearDown(self):
         setup.placefulTearDown()
 
+
 def test_suite():
-    return TestSuite(
-        (
+    return TestSuite((
         makeSuite(SchemaUtilityTests),
          ))

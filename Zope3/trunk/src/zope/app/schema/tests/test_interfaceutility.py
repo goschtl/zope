@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_interfaceutility.py,v 1.8 2004/03/05 22:09:21 jim Exp $
+$Id: test_interfaceutility.py,v 1.1 2004/03/10 00:57:57 srichter Exp $
 """
 
 import unittest
