@@ -186,7 +186,7 @@ class MemberDataTool (UniqueObject, SimpleItem, PropertyManager, ActionProviderB
         transactions and to reduce the necessary number of
         entries.
         '''
-        self._members[id] = m
+        self._members[id] = aq_base(m)
 
 InitializeClass(MemberDataTool)
 
