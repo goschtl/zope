@@ -443,7 +443,7 @@ class FTIConstructionTests( unittest.TestCase ):
         folder = self._makeFolder( fake_product=1 )
 
         self.failIf( ti.isConstructionAllowed( folder ) )
-        self.assertRaises( 'Unauthorized', ti.isConstructionAllowed
+        self.assertRaises( Unauthorized, ti.isConstructionAllowed
                          , folder, raise_exc=1 )
 
 class FTIConstructionTests_w_Roles( unittest.TestCase ):
@@ -482,7 +482,7 @@ class FTIConstructionTests_w_Roles( unittest.TestCase ):
 
         newSecurityManager( None
                           , UserWithRoles( 'FooViewer' ).__of__( folder ) )
-        self.assertRaises( 'Unauthorized', ti.isConstructionAllowed
+        self.assertRaises( Unauthorized, ti.isConstructionAllowed
                          , folder, raise_exc=1 )
 
     def test_constructInstance_wo_Roles( self ):
@@ -492,7 +492,7 @@ class FTIConstructionTests_w_Roles( unittest.TestCase ):
         newSecurityManager( None
                           , UserWithRoles( 'FooViewer' ).__of__( folder ) )
 
-        self.assertRaises( 'Unauthorized'
+        self.assertRaises( Unauthorized
                          , ti.constructInstance, folder, 'foo' )
 
     def test_constructInstance( self ):

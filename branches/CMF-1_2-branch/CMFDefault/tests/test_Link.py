@@ -27,24 +27,24 @@ class LinkTests(unittest.TestCase):
         d = Link('foo')
         d._writeFromPUT( body=BASIC_STRUCTUREDTEXT )
         
-        self.failUnless( d.Title() == 'Zope Community' )
-        self.failUnless(
-                d.Description() == 'Link to the Zope Community website.' )
-        self.failUnless( len(d.Subject()) == 3 )
-        self.failUnless( d.getRemoteUrl() == 'http://www.zope.org' )
+        self.assertEqual( d.Title(), 'Zope Community' )
+        self.assertEqual(
+                d.Description(), 'Link to the Zope Community website.' )
+        self.assertEqual( len(d.Subject()), 3 )
+        self.assertEqual( d.getRemoteUrl(), 'http://www.zope.org' )
 
     def test_fixupMissingScheme( self ):
         d = Link( 'foo' )
         d.edit( 'http://foo.com' )
-        self.failUnless( d.getRemoteUrl() == 'http://foo.com' )
+        self.assertEqual( d.getRemoteUrl(), 'http://foo.com' )
 
         d = Link( 'bar' )
         d.edit( '//bar.com' )
-        self.failUnless( d.getRemoteUrl() == 'http://bar.com' )
+        self.assertEqual( d.getRemoteUrl(), 'http://bar.com' )
 
         d = Link( 'baz' )
         d.edit( 'baz.com' )
-        self.failUnless( d.getRemoteUrl() == 'http://baz.com' )
+        self.assertEqual( d.getRemoteUrl(), 'http://baz.com' )
 
 
 

@@ -18,12 +18,14 @@ import Globals, StructuredText, string, utils, re
 from StructuredText.HTMLWithImages import HTMLWithImages
 from Globals import DTMLFile, InitializeClass
 from AccessControl import ClassSecurityInfo, getSecurityManager
+
 from Products.CMFCore.PortalContent import PortalContent
-from DublinCore import DefaultDublinCoreImpl
-from webdav.Lockable import ResourceLockedError
+from Products.CMFCore.PortalContent import NoWL, ResourceLockedError
 from Products.CMFCore import CMFCorePermissions
 from Products.CMFCore.WorkflowCore import WorkflowAction
 from Products.CMFCore.utils import _format_stx, keywordsplitter
+
+from DublinCore import DefaultDublinCoreImpl
 from utils import parseHeadersBody, SimpleHTMLParser, bodyfinder, _dtmldir
 
 factory_type_information = ( { 'id'             : 'Document'
@@ -340,8 +342,9 @@ class Document(PortalContent, DefaultDublinCoreImpl):
 
     def PUT(self, REQUEST, RESPONSE):
         """ Handle HTTP (and presumably FTP?) PUT requests """
-        self.dav__init(REQUEST, RESPONSE)
-        self.dav__simpleifhandler(REQUEST, RESPONSE, refresh=1)
+        if not NoWL:
+            self.dav__init(REQUEST, RESPONSE)
+            self.dav__simpleifhandler(REQUEST, RESPONSE, refresh=1)
         body = REQUEST.get('BODY', '')
         guessedformat = REQUEST.get_header('Content-Type', 'text/plain')
         ishtml = (guessedformat == 'text/html') or utils.html_headcheck(body)

@@ -32,6 +32,12 @@ import os
 import CMFCorePermissions
 from Acquisition import aq_base
 
+try:
+    from Products import PluginIndexes
+    _Z24 = 1
+except ImportError:
+    _Z24 = 0
+
 
 class IndexableObjectWrapper:
 
@@ -202,7 +208,10 @@ class CatalogTool (UniqueObject, ZCatalog):
         else:
             vars = {}
         w = IndexableObjectWrapper(vars, object)
-        ZCatalog.catalog_object(self, w, uid, idxs)
+        if _Z24:
+            ZCatalog.catalog_object(self, w, uid, idxs)
+        else:
+            ZCatalog.catalog_object(self, w, uid)
 
     security.declarePrivate('indexObject')
     def indexObject(self, object):

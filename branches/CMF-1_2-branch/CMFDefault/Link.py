@@ -116,6 +116,8 @@ class Link( PortalContent
             self.remote_url = urlparse.urlunparse( tokens )
         else:
             self.remote_url = 'http://' + remote_url
+        if self.remote_url[-1] == '/':
+            self.remote_url = self.remote_url[:-1]
 
     edit = WorkflowAction(edit)
 
