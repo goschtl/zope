@@ -89,7 +89,8 @@ class PluggableAuthentication(object):
         id = id[len(self.prefix):]
 
         for searcher in self.searchers:
-            searcher = queryUtility(IPrincipalSearchPlugin, searcher)
+            searcher = queryUtility(IPrincipalSearchPlugin, searcher, 
+                                    context=self)
             if searcher is None:
                 continue
 
