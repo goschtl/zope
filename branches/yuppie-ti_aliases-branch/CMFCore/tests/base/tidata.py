@@ -136,6 +136,11 @@ FTIDATA_CMF14_SPECIAL = (
               'name':'Metadata',
               'action':'string:${object_url}/metadata_edit_form',
               'permissions':(ModifyPortalContent,) }
+          , { 'id':'mkdir',
+              'name':'MKDIR handler',
+              'action':'string:dummy_mkdir',
+              'category':'folder',
+              'visible':0 }
           )
       }
     ,

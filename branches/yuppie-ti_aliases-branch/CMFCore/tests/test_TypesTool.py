@@ -335,7 +335,7 @@ class TypeInfoTests(TestCase):
         self.assertEqual(ti._aliases, wanted)
 
     def test_MethodAliases_special_migration(self):
-        wanted = { 'view':('dummy_view',), }
+        wanted = { 'view':('dummy_view',), 'mkdir':('dummy_mkdir',) }
 
         # use old FTI Data
         ti = self._makeInstanceByFTIData(FTIDATA_CMF14_SPECIAL)
