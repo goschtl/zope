@@ -15,7 +15,7 @@
 
 This script extracts translatable strings and creates a single zope.pot file.
 
-$Id: extract.py,v 1.4 2003/08/05 13:48:54 srichter Exp $
+$Id: extract.py,v 1.5 2003/08/09 11:47:14 srichter Exp $
 """
 import os, sys, fnmatch
 import time
@@ -27,21 +27,31 @@ from pygettext import safe_eval, normalize, make_escapes
 __meta_class__ = type
 
 pot_header = '''\
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR ORGANIZATION
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+##############################################################################
 #
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\\n"
+"Project-Id-Version: %(version)s\\n"
 "POT-Creation-Date: %(time)s\\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"
-"Language-Team: LANGUAGE <LL@li.org>\\n"
+"Language-Team: Zope 3 Developers <zope3-dev@zope.org>\\n"
 "MIME-Version: 1.0\\n"
 "Content-Type: text/plain; charset=CHARSET\\n"
 "Content-Transfer-Encoding: ENCODING\\n"
-"Generated-By: Zope 3 %(version)s\\n"
+"Generated-By: zope/app/translation_files/extract.py\\n"
+
 '''
 
 class POTEntry:
@@ -88,10 +98,19 @@ class POTMaker:
                 self.catalog[msgid].addLocationComment(filename, lineno)
                 
 
+    def _getZopeVersion(self):
+        import zope
+        fn = os.path.join(os.path.dirname(zope.__file__), 'version.txt')
+        if os.path.exists(fn):
+            return open(fn, 'r').read()
+        else:
+            return 'Zope 3 (unknown version)'
+
     def write(self):
+        
         file = open(self._output_filename, 'w')
         file.write(pot_header % {'time': time.ctime(),
-                                 'version': '0.1'})
+                                 'version': self._getZopeVersion()})
         
         # Sort the catalog entries by filename
         catalog = self.catalog.values()
@@ -234,7 +253,8 @@ def py_strings(dir, domain="zope"):
     """Retrieve all Python messages from dir that are in the domain."""
     eater = TokenEater()
     make_escapes(0)
-    for filename in find_files(dir, '*.py', exclude=('extract.py',)):
+    for filename in find_files(dir, '*.py', 
+                               exclude=('extract.py', 'pygettext.py')):
         fp = open(filename)
         try:
             eater.set_filename(filename)
@@ -294,7 +314,7 @@ def main(argv=sys.argv):
     dir = app_dir()
     # Wehn generating the comments, we will not need the base directory info,
     # since it is specific to everyone's installation
-    base_dir = dir.replace('zope/app', '')
+    base_dir = dir.replace('src/zope/app', '')
 
     maker = POTMaker('zope.pot')
     maker.add(py_strings(dir), base_dir)
