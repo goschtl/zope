@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.5 2003/01/09 17:28:43 stevea Exp $
+$Id: interfaces.py,v 1.6 2003/01/15 15:15:17 alga Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -22,6 +22,7 @@ from zope.schema import BytesLine, TextLine, Text
 from zope.interface import Interface
 from zope.app.services.field import ComponentPath
 from zope.component.interfaces import IPresentation
+from zope.app.interfaces.container import IDeleteNotifiable
 
 class IAdapterConfigurationInfo(Interface):
 
@@ -39,13 +40,21 @@ class IAdapterConfigurationInfo(Interface):
         required = True,
         )
 
+    adapterName = TextLine(
+        title=u"The name of the adapter",
+        readonly=True,
+        required=False,
+        )
+
     factoryName = BytesLine(
         title=u"The dotted name of a factory for creating the adapter",
         readonly = True,
         required = True,
         )
 
-class IAdapterConfiguration(IConfiguration, IAdapterConfigurationInfo):
+
+class IAdapterConfiguration(IConfiguration, IAdapterConfigurationInfo,
+                            IDeleteNotifiable):
 
     def getAdapter(object):
         """Return an adapter for the object

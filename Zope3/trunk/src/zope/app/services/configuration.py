@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.4 2002/12/31 13:27:17 stevea Exp $
+$Id: configuration.py,v 1.5 2003/01/15 15:15:19 alga Exp $
 """
 __metaclass__ = type
 
@@ -264,8 +264,10 @@ class SimpleConfiguration(Persistent):
         objectstatus = configuration.status
 
         if objectstatus == Active:
-            try: objectpath = getPhysicalPathString(configuration)
-            except: objectpath = str(configuration)
+            try:
+                objectpath = getPhysicalPathString(configuration)
+            except: # XXX
+                objectpath = str(configuration) 
             raise DependencyError("Can't delete active configuration (%s)"
                                   % objectpath)
         elif objectstatus == Registered:

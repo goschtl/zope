@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.3 2002/12/30 20:42:08 jeremy Exp $
+$Id: adapter.py,v 1.4 2003/01/15 15:15:19 alga Exp $
 """
 __metaclass__ = type
 
@@ -152,12 +152,13 @@ class AdapterConfiguration(SimpleConfiguration):
     #     required=False,explicitly_unrequired=True in the schema field
     #     so None will get passed in.
     def __init__(self, forInterface=None, providedInterface=None,
-                 factoryName=None):
+                 factoryName=None, adapterName=u''):
         if None in (providedInterface, factoryName):
             raise TypeError(
                 "Must provide 'providedInterface' and 'factoryName'")
         self.forInterface = forInterface
         self.providedInterface = providedInterface
+        self.adapterName = adapterName
         self.factoryName = factoryName
 
     def getAdapter(self, object):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_adapter.py,v 1.3 2003/01/15 15:15:21 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -217,7 +217,7 @@ class TestAdapterConfiguration(PlacefulSetup, TestCase):
         rootFolder = RootFolder()
         rootFolder.setServiceManager(PhonyServiceManager())
         self.configuration = ContextWrapper(
-            AdapterConfiguration(I1, I2, "Foo.Bar.A"),
+            AdapterConfiguration(I1, I2, "Foo.Bar.A", "adapter"),
             rootFolder,
             )
 
