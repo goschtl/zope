@@ -24,6 +24,35 @@ from zope.app.decorator import DecoratedSecurityCheckerDescriptor
 
 class Location(object):
     """Stupid mix-in that defines __parent__ and __name__ attributes
+
+    Usage within an Object field:
+    >>> from zope.interface import implements, Interface
+    >>> from zope.schema import Object
+    >>> from zope.schema.fieldproperty import FieldProperty
+    >>> from zope.app.location.interfaces import ILocation
+    >>> from zope.app.location.location import Location
+
+    >>> class IA(Interface):
+    ...     location = Object(schema=ILocation, required=False, default=None)
+    >>> class A(object):
+    ...     implements(IA)
+    ...     location = FieldProperty(IA['location'])
+
+    >>> a = A()
+    >>> a.location = Location()
+    
+    >>> loc = Location(); loc.__name__ = u'foo'
+    >>> a.location = loc
+
+    >>> loc = Location(); loc.__name__ = None
+    >>> a.location = loc
+
+    >>> loc = Location(); loc.__name__ = 'foo'
+    >>> a.location = loc
+    Traceback (most recent call last):
+    ...
+    WrongContainedType: [foo <type 'unicode'>]
+
     """
 
     zope.interface.implements(ILocation)

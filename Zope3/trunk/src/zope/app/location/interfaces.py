@@ -25,9 +25,9 @@ class ILocation(Interface):
 
     __name__ = schema.TextLine(
         title=u"The name within the parent",
-        description=u"The parent can be traversed with this name to "
-                    u"get the object."
-        )
+        description=u"Traverse the parent with this name to get the object.",
+        required=False,
+        default=None)
 
 class ISublocations(Interface):
     """Provide access to sublocations
