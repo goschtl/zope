@@ -3,7 +3,7 @@
    xmlns:security='http://namespaces.zope.org/security'
 >
 
-<include package="Zope" file="zope.zcml" />
+<include package="Zope" />
 
 <security:role id="Manager" title="Site Manager" />
 <security:role id="Member" title="Site Member" />

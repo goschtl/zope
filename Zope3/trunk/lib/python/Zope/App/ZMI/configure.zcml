@@ -35,6 +35,6 @@
         interface=".IGenericCreatorMarker." />
   </content>
   
-  <include package=".Views" file="views.zcml" />
+  <include package=".Views" />
 
 </zopeConfigure>

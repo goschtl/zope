@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.2 2002/06/10 23:27:46 jim Exp $
+$Id: testDirectives.py,v 1.3 2002/06/17 19:33:46 stevea Exp $
 """
 
 import unittest, sys, os
@@ -30,12 +30,12 @@ from Zope.App.ContentDirective.tests.ExampleClass import ExampleClass, IExample
 import Zope.App.ContentDirective
 defs_path = os.path.join(
     os.path.split(Zope.App.ContentDirective.__file__)[0],
-    'content-meta.zcml')
+    'meta.zcml')
 
 import Zope.App.Security
 security_defs_path = os.path.join(
     os.path.split(Zope.App.Security.__file__)[0],
-    'security-meta.zcml')
+    'meta.zcml')
 
 
 def configfile(s):

@@ -17,6 +17,6 @@
        call=".ServerControl.shutdownLogger"
        />
 
-  <include package=".Views" file="views.zcml" />
+  <include package=".Views" />
 
 </zopeConfigure>

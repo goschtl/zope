@@ -5,9 +5,9 @@
 
   <include package="Zope.App.Formulator" file="meta.zcml" />
 
-  <include package="Zope.App.Formulator.Fields" file="fields.zcml" />
-  <include package="Zope.App.Formulator.Validators" file="validators.zcml" />
-  <include package="Zope.App.Formulator.Widgets" file="widgets.zcml" />
+  <include package="Zope.App.Formulator.Fields" />
+  <include package="Zope.App.Formulator.Validators" />
+  <include package="Zope.App.Formulator.Widgets" />
 
   <adapter factory="Zope.App.Formulator.PropertyFieldAdapter."
            provides="Zope.App.Formulator.IPropertyFieldAdapter."

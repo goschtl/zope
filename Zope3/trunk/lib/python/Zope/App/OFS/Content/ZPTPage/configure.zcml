@@ -40,6 +40,6 @@
 
   <zmi:icon for=".ZPTPage.IZPTPage." file="zpt.gif" />
 
-  <include package=".Views" file="views.zcml" />
+  <include package=".Views" />
 
 </zopeConfigure>

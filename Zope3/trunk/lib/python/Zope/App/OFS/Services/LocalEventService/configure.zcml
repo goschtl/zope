@@ -26,7 +26,6 @@
       title='Events'
       description='An event service: use sparingly' />
 
-  <include package=".Views" 
-           file="views.zcml" />
+  <include package=".Views" />
 
 </zopeConfigure>

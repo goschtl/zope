@@ -33,7 +33,7 @@ import Zope.App.Publisher.Browser
 
 defs_path = os.path.join(
     os.path.split(Zope.App.Publisher.Browser.__file__)[0],
-    'browser-meta.zcml')
+    'meta.zcml')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'

@@ -20,7 +20,7 @@
   <utility component=".ZopeVersion.ZopeVersionUtility"
            provides=".IZopeVersion." />
 
-  <include package=".Views" file="views.zcml" />   
-  <include package=".ServerControl" file="server-control.zcml" />
+  <include package=".Views" />
+  <include package=".ServerControl" />
 
 </zopeConfigure>

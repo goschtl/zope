@@ -16,8 +16,7 @@
         interface="Zope.App.OFS.Services.ServiceManager.IServiceManager." />
   </content>
 
-  <include package="Zope.App.OFS.Services.ServiceManager.Views" 
-           file="views.zcml" />
+  <include package="Zope.App.OFS.Services.ServiceManager.Views" />
 
   <hook module="Zope.ComponentArchitecture"
         name="getServiceManager"

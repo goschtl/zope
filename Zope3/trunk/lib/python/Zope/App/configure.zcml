@@ -1,0 +1,13 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope' >
+
+  <include package=".ComponentArchitecture" />
+  <include package=".Publisher" />
+  <include package=".ZMI" />
+  <include package=".Formulator" />
+  <include package=".OFS" />
+  <include package=".Security" />
+  <include package=".Traversing" />
+  <include package=".ZopePublication" />
+  <include package=".Undo" />
+
+</zopeConfigure>

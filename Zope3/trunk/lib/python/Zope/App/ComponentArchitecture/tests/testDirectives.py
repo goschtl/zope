@@ -35,7 +35,7 @@ from Zope.ComponentArchitecture.tests.Request import Request
 import Zope.App.ComponentArchitecture
 defs_path = os.path.join(
     os.path.split(Zope.App.ComponentArchitecture.__file__)[0],
-    'component-meta.zcml')
+    'meta.zcml')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'

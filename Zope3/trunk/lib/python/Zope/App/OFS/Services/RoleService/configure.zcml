@@ -29,7 +29,7 @@
 
   <factory component=".Role." />
 
-  <include package=".Views" file="views.zcml" />
+  <include package=".Views" />
 
   <zmi:icon for=".RoleService.ILocalRoleService" file="role_service.gif" />
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.1 2002/06/16 18:40:22 srichter Exp $
+$Id: testDirectives.py,v 1.2 2002/06/17 19:34:05 stevea Exp $
 """
 import os
 import unittest
@@ -36,7 +36,7 @@ import Zope.App.Publisher.XMLRPC
 
 defs_path = os.path.join(
     os.path.split(Zope.App.Publisher.XMLRPC.__file__)[0],
-    'xmlrpc-meta.zcml')
+    'meta.zcml')
 
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'

@@ -1,0 +1,9 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+>
+
+  <include package=".Browser" />
+  <include package=".XUL" />
+  <include package=".VFS" />
+
+</zopeConfigure>

@@ -39,6 +39,6 @@
            for=".IContainer.IReadContainer." />
 
 
-  <include package=".Find" file="find.zcml" />
+  <include package=".Find" />
 
 </zopeConfigure>

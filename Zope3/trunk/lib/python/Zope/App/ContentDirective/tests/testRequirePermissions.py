@@ -28,12 +28,12 @@ from Zope.App.Security.Exceptions import UndefinedPermissionError
 import Zope.App.ContentDirective
 defs_path = os.path.join(
     os.path.split(Zope.App.ContentDirective.__file__)[0],
-    'content-meta.zcml')
+    'meta.zcml')
 
 import Zope.App.Security
 security_defs_path = os.path.join(
     os.path.split(Zope.App.Security.__file__)[0],
-    'security-meta.zcml')
+    'meta.zcml')
 
 def defineDirectives():
     xmlconfig(open(defs_path))
