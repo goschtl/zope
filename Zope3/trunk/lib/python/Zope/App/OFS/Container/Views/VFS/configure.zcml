@@ -1,0 +1,32 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:vfs="http://namespaces.zope.org/vfs">
+
+  <vfs:view 
+      name="_traverse" 
+      for="Zope.App.OFS.Container.IContainer.IItemContainer."
+      factory=".ContainerTraverser.ItemTraverser" />
+
+  <vfs:view 
+      name="_traverse" 
+      for="Zope.App.OFS.Container.IContainer.IReadContainer"
+      factory=".ContainerTraverser." />
+
+
+   <vfs:view
+       for="Zope.App.OFS.Container.IContentContainer."
+       name="+"  
+       factory=".Adding."
+       allowed_attributes="setContentName add"
+       permission="Zope.ManageContent" />
+ 
+  <!-- Generic VFS Container View -->
+  <vfs:view
+      name="vfs"
+      for="Zope.App.OFS.Container.IContainer."
+      permission="Zope.ManageContent" 
+      allowed_interface="Zope.Publisher.VFS.IVFSDirectoryPublisher." 
+      factory="Zope.App.OFS.Container.Views.VFS.VFSContainerView." 
+      />
+
+</zopeConfigure>
