@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.20 2004/03/01 13:25:47 mgedmin Exp $
+$Id: xmlconfig.py,v 1.21 2004/03/01 21:22:08 jim Exp $
 """
 import errno
 import os
@@ -25,14 +25,15 @@ import sys
 import logging
 import zope.configuration.config as config
 
-from zope import schema
+from glob import glob
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 from xml.sax.handler import ContentHandler, feature_namespaces
 from xml.sax import SAXParseException
+from zope import schema
 from zope.configuration.exceptions import ConfigurationError
-from zope.interface import Interface
 from zope.configuration.zopeconfigure import IZopeConfigure, ZopeConfigure
+from zope.interface import Interface
 
 logger = logging.getLogger("config")
 
@@ -297,12 +298,36 @@ class IInclude(Interface):
         including configuration file.
 
         """,
-        default="configure.zcml",
+        required=False,
+        )
+
+    files = schema.BytesLine(
+        __doc__=
+        """Configuration file name pattern
+
+        The names of multiple configuration files to be included,
+        expressed as a file-name pattern, relative to the directive
+        containing the including configuration file.  The pattern can
+        include:
+
+        ``*`` matches 0 or more characters
+
+        ``?`` matches a single character
+
+        [*seq*] matches any character in seq 
+
+        [!*seq*] matches any character not in seq 
+
+        The file names are included in sorted order, where sorting is
+        without regard to case.
+
+        """,
+        required=False,
         )
 
     package = config.fields.GlobalObject(
         __doc__=
-        """Include packahe
+        """Include package
 
         Include the named file (or configure.zcml)
         from the directory of this package.
@@ -311,33 +336,47 @@ class IInclude(Interface):
         )
 
 
-def include(_context, file, package=None):
+def include(_context, file=None, package=None, files=None):
     """Include a zcml file
 
     See examples in tests/text_xmlconfig.py
     """
 
-    logger.debug("include %s" % file)
+    if files:
+        if file:
+            raise ValueError("Must specify only one of file or files")
+    elif not file:
+        file = 'configure.zcml'
 
     # This is a tad tricky. We want to behave as a grouping directive.
+
     context = config.GroupingContextDecorator(_context)
     if package is not None:
         context.package = package
         context.basepath = None
-    path = context.path(file)
-    context.checkDuplicate(path)
-    f = openInOrPlain(path)
 
-    logger.debug("include %s" % f.name)
+    if files:
+        paths = glob(context.path(files))
+        paths = zip([path.lower() for path in paths], paths)
+        paths.sort()
+        paths = [path for (l, path) in paths]
+    else:
+        paths = [context.path(file)]
+    
+    for path in paths:
+        context.checkDuplicate(path)
 
-    context.basepath = os.path.split(path)[0]
-    context.includepath = _context.includepath + (f.name, )
-    _context.stack.append(config.GroupingStackItem(context))
+        f = openInOrPlain(path)
+        logger.debug("include %s" % f.name)
 
-    processxmlfile(f, context)
-    f.close()
-    assert _context.stack[-1].context is context
-    _context.stack.pop()
+        context.basepath = os.path.split(path)[0]
+        context.includepath = _context.includepath + (f.name, )
+        _context.stack.append(config.GroupingStackItem(context))
+
+        processxmlfile(f, context)
+        f.close()
+        assert _context.stack[-1].context is context
+        _context.stack.pop()
 
 def includeOverrides(_context, file, package=None):
     """Include zcml file containing overrides

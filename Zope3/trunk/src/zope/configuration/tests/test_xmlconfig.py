@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_xmlconfig.py,v 1.5 2004/03/01 13:25:48 mgedmin Exp $
+$Id: test_xmlconfig.py,v 1.6 2004/03/01 21:22:08 jim Exp $
 """
 
 import unittest
@@ -268,6 +268,54 @@ def test_include_by_file():
 
     >>> [clean_path(p) for p in data.includepath]
     ['tests/samplepackage/foo.zcml.in']
+    """
+
+def test_include_by_file_glob():
+    """
+    >>> context = config.ConfigurationMachine()
+    >>> xmlconfig.registerCommonDirectives(context)
+    >>> here = os.path.split(__file__)[0]
+    >>> path = os.path.join(here, "samplepackage/baz*.zcml")
+    >>> xmlconfig.include(context, files=path)
+    >>> context.execute_actions()
+    
+    >>> data = foo.data.pop()
+    >>> data.args
+    (('x', 'foo'), ('y', 3))
+    
+    >>> print clean_info_path(`data.info`)
+    File "tests/samplepackage/baz3.zcml", line 5.2-5.28
+
+    >>> print clean_info_path(str(data.info))
+    File "tests/samplepackage/baz3.zcml", line 5.2-5.28
+        <test:foo x="foo" y="3" />
+    
+    >>> data.package
+    
+    >>> data.basepath[-13:]
+    'samplepackage'
+
+    >>> [clean_path(p) for p in data.includepath]
+    ['tests/samplepackage/baz3.zcml']
+    
+    >>> data = foo.data.pop()
+    >>> data.args
+    (('x', 'foo'), ('y', 2))
+    
+    >>> print clean_info_path(`data.info`)
+    File "tests/samplepackage/baz2.zcml", line 5.2-5.28
+
+    >>> print clean_info_path(str(data.info))
+    File "tests/samplepackage/baz2.zcml", line 5.2-5.28
+        <test:foo x="foo" y="2" />
+
+    >>> data.package
+    
+    >>> data.basepath[-13:]
+    'samplepackage'
+
+    >>> [clean_path(p) for p in data.includepath]
+    ['tests/samplepackage/baz2.zcml']
     """
 
 def clean_actions(actions):
