@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: interfaces.py,v 1.2 2002/12/04 17:11:51 gvanrossum Exp $
+$Id: interfaces.py,v 1.3 2002/12/04 20:00:52 gvanrossum Exp $
 """
 
 from Interface import Interface
@@ -41,3 +41,6 @@ class IUITextIndex(IStatistics):
 
     def unsubscribe():
         """Unsubscribe from the object hub service."""
+
+    def isSubscribed():
+        """Return whether we are currently subscribed."""

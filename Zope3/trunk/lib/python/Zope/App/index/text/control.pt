@@ -4,6 +4,13 @@
 
     <h1>TextIndex</h1>
 
+    <span tal:condition="request/callSubscribe|nothing" tal:omit-tag="">
+        <span tal:define="dummy context/subscribe" tal:omit-tag=""/>
+    </span>
+    <span tal:condition="request/callUnsubscribe|nothing" tal:omit-tag="">
+        <span tal:define="dummy context/unsubscribe" tal:omit-tag=""/>
+    </span>
+
     <div>
     	Documents: <span tal:replace="context/documentCount" />
     </div>
@@ -11,6 +18,17 @@
     <div>
     	Words: <span tal:replace="context/wordCount" />
     </div>
+
+    <form method="POST">
+       <span tal:condition="context/isSubscribed" tal:omit-tag="">
+           Subscription state: ON
+           <input type="submit" value="Unsubscribe" name="callUnsubscribe" />
+       </span>
+       <span tal:condition="not:context/isSubscribed" tal:omit-tag="">
+           Subscription state: OFF
+           <input type="submit" value="Subscribe" name="callSubscribe" />
+       </span>
+    </form>
 
   </body>
 

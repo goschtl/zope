@@ -16,7 +16,7 @@
 Events related to object creation and deletion are translated into
 index_doc() and unindex_doc() calls.
 
-$Id: index.py,v 1.4 2002/12/04 17:11:51 gvanrossum Exp $
+$Id: index.py,v 1.5 2002/12/04 20:00:52 gvanrossum Exp $
 """
 
 from Zope.Event.ISubscriber import ISubscriber
@@ -62,23 +62,34 @@ class TextIndex(TextIndexWrapper):
         return adapted.getSearchableText()
     _getTexts = ContextMethod(_getTexts)
 
+    currentlySubscribed = False # Default subscription state
+
     def subscribe(wrapped_self, channel=None, update=True):
+        if wrapped_self.currentlySubscribed:
+            raise RuntimeError, "already subscribed; please unsubscribe first"
         channel = wrapped_self._getChannel(channel)
         channel.subscribe(wrapped_self, IRegistrationHubEvent)
         channel.subscribe(wrapped_self, IObjectModifiedHubEvent)
         if update:
-            wrapped_self._update(channel.iterObjectRegistrations()) 
+            wrapped_self._update(channel.iterObjectRegistrations())
+        wrapped_self.currentlySubscribed = True
     subscribe = ContextMethod(subscribe)
 
     def unsubscribe(wrapped_self, channel=None):
+        if not wrapped_self.currentlySubscribed:
+            raise RuntimeError, "not subscribed; please subscribe first"
         channel = wrapped_self._getChannel(channel)
         channel.unsubscribe(wrapped_self, IObjectModifiedHubEvent)
         channel.unsubscribe(wrapped_self, IRegistrationHubEvent)
+        wrapped_self.currentlySubscribed = False
     unsubscribe = ContextMethod(unsubscribe)
+
+    def isSubscribed(self):
+        return self.currentlySubscribed
 
     def _getChannel(wrapped_self, channel):
         if channel is None:
-            channel = getService(wrapped_self, "ObjectHubService")
+            channel = getService(wrapped_self, "ObjectHub")
         return channel
     _getChannel = ContextMethod(_getChannel)
 
