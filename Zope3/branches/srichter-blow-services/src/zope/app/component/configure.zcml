@@ -1,23 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
-  <serviceType
-      id="Utilities"
-      interface="zope.component.interfaces.IUtilityService" />
-
-  <service
-      serviceType="Utilities"
-      permission="zope.Public"
-      factory="zope.component.utility.GlobalUtilityService" />
-
-  <serviceType
-      id="Adapters"
-      interface="zope.component.interfaces.IAdapterService" />
-
-  <service
-      serviceType="Adapters"
-      permission="zope.Public"
-      factory="zope.component.adapter.GlobalAdapterService" />
-
   <vocabulary
       name="Interfaces"
       factory="zope.app.utility.vocabulary.UtilityVocabulary"
