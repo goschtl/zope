@@ -83,14 +83,14 @@ class LDAPAdapter(object):
         return LDAPConnection(conn)
 
     def getServerURL(self):
-        """Returns the server url from the host and port info."""
+        """Get the server LDAP URL from the server info."""
         proto =  self.useSSL and 'ldaps' or 'ldap'
         return '%s://%s:%s' % (proto, self.host, self.port)
-        
 
     def _setServerURL(self, url):
-        """Returns the server url from the host and port info.
-        ldap[s]://host:port
+        """Set the server info from an LDAP URL.
+
+        An LDAP url is of the form ldap[s]://host:port
         """
         port = 389
         url = url.strip()
@@ -102,7 +102,7 @@ class LDAPAdapter(object):
                 port = int(urlList[2])
         else:
             LDAPURIParseError(LDAP_uri_parse_error)
-         
+
         self.host = host
         self.port = port
         self.useSSL = useSSL
@@ -170,9 +170,7 @@ class LDAPConnection(object):
 
 class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
     """LDAP adapter utility
-    
     """
-
     implements(IManageableLDAPAdapter)
 
     serverURL = property(LDAPAdapter.getServerURL, LDAPAdapter._setServerURL)
