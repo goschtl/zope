@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IAdding.py,v 1.1 2002/06/20 20:00:20 jim Exp $
+$Id: IAdding.py,v 1.2 2002/10/02 21:35:47 jeremy Exp $
 """
 
 from Interface.Attribute import Attribute
@@ -23,9 +23,14 @@ from Zope.ComponentArchitecture.IView import IView
 class IAdding(IView):
 
     def add(content):
-         """Add the content object to a container, using the name in
-         contentName.  If contentName is already used in container,
-         raises Zope.App.OFS.Container.Exceptions.DuplicateIDError"""
+         """Add content object to container.
+
+         Add using the name in contentName.  Returns the added object
+         in the context of its container.
+
+         If contentName is already used in container, raises
+         Zope.App.OFS.Container.Exceptions.DuplicateIDError.
+         """
 
     contentName=Attribute(
          """the content name, as usually set by the Adder traverser.

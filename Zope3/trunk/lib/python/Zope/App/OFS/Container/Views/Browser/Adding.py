@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.6 2002/10/01 12:49:07 jim Exp $
+$Id: Adding.py,v 1.7 2002/10/02 21:35:47 jeremy Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
@@ -24,6 +24,7 @@ from Zope.ComponentArchitecture \
      import getView, getService, createObject, queryFactory, queryView
 from Zope.App.PageTemplate import ViewPageTemplateFile
 from Zope.ContextWrapper import ContextMethod, getbaseobject
+from Zope.Proxy.ContextWrapper import ContextWrapper
 
 class Adding(BrowserView):
 
@@ -38,7 +39,8 @@ class Adding(BrowserView):
     def add(self, content):
         'See Zope.App.OFS.Container.IAdding.IAdding'
         content = removeAllProxies(content) # XXX We need to think about this
-        return self.context.setObject(self.contentName, content)
+        name = self.context.setObject(self.contentName, content)
+        return ContextWrapper(self.context[name], self.context, name=name)
     
     # See Zope.App.OFS.Container.Views.Browser.IAdding.IAdding
     contentName=None # usually set by Adding traverser
