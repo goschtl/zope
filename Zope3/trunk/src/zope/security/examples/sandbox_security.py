@@ -11,9 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""A small, secure sandbox application.
+
+$Id: sandbox_security.py,v 1.8 2004/02/16 22:04:18 srichter Exp $
+"""
 import sandbox
 from zope.security.interfaces import ISecurityPolicy
-from zope.security import management, checker
+from zope.security import checker, management
 from zope.interface import implements
 
 #################################
@@ -134,8 +138,6 @@ def wire_security():
 
     management.setSecurityPolicy(SimulationSecurityPolicy())
 
-    import zope.security.examples.sandbox
-
     checker.defineChecker(sandbox.Sandbox, sandbox_checker)
     checker.defineChecker(sandbox.TimeService, time_service_checker)
     checker.defineChecker(sandbox.AgentDiscoveryService, agent_service_checker)
@@ -145,11 +147,11 @@ def wire_security():
         if not self._agents.has_key(agent.getId()) \
            and sandbox.IAgent.isImplementedBy(agent):
             self._agents[agent.getId()]=agent
-            checker = checker.selectChecker(self)
-            wrapped_home = checker.proxy(self)
+            agentChecker = checker.selectChecker(self)
+            wrapped_home = agentChecker.proxy(self)
             agent.setHome(wrapped_home)
         else:
-            raise SandboxError("couldn't add agent %s"%agent)
+            raise sandbox.SandboxError("couldn't add agent %s"%agent)
 
     sandbox.Sandbox.addAgent = addAgent
 

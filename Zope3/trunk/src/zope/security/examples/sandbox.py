@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""A small sandbox application.
+
+$Id: sandbox.py,v 1.5 2004/02/16 22:04:18 srichter Exp $
+"""
 import time, whrandom
 
 from zope.interface import Interface, implements
@@ -218,7 +222,11 @@ class TimeGenerator:
                 try:
                     a.action()
                 except Exception, e:
-                    print a, h, e
+                    print '-- Exception --'
+                    print '"%s" in "%s" not allow to "%s"' %(a, h,
+                                                             a._action.__name__)
+                    print e
+                    print 
 
             agents = filter(WanderLust, agents)
 
@@ -229,7 +237,10 @@ class TimeGenerator:
                     new_home = GreenerPastures(a)
                     home.transportAgent(a, new_home)
                 except Exception, e:
-                    print 'moving', a, h, new_home, e
+                    print '-- Exception --'
+                    print 'moving "%s" from "%s" to "%s"' %(a, h,` new_home`)
+                    print e
+                    print 
 
 def WanderLust(agent):
     """ is agent ready to move """
