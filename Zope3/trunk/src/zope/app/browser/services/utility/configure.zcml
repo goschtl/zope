@@ -1,9 +1,9 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/browser'>
 
-  <!-- Browser directives for the utility service and for individual
-       utility objects -->
+<!-- Browser directives for the utility service -->
 
   <!-- "Add service" menu entry to add a utility service -->
+  <!-- XXX AFAIK the 'action' value is unused, but must be given -->
   <menuItem
       for="zope.app.interfaces.container.IAdding"
       menu="add_service" title="Utility Service"
@@ -11,27 +11,17 @@
       permission="zope.ManageServices"
       />
 
-  <!-- ZMI tab named "Configurations" for utility objects.
-       Given a utility object this lets you view all configurations
-       available for it. -->
-  <page
-      for="zope.app.interfaces.services.utility.ILocalUtility"
-      name="useConfiguration.html"
-      template="useconfiguration.pt"
-      class=".useconfiguration.UseConfiguration"
-      permission="zope.ManageServices"
-      menu="zmi_views" title="Configurations"
-      />
-
   <!-- ZMI tab named "Utilites" for the utility service -->
   <page
       for="zope.app.interfaces.services.utility.ILocalUtilityService"
+      menu="zmi_views" title="Utilities"
       name="utilities.html"
       template="utilities.pt"
       class=".useconfiguration.Utilities"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Utilities"
       />
+
+<!-- Browser directives for individual utility objects -->
 
   <!-- Configuration page for utility objects.  You get here by
        clicking on the (configure) link for a particular utility
@@ -48,6 +38,18 @@
       name="configureutility.html"
       template="configureutility.pt"
       class=".useconfiguration.ConfigureUtility"
+      permission="zope.ManageServices"
+      />
+
+  <!-- ZMI tab named "Configurations" for utility objects.
+       Given a utility object this lets you view all configurations
+       available for it. -->
+  <page
+      for="zope.app.interfaces.services.utility.ILocalUtility"
+      menu="zmi_views" title="Configurations"
+      name="useConfiguration.html"
+      template="useconfiguration.pt"
+      class=".useconfiguration.UseConfiguration"
       permission="zope.ManageServices"
       />
 
@@ -73,10 +75,10 @@
        form, but doesn't let you change the name, interface or path.
        (Thus leaving only permission and registration status.) -->
   <editform
-      name="index.html"
       menu="zmi_views" title="Edit"
-      schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
       label="Utility Configuration"
+      name="index.html"
+      schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
       permission="zope.ManageServices"
       fields="name interface componentPath permission status"
       />

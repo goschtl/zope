@@ -1,0 +1,26 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<body>
+  <div metal:fill-slot="body">
+
+    <p>Configurations for this connection:</p>
+
+    <ul>
+
+      <li tal:repeat="use view/uses">
+
+	<a href="."
+	   tal:attributes="href use/url">
+	  <span tal:condition="use/name">
+	    named <span tal:replace="use/name" />
+	  </span>
+	</a>
+	(<span tal:replace="use/status">Active</span>)
+
+      </li>
+    </ul>
+
+    <p><a href="addConfiguration.html">Add a configuration for this utility</a>
+
+  </div>
+</body>
+</html>

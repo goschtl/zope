@@ -1,0 +1,32 @@
+<html metal:use-macro="context/@@standard_macros/page">
+
+<div metal:fill-slot="body"
+     i18n:domain="zope"
+     >
+
+<h2 i18n:translate="">Connection configurations for
+    <i tal:content="request/name" i18n:name="connection_name">name</i></h2>
+
+<form method="POST"
+      action="."
+      tal:attributes="action request/URL"
+      tal:define="form view/update"
+      >
+  <input type="hidden"
+         name="name"
+         tal:attributes="value request/name"
+         />
+
+  <div tal:replace="structure form" />
+
+  <input type="submit"
+         name="submit_update"
+         value="Update"
+         i18n:attributes="value form_update"
+         />
+
+</form>
+
+</div>
+
+</html>

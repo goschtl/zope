@@ -7,7 +7,12 @@
       permission="zope.Public" />
   <require permission="zope.Public" 
       interface="zope.app.interfaces.rdb.IZopeDatabaseAdapter" />
-  <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+  <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+  <implements
+      interface=
+      "zope.app.interfaces.services.configuration.IAttributeUseConfigurable"
+      />
 </content>
 
 </zopeConfigure>

@@ -1,0 +1,91 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+
+<!-- Browser directives for the connection service -->
+
+  <!-- "Add service" menu entry to add a connection service -->
+  <!-- XXX AFAIK the 'action' value is unused, but must be given -->
+  <!--ALL DONE-->
+  <menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_service" title="SQL Connection Service"
+      action="zope.app.services.ConnectionService"
+      description="A Persistent SQL Connection Service for TTW development"
+      permission="zope.ManageServices"
+      />
+
+  <!-- ZMI tab named "Connections" for the connection service -->
+  <!--ALL DONE-->
+  <page
+      for="zope.app.interfaces.services.connection.ILocalConnectionService"
+      name="index.html"
+      template="connections.pt"
+      class=".connection.Connections"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Connections"
+      />
+
+<!-- Browser directives for configuring individual connection objects -->
+
+  <!-- Configuration page for connection objects.  You get here by
+       clicking on the (configure) link for a particular connection
+       in the "Connections" tab of the connection service.  It shows
+       a menu of different configurations, at most one of which
+       is active.  You can activate a different configuration, or
+       click on an individual configuration to edit it.
+       (Note that this page doesn't really apply to a single connection,
+       it applies to a single connection name. -->
+  <!--ALL DONE-->
+  <page
+      for="zope.app.interfaces.services.connection.ILocalConnectionService"
+      name="configureConnection.html"
+      template="configureConnection.pt"
+      class=".connection.ConfigureConnection"
+      permission="zope.ManageServices"
+      />
+
+  <!-- ZMI tab named "Configurations" for connection objects.
+       Given a connection object this lets you view all configurations
+       available for it. -->
+  <!--ALL DONE-->
+  <page
+      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      name="connectionConfiguration.html"
+      template="connectionConfiguration.pt"
+      class=".connection.UseConfiguration"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Configurations"
+      />
+
+  <!-- When creating a new connection object, you are taken to this
+       form to configure it.  The form lets you the connection
+       parameters, a permission, and a registration status
+       (Unregistered, Registered or Active). -->
+  <!--TBD: class AddCacheConfiguration-->
+  <addform
+      label="New Connection Configuration"
+      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      name="addConfiguration.html"
+      schema="zope.app.interfaces.services.connection.IConnectionConfiguration"
+      class=".connection.AddConnectionConfiguration"
+      permission="zope.ManageServices"
+      content_factory="zope.app.services.connection.ConnectionConfiguration"
+      arguments="name componentPath permission"
+      set_after_add="status"
+      fields="name componentPath permission status"
+      />
+
+  <!-- When editing the configuration of an existing connection object,
+       you are taken to this form.  It is similar to the above add
+       form, but doesn't let you change the name or path.
+       (Thus leaving only permission and registration status.) -->
+  <!--ALL DONE-->
+  <editform
+      menu="zmi_views" title="Edit"
+      label="Connection Configuration"
+      name="index.html"
+      schema="zope.app.interfaces.services.connection.IConnectionConfiguration"
+      permission="zope.ManageServices"
+      fields="name componentPath permission status"
+      />
+
+</zopeConfigure>
