@@ -299,9 +299,9 @@ def find_entries(repo=None, all=None):
         if all:
             is_match = 1
         elif got_re:
-            is_match = re.search(t['path'], repo)
+            is_match = re.match(t['path'], repo)
         else:
-            is_match = (regex.search(t['path'], repo) != -1)
+            is_match = (regex.match(t['path'], repo) != -1)
         if is_match:
             if not t.has_key('excludes'):
                 t['excludes'] = []
