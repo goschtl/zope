@@ -123,7 +123,7 @@ class EditView(BrowserView):
 def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u''):
-    s = zapi.getService(None, zapi.servicenames.Presentation)
+    s = zapi.getGlobalService(zapi.servicenames.Presentation)
     class_ = SimpleViewClass(template, used_for=schema, bases=bases)
     class_.schema = schema
     class_.label = label

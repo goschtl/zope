@@ -66,7 +66,7 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
 
         from zope.component.interfaces import IPresentationRequest
 
-        zapi.getService(None, zapi.servicenames.Presentation).provideView(
+        zapi.getGlobalService(zapi.servicenames.Presentation).provideView(
             I1,
             name=the_view_name,
             type=IPresentationRequest,

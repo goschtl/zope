@@ -256,7 +256,7 @@ class LocalAdapterService(LocalAdapterRegistry,
 
     def __init__(self, base=None):
         if base is None:
-            base = zapi.getService(None, self.serviceType)
+            base = zapi.getGlobalService(self.serviceType)
         LocalAdapterRegistry.__init__(self, base)
 
     def registrations(self, localOnly=False):

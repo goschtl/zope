@@ -132,7 +132,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root['folder'] = folder
         self.zpt = traverse(root, 'zpt')
         self.file = traverse(root, 'file')
-        ps = zapi.getService(None, zapi.servicenames.Presentation)
+        ps = zapi.getGlobalService(zapi.servicenames.Presentation)
         ps.provideView(None, 'absolute_url', IHTTPRequest,
                        AbsoluteURL)
         ps.provideView(None, 'PROPFIND', IHTTPRequest,
@@ -144,7 +144,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
                              ZDCAnnotatableAdapter)
-        utils = zapi.getService(None, 'Utilities')
+        utils = zapi.getGlobalService('Utilities')
         directlyProvides(IDAVSchema, IDAVNamespace)
         utils.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
         directlyProvides(IZopeDublinCore, IDAVNamespace)

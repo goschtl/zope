@@ -89,7 +89,7 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
                          utility.LocalUtilityService())
 
     def test_queryUtility_delegates_to_global(self):
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IFoo, Foo("global"))
         utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")
@@ -117,7 +117,7 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         self.assertEqual(utility_service.queryUtility(IFoo, name="rob"), None)
 
     def test_getUtility_delegates_to_global(self):
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IFoo, Foo("global"))
         utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")
@@ -160,7 +160,7 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
 
     def test_local_utilities(self):
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IFoo, Foo("global"))
         utilityService.provideUtility(IFoo, Foo("global bob"),
                                             name="bob")

@@ -235,7 +235,7 @@ def EditWizardViewFactory(name, schema, permission, layer,
         NamesChecker(("__call__", "__getitem__", "browserDefault"), permission)
         )
 
-    s = zapi.getService(None, zapi.servicenames.Presentation)
+    s = zapi.getGlobalService(zapi.servicenames.Presentation)
     s.provideView(for_, name, IBrowserRequest, class_, layer)
 
 

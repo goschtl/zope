@@ -135,14 +135,14 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
     def test_defaultSkin(self):
         # XXX we don't let people set the default skin locally yet.
         # So just test that we can get the default from the global service
-        zapi.getService(None, Presentation).defineSkin('bob', ['default'])
-        zapi.getService(None, Presentation).setDefaultSkin('bob')
+        zapi.getGlobalService(Presentation).defineSkin('bob', ['default'])
+        zapi.getGlobalService(Presentation).setDefaultSkin('bob')
         self.assertEqual(self._service.defaultSkin, 'bob')
 
     def test_querySkin(self):
         # XXX we don't let people define skins locally yet.
         # So just test that we can get the defs from the global service
-        globalService = zapi.getService(None, Presentation)
+        globalService = zapi.getGlobalService(Presentation)
         globalService.defineLayer('bob')
         globalService.defineSkin('bob', ['bob', 'default'])
         self.assertEqual(self._service.querySkin('bob'), ('bob', 'default'))
@@ -150,7 +150,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
     def test_queryLayer(self):
         # XXX we don't let people define layers locally yet.
         # So just test that we can get the them from the global service
-        globalService = zapi.getService(None, Presentation)
+        globalService = zapi.getGlobalService(Presentation)
         layer = self._service.queryLayer('default')
         self.assertEqual(layer.__parent__, globalService)
         self.test_queryView()
@@ -167,7 +167,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         r = TestRequest()
         self.assertEqual(self._service.queryDefaultViewName(o, r),
                          None)
-        globalService = zapi.getService(None, Presentation)
+        globalService = zapi.getGlobalService(Presentation)
         globalService.setDefaultViewName(I1, IBrowserRequest, 'foo.html')
         self.assertEqual(self._service.queryDefaultViewName(o, r),
                          'foo.html')
@@ -185,7 +185,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
         self.assertEqual(self._service.queryMultiView((x, y), r,
                                                       name='foo.html'),
                          None)
-        globalService = zapi.getService(None, Presentation)
+        globalService = zapi.getGlobalService(Presentation)
 
         class MV:
             def __init__(self, x, y, request):
@@ -212,7 +212,7 @@ class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
             def __init__(self, request):
                 self.request = request
 
-        globalService = zapi.getService(None, Presentation)
+        globalService = zapi.getGlobalService(Presentation)
         globalService.provideResource('logo.gif', IBrowserRequest, Resource)
         
         resource = self._service.queryResource('logo.gif', r)

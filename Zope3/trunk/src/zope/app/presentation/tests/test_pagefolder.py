@@ -48,7 +48,7 @@ class Test(RegisterableContainerTests, PlacefulSetup, TestCase):
 
     def setUp(self):
         sm = PlacefulSetup.setUp(self, site=True)
-        zapi.getService(None, Presentation).defineLayer('debug')
+        zapi.getGlobalService(Presentation).defineLayer('debug')
         setup.addService(sm, Presentation, LocalPresentationService(),
                          suffix='service')
         default = zapi.traverse(self.rootFolder, '++etc++site/default')

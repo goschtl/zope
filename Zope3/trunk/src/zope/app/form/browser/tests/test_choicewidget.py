@@ -29,7 +29,7 @@ from zope.app.form.browser import ItemDisplayWidget, DropdownWidget
 
 
 def provideMultiView(for_, factory, providing, name='', layer="default"):
-    s = zapi.getService(None, zapi.servicenames.Presentation)
+    s = zapi.getGlobalService(zapi.servicenames.Presentation)
     return s.provideAdapter(IBrowserRequest, factory, name, for_,
                             providing, layer)
 

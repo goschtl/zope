@@ -136,7 +136,7 @@ def AddViewFactory(name, schema, label, permission, layer,
                    keyword_arguments, set_before_add, set_after_add,
                    menu=u''):
 
-    s = zapi.getService(None, zapi.servicenames.Presentation)
+    s = zapi.getGlobalService(zapi.servicenames.Presentation)
     class_  = SimpleViewClass(
         template,
         used_for = schema, bases = bases

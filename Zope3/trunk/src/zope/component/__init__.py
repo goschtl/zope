@@ -48,6 +48,9 @@ def warningLevel():
 def getGlobalServices():
     return serviceManager
 
+def getGlobalService(name):
+    return serviceManager.getService(name)
+
 def getServiceManager(context):
     # Backwards compatibility stub
     warnings.warn("getServiceManager(context) is  deprecated,"

@@ -96,7 +96,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
                          utility.LocalUtilityService())
 
     def test_getLocalInterface_delegates_to_globalUtility(self):
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, Bar("blob"),
                                             name="blob")
         utilityService.provideUtility(IBaz, Baz("global baz"))
@@ -111,7 +111,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         baz = Baz("global baz")
         foo = Foo("global bob")
 
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, foo,
                                             name="bob")
         utilityService.provideUtility(IInterface, bar)
@@ -136,7 +136,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         bar = Bar("global")
         baz = Baz("global baz")
         foo = Foo("global bob")
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, foo,
                                             name="bob")
         utilityService.provideUtility(ILocalUtility, bar)
@@ -155,7 +155,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         self.assertEqual(ifaces, [(baz)])
 
     def test_getLocalInterface_raisesComponentLookupError(self):
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, Foo("global"))
         utilityService.provideUtility(IBaz, Baz("global baz"))
         utilityService.provideUtility(IInterface, Foo("global bob"),
@@ -168,7 +168,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         foo = Foo("global bob")
         bar = Bar("global")
         baz = Baz("global baz")
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, bar)
         utilityService.provideUtility(IBaz, baz)
         utilityService.provideUtility(IInterface, foo,
@@ -181,7 +181,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         foo = Foo("global bob")
         bar = Bar("global")
         baz = Baz("global baz")
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, bar)
         utilityService.provideUtility(IBaz, baz)
         utilityService.provideUtility(IInterface, foo,
@@ -191,7 +191,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
                          [foo])
 
     def test_queryUtility_delegates_to_global(self):
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, Foo("global"))
         utilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")
@@ -206,7 +206,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
             "foo global bob")
 
     def test_getUtility_delegates_to_global(self):
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, Foo("global"))
         utilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")
@@ -238,7 +238,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
 
     def test_local_utilities(self):
-        utilityService = zapi.getService(None, zapi.servicenames.Utilities)
+        utilityService = zapi.getGlobalService(zapi.servicenames.Utilities)
         utilityService.provideUtility(IInterface, Foo("global"))
         utilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")

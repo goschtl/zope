@@ -59,7 +59,7 @@ class LocalPresentationService(
 
     def __init__(self):
         self.layers = persistent.dict.PersistentDict()
-        self.base = zapi.getService(None, zapi.servicenames.Presentation)
+        self.base = zapi.getGlobalService(zapi.servicenames.Presentation)
 
     def setNext(self, next, global_):
         if next is None:

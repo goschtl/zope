@@ -70,7 +70,7 @@ class PlacefulSetup(PlacelessSetup):
 
     def makeSite(self, path='/'):
         folder = zapi.traverse(self.rootFolder, path)
-        return setup.createServiceManager(folder)
+        return setup.createServiceManager(folder, True)
 
     def createRootFolder(self):
         self.rootFolder = rootFolder()

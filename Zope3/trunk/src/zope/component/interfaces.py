@@ -28,6 +28,9 @@ class IComponentArchitecture(Interface):
     def getGlobalServices():
         """Get the global service manager."""
 
+    def getGlobalService(name):
+        """Get a global service."""
+
     def getServices(context=None):
         """Get the service manager
 

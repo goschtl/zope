@@ -106,10 +106,11 @@ def placefulSetUp(site=False):
         createServiceManager(site, setsite=True)
         return site
 
+from zope.app.component.hooks import setSite
 def placefulTearDown():
     placelessTearDown()
     zope.component.getServices.reset()
-    thread_globals().site = None
+    setSite()
 
 
 from zope.app.folder import Folder, rootFolder
@@ -141,12 +142,11 @@ def buildSampleFolderTree():
 
 from zope.app.site.service import ServiceManager
 from zope.app.site.interfaces import ISite
-from zope.thread import thread_globals
 def createServiceManager(folder, setsite=False):
     if not ISite.providedBy(folder):
         folder.setSiteManager(ServiceManager(folder))
     if setsite:
-        thread_globals().site = folder
+        setSite(folder)
     return zapi.traverse(folder, "++etc++site")
 
 from zope.app.site.service import ServiceRegistration

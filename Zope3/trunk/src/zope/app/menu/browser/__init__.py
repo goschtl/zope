@@ -80,7 +80,7 @@ class BrowserMenuServiceOverview:
         for id, menu in utilities.getUtilitiesFor(ILocalBrowserMenu):
             menus.append(self._getInfoFromMenu(id, menu))
         # Global Browser Menus
-        service = zapi.getService(None, BrowserMenu)
+        service = zapi.getGlobalService(BrowserMenu)
         for id, menu in service._registry.items():
             menus.append(self._getInfoFromMenu(id, menu))
         return menus

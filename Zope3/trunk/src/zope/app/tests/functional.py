@@ -37,7 +37,7 @@ from zope.app.debug import Debugger
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
 import zope.app.tests.setup
-from zope.thread import thread_globals
+from zope.app.component.hooks import setSite, getSite
 
 __metaclass__ = type
 
@@ -169,11 +169,11 @@ class BrowserTestCase(FunctionalTestCase):
 
     def setSite(self, site):
         """Set the site which will be used to look up local services"""
-        thread_globals().site = site
+        setSite(site)
 
     def getSite(self):
         """Returns the site which is used to look up local services"""
-        return thread_globals().site
+        return getSite()
 
     def makeRequest(self, path='', basic=None, form=None, env={},
                     outstream=None):

@@ -31,7 +31,7 @@ def provideConnection(name, connection):
     
      Uses the Utility Service for registering
     """
-    utilities = zapi.getService(None, zapi.servicenames.Utilities)
+    utilities = zapi.getGlobalService(zapi.servicenames.Utilities)
     utilities.provideUtility(IZopeDatabaseAdapter, connection, name)
 
 

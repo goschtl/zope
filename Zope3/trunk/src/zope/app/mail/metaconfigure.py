@@ -42,7 +42,7 @@ def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
         delivery = QueuedMailDelivery(queuePath)
         delivery = _assertPermission(permission, IMailDelivery, delivery)
 
-        utilities = zapi.getService(None, 'Utilities')
+        utilities = zapi.getGlobalService('Utilities')
         handler('Utilities', 'provideUtility', IMailDelivery, delivery, name)
 
         mailerObject = zapi.queryUtility(IMailer, name=mailer)
@@ -71,7 +71,7 @@ def directDelivery(_context, permission, mailer, name="Mail"):
         delivery = DirectMailDelivery(mailerObject)
         delivery = _assertPermission(permission, IMailDelivery, delivery)
 
-        utilities = zapi.getService(None, 'Utilities')
+        utilities = zapi.getGlobalService('Utilities')
         handler('Utilities', 'provideUtility', IMailDelivery, delivery, name)
 
     _context.action(

@@ -38,7 +38,7 @@ class Root(Contained):
 
 def setUp():
     placelesssetup.setUp()
-    service = zapi.getService(None, Utilities)
+    service = zapi.getGlobalService(Utilities)
     service.provideUtility(IInterpreter, PythonInterpreter,
                              'text/server-python')
 

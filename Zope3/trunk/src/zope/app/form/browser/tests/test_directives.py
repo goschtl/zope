@@ -88,7 +88,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
 
-        ps =  zapi.getService(None, zapi.servicenames.Presentation)
+        ps =  zapi.getGlobalService(zapi.servicenames.Presentation)
         
     def testAddForm(self):
         self.assertEqual(zapi.queryView(ob, 'test', request),

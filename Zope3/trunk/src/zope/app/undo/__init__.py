@@ -28,7 +28,7 @@ from zope.app.security.interfaces import IPrincipal
 
 def undoSetup(event):
     # setup undo functionality
-    svc = zapi.getService(None, Utilities)
+    svc = zapi.getGlobalService(Utilities)
     svc.provideUtility(IUndoManager, ZODBUndoManager(event.database))
 
 undoSetup = function.Subscriber(undoSetup)
