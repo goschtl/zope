@@ -13,12 +13,11 @@
 ##############################################################################
 """TTW Schema Interfaces
 
-$Id: interfaces.py,v 1.2 2004/03/13 23:08:41 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/04/24 23:19:56 srichter Exp $
 """
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
 from zope.app.container.interfaces import IAdding
-from zope.app.component.interfaces import IInterfaceField
 
 class ISchemaUtility(Interface):
     pass
@@ -89,9 +88,3 @@ class IWriteMutableSchema(Interface):
 class IMutableSchema(IReadMutableSchema, IWriteMutableSchema):
     """This object represents an interface/schema that can be edited by
     managing the fields it contains."""
-
-class IMutableSchemaField(IInterfaceField):
-    """A type of Field that has an IMutableSchema as its value."""
-
-class IMutableSchemasField(IInterfaceField):
-    """A type of Field that has a tuple of IMutableSchemas as its value."""

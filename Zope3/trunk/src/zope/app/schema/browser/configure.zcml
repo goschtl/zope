@@ -58,42 +58,6 @@
       attribute="edit"
    />
 
-  <!-- Widgets for the MutableSchemaField -->
-
-  <zope:view
-      for="zope.app.schema.interfaces.IMutableSchemaField"
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory="zope.app.component.browser.interfacewidget.InterfaceWidget"
-      permission="zope.Public"
-      />
-
-  <zope:view
-      for="zope.app.schema.interfaces.IMutableSchemaField"
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
-      factory="
-           zope.app.component.browser.interfacewidget.InterfaceDisplayWidget"
-      permission="zope.Public"
-      />
-
-  <zope:view
-      for="zope.app.schema.interfaces.IMutableSchemasField"
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory="zope.app.component.browser.interfacewidget.MultiInterfaceWidget"
-      permission="zope.Public"
-      />
-
-  <zope:view
-      for="zope.app.schema.interfaces.IMutableSchemasField"
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.interfaces.IDisplayWidget"
-      factory="
-      zope.app.component.browser.interfacewidget.MultiInterfaceDisplayWidget"
-      permission="zope.Public"
-      />
-
   <!-- Register a browser-specific traverser -->
 
   <zope:view
