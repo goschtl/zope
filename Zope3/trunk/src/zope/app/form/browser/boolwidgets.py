@@ -91,17 +91,17 @@ class CheckBoxWidget(SimpleInputWidget):
 
 
 def BooleanRadioWidget(field, request, true=_('on'), false=_('off')):
-    vocabulary = SimpleVocabulary.fromItems( ((True, true), (False, false)) ) 
+    vocabulary = SimpleVocabulary.fromItems( ((true, True), (false, False)) ) 
     return RadioWidget(field, vocabulary, request)
 
 
 def BooleanSelectWidget(field, request, true=_('on'), false=_('off')):
-    vocabulary = SimpleVocabulary.fromItems( ((True, true), (False, false)) )
+    vocabulary = SimpleVocabulary.fromItems( ((true, True), (false, False)) )
     widget = SelectWidget(field, vocabulary, request)
     widget.size = 2
     return widget
 
 
 def BooleanDropdownWidget(field, request, true=_('on'), false=_('off')):
-    vocabulary = SimpleVocabulary.fromItems( ((True, true), (False, false)) )
+    vocabulary = SimpleVocabulary.fromItems( ((true, True), (false, False)) )
     return DropdownWidget(field, vocabulary, request)

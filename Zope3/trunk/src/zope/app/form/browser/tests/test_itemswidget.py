@@ -22,7 +22,7 @@ from zope.schema import Choice, List
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.publisher.browser import TestRequest
 
-from zope.app.form.interfaces import WidgetInputError
+from zope.app.form.interfaces import ConversionError
 from zope.app.form.browser.itemswidgets import ItemsWidgetBase
 from zope.app.form.browser.itemswidgets import ItemDisplayWidget
 from zope.app.form.browser.itemswidgets import ItemsMultiDisplayWidget
@@ -201,7 +201,7 @@ class ItemsEditWidgetBaseTest(ItemsWidgetBaseTest):
         widget = self._makeWidget(form={'field.choice': 'ten'})
         widget.setPrefix('field.')
         widget._getFormValue()
-        self.assert_(isinstance(widget._error, WidgetInputError))
+        self.assert_(isinstance(widget._error, ConversionError))
     
     def test_hidden(self):
         widget = self._makeWidget(form={'field.choice': 'token2'})
@@ -398,7 +398,7 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
         widget = self._makeWidget(form={'field.numbers': ['ten']})
         widget.setPrefix('field.')
         widget._getFormValue()
-        self.assert_(isinstance(widget._error, WidgetInputError))
+        self.assert_(isinstance(widget._error, ConversionError))
     
     def test_hidden(self):
         widget = self._makeWidget(

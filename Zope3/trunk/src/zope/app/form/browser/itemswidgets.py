@@ -28,7 +28,8 @@ from zope.app import zapi
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.browser.interfaces import IVocabularyQueryView
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
-from zope.app.form.interfaces import WidgetInputError
+from zope.app.form.interfaces import ConversionError
+
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 
@@ -126,29 +127,6 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
                 values.append(term.value)
         return values
 
-    def getInputValue(self):
-        """Get the value that was inputed."""
-        input = self.request.form.get(self.name, self._data_marker)
-        field = self.context
-
-        # missing value is okay if field is not required
-        if input == self._data_marker and not field.required and \
-               self.empty_marker_name in self.request.form:
-            return field.missing_value
-
-        # Now let's see whether we have a valid input value
-        try:
-            value = self._toFieldValue(input)
-        except ValidationError, error:
-            self._error = WidgetInputError(
-                self.context.__name__,
-                self.context.title,
-                error)
-
-            raise self._error
-
-        return value
-
     def _emptyMarker(self):
         """Mark the form so that empty selections are also valid."""
         return '<input name="%s" type="hidden" value="1" />' % (
@@ -159,30 +137,12 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
         return (self.name in self.request.form or
                 self.empty_marker_name in self.request.form)
 
-    def setRenderedValue(self, value):
-        """Store the ready-for-HTML value."""
-        self._data = value
-
     def _toFieldValue(self, input):
         """See `SimpleInputWidget`"""
         raise NotImplementedError(
             "_toFieldValue(input) must be implemented by a subclass\n"
             "It may be inherited from the mix-in classes SingleDataHelper\n"
             "or MultiDataHelper")
-
-    def _getFormValue(self):
-        if self._data is self._data_marker:
-            # The data has not been retrieved from the form, so let's do that
-            if self.hasInput():
-                try:
-                    value = self.getInputValue()
-                except WidgetInputError:
-                    value = self.request.form.get(self.name, self._missing)
-            else:
-                value = self._getDefault()
-        else:
-            value = self._data
-        return value
 
 
 class SingleDataHelper(object):
@@ -193,9 +153,12 @@ class SingleDataHelper(object):
 
     def _toFieldValue(self, input):
         if input:
-            return self.convertTokensToValues([input])[0]
+            try:
+                return self.convertTokensToValues([input])[0]
+            except InvalidValue, e:
+                raise ConversionError("Invalid value", e)
         else:
-            return None
+            return self.context.missing_value
 
     def hidden(self):
         return renderElement(u'input',
@@ -221,7 +184,10 @@ class MultiDataHelper(object):
             return []
         if not isinstance(input, list):
             input = [input]
-        return self.convertTokensToValues(input)
+        try:
+            return self.convertTokensToValues(input)
+        except InvalidValue, e:
+            raise ConversionError("Invalid value", e)
 
     def _getDefault(self):
         # Return the default value for this widget;
@@ -242,7 +208,7 @@ class ItemDisplayWidget(SingleDataHelper, ItemsWidgetBase):
     def __call__(self):
         """See IBrowserWidget."""
         value = self._getFormValue()
-        if value is None:
+        if not value:
             return self.translate(self._messageNoValue)
         else:
             term = self.vocabulary.getTerm(value)
@@ -363,8 +329,7 @@ class ItemsEditWidgetBase(SingleDataHelper, ItemsWidgetBase):
                 have_results = True
 
         contents.append(self._div('value', self.renderValue(value)))
-        if not self.context.required:
-            contents.append(self._emptyMarker())
+        contents.append(self._emptyMarker())
 
         if self.queryview is not None and not have_results:
             html = self.queryview.renderInput()

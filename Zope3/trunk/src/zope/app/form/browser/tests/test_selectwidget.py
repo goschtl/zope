@@ -47,6 +47,7 @@ select_html = '''<div id="field.terms">
 <option value="&amp;blah&amp;">&amp;blah&amp;</option>
 </select>
 </div>
+<input name="field.terms-empty-marker" type="hidden" value="1" />
 </div>'''
 
 class SelectWidgetHTMLEncodingTest(unittest.TestCase):
