@@ -13,10 +13,9 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: __init__.py,v 1.7 2004/04/05 19:44:07 jim Exp $
+$Id: __init__.py,v 1.8 2004/04/27 10:53:46 jim Exp $
 """
 import zope.interface
-from zope.app import zapi
 from zope.app.location.interfaces import ILocation
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.traversing.interfaces import IContainmentRoot
@@ -26,6 +25,7 @@ from zope.proxy import removeAllProxies
 from zope.proxy import ProxyBase, getProxiedObject
 from zope.app.decorator import DecoratorSpecificationDescriptor
 from zope.app.decorator import DecoratedSecurityCheckerDescriptor
+from zope.app.traversing import getParents
 
 import cPickle
 import tempfile
@@ -201,7 +201,7 @@ class LocationPhysicallyLocatable:
         """return the nearest site, see IPhysicallyLocatable"""
         if ISite.providedBy(self.context):
             return self.context
-        for parent in zapi.getParents(self.context):
+        for parent in getParents(self.context):
             if ISite.providedBy(parent):
                 return parent
         return self.getRoot()
