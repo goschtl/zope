@@ -78,7 +78,15 @@ class IChecker(Interface):
     """
 
     def check_getattr(ob, name):
-        """Check whether attribute access is allowed."""
+        """Check whether attribute access is allowed.
+
+        If a checker implements __setitem__, then __setitem__ will be
+        called rather than check_getattr to chack whether an attribute
+        access is allowed.  This is a hack that allows significantly
+        greater performance due to the fact that low-level operator
+        access is much faster than method access.
+        
+        """
 
     def check_setattr(ob, name):
         """Check whether attribute assignment is allowed."""
@@ -88,10 +96,25 @@ class IChecker(Interface):
 
         The operation name is the Python special method name,
         e.g. "__getitem__".
+
+        If a checker implements __setitem__, then __setitem__ will be
+        called rather than check to chack whether an operation is
+        allowed.  This is a hack that allows significantly greater
+        performance due to the fact that low-level operator access is
+        much faster than method access.
+        
         """
 
     def proxy(value):
-        """Return a security proxy for the value."""
+        """Return a security proxy for the value.
+
+        If a checker implements __getitem__, then __getitem__ will be
+        called rather than proxy to proxy the value.  This is a hack
+        that allows significantly greater performance due to the fact
+        that low-level operator access is much faster than method
+        access.
+
+        """
 
 
 class INameBasedChecker(IChecker):

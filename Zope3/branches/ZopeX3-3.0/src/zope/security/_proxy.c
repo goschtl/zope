@@ -117,6 +117,11 @@ check(SecurityProxy *self, PyObject *meth, PyObject *name)
 {
   PyObject *r;
 
+  if (self->proxy_checker->ob_type->tp_as_mapping != NULL
+      && self->proxy_checker->ob_type->tp_as_mapping->mp_ass_subscript != NULL
+      && meth != str_check_setattr)
+    return self->proxy_checker->ob_type->tp_as_mapping->
+      mp_ass_subscript(self->proxy_checker, self->proxy.proxy_object, name);
 
   r = PyObject_CallMethodObjArgs(self->proxy_checker, meth, 
                                  self->proxy.proxy_object, name, 
@@ -130,8 +135,14 @@ check(SecurityProxy *self, PyObject *meth, PyObject *name)
 
 #define PROXY_RESULT(self, result) \
 if (result != NULL) { \
-  PyObject *tmp = PyObject_CallMethodObjArgs(self->proxy_checker, str_proxy, \
-                                             result, NULL); \
+  PyObject *tmp; \
+  if (self->proxy_checker->ob_type->tp_as_mapping != NULL \
+      && self->proxy_checker->ob_type->tp_as_mapping->mp_subscript != NULL) \
+    tmp = self->proxy_checker->ob_type->tp_as_mapping-> \
+      mp_subscript(self->proxy_checker, result); \
+  else \
+    tmp = PyObject_CallMethodObjArgs(self->proxy_checker, str_proxy, \
+                                     result, NULL); \
   Py_DECREF(result); \
   result = tmp; \
 }
