@@ -23,6 +23,7 @@ from Acquisition import aq_base
 from Products.CMFCore.utils import UniqueObject, getToolByName
 from Products.CMFCore.CMFCorePermissions import ManagePortal
 from Products.CMFCore.CMFCorePermissions import ModifyPortalContent
+from Products.CMFCore.interfaces.Discussions import DiscussionResponse
 
 from utils import _dtmldir
 from DiscussionItem import DiscussionItemContainer
@@ -98,9 +99,10 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
         if not self.isDiscussionAllowedFor( content ):
             raise DiscussionNotAllowed
 
-        talkback = getattr( aq_base(content), 'talkback', None )
-        if not talkback:
-            talkback = self._createDiscussionFor(content)
+        if not DiscussionResponse.isImplementedBy(content):
+            talkback = getattr( aq_base(content), 'talkback', None )
+            if not talkback:
+                talkback = self._createDiscussionFor(content)
 
         return content.talkback # Return wrapped talkback
 
