@@ -43,6 +43,10 @@ Test harness.
     the threshold is set to 1 (agressive garbage collection).  Do "-g 0" to
     disable garbage collection altogether.
 
+-G flag
+    Set garbage collector debug flag.  The flag argument should be the name
+    of a DEBUG_ attribute of the gc module.  This argument can be repeated.
+
 -u  Use unittestgui
 -m  Use unittestgui; start minimized
     Use the PyUnit GUI instead of output to the command line. The GUI
@@ -320,9 +324,10 @@ def process_args():
     debug = 0 # Don't collect test results; simply let tests crash
     build = 0
     gcthresh = None
+    gcflags = []
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'vdLbhCumg:',
+        opts, args = getopt.getopt(sys.argv[1:], 'vdLbhCumg:G:',
                                    ['help'])
     except getopt.error, msg:
         print msg
@@ -349,11 +354,28 @@ def process_args():
             GUI = 1
         elif k == '-m':
             GUI = 'minimal'
+        elif k == '-G':
+            if not v.startswith("DEBUG_"):
+                print "-G argument must be DEBUG_ flag, not", repr(v)
+                sys.exit(1)
+            gcflags.append(v)
 
     if gcthresh is not None:
         import gc
         gc.set_threshold(gcthresh)
         print 'gc threshold:', gc.get_threshold()
+
+    if gcflags:
+        import gc
+        val = 0
+        for flag in gcflags:
+            v = getattr(gc, flag, None)
+            if v is None:
+                print "Unknown gc flag", repr(flag)
+                print gc.set_debug.__doc__
+                sys.exit(1)
+            val |= v
+        gc.set_debug(v)
 
     if build:
         cmd = sys.executable + " stupid_build.py"
