@@ -12,7 +12,14 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.31 2003/06/05 11:45:03 mgedmin Exp $
+$Id: checker.py,v 1.32 2003/06/05 11:56:25 mgedmin Exp $
+
+You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
+security checker debugging output on the standard error.
+
+Setting ZOPE_WATCH_CHECKERS to 1 will display messages about unauthorized or
+forbidden attribute access.  Setting it to a larger number will also display
+messages about granted attribute access.
 """
 
 import os
@@ -36,9 +43,12 @@ from zope.exceptions import Unauthorized, ForbiddenAttribute, DuplicationError
 __metaclass__ = type
 
 if os.environ.get('ZOPE_WATCH_CHECKERS'):
-    WATCH_CHECKERS = True
+    try:
+        WATCH_CHECKERS = int(os.environ.get('ZOPE_WATCH_CHECKERS'))
+    except ValueError:
+        WATCH_CHECKERS = 1
 else:
-    WATCH_CHECKERS = False
+    WATCH_CHECKERS = 0
 
 
 def ProxyFactory(object, checker=None):
@@ -347,15 +357,21 @@ class CheckerLoggingMixin:
 
     Prints verbose debugging information about every performed check to
     sys.stderr.
+
+    If verbosity is set to 1, only displays Unauthorized and Forbidden messages.
+    If verbosity is set to a larger number, displays all messages.
     """
+
+    verbosity = 1
 
     def check(self, object, name):
         try:
             super(CheckerLoggingMixin, self).check(object, name)
-            if name in _always_available:
-                print >> sys.stderr, '[CHK] + Always available: %s on %r' % (name, object)
-            else:
-                print >> sys.stderr, '[CHK] + Granted: %s on %r' % (name, object)
+            if self.verbosity > 1:
+                if name in _always_available:
+                    print >> sys.stderr, '[CHK] + Always available: %s on %r' % (name, object)
+                else:
+                    print >> sys.stderr, '[CHK] + Granted: %s on %r' % (name, object)
         except Unauthorized:
             print >> sys.stderr, '[CHK] - Unauthorized: %s on %r' % (name, object)
             raise
@@ -366,10 +382,11 @@ class CheckerLoggingMixin:
     def check_getattr(self, object, name):
         try:
             super(CheckerLoggingMixin, self).check(object, name)
-            if name in _always_available:
-                print >> sys.stderr, '[CHK] + Always available getattr: %s on %r' % (name, object)
-            else:
-                print >> sys.stderr, '[CHK] + Granted getattr: %s on %r' % (name, object)
+            if self.verbosity > 1:
+                if name in _always_available:
+                    print >> sys.stderr, '[CHK] + Always available getattr: %s on %r' % (name, object)
+                else:
+                    print >> sys.stderr, '[CHK] + Granted getattr: %s on %r' % (name, object)
         except Unauthorized:
             print >> sys.stderr, '[CHK] - Unauthorized getattr: %s on %r' % (name, object)
             raise
@@ -380,7 +397,8 @@ class CheckerLoggingMixin:
     def check_setattr(self, object, name):
         try:
             super(CheckerLoggingMixin, self).check_setattr(object, name)
-            print >> sys.stderr, '[CHK] + Granted setattr: %s on %r' % (name, object)
+            if self.verbosity > 1:
+                print >> sys.stderr, '[CHK] + Granted setattr: %s on %r' % (name, object)
         except Unauthorized:
             print >> sys.stderr, '[CHK] - Unauthorized setattr: %s on %r' % (name, object)
             raise
@@ -391,11 +409,11 @@ class CheckerLoggingMixin:
 
 if WATCH_CHECKERS:
     class Checker(CheckerLoggingMixin, Checker):
-        pass
+        verbosity = WATCH_CHECKERS
     class CombinedChecker(CheckerLoggingMixin, CombinedChecker):
-        pass
+        verbosity = WATCH_CHECKERS
     class DecoratedChecker(CheckerLoggingMixin, DecoratedChecker):
-        pass
+        verbosity = WATCH_CHECKERS
 
 
 # Helper class for __traceback_supplement__
