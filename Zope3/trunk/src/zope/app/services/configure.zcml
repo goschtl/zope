@@ -260,7 +260,7 @@
 
 <!-- Configuration Manager -->
 
-  <content class="zope.app.services.configurationmanager.ConfigurationManager">
+  <content class="zope.app.services.configuration.ConfigurationManager">
     <factory
         id = "zope.app.services.ConfigurationManager"
         permission = "zope.ManageServices"
@@ -270,15 +270,11 @@
         interface="zope.app.interfaces.container.IReadContainer" />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IWriteContainer" />
-    <require
-        permission="zope.ManageServices"
-        interface=
-        "zope.app.interfaces.services.configurationmanager.IOrderedContainer"
-        />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IDeleteNotifiable"
+        interface="
+        zope.app.interfaces.container.IWriteContainer
+        zope.app.interfaces.services.configuration.IOrderedContainer
+        zope.app.interfaces.container.IDeleteNotifiable
+        " 
         />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
@@ -468,5 +464,8 @@
     id='Subscription'
     interface='zope.app.interfaces.services.event.ISubscriptionService'
     />
+
+<!-- Utility Service --> <include file="utility.zcml" />
+
 
 </zopeConfigure>

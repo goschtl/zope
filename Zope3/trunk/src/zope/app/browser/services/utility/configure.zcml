@@ -1,0 +1,43 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+
+  <menuItem
+      for="zope.app.interfaces.container.IAdding"
+      menu="add_service"
+      action="zope.app.services.UtilityService"
+      title="Utility Service"
+      permission="zope.ManageServices"
+      />
+
+  <page
+      for="zope.app.interfaces.services.utility.ILocalUtility"
+      name="useConfiguration.html"
+      template="useconfiguration.pt"
+      class=".useconfiguration.UseConfiguration"
+      permission="zope.ManageServices"
+      menu="zmi_views" title="Configurations"
+      />
+
+
+  <addform
+      label="New Utility Configuration"
+      for="zope.app.interfaces.services.utility.ILocalUtility"
+      name="addConfiguration.html"
+      schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
+      class=".useconfiguration.AddConfiguration"
+      permission="zope.ManageServices"
+      content_factory="zope.app.services.utility.UtilityConfiguration"
+      arguments="name interface componentPath"
+      set_after_add="status"
+      fields="name interface componentPath permission status"
+      />
+
+  <editform
+      name="index.html"
+      menu="zmi_views" title="Edit"
+      schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
+      label="Utility Configuration"
+      permission="zope.ManageServices"
+      fields="name interface componentPath permission status"
+      />
+
+</zopeConfigure>

@@ -1,0 +1,26 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<content class=".utility.LocalUtilityService">
+  <factory
+      id="zope.app.services.UtilityService"
+      permission="zope.ManageServices"
+      />
+</content>
+
+<content class=".utility.UtilityConfiguration">
+  <require
+    permission="zope.ManageServices"
+    interface="zope.app.interfaces.services.utility.IUtilityConfiguration"
+    set_schema="zope.app.interfaces.services.utility.IUtilityConfiguration"
+    />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IAddNotifiable"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IDeleteNotifiable"
+      />
+ </content>
+
+</zopeConfigure>
