@@ -31,10 +31,8 @@ from zope.app.tests import ztapi
 
 from zope.app.traversing.api import traverse
 from zope.publisher.browser import TestRequest
-from zope.app.filerepresentation.interfaces import IWriteFile
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing.browser import AbsoluteURL
-from zope.app.container.interfaces import IReadContainer
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
@@ -46,47 +44,9 @@ from zope.app.dav.interfaces import IDAVNamespace
 from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
 
+from zope.app.dav.tests.unitfixtures import File, Folder, FooZPT
+
 import zope.app.location
-
-class Folder(zope.app.location.Location):
-
-    implements(IReadContainer)
-
-    def __init__(self, name, level=0, parent=None):
-        self.name = self.__name__ = name
-        self.level=level
-        self.__parent__ = parent
-
-    def items(self):
-        if self.level == 2:
-            return (('last', File('last', 'text/plain', 'blablabla', self)),)
-        result = []
-        for i in range(1, 3):
-            result.append((str(i),
-                           File(str(i), 'text/plain', 'blablabla', self)))
-        result.append(('sub1',
-                       Folder('sub1', level=self.level+1, parent=self)))
-        return tuple(result)
-
-class File(zope.app.location.Location):
-
-    implements(IWriteFile)
-
-    def __init__(self, name, content_type, data, parent=None):
-        self.name = self.__name__ = name
-        self.content_type = content_type
-        self.data = data
-        self.__parent__ = parent
-
-    def write(self, data):
-        self.data = data
-
-class FooZPT(zope.app.location.Location):
-
-    implements(IAnnotatable)
-
-    def getSource(self):
-        return 'bla bla bla'
 
 
 def _createRequest(body=None, headers=None, skip_headers=None):
