@@ -29,6 +29,6 @@
 
 <!-- Further directives -->
 
-<include package=".Views" />
+<!-- No config file! include package=".Views" /  -->
 
 </zopeConfigure>
