@@ -153,6 +153,37 @@ class ParagraphInserter:
 
     __call__ = filterText
 
+
+class Pipeline:
+    """
+        Composite filter, chaining a list of filters together.
+    """
+    __implements__ = TextFilter
+
+    _filters = ()
+
+    def filterText( self, text_info='' ):
+
+        next = _ensureTextInfo( text_info )
+
+        for filter in self._filters:
+            next = filter.filterText( next )
+
+        return next
+
+    __call__ = filterText
+
+    def addFilter( self, filter ):
+        """
+            Append 'filter' to the end of our chain;  'filter' must
+            implement TextFilter.
+        """
+        if not TextFilter.isImplementedBy( filter ):
+            raise ValueError, 'Not a filter.'
+
+        self._filters = self._filters + ( filter, )
+
+
 #
 #   Helper functions & classes
 #

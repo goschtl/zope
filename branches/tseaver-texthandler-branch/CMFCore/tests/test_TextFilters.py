@@ -276,6 +276,96 @@ class ParagraphInserterTests( unittest.TestCase ):
         self.assertEqual( len( graphs ), 24 )
 
 
+class PipelineTests( unittest.TestCase ):
+
+    def testInterface( self ):
+
+        from Products.CMFCore.interfaces.portal_textmanager import TextFilter
+        from Products.CMFCore.TextFilters import Pipeline
+
+        self.failUnless(
+                TextFilter.isImplementedByInstancesOf( Pipeline ) )
+
+    def testEmpty( self ):
+
+        from Products.CMFCore.TextFilters import Pipeline
+
+        pipeline = Pipeline()
+
+        ti = pipeline.filterText( SAMPLE_TEXT )
+
+        self.assertEqual( ti(), SAMPLE_TEXT )
+
+    def testAddFilter( self ):
+
+        from Products.CMFCore.TextFilters import Pipeline
+        from Products.CMFCore.TextFilters import PassthroughFilter
+
+        pipeline = Pipeline()
+        pipeline.addFilter( PassthroughFilter() )
+        ti = pipeline.filterText( SAMPLE_TEXT )
+        self.assertEqual( ti(), SAMPLE_TEXT )
+
+        self.assertRaises( ValueError, pipeline.addFilter, None )
+
+    def testChaining( self ):
+
+        from Products.CMFCore.TextFilters import Pipeline
+
+        class ShimFilter:
+            from Products.CMFCore.interfaces.portal_textmanager \
+                import TextFilter
+            __implements__ = TextFilter
+
+            def __init__( self ):
+                self._filtered = []
+
+            def filterText( self, text_info ):
+                self._filtered.append( text_info )
+                return text_info
+
+            def count( self ):
+                return len( self._filtered )
+
+            def first( self ):
+                return self._filtered[0]
+
+            def last( self ):
+                return self._filtered[-1]
+
+        pipeline = Pipeline()
+        shim1 = ShimFilter()
+        shim2 = ShimFilter()
+        shim3 = ShimFilter()
+        pipeline.addFilter( shim1 )
+        pipeline.addFilter( shim2 )
+        pipeline.addFilter( shim3 )
+
+        ti = pipeline( SAMPLE_TEXT )
+        self.assertEqual( ti(), SAMPLE_TEXT )
+        self.assertEqual( shim1.count(), 1 )
+        self.assertEqual( shim1.first()(), SAMPLE_TEXT )
+        self.assertEqual( shim1.last()(), SAMPLE_TEXT )
+        self.assertEqual( shim2.count(), 1 )
+        self.assertEqual( shim2.first()(), SAMPLE_TEXT )
+        self.assertEqual( shim2.last()(), SAMPLE_TEXT )
+        self.assertEqual( shim3.count(), 1 )
+        self.assertEqual( shim3.first()(), SAMPLE_TEXT )
+        self.assertEqual( shim3.last()(), SAMPLE_TEXT )
+
+        twice = '%s\n%s' % ( SAMPLE_TEXT, SAMPLE_TEXT )
+        ti = pipeline( twice )
+        self.assertEqual( ti(), twice )
+        self.assertEqual( shim1.count(), 2 )
+        self.assertEqual( shim1.first()(), SAMPLE_TEXT )
+        self.assertEqual( shim1.last()(), twice )
+        self.assertEqual( shim2.count(), 2 )
+        self.assertEqual( shim2.first()(), SAMPLE_TEXT )
+        self.assertEqual( shim2.last()(), twice )
+        self.assertEqual( shim3.count(), 2 )
+        self.assertEqual( shim3.first()(), SAMPLE_TEXT )
+        self.assertEqual( shim3.last()(), twice )
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest( unittest.makeSuite( TextInfoTests ) )
@@ -283,6 +373,7 @@ def test_suite():
     suite.addTest( unittest.makeSuite( HTMLDecapitatorTests ) )
     suite.addTest( unittest.makeSuite( STXDecapitatorTests ) )
     suite.addTest( unittest.makeSuite( ParagraphInserterTests ) )
+    suite.addTest( unittest.makeSuite( PipelineTests ) )
     return suite
 
 def run():
