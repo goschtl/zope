@@ -208,13 +208,15 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
         self.folder.manage_addProduct['FiveTest'].manage_addFancyContent(
             'fancy')
 
-        # check if z3-based view lookup works
-        response = self.publish('/test_folder_1_/fancy/fancy')
-        self.assertEquals("Fancy, fancy", response.getBody())
 
         # check if the old bobo_traverse method can still kick in
         response = self.publish('/test_folder_1_/fancy/something-else')
         self.assertEquals('something-else', response.getBody())
+
+        # check if z3-based view lookup works
+        response = self.publish('/test_folder_1_/fancy/fancy')
+        self.assertEquals("Fancy, fancy", response.getBody())
+
 
 def test_suite():
     suite = unittest.TestSuite()

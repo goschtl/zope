@@ -67,10 +67,15 @@ def implements(_context, class_, interface):
             )
 
 def classTraversable(class_):
-    # if a class already has this attribute, it means it is either a
+    # If a class already has this attribute, it means it is either a
     # subclass of api.Traversable or was already processed with this
-    # directive; in either case, do nothing...
-    if hasattr(class_, '__five_traversable__'):
+    # directive; in either case, do nothing... except in the case were
+    # the class overrides __bobo_traverse__ instead of getting it from
+    # a base class. In this case, we suppose that the class probably
+    # didn't bother with the base classes __bobo_traverse__ anyway and
+    # we step __fallback_traverse__.
+    if (hasattr(class_, '__five_traversable__') and
+        not class_.__dict__.has_key('__bobo_traverse__')):
         return
 
     if hasattr(class_, '__bobo_traverse__'):
