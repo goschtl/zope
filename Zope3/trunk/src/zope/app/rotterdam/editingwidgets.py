@@ -18,10 +18,11 @@ __metaclass__ = type
 
 from zope.interface import implements
 from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser.widget import SimpleInputWidget, renderElement
+from zope.app.form.browser import TextAreaWidget
+from zope.app.form.browser.widget import renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-class SimpleEditingWidget(SimpleInputWidget):
+class SimpleEditingWidget(TextAreaWidget):
     """Improved textarea editing, with async saving using JavaScript."""
 
     implements(IInputWidget)
