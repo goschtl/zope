@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.29 2004/04/24 23:20:42 srichter Exp $
+$Id: _bootstrapfields.py,v 1.30 2004/04/26 23:15:01 srichter Exp $
 """
 from zope.interface import Attribute, providedBy, implements
 from zope.schema._bootstrapinterfaces import StopValidation
@@ -66,8 +66,7 @@ class Field(Attribute):
     constraint = None
     default = ValidatedProperty('default')
 
-    def __init__(self, __name__='', __doc__='',
-                 title=u'', description=u'',
+    def __init__(self, title=u'', description=u'', __name__='',
                  required=True, readonly=False, constraint=None, default=None,
                  missing_value=__missing_value_marker):
         """Pass in field values as keyword parameters.
@@ -87,45 +86,22 @@ class Field(Attribute):
         >>> f.__doc__, f.title, f.description
         ('', u'', u'')
 
-        >>> f = Field(title=u"sample")
+        >>> f = Field(title=u'sample')
         >>> f.__doc__, f.title, f.description
         (u'sample', u'sample', u'')
 
-        >>> f = Field(title=u"sample", description=u"blah blah\\nblah")
+        >>> f = Field(title=u'sample', description=u'blah blah\\nblah')
         >>> f.__doc__, f.title, f.description
         (u'sample\\n\\nblah blah\\nblah', u'sample', u'blah blah\\nblah')
-
-        >>> f = Field(__doc__='''sample
-        ...
-        ...    blah blah
-        ...    blah
-        ...    ''')
-        >>> f.__doc__, f.title
-        ('sample\\n\\n   blah blah\\n   blah\\n   ', u'sample')
-        >>> f.description
-        u'   blah blah\\n   blah\\n'
-
-        >>> f = Field(title=u"sample", description=u"blah blah",
-        ...           __doc__="xxx")
-        >>> f.__doc__, f.title, f.description
-        ('xxx', u'sample', u'blah blah')
-
         """
-
-        if not __doc__:
-            if title:
-                if description:
-                    __doc__ = "%s\n\n%s" % (title, description)
-                else:
-                    __doc__ = title
-            elif description:
-                __doc__ = description
-        else:
-            doc = __doc__.strip().split('\n')
-            if (not title and not description
-                and (len(doc) == 1 or not doc[1].strip())):
-                title = unicode(doc[0])
-                description = u'\n'.join(doc[2:])+u'\n'
+        __doc__ = ''
+        if title:
+            if description:
+                __doc__ = "%s\n\n%s" % (title, description)
+            else:
+                __doc__ = title
+        elif description:
+            __doc__ = description
 
         super(Field, self).__init__(__name__, __doc__)
         self.title = title
