@@ -14,7 +14,7 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.11 2003/06/24 19:04:40 jim Exp $
+$Id: interface.py,v 1.12 2003/07/30 18:35:18 jim Exp $
 """
 
 import sys
@@ -30,8 +30,6 @@ class Element(object):
     #
     #__implements__ = IElement
 
-    __tagged_values = {}
-
     def __init__(self, __name__, __doc__=''):
         """Create an 'attribute' description
         """
@@ -41,6 +39,7 @@ class Element(object):
 
         self.__name__=__name__
         self.__doc__=__doc__
+        self.__tagged_values = {}
 
     def getName(self):
         """ Returns the name of the object. """
