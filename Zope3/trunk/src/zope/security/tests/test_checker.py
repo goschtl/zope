@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.11 2003/05/29 15:51:19 stevea Exp $
+$Id: test_checker.py,v 1.12 2003/06/02 14:36:04 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -34,25 +34,23 @@ import types, pickle
 __metaclass__ = type
 
 class SecurityPolicy:
-
     implements(ISecurityPolicy)
 
     def checkPermission(self, permission, object, context):
         'See ISecurityPolicy'
-
         return permission == 'test_allowed'
 
 class RecordedSecurityPolicy:
-
     implements(ISecurityPolicy)
 
     def __init__(self):
         self._checked = []
+        self.permissions = {}
 
     def checkPermission(self, permission, object, context):
         'See ISecurityPolicy'
         self._checked.append(permission)
-        return True
+        return self.permissions.get(permission, True)
 
     def checkChecked(self, checked):
         res = self._checked == checked
@@ -68,30 +66,35 @@ class TransparentProxy:
         return getattr(ob, name)
 
 class OldInst:
-
     __metaclass__ = types.ClassType
 
-    a=1
+    a = 1
 
     def b(self):
         pass
 
-    c=2
+    c = 2
 
-    def gete(self): return 3
+    def gete(self):
+        return 3
     e = property(gete)
 
-    def __getitem__(self, x): return 5, x
+    def __getitem__(self, x):
+        return 5, x
 
-    def __setitem__(self, x, v): pass
+    def __setitem__(self, x, v):
+        pass
 
 class NewInst(object, OldInst):
-
     # This is not needed, but left in to show the change of metaclass
     # __metaclass__ = type
 
-    def gete(self): return 3
-    def sete(self, v): pass
+    def gete(self):
+        return 3
+
+    def sete(self, v):
+        pass
+
     e = property(gete, sete)
 
 
@@ -385,32 +388,33 @@ class TestMixinDecoratedChecker(TestCase):
     def decoratedSetUp(self):
         self.policy = RecordedSecurityPolicy()
         self._oldpolicy = setSecurityPolicy(self.policy)
+        self.obj = object()
 
     def decoratedTearDown(self):
         setSecurityPolicy(self._oldpolicy)
 
-    def checkingTestImpl(self, checker, decoratedchecker):
-        c = checker
-        dc = decoratedchecker
-
-        o = object()
-        dc.check_getattr(o, 'both_get_set')
+    def check_checking_impl(self, checker):
+        o = self.obj
+        checker.check_getattr(o, 'both_get_set')
         self.assert_(self.policy.checkChecked(['dc_get_permission']))
-        dc.check_getattr(o, 'c_only')
+        checker.check_getattr(o, 'c_only')
         self.assert_(self.policy.checkChecked(['get_permission']))
-        dc.check_getattr(o, 'd_only')
+        checker.check_getattr(o, 'd_only')
         self.assert_(self.policy.checkChecked(['dc_get_permission']))
         self.assertRaises(ForbiddenAttribute,
-                          dc.check_getattr, o, 'completely_different_attr')
+                          checker.check_getattr, o,
+                          'completely_different_attr')
         self.assert_(self.policy.checkChecked([]))
-        dc.check(o, '__str__')
+        checker.check(o, '__str__')
         self.assert_(self.policy.checkChecked(['get_permission']))
 
-        dc.check_setattr(o, 'both_get_set')
+        checker.check_setattr(o, 'both_get_set')
         self.assert_(self.policy.checkChecked(['dc_set_permission']))
-        self.assertRaises(ForbiddenAttribute, dc.check_setattr, o, 'c_only')
+        self.assertRaises(ForbiddenAttribute,
+                          checker.check_setattr, o, 'c_only')
         self.assert_(self.policy.checkChecked([]))
-        self.assertRaises(ForbiddenAttribute, dc.check_setattr, o, 'd_only')
+        self.assertRaises(ForbiddenAttribute,
+                          checker.check_setattr, o, 'd_only')
         self.assert_(self.policy.checkChecked([]))
 
     originalChecker = NamesChecker(['both_get_set', 'c_only', '__str__'],
@@ -421,6 +425,7 @@ class TestMixinDecoratedChecker(TestCase):
     decorationGetMap = {'both_get_set': 'dc_get_permission',
                         'd_only': 'dc_get_permission'}
 
+    overridingChecker = Checker(decorationGetMap, decorationSetMap)
 
 class TestDecoratedChecker(TestMixinDecoratedChecker, TestCase):
 
@@ -434,9 +439,9 @@ class TestDecoratedChecker(TestMixinDecoratedChecker, TestCase):
 
     def test_checking(self):
         from zope.security.checker import DecoratedChecker
-        c = self.originalChecker
-        dc = DecoratedChecker(c, self.decorationGetMap, self.decorationSetMap)
-        self.checkingTestImpl(c, dc)
+        dc = DecoratedChecker(self.originalChecker,
+                              self.decorationGetMap, self.decorationSetMap)
+        self.check_checking_impl(dc)
 
     def test_interface(self):
         from zope.security.checker import DecoratedChecker
@@ -445,12 +450,42 @@ class TestDecoratedChecker(TestMixinDecoratedChecker, TestCase):
         dc = DecoratedChecker(c, {}, {})
         verifyObject(IChecker, dc)
 
+class TestCombinedChecker(TestMixinDecoratedChecker, TestCase):
+
+    def setUp(self):
+        TestCase.setUp(self)
+        self.decoratedSetUp()
+
+    def tearDown(self):
+        self.decoratedTearDown()
+        TestCase.tearDown(self)
+
+    def test_checking(self):
+        from zope.security.checker import CombinedChecker
+        cc = CombinedChecker(self.overridingChecker, self.originalChecker)
+        self.check_checking_impl(cc)
+
+        # When a permission is not authorized by the security policy,
+        # the policy is queried twice per check_getattr -- once for each
+        # checker.
+        self.policy.permissions['dc_get_permission'] = False
+        cc.check_getattr(self.obj, 'both_get_set')
+        self.assert_(
+            self.policy.checkChecked(['dc_get_permission', 'get_permission'])
+            )
+
+    def test_interface(self):
+        from zope.security.checker import CombinedChecker
+        from zope.security.interfaces import IChecker
+        dc = CombinedChecker(self.overridingChecker, self.originalChecker)
+        verifyObject(IChecker, dc)
 
 def test_suite():
     return TestSuite((
         makeSuite(Test),
         makeSuite(TestCheckerPublic),
         makeSuite(TestDecoratedChecker),
+        makeSuite(TestCombinedChecker),
         ))
 
 if __name__=='__main__':

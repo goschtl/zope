@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.26 2003/06/02 12:46:03 stevea Exp $
+$Id: checker.py,v 1.27 2003/06/02 14:36:03 stevea Exp $
 """
 
 import os
@@ -165,6 +165,58 @@ class Checker(TrustedCheckerBase):
 
         return Proxy(value, checker)
 
+class CombinedChecker(TrustedCheckerBase):
+    """A checker that combines two other checkers."""
+    implements(IChecker)
+
+    def __init__(self, checker1, checker2):
+        """Create a combined checker
+
+        checker1 takes precedence over checker2.
+        """
+        self._checker1 = checker1
+        self._checker2 = checker2
+
+    def permission_id(self, name):
+        permission = self._permission_func(name)
+        if permission is None:
+            permission = self._original_checker.permission_id(name)
+        return permission
+
+    def setattr_permission_id(self, name):
+        permission = self._setattr_permission_func(name)
+        if permission is None:
+            permission = self._original_checker.setattr_permission_id(name)
+        return permission
+
+    def check(self, object, name):
+        try:
+            self._checker1.check(object, name)
+        except (Unauthorized, ForbiddenAttribute):
+            self._checker2.check(object, name)
+
+    def check_getattr(self, object, name):
+        try:
+            self._checker1.check_getattr(object, name)
+        except (Unauthorized, ForbiddenAttribute):
+            self._checker2.check_getattr(object, name)
+
+    def check_setattr(self, object, name):
+        try:
+            self._checker1.check_setattr(object, name)
+        except (Unauthorized, ForbiddenAttribute):
+            self._checker2.check_setattr(object, name)
+
+    def proxy(self, value):
+        'See IChecker'
+        checker = getattr(value, '__Security_checker__', None)
+        if checker is None:
+            checker = selectChecker(value)
+            if checker is None:
+                return value
+
+        return Proxy(value, checker)
+
 
 class DecoratedChecker(TrustedCheckerBase):
     """A checker using further permissions relative to an original checker.
@@ -174,11 +226,11 @@ class DecoratedChecker(TrustedCheckerBase):
     def __init__(self, original_checker, permission_func,
                  setattr_permission_func=lambda name: None
                  ):
-        """Create a checker
+        """Create a decorated checker
 
         A dictionary or a callable must be provided for computing permissions
         for names. The callable will be called with attribute names and must
-        return a permission id, None, or the special marker, CheckerPublic.  If
+        return a permission id, None, or the special marker, CheckerPublic. If
         None is returned, then access to the name is decided by
         original_checker. If CheckerPublic is returned, then access will be
         granted without checking a permission.
