@@ -67,6 +67,8 @@ class Specification:
     """
 
     def __init__(self, source):
+        # The source directory is needed since globbing is performed
+        # to locate files if the spec includes wildcards.
         self.excludes = {}
         self.includes = {}
         self.source = source
