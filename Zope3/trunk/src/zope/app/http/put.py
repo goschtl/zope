@@ -9,22 +9,18 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""XXX short summary goes here.
+"""HTTP PUT verb
 
-XXX longer description goes here.
-
-$Id: put.py,v 1.9 2004/03/06 17:48:50 jim Exp $
+$Id: put.py,v 1.10 2004/03/13 23:34:28 srichter Exp $
 """
-__metaclass__ = type
-
 from zope.component import queryNamedAdapter
-from zope.app.interfaces.http import INullResource
+from zope.app.http.interfaces import INullResource
 from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.interface import implements
 
-class NullResource:
+class NullResource(object):
     """Object representing objects to be created by a PUT.
     """
 
@@ -35,7 +31,7 @@ class NullResource:
         self.name = name
 
 
-class NullPUT:
+class NullPUT(object):
     """Put handler for null resources (new file-like things)
 
     This view creates new objects in containers.
@@ -86,7 +82,7 @@ class NullPUT:
         request.response.setStatus(201)
         return ''
 
-class FilePUT:
+class FilePUT(object):
     """Put handler for existing file-like things
     """
 

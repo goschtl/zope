@@ -11,7 +11,7 @@
       allowed_attributes="PROPFIND setDepth getDepth" />
   
   <view
-      for="zope.app.interfaces.http.INullResource"
+      for="zope.app.http.interfaces.INullResource"
       name="MKCOL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       factory=".mkcol.NullResource"

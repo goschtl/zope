@@ -11,16 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Not found Exception
 
-$Id: notfound.py,v 1.3 2003/06/23 17:17:05 sidnei Exp $
+$Id: notfound.py,v 1.4 2004/03/13 23:34:28 srichter Exp $
 """
-__metaclass__ = type
-
-from zope.app.interfaces.http import IHTTPException
+from zope.app.http.interfaces import IHTTPException
 from zope.interface import implements
 
-class NotFound:
+class NotFound(object):
 
     implements(IHTTPException)
 
@@ -29,7 +27,8 @@ class NotFound:
         self.request = request
 
     def __call__(self):
-        if self.request.method in ['MKCOL'] and self.request.getTraversalStack():
+        if self.request.method in ['MKCOL'] and \
+               self.request.getTraversalStack():
             # MKCOL with non-existing parent.
             self.request.response.setStatus(409)
         else:

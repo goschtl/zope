@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Unauthorized Exception Test
 
-Revision information:
-$Id: test_unauthorized.py,v 1.2 2004/03/05 22:09:07 jim Exp $
+$Id: test_unauthorized.py,v 1.3 2004/03/13 23:34:29 srichter Exp $
 """
-
 from unittest import TestCase, main, makeSuite
 from zope.publisher.browser import TestRequest
-from zope.app.interfaces.http import IHTTPException
+from zope.app.http.interfaces import IHTTPException
 
 class Test(TestCase):
 
