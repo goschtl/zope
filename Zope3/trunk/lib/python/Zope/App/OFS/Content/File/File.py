@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: File.py,v 1.6 2002/07/19 13:12:31 srichter Exp $
+$Id: File.py,v 1.7 2002/07/24 23:15:46 jeremy Exp $
 """
 from types import StringType, UnicodeType, NoneType
 
@@ -118,7 +118,7 @@ class File(Persistent):
 
         # Make sure we have an _p_jar, even if we are a new object, by
         # doing a sub-transaction commit.
-        get_transaction().commit(1)
+        get_transaction().savepoint()
         
         jar = self._p_jar
         
@@ -150,7 +150,7 @@ class File(Persistent):
             data.next = next
             
             # Now make it get saved in a sub-transaction!
-            get_transaction().commit(1)
+            get_transaction().savepoint()
 
             # Now make it a ghost to free the memory.  We
             # don't need it anymore!
