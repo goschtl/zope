@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.14 2003/08/17 06:08:11 philikon Exp $
+$Id: module.py,v 1.15 2003/09/21 17:31:59 jim Exp $
 """
 
 from persistence import Persistent
@@ -28,12 +28,11 @@ from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.services.module import IModuleManager
 from zope.interface import implements
 from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.app.container.contained import Contained
 
-class Manager(Persistent):
+class Manager(Persistent, Contained):
 
     implements(IModuleManager, IAttributeAnnotatable)
-
-    zapi.ContextAwareDescriptors()
 
     def __init__(self, name, source):
         self.name = name
@@ -58,7 +57,7 @@ class Manager(Persistent):
             mod = self._module = PersistentModule(self.name)
 
 
-        folder = zapi.getWrapperContainer(self)
+        folder = self.__parent__
 
         # XXX
         # We are currently only supporting trusted code.
@@ -114,7 +113,7 @@ class ModuleFactory(object):
         assert name.endswith(".py")
         name = name[:-3]
         m = Manager(name, data)
-        m = zapi.ContextWrapper(m, self.context)
+        m.__parent__ = self.context
         m.execute()
         return m
 

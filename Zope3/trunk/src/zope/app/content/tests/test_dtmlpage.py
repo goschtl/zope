@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_dtmlpage.py,v 1.5 2003/05/27 14:18:14 jim Exp $
+$Id: test_dtmlpage.py,v 1.6 2003/09/21 17:31:53 jim Exp $
 """
 
 import unittest
@@ -26,8 +26,8 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.interfaces.traversing import ITraverser, ITraversable
 from zope.component.adapter import provideAdapter
-from zope.context import Wrapper
 from zope.security.checker import NamesChecker, defineChecker
+from zope.app.container.contained import contained
 
 
 class Data(object):
@@ -58,7 +58,7 @@ class DTMLPageTests(PlacelessSetup, unittest.TestCase):
             '</a></body></html>'
             )
 
-        page = Wrapper(page, Data(name='zope'))
+        page = contained(page, Data(name='zope'))
 
         out = page.render(Data(URL={'1': 'http://foo.com/'}),
                           title="Zope rules")

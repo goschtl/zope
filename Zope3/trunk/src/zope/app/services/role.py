@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: role.py,v 1.6 2003/06/05 12:03:17 stevea Exp $
+$Id: role.py,v 1.7 2003/09/21 17:31:59 jim Exp $
 """
 
 from persistence import Persistent
@@ -22,7 +22,6 @@ from zope.app.security.registries.roleregistry import Role
 from zope.app.container.btree import BTreeContainer
 from zope.app.interfaces.security import IRoleService
 from zope.app.interfaces.container import IContainer
-from zope.context import ContextMethod
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.service import ISimpleService
 from zope.interface import implements
@@ -47,7 +46,6 @@ class RoleService(BTreeContainer):
             if sv:
                 return sv.getRole(rid)
             raise # will be original Key Error
-    getRole = ContextMethod(getRole)
 
     def getRoles(wrapped_self):
         '''See interface IRoleService'''
@@ -56,4 +54,3 @@ class RoleService(BTreeContainer):
         if roleserv:
             roles.extend(roleserv.getRoles())
         return roles
-    getRoles = ContextMethod(getRoles)

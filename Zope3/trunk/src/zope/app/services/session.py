@@ -32,7 +32,7 @@ from zope.interface import implements
 from zope.app.interfaces.services.session import ISessionService
 from zope.app.interfaces.services.session import IConfigureSessionService
 from zope.app.interfaces.services.service import ISimpleService
-
+from zope.app.container.contained import Contained
 
 cookieSafeTrans = string.maketrans("+/", "-.")
 
@@ -41,7 +41,7 @@ def digestEncode(s):
     return s.encode("base64")[:-2].translate(cookieSafeTrans)
 
 
-class CookieSessionService(Persistent):
+class CookieSessionService(Persistent, Contained):
     """Session service implemented using cookies."""
 
     implements(ISessionService, IConfigureSessionService, ISimpleService)

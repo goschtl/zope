@@ -23,8 +23,6 @@ from persistence import Persistent
 from persistence.dict import PersistentDict
 from zodb.btrees.OOBTree import OOBTree
 from zope.app.component.nextservice import queryNextService
-from zope.context import ContextMethod
-from zope.app.context import ContextWrapper
 from zope.app.interfaces.annotation import IAnnotations
 from zope.interface import implements
 
@@ -32,8 +30,10 @@ from zope.interface import implements
 from zope.app.interfaces.services.principalannotation \
      import IPrincipalAnnotationService
 from zope.app.interfaces.services.service import ISimpleService
+from zope.app.container.contained import Contained
+from zope.app.location import Location
 
-class PrincipalAnnotationService(Persistent):
+class PrincipalAnnotationService(Persistent, Contained):
     """Stores IAnnotations for IPrinicipals.
 
     The service ID is 'PrincipalAnnotation'.
@@ -44,7 +44,6 @@ class PrincipalAnnotationService(Persistent):
     def __init__(self):
         self.annotations = OOBTree()
 
-
     # implementation of IPrincipalAnnotationService
 
     def getAnnotations(self, principal):
@@ -54,7 +53,6 @@ class PrincipalAnnotationService(Persistent):
         """
 
         return self.getAnnotationsById(principal.getId())
-    getAnnotations = ContextMethod(getAnnotations)
 
     def getAnnotationsById(self, principalId):
         """Return object implementing IAnnotations for the given principal.
@@ -65,17 +63,17 @@ class PrincipalAnnotationService(Persistent):
         annotations = self.annotations.get(principalId)
         if annotations is None:
             annotations = Annotations(principalId, store=self.annotations)
+            annotations.__parent__ = self
+            annotations.__name__ = principalId
 
-        return ContextWrapper(annotations, self, name=principalId)
-
-    getAnnotationsById = ContextMethod(getAnnotationsById)
+        return annotations
 
     def hasAnnotations(self, principal):
         """Return boolean indicating if given principal has IAnnotations."""
         return principal.getId() in self.annotations
 
 
-class Annotations(Persistent):
+class Annotations(Persistent, Location):
     """Stores annotations."""
 
     implements(IAnnotations)
@@ -99,8 +97,6 @@ class Annotations(Persistent):
                     wrapped_self.principalId)
                 return annotations[key]
             raise
-
-    __getitem__ = ContextMethod(__getitem__)
 
     def __setitem__(self, key, value):
 

@@ -13,12 +13,11 @@
 ##############################################################################
 """Interfaces for cache manager.
 
-$Id: __init__.py,v 1.3 2003/08/19 17:34:17 srichter Exp $
+$Id: __init__.py,v 1.4 2003/09/21 17:31:55 jim Exp $
 """
 from zope.app import zapi
 from zope.app.interfaces.event import ISubscriber
 from zope.app.services.servicenames import Caching
-from zope.context import ContextProperty
 from zope.interface import Interface
 from zope.schema import TextLine
 
@@ -34,7 +33,7 @@ class CacheName(TextLine):
         else:
             return [''] + list(service.getAvailableCaches())
 
-    allowed_values = ContextProperty(__allowed)
+    allowed_values = property(__allowed)
 
 
 class ICacheable(Interface):

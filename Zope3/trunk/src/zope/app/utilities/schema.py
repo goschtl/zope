@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.4 2003/08/18 18:52:55 srichter Exp $
+$Id: schema.py,v 1.5 2003/09/21 17:31:15 jim Exp $
 """
 from persistence.dict import PersistentDict
 from zope.app import zapi
@@ -25,11 +25,10 @@ from zope.app.interfaces.utilities.schema import \
 from zope.app.services.interface import PersistentInterfaceClass
 from zope.app.services.interface import PersistentInterface
 from zope.app.services.utility import UtilityRegistration
-from zope.context import ContextMethod
 from zope.interface import implements
 from zope.interface import directlyProvides, directlyProvidedBy
 from zope.schema import getFieldsInOrder, getFieldNamesInOrder
-
+from zope.app.container.contained import Contained
 
 class SchemaUtility(PersistentInterfaceClass):
 
@@ -131,7 +130,7 @@ class SchemaAdding(Adding):
         name = self.contentName
         container = zapi.getAdapter(self.context, IMutableSchema)
         container.addField(name, content)
-        return zapi.ContextWrapper(content, container, name=name)
+        return content
 
     def nextURL(self):
         """See zope.app.interfaces.container.IAdding"""
@@ -149,21 +148,18 @@ class SchemaRegistration(UtilityRegistration):
     def activated(self):
         schema = self.getComponent()
         schema.setName(self.name)
-    activated = ContextMethod(activated)
 
     def deactivated(self):
         schema = self.getComponent()
         schema.setName('<schema not activated>')
-    deactivated = ContextMethod(deactivated)
 
 
 # XXX: This needs refactoring
-class MutableSchemaContent:
+class MutableSchemaContent(Contained):
 
     implements(IMutableSchemaContent)
 
     schema_id = None
-    zapi.ContextAwareDescriptors()
 
     def _set_schema(self, iface):
         directlyProvides(self, iface)

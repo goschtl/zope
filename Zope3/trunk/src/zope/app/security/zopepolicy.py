@@ -13,12 +13,12 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.11 2003/06/03 15:45:10 stevea Exp $
+$Id: zopepolicy.py,v 1.12 2003/09/21 17:31:58 jim Exp $
 """
-__version__='$Revision: 1.11 $'[11:-2]
+__version__='$Revision: 1.12 $'[11:-2]
 
 from zope.component import queryAdapter
-from zope.context import ContainmentIterator
+from zope.app.location import LocationIterator
 
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.management import system_user
@@ -148,7 +148,7 @@ class ZopeSecurityPolicy:
                 return True
 
         # Look for placeful grants
-        for place in ContainmentIterator(object):
+        for place in LocationIterator(object):
 
             # Copy specific principal permissions
             prinper = queryAdapter(place, IPrincipalPermissionMap)
@@ -244,7 +244,7 @@ def permissionsOfPrincipal(principal, object):
             roles[role] = setting
 
     # get placeful principal permissions and roles
-    for place in ContainmentIterator(object):
+    for place in LocationIterator(object):
 
         # Copy specific principal permissions
         prinper = queryAdapter(place, IPrincipalPermissionMap)
@@ -268,7 +268,7 @@ def permissionsOfPrincipal(principal, object):
         if role in roles and perm not in permissions:
             permissions[perm] = setting
 
-    for place in ContainmentIterator(object):
+    for place in LocationIterator(object):
 
         # Collect role permissions
         roleper = queryAdapter(place, IRolePermissionMap)

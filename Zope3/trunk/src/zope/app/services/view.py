@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.34 2003/08/20 18:21:12 philikon Exp $
+$Id: view.py,v 1.35 2003/09/21 17:31:12 jim Exp $
 """
 __metaclass__ = type
 
@@ -49,17 +49,15 @@ from zope.app.interfaces.services.view import ILocalViewService
 from zope.app.services.adapter import PersistentAdapterRegistry
 from zope.configuration.exceptions import ConfigurationError
 from zope.app.interfaces.services.service import ISimpleService
+from zope.app.container.contained import Contained
 
-class ViewService(Persistent):
+class ViewService(Persistent, Contained):
 
     implements(IViewService, ILocalViewService, IRegistry, ISimpleService,
                IInterfaceBasedRegistry)
 
     def __init__(self):
         self._layers = PersistentDict()
-
-    # All the methods defined here are context methods
-    zapi.ContextAwareDescriptors()
 
     def queryRegistrationsFor(self, registration, default=None):
         "See IRegistry"
@@ -85,7 +83,7 @@ class ViewService(Persistent):
         if registry is None:
             return default
 
-        return zapi.ContextWrapper(registry, self)
+        return registry
 
     def createRegistrationsFor(self, registration):
         "See IRegistry"
@@ -110,10 +108,10 @@ class ViewService(Persistent):
             forInterface, presentationType)
 
         if registry is None:
-            registry = RegistrationStack()
+            registry = RegistrationStack(self)
             adapter_registry.register(forInterface, presentationType, registry)
 
-        return zapi.ContextWrapper(registry, self)
+        return registry
 
     def getView(self, object, name, request):
         view = self.queryView(object, name, request)
@@ -137,14 +135,12 @@ class ViewService(Persistent):
 
             registry = reg.getForObject(
                 object, type,
-                filter = lambda registry:
-                         zapi.ContextWrapper(registry, self).active(),
+                filter = lambda registry: registry.active(),
                 )
 
             if registry is None:
                 continue
 
-            registry = zapi.ContextWrapper(registry, self)
             view = registry.active().getView(object, request)
             return view
 
@@ -206,7 +202,7 @@ class ViewService(Persistent):
     def getRegistrationsForInterface(self, iface):
         for t in self.getRegisteredMatching(required_interfaces=[iface]):
             # XXX getRegisteredMatching ought to return a wrapped object
-            reg = zapi.ContextWrapper(t[2], self) # t[2] is registration stack
+            reg = t[2]
             for info in reg.info():
                 yield info["registration"]
 
@@ -285,11 +281,10 @@ class ViewRegistration(SimpleRegistration):
         self.permission = permission
 
     def getView(self, object, request):
-        folder = zapi.getWrapperContainer(zapi.getWrapperContainer(self))
+        folder = self.__parent__.__parent__
         factory = folder.resolve(self.class_)
         return factory(object, request)
 
-    getView = zapi.ContextMethod(getView)
 
     def usageSummary(self):
         if self.forInterface is None:
@@ -377,7 +372,7 @@ class PageRegistration(ViewRegistration):
         sm = zapi.getServiceManager(self)
 
         if self.class_:
-            folder = zapi.getWrapperContainer(zapi.getWrapperContainer(self))
+            folder = self.__parent__.__parent__
             class_ = folder.resolve(self.class_)
             class_ = type(class_.__name__, (class_, DefaultClass), {})
         else:
@@ -398,7 +393,6 @@ class PageRegistration(ViewRegistration):
 
         return ProxyFactory(template, checker)
 
-    getView = zapi.ContextMethod(getView)
 
 class DefaultClass:
 

@@ -13,19 +13,19 @@
 ##############################################################################
 """Implementation of workflow process definition.
 
-$Id: definition.py,v 1.3 2003/06/06 16:34:53 stevea Exp $
+$Id: definition.py,v 1.4 2003/09/21 17:33:52 jim Exp $
 """
 __metaclass__ = type
 
 from types import StringTypes
 from persistence import Persistent
 from persistence.dict import PersistentDict
-from zope.context import ContextMethod, getWrapperContainer
-from zope.app.interfaces.workflow \
-     import IProcessDefinition, IProcessDefinitionElementContainer
+from zope.app.interfaces.workflow import IProcessDefinitionElementContainer
+from zope.app.interfaces.workflow import IProcessDefinition
 from zope.interface import implements
+from zope.app.container.contained import Contained, setitem, uncontained
 
-class ProcessDefinition(Persistent):
+class ProcessDefinition(Persistent, Contained):
 
     __doc__ = IProcessDefinition.__doc__
 
@@ -43,11 +43,7 @@ class ProcessDefinition(Persistent):
     #
     ############################################################
 
-
-
-
-
-class ProcessDefinitionElementContainer(Persistent):
+class ProcessDefinitionElementContainer(Persistent, Contained):
     """ See IProcessDefinitionElementContainer.
     """
 
@@ -64,13 +60,13 @@ class ProcessDefinitionElementContainer(Persistent):
     def __iter__(self):
         return iter(self.__data.keys())
 
-    def __getitem__(self, key):
+    def __getitem__(self, name):
         '''See interface IProcessDefinitionElementContainer'''
-        return self.__data[key]
+        return self.__data[name]
 
-    def get(self, key, default=None):
+    def get(self, name, default=None):
         '''See interface IProcessDefinitionElementContainer'''
-        return self.__data.get(key, default)
+        return self.__data.get(name, default)
 
     def values(self):
         '''See interface IProcessDefinitionElementContainer'''
@@ -84,34 +80,20 @@ class ProcessDefinitionElementContainer(Persistent):
         '''See interface IProcessDefinitionElementContainer'''
         return self.__data.items()
 
-    def __contains__(self, key):
+    def __contains__(self, name):
         '''See interface IProcessDefinitionElementContainer'''
-        return self.__data.has_key(key)
+        return name in self.__data
 
     has_key = __contains__
 
-    def setObject(self, key, object):
+    def __setitem__(self, name, object):
         '''See interface IProcessDefinitionElementContainer'''
-        bad = False
-        if isinstance(key, StringTypes):
-            try:
-                unicode(key)
-            except UnicodeError:
-                bad = True
-        else:
-            bad = True
-        if bad:
-            raise TypeError("'%s' is invalid, the key must be an "
-                            "ascii or unicode string" % key)
-        if len(key) == 0:
-            raise ValueError("The key cannot be an empty string")
-        self.__data[key] = object
-        return key
+        setitem(self, self.__data.__setitem__, name, object)
 
-    def __delitem__(self, key):
+    def __delitem__(self, name):
         '''See interface IProcessDefinitionElementContainer'''
-        del self.__data[key]
+        uncontained(self.__data[name], self, name)
+        del self.__data[name]
 
     def getProcessDefinition(self):
-        return getWrapperContainer(self)
-    getProcessDefinition = ContextMethod(getProcessDefinition)
+        return self.__parent__

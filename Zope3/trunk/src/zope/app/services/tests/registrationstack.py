@@ -13,10 +13,11 @@
 ##############################################################################
 
 from zope.app.services.registration import RegistrationStatusProperty
+from zope.app.container.contained import Contained
 
 __metaclass__ = type
 
-class TestingRegistration:
+class TestingRegistration(Contained):
     status = RegistrationStatusProperty()
 
     def __init__(self, id):

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.13 2003/06/07 05:31:59 stevea Exp $
+$Id: zpt.py,v 1.14 2003/09/21 17:31:12 jim Exp $
 """
 
 import re
@@ -28,8 +28,9 @@ from zope.app.interfaces.index.text import ISearchableText
 from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile
+from zope.app.container.contained import Contained
 
-class ZPTTemplate(AppPT, PageTemplate, Persistent):
+class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
 
     implements(IZPTTemplate)
 

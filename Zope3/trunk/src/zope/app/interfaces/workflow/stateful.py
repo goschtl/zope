@@ -13,11 +13,10 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.19 2003/08/16 00:43:37 srichter Exp $
+$Id: stateful.py,v 1.20 2003/09/21 17:31:56 jim Exp $
 """
 
 import zope.schema
-from zope.context import ContextProperty
 from zope.app.security.permission import PermissionField
 
 from zope.interface import Interface, Attribute
@@ -101,7 +100,7 @@ class AvailableStatesField(zope.schema.TextLine):
         pd = self.context.getProcessDefinition()
         return pd.getStateNames()
 
-    allowed_values = ContextProperty(__allowed)
+    allowed_values = property(__allowed)
 
 
 class TriggerModeField(zope.schema.TextLine):
@@ -110,7 +109,7 @@ class TriggerModeField(zope.schema.TextLine):
     def __allowed(self):
         return [MANUAL, AUTOMATIC]
 
-    allowed_values = ContextProperty(__allowed)
+    allowed_values = property(__allowed)
 
 
 class ITransition(Interface):

@@ -13,15 +13,13 @@
 ##############################################################################
 """NameRegistry tests
 
-$Id: test_nameregistry.py,v 1.1 2003/06/21 21:22:13 jim Exp $
+$Id: test_nameregistry.py,v 1.2 2003/09/21 17:31:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.app.services.registration import NameRegistry
 from zope.app.services.registration import NameComponentRegistry
-from zope.app.context import ContextWrapper
-from zope.context import getWrapperContainer
 
 class RegistrationStub:
 
@@ -49,7 +47,8 @@ class TestNameRegistry(TestCase):
 
     def setUp(self):
         self.container = object()
-        self.subject = ContextWrapper(NameRegistry(), self.container)
+        self.subject = NameRegistry()
+        self.subject.__parent__ = self.container
 
     def test_queryRegistrationsFor(self):
         subject = self.subject
@@ -57,12 +56,11 @@ class TestNameRegistry(TestCase):
         self.assertEquals(subject.queryRegistrationsFor(cfg), None)
         self.assertEquals(subject.queryRegistrationsFor(cfg, 42), 42)
 
-        registry = RegistryStub()
-        subject._bindings["Foo"] = registry
+        registry = subject.createRegistrations("Foo")
         result = subject.queryRegistrationsFor(cfg)
         self.assertEquals(result, registry)
-        self.assertEquals(getWrapperContainer(result), subject)
-        self.assertEquals(getWrapperContainer(getWrapperContainer(result)),
+        self.assertEquals(result.__parent__, subject)
+        self.assertEquals(result.__parent__.__parent__,
                           self.container)
 
     def test_queryRegistrations(self):
@@ -70,13 +68,11 @@ class TestNameRegistry(TestCase):
         self.assertEquals(subject.queryRegistrations("Foo"), None)
         self.assertEquals(subject.queryRegistrations("Foo", 42), 42)
 
-        registry = RegistryStub()
-        subject._bindings["Foo"] = registry
+        registry = subject.createRegistrations("Foo")
         result = subject.queryRegistrations("Foo")
         self.assertEquals(result, registry)
-        self.assertEquals(getWrapperContainer(result), subject)
-        self.assertEquals(getWrapperContainer(getWrapperContainer(result)),
-                          self.container)
+        self.assertEquals(result.__parent__, subject)
+        self.assertEquals(result.__parent__.__parent__, self.container)
 
     def test_createRegistrationsFor(self):
         subject = self.subject
@@ -89,9 +85,8 @@ class TestNameRegistry(TestCase):
         self.assertNotEquals(r1, r2)
         self.assertNotEquals(r2, r3)
         self.assertEquals(r3, subject._bindings['Foo'])
-        self.assertEquals(getWrapperContainer(r3), subject)
-        self.assertEquals(getWrapperContainer(getWrapperContainer(r3)),
-                          self.container)
+        self.assertEquals(r3.__parent__, subject)
+        self.assertEquals(r3.__parent__.__parent__, self.container)
         self.failUnless(subject._p_changed)
 
     def test_createRegistrations(self):
@@ -103,9 +98,8 @@ class TestNameRegistry(TestCase):
         self.assertNotEquals(r1, r2)
         self.assertNotEquals(r2, r3)
         self.assertEquals(r3, subject._bindings['Foo'])
-        self.assertEquals(getWrapperContainer(r3), subject)
-        self.assertEquals(getWrapperContainer(getWrapperContainer(r3)),
-                          self.container)
+        self.assertEquals(r3.__parent__, subject)
+        self.assertEquals(r3.__parent__.__parent__, self.container)
         self.failUnless(subject._p_changed)
 
     def test_listRegistrationNames(self):
@@ -120,8 +114,8 @@ class TestNameComponentRegistry(TestNameRegistry):
 
     def setUp(self):
         self.container = object()
-        self.subject = ContextWrapper(NameComponentRegistry(),
-                                      self.container)
+        self.subject = NameComponentRegistry()
+        self.subject.__parent__ = self.container
 
     def test_queryActiveComponent(self):
         subject = self.subject

@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.9 2003/08/21 20:10:30 srichter Exp $
+$Id: instance.py,v 1.10 2003/09/21 17:31:12 jim Exp $
 """
 from zope.app.browser.form.submit import Update
 from zope.app.form.utility import setUpWidget, applyWidgetsChanges
@@ -23,8 +23,6 @@ from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
 from zope.app.services.servicenames import Workflows
 from zope.component import getAdapter, getService
-from zope.context import getWrapperData
-from zope.interface import Interface
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
 from zope.security.proxy import trustedRemoveSecurityProxy
@@ -104,8 +102,7 @@ class ManagementView(BrowserView):
 
 
     def _getTitle(self, obj):
-        return (getAdapter(obj, IZopeDublinCore).title
-                or getWrapperData(obj)['name'])
+        return (getAdapter(obj, IZopeDublinCore).title or obj.__name___)
 
  
     def _getSelWorkflow(self):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Mutable Schema (as Utility) Views
 
-$Id: schema.py,v 1.3 2003/08/17 06:06:01 philikon Exp $
+$Id: schema.py,v 1.4 2003/09/21 17:31:11 jim Exp $
 """
 from zope.app import zapi
 from zope.app.browser.form.editview import EditView
@@ -37,9 +37,9 @@ class EditSchema(BrowserView):
         return getFieldNamesInOrder(self.context)
 
     def fields(self):
-        return [{'name':name,
-                 'field':zapi.ContextWrapper(field, self.context),
-                 'type':field.__class__.__name__}
+        return [{'name': name,
+                 'field': field,
+                 'type': field.__class__.__name__}
                 for name, field in getFieldsInOrder(self.context)]
 
     def update(self):
@@ -67,7 +67,6 @@ class EditMutableSchema(EditView):
     def _setUpWidgets(self):
         adapted = zapi.getAdapter(self.context, self.schema)
         if adapted is not self.context:
-            adapted = zapi.ContextWrapper(adapted, self.context,
-                                          name=_('(adapted)'))
+            adapted.__parent__ = self.context
         setUpEditWidgets(self, self.schema, names=self.fieldNames,
                          content=self.adapted)

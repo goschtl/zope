@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.18 2003/06/30 19:52:31 jeremy Exp $
+$Id: subs.py,v 1.19 2003/09/21 17:31:53 jim Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -24,7 +24,6 @@ from zodb.btrees.IOBTree import IOBTree
 
 from types import StringTypes
 
-from zope.context import ContextMethod
 from zope.proxy import removeAllProxies
 
 from zope.app.traversing import getPath
@@ -38,6 +37,7 @@ from zope.app.services.type import PersistentTypeRegistry
 from cPickle import dumps, PicklingError
 import logging
 from zope.interface import implements
+from zope.app.container.contained import Contained
 
 __metaclass__ = type
 
@@ -51,7 +51,7 @@ except NameError:
             yield count, item
             count += 1
 
-class Subscribable(Persistent):
+class Subscribable(Persistent, Contained):
     """A local mix-in"""
 
     implements(ISubscribable)
@@ -128,7 +128,6 @@ class Subscribable(Persistent):
             subscribingaware.subscribedTo(wrapped_self, event_type, filter)
 
         return token
-    subscribe = ContextMethod(subscribe)
 
     def unsubscribe(wrapped_self, reference, event_type, filter=None):
         'See ISubscribable. Remove just one subscription.'
@@ -218,7 +217,6 @@ class Subscribable(Persistent):
         subscribingaware = queryAdapter(wrappedobj, ISubscribingAware)
         if subscribingaware is not None:
             subscribingaware.unsubscribedFrom(wrapped_self, event_type, filter)
-    unsubscribe = ContextMethod(unsubscribe)
 
     def unsubscribeAll(wrapped_self, reference, event_type=IEvent):
         'See ISubscribable. Remove all matching subscriptions.'
@@ -283,7 +281,6 @@ class Subscribable(Persistent):
 
         assert num_registrations_removed == num_subscriptions_removed
         return num_registrations_removed
-    unsubscribeAll = ContextMethod(unsubscribeAll)
 
     def resubscribeByHubId(wrapped_self, reference):
         'Where a subscriber has a hubId, resubscribe it by that hubid'
@@ -305,8 +302,6 @@ class Subscribable(Persistent):
 
         self._resubscribe(path, clean_self._paths, hubId, clean_self._hubIds)
         
-    resubscribeByHubId = ContextMethod(resubscribeByHubId)
-
     def resubscribeByPath(wrapped_self, reference):
         clean_self = removeAllProxies(wrapped_self)
         cleanobj, wrappedobj, path, hubId, reftype = getWaysToSubscribe(
@@ -326,7 +321,6 @@ class Subscribable(Persistent):
 
         num_converted = self._resubscribe(hubId, clean_self._hubIds,
                                           path, clean_self._paths)
-    resubscribeByPath = ContextMethod(resubscribeByPath)
 
     def iterSubscriptions(wrapped_self, reference=None, event_type=IEvent):
         '''See ISubscribable'''
@@ -336,7 +330,6 @@ class Subscribable(Persistent):
             return wrapped_self._iterSomeSubscriptions(wrapped_self,
                                                        reference,
                                                        event_type)
-    iterSubscriptions = ContextMethod(iterSubscriptions)
 
     def _iterAllSubscriptions(self, wrapped_self, event_type):
         clean_self = removeAllProxies(wrapped_self)

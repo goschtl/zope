@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.3 2003/08/17 06:06:01 philikon Exp $
+$Id: traversal.py,v 1.4 2003/09/21 17:31:11 jim Exp $
 """
 from zope.interface import implements
 from zope.component import getDefaultViewName, queryView
@@ -21,10 +21,10 @@ from zope.app.interfaces.utilities.schema import IMutableSchema
 from zope.exceptions import NotFoundError
 
 from zope.proxy import removeAllProxies
-from zope.app.context import ContextWrapper
 
 from zope.app.interfaces.traversing import ITraversable
 from zope.app.traversing.namespace import UnexpectedParameters
+from zope.app.interfaces.location import ILocation
 
 _marker = object()
 
@@ -41,16 +41,21 @@ class SchemaFieldTraverser:
         subob = self.context.get(name, None)
 
         # XXX: Check that subobj has self.context as parent!
+        # YYY: Why?
+
         if subob is None:
 
             view = queryView(self.context, name, request)
             if view is not None:
+                if ILocation.isImplementedBy(view):
+                    view.__parent__ = self.context
+                    view.__name__ = name
+                    
                 return view
 
             raise NotFoundError(self.context, name, request)
 
-        subob = removeAllProxies(subob)
-        return ContextWrapper(subob, self.context, name=name)
+        return subob
 
     def browserDefault(self, request):
         c = self.context

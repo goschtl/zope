@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.14 2003/08/13 21:13:58 garrett Exp $
+$Id: functional.py,v 1.15 2003/09/21 17:31:16 jim Exp $
 """
 
 import logging
@@ -30,7 +30,6 @@ from zodb.db import DB
 from zodb.storage.memory import MemoryFullStorage
 from zodb.storage.demo import DemoStorage
 from zope.app import Application
-from zope.app.context import ContextWrapper
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.publication.http import HTTPPublication
 from zope.publisher.browser import BrowserRequest
@@ -124,7 +123,7 @@ class FunctionalTestSetup:
         if not self.connection:
             self.connection = self.db.open()
         root = self.connection.root()
-        return ContextWrapper(root[ZopePublication.root_name], None)
+        return root[ZopePublication.root_name]
 
     def getApplication(self):
         """Returns the Zope application instance."""

@@ -12,14 +12,13 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.4 2003/08/17 06:06:47 philikon Exp $
+$Id: __init__.py,v 1.5 2003/09/21 17:31:54 jim Exp $
 """
 
 from zope.interface import implements
 from zope.app.interfaces.index import IInterfaceIndexer
 from zope.app.interfaces.event import ISubscriber
 from zope.component import queryAdapter
-from zope.context import ContextMethod
 
 from zope.app.interfaces.services.hub import \
      IObjectRegisteredHubEvent, \
@@ -77,5 +76,4 @@ class InterfaceIndexingSubscriber(object):
                 self.unindex_doc(event.hubid)
             except KeyError:
                 pass
-    notify = ContextMethod(notify)
 

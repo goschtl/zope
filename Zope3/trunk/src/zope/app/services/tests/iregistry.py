@@ -15,11 +15,10 @@
 
 XXX longer description goes here.
 
-$Id: iregistry.py,v 1.1 2003/06/21 21:22:13 jim Exp $
+$Id: iregistry.py,v 1.2 2003/09/21 17:31:13 jim Exp $
 """
 from zope.app.interfaces.services.registration import IRegistry
 from zope.interface.verify import verifyObject
-from zope.context import getWrapperContainer
 
 class TestingIRegistry:
     """Base class for testing implementors of IRegistry
@@ -44,8 +43,8 @@ class TestingIRegistry:
         have some context.
 
         """
-        self.assertEqual(getWrapperContainer(ob), parent)
-        self.failIf(getWrapperContainer(getWrapperContainer(ob)) is None)
+        self.assertEqual(ob.__parent__, parent)
+        self.failIf(ob.__parent__.__parent__ is None)
 
     def test_implements_IRegistry(self):
         verifyObject(IRegistry, self.createTestingRegistry())
@@ -64,7 +63,7 @@ class TestingIRegistry:
         registration = self.createTestingRegistration()
         stack = registry.createRegistrationsFor(registration)
 
-        self.assertEqual(getWrapperContainer(stack), registry)
+        self.assertEqual(stack.__parent__, registry)
 
         # If we call it again, we should get the same object
         self.assertEqual(registry.createRegistrationsFor(registration),

@@ -13,12 +13,11 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.11 2003/06/07 06:37:23 stevea Exp $
+$Id: fssync.py,v 1.12 2003/09/21 17:31:52 jim Exp $
 """
 
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile, IContentDirectory
-from zope.app.context import ContextWrapper
 from zope.interface import implements
 
 class FileAdapter(ObjectEntryAdapter):
@@ -43,7 +42,6 @@ class DirectoryAdapter(ObjectEntryAdapter):
     def contents(self):
         result = []
         for name, object in self.context.items():
-            object = ContextWrapper(object, self.context, name=name)
             result.append((name, object))
         return result
 

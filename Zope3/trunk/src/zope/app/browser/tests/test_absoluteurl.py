@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.15 2003/09/04 14:22:20 jim Exp $
+$Id: test_absoluteurl.py,v 1.16 2003/09/21 17:31:10 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -30,7 +30,7 @@ from zope.publisher.tests.httprequest import TestRequest
 from zope.publisher.http import IHTTPRequest
 from zope.publisher.http import HTTPCharsets
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.context import ContextWrapper
+from zope.app.container.contained import contained
 
 
 class IRoot(Interface): pass
@@ -58,7 +58,7 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
     def testBadObject(self):
         request = TestRequest()
         request.setViewType(IBrowserPresentation)
-        view = getView(None, 'absolute_url', request)
+        view = getView(42, 'absolute_url', request)
         self.assertRaises(TypeError, view.__str__)
 
     def testNoContext(self):
@@ -71,9 +71,9 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request = TestRequest()
         request.setViewType(IBrowserPresentation)
 
-        content = ContextWrapper(TrivialContent(), Root(), name='a')
-        content = ContextWrapper(TrivialContent(), content, name='b')
-        content = ContextWrapper(TrivialContent(), content, name='c')
+        content = contained(TrivialContent(), Root(), name='a')
+        content = contained(TrivialContent(), content, name='b')
+        content = contained(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
         self.assertEqual(str(view), 'http://foobar.com/a/b/c')
 
@@ -90,10 +90,10 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request.setViewType(IBrowserPresentation)
 
         vh_root = TrivialContent()
-        content = ContextWrapper(vh_root, Root(), name='a')
-        request._vh_root = ContextWrapper(vh_root, Root(), name='a')
-        content = ContextWrapper(TrivialContent(), content, name='b')
-        content = ContextWrapper(TrivialContent(), content, name='c')
+        content = contained(vh_root, Root(), name='a')
+        request._vh_root = content
+        content = contained(TrivialContent(), content, name='b')
+        content = contained(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
         self.assertEqual(str(view), 'http://foobar.com/b/c')
 
@@ -109,11 +109,10 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request.setViewType(IBrowserPresentation)
 
         vh_root = TrivialContent()
-        request._vh_root = ContextWrapper(vh_root, Root(), name='a')
-
-        content = ContextWrapper(vh_root, Root(), name='a')
-        content = ContextWrapper(TrivialContent(), content, name='b')
-        content = ContextWrapper(TrivialContent(), content, name='c')
+        content = contained(vh_root, Root(), name='a')
+        request._vh_root = content
+        content = contained(TrivialContent(), content, name='b')
+        content = contained(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
         self.assertEqual(str(view), 'http://foobar.com/b/c')
 
@@ -129,11 +128,11 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         request.setViewType(IBrowserPresentation)
 
         root = Root()
-        request._vh_root = ContextWrapper(root, root, name='')
-        content = ContextWrapper(root, None)
-        content = ContextWrapper(TrivialContent(), content, name='a')
-        content = ContextWrapper(TrivialContent(), content, name='b')
-        content = ContextWrapper(TrivialContent(), content, name='c')
+        request._vh_root = contained(root, root, name='')
+        content = contained(root, None)
+        content = contained(TrivialContent(), content, name='a')
+        content = contained(TrivialContent(), content, name='b')
+        content = contained(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
         self.assertEqual(str(view), 'http://foobar.com/a/b/c')
 

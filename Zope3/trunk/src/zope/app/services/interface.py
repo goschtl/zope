@@ -16,7 +16,7 @@
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
 
-$Id: interface.py,v 1.16 2003/08/17 06:08:11 philikon Exp $
+$Id: interface.py,v 1.17 2003/09/21 17:31:59 jim Exp $
 """
 
 from persistence import Persistent
@@ -32,6 +32,8 @@ from zope.app import zapi
 from zope.app.services.servicenames import Interfaces, Utilities
 from zope.component import ComponentLookupError
 from zope.interface import implements
+from zope.app.container.contained import Contained
+from zope.app.interfaces.services.registration import IRegistrationStack
 
 class PersistentInterfaceClass(Persistent, InterfaceClass):
     pass
@@ -54,14 +56,11 @@ registerWrapper(InterfaceClass, PersistentInterfaceWrapper,
                 )
 
 
-class LocalInterfaceService(object):
+class LocalInterfaceService(Contained):
     """A local interface service."""
 
     implements(IInterfaceService,
                ISimpleService)
-
-    # All the methods defined here are context methods
-    zapi.ContextAwareDescriptors()
 
     def getInterface(self, id):
         # Return the interface registered for the given id

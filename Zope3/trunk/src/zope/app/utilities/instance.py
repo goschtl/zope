@@ -13,14 +13,13 @@
 ##############################################################################
 """Content Object Instance
 
-$Id: instance.py,v 1.2 2003/08/16 00:44:21 srichter Exp $
+$Id: instance.py,v 1.3 2003/09/21 17:31:15 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.app.component.interfacefield import InterfaceField
-from zope.context import ContextMethod
 from zope.interface import directlyProvides, implements, Interface
 from zope.schema import getFields, TextLine
 from zope.security.checker import CheckerPublic, Checker, defineChecker
@@ -88,8 +87,6 @@ class ContentComponentInstance(Persistent):
             super(ContentComponentInstance, self).__setattr__(key, value)
         else:
             raise AttributeError, 'Attribute not available'
-
-    __setattr__ = ContextMethod(__setattr__)
 
 
     def getSchema(self):

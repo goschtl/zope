@@ -142,7 +142,7 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.8 2003/06/13 17:41:15 stevea Exp $
+$Id: sql.py,v 1.9 2003/09/21 17:31:52 jim Exp $
 """
 
 import re
@@ -159,13 +159,13 @@ from zope.interface.common.mapping import IEnumerableMapping
 
 from zope.interface import implements
 from zope.component import getService
-from zope.context import ContextMethod, ContextProperty
 
 from zope.app.cache.caching import getCacheForObj, getLocationForCache
 from zope.app.interfaces.content.file import IFileContent
 from zope.app.interfaces.content.sql import ISQLScript, MissingInput
 from zope.app.rdb import SQLCommand
 from zope.app.rdb import queryForResults
+from zope.app.container.contained import Contained
 
 unparmre = re.compile(r'([\000- ]*([^\000- ="]+))')
 parmre = re.compile(r'([\000- ]*([^\000- ="]+)=([^\000- ="]+))')
@@ -635,7 +635,7 @@ class SQLDTML(HTML):
     commands['sqlgroup' ] = SQLGroup
 
 
-class SQLScript(SQLCommand, Persistent):
+class SQLScript(SQLCommand, Persistent, Contained):
 
     implements(ISQLScript, IFileContent)
 
@@ -691,12 +691,8 @@ class SQLScript(SQLCommand, Persistent):
         connection = connection_service.getConnection(self.connectionName)
         return connection
 
-    getConnection = ContextMethod(getConnection)
-
     # See zope.app.interfaces.content.sql.ISQLScript
-    # We need to preserve the context for connectionName, so we make it
-    # a ContextProperty instead of a property
-    connectionName = ContextProperty(_getConnectionName, _setConnectionName)
+    connectionName = property(_getConnectionName, _setConnectionName)
 
     def __call__(self, **kw):
         'See zope.app.interfaces.rdb'
@@ -742,7 +738,5 @@ class SQLScript(SQLCommand, Persistent):
             cache.set(result, location, {'query': query})
         return result
 
-    __call__ = ContextMethod(__call__)
-    
 
 valid_type = {'int':1, 'float':1, 'string':1, 'nb': 1}.has_key

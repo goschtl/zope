@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_registered.py,v 1.1 2003/06/21 21:22:13 jim Exp $
+$Id: test_registered.py,v 1.2 2003/09/21 17:31:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -20,8 +20,9 @@ from zope.app.services.registration import Registered
 from zope.app.interfaces.annotation import IAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
+from zope.app.container.contained import Contained
 
-class C(dict):
+class C(dict, Contained):
     implements(IAnnotations)
 
 class TestRegistered(PlacelessSetup, TestCase):
@@ -66,9 +67,7 @@ class TestRegistered(PlacelessSetup, TestCase):
         self.assertEqual(obj.usages(), ())
 
 def test_suite():
-    return TestSuite((
-        makeSuite(TestRegistered),
-        ))
+    return makeSuite(TestRegistered)
 
 if __name__=='__main__':
     main(defaultTest='test_suite')

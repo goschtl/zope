@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_registrationstatusproperty.py,v 1.3 2003/09/02 20:46:51 jim Exp $
+$Id: test_registrationstatusproperty.py,v 1.4 2003/09/21 17:31:13 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,11 +26,10 @@ from zope.app.services.tests.registrationstack import TestingRegistrationStack
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
-from zope.app.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.registration import NoLocalServiceError
 from zope.interface import implements
-
+from zope.app.container.contained import contained
 
 class TestingRegistration(TestingRegistration):
     serviceType = "Services"
@@ -89,7 +88,7 @@ class Test(PlacefulSetup, TestCase):
 
     def test_property(self):
 
-        configa = ContextWrapper(TestingRegistration('a'), self.rootFolder)
+        configa = contained(TestingRegistration('a'), self.rootFolder)
         self.assertEqual(configa.status, UnregisteredStatus)
 
         configa.status = RegisteredStatus
@@ -100,7 +99,7 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(self.__sm.registry._data, ('a', ))
         self.assertEqual(configa.status, ActiveStatus)
 
-        configb = ContextWrapper(TestingRegistration('b'), self.rootFolder)
+        configb = contained(TestingRegistration('b'), self.rootFolder)
         self.assertEqual(self.__sm.registry._data, ('a', ))
         self.assertEqual(configb.status, UnregisteredStatus)
 
@@ -108,7 +107,7 @@ class Test(PlacefulSetup, TestCase):
         self.assertEqual(self.__sm.registry._data, ('a', 'b'))
         self.assertEqual(configb.status, RegisteredStatus)
 
-        configc = ContextWrapper(TestingRegistration('c'), self.rootFolder)
+        configc = contained(TestingRegistration('c'), self.rootFolder)
         self.assertEqual(configc.status, UnregisteredStatus)
         self.assertEqual(self.__sm.registry._data, ('a', 'b'))
 
@@ -134,7 +133,7 @@ class Test(PlacefulSetup, TestCase):
         # now the ConnectionRegistration.status cannot access the
         # SQLConnectionService
 
-        configa = ContextWrapper(PassiveRegistration('a'), self.rootFolder)
+        configa = contained(PassiveRegistration('a'), self.rootFolder)
         self.assertEqual(configa.status, UnregisteredStatus)
 
         try:
@@ -155,7 +154,7 @@ class Test(PlacefulSetup, TestCase):
         # we should also get an error if there *is a matching service,
         # not it is non-local
 
-        configa = ContextWrapper(UtilityRegistration('a'), self.rootFolder)
+        configa = contained(UtilityRegistration('a'), self.rootFolder)
         self.assertEqual(configa.status, UnregisteredStatus)
 
         try:

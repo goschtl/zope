@@ -12,14 +12,12 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.16 2003/09/16 22:00:07 srichter Exp $
+$Id: zpt.py,v 1.17 2003/09/21 17:31:52 jim Exp $
 """
 import re
 
 from persistence import Persistent
 
-from zope.context import ContextMethod
-from zope.context import getWrapperContainer
 from zope.proxy import removeAllProxies
 from zope.security.proxy import ProxyFactory
 
@@ -32,10 +30,11 @@ from zope.app.interfaces.content.zpt import IZPTPage, IRenderZPTPage
 
 from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
 from zope.interface import implements
+from zope.app.container.contained import Contained
 
 __metaclass__ = type
 
-class ZPTPage(AppPT, PageTemplate, Persistent):
+class ZPTPage(AppPT, PageTemplate, Persistent, Contained):
 
     implements(IZPTPage, IRenderZPTPage)
 
@@ -64,19 +63,17 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
         context.evaluateInlineCode = self.evaluateInlineCode
         return context
 
-    def pt_getContext(wrapped_self, instance, request, **_kw):
+    def pt_getContext(self, instance, request, **_kw):
         # instance is a View component
-        self = removeAllProxies(wrapped_self)
+        self = removeAllProxies(self)
         namespace = super(ZPTPage, self).pt_getContext(**_kw)
-        namespace['template'] = wrapped_self
+        namespace['template'] = self
         namespace['request'] = request
         namespace['container'] = namespace['context'] = instance
         return namespace
 
-    pt_getContext = ContextMethod(pt_getContext)
-
     def render(self, request, *args, **keywords):
-        instance = getWrapperContainer(self)
+        instance = self.__parent__
 
         request = ProxyFactory(request)
         instance = ProxyFactory(instance)
@@ -88,7 +85,8 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
 
         return self.pt_render(namespace)
 
-    render = ContextMethod(render)
+    source = property(getSource, setSource, None,
+                      """Source of the Page Template.""")
 
 
 class SearchableText:

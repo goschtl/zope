@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.21 2003/06/30 16:24:38 jim Exp $
+$Id: adapter.py,v 1.22 2003/09/21 17:31:59 jim Exp $
 """
 __metaclass__ = type
 
@@ -29,11 +29,10 @@ from zope.app.services.servicenames import Adapters
 from zope.app.interfaces.services.registration import IRegistry
 from zope.app.services.registration import RegistrationStack
 from zope.app.services.registration import SimpleRegistration
-from zope.app.context import ContextWrapper
 from zope.app.component.nextservice import getNextService
 from zope.app.interfaces.services.service import ISimpleService
-
 from zope.app.interfaces.services.adapter import IAdapterRegistration
+from zope.app.container.contained import Contained
 
 class PersistentAdapterRegistry(Persistent, AdapterRegistry):
 
@@ -41,7 +40,7 @@ class PersistentAdapterRegistry(Persistent, AdapterRegistry):
         AdapterRegistry.__init__(self, PersistentDict())
 
 
-class AdapterService(Persistent):
+class AdapterService(Persistent, Contained):
 
     implements(IAdapterService, IRegistry, ISimpleService)
 
@@ -56,8 +55,6 @@ class AdapterService(Persistent):
             registration.adapterName,
             default)
 
-    queryRegistrationsFor = zapi.ContextMethod(queryRegistrationsFor)
-
     def queryRegistrations(self,
                             forInterface, providedInterface, adapterName,
                             default=None):
@@ -70,9 +67,7 @@ class AdapterService(Persistent):
         if registry is None:
             return default
 
-        return ContextWrapper(registry, self)
-
-    queryRegistrations = zapi.ContextMethod(queryRegistrations)
+        return registry
 
     def createRegistrationsFor(self, registration):
         "See IRegistry"
@@ -80,8 +75,6 @@ class AdapterService(Persistent):
         return self.createRegistrations(
             registration.forInterface, registration.providedInterface,
             registration.adapterName)
-
-    createRegistrationsFor = zapi.ContextMethod(createRegistrationsFor)
 
     def createRegistrations(self, forInterface, providedInterface, name):
 
@@ -92,12 +85,10 @@ class AdapterService(Persistent):
 
         registry = adapters.getRegistered(forInterface, providedInterface)
         if registry is None:
-            registry = RegistrationStack()
+            registry = RegistrationStack(self)
             adapters.register(forInterface, providedInterface, registry)
 
-        return ContextWrapper(registry, self)
-
-    createRegistrations = zapi.ContextMethod(createRegistrations)
+        return registry
 
     def getAdapter(self, object, interface, name=''):
         "See IAdapterService"
@@ -106,16 +97,12 @@ class AdapterService(Persistent):
             raise ComponentLookupError(object, interface)
         return adapter
 
-    getAdapter = zapi.ContextMethod(getAdapter)
-
     def getNamedAdapter(self, object, interface, name):
         "See IAdapterService"
         adapter = self.queryNamedAdapter(object, interface, name)
         if adapter is None:
             raise ComponentLookupError(object, interface)
         return adapter
-
-    getNamedAdapter = zapi.ContextMethod(getNamedAdapter)
 
     def queryAdapter(self, object, interface, default=None, name=''):
         """see IAdapterService interface"""
@@ -150,28 +137,22 @@ class AdapterService(Persistent):
 
         return self.queryNamedAdapter(object, interface, name, default)
 
-    queryAdapter = zapi.ContextMethod(queryAdapter)
-
     def queryNamedAdapter(self, object, interface, name, default=None):
         adapters = self._byName.get(name)
 
         if adapters:
             registry = adapters.getForObject(
                 object, interface,
-                filter = lambda registry:
-                         ContextWrapper(registry, self).active(),
+                filter = lambda registry: registry.active(),
                 )
 
             if registry is not None:
-                registry = ContextWrapper(registry, self)
                 adapter = registry.active().getAdapter(object)
                 return adapter
 
         adapters = getNextService(self, Adapters)
 
         return adapters.queryNamedAdapter(object, interface, name, default)
-
-    queryNamedAdapter = zapi.ContextMethod(queryNamedAdapter)
 
     # XXX need to add name support
     def getRegisteredMatching(self,
@@ -210,11 +191,9 @@ class AdapterRegistration(SimpleRegistration):
         self.factoryName = factoryName
 
     def getAdapter(self, object):
-        folder = zapi.getWrapperContainer(zapi.getWrapperContainer(self))
+        folder = self.__parent__.__parent__
         factory = folder.resolve(self.factoryName)
         return factory(object)
-
-    getAdapter = zapi.ContextMethod(getAdapter)
 
 # XXX Pickle backward compatability
 AdapterConfiguration = AdapterRegistration

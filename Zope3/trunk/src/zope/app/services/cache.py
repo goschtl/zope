@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.18 2003/08/19 23:11:05 srichter Exp $
+$Id: cache.py,v 1.19 2003/09/21 17:31:59 jim Exp $
 """
 from persistence import Persistent
 from zope.app import zapi
@@ -24,8 +24,9 @@ from zope.app.interfaces.services.service import ISimpleService
 from zope.app.services.event import ServiceSubscriberEventChannel
 from zope.app.services.servicenames import Utilities
 from zope.interface import implements
+from zope.app.container.contained import Contained
 
-class CachingService(ServiceSubscriberEventChannel, Persistent):
+class CachingService(ServiceSubscriberEventChannel, Persistent, Contained):
 
     implements(ILocalCachingService, ISimpleService)
 
@@ -38,17 +39,17 @@ class CachingService(ServiceSubscriberEventChannel, Persistent):
         'See ICachingService'
         utilities = zapi.getService(self, Utilities)
         return utilities.getUtility(ICache, name)
-    getCache = zapi.ContextMethod(getCache)
+    
 
     def queryCache(self, name, default=None):
         'See ICachingService'
         utilities = zapi.getService(self, Utilities)
         return utilities.queryUtility(ICache, default, name)
-    queryCache = zapi.ContextMethod(queryCache)
+    
 
     def getAvailableCaches(self):
         'See ICachingService'
         utilities = zapi.getService(self, Utilities)
         caches = utilities.getUtilitiesFor(ICache)
         return map(lambda c: c[0], caches)
-    getAvailableCaches = zapi.ContextMethod(getAvailableCaches)
+    

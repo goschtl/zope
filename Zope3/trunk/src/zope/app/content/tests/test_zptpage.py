@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_zptpage.py,v 1.13 2003/08/06 14:45:14 srichter Exp $
+$Id: test_zptpage.py,v 1.14 2003/09/21 17:31:53 jim Exp $
 """
 
 import unittest
@@ -37,9 +37,9 @@ from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.traversing import ITraversable
 from zope.component.adapter import provideAdapter
-from zope.app.context import ContextWrapper
-from zope.context import Wrapper, getInnerWrapperData
 from zope.security.checker import NamesChecker, defineChecker
+from zope.app.container.contained import contained
+
 
 class Data(object):
     def __init__(self, **kw):
@@ -85,7 +85,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             '</a></body></html>'
             )
 
-        page = Wrapper(page, Data(name='zope'))
+        page = contained(page, Data(name='zope'))
 
         out = page.render(Data(URL={'1': 'http://foo.com/'}),
                           title="Zope rules")
@@ -105,7 +105,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
             u'<p tal:content="python: request.__dict__" />'
             )
 
-        page = Wrapper(page, Data(name='zope'))
+        page = contained(page, Data(name='zope'))
 
         self.assertRaises(Forbidden, page.render, Data())
 
@@ -113,8 +113,10 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
 
         class AU(BrowserView):
             def __str__(self):
-                dict = getInnerWrapperData(self.context)
-                return str(dict and dict.get('name') or None)
+                name = self.context.__name__
+                if name is None:
+                    return 'None'
+                return name
 
         from zope.app.traversing.namespace import provideNamespaceHandler
         from zope.app.traversing.namespace import view
@@ -125,7 +127,7 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         page.setSource(
             u'<p tal:replace="template/@@name" />'
             )
-        page = ContextWrapper(page, None, name='zpt')
+        page = contained(page, None, name='zpt')
         request = TestRequest()
         request.setViewType(IBrowserPresentation)
         self.assertEquals(page.render(request), 'zpt\n')

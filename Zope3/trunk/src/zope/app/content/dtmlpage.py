@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.6 2003/06/07 06:37:23 stevea Exp $
+$Id: dtmlpage.py,v 1.7 2003/09/21 17:31:49 jim Exp $
 """
 from persistence import Persistent
 
@@ -22,13 +22,12 @@ from zope.app.interfaces.content.dtmlpage import IDTMLPage, IRenderDTMLPage
 from zope.app.interfaces.file import IFileFactory
 from zope.interface import implements
 
-from zope.context import ContextMethod
-from zope.context import getWrapperContainer
 from zope.security.proxy import ProxyFactory
 
 from zope.documenttemplate.dt_html import HTML
+from zope.app.container.contained import Contained
 
-class DTMLPage(Persistent):
+class DTMLPage(Persistent, Contained):
 
     # XXX Putting IFileContent at the end gives an error!
     implements(IFileContent, IDTMLPage, IRenderDTMLPage, IAnnotatable)
@@ -48,7 +47,7 @@ class DTMLPage(Persistent):
     def render(self, request, *args, **kw):
         """See interface IDTMLRenderPage"""
 
-        instance = ProxyFactory(getWrapperContainer(self))
+        instance = ProxyFactory(self.__parent__)
         request = ProxyFactory(request)
 
         for k in kw:
@@ -57,8 +56,6 @@ class DTMLPage(Persistent):
 
         return self.template(instance, request, **kw)
 
-
-    render = ContextMethod(render)
 
     __call__ = render
 

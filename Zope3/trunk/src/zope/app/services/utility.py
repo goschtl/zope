@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.16 2003/08/19 23:11:05 srichter Exp $
+$Id: utility.py,v 1.17 2003/09/21 17:31:12 jim Exp $
 """
 from zope.interface import implements
 from persistence.dict import PersistentDict
@@ -29,11 +29,10 @@ from zope.app.services.registration import \
      RegistrationStack, ComponentRegistration
 from zope.component.exceptions import ComponentLookupError
 from zope.interface.implementor import ImplementorRegistry
-from zope.context import ContextMethod
-from zope.app.context import ContextWrapper
 from zope.proxy import removeAllProxies
+from zope.app.container.contained import Contained
 
-class LocalUtilityService(Persistent):
+class LocalUtilityService(Persistent, Contained):
 
     implements(ILocalUtilityService, IRegistry, ISimpleService)
 
@@ -46,7 +45,6 @@ class LocalUtilityService(Persistent):
         if utility is None:
             raise ComponentLookupError("utility", interface, name)
         return utility
-    getUtility = ContextMethod(getUtility)
 
     def queryUtility(self, interface, default=None, name=''):
         """See zope.component.interfaces.IUtilityService"""
@@ -58,7 +56,6 @@ class LocalUtilityService(Persistent):
 
         next = getNextService(self, Utilities)
         return next.queryUtility(interface, default, name)
-    queryUtility = ContextMethod(queryUtility)
 
     def getUtilitiesFor(self, interface):
         """See zope.component.interfaces.IUtilityService"""
@@ -70,14 +67,12 @@ class LocalUtilityService(Persistent):
             if utility[0] not in names:
                 utilities.append(utility)
         return utilities
-    getUtilitiesFor = ContextMethod(getUtilitiesFor)
 
     def getLocalUtilitiesFor(self, interface):
         """See zope.app.interfaces.services.ILocalUtilityService"""
         utilities = []
         for name in self._utilities:
             for iface, cr in self._utilities[name].getRegisteredMatching():
-                cr = ContextWrapper(cr, self)
                 if not cr or cr.active() is None:
                     continue
                 utility = cr.active().getComponent()
@@ -86,7 +81,6 @@ class LocalUtilityService(Persistent):
                     continue
                 utilities.append((name, utility))
         return utilities
-    getLocalUtilitiesFor = ContextMethod(getLocalUtilitiesFor)
 
 
     def getRegisteredMatching(self, interface=None, name=None):
@@ -100,16 +94,14 @@ class LocalUtilityService(Persistent):
                     continue
                 if name is not None and reg_name.find(name) < 0:
                     continue
-                L.append((iface, reg_name, ContextWrapper(cr, self)))
+                L.append((iface, reg_name, cr))
         return L
-    getRegisteredMatching = ContextMethod(getRegisteredMatching)
 
     def queryRegistrationsFor(self, registration, default=None):
         """zope.app.interfaces.services.registration.IRegistry"""
         return self.queryRegistrations(registration.name,
                                         registration.interface,
                                         default)
-    queryRegistrationsFor = ContextMethod(queryRegistrationsFor)
 
     def queryRegistrations(self, name, interface, default=None):
         """zope.app.interfaces.services.registration.IRegistry"""
@@ -120,15 +112,13 @@ class LocalUtilityService(Persistent):
         if stack is None:
             return default
 
-        return ContextWrapper(stack, self)
-    queryRegistrations = ContextMethod(queryRegistrations)
+        return stack
 
     def createRegistrationsFor(self, registration):
         """zope.app.interfaces.services.registration.IRegistry"""
         return self.createRegistrations(registration.name,
                                          registration.interface)
 
-    createRegistrationsFor = ContextMethod(createRegistrationsFor)
 
     def createRegistrations(self, name, interface):
         """zope.app.interfaces.services.registration.IRegistry"""
@@ -139,11 +129,10 @@ class LocalUtilityService(Persistent):
 
         stack = utilities.getRegistered(interface)
         if stack is None:
-            stack = RegistrationStack()
+            stack = RegistrationStack(self)
             utilities.register(interface, stack)
 
-        return ContextWrapper(stack, self)
-    createRegistrations = ContextMethod(createRegistrations)
+        return stack
 
 
 class UtilityRegistration(ComponentRegistration):

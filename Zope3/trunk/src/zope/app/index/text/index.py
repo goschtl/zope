@@ -18,12 +18,12 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.16 2003/08/17 06:06:59 philikon Exp $
+$Id: index.py,v 1.17 2003/09/21 17:31:55 jim Exp $
 """
 
 from zope.component import getService
 from zope.app.services.servicenames import HubIds
-from zope.context import ContextMethod
+from zope.app.container.contained import Contained
 from zope.index.text.textindexwrapper import TextIndexWrapper
 
 from zope.app.interfaces.services.hub import \
@@ -34,7 +34,9 @@ from zope.interface import implements
 from zope.app.index import InterfaceIndexingSubscriber
 from zope.app.interfaces.catalog.index import ICatalogIndex
 
-class TextCatalogIndex(InterfaceIndexingSubscriber, TextIndexWrapper):
+
+class TextCatalogIndex(InterfaceIndexingSubscriber, TextIndexWrapper,
+                       Contained):
     implements(ICatalogIndex, IUITextCatalogIndex)
 
     default_interface = ISearchableText
@@ -55,7 +57,6 @@ class TextIndex(TextCatalogIndex):
         if update:
             wrapped_self._update(channel.iterObjectRegistrations())
         wrapped_self.currentlySubscribed = True
-    subscribe = ContextMethod(subscribe)
 
     def unsubscribe(wrapped_self, channel=None):
         if not wrapped_self.currentlySubscribed:
@@ -64,7 +65,6 @@ class TextIndex(TextCatalogIndex):
         channel.unsubscribe(wrapped_self, IObjectModifiedHubEvent)
         channel.unsubscribe(wrapped_self, IRegistrationHubEvent)
         wrapped_self.currentlySubscribed = False
-    unsubscribe = ContextMethod(unsubscribe)
 
     def isSubscribed(self):
         return self.currentlySubscribed
@@ -73,12 +73,10 @@ class TextIndex(TextCatalogIndex):
         if channel is None:
             channel = getService(wrapped_self, HubIds)
         return channel
-    _getChannel = ContextMethod(_getChannel)
 
     def _update(wrapped_self, registrations):
         for location, hubid, wrapped_object in registrations:
             texts = wrapped_self._getValue(wrapped_object)
             if texts is not None:
                 wrapped_self.index_doc(hubid, texts)
-    _update = ContextMethod(_update)
 

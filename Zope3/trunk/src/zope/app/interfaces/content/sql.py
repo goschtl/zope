@@ -12,13 +12,12 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.7 2003/07/03 22:46:08 sidnei Exp $
+$Id: sql.py,v 1.8 2003/09/21 17:31:56 jim Exp $
 """
 import zope.schema
 
 from zope.app.interfaces.rdb import ISQLCommand
 from zope.component import getService, ComponentLookupError
-from zope.context import ContextProperty
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 class MissingInput(Exception):
@@ -37,7 +36,7 @@ class SQLConnectionName(zope.schema.TextLine):
 
         return connection_service.getAvailableConnections()
 
-    allowed_values = ContextProperty(__allowed)
+    allowed_values = property(__allowed)
 
 class ISQLScript(ISQLCommand):
     """A persistent script that can execute SQL."""

@@ -18,24 +18,23 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.12 2003/08/17 06:06:51 philikon Exp $
+$Id: index.py,v 1.13 2003/09/21 17:31:54 jim Exp $
 """
 
 from zope.component import getService
 from zope.app.services.servicenames import HubIds
-from zope.context import ContextMethod
+from zope.app.interfaces.event import ISubscriber
 from zope.index.field.index import FieldIndex as FieldIndexWrapper
 from zope.interface import implements
-
-from zope.app.interfaces.services.hub import \
-     IRegistrationHubEvent, \
-     IObjectModifiedHubEvent
-
+from zope.app.container.contained import Contained
+from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
+from zope.app.interfaces.services.hub import IRegistrationHubEvent
 from zope.app.interfaces.index.field import IUIFieldIndex, IUIFieldCatalogIndex
 from zope.app.interfaces.catalog.index import ICatalogIndex
 from zope.app.index import InterfaceIndexingSubscriber
 
-class FieldCatalogIndex(InterfaceIndexingSubscriber, FieldIndexWrapper):
+class FieldCatalogIndex(InterfaceIndexingSubscriber, FieldIndexWrapper,
+                        Contained):
     implements(ICatalogIndex, IUIFieldCatalogIndex)
 
 class FieldIndex(FieldCatalogIndex):
@@ -53,7 +52,6 @@ class FieldIndex(FieldCatalogIndex):
         if update:
             self._update(channel.iterObjectRegistrations())
         self.currentlySubscribed = True
-    subscribe = ContextMethod(subscribe)
 
     def unsubscribe(self, channel=None):
         if not self.currentlySubscribed:
@@ -62,7 +60,6 @@ class FieldIndex(FieldCatalogIndex):
         channel.unsubscribe(self, IObjectModifiedHubEvent)
         channel.unsubscribe(self, IRegistrationHubEvent)
         self.currentlySubscribed = False
-    unsubscribe = ContextMethod(unsubscribe)
 
     def isSubscribed(self):
         return self.currentlySubscribed
@@ -71,11 +68,9 @@ class FieldIndex(FieldCatalogIndex):
         if channel is None:
             channel = getService(self, HubIds)
         return channel
-    _getChannel = ContextMethod(_getChannel)
 
     def _update(self, registrations):
         for location, hubid, wrapped_object in registrations:
             value = self._getValue(wrapped_object)
             if value is not None:
                 self.index_doc(hubid, value)
-    _update = ContextMethod(_update)

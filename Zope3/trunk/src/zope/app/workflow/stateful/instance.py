@@ -13,14 +13,13 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.11 2003/08/21 20:10:30 srichter Exp $
+$Id: instance.py,v 1.12 2003/09/21 17:33:57 jim Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
 from persistence.dict import PersistentDict
 
-from zope.app.context import ContextWrapper
 from zope.app.event import publish
 from zope.app.interfaces.workflow.stateful import AUTOMATIC
 from zope.app.interfaces.workflow.stateful import IStatefulProcessInstance
@@ -34,7 +33,7 @@ from zope.app.interfaces.workflow.stateful import AUTOMATIC
 from zope.app.traversing import getParent
 from zope.app.workflow.instance import ProcessInstance
 from zope.component import getService, getServiceManager
-from zope.context import ContextMethod, ContextProperty, getWrapperContainer
+from zope.app.container.contained import Contained
 from zope.exceptions import Unauthorized
 from zope.interface import directlyProvides, implements
 from zope.proxy import removeAllProxies
@@ -79,7 +78,7 @@ class AfterRelevantDataChangeEvent(RelevantDataChangeEvent):
     implements(IAfterRelevantDataChangeEvent)
 
 
-class RelevantData(Persistent):
+class RelevantData(Persistent, Contained):
     """The relevant data object can store data that is important to the
     workflow and fires events when this data is changed.
 
@@ -122,7 +121,7 @@ class RelevantData(Persistent):
                           key in getFields(self.__schema).keys()
 
         if is_schema_field:
-            process = getWrapperContainer(self)
+            process = self.__parent__ 
             # Send an Event before RelevantData changes
             oldvalue = getattr(self, key, None)
             publish(self, BeforeRelevantDataChangeEvent(
@@ -134,7 +133,6 @@ class RelevantData(Persistent):
             # Send an Event after RelevantData has changed
             publish(self, AfterRelevantDataChangeEvent(
                 process, self.__schema, key, oldvalue, value))
-    __setattr__ = ContextMethod(__setattr__)
 
     def getChecker(self):
         return Checker(self.__checker_getattr.get,
@@ -165,10 +163,9 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if self._data is None:
             return None
         # Always give out the data attribute as proxied object.
-        data = Proxy(self._data, self._data.getChecker())
-        return ContextWrapper(data, self, name="data")
-
-    data = ContextProperty(getData)
+        return Proxy(self._data, self._data.getChecker())
+        
+    data = property(getData) 
 
     def initialize(self):
         """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
@@ -188,14 +185,12 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
 
         # check for Automatic Transitions
         self._checkAndFireAuto(clean_pd)
-    initialize = ContextMethod(initialize)
 
     def getOutgoingTransitions(self):
         """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
         pd = self.getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         return self._outgoingTransitions(clean_pd)
-    getOutgoingTransitions = ContextMethod(getOutgoingTransitions)
 
     def fireTransition(self, id):
         """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
@@ -218,13 +213,11 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
 
         # check for automatic transitions and fire them if necessary
         self._checkAndFireAuto(clean_pd)
-    fireTransition = ContextMethod(fireTransition)
 
     def getProcessDefinition(self):
         """Get the ProcessDefinition object from WorkflowService."""
         svc =  getService(self, "Workflows")
         return svc.getProcessDefinition(self.processDefinitionName)
-    getProcessDefinition = ContextMethod(getProcessDefinition)
 
     # XXX this is not entirely tested
     def _getContext(self):
@@ -238,7 +231,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         # to a Content-Object and provide secure ***READONLY***
         # Access to it for evaluating Transition Conditions ???
 
-        #content = getWrapperContainer(self)
+        #content = self.__parent__
 
         # XXX How can i make sure that nobody modifies content
         # while the condition scripts/conditions are evaluated ????
@@ -256,7 +249,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         #ctx['content'] = content
 
         return ctx
-    _getContext = ContextMethod(_getContext)
 
 
     def _extendContext(self, transition, ctx={}):
@@ -279,7 +271,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             sm = getServiceManager(self)
             script = sm.resolve(script)
         return script(contexts)
-    _evaluateScript = ContextMethod(_evaluateScript)
 
     def _outgoingTransitions(self, clean_pd):
         sm = getSecurityManager()
@@ -318,7 +309,6 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
                 # append transition name
                 ret.append(name)
         return ret
-    _outgoingTransitions = ContextMethod(_outgoingTransitions)
 
     def _checkAndFireAuto(self, clean_pd):
         outgoing_transitions = self.getOutgoingTransitions()
@@ -327,4 +317,3 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             if trans.triggerMode == AUTOMATIC:
                 self.fireTransition(name)
                 return
-    _checkAndFireAuto = ContextMethod(_checkAndFireAuto)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Connection service
 
-$Id: connection.py,v 1.20 2003/08/21 12:01:21 BjornT Exp $
+$Id: connection.py,v 1.21 2003/09/21 17:31:59 jim Exp $
 """
 from persistence import Persistent
 from zope.app import zapi
@@ -22,8 +22,9 @@ from zope.app.interfaces.services.connection import ILocalConnectionService
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.services.servicenames import Utilities
 from zope.interface import implements
+from zope.app.container.contained import Contained
 
-class ConnectionService(Persistent):
+class ConnectionService(Persistent, Contained):
     """This is a local relational database connection service."""
 
     implements(ILocalConnectionService, ISimpleService)
@@ -33,7 +34,6 @@ class ConnectionService(Persistent):
         utilities = zapi.getService(self, Utilities)
         dbadapter = utilities.getUtility(IZopeDatabaseAdapter, name)
         return dbadapter()
-    getConnection = zapi.ContextMethod(getConnection)
 
     def queryConnection(self, name, default=None):
         'See IConnectionService'
@@ -43,11 +43,9 @@ class ConnectionService(Persistent):
             return dbadapter()
         else:
             return default
-    queryConnection = zapi.ContextMethod(queryConnection)
 
     def getAvailableConnections(self):
         'See IConnectionService'
         utilities = zapi.getService(self, Utilities)
         connections = utilities.getUtilitiesFor(IZopeDatabaseAdapter)
         return map(lambda c: c[0], connections)
-    getAvailableConnections = zapi.ContextMethod(getAvailableConnections)
