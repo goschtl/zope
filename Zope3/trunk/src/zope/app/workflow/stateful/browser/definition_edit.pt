@@ -13,7 +13,7 @@
      tal:content="status" />
 
   <form action="./@@edit.html" method="POST">
-    <h3>Set Workflow-Relevant Data Schema</h3>
+    <h3 i18n:translate="">Set Workflow-Relevant Data Schema</h3>
 
     <div class="row" tal:define="widget nocall:view/relevantDataSchema_widget">
       <metal:block use-macro="context/@@form_macros/widget_row" />
@@ -23,7 +23,8 @@
       <div class="controls" style="width: 100%">
         <input type="submit" value="Refresh"
             i18n:attributes="value refresh-button" />
-        <input type="submit" value="Set Schema" name="UPDATE_SUBMIT" />
+        <input type="submit" value="Set Schema" name="UPDATE_SUBMIT"
+            i18n:attributes="value set-schema-button" />
        </div>
     </div>
 
