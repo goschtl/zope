@@ -13,15 +13,15 @@
 ##############################################################################
 """Factory-related Tests
 
-$Id: test_factory.py,v 1.4 2004/03/10 00:58:45 srichter Exp $
+$Id: test_factory.py,v 1.5 2004/04/11 18:16:56 jim Exp $
 """
 import unittest
 from zope.interface import Interface, implements
 from zope.interface.interfaces import IDeclaration
 
 from zope.component import createObject, getFactoryInterfaces, getFactoriesFor
+from zope.component import getService, servicenames
 from zope.component.interfaces import IFactory
-from zope.component.utility import utilityService
 from zope.component.factory import Factory
 from placelesssetup import PlacelessSetup
 
@@ -66,6 +66,7 @@ class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         super(TestFactoryZAPIFunctions, self).setUp()
         self.factory = Factory(Klass, 'Klass', 'Klassier')
+        utilityService = getService(None, servicenames.Utilities)
         utilityService.provideUtility(IFactory, self.factory, 'klass')
 
     def testCreateObject(self):
@@ -80,7 +81,7 @@ class TestFactoryZAPIFunctions(PlacelessSetup, unittest.TestCase):
         self.assertEqual([iface for iface in implemented], [IKlass])
 
     def testGetFactoriesFor(self):
-        self.assertEqual(getFactoriesFor(None, IKlass),
+        self.assertEqual(list(getFactoriesFor(None, IKlass)),
                          [('klass', self.factory)])
         
 
