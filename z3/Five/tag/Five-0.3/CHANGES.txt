@@ -1,8 +1,8 @@
 Five Changes
 ============
 
-Trunk
------
+0.3
+---
 
 * Five now uses the Zope 2 page template engine, not the Zope 3
   engine. This allows better integration with Zope 2-based page
