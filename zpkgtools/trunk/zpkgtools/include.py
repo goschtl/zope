@@ -40,6 +40,17 @@ class InclusionSpecificationError(ValueError, InclusionError):
         ValueError.__init__(self, message)
 
 
+def filter_names(names):
+    names = [n for n in names
+             if n not in EXCLUDE_NAMES]
+    # This is needed when building a distro from a working
+    # copy (likely a checkout) rather than a pristine export:
+    for pattern in EXCLUDE_PATTERNS:
+        names = [n for n in names
+                 if not fnmatch.fnmatch(n, pattern)]
+    return names
+
+
 class InclusionProcessor:
     """Handler for processing inclusion specifications.
 
@@ -113,7 +124,7 @@ class InclusionProcessor:
             src = self.normalizePathOrURL(src, "source", filename, lineno)
             if src == "-":
                 path = os.path.join(self.source, dest)
-                expansions = self.filter_names(glob.glob(path))
+                expansions = filter_names(glob.glob(path))
                 if not expansions:
                     raise InclusionSpecificationError(
                         "exclusion %r doesn't match any files" % dest,
@@ -172,8 +183,8 @@ class InclusionProcessor:
             os.mkdir(destination)
         prefix = os.path.join(source, "")
         for dirname, dirs, files in os.walk(source):
-            dirs[:] = self.filter_names(dirs)
-            files = self.filter_names(files)
+            dirs[:] = filter_names(dirs)
+            files = filter_names(files)
 
             # remove excluded directories:
             for dir in dirs[:]:
@@ -214,16 +225,6 @@ class InclusionProcessor:
     def add_output(self, path):
         # we're going to build the manifest here
         pass
-
-    def filter_names(self, names):
-        names = [n for n in names
-                 if n not in EXCLUDE_NAMES]
-        # This is needed when building a distro from a working
-        # copy (likely a checkout) rather than a pristine export:
-        for pattern in EXCLUDE_PATTERNS:
-            names = [n for n in names
-                     if not fnmatch.fnmatch(n, pattern)]
-        return names
 
     def addSingleInclude(self, relpath, source):
         dirname, basename = os.path.split(relpath)
