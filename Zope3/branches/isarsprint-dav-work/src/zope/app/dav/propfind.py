@@ -238,7 +238,7 @@ class PROPFIND(object):
         for ns in _props.keys():
             iface = _props[ns]['iface']
             for p in _props[ns]['props']:
-                if _props[ns]['iface'] is None:
+                if iface is None:
                     l = not_avail.get(ns, [])
                     l.append(p)
                     not_avail[ns] = l
