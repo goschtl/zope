@@ -54,7 +54,7 @@ a path and a title. All directive handlers take the directive context
 as the first argument.  A directive context, at a minimim, implements,
 ``zope.configuration.IConfigurationContext``.  (Specialized contexts
 can implement more specific interfaces. We'll say more about that when
-we talk about grouping directives in congigex.py.)  The title argument
+we talk about grouping directives.)  The title argument
 must have a default value, because we indicated that the title was not
 required in the schema. (Alternatively, we could have made the title
 required, but provided a default value in the schema.
@@ -154,7 +154,7 @@ File "tests/simple.zcml", line 32.2-32.67
     <files:register path="__init__.py" title="Make this a package" />
 
 
-$Id: test_simple.py,v 1.1 2003/07/30 14:35:06 jim Exp $
+$Id: test_simple.py,v 1.2 2003/07/30 14:53:01 jim Exp $
 """
 
 file_registry = []
