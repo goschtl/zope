@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.22 2003/06/01 15:59:36 jim Exp $
+$Id: test_eventservice.py,v 1.23 2003/06/03 14:45:28 stevea Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.app.services.service import ServiceManager, ServiceConfiguration
 from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.event import EventService
@@ -49,11 +49,11 @@ class UnpromotingEventService(EventService):
 
 class DummyEvent:
 
-    __implements__ = IObjectAddedEvent, IObjectRemovedEvent
+    implements(IObjectAddedEvent, IObjectRemovedEvent)
 
 class ObjectEvent:
 
-    __implements__ = IObjectEvent
+    implements(IObjectEvent)
 
 class IObjectHub(Interface):
     def getObject(hubid):
@@ -66,7 +66,7 @@ class IObjectHub(Interface):
         "gets location"
 
 class DumbObjectHub:
-    __implements__ = IObjectHub, ISimpleService
+    implements(IObjectHub, ISimpleService)
 
     def __init__(self):
         # (location, object)
@@ -93,12 +93,12 @@ class IHasSubscribingAwareAdapter(Interface):
     pass
 
 class HasSubscribingAwareAdapter(DummySubscriber):
-    __implements__ = IHasSubscribingAwareAdapter, ISubscriber
+    implements(IHasSubscribingAwareAdapter, ISubscriber)
 
 
 class SubscribingAwareAdapter(RecordingAdapter):
 
-    __implements__ = ISubscribingAware
+    implements(ISubscribingAware)
 
     def subscribedTo(self, subscribable, event_type, filter):
         self.record.append(('subscribed', self.context, subscribable,
@@ -223,7 +223,7 @@ class TestEventPublisher(EventSetup, TestCase):
         # curve balls:
         unsubscribeAll(self.folder1Subscriber, context=self.folder1_1)
         unsubscribe(2,
-                    event_type=IObjectAddedEvent, 
+                    event_type=IObjectAddedEvent,
                     context=self.folder1_1)
         publish(self.folder1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
