@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: registration.py,v 1.4 2003/07/01 21:08:27 fdrake Exp $
+$Id: registration.py,v 1.5 2003/07/02 19:03:45 fdrake Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -449,13 +449,13 @@ class IRegistrationManagerContainer(IContainer):
     def resolve(name):
         """Resolve a dotted object name
 
-        A dotted opject nanem is a dotted module name and an object
+        A dotted object name is a dotted module name and an object
         name within the module.
 
-        XXX we really should switch to using some other character than
+        XXX We really should switch to using some other character than
         a dot for the delimiter between the module and the object
         name.
-        
+
         """
 
 
