@@ -52,26 +52,23 @@
        class="zope.app.browser.container.contents.Contents"
        attribute="contents" />
 
-  <view
-      name="+"
-      for="zope.app.services.pluggableauth.IContainerPrincipalSource"
-      permission="zope.ManageContent"
-      class="zope.app.browser.container.adding.Adding" />
-
   <menuItem
       menu="zmi_actions" title="Add Principal"
       for="zope.app.services.pluggableauth.IContainerPrincipalSource"
-      action="+/AddPrincipalForm" />
+      action="AddPrincipalForm.html" />
 
   <addform
+      for="zope.app.services.pluggableauth.IContainerPrincipalSource"
       schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
       label="Add Simple User with details"
       content_factory="zope.app.services.pluggableauth.SimplePrincipal"
       arguments="login password"
       keyword_arguments="title description"
       fields="login password title description"
-      name="AddPrincipalForm"
-      permission="zope.ManageContent" />
+      name="AddPrincipalForm.html"
+      permission="zope.ManageContent"
+      class=".PrincipalAdd"
+      />
 
   <editform
       schema="zope.app.interfaces.services.pluggableauth.IUserSchemafied"
