@@ -12,9 +12,11 @@
          <br><br><i><a href="">(click to clear message)</a></i>
       </div>
 
-<form method="POST" action="utilities.html">
+<p tal:condition="not:configs">None</p>
 
-  <table tal:condition="configs">
+<form method="POST" action="utilities.html" tal:condition="configs">
+
+  <table>
     <tr tal:repeat="config configs">
       <td><input type="checkbox" name="selected:list"
                  tal:attributes=
