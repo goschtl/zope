@@ -1,4 +1,4 @@
-<html metal:use-macro="views/standard_macros/dialog" i18n:domain="zope">
+<html metal:use-macro="context/@@standard_macros/dialog" i18n:domain="zope">
 <head>
   <tal:block  
       metal:fill-slot="headers" 
