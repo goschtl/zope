@@ -13,12 +13,13 @@
 ##############################################################################
 """A widget for ComponentPath field.
 
-$Id: field.py,v 1.14 2003/08/17 06:05:47 philikon Exp $
+$Id: field.py,v 1.15 2003/11/21 17:11:32 jim Exp $
 """
 
+from zope.app import zapi
 from zope.app.browser.form.widget import BrowserWidget
-from zope.app.traversing import traverse
-from zope.component import getServiceManager, getView
+from zope.app.interfaces.services.registration \
+     import IRegistrationManagerContainer
 
 __metaclass__ = type
 
@@ -40,15 +41,34 @@ class ComponentPathDisplayWidget(ComponentPathWidget):
     def __call__(self):
         path = self._showData()
         path = canonicalPath(path)
-        ob = traverse(self.context.context, path)
-        url = str(getView(ob, 'absolute_url', self.request))
+        ob = zapi.traverse(self.context.context, path)
+        url = str(zapi.getView(ob, 'absolute_url', self.request))
         url += "/@@SelectedManagementView.html"
         return '<a href="%s">%s</a>' % (url, path)
 
 
+def queryComponent(ob, type):
+    """Find the objects of the given type in the enclosing folder
+    """
+    o = ob
+    while 1:
+        if IRegistrationManagerContainer.isImplementedBy(o):
+            break
+        if o is None:
+            raise ValueError(o, "is not in a service manager container")
+        o = o.__parent__
+
+    result = []
+    for name in o:
+        value = o[name]
+        if type.isImplementedBy(value):
+            result.append({'path': zapi.getPath(value),
+                           'component': value,
+                           })
+    return result
+
 def renderPathSelect(context, type, name, selected, empty_message=''):
-    service_manager = getServiceManager(context)
-    info = service_manager.queryComponent(type)
+    info = queryComponent(context, type)
     result = []
 
     result.append('<select name="%s">' % name)
