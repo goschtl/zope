@@ -22,8 +22,6 @@ from zope.app.pluggableauth import SimplePrincipal
 
 from interfaces import ICheckLDAPAdapter
 
-
-
 class CheckLDAPAdapter:
     """A LDAP connection test adapter."""
 
@@ -44,7 +42,8 @@ class CheckLDAPAdapter:
             if connection != None:
                 self.report.append("... connection found")
                 self.report.append("... bind connection to LDAP server")
-                connection.simple_bind_s(source.manager_dn, source.manager_passwd)
+                connection.simple_bind_s(source.manager_dn,
+                        source.manager_passwd)
                 self.report.append("... <strong>OK!</strong>")
                 return self.report
             else:
@@ -55,7 +54,8 @@ class CheckLDAPAdapter:
                 
                 try:
                     self.report.append("... bind connection to LDAP server")
-                    connection.simple_bind_s(source.manager_dn, source.manager_passwd)
+                    connection.simple_bind_s(source.manager_dn,
+                            source.manager_passwd)
                     self.report.append("... <strong>OK!</strong>")
                     return self.report
                 except:
