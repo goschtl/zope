@@ -11,12 +11,50 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: query.py,v 1.2 2004/04/01 17:15:50 faassen Exp $
+"""Query mechanism
+
+This module contains advanced core query mechanisms. See the
+docstrings and interfaces.py for more information.
+
+$Id: query.py,v 1.3 2004/04/01 17:21:56 philikon Exp $
 """
 
 def advancedQueryMechanism(arguments,action='query',
                            tabs=''):
+    """
+    Use the advance query mechanism.
+
+    Let's have a look at a typical query session using the mechanism:
+    
+    >>> exit
+    'Use Ctrl-D (i.e. EOF) to exit.'
+    >>> quit
+    'Use Ctrl-D (i.e. EOF) to exit.'
+
+    This is the typical setup if the query fails:
+
+    >>> helpp
+    Traceback (most recent call last):
+    ...
+    NameError: name 'helpp' is not defined
+
+    Of course, you're not gonna get it to work if you continue on this
+    path:
+
+    >>> hello?
+    Traceback (most recent call last):
+    ...
+    SyntaxError: invalid syntax
+    >>> mail employee help this doesn't work
+    Traceback (most recent call last):
+    ...
+    SyntaxError: invalid syntax
+    >>> what is this???
+    Traceback (most recent call last):
+    ...
+    SyntaxError: invalid syntax
+    >>>
+    """
     if arguments:
         items=arguments.items()
         return (
