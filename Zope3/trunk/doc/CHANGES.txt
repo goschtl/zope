@@ -16,7 +16,11 @@ Zope Changes
       containing objects to be loaded properly and provides diagnostic
       information needed to restore the missing class, if necessary.
 
-    - Now use ZODB 3.3, rather than ZODB 4.
+    - Now use ZODB 3.3, rather than ZODB 4.  If your Data.fs file is
+      in the ZODB 4 format, you need to convert it using the following
+      command executed from the Zope3 directory::
+
+        PYTHONPATH=src python2.3 src/ZODB/zodb4/main.py Data.fs
 
     - Removed source type service and replaced source types by source
       factories. Updated the vocabulary accordingly.
