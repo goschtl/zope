@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.1 2003/05/21 16:10:06 sidnei Exp $
+$Id: propfind.py,v 1.2 2003/05/21 17:26:37 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -97,7 +97,12 @@ class PROPFIND:
             pstat.appendChild(status)
             text = response.createTextNode('HTTP/1.1 200 OK')
             status.appendChild(text)
+            count = 0
             for ns in avail.keys():
+                attr_name = 'a%s' % count
+                if ns is not None and ns != self.default_ns:
+                    count += 1
+                    prop.setAttribute('xmlns:%s' % attr_name, ns)
                 iface = _props[ns]['iface']
                 adapter = queryAdapter(self.context, iface, None)
                 initial = getWidgetsDataFromAdapter(adapter, iface, names=avail.get(ns))
@@ -106,7 +111,7 @@ class PROPFIND:
                 for p in avail.get(ns):
                     el = response.createElement('%s' % p )
                     if ns is not None and ns != self.default_ns:
-                        el.setAttribute('xmlns', ns)
+                        el.setAttribute('xmlns', attr_name)
                     prop.appendChild(el)
                     value = getattr(self, p)()
                     if isinstance(value, (unicode, str)):
@@ -116,7 +121,10 @@ class PROPFIND:
                         if isinstance(removeAllProxies(value), minidom.Node):
                             el.appendChild(removeAllProxies(value))
                         else:
-                            raise TypeError('Value should be string or minidom.Node. Got %r' % type(value))
+                            # Try to string-ify
+                            value = str(getattr(self, p))
+                            value = response.createTextNode(value) ## Get the widget value here
+                            el.appendChild(value)
 
         if not_avail:
             pstat = response.createElement('propstat')
@@ -127,12 +135,17 @@ class PROPFIND:
             pstat.appendChild(status)
             text = response.createTextNode('HTTP/1.1 403 Forbidden')
             status.appendChild(text)
+            count = 0
             for ns in not_avail.keys():
+                attr_name = 'a%s' % count
+                if ns is not None and ns != self.default_ns:
+                    count += 1
+                    prop.setAttribute('xmlns:%s' % attr_name, ns)
                 for p in not_avail.get(ns):
                     el = response.createElement('%s' % p )
                     prop.appendChild(el)
                     if ns is not None and ns != self.default_ns:
-                        el.setAttribute('xmlns', ns)
+                        el.setAttribute('xmlns', attr_name)
 
         self._depthRecurse(ms)
 

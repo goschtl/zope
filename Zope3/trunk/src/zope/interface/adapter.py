@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: adapter.py,v 1.4 2003/05/03 16:36:05 jim Exp $
+$Id: adapter.py,v 1.5 2003/05/21 17:26:39 sidnei Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -102,7 +102,7 @@ class AdapterRegistry:
                 else:
                     key = InterfaceSpecification(interfaces).__signature__
             key = key, provide.__identifier__
-                
+
             cached = cache.get(key, self)
             if cached is self:
                 cached = self._uncached_get(ob_interface_provide,
@@ -125,7 +125,7 @@ class AdapterRegistry:
                 flattened = None,
         else:
             flattened = flattened()
-        
+
 
         for interface in flattened:
             c = self._reg.get((interface, provide))
@@ -135,7 +135,7 @@ class AdapterRegistry:
                     return c
                 if filter(c):
                     return c
-        
+
         c = self._reg.get((None, provide))
         if c:
             c = c[1]

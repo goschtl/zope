@@ -19,6 +19,24 @@
        allowed_attributes="getData haveData setData __call__"
        />
 
+ <defaultView
+       for="zope.schema.interfaces.ITextLine"
+       name="view"
+       permission="zope.Public"
+       type="zope.publisher.interfaces.http.IHTTPPresentation"
+       factory="zope.app.dav.widget.SimpleDAVWidget"
+       allowed_attributes="getData haveData setData __call__"
+       />
+
+ <defaultView
+       for="zope.schema.interfaces.IDatetime"
+       name="view"
+       permission="zope.Public"
+       type="zope.publisher.interfaces.http.IHTTPPresentation"
+       factory="zope.app.dav.widget.SimpleDAVWidget"
+       allowed_attributes="getData haveData setData __call__"
+       />
+
  <adapter
       provides="zope.app.interfaces.dav.IDAVSchema"
       for="*"

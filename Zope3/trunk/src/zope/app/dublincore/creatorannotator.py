@@ -13,7 +13,7 @@
 ##############################################################################
 """Object that takes care of annotating the dublin core creator field.
 
-$Id: creatorannotator.py,v 1.2 2003/03/27 16:09:33 ctheune Exp $
+$Id: creatorannotator.py,v 1.3 2003/05/21 17:26:38 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -31,7 +31,7 @@ class CreatorAnnotatorClass:
         dc = queryAdapter(event.object, IZopeDublinCore)
         if dc is None:
             return
- 
+
         # Try to find a principal for that one. If there
         # is no principal then we don't touch the list
         # of creators.

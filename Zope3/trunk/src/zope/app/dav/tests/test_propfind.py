@@ -12,14 +12,15 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.1 2003/05/21 16:10:07 sidnei Exp $
+$Id: test_propfind.py,v 1.2 2003/05/21 17:26:37 sidnei Exp $
 """
 __metaclass__ = type
 
+from datetime import datetime
 from unittest import TestCase, TestSuite, main, makeSuite
 from StringIO import StringIO
 from zope.interface import Interface
-from zope.component import getService, getView
+from zope.component import getService, getView, getAdapter
 from zope.app.services.servicenames import Adapters, Views
 from zope.app.traversing import traverse
 from zope.publisher.browser import TestRequest
@@ -27,17 +28,21 @@ from zope.app.interfaces.file import IWriteFile
 from zope.app.interfaces.content.zpt import IZPTPage
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.publisher.interfaces.http import IHTTPPresentation
 from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.pagetemplate.tests.util import normalize_xml
 from zope.schema import getFieldNamesInOrder
 from zope.app.interfaces.container import IReadContainer
-from zope.schema.interfaces import IText
+from zope.schema.interfaces import IText, ITextLine, IDatetime
 from zope.app.dav import propfind
 from zope.app.interfaces.dav import IDAVSource, IDAVSchema
 from zope.app.dav.widget import SimpleDAVWidget
 from zope.app.dav.globaldavschemaservice import provideInterface
 from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
+from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
+from zope.app.attributeannotations import AttributeAnnotations
 
 class Folder:
 
@@ -70,7 +75,7 @@ class File:
 
 class FooZPT:
 
-    __implements__ = IZPTPage
+    __implements__ = (IAnnotatable, IZPTPage)
 
     def getSource(self):
         return 'bla bla bla'
@@ -115,13 +120,24 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         root.setObject('folder', folder)
         self.zpt = traverse(root, 'zpt')
         self.file = traverse(root, 'file')
-        provideView=getService(None, Views).provideView
+        provideView = getService(None, Views).provideView
+        setDefaultView = getService(None, Views).setDefaultViewName
         provideView(None, 'absolute_url', IHTTPPresentation,
                     [AbsoluteURL])
         provideView(None, 'PROPFIND', IHTTPPresentation,
                     [propfind.PROPFIND])
-        provideView(IText, 'view', IHTTPPresentation,
+        provideView(IText, 'view', IBrowserPresentation,
                     [SimpleDAVWidget])
+        provideView(ITextLine, 'view', IBrowserPresentation,
+                    [SimpleDAVWidget])
+        provideView(IDatetime, 'view', IBrowserPresentation,
+                    [SimpleDAVWidget])
+        setDefaultView(IText, IBrowserPresentation, 'view')
+        setDefaultView(ITextLine, IBrowserPresentation, 'view')
+        setDefaultView(IDatetime, IBrowserPresentation, 'view')
+        provideAdapter = getService(None, Adapters).provideAdapter
+        provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
+        provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
         provideInterface('DAV:', IDAVSchema)
         provideInterface('http://www.purl.org/dc/1.1', IZopeDublinCore)
 
@@ -204,6 +220,89 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         # Check HTTP Response
         self.assertEqual(request.response.getStatus(), 400)
         self.assertEqual(pfind.getDepth(), 'full')
+
+    def test_davpropdctitle(self):
+        root = self.rootFolder
+        zpt = traverse(root, 'zpt')
+        dc = getAdapter(zpt, IZopeDublinCore)
+        dc.title = u'Test Title'
+        body = '''<?xml version="1.0" encoding="utf-8"?>
+        <propfind xmlns="DAV:">
+        <prop xmlns:DC="http://www.purl.org/dc/1.1">
+        <DC:title />
+        </prop>
+        </propfind>
+        '''
+
+        request = _createRequest(body=body,
+                                 headers={'Content-type':'text/xml',
+                                          'Depth':'0'})
+
+        resource_url = str(getView(zpt, 'absolute_url', request))
+        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        <multistatus xmlns="DAV:">
+        <response>
+        <href>%(resource_url)s</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <title xmlns="a0">Test Title</title>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        </multistatus>
+        ''' % {'resource_url':resource_url}
+
+        pfind = propfind.PROPFIND(zpt, request)
+        pfind.PROPFIND()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(pfind.getDepth(), '0')
+        s1 = normalize_xml(request.response._body)
+        s2 = normalize_xml(expect)
+        self.assertEqual(s1, s2)
+
+    def test_davpropdccreated(self):
+        root = self.rootFolder
+        zpt = traverse(root, 'zpt')
+        dc = getAdapter(zpt, IZopeDublinCore)
+        dc.created = datetime.utcnow()
+        body = '''<?xml version="1.0" encoding="utf-8"?>
+        <propfind xmlns="DAV:">
+        <prop xmlns:DC="http://www.purl.org/dc/1.1">
+        <DC:created />
+        </prop>
+        </propfind>
+        '''
+
+        request = _createRequest(body=body,
+                                 headers={'Content-type':'text/xml',
+                                          'Depth':'0'})
+
+        resource_url = str(getView(zpt, 'absolute_url', request))
+        expect = '''<?xml version="1.0" encoding="utf-8"?>
+        <multistatus xmlns="DAV:">
+        <response>
+        <href>%(resource_url)s</href>
+        <propstat>
+        <prop xmlns:a0="http://www.purl.org/dc/1.1">
+        <created xmlns="a0">%(created)s</created>
+        </prop>
+        <status>HTTP/1.1 200 OK</status>
+        </propstat>
+        </response>
+        </multistatus>
+        ''' % {'resource_url':resource_url,
+               'created': dc.created }
+
+        pfind = propfind.PROPFIND(zpt, request)
+        pfind.PROPFIND()
+        # Check HTTP Response
+        self.assertEqual(request.response.getStatus(), 207)
+        self.assertEqual(pfind.getDepth(), '0')
+        s1 = normalize_xml(request.response._body)
+        s2 = normalize_xml(expect)
+        self.assertEqual(s1, s2)
 
     def test_davpropname(self):
         root = self.rootFolder

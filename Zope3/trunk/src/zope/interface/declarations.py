@@ -1,7 +1,7 @@
 ##############################################################################
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.7 2003/05/15 19:07:44 jim Exp $
+$Id: declarations.py,v 1.8 2003/05/21 17:26:39 sidnei Exp $
 """
 
 import sys
@@ -35,7 +35,7 @@ heap = 1 << 9
 # We have 3 implementations of interface specifications:
 #
 # ImplementsSpecification
-#   Holds specifications of interfaces of instances of classes. 
+#   Holds specifications of interfaces of instances of classes.
 #
 # ProvidesSpecification
 #   These are specifications for interfaces directly provided by
@@ -61,7 +61,7 @@ class InterfaceSpecificationBase:
 
 
 # This function is needed by _zope_interface_ospec and, so, must be
-# defined before _zope_interface_ospec is imported. 
+# defined before _zope_interface_ospec is imported.
 def classImplements(cls, *interfaces):
     """Declare additional interfaces implemented for instances of a class
 
@@ -111,7 +111,7 @@ def classImplements(cls, *interfaces):
                    )
 
 # This function is needed by _zope_interface_ospec and, so, must be
-# defined before _zope_interface_ospec is imported. 
+# defined before _zope_interface_ospec is imported.
 def proxySig(cls):
     # Get an implementation signature from a proxied class
 
@@ -139,7 +139,7 @@ def proxySig(cls):
         return sig
 
 # This function is needed by _zope_interface_ospec and, so, must be
-# defined before _zope_interface_ospec is imported. 
+# defined before _zope_interface_ospec is imported.
 def oldSpecSig(cls, implements):
     implements = OnlyImplementsSpecification(implements)
     _setImplements(cls, implements)
@@ -287,6 +287,7 @@ class InterfaceSpecification(InterfaceSpecificationBase):
           1
         """
         return interface in self.interfaces
+
     def __iter__(self):
         """Return an iterator for the interfaces in the specification
 
@@ -315,7 +316,7 @@ class InterfaceSpecification(InterfaceSpecificationBase):
         """
 
         return iter(self.interfaces)
-        
+
     def flattened(self):
         """Return an iterator of all included and extended interfaces
 
@@ -349,6 +350,7 @@ class InterfaceSpecification(InterfaceSpecificationBase):
         """
 
         return iter(self.__iro__)
+
     def extends(self, interface):
         """Does the specification extend the given interface?
 
@@ -383,6 +385,7 @@ class InterfaceSpecification(InterfaceSpecificationBase):
 
         """
         return interface in self.set
+
     def __add__(self, other):
         """Add twp specifications or a specification and an interface
 
@@ -552,7 +555,7 @@ class ProvidesSpecification(InterfaceSpecification):
             r = cls.__dict__.get('__provides__')
             if r is not None:
                 assert(r is self)
-                return r 
+                return r
 
         raise AttributeError, '__provides__'
 
@@ -661,7 +664,7 @@ class ObjectSpecification(ObjectSpecificationBase):
         spec = getattr(self, '_specslot', self)
         if spec is not self:
             return spec
-        
+
         ob = self.ob
         provides = getattr(ob, '__provides__', None)
         if provides is not None:
@@ -714,11 +717,11 @@ def providedBy(ob):
         # descriptors.  We'll make sure we got one by trying to get
         # the only attribute, which all specs have.
         r.only
-        
+
     except AttributeError:
         # No descriptor, so fall back to a plain object spec
         r = ObjectSpecification(ob)
-        
+
     return r
 
 def classImplementsOnly(cls, *interfaces):
@@ -876,7 +879,7 @@ def implementedBy(class_):
 
     return InterfaceSpecification(_gatherSpecs(class_, []))
 
-        
+
 
 def directlyProvidedBy(object):
     """Return the interfaces directly provided by the given object
