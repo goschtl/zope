@@ -36,7 +36,9 @@ The following command line options are provided:
 
 -r TAG, --revision-tag=TAG
   Generate the distribution using the CVS tag `TAG` instead of the
-  ``HEAD`` tag.
+  ``HEAD`` tag.  The revision tag is used to generate the release
+  version if that's not specified directly and the tag follows the
+  Zope Corporation tagging convention (see below).
 
 -s
   Include required support packages in the distribution.  This is the
@@ -47,6 +49,9 @@ The following command line options are provided:
   This can be used to generate smaller distributions when the
   ``setuptools`` and ``zpkgtools`` packages are known to be available
   on target systems.
+
+-v VERSION
+  Set the version number of the release to `VERSION`.
 
 If neither **-C** nor **-f** is specified on the command line, a
 default configuration file is loaded if it exists.  This is
@@ -130,6 +135,51 @@ map itself is used as the base for resolving ``repository:`` URLs.
 
 
 .. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/
+
+
+Zope Corporation Tagging Convention
+-----------------------------------
+
+When **zpkg** is passed a **-r**/**--revision-tag** option but not a
+**-v** option to explicitly set a version for the release, it will
+attempt to generate a version number from the revision tag.  For this
+to be successful, the revision tag must follow a convention used
+within Zope Corporation.
+
+Release tags which follow this convention all have the form::
+
+  *name*-*encoded-version*
+
+where *name* is the name of the package being released and
+*encoded-version* is the result of a simple transformation of the
+version number.  **zpkg** doesn't ever care about the name used in the
+tag, only about the version information.  It is significant that the
+version information follows the last hyphen in the tag name; it *must*
+be the last part of the tag.  The encoded version is the version
+number with all periods replaced by underscore characters; it may
+prove that the replacement isn't necessary when working with
+Subversion, though it is required for CVS.  The version number must
+conform to a pattern of two to four numbers separated by periods,
+optionally followed by one or more letters, which in turn may be
+optionally followed by another number.  Reasonable examples include
+``1.0``, ``0.1``, ``1.1.42``, ``2.3.4.5``, ``1.0a``, ``1.0a1``, and
+``5.4.3beta2``.
+
+For example, for the package ``mypkg``, the following tags correspond
+to the following version numbers:
+
+==================  ============
+Tag                 Version
+==================  ============
+mypkg-1_0           1.0
+mypkg-0_1           0.1
+mypkg-1_1_42        1.1.42
+mypkg-2_3_4_5       2.3.4.5
+mypkg-1_0a          1.0a
+mypkg-1_0a1         1.0a1
+mypkg-5_4_3_0beta2  5.4.3.0beta2
+==================  ============
+
 
 Support Packages
 ----------------
