@@ -622,7 +622,6 @@ def process_args(argv=None):
             print "gc threshold:", gc.get_threshold()
 
     if gcflags:
-        import gc
         val = 0
         for flag in gcflags:
             v = getattr(gc, flag, None)
