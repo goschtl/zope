@@ -109,7 +109,8 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
             self.assert_(IErrorReportingUtility.providedBy(
                 traverse(package, 'ErrorReporting')))
             get_transaction().commit()
-            cx.close()
+
+        cx.close()
 
 def test_suite():
     suite = unittest.TestSuite()

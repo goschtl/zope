@@ -140,7 +140,8 @@ def bootStrapSubscriber(event):
             root_folder.setSiteManager(site_manager)
 
         get_transaction().commit()
-        connection.close()
+
+    connection.close()
 
 ########################################################################
 ########################################################################
