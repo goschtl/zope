@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: unauthorized.py,v 1.6 2003/06/07 06:54:24 stevea Exp $
+$Id: unauthorized.py,v 1.7 2003/06/30 16:26:38 jeremy Exp $
 """
 
 from types import StringType
@@ -69,6 +69,7 @@ class Unauthorized(ZopeError):
         elif self.value is not None:
             return ("You are not allowed to access %s in this context"
                     % self.getValueName())
+        return "Your are not authorized"
 
 
     def getValueName(self):
