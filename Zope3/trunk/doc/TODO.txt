@@ -53,9 +53,6 @@ Things to do for the next release (in no particular order)
 
   - Query
 
-- Sort out "usage". The basic idea is very simple, but the 
-  implementation is too implicit and complex.
-
 - Redo the way names input in add forms.  Rather than have adding
   provide an add button, either:
 

@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+    - Removed usages. We do not need them. Instead the macroname is now
+      available in TAL. The standard macros can now have aliases, so that you
+      can provide different macro names and still use the same template. 
+
     - The macro name is now available via 'macroname' (reserved name) in the
       TALES namespace.
 
