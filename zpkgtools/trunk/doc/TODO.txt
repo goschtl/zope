@@ -12,7 +12,8 @@ Things that need to be done
   - Split the distro-builder and setup.py runtime support into two
     separate packages so there's not so much support code in
     distributions or checkouts that use this as the foundation for
-    setup.py.
+    setup.py.  (Roughed out in a sandbox; will commit after moving to
+    Subversion.)
 
   - When building a distribution that specifies explicit inclusions,
     the packaging metadata (`*.cfg` except `PACKAGE.cfg`) files should
