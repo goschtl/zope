@@ -2,6 +2,8 @@ vocabulary
 
   File zope/app/schema/meta.zcml, lines 5 - 9.
 
+  Handler: zope.app.schema.metaconfigure.vocabulary
+
   Define a named vocabulary.
 
   This associates a vocabulary name in the global vocabulary service with a

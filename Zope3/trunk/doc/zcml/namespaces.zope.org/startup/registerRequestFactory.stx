@@ -2,6 +2,8 @@ registerRequestFactory
 
   File zope/app/process/meta.zcml, lines 5 - 9.
 
+  Handler: zope.app.process.metaconfigure.registerRequestFactory
+
   Register a particular request factory that can be used by a server.
 
   Attributes

@@ -2,6 +2,8 @@ defaultView
 
   File zope/app/publisher/browser/meta.zcml, lines 45 - 49.
 
+  Handler: zope.app.publisher.browser.metaconfigure.defaultView
+
   The name of the view that should be the default.
 
   This name refers to view that should be the view used by default (if no view

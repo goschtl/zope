@@ -2,6 +2,8 @@ icon
 
   File zope/app/publisher/browser/meta.zcml, lines 143 - 147.
 
+  Handler: zope.app.publisher.browser.icon.IconDirective
+
   Define an icon for an interface
 
   Attributes
@@ -30,7 +32,7 @@ icon
 
       A resource containing the icon.
 
-    alt -- TextLine (optional, default=None)
+    title -- MessageID (optional, default=None)
 
       Title
 

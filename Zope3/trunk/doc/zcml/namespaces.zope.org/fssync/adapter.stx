@@ -2,6 +2,8 @@ adapter
 
   File zope/app/fssync/meta.zcml, lines 5 - 9.
 
+  Handler: zope.app.fssync.metaconfigure.registerFSRegistry
+
   
 
   Attributes

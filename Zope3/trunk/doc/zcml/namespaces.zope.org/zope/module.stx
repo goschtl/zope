@@ -1,8 +1,10 @@
 module
 
-  File zope/app/security/meta.zcml, lines 14 - 21.
+  File zope/app/security/meta.zcml, lines 30 - 34.
 
-  
+  Handler: zope.configuration.config.GroupingContextDecorator
+
+  Group security declarations about a module
 
   Attributes
 
@@ -10,5 +12,5 @@ module
 
       Module
 
-      
+      Pointer to the module object.
 

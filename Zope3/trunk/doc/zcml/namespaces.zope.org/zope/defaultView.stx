@@ -1,56 +1,15 @@
 defaultView
 
-  File zope/app/component/meta.zcml, lines 37 - 41.
+  File zope/app/component/meta.zcml, lines 44 - 48.
 
-  Register a view for a component
+  Handler: zope.app.component.metaconfigure.defaultView
+
+  The name of the view that should be the default.
+
+  This name refers to view that should be the view used by default (if no view
+  name is supplied explicitly).
 
   Attributes
-
-    for -- GlobalObject (optional, default=None)
-
-      The interface this view applies to.
-
-      The view will be for all objects that implement this interface. If this
-      is not supplied, the view applies to all objects (XXX this ought to
-      change).
-
-    permission -- Id (optional, default=None)
-
-      Permission
-
-      The permission needed to use the view.
-
-    class -- GlobalObject (optional, default=None)
-
-      Class
-
-      A class that provides attributes used by the view.
-
-    layer -- TextLine (optional, default=None)
-
-      The layer the view is in.
-
-      A skin is composed of layers. It is common to put skin specific views in
-      a layer named after the skin. If the 'layer' attribute is not supplied,
-      it defaults to 'default'.
-
-    allowed_interface -- Tokens (optional, default=None)
-
-      Interface that is also allowed if user has permission.
-
-      By default, 'permission' only applies to viewing the view and any
-      possible sub views. By specifying this attribute, you can make the
-      permission also apply to everything described in the supplied interface.
-
-      Multiple interfaces can be provided, separated by whitespace.
-
-    allowed_attributes -- Tokens (optional, default=None)
-
-      View attributes that are also allowed if user has permission.
-
-      By default, 'permission' only applies to viewing the view and any
-      possible sub views. By specifying 'allowed_attributes', you can make the
-      permission also apply to the extra attributes on the view object.
 
     name -- TextLine (required)
 
@@ -58,7 +17,7 @@ defaultView
 
       The name shows up in URLs/paths. For example 'foo'.
 
-    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b20c>)
+    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface>)
 
       The interface this component provides.
 
@@ -71,9 +30,10 @@ defaultView
 
       
 
-    factory -- Tokens (optional, default=None)
+    for -- GlobalObject (optional, default=None)
 
-      Factory
+      The interface this view is the default for.
 
-      
+      The view is the default view for the supplied interface. If this is not
+      supplied, the view applies to all objects (XXX this ought to change).
 

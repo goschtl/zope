@@ -2,6 +2,8 @@ namespace
 
   File zope/app/pagetemplate/meta.zcml, lines 8 - 11.
 
+  Handler: zope.app.pagetemplate.metaconfigure.namespace
+
   Define a new tales namespace A namespace is defined by providing a prefix
   and an interface. A handler for the namespace will be obtained by looking up
   an adapter for the given interface.

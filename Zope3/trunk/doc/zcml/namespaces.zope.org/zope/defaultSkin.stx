@@ -1,6 +1,8 @@
 defaultSkin
 
-  File zope/app/component/meta.zcml, lines 55 - 59.
+  File zope/app/component/meta.zcml, lines 62 - 66.
+
+  Handler: zope.app.component.metaconfigure.defaultSkin
 
   Register a skin
 

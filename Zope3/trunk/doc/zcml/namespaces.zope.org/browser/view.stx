@@ -2,6 +2,8 @@ view
 
   File zope/app/publisher/browser/meta.zcml, lines 9 - 25.
 
+  Handler: zope.app.publisher.browser.viewmeta.view
+
   The view directive defines a view that has subpages.
 
   The pages provided by the defined view are accessed by first traversing to
@@ -9,15 +11,7 @@ view
 
   Attributes
 
-    for -- GlobalObject (optional, default=None)
-
-      The interface this view applies to.
-
-      The view will be for all objects that implement this interface. If this
-      is not supplied, the view applies to all objects (XXX this ought to
-      change).
-
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       Permission
 
@@ -55,15 +49,11 @@ view
       possible sub views. By specifying 'allowed_attributes', you can make the
       permission also apply to the extra attributes on the view object.
 
-    usage -- TextLine (optional, default=u'')
+    for -- GlobalObject (optional, default=None)
 
-      The template usage top-level variable
+      The interface this view is for.
 
-      See the usage documentation in the README.txt in the
-      zope/app/browser/skins directory. If this view is associated with a menu
-      item, this attribute should not be supplied as the view will get its
-      usage from the menu the menu item is registered to. This attribute is
-      available for views not associated with a menu item.
+      
 
     name -- TextLine (optional, default=u'')
 
@@ -85,7 +75,7 @@ view
 
       This attribute must be supplied if a menu attribute is supplied.
 
-    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b20c>)
+    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface>)
 
       The interface this view provides.
 
@@ -98,6 +88,8 @@ view
     page
 
       File zope/app/publisher/browser/meta.zcml, lines 15 - 18.
+
+      Handler: zope.app.publisher.browser.viewmeta.page
 
       Subdirective to IViewDirective.
 
@@ -129,6 +121,8 @@ view
     defaultPage
 
       File zope/app/publisher/browser/meta.zcml, lines 20 - 23.
+
+      Handler: zope.app.publisher.browser.viewmeta.defaultPage
 
       Subdirective to IViewDirective.
 

@@ -2,6 +2,8 @@ i18n-resource
 
   File zope/app/publisher/browser/meta.zcml, lines 88 - 99.
 
+  Handler: zope.app.publisher.browser.i18nresourcemeta.I18nResource
+
   Defines an i18n'd resource.
 
   Attributes
@@ -13,7 +15,7 @@ i18n-resource
       For information on layers, see the documentation for the skin directive.
       Defaults to "default".
 
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       The permission needed to access the resource.
 
@@ -43,6 +45,8 @@ i18n-resource
 
       File zope/app/publisher/browser/meta.zcml, lines 94 - 97.
 
+      Handler: zope.app.publisher.browser.i18nresourcemeta.translation
+
       Subdirective to II18nResourceDirective.
 
       Attributes
@@ -54,7 +58,7 @@ i18n-resource
           For information on layers, see the documentation for the skin
           directive. Defaults to "default".
 
-        permission -- Id (optional, default=None)
+        permission -- Permission (optional, default=None)
 
           The permission needed to access the resource.
 

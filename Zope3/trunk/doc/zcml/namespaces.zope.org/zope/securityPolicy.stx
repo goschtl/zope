@@ -1,6 +1,8 @@
 securityPolicy
 
-  File zope/app/security/meta.zcml, lines 7 - 12.
+  File zope/app/security/meta.zcml, lines 23 - 28.
+
+  Handler: zope.app.security.metaconfigure.securityPolicy
 
   Defines the security policy that will be used for Zope.
 

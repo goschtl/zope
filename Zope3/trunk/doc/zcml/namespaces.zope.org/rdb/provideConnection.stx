@@ -2,6 +2,8 @@ provideConnection
 
   File zope/app/rdb/meta.zcml, lines 5 - 9.
 
+  Handler: zope.app.rdb.metaconfigure.connectionhandler
+
   This directive creates a globale connection to an RDBMS.
 
   Attributes

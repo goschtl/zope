@@ -1,20 +1,20 @@
 view
 
-  File zope/app/component/meta.zcml, lines 31 - 35.
+  File zope/app/component/meta.zcml, lines 38 - 42.
+
+  Handler: zope.app.component.metaconfigure.view
 
   Register a view for a component
 
   Attributes
 
-    for -- GlobalObject (optional, default=None)
+    for -- Tokens (required)
 
-      The interface this view applies to.
+      Specifications of the objects to be viewed
 
-      The view will be for all objects that implement this interface. If this
-      is not supplied, the view applies to all objects (XXX this ought to
-      change).
+      This should be a list of interfaces or classes
 
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       Permission
 
@@ -58,7 +58,7 @@ view
 
       The name shows up in URLs/paths. For example 'foo'.
 
-    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b20c>)
+    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface>)
 
       The interface this component provides.
 

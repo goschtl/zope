@@ -2,6 +2,8 @@ skin
 
   File zope/app/publisher/browser/meta.zcml, lines 137 - 141.
 
+  Handler: zope.app.component.metaconfigure.skin
+
   Defines a browser skin
 
   Attributes

@@ -1,6 +1,8 @@
 serviceType
 
-  File zope/app/component/meta.zcml, lines 67 - 71.
+  File zope/app/component/meta.zcml, lines 74 - 78.
+
+  Handler: zope.app.component.metaconfigure.serviceType
 
   
 

@@ -2,6 +2,8 @@ groupingDirective
 
   Manually registered in zope/configuration/config.py
 
+  Handler: zope.configuration.config.defineGroupingDirective
+
   Information that all top-level directives (not subdirectives) have
 
   Attributes

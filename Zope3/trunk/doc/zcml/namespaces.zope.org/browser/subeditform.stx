@@ -1,20 +1,12 @@
 subeditform
 
-  File zope/app/browser/form/meta.zcml, lines 40 - 44.
+  File zope/app/form/browser/meta.zcml, lines 40 - 44.
+
+  Handler: zope.app.form.browser.metaconfigure.SubeditFormDirective
 
   Define a subedit form
 
   Attributes
-
-    usage -- TextLine (optional, default=u'')
-
-      The template usage top-level variable
-
-      See the usage documentation in the README.txt in the
-      zope/app/browser/skins directory. If this view is associated with a menu
-      item, this attribute should not be supplied as the view will get its
-      usage from the menu the menu item is registered to. This attribute is
-      available for views not associated with a menu item.
 
     name -- TextLine (required)
 
@@ -40,7 +32,7 @@ subeditform
       If the for attribute is specified, then the objects views must implement
       or be adaptable to the schema.
 
-    permission -- Id (required)
+    permission -- Permission (required)
 
       Permission
 

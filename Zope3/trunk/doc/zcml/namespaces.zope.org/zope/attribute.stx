@@ -1,5 +1,7 @@
 attribute
 
+  Handler: zope.configuration.backward.Attribute
+
   
 
   Attributes

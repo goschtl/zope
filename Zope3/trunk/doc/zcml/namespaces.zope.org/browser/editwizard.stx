@@ -1,6 +1,8 @@
 editwizard
 
-  File zope/app/browser/form/meta.zcml, lines 21 - 32.
+  File zope/app/form/browser/meta.zcml, lines 21 - 32.
+
+  Handler: zope.app.form.browser.metaconfigure.EditWizardDirective
 
   Define an automatically generated edit wizard (multi-page form).
 
@@ -8,16 +10,6 @@ editwizard
   based on a schema.
 
   Attributes
-
-    usage -- TextLine (optional, default=u'')
-
-      The template usage top-level variable
-
-      See the usage documentation in the README.txt in the
-      zope/app/browser/skins directory. If this view is associated with a menu
-      item, this attribute should not be supplied as the view will get its
-      usage from the menu the menu item is registered to. This attribute is
-      available for views not associated with a menu item.
 
     name -- TextLine (required)
 
@@ -43,7 +35,7 @@ editwizard
       If the for attribute is specified, then the objects views must implement
       or be adaptable to the schema.
 
-    permission -- Id (required)
+    permission -- Permission (required)
 
       Permission
 
@@ -107,7 +99,9 @@ editwizard
 
     pane
 
-      File zope/app/browser/form/meta.zcml, lines 27 - 30.
+      File zope/app/form/browser/meta.zcml, lines 27 - 30.
+
+      Handler: zope.app.form.browser.metaconfigure.pane
 
       Define a Pane (page) of the wizard
 

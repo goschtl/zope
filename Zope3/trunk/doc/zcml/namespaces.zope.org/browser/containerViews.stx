@@ -1,6 +1,8 @@
 containerViews
 
-  File zope/app/browser/container/meta.zcml, lines 8 - 12.
+  File zope/app/container/browser/meta.zcml, lines 8 - 12.
+
+  Handler: zope.app.container.browser.metaconfigure.containerViews
 
   Define a container views
 

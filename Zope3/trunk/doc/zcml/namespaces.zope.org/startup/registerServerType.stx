@@ -2,6 +2,8 @@ registerServerType
 
   File zope/app/process/meta.zcml, lines 11 - 15.
 
+  Handler: zope.app.process.metaconfigure.registerServerType
+
   Register a server type.
 
   Attributes

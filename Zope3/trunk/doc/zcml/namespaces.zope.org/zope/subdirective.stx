@@ -1,5 +1,7 @@
 subdirective
 
+  Handler: zope.configuration.backward.Subdirective
+
   Information common to all directive definitions have
 
   Attributes

@@ -1,6 +1,8 @@
 class
 
-  File zope/app/component/meta.zcml, lines 79 - 105.
+  File zope/app/component/meta.zcml, lines 86 - 112.
+
+  Handler: zope.app.component.contentdirective.ContentDirective
 
   Make statements about a class
 
@@ -17,7 +19,9 @@ class
 
     implements
 
-      File zope/app/component/meta.zcml, lines 85 - 88.
+      File zope/app/component/meta.zcml, lines 92 - 95.
+
+      Handler: zope.app.component.contentdirective.implements
 
       Declare that the class given by the content directive's class attribute
       implements a given interface
@@ -34,14 +38,16 @@ class
 
     require
 
-      File zope/app/component/meta.zcml, lines 90 - 93.
+      File zope/app/component/meta.zcml, lines 97 - 100.
+
+      Handler: zope.app.component.contentdirective.require
 
       Indicate that the a specified list of names or the names in a given
       Interface require a given permission for access.
 
       Attributes
 
-        permission -- Id (optional, default=None)
+        permission -- Permission (optional, default=None)
 
           Permission
 
@@ -84,7 +90,9 @@ class
 
     allow
 
-      File zope/app/component/meta.zcml, lines 95 - 98.
+      File zope/app/component/meta.zcml, lines 102 - 105.
+
+      Handler: zope.app.component.contentdirective.allow
 
       Declare a part of the class to be publicly viewable (that is, requires
       the zope.Public permission). Only one of the following two attributes
@@ -108,7 +116,9 @@ class
 
     factory
 
-      File zope/app/component/meta.zcml, lines 100 - 103.
+      File zope/app/component/meta.zcml, lines 107 - 110.
+
+      Handler: zope.app.component.contentdirective.factory
 
       Specify the factory used to create this content object
 
@@ -121,13 +131,6 @@ class
           the identifier for this factory in the ZMI factory identification
           scheme. If not given, defaults to the literal string given as the
           content directive's 'class' attribute.
-
-        permission -- Id (optional, default=None)
-
-          Permission
-
-          permission id required to use this factory. Although optional, this
-          attribute should normally be specified.
 
         title -- MessageID (optional, default=None)
 

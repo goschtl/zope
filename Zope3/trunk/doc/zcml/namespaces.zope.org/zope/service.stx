@@ -1,6 +1,8 @@
 service
 
-  File zope/app/component/meta.zcml, lines 73 - 77.
+  File zope/app/component/meta.zcml, lines 80 - 84.
+
+  Handler: zope.app.component.metaconfigure.service
 
   Register a service
 
@@ -12,7 +14,7 @@ service
 
       
 
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       Permission
 

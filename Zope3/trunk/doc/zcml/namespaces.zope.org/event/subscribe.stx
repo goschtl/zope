@@ -2,6 +2,8 @@ subscribe
 
   File zope/app/event/meta.zcml, lines 8 - 12.
 
+  Handler: zope.app.event.metaconfigure.subscribe
+
   Subscribe to events
 
   Attributes

@@ -2,6 +2,8 @@ defaultView
 
   File zope/app/publisher/xmlrpc/meta.zcml, lines 11 - 15.
 
+  Handler: zope.app.publisher.xmlrpc.metaconfigure.defaultView
+
   The name of the view that should be the default. This name refers to view
   that should be the view used by default (if no view name is supplied
   explicitly).

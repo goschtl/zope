@@ -2,6 +2,9 @@ menuItem
 
   File zope/app/publisher/browser/meta.zcml, lines 123 - 127.
 
+  Handler:
+  zope.app.publisher.browser.globalbrowsermenuservice.menuItemDirective
+
   Define one menu item
 
   Attributes
@@ -17,12 +20,6 @@ menuItem
       Interface
 
       The interface the menu items are defined for
-
-    action -- TextLine (required)
-
-      The relative url to use if the item is selected
-
-      The url is relative to the object the menu is being displayed for.
 
     title -- MessageID (required)
 
@@ -62,4 +59,10 @@ menuItem
 
       The menu item will not be displayed if there is a filter and the filter
       evaluates to a false value.
+
+    action -- TextLine (required)
+
+      The relative url to use if the item is selected
+
+      The url is relative to the object the menu is being displayed for.
 

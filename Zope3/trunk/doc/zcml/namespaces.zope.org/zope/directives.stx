@@ -1,5 +1,7 @@
 directives
 
+  Handler: zope.configuration.config.DirectivesHandler
+
   Schema for the ``directives`` directive
 
   Attributes
@@ -8,5 +10,5 @@ directives
 
       Namespace
 
-      The namespace that directives' names will be defined in
+      The namespace in which directives' names will be defined
 

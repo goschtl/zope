@@ -2,6 +2,9 @@ menuItems
 
   File zope/app/publisher/browser/meta.zcml, lines 110 - 121.
 
+  Handler:
+  zope.app.publisher.browser.globalbrowsermenuservice.menuItemsDirective
+
   Define a group of browser menu items
 
   This directive is useful when many menu items are defined for the same
@@ -28,15 +31,11 @@ menuItems
 
       File zope/app/publisher/browser/meta.zcml, lines 116 - 119.
 
+      Handler: zope.app.publisher.browser.globalbrowsermenuservice.menuItem
+
       Define a menu item within a group of menu items
 
       Attributes
-
-        action -- TextLine (required)
-
-          The relative url to use if the item is selected
-
-          The url is relative to the object the menu is being displayed for.
 
         title -- MessageID (required)
 
@@ -76,4 +75,10 @@ menuItems
 
           The menu item will not be displayed if there is a filter and the
           filter evaluates to a false value.
+
+        action -- TextLine (required)
+
+          The relative url to use if the item is selected
+
+          The url is relative to the object the menu is being displayed for.
 

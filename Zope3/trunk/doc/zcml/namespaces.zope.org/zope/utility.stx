@@ -1,6 +1,8 @@
 utility
 
-  File zope/app/component/meta.zcml, lines 19 - 23.
+  File zope/app/component/meta.zcml, lines 26 - 30.
+
+  Handler: zope.app.component.metaconfigure.utility
 
   Register a utility
 
@@ -12,7 +14,7 @@ utility
 
       
 
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       Permission
 

@@ -2,6 +2,8 @@ interface
 
   File zope/app/component/meta.zcml, lines 7 - 11.
 
+  Handler: zope.app.component.metaconfigure.interface
+
   Define an interface
 
   Attributes

@@ -1,12 +1,18 @@
 require
 
-  File zope/app/security/meta.zcml, lines 36 - 48.
+  File zope/app/security/meta.zcml, lines 42 - 46.
 
-  
+  Handler: zope.app.security.metaconfigure.require
+
+  Require a permission to access selected module attributes
+
+  The given permission is required to access any names provided directly in
+  the attributes attribute or any names defined by interfaces listed in the
+  interface attribute.
 
   Attributes
 
-    permission -- Id (required)
+    permission -- Permission (required)
 
       Permission ID
 

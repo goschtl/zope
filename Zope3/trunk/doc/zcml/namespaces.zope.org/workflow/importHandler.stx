@@ -2,6 +2,8 @@ importHandler
 
   File zope/app/workflow/meta.zcml, lines 5 - 9.
 
+  Handler: zope.app.workflow.metaconfigure.importHandlerDirective
+
   Register an Import/Export Handler, that is able to load/save a XML
   Representation of a ProcessDefinition and create a persistent Instance for
   it.

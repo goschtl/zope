@@ -1,44 +1,28 @@
-The grant directive
+grant
 
-Overview
+  File zope/app/securitypolicy/meta.zcml, lines 4 - 7.
 
-  It is used to do the following:
+  Handler: zope.app.securitypolicy.metaconfigure.grant
 
-    * grant permissions to principals
+  Grant Permissions to roles and principals and roles to principals.
 
-    * associate permissions with roles
+  Attributes
 
-    * assign roles to principals
+    principal -- Id (optional, default=None)
 
-  Ultimately, this is all to do with granting permissions, so the grant
-  directive is used for all of these.
+      Principal
 
-Attributes
+      Specifies the Principal to be mapped.
 
-  The grant directive has three possible attributes
-  
-    * permission, a permission's id
-  
-    * principal, a principal's id
-  
-    * role, a role's id
-  
-  However, only these combinations are valid
-  
-    * permission - role
-    
-    * permission - principal
-    
-    * role - principal
+    permission -- Permission (optional, default=None)
 
-  Note that the permissions, principals and roles need to be defined
-  elsewhere using the permission, role and principal directives.
+      Permission
 
-Examples
+      Specifies the Permission to be mapped.
 
-  Here are some examples of using the grant directive::
-  
-    <grant permission="zope.View" principal="zope.Bob" />
-  
-    <grant role="zope.Manager" principal="zope.Bob" />
-    
+    role -- Id (optional, default=None)
+
+      Role
+
+      Specifies the Role to be mapped.
+

@@ -1,6 +1,8 @@
 principal
 
-  File zope/app/security/registries/meta.zcml, lines 11 - 15.
+  File zope/app/security/meta.zcml, lines 11 - 15.
+
+  Handler: zope.app.security.metaconfigure.principal
 
   Define a new principal.
 

@@ -2,39 +2,34 @@ addMenuItem
 
   File zope/app/publisher/browser/meta.zcml, lines 149 - 153.
 
+  Handler: zope.app.publisher.browser.metaconfigure.addMenuItem
+
   Define an add-menu item
 
   Attributes
 
-    class -- GlobalObject (optional, default=None)
-
-      Class
-
-      A class to be used as a factory for creating new objects
-
-    factory -- GlobalObject (optional, default=None)
-
-      Factory
-
-      A factory for creating new objects
-
-    title -- TextLine (required)
+    title -- MessageID (required)
 
       Title
 
-      A one-line description of the objects to be added
+      The text to be displayed for the menu item
 
-    description -- Text (optional, default=None)
+    description -- MessageID (optional, default=None)
 
-      Text
+      A longer explanation of the menu item
 
-      A multi-line description of the objects to be added
+      A UI may display this with the item or display it when the user requests
+      more assistance.
 
     permission -- Id (optional, default=None)
 
-      The permission needed to add an object.
+      The permission needed access the item
 
-      
+      This can usually be inferred by the system, however, doing so may be
+      expensive. When displaying a menu, the system tries to traverse to the
+      URLs given in each action to determine whether the url is accessible to
+      the current user. This can be avoided if the permission is given
+      explicitly.
 
     filter -- TextLine (optional, default=None)
 
@@ -51,6 +46,18 @@ addMenuItem
 
       The menu item will not be displayed if there is a filter and the filter
       evaluates to a false value.
+
+    class -- GlobalObject (optional, default=None)
+
+      Class
+
+      A class to be used as a factory for creating new objects
+
+    factory -- Id (optional, default=None)
+
+      Factory
+
+      A factory id for creating new objects
 
     view -- TextLine (optional, default=None)
 

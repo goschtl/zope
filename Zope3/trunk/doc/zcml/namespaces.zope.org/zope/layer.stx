@@ -1,6 +1,8 @@
 layer
 
-  File zope/app/component/meta.zcml, lines 61 - 65.
+  File zope/app/component/meta.zcml, lines 68 - 72.
+
+  Handler: zope.app.component.metaconfigure.layer
 
   Register a layer
 

@@ -2,6 +2,8 @@ hook
 
   File zope/configuration/meta.zcml, lines 5 - 6.
 
+  Handler: zope.configuration.metaconfigure.hook
+
   schema generated from attributes
 
   Attributes

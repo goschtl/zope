@@ -2,6 +2,8 @@ adapter
 
   File zope/app/component/meta.zcml, lines 13 - 17.
 
+  Handler: zope.app.component.metaconfigure.adapter
+
   Register an adapter
 
   Attributes
@@ -18,13 +20,13 @@ adapter
 
       This attribute specifes the interface the adapter instance must provide.
 
-    for -- GlobalObject (required)
+    for -- Tokens (required)
 
-      Interface the component is used for
+      Specifications to be adapted
 
-      This is the interface from which is being adapted.
+      This should be a list of interfaces or classes
 
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       Permission
 

@@ -1,6 +1,8 @@
 resource
 
-  File zope/app/component/meta.zcml, lines 43 - 47.
+  File zope/app/component/meta.zcml, lines 50 - 54.
+
+  Handler: zope.app.component.metaconfigure.resource
 
   Register a resource
 
@@ -12,7 +14,7 @@ resource
 
       
 
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       Permission
 
@@ -30,7 +32,7 @@ resource
 
       The name shows up in URLs/paths. For example 'foo'.
 
-    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface at 4031b20c>)
+    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface>)
 
       The interface this component provides.
 

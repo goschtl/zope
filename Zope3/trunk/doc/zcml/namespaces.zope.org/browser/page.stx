@@ -2,6 +2,8 @@ page
 
   File zope/app/publisher/browser/meta.zcml, lines 54 - 58.
 
+  Handler: zope.app.publisher.browser.viewmeta.page
+
   The page directive is used to create views that provide a single url or
   page.
 
@@ -10,15 +12,7 @@ page
 
   Attributes
 
-    for -- GlobalObject (optional, default=None)
-
-      The interface this view applies to.
-
-      The view will be for all objects that implement this interface. If this
-      is not supplied, the view applies to all objects (XXX this ought to
-      change).
-
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       Permission
 
@@ -56,15 +50,11 @@ page
       possible sub views. By specifying 'allowed_attributes', you can make the
       permission also apply to the extra attributes on the view object.
 
-    usage -- TextLine (optional, default=u'')
+    for -- GlobalObject (optional, default=None)
 
-      The template usage top-level variable
+      The interface this view is for.
 
-      See the usage documentation in the README.txt in the
-      zope/app/browser/skins directory. If this view is associated with a menu
-      item, this attribute should not be supplied as the view will get its
-      usage from the menu the menu item is registered to. This attribute is
-      available for views not associated with a menu item.
+      
 
     name -- TextLine (required)
 

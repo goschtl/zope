@@ -1,6 +1,8 @@
 skin
 
-  File zope/app/component/meta.zcml, lines 49 - 53.
+  File zope/app/component/meta.zcml, lines 56 - 60.
+
+  Handler: zope.app.component.metaconfigure.skin
 
   Register a skin
 

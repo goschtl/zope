@@ -1,5 +1,7 @@
 configure
 
+  Handler: zope.configuration.zopeconfigure.ZopeConfigure
+
   
 
   Attributes

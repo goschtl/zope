@@ -1,5 +1,7 @@
 directive
 
+  Handler: zope.configuration.backward.Directive
+
   Information common to all directive definitions have
 
   Attributes

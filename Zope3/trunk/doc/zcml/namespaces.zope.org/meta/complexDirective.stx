@@ -2,6 +2,8 @@ complexDirective
 
   Manually registered in zope/configuration/config.py
 
+  Handler: zope.configuration.config.ComplexDirectiveDefinition
+
   Information that all top-level directives (not subdirectives) have
 
   Attributes

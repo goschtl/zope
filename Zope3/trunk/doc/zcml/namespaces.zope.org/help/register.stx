@@ -2,6 +2,8 @@ register
 
   File zope/app/onlinehelp/meta.zcml, lines 5 - 9.
 
+  Handler: zope.app.onlinehelp.metaconfigure.register
+
   Register directive for onlien help topics.
 
   Attributes

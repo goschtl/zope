@@ -1,6 +1,8 @@
 permission
 
-  File zope/app/security/registries/meta.zcml, lines 5 - 9.
+  File zope/app/security/meta.zcml, lines 5 - 9.
+
+  Handler: zope.app.security.metaconfigure.definePermission
 
   Define a new permission.
 

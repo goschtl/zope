@@ -2,19 +2,19 @@ view
 
   File zope/app/publisher/xmlrpc/meta.zcml, lines 5 - 9.
 
+  Handler: zope.app.publisher.xmlrpc.metaconfigure.view
+
   View Directive for XML-RPC methods.
 
   Attributes
 
-    for -- GlobalObject (optional, default=None)
+    for -- Tokens (required)
 
-      The interface this view applies to.
+      Specifications of the objects to be viewed
 
-      The view will be for all objects that implement this interface. If this
-      is not supplied, the view applies to all objects (XXX this ought to
-      change).
+      This should be a list of interfaces or classes
 
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       Permission
 

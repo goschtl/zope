@@ -2,6 +2,8 @@ resourceDirectory
 
   File zope/app/publisher/browser/meta.zcml, lines 82 - 86.
 
+  Handler: zope.app.publisher.browser.resourcemeta.resourceDirectory
+
   Defines a directory containing browser resource
 
   Attributes
@@ -13,7 +15,7 @@ resourceDirectory
       For information on layers, see the documentation for the skin directive.
       Defaults to "default".
 
-    permission -- Id (optional, default=None)
+    permission -- Permission (optional, default=None)
 
       The permission needed to access the resource.
 
