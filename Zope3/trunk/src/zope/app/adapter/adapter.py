@@ -268,7 +268,7 @@ class LocalAdapterService(LocalAdapterRegistry,
         for registration in LocalAdapterRegistry.registrations(self):
             yield registration
 
-        if localOnly is True:
+        if localOnly:
             return
 
         next = self.next
