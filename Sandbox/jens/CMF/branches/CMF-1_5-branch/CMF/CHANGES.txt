@@ -1,6 +1,12 @@
 Post-CMF 1.5.0
 
-  Bug fixes:
+  New Features
+
+    - RegistrationTool: The regular expression that limits what people
+      can put in as a valid member ID is now configurable TTW in the
+      portal_registration tool (http://www.zope.org/Collectors/CMF/117)
+
+  Bug Fixes
 
     - Document/NewsItem: If the "plain text" format is selected the
       content will no longer be tested for HTML and reduced to text
