@@ -47,6 +47,11 @@
 
          Run the profiler saving the profile data to the given file name
 
+      --hotshot file
+
+         Run the hotshot profiler saving the profile data to the given
+         file name
+
       -w
       --warmup
 
@@ -57,7 +62,7 @@
 
          Output this usage information.
          
-$Id: runurl.py,v 1.2 2003/05/13 21:11:11 jim Exp $
+$Id: runurl.py,v 1.3 2003/05/15 19:01:37 jim Exp $
 """
 
 import sys, os, getopt
@@ -78,13 +83,13 @@ def main(argv=None):
             args,
             'b:r:p:d:c:hi:w',
             ['basic=', 'run=', 'profile=', 'database=', 'config=', 'help',
-             'input=', 'warmup'])
+             'input=', 'warmup', 'hotshot='])
     except getopt.GetoptError:
         print __doc__ % {'script': script}
         raise
 
     
-    basic = run = warm = profilef = database = config = None
+    basic = run = warm = profilef = database = config = hotshotf = None
     stdin = ''
     for name, value in options:
         if name in ('-b', '--basic'):
@@ -93,6 +98,8 @@ def main(argv=None):
             run = int(value)
         elif name in ('-p', '--profile'):
             profilef = value
+        elif name in ('--hotshot', ):
+            hotshotf = value
         elif name in ('-d', '--database'):
              database = value
         elif name in ('-c', '--config'):
@@ -121,10 +128,25 @@ def main(argv=None):
     if warm:
         _mainrun(app, path, basic, 1, stdin, env)
 
-    if profilef:
-        import profile
-        profile.run("_mainrun(app, path, basic, run, stdin, env)",
-                    profilef)
+    if profilef or hotshotf:
+        cmd = "_mainrun(app, path, basic, run, stdin, env)"
+        if profilef:
+            import profile
+            profile.run(cmd, profilef)
+        if hotshotf:
+            import hotshot
+            p = hotshot.Profile(hotshotf)
+            p.runctx(cmd, globals(), locals())
+            p.close()
+            del p
+
+            print 'Writing', hotshotf
+            from hotshot.stats import StatsLoader
+            p = StatsLoader(hotshotf).load()
+            import marshal
+            marshal.dump(p.stats, open(hotshotf, 'w'))
+            print 'Wrote', hotshotf
+            
     else:
         _mainrun(app, path, basic, run, stdin, env)
         
