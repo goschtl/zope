@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: xmlconfig.py,v 1.6 2003/03/11 20:11:18 jim Exp $
+$Id: xmlconfig.py,v 1.7 2003/06/12 09:28:11 jim Exp $
 """
 
 import os
@@ -24,6 +24,7 @@ from os.path import abspath
 from xml.sax import make_parser
 from xml.sax.xmlreader import InputSource
 from xml.sax.handler import ContentHandler, feature_namespaces
+from xml.sax import SAXParseException
 from zope.configuration import name
 from zope.configuration.meta import begin, sub, end
 from zope.configuration.exceptions import ConfigurationError
@@ -53,10 +54,22 @@ class ZopeXMLConfigurationError(ConfigurationError):
         self.mess = mess
 
     def __str__(self):
-        return 'File "%s", line %s, column %s\n\t%s' % (
+        return 'File "%s", line %s.%s\n\t%s' % (
             self.sid, self.lno, self.cno, self.mess)
 
 
+class ZopeSAXParseException(ConfigurationError):
+    def __init__(self, v):
+        self._v = v
+
+    def __str__(self):
+        v = self._v
+        s = tuple(str(v).split(':'))
+        if len(s) == 4:
+            return 'File "%s", line %s.%s, %s' % s
+        else:
+            return str(v)
+        
 class ConfigurationExecutionError(ZopeXMLConfigurationError):
     """An error occurred during execution of a configuration action
     """
@@ -240,7 +253,10 @@ def xmlconfig(file, actions=None, context=None, directives=None, testing=0):
                              testing=testing)
         )
     parser.setFeature(feature_namespaces, 1)
-    parser.parse(src)
+    try:
+        parser.parse(src)
+    except SAXParseException:
+        raise ZopeSAXParseException, sys.exc_info()[1], sys.exc_info()[2]
 
     if call:
         descriptors = {}
