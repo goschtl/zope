@@ -345,7 +345,7 @@ class IURI(IBytesLine):
 class IId(IBytesLine):
     """A field containing a unique identifier
 
-    A unique identifier is either an absolute URI ir a dotted name.
+    A unique identifier is either an absolute URI or a dotted name.
     If it's a dotted name, it should have a module/package name as a prefix.
     """
 
