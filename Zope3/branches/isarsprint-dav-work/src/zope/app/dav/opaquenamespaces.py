@@ -11,9 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Attribute Annotations implementation 
+"""DAV Opaque properties implementation details
 
-$Id: attribute.py 26632 2004-07-19 14:56:53Z jim $
+Opaque properties are arbitrary propterties set trhough DAV and which have no
+special meaning to the Zope application.
+
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -160,7 +163,7 @@ def makeDOMStandalone(element):
     return DOMTransformer(element).makeStandalone()
 
 
-def _numberGenerator(i = 0):
+def _numberGenerator(i=0):
     while True:
         yield i
         i += 1
