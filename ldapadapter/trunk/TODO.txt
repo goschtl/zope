@@ -1,60 +1,108 @@
-================
-LDAPAdapter TODO
-================
+TODO for LDAP Adapter
+=====================
 
-================================================================================
-task                                           | assigned to   | timeline | done
-================================================================================
-Add a generic validating input widget for URLs | torsten/roger | 10/10/04 | [x]
------------------------------------------------+---------------+----------+-----
-Complete regex for validation LDAP uri         | torsten/roger | 10/10/04 | [x]
------------------------------------------------+---------------+----------+-----
-Add exceptions                                 | torsten/roger | 10/10/04 | [ ]
------------------------------------------------+---------------+----------+-----
-Add i18n translation files                     | torsten/roger | 10/10/04 | [ ]
------------------------------------------------+---------------+----------+-----
-Move LDAPURI field to zope.schema._fields.py   | torsten/roger | 10/10/04 | [ ]
------------------------------------------------+---------------+----------+-----
-Connection tracer (for validating connections) | torsten/roger | 10/10/04 | [ ]
------------------------------------------------+---------------+----------+-----
-Enable querying of the server's LDAP schema    | florent       | 10/10/04 | [ ]
-(see hints below)                              |               |          |
-================================================================================
+Most important first:
 
-Hints:
-======
+- Connection caching, to reuse bound connections to the same server with
+  the same binding dn/password.
 
-LDAP schema query:
+- SSL connections (check python-ldap to see what's needed).
 
-First query base dn of Schema entries
+- SASL configuration and connections (in addition of the simple bind it
+  currently uses). This will require SASL libraries on the zope side
+  (check http://oss.netfarm.it/python-cyrus.php).
 
- > ldapsearch -x -s base subschemaSubentry
- 
- # extended LDIF
- #
- # LDAPv3
- # base <> with scope base
- # filter: (objectclass=*)
- # requesting: subschemaSubentry
- #
+- Use LDAP schema introspection to find which fields should not be
+  converted from UTF-8 but are actualy binary (see below).
 
- # IsarSprint, zope.org
- dn: o=IsarSprint,dc=zope,dc=org
- subschemaSubentry: cn=Subschema
+Misc:
 
- # search result
- search: 2
- result: 0 Success
+- Add i18n translation files.
 
- # numResponses: 2
- # numEntries: 1
+- Move LDAPURI field to zope.schema._fields.py.
 
-Second query the schema values
 
- > ldapsearch -x -s base -b "cn=Subschema" objectClasses attributeTypes \
- >   ldapSyntaxes matchingRules matchingRuleUse
- 
- [ ... lots of output ... ]
- 
-Probably split last query and make a dictionary for each query element
- (objectClasses={...}, attributeTypes={...}, ...)
+Schema introspection
+--------------------
+
+Here's some python I wrote to get to the LDAP schema and parse it.
+
+import ldap
+from ldap import initialize
+from ldap import OPT_PROTOCOL_VERSION
+from ldap import VERSION3
+from ldap import SCOPE_BASE
+from ldap.schema import AttributeType
+from ldap.schema import NOT_HUMAN_READABLE_LDAP_SYNTAXES
+
+conn = ldap.initialize('ldap://localhost:389/')
+conn.set_option(OPT_PROTOCOL_VERSION, VERSION3)
+conn.simple_bind_s('', '')
+
+e = conn.search_s('cn=Subschema', SCOPE_BASE, '(objectClass=subschema)',
+                  ['attributeTypes'])
+# TODO ldapSyntaxes matchingRules matchingRuleUse
+attributetypes = e[0][1]['attributeTypes']
+
+at_by_oid = {}
+at_by_name = {}
+for at_string in attributetypes:
+    at = AttributeType(at_string)
+    at_by_oid[at.oid] = at
+    for name in at.names:
+        at_by_name[name] = at
+# fill remaining syntaxes
+for oid, at in at_by_oid.iteritems():
+    syn = at
+    while syn.syntax is None:
+        sup_name = syn.sup[0]
+        syn = at_by_name[sup_name] # or oid ?
+    at.syntax = syn.syntax
+
+# Explore the schema
+for oid, at in at_by_oid.iteritems():
+    if len(at.names) > 1:
+        print 'ALIASES', at.names
+for oid, at in at_by_oid.iteritems():
+    if NOT_HUMAN_READABLE_LDAP_SYNTAXES.has_key(at.syntax):
+        print 'BINARY', at.names
+
+"""
+ALIASES ('drink', 'favouriteDrink')
+ALIASES ('mail', 'rfc822Mailbox')
+ALIASES ('uid', 'userid')
+ALIASES ('email', 'emailAddress', 'pkcs9email')
+ALIASES ('facsimileTelephoneNumber', 'fax')
+ALIASES ('co', 'friendlyCountryName')
+ALIASES ('pager', 'pagerTelephoneNumber')
+ALIASES ('mobile', 'mobileTelephoneNumber')
+ALIASES ('givenName', 'gn')
+ALIASES ('st', 'stateOrProvinceName')
+ALIASES ('street', 'streetAddress')
+ALIASES ('c', 'countryName')
+ALIASES ('l', 'localityName')
+ALIASES ('cn', 'commonName')
+ALIASES ('aliasedObjectName', 'aliasedEntryName')
+ALIASES ('dc', 'domainComponent')
+ALIASES ('homePhone', 'homeTelephoneNumber')
+ALIASES ('ou', 'organizationalUnitName')
+ALIASES ('o', 'organizationName')
+ALIASES ('sn', 'surname')
+BINARY ('krb5Key',)
+BINARY ('userSMIMECertificate',)
+BINARY ('photo',)
+BINARY ('jpegPhoto',)
+BINARY ('krb5RealmName',)
+BINARY ('audio',)
+BINARY ('personalSignature',)
+BINARY ('supportedAlgorithms',)
+BINARY ('deltaRevocationList',)
+BINARY ('x500UniqueIdentifier',)
+BINARY ('crossCertificatePair',)
+BINARY ('userPKCS12',)
+BINARY ('userCertificate',)
+BINARY ('cACertificate',)
+BINARY ('userPassword',)
+BINARY ('authorityRevocationList',)
+BINARY ('certificateRevocationList',)
+"""
