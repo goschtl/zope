@@ -34,8 +34,7 @@ from zope.app.index import InterfaceIndexingSubscriber
 from zope.app.catalog.interfaces.index import ICatalogIndex
 
 
-class TextCatalogIndex(InterfaceIndexingSubscriber, TextIndexWrapper,
-                       Contained):
+class TextCatalogIndex(InterfaceIndexing, TextIndexWrapper, Contained):
     implements(ICatalogIndex, IUITextCatalogIndex)
 
     default_interface = ISearchableText
@@ -45,33 +44,6 @@ class TextIndex(TextCatalogIndex):
 
     implements(IUITextIndex)
 
-    currentlySubscribed = False # Default subscription state
-
-    def subscribe(wrapped_self, channel=None, update=True):
-        if wrapped_self.currentlySubscribed:
-            raise RuntimeError, "already subscribed; please unsubscribe first"
-        channel = wrapped_self._getChannel(channel)
-        channel.subscribe(wrapped_self, IRegistrationHubEvent)
-        channel.subscribe(wrapped_self, IObjectModifiedHubEvent)
-        if update:
-            wrapped_self._update(channel.iterObjectRegistrations())
-        wrapped_self.currentlySubscribed = True
-
-    def unsubscribe(wrapped_self, channel=None):
-        if not wrapped_self.currentlySubscribed:
-            raise RuntimeError, "not subscribed; please subscribe first"
-        channel = wrapped_self._getChannel(channel)
-        channel.unsubscribe(wrapped_self, IObjectModifiedHubEvent)
-        channel.unsubscribe(wrapped_self, IRegistrationHubEvent)
-        wrapped_self.currentlySubscribed = False
-
-    def isSubscribed(self):
-        return self.currentlySubscribed
-
-    def _getChannel(wrapped_self, channel):
-        if channel is None:
-            channel = getService(wrapped_self, HubIds)
-        return channel
 
     def _update(wrapped_self, registrations):
         for location, hubid, wrapped_object in registrations:

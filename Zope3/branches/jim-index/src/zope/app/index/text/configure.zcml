@@ -9,9 +9,6 @@
       interface="zope.app.index.interfaces.text.IUITextIndex"
       attributes="query"
       />
-  <implements
-      interface="zope.app.index.interfaces.IQueryProcessable"
-      />
 </content>
 
 
@@ -28,16 +25,6 @@
       permission="zope.ManageContent"
       set_schema="zope.app.index.interfaces.text.IUITextCatalogIndex"
       />
-  <implements
-      interface="zope.app.index.interfaces.IQueryProcessable"
-      />
 </content>
-
-
-<adapter
-    factory="zope.app.index.text.processors.BatchedRankedProcessor"
-    provides="zope.app.index.interfaces.IQueryProcessor"
-    for="zope.index.interfaces.IQuerying"
-    />
 
 </configure>

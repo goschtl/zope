@@ -7,10 +7,6 @@
       interface="zope.app.index.interfaces.field.IUIFieldIndex"
       />
 
-  <implements
-      interface="zope.app.index.interfaces.IQueryProcessable"
-      />
-
 </content>
 <content class="zope.app.index.field.index.FieldCatalogIndex">
   <require

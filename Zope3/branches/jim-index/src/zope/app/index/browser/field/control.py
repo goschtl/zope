@@ -17,7 +17,6 @@ $Id$
 """
 from zope.app.introspector import interfaceToName
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.index.interfaces.text import IQueryView
 from zope.app.servicenames import HubIds
 from zope.app.traversing.api import canonicalPath
 from zope.component import getService, queryAdapter
@@ -26,8 +25,6 @@ from zope.interface import implements
 from zope.app.publisher.browser import BrowserView
 
 class ControlView(BrowserView):
-
-    implements(IQueryView)
 
     def __init__(self, context, request):
         super(ControlView, self).__init__(context, request)

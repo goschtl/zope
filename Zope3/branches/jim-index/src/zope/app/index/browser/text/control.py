@@ -23,11 +23,8 @@ from zope.app.publisher.browser import BrowserView
 
 from zope.app.traversing.api import canonicalPath
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.index.interfaces.text import IQueryView
 
 class ControlView(BrowserView):
-    implements(IQueryView)
-
     default_start = 0 # Don't change -- always start at first batch
     default_count = 2 # Default batch size -- tune as you please
 

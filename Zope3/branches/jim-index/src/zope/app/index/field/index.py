@@ -20,22 +20,14 @@ In addition, this implements TTW subscription management.
 
 $Id$
 """
-from zope.component import getService
-from zope.app.servicenames import HubIds
-from zope.index.field.index import FieldIndex as FieldIndexWrapper
-from zope.interface import implements
-from zope.app.container.contained import Contained
-from zope.app.hub.interfaces import IObjectModifiedHubEvent
-from zope.app.hub.interfaces import IRegistrationHubEvent
-from zope.app.index.interfaces.field import IUIFieldIndex, IUIFieldCatalogIndex
-from zope.app.catalog.interfaces.index import ICatalogIndex
-from zope.app.index.ifaceindex import InterfaceIndexingSubscriber
+import zope.app.index.ifaceindex
+import zope.interface
 
-class FieldCatalogIndex(InterfaceIndexingSubscriber, FieldIndexWrapper,
-                        Contained):
-    implements(ICatalogIndex, IUIFieldCatalogIndex)
+class IFieldIndex(zope.app.index.ifaceindex.IInterfaceIndexer):
+    """Interface-based field index
+       """
 
-class FieldIndex(FieldCatalogIndex):
+class FieldIndex(InterfaceIndexing, BaseFieldIndex, Contained):
+    zope.interface.implements(IFieldIndex)
 
-    implements(IUIFieldIndex)
 

@@ -61,24 +61,6 @@ class Test(PlacefulSetup, unittest.TestCase):
     def assertAbsent(self, word):
         self.assertEqual(self.index.query(word), ([], 0))
 
-    def testNotification(self):
-        docid = 1000
-        event = ObjectRegisteredHubEvent(None, docid, object=self.object)
-        self.index.notify(event)
-        self.assertPresent(Bruce, docid)
-
-        self.object.texts = [Sheila]
-        event = ObjectModifiedHubEvent(None, docid, object=self.object)
-        self.index.notify(event)
-        self.assertPresent(Sheila, docid)
-        self.assertAbsent(Bruce)
-
-        event = ObjectUnregisteredHubEvent(None, docid,
-                                           location="fake",
-                                           object=self.object)
-        self.index.notify(event)
-        self.assertAbsent(Bruce)
-        self.assertAbsent(Sheila)
 
     def testNotIndexing(self):
         docid = 1000

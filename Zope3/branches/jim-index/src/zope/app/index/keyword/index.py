@@ -22,6 +22,6 @@ from zope.app.index.interfaces.keyword import IUIKeywordCatalogIndex
 from zope.app.catalog.interfaces.index import ICatalogIndex
 from zope.app.index import InterfaceIndexingSubscriber
 
-class KeywordCatalogIndex(InterfaceIndexingSubscriber, KeywordIndex):
+class KeywordCatalogIndex(InterfaceIndexing, KeywordIndex):
     implements(ICatalogIndex, IUIKeywordCatalogIndex)
 

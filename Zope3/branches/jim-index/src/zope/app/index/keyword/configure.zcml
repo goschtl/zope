@@ -11,18 +11,6 @@
       set_schema="zope.app.index.interfaces.keyword.IUIKeywordCatalogIndex"
       />
 
-  <implements
-      interface="zope.app.index.interfaces.IQueryProcessable"
-      />
-
 </content>
-
-<!--
-<adapter
-    factory="zope.app.index.text.processors.BatchedRankedProcessor"
-    provides="zope.app.index.interfaces.IQueryProcessor"
-    for="zope.index.interfaces.IQuerying"
-    />
--->
 
 </configure>

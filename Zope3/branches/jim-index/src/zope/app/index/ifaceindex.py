@@ -14,10 +14,53 @@
 """
 $Id$
 """
-from zope.interface import implements
-from zope.app.index.interfaces import IInterfaceIndexer
 
-class InterfaceIndexingSubscriber(object):
+#############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Index Interfaces
+
+$Id$
+"""
+import zope.interface
+from zope.schema import BytesLine, Choice, Boolean
+from zope.app.i18n import ZopeMessageIDFactory as _
+
+class IInterfaceIndexer(zope.interface.Interface):
+    """I index objects by first adapting them to an interface, then
+       retrieving a field on the adapted object.
+    """
+
+    interface = Choice(
+        title=_(u"Interface"),
+        description=_(u"Objects will be adapted to this interface"),
+        vocabulary=_("Interfaces"),
+        required=False,
+        )
+
+    field_name = BytesLine(
+        title=_(u"Field Name"),
+        description=_(u"Name of the field to index"),
+        )
+
+    field_callable = Boolean(
+        title=_(u"Field Callable"),
+        description=_(u"If true, then the field should be called to get the "
+                      u"value to be indexed"),
+        )
+        
+    
+class InterfaceIndex(object):
     """Index interface-defined fields
 
        Mixin for indexing a particular field name, after first adapting the
@@ -39,7 +82,7 @@ class InterfaceIndexingSubscriber(object):
          ...     def __init__(self, v):
          ...         self.x = v
 
-         >>> class Index(InterfaceIndexingSubscriber, BaseIndex):
+         >>> class Index(InterfaceIndex, BaseIndex):
          ...     pass
 
          >>> index = Index('x')
@@ -83,7 +126,7 @@ class InterfaceIndexingSubscriber(object):
        When you define an index class, you can define a default
        interface and/or a default interface:
 
-         >>> class Index(InterfaceIndexingSubscriber, BaseIndex):
+         >>> class Index(InterfaceIndex, BaseIndex):
          ...     default_interface = I
          ...     default_field_name = 'y'
         
@@ -94,33 +137,32 @@ class InterfaceIndexingSubscriber(object):
          [(11, 9), (22, 4)]
 
        """
-    implements(IInterfaceIndexer)
+
+    zope.interface.implements(IInterfaceIndexer)
+    
     default_field_name = None
     default_interface = None
 
     def __init__(self, field_name=None, interface=None):
-        super(InterfaceIndexingSubscriber, self).__init__()
+        super(InterfaceIndex, self).__init__()
         if field_name is None and self.default_field_name is None:
             raise ValueError, "Must pass a field_name"
         if field_name is None:
-            self._field_name = self.default_field_name
+            self.field_name = self.default_field_name
         else:
-            self._field_name = field_name
+            self.field_name = field_name
         if interface is None:
-            self._interface = self.default_interface
+            self.interface = self.default_interface
         else:
-            self._interface = interface
+            self.interface = interface
 
-    field_name = property(lambda self: self._field_name)
-    interface = property(lambda self: self._interface)
-
-    def _getValue(self, object):
-        if self._interface is not None:
-            object = self._interface(object, None)
+    def index_doc(self, docid, object):
+        if self.interface is not None:
+            object = self.interface(object, None)
             if object is None:
                 return None
 
-        value = getattr(object, self._field_name, None)
+        value = getattr(object, self.field_name, None)
         if value is None:
             return None
 
@@ -130,8 +172,4 @@ class InterfaceIndexingSubscriber(object):
             except:
                 return None
 
-        return value
-        
-    def index_doc(self, docid, object):
-        value = self._getValue(object)
-        return super(InterfaceIndexingSubscriber, self).index_doc(docid, value)
+        return super(InterfaceIndex, self).index_doc(docid, value)
