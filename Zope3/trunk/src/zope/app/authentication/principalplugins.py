@@ -86,6 +86,10 @@ class PrincipalFactory:
     True
     >>> event.info
     {}
+
+    Cleanup:
+
+    >>> del zope.event.subscribers[-1]
     """
     implements(interfaces.IPrincipalFactoryPlugin)
 
