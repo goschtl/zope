@@ -11,7 +11,7 @@ SCRIPT="$0"
 REPOSITORY="$1"; shift
 FILES="$@"
 
-exec 1>/tmp/precommit_actions
+exec 1>>/tmp/precommit_actions
 
 echo Script: "$SCRIPT", Repository: "$REPOSITORY", Files: "$FILES"
 echo Root: "${CVSROOT}"
