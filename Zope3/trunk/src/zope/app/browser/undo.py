@@ -14,13 +14,23 @@
 """
 
 Revision information:
-$Id: undo.py,v 1.4 2003/06/06 21:35:15 philikon Exp $
+$Id: undo.py,v 1.5 2003/06/25 15:24:20 fdrake Exp $
 """
 from zope.interface import implements
-from zope.component import getUtility
+from zope.component import getService, getUtility
 from zope.publisher.browser import BrowserView
+from zope.app.event import function
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.interfaces.undo import IUndoManager
+from zope.app.services.servicenames import Utilities
+
+
+def undoSetup(event):
+    # setup undo fnctionality
+    svc = getService(None, Utilities)
+    svc.provideUtility(IUndoManager, ZODBUndoManager(event.database))
+
+undoSetup = function.Subscriber(undoSetup)
 
 
 class ZODBUndoManager:

@@ -1,4 +1,5 @@
-<zopeConfigure xmlns="http://namespaces.zope.org/browser">
+<zopeConfigure xmlns="http://namespaces.zope.org/browser"
+               xmlns:event="http://namespaces.zope.org/event">
 
 <!-- Undo -->
 
@@ -16,6 +17,11 @@
       menu="zmi_actions"
       title="Undo"
       action="@@undoForm.html"
+      />
+
+  <event:subscribe
+      subscriber=".undo.undoSetup"
+      event_types="zope.app.interfaces.event.IDatabaseOpenedEvent"
       />
 
 </zopeConfigure>
