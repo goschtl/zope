@@ -120,11 +120,6 @@ class CookieAuthHelper(Folder, BasePlugin):
                 request.set('__ac_name', '')
                 request.set('__ac_password', '')
 
-                cookie_val = encodestring('%s:%s' % (login, password))
-                cookie_val = cookie_val.replace( '\n', '' )
-                response = request['RESPONSE']
-                response.setCookie(self.cookie_name, cookie_val, path='/')
-
         if creds:
             creds['remote_host'] = request.get('REMOTE_HOST', '')
 
@@ -146,7 +141,7 @@ class CookieAuthHelper(Folder, BasePlugin):
     def updateCredentials(self, request, response, login, new_password):
         """ Respond to change of credentials (NOOP for basic auth). """
         cookie_val = encodestring('%s:%s' % (login, new_password))
-
+        cookie_val = cookie_val.replace( '\n', '' )
         response.setCookie(self.cookie_name, cookie_val, path='/')
 
 
@@ -211,6 +206,11 @@ class CookieAuthHelper(Folder, BasePlugin):
         """
         request = self.REQUEST
         response = request['RESPONSE']
+
+        login = request.get('__ac_name', '')
+        password = request.get('__ac_password', '')
+
+        self.updateCredentials(request, response, login, password)
 
         came_from = request.form['came_from']
 
