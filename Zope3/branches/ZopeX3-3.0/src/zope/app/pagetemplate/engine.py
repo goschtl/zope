@@ -29,9 +29,9 @@ from zope.tales.tales import ExpressionEngine, Context
 from zope.component.exceptions import ComponentLookupError
 from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
-from zope.restrictedpython import rcompile
+from zope.security.untrustedpython import rcompile
 from zope.security.proxy import ProxyFactory
-from zope.security.builtins import RestrictedBuiltins
+from zope.security.untrustedpython.builtins import SafeBuiltins
 from zope.i18n import translate
 
 from zope.app import zapi
@@ -81,23 +81,12 @@ class TrustedZopePathExpr(PathExpr):
 # version of getattr() that wraps values in security proxies where
 # appropriate:
 
-_marker = object()
-
-def safe_getattr(object, name, default=_marker):
-    if default is _marker:
-        return ProxyFactory(getattr(object, name))
-    else:
-        return ProxyFactory(getattr(object, name, default))
-
-RestrictedBuiltins = RestrictedBuiltins.copy()
-RestrictedBuiltins["getattr"] = safe_getattr
-
 
 class ZopePythonExpr(PythonExpr):
 
     def __call__(self, econtext):
         __traceback_info__ = self.text
-        vars = self._bind_used_names(econtext, RestrictedBuiltins)
+        vars = self._bind_used_names(econtext, SafeBuiltins)
         return eval(self._code, vars)
 
     def _compile(self, text, filename):

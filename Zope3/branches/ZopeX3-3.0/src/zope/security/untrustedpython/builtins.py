@@ -15,15 +15,26 @@
 
 $Id$
 """
-import sys
+from zope.security.proxy import ProxyFactory
+import new
 
-def RestrictedBuiltins():
+def SafeBuiltins():
 
-    from zope.security.proxy import ProxyFactory
+    builtins = {}
+    
     from zope.security.checker import NamesChecker
+    import __builtin__
+
+    _builtinTypeChecker = NamesChecker(
+        ['__str__', '__repr__', '__name__', '__module__',
+         '__bases__', '__call__'])
 
     # It's better to say what is safe than it say what is not safe
-    _safe = [
+    for name in [
+
+        # Names of safe objects. See untrustedinterpreter.txt for a
+        # definition of safe objects.
+
         'ArithmeticError', 'AssertionError', 'AttributeError',
         'DeprecationWarning', 'EOFError', 'Ellipsis', 'EnvironmentError',
         'Exception', 'FloatingPointError', 'IOError', 'ImportError',
@@ -35,7 +46,7 @@ def RestrictedBuiltins():
         'SystemExit', 'TabError', 'TypeError', 'UnboundLocalError',
         'UnicodeError', 'UserWarning', 'ValueError', 'Warning',
         'ZeroDivisionError',
-        '__debug__', '__doc__', '__name__', 'abs', 'apply', 'bool',
+        '__debug__', '__name__', '__doc__', 'abs', 'apply', 'bool',
         'buffer', 'callable', 'chr', 'classmethod', 'cmp', 'coerce',
         'complex', 'copyright', 'credits', 'delattr',
         'dict', 'divmod', 'filter', 'float', 'getattr',
@@ -45,34 +56,15 @@ def RestrictedBuiltins():
         'property', 'quit', 'range', 'reduce', 'repr', 'round',
         'setattr', 'slice', 'staticmethod', 'str', 'super', 'tuple',
         'type', 'unichr', 'unicode', 'vars', 'xrange', 'zip',
-        'True', 'False'
-        ]
+        'True', 'False',
 
-    # XXX dir segfaults with a seg fault due to a bas tuple check in
-    # merge_class_dict in object.c. The assert macro seems to be doing
-    # the wrong think. Basically, if an object has bases, then bases
-    # is assumed to be a tuple.
+        # TODO: dir segfaults with a seg fault due to a bas tuple
+        # check in merge_class_dict in object.c. The assert macro
+        # seems to be doing the wrong think. Basically, if an object
+        # has bases, then bases is assumed to be a tuple.
+        #dir,
+        ]:
 
-    # Anything that accesses an external file is a no no:
-    # 'open', 'execfile', 'file'
-
-    # We dont want restricted code to call exit: 'SystemExit', 'exit'
-
-    # Other no nos:
-    #    help prints
-    #    input does I/O
-    #    raw_input does I/O
-    #    intern's effect is too global
-    #    reload does import, XXX doesn't it use __import__?
-
-    _builtinTypeChecker = NamesChecker(
-        ['__str__', '__repr__', '__name__', '__module__',
-         '__bases__', '__call__'])
-
-    import __builtin__
-
-    builtins = {}
-    for name in _safe:
         value = getattr(__builtin__, name)
         if isinstance(value, type):
             value = ProxyFactory(value, _builtinTypeChecker)
@@ -80,24 +72,51 @@ def RestrictedBuiltins():
             value = ProxyFactory(value)
         builtins[name] = value
 
+    from sys import modules
+
+    def _imp(name, fromlist, prefix=''):
+        module = modules.get(prefix+name)
+        if module is not None:
+            if fromlist or ('.' not in name):
+                return module
+            return modules[prefix+name.split('.')[0]]
+
     def __import__(name, globals=None, locals=None, fromlist=()):
         # Waaa, we have to emulate __import__'s weird semantics.
-        try:
-            module = sys.modules[name]
-            if fromlist:
-                return module
 
-            l = name.find('.')
-            if l < 0:
-                return module
+        if globals:
+            __name__ = globals.get('__name__')
+            if __name__:
+                # Maybe do a relative import
+                if '__path__' not in globals:
+                    # We have an ordinary module, not a package,
+                    # so remove last name segment:
+                    __name__ = '.'.join(__name__.split('.')[:-1])
+                if __name__:
+                    module = _imp(name, fromlist, __name__+'.')
+                    if module is not None:
+                        return module
 
-            return sys.modules[name[:l]]
+        module = _imp(name, fromlist)
+        if module is not None:
+            return module
 
-        except KeyError:
-            raise ImportError(name)
+        raise ImportError(name)
 
     builtins['__import__'] = ProxyFactory(__import__)
 
     return builtins
 
-RestrictedBuiltins = RestrictedBuiltins()
+class ImmutableModule(new.module):
+    def __init__(self, name='__builtins__', **kw):
+        new.module.__init__(self, name)
+        self.__dict__.update(kw)
+
+    def __setattr__(self, name, v):
+        raise AttributeError, name
+
+    def __delattr__(self, name):
+        raise AttributeError, name
+
+
+SafeBuiltins = ImmutableModule(**SafeBuiltins())
