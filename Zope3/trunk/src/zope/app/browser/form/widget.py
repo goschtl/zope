@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.61 2004/01/16 13:38:18 philikon Exp $
+$Id: widget.py,v 1.62 2004/01/20 18:56:32 garrett Exp $
 """
 __metaclass__ = type
 
@@ -313,10 +313,8 @@ class BrowserWidget(Widget, BrowserView):
         return self.hidden()
 
     def _tooltip(self, txt, description):
-        # TODO: Use a JavaScript tooltip instead of an abuse of the
-        # acronym HTML tag.
         if description:
-            return '<acronym title="%s">%s</acronym>' % (
+            return '<span title="%s">%s</span>' % (
                 cgi.escape(description, quote=1), txt
                 )
         else:

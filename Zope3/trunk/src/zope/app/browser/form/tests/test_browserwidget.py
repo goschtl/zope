@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.17 2003/11/27 13:59:13 philikon Exp $
+$Id: test_browserwidget.py,v 1.18 2004/01/20 18:56:31 garrett Exp $
 """
 
 from zope.interface import Interface, implements
@@ -93,7 +93,7 @@ class BrowserWidgetTest(PlacelessSetup,
         label = ' '.join(self._widget.label().strip().split())
         self.assertEqual(label,
                 '<label for="field.foo">'
-                '<acronym title="Foo Description">Foo Title</acronym></label>'
+                '<span title="Foo Description">Foo Title</span></label>'
                 )
 
     def testDescription(self):
