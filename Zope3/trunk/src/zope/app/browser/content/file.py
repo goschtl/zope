@@ -13,10 +13,10 @@
 ##############################################################################
 """File views.
 
-$Id: file.py,v 1.4 2003/08/06 14:41:41 srichter Exp $
+$Id: file.py,v 1.5 2004/01/16 13:09:06 philikon Exp $
 """
 from zope.app.browser.form.widget import FileWidget
-from zope.app.form.widget import CustomWidget
+from zope.app.form.widget import CustomWidgetFactory
 
 __metaclass__ = type
 
@@ -37,4 +37,4 @@ class FileView:
 class FileUpload:
     """File editing mix-in that uses a file-upload widget."""
 
-    data_widget = CustomWidget(FileWidget)
+    data_widget = CustomWidgetFactory(FileWidget)

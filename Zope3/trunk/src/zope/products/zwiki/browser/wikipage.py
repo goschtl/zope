@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser View Components for WikiPages
 
-$Id: wikipage.py,v 1.1 2003/12/16 10:05:53 nmurthy Exp $
+$Id: wikipage.py,v 1.2 2004/01/16 13:09:07 philikon Exp $
 """
 import re
 from urllib import quote, unquote
@@ -22,7 +22,7 @@ from datetime import datetime
 from zope.app.browser.form.submit import Update
 from zope.app.browser.form.vocabularywidget import VocabularyFieldEditWidget
 from zope.app.browser.form.widget import ListWidget
-from zope.app.form.widget import CustomWidget
+from zope.app.form.widget import CustomWidgetFactory
 from zope.app.interfaces.dublincore import ICMFDublinCore
 from zope.app.traversing import getParent, getPath, getName
 from zope.component import getAdapter, getView, getService, createObject
@@ -94,7 +94,7 @@ class GenericWikiPageViews:
 
 class AddWikiPage(object):
 
-    type_widget = CustomWidget(VocabularyFieldEditWidget, size=1)
+    type_widget = CustomWidgetFactory(VocabularyFieldEditWidget, size=1)
 
     def nextURL(self):
         return '../'+self.context.contentName
@@ -102,7 +102,7 @@ class AddWikiPage(object):
 
 class EditWikiPage(object):
 
-    type_widget = CustomWidget(VocabularyFieldEditWidget, size=1)
+    type_widget = CustomWidgetFactory(VocabularyFieldEditWidget, size=1)
 
     def update(self):
         status = super(EditWikiPage, self).update()

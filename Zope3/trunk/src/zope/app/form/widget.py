@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.9 2003/09/26 19:53:34 poster Exp $
+$Id: widget.py,v 1.10 2004/01/16 13:09:07 philikon Exp $
 """
 import traceback
 from warnings import warn
@@ -99,9 +99,9 @@ class Widget:
 
     required = property(lambda self: self.context.required)
 
-# XXX CustomWidget *should* be called CustomWidgetFactory
-class CustomWidget:
-    """Custom Widget."""
+class CustomWidgetFactory:
+    """Custom Widget Factory.
+    """
     implements(IViewFactory)
 
     def __init__(self, *args, **kw):
@@ -119,3 +119,5 @@ class CustomWidget:
             setattr(instance, item[0], item[1])
         return instance
 
+# XXX backward compatability, will be removed in a month (2004-02-16)
+CustomWidget = CustomWidgetFactory

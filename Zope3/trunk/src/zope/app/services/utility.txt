@@ -3,7 +3,7 @@ Creating Local Services: The Local Utility Service
 ==================================================
 
 :Author: Jim Fulton
-:Version: $Revision: 1.5 $
+:Version: $Revision: 1.6 $
 
 .. contents::
 
@@ -284,7 +284,7 @@ registration object to it.
 
 The AddRegistration class defines a class attribute::
 
-    interface_widget = CustomWidget(UtilityInterfaceWidget)
+    interface_widget = CustomWidgetFactory(UtilityInterfaceWidget)
 
 This tells the forms machinery to use a a custom widget for the
 interface field. The custom widget we use is a specialized interface

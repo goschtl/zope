@@ -15,11 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: test_widget.py,v 1.4 2003/09/26 19:53:35 poster Exp $
+$Id: test_widget.py,v 1.5 2004/01/16 13:09:07 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.form.widget import Widget, CustomWidget
+from zope.app.form.widget import Widget, CustomWidgetFactory
 from zope.app.interfaces.form import IWidget
 from zope.interface.verify import verifyObject
 from zope.schema import Text
@@ -61,14 +61,14 @@ class TestWidget(TestCase):
 
     # XXX Don't test getValue. It's silly and will go away.
 
-class TestCustomWidget(TestCase):
+class TestCustomWidgetFactory(TestCase):
 
     # XXX this test should be rewritten once we've refactored widget properties
 
     def test(self):
         from zope.app.tests.placelesssetup import setUp, tearDown
         setUp()
-        cw = CustomWidget(Widget, width=60)
+        cw = CustomWidgetFactory(Widget, width=60)
         verifyObject(IViewFactory, cw)
         w = cw(Text(__name__='foo', title=u'Foo title'), TestRequest())
         self.assertEqual(w.name, 'field.foo')
@@ -81,7 +81,7 @@ class TestCustomWidget(TestCase):
 def test_suite():
     return TestSuite((
         makeSuite(TestWidget),
-        makeSuite(TestCustomWidget),
+        makeSuite(TestCustomWidgetFactory),
         ))
 
 if __name__=='__main__':

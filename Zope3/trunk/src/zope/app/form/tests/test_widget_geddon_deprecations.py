@@ -13,14 +13,14 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_widget_geddon_deprecations.py,v 1.3 2003/11/21 17:12:04 jim Exp $
+$Id: test_widget_geddon_deprecations.py,v 1.4 2004/01/16 13:09:07 philikon Exp $
 """
 
 from zope.app.tests import ztapi
 from zope.testing.doctestunit import DocTestSuite
 from zope.publisher.browser import TestRequest
 from zope.app.form import utility
-from zope.app.form.widget import Widget, CustomWidget
+from zope.app.form.widget import Widget, CustomWidgetFactory
 from zope.schema import Text
 from zope.schema.interfaces import IText
 from zope.app.tests.placelesssetup import setUp, tearDown
@@ -40,7 +40,7 @@ class TestWidget(Widget):
 
 class TestView:
 
-    bar = CustomWidget(TestWidget, uncle='bob')
+    bar = CustomWidgetFactory(TestWidget, uncle='bob')
     
     def __init__(self, context, request):
         self.context, self.request = context, request
