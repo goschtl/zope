@@ -12,27 +12,60 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.14 2003/09/21 17:31:12 jim Exp $
+$Id: zpt.py,v 1.15 2003/11/21 17:09:46 jim Exp $
 """
 
-import re
-
-from persistence import Persistent
-
-from zope.interface import implements
 from zope.security.proxy import ProxyFactory
-from zope.pagetemplate.pagetemplate import PageTemplate
-from zope.app.pagetemplate.engine import AppPT
-from zope.app.interfaces.services.view import IZPTTemplate
-from zope.app.interfaces.index.text import ISearchableText
-from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
-from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
-from zope.app.interfaces.fssync import IObjectFile
-from zope.app.container.contained import Contained
+import persistence
+import re
+import zope.app.container.contained
+import zope.app.fssync.classes
+import zope.app.interfaces.file
+import zope.app.interfaces.fssync
+import zope.app.interfaces.index.text
+import zope.app.pagetemplate.engine
+import zope.interface
+import zope.pagetemplate.pagetemplate
+import zope.schema
 
-class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
+class IZPTTemplate(zope.interface.Interface):
+    """ZPT Templates for use in views
+    """
 
-    implements(IZPTTemplate)
+    contentType = zope.schema.BytesLine(
+        title=u'Content type of generated output',
+        required=True,
+        default='text/html'
+        )
+
+    source = zope.schema.Text(
+        title=u"Source",
+        description=u"""The source of the page template.""",
+        required=True)
+
+    expand = zope.schema.Bool(
+        title=u"Expand macros",
+        )
+
+    def render(context, request, *args, **kw):
+        """Render the page template.
+
+        The context argument is bound to the top-level 'context'
+        variable.  The request argument is bound to the top-level
+        'request' variable. The positional arguments are bound to the
+        'args' variable and the keyword arguments are bound to the
+        'options' variable.
+
+        """
+
+class ZPTTemplate(
+    zope.app.pagetemplate.engine.AppPT,
+    zope.pagetemplate.pagetemplate.PageTemplate,
+    persistence.Persistent,
+    zope.app.container.contained.Contained,
+    ):
+
+    zope.interface.implements(IZPTTemplate)
 
     contentType = 'text/html'
     expand = False
@@ -75,7 +108,7 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
 tag = re.compile(r"<[^>]+>")
 class SearchableText:
 
-    implements(ISearchableText)
+    zope.interface.implements(zope.app.interfaces.index.text.ISearchableText)
     __used_for__ = IZPTTemplate
 
     def __init__(self, page):
@@ -99,7 +132,7 @@ class SearchableText:
 
 class ReadFile:
 
-    implements(IReadFile)
+    zope.interface.implements(zope.app.interfaces.file.IReadFile)
 
     def __init__(self, context):
         self.context = context
@@ -113,7 +146,7 @@ class ReadFile:
 
 class WriteFile:
 
-    implements(IWriteFile)
+    zope.interface.implements(zope.app.interfaces.file.IWriteFile)
 
     def __init__(self, context):
         self.context = context
@@ -124,7 +157,7 @@ class WriteFile:
 
 class ZPTFactory:
 
-    implements(IFileFactory)
+    zope.interface.implements(zope.app.interfaces.file.IFileFactory)
 
     def __init__(self, context):
         self.context = context
@@ -135,10 +168,10 @@ class ZPTFactory:
         return r
 
 
-class ZPTPageAdapter(ObjectEntryAdapter):
+class ZPTPageAdapter(zope.app.fssync.classes.ObjectEntryAdapter):
     """ObjectFile adapter for ZPTTemplate objects."""
 
-    implements(IObjectFile)
+    zope.interface.implements(zope.app.interfaces.fssync.IObjectFile)
 
     def getBody(self):
         return self.context.source
@@ -150,4 +183,5 @@ class ZPTPageAdapter(ObjectEntryAdapter):
         self.context.source = unicode(data)
 
     def extra(self):
-        return AttrMapping(self.context, ('contentType', 'expand'))
+        return zope.app.fssync.classes.AttrMapping(
+            self.context, ('contentType', 'expand'))
