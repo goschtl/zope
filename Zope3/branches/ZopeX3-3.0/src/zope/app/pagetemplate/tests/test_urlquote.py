@@ -17,8 +17,10 @@ I kept the tests quite small, just covering that the functions actually do
 something (and don't really scramble stuff). We are relying on the python urllib
 to be functional to avoid test duplication.
 
-$Id: test_talesapi.py 25177 2004-06-02 13:17:31Z jim $
+$Id$
 """
+
+import unittest
 
 from zope.testing.doctestunit import DocTestSuite
 from zope.app.pagetemplate.urlquote import URLQuote
@@ -33,11 +35,11 @@ def quote_simple():
     """
     >>> q = URLQuote(u"www.google.de")
     >>> q.quote()
-    u'www.google.de'
+    'www.google.de'
     >>> q.unquote()
     u'www.google.de'
     >>> q.quote_plus()
-    u'www.google.de'
+    'www.google.de'
     >>> q.unquote_plus()
     u'www.google.de'
     """
@@ -48,15 +50,18 @@ def quote_cast_needed():
     >>> q.quote()
     'www.google.de'
     >>> q.unquote()
-    'www.google.de'
+    u'www.google.de'
     >>> q.quote_plus()
     'www.google.de'
     >>> q.unquote_plus()
-    'www.google.de'
+    u'www.google.de'
     """
 
 def test_suite():
-    return DocTestSuite()
+    return unittest.TestSuite((
+        DocTestSuite(),
+        DocTestSuite('zope.app.pagetemplate.urlquote'),
+        ))
 
 if __name__ == '__main__':
     unittest.main()
