@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.14 2003/04/25 19:02:35 jeremy Exp $\n";
+"$Id: persistence.c,v 1.15 2003/05/05 17:06:27 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -131,12 +131,18 @@ persist_getstate(PyObject *self)
 
     /* XXX UPDATE_STATE_IF_NECESSARY */
 
+    /* This instance has no dict. */
+    if (!pdict) {
+	/* XXX check for slots */
+	Py_INCREF(Py_None);
+	return Py_None;
+    }
+
     state = PyDict_New();
     if (state == NULL)
 	return NULL;
 
-    /* If the instance doesn't have any attributes, the dict ptr could
-       still be NULL. */
+    /* This instance never initialized its dict. */
     if ((*pdict) == NULL)
 	return state;
 
