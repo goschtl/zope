@@ -26,11 +26,11 @@ from zope.app.container.btree import BTreeContainer
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.event.interfaces import IObjectModifiedEvent
-from zope.app.event.interfaces import ISubscriber
 from zope.app.mail.interfaces import IMailDelivery
 from zope.app.size.interfaces import ISized
 
 from book.messageboard.interfaces import IMessage
+from book.messageboard.interfaces import IMessageContained, IMessageContainer
 from book.messageboard.interfaces import IMailSubscriptions
 
 _ = MessageIDFactory('messageboard')
@@ -59,7 +59,7 @@ class Message(BTreeContainer):
     >>> message.body
     u'Message Body'
     """
-    implements(IMessage)
+    implements(IMessage, IMessageContained, IMessageContainer)
 
     # See book.messageboard.interfaces.IMessage
     title = u''
@@ -231,19 +231,10 @@ class MailSubscriptions:
 
 
 class MessageMailer:
-    """Class to handle all outgoing mail.
-
-    Verify the interface implementation
-
-    >>> from zope.interface.verify import verifyClass
-    >>> verifyClass(ISubscriber, MessageMailer)
-    True
-    """
+    """Class to handle all outgoing mail."""
   
-    implements(ISubscriber)
-  
-    def notify(self, event):
-        r"""See zope.app.event.interfaces.ISubscriber
+    def __call__(self, event):
+        r"""Called by the event system.
 
         Here is a demonstration on how the notification process and mail
         sending works.
@@ -287,7 +278,7 @@ class MessageMailer:
 
         >>> from zope.app.event.objectevent import ObjectModifiedEvent
         >>> event = ObjectModifiedEvent(msg)
-        >>> mailer.notify(event)
+        >>> mailer(event)
 
         >>> from pprint import pprint
         >>> pprint(mail_result)
@@ -364,8 +355,7 @@ class MessageMailer:
         if not toaddrs:
             return
         msg = 'Subject: %s\n\n\n%s' %(subject, body)
-        mail_utility = zapi.getUtility(None, IMailDelivery,
-                                       'msgboard-delivery')
+        mail_utility = zapi.getUtility(IMailDelivery, 'msgboard-delivery')
         mail_utility.send('mailer@messageboard.org' , toaddrs, msg)
   
 mailer = MessageMailer()

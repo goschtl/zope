@@ -30,7 +30,7 @@ class HTMLSourceWidget(TextAreaWidget):
             input = re.sub(regex, '', input)
 
         if self.context.allowed_tags:
-            regex = allowed_regex %'|'.join(
+            regex = allowed_regex %'[ />]|'.join(
                 self.context.allowed_tags)
             input = re.sub(regex, '', input)
 

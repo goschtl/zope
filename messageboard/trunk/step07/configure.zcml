@@ -1,7 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:i18n="http://namespaces.zope.org/i18n"
-    xmlns:event="http://namespaces.zope.org/event"
     xmlns:mail="http://namespaces.zope.org/mail"
     i18n_domain="messageboard">
 
@@ -69,6 +68,10 @@
         interface=".interfaces.IMessage"
         />
     <require
+        permission="book.messageboard.View"
+        interface=".interfaces.IMessageContainer"
+        />
+    <require
         permission="book.messageboard.Add"
         set_schema=".interfaces.IMessage"
         />
@@ -83,7 +86,9 @@
   <adapter
       factory=".message.MailSubscriptions"
       provides=".interfaces.IMailSubscriptions"
-      for=".interfaces.IMessage" />
+      for=".interfaces.IMessage"
+      permission="book.messageboard.Add"      
+      trusted="true" />
 
   <mail:smtpMailer name="msgboard-smtp" hostname="localhost" port="25" />
   
@@ -93,12 +98,17 @@
       queuePath="./mail-queue"
       mailer="msgboard-smtp" />
 
-  <event:subscribe
-      subscriber=".message.mailer"
-      event_types="zope.app.event.interfaces.IObjectModifiedEvent
-                   zope.app.container.interfaces.IObjectAddedEvent
-                   zope.app.container.interfaces.IObjectRemovedEvent" />
+  <subscriber
+      factory=".message.mailer"
+      for="zope.app.event.interfaces.IObjectModifiedEvent" />
 
+  <subscriber
+      factory=".message.mailer"
+      for="zope.app.container.interfaces.IObjectAddedEvent" />
+
+  <subscriber
+      factory=".message.mailer"
+      for="zope.app.container.interfaces.IObjectRemovedEvent" />
 
   <i18n:registerTranslations directory="locales" />
 
