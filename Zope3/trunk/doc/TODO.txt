@@ -1,0 +1,199 @@
+This file contains short descriptions of projects or tasks that need
+to get done by the first Zope X3 beta release. 
+
+The order that items are listed here is not significant.
+
+- Fill out TALES path api defined in
+  zope.app.interfaces.talesapi.IZopeTalesAPI and implemented in 
+  zope.app.pagetemplate.talesapi.ZopeTalesAPI.
+
+  Codeworks is currently signed up for this.
+
+- Provide a simple Python api accessable from the module
+  zope.app.zapi.  The interface for this module should be defined in
+  zope.app.interfaces.zapi.IZAPI.
+
+  This is meant to support usage like:
+
+  import zapi
+
+  ....
+
+
+  p = zapi.path(someob)
+
+  Codeworks is currently signed up for this.
+
+- Finish cache framework:
+
+  http://dev.zope.org/Zope3/Zope.App.Caching
+
+- Fill out an authentication service based on the architecture
+  that Itamar came up with in Rotterdam. See
+  src/zope/app/services/auth.txt. 
+
+- Redo local Role service to use configurations
+
+- Implement a local permission service (using configurations)
+
+- Rethink the organization of the security software to reflect
+  the fact that people will likley plug in different grant and
+  owndership systems for different security policies.
+
+- Untrusted modules.  Also implement a way of
+  specifying policies for trusted and untrusted modules.
+  At a minimum:
+
+  o Say globally whether or not modules are trusted or
+    untrusted.
+
+  o Say globally whether modules are editable through the web.
+
+  A slight variation on this is to have two kinds of modules and
+  say under what circumstances they are editable through the
+  web (or otherwise).
+
+- File-system synchronization
+
+  - Client command-line tool w HTTP-based interface to server
+    that provided CVS-like interface and features. Including:
+
+    - checkout and commit
+
+    - update including merge and offline version
+
+    - diff and offline diff
+
+  - Refine the adapter protocol or implementation to leverage
+    the file-system representation protocol.
+
+  - Maybe leverage adaptable storage ideas to assure
+    losslessness.
+
+  - In common case where extra data are simple values, store
+    extra data in the entries file to simplify representation
+    and updates.  Maybe do something similar w annotations.
+
+  - Maybe do some more xmlpickle refinement with an eye toward
+    impproving the usability of simple dictionary pickles.
+
+  - export and import as a special case
+
+  - Improve some common data file formats (e.g. simplify
+    entries file).
+
+  - Work out security details
+
+  Guido is working on this. 
+
+- Software bundles.
+
+- zcml directives for module security
+
+- local module service. This provides support for local imports
+  as well as a place to manage security configuration for
+  persistent modules.
+
+  Provide support for within package access to persistent
+  modules without the need to register them.
+
+- Rework undo
+
+  Simplify the undo model. To kinds of undo:
+
+  - Undo my changes
+
+  - Undo everybody
+
+  - Undo optionally takes place into acount.
+
+  - Should be an undo last. 
+
+  Make sure we handle multiple undos properly.
+
+- Implement interface types, and thus content types.
+
+- Local Interface service
+
+  This service should support:
+
+  * Local interface registration
+
+  * Interface browsing
+
+    + by type
+
+      By default, you'll browse content types. IOW, the default usage
+      will be as a content-type service.
+
+  * Central point for configuration by content type.
+
+    You can walk up to the interface service and see the content types
+    defined for the system.  You can select a type and see all of the
+    configuration for that type.
+
+- Finish WebDAV
+
+- Finish XML-RPC
+
+  There are some issues in the current implementation.  I need to
+  review this. For one thing, object methods are implicitly published,
+  which is bad.
+
+- Convert to use ZConfig
+
+- Finish "process control", specifically shutting down and restarting
+  via the web.  The main issue here is plumbing.  How to get the
+  signal from the UI to the server logic. The way to do this is via
+  events. The UI should generate some sort of ShutwornRequest event
+  and code in the server should be subscribed. Care needs to be taked
+  to assure that only privaledged users can generate these events.
+
+- Help System?
+
+  There is one, but I don't know what state it's in or how to write
+  help for it.
+
+- I18n for ZCML
+
+- I18n-ize all of the code
+
+- Broken-object support
+
+  When an object cannot beunpickled because it's class can't be found, 
+  it should be converted to a special kind of immutable object.  
+
+  This is actually more of a ZODB 4 feature than a Zope feature.
+
+  Alternatively, perhaps folders should be unwilling to include items 
+  (or maybe there should be a vetoing add subscriber) that prevents
+  adding non-persistent objects.
+
+  Alternatively, there should be a persistent wrapper used for objects
+  stored in folders that are non-persistent.
+
+- Supply a generic property mechanism?
+
+- Python scipts
+
+  What form should these take? Should they be like Zope 2 Python
+  scipts? or should they by like Python modules.
+
+- Properties
+
+  In Zope 2, folders and many other objects could have arbitrary
+  properties.  This was very useful to storing little bits of
+  content.  What form should this take in Zope 3?
+
+- UI
+
+  - Get rid of "common tasks".
+
+  - Make the add menu a pull-down menu
+
+  - Add nested menus.
+
+  - Make it easier to get to the error logging service.
+
+  - Get the html titles a lot righter than they are now.
+

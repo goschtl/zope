@@ -48,6 +48,11 @@ Zope Road Map
   
   Later releases
 
-    Features
+    Zope X3.0
 
-      ...
+      See the to-do list: TODO.txt.
+
+    After Zope X3.0
+
+      See the list of things to do later: TODOLATER.txt.
+

@@ -1,0 +1,32 @@
+Things to do After Zope X3.0
+
+- Support for groups in the security model. No one has been
+  interested in working on this and, at this point, there are
+  too many other things to do. We *are* committed to adding this
+  eventually. 
+
+- Support for permission catagories in the security model. No
+  one has been interested in working on this and, at this point,
+  there are too many other things to do. We *are* committed to
+  adding this eventually assuming that it becomes necessary due
+  to a lerge number of permissions.
+
+- Support for executable identity / code ownership.
+  I'm not positive that anybody actually wants this. :)
+
+- Better ZPT debugging support
+
+  It's sometimes hard to tell where the pieces that make up a
+  page come from.  We'll investigate:
+
+  - Leaving TAL and METAL markup in the ooutput and
+
+  - Including special sourcxe attributes that record locations
+    of objects used in expressions.
+
+- DTML2
+
+  DTML2 is a version of DTML that uses TALES *instead* of the
+  traditional DTML namespace stack and expression mechanisms.
+
+
