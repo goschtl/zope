@@ -54,7 +54,7 @@ def tearDown():
     
 def test_suite():
     return unittest.TestSuite((
-        DocTestSuite('zope.app.pythonpage', setUp, tearDown),
+        DocTestSuite('zope.app.pythonpage', setUp=setUp, tearDown=tearDown),
         ))
 
 if __name__ == '__main__':
