@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.14 2003/04/25 20:53:34 fdrake Exp $
+$Id: interfaces.py,v 1.15 2003/04/25 21:18:31 fdrake Exp $
 """
 from zope.interface import Interface
 from zope.i18n import MessageIDFactory
@@ -22,15 +22,15 @@ _ = MessageIDFactory("zope")
 
 
 class StopValidation(Exception):
-    """This exception is raised, if the validation is done for sure early.
-    Note that this exception should be always caught, since it is just a
-    way for the validator to save time."""
-    pass
+    """Raised if the validation is completed early.
+
+    Note that this exception should be always caught, since it is just
+    a way for the validator to save time.
+    """
 
 
 class ValidationError(Exception):
-    """If some check during the Validation process fails, this exception is
-    raised."""
+    """Raised if the Validation process fails."""
 
     def __cmp__(self, other):
         return cmp(self.args, other.args)
@@ -95,7 +95,7 @@ class IField(Interface):
     """
 
     def bind(object):
-        """return a copy of this field which is bound to an object.
+        """Return a copy of this field which is bound to an object.
 
         The copy of the Field will have the 'context' attribute set
         to 'object'.  This way a Field can implement more complex
@@ -139,7 +139,7 @@ class IField(Interface):
         )
 
     def constraint(value):
-        u"""check a customized contraint on the value.
+        u"""Check a customized contraint on the value.
 
         You can implement this method with your Field to
         require a certain constraint.  This relaxes the need
@@ -170,8 +170,7 @@ class IField(Interface):
         )
 
     def get(object):
-        """Get the value of the field for the given object.
-        """
+        """Get the value of the field for the given object."""
 
     def query(object, default=None):
         """Query the value of the field for the given object.
@@ -202,7 +201,7 @@ class IContainer(IField):
     """
 
 class IOrderable(IField):
-    u"""a Field requiring its value to be orderable.
+    u"""Field requiring its value to be orderable.
 
     The set of value needs support a complete ordering; the
     implementation mechanism is not constrained.  Either __cmp__() or
@@ -210,13 +209,13 @@ class IOrderable(IField):
     """
 
 class ILen(IField):
-    u"""a Field requiring its value to have a length.
+    u"""A Field requiring its value to have a length.
 
     The value needs to have a conventional __len__ method.
     """
 
 class IMinMax(IOrderable):
-    u"""a Field requiring its value to be between min and max.
+    u"""Field requiring its value to be between min and max.
 
     This implies that the value needs to support the IOrderable interface.
     """
@@ -235,7 +234,7 @@ class IMinMax(IOrderable):
 
 
 class IMinMaxLen(ILen):
-    u"""a Field requiring the length of its value to be within a range"""
+    u"""Field requiring the length of its value to be within a range"""
 
     min_length = Int(
         title=_(u"Minimum length"),
@@ -276,45 +275,45 @@ class IInterfaceField(IField):
     zope.interface.Interface)."""
 
 class IBool(IField):
-    u"""a Boolean Field."""
+    u"""Boolean Field."""
 
 class IBytes(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated will be removed in the future.
-    u"""a Field containing a byte string (like the python str).
+    u"""Field containing a byte string (like the python str).
 
     The value might be contrained to be with length limits.
     """
 
 class IBytesLine(IBytes):
-    u"""a Field containing a byte string without newlines."""
+    u"""Field containing a byte string without newlines."""
 
 class IText(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated doesn't make sense for multi-line strings, so will
     # be removed in the future.
-    u"""a Field containing a unicode string."""
+    u"""Field containing a unicode string."""
 
 class ISourceText(IText):
     u"""Field for source text of object."""
 
 class ITextLine(IText):
-    u"""a Field containing a unicode string without newlines."""
+    u"""Field containing a unicode string without newlines."""
 
 class IEnumeratedTextLine(IEnumerated, ITextLine):
-    u"""a Field containing a unicode string without newlines.
+    u"""Field containing a unicode string without newlines.
 
     The value may be constrained to an element of a specified list.
     """
 
 class IPassword(ITextLine):
-    u"""a Field containing a unicode string without newlines that is a password."""
+    u"""Field containing a unicode string without newlines that is a password."""
 
 class IInt(IMinMax, IEnumerated, IField):
     # XXX IEnumerated will be removed; use IEnumeratedInt instead if you
     # need the IEnumerated interface.
-    u"""a Field containing an Integer Value."""
+    u"""Field containing an Integer Value."""
 
 class IEnumeratedInt(IInt, IEnumerated):
-    u"""a Field containing an Integer Value.
+    u"""Field containing an Integer Value.
 
     The value may be constrained to an element of a specified list.
     """
@@ -322,10 +321,10 @@ class IEnumeratedInt(IInt, IEnumerated):
 class IFloat(IMinMax, IEnumerated, IField):
     # XXX IEnumerated will be removed; use IEnumeratedFloat instead if you
     # need the IEnumerated interface.
-    u"""a Field containing a Float."""
+    u"""Field containing a Float."""
 
 class IEnumeratedFloat(IEnumerated, IFloat):
-    u"""a Field containing a Float.
+    u"""Field containing a Float.
 
     The value may be constrained to an element of a specified list.
     """
@@ -333,10 +332,10 @@ class IEnumeratedFloat(IEnumerated, IFloat):
 class IDatetime(IMinMax, IEnumerated, IField):
     # XXX IEnumerated will be removed; use IEnumeratedDatetime instead
     # if you need the IEnumerated interface.
-    u"""a Field containing a DateTime."""
+    u"""Field containing a DateTime."""
 
 class IEnumeratedDatetime(IEnumerated, IDatetime):
-    u"""a Field containing a DateTime.
+    u"""Field containing a DateTime.
 
     The value may be constrained to an element of a specified list.
     """
@@ -348,7 +347,7 @@ def _fields(values):
     return True
 
 class ISequence(IMinMaxLen, IIterable, IContainer):
-    u"""a Field containing a Sequence value.
+    u"""Field containing a Sequence value.
 
     The Value must be iterable and may have a min_length/max_length.
     """
@@ -365,13 +364,13 @@ class ISequence(IMinMaxLen, IIterable, IContainer):
         )
 
 class ITuple(ISequence):
-    u"""a Field containing a conventional tuple."""
+    u"""Field containing a conventional tuple."""
 
 class IList(ISequence):
-    u"""a Field containing a conventional list."""
+    u"""Field containing a conventional list."""
 
 class IDict(IMinMaxLen, IIterable, IContainer):
-    u"""a Field containing a conventional dict.
+    u"""Field containing a conventional dict.
 
     The key_types and value_types field allow specification
     of restrictions for keys and values contained in the dict.
@@ -397,4 +396,3 @@ class IDict(IMinMaxLen, IIterable, IContainer):
         constraint=_fields,
         required=False,
         )
-
