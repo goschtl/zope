@@ -13,27 +13,28 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.5 2003/06/06 19:29:07 stevea Exp $
+$Id: xmlimportexport.py,v 1.6 2003/07/31 15:01:36 srichter Exp $
 """
-__metaclass__ = type
+from xml.sax import parse
+from xml.sax.handler import ContentHandler
 
-
-from zope.app.pagetemplate.viewpagetemplatefile \
-     import ViewPageTemplateFile
+from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.workflow.stateful \
      import IStatefulProcessDefinition
 from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
 from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
-from zope.component import getAdapter
-from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.pagetemplate.viewpagetemplatefile \
+     import ViewPageTemplateFile
+from zope.app.services.servicenames import Permissions
+from zope.app.workflow.stateful.definition import State, Transition
+from zope.component import getAdapter, getService
+from zope.configuration.name import resolve
+from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.security.checker import CheckerPublic
+from zope.security.proxy import trustedRemoveSecurityProxy
 
-from xml.sax import parse
-from xml.sax.handler import ContentHandler
-
-from zope.app.workflow.stateful.definition import State, Transition
-from zope.interface import implements
+__metaclass__ = type
 
 
 # basic implementation for a format-checker
@@ -57,6 +58,7 @@ class XMLStatefulImporter(ContentHandler):
     def __init__(self, context, encoding='latin-1'):
         self.context = context
         self.encoding = encoding
+        self.perm_service = getService(self.context, Permissions)
 
     def startElement(self, name, attrs):
         handler = getattr(self, 'start' + name.title().replace('-', ''), None)
@@ -75,14 +77,34 @@ class XMLStatefulImporter(ContentHandler):
 
     startStates = noop
     startTransitions = noop
+    startPermissions = noop
 
     def startWorkflow(self, attrs):
         dc = getAdapter(self.context, IZopeDublinCore)
         dc.title = attrs.get('title', u'')
 
     def startSchema(self, attrs):
-        name = attrs['name'].encode(self.encoding)
-        self.context.setRelevantDataSchema(name)
+        name = attrs['name'].encode(self.encoding).strip()
+        if name:
+            self.context.relevantDataSchema = resolve(name)
+
+    def startPermission(self, attrs):
+        perms = trustedRemoveSecurityProxy(self.context.schemaPermissions)
+        fieldName = attrs.get('for')
+        type = attrs.get('type')
+        perm_id = attrs.get('id')
+        if perm_id == 'zope.Public':
+            perm = CheckerPublic
+        elif perm_id == '':
+            perm = None
+        else:
+            perm = self.perm_service.getPermission(perm_id)
+        if not fieldName in perms.keys():
+            perms[fieldName] = (CheckerPublic, CheckerPublic)
+        if type == u'get':
+            perms[fieldName] = (perm, perms[fieldName][1])
+        if type == u'set':
+            perms[fieldName] = (perms[fieldName][0], perm)
 
     def startState(self, attrs):
         encoding = self.encoding
@@ -162,3 +184,20 @@ class XMLExportHandler:
             return ''
         return removeAllProxies(permission).getId()
 
+    def getSchemaPermissions(self):
+        info = []
+        perms = self.getDefinition().schemaPermissions
+        for field, (getPerm, setPerm) in perms.items():
+            info.append({'fieldName': field,
+                         'type': 'get',
+                         'id': self.getPermissionId(getPerm)})
+            info.append({'fieldName': field,
+                         'type': 'set',
+                         'id': self.getPermissionId(setPerm)})
+        return info
+
+    def relevantDataSchema(self):
+        schema = self.getDefinition().relevantDataSchema
+        if schema is None:
+            return 'None'
+        return schema.__module__ + '.' + schema.__name__

@@ -14,11 +14,12 @@
 
 """Stateful workflow process definition.
 
-$Id: definition.py,v 1.5 2003/06/05 12:03:19 stevea Exp $
+$Id: definition.py,v 1.6 2003/07/31 15:01:36 srichter Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
+from persistence.dict import PersistentDict
 
 from zope.app.context import ContextWrapper
 from zope.context import getWrapperContainer
@@ -27,7 +28,7 @@ from zope.context import ContextMethod
 from zope.app.interfaces.container import IReadContainer
 
 from zope.app.interfaces.workflow.stateful import IStatefulProcessDefinition
-from zope.app.interfaces.workflow.stateful import IState, ITransition
+from zope.app.interfaces.workflow.stateful import IState, ITransition, INITIAL
 from zope.app.interfaces.workflow.stateful import IStatefulStatesContainer
 from zope.app.interfaces.workflow.stateful import IStatefulTransitionsContainer
 
@@ -39,19 +40,16 @@ from zope.interface import implements
 
 class State(Persistent):
     """State."""
-
     implements(IState)
 
 
-
 class StatesContainer(ProcessDefinitionElementContainer):
-    """Container that stores States.
-    """
+    """Container that stores States."""
     implements(IStatefulStatesContainer)
 
 
 class Transition(Persistent):
-    """Transition."""
+    """Transition from one state to another."""
 
     implements(ITransition)
 
@@ -64,7 +62,6 @@ class Transition(Persistent):
         self.__script = script or None
         self.__permission = permission or None
         self.__triggerMode = triggerMode
-
 
     def getSourceState(self):
         return self.__source
@@ -127,8 +124,7 @@ class Transition(Persistent):
 
 
 class TransitionsContainer(ProcessDefinitionElementContainer):
-    """Container that stores Transitions.
-    """
+    """Container that stores Transitions."""
     implements(IStatefulTransitionsContainer)
 
 
@@ -144,12 +140,10 @@ class StatefulProcessDefinition(ProcessDefinition):
         self.__states.setObject(self.getInitialStateName(), initial)
         self.__transitions = TransitionsContainer()
         self.__schema = None
+        # See workflow.stateful.IStatefulProcessDefinition
+        self.schemaPermissions = PersistentDict()
 
     _clear = clear = __init__
-
-    ############################################################
-    # Implementation methods for interface
-    # zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition
 
     def getRelevantDataSchema(self):
         return self.__schema
@@ -157,66 +151,67 @@ class StatefulProcessDefinition(ProcessDefinition):
     def setRelevantDataSchema(self, schema):
         self.__schema = schema
 
+    # See workflow.stateful.IStatefulProcessDefinition
     relevantDataSchema = property(getRelevantDataSchema,
                                   setRelevantDataSchema,
                                   None,
                                   "Schema for RelevantData.")
 
-
-
+    # See workflow.stateful.IStatefulProcessDefinition
     states = property(lambda self: self.__states)
 
+    # See workflow.stateful.IStatefulProcessDefinition
     transitions = property(lambda self: self.__transitions)
 
     def addState(self, name, state):
+        """See workflow.stateful.IStatefulProcessDefinition"""
         if name in self.states:
             raise KeyError, name
         self.states.setObject(name, state)
 
     def getState(self, name):
+        """See workflow.stateful.IStatefulProcessDefinition"""
         return self.states[name]
     getState = ContextMethod(getState)
 
     def removeState(self, name):
+        """See workflow.stateful.IStatefulProcessDefinition"""
         del self.states[name]
 
     def getStateNames(self):
+        """See workflow.stateful.IStatefulProcessDefinition"""
         return self.states.keys()
 
-    # XXX This shouldn't be hardcoded
     def getInitialStateName(self):
-        return 'INITIAL'
+        """See workflow.stateful.IStatefulProcessDefinition"""
+        return INITIAL
 
     def addTransition(self, name, transition):
+        """See workflow.stateful.IStatefulProcessDefinition"""
         if name in self.transitions:
             raise KeyError, name
         self.transitions.setObject(name, transition)
 
     def getTransition(self, name):
+        """See workflow.stateful.IStatefulProcessDefinition"""
         return self.transitions[name]
     getTransition = ContextMethod(getTransition)
 
     def removeTransition(self, name):
+        """See workflow.stateful.IStatefulProcessDefinition"""
         del self.transitions[name]
 
     def getTransitionNames(self):
+        """See workflow.stateful.IStatefulProcessDefinition"""
         return self.transitions.keys()
 
-    # IProcessDefinition
-
     def createProcessInstance(self, definition_name):
+        """See workflow.IProcessDefinition"""
         pi_obj = StatefulProcessInstance(definition_name)
         ContextWrapper(pi_obj, self).initialize()
         return pi_obj
     createProcessInstance = ContextMethod(createProcessInstance)
 
-    #
-    ############################################################
-
-
-    ############################################################
-    # Implementation methods for interface
-    # zope.app.interfaces.container.IReadContainer
 
     def __getitem__(self, key):
         "See Interface.Common.Mapping.IReadMapping"
@@ -247,26 +242,25 @@ class StatefulProcessDefinition(ProcessDefinition):
 
         return self.get(key) is not None
 
-    # Enumeration methods. We'll only expose Packages for now:
     def __iter__(self):
+        """See zope.app.interfaces.container.IReadContainer"""
         return iter(self.keys())
 
     def keys(self):
+        """See zope.app.interfaces.container.IReadContainer"""
         return ['states', 'transitions']
 
     def values(self):
+        """See zope.app.interfaces.container.IReadContainer"""
         return map(self.get, self.keys())
-
     values = ContextMethod(values)
 
     def items(self):
+        """See zope.app.interfaces.container.IReadContainer"""
         return [(key, self.get(key)) for key in self.keys()]
-
     items = ContextMethod(items)
 
     def __len__(self):
+        """See zope.app.interfaces.container.IReadContainer"""
         return 2
 
-
-    #
-    ############################################################

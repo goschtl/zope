@@ -18,26 +18,40 @@ from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.dublincore import IZopeDublinCore
+from zope.app.interfaces.security import IPermissionService
 from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.interfaces.workflow import IProcessDefinitionExportHandler
 from zope.app.interfaces.workflow import IProcessDefinitionImportHandler
+from zope.app.security.registries.permissionregistry import permissionRegistry
+from zope.app.services.servicenames import Permissions
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
 from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
 from zope.component.adapter import provideAdapter
-from zope.component import getAdapter
-from zope.interface import implements, classImplements
+from zope.component import getAdapter, getService, getServiceManager
+from zope.interface import implements, classImplements, Interface
 from zope.interface.verify import verifyClass
+from zope.schema import TextLine
 from zope.security.checker import CheckerPublic
 import unittest
 
+class ISchema(Interface):
 
-xml_text = """<?xml version="1.0"?>
+    title = TextLine(
+        title=u"Title",
+        required=True)
+
+
+xml_text = '''<?xml version="1.0"?>
 <workflow type="StatefulWorkflow" title="TestPD">
 
-  <schema name="Some.path.to.an.ISchemaClass">
+  <schema name="zope.app.workflow.stateful.tests.test_xmlimportexport.ISchema">
+    <permissions>
+      <permission for="title" type="get" id="zope.Public" />
+      <permission for="title" type="set" id="zope.View" />
+    </permissions>
   </schema>
 
   <states>
@@ -73,7 +87,7 @@ xml_text = """<?xml version="1.0"?>
   </transitions>
 
 </workflow>
-"""
+'''
 
 
 class TestProcessDefinition(StatefulProcessDefinition):
@@ -92,6 +106,11 @@ class Test(PlacefulSetup, unittest.TestCase):
         provideAdapter(IAttributeAnnotatable, IAnnotations,
                        AttributeAnnotations)
         provideAdapter(IAnnotatable, IZopeDublinCore, ZDCAnnotatableAdapter)
+        sm = getServiceManager(None)
+        sm.defineService(Permissions, IPermissionService)
+        sm.provideService(Permissions, permissionRegistry)
+        perm_service = getService(None, Permissions)
+        perm_service.definePermission('zope.View', 'View', '')
 
     def testInterface(self):
         verifyClass(IProcessDefinitionImportHandler, XMLImportHandler)
@@ -110,9 +129,13 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         handler.doImport(testpd, StringIO(xml_text))
 
-        self.assertEqual(testpd.getRelevantDataSchema(),
-                         'Some.path.to.an.ISchemaClass')
+        self.assertEqual(testpd.relevantDataSchema, ISchema)
         self.assertEqual(getAdapter(testpd, IZopeDublinCore).title, 'TestPD')
+        
+        perm_service = getService(None, Permissions)
+        self.assertEqual(
+            testpd.schemaPermissions['title'],
+            (CheckerPublic, perm_service.getPermission('zope.View')))
 
         self.assertEqual(len(testpd.states), 3)
         self.assertEqual(len(testpd.transitions), 3)

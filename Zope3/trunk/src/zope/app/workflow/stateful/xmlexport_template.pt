@@ -6,7 +6,14 @@
 
   <schema 
     name = ""
-    tal:attributes="name wf/getRelevantDataSchema">
+    tal:attributes="name view/relevantDataSchema">
+    <permissions>
+      <permission for="title" type="set" id="zope.Public"
+          tal:repeat="perm view/getSchemaPermissions"
+          tal:attributes="for perm/fieldName;
+                          type perm/type;
+                          id perm/id"/>
+    </permissions>
   </schema>
 
   <states>
@@ -14,8 +21,9 @@
       title = ""
       name = ""
       tal:repeat="state wf/getStateNames"
-      tal:attributes="title python:view.getDublinCore(wf.getState(state)).Title();
-                      name  state"></state>
+      tal:attributes="
+          title python:view.getDublinCore(wf.getState(state)).Title();
+          name  state"></state>
   </states>
 
   <transitions>
@@ -30,14 +38,15 @@
         title = ""
         name = ""
         tal:define="transObj python:wf.getTransition(trans)"
-        tal:attributes="sourceState      transObj/getSourceState;
-                        destinationState transObj/getDestinationState;
-                        condition        transObj/getCondition;
-                        script           transObj/getScript;
-                        permission       python:view.getPermissionId(transObj.getPermission());
-                        triggerMode      transObj/getTriggerMode;
-                        title            python:view.getDublinCore(transObj).Title();
-                        name             trans"></transition>
+        tal:attributes="
+            sourceState      transObj/getSourceState;
+            destinationState transObj/getDestinationState;
+            condition        transObj/getCondition;
+            script           transObj/getScript;
+            permission   python:view.getPermissionId(transObj.getPermission());
+            triggerMode      transObj/getTriggerMode;
+            title            python:view.getDublinCore(transObj).Title();
+            name             trans"/>
     </tal:block>
   </transitions>
   

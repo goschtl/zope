@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.17 2003/07/30 15:24:06 srichter Exp $
+$Id: stateful.py,v 1.18 2003/07/31 15:01:31 srichter Exp $
 """
 
 import zope.schema
@@ -21,6 +21,7 @@ from zope.context import ContextProperty
 from zope.app.security.permission import PermissionField
 
 from zope.interface import Interface, Attribute
+from zope.app.component.interfacefield import InterfaceField
 from zope.app.interfaces.workflow import IWorkflowEvent
 from zope.app.interfaces.workflow import IProcessDefinition
 from zope.app.interfaces.workflow import IProcessInstance
@@ -28,6 +29,8 @@ from zope.app.interfaces.workflow import IProcessDefinitionElementContainer
 
 AUTOMATIC = u'Automatic'
 MANUAL = u'Manual'
+INITIAL = u'INITIAL'
+
 
 class ITransitionEvent(IWorkflowEvent):
     """An event that signalizes a transition from one state to another."""
@@ -84,7 +87,7 @@ class IAfterRelevantDataChangeEvent(IRelevantDataChangeEvent):
 
 class IState(Interface):
     """Interface for state of a stateful workflow process definition."""
-
+    # XXX Should at least have a title, if not a value as well 
 
 class IStatefulStatesContainer(IProcessDefinitionElementContainer):
     """Container that stores States."""
@@ -139,7 +142,7 @@ class ITransition(Interface):
     # ComponentLookupError: Permissions
     # required=False does not help as well
     # so for now the permission needs to be set ttw
-    # till we found another solution
+    # till we find another solution
     permission = PermissionField(
         title=u"The permission needed to fire the Transition.",
         required=True)
@@ -198,19 +201,16 @@ class IStatefulTransitionsContainer(IProcessDefinitionElementContainer):
 class IStatefulProcessDefinition(IProcessDefinition):
     """Interface for stateful workflow process definition."""
 
-    # XXX How to specify permissions for RelevantData ??
+    relevantDataSchema = InterfaceField(
+        title=u"Workflow-Relevant Data Schema",
+        description=u"Specifies the schema that characterizes the workflow "
+                    u"relevant data of a process instance, found in pd.data.",
+        default=None,
+        required=False)
 
-    relevantDataSchema = zope.schema.TextLine(
-        title=u"RelevantData Schema",
-        description=u"Dotted Name of RelevantData Schema.",
-        required=True)
-
-
-    def setRelevantDataSchema(schema):
-        """Set the Schema for RelevantData."""
-
-    def getRelevantDataSchema():
-        """Return the Schema for RelevantData."""
+    schemaPermissions = Attribute(u"A dictioary that maps set/get permissions"
+                                  u"on the schema's fields. Entries looks as"
+                                  u"follows: {fieldname : (set_perm, get_perm)}")
 
     states = Attribute("State objects container.")
 

@@ -13,10 +13,12 @@
 ##############################################################################
 """ProcessInstance views for a stateful workflow
  
-$Id: instance.py,v 1.5 2003/06/03 22:46:18 jim Exp $
+$Id: instance.py,v 1.6 2003/07/31 15:01:27 srichter Exp $
 """
 __metaclass__ = type
 
+from zope.app.browser.form.submit import Update
+from zope.app.form.utility import setUpWidget, applyWidgetsChanges
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
@@ -26,10 +28,23 @@ from zope.component import getAdapter, getService
 from zope.context import getWrapperData
 from zope.proxy import removeAllProxies
 from zope.publisher.browser import BrowserView
+from zope.security.proxy import trustedRemoveSecurityProxy
+from zope.schema import getFields
  
 class ManagementView(BrowserView):
 
     __used_for__ = IProcessInstanceContainerAdaptable
+
+    def __init__(self, context, request):
+        super(ManagementView, self).__init__(context, request)
+        workflow = self._getSelWorkflow() 
+        schema = workflow.data.getSchema()
+        for name, field in getFields(schema).items():
+            # setUpWidget() does not mutate the field, so it is ok.
+            field = trustedRemoveSecurityProxy(field)
+            setUpWidget(self, name, field,
+                        value=getattr(workflow.data, name))
+        
 
     def _extractContentInfo(self, item):
         id, processInstance = item
@@ -42,9 +57,6 @@ class ManagementView(BrowserView):
     def listContentInfo(self):
         return map(self._extractContentInfo,
                    getAdapter(self.context, IProcessInstanceContainer).items())
-
-    contents = ViewPageTemplateFile('instance_manage.pt')
-    contentsMacros = contents
 
     def getWorkflowTitle(self):
         pi = self._getSelWorkflow()
@@ -59,7 +71,6 @@ class ManagementView(BrowserView):
         if pi is None:
             return info
 
-        
         pd = self._getProcessDefinition(pi)
         clean_pd = removeAllProxies(pd)
 
@@ -114,3 +125,22 @@ class ManagementView(BrowserView):
         return ws.getProcessDefinition(processInstance.processDefinitionName)
 
 
+    def widgets(self):
+        schema = self._getSelWorkflow().data.getSchema()
+        return [getattr(self, name+'_widget')
+                for name in getFields(schema).keys()]
+
+    
+    def update(self):
+        status = ''
+
+        if Update in self.request:
+            workflow = self._getSelWorkflow() 
+            schema = trustedRemoveSecurityProxy(workflow.data.getSchema())
+            changed = applyWidgetsChanges(
+                self, workflow.data, schema, names=getFields(schema).keys(),
+                exclude_readonly=True)
+            if changed:
+                status = u'Updated Workflow Data.'
+
+        return status

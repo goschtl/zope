@@ -19,21 +19,22 @@
   "zope.app.browser.workflow.stateful.definition.StatefulProcessDefinitionView"
   permission="zope.ManageServices">
 
-  <browser:page name="index.html" template="definition_index.pt" />
+  <browser:page name="index.html" template="definition_index.pt"/>
 
 </browser:pages>
 
 <browser:editform
   schema="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
   name="edit.html"
-  menu="zmi_views"
-  label="Edit a Stateful ProcessDefinition"
+  template="definition_edit.pt"
+  class=".definition.RelevantDataSchemaEdit"
+  menu="zmi_views" title="Relevant Data Schema"
   permission="zope.workflow.ManageProcessDefinitions"
   />
 
 <browser:menuItems
-  for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
-  menu="zmi_actions">
+    for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
+    menu="zmi_actions">
   
   <browser:menuItem 
       title="Manage States" action="states/contents.html" />
@@ -162,16 +163,10 @@
   permission="zope.workflow.UseProcessInstances"
   class="zope.app.browser.workflow.stateful.instance.ManagementView">
 
-  <browser:page name="workflows.html" attribute="contents" />
+  <browser:page name="workflows.html" template="instance_manage.pt"
+                menu="zmi_views" title="Workflows"/>
   <browser:page name="fireTransition.html" attribute="fireTransition" />
 </browser:pages>
-
-<browser:menuItem
-  for="zope.app.interfaces.workflow.IProcessInstanceContainerAdaptable"
-  menu="zmi_views"
-  title="Workflows"
-  action="workflows.html"
-  />
 
 
 <browser:pages
@@ -183,12 +178,14 @@
 </browser:pages>
 
 
-<!-- uhm .. this seems to be to generic in its definition
-     and not really nice as well .. -->
+<!-- uhm ... this seems to be too generic in its definition
+     and not really nice as well. -->
 <adapter
     factory=".filteradapter.FilterAdapter"
     provides=".interfaces.IContentFilterAdapter"
     for="zope.app.interfaces.annotation.IAttributeAnnotatable"
     permission="zope.View" />       <!-- XXX is this permission right? -->
+
+<!--include file="testobject.zcml"/-->
 
 </zopeConfigure>

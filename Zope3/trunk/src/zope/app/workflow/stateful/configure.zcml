@@ -73,7 +73,8 @@
       />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
-      interface="zope.app.interfaces.workflow.stateful.IStatefulTransitionsContainer" 
+      interface=
+          "zope.app.interfaces.workflow.stateful.IStatefulTransitionsContainer" 
       />
   <implements 
       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
@@ -122,5 +123,8 @@
    interface="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
    factory=".xmlimportexport.XMLExportHandler"
    />
+
+<!-- Test Object for testing Stateful Workflows -->
+<!--include file="testobject.zcml"/-->
 
 </zopeConfigure>

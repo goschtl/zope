@@ -13,11 +13,12 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.8 2003/07/30 15:24:09 srichter Exp $
+$Id: instance.py,v 1.9 2003/07/31 15:01:36 srichter Exp $
 """
 __metaclass__ = type
 
 from persistence import Persistent
+from persistence.dict import PersistentDict
 
 from zope.app.context import ContextWrapper
 from zope.app.event import publish
@@ -39,7 +40,8 @@ from zope.interface import directlyProvides, implements
 from zope.proxy import removeAllProxies
 from zope.schema import getFields
 from zope.security.management import getSecurityManager
-from zope.security.checker import CheckerPublic
+from zope.security.checker import CheckerPublic, Checker
+from zope.security.proxy import Proxy
 from zope.tales.engine import Engine
 
 
@@ -79,9 +81,12 @@ class AfterRelevantDataChangeEvent(RelevantDataChangeEvent):
 
 class RelevantData(Persistent):
     """The relevant data object can store data that is important to the
-    workflow and fires events when this data is changed."""
+    workflow and fires events when this data is changed.
 
-    def __init__(self, schema=None):
+    If you don't understand this code, don't worry, it is heavy lifting.
+    """
+
+    def __init__(self, schema=None, schemaPermissions=None):
         super(RelevantData, self).__init__()
         self.__schema = None
         # Add the new attributes, if there was a schema passed in
@@ -91,9 +96,26 @@ class RelevantData(Persistent):
             self.__schema = schema
             directlyProvides(self, schema)
 
+            # Build up a Checker rules and store it for later
+            self.__checker_getattr = PersistentDict()
+            self.__checker_setattr = PersistentDict()
+            for name in getFields(schema):
+                get_perm, set_perm = schemaPermissions.get(name, (None, None))
+                self.__checker_getattr[name] = get_perm or CheckerPublic
+                self.__checker_setattr[name] = set_perm or CheckerPublic
+
+            # Always permit our class's two public methods
+            self.__checker_getattr['getChecker'] = CheckerPublic
+            self.__checker_getattr['getSchema'] = CheckerPublic
+
+
     def __setattr__(self, key, value):
         # The '__schema' attribute has a sepcial function
-        if key == '_RelevantData__schema':
+        if key in ('_RelevantData__schema',
+                   '_RelevantData__checker_getattr',
+                   '_RelevantData__checker_setattr',
+                   'getChecker', 'getSchema') or \
+               key.startswith('_p_'):
             return super(RelevantData, self).__setattr__(key, value)
             
         is_schema_field = self.__schema is not None and \
@@ -114,6 +136,13 @@ class RelevantData(Persistent):
                 process, self.__schema, key, oldvalue, value))
     __setattr__ = ContextMethod(__setattr__)
 
+    def getChecker(self):
+        return Checker(self.__checker_getattr.get,
+                       self.__checker_setattr.get)
+
+    def getSchema(self):
+        return self.__schema
+
 
 class StateChangeInfo:
     """Immutable StateChangeInfo."""
@@ -133,7 +162,9 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
     implements(IStatefulProcessInstance)
 
     def getData(self):
-        return ContextWrapper(self._data, self, name="data")
+        # Always give out the data attribute as proxied object.
+        data = Proxy(self._data, self._data.getChecker())
+        return ContextWrapper(data, self, name="data")
 
     data = ContextProperty(getData) 
 
@@ -147,12 +178,8 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         # This should really always return a schema
         schema = clean_pd.getRelevantDataSchema()
         if schema:
-            if isinstance(schema, (str, unicode)):
-                sm = getServiceManager(self)
-                schema = sm.resolve(schema)
-
             # create relevant-data
-            self._data = RelevantData(schema)
+            self._data = RelevantData(schema, clean_pd.schemaPermissions)
         else:
             self._data = None
         # setup permission on data

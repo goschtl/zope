@@ -1,0 +1,21 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:addform
+      label="Add Test Object"
+      name="AddTestObject"
+      schema="zope.app.workflow.stateful.testobject.ITestObject"
+      content_factory="zope.app.workflow.stateful.testobject.TestObject"
+      permission="zope.ManageContent"
+      menu="add_content" title="Test Object"/>
+
+  <browser:editform
+      schema="zope.app.workflow.stateful.testobject.ITestObject"
+      for="zope.app.workflow.stateful.testobject.ITestObject"
+      label="Change Test Object"
+      name="edit.html"
+      permission="zope.ManageContent"
+      menu="zmi_views" title="Edit" />
+
+</zopeConfigure>
