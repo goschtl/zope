@@ -11,22 +11,24 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.17 2004/02/25 13:22:09 dominikhuber Exp $
+"""$Id: test_editview.py,v 1.18 2004/02/26 10:28:41 dominikhuber Exp $
 """
 import unittest
+
+from zope.interface import Interface, implements
+from zope.publisher.browser import TestRequest
+from zope.schema import TextLine, accessors
+from zope.schema.interfaces import ITextLine
+from zope.component.exceptions import ComponentLookupError
 
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.event.tests.placelesssetup import getEvents
-from zope.interface import Interface, implements
-from zope.schema import TextLine, accessors
-from zope.schema.interfaces import ITextLine
-from zope.publisher.browser import TestRequest
+
 from zope.app.browser.form.editview import EditView
-from zope.app.tests import ztapi
 from zope.app.browser.form.widget import TextWidget
 from zope.app.browser.form.submit import Update
-from zope.component.exceptions import ComponentLookupError
+
 
 class I(Interface):
     foo = TextLine(title=u"Foo")

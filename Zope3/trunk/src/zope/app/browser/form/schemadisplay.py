@@ -13,13 +13,15 @@
 ##############################################################################
 """Support for display-only pages based on schema.
 
-$Id: schemadisplay.py,v 1.14 2004/02/25 13:21:50 dominikhuber Exp $
+$Id: schemadisplay.py,v 1.15 2004/02/26 10:27:51 dominikhuber Exp $
 """
 from zope.app import zapi
 
 from zope.schema import getFieldNamesInOrder
 
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.app.interfaces.location import ILocation
+from zope.app.location import LocationProxy
 from zope.app.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component import getAdapter

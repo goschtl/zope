@@ -13,26 +13,33 @@
 ##############################################################################
 """Edit Wizard View Classes
 
-$Id: editwizard.py,v 1.20 2004/02/25 13:21:50 dominikhuber Exp $
+$Id: editwizard.py,v 1.21 2004/02/26 10:27:51 dominikhuber Exp $
 """
-from zope.app import zapi
-from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.publisher.interfaces.browser import IBrowserRequest
+
 from zope.component import getAdapter
-from zope.app.publisher.browser.globalbrowsermenuservice import \
-     globalBrowserMenuService
-from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.security.checker import defineChecker, NamesChecker
-from zope.app.form.utility \
-        import setUpEditWidgets, getWidgetsData, applyWidgetsChanges
-from zope.app.interfaces.form import WidgetInputError
-from zope.app.interfaces.form import WidgetsError
+
+from zope.app import zapi
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.location import ILocation
+from zope.app.location import LocationProxy
+
+
+from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.publisher.browser.globalbrowsermenuservice import \
+     globalBrowserMenuService
 
 from editview import EditView
 from submit import Next, Previous, Update
+from zope.app.interfaces.form import WidgetInputError
+from zope.app.interfaces.form import WidgetsError
+from zope.app.form.utility \
+        import setUpEditWidgets, getWidgetsData, applyWidgetsChanges
+
 
 PaneNumber = 'CURRENT_PANE_IDX'
 

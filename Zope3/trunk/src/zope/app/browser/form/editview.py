@@ -13,29 +13,31 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.47 2004/02/25 13:21:50 dominikhuber Exp $
+$Id: editview.py,v 1.48 2004/02/26 10:27:51 dominikhuber Exp $
 """
 from datetime import datetime
 
-from zope.app import zapi
 from zope.schema import getFieldNamesInOrder
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.publisher.browser import BrowserView
 from zope.security.checker import defineChecker, NamesChecker
 from zope.component import getAdapter
 
-from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.form import WidgetsError
-from zope.app.location import LocationProxy
-from zope.app.interfaces.location import ILocation
-from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
-from zope.app.browser.form.submit import Update
+from zope.app import zapi
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.interfaces.form import WidgetsError
+from zope.app.interfaces.location import ILocation
+from zope.app.location import LocationProxy
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+from zope.app.publisher.browser import BrowserView
 from zope.app.publisher.browser.globalbrowsermenuservice import \
     globalBrowserMenuService
+
+from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
+from zope.app.browser.form.submit import Update
+
 
 class EditView(BrowserView):
     """Simple edit-view base class
