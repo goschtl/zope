@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.6 2002/12/11 18:00:12 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.7 2002/12/11 18:07:25 gvanrossum Exp $
 """
 
 import sys
@@ -189,7 +189,8 @@ class SiteDefinition:
         self._addService(root_folder, 'ObjectHub', ObjectHub)
 
 
-    def _addService(self, root_folder, service_type, service_factory):
+    def _addService(self, root_folder, service_type, service_factory,
+                    initial_status='Active'):
         """Add and configure a service to the root folder.
 
         The service is added to the default package and activated.
@@ -210,10 +211,7 @@ class SiteDefinition:
                                               package_name + (name,))
         key = configuration_manager.setObject(None, configuration)
         configuration = traverseName(configuration_manager, key)
-        service_manager = traverseName(root_folder, '++etc++Services')
-        registry = service_manager.createConfigurations(service_type)
-        registry.register(configuration)
-        registry.activate(configuration)
+        configuration.status = initial_status
 
 
     def __call__(self):
