@@ -179,7 +179,7 @@ function pd_getMouseX(e) {
   // Get the scroll offset in one of the many ways that this browser supports.
   var x_offset = window.pageXOffset || document.documentElement.scrollLeft || document.body.scrollLeft;
 
-  // Get the current mouse position, and if it is relative to the client area, 
+  // Get the current mouse position, and if it is relative to the client area,
   //  add the offset.
   var x = e.pageX ? e.pageX : e.clientX + x_offset;
 
@@ -193,7 +193,7 @@ function pd_getMouseY(e) {
   // Get the scroll offset in one of the many ways that this browser supports.
   var y_offset = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
 
-  // Get the current mouse position, and if it is relative to the client area, 
+  // Get the current mouse position, and if it is relative to the client area,
   //  add the offset.
   var y = e.pageY ? e.pageY : e.clientY + y_offset;
 
@@ -275,7 +275,7 @@ function pd_dragging(e) {
     return;
 
   var x = pd_getMouseX(e)
-  var y = pd_getMouseY(e) 
+  var y = pd_getMouseY(e)
 
   if (!pd_drag_event.began_moving) {
     if (Math.abs(x - pd_drag_event.start_x) <= 3 &&
