@@ -59,13 +59,13 @@ def main():
         includes = os.path.dirname(sys.argv[0])
     else:
         includes = os.path.dirname(__file__)
-    includes = os.path.join(os.path.abspath(includes), "include")
+    includes = os.path.join(os.path.abspath(includes), "lib/python")
     for dir in setup_dirs:
         print "Building extensions in %s" % dir
         os.chdir(dir)
-        os.spawnl(os.P_WAIT, sys.executable,
-                  sys.executable, "setup.py", 'build_ext', '-i',
-                  '-I', includes, *args)
+        cmd = sys.executable, "setup.py", 'build_ext', '-i', '-I', includes
+        cmd += tuple(args)
+        os.spawnl(os.P_WAIT, sys.executable, *cmd)
         print
 
 if __name__ == "__main__":
