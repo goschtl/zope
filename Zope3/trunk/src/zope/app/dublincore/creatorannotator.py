@@ -13,11 +13,11 @@
 ##############################################################################
 """Object that takes care of annotating the dublin core creator field.
 
-$Id: creatorannotator.py,v 1.1 2003/03/27 12:51:46 ctheune Exp $
+$Id: creatorannotator.py,v 1.2 2003/03/27 16:09:33 ctheune Exp $
 """
 __metaclass__ = type
 
-from zope.component import getAdapter
+from zope.component import queryAdapter
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.event import ISubscriber
 from zope.security.management import getSecurityManager
@@ -28,7 +28,7 @@ class CreatorAnnotatorClass:
     __implements__ = ISubscriber
 
     def notify(self, event):
-        dc = getAdapter(event.object, IZopeDublinCore)
+        dc = queryAdapter(event.object, IZopeDublinCore)
         if dc is None:
             return
  
