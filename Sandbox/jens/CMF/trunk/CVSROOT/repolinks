@@ -125,14 +125,14 @@
 
 /Zope3/lib/python/Zope/App                     /Packages/ZopeApp
 /Zope3/lib/python/Zope/ComponentArchitecture   /Packages/ComponentArchitecture
-/Zope3/lib/python/Zope/DocumentTemplate        /Packages/DocumentTemplate
+#/Zope3/lib/python/Zope/DocumentTemplate        /Packages/DocumentTemplate
 /Zope3/lib/python/Zope/Publisher               /Packages/Publisher
 /Zope3/lib/python/Zope/RestrictedPython        /Packages/RestrictedPython
 /Zope3/lib/python/Zope/Server/medusa           /Packages/ZServer/medusa
-/Zope3/lib/python/Zope/StructuredText          /Packages/StructuredText
+#/Zope3/lib/python/Zope/StructuredText          /Packages/StructuredText
 /Zope3/lib/python/Zope/TAL                     /Packages/TAL
 /Zope3/lib/python/Zope/Testing                 /Packages/Testing
-/Zope3/lib/python/Zope/TreeDisplay             /Packages/TreeDisplay
+#/Zope3/lib/python/Zope/TreeDisplay             /Packages/TreeDisplay
 /Zope3/lib/python/Zope/ZLogger                 /Packages/ZLogger
 /Zope3/lib/python/Zope/Exceptions              /Zope/lib/python/zExceptions
 /Zope3/lib/python/Zope/ContextWrapper          /Packages/ContextWrapper
