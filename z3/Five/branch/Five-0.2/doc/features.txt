@@ -41,23 +41,13 @@ You can use adapters in Five, just like in Zope 3.
 Zope 3 views
 ============
 
-Zope 3 views work in Five, including layers and skins, though there
-are some limitations:
+Zope 3 views work in Five, including layers and skins. To make them
+work, you need to make a Zope 2 class "traversable", using the
+``five:traversable`` directive in ZCML. You can use
+``five:traversable`` on any Zope 2 class.
 
-* You need to make a Zope 2 class "viewable". This can be done by
-  mixing in ``Products.Five.api.Viewable`` into your class, or
-  alternatively, using the ``five:viewable`` directive in ZCML.
-
-* At the the time of writing, special constructs using ``@@`` or
-  ``++`` do not yet work in URLs. Views with subviews also do not
-  work.
-
-You can use ``five:viewable`` on any Zope 2 class, unless it declares
-its own ``__bobo_traverse__``. We plan to lift the ``bobo_traverse``
-restriction soon.
-
-At the time of writing there is also no provision for default views in
-Five.
+If you want to use default views with a class, you should use the
+``five:defaultViewable`` directive on the class first.
 
 Zope 3 page templates
 =====================
@@ -90,4 +80,3 @@ Zope 2 content classes. Note however that these permissions will be
 ignored by views anyway, as they are trusted -- it only serves to
 protect directly exposed methods on content classes (the python
 scripts and the ZPublisher).
-
