@@ -124,10 +124,10 @@ transaction before the http request.
   >>> print http(r"""
   ... POST /@@contents.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 54
+  ... Content-Length: 73
   ... Content-Type: application/x-www-form-urlencoded
   ... 
-  ... type_name=zope.app.browser.add.Folder.f10&new_value=f1""")
+  ... type_name=zope.app.browser.add.zope.app.folder.folder.Folder&new_value=f1""")
   HTTP/1.1 303 See Other
   Content-Length: ...
   Content-Type: text/html;charset=utf-8

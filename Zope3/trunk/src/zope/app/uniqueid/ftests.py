@@ -18,10 +18,13 @@ $Id$
 
 import unittest
 import re
+from transaction import commit
+
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.tests.setup import addUtility
 from zope.app.tests.functional import BrowserTestCase
+
 
 class TestUniqueIdUtility(BrowserTestCase):
 
@@ -36,14 +39,9 @@ class TestUniqueIdUtility(BrowserTestCase):
 
         sm = zapi.traverse(root, '/++etc++site')
         addUtility(sm, 'uniqueid', IUniqueIdUtility, UniqueIdUtility())
+        commit()
 
-        response = self.publish(self.basepath + '/contents.html', basic='mgr:mgrpw')
-
-        self.assertEqual(response.getStatus(), 200)
-
-        expr = 'zope.app.browser.add.UniqueIdUtility.f([0-9]*)'
-        m = re.search(expr, response.getBody())
-        type_name = m.group(0)
+        type_name = 'zope.app.browser.add.zope.app.uniqueid.UniqueIdUtility'
 
         response = self.publish(
             self.basepath + '/contents.html',

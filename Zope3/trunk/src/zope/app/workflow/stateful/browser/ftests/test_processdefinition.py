@@ -29,18 +29,11 @@ class Test(BrowserTestCase):
         self.basepath = '/++etc++site/default'
         response = self.publish(
             self.basepath + '/contents.html',
-            basic='mgr:mgrpw')
-
-        self.assertEqual(response.getStatus(), 200)
-
-        expr = 'zope.app.browser.add.StatefulProcessDefinition.f([0-9]*)'
-        m = re.search(expr, response.getBody())
-        type_name = m.group(0)
-
-        response = self.publish(
-            self.basepath + '/contents.html',
             basic='mgr:mgrpw',
-            form={'type_name': type_name,
+            form={'type_name':
+                  'zope.app.browser.add.'
+                  'zope.app.workflow.stateful.definition.'
+                  'StatefulProcessDefinition',
                   'new_value': 'pd' })
 
     def test_processdefinition(self):

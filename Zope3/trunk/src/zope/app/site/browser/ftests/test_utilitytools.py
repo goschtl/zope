@@ -52,7 +52,9 @@ class TestUtilityTool(BrowserTestCase):
         # attempt to add something
         response = self.publish(
             path+'/action.html', basic='mgr:mgrpw',
-            form={'type_name': 'zope.app.browser.add.TranslationDomain.f1',
+            form={'type_name':
+                  'zope.app.browser.add.'
+                  'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
 
@@ -74,7 +76,9 @@ class TestUtilityTool(BrowserTestCase):
         self.publish(
             path + '/action.html',
             basic='mgr:mgrpw',
-            form={'type_name': 'zope.app.browser.add.TranslationDomain.f1',
+            form={'type_name':
+                  'zope.app.browser.add.'
+                  'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
 
@@ -96,7 +100,9 @@ class TestUtilityTool(BrowserTestCase):
         self.publish(
             path + '/action.html',
             basic='mgr:mgrpw',
-            form={'type_name': 'zope.app.browser.add.TranslationDomain.f1',
+            form={'type_name':
+                  'zope.app.browser.add.'
+                  'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
 
@@ -120,7 +126,9 @@ class TestUtilityTool(BrowserTestCase):
         self.publish(
             path + '/action.html',
             basic='mgr:mgrpw',
-            form={'type_name': 'zope.app.browser.add.TranslationDomain.f1',
+            form={'type_name':
+                  'zope.app.browser.add.'
+                  'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
 
@@ -145,7 +153,9 @@ class TestUtilityTool(BrowserTestCase):
         self.publish(
             path + '/action.html',
             basic='mgr:mgrpw',
-            form={'type_name': 'zope.app.browser.add.TranslationDomain.f1',
+            form={'type_name':
+                  'zope.app.browser.add.'
+                  'zope.app.i18n.translationdomain.TranslationDomain',
                   'id': 'zope',
                   'add': 'Add'})
 

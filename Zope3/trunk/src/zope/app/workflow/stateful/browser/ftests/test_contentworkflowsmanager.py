@@ -18,6 +18,8 @@ $Id$
 import unittest
 import re
 
+from transaction import commit
+
 from zope.interface import Interface
 from zope.app.component.interface import nameToInterface
 from zope.app import zapi
@@ -44,21 +46,15 @@ class Test(BrowserTestCase):
                    IStatefulProcessDefinition,
                    StatefulProcessDefinition()
                    ) 
-
-        response = self.publish(
-            self.basepath + '/contents.html',
-            basic='mgr:mgrpw')
-
-        self.assertEqual(response.getStatus(), 200)
-
-        expr = 'zope.app.browser.add.ContentWorkflowsManager.f([0-9]*)'
-        m = re.search(expr, response.getBody())
-        type_name = m.group(0)
+        commit()
 
         response = self.publish(
             self.basepath + '/contents.html',
             basic='mgr:mgrpw',
-            form={'type_name': type_name,
+            form={'type_name':
+                  'zope.app.browser.add.'
+                  'zope.app.workflow.stateful.contentworkflow.'
+                  'ContentWorkflowsManager',
                   'new_value': 'mgr' })
 
         root = self.getRootFolder()
