@@ -735,6 +735,9 @@ class ComponentRegistration(SimpleRegistration):
         if 'componentPath' in dict:
             self._component = NULL_COMPONENT
             self._BBB_componentPath = dict['componentPath']
+
+        if isinstance(self._BBB_componentPath, (str, unicode)):
+            self._component = NULL_COMPONENT
     
     ###########################################################################
 
