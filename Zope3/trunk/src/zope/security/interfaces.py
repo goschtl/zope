@@ -16,24 +16,22 @@
 $Id$
 """
 
-from zope.exceptions import ZopeError
-from zope.exceptions import IZopeError
 from zope.interface import Interface, Attribute, implements
 from zope.interface.common.interfaces import IAttributeError
 
-class IUnauthorized(IZopeError):
+class IUnauthorized(Interface):
     pass
 
-class Unauthorized(ZopeError):
+class Unauthorized(Exception):
     """Some user wasn't allowed to access a resource"""
 
     implements(IUnauthorized)
 
 
-class IForbidden(IZopeError):
+class IForbidden(Interface):
     pass
 
-class Forbidden(ZopeError):
+class Forbidden(Exception):
     """A resource cannot be accessed under any circumstances
     """
     implements(IForbidden)
