@@ -278,7 +278,13 @@ The Meta Configuration System
     a configuration for the site that has been named.  (Note: an
     alternative implementation would be to make the ISubdireciveHandler
     a singleton, in which case it could store the configuration
-    information directly on itself).
+    information directly on itself).  This actual configuration
+    action done at parse time both necessary and safe. Necessary
+    because the subdirective actions need to be able to alter the
+    configuration the named site, so it needs to be set up.  Safe,
+    because no matter which action directives ultimately win out
+    during conflict resolution, we know that *some* configuration
+    is going to be needed for this named site.
 
     The two subdirective methods use the same discriminator, and
     the name of the site being defined is included in the discriminator.
