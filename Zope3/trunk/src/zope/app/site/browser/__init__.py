@@ -432,8 +432,7 @@ class ServiceActivation(BrowserView):
             return s
 
 class MakeSite(BrowserView):
-    """View for convering a possible site to a site
-    """
+    """View for converting a possible site to a site."""
 
     def addSiteManager(self):
         """Convert a possible site to a site
@@ -479,12 +478,11 @@ class MakeSite(BrowserView):
         ...
         UserError: This is already a site
 
-
         """
         if ISite.providedBy(self.context):
             raise zapi.UserError('This is already a site')
 
-        # we don't want to store security proxies (we can't,
+        # We don't want to store security proxies (we can't,
         # actually), so we have to remove proxies here before passing
         # the context to the SiteManager.
         bare = removeAllProxies(self.context)
