@@ -1,3 +1,5 @@
+from __future__ import generators
+
 from persistence import Persistent
 from persistence.dict import PersistentDict
 from zope.interface import implements
