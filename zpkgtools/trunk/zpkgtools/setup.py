@@ -17,6 +17,7 @@ import os
 import posixpath
 import sys
 
+from zpkgtools import package
 from zpkgtools import publication
 
 
@@ -51,6 +52,25 @@ class SetupContext:
         publication.load(f, metadata=self)
         if self.platforms:
             self.platforms = ", ".join(self.platforms)
+
+    def load_package_info(self, pkgname, reldir):
+        directory = os.path.join(self._working_dir, pkgname)
+        pkginfo = package.loadPackageInfo(pkgname, directory, reldir)
+        self.scripts.extend(pkginfo.script)
+        self.extensions.extend(pkginfo.extensions)
+        #
+        # Generate setup.cfg the first time we run:
+        #
+        setup_cfg = os.path.join(self._working_dir, "setup.cfg")
+        if os.path.exists(setup_cfg):
+            return
+        if pkginfo.documentation:
+            f = open(setup_cfg, "w")
+            f.write("[bdist_rpm]\n")
+            f.write("doc_files =")
+            for fn in pkginfo.documentation:
+                f.write(" %s\n" % fn)
+            f.close()
 
     def scan_package(self, name, directory):
         files = os.listdir(directory)
@@ -102,6 +122,7 @@ class PackageContext(SetupContext):
         self.packages.append(pkgname)
         self.load_metadata(
             os.path.join(self._working_dir, pkgname, "PUBLICATION.txt"))
+        self.load_package_info(pkgname, pkgname)
         self.add_package_dir(pkgname, pkgname)
         self.scan_package(
             pkgname, os.path.join(self._working_dir, pkgname))

@@ -13,6 +13,7 @@
 ##############################################################################
 """Support for handling package configuration files."""
 
+import glob
 import os
 import posixpath
 import re
@@ -31,6 +32,7 @@ PACKAGE_CONF = "package.conf"
 
 
 def loadPackageInfo(pkgname, directory, reldir, file=None):
+    print (pkgname, directory, reldir, file)
     if not file:
         file = PACKAGE_CONF
     path = os.path.join(directory, file)
@@ -51,11 +53,27 @@ def loadPackageInfo(pkgname, directory, reldir, file=None):
     pkginfo.extensions = [create_extension(ext, pkgname, directory, reldir)
                           for ext in pkginfo.extension]
     if reldir:
-        pkginfo.documentation = [posixpath.join(reldir, fn)
-                                 for fn in pkginfo.documentation]
-        pkginfo.script = [posixpath.join(reldir, fn)
-                          for fn in pkginfo.script]
+        pkginfo.documentation = expand_globs(directory, reldir,
+                                             pkginfo.documentation)
+        pkginfo.script = expand_globs(directory, reldir, pkginfo.script)
     return pkginfo
+
+
+def expand_globs(directory, reldir, globlist):
+    results = []
+    pwd = os.getcwd()
+    os.chdir(directory)
+    try:
+        for g in globlist:
+            gs = g.replace("/", os.sep)
+            filenames = glob.glob(gs)
+            if not filenames:
+                raise ValueError("filename pattern %r doesn't match any files" % g)
+            results += [posixpath.join(reldir, fn.replace(os.sep, "/"))
+                        for fn in filenames]
+    finally:
+        os.chdir(pwd)
+    return results
 
 
 def cpp_definition(s):
