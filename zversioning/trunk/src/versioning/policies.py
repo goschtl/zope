@@ -116,7 +116,7 @@ class UpdateStatusPolicy(VersionableAspectsAdapter) :
     
     def copy(self, source, target) :
         """ Copies the state of source to target. """
-        for key, value in source.__getstate__.items() :
+        for key, value in source.__getstate__().items() :
             if key not in ('__name__', '__parent__') :
                 setattr(target, key, value)
 

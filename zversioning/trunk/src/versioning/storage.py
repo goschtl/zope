@@ -104,7 +104,7 @@ class SimpleHistoryStorage(Folder) :
         
     def getVersion(self, obj, selector) :
         """ Returns the version of an object that is specified by selector. """
-        history = self.getHistory(obj)
+        history = self.getVersionHistory(obj)
         return history[selector]
         
   

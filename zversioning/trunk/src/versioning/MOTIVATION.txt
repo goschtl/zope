@@ -184,6 +184,19 @@ Add some additional content versions :
     'Second text version of a'
     >>> saveAsVersion(c, histories)
     '002'
+    >>> a001 = histories.getVersion(a, '001')
+    >>> a001.text
+    'First text version of a'
+    >>> a002 = histories.getVersion(a, '002')
+    >>> a002.text
+    'Second text version of a'
+    
+    Note that after the copy process original and versions
+    are all distinct object :
+    
+    >>> a != a001 != a002
+    True
+    
 
 Now let's update the original object with versioned data. This again is a matter
 of the policy. The simple implementation here replaces the original data
@@ -207,7 +220,8 @@ intact :
     >>> new_c.refers_to == a
     True
    
-The more interesting case arises if we update the refered object too :
+The more interesting case arises if we update the object that has
+been referenced :
    
     >>> revertToVersionCopy(a, histories, '001')
     >>> new_a = sample["a"]
@@ -218,7 +232,7 @@ The more interesting case arises if we update the refered object too :
 
 Depending on the use case this might be what you want.
 
-    >>> util.commit()
+
 
 
 A Second Implementation
@@ -233,20 +247,32 @@ the original object with versioned data. This implementation
 does not replace the original with a copy but updates only all fields
 with the versioned values.
 
-#    
-#    >>> def revertToVersionState(obj, histories, selector) :
-#    ...     adapter = versioning.policies.UpdateStatusPolicy(obj, histories)
-#    ...     adapter.updateAspects(selector)
-#    >>> a = new_a
-#    >>> a.text
-#    'First text version of a'
-#    >>> revertToVersionState(new_a, histories, '002')
-#    >>> a.text
-#    'Second text version of a'
-#    >>> a == new_a
-#    True
-#    
-
+    
+    >>> def revertToVersionState(obj, histories, selector) :
+    ...     adapter = versioning.policies.UpdateStatusPolicy(obj, histories)
+    ...     adapter.updateAspects(selector)
+    >>> new_a = a
+    >>> a.text
+    'Second text version of a'
+    >>> revertToVersionState(a, histories, '001')
+    >>> a.text
+    'First text version of a'
+    >>> a == new_a
+    True
+    >>> revertToVersionState(a, histories, '002')
+    >>> a.text
+    'Second text version of a'
+    >>> a == new_a
+    True
+    
+    Note that the versions and the objects are all different:
+    
+    >>> a != a001 != a002
+    True
+    >>> c.refers_to == a
+    True
+    
+    
 
 
 
