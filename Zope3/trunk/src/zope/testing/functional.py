@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.18 2004/02/23 10:20:23 philikon Exp $
+$Id: functional.py,v 1.19 2004/03/19 12:00:11 jim Exp $
 """
 
 import logging
@@ -148,6 +148,11 @@ class FunctionalTestCase(unittest.TestCase):
         """Returns the Zope root folder."""
         return FunctionalTestSetup().getRootFolder()
 
+    def commit(self):
+        get_transaction().commit()
+
+    def abort(self):
+        get_transaction().abort()
 
 class BrowserTestCase(FunctionalTestCase):
     """Functional test case for Browser requests."""
