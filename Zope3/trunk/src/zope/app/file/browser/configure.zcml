@@ -1,7 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:help="http://namespaces.zope.org/help"
     i18n_domain="zope"
     >
 
@@ -72,16 +71,6 @@
       for="zope.app.file.interfaces.IFile"
       file="file_icon.gif"
       />
-
-  <help:register
-      id="file_upload"
-      title="File Upload Screen"
-      parent="ui"
-      for="zope.app.file.interfaces.IFile"
-      view="upload.html"
-      doc_path="./file_upload.hlp"
-      />
-
 
   <!-- Directives for Image -->
 
