@@ -13,13 +13,13 @@
 ##############################################################################
 """Local/persistent surrogate (adapter) registry support
 
-$Id: surrogate.py,v 1.4 2004/02/20 16:57:30 fdrake Exp $
+$Id: surrogate.py,v 1.5 2004/03/08 17:26:55 jim Exp $
 """
 
 from persistent import Persistent
 from persistent.dict import PersistentDict
-from zope.interface.surrogate import Surrogate, SurrogateRegistry
-from zope.interface.surrogate import adapterImplied, Default
+from zope.interface.adapter import Surrogate, AdapterRegistry
+from zope.interface.adapter import adapterImplied, Default
 from zope.app.services.registration import NotifyingRegistrationStack
 import zope.app.component.nextservice
 import zope.app.container.contained
@@ -52,7 +52,7 @@ class LocalSurrogate(Surrogate):
         self.adapters = adapters
         Surrogate.clean(self)
 
-class LocalSurrogateRegistry(SurrogateRegistry, Persistent):
+class LocalSurrogateRegistry(AdapterRegistry, Persistent):
     """Local/persistent surrogate registry
     """
 
@@ -68,7 +68,7 @@ class LocalSurrogateRegistry(SurrogateRegistry, Persistent):
         self.base = base
         self.adapters = {}
         self.stacks = PersistentDict()
-        SurrogateRegistry.__init__(self)
+        AdapterRegistry.__init__(self)
         self.setNext(next)
 
     def setNext(self, next, base=None):
@@ -96,7 +96,7 @@ class LocalSurrogateRegistry(SurrogateRegistry, Persistent):
 
     def __setstate__(self, state):
         Persistent.__setstate__(self, state)
-        SurrogateRegistry.__init__(self)
+        AdapterRegistry.__init__(self)
     
     def baseFor(self, spec):
         return self.base.get(spec)

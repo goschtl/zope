@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.24 2004/02/20 16:57:30 fdrake Exp $
+$Id: adapter.py,v 1.25 2004/03/08 17:26:54 jim Exp $
 """
 __metaclass__ = type
 
@@ -28,7 +28,6 @@ import zope.app.services.surrogate
 import zope.component.interfaces
 import zope.interface
 import zope.schema
-
 
 class LocalAdapterService(
     zope.app.services.surrogate.LocalSurrogateRegistry,
@@ -119,7 +118,7 @@ AdapterConfiguration = AdapterRegistration
 #BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
 
 import persistent
-from zope.interface.surrogate import ReadProperty
+from zope.interface.adapter import ReadProperty
 
 AdapterRegistration.required = ReadProperty(lambda self: self.forInterface)
 AdapterRegistration.provided = ReadProperty(

@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.7 2004/03/06 17:48:53 jim Exp $
+$Id: presentation.py,v 1.8 2004/03/08 17:26:55 jim Exp $
 """
 
 from zope.app import zapi
@@ -552,7 +552,7 @@ class BoundTemplate:
 from zope.app.event.function import Subscriber
 import persistent
 import sys
-from zope.interface.surrogate import ReadProperty
+from zope.interface.adapter import ReadProperty
 
 ViewRegistration.required    = ReadProperty(lambda self: self.forInterface)
 ViewRegistration.factoryName = ReadProperty(lambda self: self.class_)

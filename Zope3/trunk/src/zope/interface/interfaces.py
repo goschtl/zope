@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.21 2004/03/05 22:09:28 jim Exp $
+$Id: interfaces.py,v 1.22 2004/03/08 17:26:56 jim Exp $
 """
 
 from zope.interface import Interface
@@ -323,107 +323,6 @@ class ITypeRegistry(Interface):
     def __len__():
         """Returns the number of distinct interfaces registered.
         """
-
-
-class IAdapterRegistry(Interface):
-    """Adapter-style registry
-
-    This registry stores objects registered to convert (or participate
-    in the conversion from) one interface to another. The interface
-    converted is the "required" interface. We say that the interface
-    converted to is the "provided" interface.
-
-    The objects registered here don't need to be adapters. What's
-    important is that they are registered according to a required and
-    a provided interface.
-
-    The provided interface may not be None.
-
-    The required interface may be None. Adapters with a required
-    interface of None adapt non-components. An adapter that adapts all
-    components should specify a required interface of
-    Interface.Interface.
-
-    """
-
-    def register(require, provide, object):
-        """Register an object for a required and provided interface.
-
-        There are no restrictions on what the object might be.
-        Any restrictions (e.g. callability, or interface
-        implementation) must be enforced by higher-level code.
-
-        The require argument may be None.
-
-        """
-
-    def get((implements, provides), default=None, filter=None):
-        """Return a registered object
-
-        The registered object is one that was registered to require an
-        interface that one of the interfaces in the 'implements'
-        specification argument extends or equals and that provides an
-        interface that extends or equals the 'provides' argument.  An
-        attempt will be made to find the component that most closely
-        matches the input arguments.
-
-        The object returned could have been registered to require None.
-
-        Note that the implements may be None, it which case a
-        component will be returned only if it was registered with a
-        require of None.
-
-        An optional filter may be provided. If provided, the returned
-        object must pass the filter. Search will continue until a
-        suitable match can be found. The filter should take a single
-        argument and return a true value if the object passes the
-        filter, or false otherwise.
-
-        """
-
-    def getForObject(object, interface, filter=None):
-        """Get an adapter for object that implements the specified interface
-
-        The filter option has the same meaning as in the get method.
-        """
-
-    def getRegistered(require, provide):
-        """return data registered specifically for the given interfaces
-
-        None is returned if nothing is registered.
-        """
-
-    def getRegisteredMatching(required=None,
-                              provided=None):
-        """Return information about registered data
-
-        Zero or more required and provided interfaces may be
-        specified. Registration information matching any of the
-        specified interfaces is returned.
-
-        The arguments may be interfaces, or sequences of interfaces.
-
-        The returned value is a sequence of three-element tuples:
-
-        - required interface
-
-        - provided interface
-
-        - the object registered specifically for the required and
-          provided interfaces.
-
-        To understand how the matching works, imagine that we have
-        interfaces R1, R2, P1, and P2. R2 extends R1. P2 extends P1.
-        We've registered C to require R1 and provide P2.  Given this,
-        if we call getRegisteredMatching:
-
-          registry.getRegisteredMatching([R2], [P1])
-
-        the returned value will include:
-
-          (R1, P2, C)
-        """
-
 
 class IImplementorRegistry(Interface):
     """Implementor registry

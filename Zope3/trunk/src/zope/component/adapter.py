@@ -17,7 +17,7 @@
 __metaclass__ = type
 import sys
 from zope.interface import implements
-from zope.interface.surrogate import SurrogateRegistry
+from zope.interface.adapter import AdapterRegistry
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IAdapterService
 from zope.component.service import GlobalService
@@ -60,7 +60,7 @@ class IGlobalAdapterService(IAdapterService):
           - registered data
         """
 
-class GlobalAdapterService(SurrogateRegistry, GlobalService):
+class GlobalAdapterService(AdapterRegistry, GlobalService):
 
     implements(IGlobalAdapterService)
 

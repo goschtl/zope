@@ -16,9 +16,9 @@
    Local surrogates and surrogate registries share declarations with
    those "above" them.
 
-   Suppose we have a global SurrogateRegistry:
+   Suppose we have a global AdapterRegistry:
 
-   >>> G = SurrogateRegistry()
+   >>> G = AdapterRegistry()
 
    we also have a local surrogate registry, with G as it's base:
 
@@ -173,14 +173,14 @@
    >>> a.args == (f2, )
    True
 
-   $Id: test_surrogates.py,v 1.3 2004/02/20 16:57:32 fdrake Exp $
+   $Id: test_surrogates.py,v 1.4 2004/03/08 17:26:55 jim Exp $
    """
 
 def test_named_adapters():
     """
-    Suppose we have a global SurrogateRegistry:
+    Suppose we have a global AdapterRegistry:
 
-    >>> G = SurrogateRegistry()
+    >>> G = AdapterRegistry()
 
     we also have a local surrogate registry, with G as it's base:
 
@@ -356,9 +356,9 @@ def test_named_adapters():
 
 def test_multi_adapters():
     """
-    Suppose we have a global SurrogateRegistry:
+    Suppose we have a global AdapterRegistry:
 
-    >>> G = SurrogateRegistry()
+    >>> G = AdapterRegistry()
 
     we also have a local surrogate registry, with G as it's base:
 
@@ -524,7 +524,7 @@ def test_persistence():
     >>> db = DB()
     >>> conn1 = db.open()
 
-    >>> G = globalSurrogateRegistry
+    >>> G = globalAdapterRegistry
     >>> L1 = LocalSurrogateRegistry(G)
     >>> L2 = LocalSurrogateRegistry(G, L1)
 
@@ -730,7 +730,7 @@ def test_persistence():
 
 def test_local_default():
     """
-    >>> G = SurrogateRegistry()
+    >>> G = AdapterRegistry()
     >>> L1 = LocalSurrogateRegistry(G)
     >>> r = Registration(required = None, provided=IB1, factory=Adapter)
     >>> L1.createRegistrationsFor(r).activate(r)
@@ -742,7 +742,7 @@ def test_local_default():
 
 def test_changing_next():
     """
-    >>> G = SurrogateRegistry()
+    >>> G = AdapterRegistry()
     >>> L1 = LocalSurrogateRegistry(G)
     >>> L2 = LocalSurrogateRegistry(G, L1)
     >>> f2 = F2()
@@ -883,7 +883,7 @@ def test_LocalSurrogateBasedService():
 
 import unittest
 from zope.testing.doctestunit import DocTestSuite
-from zope.interface.surrogate import SurrogateRegistry
+from zope.interface.adapter import AdapterRegistry
 from zope.app.services.surrogate import LocalSurrogateRegistry
 from zope.app.services.surrogate import LocalSurrogateBasedService
 import zope.interface
@@ -962,11 +962,11 @@ class Registration:
 
 # Create a picklable global registry. The pickleability of other
 # global surrogate registries is beyond the scope of these tests:
-class GlobalSurogateRegistry(SurrogateRegistry):
+class GlobalAdapterRegistry(AdapterRegistry):
     def __reduce__(self):
-        return 'globalSurrogateRegistry'
+        return 'globalAdapterRegistry'
 
-globalSurrogateRegistry = GlobalSurogateRegistry()
+globalAdapterRegistry = GlobalAdapterRegistry()
 
 class TestStack:
     registration = None

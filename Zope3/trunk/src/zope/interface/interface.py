@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface object implementation
 
-$Id: interface.py,v 1.23 2004/03/06 15:38:46 jim Exp $
+$Id: interface.py,v 1.24 2004/03/08 17:26:56 jim Exp $
 """
 import sys
 import warnings
@@ -204,7 +204,7 @@ class Specification(SpecificationBase):
     def isImplementedByInstancesOf(self, cls):
         warnings.warn(
             "isImplementedByInstancesOf has been renamed to implementedBy",
-            DeprecationWarning, stacklevel=1,
+            DeprecationWarning, stacklevel=2,
             )
         return self.implementedBy(cls)
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: presentation.py,v 1.7 2004/03/05 22:09:25 jim Exp $
+$Id: presentation.py,v 1.8 2004/03/08 17:26:56 jim Exp $
 """
 
 from zope.component.interfaces import IPresentationService
@@ -24,7 +24,7 @@ from zope.component.service import GlobalService
 import zope.interface
 from zope.interface.interfaces import IInterface
 import zope.schema
-import zope.interface.surrogate
+import zope.interface.adapter
 from types import ClassType
 
 
@@ -510,10 +510,10 @@ def GL(presentation_service, layer_name):
 def GU(presentation_service, usage_name):
     return presentation_service.queryUsage(usage_name)
 
-class GlobalLayer(zope.interface.surrogate.SurrogateRegistry):
+class GlobalLayer(zope.interface.adapter.AdapterRegistry):
 
     def __init__(self, parent, name):
-        zope.interface.surrogate.SurrogateRegistry.__init__(self)
+        zope.interface.adapter.AdapterRegistry.__init__(self)
         self.__parent__ = parent
         self.__name__ = name
 
@@ -521,10 +521,10 @@ class GlobalLayer(zope.interface.surrogate.SurrogateRegistry):
         return GL, (self.__parent__, self.__name__)
 
 
-class GlobalUsage(zope.interface.surrogate.SurrogateRegistry):
+class GlobalUsage(zope.interface.adapter.AdapterRegistry):
 
     def __init__(self, parent, name):
-        zope.interface.surrogate.SurrogateRegistry.__init__(self)
+        zope.interface.adapter.AdapterRegistry.__init__(self)
         self.__parent__ = parent
         self.__name__ = name
 
