@@ -92,7 +92,7 @@ class ReviewMessages:
         """Get all pending messages recursively."""
         msgs = []
         for name, msg in pmsg.items():
-            if IMessage.isImplementedBy(msg):
+            if IMessage.providedBy(msg):
                 if hasMessageStatus(msg, 'pending'):
                     msgs.append(msg)
                 msgs += self.getPendingMessages(msg)

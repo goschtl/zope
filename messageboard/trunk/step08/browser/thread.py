@@ -30,7 +30,7 @@ class Thread:
     def listContentInfo(self):
         children = []
         for name, child in self.context.items():
-            if IMessage.isImplementedBy(child) and \
+            if IMessage.providedBy(child) and \
                    hasMessageStatus(child, 'published'):
                 info = {}
                 info['title'] = child.title
