@@ -288,6 +288,10 @@ BasicTypes = {
     type(not 1): NoProxy, # Boolean, if available :)
 }
 
+class _Sequence(object):
+    def __len__(self): return 0
+    def __getitem__(self, i): raise IndexError
+
 _default_checkers = {
     dict: NamesChecker(['__getitem__', '__len__', '__iter__',
                         'get', 'has_key', '__copy__',
@@ -311,6 +315,7 @@ _default_checkers = {
     types.ModuleType: _moduleChecker,
     type(iter([])): NamesChecker(['next']), # same types in Python 2.2.1,
     type(iter(())): NamesChecker(['next']), # different in Python 2.3
+    type(iter(_Sequence())): NamesChecker(['next']),
     type(Interface): _interfaceChecker,
     }
 
