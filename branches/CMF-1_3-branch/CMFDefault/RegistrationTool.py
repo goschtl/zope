@@ -164,6 +164,11 @@ class RegistrationTool (RegistrationTool, ActionProviderBase):
             raise 'NotFound', 'The username you entered could not be found.'
 
         password = member.getPassword()
+        email = member.getProperty( 'email' )
+
+        if email is None:
+            raise ValueError( 'Member %s has no e-mail address.'
+                            % new_member_id )
     
         # Rather than have the template try to use the mailhost, we will
         # render the message ourselves and send it from here (where we
@@ -172,6 +177,7 @@ class RegistrationTool (RegistrationTool, ActionProviderBase):
                                                    , self.REQUEST
                                                    , member=member
                                                    , password=password
+                                                   , email=email
                                                    )
     
         host = self.MailHost

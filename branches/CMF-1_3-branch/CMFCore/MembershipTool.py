@@ -332,7 +332,8 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
         '''
         return map(self.wrapUser, self.__getPUS().getUsers())
 
-    security.declareProtected(CMFCorePermissions.View, 'searchMembers')
+    security.declareProtected( CMFCorePermissions.ListPortalMembers
+                             , 'searchMembers')
     def searchMembers( self, search_param, search_term ):
         """ Search the membership """
         md = getToolByName( self, 'portal_memberdata' )
