@@ -107,6 +107,21 @@ ZopeHTTPServer Components/ZopeHTTPServer
 # symlink.  The symlink is there for people who checked out when the
 # actual webdav directory lived in GreyThing...  klm 03/26/1999.
 GreyThing -d lib/python -l Components/GreyThing
+ZServer Publishers/ZServer
+
+ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
+  &lExtensionClass &lBTree &lcPickle &lzlib \
+  &lpZClasses &lpWebdav \
+  &lpAccessControl &lpApp &lpBoboPOS &lpDateTime &lpDocumentTemplate \
+  &lpHelpSys \
+  &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay \
+  &lpSearchIndex \
+  &lpSharedInit &lpDCInit &lpProductsInit \
+  &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
+  &lpZSQLMethods &lpZGadflyDA \
+  &ZServer 
+
+Zope2 ZSrc &ZopeBase
 
 Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lExtensionClass &lBTree &lcPickle &lzlib \
@@ -119,6 +134,5 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZSQLMethods &lpZGadflyDA
 
-ZServer Publishers/ZServer
 
 # KLM end
