@@ -431,6 +431,7 @@ class BuilderApplication(Application):
         if self.options.revision_tag:
             # we really don't want the tagged version of the support code
             self.loader = loader.Loader()
+        os.mkdir(os.path.join(self.destination, "Support"))
         self.include_support_package(
             "zpkgtools", ("cvs://cvs.zope.org/cvs-repository"
                           ":Packages/zpkgtools/zpkgtools"))
@@ -453,7 +454,7 @@ class BuilderApplication(Application):
         If a directory named `name` is already present in the output
         tree, it is left unchanged.
         """
-        destination = os.path.join(self.destination, name)
+        destination = os.path.join(self.destination, "Support", name)
         if os.path.exists(destination):
             # have the package as a side effect of something else
             return
@@ -544,6 +545,15 @@ SETUP_HEADER = """\
 #! /usr/bin/env python
 #
 # THIS IS A GENERATED FILE.  DO NOT EDIT THIS DIRECTLY.
+
+# Add the Support/ directory to sys.path to get our support code:
+#
+import os
+import sys
+support_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                           'Support')
+if os.path.isdir(support_dir):
+    sys.path.insert(0, support_dir)
 
 import zpkgtools.setup
 
