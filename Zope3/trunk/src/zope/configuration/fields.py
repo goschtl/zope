@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.13 2003/08/18 19:20:18 srichter Exp $
+$Id: fields.py,v 1.14 2003/08/18 19:42:25 srichter Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -381,7 +381,7 @@ class MessageID(schema.Text):
         # Check whether there is an explicit message is specified
         default = None
         if v.startswith('[]'):
-            v = v[3:]
+            v = v[2:].lstrip()
         elif v.startswith('['):
             end = v.find(']')
             default = v[end+2:]
