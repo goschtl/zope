@@ -117,6 +117,32 @@ class SkinnableObjectManager (ObjectManager):
         w_self.setupCurrentSkin()
         return w_self
 
+    security.declarePublic('changeSkin')
+    def changeSkin(self, skinname):
+        self._v_skindata = None
+        skinobj = self.getSkin(skinname)
+        if skinobj is not None:
+            self._v_skindata = (self.REQUEST, skinobj, {})
+
+    security.declarePrivate('getSkin')
+    def getSkin(self, name=None):
+        """Returns the requested skin.
+        """
+        skinob = None
+        skinstool = None
+        sfn = self.getSkinsFolderName()
+
+        if sfn is not None:
+            sf = getattr(self, sfn, None)
+            if sf is not None:
+               if name is not None:
+                   skinob = sf.getSkinByName(name)
+               if skinob is None:
+                   skinob = sf.getSkinByName(sf.getDefaultSkin())
+                   if skinob is None:
+                       skinob = sf.getSkinByPath('')
+        return skinob
+
     def _checkId(self, id, allow_dup=0):
         '''
         Override of ObjectManager._checkId().  Allows the user
