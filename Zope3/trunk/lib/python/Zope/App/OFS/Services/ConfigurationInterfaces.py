@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.10 2002/12/21 20:02:13 stevea Exp $
+$Id: ConfigurationInterfaces.py,v 1.11 2002/12/22 17:25:46 jim Exp $
 """
 
 from Interface import Interface
@@ -86,7 +86,8 @@ class INamedComponentConfiguration(INamedConfiguration):
     """Configuration object that configures a component associated with a name
     """
 
-    permission = PermissionField("The permission needed to use the component.")
+    permission = PermissionField(
+        title=u"The permission needed to use the component.")
 
     componentPath = Attribute("The physical path to the component")
 
