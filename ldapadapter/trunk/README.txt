@@ -77,7 +77,7 @@ returns simpler results than a real server would.)
 Add
 ---
 
-Let's add a few simple entries (simplified in this test setting):
+Let's add a few simple entries.
 
   >>> conn.add('dc=test', {'dc': ['test']})
   >>> conn.add('cn=foo,dc=test', {'cn': ['foo'], 'givenName': ['John']})
@@ -99,7 +99,9 @@ search is done. You can choose to return a subset of the attributes.
    (u'cn=bar,dc=test', {'cn': [u'bar']}),
    (u'cn=baz,dc=test', {'cn': [u'baz']})]
 
-  >>> res = conn.search('dc=test', scope='sub', attrs=['givenName'])
+The default scope is 'sub':
+
+  >>> res = conn.search('dc=test', attrs=['givenName'])
   >>> pprint(res)
   [(u'dc=test', {}),
    (u'cn=foo,dc=test', {'givenName': [u'John']}),
@@ -136,8 +138,8 @@ Passing an empty value for an attribute remove it from the entry:
 Delete
 ------
 
-You delete an entry.
+You can delete an entry.
 
   >>> conn.delete('cn=foo,dc=test')
-  >>> conn.search('cn=foo,dc=test', 'sub')
+  >>> conn.search('cn=foo,dc=test')
   []
