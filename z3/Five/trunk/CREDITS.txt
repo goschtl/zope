@@ -1,0 +1,23 @@
+Five contributors
+-----------------
+
+- Martijn Faassen (faassen@infrae.com)
+
+- Sidnei da Silva (sidnei@awkly.org)
+
+- Philipp von Weitershausen (philikon@philikon.de)
+
+- Tres Seaver (tres@zope.com)
+
+- Andy Adiwidjaja (mail@adiwidjaja.com)
+
+- Stuart Bishop (stuart@stuartbishop.net)
+
+Thank you
+---------
+
+Martijn Faassen would like to thank ETH Zurich for their support and
+encouragement during the initial development of Five.
+
+The Five developers would like to thank the Zope 3 developers, in
+particular Jim Fulton, for the mountain to stand on.
