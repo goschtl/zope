@@ -54,7 +54,10 @@ User stories
 BUGS
 ----
 
-* See TO DO below.
+* When committing an added file, you must commit the directory
+  containing it; you can't commit the file itself, since the command
+  tries to send the request to a view of the corresponding object,
+  which doesn't exist yet.
 
 
 TO DO
