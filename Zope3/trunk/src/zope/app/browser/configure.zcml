@@ -7,7 +7,6 @@
   <include package=".component" />
   <include package=".container" />
   <include package=".form" />
-  <include package=".services" />
   <include file="traversal.zcml" />
   <include file="auth.zcml" />
 

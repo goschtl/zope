@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.6 2004/03/13 18:01:15 srichter Exp $
+$Id: presentation.py,v 1.7 2004/03/13 19:26:04 srichter Exp $
 """
 import persistent.dict
 from zope.app import zapi
@@ -27,7 +27,6 @@ import zope.app.container.contained
 import zope.app.registration.interfaces
 import zope.app.site.interfaces
 import zope.app.adapter
-import zope.app.services.field
 import zope.app.interface.interfaces
 import zope.app.adapter
 import zope.component.interfaces
