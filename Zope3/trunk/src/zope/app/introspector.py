@@ -38,7 +38,7 @@ class Introspector:
         try:
             ck = self.context.namesAndDescriptions()
             return True
-        except:
+        except: # XXX
             return False
 
     def setRequest(self, request):
