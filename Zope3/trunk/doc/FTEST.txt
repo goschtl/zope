@@ -58,9 +58,10 @@ Zope 3 Functional Testing
         self.assertEquals(response.getStatus(), 200)
         self.assert_(response.getBody().find("some text") != -1)
 
-        response = self.publish('/something/action.html',
-                                basic='username:password',
-                                form={'id': u'foo', 'UPDATE_SUBMIT': u'Submit'})
+        response = self.publish(
+            '/something/action.html',
+            basic='username:password',
+            form={'id': u'foo', 'UPDATE_SUBMIT': u'Submit'})
         self.assertEquals(response.getStatus(), 302)
         self.assertEquals(response.getHeader('Location'),
                           'http://localhost/something.html')
@@ -71,4 +72,3 @@ Zope 3 Functional Testing
 
        from transaction import get_transaction
        get_transaction().commit()
-
