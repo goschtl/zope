@@ -15,12 +15,12 @@
 
 $Id$
 """
-
 import os
 import tempfile
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from zope.app.rdb import DatabaseAdapterError
+from zope.app.rdb.gadflyda import GadflyAdapter, setGadflyRoot
 
 class GadflyTestBase(TestCase):
 
@@ -32,17 +32,17 @@ class GadflyTestBase(TestCase):
         TestCase.tearDown(self)
         if self.tempdir:
             os.rmdir(self.tempdir)
+        setGadflyRoot()
 
     def getGadflyRoot(self):
         # note that self is GadflyTestBase here
         if not self.tempdir:
             self.tempdir = tempfile.mkdtemp('gadfly')
+        setGadflyRoot(self.tempdir)
         return self.tempdir
 
     def _create(self, *args):
-        from zope.app.rdb.gadflyda import GadflyAdapter
         obj = GadflyAdapter(*args)
-        obj._getGadflyRoot = self.getGadflyRoot
         return obj
 
 
@@ -89,13 +89,31 @@ class TestGadflyAdapterNew(GadflyTestBase):
         try: os.unlink(os.path.join(dir, "test", "demo.gfd"))
         except: pass
         os.rmdir(os.path.join(dir, "test"))
-        try: os.unlink(os.path.join(dir, "regular"))
-        except: pass
+        try:
+            os.unlink(os.path.join(dir, "regular"))
+        except:
+            pass
         GadflyTestBase.tearDown(self)
 
 
 class TestGadflyAdapterDefault(GadflyTestBase):
     """Test with pre-existing databases"""
+
+    def setUp(self):
+        # Create a directory for the database.
+        GadflyTestBase.setUp(self)
+        dir = self.getGadflyRoot()
+        os.mkdir(os.path.join(dir, "demo"))
+
+    def tearDown(self):
+        # Remove the files and directories created.
+        dir = self.getGadflyRoot()
+        try:
+            os.unlink(os.path.join(dir, "demo", "demo.gfd"))
+        except:
+            pass
+        os.rmdir(os.path.join(dir, "demo"))
+        GadflyTestBase.tearDown(self)
 
     def test__connection_factory_create(self):
         # Should create a database if the directory is empty.
@@ -112,20 +130,6 @@ class TestGadflyAdapterDefault(GadflyTestBase):
 
         conn = a._connection_factory()
         conn.rollback()         # is it really a connection?
-
-    def setUp(self):
-        # Create a directory for the database.
-        GadflyTestBase.setUp(self)
-        dir = self.getGadflyRoot()
-        os.mkdir(os.path.join(dir, "demo"))
-
-    def tearDown(self):
-        # Remove the files and directories created.
-        dir = self.getGadflyRoot()
-        try: os.unlink(os.path.join(dir, "demo", "demo.gfd"))
-        except: pass
-        os.rmdir(os.path.join(dir, "demo"))
-        GadflyTestBase.tearDown(self)
 
 
 def test_suite():

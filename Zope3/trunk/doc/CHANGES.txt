@@ -10,6 +10,8 @@ Zope Changes
 
     New features
 
+      - Implemented rdb:gadflyRoot directive.    
+
       - Schemas are now copied before they are appended to content type or
         instance. This should probably become a policy later.
 

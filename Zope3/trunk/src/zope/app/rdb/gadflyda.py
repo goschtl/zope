@@ -30,12 +30,6 @@ class GadflyAdapter(ZopeDatabaseAdapter):
     # The registerable object needs to have a container
     __name__ = __parent__ = None 
     
-    def _getGadflyRoot(self):
-        # XXX: Need to write a configuration directive for setting this up
-        # At the moment gadfly root is 'gadfly' under the instance home (which
-        # is assumed to be the current directory ATM).
-        return 'gadfly'
-
     def _connection_factory(self):
         """Create a Gadfly DBI connection based on the DSN.
 
@@ -51,7 +45,7 @@ class GadflyAdapter(ZopeDatabaseAdapter):
                 )
 
         connection = conn_info['dbname']
-        dir = os.path.join(self._getGadflyRoot(),
+        dir = os.path.join(getGadflyRoot(),
                            conn_info['parameters'].get('dir', connection))
 
         if not os.path.isdir(dir):
@@ -64,3 +58,13 @@ class GadflyAdapter(ZopeDatabaseAdapter):
             db = gadfly.gadfly(connection, dir)
 
         return db
+
+_gadflyRoot = 'gadfly'
+
+def setGadflyRoot(path='gadfly'):
+    global _gadflyRoot
+    _gadflyRoot = path
+
+def getGadflyRoot():
+    global _gadflyRoot
+    return _gadflyRoot
