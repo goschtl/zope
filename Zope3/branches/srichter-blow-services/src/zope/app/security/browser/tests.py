@@ -28,6 +28,9 @@ def test_suite():
         doctest.DocFileSuite('principalterms.txt',
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown),
+        doctest.DocFileSuite('loginlogout.txt',
+                             setUp=placelesssetup.setUp,
+                             tearDown=placelesssetup.tearDown),
         ))
 
 if __name__ == '__main__':

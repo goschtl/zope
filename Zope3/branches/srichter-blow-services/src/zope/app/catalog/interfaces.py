@@ -63,7 +63,7 @@ class IAttributeIndex(zope.interface.Interface):
     interface = zope.schema.Choice(
         title=_(u"Interface"),
         description=_(u"Objects will be adapted to this interface"),
-        vocabulary=_("Interfaces"),
+        vocabulary="Interfaces",
         required=False,
         )
 

@@ -36,13 +36,13 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
     implements(IInputWidget)
 
-    _type = tuple    
+    _type = tuple
     _data = () # pre-existing sequence items (from setRenderedValue)
 
-    def __init__(self, context, value_type, request, subwidget=None):
+    def __init__(self, context, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
 
-        self.subwidget = None
+        self.subwidget = subwidget
 
     def __call__(self):
         """Render the widget
@@ -234,7 +234,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
         return sequence
 
 class TupleSequenceWidget(SequenceWidget):
-    pass
+    _type = tuple
 
 class ListSequenceWidget(SequenceWidget):
     _type = list

@@ -90,7 +90,7 @@ class ZDaemonTests(unittest.TestCase):
         ##os.system("PYTHONPATH=%s %s %s -s %s %s &" %
         ##    (self.ppath, self.python, self.zdrun, self.zdsock, args))
 
-    def run(self, args, cmdclass=None):
+    def _run(self, args, cmdclass=None):
         if type(args) is type(""):
             args = args.split()
         try:
@@ -102,7 +102,7 @@ class ZDaemonTests(unittest.TestCase):
         class MyCmd(zdctl.ZDCmd):
             def do_sproing(self, rest):
                 print rest
-        self.run("-p echo sproing expected", cmdclass=MyCmd)
+        self._run("-p echo sproing expected", cmdclass=MyCmd)
         self.expect = "expected\n"
 
     def testSystem(self):
@@ -110,27 +110,27 @@ class ZDaemonTests(unittest.TestCase):
         self.expect = ""
 
 ##     def testInvoke(self):
-##         self.run("echo -n")
+##         self._run("echo -n")
 ##         self.expect = ""
 
 ##     def testControl(self):
 ##         self.rundaemon(["sleep", "1000"])
 ##         time.sleep(1)
-##         self.run("stop")
+##         self._run("stop")
 ##         time.sleep(1)
-##         self.run("exit")
+##         self._run("exit")
 ##         self.expect = "Sent SIGTERM\nExiting now\n"
 
 ##     def testStop(self):
 ##         self.rundaemon([self.python, self.nokill])
 ##         time.sleep(1)
-##         self.run("stop")
+##         self._run("stop")
 ##         time.sleep(1)
-##         self.run("exit")
+##         self._run("exit")
 ##         self.expect = "Sent SIGTERM\nSent SIGTERM; will exit later\n"
 
     def testHelp(self):
-        self.run("-h")
+        self._run("-h")
         import __main__
         self.expect = __main__.__doc__
 
@@ -224,15 +224,24 @@ class ZDaemonTests(unittest.TestCase):
             sys.executable,
             [sys.executable, os.path.join(self.here, 'parent.py')]
             )
-        time.sleep(2) # race condition possible here
+        # Wait for it to start, but no longer than a minute.
+        deadline = time.time() + 60
+        is_started = False
+        while time.time() < deadline:
+             response = send_action('status\n', zdrun_socket)
+             if response is None:
+                 time.sleep(0.05)
+             else:
+                 is_started = True
+                 break
+        self.assert_(is_started, "spawned process failed to start in a minute")
+        # Kill it, and wait a little to ensure it's dead.
         os.kill(zdctlpid, signal.SIGINT)
-        try:
-            response = send_action('status\n', zdrun_socket) or ''
-        except socket.error, msg:
-            response = ''
-        params = response.split('\n')
-        self.assert_(len(params) > 1, repr(response))
-        # kill the process
+        time.sleep(0.25)
+        # Make sure the child is still responsive.
+        response = send_action('status\n', zdrun_socket)
+        self.assert_(response is not None and '\n' in response)
+        # Kill the process.
         send_action('exit\n', zdrun_socket)
 
     def testUmask(self):

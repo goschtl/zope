@@ -35,7 +35,6 @@
            zope.app.container.interfaces.IObjectRemovedEvent"
       />
 
-
   <!-- Page Folder -->
 
   <content class=".pagefolder.PageFolder">

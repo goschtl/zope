@@ -28,6 +28,7 @@ from zope.security.management import endInteraction, getInteraction
 from zope.security.proxy import removeSecurityProxy
 from zope.security.proxy import getChecker
 from zope.security.checker import defineChecker, ProxyFactory
+from zope.security.checker import canWrite, canAccess
 from zope.security.proxy import Proxy
 import types, pickle
 
@@ -365,7 +366,66 @@ class Test(TestCase, CleanUp):
         proxy1 = ProxyFactory(obj, checker)
         proxy2 = ProxyFactory(proxy1, checker)
         self.assert_(proxy1 is proxy2)
-
+    
+    def test_canWrite_canAccess(self):
+        # the canWrite and canAccess functions are conveniences.  Often code
+        # wants to check if a certain option is open to a user before 
+        # presenting it.  If the code relies on a certain permission, the
+        # Zope 3 goal of keeping knowledge of security assertions out of the
+        # code and only in the zcml assertions is broken.  Instead, ask if the
+        # current user canAccess or canWrite some pertinent aspect of the 
+        # object.  canAccess is used for both read access on an attribute
+        # and call access to methods.
+        
+        # For example, consider this humble pair of class and object.
+        class SomeClass(object):
+            pass
+        obj = SomeClass()
+        
+        # We will establish a checker for the class.  This is the standard
+        # name-based checker, and works by specifying two dicts, one for read
+        # and one for write.  Each item in the dictionary should be an
+        # attribute name and the permission required to read or write it.  
+        
+        # For these tests, the SecurityPolicy defined at the top of this file 
+        # is in place.  It is a stub.  Normally, the security policy would
+        # have knowledge of interactions and participants, and would determine
+        # on the basis of the particpants and the object if a certain permission
+        # were authorized.  This stub simply says that the 'test_allowed' 
+        # permission is authorized and nothing else is, for any object you pass
+        # it.
+        
+        # Therefore, according to the checker created here, the current 
+        # 'interaction' (as stubbed out in the security policy) will be allowed
+        # to access and write foo, and access bar.  The interaction is 
+        # unauthorized for accessing baz and writing bar.  Any other access or 
+        # write is not merely unauthorized but forbidden--including write access
+        # for baz.
+        checker = Checker(
+            {'foo':'test_allowed',
+             'bar':'test_allowed',
+             'baz':'you_will_not_have_this_permission'},
+            {'foo':'test_allowed',
+             'bar':'you_will_not_have_this_permission'})
+        defineChecker(SomeClass, checker)
+        
+        # so, our hapless interaction may write and access foo...
+        self.assert_(canWrite(obj, 'foo'))
+        self.assert_(canAccess(obj, 'foo'))
+        
+        # ...may access, but not write, bar...
+        self.assert_(not canWrite(obj, 'bar'))
+        self.assert_(canAccess(obj, 'bar'))
+        
+        # ...and may access baz.
+        self.assert_(not canAccess(obj, 'baz'))
+        
+        # there are no security assertions for writing baz or accessing 
+        # anything else, so these actually raise Forbidden.  The rationale
+        # behind exposing the Forbidden exception is primarily that it is
+        # usually indicative of programming or configuration errors.
+        self.assertRaises(Forbidden, canWrite, obj, 'baz')
+        self.assertRaises(Forbidden, canAccess, obj, 'shazam')
 
 class TestCheckerPublic(TestCase):
 

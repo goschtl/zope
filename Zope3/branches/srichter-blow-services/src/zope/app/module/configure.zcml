@@ -28,7 +28,7 @@
 
   <!-- Enable import of persistent modules -->
   <subscriber
-      factory=".installPersistentModuleImporter"
+      handler=".installPersistentModuleImporter"
       for="zope.app.appsetup.IProcessStartingEvent"
       />
 

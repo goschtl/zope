@@ -71,7 +71,7 @@ def test_annotations():
       Traceback (most recent call last):
       ...
       BrokenModified: Can't modify broken objects
-    
+
 
     Cleanup:
 

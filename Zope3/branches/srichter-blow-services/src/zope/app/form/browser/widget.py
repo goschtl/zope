@@ -296,7 +296,7 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
         except ConversionError, error:
             # ConversionError is already a WidgetInputError
             self._error = error
-            raise self._error            
+            raise self._error
 
         # allow missing values only for non-required fields
         if value == field.missing_value and not field.required:
@@ -392,11 +392,25 @@ class DisplayWidget(BrowserWidget):
 
     def __call__(self):
         if self._renderedValueSet():
-            if self._data == self.context.missing_value:
-                return ""
-            return escape(self._data)
+            value = self._data
         else:
-            return escape(self.context.default)
+            value = self.context.default
+        if value == self.context.missing_value:
+            return ""
+        return escape(value)
+
+
+class UnicodeDisplayWidget(BrowserWidget):
+    """Display widget that converts the value to unicode before display."""
+
+    def __call__(self):
+        if self._renderedValueSet():
+            value = self._data
+        else:
+            value = self.context.default
+        if value == self.context.missing_value:
+            return ""
+        return escape(unicode(value))
 
 
 def renderTag(tag, **kw):
@@ -441,7 +455,7 @@ def renderTag(tag, **kw):
         items = kw.items()
         items.sort()
         for key, value in items:
-            if value == None:
+            if value is None:
                 value = key
             attr_list.append(u'%s=%s' % (key, quoteattr(unicode(value))))
 

@@ -26,6 +26,7 @@ There are three flavors of declarations:
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 import sys
 import weakref
 from zope.interface.interface import InterfaceClass, Specification

@@ -30,7 +30,7 @@
 
   <subscriber
       for="zope.app.appsetup.IDatabaseOpenedEvent"
-      factory=".bootstrap.bootStrapSubscriber"
+      handler=".bootstrap.bootStrapSubscriber"
       />
 
 </configure>

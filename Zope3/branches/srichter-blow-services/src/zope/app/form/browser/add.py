@@ -88,11 +88,11 @@ class AddView(EditView):
                     kw[str(name)] = data[name]
 
         content = self.create(*args, **kw)
-        adapted = self.schema(content)
 
         errors = []
 
         if self._set_before_add:
+            adapted = self.schema(content)
             for name in self._set_before_add:
                 if name in data:
                     field = self.schema[name]
@@ -108,9 +108,8 @@ class AddView(EditView):
 
         content = self.add(content)
 
-        adapted = self.schema(content)
-
         if self._set_after_add:
+            adapted = self.schema(content)
             for name in self._set_after_add:
                 if name in data:
                     field = self.schema[name]
@@ -119,7 +118,7 @@ class AddView(EditView):
                     except ValidationError:
                         errors.append(sys.exc_info()[1])
 
-            # We've modified the object, so we need to pubish an
+            # We have modified the object, so we need to publish an
             # object-modified event:
             notify(ObjectModifiedEvent(content))
 

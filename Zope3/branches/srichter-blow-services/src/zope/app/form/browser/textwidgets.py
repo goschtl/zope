@@ -121,28 +121,22 @@ class TextWidget(SimpleInputWidget):
         super(TextWidget, self).__init__(*args)
 
     def __call__(self):
-        displayMaxWidth = self.displayMaxWidth or 0
-        if displayMaxWidth > 0:
-            return renderElement(self.tag,
-                                 type=self.type,
-                                 name=self.name,
-                                 id=self.name,
-                                 value=self._getFormValue(),
-                                 cssClass=self.cssClass,
-                                 style=self.style,
-                                 size=self.displayWidth,
-                                 maxlength=displayMaxWidth,
-                                 extra=self.extra)
-        else:
-            return renderElement(self.tag,
-                                 type=self.type,
-                                 name=self.name,
-                                 id=self.name,
-                                 value=self._getFormValue(),
-                                 cssClass=self.cssClass,
-                                 style=self.style,
-                                 size=self.displayWidth,
-                                 extra=self.extra)
+        value = self._getFormValue()
+        if value is None or value == self.context.missing_value:
+            value = ''
+
+        kwargs = {'type': self.type,
+                  'name': self.name,
+                  'id': self.name,
+                  'value': value,
+                  'cssClass': self.cssClass,
+                  'style': self.style,
+                  'size': self.displayWidth,
+                  'extra': self.extra}
+        if self.displayMaxWidth:
+            kwargs['maxlength'] = self.displayMaxWidth # XXX This is untested.
+
+        return renderElement(self.tag, **kwargs)
 
     def _toFieldValue(self, input):
         if self.convert_missing_value and input == self._missing:
@@ -151,7 +145,7 @@ class TextWidget(SimpleInputWidget):
             # We convert everything to unicode. This might seem a bit crude,
             # but anything contained in a TextWidget should be representable
             # as a string. Note that you always have the choice of overriding
-            # the method.  
+            # the method.
             try:
                 value = unicode(input)
             except ValueError, v:
@@ -424,6 +418,20 @@ class FileWidget(TextWidget):
                 return self.context.missing_value
 
 class IntWidget(TextWidget):
+    """Integer number widget.
+
+    Let's make sure that zeroes are rendered properly:
+
+    >>> from zope.schema import Int
+    >>> field = Int(__name__='foo', title=u'on')
+    >>> widget = IntWidget(field, None)
+    >>> widget.setRenderedValue(0)
+
+    >>> 'value="0"' in widget()
+    True
+
+    """
+
     displayWidth = 10
 
     def _toFieldValue(self, input):
@@ -503,6 +511,8 @@ class DateDisplayWidget(DisplayWidget):
             content = self._data
         else:
             content = self.context.default
+        if content == self.context.missing_value:
+            return ""
         formatter = self.request.locale.dates.getFormatter(
             self._category, (self.displayStyle or None))
         content = formatter.format(content)

@@ -14,5 +14,5 @@
 $Id: __init__.py 25177 2004-06-02 13:17:31Z jim $
 """
 
-from utility import UtilityRegistration, LocalUtilityService
-
+from utility import LocalUtilityService
+from zope.app.component.site import UtilityRegistration

@@ -234,7 +234,7 @@ class IEditWizardDirective(ICommonWizardInformation):
     """
     Define an automatically generated edit wizard (multi-page form).
 
-    The editwizard directive creates and register's a view for editing
+    The editwizard directive creates and registers a view for editing
     an object based on a schema.
     """
 
@@ -266,7 +266,7 @@ class IEditFormDirective(ICommonFormInformation):
     """
     Define an automatically generated edit form
 
-    The editform directive creates and register's a view for editing
+    The editform directive creates and registers a view for editing
     an object based on a schema.
     """
 
@@ -318,7 +318,7 @@ class ISchemaDisplayDirective(ICommonFormInformation):
     """
     Define an automatically generated display form.
 
-    The schemadisplay directive creates and register's a view for
+    The schemadisplay directive creates and registers a view for
     displaying an object based on a schema.
     """
 

@@ -17,7 +17,6 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-
 import warnings
 import re
 from datetime import datetime, date
@@ -179,8 +178,6 @@ class Choice(Field):
 
     def __init__(self, values=None, vocabulary=None, source=None, **kw):
         """Initialize object."""
-
-
         if vocabulary is not None:
             assert (isinstance(vocabulary, basestring)
                     or IVocabulary.providedBy(vocabulary))
@@ -189,12 +186,12 @@ class Choice(Field):
         elif source is not None:
             assert ISource.providedBy(source)
             vocabulary = source
-        
+
         assert not (values is None and vocabulary is None), (
                "You must specify either values or vocabulary.")
         assert values is None or vocabulary is None, (
                "You cannot specify both values and vocabulary.")
-        
+
         self.vocabulary = None
         self.vocabularyName = None
         if values is not None:
@@ -238,7 +235,7 @@ class Choice(Field):
         """
         self.validate(str)
         return str
-        
+
     def _validate(self, value):
         # Pass all validations during initialization
         if self._init_field:
@@ -265,29 +262,29 @@ class InterfaceField(Field):
 
 def _validate_sequence(value_type, value, errors=None):
     """Validates a sequence value.
-    
+
     Returns a list of validation errors generated during the validation. If
     no errors are generated, returns an empty list.
-    
+
     value_type is a field. value is the sequence being validated. errors is
     an optional list of errors that will be prepended to the return value.
-    
+
     To illustrate, we'll use a text value type. All values must be unicode.
-    
+
 	    >>> field = TextLine(required=True)
-	
+
 	To validate a sequence of various values:
-	
+
 	    >>> errors = _validate_sequence(field, ('foo', u'bar', 1))
 	    >>> errors
 	    [foo <type 'unicode'>, 1 <type 'unicode'>]
-	
+
 	The only valid value in the sequence is the second item. The others
 	generated errors.
-	
+
 	We can use the optional errors argument to collect additional errors
 	for a new sequence:
-	
+
         >>> errors = _validate_sequence(field, (2, u'baz'), errors)
         >>> errors
         [foo <type 'unicode'>, 1 <type 'unicode'>, 2 <type 'unicode'>]
@@ -312,7 +309,7 @@ def _validate_uniqueness(value):
 
         temp_values.append(item)
 
-class AbstractCollection(MinMaxLen, Iterable, Field):
+class AbstractCollection(MinMaxLen, Iterable):
     value_type = None
     unique = False
 
@@ -330,7 +327,7 @@ class AbstractCollection(MinMaxLen, Iterable, Field):
         # binding value_type is necessary for choices with named vocabularies,
         # and possibly also for other fields.
         if clone.value_type is not None:
-           clone.value_type = clone.value_type.bind(object) 
+           clone.value_type = clone.value_type.bind(object)
         return clone
 
     def _validate(self, value):
@@ -363,13 +360,13 @@ class Set(AbstractCollection):
 
 def _validate_fields(schema, value, errors=None):
     if errors is None:
-        errors = []  
+        errors = []
     for name in schema.names(all=True):
         if not IMethod.providedBy(schema[name]):
             try:
                 attribute = schema[name]
                 if IField.providedBy(attribute):
-                    # validate attributes that are fields  
+                    # validate attributes that are fields
                     attribute.validate(getattr(value, name))
             except ValidationError, error:
                 errors.append(error)
@@ -386,24 +383,24 @@ class Object(Field):
     def __init__(self, schema, **kw):
         if not IInterface.providedBy(schema):
             raise WrongType
-            
+
         self.schema = schema
         super(Object, self).__init__(**kw)
-        
+
     def _validate(self, value):
         super(Object, self)._validate(value)
-        
+
         # schema has to be provided by value
         if not self.schema.providedBy(value):
             raise SchemaNotProvided
-            
+
         # check the value against schema
         errors = _validate_fields(self.schema, value)
         if errors:
             raise WrongContainedType(errors)
 
 
-class Dict(MinMaxLen, Iterable, Field):
+class Dict(MinMaxLen, Iterable):
     """A field representing a Dict."""
     implements(IDict)
     _type = dict
@@ -587,10 +584,10 @@ class DottedName(BytesLine):
         >>> dotted_name = DottedName(__name__='test')
         >>> dotted_name.validate("a.b.c")
         >>> dotted_name.validate("a")
-        >>> dotted_name.validate("   a   ")
+        >>> dotted_name.validate("   a")
         Traceback (most recent call last):
         ...
-        InvalidDottedName:    a   
+        InvalidDottedName:    a
 
         >>> dotted_name = DottedName(__name__='test', min_dots=1)
         >>> dotted_name.validate('a.b')

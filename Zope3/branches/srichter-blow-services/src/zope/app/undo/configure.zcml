@@ -20,7 +20,7 @@
 
 
   <subscriber
-      factory=".undoSetup"
+      handler=".undoSetup"
       for="zope.app.appsetup.IDatabaseOpenedEvent"
       />
 

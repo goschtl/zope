@@ -228,6 +228,34 @@ class DatetimeDisplayWidgetTest(DateDisplayWidgetTest):
         self.verifyResult(self._widget(), ["14:39:01 +000"])
 
 
+def test_w_nonrequired_and_missing_value_and_no_inout():
+    """
+    There was a bug that caused the value attribute to be set to
+    'value' under these circumstances.
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import TextLine
+    >>> field = TextLine(__name__='foo', title=u'on',
+    ...                  required=False, missing_value=u'')
+    >>> request = TestRequest()
+    >>> widget = TextWidget(field, request)
+
+    >>> def normalize(s):
+    ...   return '\\n  '.join(filter(None, s.split(' ')))
+
+    >>> print normalize( widget() )
+    <input
+      class="textType"
+      id="field.foo"
+      name="field.foo"
+      size="20"
+      type="text"
+      value=""
+      />
+
+
+    """
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TextWidgetTest),

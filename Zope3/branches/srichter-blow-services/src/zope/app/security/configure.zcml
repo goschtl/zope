@@ -10,7 +10,7 @@
                    Public resources are always accessible."
       />
 
-  <vocabulary 
+  <vocabulary
       name="Permissions"
       factory="zope.app.component.vocabulary.UtilityVocabulary"
       interface="zope.security.interfaces.IPermission" />
@@ -23,15 +23,15 @@
   <include file="_protections.zcml" />
 
   <utility
-      provides=".interfaces.IAuthentication" 
+      provides=".interfaces.IAuthentication"
       component=".principalregistry.principalRegistry" />
 
   <localUtility class=".permission.LocalPermission">
     <factory
         id="zope.app.security.Permission"
         />
-    <allow 
-        interface=".interfaces.IPermission" 
+    <allow
+        interface=".interfaces.IPermission"
         />
     <require
         permission="zope.Security"
@@ -40,13 +40,15 @@
   </localUtility>
 
   <subscriber
-     for="..component.interfaces.registration.IRegistrationActivatedEvent"
-     factory=".permission.setIdOnActivation"
+     for="zope.security.interfaces.IPermission
+          ..component.interfaces.registration.IRegistrationActivatedEvent"
+     handler=".permission.setIdOnActivation"
      />
 
   <subscriber
-     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
-     factory=".permission.unsetIdOnDeactivation"
+     for="zope.security.interfaces.IPermission
+          ..component.interfaces.registration.IRegistrationDeactivatedEvent"
+     handler=".permission.unsetIdOnDeactivation"
      />
 
   <content class=".permission.Permission">
@@ -80,9 +82,9 @@
       title="[manage-content-permission] Manage Content"
       />
 
-  <permission 
-      id="zope.ManageBindings" 
-      title="[manage-service-bindings-permission] Manage Service Bindings" 
+  <permission
+      id="zope.ManageBindings"
+      title="[manage-service-bindings-permission] Manage Service Bindings"
       />
 
   <permission
@@ -91,9 +93,9 @@
       description="Manage executable code, including Python, SQL, ZPT, etc."
       />
 
-  <permission 
-      id="zope.ManageServices" 
-      title="[manage-services-permission] Manage Services" 
+  <permission
+      id="zope.ManageServices"
+      title="[manage-services-permission] Manage Services"
       />
 
   <permission 
@@ -116,7 +118,7 @@
   <adapter
       factory=".basicauthadapter.BasicAuthAdapter"
       provides=".interfaces.ILoginPassword"
-      for="zope.publisher.interfaces.http.IHTTPCredentials" 
+      for="zope.publisher.interfaces.http.IHTTPCredentials"
       />
 
   <adapter

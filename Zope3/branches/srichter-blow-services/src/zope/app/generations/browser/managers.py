@@ -35,7 +35,7 @@ class Managers(object):
         return self.request.publication.db
 
     def evolve(self):
-        """Perform a requested evolution 
+        """Perform a requested evolution
 
            This method needs to use the component architecture, so
            we'll set it up:
@@ -90,12 +90,12 @@ class Managers(object):
            We'll also increase the generation of app1:
 
              >>> app1.generation = 2
-             
+
            Now we can create our view:
 
              >>> view = Managers(None, request)
 
-           Now, if we call it's `evolve` method, it should see that the
+           Now, if we call its `evolve` method, it should see that the
            app1 evolve button was pressed and evolve app1 to the next
            generation.
 
@@ -105,7 +105,7 @@ class Managers(object):
              2
 
            The demo evolver just writes the generation to a database key:
-           
+
              >>> from zope.app.generations.demo import key
              >>> conn.root()[key]
              (2,)
@@ -148,7 +148,7 @@ class Managers(object):
              2
              >>> conn.root()[key]
              (2,)
-           
+
            We'd better clean upp:
 
              >>> db.close()
@@ -234,12 +234,12 @@ class Managers(object):
              >>> app1.generation += 1
 
            so we can evolve it.
-             
+
            Now we can create our view:
 
              >>> view = Managers(None, request)
 
-           We call it's applications method to get data about
+           We call its applications method to get data about
            application generations. We are required to call evolve
            first:
 
@@ -250,19 +250,20 @@ class Managers(object):
              >>> for info in data:
              ...     print info['id']
              ...     print info['min'], info['max'], info['generation']
-             ...     print 'evolve?', info['evolve']
+             ...     print 'evolve?', info['evolve'] or None
              foo.app1
              0 2 1
              evolve? evolve-app-foo.app1
              foo.app2
              0 0 0
-             evolve? 
+             evolve? None
 
-           We'd better clean upp:
+           We'd better clean up:
 
              >>> db.close()
              >>> tearDown()
-           """
+
+        """
         result = []
 
         db = self._getdb()
@@ -275,7 +276,7 @@ class Managers(object):
                 manager = managers.get(key)
                 if manager is None:
                     continue
-                
+
                 result.append({
                     'id': key,
                     'min': manager.minimum_generation,

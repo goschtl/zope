@@ -125,7 +125,7 @@
 <subscriber
    for="..interfaces.IProcessInstanceContainerAdaptable
         zope.app.event.objectevent.IObjectCreatedEvent"
-   factory=".contentworkflow.NewObjectProcessInstanceCreator"
+   handler=".contentworkflow.NewObjectProcessInstanceCreator"
    />
 
 <!-- Test Object for testing Stateful Workflows -->

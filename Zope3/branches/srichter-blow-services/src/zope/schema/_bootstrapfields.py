@@ -15,6 +15,7 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 from zope.interface import Attribute, providedBy, implements
 from zope.schema._bootstrapinterfaces import StopValidation
 from zope.schema._bootstrapinterfaces import IFromUnicode
@@ -180,6 +181,7 @@ class Field(Attribute):
                                object.__class__.__module__,
                                object.__class__.__name__))
         setattr(object, self.__name__, value)
+
 
 class Container(Field):
 

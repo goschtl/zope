@@ -38,11 +38,10 @@ class IVocabularyDirective(Interface):
 
     name = TextLine(
         title=u"Name",
-        description=u'Provides a title for the source type.", The name of the '\
+        description=u'Provides a title for the source type. The name of the ' \
                     u'vocabulary; this can be used as the value for the ' \
-                    u'"vocabulary" argument to the VocabularyField and ' \
-                    u'VocabularyMultiField constructors to cause this ' \
-                    u'vocabulary to be used.',
+                    u'"vocabulary" argument to the Choice field ' \
+                    u'constructor to cause this vocabulary to be used.',
         required=True)
 
     factory = GlobalObject(

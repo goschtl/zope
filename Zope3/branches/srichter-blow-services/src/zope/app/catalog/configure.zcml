@@ -28,23 +28,23 @@
 </content>
 
 <subscriber
-    factory=".catalog.indexAdded"
+    handler=".catalog.indexAdded"
     for=".interfaces.ICatalogIndex
          zope.app.container.interfaces.IObjectAddedEvent"
     />
 
 <subscriber
-    factory=".catalog.indexDocSubscriber"
+    handler=".catalog.indexDocSubscriber"
     for="zope.app.intid.interfaces.IIntIdAddedEvent"
     />
 
 <subscriber
-    factory=".catalog.reindexDocSubscriber"
+    handler=".catalog.reindexDocSubscriber"
     for="zope.app.event.objectevent.IObjectModifiedEvent"
     />
 
 <subscriber
-    factory=".catalog.unindexDocSubscriber"
+    handler=".catalog.unindexDocSubscriber"
     for="zope.app.intid.interfaces.IIntIdRemovedEvent"
     />
 

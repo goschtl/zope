@@ -3,7 +3,7 @@
 function moveItems(from, to)
   {
   // shortcuts for selection fields
-  var src = document.getElementById(from); 
+  var src = document.getElementById(from);
   var tgt = document.getElementById(to);
 
   if (src.selectedIndex == -1) selectionError();
@@ -17,7 +17,7 @@ function moveItems(from, to)
       if (src.options[src.selectedIndex].selected)
         {
         // create a new virtal object with values of item to copy
-        temp = new Option(src.options[src.selectedIndex].text, 
+        temp = new Option(src.options[src.selectedIndex].text,
                       src.options[src.selectedIndex].value);
         // append virtual object to targe
         tgt.options[tgt.length] = temp;
@@ -46,12 +46,12 @@ function to2from(name)
 function swapFields(a, b)
   {
   // swap items
-  var temp = a.text; 
-  a.text = b.text; 
+  var temp = a.text;
+  a.text = b.text;
   b.text = temp;
   // swap selection
-  var temp = a.selected; 
-  a.selected = b.selected; 
+  var temp = a.selected;
+  a.selected = b.selected;
   b.selected = temp;
   }
 
@@ -61,9 +61,9 @@ function moveUp(name)
   // shortcuts for selection field
   var toSel = document.getElementById(name+".to");
 
-  if (toSel.selectedIndex == -1) 
+  if (toSel.selectedIndex == -1)
       selectionError();
-  else if (toSel.options[0].selected) 
+  else if (toSel.options[0].selected)
       alert("Cannot move further up!");
   else for (var i = 0; i < toSel.length; i++)
     if (toSel.options[i].selected)
@@ -79,9 +79,9 @@ function moveDown(name)
   // shortcuts for selection field
   var toSel = document.getElementById(name+".to");
 
-  if (toSel.selectedIndex == -1) 
+  if (toSel.selectedIndex == -1)
       selectionError();
-  else if (toSel.options[toSel.length-1].selected) 
+  else if (toSel.options[toSel.length-1].selected)
       alert("Cannot move further down!");
   else for (var i = toSel.length-1; i >= 0; i--)
     if (toSel.options[i].selected)
@@ -95,29 +95,29 @@ function moveDown(name)
 function copyDataForSubmit(name)
   {
   // shortcuts for selection field and hidden data field
-  var toSel = document.getElementById(name+".to"); 
+  var toSel = document.getElementById(name+".to");
   var toDataContainer = document.getElementById(name+".toDataContainer");
 
   // delete all child nodes (--> complete content) of "toDataContainer" span
-  while (toDataContainer.hasChildNodes()) 
+  while (toDataContainer.hasChildNodes())
       toDataContainer.removeChild(toDataContainer.firstChild);
 
-  // create new hidden input fields - one for each selection item of 
-  // "to" selection    
+  // create new hidden input fields - one for each selection item of
+  // "to" selection
   for (var i = 0; i < toSel.length; i++)
     {
     // create virtual node with suitable attributes
     var newNode = document.createElement("input");
-    var newAttr = document.createAttribute("name"); 
+    var newAttr = document.createAttribute("name");
     newAttr.nodeValue = name;
     newNode.setAttributeNode(newAttr);
 
-    newAttr = document.createAttribute("type"); 
+    newAttr = document.createAttribute("type");
     newAttr.nodeValue = "hidden";
     newNode.setAttributeNode(newAttr);
 
     newAttr = document.createAttribute("value");
-    newAttr.nodeValue = toSel[i].text;
+    newAttr.nodeValue = toSel[i].value;
     newNode.setAttributeNode(newAttr);
 
     // actually append virtual node to DOM tree
@@ -143,12 +143,12 @@ function selectionError()
       </select>
     </td>
     <td>
-      <button type="button" value=" -&gt;" 
+      <button type="button" value=" -&gt;"
           onclick="javascript:from2to()"
           tal:attributes="onClick string:javascript:from2to('${view/name}')"
           >&nbsp;-&gt;</button>
       <br />
-      <button name="to2fromButton" type="button" value="&lt;- " 
+      <button name="to2fromButton" type="button" value="&lt;- "
           onclick="javascript:to2from()"
           tal:attributes="onClick string:javascript:to2from('${view/name}')"
           >&lt;-&nbsp;</button>
@@ -161,23 +161,26 @@ function selectionError()
                 tal:attributes="value entry/value"
                 tal:content="entry/text" />
       </select>
+      <input name="foo-empty-marker" type="hidden"
+        tal:attributes="name string:${view/name}-empty-marker"/>
       <span id="toDataContainer"
             tal:attributes="id string:${view/name}.toDataContainer">
-        <script type="text/javascript">
+        <script type="text/javascript" tal:content="string:
+          copyDataForSubmit('${view/name}');">
           // initial copying of field "field.to" --> "field"
           copyDataForSubmit("<i tal:replace="${view/name}"/>");
         </script>
       </span>
     </td>
     <td>
-      <button 
-          name="upButton" type="button" value="^" 
+      <button
+          name="upButton" type="button" value="^"
           onclick="javascript:moveUp()"
           tal:attributes="onClick string:javascript:moveUp('${view/name}')"
           >^</button>
       <br />
-      <button 
-          name="downButton" type="button" value="v" 
+      <button
+          name="downButton" type="button" value="v"
           onclick="javascript:moveDown()"
           tal:attributes="onClick string:javascript:moveDown('${view/name}')"
           >v</button>

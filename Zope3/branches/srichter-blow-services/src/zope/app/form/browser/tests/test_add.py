@@ -24,6 +24,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
+from zope.security.checker import CheckerPublic
 
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.event.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
@@ -169,7 +170,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(name, 'addthis')
         self.assertEqual(schema, I)
         self.assertEqual(label, 'Add this')
-        self.assertEqual(permission, 'zope.Public')
+        self.assertEqual(permission, CheckerPublic) # 'zope.Public' translated
         self.assertEqual(layer, IDefaultBrowserLayer)
         self.assertEqual(template, 'add.pt')
         self.assertEqual(default_template, 'add.pt')

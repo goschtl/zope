@@ -37,14 +37,16 @@
   </localUtility>
   
   <subscriber
-     for="..component.interfaces.registration.IRegistrationActivatedEvent"
-     factory=".translationdomain.setDomainOnActivation"
-     />
+       for=".interfaces.ILocalTranslationDomain
+            ..component.interfaces.registration.IRegistrationActivatedEvent"
+       handler=".translationdomain.setDomainOnActivation"
+       />
 
   <subscriber
-     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
-     factory=".translationdomain.unsetDomainOnDeactivation"
-     />  
+       for=".interfaces.ILocalTranslationDomain
+            ..component.interfaces.registration.IRegistrationDeactivatedEvent"
+       handler=".translationdomain.unsetDomainOnDeactivation"
+       />  
 
   <!-- Setup Message Catalogs -->
   <content class=".messagecatalog.MessageCatalog">

@@ -7,7 +7,7 @@
       />
 
   <subscriber
-      factory=".observerevent.observerEventNotifier"
+      handler=".observerevent.observerEventNotifier"
       for="zope.app.event.interfaces.IObjectEvent" 
       />
 

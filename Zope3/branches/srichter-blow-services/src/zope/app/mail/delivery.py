@@ -22,6 +22,8 @@ __docformat__ = 'restructuredtext'
 import rfc822
 import threading
 import logging
+import atexit
+import time
 
 from os import unlink, getpid
 from cStringIO import StringIO
@@ -125,7 +127,6 @@ class QueueProcessorThread(threading.Thread):
 
     def __init__(self):
         threading.Thread.__init__(self)
-        self.__event = threading.Event()
 
     def setMaildir(self, maildir):
         """Set the maildir.
@@ -167,8 +168,8 @@ class QueueProcessorThread(threading.Thread):
         return fromaddr, toaddrs, rest
 
     def run(self, forever=True):
-
-        while True:
+        atexit.register(self.stop)
+        while not self.__stopped:
             for filename in self.maildir:
                 fromaddr = ''
                 toaddrs = ()
@@ -195,9 +196,7 @@ class QueueProcessorThread(threading.Thread):
                             filename, exc_info=1)
             else:
                 if forever:
-                    self.__event.wait(3)
-                    if self.__stopped:
-                        return
+                    time.sleep(3)
 
             # A testing plug
             if not forever:
@@ -205,4 +204,3 @@ class QueueProcessorThread(threading.Thread):
 
     def stop(self):
         self.__stopped = True
-        self.__event.set()

@@ -22,7 +22,7 @@
     </p>
 
 
-    <form action="AllRolePermissions.html" method="get">
+    <form action="AllRolePermissions.html" method="POST">
       <input type="hidden" name="role_id" value="Role ID"
              tal:attributes="value role/id" />
 

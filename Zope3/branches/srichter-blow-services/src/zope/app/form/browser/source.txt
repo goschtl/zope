@@ -40,7 +40,7 @@ which is basically a list:
   >>> import zope.schema
   >>> class SourceList(list):
   ...     zope.interface.implements(zope.schema.interfaces.ISource)
-  
+
 We provide an `ITerms` view for the source:
 
   >>> class Term:
@@ -52,24 +52,24 @@ We provide an `ITerms` view for the source:
   ...
   ...     def __init__(self, source, request):
   ...         pass # We don't actually need the source or the request :)
-  ... 
+  ...
   ...     def getTerm(self, value):
   ...         title = unicode(value)
   ...         token = title.encode('base64').strip()
   ...         return Term(title=title, token=token)
-  ... 
+  ...
   ...     def getValue(self, token):
   ...         return token.decode('base64')
 
   >>> from zope.app.testing import ztapi
   >>> from zope.publisher.interfaces.browser import IBrowserRequest
   >>> import zope.app.form.browser.interfaces
-  >>> ztapi.provideAdapter((SourceList, IBrowserRequest), 
+  >>> ztapi.provideAdapter((SourceList, IBrowserRequest),
   ...                      zope.app.form.browser.interfaces.ITerms,
   ...                      ListTerms)
-   
+
 This view just uses the unicode representations of values as titles
-and the base-64 encoding of the titles as tokens.  This is a very 
+and the base-64 encoding of the titles as tokens.  This is a very
 simple strategy that's only approriate when the values have short and
 unique unicode representations.
 
@@ -78,18 +78,18 @@ source itself will be used as it's own queriable.  We need to provide a
 query view for the source:
 
   >>> class ListQueryView:
-  ... 
+  ...
   ...     def __init__(self, source, request):
   ...         self.source = source
   ...         self.request = request
-  ... 
+  ...
   ...     def render(self, name):
   ...         return (
   ...             '<input name="%s.string">\n'
   ...             '<input type="submit" name="%s" value="Search">'
   ...             % (name, name)
   ...             )
-  ... 
+  ...
   ...     def results(self, name):
   ...         if name in self.request:
   ...             search_string = self.request.get(name+'.string')
@@ -100,7 +100,7 @@ query view for the source:
   ...                         ]
   ...         return None
 
-  >>> ztapi.provideAdapter((SourceList, IBrowserRequest), 
+  >>> ztapi.provideAdapter((SourceList, IBrowserRequest),
   ...                      zope.app.form.browser.interfaces.ISourceQueryView,
   ...                      ListQueryView)
 
@@ -121,7 +121,7 @@ just create the view directly:
   >>> request = TestRequest()
   >>> widget = zope.app.form.browser.source.SourceInputWidget(
   ...     dog, dog.source, request)
-  
+
 Now if we render the widget, we'll see the input value (initially
 nothing) and a form elements for seaching for values:
 
@@ -168,7 +168,7 @@ then as long as the field is displayed, the widget says it has input.
 
 If we actually provide some input:
 
-  >>> request.form['field.dog'] = 'foo' 
+  >>> request.form['field.dog'] = 'foo'
 
 then we have input:
 
@@ -266,7 +266,7 @@ queryable objects.
 
 We can reuse our terms view:
 
-  >>> ztapi.provideAdapter((MultiSource, IBrowserRequest), 
+  >>> ztapi.provideAdapter((MultiSource, IBrowserRequest),
   ...                      zope.app.form.browser.interfaces.ITerms,
   ...                      ListTerms)
 

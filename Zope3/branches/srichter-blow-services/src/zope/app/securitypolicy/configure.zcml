@@ -69,13 +69,15 @@
   </localUtility>
 
   <subscriber
-     for="..component.interfaces.registration.IRegistrationActivatedEvent"
-     factory=".role.setIdOnActivation"
+     for=".interfaces.IRole
+         ..component.interfaces.registration.IRegistrationActivatedEvent"
+     handler=".role.setIdOnActivation"
      />
 
   <subscriber
-     for="..component.interfaces.registration.IRegistrationDeactivatedEvent"
-     factory=".role.unsetIdOnDeactivation"
+     for=".interfaces.IRole
+          ..component.interfaces.registration.IRegistrationDeactivatedEvent"
+     handler=".role.unsetIdOnDeactivation"
      />
 
   <!-- Include browser package -->

@@ -176,7 +176,7 @@ class ITerms(Interface):
 class ISourceQueryView(Interface):
     """View support for querying non-iterable sources
     """
-        
+
     def render(name):
         """Return a rendering of the search form elements
         """

@@ -57,6 +57,7 @@ class CheckBoxWidget(SimpleInputWidget):
                           id=self.name,
                           cssClass=self.cssClass,
                           extra=self.extra,
+                          value="on",
                           **kw),
             )
 

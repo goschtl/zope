@@ -22,7 +22,7 @@ from zope.publisher.browser import TestRequest
 from zope.schema import TextLine
 from zope.testing.doctestunit import DocTestSuite
 
-from zope.app.form.browser.widget import DisplayWidget
+from zope.app.form.browser.widget import DisplayWidget, UnicodeDisplayWidget
 
 
 def test_implemented_interfaces():
@@ -86,13 +86,31 @@ def test_value_escaping():
 
     >>> widget()
     ''
-    
+
+    If there's no default for the field and the value is missing on
+    the bound object, the empty string should still be displayed::
+
+    >>> field = TextLine(title=u'Title',
+    ...                  __name__=u'title',
+    ...                  required=False)
+
+    >>> class Thing:
+    ...    title = field.missing_value
+
+    >>> field = field.bind(Thing())
+    >>> widget = DisplayWidget(field, TestRequest())
+
+    >>> widget()
+    ''
+
     """
 
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(DocTestSuite())
+    suite.addTest(DocTestSuite(
+        extraglobs={"DisplayWidget": UnicodeDisplayWidget}))
     return suite
 
 if __name__ == '__main__':

@@ -6,7 +6,23 @@
 
   <unauthenticatedPrincipal
     id="zope.anybody"
-    title="Unauthenticated User" />
+    title="Unauthenticated User" 
+    />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users" 
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users" 
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users" 
+    />
 
   <principal
     id="zope.sample_manager"

@@ -48,7 +48,7 @@ When creating the home folder, the principal also automatically receives the
 
   >>> from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
   >>> roles = IPrincipalRoleManager(baseFolder['stephan'])
-  >>> [(role, str(setting)) 
+  >>> [(role, str(setting))
   ...  for role, setting in roles.getRolesForPrincipal('stephan')]
   [(u'zope.Manager', 'PermissionSetting: Allow')]
 
@@ -62,7 +62,7 @@ skipped silently:
   'sc3'
 
 This has the advantage that you can choose your own `IContainer`
-implementation instead of relying on the vanilla folder. 
+implementation instead of relying on the vanilla folder.
 
 Now let's look at some derivations of the same task.
 
@@ -160,7 +160,7 @@ We also need to register our manager as a utility:
 
   >>> from zope.app.testing import ztapi
   >>> from zope.app.homefolder.interfaces import IHomeFolderManager
-  >>> ztapi.provideUtility(IHomeFolderManager, manager, 'manager') 
+  >>> ztapi.provideUtility(IHomeFolderManager, manager, 'manager')
 
 
 (1) Now we can access the home folder via the adapter:
@@ -174,7 +174,7 @@ We also need to register our manager as a utility:
 
   >>> from zope.app.traversing.interfaces import IPathAdapter
   >>> from zope.app import zapi
-  >>> zapi.getAdapter(principal, IPathAdapter, 
+  >>> zapi.getAdapter(principal, IPathAdapter,
   ...                 "homefolder") is baseFolder['stephan']
   True
 
@@ -184,8 +184,8 @@ way it will be used is via a TALES expression:
 
   Setup of the Engine
 
-  >>> from zope.app.pagetemplate.engine import Engine 
-  >>> from zope.tales.tales import Context 
+  >>> from zope.app.pagetemplate.engine import Engine
+  >>> from zope.tales.tales import Context
   >>> context = Context(Engine, {'principal': principal})
 
   Executing the TALES expression

@@ -98,6 +98,6 @@ class CustomWidgetFactory(object):
     def __call__(self, context, request):
         args = (context, request) + self.args
         instance = self._widget_factory(*args)
-        for item in self.kw.items():
-            setattr(instance, item[0], item[1])
+        for name, value in self.kw.items():
+            setattr(instance, name, value)
         return instance

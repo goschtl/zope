@@ -7,14 +7,14 @@
       for="zope.app.security.interfaces.IAuthentication
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.ISourceQueryView"
-      factory="zope.app.security.browser.auth.AuthUtilitySearchView" 
+      factory="zope.app.security.browser.auth.AuthUtilitySearchView"
       />
 
   <adapter
       for="zope.app.security.interfaces.IPrincipalSource
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.ITerms"
-      factory="zope.app.security.browser.principalterms.PrincipalTerms" 
+      factory="zope.app.security.browser.principalterms.PrincipalTerms"
       />
 
   <browser:tool
@@ -40,6 +40,13 @@
       attribute="logout"
       permission="zope.Public"
       allowed_interface="zope.app.publisher.interfaces.http.ILogout"
+      />
+
+  <browser:page
+      name="login_logout"
+      for="*"
+      class=".auth.LoginLogout"
+      permission="zope.Public"
       />
 
   <browser:tool

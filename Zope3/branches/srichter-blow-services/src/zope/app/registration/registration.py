@@ -18,6 +18,7 @@ $Id: registration.py 28601 2004-12-09 19:20:03Z srichter $
 from zope.deprecation import deprecated
 
 from zope.app.component import registration
+from zope.component import subscribers
 
 RegistrationEvent = registration.RegistrationEvent
 RegistrationActivatedEvent = registration.RegistrationActivatedEvent

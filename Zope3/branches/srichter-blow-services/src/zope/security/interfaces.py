@@ -110,16 +110,20 @@ class IChecker(Interface):
     def check_getattr(ob, name):
         """Check whether attribute access is allowed.
 
+        May raise Unauthorized or Forbidden.  Returns no value.
+
         If a checker implements __setitem__, then __setitem__ will be
-        called rather than check_getattr to chack whether an attribute
+        called rather than check_getattr to check whether an attribute
         access is allowed.  This is a hack that allows significantly
         greater performance due to the fact that low-level operator
         access is much faster than method access.
-        
         """
 
     def check_setattr(ob, name):
-        """Check whether attribute assignment is allowed."""
+        """Check whether attribute assignment is allowed.
+        
+        May raise Unauthorized or Forbidden.  Returns no value.
+        """
 
     def check(ob, operation):
         """Check whether operation is allowed.
@@ -127,12 +131,13 @@ class IChecker(Interface):
         The operation name is the Python special method name,
         e.g. "__getitem__".
 
+        May raise Unauthorized or Forbidden.  Returns no value.
+
         If a checker implements __setitem__, then __setitem__ will be
         called rather than check to chack whether an operation is
         allowed.  This is a hack that allows significantly greater
         performance due to the fact that low-level operator access is
         much faster than method access.
-        
         """
 
     def proxy(value):
@@ -143,7 +148,6 @@ class IChecker(Interface):
         that allows significantly greater performance due to the fact
         that low-level operator access is much faster than method
         access.
-
         """
 
 
@@ -279,6 +283,9 @@ class IGroupAwarePrincipal(IPrincipal):
         value_type=TextLine(),
         required=False)
 
+class IGroup(IPrincipal):
+    """Group of principals
+    """
                 
 class IPermission(Interface):
     """A permission object."""

@@ -53,7 +53,6 @@ def queuedDelivery(_context, permission, queuePath, mailer, name="Mail"):
         thread = QueueProcessorThread()
         thread.setMailer(mailerObject)
         thread.setQueuePath(queuePath)
-        thread.setDaemon(True)
         thread.start()
 
     _context.action(

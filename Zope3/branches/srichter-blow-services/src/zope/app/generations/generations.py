@@ -80,7 +80,7 @@ class SchemaManager(object):
          >>> context.connection.close()
          >>> conn.close()
          >>> db.close()
-         
+
        """
 
     zope.interface.implements(ISchemaManager)
@@ -94,8 +94,8 @@ class SchemaManager(object):
                              minimum_generation)
 
         if generation and not package_name:
-            raise ValueError("A package  name must be supplied if the"
-                             "generation is non-zero")
+            raise ValueError("A package name must be supplied if the"
+                             " generation is non-zero")
 
         self.minimum_generation = minimum_generation
         self.generation = generation
@@ -117,8 +117,8 @@ class SchemaManager(object):
             "%s.evolve%d" % (self.package_name, generation),
             {}, {}, ['*'])
         return evolver.evolve.__doc__
-        
-        
+
+
 
 class Context(object):
     pass
@@ -146,15 +146,15 @@ def evolve(db, how=EVOLVE):
       ...     zope.interface.implements(ISchemaManager)
       ...
       ...     erron = None # Raise an error is asked to evolve to this
-      ... 
+      ...
       ...     def __init__(self, name, minimum_generation, generation):
       ...         self.name, self.generation = name, generation
       ...         self.minimum_generation = minimum_generation
-      ... 
+      ...
       ...     def evolve(self, context, generation):
       ...         if generation == self.erron:
       ...             raise ValueError(generation)
-      ... 
+      ...
       ...         context.connection.root()[self.name] = generation
 
     We also need to set up the component system, since we'll be
@@ -171,9 +171,9 @@ def evolve(db, how=EVOLVE):
       >>> app2 = FauxApp('app2', 5, 11)
       >>> ztapi.provideUtility(ISchemaManager, app2, name='app2')
 
-    If we great a new database, and evolve it, we'll simply update
+    If we create a new database, and evolve it, we'll simply update
     the generation data:
-    
+
       >>> from ZODB.tests.util import DB
       >>> db = DB()
       >>> conn = db.open()
@@ -202,13 +202,13 @@ def evolve(db, how=EVOLVE):
       2
       >>> root[generations_key]['app2']
       11
-    
+
     And that the database was updated for that application:
 
       >>> root.get('app1')
       2
       >>> root.get('app2')
-    
+
     If there is an error updating a particular generation, but the
     generation is greater than the minimum generation, then we won't
     get an error from evolve, but we will get a log message.
@@ -238,7 +238,7 @@ def evolve(db, how=EVOLVE):
 
     Then we'll get an error if we try to evolve, since we can't get
     past 3 and 3 is less than 5:
-    
+
       >>> evolve(db)
       Traceback (most recent call last):
       ...
@@ -286,7 +286,6 @@ def evolve(db, how=EVOLVE):
     Now, if we use EVOLVEMINIMUM instead, we'll evolve to the minimum
     generation:
 
-
       >>> evolve(db, EVOLVEMINIMUM)
       >>> conn.sync()
       >>> root[generations_key]['app1']
@@ -307,11 +306,12 @@ def evolve(db, how=EVOLVE):
       GenerationTooHigh: (5, u'app1', 2)
 
     We'd better clean up:
-    
+
       >>> handler.uninstall()
       >>> conn.close()
       >>> db.close()
       >>> tearDown()
+
     """
     conn = db.open()
     try:

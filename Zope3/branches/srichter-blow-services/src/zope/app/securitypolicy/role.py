@@ -47,7 +47,7 @@ PersistentRole = LocalRole
 from zope.app.component.site import UtilityRegistration
 RoleRegistration = UtilityRegistration
 
-def setIdOnActivation(event):
+def setIdOnActivation(role, event):
     """Set the permission id upon registration activation.
 
     Let's see how this notifier can be used. First we need to create an event
@@ -68,28 +68,14 @@ def setIdOnActivation(event):
     Now we pass the event into this function, and the id of the role should be
     set to 'role1'.
 
-    >>> setIdOnActivation(event)
+    >>> setIdOnActivation(role1, event)
     >>> role1.id
     'role1'
-
-    If the function is called and the component is not a local permission,
-    nothing is done:
-
-    >>> class Foo:
-    ...     id = 'no id'
-    >>> foo = Foo()
-    >>> event = registration.RegistrationActivatedEvent(
-    ...     Registration(foo, 'foo'))
-    >>> setIdOnActivation(event)
-    >>> foo.id
-    'no id'
     """
-    role = event.object.component
-    if isinstance(role, LocalRole):
-        role.id = event.object.name
+    role.id = event.object.name
 
 
-def unsetIdOnDeactivation(event):
+def unsetIdOnDeactivation(role, event):
     """Unset the permission id up registration deactivation.
 
     Let's see how this notifier can be used. First we need to create an event
@@ -110,27 +96,13 @@ def unsetIdOnDeactivation(event):
     Now we pass the event into this function, and the id of the role should be
     set to NULL_ID.
 
-    >>> unsetIdOnDeactivation(event)
+    >>> unsetIdOnDeactivation(role1, event)
     >>> role1.id
     u'<role not activated>'
-
-    If the function is called and the component is not a local role,
-    nothing is done:
-
-    >>> class Foo:
-    ...     id = 'foo'
-    >>> foo = Foo()
-    >>> event = registration.RegistrationDeactivatedEvent(
-    ...     Registration(foo, 'foo'))
-    >>> unsetIdOnDeactivation(event)
-    >>> foo.id
-    'foo'
     """
-    role = event.object.component
-    if isinstance(role, LocalRole):
-        role.id = NULL_ID
+    role.id = NULL_ID
 
-    
+
 
 def checkRole(context, role_id):
     names = [name for name, util in zapi.getUtilitiesFor(IRole, context)]

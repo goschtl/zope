@@ -84,6 +84,39 @@ def ProxyFactory(object, checker=None):
 
 directlyProvides(ProxyFactory, ISecurityProxyFactory)
 
+def canWrite(obj, name):
+    """Check whether the interaction may write an attribute named name on obj.
+    
+    Convenience method.  Rather than using checkPermission in high level code,
+    use canWrite and canAccess to avoid binding code to permissions.
+    """
+    obj = ProxyFactory(obj)
+    checker = getChecker(obj)
+    try:
+        checker.check_setattr(obj, name)
+    except Unauthorized:
+        return False
+    # if it is Forbidden (or anything else), let it be raised: it probably 
+    # indicates a programming or configuration error
+    return True
+
+def canAccess(obj, name):
+    """Check whether the interaction may access an attribute named name on obj.
+    
+    Convenience method.  Rather than using checkPermission in high level code,
+    use canWrite and canAccess to avoid binding code to permissions.
+    """
+    # access attributes and methods, including, in the current checker 
+    # implementation, special names like __getitem__
+    obj = ProxyFactory(obj)
+    checker = getChecker(obj)
+    try:
+        checker.check_getattr(obj, name)
+    except Unauthorized:
+        return False
+    # if it is Forbidden (or anything else), let it be raised: it probably 
+    # indicates a programming or configuration error
+    return True
 
 class Checker(object):
     implements(INameBasedChecker)
@@ -92,7 +125,7 @@ class Checker(object):
         """Create a checker
 
         A dictionary must be provided for computing permissions for
-        names. The disctionary get will be called with attribute names
+        names. The dictionary get will be called with attribute names
         and must return a permission id, None, or the special marker,
         CheckerPublic. If None is returned, then access to the name is
         forbidden. If CheckerPublic is returned, then access will be

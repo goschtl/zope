@@ -223,7 +223,7 @@ class TranslationDomain(BTreeContainer, SimpleTranslationDomain, Contained):
 # BBB: Backward compatibility. 12/09/2004
 DomainRegistration = UtilityRegistration
 
-def setDomainOnActivation(event):
+def setDomainOnActivation(domain, event):
     """Set the permission id upon registration activation.
 
     Let's see how this notifier can be used. First we need to create an event
@@ -245,28 +245,14 @@ def setDomainOnActivation(event):
     Now we pass the event into this function, and the id of the domain should
     be set to 'domain1'.
 
-    >>> setDomainOnActivation(event)
+    >>> setDomainOnActivation(domain1, event)
     >>> domain1.domain
     'domain1'
-
-    If the function is called and the component is not a local domain, nothing
-    is done:
-
-    >>> class Foo:
-    ...     domain = 'no domain'
-    >>> foo = Foo()
-    >>> event = registration.RegistrationActivatedEvent(
-    ...     Registration(foo, 'foo'))
-    >>> setDomainOnActivation(event)
-    >>> foo.domain
-    'no domain'
     """
-    domain = event.object.component
-    if isinstance(domain, TranslationDomain):
-        domain.domain = event.object.name
+    domain.domain = event.object.name
 
 
-def unsetDomainOnDeactivation(event):
+def unsetDomainOnDeactivation(domain, event):
     """Unset the permission id up registration deactivation.
 
     Let's see how this notifier can be used. First we need to create an event
@@ -287,22 +273,8 @@ def unsetDomainOnDeactivation(event):
     Now we pass the event into this function, and the id of the role should be
     set to '<domain not activated>'.
 
-    >>> unsetDomainOnDeactivation(event)
+    >>> unsetDomainOnDeactivation(domain1, event)
     >>> domain1.domain
     '<domain not activated>'
-
-    If the function is called and the component is not a local domain,
-    nothing is done:
-
-    >>> class Foo:
-    ...     domain = 'foo'
-    >>> foo = Foo()
-    >>> event = registration.RegistrationDeactivatedEvent(
-    ...     Registration(foo, 'foo'))
-    >>> unsetDomainOnDeactivation(event)
-    >>> foo.domain
-    'foo'
     """
-    domain = event.object.component
-    if isinstance(domain, TranslationDomain):
-        domain.domain = '<domain not activated>'
+    domain.domain = '<domain not activated>'

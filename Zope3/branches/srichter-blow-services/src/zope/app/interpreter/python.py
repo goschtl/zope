@@ -37,7 +37,7 @@ class PythonInterpreter(object):
                      {}, # we don't want to get local assignments saved.
                      )
         else:
-            # XXX There atr no tests for this branch
+            # TODO: There are no tests for this branch
             code.exec_(globals,
                        {}, # we don't want to get local assignments saved.
                        )

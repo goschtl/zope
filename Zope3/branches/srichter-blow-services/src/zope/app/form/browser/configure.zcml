@@ -154,9 +154,25 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IInt"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".UnicodeDisplayWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IFloat"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".FloatWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IFloat"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".UnicodeDisplayWidget"
       permission="zope.Public"
       />
 

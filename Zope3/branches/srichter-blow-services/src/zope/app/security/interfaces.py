@@ -18,13 +18,31 @@ $Id$
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.schema import Text, TextLine
-from zope.security.interfaces import IPrincipal, IPermission
+from zope.security.interfaces import IPrincipal, IPermission, IGroup
 from zope.schema.interfaces import ISource
 
 from zope.exceptions import NotFoundError
 
 class PrincipalLookupError(NotFoundError):
     """A prncipal could not be found for a principal id
+    """
+
+class IUnauthenticatedPrincipal(IPrincipal):
+    """A principal that hasn't been authenticated.
+
+    Authenticated principals are preferable to UnauthenticatedPrincipals.
+    """
+
+class IUnauthenticatedGroup(IGroup):
+    """A group containing unauthenticated users
+    """
+
+class IAuthenticatedGroup(IGroup):
+    """A group containing authenticated users
+    """
+
+class IEveryoneGroup(IGroup):
+    """A group containing all users
     """
 
 class IUnauthenticatedPrincipal(IPrincipal):

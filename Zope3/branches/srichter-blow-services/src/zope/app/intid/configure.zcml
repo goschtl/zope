@@ -26,13 +26,13 @@
   </localUtility>
 
   <subscriber
-      factory=".removeIntIdSubscriber"
+      handler=".removeIntIdSubscriber"
       for="zope.app.location.interfaces.ILocation
            zope.app.container.interfaces.IObjectRemovedEvent"
       />
 
   <subscriber
-      factory=".addIntIdSubscriber"
+      handler=".addIntIdSubscriber"
       for="zope.app.location.interfaces.ILocation
            zope.app.container.interfaces.IObjectAddedEvent"
       />
