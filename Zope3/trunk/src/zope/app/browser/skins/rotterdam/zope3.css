@@ -268,10 +268,9 @@ pre {
 }
 
 #breadcrumbs {
-    border-bottom: 1px solid black;
-/*    color: blue; */
-    padding-bottom: 1px;
-    padding-top: 1px;
+    border: 1px solid #74AE0B;
+    padding: 0.1em 1em;
+    margin-top: 2em;
 }
 
 #navigators {
@@ -343,9 +342,16 @@ div.box div.body {
     padding: 0.1em 1em 0.3em 0.5em;
 }
 
-div.box div.body a div{
-    display: list-item;
-    list-style-position: inside;
+div.box div.body a div.odd{
+/*    display: list-item;
+    list-style-position: inside; */
+    background: transparent;
+}
+
+div.box div.body a div.even{
+/*    display: list-item;
+    list-style-position: inside; */
+    background: #F7F9FA;
 }
 
 

@@ -10,7 +10,8 @@ Add new content:<br>
     <a href="#"
        tal:attributes="href string:${request/getURL}?type_name=${info/action};
                        class info/selected" >
-    <div tal:attributes="value info/id|default"
+    <div tal:define="oddrow repeat/info/odd"
+                tal:attributes="class python:oddrow and 'even' or 'odd'; value info/id|default"
             tal:content="info/title">Folder
     </div>
     </a>

@@ -53,24 +53,6 @@
 
     </div>
 
-    <div id="breadcrumbs"
-         metal:define-macro="breadcrumbs"
-         > Location:&nbsp;<tal:block
-             repeat="breadcrumb context/@@absolute_url/breadcrumbs"
-            ><a href=""
-                tal:condition="repeat/breadcrumb/start"
-                tal:content="string:[top]"
-                tal:attributes="
-                href string:${breadcrumb/url}/@@SelectedManagementView.html"
-                >XXX should not hardcode root folder name string</a
-               ><a href=""
-                   tal:condition="not:repeat/breadcrumb/start"
-                   tal:content="string:${breadcrumb/name}"
-                   tal:attributes="
-                   href string:${breadcrumb/url}/@@SelectedManagementView.html"
-                    >breadcrumb item</a>/</tal:block></div>
-
-
     <div id="navigators">
 
       <div class="box" id="navigationTree">
@@ -104,7 +86,8 @@
              tal:attributes="href info/action" 
              tal:repeat="info actions"
              >
-            <div tal:attributes="value info/id|default"
+            <div tal:define="oddrow repeat/info/odd"
+                tal:attributes="class python:oddrow and 'even' or 'odd'; value info/id|default"
                  tal:content="info/title">Do something
             </div>
           </a>
@@ -132,7 +115,24 @@
 
     <div id="content">
 
-      <div class="itemViews"
+        <div id="breadcrumbs"
+         metal:define-macro="breadcrumbs"
+         > Location:&nbsp;<tal:block
+             repeat="breadcrumb context/@@absolute_url/breadcrumbs"
+            ><a href=""
+                tal:condition="repeat/breadcrumb/start"
+                tal:content="string:[top]"
+                tal:attributes="
+                href string:${breadcrumb/url}/@@SelectedManagementView.html"
+                >XXX should not hardcode root folder name string</a
+               ><a href=""
+                   tal:condition="not:repeat/breadcrumb/start"
+                   tal:content="string:${breadcrumb/name}"
+                   tal:attributes="
+                   href string:${breadcrumb/url}/@@SelectedManagementView.html"
+                    >breadcrumb item</a>/</tal:block></div>
+      
+        <div class="itemViews"
            metal:define-macro="zmi_tabs">
 
         <tal:block repeat="view context/@@view_get_menu/zmi_views">

@@ -13,7 +13,7 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.3 2002/12/30 12:52:36 jim Exp $
+$Id: xmlobject.py,v 1.4 2002/12/30 15:54:25 gotcha Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -34,10 +34,9 @@ class ReadContainerXmlObjectView(BrowserView):
             result = icon.url()
         return result
 
-    def children_utility(self):
+    def children_utility(self, container):
         """Return an XML document that contains the children of an object."""
         result = []
-        container = self.context
 
         keys = list(container.keys())
 
@@ -66,9 +65,10 @@ class ReadContainerXmlObjectView(BrowserView):
         
     def children(self):
         """ """
+        container = self.context
         self.request.response.setHeader('Content-Type', 'text/xml')
         return (u'<?xml version="1.0" ?><children> %s </children>'
-                % self.children_utility()
+                % self.children_utility(container)
                 )
 
     def singleBranchTree(self, root=''):
@@ -86,8 +86,15 @@ class ReadContainerXmlObjectView(BrowserView):
             if item == oldItem:                
                     continue
             subItems = []
-            for name in item.keys():
-                subItem = item[name]
+            keys = list(item.keys())
+
+            # include the service manager
+            keys.append('++etc++Services')
+
+            for name in keys:
+                # Only include items we can traverse to
+                subItem = traverse(item, name, None)
+
                 iconUrl = self.getIconUrl(subItem)
                 if IReadContainer.isImplementedBy(subItem):
                     if oldItem and subItem == oldItem:
