@@ -1206,6 +1206,18 @@ check_wrapper(PyObject *wrapper, const char *funcname)
 }
 
 static PyObject *
+api_getdescriptor(PyObject *obj, PyObject *name) {
+    PyObject *res;
+    if (obj == NULL || name == NULL)
+	return missing_wrapper("getdescriptor");
+    res = _PyType_Lookup(obj->ob_type, name);
+    if (res == NULL)
+	res = Py_None;
+    Py_INCREF(res);
+    return res;
+}
+
+static PyObject *
 api_getobject(PyObject *wrapper)
 {
     if (wrapper == NULL)
@@ -1351,7 +1363,8 @@ wrapper_capi = {
     api_getdict,
     api_getdictcreate,
     api_setobject,
-    api_setcontext
+    api_setcontext,
+    api_getdescriptor
 };
 
 static char
@@ -1519,6 +1532,23 @@ wrapper_setobject(PyObject *unused, PyObject *args)
 }
 
 static char
+getdescriptor__doc__[] =
+"getdescriptor(obj, name)\n"
+"\n"
+"get descriptor from obj's class.";
+static PyObject *
+wrapper_getdescriptor(PyObject *unused, PyObject *args)
+{
+    PyObject *obj;
+    PyObject *name;
+
+    if (PyArg_UnpackTuple(args, "getdescriptor", 2, 2, &obj, &name)) {
+        return api_getdescriptor(obj, name);
+    }
+    return NULL;
+}
+
+static char
 setcontext__doc__[] =
 "setcontext(wrapper, context)\n"
 "\n"
@@ -1560,6 +1590,8 @@ module_functions[] = {
      setobject__doc__},
     {"setcontext",      wrapper_setcontext,      METH_VARARGS,
      setcontext__doc__},
+    {"getdescriptor",   wrapper_getdescriptor, METH_VARARGS,
+     getdescriptor__doc__},
     {NULL, NULL, 0, NULL}
 };
 

@@ -12,14 +12,17 @@
 #
 ##############################################################################
 """
-$Id: test_wrapper.py,v 1.21 2003/07/13 13:45:26 anthony Exp $
+$Id: test_wrapper.py,v 1.22 2003/07/17 14:00:00 alga Exp $
 """
 import unittest
+from types import MethodType, FunctionType
 from zope.proxy import getProxiedObject
 from zope.context import Wrapper, wrapper, ContextMethod, ContextProperty
 from zope.proxy.tests.test_proxy import Thing, ProxyTestCase
 
 _marker = object()
+
+__metaclass__ = type
 
 class WrapperProperty(object):
     def __init__(self, name, dictname, default=_marker):
@@ -598,7 +601,6 @@ class WrapperTestCase(ProxyTestCase):
             def foo(): pass
             ContextMethod(ContextMethod(foo)).__get__(1)
 	self.assertRaises(TypeError, abuse)
-	    
 
 
 class WrapperSubclass(wrapper.Wrapper):
@@ -613,10 +615,37 @@ class WrapperSubclassTestCase(WrapperTestCase):
     def new_proxy(self, o, c=None):
         return self.proxy_class(o, c)
 
+
+class Foo:
+    __metaclass__ = type
+    def foo(self):
+        pass
+    s = staticmethod(foo)
+    c = classmethod(foo)
+
+class TestGetDescriptor(unittest.TestCase):
+
+    def test_getdescriptor(self):
+        from zope.context.wrapper import getdescriptor
+        f = Foo()
+
+        self.assertEquals(type(f.foo), MethodType)
+        self.assertEquals(type(f.c), MethodType)
+        self.assertEquals(type(f.s), FunctionType)
+
+        self.assertEquals(type(getdescriptor(f, 'c')), classmethod)
+        self.assertEquals(type(getdescriptor(f, 's')), staticmethod)
+        self.assertEquals(type(getdescriptor(f, 'foo')), FunctionType)
+
+        self.assertEquals(getdescriptor(f, 'foo').__get__(f, Foo), f.foo)
+        self.assertEquals(getdescriptor(f, 's').__get__(f, Foo), f.s)
+        self.assertEquals(getdescriptor(f, 'c').__get__(f, Foo), f.c)
+
 def test_suite():
     return unittest.TestSuite((
             unittest.makeSuite(WrapperTestCase),
             unittest.makeSuite(WrapperSubclassTestCase),
+            unittest.makeSuite(TestGetDescriptor),
             ))
 
 

@@ -34,6 +34,7 @@ typedef struct {
     PyObject *(*getdictcreate)(PyObject *wrapper);
     int (*setobject)(PyObject *wrapper, PyObject *object);
     int (*setcontext)(PyObject *wrapper, PyObject *context);
+    PyObject *(*getdescriptor)(PyObject *obj, PyObject *name);
 } WrapperInterface;
 
 
@@ -90,7 +91,8 @@ Wrapper_Import(void)
         (_wrapper_api->setobject((wrapper), (object)))
 #define Wrapper_SetContext(wrapper, context) \
         (_wrapper_api->setcontext((wrapper), (context)))
-
+#define Wrapper_GetDescriptor(obj, name) \
+        (_wrapper_api->getdescriptor((obj), (name)))
 #endif
 
 #endif
