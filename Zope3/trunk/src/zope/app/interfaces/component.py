@@ -13,7 +13,7 @@
 ##############################################################################
 """Locale Component Architecuture interfaces
 
-$Id: component.py,v 1.5 2004/02/24 14:16:59 srichter Exp $
+$Id: component.py,v 1.6 2004/03/03 17:06:44 srichter Exp $
 """
 from zope.interface import Interface
 from zope.schema import Field
@@ -69,35 +69,6 @@ class IGlobalInterfaceService(IInterfaceService):
 
         If the id is false, the id will be computed from the interface
         module and name.
-        """
-
-class IDAVSchemaService(IInterfaceService):
-    """Service that keeps tracks of namespace to interfaces mapping"""
-    pass
-
-class IGlobalDAVSchemaService(IDAVSchemaService):
-    """Global registry from DAV namespaces to interfaces
-    """
-
-    def provideInterface(id, interface):
-        """Register an interface with a given id
-
-        The id is the URI for the namespace.
-        """
-
-    def availableNamespaces():
-        """Returns a list of available namespaces we know about"""
-
-    def getNamespace(interface):
-        """Find what namespace is associated with an interface.
-
-        A ComponentLookupError is raised if the interface is not found.
-        """
-
-    def queryNamespace(interface, default=None):
-        """Find what namespace is associated with an interface.
-
-        The default value is returned if the interface is not found.
         """
 
 class IInterfaceField(IEnumerated, IField):
