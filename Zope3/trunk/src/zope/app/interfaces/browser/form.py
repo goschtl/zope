@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.4 2003/01/09 14:13:14 jim Exp $
+$Id: form.py,v 1.5 2003/01/16 19:53:09 stevea Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.publisher.interfaces.browser import IBrowserView
@@ -105,7 +105,10 @@ class IBrowserWidget(IWidget):
         """Render a label tag"""
 
     def row():
-        """Render the widget as a table row with the label and input widget
+        """Render the widget as two div elements, for the label and the field.
+
+        For example:
+          <div class="label">label</div><div class="field">field</div>
         """
 
     # XXX The following two methods are being supported for backward
