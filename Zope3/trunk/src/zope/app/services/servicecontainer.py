@@ -13,16 +13,18 @@
 ##############################################################################
 """ServiceManagerContainer implementation.
 
-$Id: servicecontainer.py,v 1.5 2003/09/02 20:46:50 jim Exp $
+$Id: servicecontainer.py,v 1.6 2003/09/21 17:33:02 jim Exp $
 """
 
 from zope.component.exceptions import ComponentLookupError
 from zope.app.interfaces.services.service import IPossibleSite, ISite
 from zope.component.interfaces import IServiceService
+from zope.interface import implements
+from zope.app.container.contained import Contained
 from zope.app import zapi
 import zope.interface
 
-class ServiceManagerContainer:
+class ServiceManagerContainer(Contained):
 
     """Implement access to the service manager (++etc++site).
 
@@ -46,10 +48,15 @@ class ServiceManagerContainer:
 
         if IServiceService.isImplementedBy(sm):
             self.__sm = sm
+            sm.__name__ = '++etc++site'
+            sm.__parent__ = self
         else:
             raise ValueError('setSiteManager requires an IServiceService')
 
-        zope.interface.directlyProvides(self, ISite)
+        zope.interface.directlyProvides(
+            self,
+            ISite,
+            zope.interface.directlyProvidedBy(self))
 
 
 
@@ -62,9 +69,10 @@ def fixup(event):
         database = event.database
         connection = database.open()
         app = connection.root().get('Application')
-        if app is None:
+        if app is None or ISite.isImplementedBy(app):
             # No old data
             return
+        print "Fixing up sites that don't implement ISite"
         fixfolder(app)
         get_transaction().commit()
         connection.close()
@@ -80,7 +88,11 @@ def fixfolder(folder):
     except ComponentLookupError:
         pass # nothing to do
     else:
-        zope.interface.directlyProvides(folder, ISite)
+        zope.interface.directlyProvides(
+            folder,
+            ISite,
+            zope.interface.directlyProvidedBy(folder),
+            )
 
     for item in folder.values():
         if IPossibleSite.isImplementedBy(item):
