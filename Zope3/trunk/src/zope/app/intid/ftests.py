@@ -53,7 +53,7 @@ class TestIntIds(BrowserTestCase):
 #        default = zapi.traverse(root, '/++etc++site/default')
 #        rm = default.getRegistrationManager()
 #        registration = UtilityRegistration(
-#            'cwm', IIntIds, self.basepath+'/intid')
+#            'cwm', IIntIds, zapi.traverse(self.basepath+'/intid'))
 #        pd_id = rm.addRegistration(registration)
 #        zapi.traverse(rm, pd_id).status = ActiveStatus
 

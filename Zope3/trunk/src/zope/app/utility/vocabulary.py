@@ -220,7 +220,7 @@ class UtilityComponentInterfacesVocabulary(ObjectInterfacesVocabulary):
 
     def __init__(self, context):
         if IUtilityRegistration.providedBy(context):
-            context = context.getComponent()
+            context = context.component
         super(UtilityComponentInterfacesVocabulary, self).__init__(
             context)
 

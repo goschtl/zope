@@ -32,9 +32,6 @@ Things to do After the next release (in no particular order)
 
   Only Schema Arithmetic is left from this proposal.
 
-- Restructure registration framework to use direct references rather
-  than paths.
-
 - Partial adapters
 
   http://dev.zope.org/Zope3/PartialAdapters

@@ -67,8 +67,8 @@
       class=".AddRegistration"
       permission="zope.ManageServices"
       content_factory="zope.app.utility.UtilityRegistration"
-      arguments="name interface componentPath"
-      fields="name interface componentPath permission">
+      arguments="name interface component"
+      fields="name interface component permission">
       
       <widget 
           field="name" 
@@ -88,7 +88,7 @@
       name="index.html"
       schema="zope.app.utility.interfaces.IUtilityRegistration"
       permission="zope.ManageServices"
-      fields="name interface componentPath permission status" />
+      fields="name interface component permission status" />
 
  <menuItems
     menu="zmi_actions"

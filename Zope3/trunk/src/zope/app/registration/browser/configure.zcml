@@ -11,6 +11,7 @@
                    "zope.app.form.browser.interfaces.IFormCollaborationView"
       permission="zope.ManageServices" />
 
+  <!-- BBB: Backward-compatibility: 12/07/2004 -->
   <zope:view
       for="zope.app.registration.interfaces.IComponentPath"
       type="zope.publisher.interfaces.browser.IBrowserRequest"
@@ -24,6 +25,24 @@
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".ComponentPathWidget"
+      permission="zope.Public"
+      />
+  <!-- BBB: End of backward-compatibility block -->
+
+
+  <zope:view
+      for="zope.app.registration.interfaces.IComponent"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".ComponentWidget"
+      permission="zope.Public"
+      />
+
+  <zope:view
+      for="zope.app.registration.interfaces.IComponent"
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".ComponentWidget"
       permission="zope.Public"
       />
 

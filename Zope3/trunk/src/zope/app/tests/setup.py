@@ -175,11 +175,10 @@ def addService(servicemanager, name, service, suffix=''):
 
     default = zapi.traverse(servicemanager, 'default')
     default[name+suffix] = service
-    path = "%s/default/%s" % (zapi.getPath(servicemanager), name+suffix)
-    registration = ServiceRegistration(name, path, default)
+    registration = ServiceRegistration(name, service, default)
     key = default.getRegistrationManager().addRegistration(registration)
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
-    return zapi.traverse(servicemanager, path)
+    return default[name+suffix]
 
 from zope.app.utility import UtilityRegistration
 
@@ -192,11 +191,10 @@ def addUtility(servicemanager, name, iface, utility, suffix=''):
     folder_name = (name or (iface.__name__ + 'Utility')) + suffix
     default = zapi.traverse(servicemanager, 'default')
     default[folder_name] = utility
-    path = "%s/default/%s" % (zapi.getPath(servicemanager), folder_name)
-    registration = UtilityRegistration(name, iface, path)
+    registration = UtilityRegistration(name, iface, default[folder_name])
     key = default.getRegistrationManager().addRegistration(registration)
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
-    return zapi.traverse(servicemanager, path)
+    return default[folder_name]
 
 def createStandardServices(folder):
     '''Create a bunch of standard placeful services

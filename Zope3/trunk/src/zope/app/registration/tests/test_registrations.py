@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
 
@@ -81,6 +80,7 @@ class DummyRegistration(ComponentStub):
 
     def __init__(self):
         self.status = UnregisteredStatus
+        self.component = self
 
     def getPath(self):
         return 'dummy!'
@@ -147,26 +147,22 @@ class TestComponentRegistration(TestSimpleRegistration, PlacefulSetup):
         PlacefulSetup.setUp(self, site=True)
         self.name = 'foo'
 
-    def test_getComponent(self):
+    def test_component(self):
         # set up a component
-        name, component = 'foo', object()
-        self.rootFolder[name] = component
+        component = object()
         # set up a registration
-        cfg = ComponentRegistration("/"+name)
-        cfg.__parent__ = self.rootFolder
+        cfg = ComponentRegistration(component)
         # check that getComponent finds the registration
-        self.assertEquals(cfg.getComponent(), component)
+        self.assertEquals(cfg.component, component)
 
     def test_getComponent_permission(self):
         # set up a component
-        name, component = 'foo', object()
-        self.rootFolder[name] = component
+        component = object()
         # set up a registration
-        cfg = ComponentRegistration("/"+name, 'zope.TopSecret')
+        cfg = ComponentRegistration(component, 'zope.TopSecret')
         cfg.getInterface = lambda: ITestComponent
-        cfg.__parent__ = self.rootFolder
-        # check that getComponent finds the registration
-        result = cfg.getComponent()
+        # Check that the component is proxied.
+        result = cfg.component
         self.assertEquals(result, component)
         self.failUnless(type(result) is Proxy)
 
@@ -226,15 +222,15 @@ class TestRegisterableEvents(object):
 
     and create a registration for it:
 
-        >>> reg = ComponentRegistration("foo")
+        >>> reg = ComponentRegistration(component)
         >>> sm['default']['reg'] = reg
         >>> ztapi.provideAdapter(IRegisterable, IRegistered, Registered)
         >>> IRegistered(component).addUsage('reg')
 
     The registration is initially configured with the component path:
 
-        >>> reg.componentPath
-        'foo'
+        >>> reg.component is component
+        True
 
     The RegisterableMoveSubscriber subscriber is for IRegisterable and
     IObjectMovedEvent. When we invoke it with the appropriate 'rename' event
@@ -249,8 +245,8 @@ class TestRegisterableEvents(object):
 
     the registration component path is updated accordingly:
 
-        >>> reg.componentPath
-        'bar'
+        >>> reg.component is component
+        True
 
     However, if we invoke RegisterableMoveSubscriber with a 'move' event (i.e.
     oldParent is different from newParent):
@@ -287,7 +283,7 @@ class TestRegisterableCopier(object):
 
     and create a registration for it:
 
-        >>> reg = ComponentRegistration("foo")
+        >>> reg = ComponentRegistration(component)
         >>> sm['default']['reg'] = reg
         >>> ztapi.provideAdapter(IRegisterable, IRegistered, Registered)
         >>> IRegistered(component).addUsage('/++etc++site/default/reg')

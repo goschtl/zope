@@ -32,9 +32,8 @@ class ILocalUtilityService(
 class IUtilityRegistration(IComponentRegistration):
     """Utility registration object.
 
-    This is keyed off name (which may be empty) and interface.  It
-    overrides componentPath (to make it readonly); it also inherits a
-    getComponent() method.
+    This is keyed off name (which may be empty) and interface. It inherits the
+    `component` property.
     """
 
     name = TextLine(
@@ -52,12 +51,6 @@ class IUtilityRegistration(IComponentRegistration):
         required=True,
         )
 
-    componentPath = ComponentPath(
-        title=_("Component path"),
-        description=_("The physical path to the component"),
-        required=True,
-        readonly=True,
-        )
 
 class ILocalUtility(IRegisterable):
     """Local utility marker.

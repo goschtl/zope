@@ -149,7 +149,7 @@ class SiteManager(
         if registry:
             registration = registry.active()
             if registration is not None:
-                return registration.getComponent()
+                return registration.component
         return default
 
     def getServiceDefinitions(self):
@@ -289,14 +289,13 @@ class ServiceRegistration(ComponentRegistration):
 
     zope.interface.implements(IServiceRegistration)
 
-    def __init__(self, name, path, context=None):
-        ComponentRegistration.__init__(self, path, None)
+    def __init__(self, name, service, context=None):
+        super(ServiceRegistration, self).__init__(service, None)
         self.name = name
 
         if context is not None:
             # Check that the object implements stuff we need
             self.__parent__ = context
-            service = self.getComponent()
             if not ILocalService.providedBy(service):
                 raise TypeError(
                     "service %r doesn't implement ILocalService" %
@@ -313,12 +312,12 @@ class ServiceRegistration(ComponentRegistration):
 
 def handleActivated(event):
     if isinstance(event.object, ServiceRegistration):
-        service = event.object.getComponent()
+        service = event.object.component
         if IBindingAware.providedBy(service):
             service.bound(event.object.name)
 
 def handleDeactivated(event):
     if isinstance(event.object, ServiceRegistration):
-        service = event.object.getComponent()
+        service = event.object.component
         if IBindingAware.providedBy(service):
             service.unbound(event.object.name)

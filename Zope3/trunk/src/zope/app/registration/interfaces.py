@@ -18,7 +18,7 @@ $Id$
 import zope.component.interfaces
 from zope.interface import Interface, Attribute, implements
 from zope.schema import TextLine, Field, Choice
-from zope.schema.interfaces import ITextLine
+from zope.schema.interfaces import ITextLine, IField
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.annotation.interfaces import IAnnotatable
@@ -111,7 +111,8 @@ class IRegistration(Interface):
         this might include a template path and a dotted class name.
         """
 
-
+#############################################################################
+# BBB: Kept for backward-compatibility. 12/05/2004
 class IComponentPath(ITextLine):
     """A component path
 
@@ -126,16 +127,28 @@ class ComponentPath(TextLine):
     traversed to get an object.
     """
     implements(IComponentPath)
+#############################################################################
+
+
+class IComponent(IField):
+    """A component path
+
+    This is just the interface for the ComponentPath field below.  We'll use
+    this as the basis for looking up an appropriate widget.
+    """
+
+class Component(Field):
+    """A component path
+
+    Values of the field are absolute unicode path strings that can be
+    traversed to get an object.
+    """
+    implements(IComponent)
+
 
 
 class IComponentRegistration(IRegistration):
     """Registration object that uses a component path and a permission."""
-
-    componentPath = ComponentPath(
-        title=_("Component path"),
-        description=_("The path to the component; this may be absolute, "
-                      "or relative to the nearest site management folder"),
-        required=True)
 
     permission = Choice(
         title=_("The permission needed to use the component"),
@@ -143,14 +156,27 @@ class IComponentRegistration(IRegistration):
         required=False,
         )
 
+    component = Component(
+        title=_("Registration Component"),
+        description=_("The component the registration is for."),
+        required=True)
+
+    #########################################################################
+    # BBB: Kept for backward-compatibility. 12/05/2004
+    componentPath = ComponentPath(
+        title=_("Component path"),
+        description=_("The path to the component; this may be absolute, "
+                      "or relative to the nearest site management folder"),
+        required=True)
+
+    
     def getComponent():
         """Return the component named in the registration.
 
         This is provided for backward compatibility; please use the
         `component` attribute instead.
         """
-
-    component = Attribute(_("the component named in the registration"))
+    #########################################################################
 
 
 class IRegistrationStack(Interface):

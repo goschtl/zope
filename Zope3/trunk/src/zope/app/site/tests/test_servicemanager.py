@@ -48,9 +48,8 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         ts = TestService()
         default['test_service1'] = ts
-        registration = ServiceRegistration(
-            'test_service',
-            '/++etc++site/default/test_service1')
+        registration = ServiceRegistration('test_service',
+                                           default['test_service1'])
 
         rm = default.getRegistrationManager()
         name = rm.addRegistration(registration)
@@ -77,9 +76,8 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         default = traverse(sm, 'default')
         ts = TestService()
         default['test_service1'] = ts
-        registration = ServiceRegistration(
-            'test_service',
-            '/++etc++site/default/test_service1')
+        registration = ServiceRegistration('test_service',
+                                           default['test_service1'])
         rm = default.getRegistrationManager()
         name = rm.addRegistration(registration)
         traverse(rm, name).status = ActiveStatus
@@ -102,18 +100,16 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         ts1 = TestService()
         default['test_service1'] = ts1
-        registration = ServiceRegistration(
-            'test_service',
-            '/++etc++site/default/test_service1')
+        registration = ServiceRegistration('test_service',
+                                           default['test_service1'])
         rm = default.getRegistrationManager()
         name = rm.addRegistration(registration)
         traverse(rm, name).status = ActiveStatus
 
         ts2 = TestService()
         default['test_service2'] = ts2
-        registration = ServiceRegistration(
-            'test_service',
-            '/++etc++site/default/test_service2')
+        registration = ServiceRegistration('test_service',
+                                           default['test_service2'])
         name = rm.addRegistration(registration)
         traverse(rm, name).status = RegisteredStatus
 

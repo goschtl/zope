@@ -308,7 +308,6 @@ class RegistrationStack(Persistent, Contained):
         zope.event.notify(RegistrationActivatedEvent(registration))
         # BBB: Depraction warningl 12/05/2004
         if hasattr(registration, 'activated'):
-            #import pdb; pdb.set_trace()
             warnings.warn(
                 "activated() deprected. Subscribe to "
                 "IRegistrationActivatedEvent instead.",
@@ -624,6 +623,9 @@ class SimpleRegistration(Persistent, Contained):
         return ""
 
 
+# BBB: 12/05/2004
+NULL_COMPONENT = object()
+
 class ComponentRegistration(SimpleRegistration):
     """Component registration.
 
@@ -633,34 +635,47 @@ class ComponentRegistration(SimpleRegistration):
 
     implements(interfaces.IComponentRegistration)
 
-    def __init__(self, component_path, permission=None):
-        self.componentPath = component_path
+    def __init__(self, component, permission=None):
+        # BBB: 12/05/2004
+        if isinstance(component, (str, unicode)):
+            self.componentPath = component
+        else:
+            # We always want to set the plain component. Untrusted code will
+            # get back a proxied component anyways.
+            self.component = removeSecurityProxy(component)
         if permission == 'zope.Public':
             permission = CheckerPublic
         self.permission = permission
 
     def implementationSummary(self):
-        return self.componentPath
+        return zapi.getPath(self.component)
 
+    ###########################################################################
+    # BBB: Backward compatibility from 12/05/2004
     def getComponent(self):
+        warnings.warn(
+            "`getComponent()` is deprecated, since the component is now "
+            "available directly via `component`. Also, you should not use the "
+            "not use `componentPath` anymore, since it is deprecated.",
+            DeprecationWarning, stacklevel=2,
+            )
+        return self.__BBB_getComponent()
+
+    def __BBB_getComponent(self):
+        if self._component is NULL_COMPONENT:
+            return self.__BBB_old_getComponent(self._BBB_componentPath)
+
+        # This condition should somehow make it in the final code, since it
+        # honors the permission.
+        if self.permission:
+            checker = InterfaceChecker(self.getInterface(), self.permission)
+            return Proxy(self._component, checker)
+
+        return self._component
+
+    def __BBB_old_getComponent(self, path):
         service_manager = zapi.getServices(self)
-
-        # The user of the registration object may not have permission
-        # to traverse to the component.  Yet they should be able to
-        # get it by calling getComponent() on a registration object
-        # for which they do have permission.  What they get will be
-        # wrapped in a security proxy of course.  Hence:
-
-        # We have to be clever here. We need to do an honest to
-        # god unrestricted traveral, which means we have to
-        # traverse from an unproxied object. But, it's not enough
-        # for the service manager to be unproxied, because the
-        # path is an absolute path. When absolute paths are
-        # traversed, the traverser finds the physical root and
-        # traverses from there, so we need to make sure the
-        # physical root isn't proxied.
-
-        path = self.componentPath
+        
         # Get the root and unproxy it
         if path.startswith("/"):
             # Absolute path
@@ -686,9 +701,38 @@ class ComponentRegistration(SimpleRegistration):
 
         return component
 
+    def __BBB_setComponent(self, component):
+        self._BBB_componentPath = None
+        self._component = component
+
+    component = property(__BBB_getComponent, __BBB_setComponent)
+    
+    def __BBB_getComponentPath(self):
+        warnings.warn(
+            "`componentPath` is deprecated. You can get to the component "
+            "directly by accessing `component`.",
+            DeprecationWarning, stacklevel=3,
+            )
+        if self._BBB_componentPath is not None:
+            return self._BBB_componentPath
+        return '/' + '/'.join(zapi.getPath(self.component))
+
+    def __BBB_setComponentPath(self, path):
+        warnings.warn(
+            "`componentPath` is deprecated. You can get to the component "
+            "directly by accessing `component`.",
+            DeprecationWarning, stacklevel=3,
+            )
+        self._component = NULL_COMPONENT
+        self._BBB_componentPath = path
+
+    componentPath = property(__BBB_getComponentPath, __BBB_setComponentPath)
+    ###########################################################################
+
+
 def ComponentRegistrationRemoveSubscriber(component_registration, event):
     """Receive notification of remove event."""
-    component = component_registration.getComponent()
+    component = component_registration.component
     dependents = IDependable(component)
     objectpath = zapi.getPath(component_registration)
     dependents.removeDependent(objectpath)
@@ -699,7 +743,7 @@ def ComponentRegistrationRemoveSubscriber(component_registration, event):
 
 def ComponentRegistrationAddSubscriber(component_registration, event):
     """Receive notification of add event."""
-    component = component_registration.getComponent()
+    component = component_registration.component
     dependents = IDependable(component)
     objectpath = zapi.getPath(component_registration)
     dependents.addDependent(objectpath)
@@ -711,13 +755,7 @@ def ComponentRegistrationAddSubscriber(component_registration, event):
 def RegisterableMoveSubscriber(registerable, event):
     """Updates componentPath for registrations on component rename."""
     if event.oldParent is not None and event.newParent is not None:
-        if event.oldParent is event.newParent:
-            registered = interfaces.IRegistered(registerable, None)
-            if registered is not None:
-                for reg in registered.registrations():
-                    if interfaces.IComponentRegistration.providedBy(reg):
-                        reg.componentPath = event.newName
-        else:
+        if event.oldParent is not event.newParent:
             raise DependencyError(
                 "Can't move a registered component from its container.")
 

@@ -135,12 +135,12 @@ class ServiceToolView(AbstractToolView):
             # Delete registrations
             for info in reg.info():
                 conf = info['registration']
-                obj = conf.getComponent()
+                obj = conf.component
                 conf.status = UnregisteredStatus
                 reg_folder = zapi.getParent(conf)
                 name = zapi.name(conf)
                 del reg_folder[name]
-                if obj not in [c.getComponent()
+                if obj not in [c.component
                                for c in reg_folder.values()]:
                     del_objs.append(obj)
 
@@ -226,12 +226,12 @@ class UtilityToolView(AbstractToolView):
             # Delete registrations
             for info in reg.info():
                 conf = info['registration']
-                obj = conf.getComponent()
+                obj = conf.component
                 conf.status = UnregisteredStatus
                 reg_folder = zapi.getParent(conf)
                 name = zapi.name(conf)
                 del reg_folder[name]
-                if obj not in [c.getComponent()
+                if obj not in [c.component
                                for c in reg_folder.values()]:
                     del_objs.append(obj)
 
@@ -324,7 +324,7 @@ class UtilityToolAdding(ComponentAdding):
         # Add registration
         registration = UtilityRegistration(self.contentName,
                                            self._addFilterInterface,
-                                           zapi.getPath(util))
+                                           util)
         reg_view = AddRegistration(util, self.request)
         reg_view.add(registration)
 

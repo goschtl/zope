@@ -130,7 +130,7 @@ def configureService(root_folder, service_type, name, initial_status='Active'):
     package = getServiceManagerDefault(root_folder)
     registration_manager = package.getRegistrationManager()
     registration =  ServiceRegistration(service_type,
-                                        name,
+                                        package[name],
                                         registration_manager)
     key = registration_manager.addRegistration(registration)
     registration = traverseName(registration_manager, key)
@@ -165,7 +165,7 @@ def configureUtility(
     """Configure a utility in the root folder."""
     package = getServiceManagerDefault(root_folder)
     registration_manager = package.getRegistrationManager()
-    registration = UtilityRegistration(name, interface, folder_name)
+    registration = UtilityRegistration(name, interface, package[folder_name])
     key = registration_manager.addRegistration(registration)
     registration.status = initial_status
 

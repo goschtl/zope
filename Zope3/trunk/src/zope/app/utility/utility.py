@@ -89,6 +89,7 @@ class UtilityRegistration(ComponentRegistration):
     This registration configures persistent components in packages to
     be utilities.
     """
+    zope.interface.implements(IUtilityRegistration)
 
     serviceType = zapi.servicenames.Utilities
 
@@ -98,28 +99,22 @@ class UtilityRegistration(ComponentRegistration):
     required = zope.interface.adapter.Null
     with = ()
     provided = property(lambda self: self.interface)
-    factory = property(lambda self: self.getComponent())
+    factory = property(lambda self: self.component)
     #
     ############################################################
 
-    zope.interface.implements(IUtilityRegistration)
-
-
-    component = property(lambda self: self.getComponent())
-
-    def __init__(self, name, interface, component_path, permission=None):
-        ComponentRegistration.__init__(self, component_path, permission)
+    def __init__(self, name, interface, component, permission=None):
+        super(UtilityRegistration, self).__init__(component, permission)
         self.name = name
         self.interface = interface
 
     def usageSummary(self):
         # Override IRegistration.usageSummary()
-        component = self.getComponent()
         s = self.getInterface().getName()
         if self.name:
             s += " registered as '%s'" % self.name
-        s += ", implemented by %s" %component.__class__.__name__
-        s += " '%s'"%self.componentPath
+        s += ", implemented by %s" %self.component.__class__.__name__
+        s += " '%s'"%zapi.name(self.component)
         return s
 
     def getInterface(self):

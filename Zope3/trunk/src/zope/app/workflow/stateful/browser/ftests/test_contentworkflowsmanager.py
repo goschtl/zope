@@ -61,7 +61,8 @@ class Test(BrowserTestCase):
         default = zapi.traverse(root, '/++etc++site/default')
         rm = default.getRegistrationManager()
         registration = UtilityRegistration(
-            'cwm', IContentWorkflowsManager, self.basepath+'/mgr')
+            'cwm', IContentWorkflowsManager,
+            zapi.traverse(root, self.basepath+'/mgr'))
         pd_id = rm.addRegistration(registration)
         zapi.traverse(rm, pd_id).status = ActiveStatus
 

@@ -158,6 +158,9 @@ Zope Changes
           replaced with the 'IRegistrationActivatedEvent' and
           'IRegistrationDectivatedEvent', respectively.
 
+        + Restructured registration framework to use direct references rather
+          than paths.
+
       - Replaced NotFoundError uses with more specific and meaningful
         exceptions. Eventually, NotFoundError will be deprecated.
 

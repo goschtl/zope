@@ -103,7 +103,7 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         name = self.cm.addRegistration(
             UtilityRegistration('definition1', IProcessDefinition,
-                                '/++etc++site/default/pd1'))
+                                self.default['pd1']))
         zapi.traverse(self.default.getRegistrationManager(),
                       name).status = ActiveStatus
 
@@ -215,7 +215,7 @@ class ConditionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         n = self.cm.addRegistration(
             UtilityRegistration('definition1', IProcessDefinition,
-                                '/++etc++site/default/pd1'))
+                                self.default['pd1']))
         zapi.traverse(self.default.getRegistrationManager(), n
                       ).status = ActiveStatus
 
@@ -302,7 +302,7 @@ class ScriptProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         k = self.cm.addRegistration(
             UtilityRegistration('definition1', IProcessDefinition,
-                                '/++etc++site/default/pd1'))
+                                self.default['pd1']))
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 
@@ -389,7 +389,7 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
 
         k = self.cm.addRegistration(
             UtilityRegistration('definition1', IProcessDefinition,
-                                '/++etc++site/default/pd1'))
+                                self.default['pd1']))
         zapi.traverse(self.default.getRegistrationManager(),
                       k).status = ActiveStatus
 

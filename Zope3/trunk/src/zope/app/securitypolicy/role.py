@@ -55,11 +55,8 @@ def setIdOnActivation(event):
 
     >>> class Registration:
     ...     def __init__(self, obj, name):
-    ...         self.object = obj
+    ...         self.component = obj
     ...         self.name = name
-    ...
-    ...     def getComponent(self):
-    ...         return self.object
 
     >>> role1 = LocalRole('Role 1', 'A first role')
     >>> role1.id
@@ -87,7 +84,7 @@ def setIdOnActivation(event):
     >>> foo.id
     'no id'
     """
-    role = event.object.getComponent()
+    role = event.object.component
     if isinstance(role, LocalRole):
         role.id = event.object.name
 
@@ -100,11 +97,8 @@ def unsetIdOnDeactivation(event):
 
     >>> class Registration:
     ...     def __init__(self, obj, name):
-    ...         self.object = obj
+    ...         self.component = obj
     ...         self.name = name
-    ...
-    ...     def getComponent(self):
-    ...         return self.object
 
     >>> role1 = LocalRole('Role 1', 'A first role')
     >>> role1.id = 'role1'
@@ -132,7 +126,7 @@ def unsetIdOnDeactivation(event):
     >>> foo.id
     'foo'
     """
-    role = event.object.getComponent()
+    role = event.object.component
     if isinstance(role, LocalRole):
         role.id = NULL_ID
 

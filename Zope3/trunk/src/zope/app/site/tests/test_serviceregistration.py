@@ -86,7 +86,7 @@ class Test(PlacefulSetup, TestCase):
         default['c'] = TestService()
 
         registration = ServiceRegistration(
-            'test_service', '/++etc++site/default/c')
+            'test_service', default['c'])
 
         self.__c = traverse(default, 'c')
         self.__cm = default.getRegistrationManager()
@@ -117,7 +117,7 @@ class Test(PlacefulSetup, TestCase):
     # zope.app.services.tests.testregistrations, but in a different way
 
     def test_getComponent(self):
-        self.assertEqual(self.__config.getComponent(), self.__c)
+        self.assertEqual(self.__config.component, self.__c)
 
     def test_not_a_local_service(self):
         defineService('test_service_2', ITestService)
@@ -127,7 +127,7 @@ class Test(PlacefulSetup, TestCase):
             TypeError,
             ServiceRegistration,
             'test_service',
-            '/++etc++site/default/c2',
+            self.__default['c2'],
             self.__default
             )
 

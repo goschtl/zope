@@ -225,10 +225,10 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilities = getService(Utilities, self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
-        path = "/++etc++site/default/foo"
+        foo = default['foo']
 
         for name in ('', 'bob'):
-            registration = utility.UtilityRegistration(name, IInterface, path)
+            registration = utility.UtilityRegistration(name, IInterface, foo)
             self.assertEqual(utilities.queryRegistrationsFor(registration),
                              None)
             registery = utilities.createRegistrationsFor(registration)
@@ -246,11 +246,11 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilities = getService(Utilities, self.rootFolder)
         default = traverse(self.rootFolder, "++etc++site/default")
         default['foo'] = Foo("local")
-        path = "/++etc++site/default/foo"
+        foo = default['foo']
         cm = default.getRegistrationManager()
 
         for name in ('', 'bob'):
-            registration = utility.UtilityRegistration(name, IInterface, path)
+            registration = utility.UtilityRegistration(name, IInterface, foo)
             cname = cm.addRegistration(registration)
             registration = traverse(cm, cname)
 

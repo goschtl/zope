@@ -50,14 +50,10 @@ class ContentComponentDefinitionRegistration(UtilityRegistration):
     """Content Component Registration"""
 
     def activated(self):
-        component = self.getComponent()
-        component = removeSecurityProxy(component)
-        component.name = self.name
+        self.component.name = self.name
 
     def deactivated(self):
-        component = self.getComponent()
-        component = removeSecurityProxy(component)
-        component.name = None
+        self.component.name = None
 
 
 class ContentComponentInstance(Persistent):

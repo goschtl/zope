@@ -62,7 +62,7 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
         # Setup Definition Registration
         path = "%s/default/%s" % (zapi.getPath(mgr), 'TestDoc')
         reg = ContentComponentDefinitionRegistration(
-            'TestDoc', IContentComponentDefinition, path)
+            'TestDoc', IContentComponentDefinition, default['TestDoc'])
         key = default.getRegistrationManager().addRegistration(reg)
         self.reg = zapi.traverse(default.getRegistrationManager(), key)
         
@@ -71,12 +71,12 @@ class ContentComponentDefinitionRegistrationTests(unittest.TestCase):
 
     def test_activated(self):
         self.reg.activated()
-        self.assertEqual(self.reg.getComponent().name, 'TestDoc')
+        self.assertEqual(self.reg.component.name, 'TestDoc')
 
     def test_deactivated(self):
         self.test_activated()
         self.reg.deactivated()
-        self.assertEqual(self.reg.getComponent().name, None)
+        self.assertEqual(self.reg.component.name, None)
 
 
 class ContentComponentInstanceTests(unittest.TestCase):

@@ -231,9 +231,7 @@ class DomainRegistration(UtilityRegistration):
     set the domain of the TranslationDomain.
     """
     def activated(self):
-        domain = self.getComponent()
-        domain.domain = self.name
+        self.component.domain = self.name
 
     def deactivated(self):
-        domain = self.getComponent()
-        domain.domain = '<domain not activated>'
+        self.component.domain = '<domain not activated>'

@@ -128,7 +128,7 @@ class Utilities(object):
             first = True
             for info in registry.info():
                 conf = info['registration']
-                obj = conf.getComponent()
+                obj = conf.component
                 done.append(conf.usageSummary())
                 path = zapi.getPath(obj)
                 services[path] = obj

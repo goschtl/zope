@@ -52,11 +52,8 @@ def setIdOnActivation(event):
 
     >>> class Registration:
     ...     def __init__(self, obj, name):
-    ...         self.object = obj
+    ...         self.component = obj
     ...         self.name = name
-    ...
-    ...     def getComponent(self):
-    ...         return self.object
 
     >>> perm1 = LocalPermission('Permission 1', 'A first permission')
     >>> perm1.id
@@ -85,7 +82,7 @@ def setIdOnActivation(event):
     >>> foo.id
     'no id'
     """
-    perm = event.object.getComponent()
+    perm = event.object.component
     if isinstance(perm, LocalPermission):
         perm.id = event.object.name
 
@@ -98,11 +95,8 @@ def unsetIdOnDeactivation(event):
 
     >>> class Registration:
     ...     def __init__(self, obj, name):
-    ...         self.object = obj
+    ...         self.component = obj
     ...         self.name = name
-    ...
-    ...     def getComponent(self):
-    ...         return self.object
 
     >>> perm1 = LocalPermission('Permission 1', 'A first permission')
     >>> perm1.id = 'perm1'
@@ -130,7 +124,7 @@ def unsetIdOnDeactivation(event):
     >>> foo.id
     'foo'
     """
-    perm = event.object.getComponent()
+    perm = event.object.component
     if isinstance(perm, LocalPermission):
         perm.id = NULL_ID
 

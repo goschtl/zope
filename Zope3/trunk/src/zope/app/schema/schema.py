@@ -278,9 +278,7 @@ class SchemaRegistration(UtilityRegistration):
     """
 
     def activated(self):
-        schema = self.getComponent()
-        schema.setName(self.name)
+        self.component.setName(self.name)
 
     def deactivated(self):
-        schema = self.getComponent()
-        schema.setName('<schema not activated>')
+        self.component.setName('<schema not activated>')

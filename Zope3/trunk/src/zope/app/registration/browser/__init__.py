@@ -15,11 +15,16 @@
 
 $Id$
 """
+import warnings
+
+from zope.interface import implements
+from zope.security.proxy import removeSecurityProxy
+
+from zope.app import zapi
 from zope.app.container.browser.adding import Adding
 from zope.app.container.interfaces import INameChooser
 from zope.app.form.browser.widget import SimpleInputWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 from zope.app.registration.interfaces import ActiveStatus
@@ -27,10 +32,6 @@ from zope.app.registration.interfaces import IRegistered
 from zope.app.registration.interfaces import IRegistration
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.app.registration.interfaces import UnregisteredStatus
-from zope.app.traversing.api import getName, traverse
-from zope.component import getView, getServices
-from zope.interface import implements
-from zope.security.proxy import removeSecurityProxy
 
 class RegistrationView(BrowserView):
     """View for registerable objects that have at most one registration.
@@ -85,9 +86,9 @@ class Registered(object):
         useconfig = IRegistered(component)
         result = []
         for path in useconfig.usages():
-            config = traverse(component, path)
+            config = zapi.traverse(component, path)
             description = config.usageSummary()
-            url = getView(config, 'absolute_url', self.request)
+            url = zapi.getView(config, 'absolute_url', self.request)
             result.append({'path': path,
                            'url': url(),
                            'status': config.status,
@@ -130,8 +131,8 @@ class ChangeRegistrations(BrowserView):
 
         message = self.applyUpdates()
 
-        self.configBase = str(getView(getServices(), 'absolute_url',
-                                      self.request))
+        self.configBase = str(zapi.getView(zapi.getServices(), 'absolute_url',
+                                           self.request))
 
         registrations = self.context.info()
 
@@ -160,6 +161,8 @@ class ChangeRegistrations(BrowserView):
         self.message = message
 
 
+#############################################################################
+# BBB: Only for backward compatibility. 12/07/2004
 class ComponentPathWidget(SimpleInputWidget):
     """Widget for displaying component paths
 
@@ -169,6 +172,15 @@ class ComponentPathWidget(SimpleInputWidget):
     component using the field's name. Otherwise, it uses the path to
     the context.
     """
+
+    def __init__(self, *args, **kw):
+        warnings.warn(
+            "Use of `ComponentPathWidget` deprecated, since the "
+            "registration code now uses the component directly instead "
+            "of using the component's path.",
+            DeprecationWarning, stacklevel=2,
+            )        
+        super(ComponentPathWidget, self).__init__(*agrs, **kw)
 
     def __call__(self):
         """See zope.app.browser.interfaces.form.IBrowserWidget"""
@@ -180,15 +192,15 @@ class ComponentPathWidget(SimpleInputWidget):
             path = getattr(context, field.__name__)
             # The path may be relative; then interpret relative to ../..
             if not path.startswith("/"):
-                context = traverse(context, "../..")
-            component = traverse(context, path)
+                context = zapi.traverse(context, "../..")
+            component = zapi.traverse(context, path)
         else:
             # It must be a component that is about to be configured.
             component = context
             # Always use a relative path (just the component name)
-            path = getName(context)
+            path = zapi.name(context)
 
-        url = getView(component, 'absolute_url', self.request)
+        url = zapi.getView(component, 'absolute_url', self.request)
 
         return ('<a href="%s/@@SelectedManagementView.html">%s</a>'
                 % (url, path))
@@ -211,9 +223,60 @@ class ComponentPathWidget(SimpleInputWidget):
         else:
             # It must be a component that is about to be configured.
             # Always return a relative path (just the component name)
-            path = getName(context)
+            path = zapi.name(context)
 
         return path
+#############################################################################
+
+
+class ComponentWidget(SimpleInputWidget):
+    """Widget for displaying/entering component paths that point to components.
+
+    The widget doesn't actually allow editing. Rather it gets the
+    value by inspecting its field's context. If the context is an
+    IComponentRegistration, then it just gets its value from the
+    component using the field's name. Otherwise, it uses the path to
+    the context.
+    """
+
+    def __call__(self):
+        """See zope.app.browser.interfaces.form.IBrowserWidget"""
+        # Render as a link to the component
+        field = self.context
+        context = field.context
+        if IRegistration.providedBy(context):
+            # It's a registration object. Just get the corresponding attr
+            component = getattr(context, field.__name__)
+            path = zapi.getPath(component)
+        else:
+            # It must be a component that is about to be configured.
+            component = context
+            # Always use a relative path (just the component name)
+            path = zapi.name(context)
+
+        url = zapi.getView(component, 'absolute_url', self.request)
+
+        return ('<a href="%s/@@SelectedManagementView.html">%s</a>'
+                % (url, path))
+
+    def hidden(self):
+        """See zope.app.browser.interfaces.form.IBrowserWidget"""
+        return ''
+
+    def hasInput(self):
+        """See zope.app.form.interfaces.IWidget"""
+        return 1
+
+    def getInputValue(self):
+        """See zope.app.form.interfaces.IWidget"""
+        field = self.context
+        context = field.context
+        if IRegistration.providedBy(context):
+            # It's a registration object. Just get the corresponding attr
+            return getattr(context, field.getName())
+
+        # It must be a component that is about to be configured.
+        return context
 
 
 class AddComponentRegistration(BrowserView):
@@ -255,7 +318,7 @@ class RegistrationAdding(Adding):
     menu_id = "add_registration"
 
     def nextURL(self):
-        return str(getView(self.context, "absolute_url", self.request))
+        return str(zapi.getView(self.context, "absolute_url", self.request))
 
 
 class EditRegistration(BrowserView):
@@ -305,7 +368,7 @@ class EditRegistration(BrowserView):
         """Render View for each directives."""
         result = []
         for name, configobj in self.context.items():
-            url = str(getView(configobj, 'absolute_url', self.request))
+            url = str(zapi.getView(configobj, 'absolute_url', self.request))
             active = configobj.status == ActiveStatus
             summary1 = getattr(configobj, "usageSummary", None)
             summary2 = getattr(configobj, "implementationSummary", None)

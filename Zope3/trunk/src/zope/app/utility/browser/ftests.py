@@ -36,7 +36,7 @@ class UtilityViewTestCase(functional.BrowserTestCase):
         reg = zope.app.securitypolicy.role.RoleRegistration(
             "my-role-registration",
             zope.app.securitypolicy.interfaces.IRole,
-            "my-role")
+            default["my-role"])
         rm = default.getRegistrationManager()
         rm.addRegistration(reg)
         reg.status = "Active"

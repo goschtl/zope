@@ -123,13 +123,12 @@ class ServiceAdding(ComponentAdding):
             if interface.providedBy(content):
                 implements.append(type_name)
 
-        path = zapi.name(content)
         rm = content.__parent__.getRegistrationManager()
         chooser = INameChooser(rm)
 
         # register an activated service registration
         for type_name in implements:
-            sc = ServiceRegistration(type_name, path, content)
+            sc = ServiceRegistration(type_name, content, content)
             name = chooser.chooseName(type_name, sc)
             rm[name] = sc
             sc.status = ActiveStatus
@@ -181,12 +180,11 @@ class AddServiceRegistration(BrowserView):
         return lst
 
     def action(self, name=[], active=[]):
-        path = zapi.name(self.context)
         rm = self.context.__parent__.getRegistrationManager()
         chooser = INameChooser(rm)
 
         for nm in name:
-            sc = ServiceRegistration(nm, path, self.context)
+            sc = ServiceRegistration(nm, self.context, self.context)
             name = chooser.chooseName(nm, sc)
             rm[name] = sc
             if nm in active:
@@ -274,7 +272,7 @@ class ServiceSummary(BrowserView):
             assert registry.active() is None # Phase error
             for info in registry.info():
                 conf = info['registration']
-                obj = conf.getComponent()
+                obj = conf.component
                 path = zapi.getPath(obj)
                 services[path] = obj
                 conf.status = UnregisteredStatus
@@ -344,7 +342,7 @@ def gatherConfiguredServices(sm, request, items=None):
         infos = [info for info in registry.info() if info['active']]
         if infos:
             configobj = infos[0]['registration']
-            component = configobj.getComponent()
+            component = configobj.component
             url = str(
                 zapi.getView(component, 'absolute_url', request))
         else:
@@ -383,7 +381,7 @@ class ServiceActivation(BrowserView):
         result = []
         for info in registry.info():
             configobj = info['registration']
-            component = configobj.getComponent()
+            component = configobj.component
             path = zapi.getPath(component)
             path = path.split("/")
             info['id'] = zapi.getPath(configobj)

@@ -189,7 +189,7 @@
       menu="zmi_views"
       label="Edit Service Registration"
       permission="zope.ManageServices"
-      fields="name componentPath permission status" />
+      fields="name component permission status" />
 
   <page
       name="addRegistration.html"

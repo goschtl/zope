@@ -40,7 +40,7 @@ class ComponentRegistrationAdapter(ObjectEntryAdapter):
 
         def UtilityRegistration():
             from zope.app.utility import UtilityRegistration
-            return UtilityRegistration("", None, "")
+            return UtilityRegistration("", None, None)
 
     The file representation of a registration object is an XML pickle
     for a modified version of the instance dict.  In this version of
