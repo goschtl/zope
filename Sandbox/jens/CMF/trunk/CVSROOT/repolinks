@@ -100,7 +100,7 @@
 /Zope/lib/python/Products/CallProfiler          /Products/CallProfiler
 /Zope/lib/python/Products/DateIndexes           /Products/DateIndexes
 /Zope/lib/python/Products/SiteErrorLog          /Products/SiteErrorLog
-/Zope/utilities/ZODBTools                       /StandaloneZODB/Tools
+/Zope/utilities/ZODBTools                       /ZODB3/Tools
 
 # These are retired in favor of ZODB3
 #/StandaloneZODB/ZODB/tests
