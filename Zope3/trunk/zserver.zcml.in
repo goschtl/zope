@@ -50,8 +50,7 @@
     The 'verbose' option specifies whether any logs should be written. If
     set to false, nothing is reported. -->
 
-     <startup:addServer type = "Browser" port = "8080" verbose="true"/>
-     <startup:addServer type = "XML-RPC" port = "8081" verbose="true" />
+     <startup:addServer type = "HTTP" port = "8080" verbose="true"/>
      <startup:addServer type = "FTP" port = "8021" />
 
   </startup:defineSite>
