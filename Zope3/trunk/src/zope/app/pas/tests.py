@@ -30,7 +30,7 @@ from zope.app.session.session import \
 from zope.app.session.http import CookieClientIdManager
 
 from zope.publisher.interfaces import IRequest
-from zope.publisher.http import HTTPRequest
+from zope.publisher.tests.httprequest import TestRequest
 
 def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     placelesssetup.setUp()
@@ -39,9 +39,9 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
     sdc = session_data_container_class()
     ztapi.provideUtility(ISessionDataContainer, sdc, 'pas_credentials')
-    request = HTTPRequest(None, None, {}, None)
-    return request
 
+def createTestRequest(**kw):
+    return TestRequest(**kw)
 
 def test_suite():
     return unittest.TestSuite((
