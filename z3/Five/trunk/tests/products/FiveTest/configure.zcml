@@ -184,6 +184,13 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <browser:page
+      for=".interfaces.ISimpleContent"
+      template="tales_traversal.pt"
+      name="tales_traversal.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
   <!-- macro page -->
   <browser:page
       for=".interfaces.ISimpleContent"
