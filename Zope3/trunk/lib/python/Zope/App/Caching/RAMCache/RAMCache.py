@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: RAMCache.py,v 1.7 2002/12/03 14:43:57 alga Exp $
+$Id: RAMCache.py,v 1.8 2002/12/06 09:54:14 alga Exp $
 """
 from time import time
 from thread import allocate_lock
@@ -22,6 +22,7 @@ from Zope.App.Caching.RAMCache.IRAMCache import IRAMCache
 from Zope.ComponentArchitecture import getAdapter
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
+from Zope.Event.IObjectEvent import IObjectModifiedEvent
 
 # A global caches dictionary shared between threads
 caches = {}
@@ -143,7 +144,6 @@ class RAMCache(Persistent):
             return tuple(items)
 
         return ()
-
     _buildKey = staticmethod(_buildKey)
 
     def notify(self, event):
@@ -153,13 +153,8 @@ class RAMCache(Persistent):
         cached entries for the objects that raise them.
         """
 
-        try:
-            locatable = getAdapter(event.object, IPhysicallyLocatable)
-        except ComponentLookupError:
-            pass
-        else:
-            location = locatable.getPhysicalPath()
-            self._getStorage().invalidate(location)
+        if IObjectModifiedEvent.isImplementedBy(event):
+            self._getStorage().invalidate(event.location)
 
 
 class Storage:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_RAMCache.py,v 1.6 2002/12/03 08:45:46 alga Exp $
+$Id: test_RAMCache.py,v 1.7 2002/12/06 09:54:14 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -202,22 +202,29 @@ class TestRAMCache(PlacelessSetup,
 
     def test_notify(self):
         from Zope.App.Caching.RAMCache.RAMCache import RAMCache
-        from Zope.Event.ObjectEvent import ObjectModifiedEvent
+        from Zope.Event.ObjectEvent import ObjectModifiedEvent, ObjectEvent
+        from Zope.Event.IEvent import IEvent
+
+        class DummyEvent:
+            __implements__ = IEvent
 
         location = ('aaa',)
-
+        ob = Locatable(path=location)
         keywords = {"answer": 42}
         value = "true"
         c = RAMCache()
         key = RAMCache._buildKey(keywords)
         c._getStorage().setEntry(location, key, value)
+        
+        c.notify(DummyEvent())
+        self.assertEquals(c._getStorage().getEntry(location, key),
+                          value, "doesn't ignore uninteresting events")
 
+        c.notify(ObjectEvent(ob, location))
+        self.assertEquals(c._getStorage().getEntry(location, key),
+                          value, "doesn't ignore uninteresting events")
 
-        ob = Locatable(path=location)
-        event = ObjectModifiedEvent(ob, location)
-
-        c.notify(event)
-
+        c.notify(ObjectModifiedEvent(ob, location))
         self.assertRaises(KeyError, c._getStorage().getEntry, location, key)
 
 
