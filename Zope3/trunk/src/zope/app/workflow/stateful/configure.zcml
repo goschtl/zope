@@ -58,6 +58,10 @@
       />
 </content>
 
+<vocabulary
+    name="Workflow State Names"
+    factory=".definition.StateNamesVocabulary" />
+
 <!-- Transitions Container -->
 
 <content class=".definition.TransitionsContainer">
