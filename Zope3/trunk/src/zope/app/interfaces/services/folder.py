@@ -13,32 +13,35 @@
 ##############################################################################
 """Interfaces for folders.
 
-$Id: folder.py,v 1.6 2003/08/08 15:23:21 fdrake Exp $
+$Id: folder.py,v 1.7 2003/12/03 05:41:26 jim Exp $
 """
 
-from zope.app.interfaces.container import IAdding, IContainer
-from zope.app.interfaces.services.service import IComponentManager
+import zope.app.interfaces.services.registration 
+import zope.app.interfaces.container
+import zope.app.interfaces.services.service
 from zope.app.interfaces.services.registration \
      import IRegistrationManagerContainer
+from zope.app.container.constraints import ItemTypePrecondition
 
-class ISiteManagementFolder(IContainer, IRegistrationManagerContainer):
+class ISiteManagementFolder(
+    zope.app.interfaces.container.IContainer,
+    zope.app.interfaces.services.registration.IRegistrationManagerContainer,
+    ):
     """Component and component registration containers."""
 
+    def __setitem__(name, object):
+        """Add a registerable object
+        """
+    __setitem__.precondition = ItemTypePrecondition(
+        zope.app.interfaces.services.registration.IRegisterable)
 
-class ISiteManagementFolders(IContainer, IComponentManager):
+class ISiteManagementFolders(
+    zope.app.interfaces.container.IContainer,
+    zope.app.interfaces.services.service.IComponentManager,
+    ):
     """A collection of ISiteManagementFolder objects.
 
     An ISiteManagementFolders object supports simple containment as
     well as package query and lookup.
     
-    """
-
-class ISiteManagementFolderAdding(IAdding):
-    """A special package that is not content but is similar to a folder.
-    
-    The SiteManagementFolder Adding is special, since it is not part
-    of the content namespace, but has a similar functionality as a
-    Folder. Therefore there are views that overlap; this interface was
-    created so that there are no registration conflicts.
-
     """
