@@ -13,7 +13,7 @@
 ##############################################################################
 """utility service
 
-$Id: utility.py,v 1.4 2003/06/04 09:09:45 stevea Exp $
+$Id: utility.py,v 1.5 2003/08/06 21:16:51 sidnei Exp $
 """
 
 from zope.interface.implementor import ImplementorRegistry
@@ -53,9 +53,9 @@ class GlobalUtilityService:
     def getUtility(self, interface, name=''):
         """See IUtilityService interface"""
         c = self.queryUtility(interface, None, name)
-        if c is None:
-            raise ComponentLookupError(interface)
-        return c
+        if c is not None:
+            return c
+        raise ComponentLookupError(interface)
 
     def queryUtility(self, interface, default=None, name=''):
         """See IUtilityService interface"""
@@ -65,19 +65,40 @@ class GlobalUtilityService:
             return default
 
         c = registry.get(interface)
-        if c is None:
-            c = default
+        if c is not None:
+            return c
 
-        return c
+        return default
+
+    def getRegisteredMatching(self, interface=None, name=None):
+        L = []
+        for reg_name in self.__utilities:
+            for iface, c in self.__utilities[reg_name].getRegisteredMatching():
+                if not c:
+                    continue
+                if interface and not iface is interface:
+                    continue
+                if name is not None and reg_name.find(name) < 0:
+                    continue
+                L.append((iface, reg_name, c))
+        return L
+
+    def getUtilitiesFor(self, interface=None):
+        utilities = {}
+        for name in self.__utilities:
+            for iface, util in self.__utilities[name].getRegisteredMatching():
+                if not util:
+                    continue
+                if interface and not iface is interface:
+                    continue
+                utilities[(name, util)] = None
+
+        return utilities.keys()
 
     _clear = __init__
 
 # the global utility service instance (see component.zcml )
 utilityService = GlobalUtilityService()
-
-
-
-
 _clear         = utilityService._clear
 
 # Register our cleanup with Testing.CleanUp to make writing unit tests simpler.

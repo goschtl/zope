@@ -15,7 +15,7 @@
 
 See Adapter class.
 
-$Id: implementor.py,v 1.5 2003/05/03 16:36:05 jim Exp $
+$Id: implementor.py,v 1.6 2003/08/06 21:16:58 sidnei Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -91,7 +91,7 @@ class ImplementorRegistry:
 
         A component may be returned if it was registered fgor a more
         specific interface.
-        
+
         """
         c = self._reg.get(interface)
         if c is not None:

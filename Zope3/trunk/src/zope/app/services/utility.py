@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.12 2003/06/23 00:31:31 jim Exp $
+$Id: utility.py,v 1.13 2003/08/06 21:16:41 sidnei Exp $
 """
 
 from zope.interface import implements
@@ -94,16 +94,37 @@ class LocalUtilityService(Persistent):
         return ContextWrapper(stack, self)
     createRegistrations = ContextMethod(createRegistrations)
 
-    def getRegisteredMatching(self):
+    def getRegisteredMatching(self, interface=None, name=None):
         L = []
-        for name in self._utilities:
-            for iface, cr in self._utilities[name].getRegisteredMatching():
+        for reg_name in self._utilities:
+            for iface, cr in self._utilities[reg_name].getRegisteredMatching():
                 if not cr:
                     continue
-                L.append((iface, name, ContextWrapper(cr, self)))
+                if interface and not iface is interface:
+                    continue
+                if name is not None and reg_name.find(name) < 0:
+                    continue
+                L.append((iface, reg_name, ContextWrapper(cr, self)))
         return L
     getRegisteredMatching = ContextMethod(getRegisteredMatching)
 
+    def getUtilitiesFor(self, interface=None):
+        utilities = {}
+        for name in self._utilities:
+            for iface, cr in self._utilities[reg_name].getRegisteredMatching():
+                if not cr:
+                    continue
+                if interface and not iface is interface:
+                    continue
+                utility = cr.active().getComponent()
+                utilities[(name, utility)] = None
+
+        next = getNextService(self, "Utilities")
+        for utility in next.getUtilitiesFor(interface):
+            if not utilities.has_key(utility):
+                utilities[utility] = None
+        return utilities.keys()
+    getUtilitiesFor = ContextMethod(getUtilitiesFor)
 
 class UtilityRegistration(ComponentRegistration):
     """Utility component registration for persistent components

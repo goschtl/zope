@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.11 2003/08/05 14:25:13 sidnei Exp $
+$Id: interfaces.py,v 1.12 2003/08/06 21:16:51 sidnei Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -80,7 +80,7 @@ class IComponentArchitecture(Interface):
         called with the requested interface.  If the method returns a
         non-None value, that value will be returned. Otherwise, if the
         object already implements the interface, the object will be
-        returned. 
+        returned.
 
         """
 
@@ -110,7 +110,7 @@ class IComponentArchitecture(Interface):
         called with the requested interface.  If the method returns a
         non-None value, that value will be returned. Otherwise, if the
         object already implements the interface, the object will be
-        returned. 
+        returned.
 
         """
 
@@ -188,7 +188,7 @@ class IComponentArchitecture(Interface):
         the view type and the skin name.  The nearest one to the
         object is found. If a matching view cannot be found, raises
         ComponentLookupError.
-        
+
         If context is not specified, attempts to use wrapping around
         object to specify a context.
 
@@ -357,6 +357,13 @@ class IUtilityService(Interface):
 
         """
 
+    def getUtilitiesFor(interface):
+        """Look up the registered utilities that provide an interface.
+
+        If none is found, return an empty list
+
+        """
+
 class IContextDependent(Interface):
 
     context = Attribute(
@@ -375,7 +382,7 @@ class IAdapterService(Interface):
         called with the requested interface.  If the method returns a
         non-None value, that value will be returned. Otherwise, if the
         object already implements the interface, the object will be
-        returned. 
+        returned.
 
         If a matching adapter cannot be found, raises
         ComponentLookupError.
@@ -401,7 +408,7 @@ class IAdapterService(Interface):
         called with the requested interface.  If the method returns a
         non-None value, that value will be returned. Otherwise, if the
         object already implements the interface, the object will be
-        returned. 
+        returned.
 
         If a matching adapter cannot be found, returns the default.
 

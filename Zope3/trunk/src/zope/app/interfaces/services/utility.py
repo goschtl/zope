@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces pertaining to local utilities.
 
-$Id: utility.py,v 1.7 2003/06/21 21:22:10 jim Exp $
+$Id: utility.py,v 1.8 2003/08/06 21:16:38 sidnei Exp $
 """
 
 from zope.app.interfaces.services.registration import IComponentRegistration
@@ -73,9 +73,8 @@ class ILocalUtilityService(IUtilityService):
     Methods which must be implemented by a local utility service to
     allow views to retrieve sufficient information from the service.
     """
-
-    def getRegisteredMatching():
-        """Return the registrations.
+    def getRegisteredMatching(interface=None, name=None):
+        """Return the registered utilities.
 
         The return value is an iterable object for which each item
         is a three-element tuple:
@@ -87,4 +86,11 @@ class ILocalUtilityService(IUtilityService):
         - registration stack
 
         One item is present for each registration.
+
+        If interface is None, all registered registrations are returned.
+        Otherwise, only registrations that provide the given interface
+        are returned.
+
+        Also, if name is provided and is contained in the name of the
+        registered utility, we use that to filter the returned values.
         """

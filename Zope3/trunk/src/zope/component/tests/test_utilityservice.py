@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utilityservice.py,v 1.6 2003/06/06 19:29:08 stevea Exp $
+$Id: test_utilityservice.py,v 1.7 2003/08/06 21:16:54 sidnei Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -60,6 +60,23 @@ class Test(TestCase, CleanUp):
         us.provideUtility(IDummyService, dummyService)
         self.assertEqual(queryUtility(None, IDummyService), dummyService)
 
+    def testRegisteredMatching(self):
+        us = getService(None, Utilities)
+        self.assertEqual(queryUtility(None, IDummyService), None)
+        self.assertEqual(queryUtility(None, IDummyService, self), self)
+        us.provideUtility(IDummyService, dummyService)
+        self.assertEqual(us.getRegisteredMatching(IDummyService),
+                         [(IDummyService, '', dummyService)])
+
+    def testRegisteredMatchingWithName(self):
+        us = getService(None, Utilities)
+        self.assertEqual(queryUtility(None, IDummyService), None)
+        self.assertEqual(queryUtility(None, IDummyService, self), self)
+        us.provideUtility(IDummyService, dummyService, 'a dummy service')
+        self.assertEqual(us.getRegisteredMatching(IDummyService, 'dummy'),
+                         [(IDummyService, 'a dummy service', dummyService)])
+        self.assertEqual(us.getRegisteredMatching(IDummyService, 'stupid'),
+                         [])
 
 def test_suite():
     return makeSuite(Test)
