@@ -250,9 +250,6 @@
 <!-- Translation Service Views -->
   <zope:include package=".translation" />
 
-<!-- Local Interface Service -->
-  <zope:include package=".interface" />
-
   <zope:include file="error.zcml" />
 
 </zope:configure>
