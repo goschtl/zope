@@ -2,6 +2,9 @@ CMF 1.4.1 (unreleased)
 
   Bug Fixes
 
+    - ScriptableTypeInformation: Fixed ownership of constructor scripts.
+      (Collector #165)
+
     - zpt skins (CMFDefault): Fixed some minor template issues.
       (Collector #156 and other)
 
