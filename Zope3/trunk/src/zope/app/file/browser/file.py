@@ -13,11 +13,8 @@
 ##############################################################################
 """File views.
 
-$Id: file.py,v 1.6 2004/03/19 03:17:39 srichter Exp $
+$Id: file.py,v 1.7 2004/04/25 16:19:26 srichter Exp $
 """
-from zope.app.form.browser import BytesAreaWidget
-from zope.app.form import CustomWidgetFactory
-
 class FileView(object):
 
     def show(self):
@@ -30,10 +27,3 @@ class FileView(object):
                                        self.context.getSize())
 
         return self.context.data
-
-
-class FileTextEdit(object):
-    """File editing mix-in that uses a file-upload widget.
-    """
-
-    data_widget = CustomWidgetFactory(BytesAreaWidget)

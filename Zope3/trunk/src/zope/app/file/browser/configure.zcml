@@ -19,8 +19,13 @@
       schema="zope.app.file.interfaces.IFile"
       label="Change a file"
       permission="zope.ManageContent" 
-      class=".file.FileTextEdit" 
-      />
+      >
+
+    <widget
+        field="data"
+        class="zope.app.form.browser.BytesAreaWidget" />
+
+  </browser:editform>
 
   <browser:menuItem
       menu="zmi_views" title="Edit"

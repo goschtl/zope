@@ -64,7 +64,14 @@
       content_factory="zope.app.wiki.wikipage.WikiPage"
       permission="zope.app.wiki.AddWikiPage"
       fields="source type"
-      class=".wikipage.AddWikiPage" />
+      class=".wikipage.AddWikiPage">
+
+    <browser:widget
+        field="type"
+        class="zope.app.renderer.vocabulary.SourceTypeEditWidget" />
+
+  </browser:addform>
+
 
   <browser:addMenuItem
       class="zope.app.wiki.wikipage.WikiPage"
@@ -81,7 +88,13 @@
       permission="zope.app.wiki.EditWikiPage"
       fields="source type"
       class=".wikipage.EditWikiPage"
-      menu="zmi_views" title="Edit" />
+      menu="zmi_views" title="Edit" >
+
+    <browser:widget
+        field="type"
+        class="zope.app.renderer.vocabulary.SourceTypeEditWidget" />
+
+  </browser:editform>
 
   <browser:pages
       for="zope.app.wiki.interfaces.IWikiPage"
@@ -138,7 +151,14 @@
       content_factory="zope.app.wiki.wikipage.Comment"
       permission="zope.app.wiki.AddWikiPage"
       fields="title source type"
-      class=".wikipage.AddComment"/>
+      class=".wikipage.AddComment">
+
+    <browser:widget
+        field="type"
+        class="zope.app.renderer.vocabulary.SourceTypeEditWidget" />
+
+  </browser:addform>
+
 
   <browser:addMenuItem
       class="zope.app.wiki.wikipage.Comment"
