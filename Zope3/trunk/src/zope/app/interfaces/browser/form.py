@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.11 2003/06/18 14:50:47 fdrake Exp $
+$Id: form.py,v 1.12 2003/06/20 06:42:44 stevea Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.form import IWidget
@@ -66,7 +66,7 @@ class IAddFormCustomization(Interface):
         The default implementation returns self.context.add(content),
         i.e. it delegates to the IAdding view.
         """
-    
+
     def nextURL():
         """Return the URL to be displayed after the add operation.
 
