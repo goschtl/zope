@@ -12,12 +12,24 @@
 #
 ##############################################################################
 
-"""Zope application server, version 3
+"""Zope application server
 
 Zope is a leading open source application server, specializing in content
 management, portals, and custom applications.  Zope enables teams to
 collaborate in the creation and management of dynamic web-based business
 applications such as intranets and portals.
+"""
+
+classifiers = """\
+Development Status :: 3 - Alpha
+Environment :: Web Environment
+License :: OSI Approved :: Zope Public License
+Operating System :: Microsoft :: Windows
+Operating System :: Unix
+Programming Language :: Python
+Topic :: Internet :: WWW/HTTP
+Topic :: Internet :: WWW/HTTP :: Dynamic Content
+Topic :: Software Development :: Libraries :: Python Modules
 """
 
 import os
@@ -32,6 +44,13 @@ from distutils.command.install_lib import install_lib as installcmd
 from distutils.core import setup
 from distutils.dist import Distribution
 from distutils.extension import Extension
+
+if sys.version_info < (2, 3):
+    _setup = setup
+    def setup(**kwargs):
+        if kwargs.has_key("classifiers"):
+            del kwargs["classifiers"]
+        _setup(**kwargs)
 
 
 # A hack to determine if Extension objects support the `depends' keyword arg,
@@ -216,8 +235,8 @@ if sys.platform == "win32":
 # We're using the module docstring as the distutils descriptions.
 doclines = __doc__.split("\n")
 
-setup(name="Zope3",
-      version="3.0a1",
+setup(name="ZopeX3",
+      version="3.0m2",
       maintainer="Zope Corporation",
       maintainer_email="zope3-dev@zope.org",
       url = "http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture",
@@ -230,6 +249,7 @@ setup(name="Zope3",
       license = "http://www.zope.org/Resources/ZPL",
       platforms = ["any"],
       description = doclines[0],
+      classifiers = filter(None, classifiers.split("\n")),
       long_description = "\n".join(doclines[2:]),
       packages = packages,
       package_dir = {'': 'src'},
