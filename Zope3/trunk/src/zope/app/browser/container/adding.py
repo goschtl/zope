@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.31 2003/12/15 12:45:05 philikon Exp $
+$Id: adding.py,v 1.32 2003/12/16 14:53:47 jim Exp $
 """
 __metaclass__ = type
 
@@ -85,6 +85,10 @@ class BasicAdding(BrowserView):
         """To Render Add button with or without Inputbox"""
         container = self.context
         button_label = _('add-button', 'Add')
+        translation = zapi.getService(self.context,
+                                      zapi.servicenames.Translation)
+        button_label = translation.translate(button_label,
+                                             context=self.request)
         if IContainerNamesContainer.isImplementedBy(container):
             return "<input type='submit' name='UPDATE_SUBMIT' value='%s'>" \
                    % button_label

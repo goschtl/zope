@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.19 2003/12/15 12:45:05 philikon Exp $
+$Id: test_adding.py,v 1.20 2003/12/16 14:53:47 jim Exp $
 """
 
 import unittest
@@ -273,7 +273,7 @@ def test_renderAddButton():
     
     >>> adding = Adding(FakeContainer(),TestRequest())
     >>> adding.renderAddButton()
-    u"<input type='submit' name='UPDATE_SUBMIT' value='add-button'>"
+    u"<input type='submit' name='UPDATE_SUBMIT' value='Add'>"
 
     Fake class without IContainerNamesContainer
     
@@ -285,12 +285,12 @@ def test_renderAddButton():
 
     >>> adding = Adding(Fake(),TestRequest())
     >>> adding.renderAddButton()
-    u"<input type='submit' name='UPDATE_SUBMIT' value='add-button'>""" \
+    u"<input type='submit' name='UPDATE_SUBMIT' value='Add'>""" \
           """<input type='text' name='add_input_name' value=''>"
 
     >>> adding.contentName='myname'
     >>> adding.renderAddButton()
-    u"<input type='submit' name='UPDATE_SUBMIT' value='add-button'>""" \
+    u"<input type='submit' name='UPDATE_SUBMIT' value='Add'>""" \
          """<input type='text' name='add_input_name' value='myname'>"
     >>> adding = Adding(Fake(),TestRequest())     
 
