@@ -36,7 +36,7 @@ class TestDatabaseSchema(BrowserTestCase):
         ztapi.provideUtility(ISchemaManager, manager, appkey)
 
         response = self.publish('/++etc++process/@@generations.html',
-                                basic='mgr:mgrpw')
+                                basic='globalmgr:globalmgrpw')
         body = response.getBody()
         body = ' '.join(body.split())
         expect = ('<td>zope.app.generations.demo</td> '
@@ -47,7 +47,7 @@ class TestDatabaseSchema(BrowserTestCase):
 
         response = self.publish('/++etc++process/@@generations.html'
                                 '?evolve-app-zope.app.generations.demo=evolve',
-                                basic='mgr:mgrpw')
+                                basic='globalmgr:globalmgrpw')
         body = response.getBody()
         body = ' '.join(body.split())
         expect = ('<td>zope.app.generations.demo</td> '
@@ -58,7 +58,7 @@ class TestDatabaseSchema(BrowserTestCase):
 
         response = self.publish('/++etc++process/@@generations.html'
                                 '?evolve-app-zope.app.generations.demo=evolve',
-                                basic='mgr:mgrpw')
+                                basic='globalmgr:globalmgrpw')
         body = response.getBody()
         body = ' '.join(body.split())
         expect = ('<td>zope.app.generations.demo</td> '
@@ -69,7 +69,7 @@ class TestDatabaseSchema(BrowserTestCase):
 
         response = self.publish('/++etc++process/@@generations.html'
                                 '?evolve-app-zope.app.generations.demo=evolve',
-                                basic='mgr:mgrpw')
+                                basic='globalmgr:globalmgrpw')
         body = response.getBody()
         body = ' '.join(body.split())
         expect = ('<td>zope.app.generations.demo</td> '

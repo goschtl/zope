@@ -159,6 +159,7 @@ class ObjectMover(object):
 
     def __init__(self, object):
         self.context = object
+        self.__parent__ = object # TODO: see if we can automate this
 
     def moveTo(self, target, new_name=None):
         '''Move this object to the target given.
@@ -344,6 +345,7 @@ class ObjectCopier(object):
 
     def __init__(self, object):
         self.context = object
+        self.__parent__ = object # TODO: see if we can automate this
 
     def copyTo(self, target, new_name=None):
         """Copy this object to the target given.
