@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the provideFactory method.
 
-$Id: test_providefactory.py,v 1.6 2003/08/05 14:25:16 sidnei Exp $
+$Id: test_providefactory.py,v 1.7 2003/08/25 14:14:09 sidnei Exp $
 """
 
 
@@ -38,7 +38,7 @@ class ProvideFactoryTestCase(PlacelessSetup, TestCase):
         factories=getService(None, Factories)
         factories.provideFactory("Some.Object", f)
         fs = factories.getFactoriesFor(IX)
-        self.assertEqual(fs, [f])
+        self.assertEqual(fs, [('Some.Object', f)])
 
     def test_getFactoriesForUnregistered(self):
         from zope.component import getService, createObject

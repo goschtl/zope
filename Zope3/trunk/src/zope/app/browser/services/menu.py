@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service Views
 
-$Id: menu.py,v 1.4 2003/08/19 23:10:55 srichter Exp $
+$Id: menu.py,v 1.5 2003/08/25 14:14:06 sidnei Exp $
 """
 
 from zope.app import zapi
@@ -51,7 +51,7 @@ class MenuContents(Contents):
         return info
 
 
-class BrowserMenuServiceOverview:        
+class BrowserMenuServiceOverview:
 
     def getLocalMenus(self):
         menus_info = []
@@ -71,7 +71,7 @@ class BrowserMenuServiceOverview:
         for id, menu in service._registry.items():
             menus.append(self._getInfoFromMenu(id, menu))
         return menus
-            
+
 
     def _getInfoFromMenu(self, menu_id, menu):
         info = {}
@@ -100,10 +100,10 @@ class BrowserMenuServiceOverview:
 
     def _getItemsInfo(self, menu):
         menu_items = []
-        
+
         for items in menu.getMenuItems():
             action, title, description, filter, permission = items
-                
+
             menu_items.append({'title': title,
                                'action': action})
         return menu_items

@@ -72,8 +72,8 @@ class GlobalFactoryService:
 
     def queryFactoriesFor(self, iface, default=None):
         """See IFactoryService interface"""
-        return [factory for factory in self.__factories.values() \
-                if iface in factory.getInterfaces()] or default
+        return [(n, f) for n, f in self.__factories.items() \
+                if iface in f.getInterfaces()] or default
 
     _clear = __init__
 

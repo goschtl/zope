@@ -13,9 +13,9 @@
 ##############################################################################
 """Local Menu Service
 
-$Id: menu.py,v 1.5 2003/08/19 23:11:05 srichter Exp $
+$Id: menu.py,v 1.6 2003/08/25 14:14:07 sidnei Exp $
 """
-__metaclass__ = type 
+__metaclass__ = type
 
 from persistence import Persistent
 from zope.app import zapi
@@ -57,11 +57,11 @@ class LocalBrowserMenuItem(Persistent):
 
     # See zope.app.interfaces.publisher.browser.IBrowserMenuItem
     filter_string = u''
-    
+
 
 class LocalBrowserMenu(OrderedContainer):
     """A persistent browser menu that can store menu item objects."""
-    
+
     implements(ILocalBrowserMenu)
 
     # See zope.app.interfaces.publisher.browser.IBrowserMenu
@@ -109,7 +109,7 @@ class LocalBrowserMenu(OrderedContainer):
 class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
     """This implementation strongly depends on the semantics of
     GlobalBrowserMenuService."""
-    
+
     implements(ILocalBrowserMenuService, ISimpleService)
 
     def __init__(self):
@@ -164,22 +164,22 @@ class LocalBrowserMenuService(BaseBrowserMenuService, Persistent):
         if IGlobalBrowserMenuService.isImplementedBy(next):
             return next._registry.get(menu_id, default)
 
-        return next.queryInheritedMenu(menu_id, True, default)        
+        return next.queryInheritedMenu(menu_id, True, default)
     queryInheritedMenu = ContextMethod(queryInheritedMenu)
 
 
     def getAllMenuItems(self, menu_id, object):
         """See zope.app.interfaces.publisher.browser.IBrowserMenuService"""
         result = []
-    
-        # Find the local items, if available 
+
+        # Find the local items, if available
         menu = self.queryLocalMenu(menu_id)
         if menu is not None:
             result += menu.getMenuItems(object)
             # We might not want to inherit menu entries from higher up
             if not menu.inherit:
                 return result
-    
+
         # Try to find the next service and get its items. The next service is
         # also responsible for finding items higher up.
         next = getNextService(self, BrowserMenu)

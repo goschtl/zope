@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.12 2003/08/06 21:16:51 sidnei Exp $
+$Id: interfaces.py,v 1.13 2003/08/25 14:14:08 sidnei Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -327,16 +327,16 @@ class IFactoryService(Interface):
         object instances created by the named factory will implement."""
 
     def getFactoriesFor(iface):
-        """Return list of registered factories that create objects
-        which implement the given interface
+        """Return a tuple (name, factory) of registered factories that
+        create objects which implement the given interface.
 
-        A ComponentLookupError will be
-        raised if the factory component can't be found.
+        A ComponentLookupError will be  raised if the factory component
+        can't be found.
         """
 
     def queryFactoriesFor(iface, default=None):
-        """Return list of registered factories that create objects
-        which implement the given interface
+        """Return a tuple (name, factory) list of registered factories
+        that create objects which implement the given interface
 
         If no factory is found, the default value is returned.
         """
