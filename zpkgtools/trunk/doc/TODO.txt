@@ -70,12 +70,6 @@ Things that need to be done
     Perhaps a configuration option should specify which are produced
     by default.  Low priority.
 
-  - Some way to transform template files on build or installation
-    beyond what distutils does for scripts would be nice; it's not
-    clear how to feed enough interesting information into the process.
-    The use cases aren't sufficiently clear at this time.  Won't
-    happen unless the use cases become clearer.
-
 - Look at the package manager used by the MacPython people to see what
   can be/has been done.
 
