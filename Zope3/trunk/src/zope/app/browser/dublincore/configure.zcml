@@ -19,7 +19,7 @@
 
     <browser:menuItems menu="zmi_views"
         for="zope.app.interfaces.annotation.IAnnotatable">
-      <browser:menuItem title="Meta Data" action="@@EditMetaData.html" />
+      <browser:menuItem title="Metadata" action="@@EditMetaData.html" />
       </browser:menuItems>
 
 </zopeConfigure>
