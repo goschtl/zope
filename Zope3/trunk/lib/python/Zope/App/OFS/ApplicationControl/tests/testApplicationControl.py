@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: testApplicationControl.py,v 1.3 2002/07/17 16:54:16 jeremy Exp $
+$Id: testApplicationControl.py,v 1.4 2002/12/20 23:15:04 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -54,19 +54,6 @@ class Test(TestCase):
         test_time = self._Test__new().getStartTime()
         
         self.failUnless(abs(assert_time - test_time) < time_tolerance)
-
-    def test_plugins(self):
-        test_appctrl = self._Test__new()
-        assert_info = ( {'name':'foo', 'title':'I\'m a lumberjack'},
-                        {'name':'bar', 'title':'and i feel fine.'},
-                        {'name':'nudges', 'title':'The nudge'},
-                        {'name':'dash', 'title':'The dash'} )
-
-        for info in assert_info:
-            test_appctrl.registerView(info['name'], info['title'])
-
-        test_info = test_appctrl.getListOfViews()
-        self.failUnlessEqual(assert_info, test_info)
 
 
 def test_suite():

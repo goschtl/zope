@@ -4,28 +4,19 @@
    xmlns:application-control='http://namespaces.zope.org/application-control'
 >
 
-  <!-- ApplicationControl View Directives -->
-  <browser:defaultView
-      name="index.html"
-      for="Zope.App.OFS.ApplicationControl.IApplicationControl."
-      permission="Zope.ManageApplication"
-      template="index.pt"
-      />
-
-  <!-- RuntimeInfo View Directives -->
   <browser:view 
       for="Zope.App.OFS.ApplicationControl.IApplicationControl."
       factory=".RuntimeInfoView." 
       permission="Zope.ManageApplication" >
 
-    <browser:page name="RuntimeInfo.html" attribute="index" />
+    <browser:page name="index.html" attribute="index" />
   </browser:view> 
-    
 
-  <!-- Hint: 
-       also register the 'runtimeinfo' view as ApplicationControl plugin -->
-  <application-control:registerView
-      name="RuntimeInfo.html"
-      title="Runtime Information" />
+  <browser:menuItem
+      for="Zope.App.OFS.ApplicationControl.IApplicationControl."
+      menu="zmi_views"
+      action="index.html"
+      title="Runtime Information"
+      />
 
 </zopeConfigure>

@@ -13,10 +13,15 @@
     <browser:page name="ServerControlForm.html" attribute="index" />
     <browser:page name="ServerControl.html"     attribute="action" />
   </browser:view>
-    
+ 
 
-  <application-control:registerView
-      name="ServerControlForm.html"
-      title="Server control" />
-    
+  <browser:menuItem
+      for="Zope.App.OFS.ApplicationControl.IApplicationControl."
+      menu="zmi_views"
+      action="ServerControlForm.html"
+      title="Server control" 
+      />
+
+
+
 </zopeConfigure>

@@ -13,7 +13,7 @@
 ##############################################################################
 __doc__ = """ Application Control Interface
 
-$Id: IApplicationControl.py,v 1.2 2002/06/10 23:27:51 jim Exp $"""
+$Id: IApplicationControl.py,v 1.3 2002/12/20 23:15:03 jim Exp $"""
 
 from Interface import Interface
 
@@ -21,13 +21,6 @@ class IApplicationControl(Interface):
     """ """
 
     def getStartTime():
-        """Return the time when the ApplicationControl object has been instanciated
+        """Return the time the application started
+        
            in seconds since the epoch"""
-
-    def registerView(name, title):
-        """Register a view called <name> to be displayed in ApplicationControl
-        """
-
-    def getListOfViews():
-        """Return a sequence containing dictionaries with the registered views' names
-        and titles mapped with the keys 'name' and 'title'"""

@@ -13,7 +13,7 @@
 ##############################################################################
 __doc__ = """ Application Control
 
-$Id: ApplicationControl.py,v 1.3 2002/12/20 19:45:44 jim Exp $"""
+$Id: ApplicationControl.py,v 1.4 2002/12/20 23:15:03 jim Exp $"""
 
 from IApplicationControl import IApplicationControl
 from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
@@ -28,7 +28,6 @@ class ApplicationControl:
 
     def __init__(self):
         self.start_time = time.time()
-        self._views = []
 
     ############################################################
     # Implementation methods for interface
@@ -37,14 +36,6 @@ class ApplicationControl:
     def getStartTime(self):
         'See Zope.App.OFS.ApplicationControl.IApplicationControl.IApplicationControl'
         return self.start_time
-
-    def registerView(self, name, title):
-        'See Zope.App.OFS.ApplicationControl.IApplicationControl.IApplicationControl'
-        self._views.append({'name': name, 'title': title})
-
-    def getListOfViews(self):
-        'See Zope.App.OFS.ApplicationControl.IApplicationControl.IApplicationControl'
-        return tuple(self._views)
 
     #
     ############################################################
