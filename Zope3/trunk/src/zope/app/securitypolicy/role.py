@@ -11,51 +11,53 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: role.py,v 1.2 2004/03/03 10:38:51 philikon Exp $
-"""
+"""Role implementation
 
+$Id: role.py,v 1.3 2004/03/05 18:38:49 srichter Exp $
+"""
 from persistence import Persistent
 from zope.interface import implements
-from zope.component import getService
 
-from zope.app.container.btree import BTreeContainer
-from zope.app.container.interfaces import IContainer
-from zope.app.component.nextservice import getNextService
-from zope.app.interfaces.services.service import ISimpleService
+from zope.app import zapi
+from zope.app.container.contained import Contained
+from zope.app.securitypolicy.interfaces import IRole
+from zope.app.services.utility import UtilityRegistration
 
-from zope.app.securitypolicy.roleregistry import Role
-from zope.app.securitypolicy.interfaces import IRoleService
 
-class Role(Role, Persistent):
-    "Persistent Role"
+class Role(object):
+    implements(IRole)
 
-class ILocalRoleService(IRoleService, IContainer):
-    """TTW manageable role service"""
+    def __init__(self, id, title, description=""):
+        self.id = id
+        self.title = title
+        self.description = description
 
-class RoleService(BTreeContainer):
 
-    implements(ILocalRoleService, ISimpleService)
+class PersistentRole(Contained, Persistent):
+    implements(IRole)
 
-    def getRole(wrapped_self, rid):
-        '''See interface IRoleService'''
-        try:
-            return wrapped_self[rid]
-        except KeyError:
-            # We failed locally: delegate to a higher-level service.
-            sv = getNextService(wrapped_self, 'Roles')
-            if sv:
-                return sv.getRole(rid)
-            raise # will be original Key Error
+    def __init__(self, title, description=""):
+        self.id = '<role not activated>'
+        self.title = title
+        self.description = description
 
-    def getRoles(wrapped_self):
-        '''See interface IRoleService'''
-        roles = list(wrapped_self.values())
-        roleserv = getNextService(wrapped_self, 'Roles')
-        if roleserv:
-            roles.extend(roleserv.getRoles())
-        return roles
+
+class RoleRegistration(UtilityRegistration):
+    """Role Registration
+
+    We have a custom registration here, since we want active registrations to
+    set the id of the role.
+    """
+    def activated(self):
+        role = self.getComponent()
+        role.id = self.name
+
+    def deactivated(self):
+        role = self.getComponent()
+        role.id = '<role not activated>'
+    
 
 def checkRole(context, role_id):
-    if not getService(context, 'Roles').getRole(role_id):
+    names = [name for name, util in zapi.getUtilitiesFor(context, IRole)]
+    if not role_id in names:
         raise ValueError("Undefined role id", role_id)
