@@ -18,7 +18,6 @@
   <include package="zope.app.interface" />
   <include package="zope.app.security" />
   <include package="zope.app.event" />
-  <include package="zope.app.observable" />
   <include package="zope.app.annotation" />
   <include package="zope.app.dependable" />
   <include package="zope.app.content" />
