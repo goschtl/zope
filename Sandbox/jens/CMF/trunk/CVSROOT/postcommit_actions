@@ -108,7 +108,7 @@ def find_entries(repo):
 def do_mail(name, repo, addrs, subjs):
     """Send notice about checkin to addresses dictated by traffic table."""
     if VERBOSE:
-        complain("Notice to %s for %s / %s\n", addrs, repo, fnames)
+        complain("Notice to %s for %s / %s\n", addrs, repo, subjs)
     # The message contents are on stdin, just _yearning_ to be sent...-)
     subject = "CVS checkin: %s -"
     for nm, old, new in subjs:
