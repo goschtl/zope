@@ -1,0 +1,19 @@
+# Makefile.in for @PACKAGE_FULL_NAME@ @PACKAGE_VERSION@
+#
+# This makefile provides two interesting targets:
+#
+#     build    build the software
+#     install  install the software
+
+default: build
+
+PYTHON=@PYTHON@
+
+prefix=@prefix@
+
+
+build:
+	$(PYTHON) install.py build
+
+install: build
+	$(PYTHON) install.py install --home "$(prefix)"
