@@ -2,9 +2,6 @@
 <head>
 <style metal:fill-slot="headers" type="text/css">
 <!--
-.ContentListing {
-    width: 100%;
-}
 
 .ContentIcon {
     width: 20px;
@@ -46,10 +43,7 @@
 		 tal:attributes="value info/id" />
 	</td>
   
-	<td class="ContentIcon">
-	  <img alt="Folder" src="../../ZMI/www/folder_icon.gif"
-	       tal:condition="info/url"
-	       tal:attributes="src info/url" />
+	<td class="ContentIcon" tal:content="structure info/icon|default">
 	</td>
   
 	<td class="ContentTitle">
