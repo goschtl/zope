@@ -113,9 +113,18 @@ class RegistrationTool(BaseTool):
                 return 'You must enter a valid email address.'
 
         else: # Existing member.
+            email = props.get('email')
+
+            if email is not None:
+
+                ok, message =  _checkEmail( email )
+                if not ok:
+                    return 'You must enter a valid email address.'
+
             # Not allowed to clear an existing non-empty email.
-            if (member.getProperty('email') and
-                not props.get('email', 'NoPropIsOk')):
+            existing = member.getProperty('email')
+            
+            if existing and email == '':
                 return 'You must enter a valid email address.'
 
         return None
@@ -137,6 +146,10 @@ class RegistrationTool(BaseTool):
         # the template will be made with a blank To:, this is bad
         if not member.getProperty('email'):
             raise 'ValueError', 'That user does not have an email address.'
+
+        check, msg = _checkEmail(member.getProperty('email'))
+        if not check:
+            raise 'ValueError', msg
 
         # Rather than have the template try to use the mailhost, we will
         # render the message ourselves and send it from here (where we
@@ -169,6 +182,10 @@ class RegistrationTool(BaseTool):
         if email is None:
             raise ValueError( 'Member %s has no e-mail address!'
                             % new_member_id )
+
+        check, msg = _checkEmail(email)
+        if not check:
+            raise 'ValueError', msg
 
         # Rather than have the template try to use the mailhost, we will
         # render the message ourselves and send it from here (where we
