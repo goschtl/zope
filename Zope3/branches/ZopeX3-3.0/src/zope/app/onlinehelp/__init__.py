@@ -21,10 +21,12 @@ import os
 
 import zope
 from zope.interface import providedBy
+from zope.testing import cleanup
 from zope.app import zapi
 
 from interfaces import IOnlineHelpTopic
 from onlinehelp import OnlineHelp
+
 
 # Global Online Help Instance
 path = os.path.join(os.path.dirname(zope.app.__file__),
@@ -98,3 +100,11 @@ def getTopicFor(obj, view=None):
                 break
 
     return topic
+
+
+def _clear():
+    global help
+    help.__init__(help.title, help.path)
+
+
+cleanup.addCleanUp(_clear)
