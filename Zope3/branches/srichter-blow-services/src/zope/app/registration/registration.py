@@ -19,6 +19,7 @@ from zope.deprecation import deprecated
 
 from zope.app.component import registration
 from zope.component import subscribers
+from zope.component import subscribers
 
 RegistrationEvent = registration.RegistrationEvent
 RegistrationActivatedEvent = registration.RegistrationActivatedEvent

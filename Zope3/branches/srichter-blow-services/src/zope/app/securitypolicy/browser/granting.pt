@@ -1,63 +1,82 @@
 <html metal:use-macro="context/@@standard_macros/page">
 <body>
 <div metal:fill-slot="body" i18n:domain="zope">
+  <h2 i18n:translate="">Granting Roles and Permissions to Principals</h2>
+  <p tal:define="status view/status"
+     tal:condition="status"
+     tal:content="status" />
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-<h2 i18n:translate="">Granting Roles and Permissions to Principals</h2>
+  <form action="" method="POST">
 
-<p tal:define="status view/status"
-   tal:condition="status"
-   tal:content="status" />
+    <div tal:content="structure view/principal_widget">...</div>
 
-<form action="" method="post">
-<p i18n:translate="">Select a principal:</p>
-<div tal:content="structure view/principal_widget">...</div>
+    <div tal:condition="view/principal">
 
-<div tal:condition="view/principal">
+      <h2 i18n:translate="">Grants for the selected principal</h2>
+      <input type="submit" name="GRANT_SUBMIT" value="Change" 
+             i18n:attributes="value grant-submit" />
 
-  <h2 i18n:translate="">Grants for the selected principal</h2>
+      <table width="100%" border="0">
+        <tr>
+          <td valign="top">
+            <table class="matrix">
+              <tr>
+                <td i18n:translate=""><strong>Roles</strong>&nbsp;</td>
+                <td i18n:translate=""><strong>Allow</strong>&nbsp;</td>
+                <td i18n:translate=""><strong>Unset</strong>&nbsp;</td>
+                <td i18n:translate=""><strong>Deny</strong>&nbsp;</td>
+              </tr>
+              <tr tal:repeat="widget view/roles">
+                <td valign="top" nowrap>
+                  <div class="label">
+                    <label for="field.name" title="The widget's hint"
+                           tal:attributes="for widget/name; title widget/hint"
+                           tal:content="widget/label">The Label</label>
+                  </div>
+                </td>
+                <tal:block tal:content="structure widget">
+                  roles widget
+                </tal:block>
+              </tr>
+              <tr>
+                <td colspan="2"><a href="#top" i18n:translate="">^ top</a></td>
+              </tr>
+            </table>
+          </td>
+          <td valign="top">
+            <table class="matrix">
+              <tr>
+                <td i18n:translate=""><strong>Permissions</strong>&nbsp;</td>
+                <td i18n:translate=""><strong>Allow</strong>&nbsp;</td>
+                <td i18n:translate=""><strong>Unset</strong>&nbsp;</td>
+                <td i18n:translate=""><strong>Deny</strong>&nbsp;</td>
+              </tr>
+              <tr tal:repeat="widget view/permissions">
+                <td valign="top" nowrap>
+                  <div class="label">
+                    <label for="field.name" title="The widget's hint"
+                           tal:attributes="for widget/name; title widget/hint"
+                           tal:content="widget/label">The Label</label>
+                  </div>
+                </td>
+                <tal:block tal:content="structure widget">
+                  permission widget
+                </tal:block>
+              </tr>
+              <tr>
+                <td colspan="2"><a href="#top" i18n:translate="">^ top</a></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <input type="submit" name="GRANT_SUBMIT" value="Change" 
+             i18n:attributes="value grant-submit" />
 
-  <input type="submit" name="GRANT_SUBMIT" value="Change" 
-         i18n:attributes="value grant-submit" />
-
-<table width="100%">
-  <tr>
-    <th i18n:translate="">Roles:</th>
-    <th i18n:translate="">Permissions:</th>
-  <tr/>
-  <tr>
-    <td valign="top">
-      <div class="row" tal:repeat="widget view/roles">
-        <div class="label">
-          <label for="field.name" title="The widget's hint"
-            tal:attributes="for widget/name; title widget/hint"
-            tal:content="widget/label">The Label</label>
-        </div>
-        <div class="field" tal:content="structure widget">
-          <input type="text" style="width:100%"/>
-        </div>
-      </div>
-    </td>
-    <td valign="top">
-      <div class="row" tal:repeat="widget view/permissions">
-        <div class="label">
-          <label for="field.name" title="The widget's hint"
-            tal:attributes="for widget/name; title widget/hint"
-            tal:content="widget/label">The Label</label>
-        </div>
-        <div class="field" tal:content="structure widget">
-          <input type="text" style="width:100%"/>
-        </div>
-      </div>
-    </td>
-  <tr/>
-</table>
-
-  <input type="submit" name="GRANT_SUBMIT" value="Change" 
-         i18n:attributes="value grant-submit" />
-
-</div>
-</form>
-
+    </div>
+  </form>
 </div>
 </body>
 </html>

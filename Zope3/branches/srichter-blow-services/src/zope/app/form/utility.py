@@ -34,6 +34,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.security.interfaces import ForbiddenAttribute
 from zope.schema import getFieldsInOrder
 from zope.app import zapi
 from zope.app.form.interfaces import IWidget
@@ -181,6 +182,8 @@ def _setUpFormWidgets(view, schema, source, prefix, ignoreStickyValues,
             viewType = inputType
         try:
             value = field.get(source)
+        except ForbiddenAttribute:
+            raise
         except AttributeError, v:
             value = no_value
         setUpWidget(view, name, field, viewType, value, prefix,

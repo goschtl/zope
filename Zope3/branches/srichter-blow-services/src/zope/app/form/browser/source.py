@@ -148,10 +148,20 @@ class SourceInputWidget(zope.app.form.InputWidget):
 
         term = None
         if value == field.missing_value:
-            result.append(u'  ' +
+            result.append('  <div class="row">')
+            result.append('    <div class="label">')
+            result.append(u'     ' +
+                          self._translate(_("SourceDisplayWidget-label",
+                                            default="Selected"))
+                          )
+            result.append('    </div>')
+            result.append('    <div class="field">')
+            result.append(u'     ' +
                           self._translate(_("SourceDisplayWidget-missing",
                                             default="Nothing"))
                           )
+            result.append('    </div>')
+            result.append('  </div>')
         else:
             try:
                 term = self.terms.getTerm(value)
@@ -161,10 +171,19 @@ class SourceInputWidget(zope.app.form.InputWidget):
                                                 default="Nothing Valid"))
                               )
             else:
-                result.append(u'  ' + cgi.escape(term.title))
+                result.append('  <div class="row">')
+                result.append('    <div class="label">')
+                result.append(u'     ' +
+                              self._translate(_("SourceDisplayWidget-label",
+                                                default="Selected"))
+                              )
+                result.append('    </div>')
+                result.append('    <div class="field">')
+                result.append(u'     ' + cgi.escape(term.title))
+                result.append('    </div>')
+                result.append('  </div>')
                 result.append('  <input type="hidden" name="%s" value="%s">'
                               % (self.name, cgi.escape(term.token)))
-        result.append('  <br>')
 
         result.append('  <input type="hidden" name="%s.displayed" value="y">'
                       % self.name)

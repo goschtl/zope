@@ -266,7 +266,7 @@ def unsetDomainOnDeactivation(domain, event):
     >>> domain1 = TranslationDomain()
     >>> domain1.domain = 'domain1'
 
-    >>> from zope.app.component import registration 
+    >>> from zope.app.registration import registration
     >>> event = registration.RegistrationDeactivatedEvent(
     ...     Registration(domain1, 'domain1'))
 
