@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.5 2003/01/28 03:40:10 rdmurray Exp $
+$Id: test_utility.py,v 1.6 2003/01/28 04:06:54 rdmurray Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -181,7 +181,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(view.title(), u'title: ')
         self.assertEqual(view.description(), u'description: ')
 
-    def test_setupWidgets_only_some_fields(self):
+    def test_setupWidgets_via_names(self):
         c = C()
         request = TestRequest()
         view = BrowserView(c, request)
@@ -257,6 +257,27 @@ class Test(PlacelessSetup, TestCase):
         setUpEditWidgets(view, I)
         self.assertEqual(view.title(), u'title: ft')
         self.assertEqual(view.description(), u'description: fd')
+
+    def test_setupEditWidgets_via_names(self):
+        c = C()
+        c.title = u'ct'
+        request = TestRequest()
+        request.form['field.title'] = u'ft'
+        view = BrowserView(c, request)
+        setUpEditWidgets(view, I, names=['title'])
+        self.assertEqual(view.title(), u'title: ft')
+        self.failIf(hasattr(view, 'description'))
+
+    def test_setupWidgets_bad_field_name(self):
+        c = C()
+        request = TestRequest()
+        view = BrowserView(c, request)
+        self.assertRaises(KeyError, setUpEditWidgets, view, I, names=['bar'])
+        #This AttributeError occurs when setUpEditWidget tries to call
+        #bind on the non-Field (Method) object.  The point is that
+        #that *some* error should occur, not necessarily this specific one.
+        self.assertRaises(AttributeError, setUpEditWidgets, view,
+                          I, names=['foo'])
 
     def test_setupEditWidgets_w_form_data_force(self):
         c = C()

@@ -30,7 +30,7 @@ This module provides some utility functions that provide some of the
 functionality of formulator forms that isn't handled by schema,
 fields, or widgets.
 
-$Id: utility.py,v 1.7 2003/01/28 03:40:08 rdmurray Exp $
+$Id: utility.py,v 1.8 2003/01/28 04:06:53 rdmurray Exp $
 """
 __metaclass__ = type
 
@@ -113,24 +113,24 @@ def setUpEditWidgets(view, schema, content=None, prefix=None, force=0,
     if content is None:
         content = view.context
 
-    for name in (names or schema):
-        field = schema[name]
-        if IField.isImplementedBy(field):
-            # OK, we really got a field
-            if field.readonly:
-                vname = 'display'
-            else:
-                vname = 'edit'
+    if not names: fields = getFieldsInOrder(schema)
+    else: fields = [ (name, schema[name]) for name in names ]
 
-            try:
-                value = getattr(content, name)
-            except AttributeError, v:
-                if v.__class__ != AttributeError:
-                    raise
-                value = None
+    for name, field in fields:
+        if field.readonly:
+            vname = 'display'
+        else:
+            vname = 'edit'
 
-            setUpWidget(view, name, field, value,
-                        prefix = prefix, force = force, vname = vname)
+        try:
+            value = getattr(content, name)
+        except AttributeError, v:
+            if v.__class__ != AttributeError:
+                raise
+            value = None
+
+        setUpWidget(view, name, field, value,
+                    prefix = prefix, force = force, vname = vname)
 
 def haveWidgetsData(view, schema, names=None):
     """Collect the user-entered data defined by a schema
