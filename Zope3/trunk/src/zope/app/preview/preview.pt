@@ -2,7 +2,7 @@
 <body>
 <div metal:fill-slot="body">
 
-  <iframe src="." height="98%" width="98%"></iframe>
+  <iframe src="." height="500" width="100%"></iframe>
 
 </div>
 </body>
