@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.17 2003/04/30 21:57:14 gvanrossum Exp $
+$Id: view.py,v 1.18 2003/05/06 11:18:54 efge Exp $
 """
 __metaclass__ = type
 
@@ -240,6 +240,7 @@ class ViewConfiguration(SimpleConfiguration):
     getView = ContextMethod(getView)
 
     def usageSummary(self):
+        # XXX L10N This should be localizable.
         ifname = getattr(self.forInterface, '__name__', "(Anything)")
         s = "%s %s for %s" % (self.viewName, self._what, ifname)
         if self.layer and self.layer != "default":
