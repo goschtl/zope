@@ -52,13 +52,13 @@ class MembershipToolSecurityTests(SecurityTest):
 
     def test_createMemberarea(self):
         mtool = self.mtool
-        self.site._setObject( 'Members', PortalFolder('Members') )
-        self.site._setObject( 'acl_users', DummyUserFolder() )
-        self.site._setObject( 'portal_workflow', DummyTool() )
+        members = self.site._setObject( 'Members', PortalFolder('Members') )
+        acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
+        wtool = self.site._setObject( 'portal_workflow', DummyTool() )
         mtool.createMemberarea('user_foo')
 
-        f = self.site.Members.user_foo
-        ownership = self.site.acl_users.user_foo
+        f = members.user_foo
+        ownership = acl_users.user_foo
         localroles = ( ( 'user_foo', ('Owner',) ), )
         self.assertEqual( f.getOwner(), ownership )
         self.assertEqual( f.get_local_roles(), localroles,

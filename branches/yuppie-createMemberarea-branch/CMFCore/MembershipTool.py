@@ -17,7 +17,7 @@ $Id$
 
 from utils import UniqueObject, _getAuthenticatedUser, _checkPermission
 from utils import getToolByName, _dtmldir
-from OFS.SimpleItem import SimpleItem
+from OFS.Folder import Folder
 from Globals import InitializeClass, DTMLFile, MessageDialog, \
      PersistentMapping
 from Acquisition import aq_base
@@ -41,7 +41,7 @@ default_member_content = '''Default page for %s
   in the Tool Box on the left.
 '''
 
-class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
+class MembershipTool(UniqueObject, Folder, ActionProviderBase):
     """ This tool accesses member data through an acl_users object.
 
     It can be replaced with something that accesses member data in a
@@ -65,7 +65,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
                    ( { 'label' : 'Overview'
                      , 'action' : 'manage_overview'
                      },
-                   ) + SimpleItem.manage_options)
+                   ) + Folder.manage_options)
 
     #
     #   ZMI methods
@@ -138,15 +138,7 @@ class MembershipTool (UniqueObject, SimpleItem, ActionProviderBase):
             md = getToolByName(parent, 'portal_memberdata')
             try:
                 portal_user = md.wrapUser(u)
-
-                # Check for the member area creation flag and
-                # take appropriate (non-) action
-                if getattr(self, 'memberareaCreationFlag', 0) != 0:
-                    if self.getHomeUrl(portal_user.getId()) is None:
-                        self.createMemberarea(portal_user.getId())
-
                 return portal_user
-
             except:
                 from zLOG import LOG, ERROR
                 import sys
