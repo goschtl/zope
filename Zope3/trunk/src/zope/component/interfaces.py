@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.30 2004/04/07 19:18:56 jim Exp $
+$Id: interfaces.py,v 1.31 2004/04/11 18:16:41 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -67,9 +67,9 @@ class IComponentArchitecture(Interface):
         """
 
     def getUtilitiesFor(context, interface):
-        """Look up the registered utilities that provide an interface.
+        """Return the utilitis that provide an interface
 
-        Returns the list of utilities found
+        An iterable of utility name-value pairs is returned.
         """
         
     # Adapter service
@@ -405,7 +405,7 @@ class IUtilityService(Interface):
     def getUtilitiesFor(interface):
         """Look up the registered utilities that provide an interface.
 
-        If none is found, return an empty list
+        Returns an iterable of name-utility pairs.
         """
 
 class IContextDependent(Interface):
