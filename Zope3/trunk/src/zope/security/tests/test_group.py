@@ -19,10 +19,21 @@ $Id: tests_group.py 27237 2004-10-12 10:49:00 mriya3 $
 
 import unittest
 from zope.testing.doctest import DocFileSuite
+from zope.app.tests import placelesssetup, ztapi
+import zope.security.group
+import zope.app.groupscontainer.groupsfolder
+import zope.app.groupscontainer.interfaces
+import zope.app.pas.interfaces
+
+def setUp(test):
+    placelesssetup.setUp(test)
+    ztapi.subscribe([zope.app.pas.interfaces.IAuthenticatedPrincipalCreated], None, zope.security.group.setGroupsForPrincipal)
+    groups = zope.app.groupscontainer.groupsfolder.GroupsFolder()
+    ztapi.provideUtility(zope.app.groupscontainer.interfaces.IGroupsFolder, groups)
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(DocFileSuite('grouptest.txt'))
+    suite.addTest(DocFileSuite('groups_principals.txt', setUp=setUp, tearDown=placelesssetup.tearDown))
     return suite
         
     

@@ -17,11 +17,14 @@ $Id: group.py 27237 2004-10-12 09:33:00 mriya3 $
 
 """
 
-from zope.security.interfaces import IGroup, IGroupChangedEvent, IPrincipalCreatedEvent
+from zope.security.interfaces import IGroup
+from zope.app.pas.interfaces import IAuthenticatedPrincipalCreated
 from persistent import Persistent
-from zope.interface import implements
+from zope.interface import implements, alsoProvides
 from zope.app.groupscontainer.interfaces import IGroupContained, IGroupsFolder
+from zope.security.interfaces import IGroupAwarePrincipal
 from types import StringTypes
+import zope.app.zapi
 from zope.event import notify
 
 
@@ -64,44 +67,20 @@ class Group(Persistent):
     def setPrincipals(self, prinlist):
         origprincipals = self.__principals
         self.__principals = prinlist
-        notify(GroupChangedEvent(self, origprincipals))
         
     principals = property(getPrincipals, setPrincipals)
     
-    
-class PrincipalCreatedEvent:
-    """Event on principal creation"""
-    implements(IPrincipalCreatedEvent)
-    
-    def __init__(self, principal):
-        self.principal = principal
-        
-class GroupChangedEvent:
-    """Event on group change"""
-    implements(IGroupChangedEvent)
-    
-    def __init__(self, group, originalids):
-        self.group = group
-        self.originalids = originalids
-        
-        
-def updateGroupsForPrincipal(event):
-    """Updates group informations when a principal is created"""
+
+def setGroupsForPrincipal(event):
+    """Set group information when a principal is created"""
     principal = event.principal
-    groupfolder = zope.app.zapi.getUtility(IGroupsFolder)
-    groups = groupfolder.getGroupsForPrincipal(principal.id)
-    principal.groups = groups
-    
-def updatePrincipalsFromGroups(event):
-    """Updates principals when a group changes"""
-    group = event.group
-    originalids = event.originalids
-    groupfolder = zope.app.zapi.getUtility(IGroupsFolder)
-    for principalid in originalids:
-        authservice = zope.app.zapi.getService(IAuthenticationService)
-        principal = authservice.getPrincipal(principalid)
+    alsoProvides(principal, IGroupAwarePrincipal)
+    principal.groups = []
+    groupfolders = zope.app.zapi.getUtilitiesFor(IGroupsFolder)
+    for name, groupfolder in groupfolders:
         groups = groupfolder.getGroupsForPrincipal(principal.id)
-        principal.groups = groups
+        principal.groups.extend(groups)
+
     
     
     

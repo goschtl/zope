@@ -267,6 +267,12 @@ class IPrincipal(Interface):
         description=_("A detailed description of the principal."),
         required=False)
         
+        
+class IGroupAwarePrincipal(IPrincipal):
+    """Group aware principal interface
+    Extends IPrincipal to contain group information.
+    """
+    
     groups = List(
         title=_("Groups"),
         description=_("List of groups the principal belongs to"),
@@ -317,18 +323,7 @@ class IGroup(IPrincipal):
         description=_("List of principals which belong to the group"),
         required=False)
 
-        
-class IPrincipalCreatedEvent(Interface):
-    """ Interface for principal created events"""
-    principal = Attribute(
-                    "The principal that was created")
-    
-class IGroupChangedEvent(Interface):
-    """ Interface for group changed event"""
-    group = Attribute(
-                    "The group that was changed")
-    
-    
+
         
     
 

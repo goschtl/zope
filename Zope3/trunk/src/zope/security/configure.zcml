@@ -37,13 +37,9 @@
     />
     
   <subscriber
-    factory="zope.security.group.updateGroupsForPrincipal"
-    for="zope.security.interfaces.IPrincipalCreatedEvent"
+    factory="zope.security.group.setGroupsForPrincipal"
+    for="zope.app.pas.interfaces.IAuthenticatedPrincipalCreated"
     />
   
-    <subscriber
-    factory="zope.security.group.updatePrincipalsFromGroups"
-    for="zope.security.interfaces.IGroupChangedEvent"
-    />
 
 </configure> 
