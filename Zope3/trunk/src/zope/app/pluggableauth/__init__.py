@@ -65,7 +65,6 @@ class PluggableAuthenticationService(OrderedContainer):
 
     def __init__(self, earmark=None, hide_deprecation_warning=False):
         if not hide_deprecation_warning:
-            import pdb; pdb.set_trace()
             warn("The `pluggableauth` module has been deprecated in favor of "
                  "the new `pas` code, which is much more modular and powerful.",
                  DeprecationWarning, 2)        
