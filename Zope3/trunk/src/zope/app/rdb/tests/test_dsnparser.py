@@ -27,6 +27,12 @@ class TestDSNParser(unittest.TestCase):
                   'password': '', 'host': '', 'port': ''}
         self.assertEqual(result, parseDSN(dsn))
 
+    def testDBNameWithSpecialCharacters(self):
+        dsn = 'dbi://test%2Fmore+'
+        result = {'parameters': {}, 'dbname': 'test/more ', 'username': '',
+                  'password': '', 'host': '', 'port': ''}
+        self.assertEqual(result, parseDSN(dsn))
+
     def testDBNameAndParams(self):
         dsn = 'dbi://test;param1=value1;param2=value2'
         result = {'parameters': {'param1': 'value1', 'param2': 'value2'},
@@ -46,6 +52,12 @@ class TestDSNParser(unittest.TestCase):
                   'password': 'muster', 'host': '', 'port': ''}
         self.assertEqual(result, parseDSN(dsn))
 
+    def testUserPasswordWithSpecialCharacters(self):
+        dsn = 'dbi://m+i+k+e:m%7Bu%7Dster/test'
+        result = {'parameters': {}, 'dbname': 'test', 'username': 'm i k e',
+                  'password': 'm{u}ster', 'host': '', 'port': ''}
+        self.assertEqual(result, parseDSN(dsn))
+
     def testPasswordWithColon(self):
         dsn = 'dbi://mike:before:after/test'
         result = {'parameters': {}, 'dbname': 'test', 'username': 'mike',
@@ -59,6 +71,12 @@ class TestDSNParser(unittest.TestCase):
                   'host': '', 'port': ''}
         self.assertEqual(result, parseDSN(dsn))
 
+    def testParamsWithSpecialCharacters(self):
+        dsn = 'dbi://test;param%40=value%21;param%23=value%24'
+        result = {'parameters': {'param@': 'value!', 'param#': 'value$'},
+                  'dbname': 'test', 'username': '', 'password': '',
+                  'host': '', 'port': ''}
+        self.assertEqual(result, parseDSN(dsn))
 
     def testUserAndHostWithoutPort(self):
         dsn = 'dbi://mike@bohr/test'

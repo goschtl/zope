@@ -21,6 +21,7 @@ $Id$
 """
 import types, string
 from types import StringTypes
+from urllib import unquote_plus
 
 from persistent import Persistent
 
@@ -179,6 +180,9 @@ def parseDSN(dsn):
        dbi://user:passwd@host:port/dbname
        dbi://user:passwd@host:port/dbname;param1=value...
 
+    Any values that might contain characters special for URIs need to be
+    quoted as it would be returned by `urllib.quote_plus`.
+
     Return value is a mapping with the following keys:
 
        username     username (if given) or an empty string
@@ -202,7 +206,9 @@ def parseDSN(dsn):
     dsn = raw_params[0]
     raw_params = raw_params[1:]
 
-    parameters = dict([param.split('=') for param in raw_params])
+    parameters = [param.split('=') for param in raw_params]
+    parameters = dict([(unquote_plus(key), unquote_plus(value))
+                       for key, value in parameters])
 
     result['parameters'] = parameters
 
@@ -213,7 +219,7 @@ def parseDSN(dsn):
         dbname = dsn
         dsn = ''
 
-    result['dbname'] = dbname
+    result['dbname'] = unquote_plus(dbname)
 
     # Get host and port from DSN
     if dsn and dsn.find('@') > 0:
@@ -237,8 +243,8 @@ def parseDSN(dsn):
     else:
         username, password = '', ''
 
-    result['username'] = username
-    result['password'] = password
+    result['username'] = unquote_plus(username)
+    result['password'] = unquote_plus(password)
 
     return result
 

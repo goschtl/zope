@@ -67,8 +67,6 @@ Bug Fixes
 
 * 302: File objects can't contain non-ascii characters
 
-* 304: Slash involve dbname 
-
 * 305: system error Translations/"Edit Messages" (Stephan)
 
 * 306: page/view-menu-layer configuration

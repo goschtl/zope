@@ -249,6 +249,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Resolved issue 304 (Slash involve dbname). We require now that all
+        values in a DSN are properly URL-encoded, so that all values can
+        contain any special character, except for the hostname and the port.
+
       - Fixed intid utility: Registration and unregistration of
         local utitlity services, context aware registration of nested 
         components that may provide their own intids utiltities.
