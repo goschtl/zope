@@ -59,7 +59,7 @@ class Traversable:
         try:
             kw = dict(path=[name], request=REQUEST)
             return ITraverser(self).traverse(**kw).__of__(self)
-        except (ComponentLookupError, NotFoundError, AttributeError):
+        except (ComponentLookupError, NotFoundError, AttributeError, KeyError):
             pass
         try:
             return getattr(self, name)
