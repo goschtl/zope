@@ -14,18 +14,15 @@
 """
 $Id$
 """
+from persistent.dict import PersistentDict
+from zope.xmlpickle import dumps, loads
 
-__metaclass__ = type
-
-from zope.fssync.server.entryadapter import ObjectEntryAdapter
-from zope.fssync.server.interfaces import IObjectFile
-from zope.interface import implements
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
 from zope.app.dublincore.zopedublincore import ZopeDublinCore
-from zope.xmlpickle import dumps, loads
-from persistent.dict import PersistentDict
+
 
 DCkey = "zope.app.dublincore.ZopeDublinCore"
+
 
 class ZDCAnnotatableAdapter(ZopeDublinCore):
     """Adapt annotatable objects to Zope Dublin Core."""
@@ -52,17 +49,9 @@ __doc__ = ZDCAnnotatableAdapter.__doc__ + __doc__
 
 
 class ZDCAnnotationData(PersistentDict):
-    pass
+    """Data for a Dublin Core annotation.
 
-
-class ZDCAnnotationDataAdapter(ObjectEntryAdapter):
-
-    implements(IObjectFile)
-
-    def getBody(self):
-        return dumps(self.context.data)
-
-    def setBody(self, data):
-        data = loads(data)
-        self.context.clear()
-        self.context.update(data)
+    A specialized class is used to allow an alternate fssync
+    serialization to be registered.  See the
+    zope.app.dublincore.fssync package.
+    """

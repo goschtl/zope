@@ -24,8 +24,6 @@ from zope.app.event import function
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.module.interfaces import IModuleManager
-from zope.fssync.server.entryadapter import ObjectEntryAdapter, AttrMapping
-from zope.fssync.server.interfaces import IObjectFile
 from zope.app.container.contained import Contained
 
 class Manager(Persistent, Contained):
@@ -86,19 +84,6 @@ class Manager(Persistent, Contained):
 # Hack to allow unpickling of old Managers to get far enough for __setstate__
 # to do it's magic:
 Registry = Manager
-
-class ModuleAdapter(ObjectEntryAdapter):
-
-    implements(IObjectFile)
-
-    def getBody(self):
-        return self.context.source
-
-    def setBody(self, source):
-        self.context.update(source)
-
-    def extra(self):
-        return AttrMapping(self.context, ("name",))
 
 
 class ModuleFactory(object):

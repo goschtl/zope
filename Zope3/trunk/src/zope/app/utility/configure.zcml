@@ -1,6 +1,5 @@
 <configure 
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:fssync="http://namespaces.zope.org/fssync">
+  xmlns="http://namespaces.zope.org/zope">
 
   <content class=".LocalUtilityService">
     
@@ -24,11 +23,7 @@
       set_schema="zope.app.utility.interfaces.IUtilityRegistration" />
       
    </content>
-  
-  <fssync:adapter
-    class=".UtilityRegistration"
-    factory="zope.app.registration.fssync.adapter.ComponentRegistrationAdapter" />
-    
+
   <vocabulary
     name="Utility Component Interfaces"
     factory=".vocabulary.UtilityComponentInterfacesVocabulary" />

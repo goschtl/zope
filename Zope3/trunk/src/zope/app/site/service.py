@@ -31,7 +31,6 @@ from zodbcode.module import PersistentModuleRegistry
 
 import zope.interface
 from zope.component.exceptions import ComponentLookupError
-from zope.fssync.server.entryadapter import AttrMapping, DirectoryAdapter
 from zope.proxy import removeAllProxies
 
 import zope.app.registration.interfaces
@@ -314,32 +313,15 @@ class ServiceRegistration(ComponentRegistration):
         service_manager = zapi.getServices(self)
         return service_manager.getInterfaceFor(self.name)
 
-
     def activated(self):
         service = self.getComponent()
         if IBindingAware.providedBy(service):
             service.bound(self.name)
-
 
     def deactivated(self):
         service = self.getComponent()
         if IBindingAware.providedBy(service):
             service.unbound(self.name)
 
-
     def usageSummary(self):
         return self.name + " Service"
-
-
-# Fssync stuff
-
-_smattrs = (
-    '_modules',                         # PersistentModuleRegistry
-    '_bindings',
-)
-
-class ServiceManagerAdapter(DirectoryAdapter):
-
-    def extra(self):
-        obj = removeAllProxies(self.context)
-        return AttrMapping(obj, _smattrs)

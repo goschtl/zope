@@ -12,11 +12,6 @@
         />
   </content>
 
-  <fssync:adapter
-      class=".Manager"
-      factory=".ModuleAdapter"
-      />
-
   <adapter
       for="zope.app.site.interfaces.ISiteManagementFolder"
       provides="zope.app.filerepresentation.interfaces.IFileFactory"

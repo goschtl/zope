@@ -1,7 +1,6 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
-   xmlns:event="http://namespaces.zope.org/event"
-   xmlns:fssync="http://namespaces.zope.org/fssync">
+   xmlns:event="http://namespaces.zope.org/event">
 
   <permission 
       id="zope.app.dublincore.view" 
@@ -58,11 +57,6 @@
       event_types="zope.app.event.interfaces.IObjectModifiedEvent
                    zope.app.event.interfaces.IObjectCreatedEvent"
     />
-
-  <fssync:adapter
-      class=".annotatableadapter.ZDCAnnotationData"
-      factory=".annotatableadapter.ZDCAnnotationDataAdapter"
-      />
 
 
   <!-- Include browser package -->
