@@ -243,10 +243,15 @@ class Parser:
             self.error("malformed section header")
         type, name = m.group('type', 'name')
         type = type.lower()
-        if name:
-            # XXX Argh!  This was a mistake in ZConfig, but can't
-            # change it here.
-            name = name.lower()
+        #
+        # XXX Argh!  Converting section names to lower-case was a
+        # mistake in ZConfig, but we have to honor case here for
+        # <extension> sections.  We need to add some way to control
+        # the "nametype" of sections in ZConfig anyway.
+        #
+        # if name:
+        #    name = name.lower()
+        #
         newsect = self.schema.startSection(section, type, name)
         if isempty:
             self.schema.endSection(section, type, name, newsect)
