@@ -26,3 +26,6 @@ class Unauthorized(ZopeError):
     """Some user wasn't allowed to access a resource"""
 
     implements(IUnauthorized)
+
+    def __init__(self, name=None, permission=None):
+        self.name, self.permission = name, permission
