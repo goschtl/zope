@@ -133,12 +133,12 @@ class RegistrationStack(Persistent, Contained):
        When a registration is activated or deactivated, an event is published
        to which one can subscribe; in our case the registration components
        themselves subscribe to these events to set their status.
-         
+
          >>> def setActive(event):
          ...     event.object.active = True
          >>> subscribe((interfaces.IRegistrationActivatedEvent,), None,
          ...           setActive)
-         
+
          >>> def unsetActive(event):
          ...     event.object.active = False
          >>> subscribe((interfaces.IRegistrationDeactivatedEvent,), None,
@@ -147,7 +147,7 @@ class RegistrationStack(Persistent, Contained):
 
        We create a registration stack by providing it with a parent:
 
-         >>> from zope.app.registration.registration import RegistrationStack 
+         >>> from zope.app.registration.registration import RegistrationStack
          >>> stack = RegistrationStack(42)
          >>> stack.__parent__
          42
@@ -484,7 +484,7 @@ class NotifyingRegistrationStack(RegistrationStack):
          ...     event.object.active = True
          >>> subscribe((interfaces.IRegistrationActivatedEvent,), None,
          ...           setActive)
-         
+
          >>> def unsetActive(event):
          ...     event.object.active = False
          >>> subscribe((interfaces.IRegistrationDeactivatedEvent,), None,
@@ -568,7 +568,7 @@ class NotifyingRegistrationStack(RegistrationStack):
         self.__parent__.notifyActivated(self, registration)
 
     def _deactivate(self, registration):
-        super(NotifyingRegistrationStack, self)._activate(registration)
+        super(NotifyingRegistrationStack, self)._deactivate(registration)
         self.__parent__.notifyDeactivated(self, registration)
 #############################################################################
 
@@ -675,7 +675,7 @@ class ComponentRegistration(SimpleRegistration):
 
     def __BBB_old_getComponent(self, path):
         service_manager = zapi.getServices(self)
-        
+
         # Get the root and unproxy it
         if path.startswith("/"):
             # Absolute path
@@ -706,7 +706,7 @@ class ComponentRegistration(SimpleRegistration):
         self._component = component
 
     component = property(__BBB_getComponent, __BBB_setComponent)
-    
+
     def __BBB_getComponentPath(self):
         warnings.warn(
             "`componentPath` is deprecated. You can get to the component "
@@ -731,14 +731,14 @@ class ComponentRegistration(SimpleRegistration):
     def __setstate__(self, dict):
         super(ComponentRegistration, self).__setstate__(dict)
         # For some reason the component path is not set correctly by the
-        # default __setstate__ mechanism. 
+        # default __setstate__ mechanism.
         if 'componentPath' in dict:
             self._component = NULL_COMPONENT
             self._BBB_componentPath = dict['componentPath']
 
         if isinstance(self._BBB_componentPath, (str, unicode)):
             self._component = NULL_COMPONENT
-    
+
     ###########################################################################
 
 
