@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.8 2003/02/21 14:53:33 alga Exp $
+$Id: test_utility.py,v 1.9 2003/02/21 17:52:18 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,8 +26,7 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.interface import Interface
 from zope.schema import Text
 from zope.app.browser.form.widget import TextWidget
-from zope.component.view \
-     import provideView, setDefaultViewName
+from zope.component.view import provideView, setDefaultViewName
 from zope.schema.interfaces import IText
 from zope.app.interfaces.form import WidgetsError, MissingInputError
 from zope.app.form.utility import setUpWidget, setUpWidgets, setUpEditWidgets
@@ -426,16 +425,20 @@ class Test(PlacelessSetup, TestCase):
         request = TestRequest()
         view = BrowserView(c, request)
         setUpWidgets(view, I, initial=kw(title=u"ttt", description=u"ddd"))
-        self.assertEqual(getWidgetsData(view, I, strict=False, set_missing=False),
-                         {})
+        self.assertEqual(
+            getWidgetsData(view, I, strict=False, set_missing=False),
+            {})
 
-        self.assertEqual(getWidgetsData(view, I, strict=False, set_missing=True),
-                         {'description': None,  'title': None})
+        self.assertEqual(
+            getWidgetsData(view, I, strict=False, set_missing=True),
+            {'description': None,  'title': None})
 
-        self.assertRaises(MissingInputError, getWidgetsData, view, I2, strict=True)
+        # XXX check that the WidgetsError contains a MissingInputError
+        self.assertRaises(WidgetsError,
+                          getWidgetsData, view, I2, strict=True)
 
-        self.assertEqual(getWidgetsData(view, I), {'description': None,
-                                                   'title': None})
+        self.assertEqual(getWidgetsData(view, I),
+                         {'description': None, 'title': None})
 
         request.form['field.description'] = u'fd'
         self.assertEqual(getWidgetsData(view, I2, strict=False,
@@ -446,7 +449,8 @@ class Test(PlacelessSetup, TestCase):
                                         set_missing=True),
                          {'description': u'fd', 'title': None})
 
-        self.assertRaises(MissingInputError, getWidgetsData, view, I2)
+        # XXX check that the WidgetsError contains a MissingInputError
+        self.assertRaises(WidgetsError, getWidgetsData, view, I2)
         self.assertEqual(getWidgetsData(view, I), {'description': u'fd',
                                                    'title': None})
 
@@ -491,9 +495,6 @@ class Test(PlacelessSetup, TestCase):
         setUpWidgets(view, I2, initial=kw(title=u"ttt", description=u"ddd"))
         self.assertEqual(c.title, u'old title')
         self.assertEqual(c.description, u'old description')
-
-
-
 
 def test_suite():
     return TestSuite((
