@@ -13,10 +13,8 @@
 ##############################################################################
 """Unit test logic for setting up and tearing down basic infrastructure
 
-
-$Id: placelesssetup.py,v 1.3 2003/11/21 17:12:06 jim Exp $
+$Id: placelesssetup.py,v 1.4 2004/02/27 22:25:24 srichter Exp $
 """
-
 from zope.app.services.servicenames import Translation
 from zope.app.tests import ztapi
 from zope.component import getServiceManager
@@ -25,18 +23,15 @@ from zope.i18n.interfaces import ITranslationService
 from zope.i18n.interfaces import IUserPreferredCharsets
 from zope.i18n.interfaces import IUserPreferredLanguages
 from zope.publisher.browser import BrowserLanguages
-from zope.publisher.http import HTTPCharsets
-from zope.publisher.http import IHTTPRequest
+from zope.publisher.http import HTTPCharsets, IHTTPRequest
 
 class PlacelessSetup:
 
     def setUp(self):
         sm = getServiceManager(None)
-        defineService = sm.defineService
-        provideService = sm.provideService
 
-        defineService(Translation, ITranslationService)
-        provideService(Translation, translationService)
+        sm.defineService(Translation, ITranslationService)
+        sm.provideService(Translation, translationService)
 
         ztapi.provideAdapter(IHTTPRequest, IUserPreferredCharsets,
                              HTTPCharsets)
