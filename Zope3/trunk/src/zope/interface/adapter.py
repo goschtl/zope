@@ -302,21 +302,12 @@ class AdapterLookup(object):
     # so this class acts a little bit like a lookup adapter for the adapter
     # registry.
 
-    def __init__(self, registry):
+    def __init__(self, registry, surrogates, _remove):
         self._registry = registry
         self._surrogateClass = registry._surrogateClass
-        surrogates = {Default.weakref(): registry._default,
-                      Null.weakref(): registry._null}
         self._default = registry._default
         self._null = registry._null
         self._surrogates = surrogates
-
-        def _remove(k):
-            try:
-                del surrogates[k]
-            except KeyError:
-                pass
-
         self._remove = _remove
 
     def lookup(self, required, provided, name='', default=None):
@@ -485,7 +476,13 @@ class AdapterRegistry(object):
         self._null = null
 
         # Create separate lookup object and copy it's methods
-        lookup = AdapterLookup(self)
+        surrogates = {Default.weakref(): default, Null.weakref(): null}
+        def _remove(k):
+            try:
+                del surrogates[k]
+            except KeyError:
+                pass
+        lookup = AdapterLookup(self, surrogates, _remove)
         for name in ('lookup', 'lookup1', 'queryAdapter', 'get',
                      'subscriptions', 'queryMultiAdapter', 'subscribers'
                      ):
