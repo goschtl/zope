@@ -503,6 +503,8 @@ class DateDisplayWidget(DisplayWidget):
             content = self._data
         else:
             content = self.context.default
+        if content == self.context.missing_value:
+            return ""
         formatter = self.request.locale.dates.getFormatter(
             self._category, (self.displayStyle or None))
         content = formatter.format(content)
