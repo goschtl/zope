@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IServiceManager.py,v 1.2 2002/06/10 23:28:12 jim Exp $
+$Id: IServiceManager.py,v 1.3 2002/06/12 19:39:29 bwarsaw Exp $
 """
 from Interface import Interface
 from Zope.ComponentArchitecture.IServiceManager import IServiceManager as \
@@ -22,31 +22,32 @@ from Zope.ComponentArchitecture.IServiceManager import IServiceManager as \
 from Zope.App.OFS.Container.IContainer import IContainer
 
 class IServiceManager(IContainer, IGlobalServiceManager):
-    """
-    Service Managers act as containers for Services.
+    """Service Managers act as containers for Services.
     
-    If a Service Manager is asked for a service it
-    checks for those it contains, before using a context
-    based lookup to find another service manager to delegate
-    to. If no other service manager is found they defer
-    to the ComponentArchitecture ServiceManager which
-    contains file based services.
+    If a Service Manager is asked for a service, it checks for those it
+    contains before using a context based lookup to find another service
+    manager to delegate to.  If no other service manager is found they defer
+    to the ComponentArchitecture ServiceManager which contains file based
+    services.
     """
 
     def bindService(serviceName, serviceComponentName):
-        """provide a service implementation.  If the named object
-        implements IBindingAware, the wrapped object is notified as per
-        that interface"""
+        """Provide a service implementation.
+
+        If the named object implements IBindingAware, the wrapped object is
+        notified as per that interface.
+        """
 
     def unbindService(serviceName):
-        """no longer provide a service implementation.  If the named
-        object implements IBindingAware, the wrapped object is notified
-        as per that interface"""
+        """No longer provide a service implementation.
+
+        If the named object implements IBindingAware, the wrapped object is
+        notified as per that interface.
+        """
 
     def getBoundService(name):
-        """retrieve a bound service implimentation
+        """Retrieve a bound service implementation.
 
-        Get the component currently bound to the named Service
-        in this ServiceService.  Does not search context.
+        Get the component currently bound to the named Service in this
+        ServiceService.   Does not search context.
         """
-        
