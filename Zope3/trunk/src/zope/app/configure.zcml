@@ -33,13 +33,9 @@
   <include package="zope.app.publisher" />
   <include package="zope.app.traversing" />
   <include package="zope.app.pagetemplate" />
-  <include package="zope.app.interpreter" />
-  <include package="zope.app.renderer" />
   <include package=".generations" />
   
   <!-- Views -->
-  <include package="zope.app.ftp" />
-  <include package="zope.app.xmlrpc" />
   <include package="zope.app.http" />
 
   <!-- Translations -->
@@ -69,9 +65,7 @@
   <include package="zope.app.schema" file="fieldforms.zcml" />
 
   <!-- Misc. Service Manager objects -->
-  <include package="zope.app.bundle" />  
   <include package="zope.app.module" />
-  <include package="zope.app.schemacontent" />
 
   <!-- Broken-object support -->
   <include package="zope.app.broken" />
@@ -85,31 +79,19 @@
 
   <include package="zope.app.basicskin" />
   <include package="zope.app.rotterdam" />
-  <include package="zope.app.zopetop" />
-  <include package="zope.app.debugskin" />
   <defaultSkin name="Rotterdam" />
 
 
   <!-- Additional packages -->
 
-  <include package="zope.app.undo" />
   <include package="zope.app.applicationcontrol" />
   <include package="zope.app.dublincore" />
-  <include package="zope.app.cache" />
-  <include package="zope.app.workflow" />
-  <include package="zope.app.catalog"/>
-  <include package="zope.app.tree" />
   <include package="zope.app.introspector" />
 
 
   <!-- Content types -->
 
   <include package="zope.app.folder" />
-  <include package="zope.app.file" />
-  <include package="zope.app.i18nfile" />
-  <include package="zope.app.zptpage" />
-  <include package="zope.app.pythonpage" />
-  <include package="zope.app.sqlscript" />
 
   <!-- Browser Configurations -->
   <include file="browser.zcml" />

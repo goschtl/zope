@@ -33,18 +33,26 @@ from zope.app.servicenames import HubIds, PrincipalAnnotation
 from zope.app.servicenames import EventPublication, EventSubscription
 from zope.app.servicenames import ErrorLogging, Utilities
 from zope.app.site.service import ServiceManager, ServiceRegistration
-from zope.app.hub import ObjectHub, Registration
 from zope.app.event.localservice import EventService
 from zope.app.errorservice import RootErrorReportingService
-from zope.app.principalannotation import PrincipalAnnotationService
 from zope.app.event import function
-from zope.app.hub.interfaces import ISubscriptionControl
 from zope.app.container.interfaces import INameChooser
+from zope.app.utility import UtilityRegistration, LocalUtilityService
+
+# XXX It should be possible to remove each of these from the basic
+# bootstrap, at which point we can remove the zope.app.hub,
+# zope.app.principalannotation, and zope.app.session packages from
+# zope.app.
+
+from zope.app.hub import ObjectHub, Registration
+from zope.app.hub.interfaces import ISubscriptionControl
+
+from zope.app.principalannotation import PrincipalAnnotationService
+
 from zope.app.session.interfaces import \
      IBrowserIdManager, ISessionDataContainer
 from zope.app.session import \
      CookieBrowserIdManager, PersistentSessionDataContainer
-from zope.app.utility import UtilityRegistration, LocalUtilityService
 
 class BootstrapSubscriberBase:
     """A startup event subscriber base class.
