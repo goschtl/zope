@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: __init__.py,v 1.11 2003/06/07 20:10:02 runyaga Exp $
+$Id: __init__.py,v 1.12 2003/06/09 14:58:34 stevea Exp $
 """
 from types import StringTypes
 
@@ -171,9 +171,11 @@ def parseDSN(dsn):
        dbname       database name
        parameters   a mapping of additional parameters to their values
     """
-    # XXX these should not be assertions
-    assert isinstance(dsn, StringTypes), 'The dsn is not a string.'
-    assert dsn.startswith('dbi://'), 'Invalid DSN; must start with "dbi://"'
+    if not isinstance(dsn, StringTypes):
+        raise ValueError('The dsn is not a string. It is a %s'
+                         % repr(type(dsn)))
+    if not dsn.startswith('dbi://'):
+        raise ValueError('Invalid DSN; must start with "dbi://": %s' % dsn)
 
     result = {}
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_dsnparser.py,v 1.2 2002/12/25 14:13:14 jim Exp $
+$Id: test_dsnparser.py,v 1.3 2003/06/09 14:58:35 stevea Exp $
 """
 import unittest
 from zope.app.rdb import parseDSN
@@ -60,8 +60,8 @@ class TestDSNParser(unittest.TestCase):
         self.assertEqual(result, parseDSN(dsn))
 
     def testFailures(self):
-        self.assertRaises(AssertionError, parseDSN, None)
-        self.assertRaises(AssertionError, parseDSN, 'dfi://')
+        self.assertRaises(ValueError, parseDSN, None)
+        self.assertRaises(ValueError, parseDSN, 'dfi://')
 
 def test_suite():
     suite = unittest.TestSuite()
