@@ -126,6 +126,19 @@ class portal_membership(Interface):
         Permission -- Python only
         """
 
+    def deleteMembers(member_ids, delete_memberareas=1, delete_localroles=1):
+        """ Delete members specified by member_ids.
+
+        Delete members in acl_users and member data in portal_memberdata.
+        If delete_memberareas is true, delete members' home folders including
+        all content items. If delete_localroles is true, recursively delete
+        members' local roles, starting from the portal root.
+
+        Permission -- Manage users
+
+        Returns -- Tuple listing member_ids of deleted members
+        """
+
     def getPortalRoles():
         """
         Return all local roles defined by the portal itself,
@@ -177,4 +190,12 @@ class portal_membership(Interface):
         Permission -- Always available
 
         Returns -- created member folder object or None
+        """
+
+    def deleteMemberArea(member_id):
+        """ Delete member area of member specified by member_id.
+
+        Permission -- Manage users
+
+        Returns -- Boolean value
         """

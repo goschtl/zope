@@ -230,6 +230,10 @@ class DummyUserFolder(Implicit):
     def getUserById(self, id, default=None):
         return self.getUser(id)
 
+    def userFolderDelUsers(self, names):
+        for user_id in names:
+            delattr(self, user_id)
+
 
 class DummyTool(Implicit,ActionProviderBase):
     """
