@@ -1,0 +1,19 @@
+<html metal:use-macro="views/standard_macros/page">
+  <body>
+    <div metal:fill-slot="body">
+
+      <h1 tal:content="context/title" />
+
+      <table>
+        <tr tal:repeat="row view/getPhotosPage">
+	  <td tal:repeat="url row">
+            <a href="" tal:attributes="href python: url[0]"> 
+	      <img src=""
+	           tal:attributes="src python: url[1]"/> 
+	    </a>
+	  </td>
+	</tr>
+      </table>
+    </div>
+  </body>
+</html>

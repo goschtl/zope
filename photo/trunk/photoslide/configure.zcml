@@ -1,0 +1,101 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="photo"
+    >
+
+<content class=".PhotoSlide">
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      />
+  <implements
+      interface="zope.app.container.interfaces.IContentContainer"
+      />
+  <factory
+      id="photoslide.PhotoSlide"
+      description="Photo Slide"
+      />
+  <require
+      permission="zope.View"
+      interface=".interfaces.IPhotoSlide"
+      />
+  <require
+      permission="zope.ManageContent"
+      set_schema=".interfaces.IPhotoSlide"
+      />
+</content>
+
+<content class=".PhotoSlideFolder">
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      />
+  <implements
+      interface="zope.app.container.interfaces.IContentContainer"
+      />
+  <factory
+      id="photoslide.PhotoSlideFolder"
+      title="Photo Slide Folder"
+      description="A Folder which contains PhotoSlide objects"
+      />
+  <require
+      permission="zope.View"
+      interface=".interfaces.IPhotoSlideFolder"
+      />
+  <require
+      permission="zope.ManageContent"
+      set_schema=".interfaces.IPhotoSlideFolder"
+      />
+</content>
+
+<!-- Adapters -->
+
+<!-- Upload Photo permission -->
+<adapter
+    factory="photo.PhotoFactory"
+    provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
+    for=".interfaces.IPhotoSlide"
+    permission="zope.ManageContent"
+    />
+
+<!-- Create Photo permission -->
+<adapter
+    factory="photo.PhotoFactory"
+    provides="zope.app.filerepresentation.interfaces.IFileFactory"
+    for=".interfaces.IPhotoSlide"
+    permission="zope.ManageContent"
+    />
+
+<!-- Create Photo Slide permission -->
+<adapter
+    factory=".PhotoSlideFactory"
+    provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
+    for=".interfaces.IPhotoSlideFolder"
+    permission="zope.ManageContent"
+    />
+
+<!-- Delete Photo Slide permission -->
+<adapter
+    factory="zope.app.container.directory.noop"
+    provides="zope.app.filerepresentation.interfaces.IWriteDirectory"
+    for=".interfaces.IPhotoSlideFolder"
+    permission="zope.ManageContent"
+    />
+
+<!-- List Photo Slide permission -->
+<adapter
+    factory="zope.app.container.directory.noop"
+    provides="zope.app.filerepresentation.interfaces.IReadDirectory"
+    for=".interfaces.IPhotoSlide"
+    permission="zope.ManageContent"
+    />
+
+<!-- Delete Photo permission -->
+<adapter
+    factory="zope.app.container.directory.noop"
+    provides="zope.app.filerepresentation.interfaces.IWriteDirectory"
+    for=".interfaces.IPhotoSlide"
+    permission="zope.ManageContent"
+    />
+
+<include package=".browser" />
+
+</configure>

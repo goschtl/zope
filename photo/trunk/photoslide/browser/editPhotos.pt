@@ -1,0 +1,39 @@
+<html metal:use-macro="views/standard_macros/page">
+  <body>
+    <div metal:fill-slot="body" i18n:domain="photo">
+      <h3 i18n:translate="">Edit Photos</h3>
+
+      <p tal:define="status view/update"
+         tal:condition="status"
+         tal:content="status" />
+
+<br>
+      <form method="POST" tal:attributes="action request/URL">
+      <center>
+        <table width="90%" align="center">
+          <tr tal:repeat="photo context/getPhotos" >
+	    <tal:block
+	        tal:define="photoView python: view.getPhotoView(photo)"
+		>
+	      <td width="30%" valign="top" align="left">
+	        <span tal:replace="structure photoView/title_widget/row" />
+	        <img src=""
+	     tal:attributes="src python:view.getPhotoURL(photo,'thumbnail')"/>
+	        <span tal:replace="structure photoView/position_widget/row" />
+              </td>
+	      <td width="70%">
+	        <span
+		    tal:replace="structure photoView/description_widget/row"/>
+              </td>
+	    </tal:block>
+	  </tr>
+	</table>
+      </center>
+        <div class="controls">
+          <input type="submit" name="UPDATE_EDIT_PHOTOS"
+                 value="Submit" i18n:attributes="value submit-button" />
+        </div>	
+      </form>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+Photo Product
+
+  Overview
+
+    This product enables you to have multiple sizes of an image. You
+    only have to supply it with an image and it will automatically
+    generate the size you ask it for. It also can store some meta
+    data about the image.
+
+    It is much influenced by the Photo product in Zope 2, but it
+    is not a direct port of it.
+
+  Display Sizes
+
+    Right now it contains a static set of different sizes of the image.
+    This will change though, so that you can specify the sizes you
+    want.
+
+  Image Utilities
+
+    In order to resize the image it uses an image utility. It will give
+    you a list of available image utilities. You can choose any utility
+    which implements IImageResizeUtility. Two utilites are provided in
+    this package. One which uses ImageMagick and another which uses PIL.
+
+    Note that in order to use the ImageMagick utility the 'convert'
+    program has to be in your PATH. To use the PIL utility the PIL
+    module has to be installed. 
+
+  Uploading Photos
+
+    There are two ways of uploading photos. One is to do it through
+    the browser by adding a photo in the ZMI. Though if you want to
+    upload many photos you're better off creating a photo aware folder,
+    like the PhotoSlide product. You can also create a normal folder
+    and mark it with the IPhotoFolder interface. Then every image
+    you upload to that folder will becom a photo.
+
+  Current Status
+
+    At the moment this product is quite usable, though there's still
+    a lot to be done. See the TODO for more information
+
+  Other Notes
+
+    This product was originally created by Bjorn Tillenius. Maintenance
+    has been taken over by Ivo van der Wijk (ivo@amaze.nl)

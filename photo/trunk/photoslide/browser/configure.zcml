@@ -1,0 +1,159 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+<!-- PhotoSlide -->
+
+<browser:addform
+    label="Add Photo Slide"
+    name="AddPhotoSlide"
+    content_factory="photoslide.PhotoSlide"
+    schema="photoslide.interfaces.IPhotoSlide"
+    permission="zope.ManageContent"
+    menu="add_content"
+    title="Photo Slide"
+    />
+
+<browser:editform
+    label="Edit Photo Slide"
+    name="edit.html"
+    schema="photoslide.interfaces.IPhotoSlide"
+    permission="zope.ManageContent"
+    menu="zmi_views"
+    title="Edit"
+    />
+
+<browser:menu
+    id="add_photoslide"
+    title="Menu of objects to be added to the Photo Slide"
+    />
+
+<browser:menuItem
+    menu="add_photoslide"
+    for="zope.app.container.interfaces.IAdding"
+    action="AddPhoto"
+    title="Photo"
+    />
+
+<browser:menuItem
+    menu="zmi_views"
+    for="photoslide.interfaces.IPhotoSlide"
+    action="@@viewThumbnails.html"
+    title="View Slide Show"
+    />
+
+<browser:view
+    name="+"
+    for="photoslide.interfaces.IPhotoSlide"
+    class=".photoslide.PhotoSlideAdding"
+    permission="zope.ManageContent"
+    allowed_attributes="addingInfo"
+    menu="zmi_actions"
+    title="Add"
+    >
+      <browser:page name="index.html"  template="add.pt" />
+      <browser:page name="action.html" attribute="action" />
+</browser:view>
+
+<browser:page
+    for="photoslide.interfaces.IPhotoSlide"
+    name="contents.html"
+    permission="zope.ManageContent"
+    class="zope.app.container.browser.contents.Contents"
+    attribute="contents"
+    menu="zmi_views"
+    title="Contents"
+    />
+
+<browser:page
+    for="photoslide.interfaces.IPhotoSlide"
+    name="viewThumbnails.html"
+    permission="zope.Public"
+    class=".photoslide.PhotoSlideViewThumbnails"
+    template="viewThumbnails.pt"
+    menu="zmi_views"
+    title="View"
+    />
+
+<browser:page
+    for="photoslide.interfaces.IPhotoSlide"
+    name="viewPhoto.html"
+    permission="zope.Public"
+    class=".photoslide.PhotoSlideViewPhoto"
+    template="viewPhoto.pt"
+    />
+
+<browser:page
+    for="photoslide.interfaces.IPhotoSlide"
+    name="editPhotos.html"
+    permission="zope.ManageContent"
+    class=".photoslide.PhotoSlideViewEditPhotos"
+    template="editPhotos.pt"
+    menu="zmi_views"
+    title="Edit Photos"
+    />
+
+<browser:defaultView
+    for="photoslide.interfaces.IPhotoSlide"
+    name="viewThumbnails.html"
+    />
+
+<!-- PhotoSlideFolder -->
+
+<browser:page
+    for="photoslide.interfaces.IPhotoSlideFolder"
+    name="contents.html"
+    permission="zope.ManageContent"
+    class="zope.app.container.browser.contents.Contents"
+    attribute="contents"
+    menu="zmi_views"
+    title="Contents"
+    />
+
+<browser:view
+    name="+"
+    for="photoslide.interfaces.IPhotoSlideFolder"
+    class=".photoslide.PhotoSlideFolderAdding"
+    permission="zope.ManageContent"
+    allowed_attributes="addingInfo"
+    menu="zmi_actions"
+    title="Add"
+    >
+      <browser:page name="index.html"  template="add.pt" />
+      <browser:page name="action.html" attribute="action" />
+</browser:view>
+
+<browser:menu
+    id="add_photoslidefolder"
+    title="Menu of objects to be added to the Photo Slide Collection"
+    />
+
+<browser:menuItem
+    menu="add_photoslidefolder"
+    for="zope.app.container.interfaces.IAdding"
+    action="AddPhoto"
+    title="Photo"
+    />
+
+<browser:menuItem
+    menu="add_photoslidefolder"
+    for="zope.app.container.interfaces.IAdding"
+    action="AddPhotoSlide"
+    title="Photo Slide"
+    />
+
+<browser:menuItem
+    menu="add_content"
+    for="zope.app.container.interfaces.IAdding"
+    title="Photo Slide Folder"
+    action="photoslide.PhotoSlideFolder"
+    description="Photo Slide Collection"
+    />
+
+<browser:defaultView
+    for="photoslide.interfaces.IPhotoSlideFolder"
+    name="contents.html"
+    />
+
+</configure>

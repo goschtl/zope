@@ -1,0 +1,55 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="photo"
+    >
+
+<browser:addform
+    label="Add Photo"
+    name="AddPhoto"
+    schema="photo.interfaces.IPhoto"
+    content_factory="photo.Photo"
+    permission="zope.ManageContent"
+    menu="add_content"
+    title="Photo"
+    />
+
+<browser:editform
+    label="Edit Photo"
+    name="edit.html"
+    schema="photo.interfaces.IPhoto"
+    fields="title description useParentOptions currentDisplayId resizeUtility"
+    for="photo.interfaces.IPhoto"
+    permission="zope.ManageContent"
+    menu="zmi_views"
+    title="Edit"
+    />
+
+<browser:editform
+    label="Upload New Photo"
+    name="upload.html"
+    schema="photo.interfaces.IPhoto"
+    for="photo.interfaces.IPhoto"
+    permission="zope.ManageContent"
+    menu="zmi_views"
+    title="Upload"
+    /> 
+
+<browser:page
+    name="index.html"
+    for="photo.interfaces.IPhoto"
+    permission="zope.View"
+    allowed_attributes="__call__ tag"
+    class="photo.browser.photo.PhotoData"
+    /> 
+
+<browser:page
+    for="photo.interfaces.IPhoto"
+    name="preview.html"
+    template="preview.pt"
+    menu="zmi_views"
+    title="Preview"
+    permission="zope.ManageContent"
+    /> 
+
+</configure>

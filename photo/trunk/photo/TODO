@@ -1,0 +1,44 @@
+* Provide a nice icon
+
+    Currently there's no icon associated with this product.
+    
+* Support for external storage
+
+    Storing a lot of images inside ZODB makes it unnecessary big and
+    slow. It would be better to only store meta data there and store
+    the actual images somewhere else, like the file system or an
+    external database.
+
+* Fix generation of new image sizes
+
+    At the moment new image sizes only get created when someone requests
+    it and the new image never gets deleted. There should be an option
+    to pre-generate certain sizes. There should also be some kind of
+    cache timeout, so that the images get deleted after a while.
+
+* Customization of display sizes
+
+    Now there are hard coded list of display sizes. It should be possible
+    to edit this list.
+
+* EXIF support
+
+    Extract EXIF data from the image.
+
+* Run images through filters while resizing
+
+    It would be nice to say, for example, that the thumbnails should
+    have rounded corners. My main idea here is that for each display
+    size you can specify a number of filter through which the resized
+    image will be processed.
+
+* Put PILImageUtility and ImageMagickUtility into seperate packages
+
+    Those are not specific to this product and could be useful for others
+    to use. Of course they would need some more functionality as well.
+
+* More functional tests
+
+    I noticed that quite often when I developed this product, all the unit
+    tests passed, but in reality the product was broken. Would be nice to
+    have some tests which can tell that it is broken.

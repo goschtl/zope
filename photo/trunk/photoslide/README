@@ -1,0 +1,28 @@
+PhotoSlide Product
+
+  Overview
+
+    This product is a container which can contain photos. It will keep
+    you from configure every single photo since the photos can use the 
+    this product's options. It also provides some views of the all the
+    photos. Currently the views aren't that nice and could really need
+    a better look.
+
+    It also contains a PhotoSlide Folder. The only advantage of using
+    this right now is if you create a folder inside it via FTP, it will
+    create a PhotoSlide. Later on it should also provide a view of the
+    slide shows which it contain.
+
+  Dependencies
+
+    It requires that zopeproducts.photo is installed.
+    
+  Current Status
+
+    At the moment this product is usable, the most important thing to
+    fix is to make the views look nicer.
+
+  Other Notes
+
+    This product was originally created by Bjorn Tillenius. Maintenance
+    has been taken over by Ivo van der Wijk (ivo@amaze.nl)

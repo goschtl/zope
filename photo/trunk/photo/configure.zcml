@@ -1,0 +1,75 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="photo"
+    >
+
+<content class=".Photo">
+  <implements
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
+      />
+  <!-- Photo is defined in __init__ - move it away? 
+      removed:
+      permission="zope.ManageContent"
+  -->
+  <factory
+      id="photo.Photo"
+      description="Photo"
+      />
+  <require
+      permission="zope.View"
+      interface=".interfaces.IPhoto"
+      />
+  <require
+      permission="zope.ManageContent"
+      set_schema=".interfaces.IPhoto"
+      />
+</content>
+
+<!-- ADAPTERS -->
+
+<adapter
+    factory=".PhotoSized"
+    provides="zope.app.size.interfaces.ISized"
+    for=".interfaces.IPhoto"
+    />
+
+<adapter
+    factory=".PhotoFactory"
+    provides="zope.app.filerepresentation.interfaces.IDirectoryFactory"
+    for=".interfaces.IPhotoFolder"
+    permission="zope.ManageContent"
+    />
+
+<adapter
+    factory=".PhotoFactory"
+    provides="zope.app.filerepresentation.interfaces.IFileFactory"
+    for=".interfaces.IPhotoFolder"
+    permission="zope.ManageContent"
+    />
+
+<adapter
+   for=".interfaces.IPhoto"
+   provides="zope.app.filerepresentation.interfaces.IReadDirectory"
+   factory="zope.app.container.directory.noop"
+   permission="zope.ManageContent"
+   />
+
+
+<!-- UTILITIES -->
+
+<utility
+    factory="photo.utilities.PILImageUtility"
+    provides="photo.interfaces.IImageResizeUtility"
+    name="PIL Image Utility"
+    />
+
+<utility
+    factory="photo.utilities.ImageMagickUtility"
+    provides="photo.interfaces.IImageResizeUtility"
+    name="ImageMagick Image Utility"
+    />
+
+<include package=".browser" />
+
+</configure>
+

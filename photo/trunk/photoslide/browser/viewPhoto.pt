@@ -1,0 +1,73 @@
+<html metal:use-macro="views/standard_macros/page">
+  <body>
+    <div metal:fill-slot="body" tal:define="curPhoto view/getCurrentPhoto" >
+
+      <h1 tal:content="context/title" />
+<center>
+      <table width="80%" tal:define="n_photos view/getNumberOfPhotos">
+        <tr> 
+	  <td width="20%" align="left">
+	    <a href=""
+	       tal:condition="not: view/isFirstPhoto"
+	       tal:attributes="href view/getPreviousURL"
+               >
+	      Previous
+	    </a>
+	  </td>
+	  <td width="60%"
+	      align="center"
+	      >
+	    <tal:block tal:repeat="page_url view/getPageURLs"
+	               tal:define="cur_page view/rq_page"
+                       >
+	      <a href="" 
+	         tal:condition="python: cur_page != page_url[0]"
+	         tal:content="python: page_url[0]"
+	         tal:attributes="href python: page_url[1]"
+	         />
+	      <tal:block tal:condition="python: cur_page == page_url[0]"
+	                 tal:content="python: page_url[0]"
+                         />
+	    </tal:block>
+	    </td>
+	  <td width="20%" align="right">
+	    <a href=""
+	       tal:condition="not: view/isLastPhoto"
+	       tal:attributes="href view/getNextURL"
+	       >
+	      Next
+	    </a>
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan="3" align="center">
+	    <b tal:content="curPhoto/title" />
+	  </td>
+	</tr>
+	</table>
+	<table width="80%">	
+	<tr>
+	  <td colspan="3" align="center">
+	    <img src=""
+	      tal:attributes="src python: view.getPhotoURL(curPhoto)" />
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan="3" align="center">
+	    <tal:block tal:repeat="dispId view/getDisplayIds"
+	               tal:define="curDispId view/getCurrentDisplayId">
+	      <a href="" tal:condition="python: curDispId != dispId[0]"
+	         tal:content="python: '[%s] ' % dispId[0]"
+	         tal:attributes="href python: dispId[1]"
+	         />
+	      <span tal:condition="python: curDispId == dispId[0]"
+	            tal:replace="python: '%s ' % dispId[0]"
+		    />
+	    </tal:block>
+	  </td>
+	</tr>
+      </table>
+</center>
+    </div>
+  </body>
+</html>
