@@ -13,7 +13,7 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.20 2004/03/06 00:38:47 jim Exp $
+$Id: __init__.py,v 1.21 2004/03/06 02:50:18 garrett Exp $
 """
 import sys
 import warnings
@@ -198,6 +198,13 @@ def queryView(object, name, request,
                        default=default, providing=providing)
 
 queryView = hookable(queryView)
+
+def getViewProviding(object, providing, request, context=None):
+    return getView(object, '', request, context, providing)
+    
+def queryViewProviding(object, providing, request, default=None, 
+                       context=None):
+    return queryView(object, '', request, default, context, providing)
 
 def getDefaultViewName(object, request, context=None):
     v = queryDefaultViewName(object, request, context=context)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.21 2004/03/02 14:26:16 srichter Exp $
+$Id: interfaces.py,v 1.22 2004/03/06 02:54:29 garrett Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -46,7 +46,8 @@ class IComponentArchitecture(Interface):
         the given context, in the format {nameString: serviceInterface}.
         If the context is None the global definitions will be returned.
         The default behavior of placeful service managers is to include
-        service definitions above them, but this can be overridden"""
+        service definitions above them, but this can be overridden.
+        """
 
     # Utility service
 
@@ -56,20 +57,19 @@ class IComponentArchitecture(Interface):
         Returns the nearest utility to the context that implements the
         specified interface.  If one is not found, raises
         ComponentLookupError.
-
         """
 
     def queryUtility(context, interface, default=None, name=''):
         """Look for the utility that provides interface
 
         Returns the nearest utility to the context that implements
-        the specified interface.  If one is not found, returns default."""
+        the specified interface.  If one is not found, returns default.
+        """
 
     def getUtilitiesFor(context, interface):
         """Look up the registered utilities that provide an interface.
 
         Returns the list of utilities found
-
         """
         
     # Adapter service
@@ -87,7 +87,6 @@ class IComponentArchitecture(Interface):
         non-None value, that value will be returned. Otherwise, if the
         object already implements the interface, the object will be
         returned.
-
         """
 
     def getNamedAdapter(object, interface, name, context=None):
@@ -101,7 +100,6 @@ class IComponentArchitecture(Interface):
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
         named adapter methods with an empty string for a name.
-
         """
 
     def queryAdapter(object, interface, default=None, context=None):
@@ -117,7 +115,6 @@ class IComponentArchitecture(Interface):
         non-None value, that value will be returned. Otherwise, if the
         object already implements the interface, the object will be
         returned.
-
         """
 
     def queryNamedAdapter(object, interface, name, default=None, context=None):
@@ -131,7 +128,6 @@ class IComponentArchitecture(Interface):
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
         named adapter methods with an empty string for a name.
-
         """
 
     # Factory service
@@ -144,7 +140,6 @@ class IComponentArchitecture(Interface):
         to create a new instance. Returns a reference to the new
         object.  If a matching factory cannot be found raises
         ComponentLookupError
-
         """
 
     def getFactory(context, name):
@@ -153,7 +148,6 @@ class IComponentArchitecture(Interface):
         Get the factory of the given name that is nearest to the
         context.  If a matching factory cannot be found raises
         ComponentLookupError
-
         """
 
     def queryFactory(context, name, default=None):
@@ -162,7 +156,6 @@ class IComponentArchitecture(Interface):
         Get the factory of the given name that is nearest to the
         context.  If a matching factory cannot be found then the
         default is returned.
-
         """
 
     def getFactoryInterfaces(context, name):
@@ -170,7 +163,8 @@ class IComponentArchitecture(Interface):
 
         finds the factory of the given name that is nearest to the
         context, and returns the interface or interface tuple that
-        object instances created by the named factory will implement."""
+        object instances created by the named factory will implement.
+        """
 
     # Presentation service
 
@@ -185,7 +179,6 @@ class IComponentArchitecture(Interface):
 
         If context is not specified, attempts to use wrapping around
         object to specify a context.
-
         """
 
     def queryView(object, name, request,
@@ -198,7 +191,23 @@ class IComponentArchitecture(Interface):
 
         If context is not specified, attempts to use wrapping around
         object to specify a context.
+        """
+        
+    def getViewProviding(object, providing, request, context=None):
+        """Look for a view based on the interface it provides.
+        
+        A call to this method is equivalent to:
+            
+            getView(object, '', request, context, providing)
+        """
+        
+    def queryViewProviding(object, providing, request, 
+                           default=None, context=None):
+        """Look for a view that provides the specified interface.
+        
+        A call to this method is equivalent to:
 
+            queryView(object, '', request, default, context, providing)
         """
 
     def getDefaultViewName(object, request, context=None):
@@ -211,7 +220,6 @@ class IComponentArchitecture(Interface):
 
         If context is not specified, attempts to use wrapping around
         object to specify a context.
-
         """
 
     def queryDefaultViewName(object, request, default=None, context=None):
@@ -224,7 +232,6 @@ class IComponentArchitecture(Interface):
 
         If context is not specified, attempts to use wrapping around
         object to specify a context.
-
         """
 
     def getResource(wrapped_object, name, request, providing=Interface):
@@ -236,7 +243,6 @@ class IComponentArchitecture(Interface):
 
         A ComponentLookupError will be raised if the component can't
         be found.
-
         """
 
     def queryResource(wrapped_object, name, request,
@@ -274,7 +280,6 @@ class IServiceService(Interface):
 
         Return the default if the service can't be found.
         """
-
 
 class IFactory(Interface):
     """A factory is responsible for creating other components."""
@@ -450,12 +455,10 @@ class IPresentation(Interface):
         The request is a surrogate for the user. It also provides the
         presentation type and skin. It is of type
         IPresentationRequest.
-
         """)
 
 class IPresentationRequest(Interface):
-    """An IPresentationRequest provides methods for getting view meta data.
-    """
+    """An IPresentationRequest provides methods for getting view meta data."""
 
     def getPresentationSkin():
         """Get the skin to be used for a request.
@@ -465,8 +468,7 @@ class IPresentationRequest(Interface):
         """
 
 class IResource(IPresentation):
-    """Resources provide data to be used for presentation.
-    """
+    """Resources provide data to be used for presentation."""
 
 class IResourceFactory(Interface):
     """A factory to create factories using the request."""
@@ -475,12 +477,10 @@ class IResourceFactory(Interface):
         """Create a resource for a request
 
         The request must be an IPresentationRequest.
-
         """
 
 class IView(IPresentation, IContextDependent):
-    """Views provide a connection between an external actor and an object
-    """
+    """Views provide a connection between an external actor and an object"""
 
 class IViewFactory(Interface):
     """Objects for creating views"""

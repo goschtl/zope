@@ -276,6 +276,42 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEquals(c.__class__, Comp)
         self.assertEquals(c.context, ob)
 
+    def test_viewProvidingFunctions(self):        
+        # Confirm that a call to getViewProving/queryViewProviding simply 
+        # passes its arguments through to getView/queryView - here we hack
+        # getView and queryView to inspect the args passed through.
+        import zope.component
+        
+        # hack zope.component.getView
+        def getView(object, name, request, context, providing):
+            self.args = [object, name, request, context, providing]
+        savedGetView = zope.component.getView
+        zope.component.getView = getView
+        
+        # confirm pass through of args to getView by way of getViewProviding
+        zope.component.getViewProviding(
+            object='object', providing='providing', request='request', 
+            context='context')
+        self.assertEquals(self.args, 
+            ['object', '', 'request', 'context', 'providing'])
+        
+        # hack zope.component.queryView
+        def queryView(object, name, request, default, context, providing):
+            self.args = [object, name, request, default, context, providing]
+        savedQueryView = zope.component.queryView
+        zope.component.queryView = queryView
+        
+        # confirm pass through of args to queryView by way of queryViewProviding 
+        zope.component.queryViewProviding(
+            object='object', providing='providing', request='request', 
+            default='default', context='context')
+        self.assertEquals(self.args, 
+            ['object', '', 'request', 'default', 'context', 'providing'])
+        
+        # restore zope.component
+        zope.component.getView = savedGetView
+        zope.component.queryView = savedQueryView
+
     def testResource(self):
 
         from zope.component import getResource, queryResource, getService
