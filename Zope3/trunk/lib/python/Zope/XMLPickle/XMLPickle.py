@@ -13,10 +13,10 @@
 ##############################################################################
 """Pickle-based serialization of Python objects to and from XML.
 
-$Id: XMLPickle.py,v 1.1 2002/09/17 10:59:48 jim Exp $
+$Id: XMLPickle.py,v 1.2 2002/09/18 02:22:15 fdrake Exp $
 """
 
-import pyexpat
+from xml.parsers import expat
 from cStringIO import StringIO
 from cPickle import loads as pickle_loads
 from pickle import \
@@ -88,7 +88,7 @@ def loads(xml):
     """Create an object from serialized XML
     """
     handler = ppml.xmlPickler()
-    parser = pyexpat.ParserCreate()
+    parser = expat.ParserCreate()
     parser.CharacterDataHandler = handler.handle_data
     parser.StartElementHandler = handler.handle_starttag
     parser.EndElementHandler = handler.handle_endtag
