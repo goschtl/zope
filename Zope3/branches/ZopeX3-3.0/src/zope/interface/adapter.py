@@ -123,6 +123,7 @@ class Surrogate(object):
 
     def __init__(self, spec, registry):
         self.spec = spec.weakref()
+        self.registry = registry
         spec.subscribe(self)
         self.adapters = {}
         self.dependents = weakref.WeakKeyDictionary()
@@ -137,10 +138,24 @@ class Surrogate(object):
             del self.selfImplied
             del self.multImplied
             del self.get
+
+        bases = [self.registry.get(base) for base in self.spec().__bases__]
+        if bases != self.__bases__:
+            # Our bases changed. unsubscribe from the old ones
+            # and subscribe to the new ones
+            for base in self.__bases__:
+                base.unsubscribe(self)
+
+            self.__bases__ = bases
+            for base in bases:
+                base.subscribe(self)
+
         for dependent in self.dependents.keys():
             dependent.dirty()
 
     def clean(self):
+            
+
         self.selfImplied, self.multImplied = adapterImplied(self.adapters)
 
         implied = {}
