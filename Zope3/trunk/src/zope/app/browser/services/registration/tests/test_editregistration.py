@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_editregistration.py,v 1.2 2003/08/17 06:05:55 philikon Exp $
+$Id: test_editregistration.py,v 1.3 2003/09/21 17:31:00 jim Exp $
 """
 __metaclass__ = type
 
@@ -23,7 +23,8 @@ from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.services.registration import EditRegistration
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.event import IObjectModifiedEvent, IObjectRemovedEvent
+from zope.app.interfaces.container import IObjectRemovedEvent
+from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.services.registration import ActiveStatus
 from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.services.tests.placefulsetup import PlacefulSetup
@@ -32,7 +33,7 @@ from zope.interface import Interface, implements
 from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.context import ContextWrapper
+from zope.app.container.contained import Contained
 
 class Container(dict):
     implements(IContainer, IContainmentRoot)
@@ -40,7 +41,7 @@ class Container(dict):
 class I(Interface):
     pass
 
-class C:
+class C(Contained):
     implements(I)
     status = ActiveStatus
 
@@ -52,23 +53,9 @@ class Test(PlacefulSetup, TestCase):
         c2 = C()
         c7 = C()
         d = Container({'1': c1, '2': c2, '7': c7})
-        d = ContextWrapper(d, None)
         view = EditRegistration(d, TestRequest())
         view.remove_objects(['2', '7'])
         self.assertEqual(d, {'1': c1})
-
-        self.failUnless(
-            getEvents(IObjectRemovedEvent,
-                      filter = lambda event: event.object == c2),
-            )
-        self.failUnless(
-            getEvents(IObjectRemovedEvent,
-                      filter = lambda event: event.object == c7)
-            )
-        self.failUnless(
-            getEvents(IObjectModifiedEvent,
-                      filter = lambda event: event.object == d)
-            )
 
     def test_configInfo(self):
 
@@ -82,6 +69,9 @@ class Test(PlacefulSetup, TestCase):
         c2 = C()
         c7 = C()
         d = Container({'1': c1, '2': c2, '7': c7})
+        c1.__parent__ = d; c1.__name__ = '1'
+        c2.__parent__ = d; c2.__name__ = '2'
+        c7.__parent__ = d; c7.__name__ = '7'
 
         view = EditRegistration(d, TestRequest())
 
