@@ -140,7 +140,7 @@ class VocabularyUniqueListField(UniqueElements, VocabularyMultiField):
 # simple vocabularies performing enumerated-like tasks
 
 class SimpleTerm:
-    """Simple tokenized term used by SimpleVocabulary"""
+    """Simple tokenized term used by SimpleVocabulary."""
 
     implements(ITokenizedTerm)
 
@@ -154,49 +154,71 @@ class SimpleTerm:
         self.token = str(token)
 
 class SimpleVocabulary(object):
-    """vocabulary that uses a list or tuple"""
+    """Vocabulary that works from a sequence of terms."""
 
     implements(IVocabulary, IVocabularyTokenized)
 
-    def __init__(self, data, *interfaces):
-        """Construct a vocabulary from a simple list. Values of the list become
-        both the tokens and values of the terms in the vocabulary. The order
-        of the values is preserved as the order of the terms in the vocabulary.
-        One or more interfaces may also be provided so that alternate widgets
-        may be bound without subclassing
+    def __init__(self, terms, *interfaces):
+        """Initialize the vocabulary given a list of terms.
+
+        The vocabulary keeps a reference to the list of terms passed
+        in; it should never be modified while the vocabulary is used.
+
+        One or more interfaces may also be provided so that alternate
+        widgets may be bound without subclassing.
         """
         self.by_value = {}
         self.by_token = {}
-        self._terms = []
-        for value in data:
-            term = SimpleTerm(value)
-            self.by_value[value] = term
+        self._terms = terms
+        for term in self._terms:
+            self.by_value[term.value] = term
             self.by_token[term.token] = term
-            self._terms.append(term)
-        assert len(self.by_value) == len(self.by_token), \
+        assert len(self.by_value) == len(self.by_token) == len(terms), \
                'Supplied vocabulary values resulted in duplicate term tokens'
         if interfaces:
             directlyProvides(self, *interfaces)
 
     def fromItems(cls, items, *interfaces):
         """Construct a vocabulary from a list of (token, value) pairs.
-        The order of the items is preserved as the order of the terms in the
-        vocabulary. One or more interfaces may also be provided so that
-        alternate widgets may be bound without subclassing
+
+        The order of the items is preserved as the order of the terms
+        in the vocabulary.  Terms are created by calling the class
+        method createTerm() with the pair (value, token).
+
+        One or more interfaces may also be provided so that alternate
+        widgets may be bound without subclassing.
         """
-        self = cls.__new__(cls, items, *interfaces)
-        self.by_value = {}
-        self.by_token = {}
-        self._terms = []
-        for token, value in items:
-            term = SimpleTerm(value, token)
-            self.by_value[value] = term
-            self.by_token[term.token] = term
-            self._terms.append(term)
-        assert len(self.by_value) == len(self.by_token), \
-               'Supplied vocabulary items resulted in duplicate term tokens'
-        return self
+        terms = [cls.createTerm((value, token)) for (token, value) in items]
+        return cls(terms, *interfaces)
     fromItems = classmethod(fromItems)
+
+    def fromValues(cls, values, *interfaces):
+        """Construct a vocabulary from a simple list.
+
+        Values of the list become both the tokens and values of the
+        terms in the vocabulary.  The order of the values is preserved
+        as the order of the terms in the vocabulary.  Tokens are
+        created by calling the class method createTerm() with the
+        value as the only parameter.
+
+        One or more interfaces may also be provided so that alternate
+        widgets may be bound without subclassing.
+        """
+        terms = [cls.createTerm(value) for value in values]
+        return cls(terms, *interfaces)
+    fromValues = classmethod(fromValues)
+
+    def createTerm(cls, data):
+        """Create a single term from data.
+
+        Subclasses may override this with a class method that creates
+        a term of the appropriate type from the single data argument.
+        """
+        if isinstance(data, tuple):
+            return SimpleTerm(*data)
+        else:
+            return SimpleTerm(data)
+    createTerm = classmethod(createTerm)
 
     def __contains__(self, value):
         return value in self.by_value

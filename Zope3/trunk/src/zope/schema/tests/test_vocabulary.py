@@ -130,7 +130,7 @@ class VocabularyFieldTests(BaseTest):
 
 class SimpleVocabularyTests(unittest.TestCase):
 
-    list_vocab = vocabulary.SimpleVocabulary([1, 2, 3])
+    list_vocab = vocabulary.SimpleVocabulary.fromValues([1, 2, 3])
     items_vocab = vocabulary.SimpleVocabulary.fromItems(
         [('one', 1), ('two', 2), ('three', 3), ('fore!', 4)])
 
@@ -166,7 +166,7 @@ class SimpleVocabularyTests(unittest.TestCase):
     def test_addt_interfaces(self):
         class IStupid(Interface):
             pass
-        v = vocabulary.SimpleVocabulary([1, 2, 3], IStupid)
+        v = vocabulary.SimpleVocabulary.fromValues([1, 2, 3], IStupid)
         self.failUnless(IStupid.isImplementedBy(v))
 
     def test_len(self):
@@ -189,10 +189,27 @@ class SimpleVocabularyTests(unittest.TestCase):
 
     def test_nonunique_tokens(self):
         self.assertRaises(
-            AssertionError, vocabulary.SimpleVocabulary, [2, '2'])
+            AssertionError, vocabulary.SimpleVocabulary.fromValues,
+            [2, '2'])
         self.assertRaises(
             AssertionError, vocabulary.SimpleVocabulary.fromItems, 
             [(1, 'one'), ('1', 'another one')])
+
+    def test_overriding_createTerm(self):
+        class MyTerm:
+            def __init__(self, value):
+                self.value = value
+                self.token = repr(value)
+                self.nextvalue = value + 1
+
+        class MyVocabulary(vocabulary.SimpleVocabulary):
+            def createTerm(cls, value):
+                return MyTerm(value)
+            createTerm = classmethod(createTerm)
+
+        vocab = MyVocabulary.fromValues([1, 2, 3])
+        for term in vocab:
+            self.assertEqual(term.value + 1, term.nextvalue)
 
 
 def test_suite():
