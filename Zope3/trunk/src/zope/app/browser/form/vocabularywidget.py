@@ -499,13 +499,15 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
         #
         get = self.request.form.get
         self.action = self.getAction()
-        try:
-            self.query_index = int(get(self.query_index_name, 0))
-        except ValueError:
-            self.query_index = None
-        else:
-            if self.query_index < 0:
-                self.query_index = None
+        self.query_index = None
+        if self.query_index_name in self.request.form:
+            try:
+                index = int(self.request.form[self.query_index_name])
+            except ValueError:
+                pass
+            else:
+                if index >= 0:
+                    self.query_index = index
         QS = get(self.query_selections_name, [])
         if not isinstance(QS, list):
             QS = [QS]
