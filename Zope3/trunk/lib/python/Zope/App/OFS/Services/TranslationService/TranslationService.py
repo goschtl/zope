@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: TranslationService.py,v 1.3 2002/08/01 18:42:13 jim Exp $
+$Id: TranslationService.py,v 1.4 2002/12/18 19:15:31 poster Exp $
 """
 import re
 from types import StringTypes, TupleType
@@ -26,7 +26,6 @@ from Zope.App.ComponentArchitecture.NextService import queryNextService
 
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 from Zope.App.OFS.Container.IContainer import IContainer
-from Zope.App.OFS.Container.IContainer import IHomogenousContainer
 
 from Zope.I18n.Negotiator import negotiator
 from Zope.I18n.Domain import Domain
@@ -35,8 +34,7 @@ from Zope.I18n.ITranslationService import ITranslationService
 from Zope.I18n.SimpleTranslationService import SimpleTranslationService
 
 
-class ILocalTranslationService(ITranslationService,
-                               IContainer, IHomogenousContainer):
+class ILocalTranslationService(ITranslationService, IContainer):
     """TTW manageable translation service"""
 
 
@@ -79,14 +77,6 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         super(TranslationService, self).__delitem__(name)
         self._unregisterMessageCatalog(object.getLanguage(),
                                        object.getDomain(), name)
-
-    def isAddable(self, interfaces):
-        """See Zope.App.OFS.Container.IContainer.IWriteContainer"""
-        if type(interfaces) != TupleType:
-            interfaces = (interfaces,)
-        if IMessageCatalog in interfaces:
-            return 1
-        return 0
 
     # end Zope.App.OFS.Container.IContainer.IWriteContainer
     ############################################################

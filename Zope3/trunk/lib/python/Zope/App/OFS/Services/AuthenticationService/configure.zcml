@@ -14,9 +14,6 @@
         interface="Zope.App.Security.IAuthenticationService." />
     <require
         permission="Zope.View"
-        interface="Zope.App.OFS.Container.IContainer.IHomogenousContainer" />
-    <require
-        permission="Zope.View"
         attributes="getAllUsers" />
 
     <require

@@ -12,14 +12,14 @@
 # 
 ##############################################################################
 """
-$Id: AuthenticationService.py,v 1.5 2002/12/06 13:12:08 itamar Exp $
+$Id: AuthenticationService.py,v 1.6 2002/12/18 19:15:03 poster Exp $
 """
 from types import TupleType
 
 from Zope.Exceptions import NotFoundError
 from Zope.ComponentArchitecture import getAdapter, queryAdapter
 
-from Zope.App.OFS.Container.IContainer import IHomogenousContainer, IContainer
+from Zope.App.OFS.Container.IContainer import IContainer
 from Zope.App.OFS.Container.BTreeContainer import BTreeContainer
 
 from Zope.App.Security.ILoginPassword import ILoginPassword
@@ -30,8 +30,7 @@ from Zope.App.OFS.Services.AuthenticationService.IUser import IUser
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
 
-class ILocalAuthenticationService(IAuthenticationService, IContainer,
-                                  IHomogenousContainer):
+class ILocalAuthenticationService(IAuthenticationService, IContainer):
     """TTW manageable authentication service"""
 
     def getAllUsers():
@@ -97,16 +96,3 @@ class AuthenticationService(BTreeContainer):
                   if p.getTitle().lower().startswith(name) or
                      p.getLogin().lower().startswith(name)]
 
-    ######################################
-    # from: Zope.App.OFS.Container.IContainer.IHomogenousContainer
-
-    def isAddable(self, interfaces):
-        'See Zope.App.OFS.Container.IContainer.IHomogenousContainer'
-        if type(interfaces) != TupleType:
-            interfaces = (interfaces,)
-        if IUser in interfaces:
-            return 1
-        return 0
-
-    #
-    ############################################################

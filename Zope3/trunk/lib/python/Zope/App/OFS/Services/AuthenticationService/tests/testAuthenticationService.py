@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testAuthenticationService.py,v 1.3 2002/12/06 13:12:08 itamar Exp $
+$Id: testAuthenticationService.py,v 1.4 2002/12/18 19:15:03 poster Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -103,12 +103,6 @@ class AuthServiceTest(TestCase, PlacefulSetup):
     def testGetPrincipals(self):
         auth = self._auth
         self.assertEqual([auth['srichter']], auth.getPrincipals('srichter'))
-
-    def testIsAddable(self):
-        auth = self._auth
-        self.assertEqual(1, auth.isAddable(IUser))
-        self.assertEqual(0, auth.isAddable(IHTTPCredentials))
-
 
 def test_suite():
     return makeSuite(AuthServiceTest)
