@@ -12,12 +12,43 @@
 #
 ##############################################################################
 """
-$Id: test_tuplefield.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+This set of tests exercises both Tuple and Sequence.  The only
+behavior Tuple adds to sequence is the restriction of the type
+to 'tuple'.
+
+$Id: test_tuplefield.py,v 1.3 2003/01/25 03:53:40 rdmurray Exp $
 """
 from unittest import TestSuite, main, makeSuite
-from zope.schema import Tuple, Int, Float
+from zope.schema import Sequence, Tuple, Int, Float
 from zope.schema import errornames
 from zope.schema.tests.test_field import FieldTestBase
+
+class SequenceTest(FieldTestBase):
+    """Test the Sequence Field."""
+
+    _Field_Factory = Sequence
+
+    def testValidate(self):
+        field = self._Field_Factory(title=u'test field', description=u'',
+                                    readonly=False, required=False)
+        field.validate(None)
+        field.validate(())
+        field.validate([])
+        field.validate('')
+        field.validate({})
+        field.validate([1, 2])
+
+        self.assertRaisesErrorNames(errornames.NotAContainer,
+                                    field.validate, 1)
+
+    def testValidateRequired(self):
+        field = self._Field_Factory(title=u'test field', description=u'',
+                                    readonly=False, required=True)
+        field.validate([1, 2])
+
+        self.assertRaisesErrorNames(errornames.RequiredMissing,
+                                    field.validate, None)
+
 
 class TupleTest(FieldTestBase):
     """Test the Tuple Field."""
@@ -31,6 +62,15 @@ class TupleTest(FieldTestBase):
         field.validate(())
         field.validate((1, 2))
         field.validate((3,))
+
+        self.assertRaisesErrorNames(errornames.WrongType,
+                                    field.validate, [1, 2, 3])
+        self.assertRaisesErrorNames(errornames.WrongType,
+                                    field.validate, 'abc')
+        self.assertRaisesErrorNames(errornames.WrongType,
+                                    field.validate, 1)
+        self.assertRaisesErrorNames(errornames.WrongType,
+                                    field.validate, {})
 
     def testValidateRequired(self):
         field = Tuple(title=u'Tuple field', description=u'',
@@ -93,7 +133,10 @@ class TupleTest(FieldTestBase):
                                     field.validate, (2, '') )
 
 def test_suite():
-    return makeSuite(TupleTest)
+    suite = TestSuite()
+    suite.addTest(makeSuite(TupleTest))
+    suite.addTest(makeSuite(SequenceTest))
+    return suite
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')
