@@ -69,6 +69,8 @@ Zope Changes
 
       o Code Interpreter
 
+      o Language Negotiator
+
     - Rearranged the package hierarchy below zope.app.
 
       o Moved content types, including their interfaces and browser

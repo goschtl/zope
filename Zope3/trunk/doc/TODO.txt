@@ -52,8 +52,6 @@ Things to do for the next release (in no particular order)
 
   What remains is the section "Utilities everywhere".
 
-  - Language negotiation
-
   - Translation (?)  Note that if these were utilities, you could
     have independent utilities prt domain
 
