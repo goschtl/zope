@@ -58,9 +58,10 @@ def filter_names(names):
 class SetupContext:
     """Object representing the arguments to distutils.core.setup()."""
 
-    def __init__(self, pkgname, version, setup_file):
+    def __init__(self, pkgname, version, setup_file, distclass=None):
         self._working_dir = os.path.dirname(os.path.abspath(setup_file))
         self._pkgname = pkgname
+        self._distclass = distclass or "zpkgsetup.dist.ZPkgDistribution"
         self.version = version
         self.packages = []
         self.package_data = {}
@@ -72,9 +73,10 @@ class SetupContext:
         self.data_files = []
 
     def initialize(self):
-        self.load_metadata(
-            os.path.join(self._working_dir, self._pkgname,
-                         publication.PUBLICATION_CONF))
+        metadata_file = os.path.join(self._working_dir, self._pkgname,
+                                     publication.PUBLICATION_CONF)
+        if os.path.isfile(metadata_file):
+            self.load_metadata(metadata_file)
         pkgdir = os.path.join(self._working_dir, self._pkgname)
         self.scan(self._pkgname, pkgdir, self._pkgname)
         depsdir = os.path.join(self._working_dir, "Dependencies")
@@ -107,12 +109,20 @@ class SetupContext:
         for name in self.__dict__:
             if name[0] == "_":
                 del kwargs[name]
-        from zpkgsetup.dist import ZPkgDistribution
         from distutils.core import setup
-        kwargs["distclass"] = ZPkgDistribution
+        kwargs["distclass"] = self.get_distribution_class()
         ContextDisplay.kwargs = kwargs
         kwargs["cmdclass"] = {"debugdisplay": ContextDisplay}
         setup(**kwargs)
+
+    def get_distribution_class(self):
+        i = self._distclass.rfind(".")
+        if i >= 0:
+            modname = self._distclass[:i]
+            clsname = self._distclass[i+1:]
+            __import__(modname)
+            return getattr(sys.modules[modname], clsname)
+        raise ValueError("distribution class name must specify a module name")
 
     def load_metadata(self, path):
         f = open(path, "rU")

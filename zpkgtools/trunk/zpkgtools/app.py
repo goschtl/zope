@@ -136,7 +136,7 @@ class BuilderApplication(Application):
                 destination = os.path.join(depsdir, fullname)
                 self.add_manifest(destination)
                 component.write_package(destination)
-                component.write_setup_py()
+                component.write_setup_py(pathparts=["..", ".."])
                 component.write_setup_cfg()
                 self.add_headers(component)
         if self.options.application:
@@ -452,11 +452,15 @@ class Component:
         f.write("optimize = 1\n")
         f.close()
 
-    def write_setup_py(self, filename="setup.py", version=None):
+    def write_setup_py(self, filename="setup.py", version=None, pathparts=[]):
         setup_py = os.path.join(self.destination, filename)
         self.ip.add_output(setup_py)
         f = open(setup_py, "w")
-        print >>f, SETUP_HEADER
+        if pathparts:
+            extrapath = ", ".join([""] + [repr(pp) for pp in pathparts])
+        else:
+            extrapath = ""
+        print >>f, SETUP_HEADER % extrapath
         print >>f, "context = zpkgsetup.setup.SetupContext("
         print >>f, "    %r, %r, __file__)" % (self.name, version)
         print >>f
@@ -481,8 +485,9 @@ except NameError:
     # Python 2.2.x does not have __file__ for scripts.
     __file__ = sys.argv[0]
 
-support_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)),
-                           'Support')
+here = os.path.dirname(os.path.realpath(__file__))
+support_dir = os.path.join(here%s, 'Support')
+support_dir = os.path.normpath(support_dir)
 if os.path.isdir(support_dir):
     sys.path.insert(0, support_dir)
 
