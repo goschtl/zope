@@ -13,12 +13,13 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_config.py,v 1.1 2003/07/28 22:22:47 jim Exp $
+$Id: test_config.py,v 1.2 2003/07/29 19:56:45 jim Exp $
 """
 
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 from zope.configuration.config import metans, ConfigurationMachine
+from zope.configuration import config
 
 def test_config_extended_example():
     """Configuration machine
@@ -227,6 +228,22 @@ def test_kyeword_handling():
 
     >>> machine.actions
     [(('k', 'f'), f, ('f', 'c', 'x'), {}, (), 'yee ha')]
+    """
+
+def test_trailing_dot_in_resolve():
+    """Dotted names are no longer allowed to end in dots
+
+    >>> c = config.ConfigurationContext()
+
+    >>> c.resolve('zope.')
+    Traceback (most recent call last):
+    ...
+    ValueError: Trailing dots are no longer supported in dotted names
+
+    >>> c.resolve('  ')
+    Traceback (most recent call last):
+    ...
+    ValueError: The given name is blank
     """
 
 

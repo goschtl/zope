@@ -15,7 +15,7 @@
 
 See README.txt and notes.txt.
 
-$Id: config.py,v 1.2 2003/07/29 16:28:54 jim Exp $
+$Id: config.py,v 1.3 2003/07/29 19:56:42 jim Exp $
 """
 
 from keyword import iskeyword
@@ -115,7 +115,14 @@ class ConfigurationContext(object):
         """
         
         name = dottedname.strip()
+        if not name:
+            raise ValueError("The given name is blank")
+        
         names = name.split('.')
+        if not names[-1]:
+            raise ValueError(
+                "Trailing dots are no longer supported in dotted names")
+        
         if not names[0]:
             # Got a relative name. Conver it to abs using package info
             if self.package is None:
