@@ -17,7 +17,6 @@ $Id$
 """
 from zope.interface import implements, Invalid
 from zope.exceptions import NotFoundError, DuplicationError
-from zope.proxy import removeAllProxies
 
 from zope.app import zapi
 from zope.app.container.sample import SampleContainer
@@ -182,9 +181,6 @@ class ObjectMover(object):
 
         chooser = INameChooser(target)
         new_name = chooser.chooseName(new_name, obj)
-
-        # Can't store security proxies
-        obj = removeAllProxies(obj)
 
         target[new_name] = obj
         del container[orig_name]
@@ -372,8 +368,7 @@ class ObjectCopier(object):
         chooser = INameChooser(target)
         new_name = chooser.chooseName(new_name, obj)
 
-        copy = removeAllProxies(obj)
-        copy = locationCopy(copy)
+        copy = locationCopy(obj)
         self._configureCopy(copy, target, new_name)
         notify(ObjectCopiedEvent(copy))
 
@@ -438,7 +433,7 @@ class PrincipalClipboard(object):
 
     def getContents(self):
         '''Return the contents of the clipboard'''
-        return removeAllProxies(self.context.get('clipboard', ()))
+        return self.context.get('clipboard', ())
 
 
 def rename(container, oldid, newid):
