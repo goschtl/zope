@@ -120,6 +120,8 @@ Zope Changes
     - Introspector uses the Interface service now, instead of the ++module++
       namespace.
      
+    - Refactoring and cleanup of the schema/form code.
+
     - Improvements to the OnlineHelp, which has been deactivated for this
       release since it is broken since the recent geddons.
 

@@ -682,6 +682,11 @@ CVS Contributors
 
   Implementation of the Catalog.
 
+- Garrett Smith
+
+  Some refactoring of the widget/schema machinery.
+
+  Miscellaneous bug fixes.
 
 
 Other Contributions
