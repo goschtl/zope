@@ -31,8 +31,11 @@ Options:
     -p / --path <path>
         Specifies the package that is supposed to be searched
         (i.e. 'zope/app')
+    -o dir
+        Specifies a directory, relative to the package in which to put the
+        output translation template.
 """
-__id__ = "$Id: extract.py,v 1.11 2003/08/20 18:21:13 philikon Exp $"
+__id__ = "$Id: extract.py,v 1.12 2003/12/04 07:09:59 jim Exp $"
 
 import os, sys, fnmatch
 import getopt
@@ -371,7 +374,7 @@ def main(argv=sys.argv):
     try:
         opts, args = getopt.getopt(
             sys.argv[1:],
-            'hd:p:',
+            'hd:p:o:',
             ['help', 'domain=', 'path='])
     except getopt.error, msg:
         usage(1, msg)
@@ -379,12 +382,15 @@ def main(argv=sys.argv):
     domain = 'zope'
     path = app_dir()
     include_default_domain = True
+    output_dir = None
     for opt, arg in opts:
         if opt in ('-h', '--help'):
             usage(0)
         elif opt in ('-d', '--domain'):
             domain = arg
             include_default_domain = False
+        elif opt in ('-o', ):
+            output_dir = arg
         elif opt in ('-p', '--path'):
             if not os.path.exists(arg):
                 usage(1, 'The specified path does not exist.')
@@ -402,7 +408,15 @@ def main(argv=sys.argv):
     src_start = path.find('src')
     base_dir = path[:src_start]
 
-    maker = POTMaker(domain+'.pot', path)
+    output_file = domain+'.pot'
+    if output_dir:
+        output_dir = os.path.join(path, output_dir)
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+        output_file = os.path.join(output_dir, output_file)
+        
+
+    maker = POTMaker(output_file, path)
     maker.add(py_strings(path, domain), base_dir)
     maker.add(zcml_strings(path, domain), base_dir)
     maker.add(tal_strings(path, domain, include_default_domain), base_dir)
