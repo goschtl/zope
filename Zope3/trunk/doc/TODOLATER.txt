@@ -2,6 +2,12 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- Minor refactoring of security context
+
+  http://dev.zope.org/Zope3/UnificationOfRequestsAndSecurityContextsThroughUse
+
+  Steve and Marius are working on this
+
 - Restructure registration framework to use direct references rather
   than paths.
 
