@@ -16,7 +16,7 @@
 $Id: management.py,v 1.5 2004/02/20 20:42:12 srichter Exp $
 """
 # Special system user that has all permissions
-# zope.security.manager needs it
+# zope.security.simplepolicies needs it
 system_user = object()
 
 import traceback
@@ -24,12 +24,17 @@ import traceback
 from zope.interface import moduleProvides
 from zope.security.interfaces import ISecurityManagement
 from zope.security.interfaces import IInteractionManagement
-from zope.security.manager import setSecurityPolicy as _setSecurityPolicy
-from zope.security.manager import getSecurityPolicy as _getSecurityPolicy
 from zope.testing.cleanup import addCleanUp
 from zope.thread import thread_globals
 
 moduleProvides(ISecurityManagement, IInteractionManagement)
+
+
+def _clear():
+    global _defaultPolicy
+    _defaultPolicy = ParanoidSecurityPolicy()
+
+addCleanUp(_clear)
 
 
 #
@@ -38,7 +43,7 @@ moduleProvides(ISecurityManagement, IInteractionManagement)
 
 def getSecurityPolicy():
     """Get the system default security policy."""
-    return _getSecurityPolicy()
+    return _defaultPolicy
 
 def setSecurityPolicy(aSecurityPolicy):
     """Set the system default security policy, and return the previous
@@ -47,7 +52,11 @@ def setSecurityPolicy(aSecurityPolicy):
     This method should only be called by system startup code.
     It should never, for example, be called during a web request.
     """
-    return _setSecurityPolicy(aSecurityPolicy)
+    global _defaultPolicy
+
+    last, _defaultPolicy = _defaultPolicy, aSecurityPolicy
+
+    return last
 
 
 #
@@ -83,3 +92,7 @@ def _cleanUp():
 addCleanUp(_cleanUp)
 
 
+# circular imports are not fun
+
+from zope.security.simplepolicies import ParanoidSecurityPolicy
+_defaultPolicy = ParanoidSecurityPolicy()

@@ -60,57 +60,6 @@ class ISecurityProxyFactory(Interface):
         """
 
 
-# XXX This interface has too much Zope application dependence. This
-# needs to be refactored somehow.
-
-class ISecurityManager(Interface):  # XXX: going away
-    """
-        A security manager provides methods for checking access and managing
-        executable context and policies.
-    """
-
-    def getPrincipal():
-        """Return the authenticated principal.
-
-        This is equivalent to something like::
-        REQUEST['AUTHENTICATED_USER']
-        but is a bit cleaner, especially if 'REQUEST' isn't handy.
-
-        An IPrincipal object wrapped in a context of its
-        AuthenticationService is returned.
-        """
-
-    def checkPermission(permission, object):
-        """Return whether security context allows permission on object.
-
-        Arguments:
-        permission -- A permission name
-        object -- The object being accessed according to the permission
-        """
-
-    def pushExecutable(anExecutableObject):
-        """
-            Push an ExecutableObject onto the manager's stack, and
-            activate its custom security policy, if any.
-        """
-
-    def popExecutable(anExecutableObject):
-        """
-            Pop the topmost ExecutableObject from the stack, deactivating
-            any custom security policy it might have installed.
-        """
-
-    def calledByExecutable():
-        """
-            Return a boolean indicating whether the current request has
-            invoked any IExecutableObjects.
-
-            This can be used to determine if an object was called
-            (more or less) directly from a URL, or if it was called by
-            through-the-web provided code.
-        """
-
-
 class IChecker(Interface):
     """Security-proxy plugin objects that implement low-level checks
 
@@ -182,20 +131,6 @@ class ISecurityPolicy(Interface):
         interaction -- An interaction, which provides access to information
             such as authenticated principals.
         """
-
-
-class ISecurityContext(Interface):  # XXX: going away
-    """Capture transient request-specific security information."""
-
-    Attribute('stack',
-              'A stack of elements, each either be an ExecutableObject'
-              'or a tuple consisting of an ExecutableObject and a'
-              'custom SecurityPolicy.'
-            )
-
-    Attribute('user',
-              'The AUTHENTICATED_USER for the request.'
-              )
 
 
 class IInteraction(Interface):
