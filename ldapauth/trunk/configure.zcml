@@ -22,6 +22,11 @@
 
     </content>
 
+    <adapter
+        factory="ldapauth.connectiontest.LDAPTestAdapter"
+        provides="ldapauth.interfaces.ILDAPTestAdapter"
+        for="*"
+        />
 
     <!-- add browser views -->
     <include package=".browser" />

@@ -25,6 +25,7 @@ from zope.app.publisher.browser import BrowserView
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 from ldapauth.interfaces import ILDAPBasedPrincipalSource
+from ldapauth.interfaces import ILDAPTestAdapter
 
 
 
@@ -39,13 +40,40 @@ class CheckConnectionView(BrowserView):
         self.__parent__ = context
         self.report = []
 
+    def getHostInfo(self):
+        """Returns a dict with host information."""
+        infoDict = {}
+        infoDict['host'] = self.context.host
+        infoDict['port'] = self.context.port
+        infoDict['basedn'] = self.context.basedn
+        infoDict['login_attribute'] = self.context.login_attribute
+        infoDict['manager_dn'] = self.context.manager_dn
+        return infoDict
+
+
     def checkConnection(self):
         """Check connetction to the given LDAP server."""
-        report = []
+        runtest = self.request.get('runtest', None)
+        if runtest == "Run":
+            un = self.request.get('username')
+            pw = self.request.get('password')
 
-        self._addInfo("Report traceback")
+            # test the connection to the LDAP server
+            self._addInfo("<strong>Test LDAP server connection</strong>")
+            testadapter = ILDAPTestAdapter(self.context)
+            self.report = self.report + testadapter.testConnection()
 
-        return self.report
+            # test quering the LDAP server
+
+            # test query the given username
+
+            # test authenticate the given username
+
+            self._addInfo("... more test")
+    
+            return self.report
+        else:
+            return ""
 
     def _addInfo(self, res):
         """Add traceback info to the report list"""

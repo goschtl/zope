@@ -1,25 +1,88 @@
 <html metal:use-macro="views/standard_macros/view">
 <body>
 <div metal:fill-slot="body">
-  <div metal:define-macro="contents">
+  <div metal:define-macro="contents"
+			 tal:define="hostinfo view/getHostInfo;
+			 						 testreport view/checkConnection">
 
-    Here should be the form for to set the test data!
+		<form name="ldapConnectionTestForm" method="POST" action="."
+          tal:attributes="action request/URL">
 
-    <table id="sortable" class="listing" summary="Principal listing"
-           i18n:attributes="summary">
-      <thead>
-        <tr>
-          <th i18n:translate="">Test report</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr tal:repeat="entry view/checkConnection" >
-          <td>
-					<span tal:content="entry">login</span>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+			<table id="sortable" class="listing" summary="LDAP Configuration listing"
+						 i18n:attributes="summary">
+				<thead>
+					<tr>
+						<th i18n:translate="">Desription</th>
+						<th i18n:translate="">Data</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td i18n:translate="">Hostname</td>
+						<td><span tal:content="python:hostinfo['host']">host</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Port</td>
+						<td><span tal:content="python:hostinfo['port']">port</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Login attribute name</td>
+						<td><span tal:content="python:hostinfo['login_attribute']">login_attribute</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Base DN</td>
+						<td><span tal:content="python:hostinfo['basedn']">basedn</span></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Manager DN</td>
+						<td><span tal:content="python:hostinfo['manager_dn']">manager_dn</span></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<span i18n:translate="">
+				For to test the authentication, you can set a username and password.<br /> 
+				This usename and password has to be falid on the LDAP server.
+			</span>
+
+			<table id="sortable" class="listing" summary="LDAP Connection Test Data"
+						 i18n:attributes="summary">
+				<thead>
+					<tr>
+						<th i18n:translate="">Description</th>
+						<th i18n:translate="">Data</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td i18n:translate="">Username (optional)</td>
+						<td><input type="text" value="" name="username"></td>
+					</tr>
+					<tr>
+						<td i18n:translate="">Password (optional)</td>
+						<td><input type="password" value="" name="password"></td>
+					</tr>
+				</tbody>
+			</table>
+			<input type="hidden" value="Run" name="runtest">
+			<input type="submit" value="Test" name="submit">
+	
+			<table id="sortable" class="listing" summary="LDAP Connection Report listing"
+						 i18n:attributes="summary"
+						 tal:condition="testreport">
+				<thead>
+					<tr>
+						<th i18n:translate="">Test report</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr tal:repeat="line testreport" >
+						<td><span tal:content="structure line">report entry</span></td>
+					</tr>
+				</tbody>
+			</table>
+
+		</form>
   </div>
 </div>
 </body>

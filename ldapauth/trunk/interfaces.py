@@ -15,6 +15,7 @@
 
 $Id$
 """
+from zope.interface import Interface
 
 from zope.schema import TextLine, Int, List, Password
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -49,3 +50,14 @@ class ILDAPBasedPrincipalSource(IPrincipalSource):
             title = _(u'Manager password'),
             description = _(u"Manager's password"))
 
+
+
+class ILDAPTestAdapter(Interface):
+    """A test adapter for to test the connection between Zope and LDAP."""
+
+    def testConnection():
+        """Returns a report about connecting the LDAP server.
+        
+        Each step of connecting the server is reported as a string
+        in a report (list).
+        """
