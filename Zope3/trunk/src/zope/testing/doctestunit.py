@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests.
 
-$Id: doctestunit.py,v 1.11 2004/04/02 12:53:05 nathan Exp $
+$Id: doctestunit.py,v 1.12 2004/05/11 11:23:58 garrett Exp $
 """
 
 from StringIO import StringIO
@@ -87,7 +87,15 @@ class DocTestTestCase(unittest.TestCase):
     def shortDescription(self):
         return "Doctest: " + self.__name
 
-def DocFileSuite(*paths):
+def DocFileSuite(package, *paths):
+    """Creates a suite of doctest files.
+    
+    package is the source package containing the doctest files.
+    
+    Each subsequent argument is a string specifying the file name of the
+    doctest relative to the package.
+    """
+    
     # It's not entirely obvious how to connection this single string
     # with unittest.  For now, re-use the _utest() function that comes
     # standard with doctest in Python 2.3.  One problem is that the
@@ -96,7 +104,7 @@ def DocFileSuite(*paths):
     import os, doctest, new
     t = doctest.Tester(globs={})
     suite = unittest.TestSuite()
-    dir = os.path.split(__file__)[0]
+    dir = os.path.split(package.__file__)[0]
     for path in paths:
         path = os.path.join(dir, path)
         source = open(path).read()
