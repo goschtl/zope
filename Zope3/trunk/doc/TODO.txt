@@ -2,6 +2,9 @@
 Things to do for the next release (in no particular order)
 ============================================================
 
+- Remove the workflow service, which is just a wrapper around the
+  utility service.
+
 - http://dev.zope.org/Zope3/NoMoreSchemaBinding
 
 - http://dev.zope.org/Zope3/CleanupOfSchemaAndWidgets
