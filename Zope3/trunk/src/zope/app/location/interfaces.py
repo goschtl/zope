@@ -38,7 +38,7 @@ class ISublocations(Interface):
     def sublocations():
         """Return sublocations
 
-        An iterablt of objects who's __parent__ is the object
+        An iterable of objects whose __parent__ is the object
         providing the interface is returned.
         
         """

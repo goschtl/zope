@@ -64,7 +64,7 @@ Zope Changes
 
       - Ported Zope Version Control
 
-      - Added an uption (-1) to the test runner to suppress doctest
+      - Added an option (-1) to the test runner to suppress doctest
         errors after the first within each doctest.
 
       - If the adapter factory returns `None` as adapter instance, the default
@@ -192,8 +192,8 @@ Zope Changes
 
     Bug Fixes
 
-      - Fixed the page that reports "syste errors", errors that
-        represent a failure o the system, rather than the user, to set
+      - Fixed the page that reports "system errors", errors that
+        represent a failure of the system, rather than the user, to set
         the response status to 500.
 
       - NotFound pages and stattus codes are now returned only when
