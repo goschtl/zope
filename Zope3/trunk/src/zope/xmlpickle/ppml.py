@@ -53,11 +53,11 @@ def _convert_sub(string):
         else:
 
             if apos >= 0:
-                string = '&amp;'.join(string.split('&'))
+                string = string.replace("&", "&amp;")
             if lpos >= 0:
-                string = '&lt;'.join(string.split('<'))
+                string = string.replace("<", "&lt;")
             if rpos >= 0:
-                string = '&#x0d;'.join(string.split('\r'))
+                string = string.replace("\r", "&#x0d;")
 
     return '', string
 
@@ -75,8 +75,7 @@ def unconvert_string(encoding, string):
 
 def unconvert_unicode(encoding, string):
     if encoding == 'base64':
-        string = string.encode('ascii')
-        string = base64.decodestring(string)
+        string = base64.decodestring(string.encode('ascii'))
     elif encoding:
         raise ValueError('bad encoding', encoding)
 
@@ -313,6 +312,8 @@ class Dictionary(Collection):
     def value(self, write, indent):
         ind = ' '*indent
         ind4 = indent+4
+        begin = '%s<%s>\n' % (ind, self.item_name)
+        end = '%s</%s>\n' % (ind, self.item_name)
         for key, value in self._d:
             if (key.__class__ is String
                 and not key.encoding
@@ -321,16 +322,16 @@ class Dictionary(Collection):
                 id = getattr(key, 'id', '')
                 if id:
                     id = ' id="%s"' % id
-                s = key.value()
                 write('%s<%s %s="%s"%s>\n' %
-                      (ind, self.item_name, self.key_name, s, id))
+                      (ind, self.item_name, self.key_name, key.value(), id))
                 value.output(write, ind4)
-                write('%s</%s>\n' % (ind, self.item_name))
+                write(end)
             else:
-                write('%s<%s>\n' % (ind, self.item_name))
-                self.key_class(key).output(write, indent+2)
-                Value(value).output(write, indent+2)
-                write('%s</%s>\n' % (ind, self.item_name))
+                write(begin)
+                ind2 = indent+2
+                self.key_class(key).output(write, ind2)
+                Value(value).output(write, ind2)
+                write(end)
 
 class Attributes(Dictionary):
     key_name = 'name'
@@ -400,9 +401,7 @@ none=none()
 class Reference(Scalar):
 
     def output(self, write, indent=0, strip=0):
-        v = self._v
-        name = self.__class__.__name__.lower()
-        write('%s<%s id="%s"/>' % (' '*indent,name,v))
+        write('%s<reference id="%s"/>' % (' '*indent,self._v))
         if not strip:
             write('\n')
 
