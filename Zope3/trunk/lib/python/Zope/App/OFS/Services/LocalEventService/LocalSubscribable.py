@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalSubscribable.py,v 1.3 2002/08/01 15:33:43 jim Exp $
+$Id: LocalSubscribable.py,v 1.4 2002/09/06 02:14:31 poster Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -29,17 +29,24 @@ from Persistence import Persistent
 class LocalSubscribable(Subscribable, Persistent):
     """a local mix-in"""
 
-    def subscribe(wrapped_self, subscriber, event_type=IEvent, filter=None):
-        subscriber=removeAllProxies(subscriber) # might be wrapped, might not
+    def subscribe(wrapped_self,
+                  subscriber,
+                  event_type=IEvent,
+                  filter=None):
+        # might be wrapped, might not
+        subscriber = removeAllProxies(subscriber)
         
-        clean_self=removeAllProxies(wrapped_self)
-        wrapped_subscriber=ContextWrapper(subscriber, wrapped_self)
+        clean_self = removeAllProxies(wrapped_self)
+        wrapped_subscriber = ContextWrapper(subscriber, wrapped_self)
         
         if ISubscriptionAware.isImplementedBy(subscriber):
-            wrapped_subscriber.subscribedTo(wrapped_self, event_type, filter)
+            wrapped_subscriber.subscribedTo(
+                wrapped_self,
+                event_type,
+                filter)
         
-        ev_type=event_type
-        if ev_type is IEvent: ev_type=None # optimization
+        ev_type = event_type
+        if ev_type is IEvent: ev_type = None # optimization
         
         subscribers = clean_self._registry.get(ev_type)
         if subscribers is None:
@@ -49,38 +56,42 @@ class LocalSubscribable(Subscribable, Persistent):
 
         subs = clean_self._subscribers
         for sub in subs:
-            if sub[0]==subscriber:
-                sub[1][ev_type]=1
+            if sub[0] == subscriber:
+                sub[1][ev_type] = 1
                 break
         else:
             subs.append((subscriber,{ev_type:1}))
         
-        clean_self._registry=clean_self._registry #trigger persistence
+        clean_self._p_changed = 1 #trigger persistence
         
     
     subscribe=ContextMethod(subscribe)
     
-    def unsubscribe(wrapped_self, subscriber, event_type=None, filter=None):
-        subscriber=removeAllProxies(subscriber) # might be wrapped, might not
+    def unsubscribe(wrapped_self,
+                    subscriber,
+                    event_type = None,
+                    filter = None):
+        # subscriber might be wrapped, might not
+        subscriber = removeAllProxies(subscriber) 
         
-        clean_self=removeAllProxies(wrapped_self)
-        wrapped_subscriber=ContextWrapper(subscriber, wrapped_self)
+        clean_self = removeAllProxies(wrapped_self)
+        wrapped_subscriber = ContextWrapper(subscriber, wrapped_self)
         
         for subscriber_index in range(len(clean_self._subscribers)):
-            sub=clean_self._subscribers[subscriber_index]
-            if sub[0]==subscriber:
-                ev_set=sub[1]
+            sub = clean_self._subscribers[subscriber_index]
+            if sub[0] == subscriber:
+                ev_set = sub[1]
                 break
         else:
             raise NotFoundError(subscriber)
         
         
-        do_alert=ISubscriptionAware.isImplementedBy(subscriber)
+        do_alert = ISubscriptionAware.isImplementedBy(subscriber)
         
         if event_type:
-            ev_type=event_type
+            ev_type = event_type
             if event_type is IEvent:
-                ev_type=None # handle optimization
+                ev_type = None # handle optimization
             if ev_type not in ev_set:
                 raise NotFoundError(subscriber, event_type, filter)
             subscriptions = clean_self._registry.get(ev_type)
@@ -91,10 +102,11 @@ class LocalSubscribable(Subscribable, Persistent):
             except ValueError:
                 raise NotFoundError(subscriber, event_type, filter)
             if do_alert:
-                wrapped_subscriber.unsubscribedFrom(self, event_type, filter)
-            if len(ev_set)==1:
+                wrapped_subscriber.unsubscribedFrom(
+                    wrapped_self, event_type, filter)
+            if len(ev_set) == 1:
                 for sub in subscriptions:
-                    if sub[0]==subscriber:
+                    if sub[0] == subscriber:
                         break
                 else:
                     del clean_self._subscribers[subscriber_index]
@@ -108,10 +120,11 @@ class LocalSubscribable(Subscribable, Persistent):
                         if do_alert:
                             wrapped_subscriber.unsubscribedFrom(
                                 wrapped_self, ev_type or IEvent, sub[1])
-                            # IEvent switch is to make optimization transparent
+                            # IEvent switch is to make optimization
+                            # transparent
                     else: # kept (added back)
                         subscriptions.append(sub)
             del clean_self._subscribers[subscriber_index]
-        clean_self._registry=clean_self._registry #trigger persistence
+        clean_self._p_changed = 1
     
-    unsubscribe=ContextMethod(unsubscribe)
+    unsubscribe = ContextMethod(unsubscribe)

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.3 2002/07/11 18:21:31 jim Exp $
+$Id: testEventService.py,v 1.4 2002/09/06 02:14:31 poster Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -43,6 +43,7 @@ from Zope.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
 from Zope.Event.ObjectEvent import ObjectAddedEvent
 from Zope.Event.GlobalEventService import GlobalEventService
 from Zope.Event.IEvent import IEvent
+from Zope.Event.ISubscriptionAware import ISubscriptionAware
 
 from EventSetup import EventSetup
 
@@ -59,6 +60,21 @@ class DummyEvent:
 class ObjectEvent:
 
     __implements__ = IObjectEvent
+
+
+
+class DummySubscriptionAwareSubscriber(DummySubscriber):
+    __implements__ = ISubscriptionAware
+    
+    def subscribedTo(self, subscribable, event_type, filter):
+        self.subscribable = subscribable
+        self.event_type = event_type
+        self.filter = filter
+    
+    def unsubscribedFrom(self, subscribable, event_type, filter):
+        self.un_subscribable = subscribable
+        self.un_event_type = event_type
+        self.un_filter = filter
 
 class EventServiceTests(EventSetup, TestCase):
     
@@ -443,7 +459,43 @@ class EventServiceTests(EventSetup, TestCase):
         directive = sm.getDirectives("Events")[0]
         sm.unbindService(directive) # make sure it doesn't raise any errors
         
-
+    def testSubscriptionAwareInteraction(self):
+        sub = DummySubscriptionAwareSubscriber()
+        self.rootFolder.setObject(
+            "mySubscriber",
+            DummySubscriptionAwareSubscriber())
+        self.mySubscriber=ContextWrapper(
+            self.rootFolder["mySubscriber"],
+            self.rootFolder,
+            name="mySubscriber")
+        filter = DummyFilter()
+        subscribe(
+            self.mySubscriber,
+            event_type=IObjectAddedEvent,
+            filter=filter)
+        self.assertEqual(
+            self.mySubscriber.subscribable,
+            self.rootFolder.getServiceManager().getService("Events"))
+        self.assertEqual(
+            self.mySubscriber.event_type,
+            IObjectAddedEvent)
+        self.assertEqual(
+            self.mySubscriber.filter,
+            filter)
+        unsubscribe(
+            self.mySubscriber,
+            event_type=IObjectAddedEvent,
+            filter=filter)
+        self.assertEqual(
+            self.mySubscriber.un_subscribable,
+            self.rootFolder.getServiceManager().getService("Events"))
+        self.assertEqual(
+            self.mySubscriber.un_event_type,
+            IObjectAddedEvent)
+        self.assertEqual(
+            self.mySubscriber.un_filter,
+            filter)
+        
         
 def test_suite():
     loader=TestLoader()
