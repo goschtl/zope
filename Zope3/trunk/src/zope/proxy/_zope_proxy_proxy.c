@@ -1,3 +1,17 @@
+/*############################################################################
+#
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+############################################################################*/
+
 #include "Python.h"
 #include "modsupport.h"
 
@@ -1019,6 +1033,14 @@ wrapper_queryInnerProxy(PyObject *unused, PyObject *args)
   return result;
 }
 
+static char
+module___doc__[] =
+"Association between an object, a context object, and a dictionary.\n\
+\n\
+The context object and dictionary give additional context information\n\
+associated with a reference to the basic object.  The wrapper objects\n\
+act as proxies for the original object.";
+
 
 static PyMethodDef
 module_functions[] = {
@@ -1033,15 +1055,6 @@ module_functions[] = {
      removeAllProxies__doc__},
     {NULL}
 };
-
-static char
-module___doc__[] =
-"Association between an object, a context object, and a dictionary.\n\
-\n\
-The context object and dictionary give additional context information\n\
-associated with a reference to the basic object.  The wrapper objects\n\
-act as proxies for the original object.";
-
 
 void
 init_zope_proxy_proxy(void)
