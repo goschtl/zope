@@ -27,13 +27,8 @@ from zope.schema import URI
 from ldapadapter.exceptions import InvalidLDAPURI
 
 
-_isldapuri = re.compile(
-    r"^ldaps?://"         # protocol
-
-    # BEGIN: host
-
-    """
-    From RFC 952:
+"""
+From RFC 952:
     
      A "name" (Net, Host, Gateway, or  Domain  name)  is  a  text
      string  up  to  24 characters drawn from the alphabet (A-Z),
@@ -45,8 +40,11 @@ _isldapuri = re.compile(
      tinction  is  made  between  upper and lower case. The first
      character must be an alpha  character.  The  last  character
      must not be a minus sign or period.
-    """
+"""
+_isldapuri = re.compile(
+    r"^ldaps?://"         # protocol
 
+    # BEGIN: host
     r"([a-zA-Z]+([a-zA-Z\d\-]*[a-zA-Z\d])*"
     r"(\.[a-zA-Z\d]+([a-zA-Z\d\-]*[a-zA-Z\d])*)*"
     # END: host
