@@ -34,7 +34,7 @@ z Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
   &ZPublisher &OFS &Scheduler &StructuredText &TreeDisplay \
   &Shared &DC &ZRDB \
-  &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZGadflyDA
+  &Products &OFSP &MailHost &ExternalMethod 
 
 zs Components/GreyThing \
   &AccessControl &App &BoboPOS &DateTime &DocumentTemplate &HelpSys \
@@ -43,4 +43,3 @@ zs Components/GreyThing \
   &Products &OFSP &MailHost &ExternalMethod 
 
 pcgi Components/pcgi2 pcgi_publisher.py
-
