@@ -7,7 +7,7 @@ Problem/Proposal
 ----------------
 
 Vocabulary fields provide a field type for situations in which the set
-of options may be highly dynamic or otherwise by decoupled from the
+of options may be highly dynamic or otherwise be decoupled from the
 schema definition itself.  A vocabulary may be provided by (for
 example) some object in the ZODB, a query to an external database, the
 contents of a file maintained by another process, or static data
