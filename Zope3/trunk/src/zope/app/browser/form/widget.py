@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.53 2003/09/16 21:58:20 srichter Exp $
+$Id: widget.py,v 1.54 2003/09/25 21:43:12 poster Exp $
 """
 __metaclass__ = type
 
@@ -45,8 +45,12 @@ class BrowserWidget(Widget, BrowserView):
 
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.schema import Field
-    >>> field = Field(__name__='foo', title=u'Foo')
-    >>> request = TestRequest(form={'field.foo': u'hello\\r\\nworld'})
+    >>> import re
+    >>> isFriendly=re.compile(".*hello.*").match
+    >>> field = Field(__name__='foo', title=u'Foo', constraint=isFriendly)
+    >>> request = TestRequest(form={
+    ... 'field.foo': u'hello\\r\\nworld',
+    ... 'baz.foo': u'bye world'})
     >>> widget = BrowserWidget(field, request)
     >>> widget.name
     'field.foo'
@@ -58,19 +62,55 @@ class BrowserWidget(Widget, BrowserView):
     u'hello\\r\\nworld'
     >>> int(widget.required)
     1
-    >>> widget.error is None
+    >>> widget._error is None
     1
+    >>> widget.error()
+    ''
     >>> widget.setRenderedValue('Hey\\nfolks')
     >>> widget.getInputValue()
     u'hello\\r\\nworld'
-    >>> widget.error is None
+    >>> widget._error is None
     1
+    >>> widget.error()
+    ''
+
+    When we generate labels and errors, the labels are translated and the 
+    errors rendered with the view machinery, so we need to set up
+    a lot of machinery to support translation and views:
+
+    >>> setUp() # now we have to set up an error view...
+    >>> from zope.component.view import provideView
+    >>> from zope.app.interfaces.form import IWidgetInputError
+    >>> from zope.publisher.browser import IBrowserPresentation
+    >>> from zope.app.publisher.browser import BrowserView
+    >>> from cgi import escape
+    >>> class SnippetErrorView(BrowserView):
+    ...     def __call__(self):
+    ...         return escape(self.context.errors[0])
+    ... 
+    >>> provideView(IWidgetInputError, 'snippet', 
+    ...             IBrowserPresentation, SnippetErrorView)
+    >>> widget.setPrefix('baz')
+    >>> widget.name
+    'baz.foo'
+    >>> widget.error()
+    ''
+    >>> try:
+    ...     widget.getInputValue()
+    ... except WidgetInputError:
+    ...     print widget._error.errors
+    (u'Constraint not satisfied', u'bye world')
+    >>> widget.error()
+    u'Constraint not satisfied'
+    >>> widget._error = None # clean up for next round of tests
 
     >>> widget.setPrefix('test')
     >>> widget.name
     'test.foo'
-    >>> widget.error is None
+    >>> widget._error is None
     1
+    >>> widget.error()
+    ''
     >>> int(widget.hasInput())
     0
     >>> widget.getInputValue()
@@ -83,13 +123,11 @@ class BrowserWidget(Widget, BrowserView):
     0
     >>> int(widget.getInputValue() == field.missing_value)
     1
-    >>> widget.error is None
+    >>> widget._error is None
     1
-
-    When we generate labels, the labels are translated, so we need to set up
-    a lot of machinery to support translation:
-
-    >>> setUp()
+    >>> widget.error()
+    ''
+    
     >>> print widget.label()
     <label for="test.foo">Foo</label>
     >>> tearDown()
@@ -106,7 +144,7 @@ class BrowserWidget(Widget, BrowserView):
     cssClass = ''
     extra = ''
     _missing = ''
-    error = None
+    _error = None
 
     def haveData(self):
         if traceback.extract_stack()[-2][2] != 'hasInput':
@@ -146,7 +184,7 @@ class BrowserWidget(Widget, BrowserView):
         # XXX - move this implementation to getInputValue when deprecation
         # is removed
 
-        self.error = None
+        self._error = None
         field = self.context
 
         # form input is required, otherwise raise an error
@@ -165,9 +203,9 @@ class BrowserWidget(Widget, BrowserView):
         try:
             field.validate(value)
         except ValidationError, v:
-            self.error = WidgetInputError(
+            self._error = WidgetInputError(
                 self.context.__name__, self.title, v)
-            raise self.error
+            raise self._error
         return value
 
     def getInputValue(self):
@@ -287,16 +325,21 @@ class BrowserWidget(Widget, BrowserView):
         return '<label for="%s">%s</label>' % (
             self.name, self._tooltip(title, self.context.description),
             )
+    
+    def error(self):
+        if self._error:
+            return zapi.getView(self._error, 'snippet', self.request)()
+        return ""
 
     def labelClass(self):
         return self.context.required and "label required" or "label"
 
     def row(self):
-        if self.error:
-            error = zapi.getView(self.error, 'snippet', self.request)()
+        if self._error:
             return '<div class="%s">%s</div><div class="field">%s</div>' \
                 '<div class="error">%s</div>' % (self.labelClass(),
-                                                 self.label(), self(), error)
+                                                 self.label(), self(), 
+                                                 self.error())
         else:
             return '<div class="%s">%s</div><div class="field">%s</div>' % (
                 self.labelClass(), self.label(), self()
