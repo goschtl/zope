@@ -24,6 +24,9 @@ from zope.importtool import reporter
 from zope.importtool.tests import sample
 
 
+THIS_PACKAGE = __name__[:__name__.rfind(".")]
+PARENT_PACKAGE = THIS_PACKAGE[:THIS_PACKAGE.rfind(".")]
+
 real__import__ = __import__
 
 
@@ -202,5 +205,19 @@ class HookTestCase(unittest.TestCase):
         self.exc_info = None
 
 
+class HelpFunctionTestCase(unittest.TestCase):
+
+    def test_get_package_name(self):
+        self.assertEqual(hook.get_package_name(globals()),
+                         THIS_PACKAGE)
+        self.assertEqual(hook.get_package_name(sys.__dict__), None)
+        self.assertEqual(hook.get_package_name(reporter.__dict__),
+                         PARENT_PACKAGE)
+        import logging
+        self.assertEqual(hook.get_package_name(logging.__dict__), "logging")
+
+
 def test_suite():
-    return unittest.makeSuite(HookTestCase)
+    suite = unittest.makeSuite(HookTestCase)
+    suite.addTest(unittest.makeSuite(HelpFunctionTestCase))
+    return suite

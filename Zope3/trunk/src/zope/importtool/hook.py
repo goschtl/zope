@@ -77,7 +77,33 @@ class ReportingHook:
         if fromlist:
             imported = getattr(v, "__name__", None)
         else:
-            mod = self.previous(name, globals, locals, ("foo",))
+            try:
+                mod = self.previous(name, globals, locals, ("foo",))
+            except:
+                self.reporter.exception(importer, name, fromlist,
+                                        sys.exc_info())
+                raise
             imported = getattr(mod, "__name__", None)
         self.reporter.found(importer, imported, fromlist)
         return v
+
+
+def get_package_name(globals):
+    """Return the package name that produced `globals`, or None.
+
+    If `globals` is the dict for a module in a package, the name of
+    the package the module is contained in is returned.
+
+    If `globals` is the dict for a module that isn't in a package,
+    None is returned.
+
+    """
+    name = globals.get("__name__")
+    if name:
+        if "__path__" in globals:
+            # this is a package's __init__, just return the name
+            return name
+        elif "." in name:
+            # it's a module in a package; return the package name
+            return name[:name.rfind(".")]
+    return None
