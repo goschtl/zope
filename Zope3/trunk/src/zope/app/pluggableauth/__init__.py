@@ -533,6 +533,7 @@ class SimplePrincipal(Persistent, Contained):
         self.password = password
         self.title = title
         self.description = description
+        self.groups = []
 
     def _getId(self):
         source = self.__parent__
