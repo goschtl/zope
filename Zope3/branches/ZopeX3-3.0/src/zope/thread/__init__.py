@@ -215,11 +215,36 @@ except ImportError:
                 lock.release()
 
 
-        def __del__(self, enumerate=enumerate):
-            key = object.__getattribute__(self, '_local__key')
-            for thread in enumerate():
-                if key in thread.__dict__:
-                    del thread.__dict__[key]
+        def __del__():
+            threading_enumerate = enumerate
+            __getattribute__ = object.__getattribute__
+
+            def __del__(self):
+                key = __getattribute__(self, '_local__key')
+
+                try:
+                    threads = list(threading_enumerate())
+                except:
+                    # if enumerate fails, as it seems to do during
+                    # shutdown, we'll skip cleanup under the assumption
+                    # that there is nothing to clean up
+                    return 
+                
+                for thread in threads:
+                    try:
+                        __dict__ = thread.__dict__
+                    except AttributeError:
+                        # Thread is dying, rest in peace
+                        continue
+                    
+                    if key in __dict__:
+                        try:
+                            del __dict__[key]
+                        except KeyError: 
+                            pass # didn't have nything in this thread
+              
+            return __del__
+        __del__ = __del__()
 
 else:
     local = _zope_thread.local
