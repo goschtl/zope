@@ -11,7 +11,6 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-
 """Sample vocabularies for use with the complexsample widgets.
 
 $Id$
