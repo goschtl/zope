@@ -13,14 +13,14 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: tests.py,v 1.3 2004/03/13 18:01:13 srichter Exp $
+$Id: tests.py,v 1.4 2004/03/13 23:00:58 srichter Exp $
 """
 import unittest
 
 from zope.app import zapi
 from interfaces import ILocalBrowserMenuService, ILocalBrowserMenu
 from zope.publisher.interfaces.browser import IBrowserPublisher
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.publisher.interfaces.browser import IBrowserMenuService
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.utility.interfaces import ILocalUtility

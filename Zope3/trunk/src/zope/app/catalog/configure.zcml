@@ -5,7 +5,7 @@
 
 <content class=".catalog.Catalog">
   <implements 
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
       />
   <factory 
       id="zope.app.catalog" 

@@ -23,7 +23,7 @@
         set_attributes="source contentType"
         />
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
         />
   </content>
 

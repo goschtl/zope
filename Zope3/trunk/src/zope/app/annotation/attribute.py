@@ -13,10 +13,10 @@
 ##############################################################################
 """Attribute Annotations implementation 
 
-$Id: attributeannotations.py,v 1.11 2004/03/05 22:08:51 jim Exp $
+$Id: attribute.py,v 1.1 2004/03/13 23:00:39 srichter Exp $
 """
 from BTrees.OOBTree import OOBTree
-from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
+from interfaces import IAnnotations, IAttributeAnnotatable
 from zope.proxy import removeAllProxies
 from zope.interface import implements
 from zope.app.location.interfaces import ILocation
@@ -38,14 +38,14 @@ class AttributeAnnotations:
         self.unwrapped_obj = removeAllProxies(obj)
 
     def __getitem__(self, key):
-        """See zope.app.interfaces.annotation.IAnnotations"""
+        """See zope.app.annotation.interfaces.IAnnotations"""
         annotations = getattr(self.unwrapped_obj, '__annotations__', None)
         if annotations is None:
             raise KeyError, key
         return annotations[key]
 
     def __setitem__(self, key, value):
-        """See zope.app.interfaces.annotation.IAnnotations"""
+        """See zope.app.annotation.interfaces.IAnnotations"""
         if ILocation.providedBy(value):
             value.__parent__ = self.unwrapped_obj
 
@@ -64,7 +64,7 @@ class AttributeAnnotations:
             raise KeyError, key
 
     def get(self, key, default=None):
-        """See zope.app.interfaces.annotation.IAnnotations"""
+        """See zope.app.annotation.interfaces.IAnnotations"""
         try:
             return self.unwrapped_obj.__annotations__.get(key, default)
         except AttributeError:

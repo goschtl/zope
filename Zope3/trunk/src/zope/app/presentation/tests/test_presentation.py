@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.5 2004/03/13 22:02:06 srichter Exp $
+$Id: test_presentation.py,v 1.6 2004/03/13 23:01:00 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
@@ -50,7 +50,7 @@ from zope.app.container.contained import contained, uncontained, setitem
 from zope.app.container.interfaces import IContained, ILocation
 
 from zope.app.dependable.interfaces import IDependable
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.registration.interfaces import IRegistered
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.dependable import Dependable

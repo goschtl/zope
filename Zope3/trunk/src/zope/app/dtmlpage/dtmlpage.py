@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.2 2004/02/24 16:49:37 philikon Exp $
+$Id: dtmlpage.py,v 1.3 2004/03/13 23:00:51 srichter Exp $
 """
 from persistent import Persistent
 
@@ -20,7 +20,7 @@ from zope.security.proxy import ProxyFactory
 from zope.documenttemplate.dt_html import HTML
 from zope.interface import implements
 
-from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.annotation.interfaces import IAnnotatable
 from zope.app.interfaces.file import IFileFactory
 from zope.app.container.contained import Contained
 

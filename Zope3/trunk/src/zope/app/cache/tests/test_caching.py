@@ -13,16 +13,16 @@
 ##############################################################################
 """Unit tests for caching helpers.
 
-$Id: test_caching.py,v 1.15 2004/03/10 19:41:02 srichter Exp $
+$Id: test_caching.py,v 1.16 2004/03/13 23:00:46 srichter Exp $
 """
 import unittest
 from zope.interface import implements
 
 from zope.app.tests import ztapi, setup
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.caching import getCacheForObject
 from zope.app.cache.annotationcacheable import AnnotationCacheable

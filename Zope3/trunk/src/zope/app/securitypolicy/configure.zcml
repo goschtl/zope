@@ -27,15 +27,15 @@
 
   <adapter factory=".rolepermission.AnnotationRolePermissionManager"
            provides=".interfaces.IRolePermissionManager"
-           for="zope.app.interfaces.annotation.IAnnotatable" />
+           for="zope.app.annotation.interfaces.IAnnotatable" />
 
   <adapter factory=".principalrole.AnnotationPrincipalRoleManager"
            provides=".interfaces.IPrincipalRoleManager"
-           for="zope.app.interfaces.annotation.IAnnotatable" />
+           for="zope.app.annotation.interfaces.IAnnotatable" />
 
   <adapter factory=".principalpermission.AnnotationPrincipalPermissionManager"
            provides=".interfaces.IPrincipalPermissionManager"
-           for="zope.app.interfaces.annotation.IAnnotatable" />
+           for="zope.app.annotation.interfaces.IAnnotatable" />
 
 
   <!-- protect Roles and Permissions -->
@@ -51,7 +51,7 @@
         interface="zope.app.utility.interfaces.ILocalUtility" 
         />
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
         />
     <require 
         permission="zope.Security"

@@ -13,15 +13,15 @@
 ##############################################################################
 """Test handler for Annotation Principal Permission Manager module.
 
-$Id: test_annotationprincipalpermissionmanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
+$Id: test_annotationprincipalpermissionmanager.py,v 1.4 2004/03/13 23:01:09 srichter Exp $
 """
 import unittest
 
 from zope.interface import implements
 
 from zope.app.tests import ztapi
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable, IAnnotations
+from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.tests.placelesssetup import PlacelessSetup

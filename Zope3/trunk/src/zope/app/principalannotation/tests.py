@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal Annotation Tests
 
-$Id: tests.py,v 1.1 2004/03/13 18:44:48 srichter Exp $
+$Id: tests.py,v 1.2 2004/03/13 23:01:02 srichter Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.site.tests.placefulsetup import PlacefulSetup
@@ -22,7 +22,7 @@ from zope.app.principalannotation import \
      PrincipalAnnotationService, AnnotationsForPrincipal
 from interfaces import IPrincipalAnnotationService
 from zope.app.tests import ztapi
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.security.interfaces import IPrincipal
 from zope.app.tests import setup
 from zope.interface import implements

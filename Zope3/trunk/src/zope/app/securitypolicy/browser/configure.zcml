@@ -53,7 +53,7 @@
 <!-- Role Permissions -->
 
   <pages
-      for="zope.app.interfaces.annotation.IAnnotatable"
+      for="zope.app.annotation.interfaces.IAnnotatable"
       permission="zope.Security"
       class=".rolepermissionview.RolePermissionView">
 
@@ -65,7 +65,7 @@
   </pages>
 
   <page
-    for="zope.app.interfaces.annotation.IAnnotatable"
+    for="zope.app.annotation.interfaces.IAnnotatable"
     name="grant.html"
     permission="zope.Security"
     template="grant.pt" 
@@ -75,7 +75,7 @@
 
   <page
       name="PrincipalRoles.html" 
-      for="zope.app.interfaces.annotation.IAnnotatable"
+      for="zope.app.annotation.interfaces.IAnnotatable"
       permission="zope.Security"
       class=".principalroleview.PrincipalRoleView"
       template="principal_role_association.pt" />
@@ -86,7 +86,7 @@
 
   <!-- browser:page
       name="PrincipalPermissionsManagement"
-      for="zope.app.interfaces.annotation.IAnnotatable"
+      for="zope.app.annotation.interfaces.IAnnotatable"
       class=".principalpermissionview.PrincipalPermissionView" 
       permission="zope.Security"
       allow_attributes="index get_principal unsetPermissions denyPermissions

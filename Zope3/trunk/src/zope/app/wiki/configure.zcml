@@ -88,7 +88,7 @@
     <implements interface="zope.app.container.interfaces.IContentContainer" />
 
     <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="zope.wiki.Wiki"
@@ -121,7 +121,7 @@
   <content class=".wikipage.WikiPage">
 
     <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="zope.wiki.WikiPage"
@@ -151,7 +151,7 @@
   <content class=".wikipage.Comment">
 
     <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <factory
         id="zope.wiki.Comment"

@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of workflow process instance.
 
-$Id: instance.py,v 1.12 2004/03/06 16:50:36 jim Exp $
+$Id: instance.py,v 1.13 2004/03/13 23:01:15 srichter Exp $
 """
 __metaclass__ = type
 
@@ -21,7 +21,7 @@ from types import StringTypes
 from persistent.dict import PersistentDict
 from zope.proxy import removeAllProxies
 
-from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
+from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.workflow.interfaces \
      import IProcessInstance, IProcessInstanceContainer
 

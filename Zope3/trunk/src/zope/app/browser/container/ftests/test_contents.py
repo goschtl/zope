@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_contents.py,v 1.8 2004/03/06 16:50:14 jim Exp $
+$Id: test_contents.py,v 1.9 2004/03/13 23:00:41 srichter Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.testing.functional import BrowserTestCase
 from zope.interface import implements
 
 from zope.app import zapi
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
 
 class File(Persistent):

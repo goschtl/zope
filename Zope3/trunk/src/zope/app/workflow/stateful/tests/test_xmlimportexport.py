@@ -13,16 +13,16 @@
 ##############################################################################
 """XML import/export tests
 
-$Id: test_xmlimportexport.py,v 1.14 2004/03/13 18:01:25 srichter Exp $
+$Id: test_xmlimportexport.py,v 1.15 2004/03/13 23:01:17 srichter Exp $
 """
 import unittest
 from StringIO import StringIO
 
 from zope.app import zapi
-from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.security.interfaces import IPermission
 from zope.app.registration.interfaces import IRegisterable

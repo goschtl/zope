@@ -25,7 +25,7 @@
         interface="zope.app.utility.interfaces.ILocalUtility" 
         />
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
         />
    <allow interface="zope.i18n.interfaces.ITranslationDomain" 
        />
@@ -58,7 +58,7 @@
   <require permission="zope.ManageServices"
       attributes="setMessage getMessageIds" />
   <implements 
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 </content>
 
 <factory 

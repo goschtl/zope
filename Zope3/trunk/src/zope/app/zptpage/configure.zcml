@@ -44,7 +44,7 @@
         interface=".interfaces.IRenderZPTPage"
         />
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
   </content>
 

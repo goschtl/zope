@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of IPrincipalAnnotationService.
 
-$Id: __init__.py,v 1.1 2004/03/13 18:44:48 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 23:01:02 srichter Exp $
 """
 
 # TODO: register service as adapter for IAnnotations on service activation
@@ -25,7 +25,7 @@ from persistent import Persistent
 from persistent.dict import PersistentDict
 from BTrees.OOBTree import OOBTree
 from zope.app.component.nextservice import queryNextService
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.interface import implements
 
 # Sibling imports

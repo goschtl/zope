@@ -13,15 +13,15 @@
 ##############################################################################
 """Test handler for PrincipalRoleManager module.
 
-$Id: test_annotationprincipalrolemanager.py,v 1.4 2004/03/13 15:21:33 srichter Exp $
+$Id: test_annotationprincipalrolemanager.py,v 1.5 2004/03/13 23:01:09 srichter Exp $
 """
 import unittest
 from zope.interface import implements
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable, IAnnotations
+from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.annotation.interfaces import IAttributeAnnotatable, IAnnotations
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow, Deny
 from zope.app.site.tests.placefulsetup import PlacefulSetup

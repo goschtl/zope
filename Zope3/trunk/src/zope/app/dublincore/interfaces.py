@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.1 2004/03/01 15:02:49 philikon Exp $
+$Id: interfaces.py,v 1.2 2004/03/13 23:00:52 srichter Exp $
 """
 
-from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.annotation.interfaces import IAnnotatable
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Datetime, Sequence
 

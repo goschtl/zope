@@ -6,7 +6,7 @@
     >
 
 <content class="zopeproducts.demo.jobboard.job.JobList">
-  <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+  <implements interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
   />
   <factory
       id="zopeproducts.demo.jobboard.job.JobList"

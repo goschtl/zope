@@ -13,13 +13,13 @@
 ##############################################################################
 """Tests the 'AttributeAnnotations' adapter.
 
-$Id: test_attributeannotations.py,v 1.5 2004/02/13 22:24:09 srichter Exp $
+$Id: test_attributeannotations.py,v 1.1 2004/03/13 23:00:39 srichter Exp $
 """
 from unittest import main, makeSuite
 from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-from zope.app.tests.annotations import IAnnotationsTest
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.tests.annotations import IAnnotationsTest
+from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.interface import implements
 
 class Dummy:

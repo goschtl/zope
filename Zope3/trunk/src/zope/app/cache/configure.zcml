@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
   <adapter 
-      for="zope.app.interfaces.annotation.IAnnotatable"
+      for="zope.app.annotation.interfaces.IAnnotatable"
       provides="zope.app.cache.interfaces.ICacheable"
       factory="zope.app.cache.annotationcacheable.AnnotationCacheable"
       />
@@ -16,7 +16,7 @@
         />
 
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
 
     <implements

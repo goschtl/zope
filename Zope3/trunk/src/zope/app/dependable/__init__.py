@@ -12,13 +12,13 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.1 2004/03/13 22:02:04 srichter Exp $
+$Id: __init__.py,v 1.2 2004/03/13 23:00:51 srichter Exp $
 """
 
 __metaclass__ = type
 
 from interfaces import IDependable
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.traversing import getParent, canonicalPath, getPath
 from zope.interface import implements
 

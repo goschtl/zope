@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_propfind.py,v 1.18 2004/03/13 15:21:14 srichter Exp $
+$Id: test_propfind.py,v 1.19 2004/03/13 23:00:49 srichter Exp $
 """
 from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -36,8 +36,8 @@ from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.container.interfaces import IReadContainer
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
-from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
-from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.app.annotation.attribute import AttributeAnnotations
 
 from zope.app.dav import propfind
 from zope.app.dav.interfaces import IDAVSchema

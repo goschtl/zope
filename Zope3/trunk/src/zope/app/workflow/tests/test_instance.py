@@ -13,12 +13,12 @@
 ##############################################################################
 """Process Instance Tests
 
-$Id: test_instance.py,v 1.5 2004/03/03 20:20:36 srichter Exp $
+$Id: test_instance.py,v 1.6 2004/03/13 23:01:18 srichter Exp $
 """
 import unittest
 from zope.interface.verify import verifyClass
 
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.app.workflow.interfaces import IProcessInstance

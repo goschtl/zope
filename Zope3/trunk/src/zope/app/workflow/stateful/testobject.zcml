@@ -6,7 +6,7 @@
   <content class=".testobject.TestObject">
 
     <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"/>
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
 
     <implements interface=
         "zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable"/>

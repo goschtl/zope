@@ -13,12 +13,12 @@
 ##############################################################################
 """An adapter of annotatable objects.
 
-$Id: annotationcacheable.py,v 1.7 2004/03/10 19:41:00 srichter Exp $
+$Id: annotationcacheable.py,v 1.8 2004/03/13 23:00:44 srichter Exp $
 """
 from zope.interface import implements
 
 from zope.app import zapi
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.cache.interfaces import ICacheable, ICache
 
 annotation_key = 'zope.app.cache.CacheManager'

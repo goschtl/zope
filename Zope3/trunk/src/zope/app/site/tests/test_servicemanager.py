@@ -13,7 +13,7 @@
 ##############################################################################
 """Service Manager Tests
 
-$Id: test_servicemanager.py,v 1.2 2004/03/13 18:01:22 srichter Exp $
+$Id: test_servicemanager.py,v 1.3 2004/03/13 23:01:12 srichter Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -28,7 +28,7 @@ from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.registration.interfaces import RegisteredStatus
 from zope.component.service import serviceManager
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 
 class ITestService(Interface):
     pass

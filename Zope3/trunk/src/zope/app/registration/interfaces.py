@@ -13,11 +13,11 @@
 ##############################################################################
 """Interfaces for objects supporting registration
 
-$Id: interfaces.py,v 1.2 2004/03/13 19:02:09 srichter Exp $
+$Id: interfaces.py,v 1.3 2004/03/13 23:01:04 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.annotation import IAnnotatable
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.interfaces import IContainerNamesContainer
 from zope.app.container.interfaces import IContained, IContainer
 from zope.app.security.permission import PermissionField

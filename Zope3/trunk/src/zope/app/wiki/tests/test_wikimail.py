@@ -13,7 +13,7 @@
 ##############################################################################
 """ZWiki Tests
 
-$Id: test_wikimail.py,v 1.4 2004/03/13 15:21:40 srichter Exp $
+$Id: test_wikimail.py,v 1.5 2004/03/13 23:01:15 srichter Exp $
 """
 import unittest
 
@@ -21,9 +21,9 @@ from zope.interface import classImplements
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.site.tests.placefulsetup import PlacefulSetup
-from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.event.interfaces import ISubscriber
-from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.annotation.attribute import AttributeAnnotations
 
 from zope.app.wiki.interfaces import IWikiPage, IWiki, IMailSubscriptions
 from zope.app.wiki.wikipage import WikiPage

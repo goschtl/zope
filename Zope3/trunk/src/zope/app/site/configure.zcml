@@ -45,7 +45,7 @@
         interface=".interfaces.ISiteManager
                    zope.app.container.interfaces.IWriteContainer" />
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
     </content>
 
   <content class=".service.ServiceRegistration">
@@ -79,7 +79,7 @@
         permission="zope.ManageServices"
         interface="zope.app.site.interfaces.IComponentManager" />
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     </content>
 
@@ -94,7 +94,7 @@
         attributes="getRegistrationManager resolve" 
         />
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     </content>
 

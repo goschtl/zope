@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.21 2004/03/13 22:02:09 srichter Exp $
+$Id: setup.py,v 1.22 2004/03/13 23:01:14 srichter Exp $
 """
 
 import zope.component
@@ -23,9 +23,9 @@ from zope.interface import classImplements
 
 #------------------------------------------------------------------------
 # Annotations
-from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.annotation.interfaces import IAnnotations
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 def setUpAnnotations():
     ztapi.provideAdapter(IAttributeAnnotatable, IAnnotations,
                          AttributeAnnotations)

@@ -13,15 +13,15 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: test_annotationcacheable.py,v 1.14 2004/03/10 19:41:02 srichter Exp $
+$Id: test_annotationcacheable.py,v 1.15 2004/03/13 23:00:46 srichter Exp $
 """
 import unittest
 from zope.interface import implements
 
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.interfaces.annotation import IAnnotations, IAttributeAnnotatable
-from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
+from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.cache.interfaces import ICache
 

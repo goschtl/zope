@@ -3,7 +3,7 @@
    xmlns="http://namespaces.zope.org/browser">
 
   <pages
-      for="zope.app.interfaces.annotation.IAnnotatable"
+      for="zope.app.annotation.interfaces.IAnnotatable"
       permission="zope.ManageContent"
       class=".metadataedit.MetaDataEdit">
 

@@ -13,13 +13,13 @@
 ##############################################################################
 """Setup for Placeful Worfklow Tests
 
-$Id: workflowsetup.py,v 1.11 2004/03/13 15:21:42 srichter Exp $
+$Id: workflowsetup.py,v 1.12 2004/03/13 23:01:18 srichter Exp $
 """
 from zope.interface import implements
 from zope.component.interfaces import IUtilityService
 
 from zope.app import zapi
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.security.interfaces import IAuthenticationService
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.services.servicenames import Authentication, Workflows, Utilities

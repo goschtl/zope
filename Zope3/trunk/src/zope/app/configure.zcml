@@ -13,16 +13,9 @@
   <include package="zope.app.security" />
   <include package="zope.app.event" />
   <include package="zope.app.mail" />
-
-  <adapter
-      factory="zope.app.attributeannotations.AttributeAnnotations"
-      provides="zope.app.interfaces.annotation.IAnnotations"
-      for="zope.app.interfaces.annotation.IAttributeAnnotatable" />
-
-  <adapter
-      factory="zope.app.dependable.Dependable"
-      provides="zope.app.dependable.interfaces.IDependable"
-      for="zope.app.interfaces.annotation.IAnnotatable" />
+  <include package="zope.app.annotation" />
+  <include package="zope.app.dependable" />
+  
 
   <!-- Usages and Menus -->
   <include package=".browser" file="usages.zcml" />

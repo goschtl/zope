@@ -13,7 +13,7 @@
 ##############################################################################
 """Broken-object support
 
-$Id: broken.py,v 1.4 2004/03/05 22:08:52 jim Exp $
+$Id: broken.py,v 1.5 2004/03/13 23:00:40 srichter Exp $
 """
 
 
@@ -24,7 +24,7 @@ import zope.app.event.function
 import zope.security.checker
 
 
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 
 class IBroken(zope.interface.Interface):
     """Marker interface for broken objects

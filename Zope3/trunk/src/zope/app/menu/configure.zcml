@@ -33,7 +33,7 @@
         interface="zope.app.utility.interfaces.ILocalUtility" />
 
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <require
         permission="zope.ManageServices"
@@ -51,7 +51,7 @@
         description="A Persistent Browser Menu Item" />
 
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <require
         permission="zope.ManageServices"

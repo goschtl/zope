@@ -13,7 +13,7 @@
 ##############################################################################
 """Workflow Service Tests
 
-$Id: test_service.py,v 1.11 2004/03/13 18:01:25 srichter Exp $
+$Id: test_service.py,v 1.12 2004/03/13 23:01:18 srichter Exp $
 """
 import unittest
 
@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.interface import implements
 from zope.interface.verify import verifyClass
 from zope.app.container.contained import Contained
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.registration.interfaces import RegisteredStatus, ActiveStatus
 from zope.app.utility import UtilityRegistration

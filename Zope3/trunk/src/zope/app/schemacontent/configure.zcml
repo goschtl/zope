@@ -15,7 +15,7 @@
       interface="zope.app.utility.interfaces.ILocalUtility" />
 
     <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <require
       permission="zope.ManageServices"
@@ -55,7 +55,7 @@
 
   <content class=".content.ContentComponentInstance">
     <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
   </content>
 
   <include package=".browser" />

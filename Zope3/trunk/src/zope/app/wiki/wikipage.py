@@ -13,7 +13,7 @@
 ##############################################################################
 """Wiki implementation
 
-$Id: wikipage.py,v 1.6 2004/03/06 16:50:35 jim Exp $
+$Id: wikipage.py,v 1.7 2004/03/13 23:01:14 srichter Exp $
 """
 import smtplib
 from persistent import Persistent
@@ -24,7 +24,7 @@ from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
 from zope.app.dublincore.interfaces import ICMFDublinCore
 from zope.app.interfaces.file import IReadFile, IWriteFile
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.event.interfaces import ISubscriber, IObjectModifiedEvent
 from zope.app.container.interfaces import \
      IObjectAddedEvent, IObjectRemovedEvent, IObjectMovedEvent

@@ -18,7 +18,7 @@
   <adapter
       factory=".annotatableadapter.ZDCAnnotatableAdapter"
       provides="zope.app.dublincore.interfaces.IWriteZopeDublinCore"
-      for="zope.app.interfaces.annotation.IAnnotatable"
+      for="zope.app.annotation.interfaces.IAnnotatable"
       />
 
   <class class=".annotatableadapter.ZDCAnnotatableAdapter">

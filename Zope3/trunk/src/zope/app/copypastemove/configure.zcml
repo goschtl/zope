@@ -21,7 +21,7 @@
   <adapter
       factory="zope.app.copypastemove.PrincipalClipboard"
       provides="zope.app.copypastemove.interfaces.IPrincipalClipboard"
-      for="zope.app.interfaces.annotation.IAnnotations"
+      for="zope.app.annotation.interfaces.IAnnotations"
       />
 
 </configure>

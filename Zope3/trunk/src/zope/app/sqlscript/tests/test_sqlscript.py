@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.7 2004/03/13 21:03:22 srichter Exp $
+$Id: test_sqlscript.py,v 1.8 2004/03/13 23:01:13 srichter Exp $
 """
 import unittest
 from zope.interface import implements, classImplements
@@ -27,10 +27,9 @@ from zope.app.services.servicenames import Adapters
 from zope.app.component import nextservice
 from zope.app.tests.placelesssetup import PlacelessSetup
 
-from zope.app.interfaces.annotation import IAnnotatable
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.attributeannotations import AttributeAnnotations
+from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.annotation.attribute import AttributeAnnotations
 
 from zope.app.cache.interfaces import ICacheable, ICache
 from zope.app.cache.annotationcacheable import AnnotationCacheable

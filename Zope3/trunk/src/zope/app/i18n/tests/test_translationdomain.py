@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Domain.
 
-$Id: test_translationdomain.py,v 1.4 2004/03/13 15:21:19 srichter Exp $
+$Id: test_translationdomain.py,v 1.5 2004/03/13 23:00:57 srichter Exp $
 """
 import unittest
 
@@ -35,7 +35,7 @@ from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.utility import LocalUtilityService
 from zope.i18n.interfaces import ITranslationDomain
 from zope.app.utility.interfaces import ILocalUtility 
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 
 class Environment(object):
 

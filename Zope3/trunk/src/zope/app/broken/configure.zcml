@@ -4,7 +4,7 @@
     >
 
   <content class=".broken.Broken">
-    <allow interface="zope.app.interfaces.annotation.IAnnotations" />
+    <allow interface="zope.app.annotation.interfaces.IAnnotations" />
   </content>
 
   <event:subscribe

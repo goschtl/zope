@@ -13,13 +13,13 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.34 2004/03/06 17:48:49 jim Exp $
+$Id: syncer.py,v 1.35 2004/03/13 23:00:55 srichter Exp $
 """
 
 from zope.component import getService
 from zope.fssync.server.syncer import Syncer
 
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.traversing import getPath
 
 

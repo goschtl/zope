@@ -13,13 +13,13 @@
 ##############################################################################
 """Content Component Definition and Instance
 
-$Id: content.py,v 1.5 2004/03/13 18:01:19 srichter Exp $
+$Id: content.py,v 1.6 2004/03/13 23:01:06 srichter Exp $
 """
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.interfaces import IAdding
 from zope.app.menu.interfaces import ILocalBrowserMenu, ILocalBrowserMenuService
 from zope.app.registration.interfaces import ActiveStatus

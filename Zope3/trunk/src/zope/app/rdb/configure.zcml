@@ -30,7 +30,7 @@
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
 
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <implements
       interface="zope.app.utility.interfaces.ILocalUtility" />

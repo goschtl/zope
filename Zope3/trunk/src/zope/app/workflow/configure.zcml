@@ -38,7 +38,7 @@
                     listRegistrationNames"
         />
     <implements 
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
        />
   </content>
 
@@ -60,7 +60,7 @@
         interface="zope.app.utility.interfaces.ILocalUtility" 
         />
     <implements 
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" 
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
         />
     <require
         permission="zope.ManageServices"
@@ -93,7 +93,7 @@
     <implements interface="zope.app.container.interfaces.IContentContainer" />
 
     <implements
-       interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
        />
 
     <require
@@ -110,7 +110,7 @@
   <adapter
       factory="zope.app.workflow.instance.ProcessInstanceContainerAdapter"
       provides="zope.app.workflow.interfaces.IProcessInstanceContainer"
-      for="zope.app.interfaces.annotation.IAnnotatable"
+      for="zope.app.annotation.interfaces.IAnnotatable"
       />
 
   <!-- Workflow Import/Export Utility -->

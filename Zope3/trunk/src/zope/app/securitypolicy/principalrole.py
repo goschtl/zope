@@ -18,7 +18,7 @@ __metaclass__ = type
 from zope.interface import implements
 from zope.security.proxy import trustedRemoveSecurityProxy
 
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
 from zope.app.securitypolicy.interfaces import IPrincipalRoleMap
 

@@ -13,11 +13,11 @@
 ##############################################################################
 """Mappings between principals and permissions, stored in an object locally.
 
-$Id: principalpermission.py,v 1.2 2004/03/06 16:50:29 jim Exp $
+$Id: principalpermission.py,v 1.3 2004/03/13 23:01:07 srichter Exp $
 """
 
 from zope.interface import implements
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 
 from zope.app.security.settings import Allow, Deny, Unset

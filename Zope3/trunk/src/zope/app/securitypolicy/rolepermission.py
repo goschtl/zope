@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: rolepermission.py,v 1.4 2004/03/08 12:06:03 srichter Exp $
+$Id: rolepermission.py,v 1.5 2004/03/13 23:01:07 srichter Exp $
 """
 from zope.interface import implements
 
 from zope.app import zapi
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.security.permission import checkPermission

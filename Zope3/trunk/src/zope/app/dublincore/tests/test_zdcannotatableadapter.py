@@ -13,12 +13,12 @@
 ##############################################################################
 """Test the Dublin Core annotations adapter.
 
-$Id: test_zdcannotatableadapter.py,v 1.4 2003/08/20 14:30:14 fdrake Exp $
+$Id: test_zdcannotatableadapter.py,v 1.5 2004/03/13 23:00:53 srichter Exp $
 """
 
 import unittest
 
-from zope.app.interfaces.annotation import IAnnotations
+from zope.app.annotation.interfaces import IAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 
