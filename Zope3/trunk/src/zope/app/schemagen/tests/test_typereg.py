@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_typereg.py,v 1.3 2003/06/04 10:46:38 stevea Exp $
+$Id: test_typereg.py,v 1.4 2004/03/13 20:24:16 srichter Exp $
 """
 
 import datetime
@@ -102,7 +102,7 @@ class TypeRepresentationRegistryTests(unittest.TestCase):
             self.tr.represent(1), DefaultTypeRepresentation))
 
     def test_register(self):
-        from zope.app.interfaces.schemagen import ITypeRepresentation
+        from zope.app.schemagen.interfaces import ITypeRepresentation
         class IntRepresentation:
             implements(ITypeRepresentation)
             def __init__(self, obj):

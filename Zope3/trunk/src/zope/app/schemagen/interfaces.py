@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: schemagen.py,v 1.2 2002/12/25 14:12:56 jim Exp $
+$Id: interfaces.py,v 1.1 2004/03/13 20:24:15 srichter Exp $
 """
 
 from zope.interface import Interface, Attribute

@@ -11,17 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Type Reprsentation Registry
 
-XXX longer description goes here.
-
-$Id: typereg.py,v 1.5 2003/11/04 04:04:25 jeremy Exp $
+$Id: typereg.py,v 1.6 2004/03/13 20:24:15 srichter Exp $
 """
-
 from zope.interface import implements, providedBy
 import zope.schema
 
-from zope.app.interfaces.schemagen import ITypeRepresentation
+from interfaces import ITypeRepresentation
 
 class TypeRepresentationRegistry:
     def __init__(self, default):

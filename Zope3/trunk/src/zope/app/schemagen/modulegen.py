@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: modulegen.py,v 1.4 2004/02/20 16:57:28 fdrake Exp $
+$Id: modulegen.py,v 1.5 2004/03/13 20:24:15 srichter Exp $
 """
-
 from zope.app.schemagen.typereg import fieldRegistry
 
 def generateModuleSource(schema_name, fields, class_name,
