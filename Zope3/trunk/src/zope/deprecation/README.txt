@@ -15,10 +15,10 @@ demonstrate the functionality, I have placed the following code inside the
   from zope.deprecation import deprecated
   demo1 = 1
   deprecated('demo1', 'demo1 is no more.')
-  
+
   demo2 = 2
   deprecated('demo2', 'demo2 is no more.')
-  
+
   demo3 = 3
   deprecated('demo3', 'demo3 is no more.')
 
@@ -32,13 +32,15 @@ Let's now see how the deprecation warnings are displayed.
 
   >>> from zope.deprecation import tests
   >>> tests.demo1
-  /.../README.txt:1: DeprecationWarning: demo1: demo1 is no more.
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: demo1: demo1 is no more.
   ...
   1
 
   >>> import zope.deprecation.tests
   >>> zope.deprecation.tests.demo2
-  /.../README.txt:1: DeprecationWarning: demo2: demo2 is no more.
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: demo2: demo2 is no more.
   ...
   2
 
@@ -48,7 +50,8 @@ the module, we get a deprecation warning. On the other hand, if we import the
 name directly, the deprecation warning will be raised immediately.
 
   >>> from zope.deprecation.tests import demo3
-  /.../README.txt:1: DeprecationWarning: demo3: demo3 is no more.
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: demo3: demo3 is no more.
   ...
 
 Also, once a deprecation warning has been displayed, it is not shown again:
@@ -81,13 +84,15 @@ And here is the result:
 
   >>> my = MyComponent()
   >>> my.foo
-  /.../README.txt:1: DeprecationWarning: foo is no more.
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: foo is no more.
   ...
   1
   >>> my.bar
   2
   >>> my.blah()
-  /.../README.txt:1: DeprecationWarning: blah() is no more.
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: blah() is no more.
   ...
   3
   >>> my.splat()
@@ -113,7 +118,8 @@ an attribute called `__show__`. One can ask for its status by calling it:
   >>> foo = Foo()
 
   >>> foo.bar
-  /.../README.txt:1: DeprecationWarning: bar is no more.
+  From tests.py's showwarning():
+  ...README.txt:1: DeprecationWarning: bar is no more.
   ...
   1
 

@@ -35,6 +35,7 @@ deprecated('demo3', 'demo3 is no more.')
 orig_showwarning = warnings.showwarning
 
 def showwarning(message, category, filename, lineno, file=None):
+    sys.stdout.write("From tests.py's showwarning():\n")
     sys.stdout.write(
         warnings.formatwarning(message, category, filename, lineno))
 
