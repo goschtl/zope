@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dublincore.py,v 1.7 2003/07/17 19:07:38 fdrake Exp $
+$Id: dublincore.py,v 1.8 2003/07/17 21:03:36 fdrake Exp $
 """
 
 from zope.app.interfaces.annotation import IAnnotatable
@@ -21,15 +21,17 @@ from zope.schema import Text, TextLine, Datetime, Sequence
 
 
 class IDublinCoreElementItem(Interface):
-    """A qualified sublin core element"""
+    """A qualified dublin core element"""
 
-    qualification = TextLine(title = u"Qualification",
-                         description = u"The element qualification"
-                         )
+    qualification = TextLine(
+        title = u"Qualification",
+        description = u"The element qualification"
+        )
 
-    value = Text(title = u"Value",
-                 description = u"The element value",
-                 )
+    value = Text(
+        title = u"Value",
+        description = u"The element value",
+        )
 
 
 class IGeneralDublinCore(Interface):
