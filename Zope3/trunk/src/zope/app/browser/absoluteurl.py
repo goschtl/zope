@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: absoluteurl.py,v 1.5 2003/04/28 13:14:19 mgedmin Exp $
+$Id: absoluteurl.py,v 1.6 2003/05/27 09:43:52 stevea Exp $
 """
 from zope.publisher.browser import BrowserView
 from zope.proxy.context import getWrapperContainer, getInnerWrapperData
@@ -50,7 +50,7 @@ class AbsoluteURLBase(BrowserView):
         base = getView(container, 'absolute_url', self.request).breadcrumbs()
 
         if name == '.':
-            # The name is meaningless. There is a side-efect name
+            # The name is meaningless. There is a side-effect name
             # that we need to preserve in the urls (only)
             name = dict.get('side_effect_name', name)
             if name.startswith('++vh++'):
