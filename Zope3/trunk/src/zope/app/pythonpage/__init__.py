@@ -123,8 +123,8 @@ class PythonPage(Contained, Persistent):
 
       Make sure that faulty syntax is interpreted correctly.
 
-      # XXX: Note: We cannot just print the error directly, since there is a
-      # bug in the Linux version of Python that does not display the filename
+      # Note: We cannot just print the error directly, since there is a
+      # 'bug' in the Linux version of Python that does not display the filename
       # of the source correctly. So we construct an information string by hand.
 
       >>> def print_err(err):
