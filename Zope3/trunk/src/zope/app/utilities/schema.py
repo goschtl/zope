@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.8 2003/10/08 13:10:11 sidnei Exp $
+$Id: schema.py,v 1.9 2003/10/08 13:16:01 sidnei Exp $
 """
 from types import FunctionType
 
@@ -119,7 +119,6 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
     def __delitem__(self, name):
         uncontained(self._attrs[name], self, name)
         del self._attrs[name]
-        self._p_changed = 1
 
     def __setitem__(self, name, value):
         value = trustedRemoveSecurityProxy(value)
@@ -133,7 +132,6 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
                 raise InvalidInterface("Concrete attribute, %s" % name)
         value = Struct(value)
         setitem(self, self._attrs.__setitem__, name, value)
-        self._p_changed = 1
 
     # Methods copied from zope.interface.interface.InterfaceClass,
     # to avoid having to work around name mangling, which happens to be
