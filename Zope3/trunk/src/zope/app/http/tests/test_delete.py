@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_delete.py,v 1.6 2003/06/23 17:17:05 sidnei Exp $
+$Id: test_delete.py,v 1.7 2003/09/21 17:32:17 jim Exp $
 """
 __metaclass__ = type
 
@@ -20,14 +20,13 @@ from unittest import TestCase, TestSuite, makeSuite
 import zope.app.http.delete
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.file import IWriteDirectory, IFileFactory
-from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.context import ContextWrapper
 from zope.interface import implements
+from zope.app.container.contained import contained
 
 class Container:
 
-    implements(IWriteDirectory, IZopeWriteContainer, IFileFactory)
+    implements(IWriteDirectory, IFileFactory)
 
     def __delitem__(self, name):
         delattr(self, name)
@@ -38,7 +37,7 @@ class TestDelete(PlacelessSetup, TestCase):
     def test(self):
         container = Container()
         container.a = 'spam'
-        item = ContextWrapper(Container(), container, name='a')
+        item = contained(Container(), container, name='a')
 
         request = TestRequest()
         delete = zope.app.http.delete.DELETE(item, request)

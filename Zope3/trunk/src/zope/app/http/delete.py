@@ -13,14 +13,12 @@
 
 XXX longer description goes here.
 
-$Id: delete.py,v 1.3 2003/06/23 17:17:04 sidnei Exp $
+$Id: delete.py,v 1.4 2003/09/21 17:32:16 jim Exp $
 """
 __metaclass__ = type
 
 from zope.component import getAdapter
-from zope.context import getWrapperContainer, getWrapperData
 from zope.app.interfaces.file import IWriteDirectory
-from zope.app.interfaces.container import IZopeWriteContainer
 
 class DELETE:
     """Delete handler for all objects
@@ -34,17 +32,13 @@ class DELETE:
         request = self.request
 
         victim = self.context
-        container = getWrapperContainer(victim)
-        name = getWrapperData(victim)['name']
+        container = victim.__parent__
+        name = victim.__name__
 
 
         # Get a "directory" surrogate for the container
         dir = getAdapter(container, IWriteDirectory)
 
-        # Get the zope adapter for that
-        dir = getAdapter(dir, IZopeWriteContainer)
-
-        # Now do the delete
         del dir[name]
 
         return ''
