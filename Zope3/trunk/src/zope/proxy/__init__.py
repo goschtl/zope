@@ -13,7 +13,7 @@
 ##############################################################################
 """More convenience functions for dealing with proxies.
 
-$Id: __init__.py,v 1.8 2003/11/05 03:08:12 jeremy Exp $
+$Id: __init__.py,v 1.9 2004/01/14 13:40:18 sidnei Exp $
 """
 from zope.interface import moduleProvides
 from zope.proxy.interfaces import IProxyIntrospection
@@ -23,41 +23,6 @@ from zope.proxy._zope_proxy_proxy import _CAPI
 
 moduleProvides(IProxyIntrospection)
 __all__ = tuple(IProxyIntrospection)
-
-
-
-def proxy_compatible_isinstance(obj, cls):
-    """Like built-in isinstance() in Python 2.3.
-
-    This honors __class__ if the standard isinstance() fails.  This is how it
-    works in Python 2.3 so that even proxied objects will succeed the test.
-    """
-    if isinstance(obj, cls):
-        return True
-    # Check whether the object is a class itself, if so abort, otherwise the
-    # next check will fail.
-    if type(removeAllProxies(obj)) == ClassType:
-        return False
-    oclass = removeAllProxies(obj.__class__)
-    if type(obj) is oclass:
-        # Nothing more will help
-        return False
-    # Note that cls may be a tuple, but issubclass can't deal with that so we
-    # need to expand recursively.
-    classes = {}
-    flatten = [cls]
-    while flatten:
-        thisclass = flatten.pop(0)
-        if thisclass in classes:
-            continue
-        if isinstance(thisclass, tuple):
-            flatten.extend(thisclass)
-        else:
-            classes[thisclass] = True
-    for bclass in classes.keys():
-        if issubclass(oclass, bclass):
-            return True
-    return False
 
 def ProxyIterator(p):
     yield p
