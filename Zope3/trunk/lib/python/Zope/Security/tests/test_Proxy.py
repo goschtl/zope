@@ -31,6 +31,8 @@ class Something:
         return self.foo[key]
     def __setitem__(self, key, value):
         self.foo[key] = value
+    def __delitem__(self, key):
+        del self.foo[key]
     def __call__(self, arg):
         return 42
     def __eq__(self, other):
@@ -118,6 +120,16 @@ class ProxyTests(unittest.TestCase):
         self.assertEqual(self.p[0], 42)
 
     def testSetItemFail(self):
+        def doit(): del self.p[0]
+        self.shouldFail(doit)
+
+    def testDelItemOK(self):
+        self.p[0] = 42
+        self.assertEqual(self.p[0], 42)
+        del self.p[0]
+        self.shouldFail(lambda: self.p[0])
+        
+    def testDelItemFail(self):
         def doit(): self.p[10] = 42
         self.shouldFail(doit)
 
