@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: test_xmlconfig.py,v 1.3 2003/07/30 15:06:50 sidnei Exp $
+$Id: test_xmlconfig.py,v 1.4 2003/07/31 14:57:01 jim Exp $
 """
 
 import unittest
@@ -153,7 +153,7 @@ def test_processxmlfile():
 
     >>> file = open(path("samplepackage", "configure.zcml"))
     >>> context = config.ConfigurationMachine()
-    >>> xmlconfig._registerIncludes(context)
+    >>> xmlconfig.registerCommonDirectives(context)
     >>> xmlconfig.processxmlfile(file, context)
 
     >>> foo.data
@@ -203,7 +203,7 @@ def test_file():
 def test_include_by_package():
     """
     >>> context = config.ConfigurationMachine()
-    >>> xmlconfig._registerIncludes(context)
+    >>> xmlconfig.registerCommonDirectives(context)
     >>> import zope.configuration.tests.samplepackage as package
     >>> xmlconfig.include(context, 'configure.zcml', package)
     >>> context.execute_actions()
@@ -234,7 +234,7 @@ def test_include_by_package():
 def test_include_by_file():
     """
     >>> context = config.ConfigurationMachine()
-    >>> xmlconfig._registerIncludes(context)
+    >>> xmlconfig.registerCommonDirectives(context)
     >>> here = os.path.split(__file__)[0]
     >>> path = os.path.join(here, "samplepackage", "foo.zcml")
     >>> xmlconfig.include(context, path)
@@ -302,7 +302,7 @@ def test_includeOverrides():
     Let's see what happens when we try to process bar.zcml.
 
     >>> context = config.ConfigurationMachine()
-    >>> xmlconfig._registerIncludes(context)
+    >>> xmlconfig.registerCommonDirectives(context)
     
     >>> here = os.path.split(__file__)[0]
     >>> path = os.path.join(here, "samplepackage", "bar.zcml")
@@ -368,7 +368,7 @@ def test_includeOverrides():
     baro.zcml which includes bar2.zcml as overrides.
 
     >>> context = config.ConfigurationMachine()
-    >>> xmlconfig._registerIncludes(context)
+    >>> xmlconfig.registerCommonDirectives(context)
     >>> path = os.path.join(here, "samplepackage", "baro.zcml")
     >>> xmlconfig.include(context, path)
 
