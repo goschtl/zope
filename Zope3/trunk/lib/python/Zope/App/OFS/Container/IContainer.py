@@ -36,9 +36,10 @@ class IWriteContainer(Interface):
     def setObject(key, object):
         """Add the given object to the container under the given key.
 
-        Raises a ValueError if key is an empty string.
+        Raises a ValueError or if key is an empty string, unless the
+        container chooses a different key.
 
-        Returns the key used, which might be different than the given key
+        Returns the key used, which might be different than the given key.
         """
 
     def __delitem__(key):
