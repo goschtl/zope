@@ -115,12 +115,8 @@ class PROPFIND(object):
                 adapter = iface(self.context, None)
                 initial = {}
                 for name in avail.get(ns):
-                    attr = getattr(adapter, name, None)
-                    if attr is not None:
-                        if callable(attr):
-                            value = attr()
-                        else:
-                            value = attr
+                    value = getattr(adapter, name, None)
+                    if value is not None:
                         initial[name] = value
                 setUpWidgets(self, iface, IDAVWidget,
                     ignoreStickyValues=True, initial=initial, 
