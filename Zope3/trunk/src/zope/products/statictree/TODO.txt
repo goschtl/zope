@@ -1,7 +1,7 @@
 
-- BUG: site manager does not show up in StaticTree skin
+TODO
 
-v1.1
+for v1.1
 
 - allow sorting: would work similar to filter
 

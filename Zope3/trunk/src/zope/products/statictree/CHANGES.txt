@@ -7,6 +7,8 @@ v1.0.1 (2004-01-16) -- 'Nibbler'
 
   - Updated documentation
 
+  - Rounded some rough edges in the skin
+
   - Integrated it into the Zope3 distribution below the zope.products
     package
 

@@ -13,13 +13,13 @@
 ##############################################################################
 """Browser views
 
-$Id: browser.py,v 1.1 2004/01/16 12:39:00 philikon Exp $
+$Id: browser.py,v 1.2 2004/01/16 14:17:01 philikon Exp $
 """
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 from zope.app.interfaces.content.folder import IFolder
-from zope.app.interfaces.services.service import ISite
+from zope.app.interfaces.services.service import ISite, ISiteManager
 from zope.app.interfaces.traversing import IContainmentRoot
 
 from interfaces import ITreeStateEncoder
@@ -50,9 +50,9 @@ class StaticTreeView(BrowserView):
         return node
 
     def folderCookieTree(self, root=None):
-        """Cookie tree with only folders.
+        """Cookie tree with only folders (and site managers).
         """
-        filter = OnlyInterfacesFilter(IFolder)
+        filter = OnlyInterfacesFilter(IFolder, ISiteManager)
         return self.cookieTree(root, filter)
 
     def siteCookieTree(self):
