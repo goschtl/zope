@@ -27,4 +27,27 @@
     <allow interface="zope.tales.interfaces.ITALESIterator" />
  </content>
 
+ <class class=".engine.ZopePathExpr">
+    <allow attributes="__call__" />
+ </class>
+ <class class=".engine.TrustedZopePathExpr">
+    <allow attributes="__call__" />
+ </class>
+ <class class=".engine.ZopePythonExpr">
+    <allow attributes="__call__" />
+ </class>
+ <class class=".engine.PythonExpr">
+    <allow attributes="__call__" />
+ </class>
+
+ <class class="zope.tales.expressions.StringExpr">
+    <allow attributes="__call__" />
+ </class>
+ <class class="zope.tales.expressions.NotExpr">
+    <allow attributes="__call__" />
+ </class>
+ <class class="zope.tales.expressions.DeferExpr">
+    <allow attributes="__call__" />
+ </class>
+
 </configure>

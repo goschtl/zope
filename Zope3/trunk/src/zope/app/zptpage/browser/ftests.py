@@ -178,7 +178,7 @@ def test_suite():
     from zope.app.tests.functional import FunctionalDocFileSuite
     return unittest.TestSuite((
         unittest.makeSuite(ZPTPageTest),
-        FunctionalDocFileSuite('collector266.txt'),
+        FunctionalDocFileSuite('collector266.txt', 'collector269.txt'),
         ))
 
 if __name__ == '__main__':
