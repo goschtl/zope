@@ -13,7 +13,7 @@
 ##############################################################################
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.15 2003/08/18 20:44:52 srichter Exp $
+$Id: fields.py,v 1.16 2003/08/18 22:14:39 fdrake Exp $
 """
 import os, re, warnings
 from zope import schema
@@ -350,7 +350,7 @@ class MessageID(schema.Text):
 
     >>> from zope.i18n.messageid import MessageID
     >>> isinstance(context.i18n_strings['testing'].keys()[0], MessageID)
-    True
+    1
 
     Explicit Message IDs
 
