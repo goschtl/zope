@@ -89,10 +89,12 @@ def setUpServiceService():
 
 #------------------------------------------------------------------------
 # Placeful setup
+import zope.app.component.hooks
 from zope.app.tests.placelesssetup import setUp as placelessSetUp
 from zope.app.tests.placelesssetup import tearDown as placelessTearDown
 def placefulSetUp(site=False):
     placelessSetUp()
+    zope.app.component.hooks.setHooks()
     setUpAnnotations()
     setUpDependable()
     setUpTraversal()
@@ -107,6 +109,7 @@ def placefulSetUp(site=False):
 from zope.app.component.hooks import setSite
 def placefulTearDown():
     placelessTearDown()
+    zope.app.component.hooks.resetHooks()
     setSite()
 
 

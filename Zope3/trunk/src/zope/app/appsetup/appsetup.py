@@ -16,6 +16,7 @@
 $Id$
 """
 import zope.interface
+import zope.app.component.hooks
 from zope.security.interfaces import IParticipation
 from zope.security.management import system_user
 
@@ -58,6 +59,9 @@ def config(file, execute=True):
     from zope.security.management import newInteraction
     newInteraction(SystemConfigurationParticipation())
 
+    # Hook up custom component architecture calls
+    zope.app.component.hooks.setHooks()
+
     # Load server-independent site config
     context = xmlconfig.file(file, execute=execute)
 
@@ -66,6 +70,7 @@ def config(file, execute=True):
     endInteraction()
 
     _configured = execute
+
 
     return context
 
