@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: PublicationTraverse.py,v 1.5 2002/07/24 22:28:13 jeremy Exp $
+$Id: PublicationTraverse.py,v 1.6 2002/07/29 04:45:26 tseaver Exp $
 """
 
 from Zope.ComponentArchitecture import queryView, getService
@@ -76,7 +76,6 @@ class PublicationTraverse:
         else:
             adapter = queryView(ob, '_traverse', request, self) # marker
             if adapter is not self:
-                print ob, adapter, nm
                 ob2 = adapter.publishTraverse(request, nm)
             else:
                 raise NotFound(ob, name, request)
