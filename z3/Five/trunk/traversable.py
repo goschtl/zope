@@ -46,7 +46,7 @@ def newInteraction():
     """
     if getattr(thread_local, 'interaction', None) is None:
         thread_local.interaction = getSecurityManager()
-        
+
 class Traversable:
     """A mixin to make an object traversable using an ITraverser adapter.
     """
@@ -58,10 +58,10 @@ class Traversable:
         This method is called by __bobo_traverse___ when Zope3-style
         ITraverser traversal fails.
 
-        By default, we return None. This should be enough
-        as far as Zope 2 is concerned to trigger acquisition.
+        Just raise a AttributeError to indicate traversal has failed
+        and let Zope do it's job.
         """
-        return None
+        raise AttributeError, name
 
     def __bobo_traverse__(self, REQUEST, name):
         """Hook for Zope 2 traversal
@@ -111,4 +111,3 @@ class FiveTraversable(DefaultTraversable):
             pass
         # If a view can't be found, then use default traversable
         return super(FiveTraversable, self).traverse(name, furtherPath)
-

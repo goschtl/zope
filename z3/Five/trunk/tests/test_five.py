@@ -237,9 +237,9 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
             view = self.folder.unrestrictedTraverse(base % macro)
         self.failUnless(view)
 
-    def test_ignore_new_style_class(self):
-        view = self.folder.unrestrictedTraverse('testoid/@@invalid_page')
-        self.assertEquals(view, None)
+    def test_unrestrictedTraverse_non_existing(self):
+        self.assertRaises(AttributeError, self.folder.unrestrictedTraverse,
+                          'testoid/@@invalid_page')
 
     def test_get_widgets_for_schema_fields(self):
         salutation = Choice(title=u'Salutation', values=("Mr.", "Mrs.", "Captain", "Don"))
@@ -278,6 +278,10 @@ class PublishTestCase(Functional, ZopeTestCase.ZopeTestCase):
             self.assertEquals("No docstring", response.getBody())
 
     def test_fallback_raises_notfound(self):
+        # If we return None in __fallback_traverse__, this test passes
+        # but for the wrong reason: None doesn't have a docstring so
+        # BaseRequest raises NotFoundError. A functional test would be
+        # perfect here.
         response = self.publish('/test_folder_1_/testoid/doesntexist')
         self.assertEquals(404, response.getStatus())
 
