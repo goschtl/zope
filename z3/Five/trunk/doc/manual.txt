@@ -210,18 +210,12 @@ Five will automatically pickup ``configure.zcml`` when it's placed in
 the product's directory.  Any object that provides ``INewInterface``
 can now be adapted to ``INewInterface``, like this::
 
-  from zope.component import getAdapter
   from classes import MyClass
   from interfaces import INewInterface
 
   object = MyClass()
-  adapted = getAdapter(object, INewInterface)
-  print adapted.anotherMethod()
-
-A shortcut for ``getAdapter()`` is to call the interface directly,
-like this::
-
   adapted = INewInterface(object)
+  print adapted.anotherMethod()
 
 Views in Five
 -------------

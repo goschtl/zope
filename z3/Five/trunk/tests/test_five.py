@@ -12,7 +12,6 @@ from Testing.ZopeTestCase.functional import Functional
 ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 
-from zope.component import getAdapter
 from Products.FiveTest.classes import Adaptable, Origin
 from Products.FiveTest.interfaces import IAdapted, IDestination
 from Products.FiveTest.browser import SimpleContentView
@@ -28,7 +27,7 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 
     def test_adapters(self):
         obj = Adaptable()
-        adapted = getAdapter(obj, IAdapted)
+        adapted = IAdapted(obj)
         self.assertEquals(
             "Adapted: The method",
             adapted.adaptedMethod())
