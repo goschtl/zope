@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: ut.py,v 1.4 2002/08/13 20:28:35 gvanrossum Exp $
+$Id: ut.py,v 1.5 2002/12/20 19:35:40 bwarsaw Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -34,12 +34,29 @@ from unittest import TestCase, TestSuite, main, makeSuite
 #############################################################################
 
 class Test(TestCase):
-    pass
+    def setUp(self):
+        # Set up some preconditions
+        pass
+
+    def tearDown(self):
+        # Clean up after each test
+        pass
+
+    def test_something(self):
+        # This tests something.  Unittest style guidelines:
+        # - never put anything in the test method's docstring, since it makes
+        #   it harder to find this test when verbose output is used.  Use a
+        #   comment instead.
+        # - Call your test method "test_<something>", never
+        #   "check_<something>".  The "test" prefix is a unittest default.
+        pass
+
 
 def test_suite():
-    return TestSuite((
-        makeSuite(Test),
-        ))
+    suite = unittest.TestSuite()
+    suite.addTest(unttest.makeSuite(Test))
+    return suite
 
-if __name__=='__main__':
-    main(defaultTest='test_suite')
+
+if __name__ == '__main__':
+    unittest.main()
