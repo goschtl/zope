@@ -13,10 +13,12 @@
 ##############################################################################
 """A persistent implementation of thr IPrincipal interface
 
-$Id: User.py,v 1.2 2002/07/13 18:26:25 srichter Exp $
+$Id: User.py,v 1.3 2002/07/13 19:11:15 srichter Exp $
 """
 from Persistence import Persistent
+from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
+from Zope.App.OFS.Annotation.AttributeAnnotations import AttributeAnnotations
 from Zope.App.OFS.Services.AuthenticationService.IUser import IUser
 from Zope.App.Security.Grants.Global.PrincipalRoleManager import \
      principalRoleManager
@@ -46,8 +48,9 @@ class User(Persistent):
 
     def getRoles(self):
         'See Zope.App.OFS.Services.AuthenticationService.IUser.IReadUser'
-        roles = principalRoleManager.getRolesForPrincipal(self.getId())
-        roles = map(lambda r: r[0], roles)
+        annotations = AttributeAnnotations(self)
+        roles = annotations.get('roles', [])
+        roles = removeAllProxies(roles)
         return roles
     
     def validate(self, pw):
@@ -89,8 +92,8 @@ class User(Persistent):
 
     def setRoles(self, roles):
         'See Zope.App.OFS.Services.AuthenticationService.IUser.IReadUser'
-        id = self.getId()
-        for role in roles:
-            principalRoleManager.assignRoleToPrincipal(role, id)
+        annotations = AttributeAnnotations(self)
+        annotations['roles'] = roles
+
     #
     ############################################################
