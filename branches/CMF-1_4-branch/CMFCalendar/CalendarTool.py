@@ -134,10 +134,10 @@ class CalendarTool (UniqueObject, SimpleItem):
         
     	query=self.portal_catalog(portal_type=self.calendar_types,
                                   review_state='published',	                          
-                                  start=last_date,
-                                  start_usage='range:max',
-                                  end=first_date,
-                                  end_usage='range:min',
+                                  start={'query': last_date,
+                                         'range': 'max'},
+                                  end={'query': first_date,
+                                       'range': 'min'},
                                   sort_on='start')
         
         # compile a list of the days that have events
@@ -202,22 +202,22 @@ class CalendarTool (UniqueObject, SimpleItem):
         # Get all events that Start on this day
         query=self.portal_catalog(portal_type=self.calendar_types,
                                   review_state='published',	                          
-                                  start=(first_date,last_date),
-                                  start_usage='range:min:max')
+                                  start={'query': (first_date,last_date),
+                                         'range': 'min:max'})
         
         # Get all events that End on this day
         query+=self.portal_catalog(portal_type=self.calendar_types,
                                   review_state='published',	                          
-                                  end=(first_date,last_date),
-                                  end_usage='range:min:max')
+                                  end={'query': (first_date,last_date),
+                                       'range': 'min:max'})
 
         # Get all events that Start before this day AND End after this day
         query+=self.portal_catalog(portal_type=self.calendar_types,
                                   review_state='published',
-                                  start=first_date,
-                                  start_usage='range:max',
-                                  end=last_date,
-                                  end_usage='range:min')
+                                  start={'query': first_date,
+                                         'range': 'max'},
+                                  end={'query': last_date,
+                                       'range': 'min'})
 
         # Unique the results
         results = []
