@@ -63,12 +63,13 @@ packages.  These include:
   information.  This is required, but is not expected to change often
   for a distribution.
 
-`INCLUDES.cfg`
+`PACKAGE.cfg`
   An optional file which describes what files should be added to the
   collection itself from other locations (this is normally expected to
   be documentation files or scripts).  It is also possible to specify
   that files in the collection should not be included in
-  distributions.
+  distributions.  Additionally, it can include information about what
+  files should appear in the distribution root.
 
 `DEPENDENCIES.cfg`
   Another optional file containing a list of direct dependencies, as
@@ -76,7 +77,7 @@ packages.  These include:
   must be a resource identifier or a comment.
 
 Additional files may be present in a collection; these are copied into
-the collection-specific directory directly unless `INCLUDES.cfg`
+the collection-specific directory directly unless `PACKAGE.cfg`
 indicates they should not be distributed.  The `README.txt` file in
 this example is such a file.  The files used by distutils will be
 generated and added to the directory as well.
