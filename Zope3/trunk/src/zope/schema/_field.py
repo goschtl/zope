@@ -14,7 +14,7 @@
 ##############################################################################
 """Schema Fields
 
-$Id: _field.py,v 1.30 2004/03/05 22:09:31 jim Exp $
+$Id: _field.py,v 1.31 2004/03/15 18:12:40 jim Exp $
 """
 __metaclass__ = type
 
@@ -237,14 +237,12 @@ class Tuple(Sequence):
     """A field representing a Tuple."""
     implements(ITuple)
     _type = tuple
-    missing_value = ()
 
 
 class List(Sequence):
     """A field representing a List."""
     implements(IList)
     _type = list
-    missing_value = []
 
 
 def _validate_fields(schema, value, errors=None):
