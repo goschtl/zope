@@ -502,9 +502,14 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
 
     action = None
 
-    _msg_add_done = _message(_("vocabulary-query-button-add-done"), "Add")
-    _msg_add_more = _message(_("vocabulary-query-button-add-more"), "Add+More")
-    _msg_more     = _message(_("vocabulary-query-button-more"),     "More")
+    _msg_add_done   = _message(_("vocabulary-query-button-add-done"),
+                               "Add")
+    _msg_add_more   = _message(_("vocabulary-query-button-add-more"),
+                               "Add+More")
+    _msg_more       = _message(_("vocabulary-query-button-more"),
+                               "More")
+    _msg_no_results = _message(_("vocabulary-query-message-no-results"),
+                               "No Results")
 
     def setName(self, name):
         VocabularyQueryViewBase.setName(self, name)
@@ -561,6 +566,9 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
             for xxx in range(qi):
                 it.next()
         except StopIteration:
+            # we should only get here with a botched request; ADD_MORE
+            # and MORE will normally be disabled if there are no results
+            # (see below)
             have_more = False
         items = []
         QS = []
@@ -577,6 +585,9 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
                 # see if there's anything else:
                 it.next()
         except StopIteration:
+            if len(QS) == 0:
+                return "<div class='results'>%s</div>" % (
+                    self.translate(self._msg_no_results))
             have_more = False
         self.query_selections = QS
         return ''.join(
