@@ -29,6 +29,15 @@ def loadProducts(_context):
 	module = sys.modules.get(name, None)
 	if module:
 	    products.append(module)
+
+    # first load meta.zcml files
+    for product in products:
+	zcml = os.path.join(os.path.dirname(product.__file__), "meta.zcml")
+	if os.path.isfile(zcml):
+	    xmlconfig.file(zcml, context=_context, execute=True,
+			   package=product)
+
+    # now load their configure.zcml
     for product in products:
 	zcml = os.path.join(os.path.dirname(product.__file__), "configure.zcml")
 	if os.path.isfile(zcml):
