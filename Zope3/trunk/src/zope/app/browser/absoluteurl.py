@@ -13,7 +13,7 @@
 ##############################################################################
 """Absolute URL View components
 
-$Id: absoluteurl.py,v 1.14 2003/08/29 12:28:37 sidnei Exp $
+$Id: absoluteurl.py,v 1.15 2003/09/03 18:33:55 sidnei Exp $
 """
 
 from zope.app import zapi
@@ -69,7 +69,8 @@ class AbsoluteURL(BrowserView):
                isinstance(context, Exception):
             return ({'name':'', 'url': self.request.getApplicationURL()}, )
 
-        base = zapi.getView(container, 'absolute_url', request).breadcrumbs()
+        base = tuple(zapi.getView(container,
+                                  'absolute_url', request).breadcrumbs())
 
         dict = zapi.getInnerWrapperData(context)
         try:

@@ -15,7 +15,7 @@
 
 Makes imports easier
 
-$Id: zapi.py,v 1.9 2003/08/21 19:47:30 fdrake Exp $
+$Id: zapi.py,v 1.10 2003/09/03 18:33:54 sidnei Exp $
 """
 
 from zope.app.interfaces.zapi import IZAPI
@@ -35,3 +35,4 @@ from zope.app.traversing import *
 from zope.app.interfaces.exceptions import UserError
 
 name = getName
+

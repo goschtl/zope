@@ -1,9 +1,9 @@
-<configure 
+<configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:browser="http://namespaces.zope.org/browser">
 
   <browser:defaultView name="index.html" />
-  
+
   <include file="menus.zcml" />
   <include package=".applicationcontrol" />
   <include package=".cache" />
@@ -25,7 +25,7 @@
   <include file="traversal.zcml" />
   <include file="undo.zcml" />
   <include file="auth.zcml" />
-  
+
   <include package=".exception" />
 
 </configure>
