@@ -1614,14 +1614,16 @@ class datetimetz(datetime):
 
     def astimezone(self, tz):
         _check_tzinfo_arg(tz)
-        offset = self.utcoffset()
-        if offset is not None and tz is not None:
-            newoffset = tz.utcoffset(self)
-            if newoffset is not None:
-                if not isinstance(newoffset, timedelta):
-                    newoffset = timedelta(minutes=newoffset)
-                diff = offset - newoffset
-                self -= diff # this can overflow; can't be helped
+        # Don't call utcoffset unless it's necessary.
+        if tz is not None:
+            offset = self.utcoffset()
+            if offset is not None:
+                newoffset = tz.utcoffset(self)
+                if newoffset is not None:
+                    if not isinstance(newoffset, timedelta):
+                        newoffset = timedelta(minutes=newoffset)
+                    diff = offset - newoffset
+                    self -= diff # this can overflow; can't be helped
         return self.replace(tzinfo=tz)
 
     def isoformat(self, sep='T'):

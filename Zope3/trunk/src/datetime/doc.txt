@@ -624,7 +624,7 @@ Instance methods:
 
   - astimezone(tz)
     Return a datetimetz with the same date and time fields, and with
-    tzinfo=tz.  tz must be an instance of a tzinfo subclass.
+    tzinfo=tz.  tz must be None or an instance of a tzinfo subclass.
 
   - timetuple()
     Return a 9-element tuple of the form returned by time.localtime().
@@ -1131,9 +1131,9 @@ Instance methods:
     tzinfo=None to remove a datetimetz's tzinfo member.
 
   - astimezone(tz)
-    Return a datetimetz with new tzinfo member.  tz must be an instance
-    of a tzinfo subclass.  If self is naive, or if tz.utcoffset(self)
-    returns None, self.astimezone(tz) is equivalent to
+    Return a datetimetz with new tzinfo member.  tz must be None or an
+    instance of a tzinfo subclass.  If tz is None, self is naive, or
+    tz.utcoffset(self) returns None, self.astimezone(tz) is equivalent to
     self.replace(tzinfo=tz):  a new timezone object is attached without
     any conversion of date or time fields.  If self is aware and
     tz.utcoffset(self) does not return None, the date and time fields
