@@ -120,37 +120,33 @@ contains::
 2. ``cvs://cvs.zope.org/cvs-repository:Packages2/packages.map``
 
 
+.. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/
+
+
 Resource Maps
 -------------
 
-A `resource map` is a mapping of typed resource names to URLs.  The
-URLs will most often be ``cvs:`` or ``repository:`` URLs, but do not
-have to be (well, they do for now, but presumably not forever).
+A `resource map` is a mapping of resource names to URLs.  The URLs
+will most often be ``cvs:``, ``svn:``, or ``repository:`` URLs, but do
+not have to be.  See `Resource Locations <resources.html>`_ for more
+information on using URLs for specific locations.
 
-Resources are identified by strings of the form:
-
-  [ `type` ":" ] `name`
-
-The optional `type` defaults to ``package``.
-
-The only types known to **zpkg** are ``package`` and ``collection``.
-The `name` portion may be used to represent different resources of
-different types.  For example, ``collection:ZConfig`` and
-``package:ZConfig`` represent two different resources.
+Resources are identified by names without any whitespace; if the
+resource is a Python package, the resource name is the full package
+name ("ZConfig" or "zope.app.tree" for example).  Resource names must
+be unique.
 
 A file representing a resource map is a simple two-column table with
-the fields separated by writespace.  Blank lines and comments (lines
+the fields separated by whitespace.  Blank lines and comments (lines
 that start with ``#`` as the first non-blank character) are ignored.
 
 The first field is the name of a resource, and the second field is the
 URL by which it can be accessed.
 
 Resource maps which have CVS locations of their own can contain
-``repository:`` URLs; the ``cvs:`` URL of the directory containing the
-map itself is used as the base for resolving ``repository:`` URLs.
-
-
-.. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/
+``repository:`` URLs; the ``cvs:`` or ``svn:`` URL of the directory
+containing the map itself is used as the base for resolving
+``repository:`` URLs.
 
 
 Zope Corporation Tagging Convention
