@@ -5,14 +5,10 @@ Things to do After the next release (in no particular order)
 - Write tests for the Dublin Core Structured Value support, especially errors
   and createMapping(). See zope.app.dublincore.dcsv.
 
-- Revisit getInterface() method of ComponentRegistration
-  (i.e. UtilityRegistration) component. It can probably be just a simple
-  attribute. The change should be trivial as well.
-
 - The mapping from file endings to mime types is handled through configuration
   in Zope 2 now.  Perhaps we can do the same for Zope 3.
 
-- When converting a possible site to a site, prompt the user for services that
+- When converting a possible site to a site, prompt the user for utilities that
   should be added right away. See zope/app/site/browser/__init__.py
 
 - http://dev.zope.org/Zope3/TALESPathExpressionAdapters
@@ -136,24 +132,6 @@ Things to do After the next release (in no particular order)
   DTML2 is a version of DTML that uses TALES *instead* of the
   traditional DTML namespace stack and expression mechanisms.
 
-- Local module service. This provides support for local imports as
-  well as a place to manage security configuration for persistent
-  modules.
-
-  Provide support for within package access to persistent modules
-  without the need to register them.
-
-  * Change import mechanism:
-
-    + only import from other modules and registrations in the same
-      folder by default
-
-    + importing from elsewhere should require explicit registration
-
-  * Registrations that allow module security assertions
-
-  * Name of the module within the folder must match the module name
-
 - Fix a number of bugs and rough edges in page folders
 
 - Finish WebDAV
@@ -208,18 +186,9 @@ Things to do After the next release (in no particular order)
 
   Current efforts could continue to be pursued as add-on items.
 
-- Finish persistent-module refactoring
-
-  http://dev.zope.org/Zope3/ModulesAreGlobal
-
 - Redo form machinery
 
   The existing form implementation is neither as clean or as flexible
   as it should be, but it might be OK for the first release.
 
 - Reimplement or port Evan's ZPT adapter work.
-
-- Investigate "component specifications", that make more explicit the
-  relationships among components.
-
-  Add checking and better spelling of __used_for__.
