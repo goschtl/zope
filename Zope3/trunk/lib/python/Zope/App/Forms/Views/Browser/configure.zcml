@@ -1,0 +1,31 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   package="Zope.App.Forms.Views.Browser"
+>
+
+  <!-- Form Widget View Directives -->
+  <browser:view
+      permission="Zope.View"
+      for="Schema.IField.IStr"
+      name="normal"
+      factory=".TextWidget." />
+
+  <browser:view
+      permission="Zope.View"
+      for="Schema.IField.IBool"
+      name="normal"
+      factory=".CheckboxWidget." />
+
+  <!-- Test view for folders -->
+
+   <browser:view
+       permission="Zope.View" 
+       for="Zope.App.OFS.Content.Folder.Folder.IFolder."  
+       factory=".FormView.">
+       <browser:page name="testFormView.html"
+        template="testFormView.pt" />
+   </browser:view>
+
+  
+</zopeConfigure>
