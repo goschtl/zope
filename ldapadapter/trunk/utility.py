@@ -32,6 +32,9 @@ from persistent import Persistent
 from zope.interface import implements
 from zope.app.container.contained import Contained
 
+from exceptions import URLFormatError
+from exceptions import LDAP_url_format_error
+
 from interfaces import ILDAPAdapter
 from interfaces import ILDAPConnection
 from interfaces import IManageableLDAPAdapter
@@ -100,13 +103,9 @@ class LDAPAdapter(object):
                 if len(urlList) == 3:
                     port = int(urlList[2])
             else:
-                # raise ERROR
-                print "to small url"
-                return None
+                URLFormatError(LDAP_url_format_error)
         else:
-            # raise ERROR
-            print "ERROR"
-            return None
+            raise URLFormatError(LDAP_url_format_error)
          
         self.host = host
         self.port = port

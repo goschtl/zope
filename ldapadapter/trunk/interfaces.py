@@ -20,8 +20,11 @@ from zope.interface import Attribute
 from zope.schema import Int
 from zope.schema import Bool
 from zope.schema import TextLine
+from zope.schema import URI
+from ldapadapter.field import LDAPURI
 
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.i18nmessageid import MessageIDFactory
+_ = MessageIDFactory("ldapadapter")
 
 
 class ILDAPAdapter(Interface):
@@ -56,7 +59,17 @@ class ILDAPAdapter(Interface):
         """
 
 class ILDAPAdapterManagement(Interface):
-    serverURL = TextLine(
+    #serverURL = TextLine(
+    #    title=_("Server URL"),
+    #    description=_(
+    #        "Specify the LDAP URL of the server. Examples:\n"
+    #        "\n"
+    #        "ldap:///\n",
+    #        "ldaps://localhost:389/\n",
+    #        ),
+    #    default=u"ldap://localhost",
+    #    )
+    serverURL = LDAPURI(
         title=_("Server URL"),
         description=_(
             "Specify the LDAP URL of the server. Examples:\n"
@@ -64,7 +77,7 @@ class ILDAPAdapterManagement(Interface):
             "ldap:///\n",
             "ldaps://localhost:389/\n",
             ),
-        default=u"ldap://localhost",
+        default="ldap://localhost",
         )
     bindDN = TextLine(
         title=_("Bind DN"),
