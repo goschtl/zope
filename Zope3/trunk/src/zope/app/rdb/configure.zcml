@@ -31,9 +31,6 @@
 
   <localUtility class="zope.app.rdb.ZopeDatabaseAdapter">
 
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
     <require
         permission="zope.app.rdb.Use"
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />

@@ -62,9 +62,6 @@
     <factory
         id="zope.security.role.Role"
         />
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
-        />
     <require
         permission="zope.Security"
         interface=".interfaces.IRole"

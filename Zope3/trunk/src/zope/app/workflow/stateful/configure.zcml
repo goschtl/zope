@@ -7,9 +7,6 @@
   <factory
       id="zope.app.workflow.StatefulProcessDefinition"
       />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
-      />
   <require
       permission="zope.workflow.ManageProcessDefinitions"
       interface=".interfaces.IStatefulProcessDefinition"
@@ -94,9 +91,6 @@
     class=".contentworkflow.ContentWorkflowsManager">
   <factory
       id="zope.app.workflow.ContentWorkflowsManager"
-      />
-  <implements 
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
       />
   <require
       permission="zope.ManageServices"

@@ -6,9 +6,6 @@
         title="Mutable Schema"
         description="A Persistent Schema that can be edited through the web"/>
 
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
     <require
         permission="zope.ManageServices"
         interface=".interfaces.IMutableSchema" />

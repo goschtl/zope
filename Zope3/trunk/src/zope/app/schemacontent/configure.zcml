@@ -12,9 +12,6 @@
       title="Content Component Definition"
       description="A Persistent Content Component Definition" />
 
-    <implements
-      interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
     <require
       permission="zope.ManageServices"
       interface=".interfaces.IContentComponentDefinition"

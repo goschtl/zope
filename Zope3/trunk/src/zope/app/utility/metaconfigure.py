@@ -18,6 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 from zope.interface import classImplements
 from zope.app.component.contentdirective import ContentDirective
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 
 from interfaces import ILocalUtility
 
@@ -25,5 +26,6 @@ from interfaces import ILocalUtility
 class LocalUtilityDirective(ContentDirective):
 
     def __init__(self, _context, class_):
+        classImplements(class_, IAttributeAnnotatable)
         classImplements(class_, ILocalUtility)
         super(LocalUtilityDirective, self).__init__(_context, class_)

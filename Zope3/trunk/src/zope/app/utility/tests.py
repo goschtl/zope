@@ -29,6 +29,7 @@ import zope.app.utility
 from zope.app.tests import setup
 from zope.app.site.tests import placefulsetup
 from zope.app import utility, zapi
+from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.traversing.api import traverse
 from zope.app.registration.interfaces import IRegistrationStack
 from zope.app.registration.interfaces import UnregisteredStatus
@@ -249,6 +250,7 @@ class TestLocalUtilityDirective(PlacelessSetup, unittest.TestCase):
         ''')
         xmlconfig(f)
         self.assert_(ILocalUtility.implementedBy(UtilityStub))
+        self.assert_(IAttributeAnnotatable.implementedBy(UtilityStub))
     
 
 def test_suite():

@@ -31,9 +31,6 @@
     <factory
         id="zope.app.workflow.ProcessDefinition"
         />
-    <implements 
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
-        />
     <require
         permission="zope.ManageServices"
         interface="zope.app.workflow.interfaces.IProcessDefinition" 

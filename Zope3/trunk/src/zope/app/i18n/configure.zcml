@@ -21,9 +21,6 @@
    <factory 
         id="zope.app.TranslationService" 
         />
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" 
-        />
    <allow interface="zope.i18n.interfaces.ITranslationDomain" 
        />
    <require permission="zope.ManageServices"

@@ -17,10 +17,6 @@
         interface="zope.app.cache.interfaces.ICache"
         />
 
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
-        />
-
     <require 
         permission="zope.ManageServices" 
         interface="zope.app.cache.interfaces.ram.IRAMCache"
