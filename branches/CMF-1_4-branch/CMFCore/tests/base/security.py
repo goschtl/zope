@@ -32,6 +32,9 @@ class OmnipotentUser( Implicit ):
     
     getUserName = getId
 
+    def getRoles(self):
+        return ('Manager',)
+
     def allowed( self, object, object_roles=None ):
         return 1
 
@@ -47,6 +50,9 @@ class UserWithRoles( Implicit ):
         return 'high_roller'
     
     getUserName = getId
+
+    def getRoles(self):
+        return self._roles
 
     def allowed( self, object, object_roles=None ):
         if object_roles is None:
