@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: view.py,v 1.3 2003/06/04 09:09:45 stevea Exp $
+$Id: view.py,v 1.4 2003/06/23 16:39:15 mgedmin Exp $
 """
 
 from zope.interface.adapter import AdapterRegistry
@@ -55,6 +55,7 @@ class GlobalViewService:
         '''See interface IViewService'''
         view = self.queryView(object, name, request)
         if view is None:
+            type = request.getPresentationType()
             raise ComponentLookupError(object, name, type)
         return view
 
