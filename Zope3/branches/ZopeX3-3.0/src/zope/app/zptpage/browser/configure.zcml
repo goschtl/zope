@@ -22,7 +22,7 @@
 
   <browser:addMenuItem
       class="zope.app.zptpage.ZPTPage"
-      title="Templated Page"
+      title="ZPT Page"
       description="A simple, content-based Page Template"
       permission="zope.ManageContent"
       view="zope.app.zptpage.ZPTPage"
