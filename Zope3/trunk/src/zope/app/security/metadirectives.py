@@ -13,12 +13,13 @@
 ##############################################################################
 """securityPolicy Directive Schema
 
-$Id: metadirectives.py,v 1.2 2004/03/08 12:06:41 srichter Exp $
+$Id: metadirectives.py,v 1.3 2004/03/20 19:52:48 srichter Exp $
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
 from zope.configuration.fields import MessageID
 from zope.schema import InterfaceField, Id, TextLine
+from fields import Permission
 
 class ISecurityPolicyDirective(Interface):
     """Defines the security policy that will be used for Zope."""
@@ -69,7 +70,7 @@ class IRequire(Interface):
     interfaces listed in the interface attribute.  
     """
     
-    permission = Id(
+    permission = Permission(
         title=u"Permission ID",
         description=u"The id of the permission to require.")
 
@@ -130,3 +131,17 @@ class IDefinePrincipalDirective(IBasePrincipalDirective):
 
 class IDefineUnauthenticatedPrincipalDirective(IBasePrincipalDirective):
     """Define a new unauthenticated principal."""
+
+class IRedefinePermission(Interface):
+    """Define a permission to replace another permission."""
+
+    from_ = Permission(
+        title=u"from",
+        description=u"Original permission id to redefine.",
+        required=True)
+    
+    to = Permission(
+        title=u"to",
+        description=u"Substituted permission id.",
+        required=True)
+

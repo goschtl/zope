@@ -13,7 +13,7 @@
 ##############################################################################
 """Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.6 2004/03/08 12:06:41 srichter Exp $
+$Id: metaconfigure.py,v 1.7 2004/03/20 19:52:48 srichter Exp $
 """
 from zope.app.component.metaconfigure import utility
 
@@ -110,3 +110,14 @@ def unauthenticatedPrincipal(_context, id, title, description=''):
         discriminator = 'unauthenticatedPrincipal',
         callable = principalRegistry.defineDefaultPrincipal,
         args = (id, title, description) )
+
+def redefinePermission(_context, from_, to):
+    _context = _context.context
+    
+    # check if context has any permission mappings yet
+    if not hasattr(_context, 'permission_mapping'):
+        _context.permission_mapping={}
+
+    _context.permission_mapping[from_] = to
+    
+

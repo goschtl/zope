@@ -13,7 +13,7 @@
 ##############################################################################
 """Directives Tests
 
-$Id: test_directives.py,v 1.1 2004/03/08 12:06:40 srichter Exp $
+$Id: test_directives.py,v 1.2 2004/03/20 19:52:48 srichter Exp $
 """
 import unittest
 from pprint import PrettyPrinter
@@ -26,6 +26,9 @@ from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.security import metaconfigure
 from zope.app.security.interfaces import IPermission
 from zope.app.security.permission import Permission
+from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.configuration import xmlconfig
+from zope.app.security import fields
 
 def pprint(ob, width=70):
     PrettyPrinter(width=width).pprint(ob)
@@ -49,7 +52,7 @@ def test_protectModule():
 
     >>> moduleChecker(test_directives)
     
-    Should get an ewrror if a permission is defined before it's used:
+    Should get an error if a permission isn't defined before it's used:
 
     >>> metaconfigure.protectModule(test_directives, 'foo', test_perm)
     Traceback (most recent call last):
@@ -195,10 +198,32 @@ def test_require():
     
     """
 
+class IDummy(Interface):
+
+    perm = fields.Permission(title=u'')
+
+perms = []
+
+def dummy(context_, perm):
+    global perms
+    perms.append(perm)
+
+
+class DirectivesTest(PlacelessSetup, unittest.TestCase):
+
+    def setUp(self):
+        super(DirectivesTest, self).setUp()
+        from zope.app.security import tests
+        
+        self.context = xmlconfig.file("redefineperms.zcml", tests)
+
+    def testRedefinePermission(self):
+        self.assertEqual(perms, ['zope.Security'])
 
 def test_suite():
     return unittest.TestSuite((
         DocTestSuite(setUp=setUp, tearDown=tearDown),
+        unittest.makeSuite(DirectivesTest),
         ))
 
 if __name__ == '__main__': unittest.main()

@@ -99,8 +99,6 @@ Things to do for the next release (in no particular order)
 
 - http://dev.zope.org/Zope3/ZCMLEnhancements
 
-  At least the permission redefinition. 
-
 - Permission rationalization
 
   Absent deep thinking, then create a set of fine-grained permission

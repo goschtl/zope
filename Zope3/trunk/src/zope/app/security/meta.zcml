@@ -44,5 +44,11 @@
       namespace="http://namespaces.zope.org/zope"
       schema=".metadirectives.IRequire"
       handler=".metaconfigure.require" />
- 
+
+  <meta:directive
+      name="redefinePermission"
+      namespace="http://namespaces.zope.org/meta"
+      schema=".metadirectives.IRedefinePermission"
+      handler=".metaconfigure.redefinePermission" />
+   
 </configure>

@@ -10,6 +10,8 @@ Zope Changes
 
     New features
 
+    - Implemented Permission Redefinition portion of ZCMLEnhancements.
+
     - Implemented http://dev.zope.org/Zope3/MinimalDefaultViewDirectives
       'zope:defaultView' canno longer *define* a view. It also only accepts
       one "for" interface.
