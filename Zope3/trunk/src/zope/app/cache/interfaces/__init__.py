@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for cache manager.
 
-$Id: __init__.py,v 1.4 2003/09/21 17:31:55 jim Exp $
+$Id: __init__.py,v 1.1 2004/03/01 10:57:36 philikon Exp $
 """
 from zope.app import zapi
 from zope.app.interfaces.event import ISubscriber

@@ -13,10 +13,10 @@
 ##############################################################################
 """Helpers for caching.
 
-$Id: caching.py,v 1.6 2003/09/16 21:59:17 srichter Exp $
+$Id: caching.py,v 1.7 2004/03/01 10:57:35 philikon Exp $
 """
 from zope.app import zapi
-from zope.app.interfaces.cache import ICacheable
+from zope.app.cache.interfaces import ICacheable
 from zope.app.services.servicenames import Caching
 from zope.component import ComponentLookupError
 

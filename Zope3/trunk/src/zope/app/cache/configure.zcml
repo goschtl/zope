@@ -2,30 +2,42 @@
 
   <serviceType 
       id="Caching"
-      interface="zope.app.interfaces.cache.ICachingService" />
+      interface="zope.app.cache.interfaces.ICachingService"
+      />
 
   <adapter 
       for="zope.app.interfaces.annotation.IAnnotatable"
-      provides="zope.app.interfaces.cache.ICacheable"
-      factory="zope.app.cache.annotationcacheable.AnnotationCacheable" />
+      provides="zope.app.cache.interfaces.ICacheable"
+      factory="zope.app.cache.annotationcacheable.AnnotationCacheable"
+      />
 
   <content class=".ram.RAMCache">
-    <factory 
+    <factory
         id="zope.caching.RAMCache"
-        permission="zope.Public" />
+        permission="zope.Public"
+        />
 
     <implements
-        interface="zope.app.interfaces.cache.ICache" />
+        interface="zope.app.cache.interfaces.ICache"
+        />
 
     <implements
-        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
+        />
 
     <implements
-        interface="zope.app.interfaces.services.utility.ILocalUtility" />
+        interface="zope.app.interfaces.services.utility.ILocalUtility"
+        />
 
     <require 
         permission="zope.Public" 
-        interface="zope.app.interfaces.cache.ram.IRAMCache" />
+        interface="zope.app.cache.interfaces.ram.IRAMCache"
+        />
   </content>
+
+
+  <!-- Include browser package -->
+
+  <include package=".browser" />
 
 </configure>

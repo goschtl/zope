@@ -15,16 +15,16 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: test_cachename.py,v 1.7 2003/12/18 09:57:11 pnaveen Exp $
+$Id: test_cachename.py,v 1.8 2004/03/01 10:57:36 philikon Exp $
 """
 import unittest
+from zope.interface import implements
 
-from zope.app.interfaces.cache import CacheName
+from zope.app.cache.interfaces import CacheName
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
 from zope.app.interfaces.services.service import ILocalService
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.interface import implements
 
 __metaclass__ = type
 

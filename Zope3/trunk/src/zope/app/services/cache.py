@@ -13,17 +13,18 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.20 2004/02/20 16:57:30 fdrake Exp $
+$Id: cache.py,v 1.21 2004/03/01 10:57:39 philikon Exp $
 """
 from persistent import Persistent
+from zope.interface import implements
+
 from zope.app import zapi
-from zope.app.interfaces.cache import ICache
 from zope.app.interfaces.event import IObjectModifiedEvent
 from zope.app.interfaces.services.cache import ILocalCachingService
 from zope.app.interfaces.services.service import ISimpleService
+from zope.app.cache.interfaces import ICache
 from zope.app.services.event import ServiceSubscriberEventChannel
 from zope.app.services.servicenames import Utilities
-from zope.interface import implements
 from zope.app.container.contained import Contained
 
 class CachingService(ServiceSubscriberEventChannel, Persistent, Contained):

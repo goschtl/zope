@@ -13,11 +13,11 @@
 ##############################################################################
 """A registration for a cache.
 
-$Id: cache.py,v 1.4 2003/08/19 17:34:21 srichter Exp $
+$Id: cache.py,v 1.5 2004/03/01 10:57:38 philikon Exp $
 """
 from zope.app.interfaces.services.event import IEventChannel
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.interfaces.cache import ICachingService
+from zope.app.cache.interfaces import ICachingService
 
 class ILocalCachingService(ICachingService, IEventChannel):
     """TTW manageable caching service"""

@@ -13,23 +13,24 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.14 2003/09/21 17:33:12 jim Exp $
+$Id: test_cachingservice.py,v 1.15 2004/03/01 10:57:39 philikon Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.interface import implements
+from zope.interface.verify import verifyObject
+
 from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.cache import ICache, ICachingService
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.cache.interfaces import ICache, ICachingService
 from zope.app.services.cache import CachingService
 from zope.app.services.servicenames import Caching, Utilities
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.app.services.utility import LocalUtilityService, UtilityRegistration
 from zope.app.tests import setup
 from zope.app.traversing import getPath, traverse
-from zope.interface import implements
-from zope.interface.verify import verifyObject
 
 def sort(list):
     list.sort()

@@ -54,7 +54,7 @@
   <browser:pages
       for="zope.app.sqlscript.interfaces.ISQLScript"
       permission="zope.ManageBindings"
-      class="zope.app.browser.cache.cacheable.CacheableView"
+      class="zope.app.cache.browser.cacheable.CacheableView"
       >
 
     <browser:page

@@ -68,10 +68,12 @@
   <content class="zope.app.services.cache.CachingService">
     <factory 
           id="zope.services.CachingService" 
-          permission="zope.ManageServices" />
+          permission="zope.ManageServices"
+          />
       <require
           permission="zope.View"
-          interface="zope.app.interfaces.cache.ICachingService" />
+          interface="zope.app.cache.interfaces.ICachingService"
+          />
     </content>
 
 <!-- Service Manager -->
