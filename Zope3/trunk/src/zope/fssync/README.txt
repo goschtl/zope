@@ -208,7 +208,7 @@ Working with bundles
   copy of the default folder.  You should delete unnecessary things;
   especially the standard service definitions are not needed.
 
-- Exporting a bundle.  First deactivate the bundle bu using the
+- Exporting a bundle.  First deactivate the bundle by using the
   "Deactivate bundle" button on the Bundle tab (see below).  Then save
   the bundle to the filesystem using fssync checkout.  Finally tar or
   zip it up.  Make sure to include the @@Zope directory at the same
@@ -220,7 +220,7 @@ Working with bundles
   $ tar tf - bundle-1.0 @@Zope | gzip >bundle-1.0.tgz
   $
 
-  Now distribute the gzipped tar file file via the web.
+  Now distribute the gzipped tar file via the web.
 
 - Importing a bundle.  First extract the zip or tar file to the
   filesystem.  Then use fssync checkin command to add it to your Zope
@@ -243,8 +243,8 @@ Working with bundles
     For each needed service, there are three possibilities:
 
     1) The service is already active in the site.  This is probably
-       because it exists in the default folder or in a previous
-       bundle.
+       because it exists in the default folder or in a previously
+       installed bundle.
 
     2) The service is not yet active in the site but the bundle
        provides a configuration for the service.
