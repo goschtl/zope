@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to context wrappers.
 
-$Id: interfaces.py,v 1.14 2003/06/07 13:00:01 stevea Exp $
+$Id: interfaces.py,v 1.15 2003/06/12 09:29:00 jim Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -148,5 +148,46 @@ class IWrapperIntrospection(Interface):
         The iteration starts at ob and proceeds through ob's containers.
         As with getWrapperContainer, the container is the context of the
         innermost wrapper.
+        """
+
+    def ContextIterator(ob):
+        """Get an iterator for the object's context chain.
+
+        The iteration starts at ob and proceeds through ob's contexts.
+        """
+
+class IContextAwareDescriptorSupport(Interface):
+    """Special utilities for creating context-aware descriptors 
+
+    A context-aware descriptors is bound to context wrappers, rather than to
+    unwrapped instances.
+    """
+
+    ContextDescriptor = Attribute(
+        """Marker descriptor base class
+
+        Descriptor implementations that subclass this class will have
+        wrappers passed to their descriptor methods if they are
+        accessed through wrapped objects.
+        """)
+
+    def ContextMethod(method):
+        """Convert ordinary methods to context-aware methods.
+
+        The first argument passed to methods will be context wrapped
+        if the method is called on a context-wrapped instance.
+        
+        """
+
+    def ContextProperty(fget, fset=None, fdel=None):
+        """\
+        Create a property with functions to be passed context-wrapped instances
+
+        This function works like Python's property function, except
+        that the access functions are passed context-warpped instances.
+        """
+
+    def ContextSuper(cls, wrapped_instance):
+        """Call an inherited method on a wrapped instances
         """
 
