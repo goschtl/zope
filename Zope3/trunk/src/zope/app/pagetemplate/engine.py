@@ -18,7 +18,6 @@ Each expression engine can have its own expression types and base names.
 $Id$
 """
 import sys
-from types import StringTypes
 
 from zope.tales.expressions import PathExpr, StringExpr, NotExpr, DeferExpr
 from zope.tales.pythonexpr import PythonExpr
@@ -68,7 +67,7 @@ class ZopeContext(Context):
         text = self.evaluate(expr)
         if text is self.getDefault() or text is None:
             return text
-        if isinstance(text, StringTypes):
+        if isinstance(text, basestring):
             # text could be a proxied/wrapped object
             return text
         return unicode(text)
@@ -197,7 +196,13 @@ def _Engine(engine=None):
     engine.registerType('python', ZopePythonExpr)
     engine.registerType('not', NotExpr)
     engine.registerType('defer', DeferExpr)
+
+    # Using a proxy around sys.modules allows page templates to use
+    # modules for which security declarations have been made, but
+    # disallows execution of any import-time code for modules, which
+    # should not be allowed to happen during rendering.
     engine.registerBaseName('modules', ProxyFactory(sys.modules))
+
     return engine
 
 Engine = _Engine()
