@@ -191,12 +191,26 @@ class LDAPPrincipalSource(Contained, Persistent):
             return None
 
     def __connect(self):
-        conn = getattr(self, '_v_conn', None)
-        if not conn:
+        connection = getattr(self, '_v_conn', None)
+
+        if connection is not None :
+            # we have a cached connection,  test it to see if it is still valid
+            try :
+                connection.simple_bind_s(self.manager_dn, self.manager_passwd)
+            #except ldap.LDAPError, err :
+            #except (ldap.CONNECT_ERROR, ldap.SERVER_DOWN), err :
+            except ldap.SERVER_DOWN, err :
+                # it's not valid so discard it
+                connection = None
+
+        # no valid connection exists, create a new one and cache it
+        if connection is None :
             connectstring = 'ldap://%s:%s' % (self.host, self.port)
             connection = ldap.initialize(connectstring)
             self._v_conn = connection
-            return connection
-        else:
-            return conn
- 
+
+        return connection
+    # end __connect()
+
+# end class LDAPPrincipalSource
+
