@@ -32,16 +32,136 @@ which must be recognized and be read into Zope. In this case
 there must be a mechanism that informs the involved Zope
 objects about new versions. We propose to use the Zope event system 
 to allow versionable objects to subscribe to new versions if the
-used backend generates its own versions."""
+used backend generates its own versions.
+"""
 
+class IRepository(Interface):
+    """A version repository providing core functionality.
+    
+    IRepository is a kind of abstract component as the most important
+    functionality of storing versions of object is not implemented
+    here.
+    
+    See other repository interfaces defining different access strategies.
+
+    As long you have at least one object from your versioned
+    object cloud you can reach every object from it (at least the 
+    versioned aspects). XXX After having deleted the last object 
+    the IHistoryStorage component has to be asked for a bootstrap
+    object.
+    """
+    
+    def applyVersionControl(obj):
+        """Put the an object under version control.
+            
+        This method has to be call prior using any other repository
+        related methods.
+        """
+    
+    def revertToVersion(obj, selector):
+        """Reverts the object to the selected version.
+        
+        XXX Do we need to say something about branches?
+        """
+        
+
+class ICopyModifyMergeRepository(IRepository):
+    """Top level API for a copy-modify-merge (subversion like) repository.
+    """
+    
+    def saveAsVersion(obj):
+        """Save the current state of the object for later retreival.
+        """
+
+class ICheckoutCheckinRepository(IRepository):
+    """Top level API for a checkout-modify-checkin (XXX DeltaV like) repository.
+    
+    These kind of repositories administrate an "object is in use" 
+    information which may be suitable in some environments.
+    
+    It my be seen as kind of soft locks.
+    """
+
+    def checkout(obj):
+        """Marks the object as checked out (being in use somehow).
+        """
+    
+    def checkin(obj):
+        """Check in the current state of an object.
+        
+        Raises an RepositoryError if the object is not versionable.
+        XXX Other exceptions (for repository problems)?
+        """
+
+
+class IHardlockUnlockRepository(ICheckoutCheckinRepository):
+    """Top level API for a lock-modify-unlock repository.
+    
+    These kind of repositories also manage a lock state to avoid
+    editing collisions.
+    
+    XXX This interface may be unstable as we didn't think a lot about 
+    it.
+    """
+
+
+class IIntrospectableRepository(Interface):
+    """Additional methods providing more information versioned objects.
+    """
+
+    def getVersion(obj, selector): # XXX Naming: getCopyOfVersion
+        """Returns the selected version of an object. 
+        
+        This method does not overwrite 'obj' (like revertToVersion
+        does). Instead it returns the version as new object.
+        """
+
+    def getVersionIds(self, obj)
+        """Returns references to all versions of the passed object.
+        
+        XXX Naming: Should we name that 'listVersions' just returning
+        references to the objects?
+        """
+
+
+class ICheckoutAware(Interfaces):
+    """Marking objects as checked in or checked out.
+    
+    XXX Naming conventions? Aren't IBlahAware interfaces usually marker 
+    interfaces?
+    XXX IUsageTrackingAware?, IInUseMarkingAware, ISoftLockingAware
+    """
+    
+    def markAsCheckedIn(obj):
+        """Marks the object as being checked in.
+        """
+        
+    def markAsCheckedOut(obj):
+        """Marks the object as being checked out.
+        """
 
    
-class IVersionableData(Interface) :
+class IVersionableAspects(Interface) :
     """ An interface that implements a versioning policy for
         a content type and a storage that knows how to version the
         content data.
+        
+        XXX VersionableData vermittelt zwischen den Daten und der Storage, 
+        was gespeichert werden soll
+        
+        XXX Explain that this is a multidapter?
     """
-           
+
+    def updateAspects(selector):
+        """Updates a certain aspect on the original object.
+        
+        XXX exceptions?
+        XXX Should reading only certain parts of an aspect be possible?
+        """
+    
+    def writeAspects():
+        """Write an aspect from the original object.
+        """
  
 class ITicket(Interface) :
     """ A marker interface for access information for versioned data.
@@ -54,31 +174,30 @@ class ITicket(Interface) :
       
     """
 
-class IHistoryStorage(Interface) :
+
+# XXX 
+class IHistoryStorage(Interface) : # IHistories
     """ Minimal interface for a pluggable storage that stores a new version
     of an object into an object history.
+    
+    XXX Important note: IHistoryStorage components must be transaction aware.
+    A CVSHistoryStorage component for example has to ensure to handle 
+    transactions.
+    
+    IHistoryStorage components store IVersionableAspects of objects.
     """
 
-    def register(obj) :
-        """ Puts some object under version control. Returns an ITicket
-        to the first version.
+    def createVersionHistory(obj) :
+        """ Puts some object under version control. Returns an IHistory.
+        
+        XXX YAGNI?
         """
     
-    def write(obj) :
-        """ Saves a new version in the repository and returns an ITicket.
-        
-        Raises a VersionControlError if something went wrong.
-        """
+    def getObject
     
-    def read(ticket) :
-        """ Reads a version from the repository that is specified by the ticket.
-        
-        Raises a VersionPermanentlyDeleted exception if the repository
-        allowed to delete the specified version.
-        
-        VersionNotAvailable error if something went wrong 
+    def getVersion(history, selector):
         """
-       
+        """
    
 class IPythonReferenceStorage :
     """ Marker interface for a storage that is able to preserve 
@@ -89,8 +208,9 @@ class IPythonReferenceStorage :
         packs.
     """
 
+class IVersionable(persistent.interfaces.IPersistent):
+    """Version control is allowed for objects that provide this."""
 
-   
 class IDeletableStorage(IStorage) :
     """ Most versioning systems do not allow to throw away versioned
     data, but there might be use cases were simple file repositories
@@ -119,6 +239,20 @@ class IMultiClientStorage(Interface) :
         
         If ticket is None all changes should be described.   
         """
+
+
+class IVersionable(persistent.interfaces.IPersistent,
+                   zope.app.annotation.interfaces.IAnnotatable):
+    """Version control is allowed for objects that provide this."""
+
+class INonVersionable(zope.interface.Interface):
+    """Version control is not allowed for objects that provide this.
+    
+    XXX Do we need that? Is this YAGNI?
+    """
+
+class IVersioned(IVersionable):
+    """Version control is in effect for this object."""
 
 
 # XXX describe Event types here
