@@ -2,7 +2,7 @@
   <body>
     <div metal:fill-slot="body">
 
-      <p>Configurations for this object:</p>
+      <p>Configurations for this service:</p>
 
       <ul>
 
@@ -17,7 +17,7 @@
 	</li>
       </ul>
 
-      <p><a href="addConfiguration.html">Add a configuration for this object</a>
+      <p><a href="addConfiguration.html">Add a configuration for this service</a>
 
     </div>
   </body>
