@@ -11,11 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""ctory.py,v 1.1.2.2 2002/04/02 02:20:40 srichter Exp $
-"""
+"""Request Factory
 
+$Id: requestfactory.py,v 1.3 2004/03/13 20:24:21 srichter Exp $
+"""
 import copy
-from zope.app.interfaces.startup import IRequestFactory
+from zope.app.process.interfaces import IRequestFactory
 from zope.interface import implements
 
 class RequestFactory:

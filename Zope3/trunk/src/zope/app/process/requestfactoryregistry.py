@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: requestfactoryregistry.py,v 1.2 2003/06/25 15:29:32 fdrake Exp $
+$Id: requestfactoryregistry.py,v 1.3 2004/03/13 20:24:21 srichter Exp $
 """
-from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
-from zope.app.process.simpleregistry import SimpleRegistry
-from zope.app.interfaces.startup import IPublicationRequestFactoryFactory
 from zope.interface import implements
+from interfaces.simpleregistry import ISimpleRegistry
+from interfaces import IPublicationRequestFactoryFactory
+from zope.app.process.simpleregistry import SimpleRegistry
 
 
 class IRequestFactoryRegistry(ISimpleRegistry):

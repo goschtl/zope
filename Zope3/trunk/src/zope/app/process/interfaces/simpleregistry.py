@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: simpleregistry.py,v 1.2 2002/12/25 14:13:03 jim Exp $
+$Id: simpleregistry.py,v 1.1 2004/03/13 20:24:22 srichter Exp $
 """
 
 from zope.interface import Interface

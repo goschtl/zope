@@ -13,10 +13,10 @@
 ##############################################################################
 """startup ZCML namespace directive tests
 
-$Id: test_directives.py,v 1.1 2003/08/02 16:34:58 srichter Exp $
+$Id: test_directives.py,v 1.2 2004/03/13 20:24:22 srichter Exp $
 """
 import unittest
-from zope.app.interfaces.startup import IPublicationRequestFactoryFactory
+from zope.app.process.interfaces import IPublicationRequestFactoryFactory
 from zope.app.process.requestfactoryregistry import getRequestFactory
 from zope.app.process.servertyperegistry import getServerType
 from zope.app.publication.browser import BrowserPublication
