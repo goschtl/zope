@@ -137,13 +137,15 @@ blockquote {
 }
 
 code {
+    font-family: Times, "Times New Roman", serif;
     font-size: 100%;
     color: Black;
     background-color: #FFD900;
 }
 
 pre {
-    font-size: 90%;
+    font-family: Times, "Times New Roman", serif;
+    font-size: 100%;
     padding: 1em;
     border: 1px solid #A0A0A0;
     color: Black;
