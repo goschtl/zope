@@ -14,6 +14,8 @@ import os
 from zope.configuration import xmlconfig
 
 _initialized = False
+_context = None
+
 
 def load_site():
     """Load the appropriate ZCML file.
@@ -33,4 +35,16 @@ def load_site():
         file = site_zcml
     else:
         file = os.path.join(os.path.dirname(__file__), "skel", "site.zcml")
-    xmlconfig.file(file)
+
+    global _context
+    _context = xmlconfig.file(file)
+
+
+def load_config(file, package=None):
+    """Load an additional ZCML file into the context.
+
+    Use with extreme care.
+    """
+    global _context
+    _context = xmlconfig.file(file, package, _context)
+
