@@ -395,6 +395,9 @@
 
 <!-- View pages -->
 
+<browser:defaultView
+    for="zope.app.interfaces.services.interfaces.IPageConfiguration"
+    name="edit.html" />
 
 <browser:editform
     schema="zope.app.interfaces.services.interfaces.IPageConfiguration"
@@ -409,16 +412,16 @@
     name="ItemEdit"
     label="Page"
     permission="zope.ManageServices"
-    fields="forInterface viewName class_ layer permission 
+    fields="forInterface viewName class_ layer permission
             title status"
     />
 
 <browser:page
-     for = "zope.app.interfaces.services.interfaces.IPageConfiguration"
-     name = "ConfigurationSummary"
-     template = "pageconfigsummary.pt"
-     permission="zope.ManageServices" 
-     />  
+     for="zope.app.interfaces.services.interfaces.IPageConfiguration"
+     name="ConfigurationSummary"
+     template="pageconfigsummary.pt"
+     permission="zope.ManageServices"
+     />
 
 <browser:addform
       schema = "zope.app.interfaces.services.interfaces.IPageConfiguration"
@@ -426,8 +429,8 @@
       content_factory = ".view.PageConfiguration"
       keyword_arguments = "forInterface class_ viewName permission"
       set_before_add = "template layer"
-      label = "Configure a view page" 
-      permission="zope.ManageServices" 
+      label = "Configure a view page"
+      permission="zope.ManageServices"
       fields="forInterface viewName
               template class_ layer permission title status description"
       />

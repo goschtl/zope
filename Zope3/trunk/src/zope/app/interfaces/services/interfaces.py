@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.9 2003/01/25 13:28:54 jim Exp $
+$Id: interfaces.py,v 1.10 2003/02/06 15:35:03 alga Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -160,6 +160,12 @@ class IPageConfigurationInfo(IViewConfigurationInfo):
         required = False,
         readonly = True,
         type = IZPTTemplate,
+        )
+
+    attribute = TextLine(
+        title = u"Class attribute",
+        required = False,
+        readonly = True,
         )
 
 class IPageConfiguration(IConfiguration, IPageConfigurationInfo):

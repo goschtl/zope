@@ -1,2 +1,2 @@
-<span tal:replace="context/factoryName" />
+<span tal:replace="context/class_" />
 <span tal:replace="context/template" />

@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.4 2003/01/21 21:45:07 jim Exp $
+$Id: view.py,v 1.5 2003/02/06 15:35:03 alga Exp $
 """
 __metaclass__ = type
 
@@ -43,6 +43,7 @@ from zope.exceptions import NotFoundError
 
 from zope.app.interfaces.services.interfaces import IViewConfiguration, IPageConfiguration
 from zope.app.services.adapter import PersistentAdapterRegistry
+from zope.configuration.exceptions import ConfigurationError
 
 class ViewService(Persistent):
 
@@ -244,24 +245,46 @@ class PageConfiguration(ViewConfiguration):
     presentationType = IBrowserPresentation
 
     def __init__(self,
-                 forInterface, viewName, permission,                 
-                 class_=None, template=None,
+                 forInterface, viewName, permission,
+                 class_=None, template=None, attribute=None,
                  layer='default'):
 
-        
         super(PageConfiguration, self).__init__(
             forInterface, viewName, self.presentationType,
             class_, permission, layer)
 
         self.template = template
+        self.attribute = attribute
+
+    def _validate(self):
+        if self.template is not None and self.attribute is not None:
+            raise ConfigurationError(
+                "PageConfiguration for %s view name %s: "
+                "Cannot have both 'template' and 'attribute' at the same time." %
+                (self.forInterface, self.viewName))
+
+        if self.template is None and self.attribute is None:
+            raise ConfigurationError(
+                "PageConfiguration for %s view name %s: "
+                "Should have a 'template' or 'attribute' attribute." %
+                (self.forInterface, self.viewName))
+
+        if self.class_ is None and self.attribute is not None:
+            raise ConfigurationError(
+                "PageConfiguration for %s view name %s: "
+                "Cannot have an 'attribute' without a 'class_'." %
+                (self.forInterface, self.viewName))
 
     def getView(self, object, request):
+
+
+        self._validate()
+
         sm = getServiceManager(self)
 
         if self.class_:
             class_ = sm.resolve(self.class_)
             class_ = type(class_.__name__, (class_, DefaultClass), {})
-            
         else:
             class_  = DefaultClass
 
@@ -270,11 +293,15 @@ class PageConfiguration(ViewConfiguration):
         # This is needed because we need to do an unrestricted traverse
         root = removeAllProxies(getPhysicalRoot(sm))
 
-        template = traverse(root, self.template)
+        if self.attribute is not None:
+            template = getattr(view, self.attribute)
+        else:
+            template = traverse(root, self.template)
+            template = BoundTemplate(template, view)
 
         checker = NamesChecker(__call__ = self.permission)
 
-        return ProxyFactory(BoundTemplate(template, view), checker)
+        return ProxyFactory(template, checker)
 
     getView = ContextMethod(getView)
 

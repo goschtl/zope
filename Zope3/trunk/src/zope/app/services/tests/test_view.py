@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.3 2003/01/21 21:45:09 jim Exp $
+$Id: test_view.py,v 1.4 2003/02/06 15:35:04 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -37,6 +37,8 @@ from zope.app.services.view import PageConfiguration, BoundTemplate
 from zope.interface.verify import verifyObject
 from zope.component.interfaces import IViewService
 from zope.proxy.introspection import removeAllProxies
+from zope.configuration.exceptions import ConfigurationError
+
 class I1(Interface):
     pass
 
@@ -66,11 +68,16 @@ class Configuration:
 
 class C: pass
 
+class PhonyTemplate:
+
+    __implements__ = IZPTTemplate
+
 class A:
     def __init__(self, object, request):
         self.context = object
         self.request = request
 
+    run = PhonyTemplate()
 
 class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
@@ -214,31 +221,29 @@ class TestViewConfiguration(PlacefulSetup, TestCase):
         self.assertEqual(self.configuration.forInterface, I1)
         self.assertEqual(self.configuration.presentationType, I2)
 
-class PhonyTemplate:
-
-    __implements__ = IZPTTemplate
 
 class TestPageConfiguration(PlacefulSetup, TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        rootFolder = RootFolder()
-        rootFolder.setServiceManager(PhonyServiceManager())
-        default = traverse(rootFolder, '++etc++Services/Packages/default')
+        self.rootFolder = RootFolder()
+        self.rootFolder.setServiceManager(PhonyServiceManager())
+        default = traverse(self.rootFolder, '++etc++Services/Packages/default')
         self.__template = PhonyTemplate()
         default.setObject('t', self.__template)
-        self.__configuration = ContextWrapper(
+
+    def test_getView_template(self):
+        configuration = ContextWrapper(
             PageConfiguration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
-                              '/++etc++Services/Packages/default/t',
+                              template='/++etc++Services/Packages/default/t',
                               ),
-            rootFolder,
+            self.rootFolder,
             )
 
-    def test_getView(self):
         c = C()
         request = TestRequest()
-        view = self.__configuration.getView(c, request)
+        view = configuration.getView(c, request)
         self.assertEqual(view.__class__, BoundTemplate)
         self.assertEqual(removeAllProxies(view).template, self.__template)
 
@@ -246,8 +251,36 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
         self.assert_(issubclass(view.__class__, A))
         self.assertEqual(view.context, c)
         self.assertEqual(view.request, request)
-        self.assertEqual(self.__configuration.forInterface, I1)
-        self.assertEqual(self.__configuration.presentationType, I2)
+        self.assertEqual(configuration.forInterface, I1)
+        self.assertEqual(configuration.presentationType, I2)
+
+    def test_getView_attribute(self):
+        configuration = ContextWrapper(
+            PageConfiguration(I1, 'test', 'zope.View',
+                              "Foo.Bar.A",
+                              attribute='run',
+                              ),
+            self.rootFolder,
+            )
+        c = C()
+        request = TestRequest()
+        view = configuration.getView(c, request)
+        self.assertEquals(view, A.run)
+
+    def test_getView_errors(self):
+        configuration = ContextWrapper(
+            PageConfiguration(I1, 'test', 'zope.View',
+                              "Foo.Bar.A",
+                              ),
+            self.rootFolder,
+            )
+        c = C()
+        request = TestRequest()
+        self.assertRaises(ConfigurationError, configuration.getView, c, request)
+        configuration.template = '/++etc++Services/Packages/default/t'
+        configuration.attribute = 'run'
+        self.assertRaises(ConfigurationError, configuration.getView, c, request)
+
 
 def test_suite():
     return TestSuite((
