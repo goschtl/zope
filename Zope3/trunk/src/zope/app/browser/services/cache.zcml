@@ -32,11 +32,10 @@
   <!-- "Add service" menu entry to add a cache service.
        The action attribute matches a factory id defined in
        zope/app/services/configure.zcml. -->
-  <menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_service" title="Caching Service"
+  <addMenuItem 
+      title="Caching Service"
       description="A Persistent Caching Service for TTW development"
-      action="zope.services.CachingService"
+      class="zope.app.services.cache.CachingService"
       permission="zope.ManageServices" />
 
   <!-- ZMI tab named "Caches" for the cache service -->
