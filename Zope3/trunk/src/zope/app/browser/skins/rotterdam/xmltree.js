@@ -19,7 +19,7 @@ var LG_NOLOG = 0;
 // globals
 var baseurl;
 var navigationTree;
-
+var docNavTree;
 var loglevel = LG_NOLOG;
 
 
@@ -315,6 +315,7 @@ function loadtreexml (url, node) {
 
 function loadtree (rooturl, thisbaseurl) {
         baseurl = rooturl;  // Global baseurl
+        docNavTree = document.getElementById('navtreecontents');
   
 	var url = thisbaseurl + SINGLE_BRANCH_TREE_VIEW;
         loadtreexml(url, null);
@@ -335,10 +336,9 @@ function parseXML(responseXML, node) {
                 var data = responseXML.documentElement;
                 if (node == null) {
                         //[top] node
-                        var docNavTree = document.getElementById('navtreecontents');
                         removeChildren(docNavTree);
                         addNavigationTreeNodes(data, null, 1);
-                        docNavTree.appendChild(navigationTree.domNode);
+//                        docNavTree.appendChild(navigationTree.domNode);
                         }
                 else {
                         //expanding nodes
@@ -366,6 +366,7 @@ function addNavigationTreeNodes(sourceNode, targetNavTreeNode, deep) {
                 }
         }       
 
+
 function createPresentationNodes(title, targetUrl, icon_url, length) {
         // create nodes hierarchy for one collection (without children)
         
@@ -374,7 +375,10 @@ function createPresentationNodes(title, targetUrl, icon_url, length) {
         // create elem for item icon
         var iconElem = document.createElement('icon');
         expandElem.appendChild(iconElem);
-        iconElem.style.backgroundImage = 'url("' + icon_url + '")';
+        // Mozilla tries to infer an URL if url is empty and reloads containing page
+        if (icon_url != '')  {
+                iconElem.style.backgroundImage = 'url("' + icon_url + '")';
+                }
         // create link
         var linkElem = document.createElement('a');
         var titleTextNode = document.createTextNode(title);
@@ -410,6 +414,7 @@ function createNavigationTreeNode(source, basePath, deep) {
                 elemPath = basePath;
                 newelem.style.marginLeft = '0px';
                 navigationTree = navTreeNode;
+                docNavTree.appendChild(newelem);
                 }
         else {
                 elemTitle = source.getAttribute('name');
@@ -435,8 +440,6 @@ function createNavigationTreeNode(source, basePath, deep) {
                 var numchildren = children.length;
                 for (var i=0; i< numchildren; i++) {
                         var navTreeNodeChild =  createNavigationTreeNode(children[i], navTreeNode.path, deep); 
-                        var newchild = navTreeNodeChild.domNode;
-                        newelem.appendChild(newchild);
                         navTreeNode.appendChild(navTreeNodeChild);
                         }
                 if (numchildren) {
