@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.7 2002/12/06 14:49:11 gvanrossum Exp $
+$Id: index.py,v 1.8 2002/12/09 22:02:23 gvanrossum Exp $
 """
 
 from Zope.ComponentArchitecture import getService, queryAdapter
@@ -99,33 +99,3 @@ class TextIndex(TextIndexWrapper):
             if texts is not None:
                 wrapped_self.index_doc(hubid, texts)
     _update = ContextMethod(_update)
-
-    # Helpers for the view (XXX should be in a separate view class!)
-
-    def hubid2location(wrapped_self, hubid):
-        channel = getService(wrapped_self, "ObjectHub")
-        try:
-            return locationAsUnicode(channel.getLocation(hubid))
-        except NotFoundError:
-            return ""
-    hubid2location = ContextMethod(hubid2location)
-
-    def hubid2object(wrapped_self, hubid):
-        channel = getService(wrapped_self, "ObjectHub")
-        try:
-            return channel.getObject(hubid)
-        except NotFoundError:
-            return ""
-    hubid2object = ContextMethod(hubid2object)
-
-    def hubid2title(wrapped_self, hubid):
-        channel = getService(wrapped_self, "ObjectHub")
-        try:
-            object = channel.getObject(hubid)
-        except NotFoundError:
-            return ""
-        dc = queryAdapter(object, IZopeDublinCore, context=wrapped_self)
-        if dc is None:
-            return ""
-        return dc.title
-    hubid2title = ContextMethod(hubid2title)
