@@ -13,9 +13,9 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.15 2003/04/25 21:18:31 fdrake Exp $
+$Id: interfaces.py,v 1.16 2003/05/20 16:10:30 fdrake Exp $
 """
-from zope.interface import Interface
+from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
 
 _ = MessageIDFactory("zope")
@@ -396,3 +396,122 @@ class IDict(IMinMaxLen, IIterable, IContainer):
         constraint=_fields,
         required=False,
         )
+
+
+class IAbstractVocabulary(Interface):
+    """Representation of a vocabulary.
+
+    At this most basic level, a vocabulary only need to support a test
+    for containment.  This can be implemented either by __contains__()
+    or by sequence __getitem__() (the later only being useful for
+    vocabularies which are intrinsically ordered).
+    """
+
+    def getQuery():
+        """Return an IVocabularyQuery object for this vocabulary.
+
+        Vocabularies which do not support query must return None.
+        """
+
+    def getTerm(value):
+        """Return the ITerm object for the term 'value'.
+
+        If 'value' is not a valid term, this method raises LookupError.
+        """
+
+class IVocabularyQuery(Interface):
+    """Query object for a vocabulary.
+
+    This is a marker interface for query objects; specific
+    implementations must derive a more specific interface and
+    implement that.  Widget views should be registered for the
+    specific interface.
+    """
+
+    vocabulary = Attribute("vocabulary",
+                           """The source vocabulary for this query object.
+
+                           This needs to be available for use by the
+                           query view.
+                           """)
+
+
+class ITerm(Interface):
+    """Object representing a single value in a vocabulary."""
+
+    value = Attribute(
+        "value", "The value used to represent vocabulary term in a field.")
+
+
+class IIterableVocabulary(Interface):
+    """Vocabulary which supports iteration over allowed values.
+
+    The objects iteration provides must conform to the ITerm
+    interface.
+    """
+
+    def __iter__():
+        """Return an iterator which provides the terms from the vocabulary."""
+
+    def __len__():
+        """Return the number of valid terms, or sys.maxint."""
+
+
+class ISubsetVocabulary(Interface):
+    """Vocabulary which represents a subset of another vocabulary."""
+
+    def getMasterVocabulary():
+        """Returns the vocabulary that this is a subset of."""
+
+
+class IVocabulary(IIterableVocabulary, IAbstractVocabulary):
+    """Vocabulary which is iterable."""
+
+
+class IVocabularyFieldMixin(Interface):
+    # Mix-in interface that defines interesting things common to all
+    # vocabulary fields.
+
+    vocabularyName = TextLine(
+        title=u"Vocabulary Name",
+        description=(u"The name of the vocabulary to be used.  This name\n"
+                     u"is intended to be used by the IVocabularyRegistry's\n"
+                     u"get() method."),
+        required=False,
+        default=None)
+
+    vocabulary = Attribute(
+        "vocabulary",
+        ("IAbstractVocabulary to be used, or None.\n"
+         "\n"
+         "If None, the vocabularyName should be used by an\n"
+         "IVocabularyRegistry should be used to locate an appropriate\n"
+         "IAbstractVocabulary object."))
+
+
+class IVocabularyField(IVocabularyFieldMixin, IField):
+    """Field with a vocabulary-supported value.
+
+    The value for fields of this type is a single value from the
+    vocabulary.
+    """
+
+
+class IVocabularyMultiField(IVocabularyFieldMixin, IField):
+    """Field with a value containing selections from a vocabulary..
+
+    The value for fields of this type need to support at least
+    containment checks using 'in' and iteration.
+    """
+
+
+class IVocabularyRegistry(Interface):
+    """Registry that provides IAbstractVocabulary objects for specific fields.
+    """
+
+    def get(object, name):
+        """Return the vocabulary named 'name' for the content object
+        'object'.
+
+        When the vocabulary cannot be found, LookupError is raised.
+        """

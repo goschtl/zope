@@ -1,0 +1,10 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<serviceType id='Vocabularies'
+             interface='zope.schema.interfaces.IVocabularyRegistry' />
+
+<service serviceType='Vocabularies'
+         permission='zope.Public'
+         component='zope.app.schema.vocabulary.vocabularyService' />
+
+</zopeConfigure>
