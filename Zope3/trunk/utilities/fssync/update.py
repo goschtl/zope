@@ -20,8 +20,6 @@ from common import isNewObject, getFSRoot
 
 from zope.app.fssync.syncer import toFS
 
-env = os.environ
-
 def update(fspath, dbpath, siteconfpath):
     """Updates the checked out objects in the file system from a ZODB
 
@@ -29,19 +27,19 @@ def update(fspath, dbpath, siteconfpath):
     by -f option.
     """
     root = getApplicationRoot(dbpath, siteconfpath)
-    if env.has_key('SYNCROOT'):
-        if os.path.abspath(fspath) == os.path.abspath(env['SYNCROOT']):
-            if os.path.isdir(os.path.abspath(fspath)):
-                module_list = os.listdir(os.path.abspath(fspath))
-                if '@@Zope' in module_list:
-                    module_list.remove('@@Zope')
-                    for module in module_list:
-                        fspath = os.path.join(fspath, module)
-                        updateSettings(fspath, root)
-                else:
-                    return ('sync [update aborted] : '
-                            '@@Zope administrative folder not found in %s' %
-                            fspath)
+    if os.path.isdir(fspath):
+        fsparent = os.path.dirname(os.path.abspath(fspath))
+        if not os.path.exists(os.path.join(fsparent, '@@Zope')):
+            module_list = os.listdir(os.path.abspath(fspath))
+            if '@@Zope' in module_list:
+                module_list.remove('@@Zope')
+                for module in module_list:
+                    fsp = os.path.join(fspath, module)
+                    updateSettings(fsp, root)
+            else:
+                return ('sync [update aborted] : '
+                        '@@Zope administrative folder not found in %s' %
+                        fspath)
         else:
             updateSettings(fspath, root)
     else:
