@@ -17,11 +17,15 @@ $Id$
 """
 
 import unittest
-from zope.testing import doctest, doctestunit
 from zope.app.testing import functional
 
 def test_suite():
-    return functional.FunctionalDocFileSuite('./help/textwidget.txt')
+    return unittest.TestSuite((
+        functional.FunctionalDocFileSuite('./help/boolwidget.txt'),
+        functional.FunctionalDocFileSuite('./help/intwidget.txt'),
+        functional.FunctionalDocFileSuite('./help/textwidget.txt'),
+        functional.FunctionalDocFileSuite('./help/textareawidget.txt'),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

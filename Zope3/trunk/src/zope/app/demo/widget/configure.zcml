@@ -18,6 +18,7 @@
   </content>
 
   <!-- demo widgets -->
+  <include file="boolwidget.zcml" />
   <include file="intwidget.zcml" />
   <include file="textwidget.zcml" />
   <include file="textareawidget.zcml" />

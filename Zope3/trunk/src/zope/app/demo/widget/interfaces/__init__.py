@@ -49,6 +49,10 @@ class IDemoWidgetContainerContained(IContained):
              constraint = ContainerTypesConstraint(IDemoWidgetContainer))
 
 
+from zope.app.demo.widget.interfaces.boolwidget import IReadDemoBoolWidget
+from zope.app.demo.widget.interfaces.boolwidget import IWriteDemoBoolWidget
+from zope.app.demo.widget.interfaces.boolwidget import IDemoBoolWidget
+
 from zope.app.demo.widget.interfaces.intwidget import IReadDemoIntWidget
 from zope.app.demo.widget.interfaces.intwidget import IWriteDemoIntWidget
 from zope.app.demo.widget.interfaces.intwidget import IDemoIntWidget

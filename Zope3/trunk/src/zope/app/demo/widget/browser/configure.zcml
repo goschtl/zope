@@ -29,6 +29,7 @@
       action="javascript:popup('./popupEdit.html', 'popup', 'height=460,width=500,resizable=1,scrollbars=yes,location=no,status=no,toolbar=no,menubar=no')"
       />
 
+  <include file="boolwidget.zcml" />
   <include file="intwidget.zcml" />
   <include file="textwidget.zcml" />
   <include file="textareawidget.zcml" />

@@ -12,6 +12,22 @@
       />
 
   <help:register
+      id="boolwidget"
+      parent="samples/widgets"
+      title="BoolWidget"
+      doc_path="boolwidget.txt"
+      class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+      />
+
+  <help:register
+      id="intwidget"
+      parent="samples/widgets"
+      title="IntWidget"
+      doc_path="intwidget.txt"
+      class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+      />
+
+  <help:register
       id="textwidget"
       parent="samples/widgets"
       title="TextWidget"

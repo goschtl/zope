@@ -23,6 +23,7 @@ from zope.testing.doctestunit import DocFileSuite
 
 def test_suite():
     return unittest.TestSuite((
+        DocTestSuite('zope.app.demo.widget.boolwidget'),
         DocTestSuite('zope.app.demo.widget.intwidget'),
         DocTestSuite('zope.app.demo.widget.textwidget'),
         DocTestSuite('zope.app.demo.widget.textareawidget'),
