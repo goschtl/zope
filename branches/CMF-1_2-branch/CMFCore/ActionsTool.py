@@ -116,20 +116,18 @@ class ActionsTool (UniqueObject, SimpleItem):
         """
         List actions available from this tool
         """
-        if info.isAnonymous:
-            return None
-        else:
-            actions = []
-            folder_url = info.folder_url   
-            content_url = info.content_url   
-            if folder_url is not None: 
-                actions.append(
-                    { 'name'          : 'Folder contents'
-                    , 'url'        : folder_url + '/folder_contents'
-                    , 'permissions'   : ['List folder contents']
-                    , 'category'      : 'folder'
-                   })
-            return actions
+        actions = []
+        folder_url = info.folder_url   
+        content_url = info.content_url   
+        if folder_url is not None: 
+            actions.append(
+                { 'id'            : 'foldercontents'
+                , 'name'          : 'Folder contents'
+                , 'url'           : folder_url + '/folder_contents'
+                , 'permissions'   : ['List folder contents']
+                , 'category'      : 'folder'
+                })
+        return actions
 
     security.declareProtected( CMFCorePermissions.ManagePortal
                              , 'deleteActionProvider'

@@ -53,7 +53,7 @@ class RegistrationTool (UniqueObject, SimpleItem):
     #
     security.declarePrivate('listActions')
     def listActions(self, info):
-        return none
+        return []
 
     security.declarePublic('isRegistrationAllowed')
     def isRegistrationAllowed(self, REQUEST):

@@ -388,7 +388,7 @@ class MembershipTool (UniqueObject, SimpleItem):
 
     security.declarePrivate('listActions')
     def listActions(self, info):
-        return None
+        return []
 
     security.declarePublic('getHomeFolder')
     def getHomeFolder(self, id=None, verifyPermission=0):

@@ -84,7 +84,7 @@ class MemberDataTool (UniqueObject, SimpleItem, PropertyManager):
     #
     security.declarePrivate('listActions')
     def listActions(self, info):
-        return None
+        return []
 
     security.declarePrivate('getMemberDataContents')
     def getMemberDataContents(self):

@@ -47,8 +47,6 @@ class UndoTool (UniqueObject, SimpleItem):
 
     security.declarePrivate('listActions')
     def listActions( self, info ):
-        if info.isAnonymous:
-            return []
         return [ { 'name': 'Undo'
                  , 'url': 'undo_form'
                  , 'permissions': [ ListUndoableChanges ]
