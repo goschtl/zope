@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IHubEvent.py,v 1.1 2002/10/30 03:47:47 poster Exp $
+$Id: IHubEvent.py,v 1.2 2002/11/13 19:28:35 gvanrossum Exp $
 """
 from Zope.Event.IEvent import IEvent
 from Interface.Attribute import Attribute
