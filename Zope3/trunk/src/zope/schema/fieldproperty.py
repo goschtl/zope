@@ -11,15 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: fieldproperty.py,v 1.2 2002/12/25 14:15:20 jim Exp $
-"""
+"""Computed attributes based on schema fields
 
-__metaclass__ = type
-
+$Id: fieldproperty.py,v 1.3 2004/04/24 23:20:49 srichter Exp $
+"""
 _marker = object()
 
-class FieldProperty:
+class FieldProperty(object):
     """Computed attributes based on schema fields
 
     Field properties provide default values, data validation and error messages
@@ -27,7 +25,6 @@ class FieldProperty:
 
     Note that FieldProperties cannot be used with slots. They can only
     be used for attributes stored in instance dictionaries.
-
     """
 
     def __init__(self, field, name=None):
@@ -57,5 +54,3 @@ class FieldProperty:
 
     def __getattr__(self, name):
         return getattr(self.__field, name)
-
-__doc__ = FieldProperty.__doc__ + __doc__

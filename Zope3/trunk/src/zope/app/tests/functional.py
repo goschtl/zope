@@ -15,9 +15,8 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.1 2004/04/06 20:57:55 jim Exp $
+$Id: functional.py,v 1.2 2004/04/24 23:20:14 srichter Exp $
 """
-
 import logging
 import sys
 import traceback

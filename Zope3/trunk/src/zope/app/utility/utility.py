@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.2 2004/04/17 14:33:46 srichter Exp $
+$Id: utility.py,v 1.3 2004/04/24 23:20:14 srichter Exp $
 """
 
 from zope.app.adapter.adapter import LocalAdapterService
@@ -103,4 +103,3 @@ class UtilityRegistration(ComponentRegistration):
         # proxy for the interface with the given permission.
         # XXX Smells like a dead chicken to me.
         return self.interface
-
