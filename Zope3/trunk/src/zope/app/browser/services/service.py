@@ -13,12 +13,12 @@
 ##############################################################################
 """Adding components for components and configuration
 
-$Id: service.py,v 1.3 2002/12/31 13:14:31 stevea Exp $
+$Id: service.py,v 1.4 2003/02/03 16:36:02 stevea Exp $
 """
 
 from zope.app.browser.container.adding import Adding as ContentAdding
 from zope.component import getView, getAdapter
-from zope.proxy.context import ContextWrapper
+from zope.proxy.context import ContextWrapper, ContextSuper
 from zope.app.interfaces.container import IZopeContainer
 from zope.component import getServiceManager
 from zope.publisher.browser import BrowserView
@@ -43,7 +43,7 @@ class ComponentAdding(ContentAdding):
                 while ("%s-%s" % (id, i)) in self.context:
                     i=i+1
                 id = "%s-%s" % (id, i)
-        return super(ComponentAdding, self).action(type_name, id)
+        return ContextSuper(ComponentAdding, self).action(type_name, id)
 
 class ConfigurationAdding(ContentAdding):
     """Adding component for configuration
