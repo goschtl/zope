@@ -8,7 +8,7 @@ PrincipiaSB Principia README &PrincipiaSBlib
 
 AccessControl    Packages/AccessControl
 App              Packages/App
-BoboPOS2         Packages/BoboPOS2
+BoboPOS          Packages/BoboPOS
 DateTime         Packages/DateTime
 DocumentTemplate Packages/DocumentTemplate
 HTTP_ORB         Packages/HTTP_ORB
@@ -17,15 +17,22 @@ PrincipiaHelp    Packages/PrincipiaHelp
 Scheduler        Packages/Scheduler
 StructuredText   Packages/StructuredText
 TreeDisplay      Packages/TreeDisplay
-Products         Packages/Products  __init__.py
 
+Shared           Packages/Shared  __init__.py
+DC               -d Shared/DC Packages/Shared/DC  __init__.py
+ZRDB             -d Shared/DC/ZRDB Packages/Shared/DC/ZRDB
+
+Products         Packages/Products  __init__.py
 OFSP           -d Products/OFSP Packages/Products/OFSP
 MailHost       -d Products/MailHost Packages/Products/MailHost
 ExternalMethod -d Products/ExternalMethod Packages/Products/ExternalMethod
+ZSQLMethods    -d Products/ZSQLMethods Packages/Products/ZSQLMethods
+ZGadflyDA      -d Products/ZGadflyDA Packages/Products/ZGadflyDA
 
 z Components/GreyThing \
-  &AccessControl &App &BoboPOS2 &DateTime &DocumentTemplate \
+  &AccessControl &App &BoboPOS &DateTime &DocumentTemplate \
   &HTTP_ORB &OFS &PrincipiaHelp &Scheduler &StructuredText &TreeDisplay \
-  &Products &OFSP &MailHost &ExternalMethod
+  &Shared &DC &ZRDB \
+  &Products &OFSP &MailHost &ExternalMethod &ZSQLMethods &ZAqueductGadfly
 
 pcgi Components/pcgi2 pcgi_publisher.py
