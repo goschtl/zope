@@ -48,7 +48,7 @@ class ReferenceSetupMixin(object):
         from zope.app.keyreference.persistent import KeyReferenceToPersistent
         from zope.app.keyreference.interfaces import IKeyReference
         self.root = setup.placefulSetUp(site=True)
-        ztapi.provideAdapter(ILocation, IConnection, connectionOfPersistent)
+        ztapi.provideAdapter(IPersistent, IConnection, connectionOfPersistent)
         ztapi.provideAdapter(IPersistent, IKeyReference,
                              KeyReferenceToPersistent)
 
@@ -210,6 +210,41 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(events[0].original_event.object, parent_folder)
         self.assertEquals(events[0].object, folder)
 
+    def test_localutilityservice_bug(self):
+        # setup first some stuff
+        from zope.app.intid import addIntIdSubscriber
+        from zope.app.container.contained import ObjectAddedEvent
+        from zope.app.intid.interfaces import IIntIdAddedEvent
+        parent_folder = self.root['folder1']['folder1_1']
+        folder = self.root['folder1']['folder1_1']['folder1_1_1']
+        events = []
+        ztapi.handle([IIntIdAddedEvent], events.append)
+        setSite(parent_folder)
+
+        # create a local utility sevice
+        utils = LocalUtilityService()
+        utils.__parent__ = folder # cheat IConnection adapter
+
+        # try to register the local utility sevice
+        self.assertRaises(TypeError, addIntIdSubscriber, utils, ObjectAddedEvent(parent_folder))
+
+        # problem: local utility sevice does not provide IPersistent
+        # -> LocalUtilityService implementsOnly(ILocalUtilityService, ISimpleService, IBindingAware)
+        self.assertEquals(False, IPersistent.providedBy(utils))
+
+        # add IPersistent to utils
+        from zope.interface import directlyProvides, directlyProvidedBy
+        directlyProvides(utils, IPersistent, directlyProvidedBy(utils))
+
+        # try another time...
+        addIntIdSubscriber(utils, ObjectAddedEvent(parent_folder))
+
+        # check that the utilis got registered
+        id = self.utility.getId(utils)
+        id1 = self.utility1.getId(utils)
+        self.assertEquals(len(events), 1)
+        self.assertEquals(events[0].original_event.object, parent_folder)
+        self.assertEquals(events[0].object, utils)
 
 def test_suite():
     suite = unittest.TestSuite()
