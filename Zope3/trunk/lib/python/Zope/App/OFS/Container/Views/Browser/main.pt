@@ -72,7 +72,7 @@
   <br />
 
   <input type="submit" name="@@removeObjects.html:method" value="Delete"
-         i18nXXX:attributes="value string:menu_delete_button"> 
+         i18n:attributes="value string:menu_delete_button"> 
 </form>
 
 </div>

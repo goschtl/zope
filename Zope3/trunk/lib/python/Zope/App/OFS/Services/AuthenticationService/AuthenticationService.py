@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: AuthenticationService.py,v 1.1 2002/07/13 16:52:57 srichter Exp $
+$Id: AuthenticationService.py,v 1.2 2002/07/13 18:26:25 srichter Exp $
 """
 from types import TupleType
 
@@ -35,6 +35,9 @@ class ILocalAuthenticationService(IAuthenticationService, IContainer,
                                   IHomogenousContainer):
     """TTW manageable authentication service"""
 
+    def getAllUsers():
+        """Get all users of the Service."""
+
 
 class AuthenticationService(BTreeContainer):
 
@@ -48,6 +51,9 @@ class AuthenticationService(BTreeContainer):
             if p.getLogin() == login:
                 return p
         return None
+
+    def getAllUsers(self):
+        return self.values()
 
     ############################################################
     # Implementation methods for interface

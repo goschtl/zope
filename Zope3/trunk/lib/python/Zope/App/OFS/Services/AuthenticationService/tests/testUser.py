@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testUser.py,v 1.1 2002/07/13 16:52:58 srichter Exp $
+$Id: testUser.py,v 1.2 2002/07/13 18:26:26 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -29,6 +29,10 @@ class UserTest(TestCase):
         user = self._user
         self.assertEqual('srichter', user.getLogin())
         
+    def testGetRoles(self):
+        user = self._user
+        self.assertEqual([], user.getRoles())
+
     def testValidate(self):
         user = self._user
         self.assertEqual(1, user.validate('hello'))
@@ -60,6 +64,10 @@ class UserTest(TestCase):
         user = self._user
         user.setLogin('srichter2')
         self.assertEqual('srichter', user.getLogin())
+
+    def testSetRoles(self):
+        # XXX Needs a test
+        user = self._user
 
     def testSetPassword(self):
         user = self._user

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: IUser.py,v 1.1 2002/07/13 16:52:57 srichter Exp $
+$Id: IUser.py,v 1.2 2002/07/13 18:26:25 srichter Exp $
 """
 from Interface import Interface
 from Zope.App.Security.IPrincipal import IPrincipal
@@ -22,6 +22,9 @@ class IReadUser(IPrincipal):
 
     def getLogin():
         """Get the login for the user."""
+
+    def getRoles():
+        """Get the roles for the user."""
 
     def validate(pw):
         """Seee whether the password is valid."""
@@ -38,6 +41,9 @@ class IWriteUser(Interface):
 
     def setLogin(login):
         """Set login of User."""
+
+    def setRoles(roles):
+        """Set roles of User."""
 
     def setPassword(password):
         """Set password of User."""

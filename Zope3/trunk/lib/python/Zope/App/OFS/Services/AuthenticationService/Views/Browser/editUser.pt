@@ -43,8 +43,18 @@
     	  <tr>
     	    <th>Roles:</th>
     	    <td>
-	      <select name="roles:list">
-	        <option value="Manager">Manager</option>
+	      <select name="roles:list" size="5" multiple>
+              	<tal:block tal:repeat="role view/getAvailableRoles"
+              	           tal:define="user_roles context/getRoles"> 
+              	  <option value=""
+              		  tal:condition="python: role.getId() not in user_roles"
+              	    tal:attributes="value role/getId"
+              	    tal:content="role/getTitle" />
+              	  <option value="" selected=""
+              		  tal:condition="python: role.getId() in user_roles"
+              	    tal:attributes="value role/getId"
+              	    tal:content="role/getTitle" />
+              	</tal:block>
               </select>
             </td>
     	  </tr>
@@ -52,7 +62,7 @@
     	</tbody>     
       </table>
     
-      <input type="submit" name="action.html:method" value="Edit" />
+      <input type="submit" name="edit.html:method" value="Edit" />
     
     </form> 
 

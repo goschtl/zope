@@ -13,8 +13,9 @@
 ##############################################################################
 """Connection Management GUI
 
-$Id: EditUser.py,v 1.1 2002/07/13 16:52:58 srichter Exp $
+$Id: EditUser.py,v 1.2 2002/07/13 18:26:26 srichter Exp $
 """
+from Zope.ComponentArchitecture import getService
 from Zope.Publisher.Browser.BrowserView import BrowserView
 
 class EditUser(BrowserView):
@@ -26,4 +27,9 @@ class EditUser(BrowserView):
         user.setLogin(login)
         if password != "DEFAULT":
             user.setPassword(password)
+        user.setRoles(roles)
         return self.request.response.redirect(self.request.URL[-1])
+
+    def getAvailableRoles(self):
+        service = getService(self.context, "RoleService")
+        return service.getRoles()

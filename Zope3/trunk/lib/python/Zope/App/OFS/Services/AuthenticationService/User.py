@@ -13,16 +13,18 @@
 ##############################################################################
 """A persistent implementation of thr IPrincipal interface
 
-$Id: User.py,v 1.1 2002/07/13 16:52:57 srichter Exp $
+$Id: User.py,v 1.2 2002/07/13 18:26:25 srichter Exp $
 """
 from Persistence import Persistent
-from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
+from Zope.App.OFS.Annotation.IAttributeAnnotatable import IAttributeAnnotatable
 from Zope.App.OFS.Services.AuthenticationService.IUser import IUser
+from Zope.App.Security.Grants.Global.PrincipalRoleManager import \
+     principalRoleManager
 
 class User(Persistent):
     """A persistent implementation of the IUser interface """
     
-    __implements__ =  IUser, IAnnotatable
+    __implements__ =  IUser, IAttributeAnnotatable
 
     def __init__(self, id, title, description, login, pw):
         self.__id = id
@@ -42,6 +44,12 @@ class User(Persistent):
         'See Zope.App.OFS.Services.AuthenticationService.IUser.IReadUser'
         return self.__login
 
+    def getRoles(self):
+        'See Zope.App.OFS.Services.AuthenticationService.IUser.IReadUser'
+        roles = principalRoleManager.getRolesForPrincipal(self.getId())
+        roles = map(lambda r: r[0], roles)
+        return roles
+    
     def validate(self, pw):
         'See Zope.App.OFS.Services.AuthenticationService.IUser.IReadUser'
         return pw == self.__pw
@@ -78,5 +86,11 @@ class User(Persistent):
     def setPassword(self, password):
         'See Zope.App.OFS.Services.AuthenticationService.IUser.IWriteUser'
         self.__pw = password
+
+    def setRoles(self, roles):
+        'See Zope.App.OFS.Services.AuthenticationService.IUser.IReadUser'
+        id = self.getId()
+        for role in roles:
+            principalRoleManager.assignRoleToPrincipal(role, id)
     #
     ############################################################

@@ -7,7 +7,7 @@
   <factory id="AuthenticationService" permission="Zope.ManageServices" />
     <require
         permission="Zope.View"
-        interface="Zope.App.Security.IAuthenticationService." />
+        interface=".AuthenticationService.ILocalAuthenticationService." />
     <require
         permission="Zope.ManageServices"
         interface="Zope.App.OFS.Container.IContainer." />
@@ -29,6 +29,6 @@
 
 <!-- Further directives -->
 
-<!-- No config file! include package=".Views" /  -->
+<include package=".Views" />
 
 </zopeConfigure>
