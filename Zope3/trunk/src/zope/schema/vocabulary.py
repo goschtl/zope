@@ -144,33 +144,45 @@ class SimpleVocabulary(object):
     __implements__ = IVocabulary, IVocabularyTokenized
 
     def __init__(self, data, *interfaces):
+        """Construct a vocabulary from a simple list. Values of the list become
+        both the tokens and values of the terms in the vocabulary. The order
+        of the values is preserved as the order of the terms in the vocabulary.
+        One or more interfaces may also be provided so that alternate widgets 
+        may be bound without subclassing
+        """
         self.by_value = {}
         self.by_token = {}
+        self._terms = []
         for value in data:
             term = SimpleTerm(value)
             self.by_value[value] = term
             self.by_token[term.token] = term
+            self._terms.append(term)
         assert len(self.by_value) == len(self.by_token), \
             'Supplied vocabulary values resulted in duplicate term tokens'
         if interfaces:
             directlyProvides(self, *interfaces)
-
-    def fromDict(cls, data, *interfaces):
-        self = cls.__new__(cls, data, *interfaces)
+    
+    def fromItems(cls, items, *interfaces):
+        """Construct a vocabulary from a list of (token, value) pairs. 
+        The order of the items is preserved as the order of the terms in the 
+        vocabulary. One or more interfaces may also be provided so that 
+        alternate widgets may be bound without subclassing
+        """
+        self = cls.__new__(cls, items, *interfaces)
         self.by_value = {}
         self.by_token = {}
-        for token, value in data.items():
+        self._terms = []
+        for token, value in items:
             term = SimpleTerm(value, token)
             self.by_value[value] = term
             self.by_token[term.token] = term
+            self._terms.append(term)
         assert len(self.by_value) == len(self.by_token), \
-            'Supplied vocabulary data keys resulted in duplicate term tokens'
-        if interfaces:
-            directlyProvides(self, *interfaces)
+            'Supplied vocabulary items resulted in duplicate term tokens'
         return self
-
-    fromDict = classmethod(fromDict)
-
+    fromItems = classmethod(fromItems)
+    
     def __contains__(self, value):
         return value in self.by_value
 
@@ -190,7 +202,7 @@ class SimpleVocabulary(object):
             raise LookupError(token)        
 
     def __iter__(self):
-        return self.by_value.itervalues()
+        return iter(self._terms)
 
     def __len__(self):
         return len(self.by_value)
