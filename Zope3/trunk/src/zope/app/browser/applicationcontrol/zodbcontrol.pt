@@ -1,0 +1,32 @@
+<html metal:use-macro="views/standard_macros/page">
+  <head>
+    <title>ZODB Controller</title>
+  </head>
+  <body>
+    <div metal:fill-slot="body">
+
+      <div style="font-size: 120%">
+        Size of file: <em tal:content="view/getDatabaseSize">1.1 MB</em>
+      </div>
+
+      <p tal:define="status view/pack"
+         tal:condition="status"
+         tal:content="status" />
+
+      <form action="." method="POST" tal:attributes="action request/URL">
+        <div class="row">
+          <div class="label">Keep up to:</div>
+          <div class="view">
+            <input type="text" size="4" name="days" value="0"/> days
+          </div> 
+        </div>
+        <div class="row">
+          <div class="control">
+            <input type="submit" name="PACK" value="Pack" />
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </body>
+</html>

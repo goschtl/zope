@@ -1,35 +1,34 @@
 <zopeConfigure
-   xmlns='http://namespaces.zope.org/zope'
-   xmlns:browser='http://namespaces.zope.org/browser'
-   xmlns:application-control='http://namespaces.zope.org/application-control'
->
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
 
   <!-- ServerControl View Directives -->
   <browser:pages
-      for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
+      for="zope.app.interfaces.applicationcontrol.IApplicationControl"
       permission="zope.ManageApplication"
-      class="zope.app.browser.applicationcontrol.servercontrol.ServerControlView">
+      class=
+         "zope.app.browser.applicationcontrol.servercontrol.ServerControlView">
     
-    <browser:page name="ServerControlForm.html" attribute="index" />
-    <browser:page name="ServerControl.html"     attribute="action" />
+    <browser:page name="ServerControlForm.html" template="server-control.pt" 
+                  menu="zmi_views" title="Server Control" />
+    <browser:page name="ServerControl.html" attribute="action" />
   </browser:pages>
  
-
-  <browser:menuItem
-      for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
-      menu="zmi_views"
-      action="ServerControlForm.html"
-      title="Server control" 
-      />
-
   <browser:page
-      for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
+      for="zope.app.interfaces.applicationcontrol.IApplicationControl"
       name="index.html"
       menu="zmi_views"
       title="Runtime Information"       
-      attribute="index"
+      template="runtimeinfo.pt"
       class="zope.app.browser.applicationcontrol.runtimeinfo.RuntimeInfoView" 
+      permission="zope.ManageApplication"/>
+
+  <browser:page
+      for="zope.app.interfaces.applicationcontrol.IApplicationControl"
+      name="ZODBControl.html"
+      template="zodbcontrol.pt"
+      class="zope.app.browser.applicationcontrol.zodbcontrol.ZODBControlView" 
       permission="zope.ManageApplication"
-      />
+      menu="zmi_views" title="ZODB Control"/>
 
 </zopeConfigure>

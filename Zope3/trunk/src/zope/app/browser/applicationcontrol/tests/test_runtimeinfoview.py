@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002, 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,27 +11,29 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Runtime View tests
 
-from unittest import TestCase, main, makeSuite
-
-from zope.app.applicationcontrol.applicationcontrol import \
-  applicationController
-from zope.app.interfaces.applicationcontrol.applicationcontrol import \
-  IApplicationControl
-from zope.app.interfaces.applicationcontrol.runtimeinfo import IRuntimeInfo
-from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
-from zope.app.browser.applicationcontrol.runtimeinfo \
-  import RuntimeInfoView
-from zope.component import getService
-from zope.app.services.servicenames import Adapters
+$Id: test_runtimeinfoview.py,v 1.7 2003/07/31 21:37:31 srichter Exp $
+"""
+import unittest
 from types import DictType
-from zope.app.services.tests.placefulsetup\
-           import PlacefulSetup
 
-class Test(PlacefulSetup, TestCase):
+from zope.app.applicationcontrol.applicationcontrol import applicationController
+from zope.app.applicationcontrol.runtimeinfo import RuntimeInfo
+from zope.app.browser.applicationcontrol.runtimeinfo import RuntimeInfoView
+from zope.app.interfaces.applicationcontrol import \
+     IApplicationControl, IRuntimeInfo
+from zope.app.services.servicenames import Adapters
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.component import getService
+
+class Test(PlacefulSetup, unittest.TestCase):
 
     def _TestView__newView(self, container):
-        return RuntimeInfoView(container, None)
+        view = RuntimeInfoView()
+        view.context = container
+        view.request = None
+        return view
 
     def test_RuntimeInfoView(self):
         getService(None,Adapters).provideAdapter(
@@ -67,8 +69,11 @@ class Test(PlacefulSetup, TestCase):
 
         self.failUnless(test_format["ZopeVersion"] == "N/A")
 
-def test_suite():
-    return makeSuite(Test)
 
-if __name__=='__main__':
-    main(defaultTest='test_suite')
+def test_suite():
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+        ))
+
+if __name__ == '__main__':
+    unittest.main()

@@ -13,17 +13,14 @@
 ##############################################################################
 """Define runtime information view component for Application Control
 
-$Id: runtimeinfo.py,v 1.3 2003/04/08 20:35:25 gotcha Exp $
+$Id: runtimeinfo.py,v 1.4 2003/07/31 21:37:27 srichter Exp $
 """
-
-from zope.publisher.browser import BrowserView
-from zope.app.interfaces.applicationcontrol.runtimeinfo import IRuntimeInfo
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.interfaces.applicationcontrol import IRuntimeInfo
 from zope.component import getAdapter
 from zope.component import ComponentLookupError
 
 
-class RuntimeInfoView(BrowserView):
+class RuntimeInfoView:
 
     def runtimeInfo(self):
         formatted = {}  # will contain formatted runtime information
@@ -33,7 +30,8 @@ class RuntimeInfoView(BrowserView):
             formatted['ZopeVersion'] = runtime_info.getZopeVersion()
             formatted['PythonVersion'] = runtime_info.getPythonVersion()
             formatted['PythonPath'] = runtime_info.getPythonPath()
-            formatted['SystemPlatform'] = " ".join(runtime_info.getSystemPlatform())
+            formatted['SystemPlatform'] = " ".join(
+                runtime_info.getSystemPlatform())
             formatted['CommandLine'] = " ".join(runtime_info.getCommandLine())
             formatted['ProcessId'] = runtime_info.getProcessId()
 
@@ -66,7 +64,5 @@ class RuntimeInfoView(BrowserView):
             formatted['Uptime'] = "N/A"
             formatted['Hint'] = "Could not retrieve runtime information."
 
-
         return formatted
 
-    index = ViewPageTemplateFile('runtimeinfo.pt')

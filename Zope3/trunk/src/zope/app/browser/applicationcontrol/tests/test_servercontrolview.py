@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2001, 2002, 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,25 +11,27 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Server Control View Tests
 
-from unittest import TestCase, main, makeSuite
+$Id: test_servercontrolview.py,v 1.6 2003/07/31 21:37:31 srichter Exp $
+"""
+import unittest
 
-from zope.app.applicationcontrol.applicationcontrol import \
-  applicationController
-from zope.app.interfaces.applicationcontrol.servercontrol import \
-  IServerControl
+from zope.app.applicationcontrol.applicationcontrol import applicationController
+from zope.app.applicationcontrol.servercontrol import ServerControl
 from zope.app.browser.applicationcontrol.servercontrol import ServerControlView
-from zope.app.applicationcontrol.servercontrol import \
-  ServerControl
-from zope.component import getService
+from zope.app.interfaces.applicationcontrol import IServerControl
 from zope.app.services.servicenames import Utilities
-from zope.app.services.tests.placefulsetup\
-           import PlacefulSetup
+from zope.app.services.tests.placefulsetup import PlacefulSetup
+from zope.component import getService
 
-class Test(PlacefulSetup, TestCase):
+class Test(PlacefulSetup, unittest.TestCase):
 
     def _TestView__newView(self, container, request):
-        return ServerControlView(container, request)
+        view = ServerControlView()
+        view.context = container
+        view.request = request
+        return view
 
     def test_ServerControlView(self):
         getService(None,Utilities).provideUtility(
@@ -47,8 +49,11 @@ class Test(PlacefulSetup, TestCase):
             )
         test_serverctrl.action()
 
-def test_suite():
-    return makeSuite(Test)
 
-if __name__=='__main__':
-    main(defaultTest='test_suite')
+def test_suite():
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+        ))
+
+if __name__ == '__main__':
+    unittest.main()

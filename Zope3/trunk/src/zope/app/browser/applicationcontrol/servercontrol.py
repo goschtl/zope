@@ -11,19 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-__doc__ = """ Server Control View
+""" Server Control View
 
-$Id: servercontrol.py,v 1.4 2003/04/08 21:44:33 gotcha Exp $ """
-
-from zope.publisher.browser import BrowserView
-from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.app.interfaces.applicationcontrol.servercontrol \
-     import IServerControl
+$Id: servercontrol.py,v 1.5 2003/07/31 21:37:27 srichter Exp $
+"""
+from zope.app.interfaces.applicationcontrol import IServerControl
 from zope.component import getUtility
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-class ServerControlView(BrowserView):
+class ServerControlView:
 
     def serverControl(self):
         # XXX Refactor alarm! This is *required*. We really
@@ -40,5 +37,3 @@ class ServerControlView(BrowserView):
         elif 'shutdown' in self.request:
             return (self.serverControl().shutdown()
                     or _("You shut down the server."))
-
-    index = ViewPageTemplateFile('server-control.pt')
