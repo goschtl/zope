@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements, Interface
 from zope.schema.vocabulary import VocabularyField
 from zope.app.content.folder import Folder

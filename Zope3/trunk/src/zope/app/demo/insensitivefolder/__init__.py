@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app import zapi
 from zope.app.folder import Folder
 from zope.app.folder.interfaces import IFolder

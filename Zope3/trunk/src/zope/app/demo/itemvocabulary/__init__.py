@@ -13,11 +13,13 @@
 ##############################################################################
 """Item Vocabulary
 
-Given a context object that implements 'IEnumerableMapping', the vocabulary
+Given a context object that implements `IEnumerableMapping`, the vocabulary
 displays all items of that context object. 
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import implements
 from zope.schema.interfaces import \
      ITokenizedTerm, IVocabulary, IVocabularyTokenized
@@ -32,7 +34,7 @@ class ItemTerm(object):
 
 
 class ItemVocabulary(object):
-    """A vocabulary that provides the keys of any IEnumerableMapping object.
+    """A vocabulary that provides the keys of any `IEnumerableMapping` object.
 
     Every dictionary will qualify for this vocabulary.
 

@@ -18,6 +18,8 @@ authenticate users.
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 import os
 from persistent import Persistent
 from zope.app.container.contained import Contained
@@ -51,7 +53,7 @@ class PasswdPrincipalSource(Contained, Persistent):
         return principals
 
     def getPrincipal(self, id):
-        """See IPrincipalSource."""
+        """See `IPrincipalSource`."""
         earmark, source_name, id = id.split('\t')
         for p in self.readPrincipals():
             if p._id == id:
@@ -59,12 +61,12 @@ class PasswdPrincipalSource(Contained, Persistent):
         raise NotFoundError, id
 
     def getPrincipals(self, name):
-        """See IPrincipalSource."""
+        """See `IPrincipalSource`."""
         return filter(lambda p: p.login.find(name) != -1,
                       self.readPrincipals())
 
     def authenticate(self, login, password):
-        """See ILoginPasswordPrincipalSource. """
+        """See `ILoginPasswordPrincipalSource`. """
         for user in self.readPrincipals():
             if user.login == login and user.password == password:
                 return user

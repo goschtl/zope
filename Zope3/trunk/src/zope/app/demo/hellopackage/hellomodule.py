@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from interfaces import IHello
 from persistent import Persistent
 from zope.interface import implements

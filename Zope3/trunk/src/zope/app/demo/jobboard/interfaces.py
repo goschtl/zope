@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.interface import Interface
 from zope.interface import Attribute
 
