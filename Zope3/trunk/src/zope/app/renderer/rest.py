@@ -143,12 +143,21 @@ class ReStructuredTextToHTMLRenderer(BrowserView):
     __used_for__ = IReStructuredTextSource
 
     def render(self):
-        "See zope.app.interfaces.renderer.IHTMLRenderer"
+        r"""See zope.app.interfaces.renderer.IHTMLRenderer
+
+        Let's make sure that inputted unicode stays as unicode:
+
+        >>> renderer = ReStructuredTextToHTMLRenderer(u'b\xc3h', None)
+        >>> renderer.render()
+        u'<div class="document">\nb\xc3h</div>\n'
+        """
         settings_overrides = {
             'footnote_references': 'brackets',
             'report_level': 1,
             'halt_level': 6,
             'stylesheet': 'zope3.css',
+            'input_encoding': 'unicode',
+            'output_encoding': 'unicode',
             }
         html = docutils.core.publish_string(
             self.context,
