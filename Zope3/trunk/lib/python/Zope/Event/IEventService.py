@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IEventService.py,v 1.2 2002/06/10 23:29:25 jim Exp $
+$Id: IEventService.py,v 1.3 2002/09/05 21:41:09 jeremy Exp $
 """
 
 from ISubscribable import ISubscribable
@@ -29,8 +29,7 @@ class IEventService(ISubscribable):
     """
     
     def publishEvent(event):
-        """
-        Notify all subscribers of the channel of event.
+        """Notify all subscribers of the channel of event.
 
         Events will often be propagated to higher level IEventServices;
         This is a policy decision for the IEventService.
