@@ -100,7 +100,6 @@ def fromPathOrUrl(path, mapping=None):
         try:
             cvsurl = cvsloader.fromPath(path)
         except IOError, e:
-            print "IOError:", e
             base = os.path.dirname(path)
         else:
             cvsurl.path = posixpath.dirname(cvsurl.path)
