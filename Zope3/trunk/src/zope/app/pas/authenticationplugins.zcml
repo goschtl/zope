@@ -3,13 +3,6 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope"
     >
-
-  <browser:tool
-      interface=".interfaces.IAuthenticationPlugin"
-      title="PAS Authentication Plugin"
-      description="PAS Authentication Plugin"
-      />
-
   
   <localUtility class=".zodb.PersistentPrincipalStorage">
 

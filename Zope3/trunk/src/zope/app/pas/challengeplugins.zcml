@@ -2,12 +2,6 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     i18n_domain="zope">
-
-  <browser:tool
-      interface=".interfaces.IChallengePlugin"
-      title="PAS Challenge Plugin"
-      description="PAS Challenge Plugin"
-      />
   
   <localUtility class=".httpplugins.HTTPBasicAuthChallenger">
 

@@ -33,4 +33,44 @@
       name="edit.html"
       permission="zope.ManageServices"
       menu="zmi_views" title="Edit" />
+
+
+  <tool
+      interface="..interfaces.IAuthenticationPlugin"
+      title="PAS Authentication Plugin"
+      description="PAS Authentication Plugin"
+      />
+
+  <tool
+      interface="..interfaces.IPrincipalSearchPlugin"
+      title="PAS Search Plugin"
+      description="PAS Search Plugin"
+      />
+
+  <tool
+      interface="..interfaces.ISearchableAuthenticationPlugin"
+      title="PAS Search and Authentication Plugin"
+      description="PAS Search and Authentication Plugin"
+      />
+
+  <tool
+      interface="..interfaces.IExtractionPlugin"
+      title="PAS Extraction Plugin"
+      description="PAS Extraction Plugin"
+      />
+
+  <tool
+      interface="..interfaces.IChallengePlugin"
+      title="PAS Challenge Plugin"
+      description="PAS Challenge Plugin"
+      />
+
+  <tool
+      interface="..interfaces.IExtractionAndChallengePlugin"
+      title="PAS Credential Extraction and Challenge Plugin"
+      description="PAS Credential Extraction and Challenge Plugin"
+      />
+
+
+
 </zope:configure>
