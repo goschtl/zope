@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.14 2003/03/26 10:43:54 tseaver Exp $
+$Id: add.py,v 1.15 2003/03/26 11:56:24 jack-e Exp $
 """
 
 import sys
@@ -107,6 +107,8 @@ class AddView(EditView):
         publish(content, ObjectCreatedEvent(content))
 
         content = self.add(content)
+
+        adapted = queryAdapter(content, self.schema, content)
 
         for name in self._set_after_add:
             if name in data:
