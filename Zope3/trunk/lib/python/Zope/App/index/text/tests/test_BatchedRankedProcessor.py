@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_BatchedRankedProcessor.py,v 1.1 2002/12/04 11:55:16 ctheune Exp $
+$Id: test_BatchedRankedProcessor.py,v 1.2 2002/12/04 16:04:53 ctheune Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -28,8 +28,8 @@ from Zope.App.index.interfaces import IBatchedQuery, ITextIndexQuery, \
     
 from Zope.App.index.text.processors import \
     BatchedRankedProcessor, IBatchedRankedProcessor
-from Zope.App.index.text.queries import \
-    BatchedRankedResult, BatchedTextIndexQuery
+from Zope.App.index.queries import BatchedRankedResult
+from Zope.App.index.text.queries import BatchedTextIndexQuery
 
 class StupidTextIndex:
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """XXX short summary goes here.
 
-$Id: queries.py,v 1.1 2002/12/04 11:55:15 ctheune Exp $
+$Id: queries.py,v 1.2 2002/12/04 16:04:25 ctheune Exp $
 """
 
 from Zope.App.index.interfaces import \
@@ -28,16 +28,3 @@ class BatchedTextIndexQuery:
         self.textIndexQuery = query
         self.startPosition = startposition
         self.batchSize = batchsize
-
-class BatchedRankedResult:
-
-    __implements__ = IBatchedResult, IRankedHubIdList
-
-    def __init__(self, hubidlist, startposition, batchsize, totalsize):
-        self.__hubidlist = hubidlist
-        self.startPosition = startposition
-        self.batchSize = batchsize
-        self.totalSize = totalsize
-
-    def __getitem__(self, index):
-        return self.__hubidlist[index]
