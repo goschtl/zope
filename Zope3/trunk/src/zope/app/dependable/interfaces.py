@@ -16,6 +16,7 @@ $Id$
 """
 
 from zope.interface import Interface
+from zope.app.exception.interfaces import UserError
 
 class IDependable(Interface):
     """Objects that other objects depend on.
@@ -44,5 +45,5 @@ __doc__ = IDependable.__doc__ + __doc__
 $Id$
 """
 
-class DependencyError(Exception):
+class DependencyError(UserError):
     """ This object is dependable"""
