@@ -100,7 +100,7 @@ class PAS:
                 id, info = authenticated
                 return self._create('createAuthenticatedPrincipal',
                                     self.prefix+id, info, request)
-
+        return None
 
     def _create(self, meth, *args):
         # We got some data, lets create a user
@@ -135,7 +135,7 @@ class PAS:
         return self._delegate('getPrincipal', self.prefix+id)
 
     def unauthenticatedPrincipal(self):
-        pass
+        return None
 
     def unauthorized(self, id, request):
         protocol = None
@@ -158,8 +158,9 @@ class PAS:
     def _delegate(self, meth, *args):
         # delegate to next AS
         next = queryNextService(self, Authentication, None)
-        if next is not None:
-            return getattr(next, meth)(*args)
+        if next is None:
+            return None
+        return getattr(next, meth)(*args)
 
 
 class LocalPAS(PAS, Persistent, Contained):
