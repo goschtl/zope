@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_absoluteurl.py,v 1.14 2003/08/08 18:07:09 jim Exp $
+$Id: test_absoluteurl.py,v 1.15 2003/09/04 14:22:20 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -111,10 +111,7 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
         vh_root = TrivialContent()
         request._vh_root = ContextWrapper(vh_root, Root(), name='a')
 
-        content = ContextWrapper(vh_root, Root(),
-                                 name='a',
-                                 side_effect_names=("++vh++abc", ),
-                                 )
+        content = ContextWrapper(vh_root, Root(), name='a')
         content = ContextWrapper(TrivialContent(), content, name='b')
         content = ContextWrapper(TrivialContent(), content, name='c')
         view = getView(content, 'absolute_url', request)
@@ -133,8 +130,7 @@ class TestAbsoluteURL(PlacelessSetup, TestCase):
 
         root = Root()
         request._vh_root = ContextWrapper(root, root, name='')
-        content = ContextWrapper(root, None,
-                                 side_effect_name="++vh++abc")
+        content = ContextWrapper(root, None)
         content = ContextWrapper(TrivialContent(), content, name='a')
         content = ContextWrapper(TrivialContent(), content, name='b')
         content = ContextWrapper(TrivialContent(), content, name='c')
