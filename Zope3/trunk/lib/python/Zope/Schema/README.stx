@@ -2,27 +2,44 @@ Zope 3 Schemas
 
 Table of contents
 
- Introduction
+ Short introduction
+
+ Long introduction
 
  What is a schema, how does it compare to an interface and why should you care?
 
- What does a Schema look like
+ What does a Schema look like ( Example )
  
- Where Schemas make sense: Providing views from Schemas
+ Where Schemas make sense: Providing views from Schemas ( Example )
 
  Issues
 
 
+Short introduction
 
-Introduction
+ Schemas:
 
- Zope 3 schemas were born when Jim Fulton and Martijn Faassen were thinking about Formulator for Zope3 and PropertySets while at the Zope3 sprint at the Zope BBQ in Berlin. They realized that forms stripped of all logic to view them look suspiciously similar to Zope 3 interfaces. And thus schemas were born.
+  - Model the public information managed by the object.
 
-What is a schema, how does it compare to an interface and why should you care?
+  - An interface with fields.
 
- A schema is a definition of an object's properties, while interface is a definition of an object's methods. A property is an attribute of an object that is intended to be public; it is part of the interface of the object. While properties generally look and feel like normal attributes to the Python programmer, they are often implemented with a hidden getter and setter instead. In a way interface and schema look at the object from two different viewpoints.
+  - Fields define attribute types, including value constraints, and documentation.
 
- To make things more clear, let's compare schemas with normal Zope 3 interfaces. What are Zope 3 interfaces used for?
+ Fields themselves are:
+ 
+  - They provide a validate method for validating values
+
+  - FieldProperties can automate validation at Python level.
+
+Long introduction
+
+  Zope 3 schemas were born when Jim Fulton and Martijn Faassen were thinking about Formulator for Zope3 and PropertySets while at the Zope3 sprint at the Zope BBQ in Berlin. They realized that forms stripped of all logic to view them look suspiciously similar to Zope 3 interfaces. And thus schemas were born.
+
+ What is a schema, how does it compare to an interface and why should you care?
+
+  A schema is a definition of an object's properties, while interface is a definition of an object's methods. A property is an attribute of an object that is intended to be public; it is part of the interface of the object. While properties generally look and feel like normal attributes to the Python programmer, they are often implemented with a hidden getter and setter instead. In a way interface and schema look at the object from two different viewpoints.
+
+  To make things more clear, let's compare schemas with normal Zope 3 interfaces. What are Zope 3 interfaces used for?
 
    o documentation: by writing an interface, we can tell programmers what methods are available for them to use, and provide documentation on what these methods do. Similarly, a class documents itself by advertising what interfaces it is implementing. Only publically available methods (useable by the programmer as well as other components) are advertised this way.
 
@@ -32,7 +49,7 @@ What is a schema, how does it compare to an interface and why should you care?
 
    o component architecture: Zope 3's component architecture uses these introspection facilities to plug objects together by their interfaces. The component architecture can for instance be asked to supply an object with another interface (adapters) or end-user presentation (views).
 
- Schemas are used in much the same way, substituting property for method. What are schemas used for?
+  Schemas are used in much the same way, substituting property for method. What are schemas used for?
 
    o documentation: by writing a schema, we can tell programmers what public properties are available for them to use (get or set), and to provide documentation on what these properties are to be used for. Classes document themselves by advertising what schemas they are implementing.
 
@@ -44,120 +61,77 @@ What is a schema, how does it compare to an interface and why should you care?
 
 What does a schema look like?
 
- Enough theory; how does one define a schema? Much like one would define an interface, but it has fields instead of methods:
+  How do you define Schema, much like one would define an interface, but it has fields instead of methods (Example from programmers tutorial):
 
-      from Interface import Schema
+      from Interface import Interface
+      from Zope.Schema import Text, TextLine
 
-      class IPerson(Schema):
-          """A simple schema for a person.
-          """
+      class IContact(Interface):
+       "Provides access to basic contact information."
 
-          initials = StringField(
-             title="Initials",
-             description="Initials to be used in portal emails.",
-             )
+         first = TextLine(title=u"First name")
+         last = TextLine(title=u"Last name")
+         email = TextLine(title=u"Electronic mail address")
+         address = Text(title=u"Postal address")
+         postalCode = TextLine(title=u"Postal code",
+                       constraint = re.compile("\d{5,5}(-\d{4,4})?$").match)
 
-          last_name = StringField(
-             title="Last name",
-             description="Last name.",
-             )
-
-          date_of_birth = DateTimeField(
-             title="Date of birth",
-             description="Date of birth.",
-             )
-
-          is_zope_user = BooleanField(
-             title="Is Zope user?",
-             description="Is this person a zope user?",
-             )
-
- Now we need a class that implements this interface:
-
-      class MyPerson:
-          """A very simple implementation of the IPerson schema.
-          """
-          __implements__ = IPerson
-
-          def __init__(self, initials, last_name, date_of_birth, is_zope_user):
-              # now we have to do what we promised
-              self.initials = initials
-              self.last_name = last_name
-              self.date_of_birth = date_of_birth
-              self.is_zope_user = is_zope_user
-
- Note that in this example a MyPerson instance may in fact not conform to the schema anymore, as it does no checking whether the values of the properties are in fact the ones specified in the schema.
-
- Another example comes from the ZPTPage ( Zope3/lib/python/Zope/App/OFS/ZPTPage ):
- 
-    class IZPTPage(Interface):
-    """ZPT Pages are a persistent implementation of Page Templates.   """
-
-    def setSource(text, content_type='text/html'):
-        """Save the source of the page template."""
-
-    def getSource():
-        """Get the source of the page template."""
-
-    source = Zope.Schema.Text(
-        title=u"Source",
-        description=u"""The source of the page template.""",
-        required=True)
-
- And the class itself starts with:
-
-    class ZPTPage(AppPT, PageTemplate, Persistent):
-
-    # XXX Putting IFileContent at the end gives an error!
-    __implements__ = IFileContent, IZPTPage, IRenderZPTPage
-
-    def getSource(self):
-        '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
-        return self.read()
-
-    def setSource(self, text, content_type='text/html'):
-        '''See interface Zope.App.OFS.ZPTPage.ZPTPage.IZPTPage'''
-        if isinstance(text, unicode):
-            text = text.encode('utf-8')
+         def  name():
+         """Gets the contact name.
         
-        self.pt_edit(text, content_type)
+         The contact name is the first and last name"""
+
+  Now we need a class that implements this interface:
+
+    class Contact (Persistence.Persistent):
+    __implements__ = IContact
+
+        def __init__(self, first='', last='', email='', address='', pc=''):
+            self.first = first
+            self.last = last
+            self.email = email
+            self.address = address
+            self.postalCode = pc
+
+        def name(self): 
+            return "%s %s" % (self.first, self.last)
 
 
 Where Schemas make sense: Providing views from Schemas
 
- We can now proceed to provide a view for this schema in much the same way we provide a view for any Zope 3 interface. What would such a view actually look like? A view could be used just to display the values of properties. Often, we'd also like to provide an edit facility such as a web form. This is where Formulator comes in; Formulator provides views (widgets) for each type of field; say an input box for a StringFieldx and a check box for a BooleanFieldx. 
-
- And here is an example of how configuration happens(Zope3/lib/python/Zope/App/OFS/ZPTPage ):
+  Schemas, Fields, Widgets and Forms form a combination that can be used to provide views automaticly by Zope machinery.
+  
+  TUTORIAL STUFF HERE.
+  
  
- EditView and form:edit directive provide automatic, but customizable edit views.
- 
- In the base configuration (configure.zcml ) views configuration is included to configuration:
   
- **NOTE** Views are destined to change in near future. Reference talks and Martijn Faassen's presentation in Rotterdam Sprint. 
-  
-  
-  <include package=".Views" />
-  
-  In Views Browser configuration is included:  
-  
-  <include package=".Browser" />
-  
-  Which then has:
-  
-  <form:edit
-    schema=".ZPTPage.IZPTPage."
-    name="edit.html"
-    label="Edit a ZPT page"
-    permission="Zope.ManageContent"
-  />
   
 
 Issues
 
  These issues were written up at Rotterdam Sprint
  
+ Internalization
+ 
+  How internalization is done in Schemas - and how internalization is taken care while designing a schema. Title and description need to be translated - as well as validation errors that happen. Idea is that the translation would happen in views - and views would have means to get to the Schema ids.
   
+  Example:
+  
+  Class book(Interface):
+  
+     author = ITextLine()
+     
+  And in view, while the widget or widget's messages are constructed:
+  
+  TranslatorService.getMessage('book.author.title','DE_DE')   
 
+  CHECK ... HOW DOES VIEW HAVE REFERENCE TO THE CLASS NAMES?  
+
+
+References
+
+ Jim Fulton's Programmers Tutorial, 
+ in CVS Docs/ZopeComponentArchitecture/PythonProgrammerTutorial/Chapter2
 
 
 
