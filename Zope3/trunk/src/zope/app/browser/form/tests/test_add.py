@@ -13,9 +13,10 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.7 2003/03/13 18:49:02 alga Exp $
+$Id: test_add.py,v 1.8 2003/03/21 20:57:12 jim Exp $
 """
 
+import sys
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.form.add import add, AddViewFactory, AddView
 from zope.interface import Interface
@@ -27,15 +28,23 @@ from zope.app.browser.form.widget import TextWidget as Text
 from zope.publisher.browser import TestRequest
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getView
+from zope.app.browser.form.submit import Update
 
 class Context:
 
     def resolve(self, name):
+        l = name.rfind('.') 
+        if l >= 0:
+            # eek, we got a real dotted name
+            m = sys.modules[name[:l]]
+            return getattr(m, name[l+1:])
+            
+            
         return globals()[name]
 
 class I(Interface):
 
-    name = TextLine()
+    name_ = TextLine()
     first = TextLine()
     last = TextLine()
     email = TextLine()
@@ -53,7 +62,7 @@ class C:
         self.kw = kw
 
 class V:
-    name = CustomWidget(Text)
+    name_ = CustomWidget(Text)
     first = CustomWidget(Text)
     last = CustomWidget(Text)
     email = CustomWidget(Text)
@@ -65,14 +74,14 @@ class V:
 
 class SampleData:
 
-    name = "foo"
-    first = "bar"
-    last = "baz"
-    email = "baz@dot.com"
-    address = "aa"
-    foo = "foo"
-    extra1 = "extra1"
-    extra2 = "extra2"
+    name_ = u"foo"
+    first = u"bar"
+    last = u"baz"
+    email = u"baz@dot.com"
+    address = u"aa"
+    foo = u"foo"
+    extra1 = u"extra1"
+    extra2 = u"extra2"
 
 class Test(PlacelessSetup, TestCase):
 
@@ -102,12 +111,12 @@ class Test(PlacelessSetup, TestCase):
             keyword_arguments="email",
             set_before_add="foo",
             set_after_add="extra1",
-            fields="name first last email address foo extra1 extra2",
+            fields="name_ first last email address foo extra1 extra2",
             )
 
         self.assertEqual(result1, result2)
 
-    def test_add(self):
+    def test_add(self, args=None):
 
         [(descriminator, callable, args, kw)] = add(
             Context(),
@@ -144,7 +153,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(bases, (V, AddView, ))
         self.assertEqual(for_, IAdding)
         self.assertEqual(" ".join(fields),
-                         "name first last email address foo extra1 extra2")
+                         "name_ first last email address foo extra1 extra2")
         self.assertEqual(content_factory, C)
         self.assertEqual(" ".join(arguments),
                          "first last")
@@ -153,12 +162,12 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(" ".join(set_before_add),
                          "foo")
         self.assertEqual(" ".join(set_after_add),
-                         "extra1 name address extra2")
+                         "extra1 name_ address extra2")
         self.failIf(kw)
 
         return args
 
-    def test_apply_update(self):
+    def test_createAndAdd(self):
 
         class Adding:
 
@@ -183,14 +192,74 @@ class Test(PlacelessSetup, TestCase):
         args = self.test_add()
         factory = AddViewFactory(*args)
         request = TestRequest()
-        request.form.update(SampleData.__dict__)
         view = getView(adding, 'addthis', request)
-        view.apply_update(SampleData.__dict__)
+        view.createAndAdd(SampleData.__dict__)
 
         self.assertEqual(adding.ob.extra1, "extra1")
         self.assertEqual(adding.ob.extra2, "extra2")
-        self.assertEqual(adding.ob.name, "foo")
+        self.assertEqual(adding.ob.name_, "foo")
         self.assertEqual(adding.ob.address, "aa")
+
+    def test_hooks(self):
+
+        class Adding:
+            __implements__ = IAdding
+
+
+        adding = Adding()
+        args = self.test_add()
+        factory = AddViewFactory(*args)
+        request = TestRequest()
+        
+        request.form.update(dict([
+            ("field.%s" % k, v) 
+            for (k, v) in dict(SampleData.__dict__).items()
+            ]))
+        request.form[Update] = ''
+        view = getView(adding, 'addthis', request)
+
+        # Add hooks to V
+
+        l=[None]
+
+        def add(aself, ob):
+            l[0] = ob
+            self.assertEqual(
+                ob.__dict__,
+                {'args': ("bar", "baz"),
+                 'kw': {'email': 'baz@dot.com'},
+                 'foo': 'foo',
+                 })
+            return ob
+        
+        V.add = add
+
+        V.nextURL = lambda self: 'next'
+
+        try:
+            
+            self.assertEqual(view.update(), '')
+
+            self.assertEqual(view.errors, ())
+
+
+            self.assertEqual(l[0].extra1, "extra1")
+            self.assertEqual(l[0].extra2, "extra2")
+            self.assertEqual(l[0].name_, "foo")
+            self.assertEqual(l[0].address, "aa")
+
+            self.assertEqual(request.response.getHeader("Location"), "next")
+
+            # Verify that calling update again doesn't do anything.
+            l[0] = None
+            self.assertEqual(view.update(), '')
+            self.assertEqual(l[0], None)
+
+        finally:
+            # Uninstall hooks
+            del V.add
+            del V.nextURL
+            
 
 def test_suite():
     return TestSuite((

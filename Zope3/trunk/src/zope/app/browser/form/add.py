@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.9 2003/02/21 14:53:35 alga Exp $
+$Id: add.py,v 1.10 2003/03/21 20:57:11 jim Exp $
 """
 
 import sys
@@ -31,10 +31,9 @@ from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.browser.form.submit import Update
 from zope.app.browser.form.editview import EditView, _normalize
-from zope.app.interfaces.container import IAdding
 
 class AddView(EditView):
-    """Simple edit-view base class
+    """Simple edit-view base class.
 
     Subclasses should provide a schema attribute defining the schema
     to be edited.
@@ -43,14 +42,36 @@ class AddView(EditView):
     def _setUpWidgets(self):
         setUpWidgets(self, self.schema, names=self.fieldNames)
 
-    def apply_update(self, data):
-        """Apply data updates
+    def update(self):
 
-        Return true if data were unchanged and false otherwise.
-        This sounds backwards, but it allows lazy implementations to
-        avoid tracking changes.
+        if self.update_status is not None:
+            # We've been called before. Just return the previous result.
+            return self.update_status
+
+        if Update in self.request:
+
+            self.update_status = ''
+            try:
+                data = getWidgetsData(self, self.schema,
+                                      strict=False,
+                                      names=self.fieldNames,
+                                      set_missing=False)
+                content = self.createAndAdd(data)
+            except WidgetsError, errors:
+                self.errors = errors
+                self.update_status = u"An error occured."
+                return self.update_status
+
+            self.request.response.redirect(self.nextURL())
+
+        return self.update_status
+
+    def createAndAdd(self, data):
+        """Add the desired object using the data in the data argument.
+
+        The data argument is a dictionary with the data entered in the form.
         """
-
+        
         args = []
         for name in self._arguments:
             args.append(data[name])
@@ -76,7 +97,7 @@ class AddView(EditView):
 
         publish(content, ObjectCreatedEvent(content))
 
-        content = self.context.add(content)
+        content = self.add(content)
 
         for name in self._set_after_add:
             if name in data:
@@ -90,19 +111,11 @@ class AddView(EditView):
 
         return content
 
-    def update(self):
-        if Update in self.request:
-            try:
-                data = getWidgetsData(self, self.schema,
-                                      strict=False,
-                                      names=self.fieldNames,
-                                      set_missing=False)
-                content = self.apply_update(data)
-            except WidgetsError, errors:
-                self.errors = errors
-                return u"An error occured."
+    def add(self, content):
+        return self.context.add(content)
 
-            self.request.response.redirect(self.context.nextURL())
+    def nextURL(self):
+        return self.context.nextURL()
 
 
 def AddViewFactory(name, schema, label, permission, layer,
@@ -135,9 +148,10 @@ def AddViewFactory(name, schema, label, permission, layer,
 
     provideView(for_, name, IBrowserPresentation, class_, layer)
 
-def add(_context, name, schema, label, content_factory,
+
+def add(_context, name, schema, content_factory, label='',
         permission = 'zope.Public', layer = "default",
-        class_ = None, for_ = None,
+        class_ = None, for_ = 'zope.app.interfaces.container.IAdding',
         template = None, omit=None, fields=None,
         arguments='', keyword_arguments='',
         set_before_add='', set_after_add=''):
@@ -194,11 +208,10 @@ def add(_context, name, schema, label, content_factory,
 
     return [
         Action(
-        discriminator = ('view', IAdding, name, IBrowserPresentation, layer),
+        discriminator = ('view', for_, name, IBrowserPresentation, layer),
         callable = AddViewFactory,
         args = (name, schema, label, permission, layer, template, 'add.pt',
-                bases,
-                IAdding, fields, content_factory, arguments,
+                bases, for_, fields, content_factory, arguments,
                 keyword_arguments, set_before_add, set_after_add),
         )
         ]

@@ -12,68 +12,70 @@
 #
 ##############################################################################
 """
-$Id: form.py,v 1.5 2003/01/16 19:53:09 stevea Exp $
+$Id: form.py,v 1.6 2003/03/21 20:57:11 jim Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.publisher.interfaces.browser import IBrowserView
 from zope.app.interfaces.form import IWidget
 
+class IAddFormCustomization(Interface):
+    """This interface defined methods of add forms that can be overridden
 
-class IReadForm(IBrowserView):
-    """This interface defines methods and attributes that are required to
-    display a form."""
+    Classes supplied when defining add forms may need to override some
+    of these methods.
 
-    form = Attribute(
-        """The form template. Usually a Page Template.""")
+    In particular, when the context of an add form is not an IAdding,
+    a subclass needs to override ``nextURL`` and one of ``add`` or
+    ``createAndAdd``.
 
-    schema = Attribute(
-        """The schema this form should be constructed from.""")
+    To see how all this fits together, here's pseudo code for the
+    update() method of the form:
 
-    custom_widgets = Attribute(
-        """A dictionary that holds custom widgets for various fields.""")
+    def update(self):
+        data = <get data from widgets> # a dict
+        self.createAndAdd(data)
+        self.request.response.redirect(self.nextURL())
 
-    fields_order = Attribute(
-        """A list that contains the field ids in the order they should
-        be displayed. If the value of this attribute is None, then the
-        fields are just grapped randomly out of the various schemas.
+    def createAndAdd(self, data):
+        content = <create the content from the data>
+        content = self.add(content) # content wrapped in some context
+        <set after-add attributes on content>
 
-        Furthermore, if fields are specified then only these fields are
-        used for the form, not all that could be possibly found.
-        """)
+    """
 
-    def getFields():
-        """Get all the fields that need input from the content object."""
+    def createAndAdd(data):
+        """Create a new object from the given data and the resulting object.
 
-    def getField(name):
-        """Get a field by name from the content object schemas."""
+        The data argument is a dictionary with values supplied by the form.
 
-    def getWidgetForFieldName(name):
-        """Lookup the widget of the field by name."""
+        If any user errors occur, they should be collected into a list
+        and raised as a WidgetsError.
 
-    def getWidgetForField(field):
-        """Return the correct widget instance for a field. This method
-        consults the custom_widgets attribute """
+        (For the default implementation, see pseudo-code in class docs.)
+        """
 
-    def renderField(field):
-        """Render a field using the widgets."""
+    def add(content):
+        """Add the given content
 
-    def action():
-        """Execute the form. By default it tries to save the values back
-           into the content object."""
+        This method is overridden when the context of the add form is
+        not an IAdding.  In this case, the class that customizes the
+        form must take over adding the object.
 
+        The content should be returned wrapped in the context of the
+        object that it was added to.
 
-class IWriteForm(IBrowserView):
-    """This interface defines methods and attributes that are required to
-    retrieve the data from the request and store them back into the."""
+        The default implementation returns self.context.add(content),
+        i.e. it delegates to the IAdding view.
+        """
+    
+    def nextURL():
+        """Return the URL to be displayed after the add operation.
 
-    def saveValuesInContext():
-        """This method is responsible of retrieving all the data from
-        the request, converting it, validating it and then store it back
-        to the context object."""
+        This can be relative to the view's context.
 
-
-class IForm(IReadForm, IWriteForm):
-    """This is a complete form."""
+        The default implementation returns self.context.nextURL(),
+        i.e. it delegates to the IAdding view.
+        """
 
 
 class IBrowserWidget(IWidget):
