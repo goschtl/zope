@@ -15,10 +15,10 @@
 
 XXX longer description goes here.
 
-$Id: ut.py,v 1.5 2002/12/20 19:35:40 bwarsaw Exp $
+$Id: ut.py,v 1.6 2002/12/20 19:36:29 bwarsaw Exp $
 """
 
-from unittest import TestCase, TestSuite, main, makeSuite
+import unittest
 
 #############################################################################
 # If your tests change any global registries, then uncomment the
@@ -33,7 +33,7 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 #############################################################################
 
-class Test(TestCase):
+class TestSomething(unittest.TestCase):
     def setUp(self):
         # Set up some preconditions
         pass
@@ -54,7 +54,7 @@ class Test(TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest(unttest.makeSuite(Test))
+    suite.addTest(unittest.makeSuite(TestSomething))
     return suite
 
 
