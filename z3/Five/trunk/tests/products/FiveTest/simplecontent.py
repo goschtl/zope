@@ -8,7 +8,6 @@ from zope.interface import implements
 from interfaces import ISimpleContent
 
 class SimpleContent(SimpleItem, Viewable):
-
     implements(ISimpleContent)
 
     meta_type = 'TestSimpleContent'
