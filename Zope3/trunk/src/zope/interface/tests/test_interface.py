@@ -273,11 +273,14 @@ class _I2(_I1__):
 
 
 def test_suite():
-    from zope.testing.doctestunit import DocFileSuite
+    from zope.testing import doctest
     suite = unittest.makeSuite(InterfaceTests)
-    suite.addTest(DocTestSuite("zope.interface.interface"))
-    suite.addTest(DocFileSuite('../README.txt',
-                               globs={'__name__': '__main__'}))
+    suite.addTest(doctest.DocTestSuite("zope.interface.interface"))
+    suite.addTest(doctest.DocFileSuite(
+        '../README.txt',
+        globs={'__name__': '__main__'},
+        optionflags=doctest.NORMALIZE_WHITESPACE,
+        ))
     return suite
 
 def main():

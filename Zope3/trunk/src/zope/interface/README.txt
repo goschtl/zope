@@ -4,11 +4,6 @@ Interfaces
 
 .. contents::
 
-.. Doctest directive that causes whitespace to be normalized when
-   comparing expected and actual output. This allows us to wrap long
-   lines out output:
-   >>> doctest: +NORMALIZE_WHITESPACE
-
 Interfaces are objects that specify (document) the external behavior
 of objects that "provide" them.  An interface specifies behavior
 through: 
