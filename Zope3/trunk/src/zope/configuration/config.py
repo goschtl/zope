@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.22 2004/03/08 23:39:00 tim_one Exp $
+$Id: config.py,v 1.23 2004/03/10 12:24:02 srichter Exp $
 """
 
 import os.path
@@ -116,6 +116,8 @@ class ConfigurationContext(object):
                                                                   """'package'
         >>> import zope.configuration
         >>> c.package = zope.configuration
+        >>> c.resolve('.') is zope.configuration
+        1
         >>> c.resolve('.config.ConfigurationContext') is ConfigurationContext
         1
         >>> c.resolve('..interface') is zope.interface
@@ -127,6 +129,9 @@ class ConfigurationContext(object):
         name = dottedname.strip()
         if not name:
             raise ValueError("The given name is blank")
+
+        if name == '.':
+            return self.package
 
         names = name.split('.')
         if not names[-1]:

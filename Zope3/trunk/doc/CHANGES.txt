@@ -63,6 +63,10 @@ Zope Changes
 
     Bug fixes
     
+    - The configuration machinery's resolve() method  can now handle single
+      ".", which referes to the current package. Therefore you can reference a
+      module in ZCML simply by ".". 
+
     - Fixed inline-code support for Windows.
 
     - Reimplemented 'getRegisteredMatching()' of the Presentation Service,
