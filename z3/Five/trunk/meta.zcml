@@ -7,36 +7,36 @@
     <meta:directive
         name="permission"
         schema="zope.app.security.metadirectives.IDefinePermissionDirective"
-        handler=".metaconfigure.definePermission" />
+        handler="zope.app.security.metaconfigure.definePermission" />
 
     <meta:directive
         name="interface"
         schema="zope.app.component.metadirectives.IInterfaceDirective"
-        handler=".metaconfigure.interface"
+        handler="zope.app.component.metaconfigure.interface"
         />
 
     <meta:directive
         name="adapter"
         schema="zope.app.component.metadirectives.IAdapterDirective"
-        handler=".metaconfigure.adapter"
+        handler="zope.app.component.metaconfigure.adapter"
         />
 
     <meta:directive
         name="utility"
         schema="zope.app.component.metadirectives.IUtilityDirective"
-        handler=".metaconfigure.utility"
+        handler="zope.app.component.metaconfigure.utility"
         />
 
     <meta:directive
         name="serviceType"
         schema="zope.app.component.metadirectives.IServiceTypeDirective"
-        handler=".metaconfigure.serviceType"
+        handler="zope.app.component.metaconfigure.serviceType"
         />
 
     <meta:directive
         name="service"
         schema="zope.app.component.metadirectives.IServiceDirective"
-        handler=".metaconfigure.service"
+        handler="zope.app.component.metaconfigure.service"
         />
 
     <meta:complexDirective
@@ -83,7 +83,7 @@
   </meta:directives>
 
   <meta:directives namespace="http://namespaces.zope.org/browser">
-    
+
     <meta:directive
         name="page"
         schema="zope.app.publisher.browser.metadirectives.IPageDirective"
