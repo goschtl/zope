@@ -1,58 +1,62 @@
 <html metal:use-macro="here/main_template/macros/master" >
 <body style="position: relative">
 
- <div metal:fill-slot="header"
-      tal:define="global has_local python: 'local_pt' in here.objectIds()"
- >
+<div metal:fill-slot="header"
+     tal:define="global has_local python: 'local_pt' in here.objectIds();
+                 global util_macros here/index_html_utils/macros;
+                " >
+
   <div tal:condition="not: has_local">
-     <div metal:use-macro="here/index_html_utils/macros/index_header" />
+
+     <div metal:use-macro="util_macros/index_header" />
+
   </div>
 
   <div tal:condition="has_local">
 
-   <div metal:use-macro="here/local_pt/macros/header|default">
-     'local_pt' body goes here.
-   </div>
+    <div metal:use-macro="here/local_pt/macros/header | default">
+      'local_pt' header goes here.
+    </div>
 
   </div>
 
- </div><!-- header slot -->
+</div><!-- header slot -->
 
- <div metal:fill-slot="main">
+<div metal:fill-slot="main">
 
-<div id="content_well"
-     style="float: left; top: 0; width: 80%;">
-<br />
+  <div id="content_well"
+       style="float: left; top: 0; width: 80%;">
 
- <div tal:condition="not: has_local" >
+    <div tal:condition="not: has_local">
 
-  <div metal:use-macro="here/index_html_utils/macros/index_content" />
+      <br />
 
-  <div metal:use-macro="here/index_html_utils/macros/index_links" />
+      <div metal:use-macro="util_macros/index_content" />
+  
+      <div metal:use-macro="util_macros/index_links" />
 
-  <div metal:use-macro="here/index_html_utils/macros/index_folders" />
+      <div metal:use-macro="util_macros/index_folders" />
 
- </div><!-- not: has_local -->
+    </div>
 
+    <div tal:condition="has_local">
 
- <div tal:condition="has_local">
+      <div metal:use-macro="here/local_pt/macros/body | default">
+        'local_pt' body goes here.
+      </div>
 
-   <div metal:use-macro="here/local_pt/macros/body|default">
-     'local_pt' body goes here.
-   </div>
+    </div>
 
- </div>
+  </div>
+
+  <div id="right_sidebar"
+       style="width: 20%">
+
+    <div metal:use-macro="util_macros/news_box" />
+
+  </div>
 
 </div>
-
-<div style="width: 20%">
-<div metal:use-macro="here/index_html_utils/macros/news_box" />
-</div>
-
- </div><!-- main slot -->
-
 
 </body>
 </html>
-
-
