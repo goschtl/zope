@@ -17,8 +17,7 @@
 $Id$
 """
 
-from base64 import encodestring, decodestring
-from urllib import quote, unquote
+from urllib import quote_plus
 
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from OFS.Folder import Folder
@@ -31,12 +30,11 @@ from Products.PluggableAuthService.interfaces.plugins \
         import ILoginPasswordHostExtractionPlugin
 from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
 
-manage_addLoginFormChallengerForm = PageTemplateFile(
-    'www/lfcAdd', globals(), __name__='manage_addLoginFormChallengerForm')
-
-
 _DEFAULT_LOGIN_FIELD = '__ac_name'
 _DEFAULT_PASSWORD_FIELD = '__ac_password'
+
+manage_addLoginFormChallengerForm = PageTemplateFile(
+    'www/lfcAdd', globals(), __name__='manage_addLoginFormChallengerForm')
 
 def addLoginFormChallenger( dispatcher
                           , id
@@ -155,36 +153,45 @@ class LoginFormChallenger(Folder, BasePlugin):
 
         # Redirect if desired.
         url = self.getLoginURL()
-        if url is not None:
-            came_from = req.get('came_from', None)
-            
-            if came_from is None:
-                came_from = req.get('URL', '')
-                query = req.get('QUERY_STRING')
-                if query:
-                    if not query.startswith('?'):
-                        query = '?' + query
-                    came_from = came_from + query
-            else:
-                # If came_from contains a value it means the user
-                # must be coming through here a second time
-                # Reasons could be typos when providing credentials
-                # or a redirect loop (see below)
-                req_url = req.get('URL', '')
 
-                if req_url and req_url == url:
-                    # Oops... The login_form cannot be reached by the user -
-                    # it might be protected itself due to misconfiguration -
-                    # the only sane thing to do is to give up because we are
-                    # in an endless redirect loop.
-                    return 0
-                
-            url = url + '?came_from=%s' % quote(came_from)
-            resp.redirect(url, lock=1)
-            return 1
+        if url is None:
+            # Could not challenge.
+            return 0
 
-        # Could not challenge.
-        return 0
+        came_from = req.get('came_from', None)
+        
+        if came_from is not None:
+            # If came_from contains a value it means the user
+            # must be coming through here a second time
+            # Reasons could be typos when providing credentials
+            # or a redirect loop (see below)
+            req_url = req.get('URL', '')
+
+            if req_url and req_url == url:
+                # Oops... The login_form cannot be reached by the user -
+                # it might be protected itself due to misconfiguration -
+                # the only sane thing to do is to give up because we are
+                # in an endless redirect loop.
+                return 0
+
+        else:
+            came_from = req.get('URL', '')
+
+        query = req.get('QUERY_STRING', '')
+
+        if query.startswith('?'):
+            query = query[1:]
+
+        terms = filter(None, query.split('&'))
+
+        if came_from:
+            terms.insert(0, 'came_from=%s' % quote_plus(came_from))
+
+        if terms:
+            url = '%s?%s' % (url, '&'.join(terms))
+
+        resp.redirect(url, lock=1)
+        return 1
 
     security.declarePrivate('getLoginURL')
     def getLoginURL(self):
