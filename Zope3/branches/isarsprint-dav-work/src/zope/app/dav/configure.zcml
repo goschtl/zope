@@ -11,6 +11,14 @@
       allowed_attributes="PROPFIND setDepth getDepth" />
   
   <view
+      for="*"
+      name="PROPPATCH"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      factory=".proppatch.PROPPATCH"
+      permission="zope.ManageContent"
+      allowed_attributes="PROPPATCH" />
+  
+  <view
       for="zope.app.http.interfaces.INullResource"
       name="MKCOL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
