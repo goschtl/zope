@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.14 2003/01/08 18:56:12 stevea Exp $
+$Id: interfacewidget.py,v 1.15 2003/01/09 09:13:05 stevea Exp $
 """
 
 import sys
@@ -276,7 +276,6 @@ class MultiInterfaceWidget(Widget, BrowserView):
 
     def hidden(self):
         'See IBrowserWidget'
-        # XXX this method needs a unit-test
         if self._data is None:
             data = self.getData(1)
         else:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.9 2003/01/08 18:56:15 stevea Exp $
+$Id: test_interfacewidget.py,v 1.10 2003/01/09 09:13:03 stevea Exp $
 """
 
 __metaclass__ = type
@@ -299,6 +299,28 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
         out = (
         '<input type="hidden" name="field.TestName"'
         ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
+        )
+        self.assertEqual(widget.hidden(), out)
+
+    def testHiddenNone(self):
+        request = self.request
+        field = InterfaceField(__name__='TestName',
+                               title=u"This is a test",
+                               basetype=None)
+
+        widget = InterfaceWidget(field, request)
+        
+        out = (
+        '<input type="hidden" name="field.TestName" value="None" />'
+        )
+        self.assertEqual(widget.hidden(), out)
+        
+        request.form["field.TestName"] = (
+        'None'
+        )
+        self.assertEqual(widget.getData(), None)
+        out = (
+        '<input type="hidden" name="field.TestName" value="None" />'
         )
         self.assertEqual(widget.hidden(), out)
         
@@ -633,6 +655,57 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         request.form["field.TestName.i0"] = ('bad interface name')
         self.assertRaises(ConversionError, widget.getData)
+        
+    def testHidden(self):
+        request = self.request
+        field = InterfacesField(__name__='TestName',
+                                title=u"This is a test",
+                                required=False)
+
+        widget = MultiInterfaceWidget(field, request)
+        
+        self.assertEqual(widget.hidden(), '')
+        
+        request.form["field.TestName.i0"] = (
+        'zope.app.browser.component.tests.test_interfacewidget.I2'
+        )
+        self.assertEqual(widget.getData(), (I2,))
+        out = (
+        '<input type="hidden" name="field.TestName.i0"'
+        ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
+        )
+        self.assertEqual(widget.hidden(), out)
+
+        request.form["field.TestName.i1"] = (
+        'zope.app.browser.component.tests.test_interfacewidget.I3'
+        )
+        self.assertEqual(widget.getData(), (I2, I3))
+        out = (
+        '<input type="hidden" name="field.TestName.i0"'
+        ' value="zope.app.browser.component.tests.test_interfacewidget.I2" />'
+        '<input type="hidden" name="field.TestName.i1"'
+        ' value="zope.app.browser.component.tests.test_interfacewidget.I3" />'
+        )
+        self.assertEqual(widget.hidden(), out)
+
+    def testHiddenNone(self):
+        request = self.request
+        field = InterfacesField(__name__='TestName',
+                                title=u"This is a test",
+                                basetype=None)
+
+        widget = MultiInterfaceWidget(field, request)
+        
+        self.assertEqual(widget.hidden(), '')
+        
+        request.form["field.TestName.i0"] = (
+        'None'
+        )
+        self.assertEqual(widget.getData(), (None,))
+        out = (
+        '<input type="hidden" name="field.TestName.i0" value="None" />'
+        )
+        self.assertEqual(widget.hidden(), out)
         
 
 def test_suite():
