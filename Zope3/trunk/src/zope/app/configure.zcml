@@ -11,6 +11,11 @@
 
   <modulealias
       module="zope.app"
+      alias="zope.app.interfaces"
+      />
+
+  <modulealias
+      module="zope.app"
       alias="zope.app.services"
       />
 
