@@ -37,16 +37,15 @@ class TestCatalogAdd(BrowserTestCase):
         self.assertEqual(response.getHeader('Location'),
                  'http://localhost/felix_the/@@contents.html')
 
-        # and a couple more indexes now
-        #response = self.publish("/felix_the/+/AddTextIndexToCatalog=dcdesc",
-                        #basic='mgr:mgrpw', 
-                        #form={'text.interface': 
-                        #      u'zope.app.interfaces.dublincore.IZopeDublinCore',
-                        #      'text.field_name':'Description',
-                        #       'UPDATE_SUBMIT': u'Submit'})
+        # and a couple more indexes now - first a full text index
+        response = self.publish("/felix_the/@@contents.html",
+                        basic='mgr:mgrpw', 
+                        form={'type_name':
+                                    u'zope.app.index.text.TextCatalogIndex',
+                              'new_value': 'fulltext' })
         self.assertEqual(response.getStatus(), 302)
-        self.assertEqual(response.getHeader('Location'),
-                 'http://localhost/felix_the/@@contents.html')
+
+        # Single page submit
         response = self.publish("/felix_the/+/AddFieldIndexToCatalog=name",
                         basic='mgr:mgrpw', 
                         form={'field.interface.search': '',
@@ -79,7 +78,7 @@ class TestCatalogAdd(BrowserTestCase):
         self.assertEqual(response.getStatus(), 302)
         response = self.publish("/Second/@@EditMetaData.html",basic='mgr:mgrpw',
                                 form={'dctitle':u'Second File',
-                                      'dcdescription':u'another file with stuff',
+                                      'dcdescription':u'another file of stuff',
                                       'save':u'Save Changes',
                                       })
         self.assertEqual(response.getStatus(), 200)
@@ -104,15 +103,60 @@ class TestCatalogAdd(BrowserTestCase):
                                       'save':u'Save Changes',
                                       })
         self.assertEqual(response.getStatus(), 200)
+        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
+                                form={'type_name':u'ZPTPage', 
+                                      'id':u'Page1'})
+        self.assertEqual(response.getStatus(), 302)
+        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
+                                form={'type_name':u'ZPTPage', 
+                                      'id':u'Page2'})
+        self.assertEqual(response.getStatus(), 302)
+        response = self.publish("/+/action.html", basic='mgr:mgrpw', 
+                                form={'type_name':u'ZPTPage', 
+                                      'id':u'Page3'})
+        self.assertEqual(response.getStatus(), 302)
+
+        response = self.publish("/Page1/@@edit.html", basic='mgr:mgrpw', 
+                                form={'field.source':u'Some sample text',
+                                      'field.expand':u'',
+                                      'field.expand.used':u'',
+                                      'UPDATE_SUBMIT':u'Submit'})
+        self.assertEqual(response.getStatus(), 200)
+        response = self.publish("/Page2/@@edit.html", basic='mgr:mgrpw', 
+                                form={'field.source':u'Some other text',
+                                      'field.expand':u'',
+                                      'field.expand.used':u'',
+                                      'UPDATE_SUBMIT':u'Submit'})
+        self.assertEqual(response.getStatus(), 200)
+        response = self.publish("/Page3/@@edit.html", basic='mgr:mgrpw', 
+                                form={'field.source':u'Different sample text',
+                                      'field.expand':u'',
+                                      'field.expand.used':u'',
+                                      'UPDATE_SUBMIT':u'Submit'})
+        self.assertEqual(response.getStatus(), 200)
+        response = self.publish("/Page3/@@EditMetaData.html",basic='mgr:mgrpw',
+                                form={'dctitle':u'Third File',
+                                      'dcdescription':u'something else',
+                                      'save':u'Save Changes',
+                                      })
+        self.assertEqual(response.getStatus(), 200)
 
         root = self.getRootFolder()
         cat = root['felix_the']
         name = cat['dctitle']
-        self.assert_(name.documentCount()==5)
+        self.assert_(name.documentCount()==8)
         res = cat.searchResults(dctitle='Second File')
         self.assert_(len(res)==1)
         res = cat.searchResults(dctitle='Third File')
+        self.assert_(len(res)==3)
+        res = cat.searchResults(fulltext='sample')
         self.assert_(len(res)==2)
+        res = cat.searchResults(fulltext='sample', dctitle='Third File')
+        self.assert_(len(res)==1)
+        res = cat.searchResults(fulltext='fnargle', dctitle='Third File')
+        self.assert_(len(res)==0)
+        res = cat.searchResults(fulltext='sample', dctitle='Zeroth File')
+        self.assert_(len(res)==0)
 
 def test_suite():
     suite = unittest.TestSuite()
