@@ -696,6 +696,11 @@ CVS Contributors
 
   Miscellaneous bug fixes.
 
+- Eckart Hertzler
+
+  Miscellaneous bug fixes.
+
+  Work on the Cookbook
 
 Other Contributions
 -------------------
