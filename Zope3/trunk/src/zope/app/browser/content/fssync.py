@@ -14,7 +14,7 @@
 
 """Code for the toFS.zip view and its inverse, fromFS.form.
 
-$Id: fssync.py,v 1.7 2003/05/09 20:55:37 gvanrossum Exp $
+$Id: fssync.py,v 1.8 2003/05/13 19:49:12 gvanrossum Exp $
 """
 
 import os
@@ -40,11 +40,9 @@ class ZipFile(BrowserView):
     - return the contents of the zipfile with content-type application/zip
     """
 
-    def show(self, writeOriginals=None):
+    def show(self):
         """Return the zipfile response."""
-        if writeOriginals is None:
-            writeOriginals = isset(self.request.get("writeOriginals"))
-        zipfilename = writeZipFile(self.context, writeOriginals)
+        zipfilename = writeZipFile(self.context)
         f = open(zipfilename, "rb")
         data = f.read()
         f.close()
@@ -79,7 +77,7 @@ def isset(s):
         return False
     raise ValueError, "invalid flag (%r)" % s
 
-def writeZipFile(obj, writeOriginals=False):
+def writeZipFile(obj):
     """Helper to render the object tree to the filesystem and zip it.
 
     Return the name of the zipfile.
@@ -88,8 +86,7 @@ def writeZipFile(obj, writeOriginals=False):
     os.mkdir(dirname)
     try:
         # XXX toFS prints to stdout; it shouldn't
-        toFS(obj, objectName(obj) or "root", dirname,
-             writeOriginals=writeOriginals)
+        toFS(obj, objectName(obj) or "root", dirname)
         zipfilename = tempfile.mktemp(".zip")
         # XXX This is Unix specific and requires that you have the zip
         # program installed; should use the zipfile module instead
@@ -136,7 +133,7 @@ class Commit(ZipFile):
         zipdata = self.request.body
         errors = self.do_commit(zipdata)
         if not errors:
-            return self.show(writeOriginals=True) # Return the zipfile!
+            return self.show() # Return the zipfile!
         else:
             self.request.response.setHeader("Content-Type", "text/plain")
             errors.insert(0, "Up-to-date check failed:")
@@ -161,8 +158,7 @@ class Commit(ZipFile):
             os.system("cd %s; unzip -q %s" % (working, zipfilename))
             # 3) Save the current state of the object to disk
             os.mkdir(current)
-            toFS(self.context, objectName(self.context) or "root", current,
-                 writeOriginals=False)
+            toFS(self.context, objectName(self.context) or "root", current)
             # 4) Check that the working originals are up-to-date
             errors = checkUptodate(working, current)
             if errors:

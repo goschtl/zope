@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.12 2003/05/13 18:53:46 gvanrossum Exp $
+$Id: syncer.py,v 1.13 2003/05/13 19:50:49 gvanrossum Exp $
 """
 
 import os
@@ -50,7 +50,7 @@ def loadFile(path):
 def dumpFile(obj, path):
     writeFile(dumps(obj), path)
 
-def toFS(ob, name, location, writeOriginals=False):
+def toFS(ob, name, location):
     """Check an object out to the file system
 
     ob -- The object to be checked out
@@ -58,8 +58,6 @@ def toFS(ob, name, location, writeOriginals=False):
     name -- The name of the object
 
     location -- The directory on the file system where the object will go
-
-    writeOriginals -- If True, write 'Original' directory.  Default False.
     """
 
     # Get name path and check that name is not an absolute path
@@ -108,7 +106,7 @@ def toFS(ob, name, location, writeOriginals=False):
             os.mkdir(extra_dir)
         for ename in extra:
             edata = extra[ename]
-            toFS(edata, ename, extra_dir, writeOriginals=writeOriginals)
+            toFS(edata, ename, extra_dir)
 
     # Handle annotations
     annotations = queryAdapter(ob, IAnnotations)
@@ -121,8 +119,7 @@ def toFS(ob, name, location, writeOriginals=False):
             os.mkdir(annotation_dir)
         for key in annotations:
             annotation = annotations[key]
-            toFS(annotation, key, annotation_dir,
-                 writeOriginals=writeOriginals)
+            toFS(annotation, key, annotation_dir)
 
     # Handle data
     if IObjectFile.isImplementedBy(adapter):
@@ -131,14 +128,6 @@ def toFS(ob, name, location, writeOriginals=False):
         if not os.path.exists(path):
             data = adapter.getBody()
             writeFile(data, path)
-        if writeOriginals:
-            original_path = os.path.join(admin_dir, 'Original')
-            if not os.path.exists(original_path):
-                os.mkdir(original_path)
-            original_path = os.path.join(original_path, name)
-            if not data:
-                data = adapter.getBody()
-            writeFile(data, original_path)
     else:
         # Directory
         if os.path.exists(path):
@@ -149,7 +138,7 @@ def toFS(ob, name, location, writeOriginals=False):
             os.mkdir(path)
 
         for cname, cob in adapter.contents():
-            toFS(cob, cname, path, writeOriginals=writeOriginals)
+            toFS(cob, cname, path)
 
 
 class SynchronizationError(Exception):
