@@ -12,8 +12,11 @@
 ##############################################################################
 """A utility module for content-type handling.
 
-$Id: content_types.py,v 1.7 2004/01/16 19:23:49 sidnei Exp $
+$Id: content_types.py,v 1.8 2004/04/29 14:59:09 fdrake Exp $
 """
+
+# XXX This is handled through configuration in Zope 2 now.  Perhaps
+# this can be trimmed / removed from Zope 3.
 
 import re, mimetypes
 
