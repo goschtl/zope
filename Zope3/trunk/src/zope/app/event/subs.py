@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.9 2003/02/17 18:22:02 poster Exp $
+$Id: subs.py,v 1.10 2003/02/18 15:19:22 stevea Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -32,7 +32,7 @@ from zope.app.traversing import locationAsUnicode, getPhysicalPath, traverse
 from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribable
 from zope.app.interfaces.event import ISubscribingAware
 
-from zope.component import getService, getAdapter, queryAdapter
+from zope.component import getService, queryService, getAdapter, queryAdapter
 from zope.component import ComponentLookupError
 from zope.app.services.servicenames import HubIds
 from zope.app.services.type import PersistentTypeRegistry
@@ -79,12 +79,18 @@ class Subscribable(Persistent):
         if not event_type.extends(IEvent, strict=False):
             raise TypeError('event_type must be IEvent or extend IEvent',
                             event_type)
-        reftype, token, wrapped_object = getWayToSubscribe(
+        reftype, token, wrapped_object, clean_object = getWayToSubscribe(
                 wrapped_self, reference)
+
         # If wrapped_object is None, the object can't be traversed to,
         # so raise an exception
         if wrapped_object is None:
             raise NotFoundError(reference)
+
+        clean_self = removeAllProxies(wrapped_self)
+
+        if clean_object is clean_self:
+           raise RuntimeError("Cannot subscribe to self")
 
         # Check that ISubscriber adapter exists for the wrapped object.
         # This will raise an error if there is no such adapter.
@@ -95,8 +101,6 @@ class Subscribable(Persistent):
             ev_type = None
         else:
             ev_type = event_type
-
-        clean_self = removeAllProxies(wrapped_self)
 
         subscribers = clean_self._registry.get(ev_type)
         if subscribers is None:
@@ -463,11 +467,11 @@ def getWayToSubscribe(context, reference):
     clean, wrapped, path, hubId, reftype = getWaysToSubscribe(
         context, reference, allways=False)
     if reftype is unicode or hubId is None:
-        return unicode, path, wrapped
+        return unicode, path, wrapped, clean
     if path is None and hubId is None:
         raise Exception('Can get neither path nor hubId for reference',
                         reference)
-    return int, hubId, wrapped
+    return int, hubId, wrapped, clean
 
 def getWaysToSubscribe(context, reference, allways=True):
     '''Get the various means of subscription available for the given
@@ -514,11 +518,8 @@ def getWaysToSubscribe(context, reference, allways=True):
         else:
             cleanobj = removeAllProxies(wrappedobj)
             if allways:
-                try:
-                    hub = getService(context, HubIds)
-                except ComponentLookupError:
-                    pass
-                else:
+                hub = queryService(context, HubIds)
+                if hub is not None:
                     try:
                         hubId = hub.getHubId(path)
                     except NotFoundError:
@@ -528,11 +529,8 @@ def getWaysToSubscribe(context, reference, allways=True):
         wrappedobj = reference
         cleanobj = clean_reference
         path = getPhysicalPathString(wrappedobj)
-        try:
-            hub = getService(context, HubIds)
-        except ComponentLookupError:
-            pass
-        else:
+        hub = queryService(context, HubIds)
+        if hub is not None:
             try:
                 hubId = hub.getHubId(path)
             except NotFoundError:
