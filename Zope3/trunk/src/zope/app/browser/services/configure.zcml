@@ -481,16 +481,18 @@
 
 </view>
 
-<!-- ServiceConfiguration -->
+<!-- Generic page for objects that keep track of their registrations -->
 
   <page
-      for="zope.app.interfaces.services.service.ILocalService"
-      name="useConfiguration.html"
+      for="zope.app.interfaces.services.configuration.IUseConfigurable"
+      name="registrations.html"
       template="configuration/useconfiguration.pt"
       class=".configuration.NameUseConfiguration"
       permission="zope.ManageServices"
-      menu="zmi_views" title="Configurations"
+      menu="zmi_views" title="Registrations"
       />
+
+<!-- ServiceConfiguration -->
 
   <page
       name="addConfiguration.html"

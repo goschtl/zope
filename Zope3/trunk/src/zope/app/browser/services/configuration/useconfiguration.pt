@@ -2,7 +2,7 @@
   <body>
     <div metal:fill-slot="body">
 
-      <p>Configurations for this service:</p>
+      <p>Registrations for this object:</p>
 
       <ul>
 
@@ -11,13 +11,13 @@
 	  <a href="http://."
 	     tal:attributes="href use/url"
 	     tal:content="use/name">
-	   Example Service
+	   Example Object
 	   </a> (<span tal:replace="use/status">Active</span>)
 
 	</li>
       </ul>
 
-      <p><a href="addConfiguration.html">Add a configuration for this service</a>
+      <p><a href="addConfiguration.html">Add a registration for this object</a>
 
     </div>
   </body>

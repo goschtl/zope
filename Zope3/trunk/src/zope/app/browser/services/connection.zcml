@@ -41,18 +41,6 @@
       permission="zope.ManageServices"
       />
 
-  <!-- ZMI tab named "Configurations" for connection objects.
-       Given a connection object this lets you view all configurations
-       available for it. -->
-  <page
-      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
-      name="connectionConfiguration.html"
-      template="connectionConfiguration.pt"
-      class=".connection.UseConfiguration"
-      permission="zope.ManageServices"
-      menu="zmi_views" title="Configurations"
-      />
-
   <!-- When creating a new connection object, you are taken to this
        form to configure it.  The form lets you the connection
        parameters, a permission, and a registration status

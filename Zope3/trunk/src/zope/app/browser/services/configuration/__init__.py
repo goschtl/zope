@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral configuration-related views
 
-$Id: __init__.py,v 1.4 2003/04/24 18:02:02 gvanrossum Exp $
+$Id: __init__.py,v 1.5 2003/04/28 15:54:11 gvanrossum Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -90,6 +90,13 @@ class NameUseConfiguration:
         for path in useconfig.usages():
             config = traverse(component, path)
             url = getView(config, 'absolute_url', self.request)
+            # XXX This assumes the configuration implements
+            #     INamedComponentConfiguration rather than just
+            #     IComponentConfiguration.  ATM there are no
+            #     counterexamples, so this is a sleeper bug;
+            #     but what to do?  Could move the configuration
+            #     management up to INamedComponentConfiguration,
+            #     or could use path as default for name here.
             result.append({'name': config.name,
                            'path': path,
                            'url': url(),

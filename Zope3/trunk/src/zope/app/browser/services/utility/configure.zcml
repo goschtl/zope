@@ -42,18 +42,6 @@
       permission="zope.ManageServices"
       />
 
-  <!-- ZMI tab named "Configurations" for utility objects.
-       Given a utility object this lets you view all configurations
-       available for it. -->
-  <page
-      for="zope.app.interfaces.services.utility.ILocalUtility"
-      menu="zmi_views" title="Configurations"
-      name="useConfiguration.html"
-      template="useconfiguration.pt"
-      class=".useconfiguration.UseConfiguration"
-      permission="zope.ManageServices"
-      />
-
   <!-- When creating a new utility object, you are taken to this
        form to configure it.  The form lets you choose a name,
        an interface, a permission, and a registration status
