@@ -2,6 +2,30 @@ CMF 1.3
 
   New Features
 
+    - Wired 'scrubHTML' check into default versions of 'document_edit'
+      and 'newsitem_edit' skins (site managers who prefer to allow
+      JavaScript in content can customize to remove the check).
+
+    - Added utility methods for checking / scrubbing HTML content of
+      unwanted tags:  
+
+      CMFDefault.utils:  scrubHTML, isHTMLSafe
+
+      Known bad tags ('<script>', '<applet>', '<embed>', '<object>'),
+      attributes (starting with 'on'), and values (starting with
+      'javascript:') cause 'scrubHTML' to raise an exception;  unknown
+      tags are silently dropped.  'isHTMLSafe' returns true if
+      'scrubHTML' would not raise an exception on the same text.
+
+    - Exposed useful utility methods to scripting / skinning.
+
+      CMFCore.utils:  getToolByName, cookString, tuplize, format_stx,
+        keywordsplitter, normalize, expandpath, minimalpath
+
+      CMFDefault.utils:  formatRFC822Headers, parseHeadersBody,
+        semi_split, comma_split, seq_strip, tuplize, bodyfinder,
+        html_headcheck.
+
     - Allowed Portal Folders to be discussable.
 
     - Improved the ActionsTool so that permission checking for actions
@@ -11,6 +35,13 @@ CMF 1.3
       otherwise. This is useful for admin-defined additional categories.
 
   Bug Fixes
+
+    - Hardened DefaultDublinCoreImpl's EffectiveDate() and
+      ExpirationDate() methods to deal better with older / uninitialzed
+      content.
+
+    - Refactored content construction in the Types tool to make
+      cataloguing and workflow notification more uniform.
 
     - Made Undo work again by removing any LF in transaction ids.
 
