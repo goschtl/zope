@@ -21,7 +21,7 @@ from provideinterface import provideInterface
 from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
-from security.permission import getSecurityInfo, CheckerPublic
+from security import getSecurityInfo, CheckerPublic
 from metaconfigure import protectName, initializeClass
 
 #def handler(serviceName, methodName, *args, **kwargs):
