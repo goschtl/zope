@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.10 2003/04/04 00:00:20 jeremy Exp $\n";
+"$Id: persistence.c,v 1.11 2003/04/10 17:55:25 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -431,8 +431,6 @@ persist_getattro(PyPersistObject *self, PyObject *name)
        Implement with simple check on s_name[0] to avoid two strncmp()
        calls for all attribute names that don't start with an
        underscore.
-
-       XXX Don't revive a ghost just to get its __class__.
     */
 
     if (persist_checkattr(s_name)) {
@@ -475,8 +473,6 @@ persist_getattro(PyPersistObject *self, PyObject *name)
     Py_DECREF(name);
     return attr;
 }
-
-/* XXX why is __dict__ special? */
 
 /* persist_setattr_setup() will load the object's state if necessary.
    Return values:
@@ -864,7 +860,7 @@ PyPersist_New(PyTypeObject *type, PyObject *args, PyObject *kwds)
 	}
 	else
 	    /* XXX Should be aligned properly */
-	    new->tp_dictoffset = type->tp_basicsize;
+	    new->tp_dictoffset = new->tp_basicsize;
 	new->tp_basicsize += sizeof(PyObject *);
 
 	/* Put a descriptor for __dict__ in the type's __dict__.
