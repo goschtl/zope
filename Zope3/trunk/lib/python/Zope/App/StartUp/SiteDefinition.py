@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.4 2002/12/10 23:04:09 gvanrossum Exp $
+$Id: SiteDefinition.py,v 1.5 2002/12/10 23:08:22 gvanrossum Exp $
 """
 
 import sys
@@ -154,8 +154,6 @@ class SiteDefinition:
         app = root.get(ZopePublication.root_name, None)
 
         if app is None:
-
-            sys.stderr.write("Creating Brand New Site\n\n")
 
             from Zope.App.OFS.Content.Folder.RootFolder import RootFolder
             from Transaction import get_transaction
