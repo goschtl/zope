@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: FieldProperty.py,v 1.1 2002/09/07 16:18:51 jim Exp $
+$Id: FieldProperty.py,v 1.2 2002/09/08 13:52:13 jim Exp $
 """
 
 __metaclass__ = type
@@ -24,6 +24,10 @@ class FieldProperty:
 
     Field properties provide default values, data validation and error messages
     based on data found in field meta-data.
+
+    Note that FieldProperties cannot be used with slots. They can only
+    be used for attributes stored in instance dictionaries.
+    
     """
 
     def __init__(self, field, name=None):
@@ -32,13 +36,12 @@ class FieldProperty:
 
         self.__field = field
         self.__name = name
-        self.__private_name = "_fp__" + name
 
     def __get__(self, inst, klass):
         if inst is None:
             return self
 
-        value = getattr(inst, self.__private_name, _marker)
+        value = inst.__dict__.get(self.__name, _marker)
         if value is _marker:
             value = getattr(self.__field, 'default', _marker)
             if value is _marker:
@@ -48,7 +51,7 @@ class FieldProperty:
 
     def __set__(self, inst, value):
         self.__field.validate(value)
-        setattr(inst, self.__private_name, value)
+        inst.__dict__[self.__name] = value
             
 
 __doc__ = FieldProperty.__doc__ + __doc__
