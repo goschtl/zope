@@ -26,6 +26,7 @@ import zpkgtools
 from zpkgsetup import loggingapi as logging
 from zpkgsetup import package
 from zpkgsetup import publication
+from zpkgsetup import setup
 
 from zpkgtools import config
 from zpkgtools import dependencies
@@ -209,11 +210,17 @@ class BuilderApplication(Application):
             self.loader = loader.Loader()
         os.mkdir(os.path.join(self.destination, "Support"))
         self.include_support_package(
-            "zpkgsetup", ("svn://svn.zope.org/repos/main/zpkgtools/tags/*/"
+            "zpkgsetup", ("svn://svn.zope.org/repos/main/zpkgtools/trunk/"
                           "zpkgsetup"))
         if self.options.revision_tag:
             self.loader.cleanup()
         self.loader = old_loader
+        source = os.path.join(zpkgtools.__path__[0], "support")
+        dest = os.path.join(self.destination, "Support")
+        files = os.listdir(source)
+        for fn in setup.filter_names(files):
+            self.ip.copy_file(os.path.join(source, fn),
+                              os.path.join(dest, fn))
 
     def include_support_package(self, name, fallback):
         """Add the support package `name` to the output directory.
