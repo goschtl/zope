@@ -13,25 +13,22 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.11 2003/06/06 21:21:47 stevea Exp $
+$Id: test_translationservice.py,v 1.12 2003/08/20 00:46:07 srichter Exp $
 """
-
 import unittest
 
-from zope.interface.verify import verifyObject
-from zope.app.services.servicenames import Factories
+from zope.app import zapi
 from zope.app.component.metaconfigure import handler
-
-from zope.i18n.interfaces import IUserPreferredLanguages, ITranslationService
-from zope.app.services.translation.translationservice import \
-     TranslationService
-from zope.app.interfaces.services.translation import ISyncTranslationService
-from zope.app.services.translation.messagecatalog import \
-     MessageCatalog
-from zope.i18n.tests.test_itranslationservice import \
-     TestITranslationService
 from zope.app.component.metaconfigure import provideService, managerHandler
+from zope.app.interfaces.services.translation import ISyncTranslationService
+from zope.app.services.servicenames import Factories, Translation
+from zope.app.services.translation.messagecatalog import MessageCatalog
+from zope.app.services.translation.translationservice import TranslationService
+from zope.app.tests import setup
+from zope.i18n.interfaces import IUserPreferredLanguages, ITranslationService
+from zope.i18n.tests.test_itranslationservice import TestITranslationService
 from zope.interface import implements
+from zope.interface.verify import verifyObject
 
 
 class Environment:
@@ -57,8 +54,8 @@ class TestILocalTranslationService:
     def setUp(self):
         self._service = self._getTranslationService()
         assert verifyObject(ITranslationService, self._service)
-        managerHandler('defineService', 'Translation', ITranslationService)
-        provideService('Translation', self._service, 'zope.Public')
+        managerHandler('defineService', Translation, ITranslationService)
+        provideService(Translation, self._service, 'zope.Public')
 
 
     def _getDomains(self, service):
@@ -274,7 +271,49 @@ class TestTranslationService(unittest.TestCase,
            'Hello!')
 
 
+class TestTranslationServiceInAction(unittest.TestCase):
+
+    def setUp(self):
+        setup.placefulSetUp()
+        self.rootFolder = setup.buildSampleFolderTree()
+        sm = zapi.getServiceManager(None)
+        ts = zapi.getService(None, Translation)
+        de_catalog = MessageCatalog('de', 'default')
+        de_catalog.setMessage('short_greeting', 'Hallo!', 10)
+        ts.addCatalog(de_catalog)
+        
+        # Create Service in root folder
+        mgr = setup.createServiceManager(self.rootFolder)
+        self.trans = setup.addService(mgr, Translation, TranslationService())
+
+        # Create Service in folder1
+        mgr = setup.createServiceManager(
+            zapi.traverse(self.rootFolder, 'folder1'))
+        ts = TranslationService('default')
+        de_catalog = MessageCatalog('de', 'default')
+        de_catalog.setMessage('short_greeting', 'Hallo Welt!', 10)
+        ts.setObject('de-default-1', de_catalog)
+        self.trans1 = setup.addService(mgr, Translation, ts)
+
+    def tearDown(self):
+        setup.placefulTearDown()
+        
+
+    def test_translate(self):
+        self.assertEqual(
+            self.trans.translate('short_greeting', 'default',
+                                 target_language='de'),
+            'Hallo!')
+        self.assertEqual(
+            self.trans1.translate('short_greeting', 'default',
+                                  target_language='de'),
+            'Hallo Welt!')
+
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TestTranslationService))
-    return suite
+    return unittest.TestSuite((
+        #unittest.makeSuite(TestTranslationService),
+        unittest.makeSuite(TestTranslationServiceInAction),
+        ))
+
+if __name__=='__main__':
+    unittest.main(defaultTest='test_suite')

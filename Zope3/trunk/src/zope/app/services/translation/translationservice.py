@@ -13,21 +13,18 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.11 2003/06/06 21:21:46 stevea Exp $
+$Id: translationservice.py,v 1.12 2003/08/20 00:46:05 srichter Exp $
 """
 import re
-
 from zodb.btrees.OOBTree import OOBTree
 
-from zope.component import createObject, getService
+from zope.app import zapi
 from zope.app.component.nextservice import queryNextService
-
 from zope.app.container.btree import BTreeContainer
-
 from zope.app.interfaces.services.service import ISimpleService
-
-from zope.i18n.negotiator import negotiator
 from zope.app.interfaces.services.translation import ILocalTranslationService
+from zope.app.services.servicenames import Translation
+from zope.i18n.negotiator import negotiator
 from zope.i18n.simpletranslationservice import SimpleTranslationService
 from zope.interface import implements
 
@@ -77,7 +74,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
         if target_language is None and context is not None:
             avail_langs = self.getAvailableLanguages(domain)
             # Let's negotiate the language to translate to. :)
-            negotiator = getService(self, 'LanguageNegotiation')
+            negotiator = zapi.getService(self, 'LanguageNegotiation')
             target_language = negotiator.getLanguage(avail_langs, context)
 
         # Get the translation. Default is the source text itself.
@@ -89,17 +86,15 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
             if text is not None:
                 break
         else:
-            # If nothing found, delegate to
-            # a translation server higher up the tree.
-            ts = queryNextService(self, 'Translation')
-            if ts is not None:
-                return ts.translate(msgid, domain, mapping, context,
-                                    target_language, default=default)
-            else:
-                return default
+            # If nothing found, delegate to a translation server higher up the
+            # tree.
+            ts = queryNextService(self, Translation)
+            return ts.translate(msgid, domain, mapping, context,
+                                target_language, default=default)
 
         # Now we need to do the interpolation
         return self.interpolate(text, mapping)
+    translate = zapi.ContextMethod(translate)
 
     def getMessageIdsOfDomain(self, domain, filter='%'):
         'See IWriteTranslationService'
@@ -201,7 +196,8 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
             domains = [self.default_domain]
 
         for domain in domains:
-            catalog = createObject(self, 'Message Catalog', language, domain)
+            catalog = zapi.createObject(self, 'Message Catalog',
+                                        language, domain)
             self.setObject('%s-%s' %(domain, language), catalog)
 
 
@@ -212,7 +208,8 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
             languages = ['en']
 
         for language in languages:
-            catalog = createObject(self, 'Message Catalog', language, domain)
+            catalog = zapi.createObject(self, 'Message Catalog',
+                                        language, domain)
             self.setObject('%s-%s' %(domain, language), catalog)
 
 
@@ -279,5 +276,3 @@ class TranslationService(BTreeContainer, SimpleTranslationService):
                                    fmsg['msgstr'], fmsg['language'],
                                    fmsg['mod_time'])
 
-    #
-    ############################################################

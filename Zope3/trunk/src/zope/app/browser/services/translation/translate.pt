@@ -158,7 +158,8 @@
               <td width="16">&nbsp;</td>
               <td>
                 <textarea cols="20" rows="2" name=""
-                      tal:attributes="name string:new-msg_id-${count}" /> 
+                      tal:attributes="name string:new-msg_id-${count}"
+                ></textarea> 
               </td>
               <td>
                 <select name=""
@@ -171,7 +172,8 @@
               </td>
               <td tal:repeat="language python:view.getEditLanguages()">
                 <textarea cols="20" rows="2" name=""
-                  tal:attributes="name string:new-${language}-${count}" /> 
+                  tal:attributes="name string:new-${language}-${count}"
+                ></textarea> 
               </td>
       </tr>
       </tal:block>
