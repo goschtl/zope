@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.14 2003/06/07 07:23:52 stevea Exp $
+$Id: hub.py,v 1.15 2003/06/07 09:56:19 stevea Exp $
 """
 
 from __future__ import generators
@@ -276,10 +276,6 @@ class ObjectHub(ServiceSubscriberEventChannel):
 
         pathslash = canonicalSlash(path)
 
-        # XXX This check should be done by canonicalPath, but Albert is still
-        #     refactoring that. So, I'll do it here for now.
-        if not pathslash.startswith(u'/'):
-            raise ValueError('Path must be absolute, not relative:', path)
         path_to_hubid = clean_self.__path_to_hubid
         if path_to_hubid.has_key(pathslash):
             raise ObjectHubError('path %s already in object hub' % path)
