@@ -2,6 +2,9 @@
 Metadata Descriptions for Distributions
 =======================================
 
+Overview
+--------
+
 Packages will be described using a collection of files that contain
 different aspects of the package metadata.
 
@@ -34,8 +37,105 @@ PUBLICATION.txt
   file; this file has the same format as PKG-INFO.
 
 package.conf
-  This file contains information on building extension modules and, if
-  needed, detailed information about the files to be included in the
-  package for distribution.  Information about scripts and
-  documentation files will also be included in this file.  The format
-  of this file is not yet documented.
+  This file contains information on building extension modules.
+  Information about scripts and documentation files will also be
+  included in this file.
+
+
+Embedded Package Definitions
+----------------------------
+
+Packages can include a `package.conf` that contains information about
+special files in the package (such as documentation and scripts), and
+what extensions need to be built.  This file is a ZConfig-like
+configuration file that can contain the following settings, repeated
+as necessary:
+
+**documentation**
+  The name of a file or directory containing documentation. This is
+  used to support RPM generation.
+
+**script**
+  Only files may be identified using this.  These files are included
+  in the distribution and will be installed as executable scripts for
+  the end user.
+
+For paths, POSIX path separators must be used, and Unix-style glob
+expansion is performed.  Path names may not include leading or
+trailing whitespace.  Directories named `CVS`, `RCS`, `SCCS`, or
+`.svn` are ignored, as are files named `.cvsignore`.
+
+Paths can only refer to descendents of the directory containing
+`package.conf`, never to that directory itself or anything higher up
+the filesystem hierarchy.
+
+Support for Compiled Extensions
+-------------------------------
+
+Compiled extensions are described using **<extension>** sections in
+the `package.conf` file.  The name of the section should be the name
+of the extension module within the package.  For example, the
+extension ``persistent.cPersistence`` would be represented using a
+section of the form::
+
+  <extension cPersistence>
+    ...
+  </extension>
+
+The **<extension>** section can contain the settings described below.
+All of these can be repeated with the exception of the **language**
+setting.
+
+**define**
+  Define additional symbols for the C preprocessor.  Values must be of
+  the form ``NAME`` or ``NAME=value``.  For example::
+
+    define NAME
+
+  is equivalent to including the following line at the top of the C
+  source::
+
+    #define NAME
+
+  and this::
+
+    define NAME=value
+
+  is equivalent to this line in C::
+
+    #define NAME value
+
+  The ``NAME`` portion must be a valid C identifier.
+
+**depends-on**
+  Additional files that the compiled extension depends on.  This is
+  used by distutils to determine whether the extension needs to be
+  recompiled.  Since the source files are identified by the **source**
+  setting, this is normally only needed for header files.
+
+  XXX This is the one place I've seen a need to point outside the
+  current package.  In ZODB, the BTrees extension modules need to pick
+  up `../persistent/cPersistence.h`.
+
+**language**
+  The source language of the extension; this may be needed to control
+  compiler selection if unusual extensions are used for the source
+  files.  This is not normally needed.
+
+**source**
+  Source files for the extension.  Each file is compiled into object
+  code, and the individual objects are linked to create the
+  extension module.
+
+**undefine**
+  Specify one or more macros that should not be initially defined by
+  preprocessor.  For example, this line::
+
+    undefine NAME ANOTHER
+
+  is equivalent to the source lines::
+
+    #undef NAME
+    #undef ANOTHER
+
+  at the top of the compilation unit.
