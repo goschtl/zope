@@ -166,7 +166,9 @@ class ProxyTestCase(unittest.TestCase):
             b.append(x)
         self.assertEquals(a, b)
 
-    def test_wrapped_iterator(self):
+    def test_iteration_over_proxy(self):
+        # Wrap an iterator before starting iteration.
+        # PyObject_GetIter() will still be called on the proxy.
         a = [1, 2, 3]
         b = []
         for x in self.new_proxy(iter(a)):
@@ -174,6 +176,24 @@ class ProxyTestCase(unittest.TestCase):
         self.assertEquals(a, b)
         t = tuple(self.new_proxy(iter(a)))
         self.assertEquals(t, (1, 2, 3))
+
+    def test_iteration_using_proxy(self):
+        # Wrap an iterator within the iteration protocol, expecting it
+        # still to work.  PyObject_GetIter() will not be called on the
+        # proxy, so the tp_iter slot won't unwrap it.
+
+        class Iterable:
+            def __init__(self, test, data):
+                self.test = test
+                self.data = data
+            def __iter__(self):
+                return self.test.new_proxy(iter(self.data))
+
+        a = [1, 2, 3]
+        b = []
+        for x in Iterable(self, a):
+            b.append(x)
+        self.assertEquals(a, b)
 
     def test_bool_wrapped_None(self):
         w = self.new_proxy(None)
