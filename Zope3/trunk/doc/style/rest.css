@@ -1,7 +1,7 @@
 /*
 :Author: Fred L. Drake, Jr.
-:date: $Date: 2003/08/29 04:14:00 $
-:version: $Revision: 1.5 $
+:date: $Date: 2003/09/30 20:57:26 $
+:version: $Revision: 1.6 $
 
 This stylesheet combines some ideas from the two stylesheets
 distributed with docutils and enhances them for Zope 3 documentation.
@@ -10,20 +10,18 @@ distributed with docutils and enhances them for Zope 3 documentation.
 @import url(default.css);
 
 body {
-  margin: 0px;
-  margin-bottom: 1em;
+  margin: 0px 1em 1em 4em;
   padding: 0px; }
 
 h1.title {
   background-image: url("zope3logo.gif");
+  background-position: -6px -4px;
   background-repeat: no-repeat;
   font-size: 150%;
   min-height: 42px; }
 
 div.section {
-  margin-left: 4em;
-  margin-right: 1em;
-  margin-bottom: 1.5em; }
+  margin: 0px 0px 1.5em 0px; }
 
 div.section h1 {
   background-color: rgb(230,230,230);
@@ -33,17 +31,9 @@ div.section h1 {
      monitors, which often don't have enough contrast. */
   border-bottom: thin solid rgb(180,180,180); }
 
-div.section div.section div.section {
-  margin-left: 2em; }
-
 div.section div.section div.section h3 {
   margin-left: -1.9em;
   margin-bottom: -0.5em; }
-
-div.section div.section {
-  margin-left: 0em;
-  margin-right: 0em;
-  margin-top: 1.5em; }
 
 h1 {
   font-family: sans-serif;
