@@ -217,12 +217,8 @@ def main(args):
             no_files = 0
             subjs = map(grok_file, split_args[1:])
 
-        try: os.getcwd()
-        except:
-            raise
-
         if VERBOSE:
-            complain("CWD: %s, Repo: %s, ", os.getcwd(), repo)
+            complain("CWD: %s, Repo: %s, ", safe_getcwd(), repo)
             complain("Subjects: %s\n", subjs)
 
         if not WAIT:
@@ -294,7 +290,7 @@ def detach(args):
            % OUTPUT_LOG)
     
     if VERBOSE:
-        complain("Reexecing detached in %s, cmd:\n\t%s\n", os.getcwd(), cmd)
+        complain("Reexecing detached in %s, cmd:\n\t%s\n", safe_getcwd(), cmd)
 
     os.system(cmd)
     loosen_file(OUTPUT_LOG)
@@ -407,7 +403,7 @@ def create_diff(name, repo, file, old, new):
             lines.insert(0, insert_str)
         except IOError, e:
             lines = ['***** ERROR reading new file: ',
-                     str(e), '\n***** file: ', file, ' cwd: ', os.getcwd()]
+                     str(e), '\n***** file: ', file, ' cwd: ', safe_getcwd()]
 
     else:                # A "normal" update happened
         diff_cmd = ('cvs -d %s -f diff -kk -u -r %s -r %s %s'
@@ -553,7 +549,7 @@ def do_chmod(subjs):
                                  (DRYRUN and "echo would do: ") or "",
                                  string.join(fnames, " ")))
     if VERBOSE:
-        complain("Reexecing in %s, cmd:\n\t%s\n", os.getcwd(), cmd)
+        complain("Reexecing in %s, cmd:\n\t%s\n", safe_getcwd(), cmd)
     result = os.system(cmd)
     if result:
         msg = "*** Chmod returned %s..."
@@ -649,6 +645,12 @@ def complain(msg, *args):
     complaints.append(t + (msg % args))
     sys.stderr.write(msg % args)
     sys.stderr.flush()
+
+def safe_getcwd():
+    try:
+        return os.getcwd()
+    except:
+        return "<unknown dir>"
 
 if __name__ == "__main__":
     main(sys.argv)
