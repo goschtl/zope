@@ -21,7 +21,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Thu Apr  1 17:02:04 2004\n"
+"POT-Creation-Date: Tue Apr  6 11:37:04 2004\n"
 "PO-Revision-Date: 2004-04-01 17:43+0200\n"
 "Last-Translator: Fabrizio Reale\n"
 "Language-Team:  <realefab@redomino.org>\n"
@@ -133,8 +133,10 @@ msgid "seconds"
 msgstr "Account utenti"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:13
-msgid "If you specify a time of 0 seconds, then the server will do a hard sutdown."
-msgstr "Se specifichi un tempo di 0 secondi il server farà uno spegnimento forzato."
+msgid ""
+"If you specify a time of 0 seconds, then the server will do a hard sutdown."
+msgstr ""
+"Se specifichi un tempo di 0 secondi il server farà uno spegnimento forzato."
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:18
 msgid "Restart server"
@@ -278,7 +280,8 @@ msgid "reset-button"
 msgstr "Reset"
 
 #: src/zope/app/bundle/browser/bundle.pt:137
-msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
+msgid ""
+"Click \"Deactivate bundle\" to unregister all registrations in this bundle."
 msgstr ""
 "Clicka \"Disattiva pacchetto\" per rimuovere tutte le registrazioni in "
 "questo pacchetto."
@@ -446,29 +449,35 @@ msgstr "Tempo tra "
 msgid "You can configure the RAM Cache here."
 msgstr "Qui puoi configurare la Cache RAM."
 
-#: src/zope/app/cache/browser/ramstats.pt:19
+#: src/zope/app/cache/browser/ramstats.pt:20
 msgid "Path"
 msgstr "Percorso"
 
-#: src/zope/app/cache/browser/ramstats.pt:20
+#: src/zope/app/cache/browser/ramstats.pt:21
 msgid "Hits"
 msgstr "Contatti"
 
-#: src/zope/app/cache/browser/ramstats.pt:21
+#: src/zope/app/cache/browser/ramstats.pt:22
 msgid "Misses"
 msgstr "Mancati"
 
-#: src/zope/app/cache/browser/ramstats.pt:22
+#: src/zope/app/cache/browser/ramstats.pt:23
 msgid "Size, bytes"
 msgstr "Dimensione, bytes"
 
-#: src/zope/app/cache/browser/ramstats.pt:23
+#: src/zope/app/cache/browser/ramstats.pt:24
 msgid "Entries"
 msgstr "Elementi"
 
+#: src/zope/app/cache/browser/ramstats.pt:6
+#, fuzzy
+msgid "RAMCache statistics"
+msgstr "Statistiche"
+
 #: src/zope/app/catalog/browser/advanced.pt:10
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
-msgstr "Il Catalog è attulamente <strong>sottoscritto</strong> dall'oggetto hub."
+msgstr ""
+"Il Catalog è attulamente <strong>sottoscritto</strong> dall'oggetto hub."
 
 # Default: "Sottoscrivi"
 #: src/zope/app/catalog/browser/advanced.pt:27
@@ -805,7 +814,7 @@ msgstr "Mostra"
 #: src/zope/app/errorservice/browser/configure.zcml:26
 #: src/zope/app/cache/browser/cacheableedit.pt:23
 #: src/zope/app/cache/browser/ramedit.pt:9
-#: src/zope/app/cache/browser/ramstats.pt:9
+#: src/zope/app/cache/browser/ramstats.pt:10
 msgid "Errors"
 msgstr "Errori"
 
@@ -823,8 +832,10 @@ msgid "Error Reporting Service for Logging Errors"
 msgstr "Servizio di registrazione errori"
 
 #: src/zope/app/errorservice/browser/error.pt:10
-msgid "This page lists the exceptions that have occurred in this site recently."
-msgstr "Questa pagina elenca le eccezioni recentemente catturate in questo sito."
+msgid ""
+"This page lists the exceptions that have occurred in this site recently."
+msgstr ""
+"Questa pagina elenca le eccezioni recentemente catturate in questo sito."
 
 #: src/zope/app/errorservice/browser/error.pt:15
 #, fuzzy
@@ -1367,7 +1378,9 @@ msgstr "Elementi delle transizioni"
 msgid ""
 "Translation Domains allow you to localize your software by       providing "
 "message translations."
-msgstr "I Domini di Traduzione permettono di localizzare il software fornendo le traduzioni dei messaggi."
+msgstr ""
+"I Domini di Traduzione permettono di localizzare il software fornendo le "
+"traduzioni dei messaggi."
 
 #: src/zope/app/i18n/browser/configure.zcml:61
 #, fuzzy
@@ -1391,7 +1404,8 @@ msgstr "Importa ed esporta messaggi"
 #: src/zope/app/i18n/browser/exportimport.pt:12
 #, fuzzy
 msgid "Here you can export and import messages from your Translation Domain."
-msgstr "Qui puoi esportare ed importare messaggi dal tuo Servizio di traduzione."
+msgstr ""
+"Qui puoi esportare ed importare messaggi dal tuo Servizio di traduzione."
 
 #: src/zope/app/i18n/browser/exportimport.pt:20
 #: src/zope/app/i18n/browser/synchronize.pt:43
@@ -1460,12 +1474,12 @@ msgid "Status"
 msgstr "Stato"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
-msgid "Up to Date"
-msgstr "Aggiornato"
-
-#: src/zope/app/i18n/browser/synchronize.py:30
 msgid "New Remote"
 msgstr "Nuova connessione remota"
+
+#: src/zope/app/i18n/browser/synchronize.py:30
+msgid "Up to Date"
+msgstr "Aggiornato"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
 msgid "Out of Date"
@@ -1478,6 +1492,11 @@ msgstr "Non esiste"
 #: src/zope/app/i18n/browser/synchronize.py:31
 msgid "Newer Local"
 msgstr ""
+
+#: src/zope/app/i18n/browser/translate.pt:102
+#, fuzzy
+msgid "Add new messages"
+msgstr "Aggiungi una nuova lingua"
 
 #: src/zope/app/i18n/browser/translate.pt:127
 msgid "Edit Messages"
@@ -1562,7 +1581,8 @@ msgid "Edit Form"
 msgstr "Modulo di modifica"
 
 #: src/zope/app/i18nfile/browser/i18nimage.py:28
-msgid "This edit form allows you to make changes to the properties of this image."
+msgid ""
+"This edit form allows you to make changes to the properties of this image."
 msgstr ""
 "Questo modulo di modifica permette di modificare le proprietà di "
 "quest'immagine."
@@ -1777,7 +1797,8 @@ msgstr "Intevallo di controllo"
 
 #: src/zope/app/mail/interfaces.py:121
 msgid "How often the queue is checked for new messages (in milliseconds)"
-msgstr "Ogni quanto si verifica se ci sono nuovi messaggi in coda (in millisecondi)"
+msgstr ""
+"Ogni quanto si verifica se ci sono nuovi messaggi in coda (in millisecondi)"
 
 #: src/zope/app/mail/interfaces.py:153
 msgid "Hostname"
@@ -1841,7 +1862,8 @@ msgid "Add Browser Menu (Registration)"
 msgstr "Aggiungi un menu al browser (Registrazione)"
 
 #: src/zope/app/menu/browser/configure.zcml:5
-msgid "Browser Menu tools are used to build menus for Web user        interfaces."
+msgid ""
+"Browser Menu tools are used to build menus for Web user        interfaces."
 msgstr ""
 
 #: src/zope/app/menu/browser/configure.zcml:55
@@ -2005,7 +2027,8 @@ msgstr "Aiuto"
 
 #: src/zope/app/onlinehelp/browser/configure.zcml:7
 msgid "Menu for displaying help actions to be performed with popup"
-msgstr "Menu per mostrare le azioni di aiuto che possono essere eseguite con un popup"
+msgstr ""
+"Menu per mostrare le azioni di aiuto che possono essere eseguite con un popup"
 
 #: src/zope/app/onlinehelp/browser/skin/template.pt:100
 #: src/zope/app/zopetop/widget_macros.pt:176
@@ -2139,8 +2162,11 @@ msgid "Presentation Service"
 msgstr "Servizio di menu"
 
 #: src/zope/app/presentation/browser/configure.zcml:3
-msgid "A Presentation Service allows you to register views, resources and skins"
-msgstr "Un Servizio di Presentazione permette di registrare viste, risorse e temi grafici"
+msgid ""
+"A Presentation Service allows you to register views, resources and skins"
+msgstr ""
+"Un Servizio di Presentazione permette di registrare viste, risorse e temi "
+"grafici"
 
 #: src/zope/app/presentation/browser/pagefolder.zcml:14
 msgid "Default Registration"
@@ -2367,8 +2393,11 @@ msgid "Database Adapter"
 msgstr "Adattatore di Database per Gadfly"
 
 #: src/zope/app/rdb/browser/configure.zcml:5
-msgid "Database Adapters are used to connect to external       relational databases."
-msgstr "Gli Adattatori di Database sono usati per connettersi a database relazionali esterni."
+msgid ""
+"Database Adapters are used to connect to external       relational databases."
+msgstr ""
+"Gli Adattatori di Database sono usati per connettersi a database relazionali "
+"esterni."
 
 #: src/zope/app/rdb/browser/gadflyda.zcml:14
 msgid "Gadfly DA"
@@ -2534,15 +2563,24 @@ msgstr "Disattiva"
 msgid "This object is currently inactive."
 msgstr "Questo oggetto è attualmente inattivo."
 
-#: src/zope/app/registration/browser/registration.pt:35
+# Default: "Attiva"
+#: src/zope/app/registration/browser/registration.pt:30
+#: src/zope/app/site/browser/add_svc_config.pt:16
+#: src/zope/app/site/browser/services.pt:66
+#: src/zope/app/site/browser/tool.pt:90
+#: src/zope/app/utility/browser/utilities.pt:42
+msgid "activate-button"
+msgstr "Attiva"
+
+#: src/zope/app/registration/browser/registration.pt:36
 msgid "Advanced Options"
 msgstr "Opzioni avanzate"
 
-#: src/zope/app/registration/browser/registration.pt:42
+#: src/zope/app/registration/browser/registration.pt:43
 msgid "This object is not currently active."
 msgstr "Questo oggetto non è attualmente attivo."
 
-#: src/zope/app/registration/browser/registration.pt:44
+#: src/zope/app/registration/browser/registration.pt:45
 msgid ""
 "This object won't actually be used unless it is registered to perform a "
 "specific function and is activated."
@@ -2960,7 +2998,9 @@ msgstr "Registrazione della definizione dei componenti Contenuto"
 msgid ""
 "Content Component Definitions are used to declare       schema-based content "
 "objects."
-msgstr "Le Definizioni di Componenti Contenuto sono usate per dichiarare gli oggetti con contenuto basato sglu schema."
+msgstr ""
+"Le Definizioni di Componenti Contenuto sono usate per dichiarare gli oggetti "
+"con contenuto basato sglu schema."
 
 #: src/zope/app/schemacontent/browser/configure.zcml:55
 msgid "Define Permissions"
@@ -3006,7 +3046,8 @@ msgstr ""
 
 #: src/zope/app/schemacontent/content.py:157
 msgid "No local Browser Menu called \"${name}\" found."
-msgstr "Non è stato trovato nessuno Menu di consultazione chiamato \"${name}\"."
+msgstr ""
+"Non è stato trovato nessuno Menu di consultazione chiamato \"${name}\"."
 
 #: src/zope/app/schemacontent/interfaces.py:45
 msgid "Menu Id"
@@ -3093,7 +3134,8 @@ msgid "Login Failed!"
 msgstr "Login fallito!"
 
 #: src/zope/app/security/browser/login_failed.pt:9
-msgid "You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
+msgid ""
+"You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
 msgstr ""
 "Procedura di login annullata. <a href=\"\"> Clicka qui per tornare indietro. "
 "</a>"
@@ -3236,7 +3278,9 @@ msgstr "Registrazione di una nuova utilità"
 msgid ""
 "Roles are used to combine permissions and can be assigned       to "
 "principals."
-msgstr "I ruoli sono utilizzati per combinare i permessi e possono essere assegnati ai principal."
+msgstr ""
+"I ruoli sono utilizzati per combinare i permessi e possono essere assegnati "
+"ai principal."
 
 #: src/zope/app/securitypolicy/browser/configure.zcml:6
 #: src/zope/app/securitypolicy/browser/configure.zcml:36
@@ -3400,7 +3444,9 @@ msgstr "Proprietà del contenitore della sessione persistente"
 msgid ""
 "Uses a cookie to uniquely identify a browser, allowing        state to be "
 "maintained between requests"
-msgstr "Usa un cookie per identificare in modo univoco un browser, così da permettere che lo stato sia mantenuto tra le richieste"
+msgstr ""
+"Usa un cookie per identificare in modo univoco un browser, così da "
+"permettere che lo stato sia mantenuto tra le richieste"
 
 #: src/zope/app/session/browser.zcml:6
 #, fuzzy
@@ -3422,7 +3468,8 @@ msgid "Purge Interval"
 msgstr "Intervallo di eliminazione"
 
 #: src/zope/app/session/interfaces.py:110
-msgid "How often stale data is purged in seconds. Higer values improve performance."
+msgid ""
+"How often stale data is purged in seconds. Higer values improve performance."
 msgstr ""
 "Quanto spesso i dati obsoleti devono essere rimossi in secondi. Valori più "
 "elevati migliorano le prestazioni."
@@ -3514,14 +3561,6 @@ msgstr "Registra"
 #: src/zope/app/site/browser/add_svc_config.pt:15
 msgid "Service name"
 msgstr "Nome del servizio"
-
-# Default: "Attiva"
-#: src/zope/app/site/browser/add_svc_config.pt:16
-#: src/zope/app/site/browser/services.pt:66
-#: src/zope/app/site/browser/tool.pt:90
-#: src/zope/app/utility/browser/utilities.pt:42
-msgid "activate-button"
-msgstr "Attiva"
 
 #: src/zope/app/site/browser/add_svc_config.pt:7
 msgid "Register this object to provide the following service(s):"
@@ -3777,7 +3816,9 @@ msgstr "Nessun servizio registrato"
 
 #: src/zope/app/site/browser/tool.pt:30
 msgid "Unless a tool is disabled the tool name links to the active tool. ..."
-msgstr "A meno che uno strumento sia disabilitato il suo nome porta allo strumento attivo."
+msgstr ""
+"A meno che uno strumento sia disabilitato il suo nome porta allo strumento "
+"attivo."
 
 #: src/zope/app/site/browser/tool.pt:42
 #, fuzzy
@@ -3798,6 +3839,28 @@ msgstr "(disabilitato)"
 #, fuzzy
 msgid "Available Tools"
 msgstr "Mappature disponibili."
+
+#: src/zope/app/site/browser/tools.py:159
+#: src/zope/app/site/browser/tools.py:303
+msgid "Deleted selected tools."
+msgstr ""
+
+#: src/zope/app/site/browser/tools.py:162
+#: src/zope/app/site/browser/tools.py:308
+msgid "Renamed selected tools."
+msgstr ""
+
+#: src/zope/app/site/browser/tools.py:167
+#: src/zope/app/site/browser/tools.py:313
+#, fuzzy
+msgid "Activated registrations."
+msgstr "cambia registrazione"
+
+#: src/zope/app/site/browser/tools.py:170
+#: src/zope/app/site/browser/tools.py:316
+#, fuzzy
+msgid "Deactivated registrations."
+msgstr "cambia registrazione"
 
 #: src/zope/app/site/interfaces.py:161
 #: src/zope/app/container/browser/contents.pt:32
@@ -3830,6 +3893,11 @@ msgstr ""
 msgid "${size} KB"
 msgstr ""
 
+# Default: "Add and Test"
+#: src/zope/app/sqlscript/browser/add.pt:11
+msgid "add-and-test"
+msgstr ""
+
 #: src/zope/app/sqlscript/browser/configure.zcml:15
 msgid "Add a SQL Script"
 msgstr "Aggiungi un SQL Script"
@@ -3841,6 +3909,12 @@ msgstr "Modifica un SQL Script"
 #: src/zope/app/sqlscript/browser/configure.zcml:60
 msgid "Caching"
 msgstr ""
+
+# Default: "Change"
+#: src/zope/app/sqlscript/browser/edit.pt:11
+#, fuzzy
+msgid "change-and-test"
+msgstr "Cambia"
 
 #: src/zope/app/sqlscript/browser/test.pt:14
 msgid "Argument Name"
@@ -3933,7 +4007,9 @@ msgstr "Gestisci l'applicazione"
 msgid ""
 "With this permission a user may undo all transactions,                    "
 "regardless of who initiated them"
-msgstr "Con questo permesso un utente può annullare tutte le transazioni indipendentemente da chi le ha iniziate"
+msgstr ""
+"Con questo permesso un utente può annullare tutte le transazioni "
+"indipendentemente da chi le ha iniziate"
 
 #: src/zope/app/undo/configure.zcml:8
 msgid ""
@@ -3962,7 +4038,9 @@ msgstr ""
 
 #: src/zope/app/undo/undo_all.pt:7
 msgid "This form lets you undo all transactions initiated by any user."
-msgstr "Questo modulo permette di annulare tutte le transazioni iniziate da un utente."
+msgstr ""
+"Questo modulo permette di annulare tutte le transazioni iniziate da un "
+"utente."
 
 #: src/zope/app/undo/undo_macros.pt:101
 #, fuzzy
@@ -4031,7 +4109,9 @@ msgstr "n/d"
 msgid ""
 "This form lets you undo your last transactions. You are only viewing "
 "transactions initiated by you."
-msgstr "Questo modulo ti permette di annullare le ultime transazioni. Stai vedendo solo le transazioni iniziate da te."
+msgstr ""
+"Questo modulo ti permette di annullare le ultime transazioni. Stai vedendo "
+"solo le transazioni iniziate da te."
 
 #: src/zope/app/utility/browser/__init__.py:103
 msgid "Activated: ${activated_utilities}"
@@ -4070,7 +4150,8 @@ msgid "Utility registrations for interface ${interface}"
 msgstr "Registrazione delle utilità per l'interfaccia ${interface}"
 
 #: src/zope/app/utility/browser/configureutility.pt:9
-msgid "Utility registrations for interface ${interface} with name ${utility_name}"
+msgid ""
+"Utility registrations for interface ${interface} with name ${utility_name}"
 msgstr ""
 "Registrazione delle utilità per l'interfaccia ${interface} con nome "
 "${utility_name}"
@@ -4432,12 +4513,12 @@ msgid "Stateful Transition"
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:128
-msgid "Content Workflows Manager"
-msgstr "Gestore del workflow dei contenuti"
-
-#: src/zope/app/workflow/browser/stateful/configure.zcml:128
 msgid "An utility to manage content and workflow interaction."
 msgstr "Un'utilità per gestire le interazioni tra contenuti e workflow."
+
+#: src/zope/app/workflow/browser/stateful/configure.zcml:128
+msgid "Content Workflows Manager"
+msgstr "Gestore del workflow dei contenuti"
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:14
 msgid "A stateful workflow process definition"
@@ -4478,7 +4559,8 @@ msgstr "Definizione del processo"
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:5
 #, fuzzy
-msgid "Process Definitions are used to define the way a workflow       will behave."
+msgid ""
+"Process Definitions are used to define the way a workflow       will behave."
 msgstr "Definizioni di Processo configurate in questo servizio di workflow."
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:50
@@ -4905,4 +4987,3 @@ msgstr "${lines} linee"
 #~ msgstr ""
 #~ "Nessuno servizio dei interpretazione trovato. Questo non deve succedere, "
 #~ "poichè Zope ha un servizio globale di interpretazione."
-
