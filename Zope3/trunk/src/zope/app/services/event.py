@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.31 2003/06/17 07:44:35 stevea Exp $
+$Id: event.py,v 1.32 2003/06/17 19:54:48 stevea Exp $
 """
 
 from __future__ import generators
@@ -208,6 +208,15 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
         # unsubscribe all subscriptions
         hubIds = clean_self._hubIds
         unsubscribeAll = wrapped_self.unsubscribeAll
+
+        # XXX Temporary hack to make unsubscriptions local in scope when
+        #     this mix-in is used as part of a subscriptions service.
+        #     The dependences of these mixins need to be documented and
+        #     reevaluated.
+        if ISubscriptionService.isImplementedBy(wrapped_self):
+            real_unsubscribeAll = unsubscribeAll
+            unsubscribeAll = lambda x: real_unsubscribeAll(x, local_only=True)
+
         try:
             clean_self._v_ssecunbinding = True
             while hubIds:
@@ -220,14 +229,14 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
                 #     to decide what it should be unsubscribing from.
                 #     This could be any service that implements
                 #     ISubscriptionService
-                unsubscribeAll(hubId, local_only=True)
+                unsubscribeAll(hubId)
 
             paths = clean_self._paths
             while paths:
                 path = iter(paths).next()
                 # XXX This code path needs a unit test!
                 #     Also, see comment above.
-                unsubscribeAll(path, local_only=True)
+                unsubscribeAll(path)
         finally:
             del clean_self._v_ssecunbinding
 
