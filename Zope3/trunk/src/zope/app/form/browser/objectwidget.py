@@ -119,11 +119,11 @@ class ObjectWidget(BrowserWidget, InputWidget):
         # create our new object value
         value = field.query(content, None)
         if value is None:
-            # XXX ObjectCreatedEvent here would be nice
+            # TODO: ObjectCreatedEvent here would be nice
             value = self.factory()
 
         # apply sub changes, see if there *are* any changes
-        # XXX ObjectModifiedEvent here would be nice
+        # TODO: ObjectModifiedEvent here would be nice
         changes = applyWidgetsChanges(self, field.schema, target=value,
                                       names=self.names)
 
