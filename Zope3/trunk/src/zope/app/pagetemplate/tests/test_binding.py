@@ -21,9 +21,9 @@ from zope.app.pagetemplate.tests.testpackage.content \
 # Wow, this is a lot of work. :(
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.traverser import Traverser
-from zope.app.interfaces.traversing.traverser import ITraverser
+from zope.app.interfaces.traversing import ITraverser
 from zope.app.traversing.defaulttraversable import DefaultTraversable
-from zope.app.interfaces.traversing.traversable import ITraversable
+from zope.app.interfaces.traversing import ITraversable
 from zope.component.adapter import provideAdapter
 
 

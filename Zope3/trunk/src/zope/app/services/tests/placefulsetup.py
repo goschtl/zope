@@ -14,23 +14,22 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: placefulsetup.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
-from zope.app.browser.absoluteurl \
-     import SiteAbsoluteURL, AbsoluteURL
+from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
 from zope.app.component import hooks
 from zope.app.container.traversal import ContainerTraversable
 from zope.app.interfaces.container import ISimpleReadContainer
 from zope.app.interfaces.content.folder import IRootFolder
-from zope.app.interfaces.traversing.containmentroot import IContainmentRoot
-from zope.app.interfaces.traversing.physicallylocatable import IPhysicallyLocatable
-from zope.app.interfaces.traversing.traverser import ITraverser
-from zope.app.interfaces.traversing.traversable import ITraversable
+from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.interfaces.traversing import ITraverser
+from zope.app.interfaces.traversing import ITraversable
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.defaulttraversable import DefaultTraversable
 from zope.app.traversing.etcnamespace import etc

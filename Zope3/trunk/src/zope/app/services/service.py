@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: service.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: service.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
 """
 
 from zope.app.interfaces.services.service import IServiceManagerContainer
@@ -58,7 +58,7 @@ class ServiceManagerContainer:
 
 
 """
-$Id: service.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: service.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
 """
 
 from zope.app.interfaces.services.service import IServiceConfiguration
@@ -113,7 +113,7 @@ In addition, a ServiceManager acts as a registry for persistent
 modules.  The Zope import hook uses the ServiceManager to search for
 modules.
 
-$Id: service.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: service.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
 """
 
 import sys
@@ -122,7 +122,7 @@ from zope.app.component.nextservice \
      import getNextServiceManager, getNextService
 from zope.component.exceptions import ComponentLookupError
 
-from zope.app.interfaces.container import ISimpleReadContainer
+from zope.app.interfaces.container import IReadContainer
 from zope.proxy.context import ContextMethod
 from zope.proxy.context import ContextWrapper
 from zope.proxy.introspection import removeAllProxies
@@ -142,7 +142,7 @@ ModuleType = ModuleType, PersistentModule
 
 class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
-    __implements__ = (IServiceManager, ISimpleReadContainer,
+    __implements__ = (IServiceManager, IReadContainer,
                       PersistentModuleRegistry.__implements__,
                       NameComponentConfigurable.__implements__,
                       INameResolver)

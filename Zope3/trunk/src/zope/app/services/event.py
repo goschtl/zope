@@ -13,7 +13,7 @@
 ##############################################################################
 """Event service implementation.
 
-$Id: event.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: event.py,v 1.3 2002/12/28 14:13:27 stevea Exp $
 """
 
 from persistence import Persistent
@@ -21,7 +21,7 @@ from persistence import Persistent
 from zope.app.component.nextservice import getNextService
 from zope.app.event.globaleventservice import eventService
 from zope.app.interfaces.services.event import IPathSubscriber
-from zope.app.interfaces.traversing.traverser import ITraverser
+from zope.app.interfaces.traversing import ITraverser
 from zope.app.traversing import getPhysicalPathString
 from zope.component import getAdapter
 from zope.component import getService

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.2 2002/12/25 14:12:56 jim Exp $
+$Id: test_index.py,v 1.3 2002/12/28 14:13:24 stevea Exp $
 """
 
 import unittest
@@ -24,14 +24,13 @@ from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.services.tests.placefulsetup import \
      PlacefulSetup
 
-from zope.app.interfaces.traversing.traverser import ITraverser
+from zope.app.interfaces.traversing import ITraverser
 from zope.app.traversing import locationAsUnicode
 
 from zope.app.interfaces.services.hub import \
      IRegistrationHubEvent, IObjectModifiedHubEvent
 from zope.app.services.hub import \
-     ObjectRegisteredHubEvent, \
-     ObjectUnregisteredHubEvent, \
+     ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
      ObjectModifiedHubEvent
 from zope.app.services.hub import ObjectHub
 

@@ -13,10 +13,9 @@
 ##############################################################################
 """Helpers for caching."""
 
-from zope.component import getAdapter, getService
-from zope.component import ComponentLookupError
+from zope.component import getAdapter, getService, ComponentLookupError
 from zope.app.interfaces.cache.cache import ICacheable
-from zope.app.interfaces.traversing.physicallylocatable import IPhysicallyLocatable
+from zope.app.interfaces.traversing import IPhysicallyLocatable
 
 
 def getCacheForObj(obj):

@@ -13,11 +13,11 @@
 ##############################################################################
 """
 
-$Id: folder.py,v 1.2 2002/12/25 14:12:59 jim Exp $
+$Id: folder.py,v 1.3 2002/12/28 14:13:25 stevea Exp $
 """
 
 from zope.app.interfaces.container import IAdding
-from zope.app.interfaces.traversing.containmentroot import IContainmentRoot
+from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.service import IServiceManagerContainer
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: hub.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
 """
 
 from __future__ import generators
@@ -34,7 +34,7 @@ from zope.proxy.context import isWrapper
 from zope.proxy.context import ContextMethod
 from zope.proxy.introspection import removeAllProxies
 
-from zope.app.interfaces.traversing.traverser import ITraverser
+from zope.app.interfaces.traversing import ITraverser
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectEvent
 from zope.app.interfaces.event import IObjectMovedEvent, IObjectCreatedEvent
 from zope.app.interfaces.event import IObjectModifiedEvent
@@ -45,7 +45,7 @@ from zope.app.interfaces.services.hub import IObjectUnregisteredHubEvent
 from zope.app.interfaces.services.hub import IObjectModifiedHubEvent
 from zope.app.interfaces.services.hub import IObjectMovedHubEvent
 from zope.app.interfaces.services.hub import IObjectRemovedHubEvent
-from zope.app.interfaces.traversing.traverser import ITraverser
+from zope.app.interfaces.traversing import ITraverser
 
 class HubEvent:
     """Convenient mix-in for HubEvents"""

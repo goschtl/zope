@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ram.py,v 1.2 2002/12/25 14:12:44 jim Exp $
+$Id: ram.py,v 1.3 2002/12/28 14:13:22 stevea Exp $
 """
 from time import time
 from thread import allocate_lock
@@ -21,7 +21,7 @@ from persistence import Persistent
 from zope.app.interfaces.cache.ram import IRAMCache
 from zope.component import getAdapter
 from zope.component.exceptions import ComponentLookupError
-from zope.app.interfaces.traversing.physicallylocatable import IPhysicallyLocatable
+from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.event import IObjectModifiedEvent
 
 # A global caches dictionary shared between threads

@@ -14,7 +14,7 @@
 """testObjectHub
 
 Revision information:
-$Id: test_objecthub.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_objecthub.py,v 1.3 2002/12/28 14:13:28 stevea Exp $
 """
 
 import unittest, sys
@@ -270,7 +270,7 @@ class TestSearchRegistrations(BasicHubTest):
         def fake_object_for_location(location):
             return 'object at %s' % locationAsUnicode(location)
 
-        from zope.app.interfaces.traversing.traverser import ITraverser
+        from zope.app.interfaces.traversing import ITraverser
         class DummyTraverser:
             __implements__ = ITraverser
             def __init__(self, context):

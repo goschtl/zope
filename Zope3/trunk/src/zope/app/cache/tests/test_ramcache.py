@@ -13,13 +13,13 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_ramcache.py,v 1.2 2002/12/25 14:12:45 jim Exp $
+$Id: test_ramcache.py,v 1.3 2002/12/28 14:13:23 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.cache.tests.test_icache import BaseICacheTest
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.interfaces.traversing.physicallylocatable import IPhysicallyLocatable
+from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.proxy.context import Wrapper
 from zope.component.adapter import provideAdapter
 from zope.interface.verify import verifyClass, verifyObject
