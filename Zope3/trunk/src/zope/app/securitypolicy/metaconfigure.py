@@ -13,11 +13,13 @@
 ##############################################################################
 """ Register security related configuration directives.
 
-$Id: metaconfigure.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: metaconfigure.py,v 1.2 2004/03/05 18:38:35 srichter Exp $
 """
 from zope.configuration.exceptions import ConfigurationError
+from zope.app.component.metaconfigure import utility
 
-from zope.app.securitypolicy.roleregistry import roleRegistry as role_reg
+from zope.app.securitypolicy.interfaces import IRole 
+from zope.app.securitypolicy.role import Role 
 from zope.app.securitypolicy.rolepermission \
      import rolePermissionManager as role_perm_mgr
 from zope.app.securitypolicy.principalpermission \
@@ -27,7 +29,7 @@ from zope.app.securitypolicy.principalrole \
 
 
 def grant(_context, principal=None, role=None, permission=None):
-    if (  (principal is not None)
+    if ( (principal is not None)
         + (role is not None)
         + (permission is not None)
           ) != 2:
@@ -55,9 +57,8 @@ def grant(_context, principal=None, role=None, permission=None):
             callable = role_perm_mgr.grantPermissionToRole,
             args = (permission, role) )
 
+
 def defineRole(_context, id, title, description=''):
-    _context.action(
-            discriminator = ('defineRole', id),
-            callable = role_reg.defineRole,
-            args = (id, title, description) )
+    role = Role(id, title, description)
+    utility(_context, IRole, role, name=id)
 
