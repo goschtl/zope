@@ -57,7 +57,8 @@ class Test(PlacelessSetup, TestCase):
 
     def test_IVerify(self):
         verifyObject(IRankedObjectRecord, RankedObjectRecord(None, None))
-        verifyObject(IRankedObjectIterator, RankedObjectIterator([], None, 0, 20, 4))
+        verifyObject(IRankedObjectIterator,
+                     RankedObjectIterator([], None, 0, 20, 4))
         verifyObject(IQueryProcessor, ObjectRetrievingProcessor())
 
     def test_RankedObjectRecord(self):

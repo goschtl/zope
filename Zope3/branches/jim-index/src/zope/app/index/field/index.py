@@ -29,7 +29,7 @@ from zope.app.hub.interfaces import IObjectModifiedHubEvent
 from zope.app.hub.interfaces import IRegistrationHubEvent
 from zope.app.index.interfaces.field import IUIFieldIndex, IUIFieldCatalogIndex
 from zope.app.catalog.interfaces.index import ICatalogIndex
-from zope.app.index import InterfaceIndexingSubscriber
+from zope.app.index.ifaceindex import InterfaceIndexingSubscriber
 
 class FieldCatalogIndex(InterfaceIndexingSubscriber, FieldIndexWrapper,
                         Contained):
@@ -39,36 +39,3 @@ class FieldIndex(FieldCatalogIndex):
 
     implements(IUIFieldIndex)
 
-    currentlySubscribed = False # Default subscription state
-
-    def subscribe(self, channel=None, update=True):
-        if self.currentlySubscribed:
-            raise RuntimeError, "already subscribed; please unsubscribe first"
-        channel = self._getChannel(channel)
-        channel.subscribe(self, IRegistrationHubEvent)
-        channel.subscribe(self, IObjectModifiedHubEvent)
-        if update:
-            self._update(channel.iterObjectRegistrations())
-        self.currentlySubscribed = True
-
-    def unsubscribe(self, channel=None):
-        if not self.currentlySubscribed:
-            raise RuntimeError, "not subscribed; please subscribe first"
-        channel = self._getChannel(channel)
-        channel.unsubscribe(self, IObjectModifiedHubEvent)
-        channel.unsubscribe(self, IRegistrationHubEvent)
-        self.currentlySubscribed = False
-
-    def isSubscribed(self):
-        return self.currentlySubscribed
-
-    def _getChannel(self, channel):
-        if channel is None:
-            channel = getService(self, HubIds)
-        return channel
-
-    def _update(self, registrations):
-        for location, hubid, wrapped_object in registrations:
-            value = self._getValue(wrapped_object)
-            if value is not None:
-                self.index_doc(hubid, value)
