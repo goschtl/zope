@@ -13,13 +13,14 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.12 2004/02/08 06:25:23 nevyn Exp $
+$Id: xmlobject.py,v 1.13 2004/02/19 14:33:48 philikon Exp $
 """
 
 from zope.publisher.browser import BrowserView
+from zope.app import zapi
+from zope.app.interfaces.services.service import ISite
 from zope.app.interfaces.container import IReadContainer
 from zope.app.traversing import getParents, getParent, traverse
-from zope.component import queryView
 from zope.interface import Interface
 from rfc822 import formatdate, time
 from xml.sax.saxutils import quoteattr
@@ -49,7 +50,7 @@ class ReadContainerXmlObjectView(BrowserView):
 
     def getIconUrl(self, item):
         result = ''
-        icon = queryView(item, 'zmi_icon', self.request)
+        icon = zapi.queryView(item, 'zmi_icon', self.request)
         if icon:
             result = icon.url()
         return result
@@ -60,8 +61,9 @@ class ReadContainerXmlObjectView(BrowserView):
 
         keys = list(container.keys())
 
-        # include the service manager
-        keys.append('++etc++site')
+        if ISite.isImplementedBy(container):
+            # include the service manager
+            keys.append('++etc++site')
 
         for name in keys:
 
@@ -112,8 +114,9 @@ class ReadContainerXmlObjectView(BrowserView):
             else:
                 keys = []
 
-            # include the service manager
-            keys.append('++etc++site')
+            if ISite.isImplementedBy(item):
+                # include the service manager
+                keys.append('++etc++site')
 
             for name in keys:
                 # Only include items we can traverse to
@@ -157,10 +160,9 @@ class XmlObjectView(BrowserView):
         parent = getParent(self.context)
         while parent is not None:
                 if IReadContainer.isImplementedBy(parent):
-                        view = queryView(parent,
-                                         'singleBranchTree.xml',
-                                         self.request)
-                        return view()
+                    view = zapi.queryView(parent,
+                                          'singleBranchTree.xml',
+                                          self.request)
+                    return view()
                 else:
                     parent = getParent(parent)
-
