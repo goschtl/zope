@@ -1,17 +1,17 @@
 CHANGES
 =======
 
-v1.1.0 (not yet done)
+v1.1.0 (2004-02-15) -- 'Zapp'
 
-  - Added support for displaying lines in a tree. 
+  - Added support for displaying lines in a tree (Stephan Richter)
 
-    + I had to do some changes in Node.getFlatDict() to provide more data. 
-      Removed 'depth' from node info, but added 'row-state' and
-      'last-level-node'.
+    + Changes in Node.getFlatDict() to provide more data. Removed
+     'depth' from node info, but added 'row-state' and
+     'last-level-node'. Changed interface and test accordingly.
 
-      Changed interface and test accordingly.
-
-    + Updated templates for StaticTree skin and example.
+    + Updated templates for StaticTree skin and example. Note that
+      third party templates from 1.0.x will not work anymore and must be
+      updated as well!
 
 v1.0.1 (2004-01-16) -- 'Nibbler'
 
