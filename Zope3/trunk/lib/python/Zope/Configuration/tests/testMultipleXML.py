@@ -21,7 +21,9 @@ from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 template = """<zopeConfigure
    xmlns='http://namespaces.zope.org/zope'
    xmlns:test='http://www.zope.org/NS/Zope3/test'>
+   <directives namespace="http://www.zope.org/NS/Zope3/test">
    %s
+   </directives>
    %s
    </zopeConfigure>"""
 
