@@ -1,4 +1,4 @@
-#! /usr/bin/env python2.1
+#! /usr/bin/env python2.2
 
 """MH mail indexer.
 
@@ -40,17 +40,19 @@ import traceback
 from StringIO import StringIO
 from stat import ST_MTIME
 
-DATAFS = "~/.Data.fs"
-ZOPECODE = "~/projects/Zope/lib/python"
+DATAFS = "~/.mhindex.fs"
+ZOPECODE = "~/projects/Zope3/lib/python"
 
-sys.path.append(os.path.expanduser(ZOPECODE))
+zopecode = os.path.expanduser(ZOPECODE)
+sys.path.insert(0, zopecode)
 
-from ZODB import DB
+from ZODB.DB import DB
 from ZODB.FileStorage import FileStorage
+from Transaction import get_transaction
 from Persistence import Persistent
-from BTrees.IOBTree import IOBTree
-from BTrees.OIBTree import OIBTree
-from BTrees.IIBTree import IIBTree
+from Persistence.BTrees.IOBTree import IOBTree
+from Persistence.BTrees.OIBTree import OIBTree
+from Persistence.BTrees.IIBTree import IIBTree
 
 from Zope.TextIndex.NBest import NBest
 from Zope.TextIndex.OkapiIndex import OkapiIndex
@@ -58,6 +60,7 @@ from Zope.TextIndex.Lexicon import Lexicon, Splitter
 from Zope.TextIndex.Lexicon import CaseNormalizer, StopWordRemover
 from Zope.TextIndex.QueryParser import QueryParser
 from Zope.TextIndex.StopDict import get_stopdict
+from Zope.TextIndex.TextIndexWrapper import TextIndexWrapper
 
 NBEST = 3
 MAXLINES = 3
@@ -151,7 +154,7 @@ class Indexer:
         try:
             self.index = self.root["index"]
         except KeyError:
-            self.index = self.root["index"] = TextIndex()
+            self.index = self.root["index"] = TextIndexWrapper()
         try:
             self.docpaths = self.root["docpaths"]
         except KeyError:
@@ -305,7 +308,7 @@ class Indexer:
     def timequery(self, text, nbest):
         t0 = time.time()
         c0 = time.clock()
-        results, n = self.index.query(text, nbest)
+        results, n = self.index.query(text, 0, nbest)
         t1 = time.time()
         c1 = time.clock()
         print "[Query time: %.3f real, %.3f user]" % (t1-t0, c1-c0)
@@ -320,11 +323,10 @@ class Indexer:
         prog = re.compile(pattern, re.IGNORECASE)
         print '='*70
         rank = lo
-        qw = self.index.query_weight(text)
         for docid, score in results[lo:hi]:
             rank += 1
             path = self.docpaths[docid]
-            score = 100.0*score/qw
+            score *= 100.0
             print "Rank:    %d   Score: %d%%   File: %s" % (rank, score, path)
             path = os.path.join(self.mh.getpath(), path)
             try:
@@ -465,10 +467,10 @@ class Indexer:
                 self.unindexpath(path)
                 continue
             print "indexing", docid, path
-            self.index.index_text(docid, text)
+            self.index.index_doc(docid, text)
             self.maycommit()
         # Remove messages from the folder that no longer exist
-        for path in self.path2docid.keys(f.name):
+        for path in list(self.path2docid.keys(f.name)):
             if not path.startswith(f.name + "/"):
                 break
             if self.getmtime(path) == 0:
@@ -483,7 +485,7 @@ class Indexer:
             del self.doctimes[docid]
             del self.path2docid[path]
             try:
-                self.index.unindex(docid)
+                self.index.unindex_doc(docid)
             except KeyError, msg:
                 print "KeyError", msg
             self.maycommit()
@@ -565,37 +567,6 @@ class Indexer:
             print "packing..."
             self.database.pack()
             self.pack_count = 0
-
-class TextIndex(Persistent):
-
-    def __init__(self):
-        self.lexicon = Lexicon(Splitter(), CaseNormalizer(), StopWordRemover())
-        self.index = OkapiIndex(self.lexicon)
-
-    def index_text(self, docid, text):
-        self.index.index_doc(docid, text)
-        self._p_changed = 1 # XXX
-
-    def unindex(self, docid):
-        self.index.unindex_doc(docid)
-        self._p_changed = 1 # XXX
-
-    def query(self, query, nbest=10):
-        # returns a total hit count and a mapping from docids to scores
-        parser = QueryParser(self.lexicon)
-        tree = parser.parseQuery(query)
-        results = tree.executeQuery(self.index)
-        if results is None:
-            return [], 0
-        chooser = NBest(nbest)
-        chooser.addmany(results.items())
-        return chooser.getbest(), len(results)
-
-    def query_weight(self, query):
-        parser = QueryParser(self.lexicon)
-        tree = parser.parseQuery(query)
-        terms = tree.terms()
-        return self.index.query_weight(terms)
 
 def reportexc():
     traceback.print_exc()
