@@ -104,7 +104,7 @@ class CookieAuthHelper(Folder, BasePlugin):
         if cookie:
             cookie_val = decodestring(cookie)
             login, password = cookie_val.split(':')
-            
+
             creds['login'] = login
             creds['password'] = password
         else:
@@ -145,7 +145,7 @@ class CookieAuthHelper(Folder, BasePlugin):
     def updateCredentials(self, request, response, login, new_password):
         """ Respond to change of credentials (NOOP for basic auth). """
         cookie_val = encodestring('%s:%s' % (login, new_password))
-        
+
         response.setCookie(self.cookie_name, cookie_val, path='/')
 
 
@@ -175,7 +175,7 @@ class CookieAuthHelper(Folder, BasePlugin):
         # Redirect if desired.
         url = self.getLoginURL()
         if url is not None:
-            response.redirect(url)
+            resp.redirect(url, lock=1)
             return 1
 
         # Could not challenge.
