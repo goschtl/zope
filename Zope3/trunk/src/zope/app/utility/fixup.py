@@ -13,11 +13,11 @@
 ##############################################################################
 """Fixup old utility services
 
-$Id: fixup.py,v 1.1 2004/04/15 15:29:31 jim Exp $
+$Id: fixup.py,v 1.2 2004/04/15 22:11:14 srichter Exp $
 """
 
 from zope.app import zapi
-from zope.app.site.interfaces import IPossibleSite
+from zope.app.site.interfaces import IPossibleSite, ISite
 from zope.app.utility import LocalUtilityService
 from zope.app.annotation.interfaces import IAnnotations
 from persistent.dict import PersistentDict
@@ -57,7 +57,7 @@ def notify(event):
 notify = zope.app.event.function.Subscriber(notify)
 
 def fixup(folder):
-    if IPossibleSite.providedBy(folder):
+    if ISite.providedBy(folder):
         sm = folder.getSiteManager()
         if sm is not None:
             for smfolder in sm.values():
