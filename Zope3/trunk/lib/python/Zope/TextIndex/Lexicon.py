@@ -145,7 +145,7 @@ class Lexicon(Persistent):
 def _text2list(text):
     # Helper: splitter input may be a string or a list of strings
     try:
-        text + ""
+        text + u""
     except:
         return text
     else:
@@ -156,8 +156,8 @@ def _text2list(text):
 class Splitter:
 
     import re
-    rx = re.compile(r"(?L)\w+")
-    rxGlob = re.compile(r"(?L)\w+[\w*?]*") # See globToWordIds() above
+    rx = re.compile(r"(?u)\w+")
+    rxGlob = re.compile(r"(?u)\w+[\w*?]*") # See globToWordIds() above
 
     def process(self, lst):
         result = []
