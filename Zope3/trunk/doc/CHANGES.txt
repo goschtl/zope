@@ -10,6 +10,11 @@ Zope Changes
 
     New features
 
+      - Added new `getNextUtility()`, `queryNextUtility()`, and
+        `testingNextUtility()` functions to make it easier to find and test
+        for utilities in higher-up sites. These mimic their service-based
+        equivalents.
+
       - Added `getInfo(generation)` method to `zope.app.generations`'s
         `ISchemaManager`. It will return some information about the evolver
         that brings the database to the specified generation. This way we can
