@@ -52,10 +52,14 @@ Globals.InitializeClass(Expression)
 
 
 def getExprContext(context, object=None):
-    cache = context.REQUEST.get('_ec_cache', None)
-    if cache is None:
-        context.REQUEST['_ec_cache'] = cache = {}
-    ec = cache.get( str(object), None )
+    request = getattr(context, 'REQUEST', None)
+    if request:
+        cache = request.get('_ec_cache', None)
+        if cache is None:
+            request['_ec_cache'] = cache = {}
+        ec = cache.get( str(object), None )
+    else:
+        ec = None
     if ec is None:
         utool = getToolByName(context, 'portal_url')
         portal = utool.getPortalObject()
@@ -71,7 +75,9 @@ def getExprContext(context, object=None):
                     break
                 else:
                     folder = aq_parent(aq_inner(folder))
-        cache[ str(object) ] = ec = createExprContext(folder, portal, object)
+        ec = createExprContext(folder, portal, object)
+        if request:
+            cache[ str(object) ] = ec
     return ec
 
 

@@ -196,10 +196,14 @@ InitializeClass( ActionInformation )
 
 
 def getOAI(context, object=None):
-    cache = context.REQUEST.get('_oai_cache', None)
-    if cache is None:
-        context.REQUEST['_oai_cache'] = cache = {}
-    info = cache.get( str(object), None )
+    request = getattr(context, 'REQUEST', None)
+    if request:
+        cache = request.get('_oai_cache', None)
+        if cache is None:
+            request['_oai_cache'] = cache = {}
+        info = cache.get( str(object), None )
+    else:
+        info = None
     if info is None:
         if object is None or not hasattr(object, 'aq_base'):
             folder = None
@@ -213,7 +217,9 @@ def getOAI(context, object=None):
                     break
                 else:
                     folder = aq_parent(aq_inner(folder))
-        cache[ str(object) ] = info = oai(context, folder, object)
+        info = oai(context, folder, object)
+        if request:
+            cache[ str(object) ] = info
     return info
 
 
