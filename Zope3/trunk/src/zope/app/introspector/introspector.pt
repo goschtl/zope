@@ -113,7 +113,7 @@
           <td><a tal:define="path python: (introspector.getModule()
                 + '.' + introspector.getClass()).replace('.', '/')"
                 tal:attributes="href
-                string: /++apidoc++/Class/${path}/index.html"
+                string: /++apidoc++/Code/${path}/index.html"
                 href="">
             <span tal:replace="introspector/getModule">Module</span
             >.<span tal:replace="introspector/getClass">Name</span></a></td>
@@ -129,7 +129,7 @@
               <a tal:define="path
                 python: path('repeat/base/item').replace('.', '/')"
                 tal:attributes="href
-                string: /++apidoc++/Class/${path}/index.html"
+                string: /++apidoc++/Code/${path}/index.html"
                 href=""><span tal:replace="repeat/base/item" /></a>
             </div>
           </td>
