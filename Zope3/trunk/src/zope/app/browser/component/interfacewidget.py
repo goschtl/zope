@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.42 2003/11/21 17:11:04 jim Exp $
+$Id: interfacewidget.py,v 1.43 2003/12/16 10:32:05 srichter Exp $
 """
 from zope.interface import Interface, implements
 from zope.app.browser.form.widget import BrowserWidget
@@ -79,7 +79,7 @@ class InterfaceWidget(BrowserWidget, BrowserView):
                 try:
                     selected = self.getInputValue()
                 except WidgetInputError, e:
-                    self.error = e
+                    self._error = e
                     selected = value
         else:
             selected = self._data

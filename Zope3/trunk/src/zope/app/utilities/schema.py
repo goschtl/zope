@@ -13,7 +13,7 @@
 ##############################################################################
 """TTW Schema (as Utility)
 
-$Id: schema.py,v 1.12 2003/11/21 17:09:34 jim Exp $
+$Id: schema.py,v 1.13 2003/12/16 10:32:06 srichter Exp $
 """
 from types import FunctionType
 
@@ -148,15 +148,12 @@ class SchemaUtility(PersistentInterfaceClass, Contained):
     def getBases(self):
         return [b for b in self.__bases__ if isinstance(b, self.__class__)]
 
-    def extends(self, other, strict=True):
+    def extends(self, interface, strict=True):
         """Does an interface extend another?"""
-        if not strict and self == other:
-            return True
-
-        for b in self.getBases():
-            if b == other: return True
-            if b.extends(other): return True
-        return False
+        return ((interface in self._implied)
+                and
+                ((not strict) or (self != interface))
+                )
 
     def names(self, all=False):
         """Return the attribute names defined by the interface."""
