@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Tue Aug 12 15:32:00 2003\n"
+"POT-Creation-Date: Sat Aug 16 00:19:16 2003\n"
 "PO-Revision-Date: 2003-08-12 15:35-0400\n"
 "Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
 "Language-Team: German <zope3-dev@zope.org>\n"
@@ -228,14 +228,24 @@ msgstr "Derzeit ist kein Cache für dieses Objekt definiert."
 #: src/zope/app/browser/content/configure.zcml:167
 #: src/zope/app/browser/services/auth.zcml:35
 #: src/zope/app/browser/services/pluggableauth/configure.zcml:74
+#: src/zope/app/browser/services/menu.zcml:61
+#: src/zope/app/browser/services/menu.zcml:107
 #: src/zope/app/browser/services/connection.zcml:62
 #: src/zope/app/browser/services/module/configure.zcml:8
 #: src/zope/app/browser/services/utility/configure.zcml:62
+#: src/zope/app/browser/utilities/configure.zcml:150
+#: src/zope/app/browser/utilities/configure.zcml:181
 #: src/zope/app/browser/index/text/configure.zcml:21
 #: src/zope/app/browser/index/field/configure.zcml:21
 #: src/zope/app/browser/index/keyword/configure.zcml:3
 #: src/zope/app/browser/rdb/configure.zcml:12
 #: src/zope/app/browser/workflow/configure.zcml:46
+#: src/zope/app/schema/fieldforms.zcml:18
+#: src/zope/app/schema/fieldforms.zcml:44
+#: src/zope/app/schema/fieldforms.zcml:70
+#: src/zope/app/schema/fieldforms.zcml:96
+#: src/zope/app/schema/fieldforms.zcml:122
+#: src/zope/app/schema/fieldforms.zcml:148
 msgid "Edit"
 msgstr "Bearbeiten"
 
@@ -298,34 +308,9 @@ msgstr "Einträge"
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
 msgstr "Katalog ist dezeit bei der Objekt Hub <strong>aboniert</strong>."
 
-#: src/zope/app/browser/catalog/advanced.pt:27
-#: src/zope/app/browser/index/field/control.pt:57
-#: src/zope/app/browser/index/text/control.pt:52
-msgid "subscribe-button"
-msgstr "Abonnieren"
-
 #: src/zope/app/browser/catalog/advanced.pt:30
 msgid "(and reindex all objects, if checked)"
 msgstr "(und reindiziere alle Objekte, wenn aus ausgewählt)"
-
-#: src/zope/app/browser/catalog/advanced.pt:51
-#: src/zope/app/browser/dublincore/edit.pt:31
-#: src/zope/app/browser/form/add.pt:49 src/zope/app/browser/form/edit.pt:51
-#: src/zope/app/browser/services/adapter_search.pt:10
-#: src/zope/app/browser/services/add_adapter_config.pt:23
-#: src/zope/app/browser/services/caches.pt:54
-#: src/zope/app/browser/services/connections.pt:53
-#: src/zope/app/browser/services/error.pt:94
-#: src/zope/app/browser/services/services.pt:65
-#: src/zope/app/browser/services/views.pt:49
-#: src/zope/app/browser/services/views.pt:72
-#: src/zope/app/browser/services/registration/editregistration.pt:49
-#: src/zope/app/browser/services/utility/utilities.pt:50
-#: src/zope/app/browser/workflow/stateful/instance_manage.pt:77
-#: src/zope/app/browser/workflow/stateful/definition_edit.pt:21
-#: src/zope/app/browser/workflow/stateful/definition_edit.pt:50
-msgid "refresh-button"
-msgstr "Auffrischen"
 
 #: src/zope/app/browser/catalog/advanced.pt:6
 msgid "Advanced Catalog Thingies"
@@ -352,33 +337,29 @@ msgstr "Schlüsselwort-Index"
 msgid "Advanced"
 msgstr "Fortgescrittenes"
 
-#: src/zope/app/browser/component/interfacewidget.py:290
+#: src/zope/app/browser/component/interfacewidget.py:247
 msgid "Use refresh to enter more interfaces"
 msgstr "Nutze Zurücksetzen um mehr Interfaces einzugeben."
 
-#: src/zope/app/browser/component/interfacewidget.py:351
+#: src/zope/app/browser/component/interfacewidget.py:314
 msgid "---select interface---"
 msgstr "---Interface wählen---"
 
-#: src/zope/app/browser/component/interfacewidget.py:357
+#: src/zope/app/browser/component/interfacewidget.py:320
 msgid "Anything"
 msgstr "Irgendetwas"
 
-#: src/zope/app/browser/component/interfacewidget.py:52
-#: src/zope/app/browser/component/interfacewidget.py:176
-msgid "the field is required"
-msgstr "Dieses Feld ist erforderlich"
-
-#: src/zope/app/browser/container/add.pt:8
-#: src/zope/app/browser/workflow/stateful/add.pt:8
-msgid "Add Content"
-msgstr "Inhaltstyp hinzufügen"
-
-#: src/zope/app/browser/container/adding.py:105
+#: src/zope/app/browser/container/adding.py:115
 msgid "You must specify an id"
 msgstr "Sie müssen eine Id angeben"
 
-#: src/zope/app/browser/container/adding.py:92
+#: src/zope/app/browser/container/adding.py:44
+#: src/zope/app/browser/workflow/stateful/add.pt:8
+#: src/zope/app/browser/utilities/add.pt:8
+msgid "Add Content"
+msgstr "Inhaltstyp hinzufügen"
+
+#: src/zope/app/browser/container/adding.py:96
 msgid "You must select the type of object to add."
 msgstr "Sie müssen den Inhaltstypen den sie hinzufügen möchten auswählen."
 
@@ -394,9 +375,10 @@ msgstr "Suchen"
 #: src/zope/app/browser/services/registration/configure.zcml:61
 #: src/zope/app/browser/services/configure.zcml:103
 #: src/zope/app/browser/services/auth.zcml:18
-#: src/zope/app/browser/services/configure.zcml:265
-#: src/zope/app/browser/services/configure.zcml:298
+#: src/zope/app/browser/services/configure.zcml:269
+#: src/zope/app/browser/services/configure.zcml:302
 #: src/zope/app/browser/services/pagefolder.zcml:29
+#: src/zope/app/browser/utilities/configure.zcml:11
 #: src/zope/app/browser/workflow/stateful/configure.zcml:48
 #: src/zope/app/browser/workflow/stateful/configure.zcml:85
 #: src/zope/app/browser/catalog/configure.zcml:34
@@ -420,6 +402,7 @@ msgid "container-paste-button"
 msgstr "Einfügen"
 
 #: src/zope/app/browser/container/contents.pt:133
+#: src/zope/app/browser/services/menu_contents.pt:78
 msgid "container-delete-button"
 msgstr "Löschen"
 
@@ -431,26 +414,10 @@ msgstr "Anwenden"
 msgid "container-cancel-button"
 msgstr "Abbrechen"
 
-#: src/zope/app/browser/container/contents.pt:27
-#: src/zope/app/browser/container/index.pt:18
-msgid "Content listing"
-msgstr "Inhaltsauflistung"
-
 #: src/zope/app/browser/container/contents.pt:35
 #: src/zope/app/browser/content/imageedit.pt:11
 msgid "Size"
 msgstr "Größe"
-
-#: src/zope/app/browser/container/contents.pt:36
-#: src/zope/app/browser/container/index.pt:28
-#: src/zope/app/browser/dublincore/edit.pt:39
-msgid "Created"
-msgstr "Erstellt am"
-
-#: src/zope/app/browser/container/contents.pt:37
-#: src/zope/app/browser/container/index.pt:29
-msgid "Modified"
-msgstr "Modifiziert am"
 
 #: src/zope/app/browser/container/contents.py:218
 msgid "You didn't specify any ids to remove."
@@ -471,6 +438,26 @@ msgstr "Sie haben keine Ids zum umbenennen angegeben."
 #: src/zope/app/browser/container/find.pt:7
 msgid "find-button"
 msgstr "Suchen"
+
+#: src/zope/app/browser/container/index.pt:18
+#: src/zope/app/browser/container/contents.pt:27
+#: src/zope/app/browser/services/menu_contents.pt:25
+#: src/zope/app/browser/utilities/edit.pt:30
+msgid "Content listing"
+msgstr "Inhaltsauflistung"
+
+#: src/zope/app/browser/container/index.pt:28
+#: src/zope/app/browser/container/contents.pt:36
+#: src/zope/app/browser/dublincore/edit.pt:39
+#: src/zope/app/browser/services/menu_contents.pt:33
+msgid "Created"
+msgstr "Erstellt am"
+
+#: src/zope/app/browser/container/index.pt:29
+#: src/zope/app/browser/container/contents.pt:37
+#: src/zope/app/browser/services/menu_contents.pt:34
+msgid "Modified"
+msgstr "Modifiziert am"
 
 #: src/zope/app/browser/content/configure.zcml:101
 msgid "Upload an image"
@@ -515,8 +502,10 @@ msgstr "Ein einfacher Ordner"
 #: src/zope/app/browser/services/configure.zcml:92
 #: src/zope/app/browser/services/auth.zcml:10
 #: src/zope/app/browser/services/pluggableauth/configure.zcml:45
-#: src/zope/app/browser/services/configure.zcml:256
-#: src/zope/app/browser/services/configure.zcml:290
+#: src/zope/app/browser/services/menu.zcml:53
+#: src/zope/app/browser/services/configure.zcml:260
+#: src/zope/app/browser/services/configure.zcml:294
+#: src/zope/app/browser/services/configure.zcml:322
 #: src/zope/app/browser/services/pagefolder.zcml:12
 #: src/zope/app/browser/workflow/configure.zcml:75
 msgid "Contents"
@@ -646,6 +635,7 @@ msgid "Argument Name"
 msgstr "Argumentname"
 
 #: src/zope/app/browser/content/sqltest.pt:15
+#: src/zope/app/browser/utilities/edit.pt:37
 msgid "Type"
 msgstr "Typ"
 
@@ -667,6 +657,26 @@ msgstr "Ein Fehler ist aufgetreten"
 msgid "Metadata"
 msgstr "Metadaten"
 
+#: src/zope/app/browser/dublincore/edit.pt:31
+#: src/zope/app/browser/form/add.pt:49 src/zope/app/browser/form/edit.pt:55
+#: src/zope/app/browser/services/adapter_search.pt:10
+#: src/zope/app/browser/services/add_adapter_config.pt:23
+#: src/zope/app/browser/services/caches.pt:54
+#: src/zope/app/browser/services/connections.pt:53
+#: src/zope/app/browser/services/error.pt:94
+#: src/zope/app/browser/services/services.pt:65
+#: src/zope/app/browser/services/views.pt:49
+#: src/zope/app/browser/services/views.pt:72
+#: src/zope/app/browser/services/utility/utilities.pt:50
+#: src/zope/app/browser/services/registration/editregistration.pt:49
+#: src/zope/app/browser/workflow/stateful/instance_manage.pt:77
+#: src/zope/app/browser/workflow/stateful/definition_edit.pt:21
+#: src/zope/app/browser/workflow/stateful/definition_edit.pt:50
+#: src/zope/app/browser/catalog/advanced.pt:51
+#: src/zope/app/browser/utilities/permission_edit.pt:36
+msgid "refresh-button"
+msgstr "Auffrischen"
+
 #: src/zope/app/browser/dublincore/edit.pt:43
 msgid "Content Last Modified"
 msgstr "Inhalt wurde zuletzt geändert am"
@@ -685,12 +695,12 @@ msgid "Unauthorized"
 msgstr "Unberechtigt"
 
 #: src/zope/app/browser/form/add.pt:22 src/zope/app/browser/form/edit.pt:23
+#: src/zope/app/browser/utilities/edit.pt:20
 msgid "There are ${num_errors} input errors."
 msgstr "Es gab ${num_errors} Eingabefehler."
 
-#: src/zope/app/browser/form/add.pt:51
+#: src/zope/app/browser/form/add.pt:51 src/zope/app/browser/form/edit.pt:57
 #: src/zope/app/browser/form/addwizard.pt:62
-#: src/zope/app/browser/form/edit.pt:53
 #: src/zope/app/browser/form/editwizard.pt:53
 #: src/zope/app/browser/services/add_svc_config.pt:37
 #: src/zope/app/browser/services/serviceactivation.pt:54
@@ -700,7 +710,8 @@ msgid "submit-button"
 msgstr "Abschicken"
 
 #: src/zope/app/browser/form/add.py:62
-#: src/zope/app/browser/form/editview.py:97
+#: src/zope/app/browser/form/editview.py:99
+#: src/zope/app/browser/utilities/schema.py:54
 msgid "An error occured."
 msgstr "Ein Fehler ist aufgetreten."
 
@@ -772,12 +783,14 @@ msgstr "Unzugängliches Objekt"
 
 #: src/zope/app/browser/form/complexsample/interfaces.py:28
 #: src/zope/app/interfaces/services/pluggableauth/__init__.py:34
-#: src/zope/app/browser/container/contents.pt:34
 #: src/zope/app/browser/container/index.pt:27
+#: src/zope/app/browser/container/contents.pt:34
 #: src/zope/app/browser/dublincore/edit.pt:14
 #: src/zope/app/browser/services/addrole.pt:20
 #: src/zope/app/browser/services/adduser.pt:18
 #: src/zope/app/browser/services/edituser.pt:17
+#: src/zope/app/browser/services/menu_contents.pt:31
+#: src/zope/app/browser/utilities/edit.pt:38
 msgid "Title"
 msgstr "Titel"
 
@@ -789,7 +802,7 @@ msgstr "Einfacher Wert fehlt"
 msgid "widget-missing-multiple-value"
 msgstr "Mehrere Werte fehlen"
 
-#: src/zope/app/browser/form/editview.py:104
+#: src/zope/app/browser/form/editview.py:106
 msgid "Updated on ${date_time}"
 msgstr "Daten am ${date_time} geändert"
 
@@ -801,31 +814,31 @@ msgstr "Keine Änderungen zum speichern"
 msgid "Changes saved"
 msgstr "Änderungen gespeichert"
 
-#: src/zope/app/browser/form/vocabularywidget.py:265
+#: src/zope/app/browser/form/vocabularywidget.py:271
 msgid "vocabulary-no-value"
 msgstr "Kein Wert"
 
-#: src/zope/app/browser/form/vocabularywidget.py:327
+#: src/zope/app/browser/form/vocabularywidget.py:333
 msgid "(no values)"
 msgstr "(Keine Werte)"
 
-#: src/zope/app/browser/form/vocabularywidget.py:626
+#: src/zope/app/browser/form/vocabularywidget.py:632
 msgid "vocabulary-query-button-add-done"
 msgstr "Hinzufügen und fertig"
 
-#: src/zope/app/browser/form/vocabularywidget.py:628
+#: src/zope/app/browser/form/vocabularywidget.py:634
 msgid "vocabulary-query-button-add-more"
 msgstr "Mehr hinzufügen"
 
-#: src/zope/app/browser/form/vocabularywidget.py:630
+#: src/zope/app/browser/form/vocabularywidget.py:636
 msgid "vocabulary-query-button-more"
 msgstr "Mehr"
 
-#: src/zope/app/browser/form/vocabularywidget.py:632
+#: src/zope/app/browser/form/vocabularywidget.py:638
 msgid "vocabulary-query-message-no-results"
 msgstr "Keine Ergebnisse"
 
-#: src/zope/app/browser/form/vocabularywidget.py:634
+#: src/zope/app/browser/form/vocabularywidget.py:640
 msgid "vocabulary-query-header-results"
 msgstr "Kopfergebnisse"
 
@@ -837,11 +850,6 @@ msgstr "Feldindex bearbeiten"
 #: src/zope/app/browser/catalog/configure.zcml:60
 msgid "Field Index"
 msgstr "Feldindex"
-
-#: src/zope/app/browser/index/field/control.pt:104
-#: src/zope/app/browser/index/text/control.pt:101
-msgid "NEXT BATCH --&gt;"
-msgstr "NÄCHSTER STAPEL --&gt;"
 
 #: src/zope/app/browser/index/field/control.pt:12
 msgid "FieldIndex"
@@ -862,21 +870,9 @@ msgstr ""
 "Index, der nicht \"abonniert\" hat, wird die Indexinformationen behalten, "
 "sich aber nicht weiterhin aktualisieren."
 
-#: src/zope/app/browser/index/field/control.pt:26
-#: src/zope/app/browser/index/text/control.pt:26
-#: src/zope/app/browser/services/subscription_control.pt:16
-msgid "Successfully subscribed."
-msgstr "Erfolgreich abonniert."
-
 #: src/zope/app/browser/index/field/control.pt:3
 msgid "FieldIndex Control Page"
 msgstr "Feldindex Kontrollseite"
-
-#: src/zope/app/browser/index/field/control.pt:31
-#: src/zope/app/browser/index/text/control.pt:31
-#: src/zope/app/browser/services/subscription_control.pt:20
-msgid "Successfully unsubscribed."
-msgstr "Abonnement erfolgreich gekündigt."
 
 #: src/zope/app/browser/index/field/control.pt:36
 msgid "Adapting objects to: ${iface_name}"
@@ -886,50 +882,9 @@ msgstr "Adaptiere Objekte zu: ${iface_name}"
 msgid "Indexing on attribute: ${field_name}"
 msgstr "Indiziere Attribut: ${field_name}"
 
-#: src/zope/app/browser/index/field/control.pt:46
-#: src/zope/app/browser/index/text/control.pt:36
-msgid "Documents: ${doc_count}"
-msgstr "Dokumente: ${doc_count}"
-
-#: src/zope/app/browser/index/field/control.pt:51
-#: src/zope/app/browser/index/text/control.pt:46
-#: src/zope/app/browser/services/subscription_control.pt:29
-#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:23
-msgid "Subscription state: ON"
-msgstr "Abonnementsstatus: AN"
-
-#: src/zope/app/browser/index/field/control.pt:52
-#: src/zope/app/browser/index/text/control.pt:47
-#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:24
-#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:29
-msgid "unsubscribe-button"
-msgstr "Abonnieren"
-
-#: src/zope/app/browser/index/field/control.pt:56
-#: src/zope/app/browser/index/text/control.pt:51
-#: src/zope/app/browser/services/subscription_control.pt:33
-#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:28
-msgid "Subscription state: OFF"
-msgstr "Abonnementsstatus: AUS"
-
-#: src/zope/app/browser/index/field/control.pt:73
-#: src/zope/app/browser/index/text/control.pt:68
-msgid "No hits. Please try another query."
-msgstr "Keine Ergebnisse. Bitte versuchen Sie eine andere Abfrage."
-
-#: src/zope/app/browser/index/field/control.pt:84
-#: src/zope/app/browser/index/text/control.pt:79
-msgid "Hits ${first} - ${last} of ${total}:"
-msgstr "Ergebnisse ${first} - ${last} von ${total}:"
-
 #: src/zope/app/browser/index/field/control.pt:88
 msgid "title=${title}; url=${title}"
 msgstr "Titel=${title}; URL=${title}"
-
-#: src/zope/app/browser/index/field/control.pt:96
-#: src/zope/app/browser/index/text/control.pt:93
-msgid "&lt;-- PREVIOUS BATCH"
-msgstr "&lt;-- VORHERIGER STAPEL"
 
 #: src/zope/app/browser/index/keyword/configure.zcml:3
 msgid "Edit Keyword Index"
@@ -943,6 +898,11 @@ msgstr "Text-Index bearbeiten"
 #: src/zope/app/browser/catalog/configure.zcml:49
 msgid "Text Index"
 msgstr "Text-Index"
+
+#: src/zope/app/browser/index/text/control.pt:101
+#: src/zope/app/browser/index/field/control.pt:104
+msgid "NEXT BATCH --&gt;"
+msgstr "NÄCHSTER STAPEL --&gt;"
 
 #: src/zope/app/browser/index/text/control.pt:12
 msgid "TextIndex"
@@ -962,17 +922,76 @@ msgstr ""
 "geändert werden; ein Index, der nicht \"abonniert\" hat, wird die "
 "Indexinformationen behalten, sich aber nicht weiterhin aktualisieren."
 
+#: src/zope/app/browser/index/text/control.pt:26
+#: src/zope/app/browser/index/field/control.pt:26
+#: src/zope/app/browser/services/subscription_control.pt:16
+msgid "Successfully subscribed."
+msgstr "Erfolgreich abonniert."
+
 #: src/zope/app/browser/index/text/control.pt:3
 msgid "TextIndex Control Page"
 msgstr "Textindex Kontrollseite"
+
+#: src/zope/app/browser/index/text/control.pt:31
+#: src/zope/app/browser/index/field/control.pt:31
+#: src/zope/app/browser/services/subscription_control.pt:20
+msgid "Successfully unsubscribed."
+msgstr "Abonnement erfolgreich gekündigt."
+
+#: src/zope/app/browser/index/text/control.pt:36
+#: src/zope/app/browser/index/field/control.pt:46
+msgid "Documents: ${doc_count}"
+msgstr "Dokumente: ${doc_count}"
 
 #: src/zope/app/browser/index/text/control.pt:41
 msgid "Words: ${word_count}"
 msgstr "Wörter: ${word_count}"
 
+#: src/zope/app/browser/index/text/control.pt:46
+#: src/zope/app/browser/index/field/control.pt:51
+#: src/zope/app/browser/services/subscription_control.pt:29
+#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:23
+msgid "Subscription state: ON"
+msgstr "Abonnementsstatus: AN"
+
+#: src/zope/app/browser/index/text/control.pt:47
+#: src/zope/app/browser/index/field/control.pt:52
+#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:24
+#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:29
+msgid "unsubscribe-button"
+msgstr "Abonnieren"
+
+#: src/zope/app/browser/index/text/control.pt:51
+#: src/zope/app/browser/index/field/control.pt:56
+#: src/zope/app/browser/services/subscription_control.pt:33
+#: src/zope/app/browser/workflow/stateful/contentworkflow_index.pt:28
+msgid "Subscription state: OFF"
+msgstr "Abonnementsstatus: AUS"
+
+#: src/zope/app/browser/index/text/control.pt:52
+#: src/zope/app/browser/index/field/control.pt:57
+#: src/zope/app/browser/catalog/advanced.pt:27
+msgid "subscribe-button"
+msgstr "Abonnieren"
+
+#: src/zope/app/browser/index/text/control.pt:68
+#: src/zope/app/browser/index/field/control.pt:73
+msgid "No hits. Please try another query."
+msgstr "Keine Ergebnisse. Bitte versuchen Sie eine andere Abfrage."
+
+#: src/zope/app/browser/index/text/control.pt:79
+#: src/zope/app/browser/index/field/control.pt:84
+msgid "Hits ${first} - ${last} of ${total}:"
+msgstr "Ergebnisse ${first} - ${last} von ${total}:"
+
 #: src/zope/app/browser/index/text/control.pt:88
 msgid "title=${title}; url=${url}; score=${score}"
 msgstr "Titel=${title}; URL=${url}; Punkte=${score}"
+
+#: src/zope/app/browser/index/text/control.pt:93
+#: src/zope/app/browser/index/field/control.pt:96
+msgid "&lt;-- PREVIOUS BATCH"
+msgstr "&lt;-- VORHERIGER STAPEL"
 
 #: src/zope/app/browser/introspector.pt:104 src/zope/app/browser/marker.pt:27
 msgid "Class Browser"
@@ -1077,6 +1096,7 @@ msgstr "Interfaces hinzufügen:"
 #: src/zope/app/browser/workflow/stateful/add.pt:65
 #: src/zope/app/browser/workflow/stateful/addstate.pt:20
 #: src/zope/app/browser/workflow/stateful/addtransition.pt:55
+#: src/zope/app/browser/utilities/add.pt:39
 msgid "add-button"
 msgstr "Hinzufügen"
 
@@ -1121,7 +1141,7 @@ msgid "Menu for displaying actions to be performed"
 msgstr "Menü zum Darstellen von verfügbaren Aktionen"
 
 #: src/zope/app/browser/onlinehelp.zcml:20
-#: src/zope/app/browser/skins/zopetop/widget_macros.pt:186
+#: src/zope/app/browser/skins/zopetop/widget_macros.pt:223
 msgid "Help"
 msgstr "Hilfe"
 
@@ -1438,15 +1458,6 @@ msgstr ""
 msgid "Registrations in this bundle"
 msgstr "Registrierungen in diesem Bündel"
 
-#: src/zope/app/browser/services/bundle.pt:49
-#: src/zope/app/browser/services/caches.pt:11
-#: src/zope/app/browser/services/connections.pt:11
-#: src/zope/app/browser/services/services.pt:15
-#: src/zope/app/browser/services/views.pt:11
-#: src/zope/app/browser/services/utility/utilities.pt:11
-msgid "(click to clear message)"
-msgstr "(Nachricht löschen)"
-
 #: src/zope/app/browser/services/bundle.pt:58
 msgid "For ${service_name} service"
 msgstr "Für den ${service_name}-Dienst"
@@ -1486,7 +1497,7 @@ msgid "unregistered ${count} registrations"
 msgstr "unregistrierte ${count} Registrierungen"
 
 #: src/zope/app/browser/services/cache.py:121
-#: src/zope/app/browser/services/view.py:181
+#: src/zope/app/browser/services/view.py:180
 msgid "Deleted: ${cache_names}"
 msgstr "Gelöscht: ${cache_names}"
 
@@ -1535,6 +1546,15 @@ msgstr "Ein persistenter Cachingdienst für die TTW Entwicklung"
 #: src/zope/app/browser/services/cache.zcml:8
 msgid "Caching Service"
 msgstr "Cachingdienst"
+
+#: src/zope/app/browser/services/caches.pt:11
+#: src/zope/app/browser/services/connections.pt:11
+#: src/zope/app/browser/services/services.pt:15
+#: src/zope/app/browser/services/bundle.pt:49
+#: src/zope/app/browser/services/views.pt:11
+#: src/zope/app/browser/services/utility/utilities.pt:11
+msgid "(click to clear message)"
+msgstr "(Nachricht löschen)"
 
 #: src/zope/app/browser/services/caches.pt:33
 #: src/zope/app/browser/services/connections.pt:33
@@ -1595,63 +1615,51 @@ msgstr "Adapter"
 msgid "Adapter Service"
 msgstr "Adapterdienst"
 
-#: src/zope/app/browser/services/configure.zcml:204
+#: src/zope/app/browser/services/configure.zcml:208
 msgid "Manage Local Services"
 msgstr "Lokale Dienste verwalten"
 
-#: src/zope/app/browser/services/configure.zcml:209
+#: src/zope/app/browser/services/configure.zcml:213
 msgid "Turn On Local Service Manager"
 msgstr "Lokalen Serive Verwalter anschalten"
 
-#: src/zope/app/browser/services/configure.zcml:221
+#: src/zope/app/browser/services/configure.zcml:225
 #: src/zope/app/browser/skins/zopetop/widget_macros.pt:42
 msgid "Services"
 msgstr "Dienste"
 
-#: src/zope/app/browser/services/configure.zcml:245
+#: src/zope/app/browser/services/configure.zcml:249
 msgid "Visit default package"
 msgstr "Direkt zum 'default' Paket"
 
-#: src/zope/app/browser/services/configure.zcml:249
+#: src/zope/app/browser/services/configure.zcml:253
 msgid "Add service"
 msgstr "Dienst hinzufügen"
-
-#: src/zope/app/browser/services/configure.zcml:312
-#: src/zope/app/browser/workflow/configure.zcml:26
-msgid "Registrations"
-msgstr "Registrierungen"
 
 #: src/zope/app/browser/services/configure.zcml:32
 msgid "Errors"
 msgstr "Fehler"
 
-#: src/zope/app/browser/services/configure.zcml:344
+#: src/zope/app/browser/services/configure.zcml:332
+#: src/zope/app/browser/workflow/configure.zcml:26
+msgid "Registrations"
+msgstr "Registrierungen"
+
+#: src/zope/app/browser/services/configure.zcml:364
 msgid "Simplistic session support using cookies"
 msgstr "Einfache Session Unterstützungen durch Cookies"
 
-#: src/zope/app/browser/services/configure.zcml:344
+#: src/zope/app/browser/services/configure.zcml:364
 msgid "Cookie Session Service"
 msgstr "Cookie-Sitzungsdienst"
 
-#: src/zope/app/browser/services/configure.zcml:352
+#: src/zope/app/browser/services/configure.zcml:372
 msgid "Stores Annotations for Principals"
 msgstr "Speichert Anmerkungen für Prinzipal"
 
-#: src/zope/app/browser/services/configure.zcml:352
+#: src/zope/app/browser/services/configure.zcml:372
 msgid "Principal Annotation Service"
 msgstr "Prinzipal-Anmerkungsdienst"
-
-#: src/zope/app/browser/services/configure.zcml:370
-msgid ""
-"An object hub, for cataloging, unique object ids, and                    "
-"more: use sparingly"
-msgstr ""
-"Eine Objekt-Hub, zum katalogisieren, eindeutige Objekt-Idsm und mehr: "
-"sparsam nutzen"
-
-#: src/zope/app/browser/services/configure.zcml:370
-msgid "HubIds Service"
-msgstr "Hub-Ids-Dienst"
 
 #: src/zope/app/browser/services/configure.zcml:38
 msgid "Error Logging Service"
@@ -1661,30 +1669,42 @@ msgstr "Fehlermeldedienst"
 msgid "Error Reporting Service for Logging Errors"
 msgstr "Fehlermeldedienst für Logging Fehler"
 
-#: src/zope/app/browser/services/configure.zcml:385
+#: src/zope/app/browser/services/configure.zcml:390
+msgid ""
+"An object hub, for cataloging, unique object ids, and                    "
+"more: use sparingly"
+msgstr ""
+"Eine Objekt-Hub, zum katalogisieren, eindeutige Objekt-Idsm und mehr: "
+"sparsam nutzen"
+
+#: src/zope/app/browser/services/configure.zcml:390
+msgid "HubIds Service"
+msgstr "Hub-Ids-Dienst"
+
+#: src/zope/app/browser/services/configure.zcml:405
 msgid "Registration subscriber"
 msgstr "Registrierungs-Abonnent"
 
-#: src/zope/app/browser/services/configure.zcml:385
+#: src/zope/app/browser/services/configure.zcml:405
 msgid "An event subscriber that registers content with the objecthub"
 msgstr "Ein Ereignis-Abonnent der Inhälte mit der Objekt-Hub registriert"
 
-#: src/zope/app/browser/services/configure.zcml:406
+#: src/zope/app/browser/services/configure.zcml:426
 msgid "Takes you to a menu of services to add"
 msgstr "Bringt sie zu einem Menü zum hinzufügen von Diensten"
 
-#: src/zope/app/browser/services/configure.zcml:406
+#: src/zope/app/browser/services/configure.zcml:426
 #: src/zope/app/browser/services/serviceactivation.pt:26
 msgid "Service"
 msgstr "Dienst"
 
-#: src/zope/app/browser/services/configure.zcml:467
+#: src/zope/app/browser/services/configure.zcml:487
 msgid "Bundle"
 msgstr "Bündel"
 
 #: src/zope/app/browser/services/configure.zcml:54
-#: src/zope/app/browser/services/configure.zcml:362
-#: src/zope/app/browser/services/configure.zcml:393
+#: src/zope/app/browser/services/configure.zcml:382
+#: src/zope/app/browser/services/configure.zcml:413
 #: src/zope/app/browser/index/text/configure.zcml:12
 #: src/zope/app/browser/index/field/configure.zcml:12
 msgid "Control"
@@ -1704,16 +1724,6 @@ msgstr ""
 msgid "Role Service"
 msgstr "Rollendienst"
 
-#: src/zope/app/browser/services/configureCache.pt:19
-#: src/zope/app/browser/services/configureConnection.pt:19
-#: src/zope/app/browser/services/configureView.pt:18
-#: src/zope/app/browser/services/registration/namecomponentregistry.pt:42
-#: src/zope/app/browser/services/registration/nameregistry.pt:44
-#: src/zope/app/browser/services/translation/synchronize.pt:142
-#: src/zope/app/browser/services/utility/configureutility.pt:29
-msgid "update-button"
-msgstr "Aktualisieren"
-
 #: src/zope/app/browser/services/configureCache.pt:7
 msgid "Cache registrations for ${cache_name}"
 msgstr "Cache Registrierung für ${cache_name}"
@@ -1721,6 +1731,16 @@ msgstr "Cache Registrierung für ${cache_name}"
 #: src/zope/app/browser/services/configureConnection.pt:7
 msgid "Connection registrations for ${connection_name}"
 msgstr "Verbindungs-Registrierungen für ${connection_name}"
+
+#: src/zope/app/browser/services/configureView.pt:18
+#: src/zope/app/browser/services/configureConnection.pt:19
+#: src/zope/app/browser/services/configureCache.pt:19
+#: src/zope/app/browser/services/translation/synchronize.pt:142
+#: src/zope/app/browser/services/utility/configureutility.pt:29
+#: src/zope/app/browser/services/registration/namecomponentregistry.pt:42
+#: src/zope/app/browser/services/registration/nameregistry.pt:44
+msgid "update-button"
+msgstr "Aktualisieren"
 
 #: src/zope/app/browser/services/configureView.pt:6
 msgid "View registrations for ${key_name}"
@@ -1931,6 +1951,44 @@ msgstr "Registrierungen für den ${service_name}-Dienst"
 msgid "Interface ${iface_name}"
 msgstr "Interface ${iface_name}"
 
+#: src/zope/app/browser/services/menu.zcml:100
+msgid "Add Browser Menu Item"
+msgstr "Browsermenü-Eintrag hinzufügen"
+
+#: src/zope/app/browser/services/menu.zcml:107
+msgid "Edit Browser Menu Item"
+msgstr "Browsermenü-Eintrag bearbeiten"
+
+#: src/zope/app/browser/services/menu.zcml:11
+#: src/zope/app/browser/workflow/stateful/configure.zcml:128
+msgid "Overview"
+msgstr "Überblick"
+
+#: src/zope/app/browser/services/menu.zcml:32
+msgid "Add Browser Menu (Registration)"
+msgstr "Browsermenü hinzufügen (Registrierung)"
+
+#: src/zope/app/browser/services/menu.zcml:45
+msgid "Add Browser Menu"
+msgstr "Browsermenü hinzufügen"
+
+#: src/zope/app/browser/services/menu.zcml:5
+#: src/zope/app/browser/services/menu_overview.pt:3
+msgid "Menu Service"
+msgstr "Menüdienst"
+
+#: src/zope/app/browser/services/menu.zcml:61
+msgid "Edit Browser Menu"
+msgstr "Browsermenü bearbeiten"
+
+#: src/zope/app/browser/services/menu.zcml:95
+msgid "Add Menu Item"
+msgstr "Menüeintrag hinzufügen"
+
+#: src/zope/app/browser/services/menu_contents.pt:32
+msgid "Action"
+msgstr "Aktion"
+
 #: src/zope/app/browser/services/module/__init__.py:32
 msgid "module name must be provided"
 msgstr "Modulname muss bereitgestellt werden"
@@ -2106,12 +2164,8 @@ msgid "Service deactivated"
 msgstr "Dienst deaktiviert"
 
 #: src/zope/app/browser/services/serviceactivation.pt:13
-msgid "<i>${service_type}"
-msgstr "<i>${service_type}"
-
-#: src/zope/app/browser/services/serviceactivation.pt:13
-msgid "Registrations for service x"
-msgstr "Registrierungen für Dienst x"
+msgid "Registrations for service ${service_type}"
+msgstr "Registrierungen für den ${service_type}-Dienst"
 
 #: src/zope/app/browser/services/services.pt:18
 msgid "No services are registered."
@@ -2356,23 +2410,23 @@ msgstr "Ein Werkzeug zu diesem Werkzeugdienst hinzufügen"
 msgid "Utilities registered in this utility service:"
 msgstr "Werkzeuge, die mit diesem Werkzeugdienst registriert sind:"
 
-#: src/zope/app/browser/services/view.py:129
+#: src/zope/app/browser/services/view.py:128
 msgid "Activated: ${activated_views}"
 msgstr "Aktiviert: ${activated_views}"
 
-#: src/zope/app/browser/services/view.py:133
+#: src/zope/app/browser/services/view.py:132
 msgid "All of the checked views were already active"
 msgstr "Alle ausgewählten Ansichten waren bereits aktiv"
 
-#: src/zope/app/browser/services/view.py:144
+#: src/zope/app/browser/services/view.py:143
 msgid "Deactivated: ${deactivated_views}"
 msgstr "Deaktiviert: ${deactivated_views}"
 
-#: src/zope/app/browser/services/view.py:148
+#: src/zope/app/browser/services/view.py:147
 msgid "None of the checked views were active"
 msgstr "Keine ausgewählte Ansicht war aktiv"
 
-#: src/zope/app/browser/services/view.py:162
+#: src/zope/app/browser/services/view.py:161
 msgid ""
 "Can't delete active view(s): ${view_names}; use the Deactivate button to "
 "deactivate"
@@ -2441,11 +2495,11 @@ msgstr "Unscharf"
 
 #: src/zope/app/browser/skins/onlinehelp/template.pt:74
 msgid "view 800x600"
-msgstr "In 800x600"
+msgstr "in 800x600"
 
 #: src/zope/app/browser/skins/onlinehelp/template.pt:77
 msgid "view 1024x768"
-msgstr "In 1024x768"
+msgstr "in 1024x768"
 
 #: src/zope/app/browser/skins/onlinehelp/template.pt:80
 msgid "Print"
@@ -2531,7 +2585,7 @@ msgstr "Sie sind nun als  ${user_title} eingelogged."
 msgid "Actions"
 msgstr "Tätigkeiten"
 
-#: src/zope/app/browser/skins/zopetop/widget_macros.pt:193
+#: src/zope/app/browser/skins/zopetop/widget_macros.pt:184
 #: src/zope/app/browser/skins/onlinehelp/template.pt:100
 msgid "Location:"
 msgstr "Standort:"
@@ -2636,13 +2690,93 @@ msgstr "Keine Beschreibung vorhanden"
 msgid "by ${username}"
 msgstr "von ${username}"
 
-#: src/zope/app/browser/workflow/configure.zcml:15
-msgid "Workflow Service"
-msgstr "Arbeitsablaufdienst"
+#: src/zope/app/browser/utilities/configure.zcml:116
+msgid "Content Component Definition Registration"
+msgstr "Registrierung für Definitionen von Inhaltskomponenten"
+
+#: src/zope/app/browser/utilities/configure.zcml:131
+#: src/zope/app/browser/utilities/configure.zcml:141
+#: src/zope/app/utilities/configure.zcml:43
+msgid "A Persistent Content Component Definition"
+msgstr "Eine persistente Definition von Inhaltskomponenten"
+
+#: src/zope/app/browser/utilities/configure.zcml:131
+#: src/zope/app/browser/utilities/configure.zcml:141
+#: src/zope/app/utilities/configure.zcml:43
+msgid "Content Component Definition"
+msgstr "Definition von Inhaltskomponenten"
+
+#: src/zope/app/browser/utilities/configure.zcml:158
+msgid "Define Permissions"
+msgstr "Berechtigungen definieren"
+
+#: src/zope/app/browser/utilities/configure.zcml:190
+msgid "New Content Component Instance"
+msgstr "Neue Inhaltskomponenten-Instanz"
+
+#: src/zope/app/browser/utilities/configure.zcml:190
+msgid "Schema-based Content"
+msgstr "Schemabasierter Inhalt"
+
+#: src/zope/app/browser/utilities/configure.zcml:24
+msgid "New Mutable Schema Registration"
+msgstr "Neue Registrierung für veränderbare Schemata"
+
+#: src/zope/app/browser/utilities/configure.zcml:38
+#: src/zope/app/browser/utilities/configure.zcml:48
+#: src/zope/app/utilities/configure.zcml:7
+msgid "Mutable Schema"
+msgstr "Veränderbares Schema"
+
+#: src/zope/app/browser/utilities/configure.zcml:38
+#: src/zope/app/browser/utilities/configure.zcml:48
+#: src/zope/app/utilities/configure.zcml:7
+msgid "A Persistent Schema that can be edited through the web"
+msgstr "Ein persistentes Schema, das online bearbeitet werden kann"
+
+#: src/zope/app/browser/utilities/configure.zcml:62
+msgid "Edit Schema"
+msgstr "Schema bearbeiten"
+
+#: src/zope/app/browser/utilities/configure.zcml:7
+msgid "Menu of Fields to be added to a schema."
+msgstr "Menü von Feldern, die dem Schema hinzugefügt werden können"
+
+#: src/zope/app/browser/utilities/configure.zcml:98
+msgid "Set Schema"
+msgstr "Schema definieren"
+
+#: src/zope/app/browser/utilities/edit.pt:39
+msgid "Required"
+msgstr "Notwendig"
+
+#: src/zope/app/browser/utilities/edit.pt:40
+msgid "Read-Only"
+msgstr "Nur lesbar"
+
+#: src/zope/app/browser/utilities/edit.pt:68
+msgid "delete-field-button"
+msgstr "Feld löschen"
+
+#: src/zope/app/browser/utilities/edit.pt:9
+msgid "Schema Name: ${schema_name}"
+msgstr "Schemaname: ${schema_name}"
+
+#: src/zope/app/browser/utilities/schema.py:53
+msgid "Must select a field to delete"
+msgstr "Zum löschen müssen Sie ein Feld auswählen"
+
+#: src/zope/app/browser/utilities/schema.py:73
+msgid "(adapted)"
+msgstr "(adaptiert)"
 
 #: src/zope/app/browser/workflow/configure.zcml:15
 msgid "A workflow service"
 msgstr "Ein Arbeitsablaufdienst"
+
+#: src/zope/app/browser/workflow/configure.zcml:15
+msgid "Workflow Service"
+msgstr "Arbeitsablaufdienst"
 
 #: src/zope/app/browser/workflow/configure.zcml:46
 msgid "ProcessDefinition Registration"
@@ -2724,10 +2858,6 @@ msgstr "Ein Werkzeug, um Inhalt und Arbeitsläufe zu verwalten."
 #: src/zope/app/browser/workflow/stateful/configure.zcml:121
 msgid "Content Workflows Manager"
 msgstr "Verwalter von Arbeitsabläufen von Inhalten"
-
-#: src/zope/app/browser/workflow/stateful/configure.zcml:128
-msgid "Overview"
-msgstr "Überblick"
 
 #: src/zope/app/browser/workflow/stateful/configure.zcml:136
 msgid "Content/Process Registry"
@@ -2811,10 +2941,12 @@ msgid "add-mappings-button"
 msgstr "Zuweisung Hinzufügen"
 
 #: src/zope/app/browser/workflow/stateful/definition_edit.pt:29
+#: src/zope/app/browser/utilities/permission_edit.pt:14
 msgid "Map permissions to Schema fields"
 msgstr "Berechtigungen auf Schema-Felder zuweisen"
 
 #: src/zope/app/browser/workflow/stateful/definition_edit.pt:52
+#: src/zope/app/browser/utilities/permission_edit.pt:38
 msgid "change-button"
 msgstr "Änderungen Speichern"
 
@@ -3166,10 +3298,11 @@ msgstr "Befehl zum Emai versenden"
 #: src/zope/app/interfaces/services/connection.py:34
 #: src/zope/app/interfaces/services/registration.py:112
 #: src/zope/app/interfaces/services/utility.py:35
-#: src/zope/app/browser/container/contents.pt:33
 #: src/zope/app/browser/container/index.pt:26
+#: src/zope/app/browser/container/contents.pt:33
 #: src/zope/app/browser/workflow/instancecontainer_index.pt:19
 #: src/zope/app/browser/workflow/instancecontainer_main.pt:18
+#: src/zope/app/browser/utilities/edit.pt:36
 msgid "Name"
 msgstr "Name"
 
@@ -3282,87 +3415,147 @@ msgstr "Willkommen"
 msgid "Online help system"
 msgstr "Onlinehilfesystem"
 
-#: src/zope/app/schema/fields.zcml:109
+#: src/zope/app/schema/fieldforms.zcml:108
+msgid "Add Float Field"
+msgstr "Fließkommazahlenfeld hinzufügen"
+
+#: src/zope/app/schema/fieldforms.zcml:122
+msgid "Edit Float Field"
+msgstr "Fließkommazahlenfeld bearbeiten"
+
+#: src/zope/app/schema/fieldforms.zcml:134
+msgid "Add Datetime Field"
+msgstr "Zeitdatumfeld hinzufügen"
+
+#: src/zope/app/schema/fieldforms.zcml:148
+msgid "Edit Datetime Field"
+msgstr "Zeitdatumfeld bearbeiten"
+
+#: src/zope/app/schema/fieldforms.zcml:18
+msgid "Edit Text Field"
+msgstr "Textfeld bearbeiten"
+
+#: src/zope/app/schema/fieldforms.zcml:30
+msgid "Add TextLine Field"
+msgstr "Textzeilenfeld hinzufügen"
+
+#: src/zope/app/schema/fieldforms.zcml:30
+msgid "TextLine Field"
+msgstr "Textzeilenfeld"
+
+#: src/zope/app/schema/fieldforms.zcml:4
+msgid "Add Text Field"
+msgstr "Textfeld hinzufügen"
+
+#: src/zope/app/schema/fieldforms.zcml:44
+msgid "Edit Text Line Field"
+msgstr "Textzeilenfeld bearbeiten"
+
+#: src/zope/app/schema/fieldforms.zcml:56
+msgid "Add Boolean Field"
+msgstr "Boolsches Feld hinzufügen"
+
+#: src/zope/app/schema/fieldforms.zcml:70
+msgid "Edit Boolean Field"
+msgstr "Boolsches Feld bearbeiten"
+
+#: src/zope/app/schema/fieldforms.zcml:82
+msgid "Add Integer Field"
+msgstr "Ganzahlfeld hinzufügen"
+
+#: src/zope/app/schema/fieldforms.zcml:96
+msgid "Edit Integer Field"
+msgstr "Ganzahlfeld bearbeiten"
+
+#: src/zope/app/schema/fields.zcml:104
+msgid "Sequence Field"
+msgstr "Folgenfeld"
+
+#: src/zope/app/schema/fields.zcml:115
+msgid "Bytes Field"
+msgstr "Bytesfeld"
+
+#: src/zope/app/schema/fields.zcml:128
 msgid "BytesLine Field"
 msgstr "Byteszeilenfeld"
 
-#: src/zope/app/schema/fields.zcml:120
+#: src/zope/app/schema/fields.zcml:141 src/zope/app/schema/fieldforms.zcml:4
 msgid "Text Field"
 msgstr "Textfeld"
 
-#: src/zope/app/schema/fields.zcml:131
+#: src/zope/app/schema/fields.zcml:156
 msgid "Text Line Field"
 msgstr "Textzeilenfeld"
 
-#: src/zope/app/schema/fields.zcml:142
+#: src/zope/app/schema/fields.zcml:169 src/zope/app/schema/fieldforms.zcml:56
 msgid "Boolean Field"
 msgstr "Boolsches Feld"
 
-#: src/zope/app/schema/fields.zcml:153
+#: src/zope/app/schema/fields.zcml:180 src/zope/app/schema/fieldforms.zcml:82
 msgid "Integer Field"
 msgstr "Ganzahlfeld"
 
-#: src/zope/app/schema/fields.zcml:164
+#: src/zope/app/schema/fields.zcml:193 src/zope/app/schema/fieldforms.zcml:108
 msgid "Float Field"
 msgstr "Fließkommazahlenfeld"
 
-#: src/zope/app/schema/fields.zcml:175
+#: src/zope/app/schema/fields.zcml:206
 msgid "Tuple Field"
 msgstr "Tupelfeld"
 
-#: src/zope/app/schema/fields.zcml:186
+#: src/zope/app/schema/fields.zcml:217
 msgid "List Field"
 msgstr "Listenfeld"
 
-#: src/zope/app/schema/fields.zcml:197
+#: src/zope/app/schema/fields.zcml:228
 msgid "Password Field"
 msgstr "Passwortfeld"
 
-#: src/zope/app/schema/fields.zcml:208
+#: src/zope/app/schema/fields.zcml:241
 msgid "Dict Field"
 msgstr "Dict-Feld"
 
-#: src/zope/app/schema/fields.zcml:219
+#: src/zope/app/schema/fields.zcml:253 src/zope/app/schema/fieldforms.zcml:134
 msgid "Datetime Field"
 msgstr "Zeitdatumfeld"
 
-#: src/zope/app/schema/fields.zcml:230
+#: src/zope/app/schema/fields.zcml:266
 msgid "SourceText Field"
 msgstr "Quelltextfeld"
 
-#: src/zope/app/schema/fields.zcml:241
+#: src/zope/app/schema/fields.zcml:279
 msgid "Object Field"
 msgstr "Objektfeld"
 
-#: src/zope/app/schema/fields.zcml:252
+#: src/zope/app/schema/fields.zcml:292
 msgid "URI Field"
 msgstr "URI-Feld"
 
-#: src/zope/app/schema/fields.zcml:263
+#: src/zope/app/schema/fields.zcml:305
 msgid "Id Field"
 msgstr "ID-Feld"
 
-#: src/zope/app/schema/fields.zcml:274
+#: src/zope/app/schema/fields.zcml:318
 msgid "EnumeratedTextLine Field"
 msgstr "Aufzählendes Textzeilenfeld"
 
-#: src/zope/app/schema/fields.zcml:285
+#: src/zope/app/schema/fields.zcml:331
 msgid "EnumeratedInt Field"
 msgstr "Aufzählendes Ganzzahlfeld"
 
-#: src/zope/app/schema/fields.zcml:296
+#: src/zope/app/schema/fields.zcml:344
 msgid "EnumeratedFloat Field"
 msgstr "Aufzählendes Fließkommazahlenfeld"
 
-#: src/zope/app/schema/fields.zcml:307
+#: src/zope/app/schema/fields.zcml:357
 msgid "Interface Field"
 msgstr "Interface-Feld"
 
-#: src/zope/app/schema/fields.zcml:32
+#: src/zope/app/schema/fields.zcml:37
 msgid "Container Field"
 msgstr "Behälterfeld"
 
-#: src/zope/app/schema/fields.zcml:43
+#: src/zope/app/schema/fields.zcml:48
 msgid "Iterable Field"
 msgstr "Wiederholendes Feld"
 
@@ -3370,25 +3563,17 @@ msgstr "Wiederholendes Feld"
 msgid "Basic Field"
 msgstr "Grundfeld"
 
-#: src/zope/app/schema/fields.zcml:54
+#: src/zope/app/schema/fields.zcml:59
 msgid "Orderable Field"
 msgstr "Sortierbares Feld"
 
-#: src/zope/app/schema/fields.zcml:65
+#: src/zope/app/schema/fields.zcml:74
 msgid "MinMaxLen Field"
 msgstr "MinMaxLen-Feld"
 
-#: src/zope/app/schema/fields.zcml:76
+#: src/zope/app/schema/fields.zcml:89
 msgid "Enumerated Field"
 msgstr "Aufzählendes Feld"
-
-#: src/zope/app/schema/fields.zcml:87
-msgid "Sequence Field"
-msgstr "Folgenfeld"
-
-#: src/zope/app/schema/fields.zcml:98
-msgid "Bytes Field"
-msgstr "Bytesfeld"
 
 #: src/zope/app/security/configure.zcml:14
 msgid "Change security settings"
@@ -3424,20 +3609,48 @@ msgstr "Zope-Anwedung verwalten (z.B. neustarten/runterfahren/ZODB packen)"
 msgid "Manage Application"
 msgstr "Anwendung verwalten"
 
-#: src/zope/app/services/configure.zcml:109
+#: src/zope/app/services/configure.zcml:113
 msgid "Page Template"
 msgstr "Seitenschablone"
 
-#: src/zope/app/services/configure.zcml:109
-#: src/zope/app/browser/services/configure.zcml:178
-#: src/zope/app/browser/services/configure.zcml:185
+#: src/zope/app/services/configure.zcml:113
+#: src/zope/app/browser/services/configure.zcml:182
+#: src/zope/app/browser/services/configure.zcml:189
 msgid "ZPT Template"
 msgstr "ZPT Schablone"
 
-#: src/zope/app/services/configure.zcml:289
+#: src/zope/app/services/configure.zcml:310
 #: src/zope/app/browser/services/registration/editregistration.pt:10
 msgid "Registration Manager"
 msgstr "Registrierungsverwalter"
+
+#: src/zope/app/services/menu.zcml:21
+#: src/zope/app/browser/services/menu.zcml:75
+#: src/zope/app/browser/services/menu.zcml:84
+msgid "Browser Menu"
+msgstr "Browsermenü"
+
+#: src/zope/app/services/menu.zcml:21
+#: src/zope/app/browser/services/menu.zcml:75
+#: src/zope/app/browser/services/menu.zcml:84
+msgid "A Persistent Browser Menu"
+msgstr "Ein persistentes Browsermenü"
+
+#: src/zope/app/services/menu.zcml:50
+msgid "Browser Menu Item"
+msgstr "Browsermenü-Eintrag"
+
+#: src/zope/app/services/menu.zcml:50
+msgid "A Persistent Browser Menu Item"
+msgstr "Ein Eintrag in einem persistenten Browsermenü"
+
+#: src/zope/app/services/menu.zcml:6
+msgid "A Persistent Browser Menu Service"
+msgstr "Ein Dienst für persistente Browsermenüs"
+
+#: src/zope/app/services/menu.zcml:6
+msgid "Browser Menu Service"
+msgstr "Browsermenüdienst"
 
 #: src/zope/app/services/pagefolder.zcml:10
 msgid "View Folder"
@@ -3448,18 +3661,26 @@ msgid "(Anything)"
 msgstr "jegliches"
 
 #: src/zope/app/services/view.py:253
-msgid "${view_name} ${ptype} View for {iface_name}"
+msgid "${view_name} ${ptype} View for ${iface_name}"
 msgstr "${view_name} ${ptype} Ansicht für {iface_name}"
 
 #: src/zope/app/services/view.py:255
-msgid "${view_name} ${ptype} View for {iface_name} in layer ${layer}"
+msgid "${view_name} ${ptype} View for ${iface_name} in layer ${layer}"
 msgstr "${view_name} ${ptype} Ansicht für {iface_name} in Ebene ${layer}"
 
 #: src/zope/app/services/view.py:266
 msgid "Registered by ZCML"
 msgstr "Registriert durch ZCML"
 
-#: src/zope/app/services/view.py:274 src/zope/app/security/configure.zcml:10
+# XXX
+# there is a problem with this message id
+# in src/zope/app/services/view.py:274, 'View' means a view component
+# and is refering to the substantive.
+#
+# In src/zope/app/security/configure.zcml:10, 'View' is refering to
+# the permission, the verb. While the substantive and the verb
+# happen to be equal in English, they aren't in most other languages.
+# This needs a fix.
 msgid "View"
 msgstr "Ansicht"
 
@@ -3468,7 +3689,7 @@ msgid "${view_name} for ${pname} {what} {iface_name}"
 msgstr "${view_name} für ${pname} {what} {iface_name}"
 
 #: src/zope/app/services/view.py:302
-msgid "${view_name} for ${pname} {what} {iface_name} in layer ${layer}"
+msgid "${view_name} for ${pname} ${what} ${iface_name} in layer ${layer}"
 msgstr "${view_name} für ${pname} {what} {iface_name} in Ebene ${layer}"
 
 #: src/zope/app/services/view.py:319
@@ -3491,18 +3712,6 @@ msgstr "1 KB"
 msgid "${size} KB"
 msgstr "${size} KB"
 
-#: src/zope/app/utilities/configure.zcml:8
-#: src/zope/app/utilities/configure.zcml:31
-#: src/zope/app/utilities/configure.zcml:41
-msgid "Persistent Schema Utility"
-msgstr "Persistentes Schemawerkzeug"
-
-#: src/zope/app/utilities/configure.zcml:8
-#: src/zope/app/utilities/configure.zcml:31
-#: src/zope/app/utilities/configure.zcml:41
-msgid "A Persistent Schema that can be edited through the web"
-msgstr "Ein persistentes Schema, das online bearbeitet werden kann"
-
 #: src/zope/app/workflow/configure.zcml:13
 msgid "Create Workflow ProcessInstances"
 msgstr "Arbeitsablauf-Prozessinstanzen erstellen"
@@ -3514,4 +3723,16 @@ msgstr "Arbeitsablauf-Prozessinstanzen benutzen"
 #: src/zope/app/workflow/configure.zcml:9
 msgid "Manage Workflow ProcessDefinitions"
 msgstr "Arbeitsablauf-Prozessdefinitionen verwalten"
+
+#~ msgid "the field is required"
+#~ msgstr "Dieses Feld ist erforderlich"
+
+#~ msgid "<i>${service_type}"
+#~ msgstr "<i>${service_type}"
+
+#~ msgid "Registrations for service x"
+#~ msgstr "Registrierungen für Dienst x"
+
+#~ msgid "Persistent Schema Utility"
+#~ msgstr "Persistentes Schemawerkzeug"
 
