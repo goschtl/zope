@@ -13,21 +13,21 @@
 ##############################################################################
 """
 
-$Id: test_service.py,v 1.3 2003/06/06 19:29:08 stevea Exp $
+$Id: test_service.py,v 1.4 2003/11/21 17:09:29 jim Exp $
 """
 
 import unittest
+import pickle
 from zope.interface import Interface, implements
+
 
 from zope.exceptions import DuplicationError
 from zope.testing.cleanup import CleanUp
 
-from zope.component \
-     import getServiceDefinitions, getService, getServiceManager
-from zope.component.service \
-     import UndefinedService, InvalidService
+from zope.component import getServiceDefinitions, getService, getServiceManager
+from zope.component.service import UndefinedService, InvalidService
+from zope.component.service import GlobalServiceManager, GlobalService
 from zope.component.exceptions import ComponentLookupError
-
 from zope.component import queryService
 
 class IOne(Interface):
@@ -36,10 +36,10 @@ class IOne(Interface):
 class ITwo(Interface):
     pass
 
-class ServiceOne:
+class ServiceOne(GlobalService):
     implements(IOne)
 
-class ServiceTwo:
+class ServiceTwo(GlobalService):
     implements(ITwo)
 
 class Test(CleanUp, unittest.TestCase):
@@ -108,6 +108,26 @@ class Test(CleanUp, unittest.TestCase):
         defs.sort()
         self.assertEqual(defs,
             [('one', IOne), ('two', ITwo)])
+
+
+    def testPickling(self):
+        self.assertEqual(testServiceManager.__reduce__(), 'testServiceManager')
+        sm = pickle.loads(pickle.dumps(testServiceManager))
+        self.assert_(sm is testServiceManager)
+
+        s2 = ServiceTwo()
+        sm.defineService('2', ITwo)
+        sm.provideService('2', s2)
+
+        self.assert_(s2.__parent__ is sm)
+        self.assertEqual(s2.__name__, '2')
+
+        s = pickle.loads(pickle.dumps(s2))
+        self.assert_(s is s2)
+        testServiceManager._clear()
+        
+
+testServiceManager = GlobalServiceManager('testServiceManager', __name__)
 
 
 def test_suite():

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: service.py,v 1.5 2003/10/06 22:08:54 sidnei Exp $
+$Id: service.py,v 1.6 2003/11/21 17:09:29 jim Exp $
 """
 
 from zope.exceptions import DuplicationError
@@ -50,14 +50,23 @@ class InvalidService(Exception):
        the required interface
     """
 
-class GlobalServiceManager:
+class GlobalServiceManager(object):
     """service manager"""
 
     implements(IGlobalServiceManager)
 
-    def __init__(self):
+    def __init__(self, name=None, module=None):
+        self._clear()
+        self.__name__ = name
+        self.__module__ = module
+
+    def _clear(self):
         self.__defs     = {}
         self.__services = {}
+
+    def __reduce__(self):
+        # Global service managers are pickled as global objects
+        return self.__name__
 
     def defineService(self, name, interface):
         """see IGlobalServiceManager interface"""
@@ -87,6 +96,10 @@ class GlobalServiceManager:
         if not self.__defs[name].isImplementedBy(component):
             raise InvalidService(name, component, self.__defs[name])
 
+        if isinstance(component, GlobalService):
+            component.__parent__ = self
+            component.__name__ = name
+
         self.__services[name] = component
 
     def getService(self, name):
@@ -102,16 +115,23 @@ class GlobalServiceManager:
 
         return self.__services.get(name, default)
 
-    _clear = __init__
+
+def GS(service_manager, service_name):
+    return service_manager.getService(service_name)
+
+class GlobalService(object):
+
+    def __reduce__(self):
+        return GS, (self.__parent__, self.__name__)
 
 
-serviceManager = GlobalServiceManager() # the global service manager instance
+
+# the global service manager instance
+serviceManager = GlobalServiceManager('serviceManager', __name__)
+
 defineService = serviceManager.defineService
-
-
-_clear         = serviceManager._clear
 
 # Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
 from zope.testing.cleanup import addCleanUp
-addCleanUp(_clear)
+addCleanUp(serviceManager._clear)
 del addCleanUp
