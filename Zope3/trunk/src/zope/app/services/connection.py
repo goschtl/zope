@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: connection.py,v 1.3 2003/01/03 17:46:10 stevea Exp $
 """
 
 from persistence import Persistent
@@ -74,12 +74,6 @@ class ConnectionService(Persistent, NameComponentConfigurable):
     getAvailableConnections = ContextMethod(getAvailableConnections)
 
 
-
-"""A configuration for a database adapter.
-
-$Id: connection.py,v 1.2 2002/12/25 14:13:19 jim Exp $
-"""
-
 from zope.app.interfaces.services.connection import IConnectionConfiguration
 from zope.app.services.configuration import NamedComponentConfiguration
 from zope.app.services.configuration import ConfigurationStatusProperty
@@ -95,5 +89,3 @@ class ConnectionConfiguration(NamedComponentConfiguration):
 
     label = "Connection"
 
-    def __init__(self, *args, **kw):
-        super(ConnectionConfiguration, self).__init__(*args, **kw)
