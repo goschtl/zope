@@ -19,7 +19,6 @@ from zope.configuration.fields import Path
 from zope.interface import Interface
 
 from zope.app import zapi
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter
 from zope.app.rdb.gadflyda import setGadflyRoot 
 
 class IGadflyRoot(Interface):

@@ -3,6 +3,11 @@
     i18n_domain="zope"
     >
 
+  <permission
+      id="zope.app.rdb.Use"
+      title="[zope.app.rdb.Use] Use Database Connections"
+      />
+
   <content class="zope.app.rdb.ZopeConnection">
     <require
         permission="zope.ManageContent"
@@ -27,16 +32,13 @@
   <content class="zope.app.rdb.ZopeDatabaseAdapter">
 
     <implements
-        interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
-
-    <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <implements
       interface="zope.app.utility.interfaces.ILocalUtility" />
 
     <require
-        permission="zope.Public"
+        permission="zope.app.rdb.Use"
         interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
 
   </content>
