@@ -32,7 +32,7 @@
 
   <div metal:define-macro="logged_user">
   <p i18n:translate="">User: 
-    <span tal:replace="request/user/getTitle" i18n:name="user_title">User</span>
+    <span tal:replace="request/user/title" i18n:name="user_title">User</span>
   </p>
   </div>
 

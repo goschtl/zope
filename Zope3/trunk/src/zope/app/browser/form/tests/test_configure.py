@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Test that the package's configure.zcml can be loaded.
 
-"""Test that the package's configure.zcml can be loaded."""
-
+$Id: test_configure.py,v 1.3 2004/03/08 12:05:54 srichter Exp $
+"""
 import unittest
 
 from zope.app.tests.placelesssetup import PlacelessSetup

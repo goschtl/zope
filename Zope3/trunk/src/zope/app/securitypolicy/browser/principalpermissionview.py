@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal Permission View Classes
 
-$Id: principalpermissionview.py,v 1.3 2004/03/06 16:50:29 jim Exp $
+$Id: principalpermissionview.py,v 1.4 2004/03/08 12:06:05 srichter Exp $
 """
 import time
 
@@ -21,8 +21,9 @@ from zope.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.services.servicenames import Authentication
+from zope.app.security.interfaces import IPermission
 from zope.app.security.settings import Allow, Deny, Unset
-from zope.app.services.servicenames import Permissions, Authentication
 
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionManager
 from zope.app.securitypolicy.interfaces import IPrincipalPermissionMap
@@ -32,9 +33,6 @@ class PrincipalPermissionView(BrowserView):
 
     index = ViewPageTemplateFile('principal_permission_edit.pt')
 
-    def get_permission_service(self):
-        return zapi.getService(self.context, Permissions)
-
     def get_principal(self, principal_id):
         return zapi.getService(self.context,
                           Authentication
@@ -42,12 +40,11 @@ class PrincipalPermissionView(BrowserView):
 
     def unsetPermissions(self, principal_id, permission_ids, REQUEST=None):
         """Form action unsetting a principals permissions"""
-        permission_service = self.get_permission_service()
         principal = self.get_principal(principal_id)
         ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
-            permission = permission_service.getPermission(perm_id)
+            permission = zapi.getUtility(self.context, IPermission, perm_id)
             ppm.unsetPermissionForPrincipal(permission , principal)
 
         if REQUEST is not None:
@@ -56,12 +53,11 @@ class PrincipalPermissionView(BrowserView):
 
     def grantPermissions(self, principal_id, permission_ids, REQUEST=None):
         """Form action granting a list of permissions to a principal"""
-        permission_service = self.get_permission_service()
         principal = self.get_principal(principal_id)
         ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
-            permission = permission_service.getPermission(perm_id)
+            permission = zapi.getUtility(self.context, IPermission, perm_id)
             ppm.grantPermissionToPrincipal(permission , principal)
         if REQUEST is not None:
             return self.index(message="Settings changed at %s"
@@ -69,12 +65,11 @@ class PrincipalPermissionView(BrowserView):
 
     def denyPermissions(self, principal_id, permission_ids, REQUEST=None):
         """Form action denying a list of permissions for a principal"""
-        permission_service = self.get_permission_service()
         principal = self.get_principal(principal_id)
         ppm = IPrincipalPermissionManager(self.context)
 
         for perm_id in permission_ids:
-            permission = permission_service.getPermission(perm_id)
+            permission = zapi.getUtility(self.context, IPermission, perm_id)
             ppm.denyPermissionToPrincipal(permission , principal)
         if REQUEST is not None:
             return self.index(message="Settings changed at %s"
@@ -83,12 +78,10 @@ class PrincipalPermissionView(BrowserView):
     # Methods only called from the zpt view
     def getUnsetPermissionsForPrincipal(self, principal_id):
         """Returns all unset permissions for this principal"""
-
         ppmap = IPrincipalPermissionMap(self.context)
         principal = self.get_principal(principal_id)
-        perm_serv = zapi.getService(self.context, Permissions)
         result = []
-        for perm in perm_serv.getPermissions():
+        for perm in zapi.getUtilitiesFor(self.context, IPermission):
             if ppmap.getSetting(perm, principal) == Unset:
                 result.append(perm)
 

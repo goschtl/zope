@@ -13,9 +13,8 @@
 ##############################################################################
 """Tests creator annotation.
 
-$Id: test_creatorannotator.py,v 1.9 2004/03/02 18:50:58 philikon Exp $
+$Id: test_creatorannotator.py,v 1.10 2004/03/08 12:05:56 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.testing.cleanup import CleanUp
@@ -25,7 +24,7 @@ from zope.app.tests import ztapi
 
 from zope.app.dublincore.creatorannotator import CreatorAnnotator
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.interfaces.security import IPrincipal
+from zope.app.security.interfaces import IPrincipal
 from zope.app.event.interfaces import IEvent
 from zope.security.management import noSecurityManager, newSecurityManager
 
@@ -61,14 +60,11 @@ class DummyDublinCore:
 class DummyPrincipal:
     implements(IPrincipal)
 
-    def getId(self):
-        return self._id
+    def __init__(self, id, title, description):
+        self.id = id
+        self.title = title
+        self.description = description
 
-    def getTitle(self):
-        return self._title
-
-    def getDescription(self):
-        return self._description
 
 class Test(PlacefulSetup, TestCase, CleanUp):
 
@@ -88,15 +84,11 @@ class Test(PlacefulSetup, TestCase, CleanUp):
         data = DummyDublinCore()
         event.object = data
 
-        good_author = DummyPrincipal()
-        good_author._id = 'goodauthor'
-        good_author._title = 'the good author'
-        good_author._description = 'this is a very good author'
+        good_author = DummyPrincipal('goodauthor', 'the good author',
+                                     'this is a very good author')
 
-        bad_author = DummyPrincipal()
-        bad_author._id = 'badauthor'
-        bad_author._title = 'the bad author'
-        bad_author._description = 'this is a very bad author'
+        bad_author = DummyPrincipal('badauthor', 'the bad author',
+                                    'this is a very bad author')
 
         # Check what happens if no user is there
         noSecurityManager()
@@ -108,15 +100,15 @@ class Test(PlacefulSetup, TestCase, CleanUp):
         CreatorAnnotator.notify(event)
 
         self.failIf(len(data.creators) != 1)
-        self.failUnless(bad_author.getId() in data.creators)
+        self.failUnless(bad_author.id in data.creators)
 
         # Now let the good edit it
         security = newSecurityManager(good_author)
         CreatorAnnotator.notify(event)
 
         self.failIf(len(data.creators) != 2)
-        self.failUnless(good_author.getId() in data.creators)
-        self.failUnless(bad_author.getId() in data.creators)
+        self.failUnless(good_author.id in data.creators)
+        self.failUnless(bad_author.id in data.creators)
 
         # Let the bad edit it again
         security = newSecurityManager(bad_author)
@@ -124,8 +116,8 @@ class Test(PlacefulSetup, TestCase, CleanUp):
 
 	# Check that the bad author hasn't been added twice.
         self.failIf(len(data.creators) != 2)
-        self.failUnless(good_author.getId() in data.creators)
-        self.failUnless(bad_author.getId() in data.creators)
+        self.failUnless(good_author.id in data.creators)
+        self.failUnless(bad_author.id in data.creators)
 
 def test_suite():
     return TestSuite((

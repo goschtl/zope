@@ -12,13 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.21 2004/01/14 22:55:28 chrism Exp $
+$Id: test_auth.py,v 1.22 2004/03/08 12:06:21 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.auth import AuthenticationService
 from zope.app.services.auth import User
-from zope.app.services.servicenames import Adapters, Authentication
+from zope.app.services.servicenames import Authentication
 
 from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
@@ -29,6 +28,14 @@ from zope.app.container.tests.test_icontainer import BaseTestIContainer
 from zope.interface import implements
 from zope.app.tests import setup
 from zope.app.tests import ztapi
+
+from zope.component import getService
+from zope.app.security.basicauthadapter import BasicAuthAdapter
+from zope.app.security.interfaces import ILoginPassword
+
+from zope.component import getServiceManager
+from zope.app.security.principalregistry import principalRegistry
+from zope.app.security.interfaces import IAuthenticationService
 
 class Request:
 
@@ -50,9 +57,6 @@ class AuthSetup(EventSetup):
     def setUp(self):
         EventSetup.setUp(self)
 
-        from zope.component import getService
-        from zope.app.security.basicauthadapter import BasicAuthAdapter
-        from zope.app.interfaces.security import ILoginPassword
         ztapi.provideAdapter(
             IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
@@ -70,10 +74,6 @@ class AuthSetup(EventSetup):
     def createStandardServices(self):
         EventSetup.createStandardServices(self)
 
-        from zope.component import getServiceManager
-        from zope.app.security.registries.principalregistry \
-             import principalRegistry
-        from zope.app.interfaces.security import IAuthenticationService
         sm = getServiceManager(None)
         sm.defineService(Authentication, IAuthenticationService)
         sm.provideService(Authentication, principalRegistry)

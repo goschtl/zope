@@ -13,7 +13,7 @@
 ##############################################################################
 """A simple implementation of a Message Catalog.
 
-$Id: messagecatalog.py,v 1.10 2004/02/20 22:02:32 fdrake Exp $
+$Id: messagecatalog.py,v 1.11 2004/03/08 12:06:22 srichter Exp $
 """
 from zope.interface import classProvides, providedBy, implements
 import time
@@ -22,18 +22,19 @@ from BTrees.OOBTree import OOBTree
 from persistent import Persistent
 from zope.proxy import removeAllProxies
 from zope.component.interfaces import IFactory
-from zope.app.security.registries.registeredobject import RegisteredObject
 from zope.app.interfaces.services.translation import ILocalMessageCatalog
 
 
-class MessageCatalog(RegisteredObject, Persistent):
+class MessageCatalog(Persistent):
 
     implements(ILocalMessageCatalog)
     classProvides(IFactory)
 
     def __init__(self, language, domain="default"):
         """Initialize the message catalog"""
-        super(MessageCatalog, self).__init__('', '', '')
+        self.id  = ''
+        self.title = ''
+        self.description = ''
         self._language = language
         self._domain = domain
         self._messages = OOBTree()

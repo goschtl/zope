@@ -4,7 +4,7 @@
   tal:define="rprincipal_id python:request['principal_id']">
 
   <h1 i18n:translate="">Permission settings for
-    <span tal:replace="python:view.get_principal(rprincipal_id).getTitle()" 
+    <span tal:replace="python:view.get_principal(rprincipal_id).title" 
           i18n:name="principal_title"/>
   </h1>
 
@@ -21,8 +21,8 @@
             </tr>
             <tr tal:repeat="perm 
        python:view.get_set_permissions_for_principal(rprincipal_id, 'Allow')">
-              <td><input type="checkbox" tal:attributes="name perm/getId"/></td>
-              <td tal:content="perm/getTitle">Permission1</td>
+              <td><input type="checkbox" tal:attributes="name perm/id"/></td>
+              <td tal:content="perm/title">Permission1</td>
             </tr>
             <tr tal:replace="nothing">
               <td><input type="checkbox" name="permission_ids" /></td>
@@ -47,9 +47,9 @@
             <tr tal:repeat="perm 
        python:view.get_set_permissions_for_principal(rprincipal_id, 'Deny')">
               <td>
-                <input type="checkbox" tal:attributes="name perm/getId" />
+                <input type="checkbox" tal:attributes="name perm/id" />
               </td>
-              <td tal:content="perm/getTitle">Permission1</td>
+              <td tal:content="perm/title">Permission1</td>
             </tr>
             <tr tal:replace="nothing">
               <td><input type="checkbox" name="permission_ids" /></td>
@@ -80,8 +80,8 @@
             <option 
               tal:repeat="perm 
                 python:view.get_unset_permissions_for_principal(rprincipal_id)"
-              tal:attributes="value perm/getId"
-              tal:content="perm/getTitle">Perm1</option>
+              tal:attributes="value perm/id"
+              tal:content="perm/title">Perm1</option>
             <option tal:replace="nothing">Perm2</option>
             <option tal:replace="nothing">Perm3</option>
           </select>

@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of IPrincipalAnnotationService.
 
-$Id: principalannotation.py,v 1.13 2004/03/02 13:40:48 philikon Exp $
+$Id: principalannotation.py,v 1.14 2004/03/08 12:06:10 srichter Exp $
 """
 
 # TODO: register service as adapter for IAnnotations on service activation
@@ -51,8 +51,7 @@ class PrincipalAnnotationService(Persistent, Contained):
 
         If there is no IAnnotations it will be created and then returned.
         """
-
-        return self.getAnnotationsById(principal.getId())
+        return self.getAnnotationsById(principal.id)
 
     def getAnnotationsById(self, principalId):
         """Return object implementing IAnnotations for the given principal.
@@ -70,7 +69,7 @@ class PrincipalAnnotationService(Persistent, Contained):
 
     def hasAnnotations(self, principal):
         """Return boolean indicating if given principal has IAnnotations."""
-        return principal.getId() in self.annotations
+        return principal.id in self.annotations
 
 
 class Annotations(Persistent, Location):
@@ -125,4 +124,4 @@ class AnnotationsForPrincipal(object):
         self.service = service
 
     def __call__(self, principal):
-        return self.service.getAnnotationsById(principal.getId())
+        return self.service.getAnnotationsById(principal.id)

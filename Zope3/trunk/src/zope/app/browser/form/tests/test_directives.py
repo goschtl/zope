@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Form Directives Tests
 
+$Id: test_directives.py,v 1.6 2004/03/08 12:05:54 srichter Exp $
+"""
 import os
 import unittest
 from cStringIO import StringIO
@@ -20,7 +23,6 @@ from zope.app import zapi
 from zope.interface import Interface, implements
 
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-from zope.component import queryView
 from zope.component import getDefaultViewName, getResource
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.security.proxy import ProxyFactory
@@ -30,9 +32,6 @@ from zope.component.exceptions import ComponentLookupError
 from zope.publisher.browser import TestRequest
 
 import zope.app.publisher.browser
-from zope.app.interfaces.security import IPermissionService
-from zope.app.security.registries.permissionregistry import permissionRegistry
-from zope.component.service import serviceManager
 
 from zope.schema import TextLine
 
@@ -55,8 +54,7 @@ class Schema(Interface):
     text = TextLine(
         title=u'Text',
         description=u'Nice text',
-        required=False,
-    )
+        required=False)
 
 class IC(Schema): pass
 
@@ -85,7 +83,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         ps.defineUsage("overridden")
         
     def testEditForm(self):
-        self.assertEqual(queryView(ob, 'test', request),
+        self.assertEqual(zapi.queryView(ob, 'test', request),
                          None)
         xmlconfig(StringIO(template % ("""
           <view
@@ -105,13 +103,13 @@ class Test(PlacelessSetup, unittest.TestCase):
               permission="zope.Public" />
             """)))
 
-        v = queryView(ob, 'edit.html', request)
+        v = zapi.queryView(ob, 'edit.html', request)
         # expect component lookup as standard macros are not configured
         self.assertRaises(ComponentLookupError, v)
 
 
     def testEditFormWithMenu(self):
-        self.assertEqual(queryView(ob, 'test', request),
+        self.assertEqual(zapi.queryView(ob, 'test', request),
                          None)
         xmlconfig(StringIO(template % ("""
           <browser:menu id="test_menu" title="Test menu" usage="objectview"/>
@@ -134,13 +132,13 @@ class Test(PlacelessSetup, unittest.TestCase):
               />
             """)))
 
-        v = queryView(ob, 'edit.html', request)
+        v = zapi.queryView(ob, 'edit.html', request)
         self.assertEqual(v.usage, 'objectview')
         # expect component lookup as standard macros are not configured
         self.assertRaises(ComponentLookupError, v)
 
     def testEditFormWithUsage(self):
-        self.assertEqual(queryView(ob, 'test', request),
+        self.assertEqual(zapi.queryView(ob, 'test', request),
                          None)
         xmlconfig(StringIO(template % ("""
           <view
@@ -161,14 +159,14 @@ class Test(PlacelessSetup, unittest.TestCase):
               />
             """)))
 
-        v = queryView(ob, 'edit.html', request)
+        v = zapi.queryView(ob, 'edit.html', request)
         self.assertEqual(v.usage, 'objectview')
         # expect component lookup as standard macros are not configured
         self.assertRaises(ComponentLookupError, v)
 
 
     def testEditFormWithMenuAndUsage(self):
-        self.assertEqual(queryView(ob, 'test', request),
+        self.assertEqual(zapi.queryView(ob, 'test', request),
                          None)
         xmlconfig(StringIO(template % ("""
           <browser:menu id="test_menu" title="Test menu" usage="overridden"/>
@@ -192,7 +190,7 @@ class Test(PlacelessSetup, unittest.TestCase):
               />
             """)))
 
-        v = queryView(ob, 'edit.html', request)
+        v = zapi.queryView(ob, 'edit.html', request)
         self.assertEqual(v.usage, 'objectview')
         # expect component lookup as standard macros are not configured
         self.assertRaises(ComponentLookupError, v)

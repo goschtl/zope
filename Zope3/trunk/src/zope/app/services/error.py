@@ -15,9 +15,8 @@
 
 This is a port of the Zope 2 error reporting object
 
-$Id: error.py,v 1.4 2004/02/20 16:57:30 fdrake Exp $
+$Id: error.py,v 1.5 2004/03/08 12:06:10 srichter Exp $
 """
-
 from persistent import Persistent
 from random import random
 from thread import allocate_lock
@@ -110,9 +109,9 @@ class ErrorReportingService(Persistent, Contained):
                     else:
                         login = 'unauthenticated'
                     username = ', '.join(map(str, (login,
-                                          request.user.getId(),
-                                          request.user.getTitle(),
-                                          request.user.getDescription()
+                                          request.user.id,
+                                          request.user.title,
+                                          request.user.description
                                          )))
                 # When there's an unauthorized access, request.user is
                 # not set, so we get an AttributeError

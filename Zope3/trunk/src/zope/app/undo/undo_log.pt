@@ -30,7 +30,7 @@
     <span tal:condition="all">
       <p i18n:translate="">
         You are 
-        <span tal:replace="request/user/getId"
+        <span tal:replace="request/user/id"
               i18n:name="username">username</span>, 
         looking at all transactions. <a href="?">View only your own 
         transactions</a>.
@@ -41,14 +41,14 @@
 
     <span tal:condition="not:all">
       <p i18n:translate="">You are 
-        <span tal:replace="request/user/getId"
+        <span tal:replace="request/user/id"
               i18n:name="username">username</span>, 
         looking at your own transactions.  
         <a href="?all=yes">View everyone's transactions</a>.
       </p>
       <span tal:omit-tag=""
           tal:define="global undoInfo python:view.getUndoInfo(first=first,
-                                             user_name=request.user.getId())"/>
+                                             user_name=request.user.id)"/>
     </span>
 
     <p>

@@ -13,7 +13,7 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.3 2004/03/06 17:48:53 jim Exp $
+$Id: zopepolicy.py,v 1.4 2004/03/08 12:06:03 srichter Exp $
 """
 from zope.interface import implements
 from zope.security.interfaces import ISecurityPolicy
@@ -73,7 +73,7 @@ class ZopeSecurityPolicy:
             return True
 
         roledict = {'zope.Anonymous': Allow}
-        principals = {user.getId() : roledict}
+        principals = {user.id : roledict}
 
         role_permissions = {}
         remove = {}
@@ -223,7 +223,7 @@ def permissionsOfPrincipal(principal, object):
     permissions = {}
 
     roles = {'zope.Anonymous': Allow}
-    principalid = principal.getId()
+    principalid = principal.id
 
     # Make two passes.
 

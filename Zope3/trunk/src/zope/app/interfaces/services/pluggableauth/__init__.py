@@ -13,35 +13,18 @@
 ##############################################################################
 """Pluggable Authentication service.
 
-$Id: __init__.py,v 1.11 2004/03/03 10:38:46 philikon Exp $
+$Id: __init__.py,v 1.12 2004/03/08 12:05:57 srichter Exp $
 """
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.container.interfaces import IContainer, IContained
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
-from zope.app.interfaces.security import IAuthenticationService, IPrincipal
+from zope.app.security.interfaces import IAuthenticationService, IPrincipal
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Password, Field
 
 class IUserSchemafied(IPrincipal):
     """A User object with schema-defined attributes."""
-
-    id = TextLine(
-        title=_("Id"),
-        description=_("The unique identification of the user"),
-        required=True,
-        readonly=True)
-
-    title = TextLine(
-        title=_("Title"),
-        description=_("The title of the user. "
-                      "This is usually used in the UI."),
-        required=False)
-
-    description = Text(
-        title=_("Description"),
-        description=_("A detailed description of the user."),
-        required=False)
 
     login = TextLine(
         title=_("Login"),

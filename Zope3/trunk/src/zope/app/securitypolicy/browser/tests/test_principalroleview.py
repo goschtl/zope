@@ -13,7 +13,7 @@
 ##############################################################################
 """Principal-Role View Tests
 
-$Id: test_principalroleview.py,v 1.2 2004/03/05 18:39:08 srichter Exp $
+$Id: test_principalroleview.py,v 1.3 2004/03/08 12:06:06 srichter Exp $
 """
 import unittest
 
@@ -22,7 +22,9 @@ from zope.publisher.browser import BrowserView, TestRequest
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.interfaces.security import IAuthenticationService
+from zope.app.security.interfaces import IAuthenticationService, IPrincipal
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
 from zope.app.interfaces.services.service import ISimpleService
 from zope.app.services.servicenames import Authentication
 from zope.app.services.tests.placefulsetup import PlacefulSetup
@@ -49,18 +51,6 @@ class DummyManager:
     def getSetting(self, role, principal):
         return DummySetting('%r:%r' % (role, principal))
 
-
-class DummyObject:
-    def __init__(self, id, title):
-        self._id = id
-        self._title = title
-
-    def getId(self):
-        return self._id
-
-    def getTitle(self):
-        return self._title
-
 class DummyAuthenticationService:
 
     implements(IAuthenticationService, ISimpleService)
@@ -70,6 +60,14 @@ class DummyAuthenticationService:
 
     def getPrincipals(self, name):
         return self._principals
+
+class DummyPrincipal:
+    implements(IPrincipal)
+
+    def __init__(self, id, title):
+        self.id = id
+        self.title = title
+        
 
 def defineRole(id, title=None, description=None):
     role = Role(id, title, description)
@@ -84,16 +82,15 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self._roles = [defineRole('qux', 'Qux'), defineRole('baz', 'Baz')]
         
-        defineService = zapi.getServiceManager(None).defineService
-        provideService = zapi.getServiceManager(None).provideService
+        sm = zapi.getServiceManager(None)
 
-        defineService(Authentication, IAuthenticationService)
+        sm.defineService(Authentication, IAuthenticationService)
 
         self._principals = []
-        self._principals.append(DummyObject('foo', 'Foo'))
-        self._principals.append(DummyObject('bar', 'Bar'))
+        self._principals.append(DummyPrincipal('foo', 'Foo'))
+        self._principals.append(DummyPrincipal('bar', 'Bar'))
 
-        provideService(Authentication,
+        sm.provideService(Authentication,
             DummyAuthenticationService(principals = self._principals))
 
     def _makeOne(self):
@@ -114,17 +111,17 @@ class Test(PlacefulSetup, unittest.TestCase):
         principals = list(view.getAllPrincipals())
         self.assertEqual(len(principals), 2)
 
-        ids = [p.getId() for p in self._principals]
+        ids = [p.id for p in self._principals]
 
         for principal in principals:
-            self.failUnless(principal.getId() in ids, (principal, ids))
+            self.failUnless(principal.id in ids, (principal, ids))
 
     def testPrincipalRoleGrid(self):
         view = self._makeOne()
 
         grid = view.createGrid()
 
-        p_ids = [p.getId() for p in view.getAllPrincipals()]
+        p_ids = [p.id for p in view.getAllPrincipals()]
         r_ids = [r.id for r in view.getAllRoles()]
 
         self.failUnless(grid.listAvailableValues())

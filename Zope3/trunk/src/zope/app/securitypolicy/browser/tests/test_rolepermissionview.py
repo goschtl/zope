@@ -13,21 +13,18 @@
 ##############################################################################
 """Role-Permission View Tests
 
-$Id: test_rolepermissionview.py,v 1.2 2004/03/05 18:39:08 srichter Exp $
+$Id: test_rolepermissionview.py,v 1.3 2004/03/08 12:06:06 srichter Exp $
 """
 import unittest
 
 from zope.publisher.browser import BrowserView, TestRequest
-from zope.app import zapi
 from zope.app.tests import ztapi
+from zope.app.security.permission import Permission
+from zope.app.security.interfaces import IPermission
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.servicenames import Permissions
-from zope.app.interfaces.security import IPermissionService
 
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
-from zope.app.securitypolicy.browser.tests.permissionservice import \
-     PermissionService
 from zope.app.securitypolicy.browser.tests.rolepermissionmanager import \
      RolePermissionManager
 from zope.app.securitypolicy.browser.rolepermissionview \
@@ -41,16 +38,19 @@ def defineRole(id, title=None, description=None):
     ztapi.provideUtility(IRole, role, name=role.id)
     return role
 
+def definePermission(id, title=None, description=None):
+    permission = Permission(id, title, description)
+    ztapi.provideUtility(IPermission, permission, name=permission.id)
+    return permission
+
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        sm = zapi.getServiceManager(None)
         defineRole('manager', 'Manager')
         defineRole('member', 'Member')
-        sm.defineService(Permissions, IPermissionService)
-        sm.provideService(Permissions, PermissionService(
-            read='Read', write='Write'))
+        definePermission('read', 'Read')
+        definePermission('write', 'Write')
         self.view = RolePermissionView(RolePermissionManager(), None)
 
     def testRoles(self):
@@ -66,12 +66,12 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def testPermisssions(self):
         permissions = list(self.view.permissions())
-        ids = ['read', 'write']
-        titles = ['Read', 'Write']
+        ids = ['read', 'write', 'zope.Public']
+        titles = ['Read', 'Write', 'Public']
         for permission in permissions:
-            i=ids.index(permission.getId())
+            i=ids.index(permission.id)
             self.failIf(i < 0)
-            self.assertEqual(permission.getTitle(), titles[i])
+            self.assertEqual(permission.title, titles[i])
             del ids[i]
             del titles[i]
 
@@ -98,7 +98,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             for ir in range(len(rset)):
                 setting = rset[ir]
                 r = roles[ir].id
-                p = permissions[ip].getId()
+                p = permissions[ip].id
                 if setting == 'Allow':
                     self.failUnless(r == 'manager' and p == 'read')
                 elif setting == 'Deny':
@@ -125,7 +125,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             for ir in range(len(rset)):
                 setting = rset[ir]
                 r = roles[ir].id
-                p = permissions[ip].getId()
+                p = permissions[ip].id
                 if setting == 'Allow':
                     self.failUnless(r == 'manager' and p == 'write')
                 elif setting == 'Deny':

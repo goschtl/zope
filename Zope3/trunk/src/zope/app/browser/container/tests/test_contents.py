@@ -13,7 +13,7 @@
 ##############################################################################
 """Test Container Contents
 
-$Id: test_contents.py,v 1.33 2004/03/03 10:52:02 philikon Exp $
+$Id: test_contents.py,v 1.34 2004/03/08 12:05:52 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import ztapi
@@ -22,11 +22,9 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.copypastemove.interfaces import IObjectMover
 
 from zope.app.traversing import traverse
-from zope.app.copypastemove.interfaces import IObjectMover
-from zope.app.copypastemove.interfaces import IObjectCopier
+from zope.app.copypastemove.interfaces import IObjectMover, IObjectCopier
 
-from zope.app.copypastemove import ObjectMover
-from zope.app.copypastemove import ObjectCopier
+from zope.app.copypastemove import ObjectMover, ObjectCopier
 
 from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.interface import Interface, implements
@@ -154,9 +152,8 @@ class Document:
 
 
 class Principal:
-
-    def getId(self):
-        return 'bob'
+    
+    id = 'bob'
 
 
 class TestCutCopyPaste(PlacefulSetup, TestCase):

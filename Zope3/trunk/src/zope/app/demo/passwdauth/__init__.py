@@ -16,7 +16,7 @@
 This package defines a new authentication plugin, which can use textfiles to
 authenticate users.
 
-$Id: __init__.py,v 1.1 2004/02/27 14:50:24 philikon Exp $
+$Id: __init__.py,v 1.2 2004/03/08 12:05:55 srichter Exp $
 """
 import os
 from persistence import Persistent
@@ -46,8 +46,8 @@ class PasswdPrincipalSource(Contained, Persistent):
             if line.strip() != '':
                 user_info = line.strip().split(':', 3)
                 p = SimplePrincipal(*user_info)
-                locate(p, self, p.id)
-                p.id = p.login
+                locate(p, self, p._id)
+                p._id = p.login
                 principals.append(p)
         return principals
 
@@ -55,7 +55,7 @@ class PasswdPrincipalSource(Contained, Persistent):
         """See IPrincipalSource."""
         earmark, source_name, id = id.split('\t')
         for p in self.readPrincipals():
-            if p.id == id:
+            if p._id == id:
                 return p
         raise NotFoundError, id
 

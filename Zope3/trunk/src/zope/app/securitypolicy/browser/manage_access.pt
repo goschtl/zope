@@ -60,13 +60,13 @@
           <div class="list-item">
              <a href="RolesWithPermission.html"
                 tal:attributes="href 
-           string:RolesWithPermission.html?permission_to_manage=${perm/getId}"
-                tal:content="perm/getTitle"
+           string:RolesWithPermission.html?permission_to_manage=${perm/id}"
+                tal:content="perm/title"
                 >Access Transient Objects</a>
              <input type="hidden" name="r0" value=""
                  tal:attributes="
                  name string:p${repeat/perm/index};
-                 value  string:${perm/getId}" />
+                 value  string:${perm/id}" />
           </div>
         </td>
         <td align="center" tal:repeat="setting perm/roleSettings">

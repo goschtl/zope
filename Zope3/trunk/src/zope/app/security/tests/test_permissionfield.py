@@ -13,37 +13,34 @@
 ##############################################################################
 """Permission fields tests
 
-$Id: test_permissionfield.py,v 1.8 2003/03/07 21:13:49 jim Exp $
+$Id: test_permissionfield.py,v 1.9 2004/03/08 12:06:02 srichter Exp $
 """
-
-from unittest import TestCase, TestSuite, main, makeSuite
-from zope.security.checker import CheckerPublic
-from zope.app.security.permission import PermissionField
+import unittest
 from zope.schema.interfaces import ValidationError
+from zope.security.checker import CheckerPublic
+from zope.app.tests import ztapi
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission, PermissionField
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.security.registries.permissionregistry import permissionRegistry
-from zope.app.interfaces.security import IPermissionService
-from zope.component.service \
-     import serviceManager, defineService
-from zope.app.services.servicenames import Permissions
 
-from zope.app.security.registries.permissionregistry import Permission
 
-class TestPermissionField(PlacelessSetup, TestCase):
+class TestPermissionField(PlacelessSetup, unittest.TestCase):
 
     def test_validate(self):
-        defineService(Permissions, IPermissionService)
-        serviceManager.provideService(Permissions, permissionRegistry)
         dummy = Permission('dummy', 'Dummy', 'Dummy permission')
         field = PermissionField()
         self.assertRaises(ValidationError, field.validate, dummy)
-        permissionRegistry.definePermission('read', 'Read', 'Read something')
-        field.validate(permissionRegistry.getPermission('read').getId())
+        ztapi.provideUtility(IPermission,
+                             Permission('read', 'Read', 'Read something'),
+                             'read')
+        field.validate('read')
         field.validate(CheckerPublic)
 
-def test_suite():
-    return TestSuite((makeSuite(TestPermissionField),))
 
+def test_suite():
+    return unittest.TestSuite((
+        unittest.makeSuite(TestPermissionField),
+        ))
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

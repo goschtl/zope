@@ -13,20 +13,30 @@
 ##############################################################################
 """Permissions
 
-$Id: permission.py,v 1.10 2004/02/24 14:12:11 srichter Exp $
+$Id: permission.py,v 1.11 2004/03/08 12:06:01 srichter Exp $
 """
+from zope.interface import implements
 from zope.schema import Enumerated, Field
 from zope.schema.interfaces import ValidationError
-from zope.component import getService
-from zope.app.services.servicenames import Permissions
-from zope.app.interfaces.security import IPermissionField
 from zope.security.checker import CheckerPublic
-from zope.interface import implements
+from zope.app import zapi
+from interfaces import IPermission, IPermissionField
+
+
+class Permission(object):
+    implements(IPermission)
+
+    def __init__(self, id, title="", description=""):
+        self.id = id
+        self.title = title
+        self.description = description
 
 
 def checkPermission(context, permission_id):
     """Check whether a given permission exists in the provided context."""
-    if not getService(context, Permissions).getPermission(permission_id):
+    if permission_id == CheckerPublic:
+        return
+    if not zapi.queryUtility(context, IPermission, name=permission_id):
         raise ValueError("Undefined permission id", permission_id)
 
 
@@ -38,6 +48,25 @@ class PermissionField(Enumerated, Field):
         if value is CheckerPublic:
             return
         super(PermissionField, self)._validate(value)
-        service = getService(self.context, Permissions)
-        if service.getPermission(value) is None:
+        if zapi.queryUtility(self.context, IPermission, name=value) is None:
             raise ValidationError("Unknown permission", value)
+
+
+def _addCheckerPublic():
+    """Add the CheckerPublic permission as 'zope.Public'"""
+    from zope.component.utility import utilityService
+    perm = Permission('zope.Public', 'Public',
+            """Special permission used for resources that are always public
+
+            The public permission is effectively an optimization, sine
+            it allows security computation to be bypassed.
+            """
+            )
+    utilityService.provideUtility(IPermission, perm, perm.id)
+
+_addCheckerPublic()
+
+# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
+from zope.testing.cleanup import addCleanUp
+addCleanUp(_addCheckerPublic)
+del addCleanUp

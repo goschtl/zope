@@ -13,47 +13,49 @@
 ##############################################################################
 """Test handler for PrincipalPermissionManager module.
 
-$Id: test_principalpermissionmanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
+$Id: test_principalpermissionmanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
 """
 import unittest
 
-from zope.component.service import serviceManager as services
-from zope.testing.cleanup import CleanUp
+from zope.app import zapi
+from zope.app.tests import ztapi
+from zope.app.tests.placelesssetup import PlacelessSetup
 
-from zope.app.interfaces.security import IPermissionService
-from zope.app.interfaces.security import IAuthenticationService
+from zope.app.security.interfaces import IAuthenticationService, IPermission
+from zope.app.security.permission import Permission
 
-from zope.app.services.servicenames import Permissions, Authentication
-from zope.app.security.registries.permissionregistry \
-    import permissionRegistry as permregistry
-from zope.app.security.registries.principalregistry \
-    import principalRegistry as prinregistry
+from zope.app.services.servicenames import Authentication
 from zope.app.security.settings import Allow, Deny, Unset
+from zope.app.security.principalregistry import principalRegistry
 
 from zope.app.securitypolicy.principalpermission \
     import principalPermissionManager as manager
 
-class Test(CleanUp, unittest.TestCase):
+
+def definePermission(id, title=None, description=None):
+    perm = Permission(id, title, description)
+    ztapi.provideUtility(IPermission, perm, name=perm.id)
+    return perm
+
+class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        CleanUp.setUp(self)
-
-        services.defineService(Permissions, IPermissionService)
-        services.provideService(Permissions, permregistry)
+        super(Test, self).setUp()
+        services = zapi.getServiceManager(None)
 
         services.defineService(Authentication, IAuthenticationService)
-        services.provideService(Authentication, prinregistry)
+        services.provideService(Authentication, principalRegistry)
 
 
     def _make_principal(self, id=None, title=None):
-        p = prinregistry.definePrincipal(
+        p = principalRegistry.definePrincipal(
             id or 'APrincipal',
             title or 'A Principal',
             login = id or 'APrincipal')
-        return p.getId()
+        return p.id
 
     def testUnboundPrincipalPermission(self):
-        permission = permregistry.definePermission('APerm', 'title').getId()
+        permission = definePermission('APerm', 'title').id
         principal = self._make_principal()
         self.assertEqual(manager.getPrincipalsForPermission(permission), [])
         self.assertEqual(manager.getPermissionsForPrincipal(principal), [])
@@ -69,14 +71,14 @@ class Test(CleanUp, unittest.TestCase):
                           'permission', principal)
 
     def test_invalidPrincipal(self):
-        permission = permregistry.definePermission('APerm', 'title').getId()
+        permission = definePermission('APerm', 'title').id
         self.assertRaises(ValueError,
                           manager.grantPermissionToPrincipal,
                           permission, 'principal')
         
 
     def testPrincipalPermission(self):
-        permission = permregistry.definePermission('APerm', 'title').getId()
+        permission = definePermission('APerm', 'title').id
         principal = self._make_principal()
         # check that an allow permission is saved correctly
         manager.grantPermissionToPrincipal(permission, principal)
@@ -121,8 +123,8 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(manager.getSetting(permission, principal), Deny)
 
     def testManyPermissionsOnePrincipal(self):
-        perm1 = permregistry.definePermission('Perm One', 'title').getId()
-        perm2 = permregistry.definePermission('Perm Two', 'title').getId()
+        perm1 = definePermission('Perm One', 'title').id
+        perm2 = definePermission('Perm Two', 'title').id
         prin1 = self._make_principal()
         manager.grantPermissionToPrincipal(perm1, prin1)
         manager.grantPermissionToPrincipal(perm2, prin1)
@@ -140,7 +142,7 @@ class Test(CleanUp, unittest.TestCase):
         self.failUnless((perm2,prin1,Deny) in perms)
 
     def testManyPrincipalsOnePermission(self):
-        perm1 = permregistry.definePermission('Perm One', 'title').getId()
+        perm1 = definePermission('Perm One', 'title').id
         prin1 = self._make_principal()
         prin2 = self._make_principal('Principal 2', 'Principal Two')
         manager.grantPermissionToPrincipal(perm1, prin1)

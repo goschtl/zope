@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: annotatableadapter.py,v 1.8 2004/03/06 16:50:21 jim Exp $
+$Id: annotatableadapter.py,v 1.9 2004/03/08 12:05:56 srichter Exp $
 """
 
 __metaclass__ = type
@@ -20,8 +20,7 @@ __metaclass__ = type
 from zope.fssync.server.entryadapter import ObjectEntryAdapter
 from zope.fssync.server.interfaces import IObjectFile
 from zope.interface import implements
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.interfaces.annotation import IAnnotations, IAnnotatable
 from zope.app.dublincore.zopedublincore import ZopeDublinCore
 from zope.xmlpickle import dumps, loads
 from persistent.dict import PersistentDict

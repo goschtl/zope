@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""File Functional Tests
 
-$Id: test_file.py,v 1.2 2004/02/24 16:49:49 philikon Exp $
+$Id: test_file.py,v 1.3 2004/03/08 12:05:57 srichter Exp $
 """
-
 import unittest
 
 from zope.testing.functional import BrowserTestCase

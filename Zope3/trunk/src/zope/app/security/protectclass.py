@@ -11,25 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Make assertions about permissions needed to access class instances attributes
+"""Make assertions about permissions needed to access class instances
+attributes
+
+$Id: protectclass.py,v 1.4 2004/03/08 12:06:01 srichter Exp $
 """
-
-from zope.app.security.exceptions import UndefinedPermissionError
-from zope.app.security.registries.permissionregistry import permissionRegistry
-
 from zope.security.checker import defineChecker, getCheckerForInstancesOf
 from zope.security.checker import Checker, CheckerPublic
 
-def checkPermission(permission):
-    """Check to make sure that the permission is valid.
-    """
-    if not permissionRegistry.definedPermission(permission):
-        raise UndefinedPermissionError(permission)
+from permission import checkPermission
+
 
 def protectName(class_, name, permission):
-    "Set a permission on a particular name."
-
-    checkPermission(permission)
+    """Set a permission on a particular name."""
+    checkPermission(None, permission)
 
     checker = getCheckerForInstancesOf(class_)
     if checker is None:
@@ -45,9 +40,8 @@ def protectName(class_, name, permission):
     protections[name] = permission
 
 def protectSetAttribute(class_, name, permission):
-    "Set a permission on a particular name."
-
-    checkPermission(permission)
+    """Set a permission on a particular name."""
+    checkPermission(None, permission)
 
     checker = getCheckerForInstancesOf(class_)
     if checker is None:
@@ -63,8 +57,7 @@ def protectSetAttribute(class_, name, permission):
     protections[name] = permission
 
 def protectLikeUnto(class_, like_unto):
-    """Use the protections from like_unto for class_
-    """
+    """Use the protections from like_unto for class_"""
 
     unto_checker = getCheckerForInstancesOf(like_unto)
     if unto_checker is None:

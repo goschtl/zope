@@ -11,20 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""TextWidget Tests
 
-$Id: test_textwidget.py,v 1.6 2004/03/06 04:17:18 garrett Exp $
+$Id: test_textwidget.py,v 1.7 2004/03/08 12:05:53 srichter Exp $
 """
-
 import unittest
 from persistence import Persistent
 from transaction import get_transaction
 
-from zope.interface import Interface
-from zope.interface import implements
-
-from zope.schema import TextLine
-from zope.schema import EnumeratedTextLine
+from zope.interface import Interface, implements
+from zope.schema import TextLine, EnumeratedTextLine
 
 from support import *
 from zope.app.traversing import traverse

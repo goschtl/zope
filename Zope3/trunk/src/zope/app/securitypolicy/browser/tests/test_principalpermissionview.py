@@ -11,22 +11,20 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_principalpermissionview.py,v 1.1 2004/02/27 12:46:32 philikon Exp $
-"""
+"""Principal Permission View Tests
 
+$Id: test_principalpermissionview.py,v 1.2 2004/03/08 12:06:06 srichter Exp $
+"""
 import unittest
 
 from zope.interface import implements
-from zope.component import getService, getServiceManager
 
+from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.interfaces.services.service import ISimpleService
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.security import IPermissionService
-from zope.app.interfaces.security import IAuthenticationService
-from zope.app.services.servicenames import Permissions, Adapters
+from zope.app.interfaces.annotation import IAttributeAnnotatable, IAnnotations
+from zope.app.security.interfaces import IAuthenticationService, IPrincipal
+from zope.app.security.interfaces import IPermission
 from zope.app.services.servicenames import Authentication
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.security.settings import Allow, Deny, Unset
@@ -38,26 +36,7 @@ from zope.app.securitypolicy.browser.principalpermissionview \
      import PrincipalPermissionView
 
 class DummyContext:
-
     implements(IAttributeAnnotatable)
-#IPrincipalPermissionManager, IPrincipalPermissionMap
-
-class DummyPermissionService:
-
-    implements(IPermissionService, ISimpleService)
-
-    def __init__(self, perm_objs):
-        perms = {}
-        for perm_obj in perm_objs:
-            perms[perm_obj.getId()] = perm_obj
-
-        self.perms = perms
-
-    def getPermission(self,pr_id):
-        return self.perms[pr_id]
-
-    def getPermissions(self):
-        return self.perms.keys()
 
 
 class DummyAuthenticationService:
@@ -66,14 +45,22 @@ class DummyAuthenticationService:
     def __init__(self, principals):
         pr = {}
         for principal in principals:
-            pr[principal.getId()] = principal
+            pr[principal.id] = principal
         self.principals = pr
 
     def getPrincipal(self, principal_id):
         return self.principals[principal_id]
 
-class DummyAdapter:
 
+class DummyPrincipal:
+    implements(IPrincipal)
+
+    def __init__(self, id, title):
+        self.id = id
+        self.title = title
+
+
+class DummyAdapter:
     implements(IPrincipalPermissionManager, IPrincipalPermissionMap)
 
     def __init__(self, context):
@@ -123,41 +110,33 @@ class DummyAdapter:
         except KeyError:
             return []
 
-class DummyObject:
+class DummyPermission:
+    implements(IPermission)
+    
     def __init__(self, id, title):
-        self._id = id
-        self._title = title
-
-    def getId(self):
-        return self._id
-
-    def getTitle(self):
-        return self._title
+        self.id = id
+        self.title = title
 
 
 class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
+        sm = zapi.getServiceManager(None)
         self._permissions = []
-        self._permissions.append(DummyObject('qux', 'Qux'))
-        self._permissions.append(DummyObject('baz', 'Baz'))
-        defineService=getServiceManager(None).defineService
-        provideService=getServiceManager(None).provideService
+        self._permissions.append(DummyPermission('qux', 'Qux'))
+        self._permissions.append(DummyPermission('baz', 'Baz'))
+        
+        for perm in self._permissions:
+            ztapi.provideUtility(IPermission, perm, perm.id)
 
-        defineService(
-                 Permissions, IPermissionService)
-        provideService(Permissions,
-                 DummyPermissionService(self._permissions))
-
-        defineService(Authentication,
-                 IAuthenticationService)
+        sm.defineService(Authentication, IAuthenticationService)
 
         self._principals = []
-        self._principals.append(DummyObject('foo', 'Foo'))
-        self._principals.append(DummyObject('bar', 'Bar'))
+        self._principals.append(DummyPrincipal('foo', 'Foo'))
+        self._principals.append(DummyPrincipal('bar', 'Bar'))
 
-        provideService(Authentication,
+        sm.provideService(Authentication,
             DummyAuthenticationService(principals = self._principals))
         ztapi.provideAdapter(IAttributeAnnotatable,
                        IPrincipalPermissionManager, DummyAdapter)
@@ -170,188 +149,189 @@ class Test(PlacefulSetup, unittest.TestCase):
     def testGrantPermissions(self):
         view = self._makeOne()
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         denied_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Deny')
+            self._principals[0].id, 'Deny')
 
         self.assertEqual(len(allowed_perms), 0, 'List not empty')
         self.assertEqual(len(denied_perms), 0, 'List not empty')
-        view.grantPermissions(self._principals[0].getId(),
-                              [self._permissions[0].getId()])
+        view.grantPermissions(self._principals[0].id,
+                              [self._permissions[0].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Allow'),
+            self._principals[0].id,'Allow'),
                          [self._permissions[0]])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Deny'),
+            self._principals[0].id,'Deny'),
                          [])
 
-        view.grantPermissions(self._principals[0].getId(),
-                              [self._permissions[1].getId()])
+        view.grantPermissions(self._principals[0].id,
+                              [self._permissions[1].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Allow').sort(),
+            self._principals[0].id,'Allow').sort(),
                          self._permissions.sort())
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Deny'),
+            self._principals[0].id,'Deny'),
                          [])
 
-        view.grantPermissions(self._principals[1].getId(),
-                              [self._permissions[0].getId()])
+        view.grantPermissions(self._principals[1].id,
+                              [self._permissions[0].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[1].getId(),'Allow'),
+            self._principals[1].id,'Allow'),
                          [self._permissions[0]])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[1].getId(),'Deny'),
+            self._principals[1].id,'Deny'),
                          [])
 
-        view.grantPermissions(self._principals[1].getId(),
-                              [self._permissions[1].getId()])
+        view.grantPermissions(self._principals[1].id,
+                              [self._permissions[1].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[1].getId(),'Allow').sort(),
+            self._principals[1].id,'Allow').sort(),
                          self._permissions.sort())
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[1].getId(),'Deny'),
+            self._principals[1].id,'Deny'),
                          [])
 
     def testDenyPermissions(self):
         view = self._makeOne()
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         denied_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Deny')
+            self._principals[0].id, 'Deny')
 
         self.assertEqual(len(allowed_perms), 0, 'List not empty')
         self.assertEqual(len(denied_perms), 0, 'List not empty')
-        view.denyPermissions(self._principals[0].getId(),
-                             [self._permissions[0].getId()])
+        view.denyPermissions(self._principals[0].id,
+                             [self._permissions[0].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Deny'),
+            self._principals[0].id,'Deny'),
                          [self._permissions[0]])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Allow'),
+            self._principals[0].id,'Allow'),
                          [])
 
-        view.denyPermissions(self._principals[0].getId(),
-                             [self._permissions[1].getId()])
+        view.denyPermissions(self._principals[0].id,
+                             [self._permissions[1].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Deny').sort(),
+            self._principals[0].id,'Deny').sort(),
                          self._permissions.sort())
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Allow'),
+            self._principals[0].id,'Allow'),
                          [])
 
-        view.denyPermissions(self._principals[1].getId(), [
-            self._permissions[0].getId()])
+        view.denyPermissions(self._principals[1].id, [
+            self._permissions[0].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[1].getId(),'Deny'),
+            self._principals[1].id,'Deny'),
                          [self._permissions[0]])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[1].getId(),'Allow'),
+            self._principals[1].id,'Allow'),
                          [])
 
-        view.denyPermissions(self._principals[1].getId(),
-                             [self._permissions[1].getId()])
+        view.denyPermissions(self._principals[1].id,
+                             [self._permissions[1].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[1].getId(),'Deny').sort(),
+            self._principals[1].id,'Deny').sort(),
                          self._permissions.sort())
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[1].getId(),'Allow'),
+            self._principals[1].id,'Allow'),
                          [])
 
     def testAllowDenyPermissions(self):
         view = self._makeOne()
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         denied_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Deny')
+            self._principals[0].id, 'Deny')
 
         self.assertEqual(len(allowed_perms), 0, 'List not empty')
         self.assertEqual(len(denied_perms), 0, 'List not empty')
 
-        view.grantPermissions(self._principals[0].getId(),
-                              [self._permissions[0].getId()])
+        view.grantPermissions(self._principals[0].id,
+                              [self._permissions[0].id])
 
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Allow'),
+            self._principals[0].id,'Allow'),
                          [self._permissions[0]])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Deny'),
+            self._principals[0].id,'Deny'),
                          [])
 
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         self.assertEqual(len(allowed_perms), 1, 'List has wrong length')
 
         # Now change it to deny
-        view.denyPermissions(self._principals[0].getId(),
-                             [self._permissions[0].getId()])
+        view.denyPermissions(self._principals[0].id,
+                             [self._permissions[0].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Deny'),
+            self._principals[0].id,'Deny'),
                          [self._permissions[0]])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Allow'),
+            self._principals[0].id,'Allow'),
                          [])
 
-        view.grantPermissions(self._principals[0].getId(),
-                              [self._permissions[1].getId()])
+        view.grantPermissions(self._principals[0].id,
+                              [self._permissions[1].id])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Deny'),  [self._permissions[0]])
+            self._principals[0].id,'Deny'),  [self._permissions[0]])
         self.assertEqual(view.getPermissionsForPrincipal(
-            self._principals[0].getId(),'Allow'), [self._permissions[1]])
+            self._principals[0].id,'Allow'), [self._permissions[1]])
 
     def testUnsetPermissions(self):
         view = self._makeOne()
 
-        view.grantPermissions(self._principals[0].getId(),
-                              [self._permissions[0].getId()])
+        view.grantPermissions(self._principals[0].id,
+                              [self._permissions[0].id])
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         self.assertEqual(len(allowed_perms), 1, 'List has wrong length')
 
-        view.unsetPermissions(self._principals[0].getId(),
-                              [self._permissions[0].getId()])
+        view.unsetPermissions(self._principals[0].id,
+                              [self._permissions[0].id])
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         self.assertEqual(len(allowed_perms), 0, 'Permission not unset')
 
         # Deleting mutiple in one step
-        view.grantPermissions(self._principals[0].getId(),
-                              [self._permissions[0].getId(),
-                               self._permissions[1].getId()])
+        view.grantPermissions(self._principals[0].id,
+                              [self._permissions[0].id,
+                               self._permissions[1].id])
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         self.assertEqual(len(allowed_perms), 2, 'List has wrong length')
 
-        view.unsetPermissions(self._principals[0].getId(),
-                              [self._permissions[0].getId(),
-                               self._permissions[1].getId()])
+        view.unsetPermissions(self._principals[0].id,
+                              [self._permissions[0].id,
+                               self._permissions[1].id])
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         self.assertEqual(len(allowed_perms), 0, 'Some permissions not unset')
 
         # Deleting in a row
-        view.grantPermissions(self._principals[0].getId(),
-                              [self._permissions[0].getId(),
-                               self._permissions[1].getId()])
+        view.grantPermissions(self._principals[0].id,
+                              [self._permissions[0].id,
+                               self._permissions[1].id])
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         self.assertEqual(len(allowed_perms), 2, 'List has wrong length')
 
-        view.unsetPermissions(self._principals[0].getId(),
-                              [self._permissions[0].getId()])
+        view.unsetPermissions(self._principals[0].id,
+                              [self._permissions[0].id])
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         self.assertEqual(len(allowed_perms), 1, 'Some permissions not unset')
 
-        view.unsetPermissions(self._principals[0].getId(),
-                              [self._permissions[1].getId()])
+        view.unsetPermissions(self._principals[0].id,
+                              [self._permissions[1].id])
         allowed_perms = view.getPermissionsForPrincipal(
-            self._principals[0].getId(), 'Allow')
+            self._principals[0].id, 'Allow')
         self.assertEqual(len(allowed_perms), 0, 'Not all permissions unset')
 
-        # Ask for an other way of getting the unset permisssions
+        # Ask for another way of getting the unset permisssions
         unset_perms = view.getUnsetPermissionsForPrincipal(
-            self._principals[0].getId())
-        self.assertEqual(len(unset_perms), 2, 'Not all permissions unset')
+            self._principals[0].id)
+        # the permissions include zope.Public
+        self.assertEqual(len(unset_perms), 3, 'Not all permissions unset')
 
 def test_suite():
     loader=unittest.TestLoader()

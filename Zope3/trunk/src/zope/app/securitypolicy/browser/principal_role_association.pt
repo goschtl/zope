@@ -17,8 +17,8 @@
        <span i18n:translate="">Principal(s)</span>:
        <select name="principals:list" multiple="multiple">
          <option tal:repeat="principal view/getAllPrincipals"
-                 tal:attributes="value principal/getId"
-                 tal:content="principal/getTitle">my title</option>
+                 tal:attributes="value principal/id"
+                 tal:content="principal/title">my title</option>
        </select>
 
        <span i18n:translate="">Role(s)</span>:
@@ -58,17 +58,17 @@
            </tr>
 
            <tr class="principalRoleRow" tal:repeat="principal listPrincipals">
-             <td class="principalLabel" tal:content="string:${principal/getLogin} (${principal/getTitle|principal/getLogin})">
+             <td class="principalLabel" tal:content="string:${principal/getLogin} (${principal/title|principal/getLogin})">
                Principal Id
              </td>
 
              <td class="principalRole" tal:repeat="role listRoles">
                <select name="grid.role.principal:records"
                        tal:attributes="
-                           name string:grid.${role/id}.${principal/getId}"
+                           name string:grid.${role/id}.${principal/id}"
                        tal:define="selectedValue
                                    python:principalRoleGrid.getValue(
-                                              principal.getId(),
+                                              principal.id,
                                               role.id
                                               )" >
                  <option value="" tal:repeat="defaultValue listValues"
@@ -87,7 +87,7 @@
 
          <input type="hidden" name="principals:list"
                 tal:repeat="principal listPrincipals"
-                tal:attributes="value principal/getId" />
+                tal:attributes="value principal/id" />
 
          <input type="hidden" name="roles:list"
                 tal:repeat="role listRoles"

@@ -11,53 +11,59 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Test handler for 'protectClass' directive """
+""" Test handler for 'protectClass' directive
 
+$Id: test_protectclass.py,v 1.6 2004/03/08 12:06:02 srichter Exp $
+"""
 import unittest
+from zope.interface import implements
+from zope.security.checker import selectChecker
+from zope.app.tests import ztapi
+from zope.app.tests.placelesssetup import PlacelessSetup
 
-from zope.app.security.tests.modulehookup import *
-from zope.app.security.registries.permissionregistry import permissionRegistry
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
+from zope.app.security.permission import Permission
+from zope.app.security.interfaces import IPermission
 from zope.app.security.protectclass import protectName, protectLikeUnto
 from zope.app.security.protectclass import protectSetAttribute
-from zope.interface import implements
+from zope.app.security.tests.modulehookup import *
 
 NOTSET = []
 
 P1 = "extravagant"
 P2 = "paltry"
 
-class Test(CleanUp, unittest.TestCase):
+class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
-        permissionRegistry.definePermission(P1, P1)
-        permissionRegistry.definePermission(P2, P2)
+        super(Test, self).setUp()
+
+        ztapi.provideUtility(IPermission, Permission(P1), P1)
+        ztapi.provideUtility(IPermission, Permission(P2), P2)
 
         class B:
             def m1(self):
                 return "m1"
             def m2(self):
                 return "m2"
+
         class C(B):
             implements(I)
             def m3(self):
                 return "m3"
             def m4(self):
                 return "m4"
+
         TestModule.test_base = B
         TestModule.test_class = C
         TestModule.test_instance = C()
         self.assertState()
 
     def tearDown(self):
-        CleanUp.tearDown(self)
+        super(Test, self).tearDown()
         TestModule.test_class = None
 
     def assertState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
         "Verify that class, instance, and methods have expected permissions."
-
-        from zope.security.checker import selectChecker
-
         checker = selectChecker(TestModule.test_instance)
         self.assertEqual(checker.permission_id('m1'), (m1P or None))
         self.assertEqual(checker.permission_id('m2'), (m2P or None))
@@ -65,9 +71,6 @@ class Test(CleanUp, unittest.TestCase):
 
     def assertSetattrState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
         "Verify that class, instance, and methods have expected permissions."
-
-        from zope.security.checker import selectChecker
-
         checker = selectChecker(TestModule.test_instance)
         self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))
         self.assertEqual(checker.setattr_permission_id('m2'), (m2P or None))
@@ -93,9 +96,6 @@ class Test(CleanUp, unittest.TestCase):
 
     def assertSetattrState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
         "Verify that class, instance, and methods have expected permissions."
-
-        from zope.security.checker import selectChecker
-
         checker = selectChecker(TestModule.test_instance)
         self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))
         self.assertEqual(checker.setattr_permission_id('m2'), (m2P or None))

@@ -13,7 +13,7 @@
 ##############################################################################
 """Process Difinition Instance Tests
 
-$Id: test_instance.py,v 1.13 2004/03/05 22:09:24 jim Exp $
+$Id: test_instance.py,v 1.14 2004/03/08 12:06:25 srichter Exp $
 """
 import unittest
 
@@ -24,10 +24,8 @@ from zope.schema import Text, Int
 from zope.component.service import serviceManager
 from zope.app.event.tests.placelesssetup import \
      eventPublisher, EventRecorder, events, clearEvents
-from zope.app.interfaces.security import IPermissionService
-from zope.app.security.registries.permissionregistry \
-     import permissionRegistry
-from zope.app.services.servicenames import Permissions
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
 from zope.security.checker import CheckerPublic
 from zope.security.management import newSecurityManager
 
@@ -50,6 +48,7 @@ from zope.app.workflow.stateful.definition \
 from zope.app.workflow.stateful.instance \
      import StatefulProcessInstance, StateChangeInfo
 from zope.app import zapi
+from zope.app.tests import ztapi
 from zope.app.container.contained import contained
 from zope.app.services.utility import UtilityRegistration
 
@@ -352,11 +351,8 @@ class PermissionProcessInstanceTests(WorkflowSetup, unittest.TestCase):
     def setUp(self):
         WorkflowSetup.setUp(self)
 
-        serviceManager.defineService(Permissions, IPermissionService)
-        serviceManager.provideService(Permissions, permissionRegistry)
-        permissionRegistry.definePermission('deny', 'Deny')
+        ztapi.provideUtility(IPermission, Permission('deny', 'Deny'), 'deny')
 
-        #newSecurityManager(system_user)
         newSecurityManager('test')
 
         pd = TestProcessDefinition()

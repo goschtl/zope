@@ -14,7 +14,7 @@
 """Management view component for principal-role management (Zope2's
 'local roles').
 
-$Id: principalroleview.py,v 1.3 2004/03/06 16:50:29 jim Exp $
+$Id: principalroleview.py,v 1.4 2004/03/08 12:06:05 srichter Exp $
 """
 from datetime import datetime
 
@@ -106,7 +106,7 @@ class PrincipalRoleGrid:
         for role in roles:
             rid = role.id
             for principal in principals:
-                pid = principal.getId()
+                pid = principal.id
                 setting = map.getSetting(rid, pid)
                 self._grid[(pid, rid)] = setting.getName()
 
@@ -114,7 +114,7 @@ class PrincipalRoleGrid:
         return self._principals
 
     def principalIds(self):
-        return [p.getId() for p in self._principals]
+        return [p.id for p in self._principals]
 
     def roles(self):
         return self._roles

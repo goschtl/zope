@@ -11,8 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Security setting constants """
+"""Security setting constants
 
+$Id: settings.py,v 1.4 2004/03/08 12:06:01 srichter Exp $
+"""
 
 class PermissionSetting(object):
     """PermissionSettings should be considered as immutable.

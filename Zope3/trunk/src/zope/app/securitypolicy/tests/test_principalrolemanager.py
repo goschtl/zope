@@ -13,19 +13,18 @@
 ##############################################################################
 """Test handler for PrincipalRoleManager module.
 
-$Id: test_principalrolemanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
+$Id: test_principalrolemanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
 """
 import unittest
 
 from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import PlacelessSetup
-from zope.app.interfaces.security import IAuthenticationService
 from zope.app.services.servicenames import Authentication
 
+from zope.app.security.interfaces import IAuthenticationService
 from zope.app.security.settings import Allow, Deny
-from zope.app.security.registries.principalregistry \
-     import principalRegistry as pregistry
+from zope.app.security.principalregistry import principalRegistry
 
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
@@ -43,15 +42,15 @@ class Test(PlacelessSetup, unittest.TestCase):
         services = zapi.getServiceManager(None)
 
         services.defineService(Authentication, IAuthenticationService)
-        services.provideService(Authentication, pregistry)
+        services.provideService(Authentication, principalRegistry)
 
     def _make_principal(self, id=None, title=None):
-        p = pregistry.definePrincipal(
+        p = principalRegistry.definePrincipal(
             id or 'APrincipal',
             title or 'A Principal',
             login = id or 'APrincipal')
-        return p.getId()
-
+        return p.id
+    
     def testUnboundPrincipalRole(self):
         role = defineRole('ARole', 'A Role').id
         principal = self._make_principal()

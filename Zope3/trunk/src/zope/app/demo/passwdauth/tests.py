@@ -13,7 +13,7 @@
 ##############################################################################
 """/etc/passwd Authentication Plugin Tests
 
-$Id: tests.py,v 1.2 2004/03/03 16:08:26 jeremy Exp $
+$Id: tests.py,v 1.3 2004/03/08 12:05:55 srichter Exp $
 """
 import os
 from zope.app.demo import passwdauth
@@ -38,7 +38,7 @@ class PasswdPrincipalSourceTest(TestCase):
         self.assertEqual(len(self.source.getPrincipals('2')), 1)
 
     def test_authenticate(self):
-        self.assertEqual(self.source.authenticate('foo1', 'bar1').id, 'foo1')
+        self.assertEqual(self.source.authenticate('foo1', 'bar1')._id, 'foo1')
         self.assertEqual(self.source.authenticate('foo1', 'bar'), None)
         self.assertEqual(self.source.authenticate('foo', 'bar'), None)
     

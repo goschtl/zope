@@ -13,33 +13,28 @@
 ##############################################################################
 """Security Directives Tests
 
-$Id: test_securitydirectives.py,v 1.13 2004/01/14 22:55:27 chrism Exp $
+$Id: test_securitydirectives.py,v 1.14 2004/03/08 12:06:02 srichter Exp $
 """
 import unittest
-
-from zope.component.service import serviceManager as services
-from zope.app.services.servicenames import Permissions, Authentication
-from zope.app.interfaces.security import IPermissionService
-from zope.app.interfaces.security import IAuthenticationService
-
 from zope.configuration.config import ConfigurationConflictError
 from zope.configuration import xmlconfig
 
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
+from zope.app import zapi
+from zope.app.tests import ztapi
+from zope.app.tests.placelesssetup import PlacelessSetup
 
-import zope.app.security.tests
+from zope.app.services.servicenames import Authentication
+from zope.app.security.interfaces import IAuthenticationService, IPermission
+from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow
-from zope.app.security.registries.principalregistry import principalRegistry
-from zope.app.security.registries.permissionregistry \
-    import permissionRegistry as pregistry
+import zope.app.security.tests
 
-class TestBase(CleanUp):
+
+class TestBase(PlacelessSetup):
 
     def setUp(self):
-        CleanUp.setUp(self)
-
-        services.defineService(Permissions, IPermissionService)
-        services.provideService(Permissions, pregistry)
+        super(TestBase, self).setUp()
+        services = zapi.getServiceManager(None)
 
         services.defineService(Authentication, IAuthenticationService)
         services.provideService(Authentication, principalRegistry)
@@ -52,13 +47,13 @@ class TestPrincipalDirective(TestBase, unittest.TestCase):
         reg=principalRegistry
 
         p = reg.getPrincipal('zope.p1')
-        self.assertEqual(p.getId(), 'zope.p1')
-        self.assertEqual(p.getTitle(), 'Sir Tim Peters')
-        self.assertEqual(p.getDescription(), 'Tim Peters')
+        self.assertEqual(p.id, 'zope.p1')
+        self.assertEqual(p.title, 'Sir Tim Peters')
+        self.assertEqual(p.description, 'Tim Peters')
         p = reg.getPrincipal('zope.p2')
-        self.assertEqual(p.getId(), 'zope.p2')
-        self.assertEqual(p.getTitle(), 'Sir Jim Fulton')
-        self.assertEqual(p.getDescription(), 'Jim Fulton')
+        self.assertEqual(p.id, 'zope.p2')
+        self.assertEqual(p.title, 'Sir Jim Fulton')
+        self.assertEqual(p.description, 'Jim Fulton')
 
         self.assertEqual(len(reg.getPrincipals('')), 2)
 
@@ -67,10 +62,10 @@ class TestPermissionDirective(TestBase, unittest.TestCase):
 
     def testRegister(self):
         context = xmlconfig.file("perm.zcml", zope.app.security.tests)
-        perm = pregistry.getPermission("Can.Do.It")
-        self.failUnless(perm.getId().endswith('Can.Do.It'))
-        self.assertEqual(perm.getTitle(), 'A Permissive Permission')
-        self.assertEqual(perm.getDescription(),
+        perm = zapi.getUtility(None, IPermission, "Can.Do.It")
+        self.failUnless(perm.id.endswith('Can.Do.It'))
+        self.assertEqual(perm.title, 'A Permissive Permission')
+        self.assertEqual(perm.description,
                          'This permission lets you do anything')
 
     def testDuplicationRegistration(self):

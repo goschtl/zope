@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test handler for AnnotationPrincipalPermissionManager module.
+"""Test handler for Annotation Principal Permission Manager module.
 
-$Id: test_annotationprincipalpermissionmanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
+$Id: test_annotationprincipalpermissionmanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
 """
 import unittest
 
@@ -21,15 +21,13 @@ from zope.interface import implements
 
 from zope.app.tests import ztapi
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.security.registries.permissionregistry import \
-     permissionRegistry as permregistry
-from zope.app.security.registries.principalregistry import \
-     principalRegistry as prinregistry
+from zope.app.interfaces.annotation import IAttributeAnnotatable, IAnnotations
+from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow, Deny, Unset
 from zope.app.tests.placelesssetup import PlacelessSetup
 
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
 from zope.app.securitypolicy.principalpermission \
     import AnnotationPrincipalPermissionManager
 
@@ -45,24 +43,24 @@ class Test(PlacelessSetup, unittest.TestCase):
             AttributeAnnotations)
 
     def _make_principal(self, id=None, title=None):
-        p = prinregistry.definePrincipal(
+        p = principalRegistry.definePrincipal(
             id or 'APrincipal',
             title or 'A Principal',
             login = id or 'APrincipal')
-        return p.getId()
+        return p.id
 
     def testUnboundPrincipalPermission(self):
         manager = AnnotationPrincipalPermissionManager(Manageable())
-        permission = permregistry.definePermission('APerm', 'title')
-        permission = permission.getId()
+        ztapi.provideUtility(IPermission, Permission('APerm', 'title'), 'APerm')
+        permission = 'APerm'
         principal = self._make_principal()
         self.assertEqual(manager.getPrincipalsForPermission(permission), [])
         self.assertEqual(manager.getPermissionsForPrincipal(principal), [])
 
     def testPrincipalPermission(self):
         manager = AnnotationPrincipalPermissionManager(Manageable())
-        permission = permregistry.definePermission('APerm', 'title')
-        permission = permission.getId()
+        ztapi.provideUtility(IPermission, Permission('APerm', 'title'), 'APerm')
+        permission = 'APerm'
         principal = self._make_principal()
 
         # check that an allow permission is saved correctly
@@ -117,32 +115,38 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def testManyPermissionsOnePrincipal(self):
         manager = AnnotationPrincipalPermissionManager(Manageable())
-        perm1 = permregistry.definePermission('Perm One', 'title').getId()
-        perm2 = permregistry.definePermission('Perm Two', 'title').getId()
+        ztapi.provideUtility(
+            IPermission, Permission('Perm One', 'title'), 'Perm One')
+        perm1 = 'Perm One' 
+        ztapi.provideUtility(
+            IPermission, Permission('Perm Two', 'title'), 'Perm Two')
+        perm2 = 'Perm Two'
         prin1 = self._make_principal()
         manager.grantPermissionToPrincipal(perm1, prin1)
         manager.grantPermissionToPrincipal(perm2, prin1)
         perms = manager.getPermissionsForPrincipal(prin1)
         self.assertEqual(len(perms), 2)
-        self.failUnless((perm1,Allow) in perms)
-        self.failUnless((perm2,Allow) in perms)
+        self.failUnless((perm1, Allow) in perms)
+        self.failUnless((perm2, Allow) in perms)
         manager.denyPermissionToPrincipal(perm2, prin1)
         perms = manager.getPermissionsForPrincipal(prin1)
         self.assertEqual(len(perms), 2)
-        self.failUnless((perm1,Allow) in perms)
-        self.failUnless((perm2,Deny) in perms)
+        self.failUnless((perm1, Allow) in perms)
+        self.failUnless((perm2, Deny) in perms)
 
     def testManyPrincipalsOnePermission(self):
         manager = AnnotationPrincipalPermissionManager(Manageable())
-        perm1 = permregistry.definePermission('Perm One', 'title').getId()
+        ztapi.provideUtility(
+            IPermission, Permission('Perm One', 'title'), 'Perm One')
+        perm1 = 'Perm One' 
         prin1 = self._make_principal()
         prin2 = self._make_principal('Principal 2', 'Principal Two')
         manager.grantPermissionToPrincipal(perm1, prin1)
         manager.denyPermissionToPrincipal(perm1, prin2)
         principals = manager.getPrincipalsForPermission(perm1)
         self.assertEqual(len(principals), 2)
-        self.failUnless((prin1,Allow) in principals)
-        self.failUnless((prin2,Deny) in principals)
+        self.failUnless((prin1, Allow) in principals)
+        self.failUnless((prin2, Deny) in principals)
 
 def test_suite():
     loader=unittest.TestLoader()

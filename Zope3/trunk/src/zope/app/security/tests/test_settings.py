@@ -11,6 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Security Settings Tests
+
+$Id: test_settings.py,v 1.4 2004/03/08 12:06:02 srichter Exp $
+"""
 import unittest
 
 from zope.app.security.settings import Allow

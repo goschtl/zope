@@ -13,11 +13,11 @@
 ##############################################################################
 """Grant Directive Schema
 
-$Id: metadirectives.py,v 1.1 2004/02/27 12:46:31 philikon Exp $
+$Id: metadirectives.py,v 1.2 2004/03/08 12:06:03 srichter Exp $
 """
 from zope.interface import Interface
 from zope.schema import Id 
-from zope.app.security.registries.metadirectives import IBaseDefineDirective
+from zope.app.security.metadirectives import IBaseDefineDirective
 
 class IGrantDirective(Interface):
     """Grant Permissions to roles and principals and roles to principals."""

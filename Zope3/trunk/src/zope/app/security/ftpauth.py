@@ -11,13 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-# HTTP Basic Authentication adapter
+"""FTP Standard Authentication adapter
 
+$Id: ftpauth.py,v 1.2 2004/03/08 12:06:01 srichter Exp $
+"""
 from zope.publisher.interfaces.ftp import IFTPCredentials
-from zope.app.security.loginpassword import LoginPassword
+from loginpassword import LoginPassword
 
 class FTPAuth(LoginPassword):
-
+    """Adapter for handling common FTP authentication.""" 
     __used_for__ = IFTPCredentials
 
     __request = None

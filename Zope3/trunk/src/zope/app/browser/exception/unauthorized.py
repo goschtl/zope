@@ -13,26 +13,24 @@
 ##############################################################################
 """Unautorized Exception View Class
 
-$Id: unauthorized.py,v 1.7 2004/03/05 22:08:54 jim Exp $
+$Id: unauthorized.py,v 1.8 2004/03/08 12:05:52 srichter Exp $
 """
-from zope.app.traversing import getParent
-from zope.app.interfaces.security import IAuthenticationService
-
-__metaclass__ = type
+from zope.app import zapi
+from zope.app.security.interfaces import IAuthenticationService
 
 
-class Unauthorized:
+class Unauthorized(object):
 
     def issueChallenge(self):
         # Set the error status to 403 (Forbidden) in the case when we don't
         # challenge the user
         self.request.response.setStatus(403)
         principal = self.request.user
-        prinreg = getParent(principal)
+        prinreg = zapi.getParent(principal)
         if not IAuthenticationService.providedBy(prinreg):
             # With PluggableAuthenticationService, principals are
             # contained in the PrincipalSource, which is contained in
             # the service.
-            prinreg = getParent(prinreg)
+            prinreg = zapi.getParent(prinreg)
         assert IAuthenticationService.providedBy(prinreg)
-        prinreg.unauthorized(principal.getId(), self.request)
+        prinreg.unauthorized(principal.id, self.request)

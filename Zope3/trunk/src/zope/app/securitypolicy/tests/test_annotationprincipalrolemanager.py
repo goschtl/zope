@@ -13,26 +13,22 @@
 ##############################################################################
 """Test handler for PrincipalRoleManager module.
 
-$Id: test_annotationprincipalrolemanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
+$Id: test_annotationprincipalrolemanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
 """
 import unittest
 from zope.interface import implements
-from zope.component import getService
 
+from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.attributeannotations import AttributeAnnotations
-from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.annotation import IAnnotations
-from zope.app.services.servicenames import Adapters
-from zope.app.security.registries.principalregistry import \
-     principalRegistry as pregistry
+from zope.app.interfaces.annotation import IAttributeAnnotatable, IAnnotations
+from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow, Deny
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 
 from zope.app.securitypolicy.role import Role
 from zope.app.securitypolicy.interfaces import IRole
-from zope.app.securitypolicy.principalrole import \
-     AnnotationPrincipalRoleManager
+from zope.app.securitypolicy.principalrole import AnnotationPrincipalRoleManager
 
 class Manageable:
     implements(IAttributeAnnotatable)
@@ -51,11 +47,11 @@ class Test(PlacefulSetup, unittest.TestCase):
             AttributeAnnotations)
 
     def _make_principal(self, id=None, title=None):
-        p = pregistry.definePrincipal(
+        p = principalRegistry.definePrincipal(
             id or 'APrincipal',
             title or 'A Principal',
             login = id or 'APrincipal')
-        return p.getId()
+        return p.id
 
     def _make_roleManager(self, obj=None):
         if obj is None:

@@ -30,16 +30,16 @@
 
     <p class="form-text" i18n:translate="">
       Roles assigned to the permission
-      <strong tal:content="perm/getTitle" 
+      <strong tal:content="perm/title" 
           i18n:name="perm_title">Change DTML Methods</strong>
-      (id: <strong tal:content="perm/getId" 
+      (id: <strong tal:content="perm/id" 
           i18n:name="perm_id">Zope.Some.Permission</strong>)
     </p>
 
     <form action="AllRolePermissions.html" method="post">
 
       <input type="hidden" name="permission_id" value="Permission Name"
-          tal:attributes="value perm/getId" />
+          tal:attributes="value perm/id" />
 
         <div class="form-element">
 

@@ -13,9 +13,8 @@
 ##############################################################################
 """An adapter from IPrincipal to the ILoggingInfo.
 
-$Id: principallogging.py,v 1.1 2003/07/22 15:09:35 ryzaja Exp $
+$Id: principallogging.py,v 1.2 2004/03/08 12:06:01 srichter Exp $
 """
-
 from zope.interface import implements
 from zope.publisher.interfaces.logginginfo import ILoggingInfo
 
@@ -27,4 +26,4 @@ class PrincipalLogging:
         self.principal = principal
 
     def getLogMessage(self):
-        return str(self.principal.getId())
+        return str(self.principal.id)

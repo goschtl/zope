@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: rolepermission.py,v 1.3 2004/03/06 16:50:29 jim Exp $
+$Id: rolepermission.py,v 1.4 2004/03/08 12:06:03 srichter Exp $
 """
 from zope.interface import implements
 
@@ -33,9 +33,8 @@ from zope.app.securitypolicy.securitymap import SecurityMap
 # change without breaking existing databases
 annotation_key = 'zope.app.security.AnnotationRolePermissionManager'
 
-class AnnotationRolePermissionManager:
-    """
-    provide adapter that manages role permission data in an object attribute
+class AnnotationRolePermissionManager(object):
+    """Provide adapter that manages role permission data in an object attribute
     """
 
     implements(IRolePermissionManager, IRolePermissionMap)
@@ -118,7 +117,7 @@ class AnnotationRolePermissionManager:
                 return rp
         return None
 
-class RolePermissions:
+class RolePermissions(object):
 
     implements(IRole)
 
@@ -127,14 +126,21 @@ class RolePermissions:
         self._context = context
         self._permissions = permissions
 
-    def getId(self):
+
+    def _getId(self):
         return self._role.id
 
-    def getTitle(self):
+    id = property(_getId)
+
+    def _getTitle(self):
         return self._role.title
 
-    def getDescription(self):
+    title = property(_getTitle)
+
+    def _getDescription(self):
         return self._role.description
+
+    description = property(_getDescription)
 
     def permissionsInfo(self):
         prm = IRolePermissionManager(self._context)
@@ -143,9 +149,9 @@ class RolePermissions:
         for permission, setting in rperms:
             settings[permission] = setting.getName()
         nosetting = Unset.getName()
-        return [{'id': permission.getId(),
-                 'title': permission.getTitle(),
-                 'setting': settings.get(permission.getId(), nosetting)}
+        return [{'id': permission.id,
+                 'title': permission.title,
+                 'setting': settings.get(permission.id, nosetting)}
                 for permission in self._permissions]
 
 

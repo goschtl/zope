@@ -68,7 +68,7 @@
 
       <div id="personal" i18n:translate="">
         User:
-        <tal:block replace="request/user/getTitle" 
+        <tal:block replace="request/user/title" 
             i18n:name="user">User</tal:block>
         (<tal:block replace="request/user/getLogin" 
             tal:on-error="string:anonymous"

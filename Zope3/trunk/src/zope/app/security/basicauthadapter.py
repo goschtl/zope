@@ -11,12 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-# HTTP Basic Authentication adapter
+"""HTTP Basic Authentication adapter
 
+$Id: basicauthadapter.py,v 1.3 2004/03/08 12:06:01 srichter Exp $
+"""
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.security.loginpassword import LoginPassword
+from loginpassword import LoginPassword
 
 class BasicAuthAdapter(LoginPassword):
+    """Adapter for handling HTTP Basic Auth.""" 
 
     __used_for__ = IHTTPCredentials
 

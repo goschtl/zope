@@ -11,14 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: test_pluggableauth.py,v 1.7 2003/11/21 17:12:13 jim Exp $
-"""
+"""Pluggable Auth Tests
 
+$Id: test_pluggableauth.py,v 1.8 2004/03/08 12:06:21 srichter Exp $
+"""
 from unittest import TestCase, TestSuite, main, makeSuite
+from zope.testing.doctestunit import DocTestSuite
+from zope.interface.verify import verifyObject
+
+from zope.app import zapi
 from zope.app.tests import ztapi
 from zope.app.services.auth import User
-from zope.app.services.servicenames import Adapters
 from zope.app.services.tests import placefulsetup
 
 from zope.exceptions import NotFoundError
@@ -29,10 +32,11 @@ from zope.exceptions import NotFoundError
 from zope.app.services.pluggableauth import BTreePrincipalSource, \
      SimplePrincipal, PluggableAuthenticationService, \
      PrincipalAuthenticationView
+from zope.app.interfaces.services.pluggableauth import IPrincipalSource
 
 from zope.app.interfaces.services.pluggableauth import IUserSchemafied
-from zope.app.interfaces.security import IPrincipal
-from zope.interface.verify import verifyObject
+from zope.app.security.interfaces import IPrincipal, ILoginPassword
+from zope.app.security.basicauthadapter import BasicAuthAdapter
 
 from zope.publisher.browser import TestRequest as Request
 
@@ -44,19 +48,14 @@ import base64
 class Setup(placefulsetup.PlacefulSetup, TestCase):
 
     def setUp(self):
-        from zope.app.interfaces.services.pluggableauth import IPrincipalSource
         sm = placefulsetup.PlacefulSetup.setUp(self, site=True)
-        from zope.component import getService
-        from zope.app.security.basicauthadapter import BasicAuthAdapter
-        from zope.app.interfaces.security import ILoginPassword
-        ztapi.provideAdapter(
-            IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
+        ztapi.provideAdapter(IHTTPCredentials, ILoginPassword, BasicAuthAdapter)
 
         ztapi.browserView(IPrincipalSource, "login",
                           (PrincipalAuthenticationView,))
 
         auth = setup.addService(sm, "TestPluggableAuthenticationService",
-                                 PluggableAuthenticationService())
+                                PluggableAuthenticationService())
 
         one = BTreePrincipalSource()
         two = BTreePrincipalSource()
@@ -125,7 +124,7 @@ class AuthServiceTest(Setup):
 
     def testAuthServiceGetPrincipal(self):
         auth = self._auth
-        id = self._slinkp.getId()
+        id = self._slinkp.id
         self.assertEqual(self._slinkp, auth.getPrincipal(id))
         self.assertRaises(NotFoundError, self._fail_NoSourceId)
         self.assertRaises(NotFoundError, self._fail_BadIdType)
@@ -151,7 +150,7 @@ class BTreePrincipalSourceTest(Setup):
     def test_getPrincipal(self):
         one = self._one
         p = self._slinkp
-        self.assertEqual(p, one.getPrincipal(p.getId()))
+        self.assertEqual(p, one.getPrincipal(p.id))
 
 class PrincipalAuthenticationViewTest(Setup):
 
@@ -163,7 +162,6 @@ class PrincipalAuthenticationViewTest(Setup):
 
 def test_suite():
     t1 = makeSuite(AuthServiceTest)
-    from zope.testing.doctestunit import DocTestSuite
     t2 = DocTestSuite('zope.app.services.pluggableauth',
                       setUp=setUp, tearDown=tearDown)
     t3 = makeSuite(BTreePrincipalSourceTest)

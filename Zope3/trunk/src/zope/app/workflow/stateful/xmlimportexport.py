@@ -13,30 +13,25 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.11 2004/03/06 16:50:37 jim Exp $
+$Id: xmlimportexport.py,v 1.12 2004/03/08 12:06:25 srichter Exp $
 """
 from xml.sax import parse
 from xml.sax.handler import ContentHandler
 
-from zope.component import getService
 from zope.configuration.name import resolve
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.security.checker import CheckerPublic
 from zope.security.proxy import trustedRemoveSecurityProxy
 
+from zope.app import zapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.workflow.interfaces.stateful \
-     import IStatefulProcessDefinition
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.security.interfaces import IPermission 
+from zope.app.workflow.interfaces.stateful import IStatefulProcessDefinition
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
-from zope.app.pagetemplate.viewpagetemplatefile \
-     import ViewPageTemplateFile
-from zope.app.services.servicenames import Permissions
 from zope.app.workflow.stateful.definition import State, Transition
-
-
-__metaclass__ = type
 
 
 # basic implementation for a format-checker
@@ -60,7 +55,6 @@ class XMLStatefulImporter(ContentHandler):
     def __init__(self, context, encoding='latin-1'):
         self.context = context
         self.encoding = encoding
-        self.perm_service = getService(self.context, Permissions)
 
     def startElement(self, name, attrs):
         handler = getattr(self, 'start' + name.title().replace('-', ''), None)
@@ -100,7 +94,7 @@ class XMLStatefulImporter(ContentHandler):
         elif perm_id == '':
             perm = None
         else:
-            perm = self.perm_service.getPermission(perm_id)
+            perm = zapi.getUtility(None, IPermission, perm_id)
         if not fieldName in perms.keys():
             perms[fieldName] = (CheckerPublic, CheckerPublic)
         if type == u'get':
@@ -123,7 +117,7 @@ class XMLStatefulImporter(ContentHandler):
 
     def startTransition(self, attrs):
         encoding = self.encoding
-        name   = attrs['name'].encode(encoding)
+        name = attrs['name'].encode(encoding)
         permission = attrs.get('permission', '').encode(encoding)
         if permission == 'zope.Public':
             permission = CheckerPublic
@@ -140,8 +134,7 @@ class XMLStatefulImporter(ContentHandler):
         self.context.addTransition(name, trans)
 
 
-class XMLImportHandler:
-
+class XMLImportHandler(object):
     implements(IProcessDefinitionImportHandler)
 
     # XXX Implementation needs more work !!
@@ -158,8 +151,7 @@ class XMLImportHandler:
         parse(data, XMLStatefulImporter(context))
 
 
-class XMLExportHandler:
-
+class XMLExportHandler(object):
     implements(IProcessDefinitionExportHandler)
 
     template = ViewPageTemplateFile('xmlexport_template.pt')
@@ -184,7 +176,7 @@ class XMLExportHandler:
             return 'zope.Public'
         if permission is None:
             return ''
-        return removeAllProxies(permission).getId()
+        return removeAllProxies(permission).id
 
     def getSchemaPermissions(self):
         info = []

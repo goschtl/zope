@@ -13,7 +13,7 @@
 ##############################################################################
 """Test handler for RolePermissionManager module.
 
-$Id: test_rolepermissionmanager.py,v 1.2 2004/03/05 18:39:09 srichter Exp $
+$Id: test_rolepermissionmanager.py,v 1.3 2004/03/08 12:06:09 srichter Exp $
 """
 import unittest
 
@@ -21,11 +21,9 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.app import zapi
 from zope.app.tests import ztapi
-from zope.app.services.servicenames import Permissions
-from zope.app.interfaces.security import IPermissionService
 
-from zope.app.security.registries.permissionregistry \
-        import permissionRegistry as pregistry
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
 from zope.app.security.settings import Allow, Deny
 
 from zope.app.securitypolicy.role import Role
@@ -38,23 +36,21 @@ def defineRole(id, title=None, description=None):
     ztapi.provideUtility(IRole, role, name=role.id)
     return role
 
+def definePermission(id, title=None, description=None):
+    perm = Permission(id, title, description)
+    ztapi.provideUtility(IPermission, perm, name=perm.id)
+    return perm
+
 class Test(PlacelessSetup, unittest.TestCase):
 
-    def setUp(self):
-        super(Test, self).setUp()
-        services = zapi.getServiceManager(None)
-
-        services.defineService(Permissions, IPermissionService)
-        services.provideService(Permissions, pregistry)
-
     def testUnboundRolePermission(self):
-        permission = pregistry.definePermission('APerm', 'aPerm title').getId()
+        permission = definePermission('APerm', 'aPerm title').id
         role = defineRole('ARole', 'A Role').id
         self.assertEqual(manager.getRolesForPermission(permission), [])
         self.assertEqual(manager.getPermissionsForRole(role), [])
 
     def testRolePermission(self):
-        permission = pregistry.definePermission('APerm', 'aPerm title').getId()
+        permission = definePermission('APerm', 'aPerm title').id
         role = defineRole('ARole', 'A Role').id
         manager.grantPermissionToRole(permission, role)
         self.assertEqual(manager.getRolesForPermission(permission),
@@ -63,9 +59,9 @@ class Test(PlacelessSetup, unittest.TestCase):
                                                     [(permission,Allow)])
 
     def testManyPermissionsOneRole(self):
-        perm1 = pregistry.definePermission('Perm One', 'P1').getId()
-        perm2 = pregistry.definePermission('Perm Two', 'P2').getId()
-        perm3 = pregistry.definePermission('Perm Three', 'P3').getId()
+        perm1 = definePermission('Perm One', 'P1').id
+        perm2 = definePermission('Perm Two', 'P2').id
+        perm3 = definePermission('Perm Three', 'P3').id
         role1 = defineRole('Role One', 'Role #1').id
         perms = manager.getPermissionsForRole(role1)
         self.assertEqual(len(perms), 0)
@@ -84,7 +80,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.failUnless((perm2,Allow) in perms)
 
     def testManyRolesOnePermission(self):
-        perm1 = pregistry.definePermission('Perm One', 'title').getId()
+        perm1 = definePermission('Perm One', 'title').id
         role1 = defineRole('Role One', 'Role #1').id
         role2 = defineRole('Role Two', 'Role #2').id
         roles = manager.getRolesForPermission(perm1)
@@ -107,7 +103,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ValueError,
                           manager.grantPermissionToRole, 'perm1', 'role1'
                           )
-        perm1 = pregistry.definePermission('Perm One', 'title').getId()
+        perm1 = definePermission('Perm One', 'title').id
         self.assertRaises(ValueError,
                           manager.grantPermissionToRole, perm1, 'role1'
                           )

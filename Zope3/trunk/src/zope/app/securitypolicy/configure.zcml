@@ -9,9 +9,6 @@
   <modulealias module=".securitymap"
                alias="zope.app.security.grants.securitymap"/>
 
-  <modulealias module=".role"
-               alias="zope.app.services.role" />
-
   <modulealias module="zope.app.securitypolicy"
                alias="zope.products.securitypolicy" />
 
@@ -20,14 +17,12 @@
 
   <content class=".permissionroles.PermissionRoles">
     <require permission="zope.Security"
-             attributes="roles rolesInfo"
-             interface="zope.app.interfaces.security.IRegisteredObject" />
+             attributes="roles rolesInfo id title description" />
   </content>
 
   <content class=".rolepermission.RolePermissions">
     <require permission="zope.Security"
-             attributes="permissions permissionsInfo"
-             interface="zope.app.interfaces.security.IRegisteredObject" />
+             attributes="permissions permissionsInfo id title description" />
   </content>
 
   <adapter factory=".rolepermission.AnnotationRolePermissionManager"

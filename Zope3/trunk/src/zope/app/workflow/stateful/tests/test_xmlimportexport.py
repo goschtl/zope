@@ -11,31 +11,34 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""XML import/export tests
 
+$Id: test_xmlimportexport.py,v 1.12 2004/03/08 12:06:25 srichter Exp $
+"""
+import unittest
 from StringIO import StringIO
+
+from zope.app import zapi
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.interfaces.annotation import IAnnotatable, IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.interfaces.security import IPermissionService
+from zope.app.security.interfaces import IPermission
 from zope.app.interfaces.services.registration import IRegisterable
 from zope.app.workflow.interfaces import IProcessDefinitionExportHandler
 from zope.app.workflow.interfaces import IProcessDefinitionImportHandler
-from zope.app.security.registries.permissionregistry import permissionRegistry
-from zope.app.services.servicenames import Permissions
+from zope.app.security.permission import Permission
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.definition import State, Transition
 from zope.app.workflow.stateful.xmlimportexport import XMLExportHandler
 from zope.app.workflow.stateful.xmlimportexport import XMLImportHandler
 from zope.app.tests import ztapi
-from zope.component import getService, getServiceManager
 from zope.interface import implements, classImplements, Interface
 from zope.interface.verify import verifyClass
 from zope.schema import TextLine
 from zope.security.checker import CheckerPublic
-import unittest
 
 class ISchema(Interface):
 
@@ -107,11 +110,8 @@ class Test(PlacefulSetup, unittest.TestCase):
                              AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
                              ZDCAnnotatableAdapter)
-        sm = getServiceManager(None)
-        sm.defineService(Permissions, IPermissionService)
-        sm.provideService(Permissions, permissionRegistry)
-        perm_service = getService(None, Permissions)
-        perm_service.definePermission('zope.View', 'View', '')
+        ztapi.provideUtility(IPermission, Permission('zope.View', 'View', ''),
+                             'zope.View')
 
     def testInterface(self):
         verifyClass(IProcessDefinitionImportHandler, XMLImportHandler)
@@ -133,10 +133,9 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(testpd.relevantDataSchema, ISchema)
         self.assertEqual(IZopeDublinCore(testpd).title, 'TestPD')
 
-        perm_service = getService(None, Permissions)
         self.assertEqual(
             testpd.schemaPermissions['title'],
-            (CheckerPublic, perm_service.getPermission('zope.View')))
+            (CheckerPublic, zapi.getUtility(None, IPermission, 'zope.View')))
 
         self.assertEqual(len(testpd.states), 3)
         self.assertEqual(len(testpd.transitions), 3)

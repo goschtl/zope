@@ -12,16 +12,15 @@
 #
 ##############################################################################
 """
-$Id: permissionroles.py,v 1.3 2004/03/06 16:50:29 jim Exp $
+$Id: permissionroles.py,v 1.4 2004/03/08 12:06:03 srichter Exp $
 """
-
 from zope.interface import implements
 
-from zope.app.interfaces.security import IPermission
+from zope.app.security.interfaces import IPermission
 from zope.app.security.settings import Unset
 from zope.app.securitypolicy.interfaces import IRolePermissionManager
 
-class PermissionRoles:
+class PermissionRoles(object):
 
     implements(IPermission)
 
@@ -30,21 +29,27 @@ class PermissionRoles:
         self._context    = context
         self._roles      = roles
 
-    def getId(self):
-        return self._permission.getId()
+    def _getId(self):
+        return self._permission.id
 
-    def getTitle(self):
-        return self._permission.getTitle()
+    id = property(_getId)
 
-    def getDescription(self):
-        return self._permission.getDescription()
+    def _getTitle(self):
+        return self._permission.title
+
+    title = property(_getTitle)
+
+    def _getDescription(self):
+        return self._permission.description
+
+    description = property(_getDescription)
 
     def roleSettings(self):
         """
         Returns the list of setting names of each role for this permission.
         """
         prm = IRolePermissionManager(self._context)
-        proles = prm.getRolesForPermission(self._permission.getId())
+        proles = prm.getRolesForPermission(self._permission.id)
         settings = {}
         for role, setting in proles:
             settings[role] = setting.getName()

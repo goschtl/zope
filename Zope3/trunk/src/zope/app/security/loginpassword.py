@@ -11,8 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-from zope.app.interfaces.security import ILoginPassword
+"""Login/Password provider
+
+$Id: loginpassword.py,v 1.4 2004/03/08 12:06:01 srichter Exp $
+"""
 from zope.interface import implements
+from interfaces import ILoginPassword
 
 class LoginPassword:
 

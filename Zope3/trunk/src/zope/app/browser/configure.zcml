@@ -9,7 +9,6 @@
   <include package=".component" />
   <include package=".container" />
   <include package=".form" />
-  <include package=".security" />
   <include package=".services" />
   <include package=".utilities" />
   <include file="traversal.zcml" />

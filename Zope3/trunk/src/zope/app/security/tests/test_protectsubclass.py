@@ -13,17 +13,18 @@
 ##############################################################################
 """Test proper protection of inherited methods
 
-Revision information:
-$Id: test_protectsubclass.py,v 1.3 2003/05/01 19:35:34 faassen Exp $
+$Id: test_protectsubclass.py,v 1.4 2004/03/08 12:06:02 srichter Exp $
 """
-
-from unittest import TestCase, main, makeSuite
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-from zope.app.security.protectclass import protectName
-from zope.app.security.registries.permissionregistry import permissionRegistry
+import unittest
 from zope.security.checker import selectChecker
+from zope.app.tests import ztapi
+from zope.app.tests.placelesssetup import PlacelessSetup
 
-class Test(CleanUp, TestCase):
+from zope.app.security.interfaces import IPermission
+from zope.app.security.permission import Permission
+from zope.app.security.protectclass import protectName
+
+class Test(PlacelessSetup, unittest.TestCase):
 
     def testInherited(self):
 
@@ -36,8 +37,8 @@ class Test(CleanUp, TestCase):
         class S(B1, B2):
             pass
 
-        permissionRegistry.definePermission('B1', '')
-        permissionRegistry.definePermission('S', '')
+        ztapi.provideUtility(IPermission, Permission('B1', ''), 'B1')
+        ztapi.provideUtility(IPermission, Permission('S', ''), 'S')
         protectName(B1, 'g', 'B1')
         protectName(S, 'g', 'S')
         protectName(S, 'h', 'S')
@@ -52,7 +53,7 @@ class Test(CleanUp, TestCase):
 
 
 def test_suite():
-    return makeSuite(Test)
+    return unittest.makeSuite(Test)
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    unittest.main(defaultTest='test_suite')

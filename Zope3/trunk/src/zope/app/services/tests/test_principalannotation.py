@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Principal Annotation Tests
 
-Revision information:
-$Id: test_principalannotation.py,v 1.10 2004/03/06 16:50:30 jim Exp $
+$Id: test_principalannotation.py,v 1.11 2004/03/08 12:06:21 srichter Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from zope.app.services.tests.placefulsetup \
@@ -26,7 +25,7 @@ from zope.app.interfaces.services.principalannotation import \
      IPrincipalAnnotationService
 from zope.app.tests import ztapi
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.security import IPrincipal
+from zope.app.security.interfaces import IPrincipal
 from zope.app.tests import setup
 from zope.interface import implements
 
@@ -37,9 +36,6 @@ class Principal:
 
     def __init__(self, id):
         self.id = id
-
-    def getId(self):
-        return self.id
 
 
 class PrincipalAnnotationTests(PlacefulSetup, TestCase):

@@ -13,17 +13,16 @@
 ##############################################################################
 """Principals.
 
-$Id: principal.py,v 1.5 2004/01/05 08:06:12 philikon Exp $
+$Id: principal.py,v 1.6 2004/03/08 12:06:01 srichter Exp $
 """
-
 from zope.exceptions import NotFoundError
-from zope.component import getService
+from zope.app import zapi
 from zope.app.services.servicenames import Authentication
 
 def checkPrincipal(context, principal_id):
 
     try:
-        if getService(context, Authentication).getPrincipal(principal_id):
+        if zapi.getService(context, Authentication).getPrincipal(principal_id):
             return
     except NotFoundError:
         pass

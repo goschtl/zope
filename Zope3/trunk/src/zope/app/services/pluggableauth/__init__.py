@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.17 2004/03/06 17:48:54 jim Exp $
+$Id: __init__.py,v 1.18 2004/03/08 12:06:19 srichter Exp $
 """
 import random
 import sys
@@ -21,6 +21,7 @@ import time
 import random
 import zope.schema
 
+from warnings import warn
 from persistent import Persistent
 from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
@@ -45,7 +46,7 @@ from zope.app.container.ordered import OrderedContainer
 
 from zope.app.services.servicenames import Authentication
 from zope.app.interfaces.services.pluggableauth import IUserSchemafied
-from zope.app.interfaces.security import ILoginPassword
+from zope.app.security.interfaces import ILoginPassword
 from zope.app.interfaces.services.pluggableauth \
      import IPluggableAuthenticationService
 from zope.app.interfaces.services.pluggableauth import \
@@ -496,24 +497,30 @@ class SimplePrincipal(Persistent, Contained):
     implements(IUserSchemafied, IBTreePrincipalSourceContained)
 
     def __init__(self, login, password, title='', description=''):
-        self.id = ''
+        self._id = ''
         self.login = login
         self.password = password
         self.title = title
         self.description = description
 
-    def getId(self):
-        """See IPrincipal."""
+    def _getId(self):
         source = self.__parent__
         auth = source.__parent__
-        return "%s\t%s\t%s" %(auth.earmark, source.__name__, self.id)
+        return "%s\t%s\t%s" %(auth.earmark, source.__name__, self._id)
+
+    def _setId(self, id):
+        self._id = id
+
+    id = property(_getId, _setId)
 
     def getTitle(self):
-        """ See IPrincipal. """
+        warn("Use principal.title instead of principal.getTitle().",
+             DeprecationWarning, 2)
         return self.title
 
     def getDescription(self):
-        """See IPrincipal."""
+        warn("Use principal.description instead of principal.getDescription().",
+             DeprecationWarning, 2)
         return self.description
 
     def getLogin(self):
