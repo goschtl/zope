@@ -1,16 +1,17 @@
 PYTHON=python2.2
 TESTFLAGS=-p -v
 TESTOPTS=
+SETUPFLAGS=-q
 
 # XXX What should the default be?
 all: inplace
 
 # Build in-place
 inplace:
-	$(PYTHON) setup.py -q build_ext -i
+	$(PYTHON) setup.py $(SETUPFLAGS) build_ext -i
 
 build:
-	$(PYTHON) setup.py -q build
+	$(PYTHON) setup.py $(SETUPFLAGS) build
 
 test_build: build
 	$(PYTHON) test.py $(TESTFLAGS) $(TESTOPTS)
