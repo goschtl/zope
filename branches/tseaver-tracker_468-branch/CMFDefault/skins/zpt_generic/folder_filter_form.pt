@@ -12,9 +12,11 @@
         " />
 </span>
 <form action="" method="POST"
-    tal:define="showfilter request/show_filter_form|nothing; hidefilter python:not showfilter; formaction python:here.absolute_url() + '/folder_contents'"
-    tal:attributes="action formaction"
-    >
+      tal:define="showfilter request/show_filter_form|nothing;
+                  hidefilter python:not showfilter;
+                 "
+      tal:attributes="action string:${here/absolute_url}/folder_contents"
+>
 <table class="FormLayout"
     tal:condition="showfilter"
     tal:define="Type python:(); Subject python:'';filter python:here.decodeFolderFilter(request.get('folderfilter', ''))">
