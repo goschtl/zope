@@ -617,7 +617,8 @@ class TrackRefs:
 
 def runner(files, test_filter, debug):
     runner = ImmediateTestRunner(verbosity=VERBOSE, debug=debug,
-                                 progress=progress, profile=profile)
+                                 progress=progress, profile=profile,
+                                 descriptions=False)
     suite = unittest.TestSuite()
     for file in files:
         s = get_suite(file)
