@@ -19,7 +19,12 @@
 	../utilities/rst2html $<
 
 # Some convenient targets:
-all:	schema zsync
+all:	toplevel schema zsync
+
+.PHONY: toplevel
+toplevel: index.html CREDITS.html DEBUG.html ENVIRONMENT.html FTEST.html \
+          INSTALL.html LOGGING.html ROADMAP.html TODO.html TODOLATER.html \
+          UNITTEST.html
 
 .PHONY:	schema
 schema:	schema/vocabularies.html
