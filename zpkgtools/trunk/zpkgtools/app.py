@@ -149,39 +149,36 @@ class Application:
         f.close()
 
     def includeSupportCode(self):
-        zpkgtools_dest = os.path.join(self.destination, "zpkgtools")
-        # Since we might actually be including zpkgtools as an
-        # installable package, we only do this if we need to:
-        if not os.path.exists(zpkgtools_dest):
-            tests_dir = os.path.join(zpkgtools.__path__[0], "tests")
-            self.ip.copyTree(zpkgtools.__path__[0], zpkgtools_dest,
-                             excludes={tests_dir: tests_dir})
-            tests_dir = os.path.join(zpkgtools_dest, "tests")
-        # now we need to find setuptools:
-        setuptools_dest = os.path.join(self.destination, "setuptools")
-        if os.path.exists(setuptools_dest):
-            # already have it
+        self.includeSupportPackage(
+            "zpkgtools", ("cvs://cvs.zope.org/cvs-repository"
+                          ":Packages/zpkgtools/zpkgtools"))
+        self.includeSupportPackage(
+            "setuptools", ("cvs://cvs.python.sourceforge.net/cvsroot/python"
+                           ":python/nondist/sandbox/setuptools/setuptools"))
+
+    def includeSupportPackage(self, name, fallback):
+        destination = os.path.join(self.destination, name)
+        if os.path.exists(destination):
+            # have the package as a side effect of something else
             return
         source = None
-        if "setuptools" in self.locations:
-            url = self.locations["setuptools"]
+        if name in self.locations:
+            url = self.locations[name]
         else:
             try:
-                import setuptools
+                __import__(name)
             except ImportError:
-                # last resort
-                url = ("cvs://cvs.python.sourceforge.net/cvsroot/python"
-                       ":python/nondist/sandbox/setuptools/setuptools")
-                self.logger.info("resource package:setuptools not configured;"
-                                 " using bootstrap URL")
+                url = fallback
+                self.logger.info("resource package:%s not configured;"
+                                 " using fallback URL" % name)
             else:
-                source = os.path.abspath(setuptools.__path__[0])
+                mod = sys.modules[name]
+                source = os.path.abspath(mod.__path__[0])
         if source is None:
             source = self.loader.load(url)
 
         tests_dir = os.path.join(source, "tests")
-        self.ip.copyTree(source, setuptools_dest,
-                         excludes={tests_dir: tests_dir})
+        self.ip.copyTree(source, destination, excludes=[tests_dir])
 
     def createManifest(self):
         if self.ip is None:
