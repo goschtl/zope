@@ -27,8 +27,10 @@ DC               -d Shared/DC Packages/Shared/DC  __init__.py
 ZRDB             -d Shared/DC/ZRDB Packages/Shared/DC/ZRDB
 
 Products         Packages/Products  __init__.py
-OFSP           -d Products/OFSP Packages/Products/OFSP
-IMAPAdapter    -d lib/python/Products/IMAPAdapter Packages/Products/IMAPAdapter
+OFSP             -d Products/OFSP Packages/Products/OFSP
+IMAPAdapter    -d Products/IMAPAdapter Packages/Products/IMAPAdapter
+NotMail        -d Products/NotMail Packages/Products/NotMail
+MMRoster       -d Products/MMRoster Packages/Products/MMRoster
 MailHost       -d Products/MailHost Packages/Products/MailHost
 ExternalMethod -d Products/ExternalMethod Packages/Products/ExternalMethod
 ZSQLMethods    -d Products/ZSQLMethods Packages/Products/ZSQLMethods
@@ -61,7 +63,7 @@ lpAccessControl    -d lib/python/AccessControl Packages/AccessControl
 lpApp              -d lib/python/App Packages/App
 lpBoboPOS          -d lib/python/BoboPOS Packages/BoboPOS
 lpDateTime         -d lib/python/DateTime Packages/DateTime
-lpDocumentTemplate  -d lib/python/DocumentTemplate Packages/DocumentTemplate
+lpDocumentTemplate -d lib/python/DocumentTemplate Packages/DocumentTemplate
 lpHelpSys          -d lib/python/HelpSys Packages/HelpSys
 lpZPublisher       -d lib/python/ZPublisher Packages/ZPublisher
 lpOFS              -d lib/python/OFS Packages/OFS
@@ -77,9 +79,11 @@ lpSharedInit       -d lib/python/Shared cvs-indirect/Zope/Shared
 lpDCInit           -d lib/python/Shared/DC cvs-indirect/Zope/DC
 lpZRDB             -d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
 
-lpProductsInit     -d lib/python/Products cvs-indirect/Zope/Products
+lpProductsInit    -d lib/python/Products cvs-indirect/Zope/Products
 lpOFSP            -d lib/python/Products/OFSP Packages/Products/OFSP
 lpIMAPAdapter     -d lib/python/Products/IMAPAdapter Packages/Products/IMAPAdapter
+lpNotMail         -d lib/python/Products/NotMail Packages/Products/NotMail
+lpMMRoster        -d lib/python/Products/MMRoster Packages/Products/MMRoster
 lpMailHost        -d lib/python/Products/MailHost Packages/Products/MailHost
 lpExternalMethod  -d lib/python/Products/ExternalMethod Packages/Products/ExternalMethod
 lpZSQLMethods     -d lib/python/Products/ZSQLMethods Packages/Products/ZSQLMethods
@@ -108,7 +112,7 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpZPublisher &lpOFS &lpScheduler &lpStructuredText &lpTreeDisplay \
   &lpSearchIndex \
   &lpSharedInit &lpDCInit &lpProductsInit \
-  &lpZRDB &lpOFSP &lpIMAPAdapter &lpMailHost &lpExternalMethod \
+  &lpZRDB &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZSQLMethods &lpZGadflyDA
 
 ZServer Publishers/ZServer
