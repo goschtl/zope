@@ -14,22 +14,22 @@
     </div>
     <br />
     <table  id="sortable" class="listing" summary="Content listing"
-	       cellpadding="2" cellspacing="0" >
+           cellpadding="2" cellspacing="0" >
       <thead> 
-	  <th>Path</th>
-	  <th>Hits</th>
-	  <th>Misses</th>
-	  <th>Size, bytes</th>
-	  <th>Entries</th>
+      <th>Path</th>
+      <th>Hits</th>
+      <th>Misses</th>
+      <th>Size, bytes</th>
+      <th>Entries</th>
       </thead>
       <tbody>
-	<tr tal:repeat="data context/getStatistics">
-	  <td><span tal:content="data/path">&nbsp;</span></td>
-	  <td><span tal:content="data/hits">&nbsp;</span></td>
-	  <td><span tal:content="data/misses">&nbsp;</span></td>
-	  <td><span tal:content="data/size">&nbsp;</span></td>
-	  <td><span tal:content="data/entries">&nbsp;</span></td>
-	</tr>
+    <tr tal:repeat="data context/getStatistics">
+      <td><span tal:content="data/path">&nbsp;</span></td>
+      <td><span tal:content="data/hits">&nbsp;</span></td>
+      <td><span tal:content="data/misses">&nbsp;</span></td>
+      <td><span tal:content="data/size">&nbsp;</span></td>
+      <td><span tal:content="data/entries">&nbsp;</span></td>
+    </tr>
       </tbody>
     </table>
 
