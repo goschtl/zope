@@ -10,10 +10,10 @@ Zope Changes
 
     New features
 
-    - Implemented 'registrations()' method for all adapter and presentation
-      services. This method is particularly aimed for people building
-      informational GUIs and documentation. Examples of its use are in the
-      'apidoc' package.
+    - Implemented 'registrations()' method for all adapter, utility and
+      presentation services. This method is particularly aimed for people
+      building informational GUIs and documentation. Examples of its use are
+      in the 'apidoc' package.
 
       The change was motivated by the desirable removal of the 
       'getRegisteredMatching()' method, which has been done now.
