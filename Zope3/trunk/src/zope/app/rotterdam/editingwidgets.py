@@ -22,7 +22,73 @@ from zope.app.form.browser.widget import renderElement
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 class SimpleEditingWidget(TextAreaWidget):
-    """Improved textarea editing, with async saving using JavaScript."""
+    """Improved textarea editing, with async saving using JavaScript.
+
+
+    Multi-line text (unicode) input.
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> from zope.schema import Text
+    >>> field = Text(__name__='foo', title=u'on')
+    >>> request = TestRequest(form={'field.foo': u'Hello\\r\\nworld!'})
+    >>> widget = SimpleEditingWidget(field, request)
+    >>> widget.style = ''
+    >>> widget.hasInput()
+    True
+    >>> widget.getInputValue()
+    u'Hello\\nworld!'
+
+    >>> def normalize(s):
+    ...   return '\\n  '.join(filter(None, s.split(' ')))
+
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.foo"
+      name="field.foo"
+      rows="15"
+      >Hello\r
+    world!</textarea>
+
+    >>> print normalize( widget.hidden() )
+    <input
+      class="hiddenType"
+      id="field.foo"
+      name="field.foo"
+      type="hidden"
+      value="Hello\r
+    world!"
+      />
+
+    Calling `setRenderedValue` will change what gets output:
+
+    >>> widget.setRenderedValue("Hey\\ndude!")
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.foo"
+      name="field.foo"
+      rows="15"
+      >Hey\r
+    dude!</textarea>
+
+    Check that HTML is correctly encoded and decoded:
+
+    >>> request = TestRequest(
+    ...     form={'field.foo': u'&lt;h1&gt;&amp;copy;&lt;/h1&gt;'})
+    >>> widget = SimpleEditingWidget(field, request)
+    >>> widget.style = ''
+    >>> widget.getInputValue()
+    u'<h1>&copy;</h1>'
+
+    >>> print normalize( widget() )
+    <textarea
+      cols="60"
+      id="field.foo"
+      name="field.foo"
+      rows="15"
+      >&lt;h1&gt;&amp;copy;&lt;/h1&gt;</textarea>
+    """
 
     implements(IInputWidget)
 
@@ -37,7 +103,7 @@ class SimpleEditingWidget(TextAreaWidget):
     def _toFieldValue(self, value):
         if self.context.min_length and not value:
             return None
-        return value
+        return super(SimpleEditingWidget, self)._toFieldValue(value)
 
     def __call__(self):
         return renderElement("textarea",
@@ -53,4 +119,3 @@ class SimpleEditingWidget(TextAreaWidget):
     def contents(self):
         """Make the contents available to the template"""
         return self._getFormData()
-
