@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ResourceMeta.py,v 1.1 2002/06/18 14:16:49 jim Exp $
+$Id: ResourceMeta.py,v 1.2 2002/06/19 21:31:57 jim Exp $
 """
 
 from Zope.Security.Proxy import Proxy
@@ -133,7 +133,7 @@ class resource(object):
 
         return pageView
 
-    def __call__(self):
+    def __call__(self, require = None):
         if self.name is None:
             return ()
 
@@ -143,6 +143,9 @@ class resource(object):
         factory = self.factory
 
         if permission:
+            if require is None:
+                require = {}
+                
             if permission == 'Zope.Public':
                 permission = CheckerPublic
             
@@ -150,13 +153,14 @@ class resource(object):
                 and (not self.pages)):
                 allowed_attributes = self.default_allowed_attributes
 
-            require={}
             for name in (allowed_attributes or '').split():
                 require[name] = permission
+
             if allowed_interface:
                 for name in allowed_interface.names(1):
                     require[name] = permission
 
+        if require:
             checker = Checker(require.get)
 
             factory = self._proxyFactory(factory, checker)

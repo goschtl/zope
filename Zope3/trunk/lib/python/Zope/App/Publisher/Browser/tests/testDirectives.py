@@ -270,30 +270,66 @@ class Test(PlacelessSetup, unittest.TestCase):
         v = getView(ob, 'test.html', request)
         self.assertEqual(str(v()), '<html><body><p>done</p></body></html>\n')
 
-    def testPageViewsWithName(self):
+    def testNamedViewPageViewsNoDefault(self):
         self.assertEqual(queryView(ob, 'test', request),
                          None)
+        test3 = os.path.join(os.path.split(defs_path)[0], 'tests', 'test3.pt')
 
         xmlconfig(StringIO(template %
             """
-            <browser:view name="test"
+            <browser:view
+                  name="test"
                   factory="Zope.ComponentArchitecture.tests.TestViews.V1"
                   for="Zope.ComponentArchitecture.tests.TestViews.IC">
 
                 <browser:page name="index.html" attribute="index" /> 
                 <browser:page name="action.html" attribute="action" /> 
+                <browser:page name="test.html" template="%s" /> 
             </browser:view>
-            """
+            """ % test3
             ))
 
-        v = getView(ob, 'index.html', request)
+        view = getView(ob, 'test', request)
+        self.assertEqual(view.browserDefault(request)[1], (u'index.html', ))
+
+
+        v = view.publishTraverse(request, 'index.html')
         self.assertEqual(v(), 'V1 here')
-        v = getView(ob, 'action.html', request)
+        v = view.publishTraverse(request, 'action.html')
         self.assertEqual(v(), 'done')
-        v = getView(ob, 'test', request)
-        self.assertEqual(v.index(), 'V1 here')
-        self.assertEqual(v.action(), 'done')
-    
+        v = view.publishTraverse(request, 'test.html')
+        self.assertEqual(str(v()), '<html><body><p>done</p></body></html>\n')
+
+    def testNamedViewPageViewsWithDefault(self):
+        self.assertEqual(queryView(ob, 'test', request),
+                         None)
+        test3 = os.path.join(os.path.split(defs_path)[0], 'tests', 'test3.pt')
+
+        xmlconfig(StringIO(template %
+            """
+            <browser:view
+                  name="test"
+                  factory="Zope.ComponentArchitecture.tests.TestViews.V1"
+                  for="Zope.ComponentArchitecture.tests.TestViews.IC">
+
+                <browser:defaultPage name="test.html" />
+                <browser:page name="index.html" attribute="index" /> 
+                <browser:page name="action.html" attribute="action" /> 
+                <browser:page name="test.html" template="%s" /> 
+            </browser:view>
+            """ % test3
+            ))
+
+        view = getView(ob, 'test', request)
+        self.assertEqual(view.browserDefault(request)[1], (u'test.html', ))
+
+
+        v = view.publishTraverse(request, 'index.html')
+        self.assertEqual(v(), 'V1 here')
+        v = view.publishTraverse(request, 'action.html')
+        self.assertEqual(v(), 'done')
+        v = view.publishTraverse(request, 'test.html')
+        self.assertEqual(str(v()), '<html><body><p>done</p></body></html>\n')
 
     def testProtectedPageViews(self):
         self.assertEqual(queryView(ob, 'test', request),

@@ -13,8 +13,10 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ViewMeta.py,v 1.1 2002/06/18 14:16:49 jim Exp $
+$Id: ViewMeta.py,v 1.2 2002/06/19 21:31:57 jim Exp $
 """
+
+# XXX this will need to be refactored soon. :)
 
 from Zope.Security.Proxy import Proxy
 from Zope.Security.Checker \
@@ -24,6 +26,8 @@ from Zope.Configuration.Action import Action
 from Zope.Configuration.Exceptions import ConfigurationError
 
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
+from Zope.Publisher.Browser.IBrowserView import IBrowserView
+from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 
 from Zope.App.ComponentArchitecture.metaConfigure \
      import defaultView as _defaultView, handler
@@ -34,6 +38,9 @@ from Zope.App.PageTemplate import ViewPageTemplateFile
 from ResourceMeta import resource
 
 class view(resource):
+
+    __pages = None
+    __default = None
 
     def __init__(self, _context, factory=None, name=None, for_=None,
                  layer='default',
@@ -66,15 +73,36 @@ class view(resource):
         resource.__init__(self, _context, factory, name, layer,
                           permission, allowed_interface, allowed_attributes)
 
+        if name:
+            self.__pages = {}
+
 
     def page(self, _context, name, attribute=None, permission=None,
              layer=None, template=None):
+
 
         if self.template:
             raise ConfigurationError(
                 "Can't use page or defaultPage subdirectives for simple "
                 "template views")
 
+
+        if self.name:
+            # Named view with pages.
+
+            if layer is not None:
+                raise ConfigurationError(
+                    "Can't specify a separate layer for pages of named "
+                    "templates.")
+            
+            if template is not None:
+                template = _context.path(template)
+
+            self.__pages[name] = attribute, permission, template
+            if self.__default is None:
+                self.__default = name
+
+            return ()
 
         factory = self.factory
 
@@ -91,6 +119,18 @@ class view(resource):
         return super(view, self).page(
             _context, name, attribute, permission, layer,
             factory=factory)
+
+    def defaultPage(self, _context, name):
+        if self.name:
+            self.__default = name
+            return ()
+
+        return [Action(
+            discriminator = ('defaultViewName', self.for_, self.type, name),
+            callable = handler,
+            args = ('Views','setDefaultViewName', self.for_, self.type, name),
+            )]
+        
 
     def _factory(self, _context, factory):
 
@@ -165,6 +205,57 @@ class view(resource):
 
         return factory
 
+    def __call__(self):
+        if not self.__pages:
+            return super(view, self).__call__()
+
+        # OK, we have named pages on a named view.
+        # We'l lreplace the original class with a new subclass that
+        # can traverse to the necessary pages. 
+
+        require = {}
+        klassdict = {'_PageTraverser__pages': {},
+                     '_PageTraverser__default': self.__default,
+                     }
+        for name in self.__pages:
+            attribute, permission, template = self.__pages[name] 
+            if permission == 'Zope.Public':
+                permission = CheckerPublic
+
+            if attribute:
+                require[attribute] = permission
+            else:
+                attribute = name
+                require[attribute] = permission
+
+            if template:
+                klassdict[attribute] = ViewPageTemplateFile(template)
+
+            klassdict['_PageTraverser__pages'][name] = attribute
+
+        factory = self.factory[:]
+        klass = factory[-1]
+        klass = type(klass.__name__,
+                     (PageTraverser, klass, object),
+                     klassdict)
+        factory[-1] = klass
+        self.factory = factory
+
+        return super(view, self).__call__(require=require)
+
+
+class PageTraverser:
+
+    __implements__ = IBrowserPublisher
+
+    def publishTraverse(self, request, name):
+        return getattr(self, self._PageTraverser__pages[name])
+
+    def browserDefault(self, request):
+        return self, (self._PageTraverser__default, )
+
+
+
 def defaultView(_context, name, for_=None, **__kw):
 
     if __kw:
@@ -184,3 +275,6 @@ def defaultView(_context, name, for_=None, **__kw):
         )]
 
     return actions
+
+
+
