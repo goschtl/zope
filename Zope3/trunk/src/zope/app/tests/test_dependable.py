@@ -11,38 +11,36 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Unit tests for Dependable class.
 
-XXX longer description goes here.
-
-$Id: test_dependable.py,v 1.2 2002/12/25 14:13:26 jim Exp $
+$Id: test_dependable.py,v 1.3 2003/06/12 19:28:08 gvanrossum Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.attributeannotations \
-     import AttributeAnnotations
+from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.tests.placelesssetup import PlacelessSetup
+
 class C:pass
 
 class Test(PlacelessSetup, TestCase):
 
-
-    def _Test__new(self):
+    def factory(self):
         from zope.app.dependable import Dependable
         return Dependable(AttributeAnnotations(C()))
 
     def testVerifyInterface(self):
         from zope.interface.verify import verifyObject
         from zope.app.interfaces.dependable import IDependable
-        object = self._Test__new()
+        object = self.factory()
         verifyObject(IDependable, object)
 
-    def test(self):
-        dependable = self._Test__new()
+    def testBasic(self):
+        dependable = self.factory()
         self.failIf(dependable.dependents())
         dependable.addDependent('/a/b')
         dependable.addDependent('/c/d')
         dependable.addDependent('/c/e')
+        dependable.addDependent('/c/d')
         dependents = list(dependable.dependents())
         dependents.sort()
         self.assertEqual(dependents, ['/a/b', '/c/d', '/c/e'])
@@ -50,6 +48,24 @@ class Test(PlacelessSetup, TestCase):
         dependents = list(dependable.dependents())
         dependents.sort()
         self.assertEqual(dependents, ['/a/b', '/c/e'])
+        dependable.removeDependent('/c/d')
+        dependents = list(dependable.dependents())
+        dependents.sort()
+        self.assertEqual(dependents, ['/a/b', '/c/e'])
+
+    def testRelativeAbsolute(self):
+        obj = self.factory()
+        # Hack the object to have a parent path
+        obj.pp = "/a/"
+        obj.pplen = len(obj.pp)
+        obj.addDependent("foo")
+        self.assertEqual(obj.dependents(), ("/a/foo",))
+        obj.removeDependent("/a/foo")
+        self.assertEqual(obj.dependents(), ())
+        obj.addDependent("/a/bar")
+        self.assertEqual(obj.dependents(), ("/a/bar",))
+        obj.removeDependent("bar")
+        self.assertEqual(obj.dependents(), ())
 
 def test_suite():
     return TestSuite((

@@ -12,39 +12,90 @@
 #
 ##############################################################################
 """
-$Id: dependable.py,v 1.4 2003/06/03 15:33:55 stevea Exp $
+$Id: dependable.py,v 1.5 2003/06/12 19:28:08 gvanrossum Exp $
 """
 
 __metaclass__ = type
 
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.annotation import IAnnotations
+from zope.app.traversing import getParent, canonicalPath, getPath
 from zope.component import getAdapter
 from zope.interface import implements
 
-key = 'zope.app.dependable.Dependents'
 
-class Dependable:
-    __doc__ = IDependable.__doc__
+class PathSetAnnotation:
 
-    implements(IDependable)
+    """Abstract base class for annotations that are sets of paths.
+
+    To make this into a concrete class, a subclass must set the class
+    attribute 'key' to a unique annotation key.  A subclass may also
+    choose to rename the methods.
+    """
 
     def __init__(self, context):
         self.context = context
+        try:
+            pp = getPath(getParent(self.context))
+            if not pp.endswith("/"):
+                pp += "/"
+            self.pp = pp # parentpath
+        except TypeError:
+            self.pp = ""
+        self.pplen = len(self.pp)
 
-    def addDependent(self, location):
-        "See IDependable"
+    def addPath(self, path):
+        path = self._make_relative(path)
         annotations = getAdapter(self.context, IAnnotations)
-        annotations [key] = annotations.get(key, ()) + (location, )
+        old = annotations.get(self.key, ())
+        fixed = map(self._make_relative, old)
+        if path not in fixed:
+            fixed.append(path)
+        new = tuple(fixed)
+        if new != old:
+            annotations[self.key] = new
 
-    def removeDependent(self, location):
-        "See IDependable"
+    def removePath(self, path):
+        path = self._make_relative(path)
         annotations = getAdapter(self.context, IAnnotations)
-        annotations[key] = tuple([loc
-                                  for loc in annotations.get(key, ())
-                                  if loc != location])
+        old = annotations.get(self.key, ())
+        if old:
+            fixed = map(self._make_relative, old)
+            fixed = [loc for loc in fixed if loc != path]
+            new = tuple(fixed)
+            if new != old:
+                if new:
+                    annotations[self.key] = new
+                else:
+                    del annotations[self.key]
 
-    def dependents(self):
-        "See IDependable"
+    def getPaths(self):
         annotations = getAdapter(self.context, IAnnotations)
-        return annotations.get(key, ())
+        locs = annotations.get(self.key, ())
+        return tuple(map(self._make_absolute, locs))
+
+    def _make_relative(self, path):
+        if path.startswith("/") and self.pp:
+            path = canonicalPath(path)
+            if path.startswith(self.pp):
+                path = path[self.pplen:]
+                while path.startswith("/"):
+                    path = path[1:]
+        return path
+
+    def _make_absolute(self, path):
+        if not path.startswith("/") and self.pp:
+            path = self.pp + path
+        return path
+
+
+class Dependable(PathSetAnnotation):
+    """See IDependable."""
+
+    implements(IDependable)
+
+    key = "zope.app.dependable.Dependents"
+
+    addDependent = PathSetAnnotation.addPath
+    removeDependent = PathSetAnnotation.removePath
+    dependents = PathSetAnnotation.getPaths
