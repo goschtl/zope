@@ -13,7 +13,7 @@
 ############################################################################
 """Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.31 2004/04/11 18:16:41 jim Exp $
+$Id: interfaces.py,v 1.32 2004/04/15 13:26:13 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
@@ -449,26 +449,6 @@ class IAdapterService(Interface):
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
         named adapter methods with an empty string for a name.
-        """
-
-    def getRegisteredMatching(required=None, provided=None,
-                              name=None, with=None):
-        """Return information about registered data
-
-        Zero or more for and provided interfaces may be
-        specified. Registration information matching any of the
-        specified interfaces is returned.
-
-        The arguments may be interfaces, or sequences of interfaces.
-
-        The returned value is a sequence of three-element tuples:
-
-        - required interface
-
-        - provided interface
-
-        - the object registered specifically for the required and
-          provided interfaces.
         """
 
     def subscribers(required, provided):

@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Adapter registry tests
 
-$Id: test_adapter.py,v 1.5 2004/04/05 19:43:41 jim Exp $
+$Id: test_adapter.py,v 1.6 2004/04/15 13:26:25 srichter Exp $
 """
 import unittest, doctest
 import zope.interface
@@ -128,82 +128,10 @@ def test_multi_adapter_check_non_default_dont_hide_default():
     """
 
 
-def test_getRegisteredMatching_with_with():
-    """
-    >>> registry = AdapterRegistry()
-    >>> registry.register([None], IB0, '', '_0')
-    >>> registry.register([IF0], IB0, '', '00')
-    >>> registry.register([IF1], IB0, '', '10')
-    >>> registry.register([IF1], IB1, '', '11')
-    >>> registry.register((IF0, IR0), IB0, '', '000')
-    >>> registry.register((IF1, IR0), IB0, '', '100')
-    >>> registry.register((IF1, IR0), IB1, '', '110')
-    >>> registry.register((IF0, IR1), IB0, '', '001')
-    >>> registry.register((IF1, IR1), IB0, '', '101')
-    >>> registry.register((IF1, IR1), IB1, '', '111')
-
-    >>> from pprint import PrettyPrinter
-    >>> pprint = PrettyPrinter(width=60).pprint
-    >>> def sorted(x):
-    ...    x = [(getattr(r, '__name__', None), p.__name__,
-    ...          [w.__name__ for w in rwith], n, f)
-    ...         for (r, p, rwith, n, f) in x]
-    ...    x.sort()
-    ...    pprint(x)
-
-    >>> sorted(registry.getRegisteredMatching())
-    [(None, 'IB0', [], u'', '_0'),
-     ('IF0', 'IB0', [], u'', '00'),
-     ('IF0', 'IB0', ['IR0'], u'', '000'),
-     ('IF0', 'IB0', ['IR1'], u'', '001'),
-     ('IF1', 'IB0', [], u'', '10'),
-     ('IF1', 'IB0', ['IR0'], u'', '100'),
-     ('IF1', 'IB0', ['IR1'], u'', '101'),
-     ('IF1', 'IB1', [], u'', '11'),
-     ('IF1', 'IB1', ['IR0'], u'', '110'),
-     ('IF1', 'IB1', ['IR1'], u'', '111')]
-    >>> sorted(registry.getRegisteredMatching(required=[IF0]))
-    [(None, 'IB0', [], u'', '_0'),
-     ('IF0', 'IB0', [], u'', '00'),
-     ('IF0', 'IB0', ['IR0'], u'', '000'),
-     ('IF0', 'IB0', ['IR1'], u'', '001')]
-    >>> sorted(registry.getRegisteredMatching(required=[IF1],
-    ...                                       provided=[IB0]))
-    [(None, 'IB0', [], u'', '_0'),
-     ('IF0', 'IB0', [], u'', '00'),
-     ('IF0', 'IB0', ['IR0'], u'', '000'),
-     ('IF0', 'IB0', ['IR1'], u'', '001'),
-     ('IF1', 'IB0', [], u'', '10'),
-     ('IF1', 'IB0', ['IR0'], u'', '100'),
-     ('IF1', 'IB0', ['IR1'], u'', '101'),
-     ('IF1', 'IB1', [], u'', '11'),
-     ('IF1', 'IB1', ['IR0'], u'', '110'),
-     ('IF1', 'IB1', ['IR1'], u'', '111')]
-    >>> sorted(registry.getRegisteredMatching(required=[IF1],
-    ...                                       provided=[IB0],
-    ...                                       with=[IR0]))
-    [('IF0', 'IB0', ['IR0'], u'', '000'),
-     ('IF1', 'IB0', ['IR0'], u'', '100'),
-     ('IF1', 'IB1', ['IR0'], u'', '110')]
-    >>> sorted(registry.getRegisteredMatching(required=[IF1],
-    ...                                       provided=[IB0],
-    ...                                       with=[IR1]))
-    [('IF0', 'IB0', ['IR0'], u'', '000'),
-     ('IF0', 'IB0', ['IR1'], u'', '001'),
-     ('IF1', 'IB0', ['IR0'], u'', '100'),
-     ('IF1', 'IB0', ['IR1'], u'', '101'),
-     ('IF1', 'IB1', ['IR0'], u'', '110'),
-     ('IF1', 'IB1', ['IR1'], u'', '111')]
-    """
-
-
-
-
 def test_suite():
     from docfilesuite import DocFileSuite
     return unittest.TestSuite((
         DocFileSuite('../adapter.txt', 'foodforthought.txt'),
-        doctest.DocTestSuite('zope.interface.adapter'),
         doctest.DocTestSuite(),
         ))
 
