@@ -11,6 +11,10 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - CMFCore.CatalogTool: Take into account query restrictions on
+      'effective' or 'expires' attributes during a search.
+      (http://zope.org/Collectors/CMF/120)
+
     - WorkflowTool: Fixed 'setChainForPortalTypes'.
       If 'chain' was an empty string, it wasn't set correctly.
 
