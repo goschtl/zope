@@ -10,5 +10,6 @@
 <include package=".zopetop" />
 <include package=".rotterdam" />
 <include package=".debug" />
+<include package=".onlinehelp" />
 
 </zopeConfigure>
