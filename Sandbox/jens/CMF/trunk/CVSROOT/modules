@@ -161,9 +161,11 @@ sazExtensionClass -d ExtensionClass Zope2/lib/Components/ExtensionClass
 sazLib -d Lib Zope2/lib/python Persistence.py ThreadedAsync.py zLOG.py \
        zdaemon.py
 sazBTrees -d BTrees Zope2/lib/python/BTrees
+sazbsddb3Storage -d bsddb3Storage Packages/bsddb3Storage
 
 StandaloneZODB Releases/StandaloneZODB \
-	       &sazZODB &sazZEO &sazExtensionClass &sazLib &sazBTrees
+	       &sazZODB &sazZEO &sazExtensionClass &sazLib &sazBTrees \
+	       &sazbsddb3Storage
 
 # modules to be used for the ZEO 1.0 release
 zrZEO -d ZEO Packages/ZEO
