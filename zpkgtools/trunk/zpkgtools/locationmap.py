@@ -16,6 +16,7 @@
 import logging
 import os.path
 import posixpath
+import re
 import sets
 import urllib
 import urllib2
@@ -159,4 +160,14 @@ def normalizeResourceId(resource):
     type, rest = urllib.splittype(resource)
     if not type:
         type = DEFAULT_TYPE
+    if type == "package":
+        if not isModuleName(rest):
+            raise ValueError("not a valid package name: %r" % rest)
     return "%s:%s" % (type, rest)
+
+
+_ident = "[a-zA-Z_][a-zA-Z_0-9]*"
+_module_match = re.compile(r"%s(\.%s)*$" % (_ident, _ident)).match
+
+def isModuleName(string):
+    return _module_match(string) is not None
