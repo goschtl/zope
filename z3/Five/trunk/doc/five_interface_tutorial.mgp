@@ -135,6 +135,7 @@ Component architecture
 
 Adapters, example
 
+
 %size 4, fore "blue"
 class INoiseMaker(Interface):
     """Something that makes noise.
@@ -213,9 +214,9 @@ Adapter lookup, example
 
 
 %size 4, fore "blue"
->>> for animal in animal_farm:
-...    noise_maker = INoiseMaker(animal)
-...    print noise_maker.makeNoise()
+for animal in animal_farm:
+    noise_maker = INoiseMaker(animal)
+    print noise_maker.makeNoise()
 
 %page
 
