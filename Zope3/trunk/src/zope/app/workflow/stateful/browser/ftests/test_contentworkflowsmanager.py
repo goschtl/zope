@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Functional Tests for StatefulProcessDefinition
+"""Functional Tests for ContentWorkflowsManager
 
    $Id$
    
@@ -23,10 +23,10 @@ from zope.interface import Interface
 from zope.app.component.interface import nameToInterface
 from zope.app import zapi
 from zope.app.tests.functional import BrowserTestCase
+from zope.app.tests.setup import addUtility
 from zope.app.registration.interfaces import ActiveStatus
 from zope.app.utility.utility import LocalUtilityService
 from zope.app.utility.utility import UtilityRegistration
-from zope.app.traversing import getPath, traverse
 
 from zope.app.workflow.stateful.definition import StatefulProcessDefinition
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition,\
@@ -38,17 +38,14 @@ class Test(BrowserTestCase):
         BrowserTestCase.setUp(self)
         self.basepath = '/++etc++site/default'
         root = self.getRootFolder()
-        default = zapi.traverse(root, '/++etc++site/default')
-        rm = default.getRegistrationManager()
 
-        default['pd'] = StatefulProcessDefinition()
-        pd_path = getPath(default['pd'])
-        registration = UtilityRegistration(
-            'dummy-definition', IStatefulProcessDefinition, pd_path)
-        pd_id = rm.addRegistration(registration)
-        traverse(rm, pd_id).status = ActiveStatus
+        sm = zapi.traverse(root, '/++etc++site')
+        addUtility(sm,
+                   'dummy-definition',
+                   IStatefulProcessDefinition,
+                   StatefulProcessDefinition()
+                   ) 
 
-        self.basepath = '/++etc++site/default'
         response = self.publish(
             self.basepath + '/contents.html',
             basic='mgr:mgrpw')
@@ -66,12 +63,17 @@ class Test(BrowserTestCase):
                   'new_value': 'mgr' })
 
         root = self.getRootFolder()
-        mgr = zapi.traverse(root, self.basepath+'/mgr')
+        default = zapi.traverse(root, '/++etc++site/default')
+        rm = default.getRegistrationManager()
         registration = UtilityRegistration(
             'cwm', IContentWorkflowsManager, self.basepath+'/mgr')
         pd_id = rm.addRegistration(registration)
-        traverse(rm, pd_id).status = ActiveStatus
+        zapi.traverse(rm, pd_id).status = ActiveStatus
         
+
+    def tearDown(self):
+        BrowserTestCase.tearDown(self)
+
 
     def test_subscribe(self):
         response = self.publish(
