@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.15 2003/05/15 17:32:46 gvanrossum Exp $
+$Id: syncer.py,v 1.16 2003/05/15 19:46:45 gvanrossum Exp $
 """
 
 import os
@@ -29,6 +29,8 @@ from zope.configuration.name import resolve
 from zope.app.fssync.classes import Default
 from zope.app.traversing import getPath
 from zope.app.fssync.fsregistry import getSynchronizer
+from zope.app.interfaces.file import IFileFactory
+from zope.proxy.introspection import removeAllProxies
 
 def readFile(path):
     f = open(path)
@@ -159,6 +161,34 @@ def _setItem(container, name, ob, old=False):
         container[name] = ob
 
 
+def _create(container, name, factory, path, old=False):
+    # Create an item in a container or in a mapping
+    if factory:
+        # A given factory overrides everything
+        newOb = resolve(factory)()
+    else:
+        # No factory; try using the newfangled IFileFactory feature
+        as = getService(container, "Adapters")
+        isuffix = name.rfind(".")
+        if isuffix >= 0:
+            suffix = name[isuffix:]
+        else:
+            suffix = ""
+        factory = as.queryAdapter(container, IFileFactory, name=suffix)
+        if factory is None and suffix:
+            factory = as.queryAdapter(container, IFileFactory)
+        if factory:
+            newOb = factory(name, None, readFile(path))
+            newOb = removeAllProxies(newOb)
+        else:
+            # Oh well, do it the oldfashioned way
+            newOb = loadFile(path)
+
+    _setItem(container, name, newOb, old)
+
+    return newOb
+
+
 def fromFS(container, name, location):
     """Synchromize a file from what's on the file system.
 
@@ -202,8 +232,13 @@ def fromFS(container, name, location):
         raise ValueError("Invalid absolute path name")
 
     # See if this is an existing object
-    if name in container:
-        # Yup, let's see if we need to delete it
+    if name not in container:
+        # Not there; we need to create a new object
+        assert entry.get("flag") == "added"
+        newOb = _create(container, name, factory, path)
+
+    else:
+        # It's there; let's see if we need to delete it
         if entry.get("flag") == "removed":
             del container[name]
             return # That was easy!
@@ -219,12 +254,7 @@ def fromFS(container, name, location):
         if adapter.typeIdentifier() != entry.get('type'):
             # We have a different object, replace the one that's there
 
-            if factory:
-                newOb = resolve(factory)()
-            else:
-                newOb = loadFile(path)
-
-            _setItem(container, name, newOb, old=True)
+            newOb = _create(container, name, factory, path, old=True)
 
         elif not factory:
             if entry.get('type') == '__builtin__.str':
@@ -245,15 +275,6 @@ def fromFS(container, name, location):
                     oldOb.__setstate__(getstate())
                     oldOb._p_changed = True
         # XXX else, what?
-
-    else:
-        # We need to create a new object
-        if factory:
-            newOb = resolve(entry['factory'])()
-        else:
-            newOb = loadFile(path)
-
-        _setItem(container, name, newOb)
 
     # Get the object adapter again
     ob = container[name]
@@ -312,6 +333,7 @@ def fromFS(container, name, location):
 
     else:
         # Directory
+        assert IObjectDirectory.isImplementedBy(adapter)
         if not os.path.isdir(path):
             raise SynchronizationError("Object is directory, but data is file")
 
