@@ -27,7 +27,7 @@ fssync status [FILE_OR_DIR ...]
 fssync commit [FILE_OR_DIR ...]
 fssync diff [FILE_OR_DIR ...]
 
-$Id: main.py,v 1.2 2003/05/11 00:16:06 gvanrossum Exp $
+$Id: main.py,v 1.3 2003/05/13 15:28:03 gvanrossum Exp $
 """
 
 import os
@@ -96,18 +96,17 @@ def main(argv=None):
     else:
         return None
 
-def checkout(url, fspath, writeOriginals=True):
-    fs = FSSync(fspath)
-    fs.setrooturl(url)
-    fs.checkout()
+def checkout(rooturl, target):
+    fs = FSSync(rooturl=rooturl)
+    fs.checkout(target)
 
-def commit(fspath):
-    fs = FSSync(fspath)
-    fs.commit()
+def commit(target):
+    fs = FSSync()
+    fs.commit(target)
 
-def update(fspath):
-    fs = FSSync(fspath)
-    fs.update()
+def update(target):
+    fs = FSSync()
+    fs.update(target)
 
 def add(args):
     fs = FSSync(os.curdir)

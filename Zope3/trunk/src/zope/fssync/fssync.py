@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.5 2003/05/12 22:23:42 gvanrossum Exp $
+$Id: fssync.py,v 1.6 2003/05/13 15:28:03 gvanrossum Exp $
 """
 
 import os
@@ -79,17 +79,38 @@ class Error(Exception):
     def __repr__(self):
         return "%s%r" % (self.__class__.__name__, (self.msg,)+self.args)
 
-class FSSync(object):
+class Network(object):
 
-    def __init__(self, topdir, verbose=False):
-        self.topdir = topdir
-        self.verbose = verbose
-        self.setrooturl(self.findrooturl())
-        self.metadata = Metadata()
+    def loadrooturl(self, target):
+        rooturl = self.findrooturl(target)
+        if not rooturl:
+            raise Error("can't find root url for target", target)
+        self.setrooturl(rooturl)
+
+    def saverooturl(self, target):
+        if self.rooturl:
+            self.writefile(self.rooturl + "\n",
+                           join(target, "@@Zope", "Root"))
+
+    def findrooturl(self, target):
+        dir = realpath(target)
+        while dir:
+            zopedir = join(dir, "@@Zope")
+            rootfile = join(zopedir, "Root")
+            try:
+                data = self.readfile(rootfile)
+            except IOError:
+                pass
+            else:
+                data = data.strip()
+                if data:
+                    return data
+            dir = dirname(dir)
+        return None
 
     def setrooturl(self, rooturl):
         self.rooturl = rooturl
-        if self.rooturl is None:
+        if not self.rooturl:
             self.roottype = self.rootpath = None
             self.user_passwd = self.host_port = None
             return
@@ -100,6 +121,20 @@ class FSSync(object):
             raise Error("https not supported by this Python build")
         netloc, self.rootpath = urllib.splithost(rest)
         self.user_passwd, self.host_port = urllib.splituser(netloc)
+
+    def readfile(self, file, mode="r"):
+        f = open(file, mode)
+        try:
+            return f.read()
+        finally:
+            f.close()
+
+    def writefile(self, data, file, mode="w"):
+        f = open(file, mode)
+        try:
+            f.write(data)
+        finally:
+            f.close()
 
     def httpreq(self, path, view, datafp=None, content_type="application/zip"):
         if not path.endswith("/"):
@@ -140,39 +175,75 @@ class FSSync(object):
                         errcode, errmsg,
                         self.slurptext(fp, headers))
         if headers["Content-type"] != "application/zip":
-            raise Error("The request didn't return a zipfile:\n%s",
-                        self.slurptext(fp, headers).strip())
+            raise Error(self.slurptext(fp, headers).strip())
         return fp, headers
 
-    def checkout(self):
-        fspath = self.topdir
-        if not self.rooturl:
-            raise Error("root url not found nor explicitly set")
-        if os.path.exists(fspath):
-            raise Error("can't checkout into existing directory", fspath)
-        fp, headers = self.httpreq(self.rootpath,
-                                   "@@toFS.zip?writeOriginals=False")
+    def slurptext(self, fp, headers):
+        data = fp.read()
+        ctype = headers["Content-type"]
+        if ctype == "text/html":
+            s = StringIO()
+            f = formatter.AbstractFormatter(formatter.DumbWriter(s))
+            p = htmllib.HTMLParser(f)
+            p.feed(data)
+            p.close()
+            return s.getvalue()
+        if ctype.startswith("text/"):
+            return data
+        return "Content-Type %r" % ctype
+
+class FSSync(object):
+
+    def __init__(self, metadata=None, network=None, rooturl=None):
+        if metadata is None:
+            metadata = Metadata()
+        if network is None:
+            network = Network()
+        self.metadata = metadata
+        self.network = network
+        self.network.setrooturl(rooturl)
+
+    def checkout(self, target):
+        rootpath = self.network.rootpath
+        if not rootpath:
+            raise Error("root url not set")
+        if self.metadata.getentry(target):
+            raise Error("target already registered", target)
+        if exists(target) and not isdir(target):
+            raise Error("target should be a directory", target)
+        self.ensuredir(target)
+        fp, headers = self.network.httpreq(rootpath,
+                                           "@@toFS.zip?writeOriginals=False")
         try:
-            self.merge_zipfile(fp)
+            self.merge_zipfile(fp, target)
         finally:
             fp.close()
-        self.saverooturl()
+        self.network.saverooturl(target)
 
-    def commit(self):
-        names = self.metadata.getnames(self.topdir)
-        if len(names) != 1:
-            raise Error("can only commit from toplevel directory")
-        entry = self.metadata.getentry(join(self.topdir, names[0]))
+    def commit(self, target):
+        entry = self.metadata.getentry(target)
+        if not entry:
+            names = self.metadata.getnames(target)
+            if len(names) != 1:
+                raise Error("can only commit a single directory")
+            target = join(target, names[0])
+            entry = self.metadata.getentry(target)
+        self.network.loadrooturl(target)
         path = entry["path"]
         zipfile = tempfile.mktemp(".zip")
+        head, tail = split(realpath(target))
         try:
-            sts = os.system("cd %s; zip -q -r %s ." %
-                            (commands.mkarg(self.topdir), zipfile))
+            sts = os.system("cd %s; zip -q -r %s %s @@Zope" %
+                            (commands.mkarg(head),
+                             zipfile,
+                             commands.mkarg(tail)))
             if sts:
                 raise Error("zip command failed")
             infp = open(zipfile, "rb")
             try:
-                outfp, headers = self.httpreq(path, "@@fromFS.zip", infp)
+                outfp, headers = self.network.httpreq(path,
+                                                      "@@fromFS.zip",
+                                                      infp)
             finally:
                 infp.close()
         finally:
@@ -180,22 +251,29 @@ class FSSync(object):
             if isfile(zipfile):
                 os.remove(zipfile)
         try:
-            self.merge_zipfile(outfp)
+            self.merge_zipfile(outfp, head)
         finally:
             outfp.close()
 
-    def update(self):
-        fp, headers = self.httpreq(self.rootpath,
-                                   "@@toFS.zip?writeOriginals=False")
+    def update(self, target):
+        entry = self.metadata.getentry(target)
+        if not entry:
+            names = self.metadata.getnames(target)
+            if len(names) != 1:
+                raise Error("can only commit a single directory")
+            target = join(target, names[0])
+            entry = self.metadata.getentry(target)
+        self.network.loadrooturl(target)
+        head, tail = split(realpath(target))
+        path = entry["path"]
+        fp, headers = self.network.httpreq(path,
+                                           "@@toFS.zip?writeOriginals=False")
         try:
-            if headers["Content-Type"] != "application/zip":
-                raise Error("The request didn't return a zipfile:\n%s",
-                            self.slurptext(fp, headers).strip())
-            self.merge_zipfile(fp)
+            self.merge_zipfile(fp, head)
         finally:
             fp.close()
 
-    def merge_zipfile(self, fp):
+    def merge_zipfile(self, fp, localdir):
         zipfile = tempfile.mktemp(".zip")
         try:
             tfp = open(zipfile, "wb")
@@ -208,7 +286,7 @@ class FSSync(object):
                 os.mkdir(tmpdir)
                 cmd = "cd %s; unzip -q %s" % (tmpdir, zipfile)
                 sts, output = commands.getstatusoutput(cmd)
-                self.merge_dirs(self.topdir, tmpdir)
+                self.merge_dirs(localdir, tmpdir)
                 print "All done."
             finally:
                 if isdir(tmpdir):
@@ -282,7 +360,7 @@ class FSSync(object):
             if lentry or rentry:
                 if x not in ldirs:
                     os.mkdir(local)
-            self.merge_dirs(local, remote)
+                self.merge_dirs(local, remote)
 
         for x in sorted(nondirs):
             if x in dirs:
@@ -363,64 +441,3 @@ class FSSync(object):
     def ensuredir(self, dir):
         if not isdir(dir):
             os.makedirs(dir)
-
-    def slurptext(self, fp, headers):
-        data = fp.read()
-        ctype = headers["Content-type"]
-        if ctype == "text/html":
-            s = StringIO()
-            f = formatter.AbstractFormatter(formatter.DumbWriter(s))
-            p = htmllib.HTMLParser(f)
-            p.feed(data)
-            p.close()
-            return s.getvalue()
-        if ctype.startswith("text/"):
-            return data
-        return "Content-Type %r" % ctype
-
-    def findrooturl(self):
-        dir = self.topdir
-        while dir:
-            zopedir = join(dir, "@@Zope")
-            rootfile = join(zopedir, "Root")
-            try:
-                data = self.readfile(rootfile)
-                return data.strip()
-            except IOError:
-                pass
-            dir = self.parent(dir)
-        return None
-
-    def saverooturl(self):
-        if self.rooturl:
-            self.writefile(self.rooturl + "\n",
-                           join(self.topdir, "@@Zope", "Root"))
-        else:
-            print "No root url saved"
-
-    def readfile(self, file, mode="r"):
-        f = open(file, mode)
-        try:
-            return f.read()
-        finally:
-            f.close()
-
-    def writefile(self, data, file, mode="w"):
-        f = open(file, mode)
-        try:
-            f.write(data)
-        finally:
-            f.close()
-
-    def parent(self, path):
-        anomalies = ("", os.curdir, os.pardir)
-        head, tail = split(path)
-        if tail not in anomalies:
-            return head
-        head, tail = split(normpath(path))
-        if tail not in anomalies:
-            return head
-        head, tail = split(realpath(path))
-        if tail not in anomalies:
-            return head
-        return None
