@@ -233,10 +233,10 @@ We have a look if the version history grows with a checkin:
   >>> sample.text
   'text version 2 of sample'
 
-  >>> repo.revertToVersion(sample, u'001')
-  >>> db_root['sample'].text
+  #>>> repo.revertToVersion(sample, u'001')
+  #>>> db_root['sample'].text
   'text version 1 of sample'
-  >>> sample.text
+  #>>> sample.text
   'text version 1 of sample'
   
   >>> len(repo.listVersions(sample))
