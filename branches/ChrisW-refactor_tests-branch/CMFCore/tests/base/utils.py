@@ -26,6 +26,8 @@ def has_path( catalog, path ):
     """
         Verify that catalog has an object at path.
     """
+    if type( path ) is type( () ):
+        path = '/'.join(path)
     rids = map( lambda x: x.data_record_id_, catalog.searchResults() )
     for rid in rids:
         if catalog.getpath( rid ) == path:
