@@ -22,7 +22,7 @@ typedef struct {
         (((ProxyObject *)proxy)->proxy_checker)
 
 
-staticforward PyTypeObject ProxyType;
+static PyTypeObject ProxyType;
 
 
 /*
@@ -606,8 +606,8 @@ proxy_length(PyObject *self)
 }
 
 /* sq_item and sq_ass_item may be called by PySequece_{Get,Set}Item(). */
-staticforward PyObject *proxy_getitem(PyObject *, PyObject *);
-staticforward int proxy_setitem(PyObject *, PyObject *, PyObject *);
+static PyObject *proxy_getitem(PyObject *, PyObject *);
+static int proxy_setitem(PyObject *, PyObject *, PyObject *);
 
 static PyObject *
 proxy_igetitem(PyObject *self, int i)
