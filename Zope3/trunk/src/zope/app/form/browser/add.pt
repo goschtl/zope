@@ -4,8 +4,8 @@
 
   <div metal:define-macro="addform">
 
-    <form action="." tal:attributes="action request/URL" method="post"
-          enctype="multipart/form-data">
+    <form action="." tal:attributes="action request/URL/url:unquote"
+          method="post" enctype="multipart/form-data">
 
       <div metal:define-macro="formbody">
 
