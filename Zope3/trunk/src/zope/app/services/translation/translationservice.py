@@ -13,7 +13,7 @@
 ##############################################################################
 """This is the standard, placeful Translation Service for TTW development.
 
-$Id: translationservice.py,v 1.15 2004/02/20 22:02:32 fdrake Exp $
+$Id: translationservice.py,v 1.16 2004/03/02 17:49:26 srichter Exp $
 """
 import re
 from BTrees.OOBTree import OOBTree
@@ -25,6 +25,7 @@ from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.services.translation import ILocalTranslationService
 from zope.app.services.servicenames import Translation
 from zope.i18n.negotiator import negotiator
+from zope.i18n.interfaces import INegotiator
 from zope.i18n.simpletranslationservice import SimpleTranslationService
 from zope.interface import implements
 from zope.app.container.contained import Contained
@@ -73,7 +74,7 @@ class TranslationService(BTreeContainer, SimpleTranslationService, Contained):
         if target_language is None and context is not None:
             avail_langs = self.getAvailableLanguages(domain)
             # Let's negotiate the language to translate to. :)
-            negotiator = zapi.getService(self, 'LanguageNegotiation')
+            negotiator = zapi.getUtility(self, INegotiator)
             target_language = negotiator.getLanguage(avail_langs, context)
 
         # Get the translation. Default is the source text itself.
