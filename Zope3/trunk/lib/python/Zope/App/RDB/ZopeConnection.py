@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZopeConnection.py,v 1.5 2002/08/12 15:07:30 alga Exp $
+$Id: ZopeConnection.py,v 1.6 2002/12/09 16:07:28 alga Exp $
 """
 from IZopeConnection import IZopeConnection
 from IZopeCursor import IZopeCursor
@@ -34,10 +34,6 @@ class ZopeConnection:
         # The IDBIConnection interface is hereby implemented
         return getattr(self.conn, key)
 
-    ############################################################
-    # Implementation methods for interface
-    # Zope/App/RDB/IZopeConnection.py
-
     def cursor(self):
         'See Zope.App.RDB.IZopeConnection.IZopeConnection'
         return ZopeCursor(self.conn.cursor(), self)
@@ -49,12 +45,17 @@ class ZopeConnection:
             get_transaction().join(tm)
             self._txn_registered = True
 
-    ######################################
-    # from: Zope.App.RDB.IDBITypeInfoProvider.IDBITypeInfoProvider
+    def commit(self):
+        'See Zope.App.RDB.IDBIConnection.IDBIConnection'
+        self._txn_registered = False
+        self.conn.commit()
+
+        
+    def rollback(self):
+        'See Zope.App.RDB.IDBIConnection.IDBIConnection'
+        self._txn_registered = False
+        self.conn.rollback()
 
     def getTypeInfo(self):
         'See Zope.App.RDB.IDBITypeInfoProvider.IDBITypeInfoProvider'
         return self._type_info
-        
-    #
-    ############################################################

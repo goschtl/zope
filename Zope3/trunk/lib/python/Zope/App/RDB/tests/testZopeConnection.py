@@ -12,14 +12,14 @@
 #
 ##############################################################################
 """
-$Id: testZopeConnection.py,v 1.5 2002/08/12 15:07:30 alga Exp $
+$Id: testZopeConnection.py,v 1.6 2002/12/09 16:07:28 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from Transaction import get_transaction
 from Zope.App.RDB.ZopeConnection import ZopeConnection
 from Zope.App.RDB.IZopeCursor import IZopeCursor
-from Stubs import *
+from Stubs import ConnectionStub, TypeInfoStub
 
 class ZopeConnectionTests(TestCase):
 
@@ -40,6 +40,24 @@ class ZopeConnectionTests(TestCase):
 
         self.assertEqual(zc._txn_registered, True)
         self.assertEqual(len(t._resources), 1)
+
+    def test_commit(self):
+        t = get_transaction()
+        t.begin()
+        zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
+        self._txn_registered = True
+        zc.commit()
+        self.assertEqual(zc._txn_registered, False,
+                         "did not forget the transaction")
+
+    def test_rollback(self):
+        t = get_transaction()
+        t.begin()
+        zc = ZopeConnection(ConnectionStub(), TypeInfoStub())
+        self._txn_registered = True
+        zc.rollback()
+        self.assertEqual(zc._txn_registered, False,
+                         "did not forget the transaction")
 
     def test_getattr(self):
         zc = ZopeConnection(ConnectionStub(), TypeInfoStub())

@@ -17,7 +17,7 @@ Provides a proxy for interaction between the zope transaction
 framework and the db-api connection. Databases which want to support
 sub transactions need to implement their own proxy.
 
-$Id: ZopeDBTransactionManager.py,v 1.3 2002/07/24 23:17:04 jeremy Exp $
+$Id: ZopeDBTransactionManager.py,v 1.4 2002/12/09 16:07:28 alga Exp $
 """
 from Transaction.IDataManager import IDataManager
 
@@ -28,9 +28,6 @@ class ZopeDBTransactionManager:
     def __init__(self, dbconn):
         self._dbconn = dbconn
 
-    # XXX Do any of the Python DB-API implementations support
-    # two-phase commit?
-
     def prepare(self, txn):
         return True
 
@@ -40,5 +37,8 @@ class ZopeDBTransactionManager:
     def commit(self, txn):
         self._dbconn.commit()
 
+    # XXX Do any of the Python DB-API implementations support
+    # two-phase commit?
+
     def savepoint(self, txn):
-        pass
+        return None
