@@ -244,6 +244,17 @@ same as registering them for a class::
   >>> registry.lookup([zope.interface.implementedBy(C2)], IP1, '')
   'C21'
 
+Dict adapters
+-------------
+
+At some point it was impossible to register dictionary-based adapters due a
+bug. Let's make sure this works now:
+
+  >>> adapter = {}
+  >>> registry.register((), IQ, '', adapter)
+  >>> registry.lookup((), IQ, '') is adapter
+  True
+
 Unregistering
 -------------
 

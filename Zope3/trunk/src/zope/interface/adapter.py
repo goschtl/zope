@@ -196,17 +196,18 @@ class Surrogate(object):
 
         # Now flatten with mappings to tuples
         for key, v in implied.iteritems():
-            if isinstance(key, tuple) and key[0] == 's':
-                # subscriptions
-                if isinstance(v, dict):
-                    implied[key] = v.items()
-            else:
-                byname = v
-                for name, value in byname.iteritems():
-                    if isinstance(value, dict):
-                        # We have {with -> value}
-                        # convert it to sorted [(with, value]
-                        byname[name] = orderwith(value)
+            if isinstance(key, tuple):
+                if key[0] == 's':
+                    # subscriptions
+                    if isinstance(v, dict):
+                        implied[key] = v.items()
+                else:
+                    byname = v
+                    for name, value in byname.iteritems():
+                        if isinstance(value, dict):
+                            # We have {with -> value}
+                            # convert it to sorted [(with, value]
+                            byname[name] = orderwith(value)
 
         self.get = implied.get
 

@@ -254,6 +254,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed a bug in the adapter registry that would prevent `dict`-derived
+        utilites from being retrieved correctly.
+
       - Resolved issue 304 (Slash involve dbname). We require now that all
         values in a DSN are properly URL-encoded, so that all values can
         contain any special character, except for the hostname and the port.
