@@ -11,8 +11,6 @@ Features
 
 - Support for iterable sources
 
-- Issue 292: Add factory to browser:resource directive 
-
 - Issue 295: Sort out defaultView 
 
 - Allow adapters (including views) to be registered for classes

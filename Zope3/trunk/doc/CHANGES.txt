@@ -10,6 +10,8 @@ Zope Changes
 
     New features
 
+      - Implemented issue 292: Add factory to browser:resource directive 
+
       - Implemented issue 309: <schemadisplay> should support <widget>
 
       - Developed a generic browser:form directive. It is pretty much the same
