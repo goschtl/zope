@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-"""
+"""Container interfaces
 
+$Id: IContainer.py,v 1.7 2002/11/30 18:34:34 jim Exp $
 """
 
 
@@ -57,6 +58,15 @@ class IWriteContainer(Interface):
 
 class IContainer(IReadContainer, IWriteContainer):
     """Readable and writable content container."""
+
+
+class IOptionalNamesContainer(IContainer):
+    """Containers that will choose names for their items if no names are given
+    """
+
+class IContainerNamesContainer(IContainer):
+    """Containers that always choose names for their items
+    """
 
 class IHomogenousContainer(Interface):
 

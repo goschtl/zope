@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: Contents.py,v 1.9 2002/11/18 23:52:59 jim Exp $
+Revision information: $Id: Contents.py,v 1.10 2002/11/30 18:34:34 jim Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.PageTemplate import ViewPageTemplateFile
@@ -61,9 +61,8 @@ class Contents(BrowserView):
 
     def removeObjects(self, ids):
         """Remove objects specified in a list of object ids"""
-        container = self.context
+        container = getAdapter(self.context, IZopeContainer)
         for id in ids:
-            container = getAdapter(container, IZopeContainer)
             container.__delitem__(id)
 
         self.request.response.redirect('@@contents.html')

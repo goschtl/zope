@@ -13,10 +13,11 @@
 ##############################################################################
 """
 
-$Id: Adding.py,v 1.11 2002/11/18 23:52:59 jim Exp $
+$Id: Adding.py,v 1.12 2002/11/30 18:34:34 jim Exp $
 """
 
 from Zope.App.OFS.Container.IAdding import IAdding
+from Zope.App.OFS.Container.IContainer import IContainerNamesContainer
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Publisher.IPublishTraverse import IPublishTraverse
 from Zope.ComponentArchitecture \
@@ -101,7 +102,7 @@ class Adding(BrowserView):
         menu_service = getService(self.context, "BrowserMenu")
         return menu_service.getMenu(self.menu_id, self, self.request)
 
-    def action(self, type_name, id):
+    def action(self, type_name, id=''):
         if queryView(self, type_name, self.request) is not None:
             url = "%s=%s" % (type_name, id)
             self.request.response.redirect(url)
@@ -118,5 +119,6 @@ class Adding(BrowserView):
         self.add(content)
         self.request.response.redirect(self.nextURL())
 
-
+    def namesAccepted(self):
+        return not IContainerNamesContainer.isImplementedBy(self.context)
 

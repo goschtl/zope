@@ -14,10 +14,12 @@
 """
 
 Revision information:
-$Id: ZopeContainerAdapter.py,v 1.2 2002/11/18 23:52:58 jim Exp $
+$Id: ZopeContainerAdapter.py,v 1.3 2002/11/30 18:34:34 jim Exp $
 """
 
 from Zope.App.OFS.Container.IZopeContainer import IZopeContainer
+from Zope.App.OFS.Container.IContainer import IOptionalNamesContainer
+from Zope.App.OFS.Container.IContainer import IContainerNamesContainer
 from Zope.ComponentArchitecture import queryAdapter
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Event import publishEvent
@@ -82,16 +84,22 @@ class ZopeContainerAdapter:
 
     def setObject(self, key, object):
         "See Zope.App.OFS.Container.IZopeContainer.IZopeWriteContainer"
-        
-        if type(key) in StringTypes and len(key)==0:
-            raise ValueError("The id cannot be an empty string")
+
+        if not isinstance(key, StringTypes):
+            raise TypeError("Item name is not a string.")
+
+        container = self.context
+
+        if not key:
+            if not (IOptionalNamesContainer.isImplementedBy(container)
+                    or IContainerNamesContainer.isImplementedBy(container)):
+                raise ValueError("Empty names are not allowed")
 
         # We remove the proxies from the object before adding it to
         # the container, because we can't store proxies.
         object = removeAllProxies(object)
 
         # Add the object
-        container = self.context
         key = container.setObject(key, object)
 
         # Publish an added event
