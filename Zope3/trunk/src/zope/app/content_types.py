@@ -11,15 +11,15 @@
 #
 ##############################################################################
 """A utility module for content-type handling."""
-__version__='$Revision: 1.3 $'[11:-2]
+__version__='$Revision: 1.4 $'[11:-2]
 
 import re, mimetypes
 
-find_binary=re.compile('[\0-\7]').search
+find_binary = re.compile('[\0-\7]').search
 
 def text_type(s):
     # Yuk. See if we can figure out the type by content.
-    s=s.strip()
+    s = s.strip()
     if (s[:6].lower() == '<html>' or s.find('</') > 0):
         return 'text/html'
 
@@ -33,7 +33,7 @@ def text_type(s):
 
 # This gives us a hook to add content types that
 # aren't currently listed in the mimetypes module.
-_addtypes=(
+_addtypes = (
     ('.mp3', 'audio/mpeg'),
     ('.ra', 'audio/x-pn-realaudio'),
     ('.pdf', 'application/pdf'),
@@ -87,14 +87,14 @@ def guess_content_type(name='', body='', default=None):
             if find_binary(body) is not None:
                 type = default or 'application/octet-stream'
             else:
-                type = (default or text_type(body)
-                      or 'text/x-unknown-content-type')
+                type = default or text_type(body)
         else:
             type = default or 'text/x-unknown-content-type'
 
     return type.lower(), enc and enc.lower() or None
 
-if __name__=='__main__':
-    items=mimetypes.types_map.items()
+if __name__ == '__main__':
+    items = mimetypes.types_map.items()
     items.sort()
-    for item in items: print "%s:\t%s" % item
+    for item in items:
+        print "%s:\t%s" % item
