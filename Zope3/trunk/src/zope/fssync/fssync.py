@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.21 2003/05/15 18:18:26 gvanrossum Exp $
+$Id: fssync.py,v 1.22 2003/05/15 19:48:02 gvanrossum Exp $
 """
 
 import os
@@ -419,12 +419,7 @@ class FSSync(object):
         entry["path"] = zpath
         entry["flag"] = "added"
         if isdir(path):
-            entry["type"] = "zope.app.content.folder.Folder"
-        else:
-            # XXX Need to guess better based on extension
-            entry["type"] = "zope.app.content.file.File"
-        if "factory" not in entry:
-            entry["factory"] = str(unicode(entry["type"]))
+            entry["type"] = entry["factory"] = "zope.app.content.folder.Folder"
         self.metadata.flush()
 
     def remove(self, path):
