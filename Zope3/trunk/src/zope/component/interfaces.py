@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Component and Component Architecture Interfaces
 
-$Id: interfaces.py,v 1.19 2004/01/08 20:48:22 garrett Exp $
+$Id: interfaces.py,v 1.20 2004/02/20 20:35:33 srichter Exp $
 """
-
 from zope.interface import Interface, Attribute
 from zope.component.exceptions import *
 
@@ -252,6 +251,7 @@ class IComponentArchitecture(Interface):
         """
 
 class IServiceService(Interface):
+    """A service to manage Services."""
 
     def getServiceDefinitions():
         """Retrieve all Service Definitions
@@ -267,18 +267,17 @@ class IServiceService(Interface):
         """Retrieve a service implementation
 
         Raises ComponentLookupError if the service can't be found.
-
         """
 
     def queryService(name, default=None):
         """Look for a named service.
 
         Return the default if the service can't be found.
-
         """
 
 
 class IFactory(Interface):
+    """A factory is responsible for creating other components."""
 
     # XXX Because __call__ does not receive a context, it is not possible
     #     to write a factory that does its job in terms of another factory.
@@ -305,6 +304,7 @@ class IFactoryInfo(Interface):
 
 
 class IFactoryService(Interface):
+    """A service to manage Factories."""
 
     def createObject(name, *args, **kwargs):
         """Create an object using a factory
@@ -354,44 +354,47 @@ class IFactoryService(Interface):
         """
 
 class IUtilityService(Interface):
+    """A service to manage Utilities."""
 
     def getUtility(interface, name=''):
         """Look up a utility that provides an interface.
 
         If one is not found, raises ComponentLookupError.
-
         """
 
     def queryUtility(interface, default=None, name=''):
         """Look up a utility that provides an interface.
 
         If one is not found, returns default.
-
         """
 
     def getUtilitiesFor(interface):
         """Look up the registered utilities that provide an interface.
 
         If none is found, return an empty list
-
         """
 
 class IContextDependent(Interface):
+    """Components implementing this interface must have a context component.
+
+    Usually the context must be one of the arguments of the
+    constructor. Adapters and views are a primary example of context-dependent
+    components.
+    """
 
     context = Attribute(
         """The context of the object
 
         This is the object being adapted, viewed, extended, etc.
-
         """)
 
 class IAdapterService(Interface):
+    """A service to manage Adapters."""
 
     def queryAdapter(object, interface, default=None):
         """Look for an adapter to an interface for an object
 
         If a matching adapter cannot be found, returns the default.
-
         """
 
     def queryNamedAdapter(object, interface, name, default=None):
@@ -402,7 +405,6 @@ class IAdapterService(Interface):
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
         named adapter methods with an empty string for a name.
-
         """
 
     def queryMultiAdapter(objects, interface, name, default=None):
@@ -413,11 +415,10 @@ class IAdapterService(Interface):
         The name consisting of an empty string is reserved for unnamed
         adapters. The unnamed adapter methods will often call the
         named adapter methods with an empty string for a name.
-
         """
 
-    # XXX need to add name support
-    def getRegisteredMatching(required=None, provided=None):
+    def getRegisteredMatching(required=None, provided=None,
+                              name=None, with=None):
         """Return information about registered data
 
         Zero or more for and provided interfaces may be
@@ -434,7 +435,6 @@ class IAdapterService(Interface):
 
         - the object registered specifically for the required and
           provided interfaces.
-
         """
 
 class IPresentation(Interface):
@@ -442,7 +442,6 @@ class IPresentation(Interface):
 
     The are created for requests, which encapsulate external actors,
     connections, etc.
-
     """
 
     request = Attribute(
@@ -470,6 +469,7 @@ class IResource(IPresentation):
     """
 
 class IResourceFactory(Interface):
+    """A factory to create factories using the request."""
 
     def __call__(request):
         """Create a resource for a request
@@ -483,8 +483,7 @@ class IView(IPresentation, IContextDependent):
     """
 
 class IViewFactory(Interface):
-    """Objects for creating views
-    """
+    """Objects for creating views"""
 
     def __call__(context, request):
         """Create an view (IView) object
@@ -495,6 +494,7 @@ class IViewFactory(Interface):
         """
 
 class IPresentationService(Interface):
+    """A service to manage Presentation components."""
 
     def queryResource(name, request, providing=Interface, default=None):
         """Look up a named resource for a given request
@@ -519,7 +519,3 @@ class IPresentationService(Interface):
         The first argument is a tuple of objects to be adapted with the
         request.
         """
-        
-        
-        
-        

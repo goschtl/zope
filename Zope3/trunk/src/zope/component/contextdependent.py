@@ -11,11 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""A simple mix-in class that implements IContextDependent. 
 
-$Id: contextdependent.py,v 1.3 2003/06/04 09:09:45 stevea Exp $
+$Id: contextdependent.py,v 1.4 2004/02/20 20:35:33 srichter Exp $
 """
-
 from zope.component.interfaces import IContextDependent
 from zope.interface import implements
 
