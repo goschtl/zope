@@ -11,10 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: testEditView.py,v 1.2 2002/11/30 18:33:52 jim Exp $
+"""$Id: testEditView.py,v 1.3 2002/12/01 10:22:33 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
+from Zope.Event.tests.PlacelessSetup import getEvents
 from Interface import Interface
 from Zope.Schema import TextLine
 from Zope.Schema.IField import ITextLine
@@ -72,6 +73,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(c.a  , u'c a')
         self.assertEqual(c.b  , u'c b')
         self.assertEqual(c.baz, u'c baz')
+        self.failIf(getEvents())
 
     def test_apply_update(self):
         c = C()
@@ -87,6 +89,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(c.a  , u'c a')
         self.assertEqual(c.b  , u'c b')
         self.assertEqual(c.baz, u'd baz')        
+        self.failUnless(getEvents(filter=lambda event: event.object == c))
 
     def test_update_no_update(self):
         c = C()
@@ -109,6 +112,7 @@ class Test(PlacelessSetup, TestCase):
         self.assertEqual(c.a  , u'c a')
         self.assertEqual(c.b  , u'c b')
         self.assertEqual(c.baz, u'c baz')
+        self.failIf(getEvents())
 
     def test_update(self):
         c = C()

@@ -12,10 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: EditView.py,v 1.2 2002/11/30 18:33:52 jim Exp $
+$Id: EditView.py,v 1.3 2002/12/01 10:22:33 jim Exp $
 """
 
 from datetime import datetime
+from Zope.Event import publish
+from Zope.Event.ObjectEvent import ObjectModifiedEvent
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.App.Forms.Views.Browser import Widget
 from Zope.App.Forms.Exceptions import WidgetsError
@@ -98,6 +100,9 @@ class EditView(BrowserView):
 
         if errors:
             raise WidgetsError(*errors)
+
+        if not unchanged:
+            publish(content, ObjectModifiedEvent(content))
 
         return unchanged
 
