@@ -50,8 +50,7 @@ class ObjectInterfacesVocabulary(SimpleVocabulary):
     """
 
     def __init__(self, context):
-        component = removeSecurityProxy(context)
-        interfaces = providedBy(component).flattened()
+        interfaces = providedBy(context).flattened()
         terms = [SimpleTerm(interface, interfaceToName(context, interface))
                  for interface in interfaces]
         super(ObjectInterfacesVocabulary, self).__init__(terms)
