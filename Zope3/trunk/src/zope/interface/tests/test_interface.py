@@ -16,7 +16,7 @@ import unittest
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface.tests.unitfixtures import *  # hehehe
 from zope.interface.exceptions import BrokenImplementation, Invalid
-from zope.interface import implementedBy, providedBy, invariant
+from zope.interface import implementedBy, providedBy
 from zope.interface import Interface, directlyProvides, Attribute
 
 class InterfaceTests(unittest.TestCase):
@@ -144,25 +144,16 @@ class InterfaceTests(unittest.TestCase):
     
     def testInvariant(self):
         # set up
-        def ifFooThenBar(obj):
-            if getattr(obj, 'foo', None) and not getattr(obj, 'bar', None):
-                raise Invalid('If Foo, then Bar!')
-        class IInvariant(Interface):
-            foo = Attribute('foo')
-            bar = Attribute('bar; must eval to Boolean True if foo does')
-            invariant(ifFooThenBar)
-        self.assertEquals(IInvariant.getTaggedValue('invariants'), 
-                          [ifFooThenBar])
-        class InvariantC(object):
-            pass
         o = InvariantC()
         directlyProvides(o, IInvariant)
         # a helper
-        def errorsEqual(self, o, error_len, error_msgs):
-            self.assertRaises(Invalid, IInvariant.validateInvariants, o)
+        def errorsEqual(self, o, error_len, error_msgs, interface=None):
+            if interface is None:
+                interface = IInvariant
+            self.assertRaises(Invalid, interface.validateInvariants, o)
             e = []
             try:
-                IInvariant.validateInvariants(o, e)
+                interface.validateInvariants(o, e)
             except Invalid, error:
                 self.assertEquals(error.args[0], e)
             else:
@@ -174,6 +165,8 @@ class InterfaceTests(unittest.TestCase):
             for msg in msgs:
                 self.assertEquals(msg, error_msgs.pop(0))
         # the tests
+        self.assertEquals(IInvariant.getTaggedValue('invariants'), 
+                          [ifFooThenBar])
         self.assertEquals(IInvariant.validateInvariants(o), None)
         o.bar = 27
         self.assertEquals(IInvariant.validateInvariants(o), None)
@@ -181,23 +174,46 @@ class InterfaceTests(unittest.TestCase):
         self.assertEquals(IInvariant.validateInvariants(o), None)
         del o.bar
         errorsEqual(self, o, 1, ['If Foo, then Bar!'])
-        # now we'll do two invariants just to make sure that at least a minimal
-        # multi-invariant interface is tested.
-        def BarGreaterThanFoo(obj):
-            foo = getattr(obj, 'foo', None)
-            bar = getattr(obj, 'bar', None)
-            if foo is not None and isinstance(foo, type(bar)):
-                # type checking should be handled elsewhere (like, say, 
-                # schema); these invariants should be intra-interface 
-                # constraints.  This is a hacky way to do it, maybe, but you
-                # get the idea
-                if not bar > foo:
-                    raise Invalid('Please, Boo MUST be greater than Foo!')
-        invariants = IInvariant.getTaggedValue('invariants')
-        invariants.append(BarGreaterThanFoo) # if you really need to mutate,
-        # then this would be the way to do it.
+        # nested interfaces with invariants:
+        self.assertEquals(ISubInvariant.getTaggedValue('invariants'), 
+                          [BarGreaterThanFoo])
+        o = InvariantC()
+        directlyProvides(o, ISubInvariant)
+        o.foo = 42
         # even though the interface has changed, we should still only have one 
-        # error so far, the same one as before.
+        # error.
+        errorsEqual(self, o, 1, ['If Foo, then Bar!'], ISubInvariant)
+        # however, if we set foo to 0 (Boolean False) and bar to a negative 
+        # number then we'll get the new error
+        o.foo = 2
+        o.bar = 1
+        errorsEqual(self, o, 1, ['Please, Boo MUST be greater than Foo!'], 
+                    ISubInvariant)
+        # and if we set foo to a positive number and boo to 0, we'll
+        # get both errors!
+        o.foo = 1
+        o.bar = 0
+        errorsEqual(self, o, 2, ['If Foo, then Bar!',
+                                 'Please, Boo MUST be greater than Foo!'],
+                    ISubInvariant)
+        # for a happy ending, we'll make the invariants happy
+        o.foo = 1
+        o.bar = 2
+        self.assertEquals(IInvariant.validateInvariants(o), None) # woohoo
+        # now we'll do two invariants on the same interface, 
+        # just to make sure that a small
+        # multi-invariant interface is at least minimally tested.
+        o = InvariantC()
+        directlyProvides(o, IInvariant)
+        o.foo = 42
+        old_invariants = IInvariant.getTaggedValue('invariants')
+        invariants = old_invariants[:]
+        invariants.append(BarGreaterThanFoo) # if you really need to mutate,
+        # then this would be the way to do it.  Probably a bad idea, though. :-)
+        IInvariant.setTaggedValue('invariants', invariants)
+        #
+        # even though the interface has changed, we should still only have one 
+        # error.
         errorsEqual(self, o, 1, ['If Foo, then Bar!'])
         # however, if we set foo to 0 (Boolean False) and bar to a negative 
         # number then we'll get the new error
@@ -210,11 +226,12 @@ class InterfaceTests(unittest.TestCase):
         o.bar = 0
         errorsEqual(self, o, 2, ['If Foo, then Bar!',
                                  'Please, Boo MUST be greater than Foo!'])
-        # for a happy ending, we'll make the invariants happy
+        # for another happy ending, we'll make the invariants happy again
         o.foo = 1
         o.bar = 2
         self.assertEquals(IInvariant.validateInvariants(o), None) # bliss
-        
+        # clean up
+        IInvariant.setTaggedValue('invariants', old_invariants)
 
     def test___doc___element(self):
         class I(Interface):

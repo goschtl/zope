@@ -14,7 +14,7 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.17 2004/01/20 21:17:41 poster Exp $
+$Id: interface.py,v 1.18 2004/01/23 16:59:01 poster Exp $
 """
 
 from __future__ import generators
@@ -519,7 +519,12 @@ class InterfaceClass(Element, Specification):
                 else:
                     errors.append(e)
         for base in self.__bases__:
-            base.validateInvariants(obj, errors)
+            try:
+                base.validateInvariants(obj, errors)
+            except Invalid:
+                if errors is None:
+                    raise
+                pass
         if errors:
             raise Invalid(errors)
 
