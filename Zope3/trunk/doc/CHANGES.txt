@@ -10,6 +10,15 @@ Zope Changes
 
     New features
 
+      - Added ++debug++ traversal adapter that allows you to turn on debugging
+        flags in request.debug.  Currently there is only one flag named
+        "source" that adds HTML comments to rendered page templates showing
+        where each code snippet came from.  Try
+
+          http://localhost:8080/++debug++source/@@contents.html
+
+        and view the source of the resulting page.
+
     Bug fixes
 
       - Fixed bug in TypeRegistry for
