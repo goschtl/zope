@@ -48,7 +48,7 @@ Test harness.
     Use the PyUnit GUI instead of output to the command line. The GUI
     imports tests on its own, taking care to reload all dependencies on each
     run. The debug (-d), verbose (-v), and Loop (-L) options will be
-    ignored.
+    ignored. The testfilter filter is also not applied.
 
 modfilter
 testfilter
