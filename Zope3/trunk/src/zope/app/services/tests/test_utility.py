@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.9 2003/06/21 21:22:13 jim Exp $
+$Id: test_utility.py,v 1.10 2003/08/06 13:03:21 sidnei Exp $
 """
 
 import unittest
@@ -54,19 +54,19 @@ class Foo:
         self.name = name
         self._usages = []
         self._dependents = []
-        
+
     def foo(self):
         return 'foo ' + self.name
-    
+
     def addUsage(self, location):
         "See zope.app.interfaces.services.registration.IRegistered"
         if location not in self._usages:
             self._usages.append(location)
-    
+
     def removeUsage(self, location):
         "See zope.app.interfaces.services.registration.IRegistered"
         self._usages.remove(location)
-            
+
     def usages(self):
         "See zope.app.interfaces.services.registration.IRegistered"
         return self._usages
@@ -140,9 +140,9 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
     def test_registrationsFor_methods(self):
         utilities = getService(self.rootFolder, "Utilities")
-        default = traverse(self.rootFolder, "++etc++Services/default")
+        default = traverse(self.rootFolder, "++etc++site/default")
         default.setObject('foo', Foo("local"))
-        path = "/++etc++Services/default/foo"
+        path = "/++etc++site/default/foo"
 
         for name in ('', 'bob'):
             registration = utility.UtilityRegistration(name, IFoo, path)
@@ -160,9 +160,9 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
                                             name="bob")
 
         utilities = getService(self.rootFolder, "Utilities")
-        default = traverse(self.rootFolder, "++etc++Services/default")
+        default = traverse(self.rootFolder, "++etc++site/default")
         default.setObject('foo', Foo("local"))
-        path = "/++etc++Services/default/foo"
+        path = "/++etc++site/default/foo"
         cm = default.getRegistrationManager()
 
         for name in ('', 'bob'):
@@ -188,7 +188,7 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
         utilities = getService(self.rootFolder, "Utilities")
         r = list(utilities.getRegisteredMatching())
         r.sort()
-        path = "/++etc++Services/default/foo"
+        path = "/++etc++site/default/foo"
         cr1 = utilities.queryRegistrationsFor(
             utility.UtilityRegistration("", IFoo, path))
         cr2 = utilities.queryRegistrationsFor(
