@@ -55,7 +55,7 @@ table = [
 
     {'path': "Zope2", 'addrs': zopeaddr},
 
-    {'path': "ZopeDocs", 'addrs': 'klm@zope.org', remote: None},
+    {'path': "ZopeDocs", 'addrs': 'klm@zope.org', 'remote': None},
 
     {'path': "Packages/Products/XMLDocument", 'addrs': zopeaddr,
      'remote': products_remote},
