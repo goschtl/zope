@@ -130,6 +130,7 @@
 /ZODB4/Persistence	 /Packages3/Persistence
 /ZODB4/Transaction	 /Zope3/lib/python/Transaction
 /ZODB4/zLOG		 /Packages3/zLOG
+/ZODB4/ZConfig		 /Packages/ZConfig
 /ZODB4/logging           /Packages/logging
 
 /StandaloneSTX/StructuredText     /Packages/StructuredText
