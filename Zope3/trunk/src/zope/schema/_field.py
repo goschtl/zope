@@ -271,19 +271,19 @@ def _validate_sequence(value_type, value, errors=None):
 
     To illustrate, we'll use a text value type. All values must be unicode.
 
-	    >>> field = TextLine(required=True)
+            >>> field = TextLine(required=True)
 
-	To validate a sequence of various values:
+        To validate a sequence of various values:
 
-	    >>> errors = _validate_sequence(field, ('foo', u'bar', 1))
-	    >>> errors
-	    [foo <type 'unicode'>, 1 <type 'unicode'>]
+            >>> errors = _validate_sequence(field, ('foo', u'bar', 1))
+            >>> errors
+            [foo <type 'unicode'>, 1 <type 'unicode'>]
 
-	The only valid value in the sequence is the second item. The others
-	generated errors.
+        The only valid value in the sequence is the second item. The others
+        generated errors.
 
-	We can use the optional errors argument to collect additional errors
-	for a new sequence:
+        We can use the optional errors argument to collect additional errors
+        for a new sequence:
 
         >>> errors = _validate_sequence(field, (2, u'baz'), errors)
         >>> errors
