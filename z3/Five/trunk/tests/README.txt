@@ -28,4 +28,4 @@ variables::
 
 Then you should be able to run the tests by typing::
 
-  python2.3 test_five.py
+  python2.3 runalltests.py
