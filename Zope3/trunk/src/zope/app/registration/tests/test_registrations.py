@@ -30,6 +30,7 @@ from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.dependable.interfaces import IDependable
 from zope.app.traversing.api import traverse
 from zope.security.proxy import Proxy
+from zope.app.container.contained import Contained
 from zope.app.container.contained import ObjectRemovedEvent
 from zope.app.tests import ztapi
 from zope.app.registration.interfaces import IRegistration
@@ -39,11 +40,12 @@ from zope.app.registration.registration import \
     ComponentRegistrationRemoveSubscriber, \
     ComponentRegistrationAddSubscriber
 from zope.app.traversing.interfaces import IPhysicallyLocatable
+import zope.interface
 
 class ITestComponent(Interface):
     pass
 
-class ComponentStub:
+class ComponentStub(Contained):
 
     implements(IDependable)
 
@@ -79,17 +81,34 @@ class DummyRegistration(ComponentStub):
     
 class TestSimpleRegistrationEvents(TestCase):
 
-    def test_RemoveSubscriber(self):
+    def test_RemoveSubscriber(self):    
         reg = DummyRegistration()
         reg.status = ActiveStatus
 
+        # we need to simulate an enclosing site manager:
+        from zope.app.container.contained import Contained
+        services = Contained()
+        from zope.app.site.interfaces import ISiteManager
+        zope.interface.directlyProvides(services, ISiteManager)
+        reg.__parent__ = services
+
+        # we need an event. Initially, we create an event simulating delete
+        # of the services.  In this case, nothing should change:
+        from zope.app.container.contained import ObjectRemovedEvent
+        event = ObjectRemovedEvent(services)
+        SimpleRegistrationRemoveSubscriber(reg, event)
+        self.assertEquals(reg.status, ActiveStatus)
+
+        # Now we'll "remove" the registration:
+        event = ObjectRemovedEvent(reg)
+
         # test that removal fails with Active status
         self.assertRaises(DependencyError,
-                          SimpleRegistrationRemoveSubscriber, reg, None)
+                          SimpleRegistrationRemoveSubscriber, reg, event)
 
         # test that removal succeeds with Registered status
         reg.status = RegisteredStatus
-        SimpleRegistrationRemoveSubscriber(reg, None)
+        SimpleRegistrationRemoveSubscriber(reg, event)
 
         self.assertEquals(reg.status, UnregisteredStatus)
         

@@ -57,10 +57,4 @@
          zope.app.container.interfaces.IObjectAddedEvent"
     />
 
-  <subscriber
-    factory=".registration.RegistrationManagerRemoveSubscriber"
-    for=".interfaces.IRegistrationManager
-         zope.app.container.interfaces.IObjectRemovedEvent"
-    />
-
 </configure>

@@ -18,8 +18,6 @@ from unittest import TestSuite, TestCase, main, makeSuite
 from doctest import DocTestSuite
 from zope.app.registration.interfaces import IRegistrationManager
 from zope.app.registration.registration import RegistrationManager
-from zope.app.registration.registration \
-     import RegistrationManagerRemoveSubscriber
 from zope.app.site.tests import placefulsetup
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.api import traverse
@@ -348,26 +346,6 @@ class DummyRM(dict):
     def __iter__(self):
         for n in self.keys():
             yield n
-        
-class TestRegistrationManagerRemoveSubscriber:
-    def test_subscriber():
-        """
-        First create a dummy registration manager with some
-        initial data.
-        
-          >>> regmgr = DummyRM()
-          >>> regmgr['foo'] = 'bar'
-
-        Notify:
-
-          >>> RegistrationManagerRemoveSubscriber(regmgr, None)
-
-        Check the results.
-
-          >>> regmgr
-          {}
-        
-        """
 
 class RegisterableContainerTests(placefulsetup.PlacefulSetup):
 
@@ -400,7 +378,6 @@ def test_suite():
     import sys
     return TestSuite((
         makeSuite(Test),
-        DocTestSuite(sys.modules[__name__]),
         ))
 
 if __name__=='__main__':

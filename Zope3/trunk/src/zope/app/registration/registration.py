@@ -30,6 +30,8 @@ from zope.app.annotation.interfaces import IAttributeAnnotatable
 from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.dependable.interfaces import IDependable, DependencyError
+from zope.app.component.localservice import getLocalServices
+from zope.app.location import inside
 from zope.app.module.interfaces import IModuleManager
 from zope.app.registration import interfaces
 
@@ -516,6 +518,14 @@ class NotifyingRegistrationStack(RegistrationStack):
 
 def SimpleRegistrationRemoveSubscriber(registration, event):
     """Receive notification of remove event."""
+
+    services = getLocalServices(registration)
+    removed = event.object
+    if (services == removed) or inside(services, removed):
+        # we don't really care if the rigistration is active or
+        # registered, since the site is going away.
+        return
+
     objectstatus = registration.status
 
     if objectstatus == interfaces.ActiveStatus:
@@ -660,11 +670,6 @@ class Registered(PathSetAnnotation):
     def registrations(self):
         return [zapi.traverse(self.context, path)
                 for path in self.getPaths()]
-
-def RegistrationManagerRemoveSubscriber(registration_manager, event):
-    """Receive notification of remove event."""
-    for name in registration_manager:
-        del registration_manager[name]
             
 class RegistrationManager(Persistent, Contained):
     """Registration manager
