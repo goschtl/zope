@@ -2832,6 +2832,10 @@ class TestTimezoneConversions(unittest.TestCase):
             got = FEastern.fromutc(fstart)
             self.assertEqual(expected, got)
 
+            # Ensure astimezone() calls fromutc() too.
+            got = fstart.replace(tzinfo=utc_real).astimezone(FEastern)
+            self.assertEqual(expected, got)
+
             start += HOUR
             fstart += HOUR
 
@@ -2845,6 +2849,10 @@ class TestTimezoneConversions(unittest.TestCase):
 
             expected = fstart + FEastern.stdoffset
             got = FEastern.fromutc(fstart)
+            self.assertEqual(expected, got)
+
+            # Ensure astimezone() calls fromutc() too.
+            got = fstart.replace(tzinfo=utc_real).astimezone(FEastern)
             self.assertEqual(expected, got)
 
             start += HOUR
