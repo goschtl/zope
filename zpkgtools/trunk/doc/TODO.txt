@@ -11,11 +11,6 @@ Things that need to be done
 
 - Package assembler script to build sumo/combined distro (mostly done)
 
-  - The zpkgtools.locationmap module still doesn't handle Subversion
-    URLs properly; revision control URLs need to be abstracted
-    separately from the specific revision control loaders (perhaps in
-    the zpkgtools.loader module).
-
   - We should have some way to wildcard an entire hierarchy of packages
     in resource maps.  Something like::
 
