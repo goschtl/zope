@@ -1,5 +1,5 @@
-========================
-Views, Forms and Widgets
-========================
+=====
+Forms
+=====
 
-Explains how we write views and which tags should be used ...
+Explains how we write forms ...
