@@ -13,7 +13,7 @@
 ##############################################################################
 """Role Permission View Classes
 
-$Id: rolepermissionview.py,v 1.2 2004/01/14 22:55:33 chrism Exp $
+$Id: rolepermissionview.py,v 1.3 2004/02/05 22:52:35 srichter Exp $
 """
 from datetime import datetime
 
@@ -139,7 +139,8 @@ class RolePermissionView:
             changed = True
 
         if changed:
-            formatter = self.request.locale.getDateTimeFormatter('medium')
+            formatter = self.request.locale.dates.getFormatter(
+                'dateTime', 'medium')
             status = _("Settings changed at ${date_time}")
             status.mapping = {'date_time': formatter.format(datetime.utcnow())}
 

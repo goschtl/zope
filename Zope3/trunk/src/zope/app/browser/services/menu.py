@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Menu Service Views
 
-$Id: menu.py,v 1.5 2003/08/25 14:14:06 sidnei Exp $
+$Id: menu.py,v 1.6 2004/02/05 22:52:19 srichter Exp $
 """
 
 from zope.app import zapi
@@ -39,7 +39,8 @@ class MenuContents(Contents):
         dc = zapi.queryAdapter(obj, IZopeDublinCore)
         if dc is not None:
 
-            formatter = self.request.locale.getDateTimeFormatter('short')
+            formatter = self.request.locale.dates.getFormatter(
+                'dateTime', 'short')
             created = dc.created
             if created is not None:
                 info['created'] = formatter.format(created)

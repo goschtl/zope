@@ -13,7 +13,7 @@
 ##############################################################################
 """Undo Tests
 
-$Id: test_undo.py,v 1.7 2003/09/24 02:57:12 garrett Exp $
+$Id: test_undo.py,v 1.8 2004/02/05 22:52:20 srichter Exp $
 """
 from datetime import datetime
 from unittest import TestCase, main, makeSuite
@@ -96,7 +96,7 @@ class Test(PlacefulSetup, TestCase):
 
     def checkResult(self, info):
         for entry in info:
-            self.assertEqual(entry['datetime'], u'Jan 1, 2001 12:00:00 PM ')
+            self.assertEqual(entry['datetime'], u'2001 1 1  12:00:00 ')
             self.assertEqual(entry['time'], 'today')
             self.assert_(entry['user_name'] in ('bonobo', 'monkey'))
             self.assertEqual(entry['description'], 'thing'+entry['id'])

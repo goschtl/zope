@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.29 2003/12/12 15:39:18 pnaveen Exp $
+$Id: contents.py,v 1.30 2004/02/05 22:52:17 srichter Exp $
 """
 
 from zope.app import zapi
@@ -161,7 +161,9 @@ class Contents(BrowserView):
             if title:
                 info['title'] = title
 
-            formatter = self.request.locale.getDateTimeFormatter('short')
+            formatter = self.request.locale.dates.getFormatter(
+                'dateTime', 'short')
+
             created = dc.created
             if created is not None:
                 info['created'] = formatter.format(created)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.45 2004/01/05 08:03:44 philikon Exp $
+$Id: editview.py,v 1.46 2004/02/05 22:52:19 srichter Exp $
 """
 from datetime import datetime
 
@@ -103,8 +103,8 @@ class EditView(BrowserView):
                                  names=self.fieldNames, content=self.adapted)
                 if changed:
                     self.changed()
-                    formatter = self.request.locale.getDateTimeFormatter(
-                        'medium')
+                    formatter = self.request.locale.dates.getFormatter(
+                        'dateTime', 'medium')
                     status = _("Updated on ${date_time}")
                     status.mapping = {'date_time': formatter.format(
                         datetime.utcnow())}

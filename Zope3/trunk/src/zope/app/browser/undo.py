@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: undo.py,v 1.10 2004/01/16 12:16:37 philikon Exp $
+$Id: undo.py,v 1.11 2004/02/05 22:52:06 srichter Exp $
 """
 from zope.interface import implements
 from zope.component import getService, getUtility
@@ -87,7 +87,7 @@ class Undo:
     def getUndoInfo(self, first=0, last=-20, user_name=None):
         utility = getUtility(self.context, IUndoManager)
         info = utility.getUndoInfo(first, last, user_name)
-        formatter = self.request.locale.getDateTimeFormatter('medium')
+        formatter = self.request.locale.dates.getFormatter('dateTime', 'medium')
         for entry in info:
             entry['datetime'] = formatter.format(entry['datetime'])
         return info

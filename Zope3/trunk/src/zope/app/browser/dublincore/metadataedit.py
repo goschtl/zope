@@ -13,7 +13,7 @@
 ##############################################################################
 """Dublin Core Meta Data View
 
-$Id: metadataedit.py,v 1.6 2003/08/06 14:41:51 srichter Exp $
+$Id: metadataedit.py,v 1.7 2004/02/05 22:52:18 srichter Exp $
 """
 from datetime import datetime
 from zope.app.event import publish
@@ -29,7 +29,7 @@ class MetaDataEdit:
 
     def edit(self):
         request = self.request
-        formatter = request.locale.getDateTimeFormatter('medium')
+        formatter = self.request.locale.dates.getFormatter('dateTime', 'medium')
         dc = getAdapter(self.context, IZopeDublinCore)
         message=''
 

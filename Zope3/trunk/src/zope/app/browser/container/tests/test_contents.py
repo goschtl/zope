@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.26 2003/11/21 17:11:54 jim Exp $
+$Id: test_contents.py,v 1.27 2004/02/05 22:52:17 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -122,8 +122,8 @@ class BaseTestContentsBrowserView(PlacefulSetup):
         self.assertEqual(info['url'], 'document')
         self.assertEqual(info['object'], document)
         self.assertEqual(info['title'], 'faux title')
-        self.assertEqual(info['created'], '1/1/01 1:01 AM ')
-        self.assertEqual(info['modified'], '2/2/02 2:02 AM ')
+        self.assertEqual(info['created'], '01/01/01 01:01')
+        self.assertEqual(info['modified'], '02/02/02 02:02')
 
     def testRemove(self):
         container = self._TestView__newContext()

@@ -14,7 +14,7 @@
 """Management view component for principal-role management (Zope2's
 "local roles").
 
-$Id: principalroleview.py,v 1.3 2004/01/15 23:25:22 stevea Exp $
+$Id: principalroleview.py,v 1.4 2004/02/05 22:52:35 srichter Exp $
 """
 from datetime import datetime
 
@@ -87,7 +87,8 @@ class PrincipalRoleView:
                     else:
                         raise ValueError("Incorrect setting %s" % setting)
 
-            formatter = self.request.locale.getDateTimeFormatter('medium')
+            formatter = self.request.locale.dates.getFormatter(
+                'dateTime', 'medium')
             status = _("Settings changed at ${date_time}")
             status.mapping = {'date_time': formatter.format(datetime.utcnow())}
 
