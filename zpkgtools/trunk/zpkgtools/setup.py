@@ -159,9 +159,13 @@ class SetupContext:
         #
         relbase = posixpath.join(reldir, "")
         pkgfiles = self.package_data.get(reldir, [])
-        non_pkgdata = pkginfo.script[:]
+        non_pkgdata = pkginfo.script + pkginfo.header
         for dir, files in pkginfo.data_files:
             non_pkgdata.extend(files)
+        for ext in pkginfo.extensions:
+            for fn in ext.sources + ext.depends:
+                if fn not in non_pkgdata:
+                    non_pkgdata.append(fn)
         for fn in non_pkgdata:
             pkgdatapath = fn[len(relbase):]
             if pkgdatapath in pkgfiles:

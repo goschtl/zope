@@ -42,6 +42,14 @@ class SetupContextTestCase(unittest.TestCase):
         finally:
             os.unlink(publicationcfg)
 
+    def test_extension_sources_are_not_package_data(self):
+        packagedir = os.path.join(here, "input", "package2")
+        setupfile = os.path.join(here, "input", "setup.py")
+        context = setup.SetupContext("package2", "0.1.234", setupfile)
+        context.package_data["package2"].sort()
+        self.assertEqual(context.package_data,
+                         {"package2": ["PUBLICATION.cfg", "SETUP.cfg"]})
+
 
 def test_suite():
     return unittest.makeSuite(SetupContextTestCase)
