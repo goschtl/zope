@@ -387,11 +387,16 @@ class AdapterLookup(object):
 
         When called from Interface.__adapt__, only the interface and
         object parameters will be passed.
-        
+
+        If the factory produces `None`, then the default is returned. This
+        allows us to prevent adaptation (if desired) and make the factory
+        decide whether an adapter will be available.
         """
         factory = self.lookup1(providedBy(object), interface, name)
         if factory is not None:
-            return factory(object)
+            adapter = factory(object)
+            if adapter is not None:
+                return adapter
 
         return default
 

@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - If the adapter factory returns `None` as adapter instance, the default
+        is returned instead of `None`. For benefits and the discussions see
+        http://mail.zope.org/pipermail/interface-dev/2004-September/000070.html
+
       - Added new API method `getAdapters(objects, provided)` to `zapi`. It
         will return all available adapters for this configuration. Note that
         every name will be only returned once.

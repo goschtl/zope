@@ -170,6 +170,30 @@ We can register and lookup by name too::
   >>> y.context is x
   True
 
+When the adapter factory produces `None`, then this is treated as if no
+adapter has been found. This allows us to prevent adaptation (when desired)
+and let the adapter factory determine whether adaptation is possible based on
+the state of the object being adapted.
+
+  >>> def factory(context):
+  ...     if context.name == 'object':
+  ...         return 'adapter'
+  ...     return None
+
+  >>> class Object(object):
+  ...     zope.interface.implements(IR)
+  ...     name = 'object'
+
+  >>> registry.register([IR], IP1, 'conditional', factory) 
+  >>> obj = Object()
+  >>> registry.queryAdapter(obj, IP1, 'conditional')
+  'adapter'
+  >>> obj.name = 'no object'
+  >>> registry.queryAdapter(obj, IP1, 'conditional') is None
+  True
+  >>> registry.queryAdapter(obj, IP1, 'conditional', 'default')
+  'default'
+
 An alternate method that provides the same function as `queryAdapter()` is
 `adapter_hook()`::
 

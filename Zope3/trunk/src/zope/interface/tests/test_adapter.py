@@ -205,6 +205,31 @@ def test_multi_adapter_check_non_default_dont_hide_default():
     1
     """
 
+def test_adapter_hook_with_factory_producing_None():
+    """
+    >>> registry = AdapterRegistry()
+    >>> default = object()
+    
+    >>> class Object1(object):
+    ...     zope.interface.implements(IF0)
+    >>> class Object2(object):
+    ...     zope.interface.implements(IF0)
+
+    >>> def factory(context):
+    ...     if isinstance(context, Object1):
+    ...         return 'adapter'
+    ...     return None
+
+    >>> registry.register([IF0], IB0, '', factory)
+
+    >>> registry.adapter_hook(IB0, Object1())
+    'adapter'
+    >>> registry.adapter_hook(IB0, Object2()) is None
+    True
+    >>> registry.adapter_hook(IB0, Object2(), default=default) is default
+    True
+    """
+    
 
 def test_suite():
     from zope.testing.doctestunit import DocFileSuite
