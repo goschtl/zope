@@ -11,7 +11,7 @@
 ##############################################################################
 """DAV method MKCOL
 
-$Id: mkcol.py,v 1.4 2004/03/06 16:50:20 jim Exp $
+$Id: mkcol.py,v 1.5 2004/03/06 17:48:48 jim Exp $
 """
 from zope.app import zapi
 from zope.app.interfaces.file import IWriteDirectory
@@ -39,7 +39,7 @@ class NullResource(object):
         container = self.context.container
         name = self.context.name
 
-        dir = zapi.queryAdapter(container, IWriteDirectory, None)
+        dir = IWriteDirectory(container, None)
         if dir is None:
             request.response.setStatus(403)
             return ''

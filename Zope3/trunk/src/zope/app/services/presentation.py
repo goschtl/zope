@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.6 2004/03/06 16:50:30 jim Exp $
+$Id: presentation.py,v 1.7 2004/03/06 17:48:53 jim Exp $
 """
 
 from zope.app import zapi
@@ -493,7 +493,7 @@ class PageRegistration(ViewRegistration):
         objectpath = zapi.getPath(self)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
-        adapter = zapi.queryAdapter(template, IRegistered)
+        adapter = IRegistered(template, None)
         if adapter is not None:
             adapter.addUsage(objectpath)
 
@@ -506,7 +506,7 @@ class PageRegistration(ViewRegistration):
         objectpath = zapi.getPath(self)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
-        adapter = zapi.queryAdapter(template, IRegistered)
+        adapter = IRegistered(template, None)
         if adapter is not None:
             adapter.removeUsage(zapi.getPath(self))
 

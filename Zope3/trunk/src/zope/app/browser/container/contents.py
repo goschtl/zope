@@ -13,7 +13,7 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.36 2004/03/06 16:50:12 jim Exp $
+$Id: contents.py,v 1.37 2004/03/06 17:48:45 jim Exp $
 """
 
 from zope.exceptions import NotFoundError
@@ -155,7 +155,7 @@ class Contents(BrowserView):
         else:
             info['icon'] = zmi_icon()
 
-        dc = zapi.queryAdapter(obj, IZopeDublinCore)
+        dc = IZopeDublinCore(obj, None)
         if dc is not None:
             info['retitleable'] = id != retitle_id
             info['plaintitle'] = 0
@@ -179,7 +179,7 @@ class Contents(BrowserView):
             info['plaintitle'] = 1
 
 
-        sized_adapter = zapi.queryAdapter(obj, ISized)
+        sized_adapter = ISized(obj, None)
         if sized_adapter is not None:
             info['size'] = sized_adapter
         return info

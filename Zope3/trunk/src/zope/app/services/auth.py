@@ -13,14 +13,13 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.26 2004/03/06 16:50:30 jim Exp $
+$Id: auth.py,v 1.27 2004/03/06 17:48:53 jim Exp $
 """
 
 from persistent import Persistent
 from BTrees.OOBTree import OOBTree
 
 from zope.exceptions import NotFoundError
-from zope.component import queryAdapter
 from zope.app.services.servicenames import Authentication
 
 from zope.app.container.interfaces import IContainer
@@ -68,7 +67,7 @@ class AuthenticationService(Persistent, Contained):
         warnings.warn('The Simple Authentication Service is deprecated and '
                       'will be removed in a future revision of Zope 3',
                       DeprecationWarning)
-        a = queryAdapter(request, ILoginPassword, None)
+        a = ILoginPassword(request, None)
         if a is not None:
             login = a.getLogin()
             if login is not None:

@@ -13,10 +13,9 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: entryadapter.py,v 1.4 2004/02/25 21:13:10 fdrake Exp $
+$Id: entryadapter.py,v 1.5 2004/03/06 17:48:55 jim Exp $
 """
 
-from zope.component import queryAdapter
 from zope.fssync.server.interfaces import IObjectFile, IContentDirectory
 from zope.interface import implements
 from zope.xmlpickle import toxml

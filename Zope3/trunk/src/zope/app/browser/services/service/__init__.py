@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.23 2004/03/06 16:50:15 jim Exp $
+$Id: __init__.py,v 1.24 2004/03/06 17:48:46 jim Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -617,7 +617,7 @@ class Detail:
             service = sm.queryService(name)
             if service is None:
                 continue
-            registry = zapi.queryAdapter(service, IInterfaceBasedRegistry)
+            registry = IInterfaceBasedRegistry(service, None)
             if registry is None:
                 continue
             regs = list(registry.getRegistrationsForInterface(self.iface))

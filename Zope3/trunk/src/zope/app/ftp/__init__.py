@@ -14,11 +14,11 @@
 These views implement ftp commands using file-system representation
 and meta-data apis.
 
-$Id: __init__.py,v 1.7 2004/03/06 16:50:24 jim Exp $
+$Id: __init__.py,v 1.8 2004/03/06 17:48:50 jim Exp $
 """
 __metaclass__ = type
 
-from zope.component import queryAdapter, queryNamedAdapter
+from zope.component import queryNamedAdapter
 from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.file import IReadFile, IWriteFile
@@ -41,7 +41,7 @@ class FTPView:
         return self._dir[name]
 
     def _type(self, file):
-        if queryAdapter(file, IReadDirectory) is not None:
+        if IReadDirectory(file, None) is not None:
             return 'd'
         else:
             return 'f'
@@ -73,17 +73,17 @@ class FTPView:
                 'mtime': self._mtime(file),
                 }
 
-        f = queryAdapter(file, IReadDirectory)
+        f = IReadDirectory(file, None)
         if f is not None:
             # It's a directory
             info['type'] = 'd'
             info['group_readable'] = hasattr(f, 'get')
-            f = queryAdapter(file, IWriteDirectory)
+            f = IWriteDirectory(file, None)
             info['group_writable'] = hasattr(f, '__setitem__')
         else:
             # It's a file
             info['type'] = 'f'
-            f = queryAdapter(file, IReadFile)
+            f = IReadFile(file, None)
             if f is not None:
                 size = getattr(f, 'size', self)
                 if size is not self:
@@ -93,7 +93,7 @@ class FTPView:
             else:
                 info['group_readable'] = False
 
-            f = queryAdapter(file, IWriteFile)
+            f = IWriteFile(file, None)
             info['group_writable'] = hasattr(f, 'write')
 
         return info
@@ -125,7 +125,7 @@ class FTPView:
         return self._mtime(self)
 
     def _size(self, file):
-        file = queryAdapter(file, IReadFile)
+        file = IReadFile(file, None)
         if file is not None:
             return file.size()
         return 0
@@ -136,30 +136,30 @@ class FTPView:
         return 0
 
     def mkdir(self, name):
-        dir = queryAdapter(self.context, IWriteDirectory)
+        dir = IWriteDirectory(self.context, None)
         factory = IDirectoryFactory(self.context)
         newdir = factory(name)
         publish(self.context, ObjectCreatedEvent(newdir))
         dir[name] = newdir
 
     def remove(self, name):
-        dir = queryAdapter(self.context, IWriteDirectory)
+        dir = IWriteDirectory(self.context, None)
         del dir[name]
 
     def rmdir(self, name):
         self.remove(name)
 
     def rename(self, old, new):
-        dir = queryAdapter(self.context, IWriteDirectory)
+        dir = IWriteDirectory(self.context, None)
         rename(dir, old, new)
 
     def _overwrite(self, name, instream, start=None, end=None, append=False):
         file = self._dir[name]
         if append:
-            reader = removeAllProxies(queryAdapter(file, IReadFile))
+            reader = removeAllProxies(IReadFile(file, None))
             data = reader.read() + instream.read()
         elif start is not None or end is not None:
-            reader = removeAllProxies(queryAdapter(file, IReadFile))
+            reader = removeAllProxies(IReadFile(file, None))
             data = reader.read()
             if start is not None:
                 prefix = data[:start]
@@ -178,7 +178,7 @@ class FTPView:
         else:
             data = instream.read()
 
-        f = queryAdapter(self._dir[name], IWriteFile)
+        f = IWriteFile(self._dir[name], None)
         f.write(data)
 
     def writefile(self, name, instream, start=None, end=None, append=False):
@@ -201,7 +201,7 @@ class FTPView:
         else:
             ext = "."
 
-        dir = queryAdapter(self.context, IWriteDirectory)
+        dir = IWriteDirectory(self.context, None)
 
         factory = queryNamedAdapter(self.context, IFileFactory, ext)
         if factory is None:
@@ -213,9 +213,9 @@ class FTPView:
 
     def writable(self, name):
         if name in self._dir:
-            f = queryAdapter(self._dir[name], IWriteFile)
+            f = IWriteFile(self._dir[name], None)
             return hasattr(f, 'write')
-        d = queryAdapter(self.context, IWriteDirectory)
+        d = IWriteDirectory(self.context, None)
         return hasattr(d, '__setitem__')
 
 

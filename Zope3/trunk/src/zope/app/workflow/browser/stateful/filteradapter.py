@@ -13,10 +13,9 @@
 ##############################################################################
 """filtering view for ProcessInstances of a stateful workflow
  
-$Id: filteradapter.py,v 1.1 2004/02/27 16:50:38 philikon Exp $
+$Id: filteradapter.py,v 1.2 2004/03/06 17:48:55 jim Exp $
 """
 from zope.interface import implements
-from zope.component import queryAdapter 
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.interfaces import IProcessInstanceContainer
 
@@ -45,7 +44,7 @@ class FilterAdapter:
 
     def filterObjectByState(self, object, state, workflow='default'):
         """See IContentFilterAdapter"""
-        adapter = queryAdapter(object, IProcessInstanceContainer)
+        adapter = IProcessInstanceContainer(object, None)
         if not adapter:
             return False
             

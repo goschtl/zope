@@ -15,13 +15,13 @@
 
 Associates content objects with some workflow process definitions.
 
-$Id: contentworkflow.py,v 1.12 2004/03/05 22:09:23 jim Exp $
+$Id: contentworkflow.py,v 1.13 2004/03/06 17:48:55 jim Exp $
 """
 __metaclass__ = type
 
 from persistent import Persistent
 from persistent.dict import PersistentDict
-from zope.component import getService, queryAdapter
+from zope.component import getService
 
 from zope.app.event.interfaces import ISubscriber
 from zope.app.event.interfaces import IObjectCreatedEvent
@@ -49,11 +49,12 @@ class ContentWorkflowsManager(Persistent, Contained):
         obj = event.object
 
         # check if it implements IProcessInstanceContainerAdaptable
-        # This interface ensures that the object can store process instances. 
+        # This interface ensures that the object can store process
+        # instances.
         if not IProcessInstanceContainerAdaptable.providedBy(obj):
             return
 
-        pi_container = queryAdapter(obj, IProcessInstanceContainer)
+        pi_container = IProcessInstanceContainer(obj, None)
         # probably need to adapt to IZopeContainer to use pi_container with
         # context.
         if pi_container is None:

@@ -13,11 +13,10 @@
 ##############################################################################
 """WebDAV-related Adapters
 
-$Id: adapter.py,v 1.8 2004/03/06 16:50:20 jim Exp $
+$Id: adapter.py,v 1.9 2004/03/06 17:48:48 jim Exp $
 """
 from xml.dom import minidom
 
-from zope.component import queryAdapter
 from zope.interface import implements
 
 from zope.app import zapi
@@ -36,7 +35,7 @@ class DAVSchemaAdapter:
 
     def displayname(self):
         value = zapi.name(self.context)
-        if queryAdapter(self.context, IReadDirectory, None) is not None:
+        if IReadDirectory(self.context, None) is not None:
             value = value + '/'
         return value
 
@@ -48,7 +47,7 @@ class DAVSchemaAdapter:
         return value
 
     def resourcetype(self):
-        value = queryAdapter(self.context, IReadDirectory, None)
+        value = IReadDirectory(self.context, None)
         xml = minidom.Document()
         if value is not None:
             node = xml.createElement('collection')

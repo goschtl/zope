@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.37 2004/02/20 16:57:30 fdrake Exp $
+$Id: view.py,v 1.38 2004/03/06 17:48:53 jim Exp $
 """
 __metaclass__ = type
 
@@ -199,7 +199,7 @@ class ViewService(Persistent, Contained):
                 yield info["registration"]
 
         next = getNextService(self, Views)
-        next = zapi.queryAdapter(next, IInterfaceBasedRegistry)
+        next = IInterfaceBasedRegistry(next, None)
         if next is None:
             return
         for r in next.getRegistrationsForInterface(iface):

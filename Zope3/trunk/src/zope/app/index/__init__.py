@@ -12,13 +12,12 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.8 2004/03/05 22:09:08 jim Exp $
+$Id: __init__.py,v 1.9 2004/03/06 17:48:51 jim Exp $
 """
 
 from zope.interface import implements
 from zope.app.index.interfaces import IInterfaceIndexer
 from zope.app.event.interfaces import ISubscriber
-from zope.component import queryAdapter
 
 from zope.app.interfaces.services.hub import \
      IObjectRegisteredHubEvent, \
@@ -52,7 +51,7 @@ class InterfaceIndexingSubscriber(object):
 
     def _getValue(self, object):
         if self._interface is not None:
-            object = queryAdapter(object, self._interface)
+            object = self._interface(object, None)
             if object is None: return None
 
         value = getattr(object, self._field_name, None)

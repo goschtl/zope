@@ -12,14 +12,13 @@
 # 
 ##############################################################################
 """
-$Id: globalservice.py,v 1.14 2004/03/05 22:09:02 jim Exp $
+$Id: globalservice.py,v 1.15 2004/03/06 17:48:49 jim Exp $
 """
 
 __metaclass__ = type
 
 from zope.interface.type import TypeRegistry
 from zope.interface import implements
-from zope.component import queryAdapter
 from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
 
@@ -76,7 +75,7 @@ class GlobalSubscribable:
         checkEventType(event_type)
         clean_subscriber = removeAllProxies(subscriber)
 
-        subscribingaware = queryAdapter(subscriber, ISubscribingAware)
+        subscribingaware = ISubscribingAware(subscriber, None)
         if subscribingaware is not None:
             subscribingaware.subscribedTo(self, event_type, filter)
 
@@ -117,7 +116,7 @@ class GlobalSubscribable:
                 # been done by a local service
                 return
 
-        subscribingaware = queryAdapter(subscriber, ISubscribingAware)
+        subscribingaware = ISubscribingAware(subscriber, None)
 
         if event_type:
             ev_type = event_type
@@ -204,7 +203,7 @@ def globalNotifyOrPublish(self, event):
         for subscriber, filter in subscriptions:
             if filter is not None and not filter(event):
                 continue
-            queryAdapter(subscriber, ISubscriber).notify(event)
+            ISubscriber(subscriber).notify(event)
 
 class GlobalEventChannel(GlobalSubscribable):
 

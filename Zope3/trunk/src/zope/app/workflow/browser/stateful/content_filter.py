@@ -13,9 +13,8 @@
 ##############################################################################
 """filtering view for ProcessInstances of a stateful workflow
  
-$Id: content_filter.py,v 1.1 2004/02/27 16:50:38 philikon Exp $
+$Id: content_filter.py,v 1.2 2004/03/06 17:48:55 jim Exp $
 """
-from zope.component import queryAdapter
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.browser.container.contents import Contents
 from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
@@ -32,14 +31,18 @@ class FilterList(Contents):
         """Filter a list of objects according to given workflow and state
 
         objList  ... list of objects
-        state    ... name of a state (of the given workflow) in which the result
-                      objects must be
-        workflow ... name of a workflow to which result objects must be attached
+        
+        state    ... name of a state (of the given workflow) in which the
+                     result objects must be
+
+        workflow ... name of a workflow to which result objects must
+                     be attached
+        
         """
         res = []
 
         for obj in objList:
-            adapter = queryAdapter(obj['object'], IProcessInstanceContainer)
+            adapter = IProcessInstanceContainer(obj['object'], None)
             if adapter:
                 for item in adapter.values():
                     if item.processDefinitionName != workflow:

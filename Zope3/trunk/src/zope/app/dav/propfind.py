@@ -11,7 +11,7 @@
 ##############################################################################
 """WebDAV method PROPFIND
 
-$Id: propfind.py,v 1.16 2004/03/06 04:17:22 garrett Exp $
+$Id: propfind.py,v 1.17 2004/03/06 17:48:48 jim Exp $
 """
 from xml.dom import minidom
 from zope.proxy import removeAllProxies
@@ -105,7 +105,7 @@ class PROPFIND(object):
                     count += 1
                     prop.setAttribute('xmlns:%s' % attr_name, ns)
                 iface = _props[ns]['iface']
-                adapter = zapi.queryAdapter(self.context, iface, None)
+                adapter = iface(self.context, None)
                 initial = {}
                 for name in avail.get(ns):
                     attr = getattr(adapter, name, None)
@@ -235,7 +235,7 @@ class PROPFIND(object):
                     l.append(p)
                     not_avail[ns] = l
                     continue
-                adapter = zapi.queryAdapter(self.context, iface, None)
+                adapter = iface(self.context, None)
                 if adapter is None:
                     l = not_avail.get(ns, [])
                     l.append(p)

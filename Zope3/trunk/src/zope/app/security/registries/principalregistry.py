@@ -13,13 +13,12 @@
 ##############################################################################
 """
 
-$Id: principalregistry.py,v 1.11 2004/03/06 16:50:28 jim Exp $
+$Id: principalregistry.py,v 1.12 2004/03/06 17:48:52 jim Exp $
 """
 __metaclass__ = type
 
 from zope.exceptions import NotFoundError
 from zope.app.interfaces.security import ILoginPassword
-from zope.component import queryAdapter
 from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 from zope.app.interfaces.security import IUnauthenticatedPrincipal
 from zope.app.interfaces.services.service import ISimpleService
@@ -36,7 +35,7 @@ class PrincipalRegistry:
     # Methods implementing IAuthenticationService
 
     def authenticate(self, request):
-        a = queryAdapter(request, ILoginPassword, None)
+        a = ILoginPassword(request, None)
         if a is not None:
             login = a.getLogin()
             if login is not None:

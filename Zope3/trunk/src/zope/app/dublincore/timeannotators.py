@@ -13,12 +13,11 @@
 ##############################################################################
 """Objects that take care of annotating dublin core meta data times
 
-$Id: timeannotators.py,v 1.7 2004/03/02 18:50:58 philikon Exp $
+$Id: timeannotators.py,v 1.8 2004/03/06 17:48:48 jim Exp $
 """
 __metaclass__ = type
 
 from datetime import datetime
-from zope.component import queryAdapter
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.event.interfaces import ISubscriber
 from zope.interface import implements
@@ -29,7 +28,7 @@ class DCTimeAnnotatorBase:
     implements(ISubscriber)
 
     def notify(self, event):
-        dc = queryAdapter(event.object, IZopeDublinCore)
+        dc = IZopeDublinCore(event.object, None)
         if dc is not None:
             self.annotate(dc)
 

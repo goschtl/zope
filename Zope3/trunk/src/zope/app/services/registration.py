@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: registration.py,v 1.24 2004/03/06 16:50:30 jim Exp $
+$Id: registration.py,v 1.25 2004/03/06 17:48:53 jim Exp $
 """
 __metaclass__ = type
 
@@ -434,7 +434,7 @@ class ComponentRegistration(SimpleRegistration):
         objectpath = zapi.getPath(self)
         dependents.addDependent(objectpath)
         # Also update usage, if supported
-        adapter = zapi.queryAdapter(component, interfaces.IRegistered)
+        adapter = interfaces.IRegistered(component, None)
         if adapter is not None:
             adapter.addUsage(objectpath)
 
@@ -446,7 +446,7 @@ class ComponentRegistration(SimpleRegistration):
         objectpath = zapi.getPath(self)
         dependents.removeDependent(objectpath)
         # Also update usage, if supported
-        adapter = zapi.queryAdapter(component, interfaces.IRegistered)
+        adapter = interfaces.IRegistered(component, None)
         if adapter is not None:
             adapter.removeUsage(zapi.getPath(self))
 

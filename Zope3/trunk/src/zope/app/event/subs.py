@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.25 2004/03/06 16:50:22 jim Exp $
+$Id: subs.py,v 1.26 2004/03/06 17:48:49 jim Exp $
 """
 from zope.exceptions import NotFoundError
 from persistent import Persistent
@@ -28,7 +28,7 @@ from zope.app.traversing import canonicalPath, traverse
 from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribable
 from zope.app.event.interfaces import ISubscribingAware
 
-from zope.component import getService, queryService, queryAdapter
+from zope.component import getService, queryService
 from zope.app.services.servicenames import HubIds
 from zope.app.services.type import PersistentTypeRegistry
 from cPickle import dumps, PicklingError
@@ -111,7 +111,7 @@ class Subscribable(Persistent, Contained):
         evtype_numsubs[ev_type] += 1
         tokens[token] = evtype_numsubs
 
-        subscribingaware = queryAdapter(wrapped_object, ISubscribingAware)
+        subscribingaware = ISubscribingAware(wrapped_object, None)
         if subscribingaware is not None:
             subscribingaware.subscribedTo(wrapped_self, event_type, filter)
 
@@ -202,7 +202,7 @@ class Subscribable(Persistent, Contained):
             # No subscription was removed.
             raise NotFoundError(reference)
 
-        subscribingaware = queryAdapter(wrappedobj, ISubscribingAware)
+        subscribingaware = ISubscribingAware(wrappedobj, None)
         if subscribingaware is not None:
             subscribingaware.unsubscribedFrom(wrapped_self, event_type, filter)
 
@@ -225,7 +225,7 @@ class Subscribable(Persistent, Contained):
                 "Unsubscribing all for an object that doesn't exist: %s" %
                 reference)
 
-        subscribingaware = queryAdapter(wrappedobj, ISubscribingAware)
+        subscribingaware = ISubscribingAware(wrappedobj, None)
 
         registry = clean_self._registry
         if event_type is IEvent:

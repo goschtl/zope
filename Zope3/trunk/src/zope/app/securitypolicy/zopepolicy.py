@@ -13,10 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.2 2004/03/02 13:42:39 philikon Exp $
+$Id: zopepolicy.py,v 1.3 2004/03/06 17:48:53 jim Exp $
 """
 from zope.interface import implements
-from zope.component import queryAdapter
 from zope.security.interfaces import ISecurityPolicy
 from zope.security.management import system_user
 
@@ -148,7 +147,7 @@ class ZopeSecurityPolicy:
         for place in LocationIterator(object):
 
             # Copy specific principal permissions
-            prinper = queryAdapter(place, IPrincipalPermissionMap)
+            prinper = IPrincipalPermissionMap(place, None)
             if prinper is not None:
                 for principal in principals:
                     for principal_permission, setting in (
@@ -172,7 +171,7 @@ class ZopeSecurityPolicy:
                     return True
 
             # Collect principal roles
-            prinrole = queryAdapter(place, IPrincipalRoleMap)
+            prinrole = IPrincipalRoleMap(place, None)
             if prinrole is not None:
                 for principal in principals:
                     roles = principals[principal]
@@ -183,7 +182,7 @@ class ZopeSecurityPolicy:
                             roles[role] = setting
 
             # Collect role permissions
-            roleper = queryAdapter(place, IRolePermissionMap)
+            roleper = IRolePermissionMap(place, None)
             if roleper is not None:
                 for perm, role, setting in roleper.getRolesAndPermissions():
                     assert setting in (Allow, Deny)
@@ -245,7 +244,7 @@ def permissionsOfPrincipal(principal, object):
     for place in LocationIterator(object):
 
         # Copy specific principal permissions
-        prinper = queryAdapter(place, IPrincipalPermissionMap)
+        prinper = IPrincipalPermissionMap(place, None)
         if prinper is not None:
             for permission, setting in prinper.getPermissionsForPrincipal(
                 principalid):
@@ -253,7 +252,7 @@ def permissionsOfPrincipal(principal, object):
                     permissions[permission] = setting
 
         # Collect principal roles
-        prinrole = queryAdapter(place, IPrincipalRoleMap)
+        prinrole = IPrincipalRoleMap(place, None)
         if prinrole is not None:
             for role, setting in prinrole.getRolesForPrincipal(principalid):
                 if role not in roles:
@@ -269,7 +268,7 @@ def permissionsOfPrincipal(principal, object):
     for place in LocationIterator(object):
 
         # Collect role permissions
-        roleper = queryAdapter(place, IRolePermissionMap)
+        roleper = IRolePermissionMap(place, None)
         if roleper is not None:
             for perm, role, setting in roleper.getRolesAndPermissions():
                 if role in roles and perm not in permissions:

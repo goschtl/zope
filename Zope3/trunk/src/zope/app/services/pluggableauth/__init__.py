@@ -13,7 +13,7 @@
 ##############################################################################
 """Pluggable Authentication service implementation.
 
-$Id: __init__.py,v 1.16 2004/03/05 22:09:17 jim Exp $
+$Id: __init__.py,v 1.17 2004/03/06 17:48:54 jim Exp $
 """
 import random
 import sys
@@ -26,7 +26,6 @@ from BTrees.IOBTree import IOBTree
 from BTrees.OIBTree import OIBTree
 
 from zope.interface import implements
-from zope.component import queryAdapter
 from zope.component.interfaces import IViewFactory
 from zope.exceptions import NotFoundError
 
@@ -546,7 +545,7 @@ class PrincipalAuthenticationView:
         # in them currently (ILoginPassword-based requests)
         # If you want a different policy, you'll need to write and register
         # a different view, replacing this one.
-        a = queryAdapter(self.request, ILoginPassword, None)
+        a = ILoginPassword(self.request, None)
         if a is None:
             return
         login = a.getLogin()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector View class
 
-$Id: browser.py,v 1.3 2004/03/06 16:50:26 jim Exp $
+$Id: browser.py,v 1.4 2004/03/06 17:48:51 jim Exp $
 """
 from zope.app.publisher.browser import BrowserView
 from zope.app.introspector.interfaces import IIntrospector
@@ -66,7 +66,7 @@ class IntrospectorView(BrowserView):
         #        pass
         #    else:
         #        # XXX IConfigureFor appears to have disappeared at some point
-        #        adapter = queryAdapter(service, IConfigureFor)
+        #        adapter = IConfigureFor(service, None)
         #        if (adapter is not None
         #            and adapter.hasRegistrationFor(self.context)):
         #            search_result = service.getRegisteredMatching(
