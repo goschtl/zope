@@ -15,7 +15,7 @@
 
 Each expression engine can have its own expression types and base names.
 
-$Id: Engine.py,v 1.3 2002/06/13 00:03:56 srichter Exp $
+$Id: Engine.py,v 1.4 2002/06/18 14:16:49 jim Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -25,17 +25,17 @@ from Zope.PageTemplate.Expressions \
      import PathExpr, StringExpr, NotExpr, DeferExpr
 from Zope.PageTemplate.PythonExpr import PythonExpr
 from Zope.Security.Proxy import ProxyFactory
-from Zope.ComponentArchitecture import getAdapter
 from Zope.App.Traversing.ITraverser import ITraverser
 from Zope.Security.RestrictedBuiltins import RestrictedBuiltins
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.I18n.GlobalTranslationService import translationService
+from Zope.App.Traversing.Traverser import Traverser
 import sys
 
 def zopeTraverser(object, path_items, econtext):
     """Traverses a sequence of names, first trying attributes then items.
     """
-    traverser = getAdapter(object, ITraverser)
+    traverser = Traverser(object)
     return traverser.traverse(path_items,
                               request=getattr(econtext, 'request', None))
 

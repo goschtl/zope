@@ -55,6 +55,13 @@ class Test(PlacelessSetup, unittest.TestCase):
         PlacelessSetup.setUp(self)
         xmlconfig(open(defs_path))
 
+        from Zope.ComponentArchitecture.GlobalAdapterService \
+             import provideAdapter
+        from Zope.App.Traversing.DefaultTraversable import DefaultTraversable
+        from Zope.App.Traversing.ITraversable import ITraversable
+
+        provideAdapter(None, ITraversable, DefaultTraversable)
+
     def testView(self):
         self.assertEqual(queryView(ob, 'test', request),
                          None)
@@ -242,6 +249,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testPageViews(self):
         self.assertEqual(queryView(ob, 'test', request),
                          None)
+        test3 = os.path.join(os.path.split(defs_path)[0], 'tests', 'test3.pt')
 
         xmlconfig(StringIO(template %
             """
@@ -251,14 +259,17 @@ class Test(PlacelessSetup, unittest.TestCase):
 
                 <browser:page name="index.html" attribute="index" /> 
                 <browser:page name="action.html" attribute="action" /> 
+                <browser:page name="test.html" template="%s" /> 
             </browser:view>
-            """
+            """ % test3
             ))
 
         v = getView(ob, 'index.html', request)
         self.assertEqual(v(), 'V1 here')
         v = getView(ob, 'action.html', request)
         self.assertEqual(v(), 'done')
+        v = getView(ob, 'test.html', request)
+        self.assertEqual(str(v()), '<html><body><p>done</p></body></html>\n')
 
     def testPageViewsWithName(self):
         self.assertEqual(queryView(ob, 'test', request),
@@ -384,7 +395,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def testtemplate(self):
         path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
         
-        self.assertEqual(queryView(ob, 'test', request),
+        self.assertEqual(queryView(ob, 'index.html', request),
                          None)
 
         xmlconfig(StringIO(template %
@@ -398,6 +409,25 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         v = getView(ob, 'index.html', request)
         self.assertEqual(v().strip(), '<html><body><p>test</p></body></html>')
+
+    def testtemplateWClass(self):
+        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test2.pt')
+        
+        self.assertEqual(queryView(ob, 'index.html', request),
+                         None)
+
+        xmlconfig(StringIO(template %
+            """
+            <browser:view
+                  name="index.html"
+                  template="%s"
+                  class="Zope.App.Publisher.Browser.tests.templateclass."
+                  for="Zope.ComponentArchitecture.tests.TestViews.IC" />
+            """ % path
+            ))
+
+        v = getView(ob, 'index.html', request)
+        self.assertEqual(v().strip(), '<html><body><p>42</p></body></html>')
 
     def testProtectedtemplate(self):
         path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
@@ -456,22 +486,6 @@ class Test(PlacelessSetup, unittest.TestCase):
             <browser:view
                   template="%s"
                   for="Zope.ComponentArchitecture.tests.TestViews.IC" 
-                  /> 
-            """ % path
-            ))
-
-    def testtemplateAndFactory(self):
-        path = os.path.join(os.path.split(defs_path)[0], 'tests', 'test.pt')
-        self.assertRaises(
-            ConfigurationError,
-            xmlconfig,
-            StringIO(template %
-            """
-            <browser:view
-                  name="index.html"
-                  template="%s"
-                  for="Zope.ComponentArchitecture.tests.TestViews.IC" 
-                  factory="Zope.ComponentArchitecture.tests.TestViews.V1">
                   /> 
             """ % path
             ))

@@ -31,7 +31,25 @@ class Test(unittest.TestCase):
                          '  <body>\n'
                          '    <p>hello world</p>\n'
                          '  </body>\n</html>\n')
-                         
+
+    def testWBases(self):
+        from Zope.App.PageTemplate.SimpleViewClass import SimpleViewClass
+
+        class C: pass
+        
+        SimpleTestView = SimpleViewClass('testSimpleViewClass.pt', bases=(C, ))
+        
+        self.failUnless(issubclass(SimpleTestView, C))
+
+        ob = data()
+        view = SimpleTestView(ob, None)        
+        macro = view['test']
+        out = view()
+        self.assertEqual(out,
+                         '<html>\n'
+                         '  <body>\n'
+                         '    <p>hello world</p>\n'
+                         '  </body>\n</html>\n')
 
 def test_suite():
     loader=unittest.TestLoader()

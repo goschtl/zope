@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: SimpleViewClass.py,v 1.2 2002/06/10 23:28:14 jim Exp $
+$Id: SimpleViewClass.py,v 1.3 2002/06/18 14:16:49 jim Exp $
 """
 
 import sys
@@ -42,11 +42,13 @@ class simple(BrowserView):
     def __call__(self, *args, **kw):
         return self.index(self.request, *args, **kw)
 
-def SimpleViewClass(src, offering=None, used_for=None):
+def SimpleViewClass(src, offering=None, used_for=None, bases=()):
     if offering is None:
         offering = sys._getframe(1).f_globals
 
-    class_ = type("SimpleViewClass from %s" % src, (simple,),
+    bases += (simple, )
+
+    class_ = type("SimpleViewClass from %s" % src, bases,
                   {'index': ViewPageTemplateFile(src, offering)})
 
     if used_for is not None:
