@@ -17,6 +17,18 @@ Things that need to be done
     in an alternate implementation (with different semantics), but the
     issue needs to be re-visited.
 
+  - There should be a way to specify a Download-URL when building a
+    package; using the distutils "register" command would then cause
+    that field to be provided via PyPI.
+
+    An alternative is to not include the Download-URL information in
+    the distribution and to simply edit the finished registration
+    manually.
+
+  - If a version number is used which appears to indicate "alpha" or
+    "beta" status, check the Trove "Development Status" classifier to
+    see that it matches, and issue a warning if not.
+
   - Re-visit the abstrations for parsed revision control URLs:
 
     - The current abstraction is pretty painful to work with, and
