@@ -1,6 +1,6 @@
-embedded -a Components/principia Components/ExtensionClass Components/cPickle \
-  Components/PickleJar Components/cPersistence Components/zlib \
-  Packages/Aqueduct Packages/DocumentTemplate Packages/SearchIndex
+embedded -a Components/principia Components/ExtensionClass \
+  Packages/BoboPOS2 Components/Commercial \
+  Packages/DocumentTemplate Packages/SearchIndex
 
 
 AccessControl    Packages/AccessControl
