@@ -115,9 +115,10 @@ class ICommonFormInformation(ICommonInformation):
     fields = Tokens(
         title=u"Fields",
         description=u"""
-        The fields and the order in which to display them.  If this is
-        not specified, all schema fields will be displayed in the
-        order specified in the schema itself.""",
+        Here you can specify the names of the fields you wish to display. 
+        The order in this list is also the order the fields will 
+        be displayed in.  If this attribute is not specified, all schema fields
+        will be displayed in the order specified in the schema itself.""",
         required=False,
         value_type=PythonIdentifier()
         )
