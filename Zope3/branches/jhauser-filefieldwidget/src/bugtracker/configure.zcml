@@ -303,7 +303,7 @@
         interface="bugtracker.interfaces.IAttachment" />
   </content>
 
-  <content class="zope.app.file.image.Image">
+  <content class="zope.app.image.image.Image">
     <implements 
         interface="bugtracker.interfaces.IAttachment" />
   </content>

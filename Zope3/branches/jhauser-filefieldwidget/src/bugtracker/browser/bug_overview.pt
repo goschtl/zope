@@ -85,7 +85,7 @@
   <div class="action" i18n:domain="bugtracker">
     <a href="./@@+/action.html?type_name=zope.app.file.File" 
       i18n:translate="">Add File</a> |
-    <a href="./@@+/action.html?type_name=zope.app.file.Image" 
+    <a href="./@@+/action.html?type_name=zope.app.image.Image" 
       i18n:translate="">Add Image</a>
   </div>
 

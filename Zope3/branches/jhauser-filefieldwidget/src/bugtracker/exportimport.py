@@ -28,7 +28,8 @@ from zope.security.proxy import removeSecurityProxy
 
 from zope.app import zapi
 from zope.app.dublincore.interfaces import IZopeDublinCore
-from zope.app.file import File, Image
+from zope.app.file import File
+from zope.app.image import Image
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from bugtracker.bug import Bug

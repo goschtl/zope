@@ -27,7 +27,8 @@ from zope.app import zapi
 from zope.app.container.contained import contained
 from zope.app.container.interfaces import INameChooser
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
-from zope.app.file import File, Image
+from zope.app.file import File
+from zope.app.image import Image
 
 from bugtracker.bug import Bug
 from bugtracker.comment import Comment
