@@ -29,6 +29,13 @@ typedef struct {
   PyObject *__signature__;
 } ISB;
 
+static void
+ISB_dealloc(ISB *self)
+{
+  Py_XDECREF(self->__signature__);
+  self->ob_type->tp_free((PyObject*)self);
+}
+
 static PyMemberDef ISB_members[] = {
   { "__signature__", T_OBJECT_EX, offsetof(ISB, __signature__), 0 },
   {NULL}	/* Sentinel */
@@ -45,7 +52,7 @@ static PyTypeObject ISBType = {
                                 "InterfaceSpecificationBase",
 	/* tp_basicsize      */ sizeof(ISB),
 	/* tp_itemsize       */ 0,
-	/* tp_dealloc        */ (destructor)0,
+	/* tp_dealloc        */ (destructor)ISB_dealloc,
 	/* tp_print          */ (printfunc)0,
 	/* tp_getattr        */ (getattrfunc)0,
 	/* tp_setattr        */ (setattrfunc)0,
