@@ -124,7 +124,7 @@ msgstr "секунд"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:13
 msgid ""
-"If you specify a time of 0 seconds, then the server will do a hard sutdown."
+"If you specify a time of 0 seconds, then the server will do a hard shutdown."
 msgstr ""
 "Если Вы укажете время остановки - 0 секунд, сервер будет остановлен "
 "незамедлительно."

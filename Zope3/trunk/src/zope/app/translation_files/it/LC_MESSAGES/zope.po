@@ -134,7 +134,7 @@ msgstr "Account utenti"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:13
 msgid ""
-"If you specify a time of 0 seconds, then the server will do a hard sutdown."
+"If you specify a time of 0 seconds, then the server will do a hard shutdown."
 msgstr ""
 "Se specifichi un tempo di 0 secondi il server farà uno spegnimento forzato."
 

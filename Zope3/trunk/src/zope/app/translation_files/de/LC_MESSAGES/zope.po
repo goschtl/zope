@@ -106,15 +106,15 @@ msgstr "entfällt"
 
 #: src/zope/app/applicationcontrol/browser/runtimeinfo.py:65
 msgid "Could not retrieve runtime information."
-msgstr "Konnte nicht die Laufzeitinformationen wiederfinden."
+msgstr "Die Laufzeitinformationen konnten nicht wiedergefunden werden."
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:11
 msgid "seconds"
 msgstr "Sekunden"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:13
-msgid "If you specify a time of 0 seconds, then the server will do a hard sutdown."
-msgstr "Wenn Sie eine Zeit von 0 Sekunden eigeben, dann wird der Server sofort angehalten (hard shutdown)."
+msgid "If you specify a time of 0 seconds, then the server will do a hard shutdown."
+msgstr "Wenn Sie eine Zeit von 0 Sekunden eingeben, dann wird der Server sofort angehalten (hard shutdown)."
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:18
 msgid "Restart server"
@@ -130,7 +130,7 @@ msgstr "Zope Stub Server Controller"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:9
 msgid "Shutdown time:"
-msgstr "Sutdown-Zeit:"
+msgstr "Shutdown-Zeit:"
 
 #: src/zope/app/applicationcontrol/browser/servercontrol.py:32
 msgid "You restarted the server."
