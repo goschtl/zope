@@ -34,7 +34,7 @@ Zope Changes
 
         Added a layer argument to the menu directives and made sure that all
         browser directives specify the layer for the menu directives.
-    
+
       - Implemented issue 292: Add factory to browser:resource directive 
 
       - Implemented issue 309: <schemadisplay> should support <widget>
@@ -521,6 +521,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #334: Failing RuntimeInfo tests
+
       - Fix: Pagelet directive was inoring the permission. Pagelets which
         not the right permission are not shwon if calling via the Tales 
         expression "pagelets:". If calling named pagelets directly via the
@@ -539,7 +541,7 @@ Zope Changes
 
       - Fixed issue #360: MultiSelectWidget configured for ISet but creates
                           list
-                          
+
         The correct type of the collection field is now discovered and used.
 
       - Addressed issue #348: ZCML hides import errors 
@@ -633,7 +635,7 @@ Zope Changes
 
       - If the content-type was text/*, HTTPResponse.write re-set the
         content-length header to the first chunk of data.
-      
+
       - Don't unconditionally add Content-Length header in
         HTTPResponse.getHeaders(). Do it only in output(), where the
         size of the data is known.
@@ -643,7 +645,7 @@ Zope Changes
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
       Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
-      Bishop, Dominik Huber
+      Bishop, Dominik Huber, Dmitry Vasiliev
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
