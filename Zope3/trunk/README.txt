@@ -56,7 +56,7 @@ Starting Zope3
 
     http://localhost:8080/manage
 
-  This will access the Zope 3 default management interface.  Note that
+  This goes to the Zope 3 default management interface.  Note that
   this release of Zope 3 requires recent versions of Mozilla or IE.
 
   If you insist on using an older browser (or a text-based browser)
@@ -70,7 +70,7 @@ Starting Zope3
 Finding out how to develop new content types:
 
   We aren't as far along with documentation as we'd like to
-  be. Please be patient or help out. Some resources:
+  be.  Please be patient or help out.  Some resources:
 
   - The developers tutorial at:
 
