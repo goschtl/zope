@@ -12,18 +12,18 @@
 #
 ##############################################################################
 """
-$Id: __init__.py,v 1.4 2004/05/07 19:33:31 garrett Exp $
+$Id: __init__.py,v 1.5 2004/05/11 11:11:52 garrett Exp $
 """
 import traceback
 from warnings import warn
 from zope.app import zapi
-from zope.app.form.interfaces import IWidget
+from zope.app.form.interfaces import IWidget, WidgetInputError
 from zope.component.interfaces import IViewFactory
 from zope.interface import implements
 from zope.i18n import translate
 
 class Widget(object):
-    """Mixin class providing functionality common accross view types."""
+    """Mixin class providing functionality common across widget types."""
     
     implements(IWidget)
 
@@ -64,6 +64,19 @@ class Widget(object):
 
     def setRenderedValue(self, value):
         self._data = value
+        
+class InputWidget(Widget):
+    """Mixin class providing some default input widget methods."""
+    
+    def hasValidInput(self):
+        try:
+            self.validate()
+            return True
+        except WidgetInputError:
+            return False
+
+    def validate(self):
+        self.getInputValue()
 
 class CustomWidgetFactory(object):
     """Custom Widget Factory."""
