@@ -2,7 +2,7 @@
 # This file is necessary to make this directory a package.
 
 from zope.interface import Interface
-from zope.schema.interfaces import IValueSet
+from zope.schema.interfaces import IEnumerated, IField
 
 class IPrincipal(Interface):
     """Provide information about principals.
@@ -244,7 +244,7 @@ class IPermissionService(Interface):
         service.
         """
 
-class IPermissionField(IValueSet):
+class IPermissionField(IEnumerated, IField):
     u"""Fields with Permissions as values
     """
 

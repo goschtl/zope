@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.10 2003/04/14 16:13:42 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.11 2003/04/14 18:21:36 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -218,13 +218,13 @@ class MinMaxLen(Field):
             raise ValidationError(errornames.TooLong, value, self.max_length)
 
 
-class ValueSet(Field):
+class Enumerated(Field):
 
     def __init__(self, allowed_values=None, default=None, **kw):
         # Set allowed_values to None so that we can validate if
         # one of the super methods invoke validation.
         self.__dict__['allowed_values'] = None
-        super(ValueSet, self).__init__(**kw)
+        super(Enumerated, self).__init__(**kw)
         if allowed_values is not None:
             self.allowed_values = allowed_values
 
@@ -254,14 +254,13 @@ class ValueSet(Field):
     allowed_values = ValidatedProperty('allowed_values', allowed_values)
 
     def _validate(self, value):
-        super(ValueSet, self)._validate(value)
+        super(Enumerated, self)._validate(value)
         if self.allowed_values:
             if not value in self.allowed_values:
                 raise ValidationError(errornames.InvalidValue, value,
                                       self.allowed_values)
 
-
-class Text(MinMaxLen, ValueSet):
+class Text(MinMaxLen, Enumerated, Field):
     """A field containing text used for human discourse."""
     _type = unicode
 
@@ -280,7 +279,7 @@ class TextLine(Text):
     def constraint(self, value):
         return '\n' not in value and '\r' not in value
 
-class EnumeratedTextLine(ValueSet, TextLine):
+class EnumeratedTextLine(Enumerated, TextLine):
     """TextLine with a value from a list of allowed values."""
 
 class Password(TextLine):
@@ -290,7 +289,7 @@ class Bool(Field):
     """A field representing a Bool."""
     _type = type(True)
 
-class Int(ValueSet, Orderable):
+class Int(Enumerated, Orderable, Field):
     """A field representing an Integer."""
     _type = int, long
 
@@ -303,5 +302,5 @@ class Int(ValueSet, Orderable):
                           DeprecationWarning, stacklevel=2)
         super(Int, self).__init__(*args, **kw)
 
-class EnumeratedInt(ValueSet, Int):
+class EnumeratedInt(Enumerated, Int):
     """A field representing one of a selected set of Integers."""

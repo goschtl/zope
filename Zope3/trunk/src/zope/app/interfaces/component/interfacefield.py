@@ -13,28 +13,29 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacefield.py,v 1.4 2003/01/06 18:39:36 stevea Exp $
+$Id: interfacefield.py,v 1.5 2003/04/14 18:21:35 fdrake Exp $
 """
 
-from zope.schema import Field
-from zope.schema.interfaces import IValueSet, ITuple
 from zope.interface import Interface
+from zope.schema import Field
+from zope.schema.interfaces import IEnumerated, IField, ITuple
 
-class IInterfaceField(IValueSet):
+class IInterfaceField(IEnumerated, IField):
     u"""A type of Field that has an Interfaces as its value."""
 
-    basetype = Field(title=u"Base type",
-                 description=u"All values must extend (or be) this type,"
-                              " unless it is None which means 'anything'.",
-                 default=Interface,
-                 )
+    basetype = Field(
+        title=u"Base type",
+        description=(u"All values must extend (or be) this type,"
+                     u" unless it is None which means 'anything'."),
+        default=Interface,
+        )
 
 class IInterfacesField(ITuple):
     u"""A type of Field that is has a tuple of Interfaces as its value."""
 
     basetype = Field(
             title=u"Base type",
-            description=u"All values must extend or be this type,"
-                         " unless it is None, which means 'anything'.",
+            description=(u"All values must extend or be this type,"
+                         u" unless it is None, which means 'anything'."),
             default=Interface,
             )

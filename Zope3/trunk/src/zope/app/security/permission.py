@@ -13,10 +13,10 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: permission.py,v 1.6 2003/03/07 21:13:49 jim Exp $
+$Id: permission.py,v 1.7 2003/04/14 18:21:36 fdrake Exp $
 """
 
-from zope.schema import ValueSet
+from zope.schema import Enumerated, Field
 from zope.schema.interfaces import ValidationError
 from zope.component import getService
 from zope.app.services.servicenames import Permissions
@@ -29,7 +29,7 @@ def checkPermission(context, permission_id):
     if not getService(context, Permissions).getPermission(permission_id):
         raise ValueError("Undefined permission id", permission_id)
 
-class PermissionField(ValueSet):
+class PermissionField(Enumerated, Field):
     __doc__ = IPermissionField.__doc__
     __implements__ = IPermissionField
 

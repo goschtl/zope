@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.8 2003/04/14 16:13:42 fdrake Exp $
+$Id: interfaces.py,v 1.9 2003/04/14 18:21:36 fdrake Exp $
 """
 from zope.interface import Interface
 
@@ -248,7 +248,7 @@ class IMinMaxLen(ILen):
         min=0, # needs to be a positive number
         default=None)
 
-class IValueSet(IField):
+class IEnumerated(IField):
     u"""Field whose value is contained in a predefined set"""
 
     allowed_values = Container(
@@ -259,11 +259,13 @@ class IValueSet(IField):
         restictions.""",
         required=False)
 
+IValueSet = IEnumerated
+
 class IBool(IField):
     u"""a Boolean Field."""
 
-class IBytes(IMinMaxLen, IValueSet, IIterable):
-    # XXX IValueSet will be removed in the future.
+class IBytes(IMinMaxLen, IEnumerated, IIterable):
+    # XXX IEnumerated will be removed in the future.
     u"""a Field containing a byte string (like the python str).
 
     The value might be contrained to be with length limits.
@@ -272,8 +274,8 @@ class IBytes(IMinMaxLen, IValueSet, IIterable):
 class IBytesLine(IBytes):
     u"""a Field containing a byte string without newlines."""
 
-class IText(IMinMaxLen, IValueSet, IIterable):
-    # XXX IValueSet doesn't make sense for multi-line strings, so will
+class IText(IMinMaxLen, IEnumerated, IIterable):
+    # XXX IEnumerated doesn't make sense for multi-line strings, so will
     # be removed in the future.
     u"""a Field containing a unicode string."""
 
@@ -283,7 +285,7 @@ class ISourceText(IText):
 class ITextLine(IText):
     u"""a Field containing a unicode string without newlines."""
 
-class IEnumeratedTextLine(ITextLine, IValueSet):
+class IEnumeratedTextLine(ITextLine, IEnumerated):
     u"""a Field containing a unicode string without newlines.
 
     The value may be constrained to an element of a specified list.
@@ -292,34 +294,34 @@ class IEnumeratedTextLine(ITextLine, IValueSet):
 class IPassword(ITextLine):
     u"""a Field containing a unicode string without newlines that is a password."""
 
-class IInt(IMinMax, IValueSet):
-    # XXX IValueSet will be removed; use IEnumeratedInt instead if you
-    # need the IValueSet interface.
+class IInt(IMinMax, IEnumerated):
+    # XXX IEnumerated will be removed; use IEnumeratedInt instead if you
+    # need the IEnumerated interface.
     u"""a Field containing an Integer Value."""
 
-class IEnumeratedInt(IInt, IValueSet):
+class IEnumeratedInt(IInt, IEnumerated):
     u"""a Field containing an Integer Value.
 
     The value may be constrained to an element of a specified list.
     """
 
-class IFloat(IMinMax, IValueSet):
-    # XXX IValueSet will be removed; use IEnumeratedFloat instead if you
-    # need the IValueSet interface.
+class IFloat(IMinMax, IEnumerated):
+    # XXX IEnumerated will be removed; use IEnumeratedFloat instead if you
+    # need the IEnumerated interface.
     u"""a Field containing a Float."""
 
-class IEnumeratedFloat(IFloat, IValueSet):
+class IEnumeratedFloat(IFloat, IEnumerated):
     u"""a Field containing a Float.
 
     The value may be constrained to an element of a specified list.
     """
 
-class IDatetime(IMinMax, IValueSet):
-    # XXX IValueSet will be removed; use IEnumeratedDatetime instead
-    # if you need the IValueSet interface.
+class IDatetime(IMinMax, IEnumerated):
+    # XXX IEnumerated will be removed; use IEnumeratedDatetime instead
+    # if you need the IEnumerated interface.
     u"""a Field containing a DateTime."""
 
-class IEnumeratedDatetime(IDatetime, IValueSet):
+class IEnumeratedDatetime(IDatetime, IEnumerated):
     u"""a Field containing a DateTime.
 
     The value may be constrained to an element of a specified list.

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _field.py,v 1.8 2003/04/14 16:13:42 fdrake Exp $
+$Id: _field.py,v 1.9 2003/04/14 18:21:36 fdrake Exp $
 """
 __metaclass__ = type
 
@@ -24,7 +24,7 @@ from zope.schema.interfaces import ValidationError
 from zope.schema.errornames import WrongContainedType
 
 from zope.schema.interfaces import IField, IContainer, IIterable, IOrderable
-from zope.schema.interfaces import IMinMaxLen, IValueSet, IText, ITextLine
+from zope.schema.interfaces import IMinMaxLen, IEnumerated, IText, ITextLine
 from zope.schema.interfaces import ISourceText
 from zope.schema.interfaces import IBool, IInt, IBytes, IBytesLine, IFloat
 from zope.schema.interfaces import IDatetime, ISequence, ITuple, IList, IDict
@@ -33,7 +33,7 @@ from zope.schema.interfaces import IEnumeratedDatetime, IEnumeratedTextLine
 from zope.schema.interfaces import IEnumeratedInt, IEnumeratedFloat
 
 from zope.schema._bootstrapfields import Field, Container, Iterable, Orderable
-from zope.schema._bootstrapfields import MinMaxLen, ValueSet
+from zope.schema._bootstrapfields import MinMaxLen, Enumerated
 from zope.schema._bootstrapfields import Text, TextLine, Bool, Int, Password
 from zope.schema._bootstrapfields import EnumeratedTextLine, EnumeratedInt
 from zope.schema.fieldproperty import FieldProperty
@@ -63,7 +63,7 @@ class SourceText(Text):
     __implements__ = ISourceText
     _type = unicode
 
-class Bytes(MinMaxLen, ValueSet):
+class Bytes(MinMaxLen, Enumerated, Field):
     __doc__ = IBytes.__doc__
     __implements__ = IBytes
 
@@ -79,7 +79,7 @@ class BytesLine(Bytes):
         return '\n' not in value
 
 
-class Float(ValueSet, Orderable):
+class Float(Enumerated, Orderable, Field):
     __doc__ = IFloat.__doc__
     __implements__ = IFloat
     _type = float
@@ -93,11 +93,11 @@ class Float(ValueSet, Orderable):
                           DeprecationWarning, stacklevel=2)
         super(Float, self).__init__(*args, **kw)
 
-class EnumeratedFloat(ValueSet, Float):
+class EnumeratedFloat(Enumerated, Float):
     __doc__ = IEnumeratedFloat.__doc__
     __implements__ = IEnumeratedFloat
 
-class Datetime(ValueSet, Orderable):
+class Datetime(Enumerated, Orderable, Field):
     __doc__ = IDatetime.__doc__
     __implements__ = IDatetime
     _type = datetime
@@ -111,7 +111,7 @@ class Datetime(ValueSet, Orderable):
                           DeprecationWarning, stacklevel=2)
         super(Datetime, self).__init__(*args, **kw)
 
-class EnumeratedDatetime(ValueSet, Datetime):
+class EnumeratedDatetime(Enumerated, Datetime):
     __doc__ = IEnumeratedDatetime.__doc__
     __implements__ = IEnumeratedDatetime
 
