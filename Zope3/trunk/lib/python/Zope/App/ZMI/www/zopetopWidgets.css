@@ -1,25 +1,24 @@
-
-
-
-
-
-/*
- * Plone Widgets CSS v1
+/*****************************************************************************
  *
- * Zope CMF style sheet by Alexander Limi (http://limi.net)
+ * Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+ * All Rights Reserved.
  * 
- * Special thanks to Geir Baekholt (http://elvix.com) and 
- * Stian Soiland (http://stain.portveien.to) for invaluable 
- * input and code examples. You guys rock! :)
- *
- * I've tried to comment everything as concisely as possible. If there's anything
- * that you find confusing or just plain wrong, contact me and I'll fix it before the
- * next release.
- *
- * TODO: table.listing, 
- *       table.box
- *
- */
+ * This software is subject to the provisions of the Zope Public License,
+ * Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+ * WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+ * FOR A PARTICULAR PURPOSE.
+ * 
+ *****************************************************************************
+ 
+ These are the Widget CSS declarations.
+
+ TODO: table.listing, 
+       table.box
+
+ $Id: zopetopWidgets.css,v 1.2 2002/06/15 09:10:09 srichter Exp $
+*/
 
 input.standalone {
     background: #DEE7EC url(linkOpaque.gif) left no-repeat;
@@ -40,8 +39,8 @@ input.context {
 }
 
 input.noborder {
-    /* radiobuttons and checkmarks, different behaviour in Moz and IE. 
-       Border necessary in Moz, not in IE */
+/* radiobuttons and checkmarks, different behaviour in Moz and IE. 
+   Border necessary in Moz, not in IE */
     border: none;
     margin: 0;
     background-color: transparent;
@@ -59,6 +58,7 @@ div.row {
     width: 94%;
     padding: 1em 0em;
 }
+
 .legend {
     position : relative;
     top: -1.8em;
@@ -97,7 +97,7 @@ span.info {
 }
 
 .required {
-    /* Used in addition to class "label" on required elements */
+/* Used in addition to class "label" on required elements */
     background: url(required.gif) 2em no-repeat;
 }
 
@@ -151,11 +151,11 @@ table.listing a:hover {
 }
 
 table.listing img{
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 table.box {
-    /* The Plone Box(tm) (Navigation, Related etc) */
+/* The Plone Box(tm) (Navigation, Related etc) */
     background: transparent;
     border-collapse: collapse;
     border-bottom: 1px solid #8CACBB;
@@ -183,7 +183,7 @@ table.box th.empty {
 }
 
 table.box tr.odd {
-    /*every second line should be shaded */
+/*every second line should be shaded */
     background: transparent;
 }
 
@@ -197,11 +197,11 @@ table.box td {
 }
 
 table.box img{
-	vertical-align: middle;
+    vertical-align: middle;
 }
 
 div.boxDetails {
-    /*the line that contains the date for news and other info */
+/*the line that contains the date for news and other info */
     text-align: right;
 }
 
@@ -209,7 +209,8 @@ table.box a {
 }
 
 table.box a.comment {
-    /* special link for comments - default behavior is to display the discussion icon next to the link */
+/* special link for comments - default behavior is to display the discussion
+   icon next to the link */
     background-image: url(http://www.x3ng.com.br:8080/ZopeOrg/discussionitem_icon.gif); 
     background-repeat: no-repeat;
     background-position: 0px -2px;
@@ -219,7 +220,9 @@ table.box a.comment {
 }
 
 table.box a.marker {
-    /* special format for links inside boxes - adds link image and displays the link as a block (which in this case means the text will not float under the link image, plus the whole thing is clickable) */
+/* special format for links inside boxes - adds link image and displays the
+   link as a block (which in this case means the text will not float under 
+   the link image, plus the whole thing is clickable) */
     background: url(linkTransparent.gif) -0.5em 0px no-repeat;
     display: block;
     padding: 0em 0em 0em 1.5em;
@@ -227,13 +230,13 @@ table.box a.marker {
 }
 
 span.folderName {
-    /* The folder name in folder_contents */
+/* The folder name in folder_contents */
     font-size: 150%;
     font-weight: bold;
 }
 
 div.category {
-	float: left;
+   float: left;
     margin-right: 1em;
     margin-bottom: 2em;
     width: 20em;
@@ -251,7 +254,7 @@ div.category a {
 }
 
 div.box {
-	float: left;
+    float: left;
     margin-right: 1em;
     margin-bottom: 2em;
     width: 20em;
@@ -271,7 +274,7 @@ div.box div.heading {
 }
 
 div.box a.close {
-	float: right;
+    float: right;
     text-transform: none;
     border-left: 1px solid #8CACBB;
     padding: 0em 0.2em;
@@ -287,11 +290,8 @@ div.box div.even {
     padding: 1em;
 }
 
-
-
-
 div.spacer {
-	margin: 3em;
+    margin: 3em;
 }
 
 .private {
@@ -351,9 +351,7 @@ div.workspace span.small {
 div.workspace span.big {
     float: left;
     height: 40em;
-    width: 40em;	
+    width: 40em;        
     margin-right: 1em;
     margin-bottom: 1em;
 }
-
-

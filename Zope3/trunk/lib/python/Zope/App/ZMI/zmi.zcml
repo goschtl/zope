@@ -19,6 +19,15 @@
                 permission="Zope.View"
                 allowed_interface=".ZMIViewUtility.IZMIViewUtility"
                 factory=".ZMIViewUtility." />
+
+  <browser:resource name="zopetopBasic.css" 
+                    file="www/zopetopBasic.css"/>
+  <browser:resource name="zopetopWidgets.css" 
+                    file="www/zopetopWidgets.css"/>
+  <browser:resource name="zopetopStructure.css" 
+                    file="www/zopetopStructure.css"/>
+
+  <browser:resource name="arrowUp.gif" file="www/arrowUp.gif"/>
   
   <content class=".IGenericCreatorMarker.">
     <security:require  

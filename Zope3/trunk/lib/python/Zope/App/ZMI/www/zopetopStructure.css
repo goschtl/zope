@@ -1,31 +1,28 @@
-
-
-
-
-
-/*
- * Plone Structure CSS v1
+/*****************************************************************************
  *
- * The Structure CSS contains elements that make up the structure of Plone,
- * generally stuff that is used once on a page - general layout, opposed to the Widgets, that are
- * used several times in a page.
- *
- * Zope CMF style sheet by Alexander Limi (http://limi.net)
+ * Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+ * All Rights Reserved.
  * 
- * Special thanks to Geir Bakholt (http://elvix.com) and 
- * Stian Soiland (http://stain.portveien.to) for invaluable 
- * input and code examples. You guys rock! :)
- *
- * I've tried to comment everything as concisely as possible. If there's anything
- * that you find confusing or just plain wrong, contact me and I'll fix it before the
- * next release.
- *
- * KNOWN BUG: The selected tab cannot have image backdrop. FIXME
- *
- */
+ * This software is subject to the provisions of the Zope Public License,
+ * Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+ * WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+ * FOR A PARTICULAR PURPOSE.
+ * 
+ *****************************************************************************
  
+ The Structure CSS contains elements that make up the structure of Plone,
+ generally stuff that is used once on a page - general layout, opposed to the
+ Widgets, that are used several times in a page.
+
+ KNOWN BUG: The selected tab cannot have image backdrop. FIXME
+
+ $Id: zopetopStructure.css,v 1.2 2002/06/15 09:10:09 srichter Exp $
+*/
+
 div.top {
-    /* Top section */
+/* Top section */
     background: transparent;
     margin: 0;
     padding: 0;
@@ -33,13 +30,13 @@ div.top {
 }
 
 .logo {
-    /* Logo properties */
+/* Logo properties */
     margin: 1em 0em 1em 2em;
     padding: 0;
 }
 
 div.searchBox {
-    /*searchbox style and positioning */
+/*searchbox style and positioning */
     background-color: transparent;
     color: Black;
     float: right;
@@ -53,7 +50,8 @@ input.searchGadget {
 }
 
 div.tabs {
-    /* Navigational Plone Tabs(tm), implemented by customizing the a tag - they are surprisingly elegant. The power of CSS runs strong in these :) */
+/* Navigational Plone Tabs(tm), implemented by customizing the a tag - they
+   are surprisingly elegant. The power of CSS runs strong in these :) */
     background: transparent;
     border-collapse: collapse;
     border-bottom-color: #8CACBB;
@@ -64,7 +62,7 @@ div.tabs {
 }
 
 div.tabs a {
-    /* The normal, unselected tabs. They are all links */
+/* The normal, unselected tabs. They are all links */
     background: transparent;
     border-color: #8CACBB;
     border-width: 1px; 
@@ -77,7 +75,7 @@ div.tabs a {
 }
 
 div.tabs a.selected {
-    /* The selected tab. There's only one of this */
+/* The selected tab. There's only one of this */
     background: #DEE7EC;
     border: 1px solid #8CACBB;
     border-bottom: #DEE7EC 1px solid;
@@ -93,7 +91,7 @@ div.tabs a:hover {
 }
 
 div.personalBar {
-    /* Bar with personalized menu (user preferences, favorites etc) */
+/* Bar with personalized menu (user preferences, favorites etc) */
     background: #DEE7EC;
     border-bottom-color: #8CACBB;
     border-bottom-style: solid;
@@ -106,12 +104,12 @@ div.personalBar {
 
 div.personalBar a{
     background-color: transparent;
-	color: #436976;
+    color: #436976;
     font-weight: normal;
 }
 
 div.pathBar {
-    /* The path bar, including breadcrumbs and add to favorites */
+/* The path bar, including breadcrumbs and add to favorites */
     border-bottom-color: #8CACBB;
     border-bottom-style: solid;
     border-bottom-width: 1px;
@@ -137,7 +135,7 @@ div.pathBar {
 }
 
 table.columns {
-	width: 100%;
+    width: 100%;
 }
 
 table.columns td.left {
@@ -159,7 +157,7 @@ table.columns td.right {
 }
 
 div.contentTabs {
-    /* Local Plone Tabs(tm), used in the content display */
+/* Local Tabs(tm), used in the content display */
     background: transparent;
     border-collapse: collapse;
     border-bottom: 1px solid #74AE0B;
@@ -168,7 +166,7 @@ div.contentTabs {
 }
 
 div.contentTabs a {
-    /* The normal, unselected tabs. They are all links */
+/* The normal, unselected tabs. They are all links */
     background: transparent;
     border: 1px solid #74AE0B;
     color: #578308;
@@ -179,7 +177,7 @@ div.contentTabs a {
 }
 
 div.contentTabs a.selected {
-    /* The selected tab. There's only one of this */
+/* The selected tab. There's only one of this */
     background: #CDE2A7;
     border-bottom: #CDE2A7 1px solid;
     color: #578308;
@@ -201,14 +199,15 @@ div.contentBar {
 }
 
 div.document {
-    /* The document class encloses the object content when editing is not permitted */
+/* The document class encloses the object content when editing is not
+   permitted */
     background: transparent;
     padding: 0;
     margin: 0em 0em 2em 0em;
 }
 
 div.editableDocument {
-    /* The class surrounding content when editing is permitted */
+/* The class surrounding content when editing is permitted */
     background: transparent;
     border: 1px solid #74AE0B;
     margin: 0em 0em 2em 0em;
@@ -216,7 +215,7 @@ div.editableDocument {
 }
 
 div.message {
-    /* The portal messages for cut/paste operations etc */
+/* The portal messages for cut/paste operations etc */
     background: #FFCE7B;
     border: 1px solid #FFA500;
     color: Black;
@@ -228,13 +227,13 @@ div.message {
 }
 
 div.message a {
-	color: Black;
+    color: Black;
     text-decoration: underline;
 }
 
 
 .description {
-    /* The summary text describing the document */
+/* The summary text describing the document */
     font: bold 1em Tahoma, Helvetica, Arial, sans-serif;
     display: block;
     margin-bottom: 1em;
@@ -251,12 +250,3 @@ div.message a {
     padding: 0.5em 0em 1em 0em;
     text-align: center;
 }
-
-
-
-
-
-
-
-
-

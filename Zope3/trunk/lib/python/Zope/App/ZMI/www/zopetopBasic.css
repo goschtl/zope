@@ -1,24 +1,21 @@
-
-
-
-
-
-
-/*
- * Plone Basic CSS v1
+/*****************************************************************************
  *
- * Zope CMF style sheet by Alexander Limi (http://limi.net)
+ * Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+ * All Rights Reserved.
  * 
- * Special thanks to Geir Baekholt (http://elvix.com) and 
- * Stian Soiland (http://stain.portveien.to) for invaluable 
- * input and code examples. You guys rock! :)
- *
- * I've tried to comment everything as concisely as possible. If there's anything
- * that you find confusing or just plain wrong, contact me and I'll fix it before the
- * next release.
- *
- */
+ * This software is subject to the provisions of the Zope Public License,
+ * Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+ * THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+ * WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+ * FOR A PARTICULAR PURPOSE.
+ * 
+ *****************************************************************************
  
+ These are the basic CSS declarations.
+
+ $Id: zopetopBasic.css,v 1.2 2002/06/15 09:10:09 srichter Exp $
+*/
 
 
 body {
@@ -39,7 +36,7 @@ body {
 
 
 a {
-	text-decoration: none;
+        text-decoration: none;
     color: #336699;
     background-color: transparent;
 }
@@ -66,12 +63,12 @@ p a {
 }
 
 p a:visited {
-	color: Purple;
+        color: Purple;
     background-color: transparent;
 }
 
 p a:active {
-	color: Red;
+        color: Red;
     background-color: transparent;
 }
 
@@ -89,7 +86,7 @@ hr {
 }
 
 
-h1, h2, h3, h4, h5, h6 {	/* Style for the headlines */
+h1, h2, h3, h4, h5, h6 {        /* Style for the headlines */
     color: Black;
     font: 1em Tahoma, Helvetica, Arial, sans-serif;
     margin-top: 0;
@@ -127,9 +124,10 @@ ul {
     padding:0;
 }
 
-/* we advise you to use the div.group and span.legend elements instead of these, 
-    as the only browser showing legends correctly is IE. They are just included here 
-    for completeness */
+/* we advise you to use the div.group and span.legend elements instead of
+these, as the only browser showing legends correctly is IE. They are just
+included here for completeness */
+
 fieldset {
     border: 1px solid #8cacbb;
     margin: 2em 0em 1em 0em;
@@ -195,7 +193,8 @@ pre {
 }
 
 .netscape4 {
-/* This hides elements necessary for getting Netscape 4.x to look better. Mostly strategically placed hr tags and &middot;'s */
+/* This hides elements necessary for getting Netscape 4.x to look better.
+   Mostly strategically placed hr tags and &middot;'s */
     display: none;
 }
 
