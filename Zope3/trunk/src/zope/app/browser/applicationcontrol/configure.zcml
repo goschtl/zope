@@ -1,0 +1,40 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   xmlns:application-control='http://namespaces.zope.org/application-control'
+>
+
+  <!-- ServerControl View Directives -->
+  <browser:view
+      for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
+      permission="zope.ManageApplication"
+      factory="zope.app.browser.applicationcontrol.servercontrol.ServerControlView">
+    
+    <browser:page name="ServerControlForm.html" attribute="index" />
+    <browser:page name="ServerControl.html"     attribute="action" />
+  </browser:view>
+ 
+
+  <browser:menuItem
+      for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
+      menu="zmi_views"
+      action="ServerControlForm.html"
+      title="Server control" 
+      />
+
+  <browser:view 
+      for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
+      factory="zope.app.browser.applicationcontrol.runtimeinfo.RuntimeInfoView" 
+      permission="zope.ManageApplication" >
+
+    <browser:page name="index.html" attribute="index" />
+  </browser:view> 
+
+  <browser:menuItem
+      for="zope.app.interfaces.applicationcontrol.applicationcontrol.IApplicationControl"
+      menu="zmi_views"
+      action="index.html"
+      title="Runtime Information"
+      />
+
+</zopeConfigure>

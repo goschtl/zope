@@ -1,0 +1,60 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   >
+
+  <include package=".registries" />
+
+  <!-- Standard Permissions -->
+
+  <permission id="zope.View"
+                       title="View"
+                       />
+
+  <permission id="zope.Security"
+                       title="Change security settings"
+                       />
+
+  <permission id="zope.ManageContent" 
+                       title="Manage Content"
+                       />
+
+  <permission id="zope.ManageBindings" 
+                       title="Manage Service Bindings"
+                       />
+
+  <permission id="zope.ManageCode" 
+                       title="Manage Code"
+                       description="Manage executable code, including
+                                    Python, SQL, ZPT, etc."
+                        />
+
+  <permission id="zope.ManageServices" 
+                       title="Manage Services"
+                        />
+
+  <!-- XXX What is this for? -->
+  <permission id="zope.ManageApplication" 
+                       title="Manage Application"
+                       />
+
+  <!-- XXX What is this for? -->
+  <permission id="zope.I18n" 
+                       title="Use Internationalization (?XXX)"
+                       />
+
+  <include package=".grants" />
+
+  <securityPolicy 
+      name="zope.app.security.zopesecuritypolicy.zopeSecurityPolicy" />
+
+  <adapter factory="zope.app.security.basicauthadapter.BasicAuthAdapter"
+           provides="zope.app.interfaces.security.ILoginPassword"
+           for="zope.publisher.interfaces.http.IHTTPCredentials" />
+
+  <adapter factory="zope.app.security.basicvfsauthadapter.BasicVFSAuthAdapter"
+           provides="zope.app.interfaces.security.ILoginPassword"
+           for="zope.publisher.interfaces.vfs.IVFSCredentials" />
+
+</zopeConfigure>
+

@@ -1,0 +1,18 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <!-- zope.app.security -->
+  <directives namespace="http://namespaces.zope.org/zope">
+    <directive name="permission"
+               attributes="id title description"
+               handler="zope.app.security.registries.metaconfigure.definePermission" />
+    <directive name="role"
+               attributes="id title description"
+               handler="zope.app.security.registries.metaconfigure.defineRole" />
+    <directive name="principal" attributes="id title description"
+       handler="zope.app.security.registries.metaconfigure.principal" />
+    <directive name="unauthenticatedPrincipal" 
+               attributes="principal title description"
+       handler="zope.app.security.registries.metaconfigure.unauthenticatedPrincipal" />
+  </directives>
+
+</zopeConfigure>

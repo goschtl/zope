@@ -1,0 +1,30 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:service="http://namespaces.zope.org/service"
+   xmlns:gts="http://namespaces.zope.org/gts"
+   package="zope.i18n"
+   >
+
+<!-- Setup language negotiation -->
+<serviceType id="LanguageNegotiation" interface="zope.interfaces.i18n.INegotiator" />
+
+<service serviceType="LanguageNegotiation" 
+    component="zope.i18n.negotiator.negotiator" />
+
+<adapter factory="zope.publisher.browser.BrowserLanguages"
+    for="zope.publisher.interfaces.browser.IBrowserRequest"
+    provides="zope.interfaces.i18n.IUserPreferredLanguages" />
+
+<!-- Setup charset negotiation -->
+<adapter factory="zope.publisher.http.HTTPCharsets"
+    for="zope.publisher.interfaces.http.IHTTPRequest"
+    provides="zope.interfaces.i18n.IUserPreferredCharsets" />
+
+<!-- Setup Translation Service -->
+<serviceType id="Translation" interface="zope.interfaces.i18n.ITranslationService" />
+
+<service serviceType="Translation"
+    permission="zope.Public"
+    component="zope.i18n.globaltranslationservice.translationService" />
+
+</zopeConfigure>

@@ -1,0 +1,11 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <include package=".registries" file="meta.zcml" />
+  <include package=".grants" file="meta.zcml" />
+
+  <directives namespace="http://namespaces.zope.org/zope">
+    <directive name="securityPolicy" attributes="name"
+       handler="zope.app.security.metaconfigure.securityPolicy" />
+  </directives>
+
+</zopeConfigure>

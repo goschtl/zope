@@ -1,0 +1,12 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+<serviceType id='Events' 
+             interface='zope.interfaces.event.IEventService' />
+
+<service serviceType='Events'
+         component='zope.app.event.globaleventservice.eventService' />
+
+</zopeConfigure>

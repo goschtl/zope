@@ -1,0 +1,50 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:service="http://namespaces.zope.org/service"
+   xmlns:gts="http://namespaces.zope.org/gts">
+
+<!-- Register the Translation Service as a content object -->
+<content class="zope.app.services.translation.translationservice.TranslationService">
+   <factory id="TranslationService" permission="zope.ManageServices" />
+   <require permission="zope.Public"
+       interface="zope.interfaces.i18n.ITranslationService" />
+   <require permission="zope.ManageServices"
+       interface="zope.app.interfaces.container.IContainer" />
+   <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+</content>
+
+<browser:icon name="zmi_icon" for="zope.interfaces.i18n.ITranslationService"
+    file="./i18n_service.gif" />
+
+<!-- Setup Message Catalogs -->
+<content class="zope.app.services.translation.messagecatalog.MessageCatalog">
+
+  <require permission="zope.View" 
+      interface="zope.interfaces.i18n.IReadMessageCatalog" />
+
+  <require permission="zope.ManageServices"
+      attributes="setMessage getMessageIds" />
+  <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+      interface="zope.interfaces.i18n.IWriteMessageCatalog" />
+
+
+</content>
+
+<factory component="zope.app.services.translation.messagecatalog.MessageCatalog" id="Message Catalog"/>
+
+<!-- Setup Export and Import Filters -->
+<adapter factory="zope.app.services.translation.gettextexportfilter.GettextExportFilter"
+    for="zope.interfaces.i18n.IWriteTranslationService"
+    provides="zope.interfaces.i18n.IMessageExportFilter" />
+
+<adapter factory="zope.app.services.translation.gettextimportfilter.GettextImportFilter"
+    for="zope.interfaces.i18n.IWriteTranslationService"
+    provides="zope.interfaces.i18n.IMessageImportFilter" />
+
+<gts:registerTranslations directory="./locale" />
+<gts:defaultLanguages languages="en" />
+
+<include package=".Views" />
+
+</zopeConfigure>

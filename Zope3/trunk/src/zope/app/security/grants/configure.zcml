@@ -1,0 +1,34 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+   package="zope.app.security"
+>
+
+  <content class="zope.app.security.grants.permissionroles.PermissionRoles">
+    <require
+        permission="zope.Security"
+        attributes="roles rolesInfo"
+        interface="zope.app.interfaces.security.IRegisteredObject" />
+  </content>
+
+  <content class="zope.app.security.grants.rolepermissions.RolePermissions">
+    <require
+        permission="zope.Security"
+        attributes="permissions permissionsInfo"
+        interface="zope.app.interfaces.security.IRegisteredObject" />
+  </content>
+
+  <adapter factory="zope.app.security.grants.annotationrolepermissionmanager.AnnotationRolePermissionManager"
+           provides="zope.app.interfaces.security.IRolePermissionManager"
+           for="zope.app.interfaces.annotation.IAnnotatable" />
+
+  <adapter factory="zope.app.security.grants.annotationprincipalrolemanager.AnnotationPrincipalRoleManager"
+           provides="zope.app.interfaces.security.IPrincipalRoleManager"
+           for="zope.app.interfaces.annotation.IAnnotatable" />
+
+  <adapter factory="zope.app.security.grants.annotationprincipalpermissionmanager.AnnotationPrincipalPermissionManager"
+           provides="zope.app.interfaces.security.IPrincipalPermissionManager"
+           for="zope.app.interfaces.annotation.IAnnotatable" />
+
+</zopeConfigure>
+

@@ -96,7 +96,7 @@ class Finder:
 
 # Create the finder instance, which will be used in lots of places.  `finder'
 # is the global we're most interested in.
-basedir = 'lib/python/'
+basedir = 'src/'
 finder = Finder(EXTS, basedir)
 os.path.walk(basedir, finder.visit, None)
 packages = finder.get_packages()
@@ -131,30 +131,32 @@ class MyDistribution(Distribution):
 
 # Set up dependencies for the BTrees package
 base_btrees_depends = [
-    "lib/python/Persistence/cPersistence.h",
-    "lib/python/Persistence/cPersistenceAPI.h",
-    "lib/python/Persistence/BTrees/BTreeItemsTemplate.c",
-    "lib/python/Persistence/BTrees/BTreeModuleTemplate.c",
-    "lib/python/Persistence/BTrees/BTreeTemplate.c",
-    "lib/python/Persistence/BTrees/BucketTemplate.c",
-    "lib/python/Persistence/BTrees/MergeTemplate.c",
-    "lib/python/Persistence/BTrees/SetOpTemplate.c",
-    "lib/python/Persistence/BTrees/SetTemplate.c",
-    "lib/python/Persistence/BTrees/TreeSetTemplate.c",
-    "lib/python/Persistence/BTrees/sorters.c",
+    "src/persistence/persistence.h",
+    "src/persistence/persistenceAPI.h",
+    "src/zodb/btrees/BTreeItemsTemplate.c",
+    "src/zodb/btrees/BTreeModuleTemplate.c",
+    "src/zodb/btrees/BTreeTemplate.c",
+    "src/zodb/btrees/BucketTemplate.c",
+    "src/zodb/btrees/MergeTemplate.c",
+    "src/zodb/btrees/SetOpTemplate.c",
+    "src/zodb/btrees/SetTemplate.c",
+    "src/zodb/btrees/TreeSetTemplate.c",
+    "src/zodb/btrees/sorters.c",
     ]
 
 _flavors = {"O": "object", "I": "int"}
 
-KEY_H = "lib/python/Persistence/BTrees/%skeymacros.h"
-VALUE_H = "lib/python/Persistence/BTrees/%svaluemacros.h"
+KEY_H = "src/zodb/btrees/%skeymacros.h"
+VALUE_H = "src/zodb/btrees/%svaluemacros.h"
+
+include_dirs = ['src']
 
 def BTreeExtension(flavor):
     key = flavor[0]
     value = flavor[1]
-    name = "Persistence.BTrees._%sBTree" % flavor
-    sources = ["lib/python/Persistence/BTrees/_%sBTree.c" % flavor]
-    kwargs = {"include_dirs": ["lib/python/Persistence"]}
+    name = "zodb.btrees._%sBTree" % flavor
+    sources = ["src/zodb/btrees/_%sBTree.c" % flavor]
+    kwargs = {"include_dirs": include_dirs}
     if flavor != "fs":
         kwargs["depends"] = (base_btrees_depends + [KEY_H % _flavors[key],
                                                     VALUE_H % _flavors[value]])
@@ -169,28 +171,28 @@ ext_modules = [
     BTreeExtension("OI"),
     BTreeExtension("II"),
     BTreeExtension("fs"),
-    Extension("Persistence.cPersistence",
-              ["lib/python/Persistence/cPersistence.c"],
-              depends = ["lib/python/Persistence/cPersistence.h",
-                         "lib/python/Persistence/cPersistenceAPI.h",]),
-    Extension("ZODB._TimeStamp", ["lib/python/ZODB/TimeStamp.c"]),
-    Extension("BDBStorage._helper", ["lib/python/BDBStorage/_helper.c"]),
-    Extension("Zope.ContextWrapper.wrapper",
-              ["lib/python/Zope/ContextWrapper/wrapper.c"],
-              include_dirs = ["lib/python"],
-              depends = ["lib/python/Zope/ContextWrapper/wrapper.h",
-                         "lib/python/Zope/Proxy/proxy.h"]),
-    Extension("Zope.Proxy.proxy", ["lib/python/Zope/Proxy/proxy.c"],
-              include_dirs = ["lib/python"],
-              depends = ["lib/python/Zope/Proxy/proxy.h"]),
-    Extension("Zope.Security._Proxy", ["lib/python/Zope/Security/_Proxy.c"],
-              include_dirs = ["lib/python"],
-              depends = ["lib/python/Zope/Proxy/proxy.h"]),
+    Extension("persistence._persistence",
+              ["src/persistence/persistence.c"],
+              depends = ["src/persistence/persistence.h",
+                         "src/persistence/persistenceAPI.h",]),
+    Extension("zodb._timestamp", ["src/zodb/_timestamp.c"]),
+    Extension("zodb.storage._helper", ["src/zodb/storage/_helper.c"]),
+    Extension("zope.proxy.context.wrapper",
+              ["src/zope/proxy/context/wrapper.c"],
+              include_dirs = include_dirs,
+              depends = ["src/zope/proxy/context/wrapper.h",
+                         "src/zope/proxy/proxy.h"]),
+    Extension("zope.proxy.proxy", ["src/zope/proxy/proxy.c"],
+              include_dirs = include_dirs,
+              depends = ["src/zope/proxy/proxy.h"]),
+    Extension("zope.security._proxy", ["src/zope/security/_proxy.c"],
+              include_dirs = include_dirs,
+              depends = ["src/zope/proxy/proxy.h"]),
     ]
 
 # On Window, there are more extensions that need to be built
 if sys.platform == "win32":
-    ext_modules += [Extension("ZODB.winlock", ["lib/python/ZODB/winlock.c"])]
+    ext_modules += [Extension("zodb.winlock", ["src/zodb/winlock.c"])]
 
 
 # We're using the module docstring as the distutils descriptions.
@@ -203,15 +205,15 @@ setup(name="Zope3",
       url = "http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture",
       ext_modules = ext_modules,
       # This doesn't work right at all
-      headers = ["lib/python/Persistence/cPersistence.h",
-                 "lib/python/Persistence/cPersistenceAPI.h",
-                 "lib/python/Zope/Proxy/proxy.h",
-                 "lib/python/Zope/ContextWrapper/wrapper.h"],
+      headers = ["src/persistence/persistence.h",
+                 "src/persistence/persistenceAPI.h",
+                 "src/zope/proxy/proxy.h",
+                 "src/zope/proxy/context/wrapper.h"],
       license = "http://www.zope.org/Resources/ZPL",
       platforms = ["any"],
       description = doclines[0],
       long_description = "\n".join(doclines[2:]),
       packages = packages,
-      package_dir = {'': 'lib/python'},
+      package_dir = {'': 'src'},
       distclass = MyDistribution,
       )

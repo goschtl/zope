@@ -1,0 +1,38 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <browser:menuItem menu="add_component"
+      for="zope.app.interfaces.container.IAdding"
+      title="RAM Cache" action="RAMCache"
+      description="RAM Cache"/>
+
+  <browser:view for="zope.app.interfaces.cache.ram.IRAMCache"
+		factory="zope.app.browser.cache.ram.RAMCacheView"
+		permission="zope.Public"
+		>
+    <browser:page name="editAction.html" attribute="action" />
+    <browser:page name="index.html"       template="edit.pt" />
+    <browser:page name="stats.html"      template="stats.pt" />
+  </browser:view>
+
+  <browser:menuItems menu="zmi_views"
+     for="zope.app.interfaces.cache.ram.IRAMCache">
+    <browser:menuItem title="Edit"       action="index.html"/>
+    <browser:menuItem title="Statistics" action="stats.html"/>
+  </browser:menuItems>
+
+  <browser:view for="zope.app.interfaces.annotation.IAnnotatable"
+                permission="zope.ManageBindings"
+                factory="zope.app.browser.cache.cacheable.CacheableView">
+
+    <browser:page name="Caching.html"
+                  attribute="form" />
+    <browser:page name="ChangeCaching.html"
+                  attribute="action" />
+    <browser:page name="InvalidateCache.html"
+                  attribute="invalidate" />
+  </browser:view>
+
+</zopeConfigure>

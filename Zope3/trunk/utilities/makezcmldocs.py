@@ -3,18 +3,18 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
-$Id: makezcmldocs.py,v 1.4 2002/11/08 20:09:43 rdmurray Exp $
+$Id: makezcmldocs.py,v 1.5 2002/12/25 14:15:36 jim Exp $
 """
 
 from types import UnicodeType, FunctionType, TypeType, ClassType
@@ -37,14 +37,14 @@ basepath = filter(None, sys.path)
 here = os.path.normpath(os.path.join(os.getcwd(),
                                      os.path.split(sys.argv[0])[0]))
 root = os.path.split(here)[0]  #We live in the utilities subdirectory
-libpython = os.path.join(root, 'lib', 'python')
+libpython = os.path.join(root, 'src')
 sys.path=[libpython] + basepath
 
 # Now for the z3 imports.
-from Zope.Configuration.meta import _directives
-from Zope.Configuration.xmlconfig import XMLConfig
-from Zope.App import config
-from Zope.Configuration.metametaConfigureForDocgen import _metadataKey
+from zope.configuration.meta import _directives
+from zope.configuration.xmlconfig import XMLConfig
+from zope.app import config
+from zope.configuration.metametaconfigurefordocgen import _metadataKey
 
 # Some additional useful names.
 treeroot = os.path.join(root,'doc','zcml.new')   #Where we put the docs.
@@ -110,7 +110,7 @@ def printdirective(outfile, name, handler, registry, level=0):
             '(optional) ' or '')
         outfile.write(paragraph("%s -- %s%s" % (attr,required,
             description))+'\n\n')
-    if (level<9 and len(registry)>1 or len(registry)==1 and not 
+    if (level<9 and len(registry)>1 or len(registry)==1 and not
             registry.keys()==[_metadataKey]):
         outfile.write(' '*level+'Subdirectives\n\n')
     for subdir in registry:
@@ -139,4 +139,3 @@ def run(argv=sys.argv):
 
 if __name__ == '__main__':
     run()
-    

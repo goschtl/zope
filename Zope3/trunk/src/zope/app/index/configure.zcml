@@ -1,0 +1,16 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+
+  <content class="zope.app.index.subscribers.Registration">
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.index.subscribers.ISubscriptionControl"
+      />
+    <factory
+      id="zope.app.index.subscribers.Registration"
+      permission="zope.ManageServices"
+      />
+  </content>
+
+  <include package=".text" />
+
+</zopeConfigure>

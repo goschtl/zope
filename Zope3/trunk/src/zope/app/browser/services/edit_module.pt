@@ -1,0 +1,17 @@
+<html metal:use-macro="views/standard_macros/page">
+<head><title>Add a module</title></head>
+<body>
+<div metal:fill-slot="body">
+
+<p>Enter the absolute module name and source code.</p>
+
+<form action="edit.html">
+<span tal:replace="view/update"></span>
+<p>Module: <span tal:content="context/name">Module Name</span></p>
+<textarea name="source:text" cols="65" rows="25"
+          tal:content="context/source"
+></textarea>
+<input type="submit" value="Edit"/>
+</form>
+
+</div></body></html>

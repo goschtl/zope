@@ -1,0 +1,64 @@
+<html metal:use-macro="views/standard_macros/page">
+<body metal:fill-slot="body">
+<div metal:define-macro="body">
+<div tal:define="registries view/update">
+
+  <h2 metal:define-slot="heading">Fruits configured in this fruits manager.</h2>
+
+  <div tal:condition="not:registries">
+       <p metal:define-slot="empty_text">No fruits have been configured</p>
+  </div>
+
+  <div tal:condition="registries">
+
+    <div metal:define-slot="extra_top">
+
+      <p>For each fruit, the fruit name is given and all of the components
+         registered to provide the fruit are shown.  You may select the
+         component to provide the fruit or disable the fruit.
+      </p>
+
+      <p>Select a fruit name or a component name to visit the fruit or
+         component.
+      </p>
+
+    </div>
+
+      <form action="." method="post" tal:attributes="action request/URL">
+
+      <table width="100%">
+
+         <tr tal:repeat="registry registries">
+           <td valign="top" align="right">
+              <a href="#"
+                 tal:content="registry/name"
+                 tal:attributes="href registry/url"
+                 tal:condition="registry/active"
+                 >Orange</a>
+              <span tal:replace="registry/name"
+                    tal:condition="registry/inactive" />
+           </td>
+           <td tal:content="structure registry/view">
+           </td>
+         </tr>
+
+      </table>
+
+      <input type=submit name="submit_update" value="Update"><br>
+
+      </form>
+
+    <div metal:define-slot="extra_bottom" />
+
+  </div>
+
+  <p metal:define-slot="help_text">To configure a fruit, add a fruit component
+     to a <em>package</em> in <a href="Packages">Packages</a> or to the <a
+     href="Packages/default">default package</a>. After the fruit is added, add
+     a fruit configuration that configures the component to provide a fruit.
+  </p>
+
+</div>
+</div>
+</body>
+</html>

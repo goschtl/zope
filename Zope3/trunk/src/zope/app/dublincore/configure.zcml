@@ -1,0 +1,21 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:event="http://namespaces.zope.org/event"
+>
+
+  <adapter
+      factory="zope.app.dublincore.annotatableadapter.ZDCAnnotatableAdapter"
+      provides="zope.app.interfaces.dublincore.IZopeDublinCore"
+      for="zope.app.interfaces.annotation.IAnnotatable" />
+
+  <event:subscribe 
+      subscriber = ".timeannotators.ModifiedAnnotator"
+      event_types = "zope.app.interfaces.event.IObjectModifiedEvent"
+      />
+
+  <event:subscribe 
+      subscriber = ".timeannotators.CreatedAnnotator"
+      event_types = "zope.app.interfaces.event.IObjectCreatedEvent"
+      />
+
+</zopeConfigure>

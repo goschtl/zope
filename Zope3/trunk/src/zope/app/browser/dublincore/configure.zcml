@@ -1,0 +1,22 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:view
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      permission="zope.ManageContent"
+      factory="zope.app.browser.dublincore.metadataedit.MetaDataEdit"
+      >
+
+    <browser:page name="EditMetaData.html"
+                  template="edit.pt" />
+
+    </browser:view>
+
+
+    <browser:menuItems menu="zmi_views"
+        for="zope.app.interfaces.annotation.IAnnotatable">
+      <browser:menuItem title="Meta Data" action="@@EditMetaData.html" />
+      </browser:menuItems>
+
+</zopeConfigure>

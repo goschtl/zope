@@ -267,7 +267,7 @@ class PathInit:
         # Calculate which directories we're going to add to sys.path, and cd
         # to the appropriate working directory
         if self.inplace:
-            self.libdir = os.path.join('lib', 'python')
+            self.libdir = 'src'
         else:
             self.libdir = 'lib.%s' % PLAT_SPEC
             os.chdir('build')
@@ -311,6 +311,7 @@ class TestFileFinder:
             if VERBOSE:
                 print 'skipping', pkg, 'because:', e
             return
+
         for file in files:
             if file.startswith('test') and os.path.splitext(file)[-1] == '.py':
                 path = os.path.join(dir, file)
@@ -345,6 +346,11 @@ def get_suite(file):
     modname = finder.module_from_path(file)
     try:
         mod = package_import(modname)
+    except RuntimeError:
+        # test uses some optional software
+        if VERBOSE:
+            print 'Module with missing optional software skipped:', modname
+        return None
     except ImportError, err:
         # print traceback
         print "Error importing %s\n%s" % (modname, err)
@@ -436,10 +442,12 @@ def main(module_filter, test_filter):
     # Initialize the logging module.
     import logging.config
     logging.basicConfig()
-    logging.root.setLevel(logging.CRITICAL)
-    # If log.ini exists, use it
-    if os.path.exists(logini):
-        logging.config.fileConfig(logini)
+    level = os.getenv("LOGGING")
+    if level:
+        level = int(level)
+    else:
+        level = logging.CRITICAL
+    logging.root.setLevel(level)
 
     files = find_tests(module_filter)
     files.sort()

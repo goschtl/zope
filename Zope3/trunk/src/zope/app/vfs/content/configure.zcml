@@ -1,0 +1,91 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:vfs="http://namespaces.zope.org/vfs">
+
+<!-- DTML -->
+
+  <vfs:view name="vfs" 
+       for="zope.app.content.dtmlpage.IDTMLPage"
+       permission="zope.View" 
+       allowed_interface="zope.publisher.interfaces.vfs.IVFSFilePublisher"
+       factory="zope.app.vfs.content.dtmlpageview.DTMLPageView" />
+
+  <vfs:view
+      name=".dtml"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.dtmlpageadd.DTMLPageAdd"
+      permission="zope.ManageContent" />
+
+
+<!-- ZPT -->
+
+  <vfs:view name="vfs" 
+       for="zope.app.content.zpt.IZPTPage"
+       permission="zope.View" 
+       allowed_interface="zope.publisher.interfaces.vfs.IVFSFilePublisher"
+       factory="zope.app.vfs.content.zpt.ZPTPageView" />
+
+  <vfs:view
+      name=".pt"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.zpt.ZPTPageAdd"
+      permission="zope.ManageContent" />
+
+  <vfs:view
+      name=".zpt"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.zpt.ZPTPageAdd"
+      permission="zope.ManageContent" />
+
+<!-- Folder -->
+
+  <vfs:view
+      name="Folder"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.folder.FolderAdd"
+      permission="zope.ManageContent" />
+
+  <vfs:view
+      name="vfs"
+      for="zope.app.interfaces.content.folder.IFolder"
+      permission="zope.ManageContent" 
+      allowed_interface="zope.publisher.interfaces.vfs.IVFSDirectoryPublisher" 
+      factory="zope.app.vfs.content.folder.FolderView" 
+      />
+
+<!-- SQL -->
+
+  <vfs:view name="vfs" 
+       for="zope.app.content.sql.ISQLScript"
+       permission="zope.View" 
+       allowed_interface="zope.publisher.interfaces.vfs.IVFSFilePublisher"
+       factory="zope.app.vfs.content.sql.SQLScriptView" />
+
+  <vfs:view
+      name=".sql"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.sql.SQLScriptAdd"
+      permission="zope.ManageContent" />
+
+  <vfs:view
+      name=".zsql"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.sql.SQLScriptAdd"
+      permission="zope.ManageContent" />
+
+<!-- File -->
+
+  <vfs:view name="vfs" 
+       for="zope.app.interfaces.content.file.IFile"
+       permission="zope.View" 
+       allowed_interface="zope.publisher.interfaces.vfs.IVFSFilePublisher"
+       factory="zope.app.vfs.content.file.FileView" />
+
+  <!-- Generic File Adder -->
+  <vfs:view
+      name="."
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.file.FileAdd"
+      permission="zope.ManageContent" />
+
+</zopeConfigure>

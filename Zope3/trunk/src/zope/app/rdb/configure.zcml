@@ -1,0 +1,13 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+>
+
+<content class="zope.app.rdb.gadflyda.GadflyAdapter">
+  <factory id="GadflyDA"
+      permission="zope.Public" />
+  <require permission="zope.Public" 
+      interface="zope.app.interfaces.rdb.IZopeDatabaseAdapter" />
+  <implements interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+</content>
+
+</zopeConfigure>

@@ -1,0 +1,40 @@
+<html metal:use-macro="views/standard_macros/page">
+<head><title>Contact Information</title></head>
+<body>
+<div metal:fill-slot="body">
+
+<form action="finish.html" method="post">
+  <input type="hidden" name="service_type" value="" 
+         tal:attributes="value request/service_type" />
+  <table>
+     <tr>
+       <td>Service Type</td>
+       <td tal:content="request/service_type">Roles</td>
+     </tr>
+     <tr>
+       <td>Component</td>
+       <td><select name="component_path">
+             <option tal:repeat="path view/components"
+                     tal:attributes="value path"
+                     tal:content="path">path</option>
+           </select>
+       </td>
+     </tr>
+     <tr>
+       <td>Status</td>
+       <td tal:content="structure view/status"><input type="text"></td>
+     </tr>
+     <tr>
+       <td>Title</td>
+       <td tal:content="structure view/title"><input type="text"></td>
+     </tr>
+     <tr>
+       <td>Description</td>
+       <td tal:content="structure view/description"><textarea></textarea></td>
+     </tr>
+
+  </table>
+  <input type="submit" value="Finish" />
+</form>
+
+</div></body></html>

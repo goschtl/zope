@@ -1,0 +1,76 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:vfs="http://namespaces.zope.org/vfs">
+
+<!-- ZPT -->
+
+  <vfs:view name="vfs" 
+       for="zope.app.interfaces.services.interfaces.IZPTTemplate"
+       permission="zope.View" 
+       allowed_interface="zope.publisher.interfaces.vfs.IVFSFilePublisher"
+       factory="zope.app.vfs.services.zpt.ZPTTemplateView" />
+
+  <vfs:view
+      name=".pt"
+      for="zope.app.interfaces.services.package.IPackageAdding"
+      factory="zope.app.vfs.services.zpt.ZPTTemplateAdd"
+      permission="zope.ManageContent" />
+
+  <vfs:view
+      name=".zpt"
+      for="zope.app.interfaces.services.package.IPackageAdding"
+      factory="zope.app.vfs.services.zpt.ZPTTemplateAdd"
+      permission="zope.ManageContent" />
+
+<!-- XXX ???  -->
+
+  <!-- Note that we have to use another Adding interface here, since 
+       it conflicts otherwise with the content namespace definitions. --> 
+
+   <vfs:view
+       for="zope.app.interfaces.services.package.IPackage"
+       name="+"  
+       factory="zope.app.vfs.services.package.PackageAdding"
+       allowed_attributes="setContentName add"
+       permission="zope.ManageContent" />
+
+
+   <vfs:view
+       for="zope.app.interfaces.container.IContainer"
+       name="+"  
+       factory="zope.app.vfs.container.adding.Adding"
+       allowed_attributes="setContentName add"
+       permission="zope.ManageContent" />
+
+  <vfs:view
+      name="Package"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.services.package.PackageAdd"
+      permission="zope.ManageContent" />
+
+
+  <vfs:view
+      name="vfs"
+      for="zope.app.interfaces.services.service.IServiceManager"
+      permission="zope.ManageContent" 
+      allowed_interface="zope.publisher.interfaces.vfs.IVFSDirectoryPublisher" 
+      factory="zope.app.vfs.services.service.ServiceManagerView" 
+      />
+
+  <vfs:view
+      name="vfs"
+      for="zope.app.interfaces.services.package.IPackages"
+      permission="zope.ManageContent" 
+      allowed_interface="zope.publisher.interfaces.vfs.IVFSDirectoryPublisher" 
+      factory="zope.app.vfs.services.package.PackagesView" 
+      />
+
+  <vfs:view
+      name="vfs"
+      for="zope.app.interfaces.services.package.IPackage"
+      permission="zope.ManageContent" 
+      allowed_interface="zope.publisher.interfaces.vfs.IVFSDirectoryPublisher" 
+      factory="zope.app.vfs.services.package.PackageView" 
+      />
+
+</zopeConfigure>

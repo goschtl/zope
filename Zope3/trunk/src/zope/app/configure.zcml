@@ -1,0 +1,79 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<!-- Meta configuration (new directives) -->
+
+  <include file="meta.zcml" />
+
+<!-- Ordinary Application (non-view) configuration) --> 
+
+  <include package="zope.app.component" />
+  <include package="zope.app.security" />
+  <include package="zope.app.event" />
+
+  <serviceType
+     id="SQLDatabaseConnections"
+     interface="zope.app.interfaces.rdb.IConnectionService" 
+     />
+
+  <content class="zope.app.rdb.ZopeConnection">
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.interfaces.rdb.IZopeConnection" />
+  </content>
+
+  <content class="zope.app.rdb.ZopeCursor">
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.interfaces.rdb.IZopeCursor" />
+  </content>
+
+  <content class="zope.app.rdb.ResultSet">
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.interfaces.rdb.IResultSet" />
+  </content>
+
+  <content class="zope.app.rdb.Row">
+    <require
+        permission="zope.ManageContent"
+        attributes="__getattr__" />
+  </content>
+
+  <adapter
+      factory="zope.app.attributeannotations.AttributeAnnotations"
+      provides="zope.app.interfaces.annotation.IAnnotations"
+      for="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+
+  <adapter
+      factory="zope.app.introspector.Introspector"
+      permission="zope.View"
+      provides="zope.app.interfaces.introspector.IIntrospector" />
+
+  <adapter
+      factory="zope.app.dependable.Dependable"
+      provides="zope.app.interfaces.dependable.IDependable"
+      for="zope.app.interfaces.annotation.IAnnotatable" />
+
+  <include package="zope.app.container" />
+  <include package="zope.app.content" />
+  <include package="zope.app.services" />
+  <include package="zope.app.applicationcontrol" />
+
+  <include package="zope.app.i18n" />
+  <include package="zope.app.publisher" />
+  <include package="zope.app.rdb" />
+  <include package="zope.app.traversing" />
+  <include package="zope.app.publication" />
+  <include package="zope.app.form" />
+  <include package="zope.app.cache" />
+  <include package="zope.app.dublincore" />
+  <include package="zope.app.startup" />
+  <include package="zope.app.index" />
+
+<!-- Views -->
+
+  <include package="zope.app.browser" />
+  <include package="zope.app.vfs" />
+
+</zopeConfigure>

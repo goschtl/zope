@@ -1,0 +1,15 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:xmlrpc='http://namespaces.zope.org/xmlrpc'
+>
+
+  <!-- Translation Service View Directives -->
+
+  <xmlrpc:view
+      name="methods"
+      for="zope.interfaces.i18n.ITranslationService"
+      permission="zope.ManageContent" 
+      allowed_methods="getAllLanguages getAllDomains"
+      factory="zope.app.services.translation.xmlrpc.methods.Methods" />
+      
+</zopeConfigure>

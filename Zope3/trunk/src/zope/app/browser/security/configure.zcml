@@ -1,0 +1,20 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   >
+
+  <browser:view 
+	factory = ".permissionwidget.SinglePermissionWidget"
+	for = "zope.app.interfaces.security.IPermissionField"
+	name = "edit"
+        />
+
+  <browser:view 
+	factory = ".permissionwidget.DisplayWidget"
+	for = "zope.app.interfaces.security.IPermissionField"
+	name = "display"
+        />
+
+  <include package=".grants" />
+
+</zopeConfigure>

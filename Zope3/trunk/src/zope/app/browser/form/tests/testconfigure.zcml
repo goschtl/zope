@@ -1,0 +1,15 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <!-- Test view for folders -->
+  <browser:view
+      permission="zope.View" 
+      for="zope.app.interfaces.content.folder.IFolder"  
+      factory=".SchemaTestObject.EditFactory">
+      <browser:page name="testSchemaFormView.html" attribute="form" />
+      <browser:page name="testSchemaFormAction.html" attribute="action" />
+  </browser:view>
+
+</zopeConfigure>

@@ -1,0 +1,28 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <browser:menuItem
+    menu="add_component"
+    for="zope.app.interfaces.container.IAdding"
+    action="zope.app.index.text.factory"
+    title="Text Index"
+    description="An index to support full-text search"
+    />
+
+  <browser:defaultView
+    for="zope.textindex.textindexinterfaces.IStatistics"
+    name="control.html" />
+
+  <browser:view
+    for="zope.textindex.textindexinterfaces.IStatistics"
+    permission="zope.ManageServices"
+    name="control.html"
+    factory=".control.ControlView">
+
+    <browser:page name="index.html" template="control.pt" />
+
+  </browser:view>
+
+</zopeConfigure>

@@ -1,0 +1,80 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+  <!-- Form Widget View Directives -->
+  <browser:defaultView for="zope.schema.interfaces.IField" name="edit" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.ITextLine"
+      name="edit"
+      factory="zope.app.browser.form.widget.TextWidget" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IText"
+      name="edit"
+      factory="zope.app.browser.form.widget.TextAreaWidget" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IBytesLine"
+      name="edit"
+      factory="zope.app.browser.form.widget.BytesWidget" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IBytes"
+      name="edit"
+      factory="zope.app.browser.form.widget.BytesAreaWidget" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IInt"
+      name="edit"
+      factory="zope.app.browser.form.widget.IntWidget" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IFloat"
+      name="edit"
+      factory="zope.app.browser.form.widget.FloatWidget" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IBool"
+      name="edit"
+      factory="zope.app.browser.form.widget.CheckBoxWidget" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.ITuple"
+      name="edit"
+      factory="zope.app.browser.form.widget.TextAreaWidget" />
+
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IList"
+      name="edit"
+      factory="zope.app.browser.form.widget.TextAreaWidget" />
+
+  <!-- Default simple display view -->
+  <browser:view
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IField"
+      name="display"
+      factory="zope.app.browser.form.widget.DisplayWidget" />
+  
+</zopeConfigure>

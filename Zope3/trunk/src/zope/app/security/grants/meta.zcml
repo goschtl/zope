@@ -1,0 +1,10 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <directives namespace="http://namespaces.zope.org/zope">
+
+    <directive name="grant" attributes="principal permission role"
+       handler="zope.app.security.grants.metaconfigure.grant" />
+
+  </directives>
+
+</zopeConfigure>

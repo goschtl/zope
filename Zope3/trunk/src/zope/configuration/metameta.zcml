@@ -1,0 +1,54 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<directives namespace="http://namespaces.zope.org/zope">
+
+  <!-- Modify the bootstrap meta configuration directives
+
+  Note that we are modifying the handler we are using to
+  process the text that is triggering the modifications.
+  However, since modifications are non-destructive of
+  any pre-existing subdirective structure, this works.
+  Further, since the bootstrap namespace for subdirective
+  is recursive, we only have to modify subdirective once.
+
+  The handler routines called out by the declarations in this
+  file simply ignore the additional information provided by the
+  modified directives, which at the moment is what we want
+  done during normal running of zope.
+
+  XXX: In the current implementation of the bootstrap code, the
+  'attributes' attribute doesn't actually do anything.  I include
+  it anyway in case the bootstrap code gets modified to actually
+  do something with attributes.  This however seems unlikely,
+  since it would make more sense to modify the attribute subdirective
+  we are introducing here.  So after people are comfortable with
+  this meta-meta configuration, we could simplify the bootstrap
+  by doing away with 'attributes' in the bootstrap code and here.
+  -->
+
+  <directive
+      name="directives"
+      attributes="namespace name handler attributes description"
+      handler="zope.configuration.metametaconfigure.DirectiveNamespace"
+    >
+    <subdirective
+        name="directive"
+        attributes="namespace name handler attributes description"
+    >
+      <subdirective
+          name="attribute"
+          attributes="name description required" />
+      <subdirective
+          name="subdirective"
+          attributes="name attributes namespace handler_method description"
+      >
+        <subdirective
+            name="attribute"
+            attributes="name description required" />
+      </subdirective>
+    </subdirective>
+  </directive>
+     
+</directives>
+
+</zopeConfigure>

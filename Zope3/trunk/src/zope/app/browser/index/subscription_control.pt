@@ -1,0 +1,46 @@
+<html metal:use-macro="views/standard_macros/page">
+
+  <head>
+    <title>Registration "Service" Control Page</title>
+  </head>
+
+  <body>
+
+  <div metal:fill-slot="body">
+
+    <h1>Subscription control</h1>
+
+    <span tal:condition="request/callSubscribe|nothing" tal:omit-tag="">
+        <span tal:define="dummy context/subscribe" tal:omit-tag=""/>
+        Successfully subscribed.
+    </span>
+    <span tal:condition="request/callUnsubscribe|nothing" tal:omit-tag="">
+        <span tal:define="dummy context/unsubscribe" tal:omit-tag=""/>
+        Successfully unsubscribed.
+    </span>
+    <span tal:condition="request/callRegisterExisting|nothing" tal:omit-tag="">
+        <span tal:define="dummy context/registerExisting" tal:omit-tag=""/>
+        Registration done.
+    </span>
+
+    <form method="POST">
+       <span tal:condition="context/isSubscribed" tal:omit-tag="">
+           Subscription state: ON
+           <input type="submit" value="Unsubscribe" name="callUnsubscribe" />
+       </span>
+       <span tal:condition="not:context/isSubscribed" tal:omit-tag="">
+           Subscription state: OFF
+           <input type="submit" value="Subscribe" name="callSubscribe" />
+       </span>
+    </form>
+
+    <form method="POST">
+        <input type="submit" value="Register Existing Objects"
+               name="callRegisterExisting" />
+    </form>
+
+  </div>
+
+  </body>
+
+</html>

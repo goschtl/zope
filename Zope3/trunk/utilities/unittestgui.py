@@ -3,14 +3,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 GUI framework and application for use with Python unit testing framework.
@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.12 $"[11:-2]
+__version__ = "$Revision: 1.13 $"[11:-2]
 
 import linecache
 import unittest
@@ -188,7 +188,7 @@ class RollbackImporter:
     """
     def __init__(self):
         self.previousModules = sys.modules.copy()
-        
+
     def rollbackImports(self):
         for modname in sys.modules.keys():
             if not self.previousModules.has_key(modname):
@@ -254,7 +254,7 @@ class TkTestRunner(BaseGUITestRunner):
 
     def createWidgets(self):
         """Creates and packs the various widgets.
-        
+
         Why is it that GUI code always ends up looking a mess, despite all the
         best intentions to keep it tidy? Answers on a postcard, please.
         """
@@ -264,7 +264,7 @@ class TkTestRunner(BaseGUITestRunner):
 
         self.top = tk.Frame()
         add((self.top, {'fill': tk.BOTH, 'expand': 1}, 0))
-        
+
         # Status bar
         statusFrame = tk.Frame(self.top, relief=tk.SUNKEN, borderwidth=2)
         add((statusFrame,
@@ -291,10 +291,10 @@ class TkTestRunner(BaseGUITestRunner):
 
         add((tk.Label(progressFrame, text="Progress:"), {'anchor': tk.W}, 1))
         tb = self.toggleButton = tk.Button(progressFrame, padx=0,
-                                           relief=tk.GROOVE, 
+                                           relief=tk.GROOVE,
                                            textvariable=self.toggleVar,
                                            command=self.toggleMinimal)
-        
+
         add((self.toggleButton, {'side': tk.LEFT, 'anchor': tk.NW}, 0))
         pb = self.progressBar = ProgressBar(progressFrame, relief=tk.SUNKEN,
                                             borderwidth=2)
@@ -322,7 +322,7 @@ class TkTestRunner(BaseGUITestRunner):
                         ('Errors:', self.errorCountVar),
                         ('Remaining:', self.remainingCountVar)):
             add((tk.Label(progressFrame, text=label), {'side': tk.LEFT}, 1))
-            
+
             add((tk.Label(progressFrame, textvariable=var, foreground="blue"),
                  {'side': tk.LEFT, 'fill': tk.X, 'expand': 1, 'anchor': tk.W},
                  1))
@@ -344,7 +344,7 @@ class TkTestRunner(BaseGUITestRunner):
         self.errorListbox.configure(yscrollcommand=listScroll.set)
 
         # List box showing warnings
-        
+
         add((tk.Label(leftFrame, text="Warnings:"), {'anchor': tk.W}, 1))
         warnFrame = tk.Frame(leftFrame, relief=tk.SUNKEN, borderwidth=2)
         add((warnFrame, {'fill': tk.BOTH, 'anchor': tk.NW, 'expand': 1}, 1))
@@ -442,7 +442,7 @@ class TkTestRunner(BaseGUITestRunner):
     def notifyWarning(self, msg, tb_str):
         self.warningListbox.insert(tk.END, "Warning: %s" % msg)
         self.warnInfo.append((msg,tb_str))
-        
+
     def notifyTestFailed(self, test, err):
         self.failCountVar.set(1 + self.failCountVar.get())
         self.errorListbox.insert(tk.END, "Failure: %s" % test)
@@ -560,13 +560,13 @@ class TkTestRunner(BaseGUITestRunner):
                 text.tag_add(tagname,
                              "%d.%d" % (i + 1, start), "%d.%d" % (i + 1, end))
                 text.tag_bind(tagname, "<Enter>",
-                              lambda e, n=tagname: 
+                              lambda e, n=tagname:
                                     e.widget.tag_config(n, underline=1))
                 text.tag_bind(tagname, "<Leave>",
-                              lambda e, n=tagname: 
+                              lambda e, n=tagname:
                                     e.widget.tag_config(n, underline=0))
                 text.tag_bind(tagname, "<Button-1>",
-                              lambda e, self=self, f=file, l=line: 
+                              lambda e, self=self, f=file, l=line:
                                     self.launchEditor(f, l))
 
     def launchEditor(self, file, line):
@@ -601,22 +601,22 @@ class ProgressBar(tk.Frame):
         "Bindings should be propagated to the contained canvas."
         tk.Frame.bind(self, sequence, callback, add)
         self.canvas.bind(sequence, callback, add)
-        
+
     def unbind(self, sequence):
         "Bindings should be propagated to the contained canvas."
         tk.Frame.unbind(self, sequence)
         self.canvas.unbind(sequence)
-        
+
     def bind_class(self, className, sequence=None, callback=None, add=None):
         "Bindings should be propagated to the contained canvas."
         tk.Frame.bind_class(self, className, sequence, callback, add)
         self.canvas.bind_class(className, sequence, callback, add)
-        
+
     def unbind_class(self, className, sequence):
         "Bindings should be propagated to the contained canvas."
         tk.Frame.bind_class(self, className, sequence)
         self.canvas.bind_class(className, sequence)
-        
+
     def paint(self, *args):
         totalWidth = self.canvas.winfo_width()
         width = int(self.fraction * float(totalWidth))

@@ -1,0 +1,64 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+
+<!-- Role Permissions -->
+
+  <browser:view
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      permission="zope.Security"
+      factory=".rolepermissionview.RolePermissionView">
+
+    <browser:page name="AllRolePermissions.html"
+                  attribute="index" />
+    <browser:page name="ChangeAllRolePermissions.html"
+                  attribute="action" />
+    <browser:page name="RolePermissions.html"
+                  attribute="manage_roleForm" />
+    <browser:page name="ChangeRolePermissions.html"
+                  attribute="update_role" />
+    <browser:page name="RolesWithPermission.html"
+                  attribute="manage_permissionForm" />
+    <browser:page name="ChangeRolesWithPermission.html"
+                  attribute="update_permission" />
+  </browser:view>
+
+  <browser:menuItem
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      menu="zmi_views"
+      title="Role Permissions"
+      action="@@AllRolePermissions.html"
+      />
+
+<!-- Principal Roles -->
+
+  <browser:view for="zope.app.interfaces.annotation.IAnnotatable"
+                permission="zope.Security"
+                factory=".principalroleview.PrincipalRoleView">
+    <browser:page name="PrincipalRoles.html"
+                  attribute="index" />
+    <browser:page name="ChangePrincipalRoles.html"
+                  attribute="action" />
+    </browser:view>
+
+  <browser:menuItem
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      menu="zmi_views"
+      title="Principal Role"
+      action="PrincipalRoles.html"
+      />
+
+<!-- Principal Permission (not working) -->
+
+  <!-- browser:view
+      name="PrincipalPermissionsManagement"
+      for="zope.app.interfaces.annotation.IAnnotatable"
+      factory=".principalpermissionview.PrincipalPermissionView" 
+      permission="zope.Security"
+      allow_attributes="index get_principal unsetPermissions denyPermissions
+                        grantPermissions getUnsetPermissionsForPrincipal
+                        getPermissionsForPrincipal" 
+      /  -->
+
+</zopeConfigure>

@@ -1,0 +1,92 @@
+<html metal:use-macro="views/standard_macros/page">
+
+  <head>
+    <title>TextIndex Control Page</title>
+  </head>
+
+  <body>
+
+  <div metal:fill-slot="body">
+
+    <h1><br>TextIndex</h1>
+
+    <p class="form-help">
+        This page lets you control a text index, which is used to
+        provide a full-text searching facility.  The search box here is
+        only for debugging.  Subscription status: A "subscribed" index
+        will update itself whenever objects are added, deleted or
+        modified; an "unsubscribed" index will retain the indexing
+        information but not update itself further.
+    </p>
+
+    <span tal:condition="request/callSubscribe|nothing" tal:omit-tag="">
+        <span tal:define="dummy context/subscribe" tal:omit-tag=""/>
+        Successfully subscribed.
+    </span>
+    <span tal:condition="request/callUnsubscribe|nothing" tal:omit-tag="">
+        <span tal:define="dummy context/unsubscribe" tal:omit-tag=""/>
+        Successfully unsubscribed.
+    </span>
+
+    <div>
+        Documents: <span tal:replace="context/documentCount" />
+    </div>
+
+    <div>
+        Words: <span tal:replace="context/wordCount" />
+    </div>
+
+    <form method="POST">
+       <span tal:condition="context/isSubscribed" tal:omit-tag="">
+           Subscription state: ON
+           <input type="submit" value="Unsubscribe" name="callUnsubscribe" />
+       </span>
+       <span tal:condition="not:context/isSubscribed" tal:omit-tag="">
+           Subscription state: OFF
+           <input type="submit" value="Subscribe" name="callSubscribe" />
+       </span>
+       <input type="hidden" name="queryText" value=""
+              tal:attributes="value request/queryText|nothing" />
+    </form>
+
+    <form method="GET">
+        <input type="text" name="queryText" value=""
+               tal:attributes="value request/queryText|nothing" />
+        <input type="submit" value="Query" />
+    </form>
+
+    <div tal:condition="request/queryText|nothing" tal:omit-tag="">
+        <div tal:define="result view/query" tal:omit-tag="">
+	    <div tal:condition="not:result/total">
+	        No hits.  Please try another query.
+	    </div>
+	    <div tal:condition="result/total">
+		<div tal:content="
+		string:Hits ${result/first}-${result/last} of ${result/total}:"
+		/>
+		<div tal:repeat="info result/results">
+	            title=<span tal:replace="info/title" />;
+		    url=<a href="location"
+		            tal:attributes="href info/location"
+                            tal:content="info/location">url</a>;
+		    score=<span tal:replace="info/scoreLabel" />
+		</div>
+	    </div>
+	    <span tal:condition="exists:result/prev">
+                <a href="next"
+                   tal:attributes="href
+                       string:?queryText=${request/queryText}&start=${view/prevBatch}">&lt;-- PREVIOUS BATCH</a>
+	    </span>
+	    <span tal:condition="exists:result/next">
+                <a href="next"
+                   tal:attributes="href
+                       string:?queryText=${request/queryText}&start=${view/nextBatch}">NEXT BATCH --&gt;</a>
+	    </span>
+        </div>
+    </div>
+
+  </div>
+
+  </body>
+
+</html>

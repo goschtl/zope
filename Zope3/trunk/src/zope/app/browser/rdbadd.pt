@@ -1,0 +1,33 @@
+<html metal:use-macro="views/standard_macros/page">
+<head>
+  <title>Add Relational Database Adapter</title>
+</head>
+<body>
+
+  <div metal:fill-slot="body">
+
+    <form action="action.html" method="post" enctype="multipart/form-data">
+
+      <table>
+        <tbody>
+
+          <tr>
+            <th>Connection URI:</th>
+            <td>
+              Template:
+              dbi://username:password@host:port/dbname;param1=value...<br />
+              <input type="text" name="dsn" size="40" value="dbi://dbname">
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <input type="submit" name="add" value="Add" />
+
+    </form>
+
+  </div>
+
+</body>
+</html>

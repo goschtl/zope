@@ -14,7 +14,7 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.11 2002/12/19 21:06:42 gvanrossum Exp $
+$Id: z3.py,v 1.12 2002/12/25 14:12:09 jim Exp $
 """
 
 import os, sys
@@ -36,8 +36,8 @@ def run(argv=sys.argv):
     # setting python paths
     program = argv[0]
     here = os.path.join(os.getcwd(), os.path.split(program)[0])
-    libpython = os.path.join(here, 'lib', 'python') 
-    sys.path = [libpython, here] + basepath
+    srcdir = os.path.abspath('src')
+    sys.path = [srcdir, here] + basepath
 
     # Initialize the logging module.
     import logging.config
@@ -49,9 +49,15 @@ def run(argv=sys.argv):
 
     # temp hack
     dir = os.getcwd()
+    
+    # Copy products.zcml.in, if necessary
+    if (not os.path.exists('products.zcml')
+        and os.path.exists('products.zcml.in')
+        ):
+        open('products.zcml', 'w').write(open('products.zcml.in').read())
 
     # Do global software config
-    from Zope.App import config
+    from zope.app import config
     config('site.zcml')
     
     # Load server config
@@ -60,12 +66,12 @@ def run(argv=sys.argv):
         ):
         open('zserver.zcml', 'w').write(open('zserver.zcml.in').read())
         
-    from Zope.Configuration.xmlconfig import XMLConfig
+    from zope.configuration.xmlconfig import XMLConfig
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
 
-    import ThreadedAsync
+    from zodb.zeo import threadedasync
     try:
-        ThreadedAsync.loop()
+        threadedasync.loop()
     except KeyboardInterrupt:
         # Exit without spewing an exception.
         pass
@@ -74,4 +80,3 @@ def run(argv=sys.argv):
 
 if __name__ == '__main__':
     run()
-    

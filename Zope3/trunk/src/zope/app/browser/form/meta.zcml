@@ -1,0 +1,28 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <directives namespace="http://namespaces.zope.org/form">
+
+    <directive
+       name="edit" 
+       attributes="name schema label for layer permission class template"
+       handler="zope.app.browser.form.editview.edit"
+       />
+
+    <directive
+       name="subedit" 
+       attributes="name schema label for layer permission class template
+                   fulledit fulledit_label"
+       handler="zope.app.browser.form.editview.subedit"
+       />
+
+    <directive
+       name="add" 
+       attributes="name schema label for layer permission class
+                   template content_factory argument keyword_arguments
+                   set_before_add set_after_add"
+       handler="zope.app.browser.form.add.add"
+       />
+
+  </directives>
+
+</zopeConfigure>

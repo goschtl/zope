@@ -15,7 +15,7 @@
 
 Creates a HTML file from a XXXReport file.
 
-$Id: XXXreport2html.py,v 1.3 2002/12/09 20:42:07 ctheune Exp $
+$Id: XXXreport2html.py,v 1.4 2002/12/25 14:15:36 jim Exp $
 """
 
 import sys
@@ -41,7 +41,7 @@ for x in inputfile.readlines():
     if x == "--\n":
         print ".",
         comments.append(current)
-        current = ["", 0, []] 
+        current = ["", 0, []]
         currentfile = None
         continue
 

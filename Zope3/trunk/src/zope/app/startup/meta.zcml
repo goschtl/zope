@@ -1,0 +1,33 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+  <directives namespace="http://namespaces.zope.org/startup">
+
+    <directive name="defineSite"
+               attributes="name threads"
+               handler="zope.app.startup.metaconfigure.defineSite">
+
+      <subdirective name="useFileStorage"
+                    attributes="file" />
+
+      <subdirective name="useMappingStorage" />
+
+      <subdirective name="useLog" attributes="file level" />
+
+      <subdirective name="addServer"
+                    attributes="type port verbose logClass" />
+
+    </directive>
+
+    <directive name="registerRequestFactory"
+               attributes="name publication request"
+               handler="zope.app.startup.metaconfigure.registerRequestFactory"
+               />
+
+    <directive name="registerServerType"
+               attributes="name publication request"
+               handler="zope.app.startup.metaconfigure.registerServerType"
+               />
+
+  </directives>
+
+</zopeConfigure>

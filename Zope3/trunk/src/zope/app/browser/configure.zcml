@@ -1,0 +1,188 @@
+<zopeConfigure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+<!-- Foundational setup -->
+
+  <!-- The default default view -->
+  <browser:defaultView name="index.html" />
+
+
+  <!-- Standard menus -->
+
+    <browser:menu 
+       id="zmi_views" 
+       title="Menu for displaying alternate representations of an object"
+       />
+
+    <browser:menu
+       id="zmi_actions" 
+       title="Menu for displaying actions to be performed"
+       />
+
+   <browser:menu
+        id="add_content"
+        title="Menu of objects to be added to content folders"
+        />
+
+   <browser:menu
+        id="add_component"
+        title="Menu of objects to be added to service manager packages"
+        />
+
+   <browser:menu id="add_configuration"
+        title="Menu of addable configuration objects"
+        />
+
+
+  <!-- Management view selector -->
+  <!-- Get first accessable item from zmi_views menu -->
+  <browser:view
+     name="SelectedManagementView.html"
+     permission="zope.Public"
+     factory=".managementviewselector.ManagementViewSelector" 
+     allowed_interface="zope.publisher.interfaces.browser.IBrowserPublisher"
+     allowed_attributes="__call__"
+     />
+
+  <!-- Menu access -->
+  <browser:view
+     name="view_get_menu"
+     permission="zope.Public"
+     factory=".menu.MenuAccessView" 
+     allowed_interface="zope.app.interfaces.browser.menu.IMenuAccessView"
+     />
+
+<!-- includes -->
+
+<include package=".applicationcontrol" />
+<include package=".cache" />
+<include package=".component" />
+<include package=".container" />
+<include package=".content" />
+<include package=".dublincore" />
+<include package=".form" />
+<include package=".security" />
+<include package=".services" />
+<include package=".skins" />
+
+<!-- Introspection -->
+
+  <browser:defaultView
+      name="classBrowser.html"
+      for = "zope.interface.Interface"
+      permission="zope.View"
+      template="ibrowser.pt"
+      factory="zope.app.browser.introspector.IntrospectorView"
+      />
+
+  <browser:menuItem 
+      for = "zope.interface.Interface" 
+      title="Introspector" 
+      menu="zmi_views" 
+      action="classBrowser.html"
+      />
+
+
+  <browser:defaultView
+      name="interfaceBrowser.html"
+      for="zope.interface.interfaces.IInterface"
+      permission="zope.View"
+      template="ibrowser.pt"
+      factory="zope.app.browser.introspector.IntrospectorView"
+      /> 
+
+<!-- Gadfly DA -->
+
+  <browser:view
+      name="zope.app.rdb.GadflyDA"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.browser.gadflyda.GadflyDAAddView"
+      permission="zope.ManageServices">
+
+    <browser:page name="+" attribute="add" />
+    <browser:page name="action.html" attribute="action" />
+
+    </browser:view>
+
+  <browser:menuItem menu="add_component"
+      for="zope.app.interfaces.container.IAdding"
+      title="Gadfly DA" 
+      action="zope.app.rdb.GadflyDA"
+      description="A Gadfly Database Adapter"/>
+
+<!-- ZopeDatabaseAdapter default views -->
+
+  <browser:defaultView for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      name="editForm.html" />
+
+  <browser:menuItems menu="zmi_views"
+         for="zope.app.interfaces.rdb.IZopeDatabaseAdapter">
+    <browser:menuItem title="Edit" action="editForm.html"/>
+    <browser:menuItem title="Test" action="testForm.html"/>
+    </browser:menuItems>
+
+  <browser:view
+      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      permission="zope.View"
+      factory="zope.app.browser.rdb.Connection">
+    <browser:page name="editForm.html"
+        template="connection.pt" />
+    <browser:page name="edit.html" attribute="edit" />
+    <browser:page name="connect.html" attribute="connect" />
+    <browser:page name="disconnect.html" attribute="disconnect" />
+  
+    </browser:view>
+
+  <browser:view
+      for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
+      permission="zope.View"
+      factory="zope.app.browser.rdb.TestSQL">
+    <browser:page name="testForm.html" template="testsql.pt" />
+    <browser:page name="test.html" template="testresults.pt" />
+
+    </browser:view>
+
+<!-- Undo -->
+
+  <browser:view
+      permission="zope.ManageContent"
+      factory="zope.app.browser.undo.Undo" >
+
+     <browser:page name="undoForm.html" attribute="index" />
+     <browser:page name="undo.html" attribute="action" />
+     </browser:view>
+
+<!-- URLs and names -->
+
+<browser:view
+    name="absolute_url"
+    factory=".absoluteurl.AbsoluteURL"
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
+    />
+
+<browser:view
+    for="zope.app.interfaces.content.folder.IRootFolder"
+    name="absolute_url"
+    factory=".absoluteurl.SiteAbsoluteURL"
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.browser.absoluteurl.IAbsoluteURL" 
+    />
+
+<browser:view
+    name="object_name"
+    factory=".objectname.ObjectNameView"
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.traversing.objectname.IObjectName" 
+    />
+
+<browser:view
+    for="zope.app.interfaces.content.folder.IRootFolder"
+    name="object_name"
+    factory=".objectname.SiteObjectNameView"
+    permission="zope.Public"
+    allowed_interface="zope.app.interfaces.traversing.objectname.IObjectName" 
+    />
+
+</zopeConfigure>

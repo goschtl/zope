@@ -1,0 +1,9 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<directives namespace="test">
+  <directive
+      name="test_include"
+      handler="zope.configuration.tests.contact.testincludehandler.TestIncludeHandler" />
+</directives>
+
+</zopeConfigure>

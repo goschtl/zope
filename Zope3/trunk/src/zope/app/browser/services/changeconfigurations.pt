@@ -1,0 +1,32 @@
+<table width="100%">
+  <tr tal:define="message view/message" tal:condition="message">
+     <td></td>
+     <td colspan="2"><em tal:content="message">xxxx</em></td>
+  </tr>
+  <tr tal:repeat="configuration view/configurations">
+     <td><input type="radio" name="Roles" value="0"
+             tal:attributes="
+             name view/name;
+             value configuration/id;
+             checked configuration/active;
+             "
+             />
+     </td>
+     <td><a href="."
+            tal:attributes="href string:${view/configBase}/${configuration/id}"
+            tal:content="configuration/id"
+         >foo/bar</a></td>
+     <td tal:content="structure configuration/summary">
+         Configuration summary
+     </td>
+  </tr>
+  <tr>
+     <td><input type="radio" name="Roles" value="disable"
+                tal:attributes="
+                   name view/name;
+                   checked view/inactive;
+                   "
+                /></td>
+     <td><em>Disable</em></td>
+  </tr>
+</table>

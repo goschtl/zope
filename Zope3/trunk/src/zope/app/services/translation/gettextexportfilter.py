@@ -1,0 +1,90 @@
+##############################################################################
+#
+# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Translation Service Message Export Filter
+
+$Id: gettextexportfilter.py,v 1.2 2002/12/25 14:13:21 jim Exp $
+"""
+import time
+from types import StringTypes
+
+from zope.interfaces.i18n import IMessageExportFilter
+from zope.interfaces.i18n import IWriteTranslationService
+
+
+class GettextExportFilter:
+
+    __implements__ =  IMessageExportFilter
+    __used_for__ = IWriteTranslationService
+
+
+    def __init__(self, service):
+        self.service = service
+
+    def exportMessages(self, domains, languages):
+        'See IMessageExportFilter'
+
+        if isinstance(domains, StringTypes):
+            domain = domains
+        elif len(domains) == 1:
+            domain = domains[0]
+        else:
+            raise TypeError, \
+                  'Only one domain at a time is supported for gettext export.'
+
+        if isinstance(languages, StringTypes):
+            language = languages
+        elif len(languages) == 1:
+            language = languages[0]
+        else:
+            raise TypeError, \
+                'Only one language at a time is supported for gettext export.'
+
+        dt = time.time()
+        dt = time.localtime(dt)
+        dt = time.strftime('%Y/%m/%d %H:%M', dt)
+        output = _file_header %(dt, language.encode('UTF-8'),
+                                domain.encode('UTF-8'))
+        service = self.service
+
+        for msgid in service.getMessageIdsOfDomain(domain):
+            msgstr = service.translate(domain, msgid,
+                                       target_language=language)
+            msgstr = msgstr.encode('UTF-8')
+            msgid = msgid.encode('UTF-8')
+            output += _msg_template %(msgid, msgstr)
+
+        return output
+
+    #
+    ############################################################
+
+
+
+_file_header = '''
+msgid ""
+msgstr ""
+"Project-Id-Version: Zope 3\\n"
+"PO-Revision-Date: %s\\n"
+"Last-Translator: Zope 3 Gettext Export Filter\\n"
+"Zope-Language: %s\\n"
+"Zope-Domain: %s\\n"
+"MIME-Version: 1.0\\n"
+"Content-Type: text/plain; charset=UTF-8\\n"
+"Content-Transfer-Encoding: 8bit\\n"
+'''
+
+_msg_template = '''
+msgid "%s"
+msgstr "%s"
+'''

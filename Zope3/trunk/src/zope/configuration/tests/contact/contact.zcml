@@ -1,0 +1,12 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<directives namespace="test">
+  <directive
+      name="test"
+      handler="zope.configuration.tests.contact.testhandler.TestHandler" />
+</directives>
+           
+<!-- test if the included zcml file keeps the package of this file -->
+<include file="test_include.zcml" />
+
+</zopeConfigure>

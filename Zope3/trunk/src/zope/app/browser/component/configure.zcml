@@ -1,0 +1,18 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+>
+
+<browser:view 
+	factory = ".interfacewidget.SingleInterfaceWidget"
+	for = "zope.app.interfaces.component.interfacefield.IInterfaceField"
+	name = "edit"
+        />
+
+<browser:view 
+	factory = ".interfacewidget.DisplayWidget"
+	for = "zope.app.interfaces.component.interfacefield.IInterfaceField"
+	name = "display"
+        />
+
+</zopeConfigure>

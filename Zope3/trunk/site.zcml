@@ -1,7 +1,7 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-<include package="Zope.Configuration" file="metameta.zcml" />
-<include package="Zope.App" />
+<include package="zope.configuration" file="metameta.zcml" />
+<include package="zope.app" />
 
 <role id="Manager" title="Site Manager" />
 <role id="Member" title="Site Member" />
@@ -12,13 +12,13 @@
 <!-- Remove the following directive if you don't want public access -->
 <grant permission="Zope.View" role="Anonymous" />
 
-<grant permission="Zope.View"              role="Manager" />
-<grant permission="Zope.ManageContent"     role="Manager" />
-<grant permission="Zope.Security"          role="Manager" />
-<grant permission="Zope.ManageCode"        role="Manager" />
-<grant permission="Zope.ManageServices"    role="Manager" />
-<grant permission="Zope.ManageApplication" role="Manager" />
-<grant permission="Zope.ManageBindings"    role="Manager" />
+<grant permission="zope.View"              role="Manager" />
+<grant permission="zope.ManageContent"     role="Manager" />
+<grant permission="zope.Security"          role="Manager" />
+<grant permission="zope.ManageCode"        role="Manager" />
+<grant permission="zope.ManageServices"    role="Manager" />
+<grant permission="zope.ManageApplication" role="Manager" />
+<grant permission="zope.ManageBindings"    role="Manager" />
 
 <include file="products.zcml" />
 

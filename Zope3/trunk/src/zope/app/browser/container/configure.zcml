@@ -1,0 +1,26 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:browser='http://namespaces.zope.org/browser'
+>
+   
+   <browser:view
+       for="zope.app.interfaces.container.IContentContainer"
+       name="+"  
+       factory="zope.app.browser.container.adding.Adding"
+       permission="zope.ManageContent"
+       >
+
+       <browser:page name="index.html"  template="add.pt" />
+       <browser:page name="action.html" attribute="action" />
+   
+       </browser:view>
+
+  <browser:view
+      for="zope.app.interfaces.container.IReadContainer"
+      permission="zope.ManageContent" 
+      factory="zope.app.browser.container.find.Find">
+
+     <browser:page name="find.html" attribute="index" />
+  </browser:view>
+
+</zopeConfigure>

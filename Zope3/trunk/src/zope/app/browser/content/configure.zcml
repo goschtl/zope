@@ -1,0 +1,394 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   xmlns:form="http://namespaces.zope.org/form"
+   >
+
+<!-- File View Directives -->
+
+  <browser:view
+      for="zope.app.interfaces.content.file.IFile"
+      permission="zope.View"
+      factory="zope.app.browser.content.file.FileView">
+
+      <browser:page
+         name="index.html"
+         attribute="show" />
+
+    </browser:view>
+
+  <form:edit
+      name = "edit.html"
+      schema = "zope.app.interfaces.content.file.IFile"
+      label = "Change a file"
+      permission = "zope.ManageContent"
+      />
+
+  <form:edit
+      name = "upload.html"
+      schema = "zope.app.interfaces.content.file.IFile"
+      label = "Upload a file"
+      permission = "zope.ManageContent"
+      class = ".file.FileUpload."
+      />
+
+  <browser:menuItems
+      menu="zmi_views"
+      for="zope.app.interfaces.content.file.IFile">
+
+      <browser:menuItem
+          title="Edit"
+          action="edit.html"
+          filter="python:context.contentType.startswith('text/')"
+          />
+      <browser:menuItem
+          title="Upload"
+          action="upload.html" 
+          />
+      <browser:menuItem
+          title="Role Permissions" 
+          action="AllRolePermissions.html" 
+          />
+      <browser:menuItem
+          title="View" 
+          action="show.html" 
+          />
+
+      </browser:menuItems>
+
+  <browser:menuItem menu="add_content"
+     for="zope.app.interfaces.container.IAdding"
+     title="File" 
+     action="File"
+     description="A file object, suitable for large data." />
+
+  <browser:icon
+     name="zmi_icon"
+     for="zope.app.interfaces.content.file.IFile"
+     file="file_icon.gif"
+     />
+
+<!-- I18n File View Directives -->
+
+  <browser:view
+      name="index.html"
+      for="zope.app.interfaces.content.i18nfile.II18nFile"
+      permission="zope.View"
+      factory="zope.app.browser.content.i18n.I18nFileView"
+      />
+
+  <browser:view
+      for="zope.app.interfaces.content.i18nfile.II18nFile"
+      permission="zope.View"
+      factory="zope.app.browser.content.i18n.I18nFileEdit">
+
+      <browser:page
+          name="editForm.html" 
+          template="i18n_edit.pt" 
+          />
+      <browser:page
+          name="edit.html"
+          attribute="action" 
+          />
+
+      </browser:view>
+
+  <browser:menuItems menu="zmi_views"
+      for="zope.app.interfaces.content.i18nfile.II18nFile">
+
+      <!-- Keep original edit view, for now -->
+      <browser:menuItem title="Edit" action="editForm.html" />
+
+      <!-- Supress the upload view from file -->
+      <browser:menuItem title="Upload" action="editForm.html"
+                        filter="python: 0"
+                        />
+
+      </browser:menuItems>
+
+  <browser:menuItem menu="add_content"
+      for="zope.app.interfaces.container.IAdding"
+      title="I18n File"
+      action="zope.app.content.I18nFile"
+      description="A file that supports multiple locales." 
+      />
+
+<!-- Image -->
+
+  <browser:view
+      name="index.html"
+      for="zope.app.content.image.IImage"
+      permission="zope.View"
+      allowed_attributes="__call__ tag"
+      factory="zope.app.browser.content.image.ImageData" 
+      />
+
+  <form:edit
+      schema = "zope.app.content.image.IImage"
+      name = "upload.html"
+      label = "Upload an image"
+      permission = "zope.ManageContent"
+      class = ".image.ImageUpload."
+      template = "imageedit.pt"
+      />
+
+  <browser:menuItems menu="zmi_views" for="zope.app.content.image.IImage">
+
+     <browser:menuItem
+         title="Upload"
+         action="upload.html"
+         />
+     <browser:menuItem 
+        title="View" 
+        action="."
+        />
+     <browser:menuItem 
+       title="Role Permissions"
+       action="AllRolePermissions.html"
+       />
+
+    </browser:menuItems>
+
+  <browser:icon 
+     name="zmi_icon" 
+     for="zope.app.content.image.IImage" 
+     file="image_icon.gif" 
+     />
+
+  <browser:menuItem 
+     menu="add_content"
+     for="zope.app.interfaces.container.IAdding"
+     title="Image" 
+     action="Image"
+     description="This object helps you manage your images." 
+     />
+
+  <!-- I18n Image -->
+
+  <browser:view
+      name="index.html"
+      for="zope.app.interfaces.content.i18nimage.II18nImage"
+      permission="zope.View"
+      allowed_attributes="__call__ tag"
+      factory="zope.app.browser.content.i18nimage.I18nImageData" />
+
+  <browser:view
+      for="zope.app.content.i18nimage.II18nImage"
+      permission="zope.ManageContent"
+      factory="zope.app.browser.content.i18nimage.I18nImageEdit">
+
+      <browser:page name="upload.html" template="i18nimageedit.pt" />
+      <browser:page name="uploadAction.html" attribute="action" />
+
+      </browser:view>
+
+  <browser:menuItems 
+      menu="zmi_views" 
+      for="zope.app.content.i18nimage.II18nImage"
+      >
+
+      <!-- Keep the old "edit" form -->
+      <browser:menuItem title="Edit" action="upload.html"/>
+
+      <!-- Suppress upload form (from IFile) -->
+      <browser:menuItem title="Uload" action="upload.html"
+                        filter="python: 0" />
+
+    </browser:menuItems>
+
+  <browser:menuItem
+      menu="add_content"
+      for="zope.app.interfaces.container.IAdding"
+      title="I18n Image" 
+      action="I18nImage"
+      description="A multi-locale version of an Image." 
+      />
+
+<!-- ZPT Page View Directives -->
+
+  <browser:view
+      permission="zope.View"
+      for="zope.app.content.zpt.IZPTPage"
+      factory="zope.app.browser.content.zpt.ZPTPageEval">
+
+     <browser:page name="index.html" attribute="index" />
+
+     </browser:view>
+
+  <form:edit
+      schema="zope.app.content.zpt.IZPTPage"
+      name="edit.html"
+      label="Edit a ZPT page"
+      permission="zope.ManageContent"
+      />
+
+  <browser:menuItems menu="zmi_views" 
+     for="zope.app.content.zpt.IZPTPage">
+
+     <browser:menuItem title="Edit" action="edit.html"/>
+     <browser:menuItem
+         title="Role Permissions"
+         action="AllRolePermissions.html"
+         />
+     <browser:menuItem title="View" action="."/>
+  </browser:menuItems>
+
+  <browser:icon name="zmi_icon"
+           for="zope.app.content.zpt.IZPTPage" file="zpt.gif" />
+
+  <browser:menuItem
+      menu="add_content"
+      for="zope.app.interfaces.container.IAdding"
+      title="Zope Page Template Page" action="ZPTPage"
+      description="An object for dynamic content based on Page Templates." 
+      />
+
+<!-- Folder View Directives -->
+
+  <browser:view
+      for="zope.app.interfaces.content.folder.IFolder"
+      permission="zope.ManageContent" 
+      name="create"  
+      factory="zope.app.browser.content.folder.FolderAdding">
+
+    <browser:page name="index.html" template="add.pt" />
+    <browser:page name="action.html" attribute="action" />
+
+    </browser:view>
+
+  <browser:icon
+      name="zmi_icon" 
+      for="zope.app.interfaces.content.folder.IFolder"
+      file="folder_icon.gif" 
+      />
+
+  <browser:menuItems menu="zmi_views"
+           for="zope.app.interfaces.content.folder.IFolder">
+    <browser:menuItem title="Contents" action="@@contents.html"/>
+    <browser:menuItem title="Role Permissions" 
+        action="@@AllRolePermissions.html"/>
+    <browser:menuItem title="Principal Roles" 
+        action="@@PrincipalRoles.html"/>
+    <browser:menuItem title="View" action="@@index.html"/>
+    </browser:menuItems>
+
+  <browser:menuItem menu="add_content"
+      for="zope.app.interfaces.container.IAdding"
+      title="Folder" action="Folder"
+      description="A simple Folder." 
+      />
+
+  <browser:view
+      for="zope.app.interfaces.content.folder.IFolder"
+      permission="zope.ManageContent" 
+      factory="zope.app.browser.container.contents.Contents">
+
+    <browser:page name="index.html" attribute="index" permission="zope.View" />
+    <browser:page name="contents.html" attribute="contents" />
+    <browser:page name="manage" attribute="contents" />
+    <browser:page name="removeObjects.html" attribute="removeObjects" />
+
+    </browser:view>
+
+  <!-- ApplicationController navigation -->
+
+
+  <browser:menuItems menu="zmi_actions"
+    for="zope.app.interfaces.content.folder.IRootFolder"
+    >
+
+    <browser:menuItem title="Process Manager"
+              action="++etc++ApplicationController/index.html"
+              />
+
+    </browser:menuItems>
+
+
+<!-- SQL Script View Directives -->
+
+  <browser:view
+      for="zope.app.interfaces.content.sql.ISQLScript"
+      permission="zope.View"
+      factory="zope.app.browser.content.sql.SQLScriptTest"
+      >
+      
+      <browser:page name="index.html" 
+                    template="sqltest.pt" 
+                    />
+      <browser:page name="testResults.html" 
+                    template="sqltestresults.pt" 
+                    />
+      </browser:view>
+
+
+  <form:edit
+      schema = "zope.app.interfaces.content.sql.ISQLScript"
+      name = "edit.html"
+      label = "Edit an SQL script"
+      permission = "zope.ManageContent"
+      />
+
+  <browser:menuItems
+      menu="zmi_views"
+      for="zope.app.interfaces.content.sql.ISQLScript"
+      >
+
+    <browser:menuItem title="Edit" action="edit.html"/>
+    <browser:menuItem title="Test" action="index.html"/>
+    <browser:menuItem title="Cache" action="Caching.html"/>
+
+  </browser:menuItems>
+
+  <browser:menuItem
+      menu="add_content"
+      for="zope.app.interfaces.container.IAdding"
+      title="SQLScript"
+      action="SQLScript"
+      description="A content object getting its data from a RDB." 
+      />
+
+<!-- DTML Page View Directives -->
+
+  <browser:view
+      permission="zope.View"
+      for="zope.app.content.dtmlpage.IDTMLPage"
+      factory="zope.app.browser.content.dtmlpageeval.DTMLPageEval"
+      >
+
+    <browser:page name="index.html" attribute="index" />
+
+  </browser:view>
+
+
+  <form:edit
+      schema = "zope.app.content.dtmlpage.IDTMLPage"
+      name = "edit.html"
+      label = "Edit a DTML page"
+      permission = "zope.ManageContent"
+      />
+
+  <browser:menuItems
+      menu="zmi_views"
+      for="zope.app.content.dtmlpage.IDTMLPage"
+      >
+    <browser:menuItem title="Edit" action="edit.html"/>
+    <browser:menuItem title="View" action="."/>
+    <browser:menuItem title="Role Permissions"
+                      action="AllRolePermissions.html"
+                      />
+    </browser:menuItems>
+
+  <browser:icon 
+     name="zmi_icon"
+     for="zope.app.content.dtmlpage.IDTMLPage" 
+     file="dtml.gif" 
+     />
+
+  <browser:menuItem 
+     menu="add_content"
+     for="zope.app.interfaces.container.IAdding"
+     title="DTML Page" action="DTMLPage"
+     description="An object for dynamic content based on Document Templates." 
+     />
+
+</zopeConfigure>

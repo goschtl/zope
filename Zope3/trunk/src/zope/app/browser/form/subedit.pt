@@ -1,0 +1,46 @@
+<div metal:define-macro="formbody">
+  <span tal:condition="view/label"
+      tal:content="view/label"
+      metal:define-slot="heading"
+      >
+Edit something
+  </span>
+  <p tal:condition="view/fulledit_label">
+    <a tal:attributes="href
+         string:${context/@@absolute_url}/${view/fulledit_path}"
+       tal:content="view/fulledit_label">Full edit</a>
+  </p>
+  <p tal:define="status view/update"
+     tal:condition="status"
+     tal:content="status" />
+
+  <div tal:condition="view/errors">
+     <ul>
+        <li tal:repeat="error view/errors">
+           <strong tal:content="error/__class__">
+              Error Type</strong>:
+           <span tal:content="error">Error text</span>
+        </li>
+     </ul>
+  </div>
+
+  <div metal:define-slot="extra_info" tal:replace="nothing">
+  </div>
+
+  <table width="100%" border="0">
+  <tr metal:define-slot="extra_top" tal:replace="nothing">
+      <td>Extra top</td>
+      <td><input type="text" style="width:100%" /></td>
+  </tr>
+  <tr metal:define-macro="widget_rows" tal:repeat="widget view/widgets"
+      tal:content="structure widget/row">
+      <td>Name</td>
+      <td><input type="text" style="width:100%" /></td>
+  </tr>
+  <tr metal:define-slot="extra_bottom" tal:replace="nothing">
+      <td>Extra bottom</td>
+      <td><input type="text" style="width:100%" /></td>
+  </tr>
+  </table>
+
+</div>

@@ -1,0 +1,75 @@
+<html metal:use-macro="views/standard_macros/page">
+<div metal:fill-slot="body" tal:define="rprincipal_id python:request['principal_id']">
+<h1>Permission settings for <span tal:replace="python:view.get_principal(rprincipal_id).getTitle()">PrincipalName</span></h1>
+
+<form action="unsetPermissions.html" method="post">
+<h2>Permission Settings</h2>
+<table>
+  <tr>
+    <td valign="top">
+      <table border="0">
+	<tr>
+	  <th colspan="2" align="center">Allowed Permissions</th>
+	</tr>
+	<tr tal:repeat="perm python:view.get_set_permissions_for_principal(rprincipal_id, 'Allow')">
+	  <td><input type="checkbox" tal:attributes="name perm/getId"></td><td tal:content="perm/getTitle">Permission1</td>
+	</tr>
+	<tr tal:replace="nothing">
+	  <td><input type="checkbox" name="permission_ids"></td><td>Permission2</td>
+	</tr>
+	<tr tal:replace="nothing">
+	  <td><input type="checkbox" name="permission_ids"></td><td>Permission3</td>
+	</tr>
+	<tr tal:replace="nothing">
+	  <td><input type="checkbox" name="permission_ids"></td><td>Permission5</td>
+	</tr>
+      </table>
+    </td>
+    <td valign="top"> 
+      <table border="0">
+	<tr >
+	  <th colspan="2" align="center">Denied Permissions</th>
+	</tr>
+	<tr tal:repeat="perm python:view.get_set_permissions_for_principal(rprincipal_id, 'Deny')">
+	  <td><input type="checkbox" tal:attributes="name perm/getId"></td><td tal:content="perm/getTitle">Permission1</td>
+	</tr>
+	<tr tal:replace="nothing">
+	  <td><input type="checkbox" name="permission_ids"></td><td>Permission2</td>
+	</tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="2" align="center"><input type="submit" name="unset" value="Remove selected permission settings"></td></tr>
+</table>
+</form>
+<p>&nbsp;</p>
+<form action="./" method="post">
+<h2>Add permission settings</h2>
+  <table>
+    <tr>
+      <td>
+	<select name="permissions" multiple>
+	  <option 
+	    tal:repeat="perm python:view.get_unset_permissions_for_principal(rprincipal_id)" 
+	    tal:attributes="value perm/getId"
+	    tal:content="perm/getTitle">Perm1</option>
+	  <option tal:replace="nothing">Perm2</option>
+	  <option tal:replace="nothing">Perm3</option>
+	  <option tal:replace="nothing">Perm4</option>
+	  <option tal:replace="nothing">Perm5</option>
+	</select>
+      </td>	
+      <td valign="center">
+	<p>
+	  <input type="submit" name="grantPermissions.html:method" value="Grant">
+	  </p>
+	<p>
+	  <input type="submit" name="denyPermissions.html:method" value="Deny">
+	  </p>
+      </td>
+    </tr>
+  </table>
+</form>
+</div>
+</html>

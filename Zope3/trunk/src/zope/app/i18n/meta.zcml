@@ -1,0 +1,14 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+  <!-- zope.i18n -->
+  <directives namespace="http://namespaces.zope.org/gts">
+
+    <directive name="registerTranslations"
+               attributes="directory"
+               handler="zope.app.i18n.metaconfigure.registerTranslations" />
+
+    <directive name="defaultLanguages"
+               attributes="languages"
+               handler="zope.app.i18n.metaconfigure.defaultLanguages" />
+
+  </directives>
+</zopeConfigure>

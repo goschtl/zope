@@ -1,0 +1,23 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:vfs="http://namespaces.zope.org/vfs">
+
+  <vfs:view
+      name=".png"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.image.image.ImageAdd"
+      permission="zope.ManageContent" />
+
+  <vfs:view
+      name=".gif"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.image.image.ImageAdd"
+      permission="zope.ManageContent" />
+
+  <vfs:view
+      name=".bmp"
+      for="zope.app.interfaces.container.IAdding"
+      factory="zope.app.vfs.content.image.image.ImageAdd"
+      permission="zope.ManageContent" />
+
+</zopeConfigure>
