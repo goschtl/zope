@@ -7,7 +7,7 @@ Building and installing Zope from source
 
 Important notes
 
-   ZOPE 3 REQUIRES PYTHON 2.2.1!
+   ZOPE 3 REQUIRES PYTHON 2.2.2!
 
 Quick Start
 
@@ -76,7 +76,7 @@ Random Details
       run all of the unit tests (see UNITTEST.txt in the doc directory for more
       information on unit tests).
 
-    * You should be using Python 2.2.1 or later to run anything related to Zope3.
+    * You should be using Python 2.2.2 or later to run anything related to Zope3.
 
     * The python you run Zope with *must* have threads compiled in,
       which is *not* the case for a vanilla build.  When you build the
