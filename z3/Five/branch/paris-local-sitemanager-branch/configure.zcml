@@ -97,7 +97,7 @@
 
 
   <!-- enough to bootstrap the machinery to lookup local services -->
-  <!--
+  <include package="zope.configuration" file="meta.zcml" />
   <hook
       module="zope.component"
       name="getServices"
@@ -109,7 +109,6 @@
       name="adapter_hook"
       implementation="zope.app.component.hooks.adapter_hook"
       />
-  -->
 
   <adapter
       factory=".adapter.serviceServiceAdapter"
@@ -125,6 +124,10 @@
   <subscriber
       factory="zope.app.component.localservice.clearThreadSiteSubscriber"
       for="zope.app.publication.interfaces.IEndRequestEvent"
+      />
+
+  <five:localsitehook
+      class="OFS.ObjectManager.ObjectManager"
       />
 
 </configure>

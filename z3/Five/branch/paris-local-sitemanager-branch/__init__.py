@@ -25,3 +25,13 @@ from browser import BrowserView, StandardMacros
 
 def initialize(context):
     zcml.load_site()
+
+    import traversable
+    context.registerClass(
+        meta_type='Five: Add Local Site Hook',
+        permission='Manage Access Rules',
+        constructors=(traversable.manage_addLocalSiteHook,))
+    context.registerClass(
+        meta_type='Five: Remove Local Site Hook',
+        permission='Manage Access Rules',
+        constructors=(traversable.manage_removeLocalSiteHook,))

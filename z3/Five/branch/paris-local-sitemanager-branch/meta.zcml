@@ -272,6 +272,12 @@
        handler=".fiveconfigure.bridge"
        />
 
+    <meta:directive
+       name="localsitehook"
+       schema=".fivedirectives.IFiveLocalSiteHook"
+       handler=".fiveconfigure.installFiveSiteHook"
+       />
+
   </meta:directives>
 
 </configure>

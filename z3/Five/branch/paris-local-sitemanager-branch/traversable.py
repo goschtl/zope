@@ -11,17 +11,27 @@
 $Id$
 """
 from zExceptions import NotFound
+from zope.event import notify
 from zope.exceptions import NotFoundError
 from zope.component import getView, ComponentLookupError
 from zope.interface import implements
+from zope.interface import directlyProvides, directlyProvidedBy
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.security.management import thread_local
+from zope.app.site.interfaces import ISite
 from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import traversePathElement
+from zope.app.publication.zopepublication import BeforeTraverseEvent
 from monkey import DebugFlags
+from interfaces import IFiveSite
 
-from zope.security.management import thread_local
+from Globals import MessageDialog
 from AccessControl import getSecurityManager
+from ExtensionClass import Base
+from Products.SiteAccess.AccessRule import AccessRule
+from ZPublisher.BeforeTraverse import registerBeforeTraverse
+from ZPublisher.BeforeTraverse import unregisterBeforeTraverse
 
 _marker = object
 
@@ -111,3 +121,65 @@ class FiveTraversable(DefaultTraversable):
             pass
         # If a view can't be found, then use default traversable
         return super(FiveTraversable, self).traverse(name, furtherPath)
+
+class FiveSite:
+
+    def getSiteManager(self):
+        adapted = IFiveSite(self, None)
+        if adapted is None:
+            return None
+        return adapted.getSiteManager()
+
+    def setSiteManager(self, sm):
+        adapted = IFiveSite(self, None)
+        if adapted is None:
+            return None
+        return adapted.setSiteManager(sm)
+
+HOOK_NAME = '__local_site_hook__'
+
+class LocalSiteHook(Base):
+
+    meta_type = 'Five Local Site Hook'
+
+    def __call__(self, container, request):
+        notify(BeforeTraverseEvent(container, request))
+
+
+def manage_addLocalSiteHook(self, REQUEST=None, **ignored):
+    """Install __before_traverse__ hook for Local Site
+    """
+    # We want the original object, not stuff in between, and no acquisition
+    self = self.this()
+    self = getattr(self, 'aq_base', self)
+
+    hook = AccessRule(HOOK_NAME)
+    registerBeforeTraverse(self, hook, HOOK_NAME, 1)
+
+    if not hasattr(self, HOOK_NAME):
+        setattr(self, HOOK_NAME, LocalSiteHook())
+
+    directlyProvides(self, ISite, directlyProvidedBy(self))
+
+    if REQUEST is not None:
+        return MessageDialog(
+            title='Local Site Hook',
+            message='Local Site Hook has been enabled for this object',
+            action='%s/manage_main' % REQUEST['URL1'])
+
+def manage_removeLocalSiteHook(self, REQUEST=None, **ignored):
+    """Remove __before_traverse__ hook for Local Site
+    """
+    # We want the original object, not stuff in between, and no acquisition
+    self = self.this()
+    self = getattr(self, 'aq_base', self)
+
+    rules = unregisterBeforeTraverse(self, HOOK_NAME)
+    if hasattr(self, HOOK_NAME):
+        delattr(self, HOOK_NAME)
+
+    if REQUEST is not None:
+        return MessageDialog(
+            title='Local Site Hook',
+            message='Local Site Hook has been disabled for this object',
+            action='%s/manage_main' % REQUEST['URL1'])

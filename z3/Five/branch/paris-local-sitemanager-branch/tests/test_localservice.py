@@ -7,7 +7,7 @@ import unittest
 from Testing import ZopeTestCase
 ZopeTestCase.installProduct('Five')
 
-from zope.component import getGlobalServices
+from zope.component import getGlobalServices, getServices
 from zope.app.component.hooks import getServices_hook
 from zope.app.site.interfaces import IPossibleSite, ISite, ISiteManager
 from zope.app.traversing.interfaces import IContainmentRoot
@@ -35,6 +35,9 @@ class Folder(ObjectManager):
     implements(IPossibleSite)
 
     sm = None
+
+    def getId(self):
+        return self.id
 
     def getSiteManager(self, default=None):
         return self.sm
@@ -248,10 +251,40 @@ class Test(ZopeTestCase.ZopeTestCase):
 
         self.assertEqual(getSite(), None)
 
+class BeforeTraversalTest(ZopeTestCase.FunctionalTestCase):
+
+    def beforeTearDown(self):
+        from zope.app.component.localservice import clearSite
+        clearSite()
+
+    def test_before_traversal_event(self):
+        self.folder.manage_addProduct['Five'].manage_addLocalSiteHook()
+        path = '/'.join(self.folder.getPhysicalPath())
+        response = self.publish(path)
+        self.assertEqual(getSite(), self.folder)
+
+    def test_before_traversal_event_and_hook(self):
+        f1 = Folder()
+        f1.id = 'f1'
+        self.folder._setObject('f1', f1)
+        f1 = self.folder._getOb('f1')
+        ss = ServiceServiceStub()
+        f1.setSiteManager(ss)
+        f1.manage_addProduct['Five'].manage_addLocalSiteHook()
+        path = '/'.join(f1.getPhysicalPath())
+        response = self.publish(path)
+        self.assertEqual(getServices(), ss)
+
+    def test_no_before_traversal_event(self):
+        path = '/'.join(self.folder.getPhysicalPath())
+        response = self.publish(path)
+        self.assertEqual(getSite(), None)
+
 
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(Test))
+    suite.addTest(unittest.makeSuite(BeforeTraversalTest))
     return suite
 
 if __name__ == '__main__':

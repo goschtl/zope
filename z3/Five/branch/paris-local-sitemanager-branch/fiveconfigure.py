@@ -21,6 +21,7 @@ from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
 from viewable import Viewable
 from traversable import Traversable
+from traversable import FiveSite
 from bridge import fromZ2Interface
 from browserconfigure import page
 
@@ -195,4 +196,20 @@ def pagesFromDirectory(_context, directory, module, for_=None,
         page(_context, name=name, permission=permission,
              layer=layer, for_=for_, template=fname)
 
+def classFiveSiteHook(class_):
+    if hasattr(class_, '__five_possible_site__'):
+        if (hasattr(class_, 'getSiteManager') and
+            isFiveMethod(class_.getSiteManager)):
+            return
+    setattr(class_, 'getSiteManager',
+            FiveSite.getSiteManager.im_func)
+    setattr(class_, 'setSiteManager',
+            FiveSite.setSiteManager.im_func)
+    setattr(class_, '__five_possible_site__', True)
 
+def installFiveSiteHook(_context, class_):
+    _context.action(
+        discriminator = None,
+        callable = classFiveSiteHook,
+        args=(class_,)
+        )

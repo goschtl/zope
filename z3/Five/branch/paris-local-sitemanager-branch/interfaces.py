@@ -19,12 +19,17 @@ $Id$
 from zope.interface import Interface, Attribute
 from zope.interface.interfaces import IInterface
 from zope.schema import Bool, BytesLine, Tuple
+from zope.app.site.interfaces import ISite
 
 try:
     from persistent.interfaces import IPersistent
 except ImportError:
     class IPersistent(Interface):
         """Persistent object"""
+
+class IFiveSite(ISite):
+    """Five specialization of ISite
+    """
 
 class IPersistentExtra(Interface):
 
