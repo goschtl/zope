@@ -12,13 +12,12 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.12 2003/06/11 13:47:58 srichter Exp $
+$Id: test_sqlscript.py,v 1.13 2003/06/11 13:59:09 srichter Exp $
 """
 
 import unittest
 
-from zope.interface import implements
-from zope.interface.implements import implements as setImplements
+from zope.interface import implements, classImplements
 
 from zope.app.interfaces.rdb import IConnectionService
 from zope.app.interfaces.rdb import IZopeConnection
@@ -131,7 +130,7 @@ class SQLScriptTest(unittest.TestCase, PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        setImplements(SQLScript, IAttributeAnnotatable)
+        classImplements(SQLScript, IAttributeAnnotatable)
         sm.defineService('SQLDatabaseConnections', IConnectionService)
         sm.provideService('SQLDatabaseConnections', ConnectionServiceStub())
         self._old_getNextServiceManager = nextservice.getNextServiceManager
