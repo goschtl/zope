@@ -17,41 +17,39 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import persistent
-
 import zope.interface
-import zope.schema
-
-import zope.app.container.btree
-import zope.app.container.contained
-import zope.app.container.constraints
-import zope.app.container.interfaces
-
-from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.schema import Text, TextLine, Password
 
 from zope.app.pau import interfaces
 
+from persistent import Persistent
+from zope.interface import Interface, implements
+from zope.app.container.contained import Contained
+from zope.app.container.constraints import contains, containers
+from zope.app.container.btree import BTreeContainer
+from zope.app.i18n import ZopeMessageIDFactory as _
 
-class IInternalPrincipal(zope.interface.Interface):
+
+class IInternalPrincipal(Interface):
     """Principal information"""
 
-    login = zope.schema.TextLine(
+    login = TextLine(
         title=_("Login"),
         description=_("The Login/Username of the principal. "
                       "This value can change."),
         required=True)
 
-    password = zope.schema.Password(
+    password = Password(
         title=_(u"Password"),
         description=_("The password for the principal."),
         required=True)
 
-    title = zope.schema.TextLine(
+    title = TextLine(
         title=_("Title"),
         description=_("Provides a title for the principal."),
         required=True)
 
-    description = zope.schema.Text(
+    description = Text(
         title=_("Description"),
         description=_("Provides a description for the principal."),
         required=False,
@@ -60,10 +58,10 @@ class IInternalPrincipal(zope.interface.Interface):
         )
 
 
-class IInternalPrincipalContainer(zope.interface.Interface):
+class IInternalPrincipalContainer(Interface):
     """A container that contains internal principals."""
 
-    prefix = zope.schema.TextLine(
+    prefix = TextLine(
         title=_("Prefix"),
         description=_(
         "Prefix to be added to all principal ids to assure "
@@ -75,16 +73,16 @@ class IInternalPrincipalContainer(zope.interface.Interface):
         readonly=True,
         )
 
-    zope.app.container.constraints.contains(IInternalPrincipal)
+    contains(IInternalPrincipal)
 
 
-class IInternalPrincipalContained(zope.interface.Interface):
+class IInternalPrincipalContained(Interface):
     """Principal information"""
 
-    zope.app.container.constraints.containers(IInternalPrincipalContainer)
+    containers(IInternalPrincipalContainer)
 
 
-class ISearchSchema(zope.interface.Interface):
+class ISearchSchema(Interface):
     """Search Interface for this Principal Provider"""
 
     search = zope.schema.TextLine(
@@ -96,12 +94,10 @@ class ISearchSchema(zope.interface.Interface):
         )
 
 
-class PrincipalInformation(
-    persistent.Persistent,
-    zope.app.container.contained.Contained,):
-    """An internal principal for Persistent Principal Folder.
-    """
-    zope.interface.implements(IInternalPrincipal, IInternalPrincipalContained)
+class PrincipalInformation(Persistent, Contained):
+    """An internal principal for Persistent Principal Folder."""
+
+    implements(IInternalPrincipal, IInternalPrincipalContained)
 
     def __init__(self, login, password, title, description=u''):
         self._login = login
@@ -129,12 +125,12 @@ class PrincipalInformation(
             return getattr(self, attr)
 
 
-class PrincipalFolder(zope.app.container.btree.BTreeContainer):
+class PrincipalFolder(BTreeContainer):
     """A Persistent Principal Folder and Authentication plugin."""
 
-    zope.interface.implements(interfaces.ISearchableAuthenticationPlugin,
-                              interfaces.IQuerySchemaSearch,
-                              IInternalPrincipalContainer)
+    implements(interfaces.ISearchableAuthenticationPlugin,
+               interfaces.IQuerySchemaSearch,
+               IInternalPrincipalContainer)
 
     def __init__(self, prefix=''):
         self.prefix = unicode(prefix)
@@ -163,8 +159,7 @@ class PrincipalFolder(zope.app.container.btree.BTreeContainer):
         self.__id_by_login[principal.login] = id
 
     def __delitem__(self, id):
-        """Remove principal information
-        """
+        """Remove principal information."""
         principal = self[id]
         super(PrincipalFolder, self).__delitem__(id)
         del self.__id_by_login[principal.login]
@@ -215,8 +210,7 @@ class PrincipalFolder(zope.app.container.btree.BTreeContainer):
                 search in value.description.lower() or
                 search in value.login.lower()):
                 if not ((start is not None and i < start)
-                        or
-                        (batch_size is not None and n > batch_size)):
+                        or (batch_size is not None and n > batch_size)):
                     n += 1
-                    yield self.prefix+value.__name__
+                    yield self.prefix + value.__name__
                 i += 1
