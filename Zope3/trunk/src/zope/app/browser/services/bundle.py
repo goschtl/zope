@@ -28,9 +28,10 @@ XXX This interim code is much less ambitious: it just provides a view
 on a (site-management) folder that displays all configurations in a
 bundle and lets the user activate them.
 
-$Id: bundle.py,v 1.4 2003/06/16 21:00:29 gvanrossum Exp $
+$Id: bundle.py,v 1.5 2003/06/17 01:53:47 gvanrossum Exp $
 """
 
+from transaction import get_transaction
 from zope.app import zapi
 from zope.app.interfaces.container import IReadContainer
 from zope.app.interfaces.services.configuration import IConfiguration
@@ -61,6 +62,8 @@ class BundleView(BrowserView):
                 if obj.status != Unregistered:
                     obj.status = Unregistered
                     count += 1
+            if count:
+                get_transaction().note("deactivate bundle")
             return "unregistered %d configurations" % count
         activated = []
         registered = []
@@ -88,6 +91,8 @@ class BundleView(BrowserView):
             s += "Activated: %s.\n" % (", ".join(activated))
         if registered:
             s += "Registered: %s.\n" % (", ".join(registered))
+        if s:
+            get_transaction().note("activate bundle")
         return s
 
     def listServices(self):
