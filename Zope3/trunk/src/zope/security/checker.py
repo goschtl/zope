@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.39 2003/09/02 20:47:22 jim Exp $
+$Id: checker.py,v 1.40 2003/10/03 20:37:51 sidnei Exp $
 
 You can set the environment variable ZOPE_WATCH_CHECKERS to get additional
 security checker debugging output on the standard error.
@@ -504,7 +504,7 @@ def NamesChecker(names=(), permission_id=CheckerPublic, **__kw__):
 
     A sequence of names is given as the first argument. If a second
     argument, permission_id, is given, it is the permission required
-    to access the names.  Additional names and persmission ids can be
+    to access the names.  Additional names and permission ids can be
     supplied as keyword arguments.
     """
 
@@ -656,7 +656,7 @@ _always_available = ['__lt__', '__le__', '__eq__',
                      '__gt__', '__ge__', '__ne__',
                      '__hash__', '__nonzero__',
                      '__class__', '__providedBy__', '__implements__',
-                     '__repr__'
+                     '__repr__', '__conform__',
                      ]
 
 _callableChecker = NamesChecker(['__str__', '__name__', '__call__'])
