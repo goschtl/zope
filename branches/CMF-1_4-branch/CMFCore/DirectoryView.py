@@ -19,6 +19,7 @@ import Globals
 from Globals import HTMLFile, Persistent, package_home, DTMLFile
 import os
 from os import path, listdir, stat
+import sys
 from Acquisition import aq_inner, aq_parent, aq_base
 from string import split, rfind, strip, join
 from App.Common import package_home
