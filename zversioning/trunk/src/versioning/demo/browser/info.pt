@@ -1,29 +1,48 @@
 <html metal:use-macro="context/@@standard_macros/view"
       i18n:domain="vproposal">
-<body><div metal:fill-slot="body">
+
+<tal:block metal:fill-slot="style_slot">
+  <style type="text/css" media="all"
+         tal:content="string:@import url(${context/++resource++proposal.css});">
+      @import url(proposal.css);
+  </style>
+</tal:block>
+
+<body>
+
+<div metal:fill-slot="body">
 
   <h1 tal:content="context/title">Versionable Proposal</h1>
 
-    <div><h4 i18n:translate="">Use Case</h4>
+    <div class="cblock">
+        <h4 i18n:translate="">Use Case</h4>
         <div tal:content="structure view/usecase | nothing">
-           What Situations we will solve
-        </div><a href="./@@EditUseCase.html" i18n:translate="">Edit</a>
+             What Situations we will solve
         </div>
-    <div><h4 i18n:translate="">Concept</h4>
+        <a href="./@@EditUseCase.html" i18n:translate="" class="edit">Edit</a>
+    </div>
+    <div class="cblock">
+        <h4 i18n:translate="">Concept</h4>
         <div tal:content="structure view/concept | nothing">
-           Technical Concept
-        </div><a href="./@@EditConcept.html" i18n:translate="">Edit</a>
+             Technical Concept
         </div>
-    <div><h4 i18n:translate="">Todo</h4>
+        <a href="./@@EditConcept.html" i18n:translate="" class="edit">Edit</a>
+    </div>
+    <div class="cblock">
+        <h4 i18n:translate="">Todo</h4>
         <div tal:content="structure view/todo | nothing">
-           Steps to go
-        </div><a href="./@@EditTodo.html" i18n:translate="">Edit</a>
+             Steps to go
         </div>
-    <div><h4 i18n:translate="">Open Issues</h4>
+        <a href="./@@EditTodo.html" i18n:translate="" class="edit">Edit</a>
+    </div>
+    <div class="cblock">
+        <h4 i18n:translate="">Open Issues</h4>
         <div tal:content="structure view/issues | nothing">
-           Open Issues
-        </div><a href="./@@EditIssues.html" i18n:translate="">Edit</a>
+             Open Issues
         </div>
+        <a href="./@@EditIssues.html" i18n:translate="" class="edit">Edit</a>
+    </div>
 
+</div>
 
-</div></body></html>
+</body></html>

@@ -10,7 +10,12 @@ class RenderReST:
         self.usecase = self.render(context.usecase)
         self.concept = self.render(context.concept)
         self.todo = self.render(context.todo)
-        self.issues = self.render(context.issues)   
+        self.issues = self.render(context.issues)
+        #Silly hack
+        self.href = "display:block; background:#EFEFEF;"
+        self.cblock = "border-width:1px; \
+                       border-style:solid;margin-top:6px; \
+                       padding:2px;"
 
 
     def render(self,content):    

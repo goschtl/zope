@@ -105,6 +105,11 @@
     view="AddProposal.html"
     />
 
+<browser:resource 
+    name="proposal.css" 
+    file="proposal.css" 
+    />
+
 <browser:icon
     name="zmi_icon"
     for="..interfaces.IVProposal"
