@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: metadirectives.py,v 1.3 2004/03/23 22:08:10 srichter Exp $
+$Id: metadirectives.py,v 1.4 2004/04/14 14:31:18 hdima Exp $
 """
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject, Tokens, Path, \
@@ -298,7 +298,7 @@ class IAddFormDirective(ICommonFormInformation, ICommonAddInformation):
     See zope.app.browser.form.interfaces.IAddFormCustomization.
     """
 
-    description = Text(
+    description = MessageID(
         title=u"A longer description of the add form.",
         description=u"""
         A UI may display this with the item or display it when the
