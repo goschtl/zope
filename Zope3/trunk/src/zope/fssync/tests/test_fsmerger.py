@@ -11,12 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for the FSMerger class.
+"""Tests for the (high-level) FSMerger class.
 
-$Id: test_fsmerger.py,v 1.5 2003/05/28 14:53:41 gvanrossum Exp $
+$Id: test_fsmerger.py,v 1.6 2003/05/28 15:02:25 gvanrossum Exp $
 """
 
 import os
+import sys
 import unittest
 
 from os.path import exists, isdir, isfile, realpath, normcase, split, join
@@ -44,14 +45,18 @@ class TestFSMerger(TempFiles):
 
     def diff3_check(self):
         if not hasattr(os, "popen"):
+            sys.stderr.write("\nos.popen() not found, diff3 tests disabled\n")
             return False
         f1 = self.tempfile("a")
-        f2 = self.tempfile("b")
+        f2 = self.tempfile("a")
         f3 = self.tempfile("b")
         pipe = os.popen("diff3 -m -E %s %s %s" % (f1, f2, f3), "r")
         output = pipe.read()
         sts = pipe.close()
-        return output == "b" and not sts
+        ok = output == "b" and not sts
+        if not ok:
+            sys.stderr.write("\ndiff3 doesn't work, diff3 tests disabled\n")
+        return ok
 
     def addfile(self, dir, path, data, entry=None):
         # Create a file or directory and write some data to it.  If
