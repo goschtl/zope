@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Merger class.
 
-$Id: test_merger.py,v 1.3 2003/05/12 21:04:43 gvanrossum Exp $
+$Id: test_merger.py,v 1.4 2003/05/13 13:47:04 gvanrossum Exp $
 """
 
 import os
@@ -169,7 +169,7 @@ class TestMerger(unittest.TestCase):
     def test_remote_modified(self):
         self.runtest("a", "a", "ab", {}, {}, "Copy", "Uptodate")
 
-    def test_both_modified_resolved(self):
+    def disabled_test_both_modified_resolved(self):
         if os.name != "posix":
             # Alas, this test requires the external command 'merge'
             # which isn't usually found on Windows
