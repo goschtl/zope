@@ -21,4 +21,7 @@
 
   <grant role="zope.Manager" principal="zope.mgr" />
 
+  <include package="sip.ftests" file="test.zcml" />
+  <includeOverrides file="overrides.zcml" />
+
 </configure>
