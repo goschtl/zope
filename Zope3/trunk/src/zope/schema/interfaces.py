@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.22 2003/06/11 17:00:28 fdrake Exp $
+$Id: interfaces.py,v 1.23 2003/06/12 17:27:59 fdrake Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -409,7 +409,8 @@ class ITokenizedTerm(ITerm):
         "token",
         """Token which can be used to represent the value on a stream.
 
-        The value of this attribute must be a 7-bit string.
+        The value of this attribute must be a non-empty 7-bit string.
+        Control characters are not allowed.
         """)
 
 
