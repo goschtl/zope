@@ -14,7 +14,7 @@
 """Adapter Service
 
 
-$Id: adapter.py,v 1.2 2002/12/19 20:38:21 jim Exp $
+$Id: adapter.py,v 1.3 2002/12/22 21:13:50 stevea Exp $
 """
 __metaclass__ = type
 
@@ -148,7 +148,15 @@ class AdapterConfiguration(SimpleConfiguration):
 
     status = ConfigurationStatusProperty('Adapters')
 
-    def __init__(self, forInterface, providedInterface, factoryName):
+    # XXX These should be positional arguments, except that forInterface
+    #     isn't passed in if it is omitted. To fix this, we need a
+    #     required=False,explicitly_unrequired=True in the schema field
+    #     so None will get passed in.
+    def __init__(self, forInterface=None, providedInterface=None,
+                 factoryName=None):
+        if None in (providedInterface, factoryName):
+            raise TypeError(
+                "Must provide 'providedInterface' and 'factoryName'")
         self.forInterface = forInterface
         self.providedInterface = providedInterface
         self.factoryName = factoryName

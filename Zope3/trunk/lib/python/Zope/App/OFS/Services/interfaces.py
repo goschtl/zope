@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.2 2002/12/19 20:38:21 jim Exp $
+$Id: interfaces.py,v 1.3 2002/12/22 21:13:50 stevea Exp $
 """
 
 from ConfigurationInterfaces import IConfiguration
@@ -29,8 +29,8 @@ class IAdapterConfigurationInfo(Interface):
         title = u"For interface",
         description = u"The interface of the objects being adapted",
         readonly = True,
-        required = True,
-        )
+        required = False,  # XXX the UI should be explicit about allowing
+        )                  #     no selection.
 
     providedInterface = InterfaceField(
         title = u"Provided interface",
