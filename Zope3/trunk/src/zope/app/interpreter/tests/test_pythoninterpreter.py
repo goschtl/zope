@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the workflow ZCML namespace directives.
 
-$Id: test_pythoninterpreter.py,v 1.2 2003/08/21 14:19:25 srichter Exp $
+$Id: test_pythoninterpreter.py,v 1.3 2004/02/25 22:58:30 srichter Exp $
 """
 import unittest
 
@@ -79,6 +79,11 @@ class PythonInterpreterTest(unittest.TestCase):
         self.assertRaises(ForbiddenAttribute,
                           PythonInterpreter.evaluateRawCode, code, {})
 
+    def test_windows_newline(self):
+        code = ('print "hello"\r\n'
+                'print "world"\r\n')
+        self._check(code, 'hello\nworld\n', True)
+        
 
 def test_suite():
     return unittest.TestSuite((

@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Code Interpreter
 
-$Id: python.py,v 1.4 2004/02/02 15:03:41 anthony Exp $
+$Id: python.py,v 1.5 2004/02/25 22:58:29 srichter Exp $
 """
 import StringIO
 import sys
@@ -49,7 +49,7 @@ class PythonInterpreter:
             code = code.strip()[4:-3]
 
         # Prepare code.
-        lines = code.split('\n')
+        lines = code.splitlines()
         lines = filter(lambda l: l.strip() != '', lines)
         code = '\n'.join(lines)
         # This saves us from all indentation issues :)
