@@ -13,7 +13,7 @@
 ##############################################################################
 """Static tree utilities
 
-$Id: utils.py,v 1.1 2004/02/19 20:43:04 philikon Exp $
+$Id: utils.py,v 1.2 2004/03/04 02:01:38 philikon Exp $
 """
 
 import zlib
@@ -59,7 +59,7 @@ u2a_map = maketrans('-._', '+/=')
 def b2a(s):
     '''Encode a value as a cookie- and url-safe string.
 
-    Encoded string use only alpahnumeric characters, and "._-".
+    Encoded string use only alphanumeric characters, and "._-".
     '''
     s = str(s)
     if len(s) <= 57:
