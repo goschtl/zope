@@ -21,6 +21,7 @@ from cStringIO import StringIO
 from Zope.Configuration.xmlconfig import xmlconfig, ZopeXMLConfigurationError
 from Zope.Configuration.xmlconfig import XMLConfig
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
+from Zope.Security.SecurityManagement import newSecurityManager, system_user
 
 import Zope.App.Security
 from Zope.App.Security.Exceptions import UndefinedPermissionError
@@ -39,6 +40,7 @@ def configfile(s):
 class Test(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
+        newSecurityManager(system_user)
         XMLConfig('meta.zcml', Zope.App.ContentDirective)()
         XMLConfig('meta.zcml', Zope.App.Security)()
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testDirectives.py,v 1.6 2002/06/23 17:03:40 jim Exp $
+$Id: testDirectives.py,v 1.7 2002/08/13 17:46:12 jim Exp $
 """
 
 import unittest
@@ -24,7 +24,7 @@ from StringIO import StringIO
 from Zope.Configuration.xmlconfig import xmlconfig, XMLConfig
 from Zope.Configuration.xmlconfig import ZopeXMLConfigurationError
 from Zope.ComponentArchitecture.tests.PlacelessSetup import PlacelessSetup
-
+from Zope.Security.SecurityManagement import newSecurityManager, system_user
 import Zope.App.ComponentArchitecture
 import Zope.App.Security
 import Zope.App.ContentDirective
@@ -44,6 +44,7 @@ def configfile(s):
 class TestContentDirective(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
+        newSecurityManager(system_user)
         XMLConfig('meta.zcml', Zope.App.ContentDirective)()
         XMLConfig('meta.zcml', Zope.App.Security)()
         
@@ -100,6 +101,7 @@ class TestContentDirective(PlacelessSetup, unittest.TestCase):
 class TestFactorySubdirective(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
+        newSecurityManager(system_user)
         XMLConfig('meta.zcml', Zope.App.ContentDirective)()
         XMLConfig('meta.zcml', Zope.App.Security)()
 

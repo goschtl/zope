@@ -14,7 +14,7 @@
 ##############################################################################
 """
 
-$Id: z3.py,v 1.3 2002/06/14 18:51:10 gvanrossum Exp $
+$Id: z3.py,v 1.4 2002/08/13 17:46:12 jim Exp $
 """
 
 import os, sys, asyncore
@@ -45,11 +45,20 @@ def run(argv=sys.argv):
 
     from Zope.Configuration.xmlconfig import XMLConfig
 
+    # Set user to system_user, so we can do anything we want
+    from Zope.Security.SecurityManagement import system_user
+    from Zope.Security.SecurityManagement import newSecurityManager
+    newSecurityManager(system_user)
+
     # Load server-independent site config
     XMLConfig(os.path.join(dir, 'site.zcml'))()
     
     # Load server config
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
+
+    # Reset user
+    from Zope.Security.SecurityManagement import noSecurityManager
+    noSecurityManager()
 
     try:
         asyncore.loop()

@@ -13,14 +13,19 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: ZopeSecurityPolicy.py,v 1.5 2002/07/16 23:41:17 jim Exp $
+$Id: ZopeSecurityPolicy.py,v 1.6 2002/08/13 17:46:12 jim Exp $
 """
-__version__='$Revision: 1.5 $'[11:-2]
+__version__='$Revision: 1.6 $'[11:-2]
 
 from Zope.ComponentArchitecture import queryAdapter
+
 from Zope.Proxy.ContextWrapper import ContainmentIterator
+
 from Zope.Exceptions import Unauthorized, Forbidden
+
 from Zope.Security.ISecurityPolicy import ISecurityPolicy
+from Zope.Security.SecurityManagement import system_user
+
 from Zope.App.Security.IRolePermissionManager \
      import IRolePermissionManager, IRolePermissionMap
 from Zope.App.Security.IPrincipalPermissionManager \
@@ -80,7 +85,11 @@ class ZopeSecurityPolicy:
         # XXX We aren't really handling multiple principals yet
 
         # mapping from principal to set of roles
-        principals = { context.user : {'Anonymous': Allow} }
+        user = context.user
+        if user is system_user:
+            return 1
+        
+        principals = {user : {'Anonymous': Allow}}
         
         role_permissions = {}
         remove = {}

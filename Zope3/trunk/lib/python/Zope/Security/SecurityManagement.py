@@ -13,6 +13,9 @@
 ##############################################################################
 """ Default ISecurityManagement implementation """
 
+system_user = object() # Special system user that has all permissions
+
+
 from ISecurityManagement import ISecurityManagement, ISecurityManagementSetup
 from SecurityManager import SecurityManager
 from SecurityManager import setSecurityPolicy as _setSecurityPolicy

@@ -15,6 +15,7 @@
 
 from ISecurityPolicy import ISecurityPolicy
 from Zope.Exceptions import Unauthorized
+from SecurityManagement import system_user
 
 class ParanoidSecurityPolicy:
     """
@@ -23,7 +24,7 @@ class ParanoidSecurityPolicy:
     __implements__ = ISecurityPolicy
 
     def checkPermission( sel, permission, object, context ):
-        if (context.user is None   # no user
+        if (context.user is system_user   # no user
             and not context.stack  # no untrusted code
             ):
             return 1 # Nobody not to trust!
