@@ -13,7 +13,7 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.8 2003/06/01 15:59:36 jim Exp $
+$Id: module.py,v 1.9 2003/06/02 16:24:33 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -95,9 +95,9 @@ class Manager(Persistent):
         self._registry.setModuleService(getServiceManager(self))
         self._manager.update(source)
 
-    def remove(self, source):
+    def remove(self):
         self._registry.setModuleService(getServiceManager(self))
-        self._manager.remove(source)
+        self._manager.remove()
 
     new = ContextMethod(new)
     update = ContextMethod(update)
