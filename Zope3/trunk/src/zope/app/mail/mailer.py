@@ -40,6 +40,7 @@ class SendmailMailer(object):
         f.write(message)
         f.close()
 
+
 class SMTPMailer(object):
 
     implements(ISMTPMailer)

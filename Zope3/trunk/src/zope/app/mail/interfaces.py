@@ -23,8 +23,8 @@ Email sending from Zope 3 applications works as follows:
   message is only sent when the transaction commits successfully.  (Among
   other things this avoids duplicate messages on 'ConflictErrors'.)
 
-- If the delivery utility is a 'IQueuedMailDelivery', it puts the message into a
-  queue (a Maildir mailbox in the file system). A separate process or thread
+- If the delivery utility is a 'IQueuedMailDelivery', it puts the message into
+  a queue (a Maildir mailbox in the file system). A separate process or thread
   ('IMailQueueProcessor') watches the queue and delivers messages
   asynchronously. Since the queue is located in the file system, it survives
   Zope restarts or crashes and the mail is not lost.  The queue processor
@@ -55,6 +55,7 @@ Email sending from Zope 3 applications works as follows:
 
 $Id$
 """
+
 from zope.interface import Interface, Attribute
 from zope.schema import Object, TextLine, Int, Password, BytesLine
 
@@ -66,7 +67,7 @@ class IMailDelivery(Interface):
     people."""
 
     def send(fromaddr, toaddrs, message):
-        """Sends an email message.
+        """Send an email message.
 
         'fromaddr' is the sender address (byte string),
 
@@ -125,10 +126,10 @@ class IMailQueueProcessor(Interface):
 
 
 class IMailer(Interface):
-    """Mailer handles syncrhonous mail delivery."""
+    """Mailer handles synchronous mail delivery."""
 
     def send(fromaddr, toaddrs, message):
-        """Sends an email message.
+        """Send an email message.
 
         'fromaddr' is the sender address (unicode string),
 
