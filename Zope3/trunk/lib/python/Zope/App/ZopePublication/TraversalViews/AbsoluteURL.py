@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: AbsoluteURL.py,v 1.5 2002/07/13 14:18:37 jim Exp $
+$Id: AbsoluteURL.py,v 1.6 2002/10/28 07:37:58 stevea Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Proxy.ContextWrapper import getWrapperContainer, getInnerWrapperData
@@ -36,6 +36,12 @@ class IAbsoluteURL(Interface):
         """Get a string representation
         """
 
+    def breadcrumbs():
+        """Return a tuple like ({'name':name, 'url':url}, ...)
+
+        Name is the name to display for that segment of the breadcrumbs.
+        URL is the link for that segment of the breadcrumbs.
+        """
 
 class AbsoluteURL(BrowserView):
 
