@@ -183,7 +183,8 @@ def parse(url):
     parts = split_on_tag(url)
     if parts is None:
         return TaglessSubversionUrl(url)
-    return SubversionUrl(*parts)
+    else:
+        return SubversionUrl(*parts)
 
 
 def split_on_tag(url):
