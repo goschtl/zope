@@ -1,0 +1,16 @@
+After 1.5.0beta
+
+  New Features
+
+    - Feature
+
+  Bugs Fixed
+
+    - ActionsTool: Removed deprecated support for oldstyle Action Providers.
+      If Action Providers don't implement the ActionProvider interface they
+      are now ignored.
+
+    - Workflow: Removed deprecated WorkflowMethod machinery.
+
+    - RegistrationTool: An optional password can now be passed to 
+      registeredNotify() (Issue #277).
