@@ -15,7 +15,7 @@
 
 See README.txt.
 
-$Id: config.py,v 1.17 2004/03/01 21:22:10 jim Exp $
+$Id: config.py,v 1.18 2004/03/01 22:39:31 fdrake Exp $
 """
 
 import os.path
@@ -269,7 +269,7 @@ class ConfigurationContext(object):
         ...
         True
 
-        """ #'
+        """ #' <-- bow to font-lock
         path = self.path(filename)
         if path in self._seen_files:
             raise ConfigurationError('%r included more than once' % path)
