@@ -37,9 +37,9 @@
         <table width="100%" tal:condition="registries">
           <tr>
             <th width="5%"> </th>
-            <th width="35%">Name</th>
-            <th width="20%">Registration</th>
-            <th width="40%">Parent</th>
+            <th i18n:translate="" width="35%">Name</th>
+            <th i18n:translate="" width="20%">Registration</th>
+            <th i18n:translate="" width="40%">Parent</th>
           </tr>
           <tr tal:repeat="reg registries">
             <td>

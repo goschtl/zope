@@ -17,8 +17,8 @@
       <table class="listingdescription" summary="Method Listing"
           cellspacing="0">
         <thead>
-          <th>Method Signature</th>
-          <th>Description</th>
+          <th i18n:translate="">Method Signature</th>
+          <th i18n:translate="">Description</th>
         </thead>    
         <tal:repeat repeat="methoddict view/methods">
         <tr tal:define="oddrow repeat/methoddict/odd;"
@@ -43,9 +43,9 @@
       <table class="listingdescription" summary="Schema Listing"
           cellspacing="0">
         <thead>
-          <th>Field Name</th>
-          <th>Type</th>
-          <th>Description</th>
+          <th i18n:translate="">Field Name</th>
+          <th i18n:translate="">Type</th>
+          <th i18n:translate="">Description</th>
         </thead>    
         <tal:repeat repeat="field view/schema">
         <tal:define define="oddrow repeat/field/odd;
@@ -64,7 +64,7 @@
         </tal:define>
         </tal:repeat>
       </table>  
-      <p>* indicates required fields.</p>
+      <p i18n:translate="">* indicates required fields.</p>
   </div>
 
   <div tal:repeat="service view/getServices">
@@ -76,9 +76,9 @@
   <table class="listingdescription" summary="Registration Listing"
       cellspacing="0">
     <thead>
-      <th>Status</th>
-      <th>Usage Summary</th>
-      <th>Implementation Summary</th>
+      <th i18n:translate="">Status</th>
+      <th i18n:translate="">Usage Summary</th>
+      <th i18n:translate="">Implementation Summary</th>
     </thead>
     <tal:repeat repeat="reg service/registrations">
       <tr tal:define="oddrow repeat/reg/odd"

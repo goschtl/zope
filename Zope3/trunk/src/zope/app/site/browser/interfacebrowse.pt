@@ -7,8 +7,8 @@
   <table class="listingdescription" summary="Interfaces Listing"
       cellspacing="0">
     <thead>
-      <th>Interface Name</th>
-      <th>Title</th>
+      <th i18n:translate="">Interface Name</th>
+      <th i18n:translate="">Title</th>
     </thead>
     <tal:repeat tal:repeat="dict view/getInterfaces">
     <tr tal:define="oddrow repeat/dict/odd;"
