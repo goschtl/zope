@@ -46,8 +46,6 @@ XML Schema Interface
 
     * provide an adapter from IInvoiceSchema to IInvoice.
 
-    * create an object that implements IInvoice as well as
+    * create a class that implements IInvoice as well as
       IXMLRepresentable. The only XML this object should represent
       should be conformant to IInvoiceSchema.
-
-  
