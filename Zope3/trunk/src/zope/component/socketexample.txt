@@ -1,6 +1,6 @@
-=================================
-The Zope 3 Component Architecture
-=================================
+==================================================
+The Zope 3 Component Architecture (Socket Example)
+==================================================
 
 The component architecture provides an application framework that provides its
 functionality through loosly-connected components. A *component* can be any
