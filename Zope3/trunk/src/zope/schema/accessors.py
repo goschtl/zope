@@ -15,7 +15,7 @@
 Field accessors
 ===============
 
-Accessors are used to model methods used to access data defgined by fields.
+Accessors are used to model methods used to access data defined by fields.
 Accessors are fields that work by decorating existing fields.
 
 To define accessors in an interface, use the accessors function::
@@ -28,12 +28,12 @@ To define accessors in an interface, use the accessors function::
 
 
 Normally a read accessor and a write accessor are defined.  Only a
-readaccessor is defined for read-only fields.
+read accessor is defined for read-only fields.
 
-Read accessors function as access method sepcifications and as field
+Read accessors function as access method specifications and as field
 specifications.  Write accessors are solely method specifications.
 
-$Id: accessors.py,v 1.4 2003/05/12 10:02:41 ryzaja Exp $
+$Id: accessors.py,v 1.5 2003/09/25 08:36:32 anthony Exp $
 """
 
 from __future__ import generators
@@ -48,7 +48,7 @@ class FieldReadAccessor(Method):
 
     # A read field accessor is a method and a field.
     # A read accessor is a decorator of a field, using the given
-    # fields proprtyoes to provide meta data.
+    # fields properties to provide meta data.
 
     def __provides__(self):
         return providedBy(self.field)
