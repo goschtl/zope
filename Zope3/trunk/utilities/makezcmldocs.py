@@ -14,7 +14,7 @@
 ##############################################################################
 """
 
-$Id: makezcmldocs.py,v 1.6 2002/12/27 23:31:06 jim Exp $
+$Id: makezcmldocs.py,v 1.7 2003/03/21 20:54:02 jim Exp $
 """
 
 from types import UnicodeType, FunctionType, TypeType, ClassType
@@ -105,7 +105,8 @@ def printdirective(outfile, name, handler, registry, level=0):
     path, handlerstring = handlerData(handler,md)
     if path:
         curpath = path
-    outfile.write("%s%s (%s)\n\n" % (' '*level, name, handlerstring))
+    outfile.write("%sZCML %s directive\n\n" % (' '*level, name))
+    
 
     initial = ' '*(level+2)
     initial4 = ' '*(level+4)
@@ -142,6 +143,10 @@ def printdirective(outfile, name, handler, registry, level=0):
         if subdir==_metadataKey: continue
         subs, handler = registry[subdir]
         printdirective(outfile, subdir, handler, subs, level+4)
+
+# The function without a module name is useless.
+##     outfile.write("%s  (This directive is handled by by %s. %s)\n\n"
+##                   % (' '*level, handlerstring, curpath))
 
 
 def run(argv=sys.argv):
