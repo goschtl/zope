@@ -12,10 +12,11 @@
 # 
 ##############################################################################
 """
-$Id: ICacheable.py,v 1.3 2002/11/11 20:57:20 jim Exp $
+$Id: ICacheable.py,v 1.4 2002/11/13 11:30:31 ryzaja Exp $
 """
 from Interface import Interface
 from Zope.ComponentArchitecture import getService
+from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
 from Zope.ContextWrapper import ContextProperty
 import Zope.Schema
 
@@ -24,10 +25,12 @@ class CacheName(Zope.Schema.TextLine):
 
     def __allowed(self):
         """Note that this method works only if the Field is context wrapped."""
-        caching_service = getService(self.context, "Caching")
-
-        # FIXME: i18n
-        return [''] + list(caching_service.getAvailableCaches())
+        try:
+            caching_service = getService(self.context, "Caching")
+        except ComponentLookupError:
+            return ['']
+        else:
+            return [''] + list(caching_service.getAvailableCaches())
 
     allowed_values = ContextProperty(__allowed)
 
