@@ -442,13 +442,11 @@ def create_diff(repo, file, old, new):
             handle = os.popen(co_stdout_cmd)
             lines = handle.readlines()
             handle.close()
-            insert_str = ("=== Added File %s/%s ===\n"
-                          % (repo, file))
-            lines.insert(0, insert_str)
+            header = ("=== Added File %s/%s ===\n"
+                      % (repo, file))
         except IOError, e:
-            lines = ['***** ERROR reading new file: ',
-                     str(e), '\n***** file: ', file,
-                     ' cwd: ', safe_getcwd('/tmp')]
+            return ('*** ERROR reading new file: %s ***\n*** File: %s ***\n'
+                    % (str(e), file))
 
     else:                # A "normal" update happened
         diff_cmd = ('cvs -d %s -f rdiff -kk -u -t %s/%s'
@@ -456,11 +454,14 @@ def create_diff(repo, file, old, new):
         file_handle = os.popen(diff_cmd)
         lines = file_handle.readlines()[6:]
         file_handle.close()
-        insert_str = ("=== %s/%s %s => %s ===\n"
-                      % (str(repo), str(file), old, new))
-        lines.insert(0, insert_str) 
+        header = ("=== %s/%s %s => %s ===\n"
+                  % (str(repo), str(file), old, new))
 
-    return string.join(lines, '')
+    if seems_binary(lines):
+        return "%s\n  <Binary-ish file>\n" % header
+    else:
+        lines.insert(0, header)
+        return string.join(lines, '')
 
 ### XXX 'path' is selector_path, not very useful.  I think we should be using
 ###     'repo'. 
@@ -727,6 +728,21 @@ def get_command(cmd, path):
             return maybe
     note_failure("No usable %s executable found.\n", `cmd`)
     
+def seems_binary(lines):
+    """Return true iff more than half the chars, up to 500 checked, are binary.
+    """
+    isit = 0
+    count = 0
+    for l in lines:
+        for c in l:
+            if (31 < ord(c) < 177):
+                isit = isit - 1
+            else:
+                isit = isit + 1
+            count = count + 1
+            if count > 500:
+                break
+    return (count > 10) and (isit > 0)
 
 complaints = []
 def complain(msg, *args):
