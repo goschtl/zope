@@ -70,6 +70,13 @@ class LocalUtilityService(UtilityService, LocalAdapterService):
                 registration = stack.active()
                 if registration is not None:
                     key = True, key[1], '', key[3]
+
+                    # Needs more thought:
+                    # We have to remove the proxy because we're
+                    # storing the value amd we can't store proxies.
+                    # (Why can't we?)  we need to think more about
+                    # why/if this is truly safe
+                    
                     radapters[key] = radapters.get(key, ()) + (
                         removeAllProxies(registration.factory), )
 
