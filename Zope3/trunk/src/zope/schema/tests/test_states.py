@@ -17,8 +17,10 @@
 import unittest
 
 from zope.interface import Interface, implements
+from zope.interface.verify import verifyObject
 
 from zope.schema import vocabulary
+from zope.schema.interfaces import IVocabulary
 from zope.schema.tests import states
 
 
@@ -46,12 +48,6 @@ class IBirthInfo(Interface):
         vocabulary="states",
         )
 
-class BirthInfo:
-    implements(IBirthInfo)
-
-    def __init__(self):
-        self.state = state
-
 
 class StateSelectionTest(unittest.TestCase):
     def setUp(self):
@@ -65,10 +61,12 @@ class StateSelectionTest(unittest.TestCase):
     def test_default_presentation(self):
         field = IBirthInfo.getDescriptionFor("state1")
         bound = field.bind(object())
+        self.assert_(verifyObject(IVocabulary, bound.vocabulary))
         self.assertEqual(bound.vocabulary.getTerm("VA").title, "Virginia")
 
     def test_contains(self):
         vocab = states.StateVocabulary()
+        self.assert_(verifyObject(IVocabulary, vocab))
         count = 0
         L = list(vocab)
         for term in L:
@@ -86,6 +84,7 @@ class StateSelectionTest(unittest.TestCase):
         field = IBirthInfo.getDescriptionFor("state3")
         bound = field.bind(None)
         self.assert_(bound.vocabularyName is None)
+        self.assert_(verifyObject(IVocabulary, bound.vocabulary))
         self.assert_("AL" in bound.vocabulary)
 
 
