@@ -12,11 +12,10 @@
 # 
 ##############################################################################
 """
-$Id: NaiveFile.py,v 1.3 2002/07/19 13:12:31 srichter Exp $
+$Id: NaiveFile.py,v 1.4 2002/07/25 22:09:31 faassen Exp $
 """
 from Persistence import Persistent
 from Zope.App.OFS.Content.File.IFile import IFile
-from Zope.App.OFS.Content.File.SFile import SFile
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
 
 
@@ -26,7 +25,7 @@ class NaiveFile(Persistent):
     WARNING: This implementation should not be used to save large amounts
              of Data.
     """
-    __implements__ = IFile, SFile, IAnnotatable
+    __implements__ = IFile, IAnnotatable
 
     def __init__(self, data='', contentType=''):
         self.setData(data)
@@ -40,7 +39,7 @@ class NaiveFile(Persistent):
         
     def setContentType(self, contentType):
         '''See interface Zope.App.OFS.File.IFile.IFile'''
-        SFile.getDescriptionFor('contentType').validate(contentType)
+        IFile.getDescriptionFor('contentType').validate(contentType)
         self._contentType = contentType
     
     def getContentType(self):
@@ -59,7 +58,7 @@ class NaiveFile(Persistent):
 
     def setData(self, data):
         '''See interface Zope.App.OFS.File.IFile.IFile'''
-        SFile.getDescriptionFor('data').validate(data)
+        IFile.getDescriptionFor('data').validate(data)
         if data is not None:
             self._size = len(data)
             self._data = data
@@ -68,7 +67,6 @@ class NaiveFile(Persistent):
         '''See interface Zope.App.OFS.File.IFile.IFile'''
         return self._size
 
-    # See schema Zope.App.OFS.File.SFile.SFile
     data = property(getData, setData, None,
                     """Contains the data of the file.""")
 

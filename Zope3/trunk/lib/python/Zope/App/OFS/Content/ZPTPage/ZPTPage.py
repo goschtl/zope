@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ZPTPage.py,v 1.4 2002/07/19 13:12:33 srichter Exp $
+$Id: ZPTPage.py,v 1.5 2002/07/25 22:09:31 faassen Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -42,8 +42,6 @@ class IZPTPage(Interface):
     def getSource():
         """Get the source of the page template."""
 
-
-class SZPTPage(Schema.Schema):
     source = Schema.Str(
         id="source",
         title="Source",
@@ -68,7 +66,7 @@ class IRenderZPTPage(Interface):
 class ZPTPage(AppPT, PageTemplate, Persistent):
 
     # XXX Putting IFileContent at the end gives an error!
-    __implements__ = IFileContent, SZPTPage, IZPTPage, IRenderZPTPage, \
+    __implements__ = IFileContent, IZPTPage, IRenderZPTPage, \
                      IAnnotatable
 
     def getSource(self):

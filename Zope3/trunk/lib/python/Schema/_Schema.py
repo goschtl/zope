@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Schema.py,v 1.7 2002/07/14 18:54:20 faassen Exp $
+$Id: _Schema.py,v 1.8 2002/07/25 22:09:30 faassen Exp $
 """
 from Interface import Interface
 import Validator
@@ -43,7 +43,7 @@ def validateMappingAll(schema, values):
     """Pass in field values in mapping and validate whether they
     conform to schema.
     """
-    list = []
+    errors = []
     from IField import IField
     for name in schema.names(1):
         attr = schema.getDescriptionFor(name)
@@ -51,9 +51,9 @@ def validateMappingAll(schema, values):
             try:
                 attr.validate(values.get(name))
             except ValidationError, e:
-                list.append((name, e))
-    if list:
-        raise ValidationErrorsAll, list
+                errors.append((name, e))
+    if errors:
+        raise ValidationErrorsAll, errors
 
 # Now we can create the interesting interfaces and wire them up:
 def wire():

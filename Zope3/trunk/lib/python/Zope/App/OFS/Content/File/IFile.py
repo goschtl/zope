@@ -13,14 +13,28 @@
 ##############################################################################
 """
 
-$Id: IFile.py,v 1.2 2002/06/10 23:27:57 jim Exp $
+$Id: IFile.py,v 1.3 2002/07/25 22:09:31 faassen Exp $
 """
 
 from Interface import Interface
 from Zope.App.OFS.Content.IFileContent import IFileContent
+import Schema
 
 class IReadFile(IFileContent):
     
+    contentType = Schema.Str(
+        id = 'contentType',
+        title = 'Content Type',
+        description = 'The content type identifies the type of data.',
+        default = 'text/plain',
+        )
+
+
+    data = Schema.Str(
+        id = 'data',
+        title = 'Data',
+        description = 'The actual content of the object.',
+        )
 
     def getData():
         """Returns the bits (data) of the File itself."""

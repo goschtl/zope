@@ -12,17 +12,46 @@
 # 
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.2 2002/07/19 13:12:32 srichter Exp $
+$Id: ISQLScript.py,v 1.3 2002/07/25 22:09:31 faassen Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
+from Zope.ComponentArchitecture import getService
+from Zope.ContextWrapper import ContextMethod
+import Schema
 
+class SQLConnectionName(Schema.Str):
+    """SQL Connection Name"""
+
+    def items(self):
+        """Note that this method works only if the Field is context wrapped."""
+        connection_service = getService(self, "Connections")
+        connections = connection_service.getAvailableConnections()
+        return connections
+
+    items = ContextMethod(items)
+    
 class ISQLScript(ISQLCommand):
     """A persistent script that can execute SQL."""
 
-    arguments = Attribute('''A set of attributes that can be used during
-                             the DTML rendering process to provide dynamic
-                             data.''')
+    connectionName = SQLConnectionName(
+        id="connectionName",
+        title="Connection Name",
+        description="""The Connection Name for the connection to be used.""",
+        required=1)
+
+    arguments = Schema.Str(
+        id="arguments",
+        title="Arguments",
+        description='A set of attributes that can be used during the DTML '
+                    'rendering process to provide dynamic data.',
+        required=1)
+
+    source = Schema.Str(
+        id="source",
+        title="Source",
+        description="""The source od the page template.""",
+        required=1)
 
     def setArguments(arguments):
         """Processes the arguments (which could be a dict, string or whatever)

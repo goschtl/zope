@@ -15,8 +15,6 @@
     <require permission="Zope.ManageContent"
                       interface=".DTMLPage.IDTMLPage" />
     <require permission="Zope.View"
-                      interface=".DTMLPage.SDTMLPage" />
-    <require permission="Zope.View"
                       interface=".DTMLPage.IRenderDTMLPage" />
   </content>
 

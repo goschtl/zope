@@ -12,8 +12,9 @@
 # 
 ##############################################################################
 """
-$Id: SchemaTestObject.py,v 1.5 2002/07/19 13:12:30 srichter Exp $
+$Id: SchemaTestObject.py,v 1.6 2002/07/25 22:09:30 faassen Exp $
 """
+from Interface import Interface
 import Schema
 from Schema.Converter import StrToIntConverter
 
@@ -42,7 +43,7 @@ class Email(Schema.Str):
     pass
 
 
-class STestObject(Schema.Schema):
+class STestObject(Interface):
     """A simple Schema."""
 
     id = Schema.Int(

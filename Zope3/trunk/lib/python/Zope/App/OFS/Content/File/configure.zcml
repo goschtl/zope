@@ -10,9 +10,6 @@
       description="A File" />
   <require
       permission="Zope.View"
-      interface=".SFile.SFile" />
-  <require
-      permission="Zope.View"
       interface=".IFile.IReadFile" />
   <require
       permission="Zope.ManageContent"

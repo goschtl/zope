@@ -12,13 +12,12 @@
 # 
 ##############################################################################
 """
-$Id: Image.py,v 1.4 2002/07/24 23:15:30 jeremy Exp $
+$Id: Image.py,v 1.5 2002/07/25 22:09:31 faassen Exp $
 """
 import struct
 
 from Zope.App.OFS.Content.File.File import File
 from Zope.App.OFS.Content.File.IFile import IFile
-from Zope.App.OFS.Content.File.SFile import SFile
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
 from cStringIO import StringIO
 
@@ -30,13 +29,8 @@ class IImage(IFile):
         """Return a tuple (x, y) that describes the dimensions of
         the object."""
 
-    
-class SImage(SFile):
-    """Image properties."""
-
-
 class Image(File):
-    __implements__ = (SImage, IImage, IAnnotatable,)
+    __implements__ = IImage, IAnnotatable
 
     def __init__(self, data=None):
         '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
@@ -58,7 +52,6 @@ class Image(File):
         '''See interface IImage'''
         return (self._width, self._height)
 
-    # See schema Zope.App.OFS.File.SFile.SFile
     data = property(File.getData, setData, None,
                     """Contains the data of the file.""")
 

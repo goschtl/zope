@@ -12,15 +12,16 @@
 #
 ##############################################################################
 """
-$Id: testSchema.py,v 1.7 2002/07/17 16:54:15 jeremy Exp $
+$Id: testSchema.py,v 1.8 2002/07/25 22:09:30 faassen Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Schema.Exceptions import StopValidation, ValidationError, \
      ValidationErrorsAll
-from Schema import *
+from Interface import Interface
+from Schema import Str
+from Schema import validateMapping, validateMappingAll, ErrorNames
 
-
-class ISchemaTest(Schema):
+class ISchemaTest(Interface):
     title = Str(id="title",
                    title="Title",
                    description="Title",

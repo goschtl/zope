@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: DTMLPage.py,v 1.2 2002/07/19 13:12:31 srichter Exp $
+$Id: DTMLPage.py,v 1.3 2002/07/25 22:09:30 faassen Exp $
 """
 from Interface import Interface
 from Interface.Attribute import Attribute
@@ -38,8 +38,6 @@ class IDTMLPage(Interface):
     def getSource():
         """Get the source of the page template."""
 
-
-class SDTMLPage(Schema.Schema):
     source = Schema.Str(
         id="source",
         title="Source",
@@ -64,8 +62,7 @@ class IRenderDTMLPage(Interface):
 class DTMLPage(Persistent):
 
     # XXX Putting IFileContent at the end gives an error!
-    __implements__ = IFileContent, IDTMLPage, SDTMLPage, IRenderDTMLPage, \
-                     IAnnotatable
+    __implements__ = IFileContent, IDTMLPage, IRenderDTMLPage, IAnnotatable
 
 
     def __init__(self, source=''):

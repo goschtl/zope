@@ -14,9 +14,6 @@
         permission="Zope.ManageContent"
         interface=".ISQLScript." />
     <require
-        permission="Zope.View"
-        interface=".SSQLScript." />
-    <require
         permission="Zope.ManageContent"
         interface="Zope.App.OFS.Content.IFileContent." />
   </content>

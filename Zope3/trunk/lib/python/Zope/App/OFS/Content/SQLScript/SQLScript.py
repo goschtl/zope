@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: SQLScript.py,v 1.4 2002/07/19 13:12:32 srichter Exp $
+$Id: SQLScript.py,v 1.5 2002/07/25 22:09:31 faassen Exp $
 """
 from types import StringTypes
 
@@ -27,7 +27,6 @@ from Zope.App.RDB.Util import queryForResults
 
 from Zope.App.OFS.Content.IFileContent import IFileContent
 from Zope.App.OFS.Content.SQLScript.ISQLScript import ISQLScript
-from Zope.App.OFS.Content.SQLScript.SSQLScript import SSQLScript
 from Zope.App.OFS.Content.SQLScript.Arguments import parseArguments
 
 from DT_SQLVar import SQLVar
@@ -51,7 +50,7 @@ class SQLDTML(HTML):
 
 class SQLScript(SQLCommand, Persistent):
 
-    __implements__ = ISQLScript, SSQLScript, IFileContent
+    __implements__ = ISQLScript, IFileContent
     
     def __init__(self, connectionName='', source='', arguments=''):
         self.template = SQLDTML(source)

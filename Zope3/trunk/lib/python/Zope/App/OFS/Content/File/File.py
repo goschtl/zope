@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: File.py,v 1.7 2002/07/24 23:15:46 jeremy Exp $
+$Id: File.py,v 1.8 2002/07/25 22:09:30 faassen Exp $
 """
 from types import StringType, UnicodeType, NoneType
 
@@ -25,14 +25,13 @@ from Zope.App.OFS.Content.File.IFile import IFile
 from Zope.Publisher.Browser.BrowserRequest import FileUpload
 
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
-from Zope.App.OFS.Content.File.SFile import SFile
 from Zope.App.OFS.Content.File.IFile import IFile
 
 # set the size of the chunks
 MAXCHUNKSIZE = 1 << 16
 
 class File(Persistent):
-    __implements__ = SFile, IFile, IAnnotatable
+    __implements__ = IFile, IAnnotatable
 
     def __init__(self, data='', contentType=''):
         self.data = data
@@ -167,8 +166,6 @@ class File(Persistent):
         '''See interface Zope.App.OFS.Content.File.IFile.IFile'''
         return self._size
 
-
-    # See schema Zope.App.OFS.File.SFile.SFile
     data = property(getData, setData, None,
                     """Contains the data of the file.""")
 
