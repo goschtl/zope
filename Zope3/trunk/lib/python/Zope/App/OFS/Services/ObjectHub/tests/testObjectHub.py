@@ -14,18 +14,19 @@
 """testObjectHub
 
 Revision information:
-$Id: testObjectHub.py,v 1.3 2002/11/29 15:51:03 stevea Exp $
+$Id: testObjectHub.py,v 1.4 2002/12/05 21:32:37 stevea Exp $
 """
 
 import unittest, sys
 from ObjectHubSetup import ObjectHubSetup
 
-from Zope.Event.IObjectEvent import IObjectAddedEvent, IObjectRemovedEvent
-from Zope.Event.IObjectEvent import IObjectModifiedEvent, IObjectMovedEvent
-from Zope.Event.ObjectEvent import ObjectAddedEvent, ObjectModifiedEvent
-from Zope.Event.ObjectEvent import ObjectRemovedEvent, ObjectMovedEvent
+from Zope.Event.IObjectEvent\
+        import IObjectAddedEvent, IObjectRemovedEvent, IObjectModifiedEvent,\
+               IObjectMovedEvent
+from Zope.Event.ObjectEvent\
+        import ObjectAddedEvent, ObjectModifiedEvent, ObjectRemovedEvent,\
+               ObjectMovedEvent, ObjectCreatedEvent
 from Zope.Event.ISubscriber import ISubscriber
-
 from Zope.App.OFS.Services.ObjectHub.IObjectHub import ObjectHubError
 from Zope.App.OFS.Services.ObjectHub.IHubEvent import \
      IObjectRemovedHubEvent, IObjectModifiedHubEvent, \
@@ -172,6 +173,7 @@ class BasicHubTest(ObjectHubSetup, unittest.TestCase):
         self.object_hub.subscribe(self.subscriber)
 
     def setEvents(self):
+        self.created_event = ObjectCreatedEvent(object())
         self.added_event = ObjectAddedEvent(self.obj, self.location)
         self.added_new_location_event = ObjectAddedEvent(
             self.obj, self.new_location)
@@ -302,6 +304,40 @@ class TestNoRegistration(BasicHubTest):
                 (IObjectAddedEvent, location),
             ])
 
+
+class TestObjectCreatedEvent(BasicHubTest):
+    def setUp(self):
+        ObjectHubSetup.setUp(self)
+        self.object_hub = getService(self.rootFolder, "ObjectHub")
+        self.setEvents()
+        self.subscriber = RegistrationSubscriber(self.object_hub)
+        self.object_hub.subscribe(self.subscriber)
+            
+    def testLookingUpLocation(self):
+        hub = self.object_hub
+        event = self.created_event
+        location = None
+        
+        hub.notify(event)
+        
+        self.assertEqual(location_from_hub, location)
+        
+        self.subscriber.verifyEventsReceived(self, [
+                (IObjectCreatedEvent, location),
+            ])
+
+    def testLookupUpAbsentLocation(self):
+        # Test that we don't find an hub id for location that we haven't added.
+        hub = self.object_hub
+        event = self.added_event
+        location = self.location
+        
+        # Do not add the location to the hub
+        # hub.notify(event)
+        
+        self.assertRaises(NotFoundError, hub.getHubId, location)
+
+        self.subscriber.verifyEventsReceived(self, [])
 
 class TestObjectAddedEvent(BasicHubTest):
     def setUp(self):
