@@ -1,0 +1,11 @@
+<html metal:use-macro="views/standard_macros/view">
+  <body>
+    <div metal:fill-slot="body">
+
+      <h1>Discussion Thread</h1>
+
+      <div tal:replace="structure view/subthread" />
+
+    </div>
+  </body>
+</html>
