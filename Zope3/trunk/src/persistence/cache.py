@@ -15,6 +15,8 @@ from time import time
 from sys import getrefcount
 from weakref import ref
 
+import logging
+
 from persistence.interfaces import ICache
 
 class Cache(object):
@@ -28,6 +30,7 @@ class Cache(object):
         self.__aget = self.__active.get
         self._size = size
         self._inactive = inactive
+        self._logger = logging.getLogger("persistence.cache")
 
     def __getitem__(self, oid):
         o = self.__gget(oid, self)
@@ -86,16 +89,23 @@ class Cache(object):
 
         now = int(time() % 86400)
 
-        # Implement a trivial LRU cache by sorting the items by
-        # access time and trundling over the last until we've reached
-        # out target.  The number of objects in the cache should
-        # be relatively small (thousands) so the memory for the
-        # list is pretty minimal.
+        # Implement a trivial LRU cache by sorting the items by access
+        # time and trundling over the list until we've reached out
+        # target size.  The number of objects in the cache should be
+        # relatively small (thousands) so the memory for the list is
+        # pretty minimal.
         L = []
         for oid, ob in self.__active.iteritems():
             if ob is not None:
                 ob = ob()
-            L.append((ob._p_atime, oid, ob))
+            # The _p_atime field is seconds since the start of the day.
+            # When we start a new day, we'll expect to see most of the
+            # _p_atime values be less than now.
+            if ob._p_atime > now:
+                deltat = (86400 - ob._p_atime) + now
+            else:
+                deltat = now - ob._p_atime
+            L.append((deltat, oid, ob))
         L.sort()
 
         if na > self._size:
@@ -108,11 +118,13 @@ class Cache(object):
                 self._ghostify(oid, ob)
 
         # ghostify old objects regardless of cache size
-        stop_at = now - self._inactive
-        for atime, oid, ob in L:
-            if atime > stop_at:
+        for deltat, oid, ob in L:
+            if deltat < self._inactive:
                 break
             self._ghostify(oid, ob)
+
+        self._logger.debug("incrgc reduced size from %d to %d",
+                           na, len(self.__active))
 
     def _ghostify(self, oid, ob):
         ob._p_deactivate()
