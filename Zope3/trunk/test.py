@@ -44,8 +44,10 @@ Test harness.
     test, so Use With Care.
 
 --dir directory
-    Option to limit where tests are searched for. This is
-    important when you *really* want to limit the code that gets run.
+    Option to limit where tests are searched for. This is important
+    when you *really* want to limit the code that gets run.  This can
+    be specified more than once to run tests in two different parts of
+    the source tree.
     For example, if refactoring interfaces, you don't want to see the way
     you have broken setups for tests in other packages. You *just* want to
     run the interface tests.
@@ -173,6 +175,13 @@ import time
 import traceback
 import unittest
 import warnings
+
+def set_trace_doctest(stdin=sys.stdin, stdout=sys.stdout, trace=pdb.set_trace):
+    sys.stdin = stdin
+    sys.stdout = stdout
+    trace()
+
+pdb.set_trace_doctest = set_trace_doctest
 
 from distutils.util import get_platform
 
@@ -484,30 +493,27 @@ def walk_with_symlinks(top, func, arg):
             if os.path.isdir(name):
                 walk_with_symlinks(name, func, arg)
 
-
-def check_test_dir():
-    global test_dir
-    if test_dir and not os.path.exists(test_dir):
-        d = pathinit.libdir
-        d = os.path.join(d, test_dir)
-        if os.path.exists(d):
-            if not os.path.isdir(d):
-                raise ValueError(
-                    "%s does not exist and %s is not a directory"
-                    % (test_dir, d)
-                    )
-            test_dir = d
-        else:
-            raise ValueError("%s does not exist!" % test_dir)
-
+def find_test_dir(dir):
+    if os.path.exists(dir):
+        return dir
+    d = os.path.join(pathinit.libdir, dir)
+    if os.path.exists(d):
+        if os.path.isdir(d):
+            return d
+        raise ValueError("%s does not exist and %s is not a directory"
+                         % (dir, d))
+    raise ValueError("%s does not exist!" % dir)
 
 def find_tests(rx):
     global finder
     finder = TestFileFinder(pathinit.libdir)
 
-    check_test_dir()
-    walkdir = test_dir or pathinit.libdir
-    walk_with_symlinks(walkdir, finder.visit, rx)
+    if test_dirs:
+        for d in test_dirs:
+            d = find_test_dir(d)
+            walk_with_symlinks(d, finder.visit, rx)
+    else:
+        walk_with_symlinks(pathinit.libdir, finder.visit, rx)
     return finder.files
 
 def package_import(modname):
@@ -720,7 +726,7 @@ def process_args(argv=None):
     global progress
     global build_inplace
     global keepStaleBytecode
-    global test_dir
+    global test_dirs
     global profile
 
     if argv is None:
@@ -747,7 +753,7 @@ def process_args(argv=None):
     timetests = 0
     keepStaleBytecode = 0
     kinds = 'unit'
-    test_dir = None
+    test_dirs = []
     profile = False
 
     try:
@@ -826,7 +832,7 @@ def process_args(argv=None):
                 # must be a filename to write
                 timesfn = v
         elif k == '--dir':
-            test_dir = v
+            test_dirs.append(v)
 
     if sys.version_info < ( 2,3,2 ):
 	print """\
