@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.24 2003/06/09 18:48:52 gvanrossum Exp $
+$Id: syncer.py,v 1.25 2003/07/18 04:18:25 fdrake Exp $
 """
 
 import os
@@ -118,6 +118,17 @@ def toFS(ob, name, location):
         annotation_dir = os.path.join(annotation_dir, name)
         if not os.path.exists(annotation_dir):
             os.mkdir(annotation_dir)
+
+        # XXX This doesn't allow an interface that's implemented as an
+        # adapter that uses annotations to store data to affect the
+        # serialized representation of the data.  Case in point: the
+        # IAnnotatable --> ZopeDublinCore adapter
+        # (zope.app.dublincore.annotatableadapter.ZDCAnnotationAdapter)
+        # uses a PersistentDict as the storage format, but could
+        # benefit by storing the data as RDF encoded in XML (for
+        # example).  Perhaps marker interfaces could be used on in
+        # PersistentDict instance to support this?
+
         for key in annotations:
             annotation = annotations[key]
             toFS(annotation, key, annotation_dir)
