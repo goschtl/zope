@@ -31,5 +31,5 @@ table = [
 ##                                           'repodir': "/cvs-repository/test"])
  ("Test", "^test", [], {'host': "www.zope.org",
                                           'acct': "anonymous",
-                                          'repodir': "/cvs-repository/test"])
+                                          'repodir': "/cvs-repository/test"})
 ]
