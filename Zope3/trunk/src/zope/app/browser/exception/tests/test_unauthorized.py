@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_unauthorized.py,v 1.6 2003/06/06 20:44:27 stevea Exp $
+$Id: test_unauthorized.py,v 1.7 2003/06/09 16:39:12 alga Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -50,7 +50,7 @@ class Test(TestCase):
             pass
         request = TestRequest('/')
         authservice = DummyAuthService()
-        request.user = ContextWrapper(DummyPrincipal(23), authservice)
+        request.setUser(ContextWrapper(DummyPrincipal(23), authservice))
         u = Unauthorized(exception, request)
         u.issueChallenge()
 

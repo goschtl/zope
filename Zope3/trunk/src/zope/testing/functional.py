@@ -15,7 +15,7 @@
 
 There should be a file 'ftesting.zcml' in the current directory.
 
-$Id: functional.py,v 1.8 2003/05/22 13:58:55 sidnei Exp $
+$Id: functional.py,v 1.9 2003/06/09 16:39:16 alga Exp $
 """
 
 import logging
@@ -23,7 +23,7 @@ import sys
 import traceback
 import unittest
 
-from cStringIO import StringIO
+from StringIO import StringIO
 
 from transaction import get_transaction
 from zodb.db import DB
@@ -36,6 +36,14 @@ from zope.publisher.browser import BrowserRequest
 from zope.publisher.http import HTTPRequest
 from zope.publisher.publish import publish
 from zope.exceptions import Forbidden, Unauthorized
+
+__metaclass__ = type
+
+
+class HTTPTaskStub(StringIO):
+
+    def setAuthUserName(self, user):
+        pass
 
 
 class ResponseWrapper:
@@ -161,7 +169,7 @@ class BrowserTestCase(FunctionalTestCase):
           outstream -- a stream where the HTTP response will be written
         """
         if outstream is None:
-            outstream = StringIO()
+            outstream = HTTPTaskStub()
         environment = {"HTTP_HOST": 'localhost',
                        "HTTP_REFERER": 'localhost'}
         environment.update(env)
@@ -186,7 +194,7 @@ class BrowserTestCase(FunctionalTestCase):
           getBody()      -- returns the full response body as a string
           getPath()      -- returns the path used in the request
         """
-        outstream = StringIO()
+        outstream = HTTPTaskStub()
         request = self.makeRequest(path, basic=basic, form=form, env=env,
                                    outstream=outstream)
         response = ResponseWrapper(request.response, outstream, path)
@@ -272,7 +280,7 @@ class HTTPTestCase(FunctionalTestCase):
           outstream -- a stream where the HTTP response will be written
         """
         if outstream is None:
-            outstream = StringIO()
+            outstream = HTTPTaskStub()
         if instream is None:
             instream = ''
         environment = {"HTTP_HOST": 'localhost',
@@ -299,7 +307,7 @@ class HTTPTestCase(FunctionalTestCase):
           getBody()      -- returns the full response body as a string
           getPath()      -- returns the path used in the request
         """
-        outstream = StringIO()
+        outstream = HTTPTaskStub()
         request = self.makeRequest(path, basic=basic, form=form, env=env,
                                    instream=request_body, outstream=outstream)
         response = ResponseWrapper(request.response, outstream, path)

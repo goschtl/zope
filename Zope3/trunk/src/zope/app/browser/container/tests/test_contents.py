@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.19 2003/06/05 20:59:47 gvanrossum Exp $
+$Id: test_contents.py,v 1.20 2003/06/09 16:39:11 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -303,7 +303,7 @@ class TestCutCopyPaste(PlacefulSetup, TestCase):
         from zope.app.browser.container.contents import Contents
         from zope.publisher.browser import TestRequest
         request = TestRequest()
-        request.user = Principal()
+        request.setUser(Principal())
         return Contents(container, request)
 
 class Test(BaseTestContentsBrowserView, TestCase):
