@@ -145,8 +145,8 @@ can be run using the command:
   OK
 
 The line before the final "OK" tells how many individual tests were
-run, and long it took to run them.  These numbers will vary based on
-release, operating system, and host platform.
+run, and how long it took to run them.  These numbers will vary based
+on release, operating system, and host platform.
 
 At this point, you can install the software using the command:
 
