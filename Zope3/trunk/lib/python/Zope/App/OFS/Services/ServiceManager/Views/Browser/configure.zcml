@@ -30,14 +30,14 @@
   </menuItems>
 
 
-  <defaultView for=".IPackages." name="index.html" />
+  <defaultView for=".IPackages." name="contents.html" />
 
   <view
       for=".IPackages."
       permission="Zope.ManageServices" 
       factory=".Views.Browser.PackagesContents.">
 
-    <page name="index.html"
+    <page name="contents.html"
                   attribute="index"
                   />
     <page name="addPackage.html"

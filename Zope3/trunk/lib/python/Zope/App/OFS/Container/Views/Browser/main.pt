@@ -26,7 +26,9 @@
         >
 
       <table id="sortable" class="listing" summary="Content listing"
-             cellpadding="2" cellspacing="0" >
+             cellpadding="2" cellspacing="0" 
+             metal:define-macro="contents_table"
+             >
     
         <thead> 
           <tr>

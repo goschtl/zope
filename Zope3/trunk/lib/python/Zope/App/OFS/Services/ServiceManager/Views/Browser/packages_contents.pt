@@ -6,50 +6,14 @@
 <body>
 <div metal:fill-slot="body">
 
-<form action="." method="get">
-  <table class="ContentListing">
-  
-    <caption>Package Contents</caption>
-  
-    <tbody>
-  
-      <tr>
-	<td class="ContentIcon"><br /> </td>
-	<th class="ContentTitle">Title</th>
-      </tr>
-      <tr tal:repeat="info view/listContentInfo">
-  
-	<td class="ContentSelect">
-	  <input type="checkbox" name="ids:list" value="id"
-		 tal:attributes="value info/id" />
-	</td>
-  
-	<td class="ContentIcon" tal:content="structure info/icon|default">
-	</td>
-  
-	<td class="ContentTitle">
-	  <a href="subfolder_id"
-	     tal:attributes="href string:${info/url}"
-	     tal:content="info/title"
-	  >Folder Title or ID here</a>
-	</td>
-  
-      </tr>
-  
-      <tr tal:condition="nothing">
-  
-	<td class="ContentIcon">
-	  <img alt="Document" src="../../ZMI/www/document_icon.gif" />
-	</td>
-  
-	<td class="ContentTitle">
-	   <a href="document_id">Document Title or ID here</a>
-	</td>
-  
-      </tr>
-    </tbody>
-  
-  </table>
+<form action="." method="get" 
+      tal:define="container_contents view/listContentInfo"
+>
+
+  <p>Package Contents</p>
+
+  <div metal:use-macro="view/contentsMacros/macros/contents_table" />
+
   <br />
     <input type="text" name="name" />
     <input type="submit" name="@@addPackage.html:method" value="Add"
