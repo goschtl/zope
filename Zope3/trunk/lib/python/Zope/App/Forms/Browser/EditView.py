@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: EditView.py,v 1.1 2002/11/11 20:29:58 jim Exp $
+$Id: EditView.py,v 1.2 2002/11/30 18:33:52 jim Exp $
 """
 
 from datetime import datetime
@@ -27,6 +27,7 @@ from Zope.Security.Checker import defineChecker, NamesChecker
 from Zope.ComponentArchitecture.GlobalViewService import provideView
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.App.PageTemplate.SimpleViewClass import SimpleViewClass
+from Zope.App.Forms.Browser.StandardSubmit import Update
 
 
 class EditView(BrowserView):
@@ -101,7 +102,7 @@ class EditView(BrowserView):
         return unchanged
 
     def update(self):
-        if "save_submit" in self.request:
+        if Update in self.request:
             unchanged = True
             try:
                 data = getWidgetsData(self, self.schema, required=0)

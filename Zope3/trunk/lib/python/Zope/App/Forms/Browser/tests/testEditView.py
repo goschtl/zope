@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: testEditView.py,v 1.1 2002/11/11 20:29:58 jim Exp $
+"""$Id: testEditView.py,v 1.2 2002/11/30 18:33:52 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
@@ -24,6 +24,7 @@ from Zope.App.Forms.Browser.EditView import EditView
 from Zope.ComponentArchitecture.GlobalViewService \
      import provideView, setDefaultViewName
 from Zope.App.Forms.Views.Browser.Widget import TextWidget
+from Zope.App.Forms.Browser.StandardSubmit import Update
 
 class I(Interface):
     foo = TextLine(title=u"Foo")
@@ -113,7 +114,7 @@ class Test(PlacelessSetup, TestCase):
         c = C()
         request = TestRequest()
         v = EV(c, request)
-        request.form['save_submit'] = u'Submit'
+        request.form[Update] = ''
         request.form['field.foo'] = u'r foo'
         request.form['field.bar'] = u'r bar'
         request.form['field.baz'] = u'r baz'
