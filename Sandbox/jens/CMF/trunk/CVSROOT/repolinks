@@ -136,6 +136,9 @@
 /Zope3/lib/python/Zope/ZLogger                 /Packages/ZLogger
 /Zope3/lib/python/Zope/zExceptions             /Zope/lib/python/zExceptions
 
+# We want iterator in Zope3, but not the rest of the cruft.
+/Zope3/lib/python/ZopeLegacy/ZTUtils/Iterator.py  /Packages/ZTUtils/Iterator.py
+
 /Zope3/lib/python/ZopeLegacy/AccessControl     /Packages/AccessControl
 /Zope3/lib/python/ZopeLegacy/App               /Packages/App
 /Zope3/lib/python/ZopeLegacy/BTree             /Zope/lib/Components/BTree
