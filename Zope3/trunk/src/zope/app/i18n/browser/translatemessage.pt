@@ -9,8 +9,6 @@
 <div metal:fill-slot="body">
 
   <form action="./" method="post">
-    <input type="hidden" name="msg_domain" value=""
-           tal:attributes="value request/domain" />
     <input type="hidden" name="msg_id" value=""
            tal:attributes="value request/msgid" />
     <table>
@@ -23,7 +21,7 @@
         <td>
           <textarea cols="80" rows="10" name=""
                     tal:attributes="name string:msg_lang_${language}" 
-                    tal:content="python: view.getTranslation(request['domain'], 
+                    tal:content="python: view.getTranslation( 
                                  request['msgid'], language)"
            >Translation of Message</textarea>
         </td>

@@ -1,7 +1,7 @@
 <html metal:use-macro="views/standard_macros/page">
 <head>
   <title metal:fill-slot="title" i18n:translate="">
-    Translation Service - Translate
+    Translation Domain - Translate
   </title>
 </head>
 <body>
@@ -10,13 +10,13 @@
   <h3 i18n:translate="">Import and Export Messages</h3>
 
   <p i18n:translate="">
-    Here you can export and import messages from your Translation Service.
+    Here you can export and import messages from your Translation Domain.
   </p>
 
   <form action="./" method="post" enctype="multipart/form-data">
-    <table cols="4" width="100%" border="0">
+    <table cols="2" width="100%" border="0">
       <tr>
-        <td width="25%">
+        <td width="50%">
           <div class="form-label" i18n:translate="">Select Languages:</div>
           <div>
             <select name="languages:list" size="3" style="width: 80%"
@@ -28,19 +28,7 @@
             </select>
           </div>
         </td>
-        <td width="25%">
-          <div class="form-label" i18n:translate="">Select Domains:</div>
-          <div>
-            <select name="domains:list" size="3" style="width: 80%"
-                    multiple="multiple">
-              <option value="" 
-                      tal:attributes="value domain"
-                      tal:content="domain"
-                      tal:repeat="domain view/getAllDomains"></option>
-            </select>
-          </div>
-        </td>
-        <td width="25%" valign="top">
+        <td width="50%" valign="top">
           <div class="form-label" i18n:translate="">Import File Name:</div>
           <div>
             <input type="file" name="file" size="20" value="" />

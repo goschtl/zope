@@ -13,27 +13,24 @@
 ##############################################################################
 """Translation GUI
 
-$Id: translate.py,v 1.4 2003/07/18 16:40:12 srichter Exp $
+$Id: translate.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
 """
-from zope.app.browser.services.translation import BaseView
+from zope.app.i18n.browser import BaseView
 
 class Translate(BaseView):
 
     def getMessages(self):
-        """Get messages based on the domain selection"""
+        """Get messages"""
         filter = self.request.get('filter', '%')
-        domains = self.getEditDomains()
         messages = []
-        for domain in domains:
-            for msg_id in self.context.getMessageIdsOfDomain(domain, filter):
-                messages.append((msg_id, domain, len(messages)))
+        for msg_id in self.context.getMessageIds(filter):
+            messages.append((msg_id, len(messages)))
 
         return messages
 
 
-    def getTranslation(self, domain, msgid, target_lang):
-        return self.context.translate(
-            msgid, domain, target_language=target_lang)
+    def getTranslation(self, msgid, target_lang):
+        return self.context.translate(msgid, target_language=target_lang)
 
 
     def getEditLanguages(self):
@@ -42,20 +39,13 @@ class Translate(BaseView):
         return filter(None, languages.split(','))
 
 
-    def getEditDomains(self):
-        '''get the languages that are selected for editing'''
-        domains = self.request.cookies.get('edit_domains', '')
-        return filter(None, domains.split(','))
-
-
     def editMessage(self):
-        domain = self.request['msg_domain']
         msg_id = self.request['msg_id']
         for language in self.getEditLanguages():
             msg = self.request['msg_lang_%s' %language]
-            if msg != self.context.translate(msg_id, domain,
+            if msg != self.context.translate(msg_id,
                                              target_language=language):
-                self.context.updateMessage(domain, msg_id, msg, language)
+                self.context.updateMessage(msg_id, msg, language)
         return self.request.response.redirect(self.request.URL[-1])
 
 
@@ -64,11 +54,10 @@ class Translate(BaseView):
         for count in range(5):
             msg_id = self.request.get('new-msg_id-%i' %count, '')
             if msg_id:
-                domain = self.request.get('new-domain-%i' %count, 'default')
                 for language in self.getEditLanguages():
                     msg = self.request.get('new-%s-%i' %(language, count),
                                            msg_id)
-                    self.context.addMessage(domain, msg_id, msg, language)
+                    self.context.addMessage(msg_id, msg, language)
 
         # Handle edited Messages
         keys = filter(lambda k: k.startswith('edit-msg_id-'),
@@ -76,24 +65,22 @@ class Translate(BaseView):
         keys = map(lambda k: k[12:], keys)
         for key in keys:
             msg_id = self.request['edit-msg_id-'+key]
-            domain = self.request['edit-domain-'+key]
             for language in self.getEditLanguages():
                 msg = self.request['edit-%s-%s' %(language, key)]
-                if msg != self.context.translate(msg_id, domain,
+                if msg != self.context.translate(msg_id,
                                                  target_language=language):
-                    self.context.updateMessage(domain, msg_id, msg, language)
+                    self.context.updateMessage(msg_id, msg, language)
 
         return self.request.response.redirect(self.request.URL[-1])
 
 
     def deleteMessages(self, message_ids):
         for id in message_ids:
-            domain = self.request.form['edit-domain-%s' %id]
             msgid = self.request.form['edit-msg_id-%s' %id]
-            for language in self.context.getAvailableLanguages(domain):
+            for language in self.context.getAvailableLanguages():
                 # Some we edit a language, but no translation exists...
                 try:
-                    self.context.deleteMessage(domain, msgid, language)
+                    self.context.deleteMessage(msgid, language)
                 except KeyError:
                     pass
         return self.request.response.redirect(self.request.URL[-1])
@@ -104,19 +91,9 @@ class Translate(BaseView):
         return self.request.response.redirect(self.request.URL[-1])
 
 
-    def addDomain(self, domain):
-        self.context.addDomain(domain)
-        return self.request.response.redirect(self.request.URL[-1])
-
-
     def changeEditLanguages(self, languages=[]):
         self.request.response.setCookie('edit_languages',
                                         ','.join(languages))
-        return self.request.response.redirect(self.request.URL[-1])
-
-
-    def changeEditDomains(self, domains=[]):
-        self.request.response.setCookie('edit_domains', ','.join(domains))
         return self.request.response.redirect(self.request.URL[-1])
 
 
@@ -129,10 +106,4 @@ class Translate(BaseView):
     def deleteLanguages(self, languages):
         for language in languages:
             self.context.deleteLanguage(language)
-        return self.request.response.redirect(self.request.URL[-1])
-
-
-    def deleteDomains(self, domains):
-        for domain in domains:
-            self.context.deleteDomain(domain)
         return self.request.response.redirect(self.request.URL[-1])

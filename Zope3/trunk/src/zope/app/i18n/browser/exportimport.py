@@ -13,21 +13,20 @@
 ##############################################################################
 """Message Export/Import View
 
-$Id: exportimport.py,v 1.6 2004/03/06 16:50:15 jim Exp $
+$Id: exportimport.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
 """
-from zope.app.browser.services.translation import BaseView
+from zope.app.i18n.browser import BaseView
 from zope.i18n.interfaces import IMessageExportFilter, IMessageImportFilter
-
 
 class ExportImport(BaseView):
 
-    def exportMessages(self, domains, languages):
+    def exportMessages(self, languages):
         self.request.response.setHeader('content-type',
                                         'application/x-gettext')
         filter = IMessageExportFilter(self.context)
-        return filter.exportMessages(domains, languages)
+        return filter.exportMessages(languages)
 
-    def importMessages(self, domains, languages, file):
+    def importMessages(self, languages, file):
         filter = IMessageImportFilter(self.context)
-        filter.importMessages(domains, languages, file)
+        filter.importMessages(languages, file)
         return self.request.response.redirect(self.request.URL[-1])

@@ -12,9 +12,8 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.8 2003/11/27 13:59:15 philikon Exp $
+$Id: test_translate.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
 """
-
 import unittest
 from StringIO import StringIO
 
@@ -22,12 +21,9 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.tests import ztapi
 from zope.component.factory import provideFactory
 
-from zope.app.browser.services.translation.translate \
-     import Translate as Translate
-from zope.app.services.translation.translationservice import \
-     TranslationService
-from zope.app.services.translation.messagecatalog import \
-     MessageCatalog
+from zope.app.i18n.browser.translate import Translate
+from zope.app.i18n.translationdomain import TranslationDomain
+from zope.app.i18n.messagecatalog import MessageCatalog
 from zope.i18n.interfaces import IUserPreferredCharsets
 
 from zope.publisher.http import IHTTPRequest
@@ -52,7 +48,8 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
                              HTTPCharsets)
         provideFactory('Message Catalog', MessageCatalog)
 
-        service = TranslationService('default')
+        domain = TranslationDomain()
+        domain.domain = 'default'
 
         en_catalog = MessageCatalog('en', 'default')
         de_catalog = MessageCatalog('de', 'default')
@@ -63,16 +60,15 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
         en_catalog.setMessage('greeting', 'Hello $name, how are you?')
         de_catalog.setMessage('greeting', 'Hallo $name, wie geht es Dir?')
 
-        service['en-default-1'] = en_catalog
-        service['de-default-1'] = de_catalog
+        domain['en-1'] = en_catalog
+        domain['de-1'] = de_catalog
 
-        self._view = Translate(service, self._getRequest())
+        self._view = Translate(domain, self._getRequest())
 
 
     def _getRequest(self, **kw):
         request = BrowserRequest(StringIO(''), StringIO(), kw)
-        request._cookies = {'edit_domains': 'default',
-                            'edit_languages': 'en,de'}
+        request._cookies = {'edit_languages': 'en,de'}
         request._traversed_names = ['foo', 'bar']
         return request
 
@@ -84,8 +80,7 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
 
 
     def testGetTranslation(self):
-        self.assertEqual(self._view.getTranslation('default', 'short_greeting',
-                                                   'en'),
+        self.assertEqual(self._view.getTranslation('short_greeting', 'en'),
                          'Hello!')
 
 
@@ -95,29 +90,11 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
         self.assertEqual(languages, ['de', 'en'])
 
 
-    def testGetAllDomains(self):
-        domains = self._view.getAllDomains()
-        domains.sort()
-        self.assertEqual(domains, ['default'])
-
-
     def testGetEditLanguages(self):
         languages = self._view.getEditLanguages()
         languages.sort()
         self.assertEqual(languages, ['de', 'en'])
 
-
-    def testGetEditDomains(self):
-        domains = self._view.getEditDomains()
-        domains.sort()
-        self.assertEqual(domains, ['default'])
-
-
-    # def testEditMessages(self):
-    #     pass
-    #
-    # def testDeleteMessages(self):
-    #     pass
 
     def testAddDeleteLanguage(self):
         self._view.addLanguage('es')
@@ -125,12 +102,6 @@ class TranslateTest(PlacelessSetup, unittest.TestCase):
         self._view.deleteLanguages(['es'])
         assert 'es' not in self._view.getAllLanguages()
 
-
-    def testAddDeleteDomain(self):
-        self._view.addDomain('Zope')
-        assert 'Zope' in self._view.getAllDomains()
-        self._view.deleteDomains(['Zope'])
-        assert 'Zope' not in self._view.getAllDomains()
 
 
 def test_suite():

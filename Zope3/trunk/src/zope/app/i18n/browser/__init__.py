@@ -13,20 +13,14 @@
 ##############################################################################
 """Translation Service Views
 
-$Id: __init__.py,v 1.4 2003/08/07 17:41:34 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
 """
-from zope.i18n.interfaces import ITranslationService
+from zope.i18n.interfaces import ITranslationDomain
 
-__metaclass__ = type
+class BaseView(object):
 
-class BaseView:
-
-    __used_for__ = ITranslationService
+    __used_for__ = ITranslationDomain
 
     def getAllLanguages(self):
-        """Get all available languages from the Translation Service."""
+        """Get all available languages from the Translation Domain."""
         return self.context.getAllLanguages()
-
-    def getAllDomains(self):
-        """Get all available domains from the Translation Service."""
-        return self.context.getAllDomains()

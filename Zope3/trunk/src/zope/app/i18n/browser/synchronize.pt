@@ -19,10 +19,10 @@
 <body>
 <div metal:fill-slot="body">
 
-  <table cols="4" width="100%" border="0" cellspacing="0">
+  <table cols="3" width="100%" border="0" cellspacing="0">
     <form action="./" method="post">
       <tr>
-        <td width="30%">
+        <td width="40%">
           <div class="form-label" i18n:translate="">Server URL</div>
           <div>
             <input type="text" size="40" name="sync_url" value=""
@@ -39,27 +39,7 @@
                    tal:attributes="value view/sync_password" />
           </div>
         </td>
-        <td width="25%">
-          <div i18n:translate="">Select Domains:</div>
-          <div>
-            <select name="sync_domains:list" size="6" style="width: 80%" 
-                    multiple="multiple">
-              <tal:block repeat="domain view/getAllDomains">
-              <option value="" 
-                      tal:attributes="value domain"
-                      tal:content="domain"
-                      tal:condition="python: domain not in
-                                     view.sync_domains" ></option>
-              <option value="" selected="1"
-                      tal:attributes="value domain"
-                      tal:content="domain"
-                      tal:condition="python: domain in
-                                     view.sync_domains" ></option>
-              </tal:block>
-            </select>
-          </div>
-        </td>
-        <td width="25%">
+        <td width="30%">
           <div i18n:translate="">Select Languages:</div>
           <div>
             <select name="sync_languages:list" size="6" style="width: 80%" 
@@ -79,7 +59,7 @@
             </select>
           </div>
         </td>
-        <td width="20%">
+        <td width="30%">
           <div align="center">
             <div>
               <input type="submit" name="saveSettings.html:method" 
@@ -105,9 +85,8 @@
       <tr>
         <th width="16">&nbsp;</th>
         <th width="55%" i18n:translate="">Message Id</th>
-        <th width="15%" i18n:translate="">Domain</th>
-        <th width="10%" i18n:translate="">Language</th>
-        <th width="15%" i18n:translate="">Status</th>
+        <th width="15%" i18n:translate="">Language</th>
+        <th width="20%" i18n:translate="">Status</th>
       </tr>
       <tal:block repeat="message python: view.queryMessages().items()">
         <tr tal:define="number repeat/message/number;
@@ -118,17 +97,13 @@
                    tal:attributes="name python: 'update-msgid-%i' %number;
                                    value python: message[0][0]" />
             <input type="hidden"
-                   tal:attributes="name python: 'update-domain-%i' %number;
-                                   value python: message[0][1]" />
-            <input type="hidden"
                    tal:attributes="name python: 'update-language-%i' %number;
-                                   value python: message[0][2]" />
+                                   value python: message[0][1]" />
             <input type="checkbox" name="message_ids:list"
                        tal:attributes="value python: number" />
           </td>
           <td tal:content="python: message[0][0]">Hello World!</td>
-          <td tal:content="python: message[0][1]">default</td>
-          <td tal:content="python: message[0][2]">en</td>
+          <td tal:content="python: message[0][1]">en</td>
           <td>
             <b tal:content="python: view.getStatus(*message[1])"
                tal:attributes="class python:'state%i' %

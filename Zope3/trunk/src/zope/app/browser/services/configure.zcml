@@ -241,9 +241,6 @@
       template="bundle.pt" />
 
 
-<!-- Translation Service Views -->
-  <zope:include package=".translation" />
-
   <zope:include file="error.zcml" />
 
 </zope:configure>

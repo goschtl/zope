@@ -13,16 +13,17 @@
 ##############################################################################
 """Synchronize with Foreign Translation Services
 
-$Id: synchronize.py,v 1.5 2003/08/07 17:41:34 srichter Exp $
+$Id: synchronize.py,v 1.1 2004/03/08 23:34:18 srichter Exp $
 """
 import httplib
 import urllib
 import xmlrpclib
 from base64 import encodestring
 
-from zope.app.browser.services.translation import BaseView
+from zope.app.i18n.browser import BaseView
 from zope.app.i18n import ZopeMessageIDFactory as _
 
+DEFAULT = 'http://localhost:8080/++etc++site/default/zope'
 
 class Synchronize(BaseView):
 
@@ -32,13 +33,11 @@ class Synchronize(BaseView):
     def __init__(self, context, request):
         super(Synchronize, self).__init__(context, request)
 
-        self.sync_url = self.request.cookies.get('sync_url',
-                                'http://localhost:8081/++etc++site/ts/')
+        self.sync_url = self.request.cookies.get(
+            'sync_url', DEFAULT)
         self.sync_url = urllib.unquote(self.sync_url)
         self.sync_username = self.request.cookies.get('sync_username', 'admin')
         self.sync_password = self.request.cookies.get('sync_password', 'admin')
-        self.sync_domains = filter(None, self.request.cookies.get(
-            'sync_domains', '').split(','))
         self.sync_languages = filter(None, self.request.cookies.get(
             'sync_languages', '').split(','))
 
@@ -59,7 +58,7 @@ class Synchronize(BaseView):
         # check whether the connection was made and the Master Babel Tower
         # exists
         try:
-            self._connection.getAllDomains()
+            self._connection.getAllLanguages()
             return 1
         except:
             self._connection = None
@@ -78,7 +77,7 @@ class Synchronize(BaseView):
         if not hasattr(self, '_connection'):
             self._connection = None
 
-        if not self._connection is None and self._connection.getAllDomains():
+        if not self._connection is None and self._connection.getAllLanguages():
             return 1
         else:
             return 0
@@ -94,17 +93,6 @@ class Synchronize(BaseView):
                 return self._connect()
             except:
                 return 0
-
-
-    def getAllDomains(self):
-        connected = self._isConnected()
-        if not connected: connected = self._connect()
-
-        if connected:
-
-            return self._connection.getAllDomains()
-        else:
-            return []
 
 
     def getAllLanguages(self):
@@ -123,13 +111,11 @@ class Synchronize(BaseView):
         if not connected: connected = self._connect()
 
         if connected:
-            fmsgs = self._connection.getMessagesFor(self.sync_domains,
-                                                    self.sync_languages)
+            fmsgs = self._connection.getMessagesFor(self.sync_languages)
         else:
             fmdgs = []
 
-        return self.context.getMessagesMapping(self.sync_domains,
-                                               self.sync_languages,
+        return self.context.getMessagesMapping(self.sync_languages,
                                                fmsgs)
 
 
@@ -152,10 +138,7 @@ class Synchronize(BaseView):
 
 
     def saveSettings(self):
-        self.sync_domains = self.request.form.get('sync_domains', [])
         self.sync_languages = self.request.form.get('sync_languages', [])
-        self.request.response.setCookie('sync_domains',
-                                             ','.join(self.sync_domains))
         self.request.response.setCookie('sync_languages',
                                              ','.join(self.sync_languages))
         self.request.response.setCookie('sync_url',
@@ -180,9 +163,8 @@ class Synchronize(BaseView):
         idents = []
         for id in self.request.form['message_ids']:
             msgid = self.request.form['update-msgid-'+id]
-            domain = self.request.form['update-domain-'+id]
             language = self.request.form['update-language-'+id]
-            idents.append((msgid, domain, language))
+            idents.append((msgid, language))
 
         mapping = self.queryMessages()
         new_mapping = {}
