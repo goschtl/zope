@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 """Configuration-specific schema fields
 
-$Id: fields.py,v 1.2 2003/07/29 16:29:01 jim Exp $
+$Id: fields.py,v 1.3 2003/07/29 17:13:17 jim Exp $
 """
 
 import os
@@ -145,7 +145,7 @@ class Tokens(schema.Sequence):
         return values
 
 class Path(schema.Text):
-    """A file path name, which may be input as a relative path
+    r"""A file path name, which may be input as a relative path
 
     Input paths are converted to absolute paths and normalized.
 
@@ -170,6 +170,12 @@ class Path(schema.Text):
     >>> n.split(os.sep)
     [u'', u'a', u'b']
 
+    This should also work with extra spaces around the path:
+    >>> p = "   \n   %s   \n\n   " % p
+    >>> n = field.fromUnicode(p)
+    >>> n.split(os.sep)
+    [u'', u'a', u'b']
+
     Now try a relative path:
 
     >>> p = unicode(os.path.join('a', 'b'))
@@ -183,6 +189,7 @@ class Path(schema.Text):
     implements(IFromUnicode)
 
     def fromUnicode(self, u):
+        u = u.strip()
         if os.path.isabs(u):
             return os.path.normpath(u)
         
