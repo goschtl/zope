@@ -59,10 +59,12 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertEqual(p.getId(), '1')
         self.assertEqual(p.getTitle(), 'Tim Peters')
         self.assertEqual(p.getDescription(), 'Sir Tim Peters')
+        self.assertEqual(p.getRoles(), ())
         p = self.reg.getPrincipal('2')
         self.assertEqual(p.getId(), '2')
         self.assertEqual(p.getTitle(), 'Jim Fulton')
         self.assertEqual(p.getDescription(), 'Sir Jim Fulton')
+        self.assertEqual(p.getRoles(), ())
 
         self.assertEqual(len(self.reg.getPrincipals('')), 2)
 
@@ -137,6 +139,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         p = self.reg.getPrincipal("anybody")
         self.assertEquals(p.getId(), "anybody")
         self.assertEquals(p.getTitle(), "Default Principal")
+        self.assertEquals(p.getRoles(), ())
         self.assertRaises(DuplicateId, self.reg.definePrincipal,
                           "anybody", "title")
 
