@@ -17,6 +17,7 @@ $Id$
 
 from Globals import InitializeClass, DTMLFile
 from AccessControl import ClassSecurityInfo
+from OFS.PropertyManager import PropertyManager
 
 from Products.CMFCore.utils import _checkPermission
 from Products.CMFCore.utils import getToolByName
@@ -29,7 +30,7 @@ from Products.CMFCore.CMFCorePermissions import ManagePortal
 
 from utils import _dtmldir
 
-class RegistrationTool(BaseTool):
+class RegistrationTool(BaseTool, PropertyManager):
     """ Manage through-the-web signup policies.
     """
 
@@ -51,18 +52,47 @@ class RegistrationTool(BaseTool):
 
     security = ClassSecurityInfo()
 
+    min_password_length = 5
+    allow_dictionary_passwords = 0
+    custom_policy_hook = 'python:1'
+
+    _properties = (
+      { 'id'    : 'min_password_length'
+      , 'type'  : 'int'
+      , 'mode'  : 'w'
+      , 'label' : 'Minimum password length'
+      }
+    , { 'id'    : 'allow_dictionary_passwords'
+      , 'type'  : 'boolean'
+      , 'mode'  : 'w'
+      , 'label' : 'Allow dictionary passwords?'
+      }
+    , { 'id'    : 'custom_policy_hook'
+      , 'type'  : 'string'
+      , 'mode'  : 'w'
+      , 'label' : 'Custom policy expression'
+      }
+    )
+
     #
     #   ZMI methods
     #
+    security.declareProtected( ManagePortal, 'manage_propertiesForm' )
     security.declareProtected( ManagePortal, 'manage_overview' )
 
-    manage_options = ( ActionProviderBase.manage_options
+    manage_options = ( ( { 'label' : 'Policies'
+                         , 'action' : 'manage_propertiesForm'
+                         }
+                       ,
+                       )
+                     + ActionProviderBase.manage_options
                      + ( { 'label' : 'Overview'
                          , 'action' : 'manage_overview'
                          }
                        , 
                        )
                      )
+
     manage_overview = DTMLFile( 'explainRegistrationTool', _dtmldir )
 
     #
@@ -76,8 +106,14 @@ class RegistrationTool(BaseTool):
         o If the password is valid, return None.
         o If not, return a string explaining why.
         """
-        if len(password) < 5 and not _checkPermission('Manage portal', self):
-            return 'Your password must contain at least 5 characters.'
+        if ( len(password) < self.min_password_length
+              and not _checkPermission('Manage portal', self) ):
+            return ( 'Your password must contain at least %d characters.'
+                    % self.min_password_length )
+
+        #   TODO:  enforce 'allow_dictionary_passwords' policy
+
+        #   TODO:  invoke 'custom_policy_hook' expression
 
         if confirm is not None and confirm != password:
             return ( 'Your password and confirmation did not match. ' 
@@ -100,8 +136,8 @@ class RegistrationTool(BaseTool):
                 return 'You must enter a valid name.'
 
             if not self.isMemberIdAllowed(username):
-                return ('The login name you selected is already '
-                        'in use or is not valid. Please choose another.')
+                raise ('The login name you selected is already '
+                       'in use or is not valid. Please choose another.')
 
             if not props.get('email'):
                 return 'You must enter a valid email address.'
