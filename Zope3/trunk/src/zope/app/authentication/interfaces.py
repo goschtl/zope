@@ -102,25 +102,6 @@ class IAuthenticatorPlugin(IPlugin):
         If the plugin cannot find information for the id, returns None.
         """
 
-    def createAuthenticatedPrincipal(info, request):
-        """Creates a principal authenticated against a request.
-
-        `info` provides IPrincipalInfo and is used create a principal.
-
-        If a principal is created, an AuthenticatedPrincipalCreated event is
-        published and the principal is returned. If no principal is created,
-        returns None.
-        """
-
-    def createFoundPrincipal(info):
-        """Creates a principal with info from a search operation.
-
-        `info` provides IPrincipalInfo and is to create the principal.
-
-        If a principal is created, a FoundPrincipalCreated is published and
-        the principal is returned.  If no principal is created, returns None.
-        """
-
 class IPrincipalInfo(zope.interface.Interface):
     """Minimal information about a principal."""
 

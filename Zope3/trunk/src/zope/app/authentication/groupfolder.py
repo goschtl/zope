@@ -171,14 +171,6 @@ class GroupFolder(BTreeContainer):
                 return principalfolder.PrincipalInfo(id, info.title,
                                                      info.description)
 
-    def createAuthenticatedPrincipal(self, info, request):
-        return component.getMultiAdapter((info, request),
-            interfaces.IAuthenticatedPrincipalFactory)()
-
-    def createFoundPrincipal(self, info):
-        return interfaces.IFoundPrincipalFactory(info)()
-
-
 class GroupCycle(Exception):
     """There is a cyclic relationship among groups
     """

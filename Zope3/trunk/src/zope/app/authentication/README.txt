@@ -3,7 +3,7 @@ Pluggable-Authentication Utility
 ================================
 
 The Pluggable-Authentication Utility (PAU) provides a framework for
-authenticating principals and associating information with them. It uses 
+authenticating principals and associating information with them. It uses
 plugins and subscribers to get its work done.
 
 Authentication
@@ -13,11 +13,11 @@ The primary job of PAU is to authenticate principals. It uses two types of
 plug-ins in its work:
 
   - Credentials Plugins
-  
+
   - Authenticator Plugins
-  
-Credentials plugins are responsible for extracting user credentials from a 
-request. A credentials plugin may in some cases issue a 'challenge' to obtain 
+
+Credentials plugins are responsible for extracting user credentials from a
+request. A credentials plugin may in some cases issue a 'challenge' to obtain
 credentials. For example, a 'session' credentials plugin reads credentials
 from a session (the "extraction"). If it cannot find credentials, it will
 redirect the user to a login form in order to provide them (the "challenge").
@@ -26,12 +26,12 @@ Authenticator plugins are responsible for authenticating the credentials
 extracted by a credentials plugin. They are also typically able to create
 principal objects for credentials they successfully authenticate.
 
-Given a request object, the PAU returns a principal object, if it can. The PAU 
+Given a request object, the PAU returns a principal object, if it can. The PAU
 does this by first iterateing through its credentials plugins to obtain a
 set of credentials. If it gets credentials, it iterates through its
 authenticator plugins to authenticate them.
 
-If an authenticator succeeds in authenticating a set of credentials, the PAU 
+If an authenticator succeeds in authenticating a set of credentials, the PAU
 uses the authenticator to create a principal corresponding to the credentials.
 The authenticator notifies subscribers if an authenticated princiapl is created.
 Subscribers are responsible for adding data, especially groups, to the
@@ -77,13 +77,13 @@ Next we'll create a simple authenticator plugin:
   ...         if credentials == 'secretcode':
   ...             return principalfolder.PrincipalInfo('bob', 'Bob', '')
   ...
-  ...     def createAuthenticatedPrincipal(self, info, request):
+  ...     def createAuthenticatedPrincipal_XXX(self, info, request):
   ...         principal = principalfolder.Principal(info.id)
   ...         notify(interfaces.AuthenticatedPrincipalCreated(
   ...             principal, info, request))
   ...         return principal
   ...
-  ...     def createFoundPrincipal(self, info):
+  ...     def createFoundPrincipal_XXX(self, info):
   ...         principal = principalfolder.Principal(info.id)
   ...         notify(interfaces.FoundPrincipalCreated(principal, info))
   ...         return principal
@@ -95,6 +95,21 @@ As with the credentials plugin, the authenticator plugin must be registered
 as a named utility:
 
   >>> provideUtility(MyAuthenticatorPlugin(), name='My Authenticator Plugin')
+
+Principal Factories
+-------------------
+While authenticator plugins provide principal info, they are not responsible
+for creating principals. This function is performed by factory adapters. For
+these tests we will register factories for creating both 'authenticated'
+principals:
+
+  >>> provideAdapter(principalfolder.AuthenticatedPrincipalFactory)
+
+and 'found' principals:
+
+  >>> provideAdapter(principalfolder.FoundPrincipalFactory)
+
+For more information on these factories, see their docstrings.
 
 Configuring a PAU
 -----------------
@@ -247,13 +262,13 @@ from the form and the second authenticator was able to authenticate the
 credentials. Specifically, the PAU went through these steps:
 
  - Get credentials using 'Form Credentials Plugin'
- 
- - Got 'hiddenkey' credentials using 'Form Credentials Plugin', try to 
+
+ - Got 'hiddenkey' credentials using 'Form Credentials Plugin', try to
    authenticate using 'My Authenticator Plugin'
-   
+
  - Failed to authenticate 'hiddenkey' with 'My Authenticator Plugin', try
    'My Authenticator Plugin 2'
- 
+
  - Succeeded in authenticating with 'My Authenticator Plugin 2'
 
 Let's try a different scenario:
@@ -264,13 +279,13 @@ Let's try a different scenario:
 In this case, the PAU went through these steps:
 
   - Get credentials using 'Form Credentials Plugin'
-  
+
   - Failed to get credentials using 'Form Credentials Plugin', try
     'My Credentials Plugin'
-    
+
   - Got 'scecretcode' credentials using 'My Credentials Plugin', try to
     authenticate using 'My Authenticator Plugin'
-  
+
   - Succeeded in authenticating with 'My Authenticator Plugin'
 
 Let's try a slightly more complex scenario:
@@ -282,7 +297,7 @@ Let's try a slightly more complex scenario:
 This highlights PAU's ability to use multiple plugins for authentication:
 
   - Get credentials using 'Form Credentials Plugin'
-  
+
   - Got 'bogusvalue' credentials using 'Form Credentials Plugin', try to
     authenticate using 'My Authenticator Plugin'
 
@@ -294,10 +309,10 @@ This highlights PAU's ability to use multiple plugins for authentication:
     plugin for some new credentials
 
   - Get credentials using 'My Credentials Plugin'
-  
+
   - Got 'hiddenkey' credentials using 'My Credentials Plugin', try to
     authenticate using 'My Authenticator Plugin'
-    
+
   - Failed to authenticate 'hiddenkey' using 'My Authenticator Plugin', try
     'My Authenticator Plugin 2'
 
@@ -309,16 +324,16 @@ Principal Searching
 ===================
 
 As a component that provides IAuthentication2, a PAU lets you lookup a
-principal with a principal ID. The PAU looks up a principal by delegating to 
+principal with a principal ID. The PAU looks up a principal by delegating to
 its authenticators. In out example, none of the authenticators implement this
 search capability, so when we look for a principal:
 
   >>> print pau.getPrincipal('bob')
   None
-  
+
   >>> print pau.getPrincipal('white')
   None
-  
+
   >>> print pau.getPrincipal('black')
   None
 
@@ -342,13 +357,13 @@ authenticator:
   ...         if id is not None:
   ...             return self.infos[id]
   ...
-  ...     def createAuthenticatedPrincipal(self, info, request):
+  ...     def createAuthenticatedPrincipal_XXX(self, info, request):
   ...         principal = principalfolder.Principal(info.id)
   ...         notify(interfaces.AuthenticatedPrincipalCreated(
   ...             principal, info, request))
   ...         return principal
   ...
-  ...     def createFoundPrincipal(self, info):
+  ...     def createFoundPrincipal_XXX(self, info):
   ...         principal = principalfolder.Principal(info.id)
   ...         notify(interfaces.FoundPrincipalCreated(principal, info))
   ...         return principal
@@ -364,7 +379,7 @@ where an authenticator may opt to not perform one of these two functions, they
 are less typical.
 
 As with any plugin, we need to register it as a utility:
-  
+
   >>> searchable = SearchableAuthenticatorPlugin()
   >>> provideUtility(searchable, name='Searchable Authentication Plugin')
 
@@ -403,11 +418,11 @@ principal on behalf of PAU's 'getPrincipal':
   True
   >>> event.info
   PrincipalInfo('white')
-  
+
 As we have seen with authenticated principals, it is common to subscribe to
 principal created events to add information to the newly created principal.
 In this case, we need to subscribe to IFoundPrincipalCreated events:
-  
+
   >>> subscribe([interfaces.IFoundPrincipalCreated], None, add_info)
 
 Now when a principal is created as a result of a search, it's title and
@@ -471,10 +486,10 @@ credentials when its 'unauthorized' method is called. The need for this
 functionality is driven by the following use case:
 
   - A user attempts to perform an operation he is not authorized to perform.
-  
+
   - A handler responds to the unauthorized error by calling IAuthentication2
     'unauthorized'.
-    
+
   - The authentication component (in our case, a PAU) issues a challenge to
     the user to collect new credentials (typically in the form of logging in
     as a new user).
@@ -482,7 +497,7 @@ functionality is driven by the following use case:
 The PAU handles the credentials challenge by delegating to its credentials
 plugins.
 
-Currently, the PAU is configured with the credentials plugins that don't 
+Currently, the PAU is configured with the credentials plugins that don't
 perform any action when asked to challenge (see above the 'challenge' methods).
 
 To illustrate challenges, we'll subclass an existing credentials plugin and

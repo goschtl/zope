@@ -21,7 +21,7 @@ import unittest
 
 from zope.testing import doctest
 from zope.interface import implements
-from zope.component import provideUtility
+from zope.component import provideUtility, provideAdapter
 from zope.publisher.interfaces import IRequest
 from zope.publisher.tests.httprequest import TestRequest
 
@@ -73,6 +73,7 @@ def test_suite():
                              setUp=siteSetUp,
                              tearDown=siteTearDown,
                              globs={'provideUtility': provideUtility,
+                                    'provideAdapter': provideAdapter,
                                     'getEvents': getEvents,
                                     'clearEvents': clearEvents,
                                     'subscribe': ztapi.subscribe,

@@ -127,9 +127,9 @@ PrincipalInformation = InternalPrincipal
 
 class PrincipalInfo:
     """A basic implementation of interfaces.IPrincipalInfo.
-    
+
     A principal info is created with id, title, and description:
-      
+
       >>> info = PrincipalInfo('foo', 'Foo', 'An over-used term.')
       >>> info
       PrincipalInfo('foo')
@@ -142,7 +142,7 @@ class PrincipalInfo:
 
     """
     interface.implements(interfaces.IPrincipalInfo)
-    
+
     def __init__(self, id, title, description):
         self.id = id
         self.title = title
@@ -151,10 +151,10 @@ class PrincipalInfo:
     def __repr__(self):
         return 'PrincipalInfo(%r)' % self.id
 
-    
+
 class PrincipalFolder(BTreeContainer):
     """A Persistent Principal Folder and Authentication plugin.
-    
+
     See principalfolder.txt for details.
     """
 
@@ -211,7 +211,7 @@ class PrincipalFolder(BTreeContainer):
         if principal.password != credentials['password']:
             return None
         return PrincipalInfo(
-            id=self.prefix + id, 
+            id=self.prefix + id,
             title=principal.title,
             description=principal.description)
 
@@ -239,13 +239,6 @@ class PrincipalFolder(BTreeContainer):
                     yield self.prefix + value.__name__
                 i += 1
 
-    def createAuthenticatedPrincipal(self, info, request):
-        return component.getMultiAdapter((info, request), 
-            interfaces.IAuthenticatedPrincipalFactory)()
-
-    def createFoundPrincipal(self, info):
-        return interfaces.IFoundPrincipalFactory(info)()
-
 
 class Principal:
     """A group-aware implementation of zope.security.interfaces.IPrincipal.
@@ -257,7 +250,7 @@ class Principal:
       Principal(1)
       >>> p.id
       1
-    
+
     title and description may also be provided:
 
       >>> p = Principal('george', 'George', 'A site member.')
@@ -269,10 +262,10 @@ class Principal:
       'George'
       >>> p.description
       'A site member.'
-     
+
     """
     interface.implements(IGroupAwarePrincipal)
-    
+
     def __init__(self, id, title=u'', description=u''):
         self.id = id
         self.title = title
@@ -285,29 +278,29 @@ class Principal:
 
 class AuthenticatedPrincipalFactory:
     """Creates 'authenticated' principals.
-    
+
     An authenticated principal is created as a result of an authentication
     operation.
-    
+
     To use the factory, create it with the info (interfaces.IPrincipalInfo) of
     the principal to create and a request:
-    
+
       >>> info = PrincipalInfo('mary', 'Mary', 'The site admin.')
       >>> from zope.publisher.browser import TestRequest
       >>> request = TestRequest()
       >>> factory = AuthenticatedPrincipalFactory(info, request)
       >>> principal = factory()
-  
+
     The factory uses the info to create a principal with the same ID, title,
     and description:
- 
+
       >>> principal.id
       'mary'
       >>> principal.title
       'Mary'
       >>> principal.description
       'The site admin.'
-      
+
     It also fires an AuthenticatedPrincipalCreatedEvent:
 
       >>> from zope.app.event.tests.placelesssetup import getEvents
@@ -318,7 +311,7 @@ class AuthenticatedPrincipalFactory:
       PrincipalInfo('mary')
       >>> event.request is request
       True
-      
+
     Listeners can subscribe to this event to perform additional operations
     when the authenticated principal is created.
 
@@ -328,7 +321,7 @@ class AuthenticatedPrincipalFactory:
     component.adapts(interfaces.IPrincipalInfo, IBrowserRequest)
 
     interface.implements(interfaces.IAuthenticatedPrincipalFactory)
-    
+
     def __init__(self, info, request):
         self.info = info
         self.request = request
@@ -339,30 +332,30 @@ class AuthenticatedPrincipalFactory:
         notify(interfaces.AuthenticatedPrincipalCreated(
             principal, self.info, self.request))
         return principal
-        
+
 
 class FoundPrincipalFactory:
     """Creates 'found' principals.
-    
+
     A 'found' principal is created as a result of a principal lookup.
-    
+
     To use the factory, create it with the info (interfaces.IPrincipalInfo) of
     the principal to create:
-    
+
       >>> info = PrincipalInfo('sam', 'Sam', 'A site user.')
       >>> factory = FoundPrincipalFactory(info)
       >>> principal = factory()
-  
+
     The factory uses the info to create a principal with the same ID, title,
     and description:
- 
+
       >>> principal.id
       'sam'
       >>> principal.title
       'Sam'
       >>> principal.description
       'A site user.'
-      
+
     It also fires a FoundPrincipalCreatedEvent:
 
       >>> from zope.app.event.tests.placelesssetup import getEvents
@@ -371,17 +364,17 @@ class FoundPrincipalFactory:
       True
       >>> event.info
       PrincipalInfo('sam')
-      
+
     Listeners can subscribe to this event to perform additional operations
     when the 'found' principal is created.
-    
+
     For information on how factories are used in the authentication process,
     see README.txt.
-    """    
+    """
     component.adapts(interfaces.IPrincipalInfo)
 
     interface.implements(interfaces.IFoundPrincipalFactory)
-    
+
     def __init__(self, info):
         self.info = info
 
