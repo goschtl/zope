@@ -411,8 +411,6 @@ def do_sync(path, repo, remote, receiverid, subjs=None,
     if not recurse:
         cmd = cmd + ' --exclude "/*/*/*"'
 
-    import pdb; pdb.set_trace()
-
     reposubdir = string.join(string.split(repo, '/')[1:], '/')
 ##    # XXX BOGUS - this twisted condition is because i haven't thought through
 ##    #     the proper way to handle special locations for remote repositories
