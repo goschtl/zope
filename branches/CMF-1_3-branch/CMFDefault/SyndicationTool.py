@@ -205,6 +205,8 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
             syInfo.syUpdateFrequency = self.syUpdateFrequency
 
         if updateBase:
+            if type( updateBase ) is type( '' ):
+                updateBase = DateTime( updateBase )
             syInfo.syUpdateBase = updateBase
         else:
             syInfo.syUpdateBase = self.syUpdateBase
