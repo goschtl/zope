@@ -13,7 +13,7 @@
 ##############################################################################
 """Introspector
 
-$Id: __init__.py,v 1.1 2004/03/01 10:18:20 philikon Exp $
+$Id: __init__.py,v 1.2 2004/03/03 17:06:57 srichter Exp $
 """
 from zope.component import getService, getAdapter, getServiceDefinitions
 from zope.proxy import removeAllProxies
@@ -28,7 +28,7 @@ from zope.app.services.servicenames import Interfaces
 
 from zope.app.introspector.interfaces import IIntrospector
 
-class Introspector:
+class Introspector(object):
     """Introspects an object"""
 
     implements(IIntrospector)
@@ -203,6 +203,7 @@ def interfaceToName(context, interface):
     interface = removeAllProxies(interface)
     if interface is None:
         return 'None'
+    defaultName = interface.__module__ + '.' + interface.getName()
     service = getService(context, Interfaces)
     items = service.items(base=interface)
     ids = [id for id, iface in items
@@ -211,7 +212,16 @@ def interfaceToName(context, interface):
         # XXX Do not fail badly, instead resort to the standard
         # way of getting the interface name, cause not all interfaces
         # may be registered.
-        return interface.__module__ + '.' + interface.getName()
+        return defaultName
 
+    if len(ids) == 1:
+        return ids[0]
+
+    # XXX: Band-aid for mal-functioning interface service. Once the interface
+    # service is gone, this method needs to be refactored anyways and the
+    # following two lines should be removed!!!
+    if defaultName in ids:
+        return defaultName
+    
     assert len(ids) == 1, "Ambiguous interface names: %s" % ids
-    return ids[0]
+    
