@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.14 2003/02/20 14:45:43 stevea Exp $
+$Id: widget.py,v 1.15 2003/02/20 14:56:42 stevea Exp $
 """
 
 __metaclass__ = type
@@ -194,8 +194,9 @@ class PossiblyEmptyMeansMissing:
 
 class TextWidget(PossiblyEmptyMeansMissing, BrowserWidget):
     """Text widget."""
-    propertyNames = BrowserWidget.propertyNames + \
+    propertyNames = (BrowserWidget.propertyNames +
                      ['displayWidth', 'displayMaxWidth', 'extra', 'default']
+                     )
     default = ''
     displayWidth = 20
     displayMaxWidth = ""
@@ -406,7 +407,7 @@ class FileWidget(TextWidget):
             seek = value.seek
             read = value.read
         except AttributeError, e:
-            raise ConversionError('Value is not a file object', e)            
+            raise ConversionError('Value is not a file object', e)
         else:
             seek(0)
             data = read()
@@ -434,8 +435,8 @@ class SingleItemsWidget(ItemsWidget):
         items = self.context.allowed_values
 
         # check if we want to select first item
-        if not value and getattr(self.context, 'firstItem', None) and \
-               len(items) > 0:
+        if (not value and getattr(self.context, 'firstItem', None)
+            and len(items) > 0):
             try:
                 text, value = items[0]
             except ValueError:
@@ -475,8 +476,9 @@ class SingleItemsWidget(ItemsWidget):
 class ListWidget(SingleItemsWidget):
     """List widget."""
     __implements__ = SingleItemsWidget.__implements__
-    propertyNames = SingleItemsWidget.propertyNames +\
+    propertyNames = (SingleItemsWidget.propertyNames +
                      ['firstItem', 'items', 'size', 'extra']
+                     )
     size = 5
 
     def __call__(self):
@@ -588,8 +590,7 @@ class MultiItemsWidget(ItemsWidget):
 
 class MultiListWidget(MultiItemsWidget):
     """List widget with multiple select."""
-    propertyNames = MultiItemsWidget.propertyNames +\
-                     ['size', 'extra']
+    propertyNames = MultiItemsWidget.propertyNames + ['size', 'extra']
     size = 5
 
     def __call__(self):
@@ -613,8 +614,7 @@ class MultiListWidget(MultiItemsWidget):
 
 class MultiCheckBoxWidget(MultiItemsWidget):
     """Multiple checkbox widget."""
-    propertyNames = MultiItemsWidget.propertyNames +\
-                     ['orientation']
+    propertyNames = MultiItemsWidget.propertyNames + ['orientation']
     orientation = "vertical"
 
     def __call__(self):
