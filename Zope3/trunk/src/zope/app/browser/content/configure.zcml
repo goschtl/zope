@@ -265,22 +265,6 @@
 
   <browser:pages
       for="zope.app.interfaces.content.folder.IFolder"
-      permission="zope.ManageContent" 
-      class="zope.app.browser.container.contents.Contents"
-      >
-
-    <browser:page name="contents.html" attribute="contents" />
-    <browser:page name="removeObjects.html" attribute="removeObjects" />
-    <browser:page name="cutObjects.html" attribute="cutObjects" />
-    <browser:page name="copyObjects.html" attribute="copyObjects" />
-    <browser:page name="pasteObjects.html" attribute="pasteObjects" />
-    <browser:page name="renameObjects.html" attribute="renameObjects" />
-    <browser:page name="rename.html" attribute="rename" />
-
-  </browser:pages>
-
-  <browser:pages
-      for="zope.app.interfaces.content.folder.IFolder"
       permission="zope.View" 
       class="zope.app.browser.container.contents.Contents">
 

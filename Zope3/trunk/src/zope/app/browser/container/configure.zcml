@@ -14,6 +14,21 @@
    
        </view>
 
+  <pages
+      for="zope.app.interfaces.container.IContainer"
+      permission="zope.ManageContent" 
+      class=".contents.Contents">
+
+    <page name="contents.html" attribute="contents" />
+    <page name="removeObjects.html" attribute="removeObjects" />
+    <page name="cutObjects.html" attribute="cutObjects" />
+    <page name="copyObjects.html" attribute="copyObjects" />
+    <page name="pasteObjects.html" attribute="pasteObjects" />
+    <page name="renameObjects.html" attribute="renameObjects" />
+    <page name="rename.html" attribute="rename" />
+
+  </pages>
+
   <page
       for="zope.app.interfaces.container.IReadContainer"
       name="find.html" 
