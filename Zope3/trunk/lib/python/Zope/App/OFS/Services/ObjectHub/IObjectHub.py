@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: IObjectHub.py,v 1.4 2002/11/29 15:51:03 stevea Exp $
+$Id: IObjectHub.py,v 1.5 2002/12/04 16:08:20 bcsaller Exp $
 """
 
 from IHubEventChannel import IHubEventChannel
@@ -127,7 +127,7 @@ class IObjectHub(IHubEventChannel):
         """
 
     def register(obj_or_loc):
-        """Returns a new hub id for the given location or wrapped object
+        """Returns a new hub id, for the given location or wrapped object,
         if it is not already registered. 
 
         It also emits a HubIdObjectRegisteredEvent.  Raises an 
