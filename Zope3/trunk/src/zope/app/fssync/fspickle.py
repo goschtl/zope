@@ -159,7 +159,7 @@ class PersistentLoader(object):
 
     def __init__(self, context):
         locatable = LocationPhysicallyLocatable(context)
-        __traceback_info__ = (context, locatable),
+        __traceback_info__ = (context, locatable)
         self.root = locatable.getRoot()
         self.traverse = ITraverser(self.root).traverse
 
