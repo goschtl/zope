@@ -386,9 +386,10 @@ def do_mail(name, remote, repo, addrs, subjs,
                                      string.join(addrs, ",")))
 
     # Prepend the subject line and and append the diff:
-    mf = open(msgfilenm, 'rw')
+    mf = open(msgfilenm, 'r')
     oldcontents = mf.read()
-    mf.seek(0)
+    mf.close()
+    mf = open(msgfilenm, 'w')
     mf.write("Subject: %s\n\n%s %s"
              % (subject, oldcontents, diff_msg))
     mf.close()
