@@ -27,6 +27,7 @@ from zope.app import zapi
 from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
 from zope.app.form.interfaces import ConversionError
+from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 
@@ -523,6 +524,28 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
 class MultiSelectWidget(ItemsMultiEditWidgetBase):
     """Provide a selection list for the list to be selected."""
 
+class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
+    """A multi-selection widget with ordering support."""
+
+    template = ViewPageTemplateFile('orderedSelectionList.pt')
+
+    def choices(self):
+        """Return a set of tuples (text, value) that are available."""
+        selected_values = self.context.get(self.context.context)
+        return [{'text': self.textForValue(term), 'value': term.token}
+                for term in self.vocabulary
+                if term.value not in selected_values]
+        
+    def selected(self):
+        """Return a list of tuples (text, value) that are selected."""
+        terms = [self.vocabulary.getTerm(value)
+                 for value in self.context.get(self.context.context)]
+        return [{'text': self.textForValue(term), 'value': term.token}
+                for term in terms]
+    
+    def __call__(self):
+        return self.template()
+    
 
 class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
     """Provide a list of checkboxes that provide the choice for the list."""
@@ -558,3 +581,4 @@ class MultiCheckBoxWidget(ItemsMultiEditWidgetBase):
                              value=value,
                              checked=None)
         return self._joinButtonToMessageTemplate %(elem, text)
+

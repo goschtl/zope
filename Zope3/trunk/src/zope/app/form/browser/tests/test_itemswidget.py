@@ -33,6 +33,7 @@ from zope.app.form.browser.itemswidgets import SelectWidget, DropdownWidget
 from zope.app.form.browser.itemswidgets import RadioWidget
 from zope.app.form.browser.itemswidgets import ItemsMultiEditWidgetBase
 from zope.app.form.browser.itemswidgets import MultiSelectWidget
+from zope.app.form.browser.itemswidgets import OrderedMultiSelectWidget
 from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
 from zope.app.form.browser.tests.support import VerifyResults
 from zope.app.tests.placelesssetup import PlacelessSetup 
@@ -416,6 +417,23 @@ class MultiSelectWidgetTest(ItemsMultiEditWidgetBaseTest):
     _widget = MultiSelectWidget
 
 
+class OrderedMultiSelectWidgetTest(ItemsMultiEditWidgetBaseTest):
+
+    _widget = OrderedMultiSelectWidget
+
+    def test_choices(self):
+        widget = self._makeWidget()
+        choices = [choice['text'] for choice in widget.choices()]
+        choices.sort()
+        self.assertEqual(choices, ['One', 'Three', 'Two'])
+
+    def test_selected(self):
+        widget = self._makeWidget(nums=['one'])
+        selected = [select['text'] for select in widget.selected()]
+        selected.sort()
+        self.assertEqual(selected, ['One'])
+    
+
 class MultiCheckBoxWidgetTest(ItemsMultiEditWidgetBaseTest):
 
     _widget = MultiCheckBoxWidget
@@ -474,6 +492,7 @@ def test_suite():
     suite.addTest(unittest.makeSuite(RadioWidgetTest))
     suite.addTest(unittest.makeSuite(ItemsMultiEditWidgetBaseTest))
     suite.addTest(unittest.makeSuite(MultiSelectWidgetTest))
+    suite.addTest(unittest.makeSuite(OrderedMultiSelectWidgetTest))
     suite.addTest(unittest.makeSuite(MultiCheckBoxWidgetTest))
     return suite
 
