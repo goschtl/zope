@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Exception.py,v 1.2 2002/11/18 22:25:16 jim Exp $
+$Id: Exceptions.py,v 1.2 2002/11/30 18:32:14 jim Exp $
 """
 
 class DependencyError(Exception):
