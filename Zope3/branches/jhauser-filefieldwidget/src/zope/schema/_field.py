@@ -67,10 +67,12 @@ classImplements(Password, IPassword)
 classImplements(Bool, IBool)
 classImplements(Int, IInt)
 
+
 class SourceText(Text):
     __doc__ = ISourceText.__doc__
     implements(ISourceText)
     _type = unicode
+
 
 class Bytes(MinMaxLen, Field):
     __doc__ = IBytes.__doc__
@@ -94,7 +96,8 @@ class Bytes(MinMaxLen, Field):
         self.validate(v)
         return v
 
-class Mime(Bytes):
+
+class Mime(Field):
     __doc__ = IMime.__doc__
     implements(IMime)
 
@@ -131,6 +134,13 @@ class Mime(Bytes):
             return
         super(Bytes, self)._validate(value)
 
+    def _validate(self, value):
+        if self._type is not None and not isinstance(value, self._type):
+            raise WrongType(value, self._type)
+
+        if not self.constraint(value):
+            raise ConstraintNotSatisfied(value)
+
     def _extractFilename(self, data):
         # if it is a fileupload object
         if hasattr(data,'filename'):
@@ -142,6 +152,7 @@ class Mime(Bytes):
             return fid
         else:
             return ''
+
 
 class ASCII(Bytes):
     __doc__ = IASCII.__doc__
@@ -172,6 +183,7 @@ class ASCII(Bytes):
             return
         if not max(map(ord, value)) < 128:
             raise InvalidValue
+
 
 class BytesLine(Bytes):
     """A Text field with no newlines."""
@@ -205,6 +217,7 @@ class Float(Orderable, Field):
         self.validate(v)
         return v
 
+
 class Datetime(Orderable, Field):
     __doc__ = IDatetime.__doc__
     implements(IDatetime)
@@ -213,10 +226,12 @@ class Datetime(Orderable, Field):
     def __init__(self, *args, **kw):
         super(Datetime, self).__init__(*args, **kw)
 
+
 class Date(Orderable, Field):
     __doc__ = IDate.__doc__
     implements(IDate)
     _type = date
+
 
 class Choice(Field):
     """Choice fields can have a value found in a constant or dynamic set of
@@ -301,6 +316,7 @@ class Choice(Field):
         if value not in vocabulary:
             raise ConstraintNotSatisfied, value
 
+
 class InterfaceField(Field):
     __doc__ = IInterfaceField.__doc__
     implements(IInterfaceField)
@@ -309,6 +325,7 @@ class InterfaceField(Field):
         super(InterfaceField, self)._validate(value)
         if not IInterface.providedBy(value):
             raise WrongType("An interface is required")
+
 
 def _validate_sequence(value_type, value, errors=None):
     """Validates a sequence value.
@@ -351,6 +368,7 @@ def _validate_sequence(value_type, value, errors=None):
             errors.append(error)
     return errors
 
+
 def _validate_uniqueness(value):
     temp_values = []
     for item in value:
@@ -358,6 +376,7 @@ def _validate_uniqueness(value):
             raise NotUnique, item
 
         temp_values.append(item)
+
 
 class AbstractCollection(MinMaxLen, Iterable, Field):
     value_type = None
@@ -388,15 +407,18 @@ class AbstractCollection(MinMaxLen, Iterable, Field):
         if self.unique:
             _validate_uniqueness(value)
 
+
 class Tuple(AbstractCollection):
     """A field representing a Tuple."""
     implements(ITuple)
     _type = tuple
 
+
 class List(AbstractCollection):
     """A field representing a List."""
     implements(IList)
     _type = list
+
 
 class Set(AbstractCollection):
     """A field representing a set."""
@@ -407,6 +429,7 @@ class Set(AbstractCollection):
             raise TypeError(
                 "__init__() got an unexpected keyword argument 'unique'")
         super(Set, self).__init__(unique=True, **kw)
+
 
 def _validate_fields(schema, value, errors=None):
     if errors is None:
@@ -487,6 +510,8 @@ _isuri = re.compile(
     r"[a-zA-z0-9+.-]+:"   # scheme
     r"\S*$"               # non space (should be pickier)
     ).match
+
+
 class URI(BytesLine):
     """URI schema field
     """
@@ -534,6 +559,7 @@ _isdotted = re.compile(
     r"([.][a-zA-Z][a-zA-z0-9_]*)*"
     r"$" # use the whole line
     ).match
+
 
 class Id(BytesLine):
     """Id field

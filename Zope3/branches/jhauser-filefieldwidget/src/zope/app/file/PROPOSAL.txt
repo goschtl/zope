@@ -1,0 +1,127 @@
+IFile refactoring
+
+  Status
+
+    IsProposal
+
+  Author
+
+    Roger Ineichen
+
+  Problem/Proposal
+
+    Constraints of field data in IFile does'nt fit. The interface field Bytes
+    ignores the possible FileChunk as value we get on bigger values.
+    
+    We allready added a branch called for the refactoring. The branch is
+    called jhauser-filefieldwidget.
+
+  Goals
+
+    - Fix constraints in data schema field (Bytes), we could have FileChunk 
+      objects as values.
+
+    - Handle fileupload via session. The widget should read the file upload 
+      information from the session.
+    
+    - Make Refresh method in edit form working. Now the value of the file 
+      upload field (input type=file) get lost on refresh.
+
+  Proposed Solution
+
+    Refactoring, extend and/or add different parts
+
+    IFile interface::
+      
+      class IFile(Interface):
+      
+          contents = Mime(
+              title = _(u'The mime data'),
+              description = _(u'The mime data, which can be read as a file.'),
+              default='',
+              missing_value='',
+              required=False,
+              )
+      
+          data = ... for backward compatibility
+      
+    IMime interface::
+      
+      class IMime(Interface):
+      
+          contentType = MimeType(
+              title = _(u'Content Type'),
+              description=_(u'The content type identifies the type of data.'),
+              default='',
+              required=False,
+              missing_value=''
+              )
+      
+          encoding = MimeDataEncoding(
+              title = _(u'Encoding type'),
+              description=_(u'The encoding of the data if it is text.'),
+              default='',
+              required=False,
+              missing_value=''
+              )
+      
+          data = MimeData(
+              title=_(u'Data'),
+              description=_(u'The actual content of the object.'),
+              default='',
+              missing_value='',
+              required=False,
+              )
+      
+    IFile/contents/Mime field - MimeInputWidget:
+    
+      The input widget is like a object widget which renders it's information 
+      from the schema IMime. The widget is used for the field contents in the 
+      interface IFile. It's more a view the a widget like to object widget 
+      implementation.
+      
+      This widget directly handles:
+      
+        - extract information about the fileupload to the session
+        
+      The subwidgets of the schema IMime are not simply widgets like
+      TextLine etc, they have to support session reading:
+
+    IMime/contentType/MimeType - MimeTypeWidget:
+      
+      - set the contentType (mime-type) via session formation
+      
+
+    IMime/encoding/MimeDataEncoding - MimeDataEncodingWidget:
+      
+      - set the encoding if given and type is a text format
+      
+    IMime/data/MimeData - MimeDataWidget:
+ 
+      - render input field of type=file
+    
+      - store fileupload to the field data
+    
+      - don't override data value if upload is empty
+    
+    IMime/data/MimeData - MimeDataWidget (IInputWidget):
+    
+      The widget is used in the IMime schema on the data field
+      The interface field is called MimeData
+    
+      - stores FileChunk or str to the value
+    
+    IMime/data/MimeData - MimeDataDisplayWidget (IDisplayWidget):
+    
+      We need different widgets for displaying files. The different usecases 
+      are:
+    
+        - render 'a href' links
+        
+        - render 'img' images tags
+
+        - render text content
+
+  Risks
+
+    Backward compatiblility

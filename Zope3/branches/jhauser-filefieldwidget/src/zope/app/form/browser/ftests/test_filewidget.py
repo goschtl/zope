@@ -26,7 +26,7 @@ from zope.interface import implements
 from zope.schema.interfaces import IField
 from zope.schema import Field
 
-from zope.app.form.browser.textwidgets import FileWidget
+from zope.app.form.browser import FileWidget
 
 from support import *
 from zope.app.traversing.api import traverse

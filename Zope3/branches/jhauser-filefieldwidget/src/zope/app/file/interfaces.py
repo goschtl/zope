@@ -51,8 +51,12 @@ class IMime(Interface):
         """Return the byte-size of the data of the object."""
 
     def open(mode='r'):
-        """Return a file like object for reading or updating."""
-    
+        """Return a file like object for reading or updating.
+        
+        Default is set to readonly, use mode='w' for write mode.
+        """
+
+
 class IFile(Interface):
 
     contents = Mime(
