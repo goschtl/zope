@@ -2,6 +2,8 @@ Post CMF 1.4.7
 
   Bug Fixes
 
+    - CMFCore.FSPageTemplate: Don't hide sub-tracebacks in development mode.
+
     - CMFCore.FSPageTemplate:  Smoothed an incompatibility with Zope 2.8
       due to inappropriate borrowing of an unbound method from
       ZopePageTemplate.
