@@ -48,7 +48,15 @@ the directive.  There are four kinds of directives:
   directives. They are called with a context object which they adapt
   to some interface that extends IConfigurationContext.
 
+  To learn how to create grouping directives, look at the
+  documentation in zopeconfigure.py, which provides the implementation
+  of the zope `configure` directive.
+
   Other directives can be nested in grouping directives.
+
+  To learn how to implement nested directives, look at the
+  documentation in tests/test_nested.py (when it exists, which isn't
+  yet ;).
 
 - Complex directives are directives that have subdirectives.  
   Subdirectives have handlers that are simply methods of complex
