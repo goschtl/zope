@@ -28,3 +28,15 @@ class ILocation(Interface):
         description=u"The parent can be traversed with this name to "
                     u"get the object."
         )
+
+class ISublocations(Interface):
+    """Provide access to sublocations
+    """
+
+    def sublocations():
+        """Return sublocations
+
+        An iterablt of objects who's __parent__ is the object
+        providing the interface is returned.
+        
+        """
