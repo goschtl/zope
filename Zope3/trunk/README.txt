@@ -16,10 +16,10 @@ Building and running tests
 
   In the top-level Zope3 directory, you should find a script called
   setup.py.  Run it to build the extension modules needed by
-  Zope.  Example:
+  Zope.  Example::
 
-  # cd Zope3
-  # python2.2 setup.py -q build_ext -i
+    # cd Zope3
+    # python2.2 setup.py -q build_ext -i
 
   On a unix variant, you can just type: make
 
@@ -27,11 +27,34 @@ Building and running tests
   you checkin changes, you should verify that all the tests succeed
   before you checkin.
 
-  To run all the tests, use the script test.py.
-  # python test.py -v
+  To run all the tests, use the script test.py::
+
+    # python2.2 test.py -v
 
   Use test.py -h for usage.  The test script can run selected tests,
   stop after the first error, run the tests in a loop, etc.
+
+  Before running Zope, you need to create one or more bootstrap
+  users. Try copying and editing the file sample_principals.zcml to
+  principals.zcml.  Make sure you change the passwords.
+
+  To run Zope just run the z3.py script:
+
+    # python2.2 z3.py
+
+  This will run Zope on port 8080.  Visit the url:
+
+    http://localhost:8080/manage
+
+  This will access the Zope 3 default management interface.  Note that
+  this release of Zope 3 requires recent versions of Mozilla or IE.
+
+  If you insist on using an older browser (or a text-based browser)
+  you can use the basic Zope 3 skin by putting '++skin++basic' after
+  the server part of the URL::
+
+    http://localhost:8080/++skin++basic/manage
+
 
 Finding out how to develop new content types:
 
