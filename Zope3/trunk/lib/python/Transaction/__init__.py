@@ -11,9 +11,11 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
-def get_transaction():
-    return get_transaction_hook()
 
-from _defaultTransaction import get_transaction as get_transaction_hook
+from Manager import ThreadedTransactionManager
 
-from _defaultTransaction import Transaction
+_manager = ThreadedTransactionManager()
+get_transaction = _manager.new
+
+def set_factory(factory):
+    _manager.txn_factory = factory

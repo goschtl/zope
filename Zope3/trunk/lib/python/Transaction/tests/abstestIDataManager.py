@@ -27,25 +27,23 @@ the data actually gets written/not written to the storge.
 
 Obviously this test suite should be expanded.
 
-$Id: abstestIDataManager.py,v 1.3 2002/07/18 17:10:18 jeremy Exp $
+$Id: abstestIDataManager.py,v 1.4 2002/07/24 23:02:54 jeremy Exp $
 """
 
 import os
 from unittest import TestCase
 
-from Transaction import Transaction, get_transaction
+from Transaction.Transaction import Transaction
 
-class IDataManagerTests(TestCase):
+class IDataManagerTests(TestCase, object):
     
     def setUp(self):
         self.datamgr = None # subclass should override
         self.obj = None # subclass should define Persistent object
+        self.txn_factory = None
 
     def get_transaction(self):
-        t = Transaction()
-        t.setUser('IDataManagerTests')
-        t.note('dummy note')
-        return t
+        return self.txn_factory()
 
     ################################
     # IDataManager interface tests #
@@ -53,38 +51,16 @@ class IDataManagerTests(TestCase):
 
     def testCommitObj(self):
         tran = self.get_transaction()
-        self.datamgr.tpc_begin(tran)
-        self.datamgr.commit(self.obj, tran)
-        self.datamgr.tpc_vote(tran)
-        self.datamgr.tpc_finish(tran)
+        self.datamgr.prepare(tran)
+        self.datamgr.commit(tran)
 
     def testAbortTran(self):
         tran = self.get_transaction()
-        self.datamgr.tpc_begin(tran)
-        self.datamgr.commit(self.obj, tran)
-        self.datamgr.tpc_abort(tran)
+        self.datamgr.prepare(tran)
+        self.datamgr.abort(tran)
 
-    def testAbortObj(self):
+    def testRollback(self):
         tran = self.get_transaction()
-        self.datamgr.tpc_begin(tran)
-        self.datamgr.commit(self.obj, tran)
-        self.datamgr.abort(self.obj, tran)
-        self.datamgr.tpc_abort(tran)
-
-    def testSubCommit(self):
-        tran = self.get_transaction()
-        self.datamgr.tpc_begin(tran, 1)
-        self.datamgr.commit(self.obj, tran)
-        self.datamgr.commit_sub(tran)
-        self.datamgr.tpc_vote(tran)
-        self.datamgr.tpc_finish(tran)
-
-    #This test may not be semantically correct.  It hangs on FreeBSD.
-    #def testSubAbortCommitNull(self):
-    #   tran = self.get_transaction()
-    #   self.datamgr.tpc_begin(tran,1)
-    #   self.datamgr.commit(self.obj,tran)
-    #   self.datamgr.abort_sub(tran)
-    #   self.datamgr.tpc_vote(tran)
-    #   self.datamgr.tpc_finish(tran)
-
+        rb = self.datamgr.savepoint(tran)
+        if rb is not None:
+            rb.rollback()

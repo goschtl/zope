@@ -23,49 +23,25 @@ class IDataManager(Interface):
     This is currently implemented by ZODB database connections.
     """
 
-    def abort(object, transaction):
-        """Abort changes made to an object in a transaction"""
-    
-    def tpc_begin(transaction, subtransaction=0):
-        """Begin two-phase commit of a transaction
+    def prepare(transaction):
+        """Begin two-phase commit of a transaction.
 
-        If a non-zero subtransaction flag is provided, then begin a
-        sub-transaction.
+        DataManager should return True or False.
         """
         
-    def commit(object, transaction):
-        """Commit (tentatively) changes made to an object in a transaction
-
-        This method is called during the first stage of a two-phase commit
-        """
-
-    def tpc_vote(transaction):
-        """Promise to commit a transaction
-
-        This is the last chance to fail. A data manager should have
-        all changes saved in a recoverable fashion.
-        
-        Finishes the first phase of a two-phase commit.
-        """
-
-    def tpc_finish(transaction):
-        """Finish the transaction by permanently saving any tentative changes.
-
-        This *must not fail*.
-        """
-
-    def tpc_abort(transaction):
-        """Abort (rollback) any tentative commits performed in the transaction
-        """
-
-    # XXX subtransaction model is pretty primitive.
-    def abort_sub(transaction):
-        """Abort any sub-transaction changes"""
-
-
-    def commit_sub(transaction):
-        """Commit (tentatively) subtransaction changes
-
-        This method is called during the first stage of a two-phase commit
-        """        
+    def abort(transaction):
+        """Abort changes made by transaction."""
     
+    def commit(transaction):
+        """Commit changes made by transaction."""
+
+    def savepoint(transaction):
+        """Do tentative commit of changes to this point.
+
+        Should return an object implementing IRollback
+        """
+        
+class IRollback(Interface):
+    
+    def rollback():
+        """Rollback changes since savepoint."""

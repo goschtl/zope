@@ -13,7 +13,7 @@
 ##############################################################################
 """Transaction management
 
-$Id: _defaultTransaction.py,v 1.4 2002/06/21 20:39:05 jeremy Exp $
+$Id: _defaultTransaction.py,v 1.5 2002/07/24 23:02:53 jeremy Exp $
 """
 import sys
 
@@ -292,7 +292,7 @@ class Transaction:
             while jarsv:
                 jarsv[-1].tpc_finish(self) # This should never fail
                 jarsv.pop() # It didn't, so it's taken care of.
-        except:                        
+        except:
             # But if it does, we need to yell FIRE!  Someone finished,
             # so don't allow any more work without at least a restart!
             hosed = 1
