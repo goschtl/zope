@@ -1,0 +1,23 @@
+<zopeConfigure
+   xmlns='http://namespaces.zope.org/zope'
+   xmlns:event='http://namespaces.zope.org/event'
+>
+
+  <content class=".RAMCache.">
+    <factory id="RAMCache"
+        permission="Zope.Public" />
+    <require permission="Zope.Public" 
+        interface="Zope.App.Caching.RAMCache.IRAMCache." />
+  
+  </content>
+
+  <!--
+  <event:subscribe 
+      subscriber = ".RAMCache."
+      event_types = "Zope.Event.IObjectEvent.IObjectModifiedEvent"
+      />
+  -->
+
+<include package=".Views" />
+
+</zopeConfigure>

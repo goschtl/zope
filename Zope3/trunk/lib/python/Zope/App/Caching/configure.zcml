@@ -11,6 +11,7 @@
            for="Zope.App.OFS.Annotation.IAnnotatable." />
 
   <include package=".Views" />
+  <include package=".RAMCache" />
 
 </zopeConfigure>
 

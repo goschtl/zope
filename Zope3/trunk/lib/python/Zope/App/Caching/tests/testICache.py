@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for ICache interface
 
-$Id: testICache.py,v 1.1 2002/10/03 09:50:40 mgedmin Exp $
+$Id: testICache.py,v 1.2 2002/10/31 16:01:40 alga Exp $
 """
 
 from unittest import TestSuite, main
@@ -33,13 +33,13 @@ class BaseICacheTest:
     def testCaching(self):
         """Verify basic caching"""
         cache = self._Test__new()
-        object = "obj"
+        ob = "obj"
         data = "data"
         marker = []
         self.failIf(cache.query(ob, default=marker) is not marker,
                     "empty cache should not contain anything")
 
-        cache.set(ob, view_name="view1")
+        cache.set(data, ob, view_name="view1")
         self.assertEquals(cache.query(ob, "view1"), data,
                     "should return cached result")
         self.failIf(cache.query(ob, "view2", default=marker) is not marker,
@@ -68,3 +68,7 @@ def test_suite():
 
 if __name__=='__main__':
     main(defaultTest='test_suite')
+
+
+
+

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: ICache.py,v 1.2 2002/10/03 09:51:29 mgedmin Exp $
+$Id: ICache.py,v 1.3 2002/10/31 16:01:39 alga Exp $
 """
 from Interface import Interface
 
@@ -28,17 +28,16 @@ class ICache(Interface):
         None, invalidates all entries for the object.
         """
 
-    def query(ob, view_name="", keywords=None, mtime_func=None, default=None):
+    def query(ob, view_name="", keywords=None, default=None):
         """Returns the cached data previously stored by set().
 
         ob is the content object from which the object ID, modification
         times, and acquisition context are usually determined. view_name is
         the name of the view or method used to display the content object.
         keywords is a set of filtered keywords and values which should all
-        be used to select a cache entry. mtime_func is an optional function
-        that will be called to determine the content modification time
-        based on more intimate knowledge of the cached object.
+        be used to select a cache entry. 
         """
 
-    def set(data, ob, view_name="", keywords=None, mtime_func=None):
+    def set(data, ob, view_name="", keywords=None):
         """Stores the result of executing an operation."""
+
