@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.24 2003/11/05 03:08:16 jeremy Exp $
+$Id: hub.py,v 1.25 2003/12/06 10:00:12 zagy Exp $
 """
 __metaclass__ = type
 
@@ -365,10 +365,10 @@ class ObjectHub(ServiceSubscriberEventChannel, Contained):
                 min=pathslash, max=pathslash[:-1]+u'0', excludemax=True):
                 yield pathslash[:-1], hubId
 
-    def iterObjectRegistrations(self):
+    def iterObjectRegistrations(self, path=u'/'):
         """See interface IHubEventChannel"""
         traverser = getAdapter(self, ITraverser)
-        for path, hubId in self.iterRegistrations():
+        for path, hubId in self.iterRegistrations(path):
             yield (path, hubId, self._safeTraverse(path, traverser))
 
     ############################################################

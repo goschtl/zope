@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub interfaces.
 
-$Id: hub.py,v 1.6 2003/07/11 05:50:41 anthony Exp $
+$Id: hub.py,v 1.7 2003/12/06 10:00:11 zagy Exp $
 """
 
 from zope.interface import Attribute
@@ -35,8 +35,9 @@ class IHubEventChannel(IEventChannel):
     method is needed for bootstrapping the index with the appropriate objects.
     """
 
-    def iterObjectRegistrations():
-        """Returns an iterator of the object registrations.
+    def iterObjectRegistrations(path=u'/'):
+        """Returns an iterator of the object registrations at and within the
+        given path.
 
         An object registration is a tuple (location, hubid, wrapped_object).
         """
