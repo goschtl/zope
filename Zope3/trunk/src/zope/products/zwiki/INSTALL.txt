@@ -1,0 +1,37 @@
+Installation
+============
+
+  - create 'zopeproducts' inside your Zope 3 installation src directory
+
+  - add an empty '__init__.py' to zopeproducts
+
+  - copy the 'zwiki' folder to 'zopeproducts'
+
+  - add the following line to products.zcml file::
+
+     <include package='zopeproducts.zwiki' />
+
+  - You need to define the following role declarations to your user in order
+    to use the zwiki product effectively.
+
+     <grant role="zwiki.Admin" principal="user" />
+     <grant role="zwiki.Editor" principal="user" />
+     <grant role="zwiki.User" principal="user" />
+
+     <grant role="zwiki.User" principal="anybody" />
+
+
+  - (Optional) If you want restructured text support, you need to install the
+    **CVS** version of docutils, which you can retrieve from
+    http://docutils.sf.net.
+
+
+Usage
+=====
+
+  1. To see Wikis in action, go into the management interface and add a Wiki
+     object named 'wiki'. Leave the two preselected options.
+
+  2. To enter the end user interface, enter::
+
+      http://localhost:8080/++skin++wiki/wiki

@@ -1,0 +1,15 @@
+<html metal:use-macro="views/standard_macros/page">
+  <head>
+    <style metal:fill-slot="style_slot">
+    </style>
+  </head>
+  <body>
+    <div metal:fill-slot="body">
+
+      <div tal:replace="structure view/render">
+        This is the rendered Wiki
+      </div>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<html metal:use-macro="views/standard_macros/page">
+  <head>
+    <style metal:fill-slot="style_slot">
+    </style>
+  </head>
+  <body>
+    <div metal:fill-slot="body">
+
+      <p tal:define="status view/update"
+         tal:condition="status"
+         tal:content="status" />
+
+      <form action="." tal:attributes="action request/URL" 
+            method="post" i18n:domain="wiki">
+
+        <div class="row">
+            <div class="field">
+              <h1><input type="checkbox" name="textindex:int" value="1"
+                    checked=""/>
+	        Create Wiki Text Index
+              </h1>
+	      This is strongly recommended. Without the text index you cannot
+              search your objects properly. Of cource, you can always add 
+	      an index later as well. 
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="field">
+              <h1><input type="checkbox" name="frontpage:int" value="1"
+                     checked=""/>
+	        Create "Front Page" Wiki Page
+              </h1>
+	      This is not absolutely necessary, but it is nice to have, since
+              it gets you started right away. Note that you have to have at
+              least one WikiPage for the 'wiki' skin to be useful. 
+            </div>
+        </div>
+
+      	<div class="row">
+      	  <div class="controls">
+      	    <input type="submit" value="Refresh" 
+                i18n:attributes="value refresh-button" />
+      	    <input type="submit" name="UPDATE_SUBMIT" value="Submit" 
+      		i18n:attributes="value submit-button" />
+      	  </div>
+      	</div>
+
+      </form>
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,133 @@
+# translation of wiki.po to English US
+# translation of wiki.po to
+# #############################################################################
+#
+# Copyright (c) 2003 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+# #############################################################################
+# $Id: wiki.po,v 1.2 2003/04/10 06:28:16 srichter Exp $
+# , 2003
+# , 2003
+# Stephan Richter <stephan.richter@tufts.edu>, 2003
+msgid ""
+msgstr ""
+"Project-Id-Version: wiki\n"
+"POT-Creation-Date: Thu Apr 10 00:29:29 2003\n"
+"PO-Revision-Date: 2003-04-10 00:52-0400\n"
+"Last-Translator: Stephan Richter <stephan.richter@tufts.edu>\n"
+"Language-Team: English US <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.2beta2\n"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/interfaces.py:43
+msgid "Source Text"
+msgstr "Source Text"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/interfaces.py:44
+msgid "Renderable source text of the Wiki Page."
+msgstr "Renderable source text of the Wiki Page."
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/interfaces.py:49
+msgid "Source Type"
+msgstr "Source Type"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/interfaces.py:50
+msgid "Type of the source text, e.g. structured text"
+msgstr "Type of the source text, e.g. structured text"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/interfaces.py:69
+msgid "Wiki Page Parents"
+msgstr "Wiki Page Parents"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/interfaces.py:70
+msgid "Parents of a a Wiki"
+msgstr "Parents of a Wiki"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/interfaces.py:71
+msgid "Parent Name"
+msgstr "Parent Name"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/interfaces.py:72
+msgid "Name of the parent wiki page."
+msgstr "Name of the parent wiki page."
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/parents_page.pt:35
+msgid "Branch"
+msgstr "Branch"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/comment_page.pt:13
+msgid "Comment"
+msgstr "Comment"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/skin/template.pt:65
+msgid "Jump to:"
+msgstr "Jump to:"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/skin/template.pt:32
+msgid "Last modified by ${user} on ${date}"
+msgstr "Last modified by ${user} on ${date}"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/parents_page.pt:13
+msgid "Parents"
+msgstr "Parents"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/skin/template.pt:75
+msgid "User: ${user} (${login})"
+msgstr "User: ${user} (${login})"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/skin/template.pt:59
+msgid "View"
+msgstr ""
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/skin/template.pt:59
+msgid "Edit"
+msgstr ""
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/skin/template.pt:59
+msgid "TOC"
+msgstr ""
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/wiki_toc.pt:9
+msgid "Wiki Table of Contents"
+msgstr "Wiki Table of Contents"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/parents_page.pt:30
+msgid "reparent-button"
+msgstr "Reparent"
+
+# comment_page.pt:19
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/comment_page.pt:19
+msgid "submit-button"
+msgstr "Submit"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/comment_page.pt:19
+#, fuzzy
+msgid "refresh-button"
+msgstr "Reparent"
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/comment_page.pt:19
+msgid "Submit"
+msgstr ""
+
+#: /home/srichter/Zope3/Zope3-Fresh/src/zopeproducts/zwiki/browser/edit_page.pt:19
+msgid "Refresh"
+msgstr ""
+
+msgid "Plain Text"
+msgstr ""
+
+msgid "Structured Text (STX)"
+msgstr ""
+
+msgid "reStructured Text (reST)"
+msgstr ""
