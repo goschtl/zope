@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.11 2003/02/06 19:23:15 stevea Exp $
+$Id: widget.py,v 1.12 2003/02/06 19:59:50 stevea Exp $
 """
 
 __metaclass__ = type
@@ -59,7 +59,7 @@ class BrowserWidget(Widget, BrowserView):
             return field.default
 
         value = self._convert(value)
-        if value is not None or not optional:
+        if value is not None and not optional:
 
             try:
                 field.validate(value)
