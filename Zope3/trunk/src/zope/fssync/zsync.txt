@@ -7,7 +7,7 @@ Name
 Synopsis
 --------
 
-**zsync** [*general-options*...] *command* [*command-options*...] [*path*]
+**zsync** [*general-options*...] *command* [*command-options*...] [*args*]
 
 
 Description
@@ -80,8 +80,16 @@ run.
   Display help text
 
 
-**zsync add** Options
-~~~~~~~~~~~~~~~~~~~~~
+The **zsync add** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**add** [*add-options*...] [*path*]
+
+Options
++++++++
 
 -f FACTORY, --factory FACTORY
   Specify the object factory to use for the object being added.
@@ -91,16 +99,79 @@ run.
   to be specified.
 
 
-**zsync checkin** Options
-~~~~~~~~~~~~~~~~~~~~~~~~~
+The **zsync checkin** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**checkin** [**-m** *message*] *target-url* [*path*]
+
+Description
++++++++++++
+
+Check an object representation into the repository.  The
+representation may have been created by a checkout from a different
+object database or from a different location in the target database.
+If the metadata in the representation includes path information, that
+is ignored in favor of the new name being assigned in the target
+repository.
+
+The new name is given as part of *target-url*.  The last component of
+*target-url* is used as the local *path* if path is not specified.
+
+The representation which is used as the source is not modified; it
+does not become an equivalent of a checkout.  A separate **zsync
+checkout** is needed to create a working copy on the local
+filesystem.
+
+Options
++++++++
 
 -m MSG, --message MSG
   Set the message used for the transaction note (similar to the ``-m``
   option for **cvs commit**).
 
 
-**zsync commit** Options
-~~~~~~~~~~~~~~~~~~~~~~~~
+The **zsync checkout** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**checkout** *source-url* [*dir*]
+
+Description
++++++++++++
+
+Retrieve the serialized representation of a portion of the object
+database.  The database and starting path to be retrieved are
+specified as *source-url*.  The local representation is stored in the
+directory *dir*, which defaults to the current directory.
+
+
+The **zsync commit** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**commit** [*commit-options*] [*path* ...]
+
+Description
++++++++++++
+
+Integrate changes in the local representation objects into the object
+database.  If there are changes to the same objects in the object
+database, those changes must be merged into the local representation
+before the local changes can be committed.
+
+If *path* is given, only the named content objects are committed into
+the repository.  If not given, the current directory and all
+descendents are committed.
+
+Options
++++++++
 
 -m MSG, --message MSG
   Set the message used for the transaction note (similar to the ``-m``
@@ -111,8 +182,22 @@ run.
   reporting a list of paths for which conflicts are detected.
 
 
-**zsync diff** Options
-~~~~~~~~~~~~~~~~~~~~~~
+The **zsync diff** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**diff** [*diff-options*] [*path* ...]
+
+Description
++++++++++++
+
+If *path* is given, only the named content objects are considered.  If
+not given, the current directory and all descendents are examined.
+
+Options
++++++++
 
 -b
   Ignore changes in the amount of white space.
@@ -143,21 +228,45 @@ run.
   **patch** typically needs at least two lines of context.
 
 
-**zsync remove** Options
-~~~~~~~~~~~~~~~~~~~~~~~~
+The **zsync remove** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**remove** *path* ...
+
+Description
++++++++++++
 
 The **remove** command has no specific options.  It requires at least
 one *path* argument.
 
 
-**zsync status** Options
-~~~~~~~~~~~~~~~~~~~~~~~~
+The **zsync status** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**status** [*path* ...]
+
+Description
++++++++++++
 
 The **status** command has no specific options.
 
 
-**zsync update** Options
-~~~~~~~~~~~~~~~~~~~~~~~~
+The **zsync update** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**update** [*path* ...]
+
+Description
++++++++++++
 
 The **update** command has no specific options.
 
