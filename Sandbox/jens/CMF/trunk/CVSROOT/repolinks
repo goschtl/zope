@@ -73,6 +73,7 @@
 /Zope/lib/python/Zope                           /Packages/Zope
 /Zope/lib/python/webdav                         /Packages/webdav
 /Zope/lib/python/Persistence                    /Packages/Persistence
+/Zope/lib/python/persistent                     /ZODB3/persistent
 /Zope/lib/python/ThreadedAsync                  /Packages/ThreadedAsync
 /Zope/lib/python/zdaemon                        /Packages/zdaemon
 /Zope/lib/python/zLOG                           /Packages/zLOG
