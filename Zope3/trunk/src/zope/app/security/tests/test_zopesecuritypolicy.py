@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopesecuritypolicy.py,v 1.1 2002/12/27 22:30:11 rdmurray Exp $
+Revision information: $Id: test_zopesecuritypolicy.py,v 1.2 2002/12/28 01:39:55 rdmurray Exp $
 """
 
 import unittest
@@ -30,6 +30,7 @@ from zope.component import getService
 from zope.app.interfaces.security import IRolePermissionManager
 from zope.app.security.registries.permissionregistry import permissionRegistry
 from zope.app.security.registries.principalregistry import principalRegistry
+from zope.app.security.registries.principalregistry import PrincipalBase
 from zope.app.security.registries.roleregistry import roleRegistry
 from zope.app.security.grants.principalpermission \
      import principalPermissionManager
@@ -56,6 +57,17 @@ class Context:
 
 class Unprotected:
     pass
+
+class Principal(PrincipalBase):
+    def getRoles(self): return ['Manager']
+
+class AuthService:
+    """we only implement what we need for testing here"""
+    __implements__ = IAuthenticationService
+    def __init__(self):
+        self.data = {'jim': Principal('jim','Jim','Jim Fulton')}
+    def getPrincipal(self, id):
+        return self.data[id]
 
 
 class Test(PlacefulSetup, unittest.TestCase):
@@ -137,8 +149,12 @@ class Test(PlacefulSetup, unittest.TestCase):
         from zope.app.security.zopesecuritypolicy import ZopeSecurityPolicy
         return ZopeSecurityPolicy()
 
-    def testImport( self ):
+    def __assertPermissions(self, user, expected, object=None):
+        permissions = list(permissionsOfPrincipal(user, object))
+        permissions.sort()
+        self.assertEqual(permissions, expected)
 
+    def testImport( self ):
         from zope.app.security.zopesecuritypolicy import ZopeSecurityPolicy
 
     def testGlobalCheckPermission(self):
@@ -177,10 +193,12 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.__assertPermissions(self.jim, ['create', 'read', 'write'])
 
-    def __assertPermissions(self, user, expected, object=None):
-        permissions = list(permissionsOfPrincipal(user, object))
-        permissions.sort()
-        self.assertEqual(permissions, expected)
+
+    def testUserWithRoles(self):
+        services.provideService('Authentication', AuthService(),force=True)
+        self.failUnless(
+            self.policy.checkPermission(self.write, None, Context(self.jim)))
+        self.__assertPermissions(self.jim, ['create', 'read', 'write'])
 
 
     def testPlayfulPrincipalRole(self):
