@@ -1,0 +1,54 @@
+<zopeConfigure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:renderer="http://namespaces.zope.org/renderer">
+
+  <serviceType 
+      id="SourceTypeRegistry"
+      interface="zope.app.interfaces.renderer.ISourceTypeService" />
+
+  <service 
+      serviceType="SourceTypeRegistry"
+      permission="zope.View"
+      component=".sourcetype.SourceTypes" />
+
+
+  <!-- Plain Text Support -->
+
+  <renderer:sourcetype
+      title="Plain Text" 
+      interface="zope.app.interfaces.renderer.IPlainTextSource"
+      class=".plaintext.PlainTextSource" />
+
+  <renderer:renderer 
+      sourceType="zope.app.interfaces.renderer.IPlainTextSource"
+      for="zope.publisher.interfaces.browser.IBrowserPresentation" 
+      factory=".plaintext.PlainTextToHTMLRenderer" />
+
+
+  <!-- STX support -->
+
+  <!--renderer:sourcetype 
+      title="Structured Text (STX)"
+      interface="zope.app.interfaces.renderer.IStructuredTextSource"
+      class=".stx.StructuredTextSource" /-->
+
+  <!--renderer:renderer 
+      sourceType="zope.app.interfaces.renderer.IStructuredTextSource"
+      for="zope.publisher.interfaces.browser.IBrowserPresentation" 
+      factory=".stx.StructuredTextToHTMLRenderer" /-->
+
+
+  <!-- ReST support -->
+
+  <renderer:sourcetype 
+      title="reStructured Text (reST)" 
+      interface="zope.app.interfaces.renderer.IReStructuredTextSource"
+      class=".rest.ReStructuredTextSource" />
+
+  <renderer:renderer 
+      sourceType="zope.app.interfaces.renderer.IReStructuredTextSource"
+      for="zope.publisher.interfaces.browser.IBrowserPresentation" 
+      factory=".rest.ReStructuredTextToHTMLRenderer" />
+
+
+</zopeConfigure>

@@ -1,0 +1,20 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:meta="http://namespaces.zope.org/meta"
+           xmlns:renderer="http://namespaces.zope.org/renderer">
+
+  <include package="zope.app.renderer" file="meta.zcml"/>
+
+  <renderer:sourcetype 
+      title="Test Text" 
+      interface=".tests.test_directives.ITestSource"
+      class=".tests.test_directives.TestSource"/>
+
+  <renderer:renderer
+      sourceType=".tests.test_directives.ITestSource"
+      for="zope.publisher.interfaces.browser.IBrowserPresentation" 
+      factory=".tests.test_directives.TestRenderer" />
+ 
+
+</configure>
+
+  
