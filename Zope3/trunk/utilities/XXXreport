@@ -1,0 +1,12 @@
+#!/bin/bash
+TMPFILE=/tmp/xxxtmp.txt
+TARGET=XXXreport.html
+
+rm $TARGET
+echo "Looking for XXX comments"
+grep "# XXX" ../* -niIr -A 3 > $TMPFILE
+echo "Beautifying XXX comments"
+python2.2 XXXreport2html.py $TMPFILE $TARGET
+rm $TMPFILE
+echo "Done."
+
