@@ -1,4 +1,3 @@
-#! /usr/bin/env python2.3
 ##############################################################################
 #
 # Copyright (c) 2004 Zope Corporation and Contributors.
@@ -337,7 +336,3 @@ def main(argv=None):
             raise
     except KeyboardInterrupt:
         sys.exit(1)
-
-if __name__ == '__main__':
-    main()
-
