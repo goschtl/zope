@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.3 2003/05/27 14:18:07 jim Exp $
+$Id: test_adding.py,v 1.4 2003/05/28 23:15:05 jim Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -22,8 +22,7 @@ from zope.app.browser.container.adding import Adding
 from zope.app.interfaces.container import IAdding
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component.view import provideView
-from zope.context \
-     import getWrapperObject, getWrapperContainer, getWrapperData
+from zope.context import getWrapperContainer, getWrapperData
 from zope.publisher.browser import TestRequest
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPresentation
@@ -95,7 +94,7 @@ class Test(PlacelessSetup, TestCase):
         # Check the state of the container and result
         self.assertEqual(container["foo"], o)
         self.assertEqual(getWrapperContainer(result), container)
-        self.assertEqual(getWrapperObject(result), o)
+        self.assertEqual(result, o)
         self.assertEqual(getWrapperData(result)["name"], "foo")
 
     def testNoNameGiven(self):
