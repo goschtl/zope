@@ -1,6 +1,6 @@
 <metal:block define-macro="page">
   <metal:block define-slot="doctype">
-    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
   </metal:block>
 
@@ -12,14 +12,14 @@
     <title metal:define-slot="title">Z3 UI</title>
 
 
-    <style type="text/css" 
+    <style type="text/css"
            media="all"
            tal:content=
                "string: @import url(${context/++resource++zope3.css});"
            >
       @import url(zope3.css);
     </style>
-        
+
     <meta http-equiv="Content-Type"
           content="text/html;charset=utf-8" />
 
@@ -29,7 +29,7 @@
 
     <!-- Ugly is better than lobotomized.
     -->
-    <script type="text/javascript" src="xmltree.js" 
+    <script type="text/javascript" src="xmltree.js"
             tal:attributes="src string:${context/++resource++xmltree.js}" >
     </script>
 
@@ -50,8 +50,8 @@
 	  <tal:block replace="request/user/getTitle">
             User
           </tal:block>
-        </metal:block> 
-        <span tal:content="string:Usage $usage" />  
+        </metal:block>
+        <span tal:content="string:Usage $usage" />
       </div>
       <img tal:attributes="src context/++resource++zope3logo.gif" />
     </div>
@@ -62,11 +62,11 @@
     -->
       <div class="box" id="navigationTree">
         <h4>Navigation</h4>
-        <div 
+        <div
             xmlns="http://www.zope.org/zope3xmltree"
-            id="navtreecontents" 
-            class="body" 
-            onclick="treeclicked(event);" 
+            id="navtreecontents"
+            class="body"
+            onclick="treeclicked(event);"
             >Loading...
         </div>
       </div>
@@ -107,29 +107,29 @@
       <div class="itemViews"
            metal:define-slot="tabs">
         <tal:block repeat="view context/@@view_get_menu/zmi_views">
-          <a href="" 
+          <a href=""
             tal:attributes="href view/action;
-                            class view/selected;" 
+                            class view/selected;"
             tal:content="view/title">
             label
           </a>
         </tal:block>
       </div>
-                        
+
       <div id="actions"
           tal:define="actions context/@@view_get_menu/zmi_actions"
           tal:condition="actions"
           metal:define-slot="tabs">
-          <a href="#" 
-               tal:attributes="href info/action" 
+          <a href="#"
+               tal:attributes="href info/action"
                tal:repeat="info actions"
                tal:content="info/title">
               Action name
           </a>&nbsp;
       </div>
-                        
+
       <div id="viewspace">
-                
+
         <div metal:define-slot="message" id="message">
         </div>
 
@@ -156,27 +156,27 @@
 
 
         <div id="context_information">
-     
+
           <div id="helpers">
-     
+
             <div class="box" id="itemHelp" tal:condition="pagetip|nothing">
               <h4>Tip</h4>
               <div class="body">
                 <div class="content odd">
-                  <metal:block define-slot="pagetip" 
+                  <metal:block define-slot="pagetip"
                                tal:replace="pagetip">
-                    A short tip goes here              
+                    A short tip goes here
                   </metal:block>
                 </div>
               </div>
             </div>
 
-            <div class="box" id="help" 
+            <div class="box" id="help"
                 tal:define="results view/@@find_help_topics|nothing"
                 tal:condition="results">
               <h4>Online Help</h4>
               <div class="body">
-                <a href="#" 
+                <a href="#"
                     tal:repeat="entry results"
                             tal:attributes="href entry/url">
                   <div tal:define="oddrow repeat/entry/odd"
@@ -203,17 +203,17 @@
               <h4>Metadata</h4>
 
               <div class="body">
-                                        
+
                 <div class="content" tal:content="structure view">
                   Some metadata
                 </div>
-          
+
               </div>
             </div>
           </div>
 -->
 
-        </div>      
+        </div>
 
         <div class="spacer">
 	  &nbsp;

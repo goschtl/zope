@@ -12,8 +12,13 @@
    component='zope.app.dav.globaldavschemaservice.davSchemaService' />
 
 <dav:provideInterface
-   for="http://purl.org/dc/elements/1.1/"
+   for="http://purl.org/dc/1.1"
    interface="zope.app.interfaces.dublincore.IZopeDublinCore"
+/>
+
+<dav:provideInterface
+   for="DAV:"
+   interface="zope.app.interfaces.dav.IDAVSchema"
 />
 
 </zopeConfigure>
