@@ -3,12 +3,15 @@ from zope.testing.doctest import DocFileSuite, DocTestSuite
 from zope.app.tests import placelesssetup
 from zope.app.tests import ztapi
 
-from vproposal import VProposal
 from zope.app.tests.setup import setUpAnnotations
 from zope.app.annotation.interfaces import IAnnotatable, IAttributeAnnotatable
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.interface.declarations import classImplements
+
+
+from versioning.demo.vproposal import VProposal
+
 
 def setUp(test):
     placelesssetup.setUp(test)
@@ -23,3 +26,5 @@ def test_suite():
                                 tearDown=placelesssetup.tearDown))
     return suite
 
+if __name__=='__main__':
+    unittest.main(defaultTest='test_suite')
