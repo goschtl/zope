@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: IAdding.py,v 1.2 2002/10/02 21:35:47 jeremy Exp $
+$Id: IAdding.py,v 1.3 2002/11/18 13:30:42 stevea Exp $
 """
 
 from Interface.Attribute import Attribute
@@ -32,8 +32,8 @@ class IAdding(IView):
          Zope.App.OFS.Container.Exceptions.DuplicateIDError.
          """
 
-    contentName=Attribute(
-         """the content name, as usually set by the Adder traverser.
+    contentName = Attribute(
+         """The content name, as usually set by the Adder traverser.
 
          If the content name hasn't been defined yet, returns None.
 
@@ -43,7 +43,7 @@ class IAdding(IView):
          )
 
     def nextURL():
-         """Return the URL that the creation view should redirect to
+         """Return the URL that the creation view should redirect to.
 
          This is called by the creation view after calling add.
 
