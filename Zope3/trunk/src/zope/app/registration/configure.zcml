@@ -12,16 +12,24 @@
   </content>
   
   <adapter
-    for=".interfaces.IRegisterable"
-    provides=".interfaces.IRegistered"
-    factory=".registration.Registered"
-    />
+      for=".interfaces.IRegisterable"
+      provides=".interfaces.IRegistered"
+      factory=".registration.Registered"
+      trusted="true"
+      />
+
+  <class class=".registration.Registered">
+    <require 
+        permission="zope.ManageContent"
+        attributes="addUsage removeUsage" />
+    <allow attributes="usages registrations" />      
+  </class>
     
   <adapter
-    for=".interfaces.IRegisterable"
-    provides="zope.app.copypastemove.interfaces.IObjectCopier"
-    factory=".registration.RegisterableCopier"
-    permission="zope.ManageContent"
+      for=".interfaces.IRegisterable"
+      provides="zope.app.copypastemove.interfaces.IObjectCopier"
+      factory=".registration.RegisterableCopier"
+      permission="zope.ManageContent"
     />
 
   <!-- Registration Manager -->
@@ -47,27 +55,27 @@
   </content>
 
   <subscriber
-    factory=".registration.SimpleRegistrationRemoveSubscriber"
-    for=".interfaces.IRegistration
-         zope.app.container.interfaces.IObjectRemovedEvent"
-    />
+      factory=".registration.SimpleRegistrationRemoveSubscriber"
+      for=".interfaces.IRegistration
+           zope.app.container.interfaces.IObjectRemovedEvent"
+      />
 
   <subscriber
-    factory=".registration.ComponentRegistrationRemoveSubscriber"
-    for=".interfaces.IComponentRegistration
-         zope.app.container.interfaces.IObjectRemovedEvent"
-    />
+      factory=".registration.ComponentRegistrationRemoveSubscriber"
+      for=".interfaces.IComponentRegistration
+           zope.app.container.interfaces.IObjectRemovedEvent"
+      />
 
   <subscriber
-    factory=".registration.ComponentRegistrationAddSubscriber"
-    for=".interfaces.IComponentRegistration
-         zope.app.container.interfaces.IObjectAddedEvent"
-    />
+      factory=".registration.ComponentRegistrationAddSubscriber"
+      for=".interfaces.IComponentRegistration
+           zope.app.container.interfaces.IObjectAddedEvent"
+      />
 
   <subscriber
-    factory=".registration.RegisterableMoveSubscriber"
-    for=".interfaces.IRegisterable
-         zope.app.container.interfaces.IObjectMovedEvent"
-    />
+      factory=".registration.RegisterableMoveSubscriber"
+      for=".interfaces.IRegisterable
+           zope.app.container.interfaces.IObjectMovedEvent"
+      />
 
 </configure>
