@@ -24,6 +24,7 @@ from zope.app.tests import ztapi
 from zope.app.tests.placelesssetup import setUp, tearDown
 from zope.app.size.interfaces import ISized
 from zope.app.filerepresentation.interfaces import IReadDirectory
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 import zope.app.location
 from zope.app.dublincore.interfaces import IWriteZopeDublinCore
@@ -52,7 +53,9 @@ class RobotSize(object):
         return None
 
     def sizeForDisplay(self):
-        return u"1 robot unit"
+        msg = _(u"${num} robot unit")
+        msg.mapping = {'num': 1}
+        return msg
 
 class RobotDirectory(object):
     implements(IReadDirectory)
@@ -147,4 +150,4 @@ def test_suite():
             ))
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.main(defaultTest='test_suite')

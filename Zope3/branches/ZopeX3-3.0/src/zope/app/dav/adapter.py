@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 from xml.dom import minidom
 
 from zope.interface import implements
+from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.dav.interfaces import IDAVSchema
@@ -62,7 +63,7 @@ class DAVSchemaAdapter(object):
         sized = ISized(self.context, None)
         if sized is None:
             return ''
-        return str(sized.sizeForDisplay())
+        return str(translate(sized.sizeForDisplay()))
     getcontentlength = property(getcontentlength)
 
     def getlastmodified(self):
