@@ -16,7 +16,7 @@
 This module provides a DocTestSuite contructor for converting doctest
 tests to unit tests. 
 
-$Id: doctestunit.py,v 1.3 2003/06/29 05:07:50 tim_one Exp $
+$Id: doctestunit.py,v 1.4 2003/09/21 17:34:29 jim Exp $
 """
 
 from StringIO import StringIO
@@ -30,7 +30,10 @@ import unittest
 class DocTestTestFailure(Exception):
     """A doctest test failed"""
 
-def DocTestSuite(module=None):
+def DocTestSuite(module=None,
+                 setUp=lambda: None,
+                 tearDown=lambda: None,
+                 ):
     """Convert doctest tests for a mudule to a unittest test suite
 
     This tests convers each documentation string in a module that
@@ -61,9 +64,16 @@ def DocTestSuite(module=None):
                 filename = filename[:-1]
             elif filename.endswith(".pyo"):
                 filename = filename[:-1]
+
+        def testfunc(args=(tester, name, doc, filename, lineno)):
+            setUp()
+            try:
+                _test(*args)
+            finally:
+                tearDown()
+                
         suite.addTest(unittest.FunctionTestCase(
-            lambda args=(tester, name, doc, filename, lineno):
-            _test(*args),
+            testfunc,
             description = "doctest of "+name
             ))
 
