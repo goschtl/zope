@@ -78,6 +78,7 @@ Zope Road Map
           location-independent object references
 
         - Indexing service, supporting pluggable indexes and searching
+          and lightweight metadata for results
 
         Through the web development will take place in packages, which
         can contain:
