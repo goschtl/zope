@@ -10,9 +10,29 @@ VProposal contains a title an some content blocks
 
 You create it calling the 'VProposal' class:
 
-
-Access the content and title via attributes:
+  >>> from versioning.demo.vproposal import VProposal
+  >>> myproposal = VProposal('Titel','Concept')
  
+Access the content and title via attributes:
+
+  >>> myproposal.title
+  u'Titel'
+  >>>
+
+As you see everything is unicode
+'Titel' is stored in the Annotations, hereby dublincore
+So we have a getter and setter for that:
+
+  >>> myproposal.getTitle()
+  u'Titel'
+  >>> 
 
 All data in the 'VProposal' class defaults to a empty string:
 
+  >>> myproposal = VProposal()
+  >>> myproposal.title, myproposal.usecase, myproposal.concept
+  (u'', u'', u'')
+  >>>
+  >>> myproposal.todo, myproposal.issues
+  (u'', u'')
+  >>>
