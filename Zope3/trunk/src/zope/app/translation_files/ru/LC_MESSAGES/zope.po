@@ -16,7 +16,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Wed Apr 14 18:22:20 2004\n"
+"POT-Creation-Date: Thu Apr 15 17:24:04 2004\n"
 "PO-Revision-Date: 2004-03-19 18:20+0000\n"
 "Last-Translator: Dmitry Vasiliev <dima@hlabs.spb.ru>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -123,8 +123,7 @@ msgid "seconds"
 msgstr "секунд"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:13
-msgid ""
-"If you specify a time of 0 seconds, then the server will do a hard shutdown."
+msgid "If you specify a time of 0 seconds, then the server will do a hard shutdown."
 msgstr ""
 "Если Вы укажете время остановки - 0 секунд, сервер будет остановлен "
 "незамедлительно."
@@ -253,8 +252,7 @@ msgstr "Данный пакет не предоставляет регистра
 
 #: src/zope/app/bundle/browser/bundle.pt:123
 msgid "Click \"Activate bundle\" to perform the above actions."
-msgstr ""
-"Нажмите \"Активировать пакет\" для выполнения действия указанного выше."
+msgstr "Нажмите \"Активировать пакет\" для выполнения действия указанного выше."
 
 # Default: "Activate bundle"
 #: src/zope/app/bundle/browser/bundle.pt:127
@@ -269,10 +267,8 @@ msgid "reset-button"
 msgstr "Сбросить"
 
 #: src/zope/app/bundle/browser/bundle.pt:137
-msgid ""
-"Click \"Deactivate bundle\" to unregister all registrations in this bundle."
-msgstr ""
-"Нажмите \"Деактивировать пакет\" для отмены всех регистраций в данном пакете."
+msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
+msgstr "Нажмите \"Деактивировать пакет\" для отмены всех регистраций в данном пакете."
 
 # Default: "Deactivate bundle"
 #: src/zope/app/bundle/browser/bundle.pt:140
@@ -462,8 +458,7 @@ msgstr "Статистика кэша в памяти"
 
 #: src/zope/app/catalog/browser/advanced.pt:10
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
-msgstr ""
-"В данный момент каталог <strong>подписан</strong> концентратором объектов."
+msgstr "В данный момент каталог <strong>подписан</strong> концентратором объектов."
 
 # Default: "Subscribe"
 #: src/zope/app/catalog/browser/advanced.pt:27
@@ -728,7 +723,7 @@ msgstr "Тип ошибки: ${error_type}"
 #: src/zope/app/debugskin/unauthorized.pt:7
 #: src/zope/app/exception/browser/unauthorized.pt:8
 msgid "Unauthorized"
-msgstr "Нет прав доступа"
+msgstr "Нет прав для доступа"
 
 #: src/zope/app/debugskin/unauthorized.pt:8
 msgid "You're not allowed in here."
@@ -830,8 +825,7 @@ msgid "Error Logging Service"
 msgstr "Сервис лога ошибок"
 
 #: src/zope/app/errorservice/browser/error.pt:10
-msgid ""
-"This page lists the exceptions that have occurred in this site recently."
+msgid "This page lists the exceptions that have occurred in this site recently."
 msgstr "Ошибки, недавно произошедшие для данного сайта"
 
 #: src/zope/app/errorservice/browser/error.pt:15
@@ -903,11 +897,11 @@ msgstr "Параметр ошибки"
 
 #: src/zope/app/errorservice/browser/errorentry.pt:45
 msgid "Traceback"
-msgstr "Путь ошибки"
+msgstr "Путь вызовов"
 
 #: src/zope/app/errorservice/browser/errorentry.pt:59
 msgid "Display traceback as text"
-msgstr "Показать путь ошибки как текст"
+msgstr "Показать путь вызовов как текст"
 
 #: src/zope/app/errorservice/browser/errorentry.pt:67
 msgid "REQUEST"
@@ -928,8 +922,7 @@ msgstr "Сервис событий"
 
 #: src/zope/app/event/browser/configure.zcml:13
 msgid "An event service. One of these in the root is usually enough"
-msgstr ""
-"Сервис событий. Обычно достаточно одного сервиса событий в корне сайта."
+msgstr "Сервис событий. Обычно достаточно одного сервиса событий в корне сайта."
 
 #: src/zope/app/event/browser/eventcontrol.pt:5
 msgid "This is an event service."
@@ -1151,7 +1144,7 @@ msgstr ""
 #: src/zope/app/publisher/interfaces/browser.py:87
 #: src/zope/app/security/interfaces/__init__.py:45
 #: src/zope/app/security/interfaces/__init__.py:198
-#: src/zope/app/wiki/interfaces.py:39
+#: src/zope/app/wiki/interfaces.py:39 src/zope/schema/interfaces.py:95
 #: src/zope/app/container/browser/contents.pt:33
 #: src/zope/app/container/browser/index.pt:27
 #: src/zope/app/dublincore/browser/edit.pt:14
@@ -1394,8 +1387,7 @@ msgstr "Импортирование и экспортирование сооб�
 
 #: src/zope/app/i18n/browser/exportimport.pt:12
 msgid "Here you can export and import messages from your Translation Domain."
-msgstr ""
-"Здесь Вы можете загружать и сохранять сообщения для Вашего домена переводов."
+msgstr "Здесь Вы можете загружать и сохранять сообщения для Вашего домена переводов."
 
 #: src/zope/app/i18n/browser/exportimport.pt:20
 #: src/zope/app/i18n/browser/synchronize.pt:43
@@ -1569,8 +1561,7 @@ msgid "Edit Form"
 msgstr "Форма редактирования"
 
 #: src/zope/app/i18nfile/browser/i18nimage.py:28
-msgid ""
-"This edit form allows you to make changes to the properties of this image."
+msgid "This edit form allows you to make changes to the properties of this image."
 msgstr ""
 "Данная форма редактирования позволяет сделать изменения в свойствах данного "
 "изображения."
@@ -1836,8 +1827,7 @@ msgid "Add Browser Menu (Registration)"
 msgstr ""
 
 #: src/zope/app/menu/browser/configure.zcml:5
-msgid ""
-"Browser Menu tools are used to build menus for Web user        interfaces."
+msgid "Browser Menu tools are used to build menus for Web user        interfaces."
 msgstr ""
 
 #: src/zope/app/menu/browser/configure.zcml:55
@@ -2126,8 +2116,7 @@ msgid "Presentation Service"
 msgstr ""
 
 #: src/zope/app/presentation/browser/configure.zcml:3
-msgid ""
-"A Presentation Service allows you to register views, resources and skins"
+msgid "A Presentation Service allows you to register views, resources and skins"
 msgstr ""
 
 #: src/zope/app/presentation/browser/pagefolder.zcml:14
@@ -2329,10 +2318,8 @@ msgid "Database Adapter"
 msgstr "Адаптер базы данных"
 
 #: src/zope/app/rdb/browser/configure.zcml:5
-msgid ""
-"Database Adapters are used to connect to external       relational databases."
-msgstr ""
-"Адаптер базы данных используется для соединения с реляционными базами данных."
+msgid "Database Adapters are used to connect to external       relational databases."
+msgstr "Адаптер базы данных используется для соединения с реляционными базами данных."
 
 #: src/zope/app/rdb/browser/gadflyda.zcml:14
 msgid "Gadfly DA"
@@ -2340,8 +2327,7 @@ msgstr "Адаптер базы данных Gadfly"
 
 #: src/zope/app/rdb/browser/gadflyda.zcml:14
 msgid "A DA for the built-in 100% Pure Python Gadfly Database"
-msgstr ""
-"Адаптер для встроенной базы данных Gadfly написанной полностью на Python"
+msgstr "Адаптер для встроенной базы данных Gadfly написанной полностью на Python"
 
 #: src/zope/app/rdb/browser/gadflyda.zcml:5
 msgid "Add Gadfly Database Adapter"
@@ -2660,10 +2646,6 @@ msgstr "Редактировать схему"
 msgid "Type"
 msgstr "Тип"
 
-#: src/zope/app/schema/browser/schema_edit.pt:39
-msgid "Required"
-msgstr "Необходим"
-
 #: src/zope/app/schema/browser/schema_edit.pt:40
 msgid "Read-Only"
 msgstr "Только для чтения"
@@ -2780,12 +2762,12 @@ msgid "Edit Enumerated Datetime Field"
 msgstr "Редактировать перечисляемое поле для даты и времени"
 
 #: src/zope/app/schema/fieldforms.zcml:274
-msgid "Add Enumerated Date Field"
-msgstr "Добавить перечисляемое поле для даты"
-
-#: src/zope/app/schema/fieldforms.zcml:274
 msgid "An Enumerated Date Field"
 msgstr "Перечисляемое поле для даты"
+
+#: src/zope/app/schema/fieldforms.zcml:274
+msgid "Add Enumerated Date Field"
+msgstr "Добавить перечисляемое поле для даты"
 
 #: src/zope/app/schema/fieldforms.zcml:274
 msgid "Enumerated Date Field"
@@ -3087,10 +3069,8 @@ msgid "Login Failed!"
 msgstr "Вход в систему неудачен!"
 
 #: src/zope/app/security/browser/login_failed.pt:9
-msgid ""
-"You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
-msgstr ""
-"Вы прервали процедуру входа в систему. <a href=\"\"> Вернуться назад. </a>"
+msgid "You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
+msgstr "Вы прервали процедуру входа в систему. <a href=\"\"> Вернуться назад. </a>"
 
 #: src/zope/app/security/browser/logout.pt:5
 msgid "Logout successful!"
@@ -3110,8 +3090,7 @@ msgstr "Ваш запрос был перенаправлен!"
 
 #: src/zope/app/security/browser/redirect.pt:14
 msgid "If you you see this screen for more than 5 seconds, click here."
-msgstr ""
-"Если вы видите данную страницу больше чем 5 секунд, идите по данной ссылке."
+msgstr "Если вы видите данную страницу больше чем 5 секунд, идите по данной ссылке."
 
 # Default: "Change security settings"
 #: src/zope/app/security/configure.zcml:43
@@ -3199,6 +3178,7 @@ msgstr ""
 
 #: src/zope/app/security/interfaces/__init__.py:51
 #: src/zope/app/security/interfaces/__init__.py:203
+#: src/zope/schema/interfaces.py:102
 #: src/zope/app/dublincore/browser/edit.pt:22
 #: src/zope/app/introspector/introspector.pt:52
 #: src/zope/app/introspector/introspector.pt:155
@@ -3400,8 +3380,7 @@ msgid "Purge Interval"
 msgstr "Время между очистками"
 
 #: src/zope/app/session/interfaces.py:110
-msgid ""
-"How often stale data is purged in seconds. Higer values improve performance."
+msgid "How often stale data is purged in seconds. Higer values improve performance."
 msgstr ""
 
 #: src/zope/app/session/interfaces.py:53
@@ -3486,8 +3465,7 @@ msgstr "Название сервиса"
 
 #: src/zope/app/site/browser/add_svc_config.pt:7
 msgid "Register this object to provide the following service(s):"
-msgstr ""
-"Зарегистрировать данный объект для предоставления следующего(их) сервиса(ов):"
+msgstr "Зарегистрировать данный объект для предоставления следующего(их) сервиса(ов):"
 
 #: src/zope/app/site/browser/configure.zcml:103
 msgid "Interface Browse"
@@ -4051,8 +4029,7 @@ msgid "Utility registrations for interface ${interface}"
 msgstr ""
 
 #: src/zope/app/utility/browser/configureutility.pt:9
-msgid ""
-"Utility registrations for interface ${interface} with name ${utility_name}"
+msgid "Utility registrations for interface ${interface} with name ${utility_name}"
 msgstr ""
 
 #: src/zope/app/utility/browser/utilities.pt:34
@@ -4191,12 +4168,12 @@ msgid "Wiki Page"
 msgstr ""
 
 #: src/zope/app/wiki/configure.zcml:14
-msgid "Wiki Editor"
-msgstr "Редактор Wiki"
-
-#: src/zope/app/wiki/configure.zcml:14
 msgid "The Wiki Editor can create and edit wikis."
 msgstr ""
+
+#: src/zope/app/wiki/configure.zcml:14
+msgid "Wiki Editor"
+msgstr "Редактор Wiki"
 
 #: src/zope/app/wiki/configure.zcml:156
 msgid "A Wiki Page Comment"
@@ -4429,8 +4406,7 @@ msgid "Workflow Process Definitions"
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:5
-msgid ""
-"Process Definitions are used to define the way a workflow       will behave."
+msgid "Process Definitions are used to define the way a workflow       will behave."
 msgstr ""
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:50
@@ -4690,3 +4666,232 @@ msgstr "1 строка"
 #: src/zope/app/zptpage/zptpage.py:131
 msgid "${lines} lines"
 msgstr "${lines} строк(и)"
+
+#: src/zope/exceptions/unauthorized.py:69
+#: src/zope/exceptions/unauthorized.py:72
+msgid "You are not allowed to access ${name} in this context"
+msgstr "У Вас нет доступа к ${name} в данном контексте"
+
+#: src/zope/exceptions/unauthorized.py:74
+msgid "You are not authorized"
+msgstr "Нет прав для доступа"
+
+#: src/zope/exceptions/unauthorized.py:84
+msgid "a particular ${object}"
+msgstr ""
+
+#: src/zope/schema/_bootstrapinterfaces.py:43
+msgid "Required input is missing."
+msgstr "Отсутствует необходимый аргумент."
+
+#: src/zope/schema/_bootstrapinterfaces.py:46
+msgid "Object is of wrong type."
+msgstr "Неверный тип объекта."
+
+#: src/zope/schema/_bootstrapinterfaces.py:49
+msgid "Value is too big"
+msgstr "Значение слишком велико"
+
+#: src/zope/schema/_bootstrapinterfaces.py:52
+msgid "Value is too small"
+msgstr "Значение слишком мало"
+
+#: src/zope/schema/_bootstrapinterfaces.py:55
+msgid "Value is too long"
+msgstr "Значение слишком длинное"
+
+#: src/zope/schema/_bootstrapinterfaces.py:58
+msgid "Value is too short"
+msgstr "Значение слишком короткое"
+
+#: src/zope/schema/_bootstrapinterfaces.py:61
+msgid "Invalid value"
+msgstr "Ошибочное значение"
+
+#: src/zope/schema/_bootstrapinterfaces.py:64
+msgid "Constraint not satisfied"
+msgstr "Ограничение не соблюдено"
+
+#: src/zope/schema/_bootstrapinterfaces.py:67
+msgid "Not a container"
+msgstr "Не является контейнером"
+
+#: src/zope/schema/_bootstrapinterfaces.py:70
+msgid "Not an iterator"
+msgstr "Не является итератором"
+
+#: src/zope/schema/interfaces.py:103
+msgid "A description of the field"
+msgstr "Описание поля"
+
+#: src/zope/schema/interfaces.py:109
+#: src/zope/app/schema/browser/schema_edit.pt:39
+msgid "Required"
+msgstr "Необходим"
+
+#: src/zope/schema/interfaces.py:111
+msgid "Tells whether a field requires its value to exist."
+msgstr "Описывает если значение поля необходимо."
+
+#: src/zope/schema/interfaces.py:115
+msgid "Read Only"
+msgstr "Только для чтения"
+
+#: src/zope/schema/interfaces.py:116
+msgid "If true, the field's value cannot be changed."
+msgstr "Если установлено, то значение поля не может быть изменено."
+
+#: src/zope/schema/interfaces.py:121 src/zope/schema/interfaces.py:272
+#: src/zope/schema/interfaces.py:327
+msgid "Default Value"
+msgstr "Значение по-умолчанию"
+
+#: src/zope/schema/interfaces.py:122 src/zope/schema/interfaces.py:273
+#: src/zope/schema/interfaces.py:328
+msgid ""
+"The field default value may be None or a legal\n"
+"                        field value"
+msgstr ""
+"Значение по-умолчанию может быть None\n"
+"            или допустимое для поля значение"
+
+#: src/zope/schema/interfaces.py:127
+msgid "Missing Value"
+msgstr "Отсутствует значение"
+
+#: src/zope/schema/interfaces.py:128
+msgid ""
+"If input for this Field is missing, and that's ok,\n"
+"                          then this is the value to use"
+msgstr ""
+"Если ввод для данного поля отсутствует и это нормально\n"
+"                    тогда данное значение будет использоваться"
+
+#: src/zope/schema/interfaces.py:133
+msgid "Field Order"
+msgstr "Порядок полей"
+
+#: src/zope/schema/interfaces.py:134
+msgid ""
+"        The order attribute can be used to determine the order in\n"
+"        which fields in a schema were defined. If one field is created\n"
+"        after another (in the same thread), its order will be\n"
+"        greater.\n"
+"\n"
+"        (Fields in separate threads could have the same order.)\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:215 src/zope/schema/interfaces.py:315
+msgid "Start of the range"
+msgstr "Начало диапазона"
+
+#: src/zope/schema/interfaces.py:221 src/zope/schema/interfaces.py:321
+msgid "End of the range (excluding the value itself)"
+msgstr "Конец диапазона (включая данное значение)"
+
+#: src/zope/schema/interfaces.py:231
+msgid "Minimum length"
+msgstr "Минимальная длина"
+
+#: src/zope/schema/interfaces.py:232
+msgid ""
+"        Value after whitespace processing cannot have less than\n"
+"        min_length characters (if a string type) or elements (if\n"
+"        another sequence type). If min_length is None, there is\n"
+"        no minimum.\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:243
+msgid "Maximum length"
+msgstr "Максимальная длина"
+
+#: src/zope/schema/interfaces.py:244
+msgid ""
+"        Value after whitespace processing cannot have greater\n"
+"        or equal than max_length characters (if a string type) or \n"
+"        elements (if another sequence type). If max_length is\n"
+"        None, there is no maximum."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:257
+msgid "Allowed Values"
+msgstr "Допустимые значения"
+
+#: src/zope/schema/interfaces.py:258
+msgid ""
+"        Only values specified here can be values of this field.\n"
+"        If the list is empty, then there are no further\n"
+"        restictions."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:38
+msgid "Wrong contained type"
+msgstr "Неверный тип содержимого"
+
+#: src/zope/schema/interfaces.py:397
+msgid ""
+"Field value items must conform to the given type, expressed\n"
+"           via a Field.\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:41
+msgid "Schema not fully implemented"
+msgstr "Схема не полностью реализована"
+
+#: src/zope/schema/interfaces.py:411
+msgid "The Interface that defines the Fields comprising the Object."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:421
+msgid ""
+"Field keys must conform to the given type, expressed\n"
+"           via a Field.\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:426
+msgid ""
+"Field values must conform to the given type, expressed\n"
+"           via a Field.\n"
+"        "
+msgstr ""
+
+#: src/zope/schema/interfaces.py:44
+msgid "Schema not provided"
+msgstr "Схема не предоставлена"
+
+#: src/zope/schema/interfaces.py:47
+msgid "The specified URI is not valid."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:50
+msgid "The specified id is not valid."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:53
+msgid "The specified dotted name is not valid."
+msgstr ""
+
+#: src/zope/schema/interfaces.py:96
+msgid "A short summary or label"
+msgstr ""
+
+#: src/zope/schema/tests/test_objectfield.py:38
+msgid "Foo"
+msgstr ""
+
+#: src/zope/schema/tests/test_objectfield.py:39
+msgid "Foo description"
+msgstr "Описание"
+
+#: src/zope/schema/tests/test_objectfield.py:44
+msgid "Bar"
+msgstr ""
+
+#: src/zope/schema/tests/test_objectfield.py:45
+msgid "Bar description"
+msgstr "Описание"
+
