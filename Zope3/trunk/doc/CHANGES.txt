@@ -10,6 +10,15 @@ Zope Changes
 
     New features
 
+      - API doctool has received some upgrades:
+
+        * A new `bookmodule` compiles all our README.txt and other text
+          documentation files to a nice book-like format.
+
+        * A new `typemodule` lists all interface types (such as
+          `IContentType`) and then let's you see all interfaces providing this
+          type (for example `IFile`)
+
       - Zope 3 can now listen on specified network interfaces only.  Example
         of a server section in zope.conf:
 
@@ -395,6 +404,11 @@ Zope Changes
         `IContainerItemRenamer(container).renameItem(oldName, newName)`.
 
     Bug Fixes
+
+      - When I converted layers and skins to interfaces, I got the layer part
+        wrong and made layer interfaces extend `ILayer`. But `ILayer` is an
+        `IInterface`, *not* an Interface. Layers should not extend but provide
+        `ILayer`.
 
       - Fixed most formatting characters for i18n's datetime formatter. Only
         timezones are left.
