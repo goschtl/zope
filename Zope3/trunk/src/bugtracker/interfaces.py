@@ -246,7 +246,7 @@ class IMailSubscriptions(Interface):
         """Remove a set of subscriptions."""
 
 
-# XXX: Remove once index is back
+# TODO: Remove once index is back
 class ISearchableText(Interface):
 
     def getSearchableText():

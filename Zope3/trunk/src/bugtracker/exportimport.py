@@ -278,7 +278,7 @@ class XMLImporter(ContentHandler):
     def startTerm(self, attrs):
         registry = getVocabularyRegistry()
         vocab = registry.get(self.context, self.vocab_name)
-        # XXX: I do not understand why my security does not work here.
+        # TODO: I do not understand why my security does not work here.
         vocab = trustedRemoveSecurityProxy(vocab)
         vocab.add(attrs.get('value'), attrs.get('title'))
         if attrs.get('default', None) is not None:

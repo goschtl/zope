@@ -140,7 +140,7 @@ def checkBug(bug, criteria, search_text):
             if values and not getattr(bug, name) in values:
                 return False
 
-    # XXX: Extremely crude text search; should use indexes
+    # TODO: Extremely crude text search; should use indexes
     text = ' '.join(ISearchableText(bug).getSearchableText())
     if search_text != '':
         terms = search_text.split(' ')
