@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-""" Default ISecurityManager implementation """
+"""Default ISecurityManager implementation
+
+$Id: manager.py,v 1.3 2003/03/13 18:49:16 alga Exp $
+"""
 
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 
@@ -27,7 +30,7 @@ from zope.testing.cleanup import addCleanUp
 addCleanUp(_clear)
 
 
-def setSecurityPolicy( aSecurityPolicy ):
+def setSecurityPolicy(aSecurityPolicy):
     """
         Set the system default security policy.
 
@@ -49,11 +52,11 @@ class SecurityManager:
     """
     __implements__ = ISecurityManager
 
-    def __init__( self, context ):
+    def __init__(self, context):
         self._context = context
         self._policy = None
 
-    def _getPolicy( self ):
+    def _getPolicy(self):
         """
             Find current policy, or default.
         """
@@ -65,7 +68,7 @@ class SecurityManager:
     #
     #   ISecurityManager implementation
     #
-    def getPrincipal( self ):
+    def getPrincipal(self):
         """
             Return the authenticated user.
 
@@ -77,7 +80,7 @@ class SecurityManager:
         """
         return self._context.user
 
-    def checkPermission( self, permission, object ):
+    def checkPermission(self, permission, object):
         """
             Check whether the security context allows the given
             permission on the given object. Return a boolean value.
@@ -88,28 +91,28 @@ class SecurityManager:
 
             object -- The object being accessed according to the permission
         """
-        return self._getPolicy().checkPermission( permission, object
-                                              , self._context )
+        return self._getPolicy().checkPermission(permission, object
+                                              , self._context)
 
-    def pushExecutable( self, anExecutableObject ):
+    def pushExecutable(self, anExecutableObject):
         """
             Push an ExecutableObject onto the manager's stack, and
             activate its custom security policy, if any.
         """
         stack=self._context.stack
 
-        if len( stack ) >= MAX_STACK_SIZE:
+        if len(stack) >= MAX_STACK_SIZE:
             raise SystemError, 'Excessive recursion'
 
-        stack.append( anExecutableObject )
-        p = getattr( anExecutableObject, '_customSecurityPolicy', None )
+        stack.append(anExecutableObject)
+        p = getattr(anExecutableObject, '_customSecurityPolicy', None)
 
         if p is not None:
             p = p()
 
         self._policy = p
 
-    def popExecutable( self, anExecutableObject ):
+    def popExecutable(self, anExecutableObject):
         """
             Pop the topmost ExecutableObject from the stack, deactivating
             any custom security policy it might have installed.
@@ -137,7 +140,7 @@ class SecurityManager:
         if stack:
 
             top = stack[-1]
-            p = getattr( top, '_customSecurityPolicy', None )
+            p = getattr(top, '_customSecurityPolicy', None)
 
             if p is not None:
                 p=p()
@@ -146,7 +149,7 @@ class SecurityManager:
         else:
             self._policy=None
 
-    def calledByExecutable( self ):
+    def calledByExecutable(self):
         """
             Return a boolean indicating whether the current request has
             invoked any IExecutableObjects.
@@ -155,4 +158,4 @@ class SecurityManager:
             (more or less) directly from a URL, or if it was called by
             through-the-web provided code.
         """
-        return len( self._context.stack )
+        return len(self._context.stack)

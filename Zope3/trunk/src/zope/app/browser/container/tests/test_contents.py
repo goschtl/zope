@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.7 2003/02/17 15:10:39 sidnei Exp $
+$Id: test_contents.py,v 1.8 2003/03/13 18:49:00 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -54,30 +54,30 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         # Do we get the correct information back from ContainerContents?
         container = self._TestView__newContext()
         subcontainer = self._TestView__newContext()
-        container.setObject( 'subcontainer', subcontainer )
+        container.setObject('subcontainer', subcontainer)
         document = Document()
-        container.setObject( 'document', document )
+        container.setObject('document', document)
 
-        fc = self._TestView__newView( container )
+        fc = self._TestView__newView(container)
         info_list = fc.listContentInfo()
 
-        self.assertEquals( len( info_list ), 2 )
+        self.assertEquals(len(info_list), 2)
 
-        ids = map( lambda x: x['id'], info_list )
-        self.assert_( 'subcontainer' in ids )
+        ids = map(lambda x: x['id'], info_list)
+        self.assert_('subcontainer' in ids)
 
-        objects = map( lambda x: x['object'], info_list )
-        self.assert_( subcontainer in objects )
+        objects = map(lambda x: x['object'], info_list)
+        self.assert_(subcontainer in objects)
 
-        urls = map( lambda x: x['url'], info_list )
-        self.assert_( 'subcontainer' in urls )
+        urls = map(lambda x: x['url'], info_list)
+        self.assert_('subcontainer' in urls)
 
-        self.failIf( filter( None, map( lambda x: x['icon'], info_list ) ) )
+        self.failIf(filter(None, map(lambda x: x['icon'], info_list)))
 
     def testInfoWDublinCore(self):
         container = self._TestView__newContext()
         document = Document()
-        container.setObject( 'document', document )
+        container.setObject('document', document)
 
         from datetime import datetime
         from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -95,7 +95,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         from zope.component.adapter import provideAdapter
         provideAdapter(IDocument, IZopeDublinCore, FauxDCAdapter)
 
-        fc = self._TestView__newView( container )
+        fc = self._TestView__newView(container)
         info = fc.listContentInfo()[0]
 
         self.assertEqual(info['id'], 'document')
@@ -105,7 +105,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         self.assertEqual(info['created'], formatTime(FauxDCAdapter.created))
         self.assertEqual(info['modified'], formatTime(FauxDCAdapter.modified))
 
-    def testRemove( self ):
+    def testRemove(self):
         container = self._TestView__newContext()
         subcontainer = self._TestView__newContext()
         container.setObject('subcontainer', subcontainer)
@@ -114,7 +114,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         document2 = Document()
         container.setObject('document2', document2)
 
-        fc = self._TestView__newView( container )
+        fc = self._TestView__newView(container)
 
         self.failIf(getEvents(IObjectModifiedEvent))
         self.failIf(getEvents(IObjectRemovedEvent))
@@ -126,40 +126,39 @@ class BaseTestContentsBrowserView(PlacelessSetup):
                       filter =
                       lambda event:
                       removeAllProxies(event.object) == document2)
-            )
+           )
         self.failUnless(
             getEvents(IObjectModifiedEvent,
                       filter =
                       lambda event:
                       removeAllProxies(event.object) == container)
-            )
+           )
 
         info_list = fc.listContentInfo()
 
-        self.assertEquals( len( info_list ), 2 )
+        self.assertEquals(len(info_list), 2)
 
-        ids = map( lambda x: x['id'], info_list )
-        self.assert_( 'subcontainer' in ids )
+        ids = map(lambda x: x['id'], info_list)
+        self.assert_('subcontainer' in ids)
 
-        objects = map( lambda x: x['object'], info_list )
-        self.assert_( subcontainer in objects )
+        objects = map(lambda x: x['object'], info_list)
+        self.assert_(subcontainer in objects)
 
-        urls = map( lambda x: x['url'], info_list )
-        self.assert_( 'subcontainer' in urls )
+        urls = map(lambda x: x['url'], info_list)
+        self.assert_('subcontainer' in urls)
 
     # XXX This test fails due to:
     # - inadequate setup and
     # - bugs in the code it's testing.
     # :(
-    def XXXtestRename( self ):
+    def XXXtestRename(self):
         container = self._TestView__newContext()
-        fc = self._TestView__newView( container )
+        fc = self._TestView__newView(container)
         ids=['document1', 'document2']
         for id in ids:
             document = Document()
             container.setObject(id, document)
-        fc.renameObjects(ids, ['document1_1',
-                              'document2_2'] )
+        fc.renameObjects(ids, ['document1_1', 'document2_2'])
         self.failUnless('document1_1' not in container)
         self.failIf('document_1 in container')
 

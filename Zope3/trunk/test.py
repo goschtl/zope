@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 test.py [-abCdgGLvvt] [modfilter [testfilter]]
@@ -175,7 +175,7 @@ class ImmediateTestResult(unittest._TextTestResult):
         if gc.garbage:
             print test
             print gc.garbage
-        
+
     def print_times(self):
         results = self._testtimes.items()
         results.sort(lambda x, y: cmp(y[1], x[1]))
@@ -242,7 +242,7 @@ class ImmediateTestResult(unittest._TextTestResult):
             self.stream.writeln("%s: %s" % (flavor, self.getDescription(test)))
             self.stream.writeln(self.separator2)
             self.stream.writeln(err)
-            
+
 
 class ImmediateTestRunner(unittest.TextTestRunner):
 
@@ -446,7 +446,7 @@ def remove_stale_bytecode(arg, dirname, names):
 
 def main(module_filter, test_filter, libdir):
     global pathinit
-    
+
     os.path.walk(os.curdir, remove_stale_bytecode, None)
 
     # Get the log.ini file from the current directory instead of possibly

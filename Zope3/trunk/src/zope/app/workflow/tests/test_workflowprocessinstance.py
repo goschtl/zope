@@ -14,16 +14,16 @@
 import unittest
 
 
-class WorkflowProcessInstanceTests( unittest.TestCase ):
+class WorkflowProcessInstanceTests(unittest.TestCase):
 
-    def testInterface( self ):
+    def testInterface(self):
         from zope.interface.verify import verifyClass
         from zope.app.interfaces.workflow \
             import IWorkflowProcessInstance
         from zope.app.workflow.workflowprocessinstance \
             import WorkflowProcessInstance
 
-        verifyClass( IWorkflowProcessInstance, WorkflowProcessInstance )
+        verifyClass(IWorkflowProcessInstance, WorkflowProcessInstance)
 
 
 def test_suite():
@@ -32,7 +32,7 @@ def test_suite():
     suite = unittest.TestSuite()
     #suite.addTest(
     #    unittest.defaultTestLoader.loadTestsFromTestCase(
-    #        WorkflowProcessInstanceTests ) )
+    #        WorkflowProcessInstanceTests))
     return suite
 
 

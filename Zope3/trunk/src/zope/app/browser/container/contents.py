@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.10 2003/02/17 15:10:39 sidnei Exp $
+Revision information: $Id: contents.py,v 1.11 2003/03/13 18:49:00 alga Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -54,7 +54,7 @@ class Contents(BrowserView):
             title = dc.title
             if title:
                 info['title'] = title
-            
+
             created = dc.created
             if created is not None:
                 info['created'] = formatTime(created)
@@ -88,7 +88,7 @@ class Contents(BrowserView):
         """Copy objects specified in a list of object ids"""
         physical = getAdapter(self.context, IPhysicallyLocatable)
         container_path = physical.getPhysicalPath()
-        
+
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotation(user)
@@ -105,7 +105,7 @@ class Contents(BrowserView):
         """move objects specified in a list of object ids"""
         physical = getAdapter(self.context, IPhysicallyLocatable)
         container_path = physical.getPhysicalPath()
-        
+
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotation(user)
@@ -115,11 +115,11 @@ class Contents(BrowserView):
         for id in ids:
             items.append('%s/%s' % ('/'.join(container_path), id))
         clipboard.addItems('cut', items)
-        
+
         self.request.response.redirect('@@contents.html')
 
     def pasteObjects(self):
-        """Iterate over clipboard contents and perform the 
+        """Iterate over clipboard contents and perform the
            move/copy operations"""
         container = self.context
         target = container
@@ -145,8 +145,8 @@ class Contents(BrowserView):
         self.request.response.redirect('@@contents.html')
 
     def hasClipboardContents(self):
-        """ interogates the PrinicipalAnnotation to see if 
-           clipboard contents exist """ 
+        """ interogates the PrinicipalAnnotation to see if
+           clipboard contents exist """
 
         user = self.request.user
 
@@ -159,7 +159,7 @@ class Contents(BrowserView):
 
         return False
 
-        
+
     def listContentInfo(self):
         return map(self._extractContentInfo,
                    getAdapter(self.context, IZopeContainer).items())
@@ -184,7 +184,7 @@ class JustContents(Contents):
 
     def index(self):
         return self._index()
-    
+
 
 
 # XXX L10N Below is prime material for localization.

@@ -30,7 +30,7 @@ class SecurityContext:
                 )
     """
 
-    def __init__( self, user ):
+    def __init__(self, user):
 
         self.stack       = []
         self.user        = user

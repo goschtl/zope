@@ -29,7 +29,7 @@ class Test(unittest.TestCase):
         from zope.app.size import DefaultSized
         sized = DefaultSized(object())
         self.assert_(ISized.isImplementedBy(sized))
-        
+
     def testSizeWithBytes(self):
         from zope.app.size import DefaultSized
         obj = DummyObject(1023)
@@ -49,22 +49,22 @@ class Test(unittest.TestCase):
         sized = DefaultSized(object())
         self.assertEqual(sized.sizeForSorting(), (None, None))
         self.assertEqual(sized.sizeForDisplay(), u'n/a')
-   
+
     def testVariousSizes(self):
         from zope.app.size import DefaultSized
-        
+
         sized = DefaultSized(DummyObject(0))
         self.assertEqual(sized.sizeForSorting(), ('byte', 0))
         self.assertEqual(sized.sizeForDisplay(), u'0 KB')
-        
+
         sized = DefaultSized(DummyObject(1))
         self.assertEqual(sized.sizeForSorting(), ('byte', 1))
         self.assertEqual(sized.sizeForDisplay(), u'1 KB')
-        
+
         sized = DefaultSized(DummyObject(2048))
         self.assertEqual(sized.sizeForSorting(), ('byte', 2048))
         self.assertEqual(sized.sizeForDisplay(), u'2 KB')
-        
+
         sized = DefaultSized(DummyObject(2000000))
         self.assertEqual(sized.sizeForSorting(), ('byte', 2000000))
         self.assertEqual(sized.sizeForDisplay(), u'1.91 MB')

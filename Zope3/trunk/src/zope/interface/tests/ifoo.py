@@ -13,12 +13,12 @@
 ##############################################################################
 from zope.interface import Interface
 
-class IFoo( Interface ):
+class IFoo(Interface):
     """
         Dummy interface for unit tests.
     """
 
-    def bar( baz ):
+    def bar(baz):
         """
             Just a note.
         """

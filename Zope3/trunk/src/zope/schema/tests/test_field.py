@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_field.py,v 1.2 2002/12/25 14:15:21 jim Exp $
+$Id: test_field.py,v 1.3 2003/03/13 18:49:16 alga Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.schema import Field, Text, Int
@@ -130,10 +130,10 @@ class FieldDefaultBehaviour(TestCase):
         self.assert_(field.required)
 
 def test_suite():
-    return TestSuite(   (
-            makeSuite(FieldTest),
-            makeSuite(FieldDefaultBehaviour)
-    ))
+    return TestSuite((
+        makeSuite(FieldTest),
+        makeSuite(FieldDefaultBehaviour),
+        ))
 
 if __name__ == '__main__':
     main(defaultTest='test_suite')

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_simpleregistry.py,v 1.2 2002/12/25 14:13:25 jim Exp $
+$Id: test_simpleregistry.py,v 1.3 2003/03/13 18:49:10 alga Exp $
 """
 
 import unittest
@@ -38,7 +38,7 @@ class Object2:
     __implements__ = I2
 
 
-class Test( unittest.TestCase ):
+class Test(unittest.TestCase):
 
 
     def testRegister(self):
@@ -91,8 +91,8 @@ class Test( unittest.TestCase ):
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( Test )
+    return loader.loadTestsFromTestCase(Test)
 
 
 if __name__=='__main__':
-    unittest.TextTestRunner().run( test_suite() )
+    unittest.TextTestRunner().run(test_suite())

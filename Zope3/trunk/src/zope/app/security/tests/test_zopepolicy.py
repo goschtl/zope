@@ -14,7 +14,7 @@
 """
 
 
-Revision information: $Id: test_zopepolicy.py,v 1.7 2003/03/13 16:28:15 alga Exp $
+Revision information: $Id: test_zopepolicy.py,v 1.8 2003/03/13 18:49:09 alga Exp $
 """
 
 import unittest
@@ -138,7 +138,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.policy = self._makePolicy()
 
-    def _makePolicy( self ):
+    def _makePolicy(self):
 
         from zope.app.security.zopepolicy import ZopeSecurityPolicy
         return ZopeSecurityPolicy()
@@ -148,7 +148,7 @@ class Test(PlacefulSetup, unittest.TestCase):
         permissions.sort()
         self.assertEqual(permissions, expected)
 
-    def testImport( self ):
+    def testImport(self):
         from zope.app.security.zopepolicy import ZopeSecurityPolicy
 
     def testGlobalCheckPermission(self):

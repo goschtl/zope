@@ -23,7 +23,7 @@ class WorkflowActionEvent:
     """
         Base class for all action-related events.
     """
-    def __init__( self, action ):
+    def __init__(self, action):
         self._action = action
 
     def getAction(self):

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: simpleregistry.py,v 1.4 2003/02/11 15:59:59 sidnei Exp $
+$Id: simpleregistry.py,v 1.5 2003/03/13 18:49:10 alga Exp $
 """
 from zope.configuration.name import resolve
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
@@ -48,8 +48,8 @@ class ZopeIllegalInterfaceError(Exception):
 
     def __str__(self):
         """Returns string representation of Error"""
-        return ( "The object with name " + self.name + " does not implement "
-                 "the interface " + self.interface.__name__ + "." )
+        return ("The object with name " + self.name + " does not implement "
+                "the interface " + self.interface.__name__ + ".")
 
 
 

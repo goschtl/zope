@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_rolecontents.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: test_rolecontents.py,v 1.3 2003/03/13 18:49:03 alga Exp $
 """
 
 import unittest
@@ -41,7 +41,7 @@ class Test(BaseTestContentsBrowserView, unittest.TestCase):
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( Test )
+    return loader.loadTestsFromTestCase(Test)
 
 if __name__=='__main__':
     unittest.main()

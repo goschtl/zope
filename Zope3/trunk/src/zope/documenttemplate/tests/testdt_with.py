@@ -12,7 +12,7 @@
 ##############################################################################
 """Document Template Tests
 
-$Id: testdt_with.py,v 1.2 2002/12/25 14:13:37 jim Exp $
+$Id: testdt_with.py,v 1.3 2003/03/13 18:49:13 alga Exp $
 """
 
 import unittest
@@ -38,7 +38,7 @@ class TestDT_With(DTMLTestBase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest( unittest.makeSuite(TestDT_With) )
+    suite.addTest(unittest.makeSuite(TestDT_With))
     return suite
 
 

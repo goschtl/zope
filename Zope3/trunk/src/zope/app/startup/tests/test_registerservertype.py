@@ -21,7 +21,7 @@ from zope.configuration.tests.basetestdirectivesxml import makeconfig
 from zope.app.startup.servertyperegistry import getServerType
 
 
-class Test( unittest.TestCase ):
+class Test(unittest.TestCase):
 
     def testRegisterServerType(self):
         xmlconfig(makeconfig(
@@ -56,8 +56,8 @@ class Test( unittest.TestCase ):
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( Test )
+    return loader.loadTestsFromTestCase(Test)
 
 
 if __name__=='__main__':
-    unittest.TextTestRunner().run( test_suite() )
+    unittest.TextTestRunner().run(test_suite())

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.19 2003/02/12 02:17:05 seanb Exp $
+$Id: test_interfacewidget.py,v 1.20 2003/03/13 18:48:59 alga Exp $
 """
 
 __metaclass__ = type
@@ -346,12 +346,12 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
                                required=False)
 
         widget = InterfaceWidget(field, request)
-        
+
         out = (
         '<input type="hidden" name="field.TestName" value="None" />'
         )
         self.assertEqual(widget.hidden(), out)
-        
+
         request.form["field.TestName"] = (
         'zope.app.browser.component.tests.test_interfacewidget.I2'
         )

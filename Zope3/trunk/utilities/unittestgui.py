@@ -38,7 +38,7 @@ SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS.
 """
 
 __author__ = "Steve Purcell (stephen_purcell@yahoo.com)"
-__version__ = "$Revision: 1.13 $"[11:-2]
+__version__ = "$Revision: 1.14 $"[11:-2]
 
 import linecache
 import unittest
@@ -79,9 +79,7 @@ class BaseGUITestRunner:
         "Override to display an error arising from GUI usage"
         pass
 
-    def runClicked( self
-                  , COMMA_SPACE=re.compile( '[, ]+' )
-                  ):
+    def runClicked(self, COMMA_SPACE=re.compile('[, ]+')):
         "To be called in response to user choosing to run a test"
         if self.running: return
         testName = self.getSelectedTestName()
@@ -94,10 +92,10 @@ class BaseGUITestRunner:
         self.notifyStartImport()
         try:
             test = unittest.defaultTestLoader.loadTestsFromNames(
-                                COMMA_SPACE.split( testName ) )
-            warnings = getattr( test, 'warnings', [] )
+                COMMA_SPACE.split(testName))
+            warnings = getattr(test, 'warnings', [])
             for sub_test in test._tests:
-                warnings.extend( getattr( sub_test, 'warnings', [] ) )
+                warnings.extend(getattr(sub_test, 'warnings', []))
             test.warnings = warnings
         except:
             exc_type, exc_value, exc_tb = sys.exc_info()
@@ -110,9 +108,9 @@ class BaseGUITestRunner:
         self.totalTests = test.countTestCases()
         self.running = 1
         self.notifyRunning()
-        warnings = getattr( test, 'warnings', () )
+        warnings = getattr(test, 'warnings', ())
         for warning in warnings:
-            self.notifyWarning( warning[0], warning[1] )
+            self.notifyWarning(warning[0], warning[1])
         test.run(self.currentResult)
         self.running = 0
         self.notifyStopped()

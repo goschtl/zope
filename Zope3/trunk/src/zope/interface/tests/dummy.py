@@ -15,5 +15,5 @@ from zope.interface.tests.ifoo import IFoo
 
 __implements__ = IFoo
 
-def bar( baz ):
+def bar(baz):
     pass

@@ -11,22 +11,25 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""
+$Id: test_workflowaction.py,v 1.4 2003/03/13 18:49:12 alga Exp $
+"""
 import unittest
 
 class WorkflowActionTestsBase:
 
-    def test_getAction( self ):
+    def test_getAction(self):
         ACTION = []
-        event = self._makeOne( ACTION )
-        self.assertEqual( event.getAction(), ACTION )
+        event = self._makeOne(ACTION)
+        self.assertEqual(event.getAction(), ACTION)
 
-    def _makeOne( self, *args, **kw ):
+    def _makeOne(self, *args, **kw):
 
-        return self._getEventClass()( *args, **kw )
+        return self._getEventClass()(*args, **kw)
 
-class WorkflowActionCreatedTests( unittest.TestCase, WorkflowActionTestsBase ):
+class WorkflowActionCreatedTests(unittest.TestCase, WorkflowActionTestsBase):
 
-    def testInterface( self ):
+    def testInterface(self):
         from zope.app.interfaces.workflow import IWorkflowEvent
         from zope.app.interfaces.workflow import IWorkflowActionEvent
         from zope.app.interfaces.workflow \
@@ -34,19 +37,19 @@ class WorkflowActionCreatedTests( unittest.TestCase, WorkflowActionTestsBase ):
         from zope.app.workflow.workflowevents import WorkflowActionCreatedEvent
         from zope.interface.verify import verifyClass
 
-        verifyClass( IWorkflowEvent, WorkflowActionCreatedEvent )
-        verifyClass( IWorkflowActionEvent, WorkflowActionCreatedEvent )
-        verifyClass( IWorkflowActionCreatedEvent, WorkflowActionCreatedEvent )
+        verifyClass(IWorkflowEvent, WorkflowActionCreatedEvent)
+        verifyClass(IWorkflowActionEvent, WorkflowActionCreatedEvent)
+        verifyClass(IWorkflowActionCreatedEvent, WorkflowActionCreatedEvent)
 
-    def _getEventClass( self ):
+    def _getEventClass(self):
         from zope.app.workflow.workflowevents import WorkflowActionCreatedEvent
         return WorkflowActionCreatedEvent
 
 
-class WorkflowActionAssignedEventTest( unittest.TestCase
-                                     , WorkflowActionTestsBase ):
+class WorkflowActionAssignedEventTest(unittest.TestCase
+                                     , WorkflowActionTestsBase):
 
-    def testInterface( self ):
+    def testInterface(self):
         from zope.app.interfaces.workflow import IWorkflowEvent
         from zope.app.interfaces.workflow import IWorkflowActionEvent
         from zope.app.interfaces.workflow \
@@ -55,34 +58,34 @@ class WorkflowActionAssignedEventTest( unittest.TestCase
             import WorkflowActionAssignedEvent
         from zope.interface.verify import verifyClass
 
-        verifyClass( IWorkflowEvent, WorkflowActionAssignedEvent )
-        verifyClass( IWorkflowActionEvent, WorkflowActionAssignedEvent )
-        verifyClass( IWorkflowActionAssignedEvent, WorkflowActionAssignedEvent )
+        verifyClass(IWorkflowEvent, WorkflowActionAssignedEvent)
+        verifyClass(IWorkflowActionEvent, WorkflowActionAssignedEvent)
+        verifyClass(IWorkflowActionAssignedEvent, WorkflowActionAssignedEvent)
 
-    def _getEventClass( self ):
+    def _getEventClass(self):
         from zope.app.workflow.workflowevents import WorkflowActionAssignedEvent
         return WorkflowActionAssignedEvent
 
 
-class WorkflowActionBegunEventTest( unittest.TestCase, WorkflowActionTestsBase ):
+class WorkflowActionBegunEventTest(unittest.TestCase, WorkflowActionTestsBase):
 
-    def testInterface( self ):
+    def testInterface(self):
         from zope.app.interfaces.workflow import IWorkflowEvent
         from zope.app.interfaces.workflow import IWorkflowActionEvent
         from zope.app.interfaces.workflow import IWorkflowActionBegunEvent
         from zope.app.workflow.workflowevents import WorkflowActionBegunEvent
         from zope.interface.verify import verifyClass
 
-        verifyClass( IWorkflowEvent, WorkflowActionBegunEvent )
-        verifyClass( IWorkflowActionEvent, WorkflowActionBegunEvent )
-        verifyClass( IWorkflowActionBegunEvent, WorkflowActionBegunEvent )
+        verifyClass(IWorkflowEvent, WorkflowActionBegunEvent)
+        verifyClass(IWorkflowActionEvent, WorkflowActionBegunEvent)
+        verifyClass(IWorkflowActionBegunEvent, WorkflowActionBegunEvent)
 
-    def _getEventClass( self ):
+    def _getEventClass(self):
         from zope.app.workflow.workflowevents import WorkflowActionBegunEvent
         return WorkflowActionBegunEvent
 
 
-class WorkflowActionSuspendedTests( unittest.TestCase, WorkflowActionTestsBase ):
+class WorkflowActionSuspendedTests(unittest.TestCase, WorkflowActionTestsBase):
 
     def testInterface(self):
         from zope.app.interfaces.workflow import IWorkflowEvent
@@ -93,11 +96,11 @@ class WorkflowActionSuspendedTests( unittest.TestCase, WorkflowActionTestsBase )
              import WorkflowActionSuspendedEvent
         from zope.interface.verify import verifyClass
 
-        verifyClass( IWorkflowEvent, WorkflowActionSuspendedEvent )
-        verifyClass( IWorkflowActionEvent, WorkflowActionSuspendedEvent )
-        verifyClass( IWorkflowActionSuspendedEvent, WorkflowActionSuspendedEvent )
+        verifyClass(IWorkflowEvent, WorkflowActionSuspendedEvent)
+        verifyClass(IWorkflowActionEvent, WorkflowActionSuspendedEvent)
+        verifyClass(IWorkflowActionSuspendedEvent, WorkflowActionSuspendedEvent)
 
-    def _getEventClass( self ):
+    def _getEventClass(self):
         from zope.app.workflow.workflowevents \
             import WorkflowActionSuspendedEvent
         return WorkflowActionSuspendedEvent
@@ -118,7 +121,7 @@ class WorkflowActionCompletedEvent(unittest.TestCase, WorkflowActionTestsBase):
         verifyClass(IWorkflowActionEvent, WorkflowActionCompletedEvent)
         verifyClass(IWorkflowActionCompletedEvent, WorkflowActionCompletedEvent)
 
-    def _getEventClass( self ):
+    def _getEventClass(self):
         from zope.app.workflow.workflowevents \
             import WorkflowActionCompletedEvent
         return WorkflowActionCompletedEvent
@@ -139,12 +142,12 @@ class WorkflowActionExceptionEvent(unittest.TestCase, WorkflowActionTestsBase):
         verifyClass(IWorkflowActionEvent, WorkflowActionExceptionEvent)
         verifyClass(IWorkflowActionExceptionEvent, WorkflowActionExceptionEvent)
 
-    def _getEventClass( self ):
+    def _getEventClass(self):
         from zope.app.workflow.workflowevents \
             import WorkflowActionExceptionEvent
         return WorkflowActionExceptionEvent
 
-    def _getEventClass( self ):
+    def _getEventClass(self):
         from zope.app.workflow.workflowevents \
             import WorkflowActionExceptionEvent
         return WorkflowActionExceptionEvent
@@ -154,15 +157,15 @@ def test_suite():
     # DISABLED BECAUSE OUTDATED
 
     suite = unittest.TestSuite()
-    #for klass in ( WorkflowActionCreatedTests
+    #for klass in (WorkflowActionCreatedTests
     #             , WorkflowActionAssignedEventTest
     #             , WorkflowActionBegunEventTest
     #             , WorkflowActionSuspendedTests
     #             , WorkflowActionCompletedEvent
     #             , WorkflowActionExceptionEvent
-    #             ):
+    #            ):
     #    suite.addTest(
-    #        unittest.defaultTestLoader.loadTestsFromTestCase( klass ) )
+    #        unittest.defaultTestLoader.loadTestsFromTestCase(klass))
     return suite
 
 

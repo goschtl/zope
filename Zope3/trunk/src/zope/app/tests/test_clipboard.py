@@ -13,7 +13,7 @@ from zope.app.services.tests.test_auth import AuthSetup
 #
 ##############################################################################
 """
-$Id: test_clipboard.py,v 1.3 2003/02/17 15:10:41 sidnei Exp $
+$Id: test_clipboard.py,v 1.4 2003/03/13 18:49:11 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -29,9 +29,9 @@ from zope.app.interfaces.services.principalannotation \
 from zope.app.services.tests.placefulsetup \
     import PlacefulSetup
 from zope.app.interfaces.annotation import IAnnotations
- 
+
 class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
-    
+
     def setUp(self):
         AuthSetup.setUp(self)
         PlacefulSetup.setUp(self)
@@ -41,7 +41,7 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         root_sm = getServiceManager(None)
         svc = PrincipalAnnotationService()
         root_sm.defineService("PrincipalAnnotation", \
-            IPrincipalAnnotationService) 
+            IPrincipalAnnotationService)
         root_sm.provideService("PrincipalAnnotation", svc)
         sm = getServiceManager(self.rootFolder)
         sm.PrincipalAnnotation = svc
@@ -55,13 +55,13 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         annotations = annotationsvc.getAnnotation(user)
         clipboard = getAdapter(annotations, IPrincipalClipboard)
         clipboard.addItems('move', ['bla', 'bla/foo', 'bla/bar'])
-        expected = ({'action':'move', 'target':'bla'}, 
+        expected = ({'action':'move', 'target':'bla'},
                     {'action':'move', 'target':'bla/foo'},
                     {'action':'move', 'target':'bla/bar'})
-                    
+
         self.failUnless(clipboard.getContents() == expected)
         clipboard.addItems('copy', ['bla'])
-        expected = expected + ({'action':'copy', 'target':'bla'},) 
+        expected = expected + ({'action':'copy', 'target':'bla'},)
         self.failUnless(clipboard.getContents() == expected)
 
     def testSetContents(self):
@@ -72,13 +72,13 @@ class PrincipalClipboardTest(AuthSetup, PlacefulSetup, TestCase):
         annotations = annotationsvc.getAnnotation(user)
         clipboard = getAdapter(annotations, IPrincipalClipboard)
 
-        expected = ({'action':'move', 'target':'bla'}, 
+        expected = ({'action':'move', 'target':'bla'},
                     {'action':'move', 'target':'bla/foo'},
                     {'action':'move', 'target':'bla/bar'})
         clipboard.setContents(expected)
         self.failUnless(clipboard.getContents() == expected)
         clipboard.addItems('copy', ['bla'])
-        expected = expected + ({'action':'copy', 'target':'bla'},) 
+        expected = expected + ({'action':'copy', 'target':'bla'},)
         self.failUnless(clipboard.getContents() == expected)
 
     def testClearContents(self):

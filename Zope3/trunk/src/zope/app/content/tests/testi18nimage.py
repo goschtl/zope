@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: testi18nimage.py,v 1.3 2002/12/31 02:51:57 jim Exp $
+$Id: testi18nimage.py,v 1.4 2003/03/13 18:49:06 alga Exp $
 """
 
 import unittest
@@ -43,7 +43,7 @@ class Test(TestII18nAware):
         return obj
 
 
-    def testEmpty( self ):
+    def testEmpty(self):
 
         file = self._makeImage()
 
@@ -177,7 +177,7 @@ class Test(TestII18nAware):
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( Test )
+    return loader.loadTestsFromTestCase(Test)
 
 if __name__=='__main__':
-    unittest.TextTestRunner().run( test_suite() )
+    unittest.TextTestRunner().run(test_suite())

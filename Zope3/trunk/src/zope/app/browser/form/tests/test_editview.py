@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""$Id: test_editview.py,v 1.4 2003/03/02 03:34:05 tseaver Exp $
+"""$Id: test_editview.py,v 1.5 2003/03/13 18:49:03 alga Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
@@ -38,14 +38,14 @@ class EV(EditView):
     schema = I
 
 class C:
-    __implements__ = ( I, )
+    __implements__ = (I, )
     foo = u"c foo"
     bar = u"c bar"
     a   = u"c a"
     b   = u"c b"
     baz = u"c baz"
 
-class NonConforming( C ):
+class NonConforming(C):
     __implements__ = ()
 
 class Test(PlacelessSetup, TestCase):

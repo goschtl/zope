@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_securitydirectives.py,v 1.6 2003/02/12 02:17:33 seanb Exp $
+$Id: test_securitydirectives.py,v 1.7 2003/03/13 18:49:09 alga Exp $
 """
 
 import unittest
@@ -171,11 +171,11 @@ class TestRoleDirective(CleanUp, unittest.TestCase):
 
 class TestRolePermission(CleanUp, unittest.TestCase):
 
-    def setUp( self ):
+    def setUp(self):
         setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
-    def testMap( self ):
+    def testMap(self):
         pregistry.definePermission("Foo", '', '')
         rregistry.defineRole("Bar", '', '')
         f = configfile("""
@@ -189,19 +189,19 @@ class TestRolePermission(CleanUp, unittest.TestCase):
         roles = role_perm_mgr.getRolesForPermission("Foo")
         perms = role_perm_mgr.getPermissionsForRole("Bar")
 
-        self.assertEqual(len( roles ), 1)
+        self.assertEqual(len(roles), 1)
         self.failUnless(("Bar",Allow) in roles)
 
-        self.assertEqual(len( perms ), 1)
+        self.assertEqual(len(perms), 1)
         self.failUnless(("Foo",Allow) in perms)
 
 class TestPrincipalPermission(CleanUp, unittest.TestCase):
 
-    def setUp( self ):
+    def setUp(self):
         setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
-    def testMap( self ):
+    def testMap(self):
         pregistry.definePermission("Foo", '', '')
         principalRegistry.definePrincipal("Bar", '', '')
         f = configfile("""
@@ -215,19 +215,19 @@ class TestPrincipalPermission(CleanUp, unittest.TestCase):
         principals = principal_perm_mgr.getPrincipalsForPermission("Foo")
         perms = principal_perm_mgr.getPermissionsForPrincipal("Bar")
 
-        self.assertEqual(len( principals ), 1)
+        self.assertEqual(len(principals), 1)
         self.failUnless(("Bar", Allow) in principals)
 
-        self.assertEqual(len( perms ), 1)
+        self.assertEqual(len(perms), 1)
         self.failUnless(("Foo", Allow) in perms)
 
 class TestPrincipalRole(CleanUp, unittest.TestCase):
 
-    def setUp( self ):
+    def setUp(self):
         setUp(self)
         XMLConfig('meta.zcml', zope.app.security)()
 
-    def testMap( self ):
+    def testMap(self):
         rregistry.defineRole("Foo", '', '')
         principalRegistry.definePrincipal("Bar", '', '')
         f = configfile("""
@@ -241,10 +241,10 @@ class TestPrincipalRole(CleanUp, unittest.TestCase):
         principals = principal_role_mgr.getPrincipalsForRole("Foo")
         roles = principal_role_mgr.getRolesForPrincipal("Bar")
 
-        self.assertEqual(len( principals ), 1)
+        self.assertEqual(len(principals), 1)
         self.failUnless(("Bar",Allow) in principals)
 
-        self.assertEqual(len( roles ), 1)
+        self.assertEqual(len(roles), 1)
         self.failUnless(("Foo",Allow) in roles)
 
 def test_suite():

@@ -39,7 +39,7 @@ def _verify(iface, candidate, tentative=0, vtype=None):
     else:
         tester = iface.isImplementedBy
 
-    if not tentative and not tester( candidate ):
+    if not tentative and not tester(candidate):
         raise DoesNotImplement(iface)
 
     for n, d in iface.namesAndDescriptions(1):

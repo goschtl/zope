@@ -25,7 +25,7 @@ class DM:
 
     def register(self, ob):
         self.called += 1
-        
+
     def setstate(self, ob):
         ob.__setstate__({'x': 42})
         self.cache.setstate(ob._p_oid, ob)

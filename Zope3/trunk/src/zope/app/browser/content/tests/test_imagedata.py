@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_imagedata.py,v 1.2 2002/12/25 14:12:31 jim Exp $
+$Id: test_imagedata.py,v 1.3 2003/03/13 18:49:01 alga Exp $
 """
 
 import unittest
@@ -22,7 +22,7 @@ from zope.app.browser.content.image import ImageData
 from zope.app.content.image import Image
 
 
-class Test( unittest.TestCase ):
+class Test(unittest.TestCase):
 
     def testData(self):
         """ """
@@ -64,7 +64,7 @@ class Test( unittest.TestCase ):
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( Test )
+    return loader.loadTestsFromTestCase(Test)
 
 if __name__=='__main__':
     unittest.main()

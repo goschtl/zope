@@ -1,7 +1,7 @@
 ##############################################################################
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
@@ -9,12 +9,12 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
-"""Views implementing ftp commands 
+"""Views implementing ftp commands
 
 These views implement ftp commands using file-system representation
 and meta-data apis.
 
-$Id: __init__.py,v 1.1 2003/02/03 15:08:35 jim Exp $
+$Id: __init__.py,v 1.2 2003/03/13 18:49:07 alga Exp $
 """
 __metaclass__ = type
 
@@ -30,7 +30,7 @@ from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.container import IZopeWriteContainer
 
 from zope.proxy.introspection import removeAllProxies
-    
+
 class FTPView:
 
     def __init__(self, context, request):
@@ -46,14 +46,14 @@ class FTPView:
             return 'd'
         else:
             return 'f'
-        
+
     def type(self, name=None):
         if not name:
             return 'd'
         file = self._dir.get(name)
         if file is not None:
             return self._type(file)
-        
+
     def names(self, filter=None):
         if filter is None:
             return list(self._dir)
@@ -67,7 +67,7 @@ class FTPView:
         else:
             return [lsinfo(name, dir[name]) for name in dir
                     if filter(name)]
-            
+
     def _lsinfo(self, name, file):
 
         info = {'name': name,
@@ -90,13 +90,13 @@ class FTPView:
                 if size is not self:
                     info['group_readable'] = True
                     info['size'] = size()
-            
+
             else:
                 info['group_readable'] = False
 
             f = queryAdapter(file, IWriteFile)
             info['group_writable'] = hasattr(f, 'write')
-                
+
         return info
 
     def readfile(self, name, outstream, start = 0, end = None):
@@ -119,7 +119,7 @@ class FTPView:
         dc = getAdapter(file, IZopeDublinCore)
         if dc is not None:
             return dc.modified
-        
+
     def mtime(self, name=None):
         if name:
             return self._mtime(self._dir[name])
@@ -198,7 +198,7 @@ class FTPView:
 
         if start is not None:
             data = ('\0' * start) + data
-        
+
         # Find the extension
         ext_start = name.rfind('.')
         if ext_start > 0:
@@ -224,4 +224,4 @@ class FTPView:
         d = queryAdapter(self.context, IWriteDirectory)
         return hasattr(d, 'setObject')
 
-        
+

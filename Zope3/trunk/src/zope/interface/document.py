@@ -17,7 +17,7 @@ This module provides a function, asStructuredText, for rendering an
 interface as structured text.
 
 Revision information:
-$Id: document.py,v 1.2 2002/12/25 14:13:42 jim Exp $
+$Id: document.py,v 1.3 2003/03/13 18:49:14 alga Exp $
 """
 
 from string import maketrans
@@ -113,6 +113,6 @@ def _justify_and_indent(text, level, munge=0, width=72):
         text = text.replace("\r\n", "\n").split("\n")
 
         for line in text:
-            lines.append( (" " * level) + line)
+            lines.append((" " * level) + line)
 
         return '\n'.join(lines)

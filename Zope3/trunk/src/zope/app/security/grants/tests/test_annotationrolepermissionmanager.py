@@ -68,27 +68,27 @@ class Test(PlacefulSetup, unittest.TestCase):
         mgr.grantPermissionToRole(self.read,self.peon)
 
         l = list(mgr.getPermissionsForRole(self.manager))
-        self.failUnless( (self.read, Allow) in l )
-        self.failUnless( (self.write, Allow) in l )
+        self.failUnless((self.read, Allow) in l)
+        self.failUnless((self.write, Allow) in l)
 
         l = list(mgr.getPermissionsForRole(self.peon))
-        self.failUnless( [(self.read, Allow)] == l )
+        self.failUnless([(self.read, Allow)] == l)
 
         l = list(mgr.getRolesForPermission(self.read))
-        self.failUnless( (self.manager, Allow) in l )
-        self.failUnless( (self.peon, Allow) in l )
+        self.failUnless((self.manager, Allow) in l)
+        self.failUnless((self.peon, Allow) in l)
 
         l = list(mgr.getRolesForPermission(self.write))
-        self.assertEqual(l, [ (self.manager, Allow) ] )
+        self.assertEqual(l, [(self.manager, Allow)])
 
         mgr.denyPermissionToRole(self.read, self.peon)
         l = list(mgr.getPermissionsForRole(self.peon))
-        self.assertEqual(l, [(self.read, Deny)] )
+        self.assertEqual(l, [(self.read, Deny)])
 
         mgr.unsetPermissionFromRole(self.read, self.peon)
 
         l = list(mgr.getRolesForPermission(self.read))
-        self.assertEqual(l, [ (self.manager, Allow) ] )
+        self.assertEqual(l, [(self.manager, Allow)])
 
 
 def test_suite():

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.6 2003/03/02 03:34:05 tseaver Exp $
+$Id: test_add.py,v 1.7 2003/03/13 18:49:02 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -46,7 +46,7 @@ class I(Interface):
 
 class C:
 
-    __implements__ = ( I, )
+    __implements__ = (I, )
 
     def __init__(self, *args, **kw):
         self.args = args

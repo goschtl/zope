@@ -15,7 +15,7 @@
 I do not think it is necessary to do the entire SimpleRegistry tests again.
 Instead we will test whether the module in itself works.
 
-$Id: test_requestfactoryregistry.py,v 1.2 2002/12/25 14:13:25 jim Exp $
+$Id: test_requestfactoryregistry.py,v 1.3 2003/03/13 18:49:10 alga Exp $
 """
 
 import unittest
@@ -31,7 +31,7 @@ class RequestFactory:
 
 
 
-class Test( unittest.TestCase ):
+class Test(unittest.TestCase):
 
 
     def testRegistry(self):
@@ -44,8 +44,8 @@ class Test( unittest.TestCase ):
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( Test )
+    return loader.loadTestsFromTestCase(Test)
 
 
 if __name__=='__main__':
-    unittest.TextTestRunner().run( test_suite() )
+    unittest.TextTestRunner().run(test_suite())

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: interfaces.py,v 1.8 2003/02/03 17:29:12 jim Exp $
+$Id: interfaces.py,v 1.9 2003/03/13 18:49:14 alga Exp $
 """
 
 from zope.interface import Interface
@@ -466,7 +466,7 @@ class IImplements(Interface):
         The getImplements argument is a hook that will be called if a
         certian experimental (and soon to be removed) feature is used
         in the interface specification.
-        
+
         This method will soon be depricated.
 
         """
@@ -541,7 +541,7 @@ class INewImplements(Interface):
         If a class is provided as the first argument, then the
         assertion will be made bout that class.
 
-        
+
         """
 
     def provides(object, *interfaces):
@@ -550,7 +550,7 @@ class INewImplements(Interface):
         XXX Modules?
         """
 
-    
+
     def implementsLike(class_):
         ""
 
@@ -558,6 +558,3 @@ class INewImplements(Interface):
 
     def implementsAdditional(ob, ):
         pass
-
-    
-    

@@ -23,7 +23,7 @@ class ParanoidSecurityPolicy:
     """
     __implements__ = ISecurityPolicy
 
-    def checkPermission( sel, permission, object, context ):
+    def checkPermission(self, permission, object, context):
         if (context.user is system_user   # no user
             and not context.stack  # no untrusted code
             ):
@@ -37,5 +37,5 @@ class PermissiveSecurityPolicy:
     """
     __implements__ = ISecurityPolicy
 
-    def checkPermission( self, permission, object, context ):
+    def checkPermission(self, permission, object, context):
         return 1

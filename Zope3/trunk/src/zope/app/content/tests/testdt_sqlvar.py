@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: testdt_sqlvar.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: testdt_sqlvar.py,v 1.3 2003/03/13 18:49:06 alga Exp $
 """
 
 import unittest
@@ -71,7 +71,7 @@ class TestDT_SQLVar(unittest.TestCase):
 
 def test_suite():
     suite = unittest.TestSuite()
-    suite.addTest( unittest.makeSuite(TestDT_SQLVar) )
+    suite.addTest(unittest.makeSuite(TestDT_SQLVar))
     return suite
 
 if __name__ == '__main__':

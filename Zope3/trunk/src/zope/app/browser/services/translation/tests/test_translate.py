@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_translate.py,v 1.3 2002/12/31 02:51:55 jim Exp $
+$Id: test_translate.py,v 1.4 2003/03/13 18:49:04 alga Exp $
 """
 
 import unittest
@@ -127,7 +127,7 @@ class TranslateTest(unittest.TestCase, PlacelessSetup):
 
 def test_suite():
     loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase( TranslateTest )
+    return loader.loadTestsFromTestCase(TranslateTest)
 
 if __name__=='__main__':
     unittest.main()

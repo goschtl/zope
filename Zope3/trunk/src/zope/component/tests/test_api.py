@@ -190,7 +190,7 @@ class Test(PlacelessSetup, unittest.TestCase):
                           getView, ob, 'foo2', Request(I2))
         self.assertEquals(queryView(ob, 'foo2', Request(I2), Test), Test)
 
-        self.assertEquals(queryView( ob, 'foo2', Request(I1), None), None)
+        self.assertEquals(queryView(ob, 'foo2', Request(I1), None), None)
 
     def testViewWithContextArgument(self):
         # Basically the same as testView, but exercising the context

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_tzinfo.py,v 1.1 2003/01/09 18:29:49 jim Exp $
+$Id: test_tzinfo.py,v 1.2 2003/03/13 18:49:11 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -30,12 +30,12 @@ class Test(TestCase):
         for minutes in 1439, 600, 1, 0, -1, -600, -1439:
             info1 = tzinfo(minutes)
             info2 = tzinfo(minutes)
-            
+
             self.assertEqual(info1, info2)
             self.assert_(info1 is info2)
             self.assert_(pickle.loads(pickle.dumps(info1)) is info1)
 
-        
+
             self.assertEqual(info1.utcoffset(None),
                              datetime.timedelta(minutes=minutes))
 
@@ -44,7 +44,7 @@ class Test(TestCase):
 
         for minutes in 900000, 1440*60, -1440*60, -900000:
             self.assertRaises(ValueError, tzinfo, minutes)
-        
+
 
 
 def test_suite():

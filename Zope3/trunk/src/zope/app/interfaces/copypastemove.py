@@ -14,7 +14,7 @@ class IObjectMover(Interface):
 
     def moveableTo(target, name=None):
         '''Say whether the object can be moved to the given target.
-        
+
         Returns True if it can be moved there. Otherwise, returns
         false.
         '''
@@ -23,7 +23,7 @@ class IObjectCopier(Interface):
 
     def copyTo(target, name=None):
         """Copy this object to the target given.
-        
+
         Returns the new name within the target, or None
         if the target doesn't do names.
         Typically, the target is adapted to IPasteTarget.
@@ -35,10 +35,10 @@ class IObjectCopier(Interface):
 
     def copyable():
         '''Returns True if the object is copyable, otherwise False.'''
-        
+
     def copyableTo(target, name=None):
         '''Say whether the object can be copied to the given target.
-        
+
         Returns True if it can be copied there. Otherwise, returns
         False.
         '''
