@@ -567,13 +567,15 @@ def walk_with_symlinks(top, func, arg):
         names = os.listdir(top)
     except os.error:
         return
+    exceptions = ('.', '..', '{arch}', '.arch-ids')
+    names = [name for name in names
+             if name not in exceptions
+             if not name.startswith(',,')]
     func(arg, top, names)
-    exceptions = ('.', '..', '{arch}', '_darcs')
     for name in names:
-        if name not in exceptions:
-            name = os.path.join(top, name)
-            if os.path.isdir(name):
-                walk_with_symlinks(name, func, arg)
+        name = os.path.join(top, name)
+        if os.path.isdir(name):
+            walk_with_symlinks(name, func, arg)
 
 def find_test_dir(dir):
     if os.path.exists(dir):
