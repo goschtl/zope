@@ -24,7 +24,7 @@
   <permission
       id="zope.app.wiki.ViewWikiPage"
       title="View Wiki Page"
-      description="View a Wiki Page." />
+      description="View a Wiki Page" />
 
   <grant
       permission="zope.app.wiki.ViewWikiPage"
@@ -33,7 +33,7 @@
   <permission
       id="zope.app.wiki.CommentWikiPage"
       title="Comment on Wiki Page"
-      description="Make a comment on Wiki Page." />
+      description="Make a comment on Wiki Page" />
 
   <grant
       permission="zope.app.wiki.CommentWikiPage"
@@ -42,7 +42,7 @@
   <permission
       id="zope.app.wiki.AddWikiPage"
       title="Add Wiki Page"
-      description="Add Wiki Page." />
+      description="Add Wiki Page" />
 
   <grant
       permission="zope.app.wiki.AddWikiPage"
@@ -51,7 +51,7 @@
   <permission
       id="zope.app.wiki.EditWikiPage"
       title="Edit Wiki Page"
-      description="Edit Wiki Page." />
+      description="Edit Wiki Page" />
 
   <grant
       permission="zope.app.wiki.EditWikiPage"
@@ -60,7 +60,7 @@
   <permission
       id="zope.app.wiki.DeleteWikiPage"
       title="Delete Wiki Page"
-      description="Delete Wiki Page." />
+      description="Delete Wiki Page" />
 
   <grant
       permission="zope.app.wiki.DeleteWikiPage"
@@ -69,7 +69,7 @@
   <permission
       id="zope.app.wiki.ReparentWikiPage"
       title="Reparent Wiki Page"
-      description="Reparent a Wiki Page." />
+      description="Reparent a Wiki Page" />
 
   <grant
       permission="zope.app.wiki.ReparentWikiPage"
