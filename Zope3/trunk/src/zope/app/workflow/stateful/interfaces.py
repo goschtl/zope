@@ -19,6 +19,7 @@ import zope.schema
 from zope.security.checker import CheckerPublic
 
 from zope.interface import Interface, Attribute
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.workflow.interfaces import IWorkflowEvent
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.interfaces import IProcessInstance
@@ -95,39 +96,39 @@ class ITransition(Interface):
     """Stateful workflow transition."""
 
     sourceState = zope.schema.Choice( 
-        title=u"Source State",
-        description=u"Name of the source state.",
+        title=_(u"Source State"),
+        description=_(u"Name of the source state."),
         vocabulary=u"Workflow State Names",
         required=True)
 
     destinationState = zope.schema.Choice( 
-        title=u"Destination State",
-        description=u"Name of the destination state.",
+        title=_(u"Destination State"),
+        description=_(u"Name of the destination state."),
         vocabulary=u"Workflow State Names",
         required=True)
 
     condition = zope.schema.TextLine(
-        title=u"Condition",
-        description=u"""The condition that is evaluated to decide if the
-                        transition can be fired or not.""",
+        title=_(u"Condition"),
+        description=_(u"""The condition that is evaluated to decide if the
+                        transition can be fired or not."""),
         required=False)
 
     script = zope.schema.TextLine(
-        title=u"Script",
-        description=u"""The script that is evaluated to decide if the
-                        transition can be fired or not.""",
+        title=_(u"Script"),
+        description=_(u"""The script that is evaluated to decide if the
+                        transition can be fired or not."""),
         required=False)
 
     permission = zope.schema.Choice(
-        title=u"The permission needed to fire the Transition.",
+        title=_(u"The permission needed to fire the Transition."),
         vocabulary="Permission Ids",
         default=CheckerPublic,
         required=True)
 
 
     triggerMode = zope.schema.Choice(
-        title=u"Trigger Mode",
-        description=u"How the Transition is triggered (Automatic/Manual)",
+        title=_(u"Trigger Mode"),
+        description=_(u"How the Transition is triggered (Automatic/Manual)"),
         default=MANUAL,
         values=[MANUAL, AUTOMATIC])
 
@@ -143,9 +144,9 @@ class IStatefulProcessDefinition(IProcessDefinition):
     """Interface for stateful workflow process definition."""
 
     relevantDataSchema = zope.schema.Choice(
-        title=u"Workflow-Relevant Data Schema",
-        description=u"Specifies the schema that characterizes the workflow "
-                    u"relevant data of a process instance, found in pd.data.",
+        title=_(u"Workflow-Relevant Data Schema"),
+        description=_(u"Specifies the schema that characterizes the workflow "
+                    u"relevant data of a process instance, found in pd.data."),
         vocabulary="Interfaces",
         default=None,
         required=False)
