@@ -358,6 +358,9 @@ class Sequence(Collection):
     def append(self, v):
         self._subs.append(v)
 
+    def extend(self, v):
+        self._subs.extend(v)
+
     def value(self, write, indent):
         for v in self._subs:
             v.output(write, indent)
