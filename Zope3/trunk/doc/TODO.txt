@@ -70,7 +70,6 @@ Things to do for the next release (in no particular order)
 
   - Session data managers
 
-  - Workflow definitions
 
 - Implement tools:
 

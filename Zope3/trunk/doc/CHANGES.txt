@@ -79,6 +79,12 @@ Zope Changes
       o Converted MailService --> MailDelivery utility; also the Mailer is now
         a utility, instead of using its own registry.
 
+    
+    - Converted local Workflow Definitions from being registerable components
+      to be local utilities. Therefore, **a lot** of boiler-plate registration
+      code became obselete and was removed. Using utilities is a huge
+      improvement! 
+
     - Rearranged the package hierarchy below zope.app.
 
       o Moved content types, including their interfaces and browser
