@@ -14,24 +14,17 @@
  
  These are the basic CSS declarations.
 
- $Id: zopetopBasic.css,v 1.2 2002/06/15 09:10:09 srichter Exp $
+ $Id: zopetopBasic.css,v 1.3 2002/07/12 13:29:34 sidnei Exp $
 */
 
 
 body {
-    font: 0.8em Tahoma, Helvetica, Arial, sans-serif;
+    font: 11px Tahoma, Helvetica, Arial, sans-serif;
     background: White;
     color: Black;
-    margin: 0;
-    padding: 0;
+    margin: 5;
+    padding: 5;
 
-    scrollbar-base-color: #DEE7EC;
-    scrollbar-highlight-color: #DEE7EC;
-    scrollbar-track-color: #F7F9FA;
-    scrollbar-darkshadow-color: #F7F9FA;
-    scrollbar-3dlight-color: #8CACBB;
-    scrollbar-shadow-color: #8CACBB;
-    scrollbar-arrow-color: #436976;
 }
 
 
@@ -42,7 +35,7 @@ a {
 }
 
 table {
-    font: 1em Verdana, Helvetica, Arial, sans-serif;
+    font: 1em Tahoma, Helvetica, Arial, sans-serif;
 }
 
 
@@ -53,7 +46,7 @@ img {
 
 p {
 /* Default paragraph style*/
-    font: 1em Verdana, Helvetica, Arial, sans-serif;
+    font: 1em Tahoma, Helvetica, Arial, sans-serif;
     margin: 1em 0em;
     text-align: justify;
 }
@@ -156,9 +149,7 @@ textarea {
 input {
 /* Small cosmetic fix which makes input gadgets look nicer. */
     font: bold 1em Tahoma, Helvetica, Arial, sans-serif;
-    border: 1px solid #8cacbb;  
     color: Black;
-    background-color: white;
     margin: 0em 0em 1em 0em;
 }
 
