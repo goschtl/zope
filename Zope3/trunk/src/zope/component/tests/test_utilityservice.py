@@ -143,7 +143,14 @@ class Test(TestCase, CleanUp):
         uts.remove(dummerUtility)
         uts.remove(dummerUtility)
         self.assertEqual(uts, [])
-        
+
+
+    def test_getAllUtilitiesRegisteredFor_empty(self):
+        us = getService(Utilities)
+        class IFoo(Interface):
+            pass
+        self.assertEqual(list(us.getAllUtilitiesRegisteredFor(IFoo)), [])
+
 
 def test_suite():
     return makeSuite(Test)
