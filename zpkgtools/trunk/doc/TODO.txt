@@ -17,6 +17,10 @@ Things that need to be done
     in an alternate implementation (with different semantics), but the
     issue needs to be re-visited.
 
+  - Re-visit the abstrations for parsed revision control URLs; they're
+    actually pretty painful to work with, and require too much
+    awareness of what kind of URL is being handled.
+
   - The setuptools helper should only be included in distributions that
     actually need it.  This is currenly only needed when packages end up
     defining package data (common in Zope, but not for everyone).  Low
