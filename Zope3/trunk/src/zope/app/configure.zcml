@@ -44,12 +44,6 @@
       provides="zope.app.interfaces.annotation.IAnnotations"
       for="zope.app.interfaces.annotation.IAttributeAnnotatable" />
 
-
-  <adapter
-      factory="zope.app.introspector.Introspector"
-      permission="zope.View"
-      provides="zope.app.interfaces.introspector.IIntrospector" />
-
   <adapter
       factory="zope.app.dependable.Dependable"
       provides="zope.app.interfaces.dependable.IDependable"
@@ -59,6 +53,16 @@
       factory="zope.app.size.DefaultSized"
       provides="zope.app.interfaces.size.ISized"
       permission="zope.View" />
+
+  <adapter
+      factory="zope.app.copy.ObjectMover"
+      provides="zope.app.interfaces.copy.IObjectMover"
+      for="*" />
+
+  <adapter
+      factory="zope.app.copy.ObjectCopier"
+      provides="zope.app.interfaces.copy.IObjectCopier"
+      for="*" />
 
   <include package="zope.app.container" />
   <include package="zope.app.content" />

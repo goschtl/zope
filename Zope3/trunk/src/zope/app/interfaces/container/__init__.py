@@ -189,8 +189,6 @@ class IZopeWriteContainer(IWriteContainer):
 class IZopeContainer(IZopeReadContainer, IZopeWriteContainer, IContainer):
     """Readable and writable content container."""
 
-
-
 class IAddNotifiable(Interface):
     """Interface for notification of being added."""
 
@@ -285,3 +283,8 @@ class ICopySource(Interface):
 
         copyingTo is the unicode path for where the copy is to.
         '''
+
+class IContainerCopyPasteMoveSupport(ICopySource, IPasteTarget, IMoveSource):
+    '''An interface for containers that support copy,
+    paste and move operations'''
+    
