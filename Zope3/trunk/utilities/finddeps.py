@@ -38,7 +38,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.10 2004/03/11 22:59:35 fdrake Exp $
+$Id: finddeps.py,v 1.11 2004/03/11 23:03:52 fdrake Exp $
 """
 import sys
 import getopt
@@ -118,7 +118,7 @@ def getDependenciesOfPythonFile(path):
     """Look through a file for dependencies."""
     deps = []
     lineno = 0
-    for line in open(path, 'r').readlines():
+    for line in open(path, 'r'):
         lineno += 1
         if line.startswith('from') or line.startswith('import'):
             deps.append(Dependency(line.split(' ')[1].strip(), path, lineno))
@@ -131,7 +131,7 @@ def getDependenciesOfZCMLFile(path):
     localModule = localModule.replace('/', '.')
     deps = []
     lineno = 0
-    for line in open(path, 'r').readlines():
+    for line in open(path, 'r'):
         lineno += 1
         match = dottedName.findall(line)
         if match:
