@@ -7,11 +7,11 @@
 <!-- ConnectionService -->
 
   <browser:defaultView 
-      for=".IConnectionManager"
+      for=".IConnectionManager."
       name="index.html" />
 
   <browser:view 
-      for=".IConnectionManager"
+      for=".IConnectionManager."
       name="index.html"
       template="Views/Browser/Connections.pt"
       class=".Views.Browser.Connections."
