@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
- XXX have to uninhibit the module docstring after editing - something is 
-     foiling pymode's font locking.
-
 """Apply actions dictated by traffic_table.py to checkins as they occur.
 
 Normal operation is to fork into the background with stderr and stdout
