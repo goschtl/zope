@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ErrorReportingService.py,v 1.4 2002/10/23 16:00:19 jim Exp $
+$Id: ErrorReportingService.py,v 1.5 2002/10/23 18:18:28 pnaveen Exp $
 """
 
 import os
@@ -106,8 +106,10 @@ class ErrorReportingService(Persistent):
                 req_html = None
                 if request:
                     url = request.URL
-                    username = request.user.getLogin()+','+\
-                      request.user.getId()+','+request.user.getTitle()+','+request.user.getDescription()
+                    try:
+                       username = request.user.getLogin()+','+ request.user.getId()+','+request.user.getTitle()+','+request.user.getDescription()
+                    except:
+                        pass
                     try:
                         req_html = self._makestr(request)
                     except:
