@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: principalpermissionview.py,v 1.3 2003/02/06 06:49:06 seanb Exp $
+$Id: principalpermissionview.py,v 1.4 2003/02/11 15:59:35 sidnei Exp $
 """
 import time
 

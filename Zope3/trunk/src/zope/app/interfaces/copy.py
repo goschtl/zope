@@ -22,7 +22,7 @@ class IObjectMover(Interface):
 class IObjectCopier(Interface):
 
     def copyTo(target, name=None):
-        '''Copy this object to the target given.
+        """Copy this object to the target given.
         
         Returns the new name within the target, or None
         if the target doesn't do names.
@@ -31,7 +31,7 @@ class IObjectCopier(Interface):
         an IObjectCopied event in the context of the target container.
         If a new object is created as part of the copying process, then
         an IObjectCreated event should be published.
-        '''
+        """
 
     def copyable():
         '''Returns True if the object is copyable, otherwise False.'''
@@ -43,3 +43,21 @@ class IObjectCopier(Interface):
         False.
         '''
 
+class IPrincipalClipboard(Interface):
+    '''Interface for adapters that store/retrieve clipboard information
+    for a principal.
+
+    Clipboard information consists on tuples of {'action':action, 'target':target}.
+    '''
+
+    def clearContents():
+        '''Clear the contents of the clipboard'''
+
+    def addItems(action, targets):
+        '''Add new items to the clipboard'''
+
+    def setContents(clipboard):
+        '''Replace the contents of the clipboard by the given value'''
+
+    def getContents():
+        '''Return the contents of the clipboard'''

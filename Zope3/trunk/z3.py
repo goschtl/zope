@@ -14,7 +14,7 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.14 2003/01/09 08:48:33 anthony Exp $
+$Id: z3.py,v 1.15 2003/02/11 15:59:26 sidnei Exp $
 """
 
 import os, sys
@@ -38,6 +38,8 @@ def run(argv=sys.argv):
     here = os.path.join(os.getcwd(), os.path.split(program)[0])
     srcdir = os.path.abspath('src')
     sys.path = [srcdir, here] + basepath
+
+    print sys.path
 
     # Initialize the logging module.
     import logging.config

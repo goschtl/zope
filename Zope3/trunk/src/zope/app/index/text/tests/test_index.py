@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.6 2003/02/06 04:30:49 seanb Exp $
+$Id: test_index.py,v 1.7 2003/02/11 15:59:47 sidnei Exp $
 """
 
 import unittest

@@ -14,16 +14,19 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.3 2002/12/27 15:22:51 stevea Exp $
+$Id: test_contents.py,v 1.4 2003/02/11 15:59:30 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component.adapter import provideAdapter
 
+from zope.app.interfaces.traversing import ITraversable
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.copy import IObjectMover
 from zope.app.container.zopecontainer import ZopeContainerAdapter
+from zope.app.copy import ObjectMover
 
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectModifiedEvent
@@ -44,7 +47,8 @@ class BaseTestContentsBrowserView(PlacelessSetup):
     def setUp(self):
         PlacelessSetup.setUp(self)
         provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
-
+        provideAdapter(ITraversable, IZopeContainer, ZopeContainerAdapter)
+        provideAdapter(None, IObjectMover, ObjectMover)
 
     def testInfo(self):
         # Do we get the correct information back from ContainerContents?
@@ -143,6 +147,17 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         urls = map( lambda x: x['url'], info_list )
         self.assert_( 'subcontainer' in urls )
 
+    def testRename( self ):
+        container = self._TestView__newContext()
+        fc = self._TestView__newView( container )
+        ids=['document1', 'document2']
+        for id in ids:
+            document = Document()
+            container.setObject(id, document)
+        fc.renameObjects(ids, ['document1_1',
+                              'document2_2'] )
+        self.failUnless('document1_1' not in container)
+        self.failIf('document_1 in container')
 
 class IDocument(Interface):
     pass
@@ -155,7 +170,11 @@ class Test(BaseTestContentsBrowserView, TestCase):
 
     def _TestView__newContext(self):
         from zope.app.container.sample import SampleContainer
-        return SampleContainer()
+        from zope.app.content.folder import RootFolder
+        from zope.proxy.context import ContextWrapper
+        root = RootFolder()
+        container = SampleContainer()
+        return ContextWrapper(container, root, name='sample')
 
     def _TestView__newView(self, container):
         from zope.app.browser.container.contents import Contents

@@ -16,7 +16,7 @@
 These exceptions are so general purpose that they don't belong in Zope
 application-specific packages.
 
-$Id: __init__.py,v 1.3 2003/02/04 20:21:59 stevea Exp $
+$Id: __init__.py,v 1.4 2003/02/11 16:00:06 sidnei Exp $
 """
 
 from zope.exceptions._zope_error import ZopeError, IZopeError

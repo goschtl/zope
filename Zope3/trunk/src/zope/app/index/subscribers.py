@@ -25,7 +25,7 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.5 2003/02/06 04:30:46 seanb Exp $
+$Id: subscribers.py,v 1.6 2003/02/11 15:59:45 sidnei Exp $
 """
 __metaclass__ = type
 

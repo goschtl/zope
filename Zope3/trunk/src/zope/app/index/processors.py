@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.6 2003/02/06 04:30:46 seanb Exp $
+$Id: processors.py,v 1.7 2003/02/11 15:59:45 sidnei Exp $
 """
 
 from __future__ import generators

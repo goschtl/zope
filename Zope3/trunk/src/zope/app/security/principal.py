@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: principal.py,v 1.2 2003/02/06 06:49:48 seanb Exp $
+$Id: principal.py,v 1.3 2003/02/11 15:59:55 sidnei Exp $
 """
 
 from zope.exceptions import NotFoundError

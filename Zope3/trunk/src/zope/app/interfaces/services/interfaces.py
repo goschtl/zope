@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: interfaces.py,v 1.11 2003/02/07 09:27:49 mgedmin Exp $
+$Id: interfaces.py,v 1.12 2003/02/11 15:59:51 sidnei Exp $
 """
 
 from zope.app.interfaces.services.configuration import IConfiguration

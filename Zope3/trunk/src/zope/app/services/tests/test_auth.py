@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.6 2003/02/06 06:49:57 seanb Exp $
+$Id: test_auth.py,v 1.7 2003/02/11 15:59:57 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

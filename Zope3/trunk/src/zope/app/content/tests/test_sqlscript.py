@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.4 2003/02/06 06:49:29 seanb Exp $
+$Id: test_sqlscript.py,v 1.5 2003/02/11 15:59:43 sidnei Exp $
 """
 
 import unittest

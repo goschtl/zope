@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.6 2003/02/06 04:30:54 seanb Exp $
+$Id: placefulsetup.py,v 1.7 2003/02/11 15:59:57 sidnei Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter

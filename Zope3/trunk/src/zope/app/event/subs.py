@@ -13,7 +13,8 @@
 ##############################################################################
 """
 Revision information:
-$Id: subs.py,v 1.5 2003/02/06 04:30:43 seanb Exp $
+
+$Id: subs.py,v 1.6 2003/02/11 15:59:44 sidnei Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError

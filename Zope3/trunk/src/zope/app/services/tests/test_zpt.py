@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_zpt.py,v 1.1 2003/02/07 15:52:22 jim Exp $
+$Id: test_zpt.py,v 1.2 2003/02/11 15:59:58 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -14,7 +14,7 @@
 """This module tests the Gettext Export and Import funciotnality of the
 Translation Service.
 
-$Id: test_gettextexportimport.py,v 1.4 2003/02/06 06:49:58 seanb Exp $
+$Id: test_gettextexportimport.py,v 1.5 2003/02/11 15:59:58 sidnei Exp $
 """
 import unittest, time
 

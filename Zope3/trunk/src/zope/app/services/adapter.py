@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.7 2003/02/06 06:49:56 seanb Exp $
+$Id: adapter.py,v 1.8 2003/02/11 15:59:56 sidnei Exp $
 """
 __metaclass__ = type
 

@@ -73,8 +73,6 @@ class IContainerNamesContainer(IContainer):
     """Containers that always choose names for their items
     """
 
-
-
 class IAdding(IView):
 
     def add(content):
@@ -116,7 +114,6 @@ class IZopeItemContainer(IItemContainer):
         The returned value will be in the context of the container.
         """
 
-
 class IZopeSimpleReadContainer(IZopeItemContainer, ISimpleReadContainer):
     """Readable content containers
     """
@@ -129,11 +126,9 @@ class IZopeSimpleReadContainer(IZopeItemContainer, ISimpleReadContainer):
         The value for the key will be in the context of the container.
         """
 
-
 class IZopeReadContainer(IZopeSimpleReadContainer, IReadContainer):
     """Readable containers that can be enumerated.
     """
-
 
     def values():
         """Return the values of the mapping object in the context of
@@ -223,6 +218,7 @@ class IMoveNotifiable(IDeleteNotifiable, IAddNotifiable):
         """
 
 class ICopyNotifiable(IAddNotifiable):
+
     def manage_afterAdd(object, container, copiedFrom=None):
         """Hook method. Will be called after an object is added to a
         container.
@@ -284,7 +280,14 @@ class ICopySource(Interface):
         copyingTo is the unicode path for where the copy is to.
         '''
 
-class IContainerCopyPasteMoveSupport(ICopySource, IPasteTarget, IMoveSource):
-    '''An interface for containers that support copy,
-    paste and move operations'''
-    
+class IPasteNamesChooser(Interface):
+    """Containers automatically chooses a new name for the object if the
+    given one is already choosen. 
+    """
+
+    def getNewName(obj, key):
+        """ Should return a choosen name based on object and key to be used
+        for pasting. This may not be reliable all the time as
+        the name you choose is not guaranteed to be reserved between the time
+        you get it and the time you paste the object, so be careful."""
+

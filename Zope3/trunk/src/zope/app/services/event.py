@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.9 2003/02/06 04:30:52 seanb Exp $
+$Id: event.py,v 1.10 2003/02/11 15:59:56 sidnei Exp $
 """
 
 from __future__ import generators

@@ -14,7 +14,7 @@
 """Unit test logic for setting up and tearing down basic infrastructure
 
 
-$Id: placelesssetup.py,v 1.5 2003/02/06 04:30:44 seanb Exp $
+$Id: placelesssetup.py,v 1.6 2003/02/11 15:59:45 sidnei Exp $
 """
 
 from zope.component import getServiceManager

@@ -153,6 +153,12 @@ Add new content:<br>
 
         </tbody> 
       </table>
+
+      <input type="submit" name="@@rename.html:method" value="Rename" />
+      <input type="submit" name="@@cutObjects.html:method" value="Cut"/>
+      <input type="submit" name="@@copyObjects.html:method" value="Copy"/>
+      <input type="submit" name="@@pasteObjects.html:method" value="Paste"
+             tal:condition="view/hasClipboardContents" />
       <input type="submit" name="@@removeObjects.html:method" value="Delete"/>
 
   </form>

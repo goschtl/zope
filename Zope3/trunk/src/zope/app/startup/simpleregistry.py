@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: simpleregistry.py,v 1.3 2003/02/07 15:59:45 jim Exp $
+$Id: simpleregistry.py,v 1.4 2003/02/11 15:59:59 sidnei Exp $
 """
 from zope.configuration.name import resolve
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry

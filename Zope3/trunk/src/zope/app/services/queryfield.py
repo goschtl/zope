@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: queryfield.py,v 1.1 2003/02/06 13:07:58 stevea Exp $
+$Id: queryfield.py,v 1.2 2003/02/11 15:59:56 sidnei Exp $
 """
 from zope.app.services.field import locateComponent
 from zope.schema import Tuple

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: objecthubsetup.py,v 1.5 2003/02/06 04:30:54 seanb Exp $
+$Id: objecthubsetup.py,v 1.6 2003/02/11 15:59:57 sidnei Exp $
 """
 
 from zope.app.services.tests.eventsetup import EventSetup

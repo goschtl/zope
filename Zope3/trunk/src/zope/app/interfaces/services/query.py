@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: query.py,v 1.7 2003/02/06 13:03:39 stevea Exp $
+$Id: query.py,v 1.8 2003/02/11 15:59:51 sidnei Exp $
 """
 
 from zope.interface import Interface, Attribute

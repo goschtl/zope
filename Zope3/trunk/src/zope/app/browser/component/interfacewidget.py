@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.25 2003/02/06 06:48:54 seanb Exp $
+$Id: interfacewidget.py,v 1.26 2003/02/11 15:59:29 sidnei Exp $
 """
 
 import sys

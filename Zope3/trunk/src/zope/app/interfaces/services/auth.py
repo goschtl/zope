@@ -12,10 +12,11 @@
 #
 ##############################################################################
 """
-$Id: auth.py,v 1.4 2003/02/07 18:18:56 mgedmin Exp $
+$Id: auth.py,v 1.5 2003/02/11 15:59:51 sidnei Exp $
 """
 from zope.interface import Interface
 from zope.app.interfaces.security import IPrincipal
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 class IReadUser(IPrincipal):
     """Read interface for a User."""
@@ -50,4 +51,7 @@ class IWriteUser(Interface):
 
 
 class IUser(IReadUser, IWriteUser):
-    """A user object for the Local Authentication Service."""
+    """An user object for the Local Authentication Service."""
+
+class IAnnotatableUser(IUser, IAttributeAnnotatable):
+    """An annotatable user object for the Local Authentication Service."""

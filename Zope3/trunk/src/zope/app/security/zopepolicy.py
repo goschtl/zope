@@ -13,9 +13,9 @@
 ##############################################################################
 """ Define Zope\'s default security policy
 
-$Id: zopepolicy.py,v 1.3 2003/02/06 06:49:48 seanb Exp $
+$Id: zopepolicy.py,v 1.4 2003/02/11 15:59:55 sidnei Exp $
 """
-__version__='$Revision: 1.3 $'[11:-2]
+__version__='$Revision: 1.4 $'[11:-2]
 
 from zope.component import queryAdapter, getService
 from zope.component.servicenames import Authentication

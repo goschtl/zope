@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utilityservice.py,v 1.3 2003/02/06 06:50:08 seanb Exp $
+$Id: test_utilityservice.py,v 1.4 2003/02/11 16:00:05 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -13,7 +13,7 @@
 ##############################################################################
 """Code to initialize the application server
 
-$Id: _app.py,v 1.5 2003/02/07 15:30:46 jim Exp $
+$Id: _app.py,v 1.6 2003/02/11 15:59:28 sidnei Exp $
 """
 
 import base64

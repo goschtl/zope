@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_standardmacros.py,v 1.3 2003/02/06 06:49:14 seanb Exp $
+$Id: test_standardmacros.py,v 1.4 2003/02/11 15:59:38 sidnei Exp $
 """
 
 import unittest, sys

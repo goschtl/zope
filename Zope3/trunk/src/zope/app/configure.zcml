@@ -64,12 +64,20 @@
   <adapter
       factory="zope.app.copy.ObjectMover"
       provides="zope.app.interfaces.copy.IObjectMover"
+      permission="zope.ManageContent" 
       for="*" />
 
   <adapter
       factory="zope.app.copy.ObjectCopier"
       provides="zope.app.interfaces.copy.IObjectCopier"
+      permission="zope.ManageContent" 
       for="*" />
+
+  <adapter
+      factory="zope.app.copy.PrincipalClipboard"
+      provides="zope.app.interfaces.copy.IPrincipalClipboard"
+      permission="zope.ManageContent" 
+      for="zope.app.interfaces.annotation.IAnnotations" />
 
   <include package="zope.app.container" />
   <include package="zope.app.content" />

@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_batchedrankedprocessor.py,v 1.4 2003/02/06 13:03:38 stevea Exp $
+$Id: test_batchedrankedprocessor.py,v 1.5 2003/02/11 15:59:47 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

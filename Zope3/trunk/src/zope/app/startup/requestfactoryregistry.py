@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: requestfactoryregistry.py,v 1.3 2003/02/07 15:59:45 jim Exp $
+$Id: requestfactoryregistry.py,v 1.4 2003/02/11 15:59:58 sidnei Exp $
 """
 from zope.app.interfaces.startup.simpleregistry import ISimpleRegistry
 from zope.app.startup.simpleregistry import SimpleRegistry

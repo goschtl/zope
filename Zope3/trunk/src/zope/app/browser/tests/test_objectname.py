@@ -14,7 +14,7 @@
 """Test the AbsoluteURL view
 
 Revision information:
-$Id: test_objectname.py,v 1.4 2003/02/06 06:49:16 seanb Exp $
+$Id: test_objectname.py,v 1.5 2003/02/11 15:59:39 sidnei Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import Interface

@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_objectretrievingprocessor.py,v 1.4 2003/02/06 04:30:47 seanb Exp $
+$Id: test_objectretrievingprocessor.py,v 1.5 2003/02/11 15:59:46 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-
 Revision information:
-$Id: placelesssetup.py,v 1.3 2003/02/06 06:50:08 seanb Exp $
+
+$Id: placelesssetup.py,v 1.4 2003/02/11 16:00:05 sidnei Exp $
 """
 
 # A mix-in class inheriting from CleanUp that also connects the CA services

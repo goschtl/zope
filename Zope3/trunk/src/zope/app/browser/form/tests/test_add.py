@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_add.py,v 1.4 2003/02/07 15:48:38 jim Exp $
+$Id: test_add.py,v 1.5 2003/02/11 15:59:33 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

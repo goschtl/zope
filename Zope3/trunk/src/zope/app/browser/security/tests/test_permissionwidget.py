@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission field widget tests
 
-$Id: test_permissionwidget.py,v 1.5 2003/02/06 06:49:11 seanb Exp $
+$Id: test_permissionwidget.py,v 1.6 2003/02/11 15:59:37 sidnei Exp $
 """
 
 __metaclass__ = type

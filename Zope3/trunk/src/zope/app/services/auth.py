@@ -13,7 +13,7 @@
 ##############################################################################
 """Authentication service implementation.
 
-$Id: auth.py,v 1.10 2003/02/06 06:49:56 seanb Exp $
+$Id: auth.py,v 1.11 2003/02/11 15:59:56 sidnei Exp $
 """
 
 from types import TupleType
@@ -30,10 +30,9 @@ from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.security import ILoginPassword
 from zope.app.interfaces.security import IAuthenticationService
 
-from zope.app.interfaces.services.auth import IUser
+from zope.app.interfaces.services.auth import IAnnotatableUser
 
 from zope.proxy.introspection import removeAllProxies
-from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.security.grants.principalrole import principalRoleManager
 from zope.app.component.nextservice import getNextService
@@ -166,7 +165,7 @@ class AuthenticationService(Persistent):
 class User(Persistent):
     """A persistent implementation of the IUser interface """
 
-    __implements__ =  IUser, IAttributeAnnotatable
+    __implements__ =  IAnnotatableUser
 
     def __init__(self, id, title, description, login, pw):
         self.__id = id

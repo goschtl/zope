@@ -13,7 +13,7 @@
 ##############################################################################
 """A query processor to the TextIndex that supports batching and ranking.
 
-$Id: processors.py,v 1.4 2003/02/06 13:04:28 stevea Exp $
+$Id: processors.py,v 1.5 2003/02/11 15:59:46 sidnei Exp $
 """
 
 from zope.component import getAdapter

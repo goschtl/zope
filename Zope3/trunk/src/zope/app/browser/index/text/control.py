@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: control.py,v 1.5 2003/02/06 04:30:41 seanb Exp $
+$Id: control.py,v 1.6 2003/02/11 15:59:33 sidnei Exp $
 """
 
 from __future__ import generators

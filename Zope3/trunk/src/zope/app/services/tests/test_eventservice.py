@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.8 2003/02/06 04:30:54 seanb Exp $
+$Id: test_eventservice.py,v 1.9 2003/02/11 15:59:57 sidnei Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner

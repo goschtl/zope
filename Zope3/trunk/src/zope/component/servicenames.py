@@ -14,7 +14,7 @@
 """
 Default service names
 
-$Id: servicenames.py,v 1.3 2003/02/06 20:40:55 jack-e Exp $
+$Id: servicenames.py,v 1.4 2003/02/11 16:00:04 sidnei Exp $
 """
 
 HubIds = 'HubIds'

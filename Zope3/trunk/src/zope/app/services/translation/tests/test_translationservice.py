@@ -13,7 +13,7 @@
 ##############################################################################
 """This module tests the regular persistent Translation Service.
 
-$Id: test_translationservice.py,v 1.3 2003/02/06 06:49:58 seanb Exp $
+$Id: test_translationservice.py,v 1.4 2003/02/11 15:59:58 sidnei Exp $
 """
 import unittest, sys
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.17 2003/02/06 06:49:00 seanb Exp $
+$Id: test_interfacewidget.py,v 1.18 2003/02/11 15:59:29 sidnei Exp $
 """
 
 __metaclass__ = type

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.4 2003/02/06 06:50:06 seanb Exp $
+$Id: __init__.py,v 1.5 2003/02/11 16:00:04 sidnei Exp $
 """
 
 from zope.component.interfaces import IComponentArchitecture

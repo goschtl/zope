@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_directives.py,v 1.4 2003/02/06 04:30:44 seanb Exp $
+$Id: test_directives.py,v 1.5 2003/02/11 15:59:45 sidnei Exp $
 """
 
 from unittest import TestCase, main, makeSuite

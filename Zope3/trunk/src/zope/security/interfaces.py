@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for security machinery.
 
-$Id: interfaces.py,v 1.4 2003/02/05 11:38:00 stevea Exp $
+$Id: interfaces.py,v 1.5 2003/02/11 16:00:10 sidnei Exp $
 """
 
 from zope.interface import Interface, Attribute

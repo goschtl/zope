@@ -13,7 +13,7 @@
 ##############################################################################
 """Permission fields tests
 
-$Id: test_permissionfield.py,v 1.5 2003/02/06 06:49:54 seanb Exp $
+$Id: test_permissionfield.py,v 1.6 2003/02/11 15:59:56 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

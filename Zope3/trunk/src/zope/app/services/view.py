@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.5 2003/02/06 15:35:03 alga Exp $
+$Id: view.py,v 1.6 2003/02/11 15:59:56 sidnei Exp $
 """
 __metaclass__ = type
 

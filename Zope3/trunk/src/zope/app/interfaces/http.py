@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: http.py,v 1.1 2003/02/07 15:59:38 jim Exp $
+$Id: http.py,v 1.2 2003/02/11 15:59:49 sidnei Exp $
 """
 
 from zope.interface import Interface, Attribute

@@ -12,9 +12,9 @@
 #
 ##############################################################################
 """
-
 Revision information:
-$Id: errorr.py,v 1.5 2003/02/06 21:07:05 stevea Exp $
+
+$Id: errorr.py,v 1.6 2003/02/11 15:59:56 sidnei Exp $
 """
 
 import time

@@ -273,6 +273,11 @@
 
     <browser:page name="contents.html" attribute="contents" />
     <browser:page name="removeObjects.html" attribute="removeObjects" />
+    <browser:page name="cutObjects.html" attribute="cutObjects" />
+    <browser:page name="copyObjects.html" attribute="copyObjects" />
+    <browser:page name="pasteObjects.html" attribute="pasteObjects" />
+    <browser:page name="renameObjects.html" attribute="renameObjects" />
+    <browser:page name="rename.html" attribute="rename" />
 
   </browser:pages>
 

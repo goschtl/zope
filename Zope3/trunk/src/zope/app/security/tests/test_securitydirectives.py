@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_securitydirectives.py,v 1.4 2003/02/06 06:49:54 seanb Exp $
+$Id: test_securitydirectives.py,v 1.5 2003/02/11 15:59:56 sidnei Exp $
 """
 
 import unittest

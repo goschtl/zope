@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: editview.py,v 1.9 2003/02/07 15:48:38 jim Exp $
+$Id: editview.py,v 1.10 2003/02/11 15:59:32 sidnei Exp $
 """
 
 from datetime import datetime

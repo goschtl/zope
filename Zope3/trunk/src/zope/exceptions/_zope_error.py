@@ -13,7 +13,7 @@
 ##############################################################################
 """Base class for Zope application errors.
 
-$Id: _zope_error.py,v 1.3 2003/02/04 20:21:59 stevea Exp $
+$Id: _zope_error.py,v 1.4 2003/02/11 16:00:06 sidnei Exp $
 """
 from zope.interface.common.interfaces import IException
 from zope.interface.implements import implements

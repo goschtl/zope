@@ -13,7 +13,7 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_viewpackage.py,v 1.4 2003/02/07 15:09:53 jim Exp $
+$Id: test_viewpackage.py,v 1.5 2003/02/11 15:59:58 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

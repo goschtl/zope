@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: test_annotationcacheable.py,v 1.3 2003/02/06 06:49:19 seanb Exp $
+$Id: test_annotationcacheable.py,v 1.4 2003/02/11 15:59:40 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite

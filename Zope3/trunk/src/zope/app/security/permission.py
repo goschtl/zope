@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: permission.py,v 1.3 2003/02/06 06:49:48 seanb Exp $
+$Id: permission.py,v 1.4 2003/02/11 15:59:55 sidnei Exp $
 """
 
 from zope.schema import ValueSet

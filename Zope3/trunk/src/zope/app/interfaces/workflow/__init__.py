@@ -14,7 +14,7 @@
 """
     Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.6 2003/02/07 15:26:30 jack-e Exp $
+$Id: __init__.py,v 1.7 2003/02/11 15:59:52 sidnei Exp $
 """
 
 from zope.interface import Interface
