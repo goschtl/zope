@@ -27,8 +27,8 @@ class PlacelessSetup(cleanup.CleanUp):
         super(PlacelessSetup, self).tearDown()
 
 
-def setUp(test):
+def setUp(test=None):
     cleanup.setUp()
 
-def tearDown(test):
+def tearDown(test=None):
     cleanup.tearDown()
