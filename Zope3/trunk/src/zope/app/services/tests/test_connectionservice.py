@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.14 2003/08/21 12:01:21 BjornT Exp $
+$Id: test_connectionservice.py,v 1.15 2003/09/21 17:33:13 jim Exp $
 """
 
 import unittest
@@ -50,10 +50,10 @@ def sort(list):
 def addConnection(servicemanager, name, connection, status=ActiveStatus):
     """Add a menu to the service manager's default package."""
     default = zapi.traverse(servicemanager, 'default')
-    default.setObject(name, connection)
+    default[name] = connection
     path = "%s/default/%s" % (zapi.getPath(servicemanager), name)
     registration = UtilityRegistration(name, IZopeDatabaseAdapter, path)
-    key = default.getRegistrationManager().setObject("", registration)
+    key = default.getRegistrationManager().addRegistration(registration)
     zapi.traverse(default.getRegistrationManager(), key).status = status
     return zapi.traverse(default, name)    
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Menu Service Tests
 
-$Id: test_menu.py,v 1.2 2003/08/16 00:44:14 srichter Exp $
+$Id: test_menu.py,v 1.3 2003/09/21 17:33:13 jim Exp $
 """
 import unittest
 
@@ -66,10 +66,10 @@ def addMenu(servicemanager, menu_id, title, inherit, usage=''):
     menu.usage = usage
 
     default = zapi.traverse(servicemanager, 'default')
-    default.setObject(menu_id, menu)
+    default[menu_id] = menu
     path = "%s/default/%s" % (zapi.getPath(servicemanager), menu_id)
     registration = UtilityRegistration(menu_id, ILocalBrowserMenu, path)
-    key = default.getRegistrationManager().setObject("", registration)
+    key = default.getRegistrationManager().addRegistration(registration)
     zapi.traverse(default.getRegistrationManager(), key).status = ActiveStatus
     return zapi.traverse(default, menu_id)    
 
@@ -79,7 +79,7 @@ def addMenuItem(menu, interface, action, title):
     item.title = title
     item.action = action
     item.interface = interface
-    menu.setObject('something', item)
+    menu.addItem(item)
     return item
 
 
