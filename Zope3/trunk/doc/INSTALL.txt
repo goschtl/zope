@@ -26,7 +26,7 @@ Quick Start
 
     * cd Zope3
 
-    * python stupid_build.py
+    * make
 
     * Copy principals.zcml.in to principals.zcml, and add a manager
       entry to it based on the examples in sample_principals.zcml.
