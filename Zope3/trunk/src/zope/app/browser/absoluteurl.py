@@ -13,7 +13,7 @@
 ##############################################################################
 """Absolute URL View components
 
-$Id: absoluteurl.py,v 1.12 2003/08/08 18:07:06 jim Exp $
+$Id: absoluteurl.py,v 1.13 2003/08/28 22:40:24 sidnei Exp $
 """
 
 from zope.app import zapi
@@ -48,7 +48,7 @@ class AbsoluteURL(BrowserView):
             name = dict['name']
         except KeyError:
             raise TypeError, _insufficientContext
-            
+
         if name:
             url += '/'+name
 
@@ -75,7 +75,7 @@ class AbsoluteURL(BrowserView):
             name = dict['name']
         except KeyError:
             raise TypeError, _insufficientContext
-            
+
         if name:
             base += ({'name': name,
                       'url': ("%s/%s" % (base[-1]['url'], name))
@@ -99,7 +99,7 @@ class SiteAbsoluteURL(BrowserView):
             name = dict.get('name')
             if name:
                 url += '/'+name
-                
+
         return url
 
     __call__ = __str__
@@ -123,5 +123,5 @@ class SiteAbsoluteURL(BrowserView):
                           'url': ("%s/%s" % (base[-1]['url'], name))
                           }, )
 
-                
+
         return base

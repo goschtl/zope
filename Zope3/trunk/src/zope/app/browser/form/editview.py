@@ -13,7 +13,7 @@
 ##############################################################################
 """Edit View Classes
 
-$Id: editview.py,v 1.36 2003/08/18 18:50:44 srichter Exp $
+$Id: editview.py,v 1.37 2003/08/28 22:40:25 sidnei Exp $
 """
 from datetime import datetime
 
@@ -133,7 +133,8 @@ def EditViewFactory(name, schema, label, permission, layer,
         menu and globalBrowserMenuService.getMenuUsage(menu))
 
     defineChecker(class_,
-                  NamesChecker(("__call__", "__getitem__", "browserDefault"),
+                  NamesChecker(("__call__", "__getitem__",
+                                "browserDefault", "publishTraverse"),
                                permission))
 
     provideView(for_, name, IBrowserPresentation, class_, layer)

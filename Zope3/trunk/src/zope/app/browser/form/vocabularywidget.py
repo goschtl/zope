@@ -17,7 +17,7 @@ This includes support for vocabulary fields' use of the vocabulary to
 determine the actual widget to display, and support for supplemental
 query objects and helper views.
 
-$Id: vocabularywidget.py,v 1.56 2003/08/25 14:30:27 fdrake Exp $
+$Id: vocabularywidget.py,v 1.57 2003/08/28 22:40:25 sidnei Exp $
 """
 from xml.sax.saxutils import quoteattr
 
@@ -436,8 +436,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
             if s:
                 contents.append(self._div('queryinput', s))
         return self._div(self.getValue('cssClass'), "\n".join(contents),
-                         id=self.name,
-                         extra=self.getValue('extra'))
+                         id=self.name)
 
     def _div(self, cssClass, contents, **kw):
         if contents:
@@ -508,7 +507,8 @@ class SelectListWidget(SingleDataHelper, VocabularyEditWidgetBase):
         return widget.renderElement('select',
                                     name=self.name,
                                     contents=contents,
-                                    size=self.getValue('size'))
+                                    size=self.getValue('size'),
+                                    extra=self.getValue('extra'))
 
     def renderItems(self, value):
         vocabulary = self.context.vocabulary
@@ -555,7 +555,8 @@ class VocabularyMultiEditWidget(MultiDataHelper, VocabularyEditWidgetBase):
                                     name=self.name + ':list',
                                     multiple=None,
                                     size=self.getValue('size'),
-                                    contents="\n".join(rendered_items))
+                                    contents="\n".join(rendered_items),
+                                    extra=self.getValue('extra'))
 
 
 class VocabularyQueryViewBase(ActionHelper, ViewSupport, BrowserView):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.30 2003/08/16 00:42:49 srichter Exp $
+$Id: add.py,v 1.31 2003/08/28 22:40:25 sidnei Exp $
 """
 import sys
 
@@ -155,7 +155,8 @@ def AddViewFactory(name, schema, label, permission, layer,
 
     defineChecker(class_,
                   NamesChecker(
-                    ("__call__", "__getitem__", "browserDefault"),
+                    ("__call__", "__getitem__",
+                     "browserDefault", "publishTraverse"),
                     permission,
                     )
                   )
