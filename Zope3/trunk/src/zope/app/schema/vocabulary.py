@@ -13,11 +13,13 @@
 ##############################################################################
 """Implementation of ZCML action to register vocabulary factories.
 
-$Id: vocabulary.py,v 1.5 2004/03/03 22:54:27 srichter Exp $
+$Id: vocabulary.py,v 1.6 2004/03/04 18:48:21 poster Exp $
 """
 from zope.app import zapi
 from zope.interface import Interface, implements
 from zope.schema.interfaces import IVocabularyRegistry
+from zope.schema import vocabulary
+from zope.testing import cleanup
 
 
 class IVocabularyFactory(Interface):
@@ -38,3 +40,17 @@ class ZopeVocabularyRegistry(object):
         """See zope.schema.interfaces.IVocabularyRegistry"""
         factory = zapi.getUtility(context, IVocabularyFactory, name)
         return factory(context)
+
+def _clear():
+    """Re-initialize the vocabulary service."""
+    # This should normally only be needed by the testing framework,
+    # but is also used for module initialization.
+    global vocabularyService
+    vocabulary._clear()
+    vocabularyService = vocabulary.getVocabularyRegistry()
+    vocabulary._clear()
+    vocabulary.setVocabularyRegistry(ZopeVocabularyRegistry())
+
+
+_clear()
+cleanup.addCleanUp(_clear)
