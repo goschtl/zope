@@ -13,10 +13,12 @@
 ##############################################################################
 """Classes to support implementing Acquisition
 
-$Id: __init__.py,v 1.1 2004/04/01 18:26:43 sidnei Exp $
+$Id: __init__.py,v 1.2 2004/04/01 18:33:26 philikon Exp $
 """
 
-from __future__ import Acquisition
+class Acquisition:
+    class Implicit:
+        pass
 
 class Implicit(Acquisition.Implicit):
     pass
