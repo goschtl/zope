@@ -102,7 +102,6 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.f1, 1.123)
         self.assertEqual(object.f2, 2.23456789012345)
         self.assertEqual(object.f3, 11.1)
@@ -123,7 +122,6 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.f1, 1.1)
         self.assertEqual(object.f2, None) # None is default missing_value
         self.assertEqual(object.f3, 0)  # 0 is from f3.missing_value=0
@@ -200,7 +198,6 @@ class Test(BrowserTestCase):
 
         # check new value in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assert_(object.f1 is None)
         self.assert_(object.f2 is None)
         self.assertEqual(object.f3, 2.1)
@@ -215,9 +212,8 @@ class Test(BrowserTestCase):
             'UPDATE_SUBMIT' : '',
             'field.f1' : 'foo' })
         self.assertEqual(response.getStatus(), 200)
-        # XXX - reinstate when widget errors are cleaned up
-        # self.assert_(validationErrorExists('f1',
-        #    'Invalid floating point data', response.getBody()))
+        self.assert_(validationErrorExists('f1',
+            'Invalid floating point data', response.getBody()))
 
 
 def test_suite():

@@ -33,6 +33,7 @@ class IFile(Interface):
         title=_(u'Data'),
         description=_(u'The actual content of the object.'),
         default='',
+        missing_value='',
         required=False,
         )
 

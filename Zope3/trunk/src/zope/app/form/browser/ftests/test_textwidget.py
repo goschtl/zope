@@ -96,27 +96,28 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.s1, u'foo')
         self.assertEqual(object.s2, u'bar')
         self.assertEqual(object.s3, u'Uncle')
 
 
     def test_invalid_type(self):
+        """Tests text widget's handling of invalid unicode input.
+        
+        The text widget will succeed in converting any form input into
+        unicode.
+        """
         self.getRootFolder()['test'] = TextLineTest()
         get_transaction().commit()
 
         # submit invalud type for text line
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.s1' : '' }) # not unicode
-
+            'field.s1' : 123 }) # not unicode
         self.assertEqual(response.getStatus(), 200)
-        # XXX We don't have a invalid field value
-        #since we convert the value to unicode
-        self.assert_(not validationErrorExists(
-            's1', 'Object is of wrong type.', response.getBody()))
-
+        
+        object = traverse(self.getRootFolder(), 'test')
+        self.assert_(object.s1, u'123')
 
     def test_missing_value(self):
         self.getRootFolder()['test'] = TextLineTest()
@@ -133,7 +134,6 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.s1, u'foo')
         self.assertEqual(object.s2, u'')   # default missing_value
         self.assertEqual(object.s3, None)  # None is s3's missing_value
@@ -210,7 +210,6 @@ class Test(BrowserTestCase):
 
         # check new value in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.s1, '')
         self.assertEqual(object.s2, u'bar')
         self.assert_(object.s3 is None)

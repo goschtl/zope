@@ -133,14 +133,10 @@ class TextWidget(SimpleInputWidget):
         if self.convert_missing_value and input == self._missing:
             value = self.context.missing_value
         else:
-            # XXX We convert everything to unicode :-(
-            # But I see no other way for to convert the
-            # value at the moment. 
             try:
                 value = unicode(input)
             except ValueError, v:
                 raise ConversionError("Invalid integer data", v)
-        
         return decode_html(value)
 
 
@@ -257,13 +253,13 @@ class TextAreaWidget(SimpleInputWidget):
     def _toFieldValue(self, value):
         value = super(TextAreaWidget, self)._toFieldValue(value)
         if value:
-            value = decode_html(value)
-            value = value.replace("\r\n", "\n")
-            # Converting the value to unicode.
             try:
                 value = unicode(value)
             except ValueError, v:
                 raise ConversionError("Invalid unicode data", v)
+            else:
+                value = decode_html(value)
+                value = value.replace("\r\n", "\n")                
         return value
 
     def _toFormValue(self, value):
@@ -358,27 +354,9 @@ class FileWidget(TextWidget):
                                  size=self.displayWidth,
                                  extra=self.extra)
 
-    def hasInput(self):
-        file = self.request.form.get(self.name)
-        if file is None:
-            return False
-
-        if getattr(file, 'filename', ''):
-            return True
-
-        try:
-            seek = file.seek
-            read = file.read
-        except AttributeError:
-            return False
-
-        seek(0)
-        if read(1):
-            return True
-
-        return False
-
     def _toFieldValue(self, input):
+        if input == '':
+            return self.context.missing_value
         try:
             seek = input.seek
             read = input.read

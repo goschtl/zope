@@ -114,41 +114,41 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.f1, self.sampleText)
         self.assertEqual(object.f2, self.sampleText)
 
 
-    def XXX_test_invalid_value(self):
+    def test_invalid_value(self):
+        """Invalid input is treated as 'no input' by the file widget.
+
+        To test this, we submit an invalid value for a required field f1.
+        """
         self.getRootFolder()['test'] = FileTest()
         get_transaction().commit()
 
         # submit an invalid file value
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.f1' : 'not a file' })
+            'field.f1' : 'not a file - same as missing input' })
         self.assertEqual(response.getStatus(), 200)
-
-        print response.getBody()
-
         self.assert_(validationErrorExists('f1',
-            'Value is not a file object', response.getBody()))
+            'Form input is not a file object', response.getBody()))
 
 
-    def XXX_test_required_validation(self):
-        self.getRootFolder()['test'] = TextLineTest()
+    def test_required_validation(self):
+        self.getRootFolder()['test'] = FileTest()
         get_transaction().commit()
 
-        # submit missing values for required field s1
+        # submit missing value for required field f1
         response = self.publish('/test/edit.html', form={
             'UPDATE_SUBMIT' : '',
-            'field.f1' : sampleTextFile,
-            'field.f2' : '' })
+            'field.f1' : '',
+            'field.f2' : self.sampleTextFile })
         self.assertEqual(response.getStatus(), 200)
 
         # confirm error msgs
-        self.assert_(missingInputErrorExists('s1', response.getBody()))
-        self.assert_(not missingInputErrorExists('s2', response.getBody()))
+        self.assert_(missingInputErrorExists('f1', response.getBody()))
+        self.assert_(not missingInputErrorExists('f2', response.getBody()))
 
 
     def test_empty_file(self):
@@ -164,7 +164,6 @@ class Test(BrowserTestCase):
 
         # new value for f1 should be field.missing_value (i.e, None)
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assert_(object.f1 is None)
 
 
