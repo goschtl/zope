@@ -15,10 +15,11 @@
 
 $Id$
 """
+import sets
 import unittest
 
 from zope.interface import Interface, implements
-from zope.schema import Choice, List
+from zope.schema import Choice, List, Set, TextLine
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from zope.publisher.browser import TestRequest
 
@@ -55,6 +56,12 @@ class ICollector(Interface):
     numbers = List(
         title=u"Numbers",
         description=u"The Numbers",
+        value_type=choice,
+        required=False)
+
+    letters = Set(
+        title=u"Letters",
+        description=u"The Letters",
         value_type=choice,
         required=False)
 
@@ -410,6 +417,18 @@ class ItemsMultiEditWidgetBaseTest(ItemsEditWidgetBaseTest):
             widget.hidden(),
             ['<input', 'type="hidden"', 'value="token2"', 'id="field.numbers"', 
              'name="field.numbers:list"', 'value="token3"'])
+
+    def test_getInputValue(self):
+        widget = self._makeWidget(form={'field.numbers': ['token2','token3']})
+        widget.setPrefix('field.')
+        self.assertEqual(widget.getInputValue(), ['two', 'three'])
+
+        self._field = ICollector.get('letters')
+        widget = self._makeWidget(form={'field.letters': ['token2','token3']})
+        widget.setPrefix('field.')
+        self.assertEqual(widget.getInputValue(), sets.Set(['two', 'three']))
+        self._field = ICollector.get('numbers')
+
 
 
 class MultiSelectWidgetTest(ItemsMultiEditWidgetBaseTest):

@@ -495,6 +495,11 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #360: MultiSelectWidget configured for ISet but creates
+                          list
+                          
+        The correct type of the collection field is now discovered and used.
+
       - Addressed issue #348: ZCML hides import errors 
  
         I tried really hard to get a better error message, but it is not

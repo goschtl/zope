@@ -16,8 +16,9 @@
 $Id$
 """
 __docformat__ = 'restructuredtext'
-
+import sets
 from xml.sax.saxutils import escape
+
 from zope.interface import implements
 from zope.i18n import translate
 from zope.schema.interfaces import ValidationError, InvalidValue
@@ -188,9 +189,18 @@ class MultiDataHelper(object):
         if not isinstance(input, list):
             input = [input]
         try:
-            return self.convertTokensToValues(input)
+            values = self.convertTokensToValues(input)
         except InvalidValue, e:
             raise ConversionError("Invalid value", e)
+
+        # All AbstractCollection fields have a `_type` attribute specifying
+        # the type of collection. Use it to generate the correct type,
+        # otherwise return a list. 
+        if hasattr(self.context, '_type'):
+            return self.context._type(values)
+        else:
+            return values
+
 
     def _getDefault(self):
         # Return the default value for this widget;
@@ -526,6 +536,7 @@ class ItemsMultiEditWidgetBase(MultiDataHelper, ItemsEditWidgetBase):
 
 class MultiSelectWidget(ItemsMultiEditWidgetBase):
     """Provide a selection list for the list to be selected."""
+    
 
 class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
     """A multi-selection widget with ordering support."""

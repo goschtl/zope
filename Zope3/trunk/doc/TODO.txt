@@ -90,8 +90,6 @@ Others
 
 * 356: Copy and Paste does not handle exceptions raised by __setitem__ 
 
-* 360: MultiSelectWidget configured for ISet but creates list
-
 * 369: DAV is hosed on the trunk
 
 * 371: OrderedMultiSelectWidget ignores setRenderedValue
