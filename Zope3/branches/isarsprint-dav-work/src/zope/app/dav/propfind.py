@@ -107,7 +107,7 @@ class PROPFIND(object):
             responses = parsed.getElementsByTagNameNS(
                 self.default_ns, 'response')
             for r in responses:
-                ms.appendChild(r)
+                ms.appendChild(ms.ownerDocument.importNode(r, True))
 
     def _handleProp(self, source):
         props = {}
