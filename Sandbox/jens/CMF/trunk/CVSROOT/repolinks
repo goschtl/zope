@@ -196,5 +196,4 @@
 /Zope27/lib/python/Zope/ComponentArchitecture  /Packages3/ComponentArchitecture
 /Zope27/lib/python/Zope/Configuration     /Zope3/lib/python/Zope/Configuration
 /Zope27/lib/python/Zope/I18n              /Zope3/lib/python/Zope/I18n
-
-
+/Zope27/lib/python/Zope/Exceptions        /Zope3/lib/python/Zope/Exceptions
