@@ -14,7 +14,7 @@
 These views implement ftp commands using file-system representation
 and meta-data apis.
 
-$Id: __init__.py,v 1.4 2003/05/28 15:46:09 jim Exp $
+$Id: __init__.py,v 1.5 2003/09/21 17:32:14 jim Exp $
 """
 __metaclass__ = type
 
@@ -27,9 +27,10 @@ from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 
 from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.app.interfaces.container import IZopeWriteContainer
 
 from zope.proxy import removeAllProxies
+
+from zope.app.copypastemove import rename
 
 class FTPView:
 
@@ -80,7 +81,7 @@ class FTPView:
             info['type'] = 'd'
             info['group_readable'] = hasattr(f, 'get')
             f = queryAdapter(file, IWriteDirectory)
-            info['group_writable'] = hasattr(f, 'setObject')
+            info['group_writable'] = hasattr(f, '__setitem__')
         else:
             # It's a file
             info['type'] = 'f'
@@ -138,16 +139,13 @@ class FTPView:
 
     def mkdir(self, name):
         dir = queryAdapter(self.context, IWriteDirectory)
-        dir = getAdapter(dir, IZopeWriteContainer)
-
         factory = getAdapter(self.context, IDirectoryFactory)
         newdir = factory(name)
         publish(self.context, ObjectCreatedEvent(newdir))
-        dir.setObject(name, newdir)
+        dir[name] = newdir
 
     def remove(self, name):
         dir = queryAdapter(self.context, IWriteDirectory)
-        dir = getAdapter(dir, IZopeWriteContainer)
         del dir[name]
 
     def rmdir(self, name):
@@ -155,8 +153,7 @@ class FTPView:
 
     def rename(self, old, new):
         dir = queryAdapter(self.context, IWriteDirectory)
-        dir = getAdapter(dir, IZopeWriteContainer)
-        dir.rename(old, new)
+        rename(dir, old, new)
 
     def _overwrite(self, name, instream, start=None, end=None, append=False):
         file = self._dir[name]
@@ -207,7 +204,6 @@ class FTPView:
             ext = "."
 
         dir = queryAdapter(self.context, IWriteDirectory)
-        dir = getAdapter(dir, IZopeWriteContainer)
 
         factory = queryNamedAdapter(self.context, IFileFactory, ext)
         if factory is None:
@@ -215,13 +211,13 @@ class FTPView:
 
         newfile = factory(name, '', data)
         publish(self.context, ObjectCreatedEvent(newfile))
-        dir.setObject(name, newfile)
+        dir[name] = newfile
 
     def writable(self, name):
         if name in self._dir:
             f = queryAdapter(self._dir[name], IWriteFile)
             return hasattr(f, 'write')
         d = queryAdapter(self.context, IWriteDirectory)
-        return hasattr(d, 'setObject')
+        return hasattr(d, '__setitem__')
 
 

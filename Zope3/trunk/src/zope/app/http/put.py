@@ -13,14 +13,13 @@
 
 XXX longer description goes here.
 
-$Id: put.py,v 1.6 2003/06/06 20:55:09 stevea Exp $
+$Id: put.py,v 1.7 2003/09/21 17:32:14 jim Exp $
 """
 __metaclass__ = type
 
 from zope.component import getAdapter, queryAdapter, queryNamedAdapter
 from zope.app.interfaces.http import INullResource
 from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
-from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.interface import implements
@@ -69,9 +68,6 @@ class NullPUT:
         # Get a "directory" surrogate for the container
         dir = queryAdapter(container, IWriteDirectory)
 
-        # Get the zope adapter for that
-        dir = getAdapter(dir, IZopeWriteContainer)
-
         # Now try to get a custom factory for he container
         factory = queryNamedAdapter(container, IFileFactory, ext)
 
@@ -84,7 +80,8 @@ class NullPUT:
 
         newfile = factory(name, request.getHeader('content-type', ''), data)
         publish(self.context, ObjectCreatedEvent(newfile))
-        dir.setObject(name, newfile)
+
+        dir[name] = newfile
 
         request.response.setStatus(201)
         return ''

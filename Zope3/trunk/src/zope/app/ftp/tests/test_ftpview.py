@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_ftpview.py,v 1.3 2003/06/23 17:17:03 sidnei Exp $
+$Id: test_ftpview.py,v 1.4 2003/09/21 17:32:14 jim Exp $
 """
 
 import datetime
@@ -26,33 +26,41 @@ from zope.app.interfaces.file import IReadFile, IWriteFile
 from zope.app.interfaces.file import IReadDirectory, IWriteDirectory
 from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.interfaces.dublincore import IZopeDublinCore
-from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.ftp import FTPView
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
+from zope.app.interfaces.copypastemove import IObjectMover
+from zope.app.container.contained import setitem, Contained
 
-class Directory(demofs.Directory):
+class Directory(demofs.Directory, Contained):
 
     implements(IReadDirectory, IWriteDirectory, IFileFactory,
-               IDirectoryFactory, IZopeWriteContainer, IZopeDublinCore)
+               IDirectoryFactory, IZopeDublinCore, IObjectMover)
 
     modified = datetime.datetime(1990, 1,1)
 
-    def setObject(self, name, object):
-        self[name] = object
+    def __setitem__(self, name, object):
+        setitem(self, super(Directory, self).__setitem__, name, object)
         self.modified = datetime.datetime.now()
-        return name
 
+    def moveTo(self, target, new_name):
+        source = self.__parent__
+        old_name = self.__name__
+        target[new_name] = self
+        del source[old_name]
+
+    def moveable(self):
+        return True
+
+    def moveableTo(self, target, name=None):
+        return True
+    
     def __call__(self, name, content_type='', data=None):
         if data:
             r = File()
             r.data = data
             return r
         return Directory()
-
-    def rename(self, old, new):
-        self[new] = self[old]
-        del self[old]
 
 class File(demofs.File):
 

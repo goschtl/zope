@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_put.py,v 1.5 2003/06/23 17:17:05 sidnei Exp $
+$Id: test_put.py,v 1.6 2003/09/21 17:32:15 jim Exp $
 """
 __metaclass__ = type
 
@@ -21,7 +21,6 @@ from StringIO import StringIO
 import zope.app.http.put
 from zope.publisher.browser import TestRequest
 from zope.app.interfaces.file import IWriteFile, IWriteDirectory, IFileFactory
-from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 
@@ -39,9 +38,9 @@ class File:
 
 class Container:
 
-    implements(IWriteDirectory, IZopeWriteContainer, IFileFactory)
+    implements(IWriteDirectory, IFileFactory)
 
-    def setObject(self, name, object):
+    def __setitem__(self, name, object):
         setattr(self, name, object)
 
     def __call__(self, name, content_type, data):

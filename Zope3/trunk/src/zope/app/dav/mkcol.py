@@ -11,13 +11,12 @@
 ##############################################################################
 """DAV method MKCOL
 
-$Id: mkcol.py,v 1.1 2003/06/23 17:21:08 sidnei Exp $
+$Id: mkcol.py,v 1.2 2003/09/21 17:32:03 jim Exp $
 """
 __metaclass__ = type
 
 from zope.app.interfaces.file import IWriteDirectory
 from zope.app.interfaces.file import IDirectoryFactory
-from zope.app.interfaces.container import IZopeWriteContainer
 from zope.app.event import publish
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.component import queryAdapter, getAdapter
@@ -48,12 +47,10 @@ class NullResource:
             request.response.setStatus(403)
             return ''
 
-        dir = getAdapter(dir, IZopeWriteContainer)
-
         factory = getAdapter(container, IDirectoryFactory)
         newdir = factory(name)
         publish(self.context, ObjectCreatedEvent(newdir))
-        dir.setObject(name, newdir)
+        dir[name] = newdir
 
         request.response.setStatus(201)
         return ''
