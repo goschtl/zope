@@ -1,0 +1,61 @@
+=========
+Recursion
+=========
+
+When combining Five with traditional Zope 2 applications, such as the
+CMF, a condition for recursion can easily be encountered.  Consider
+the following example:
+
+A sample interface
+
+  >>> from zope.interface import Interface, implements
+  >>> class IRecurse(Interface):
+  ...     pass
+
+A sample classthat has a `view` method which calls its ``__call__``
+method:
+
+  >>> from OFS.Traversable import Traversable
+  >>> class Recurse(Traversable):
+  ...     implements(IRecurse)
+  ...     def view(self):
+  ...         return self()
+  ...     def __call__(self):
+  ...         return 'foo'
+
+Now we make the class default viewable:
+
+  >>> from Products.Five.fiveconfigure import classDefaultViewable
+  >>> classDefaultViewable(Recurse)
+
+#     # This tests for simple recursion, which can easily happen
+#     # in CMF, like the following:
+#     # - Object has a method named 'view'
+#     # - 'view' method calls '__call__'
+#     # - five:viewable overrides call to use '__browser_default__'
+#     #   to find a default view and call it
+#     # - defaultView is set to 'view'
+#     # Bang. Infinite recursion.
+
+When we now make the class default viewable  #XXX five:defaultViewable???
+
+  >>> from zope.configuration import xmlconfig
+  >>> ignored = xmlconfig.string("""
+  ... <configure 
+  ...     xmlns="http://namespaces.zope.org/zope"
+  ...     xmlns:browser="http://namespaces.zope.org/browser"
+  ...     >
+  ...   <include package="Products.Five" file="meta.zcml" />
+  ...   <browser:defaultView
+  ...       for="Products.Five.tests.recursion.IRecurse"
+  ...       name="view"
+  ...       />
+  ... </configure>
+  ... """)
+
+  >>> ob = Recurse()
+  >>> ob.view()
+  'foo'
+
+  >>> ob()
+  'foo'
