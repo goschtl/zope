@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: tests.py,v 1.1 2004/03/08 19:40:26 jim Exp $
+$Id: tests.py,v 1.2 2004/03/09 16:34:31 BjornT Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -47,10 +47,13 @@ from zope.proxy import removeAllProxies
 
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
-from zope.app.container.contained import contained
+from zope.app.container.contained import contained, uncontained, setitem
+from zope.app.container.interfaces import IContained, ILocation
 
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.services.registration import IRegistered
+from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.dependable import Dependable
 
 class I1(Interface):
@@ -86,7 +89,41 @@ class C: pass
 
 class PhonyTemplate:
     __name__ = __parent__ = None
-    implements(IZPTTemplate)
+    implements(IZPTTemplate, IDependable, IRegistered)
+
+    _dependents = ()
+    _usages = ()
+
+    def addDependent(self, location):
+        self._dependents = tuple(
+            [d for d in self._dependents if d != location]
+            +
+            [location]
+            )
+
+    def removeDependent(self, location):
+        self._dependents = tuple(
+            [d for d in self._dependents if d != location]
+            )
+
+    def dependents(self):
+        return self._dependents
+
+    def addUsage(self, location):
+        self._usages = tuple(
+            [d for d in self._usages if d != location]
+            +
+            [location]
+            )
+
+    def removeUsage(self, location):
+        self._usages = tuple(
+            [d for d in self._usages if d != location]
+            )
+
+    def usages(self):
+        return self._usages
+ 
 
 class A:
     def __init__(self, object, request):
@@ -283,10 +320,42 @@ class PhonyServiceManager(ServiceManager):
 
 class ModuleFinder:
 
+    implements(IContained)
+
+    __parent__ = __name__ = None
+
+    def __init__(self):
+        self._dict = {}
+
     def resolve(self, name):
         if name == "Foo.Bar.A":
             return A
         raise ImportError(name)
+
+    def __setitem__(self, key, ob):
+        setitem(self, self.__setitem, key, ob)
+    
+    def __setitem(self, key, ob):
+        self._dict[key] = ob
+
+    def get(self, key, default=None):
+        return self._dict.get(key, default)
+
+
+class PhonyPathAdapter:
+    implements(IPhysicallyLocatable)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getPath(self):
+        return self.context.__name__
+
+    def getRoot(self):
+        root = self.context
+        while root.__parent__ is not None:
+            root = root.__parent__
+        return root
 
 
 class TestViewRegistration(PlacefulSetup, TestCase):
@@ -365,16 +434,33 @@ class TestPageRegistration(PlacefulSetup, TestCase):
         registration.attribute = 'run'
         self.assertRaises(ConfigurationError, lambda: registration.factories)
 
+    def test_addremoveNotify_template(self):
+        ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
+                             PhonyPathAdapter)
+        registration = PageRegistration(I1, 'test', 'zope.View', "Foo.Bar.A",
+                                        template='/++etc++site/default/t')
+        # Test addNotify
+        self.folder['test'] = registration
+        dependents = zapi.getAdapter(self.__template, IDependable)
+        self.assert_('test' in dependents.dependents())
+        usages = zapi.getAdapter(self.__template, IRegistered)
+        self.assert_('test' in usages.usages())
 
-def test_PageRegistration_addremoveNotify():
-    """for addNotify and removeNotify
-
-    XXX
-      - Jim suggested we can write unit test later.
-
-      - It will be easiar to write unit test, for Direct reference.
-
-    """
+        # Test removeNotify
+        uncontained(registration, self.folder, 'test')
+        dependents = zapi.getAdapter(self.__template, IDependable)
+        self.assert_('test' not in dependents.dependents())
+        usages = zapi.getAdapter(self.__template, IRegistered)
+        self.assert_('test' not in usages.usages())
+        
+    def test_addremoveNotify_attribute(self):
+        ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
+                             PhonyPathAdapter)
+        registration = PageRegistration(I1, 'test', 'zope.View',
+                                        "Foo.Bar.A", attribute='run')
+        # Just add and remove registration to see that no errors occur
+        self.folder['test'] = registration
+        uncontained(registration, self.folder, 'test')
 
 
 def test_suite():

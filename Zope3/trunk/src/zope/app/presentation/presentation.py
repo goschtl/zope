@@ -13,7 +13,7 @@
 ##############################################################################
 """Local presentation service
 
-$Id: presentation.py,v 1.1 2004/03/08 19:40:26 jim Exp $
+$Id: presentation.py,v 1.2 2004/03/09 16:34:31 BjornT Exp $
 """
 
 from zope.app import zapi
@@ -488,27 +488,29 @@ class PageRegistration(ViewRegistration):
 
     def addNotify(self, event):
         "See IAddNotifiable"
-        template = zapi.traverse(self.__parent__.__parent__,self.template)
-        dependents = IDependable(template)
-        objectpath = zapi.getPath(self)
-        dependents.addDependent(objectpath)
-        # Also update usage, if supported
-        adapter = IRegistered(template, None)
-        if adapter is not None:
-            adapter.addUsage(objectpath)
+        if self.template:
+            template = zapi.traverse(self.__parent__.__parent__,self.template)
+            dependents = IDependable(template)
+            objectpath = zapi.getPath(self)
+            dependents.addDependent(objectpath)
+            # Also update usage, if supported
+            adapter = IRegistered(template, None)
+            if adapter is not None:
+                adapter.addUsage(objectpath)
 
 
     def removeNotify(self, event):
         "See IRemoveNotifiable"
         super(PageRegistration, self).removeNotify(event)
-        template = zapi.traverse(self.__parent__.__parent__,self.template)
-        dependents = IDependable(template)
-        objectpath = zapi.getPath(self)
-        dependents.addDependent(objectpath)
-        # Also update usage, if supported
-        adapter = IRegistered(template, None)
-        if adapter is not None:
-            adapter.removeUsage(zapi.getPath(self))
+        if self.template:
+            template = zapi.traverse(self.__parent__.__parent__,self.template)
+            dependents = IDependable(template)
+            objectpath = zapi.getPath(self)
+            dependents.removeDependent(objectpath)
+            # Also update usage, if supported
+            adapter = IRegistered(template, None)
+            if adapter is not None:
+                adapter.removeUsage(zapi.getPath(self))
 
 
 class TemplateViewFactory:
