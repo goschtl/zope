@@ -22,7 +22,7 @@
         <div tal:condition="view/errors">
            <ul>
               <li tal:repeat="error view/errors">
-                 <strong tal:content="error/__class__">
+                 <strong tal:content="error/__class__" i18n:translate="">
                     Error Type</strong>:
                  <span tal:content="error">Error text</span>
               </li>
@@ -52,8 +52,10 @@
 
       <div class="row">
         <div class="controls">
-          <input type="submit" value="Refresh" />
-          <input type="submit" name="UPDATE_SUBMIT" value="Submit" />
+          <input type="submit" value="Refresh" 
+              i18n:attributes="value refresh-button" />
+          <input type="submit" name="UPDATE_SUBMIT" value="Submit" 
+              i18n:attributes="value submit-button"/>
         </div>
       </div>
 

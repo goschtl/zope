@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.16 2003/03/26 13:25:31 jack-e Exp $
+$Id: add.py,v 1.17 2003/04/10 06:17:34 srichter Exp $
 """
 
 import sys
@@ -126,6 +126,7 @@ class AddView(EditView):
         return self.context.add(content)
 
     def nextURL(self):
+
         return self.context.nextURL()
 
 
