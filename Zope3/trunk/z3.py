@@ -14,14 +14,18 @@
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.17 2003/03/06 18:25:13 gvanrossum Exp $
+$Id: z3.py,v 1.18 2003/04/22 12:08:13 gvanrossum Exp $
 """
 
-import os, sys
+import os, sys, time
 
 basepath = filter(None, sys.path)
 
 def run(argv=sys.argv):
+    # Record start times (real time and CPU time)
+    t0 = time.time()
+    c0 = time.clock()
+
     # Refuse to run without principals.zcml
     if not os.path.exists('principals.zcml'):
         print """ERROR: You need to create principals.zcml
@@ -77,6 +81,12 @@ def run(argv=sys.argv):
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
 
     from zodb.zeo import threadedasync
+
+    # Report total startup time
+    t1 = time.time()
+    c1 = time.clock()
+    logging.info("Startup time: %.3f sec real, %.3f sec CPU", t1-t0, c1-c0)
+
     try:
         threadedasync.loop()
     except KeyboardInterrupt:
