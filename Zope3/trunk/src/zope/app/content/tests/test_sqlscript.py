@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.10 2003/03/19 19:57:26 alga Exp $
+$Id: test_sqlscript.py,v 1.11 2003/06/07 06:37:24 stevea Exp $
 """
 
 import unittest
@@ -39,6 +39,7 @@ from zope.app.interfaces.cache.cache import ICachingService
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.interfaces.services.service import ISimpleService
+from zope.interface import implements
 
 
 # Make spme fixes, so that we overcome some of the natural ZODB properties
@@ -47,7 +48,7 @@ def getNextServiceManager(context):
 
 class CursorStub:
 
-    __implements__ = IZopeCursor
+    implements(IZopeCursor)
 
     description = (('name', 'string'), ('counter', 'int'))
     count = 0
@@ -67,14 +68,14 @@ class CursorStub:
 
 
 class ConnectionStub:
-    __implements__ = IZopeConnection
+    implements(IZopeConnection)
 
     def cursor(self):
         return CursorStub()
 
 
 class ConnectionServiceStub:
-    __implements__ = IConnectionService, ISimpleService
+    implements(IConnectionService, ISimpleService)
 
     def getConnection(self, name):
         return ConnectionStub()
@@ -102,7 +103,7 @@ class CacheStub:
 
 class CachingServiceStub:
 
-    __implements__ = ICachingService, ISimpleService
+    implements(ICachingService, ISimpleService)
 
     def __init__(self):
         self.caches = {}
@@ -112,7 +113,7 @@ class CachingServiceStub:
 
 class LocatableStub:
 
-    __implements__ = IPhysicallyLocatable
+    implements(IPhysicallyLocatable)
 
     def __init__(self, obj):
         self.obj = obj

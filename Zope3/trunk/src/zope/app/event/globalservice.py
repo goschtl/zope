@@ -14,12 +14,13 @@
 """
 
 Revision information:
-$Id: globalservice.py,v 1.9 2003/05/28 15:46:07 jim Exp $
+$Id: globalservice.py,v 1.10 2003/06/07 06:37:24 stevea Exp $
 """
 
 __metaclass__ = type
 
 from zope.interface.type import TypeRegistry
+from zope.interface import implements
 from zope.component import queryAdapter
 from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
@@ -55,7 +56,7 @@ def subscribeDirective(_context, subscriber,
 
     if filter is not None:
         filter = _context.resolve(filter)
-        
+
     return [
         Action(
              # subscriptions can never conflict
@@ -72,7 +73,7 @@ class Logger:
     events sent out by Zope.
     """
 
-    __implements__ = ISubscriber
+    implements(ISubscriber)
 
     def __init__(self, severity=logging.INFO):
         self.severity = severity
@@ -95,7 +96,7 @@ class Logger:
 class GlobalSubscribable:
     """A global mix-in"""
 
-    __implements__ = IGlobalSubscribable
+    implements(IGlobalSubscribable)
 
     def __init__(self):
         self._registry = TypeRegistry()
@@ -239,14 +240,14 @@ def globalNotifyOrPublish(self, event):
 
 class GlobalEventChannel(GlobalSubscribable):
 
-    __implements__ = IGlobalSubscribable, ISubscriber
+    implements(IGlobalSubscribable, ISubscriber)
 
     notify = globalNotifyOrPublish
 
 
 class GlobalEventPublisher(GlobalSubscribable):
 
-    __implements__ = IGlobalSubscribable, IPublisher
+    implements(IGlobalSubscribable, IPublisher)
 
     publish = globalNotifyOrPublish
 

@@ -13,12 +13,12 @@
 ##############################################################################
 """A functional GlobalEventChannel test.
 
-$Id: test_globaleventchannel.py,v 1.2 2003/01/27 18:16:57 stevea Exp $
+$Id: test_globaleventchannel.py,v 1.3 2003/06/07 06:37:25 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.interfaces.event import IEvent, ISubscribingAware, ISubscriber
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.component.tests.components import RecordingAdapter
 from zope.component.adapter import provideAdapter
@@ -39,22 +39,22 @@ class INonSubscriberStub(Interface):
     pass
 
 class SomeEvent:
-    __implements__ = ISomeEvent
+    implements(ISomeEvent)
 
 class SomeSubEvent:
-    __implements__ = ISomeSubEvent
+    implements(ISomeSubEvent)
 
 class SomeOtherEvent:
-    __implements__ = ISomeOtherEvent
+    implements(ISomeOtherEvent)
 
 class SubscriberStub:
-    __implements__ = ISubscriberStub
+    implements(ISubscriberStub)
     received = None
     def notify(self, event):
         self.received = event
 
 class NonSubscriberStub:
-    __implements__ = INonSubscriberStub
+    implements(INonSubscriberStub)
 
 
 class Test(PlacelessSetup, TestCase):
@@ -105,7 +105,7 @@ class Test(PlacelessSetup, TestCase):
                           "Event was not filtered")
 
 class SubAware(RecordingAdapter):
-    __implements__ = ISubscribingAware
+    implements(ISubscribingAware)
 
     def subscribedTo(self, subscribable, event_type, filter):
         self.record.append(('subscribed', self.context, subscribable,
@@ -151,7 +151,7 @@ class TestSubscribingAwareGlobalPublisher(TestSubscribingAwareChannel):
         self.ec = GlobalEventPublisher()
 
 class SubscriberAdapter(RecordingAdapter):
-    __implements__ = ISubscriber
+    implements(ISubscriber)
 
     def notify(self, event):
         self.record.append(('notified', self.context, event))

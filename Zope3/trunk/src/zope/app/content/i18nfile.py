@@ -13,12 +13,13 @@
 ##############################################################################
 """
 
-$Id: i18nfile.py,v 1.2 2002/12/25 14:12:48 jim Exp $
+$Id: i18nfile.py,v 1.3 2003/06/07 06:37:23 stevea Exp $
 """
 
 import persistence
 from zope.app.interfaces.content.i18nfile import II18nFile
 from zope.app.content.file import File
+from zope.interface import implements
 
 # XXX We shouldn't be dependent on Browser here! Aaaargh.
 from zope.publisher.browser import FileUpload
@@ -28,7 +29,7 @@ class I18nFile(persistence.Persistent):
     one for each language.
     """
 
-    __implements__ = II18nFile
+    implements(II18nFile)
 
     def __init__(self, data='', contentType=None, defaultLanguage='en'):
         """ """

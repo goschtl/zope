@@ -25,11 +25,11 @@ hardcodes all the policy decisions.  Also, it has some "viewish"
 properties.  The traversal code in registerExisting could be useful
 for creating a general "Find" facility like the Zope2 Find tab.
 
-$Id: subscribers.py,v 1.15 2003/05/27 14:18:16 jim Exp $
+$Id: subscribers.py,v 1.16 2003/06/07 06:37:26 stevea Exp $
 """
 __metaclass__ = type
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from persistence import Persistent
 
 from zope.app.interfaces.event import ISubscriber
@@ -58,7 +58,7 @@ class ISubscriptionControl(Interface):
 
 class Registration(Persistent):
 
-    __implements__ = ISubscriptionControl, ISubscriber
+    implements(ISubscriptionControl, ISubscriber)
 
     def notify(wrapped_self, event):
         """An event occured. Perhaps register this object with the hub."""

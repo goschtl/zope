@@ -12,13 +12,14 @@
 ##############################################################################
 """
 
-$Id: test_batchedrankedprocessor.py,v 1.6 2003/05/01 19:35:20 faassen Exp $
+$Id: test_batchedrankedprocessor.py,v 1.7 2003/06/07 06:37:27 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.interface.verify import verifyObject
+from zope.interface import implements
 
 from zope.component import getAdapter
 
@@ -31,7 +32,7 @@ from zope.app.index.text.queries import BatchedTextIndexQuery
 
 class StupidTextIndex:
 
-    __implements__ = IQuerying
+    implements(IQuerying)
 
     def __init__(self, returnvalue):
         self.returnvalue = returnvalue

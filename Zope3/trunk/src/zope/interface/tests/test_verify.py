@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: test_verify.py,v 1.3 2003/05/01 19:35:44 faassen Exp $
+$Id: test_verify.py,v 1.4 2003/06/07 06:37:30 stevea Exp $
 """
 
 
-from zope.interface import Interface
+from zope.interface import Interface, implements, classImplements
 from zope.interface.verify import verifyClass, verifyObject
 from zope.interface.exceptions import DoesNotImplement, BrokenImplementation
 from zope.interface.exceptions import BrokenMethodImplementation
@@ -35,7 +35,7 @@ class Test(unittest.TestCase):
 
         self.assertRaises(DoesNotImplement, verifyClass, I, C)
 
-        C.__implements__=I
+        classImplements(C, I)
 
         verifyClass(I, C)
 
@@ -45,8 +45,7 @@ class Test(unittest.TestCase):
             def f(): pass
 
         class C:
-
-            __implements__=I
+            implements(I)
 
         self.assertRaises(BrokenImplementation, verifyClass, I, C)
 
@@ -65,7 +64,7 @@ class Test(unittest.TestCase):
 
         class C:
 
-            __implements__=I
+            implements(I)
 
         self.assertRaises(BrokenImplementation, verifyClass, I, C)
 
@@ -82,7 +81,7 @@ class Test(unittest.TestCase):
 
             def f(self, b): pass
 
-            __implements__=I
+            implements(I)
 
         # We no longer require names to match.
         #self.assertRaises(BrokenMethodImplementation, verifyClass, I, C)
@@ -116,7 +115,7 @@ class Test(unittest.TestCase):
 
             def f(self, a, b): pass
 
-            __implements__=I
+            implements(I)
 
         self.assertRaises(BrokenMethodImplementation, verifyClass, I, C)
 
@@ -137,7 +136,7 @@ class Test(unittest.TestCase):
 
             def f(self, a): pass
 
-            __implements__=I
+            implements(I)
 
         self.assertRaises(BrokenMethodImplementation, verifyClass, I, C)
 
@@ -154,7 +153,7 @@ class Test(unittest.TestCase):
 
             def f(self, a): pass
 
-            __implements__=I
+            implements(I)
 
         self.assertRaises(BrokenMethodImplementation, verifyClass, I, C)
 

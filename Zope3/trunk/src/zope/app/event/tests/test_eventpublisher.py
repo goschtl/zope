@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventpublisher.py,v 1.3 2003/05/01 19:35:16 faassen Exp $
+$Id: test_eventpublisher.py,v 1.4 2003/06/07 06:37:25 stevea Exp $
 """
 
 import unittest
@@ -29,14 +29,15 @@ from zope.app.interfaces.event import IEvent
 from zope.component.tests.placelesssetup import PlacelessSetup
 
 from zope.app.event.tests.subscriber import DummySubscriber, DummyFilter
+from zope.interface import implements
 
 class DummyEvent:
 
-    __implements__ = IObjectAddedEvent, IObjectRemovedEvent
+    implements(IObjectAddedEvent, IObjectRemovedEvent)
 
 class ObjectEvent:
 
-    __implements__ = IObjectEvent
+    implements(IObjectEvent)
 
 class TestEventService(PlacelessSetup, unittest.TestCase):
 

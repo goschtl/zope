@@ -13,7 +13,7 @@
 ##############################################################################
 """ProcessInstance views
  
-$Id: instance.py,v 1.2 2003/06/03 22:46:17 jim Exp $
+$Id: instance.py,v 1.3 2003/06/07 06:37:20 stevea Exp $
 """
 __metaclass__ = type
 
@@ -26,11 +26,10 @@ from zope.app.interfaces.workflow import IProcessInstanceContainerAdaptable
 from zope.app.interfaces.workflow import IProcessInstanceContainer
 from zope.app.interfaces.workflow.stateful import IStatefulProcessInstance
 
- 
+
 class InstanceContainerView(BrowserView):
 
     __used_for__ = IProcessInstanceContainerAdaptable
-
 
     def _extractContentInfo(self, item):
         id, obj = item
@@ -40,33 +39,32 @@ class InstanceContainerView(BrowserView):
 
         # XXX need to urlencode the id in this case !!!
         info['url'] = "processinstance.html?pi_name=%s" % id
- 
+
         return info
- 
- 
+
     def removeObjects(self, ids):
         """Remove objects specified in a list of object ids"""
         container = getAdapter(self.context, IProcessInstanceContainer)
         for id in ids:
             container.__delitem__(id)
- 
+
         self.request.response.redirect('@@processinstances.html')
- 
+
     def listContentInfo(self):
         return map(self._extractContentInfo,
                    getAdapter(self.context, IProcessInstanceContainer).items())
- 
+
     contents = ViewPageTemplateFile('instancecontainer_main.pt')
     contentsMacros = contents
- 
+
     _index = ViewPageTemplateFile('instancecontainer_index.pt')
- 
+
     def index(self):
         if 'index.html' in self.context:
             self.request.response.redirect('index.html')
             return ''
- 
-        return self._index()    
+
+        return self._index()
 
 
     # ProcessInstance Details
@@ -76,14 +74,16 @@ class InstanceContainerView(BrowserView):
     #     we really want to traverse to the instance and display a view
 
     def _getProcessInstanceData(self, data):
-        names = getFieldNames(data.__implements__)
-        return dict([(name, getattr(data, name, None),) for name in names ])
+        names = []
+        for interface in providedBy(data):
+            names.append(getFieldNames(interface))
+        return dict([(name, getattr(data, name, None),) for name in names])
 
     def getProcessInstanceInfo(self, pi_name):
         info = {}
         pi = getAdapter(self.context, IProcessInstanceContainer)[pi_name]
         info['status'] = pi.status
-        
+
         # temporary
         if IStatefulProcessInstance.isImplementedBy(pi):
             info['outgoing_transitions'] = pi.getOutgoingTransitions()
@@ -92,7 +92,7 @@ class InstanceContainerView(BrowserView):
             info['data'] = self._getProcessInstanceData(pi.data)
         else:
             info['data'] = None
-            
+
         return info
 
     def _fireTransition(self, pi_name, id):
@@ -112,5 +112,5 @@ class InstanceContainerView(BrowserView):
 
         if request.has_key('fire_transition'):
             self._fireTransition(pi_name, request['fire_transition'])
-        
+
         return self._instanceindex()

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: sql.py,v 1.7 2003/06/06 21:35:16 philikon Exp $
+$Id: sql.py,v 1.8 2003/06/07 06:37:19 stevea Exp $
 """
 from zope.interface import implements
 from zope.publisher.browser import BrowserView
@@ -32,6 +32,8 @@ class SQLScriptTest(BrowserView):
     # __implements__ of the newly created class (see SimpleViewClass in the
     # same module) ought to be a union of __implements__ of all the base
     # classes.  Or perhaps it should be done by zope.app.browser.form.editview?
+    #
+    # XXX: is this still true now that we have the new interfaces package?
 
     __used_for__ = ISQLScript
 

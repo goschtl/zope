@@ -13,7 +13,7 @@
 ##############################################################################
 """Generic query processors for use with multiple indexes..
 
-$Id: processors.py,v 1.9 2003/05/27 14:18:16 jim Exp $
+$Id: processors.py,v 1.10 2003/06/07 06:37:26 stevea Exp $
 """
 
 from __future__ import generators
@@ -26,6 +26,7 @@ from zope.app.interfaces.services.query import IQueryProcessor
 from zope.component import getAdapter, getService
 from zope.app.services.servicenames import HubIds
 from zope.context import ContextMethod
+from zope.interface import implements
 
 class ObjectRetrievingProcessor:
     """Converts a RankedHubIdList into an iteratable
@@ -33,7 +34,7 @@ class ObjectRetrievingProcessor:
        from the ObjectHub.
     """
 
-    __implements__ = IQueryProcessor
+    implements(IQueryProcessor)
 
     inputInterfaces = (IRankedHubIdList, IBatchedResult)
     outputInterfaces = (IRankedObjectIterator,)
@@ -56,7 +57,7 @@ class ObjectRetrievingProcessor:
 class RankedObjectIterator:
     """Iterates over a given list of IRankedObjectRecord."""
 
-    __implements__ = IRankedObjectIterator, IBatchedResult
+    implements(IRankedObjectIterator, IBatchedResult)
 
     def __init__(self, recordlist, objectfetcher, startposition,
                  batchsize, totalsize):
@@ -81,7 +82,7 @@ class RankedObjectRecord:
 
     __slots__ = ["rank", "object"]
 
-    __implements__ = IRankedObjectRecord
+    implements(IRankedObjectRecord)
 
     def __init__(self, object, rank):
         self.rank = rank

@@ -15,17 +15,17 @@
 
 See Adapter class.
 
-$Id: type.py,v 1.9 2003/06/03 22:46:25 jim Exp $
+$Id: type.py,v 1.10 2003/06/07 06:37:29 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
-from zope.interface import providedBy
+from zope.interface import providedBy, implements
 from zope.interface.interfaces import IInterface
 from zope.interface.interfaces import ITypeRegistry
 
 class TypeRegistry:
 
-    __implements__ = ITypeRegistry
+    implements(ITypeRegistry)
 
     # XXX This comment doesn't seem to be correct, because the mapping is
     # from interface -> object.  There are no tuples that I see.  Also,

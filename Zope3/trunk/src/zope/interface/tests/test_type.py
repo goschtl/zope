@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: test_type.py,v 1.6 2003/05/01 19:35:44 faassen Exp $
+$Id: test_type.py,v 1.7 2003/06/07 06:37:30 stevea Exp $
 """
 
 import unittest
 from zope.interface.type import TypeRegistry
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 def getAllForObject(reg, ob):
     all = list(reg.getAllForObject(ob))
@@ -52,9 +52,9 @@ class TestTypeRegistry(unittest.TestCase):
         self.assertEqual(getTypesMatching(reg, I2), [I2])
         self.assertEqual(getTypesMatching(reg, I3), [])
 
-        class C1: __implements__ = I1
-        class C2: __implements__ = I2
-        class C3: __implements__ = I3
+        class C1: implements(I1)
+        class C2: implements(I2)
+        class C3: implements(I3)
         class C: pass
 
         self.assertEqual(getAllForObject(reg, C1()), [])
@@ -131,11 +131,11 @@ class TestTypeRegistry(unittest.TestCase):
         class I2(I1): pass
         class I3(I1): pass
         class I4(I2, I3): pass
-        class C1: __implements__ = I1
-        class C2: __implements__ = I2
-        class C3: __implements__ = I3
-        class C4: __implements__ = I4
-        class C5: __implements__ = I1, I2, I3, I4
+        class C1: implements(I1)
+        class C2: implements(I2)
+        class C3: implements(I3)
+        class C4: implements(I4)
+        class C5: implements(I1, I2, I3, I4)
         class C: pass
 
         reg = TypeRegistry()

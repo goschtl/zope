@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.15 2003/05/28 15:46:07 jim Exp $
+$Id: subs.py,v 1.16 2003/06/07 06:37:24 stevea Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -37,6 +37,7 @@ from zope.app.services.servicenames import HubIds
 from zope.app.services.type import PersistentTypeRegistry
 from cPickle import dumps, PicklingError
 import logging
+from zope.interface import implements
 
 __metaclass__ = type
 
@@ -53,7 +54,7 @@ except NameError:
 class Subscribable(Persistent):
     """A local mix-in"""
 
-    __implements__ = ISubscribable
+    implements(ISubscribable)
 
     def __init__(self):
         # the type registry
@@ -435,7 +436,7 @@ num = 0
 class SubscriptionTracker:
     "Mix-in for subscribers that want to know to whom they are subscribed"
 
-    __implements__ = ISubscribingAware
+    implements(ISubscribingAware)
 
     def __init__(self):
         self._subscriptions = ()

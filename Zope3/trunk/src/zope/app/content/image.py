@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: image.py,v 1.7 2003/04/14 17:15:20 stevea Exp $
+$Id: image.py,v 1.8 2003/06/07 06:37:23 stevea Exp $
 """
 import struct
 from zope.app.content.file import File
@@ -22,11 +22,12 @@ from zope.app.interfaces.size import ISized
 from zope.app.size import byteDisplay
 
 from zope.app.content_types import guess_content_type
+from zope.interface import implements
 
 __metaclass__ = type
 
 class Image(File):
-    __implements__ = IImage
+    implements(IImage)
 
     def __init__(self, data=''):
         '''See interface IFile'''
@@ -51,7 +52,7 @@ class Image(File):
 
 class ImageSized:
 
-    __implements__ = ISized
+    implements(ISized)
 
     def __init__(self, image):
         self._image = image

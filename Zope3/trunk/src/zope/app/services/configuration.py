@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.31 2003/06/07 05:31:58 stevea Exp $
+$Id: configuration.py,v 1.32 2003/06/07 06:37:28 stevea Exp $
 """
 __metaclass__ = type
 
@@ -338,7 +338,8 @@ class ComponentConfiguration(SimpleConfiguration):
     of the component.
     """
 
-    # SimpleConfiguration.__implements__ includes IDeleteNotifiable
+    # SimpleConfiguration implements IDeleteNotifiable, so we don't need
+    # it below.
     implements(IComponentConfiguration, IAddNotifiable)
 
     def __init__(self, component_path, permission=None):

@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for text index.
 
-$Id: test_index.py,v 1.11 2003/06/03 21:43:00 jim Exp $
+$Id: test_index.py,v 1.12 2003/06/07 06:37:27 stevea Exp $
 """
 
 import unittest
@@ -31,10 +31,11 @@ from zope.app.services.hub import \
 
 from zope.app.interfaces.index.text import ISearchableText
 from zope.app.index.text.index import TextIndex
+from zope.interface import implements
 
 
 class FakeSearchableObject:
-    __implements__ = ISearchableText
+    implements(ISearchableText)
     def __init__(self):
         self.texts = [u"Bruce"]
     def getSearchableText(self):

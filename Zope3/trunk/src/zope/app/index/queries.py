@@ -13,15 +13,16 @@
 ##############################################################################
 """Generic queries for indexes.
 
-$Id: queries.py,v 1.4 2003/05/01 19:35:18 faassen Exp $
+$Id: queries.py,v 1.5 2003/06/07 06:37:26 stevea Exp $
 """
 
-from zope.app.interfaces.index.interfaces\
-     import IBatchedResult, IRankedHubIdList
+from zope.app.interfaces.index.interfaces import IBatchedResult
+from zope.app.interfaces.index.interfaces import IRankedHubIdList
+from zope.interface import implements
 
 class BatchedRankedResult:
 
-    __implements__ = IBatchedResult, IRankedHubIdList
+    implements(IBatchedResult, IRankedHubIdList)
 
     def __init__(self, hubidlist, startposition, batchsize, totalsize):
         self.__hubidlist = hubidlist

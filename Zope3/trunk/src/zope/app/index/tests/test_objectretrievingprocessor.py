@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_objectretrievingprocessor.py,v 1.9 2003/05/01 19:35:20 faassen Exp $
+$Id: test_objectretrievingprocessor.py,v 1.10 2003/06/07 06:37:26 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -31,13 +31,14 @@ from zope.app.interfaces.services.service import ISimpleService
 from zope.app.index.processors import ObjectRetrievingProcessor
 from zope.app.index.processors import RankedObjectRecord, RankedObjectIterator
 from zope.app.index.queries import BatchedRankedResult
+from zope.interface import implements
 
 class FakeObjectHub:
 
     # This fake hub doesn't implement everything, but enough
     # to satisfy our tests
 
-    __implements__ = IObjectHub, ISimpleService
+    implements(IObjectHub, ISimpleService)
 
     def __init__(self):
         self.data = {}

@@ -142,7 +142,7 @@ Inserting values with the 'sqlvar' tag
     however, if x is ommitted or an empty string, then the value
     inserted is 'null'.
 
-$Id: sql.py,v 1.5 2003/05/27 14:18:14 jim Exp $
+$Id: sql.py,v 1.6 2003/06/07 06:37:23 stevea Exp $
 """
 
 import re
@@ -157,6 +157,7 @@ from zope.documenttemplate.dt_html import HTML
 from zope.documenttemplate.dt_util import ParseError, parse_params, name_param
 from zope.interface.common.mapping import IEnumerableMapping
 
+from zope.interface import implements
 from zope.component import getService
 from zope.context import ContextMethod
 
@@ -181,7 +182,7 @@ class InvalidParameter(Exception):
 class Arguments(PersistentDict):
     """Hold arguments of SQL Script"""
 
-    __implements__ = IEnumerableMapping
+    implements(IEnumerableMapping)
 
 
 def parseArguments(text, result=None):
@@ -645,7 +646,7 @@ class SQLDTML(HTML):
 
 class SQLScript(SQLCommand, Persistent):
 
-    __implements__ = ISQLScript, IFileContent, IAttributeAnnotatable
+    implements(ISQLScript, IFileContent, IAttributeAnnotatable)
 
     def __init__(self, connectionName='', source='', arguments=''):
         self.template = SQLDTML(source)
@@ -782,7 +783,7 @@ class SQLDTML(HTML):
 
 class SQLScript(SQLCommand, Persistent):
 
-    __implements__ = ISQLScript, IFileContent, IAttributeAnnotatable
+    implements(ISQLScript, IFileContent, IAttributeAnnotatable)
 
     def __init__(self, connectionName='', source='', arguments=''):
         self.template = SQLDTML(source)

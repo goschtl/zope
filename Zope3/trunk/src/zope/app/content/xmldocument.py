@@ -12,23 +12,23 @@
 #
 ##############################################################################
 """
-$Id: xmldocument.py,v 1.3 2003/04/11 14:44:27 philikon Exp $
+$Id: xmldocument.py,v 1.4 2003/06/07 06:37:23 stevea Exp $
 """
 from persistence import Persistent
 from zope.app.interfaces.content.xmldocument import IXMLDocument
-from zope.app.xml.w3cschemalocations import\
-     setInstanceInterfacesForXMLText
+from zope.app.xml.w3cschemalocations import setInstanceInterfacesForXMLText
+from zope.interface import implements
 
 class XMLDocument(Persistent):
 
-    __implements__ = IXMLDocument
-    
+    implements(IXMLDocument)
+
     def __init__(self, source='<doc/>'):
         self.source = source
-        
+
     def _setSource(self, value):
         self._source = value
-        
+
         # XXX for now, parse the document and lift the W3C XML schema
         # locations from it to identify which schemas are used
         # this dependency on W3C XML schema should go away at some point,
@@ -40,5 +40,5 @@ class XMLDocument(Persistent):
 
     def _getSource(self):
         return self._source
-    
+
     source = property(_getSource, _setSource)

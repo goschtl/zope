@@ -18,7 +18,7 @@ index_doc() and unindex_doc() calls.
 
 In addition, this implements TTW subscription management.
 
-$Id: index.py,v 1.4 2003/05/27 14:18:17 jim Exp $
+$Id: index.py,v 1.5 2003/06/07 06:37:26 stevea Exp $
 """
 
 from zope.component import getService
@@ -26,6 +26,7 @@ from zope.app.services.servicenames import HubIds
 from zope.context import ContextMethod
 from zope.app.interfaces.event import ISubscriber
 from zope.fieldindex.fieldindex import FieldIndex as FieldIndexWrapper
+from zope.interface import implements
 
 from zope.app.interfaces.services.hub import \
      IRegistrationHubEvent, \
@@ -37,8 +38,7 @@ from zope.app.interfaces.index.field  import IUIFieldIndex
 
 class FieldIndex(FieldIndexWrapper):
 
-    __implements__ = (FieldIndexWrapper.__implements__,
-                      ISubscriber, IUIFieldIndex)
+    implements(ISubscriber, IUIFieldIndex)
 
     def __init__(self, indexed_attr):
         FieldIndexWrapper.__init__(self)

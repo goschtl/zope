@@ -13,17 +13,18 @@
 ##############################################################################
 """Filesystem synchronization support.
 
-$Id: fssync.py,v 1.10 2003/06/03 22:46:18 jim Exp $
+$Id: fssync.py,v 1.11 2003/06/07 06:37:23 stevea Exp $
 """
 
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectFile, IContentDirectory
 from zope.app.context import ContextWrapper
+from zope.interface import implements
 
 class FileAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for file objects."""
 
-    __implements__ =  IObjectFile
+    implements(IObjectFile)
 
     def getBody(self):
         return self.context.getData()
@@ -37,7 +38,7 @@ class FileAdapter(ObjectEntryAdapter):
 class DirectoryAdapter(ObjectEntryAdapter):
     """Folder adapter to provide a file-system representation."""
 
-    __implements__ =  IContentDirectory
+    implements(IContentDirectory)
 
     def contents(self):
         result = []
@@ -49,7 +50,7 @@ class DirectoryAdapter(ObjectEntryAdapter):
 class ZPTPageAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for ZPT page objects."""
 
-    __implements__ =  IObjectFile
+    implements(IObjectFile)
 
     def getBody(self):
         return self.context.getSource()
@@ -62,7 +63,7 @@ class ZPTPageAdapter(ObjectEntryAdapter):
 
 class DTMLPageAdapter(ObjectEntryAdapter):
 
-    __implements__ = IObjectFile
+    implements(IObjectFile)
 
     def getBody(self):
         return self.context.getSource()

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: zpt.py,v 1.12 2003/05/28 15:46:06 jim Exp $
+$Id: zpt.py,v 1.13 2003/06/07 06:37:23 stevea Exp $
 """
 
 import re
@@ -31,12 +31,13 @@ from zope.app.interfaces.size import ISized
 from zope.app.interfaces.content.zpt import IZPTPage, IRenderZPTPage
 
 from zope.app.interfaces.file import IReadFile, IWriteFile, IFileFactory
+from zope.interface import implements
 
 __metaclass__ = type
 
 class ZPTPage(AppPT, PageTemplate, Persistent):
 
-    __implements__ = IZPTPage, IRenderZPTPage
+    implements(IZPTPage, IRenderZPTPage)
 
     expand = False
 
@@ -84,7 +85,7 @@ class ZPTPage(AppPT, PageTemplate, Persistent):
 class SearchableText:
 
     __used_for__ = IZPTPage
-    __implements__ = ISearchableText
+    implements(ISearchableText)
 
     def __init__(self, page):
         self.page = page
@@ -106,7 +107,7 @@ class SearchableText:
 
 class Sized:
 
-    __implements__ = ISized
+    implements(ISized)
 
     def __init__(self, page):
         self.num_lines = len(page.getSource().splitlines())
@@ -125,7 +126,7 @@ class Sized:
 
 class ZPTReadFile:
 
-    __implements__ = IReadFile
+    implements(IReadFile)
 
     def __init__(self, context):
         self.context = context
@@ -138,7 +139,7 @@ class ZPTReadFile:
 
 class ZPTWriteFile:
 
-    __implements__ = IWriteFile
+    implements(IWriteFile)
 
     def __init__(self, context):
         self.context = context
@@ -149,7 +150,7 @@ class ZPTWriteFile:
 
 class ZPTFactory:
 
-    __implements__ = IFileFactory
+    implements(IFileFactory)
 
 
     def __init__(self, context):

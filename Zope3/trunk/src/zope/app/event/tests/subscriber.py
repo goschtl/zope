@@ -16,14 +16,15 @@ This contains some dummy stuff to do with subscribing to event channels
 that's useful in several test modules.
 
 Revision information:
-$Id: subscriber.py,v 1.2 2003/01/27 18:31:52 stevea Exp $
+$Id: subscriber.py,v 1.3 2003/06/07 06:37:25 stevea Exp $
 """
 
 from zope.app.interfaces.event import IFilter, ISubscriber
+from zope.interface import implements
 
 class DummySubscriber:
 
-    __implements__ = ISubscriber
+    implements(ISubscriber)
 
     def __init__(self):
         self.notified = 0
@@ -34,8 +35,8 @@ class DummySubscriber:
 subscriber = DummySubscriber()
 
 class DummyFilter:
-    __implements__ = IFilter
-    
+    implements(IFilter)
+
     def __init__(self,value=1):
         self.value = value
 

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: dtmlpage.py,v 1.5 2003/05/29 16:48:16 gvanrossum Exp $
+$Id: dtmlpage.py,v 1.6 2003/06/07 06:37:23 stevea Exp $
 """
 from persistence import Persistent
 
@@ -20,6 +20,7 @@ from zope.app.interfaces.annotation import IAnnotatable
 from zope.app.interfaces.content.file import IFileContent
 from zope.app.interfaces.content.dtmlpage import IDTMLPage, IRenderDTMLPage
 from zope.app.interfaces.file import IFileFactory
+from zope.interface import implements
 
 from zope.context import ContextMethod
 from zope.context import getWrapperContainer
@@ -30,7 +31,7 @@ from zope.documenttemplate.dt_html import HTML
 class DTMLPage(Persistent):
 
     # XXX Putting IFileContent at the end gives an error!
-    __implements__ = IFileContent, IDTMLPage, IRenderDTMLPage, IAnnotatable
+    implements(IFileContent, IDTMLPage, IRenderDTMLPage, IAnnotatable)
 
     def __init__(self, source=''):
         self.setSource(source)
@@ -66,7 +67,7 @@ class DTMLPage(Persistent):
 
 class DTMLFactory(object):
 
-    __implements__ = IFileFactory
+    implements(IFileFactory)
 
     def __init__(self, context):
         self.context = context

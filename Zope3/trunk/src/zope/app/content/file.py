@@ -13,13 +13,14 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.9 2003/05/19 21:25:07 jim Exp $
+$Id: file.py,v 1.10 2003/06/07 06:37:23 stevea Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
 
 from persistence import Persistent
 from transaction import get_transaction
+from zope.interface import implements
 
 from zope.publisher.browser import FileUpload
 from zope.app.interfaces.content.file import IFile, IReadFile, IFileContent
@@ -28,7 +29,7 @@ from zope.app.interfaces.content.file import IFile, IReadFile, IFileContent
 MAXCHUNKSIZE = 1 << 16
 
 class File(Persistent):
-    __implements__ = IFileContent, IFile
+    implements(IFileContent, IFile)
 
     def __init__(self, data='', contentType=''):
         self.data = data
@@ -171,7 +172,7 @@ from zope.app.interfaces.index.text import ISearchableText
 
 class SearchableText:
 
-    __implements__ = ISearchableText
+    implements(ISearchableText)
     __used_for__ = IReadFile
 
     def __init__(self, file):
