@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.16 2003/08/22 20:02:22 faassen Exp $
+$Id: xmlconfig.py,v 1.17 2003/12/17 08:04:07 philikon Exp $
 """
 
 import errno
@@ -230,7 +230,7 @@ class ConfigurationHandler(ContentHandler):
                 ), sys.exc_info()[2]
 
 
-def processxmlfile(file, context, testing=0):
+def processxmlfile(file, context, testing=False):
     """Process a configuration file
 
     See examples in tests/text_xmlconfig.py
@@ -239,7 +239,7 @@ def processxmlfile(file, context, testing=0):
     src.setByteStream(file)
     parser = make_parser()
     parser.setContentHandler(ConfigurationHandler(context, testing=testing))
-    parser.setFeature(feature_namespaces, 1)
+    parser.setFeature(feature_namespaces, True)
     try:
         parser.parse(src)
     except SAXParseException:
