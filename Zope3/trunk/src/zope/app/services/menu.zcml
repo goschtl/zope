@@ -1,0 +1,68 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope">
+
+<!-- Browser Menu Service -->
+  <content class="zope.app.services.menu.LocalBrowserMenuService">
+    <factory
+        id="zope.app.services.LocalBrowserMenuService"
+        permission="zope.ManageServices"
+        title="Browser Menu Service"
+        description="A Persistent Browser Menu Service" />
+
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.services.registration.IRegistry"
+        attributes="menu menuItem" />
+  </content>
+
+<!-- Browser Menu -->
+  <content class=".menu.LocalBrowserMenu">
+
+    <factory
+      id="zope.app.services.menu.LocalBrowserMenu"
+      permission="zope.ManageServices"
+      title="Browser Menu"
+      description="A Persistent Browser Menu" />
+
+    <allow
+        interface="zope.app.interfaces.container.IReadContainer" />
+
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.container.IWriteContainer" />
+
+    <implements
+      interface="zope.app.interfaces.services.utility.ILocalUtility" />
+
+    <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.menu.ILocalBrowserMenu"
+      set_schema="zope.app.interfaces.services.menu.ILocalBrowserMenu" />
+
+  </content>
+
+<!-- Browser Menu Item -->
+  <content class=".menu.LocalBrowserMenuItem">
+
+    <factory
+      id="utility.LocalBrowserMenuItem"
+      permission="zope.ManageServices"
+      title="Browser Menu Item"
+      description="A Persistent Browser Menu Item" />
+
+    <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.publisher.browser.IBrowserMenuItem"
+      set_schema="zope.app.interfaces.publisher.browser.IBrowserMenuItem" />
+
+  </content>
+
+
+</configure>
+

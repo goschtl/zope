@@ -13,10 +13,9 @@
 ##############################################################################
 """Helper classes for local view registry.
 
-$Id: view.py,v 1.23 2003/08/13 21:28:14 garrett Exp $
+$Id: view.py,v 1.24 2003/08/16 00:42:54 srichter Exp $
 """
 import md5
-
 
 from zope.app.component.interfacefield import InterfaceField
 from zope.app.context import ContextWrapper
@@ -207,11 +206,11 @@ class ViewServiceView(_SharedBase):
                 forInterface = "(Anything)"
             else:
                 forInterface = (
-                    forInterface.__module__ +"."+ forInterface.__name__)
+                    forInterface.__module__ +"."+ forInterface.getName())
 
             shortType = presentationType.__name__
             presentationType = (
-                presentationType.__module__ +"."+ presentationType.__name__)
+                presentationType.__module__ +"."+ presentationType.getName())
 
             registry = ContextWrapper(registry, self.context)
             view = getView(registry, "ChangeRegistrations", self.request)

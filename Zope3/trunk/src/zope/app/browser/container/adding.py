@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.16 2003/08/15 19:41:14 garrett Exp $
+$Id: adding.py,v 1.17 2003/08/16 00:42:41 srichter Exp $
 """
 __metaclass__ = type
 
@@ -83,7 +83,7 @@ class BasicAdding(BrowserView):
 
         factory = zapi.queryFactory(self.context, name)
         if factory is None:
-            return zapi.ContextSuper(Adding, self).publishTraverse(
+            return zapi.ContextSuper(BasicAdding, self).publishTraverse(
                 request, name)
 
         return factory
@@ -98,7 +98,12 @@ class BasicAdding(BrowserView):
         if type_name.startswith('@@'):
             type_name = type_name[2:]
 
-        if zapi.queryView(self, type_name, self.request) is not None:
+        if '/' in type_name:
+            view_name  = type_name.split('/', 1)[0]
+        else:
+            view_name = type_name
+
+        if zapi.queryView(self, view_name, self.request) is not None:
             url = "%s/%s=%s" % (
                 zapi.getView(self, "absolute_url", self.request),
                 type_name, id)

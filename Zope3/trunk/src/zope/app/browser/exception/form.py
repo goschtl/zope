@@ -13,7 +13,7 @@
 ##############################################################################
 """Form-related exception views
 
-$Id: form.py,v 1.1 2003/08/07 21:34:30 jim Exp $
+$Id: form.py,v 1.2 2003/08/16 00:42:45 srichter Exp $
 """
 
 from zope.app.interfaces.form import IWidgetInputError
@@ -21,7 +21,7 @@ from cgi import escape
 
 class WidgetInputErrorView:
     """Displat an input error as a snippet of text"""
-    
+
     __used_for__ = IWidgetInputError
 
     def __init__(self, context, request):

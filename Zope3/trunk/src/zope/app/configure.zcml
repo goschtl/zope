@@ -1,4 +1,4 @@
-<configure 
+<configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:global_translation="http://namespaces.zope.org/gts"
     i18n_domain="zope"
@@ -130,5 +130,7 @@
   <!-- Utilities -->
 
   <include package="zope.app.utilities" />
+  <include package="zope.app.schema" file="fieldforms.zcml" />
+
 
 </configure>

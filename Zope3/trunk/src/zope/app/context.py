@@ -15,8 +15,7 @@
 
 Specifically, coordinate use of context wrappers and security proxies.
 
-Revision information:
-$Id: context.py,v 1.11 2003/07/01 23:28:42 jim Exp $
+$Id: context.py,v 1.12 2003/08/16 00:42:30 srichter Exp $
 """
 
 from pickle import PicklingError
@@ -65,17 +64,17 @@ class DecoratorSpecificationDescriptor(ObjectSpecificationDescriptor):
 
     Interfaces of X are ordered with the directly-provided interfaces first
 
-    >>> [interface.__name__ for interface in list(providedBy(x))]
+    >>> [interface.getName() for interface in list(providedBy(x))]
     ['I4', 'I3']
 
     When we decorate objects, what order should the interfaces come
     in?  One could argue that decorators are less specific, so they
     should come last.
 
-    >>> [interface.__name__ for interface in list(providedBy(D1(x)))]
+    >>> [interface.getName() for interface in list(providedBy(D1(x)))]
     ['I4', 'I3', 'I1']
 
-    >>> [interface.__name__ for interface in list(providedBy(D2(D1(x))))]
+    >>> [interface.getName() for interface in list(providedBy(D2(D1(x))))]
     ['I4', 'I3', 'I1', 'I2']
     """
     def __get__(self, inst, cls=None):

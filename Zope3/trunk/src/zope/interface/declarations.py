@@ -11,7 +11,7 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.16 2003/06/30 16:32:46 jeremy Exp $
+$Id: declarations.py,v 1.17 2003/08/16 00:44:44 srichter Exp $
 """
 
 import sys
@@ -96,10 +96,10 @@ def classImplements(cls, *interfaces):
     >>> class C(A, B):
     ...   pass
     >>> classImplements(C, I1, I2)
-    >>> [i.__name__ for i in implementedBy(C)]
+    >>> [i.getName() for i in implementedBy(C)]
     ['I1', 'I2', 'I3', 'I4']
     >>> classImplements(C, I5)
-    >>> [i.__name__ for i in implementedBy(C)]
+    >>> [i.getName() for i in implementedBy(C)]
     ['I1', 'I2', 'I5', 'I3', 'I4']
 
     Instances of ``C`` provide ``I1``, ``I2``, ``I5``, and whatever interfaces
@@ -186,9 +186,9 @@ class ObjectSpecification_py:
         ...
         >>> c = C()
         >>> directlyProvides(c, I4)
-        >>> [i.__name__ for i in providedBy(c)]
+        >>> [i.getName() for i in providedBy(c)]
         ['I4', 'I31', 'I1', 'I2']
-        >>> [i.__name__ for i in providedBy(c).flattened()]
+        >>> [i.getName() for i in providedBy(c).flattened()]
         ['I4', 'I31', 'I3', 'I1', 'I2', 'Interface']
         >>> int(I1 in providedBy(c))
         1
@@ -206,9 +206,9 @@ class ObjectSpecification_py:
         ...
         >>> c = D()
         >>> directlyProvides(c, I4)
-        >>> [i.__name__ for i in providedBy(c)]
+        >>> [i.getName() for i in providedBy(c)]
         ['I4', 'I5', 'I31']
-        >>> [i.__name__ for i in providedBy(c).flattened()]
+        >>> [i.getName() for i in providedBy(c).flattened()]
         ['I4', 'I5', 'I31', 'I3', 'Interface']
         >>> int(I1 in providedBy(c))
         0
@@ -400,9 +400,9 @@ class ObjectSpecificationDescriptor:
           >>> class C:
           ...   implements(IFoo)
           ...   classProvides(IFooFactory)
-          >>> [i.__name__ for i in C.__providedBy__]
+          >>> [i.getName() for i in C.__providedBy__]
           ['IFooFactory']
-          >>> [i.__name__ for i in C().__providedBy__]
+          >>> [i.getName() for i in C().__providedBy__]
           ['IFoo']
 
         """
@@ -517,11 +517,11 @@ class Spec(InterfaceSpecificationBase):
           >>> spec = InterfaceSpecification(I2, I3)
           >>> spec = InterfaceSpecification(I4, spec)
           >>> i = iter(spec)
-          >>> i.next().__name__
+          >>> i.next().getName()
           'I4'
-          >>> i.next().__name__
+          >>> i.next().getName()
           'I2'
-          >>> i.next().__name__
+          >>> i.next().getName()
           'I3'
           >>> list(i)
           []
@@ -546,15 +546,15 @@ class Spec(InterfaceSpecificationBase):
           >>> spec = InterfaceSpecification(I2, I3)
           >>> spec = InterfaceSpecification(I4, spec)
           >>> i = spec.flattened()
-          >>> i.next().__name__
+          >>> i.next().getName()
           'I4'
-          >>> i.next().__name__
+          >>> i.next().getName()
           'I2'
-          >>> i.next().__name__
+          >>> i.next().getName()
           'I1'
-          >>> i.next().__name__
+          >>> i.next().getName()
           'I3'
-          >>> i.next().__name__
+          >>> i.next().getName()
           'Interface'
           >>> list(i)
           []
@@ -614,24 +614,24 @@ class Spec(InterfaceSpecificationBase):
           >>> class I4(I3): pass
           ...
           >>> spec = InterfaceSpecification()
-          >>> [iface.__name__ for iface in spec]
+          >>> [iface.getName() for iface in spec]
           []
-          >>> [iface.__name__ for iface in spec+I1]
+          >>> [iface.getName() for iface in spec+I1]
           ['I1']
-          >>> [iface.__name__ for iface in I1+spec]
+          >>> [iface.getName() for iface in I1+spec]
           ['I1']
           >>> spec2 = spec
           >>> spec += I1
-          >>> [iface.__name__ for iface in spec]
+          >>> [iface.getName() for iface in spec]
           ['I1']
-          >>> [iface.__name__ for iface in spec2]
+          >>> [iface.getName() for iface in spec2]
           []
           >>> spec2 += InterfaceSpecification(I3, I4)
-          >>> [iface.__name__ for iface in spec2]
+          >>> [iface.getName() for iface in spec2]
           ['I3', 'I4']
-          >>> [iface.__name__ for iface in spec+spec2]
+          >>> [iface.getName() for iface in spec+spec2]
           ['I1', 'I3', 'I4']
-          >>> [iface.__name__ for iface in spec2+spec]
+          >>> [iface.getName() for iface in spec2+spec]
           ['I3', 'I4', 'I1']
 
         """
@@ -656,22 +656,22 @@ class Spec(InterfaceSpecificationBase):
           >>> class I4(I3): pass
           ...
           >>> spec = InterfaceSpecification()
-          >>> [iface.__name__ for iface in spec]
+          >>> [iface.getName() for iface in spec]
           []
           >>> spec -= I1
-          >>> [iface.__name__ for iface in spec]
+          >>> [iface.getName() for iface in spec]
           []
           >>> spec -= InterfaceSpecification(I1, I2)
-          >>> [iface.__name__ for iface in spec]
+          >>> [iface.getName() for iface in spec]
           []
           >>> spec = InterfaceSpecification(I2, I4)
-          >>> [iface.__name__ for iface in spec]
+          >>> [iface.getName() for iface in spec]
           ['I2', 'I4']
-          >>> [iface.__name__ for iface in spec - I4]
+          >>> [iface.getName() for iface in spec - I4]
           ['I2']
-          >>> [iface.__name__ for iface in spec - I1]
+          >>> [iface.getName() for iface in spec - I1]
           ['I4']
-          >>> [iface.__name__ for iface
+          >>> [iface.getName() for iface
           ...  in spec - InterfaceSpecification(I3, I4)]
           ['I2']
 
@@ -776,11 +776,11 @@ class Implements(PicklableSpec):
           ...
           >>> class B(A): implements(I3)
           ...
-          >>> [i.__name__ for i in B.__implements__]
+          >>> [i.getName() for i in B.__implements__]
           ['I3', 'I2']
           >>> b = B()
           >>> directlyProvides(b, I4)
-          >>> [i.__name__ for i in b.__implements__]
+          >>> [i.getName() for i in b.__implements__]
           ['I3', 'I2']
 
         """
@@ -819,7 +819,7 @@ class Provides(PicklableSpec):
           ...
           >>> class C:
           ...   classProvides(IFooFactory)
-          >>> [i.__name__ for i in C.__provides__]
+          >>> [i.getName() for i in C.__provides__]
           ['IFooFactory']
           >>> getattr(C(), '__provides__', 0)
           0
@@ -866,7 +866,7 @@ def classImplementsOnly(cls, *interfaces):
         >>> class C(A, B):
         ...   pass
         >>> classImplementsOnly(C, I1, I2)
-        >>> [i.__name__ for i in implementedBy(C)]
+        >>> [i.getName() for i in implementedBy(C)]
         ['I1', 'I2']
 
     Instances of ``C`` provide only ``I1``, ``I2``, and regardless of
@@ -988,7 +988,7 @@ def implementedBy(class_):
       ...   implements(I2)
       >>> class C2(C1):
       ...   implements(I3)
-      >>> [i.__name__ for i in implementedBy(C2)]
+      >>> [i.getName() for i in implementedBy(C2)]
       ['I3', 'I2']
     """
 
@@ -1185,9 +1185,9 @@ def classProvides(*interfaces):
           >>> class C:
           ...   implements(IFoo)
           ...   classProvides(IFooFactory)
-          >>> [i.__name__ for i in C.__providedBy__]
+          >>> [i.getName() for i in C.__providedBy__]
           ['IFooFactory']
-          >>> [i.__name__ for i in C().__providedBy__]
+          >>> [i.getName() for i in C().__providedBy__]
           ['IFoo']
 
     if equivalent to::
@@ -1200,9 +1200,9 @@ def classProvides(*interfaces):
           >>> class C:
           ...   implements(IFoo)
           >>> directlyProvides(C, IFooFactory)
-          >>> [i.__name__ for i in C.__providedBy__]
+          >>> [i.getName() for i in C.__providedBy__]
           ['IFooFactory']
-          >>> [i.__name__ for i in C().__providedBy__]
+          >>> [i.getName() for i in C().__providedBy__]
           ['IFoo']
 
 

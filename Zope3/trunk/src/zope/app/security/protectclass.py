@@ -71,14 +71,19 @@ def protectLikeUnto(class_, like_unto):
         return
 
     # We know a dictionart get method was used because we set it
-    unto_protections = unto_checker.getPermission_func().__self__
+    unto_get_protections = unto_checker.getPermission_func().__self__
+    unto_set_protections = unto_checker.getSetattrPermission_func().__self__
 
     checker = getCheckerForInstancesOf(class_)
     if checker is None:
-        checker = Checker({}.get)
+        checker = Checker({}.get, {}.get)
         defineChecker(class_, checker)
 
     # OK, so it's a hack.
-    protections = checker.getPermission_func().__self__
-    for name in unto_protections:
-        protections[name] = unto_protections[name]
+    get_protections = checker.getPermission_func().__self__
+    for name in unto_get_protections:
+        get_protections[name] = unto_get_protections[name]
+
+    set_protections = checker.getSetattrPermission_func().__self__
+    for name in unto_set_protections:
+        set_protections[name] = unto_set_protections[name]

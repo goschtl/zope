@@ -11,8 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: _field.py,v 1.21 2003/08/12 18:16:40 poster Exp $
+"""Schema Fields
+
+$Id: _field.py,v 1.22 2003/08/16 00:44:50 srichter Exp $
 """
 __metaclass__ = type
 
@@ -84,7 +85,7 @@ class Bytes(Enumerated, MinMaxLen, Field):
         Traceback (most recent call last):
         ...
         ValidationError: (u'Constraint not satisfied', ' foo y.z bat')
-        
+
         """
         v = str(u)
         self.validate(v)
@@ -305,7 +306,7 @@ class URI(BytesLine):
         ...
         ValidationError: ('Invalid uri', 'www.python.org/foo/bar')
         """
-    
+
         super(URI, self)._validate(value)
         if _isuri(value):
             return
@@ -382,5 +383,5 @@ class Id(BytesLine):
         self.validate(v)
         return v
 
-    
-        
+
+

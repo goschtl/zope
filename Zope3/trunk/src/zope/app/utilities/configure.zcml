@@ -1,17 +1,50 @@
-<configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser">
+<configure xmlns="http://namespaces.zope.org/zope">
 
-  <content
-    class=".schema.SchemaUtility">
+<!-- Mutable Schema -->
+
+  <content class=".schema.SchemaUtility">
 
     <factory
-      permission="zope.ManageServices"
-      title="Persistent Schema Utility"
-      description="A Persistent Schema that can be edited through the web"
-      />
+        permission="zope.ManageServices"
+        title="Mutable Schema"
+        description="A Persistent Schema that can be edited through the web"/>
 
-    <allow attributes="__name__" />
+    <implements
+        interface="zope.app.interfaces.services.utility.ILocalUtility" />
+
+    <implements
+        interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.utilities.schema.IMutableSchema" />
+
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.interfaces.utilities.schema.ISchemaUtility"
+        set_schema="zope.app.interfaces.utilities.schema.ISchemaUtility" />
+
+  </content>
+
+  <content class=".schema.SchemaRegistration">
+    <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.utility.IUtilityRegistration
+                 zope.app.interfaces.container.IAddNotifiable
+                 zope.app.interfaces.container.IDeleteNotifiable"
+      set_schema="zope.app.interfaces.services.utility.IUtilityRegistration" />
+  </content>
+
+
+<!-- Content Component Definition -->
+
+  <content class=".content.ContentComponentDefinition">
+
+    <factory
+      id="utility.ContentComponentDefinition"
+      permission="zope.ManageServices"
+      title="Content Component Definition"
+      description="A Persistent Content Component Definition" />
 
     <implements
       interface="zope.app.interfaces.services.utility.ILocalUtility" />
@@ -21,30 +54,30 @@
 
     <require
       permission="zope.ManageServices"
-      interface="zope.app.interfaces.schemagen.ISchemaSpec"
-      />
+      interface="
+          zope.app.interfaces.utilities.content.IContentComponentDefinition"
+      set_schema="
+          zope.app.interfaces.utilities.content.IContentComponentDefinition" />
 
   </content>
 
 
-  <!-- Menu entry for "add component" menu -->
-  <browser:menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_component"
-      action="zope.app.utilities.schema.SchemaUtility"
-      title="Persistent Schema Utility"
-      description="A Persistent Schema that can be edited through the web"
+  <content class=".content.ContentComponentDefinitionRegistration">
+    <require
       permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.utility.IUtilityRegistration
+                 zope.app.interfaces.container.IAddNotifiable
+                 zope.app.interfaces.container.IDeleteNotifiable"
+      set_schema="zope.app.interfaces.services.utility.IUtilityRegistration"
       />
+  </content>
 
-  <!-- Menu entry for "add utility" menu -->
-  <browser:menuItem
-      for="zope.app.interfaces.container.IAdding"
-      menu="add_utility"
-      action="zope.app.utilities.schema.SchemaUtility"
-      title="Persistent Schema Utility"
-      description="A Persistent Schema that can be edited through the web"
-      permission="zope.ManageServices"
-      />
+<!-- Content Component Instance -->
+
+  <content class=".content.ContentComponentInstance">
+    <implements
+      interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
+  </content>
+
 
 </configure>

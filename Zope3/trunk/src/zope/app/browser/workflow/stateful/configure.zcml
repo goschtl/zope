@@ -13,7 +13,7 @@
 
   <page
       for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
-      name="index.html" 
+      name="index.html"
       class=".definition.StatefulProcessDefinitionView"
       permission="zope.ManageServices"
       template="definition_index.pt" />
@@ -29,10 +29,10 @@
   <menuItems
       for="zope.app.interfaces.workflow.stateful.IStatefulProcessDefinition"
       menu="zmi_actions">
-    
-    <menuItem 
+
+    <menuItem
         title="Manage States" action="states/contents.html" />
-    <menuItem 
+    <menuItem
         title="Manage Transitions" action="transitions/contents.html" />
 
   </menuItems>
@@ -52,10 +52,10 @@
       class=".definition.StatesContainerAdding"
       permission="zope.workflow.ManageProcessDefinitions"
       allowed_attributes="addingInfo">
-  
+
     <page name="index.html"  template="add.pt" />
     <page name="action.html" attribute="action" />
-  
+
   </view>
 
 
@@ -104,7 +104,7 @@
       menu="zmi_views"
       label="Edit a Transition"
       permission="zope.workflow.ManageProcessDefinitions" />
-  
+
   <addform
       name="AddTransition"
       menu="add_stateful_transitions" title="Stateful Transition"
@@ -113,7 +113,7 @@
       content_factory="zope.app.workflow.stateful.definition.Transition"
       arguments="sourceState destinationState"
       keyword_arguments="condition script permission triggerMode"
-      fields="sourceState destinationState condition script 
+      fields="sourceState destinationState condition script
               permission triggerMode"/>
 
 
@@ -126,19 +126,19 @@
       description="An utility to manage content and workflow interaction." />
 
   <page
-      name="index.html" 
+      name="index.html"
       for="zope.app.interfaces.workflow.stateful.IContentWorkflowsManager"
       class=".contentworkflow.ContentWorkflowsManagerView"
       permission="zope.ManageServices"
-      template="contentworkflow_index.pt" 
+      template="contentworkflow_index.pt"
       menu="zmi_views" title="Overview"/>
 
   <page
-      name="registry.html" 
+      name="registry.html"
       for="zope.app.interfaces.workflow.stateful.IContentWorkflowsManager"
       class=".contentworkflow.ManageContentProcessRegistry"
       permission="zope.ManageServices"
-      template="contentworkflow_registry.pt" 
+      template="contentworkflow_registry.pt"
       menu="zmi_views" title="Content/Process Registry"/>
 
 
@@ -158,7 +158,7 @@
       for="zope.app.interfaces.container.IContentContainer"
       permission="zope.View"
       class="zope.app.browser.workflow.stateful.content_filter.FilterList"
-      name="published_content.html" 
+      name="published_content.html"
       attribute="published_content" />
 
 <!-- uhm ... this seems to be too generic in its definition

@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Interface Service Tests
 
+$Id: test_interface.py,v 1.9 2003/08/16 00:44:14 srichter Exp $
+"""
 import unittest
 
 from transaction import get_transaction

@@ -23,7 +23,7 @@ from zope.app import zapi
 class Interfaces:
 
     def getInterfaces(self):
-        L = [(iface.__name__, id) for id, iface in self.context.items()]
+        L = [(iface.getName(), id) for id, iface in self.context.items()]
         L.sort()
         return [{"id": id, "name": name} for name, id in L]
 
@@ -36,7 +36,7 @@ class Detail:
         from zope.proxy import getProxiedObject
         self.iface = getProxiedObject(iface)
         
-        self.name = self.iface.__name__
+        self.name = self.iface.getName()
         # XXX the doc string needs some formatting for presentation
         # XXX self.doc = self.iface.__doc__
         self.doc = self.iface.getDoc()

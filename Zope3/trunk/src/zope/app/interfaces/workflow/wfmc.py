@@ -16,7 +16,7 @@
 
 Status: Draft
 
-$Id: wfmc.py,v 1.1 2003/02/01 19:17:39 jack-e Exp $
+$Id: wfmc.py,v 1.2 2003/08/16 00:43:37 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 
@@ -65,25 +65,25 @@ class IWfMCProcessDefinitionHeader(Interface):
     """
 
     created = Attribute("date of creation")
-    
+
     description = Attribute("description of package")
-    
+
     validFrom = Attribute("date the PD is valid from")
-    
+
     validTo = Attribute("date the PD is valid to")
-    
+
     limit = Attribute("limit for timemanagement in units of DurationUnit")
-    
+
     priority = Attribute("priority of PD")
-    
+
     durationUnit = Attribute("Duration Unit")
-    
+
     workingTime = Attribute("amount of time, performer of activity needs to perform task")
-    
+
     waitingTime = Attribute("amount of time, needed to prepare performance of task")
-    
+
     duration = Attribute("duration in units")
-    
+
     timeEstimation = Attribute("estimated time for the process")
 
 
@@ -111,11 +111,11 @@ class IWfMCFormalParameter(IWfMCProcessDefinitionElement):
     """
 
     mode = Attribute("mode: in/out/inout")
-    
+
     index = Attribute("index of par")
-    
+
     dataType = Attribute("data type of Parameter")
-    
+
     description = Attribute("the Parameter Description")
 
 
@@ -130,13 +130,13 @@ class IWfMCRelevantData(IWfMCProcessDefinitionElement):
     """
 
     name = Attribute("name of DataField")
-    
+
     isArray = Attribute("is array ?")
-    
+
     dataType = Attribute("type of data")
-    
+
     initialValue = Attribute("initial Value")
-    
+
     description = Attribute("description of WFRD")
 
 
@@ -173,10 +173,10 @@ class IWfMCParticipant(IWfMCProcessDefinitionElement):
                         ORGANIZATIONAL_UNIT/HUMAN/SYSTEM""")
 
     description = Attribute("Description of Participant.")
- 
 
 
-## Activity 
+
+## Activity
 
 class IWfMCActivityContainer(IContainer):
     """WfMC Activity Container.
@@ -188,43 +188,43 @@ class IWfMCActivity(IWfMCProcessDefinitionElement):
 
     # we get get this via acquisition
     # processDefinition = Attribute("ref to PD the activity belongs to")
-    
+
     name = Attribute("a Activity Name")
-    
+
     description = Attribute("a description")
-    
+
     isRoute = Attribute("is this a route Activity")
-    
+
     startMode = Attribute("how Activity is started (0-Manual/1-Automatic)")
-    
+
     finishMode = Attribute("how Activity is finished (0-Manual/1-Automatic)")
-    
+
     performer = Attribute("link to workflow participant (may be expression)")
-    
+
     implementation = Attribute("if not Route-Activity: mandatory (no/tool+/subflow/loop)")
-    
+
     instantiation = Attribute("capability: once/multiple times")
-    
+
     priority = Attribute("priority of Activity")
-    
+
     cost = Attribute("average cost")
-    
+
     workingTime = Attribute("amount of time, performer of activity needs to perform task")
-    
+
     waitingTime = Attribute("amount of time, needed to prepare performance of task")
-    
+
     duration = Attribute("duration of activity")
-    
+
     limit = Attribute("limit in costUnits")
-    
+
     icon = Attribute("icon of activity")
-    
+
     documentation = Attribute("documentation")
-    
+
     splitMode = Attribute("split Mode (and/xor)")
-    
+
     joinMode = Attribute("join Mode (and/xor)")
-    
+
     inlineBlock = Attribute("inline Block definition")
 
 
@@ -249,7 +249,7 @@ class IWfMCSubflow(IWfMCImplementation):
     actualParameterList = Attribute("""Sequence of ActualParameters with those the
                                      new Instance is initialized and whose are
                                      returned.""")
-    
+
 
 class IWfMCTool(IWfMCImplementation):
     """WfMC Implementation Subflow.
@@ -329,7 +329,7 @@ class IWfMCProcessInstance(IProcessInstance):
 
     # XXX Do we need an actual Participantlist for implementation ??
 
-    
+
 
 
 ## ActivityInstance
@@ -337,13 +337,13 @@ class IWfMCProcessInstance(IProcessInstance):
 class IWfMCActivityInstanceContainer(IContainer):
     """WfMC ActivityInstance Container.
     """
-    
+
 class IWfMCActivityInstance(Interface):
     """WfMC Workflow activity instance.
     """
 
     activityId = Attribute("Id of Activity.")
-    
+
     name = Attribute("Name of ActivityInstance.")
 
     creationTime = Attribute("Creation Time of ActivityInstance.")
@@ -354,7 +354,7 @@ class IWfMCActivityInstance(Interface):
 
     workitems = Attribute("ref to WorkitemContainer.")
 
-    # XXX 
+    # XXX
     # participants = Attribute("Sequence of assigned Participants.")
 
 

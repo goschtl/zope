@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.1 2003/08/07 20:42:00 sidnei Exp $
+$Id: test_schemautility.py,v 1.2 2003/08/16 00:44:27 srichter Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -22,7 +22,8 @@ from zope.schema import Text, getFieldsInOrder, getFieldNamesInOrder
 class SchemaUtilityTests(TestCase):
 
     def setUp(self):
-        self.s = SchemaUtility('IFoo')
+        self.s = SchemaUtility()
+        self.s.setName('IFoo')
         self.alpha = Text(title=u"alpha")
 
     def test_addField(self):
@@ -30,6 +31,15 @@ class SchemaUtilityTests(TestCase):
         s.addField('alpha', self.alpha)
         self.assertEquals(
             [('alpha', self.alpha)],
+            getFieldsInOrder(s))
+
+    def test_addFieldInsertsAtEnd(self):
+        s = self.s
+        s.addField('alpha', self.alpha)
+        beta = Text(title=u"Beta")
+        s.addField('beta', beta)
+        self.assertEquals(
+            [('alpha', self.alpha),('beta', beta)],
             getFieldsInOrder(s))
 
     def test_removeField(self):

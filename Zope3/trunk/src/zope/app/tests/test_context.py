@@ -11,11 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Context Tests
 
-XXX longer description goes here.
-
-$Id: test_context.py,v 1.6 2003/08/15 19:49:52 garrett Exp $
+$Id: test_context.py,v 1.7 2003/08/16 00:44:17 srichter Exp $
 """
 
 import pickle
@@ -57,13 +55,13 @@ def test_providedBy_iter_w_new_style_class():
     >>> x = X()
     >>> directlyProvides(x, I4)
 
-    >>> [interface.__name__ for interface in list(providedBy(x))]
+    >>> [interface.getName() for interface in list(providedBy(x))]
     ['I4', 'I3']
 
-    >>> [interface.__name__ for interface in list(providedBy(D1(x)))]
+    >>> [interface.getName() for interface in list(providedBy(D1(x)))]
     ['I4', 'I3', 'I1']
 
-    >>> [interface.__name__ for interface in list(providedBy(D2(D1(x))))]
+    >>> [interface.getName() for interface in list(providedBy(D2(D1(x))))]
     ['I4', 'I3', 'I1', 'I2']
     """
 

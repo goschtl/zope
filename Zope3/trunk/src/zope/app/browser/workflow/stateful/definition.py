@@ -12,8 +12,8 @@
 #
 ##############################################################################
 """ProcessDefinition registration adding view
- 
-$Id: definition.py,v 1.6 2003/08/13 21:28:28 garrett Exp $
+
+$Id: definition.py,v 1.7 2003/08/16 00:43:16 srichter Exp $
 """
 __metaclass__ = type
 
@@ -55,7 +55,7 @@ class StateAddFormHelper:
 
 
 class StatefulProcessDefinitionView(BrowserView):
- 
+
     def getName(self):
         return """I'm a stateful ProcessInstance"""
 
@@ -124,7 +124,7 @@ class RelevantDataSchemaEdit(EditView):
                  'getter': getattr(self, name+'_get_perm_widget'),
                  'setter': getattr(self, name+'_set_perm_widget')} )
         return info
-        
+
 
 class AddState(BrowserView):
 
@@ -136,7 +136,7 @@ class AddState(BrowserView):
 
 class AddTransition(BrowserView):
 
-    # XXX This could and should be handled by a Vocabulary Field/Widget 
+    # XXX This could and should be handled by a Vocabulary Field/Widget
     def getStateNames(self):
         pd = self.context.getProcessDefinition()
         states = removeAllProxies(pd.getStateNames())

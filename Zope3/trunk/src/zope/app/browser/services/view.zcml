@@ -37,12 +37,13 @@
       schema="zope.app.interfaces.services.view.IPageRegistration"
       name="PageRegistration"
       content_factory="zope.app.services.view.PageRegistration"
-      keyword_arguments="forInterface class_ viewName permission layer"
+      keyword_arguments="forInterface class_ viewName permission 
+                         layer attribute"
       set_before_add="template"
       label="Register a view page"
       permission="zope.ManageServices"
       fields="forInterface viewName
-              template class_ layer permission status" />
+              template class_ layer permission status attribute" />
 
 <!-- XXX Jim says view configuration doesn't work and aren't well thought out.
      So I'm commenting it out for now.

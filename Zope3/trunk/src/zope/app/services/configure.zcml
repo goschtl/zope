@@ -103,6 +103,10 @@
    />
 
 
+<!-- Menu Service -->
+<include file="menu.zcml"/>
+
+
 <!-- Page Templates -->
 
 <content class="zope.app.services.zpt.ZPTTemplate">

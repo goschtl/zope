@@ -11,7 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+"""Introspector
 
+$Id: introspector.py,v 1.15 2003/08/16 00:42:31 srichter Exp $
+"""
 from zope.interface import Interface
 
 from zope.app.interfaces.introspector import IIntrospector
@@ -202,8 +205,10 @@ def interfaceToName(context, interface):
     ids = [id for id, iface in items
            if iface == interface]
     if not ids:
-        # Not every interface must be registered with the interface service;
-        # However the lookup should not fail, since this is just a name
-        return interface.__module__ + '.' + interface.__name__
+        # XXX Do not fail badly, instead resort to the standard
+        # way of getting the interface name, cause not all interfaces
+        # may be registered.
+        return interface.__module__ + '.' + interface.getName()
+
     assert len(ids) == 1, "Ambiguous interface names: %s" % ids
     return ids[0]

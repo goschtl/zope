@@ -25,7 +25,7 @@ Example:
 The dotted name is the module name and interface object name connected
 with a dot.
 
-Revision information: $Id: pyskel.py,v 1.3 2003/06/05 21:53:28 srichter Exp $
+Revision information: $Id: pyskel.py,v 1.4 2003/08/16 00:44:44 srichter Exp $
 """
 
 import sys, os, re
@@ -83,12 +83,12 @@ def skel(name):
     if class_name.startswith('I'):
         class_name = class_name[1:]
     print "from zope.interface import implements"
-    print "from %s import %s" % (iface.__module__, iface.__name__)
+    print "from %s import %s" % (iface.__module__, iface.getName())
     print
     print "class %s:" %class_name
-    print "    __doc__ = %s.__doc__" % iface.__name__
+    print "    __doc__ = %s.__doc__" % iface.getName()
     print
-    print "    implements(%s)" %iface.__name__
+    print "    implements(%s)" %iface.getName()
     print
 
     rskel(iface, iface, 0)
@@ -165,7 +165,7 @@ def guessOrder(source_file):
 def getAttributesInOrder(interface, order):
     # order is the dictionary returned from guessOrder().
     # interface is a metaclass-based interface object.
-    name_order = order.get(interface.__name__)
+    name_order = order.get(interface.getName())
 
     if name_order is None:
         # Something's wrong.  Oh well.

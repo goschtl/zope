@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.24 2003/08/13 21:27:47 garrett Exp $
+$Id: test_interfacewidget.py,v 1.25 2003/08/16 00:42:38 srichter Exp $
 """
 
 __metaclass__ = type
@@ -60,7 +60,6 @@ class BaseInterfaceWidgetTest(CleanUp, TestCase):
             'zope.app.browser.component.tests.test_interfacewidget.I2', I2)
         service.provideInterface(
             'zope.app.browser.component.tests.test_interfacewidget.I3', I3)
-
         request = TestRequest()
 
         self.request = request
@@ -193,7 +192,7 @@ class TestInterfaceWidget(BaseInterfaceWidgetTest):
             __name__='TestName',
             title=u"This is a test",
             required=False,
-            constraint=lambda i: not (i.__name__.endswith("2")),
+            constraint=lambda i: not (i.getName().endswith("2")),
             )
 
         widget = InterfaceWidget(field, request)

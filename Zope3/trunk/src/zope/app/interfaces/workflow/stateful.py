@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.18 2003/07/31 15:01:31 srichter Exp $
+$Id: stateful.py,v 1.19 2003/08/16 00:43:37 srichter Exp $
 """
 
 import zope.schema
@@ -35,7 +35,7 @@ INITIAL = u'INITIAL'
 class ITransitionEvent(IWorkflowEvent):
     """An event that signalizes a transition from one state to another."""
 
-    object = Attribute("""The content object whose status will be changed.""") 
+    object = Attribute("""The content object whose status will be changed.""")
 
     process = Attribute("""The process instance that is doing the
                            transition. Note that this object really represents
@@ -87,7 +87,7 @@ class IAfterRelevantDataChangeEvent(IRelevantDataChangeEvent):
 
 class IState(Interface):
     """Interface for state of a stateful workflow process definition."""
-    # XXX Should at least have a title, if not a value as well 
+    # XXX Should at least have a title, if not a value as well
 
 class IStatefulStatesContainer(IProcessDefinitionElementContainer):
     """Container that stores States."""
@@ -109,7 +109,7 @@ class TriggerModeField(zope.schema.TextLine):
 
     def __allowed(self):
         return [MANUAL, AUTOMATIC]
-    
+
     allowed_values = ContextProperty(__allowed)
 
 
@@ -152,14 +152,14 @@ class ITransition(Interface):
         title=u"Trigger Mode",
         description=u"How the Transition is triggered (Automatic/Manual)",
         default=u"Manual")
-        
+
 
     def getSourceState():
         """Get Source State."""
 
     def setSourceState(source):
         """Set Source State."""
-        
+
     def getDestinationState():
         """Get Destination State."""
 
@@ -189,7 +189,7 @@ class ITransition(Interface):
 
     def setTriggerMode():
         """Set TriggerMode."""
-        
+
     def getProcessDefinition():
         """Return the ProcessDefinition Object."""
 
@@ -208,9 +208,9 @@ class IStatefulProcessDefinition(IProcessDefinition):
         default=None,
         required=False)
 
-    schemaPermissions = Attribute(u"A dictioary that maps set/get permissions"
+    schemaPermissions = Attribute(u"A dictionary that maps set/get permissions"
                                   u"on the schema's fields. Entries looks as"
-                                  u"follows: {fieldname : (set_perm, get_perm)}")
+                                  u"follows: {fieldname:(set_perm, get_perm)}")
 
     states = Attribute("State objects container.")
 
@@ -218,31 +218,31 @@ class IStatefulProcessDefinition(IProcessDefinition):
 
     def addState(name, state):
         """Add a IState to the process definition."""
-    
+
     def getState(name):
         """Get the named state."""
-    
+
     def removeState(name):
         """Remove a state from the process definition
-    
+
         Raises ValueError exception if trying to delete the initial state.
         """
-    
+
     def getStateNames():
         """Get the state names."""
-    
+
     def getInitialStateName():
         """Get the name of the initial state."""
-    
+
     def addTransition(name, transition):
         """Add a ITransition to the process definition."""
-    
+
     def getTransition(name):
         """Get the named transition."""
-    
+
     def removeTransition(name):
         """Remove a transition from the process definition."""
-    
+
     def getTransitionNames():
         """Get the transition names."""
 
@@ -275,7 +275,7 @@ class IStatefulProcessInstance(IProcessInstance):
 
     def getProcessDefinition():
         """Get the process definition for this instance."""
-        
+
 
 class IContentProcessRegistry(Interface):
     """Content Type <-> Process Definitions Registry

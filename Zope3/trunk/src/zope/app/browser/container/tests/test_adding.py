@@ -13,28 +13,34 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.7 2003/08/15 19:41:17 garrett Exp $
+$Id: test_adding.py,v 1.8 2003/08/16 00:42:42 srichter Exp $
 """
 
 from unittest import TestCase, main, makeSuite
+from zope.app import zapi
+from zope.app.browser.absoluteurl import AbsoluteURL
 from zope.app.browser.container.adding import Adding
-from zope.app.interfaces.container import IAdding
+from zope.app.context import ContextWrapper
+from zope.app.event.tests.placelesssetup import getEvents
+from zope.app.interfaces.container import IAdding, IContainer, IZopeContainer
+from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
+from zope.app.interfaces.exceptions import UserError
+from zope.app.interfaces.traversing import IContainmentRoot
 from zope.app.tests.placelesssetup import PlacelessSetup
+from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
 from zope.component.factory import provideFactory
 from zope.component.interfaces import IFactory
 from zope.component.exceptions import ComponentLookupError
 from zope.context import getWrapperContainer, getWrapperData
-from zope.publisher.browser import TestRequest
-from zope.publisher.browser import BrowserView
+from zope.context import \
+     getWrapperContainer, getWrapperData, getInnerWrapperData
+from zope.interface import implements, Interface
+from zope.publisher.browser import TestRequest, BrowserView
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.event.tests.placelesssetup import getEvents
-from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
-from zope.app.interfaces.exceptions import UserError
 
-from zope.app.interfaces.container import IZopeContainer
-from zope.interface import implements
-from zope.app.context import ContextWrapper
+class Root:
+    implements(IContainmentRoot)
 
 class Container(dict):
 
@@ -60,6 +66,18 @@ class Factory:
 
     def __call__(self):
         return 'some_content'
+
+
+class AbsoluteURL(BrowserView):
+
+    def __str__(self):
+        if IContainmentRoot.isImplementedBy(self.context):
+            return ''
+        name = getInnerWrapperData(self.context)['name']
+        url = str(zapi.getView(
+            zapi.getParent(self.context), 'absolute_url', self.request))
+        url += '/' + name
+        return url
 
 
 class Test(PlacelessSetup, TestCase):
@@ -147,6 +165,26 @@ class Test(PlacelessSetup, TestCase):
         adding.contentName = None
         self.assertRaises(ValueError, adding.action, type_name='foo')
         
+
+    def test_action(self):
+        container = Container()
+        # ensure container provides IZopeContainer
+        container = ContextWrapper(container, Root(), name="container")
+        request = TestRequest()
+        adding = Adding(container, request)
+        adding = ContextWrapper(adding, container, name="+")
+        provideView(IAdding, "Thing", IBrowserPresentation, CreationView)
+        provideView(Interface, "absolute_url", IBrowserPresentation,
+                    AbsoluteURL)
+        self.assertRaises(UserError, adding.action, '', 'foo')
+        self.assertRaises(UserError, adding.action, 'Unknown', '')
+        adding.action('Thing', 'foo')
+        self.assertEqual(adding.request.response._headers['location'],
+                         '/container/+/Thing=foo')
+        adding.action('Thing/screen1', 'foo')
+        self.assertEqual(adding.request.response._headers['location'],
+                         '/container/+/Thing/screen1=foo')
+
 
 def test_suite():
     return makeSuite(Test)

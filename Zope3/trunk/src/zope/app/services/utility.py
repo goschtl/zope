@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.14 2003/08/07 15:29:48 sidnei Exp $
+$Id: utility.py,v 1.15 2003/08/16 00:44:08 srichter Exp $
 """
 
 from zope.interface import implements
@@ -31,6 +31,7 @@ from zope.component.exceptions import ComponentLookupError
 from zope.interface.implementor import ImplementorRegistry
 from zope.context import ContextMethod
 from zope.app.context import ContextWrapper
+from zope.proxy import removeAllProxies
 
 class LocalUtilityService(Persistent):
 
@@ -114,10 +115,11 @@ class LocalUtilityService(Persistent):
             for iface, cr in self._utilities[name].getRegisteredMatching():
                 if not cr:
                     continue
-                if interface and not iface is interface:
-                    continue
                 cr = ContextWrapper(cr, self)
                 utility = cr.active().getComponent()
+                if interface and not iface.extends(interface, 0) and \
+                       removeAllProxies(utility) is not interface:
+                    continue
                 utilities[(name, utility)] = None
 
         next = getNextService(self, "Utilities")
@@ -126,6 +128,7 @@ class LocalUtilityService(Persistent):
             if not utilities.has_key(utility):
                 utilities[utility] = None
         return utilities.keys()
+    
     getUtilitiesFor = ContextMethod(getUtilitiesFor)
 
 class UtilityRegistration(ComponentRegistration):
@@ -147,7 +150,7 @@ class UtilityRegistration(ComponentRegistration):
 
     def usageSummary(self):
         # Override IRegistration.usageSummary()
-        s = "%s utility" % self.interface.__name__
+        s = "%s utility" % self.interface.getName()
         if self.name:
             s += " named %s" % self.name
         return s

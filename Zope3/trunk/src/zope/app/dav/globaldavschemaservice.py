@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: globaldavschemaservice.py,v 1.3 2003/06/06 19:29:01 stevea Exp $
+$Id: globaldavschemaservice.py,v 1.4 2003/08/16 00:43:23 srichter Exp $
 """
 
 from zope.component.exceptions import ComponentLookupError
@@ -34,7 +34,7 @@ class DAVSchemaService(InterfaceService):
 
     def provideInterface(self, id, interface):
         if not id:
-            id = "%s.%s" % (interface.__module__, interface.__name__)
+            id = "%s.%s" % (interface.__module__, interface.getName())
         self.__backref[interface] = id
         super(DAVSchemaService, self).provideInterface(id, interface)
 

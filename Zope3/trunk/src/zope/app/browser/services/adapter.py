@@ -21,7 +21,7 @@
 
   AdapterRegistrationAdd
 
-$Id: adapter.py,v 1.13 2003/08/13 21:28:14 garrett Exp $
+$Id: adapter.py,v 1.14 2003/08/16 00:42:54 srichter Exp $
 """
 __metaclass__ = type
 
@@ -73,9 +73,9 @@ class AdapterServiceView(BrowserView):
              ) in self.context.getRegisteredMatching(forInterface,
                                                      providedInterface):
             forInterface = (
-                forInterface.__module__ +"."+ forInterface.__name__)
+                forInterface.__module__ +"."+ forInterface.getName())
             providedInterface = (
-                providedInterface.__module__ +"."+ providedInterface.__name__)
+                providedInterface.__module__ +"."+ providedInterface.getName())
 
             registry = ContextWrapper(registry, self.context)
             view = getView(registry, "ChangeRegistrations", self.request)

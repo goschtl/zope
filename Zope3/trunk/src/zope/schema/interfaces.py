@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.29 2003/08/12 18:16:40 poster Exp $
+$Id: interfaces.py,v 1.30 2003/08/16 00:44:50 srichter Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -120,9 +120,15 @@ class IField(Interface):
         default=False)
 
     default = Field(
-        title=_(u"default field value if no value is present"),
+        title=_(u"Default Value"),
         description=_(u"""The field default value may be None or a legal
                         field value""")
+        )
+
+    missing_value = Field(
+        title=_(u"Missing Value"),
+        description=_(u"""If input for this Field is missing, and that's ok,
+                          then this is the value to use""")
         )
 
     def constraint(value):
@@ -264,6 +270,12 @@ class IInterfaceField(IField):
 class IBool(IField):
     u"""Boolean Field."""
 
+    default = Bool(
+        title=_(u"Default Value"),
+        description=_(u"""The field default value may be None or a legal
+                        field value""")
+        )
+
 class IBytes(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated will be removed in the future.
     u"""Field containing a byte string (like the python str).
@@ -298,6 +310,24 @@ class IInt(IMinMax, IEnumerated, IField):
     # XXX IEnumerated will be removed; use IEnumeratedInt instead if you
     # need the IEnumerated interface.
     u"""Field containing an Integer Value."""
+
+    min = Int(
+        title=_(u"Start of the range"),
+        required=False,
+        default=None
+        )
+
+    max = Int(
+        title=_(u"End of the range (excluding the value itself)"),
+        required=False,
+        default=None
+        )
+
+    default = Int(
+        title=_(u"Default Value"),
+        description=_(u"""The field default value may be None or a legal
+                        field value""")
+        )
 
 class IEnumeratedInt(IInt, IEnumerated):
     u"""Field containing an Integer Value.
@@ -351,7 +381,7 @@ class IId(IBytesLine):
 
     A unique identifier is either an absolute URI ir a dotted name.
     If it's a dotted name, it should have a module/package name as a prefix.
-    
+
     """
 
 

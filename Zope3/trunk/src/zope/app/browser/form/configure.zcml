@@ -5,6 +5,18 @@
   <!-- Form Widget View Directives -->
   <browser:defaultView for="zope.schema.interfaces.IField" name="edit" />
 
+  <!-- XXX The next directive should be replaced by one that 
+       uses a 'smart' widget that knows how to deal with type-agnostic
+       values, which is the porpose of zope.schema.Field -->
+
+  <browser:page
+      permission="zope.Public"
+      allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
+      for="zope.schema.interfaces.IField"
+      name="edit"
+      class="zope.app.browser.form.widget.BrowserWidget"
+      />
+
   <browser:page
       permission="zope.Public"
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"

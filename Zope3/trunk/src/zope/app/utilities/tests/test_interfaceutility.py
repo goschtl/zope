@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_interfaceutility.py,v 1.3 2003/08/11 14:48:32 philikon Exp $
+$Id: test_interfaceutility.py,v 1.4 2003/08/16 00:44:27 srichter Exp $
 """
 
 import unittest
@@ -93,8 +93,6 @@ class Foo(InterfaceClass, Baz):
 
 class Bar(Foo): pass
 
-IFACE_NAME = "%s.%s" % (Foo.__module__, Foo.__name__)
-
 class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
@@ -104,7 +102,8 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
                          utility.LocalUtilityService())
 
     def test_getLocalInterface_delegates_to_globalUtility(self):
-        globalUtilityService.provideUtility(IInterface, Bar("global"))
+        globalUtilityService.provideUtility(IInterface, Bar("blob"),
+                                            name="blob")
         globalUtilityService.provideUtility(IBaz, Baz("global baz"))
         globalUtilityService.provideUtility(IInterface, Foo("global bob"),
                                             name="bob")
@@ -112,7 +111,7 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         iface_service = getService(self.rootFolder, Interfaces)
         self.assert_(iface_service != globalInterfaceService)
         self.assertEqual(iface_service.getInterface("bob").__class__, Foo)
-        self.assertEqual(iface_service.getInterface('').__class__, Bar)
+        self.assertEqual(iface_service.getInterface("blob").__class__, Bar)
 
     def test_localInterfaceitems_filters_accordingly(self):
         bar = Bar("global")
@@ -136,8 +135,9 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
         for pair in [('bob', foo), ('', bar)]:
             self.assert_(pair in ifaces)
 
-        self.assertEqual(iface_service.items(base=Interface),
-                         [])
+        ifaces = iface_service.items(base=Interface)
+        for pair in [('bob', foo), ('', bar)]:
+            self.assert_(pair in ifaces)
 
     def test_localInterfaceitems_filters_only_interfaces(self):
         bar = Bar("global")

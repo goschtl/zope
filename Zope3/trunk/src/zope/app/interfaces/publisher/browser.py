@@ -11,13 +11,121 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-$Id: browser.py,v 1.3 2002/12/28 16:25:45 jim Exp $
-"""
+"""Browser-Specific Publisher interfaces
 
-from zope.interface import Interface
+$Id: browser.py,v 1.4 2003/08/16 00:43:29 srichter Exp $
+"""
+from zope.app.component.interfacefield import InterfaceField
+from zope.app.security.permission import PermissionField
+from zope.interface import Interface, Attribute
+from zope.schema import TextLine, Text
+
+
+class IBrowserMenuItem(Interface):
+    """A menu item represents one view. These views might be conditioned
+    (using a filter) or being selected to be the default view of the menu."""
+
+    interface = InterfaceField(
+        title=u"Interface",
+        description=u"Specifies the interface this menu item is for.",
+        required=True)
+
+    action = TextLine(
+        title=u"The relative url to use if the item is selected",
+        description=u"""
+        The url is relative to the object the menu is being displayed
+        for.""",
+        required=True)
+
+    title = TextLine(
+        title=u"Title",
+        description=u"The text to be displayed for the menu item",
+        required=True)
+
+    description = Text(
+        title=u"A longer explanation of the menu item",
+        description=u"""
+        A UI may display this with the item or display it when the
+        user requests more assistance.""",
+        required=False)
+
+    permission = PermissionField(
+        title=u"The permission needed access the item",
+        description=u"""
+        This can usually be inferred by the system, however, doing so
+        may be expensive. When displaying a menu, the system tries to
+        traverse to the URLs given in each action to determine whether
+        the url is accessible to the current user. This can be
+        avoided if the permission is given explicitly.""",
+        required=False)
+
+    filter_string = TextLine(
+        title=u"A condition for displaying the menu item",
+        description=u"""
+        The condition is given as a TALES expression. The expression
+        has access to the variables:
+
+        context -- The object the menu is being displayed for
+
+        request -- The browser request
+
+        nothing -- None
+
+        The menu item will not be displayed if there is a filter and
+        the filter evaluates to a false value.""",
+        required=False)
+
+
+class IBrowserMenu(Interface):
+    """A menu can contain a set of views that a represented asa
+    collective."""
+
+    title = TextLine(
+        title=u"Title",
+        description=u"A descriptive title for documentation purposes",
+        required=True)
+
+    description = Text(
+        title=u"A longer explanation of the menu",
+        description=u"""
+        A UI may display this with the item or display it when the
+        user requests more assistance.""",
+        required=False)
+
+    usage = TextLine(
+        title=u"The templates usage top-level variable",
+        description=u"""
+        See the usage documentation in the README.txt in the
+        zope/app/browser/skins directory. If a view is associated with
+        a menu item, the view will get its usage from the menu the
+        menu item is registered to.""",
+        required=False
+        )
+
+    # XXX: Usage as a field does not work well with the addform, so
+    # use this one for now.
+    usage_ = usage
+
+    def getMenuItems(object=None):
+        """Get a list of all menu entries in the usual form:
+
+        (action, title, description, filter, permission)
+
+        If object is None, all items are returned.
+        """
+
 
 class IBrowserMenuService(Interface):
+
+    def getAllMenuItems(menu_id, object):
+        """Returns a list of all menu items.
+
+        The output is a list/tuple of:
+        (action, title, description, filter, permission)
+
+        This allows us to make the getMenu() method much less
+        implementation-specific.
+        """
 
     def getMenu(menu_id, object, request):
         """Get a browser menu for an object and request
@@ -51,6 +159,17 @@ class IBrowserMenuService(Interface):
         If no entry can be found, None is returned.
         """
 
+    def getMenuUsage(self, menu_id):
+        """Return the usage attribute of a specified menu."""
 
 
+class IGlobalBrowserMenuService(IBrowserMenuService):
+    """The global menu defines some additional methods that make it easier to
+    setup the service (via ZCML for example)."""
 
+    def menu(self, menu_id, title, description=u'', usage=u''):
+        """Add a new menu to the service."""
+
+    def menuItem(self, menu_id, interface, action, title,
+                 description='', filter_string=None, permission=None):
+        """Add a menu item to a specific menu."""

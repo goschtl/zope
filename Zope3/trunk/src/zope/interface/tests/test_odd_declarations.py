@@ -16,7 +16,7 @@
 These tests are to make sure we do something sane in the presense of
 classic ExtensionClass classes and instances.
 
-$Id: test_odd_declarations.py,v 1.3 2003/05/06 11:08:01 jim Exp $
+$Id: test_odd_declarations.py,v 1.4 2003/08/16 00:44:48 srichter Exp $
 """
 
 import unittest, odd
@@ -44,41 +44,41 @@ class B(Odd): __implements__ = I2
 
 class A(Odd):
     implements(I1)
-    
+
 class C(A, B):
     implements(I31)
 
 
 class Test(unittest.TestCase):
 
-    def test_ObjectSpecification(self):        
+    def test_ObjectSpecification(self):
         c = C()
         directlyProvides(c, I4)
-        self.assertEqual([i.__name__ for i in providedBy(c)],
+        self.assertEqual([i.getName() for i in providedBy(c)],
                          ['I4', 'I31', 'I1', 'I2']
                          )
-        self.assertEqual([i.__name__ for i in providedBy(c).flattened()],
+        self.assertEqual([i.getName() for i in providedBy(c).flattened()],
                          ['I4', 'I31', 'I3', 'I1', 'I2', 'Interface']
                          )
         self.assert_(I1 in providedBy(c))
-        self.failIf(I3 in providedBy(c))        
+        self.failIf(I3 in providedBy(c))
         self.assert_(providedBy(c).extends(I3))
         self.assert_(providedBy(c).extends(I31))
         self.failIf(providedBy(c).extends(I5))
 
         class COnly(A, B):
             implementsOnly(I31)
-            
+
         class D(COnly):
             implements(I5)
-            
+
         classImplements(D, I5)
-        
+
         c = D()
         directlyProvides(c, I4)
-        self.assertEqual([i.__name__ for i in providedBy(c)],
+        self.assertEqual([i.getName() for i in providedBy(c)],
                          ['I4', 'I5', 'I31'])
-        self.assertEqual([i.__name__ for i in providedBy(c).flattened()],
+        self.assertEqual([i.getName() for i in providedBy(c).flattened()],
                          ['I4', 'I5', 'I31', 'I3', 'Interface'])
         self.failIf(I1 in providedBy(c))
         self.failIf(I3 in providedBy(c))
@@ -87,16 +87,16 @@ class Test(unittest.TestCase):
         self.assert_(providedBy(c).extends(I31))
         self.assert_(providedBy(c).extends(I5))
 
-        class COnly(A, B): __implements__ = I31        
+        class COnly(A, B): __implements__ = I31
         class D(COnly):
             implements(I5)
-            
+
         classImplements(D, I5)
         c = D()
         directlyProvides(c, I4)
-        self.assertEqual([i.__name__ for i in providedBy(c)],
+        self.assertEqual([i.getName() for i in providedBy(c)],
                          ['I4', 'I5', 'I31'])
-        self.assertEqual([i.__name__ for i in providedBy(c).flattened()],
+        self.assertEqual([i.getName() for i in providedBy(c).flattened()],
                          ['I4', 'I5', 'I31', 'I3', 'Interface'])
         self.failIf(I1 in providedBy(c))
         self.failIf(I3 in providedBy(c))
@@ -104,30 +104,30 @@ class Test(unittest.TestCase):
         self.failIf(providedBy(c).extends(I1))
         self.assert_(providedBy(c).extends(I31))
         self.assert_(providedBy(c).extends(I5))
-        
+
     def test_classImplements(self):
         class A(Odd):
           implements(I3)
-          
+
         class B(Odd):
           implements(I4)
-          
+
         class C(A, B):
           pass
         classImplements(C, I1, I2)
-        self.assertEqual([i.__name__ for i in implementedBy(C)],
+        self.assertEqual([i.getName() for i in implementedBy(C)],
                          ['I1', 'I2', 'I3', 'I4'])
         classImplements(C, I5)
-        self.assertEqual([i.__name__ for i in implementedBy(C)],
+        self.assertEqual([i.getName() for i in implementedBy(C)],
                          ['I1', 'I2', 'I5', 'I3', 'I4'])
-        
+
     def test_classImplementsOnly(self):
         class A(Odd):
             implements(I3)
-          
+
         class B(Odd):
             implements(I4)
-          
+
         class C(A, B):
           pass
         classImplementsOnly(C, I1, I2)
@@ -136,19 +136,19 @@ class Test(unittest.TestCase):
 
 
     def test_directlyProvides(self):
-        class IA1(Interface): pass        
+        class IA1(Interface): pass
         class IA2(Interface): pass
         class IB(Interface): pass
         class IC(Interface): pass
         class A(Odd):
             implements(IA1, IA2)
-            
+
         class B(Odd):
             implements(IB)
-            
+
         class C(A, B):
             implements(IC)
-            
+
 
         ob = C()
         directlyProvides(ob, I1, I2)
@@ -158,7 +158,7 @@ class Test(unittest.TestCase):
         self.assert_(IA2 in providedBy(ob))
         self.assert_(IB in providedBy(ob))
         self.assert_(IC in providedBy(ob))
-        
+
         directlyProvides(ob, directlyProvidedBy(ob)-I2)
         self.assert_(I1 in providedBy(ob))
         self.failIf(I2 in providedBy(ob))
@@ -182,18 +182,18 @@ class Test(unittest.TestCase):
 
     def test_implementedBy(self):
         class I2(I1): pass
-        
+
         class C1(Odd):
           implements(I2)
-          
+
         class C2(C1):
           implements(I3)
-          
-        self.assertEqual([i.__name__ for i in implementedBy(C2)],
+
+        self.assertEqual([i.getName() for i in implementedBy(C2)],
                          ['I3', 'I2'])
 
-    
-        
+
+
 
 def test_suite():
     suite = unittest.TestSuite()

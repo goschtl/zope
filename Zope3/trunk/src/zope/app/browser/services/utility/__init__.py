@@ -2,7 +2,7 @@
 #
 # Copyright (c) 2003 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.8 2003/08/07 17:41:39 srichter Exp $
+$Id: __init__.py,v 1.9 2003/08/16 00:43:05 srichter Exp $
 """
 from zope.app.browser.component.interfacewidget import InterfaceWidget
 from zope.app.browser.services.registration import AddComponentRegistration
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.registration import UnregisteredStatus
 from zope.app import zapi
 from zope.interface import providedBy
 from zope.proxy import removeAllProxies
-
+from zope.app.introspector import interfaceToName
 
 class UtilityInterfaceWidget(InterfaceWidget):
     """Custom widget to select an interface from the component's interfaces.
@@ -37,11 +37,11 @@ class UtilityInterfaceWidget(InterfaceWidget):
         result = ['\n<select name="%s">' % self.name]
         for interface in providedBy(component).flattened():
             result.append('  <option value="%s.%s">%s</option>' %
-                          (interface.__module__, interface.__name__,
-                           interface.__name__))
+                          (interface.__module__, interface.getName(),
+                           interface.getName()))
         result.append('</select>')
         return '\n'.join(result)
-        
+
 
 class AddRegistration(AddComponentRegistration):
     """View for adding a utility registration.
@@ -172,7 +172,7 @@ class Utilities:
             active = obj = cr.active()
             if obj is None:
                 obj = cr.info()[0]['registration'] # Pick a representative
-            ifname = _interface_name(iface)
+            ifname = interfaceToName(self.context, iface)
             d = {"interface": ifname,
                  "name": name,
                  "url": "",
@@ -199,7 +199,3 @@ class ConfigureUtility:
         form = zapi.getView(regstack, "ChangeRegistrations", self.request)
         form.update()
         return form
-
-
-def _interface_name(iface):
-    return "%s.%s" % (iface.__module__, iface.__name__)

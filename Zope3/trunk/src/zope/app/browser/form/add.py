@@ -13,7 +13,7 @@
 ##############################################################################
 """Add Form View class
 
-$Id: add.py,v 1.29 2003/08/07 17:40:28 srichter Exp $
+$Id: add.py,v 1.30 2003/08/16 00:42:49 srichter Exp $
 """
 import sys
 
@@ -75,7 +75,7 @@ class AddView(EditView):
 
         The data argument is a dictionary with the data entered in the form.
         """
-        
+
         args = []
         if self._arguments:
             for name in self._arguments:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Gewneral registry-related views
 
-$Id: __init__.py,v 1.6 2003/08/13 21:28:17 garrett Exp $
+$Id: __init__.py,v 1.7 2003/08/16 00:43:02 srichter Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -139,7 +139,7 @@ class ChangeRegistrations(BrowserView):
                         self.context.activate(info['registration'])
                         message = _("Updated")
                         break
-                            
+
         return message
 
     def update(self):
@@ -187,7 +187,7 @@ class RegistrationStatusWidget(RadioWidget):
 
     def _getDefault(self):
         return UnregisteredStatus
-        
+
     def __call__(self):
         rendered_items = self.renderItems(self._showData())
         return "&nbsp;&nbsp;".join(rendered_items)
@@ -209,7 +209,7 @@ class ComponentPathWidget(BrowserWidget):
         "See zope.app.interfaces.browser.form.IBrowserWidget"
         # Render as a link to the component
         field = self.context
-        context = field.context 
+        context = field.context
         if IComponentRegistration.isImplementedBy(context):
             # It's a registration object. Just get the corresponding attr
             path = getattr(context, field.__name__)
@@ -235,7 +235,7 @@ class ComponentPathWidget(BrowserWidget):
     def getInputValue(self):
         "See zope.app.interfaces.form.IWidget"
         field = self.context
-        context = field.context 
+        context = field.context
         if IComponentRegistration.isImplementedBy(context):
             # It's a registration object. Just get the corresponding attr
             # XXX this code has no unittests !!!
@@ -256,7 +256,7 @@ class AddComponentRegistration(BrowserView):
     for non IAdding object. We need this here because registration
     add forms are views of the component being configured.
     """
-    
+
     def add(self, registration):
         """Add a registration
 
@@ -268,7 +268,7 @@ class AddComponentRegistration(BrowserView):
         """
 
         component = self.context
-        
+
         # Get the registration manager for this folder
         folder = getWrapperContainer(component)
         configure = folder.getRegistrationManager()

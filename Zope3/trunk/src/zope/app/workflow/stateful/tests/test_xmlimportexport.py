@@ -131,7 +131,7 @@ class Test(PlacefulSetup, unittest.TestCase):
 
         self.assertEqual(testpd.relevantDataSchema, ISchema)
         self.assertEqual(getAdapter(testpd, IZopeDublinCore).title, 'TestPD')
-        
+
         perm_service = getService(None, Permissions)
         self.assertEqual(
             testpd.schemaPermissions['title'],

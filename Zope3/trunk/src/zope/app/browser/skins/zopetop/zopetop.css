@@ -14,13 +14,20 @@
 
  These are the basic CSS declarations.
 
- $Id: zopetop.css,v 1.1 2003/08/07 17:31:31 srichter Exp $
+ $Id: zopetop.css,v 1.2 2003/08/16 00:43:07 srichter Exp $
 */
 
+div.label {
+  font-weight: bold;
+}
+
+div.field {
+  margin: 4px 0;
+}
 
 body {
     font: 0.8em Tahoma, Helvetica, Arial, sans-serif;
-    background: #FFFFFF;
+    background-color: #ccccff;
     color: #000066;
     margin: 0;
     padding: 0;
@@ -99,10 +106,9 @@ hr {
 
 h1, h2, h3, h4, h5, h6 {
 	color: Black;
-	margin-top: 0;
+	padding: 0 0;
+        margin: .5em 0;
 	font-family: Tahoma, Helvetica, Arial, sans-serif;
-
-
 }
 
 h1 {
@@ -258,8 +264,8 @@ table.columns td{
 }
 
 table.columns td.main {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+    background-color: white;
+    padding: 0 0.5em;
     border-bottom: 1px solid #7B7AC6;
 }
 
@@ -267,6 +273,7 @@ table.columns td.left {
     background-color: #ccccff;
     border-right: 1px solid #7B7AC6;
     border-bottom: 1px solid #7B7AC6;
+    padding: 0.5em 0;
     width: 20%;
 }
 
@@ -279,18 +286,14 @@ table.columns td.right {
 
 div.breadcrumbs{
     background-color: #ccccff;
-    margin-top: 0.5em;
-    padding: 0.5em;
+    margin-top: 0em;
+    padding: 0 0.5em 0.5em 0.5em;
 }
 
-div.breadcrumbs img {
+span.help img{
   vertical-align: middle;
-}
-
-div.breadcrumbs span.help {
-   float: right;
-   position: relative;
-   bottom: 0.5em;
+  padding: 0;
+  margin: 0;
 }
 
 div.box {
@@ -368,15 +371,14 @@ div.box .odd {
 }
 
 .footer {
-    background: #DEE7EC;
-    border-top: 1px solid #8CACBB;
-    border-bottom: 1px solid #8CACBB;
-    color: Black;
-    clear: both;
-    float: none;
-    margin: 2em 0em;
-    padding: 0.5em 0em 1em 0em;
-    text-align: center;
+  background-color: #CCCCFF;
+  padding: 0.5em;
+  text-align: center;
+}
+
+div.metadata {
+  font-size: 0.9em;
+  text-align: right;
 }
 
 .context-menu {
@@ -443,9 +445,57 @@ div.box .odd {
     font-family : monospace;
     white-space : pre;
 }
+
 th.introspector {
     vertical-align: top;
     text-align: right;
 }
 
+.itemViews {
+    border-collapse: collapse;
+    padding-bottom: 2px;
+    padding-top: 6px;
+    margin-top: 0.5em;
+    white-space: nowrap;
+    background: transparent;
+    text-align: right;
+}
 
+.itemViews a {
+    background: transparent;
+    border: 1px solid #ccccff;
+    color: #000066;
+    font-weight: normal;
+    margin-right: 0.3em;
+    padding: 0.1em 0.5em 0.1em 0.5em;
+}
+
+.itemViews a.selected {
+    background-color: #CCCCFF;
+    border-bottom: #CCCCFF 1px solid;
+    color: #000066;
+    font-weight: normal;
+}
+
+.itemViews a:hover {
+    background-color: #CCCCFF;
+    color: #000066;
+}
+
+.actions {
+  background-color: #CCCCFF;
+  text-align: right;
+  padding-top: 0.3em;
+  color: Black;
+  border-collapse: collapse;
+}
+
+.actions a{
+   color: #000066;
+   border-left: 1px dashed #000066;
+   padding: 0 0.5em;
+}
+
+.actions a:hover {
+	background-color: White;
+}

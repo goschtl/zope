@@ -9,7 +9,7 @@
 
 
 <div class="user" metal:define-macro="logged_user" i18n:translate="">
-   Logged in as 
+   Logged in as
    <span tal:replace="request/user/getTitle" i18n:name="user_title">
      dtremea</span>
 </div>
@@ -19,14 +19,14 @@
   <h5 i18n:translate="">Navigation</h5>
 
   <div xmlns="http://www.zope.org/zope3xmltree"
-       id="navtreecontents" 
-       class="body" 
+       id="navtreecontents"
+       class="body"
        onclick="treeclicked(event);" i18n:translate="">Loading...
   </div>
 
 </div>
 
-<div class="box" id="commonTasks" 
+<div class="box" id="commonTasks"
        tal:define="view context/@@commonTasks|nothing"
        tal:condition="view/strip|nothing"
        metal:define-macro="commontasks_box">
@@ -70,13 +70,13 @@
 
 <table metal:define-macro="explorer_box" align="center" class="box" width="150">
   <thead>
-    <tr> 
+    <tr>
       <th align="center" class="boxtop" i18n:translate="">Root Folder</th>
       <th class="empty">&nbsp;</th>
     </tr>
     </thead>
     <tbody>
-    <tr> 
+    <tr>
       <td colspan="2" class="odd"><a href="#">
         <img src="plus.gif" width="19" height="25"
              tal:attributes="src context/++resource++plus.gif"
@@ -87,7 +87,7 @@
         Folder Name</a>
       </td>
     </tr>
-    <tr> 
+    <tr>
       <td colspan="2" class="odd"><a href="#">
         <img src="plus.gif" width="19" height="25"
              tal:attributes="src context/++resource++plus.gif"
@@ -98,7 +98,7 @@
         Folder Name</a>
       </td>
     </tr>
-    <tr> 
+    <tr>
       <td colspan="2" class="even"><a href="#">
         <img src="minus.gif" width="19" height="25"
              tal:attributes="src context/++resource++minus.gif"
@@ -115,7 +115,7 @@
   <table metal:define-macro="search_box" align="center" class="box"
          width="150">
     <thead>
-      <tr> 
+      <tr>
         <th align="center" class="boxtop">Search</th>
         <th class="empty">&nbsp;</th>
       </tr>
@@ -181,29 +181,61 @@
   </div>
 
 <div class="breadcrumbs" metal:define-macro="content_header_bar">
-  <span class="help">
-    <a href="#">
-      <span i18n:translate="">Help</span>
-      <img src="help.gif" width="25" height="25"
-           tal:attributes="src context/++resource++help.gif"
-           alt="help" />
-    </a>
-  </span>
-
   <span i18n:translate="">Location:</span>
   <span
       metal:define-macro="breadcrumbs"
           tal:omit-tag=""
-      tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs"> <a href="" 
+      tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs"> <a href=""
       tal:attributes="href string:${breadcrumb/url}/@@manage"
       tal:content="string:${breadcrumb/name}/"
       >name</a></span>
 
 </div>
-  
-<div metal:define-macro="footer">
-  <p i18n:translate="">Powered by Zope</p>
+
+<div class="itemViews"
+     metal:define-macro="zmi_views">
+        <tal:block repeat="view context/@@view_get_menu/zmi_views">
+          <a href=""
+            tal:attributes="href view/action;
+                            class view/selected;"
+            tal:content="view/title"
+            i18n:translate="">
+            label
+          </a>
+        </tal:block>
 </div>
-                    
+
+<div class="actions"
+     metal:define-macro="zmi_actions"
+     tal:define="actions context/@@view_get_menu/zmi_actions">
+        <span tal:condition="actions"
+              tal:omit-tag="">
+          <a href="#"
+               tal:repeat="info actions"
+               tal:attributes="href info/action"
+               tal:content="info/title"
+               i18n:translate="">
+              Action name
+          </a>
+        </span>
+        <span class="help">
+          <a href="#">
+          <span i18n:translate="">Help</span>
+          <img src="help.gif" width="25" height="25"
+               tal:attributes="src context/++resource++help.gif"
+               alt="help" />
+        </a>
+  </span>
+
+</div>
+
+<div metal:define-macro="footer"
+       tal:define="view context/@@MetaDataBox|nothing"
+       class="footer">
+  <div tal:condition="view/strip|nothing"
+       class="metadata" tal:content="structure view" />
+  <div i18n:translate="">Powered by Zope</div>
+</div>
+
 </body>
 </html>

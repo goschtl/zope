@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser Widget Definitions
 
-$Id: widget.py,v 1.49 2003/08/13 21:27:50 garrett Exp $
+$Id: widget.py,v 1.50 2003/08/16 00:42:49 srichter Exp $
 """
 
 __metaclass__ = type
@@ -95,7 +95,7 @@ class BrowserWidget(Widget, BrowserView):
     >>> print widget.label()
     <label for="test.foo">Foo</label>
     >>> tearDown()
-    
+
     """
 
     implements(IBrowserWidget)
@@ -318,7 +318,7 @@ class CheckBoxWidget(BrowserWidget):
     1
     >>> int(widget.getInputValue())
     1
-    
+
     >>> def normalize(s):
     ...   return '\\n  '.join(s.split())
 
@@ -427,7 +427,7 @@ class TextWidget(BrowserWidget):
     1
     >>> widget.getInputValue()
     u'Bob'
-    
+
     >>> def normalize(s):
     ...   return '\\n  '.join(filter(None, s.split(' ')))
 
@@ -503,7 +503,7 @@ class TextWidget(BrowserWidget):
 
 
     def __call__(self):
-        if self.__values is not None:
+        if self.__values:
             return self._select()
 
         displayMaxWidth = self.getValue('displayMaxWidth') or 0
@@ -616,7 +616,7 @@ class TextAreaWidget(BrowserWidget):
     """TextArea widget.
 
     Multi-line text (unicode) input.
-    
+
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.schema import Text
     >>> field = Text(__name__='foo', title=u'on')
@@ -626,7 +626,7 @@ class TextAreaWidget(BrowserWidget):
     1
     >>> widget.getInputValue()
     u'Hello\\nworld!'
-    
+
     >>> def normalize(s):
     ...   return '\\n  '.join(filter(None, s.split(' ')))
 
@@ -680,7 +680,7 @@ class TextAreaWidget(BrowserWidget):
         value = super(TextAreaWidget, self)._unconvert(value)
         if value:
             value = value.replace("\n", "\r\n")
-        return value        
+        return value
 
     def __call__(self):
         return renderElement("textarea",
@@ -697,7 +697,7 @@ class BytesAreaWidget(Bytes, TextAreaWidget):
     """BytesArea widget.
 
     Multi-line text (unicode) input.
-    
+
     >>> from zope.publisher.browser import TestRequest
     >>> from zope.schema import Bytes
     >>> field = Bytes(__name__='foo', title=u'on')
@@ -828,8 +828,8 @@ class SingleItemsWidget(ItemsWidget):
     def renderItems(self, value):
         name = self.name
         # get items
-        items = self.context.allowed_values        
-        
+        items = self.context.allowed_values
+
         # check if we want to select first item
         if (not value and getattr(self.context, 'firstItem', False)
             and len(items) > 0):
@@ -1090,7 +1090,7 @@ class SequenceWidget(BrowserWidget):
             widget = self._getWidget(i)
             widget.setRenderedValue(value)
             r(widget()+'</td></tr>')
-            
+
         # possibly generate the "remove" and "add" buttons
         s = ''
         if render and num_items > min_length:
@@ -1190,7 +1190,7 @@ class SequenceWidget(BrowserWidget):
             return []
         field = self.context.value_type
 
-        # pre-populate 
+        # pre-populate
         found = {}
         for i in range(len(self._data)):
             entry = self._data[i]
@@ -1220,7 +1220,7 @@ class SequenceWidget(BrowserWidget):
                 value = widget.getInputValue()
                 found[i] = value
 
-        # remove the indicated indexes 
+        # remove the indicated indexes
         for i in  removing:
             del found[i]
 
@@ -1292,7 +1292,7 @@ class ObjectWidget(BrowserWidget):
         for name, widget in self.getSubWidgets():
             r(widget.row())
         r('</fieldset>')
-            
+
         return '\n'.join(render)
 
     def getSubWidgets(self):
@@ -1432,4 +1432,4 @@ def tearDown():
     global tearDown
     tearDown = zope.app.tests.placelesssetup.tearDown
     tearDown()
-    
+

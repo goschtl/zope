@@ -14,7 +14,7 @@
 """Test the new API for making and checking interface declarations
 
 
-$Id: test_declarations.py,v 1.7 2003/06/04 22:25:00 jim Exp $
+$Id: test_declarations.py,v 1.8 2003/08/16 00:44:48 srichter Exp $
 """
 
 import unittest
@@ -94,7 +94,7 @@ class Test(unittest.TestCase):
         self.assert_(C3.__implements__.__class__ is tuple)
 
         self.assertEqual(
-            [i.__name__ for i in providedBy(C3())],
+            [i.getName() for i in providedBy(C3())],
             ['I3', 'I2', 'I5'],
             )
 
@@ -102,18 +102,18 @@ class Test(unittest.TestCase):
             implements(I4)
 
         self.assertEqual(
-            [i.__name__ for i in providedBy(C4())],
+            [i.getName() for i in providedBy(C4())],
             ['I4', 'I3', 'I2', 'I5'],
             )
 
         self.assertEqual(
-            [i.__name__ for i in C4.__implements__],
+            [i.getName() for i in C4.__implements__],
             ['I4', 'I3', 'I2', 'I5'],
             )
 
         # Note that C3.__implements__ should now be a sequence of interfaces
         self.assertEqual(
-            [i.__name__ for i in C3.__implements__],
+            [i.getName() for i in C3.__implements__],
             ['I3', 'I2', 'I5'],
             )
         self.failIf(C3.__implements__.__class__ is tuple)
@@ -135,12 +135,12 @@ class Test(unittest.TestCase):
             implements(I2)
 
         x = 42
-        self.assertEqual([i.__name__ for i in providedBy(x)],
+        self.assertEqual([i.getName() for i in providedBy(x)],
                          ['I1'])
 
         x = myint(42)
         directlyProvides(x, I3)
-        self.assertEqual([i.__name__ for i in providedBy(x)],
+        self.assertEqual([i.getName() for i in providedBy(x)],
                          ['I3', 'I2', 'I1'])
 
         # cleanup
@@ -148,7 +148,7 @@ class Test(unittest.TestCase):
         _implements_reg.clear()
 
         x = 42
-        self.assertEqual([i.__name__ for i in providedBy(x)],
+        self.assertEqual([i.getName() for i in providedBy(x)],
                          [])
         
 
@@ -244,17 +244,17 @@ def test_pickle_implements_specs():
     ...   implements(I1)
     >>> class B(A):
     ...   implements(I2)
-    >>> names =  [i.__name__ for i in implementedBy(B)]
+    >>> names =  [i.getName() for i in implementedBy(B)]
     >>> names
     ['I2', 'I1']
     >>> old = B.__dict__['__implements__']
     >>> new = loads(dumps(old))
-    >>> names =  [i.__name__ for i in new]
+    >>> names =  [i.getName() for i in new]
     >>> names
     ['I2']
     >>> classImplements(A, I3)
     >>> B.__implements__ = new
-    >>> names =  [i.__name__ for i in implementedBy(B)]
+    >>> names =  [i.getName() for i in implementedBy(B)]
     >>> names
     ['I2', 'I1', 'I3']
     
@@ -267,17 +267,17 @@ def test_pickle_only_specs():
     ...   implements(I1)
     >>> class B(A):
     ...   implementsOnly(I2)
-    >>> names =  [i.__name__ for i in implementedBy(B)]
+    >>> names =  [i.getName() for i in implementedBy(B)]
     >>> names
     ['I2']
     >>> old = B.__dict__['__implements__']
     >>> new = loads(dumps(old))
-    >>> names =  [i.__name__ for i in new]
+    >>> names =  [i.getName() for i in new]
     >>> names
     ['I2']
     >>> classImplements(A, I3)
     >>> B.__implements__ = new
-    >>> names =  [i.__name__ for i in implementedBy(B)]
+    >>> names =  [i.getName() for i in implementedBy(B)]
     >>> names
     ['I2']
     

@@ -12,6 +12,7 @@
   <include package=".form" />
   <include package=".security" />
   <include package=".services" />
+  <include package=".utilities" />
   <include package=".skins" />
   <include package=".index" />
   <include package=".rdb" />

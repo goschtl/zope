@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful ProcessDefinition XML Import/Export handlers
 
-$Id: xmlimportexport.py,v 1.6 2003/07/31 15:01:36 srichter Exp $
+$Id: xmlimportexport.py,v 1.7 2003/08/16 00:44:34 srichter Exp $
 """
 from xml.sax import parse
 from xml.sax.handler import ContentHandler
@@ -200,4 +200,4 @@ class XMLExportHandler:
         schema = self.getDefinition().relevantDataSchema
         if schema is None:
             return 'None'
-        return schema.__module__ + '.' + schema.__name__
+        return schema.__module__ + '.' + schema.getName()

@@ -167,6 +167,10 @@
 <!-- Views -->  
   <include file="view.zcml" />
 
+<!-- Menu -->  
+  <include file="menu.zcml" />
+
+
 <!-- ZPT Templates -->
 
   <view

@@ -16,7 +16,7 @@
 This module contains code for interfaces in persistent modules, and
 for the local interface service.
 
-$Id: interface.py,v 1.14 2003/08/09 18:09:32 sidnei Exp $
+$Id: interface.py,v 1.15 2003/08/16 00:44:08 srichter Exp $
 """
 
 from persistence import Persistent
@@ -76,10 +76,9 @@ class LocalInterfaceService(object):
         next = getNextService(self, Interfaces)
         iface = next.queryInterface(id, default)
         if iface is default:
-            utility_service = getService(self, Utilities)
-            utility = utility_service.queryUtility(IInterface, name=id)
-            if utility is not None:
-                return utility
+            utilities = self._queryUtilityInterfaces(search_string=id)
+            if utilities:
+                return utilities[0][1]
             return default
         return iface
 
@@ -112,12 +111,11 @@ class LocalInterfaceService(object):
         for item in next.items(search_string, base):
             items[item] = None
         for item in self._queryUtilityInterfaces(base, search_string):
-            items[item] = item
+            if not items.has_key(item):
+                items[item] = None
         return items.keys()
 
     def _queryUtilityInterfaces(self, interface=None, search_string=None):
-        if interface is None:
-            interface = IInterface
         utilities = getService(self, Utilities)
         matching = utilities.getUtilitiesFor(interface)
         matching = [m for m in matching

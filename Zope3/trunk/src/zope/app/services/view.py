@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """View Service
-$Id: view.py,v 1.32 2003/08/08 20:47:47 sidnei Exp $
+$Id: view.py,v 1.33 2003/08/16 00:44:08 srichter Exp $
 """
 __metaclass__ = type
 
@@ -249,14 +249,14 @@ class GlobalViewRegistration:
         if self.forInterface is None:
             ifname = _("(Anything)")
         else:
-            ifname = self.forInterface.__name__
-        summary = _("${view_name} ${ptype} View for {iface_name}")
+            ifname = self.forInterface.getName()
+        summary = _("${view_name} ${ptype} View for ${iface_name}")
         if self.layer and self.layer != "default":
             summary = _(
-                "${view_name} ${ptype} View for {iface_name} in layer ${layer}"
+                "${view_name} ${ptype} View for ${iface_name} in layer ${layer}"
                 )
         summary.mapping = {'view_name':  self.viewName,
-                           'ptype':      self.ptype.__name__,
+                           'ptype':      self.ptype.getName(),
                            'iface_name': ifname,
                            'layer':      self.layer}
         return summary
@@ -294,13 +294,13 @@ class ViewRegistration(SimpleRegistration):
         if self.forInterface is None:
             ifname = _("(Anything)")
         else:
-            ifname = self.forInterface.__name__
+            ifname = self.forInterface.getName()
 
-        pname = self.presentationType.__name__
+        pname = self.presentationType.getName()
         summary = _("${view_name} for ${pname} {what} {iface_name}")
         if self.layer and self.layer != "default":
             summary = _(
-                "${view_name} for ${pname} {what} {iface_name} in layer ${layer}"
+                "${view_name} for ${pname} ${what} ${iface_name} in layer ${layer}"
                 )
         summary.mapping = {'view_name':  self.viewName,
                            'pname':      pname,

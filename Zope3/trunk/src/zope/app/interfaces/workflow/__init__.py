@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for workflow service, definition and instance.
 
-$Id: __init__.py,v 1.18 2003/08/08 00:14:44 srichter Exp $
+$Id: __init__.py,v 1.19 2003/08/16 00:43:37 srichter Exp $
 """
 from zope.interface import Interface
 from zope.interface import Attribute
@@ -27,7 +27,7 @@ from zope.app.interfaces.services.registration import ComponentPath
 
 class IWorkflowEvent(IEvent):
     """This event describes a generic event that is triggered by the workflow
-    mechanism.""" 
+    mechanism."""
 
 
 class IWorkflowService(Interface):
@@ -140,7 +140,7 @@ class IGlobalProcessDefinitionImportExport(IProcessDefinitionImportExport):
 
 class IProcessDefinitionImportHandler(Interface):
     """Handler for Import of ProcessDefinitions."""
-    
+
     def canImport(context, data):
         """Check if handler can import a processdefinition
            based on the data given."""

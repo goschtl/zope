@@ -63,6 +63,16 @@ class Test(CleanUp, unittest.TestCase):
         self.assertEqual(checker.permission_id('m2'), (m2P or None))
         self.assertEqual(checker.permission_id('m3'), (m3P or None))
 
+    def assertSetattrState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
+        "Verify that class, instance, and methods have expected permissions."
+
+        from zope.security.checker import selectChecker
+
+        checker = selectChecker(TestModule.test_instance)
+        self.assertEqual(checker.setattr_permission_id('m1'), (m1P or None))
+        self.assertEqual(checker.setattr_permission_id('m2'), (m2P or None))
+        self.assertEqual(checker.setattr_permission_id('m3'), (m3P or None))
+
     # "testSimple*" exercises tags that do NOT have children.  This mode
     # inherently sets the instances as well as the class attributes.
 
@@ -74,9 +84,12 @@ class Test(CleanUp, unittest.TestCase):
     def testLikeUntoOnly(self):
         protectName(TestModule.test_base, 'm1', P1)
         protectName(TestModule.test_base, 'm2', P1)
+        protectSetAttribute(TestModule.test_base, 'm1', P1)
+        protectSetAttribute(TestModule.test_base, 'm2', P1)
         protectLikeUnto(TestModule.test_class, TestModule.test_base)
         # m1 and m2 are in the interface, so should be set, and m3 should not:
         self.assertState(m1P=P1, m2P=P1)
+        self.assertSetattrState(m1P=P1, m2P=P1)
 
     def assertSetattrState(self, m1P=NOTSET, m2P=NOTSET, m3P=NOTSET):
         "Verify that class, instance, and methods have expected permissions."
@@ -96,11 +109,16 @@ class Test(CleanUp, unittest.TestCase):
     def testLikeUntoAsDefault(self):
         protectName(TestModule.test_base, 'm1', P1)
         protectName(TestModule.test_base, 'm2', P1)
+        protectSetAttribute(TestModule.test_base, 'm1', P1)
+        protectSetAttribute(TestModule.test_base, 'm2', P1)
         protectLikeUnto(TestModule.test_class, TestModule.test_base)
         protectName(TestModule.test_class, 'm2', P2)
         protectName(TestModule.test_class, 'm3', P2)
+        protectSetAttribute(TestModule.test_class, 'm2', P2)
+        protectSetAttribute(TestModule.test_class, 'm3', P2)
         # m1 and m2 are in the interface, so should be set, and m3 should not:
         self.assertState(m1P=P1, m2P=P2, m3P=P2)
+        self.assertSetattrState(m1P=P1, m2P=P2, m3P=P2)
 
 def test_suite():
     loader=unittest.TestLoader()

@@ -13,7 +13,7 @@
 ##############################################################################
 """Service interfaces
 
-$Id: view.py,v 1.5 2003/06/23 16:20:08 jeremy Exp $
+$Id: view.py,v 1.6 2003/08/16 00:43:32 srichter Exp $
 """
 
 from zope.app.interfaces.services.registration import IRegistration
@@ -97,7 +97,7 @@ class IViewRegistrationInfo(Interface):
         readonly = True,
         required = True,
         basetype = IPresentation,
-        constraint = lambda i: i.__name__.endswith("Presentation"),
+        constraint = lambda i: i.getName().endswith("Presentation"),
         )
 
     viewName = TextLine(

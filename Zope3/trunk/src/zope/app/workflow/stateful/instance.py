@@ -13,7 +13,7 @@
 ##############################################################################
 """Stateful Process Instance
 
-$Id: instance.py,v 1.9 2003/07/31 15:01:36 srichter Exp $
+$Id: instance.py,v 1.10 2003/08/16 00:44:34 srichter Exp $
 """
 __metaclass__ = type
 
@@ -117,17 +117,17 @@ class RelevantData(Persistent):
                    'getChecker', 'getSchema') or \
                key.startswith('_p_'):
             return super(RelevantData, self).__setattr__(key, value)
-            
+
         is_schema_field = self.__schema is not None and \
                           key in getFields(self.__schema).keys()
 
         if is_schema_field:
-            process = getWrapperContainer(self) 
+            process = getWrapperContainer(self)
             # Send an Event before RelevantData changes
             oldvalue = getattr(self, key, None)
             publish(self, BeforeRelevantDataChangeEvent(
                 process, self.__schema, key, oldvalue, value))
-            
+
         super(RelevantData, self).__setattr__(key, value)
 
         if is_schema_field:
@@ -166,10 +166,10 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         data = Proxy(self._data, self._data.getChecker())
         return ContextWrapper(data, self, name="data")
 
-    data = ContextProperty(getData) 
+    data = ContextProperty(getData)
 
     def initialize(self):
-        """See zope.app.interfaces.workflow.IStatefulProcessInstance""" 
+        """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
         pd = self.getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         self._status = clean_pd.getInitialStateName()
@@ -189,14 +189,14 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
     initialize = ContextMethod(initialize)
 
     def getOutgoingTransitions(self):
-        """See zope.app.interfaces.workflow.IStatefulProcessInstance""" 
+        """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
         pd = self.getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         return self._outgoingTransitions(clean_pd)
     getOutgoingTransitions = ContextMethod(getOutgoingTransitions)
 
     def fireTransition(self, id):
-        """See zope.app.interfaces.workflow.IStatefulProcessInstance""" 
+        """See zope.app.interfaces.workflow.IStatefulProcessInstance"""
         pd = self.getProcessDefinition()
         clean_pd = removeAllProxies(pd)
         if not id in self._outgoingTransitions(clean_pd):
@@ -288,7 +288,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             if self.status == trans.sourceState:
                 # check permissions
                 permission = trans.permission
-                # 
+                #
                 if (permission is not None
                     and permission is not CheckerPublic
                     and not sm.checkPermission(permission, self)
