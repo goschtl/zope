@@ -59,7 +59,7 @@ class FSSecurityBase( RequestTest ):
 
     def tearDown( self ):
         try:
-            self._deleteFile('test3.py.security')
+            self._deleteFile('test5.py.security')
         except:
             pass
         RequestTest.tearDown(self)
@@ -71,35 +71,35 @@ class FSSecurityTests( FSSecurityBase ):
         # check a normal method is as we'd expect
         self._checkSettings(self.layer.test1,'View',1,[])
         # now do some checks on the method with FS permissions
-        self._checkSettings(self.layer.test2,'View',1,['Manager','Owner'])
-        self._checkSettings(self.layer.test2,'Access contents information',0,[])
+        self._checkSettings(self.layer.test4,'View',1,['Manager','Owner'])
+        self._checkSettings(self.layer.test4,'Access contents information',0,[])
 
     def test_invalidPermissionNames( self ):
         """ Test for an invalid permission name """
         # baseline
-        self._checkSettings(self.layer.test3,'View',1,[])
+        self._checkSettings(self.layer.test5,'View',1,[])
         # add .rpm with dodgy permission name
-        self._writeFile('test3.py.security','Access stoopid contents::')
+        self._writeFile('test5.py.security','Access stoopid contents::')
         # check baseline
-        self._checkSettings(self.layer.test3,'View',1,[])
+        self._checkSettings(self.layer.test5,'View',1,[])
         
     def test_invalidRoleNames( self ):
         """ Test for an invalid role name """
         # baseline
-        self._checkSettings(self.layer.test3,'View',1,[])
+        self._checkSettings(self.layer.test5,'View',1,[])
         # add dodgy .rpm
-        self._writeFile('test3.py.security','view::Monkey, Butler, Manager ')
+        self._writeFile('test5.py.security','view::Monkey, Butler, Manager ')
         # check baseline
-        self._checkSettings(self.layer.test3,'View',1,[])
+        self._checkSettings(self.layer.test5,'View',1,[])
 
     def test_invalidAcquireNames( self ):
         """ Test for an invalid spelling of acquire """
         # baseline
-        self._checkSettings(self.layer.test3,'View',1,[])
+        self._checkSettings(self.layer.test5,'View',1,[])
         # add dodgy .rpm
-        self._writeFile('test3.py.security','View:aquire:')
+        self._writeFile('test5.py.security','View:aquire:')
         # check baseline
-        self._checkSettings(self.layer.test3,'View',1,[])
+        self._checkSettings(self.layer.test5,'View',1,[])
 
 if DevelopmentMode:
 
@@ -108,32 +108,32 @@ if DevelopmentMode:
         def test_addPRM( self ):
             """ Test adding of a .security """
             # baseline
-            self._checkSettings(self.layer.test3,'View',1,[])
+            self._checkSettings(self.layer.test5,'View',1,[])
             # add
-            self._writeFile('test3.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.security','View:acquire:Manager')
             # test            
-            self._checkSettings(self.layer.test3,'View',1,['Manager'])
+            self._checkSettings(self.layer.test5,'View',1,['Manager'])
 
         def test_editPRM( self ):
             """ Test editing a .security """
             # baseline
-            self._writeFile('test3.py.security','View::Manager,Anonymous')
-            self._checkSettings(self.layer.test3,'View',0,['Manager','Anonymous'])
+            self._writeFile('test5.py.security','View::Manager,Anonymous')
+            self._checkSettings(self.layer.test5,'View',0,['Manager','Anonymous'])
             # edit
-            self._writeFile('test3.py.security','View:acquire:Manager')
+            self._writeFile('test5.py.security','View:acquire:Manager')
             # test            
-            self._checkSettings(self.layer.test3,'View',1,['Manager'])
+            self._checkSettings(self.layer.test5,'View',1,['Manager'])
 
         def test_delPRM( self ):
             """ Test deleting of a .security """
             # baseline
-            self._checkSettings(self.layer.test3,'View',1,[])
-            self._writeFile('test3.py.security','View:acquire:Manager')
-            self._checkSettings(self.layer.test3,'View',1,['Manager'])
+            self._checkSettings(self.layer.test5,'View',1,[])
+            self._writeFile('test5.py.security','View:acquire:Manager')
+            self._checkSettings(self.layer.test5,'View',1,['Manager'])
             # delete
-            self._deleteFile('test3.py.security')
+            self._deleteFile('test5.py.security')
             # test
-            self._checkSettings(self.layer.test3,'View',1,[])
+            self._checkSettings(self.layer.test5,'View',1,[])
 
 else:
 
