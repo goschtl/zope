@@ -14,6 +14,5 @@ FILES="$@"
 
 exec 1>>/tmp/log-precommit_actions
 
-echo Script: "$SCRIPT", Repository: "$REPOSITORY"
-echo wd: "$WD", Files: "$FILES"
-echo Root: "${CVSROOT}"
+set -x
+/bin/chmod g+w $FILES
