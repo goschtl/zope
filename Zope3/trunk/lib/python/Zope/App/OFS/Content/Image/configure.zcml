@@ -30,12 +30,12 @@
 
   <!-- tabs for image -->
 
-  <zmi:tabs for=".Image.IImage.">
-    <zmi:tab label="Edit" action="editForm.html"/>
-    <zmi:tab label="View" action="."/>
-    <zmi:tab label="Role Permissions"
+  <browser:menuItems menu="zmi_views" for=".Image.IImage.">
+    <browser:menuItem title="Edit" action="editForm.html"/>
+    <browser:menuItem title="View" action="."/>
+    <browser:menuItem title="Role Permissions"
              action="AllRolePermissions.html"/>
-  </zmi:tabs>
+  </browser:menuItems>
 
   <zmi:icon for=".Image.IImage." file="Image_icon.gif" />
 

@@ -34,12 +34,6 @@
     <security:mimic class=".Folder." />
   </content>
 
-  <zmi:tabs for=".Folder.IFolder.">
-    <zmi:tab label="Contents" action="@@index.html"/>
-    <zmi:tab label="Role Permissions" 
-             action="@@AllRolePermissions.html"/>
-  </zmi:tabs>
-
   <zmi:icon for=".Folder.IFolder." file="Folder_icon.gif" />
 
 
@@ -90,16 +84,6 @@
       factory="Zope.App.OFS.Annotation.AttributeAnnotations."
       provides="Zope.App.OFS.Annotation.IAnnotations."
       for=".Folder.IFolder." />
-
-  <zmi:tabs for="Zope.App.OFS.Container.IContainerLimit.">
-    <zmi:tab label="Limit" action="@@FolderLimitEditForm.html"/>
-  </zmi:tabs>
-
-  <zmi:tabs for=".LoadedFolder.ILoadedFolder.">
-    <zmi:tab label="Contents" action="@@index.html"/>
-    <zmi:tab label="Role Permissions" 
-             action="@@AllRolePermissions.html"/>
-  </zmi:tabs>
 
   <!-- Further Directives -->
 

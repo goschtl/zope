@@ -46,15 +46,6 @@
       for=".IFile." />
 
 
-  <!-- tabs for folder -->
-
-  <zmi:tabs for=".IFile.">
-    <zmi:tab label="View" action="."/>
-    <zmi:tab label="Edit" action="editForm.html"/>
-    <zmi:tab label="Role Permissions" 
-             action="AllRolePermissions.html"/>
-  </zmi:tabs>
-
   <zmi:icon for=".IFile." file="File_icon.gif" />
 
   <!-- Further Directives -->

@@ -10,9 +10,9 @@
       permission="Zope.ManageServices" 
       factory=".Control." />
 
-  <zmi:tabs for="Zope.Event.IEventService+">
-    <zmi:tab label="Control" action="@@control.html" />
-  </zmi:tabs>
+  <browser:menuItems menu="zmi_views" for="Zope.Event.IEventService+">
+    <browser:menuItem title="Control" action="@@control.html" />
+  </browser:menuItems>
 
 </zopeConfigure>
 

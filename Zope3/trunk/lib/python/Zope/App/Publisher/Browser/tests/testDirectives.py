@@ -30,7 +30,6 @@ from Zope.ComponentArchitecture.tests.Request import Request
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 
 import Zope.App.Publisher.Browser
-
 defs_path = os.path.join(
     os.path.split(Zope.App.Publisher.Browser.__file__)[0],
     'meta.zcml')

@@ -20,7 +20,7 @@
 
   <table><tr>
     <td tal:repeat="view views/ZMIUtility/getZMIViews">
-    <a href="" tal:attributes="href view/action" tal:content="view/label">
+    <a href="" tal:attributes="href view/action" tal:content="view/title">
 	label</a>
     </td>
    </tr></table>

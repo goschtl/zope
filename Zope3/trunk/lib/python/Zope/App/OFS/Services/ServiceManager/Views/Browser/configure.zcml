@@ -54,10 +54,10 @@
   </browser:view> 
 
 
-  <zmi:tabs 
+  <browser:menuItems menu="zmi_views" 
     for="Zope.App.OFS.Services.ServiceManager.ServiceManager.IServiceManager.">
-    <zmi:tab label="Contents" action="@@index.html"/>
-    <zmi:tab label="Bindings" action="@@bindings.html"/>
-  </zmi:tabs>
+    <browser:menuItem title="Contents" action="@@index.html"/>
+    <browser:menuItem title="Bindings" action="@@bindings.html"/>
+  </browser:menuItems>
 
 </zopeConfigure>

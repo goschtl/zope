@@ -34,6 +34,18 @@
     <directive name="skin" attributes="name layers" 
         handler="Zope.App.Publisher.Browser.metaConfigure.skin" />
 
+    <directive name="menu" attributes="name title description" 
+        handler="
+        Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuDirective" />
+
+    <directive name="menuItems" attributes="id for" 
+        handler="
+       Zope.App.Publisher.Browser.GlobalBrowserMenuService.menuItemsDirective">
+       <subdirective name="menuItem" 
+                     attributes="action title description filter" 
+       /> 
+    </directive>
+
   </directives>
 
 </zopeConfigure>

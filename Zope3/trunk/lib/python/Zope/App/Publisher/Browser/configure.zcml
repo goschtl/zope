@@ -4,6 +4,14 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
+
+<serviceType id="BrowserMenu"
+             interface=".IBrowserMenuService." />
+<service serviceType="BrowserMenu"
+         permission="Zope.Public"
+         component=".GlobalBrowserMenuService.globalBrowserMenuService" />
+
+
 <content class="Zope.Publisher.Browser.BrowserRequest.">
   <security:allow
       interface="Zope.Publisher.Browser.IBrowserApplicationRequest." />

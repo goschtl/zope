@@ -35,8 +35,10 @@
 
   </browser:view>
 
-  <zmi:tabs for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService.">
-    <zmi:tab label="Contents" action="@@index.html"/>
-  </zmi:tabs>
+  <browser:menuItems
+           menu="zmi_views"
+           for="Zope.App.OFS.Services.RoleService.RoleService.IRoleService.">
+    <browser:menuItem title="Contents" action="@@index.html"/>
+  </browser:menuItems>
 
 </zopeConfigure>

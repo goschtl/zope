@@ -5,11 +5,9 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
-  <serviceType id="ZMIViewService"
-               interface=".IZMIViewService." />
-
-  <service serviceType="ZMIViewService"
-           component=".ZMIViewService.ZMIViews" />
+  <browser:menu id="zmi_views" 
+                title="Menu for displaying alternate representations
+                       of an object" />
 
   <browser:view name="standard_macros"
                 permission="Zope.View"

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: ZMIViewUtility.py,v 1.2 2002/06/10 23:28:19 jim Exp $
+$Id: ZMIViewUtility.py,v 1.3 2002/06/18 19:34:57 jim Exp $
 """
 
 from Zope.ComponentArchitecture.ContextDependent import ContextDependent
@@ -41,21 +41,8 @@ class ZMIViewUtility(BrowserView):
 
         context = self.context
         request = self.request
-        zmi_view_service = getService(context, 'ZMIViewService')
-        zmi_views=[]
-        traverser = PublicationTraverser()
-        for view in zmi_view_service.getViews(context):
-            label=view[0]
-            action=view[1]
-            if action:
-                try:
-                    # tickle the security proxy's checker
-                    # we're assuming that view pages are callable
-                    # this is a pretty sound assumption
-                    traverser.traversePath(request, context, action).__call__
-                except (Unauthorized, Forbidden):
-                    continue # Skip unauthorized or forbidden
-            zmi_views.append({'label': label, 'action': "%s" % action})
-
-        return zmi_views
+        browser_menu_service = getService(context, 'BrowserMenu')
+        return browser_menu_service.getMenu('zmi_views',
+                                            self.context,
+                                            self.request)
     

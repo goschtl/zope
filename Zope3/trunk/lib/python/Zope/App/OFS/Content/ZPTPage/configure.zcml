@@ -29,14 +29,14 @@
 
   <!-- tabs for ZPT Page -->
 
-  <zmi:tabs for=".ZPTPage.IZPTPage.">
-    <zmi:tab label="Edit" action="editForm.html"/>
-    <zmi:tab label="View" action="."/>
+  <browser:menuItems menu="zmi_views" for=".ZPTPage.IZPTPage.">
+    <browser:menuItem title="Edit" action="editForm.html"/>
+    <browser:menuItem title="View" action="."/>
     <!-- XXX This isn't working
-    <zmi:tab label="Role Permissions"
+    <browser:menuItem title="Role Permissions"
              action="AllRolePermissions.html"/>
     -->
-  </zmi:tabs>
+  </browser:menuItems>
 
   <zmi:icon for=".ZPTPage.IZPTPage." file="zpt.gif" />
 

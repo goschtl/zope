@@ -13,13 +13,12 @@
 ##############################################################################
 """
 
-$Id: testZMIViewUtility.py,v 1.2 2002/06/10 23:29:19 jim Exp $
+$Id: testZMIViewUtility.py,v 1.3 2002/06/18 19:34:58 jim Exp $
 """
 
 import unittest, sys
 from Interface import Interface
 
-from Zope.App.ZMI.IZMIViewService import IZMIViewService
 from Zope.ComponentArchitecture import getService, getServiceManager
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup\
            import PlacefulSetup
@@ -32,15 +31,19 @@ from Zope.Security.SecurityManagement import newSecurityManager
 from Zope.Exceptions import Unauthorized
 from Zope.Security.Checker import defineChecker, NamesChecker, CheckerPublic
 from Zope.Security.Proxy import ProxyFactory
+from Zope.App.Publisher.Browser.IBrowserMenuService \
+     import IBrowserMenuService
+
+def d(title, action):
+    return {'action': action, 'title': title, 'description': ''}
 
 class Service:
-    __implements__ = IZMIViewService
+    __implements__ = IBrowserMenuService
 
-    def getViews(self, ob):
-        return [('l1', 'a1'),
-                ('l2', 'a2/a3'),
-                ('lbad', 'abad'),
-                ('l3', '@@a3'),]
+    def getMenu(self, name, ob, req):
+        return [d('l1', 'a1'),
+                d('l2', 'a2/a3'),
+                d('l3', '@@a3'),]
 
 class I(Interface): pass
 class C:
@@ -73,8 +76,10 @@ class Test(PlacefulSetup, unittest.TestCase):
         PlacefulSetup.setUp(self)
         defineService=getServiceManager(None).defineService
         provideService=getServiceManager(None).provideService
-        defineService('ZMIViewService', IZMIViewService)
-        provideService('ZMIViewService', Service())
+
+
+        defineService('BrowserMenu', IBrowserMenuService)
+        provideService('BrowserMenu', Service())
         getService(None,"Views").provideView(
             I, 'a3', IBrowserPresentation, [V])
         getService(None, "Views").provideView(None, '_traverse',
@@ -87,9 +92,9 @@ class Test(PlacefulSetup, unittest.TestCase):
         newSecurityManager('who')
         v = ZMIViewUtility(ProxyFactory(ob), Request())
         self.assertEqual(v.getZMIViews(),
-                         [{'label':'l1', 'action':'a1'},
-                          {'label':'l2', 'action':'a2/a3'},
-                          {'label':'l3', 'action':'@@a3'}
+                         [{'description': '', 'title':'l1', 'action':'a1'},
+                          {'description': '', 'title':'l2', 'action':'a2/a3'},
+                          {'description': '', 'title':'l3', 'action':'@@a3'}
                           ])
 
 

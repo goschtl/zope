@@ -2,21 +2,22 @@
    xmlns='http://namespaces.zope.org/zope'
    xmlns:security='http://namespaces.zope.org/security'
    xmlns:browser='http://namespaces.zope.org/browser'
+   package="Zope.App.OFS.Content.File"
 >
 
   <!-- File View Directives -->
 
   <browser:defaultView 
       name="view"
-      for="Zope.App.OFS.Content.File.IFile."
+      for=".IFile."
       permission="Zope.View"
-      factory=".FileView." />
+      factory=".Views.Browser.FileView." />
 
   <browser:view
       name="edit"
-      for="Zope.App.OFS.Content.File.IFile."
+      for=".IFile."
       permission="Zope.View"
-      factory=".FileEdit.">
+      factory=".Views.Browser.FileEdit.">
 
     <browser:page name="editForm.html" attribute="index" />
     <browser:page name="edit.html" attribute="action" />
@@ -26,14 +27,21 @@
 
   <browser:view
       name="DataFieldView"
-      for="Zope.App.OFS.Content.File.IFile."
-      factory="Zope.App.OFS.Content.File.FileFields.DataField. 
+      for=".IFile."
+      factory=".FileFields.DataField. 
                Zope.App.Formulator.Widgets.Browser.TextAreaWidget." />
 
   <browser:view
       name="ContentTypeFieldView"
-      for="Zope.App.OFS.Content.File.IFile."
-      factory="Zope.App.OFS.Content.File.FileFields.ContentTypeField. 
+      for=".IFile."
+      factory=".FileFields.ContentTypeField. 
                Zope.App.Formulator.Widgets.Browser.TextWidget." />
+
+  <browser:menuItems menu="zmi_views" for=".IFile.">
+    <browser:menuItem title="View" action="."/>
+    <browser:menuItem title="Edit" action="editForm.html"/>
+    <browser:menuItem title="Role Permissions" 
+             action="AllRolePermissions.html"/>
+  </browser:menuItems>
 
 </zopeConfigure>
