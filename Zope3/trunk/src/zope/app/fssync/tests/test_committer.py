@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.11 2003/06/03 19:16:38 gvanrossum Exp $
+$Id: test_committer.py,v 1.12 2003/06/03 19:42:19 gvanrossum Exp $
 """
 
 import os
@@ -208,7 +208,7 @@ class TestCommitterModule(TestBase):
         entry = {"flag": "added"}
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
-        self.writefile(dumps(data), tfn)
+        self.writefile(dumps(data), tfn, "wb")
         committer.create_object(container, "foo", entry, tfn)
         self.assertEqual(container, {"foo": ["hello", "world"]})
 
@@ -218,7 +218,7 @@ class TestCommitterModule(TestBase):
         entry = {"flag": "added"}
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
-        self.writefile(dumps(data), tfn)
+        self.writefile(dumps(data), tfn, "wb")
         committer.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.holding, {"foo": ["hello", "world"]})
 
@@ -258,9 +258,9 @@ class TestCheckerClass(TestBase):
         self.childdir = os.path.join(self.parentdir, "child")
         os.mkdir(self.childdir)
         self.foofile = os.path.join(self.childdir, "foo")
-        self.writefile(dumps(self.foo), self.foofile)
+        self.writefile(dumps(self.foo), self.foofile, "wb")
         self.originalfoofile = fsutil.getoriginal(self.foofile)
-        self.writefile(dumps(self.foo), self.originalfoofile)
+        self.writefile(dumps(self.foo), self.originalfoofile, "wb")
         self.grandchilddir = os.path.join(self.childdir, "grandchild")
         os.mkdir(self.grandchilddir)
 
@@ -297,20 +297,20 @@ class TestCheckerClass(TestBase):
     def test_file_changed(self):
         # Changing a file is okay
         self.newfoo = self.foo + ["news"]
-        self.writefile(dumps(self.newfoo), self.foofile)
+        self.writefile(dumps(self.newfoo), self.foofile, "wb")
         self.check_no_errors()
 
     def test_file_type_changed(self):
         # Changing a file's type is okay
         self.newfoo = ("one", "two")
         self.fooentry["type"] = "__builtin__.tuple"
-        self.writefile(dumps(self.newfoo), self.foofile)
+        self.writefile(dumps(self.newfoo), self.foofile, "wb")
         self.check_no_errors()
 
     def test_file_conflict(self):
         # A real conflict is an error
         newfoo = self.foo + ["news"]
-        self.writefile(dumps(newfoo), self.foofile)
+        self.writefile(dumps(newfoo), self.foofile, "wb")
         self.foo.append("something else")
         self.check_errors([self.foofile])
 
@@ -323,7 +323,7 @@ class TestCheckerClass(TestBase):
         # Adding a file properly is okay
         self.bar = ["this", "is", "bar"]
         barfile = os.path.join(self.childdir, "bar")
-        self.writefile(dumps(self.bar), barfile)
+        self.writefile(dumps(self.bar), barfile, "wb")
         barentry = self.getentry(barfile)
         barentry["flag"] = "added"
         self.check_no_errors()
@@ -339,14 +339,14 @@ class TestCheckerClass(TestBase):
         # A spurious file (empty entry) is okay
         bar = ["this", "is", "bar"]
         barfile = os.path.join(self.childdir, "bar")
-        self.writefile(dumps(bar), barfile)
+        self.writefile(dumps(bar), barfile, "wb")
         self.check_no_errors()
 
     def test_file_added_no_flag(self):
         # Adding a file without setting the "added" flag is an error
         bar = ["this", "is", "bar"]
         barfile = os.path.join(self.childdir, "bar")
-        self.writefile(dumps(bar), barfile)
+        self.writefile(dumps(bar), barfile, "wb")
         barentry = self.getentry(barfile)
         barentry["path"] = "/parent/child/bar"
         self.check_errors([barfile])
@@ -356,7 +356,7 @@ class TestCheckerClass(TestBase):
         bar = ["this", "is", "bar"]
         self.child.setObject("bar", bar)
         barfile = os.path.join(self.childdir, "bar")
-        self.writefile(dumps(bar), barfile)
+        self.writefile(dumps(bar), barfile, "wb")
         barentry = self.getentry(barfile)
         barentry["path"] = "/parent/child/bar"
         self.check_errors([barfile])
@@ -448,7 +448,7 @@ class TestCheckerClass(TestBase):
         barentry["flag"] = "added"
         bazfile = os.path.join(bardir, "baz")
         self.baz = ["baz"]
-        self.writefile(dumps(self.baz), bazfile)
+        self.writefile(dumps(self.baz), bazfile, "wb")
         bazentry = self.getentry(bazfile)
         bazentry["flag"] = "added"
         burpdir = os.path.join(bardir, "burp")
@@ -466,7 +466,7 @@ class TestCheckerClass(TestBase):
         barentry["flag"] = "added"
         bazfile = os.path.join(bardir, "baz")
         baz = ["baz"]
-        self.writefile(dumps(baz), bazfile)
+        self.writefile(dumps(baz), bazfile, "wb")
         bazentry = self.getentry(bazfile)
         bazentry["path"] = "/parent/child/bar/baz"
         burpdir = os.path.join(bardir, "burp")
