@@ -179,6 +179,50 @@ To look up a multi-adapter, use either `queryMultiAdapter` or
     Hello Sally
     my name is Bob
 
+Adapters need not be classes.  Any callable will do.  We use the
+adapter decorator (in the Python 2.4 decorator sense) to declare that
+a callable object adapts some interfaces (or classes):
+
+    >>> class IJob(zope.interface.Interface):
+    ...     "A job"
+
+    >>> class Job:
+    ...     zope.interface.implements(IJob)
+
+    >>> def personJob(person):
+    ...     return getattr(person, 'job', None)
+    >>> personJob = zope.interface.implementer(IJob)(personJob)
+    >>> personJob = zope.component.adapter(IPerson)(personJob)
+
+(In Python 2.4, the example can be written:
+
+    @zope.interface.implementer(IJob)
+    @zope.component.adapter(IPerson)
+    def personJob(person):
+        return getattr(person, 'job', None)
+
+which looks a bit nicer.
+
+In this example, the personJob function simply returns the person's
+`job` attribute if present, or None if it's not present.  An adapter
+factory can return None to indicate that adaptation wasn't possible.
+Let's register this adapter and try it out:
+
+    >>> zope.component.provideAdapter(personJob)
+    >>> sally = Person("Sally")
+    >>> IJob(sally) # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+    ...
+    TypeError: ('Could not adapt', ...
+
+The adaptation failed because sally didn't have a job.  Let's give her
+one: 
+
+    >>> job = Job()
+    >>> sally.job = job
+    >>> IJob(sally) is job
+    True
+ 
 
 .. [1] CAUTION: This API should only be used from test or
        application-setup code. This API shouldn't be used by regular

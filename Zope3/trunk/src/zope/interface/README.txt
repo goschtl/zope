@@ -226,7 +226,7 @@ classes).  We do this using a Python-2.4-style decorator named
   ...     foo = Foo()
   ...     foo.y = y
   ...     return foo
-  >>> zope.interface.implementer(IFoo)(yfoo)
+  >>> yfoo = zope.interface.implementer(IFoo)(yfoo)
 
   >>> list(zope.interface.implementedBy(yfoo))
   [<InterfaceClass __main__.IFoo>]

@@ -17,6 +17,7 @@ $Id$
 """
 import sys
 import zope.interface
+from types import ClassType
 from zope.interface import moduleProvides, Interface
 from zope.interface import providedBy, implementedBy
 from zope.component.interfaces import IComponentArchitecture
@@ -26,6 +27,8 @@ from zope.component.interfaces import IFactory
 from zope.component.interfaces import ISiteManager
 from zope.component.interfaces import ComponentLookupError
 from zope.component.site import globalSiteManager
+
+_class_types = type, ClassType
 
 ##############################################################################
 # BBB: Import some backward-compatibility; 12/10/2004
@@ -185,6 +188,20 @@ class _adapts_descr(object):
         if inst is None:
             return self.interfaces
         raise AttributeError, '__component_adapts__'
+
+class adapter:
+
+    def __init__(self, *interfaces):
+        self.interfaces = interfaces
+
+    def __call__(self, ob):
+        if isinstance(ob, _class_types):
+            ob.__component_adapts__ = _adapts_descr(self.interfaces)
+        else:
+            ob.__component_adapts__ = self.interfaces
+
+        return ob
+
 
 def adapts(*interfaces):
     frame = sys._getframe(1)
