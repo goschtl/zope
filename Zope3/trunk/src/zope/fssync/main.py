@@ -29,7 +29,7 @@ Command line syntax summary:
 ``%(program)s command -h'' prints the local help for the command
 """
 """
-$Id: main.py,v 1.23 2003/08/07 19:06:33 fdrake Exp $
+$Id: main.py,v 1.24 2003/08/07 20:38:02 fdrake Exp $
 """
 
 import os
@@ -175,11 +175,9 @@ def commit(opts, args):
     The -m option specifies a message to label the transaction.
     The default message is 'fssync_commit'.
     """
-    message = "fssync_commit"
+    message, opts = extract_message(opts, "commit")
     raise_on_conflicts = False
     for o, a in opts:
-        if o in ("-m", "--message"):
-            message = a
         if o in ("-r", "--raise-on-conflicts"):
             raise_on_conflicts = True
     fs = FSSync()
@@ -301,10 +299,7 @@ def checkin(opts, args):
     /path.  subdirectory of TARGETDIR whose name is the last component
     of /path.
     """
-    message = "fssync_checkin"
-    for o, a in opts:
-        if o in ("-m", "--message"):
-            message = a
+    message, opts = extract_message(opts, "checkin")
     if not args:
         raise Usage("checkin requires a URL argument")
     rooturl = args[0]
@@ -317,19 +312,43 @@ def checkin(opts, args):
     fs = FSSync(rooturl=rooturl)
     fs.checkin(target, message)
 
+def extract_message(opts, cmd):
+    L = []
+    message = None
+    msgfile = None
+    for o, a in opts:
+        if o in ("-m", "--message"):
+            if message:
+                raise Usage(cmd + " accepts at most one -m/--message option")
+            message = a
+        elif o in ("-F", "--file"):
+            if msgfile:
+                raise Usage(cmd + " accepts at most one -F/--file option")
+            msgfile = a
+        else:
+            L.append((o, a))
+    if not message:
+        if msgfile:
+            message = open(msgfile).read()
+        else:
+            message = "fssync_" + cmd
+    elif msgfile:
+        raise Usage(cmd + " requires at most one of -F/--file or -m/--message")
+    return message, L
+
 command_table = {
     "checkout": ("", [], checkout),
     "co":       ("", [], checkout),
     "update":   ("", [], update),
-    "commit":   ("m:r", ["message=", "raise-on-conflicts"], commit),
+    "commit":   ("F:m:r", ["file=", "message=", "raise-on-conflicts"], commit),
     "add":      ("f:t:", ["factory=", "type="], add),
     "remove":   ("", [], remove),
     "rm":       ("", [], remove),
     "r":        ("", [], remove),
     "diff":     ("bBcC:iNuU:", ["brief", "context=", "unified="], diff),
     "status":   ("", [], status),
-    "checkin":  ("m:", ["message="], checkin),
-    "ci":       ("m:", ["message="], checkin),
+    "checkin":  ("F:m:", ["file=", "message="], checkin),
+    "ci":       ("F:m:", ["file=", "message="], checkin),
     }
 
 if __name__ == "__main__":
