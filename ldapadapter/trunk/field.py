@@ -13,7 +13,7 @@
 ##############################################################################
 """LDAP Schema Fields
 
-$Id: $
+$Id$
 """
 import re
 
@@ -28,9 +28,37 @@ from ldapadapter.exceptions import InvalidLDAPURI
 
 
 _isldapuri = re.compile(
-    r"^ldap[s]{0,1}://"           # protocol
-    r"[a-zA-Z0-9\-\.]+"   # host
-    r"[\:]{0,1}[\d]{0,5}"         # port
+    r"^ldaps?://"         # protocol
+
+    # BEGIN: host
+
+    """
+    From RFC 952:
+    
+     A "name" (Net, Host, Gateway, or  Domain  name)  is  a  text
+     string  up  to  24 characters drawn from the alphabet (A-Z),
+     digits (0-9), minus sign (-),  and  period  (.).  Note  that
+     periods  are  only  allowed  when they serve to delimit com-
+     ponents of "domain style names". (See RFC 921, "Domain  Name
+     System  Implementation  Schedule," for background). No blank
+     or space characters are permitted as part of a name. No dis-
+     tinction  is  made  between  upper and lower case. The first
+     character must be an alpha  character.  The  last  character
+     must not be a minus sign or period.
+    """
+
+    r"([a-zA-Z]+([a-zA-Z\d\-]*[a-zA-Z\d])*"
+    r"(\.[a-zA-Z\d]+([a-zA-Z\d\-]*[a-zA-Z\d])*)*"
+    # END: host
+
+    r"|"                  # or
+
+    # BEGIN: IP
+    r"([1-9][\d]{0,1}|1[\d]{0,2}|2[0-5]{0,2})"
+    r"(\.([\d]{1,2}|1[\d]{0,2}|2[0-5]{0,2})){3})"
+    # END: IP
+    
+    r"(:[\d]{1,5})?$"     # port
     ).match
 
 
