@@ -1,6 +1,6 @@
 PYTHON=python2.2
-TESTFLAGS="-p -v"
-TESTOPTS=""
+TESTFLAGS=-p -v
+TESTOPTS=
 
 # XXX What should the default be?
 all: inplace
