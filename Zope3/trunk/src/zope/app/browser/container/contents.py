@@ -13,25 +13,22 @@
 ##############################################################################
 """View Class for the Container's Contents view.
 
-$Id: contents.py,v 1.26 2003/09/19 15:18:50 gotcha Exp $
+$Id: contents.py,v 1.27 2003/09/21 17:30:26 jim Exp $
 """
 
 from zope.app import zapi
-from zope.app.interfaces.container import IContainer, IZopeContainer
+from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
 from zope.app.interfaces.size import ISized
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
-from zope.publisher.browser import BrowserView
+from zope.app.publisher.browser import BrowserView
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.interfaces.copypastemove import IObjectCopier
 from zope.app.interfaces.copypastemove import IObjectMover
-from zope.app.interfaces.container import IPasteTarget
-from zope.app.interfaces.container import ICopySource, IMoveSource
 from zope.app.interfaces.dublincore import IDCDescriptiveProperties
 from zope.app.i18n import ZopeMessageIDFactory as _
-
 from zope.app.browser.container.adding import BasicAdding
-
+from zope.app.copypastemove import rename
 
 class Contents(BrowserView):
 
@@ -100,17 +97,12 @@ class Contents(BrowserView):
                  )
         self.normalButtons = not self.specialButtons
 
-        info = map(self._extractContentInfo,
-                   zapi.getAdapter(self.context, IZopeContainer).items())
+        info = map(self._extractContentInfo, self.context.items())
 
-        self.supportsCut = (
-            info and zapi.queryAdapter(self.context, IMoveSource) is not None)
-        self.supportsCopy = (
-            info and zapi.queryAdapter(self.context, ICopySource) is not None)
-        self.supportsPaste = (
-            zapi.queryAdapter(self.context, IPasteTarget) is not None)
-
-        self.supportsRename = self.supportsCut and self.supportsPaste
+        self.supportsCut = info
+        self.supportsCopy = info
+        self.supportsPaste = self.pasteable()
+        self.supportsRename = self.supportsCut
 
         return info
 
@@ -179,10 +171,9 @@ class Contents(BrowserView):
         ids = request.get("rename_ids")
         newids = request.get("new_value")
 
-        for id, newid in map(None, ids, newids):
-            if newid != id:
-                container = zapi.getAdapter(self.context, IZopeContainer)
-                container.rename(id, newid)
+        for oldid, newid in map(None, ids, newids):
+            if newid != oldid:
+                rename(self.context, oldid, newid)
 
     def changeTitle(self):
         """Given a sequence of tuples of old, new ids we rename"""
@@ -206,12 +197,10 @@ class Contents(BrowserView):
                 # if the type name names a view.
                 # Note that we can't so this for the "adding is None" case
                 # above, because there is no "+" view.
-                adding = zapi.ContextWrapper(adding, self.context, name="+")
+                adding.__parent__ = self.context
+                adding.__name__ = '+'
 
             adding.action(request['type_name'], new)
-
-
-
 
     def removeObjects(self):
         """Remove objects specified in a list of object ids"""
@@ -221,9 +210,9 @@ class Contents(BrowserView):
             self.error = _("You didn't specify any ids to remove.")
             return
 
-        container = zapi.getAdapter(self.context, IZopeContainer)
+        container = self.context
         for id in ids:
-            container.__delitem__(id)
+            del container[id]
 
     def copyObjects(self):
         """Copy objects specified in a list of object ids"""
@@ -265,11 +254,11 @@ class Contents(BrowserView):
             items.append(zapi.joinPath(container_path, id))
         clipboard.addItems('cut', items)
 
-    def pasteObjects(self):
-        """Iterate over clipboard contents and perform the
-           move/copy operations"""
-        target = self.context
 
+    def pasteable(self):
+        """Decide if there is anything to paste
+        """
+        target = self.context
         user = self.request.user
         annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
         annotations = annotationsvc.getAnnotations(user)
@@ -278,12 +267,45 @@ class Contents(BrowserView):
         for item in items:
             obj = zapi.traverse(target, item['target'])
             if item['action'] == 'cut':
-                zapi.getAdapter(obj, IObjectMover).moveTo(target)
-                clipboard.clearContents()
+                mover = zapi.getAdapter(obj, IObjectMover)
+                if not mover.moveableTo(target):
+                    return False
             elif item['action'] == 'copy':
-                zapi.getAdapter(obj, IObjectCopier).copyTo(target)
+                copier = zapi.getAdapter(obj, IObjectCopier)
+                if not copier.copyableTo(target):
+                    return False
             else:
                 raise
+
+        return True
+
+    def pasteObjects(self):
+        """Paste ojects in the user clipboard to the container
+        """
+        target = self.context
+        user = self.request.user
+        annotationsvc = zapi.getService(self.context, 'PrincipalAnnotation')
+        annotations = annotationsvc.getAnnotations(user)
+        clipboard = zapi.getAdapter(annotations, IPrincipalClipboard)
+        items = clipboard.getContents()
+        moved = False
+        for item in items:
+            obj = zapi.traverse(target, item['target'])
+            if item['action'] == 'cut':
+                mover = zapi.getAdapter(obj, IObjectMover)
+                mover.moveTo(target)
+                moved = True
+            elif item['action'] == 'copy':
+                copier = zapi.getAdapter(obj, IObjectCopier)
+                copier.copyTo(target)
+            else:
+                raise
+
+        if moved:
+            # Clear the clipboard if we do a move, but not if we only do a copy
+            clipboard.clearContents()
+
+
 
     def hasClipboardContents(self):
         """ interogates the PrinicipalAnnotation to see if
