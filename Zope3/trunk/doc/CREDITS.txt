@@ -1,70 +1,83 @@
 Credits
 
-  The Zope software receives contributions from far and wide.  Here's
-  the Zope Hall of Fame:
+  Zope 3 has been a Zope Community effort!  It wouldn't exist without
+  the many fine contributions, in many forms, by many people.
+  In fact, so many people have helped out in so many important it's
+  impossible to give everybody the credit they deserve, but I'll make
+  a start.
+  
+  o A good bit of the Zope 3 development has taken place in Zope 3
+    sprints. 
 
-    o The many participants in Zope 3 sprints worldwide should be
-      listed here!  Also other contributors.  And several of the
-      features below are no longer part of Zope 3 -- but does that
-      mean that they should be removed?  In the open source world,
-      credits are important currency.  It's best not to remove
-      credits, ever.
+    - The earliest sprints were held at Zope Corporation. Tres Seaver
+      was instrumental in helping us figure out this format and
+      teaching me the XP process.
 
-    o Stephen Purcell allows us to distribute his PyUnit unit testing
-      framework with Zope.
+    - Chris Wither's and NIP hosted the first European sprint in
+      London in February 2002.
 
-    o Jeff Bauer is Zope Dude Number One.  Jeff took over PCGI and
-      kept pushing it forward through the years.
+    - Somebody (somebody help me) hosted a workflow sprint in
+      Saarbruecken, Germany, in March 2002. 
 
-    o Sam Rushing worked with us at Digital Creations to make Medusa
-      the publishing platform for ZServer and the concurrency of Zope2.
+    - NetAid (Josh Kutz, Nikheel Dhekne) hosted a sprint in New York
+      in March 2002.
 
-    o A subset of windows guru Mark Hammond's win32 extensions are
-      bundled with win32 binary distributions of Zope.
+    - Bee Hive hosted a sprint in Berlin in April 2002.
 
-    o Martijn Pieters and Brian Hooper contributed the #in reverse
-      attribute.
+    - EuroPython/EuroZope hosted a large sprint in conjunction with
+      the EuroPython conference.
 
-    o Phillip Eby contributed the DTML 'let' tag and many
-      other useful ideas, including the inspiration for the DTML
-      'call', 'with' and 'return'
-      tags.
+    - ZeOmega hosted an extended development session in Bangalore.
+      We worked out a number of ideas for the (still early) through
+      the wen configuration and development environment.  We moved
+      file-system synchronization forward. And we ported several
+      facilities from Zope 2.
 
-    o The DateTime module was based on work from Ted Horst.
+    - Infrae (Kit Blake, Martijn Faasen and others) hosted a truly
+      amazing and productive event, the Infrae Sprintathon,
+      http://www.infrae.com/sprintathon, in December 2002. I think
+      that this qualifies as the first Zope 3 Hackers Workshop. I hope
+      there will be more.
 
-    o Jordan Baker contributed the 'try' tag, something we've wanted
-      for a long, long time.
+    - Code Works hosted a sprint, led by Steve Alexander, in Vilnius,
+      immediately after the sprintathon.
 
-    o Martijn Pieters chipped in with a safe range function.
+  o Steve Alexander has provided tremendous leadership, along with his
+    many other contributions, in design, code, to say nothing of moral
+    support. 
 
-    o Michael Hauser came up with the name "Zope".
+  o Stephan Richter help launch Zope 3 with abundant energy and
+    enthusiasm, as wrell as many software andf documentation
+    contributions. 
 
-    o Eric Kidd from Userland contributed to ZPublisher's support for
-      XML-RPC.
+  o Shane Hathaway created some of the initial prototypes of Zope 3
+    and was an important brainstorming partner before we went "public"
+    with Zope 3. He has remained a stalwart but quite contributor,
+    despite his heavy workload at Zope Corporation.
 
-    o Andrew M. Kuchling wrote the initial version of mod_pcgi, making 
-      him extremely cool in our book.
+  o Python Labs: Guido van Rossum, Fred Drake, Jeremy Hylton, Tim
+    Peters, and Barry Warsaw and been crucial contributors to Zope 3
+    since it was just a bunch of stray ideas floating around 
 
-    o Oleg Broytmann has taken up the standard of mod_pcgi and moving
-      it to be a really amazing thing, and ready for prime time.
+  o Gary Poster has made significant contributions in a varity of
+    areas, including the object hub and event service.
 
-    o Jephte CLAIN made some patches to European ZopeTime.
+  o David Murray has been a constant source of well-though feedback,
+    suggestions, and ideas. 
 
-    o Thanks to Gregor Hoffleit for his work in getting Zope into the
-      Debian distribution.
+  o Sidnei da Silva created the first attractive skin for Zope 3. 
 
-    o All the other Zopistas far and wide that stuck with us during
-      the Bobo/Principia days and politely push us to make the best damn
-      app server on this or any other planet.
+  o Kapil Thangavelu, David Murray, Sidnei da Silva, and PythonLabs
+    made the grand renaming possible. Kapil wrote the scripts that did
+    most of the work and the team made Zope work again.
 
-    o Of course the list of credits would be quite incomplete without
-      mentioning Guido van Rossum, benevolent dictator of Python and
-      long-time friend of Digital Creations.  Zope Power is Python
-      Power.
+  o The folks at Code works, Albertas Agejevas, Marius Gedminas, and
+    Viktorija Zaksiene and contributed major parts of Zope, especially
+    the relational database support and caching infrustructure. Much
+    Thanks to M. Carling for makin their time available.
 
-    o Special thanks to Richard Stallman and the Free Software
-      Foundation for their assistance and feedback on the
-      GPL-compatible 2.0 version of the Zope Public License.
+I know I've left out some important contributors. I've run out of
+time. Watch this space!
 
-
-
+Much thanks!
+Jim Fulton
