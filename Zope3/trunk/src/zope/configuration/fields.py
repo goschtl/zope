@@ -52,7 +52,7 @@ class PythonIdentifier(schema.TextLine):
     ...     field._validate(value)
     >>>
     >>> from zope import schema
-    >>> 
+    >>>
     >>> for value in (u'3foo', u'foo:', u'\\', u''):
     ...     try:
     ...         field._validate(value)
@@ -68,14 +68,14 @@ class PythonIdentifier(schema.TextLine):
 
     def fromUnicode(self, u):
         return u.strip()
-        
+
     def _validate(self, value):
         super(PythonIdentifier, self)._validate(value)
         if pyidentifierPattern.match(value) is None:
             raise schema.ValidationError(value)
 
 class GlobalObject(schema.Field):
-    """An object that can be accesses as a module global
+    """An object that can be accessed as a module global.
 
     Examples:
 
@@ -139,7 +139,7 @@ class GlobalObject(schema.Field):
             value = self.context.resolve(name)
         except ConfigurationError, v:
             raise schema.ValidationError(v)
-            
+
         self.validate(value)
         return value
 
@@ -180,7 +180,7 @@ class Tokens(schema.List):
     InvalidToken: ('zope', (<type 'int'>, <type 'long'>)) in z y
     >>> gg.fromUnicode("y y")
     [42, 42]
-    >>> 
+    >>>
 
     """
     implements(IFromUnicode)
@@ -199,7 +199,7 @@ class Tokens(schema.List):
                     values.append(v)
         else:
             values = []
-            
+
         self.validate(values)
 
         return values
@@ -219,7 +219,7 @@ class Path(schema.Text):
     >>> class FauxContext(object):
     ...    def path(self, p):
     ...       return os.path.join(os.sep, 'faux', 'context', p)
-    
+
     >>> context = FauxContext()
     >>> field = Path().bind(context)
 
@@ -242,7 +242,7 @@ class Path(schema.Text):
     >>> n = field.fromUnicode(p)
     >>> n.split(os.sep)
     [u'', u'faux', u'context', u'a', u'b']
-    
+
 
     """
 
@@ -252,7 +252,7 @@ class Path(schema.Text):
         u = u.strip()
         if os.path.isabs(u):
             return os.path.normpath(u)
-        
+
         return self.context.path(u)
 
 
@@ -291,7 +291,7 @@ class MessageID(schema.Text):
     >>> class Info(object):
     ...     file = 'file location'
     ...     line = 8
-    
+
     >>> class FauxContext(object):
     ...     i18n_strings = {}
     ...     info = Info()
@@ -312,7 +312,7 @@ class MessageID(schema.Text):
     >>> import warnings
     >>> realwarn = warnings.warn
     >>> warnings.warn = fakewarn
-    
+
     >>> i = field.fromUnicode(u"Hello world!")
     >>> i
     u'Hello world!'
