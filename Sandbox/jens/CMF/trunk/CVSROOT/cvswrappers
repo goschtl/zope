@@ -1,0 +1,11 @@
+*.mif \
+  -f 'python /cvs-repository/CVSROOT/fixfm.py %s' \
+  -t 'python /cvs-repository/CVSROOT/fixfm.py %s %s' 
+
+*.gif -kb
+*.jpg -kb
+*.so -kb
+*.dll -kb
+*.pyd -kb
+
+* -f 'chmod g+w %s' 
