@@ -14,6 +14,7 @@
        subscribers may break without fixups -->
  
   <include file="backward.zcml" />
+  <include package=".generations" file="subscriber.zcml" />
 
   <modulealias
       module="zope.app"
@@ -54,6 +55,7 @@
   <include package="zope.app.pagetemplate" />
   <include package="zope.app.interpreter" />
   <include package="zope.app.renderer" />
+  <include package=".generations" />
   
   <!-- Views -->
   <include package="zope.app.ftp" />
