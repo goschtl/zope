@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: copypastemove.py,v 1.2 2003/02/26 16:11:35 gvanrossum Exp $
+$Id: copypastemove.py,v 1.3 2003/03/19 19:57:21 alga Exp $
 """
 
 from zope.app.traversing import getParent, objectName
@@ -44,7 +44,7 @@ class ObjectMover:
 
     def moveTo(self, target, name=None):
         '''Move this object to the target given.
-        
+
         Returns the new name within the target
         Typically, the target is adapted to IPasteTarget.'''
 
@@ -53,14 +53,14 @@ class ObjectMover:
         orig_name = objectName(obj)
         if name is None:
             name = objectName(obj)
-        
+
         movesource = getAdapter(container, IMoveSource)
         physicaltarget = getAdapter(target, IPhysicallyLocatable)
-        target_path = physicaltarget.getPhysicalPath()
+        target_path = physicaltarget.getPath()
 
         physicalsource = getAdapter(container, IPhysicallyLocatable)
-        source_path = physicalsource.getPhysicalPath()
-        
+        source_path = physicalsource.getPath()
+
         if queryAdapter(obj, IMoveNotifiable):
             getAdapter(obj, IMoveNotifiable).beforeDeleteHook(obj, container, \
                                     movingTo=target_path)
@@ -83,7 +83,7 @@ class ObjectMover:
         publish(container, ObjectMovedEvent(container, source_path, target_path))
 
         return new_name
-        
+
     def moveable(self):
         '''Returns True if the object is moveable, otherwise False.'''
         return True
@@ -99,7 +99,7 @@ class ObjectMover:
             name = objectName(obj)
         pastetarget = getAdapter(target, IPasteTarget)
         return pastetarget.acceptsObject(name, obj)
-    
+
 class ObjectCopier:
 
     __implements__ = IObjectCopier
@@ -122,13 +122,13 @@ class ObjectCopier:
         container = getParent(obj)
         if name is None:
             name = objectName(obj)
-        
+
         physicaltarget = getAdapter(target, IPhysicallyLocatable)
-        target_path = physicaltarget.getPhysicalPath()
+        target_path = physicaltarget.getPath()
 
         physicalsource = getAdapter(container, IPhysicallyLocatable)
-        source_path = physicalsource.getPhysicalPath()
-        
+        source_path = physicalsource.getPath()
+
         copysource = getAdapter(container, ICopySource)
         obj = copysource.copyObject(name, target_path)
 
@@ -154,7 +154,7 @@ class ObjectCopier:
 
     def copyableTo(self, target, name=None):
         '''Say whether the object can be copied to the given target.
-        
+
         Returns True if it can be copied there. Otherwise, returns
         False.
         '''
@@ -190,4 +190,4 @@ class PrincipalClipboard:
     def getContents(self):
         '''Return the contents of the clipboard'''
         return removeAllProxies(self.context.get('clipboard', ()))
-    
+

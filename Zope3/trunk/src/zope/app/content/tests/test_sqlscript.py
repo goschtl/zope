@@ -12,7 +12,7 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_sqlscript.py,v 1.9 2003/03/19 17:55:35 alga Exp $
+$Id: test_sqlscript.py,v 1.10 2003/03/19 19:57:26 alga Exp $
 """
 
 import unittest
@@ -120,8 +120,8 @@ class LocatableStub:
     def getRoot(self):
         return None
 
-    def getPhysicalPath(self):
-        return (str(id(self.obj)),)
+    def getPath(self):
+        return str(id(self.obj))
 
 
 class SQLScriptTest(unittest.TestCase, PlacelessSetup):

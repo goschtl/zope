@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to do with traversing.
 
-$Id: traversing.py,v 1.2 2003/03/19 17:55:36 alga Exp $
+$Id: traversing.py,v 1.3 2003/03/19 19:57:30 alga Exp $
 """
 
 from zope.interface import Interface
@@ -59,8 +59,8 @@ class IPhysicallyLocatable(Interface):
         """Return the physical root object
         """
 
-    def getPhysicalPath():
-        """Return the physical path to the object as a sequence of names.
+    def getPath():
+        """Return the physical path to the object as a string.
         """
 
 class ITraversable(Interface):

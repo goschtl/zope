@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.13 2003/03/18 21:02:22 jim Exp $
+$Id: service.py,v 1.14 2003/03/19 19:57:31 alga Exp $
 """
 
 import sys
@@ -61,7 +61,7 @@ from zope.app.services.package import Packages
 from zope.app.interfaces.services.configuration import IUseConfigurable
 from zope.app.interfaces.services.service import ILocalService
 
-from zope.app.traversing import getPhysicalPathString
+from zope.app.traversing import getPath
 
 class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
@@ -134,7 +134,7 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
     def queryComponent(self, type=None, filter=None, all=0):
         local = []
-        path = getPhysicalPathString(self)
+        path = getPath(self)
         for pkg_name in self:
             package = ContextWrapper(self[pkg_name], self, name=pkg_name)
             for name in package:
@@ -321,12 +321,12 @@ class ServiceConfiguration(NamedComponentConfiguration):
                                                  container)
         service = configuration.getComponent()
         adapter = getAdapter(service, IUseConfiguration)
-        adapter.addUsage(getPhysicalPathString(configuration))
+        adapter.addUsage(getPath(configuration))
 
     def beforeDeleteHook(self, configuration, container):
         service = configuration.getComponent()
         adapter = getAdapter(service, IUseConfiguration)
-        adapter.removeUsage(getPhysicalPathString(configuration))
+        adapter.removeUsage(getPath(configuration))
         NamedComponentConfiguration.beforeDeleteHook(self,
                                                      configuration,
                                                      container)

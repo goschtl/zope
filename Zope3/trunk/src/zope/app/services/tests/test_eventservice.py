@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.16 2003/03/18 21:02:23 jim Exp $
+$Id: test_eventservice.py,v 1.17 2003/03/19 19:57:32 alga Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -23,7 +23,7 @@ from zope.app.services.service import ServiceManager, ServiceConfiguration
 from zope.component import getServiceManager
 from zope.app.services.servicenames import EventPublication, EventSubscription
 from zope.app.services.event import EventService
-from zope.app.traversing import getPhysicalPathString, traverse
+from zope.app.traversing import getPath, traverse
 from zope.exceptions import NotFoundError
 from zope.app.services.event import subscribe, unsubscribe, unsubscribeAll
 from zope.app.services.event import iterSubscriptions, getSubscriptionService
@@ -168,22 +168,16 @@ class TestEventPublisher(EventSetup, TestCase):
                             event_type=IObjectAddedEvent)
         folder1_1 = subscribe(self.folder1_1Subscriber,
                               event_type=IObjectAddedEvent)
-        self.assertEqual(
-            root,
-            getPhysicalPathString(self.rootFolderSubscriber))
-        self.assertEqual(
-            folder1,
-            getPhysicalPathString(self.folder1Subscriber))
-        self.assertEqual(
-            folder1_1,
-            getPhysicalPathString(self.folder1_1Subscriber))
+        self.assertEqual(root, getPath(self.rootFolderSubscriber))
+        self.assertEqual(folder1, getPath(self.folder1Subscriber))
+        self.assertEqual(folder1_1, getPath(self.folder1_1Subscriber))
         publish(self.folder1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
         self.assertEqual(self.folder1Subscriber.notified, 1)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
-        rootPath = getPhysicalPathString(self.rootFolderSubscriber)
-        folder1Path = getPhysicalPathString(self.folder1Subscriber)
-        folder1_1Path = getPhysicalPathString(self.folder1_1Subscriber)
+        rootPath = getPath(self.rootFolderSubscriber)
+        folder1Path = getPath(self.folder1Subscriber)
+        folder1_1Path = getPath(self.folder1_1Subscriber)
         unsubscribeAll(rootPath, context=self.rootFolder)
             # curve ball:
         unsubscribeAll(self.folder1Subscriber, context=self.folder1_1)
@@ -223,7 +217,7 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
         self.assertEqual(self.folder1Subscriber.notified, 1)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
-        unsubscribe(getPhysicalPathString(self.rootFolderSubscriber),
+        unsubscribe(getPath(self.rootFolderSubscriber),
                     event_type=IObjectAddedEvent,
                     context=self.rootFolder)
         subscribe(self.rootFolderSubscriber,
@@ -249,15 +243,9 @@ class TestEventPublisher(EventSetup, TestCase):
                             event_type=IObjectAddedEvent)
         folder1_1 = subscribe(self.folder1_1Subscriber,
                               event_type=IObjectAddedEvent)
-        self.assertEqual(
-            root,
-            getPhysicalPathString(self.rootFolderSubscriber))
-        self.assertEqual(
-            folder1,
-            getPhysicalPathString(self.folder1Subscriber))
-        self.assertEqual(
-            folder1_1,
-            getPhysicalPathString(self.folder1_1Subscriber))
+        self.assertEqual(root, getPath(self.rootFolderSubscriber))
+        self.assertEqual(folder1, getPath(self.folder1Subscriber))
+        self.assertEqual(folder1_1, getPath(self.folder1_1Subscriber))
         # Remove folder1Subscriber, so that the event service will not
         # be able to notify it.
         folder1Subscriber = self.folder1['folder1Subscriber']
@@ -281,9 +269,9 @@ class TestEventPublisher(EventSetup, TestCase):
         # test complex interaction, with hubids available but explicitly
         # using paths
         self._createHubIdSubscribers()
-        rootPath = getPhysicalPathString(self.rootFolderSubscriber)
-        folder1Path = getPhysicalPathString(self.folder1Subscriber)
-        folder1_1Path = getPhysicalPathString(self.folder1_1Subscriber)
+        rootPath = getPath(self.rootFolderSubscriber)
+        folder1Path = getPath(self.folder1Subscriber)
+        folder1_1Path = getPath(self.folder1_1Subscriber)
         self.assertEqual(
             rootPath,
             subscribe(
@@ -353,7 +341,7 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
         self.assertEqual(self.folder1Subscriber.notified, 1)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
-        unsubscribe(getPhysicalPathString(self.rootFolderSubscriber),
+        unsubscribe(getPath(self.rootFolderSubscriber),
                     event_type=IObjectAddedEvent,
                     context=self.rootFolder)
         subscribe(self.rootFolderSubscriber, event_type=IObjectAddedEvent,
@@ -849,7 +837,7 @@ class TestEventPublisher(EventSetup, TestCase):
 
         default.setObject("myEventService", service)
 
-        path = "%s/default/myEventService" % getPhysicalPathString(sm)
+        path = "%s/default/myEventService" % getPath(sm)
         configuration = ServiceConfiguration(EventPublication, path)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object lifetime events.
 
-$Id: objectevent.py,v 1.3 2003/02/11 15:59:44 sidnei Exp $
+$Id: objectevent.py,v 1.4 2003/03/19 19:57:27 alga Exp $
 """
 
 __metaclass__ = type
@@ -24,7 +24,7 @@ from zope.app.interfaces.event import IObjectRemovedEvent, IObjectMovedEvent
 from zope.app.interfaces.event import IObjectCopiedEvent
 from zope.app.interfaces.event import IObjectAnnotationsModifiedEvent
 from zope.app.interfaces.event import IObjectContentModifiedEvent
-from zope.app.traversing import getPhysicalPath
+from zope.app.traversing import getPath
 
 _marker = object()
 
@@ -36,7 +36,7 @@ class ObjectEvent:
     def _getLocation(self):
         if self.__location is not _marker:
             return self.__location
-        return getPhysicalPath(self.object)
+        return getPath(self.object)
 
     location = property(_getLocation)
 

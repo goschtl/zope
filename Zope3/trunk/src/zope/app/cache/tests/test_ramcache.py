@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_ramcache.py,v 1.5 2003/03/19 17:55:35 alga Exp $
+$Id: test_ramcache.py,v 1.6 2003/03/19 19:57:24 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -35,7 +35,7 @@ class Locatable:
     def getRoot(self):
         return self
 
-    def getPhysicalPath(self):
+    def getPath(self):
         return self.path
 
 class TestRAMCache(PlacelessSetup,

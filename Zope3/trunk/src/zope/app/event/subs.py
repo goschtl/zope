@@ -14,7 +14,7 @@
 """
 Revision information:
 
-$Id: subs.py,v 1.10 2003/02/18 15:19:22 stevea Exp $
+$Id: subs.py,v 1.11 2003/03/19 19:57:27 alga Exp $
 """
 from __future__ import generators
 from zope.exceptions import NotFoundError
@@ -27,8 +27,8 @@ from types import StringTypes
 from zope.proxy.context import ContextMethod
 from zope.proxy.introspection import removeAllProxies
 
-from zope.app.traversing import getPhysicalPathString
-from zope.app.traversing import locationAsUnicode, getPhysicalPath, traverse
+from zope.app.traversing import getPath
+from zope.app.traversing import locationAsUnicode, traverse
 from zope.app.interfaces.event import IEvent, ISubscriber, ISubscribable
 from zope.app.interfaces.event import ISubscribingAware
 
@@ -447,13 +447,13 @@ class SubscriptionTracker:
     def subscribedTo(self, subscribable, event_type, filter):
         # XXX insert super() call here
         # This raises an error for subscriptions to global event service.
-        subscribable_path = getPhysicalPathString(subscribable)
+        subscribable_path = getPath(subscribable)
         self._subscriptions += ((subscribable_path, event_type, filter),)
 
     def unsubscribedFrom(self, subscribable, event_type, filter):
         # XXX insert super() call here
         # This raises an error for subscriptions to global event service.
-        subscribable_path = getPhysicalPathString(subscribable)
+        subscribable_path = getPath(subscribable)
         sub = list(self._subscriptions)
         sub.remove((subscribable_path, event_type, filter))
         self._subscriptions = tuple(sub)
@@ -506,7 +506,7 @@ def getWaysToSubscribe(context, reference, allways=True):
                     # XXX remove this next line when objecthub is refactored
                     path = locationAsUnicode(path)
                 except NotFoundError:
-                    path = getPhysicalPathString(wrappedobj)
+                    path = getPath(wrappedobj)
             cleanobj = removeAllProxies(wrappedobj)
     elif isinstance(clean_reference, StringTypes):
         reftype = unicode
@@ -528,7 +528,7 @@ def getWaysToSubscribe(context, reference, allways=True):
         reftype = object
         wrappedobj = reference
         cleanobj = clean_reference
-        path = getPhysicalPathString(wrappedobj)
+        path = getPath(wrappedobj)
         hub = queryService(context, HubIds)
         if hub is not None:
             try:

@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.13 2003/03/18 21:02:20 jim Exp $
+$Id: service.py,v 1.14 2003/03/19 19:57:22 alga Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -25,8 +25,7 @@ from zope.publisher.browser import BrowserView
 from zope.app.services.service import ServiceConfiguration
 from zope.app.interfaces.services.configuration import IConfiguration
 from zope.app.form.utility import setUpWidgets, getWidgetsDataForContent
-from zope.app.traversing import traverse, getPhysicalPathString
-from zope.app.traversing import getPhysicalPath
+from zope.app.traversing import traverse, getPath
 from zope.app.interfaces.services.service import ILocalService
 from zope.proxy.context import getWrapperContainer
 from zope.app.interfaces.services.configuration \
@@ -82,7 +81,7 @@ class ServiceAdding(ComponentAdding):
         if not ILocalService.isImplementedBy(self.added_object):
             raise TypeError("%s is not a local service" % self.added_object)
 
-        url = getPhysicalPathString(self.added_object)
+        url = getPath(self.added_object)
         self.request.response.redirect(url + "/addConfiguration.html")
 
 
@@ -175,7 +174,7 @@ class AddServiceConfiguration(BrowserView):
         return lst
 
     def action(self, name=[], active=[]):
-        path = getPhysicalPathString(self.context)
+        path = getPath(self.context)
         configure = traverse(getWrapperContainer(self.context), 'configure')
         container = getAdapter(configure, IZopeContainer)
 
@@ -234,11 +233,13 @@ class ServiceActivation(BrowserView):
         if not registry:
             return []
 
+        # XXX this code path is not being tested
         result = []
         for info in registry.info():
             configobj = info['configuration']
             component = configobj.getComponent()
-            path = getPhysicalPath(component)
+            path = getPath(component)
+            path = path.split("/")
             info['name'] = "/".join(path[-2:])
             info['url'] = str(getView(component, 'absolute_url', self.request))
             info['config'] = str(getView(configobj, 'absolute_url',

@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: hub.py,v 1.7 2003/03/19 18:05:03 stevea Exp $
+$Id: hub.py,v 1.8 2003/03/19 19:57:30 alga Exp $
 """
 
 from __future__ import generators
@@ -26,7 +26,7 @@ from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OIBTree import OIBTree
 
 #from zope.app.traversing import getPath, canonicalPath
-from zope.app.traversing import getPhysicalPathString as getPath
+from zope.app.traversing import getPath
 from zope.app.traversing import locationAsUnicode as canonicalPath
 
 from zope.component import getAdapter

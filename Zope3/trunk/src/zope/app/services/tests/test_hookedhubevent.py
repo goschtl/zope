@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_hookedhubevent.py,v 1.4 2003/03/19 18:05:04 stevea Exp $
+$Id: test_hookedhubevent.py,v 1.5 2003/03/19 19:57:32 alga Exp $
 """
 
 # in this version of these tests, we are no longer using a fake
@@ -26,7 +26,7 @@ from zope.app.services.tests.objecthubsetup import ObjectHubSetup
 from zope.app.services.hub import \
      ObjectRegisteredHubEvent, ObjectUnregisteredHubEvent, \
      ObjectModifiedHubEvent, ObjectMovedHubEvent, ObjectRemovedHubEvent
-from zope.app.traversing import getPhysicalPathString as getPath
+from zope.app.traversing import getPath
 
 from zope.component import getService
 

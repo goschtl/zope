@@ -15,7 +15,7 @@
 
 from zope.component import getAdapter, getService, ComponentLookupError
 from zope.app.interfaces.cache.cache import ICacheable
-from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.traversing import getPath
 
 
 def getCacheForObj(obj):
@@ -30,7 +30,6 @@ def getCacheForObj(obj):
 def getLocationForCache(obj):
     """Returns the location to be used for caching the object or None."""
     try:
-        locatable = getAdapter(obj, IPhysicallyLocatable)
-        return "/".join(locatable.getPhysicalPath())
+        return getPath(obj)
     except (ComponentLookupError, TypeError):
         return None

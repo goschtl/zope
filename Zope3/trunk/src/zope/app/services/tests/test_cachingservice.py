@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.5 2003/03/18 21:02:23 jim Exp $
+$Id: test_cachingservice.py,v 1.6 2003/03/19 19:57:32 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,7 +24,7 @@ from zope.app.services.cache import CacheConfiguration
 from zope.app.interfaces.services.configuration import Active, Registered
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.app.services.service import ServiceConfiguration
-from zope.app.traversing import getPhysicalPathString, traverse
+from zope.app.traversing import getPath, traverse
 
 
 def sort(list):
@@ -61,7 +61,7 @@ class CachingServiceSetup(EventSetup):
         key = default.setObject("myCachingService", CachingService())
         service = traverse(default, key)
 
-        path = getPhysicalPathString(service)
+        path = getPath(service)
         configuration = ServiceConfiguration("Caching", path)
         configure = traverse(default, 'configure')
         key = configure.setObject(None, configuration)
@@ -80,7 +80,7 @@ class CachingServiceSetup(EventSetup):
         cache = traverse(default, key)
         configure = traverse(default, 'configure')
         key = configure.setObject(None, CacheConfiguration(name,
-                                            getPhysicalPathString(cache)))
+                                                           getPath(cache)))
         traverse(configure, key).status = status
         return cache
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.13 2003/03/19 17:55:36 alga Exp $
+$Id: configuration.py,v 1.14 2003/03/19 19:57:30 alga Exp $
 """
 __metaclass__ = type
 
@@ -44,7 +44,7 @@ from zope.app.interfaces.services.configuration \
      import Unregistered, Registered, Active
 
 from zope.app.traversing \
-     import getRoot, getPhysicalPathString, traverse, locationAsUnicode
+     import getRoot, getPath, traverse, locationAsUnicode
 
 
 class ConfigurationStatusProperty:
@@ -111,7 +111,7 @@ class ConfigurationRegistry(Persistent):
 
         # Get and check relative path
         prefix = "/++etc++Services/"
-        path = getPhysicalPathString(ob)
+        path = getPath(ob)
         lpackages = path.rfind(prefix)
         if lpackages < 0:
             raise ValueError("Configuration object is in an invalid location",
@@ -290,7 +290,7 @@ class SimpleConfiguration(Persistent):
 
         if objectstatus == Active:
             try:
-                objectpath = getPhysicalPathString(configuration)
+                objectpath = getPath(configuration)
             except: # XXX
                 objectpath = str(configuration)
             raise DependencyError("Can't delete active configuration (%s)"
@@ -370,7 +370,7 @@ class NamedComponentConfiguration(NamedConfiguration):
         "See IAddNotifiable"
         component = configuration.getComponent()
         dependents = getAdapter(component, IDependable)
-        objectpath = getPhysicalPathString(configuration)
+        objectpath = getPath(configuration)
         dependents.addDependent(objectpath)
 
     def beforeDeleteHook(self, configuration, container):
@@ -379,7 +379,7 @@ class NamedComponentConfiguration(NamedConfiguration):
               ).beforeDeleteHook(configuration, container)
         component = configuration.getComponent()
         dependents = getAdapter(component, IDependable)
-        objectpath = getPhysicalPathString(configuration)
+        objectpath = getPath(configuration)
         dependents.removeDependent(objectpath)
 
 

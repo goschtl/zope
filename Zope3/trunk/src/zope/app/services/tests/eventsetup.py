@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: eventsetup.py,v 1.5 2003/01/27 18:31:51 stevea Exp $
+$Id: eventsetup.py,v 1.6 2003/03/19 19:57:32 alga Exp $
 """
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.services.service import ServiceManager, ServiceConfiguration
 from zope.app.services.event import EventService
-from zope.app.traversing import getPhysicalPathString, traverse
+from zope.app.traversing import traverse
 from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.services.event import ISubscriptionService
 

@@ -13,14 +13,14 @@
 ##############################################################################
 """View package.
 
-$Id: viewpackage.py,v 1.7 2003/03/11 16:11:22 jim Exp $
+$Id: viewpackage.py,v 1.8 2003/03/19 19:57:31 alga Exp $
 """
 __metaclass__ = type
 
 from zope.app.container.btree import BTreeContainer
 from zope.app.interfaces.services.view import IZPTTemplate
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.app.traversing import getPhysicalPathString, traverse
+from zope.app.traversing import getPath, traverse
 from zope.proxy.context import getItem, getAttr
 from zope.proxy.context import ContextMethod
 from zope.app.interfaces.services.configuration import Active
@@ -56,7 +56,7 @@ class ViewPackage(BTreeContainer):
 
         name = super(ViewPackage, base).setObject(name, object)
         template = getItem(self, name)
-        template = getPhysicalPathString(template)
+        template = getPath(template)
         config = PageConfiguration(
             forInterface=self.forInterface,
             viewName=name,

@@ -13,7 +13,7 @@
 ##############################################################################
 """A package contains components and component configurations.
 
-$Id: package.py,v 1.3 2002/12/30 20:42:46 jeremy Exp $
+$Id: package.py,v 1.4 2003/03/19 19:57:31 alga Exp $
 """
 
 __metaclass__ = type
@@ -21,7 +21,7 @@ __metaclass__ = type
 from zope.app.component.nextservice import getNextServiceManager
 from zope.app.container.btree import BTreeContainer
 from zope.app.services.configurationmanager import ConfigurationManager
-from zope.app.traversing import getPhysicalPathString
+from zope.app.traversing import getPath
 
 from zope.proxy.context import ContextMethod
 from zope.proxy.context import ContextWrapper
@@ -46,7 +46,7 @@ class Packages(BTreeContainer):
 
     def queryComponent(self, type=None, filter=None, all=0):
         local = []
-        path = getPhysicalPathString(self)
+        path = getPath(self)
         for pkg_name in self:
             package = ContextWrapper(self[pkg_name], self, name=pkg_name)
             for name in package:

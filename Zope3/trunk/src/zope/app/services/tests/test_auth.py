@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.9 2003/03/18 21:02:23 jim Exp $
+$Id: test_auth.py,v 1.10 2003/03/19 19:57:32 alga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,7 +26,7 @@ from zope.exceptions import NotFoundError
 from zope.publisher.interfaces.http import IHTTPCredentials
 from zope.app.services.service import ServiceConfiguration
 from zope.app.services.tests.eventsetup import EventSetup
-from zope.app.traversing import getPhysicalPathString, traverse
+from zope.app.traversing import getPath, traverse
 from zope.app.interfaces.services.configuration import Active, Registered
 
 from zope.app.container.tests.test_icontainer import BaseTestIContainer
@@ -66,7 +66,7 @@ class AuthSetup(EventSetup):
         key = default.setObject("AuthenticationService", AuthenticationService())
         auth = traverse(default, key)
 
-        path = getPhysicalPathString(auth)
+        path = getPath(auth)
         configuration = ServiceConfiguration(Authentication, path)
         configure = traverse(default, 'configure')
         key = configure.setObject(None, configuration)

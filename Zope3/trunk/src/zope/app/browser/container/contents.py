@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.12 2003/03/19 17:55:34 alga Exp $
+Revision information: $Id: contents.py,v 1.13 2003/03/19 19:57:21 alga Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -25,7 +25,7 @@ from zope.app.interfaces.services.principalannotation \
      import IPrincipalAnnotationService
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.traversing import traverse, getRoot
+from zope.app.traversing import traverse, getRoot, getPath
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.interfaces.container import IPasteTarget
 from zope.app.interfaces.copypastemove import IObjectCopier
@@ -86,8 +86,7 @@ class Contents(BrowserView):
 
     def copyObjects(self, ids):
         """Copy objects specified in a list of object ids"""
-        physical = getAdapter(self.context, IPhysicallyLocatable)
-        container_path = physical.getPhysicalPath()
+        container_path = getPath(self.context)
 
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
@@ -96,15 +95,14 @@ class Contents(BrowserView):
         clipboard.clearContents()
         items = []
         for id in ids:
-            items.append('%s/%s' % ('/'.join(container_path), id))
+            items.append('%s/%s' % (container_path, id))
         clipboard.addItems('copy', items)
 
         self.request.response.redirect('@@contents.html')
 
     def cutObjects(self, ids):
         """move objects specified in a list of object ids"""
-        physical = getAdapter(self.context, IPhysicallyLocatable)
-        container_path = physical.getPhysicalPath()
+        container_path = getPath(self.context)
 
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')
@@ -113,7 +111,7 @@ class Contents(BrowserView):
         clipboard.clearContents()
         items = []
         for id in ids:
-            items.append('%s/%s' % ('/'.join(container_path), id))
+            items.append('%s/%s' % (container_path, id))
         clipboard.addItems('cut', items)
 
         self.request.response.redirect('@@contents.html')
@@ -123,8 +121,6 @@ class Contents(BrowserView):
            move/copy operations"""
         container = self.context
         target = container
-        physical = getAdapter(container, IPhysicallyLocatable)
-        container_path = physical.getPhysicalPath()
 
         user = self.request.user
         annotationsvc = getService(self.context, 'PrincipalAnnotation')

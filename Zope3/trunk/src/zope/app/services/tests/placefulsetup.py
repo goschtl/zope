@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.13 2003/03/18 21:02:23 jim Exp $
+$Id: placefulsetup.py,v 1.14 2003/03/19 19:57:32 alga Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -35,7 +35,7 @@ from zope.app.traversing.namespace import etc, provideNamespaceHandler
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import WrapperPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
-from zope.app.traversing import traverse, getPhysicalPathString
+from zope.app.traversing import traverse, getPath
 from zope.app.services.service import ServiceManager, ServiceConfiguration
 from zope.app.interfaces.services.configuration import Active
 from zope.app.interfaces.services.configuration import IAttributeUseConfigurable
@@ -171,7 +171,7 @@ class PlacefulSetup(PlacelessSetup):
         from zope.app.services.event import EventService
         default.setObject(service_name, EventService())
 
-        path = "%s/%s" % (getPhysicalPathString(default), service_name)
+        path = "%s/%s" % (getPath(default), service_name)
         configuration = ServiceConfiguration(EventPublication, path, self.rootFolder)
         default['configure'].setObject(
                 "%sEventsDir" % service_name, configuration)
@@ -210,7 +210,7 @@ class PlacefulSetup(PlacelessSetup):
         default.setObject("myEventService", EventService())
         default.setObject("myObjectHub", self.getObjectHub())
 
-        path = "%s/default/myEventService" % getPhysicalPathString(sm)
+        path = "%s/default/myEventService" % getPath(sm)
         configuration = ServiceConfiguration(EventPublication, path, self.rootFolder)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
@@ -221,7 +221,7 @@ class PlacefulSetup(PlacelessSetup):
                 "mySubscriptionServiceDir", configuration)
         traverse(default, 'configure/2').status = Active
 
-        path = "%s/default/myObjectHub" % getPhysicalPathString(sm)
+        path = "%s/default/myObjectHub" % getPath(sm)
         configuration = ServiceConfiguration(HubIds, path, self.rootFolder)
         default['configure'].setObject("myHubIdsServiceDir", configuration)
         traverse(default, 'configure/3').status = Active
