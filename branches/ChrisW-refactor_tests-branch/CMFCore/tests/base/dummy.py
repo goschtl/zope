@@ -1,13 +1,15 @@
-from Acquisition import Implicit
+from Acquisition import Implicit, aq_inner, aq_parent
 from OFS.SimpleItem import Item
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.TypesTool import TypeInformation
 from Products.CMFCore.TypesTool import FactoryTypeInformation
 from Products.CMFCore.ActionProviderBase import ActionProviderBase
 
-class DummyObject:
+class DummyObject(Implicit):
     """
-    A dummy callable object
+    A dummy callable object.
+    Comes with getIcon and restrictedTraverse
+    methods.
     """
     def __init__(self, name='dummy',**kw):
         self.name = name
@@ -18,6 +20,12 @@ class DummyObject:
     
     def __call__(self):
         return self.name
+
+    def restrictedTraverse( self, path ):
+        return path and getattr( self, path ) or self
+
+    def getIcon( self, relative=0 ):
+        return 'Site: %s' % relative
 
 class DummyContent( PortalContent, Item ):
     """
@@ -151,10 +159,11 @@ class DummyFolder( Implicit ):
     def _setObject(self,id,object):
         setattr(self,id,object)
 
-class DummyTool(ActionProviderBase):
+class DummyTool(Implicit,ActionProviderBase):
     """
-    This is a Dummy Tool that behaves as both
-    a MemberShipTool and an Action Provider
+    This is a Dummy Tool that behaves as a
+    a MemberShipTool, a URLTool and an
+    Action Provider
     """
 
     _actions = [
@@ -162,6 +171,8 @@ class DummyTool(ActionProviderBase):
         DummyObject()
         ]
 
+    root = 'DummyTool'
+    
     def __init__(self, anon=1):
         self.anon = anon 
 
@@ -171,3 +182,13 @@ class DummyTool(ActionProviderBase):
     def getAuthenticatedMember(self):
         return "member"
   
+    def __call__( self ):
+        return self.root
+
+    getPortalPath = __call__
+
+    def getPortalObject( self ):
+        return aq_parent( aq_inner( self ) )
+
+    def getIcon( self, relative=0 ):
+        return 'Tool: %s' % relative
