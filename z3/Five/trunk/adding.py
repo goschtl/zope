@@ -38,7 +38,9 @@ from Products.Five import BrowserView
 from Products.Five.traversable import Traversable
 from Products.Five.pagetemplatefile import ZopeTwoPageTemplateFile
 
-class BasicAdding(BrowserView):
+from Acquisition import Implicit
+
+class BasicAdding(Implicit, BrowserView):
     implements(IAdding, IPublishTraverse)
 
     def add(self, content):
