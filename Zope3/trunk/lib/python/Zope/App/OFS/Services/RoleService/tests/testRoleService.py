@@ -14,32 +14,16 @@
 """
 
 Revision information:
-$Id: testRoleService.py,v 1.6 2002/07/16 23:41:15 jim Exp $
+$Id: testRoleService.py,v 1.7 2002/11/30 18:37:17 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
     import PlacefulSetup
 from Zope.ComponentArchitecture import getServiceManager, getService
-from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
-     import ServiceDirective
-from Zope.App.Traversing import getPhysicalPathString
-
-from Zope.App.Traversing.Traverser import Traverser
-from Zope.App.Traversing.ITraverser import ITraverser
-from Zope.App.Traversing.DefaultTraversable import DefaultTraversable
-from Zope.App.Traversing.ITraversable import ITraversable
-
-
-from Zope.App.Traversing.IPhysicallyLocatable import IPhysicallyLocatable
-from Zope.App.Traversing.IContainmentRoot import IContainmentRoot
-from Zope.App.Traversing.PhysicalLocationAdapters \
-     import WrapperPhysicallyLocatable, RootPhysicallyLocatable
-
-
-from Zope.App.OFS.Container.ContainerTraversable import ContainerTraversable
-from Zope.App.OFS.Container.IContainer import ISimpleReadContainer
-
-
+from Zope.App.Security.IRoleService import IRoleService
+from Zope.App.Security.Registries.RoleRegistry import roleRegistry
+from Zope.App.OFS.Services.RoleService.RoleService import RoleService
+from Zope.App.OFS.Services.RoleService.Role import Role
 
 class RoleServiceTests(PlacefulSetup, TestCase):
 
@@ -50,50 +34,23 @@ class RoleServiceTests(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         self.buildFolders()
 
-        # set up traversal services
-        adapterService=getService(None, "Adapters")
-        adapterService.provideAdapter(
-            None, ITraverser, Traverser)
-        adapterService.provideAdapter(
-            None, ITraversable, DefaultTraversable)
-        adapterService.provideAdapter(
-            ISimpleReadContainer, ITraversable, ContainerTraversable)
+        root_sm = getServiceManager(None)
 
+        root_sm.defineService("Roles", IRoleService)
+        self.roleRegistry = roleRegistry
+        root_sm.provideService("Roles", roleRegistry)
 
-        adapterService.provideAdapter(
-              None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
-        adapterService.provideAdapter(
-              IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
-
-
-
-        from Zope.App.Security.IRoleService import IRoleService
-        from Zope.App.Security.Registries.RoleRegistry import roleRegistry
-        sm=getServiceManager(None)
-        defineService=sm.defineService
-        provideService=sm.provideService
-        defineService("Roles", IRoleService)
-        self.roleRegistry=roleRegistry
-        provideService("Roles", self.roleRegistry)
         self.createServiceManager()
         
-        self.sm=getServiceManager(self.rootFolder)
-        from Zope.App.OFS.Services.RoleService.RoleService import RoleService
-        self.rs = RoleService()
-        self.sm.Packages['default'].setObject("myRoleService", self.rs)
+        sm = getServiceManager(self.rootFolder)
+        rs = RoleService()
+        sm.Roles = rs
 
-        path = "%s/Packages/default/myRoleService" % getPhysicalPathString(
-            self.sm)
-        directive = ServiceDirective("Roles", path)
-        self.sm.Packages['default'].setObject("myRoleServiceDir", directive)
-        self.sm.bindService(directive)
-
-        self.rs=getService(self.rootFolder,"Roles")
+        self.rs = getService(self.rootFolder,"Roles")
 
     def testGetRole(self):
         self.roleRegistry.defineRole('Manager', 'Manager', '')
         
-        from Zope.App.OFS.Services.RoleService.Role import Role
         r = Role("Hacker","","")
         self.rs.setObject("Hacker", r)
         self.assertEqual(self.rs.getRole('Hacker').getId(), 'Hacker')
@@ -107,30 +64,23 @@ class RoleServiceTests(PlacefulSetup, TestCase):
     def testGetRoleFromLayeredServices(self):
         self.roleRegistry.defineRole('Manager', 'Manager', '')
         
-        from Zope.App.OFS.Services.RoleService.Role import Role
         r = Role("Hacker","","")
         self.rs.setObject("Hacker", r)
+
         self.createServiceManager(self.folder1)
-        self.sm1=getServiceManager(self.folder1)
-        from Zope.App.OFS.Services.RoleService.RoleService import RoleService
-        self.rs1 = RoleService()
+        sm1 = getServiceManager(self.folder1)
+        sm1.Roles = RoleService()
 
-        self.sm1.Packages['default'].setObject("myRoleService", self.rs1)
+        rs1 = getService(self.folder1, "Roles")
 
-        path = "%s/Packages/default/myRoleService" % getPhysicalPathString(
-            self.sm1)
-        directive = ServiceDirective("Roles", path)
-        self.sm1.Packages['default'].setObject("myRoleServiceDir", directive)
-        self.sm1.bindService(directive)
+        r1 = Role("Reviewer",'','')
+        rs1.setObject("Reviewer", r1)
+        
+        self.assertEqual(rs1.getRole('Hacker').getId(), 'Hacker')
+        self.assertEqual(rs1.getRole('Manager').getId(), 'Manager')
+        self.assertEqual(rs1.getRole('Reviewer').getId(), 'Reviewer')
 
-        self.rs1=self.sm1.getService("Roles")
-        r1=Role("Reviewer",'','')
-        self.rs1.setObject("Reviewer", r1)
-        self.assertEqual(self.rs1.getRole('Hacker').getId(), 'Hacker')
-        self.assertEqual(self.rs1.getRole('Manager').getId(), 'Manager')
-        self.assertEqual(self.rs1.getRole('Reviewer').getId(), 'Reviewer')
-
-        roles = [role.getId() for role in self.rs1.getRoles()]
+        roles = [role.getId() for role in rs1.getRoles()]
         roles.sort()
 
         self.assertEqual(roles, ['Anonymous', 'Hacker', 'Manager','Reviewer'])

@@ -14,24 +14,25 @@
 """
 
 Revision information:
-$Id: testEventService.py,v 1.5 2002/10/03 20:53:21 jim Exp $
+$Id: testEventService.py,v 1.6 2002/11/30 18:37:17 jim Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
 
-from Zope.ComponentArchitecture import getService, getServiceManager
-
-from Zope.Proxy.ContextWrapper import ContextWrapper
-
-from Zope.Exceptions import NotFoundError
+from Zope.App.OFS.Services.ServiceManager.ServiceManager \
+     import ServiceManager
 
 from Zope.App.OFS.Services.LocalEventService.LocalEventService \
      import LocalEventService
 
-from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
-     import ServiceDirective
+from Zope.App.OFS.Services.ServiceManager.ServiceConfiguration \
+     import ServiceConfiguration
 
-from Zope.App.Traversing import getPhysicalPathString
+from Zope.App.Traversing import getPhysicalPathString, traverse
+
+from Zope.ComponentArchitecture import getService, getServiceManager
+
+from Zope.Exceptions import NotFoundError
 
 from Zope.Event import subscribe, unsubscribe, listSubscriptions, publishEvent
 from Zope.Event.tests.subscriber import DummySubscriber, DummyFilter
@@ -44,6 +45,10 @@ from Zope.Event.ObjectEvent import ObjectAddedEvent
 from Zope.Event.GlobalEventService import GlobalEventService
 from Zope.Event.IEvent import IEvent
 from Zope.Event.ISubscriptionAware import ISubscriptionAware
+from Zope.App.OFS.Services.ConfigurationInterfaces \
+     import Active, Unregistered, Registered
+
+from Zope.Proxy.ContextWrapper import ContextWrapper
 
 from EventSetup import EventSetup
 
@@ -79,9 +84,9 @@ class DummySubscriptionAwareSubscriber(DummySubscriber):
 class EventServiceTests(EventSetup, TestCase):
     
     def _createNestedServices(self):
-        self.createEventService(self.folder1)
-        self.createEventService(self.folder1_1)
-        self.createEventService(self.folder1_1_1)
+        self.createEventService('folder1')
+        self.createEventService('folder1/folder1_1')
+        self.createEventService('folder1/folder1_1/folder1_1_1')
     
     def _createSubscribers(self):
         self.rootFolder.setObject("rootFolderSubscriber", DummySubscriber())
@@ -106,8 +111,11 @@ class EventServiceTests(EventSetup, TestCase):
     def testListSubscriptions1(self):
         "a non-subscribed subscriber gets an empty array"
         self._createSubscribers()
-        self.assertEqual([], self.rootFolder.getServiceManager().getService(
-            "Events").listSubscriptions(self.rootFolderSubscriber))
+
+        events = getService(self.rootFolder, "Events")
+        
+        self.assertEqual(events.listSubscriptions(self.rootFolderSubscriber),
+                         [])
     
     def testListSubscriptions2(self):
         "one subscription"
@@ -383,19 +391,23 @@ class EventServiceTests(EventSetup, TestCase):
     def _createAlternateService(self, service):
         self._createSubscribers()
         self.folder2.setObject("folder2Subscriber", DummySubscriber())
-        self.folder2Subscriber=ContextWrapper(
+        self.folder2Subscriber = ContextWrapper(
             self.folder2["folder2Subscriber"],
             self.folder2,
             name="folder2Subscriber")
+        
         if not self.folder2.hasServiceManager():
-            self.createServiceManager(self.folder2)
-        sm=getServiceManager(self.folder2) # wrapped now
-        sm.Packages['default'].setObject("myEventService", service)
+            self.folder2.setServiceManager(ServiceManager())
+
+        sm = traverse(self.rootFolder, 'folder2/++etc++Services')
+        default = traverse(sm, 'Packages/default')
+
+        default.setObject("myEventService", service)
 
         path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
-        directive = ServiceDirective("Events", path)
-        sm.Packages['default'].setObject("myEventServiceDir", directive)
-        sm.bindService(directive)
+        configuration = ServiceConfiguration("Events", path)
+        default['configure'].setObject("myEventServiceDir", configuration)
+        traverse(default, 'configure/1').status = Active
 
         subscribe(
             self.rootFolderSubscriber,
@@ -439,9 +451,11 @@ class EventServiceTests(EventSetup, TestCase):
             self.folder1_1Subscriber,
             event_type=IObjectAddedEvent
             )
-        sm=getServiceManager(self.folder1)
-        directive = sm.getDirectives("Events")[0]
-        sm.unbindService(directive)
+
+        sm = traverse(self.rootFolder, "folder1/++etc++Services")
+        configuration = sm.queryConfigurations("Events").active()
+        configuration.status = Registered
+
         publishEvent(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder1Subscriber.notified, 0)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
@@ -455,9 +469,11 @@ class EventServiceTests(EventSetup, TestCase):
         publishEvent(self.rootFolder, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.folder2Subscriber.notified, 0)
         self.assertEqual(self.rootFolderSubscriber.notified, 1)
-        sm=getServiceManager(self.folder2)
-        directive = sm.getDirectives("Events")[0]
-        sm.unbindService(directive) # make sure it doesn't raise any errors
+
+        sm = traverse(self.rootFolder, "folder2/++etc++Services")
+        configuration = sm.queryConfigurations("Events").active()
+        # make sure it doesn't raise any errors
+        configuration.status = Registered
         
     def testSubscriptionAwareInteraction(self):
         sub = DummySubscriptionAwareSubscriber()

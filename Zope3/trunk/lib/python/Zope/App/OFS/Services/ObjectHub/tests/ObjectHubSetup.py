@@ -14,17 +14,18 @@
 """
 
 Revision information:
-$Id: ObjectHubSetup.py,v 1.2 2002/11/26 19:02:49 stevea Exp $
+$Id: ObjectHubSetup.py,v 1.3 2002/11/30 18:37:17 jim Exp $
 """
 
 from Zope.App.OFS.Services.LocalEventService.tests.EventSetup import \
      EventSetup
 from Zope.ComponentArchitecture import getServiceManager
-from Zope.App.OFS.Services.ServiceManager.ServiceDirective \
-     import ServiceDirective
-from Zope.App.Traversing import getPhysicalPathString
+from Zope.App.OFS.Services.ServiceManager.ServiceConfiguration \
+     import ServiceConfiguration
+from Zope.App.Traversing import getPhysicalPathString, traverse
 
 from Zope.App.OFS.Services.ObjectHub.ObjectHub import ObjectHub
+from Zope.App.OFS.Services.ConfigurationInterfaces import Active
 
 class ObjectHubSetup(EventSetup):
     
@@ -36,16 +37,29 @@ class ObjectHubSetup(EventSetup):
         global_service_manager.defineService("ObjectHub", IObjectHub)
         self.createObjectHub()
     
-    def createObjectHub(self, folder=None):
-        if folder is None:
-            folder = self.rootFolder
+    def createObjectHub(self, path=None):
+        folder = self.rootFolder
+        if path is not None:
+            folder = traverse(folder, path)
+
         if not folder.hasServiceManager():
             self.createServiceManager(folder)
-        sm = getServiceManager(folder)  # wrapped now
-        sm.Packages['default'].setObject("myObjectHub", ObjectHub())
+
+        sm = traverse(folder, '++etc++Services')
+        default = traverse(sm, 'Packages/default')
+        default.setObject("myObjectHub", ObjectHub())
 
         path = "%s/Packages/default/myObjectHub" % getPhysicalPathString(sm)
-        directive = ServiceDirective("ObjectHub", path)
-        sm.Packages['default'].setObject("myObjectHubDir", directive)
-        sm.bindService(directive)
+        configuration = ServiceConfiguration("ObjectHub", path)
+
+        configure = traverse(default, 'configure')
+        configure.setObject("myObjectHubDir", configuration)
+
+        for i in range(1, 100):
+            c = traverse(configure, str(i))
+            if c == configuration:
+                break
+            i += 1
+
+        c.status = Active
 
