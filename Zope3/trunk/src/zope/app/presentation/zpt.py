@@ -30,6 +30,7 @@ from zope.app.filerepresentation.interfaces import IReadFile, IWriteFile
 from zope.app.filerepresentation.interfaces import IFileFactory
 from zope.app.pagetemplate.engine import AppPT
 from zope.pagetemplate.pagetemplate import PageTemplate
+from zope.app import zapi
 
 class IZPTInfo(Interface):
     """ZPT Template configuration information
@@ -87,6 +88,12 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
         namespace['context'] = view.context
         return namespace
 
+    def pt_source_file(self):
+        try:
+            return zapi.getPath(self)
+        except TypeError:
+            return None
+
     def render(self, view, *args, **keywords):
 
         if args:
@@ -101,8 +108,10 @@ class ZPTTemplate(AppPT, PageTemplate, Persistent, Contained):
         kw = ProxyFactory(keywords)
 
         namespace = self.pt_getContext(view, args=args, options=kw)
+        debug_flags = view.request.debug
 
-        return self.pt_render(namespace)
+        return self.pt_render(namespace, showtal=debug_flags.showTAL,
+                              sourceAnnotations=debug_flags.sourceAnnotations)
 
 # Adapters for file-system emulation
 
