@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:help="http://namespaces.zope.org/help">
+
+  <help:register
+      id="zope.app.authentication"
+      parent="dev"
+      title="Authentication"
+      doc_path="README.txt"
+      class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+      />
+
+  <help:register
+      id="principalfolder"
+      parent="dev/zope.app.authentication"
+      title="Principal Folder"
+      doc_path="principalfolder.txt"
+      class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+      />
+
+  <help:register
+      id="groupfolder"
+      parent="dev/zope.app.authentication"
+      title="Group Folder"
+      doc_path="groupfolder.txt"
+      class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+      />
+
+</configure>
