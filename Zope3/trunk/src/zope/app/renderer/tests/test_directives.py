@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the wiki ZCML namespace directives.
 
-$Id: test_directives.py,v 1.3 2003/08/05 14:25:00 sidnei Exp $
+$Id: test_directives.py,v 1.4 2003/11/21 17:10:59 jim Exp $
 """
 import unittest
 
@@ -49,9 +49,9 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
             zope.app.renderer.tests.test_directives.ITestSource)
 
         obj = SourceTypes.createObject('Test Text', 'Source')
-        self.assertEqual(
-            getView(obj, None, TestRequest()).__class__,
-            zope.app.renderer.tests.test_directives.TestRenderer)
+        v = getView(obj, u'', TestRequest())
+        self.assertEqual(v.__class__,
+                         zope.app.renderer.tests.test_directives.TestRenderer)
 
 
 def test_suite():
