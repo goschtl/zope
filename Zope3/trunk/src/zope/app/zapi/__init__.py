@@ -15,10 +15,10 @@
 
 Makes imports easier
 
-$Id: zapi.py,v 1.15 2004/03/14 04:44:47 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/15 12:03:45 srichter Exp $
 """
 
-from zope.app.interfaces.zapi import IZAPI
+from interfaces import IZAPI
 from zope.interface import moduleProvides
 from zope.app import servicenames
 

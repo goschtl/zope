@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.11 2004/03/13 21:03:14 srichter Exp $
+$Id: interfaces.py,v 1.1 2004/03/15 12:03:45 srichter Exp $
 """
 from zope.interface import Attribute
 from zope.component.interfaces import IComponentArchitecture
