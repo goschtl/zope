@@ -110,14 +110,14 @@ the tag from the original ``cvs:`` URL is used.
 
 Some examples:
 
-========================= ========================== ========================================
+========================= ========================== ====================================
 Base URL                  Relative URL               Result
-========================= ========================== ========================================
+========================= ========================== ====================================
 cvs:///cvsroot:module:TAG repository:README.txt      cvs:///cvsroot:module/README.txt:TAG
 cvs:///cvsroot:module     repository:/pkg/README.txt cvs:///cvsroot:pkg/README.txt
 cvs:///cvsroot:module     repository::tag            cvs:///cvsroot:module:tag
 cvs:///cvsroot:module:FOO repository:README.txt:BAR  cvs:///cvsroot:module/README.txt:BAR
-========================= ========================== ========================================
+========================= ========================== ====================================
 
 
 Supporting Other Revision Control Systems
