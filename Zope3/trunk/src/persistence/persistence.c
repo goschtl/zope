@@ -19,7 +19,7 @@
 static char PyPersist_doc_string[] =
 "Defines Persistent mixin class for persistent objects.\n"
 "\n"
-"$Id: persistence.c,v 1.15 2003/05/05 17:06:27 jeremy Exp $\n";
+"$Id: persistence.c,v 1.16 2003/05/07 13:10:53 jeremy Exp $\n";
 
 /* A custom metaclass is only needed to support Python 2.2. */
 #if PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION == 2
@@ -175,6 +175,8 @@ persist_setstate(PyObject *self, PyObject *state)
     PyObject **pdict;
     PyObject *dict;
     PyObject *k, *v;
+    PyObject *serial = NULL;
+    static PyObject *_p_serial;
     int pos = 0;
 
     if (state == Py_None) {
@@ -189,8 +191,14 @@ persist_setstate(PyObject *self, PyObject *state)
 	if ((*pdict) == NULL)
 	    return NULL;
     }
-    else
+    else {
+	if (!_p_serial) {
+	    _p_serial = PyString_InternFromString("_p_serial");
+	}
+	serial = PyDict_GetItem(*pdict, _p_serial);
+	Py_XINCREF(serial);
 	PyDict_Clear(*pdict);
+    }
     dict = *pdict;
     
     if (!PyDict_Check(state)) {
@@ -206,6 +214,11 @@ persist_setstate(PyObject *self, PyObject *state)
 	}
 	if (PyDict_SetItem(dict, k, v) < 0)
 	    return NULL;
+    }
+    if (serial) {
+	if (PyDict_SetItem(*pdict, _p_serial, serial) < 0)
+	    return NULL;
+	Py_DECREF(serial);
     }
 
     Py_INCREF(Py_None);

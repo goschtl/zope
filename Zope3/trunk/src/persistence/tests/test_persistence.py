@@ -91,6 +91,12 @@ class Test(unittest.TestCase):
         self.assertEqual(p.__getstate__(), {'x': 5})
         self.assertEqual(p._p_changed, 0)
 
+    def testSetStateSerial(self):
+        p = self.klass()
+        p._p_serial = 12
+        p.__setstate__(p.__getstate__())
+        self.assertEqual(p._p_serial, 12)
+
     def testDirectChanged(self):
         p = self.klass()
         p._p_oid = 1
@@ -254,7 +260,7 @@ class P2(P):
 
 class B(Persistent):
 
-    __slots__ = ["x"]
+    __slots__ = ["x", "_p_serial"]
 
     def __init__(self):
         self.x = 0
