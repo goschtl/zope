@@ -19,7 +19,7 @@ file-based module to determine its dependencies.
 
 Usage: finddeps.py [options]
 Options:
-    -a / --a
+    -a / --all
         Find all dependencies. This means that the program will also scan the
         dependencies originally found in the module.
 
@@ -41,7 +41,7 @@ Options:
 
 Important: Make sure that the PYTHONPATH is set to or includes 'ZOPE3/src'.
 
-$Id: finddeps.py,v 1.18 2004/04/07 19:41:05 fdrake Exp $
+$Id: finddeps.py,v 1.19 2004/05/10 17:03:25 fdrake Exp $
 """
 import sys
 import getopt
@@ -463,9 +463,10 @@ def showDependencies(path, zcml=False, long=False, all=False):
     else:
         deps = getCleanedDependencies(path, zcml)
 
-    print '='*(8+len(path))
-    print "Module: " + path
-    print '='*(8+len(path))
+    if long:
+        print '='*(8+len(path))
+        print "Module: " + path
+        print '='*(8+len(path))
     for dep in deps:
         print dep.path
         if long:
