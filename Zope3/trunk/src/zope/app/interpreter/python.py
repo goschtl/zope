@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Code Interpreter
 
-$Id: python.py,v 1.3 2003/11/04 04:04:27 jeremy Exp $
+$Id: python.py,v 1.4 2004/02/02 15:03:41 anthony Exp $
 """
 import StringIO
 import sys
@@ -33,8 +33,9 @@ class PythonInterpreter:
         ri = RestrictedInterpreter()
         ri.globals = globals
         try:
-            # The newline character is for Python 2.2 :(
-            ri.ri_exec(code+'\n')
+            # This used to add a newline for Python 2.2. As far as 
+            # I know, we only care about 2.3 and later.
+            ri.ri_exec(code)
         finally:
             result = sys.stdout
             sys.stdout = tmp

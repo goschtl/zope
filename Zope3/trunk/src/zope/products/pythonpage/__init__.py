@@ -13,7 +13,7 @@
 ##############################################################################
 """Python Page
 
-$Id: __init__.py,v 1.2 2004/01/30 23:28:40 srichter Exp $
+$Id: __init__.py,v 1.3 2004/02/02 15:03:41 anthony Exp $
 """
 import re
 from persistence import Persistent
@@ -110,7 +110,7 @@ class PythonPage(Contained, Persistent):
         """Initialize the object."""
         super(PythonPage, self).__init__()
         self.source = source
-        self.contentType = content_type
+        self.contentType = contentType
 
     def __filename(self):
         if self.__parent__ is None:
