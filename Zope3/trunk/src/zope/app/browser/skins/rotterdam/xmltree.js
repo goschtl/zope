@@ -30,6 +30,7 @@ function navigationTreeNode (domNode) {
         this.isEmpty = 1;
         this.isCollapsed = 1;
         this.domNode = domNode;
+        this.loadingNode = null;
         this.path = '';
         this.parentNode = null;
 }
@@ -81,13 +82,22 @@ with (this) {
         prettydump('toggleExpansion', LG_TRACE);
         // If this collection is empty, load it from server
         // todo xxx optimize for the case where collection has null length
-        var elem = domNode;
         if (isEmpty) {
+                loadingNode = createLoadingNode();
+                domNode.appendChild(loadingNode);
                 var url = baseurl + path + XML_CHILDREN_VIEW;
-                var data = loadtreexml(url);
-                addNavigationTreeNodes(data, this, 0);
-                isEmpty = 0;
+                loadtreexml(url, this);
                 }
+        else
+                {
+                refreshExpansion();
+                }
+
+        }
+} 
+
+navigationTreeNode.prototype.refreshExpansion = function() {
+with (this) {
         if (isCollapsed) {
 	 	expand();
                 showChildren();
@@ -97,7 +107,8 @@ with (this) {
                 hideChildren();
    		}
         }
-} 
+}
+
 
 navigationTreeNode.prototype.hideChildren = function() {
 with (this) {
@@ -264,20 +275,24 @@ if (window.ActiveXObject) {
 return;
 };
 
-
-function loadHandler () {
-        // process document with dom methods
-        alert(this.documentElement.nodeName);
-        }
-
-function loadtreexml (url) {
+function loadtreexml (url, node) {
         var xmlHttp = XmlHttp.create(); 
         if (xmlHttp) {
-                xmlHttp.open('GET', url, false); 
-                xmlHttp.send(null);
-                prettydump('Response XML ' + xmlHttp.responseText, LG_INFO);
-                var data = xmlHttp.responseXML.documentElement;
-                return data;
+                prettydump('URL ' + url, LG_INFO);
+                xmlHttp.open('GET', url, true); 
+
+
+                xmlHttp.onreadystatechange = function () {
+        		if (xmlHttp.readyState == 4) {
+                                prettydump('Response XML ' + xmlHttp.responseText, LG_INFO);
+			        parseXML(xmlHttp.responseXML, node);
+		                }
+	                };
+
+                // call in new thread to allow ui to update
+	        window.setTimeout(function () {
+		        xmlHttp.send(null);
+	                }, 10);
                 }
         else {
                 }
@@ -287,14 +302,38 @@ function loadtree (rooturl, thisbaseurl) {
         baseurl = rooturl;  // Global baseurl
   
 	var url = thisbaseurl + SINGLE_BRANCH_TREE_VIEW;
-        var data = loadtreexml(url);
-        if (data) {
-                var docNavTree = document.getElementById('navtreecontents');
-                addNavigationTreeNodes(data, null, 1);
-                docNavTree.appendChild(navigationTree.domNode);
+        loadtreexml(url, null);
+        }
+
+
+function removeChildren(node) {
+        var items = node.childNodes;
+        var numitems = items.length;
+        for (var i = 0; i < numitems; i++) {
+                node.removeChild(items[i]);
                 }
         }
 
+
+function parseXML(responseXML, node) {
+        if (responseXML) {
+                var data = responseXML.documentElement;
+                if (node == null) {
+                        //[top] node
+                        var docNavTree = document.getElementById('navtreecontents');
+                        removeChildren(docNavTree);
+                        addNavigationTreeNodes(data, null, 1);
+                        docNavTree.appendChild(navigationTree.domNode);
+                        }
+                else {
+                        //expanding nodes
+                        addNavigationTreeNodes(data, node, 0);
+                        node.isEmpty = 0;
+                        node.refreshExpansion();
+                        node.domNode.removeChild(node.loadingNode);
+                        }
+                }             
+        }
 
 function addNavigationTreeNodes(sourceNode, targetNavTreeNode, deep) {
         // create tree nodes from XML children nodes of sourceNode         
@@ -323,7 +362,7 @@ function createPresentationNodes(title, targetUrl, icon_url, length) {
         var iconElem = document.createElement('icon');
         expandElem.appendChild(iconElem);
         iconElem.style.backgroundImage = 'url("' + icon_url + '")';
-        // create title
+        // create link
         var linkElem = document.createElement('a');
         var titleTextNode = document.createTextNode(title);
         
@@ -334,6 +373,16 @@ function createPresentationNodes(title, targetUrl, icon_url, length) {
         iconElem.appendChild(linkElem);
 
         return expandElem;
+        }
+
+function createLoadingNode() {
+        var loadingElem = document.createElement('loading');
+        //XXX should not hardcode loading string
+        var titleTextNode = document.createTextNode('Loading...');
+        
+        loadingElem.appendChild(titleTextNode);
+
+        return loadingElem;
         }
 
 function createNavigationTreeNode(source, basePath, deep) {

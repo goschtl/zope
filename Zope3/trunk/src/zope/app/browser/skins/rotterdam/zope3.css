@@ -234,6 +234,12 @@ pre {
 	   height: 18px;
 }
 
+#navtreecontents loading {
+           display: block;
+  	   padding-left: 31px;
+	   height: 18px;
+}
+
 #navtreecontents expand {
   	   background-repeat: no-repeat;
   	   padding-left: 14px;

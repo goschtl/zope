@@ -68,7 +68,7 @@
           id="navtreecontents" 
           class="body" 
           onclick="treeclicked(event);" 
-          >
+          >Loading...
         </div>
 
       </div>
