@@ -243,6 +243,11 @@ class InclusionProcessor:
                 self.includeFromLocalTree(os.path.join(self.source, source),
                                           destination)
         else:
+            if isinstance(cvsurl, cvsloader.RepositoryUrl):
+                if self.cvsurl is None:
+                    raise InclusionError(
+                        "can't load repository: URL without base cvs: URL")
+                cvsurl = self.cvsurl.join(cvsurl)
             self.includeFromCvs(cvsurl, destination)
 
     def includeFromLocalTree(self, source, destination):
@@ -266,23 +271,7 @@ class InclusionProcessor:
             inf.close()
 
     def includeFromCvs(self, cvsurl, destination):
-        loader = self.getLoader(cvsurl)
-        source = loader.load(cvsurl)
-        self.includeFromLocalTree(source, destination)
-
-    def getLoader(self, cvsurl):
-        if self.cvs_loader is None and self.cvsurl is not None:
-            self.cvs_loader = cvsloader.CvsLoader(self.cvsurl)
         if self.cvs_loader is None:
-            # We can create a temporary loader from a cvs: URL if we need to:
-            if isinstance(cvsurl, cvsloader.CvsUrl):
-                loader = cvsloader.CvsLoader(cvsurl)
-            else:
-                # We don't have a cvs: URL, and repository: URLs are
-                # always relative to a cvs: URL, so we can't proceed:
-                raise InclusionError(
-                    "cannot load URL %s without base repository information"
-                    % cvsurl.getUrl())
-        else:
-            loader = self.cvs_loader
-        return loader
+            self.cvs_loader = cvsloader.CvsLoader()
+        source = self.cvs_loader.load(cvsurl.getUrl())
+        self.includeFromLocalTree(source, destination)

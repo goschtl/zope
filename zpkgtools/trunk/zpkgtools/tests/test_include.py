@@ -175,7 +175,9 @@ class InclusionProcessorTestCase(unittest.TestCase):
         self.start_including_from_cvs_url()
         self.processor.addSingleInclude("somedir", "repository:somedir:TAG")
         cvsurl, destination = self.args
-        self.assertEqual(cvsurl.getUrl(), "repository:somedir:TAG")
+        self.assertEqual(
+            cvsurl.getUrl(),
+            "cvs://cvs.example.org:ext/foo:module/dir/somedir:TAG")
         self.assertEqual(destination,
                          os.path.join(self.destination, "somedir"))
 
