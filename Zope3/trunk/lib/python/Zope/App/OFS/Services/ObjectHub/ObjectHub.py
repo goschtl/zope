@@ -2,19 +2,19 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.5 2002/12/05 13:54:52 stevea Exp $
+$Id: ObjectHub.py,v 1.6 2002/12/06 13:23:45 gvanrossum Exp $
 """
 
 from __future__ import generators
@@ -56,12 +56,12 @@ def randid():
         return abs
 
 class ObjectHub(ProtoServiceEventChannel):
-    
+
     # this implementation makes the decision to not interact with any
-    # object hubs above it: it is a world unto itself, as far as it is 
+    # object hubs above it: it is a world unto itself, as far as it is
     # concerned, and if it doesn't know how to do something, it won't
     # ask anything else to try.  Everything else is YAGNI for now.
-    
+
     __implements__ = (
         IObjectHub,
         ProtoServiceEventChannel.__implements__)
@@ -72,7 +72,7 @@ class ObjectHub(ProtoServiceEventChannel):
         self.__hubid_to_location = IOBTree()
         # tuple of unicodes --> int
         self.__location_to_hubid = OIBTree()
-    
+
     # XXX this is copied because of some context method problems
     # with moving LocalEventChannel.notify to this _notify via a simple
     # assignment, i.e. _notify = LocalEventChannel.notify
@@ -113,7 +113,7 @@ class ObjectHub(ProtoServiceEventChannel):
                         canonical_new_location)
                     # send out IObjectMovedHubEvent to plugins
                     event = ObjectMovedHubEvent(
-                        wrapped_self, 
+                        wrapped_self,
                         hubid,
                         canonical_location,
                         canonical_new_location,
@@ -124,14 +124,14 @@ class ObjectHub(ProtoServiceEventChannel):
                 # container yet has no location. So, we're not interested in
                 # it.
                 pass
-            else: 
+            else:
                 canonical_location = locationAsTuple(event.location)
                 hubid = clean_self.__location_to_hubid.get(canonical_location)
                 if hubid is not None:
                     if IObjectModifiedEvent.isImplementedBy(event):
                         # send out IObjectModifiedHubEvent to plugins
                         event = ObjectModifiedHubEvent(
-                            wrapped_self, 
+                            wrapped_self,
                             hubid,
                             canonical_location,
                             event.object)
@@ -159,29 +159,34 @@ class ObjectHub(ProtoServiceEventChannel):
             raise NotFoundError(locationAsUnicode(location))
         else:
             return hubid
-    
+
     def getLocation(self, hubid):
         '''See interface IObjectHub'''
         try:
             return self.__hubid_to_location[hubid]
         except KeyError:
             raise NotFoundError(hubid)
-    
+
     def getObject(wrapped_self, hubid):
         '''See interface IObjectHub'''
         location = wrapped_self.getLocation(hubid)
         adapter = getAdapter(wrapped_self, ITraverser)
         return adapter.traverse(location)
     getObject = ContextMethod(getObject)
-    
-    def register(wrapped_self, location):
+
+    def register(wrapped_self, obj_or_loc):
         '''See interface ILocalObjectHub'''
         clean_self = removeAllProxies(wrapped_self)
-        if isWrapper(location):
-            obj = location
-            location = getPhysicalPath(location)
-        else:
+        # XXX Need a new unit test for this; previously we tested
+        #     whether it's wrapped, which is wrong because the root
+        #     isn't wrapped (and it certainly makes sense to want to
+        #     register the root).
+        if isinstance(obj_or_loc, (str, unicode, tuple)):
             obj = None
+            location = obj_or_loc
+        else:
+            obj = obj_or_loc
+            location = getPhysicalPath(obj_or_loc)
         canonical_location = locationAsTuple(location)
         if not canonical_location[0] == u'':
             raise ValueError("Location must be absolute")
@@ -195,22 +200,27 @@ class ObjectHub(ProtoServiceEventChannel):
 
         location_to_hubid = clean_self.__location_to_hubid
         if location_to_hubid.has_key(canonical_location):
+            # XXX It would be more convenient if register() returned
+            #     a bool indicating whether the object is already
+            #     registered, rather than raising an exception.
+            #     Then a more useful distinction between real errors
+            #     and this (common) condition could be made.
             raise ObjectHubError(
-                'location %s already in object hub' % 
+                'location %s already in object hub' %
                 locationAsUnicode(canonical_location))
         hubid = clean_self._generateHubId(canonical_location)
         location_to_hubid[canonical_location] = hubid
 
         # send out IObjectRegisteredHubEvent to plugins
         event = ObjectRegisteredHubEvent(
-            wrapped_self, 
+            wrapped_self,
             hubid,
             canonical_location,
             obj)
         clean_self._notify(wrapped_self, event)
         return hubid
     register = ContextMethod(register)
-    
+
     def unregister(wrapped_self, location):
         '''See interface ILocalObjectHub'''
         clean_self = removeAllProxies(wrapped_self)
@@ -225,20 +235,20 @@ class ObjectHub(ProtoServiceEventChannel):
         try:
             hubid = location_to_hubid[canonical_location]
         except KeyError:
-            raise NotFoundError('location %s is not in object hub' % 
+            raise NotFoundError('location %s is not in object hub' %
                 locationAsUnicode(canonical_location))
         else:
             del hubid_to_location[hubid]
             del location_to_hubid[canonical_location]
-            
+
             # send out IObjectUnregisteredHubEvent to plugins
             event = ObjectUnregisteredHubEvent(
-                wrapped_self, 
+                wrapped_self,
                 hubid,
                 canonical_location)
             clean_self._notify(wrapped_self, event)
     unregister = ContextMethod(unregister)
-   
+
     def numRegistrations(self):
         """See interface IObjectHub"""
         # The hubid<-->location mappings should be the same size.
@@ -256,7 +266,7 @@ class ObjectHub(ProtoServiceEventChannel):
             # Optimisation when we're asked for all the registered objects.
             # Returns an IOBTreeItems object.
             return self.__location_to_hubid.items()
-        
+
         # BTrees only support searches including the min and max.
         # So, I need to add to the end of the location a string that will
         # be larger than any other. I could also use a type that
@@ -281,4 +291,3 @@ class ObjectHub(ProtoServiceEventChannel):
             index = randid()
         self._v_nextid = index + 1
         return index
-
