@@ -585,7 +585,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
                 # see if there's anything else:
                 it.next()
         except StopIteration:
-            if len(QS) == 0:
+            if not items:
                 return "<div class='results'>%s</div>" % (
                     self.translate(self._msg_no_results))
             have_more = False
