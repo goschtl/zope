@@ -13,7 +13,7 @@
 ##############################################################################
 """SQL Script Views
 
-$Id: sql.py,v 1.12 2003/12/16 15:41:59 mchandra Exp $
+$Id: sql.py,v 1.13 2003/12/18 15:25:23 mchaganti Exp $
 """
 
 from zope.app.browser.form.add import AddView
@@ -140,6 +140,86 @@ class SQLScriptAdd(object):
             return super(SQLScriptAdd, self).nextURL()
        
         
+        
+
+# *********** Edit ************
+
+class SQLScriptEdit(object):
+    """Provide interface to Edit and Test  SQL Script """
+     
+
+        
+    def update(self):
+
+        """ Set the Update variable for Change and Test
+        >>> from zope.publisher.browser import TestRequest
+        
+        >>> rqst = TestRequest()
+        >>> class Base(object):
+        ...     def __init__(self, request):
+        ...         self.request = request
+        ...         self.errors  = ('no errors')
+        ...     def update(self):
+        ...         self.updated = 1
+        ...         return "update returned"
+        
+         
+        >>> class V(SQLScriptEdit, Base):
+        ...     pass
+        
+        >>> dc = V(rqst)
+        >>> res = 0
+        >>> dc.update()
+        'update returned'
+        >>> dc.updated
+        1
+        >>> 'UPDATE_SUBMIT' in rqst
+        False
+        >>>
+        
+
+        >>> d = {'change_test':1}
+        >>> rqst1 = TestRequest(form = d)
+        >>> dc1 = V(rqst1)
+        >>> dc1.errors = ()
+        >>> dc1.update()
+        'update returned'
+        >>> 'UPDATE_SUBMIT' in rqst1
+        True
+        >>> dc1.updated
+        1
+        >>> rqst1.response.getHeader('location')
+        'test.html'
+        >>> rqst1.response.getStatus()
+        302
+           
+        >>> d = {'change_test':1}
+        >>> rqst2 = TestRequest(form = d)
+        >>> dc2 = V(rqst2)
+        >>> dc2.errors = ('errorname',1234)
+        >>> dc2.update()
+        'update returned'
+        >>> 'UPDATE_SUBMIT' in rqst2
+        True
+        >>> rqst2.response.getHeader('location')
+        
+        >>> rqst2.response.getStatus()
+        599
+
+        """
+        
+       
+        if 'change_test' in self.request:
+            self.request.form[Update] = ''
+            super(SQLScriptEdit, self).update()
+            if not self.errors:
+                url = 'test.html'
+                self.request.response.redirect(url)
+        return super(SQLScriptEdit, self).update()
+        
+              
+
+       
         
 
     

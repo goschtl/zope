@@ -322,22 +322,15 @@
       class=".sql.SQLScriptAdd"
       /> 
       
-   
-  <!-- <view name="zope.app.content.sql"
-	      for="zope.app.interfaces.container.IAdding"
-              class="zope.app.browser.content.sql.SQLScriptAdd"
-              permission="zope.ManageContent">
-
-    <page name="add.html" template="sqladd.pt" />
-    <page name="action.html" attribute="action" />
-  </view> -->
-
   <editform
       schema="zope.app.interfaces.content.sql.ISQLScript"
       name="edit.html"
       menu="zmi_views"
       label="Edit an SQL script"
-      permission="zope.ManageContent" />
+      permission="zope.ManageContent"
+      template="sqledit.pt"
+      class=".sql.SQLScriptEdit" 
+      />
 
   <pages
       for="zope.app.interfaces.content.sql.ISQLScript"
