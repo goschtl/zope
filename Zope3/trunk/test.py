@@ -143,9 +143,9 @@ class ImmediateTestResult(unittest._TextTestResult):
 
     def startTest(self, test):
         if self._progress:
-            self.stream.write('\r%d' % (self.testsRun + 1))
+            self.stream.write('\r%4d' % (self.testsRun + 1))
             if self._count:
-                self.stream.write('/%d (%.1f%%)' % (self._count,
+                self.stream.write('/%d (%5.1f%%)' % (self._count,
                                   (self.testsRun + 1) * 100.0 / self._count))
             if self.showAll:
                 self.stream.write(": ")
