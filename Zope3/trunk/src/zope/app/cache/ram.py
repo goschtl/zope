@@ -24,7 +24,6 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.cache.interfaces.ram import IRAMCache
-from zope.app.event.interfaces import IObjectModifiedEvent
 
 # A global caches dictionary shared between threads
 caches = {}
@@ -144,16 +143,6 @@ class RAMCache(Persistent, Contained):
 
         return ()
     _buildKey = staticmethod(_buildKey)
-
-    def notify(self, event):
-        """See ISubscriber
-
-        This method receives ObjectModified events and invalidates
-        cached entries for the objects that raise them.
-        """
-
-        if IObjectModifiedEvent.providedBy(event):
-            self._getStorage().invalidate(zapi.getPath(event.object))
 
 
 class Storage:

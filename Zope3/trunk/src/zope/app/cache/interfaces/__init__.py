@@ -20,7 +20,6 @@ from zope.interface import Interface
 from zope.schema import TextLine
 
 from zope.app import zapi
-from zope.app.event.interfaces import ISubscriber
 
 # XXX: EEEEEEEEK, should be done using a vocabulary and the vocabulary field. :(
 class CacheName(TextLine):
@@ -51,7 +50,7 @@ class ICacheable(Interface):
         """Sets the associated cache manager ID."""
 
 
-class ICache(ISubscriber):
+class ICache(Interface):
     """Interface for caches."""
 
     def invalidate(ob, key=None):

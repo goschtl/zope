@@ -25,7 +25,6 @@ from zope.app.cache.ram import RAMCache
 from zope.app.cache.tests.test_icache import BaseICacheTest
 from zope.app.cache.interfaces import ICache
 from zope.app.cache.interfaces.ram import IRAMCache
-from zope.app.event.interfaces import ISubscriber
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.tests.placelesssetup import PlacelessSetup
 
@@ -58,7 +57,6 @@ class TestRAMCache(PlacelessSetup,
     def test_interface(self):
         verifyObject(IRAMCache, RAMCache())
         verifyClass(ICache, RAMCache)
-        verifyClass(ISubscriber, RAMCache)
 
     def test_init(self):
         from zope.app.cache.ram import RAMCache
@@ -203,33 +201,6 @@ class TestRAMCache(PlacelessSetup,
 
         # Try something that's not there
         c.invalidate(('yadda',))
-
-    def test_notify(self):
-        from zope.app.cache.ram import RAMCache
-        from zope.app.event.objectevent import ObjectModifiedEvent, ObjectEvent
-        from zope.app.event.interfaces import IEvent
-
-        class DummyEvent:
-            implements(IEvent)
-
-        location = ('aaa',)
-        ob = Locatable(path=location)
-        keywords = {"answer": 42}
-        value = "true"
-        c = RAMCache()
-        key = RAMCache._buildKey(keywords)
-        c._getStorage().setEntry(location, key, value)
-
-        c.notify(DummyEvent())
-        self.assertEquals(c._getStorage().getEntry(location, key),
-                          value, "doesn't ignore uninteresting events")
-
-        c.notify(ObjectEvent(ob))
-        self.assertEquals(c._getStorage().getEntry(location, key),
-                          value, "doesn't ignore uninteresting events")
-
-        c.notify(ObjectModifiedEvent(ob))
-        self.assertRaises(KeyError, c._getStorage().getEntry, location, key)
 
 
 class TestStorage(TestCase):

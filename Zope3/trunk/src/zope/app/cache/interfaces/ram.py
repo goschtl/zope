@@ -18,10 +18,9 @@ $Id$
 from zope.interface import Attribute
 
 from zope.app.cache.interfaces import ICache
-from zope.app.event.interfaces import ISubscriber
 from zope.app.registration.interfaces import IRegisterable
 
-class IRAMCache(ICache, ISubscriber, IRegisterable):
+class IRAMCache(ICache, IRegisterable):
     """Interface for the RAM Cache."""
 
     maxEntries = Attribute("""A maximum number of cached values.""")
