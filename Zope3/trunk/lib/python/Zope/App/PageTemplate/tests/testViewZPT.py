@@ -58,7 +58,7 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
     def checkViewMapper(self):
           
         the_view = "This is the view"
-        the_view_type = "some view type"
+        class the_view_type(Interface): pass
         the_view_name = "some view name"
         def ViewMaker(*args, **kw):
             return the_view

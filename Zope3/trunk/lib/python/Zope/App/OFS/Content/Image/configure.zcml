@@ -24,7 +24,7 @@
   <adapter
       factory="Zope.App.OFS.Annotation.AttributeAnnotations."
       provides="Zope.App.OFS.Annotation.IAnnotations."
-      for=".Image." />
+      for=".Image.IImage" />
 
   <content class=".I18nImage.">
     <factory
@@ -52,7 +52,7 @@
   <adapter
       factory="Zope.App.OFS.Annotation.AttributeAnnotations."
       provides="Zope.App.OFS.Annotation.IAnnotations."
-      for=".I18nImage." />
+      for=".I18nImage.II18nImage" />
 
   <!-- Further Directives -->
 

@@ -21,7 +21,7 @@
   <adapter
       factory="Zope.App.OFS.Annotation.AttributeAnnotations."
       provides="Zope.App.OFS.Annotation.IAnnotations."
-      for=".ZPTPage." />
+      for=".ZPTPage.IZPTPage" />
 
 
   <include package=".Views" />

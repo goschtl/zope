@@ -22,7 +22,7 @@
   <adapter
       factory="Zope.App.OFS.Annotation.AttributeAnnotations."
       provides="Zope.App.OFS.Annotation.IAnnotations."
-      for=".DTMLPage." />
+      for=".DTMLPage.IDTMLPage" />
 
 
   <include package=".Views" />
