@@ -312,17 +312,17 @@
 
 <fssync:adapter
     class=".registration.RegistrationManager"
-    factory="zope.app.content.fssync.DirectoryAdapter"
+    factory="zope.fssync.server.entryadapter.DirectoryAdapter"
     />
 
 <fssync:adapter
     class=".bundle.Bundle"
-    factory="zope.app.content.fssync.DirectoryAdapter"
+    factory="zope.fssync.server.entryadapter.DirectoryAdapter"
     />
 
 <fssync:adapter
     class=".folder.SiteManagementFolder"
-    factory="zope.app.content.fssync.DirectoryAdapter"
+    factory="zope.fssync.server.entryadapter.DirectoryAdapter"
     />
 
 <fssync:adapter

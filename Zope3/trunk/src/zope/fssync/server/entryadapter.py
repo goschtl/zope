@@ -13,11 +13,11 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: entryadapter.py,v 1.2 2004/01/13 22:28:47 fdrake Exp $
+$Id: entryadapter.py,v 1.3 2004/02/24 16:50:57 philikon Exp $
 """
 
 from zope.component import queryAdapter
-from zope.fssync.server.interfaces import IObjectFile
+from zope.fssync.server.interfaces import IObjectFile, IContentDirectory
 from zope.interface import implements
 from zope.proxy import removeAllProxies
 from zope.xmlpickle import toxml
@@ -111,3 +111,14 @@ class DefaultFileAdpater(ObjectEntryAdapter):
         # if that's not the case, then either this method needs to be
         # overridden or this class shouldn't be used.
         return None
+
+class DirectoryAdapter(ObjectEntryAdapter):
+    """Folder adapter to provide a file-system representation.
+    """
+    implements(IContentDirectory)
+
+    def contents(self):
+        result = []
+        for name, object in self.context.items():
+            result.append((name, object))
+        return result

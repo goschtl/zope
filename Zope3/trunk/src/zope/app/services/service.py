@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.37 2004/02/20 22:02:24 fdrake Exp $
+$Id: service.py,v 1.38 2004/02/24 16:50:57 philikon Exp $
 """
 
 import sys
@@ -35,12 +35,10 @@ import zope.interface
 
 from zope.component import getServiceManager
 from zope.component.exceptions import ComponentLookupError
-from zope.fssync.server.entryadapter import AttrMapping
+from zope.fssync.server.entryadapter import AttrMapping, DirectoryAdapter
 from zope.proxy import removeAllProxies
 
-
 import zope.app.interfaces.services.registration
-
 from zope.app import zapi
 
 from zope.app.event.function import Subscriber
@@ -50,8 +48,6 @@ from zope.app.component.nextservice import getNextService
 from zope.app.component.nextservice import getNextServiceManager
 
 from zope.app.container.constraints import ItemTypePrecondition
-
-from zope.app.content.fssync import DirectoryAdapter
 
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.service import IBindingAware
