@@ -61,6 +61,12 @@ class PackageData(dependencies.DependencyInfo, DistributionMetadata):
                 pass
             if perms == "unknown":
                 perms = None
+            if owner == "unknown":
+                owner = None
+            if group == "unknown":
+                group = None
+            if digest == "-":
+                digest = None
             self.files[path] = FileEntry(path, size, perms,
                                          owner, group, digest)
 
