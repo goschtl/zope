@@ -85,6 +85,9 @@
 /Zope/lib/python/Products/ZSQLMethods           /Products/ZSQLMethods
 /Zope/lib/python/Products/ZopeTutorial          /Products/ZopeTutorial
 /Zope/lib/python/Products/ZCTextIndex           /Products/ZCTextIndex
+/Zope/lib/python/Products/CallProfiler          /Products/CallProfiler
+/Zope/lib/python/Products/DateIndexes           /Products/DateIndexes
+/Zope/lib/python/Products/SiteErrorLog          /Products/SiteErrorLog
 /Zope/utilities/ZODBTools                       /StandaloneZODB/Tools
 
 
