@@ -11,18 +11,16 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Annotations store arbitrary application data under package-unique keys.
 
-$Id: annotation.py,v 1.2 2002/12/25 14:12:56 jim Exp $
+$Id: annotation.py,v 1.3 2002/12/30 21:14:25 jeremy Exp $
 """
 
 from zope.interface import Interface
 from zope.interface import Attribute
 
-
 class IAnnotatable(Interface):
-    """
-    Marker interface for objects that support storing annotations.
+    """Marker interface for objects that support storing annotations.
 
     This interface says "There exists an adapter to an IAnnotations
     for an object that implements IAnnotatable".
@@ -33,39 +31,30 @@ class IAnnotatable(Interface):
     IAttributeAnnotatable.
     """
 
-
 class IAnnotations(IAnnotatable):
-    """
-    Annotations store arbitrary application data under package unique keys
-    """
+    """Stores arbitrary application data under package-unique keys."""
 
     def __getitem__(key):
-        """
-        Return the annotation stored under key.
+        """Return the annotation stored under key.
 
         Raises KeyError if key not found.
         """
 
     def get(key, default=None):
-        """
-        Return the annotation stored under key, returning default if not found.
-        """
+        """Return the annotation stored under key, or default if not found."""
 
     def __setitem__(key, memento):
-        """
-        Store annotation under key.
+        """Store annotation under key.
 
         In order to avoid key collisions, users of this interface must
         use their dotted package name as part of the key name.
         """
 
     def __delitem__(key):
-        """
-        Removes the annotation stored under key.
+        """Removes the annotation stored under key.
 
         Raises a KeyError if the key is not found.
         """
-
 
 class IAttributeAnnotatable(IAnnotatable):
     """
