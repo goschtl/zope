@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+  xmlns:zope="http://namespaces.zope.org/zope"
+  xmlns="http://namespaces.zope.org/browser">
 
   <menu
       id="zmi_views"
@@ -76,4 +78,4 @@
       class=".menu.MenuAccessView"
       allowed_interface="zope.app.interfaces.browser.menu.IMenuAccessView" />
 
-</configure>
+</zope:configure>

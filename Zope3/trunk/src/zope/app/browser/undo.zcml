@@ -1,4 +1,5 @@
-<configure
+<zope:configure
+    xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser"
     xmlns:event="http://namespaces.zope.org/event">
 
@@ -21,4 +22,4 @@
       subscriber=".undo.undoSetup"
       event_types="zope.app.interfaces.event.IDatabaseOpenedEvent" />
 
-</configure>
+</zope:configure>

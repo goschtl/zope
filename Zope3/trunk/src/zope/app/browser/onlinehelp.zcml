@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+  xmlns:zope="http://namespaces.zope.org/zope"
+  xmlns="http://namespaces.zope.org/browser">
 
   <page
       name="find_help_topics"
@@ -24,4 +26,4 @@
       title="Help"
       action="++help++/@@index.html" /> 
  
-</configure>
+</zope:configure>

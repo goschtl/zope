@@ -1,4 +1,6 @@
-<configure xmlns="http://namespaces.zope.org/browser">
+<zope:configure 
+   xmlns:zope="http://namespaces.zope.org/zope"
+   xmlns="http://namespaces.zope.org/browser">
 
   <pages
       for="zope.app.interfaces.applicationcontrol.IApplicationControl"
@@ -36,4 +38,4 @@
       permission="zope.ManageApplication"
       menu="zmi_views" title="Global Translation Service Control"/>
 
-</configure>
+</zope:configure>
