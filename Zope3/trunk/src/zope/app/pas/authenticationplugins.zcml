@@ -14,9 +14,6 @@
 
   <localUtility class=".principalfolder.PrincipalFolder">
 
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
     <require
         permission="zope.ManageServices"
         interface="zope.app.container.interfaces.IContainer" />
@@ -30,9 +27,6 @@
       />
       
   <localUtility class=".sql.SQLAuthenticationPlugin">
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <require
         permission="zope.ManageContent"

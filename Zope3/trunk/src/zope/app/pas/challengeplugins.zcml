@@ -14,9 +14,6 @@
   <!-- Locally custom-configured basic auth -->
   <localUtility class=".httpplugins.HTTPBasicAuthChallenger">
 
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-        
     <require
         permission="zope.ManageServices"
         interface=".httpplugins.IHTTPBasicAuthRealm"
@@ -39,9 +36,6 @@
 
   <!-- Configure where to redirect to -->
   <localUtility class=".browserplugins.FormChallenger">
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
 
     <require
         permission="zope.ManageServices"
