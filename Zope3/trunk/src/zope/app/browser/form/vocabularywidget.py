@@ -571,7 +571,7 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
     def performQueryAction(self, value):
         if self.action == ADD_DONE:
             value = self.addSelections(value)
-            self.query_index = 0
+            self.query_index = None
             self.query_selections = []
         elif self.action == ADD_MORE:
             value = self.addSelections(value)
