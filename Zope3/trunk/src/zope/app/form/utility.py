@@ -117,25 +117,25 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
 def setUpWidgets(view, schema, viewType, prefix=None, ignoreStickyValues=False,
                  initial={}, names=None, context=None):
     """Sets up widgets for the fields defined by a schema.
-    
+
     view is the view that will be configured with widgets. 
-        
+
     schema is an interface containing the fields that widgets will be
     created for.
-    
-    prefix is a string that is appended to the widget names in the generated
+
+    prefix is a string that is prepended to the widget names in the generated
     HTML. This can be used to differentiate widgets for different schemas.
-    
+
     ignoreStickyValues is a flag that, when True, will cause widget sticky
     values to be replaced with the context field value or a value specified
     in initial.
-    
+
     initial is a mapping of field names to initial values.
-    
+
     names is an optional iterable that provides an ordered list of field
     names to use. If names is None, the list of fields will be defined by
     the schema.
-    
+
     context provides an alternative context for acquisition.
     """
     for (name, field) in _fieldlist(names, schema):
