@@ -85,14 +85,14 @@ interface (i.e. its instance will provide the interface)::
 
 Interfaces themselves are good for a number of reasons:
 
-  * They provide API documentation.
+* They provide API documentation.
 
-  * They help you make explicit the design of your application,
-    hopefully improving it.
+* They help you make explicit the design of your application,
+  hopefully improving it.
 
-  * If an object provides an interface, that object is considered to
-    be a *component*. This means you can use Zope 3's component
-    architecture with these objects.
+* If an object provides an interface, that object is considered to be
+  a *component*. This means you can use Zope 3's component
+  architecture with these objects.
 
 In order to use Five, you'll have to make your objects provide
 interfaces. Sometimes, you cannot change the code of class (as you are
@@ -287,19 +287,19 @@ viewable through ZCML if this object does not already provide its own
 Views in Five are simple classes. The only requirements for a Five
 view class are:
 
-  * They need an ``__init__()`` that take a context and a request
-    attribute. Typically this comes from a base class, such as
-    ``FiveView``.
+* They need an ``__init__()`` that take a context and a request
+  attribute. Typically this comes from a base class, such as
+  ``FiveView``.
 
-  * They need to be initialized with the Zope 2 security system, as
-    otherwise you cannot use the view. 
+* They need to be initialized with the Zope 2 security system, as
+  otherwise you cannot use the view.
 
-  * This also means they need to be part of the Zope 2 acquisition
-    system, as this is a requirement for Zope 2 security to
-    function. The ``BrowserView`` base class, available from
-    ``Products.Five.api``, already inherits from
-    ``Acquisition.Explicit`` to make this be the case. Acquisition is
-    explicit so no attributes can be acquired by accident.
+* This also means they need to be part of the Zope 2 acquisition
+  system, as this is a requirement for Zope 2 security to
+  function. The ``BrowserView`` base class, available from
+  ``Products.Five.api``, already inherits from
+  ``Acquisition.Explicit`` to make this be the case. Acquisition is
+  explicit so no attributes can be acquired by accident.
 
 An example of a simple view::
  
