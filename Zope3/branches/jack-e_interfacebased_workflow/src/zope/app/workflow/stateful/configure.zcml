@@ -91,8 +91,9 @@
       />
 </content>
 
-<!-- ContentWorkflowsManager -->
 
+
+<!-- ContentWorkflowsManager -->
 <content 
     class=".contentworkflow.ContentWorkflowsManager">
   <factory
@@ -113,14 +114,14 @@
     />
 </content>
 
-<class class=".instance.StatefulProcessInstance">
-  <require
-    permission="zope.workflow.UseProcessInstances"
-    interface=".interfaces.IStatefulProcessInstance"
-    />  
-</class>
+<subscriber
+  factory=".contentworkflow.NewObjectStatefulProcessInitializer"
+  for="zope.app.event.interfaces.IObjectCreatedEvent"/>
+
+
 
 <!-- Stateful workflow import/Export -->
+<!--
 <adapter
    for=".interfaces.IStatefulProcessDefinition"
    provides="zope.app.workflow.interfaces.IProcessDefinitionExportHandler"
@@ -132,17 +133,8 @@
    provides="zope.app.workflow.interfaces.IProcessDefinitionImportHandler"
    factory=".xmlimportexport.XMLImportHandler"
    />
+ -->
 
-
-<subscriber
-   for="..interfaces.IProcessInstanceContainerAdaptable
-        zope.app.event.objectevent.IObjectCreatedEvent"
-   factory=".contentworkflow.NewObjectProcessInstanceCreator"
-   >
-
-   Cause workflow instances to be added to content objects when they
-   are created.
-</subscriber>
 
 <!-- Test Object for testing Stateful Workflows -->
 <!--include file="testobject.zcml"/-->

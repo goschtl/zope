@@ -16,14 +16,10 @@
 $Id$
 """
 from zope.interface import implements
-from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
-from zope.app.workflow.interfaces import IProcessInstanceContainer
-
 from interfaces import IContentFilterAdapter
 
 class FilterAdapter(object):
     
-    __used_for__ = IProcessInstanceContainerAdaptable
     implements(IContentFilterAdapter)
 
     def __init__(self, context):
@@ -41,6 +37,7 @@ class FilterAdapter(object):
 
     def filterObjectByState(self, object, state, workflow='default'):
         """See IContentFilterAdapter"""
+        # XXX
         adapter = IProcessInstanceContainer(object, None)
         if not adapter:
             return False

@@ -29,12 +29,9 @@ from zope.app.publisher.browser import BrowserView
 from zope.app.servicenames import Utilities
 
 from zope.app.workflow.interfaces import IProcessDefinition
-from zope.app.workflow.interfaces import IProcessInstanceContainer
-from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 
 class ManagementView(BrowserView):
 
-    __used_for__ = IProcessInstanceContainerAdaptable
 
     def __init__(self, context, request):
         super(ManagementView, self).__init__(context, request)

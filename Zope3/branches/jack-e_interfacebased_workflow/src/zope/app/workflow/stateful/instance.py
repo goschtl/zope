@@ -22,21 +22,21 @@ from zope.app import zapi
 from zope.event import notify
 from zope.app.workflow.interfaces import IProcessDefinition
 from zope.app.workflow.stateful.interfaces import AUTOMATIC
+from zope.app.workflow.stateful.interfaces import ITransitionEvent
 from zope.app.workflow.stateful.interfaces import IAfterTransitionEvent
 from zope.app.workflow.stateful.interfaces import IBeforeTransitionEvent
-from zope.app.workflow.stateful.interfaces import IRelevantDataChangeEvent
-from zope.app.workflow.stateful.interfaces import IStatefulProcessInstance
-from zope.app.workflow.stateful.interfaces import ITransitionEvent
-from zope.app.workflow.stateful.interfaces import IBeforeRelevantDataChangeEvent
-from zope.app.workflow.stateful.interfaces import IAfterRelevantDataChangeEvent
+from zope.app.workflow.stateful.interfaces import IStatefulPIAdapter
+
 from zope.app.servicenames import Utilities
 from zope.app.traversing.api import getParent
-from zope.app.workflow.instance import ProcessInstance
+from zope.app.workflow.instance import PIAdapter
 from zope.app.container.contained import Contained
 
 from zope.security.interfaces import Unauthorized
 from zope.interface import directlyProvides, implements
+from zope.interface import directlyProvidedBy
 from zope.proxy import removeAllProxies
+from zope.security.proxy import removeSecurityProxy
 from zope.schema import getFields
 from zope.security.management import queryInteraction
 from zope.security.checker import CheckerPublic, Checker
@@ -49,9 +49,8 @@ class TransitionEvent(object):
     """A simple implementation of the transition event."""
     implements(ITransitionEvent)
 
-    def __init__(self, object, process, transition):
-        self.object = object
-        self.process = process
+    def __init__(self, context, transition):
+        self.context = context
         self.transition = transition
 
 class BeforeTransitionEvent(TransitionEvent):
@@ -61,85 +60,9 @@ class AfterTransitionEvent(TransitionEvent):
     implements(IAfterTransitionEvent)
 
 
-class RelevantDataChangeEvent(object):
-    """A simple implementation of the transition event."""
-    implements(IRelevantDataChangeEvent)
-
-    def __init__(self, process, schema, attributeName, oldValue, newValue):
-        self.process = process
-        self.schema = schema
-        self.attributeName = attributeName
-        self.oldValue = oldValue
-        self.newValue = newValue
-
-class BeforeRelevantDataChangeEvent(RelevantDataChangeEvent):
-    implements(IBeforeRelevantDataChangeEvent)
-
-class AfterRelevantDataChangeEvent(RelevantDataChangeEvent):
-    implements(IAfterRelevantDataChangeEvent)
 
 
-class RelevantData(Persistent, Contained):
-    """The relevant data object can store data that is important to the
-    workflow and fires events when this data is changed.
 
-    If you don't understand this code, don't worry, it is heavy lifting.
-    """
-
-    def __init__(self, schema=None, schemaPermissions=None):
-        super(RelevantData, self).__init__()
-        self.__schema = None
-        # Add the new attributes, if there was a schema passed in
-        if schema is not None:
-            for name, field in getFields(schema).items():
-                setattr(self, name, field.default)
-            self.__schema = schema
-            directlyProvides(self, schema)
-
-            # Build up a Checker rules and store it for later
-            self.__checker_getattr = {}
-            self.__checker_setattr = {}
-            for name in getFields(schema):
-                get_perm, set_perm = schemaPermissions.get(name, (None, None))
-                self.__checker_getattr[name] = get_perm or CheckerPublic
-                self.__checker_setattr[name] = set_perm or CheckerPublic
-
-            # Always permit our class's two public methods
-            self.__checker_getattr['getChecker'] = CheckerPublic
-            self.__checker_getattr['getSchema'] = CheckerPublic
-
-
-    def __setattr__(self, key, value):
-        # The '__schema' attribute has a sepcial function
-        if key in ('_RelevantData__schema',
-                   '_RelevantData__checker_getattr',
-                   '_RelevantData__checker_setattr',
-                   'getChecker', 'getSchema') or \
-               key.startswith('_p_'):
-            return super(RelevantData, self).__setattr__(key, value)
-
-        is_schema_field = (self.__schema is not None and 
-                           key in getFields(self.__schema).keys())
-
-        if is_schema_field:
-            process = self.__parent__ 
-            # Send an Event before RelevantData changes
-            oldvalue = getattr(self, key, None)
-            notify(BeforeRelevantDataChangeEvent(
-                process, self.__schema, key, oldvalue, value))
-
-        super(RelevantData, self).__setattr__(key, value)
-
-        if is_schema_field:
-            # Send an Event after RelevantData has changed
-            notify(AfterRelevantDataChangeEvent(
-                process, self.__schema, key, oldvalue, value))
-
-    def getChecker(self):
-        return Checker(self.__checker_getattr, self.__checker_setattr)
-
-    def getSchema(self):
-        return self.__schema
 
 
 class StateChangeInfo(object):
@@ -154,111 +77,84 @@ class StateChangeInfo(object):
     new_state = property(lambda self: self.__new_state)
 
 
-class StatefulProcessInstance(ProcessInstance, Persistent):
-    """Stateful Workflow ProcessInstance."""
 
-    implements(IStatefulProcessInstance)
 
-    def getData(self):
-        if self._data is None:
-            return None
-        # Always give out the data attribute as proxied object.
-        return Proxy(self._data, self._data.getChecker())
-        
-    data = property(getData) 
+class StatefulPIAdapter(PIAdapter):
+    """Stateful Workflow ProcessInstance Adapter."""
+
+    implements(IStatefulPIAdapter)
 
     def initialize(self):
-        """See zope.app.workflow.interfaces.IStatefulProcessInstance"""
-        pd = self.getProcessDefinition()
-        clean_pd = removeAllProxies(pd)
-        self._status = clean_pd.getInitialStateName()
-
-        # resolve schema class
-        # This should really always return a schema
-        schema = clean_pd.getRelevantDataSchema()
-        if schema:
-            # create relevant-data
-            self._data = RelevantData(schema, clean_pd.schemaPermissions)
-        else:
-            self._data = None
-        # setup permission on data
+        """See zope.app.workflow.interface.IStatefulProcessInstance"""
+        clean_pd = removeAllProxies(self.processDefinition)
 
         # check for Automatic Transitions
         self._checkAndFireAuto(clean_pd)
+        
+
 
     def getOutgoingTransitions(self):
         """See zope.app.workflow.interfaces.IStatefulProcessInstance"""
-        pd = self.getProcessDefinition()
-        clean_pd = removeAllProxies(pd)
+        clean_pd = removeAllProxies(self.processDefinition)
         return self._outgoingTransitions(clean_pd)
 
-    def fireTransition(self, id):
+
+    # XXX API change here !!!
+    def fireTransition(self, trans_id, event=None):
         """See zope.app.workflow.interfaces.IStatefulProcessInstance"""
-        pd = self.getProcessDefinition()
-        clean_pd = removeAllProxies(pd)
-        if not id in self._outgoingTransitions(clean_pd):
-            raise KeyError, 'Invalid Transition Id: %s' % id
-        transition = clean_pd.transitions[id]
+        
+        clean_pd = removeAllProxies(self.processDefinition)
+        if not trans_id in self._outgoingTransitions(clean_pd, event):
+            raise KeyError, 'Invalid Transition Id: %s' % trans_id
+        transition = clean_pd.transitions[trans_id]
+        
         # Get the object whose status is being changed.
-        obj = getParent(self)
+        obj = removeSecurityProxy(self.context)
 
         # Send an event before the transition occurs.
-        notify(BeforeTransitionEvent(obj, self, transition))
+        notify(BeforeTransitionEvent(obj, transition))
 
+        # XXX Jim suggests to send out ObjectStateChanging/Changed Events instead
+        # of Before/AfterTransition. Need to check the side effects (Phase2)
+        
         # change status
-        self._status = transition.destinationState
+        # XXX change self.context to implement the new interface
+        # and remove the old state's interface
+
+        oldStateIF = clean_pd.states[transition.sourceState].targetInterface
+        newStateIF = clean_pd.states[transition.destinationState].targetInterface
+
+        directlyProvides(obj, directlyProvidedBy(obj) + newStateIF - oldStateIF)
 
         # Send an event after the transition occured.
-        notify(AfterTransitionEvent(obj, self, transition))
+        notify(AfterTransitionEvent(obj, transition))
 
         # check for automatic transitions and fire them if necessary
         self._checkAndFireAuto(clean_pd)
 
-    def getProcessDefinition(self):
-        """Get the ProcessDefinition object from WorkflowService."""
-        return zapi.getUtility(IProcessDefinition, self.processDefinitionName)
 
-    def _getContext(self):
-        ctx = {}
+
+    def _getContext(self, context={}):
         # data should be readonly for condition-evaluation
-        ctx['data'] = self.data
-        ctx['principal'] = None
+        context['principal'] = None
         interaction = queryInteraction()
         if interaction is not None:
             principals = [p.principal for p in interaction.participations]
             if principals:
                 # There can be more than one principal
                 assert len(principals) == 1
-                ctx['principal'] = principals[0]
+                context['principal'] = principals[0]
 
-        # TODO This needs to be discussed:
-        # how can we know if this ProcessInstance is annotated
-        # to a Content-Object and provide secure ***READONLY***
-        # Access to it for evaluating Transition Conditions ???
+        content = removeSecurityProxy(self.context)
+        context['content'] = content
 
-        #content = self.__parent__
-
-        # TODO: How can i make sure that nobody modifies content
-        # while the condition scripts/conditions are evaluated ????
-        # this hack only prevents from directly setting an attribute
-        # using a setter-method directly is not protected :((
-        #try:
-        #    checker = getChecker(content)
-        #    checker.set_permissions = {}
-        #except TypeError:
-        #    # got object without Security Proxy
-        #    checker = selectChecker(content)
-        #    checker.set_permissions = {}
-        #    content = Proxy(content, checker)
-
-        #ctx['content'] = content
-
-        return ctx
+        return context
 
 
     def _extendContext(self, transition, ctx={}):
         ctx['state_change'] = StateChangeInfo(transition)
         return ctx
+
 
     def _evaluateCondition(self, transition, contexts):
         """Evaluate a condition in context of relevant-data."""
@@ -266,6 +162,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             return True
         expr = Engine.compile(transition.condition)
         return expr(Engine.getContext(contexts=contexts))
+
 
     def _evaluateScript(self, transition, contexts):
         """Evaluate a script in context of relevant-data."""
@@ -277,15 +174,20 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             script = sm.resolve(script)
         return script(contexts)
 
-    def _outgoingTransitions(self, clean_pd):
+
+    def _outgoingTransitions(self, clean_pd, event=None):
         ret = []
-        contexts = self._getContext()
+        contexts = self._getContext({'event':event})
+
+        # XXX
+        context = removeSecurityProxy(self.context)
+        context_spec = directlyProvidedBy(context)
 
         for name, trans in clean_pd.transitions.items():
-            if self.status == trans.sourceState:
+            if context_spec.extends(clean_pd.states[trans.sourceState].targetInterface):
                 # check permissions
                 permission = trans.permission
-                if not checkPermission(permission, self):
+                if not checkPermission(permission, context):
                     continue
 
                 ctx = self._extendContext(trans, contexts)
@@ -317,3 +219,26 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
             if trans.triggerMode == AUTOMATIC:
                 self.fireTransition(name)
                 return
+
+
+def initializeStatefulProcessFor(obj, pd_name):
+    """provide a component and a processdefinition_name and
+       to give that component behaviour.
+    """
+    # XXX For now we just add an attribute to the component
+    # to remember which processdefinition specifies the behaviour.
+    # This solution is not final and does not support multiple
+    # processes for the same component. A smarter solution using
+    # named Adapters providing (IProcessDefinition, [name])
+    # for (ISomeStatefulProcess, ISomeContentType)
+    obj.__processdefinition_name__ = pd_name
+    
+    pd = zapi.getUtility(IProcessDefinition, pd_name)
+    clean_pd = removeAllProxies(pd)
+    
+    # XXX Jim suggests to send out ObjectStateChanging/Changed Events here (Phase2)
+    
+    # XXX Set Initial Interface to self.context here !!!
+    directlyProvides(obj, pd.states[pd.getInitialStateName()].targetInterface)
+
+    IStatefulPIAdapter(obj).initialize()

@@ -11,20 +11,20 @@
       permission="zope.ManageServices"
       />
 
+  <editform
+      schema="zope.app.workflow.stateful.interfaces.IStatefulProcessDefinition"
+      name="edit.html"
+      menu="zmi_views"
+      label="Edit a Stateful ProcessDefinition"
+      class=".definition.StatefulProcessDefinitionEdit"
+      permission="zope.workflow.ManageProcessDefinitions" />
+
   <page
       for="zope.app.workflow.stateful.interfaces.IStatefulProcessDefinition"
       name="index.html"
       class=".definition.StatefulProcessDefinitionView"
       permission="zope.ManageServices"
       template="definition_index.pt" />
-
-  <editform
-      schema="zope.app.workflow.stateful.interfaces.IStatefulProcessDefinition"
-      name="edit.html"
-      template="definition_edit.pt"
-      class=".definition.RelevantDataSchemaEdit"
-      menu="zmi_views" title="Relevant Data Schema"
-      permission="zope.workflow.ManageProcessDefinitions"/>
 
   <menuItems
       for="zope.app.workflow.stateful.interfaces.IStatefulProcessDefinition"
@@ -60,14 +60,12 @@
 
 
 <!-- State -->
-  <!-- nothing to edit yet
   <editform
       schema="zope.app.workflow.stateful.interfaces.IState"
       name="edit.html"
       menu="zmi_views"
       label="Edit a State"
       permission="zope.workflow.ManageProcessDefinitions" />
-  -->
 
   <addform
       name="AddState"
@@ -134,25 +132,6 @@
       template="contentworkflow_registry.pt"
       menu="zmi_views" title="Content/Process Registry"/>
 
-
-<!-- ProcessInstanceContainerAdaptable -->
-  <pages
-      for="zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable"
-      permission="zope.workflow.UseProcessInstances"
-      class=".instance.ManagementView">
-
-    <page name="workflows.html" template="instance_manage.pt"
-          menu="zmi_views" title="Workflows"/>
-    <page name="fireTransition.html" attribute="fireTransition" />
-  </pages>
-
-
-  <page
-      for="zope.app.container.interfaces.IContentContainer"
-      permission="zope.View"
-      class=".content_filter.FilterList"
-      name="published_content.html"
-      attribute="published_content" />
 
 <!-- uhm ... this seems to be too generic in its definition
      and not really nice as well. -->

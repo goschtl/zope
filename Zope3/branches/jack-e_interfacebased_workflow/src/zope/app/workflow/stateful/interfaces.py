@@ -20,9 +20,13 @@ from zope.security.checker import CheckerPublic
 
 from zope.interface import Interface, Attribute
 from zope.app.i18n import ZopeMessageIDFactory as _
+from zope.app.container.interfaces import IContained, IContainer
+from zope.app.container.constraints import ContainerTypesConstraint
+from zope.app.container.constraints import ItemTypePrecondition
+
 from zope.app.workflow.interfaces import IWorkflowEvent
 from zope.app.workflow.interfaces import IProcessDefinition
-from zope.app.workflow.interfaces import IProcessInstance
+from zope.app.workflow.interfaces import IProcessInstance, IPIAdapter
 from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 
 AUTOMATIC = u'Automatic'
@@ -54,41 +58,34 @@ class IAfterTransitionEvent(ITransitionEvent):
     objects that might change permissions when changing the status."""
 
 
-class IRelevantDataChangeEvent(IWorkflowEvent):
-    """This event is fired, when the object's data changes and the data is
-    considered 'relevant' to the workflow. The attributes of interest are
-    usually defined by a so called Relevant Data Schema."""
-
-    process = Attribute("""The process instance that is doing the
-                           transition. Note that this object really represents
-                           the workflow.""")
-
-    schema = Attribute("""The schema that defines the relevant data
-                          attributes.""")
-
-    attributeName = Attribute("""Name of the attribute that is changed.""")
-
-    oldValue = Attribute("""The old value of the attribute.""")
-
-    newValue = Attribute("""The new value of the attribute.""")
-
-
-class IBeforeRelevantDataChangeEvent(IRelevantDataChangeEvent):
-    """This event is triggered before some of the workflow-relevant data is
-    being changed."""
-
-
-class IAfterRelevantDataChangeEvent(IRelevantDataChangeEvent):
-    """This event is triggered after some of the workflow-relevant data has
-    been changed."""
-
-
 class IState(Interface):
     """Interface for state of a stateful workflow process definition."""
     # TODO: Should at least have a title, if not a value as well
 
+    targetInterface = zope.schema.Choice(
+        title=_(u"State Interface"),
+        description=_(u"An Interface that is used to mark Instances "
+                      u"representing that it is in this state."),
+        vocabulary="Interfaces",
+        default=None,
+        required=False)
+
+
 class IStatefulStatesContainer(IProcessDefinitionElementContainer):
     """Container that stores States."""
+
+    def __setitem__(name, object):
+        """Add a state"""
+
+    __setitem__.precondition = ItemTypePrecondition(IState)
+    
+
+
+class IStateContained(IContained):
+    """Interface for state of a stateful workflow process definition."""
+
+    __parent__ = zope.schema.Field(
+             constraint = ContainerTypesConstraint(IStatefulStatesContainer))
 
 
 
@@ -139,21 +136,32 @@ class ITransition(Interface):
 class IStatefulTransitionsContainer(IProcessDefinitionElementContainer):
     """Container that stores Transitions."""
 
+    def __setitem__(name, object):
+        """Add a transition"""
+
+    __setitem__.precondition = ItemTypePrecondition(ITransition)
+
+
+
+class ITransitionContained(IContained):
+    """Stateful workflow transition that lives in a StatefulTansitionsContainer."""
+
+    __parent__ = zope.schema.Field(
+             constraint = ContainerTypesConstraint(IStatefulTransitionsContainer))
+
+
+
 
 class IStatefulProcessDefinition(IProcessDefinition):
     """Interface for stateful workflow process definition."""
 
-    relevantDataSchema = zope.schema.Choice(
-        title=_(u"Workflow-Relevant Data Schema"),
-        description=_(u"Specifies the schema that characterizes the workflow "
-                    u"relevant data of a process instance, found in pd.data."),
+    targetInterface = zope.schema.Choice(
+        title=_(u"Process Interface"),
+        description=_(u"Interface that represents the Process and "
+                      u"is extended by this Process's States."),
         vocabulary="Interfaces",
         default=None,
         required=False)
-
-    schemaPermissions = Attribute(u"A dictionary that maps set/get permissions"
-                                  u"on the schema's fields. Entries looks as"
-                                  u"follows: {fieldname:(set_perm, get_perm)}")
 
     states = Attribute("State objects container.")
 
@@ -194,19 +202,17 @@ class IStatefulProcessDefinition(IProcessDefinition):
 
 
 
-class IStatefulProcessInstance(IProcessInstance):
-    """Workflow process instance.
+class IStatefulPIAdapter(IPIAdapter):
+    """Workflow process instance Adapter.
 
-    Represents the instance of a process defined by a
+    Handles Behaviour for a process defined by a
     StatefulProcessDefinition.
     """
 
-    data = Attribute("Relevant Data object.")
-
     def initialize():
-        """Initialize the ProcessInstance.
+        """Initialize the Process.
 
-        set Initial State and create relevant Data.
+        set Initial State.
         """
 
     def getOutgoingTransitions():
@@ -215,8 +221,9 @@ class IStatefulProcessInstance(IProcessInstance):
     def fireTransition(id):
         """Fire a outgoing transitions."""
 
-    def getProcessDefinition():
-        """Get the process definition for this instance."""
+
+
+
 
 
 class IContentProcessRegistry(Interface):

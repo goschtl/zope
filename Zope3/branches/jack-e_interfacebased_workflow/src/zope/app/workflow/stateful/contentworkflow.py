@@ -24,19 +24,17 @@ from zope.app import zapi
 from zope.app.event.interfaces import IObjectCreatedEvent
 from zope.app.servicenames import Utilities
 
-from zope.app.workflow.interfaces import IProcessInstanceContainer
-from zope.app.workflow.interfaces import IProcessInstanceContainerAdaptable
 from zope.app.workflow.stateful.interfaces import IContentWorkflowsManager
-from zope.app.workflow.instance import createProcessInstance
+from zope.app.workflow.stateful.instance import initializeStatefulProcessFor
 from zope.interface import implements, providedBy
 from zope.app.container.contained import Contained
 
 
-def NewObjectProcessInstanceCreator(obj, event):
-    #  used for: IProcessInstanceContainerAdaptable, IObjectCreatedEvent
+def NewObjectStatefulProcessInitializer(event):
+    # used for IContentType?, IObjectCreatedEvent
 
-    pi_container = IProcessInstanceContainer(obj)
-
+    obj = event.object
+    
     for (ignored, cwf) in zapi.getUtilitiesFor(IContentWorkflowsManager):
         # here we will lookup the configured processdefinitions
         # for the newly created compoent. For every pd_name
@@ -47,14 +45,14 @@ def NewObjectProcessInstanceCreator(obj, event):
 
         for pd_name in cwf.getProcessDefinitionNamesForObject(obj):
 
-            if pd_name in pi_container.keys():
-                continue
-            try:
-                pi = createProcessInstance(cwf, pd_name)
-            except KeyError:
-                # No registered PD with that name..
-                continue
-            pi_container[pd_name] = pi
+            print "initializing content with: ", pd_name
+            # XXX try/except needed here
+            initializeStatefulProcessFor(obj, pd_name)
+
+            # XXX for now we cannot create more than one instance
+            # due to using a single string-attribute for storing
+            # the processdefinition-name in the content-component.
+            break
         
 
 class ContentWorkflowsManager(Persistent, Contained):

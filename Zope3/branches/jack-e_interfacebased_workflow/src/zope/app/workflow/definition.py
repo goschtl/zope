@@ -29,6 +29,7 @@ from zope.app.servicenames import Utilities
 from zope.app.workflow.interfaces import IProcessDefinitionElementContainer
 from zope.app.workflow.interfaces import IProcessDefinition
 
+
 class ProcessDefinition(Persistent, Contained):
     """Abstract Process Definition class.
 
@@ -38,9 +39,6 @@ class ProcessDefinition(Persistent, Contained):
 
     name = None
 
-    def createProcessInstance(self, definition_name):
-        """See zope.app.workflow.interfaces.IProcessDefinition"""
-        return None
 
 
 class ProcessDefinitionElementContainer(Persistent, Contained):

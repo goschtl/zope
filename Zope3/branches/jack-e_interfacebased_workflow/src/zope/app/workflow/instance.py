@@ -19,114 +19,39 @@ from types import StringTypes
 from persistent.dict import PersistentDict
 from zope.proxy import removeAllProxies
 
+from zope.interface import providedBy
+
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.container.interfaces import IContained
-from zope.app.servicenames import Utilities
-from zope.app.workflow.interfaces import IProcessInstance, IProcessDefinition
-from zope.app.workflow.interfaces import IProcessInstanceContainer
+from zope.app.servicenames import Utilities, Adapters
+from zope.app.workflow.interfaces import IPIAdapter, IProcessDefinition
 
 from zope.interface import implements
 
-from zope.app.container.contained import Contained, setitem, uncontained
 
-class ProcessInstance(Contained):
-    """Process Instance implementation.
 
-    Process instances are always added to a process instance container. This
-    container lives in an annotation of the object and is commonly stored in
-    the ZODB. Therefore a process instance should be persistent.
+class PIAdapter(object):
+    """Adapter to interpret ProcessDefinitions with ContentObjects as Context.
+
     """
-    implements(IProcessInstance)
-
-    def __init__(self, pd_name):
-        self._pd_name = pd_name
-        self._status = None
-
-    processDefinitionName = property(lambda self: self._pd_name)
-
-    status = property(lambda self: self._status)
-
-    ## should probably have a method "getProcessDefinition"
-
-
-def createProcessInstance(context, name):
-    """Helper function to create a process instance from a process definition
-    name."""
-    utils = zapi.getService(Utilities, context)
-    pd = utils.getUtility(IProcessDefinition, name)
-    return pd.createProcessInstance(name)
-
-
-_marker = object()
-
-WFKey = "zope.app.worfklow.ProcessInstanceContainer"
-
-class ProcessInstanceContainerAdapter(object):
-
-    implements(IProcessInstanceContainer)
-
-    __used_for__ = IAnnotatable
+    implements(IPIAdapter)
 
     def __init__(self, context):
         self.context = context
-        annotations = IAnnotations(context)
-        wfdata = annotations.get(WFKey)
-        if not wfdata:
-            wfdata = PersistentDict()
-            annotations[WFKey] = wfdata
-        self.wfdata = wfdata
 
-    def __getitem__(self, key):
-        "See IProcessInstanceContainer"
-        value = self.wfdata[key]
-        return value
+    def _getProcessDefinition(self):
+        # we have an Interface (ISomeState) that represents the actual
+        # state of the object and extends our IMyProcessInstance Interface.
+        # we should register the ProcessDefinition as an Adapter for IMyProcessInstance
+        #return zapi.getService(Adapters).lookup([...how to define this?...],
+        #                                        IProcessDefinition, '', None)
+        
+        # XXX but for now we just use the __processdefinition_name__ attribute on components.
+        pd_name = getattr(removeAllProxies(self.context), '__processdefinition_name__', '')
+        return zapi.getUtility(IProcessDefinition, pd_name)
+    
+    processDefinition = property(_getProcessDefinition)
 
-    def get(self, key, default=None):
-        "See IProcessInstanceContainer"
-        value = self.wfdata.get(key, _marker)
-        if value is not _marker:
-            return value
-        else:
-            return default
 
-    def __contains__(self, key):
-        "See IProcessInstanceContainer"
-        return key in self.wfdata
-
-    def values(self):
-        "See IProcessInstanceContainer"
-        return self.wfdata.values()
-
-    def keys(self):
-        "See IProcessInstanceContainer"
-        return self.wfdata.keys()
-
-    def __len__(self):
-        "See IProcessInstanceContainer"
-        return len(self.wfdata)
-
-    def items(self):
-        "See IProcessInstanceContainer"
-        return self.wfdata.items()
-
-    def __setitem__(self, key, object):
-        "See IProcessInstanceContainer"
-        # We cannot make the message the parent right away, since it is not
-        # added to any message board yet;
-        setitem(self, self.wfdata.__setitem__, key, object)
-        # Set the final parent to be the message.
-        if IContained.providedBy(object):
-            object.__parent__ = self.context
-
-    def __delitem__(self, key):
-        "See IZopeWriteContainer"
-        container = self.wfdata
-        # publish event ?
-        uncontained(container[key], self, key)
-        del container[key]
-
-    def __iter__(self):
-        '''See interface IReadContainer'''
-        return iter(self.wfdata)
 

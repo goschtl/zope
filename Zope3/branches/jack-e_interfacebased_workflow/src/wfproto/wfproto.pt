@@ -1,0 +1,23 @@
+<html metal:use-macro='context/@@standard_macros/view'
+      i18n:domain='wfproto'>
+<body>
+<div metal:fill-slot='body'>
+<form action='submit.html' method='POST'>
+<table>
+ <caption i18n:translate=''>Workflow Prototype Testpage</caption>
+ <tr>
+  <td i18n:translate=''>Text:</td>
+  <td><input type='text' name='text'/></td>
+ </tr>
+ <tr>
+  <td i18n:translate=''>Transition:</td>
+  <td><input type='text' name='transition'/></td>
+ </tr>
+ <tr>
+  <td colspan='2'><input type='submit' value='Submit'/></td>
+ </tr>
+</table>
+</form>
+</div>
+</body>
+</html>

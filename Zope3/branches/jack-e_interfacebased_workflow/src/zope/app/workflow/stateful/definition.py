@@ -29,21 +29,30 @@ from zope.app.event.objectevent import ObjectEvent, modified
 from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 from zope.app.workflow.stateful.interfaces import IStatefulProcessDefinition
-from zope.app.workflow.stateful.interfaces import IState, ITransition, INITIAL
+from zope.app.workflow.stateful.interfaces import IState, IStateContained
+from zope.app.workflow.stateful.interfaces import ITransition, ITransitionContained, INITIAL
 from zope.app.workflow.stateful.interfaces import IStatefulStatesContainer
 from zope.app.workflow.stateful.interfaces import IStatefulTransitionsContainer
 from zope.app.workflow.stateful.interfaces import MANUAL
-from zope.app.workflow.stateful.instance import StatefulProcessInstance
 
 
 class State(Persistent, Contained):
     """State."""
-    implements(IState)
+    implements(IState,IStateContained)
+
+    # see IState
+    targetInterface = None
+
+    def __init__(self, targetInterface=None):
+        self.targetInterface=targetInterface
+
 
 
 class StatesContainer(ProcessDefinitionElementContainer):
     """Container that stores States."""
     implements(IStatefulStatesContainer)
+
+
 
 
 class StateNamesVocabulary(SimpleVocabulary):
@@ -64,10 +73,11 @@ class StateNamesVocabulary(SimpleVocabulary):
         raise 'NoLocalProcessDefinition', 'No local process definition found.'
 
 
+
 class Transition(Persistent, Contained):
     """Transition from one state to another."""
 
-    implements(ITransition)
+    implements(ITransition, ITransitionContained)
 
     # See ITransition
     sourceState = None
@@ -91,9 +101,11 @@ class Transition(Persistent, Contained):
         return self.__parent__.getProcessDefinition()
 
 
+
 class TransitionsContainer(ProcessDefinitionElementContainer):
     """Container that stores Transitions."""
     implements(IStatefulTransitionsContainer)
+
 
 
 class StatefulProcessDefinition(ProcessDefinition):
@@ -103,11 +115,11 @@ class StatefulProcessDefinition(ProcessDefinition):
 
     def __init__(self):
         super(StatefulProcessDefinition, self).__init__()
+        self.__targetInterface = None
         self.__states = StatesContainer()
         initial = State()
         self.__states[self.getInitialStateName()] = initial
         self.__transitions = TransitionsContainer()
-        self.__schema = None
         self._publishModified('transitions', self.__transitions)
         self._publishModified('states', self.__states)
         # See workflow.stateful.IStatefulProcessDefinition
@@ -121,17 +133,22 @@ class StatefulProcessDefinition(ProcessDefinition):
             notify(event)
             modified(self)
 
-    def getRelevantDataSchema(self):
-        return self.__schema
+    def getTargetInterface(self):
+        return self.__targetInterface
 
-    def setRelevantDataSchema(self, schema):
-        self.__schema = schema
+    def setTargetInterface(self, i):
+        self.__targetInterface = i
+        
+        # XXX register an Adapter for targetInterface
+        # that provides IStatefulProcessDefinition here
+
+
 
     # See workflow.stateful.IStatefulProcessDefinition
-    relevantDataSchema = property(getRelevantDataSchema,
-                                  setRelevantDataSchema,
-                                  None,
-                                  "Schema for RelevantData.")
+    targetInterface = property(getTargetInterface,
+                               setTargetInterface,
+                               None,
+                               "Interface for this Process.")
 
     # See workflow.stateful.IStatefulProcessDefinition
     states = property(lambda self: self.__states)
@@ -178,24 +195,6 @@ class StatefulProcessDefinition(ProcessDefinition):
     def getTransitionNames(self):
         """See workflow.stateful.IStatefulProcessDefinition"""
         return self.transitions.keys()
-
-    def createProcessInstance(self, definition_name):
-        """See workflow.IProcessDefinition"""
-        pi_obj = StatefulProcessInstance(definition_name)
-
-        # TODO:
-        # Process instances need to have a place, so they can look things
-        # up.  It's not clear to me (Jim) what place they should have.
-
-        # The parent of the process instance should be the object it is
-        # created for!!! This will cause all sorts of head-aches, but at this
-        # stage we do not have the object around; it would need some API
-        # changes to do that. (SR)
-        pi_obj.__parent__ = self
-
-
-        pi_obj.initialize()
-        return pi_obj
 
 
     def __getitem__(self, key):

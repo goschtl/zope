@@ -1,0 +1,11 @@
+<html metal:use-macro='context/@@standard_macros/view'
+      i18n:domain='wfproto'>
+<body>
+<div metal:fill-slot='body'>
+<h1>I'm State B Template</h1>
+
+<br/>
+i'm the 2nd page.
+</div>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="zope"
+   >
+
+<interface
+   interface="buddydemo.interfaces.IBuddy"
+   type="zope.app.content.interfaces.IContentType"
+   />
+
+<adapter
+   factory="zope.app.workflow.stateful.instance.StatefulPIAdapter"
+   provides="zope.app.workflow.stateful.interfaces.IStatefulPIAdapter"
+   for=".interfaces.IMyProcess"
+   />
+
+<interface
+   interface=".interfaces.IMyStateINITIAL" />
+
+<interface
+   interface=".interfaces.IMyStateA" />
+
+<interface
+   interface=".interfaces.IMyStateB" />
+
+<interface
+   interface=".interfaces.IMyStateC" />
+
+
+
+
+<subscriber
+  factory=".userevent.UserEventSubscriber"
+  for=".interfaces.IUserEvent"
+  />
+
+
+<browser:page
+  name="state.html"
+  for=".interfaces.IMyStateA"
+  template="statea.pt"
+  menu="zmi_views" title="State"
+  permission="zope.Public"
+  />
+
+<browser:page
+  name="state.html"
+  for=".interfaces.IMyStateB"
+  template="stateb.pt"
+  menu="zmi_views" title="State"
+  permission="zope.Public"
+  />
+
+<browser:page
+  name="state.html"
+  for=".interfaces.IMyStateC"
+  template="statec.pt"
+  menu="zmi_views" title="State"
+  permission="zope.Public"
+  />
+
+
+
+
+<browser:page
+  name="wfproto.html"
+  for=".interfaces.IMyProcess"
+  template="wfproto.pt"
+  menu="zmi_views" title="Process"
+  permission="zope.Public"
+  />
+
+<browser:page
+  name="submit.html"
+  for=".interfaces.IMyProcess"
+  class=".myprocess.FormSubmitView"
+  attribute="submit"
+  permission="zope.Public"
+  />
+
+</configure>

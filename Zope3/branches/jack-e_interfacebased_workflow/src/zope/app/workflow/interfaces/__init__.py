@@ -43,41 +43,24 @@ class IProcessDefinitionElementContainer(IContainer):
         """Return the ProcessDefinition Object."""
 
 
+
+class IPIAdapter(Interface):
+    """PI Adapter that does the hard work."""
+
+    status            = Attribute('the current status of the PI')
+    processDefinition = Attribute('the ProcessDefinition')
+
+    # specify the methods that are used !!!
+
+
+
+
 class IProcessInstance(Interface):
     """Workflow process instance.
 
     Represents the instance of a process defined by a ProcessDefinition."""
 
-    status = Attribute("The status in which the workitem is.")
 
-    processDefinitionName = Attribute("The process definition Name.")
-
-
-
-class IProcessInstanceContainer(IContainer):
-    """Workflow process instance container."""
-
-
-class IProcessInstanceContainerAdaptable(Interface):
-    """Marker interface for components that can be adapted to a process
-    instance container."""
-
-
-class IProcessInstanceControl(Interface):
-    """Interface to interact with a process instance."""
-
-    def start():
-        """Start a process instance."""
-
-    def finish():
-        """Finish a process instance."""
-
-
-class IWorklistHandler(Interface):
-    """Base interface for Workflow Worklist Handler."""
-
-    def getWorkitems():
-        """Return a sequence of workitem."""
 
 
 class IProcessDefinitionImportHandler(Interface):
@@ -91,6 +74,7 @@ class IProcessDefinitionImportHandler(Interface):
         """Create a ProcessDefinition from the data given.
 
         Returns a ProcessDefinition Instance."""
+
 
 class IProcessDefinitionExportHandler(Interface):
     """Handler for Export of ProcessDefinitions."""

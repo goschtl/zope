@@ -82,14 +82,6 @@
         />
   </content>
 
-  <adapter
-      factory="zope.app.workflow.instance.ProcessInstanceContainerAdapter"
-      provides="zope.app.workflow.interfaces.IProcessInstanceContainer"
-      for="zope.app.annotation.interfaces.IAnnotatable"
-      permission="zope.workflow.UseProcessInstances"
-      trusted="true"
-      />
-
   <include package=".stateful" />
 
   <include package=".browser" />

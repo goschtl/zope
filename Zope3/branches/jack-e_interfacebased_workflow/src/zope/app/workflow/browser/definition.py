@@ -37,4 +37,5 @@ class ImportExportView(object):
         self.request.response.redirect('@@importexport.html?success=1')
 
     def exportDefinition(self):
+        return ''
         return IProcessDefinitionExportHandler(self.context).doExport()
