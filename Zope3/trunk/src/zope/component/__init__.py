@@ -264,7 +264,7 @@ def getAllUtilitiesRegisteredFor(interface, context=None):
 # Factories
 
 def createObject(__factory_name, *args, **kwargs):
-    # BBB
+    # BBB: Goes away in 3.3 
     if not isinstance(__factory_name, basestring):
         import warnings
         warnings.warn(

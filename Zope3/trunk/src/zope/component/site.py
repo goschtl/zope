@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import types
 
-from zope.interface import implements, providedBy, implementedBy
+from zope.interface import implements, providedBy, implementedBy, declarations
 from zope.interface.adapter import AdapterRegistry
 from zope.interface.interfaces import IInterface
 
@@ -204,7 +204,17 @@ class GlobalSiteManager(SiteManager):
         SubscriptionRegistration(('R1',), 'P2', 'c1', 'd1')
         SubscriptionRegistration(('R1',), 'P2', 'c2', 'd2')
         """
-        required = tuple(required)
+        ifaces = []
+        for iface in required:
+            if not IInterface.providedBy(iface) and \
+                   not isinstance(iface, declarations.Implements) and \
+                   iface is not None:
+                if not isinstance(iface, (type, types.ClassType)):
+                    raise TypeError(iface, IInterface)
+                iface = implementedBy(iface)
+
+            ifaces.append(iface)
+        required = tuple(ifaces)
 
         registration = SubscriptionRegistration(
             required, provided, factory, info)

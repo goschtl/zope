@@ -86,7 +86,7 @@ Zope Changes
         `zope.deprecation`. It allows one to deprecate methods and properties
         in classes as well as any name in a module.
 
-      - The browser:containerViews directive provides an optional layer
+      - The `browser:containerViews` directive provides an optional layer
         attribute.
 
       - Groups for unauthenticated users, authenticated users, and
@@ -97,7 +97,7 @@ Zope Changes
         for most subscribers.  Using the factory attribute without a
         provides attribute to register a handler is deprecated.
 
-      - Added the function zope.component.adapts for declaring interfaces
+      - Added the function `zope.component.adapts` for declaring interfaces
         adapted by classes. This is similar to zope.interface.implements in
         that it puts a marker on the class that has a significant meaning in
         the component architecture machinery.
@@ -287,6 +287,11 @@ Zope Changes
         expressing containment constraints.
 
     Restructuring
+
+      - Ensured that all adapters can be registered for classes as well as
+        interfaces by writing tests for all adapter-based directives. It
+        turned out that subscribers did not accept classes yet, so I
+        implemented the feature for subscribers.
 
       - Addressed issue 295: Sort out defaultView.
 
