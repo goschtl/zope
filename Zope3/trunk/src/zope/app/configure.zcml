@@ -117,5 +117,8 @@
 <!-- Translations -->
   <global_translation:registerTranslations directory="translation_files" />
 
+<!-- Filesystem synchronization -->
+
+  <include package="zope.app.fssync" />
 
 </zopeConfigure>

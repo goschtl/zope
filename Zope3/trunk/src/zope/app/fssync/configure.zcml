@@ -1,0 +1,20 @@
+<zopeConfigure xmlns="http://namespaces.zope.org/zope">
+
+  <serviceType
+    id="FSRegistryService"
+    interface="zope.app.interfaces.fssync.IGlobalFSSyncService"
+    />
+  
+  <service
+    serviceType="FSRegistryService"
+    component="zope.app.fssync.fsregistry.fsRegistry"
+    />
+
+  <view 
+    factory="zope.app.fssync.classes.AddView"
+    for="zope.app.interfaces.fssync.IContentDirectory"
+    type="zope.app.interfaces.fssync.IFSAddView"
+    name="."
+    />
+
+</zopeConfigure>
