@@ -110,6 +110,46 @@ schema::
     validateMapping(IContact, someone.__dict__)
 
 
+Data Modelling Concepts
+-----------------------
+
+XXX much more is needed here!
+
+The ``zope.schema`` package provides a core set of field types,
+including single- and multi-line text fields, binary data fields,
+integers, floating-point numbers, and date/time values.
+
+Selection issues; field type can specify:
+
+- "Raw" data value
+
+  Simple values not constrained by a selection list.
+
+- Value from enumeration (options provided by schema)
+
+  This models a single selection from a list of possible values
+  specified by the schema.  The selection list is expected to be the
+  same for all values of the type.  Changes to the list are driven by
+  schema evolution.
+
+  This is done by mixing-in the IEnumerated interface into the field
+  type, and the Enumerated mixin for the implementation (or emulating
+  it in a concrete class).
+
+- Value from selection list (options provided by an object)
+
+  This models a single selection from a list of possible values
+  specified by a source outside the schema.  The selection list
+  depends entirely on the source of the list, and may vary over time
+  and from object to object.  Changes to the list are not related to
+  the schema, but changing how the list is determined is based on
+  schema evolution.
+
+  There is not currently a spelling of this, but it could be
+  facilitated using alternate mixins similar to IEnumerated and
+  Enumerated.
+
+
 Issues to be solved
 -------------------
 
