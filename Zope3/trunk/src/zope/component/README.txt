@@ -95,9 +95,21 @@ for different people:
 The class defines a constructor that takes an argument for every
 object adapted.
 
-We use `zope.component.adapts` to declare what we adapt.  If we
-declare the interfaces adapted and if we provide only one interface,
-as in the example above, then we can provide the adapter very simply [1]_:
+We used `zope.component.adapts` to declare what we adapt.  We can find
+out if an object declares that it adapts anything using adaptedBy:
+
+    >>> list(zope.component.adaptedBy(PersonGreeter)) == [IPerson]
+    True
+
+If an object makes no declaration, then None is returned:
+
+    >>> zope.component.adaptedBy(Greeter()) is None
+    True
+
+
+If we declare the interfaces adapted and if we provide only one
+interface, as in the example above, then we can provide the adapter
+very simply [1]_:
 
     >>> zope.component.provideAdapter(PersonGreeter)
 

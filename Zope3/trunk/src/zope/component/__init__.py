@@ -202,7 +202,6 @@ class adapter:
 
         return ob
 
-
 def adapts(*interfaces):
     frame = sys._getframe(1)
     locals = frame.f_locals
@@ -218,6 +217,9 @@ def adapts(*interfaces):
         raise TypeError("adapts can be used only once in a class definition.")
 
     locals['__component_adapts__'] = _adapts_descr(interfaces)
+
+def adaptedBy(ob):
+    return getattr(ob, '__component_adapts__', None)
 
 #############################################################################
 # Register the component architectures adapter hook, with the adapter hook
