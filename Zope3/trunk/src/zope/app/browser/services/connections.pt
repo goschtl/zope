@@ -16,14 +16,14 @@
            tal:condition="config/url"
            tal:attributes="href config/url"
            >
-          <span tal:condition="config/name" i18n:translate="">
-            named <span tal:replace="config/name" i18n:name="connection_name" />
+          <span i18n:translate="">
+            <span tal:replace="config/name" i18n:name="connection_name" />
           </span>
         </a>
 
         <span tal:condition="not:config/url">
-          <span tal:condition="config/name" i18n:translate="">
-            named <span tal:replace="config/name" i18n:name="connection_name" />
+          <span i18n:translate="">
+            <span tal:replace="config/name" i18n:name="connection_name" />
           </span>
           <span i18n:translate="">(inactive)</span>
         </span>
