@@ -16,6 +16,7 @@
 This handles tag insertion and URL type dispatch.
 """
 
+import copy
 import errno
 import logging
 import os
@@ -404,3 +405,34 @@ def join(base, relurl):
         return b.join(r).getUrl()
     else:
         return relurl
+
+
+def baseUrl(url):
+    """Return the base URL for `url`."""
+    if isinstance(url, basestring):
+        try:
+            url = parse(url)
+        except ValueError:
+            # conventional URL
+            parts = list(urlparse.urlparse(url))
+            if parts[2]:
+                parts[2] = posixpath.join(posixpath.dirname(parts[2]), "")
+                url = urlparse.urlunparse(parts)
+            return url
+    else:
+        # make a copy since we're going to mutate it; don't want to
+        # affect the caller
+        url = copy.deepcopy(url)
+    if isinstance(url, cvsloader.CvsUrl):
+        url.path = posixpath.join(posixpath.dirname(url.path), "")
+        base = url.getUrl()
+    elif isinstance(url, svnloader.TaglessSubversionUrl):
+        url.url = posixpath.join(posixpath.dirname(url.url), "")
+        url.prefix = url.url
+        base = url.getUrl()
+    elif isinstance(url, svnloader.SubversionUrl):
+        url.tail = posixpath.join(posixpath.dirname(url.tail), "")
+        base = url.getUrl()
+    else:
+        base = None
+    return base

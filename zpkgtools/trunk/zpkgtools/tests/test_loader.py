@@ -253,9 +253,67 @@ class FileProxyTestCase(unittest.TestCase):
         self.assertEqual(firstline, expected)
 
 
+class UrlFunctionTestCase(unittest.TestCase):
+
+    TYPE = "svn"
+    HOSTPART = "svn.example.org"
+
+    def mkurl(self, path):
+        return "%s://%s%s" % (self.TYPE, self.HOSTPART, path)
+
+    def test_baseUrl(self):
+        eq = self.assertEqual
+        eq(loader.baseUrl("file:///tmp/foo/bar/splat.py"),
+           "file:///tmp/foo/bar/")
+        eq(loader.baseUrl("file://localhost/tmp/foo/bar/splat.py"),
+           "file://localhost/tmp/foo/bar/")
+        eq(loader.baseUrl("cvs://cvs.example.org/cvsroot:path/file.txt:TAG"),
+           "cvs://cvs.example.org/cvsroot:path/:TAG")
+
+        # tagless Subversion URLs
+        mkurl = self.mkurl
+        eq(loader.baseUrl(mkurl("/repos/path/file.txt")),
+           mkurl("/repos/path/"))
+        eq(loader.baseUrl(mkurl("/repos/branches/foo/path/file.txt")),
+           mkurl("/repos/branches/foo/path/"))
+        # taggable Subversion URLs
+        eq(loader.baseUrl(mkurl("/repos/trunk/path/file.txt")),
+           mkurl("/repos/trunk/path/"))
+        eq(loader.baseUrl(mkurl("/repos/tags/foo/path/file.txt")),
+           mkurl("/repos/tags/foo/path/"))
+
+
+class SvnSshUrlFunctionTestCase(UrlFunctionTestCase):
+
+    TYPE = "svn+ssh"
+
+
+class SvnSpecialUrlFunctionTestCase(UrlFunctionTestCase):
+
+    TYPE = "svn+other"
+
+
+class SvnFileUrlFunctionTestCase(UrlFunctionTestCase,
+                                 test_svnloader.SubversionLocalRepositoryBase):
+
+    TYPE = "file"
+    HOSTPART = ""
+
+
+class SvnFileLocalhostUrlFunctionTestCase(SvnFileUrlFunctionTestCase):
+
+    HOSTPART = "localhost"
+
+
+
 def test_suite():
     suite = unittest.makeSuite(FileProxyTestCase)
     suite.addTest(unittest.makeSuite(LoaderTestCase))
+    suite.addTest(unittest.makeSuite(UrlFunctionTestCase))
+    suite.addTest(unittest.makeSuite(SvnSshUrlFunctionTestCase))
+    suite.addTest(unittest.makeSuite(SvnSpecialUrlFunctionTestCase))
+    suite.addTest(unittest.makeSuite(SvnFileUrlFunctionTestCase))
+    suite.addTest(unittest.makeSuite(SvnFileLocalhostUrlFunctionTestCase))
     return suite
 
 if __name__ == "__main__":
