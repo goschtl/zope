@@ -13,7 +13,7 @@
 ##############################################################################
 """The connection adapters contained by ConnectionService.
 
-$Id: ZopeDatabaseAdapter.py,v 1.7 2002/11/05 12:09:49 alga Exp $
+$Id: ZopeDatabaseAdapter.py,v 1.8 2002/11/08 12:46:58 stevea Exp $
 """
 from types import StringTypes
 from Persistence import Persistent
@@ -114,10 +114,7 @@ def parseDSN(dsn):
     dsn = raw_params[0]
     raw_params = raw_params[1:]
 
-    parameters = {}
-    for string in raw_params:
-        param, value = string.split('=')
-        parameters[param] = value
+    parameters = dict([param.split('=') for param in raw_params])
 
     result['parameters'] = parameters
 
