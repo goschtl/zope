@@ -296,7 +296,16 @@ dsn2option_mapping = {'host': 'host',
                       'username': 'user',
                       'password': 'password'}
 
-
+def registerTypes():
+    """Register type conversions for psycopg"""
+    psycopg.register_type(DATE)
+    psycopg.register_type(TIME)
+    psycopg.register_type(TIMETZ)
+    psycopg.register_type(TIMESTAMP)
+    psycopg.register_type(TIMESTAMPTZ)
+    psycopg.register_type(INTERVAL)
+    psycopg.register_type(STRING)
+ 
 class PsycopgAdapter(ZopeDatabaseAdapter):
     """A PsycoPG adapter for Zope3.
 
@@ -325,11 +334,6 @@ class PsycopgAdapter(ZopeDatabaseAdapter):
 
     def _registerTypes(self):
         """Register type conversions for psycopg"""
-        psycopg.register_type(DATE)
-        psycopg.register_type(TIME)
-        psycopg.register_type(TIMETZ)
-        psycopg.register_type(TIMESTAMP)
-        psycopg.register_type(TIMESTAMPTZ)
-        psycopg.register_type(INTERVAL)
-        psycopg.register_type(STRING)
-            
+        registerTypes()
+
+           
