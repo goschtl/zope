@@ -92,6 +92,8 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
 """
         self.assertEquals(expected, view())
 
+    # this doesn't work; it looks like Zope 3 security gets involved,
+    # but I do not yet understand where this could be.
 ##     def test_repeat_iterator(self):
 ##         view = self.folder.unrestrictedTraverse('testoid/ostrich2.html')
 ##         expected = """\
