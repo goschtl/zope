@@ -130,7 +130,7 @@ class BytesLine(Bytes):
     implements(IBytesLine)
 
     def constraint(self, value):
-        # XXX we should probably use a more general definition of newlines
+        # TODO: we should probably use a more general definition of newlines
         return '\n' not in value
 
 

@@ -99,7 +99,7 @@ class SetTest(FieldTestBase):
                           field.validate, sets.Set((3.14159,)))
 
     def testCorrectValueType(self):
-        # allow value_type of None (XXX)
+        # TODO: We should not allow for a None valeu type. 
         Set(value_type=None)
 
         # do not allow arbitrary value types
