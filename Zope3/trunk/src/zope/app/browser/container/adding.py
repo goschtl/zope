@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: adding.py,v 1.7 2003/03/07 12:10:22 jim Exp $
+$Id: adding.py,v 1.8 2003/04/08 21:44:35 gotcha Exp $
 """
 __metaclass__ = type
 
@@ -31,6 +31,8 @@ from zope.app.event import publish
 from zope.proxy.context import ContextSuper, ContextMethod
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces import IPublishTraverse
+
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class Adding(BrowserView):
 
@@ -105,7 +107,7 @@ class Adding(BrowserView):
 
     def action(self, type_name='', id=''):
         if not type_name:
-            raise UserError("You must select the type of object to add.")
+            raise UserError(_(u"You must select the type of object to add."))
         
         if type_name.startswith('@@'):
             type_name = type_name[2:]
@@ -116,7 +118,7 @@ class Adding(BrowserView):
             return
 
         if not id:
-            raise ValueError("You must specify an id")
+            raise ValueError(_(u"You must specify an id"))
 
         self.contentName = id
 

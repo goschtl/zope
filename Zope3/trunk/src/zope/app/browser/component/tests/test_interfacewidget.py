@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface field widget tests
 
-$Id: test_interfacewidget.py,v 1.20 2003/03/13 18:48:59 alga Exp $
+$Id: test_interfacewidget.py,v 1.21 2003/04/08 21:44:34 gotcha Exp $
 """
 
 __metaclass__ = type
@@ -401,7 +401,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         out = (
         'Use refresh to enter more interfaces'
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i0" value="">'
 
@@ -426,7 +426,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
 
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i1" value="">'
 
@@ -463,7 +463,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         self.failUnless(widget.haveData())
         out = (
         'Use refresh to enter more interfaces'
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i0" value="">'
 
@@ -488,7 +488,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
 
-        '<br>'
+        '<br />'
         '<input type="text" name="field.TestName.search.i1" value="">'
 
         '<select name="field.TestName.i1">'
@@ -519,7 +519,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
         request.form["field.TestName.search.i1"] = 'two'
         out = (
         'Use refresh to enter more interfaces'
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i0" value="">'
 
@@ -544,7 +544,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
 
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i1" value="two">'
 
@@ -579,7 +579,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         out = (
         'Use refresh to enter more interfaces'
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i0" value="">'
 
@@ -609,7 +609,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
 
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i1" value="">'
 
@@ -647,7 +647,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         out = (
         'Use refresh to enter more interfaces'
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i0" value="">'
 
@@ -677,7 +677,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
 
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i1" value="">'
 
@@ -715,7 +715,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         out = (
         'Use refresh to enter more interfaces'
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i0" value="">'
 
@@ -745,7 +745,7 @@ class TestMultiInterfaceWidget(BaseInterfaceWidgetTest):
 
         '</select>'
 
-        '<br>'
+        '<br />'
 
         '<input type="text" name="field.TestName.search.i1" value="two">'
 

@@ -13,16 +13,15 @@
 ##############################################################################
 __doc__ = """ Server Control View
 
-$Id: servercontrol.py,v 1.3 2003/04/08 20:35:25 gotcha Exp $ """
+$Id: servercontrol.py,v 1.4 2003/04/08 21:44:33 gotcha Exp $ """
 
 from zope.publisher.browser import BrowserView
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.interfaces.applicationcontrol.servercontrol \
      import IServerControl
 from zope.component import getUtility
-from zope.i18n.messageid import MessageIDFactory
 
-_ = MessageIDFactory("zope")
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class ServerControlView(BrowserView):
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.27 2003/02/12 02:17:04 seanb Exp $
+$Id: interfacewidget.py,v 1.28 2003/04/08 21:44:34 gotcha Exp $
 """
 
 import sys
@@ -27,6 +27,8 @@ from zope.app.services.servicenames import Interfaces
 from zope.schema.interfaces import ValidationError
 from zope.component.exceptions import ComponentLookupError
 from xml.sax.saxutils import quoteattr
+
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 class InterfaceWidget(Widget, BrowserView):
     __implements__ = IBrowserWidget
@@ -44,7 +46,7 @@ class InterfaceWidget(Widget, BrowserView):
             # No user input
             if field.required and not optional:
                 raise MissingInputError(field.__name__, field.title,
-                                        'the field is required')
+                                        _(u'the field is required'))
             return field.default
         if value == 'None':
             value = None
@@ -171,7 +173,7 @@ class MultiInterfaceWidget(Widget, BrowserView):
             # No user input
             if field.required and not optional:
                 raise MissingInputError(field.__name__, field.title,
-                                        'the field is required')
+                                        _(u'the field is required'))
             return field.default
         try:
             values = tuple([nameToInterface(field, value) for value in values])
@@ -281,8 +283,8 @@ class MultiInterfaceWidget(Widget, BrowserView):
                 )
             count += 1
 
-        HTML = ('Use refresh to enter more interfaces<br>' +
-                '<br>'.join(rendered_selections))
+        HTML = (_(u'Use refresh to enter more interfaces') + '<br />' +
+                '<br />'.join(rendered_selections))
         return HTML
 
     def hidden(self):
@@ -342,11 +344,14 @@ class MultiInterfaceDisplayWidget(MultiInterfaceWidget):
 def renderInterfaceSelect(
         interfaces, selected, search_name, search_string, select_name):
     """interfaces is a sequence, all of the other args are strings"""
-    options = ['<option value="">---select interface---</option>']
+    options = ['<option value="">' + _(u"---select interface---") + \
+               '</option>']
     for interface in interfaces:
         if interface == 'None':
-            options.append('<option value="None"%s>Anything</option>'
-                           % (interface == selected and ' selected' or '')
+            options.append('<option value="None"%s>' \
+                % (interface == selected and ' selected' or '') \
+                + _(u"Anything") + '</option>'
+                           
                            )
         else:
             options.append('<option value="%s"%s>%s</option>'

@@ -1,11 +1,11 @@
-<html metal:use-macro="views/standard_macros/dialog">
+<html metal:use-macro="views/standard_macros/dialog" i18n:domain="zope">
 <body>
 
 <div metal:fill-slot="body">
 <form action="action.html" method="POST">
 <table class="TypeListing" cellpadding="3">
 
-  <caption>Add Content</caption>
+  <caption i18n:translate="">Add Content</caption>
 
     <tbody tal:repeat="info view/addingInfo">
 
@@ -40,7 +40,7 @@
       </td>
 
       <td class="TypeName">
-        <img alt="Folder" src="../../ZMI/www/document_icon.gif" />
+        <img alt="Folder" src="../../ZMI/www/document_icon.gif" i18n:attributes="alt" />
         Document
       </td>
 
@@ -48,7 +48,7 @@
 
     <tr>
       <td class="Selector"><br /></td>
-      <td class="TypeDescription">
+      <td class="TypeDescription" i18n:translate="">
           Documents are simple textual content.
       </td>
     </tr>
@@ -62,7 +62,7 @@
                tal:condition="view/namesAccepted"
 	       tal:attributes="value request/id | nothing"
         />
-        <input type="submit" value=" Add " />
+        <input type="submit" value=" Add " i18n:attributes="value" />
     </td>
   </tr>
 
