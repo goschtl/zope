@@ -215,6 +215,12 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <browser:resourceDirectory
+      name="fivetest_resources"
+      directory="."
+      permission="zope2.ViewManagementScreens"
+      />
+
   <!-- stuff that we'll override in overrides.zcml -->
 
   <browser:page
