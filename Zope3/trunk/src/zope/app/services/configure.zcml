@@ -31,124 +31,37 @@
     />
 </content>
 
-
-<!-- Adapter Service -->
-
-<content class="zope.app.services.adapter.AdapterService">
-  <factory
-      id="zope.app.services.AdapterService"
-      permission="zope.ManageServices"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.registration.IRegistry"
-      attributes="getRegisteredMatching"
-      />
-</content>
-
-<content class="zope.app.services.adapter.AdapterRegistration">
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.adapter.IAdapterRegistration"
-      set_schema="zope.app.interfaces.services.registration.IRegistration"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IRemoveNotifiable"
-      />
-</content>
-
-<!-- View Service -->
-
-<content class="zope.app.services.view.ViewService">
-  <factory
-      id="zope.app.services.ViewService"
-      permission="zope.ManageServices"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.registration.IRegistry"
-      attributes="getRegisteredMatching"
-      />
-</content>
-
-<content class="zope.app.services.view.ViewRegistration">
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.view.IViewRegistration"
-      set_schema="zope.app.interfaces.services.registration.IRegistration"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IRemoveNotifiable"
-      />
-</content>
-
-<content class="zope.app.services.view.PageRegistration">
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.view.IPageRegistration"
-      set_schema="zope.app.interfaces.services.view.IPageRegistration"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.container.IRemoveNotifiable"
-      />
-</content>
-
-<adapter
-   for="zope.component.interfaces.IGlobalViewService"
-   provides="zope.app.interfaces.services.interface.IInterfaceBasedRegistry"
-   factory=".view.RegistrationAdapter"
-   />
-
-
-<!-- Menu Service -->
-<include file="menu.zcml"/>
-
-
-<!-- Page Templates -->
-
-<content class="zope.app.services.zpt.ZPTTemplate">
-  <factory
-      id="zope.app.services.zpt.template"
-      permission="zope.ManageServices"
-      title="ZPT Template"
-      description="Page Template"
-      />
-  <require
-      permission="zope.View"
-      attributes="__call__"
-      />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.interfaces.services.view.IZPTTemplate"
-      set_schema="zope.app.interfaces.services.view.IZPTTemplate"
-      />
-  <implements
-      interface="zope.app.interfaces.annotation.IAttributeAnnotatable"
-      />
-</content>
-
-<adapter
-  for="zope.app.interfaces.services.view.IZPTTemplate"
-  provides="zope.app.interfaces.file.IReadFile"
-  factory=".zpt.ReadFile"
-  permission="zope.ManageServices"
-  />
-
-<adapter
-  for="zope.app.interfaces.services.view.IZPTTemplate"
-  provides="zope.app.interfaces.file.IWriteFile"
-  factory=".zpt.WriteFile"
-  permission="zope.ManageServices"
-  />
-
 <adapter
   for="zope.app.interfaces.services.registration.IRegisterable"
   provides="zope.app.interfaces.services.registration.IRegistered"
   factory="zope.app.services.registration.Registered"
   />
+
+<!-- Adapter Service -->
+
+<content class="zope.app.services.adapter.LocalAdapterService">
+  <factory permission="zope.ManageServices" />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.services.registration.IRegistry"
+      attributes="getRegisteredMatching"
+      />
+</content>
+
+<content class=".adapter.AdapterRegistration">
+  <require
+      permission="zope.ManageServices"
+      interface=".adapter.IAdapterRegistration"
+      set_schema=".adapter.IAdapterRegistration"
+      />
+  <require
+      permission="zope.ManageServices"
+      interface="zope.app.interfaces.container.IRemoveNotifiable"
+      />
+</content>
+
+<!-- Menu Service -->
+<include file="menu.zcml"/>
 
 <!-- Role Templates -->
 
@@ -310,6 +223,12 @@
         />
   </content>
 
+<!-- Presentation components -->
+  <include file="presentation.zcml" />
+
+<!-- Page templates -->
+  <include file="zpt.zcml" />
+
 <!-- Page Folder --> 
   <include file="pagefolder.zcml" />
 
@@ -463,11 +382,6 @@
 <fssync:adapter
     class=".service.ServiceManager"
     factory=".service.ServiceManagerAdapter"
-    />
-
-<fssync:adapter
-    class=".zpt.ZPTTemplate"
-    factory=".zpt.ZPTPageAdapter"
     />
 
 <fssync:adapter
