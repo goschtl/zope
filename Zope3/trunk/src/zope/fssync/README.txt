@@ -62,38 +62,50 @@ BUGS
 * When dealing with additions or removals, sometimes multiple updates
   are required to get the Extra stuff to be updated.
 
-* Removing a directory tree doesn't work intuitively.
+* Removing a directory tree doesn't work intuitively; if you "rm -r" a
+  subtree and then "sync remove" it, a following "sync commit" causes
+  a server-side exception.  It should just work.  (As a work-around,
+  you can remove individual files and commit those removals first,
+  then remove the directory last.)
 
 
 TO DO
 -----
 
-* Should be able to add various standard object types based on
-  filename extension.
+- On the server side:
 
-* When committing a change, shouldn't the mtime in the DC metadata be
-  updated?
+  * Should be able to add various standard object types based on
+    filename extension.  (This now works for extensions .pt and .dtml;
+    for other extensions, either an image or a plain file is created
+    based on the extension and the contents.  Is this good enough?)
 
-* Unit tests for the fssync core functionality.
+  * When committing a change, shouldn't the mtime in the DC metadata
+    be updated?
 
-* More refactoring and cleanup of the fssync core functionality.
+  * Refine the adapter protocol or implementation to leverage the
+    file-system representation protocol.
 
-* Implement diff using difflib.
+- In the sync application:
 
-* More diff options:
-  -2 diffs between local and remote
-  -3 diffs between original and remote
-  -N shows diffs for added/removed files as diffs with /dev/null
+  * Implement diff using difflib.
 
-* More GNU diff options?  e.g. --ignore-space-change etc.
+  * More diff options:
+    -2 diffs between local and remote
+    -3 diffs between original and remote
+    -N shows diffs for added/removed files as diffs with /dev/null
 
-* Something akin to cvs -n update, which shows what update would do
-  without actually doing it.
+  * More GNU diff options?  e.g. --ignore-space-change etc.
 
-* Refine the adapter protocol or implementation to leverage the
-  file-system representation protocol.
+  * Something akin to cvs -n update, which shows what update would do
+    without actually doing it.
 
-* Use camelCase for method names.
+- Code maintenance:
+
+  * Unit tests for the fssync core functionality.
+
+  * More refactoring and cleanup of the fssync core functionality.
+
+  * Use camelCase for method names.
 
 
 TO DO LATER
