@@ -1,5 +1,5 @@
 embedded -a Components/principia Components/ExtensionClass \
-  Packages/BoboPOS2 Components/Commercial \
+  Packages/BoboPOS2 Components/Commercial Components/cPickle \
   Packages/DocumentTemplate Packages/SearchIndex
 
 
