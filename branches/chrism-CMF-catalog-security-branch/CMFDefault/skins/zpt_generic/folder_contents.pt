@@ -1,0 +1,85 @@
+<tal:page
+   xmlns:tal="http://xml.zope.org/namespaces/tal"
+   xmlns:metal="http://xml.zope.org/namespaces/metal"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+   tal:define="control python: here.folder_contents_control(**request.form)"
+   tal:condition="control"
+><html metal:use-macro="here/main_template/macros/master">
+<body>
+
+<metal:block metal:fill-slot="main" i18n:domain="cmf_default"
+   tal:define="batch control/batch;
+               form control/form;
+               up control/up">
+<div class="Desktop">
+
+<h2 i18n:translate="">Desktop</h2>
+
+<tal:case tal:condition="up"
+><tal:case tal:condition="up/url"
+ ><a href="" tal:attributes="href up/url"
+  ><img src="" alt="[Link]" border="0" tal:attributes="src up/icon"
+      i18n:attributes="alt" /></a>
+  <tal:span i18n:translate="">Up to</tal:span>
+  <a href="" tal:attributes="href up/url" tal:content="up/id">ID</a></tal:case
+><tal:case tal:condition="not: up/url"
+ ><span class="mild" i18n:translate="">Root</span></tal:case></tal:case>
+
+<form action="folder_contents" method="post"
+   tal:attributes="action control/form/action">
+ <table class="ContentsList" tal:condition="batch/listItemInfos1">
+  <tr>
+   <td width="49%">
+    <table>
+     <tr tal:repeat="item batch/listItemInfos1">
+      <td width="5"
+      ><input type="checkbox" name="ids:tuple" value="" id=""
+          tal:attributes="value item/id; id item/checkbox"
+          tal:condition="item/checkbox" /></td>
+      <td
+      ><a href="" tal:attributes="href item/url" tal:condition="item/icon"
+       ><img src="" alt="" border="0"
+           tal:attributes="src item/icon; alt item/type"
+           i18n:attributes="alt" /></a></td>
+      <td
+      ><a href="" tal:attributes="href item/url"
+       ><tal:span tal:content="item/id">ID</tal:span>
+        <tal:case tal:condition="item/title"
+           tal:content="string:(${item/title})">(Title)</tal:case></a></td>
+     </tr>
+    </table>
+   </td>
+   <td width="2%">&nbsp;</td>
+   <td width="49%" tal:condition="batch/listItemInfos2">
+    <table>
+     <tr tal:repeat="item batch/listItemInfos2">
+      <td width="5"
+      ><input type="checkbox" name="ids:tuple" value="" id=""
+          tal:attributes="value item/id; id item/checkbox"
+          tal:condition="item/checkbox" /></td>
+      <td
+      ><a href="" tal:attributes="href item/url" tal:condition="item/icon"
+       ><img src="" alt="" border="0"
+           tal:attributes="src item/icon; alt item/type"
+           i18n:attributes="alt" /></a></td>
+      <td
+      ><a href="" tal:attributes="href item/url"
+       ><tal:span tal:content="item/id">ID</tal:span>
+        <tal:case tal:condition="item/title"
+           tal:content="string:(${item/title})">(Title)</tal:case></a></td>
+     </tr>
+    </table>
+   </td>
+  </tr>
+ </table>
+ <metal:block metal:use-macro="here/batch_widgets/macros/navigation" />
+ <metal:block metal:use-macro="here/form_widgets/macros/buttons" />
+</form>
+
+<div tal:replace="structure here/folder_filter_form">Filter Form Here</div>
+
+</div>
+</metal:block>
+
+</body>
+</html></tal:page>

@@ -1,0 +1,42 @@
+<tal:page
+   xmlns:tal="http://xml.zope.org/namespaces/tal"
+   xmlns:metal="http://xml.zope.org/namespaces/metal"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+   tal:define="control python: here.folder_rename_control(**request.form)"
+   tal:condition="control"
+><html metal:use-macro="here/main_template/macros/master">
+<body>
+
+<metal:block metal:fill-slot="main" i18n:domain="cmf_default"
+   tal:define="batch control/batch;
+               form control/form">
+<div class="Desktop">
+
+<h2 i18n:translate="">Rename Items</h2>
+
+<form action="members_manage" method="post"
+   tal:attributes="action form/action">
+ <table class="FormLayout">
+  <tr tal:repeat="item batch/listItemInfos">
+   <td width="8%"
+   ><img src="" alt="" border="0"
+       tal:attributes="src item/icon; alt item/type"
+       i18n:attributes="alt" /></td>
+   <td width="20%"
+   ><tal:span tal:replace="item/id">ID</tal:span>
+    <input type="hidden" name="ids:list" value=""
+       tal:attributes="value item/id" /></td>
+   <td width="5%"
+   ><strong i18n:translate="">to</strong></td>
+   <td
+   ><input type="text" name="new_ids:list" value=""
+       tal:attributes="value item/id" size="20" /></td>
+  </tr>
+ </table>
+ <metal:block metal:use-macro="here/form_widgets/macros/buttons" />
+</form>
+</div>
+</metal:block>
+
+</body>
+</html></tal:page>
