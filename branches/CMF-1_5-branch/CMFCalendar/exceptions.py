@@ -18,8 +18,5 @@ $Id$
 from AccessControl import ModuleSecurityInfo
 security = ModuleSecurityInfo('Products.CMFCalendar.exceptions')
 
-security.declarePublic('CatalogError')
-from Products.ZCatalog.Catalog import CatalogError
-
-security.declarePublic('MetadataError')
-from Products.CMFDefault.exceptions import MetadataError
+security.declarePublic('ResourceLockedError')
+from Products.CMFCore.exceptions import ResourceLockedError
