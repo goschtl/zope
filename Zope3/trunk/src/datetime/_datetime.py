@@ -877,6 +877,38 @@ class tzinfo(object):
         """
         raise NotImplementedError("tzinfo subclass must override dst()")
 
+    def _inconsistent_dst(self):
+        raise ValueError("astimezone():  tz.dst() gave "
+                         "inconsistent results; cannot convert")
+
+    def fromutc(self, dt):
+        "datetime in UTC -> datetime in local time."
+
+        if dt.tzinfo is not self:
+            raise ValueError("dt.tzinfo is not self")
+
+        dtoff = dt.utcoffset()
+        if dtoff is None:
+            raise ValueError("fromutc() requires a non-None utcoffset() "
+                             "result")
+
+        # See the long comment block at the end of this file for an
+        # explanation of this algorithm.
+        dtdst = dt.dst()
+        if dtdst is None:
+            raise ValueError("fromutc() requires a non_none dst() result")
+        delta = dtoff - dtdst
+        if delta:
+            dt += delta
+            dtdst = dt.dst()
+            if dtdst is None:
+                raise ValueError("fromutc(): dt.dst gave inconsistent "
+                                 "results; cannot convert")
+        if dtdst:
+            return dt + dtdst
+        else:
+            return dt
+
     # pickle support
 
     __safe_for_unpickling__ = True
@@ -1273,64 +1305,25 @@ class datetime(date):
         return datetime(year, month, day, hour, minute, second,
                           microsecond, tzinfo)
 
-    def _inconsistent_dst(self):
-        raise ValueError("astimezone():  tz.dst() gave "
-                         "inconsistent results; cannot convert")
-
     def astimezone(self, tz):
-        _check_tzinfo_arg(tz)
-        other = self.replace(tzinfo=tz)
+        if not isinstance(tz, tzinfo):
+            raise TypeError("tz argument must be an instance of tzinfo")
 
-        # Don't call utcoffset unless necessary.  First check trivial cases.
-        if tz is None or self._tzinfo is None or self._tzinfo is tz:
-            return other
+        mytz = self.tzinfo
+        if mytz is None:
+            raise ValueError("astimezone() requires an aware datetime")
 
-        # Get the offsets.  If either object turns out to be naive, again
-        # there's no conversion of date or time fields.
-        myoff = self.utcoffset()
-        if myoff is None:
-            return other
-        otoff = other.utcoffset()
-        if otoff is None:
-            return other
+        if tz is mytz:
+            return self
 
-        # See the long comment block at the end of this file for an
-        # explanation of this algorithm.  That it always works requires a
-        # pretty intricate proof.  There are many equivalent ways to code
-        # up the proof as an algorithm.  This way favors calling dst() over
-        # calling utcoffset(), because "the usual" utcoffset() calls dst()
-        # itself, and calling the latter instead saves a Python-level
-        # function call.  This way of coding it also follow the proof
-        # closely, w/ x=self, y=other, z=other, and z'=another.
-        otdst = other.dst()
-        if otdst is None:
-            raise ValueError("astimezone(): utcoffset() returned a duration "
-                             "but dst() returned None")
-        delta = otoff - otdst - myoff
-        if delta:
-            other += delta
-            otdst = other.dst()
-            if otdst is None:
-                self._inconsistent_dst()
-        if not otdst:
-            return other
+        # Convert self to UTC, and attach the new time zone object.
+        myoffset = self.utcoffset()
+        if myoffset is None:
+            raise ValuError("astimezone() requires an aware datetime")
+        utc = (self - myoffset).replace(tzinfo=tz)
 
-        another = other + otdst
-        return another
-
-        # XXX Leaving this unreachable code here for a while.  It may be
-        # XXX needed again real soon <wink>.
-        anotherdst = another.dst()
-        if anotherdst is None:
-            self._inconsistent_dst()
-
-        if otdst == anotherdst:
-            other = another
-        else:
-            # This is the "unspellable hour" case, and we *don't* want
-            # the DST spelling here.
-            pass
-        return other
+        # Convert from UTC to tz's local time.
+        return tz.fromutc(utc)
 
     # Ways to produce a string.
 
