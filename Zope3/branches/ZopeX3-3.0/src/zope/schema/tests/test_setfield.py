@@ -108,7 +108,7 @@ class SetTest(FieldTestBase):
 
         # however, allow anything that implements IField
         Set(value_type=Field())
-        class FakeField:
+        class FakeField(object):
             implements(IField)
         Set(value_type=FakeField())
     

@@ -12,6 +12,8 @@
 #
 ##############################################################################
 """Command-line tool to perform import analysis.
+
+$Id$
 """
 import optparse
 import os
@@ -48,7 +50,7 @@ def run(options):
     options.reporter.display_report()
 
 
-class Options:
+class Options(object):
 
     known_options = ["--first-import", "--cyclic-imports"]
 

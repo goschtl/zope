@@ -11,14 +11,13 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Request for tests
 
 $Id$
 """
-
 import zope.interface
 
-class Request:
+class Request(object):
 
     def __init__(self, type, skin=''):
         self._skin = skin

@@ -40,7 +40,7 @@ class UtilityRegistration(TestingRegistration):
     serviceType = "Utilities"
 
 
-class TestingServiceManager:
+class TestingServiceManager(object):
 
     implements(IServiceService) # I lied
 

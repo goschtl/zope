@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import unittest
 from zope.interface import Interface, implements
 from zope.schema import Text, accessors
@@ -35,10 +34,10 @@ class Test(unittest.TestCase):
 
             getFoo, setFoo = accessors(field)
 
-        class Bad:
+        class Bad(object):
             implements(I)
 
-        class Good:
+        class Good(object):
             implements(I)
 
             def getFoo(self):

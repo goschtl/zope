@@ -15,7 +15,6 @@
 
 $Id$
 """
-
 import unittest
 import os
 from zope.testing.doctestunit import DocTestSuite
@@ -24,7 +23,7 @@ from zope.configuration.tests.samplepackage import foo
 from pprint import PrettyPrinter, pprint
 
 
-class FauxLocator:
+class FauxLocator(object):
   def __init__(self, file, line, column):
     self.file, self.line, self.column = file, line, column
   def getSystemId(self):
@@ -34,7 +33,7 @@ class FauxLocator:
   def getColumnNumber(self):
     return self.column
 
-class FauxContext:
+class FauxContext(object):
   
   def setInfo(self, info):
     self.info = info

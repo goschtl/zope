@@ -19,7 +19,7 @@ from zope.app.registration.interfaces import IRegistry
 from zope.interface.verify import verifyObject
 from zope.app.location import inside
 
-class TestingIRegistry:
+class TestingIRegistry(object):
     """Base class for testing implementors of IRegistry
 
     Subclasses must implement:

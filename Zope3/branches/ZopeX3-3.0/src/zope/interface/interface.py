@@ -89,10 +89,10 @@ class SpecificationBasePy(object):
           >>> from zope.interface import *
           >>> class I1(Interface):
           ...     pass
-          >>> class C:
+          >>> class C(object):
           ...     implements(I1)
           >>> c = C()
-          >>> class X:
+          >>> class X(object):
           ...     pass
           >>> x = X()
           >>> I1.providedBy(x)
@@ -616,7 +616,7 @@ class InterfaceClass(Element, Specification):
                If an object already implements the interface, then it will be
                returned::
 
-                 >>> class C:
+                 >>> class C(object):
                  ...     zope.interface.implements(I)
 
                  >>> obj = C()
@@ -625,7 +625,7 @@ class InterfaceClass(Element, Specification):
 
                If an object implements __conform__, then it will be used::
 
-                 >>> class C:
+                 >>> class C(object):
                  ...     zope.interface.implements(I)
                  ...     def __conform__(self, proto):
                  ...          return 0
@@ -707,7 +707,7 @@ class InterfaceClass(Element, Specification):
 
            unless the object given provides the interface::
 
-             >>> class C:
+             >>> class C(object):
              ...     zope.interface.implements(I)
 
              >>> obj = C()

@@ -11,15 +11,17 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit tests for zope.security.simpleinteraction."""
+"""Unit tests for zope.security.simpleinteraction.
 
+$Id$
+"""
 import unittest
 
 from zope.interface.verify import verifyObject
 from zope.security.interfaces import IInteraction
 from zope.security.simplepolicies import ParanoidSecurityPolicy
 
-class RequestStub:
+class RequestStub(object):
 
     def __init__(self, principal=None):
         self.principal = principal

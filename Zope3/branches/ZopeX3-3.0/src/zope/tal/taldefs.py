@@ -11,10 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Common definitions used by TAL and METAL compilation an transformation.
-"""
+"""Common definitions used by TAL and METAL compilation and transformation.
 
+$Id$
+"""
 import re
 from zope.tal.interfaces import ITALExpressionErrorInfo
 from zope.interface import implements
@@ -94,7 +94,7 @@ class I18NError(TALError):
     pass
 
 
-class ErrorInfo:
+class ErrorInfo(object):
     implements(ITALExpressionErrorInfo)
 
     def __init__(self, err, position=(None, None)):

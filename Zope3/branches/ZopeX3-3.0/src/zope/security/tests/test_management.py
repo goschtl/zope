@@ -68,7 +68,7 @@ class Test(CleanUp, unittest.TestCase):
         permission = 'zope.Test'
         obj = object()
 
-        class PolicyStub:
+        class PolicyStub(object):
 
             def checkPermission(s, p, o,):
                 self.assert_(p is permission)

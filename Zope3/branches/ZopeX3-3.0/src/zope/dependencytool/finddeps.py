@@ -274,7 +274,7 @@ def showDependencies(path, zcml=False, long=False, all=False, packages=False):
             print
 
 
-class DependencyOptions:
+class DependencyOptions(object):
 
     all = False
     long = False

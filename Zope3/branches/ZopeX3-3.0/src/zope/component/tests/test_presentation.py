@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""XXX short summary goes here.
+"""Presentation Serivce tests
 
 $Id$
 """
@@ -23,7 +23,7 @@ import zope.interface
 class IRequest(zope.interface.Interface):
     "Demonstration request type"
 
-class Request:
+class Request(object):
     zope.interface.implements(IRequest)
     def getPresentationSkin(self):
         return getattr(self, 'skin', None)
@@ -31,10 +31,10 @@ class Request:
 class IContact(zope.interface.Interface):
     "Demonstration content type"
 
-class Contact:
+class Contact(object):
     zope.interface.implements(IContact)
 
-class MyView:
+class MyView(object):
     def __init__(self, context, request):
         self.context, self.request = context, request
 
@@ -61,7 +61,7 @@ def test_view_lookup_fails_w_wrong_skin():
 class ICompany(zope.interface.Interface):
     "Demonstration content type"
 
-class Company:
+class Company(object):
     zope.interface.implements(ICompany)
 
 class ContactInCompanyView:
@@ -71,10 +71,10 @@ class ContactInCompanyView:
 class IFamily(zope.interface.Interface):
     "Demonstration content type"
 
-class Family:
+class Family(object):
     zope.interface.implements(IFamily)
 
-class ContactInFamilyView:
+class ContactInFamilyView(object):
     def __init__(self, contact, family, request):
         self.contact, self.family, self.request = contact, family, request
 
@@ -223,7 +223,7 @@ def test_default_skin_affects_lookup():
 
     >>> request = Request()
 
-    >>> class MyResource:
+    >>> class MyResource(object):
     ...    def __init__(self, request):
     ...        self.request = request
     >>> s.provideAdapter(IRequest, MyResource, name='foo', layer='custom')

@@ -11,18 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-Revision information:
+"""Placeless Test Setup
 
 $Id$
 """
-
-# A mix-in class inheriting from CleanUp that also connects the CA services
-
 from zope.testing.cleanup import CleanUp
 from zope.component import getGlobalServices
 from zope.component.servicenames import Adapters, Utilities, Presentation
 
+# A mix-in class inheriting from CleanUp that also connects the CA services
 class PlacelessSetup(CleanUp):
 
     def setUp(self):

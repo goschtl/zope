@@ -27,12 +27,11 @@ The reporter function is called with four arguments:
 
 $Id$
 """
-
 import __builtin__
 import sys
 
 
-class ReportingHook:
+class ReportingHook(object):
 
     def __init__(self, reporter):
         self.reporter = reporter

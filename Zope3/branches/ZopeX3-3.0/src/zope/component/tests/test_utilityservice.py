@@ -31,18 +31,18 @@ class IDummyUtility(Interface):
 class IDummerUtility(IDummyUtility):
     pass
 
-class DummyUtility:
+class DummyUtility(object):
     __name__ = 'DummyUtility'
     implements(IDummyUtility)
 
-class DummyUtility2:
+class DummyUtility2(object):
     implements(IDummyUtility)
     __name__ = 'DummyUtility2'
 
     def __len__(self):
         return 0
 
-class DummerUtility:
+class DummerUtility(object):
     __name__ = 'DummerUtility'
     implements(IDummerUtility)
 

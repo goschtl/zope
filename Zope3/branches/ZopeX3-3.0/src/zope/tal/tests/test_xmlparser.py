@@ -12,8 +12,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for XMLParser.py."""
+"""Tests for XMLParser.py.
 
+$Id$
+"""
 import sys
 import unittest
 
@@ -83,7 +85,7 @@ class EventCollectorExtra(EventCollector):
         self.append(("starttag_text", self.get_starttag_text()))
 
 
-class SegmentedFile:
+class SegmentedFile(object):
     def __init__(self, parts):
         self.parts = list(parts)
 

@@ -293,7 +293,7 @@ class Test(TestCase, CleanUp):
     def testAlwaysAvailable(self):
         from zope.security.checker import NamesChecker
         checker = NamesChecker(())
-        class C: pass
+        class C(object): pass
         self.assertEqual(checker.check(C, '__hash__'), None)
         self.assertEqual(checker.check(C, '__nonzero__'), None)
         self.assertEqual(checker.check(C, '__class__'), None)
@@ -318,7 +318,7 @@ class Test(TestCase, CleanUp):
     # values that evaluate to False
 
     def test_ProxyFactory(self):
-        class SomeClass:
+        class SomeClass(object):
             pass
         import zope.security
         checker = NamesChecker()
@@ -349,7 +349,7 @@ class Test(TestCase, CleanUp):
         self.assert_(getChecker(proxy) is specific_checker)
 
     def test_ProxyFactory_using_proxy(self):
-        class SomeClass:
+        class SomeClass(object):
             pass
         obj = SomeClass()
         checker = NamesChecker()

@@ -138,11 +138,10 @@ def test_multiple_registrations():
     >>> view.update()
     >>> request.response.getStatus()
     302
-
     """
 
 
-class FakeRegisterable:
+class FakeRegisterable(object):
     implements(IRegistered)
 
     def __init__(self, usages):
@@ -151,7 +150,7 @@ class FakeRegisterable:
     def registrations(self):
         return self._usages
 
-class FakeRegistration:
+class FakeRegistration(object):
 
     def __init__(self, status):
         self.status = status

@@ -30,7 +30,7 @@ class I31(I3): pass
 class I4(Interface): pass
 class I5(Interface): pass
 
-class Odd: __metaclass__ = odd.MetaClass
+class Odd(object): __metaclass__ = odd.MetaClass
 
 class B(Odd): __implemented__ = I2
 

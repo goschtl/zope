@@ -99,7 +99,7 @@ class ListTest(FieldTestBase):
 
         # however, allow anything that implements IField
         List(value_type=Field())
-        class FakeField:
+        class FakeField(object):
             implements(IField)
         List(value_type=FakeField())
 

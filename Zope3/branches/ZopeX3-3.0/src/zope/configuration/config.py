@@ -848,7 +848,7 @@ class ComplexStackItem(object):
     We need a handler for the complex directive. This is a class
     with a method for each subdirective:
 
-    >>> class Handler:
+    >>> class Handler(object):
     ...   def __init__(self, context, x, y):
     ...      self.context, self.x, self.y = context, x, y
     ...      context.action('init', f)

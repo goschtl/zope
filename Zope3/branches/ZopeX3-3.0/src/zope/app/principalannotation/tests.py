@@ -27,7 +27,7 @@ from zope.app.tests import setup
 from zope.interface import implements
 from zope.app import zapi
 
-class Principal:
+class Principal(object):
 
     implements(IPrincipal)
 

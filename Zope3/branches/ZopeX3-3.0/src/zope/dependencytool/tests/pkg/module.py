@@ -16,5 +16,5 @@
 $Id$
 """
 
-class SomeClass:
+class SomeClass(object):
     """Simple class with little to offer."""

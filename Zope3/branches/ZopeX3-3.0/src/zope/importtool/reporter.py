@@ -11,12 +11,12 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Import Reporter
 
 $Id$
 """
 
-class Reporter:
+class Reporter(object):
     """Trivial implementation of the reporter interface."""
 
     def request(self, importer, name, fromlist):

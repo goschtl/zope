@@ -67,7 +67,7 @@ class RegistrationView(BrowserView):
         return self.registrations[0]
 
 
-class Registered:
+class Registered(object):
 
     def __init__(self, context, request):
         self.context = context

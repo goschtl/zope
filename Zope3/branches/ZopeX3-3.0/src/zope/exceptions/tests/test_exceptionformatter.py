@@ -11,19 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-ExceptionFormatter tests.
+"""ExceptionFormatter tests.
 
-Revision information:
 $Id$
 """
-
-from unittest import TestCase, main, makeSuite
-from zope.testing.cleanup import CleanUp # Base class w registry cleanup
-
 import sys
-from zope.exceptions.exceptionformatter import format_exception
+from unittest import TestCase, main, makeSuite
 
+from zope.exceptions.exceptionformatter import format_exception
+from zope.testing.cleanup import CleanUp # Base class w registry cleanup
 
 def tb(as_html=0):
     t, v, b = sys.exc_info()
@@ -38,7 +34,7 @@ class ExceptionForTesting (Exception):
 
 
 
-class TestingTracebackSupplement:
+class TestingTracebackSupplement(object):
 
     source_url = '/somepath'
     line = 634
@@ -127,7 +123,7 @@ class Test(CleanUp, TestCase):
             self.fail('no exception occurred')
 
     def testQuoteLastLine(self):
-        class C: pass
+        class C(object): pass
         try: raise TypeError, C()
         except:
             s = tb(1)

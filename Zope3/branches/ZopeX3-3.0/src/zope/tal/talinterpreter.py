@@ -89,7 +89,7 @@ class AltTALGenerator(TALGenerator):
         return TALGenerator.replaceAttrs(self, attrlist, repldict)
 
 
-class TALInterpreter:
+class TALInterpreter(object):
 
     def __init__(self, program, macros, engine, stream=None,
                  debug=0, wrap=60, metal=1, tal=1, showtal=-1,

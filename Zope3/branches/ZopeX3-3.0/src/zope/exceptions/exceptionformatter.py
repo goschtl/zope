@@ -22,7 +22,7 @@ import linecache
 
 DEBUG_EXCEPTION_FORMATTER = 1
 
-class TextExceptionFormatter:
+class TextExceptionFormatter(object):
 
     line_sep = '\n'
     show_revisions = 0
