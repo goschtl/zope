@@ -22,7 +22,17 @@
 
     <require
         permission="zope.View"
+        interface=".interfaces.IReadMime"
+        />
+
+    <require
+        permission="zope.View"
         interface=".interfaces.IFile"
+        />
+
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IWriteMime"
         />
 
     <require

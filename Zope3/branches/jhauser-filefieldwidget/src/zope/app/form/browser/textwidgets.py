@@ -386,6 +386,47 @@ class PasswordWidget(TextWidget):
         raise NotImplementedError(
             'Cannot get a hidden tag for a password field')
 
+class FileWidget(TextWidget):
+    """File Widget"""
+
+    type = 'file'
+
+    def __call__(self):
+        displayMaxWidth = self.displayMaxWidth or 0
+        if displayMaxWidth > 0:
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=self.displayWidth,
+                                 maxlength=displayMaxWidth,
+                                 extra=self.extra)
+        else:
+            return renderElement(self.tag,
+                                 type=self.type,
+                                 name=self.name,
+                                 id=self.name,
+                                 cssClass=self.cssClass,
+                                 size=self.displayWidth,
+                                 extra=self.extra)
+
+    def _toFieldValue(self, input):
+        if input == '':
+            return self.context.missing_value
+        try:
+            seek = input.seek
+            read = input.read
+        except AttributeError, e:
+            raise ConversionError('Form input is not a file object', e)
+        else:
+            seek(0)
+            data = read()
+            if data or getattr(input, 'filename', ''):
+                return data
+            else:
+                return self.context.missing_value
+
 
 class IntWidget(TextWidget):
     displayWidth = 10

@@ -33,7 +33,7 @@ from zope.schema.interfaces import IMimeData, IMimeDataEncoding, IMimeType
 from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate
-from zope.schema.interfaces import ISchema
+from zope.schema.interfaces import ISchema, IMime
 from zope.schema.interfaces import IURI, IId, IFromUnicode
 from zope.schema.interfaces import ISource, IVocabulary
 
@@ -539,20 +539,24 @@ class Schema(Field):
 
     _type = None
     schema = None
-    factoryId = None
 
-    def __init__(self, schema, factoryId, **kw):
+    def __init__(self, schema, **kw):
         if not IInterface.providedBy(schema):
             raise WrongType
+        super(Schema, self).__init__(**kw)
             
         self.schema = schema
-        self.factoryId = factoryId
         super(Schema, self).__init__(**kw)
         
     def _validate(self, value):
         # schema has to be provided by value
         if not self.schema.providedBy(value):
             raise SchemaNotProvided
+
+
+class Mime(Schema):
+    __doc__ = IMime.__doc__
+    implements(IMime)
 
 
 class Dict(MinMaxLen, Iterable, Field):

@@ -424,20 +424,16 @@ class IObject(IField):
 class ISchema(IField):
     u"""Field containing an schema descriping the fields.
     
-    This is like a IObject field which defines and handles the factory itself.
     The Schema field is used for Object values. It gives a powerfull bridge
     to not only attributes as values. This makes it possible to define a simply
-    interface schema for schema based values.
+    interface schema for schema based objects.
     """
 
-    interface = Attribute("interface",
+    schema = Attribute("schema",
         _(u"The Interface that defines the Fields comprising the Object."))
 
-    factoryId = TextLine(
-        title=u"factoryId",
-        description=(u"The factory id which is used for to initalize the object."),
-        required=False,
-        default=None)
+class IMime(ISchema):
+    u"""Interface for Mime field"""
 
 # TODO: perhaps we should use TextLine for prevent inheriting IMinMaxLen
 class IMimeData(IBytes):

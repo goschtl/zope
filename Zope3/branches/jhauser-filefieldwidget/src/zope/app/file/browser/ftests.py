@@ -50,11 +50,13 @@ class FileTest(BrowserTestCase):
         response = self.publish(
             '/+/zope.app.file.File=',
             form={'type_name': u'zope.app.file.File',
-                  'field.data': StringIO('A file'),
-                  'field.contentType': '',
+                  'field.contents.data': StringIO('A file'),
+                  'field.contents.mimeType': u'',
+                  'field.contents.encoding': u'',
                   'add_input_name': u'file',
                   'UPDATE_SUBMIT': u'Add'},
             basic='mgr:mgrpw')
+
         self.assertEqual(response.getStatus(), 302)
         self.assertEqual(response.getHeader('Location'),
                          'http://localhost/@@contents.html')
@@ -66,35 +68,36 @@ class FileTest(BrowserTestCase):
     def testEditForm(self):
         self.addFile()
         response = self.publish(
-            '/file/@@edit.html',
+            '/file/fileedit.html',
             basic='mgr:mgrpw')
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('Change a file' in body)
+        self.assert_('Change a text file' in body)
         self.assert_('Content Type' in body)
         self.assert_('Data' in body)
         self.assert_(escape(self.content) in body)
-        self.checkForBrokenLinks(body, '/file/@@edit.html', 'mgr:mgrpw')
+        self.checkForBrokenLinks(body, '/file/@@fileedit.html', 'mgr:mgrpw')
 
     def testEdit(self):
         self.addFile()
         response = self.publish(
-            '/file/@@edit.html',
-            form={'field.contents.data': u'<h1>A File</h1>',
-                  'field.contents.contentType': u'text/plain',
-                  'field.contents.encoding': u'',
-                  'UPDATE_SUBMIT': u'Edit'},
+            '/file/fileedit.html',
+            form={'field.contents.data': '<h1>A File</h1>',
+                  'field.contents.mimeType': 'text/plain',
+                  'field.contents.encoding': '',
+                  'UPDATE_SUBMIT': u'Change'},
             basic='mgr:mgrpw')
+
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
-        self.assert_('Change a file' in body)
+        self.assert_('Change a text file' in body)
         self.assert_('Content Type' in body)
         self.assert_('Data' in body)
         self.assert_(escape(u'<h1>A File</h1>') in body)
         root = self.getRootFolder()
         file = root['file']
         self.assertEqual(file.open('r').read(), '<h1>A File</h1>')
-        self.assertEqual(file.contentType, 'text/plain')
+        self.assertEqual(file.getMimeType(), 'text/plain')
 
     def testUploadForm(self):
         self.addFile()
@@ -107,27 +110,28 @@ class FileTest(BrowserTestCase):
         self.assert_('Content Type' in body)
         self.assert_('Data' in body)
         self.failIf(escape(self.content) in body)
-        self.checkForBrokenLinks(body, '/file/@@upload.html', 'mgr:mgrpw')
+        self.checkForBrokenLinks(body, '/file/@@fileupload.html', 'mgr:mgrpw')
 
     def testUpload(self):
         self.addFile()
         response = self.publish(
             '/file/@@fileupload.html',
-            form={'field.contents.data': StringIO('<h1>A file</h1>'),
-                  'field.contents.contentType': u'text/plain',
-                  'field.contents.encoding': u'UTF-8',
-                  'UPDATE_SUBMIT': u'Change'},
-            basic='mgr:mgrpw')
+            basic='mgr:mgrpw',
+            form={'field.contents.data': StringIO('New file'),
+                  'field.contents.mimeType': u'',
+                  'field.contents.encoding': u'',
+                  'add_input_name': u'file',
+                  'UPDATE_SUBMIT': u'Add'})
         self.assertEqual(response.getStatus(), 200)
         body = response.getBody()
         self.assert_('Encoding Type' in body)
         self.assert_('Content Type' in body)
         self.assert_('Data' in body)
-        self.failIf(escape(u'<h1>A File</h1>') in body)
+        self.failIf(escape(u'<h1>New File</h1>') in body)
         root = self.getRootFolder()
         file = root['file']
-        self.assertEqual(file.open('r').read(), '<h1>A file</h1>')
-        self.assertEqual(file.contentType, 'text/plain')
+        self.assertEqual(file.open('r').read(), '<h1>New file</h1>')
+        self.assertEqual(file.getMimeType(), 'text/plain')
         
     def testIndex(self):
         self.addFile()

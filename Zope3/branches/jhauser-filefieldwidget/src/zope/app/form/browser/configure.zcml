@@ -138,50 +138,6 @@
 
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.ISchema"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".SchemaWidget"
-      permission="zope.Public"
-      />
-
-<!-- TODO:
-     The IMime field Mime is replace by ISchema field called Schema
-     find a way where we can register special widgets for Schema fields.
-     Perhaps we have to use subdirective in editforms <widget>
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IMime"
-      provides="zope.app.form.interfaces.IDisplayWidget"
-      factory=".MimeDisplayWidget"
-      permission="zope.Public"
-      />
--->
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IMimeData"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".MimeDataWidget"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IMimeDataEncoding"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".MimeDataEncodingWidget"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
-      for="zope.schema.interfaces.IMimeType"
-      provides="zope.app.form.interfaces.IInputWidget"
-      factory=".MimeTypeWidget"
-      permission="zope.Public"
-      />
-
-  <view
-      type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IASCII"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".BytesAreaWidget"
@@ -233,6 +189,61 @@
       for="zope.schema.interfaces.IPassword"
       provides="zope.app.form.interfaces.IInputWidget"
       factory=".PasswordWidget"
+      permission="zope.Public"
+      />
+
+<!-- TODO:
+     The IMime field Mime is replace by ISchema field called Schema
+     find a way where we can register special widgets for Schema fields.
+     Perhaps we have to use subdirective in editforms <widget>
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMime"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".MimeDisplayWidget"
+      permission="zope.Public"
+      />
+-->
+
+  <!-- Schema input widgets -->
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.ISchema"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".SchemaWidget"
+      permission="zope.Public"
+      />
+
+  <!-- Mime input widgets -->
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMime"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MimeWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMimeData"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MimeDataWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMimeDataEncoding"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MimeDataEncodingWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IMimeType"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory=".MimeTypeWidget"
       permission="zope.Public"
       />
 
@@ -433,6 +444,5 @@
       factory=".source.SourceListInputWidget"
       permission="zope.Public"
       />
-     
 
 </configure>

@@ -17,6 +17,7 @@ $Id$
 """
 
 from datetime import datetime
+from warnings import warn
 
 import zope.event
 
@@ -28,24 +29,6 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 __docformat__ = 'restructuredtext'
 
 
-class NewStyleFileView(object):
-
-    def show(self):
-        """Call the File"""
-        request = self.request
-        if request is not None:
-            request.response.setHeader('Content-Type',
-                                       self.context.contentType)
-            request.response.setHeader('Content-Length',
-                                       self.context.getSize())
-
-        # TODO: use self.context.open('r').read() instead directly
-        # access the MimeData via .contents
-        # But first we have to support read and write permission in
-        # the open method
-        return self.context.contents.open('r').read()
-
-
 class FileView(object):
 
     def show(self):
@@ -53,20 +36,29 @@ class FileView(object):
         request = self.request
         if request is not None:
             request.response.setHeader('Content-Type',
-                                       self.context.contentType)
+                                       self.context.getMimeType())
             request.response.setHeader('Content-Length',
                                        self.context.getSize())
 
-        return self.context.data
+        # TODO: use self.context.open('r').read() instead directly
+        # access the MimeData via .contents
+        # But first we have to support read and write permission in
+        # the open method
+        return self.context.open().read()
 
 
+# BBB: depricated view, replaced by editform for new style files
 class FileUpdateView(object):
 
     def __init__(self, context, request):
+        warn("The IFile FileUpdateView view is deprecated, use addform directive",
+            DeprecationWarning, 2)
         self.context = context
         self.request = request
 
     def errors(self):
+        warn("The IFile FileUpdateView view is deprecated, use addform directive",
+            DeprecationWarning, 2)
         form = self.request.form
         if "UPDATE_SUBMIT" in form:
             filename = getattr(form["field.data"], "filename", None)
@@ -80,6 +72,8 @@ class FileUpdateView(object):
         return ''
 
 
+
+# BBB: depricated view, replaced by addform for new style files
 class FileAdd(FileUpdateView):
     """View that adds a new File object based on a file upload.
 
@@ -130,7 +124,15 @@ class FileAdd(FileUpdateView):
 
     """
 
+    def __init__(self, context, request):
+        warn("The IFile FileAdd view is deprecated, use addform directive",
+            DeprecationWarning, 2)
+        self.context = context
+        self.request = request
+
     def update_object(self, data, contenttype):
+        warn("The IFile FileAdd view is deprecated, use addform directive",
+            DeprecationWarning, 2)
         f = File(data, contenttype)
         zope.event.notify(objectevent.ObjectCreatedEvent(f))
         self.context.add(f)
@@ -138,6 +140,8 @@ class FileAdd(FileUpdateView):
         return ''
 
 
+
+# BBB: depricated view, replaced by editform for new style files
 class FileUpload(FileUpdateView):
     """View that updates an existing File object with a new upload.
 
@@ -177,7 +181,15 @@ class FileUpload(FileUpdateView):
     'text/plain'
     """
 
+    def __init__(self, context, request):
+        warn("The IFile FileUpload view is deprecated, use addform directive",
+            DeprecationWarning, 2)
+        self.context = context
+        self.request = request
+
     def update_object(self, data, contenttype):
+        warn("The IFile FileUpload view is deprecated, use editform directive",
+            DeprecationWarning, 2)
         self.context.contentType = contenttype
         self.context.data = data
         formatter = self.request.locale.dates.getFormatter(

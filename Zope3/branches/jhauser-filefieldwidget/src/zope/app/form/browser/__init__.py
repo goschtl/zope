@@ -21,7 +21,7 @@ from zope.app.form.browser.widget import BrowserWidget, DisplayWidget
 
 from zope.app.form.browser.textwidgets import TextWidget, BytesWidget
 from zope.app.form.browser.textwidgets import TextAreaWidget, BytesAreaWidget
-from zope.app.form.browser.textwidgets import PasswordWidget
+from zope.app.form.browser.textwidgets import PasswordWidget, FileWidget
 from zope.app.form.browser.textwidgets import ASCIIWidget
 from zope.app.form.browser.textwidgets import IntWidget, FloatWidget
 from zope.app.form.browser.textwidgets import DatetimeWidget, DateWidget
@@ -33,11 +33,12 @@ from zope.app.form.browser.textwidgets import BytesDisplayWidget
 from zope.app.form.browser.schemawidgets import SchemaWidget
 
 # Widgets for file-based fields
-from zope.app.form.browser.filewidgets import FileWidget
-from zope.app.form.browser.filewidgets import MimeDataWidget
-from zope.app.form.browser.filewidgets import MimeDataEncodingWidget
-from zope.app.form.browser.filewidgets import MimeTypeWidget
-from zope.app.form.browser.filewidgets import MimeDisplayWidget
+from zope.app.form.browser.mimewidgets import MimeWidget
+from zope.app.form.browser.mimewidgets import MimeTextWidget
+from zope.app.form.browser.mimewidgets import MimeDataWidget
+from zope.app.form.browser.mimewidgets import MimeDataEncodingWidget
+from zope.app.form.browser.mimewidgets import MimeTypeWidget
+from zope.app.form.browser.mimewidgets import MimeDisplayWidget
 
 # Widgets for boolean fields
 from zope.app.form.browser.boolwidgets import CheckBoxWidget

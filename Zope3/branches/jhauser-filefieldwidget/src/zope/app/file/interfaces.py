@@ -18,8 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.schema import Bytes
-from zope.schema import MimeData, MimeDataEncoding, MimeType
-from zope.schema import Schema
+from zope.schema import Mime, MimeData, MimeDataEncoding, MimeType
 from zope.interface import Interface
 from zope.app.i18n import ZopeMessageIDFactory as _
 
@@ -59,9 +58,6 @@ class IFileStorage(IReadFileStorage, IWriteFileStorage):
 
 class IReadMime(Interface):
     """Mime read interface."""
-
-    def getSize():
-        """Return the byte-size of the data of the object."""
 
     def getMimeType():
         """Return the mime-type of the file."""
@@ -120,10 +116,10 @@ class IFile(Interface):
 
     # TODO: rember, we remove the contentType  field from the interface
 
-    contents = Schema(IMime, "zope.app.file.Mime",
-        title = _(u'The file data'),
-        description = _(u'The mime information and file data, which can be '
-                         'read as a file.'),
+    contents = Mime(
+        schema=IMime,
+        title = _(u'Mime file'),
+        description = _(u'The mime information and file data'),
         default=None,
         missing_value=None,
         required=False,

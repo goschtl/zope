@@ -18,17 +18,29 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 
-from zope.interface import implements
-
 from zope.app.form.interfaces import IInputWidget, ConversionError
-from zope.app.form.browser.widget import SimpleInputWidget, renderElement
 from zope.app.form import InputWidget
-from zope.app.form.browser.widget import BrowserWidget
-from zope.app.form.browser.textwidgets import BytesWidget
-from zope.app.form.browser.widget import DisplayWidget
-from zope.app.form.browser.textwidgets import TextWidget, escape
-from zope.app.form.browser.schemawidgets import SchemaWidget
+from zope.app.form import CustomWidgetFactory
+from zope.app.form.browser import BrowserWidget, DisplayWidget
+from zope.app.form.browser import BytesAreaWidget
+from zope.app.form.browser import BytesWidget
+from zope.app.form.browser import TextWidget
+from zope.app.form.browser import SchemaWidget
+from zope.app.form.browser.widget import SimpleInputWidget, renderElement
+from zope.app.form.browser.textwidgets import escape
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+
+
+class MimeWidget(SchemaWidget):
+    """Default Mime field widget."""
+
+    _factoryId = "zope.app.file.Mime"
+
+
+class MimeTextWidget(MimeWidget):
+    """IFile edit view used in editform for text-based files."""
+
+    data_widget = CustomWidgetFactory(BytesAreaWidget)
 
 
 class MimeDataWidget(TextWidget):
@@ -144,115 +156,3 @@ class MimeDisplayWidget(DisplayWidget):
         show = u"Filename %s, size in bytes: %s" (content.filename,
                                                   content.getSize())
         return renderElement("span", contents=escape(show))
-
-
-
-# TODO remove old implementations
-class FileWidget(SimpleInputWidget):
-    """File Widget"""
-
-    type = 'file'
-
-    default = ''
-    displayWidth = 20
-    displayMaxWidth = ""
-    extra = ''
-    style = ''
-    convert_missing_value = True
-
-    def __call__(self):
-        displayMaxWidth = self.displayMaxWidth or 0
-        if displayMaxWidth > 0:
-            return renderElement(self.tag,
-                                 type=self.type,
-                                 name=self.name,
-                                 id=self.name,
-                                 cssClass=self.cssClass,
-                                 size=self.displayWidth,
-                                 maxlength=displayMaxWidth,
-                                 extra=self.extra)
-        else:
-            return renderElement(self.tag,
-                                 type=self.type,
-                                 name=self.name,
-                                 id=self.name,
-                                 cssClass=self.cssClass,
-                                 size=self.displayWidth,
-                                 extra=self.extra)
-
-    def _toFieldValue(self, input):
-        if input == '':
-            return self.context.missing_value
-        try:
-            seek = input.seek
-            read = input.read
-        except AttributeError, e:
-            raise ConversionError('Form input is not a file object', e)
-        else:
-            seek(0)
-            data = read()
-            if data or getattr(input, 'filename', ''):
-                return data
-            else:
-                return self.context.missing_value
-
-# TODO: remove it
-class XXXMimeWidget(SimpleInputWidget):
-    u"""Mime file upload widget"""
-
-    type = 'file'
-
-    default = ''
-    displayWidth = 20
-    displayMaxWidth = ""
-    extra = ''
-    style = ''
-    convert_missing_value = True
-
-    def __call__(self):
-        # XXX set the width to 40 to be sure to recognize this widget
-        displayMaxWidth = self.displayMaxWidth or 0
-        if displayMaxWidth > 0:
-            return renderElement(self.tag,
-                                 type=self.type,
-                                 name=self.name,
-                                 id=self.name,
-                                 cssClass=self.cssClass,
-                                 size=40,
-                                 maxlength=40,
-                                 extra=self.extra)
-        else:
-            return renderElement(self.tag,
-                                 type=self.type,
-                                 name=self.name,
-                                 id=self.name,
-                                 cssClass=self.cssClass,
-                                 size=40,
-                                 extra=self.extra)
-
-    def _toFieldValue(self, input):
-        if input == '':
-            return self.context.missing_value
-        try:
-            seek = input.seek
-            read = input.read
-        except AttributeError, e:
-            raise ConversionError('Form input is not a file object', e)
-        else:
-            # if the FileUpload instance has no filename set, there is
-            # no upload.
-            if getattr(input, 'filename', ''):
-                return input
-            else:
-                return self.context.missing_value
-
-    def applyChanges(self, content):
-        field = self.context
-        value = self.getInputValue()
-        # need to test for value, as an empty field is not an error, but
-        # the current file should not be replaced.
-        if value and (field.query(content, self) != value):
-            field.set(content, value)
-            return True
-        else:
-            return False

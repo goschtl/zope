@@ -18,7 +18,7 @@ $Id$
 from zope.schema._field import Field, Container, Iterable, Orderable
 from zope.schema._field import MinMaxLen, Choice
 from zope.schema._field import Bytes, ASCII, BytesLine
-from zope.schema._field import MimeData, MimeDataEncoding, MimeType
+from zope.schema._field import Mime, MimeData, MimeDataEncoding, MimeType
 from zope.schema._field import Text, TextLine, Bool, Int, Float
 from zope.schema._field import Tuple, List, Set
 from zope.schema._field import Password, Dict, Datetime, Date, SourceText

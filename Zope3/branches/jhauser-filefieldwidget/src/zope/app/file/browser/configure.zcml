@@ -15,18 +15,27 @@
 
   <browser:addMenuItem
       class="zope.app.file.interfaces.IFile"
-      title="- File"
+      title="File"
       description="A content type File"
       permission="zope.ManageContent"
-      view="addFile.html"
+      view="zope.app.file.File"
       />
 
   <browser:addform
-      name="addFile.html"
-      label="Add a content type File"
+      name="zope.app.file.File"
+      label="Add a File"
       schema="zope.app.file.interfaces.IFile"
       fields="contents"
       content_factory="zope.app.file.File"
+      permission="zope.ManageContent"
+      />
+
+  <browser:editform
+      name="fileupload.html"
+      menu="zmi_views" title="Upload"
+      for="zope.app.file.interfaces.IFile"
+      schema="zope.app.file.interfaces.IFile"
+      fields="contents"
       permission="zope.ManageContent"
       />
 
@@ -39,90 +48,25 @@
 
   <browser:editform
       name="fileedit.html"
+      for="zope.app.file.interfaces.IFile"
       schema="zope.app.file.interfaces.IFile"
+      fields="contents"
       label="Change a text file"
       permission="zope.ManageContent" 
       >
 
     <widget
-        field="data"
-        class="zope.app.form.browser.BytesAreaWidget" />
+        field="contents"
+        class="zope.app.form.browser.MimeTextWidget" />
 
   </browser:editform>
 
-  <browser:editform
-      name="fileupload.html"
-      menu="zmi_views" title="Upload"
-      for="zope.app.file.interfaces.IFile"
-      schema="zope.app.file.interfaces.IFile"
-      fields="contents"
-      permission="zope.ManageContent"
-      />
-
-  <browser:page
-      for="zope.app.file.interfaces.IFile"
-      name="index.html"
-      permission="zope.View"
-      class=".file.NewStyleFileView"
-      attribute="show"
-      />
-
-<!-- BBB: old style files -->
-
-  <browser:menuItem
-      menu="zmi_views" title="Edit"
-      for="zope.app.file.interfaces.IFile"
-      action="edit.html"
-      filter="python:context.contentType.startswith('text/')"
-      permission="zope.ManageContent" />
-
-  <browser:editform
-      name="edit.html"
-      schema="zope.app.file.interfaces.IFile"
-      label="Change a file"
-      permission="zope.ManageContent" 
-      >
-
-    <widget
-        field="data"
-        class="zope.app.form.browser.BytesAreaWidget" />
-
-  </browser:editform>
-
-  <browser:page
-      name="upload.html"
-      menu="zmi_views" title="BBB Upload"
-      for="zope.app.file.interfaces.IFile"
-      template="file_upload.pt"
-      class=".file.FileUpload"
-      permission="zope.ManageContent"
-      />
-
-<!-- add the index.html view back for BBB files
-     TODO: Perhaps we can use menuItem and filter/condition
   <browser:page
       for="zope.app.file.interfaces.IFile"
       name="index.html"
       permission="zope.View"
       class=".file.FileView"
       attribute="show"
-      />
--->
-
-  <browser:addMenuItem
-      class="zope.app.file.File"
-      title="File"
-      description="A File"
-      permission="zope.ManageContent"
-      view="zope.app.file.File"
-      />
-
-  <browser:page
-      name="zope.app.file.File"
-      for="zope.app.container.interfaces.IAdding"
-      template="file_add.pt"
-      class=".file.FileAdd"
-      permission="zope.ManageContent"
       />
 
   <browser:icon
@@ -144,5 +88,36 @@
         />
 
   </configure>
+
+<!-- BBB: old style files -->
+
+  <browser:menuItem
+      menu="zmi_views" title="Edit (BBB)"
+      for="zope.app.file.interfaces.IFile"
+      action="edit.html"
+      filter="python:context.contents.mimeType.startswith('text/')"
+      permission="zope.ManageContent" />
+
+  <browser:editform
+      name="edit.html"
+      schema="zope.app.file.interfaces.IFile"
+      label="Change a file"
+      permission="zope.ManageContent" 
+      >
+
+    <widget
+        field="data"
+        class="zope.app.form.browser.BytesAreaWidget" />
+
+  </browser:editform>
+
+  <browser:page
+      name="upload.html"
+      menu="zmi_views" title="Upload (BBB)"
+      for="zope.app.file.interfaces.IFile"
+      template="file_upload.pt"
+      class=".file.FileUpload"
+      permission="zope.ManageContent"
+      />
 
 </configure>
