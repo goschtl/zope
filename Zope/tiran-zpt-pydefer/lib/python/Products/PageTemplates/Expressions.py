@@ -20,9 +20,28 @@ for Python expressions, string literals, and paths.
 __version__='$Revision: 1.45 $'[11:-2]
 
 import re, sys
-from TALES import Engine, CompilerError, _valid_name, NAME_RE, \
-     Undefined, Default, _parse_expr
-from Acquisition import aq_base, aq_inner, aq_parent
+from TALES import Engine
+from TALES import CompilerError
+from TALES import _valid_name
+from TALES import NAME_RE
+from TALES import Undefined
+from TALES import Default
+from TALES import _parse_expr
+from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
+import AccessControl
+import AccessControl.cAccessControl
+# XXX what about pyAccessControl?
+acquisition_security_filter = AccessControl.cAccessControl.aq_validate
+from AccessControl import getSecurityManager
+from AccessControl.ZopeGuards import guarded_getattr
+from AccessControl import Unauthorized
+from ZRPythonExpr import PythonExpr
+from ZRPythonExpr import _SecureModuleImporter
+from ZRPythonExpr import call_with_ns
+from DeferExpr import DeferWrapper
+from DeferExpr import DeferExpr
 
 
 _engine = None
@@ -43,14 +62,6 @@ def installHandlers(engine):
     reg('python', PythonExpr)
     reg('not', NotExpr)
     reg('defer', DeferExpr)
-
-import AccessControl
-import AccessControl.cAccessControl
-acquisition_security_filter = AccessControl.cAccessControl.aq_validate
-from AccessControl import getSecurityManager
-from AccessControl.ZopeGuards import guarded_getattr
-from AccessControl import Unauthorized
-from ZRPythonExpr import PythonExpr, _SecureModuleImporter, call_with_ns
 
 SecureModuleImporter = _SecureModuleImporter()
 
@@ -234,29 +245,6 @@ class NotExpr:
 
     def __repr__(self):
         return 'not:%s' % `self._s`
-
-class DeferWrapper:
-    def __init__(self, expr, econtext):
-        self._expr = expr
-        self._econtext = econtext
-
-    def __str__(self):
-        return str(self())
-
-    def __call__(self):
-        return self._expr(self._econtext)
-
-class DeferExpr:
-    def __init__(self, name, expr, compiler):
-        self._s = expr = expr.lstrip()
-        self._c = compiler.compile(expr)
-
-    def __call__(self, econtext):
-        return DeferWrapper(self._c, econtext)
-
-    def __repr__(self):
-        return 'defer:%s' % `self._s`
-
 
 def restrictedTraverse(object, path, securityManager,
                        get=getattr, has=hasattr, N=None, M=[],
