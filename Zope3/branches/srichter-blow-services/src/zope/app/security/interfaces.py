@@ -33,13 +33,13 @@ class IUnauthenticatedPrincipal(IPrincipal):
     Authenticated principals are preferable to UnauthenticatedPrincipals.
     """
 
-class IAuthenticationUtility(Interface):
+class IAuthentication(Interface):
     """Provide support for establishing principals for requests.
 
     This is implemented by performing protocol-specific actions, such as
     issuing challenges or providing login interfaces.
 
-    `IAuthenticationUtility` objects are used to implement authentication
+    `IAuthentication` objects are used to implement authentication
     utilities. Because they implement utilities, they are expected to
     collaborate with utilities in other contexts. Client code doesn't search a
     context and call multiple utilities. Instead, client code will call the
@@ -119,11 +119,12 @@ class IAuthenticationUtility(Interface):
         object hierarchy.
         """
 
+class IAuthenticationUtility(IAuthentication):
+    """This interface is deprecated
+    """
+    
     def getPrincipals(name):
-        """Get principals with matching names.
-
-        Get an iterable object with the principals with names that are
-        similar to (e.g. contain) the given name.
+        """This interface is deprecated
         """
 
 ############################################################################
@@ -134,7 +135,7 @@ IAuthenticationService = IAuthenticationUtility
 class ILoginPassword(Interface):
     """A password based login.
 
-    An `IAuthenticationUtility` would use this (adapting a request),
+    An `IAuthentication` would use this (adapting a request),
     to discover the login/password passed from the user, or to
     indicate that a login is required.
     """

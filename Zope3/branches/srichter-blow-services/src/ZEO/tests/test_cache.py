@@ -114,13 +114,11 @@ class CacheTests(unittest.TestCase):
             n = p64(i)
             self.cache.store(n, "", n, None, data[i])
             self.assertEquals(len(self.cache), i + 1)
-            self.assert_(self.cache.fc.currentsize < maxsize)
         # The cache now uses 1225 bytes.  The next insert
         # should delete some objects.
         n = p64(50)
         self.cache.store(n, "", n, None, data[51])
         self.assert_(len(self.cache) < 51)
-        self.assert_(self.cache.fc.currentsize <= maxsize)
 
         # XXX Need to make sure eviction of non-current data
         # and of version data are handled correctly.
@@ -145,7 +143,7 @@ class CacheTests(unittest.TestCase):
         # Verify that internals of both objects are the same.
         # Could also test that external API produces the same results.
         eq = self.assertEqual
-        eq(copy.tid, self.cache.tid)
+        eq(copy.getLastTid(), self.cache.getLastTid())
         eq(len(copy), len(self.cache))
         eq(copy.version, self.cache.version)
         eq(copy.current, self.cache.current)

@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Setup local Pluggable Authentication Service for tests
+"""Setup local Pluggable Authentication for tests
 
 This setup class can be used, if a set of local principals are required for a
 test.
@@ -24,10 +24,10 @@ from zope.publisher.browser import TestRequest as Request
 from zope.app.testing import ztapi, setup
 from zope.app.component.testing import PlacefulSetup
 from zope.publisher.interfaces.http import IHTTPCredentials
-from zope.app.security.interfaces import ILoginPassword
+from zope.app.security.interfaces import ILoginPassword, IAuthentication
 from zope.app.security.basicauthadapter import BasicAuthAdapter
 from zope.app.pluggableauth import \
-     PrincipalAuthenticationView, PluggableAuthenticationService, \
+     PrincipalAuthenticationView, PluggableAuthentication, \
      BTreePrincipalSource, SimplePrincipal
 from zope.app.pluggableauth.interfaces import IPrincipalSource
 
@@ -40,8 +40,8 @@ class AuthSetup(PlacefulSetup):
         ztapi.browserView(IPrincipalSource, "login",
                           PrincipalAuthenticationView)
 
-        auth = setup.addService(sm, "PluggableAuthService",
-                                PluggableAuthenticationService(None, True))
+        auth = setup.addUtility(sm, '', IAuthentication,
+                                PluggableAuthentication(None, True))
 
         one = BTreePrincipalSource()
         two = BTreePrincipalSource()

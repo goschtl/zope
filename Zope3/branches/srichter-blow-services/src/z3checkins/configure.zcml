@@ -1,8 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
-    i18n_domain='z3checkins'
-    >
+    i18n_domain='z3checkins'>
 
 <!-- CheckinMessage content object -->
 
@@ -40,6 +39,9 @@
      <require permission="zope.View"
               interface=".interfaces.ICheckinFolderSchema" />
 
+     <require permission="zope.View"
+              attributes="messages" />
+
      <factory id="z3checkins.CheckinFolder"
               title="Checkin Folder"
               description="A checkin folder" />
@@ -50,11 +52,6 @@
   </content>
 
 <!-- Utilities -->
-
-  <adapter for="zope.app.container.interfaces.IReadContainer"
-           factory=".message.MessageContainerAdapter"
-           permission="zope.View"
-           provides=".interfaces.IMessageArchive" />
 
   <adapter for=".interfaces.ICheckinFolder"
            factory=".folder.MessageNameChooser"
@@ -73,12 +70,12 @@
 
 <!-- Generic views for date/time formatting -->
 
-  <!-- XXX: there should be an interface that datetime.datetime implements -->
+  <!-- TODO: there should be an interface that datetime.datetime implements -->
 
   <view
     for="*"
     name="rfc822"
-    factory=".message.RFCDateTimeFormatter"
+    factory=".timeutils.RFCDateTimeFormatter"
     type="zope.publisher.interfaces.http.IHTTPRequest"
     permission="zope.Public"
     />
@@ -86,7 +83,7 @@
   <view
     for="*"
     name="isodatetime"
-    factory=".message.ISODateTimeFormatter"
+    factory=".timeutils.ISODateTimeFormatter"
     type="zope.publisher.interfaces.http.IHTTPRequest"
     permission="zope.Public"
     />
@@ -99,11 +96,11 @@
     fields="data"
     label="Upload a checkin message"
     permission="zope.ManageContent"
-    class=".message.MessageUpload" />
+    class=".browser.MessageUpload" />
 
   <browser:addMenuItem
     title="Checkin message"
-    class=".message.MessageUpload"
+    class=".browser.MessageUpload"
     permission="zope.ManageContent"
     view="CheckinMessage" />
 
@@ -135,9 +132,9 @@
 
   <browser:editform
     name="EditFolder"
-    schema=".interfaces.ICheckinFolder"
+    schema=".interfaces.ICheckinFolderSchema"
     label="Change properties of a checkin message folder"
-    menu="zmi_views" title="Edit"
+    menu="zmi_views" title="Edit properties"
     permission="zope.ManageContent" />
 
 <!-- Browser views: email message -->
@@ -145,7 +142,7 @@
   <browser:page
     for=".interfaces.IMessage"
     name="rss"
-    class=".message.MessageRSSView"
+    class=".browser.MessageRSSView"
     attribute="index"
     permission="zope.View" />
 
@@ -153,28 +150,28 @@
     for=".interfaces.IMessage"
     name="html"
     template="message_part.pt"
-    class=".message.MessageView"
+    class=".browser.MessageView"
     permission="zope.View" />
 
   <browser:page
     for=".interfaces.IMessage"
     name="html-sidebar"
     template="message_sidebar.pt"
-    class=".message.MessageView"
+    class=".browser.MessageView"
     permission="zope.View" />
 
   <browser:page
     for=".interfaces.IMessage"
     name="index.html"
     template="message.pt"
-    class=".message.MessageView"
+    class=".browser.MessageView"
     permission="zope.View" />
 
   <browser:page
     for=".interfaces.IMessage"
     name="index.txt"
-    template="message_plain.pt"
-    class=".message.MessageView"
+    class=".browser.MessageView"
+    attribute="body_plain"
     permission="zope.View" />
 
 <!-- Browser views: checkin message -->
@@ -182,7 +179,7 @@
   <browser:page
     for=".interfaces.ICheckinMessage"
     name="rss"
-    class=".message.MessageRSSView"
+    class=".browser.MessageRSSView"
     attribute="index"
     permission="zope.View" />
 
@@ -190,29 +187,22 @@
     for=".interfaces.ICheckinMessage"
     name="html"
     template="message_part.pt"
-    class=".message.CheckinMessageView"
+    class=".browser.CheckinMessageView"
     permission="zope.View" />
 
   <browser:page
     for=".interfaces.ICheckinMessage"
     name="html-sidebar"
     template="message_sidebar.pt"
-    class=".message.CheckinMessageView"
+    class=".browser.CheckinMessageView"
     permission="zope.View" />
 
   <browser:page
     for=".interfaces.ICheckinMessage"
     name="index.html"
     template="message.pt"
-    class=".message.CheckinMessageView"
+    class=".browser.CheckinMessageView"
     menu="zmi_views" title="Preview"
-    permission="zope.View" />
-
-  <browser:page
-    for=".interfaces.ICheckinMessage"
-    name="index.txt"
-    template="message_plain.pt"
-    class=".message.CheckinMessageView"
     permission="zope.View" />
 
 <!-- Browser views: bookmark -->
@@ -225,25 +215,30 @@
 
 <!-- Browser views: containers -->
 
+  <browser:containerViews
+      for=".interfaces.ICheckinFolder"
+      contents="zope.ManageContent" />
+
   <browser:page
     for=".interfaces.ICheckinFolder"
     name="checkins.rss"
     template="rss_container.pt"
-    class=".message.ContainerView"
+    class=".browser.ContainerView"
     permission="zope.View" />
 
   <browser:page
     for=".interfaces.ICheckinFolder"
     name="index.html"
     template="container.pt"
-    class=".message.ContainerView"
-    permission="zope.View" />
+    class=".browser.ContainerView"
+    permission="zope.View"
+    menu="zmi_views" title="View" />
 
   <browser:page
     for=".interfaces.ICheckinFolder"
     name="checkins-sidebar.html"
     template="container_sidebar.pt"
-    class=".message.ContainerView"
+    class=".browser.ContainerView"
     permission="zope.View" />
 
 <!-- Resources -->

@@ -20,7 +20,7 @@ import os
 import sys
 
 
-SOFTWARE_HOME = "<<SOFTWARE_HOME>>"
+SOFTWARE_HOME = r"<<SOFTWARE_HOME>>"
 INSTANCE_HOME = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 CONFIG_FILE = os.path.join(INSTANCE_HOME, "etc", "zope.conf")
 

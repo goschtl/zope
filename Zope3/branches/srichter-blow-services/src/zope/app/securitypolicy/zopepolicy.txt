@@ -75,7 +75,7 @@ are grants:
   >>> interaction.checkPermission('P1', ob)
   False
 
-But CheckerPublic permission id always have a permission:
+Note, however, that we always have the CheckerPublic permission:
 
   >>> from zope.security.checker import CheckerPublic
   >>> interaction.checkPermission(CheckerPublic, ob)
@@ -496,16 +496,16 @@ among other things, converting a principal id to a principal.
 For our examples here, we'll create and register a stub principal
 authentication service:
 
-  >>> from zope.app.security.interfaces import IAuthenticationUtility
+  >>> from zope.app.security.interfaces import IAuthentication
   >>> class FauxPrincipals(dict):
-  ...     zope.interface.implements(IAuthenticationUtility)
+  ...     zope.interface.implements(IAuthentication)
   ...     def getPrincipal(self, id):
   ...         return self[id]
 
   >>> auth = FauxPrincipals()
 
   >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(IAuthenticationUtility, auth)
+  >>> ztapi.provideUtility(IAuthentication, auth)
   >>> from zope.app import zapi
 
 Let's define a group:

@@ -1,15 +1,13 @@
 """
 Interfaces for the z3checkins product.
 
-$Id: interfaces.py,v 1.14 2004/05/15 13:23:57 gintautasm Exp $
+$Id$
 """
 
 from zope.interface import Interface, Attribute
-from zope.app.folder.interfaces import IFolder
 from zope.app.container.interfaces import IContainer, IContained
-from zope.app.container.constraints import ContainerTypesConstraint
-from zope.app.container.constraints import ItemTypePrecondition
-from zope.schema import Field, Text, TextLine
+from zope.app.container.constraints import contains, containers
+from zope.schema import Field, Text, TextLine, List, Object, Datetime
 
 
 class IMessageUpload(Interface):
@@ -19,13 +17,13 @@ class IMessageUpload(Interface):
 class IMessage(IMessageUpload):
     """Mail message."""
 
-    message_id = Attribute("Unique message ID")
-    author_name = Attribute("Author's real name")
-    author_email = Attribute("Author's email address")
-    subject = Attribute("Subject line of the message")
-    date = Attribute("Date and time of the message")
-    body = Attribute("Body of the message")
-    full_text = Attribute("Full message text (headers and body)")
+    message_id = TextLine(title=u"Unique message ID")
+    author_name = TextLine(title=u"Author's real name")
+    author_email = TextLine(title=u"Author's email address")
+    subject = TextLine(title=u"Subject line of the message")
+    date = Datetime(title=u"Date and time of the message")
+    body = Text(title=u"Body of the message")
+    full_text = Text(title=u"Full message text (headers and body)")
 
 
 class ICheckinMessage(IMessage):
@@ -69,42 +67,20 @@ class ICheckinFolderSchema(Interface):
     icons = Text(title=u"Icon definitions", required=False)
 
 
-class ICheckinFolder(IFolder, ICheckinFolderSchema):
+class ICheckinFolder(IContainer, ICheckinFolderSchema):
     """A marker interface for the checkins folder."""
 
-    def __setitem__(name, object):
-        """Add a message"""
+    contains(IMessageUpload)
 
-    __setitem__.precondition = ItemTypePrecondition(IMessageUpload)
+    messages = List(title=u"Messages",
+                    description=u"""
+                    Messages in this container, sorted by date in
+                    descending order.
+                    """,
+                    value_type=Object(title=u"A message", schema=IMessage))
 
 
 class IMessageContained(IContained):
     """A contained message."""
 
-    __parent__ = Field(constraint=ContainerTypesConstraint(ICheckinFolder))
-
-
-class IMessageArchive(Interface):
-    """A chronologically ordered sequence of messages.
-
-    Implements the Python sequence procotol.
-    """
-
-    def __len__():
-        """Returns the number of messages in the archive."""
-
-    def __getitem__(index):
-        """Returns a given message."""
-
-    def __getslice__(start, stop):
-        """Returns a range of messages."""
-
-    def __iter__():
-        """Returns an iterator."""
-
-    def index(message):
-        """Returns the index of a given message.
-
-        Raises ValueError if message is not in the archive.
-        """
-
+    containers(ICheckinFolder)

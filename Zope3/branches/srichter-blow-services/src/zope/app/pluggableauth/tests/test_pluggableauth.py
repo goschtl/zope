@@ -27,12 +27,13 @@ from zope.app.security.interfaces import PrincipalLookupError
 from zope.publisher.interfaces.http import IHTTPCredentials
 
 from zope.app.pluggableauth import BTreePrincipalSource, \
-     SimplePrincipal, PluggableAuthenticationService, \
+     SimplePrincipal, PluggableAuthentication, \
      PrincipalAuthenticationView
 from zope.app.pluggableauth.interfaces import IPrincipalSource
 
 from zope.app.pluggableauth.interfaces import IUserSchemafied
 from zope.app.security.interfaces import IPrincipal, ILoginPassword
+from zope.app.security.interfaces import IAuthentication
 from zope.app.security.basicauthadapter import BasicAuthAdapter
 
 from zope.publisher.browser import TestRequest as Request
@@ -51,8 +52,8 @@ class Setup(placefulsetup.PlacefulSetup, TestCase):
         ztapi.browserView(IPrincipalSource, "login",
                           PrincipalAuthenticationView)
 
-        auth = setup.addService(sm, "TestPluggableAuthenticationService",
-                                PluggableAuthenticationService(None, True))
+        auth = setup.addUtility(sm, "", IAuthentication,
+                                PluggableAuthentication(None, True))
 
         one = BTreePrincipalSource()
         two = BTreePrincipalSource()
@@ -87,9 +88,9 @@ class Setup(placefulsetup.PlacefulSetup, TestCase):
         return Request(**dict)
 
 
-class AuthServiceTest(Setup):
+class AuthUtilityTest(Setup):
 
-    def testAuthServiceAuthenticate(self):
+    def testAuthUtilityAuthenticate(self):
         auth = self._auth
         req = self.getRequest('slinkp', '123')
         pid = auth.authenticate(req).getLogin()
@@ -119,7 +120,7 @@ class AuthServiceTest(Setup):
     def _fail_BadIdLength(self):
         self._auth.getPrincipal((self._auth.earmark, None, None))
 
-    def testAuthServiceGetPrincipal(self):
+    def testAuthUtilityGetPrincipal(self):
         auth = self._auth
         id = self._slinkp.id
         self.assertEqual(self._slinkp, auth.getPrincipal(id))
@@ -158,7 +159,7 @@ class PrincipalAuthenticationViewTest(Setup):
 
 
 def test_suite():
-    t1 = makeSuite(AuthServiceTest)
+    t1 = makeSuite(AuthUtilityTest)
     t2 = DocTestSuite('zope.app.pluggableauth',
                       setUp=setUp, tearDown=tearDown)
     t3 = makeSuite(BTreePrincipalSourceTest)

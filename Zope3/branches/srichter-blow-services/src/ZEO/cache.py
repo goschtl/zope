@@ -13,13 +13,13 @@
 ##############################################################################
 """Disk-based client cache for ZEO.
 
-ClientCache exposes an API used by the ZEO client storage.  FileCache
-stores objects one disk using a 2-tuple of oid and tid as key.
+ClientCache exposes an API used by the ZEO client storage.  FileCache stores
+objects on disk using a 2-tuple of oid and tid as key.
 
-The upper cache's API is similar to a storage API with methods like
-load(), store(), and invalidate().  It manages in-memory data
-structures that allow it to map this richer API onto the simple
-key-based API of the lower-level cache.
+ClientCaches API is similar to a storage API with methods like load(),
+store(), and invalidate().  It manages in-memory data structures that allow
+it to map this richer API onto the simple key-based API of the lower-level
+FileCache.
 """
 
 import bisect
@@ -30,6 +30,8 @@ import tempfile
 import time
 
 from ZODB.utils import z64, u64
+
+logger = logging.getLogger("zeo.cache")
 
 ##
 # A disk-based cache for ZEO clients.
@@ -54,9 +56,9 @@ from ZODB.utils import z64, u64
 # <h3>Cache verification</h3>
 # <p>
 # When the client is connected to the server, it receives
-# invalidations every time an object is modified.  Whe the client is
-# disconnected, it must perform cache verification to make sure its
-# cached data is synchronized with the storage's current state.
+# invalidations every time an object is modified.  When the client is
+# disconnected then reconnects, it must perform cache verification to make
+# sure its cached data is synchronized with the storage's current state.
 # <p>
 # quick verification
 # full verification
@@ -67,22 +69,21 @@ class ClientCache:
 
     ##
     # Do we put the constructor here?
-    # @param path path of persistent snapshot of cache state
-    # @param size maximum size of object data, in bytes
+    # @param path path of persistent snapshot of cache state (a file path)
+    # @param size size of cache file, in bytes
 
-    def __init__(self, path=None, size=None, trace=False):
+    # The default size of 200MB makes a lot more sense than the traditional
+    # default of 20MB.  The default here is misleading, though, since
+    # ClientStorage is the only user of ClientCache, and it always passes an
+    # explicit size of its own choosing.
+    def __init__(self, path=None, size=200*1024**2, trace=False):
         self.path = path
         self.size = size
-        self.log = logging.getLogger("zeo.cache")
 
         if trace and path:
             self._setup_trace()
         else:
             self._trace = self._notrace
-
-        # Last transaction seen by the cache, either via setLastTid()
-        # or by invalidate().
-        self.tid = None
 
         # The cache stores objects in a dict mapping (oid, tid) pairs
         # to Object() records (see below).  The tid is the transaction
@@ -95,25 +96,32 @@ class ClientCache:
         # records.  The in-memory form can be reconstructed from these
         # records.
 
-        # Maps oid to current tid.  Used to find compute key for objects.
+        # Maps oid to current tid.  Used to compute key for objects.
         self.current = {}
+
         # Maps oid to list of (start_tid, end_tid) pairs in sorted order.
         # Used to find matching key for load of non-current data.
         self.noncurrent = {}
-        # Map oid to version, tid pair.  If there is no entry, the object
+
+        # Map oid to (version, tid) pair.  If there is no entry, the object
         # is not modified in a version.
         self.version = {}
 
-        # A double-linked list is used to manage the cache.  It makes
-        # decisions about which objects to keep and which to evict.
-        self.fc = FileCache(size or 10**6, self.path, self)
+        # A FileCache instance does all the low-level work of storing
+        # and retrieving objects to/from the cache file.
+        self.fc = FileCache(size, self.path, self)
 
     def open(self):
         self.fc.scan(self.install)
 
+    ##
+    # Callback for FileCache.scan(), when a pre-existing file cache is
+    # used.  For each object in the file, `install()` is invoked.  `f`
+    # is the file object, positioned at the start of the serialized Object.
+    # `ent` is an Entry giving the object's key ((oid, start_tid) pair).
     def install(self, f, ent):
-        # Called by cache storage layer to insert object
-        o = Object.fromFile(f, ent.key, header_only=True)
+        # Called by cache storage layer to insert object.
+        o = Object.fromFile(f, ent.key, skip_data=True)
         if o is None:
             return
         oid = o.key[0]
@@ -122,8 +130,13 @@ class ClientCache:
         elif o.end_tid is None:
             self.current[oid] = o.start_tid
         else:
-            L = self.noncurrent.setdefault(oid, [])
-            bisect.insort_left(L, (o.start_tid, o.end_tid))
+            assert o.start_tid < o.end_tid
+            this_span = o.start_tid, o.end_tid
+            span_list = self.noncurrent.get(oid)
+            if span_list:
+                bisect.insort_left(span_list, this_span)
+            else:
+                self.noncurrent[oid] = [this_span]
 
     def close(self):
         self.fc.close()
@@ -139,7 +152,7 @@ class ClientCache:
     ##
     # Return the last transaction seen by the cache.
     # @return a transaction id
-    # @defreturn string
+    # @defreturn string, or None if no transaction is yet known
 
     def getLastTid(self):
         if self.fc.tid == z64:
@@ -151,7 +164,7 @@ class ClientCache:
     # Return the current data record for oid and version.
     # @param oid object id
     # @param version a version string
-    # @return data record, serial number, tid or None if the object is not
+    # @return (data record, serial number, tid), or None if the object is not
     #         in the cache
     # @defreturn 3-tuple: (string, string, string)
 
@@ -207,7 +220,7 @@ class ClientCache:
         return o.data, o.start_tid, o.end_tid
 
     ##
-    # Return the version an object is modified in or None for an
+    # Return the version an object is modified in, or None for an
     # object that is not modified in a version.
     # @param oid object id
     # @return name of version in which the object is modified
@@ -225,7 +238,7 @@ class ClientCache:
     # @param oid object id
     # @param version name of version that oid was modified in.  The cache
     #                only stores current version data, so end_tid should
-    #                be None.
+    #                be None if version is not the empty string.
     # @param start_tid the id of the transaction that wrote this revision
     # @param end_tid the id of the transaction that created the next
     #                revision of oid.  If end_tid is None, the data is
@@ -235,11 +248,11 @@ class ClientCache:
 
     def store(self, oid, version, start_tid, end_tid, data):
         # It's hard for the client to avoid storing the same object
-        # more than once.  One case is whether the client requests
+        # more than once.  One case is when the client requests
         # version data that doesn't exist.  It checks the cache for
         # the requested version, doesn't find it, then asks the server
         # for that data.  The server returns the non-version data,
-        # which may already by in the cache.
+        # which may already be in the cache.
         if (oid, start_tid) in self.fc:
             return
         o = Object((oid, start_tid), version, data, start_tid, end_tid)
@@ -274,48 +287,97 @@ class ClientCache:
         self.fc.add(o)
 
     ##
-    # Mark the current data for oid as non-current.  If there is no
-    # current data for oid, do nothing.
+    # Remove all knowledge of noncurrent revisions of oid, both in
+    # self.noncurrent and in our FileCache.  `version` and `tid` are used
+    # only for trace records.
+    def _remove_noncurrent_revisions(self, oid, version, tid):
+        noncurrent_list = self.noncurrent.get(oid)
+        if noncurrent_list:
+            # Note:  must iterate over a copy of noncurrent_list.  The
+            # FileCache remove() calls our _evicted() method, and that
+            # mutates the list.
+            for old_tid, dummy in noncurrent_list[:]:
+                # 0x1E = invalidate (hit, discarding current or non-current)
+                self._trace(0x1E, oid, version, tid)
+                self.fc.remove((oid, old_tid))
+            del self.noncurrent[oid]
+
+    ##
+    # If `tid` is None, or we have data for `oid` in a (non-empty) version,
+    # forget all knowledge of `oid`.  (`tid` can be None only for
+    # invalidations generated by startup cache verification.)  If `tid`
+    # isn't None, we don't have version data for `oid`, and we had current
+    # data for `oid`, stop believing we have current data, and mark the
+    # data we had as being valid only up to `tid`.  In all other cases, do
+    # nothing.
     # @param oid object id
     # @param version name of version to invalidate.
-    # @param tid the id of the transaction that wrote a new revision of oid
-
+    # @param tid the id of the transaction that wrote a new revision of oid,
+    #        or None to forget all cached info about oid (version, current
+    #        revision, and non-current revisions)
     def invalidate(self, oid, version, tid):
-        if tid > self.fc.tid:
+        if tid > self.fc.tid and tid is not None:
             self.fc.settid(tid)
+
+        remove_all_knowledge_of_oid = tid is None
+
         if oid in self.version:
+            # Forget we know about the version data.
+            # 0x1A = invalidate (hit, version)
             self._trace(0x1A, oid, version, tid)
             dllversion, dlltid = self.version[oid]
             assert not version or version == dllversion, (version, dllversion)
-            # remove() will call unlink() to delete from self.version
             self.fc.remove((oid, dlltid))
-            # And continue on, we must also remove any non-version data
-            # from the cache.  This is a bit of a failure of the current
-            # cache consistency approach as the new tid of the version
-            # data gets confused with the old tid of the non-version data.
-            # I could sort this out, but it seems simpler to punt and
-            # have the cache invalidation too much for versions.
+            assert oid not in self.version # .remove() got rid of it
+            # And continue:  we must also remove any non-version data from
+            # the cache.  Or, at least, I have such a poor understanding of
+            # versions that anything less drastic would probably be wrong.
+            remove_all_knowledge_of_oid = True
 
-        if oid not in self.current:
+        if remove_all_knowledge_of_oid:
+            self._remove_noncurrent_revisions(oid, version, tid)
+
+        # Only current, non-version data remains to be handled.
+
+        cur_tid = self.current.get(oid)
+        if not cur_tid:
+            # 0x10 == invalidate (miss)
             self._trace(0x10, oid, version, tid)
             return
-        cur_tid = self.current.pop(oid)
+
+        # We had current data for oid, but no longer.
+
+        if remove_all_knowledge_of_oid:
+            # 0x1E = invalidate (hit, discarding current or non-current)
+            self._trace(0x1E, oid, version, tid)
+            self.fc.remove((oid, cur_tid))
+            assert cur_tid not in self.current  # .remove() got rid of it
+            return
+
+        # Add the data we have to the list of non-current data for oid.
+        assert tid is not None and cur_tid < tid
+        # 0x1C = invalidate (hit, saving non-current)
+        self._trace(0x1C, oid, version, tid)
+        del self.current[oid]   # because we no longer have current data
+
+        # Update the end_tid half of oid's validity range on disk.
         # XXX Want to fetch object without marking it as accessed
         o = self.fc.access((oid, cur_tid))
+        assert o is not None
+        assert o.end_tid is None  # i.e., o was current
         if o is None:
-            # XXX is this possible?
-            return None
+            # XXX is this possible? (doubt it; added an assert just above)
+            return
         o.end_tid = tid
-        self.fc.update(o)
-        self._trace(0x1C, oid, version, tid)
+        self.fc.update(o)   # record the new end_tid on disk
+        # Add to oid's list of non-current data.
         L = self.noncurrent.setdefault(oid, [])
         bisect.insort_left(L, (cur_tid, tid))
 
     ##
     # Return the number of object revisions in the cache.
-
+    #
     # XXX just return len(self.cache)?
-
     def __len__(self):
         n = len(self.current) + len(self.version)
         if self.noncurrent:
@@ -323,7 +385,7 @@ class ClientCache:
         return n
 
     ##
-    # Generates over, version, serial triples for all objects in the
+    # Generates (oid, serial, version) triples for all objects in the
     # cache.  This generator is used by cache verification.
 
     def contents(self):
@@ -346,14 +408,14 @@ class ClientCache:
             print oid_repr(oid), oid_repr(tid), repr(version)
         print "dll contents"
         L = list(self.fc)
-        L.sort(lambda x,y:cmp(x.key, y.key))
+        L.sort(lambda x, y: cmp(x.key, y.key))
         for x in L:
             end_tid = x.end_tid or z64
             print oid_repr(x.key[0]), oid_repr(x.key[1]), oid_repr(end_tid)
         print
 
     def _evicted(self, o):
-        # Called by Object o to signal its eviction
+        # Called by the FileCache to signal that Object o has been evicted.
         oid, tid = o.key
         if o.end_tid is None:
             if o.version:
@@ -361,7 +423,7 @@ class ClientCache:
             else:
                 del self.current[oid]
         else:
-            # XXX Although we use bisect to keep the list sorted,
+            # Although we use bisect to keep the list sorted,
             # we never expect the list to be very long.  So the
             # brute force approach should normally be fine.
             L = self.noncurrent[oid]
@@ -375,8 +437,8 @@ class ClientCache:
             self._trace(0x00)
         except IOError, msg:
             self.tracefile = None
-            self.log.warning("Could not write to trace file %s: %s",
-                             tfn, msg)
+            logger.warning("Could not write to trace file %s: %s",
+                           tfn, msg)
 
     def _notrace(self, *arg, **kwargs):
         pass
@@ -419,21 +481,55 @@ class ClientCache:
 # data and whether it is in a version.
 # <p>
 # The serialized format does not include the key, because it is stored
-# in the header used by the cache's storage format.
+# in the header used by the cache file's storage format.
+# <p>
+# Instances of Object are generally short-lived -- they're really a way to
+# package data on the way to or from the disk file.
 
 class Object(object):
-    __slots__ = (# pair, object id, txn id -- something usable as a dict key
-                 # the second part of the part is equal to start_tid below
+    __slots__ = (# pair (object id, txn id) -- something usable as a dict key;
+                 # the second part of the pair is equal to start_tid
                  "key",
 
-                 "start_tid", # string, id of txn that wrote the data
-                 "end_tid", # string, id of txn that wrote next revision
-                            # or None
-                 "version", # string, name of version
-                 "data", # string, the actual data record for the object
+                 # string, tid of txn that wrote the data
+                 "start_tid",
 
-                 "size", # total size of serialized object
+                 # string, tid of txn that wrote next revision, or None
+                 # if the data is current; if not None, end_tid is strictly
+                 # greater than start_tid
+                 "end_tid",
+
+                 # string, name of version
+                 "version",
+
+                 # string, the actual data record for the object
+                 "data",
+
+                 # total size of serialized object; this includes the
+                 # data, version, and all overhead (header) bytes.
+                 "size",
                 )
+
+    # A serialized Object on disk looks like:
+    #
+    #         offset             # bytes   value
+    #         ------             -------   -----
+    #              0                   8   end_tid; string
+    #              8                   2   len(version); 2-byte signed int
+    #             10                   4   len(data); 4-byte signed int
+    #             14        len(version)   version; string
+    # 14+len(version)          len(data)   the object pickle; string
+    # 14+len(version)+
+    #       len(data)                  8   oid; string
+
+    # The serialization format uses an end tid of "\0"*8 (z64), the least
+    # 8-byte string, to represent None.  It isn't possible for an end_tid
+    # to be 0, because it must always be strictly greater than the start_tid.
+
+    fmt = ">8shi"  # end_tid, len(self.version), len(self.data)
+    FIXED_HEADER_SIZE = struct.calcsize(fmt)
+    assert FIXED_HEADER_SIZE == 14
+    TOTAL_FIXED_SIZE = FIXED_HEADER_SIZE + 8  # +8 for the oid at the end
 
     def __init__(self, key, version, data, start_tid, end_tid):
         self.key = key
@@ -441,60 +537,79 @@ class Object(object):
         self.data = data
         self.start_tid = start_tid
         self.end_tid = end_tid
-        # The size of a the serialized object on disk, include the
-        # 14-byte header, the length of data and version, and a
+        # The size of the serialized object on disk, including the
+        # 14-byte header, the lengths of data and version, and a
         # copy of the 8-byte oid.
         if data is not None:
-            self.size = 22 + len(data) + len(version)
+            self.size = self.TOTAL_FIXED_SIZE + len(data) + len(version)
 
-    # The serialization format uses an end tid of "\0" * 8, the least
-    # 8-byte string, to represent None.  It isn't possible for an
-    # end_tid to be 0, because it must always be strictly greater
-    # than the start_tid.
+    ##
+    # Return the fixed-sized serialization header as a string:  pack end_tid,
+    # and the lengths of the .version and .data members.
+    def get_header(self):
+        return struct.pack(self.fmt,
+                           self.end_tid or z64,
+                           len(self.version),
+                           len(self.data))
 
-    fmt = ">8shi"
-
+    ##
+    # Write the serialized representation of self to file f, at its current
+    # position.
     def serialize(self, f):
-        # Write standard form of Object to file, f.
-        self.serialize_header(f)
-        f.write(self.data)
-        f.write(self.key[0])
+        f.writelines([self.get_header(),
+                      self.version,
+                      self.data,
+                      self.key[0]])
 
+    ##
+    # Write the fixed-size header for self, to file f at its current position.
+    # The only real use for this is when the current revision of an object
+    # in cache is invalidated.  Then the end_tid field gets set to the tid
+    # of the transaction that caused the invalidation.
     def serialize_header(self, f):
-        s = struct.pack(self.fmt, self.end_tid or "\0" * 8,
-                        len(self.version), len(self.data))
-        f.write(s)
-        f.write(self.version)
+        f.write(self.get_header())
 
-    def fromFile(cls, f, key, header_only=False):
-        s = f.read(struct.calcsize(cls.fmt))
+    ##
+    # fromFile is a class constructor, unserializing an Object from the
+    # current position in file f.  Exclusive access to f for the duration
+    # is assumed.  The key is a (oid, start_tid) pair, and the oid must
+    # match the serialized oid.  If `skip_data` is true, .data is left
+    # None in the Object returned, but all the other fields are populated.
+    # Else (`skip_data` is false, the default), all fields including .data
+    # are populated.  .data can be big, so it's prudent to skip it when it
+    # isn't needed.
+    def fromFile(cls, f, key, skip_data=False):
+        s = f.read(cls.FIXED_HEADER_SIZE)
         if not s:
             return None
         oid, start_tid = key
+
         end_tid, vlen, dlen = struct.unpack(cls.fmt, s)
         if end_tid == z64:
             end_tid = None
+
         version = f.read(vlen)
         if vlen != len(version):
             raise ValueError("corrupted record, version")
-        if header_only:
+
+        if skip_data:
             data = None
+            f.seek(dlen, 1)
         else:
             data = f.read(dlen)
             if dlen != len(data):
                 raise ValueError("corrupted record, data")
-            s = f.read(8)
-            if s != oid:
-                raise ValueError("corrupted record, oid")
+
+        s = f.read(8)
+        if s != oid:
+            raise ValueError("corrupted record, oid")
+
         return cls((oid, start_tid), version, data, start_tid, end_tid)
 
     fromFile = classmethod(fromFile)
 
-def sync(f):
-    f.flush()
-    if hasattr(os, 'fsync'):
-        os.fsync(f.fileno())
 
+# Entry just associates a key with a file offset.  It's used by FileCache.
 class Entry(object):
     __slots__ = (# object key -- something usable as a dict key.
                  'key',
@@ -513,21 +628,21 @@ class Entry(object):
         self.offset = offset
 
 
-magic = "ZEC3"
-
-OBJECT_HEADER_SIZE = 1 + 4 + 16
 
 ##
 # FileCache stores a cache in a single on-disk file.
 #
-# On-disk cache structure
+# On-disk cache structure.
 #
 # The file begins with a 12-byte header.  The first four bytes are the
 # file's magic number - ZEC3 - indicating zeo cache version 3.  The
 # next eight bytes are the last transaction id.
-#
-# The file is a contiguous sequence of blocks.  All blocks begin with
-# a one-byte status indicator:
+
+magic = "ZEC3"
+ZEC3_HEADER_SIZE = 12
+
+# After the header, the file contains a contiguous sequence of blocks.  All
+# blocks begin with a one-byte status indicator:
 #
 # 'a'
 #       Allocated.  The block holds an object; the next 4 bytes are >I
@@ -540,21 +655,19 @@ OBJECT_HEADER_SIZE = 1 + 4 + 16
 # '1', '2', '3', '4'
 #       The block is free, and consists of 1, 2, 3 or 4 bytes total.
 #
-# 'Z'
-#       File header.  The file starts with a magic number, currently
-#       'ZEC3' and an 8-byte transaction id.
-#
 # "Total" includes the status byte, and size bytes.  There are no
 # empty (size 0) blocks.
 
 
-# XXX This needs a lot more hair.
-# The structure of an allocated block is more complicated:
+# Allocated blocks have more structure:
 #
 #     1 byte allocation status ('a').
 #     4 bytes block size, >I format.
 #     16 bytes oid + tid, string.
-#     size-OBJECT_HEADER_SIZE bytes, the object pickle.
+#     size-OBJECT_HEADER_SIZE bytes, the serialization of an Object (see
+#         class Object for details).
+
+OBJECT_HEADER_SIZE = 1 + 4 + 16
 
 # The cache's currentofs goes around the file, circularly, forever.
 # It's always the starting offset of some block.
@@ -564,47 +677,80 @@ OBJECT_HEADER_SIZE = 1 + 4 + 16
 # blocks needed to make enough room for the new object are evicted,
 # starting at currentofs.  Exception:  if currentofs is close enough
 # to the end of the file that the new object can't fit in one
-# contiguous chunk, currentofs is reset to 0 first.
+# contiguous chunk, currentofs is reset to ZEC3_HEADER_SIZE first.
 
-# Do all possible to ensure that the bytes we wrote are really on
+# Do all possible to ensure that the bytes we wrote to file f are really on
 # disk.
+def sync(f):
+    f.flush()
+    if hasattr(os, 'fsync'):
+        os.fsync(f.fileno())
 
 class FileCache(object):
 
     def __init__(self, maxsize, fpath, parent, reuse=True):
-        # Maximum total of object sizes we keep in cache.
+        # - `maxsize`:  total size of the cache file, in bytes; this is
+        #   ignored if reuse is true and fpath names an existing file;
+        #   perhaps we should attempt to change the cache size in that
+        #   case
+        # - `fpath`:  filepath for the cache file, or None; see `reuse`
+        # - `parent`:  the ClientCache this FileCache is part of
+        # - `reuse`:  If true, and fpath is not None, and fpath names a
+        #    file that exists, that pre-existing file is used (persistent
+        #    cache).  In all other cases a new file is created:  a temp
+        #    file if fpath is None, else with path fpath.
         self.maxsize = maxsize
-        # Current total of object sizes in cache.
-        self.currentsize = 0
         self.parent = parent
+
+        # tid for the most recent transaction we know about.  This is also
+        # stored near the start of the file.
         self.tid = None
+
+        # There's one Entry instance, kept in memory, for each currently
+        # allocated block in the file, and there's one allocated block in the
+        # file per serialized Object.  filemap retrieves the Entry given the
+        # starting offset of a block, and key2entry retrieves the Entry given
+        # an object revision's key (an (oid, start_tid) pair).  From an
+        # Entry, we can get the Object's key and file offset.
 
         # Map offset in file to pair (data record size, Entry).
         # Entry is None iff the block starting at offset is free.
         # filemap always contains a complete account of what's in the
         # file -- study method _verify_filemap for executable checking
         # of the relevant invariants.  An offset is at the start of a
-        # block iff it's a key in filemap.
+        # block iff it's a key in filemap.  The data record size is
+        # stored in the file too, so we could just seek to the offset
+        # and read it up; keeping it in memory is an optimization.
         self.filemap = {}
 
-        # Map key to Entry.  There's one entry for each object in the
-        # cache file.  After
+        # Map key to Entry.  After
         #     obj = key2entry[key]
         # then
         #     obj.key == key
-        # is true.
+        # is true.  An object is currently stored on disk iff its key is in
+        # key2entry.
         self.key2entry = {}
 
         # Always the offset into the file of the start of a block.
         # New and relocated objects are always written starting at
         # currentofs.
-        self.currentofs = 12
+        self.currentofs = ZEC3_HEADER_SIZE
+
+        # self.f is the open file object.
+        # When we're not reusing an existing file, self.f is left None
+        # here -- the scan() method must be called then to open the file
+        # (and it sets self.f).
 
         self.fpath = fpath
-        if not reuse or not fpath or not os.path.exists(fpath):
-            self.new = True
+        if reuse and fpath and os.path.exists(fpath):
+            # Reuse an existing file.  scan() will open & read it.
+            self.f = None
+        else:
+            if reuse:
+                logger.warning("reuse=True but the given file path %r "
+                               "doesn't exist; ignoring reuse=True", fpath)
             if fpath:
-                self.f = file(fpath, 'wb+')
+                self.f = open(fpath, 'wb+')
             else:
                 self.f = tempfile.TemporaryFile()
             # Make sure the OS really saves enough bytes for the file.
@@ -616,34 +762,44 @@ class FileCache(object):
             self.f.write(magic)
             self.f.write(z64)
             # and one free block.
-            self.f.write('f' + struct.pack(">I", self.maxsize - 12))
+            self.f.write('f' + struct.pack(">I", self.maxsize -
+                                                 ZEC3_HEADER_SIZE))
             self.sync()
-            self.filemap[12] = self.maxsize - 12, None
-        else:
-            self.new = False
-            self.f = None
+            self.filemap[ZEC3_HEADER_SIZE] = (self.maxsize - ZEC3_HEADER_SIZE,
+                                              None)
 
         # Statistics:  _n_adds, _n_added_bytes,
-        #              _n_evicts, _n_evicted_bytes
+        #              _n_evicts, _n_evicted_bytes,
+        #              _n_accesses
         self.clearStats()
 
-    # Scan the current contents of the cache file, calling install
+    ##
+    # Scan the current contents of the cache file, calling `install`
     # for each object found in the cache.  This method should only
     # be called once to initialize the cache from disk.
-
     def scan(self, install):
-        if self.new:
+        if self.f is not None:
             return
         fsize = os.path.getsize(self.fpath)
-        self.f = file(self.fpath, 'rb+')
+        if fsize != self.maxsize:
+            logger.warning("existing cache file %s has size %d; "
+                           "requested size %d ignored", self.fpath,
+                           fsize, self.maxsize)
+            self.maxsize = fsize
+        self.f = open(self.fpath, 'rb+')
         _magic = self.f.read(4)
         if _magic != magic:
             raise ValueError("unexpected magic number: %r" % _magic)
         self.tid = self.f.read(8)
-        # Remember the largest free block.  That seems a
-        # decent place to start currentofs.
+        if len(self.tid) != 8:
+            raise ValueError("cache file too small -- no tid at start")
+
+        # Populate .filemap and .key2entry to reflect what's currently in the
+        # file, and tell our parent about it too (via the `install` callback).
+        # Remember the location of the largest free block  That seems a decent
+        # place to start currentofs.
         max_free_size = max_free_offset = 0
-        ofs = 12
+        ofs = ZEC3_HEADER_SIZE
         while ofs < fsize:
             self.f.seek(ofs)
             ent = None
@@ -659,7 +815,8 @@ class FileCache(object):
             elif status in '1234':
                 size = int(status)
             else:
-                assert 0, hex(ord(status))
+                raise ValueError("unknown status byte value %s in client "
+                                 "cache file" % 0, hex(ord(status)))
 
             self.filemap[ofs] = size, ent
             if ent is None and size > max_free_size:
@@ -667,7 +824,9 @@ class FileCache(object):
 
             ofs += size
 
-        assert ofs == fsize
+        if ofs != fsize:
+            raise ValueError("final offset %s != file size %s in client "
+                             "cache file" % (ofs, fsize))
         if __debug__:
             self._verify_filemap()
         self.currentofs = max_free_offset
@@ -675,49 +834,59 @@ class FileCache(object):
     def clearStats(self):
         self._n_adds = self._n_added_bytes = 0
         self._n_evicts = self._n_evicted_bytes = 0
-        self._n_removes = self._n_removed_bytes = 0
         self._n_accesses = 0
 
     def getStats(self):
         return (self._n_adds, self._n_added_bytes,
                 self._n_evicts, self._n_evicted_bytes,
-                self._n_removes, self._n_removed_bytes,
                 self._n_accesses
                )
 
+    ##
+    # The number of objects currently in the cache.
     def __len__(self):
         return len(self.key2entry)
 
+    ##
+    # Iterate over the objects in the cache, producing an Entry for each.
     def __iter__(self):
         return self.key2entry.itervalues()
 
+    ##
+    # Test whether an (oid, tid) pair is in the cache.
     def __contains__(self, key):
         return key in self.key2entry
 
+    ##
+    # Do all possible to ensure all bytes written to the file so far are
+    # actually on disk.
     def sync(self):
         sync(self.f)
 
+    ##
+    # Close the underlying file.  No methods accessing the cache should be
+    # used after this.
     def close(self):
         if self.f:
             self.sync()
             self.f.close()
             self.f = None
 
+    ##
     # Evict objects as necessary to free up at least nbytes bytes,
     # starting at currentofs.  If currentofs is closer than nbytes to
-    # the end of the file, currentofs is reset to 0.  The number of
-    # bytes actually freed may be (and probably will be) greater than
-    # nbytes, and is _makeroom's return value.  The file is not
+    # the end of the file, currentofs is reset to ZEC3_HEADER_SIZE first.
+    # The number of bytes actually freed may be (and probably will be)
+    # greater than nbytes, and is _makeroom's return value.  The file is not
     # altered by _makeroom.  filemap is updated to reflect the
     # evictions, and it's the caller's responsibilty both to fiddle
     # the file, and to update filemap, to account for all the space
     # freed (starting at currentofs when _makeroom returns, and
     # spanning the number of bytes retured by _makeroom).
-
     def _makeroom(self, nbytes):
-        assert 0 < nbytes <= self.maxsize
+        assert 0 < nbytes <= self.maxsize - ZEC3_HEADER_SIZE
         if self.currentofs + nbytes > self.maxsize:
-            self.currentofs = 12
+            self.currentofs = ZEC3_HEADER_SIZE
         ofs = self.currentofs
         while nbytes > 0:
             size, e = self.filemap.pop(ofs)
@@ -727,11 +896,11 @@ class FileCache(object):
             nbytes -= size
         return ofs - self.currentofs
 
+    ##
     # Write Object obj, with data, to file starting at currentofs.
     # nfreebytes are already available for overwriting, and it's
     # guranteed that's enough.  obj.offset is changed to reflect the
     # new data record position, and filemap is updated to match.
-
     def _writeobj(self, obj, nfreebytes):
         size = OBJECT_HEADER_SIZE + obj.size
         assert size <= nfreebytes
@@ -763,11 +932,18 @@ class FileCache(object):
             # written.
             self.filemap[self.currentofs] = excess, None
 
+    ##
+    # Add Object object to the cache.  This may evict existing objects, to
+    # make room (and almost certainly will, in steady state once the cache
+    # is first full).  The object must not already be in the cache.
     def add(self, object):
         size = OBJECT_HEADER_SIZE + object.size
-        if size > self.maxsize:
+        # A number of cache simulation experiments all concluded that the
+        # 2nd-level ZEO cache got a much higher hit rate if "very large"
+        # objects simply weren't cached.  For now, we ignore the request
+        # only if the entire cache file is too small to hold the object.
+        if size > self.maxsize - ZEC3_HEADER_SIZE:
             return
-        assert size <= self.maxsize
 
         assert object.key not in self.key2entry
         assert len(object.key[0]) == 8
@@ -779,8 +955,97 @@ class FileCache(object):
         available = self._makeroom(size)
         self._writeobj(object, available)
 
+    ##
+    # Evict the object represented by Entry `e` from the cache, freeing
+    # `size` bytes in the file for reuse.  `size` is used only for summary
+    # statistics.  This does not alter the file, or self.filemap or
+    # self.key2entry (those are the caller's responsibilities).  It does
+    # invoke _evicted(Object) on our parent.
+    def _evictobj(self, e, size):
+        self._n_evicts += 1
+        self._n_evicted_bytes += size
+        # Load the object header into memory so we know how to
+        # update the parent's in-memory data structures.
+        self.f.seek(e.offset + OBJECT_HEADER_SIZE)
+        o = Object.fromFile(self.f, e.key, skip_data=True)
+        self.parent._evicted(o)
+
+    ##
+    # Return Object for key, or None if not in cache.
+    def access(self, key):
+        self._n_accesses += 1
+        e = self.key2entry.get(key)
+        if e is None:
+            return None
+        offset = e.offset
+        size, e2 = self.filemap[offset]
+        assert e is e2
+
+        self.f.seek(offset + OBJECT_HEADER_SIZE)
+        return Object.fromFile(self.f, key)
+
+    ##
+    # Remove Object for key from cache, if present.
+    def remove(self, key):
+        # If an object is being explicitly removed, we need to load
+        # its header into memory and write a free block marker to the
+        # disk where the object was stored.  We need to load the
+        # header to update the in-memory data structures held by
+        # ClientCache.
+
+        # XXX Or we could just keep the header in memory at all times.
+
+        e = self.key2entry.pop(key, None)
+        if e is None:
+            return
+        offset = e.offset
+        size, e2 = self.filemap[offset]
+        assert e is e2
+        self.filemap[offset] = size, None
+        self.f.seek(offset + OBJECT_HEADER_SIZE)
+        o = Object.fromFile(self.f, key, skip_data=True)
+        assert size >= 5  # only free blocks are tiny
+        # Because `size` >= 5, we can change an allocated block to a free
+        # block just by overwriting the 'a' status byte with 'f' -- the
+        # size field stays the same.
+        self.f.seek(offset)
+        self.f.write('f')
+        self.f.flush()
+        self.parent._evicted(o)
+
+    ##
+    # Update on-disk representation of Object obj.
+    #
+    # This method should be called when the object header is modified.
+    # obj must be in the cache.  The only real use for this is during
+    # invalidation, to set the end_tid field on a revision that was current
+    # (and so had an end_tid of None, but no longer does).
+    def update(self, obj):
+        e = self.key2entry[obj.key]
+        self.f.seek(e.offset + OBJECT_HEADER_SIZE)
+        obj.serialize_header(self.f)
+
+    ##
+    # Update our idea of the most recent tid.  This is stored in the
+    # instance, and also written out near the start of the cache file.  The
+    # new tid must be strictly greater than our current idea of the most
+    # recent tid.
+    def settid(self, tid):
+        if self.tid is not None and tid <= self.tid:
+            raise ValueError("new last tid (%s) must be greater than "
+                             "previous one (%s)" % (u64(tid),
+                                                    u64(self.tid)))
+        assert isinstance(tid, str) and len(tid) == 8
+        self.tid = tid
+        self.f.seek(len(magic))
+        self.f.write(tid)
+        self.f.flush()
+
+    ##
+    # This debug method marches over the entire cache file, verifying that
+    # the current contents match the info in self.filemap and self.key2entry.
     def _verify_filemap(self, display=False):
-        a = 12
+        a = ZEC3_HEADER_SIZE
         f = self.f
         while a < self.maxsize:
             f.seek(a)
@@ -803,73 +1068,3 @@ class FileCache(object):
         if display:
             print
         assert a == self.maxsize
-
-    def _evictobj(self, e, size):
-        self._n_evicts += 1
-        self._n_evicted_bytes += size
-        # Load the object header into memory so we know how to
-        # update the parent's in-memory data structures.
-        self.f.seek(e.offset + OBJECT_HEADER_SIZE)
-        o = Object.fromFile(self.f, e.key, header_only=True)
-        self.parent._evicted(o)
-
-    ##
-    # Return object for key or None if not in cache.
-
-    def access(self, key):
-        self._n_accesses += 1
-        e = self.key2entry.get(key)
-        if e is None:
-            return None
-        offset = e.offset
-        size, e2 = self.filemap[offset]
-        assert e is e2
-
-        self.f.seek(offset + OBJECT_HEADER_SIZE)
-        return Object.fromFile(self.f, key)
-
-    ##
-    # Remove object for key from cache, if present.
-
-    def remove(self, key):
-        # If an object is being explicitly removed, we need to load
-        # its header into memory and write a free block marker to the
-        # disk where the object was stored.  We need to load the
-        # header to update the in-memory data structures held by
-        # ClientCache.
-
-        # XXX Or we could just keep the header in memory at all times.
-
-        e = self.key2entry.get(key)
-        if e is None:
-            return
-        offset = e.offset
-        size, e2 = self.filemap[offset]
-        self.f.seek(offset + OBJECT_HEADER_SIZE)
-        o = Object.fromFile(self.f, key, header_only=True)
-        self.f.seek(offset + OBJECT_HEADER_SIZE)
-        self.f.write('f')
-        self.f.flush()
-        self.parent._evicted(o)
-        self.filemap[offset] = size, None
-
-    ##
-    # Update on-disk representation of obj.
-    #
-    # This method should be called when the object header is modified.
-
-    def update(self, obj):
-
-        e = self.key2entry[obj.key]
-        self.f.seek(e.offset + OBJECT_HEADER_SIZE)
-        obj.serialize_header(self.f)
-
-    def settid(self, tid):
-        if self.tid is not None and tid <= self.tid:
-            raise ValueError("new last tid (%s) must be greater than "
-                             "previous one (%s)" % (u64(tid),
-                                                    u64(self.tid)))
-        self.tid = tid
-        self.f.seek(4)
-        self.f.write(tid)
-        self.f.flush()

@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Pluggable Authentication service implementation.
+"""Pluggable Authentication utility implementation.
 
-BBB: ENTIRE PACKAGE IS DEPRECATED!!! 12/05/2004
+BBB: ENTIRE PACKAGE IS DEPRECATED!!! 12/05/2004 Gone in 3.3
 
 $Id$
 """
@@ -24,7 +24,6 @@ import sys
 import time
 import random
 import zope.schema
-
 from warnings import warn
 from persistent import Persistent
 from BTrees.IOBTree import IOBTree
@@ -32,12 +31,9 @@ from BTrees.OIBTree import OIBTree
 
 from zope.interface import implements
 from zope.component.interfaces import IViewFactory
-from zope.app.security.interfaces import PrincipalLookupError
 
 from zope.app import zapi
-from zope.app.location import locate
-from zope.app.traversing.api import getPath
-
+from zope.app.component import queryNextUtility
 from zope.app.container.interfaces import IOrderedContainer
 from zope.app.container.interfaces import IContainerNamesContainer, INameChooser
 from zope.app.container.interfaces import IContained
@@ -45,12 +41,12 @@ from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.contained import Contained, setitem, uncontained
 from zope.app.container.ordered import OrderedContainer
+from zope.app.location import locate
+from zope.app.security.interfaces import ILoginPassword, IAuthentication
+from zope.app.security.interfaces import PrincipalLookupError
+from zope.app.traversing.api import getPath
 
-from zope.app.servicenames import Authentication
-from zope.app.security.interfaces import ILoginPassword
-from zope.app.component.localservice import queryNextService
-
-from interfaces import IUserSchemafied, IPluggableAuthenticationService
+from interfaces import IUserSchemafied, IPluggableAuthentication
 from interfaces import IPrincipalSource, ILoginPasswordPrincipalSource
 from interfaces import IContainedPrincipalSource, IContainerPrincipalSource
 
@@ -59,9 +55,9 @@ def gen_key():
 
     return random.randint(0, sys.maxint-1)
 
-class PluggableAuthenticationService(OrderedContainer):
+class PluggableAuthentication(OrderedContainer):
 
-    implements(IPluggableAuthenticationService, IOrderedContainer)
+    implements(IPluggableAuthentication, IOrderedContainer)
 
     def __init__(self, earmark=None, hide_deprecation_warning=False):
         if not hide_deprecation_warning:
@@ -70,18 +66,18 @@ class PluggableAuthenticationService(OrderedContainer):
                  DeprecationWarning, 2)        
         self.earmark = earmark
         # The earmark is used as a token which can uniquely identify
-        # this authentication service instance even if the service moves
+        # this authentication utility instance even if the utility moves
         # from place to place within the same context chain or is renamed.
         # It is included in principal ids of principals which are obtained
-        # from this auth service, so code which dereferences a principal
-        # (like getPrincipal of this auth service) needs to take the earmark
+        # from this auth utility, so code which dereferences a principal
+        # (like getPrincipal of this auth utility) needs to take the earmark
         # into account. The earmark cannot change once it is assigned.  If it
         # does change, the system will not be able to dereference principal
         # references which embed the old earmark.
         OrderedContainer.__init__(self)
 
     def authenticate(self, request):
-        """ See `IAuthenticationService`. """
+        """ See `IAuthentication`. """
         for ps_key, ps in self.items():
             loginView = zapi.queryView(ps, "login", request)
             if loginView is not None:
@@ -89,36 +85,36 @@ class PluggableAuthenticationService(OrderedContainer):
                 if principal is not None:
                     return principal
 
-        next = queryNextService(self, Authentication, None)
+        next = queryNextUtility(self, IAuthentication, None)
         if next is not None:
             return next.authenticate(request)
 
         return None
 
     def unauthenticatedPrincipal(self):
-        # It's safe to assume that the global auth service will
+        # It's safe to assume that the global auth utility will
         # provide an unauthenticated principal, so we won't bother.
         return None
 
     def unauthorized(self, id, request):
-        """ See `IAuthenticationService`. """
+        """ See `IAuthentication`. """
 
-        next = queryNextService(self, Authentication, None)
+        next = queryNextUtility(self, IAuthentication)
         if next is not None:
             return next.unauthorized(id, request)
 
         return None
 
     def getPrincipal(self, id):
-        """ See `IAuthenticationService`.
+        """ See `IAuthentication`.
 
         For this implementation, an `id` is a string which can be
         split into a 3-tuple by splitting on tab characters.  The
-        three tuple consists of (`auth_service_earmark`,
+        three tuple consists of (`auth_utility_earmark`,
         `principal_source_id`, `principal_id`).
 
         In the current strategy, the principal sources that are members
-        of this authentication service cannot be renamed; if they are,
+        of this authentication utility cannot be renamed; if they are,
         principal references that embed the old name will not be
         dereferenceable.
 
@@ -130,11 +126,11 @@ class PluggableAuthenticationService(OrderedContainer):
             auth_svc_earmark, principal_src_id, principal_id = id.split('\t',2)
         except (TypeError, ValueError, AttributeError):
             auth_svc_earmark, principal_src_id, principal_id = None, None, None
-            next = queryNextService(self, Authentication, None)
+            next = queryNextUtility(self, IAuthentication)
 
         if auth_svc_earmark != self.earmark:
             # this is not our reference because its earmark doesnt match ours
-            next = queryNextService(self, Authentication, None)
+            next = queryNextUtility(self, IAuthentication)
 
         if next is not None:
             return next.getPrincipal(id)
@@ -145,21 +141,21 @@ class PluggableAuthenticationService(OrderedContainer):
         return source.getPrincipal(id)
 
     def getPrincipals(self, name):
-        """ See `IAuthenticationService`. """
+        """ See `IAuthentication`. """
 
         for ps_key, ps in self.items():
             for p in ps.getPrincipals(name):
                 yield p
 
-        next = queryNextService(self, Authentication, None)
+        next = queryNextUtility(self, IAuthentication)
         if next is not None:
             for p in next.getPrincipals(name):
                 yield p
 
     def addPrincipalSource(self, id, principal_source):
-        """ See `IPluggableAuthenticationService`.
+        """ See `IPluggableAuthentication`.
 
-        >>> pas = PluggableAuthenticationService(None, True)
+        >>> pas = PluggableAuthentication(None, True)
         >>> sps = BTreePrincipalSource()
         >>> pas.addPrincipalSource('simple', sps)
         >>> sps2 = BTreePrincipalSource()
@@ -174,9 +170,9 @@ class PluggableAuthenticationService(OrderedContainer):
         self[id] = principal_source        
 
     def removePrincipalSource(self, id):
-        """ See `IPluggableAuthenticationService`.
+        """ See `IPluggableAuthentication`.
 
-        >>> pas = PluggableAuthenticationService(None, True)
+        >>> pas = PluggableAuthentication(None, True)
         >>> sps = BTreePrincipalSource()
         >>> pas.addPrincipalSource('simple', sps)
         >>> sps2 = BTreePrincipalSource()
@@ -193,10 +189,10 @@ class PluggableAuthenticationService(OrderedContainer):
         del self[id]
 
 
-def PluggableAuthenticationServiceAddSubscriber(self, event):
+def PluggableAuthenticationAddSubscriber(self, event):
     r"""Generates an earmark if one is not provided.
 
-    Define a stub for `PluggableAuthenticationService`
+    Define a stub for `PluggableAuthentication`
 
     >>> from zope.app.traversing.interfaces import IPhysicallyLocatable
     >>> class PluggableAuthStub(object):
@@ -206,22 +202,22 @@ def PluggableAuthenticationServiceAddSubscriber(self, event):
     ...     def getName(self):
     ...         return 'PluggableAuthName'
 
-    The subscriber generates an earmark for the auth service if one is not
+    The subscriber generates an earmark for the auth utility if one is not
     set in the init.
 
     >>> stub = PluggableAuthStub()
     >>> event = ''
-    >>> PluggableAuthenticationServiceAddSubscriber(stub, event)
+    >>> PluggableAuthenticationAddSubscriber(stub, event)
     >>> stub.earmark is not None
     True
 
-    The subscriber does not modify an earmark for the auth service if one
+    The subscriber does not modify an earmark for the auth utility if one
     exists already.
 
     >>> earmark = 'my sample earmark'
     >>> stub = PluggableAuthStub(earmark=earmark)
     >>> event = ''
-    >>> PluggableAuthenticationServiceAddSubscriber(stub, event)
+    >>> PluggableAuthenticationAddSubscriber(stub, event)
     >>> stub.earmark == earmark
     True
     """

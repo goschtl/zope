@@ -20,10 +20,8 @@ import sys
 import threading
 import warnings
 from time import time
-from utils import u64
 
 from persistent import PickleCache
-from persistent.interfaces import IPersistent
 
 import transaction
 
@@ -33,10 +31,12 @@ from ZODB.POSException \
      import ConflictError, ReadConflictError, InvalidObjectReference, \
             ConnectionStateError
 from ZODB.TmpStore import TmpStore
-from ZODB.utils import oid_repr, z64, positive_id
+from ZODB.utils import u64, oid_repr, z64, positive_id
 from ZODB.serialize import ObjectWriter, ConnectionObjectReader, myhasattr
 from ZODB.interfaces import IConnection
-from ZODB.interfaces import implements
+from ZODB.utils import DEPRECATED_ARGUMENT, deprecated36
+
+from zope.interface import implements
 
 global_reset_counter = 0
 
@@ -264,9 +264,8 @@ class Connection(ExportImport, object):
         method.  You can pass a transaction manager (TM) to DB.open()
         to control which TM the Connection uses.
         """
-        warnings.warn("getTransaction() is deprecated. "
-                      "Use the txn_mgr argument to DB.open() instead.",
-                      DeprecationWarning)
+        deprecated36("getTransaction() is deprecated. "
+                     "Use the txn_mgr argument to DB.open() instead.")
         return self._txn_mgr.get()
 
     def setLocalTransaction(self):
@@ -278,9 +277,8 @@ class Connection(ExportImport, object):
         can pass a transaction manager (TM) to DB.open() to control
         which TM the Connection uses.
         """
-        warnings.warn("setLocalTransaction() is deprecated. "
-                      "Use the txn_mgr argument to DB.open() instead.",
-                      DeprecationWarning)
+        deprecated36("setLocalTransaction() is deprecated. "
+                     "Use the txn_mgr argument to DB.open() instead.")
         if self._txn_mgr is transaction.manager:
             if self._synch:
                 self._txn_mgr.unregisterSynch(self)
@@ -462,9 +460,10 @@ class Connection(ExportImport, object):
         self._cache = cache = PickleCache(self, cache_size)
 
     def abort(self, transaction):
-        """Abort the object in the transaction.
+        """Abort modifications to registered objects.
 
-        This just deactivates the thing.
+        This tells the cache to invalidate changed objects.  _p_jar
+        and _p_oid are deleted from new objects.
         """
 
         for obj in self._registered_objects:
@@ -487,14 +486,14 @@ class Connection(ExportImport, object):
 
     def cacheFullSweep(self, dt=None):
         # XXX needs doc string
-        warnings.warn("cacheFullSweep is deprecated. "
-                      "Use cacheMinimize instead.", DeprecationWarning)
+        deprecated36("cacheFullSweep is deprecated. "
+                     "Use cacheMinimize instead.")
         if dt is None:
             self._cache.full_sweep()
         else:
             self._cache.full_sweep(dt)
 
-    def cacheMinimize(self, dt=None):
+    def cacheMinimize(self, dt=DEPRECATED_ARGUMENT):
         """Deactivate all unmodified objects in the cache.
 
         Call _p_deactivate() on each cached object, attempting to turn
@@ -504,9 +503,8 @@ class Connection(ExportImport, object):
         :Parameters:
           - `dt`: ignored.  It is provided only for backwards compatibility.
         """
-        if dt is not None:
-            warnings.warn("The dt argument to cacheMinimize is ignored.",
-                          DeprecationWarning)
+        if dt is not DEPRECATED_ARGUMENT:
+            deprecated36("cacheMinimize() dt= is ignored.")
         self._cache.minimize()
 
     def cacheGC(self):
@@ -649,6 +647,7 @@ class Connection(ExportImport, object):
                 self._cache[oid] = obj
             except:
                 # Dang, I bet it's wrapped:
+                # XXX Deprecate, then remove, this.
                 if hasattr(obj, 'aq_base'):
                     self._cache[oid] = obj.aq_base
                 else:
@@ -781,8 +780,8 @@ class Connection(ExportImport, object):
             # an oid is being registered.  I can't think of any way to
             # achieve that without assignment to _p_jar.  If there is
             # a way, this will be a very confusing warning.
-            warnings.warn("Assigning to _p_jar is deprecated",
-                          DeprecationWarning)
+            deprecated36("Assigning to _p_jar is deprecated, and will be "
+                         "changed to raise an exception.")
         elif obj._p_oid in self._added:
             # It was registered before it was added to _added.
             return
@@ -798,7 +797,7 @@ class Connection(ExportImport, object):
     def root(self):
         """Return the database root object.
 
-        The root is a PersistentDict.
+        The root is a persistent.mapping.PersistentMapping.
         """
         return self.get(z64)
 

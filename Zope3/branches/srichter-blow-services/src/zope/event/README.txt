@@ -4,12 +4,12 @@ Events
 This package provides a simple event system on which
 application-specific event systems can be built.
 
-Application code can generate events without be concerned about the
+Application code can generate events without being concerned about the
 event-processing frameworks that might handle the events.
 
 Events are objects that represent something happening in a system.
 They are used to extend processing by providing processing plug
-points. 
+points.
 
 The package has a list of subscribers.  Application code can manage
 subscriptions by manipulating this list.  For the examples here, we'll

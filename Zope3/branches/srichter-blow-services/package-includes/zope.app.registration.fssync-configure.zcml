@@ -1,3 +1,0 @@
-<configure>
-<!-- XXX: include package="zope.app.registration.fssync" / -->
-</configure>

@@ -11,7 +11,7 @@
 
 <!-- ZopeDatabaseAdapter default views -->
 
-  <!-- XXX need an index.html that gives the source and is the def view -->
+  <!-- TODO: need an index.html that gives the source and is the def view -->
 
   <view
       name="+"

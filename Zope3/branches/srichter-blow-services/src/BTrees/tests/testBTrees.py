@@ -206,7 +206,7 @@ class MappingBase(Base):
             lst = list(self.t.values(max=99-x, min=0+x))
             lst.sort()
             self.assertEqual(lst,range(0+x,99-x+1))
-    
+
     def testValuesNegativeIndex(self):
         L = [-3, 6, -11, 4]
         for i in L:
@@ -235,7 +235,7 @@ class MappingBase(Base):
             self.assertEqual(list(lst), range(0+x, 99-x+1))
 
         self.assertEqual(len(v), 100)
-    
+
     def testKeysNegativeIndex(self):
         L = [-3, 6, -11, 4]
         for i in L:
@@ -267,7 +267,7 @@ class MappingBase(Base):
 
         items = list(self.t.iteritems(min=12, max=20))
         self.assertEqual(items, zip(range(12, 21), range(24, 43, 2)))
-    
+
     def testItemsNegativeIndex(self):
         L = [-3, 6, -11, 4]
         for i in L:

@@ -22,19 +22,20 @@ import persistent.dict
 from zope.interface import implements, providedBy, Interface, Attribute
 from zope.security.checker import NamesChecker, ProxyFactory
 
-import zope.app.container.contained
-import zope.app.component.interfaces.registration
-import zope.app.component.adapter
-import zope.app.interface.interfaces
 import zope.component.interfaces
 import zope.configuration.exceptions
 import zope.proxy
 import zope.publisher.interfaces.browser
-import zope.schema
 
+import zope.app.component.interfaces.registration
+import zope.app.component.adapter
+import zope.app.container.contained
+import zope.app.interface.interfaces
 from zope.app import zapi
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dependable.interfaces import IDependable, DependencyError
+
+import interfaces
 
 class GlobalViewRegistration(object):
     """Registrations representing global view thingies."""
@@ -83,35 +84,8 @@ class LocalLayer(
         self.__parent__ = parent
         self.__name__ = name
 
-class IViewRegistration(zope.app.component.interfaces.IAdapterRegistration):
-
-    required = zope.schema.Choice(
-        title = _(u"For interface"),
-        description = _(u"The interface of the objects being viewed"),
-        vocabulary="Interfaces",
-        readonly = True,
-        required = True,
-        )
-
-    requestType = zope.schema.Choice(
-        title = _(u"Request type"),
-        description = _(u"The type of requests the view works with"),
-        vocabulary="Interfaces",
-        readonly = True,
-        required = True,
-        )
-
-    layer = zope.schema.BytesLine(
-        title = _(u"Layer"),
-        description = _(u"The skin layer the view is registered for"),
-        required = False,
-        readonly = True,
-        min_length = 1,
-        default = "default",
-        )
-
 class ViewRegistration(zope.app.component.registration.SimpleRegistration):
-    implements(IViewRegistration)
+    implements(interfaces.IViewRegistration)
 
     provided = Interface
 
@@ -157,36 +131,8 @@ class ViewRegistration(zope.app.component.registration.SimpleRegistration):
         return folder.resolve(self.factoryName)
     factory = property(factory)
 
-
-class IPageRegistration(IViewRegistration):
-
-    factoryName = zope.schema.BytesLine(
-        title=_(u"Page class"),
-        required = False,
-        )
-
-    template = zope.app.component.interfaces.registration.Component(
-        title = _(u"Page template"),
-        required = False,
-        )
-
-    attribute = zope.schema.TextLine(
-        title = _(u"Class attribute"),
-        required = False,
-        )
-
-    factory = Attribute(
-        _("Factory to be called to construct an adapter")
-        )
-
-    def validate(self):
-        """Verifies that the registration is valid.
-
-        Raises a ConfigurationError if the validation is failed.
-        """
-
 class PageRegistration(ViewRegistration):
-    implements(IPageRegistration)
+    implements(interfaces.IPageRegistration)
 
     # We only care about browser pages
     requestType = zope.publisher.interfaces.browser.IBrowserRequest
@@ -209,21 +155,6 @@ class PageRegistration(ViewRegistration):
 
         self.template = template
         self.attribute = attribute
-
-    def implementationSummary(self):
-        L = []
-        if self.template:
-            prefix = "/++etc++site/"
-            t = self.template
-            i = t.rfind(prefix)
-            if i >= 0:
-                t = t[i + len(prefix):]
-            L.append("template=%s" % t)
-        if self.factoryName:
-            L.append("class=%s" % self.factoryName)
-        if self.attribute:
-            L.append("attribute=%s" % self.attribute)
-        return ", ".join(L)
 
     def validate(self):
         if self.template and self.attribute:
@@ -253,7 +184,7 @@ class PageRegistration(ViewRegistration):
             folder = self.__parent__.__parent__
             class_ = folder.resolve(self.factoryName)
         else:
-            class_  = DefaultClass
+            class_  = BrowserView
 
         if self.attribute:
             return AttrViewFactory(class_, self.attribute)
@@ -270,19 +201,21 @@ class PageRegistration(ViewRegistration):
 
     factory = property(factory)
 
-def PageRegistrationAddSubscriber(self, event):
-    if self.template:
-        template = zapi.traverse(self.__parent__.__parent__,self.template)
+def PageRegistrationAddSubscriber(registration, event):
+    if registration.template:
+        template = zapi.traverse(registration.__parent__.__parent__,
+                                 registration.template)
         dependents = IDependable(template)
-        objectpath = zapi.getPath(self)
+        objectpath = zapi.getPath(registration)
         dependents.addDependent(objectpath)
 
 
-def PageRegistrationRemoveSubscriber(self, event):
-    if self.template:
-        template = zapi.traverse(self.__parent__.__parent__,self.template)
+def PageRegistrationRemoveSubscriber(registration, event):
+    if registration.template:
+        template = zapi.traverse(registration.__parent__.__parent__,
+                                 registration.template)
         dependents = IDependable(template)
-        objectpath = zapi.getPath(self)
+        objectpath = zapi.getPath(registration)
         dependents.removeDependent(objectpath)
 
 class TemplateViewFactory(object):
@@ -311,12 +244,6 @@ class AttrViewFactory(object):
     def __call__(self, object, request):
         attr = getattr(self.cls(object, request), self.attr)
         return ProxyFactory(attr)
-
-class DefaultClass(object):
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
 
 class BoundTemplate(object):
 

@@ -13,4 +13,8 @@
 <include package="zope.app.schema" file="meta.zcml" />
 <include package="zope.app.container.browser" file="meta.zcml" />
 
+<!-- BBB: Goes away in 3.3 -->
+<include package="zope.app.site" file="meta.zcml" />
+
+
 </configure>

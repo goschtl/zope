@@ -65,7 +65,7 @@
      tal:condition="status"
      tal:content="status" />
 
-  <form name="." method="POST"> 
+  <form name="." method="post"> 
     
     <div metal:use-macro="context/@@form_macros/widget_rows" />
 

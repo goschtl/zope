@@ -11,7 +11,7 @@
 <body>
 <div metal:fill-slot="body">
 
-  <form action="." tal:attributes="action request/URL" method="POST"
+  <form action="." tal:attributes="action request/URL" method="post"
         enctype="multipart/form-data">
 
     <p tal:define="status view/update"

@@ -16,11 +16,12 @@
 $Id$
 """
 import unittest
-from zope.testing.doctestunit import DocTestSuite
+from zope.testing.doctestunit import DocTestSuite, DocFileSuite
 
 
 def test_suite():
     return unittest.TestSuite((
+        DocFileSuite('formparser.txt'),
         DocTestSuite('zope.testing.loggingsupport'),
         ))
 

@@ -7,7 +7,7 @@
 
 <content class=".presentation.ViewRegistration">
   <require
-      permission="zope.ManageServices"
+      permission="zope.ManageSite"
       interface=".presentation.IViewRegistration"
       set_schema="zope.app.registration.interfaces.IRegistration"
       />
@@ -15,21 +15,21 @@
 
 <content class=".presentation.PageRegistration">
   <require
-      permission="zope.ManageServices"
-      interface=".presentation.IPageRegistration"
-      set_schema=".presentation.IPageRegistration"
+      permission="zope.ManageSite"
+      interface=".interfaces.IPageRegistration"
+      set_schema=".interfaces.IPageRegistration"
       />
 </content>
 
 <subscriber
     factory=".presentation.PageRegistrationAddSubscriber"
-    for=".presentation.IPageRegistration 
+    for=".interfaces.IPageRegistration 
          zope.app.container.interfaces.IObjectAddedEvent"
     />
 
 <subscriber
     factory=".presentation.PageRegistrationRemoveSubscriber"
-    for=".presentation.IPageRegistration 
+    for=".interfaces.IPageRegistration 
          zope.app.container.interfaces.IObjectRemovedEvent"
     />
 

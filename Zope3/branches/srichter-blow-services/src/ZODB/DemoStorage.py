@@ -80,8 +80,9 @@ and call it to monitor the storage.
 
 """
 
-import base64, time, string
-from ZODB import POSException, BaseStorage, utils
+import base64, time
+from ZODB import POSException, BaseStorage
+from ZODB.utils import z64, oid_repr
 from persistent.TimeStamp import TimeStamp
 from cPickle import loads
 from BTrees import OOBTree
@@ -409,7 +410,7 @@ class DemoStorage(BaseStorage.BaseStorage):
 
             # Now build an index of *only* those objects reachable
             # from the root.
-            rootl = ['\0\0\0\0\0\0\0\0']
+            rootl = [z64]
             pindex = {}
             while rootl:
                 oid = rootl.pop()
@@ -508,8 +509,8 @@ class DemoStorage(BaseStorage.BaseStorage):
             o.append("  %s %s" % (TimeStamp(tid), p))
             for r in t:
                 oid, pre, vdata, p, tid = r
-                oid = utils.oid_repr(oid)
-                tid = utils.oid_repr(tid)
+                oid = oid_repr(oid)
+                tid = oid_repr(tid)
 ##                if serial is not None: serial=str(TimeStamp(serial))
                 pre=id(pre)
                 if vdata and vdata[1]: vdata=vdata[0], id(vdata[1])
@@ -522,7 +523,7 @@ class DemoStorage(BaseStorage.BaseStorage):
         items.sort()
         for oid, r in items:
             if r: r=id(r)
-            o.append('  %s: %s' % (utils.oid_repr(oid), r))
+            o.append('  %s: %s' % (oid_repr(oid), r))
 
         o.append('\nVersion Index:')
         items=self._vindex.items()
@@ -533,6 +534,6 @@ class DemoStorage(BaseStorage.BaseStorage):
             vitems.sort()
             for oid, r in vitems:
                 if r: r=id(r)
-                o.append('    %s: %s' % (utils.oid_repr(oid), r))
+                o.append('    %s: %s' % (oid_repr(oid), r))
 
-        return string.join(o,'\n')
+        return '\n'.join(o)

@@ -443,7 +443,7 @@ Now, before we can define any groups, we have to add and register a PAU:
   ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="field.provided"
   ... 
-  ... zope.app.security.interfaces.IAuthenticationUtility
+  ... zope.app.security.interfaces.IAuthentication
   ... ------------01mLTAiXW04sKSCkjnjf13EYQIvFsu2svmDMwutSuvLCNXx7JekIhxq
   ... Content-Disposition: form-data; name="field.provided-empty-marker"
   ... 

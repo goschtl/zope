@@ -15,18 +15,9 @@
 
 $Id$
 """
-try:
-    from zope.interface import Interface
-    from zope.interface import Attribute
-except ImportError:
 
-    # just allow the module to compile if zope isn't available
-
-    class Interface(object):
-        pass
-
-    def Attribute(s):
-        return s
+from zope.interface import Interface
+from zope.interface import Attribute
 
 class IPersistent(Interface):
     """Python persistent interface
@@ -149,7 +140,8 @@ class IPersistent(Interface):
           - call _p_deactivate()
           - set _p_changed to None
 
-    There is one way to invalidate an object:  delete its _p_changed
+    There are two ways to invalidate an object:  call the
+    _p_invalidate() method (preferred) or delete its _p_changed
     attribute.  This cannot be ignored, and is used when semantics
     require invalidation.  Normally, an invalidated object transitions
     to the ghost state.  However, some objects cannot be ghosts.  When
@@ -235,6 +227,15 @@ class IPersistent(Interface):
         may choose to keep an object in the saved state.
         """
 
+    def _p_invalidate():
+        """Invalidate the object.
+
+        Invalidate the object.  This causes any data to be thrown
+        away, even if the object is in the changed state.  The object
+        is moved to the ghost state; further accesses will cause
+        object data to be reloaded.
+        """
+
 class IPersistentNoReadConflicts(IPersistent):
     def _p_independent():
         """Hook for subclasses to prevent read conflict errors.
@@ -276,85 +277,4 @@ class IPersistentDataManager(Interface):
         The modification time may not be known, in which case None
         is returned.  If non-None, the return value is the kind of
         timestamp supplied by Python's time.time().
-        """
-
-# XXX Should we keep the following?  Doesn't seem too useful, and
-# XXX we don't actually implement this interface (e.g., we have no
-# XXX .statistics() method).
-
-class ICache(Interface):
-    """In-memory object cache.
-
-    The cache serves two purposes.  It peforms pointer swizzling, and
-    it keeps a bounded set of recently used but otherwise unreferenced
-    in objects to avoid the cost of re-loading them.
-
-    Pointer swizzling is the process of converting between persistent
-    object ids and Python object ids.  When a persistent object is
-    serialized, its references to other persistent objects are
-    represented as persitent object ids (oids).  When the object is
-    unserialized, the oids are converted into references to Python
-    objects.  If several different serialized objects refer to the
-    same object, they must all refer to the same object when they are
-    unserialized.
-
-    A cache stores persistent objects, but it treats ghost objects and
-    non-ghost or active objects differently.  It has weak references
-    to ghost objects, because ghost objects are only stored in the
-    cache to satisfy the pointer swizzling requirement.  It has strong
-    references to active objects, because it caches some number of
-    them even if they are unreferenced.
-
-    The cache keeps some number of recently used but otherwise
-    unreferenced objects in memory.  We assume that there is a good
-    chance the object will be used again soon, so keeping it memory
-    avoids the cost of recreating the object.
-
-    An ICache implementation is intended for use by an
-    IPersistentDataManager.
-    """
-
-    def get(oid):
-        """Return the object from the cache or None."""
-
-    def set(oid, obj):
-        """Store obj in the cache under oid.
-
-        obj must implement IPersistent
-        """
-
-    def remove(oid):
-        """Remove oid from the cache if it exists."""
-
-    def invalidate(oids):
-        """Make all of the objects in oids ghosts.
-
-        `oids` is an iterable object that yields oids.
-
-        The cache must attempt to change each object to a ghost by
-        calling _p_deactivate().
-
-        If an oid is not in the cache, ignore it.
-        """
-
-    def clear():
-        """Invalidate all the active objects."""
-
-    def activate(oid):
-        """Notification that object oid is now active.
-
-        The caller is notifying the cache of a state change.
-
-        Raises LookupError if oid is not in cache.
-        """
-
-    def shrink():
-        """Remove excess active objects from the cache."""
-
-    def statistics():
-        """Return dictionary of statistics about cache size.
-
-        Contains at least the following keys:
-        active -- number of active objects
-        ghosts -- number of ghost objects
         """

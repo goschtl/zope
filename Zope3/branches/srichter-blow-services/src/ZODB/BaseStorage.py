@@ -20,11 +20,10 @@ import threading
 import time
 import logging
 
-import UndoLogCompatible
-import POSException
 from persistent.TimeStamp import TimeStamp
 
-from ZODB import POSException, utils
+from ZODB import POSException
+from ZODB.utils import z64, oid_repr
 from ZODB.UndoLogCompatible import UndoLogCompatible
 
 log = logging.getLogger("ZODB.BaseStorage")
@@ -98,7 +97,7 @@ class BaseStorage(UndoLogCompatible):
         t=self._ts=apply(TimeStamp,(time.gmtime(t)[:5]+(t%60,)))
         self._tid = `t`
         if base is None:
-            self._oid='\0\0\0\0\0\0\0\0'
+            self._oid=z64
         else:
             self._oid=base._oid
 
@@ -401,7 +400,7 @@ class BaseStorage(UndoLogCompatible):
             for r in transaction:
                 oid=r.oid
                 if verbose:
-                    print utils.oid_repr(oid), r.version, len(r.data)
+                    print oid_repr(oid), r.version, len(r.data)
                 if restoring:
                     self.restore(oid, r.tid, r.data, r.version,
                                  r.data_txn, transaction)

@@ -625,15 +625,15 @@ def adapterImplied(adapters):
 
     # This dictionary is used to catch situations specific adapters
     # override less specific adapters.
-    # Because subscriptions are cummulative, registered doesn't apply.
+    # Because subscriptions are cumulative, registered doesn't apply.
     registered = {}
 
     # Add adapters and interfaces directly implied by same:
 
     for key, value in adapters.iteritems():
 
-        # TODO: Backward compatability
-        # Don't need to handle 3-tuples some day
+        # TODO: Backward compatibility
+        # BBB ? Don't need to handle 3-tuples some day
         try:
             (subscription, with, name, target) = key
         except ValueError:

@@ -30,10 +30,10 @@ from zope.app.folder import rootFolder
 from zope.app.presentation.zpt import IZPTTemplate
 from zope.app.registration.tests.iregistry import TestingIRegistry
 from zope.app.site.tests.placefulsetup import PlacefulSetup
+from zope.app.presentation.interfaces import IPageRegistration
 from zope.app.presentation.presentation import ViewRegistration
 from zope.app.presentation.presentation import PageRegistration
 from zope.app.presentation.presentation import BoundTemplate
-from zope.app.presentation.presentation import IPageRegistration
 from zope.app.presentation.presentation import PageRegistrationAddSubscriber
 from zope.app.presentation.presentation import PageRegistrationRemoveSubscriber
 from zope.app.testing import setup

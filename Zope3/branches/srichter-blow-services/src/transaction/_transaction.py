@@ -172,8 +172,15 @@ class Transaction(object):
         self.status = Status.ACTIVE
         # List of resource managers, e.g. MultiObjectResourceAdapters.
         self._resources = []
-        self._synchronizers = synchronizers or []
+
+        # Weak set of synchronizer objects to call.
+        if synchronizers is None:
+            from ZODB.utils import WeakSet
+            synchronizers = WeakSet()
+        self._synchronizers = synchronizers
+
         self._manager = manager
+
         # _adapters: Connection/_p_jar -> MultiObjectResourceAdapter[Sub]
         self._adapters = {}
         self._voted = {} # id(Connection) -> boolean, True if voted
@@ -261,9 +268,10 @@ class Transaction(object):
                 self._resources.append(adapter)
 
     def begin(self):
-        warnings.warn("Transaction.begin() should no longer be used; use "
-                      "the begin() method of a transaction manager.",
-                      DeprecationWarning, stacklevel=2)
+        from ZODB.utils import deprecated36
+
+        deprecated36("Transaction.begin() should no longer be used; use "
+                      "the begin() method of a transaction manager.")
         if (self._resources or
               self._sub or
               self._nonsub or
@@ -285,8 +293,7 @@ class Transaction(object):
             self.commit(True)
 
         if not subtransaction:
-            for s in self._synchronizers:
-                s.beforeCompletion(self)
+            self._synchronizers.map(lambda s: s.beforeCompletion(self))
             self.status = Status.COMMITTING
 
         try:
@@ -310,8 +317,7 @@ class Transaction(object):
             self.status = Status.COMMITTED
             if self._manager:
                 self._manager.free(self)
-            for s in self._synchronizers:
-                s.afterCompletion(self)
+            self._synchronizers.map(lambda s: s.afterCompletion(self))
             self.log.debug("commit")
 
     def _commitResources(self, subtransaction):
@@ -359,8 +365,7 @@ class Transaction(object):
                 self._cleanup(L)
             finally:
                 if not subtransaction:
-                    for s in self._synchronizers:
-                        s.afterCompletion(self)
+                    self._synchronizers.map(lambda s: s.afterCompletion(self))
             raise t, v, tb
 
     def _cleanup(self, L):
@@ -426,8 +431,7 @@ class Transaction(object):
 
     def abort(self, subtransaction=False):
         if not subtransaction:
-            for s in self._synchronizers:
-                s.beforeCompletion(self)
+            self._synchronizers.map(lambda s: s.beforeCompletion(self))
 
         if subtransaction and self._nonsub:
             from ZODB.POSException import TransactionError
@@ -457,8 +461,7 @@ class Transaction(object):
         if not subtransaction:
             if self._manager:
                 self._manager.free(self)
-            for s in self._synchronizers:
-                s.afterCompletion(self)
+            self._synchronizers.map(lambda s: s.afterCompletion(self))
             self.log.debug("abort")
 
         if tb is not None:
@@ -630,4 +633,3 @@ class DataManagerAdapter(object):
 
     def sortKey(self):
         return self._datamanager.sortKey()
-

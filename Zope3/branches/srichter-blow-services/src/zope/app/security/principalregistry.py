@@ -20,7 +20,7 @@ from zope.interface import implements
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
 from zope.app.security.interfaces import ILoginPassword
-from zope.app.security.interfaces import IAuthenticationUtility, IPrincipal
+from zope.app.security.interfaces import IAuthentication, IPrincipal
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.container.contained import Contained, contained
 from warnings import warn
@@ -30,9 +30,9 @@ class DuplicateId(Exception): pass
 
 class PrincipalRegistry(object):
 
-    implements(IAuthenticationUtility)
+    implements(IAuthentication)
 
-    # Methods implementing IAuthenticationUtility
+    # Methods implementing IAuthentication
 
     def authenticate(self, request):
         a = ILoginPassword(request, None)

@@ -17,5 +17,5 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.presentation.presentation import IPageRegistration
+from zope.app.presentation.interfaces import IPageRegistration
 from zope.app.presentation.presentation import PageRegistration

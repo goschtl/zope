@@ -1,7 +1,7 @@
 <configure xmlns="http://namespaces.zope.org/browser">
 
   <editform
-    schema="...presentation.IPageRegistration"
+    schema="..interfaces.IPageRegistration"
     name="index.html"
     class=".PageRegistrationView"
     menu="zmi_views"
@@ -9,7 +9,7 @@
     permission="zope.ManageServices" />
 
   <addform
-      schema="..presentation.IPageRegistration"
+      schema="..interfaces.IPageRegistration"
       name="PageRegistration"
       content_factory="..presentation.PageRegistration"
       keyword_arguments="required factoryName name permission 

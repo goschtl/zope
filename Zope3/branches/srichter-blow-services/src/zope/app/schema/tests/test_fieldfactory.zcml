@@ -25,7 +25,7 @@
 	/>
     -->
 
-    <!-- XXX put the whole interface under one permission for now -->
+    <!-- TODO: put the whole interface under one permission for now -->
     <require
 	permission="zope.ManageContent"
 	interface="zope.schema.interfaces.IField"

@@ -8,7 +8,7 @@
    tal:condition="status"
    tal:content="status" />
 
-<form action="" method="POST">
+<form action="" method="post">
 <p i18n:translate="">Select a principal:</p>
 <div tal:content="structure view/principal_widget">...</div>
 

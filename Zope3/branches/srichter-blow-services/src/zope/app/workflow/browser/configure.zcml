@@ -45,7 +45,7 @@
       name="contents.html" />  
 
   <!-- ProcessInstanceContainerAdaptable 
-       XXX Commented Out .. is just a demo
+       Note: Commented Out ... it is just a demo
   <pages
       for="zope.app.workflow.interfaces.IProcessInstanceContainerAdaptable"
       permission="zope.workflow.UseProcessInstances"

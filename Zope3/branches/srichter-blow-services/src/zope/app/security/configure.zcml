@@ -23,7 +23,7 @@
   <include file="_protections.zcml" />
 
   <utility
-      provides=".interfaces.IAuthenticationUtility" 
+      provides=".interfaces.IAuthentication" 
       component=".principalregistry.principalRegistry" />
 
   <localUtility class=".permission.LocalPermission">

@@ -23,7 +23,7 @@
 
     <allow attributes="__name__" />
 
-    <!-- XXX put the whole interface under one permission for now -->
+    <!-- TODO: put the whole interface under one permission for now -->
 
     <require
 	permission="zope.ManageContent"

@@ -48,7 +48,7 @@
   <include package=".zopeappgenerations" />
 
   <!-- Services -->
-  <!-- XXX: include package="zope.app.pluggableauth" /-->
+  <include package="zope.app.pluggableauth" />
   <include package="zope.app.principalannotation" />
 
   <!-- Utilities -->

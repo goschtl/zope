@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
-from zope.app.security.interfaces import IAuthenticationUtility
+from zope.app.security.interfaces import IAuthentication
 from zope.app.security.settings import Allow, Deny
 from zope.app.security.principalregistry import principalRegistry
 
@@ -38,7 +38,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        ztapi.provideUtility(IAuthenticationUtility, principalRegistry)
+        ztapi.provideUtility(IAuthentication, principalRegistry)
 
     def _make_principal(self, id=None, title=None):
         p = principalRegistry.definePrincipal(

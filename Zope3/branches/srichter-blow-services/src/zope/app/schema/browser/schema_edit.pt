@@ -9,7 +9,7 @@
       <span tal:content="view/name" i18n:name="schema_name"/>
     </h3>
 
-    <form action="." tal:attributes="action request/URL" method="POST"
+    <form action="." tal:attributes="action request/URL" method="post"
           enctype="multipart/form-data">
 
     <p tal:define="status view/update"

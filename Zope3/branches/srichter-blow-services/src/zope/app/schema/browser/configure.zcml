@@ -25,26 +25,12 @@
 
   </view>
 
-<!-- XXX: Activate again
-  <addform
-      label="New Mutable Schema Registration"
-      for="zope.app.schema.interfaces.ISchemaUtility"
-      name="addRegistration.html"
-      schema="zope.app.component.interfaces.IUtilityRegistration"
-      class="zope.app.component.browser.AddRegistration"
-      permission="zope.ManageServices"
-      content_factory="zope.app.schema.schema.SchemaRegistration"
-      arguments="name interface componentPath"
-      set_after_add="status"
-      fields="name interface componentPath permission status" />
-
   <addMenuItem
       title="Mutable Schema"
       description="A Persistent Schema that can be edited through the web"
       class="zope.app.schema.schema.SchemaUtility"
       permission="zope.ManageServices"
     />
--->
 
   <defaultView
       for="zope.app.schema.interfaces.IMutableSchema"

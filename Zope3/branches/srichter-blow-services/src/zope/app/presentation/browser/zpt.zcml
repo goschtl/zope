@@ -23,7 +23,7 @@
 
  <addform
       for="zope.app.presentation.zpt.IZPTTemplate"
-      schema="zope.app.presentation.IPageRegistration"
+      schema="zope.app.presentation.interfaces.IPageRegistration"
       name="addRegistration.html"
       class="zope.app.registration.browser.AddComponentRegistration"
       content_factory="zope.app.presentation.PageRegistration"

@@ -165,5 +165,8 @@ def __getSM(sitemanager=None):
     return GlobalServiceManager('serviceManager', __name__, sitemanager)
 
 def defineService(name, interface, sitemanager=None):
-    __getSM().defineService(name, interface)
+    if sitemanager is None:
+        from zope.component.site import globalSiteManager
+        sitemanager = globalSiteManager
+    __getSM(sitemanager).defineService(name, interface)
 

@@ -6,7 +6,7 @@ Interfaces
 
 Interfaces are objects that specify (document) the external behavior
 of objects that "provide" them.  An interface specifies behavior
-through: 
+through:
 
 - Informal documentation in a doc string
 
@@ -42,18 +42,18 @@ an instance of `InterfaceClass`::
 
   >>> type(IFoo)
   <class 'zope.interface.interface.InterfaceClass'>
-  
-We can ask for the interfaces documentation::
+
+We can ask for the interface's documentation::
 
   >>> IFoo.__doc__
   'Foo blah blah'
 
-and it's name::
+and its name::
 
   >>> IFoo.__name__
   'IFoo'
 
-and even it's module::
+and even its module::
 
   >>> IFoo.__module__
   '__main__'
@@ -158,7 +158,7 @@ function in a class statement::
   ...
   ...     def __init__(self, x=None):
   ...         self.x = x
-  ...     
+  ...
   ...     def bar(self, q, r=None):
   ...         return q, r, self.x
   ...
@@ -173,7 +173,7 @@ can ask an interface whether it is implemented by a class::
 
   >>> IFoo.implementedBy(Foo)
   True
-  
+
 And we can ask whether an interface is provided by an object::
 
   >>> foo = Foo()
@@ -220,7 +220,7 @@ is part of the `Foo`'s `__call__` method::
   ...
   ...     def __call__(x=None):
   ...         """Create a foo
-  ...         
+  ...
   ...         The argument provides the initial value for x ...
   ...         """
 
@@ -246,7 +246,7 @@ declaration from within a class statement::
   ...
   ...     def __init__(self, x=None):
   ...         self.x = x
-  ...     
+  ...
   ...     def bar(self, q, r=None):
   ...         return q, r, self.x
   ...
@@ -380,7 +380,7 @@ declarations. Here's a silly example::
   >>> class Special2(Foo):
   ...     zope.interface.implementsOnly(
   ...          zope.interface.implementedBy(Foo),
-  ...          ISpecial, 
+  ...          ISpecial,
   ...          )
   ...     reason = 'I just am'
   ...     def brag(self):
@@ -402,7 +402,7 @@ the other interfaces as base interfaces::
 
   >>> class IBlat(zope.interface.Interface):
   ...     """Blat blah blah"""
-  ...  
+  ...
   ...     y = zope.interface.Attribute("y blah blah")
   ...     def eek():
   ...         """eek blah blah"""
@@ -414,11 +414,11 @@ the other interfaces as base interfaces::
   ...     """Baz blah"""
   ...     def eek(a=1):
   ...         """eek in baz blah"""
-  ... 
+  ...
 
   >>> IBaz.__bases__
   (<InterfaceClass __main__.IFoo>, <InterfaceClass __main__.IBlat>)
-  
+
   >>> names = list(IBaz)
   >>> names.sort()
   >>> names
@@ -472,7 +472,7 @@ If two base interfaces define the same attribute, the attribute is
 inherited from the most specific interface. For example, with:
 
   >>> class IBase(zope.interface.Interface):
-  ...    
+  ...
   ...     def foo():
   ...         "base foo doc"
 
@@ -480,7 +480,7 @@ inherited from the most specific interface. For example, with:
   ...     pass
 
   >>> class IBase2(IBase):
-  ...    
+  ...
   ...     def foo():
   ...         "base2 foo doc"
 
@@ -531,10 +531,10 @@ Specifications (interfaces and declarations) provide an `__sro__`
 that lists the specification and all of it's ancestors:
 
   >>> baz_implements.__sro__
-  (<implementedBy __main__.Baz>, 
-   <InterfaceClass __main__.IBaz>, 
-   <InterfaceClass __main__.IFoo>, 
-   <InterfaceClass __main__.IBlat>, 
+  (<implementedBy __main__.Baz>,
+   <InterfaceClass __main__.IBaz>,
+   <InterfaceClass __main__.IFoo>,
+   <InterfaceClass __main__.IBlat>,
    <InterfaceClass zope.interface.Interface>)
 
 
@@ -625,7 +625,7 @@ exceptions as it's argument::
   Invalid: [RangeError(Range(2, 1))]
 
 And the list will be filled with the individual exceptions::
-  
+
   >>> errors
   [RangeError(Range(2, 1))]
 

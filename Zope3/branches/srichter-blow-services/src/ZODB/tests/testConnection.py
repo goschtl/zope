@@ -22,7 +22,7 @@ import transaction
 from ZODB.config import databaseFromString
 from ZODB.utils import p64, u64
 from ZODB.tests.warnhook import WarningsHook
-from ZODB.interfaces import verifyObject
+from zope.interface.verify import verifyObject
 
 class ConnectionDotAdd(unittest.TestCase):
 
@@ -414,8 +414,9 @@ class UserMethodTests(unittest.TestCase):
         >>> len(hook.warnings)
         1
         >>> message, category, filename, lineno = hook.warnings[0]
-        >>> message
-        'The dt argument to cacheMinimize is ignored.'
+        >>> print message
+        This will be removed in ZODB 3.6:
+        cacheMinimize() dt= is ignored.
         >>> category.__name__
         'DeprecationWarning'
         >>> hook.clear()
@@ -434,8 +435,9 @@ class UserMethodTests(unittest.TestCase):
         >>> len(hook.warnings)
         2
         >>> message, category, filename, lineno = hook.warnings[0]
-        >>> message
-        'cacheFullSweep is deprecated. Use cacheMinimize instead.'
+        >>> print message
+        This will be removed in ZODB 3.6:
+        cacheFullSweep is deprecated. Use cacheMinimize instead.
         >>> category.__name__
         'DeprecationWarning'
         >>> message, category, filename, lineno = hook.warnings[1]
@@ -632,7 +634,7 @@ class StubStorage:
 
 class TestConnectionInterface(unittest.TestCase):
 
-    def test(self):
+    def test_connection_interface(self):
         from ZODB.interfaces import IConnection
         db = databaseFromString("<zodb>\n<mappingstorage/>\n</zodb>")
         cn = db.open()

@@ -29,9 +29,9 @@ When we provide suitable credentials:
     'login': 'login1',
     'title': 'Principal 1'})
 
-we get back a principal id and supplimentary information, including the
+we get back a principal id and supplementary information, including the
 principal title and description.  Note that the principal id is a
-concatination of the principal-folder prefix and the name of the
+concatenation of the principal-folder prefix and the name of the
 principal-information object within the folder.
 
 None is returned if the credentials are invalid:
@@ -121,7 +121,7 @@ We can use batching parameters to specify a subset of results:
 Changing credentials
 --------------------
 
-Creedentials can be changed by modifying principal-information
+Credentials can be changed by modifying principal-information
 objects:
 
   >>> p1.login = 'bob'

@@ -24,7 +24,7 @@ from zope.schema.interfaces import ISourceQueriables
 
 from zope.app import zapi
 
-from zope.app.security.interfaces import IAuthenticationUtility
+from zope.app.security.interfaces import IAuthentication
 from zope.app.component import queryNextUtility
 from zope.app.container.contained import Contained
 from zope.app.component.interfaces import ILocalUtility
@@ -74,7 +74,7 @@ class IPAU(zope.interface.Interface):
 
 class PAU(object):
 
-    zope.interface.implements(IPAU, IAuthenticationUtility, ISourceQueriables)
+    zope.interface.implements(IPAU, IAuthentication, ISourceQueriables)
 
     authenticators = extractors = challengers = factories = searchers = ()
 
@@ -164,11 +164,20 @@ class PAU(object):
 
     def _delegate(self, meth, *args):
         # delegate to next AU
-        next = queryNextUtility(self, IAuthenticationUtility)
+        next = queryNextUtility(self, IAuthentication)
         if next is None:
             return None
         return getattr(next, meth)(*args)
 
+    # BBB
+    def getPrincipals(self, name):
+        import warnings
+        warnings.warn(
+            "The getPrincipals method has been deprecicated. "
+            "It will be removed in Zope X3.3. "
+            "You'll find no principals here.",
+            DeprecationWarning, stacklevel=2)
+        return ()
 
 class LocalPAU(PAU, Persistent, Contained):
     zope.interface.implements(IPAU, ILocation, ILocalUtility)

@@ -19,7 +19,7 @@
       tal:define ="global introspector view/getIntrospector;
                    global status view/update">
 
-  <form action="" tal:attributes="action request/URL" method="POST">
+  <form action="" tal:attributes="action request/URL" method="post">
 
     <table>
       <tr>
