@@ -1274,6 +1274,8 @@ api_setcontext(PyObject *wrapper, PyObject *context)
 static WrapperInterface
 wrapper_capi = {
     &WrapperType,
+    &ContextDescriptorType,
+    &ContextAwareType,
     api_check,
     api_create,
     api_getobject,
