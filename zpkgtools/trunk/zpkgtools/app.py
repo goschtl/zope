@@ -397,7 +397,7 @@ class Component:
         self.ip.add_output(setup_py)
         f = open(setup_py, "w")
         print >>f, SETUP_HEADER
-        print >>f, "context = zpkgtools.setup.PackageContext("
+        print >>f, "context = zpkgtools.setup.SetupContext("
         print >>f, "    %r, %r, __file__)" % (self.name, version)
         print >>f
         print >>f, "context.setup()"
