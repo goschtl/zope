@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.16 2003/03/24 11:09:39 jim Exp $
+$Id: service.py,v 1.17 2003/04/28 15:21:08 gvanrossum Exp $
 """
 
 import sys
@@ -341,19 +341,3 @@ class ServiceConfiguration(NamedComponentConfiguration):
 
     def usageSummary(self):
         return self.name + " Service"
-
-    def afterAddHook(self, configuration, container):
-        NamedComponentConfiguration.afterAddHook(self,
-                                                 configuration,
-                                                 container)
-        service = configuration.getComponent()
-        adapter = getAdapter(service, IUseConfiguration)
-        adapter.addUsage(getPath(configuration))
-
-    def beforeDeleteHook(self, configuration, container):
-        service = configuration.getComponent()
-        adapter = getAdapter(service, IUseConfiguration)
-        adapter.removeUsage(getPath(configuration))
-        NamedComponentConfiguration.beforeDeleteHook(self,
-                                                     configuration,
-                                                     container)

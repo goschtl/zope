@@ -13,7 +13,7 @@
 ##############################################################################
 """Caching service.
 
-$Id: cache.py,v 1.7 2003/04/24 21:01:26 gvanrossum Exp $
+$Id: cache.py,v 1.8 2003/04/28 15:21:08 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -120,17 +120,3 @@ class CacheConfiguration(NamedComponentConfiguration):
 
     def getInterface(self):
         return ICache
-
-    def afterAddHook(self, configuration, container):
-        super(CacheConfiguration, self).afterAddHook(configuration,
-                                                     container)
-        component = configuration.getComponent()
-        adapter = getAdapter(component, IUseConfiguration)
-        adapter.addUsage(getPath(configuration))
-
-    def beforeDeleteHook(self, configuration, container):
-        component = configuration.getComponent()
-        adapter = getAdapter(component, IUseConfiguration)
-        adapter.removeUsage(getPath(configuration))
-        super(CacheConfiguration, self).beforeDeleteHook(configuration,
-                                                         container)

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.21 2003/04/08 12:21:38 stevea Exp $
+$Id: configuration.py,v 1.22 2003/04/28 15:21:08 gvanrossum Exp $
 """
 __metaclass__ = type
 
@@ -44,7 +44,7 @@ from zope.app.interfaces.services.configuration import Unregistered
 from zope.app.interfaces.services.configuration import Registered, Active
 from zope.app.traversing import getRoot, getPath, traverse
 from zope.app.traversing import canonicalPath
-from zope.component import getAdapter
+from zope.component import getAdapter, queryAdapter
 from zope.component import getService, queryService, getServiceManager
 from zope.proxy.context import ContextMethod, ContextWrapper
 from zope.proxy.context import ContextDescriptor
@@ -389,6 +389,10 @@ class ComponentConfiguration(SimpleConfiguration):
         dependents = getAdapter(component, IDependable)
         objectpath = getPath(configuration)
         dependents.addDependent(objectpath)
+        # Also update usage, if supported
+        adapter = queryAdapter(component, IUseConfiguration)
+        if adapter is not None:
+            adapter.addUsage(getPath(configuration))
 
     def beforeDeleteHook(self, configuration, container):
         "See IDeleteNotifiable"
@@ -398,7 +402,10 @@ class ComponentConfiguration(SimpleConfiguration):
         dependents = getAdapter(component, IDependable)
         objectpath = getPath(configuration)
         dependents.removeDependent(objectpath)
-
+        # Also update usage, if supported
+        adapter = queryAdapter(component, IUseConfiguration)
+        if adapter is not None:
+            adapter.removeUsage(getPath(configuration))
 
 class NamedComponentConfiguration(NamedConfiguration, ComponentConfiguration):
     """Configurations for named components.

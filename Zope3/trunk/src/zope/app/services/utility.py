@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.3 2003/04/03 22:05:34 fdrake Exp $
+$Id: utility.py,v 1.4 2003/04/28 15:21:08 gvanrossum Exp $
 """
 
 from persistence.dict import PersistentDict
@@ -130,30 +130,5 @@ class UtilityConfiguration(ComponentConfiguration):
         # ComponentConfiguration calls this when you specify a
         # permission; it needs the interface to create a security
         # proxy for the interface with the given permission.
+        # XXX Smells like a dead chicken to me.
         return self.interface
-
-    # The following hooks are called only if we implement
-    # IAddNotifiable and IDeleteNotifiable.
-
-    def afterAddHook(self, configuration, container):
-        """Hook method will call after an object is added to container.
-
-        Defined in IAddNotifiable.
-        """
-        super(UtilityConfiguration, self).afterAddHook(configuration,
-                                                       container)
-        utility = configuration.getComponent()
-        adapter = getAdapter(utility, IUseConfiguration)
-        adapter.addUsage(getPath(configuration))
-
-    def beforeDeleteHook(self, configuration, container):
-        """Hook method will call before object is removed from container.
-
-        Defined in IDeleteNotifiable.
-        """
-        utility = configuration.getComponent()
-        adapter = getAdapter(utility, IUseConfiguration)
-        adapter.removeUsage(getPath(configuration))
-        super(UtilityConfiguration, self).beforeDeleteHook(configuration,
-                                                           container)
-    

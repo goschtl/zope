@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: connection.py,v 1.9 2003/04/23 21:03:37 gvanrossum Exp $
+$Id: connection.py,v 1.10 2003/04/28 15:21:08 gvanrossum Exp $
 """
 
 from persistence import Persistent
@@ -92,25 +92,3 @@ class ConnectionConfiguration(NamedComponentConfiguration):
 
     def getInterface(self):
         return IZopeDatabaseAdapter
-
-    def afterAddHook(self, configuration, container):
-        """Hook method will call after an object is added to container.
-
-        Defined in IAddNotifiable.
-        """
-        super(ConnectionConfiguration, self).afterAddHook(configuration,
-                                                          container)
-        utility = configuration.getComponent()
-        adapter = getAdapter(utility, IUseConfiguration)
-        adapter.addUsage(getPath(configuration))
-
-    def beforeDeleteHook(self, configuration, container):
-        """Hook method will call before object is removed from container.
-
-        Defined in IDeleteNotifiable.
-        """
-        utility = configuration.getComponent()
-        adapter = getAdapter(utility, IUseConfiguration)
-        adapter.removeUsage(getPath(configuration))
-        super(ConnectionConfiguration, self).beforeDeleteHook(configuration,
-                                                              container)
