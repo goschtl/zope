@@ -21,6 +21,7 @@ from zope.security._proxy import _Proxy as Proxy
 from zope.security.checker import TrustedCheckerBase
 
 getProxiedObject = getObject
+removeSecurityProxy = getObject
 
 # This import represents part of the API for this module
 from zope.security.checker import ProxyFactory
