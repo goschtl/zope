@@ -1,0 +1,37 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <localUtility class=".zodb.PersistentPrincipalStorage">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <require
+        permission="zope.ManageContent"
+        interface="zope.app.container.interfaces.IContainer" />
+
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IAuthenticationPlugin" />
+
+  </localUtility>
+
+
+  <browser:addMenuItem
+      title="PAS Authentication Plugin"
+      description="A PAS Authentication Plugin"
+      class="zope.app.pas.zodb.PersistentPrincipalStorage"
+      permission="zope.ManageContent"
+      />
+
+  <browser:tool
+      interface=".interfaces.IAuthenticationPlugin"
+      title="PAS Authentication Plugin"
+      description="PAS Authentication Plugin"
+      />
+
+
+</configure>

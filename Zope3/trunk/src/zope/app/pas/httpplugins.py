@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 import base64
 from persistent import Persistent
 from zope.interface import implements
+from zope.publisher.interfaces.http import IHTTPRequest
 
 from zope.app.container.contained import Contained
 from interfaces import IExtractionPlugin, IChallengePlugin
@@ -37,7 +38,7 @@ class HTTPBasicAuthExtractor(Persistent, Contained):
 
     >>> extractor = HTTPBasicAuthExtractor()
     >>> extractor.extractCredentials(request)
-    (u'mgr', u'mgrpw')
+    {'login': u'mgr', 'password': u'mgrpw'}
 
     Make sure we return `None`, if no authentication header has been
     specified.
@@ -58,18 +59,40 @@ class HTTPBasicAuthExtractor(Persistent, Contained):
             if request._auth.lower().startswith(u'basic '):
                 credentials = request._auth.split()[-1] 
                 username, password = base64.decodestring(credentials).split(':')
-                return username.decode('utf-8'), password.decode('utf-8')
+                return {'login': username.decode('utf-8'),
+                        'password': password.decode('utf-8')}
 
 
 class HTTPBasicAuthChallenger(Persistent, Contained):
     """A Basic HTTP Authentication Challenge Plugin
 
+    >>> challenger = HTTPBasicAuthChallenger()
+
+    >>> from zope.publisher.browser import TestRequest
+    >>> request = TestRequest()
+    >>> response = request.response
+    >>> challenger.challenge(request, response)
+    True
+    >>> response._status
+    401
+    >>> response.getHeader('WWW-Authenticate', literal=True)
+    'basic realm=Zope3'
+
+    >>> from zope.publisher.base import TestRequest
+    >>> request = TestRequest('/')
+    >>> response = request.response
+    >>> challenger.challenge(request, response) is None
+    True
     """
     implements(IChallengePlugin)
 
-    realm = 'Zope 3'
+    realm = 'Zope3'
+
+    protocol = 'http auth'
     
-    def challenge(self, requests, response):
+    def challenge(self, request, response):
+        if not IHTTPRequest.providedBy(request):
+            return None
         response.setHeader("WWW-Authenticate", "basic realm=%s" %self.realm,
                            True)
         response.setStatus(401)

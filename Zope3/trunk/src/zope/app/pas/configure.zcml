@@ -30,12 +30,6 @@
       menu="zmi_views" title="Edit"
       permission="zope.ManageServices" />
 
-  <interface interface="zope.app.pas.interfaces.IExtractionPlugin" />
-  <interface interface="zope.app.pas.interfaces.IAuthenticationPlugin" />
-  <interface interface="zope.app.pas.interfaces.IChallengePlugin" />
-  <interface interface="zope.app.pas.interfaces.IPrincipalFactoryPlugin" />
-  <interface interface="zope.app.pas.interfaces.IPrincipalSearchPlugin" />
-
   <vocabulary
     name="ExtractionPlugins"
     factory="zope.app.utility.vocabulary.UtilityVocabulary"
@@ -71,52 +65,9 @@
     nameOnly="True"
    />
 
-  <localUtility class=".httpplugin.HTTPBasicAuthExtractor">
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
-    <require
-        permission="zope.ManageContent"
-        interface=".interfaces.IExtractionPlugin" />
-
-  </localUtility>
-
-  <localUtility class=".httpplugin.HTTPBasicAuthChallenger">
-
-    <implements
-        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
-
-    <require
-        permission="zope.ManageContent"
-        interface=".interfaces.IExtractionPlugin" />
-
-  </localUtility>
-
-  <browser:tool
-      interface=".interfaces.IExtractionPlugin"
-      title="PAS Extraction Plugin"
-      description="PAS Extraction Plugin"
-      />
-  
-  <browser:tool
-      interface=".interfaces.IChallengePlugin"
-      title="PAS Challenge Plugin"
-      description="PAS Challenge Plugin"
-      />
-
-  <browser:addMenuItem
-      title="PAS Extraction Plugin"
-      description="A PAS Extraction Plugin"
-      class="zope.app.pas.httpplugin.HTTPBasicAuthExtractor"
-      permission="zope.ManageContent"
-      />
-  
-  <browser:addMenuItem
-      title="PAS Challenge Plugin"
-      description="A PAS Challenge Plugin"
-      class="zope.app.pas.httpplugin.HTTPBasicAuthChallenger"
-      permission="zope.ManageContent"
-      />
+  <include file="extractionplugins.zcml" />
+  <include file="challengeplugins.zcml" />
+  <include file="principalplugins.zcml" />
+  <include file="authenticationplugins.zcml" />
   
 </configure>

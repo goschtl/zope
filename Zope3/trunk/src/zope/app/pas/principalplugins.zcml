@@ -1,0 +1,33 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="zope"
+    >
+
+  <localUtility class=".principalplugin.PrincipalFactory">
+
+    <implements
+        interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <require
+        permission="zope.ManageContent"
+        interface=".interfaces.IPrincipalFactoryPlugin" />
+
+  </localUtility>
+
+
+  <browser:addMenuItem
+      title="PAS Principal Factory Plugin"
+      description="A PAS Principal Factory Plugin"
+      class=".principalplugin.PrincipalFactory"
+      permission="zope.ManageContent"
+      />
+
+  <browser:tool
+      interface=".interfaces.IPrincipalFactoryPlugin"
+      title="PAS Principal Factory Plugin"
+      description="PAS Principal Factory Plugin"
+      />
+
+
+</configure>

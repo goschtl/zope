@@ -52,16 +52,18 @@ def createTestRequest(**kw):
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.app.pas.httpplugin'),
+        doctest.DocTestSuite('zope.app.pas.httpplugins'),
+        doctest.DocTestSuite('zope.app.pas.zodb'),
+        doctest.DocTestSuite('zope.app.pas.principalplugins'),
+        doctest.DocTestSuite('zope.app.pas.browserplugins',
+                             setUp=formAuthSetUp,
+                             tearDown=formAuthTearDown),
         doctest.DocFileSuite('README.txt',
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown,
                              globs={'provideUtility': ztapi.provideUtility,
                                     'getEvents': getEvents,
                                     }),
-        doctest.DocTestSuite('zope.app.pas.browserplugins',
-                             setUp=formAuthSetUp,
-                             tearDown=formAuthTearDown),
         ))
 
 if __name__ == '__main__':
