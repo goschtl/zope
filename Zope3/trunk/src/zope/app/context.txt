@@ -171,63 +171,63 @@ Issues
   What could we do instead?
 
   - Reorder proxies, decorator outside the security proxy.
-  We could somehow re-order the proxies around an object so that the decorator
-  goes on the outside. This is awkward, as it breaks our invariant of putting
-  the security proxy always on the outside. There are also efficiency issues
-  if the interface-related descriptors are security-proxied.
+    We could somehow re-order the proxies around an object so that the decorator
+    goes on the outside. This is awkward, as it breaks our invariant of putting
+    the security proxy always on the outside. There are also efficiency issues
+    if the interface-related descriptors are security-proxied.
 
-  Let's analyze this a bit further.  
+    Let's analyze this a bit further.  
 
-  * Why do we have an invariant that security proxies always go on the
-    outside?  I'm not sure I know. I think it may be:
+    * Why do we have an invariant that security proxies always go on the
+      outside?  I'm not sure I know. I think it may be:
 
-    + Context methods and methods of ContextAware classes get rebound
-    to wrapper. They don't generally expect to be bound to security
-    proxies.  In particular, it's common for context methods to rely
-    on access to private data.
+      + Context methods and methods of ContextAware classes get rebound
+      to wrapper. They don't generally expect to be bound to security
+      proxies.  In particular, it's common for context methods to rely
+      on access to private data.
 
-    + Maybe it simplified wrapper manipulation. I *think* recent
-    changes to basic proxy introspection make this a non issue.
+      + Maybe it simplified wrapper manipulation. I *think* recent
+      changes to basic proxy introspection make this a non issue.
 
-  * Adapters commonly are put around proxied objects.
+    * Adapters commonly are put around proxied objects.
 
-    I see decorators lying along a continuum from totally transparent
-    proxies to adapters.  Given, this, I'm not positive that we have
-    such an invariant.
+      I see decorators lying along a continuum from totally transparent
+      proxies to adapters.  Given, this, I'm not positive that we have
+      such an invariant.
 
-  * It would be bad for interface descriptors to end up on the wrong
-    side of security proxies.  Security descriptors always need to
-    be bound to objects wo security proxies.
+    * It would be bad for interface descriptors to end up on the wrong
+      side of security proxies.  Security descriptors always need to
+      be bound to objects wo security proxies.
 
-    Note that interface descriptors can deal with context wrappers
-    now, but they would go faster if they didn't need to.
+      Note that interface descriptors can deal with context wrappers
+      now, but they would go faster if they didn't need to.
 
-    If we didn't have the ContextAware mix-in, we wouldn't need to
-    worry about effects on interface descriptors, because they
-    wouldn't evey be magically converted to context descriptors.
+      If we didn't have the ContextAware mix-in, we wouldn't need to
+      worry about effects on interface descriptors, because they
+      wouldn't evey be magically converted to context descriptors.
 
-  * Is there a helpful rule that's less general than "security
-    proxies" always go on the outside?
+    * Is there a helpful rule that's less general than "security
+      proxies" always go on the outside?
 
   - What protects rename should be what protects setObject.
-  We could declare that rename is to be protected with whatever protects the
-  'setObject' operation on the proxied object.
-  That makes the zcml more complex, and special for decorators.
-  That also makes the checker to use for decorators more complex and special.
+    We could declare that rename is to be protected with whatever protects the
+    'setObject' operation on the proxied object.
+    That makes the zcml more complex, and special for decorators.
+    That also makes the checker to use for decorators more complex and special.
 
   - Rename gets proxied by magic in the decorator.
-  We could declare that rename is a special "untrusted" method, and cause
-  its 'self' argument to be bound not to the decorator instance, but to
-  some special object that is like the original decorator, but which wraps
-  a security-proxied object.
+    We could declare that rename is a special "untrusted" method, and cause
+    its 'self' argument to be bound not to the decorator instance, but to
+    some special object that is like the original decorator, but which wraps
+    a security-proxied object.
 
   - Register decorators to classes rather than interfaces.
-  Security declarations are made by class, not by interface, so it makes sense
-  for a decorator that needs particular security declarations to be declared
-  for a class, and not an interface.
-  It is not possible, currently, to register an adapter for a class.
-  If it is made possible to do this, adapters registered for classes would
-  always trump those registered for interfaces.
+    Security declarations are made by class, not by interface, so it makes sense
+    for a decorator that needs particular security declarations to be declared
+    for a class, and not an interface.
+    It is not possible, currently, to register an adapter for a class.
+    If it is made possible to do this, adapters registered for classes would
+    always trump those registered for interfaces.
 
 * ContextAware mix-in considered harmful
 
