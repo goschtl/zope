@@ -297,7 +297,7 @@ import zpkgtools.setup
 
 def parse_args(argv):
     """Parse the command line, return an options object and the
-    positional arguments.
+    identifier of the resource to be packaged.
 
     :Parameters:
       - `argv`: The command line arguments, including argv[0].
@@ -337,23 +337,22 @@ def parse_args(argv):
         "-v", dest="version",
         help="version label for the new distribution",
         default="0.0.0")
-    return parser.parse_args(argv[1:])
+    options, args = parser.parse_args(argv[1:])
+    if len(args) != 1:
+        parser.error("wrong number of arguments")
+    return options, args[0]
 
 
 def main(argv=None):
     if argv is None:
         argv = sys.argv
     try:
-        options, args = parse_args(argv)
+        options, resource = parse_args(argv)
     except SystemExit, e:
         print >>sys.stderr, e
         return 2
 
     # figure out what to read from:
-    if len(args) != 1:
-        print >>sys.stderr, "wrong number of arguments"
-        return 2
-    resource = args[0]
     program = os.path.basename(argv[0])
 
     try:
