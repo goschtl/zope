@@ -186,6 +186,30 @@ class SubversionUrlTestCase(SubversionTestBase):
         eq(newurl.tail, "file.txt")
         eq(newurl.getUrl(), self.mkurl("/tags/FOO/file.txt"))
 
+    def test_is_subversion_url(self):
+        note = " (repo in %s)" % self.SVNROOT
+        def check(path):
+            # what's expected to pass:
+            url = self.mkurl(path)
+            self.assert_(svnloader.is_subversion_url(url), url + note)
+            # invalid scheme:
+            url = "x" + url
+            self.assert_(not svnloader.is_subversion_url(url), url + note)
+        check("")
+        check("/")
+        check("/foo/bar")
+        check("/foo/bar/")
+        check("/foo/bar.txt")
+        check("/trunk/foo/bar.txt")
+        check("/tags/foobar/foo/bar.txt")
+        check("/branches/foobar/foo/bar.txt")
+        # Things that don't look like URLs at all:
+        self.assert_(not svnloader.is_subversion_url("some/path"))
+        self.assert_(not svnloader.is_subversion_url("/some/path"))
+        self.assert_(not svnloader.is_subversion_url("/"))
+        self.assert_(not svnloader.is_subversion_url("/foo.txt"))
+        self.assert_(not svnloader.is_subversion_url("foo/"))
+
 
 class SubversionSshUrlTestCase(SubversionUrlTestCase):
     """Test handling of svn+ssh://host/... URLs."""
