@@ -138,7 +138,11 @@ class IIntrospectableRepository(Interface):
     """Additional methods providing more information versioned objects.
     """
 
-    def getObject(obj, selector):
+    def getTicket(obj):
+        """Returns a unique ticket that remains stable across time.
+        """
+
+    def getVersion(obj, selector):
         """Returns the selected version of an object. 
         
         This method does not overwrite 'obj' (like 'revertToVersion'
@@ -146,17 +150,8 @@ class IIntrospectableRepository(Interface):
         XXX How exactly? Instead it returns the version as new object.
         """
     
-    def getHistory(obj):
-        """Returns the history of the selected object
-        """
-
-
-    # These are YAGNI
-    def getVersionHistory(obj):
+    def listVersions(obj):
         """Returns all versions of the given object.
-        """
-    def getMetadataHistory(obj):
-        """Returns the metadata of all versions of the given object.
         """
 
 
