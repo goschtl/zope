@@ -25,7 +25,9 @@ from BTrees.IIBTree import IIBTree, IITreeSet
 from BTrees.IIBTree import intersection, difference
 from BTrees import Length
 
-from zope.index.interfaces import IInjection, IStatistics, IExtendedQuerying
+from zope.index.interfaces import IInjection, IStatistics
+
+from zope.index.text.interfaces import IExtendedQuerying
 from zope.index.text import widcode
 from zope.index.text.setops import mass_weightedIntersection, \
                                   mass_weightedUnion
