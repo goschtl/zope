@@ -23,9 +23,11 @@ class SimpleViewTestCase(unittest.TestCase):
 
     def test_simple(self):
         from zope.app.pagetemplate.tests.simpletestview import SimpleTestView
+        from zope.publisher.browser import TestRequest
 
         ob = data()
-        view = SimpleTestView(ob, None)
+        request = TestRequest()
+        view = SimpleTestView(ob, request)
         macro = view['test']
         out = view()
         self.assertEqual(out,
@@ -36,6 +38,7 @@ class SimpleViewTestCase(unittest.TestCase):
 
     def test_WBases(self):
         from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
+        from zope.publisher.browser import TestRequest
 
         class C(object): pass
 
@@ -44,7 +47,8 @@ class SimpleViewTestCase(unittest.TestCase):
         self.failUnless(issubclass(SimpleTestView, C))
 
         ob = data()
-        view = SimpleTestView(ob, None)
+        request = TestRequest()
+        view = SimpleTestView(ob, request)
         macro = view['test']
         out = view()
         self.assertEqual(out,
