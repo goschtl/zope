@@ -1,1 +1,1 @@
-^cvsetc /cvs-repository/CVSROOT/postcommit_actions %{svV}
+^test ${CVSROOT}/CVSROOT/postcommit_actions %{svV}
