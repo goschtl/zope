@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.4 2004/03/18 17:01:13 philikon Exp $
+$Id: __init__.py,v 1.5 2004/04/09 14:05:52 garrett Exp $
 """
 from zope.app.component.browser.interfacewidget import InterfaceWidget
 from zope.app.registration.browser import AddComponentRegistration
@@ -24,6 +24,7 @@ from zope.app.registration.interfaces import UnregisteredStatus
 from zope.app import zapi
 from zope.interface import providedBy
 from zope.proxy import removeAllProxies
+from zope.security.proxy import trustedRemoveSecurityProxy
 from zope.app.introspector import interfaceToName
 
 class UtilityInterfaceWidget(InterfaceWidget):
@@ -35,6 +36,7 @@ class UtilityInterfaceWidget(InterfaceWidget):
         component = field.context
         result = ['\n<select name="%s">' % self.name]
         for interface in providedBy(component).flattened():
+            interface = trustedRemoveSecurityProxy(interface)
             result.append('  <option value="%s.%s">%s</option>' %
                           (interface.__module__, interface.getName(),
                            interface.getName()))
@@ -195,6 +197,7 @@ class ConfigureUtility:
         folder = zapi.getParent(self.context)
         iface = folder.resolve(self.request['interface'])
         name = self.request['name']
+        # XXX should this be trustedRemoveSecurityProxy?
         iface = removeAllProxies(iface)
         regstack = self.context.queryRegistrations(name, iface)
         form = zapi.getView(regstack, "ChangeRegistrations", self.request)
