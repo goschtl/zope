@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: TestingServiceManager.py,v 1.2 2002/11/30 18:35:55 jim Exp $
+$Id: TestingServiceManager.py,v 1.3 2002/12/09 15:23:28 ryzaja Exp $
 """
 
 __metaclass__ = type
@@ -31,11 +31,11 @@ class TestingServiceManager:
 
     def getServiceDefinitions(self):
         "See Zope.ComponentArchitecture.IServiceService.IServiceService"
-        return getNextServiceManager.getServiceDefinitions()
+        return getNextServiceManager(self).getServiceDefinitions()
 
     def getInterfaceFor(self, name):
         "See Zope.ComponentArchitecture.IServiceService.IServiceService"
-        return getNextServiceManager.getServiceDefinitions()
+        return getNextServiceManager(self).getInterfaceFor(name)
 
     def getService(self, name):
         "See Zope.ComponentArchitecture.IServiceService.IServiceService"
