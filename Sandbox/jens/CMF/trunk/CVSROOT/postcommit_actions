@@ -86,10 +86,9 @@ def main(args):
     orig_args = args[:]
 
     SCRIPT = args[0]
-    opts, args = getopt.getopt(args[1:], "",
-                               ["verbose", "dryrun",
-                                "recurse", "wait",
-                                "msgfile="])
+    opts, args = getopt.getopt(args[1:], "", ["verbose", "dryrun",
+                                              "recurse", "wait",
+                                              "msgfile="])
     if len(args) != 1:
         usage(); raise SystemExit, 1
     for opt, val in opts:
@@ -229,12 +228,17 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     if not recurse:
         cmd = cmd + ' --exclude "/*/*"'
 
+    try:
+        repodir = remote['repodir'] % name
+    except TypeError:
+        repodir = remote['repodir']
+
     os.system("%s%s%s %s/%s/ %s:%s"
                     % ((VERBOSE and "set -x; ") or "",
                        (DRYRUN and "echo ") or "",
                        cmd,
                        os.environ["CVSROOT"], repo,
-                       remote['host'], remote['repodir']))
+                       remote['host'], repodir))
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
