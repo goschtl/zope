@@ -17,21 +17,10 @@
       permission="zope.ManageContent"
       />
 
-  <browser:page
-      name="contents.html"
-      menu="zmi_views" title="Contents"
+  <browser:containerViews
       for="zope.app.folder.interfaces.IFolder"
-      permission="zope.ManageContent"
-      class="zope.app.container.browser.contents.Contents"
-      attribute="contents"
-      />
-
-  <browser:page
-      name="index.html"
-      for="zope.app.folder.interfaces.IFolder"
-      permission="zope.View"
-      class="zope.app.container.browser.contents.Contents"
-      attribute="index"
+      contents="zope.ManageContent"
+      index="zope.View"
       />
 
   <!-- Preview view - requires zope.app.preview -->
