@@ -61,6 +61,11 @@ class TestingRegistrationStack:
         return cid in self._data
 
     def activate(self, registration):
+        if registration is None:
+            self._data = (None,) + filter(None, self._data)
+            if self._data[-1] is None:
+                self._data = self._data[:-1]
+            return
         cid = registration.id
         if self._data[0] == cid:
             return # already active
