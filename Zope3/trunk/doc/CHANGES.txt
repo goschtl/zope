@@ -18,6 +18,8 @@ Zope Changes
 
       o Implement tools overview. 
 
+      o Create back-links from utilities and services to the tools screens.
+
     - Write generic get/queryType(object, type) that returns the interface of
       the 'object' that provides 'type'.
       
