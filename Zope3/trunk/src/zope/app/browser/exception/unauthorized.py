@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: unauthorized.py,v 1.3 2003/03/24 09:02:06 ryzaja Exp $
+$Id: unauthorized.py,v 1.4 2003/03/24 10:42:09 ryzaja Exp $
 """
 __metaclass__ = type
 from zope.app.traversing import getParent
@@ -26,6 +26,8 @@ class Unauthorized:
         self.request = request
 
     def issueChallenge(self):
+        # Set the error status to 403 (Forbidden) in the case when we don't
+        # challenge the user
         self.request.response.setStatus(403)
         principal = self.request.user
         prinreg = getParent(principal)
