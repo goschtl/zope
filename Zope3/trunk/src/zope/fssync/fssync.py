@@ -13,7 +13,7 @@
 ##############################################################################
 """Support classes for fssync.
 
-$Id: fssync.py,v 1.14 2003/05/14 14:42:43 gvanrossum Exp $
+$Id: fssync.py,v 1.15 2003/05/14 19:18:15 gvanrossum Exp $
 """
 
 import os
@@ -36,7 +36,7 @@ from os.path import dirname, basename, split, join
 from os.path import realpath, normcase, normpath
 
 from zope.xmlpickle import loads, dumps
-from zope.fssync.compare import treeComparisonWalker, classifyContents
+from zope.fssync.compare import classifyContents
 from zope.fssync.metadata import Metadata
 from zope.fssync.merger import Merger
 
@@ -401,7 +401,7 @@ class FSSync(object):
         entry = self.metadata.getentry(target)
         if not entry:
             raise Error("diff target '%s' doesn't exist", target)
-        if entry.get("flag"):
+        if "flag" in entry:
             raise Error("diff target '%s' is added or deleted", target)
         if isdir(target):
             self.dirdiff(target, mode, diffopts)
@@ -424,7 +424,7 @@ class FSSync(object):
         for name in names:
             t = join(target, name)
             e = self.metadata.getentry(t)
-            if e and not e.get("flag"):
+            if e and "flag" not in e:
                 self.diff(t, mode, diffopts)
 
     def add(self, path):
@@ -549,6 +549,13 @@ class FSSync(object):
                 letter = "U"
         elif state == "Modified":
             letter = "M"
+            entry = self.metadata.getentry(local)
+            conflict_mtime = entry.get("conflict")
+            if conflict_mtime:
+                if conflict_mtime == os.path.getmtime(local):
+                    letter = "C"
+                else:
+                    del entry["conflict"]
         elif state == "Added":
             letter = "A"
         elif state == "Removed":

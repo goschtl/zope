@@ -13,7 +13,7 @@
 ##############################################################################
 """Tools to compare parallel trees as written by toFS().
 
-$Id: compare.py,v 1.1 2003/05/09 20:54:15 gvanrossum Exp $
+$Id: compare.py,v 1.2 2003/05/14 19:18:15 gvanrossum Exp $
 """
 
 from __future__ import generators
@@ -48,6 +48,9 @@ def checkUptodate(working, current):
             for x in rentries:
                 errors.append("missing working entry for %r" % join(left, x))
         for x in common:
+            lentry, rentry = common[x]
+            if lentry.has_key("conflict"):
+                errors.append("unresolved conflict for %r" % join(left, x))
             nx = normcase(x)
             if nx in rnondirs:
                 # Compare files (directories are compared by the walk)
