@@ -16,6 +16,7 @@
 $Id$
 """
 __metaclass__ = type
+__docformat__ = 'restructuredtext'
 
 from persistent.dict import PersistentDict
 from persistent import Persistent
@@ -208,8 +209,8 @@ class LocalAdapterBasedService(
     between it's surrogate registries and those of containing ans
     sub-services.
 
-    The service must implement a setNext method that will be called
-    with the next local service, which may be None, and the global
+    The service must implement a `setNext` method that will be called
+    with the next local service, which may be ``None``, and the global
     service. This method will be called when a service is bound.
     
     """
