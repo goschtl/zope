@@ -17,7 +17,7 @@ Note, for a detailed description of the way that conflicting
 configuration actions are resolved, see the detailed example in
 test_includeOverrides in tests/text_xmlconfig.py
 
-$Id: xmlconfig.py,v 1.13 2003/07/31 14:56:55 jim Exp $
+$Id: xmlconfig.py,v 1.14 2003/08/02 12:46:33 jim Exp $
 """
 
 import errno
@@ -412,7 +412,7 @@ def file(name, package=None, context=None, execute=True):
 
     return context
 
-def string(s, context=None, name="test.string", execute=True):
+def string(s, context=None, name="<string>", execute=True):
     """Execute a zcml string
     """
     from StringIO import StringIO
