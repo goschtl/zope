@@ -152,7 +152,12 @@ At this point, you can install the software using the command:
 
   C:\ZopeX3-3.0.0> \Python23\python install.py -q install
 
-You now have a complete Zope X3 installation.
+You now have a complete Zope X3 installation.  Note that this method
+of installing Zope does not allow for easy uninstallation later:  you
+will need to delete Zope files manually from your Python's
+Lib\site-packages\ and Scripts\ directories.  If you use the Windows
+installer instead, it creates an uninstallation program, and an entry
+to run it in Contol Panel's Add/Remove Programs applet.
 
 
 Creating a Zope instance home
