@@ -326,8 +326,9 @@ def clean_actions(actions):
        'info': clean_info_path(`info`),
        'includepath': [clean_path(p) for p in includepath],
        }
-      for (discriminator, callable, args, kw, includepath, info)
-      in actions]
+      for (discriminator, callable, args, kw, includepath, info, order)
+      in [config.expand_action(*action) for action in actions]
+      ]
 
 def clean_text_w_paths(error):
     r = []
