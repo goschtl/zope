@@ -14,7 +14,7 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.7 2002/12/20 11:11:37 stevea Exp $
+$Id: _protections.py,v 1.8 2002/12/20 19:11:29 jeremy Exp $
 """
 
 def protect():
@@ -101,6 +101,10 @@ def protect():
                         ]
                      )
                   )
+
+    # In Python 2.3 and up, PersistentMetaClass is just type.
+    # It causes an error to define a new checker for type.
     from Persistence import PersistentMetaClass
-    from Zope.Security.Checker import _typeChecker
-    defineChecker(PersistentMetaClass, _typeChecker)
+    if PersistentMetaClass != type:
+        from Zope.Security.Checker import _typeChecker
+        defineChecker(PersistentMetaClass, _typeChecker)
