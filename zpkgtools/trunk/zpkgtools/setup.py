@@ -13,12 +13,16 @@
 ##############################################################################
 """Generator for distutils setup.py files."""
 
+import logging
 import os
 import posixpath
 import sys
 
 from zpkgtools import package
 from zpkgtools import publication
+
+
+_logger = logging.getLogger(__name__)
 
 
 class SetupContext:
@@ -44,8 +48,19 @@ class SetupContext:
             import pprint
             pprint.pprint(kwargs)
         else:
-            import distutils.core
-            distutils.core.setup(**kwargs)
+            root_logger = logging.getLogger()
+            if not root_logger.handlers:
+                root_logger.addHandler(logging.StreamHandler())
+            try:
+                from setuptools import setup
+            except ImportError:
+                # package_data can't be handled this way ;-(
+                if self.package_data:
+                    _logger.error(
+                        "can't import setuptools;"
+                        " some package data will not be properly installed")
+                from distutils.core import setup
+            setup(**kwargs)
 
     def load_metadata(self, path):
         f = open(path, "rU")
@@ -55,7 +70,7 @@ class SetupContext:
 
     def scan_package(self, name, directory, reldir):
         # load the package metadata
-        pkginfo = package.loadPackageInfo(pkgname, directory, reldir)
+        pkginfo = package.loadPackageInfo(name, directory, reldir)
         self.scripts.extend(pkginfo.script)
         self.ext_modules.extend(pkginfo.extensions)
 
@@ -113,7 +128,8 @@ class PackageContext(SetupContext):
         self.load_metadata(
             os.path.join(self._working_dir, pkgname, "PUBLICATION.txt"))
         self.add_package_dir(pkgname, pkgname)
-        self.scan_package(pkgname, os.path.join(self._working_dir, pkgname))
+        self.scan_package(pkgname, os.path.join(self._working_dir, pkgname),
+                          pkgname)
 
 
 class CollectionContext(SetupContext):
