@@ -2,6 +2,13 @@
 
 # Actions executed (via commitinfo) at the start of a commit.
 
-echo -n Working dir:" "
-pwd
-echo precommit_actions: '$0': $0, '$*':, $*
+# The script is invoked within the directory of the checkin.
+#  $1 - the directory of the corresponding cvs repository for the checkins.
+#  $2- - the names of the files being committed, from the working directory.
+
+SCRIPT="$0"; shift
+REPOSITORY="$0"; shift
+FILES="$*"
+
+echo Script: "$SCRIPT", Repository: "$REPOSITORY", Files: "$FILES:"
+echo Root? "${CVSROOT}"
