@@ -13,25 +13,29 @@
 ##############################################################################
 """Caching service.
 
-$Id: CachingService.py,v 1.7 2002/12/18 17:35:04 stevea Exp $
+$Id: CachingService.py,v 1.8 2002/12/18 20:23:04 stevea Exp $
 """
+__metaclass__ = type
+
 from Persistence import Persistent
 from Zope.App.Caching.ICachingService import ICachingService
 from Zope.App.ComponentArchitecture.NextService import queryNextService
-from Zope.App.OFS.Services.ConfigurationInterfaces import INameConfigurable
-from Zope.App.OFS.Services.Configuration import NameConfigurable
+from Zope.App.OFS.Services.ConfigurationInterfaces \
+        import INameComponentConfigurable
+from Zope.App.OFS.Services.Configuration import NameComponentConfigurable
 from Zope.App.OFS.Services.LocalEventService.ProtoServiceEventChannel \
-     import ProtoServiceEventChannel
+        import ProtoServiceEventChannel
 from Zope.ContextWrapper import ContextMethod
 from Zope.Event.IEventChannel import IEventChannel
 from Zope.Event.IObjectEvent import IObjectModifiedEvent
 
 
-class ILocalCachingService(ICachingService, IEventChannel, INameConfigurable):
+class ILocalCachingService(ICachingService, IEventChannel,
+                           INameComponentConfigurable):
     """TTW manageable caching service"""
 
 
-class CachingService(ProtoServiceEventChannel, NameConfigurable):
+class CachingService(ProtoServiceEventChannel, NameComponentConfigurable):
 
     __implements__ = (ILocalCachingService,
                       ProtoServiceEventChannel.__implements__)
@@ -39,9 +43,13 @@ class CachingService(ProtoServiceEventChannel, NameConfigurable):
     _subscribeToServiceInterface = IObjectModifiedEvent
 
     def __init__(self):
+        # XXX If we know that all the superclasses do the right thing in
+        #     __init__ with respect to calling
+        #     super(ClassName, self).__init__(*args, **kw), then we can
+        #     replace the following with just a call to super.
         Persistent.__init__(self)
         ProtoServiceEventChannel.__init__(self)
-        NameConfigurable.__init__(self)
+        NameComponentConfigurable.__init__(self)
 
     def getCache(wrapped_self, name):
         'See Zope.App.Caching.ICachingService.ICachingService'

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for objects supporting configuration registration
 
-$Id: ConfigurationInterfaces.py,v 1.7 2002/12/12 15:28:16 mgedmin Exp $
+$Id: ConfigurationInterfaces.py,v 1.8 2002/12/18 20:23:02 stevea Exp $
 """
 
 from Interface import Interface
@@ -57,8 +57,8 @@ class IConfiguration(IConfigurationSummary):
     interface.
     """
 
-    description = Text(title = u"Description",
-                       description = u"Detailed description",
+    description = Text(title=u"Description",
+                       description=u"Detailed description",
                        )
 
     def activated():
@@ -69,8 +69,20 @@ class IConfiguration(IConfigurationSummary):
         """Method called when a configuration is made inactive
         """
 
-class IComponentConfiguration(IConfiguration):
-    """Configuration object that configures a component
+
+class INamedConfiguration(IConfiguration):
+    """Configuration object that is registered by name
+    """
+
+    name = Attribute("The name that is registered")
+
+    label = TextLine(title=u"Label",
+                     description=u"Descriptive label of the configuration"
+                                 u" type (e.g. Service, Connection)")
+
+
+class INamedComponentConfiguration(INamedConfiguration):
+    """Configuration object that configures a component associated with a name
     """
 
     componentPath = Attribute("The physical path to the component")
@@ -78,17 +90,6 @@ class IComponentConfiguration(IConfiguration):
     def getComponent():
         """Return the component named in the configuration.
         """
-
-class INamedComponentConfiguration(IComponentConfiguration):
-    """Configuration object that configures a component associated with a name
-    """
-
-    name = Attribute("The name of the component")
-
-    label = TextLine(title=u"Label",
-                     description=u"Descriptive label of the configuration type"
-                                 u" (e.g. Service, Connection)")
-
 
 
 class IConfigurationRegistry(Interface):
@@ -166,6 +167,7 @@ class IConfigurationRegistry(Interface):
 
 
 class IConfigurable(Interface):
+    """A component that can be configured using a configuration manager."""
 
     def queryConfigurationsFor(configuration, default=None):
         """Return an IConfigurationRegistry for the configuration
@@ -200,7 +202,12 @@ class IConfigurable(Interface):
 
 
 class INameConfigurable(IConfigurable):
-    # XXX docstring
+    """An IConfigurable, where a name is used to decide which registry to
+    return for methods in IConfigurable.
+
+    All configurations that pass through queryConfigurationsFor and
+    createConfigurationsFor are expected to implement INamedConfiguration.
+    """
 
     def queryConfigurations(name, default=None):
         """Return an IConfigurationRegistry for the configuration name
@@ -221,6 +228,13 @@ class INameConfigurable(IConfigurable):
         """Return a list of all registered configuration names
         """
 
+class INameComponentConfigurable(INameConfigurable):
+    """An INameConfigurable where the configurations refer to components.
+
+    All configurations that pass through queryConfigurationsFor and
+    createConfigurationsFor are expected to implement
+    INamedComponentConfiguration.
+    """
     def queryActiveComponent(name, default=None):
         """Finds the configuration registry for a given name, checks if it has
         an active configuration, and if so, returns its component.  Otherwise

@@ -13,19 +13,16 @@
 ##############################################################################
 """Component registration support for services
 
-This module provides constant definitions for the three registration states,
-Unregistered, Registered, and Active.
-
-$Id: Configuration.py,v 1.5 2002/12/12 15:28:16 mgedmin Exp $
+$Id: Configuration.py,v 1.6 2002/12/18 20:23:02 stevea Exp $
 """
 __metaclass__ = type
 
 from Persistence import Persistent
 from ConfigurationInterfaces import IConfigurationRegistry, IConfiguration
-from ConfigurationInterfaces import IComponentConfiguration
+from ConfigurationInterfaces import INamedConfiguration
 from ConfigurationInterfaces import INamedComponentConfiguration
 from ConfigurationInterfaces import INameConfigurable
-from Zope.Schema import Text
+from ConfigurationInterfaces import INameComponentConfigurable
 from Zope.ComponentArchitecture import getService, queryService
 from Zope.ComponentArchitecture import getServiceManager
 from Zope.ComponentArchitecture import getAdapter
@@ -98,7 +95,6 @@ class ConfigurationStatusProperty:
                 registry.activate(configuration)
 
 
-
 class ConfigurationRegistry(Persistent):
 
     __implements__ = IConfigurationRegistry
@@ -122,27 +118,24 @@ class ConfigurationRegistry(Persistent):
 
         return rpath
 
-    _id = ContextMethod(_id)
+    def register(wrapped_self, configuration):
+        cid = wrapped_self._id(configuration)
 
-    def register(self, configuration):
-        cid = self._id(configuration)
-
-        if self._data:
-            if cid in self._data:
+        if wrapped_self._data:
+            if cid in wrapped_self._data:
                 return # already registered
         else:
             # Nothing registered. Need to stick None in front so that nothing
             # is active.
-            self._data = (None, )
+            wrapped_self._data = (None, )
 
-        self._data += (cid, )
-
+        wrapped_self._data += (cid, )
     register = ContextMethod(register)
 
-    def unregister(self, configuration):
-        cid = self._id(configuration)
+    def unregister(wrapped_self, configuration):
+        cid = wrapped_self._id(configuration)
 
-        data = self._data
+        data = wrapped_self._data
         if data:
             if data[0] == cid:
                 # It's active, we need to switch in None
@@ -158,19 +151,17 @@ class ConfigurationRegistry(Persistent):
         if len(data) == 1 and data[0] is None:
             data = ()
 
-        self._data = data
-
+        wrapped_self._data = data
     unregister = ContextMethod(unregister)
 
-    def registered(self, configuration):
-        cid = self._id(configuration)
-        return cid in self._data
-
+    def registered(wrapped_self, configuration):
+        cid = wrapped_self._id(configuration)
+        return cid in wrapped_self._data
     registered = ContextMethod(registered)
 
-    def activate(self, configuration):
-        cid = self._id(configuration)
-        data = self._data
+    def activate(wrapped_self, configuration):
+        cid = wrapped_self._id(configuration)
+        data = wrapped_self._data
 
         if cid in data:
 
@@ -182,12 +173,12 @@ class ConfigurationRegistry(Persistent):
                 data = data[1:]
             else:
                 # We need to deactivate the currently active component
-                sm = getServiceManager(self)
+                sm = getServiceManager(wrapped_self)
                 old = traverse(sm, 'Packages/'+data[0])
                 old.deactivated()
 
 
-            self._data = (cid, ) + tuple(
+            wrapped_self._data = (cid, ) + tuple(
                 [item for item in data if item != cid]
                 )
 
@@ -197,19 +188,18 @@ class ConfigurationRegistry(Persistent):
             raise ValueError(
                 "Configuration to be activated is not registered",
                 configuration)
-
     activate = ContextMethod(activate)
 
-    def deactivate(self, configuration):
-        cid = self._id(configuration)
+    def deactivate(wrapped_self, configuration):
+        cid = wrapped_self._id(configuration)
 
-        if cid in self._data:
+        if cid in wrapped_self._data:
 
-            if self._data[0] != cid:
+            if wrapped_self._data[0] != cid:
                 return # already inactive
 
             # Just stick None on the front
-            self._data = (None, ) + self._data
+            wrapped_self._data = (None, ) + wrapped_self._data
 
             configuration.deactivated()
 
@@ -217,33 +207,31 @@ class ConfigurationRegistry(Persistent):
             raise ValueError(
                 "Configuration to be deactivated is not registered",
                 configuration)
-
     deactivate = ContextMethod(deactivate)
 
-    def active(self):
-        if self._data:
-            path = self._data[0]
+    def active(wrapped_self):
+        if wrapped_self._data:
+            path = wrapped_self._data[0]
             if path is not None:
                 # Make sure we can traverse to it.
-                sm = getServiceManager(self)
+                sm = getServiceManager(wrapped_self)
                 configuration = traverse(sm, 'Packages/'+path)
                 return configuration
 
         return None
-
     active = ContextMethod(active)
 
     def __nonzero__(self):
         return bool(self._data)
 
-    def info(self):
-        sm = getServiceManager(self)
+    def info(wrapped_self):
+        sm = getServiceManager(wrapped_self)
 
         result = [{'id': path,
                    'active': False,
                    'configuration': (path and traverse(sm, 'Packages/'+path))
                    }
-                  for path in self._data
+                  for path in wrapped_self._data
                   ]
 
         if result:
@@ -253,9 +241,7 @@ class ConfigurationRegistry(Persistent):
                 result[0]['active'] = True
 
         return result
-
     info = ContextMethod(info)
-
 
 
 class SimpleConfiguration(Persistent):
@@ -286,25 +272,38 @@ class SimpleConfiguration(Persistent):
             configuration.status = Unregistered
 
 
-class ComponentConfiguration(SimpleConfiguration):
-    """Component configuration
+class NamedConfiguration(SimpleConfiguration):
+    """Named configuration
+    """
+
+    __implements__ = INamedConfiguration, SimpleConfiguration.__implements__
+
+    def __init__(self, name, *args, **kw):
+        self.name = name
+        super(NamedConfiguration, self).__init__(*args, **kw)
+
+
+class NamedComponentConfiguration(NamedConfiguration):
+    """Named component configuration
 
     Subclasses should define a getInterface() method returning the interface
     of the component.
     """
 
-    __implements__ = (IComponentConfiguration,
-                      SimpleConfiguration.__implements__, IAddNotifiable)
+    __implements__ = (INamedComponentConfiguration,
+                      NamedConfiguration.__implements__, IAddNotifiable)
 
-    def __init__(self, component_path, permission=None):
+    # XXX is all this '*args, **kw' business the right way to use super?
+
+    def __init__(self, name, component_path, permission=None, *args, **kw):
         self.componentPath = component_path
         if permission == 'Zope.Public':
             permission = CheckerPublic
-
         self.permission = permission
+        super(NamedComponentConfiguration, self).__init__(name, *args, **kw)
 
-    def getComponent(self):
-        service_manager = getServiceManager(self)
+    def getComponent(wrapped_self):
+        service_manager = getServiceManager(wrapped_self)
 
         # We have to be clever here. We need to do an honest to
         # god unrestricted traveral, which means we have to
@@ -317,21 +316,20 @@ class ComponentConfiguration(SimpleConfiguration):
 
         # get the root and unproxy it.
         root = removeAllProxies(getPhysicalRoot(service_manager))
-        component = traverse(root, self.componentPath)
+        component = traverse(root, wrapped_self.componentPath)
 
-        if self.permission:
+        if wrapped_self.permission:
             if type(component) is Proxy:
                 # XXX what is this?
                 component = removeSecurityProxy(component)
 
-            interface = self.getInterface()
+            interface = wrapped_self.getInterface()
 
-            checker = InterfaceChecker(interface, self.permission)
+            checker = InterfaceChecker(interface, wrapped_self.permission)
 
             component = Proxy(component, checker)
 
         return component
-
     getComponent = ContextMethod(getComponent)
 
     def manage_afterAdd(self, configuration, container):
@@ -343,24 +341,12 @@ class ComponentConfiguration(SimpleConfiguration):
 
     def manage_beforeDelete(self, configuration, container):
         "See Zope.App.OFS.Container.IDeleteNotifiable"
-        super(ComponentConfiguration, self
+        super(NamedComponentConfiguration, self
               ).manage_beforeDelete(configuration, container)
         component = configuration.getComponent()
         dependents = getAdapter(component, IDependable)
         objectpath = getPhysicalPathString(configuration)
         dependents.removeDependent(objectpath)
-
-
-class NamedComponentConfiguration(ComponentConfiguration):
-    """Named component configuration
-    """
-
-    __implements__ = (INamedComponentConfiguration,
-                      ComponentConfiguration.__implements__)
-
-    def __init__(self, name, *args, **kw):
-        self.name = name
-        super(NamedComponentConfiguration, self).__init__(*args, **kw)
 
 
 class NameConfigurable:
@@ -369,51 +355,59 @@ class NameConfigurable:
 
     __implements__ = INameConfigurable
 
-    def __init__(self):
+    def __init__(self, *args, **kw):
         self._bindings = {}
+        super(NameConfigurable, self).__init__(*args, **kw)
 
-    def queryConfigurationsFor(self, cfg, default=None):
+    def queryConfigurationsFor(wrapped_self, cfg, default=None):
         """See Zope.App.OFS.Services.ConfigurationInterfaces.IConfigurable"""
-        return self.queryConfigurations(cfg.name, default)
-
+        return wrapped_self.queryConfigurations(cfg.name, default)
     queryConfigurationsFor = ContextMethod(queryConfigurationsFor)
 
-    def queryConfigurations(self, name, default=None):
-        """See Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
-        registry = self._bindings.get(name, default)
-        return ContextWrapper(registry, self)
-
+    def queryConfigurations(wrapped_self, name, default=None):
+        """See
+        Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
+        registry = wrapped_self._bindings.get(name, default)
+        return ContextWrapper(registry, wrapped_self)
     queryConfigurations = ContextMethod(queryConfigurations)
 
-    def createConfigurationsFor(self, cfg):
+    def createConfigurationsFor(wrapped_self, cfg):
         """See Zope.App.OFS.Services.ConfigurationInterfaces.IConfigurable"""
-        return self.createConfigurations(cfg.name)
-
+        return wrapped_self.createConfigurations(cfg.name)
     createConfigurationsFor = ContextMethod(createConfigurationsFor)
 
-    def createConfigurations(self, name):
-        """See Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
+    def createConfigurations(wrapped_self, name):
+        """See
+        Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
         try:
-            registry = self._bindings[name]
+            registry = wrapped_self._bindings[name]
         except KeyError:
-            self._bindings[name] = registry = ConfigurationRegistry()
-            self._p_changed = 1
-        return ContextWrapper(registry, self)
-
+            wrapped_self._bindings[name] = registry = ConfigurationRegistry()
+            wrapped_self._p_changed = 1
+        return ContextWrapper(registry, wrapped_self)
     createConfigurations = ContextMethod(createConfigurations)
 
-    def listConfigurationNames(self):
-        """See Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
-        return filter(self._bindings.get, self._bindings.keys())
+    def listConfigurationNames(wrapped_self):
+        """See
+        Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
+        return filter(wrapped_self._bindings.get,
+                      wrapped_self._bindings.keys())
 
-    def queryActiveComponent(self, name, default=None):
-        """See Zope.App.OFS.Services.ConfigurationInterfaces.INameConfigurable"""
-        registry = self.queryConfigurations(name)
+
+class NameComponentConfigurable(NameConfigurable):
+    """Mixin for implementing INameComponentConfigurable
+    """
+
+    __implements__ = INameComponentConfigurable
+
+    def queryActiveComponent(wrapped_self, name, default=None):
+        """See Zope.App.OFS.Services.ConfigurationInterfaces
+               .INameComponentConfigurable"""
+        registry = wrapped_self.queryConfigurations(name)
         if registry:
             configuration = registry.active()
             if configuration is not None:
                 return configuration.getComponent()
         return default
-
     queryActiveComponent = ContextMethod(queryActiveComponent)
 

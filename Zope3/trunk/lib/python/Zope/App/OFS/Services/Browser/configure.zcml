@@ -67,16 +67,16 @@
       permission="Zope.ManageServices"
       />
 
-<!-- INameConfigurable default view -->
+<!-- INameComponentConfigurable default view -->
 
   <defaultView
-      for=".ConfigurationInterfaces.INameConfigurable"
+      for=".ConfigurationInterfaces.INameComponentConfigurable"
       name="index.html"
       />
 
   <view
-      for=".ConfigurationInterfaces.INameConfigurable."
-      factory=".Browser.NameConfigurableView."
+      for=".ConfigurationInterfaces.INameComponentConfigurable."
+      factory=".Browser.NameComponentConfigurableView."
       permission="Zope.ManageServices">
     <page name="index.html" attribute="index" />
   </view>

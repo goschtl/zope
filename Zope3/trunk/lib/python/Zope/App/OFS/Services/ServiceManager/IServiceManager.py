@@ -13,14 +13,16 @@
 ##############################################################################
 """
 
-$Id: IServiceManager.py,v 1.8 2002/12/12 15:28:17 mgedmin Exp $
+$Id: IServiceManager.py,v 1.9 2002/12/18 20:23:05 stevea Exp $
 """
 from Zope.ComponentArchitecture.IServiceService import IServiceService
-from Zope.App.OFS.Services.ConfigurationInterfaces import INameConfigurable
+from Zope.App.OFS.Services.ConfigurationInterfaces \
+        import INameComponentConfigurable
 from IComponentManager import IComponentManager
 from Interface.Attribute import Attribute
 
-class IServiceManager(IServiceService, IComponentManager, INameConfigurable):
+class IServiceManager(IServiceService, IComponentManager,
+                      INameComponentConfigurable):
     """Service Managers act as containers for Services.
 
     If a Service Manager is asked for a service, it checks for those it
@@ -30,4 +32,4 @@ class IServiceManager(IServiceService, IComponentManager, INameConfigurable):
     services.
     """
 
-    Packages = Attribute("""Package container""")
+    Packages = Attribute("Package container")

@@ -12,22 +12,23 @@
 #
 ##############################################################################
 """
-$Id: ConnectionService.py,v 1.8 2002/12/12 15:28:17 mgedmin Exp $
+$Id: ConnectionService.py,v 1.9 2002/12/18 20:23:05 stevea Exp $
 """
 
 from Persistence import Persistent
 from Zope.ContextWrapper import ContextMethod
 from Zope.App.ComponentArchitecture.NextService import queryNextService
-from Zope.App.OFS.Services.ConfigurationInterfaces import INameConfigurable
-from Zope.App.OFS.Services.Configuration import NameConfigurable
+from Zope.App.OFS.Services.ConfigurationInterfaces \
+        import INameComponentConfigurable
+from Zope.App.OFS.Services.Configuration import NameComponentConfigurable
 from Zope.App.RDB.IConnectionService import IConnectionService
 
 
-class ILocalConnectionService(IConnectionService, INameConfigurable):
+class ILocalConnectionService(IConnectionService, INameComponentConfigurable):
     """A local (placeful) connection service"""
 
 
-class ConnectionService(Persistent, NameConfigurable):
+class ConnectionService(Persistent, NameComponentConfigurable):
 
     __doc__ = ILocalConnectionService.__doc__
 
@@ -35,8 +36,6 @@ class ConnectionService(Persistent, NameConfigurable):
 
     def __init__(self):
         super(ConnectionService, self).__init__()
-        NameConfigurable.__init__(self)
-
 
     def getConnection(self, name):
         'See Zope.App.RDB.IConnectionService.IConnectionService'

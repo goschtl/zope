@@ -13,16 +13,15 @@
 ##############################################################################
 """NameConfigurable tests
 
-$Id: testNameConfigurable.py,v 1.3 2002/12/12 15:28:18 mgedmin Exp $
+$Id: testNameConfigurable.py,v 1.4 2002/12/18 20:23:06 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from Zope.App.OFS.Services.Configuration import NameConfigurable
+from Zope.App.OFS.Services.Configuration import NameComponentConfigurable
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Proxy.ContextWrapper import getWrapperContainer
-from Zope.Proxy.ContextWrapper import getWrapperContext
-
 
 class ConfigurationStub:
 
@@ -117,6 +116,13 @@ class TestNameConfigurable(TestCase):
         subject._bindings['Bar'] = 0   # false values should be filtered out
         self.assertEquals(tuple(subject.listConfigurationNames()), ('Foo',))
 
+class TestNameComponentConfigurable(TestNameConfigurable):
+
+    def setUp(self):
+        self.container = object()
+        self.subject = ContextWrapper(NameComponentConfigurable(),
+                                      self.container)
+
     def test_queryActiveComponent(self):
         subject = self.subject
         self.assertEquals(subject.queryActiveComponent('xyzzy'), None)
@@ -133,6 +139,7 @@ class TestNameConfigurable(TestCase):
 def test_suite():
     return TestSuite((
         makeSuite(TestNameConfigurable),
+        makeSuite(TestNameComponentConfigurable),
         ))
 
 

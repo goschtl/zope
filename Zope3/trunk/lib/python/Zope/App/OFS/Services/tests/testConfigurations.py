@@ -14,19 +14,21 @@
 """Unit tests for configuration classes defined in
 Zope.App.OFS.Services.Configuration
 
-$Id: testConfigurations.py,v 1.2 2002/12/12 11:32:34 mgedmin Exp $
+$Id: testConfigurations.py,v 1.3 2002/12/18 20:23:06 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 
 from Interface import Interface
 from Zope.App.OFS.Services.ConfigurationInterfaces \
-     import Active, Registered, Unregistered
+        import Active, Registered, Unregistered
 from Zope.App.DependencyFramework.Exceptions import DependencyError
 from Zope.App.OFS.Services.Configuration import SimpleConfiguration
-from Zope.App.OFS.Services.Configuration import ComponentConfiguration
-from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup import PlacefulSetup
-from Zope.App.OFS.Services.tests.TestingServiceManager import TestingServiceManager
+from Zope.App.OFS.Services.Configuration import NamedComponentConfiguration
+from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
+        import PlacefulSetup
+from Zope.App.OFS.Services.tests.TestingServiceManager \
+        import TestingServiceManager
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.App.DependencyFramework.IDependable import IDependable
 from Zope.App.Traversing import traverse
@@ -70,26 +72,28 @@ class TestSimpleConfiguration(TestCase):
         self.assertRaises(DependencyError, cfg.manage_beforeDelete, cfg,
                           container)
 
-        # deletion of a registered configuration causes it to become unregistered
+        # deletion of a registered configuration causes it to become 
+        # unregistered
         cfg.status = Registered
         cfg.manage_beforeDelete(cfg, container)
         self.assertEquals(cfg.status, Unregistered)
 
 
-class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
+class TestNamedComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
         self.buildFolders()
         self.__sm = TestingServiceManager()
         self.rootFolder.setServiceManager(self.__sm)
+        self.name = 'foo'
 
     def test_getComponent(self):
         # set up a component
         path, component = 'foo', object()
         self.rootFolder.setObject(path, component)
         # set up a configuration
-        cfg = ComponentConfiguration(path)
+        cfg = NamedComponentConfiguration(self.name, path)
         cfg = ContextWrapper(cfg, self.rootFolder)
         # check that getComponent finds the configuration
         self.assertEquals(cfg.getComponent(), component)
@@ -99,7 +103,7 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         path, component = 'foo', object()
         self.rootFolder.setObject(path, component)
         # set up a configuration
-        cfg = ComponentConfiguration(path, 'Zope.TopSecret')
+        cfg = NamedComponentConfiguration(self.name, path, 'Zope.TopSecret')
         cfg.getInterface = lambda: ITestComponent
         cfg = ContextWrapper(cfg, self.rootFolder)
         # check that getComponent finds the configuration
@@ -112,7 +116,7 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         path, component = 'foo', ComponentStub()
         self.rootFolder.setObject(path, component)
         # set up a configuration
-        cfg = ComponentConfiguration(path)
+        cfg = NamedComponentConfiguration(self.name, path)
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
         # simulate IAddNotifiable
@@ -126,7 +130,7 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         self.rootFolder.setObject(path, component)
         component.addDependent('/cfg')
         # set up a configuration
-        cfg = ComponentConfiguration(path)
+        cfg = NamedComponentConfiguration(self.name, path)
         cfg.status = Unregistered
         self.rootFolder.setObject('cfg', cfg)
         cfg = traverse(self.rootFolder, 'cfg')
@@ -136,13 +140,13 @@ class TestComponentConfiguration(TestSimpleConfiguration, PlacefulSetup):
         self.assertEquals(component.dependents(), ())
 
 
-# NamedComponentConfiguration is too simple to need testing at the moment
+# NamedConfiguration is too simple to need testing at the moment
 
 
 def test_suite():
     return TestSuite((
         makeSuite(TestSimpleConfiguration),
-        makeSuite(TestComponentConfiguration),
+        makeSuite(TestNamedComponentConfiguration),
         ))
 
 if __name__=='__main__':

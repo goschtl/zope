@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Unit test for the generic NameConfigurable view mixin
+"""Unit test for the generic NameComponentConfigurable view mixin
 
-$Id: testNameConfigurableView.py,v 1.2 2002/12/12 11:32:31 mgedmin Exp $
+$Id: testNameComponentConfigurableView.py,v 1.1 2002/12/18 20:23:04 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,8 +23,8 @@ from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.ComponentArchitecture.GlobalViewService import provideView
 from Zope.Publisher.Browser.BrowserView import BrowserView
-from Zope.App.OFS.Services.Browser.NameConfigurableView \
-     import NameConfigurableView
+from Zope.App.OFS.Services.Browser.NameComponentConfigurableView \
+     import NameComponentConfigurableView
 from Zope.App.Traversing.ITraversable import ITraversable
 
 
@@ -90,7 +90,7 @@ class Test(PlacelessSetup, TestCase):
 
         sm = SM(test1=r1, test2=r2, test3=r3)
 
-        services = NameConfigurableView(sm, TestRequest()).update()
+        services = NameComponentConfigurableView(sm, TestRequest()).update()
 
         self.assertEqual(len(services), 3)
 

@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Generic INameConfigurable view mixin
+"""Generic INameComponentConfigurable view mixin
 
-$Id: NameConfigurableView.py,v 1.2 2002/12/12 11:32:31 mgedmin Exp $
+$Id: NameComponentConfigurableView.py,v 1.1 2002/12/18 20:23:03 stevea Exp $
 """
 
 from Zope.Publisher.Browser.BrowserView import BrowserView
@@ -22,9 +22,9 @@ from Zope.App.Traversing import traverse
 from Zope.App.PageTemplate.ViewPageTemplateFile import ViewPageTemplateFile
 
 
-class NameConfigurableView(BrowserView):
+class NameComponentConfigurableView(BrowserView):
 
-    indexMacros = index = ViewPageTemplateFile('NameConfigurable.pt')
+    indexMacros = index = ViewPageTemplateFile('NameComponentConfigurable.pt')
 
     def update(self):
 
