@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.11 2004/02/07 04:23:50 richard Exp $
+$Id: __init__.py,v 1.12 2004/02/07 05:35:08 richard Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -97,22 +97,17 @@ class ServiceAdding(ComponentAdding):
         for type_name, interface in sm.getServiceDefinitions():
             if interface.isImplementedBy(content):
                 implements.append(type_name)
-        
-        # more than one interface, punt to user to make choice
-        if len(implements) > 1:
-            return content
 
-        type_name = implements[0]
-
-        # register an activated service registration
         path = zapi.name(content)
         rm = content.__parent__.getRegistrationManager()
         chooser = zapi.getAdapter(rm, INameChooser)
-
-        sc = ServiceRegistration(type_name, path, content)
-        name = chooser.chooseName(type_name, sc)
-        rm[name] = sc
-        sc.status = ActiveStatus
+        
+        # register an activated service registration
+        for type_name in implements:
+            sc = ServiceRegistration(type_name, path, content)
+            name = chooser.chooseName(type_name, sc)
+            rm[name] = sc
+            sc.status = ActiveStatus
 
         return content
 
