@@ -23,6 +23,7 @@ import traceback
 import unittest
 
 from StringIO import StringIO
+from Cookie import SimpleCookie
 
 from transaction import get_transaction
 from ZODB.DB import DB
@@ -161,7 +162,13 @@ class FunctionalTestCase(unittest.TestCase):
 class BrowserTestCase(FunctionalTestCase):
     """Functional test case for Browser requests."""
 
+    def setUp(self):
+        super(BrowserTestCase, self).setUp()
+        # Somewhere to store cookies between consecutive requests
+        self.cookies = SimpleCookie()
+
     def tearDown(self):
+        del self.cookies
         self.setSite(None)
         super(BrowserTestCase, self).tearDown()
 
@@ -191,7 +198,8 @@ class BrowserTestCase(FunctionalTestCase):
         if outstream is None:
             outstream = HTTPTaskStub()
         environment = {"HTTP_HOST": 'localhost',
-                       "HTTP_REFERER": 'localhost'}
+                       "HTTP_REFERER": 'localhost',
+                       "HTTP_COOKIE": self.__http_cookie(path)}
         environment.update(env)
         app = FunctionalTestSetup().getApplication()
         request = app._request(path, '', outstream,
@@ -199,6 +207,12 @@ class BrowserTestCase(FunctionalTestCase):
                                basic=basic, form=form,
                                request=BrowserRequest)
         return request
+
+    def __http_cookie(self, path):
+        '''Return self.cookies as an HTTP_COOKIE environment format string'''
+        l = [m.OutputString() for m in self.cookies.values()
+                if path.startswith(m['path'])]
+        return '; '.join(l)
 
     def publish(self, path, basic=None, form=None, env={},
                 handle_errors=False):
@@ -217,10 +231,27 @@ class BrowserTestCase(FunctionalTestCase):
         outstream = HTTPTaskStub()
         old_site = self.getSite()
         self.setSite(None)
+        # A cookie header has been sent - ensure that future requests
+        # in this test also send the cookie, as this is what browsers do.
+        # We pull it apart and reassemble the header to block cookies
+        # with invalid paths going through, which may or may not be correct
+        if env.has_key('HTTP_COOKIE'):
+            self.cookies.load(env['HTTP_COOKIE'])
+            del env['HTTP_COOKIE'] # Added again in makeRequest
+
         request = self.makeRequest(path, basic=basic, form=form, env=env,
                                    outstream=outstream)
         response = ResponseWrapper(request.response, outstream, path)
+        if env.has_key('HTTP_COOKIE'):
+            self.cookies.load(env['HTTP_COOKIE'])
         publish(request, handle_errors=handle_errors)
+        # Urgh - need to play with the response's privates to extract
+        # cookies that have been set
+        for k,v in response._cookies.items():
+            k = k.encode('utf8')
+            self.cookies[k] = v['value'].encode('utf8')
+            if self.cookies[k].has_key('Path'):
+                self.cookies[k]['Path'] = v['Path']
         self.setSite(old_site)
         return response
 
