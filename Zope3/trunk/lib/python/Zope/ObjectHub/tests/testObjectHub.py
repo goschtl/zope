@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testObjectHub.py,v 1.5 2002/06/25 15:10:49 gotcha Exp $
+$Id: testObjectHub.py,v 1.6 2002/07/07 20:32:32 stevea Exp $
 """
 
 import unittest, sys
@@ -49,7 +49,6 @@ class LoggingSubscriber:
     
     def notify(self, event):
         self.events_received.append(event)
-        # print 'notify :', id(self),self.__class__.__name__, event.__implements__.__name__
 
     # see ObjectHub._canonical
     def _canonical(location):
@@ -75,7 +74,8 @@ class LoggingSubscriber:
                 obj = None
                 ruid = None
             location = self._canonical(location)
-            testcase.assert_(interface.isImplementedBy(event), 'Interface %s' % interface.getName())
+            testcase.assert_(interface.isImplementedBy(event),
+                             'Interface %s' % interface.getName())
             testcase.assertEqual(event.getLocation(), location)
             
             if obj is not None:
@@ -105,7 +105,8 @@ class RegistrationSubscriber(LoggingSubscriber):
             else:   
                 location = event.getLocation()
                 obj = event.getObject()
-                removeEvent = RuidObjectEvent.RuidObjectRemovedEvent(obj, ruid, location)
+                removeEvent = RuidObjectEvent.RuidObjectRemovedEvent(
+                    obj, ruid, location)
                 self.hub.notify(removeEvent)
                 self.hub.unregister(location)                  
 
@@ -119,13 +120,15 @@ class TransmitRuidObjectEventTest(unittest.TestCase):
     
     def setUp(self):
         self.object_hub = ObjectHub()
-        self.ruidobject_event = self.klass(self.object_hub, self.ruid, self.location)
+        self.ruidobject_event = self.klass(self.object_hub,
+                                           self.ruid, 
+                                           self.location)
 
         self.subscriber = LoggingSubscriber()
         self.object_hub.subscribe(self.subscriber)
 
     def testTransmittedEvent(self):
-        """Test that the RuidObjectEvents are transmitted by the notify method     
+        """Test that the RuidObjectEvents are transmitted by the notify method
         """ 
         self.object_hub.notify(self.ruidobject_event)
        
@@ -180,8 +183,9 @@ class BasicHubTest(unittest.TestCase):
 
 class TestRegistrationEvents(BasicHubTest):
     def testRegistration(self):
-        # check for notFoundError
-        self.assertRaises(NotFoundError, self.object_hub.unregister, self.location)
+        self.assertRaises(NotFoundError,
+                          self.object_hub.unregister,
+                          self.location)
         self.assertRaises(NotFoundError, self.object_hub.unregister, 42)
 
         ruid = self.object_hub.register(self.location)
@@ -193,7 +197,9 @@ class TestRegistrationEvents(BasicHubTest):
             ])
 
         # register again and check for error
-        self.assertRaises(ObjectHubError, self.object_hub.register, self.location)
+        self.assertRaises(ObjectHubError,
+                          self.object_hub.register,
+                          self.location)
 
         # unregister first object by location
         self.object_hub.unregister(self.location)
@@ -206,7 +212,8 @@ class TestRegistrationEvents(BasicHubTest):
                 (IRuidObjectUnregisteredEvent, ruid2, self.new_location)
             ])
 
-
+    def testRegistrationRelativeLocation(self):
+        self.assertRaises(ValueError, self.object_hub.register, 'foo/bar')
 
         
 class TestNoRegistration(BasicHubTest):

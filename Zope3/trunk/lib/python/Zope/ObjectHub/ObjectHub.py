@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ObjectHub.py,v 1.5 2002/06/25 15:10:49 gotcha Exp $
+$Id: ObjectHub.py,v 1.6 2002/07/07 20:32:32 stevea Exp $
 """
 
 from IObjectHub import IObjectHub
@@ -138,7 +138,8 @@ class ObjectHub(Persistent):
     def register(self, location):
         '''See interface IObjectHub'''
         canonical_location=locationAsUnicode(location)
-
+        if location[0] != u'/':
+            raise ValueError, "Location must be absolute"
         ruid = self._registerObject(canonical_location)
 
         # send out to plugins IRuidObjectRegisteredEvent
