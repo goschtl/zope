@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.22 2003/08/14 14:36:14 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.23 2003/09/24 00:37:42 garrett Exp $
 """
 __metaclass__ = type
 
@@ -148,7 +148,7 @@ class Field(Attribute):
         return clone
 
     def validate(self, value):
-        if value is None:
+        if value == None: # XXX None should be self.missing_value
             if self.required:
                 raise ValidationError(errornames.RequiredMissing)
         else:
