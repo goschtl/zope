@@ -13,7 +13,7 @@
 ##############################################################################
 """Resource URL acess
 
-$Id: Resources.py,v 1.1 2002/06/13 23:15:43 jim Exp $
+$Id: Resources.py,v 1.2 2002/06/14 09:25:20 stevea Exp $
 """
 __metaclass__ = type # All classes are new style when run with Python 2.2+
 
@@ -22,6 +22,7 @@ from Zope.Publisher.Browser.IBrowserPublisher import IBrowserPublisher
 from Zope.ComponentArchitecture import getService
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.ContextWrapper import ContextMethod
+from Zope.Exceptions import NotFoundError
 
 class Resources(BrowserView):
     """Provide a URL-accessible resource namespace

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testResources.py,v 1.1 2002/06/13 23:15:44 jim Exp $
+$Id: testResources.py,v 1.2 2002/06/14 09:25:20 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -39,6 +39,16 @@ class Test(PlacelessSetup, TestCase):
         resource = view.publishTraverse(request, 'test')
         self.assertEqual(resource(), 42)
         
+    def testNotFound(self):
+        from Zope.App.Publisher.Browser.Resources import Resources
+        from Zope.Exceptions import NotFoundError
+        request = TestRequest()
+        view = Resources(None, request)
+        self.assertRaises(NotFoundError, 
+                          view.publishTraverse, 
+                          request, 'test'
+                          )
+    
         
 
 def test_suite():
