@@ -95,10 +95,16 @@ class GlobalBrowserMenuService:
                     except (Unauthorized, Forbidden):
                         continue # Skip unauthorized or forbidden
 
+                if request.getURL().endswith(action):
+                    selected='selected'
+                else:
+                    selected=''
+
                 result.append({
                     'title': title,
                     'description': description,
                     'action': "%s" % action,
+                    'selected': selected
                     })
 
                 if len(result) >= max:
@@ -168,5 +174,5 @@ del addCleanUp
 
 __doc__ = GlobalBrowserMenuService.__doc__ + """
 
-$Id: GlobalBrowserMenuService.py,v 1.8 2002/11/19 23:25:13 jim Exp $
+$Id: GlobalBrowserMenuService.py,v 1.9 2002/12/05 14:17:11 runyaga Exp $
 """

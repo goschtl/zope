@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testGlobalBrowserMenuService.py,v 1.4 2002/11/11 20:20:27 jim Exp $
+$Id: testGlobalBrowserMenuService.py,v 1.5 2002/12/05 14:17:12 runyaga Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -77,8 +77,9 @@ class Test(PlacelessSetup, TestCase):
             return {'action': "a%s" % n,
                     'title':  "t%s" % n,
                     'description':  "d%s" % n,
+                    'selected': ''
                     }
-        
+
         self.assertEqual(list(menu), [d(5), d(6), d(3), d(2), d(1)])
         
     def test_no_dups(self):
@@ -103,7 +104,7 @@ class Test(PlacelessSetup, TestCase):
             return {'action': "a%s" % n,
                     'title':  "t%s" % n,
                     'description':  "d%s" % n,
-                    }
+                    'selected': ''}
         
         self.assertEqual(list(menu), [d(5), d(6), d(3), d(2), d(1)])
         

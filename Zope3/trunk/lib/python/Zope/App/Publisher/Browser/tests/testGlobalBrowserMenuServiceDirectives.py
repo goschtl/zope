@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.6 2002/11/08 19:56:31 rdmurray Exp $
+$Id: testGlobalBrowserMenuServiceDirectives.py,v 1.7 2002/12/05 14:17:12 runyaga Exp $
 """
 
 from StringIO import StringIO
@@ -97,6 +97,7 @@ class Test(PlacelessSetup, TestCase):
             return {'action': "a%s" % n,
                     'title':  "t%s" % n,
                     'description':  "",
+                    'selected': ''
                     }
         
         self.assertEqual(list(menu), [d(5), d(6), d(3), d(2), d(1)])
