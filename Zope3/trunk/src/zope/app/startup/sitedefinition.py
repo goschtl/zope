@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.8 2003/02/12 02:17:36 seanb Exp $
+$Id: sitedefinition.py,v 1.9 2003/02/25 21:49:24 jeremy Exp $
 """
 
 import logging
@@ -41,6 +41,7 @@ from zope.component import getService
 from zope.app.services.servicenames import Utilities
 from zope.server.taskthreads import ThreadedTaskDispatcher
 
+from zodb.db import DB
 from zodb.code.module import PersistentModuleImporter
 from zope.app.services.interface import register
 
@@ -87,28 +88,28 @@ class SiteDefinition:
 
     def useFileStorage(self, _context, file=DEFAULT_STORAGE_FILE):
         """Lets you specify the ZODB to use."""
-        from zodb.storage.file import DB
+        from zodb.storage.file import FileStorage
         if self._zodb is not None:
             raise RuntimeError("Database already open")
-        self._zodb = DB(file)
+        self._zodb = DB(FileStorage(file))
         return []
 
 
     def useMappingStorage(self, _context):
         """Lets you specify the ZODB to use."""
-        from zodb.storage.mapping import DB
+        from zodb.storage.mapping import MappingStorage
         if self._zodb is not None:
             raise RuntimeError("Database already open")
-        self._zodb = DB()
+        self._zodb = DB(MappingStorage())
         return []
 
 
     def useBDBFullStorage(self, _context, **kws):
         from zodb.config import convertBDBStorageArgs
-        from zodb.storage.bdbfull import DB
+        from zodb.storage.bdbfull import BDBFullStorage
 
         kws = convertBDBStorageArgs(**kws)
-        self._zodb = DB(**kws)
+        self._zodb = DB(BDBFullStorage(**kws))
         return []
         
 

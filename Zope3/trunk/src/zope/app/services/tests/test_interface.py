@@ -16,7 +16,8 @@ import unittest
 
 from transaction import get_transaction
 
-from zodb.storage.mapping import DB
+from zodb.db import DB
+from zodb.storage.mapping import MappingStorage
 from zodb.code.module import ManagedRegistry
 
 from zope.interface import Interface
@@ -39,7 +40,7 @@ aFoo = Foo()
 class PersistentInterfaceTest(unittest.TestCase):
 
     def setUp(self):
-        self.db = DB()
+        self.db = DB(MappingStorage())
         self.root = self.db.open().root()
         self.registry = ManagedRegistry()
         self.root["registry"] = self.registry
