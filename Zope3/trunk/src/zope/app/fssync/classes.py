@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization classes.
 
-$Id: classes.py,v 1.9 2003/06/09 21:38:09 gvanrossum Exp $
+$Id: classes.py,v 1.10 2003/06/11 17:53:42 gvanrossum Exp $
 """
 
 import os
@@ -30,7 +30,7 @@ class AttrMapping(object):
     """Convenience object implementing a mapping on selected object attributes
     """
 
-    def __init__(self, context, attrs, schema=None):
+    def __init__(self, context, attrs):
         self.attrs = attrs
         self.context = context
 
