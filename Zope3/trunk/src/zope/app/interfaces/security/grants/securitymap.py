@@ -11,8 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Security map to hold matrix-like relationships."""
+"""Security map to hold matrix-like relationships.
 
+$Id: securitymap.py,v 1.2 2004/02/24 14:23:06 srichter Exp $
+"""
 from zope.interface import Interface
 
 

@@ -1,10 +1,26 @@
+##############################################################################
 #
-# This file is necessary to make this directory a package.
+# Copyright (c) 2004 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Zope Application-specific Security Interfaces
 
+$Id: __init__.py,v 1.13 2004/02/24 14:23:06 srichter Exp $
+"""
 from zope.interface import Interface
 from zope.schema.interfaces import IEnumerated, IField
 
 class IRegisteredObject(Interface):
+    """General interface for security-related objects that are registered in a
+    service."""
 
     def getId():
         """Get the id of the registered object."""
@@ -18,7 +34,6 @@ class IRegisteredObject(Interface):
         """Get the human readable description of the registered object.
         Must be a string, but it may be empty.
         """
-
 
 
 class IPrincipal(Interface):
@@ -208,6 +223,5 @@ class IPermissionService(Interface):
         """
 
 class IPermissionField(IEnumerated, IField):
-    u"""Fields with Permissions as values
-    """
+    """Fields with Permissions as values"""
 
