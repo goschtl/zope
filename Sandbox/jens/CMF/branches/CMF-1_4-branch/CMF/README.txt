@@ -14,33 +14,33 @@ Zope Content Management Framework (CMF) README
 
     General
 
-      * The CMF "dogbowl" site, http://cmf.zope.org.
+      - The CMF "dogbowl" site, http://cmf.zope.org.
 
-      * The mailing list, zope-cmf@zope.org.  List information and
-	online signup are available at:
-	http://lists.zope.org/mailman/listinfo/zope-cmf.  Archives
-	of the list are at: http://lists.zope.org/pipermail/zope-cmf.
+      - The mailing list, zope-cmf@zope.org.  List information and
+        online signup are available at:
+        http://lists.zope.org/mailman/listinfo/zope-cmf.  Archives
+        of the list are at: http://lists.zope.org/pipermail/zope-cmf.
 
-      * The 'docs/' directory contains user-oriented documentation
+      - The 'docs/' directory contains user-oriented documentation
 
     Developer
 
-      * The CMFDefault package is an example application, built using
-	the API and services defined in CMFCore.  You will probably want to
-	alter it.  In the first instance, refer to the source of CMFDefault for
-	usage examples, standard idioms, etc.
+      - The CMFDefault package is an example application, built using
+        the API and services defined in CMFCore.  You will probably want
+        to alter it.  In the first instance, refer to the source of
+        CMFDefault for usage examples, standard idioms, etc.
 
-      * The API is documented in the 'interfaces/' directory of each
-	package.
+      - The API is documented in the 'interfaces/' directory of each
+        package.
 
-      * Refer to the unit tests in the 'tests/' directory of each package
-	for usage examples.
+      - Refer to the unit tests in the 'tests/' directory of each package
+        for usage examples.
 
   Known Issues
 
-    * Please search the "CMF Collector", http://collector.zope.org/CMF for
-      issues which are open against the CMF. You can also report issues there.
-      (please look for similar ones first!)
+    * Please search the "CMF Collector", http://collector.zope.org/CMF
+      for issues which are open against the CMF. You can also report issues
+      there.  (please look for similar ones first!)
 
   Installation
 
