@@ -563,6 +563,26 @@ def testNo__component_adapts__leakage():
       AttributeError: __component_adapts__
     """
 
+def test_ability_to_pickle_globalsitemanager():
+    """
+    We need to make sure that it is possible to pickle the global site manager
+    and its two global adapter registries.
+
+      >>> from zope.component import site
+      >>> import cPickle
+      >>> pickle = cPickle.dumps(site.globalSiteManager)
+      >>> sm = cPickle.loads(pickle)
+      >>> sm is site.globalSiteManager
+      True
+
+    Now let's ensure that the registries themselves can be pickled as well:
+
+      >>> pickle = cPickle.dumps(site.globalSiteManager.adapters)
+      >>> adapters = cPickle.loads(pickle)
+      >>> adapters is site.globalSiteManager.adapters
+      True
+    """
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite(setUp=setUp, tearDown=tearDown),

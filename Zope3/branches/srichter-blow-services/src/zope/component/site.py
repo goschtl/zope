@@ -65,10 +65,6 @@ class IGlobalSiteManager(ISiteManager, IRegistry):
 class SiteManager(object):
     """Site Manager implementation"""
 
-    def __init__(self):
-        self.adapters = AdapterRegistry()
-        self.utilities = AdapterRegistry()
-
     def queryAdapter(self, object, interface, name, default=None):
         """See ISiteManager interface"""
         return self.adapters.queryAdapter(object, interface, name, default)
@@ -113,9 +109,11 @@ class GlobalSiteManager(SiteManager):
     implements(IGlobalSiteManager)
 
     def __init__(self, name=None):
-        super(GlobalSiteManager, self).__init__()
-        self.__name__ = None
+        self.__name__ = name
         self._registrations = {}
+        self.adapters = GlobalAdapterRegistry(self, 'adapters')
+        self.utilities = GlobalAdapterRegistry(self, 'utilities')
+
 
     def provideAdapter(self, required, provided, name, factory, info=''):
         """Register an adapter
@@ -243,8 +241,26 @@ class GlobalSiteManager(SiteManager):
                 yield registration
 
     def __reduce__(self):
-        # Global service managers are pickled as global objects
+        # Global site managers are pickled as global objects
         return self.__name__
+
+
+def GAR(siteManager, registryName):
+    return getattr(siteManager, registryName)
+
+class GlobalAdapterRegistry(AdapterRegistry):
+    """A global adapter registry
+
+    This adapter registry's main purpose is to be picklable in combination
+    with a site manager.
+    """
+    def __init__(self, parent=None, name=None):
+       self.__parent__ = parent
+       self.__name__ = name
+       super(GlobalAdapterRegistry, self).__init__()
+    
+    def __reduce__(self):
+        return GAR, (self.__parent__, self.__name__)
 
 
 # Global Site Manager Instance
@@ -253,7 +269,7 @@ globalSiteManager = GlobalSiteManager('globalSiteManager')
 # Register our cleanup with zope.testing.cleanup to make writing unit tests
 # simpler.
 from zope.testing.cleanup import addCleanUp
-addCleanUp(globalSiteManager.__init__)
+addCleanUp(lambda : globalSiteManager.__init__(globalSiteManager.__name__))
 del addCleanUp
 
 
