@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.19 2003/05/29 18:15:55 jim Exp $
+Revision information: $Id: contents.py,v 1.20 2003/06/05 20:56:17 gvanrossum Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -51,7 +51,7 @@ class Contents(BrowserView):
             if title:
                 info['title'] = title
 
-            formatter = self.request.locale.getDateFormatter('medium')
+            formatter = self.request.locale.getDateTimeFormatter('short')
             created = dc.created
             if created is not None:
                 info['created'] = formatter.format(created)
