@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.35 2003/12/17 10:48:51 mukruthi Exp $
+$Id: interfaces.py,v 1.36 2004/01/05 11:31:08 philikon Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -88,12 +88,12 @@ class IField(Interface):
     required = Bool(
         title=_(u"Required"),
         description=(
-        _(u"tells whether a field requires its value to exist.")),
+        _(u"Tells whether a field requires its value to exist.")),
         default=True)
 
     readonly = Bool(
         title=_(u"Read Only"),
-        description=_(u"Read-only."), # XXX what is this?
+        description=_(u"If true, the field's value cannot be changed."),
         required=False,
         default=False)
 
@@ -262,12 +262,7 @@ class IBytes(IMinMaxLen, IEnumerated, IIterable, IField):
 
     The value might be contrained to be with length limits.
     """
-class IBytes(IMinMaxLen, IEnumerated, IIterable, IField):
-    # XXX IEnumerated will be removed in the future.
-    u"""Field containing a byte data(binary!).
 
-    The value might be contrained to be with length limits.
-    """
 class IASCII(IMinMaxLen, IEnumerated, IIterable, IField):
     # XXX IEnumerated will be removed in the future.
     u"""Field containing a byte string (like the python str).
