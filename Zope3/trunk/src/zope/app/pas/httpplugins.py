@@ -74,7 +74,7 @@ class IHTTPBasicAuthRealm(Interface):
     realm = TextLine(title=u'Realm',
                      description=u'HTTP Basic Authentication Realm',
                      required=True,
-                     default=u'Zope3')
+                     default=u'Zope')
     
 
 class HTTPBasicAuthChallenger(Persistent, Contained):
@@ -92,7 +92,7 @@ class HTTPBasicAuthChallenger(Persistent, Contained):
     >>> response._status
     401
     >>> response.getHeader('WWW-Authenticate', literal=True)
-    'basic realm=Zope3'
+    'basic realm=Zope'
 
     The challenger only works with HTTP requests.
 
@@ -104,7 +104,7 @@ class HTTPBasicAuthChallenger(Persistent, Contained):
     """
     implements(IChallengePlugin, IHTTPBasicAuthRealm)
 
-    realm = 'Zope3'
+    realm = 'Zope'
     protocol = 'http auth'
 
     def challenge(self, request, response):
