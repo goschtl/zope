@@ -38,7 +38,8 @@ class IWfMCProcessDefinition(IProcessDefinition):
 
     redefinableHeader = Attribute("ref to refinable header")
 
-    formalParameters = Attribute("parameters that are interchanged e.g. subflow")
+    formalParameters = Attribute("parameters that are interchanged e.g. "
+                                 "subflow")
 
     relevantData = Attribute("wfr data definition")
 
@@ -74,9 +75,11 @@ class IWfMCProcessDefinitionHeader(Interface):
 
     durationUnit = Attribute("Duration Unit")
 
-    workingTime = Attribute("amount of time, performer of activity needs to perform task")
+    workingTime = Attribute("amount of time, performer of activity needs "
+                            "to perform task")
 
-    waitingTime = Attribute("amount of time, needed to prepare performance of task")
+    waitingTime = Attribute("amount of time, needed to prepare performance "
+                            "of task")
 
     duration = Attribute("duration in units")
 
@@ -194,7 +197,8 @@ class IWfMCActivity(IWfMCProcessDefinitionElement):
 
     performer = Attribute("link to workflow participant (may be expression)")
 
-    implementation = Attribute("if not Route-Activity: mandatory (no/tool+/subflow/loop)")
+    implementation = Attribute("if not Route-Activity: mandatory "
+                               "(no/tool+/subflow/loop)")
 
     instantiation = Attribute("capability: once/multiple times")
 
@@ -202,9 +206,11 @@ class IWfMCActivity(IWfMCProcessDefinitionElement):
 
     cost = Attribute("average cost")
 
-    workingTime = Attribute("amount of time, performer of activity needs to perform task")
+    workingTime = Attribute("amount of time, performer of activity needs "
+                            "to perform task")
 
-    waitingTime = Attribute("amount of time, needed to prepare performance of task")
+    waitingTime = Attribute("amount of time, needed to prepare performance "
+                            "of task")
 
     duration = Attribute("duration of activity")
 
@@ -239,24 +245,25 @@ class IWfMCSubflow(IWfMCImplementation):
 
     execution = Attribute("Type of Execution: Asynchr/synchr.")
 
-    actualParameterList = Attribute("""Sequence of ActualParameters with those the
-                                     new Instance is initialized and whose are
-                                     returned.""")
+    actualParameterList = Attribute("Sequence of ActualParameters with those "
+                                    "the new Instance is initialized and "
+                                    "whose are returned.")
 
 
 class IWfMCTool(IWfMCImplementation):
     """WfMC Implementation Subflow.
     """
 
-    name = Attribute("Name of Application/Procedure to invoke (Application Declaration).")
+    name = Attribute("Name of Application/Procedure to invoke "
+                     "(Application Declaration).")
 
     type = Attribute("Type of Tool: APPLICATION/PROCEDURE.")
 
     description = Attribute("Description of Tool.")
 
-    actualParameterList = Attribute("""Sequence of ActualParameters with those the
-                                     new Instance is initialized and whose are
-                                     returned.""")
+    actualParameterList = Attribute("Sequence of ActualParameters with those "
+                                    "the new Instance is initialized and "
+                                    "whose are returned.")
 
 
 
@@ -291,12 +298,10 @@ class IWfMCTransition(IWfMCProcessDefinitionElement):
 class IWfMCProcessInstanceData(Interface):
     """WfMC ProcessInstance Data.
 
-    This is a base interfaces that gets extended dynamically when
-    creating a ProcessInstance from the relevantData Spec.
+    This is a base interfaces that gets extended dynamically when creating a
+    ProcessInstance from the relevantData Spec.
     """
 
-    # XXX Not sure how to implement this.
-    # probably using schemagen
 
 class IWfMCProcessInstance(IProcessInstance):
     """WfMC Workflow process instance.
@@ -312,7 +317,8 @@ class IWfMCProcessInstance(IProcessInstance):
 
     data = Attribute("WorkflowRelevant Data (instance, not definition.)")
 
-    # XXX Do we need an actual Participantlist for implementation ??
+    # We might need an actual Participantlist for the implementation.
+
 
 class IWfMCActivityInstanceContainer(IContainer):
     """WfMC ActivityInstance Container.
@@ -330,11 +336,11 @@ class IWfMCActivityInstance(Interface):
 
     status = Attribute("Status of ActivityInstance.")
 
-    priority = Attribute("Priority of ActivityInstance (initialized from Activity).")
+    priority = Attribute("Priority of ActivityInstance (initialized from "
+                         "Activity).")
 
     workitems = Attribute("ref to WorkitemContainer.")
 
-    # XXX
     # participants = Attribute("Sequence of assigned Participants.")
 
 class IWfMCWorkitemContainer(IContainer):
@@ -349,5 +355,6 @@ class IWfMCWorkitem(Interface):
 
     priority = Attribute("Priority of Workitem.")
 
-    participant = Attribute("Participant that is assigned to do this item of Work.")
+    participant = Attribute("Participant that is assigned to do this item "
+                            "of Work.")
 
