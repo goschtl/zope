@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_checker.py,v 1.10 2003/05/28 17:19:24 jim Exp $
+$Id: test_checker.py,v 1.11 2003/05/29 15:51:19 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -380,10 +380,77 @@ class TestCheckerPublic(TestCase):
         self.assert_(ProxyFactory(CheckerPublic) is CheckerPublic)
 
 
+class TestMixinDecoratedChecker(TestCase):
+
+    def decoratedSetUp(self):
+        self.policy = RecordedSecurityPolicy()
+        self._oldpolicy = setSecurityPolicy(self.policy)
+
+    def decoratedTearDown(self):
+        setSecurityPolicy(self._oldpolicy)
+
+    def checkingTestImpl(self, checker, decoratedchecker):
+        c = checker
+        dc = decoratedchecker
+
+        o = object()
+        dc.check_getattr(o, 'both_get_set')
+        self.assert_(self.policy.checkChecked(['dc_get_permission']))
+        dc.check_getattr(o, 'c_only')
+        self.assert_(self.policy.checkChecked(['get_permission']))
+        dc.check_getattr(o, 'd_only')
+        self.assert_(self.policy.checkChecked(['dc_get_permission']))
+        self.assertRaises(ForbiddenAttribute,
+                          dc.check_getattr, o, 'completely_different_attr')
+        self.assert_(self.policy.checkChecked([]))
+        dc.check(o, '__str__')
+        self.assert_(self.policy.checkChecked(['get_permission']))
+
+        dc.check_setattr(o, 'both_get_set')
+        self.assert_(self.policy.checkChecked(['dc_set_permission']))
+        self.assertRaises(ForbiddenAttribute, dc.check_setattr, o, 'c_only')
+        self.assert_(self.policy.checkChecked([]))
+        self.assertRaises(ForbiddenAttribute, dc.check_setattr, o, 'd_only')
+        self.assert_(self.policy.checkChecked([]))
+
+    originalChecker = NamesChecker(['both_get_set', 'c_only', '__str__'],
+                                   'get_permission')
+
+    decorationSetMap = {'both_get_set': 'dc_set_permission'}
+
+    decorationGetMap = {'both_get_set': 'dc_get_permission',
+                        'd_only': 'dc_get_permission'}
+
+
+class TestDecoratedChecker(TestMixinDecoratedChecker, TestCase):
+
+    def setUp(self):
+        TestCase.setUp(self)
+        self.decoratedSetUp()
+
+    def tearDown(self):
+        self.decoratedTearDown()
+        TestCase.tearDown(self)
+
+    def test_checking(self):
+        from zope.security.checker import DecoratedChecker
+        c = self.originalChecker
+        dc = DecoratedChecker(c, self.decorationGetMap, self.decorationSetMap)
+        self.checkingTestImpl(c, dc)
+
+    def test_interface(self):
+        from zope.security.checker import DecoratedChecker
+        from zope.security.interfaces import IChecker
+        c = self.originalChecker
+        dc = DecoratedChecker(c, {}, {})
+        verifyObject(IChecker, dc)
+
+
 def test_suite():
     return TestSuite((
         makeSuite(Test),
         makeSuite(TestCheckerPublic),
+        makeSuite(TestDecoratedChecker),
         ))
 
 if __name__=='__main__':
