@@ -63,6 +63,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 264.  Substituting a Unicode value containing
+        non-ASCII text into a translated string caused a
+        UnicodeDecodeError.
+
       - Fixed issue 228.
 
       - Fixed issue 248.  Path expressions in page templates that
