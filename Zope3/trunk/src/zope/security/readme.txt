@@ -72,7 +72,7 @@ Zope3 Security
 
       Security Management
 
-        Provides accessors for setting up interactions and global
+        Provides accessors for setting up interactions and the global
         security policy.
 
       Interaction
