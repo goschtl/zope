@@ -2,6 +2,9 @@ After CMF 1.4.6
 
   Bug Fixes
 
+    - Use the 'portal_metadata' tool's 'getPublisher' for the DublinCore
+      'Publisher' element (thanks to Eric Brown for the patch).
+
     - Make Document render compliant XHTML when format is 'plain' (thanks to
       Eric Brown for the patch).
 

@@ -19,6 +19,7 @@ from Products.CMFCore.WorkflowCore import WorkflowAction
 from Products.CMFCore.interfaces.DublinCore import DublinCore
 from Products.CMFCore.interfaces.DublinCore import CatalogableDublinCore
 from Products.CMFCore.interfaces.DublinCore import MutableDublinCore
+from Products.CMFCore.utils import getToolByName
 
 from utils import tuplize, _dtmldir, semi_split
 from Globals import InitializeClass, DTMLFile
@@ -115,7 +116,11 @@ class DefaultDublinCoreImpl( PropertyManager ):
     security.declarePublic( 'Publisher' )
     def Publisher( self ):
         "Dublin Core element - resource publisher"
-        # XXX: fixme using 'portal_metadata'
+        portal_metadata = getToolByName( self,'portal_metadata', None )
+
+        if portal_metadata is not None:
+          return portal_metadata.getPublisher()
+
         return 'No publisher'
 
     security.declarePublic( 'Description' )
