@@ -32,7 +32,7 @@ def non_empty_string(string):
     return string
 
 SCHEMA = cfgparser.Schema(
-    ({"repository-map": non_empty_string}, [], None),
+    ({"resource-map": non_empty_string}, [], None),
     )
 
 
@@ -55,9 +55,7 @@ class Configuration:
         f = open(path, "rU")
         p = cfgparser.Parser(f, path, SCHEMA)
         cf = p.load()
-        for value in cf.repository_map:
-            if not value:
-                raise ValueError("'repository-map' requires a location")
+        for value in cf.resource_map:
             type, rest = urllib.splittype(value)
             if not type:
                 # local path references are relative to the file
