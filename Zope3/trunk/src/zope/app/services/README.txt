@@ -3,7 +3,7 @@ Local Services
 ==============
 
 :Author: Jim Fulton
-:Version: $Revision: 1.4 $
+:Version: $Revision: 1.5 $
 
 .. contents::
 
@@ -47,7 +47,7 @@ service above it, in the file ``utility.py``::
 
   from persistence import Persistent
   from zope.component.exceptions import ComponentLookupError
-  from zope.proxy.context import ContextAware
+  from zope.context import ContextAware
   from zope.app.component.nextservice import getNextService
   from zope.component.interfaces import IUtilityService
   from zope.app.interfaces.services.interfaces import ISimpleService
