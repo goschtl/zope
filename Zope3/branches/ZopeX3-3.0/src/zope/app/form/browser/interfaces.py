@@ -114,7 +114,7 @@ class IAddFormCustomization(Interface):
 
     def createAndAdd(self, data):
         content = <create the content from the data>
-        content = self.add(content) # content wrapped in some context
+        content = self.add(content) 
         <set after-add attributes on content>
     """
 
@@ -135,9 +135,6 @@ class IAddFormCustomization(Interface):
         This method is overridden when the context of the add form is
         not an IAdding.  In this case, the class that customizes the
         form must take over adding the object.
-
-        The content should be returned wrapped in the context of the
-        object that it was added to.
 
         The default implementation returns self.context.add(content),
         i.e. it delegates to the IAdding view.
