@@ -11,30 +11,15 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Schema-generation tests
+"""Silly demo evolution module
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
 
-import unittest
-from zope.testing import doctest
-from zope.app.testing import placelesssetup
+generation = 3
 
+import zope.app.generations.demo
 
-def tearDownREADME(test):
-    placelesssetup.tearDown(test)
-    test.globs['db'].close()
-
-def test_suite():
-    return unittest.TestSuite((
-        doctest.DocFileSuite(
-            'README.txt',
-            setUp=placelesssetup.setUp, tearDown=tearDownREADME,
-            ),
-        doctest.DocTestSuite('zope.app.generations.generations'),
-        doctest.DocTestSuite('zope.app.generations.utility'),
-        ))
-
-if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
-
+def evolve(context):
+    zope.app.generations.demo.evolve(context, 'installed')

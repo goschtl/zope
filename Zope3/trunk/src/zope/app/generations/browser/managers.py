@@ -108,8 +108,11 @@ class Managers(object):
 
              >>> from zope.app.generations.demo import key
              >>> conn.root()[key]
-             (2,)
+             ('installed', 'installed', 2)
 
+           Note that, because the demo package has an install script,
+           we have entries for that script.
+             
            Which the returned status should indicate:
 
              >>> status['app']
@@ -126,8 +129,8 @@ class Managers(object):
              >>> conn.root()[generations_key]['foo.app1']
              2
              >>> conn.root()[key]
-             (2,)
-
+             ('installed', 'installed', 2)
+             
            as the status will indicate by returning a 'to' generation
            of 0:
 
@@ -147,7 +150,7 @@ class Managers(object):
              >>> conn.root()[generations_key]['foo.app1']
              2
              >>> conn.root()[key]
-             (2,)
+             ('installed', 'installed', 2)
 
            We'd better clean upp:
 

@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from interfaces import GenerationTooHigh, GenerationTooLow, UnableToEvolve
-from interfaces import ISchemaManager
+from interfaces import ISchemaManager, IInstallableSchemaManager
 import logging
 import os
 import zope.interface
@@ -29,12 +29,12 @@ generations_key = 'zope.app.generations'
 class SchemaManager(object):
     """Schema manager
 
-       Schema managers implement `ISchemaManager` using scripts provided
-       as module methods.  You create a schema manager by providing
-       mimumum and maximum generations and a package providing modules
-       named ``evolveN``, where ``N`` is a generation number.  Each module
-       provides a function, `evolve` that evolves a database from the
-       previous generation.
+       Schema managers implement `IInstallableSchemaManager` using
+       scripts provided as module methods.  You create a schema
+       manager by providing mimumum and maximum generations and a
+       package providing modules named ``evolveN``, where ``N`` is a
+       generation number.  Each module provides a function, `evolve`
+       that evolves a database from the previous generation.
 
        For the sake of the example, we'll use the demo package defined
        in here. See the modules there for simple examples of evolution
@@ -75,15 +75,36 @@ class SchemaManager(object):
          >>> manager.getInfo(3) is None
          True
 
+       If a package provides an install script, then it will be called
+       when the manager's intall method is called:
+
+         >>> conn.sync()
+         >>> del conn.root()[key]
+         >>> get_transaction().commit()
+         >>> conn.root().get(key)
+
+         >>> manager.install(context)
+         >>> get_transaction().commit()
+         >>> conn.sync()
+         >>> conn.root()[key]
+         ('installed',)
+
+       If there is not install script, the manager will do nothing on
+       an install:
+
+         >>> manager = SchemaManager(1, 3, 'zope.app.generations.demo2')
+         >>> manager.install(context)
+
        We'd better clean up:
 
          >>> context.connection.close()
          >>> conn.close()
          >>> db.close()
 
+
        """
 
-    zope.interface.implements(ISchemaManager)
+    zope.interface.implements(IInstallableSchemaManager)
 
     def __init__(self, minimum_generation=0, generation=0, package_name=None):
         if generation < minimum_generation:
@@ -105,11 +126,25 @@ class SchemaManager(object):
         """Evolve a database to reflect software/schema changes
         """
 
-        evolver = __import__(
-            "%s.evolve%d" % (self.package_name, generation),
-            {}, {}, ['*'])
+        name = "%s.evolve%d" % (self.package_name, generation)
+
+        evolver = __import__(name, {}, {}, ['*'])
 
         evolver.evolve(context)
+
+    def install(self, context):
+        """Evolve a database to reflect software/schema changes
+        """
+
+        name = "%s.install" % self.package_name
+
+        try:
+            evolver = __import__("%s.install" % self.package_name,
+                                 {}, {}, ['*'])
+        except ImportError:
+            pass
+        else:
+            evolver.evolve(context)
 
     def getInfo(self, generation):
         """Get the information from the evolver function's doc string."""
@@ -331,6 +366,9 @@ def evolve(db, how=EVOLVE):
 
             if generation is None:
                 # This is a new database, so no old data
+                if IInstallableSchemaManager.providedBy(manager):
+                    manager.install(context)
+                
                 generations[key] = manager.generation
                 get_transaction().commit()
                 continue

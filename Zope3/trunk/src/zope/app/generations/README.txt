@@ -18,8 +18,7 @@ connection:
     >>> import cgi
     >>> from pprint import pprint
     >>> from zope.interface import implements
-    >>> from zope.app.testing import placelesssetup, ztapi
-    >>> placelesssetup.setUp()
+    >>> from zope.app.testing import ztapi
 
     >>> from ZODB.tests.util import DB
     >>> db = DB()
@@ -32,7 +31,8 @@ phrases.  Let's keep it simple and store the data in a dict:
     >>> root['answers'] = {'Hello': 'Hi & how do you do?',
     ...                    'Meaning of life?': '42',
     ...                    'four < ?': 'four < five'}
-    >>> get_transaction().commit()
+    >>> import transaction
+    >>> transaction.commit()
 
 
 Initial setup
@@ -55,9 +55,10 @@ will be just fine, since we don't want it to do anything just yet.
 'some.app' is a unique identifier.  You should use a URI or the dotted name
 of your package.
 
-When you start Zope and a database is opened, an IDatabaseOpenedEvent is sent.
-Zope registers evolveMinimumSubscriber by default as a handler for this event.
-Let's simulate this:
+When you start Zope and a database is opened, an
+IDatabaseOpenedWithRootEvent is sent.  Zope registers
+evolveMinimumSubscriber by default as a handler for this event.  Let's
+simulate this:
 
     >>> class DatabaseOpenedEventStub(object):
     ...     def __init__(self, database):
@@ -111,7 +112,7 @@ one):
     ...         else:
     ...             raise ValueError("Bummer")
     ...         root['answers'] = answers # ping persistence
-    ...         get_transaction().commit()
+    ...         transaction.commit()
 
     >>> manager = MySchemaManager()
     >>> ztapi.provideUtility(ISchemaManager, manager, name='some.app')
@@ -185,9 +186,72 @@ the SchemaManager. You can use the `how` argument to evolve() when you want
 just to check if you need to update or if you want to be lazy like the
 subscriber which we have called previously.
 
+Installation
+------------
 
-Let's clean up after ourselves:
+In the the example above, we manually initialized the answers.  We
+shouldn't have to do that manually.  The application should be able to
+do that automatically.
 
-    >>> conn.close()
+IInstallableSchemaManager extends ISchemaManager, providing an install
+method for performing an intial installation of an application.  This
+is a better alternative than registering database-opened subscribers.
+
+Let's define a new schema manager that includes installation:
+
+
+    >>> ztapi.unprovideUtility(ISchemaManager, name='some.app')
+
+    >>> from zope.app.generations.interfaces import IInstallableSchemaManager
+    >>> class MySchemaManager(object):
+    ...     implements(IInstallableSchemaManager)
+    ...
+    ...     minimum_generation = 1
+    ...     generation = 2
+    ...
+    ...     def install(self, context):
+    ...         root = context.connection.root()
+    ...         root['answers'] = {'Hello': 'Hi &amp; how do you do?',
+    ...                            'Meaning of life?': '42',
+    ...                            'four &lt; ?': 'four &lt; five'}
+    ...         transaction.commit()
+    ...
+    ...     def evolve(self, context, generation):
+    ...         root = context.connection.root()
+    ...         answers = root['answers']
+    ...         if generation == 1:
+    ...             for question, answer in answers.items():
+    ...                 answers[question] = cgi.escape(answer)
+    ...         elif generation == 2:
+    ...             for question, answer in answers.items():
+    ...                 del answers[question]
+    ...                 answers[cgi.escape(question)] = answer
+    ...         else:
+    ...             raise ValueError("Bummer")
+    ...         root['answers'] = answers # ping persistence
+    ...         transaction.commit()
+
+    >>> manager = MySchemaManager()
+    >>> ztapi.provideUtility(ISchemaManager, manager, name='some.app')
+
+Now, lets open a new database:
+
     >>> db.close()
-    >>> placelesssetup.tearDown()
+    >>> db = DB()
+    >>> conn = db.open()
+    >>> 'answers' in conn.root()
+    False
+
+
+    >>> event = DatabaseOpenedEventStub(db)
+    >>> evolveMinimumSubscriber(event)
+
+    >>> conn.sync()
+    >>> root = conn.root()
+
+    >>> pprint(root['answers'])
+    {'Hello': 'Hi &amp; how do you do?',
+     'Meaning of life?': '42',
+     'four &lt; ?': 'four &lt; five'}
+    >>> root[generations_key]['some.app']
+    2

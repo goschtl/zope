@@ -66,3 +66,15 @@ class ISchemaManager(zope.interface.Interface):
 
         If no information is available, `None` should be returned.
         """
+
+class IInstallableSchemaManager(ISchemaManager):
+    """Manage schema evolution for an application, including installation."""
+
+    def install(context):
+        """Perform any initial installation tasks
+
+        The application has never had the application installed
+        before.  The schema manager should bring the database to the
+        current generation.
+        
+        """
