@@ -12,13 +12,14 @@
 #
 ##############################################################################
 """
-$Id: configurationmanager.py,v 1.2 2002/12/25 14:13:19 jim Exp $
+$Id: configurationmanager.py,v 1.3 2003/02/03 14:53:38 jim Exp $
 """
 
 __metaclass__ = type
 
 from persistence import Persistent
-from zope.app.interfaces.services.configurationmanager import IConfigurationManager
+from zope.app.interfaces.services.configurationmanager \
+     import IConfigurationManager
 from zope.app.interfaces.container import IDeleteNotifiable
 from zope.app.interfaces.container import IZopeWriteContainer
 from zope.component import getAdapter
@@ -58,6 +59,9 @@ class ConfigurationManager(Persistent):
     def keys(self):
         "See Interface.Common.Mapping.IEnumerableMapping"
         return [k for k, v in self._data]
+
+    def __iter__(self):
+        return iter(self.keys())
 
     def values(self):
         "See Interface.Common.Mapping.IEnumerableMapping"

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: mapping.py,v 1.3 2002/12/26 20:20:49 jim Exp $
+$Id: mapping.py,v 1.4 2003/02/03 14:59:24 jim Exp $
 """
 
 from zope.interface import Interface
@@ -47,6 +47,10 @@ class IEnumerableMapping(IReadMapping):
 
     def keys():
         """Return the keys of the mapping object
+        """
+
+    def __iter__():
+        """Return an iterator for the keys of the mapping object
         """
 
     def values():

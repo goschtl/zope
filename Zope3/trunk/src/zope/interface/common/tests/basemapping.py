@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: basemapping.py,v 1.2 2002/12/25 14:15:11 jim Exp $
+$Id: basemapping.py,v 1.3 2003/02/03 14:58:46 jim Exp $
 """
 
 from operator import __getitem__
@@ -35,6 +35,12 @@ def testIReadMapping(self, inst, state, absent):
 def test_keys(self, inst, state):
     # Return the keys of the mapping object
     inst_keys = list(inst.keys()); inst_keys.sort()
+    state_keys = list(state.keys()) ; state_keys.sort()
+    self.assertEqual(inst_keys, state_keys)
+
+def test_iter(self, inst, state):
+    # Return the keys of the mapping object
+    inst_keys = list(inst); inst_keys.sort()
     state_keys = list(state.keys()) ; state_keys.sort()
     self.assertEqual(inst_keys, state_keys)
 
@@ -82,6 +88,12 @@ class BaseTestIEnumerableMapping(BaseTestIReadMapping):
         inst = self._IEnumerableMapping__sample()
         state = self._IEnumerableMapping__stateDict()
         test_values(self, inst, state)
+
+    def test_values(self):
+        # Return the values of the mapping object
+        inst = self._IEnumerableMapping__sample()
+        state = self._IEnumerableMapping__stateDict()
+        test_iter(self, inst, state)
 
     def test_items(self):
         # Return the items of the mapping object
