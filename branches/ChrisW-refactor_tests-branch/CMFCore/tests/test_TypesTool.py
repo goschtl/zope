@@ -2,94 +2,20 @@ import Zope
 import OFS.Folder, OFS.SimpleItem
 from unittest import TestCase, TestSuite, makeSuite, main
 from Acquisition import Implicit
-from AccessControl.SecurityManagement import newSecurityManager
-from AccessControl.SecurityManagement import noSecurityManager
-from AccessControl import SecurityManager
 from Products.CMFCore.TypesTool import *
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.CMFCorePermissions import AddPortalContent
 from Products.CMFCore.CMFCorePermissions import ModifyPortalContent
 from Products.CMFCore.PortalFolder import *
 from Products.CMFCore import utils
-import ZPublisher.HTTPRequest
+from Products.CMFCore.tests.base.testcase import SecurityRequestTest
+from Products.CMFCore.tests.base.security import OmnipotentUser, UserWithRoles
+from AccessControl.SecurityManagement import newSecurityManager
+from AccessControl.SecurityManagement import noSecurityManager
+
 from Products.PythonScripts.standard import url_quote
 from webdav.NullResource import NullResource
 from Acquisition import aq_base
-
-class PermissiveSecurityPolicy:
-    """
-        Stub out the existing security policy for unit testing purposes.
-    """
-    #
-    #   Standard SecurityPolicy interface
-    #
-    def validate( self
-                , accessed=None
-                , container=None
-                , name=None
-                , value=None
-                , context=None
-                , roles=None
-                , *args
-                , **kw):
-        return 1
-    
-    def checkPermission( self, permission, object, context) :
-        if permission == 'forbidden permission':
-            return 0
-        return 1
-
-class OmnipotentUser( Implicit ):
-    """
-        Stubbed out manager for unit testing purposes.
-    """
-    def getId( self ):
-        return 'all_powerful_Oz'
-    
-    getUserName = getId
-
-    def allowed( self, object, object_roles=None ):
-        return 1
-
-class UserWithRoles( Implicit ):
-    """
-        Stubbed out manager for unit testing purposes.
-    """
-    def __init__( self, *roles ):
-        self._roles = roles
-
-    def getId( self ):
-        return 'high_roller'
-    
-    getUserName = getId
-
-    def allowed( self, object, object_roles=None ):
-        for orole in object_roles:
-            if orole in self._roles:
-                return 1
-        return 0
-
-class UnitTestUser( Implicit ):
-    """
-        Stubbed out manager for unit testing purposes.
-    """
-    def getId( self ):
-        return 'unit_tester'
-    
-    getUserName = getId
-
-    def has_permission(self, permission, obj):
-        # For types tool tests dealing with filtered_meta_types
-        return 1
-
-    def allowed( self, object, object_roles=None ):
-        # for testing permissions on actions
-        if object.getId() == 'actions_dummy':
-            if 'Anonymous' in object_roles:
-                return 1
-            else:
-                return 0
-        return 1
 
 class DummyMethod:
     def __init__(self, name):
@@ -109,28 +35,15 @@ def addDummy( self, id ):
     """
     self._setObject( id, DummyContent() )
 
-def extra_meta_types():
-    return (  { 'name' : 'Dummy', 'action' : 'manage_addFolder' }, )
-
 class DummyTypeInfo(TypeInformation):
     """ new class of type info object """
     meta_type = "Dummy Test Type Info"
 
-class TypesToolTests( TestCase ):
+class TypesToolTests( SecurityRequestTest ):
 
     def setUp( self ):
-        get_transaction().begin()
-        self._policy = PermissiveSecurityPolicy()
-        self._oldPolicy = SecurityManager.setSecurityPolicy(self._policy)
-        self.connection = Zope.DB.open()
-        root = self.root = self.connection.root()[ 'Application' ]
-        newSecurityManager( None, UnitTestUser().__of__( self.root ) )
-
-        env = { 'SERVER_NAME' : 'http://localhost'
-              , 'SERVER_PORT' : '80'
-              }
-        root.REQUEST = ZPublisher.HTTPRequest.HTTPRequest( None, env, None )
-        
+        SecurityRequestTest.setUp(self)
+        root = self.root
         root.addDummy = addDummy
 
         root._setObject( 'portal_types', TypesTool() )
@@ -155,12 +68,6 @@ class TypesToolTests( TestCase ):
                               )
                          )
     
-    def tearDown( self ):
-        get_transaction().abort()
-        self.connection.close()
-        noSecurityManager()
-        SecurityManager.setSecurityPolicy(self._oldPolicy)
-
     def off_test_otherFolderTypes( self ):
         """
             Does 'invokeFactory' work when invoked from non-PortalFolder?
