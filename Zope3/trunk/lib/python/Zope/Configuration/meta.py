@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.8 2002/09/18 03:49:52 rdmurray Exp $
+$Id: meta.py,v 1.9 2002/09/18 04:24:37 rdmurray Exp $
 """
 
 
@@ -62,10 +62,12 @@ def registersub(directives, name, handler_method=None):
     name string.
 
     The handler is not passed as it normally is for top-level
-    directives. Rather, the handler is looked up as an attribute of
-    the top-level directive object using the name string that is the
-    second element in the name tuple.  An optional handler attribute
-    can be used to specify the method to be used.
+    directives. Rather, the handler will be looked up as an attribute
+    of the ISubdirectiveHandler returned by INonEmptyDirective whose
+    associated registry we have been passed.  The string to be
+    looked up is set to the second element of the name tuple, unless
+    the optional handler attribute is used to provide the lookup
+    string explicitly.
 
     Subdirectives may have subdirectives. The subdirectives will be
     registered in a registry that is stored with the containing
@@ -78,6 +80,8 @@ def registersub(directives, name, handler_method=None):
     subdirs = {}
     directives[name] = subdirs, handler_method
     return subdirs
+
+
 
 def _exe(callable, subs, context, kw):
     r = callable(context, **kw)
