@@ -184,15 +184,19 @@ class ImmediateTestResult(unittest._TextTestResult):
             print test
             print gc.garbage
 
-    def print_times(self):
+    def print_times(self, stream, count=None):
         results = self._testtimes.items()
         results.sort(lambda x, y: cmp(y[1], x[1]))
-        n = min(50, len(results))
+        if count:
+            n = min(count, len(results))
+            if n:
+                print >>stream, "Top %d longest tests:" % n
+        else:
+            n = len(results)
         if not n:
             return
-        print "Top %d longest tests:" % n
         for i in range(n):
-            print "%6dms" % int(results[i][1] * 1000), results[i][0]
+            print >>stream, "%6dms" % int(results[i][1] * 1000), results[i][0]
 
     def _print_traceback(self, msg, err, test, errlist):
         if self.showAll or self.dots:
@@ -214,10 +218,10 @@ class ImmediateTestResult(unittest._TextTestResult):
             elif self._progressWithNames:
                 # XXX will break with multibyte strings
                 name = self.getShortDescription(test)
-                width = min(len(name), self._maxWidth)
+                width = len(name)
                 if width < self._lastWidth:
                     name += " " * (self._lastWidth - width)
-                self.stream.write(": %s" % name[:self._maxWidth])
+                self.stream.write(": %s" % name)
                 self._lastWidth = width
             self.stream.flush()
         self.__super_startTest(test)
@@ -228,11 +232,15 @@ class ImmediateTestResult(unittest._TextTestResult):
         if len(s) > self._maxWidth:
             pos = s.find(" (")
             if pos >= 0:
-                pre = s[:pos+2]
                 w = self._maxWidth - (pos + 5)
-                post = s[-w:]
-                s = "%s...%s" % (pre, post)
-        return s
+                if w < 1:
+                    # first portion (test method name) is too long
+                    s = s[:self._maxWidth-3] + "..."
+                else:
+                    pre = s[:pos+2]
+                    post = s[-w:]
+                    s = "%s...%s" % (pre, post)
+        return s[:self._maxWidth]
 
     def addError(self, test, err):
         if self._progress:
@@ -446,8 +454,12 @@ def runner(files, test_filter, debug):
             suite.addTest(s)
     try:
         r = runner.run(suite)
+        if timesfn:
+            r.print_times(open(timesfn, "w"))
+            if VERBOSE:
+                print "Wrote timing data to", timesfn
         if timetests:
-            r.print_times()
+            r.print_times(sys.stdout, timetests)
     except:
         if debugger:
             pdb.post_mortem(sys.exc_info()[2])
@@ -513,6 +525,7 @@ def process_args(argv=None):
     global build
     global level
     global libdir
+    global timesfn
     global timetests
     global progress
     global build_inplace
@@ -536,11 +549,12 @@ def process_args(argv=None):
     level = 1
     libdir = None
     progress = False
+    timesfn = None
     timetests = 0
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], "a:bBcdDgGhLmptTuv",
-                                   ["all", "help", "libdir="])
+                                   ["all", "help", "libdir=", "times="])
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % sys.argv[0]
@@ -586,11 +600,18 @@ def process_args(argv=None):
         elif k == "-T":
             TRACE = True
         elif k == "-t":
-            timetests = True
+            if not timetests:
+                timetests = 50
         elif k == "-u":
             GUI = 1
         elif k == "-v":
             VERBOSE += 1
+        elif k == "--times":
+            try:
+                timetests = int(v)
+            except ValueError:
+                # must be a filename to write
+                timesfn = v
 
     if gcthresh is not None:
         if gcthresh == 0:
