@@ -15,13 +15,12 @@
 event service when bound, and unsubscribe
 when unbound, as one needs for an event channel that will be a service
 
-$Id: ProtoServiceEventChannel.py,v 1.3 2002/11/11 08:38:36 stevea Exp $
+$Id: ProtoServiceEventChannel.py,v 1.4 2002/12/12 20:05:51 jack-e Exp $
 """
 
 from Zope.App.Traversing.ITraverser import ITraverser
 from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.ComponentArchitecture import getAdapter, getService
-from PathSubscriber import PathSubscriber
 from LocalSubscriptionAware import LocalSubscriptionAware
 from Zope.ContextWrapper import ContextMethod
 from LocalEventChannel import LocalEventChannel
@@ -75,7 +74,7 @@ class ProtoServiceEventChannel(
                 # set something special up -- something that subscribes
                 # every startup...
                 es.subscribe(
-                    PathSubscriber(wrapped_self),
+                    wrapped_self,
                     clean_self._subscribeToServiceInterface,
                     clean_self._subscribeToServiceFilter
                     )
@@ -85,11 +84,10 @@ class ProtoServiceEventChannel(
     def unbound(wrapped_self, name):
         "see IBindingAware"
         clean_self = removeAllProxies(wrapped_self)
-        subscriber = PathSubscriber(wrapped_self)
         for subscription in clean_self._subscriptions:
             subscribable = getAdapter(
                 wrapped_self, ITraverser).traverse(subscription[0])
-            subscribable.unsubscribe(subscriber)
+            subscribable.unsubscribe(wrapped_self)
         clean_self._subscriptions = ()
         clean_self._serviceName = None
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: LocalSubscribable.py,v 1.6 2002/11/28 02:45:47 poster Exp $
+$Id: LocalSubscribable.py,v 1.7 2002/12/12 20:05:51 jack-e Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -25,6 +25,8 @@ from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from Zope.Event.Subscribable import Subscribable
 from Persistence import Persistent
+from Zope.App.Traversing import traverse, getPhysicalPathString
+from Zope.App.Traversing import locationAsUnicode
 
 class LocalSubscribable(Persistent, Subscribable):
     """a local mix-in"""
@@ -39,14 +41,14 @@ class LocalSubscribable(Persistent, Subscribable):
                   subscriber,
                   event_type=IEvent,
                   filter=None):
-        # might be wrapped, might not
-        subscriber = removeAllProxies(subscriber)
         
+        # subscriber needs to be wrapped
+        subscriber_path = getPhysicalPathString(subscriber)
+       
         clean_self = removeAllProxies(wrapped_self)
-        wrapped_subscriber = ContextWrapper(subscriber, wrapped_self)
         
         if ISubscriptionAware.isImplementedBy(subscriber):
-            wrapped_subscriber.subscribedTo(
+            subscriber.subscribedTo(
                 wrapped_self,
                 event_type,
                 filter)
@@ -58,15 +60,18 @@ class LocalSubscribable(Persistent, Subscribable):
         if subscribers is None:
             subscribers = []
             clean_self._registry.register(ev_type, subscribers)
-        subscribers.append((subscriber, filter))
+        # XXX subscriber_path
+        subscribers.append((subscriber_path, filter))
 
         subs = clean_self._subscribers
         for sub in subs:
-            if sub[0] == subscriber:
+            # XXX subscriber_path
+            if sub[0] == subscriber_path:
                 sub[1][ev_type] = 1
                 break
         else:
-            subs.append((subscriber,{ev_type:1}))
+            # XXX subscriber_path
+            subs.append((subscriber_path,{ev_type:1}))
         
         clean_self._p_changed = 1 #trigger persistence
         # XXX should this and similar be done earlier in the method?
@@ -79,15 +84,15 @@ class LocalSubscribable(Persistent, Subscribable):
                     subscriber,
                     event_type = None,
                     filter = None):
-        # subscriber might be wrapped, might not
-        subscriber = removeAllProxies(subscriber) 
+        # subscriber must be wrapped
+        subscriber_path = getPhysicalPathString(subscriber)
         
         clean_self = removeAllProxies(wrapped_self)
-        wrapped_subscriber = ContextWrapper(subscriber, wrapped_self)
         
         for subscriber_index in range(len(clean_self._subscribers)):
             sub = clean_self._subscribers[subscriber_index]
-            if sub[0] == subscriber:
+            # XXX subscriber_path
+            if sub[0] == subscriber_path:
                 ev_set = sub[1]
                 break
         else:
@@ -106,15 +111,17 @@ class LocalSubscribable(Persistent, Subscribable):
             if not subscriptions:
                 raise NotFoundError(subscriber, event_type, filter)
             try:
-                subscriptions.remove((subscriber, filter))
+                # XXX subscriber_path
+                subscriptions.remove((subscriber_path, filter))
             except ValueError:
                 raise NotFoundError(subscriber, event_type, filter)
             if do_alert:
-                wrapped_subscriber.unsubscribedFrom(
+                subscriber.unsubscribedFrom(
                     wrapped_self, event_type, filter)
             if len(ev_set) == 1:
                 for sub in subscriptions:
-                    if sub[0] == subscriber:
+                    # XXX subscriber_path
+                    if sub[0] == subscriber_path:
                         break
                 else:
                     del clean_self._subscribers[subscriber_index]
@@ -124,9 +131,10 @@ class LocalSubscribable(Persistent, Subscribable):
                 subs=subscriptions[:]
                 subscriptions[:] = []
                 for sub in subs:
-                    if sub[0] == subscriber: # deleted (not added back)
+                    # XXX subscriber_path
+                    if sub[0] == subscriber_path: # deleted (not added back)
                         if do_alert:
-                            wrapped_subscriber.unsubscribedFrom(
+                            subscriber.unsubscribedFrom(
                                 wrapped_self, ev_type or IEvent, sub[1])
                             # IEvent switch is to make optimization
                             # transparent
@@ -137,3 +145,36 @@ class LocalSubscribable(Persistent, Subscribable):
         # XXX should be done earlier?  Ask Shane
     
     unsubscribe = ContextMethod(unsubscribe)
+
+    def listSubscriptions(self, subscriber, event_type=None):
+        # subscriber must be wrapped
+        subscriber_path = getPhysicalPathString(subscriber)
+        
+        result=[]
+        if event_type:
+            ev_type=event_type
+            if event_type is IEvent:
+                ev_type=None # handle optimization
+            subscriptions = self._registry.get(ev_type)
+            if subscriptions:
+                for sub in subscriptions:
+                    # XXX subscriber_path
+                    if sub[0]==subscriber_path:
+                        result.append((event_type, sub[1]))
+        else:
+            for subscriber_index in range(len(self._subscribers)):
+                sub=self._subscribers[subscriber_index]
+                # XXX subscriber_path
+                if sub[0]==subscriber_path:
+                    ev_set=sub[1]
+                    break
+            else:
+                return result
+            for ev_type in ev_set:
+                subscriptions = self._registry.get(ev_type)
+                if subscriptions:
+                    for sub in subscriptions:
+                        # XXX subscriber_path
+                        if sub[0]==subscriber_path:
+                            result.append((ev_type or IEvent, sub[1]))
+        return result

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 Revision information:
-$Id: LocalServiceSubscribable.py,v 1.8 2002/12/06 18:03:31 alga Exp $
+$Id: LocalServiceSubscribable.py,v 1.9 2002/12/12 20:05:51 jack-e Exp $
 """
 
 from Zope.Exceptions import NotFoundError
@@ -24,6 +24,7 @@ from Zope.Proxy.ProxyIntrospection import removeAllProxies
 from Zope.Proxy.ContextWrapper import ContextWrapper
 from LocalSubscribable import LocalSubscribable
 from Zope.App.ComponentArchitecture.NextService import getNextService, queryNextService
+from Zope.App.Traversing import getPhysicalPathString
 
 class LocalServiceSubscribable(LocalSubscribable):
     """a local mix-in for services"""
@@ -40,15 +41,15 @@ class LocalServiceSubscribable(LocalSubscribable):
                     subscriber,
                     event_type=None,
                     filter=None):
-        # might be wrapped, might not
-        subscriber = removeAllProxies(subscriber) 
+        # subscriber must be wrapped
+        subscriber_path = getPhysicalPathString(subscriber)
         
         clean_self = removeAllProxies(wrapped_self)
-        wrapped_subscriber = ContextWrapper(subscriber, wrapped_self)
         
         for subscriber_index in range(len(clean_self._subscribers)):
             sub = clean_self._subscribers[subscriber_index]
-            if sub[0] == subscriber:
+            # XXX subscriber_path
+            if sub[0] == subscriber_path:
                 ev_set = sub[1]
                 break
         else:
@@ -76,15 +77,17 @@ class LocalServiceSubscribable(LocalSubscribable):
             else:
                 subscriptions = clean_self._registry.get(ev_type)
                 try:
-                    subscriptions.remove((subscriber, filter))
+                    # XXX subscriber_path
+                    subscriptions.remove((subscriber_path, filter))
                 except ValueError:
                     raise NotFoundError(subscriber, event_type, filter)
                 if do_alert:
-                    wrapped_subscriber.unsubscribedFrom(
+                    subscriber.unsubscribedFrom(
                         wrapped_self, event_type, filter)
                 if len(ev_set) == 1:
                     for sub in subscriptions:
-                        if sub[0] == subscriber:
+                        # XXX subscriber_path
+                        if sub[0] == subscriber_path:
                             break
                     else:
                         del clean_self._subscribers[subscriber_index]
@@ -95,9 +98,10 @@ class LocalServiceSubscribable(LocalSubscribable):
                 subs = subscriptions[:]
                 subscriptions[:] = []
                 for sub in subs:
-                    if sub[0] == subscriber: # deleted (not added back)
+                    # XXX subscriber_path
+                    if sub[0] == subscriber_path: # deleted (not added back)
                         if do_alert:
-                            wrapped_subscriber.unsubscribedFrom(
+                            subscriber.unsubscribedFrom(
                                 wrapped_self, ev_type or IEvent, sub[1])
                             # IEvent switch is to make optimization
                             # transparent (see *** comment above in
@@ -112,9 +116,8 @@ class LocalServiceSubscribable(LocalSubscribable):
     unsubscribe = ContextMethod(unsubscribe)
     
     def listSubscriptions(wrapped_self, subscriber, event_type=None):
-        # might be wrapped, might not
-        subscriber = removeAllProxies(subscriber)
-        
+        # subscriber must be wrapped
+       
         clean_self = removeAllProxies(wrapped_self)
         result = LocalSubscribable.listSubscriptions(
             clean_self, subscriber, event_type)
