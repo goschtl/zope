@@ -121,7 +121,7 @@
 /Zope3/lib/python/zdaemon                      /Packages/zdaemon
 /Zope3/lib/python/zlib                         /Zope/lib/Components/zlib
 /Zope3/lib/python/zLOG                         /Packages/zLOG
-/Zope3/lib/python/ZODB                         /Packages/ZODB
+#/Zope3/lib/python/ZODB                         /Packages/ZODB
 
 /Zope3/lib/python/Zope/App                     /Packages/ZopeApp
 /Zope3/lib/python/Zope/ComponentArchitecture   /Packages/ComponentArchitecture
