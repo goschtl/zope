@@ -170,6 +170,23 @@ We can register and lookup by name too:
   >>> y.context is x
   True
 
+An alternate method that provides the same function as `queryAdapter` is
+`adapter_hook`:
+
+  >>> y = registry.adapter_hook(IP1, x)
+  >>> y.__class__.__name__
+  'Y'
+  >>> y.context is x
+  True
+  >>> y = registry.adapter_hook(IP1, x, 'bob')
+  >>> y.__class__.__name__
+  'Y2'
+  >>> y.context is x
+  True
+
+The `adapter_hook` simply switches the order of the object and
+interface arguments.  It is used to hook into the interface call
+mechanism.
 
 
 Default Adapters

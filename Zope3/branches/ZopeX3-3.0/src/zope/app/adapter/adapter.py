@@ -105,7 +105,7 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
     def __getstate__(self):
         state = Persistent.__getstate__(self).copy()
         
-        for name in ('_default', '_null',
+        for name in ('_default', '_null', 'adapter_hook',
                      'lookup', 'lookup1', 'queryAdapter', 'get',
                      'subscriptions', 'queryMultiAdapter', 'subscribers'
                      ):
