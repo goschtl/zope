@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ViewMeta.py,v 1.4 2002/06/20 20:00:27 jim Exp $
+$Id: ViewMeta.py,v 1.5 2002/10/22 19:17:23 stevea Exp $
 """
 
 # XXX this will need to be refactored soon. :)
@@ -210,7 +210,7 @@ class view(resource):
             return super(view, self).__call__()
 
         # OK, we have named pages on a named view.
-        # We'l lreplace the original class with a new subclass that
+        # We'll replace the original class with a new subclass that
         # can traverse to the necessary pages. 
 
         require = {}
