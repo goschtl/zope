@@ -26,7 +26,7 @@ We test whether this works with functions, methods and objects:
 
   ... print http(r"""
   ... GET /test_folder_1_/testoid/nodoc-function HTTP/1.1
-  ... """ % view_name)
+  ... """)
   HTTP/1.1 200 OK
   Content-Length: 12
   Content-Type: text/plain
@@ -35,7 +35,7 @@ We test whether this works with functions, methods and objects:
 
   ... print http(r"""
   ... GET /test_folder_1_/testoid/nodoc-method HTTP/1.1
-  ... """ % view_name)
+  ... """)
   HTTP/1.1 200 OK
   Content-Length: 12
   Content-Type: text/plain
@@ -44,7 +44,7 @@ We test whether this works with functions, methods and objects:
 
   ... print http(r"""
   ... GET /test_folder_1_/testoid/nodoc-object HTTP/1.1
-  ... """ % view_name)
+  ... """)
   HTTP/1.1 200 OK
   Content-Length: 12
   Content-Type: text/plain
