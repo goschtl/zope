@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: xmlconfig.py,v 1.3 2002/06/17 17:52:41 gvanrossum Exp $
+$Id: xmlconfig.py,v 1.4 2002/06/18 13:07:30 stevea Exp $
 """
 
 import os
@@ -168,11 +168,14 @@ class ZopeConflictingConfigurationError(ZopeXMLConfigurationError):
         at line %s column %s of %s
         and% at line %s column %s of %s
         """ % ((self.des,) + self.l1 + self.l2)
-
+        
+_unset = object()
 class Context:
-    def __init__(self, stack, module=None):
+    def __init__(self, stack, module=_unset):
         self.__stackcopy = tuple(stack)
-        if module is None:
+        if module is _unset:
+            self.__package = None
+        elif module is None:
             self.__package = 'ZopeProducts'
         else:
             self.__package = module.__name__
@@ -195,7 +198,12 @@ class Context:
         else:
             raise TypeError, "Unrecognized config file attribute: %s" % name
 
-
+    def packageWasSet(self):
+        return self.__package is not None
+        
+    def package(self):
+        return self.__package
+        
 def xmlconfig(file, actions=None, context=None, directives=None,
               testing=0):
     if context is None:
@@ -259,6 +267,8 @@ class XMLConfig:
         f.close()
 
     def include(self, _context, file='configure.zcml', package=None):
+        if package is None and _context.packageWasSet():
+            package = _context.package()
         if package is not None:
             try:
                 package = _context.resolve(package)
@@ -277,7 +287,7 @@ class XMLConfig:
                                  % (package, `v`))
         else:
             prefix = os.path.dirname(self._stack[-1])
-            
+
         file_name = os.path.join(prefix, file)
 
         f = open(file_name)

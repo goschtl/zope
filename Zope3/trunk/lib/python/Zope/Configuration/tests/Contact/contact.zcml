@@ -2,5 +2,8 @@
 
 <directive name="test" namespace="test"
            handler=".TestHandler." />
+           
+<!-- test if the included zcml file keeps the package of this file -->
+<include file="test_include.zcml" />
 
 </zopeConfigure>
