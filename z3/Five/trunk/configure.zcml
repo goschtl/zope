@@ -44,6 +44,22 @@
       provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
       />
 
+  <browser:page
+      for="zope.app.traversing.interfaces.IContainmentRoot"
+      name="absolute_url"
+      class=".browser.SiteAbsoluteURL"
+      permission="zope.Public"
+      allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
+  <view
+      for="zope.app.traversing.interfaces.IContainmentRoot"
+      factory=".browser.SiteAbsoluteURL"
+      type="zope.publisher.interfaces.http.IHTTPRequest"
+      permission="zope.Public"
+      provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
+      />
+
   <five:traversable class="OFS.SimpleItem.Item" />
   <five:traversable class="OFS.ObjectManager.ObjectManager" />
 

@@ -36,8 +36,9 @@ class BrowserView(Acquisition.Explicit):
 InitializeClass(BrowserView)
 
 class AbsoluteURL(BrowserView):
-    """An adapter for Zope3-style absolute_url
-    view using Zope2 methods
+    """An adapter for Zope3-style absolute_url using Zope2 methods
+
+    (original: zope.app.traversing.browser.absoluteurl)
     """
 
     def __init__(self, context, request):
@@ -57,7 +58,7 @@ class AbsoluteURL(BrowserView):
 
         container = aq_parent(aq_inner(context))
         if container is None or not ITraversable.providedBy(container):
-            return ({'name': '',
+            return ({'name': context.getId(),
                      'url': context.absolute_url()
                      },)
 
@@ -70,6 +71,23 @@ class AbsoluteURL(BrowserView):
 
         return base
 
+
+class SiteAbsoluteURL(AbsoluteURL):
+    """An adapter for Zope3-style absolute_url using Zope2 methods
+
+    This one is just used to stop breadcrumbs from crumbing up
+    to the Zope root.
+
+    (original: zope.app.traversing.browser.absoluteurl)
+    """
+
+    def breadcrumbs(self):
+        context = self.context
+        request = self.request
+
+        return ({'name': context.getId(),
+                 'url': context.absolute_url()
+                 },)
 
 class Macros:
 

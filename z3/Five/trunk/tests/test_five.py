@@ -15,10 +15,12 @@ ZopeTestCase.installProduct('FiveTest')
 ZopeTestCase.installProduct('Five')
 
 import zope
+from zope.interface import directlyProvides
 from zope.component import getViewProviding
 from zope.schema import Choice, TextLine
 from zope.app.form.interfaces import IInputWidget
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
+from zope.app.traversing.interfaces import IContainmentRoot
 
 from Products.FiveTest.classes import Adaptable, Origin
 from Products.FiveTest.interfaces import IAdapted, IDestination
@@ -203,6 +205,15 @@ class FiveTestCase(ZopeTestCase.ZopeTestCase):
         view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
         expected = (
             {'url': 'http://nohost', 'name': ''},
+            {'url': 'http://nohost/test_folder_1_', 'name': 'test_folder_1_'},
+            {'url': 'http://nohost/test_folder_1_/testoid', 'name': 'testoid'})
+        self.assertEquals(expected, view.breadcrumbs())
+
+    def test_containement_root_breadcrumbs(self):
+        # Should stop breadcrumbs from crumbing
+        directlyProvides(self.folder, IContainmentRoot)
+        view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
+        expected = (
             {'url': 'http://nohost/test_folder_1_', 'name': 'test_folder_1_'},
             {'url': 'http://nohost/test_folder_1_/testoid', 'name': 'testoid'})
         self.assertEquals(expected, view.breadcrumbs())
