@@ -18,7 +18,7 @@ ContextMethod and ContextProperty, and checks for misuse of ContextDescriptors
 as members of classic classes. (Descriptors generally don't work properly
 as members of classic classes.)
 
-$Id: test_wrapperinteraction.py,v 1.6 2003/06/01 15:59:40 jim Exp $
+$Id: test_wrapperinteraction.py,v 1.7 2003/06/07 19:05:20 stevea Exp $
 """
 import sys
 import unittest
@@ -471,12 +471,135 @@ class TestWrapperOnObjectsWithDifferentSlots(unittest.TestCase):
         self.assertEqual(wrapped[0], 23)
         self.assertEqual(wrapped.__getitem__(0), 23)
 
+
+class LoggingDescriptor:
+    def __init__(self, getval=None, doc=''):
+        self.getval = getval
+        self.doc = doc
+        self.log = []
+
+    def __get__(self, inst, cls=None):
+        self.log.append(('get', inst, cls))
+        return self.getval
+
+    def getDoc(self):
+        return self.doc
+    __doc__ = property(getDoc)
+
+    def checkClear(self):
+        l = self.log
+        self.log = []
+        return l
+
+class LoggingDataDescriptor(LoggingDescriptor):
+
+    def __set__(self, inst, value):
+        self.log.append(('set', inst, value))
+
+    def __delete__(self, inst):
+        self.log.append(('del', inst))
+
+class TestContextAwareDescriptor(unittest.TestCase):
+
+    def newInstance(self, value):
+        from zope.context import ContextAwareDescriptor
+        return ContextAwareDescriptor(value)
+
+    def setUp(self):
+        self.d = LoggingDataDescriptor(23, 'my doc')
+        self.cd = self.newInstance(self.d)
+
+    def test_is_ContextDescriptor(self):
+        from zope.context import ContextDescriptor
+        self.assert_(isinstance(self.cd, ContextDescriptor))
+
+    def test_descriptor(self):
+        inst = object()  # any old object
+        cls = object     # any old type
+        cd = self.cd
+        d = self.d
+
+        self.assertEquals(cd.__get__(inst, cls), 23)
+        self.assertEquals(d.checkClear(), [('get', inst, cls)])
+        self.assertEquals(cd.__doc__, d.__doc__)
+
+
+class TestContextAwareDataDescriptor(TestContextAwareDescriptor):
+
+    def newInstance(self, value):
+        from zope.context import ContextAwareDataDescriptor
+        return ContextAwareDataDescriptor(value)
+
+    def test_datadescriptor(self):
+        inst = object()  # any old object
+        cls = object     # any old type
+        cd = self.cd
+        d = self.d
+
+        cd.__set__(inst, 88)
+        self.assertEquals(d.checkClear(), [('set', inst, 88)])
+        cd.__delete__(inst)
+        self.assertEquals(d.checkClear(), [('del', inst)])
+
+
+class TestContextAware(unittest.TestCase):
+
+    def test_ContextAwareMetaClass(self):
+        from zope.context import ContextAwareMetaClass, ContextAware
+        from zope.context import ContextMethod, ContextProperty
+        normal_data_descriptor = LoggingDataDescriptor(23)
+        normal_descriptor = LoggingDescriptor(23)
+        context_method = ContextMethod(lambda s: None)
+        context_descriptor = ContextProperty()
+
+        # Check that nothing in particular happens if the class doesn't
+        # derive directly from ContextAware.
+        class X:
+            __metaclass__ = ContextAwareMetaClass
+
+            ndd = normal_data_descriptor
+            nd = normal_descriptor
+
+        self.assert_(X.ndd is normal_data_descriptor)
+        self.assert_(X.nd is normal_descriptor)
+
+        class X(ContextAware):
+
+            cm = context_method
+            ndd = normal_data_descriptor
+            nd = normal_descriptor
+            cd = context_descriptor
+
+        self.assert_(X.cm is context_method)
+        self.assert_(X.cd is context_descriptor)
+        normal_descriptor.checkClear()
+        self.assertEquals(X.nd, 23)
+        self.assertEquals(normal_descriptor.checkClear(),
+                          [('get', None, X)]
+                          )
+        normal_data_descriptor.checkClear()
+        self.assertEquals(X.ndd, 23)
+        self.assertEquals(normal_data_descriptor.checkClear(),
+                          [('get', None, X)]
+                          )
+        X.ndd = 42
+        # We've established that our descriptor is behind the context
+        # descriptor. The rest is covered by the ContextAware(Data)Descriptor
+        # unit tests.
+
+    def test_ContextAware(self):
+        from zope.context import ContextAware, ContextAwareMetaClass
+        self.assert_(type(ContextAware) is ContextAwareMetaClass)
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestNewStyleClass),
         unittest.makeSuite(TestNewStyleClassWithSlots),
         unittest.makeSuite(TestClassicClass),
         unittest.makeSuite(TestWrapperOnObjectsWithDifferentSlots),
+        unittest.makeSuite(TestContextAwareDataDescriptor),
+        unittest.makeSuite(TestContextAwareDescriptor),
+        unittest.makeSuite(TestContextAware),
         ))
 
 

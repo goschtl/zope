@@ -16,7 +16,7 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.20 2003/06/07 13:00:01 stevea Exp $
+$Id: __init__.py,v 1.21 2003/06/07 19:05:20 stevea Exp $
 """
 from __future__ import generators
 
@@ -98,3 +98,53 @@ class ContextSuper:
         inst = self.__inst
         return getattr(super(self.__class, getbaseobject(inst)), name
                        ).__get__(inst)
+
+class ContextAwareDescriptor(ContextDescriptor):
+    # TODO For speed, reimplement this in C
+
+    def __init__(self, descriptor):
+        self.descriptor = descriptor
+
+    def __get__(self, inst, cls=None):
+        return self.descriptor.__get__(inst, cls)
+
+    def getdoc(self):
+        return self.descriptor.__doc__
+
+    __doc__ = property(getdoc)
+
+class ContextAwareDataDescriptor(ContextAwareDescriptor):
+
+    def __set__(self, inst, value):
+        self.descriptor.__set__(inst, value)
+
+    def __delete__(self, inst):
+        self.descriptor.__delete__(inst)
+
+
+class ContextAwareMetaClass(type):
+
+    def __init__(self, name, bases, namespace):
+        # stub
+        super(ContextAwareMetaClass, self).__init__(name, bases, namespace)
+
+
+class ContextAware:
+    __metaclass__ = ContextAwareMetaClass
+
+
+def init_method(self, name, bases, namespace):
+    if ContextAware in bases:
+        for name, obj in namespace.items():
+            if not isinstance(obj, ContextDescriptor):
+                if getattr(obj, '__set__', None) is not None:
+                    d = ContextAwareDataDescriptor(obj)
+                    setattr(self, name, d)
+                    namespace[name] = d
+                elif getattr(obj, '__get__', None) is not None:
+                    m = ContextAwareDescriptor(obj)
+                    setattr(self, name, m)
+                    namespace[name] = m
+    super(ContextAwareMetaClass, self).__init__(name, bases, namespace)
+ContextAwareMetaClass.__init__ = init_method
+del init_method
