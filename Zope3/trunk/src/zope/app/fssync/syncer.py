@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.11 2003/05/11 00:16:05 gvanrossum Exp $
+$Id: syncer.py,v 1.12 2003/05/13 18:53:46 gvanrossum Exp $
 """
 
 import os
@@ -50,7 +50,7 @@ def loadFile(path):
 def dumpFile(obj, path):
     writeFile(dumps(obj), path)
 
-def toFS(ob, name, location, writeOriginals=True):
+def toFS(ob, name, location, writeOriginals=False):
     """Check an object out to the file system
 
     ob -- The object to be checked out
@@ -59,7 +59,7 @@ def toFS(ob, name, location, writeOriginals=True):
 
     location -- The directory on the file system where the object will go
 
-    writeOriginals -- If True (the default), write 'Original' directory.
+    writeOriginals -- If True, write 'Original' directory.  Default False.
     """
 
     # Get name path and check that name is not an absolute path
@@ -306,6 +306,9 @@ def fromFS(container, name, location):
             raise SynchronizationError("Object is directory, but data is file")
 
         dir_entries_path = os.path.join(path, '@@Zope', 'Entries.xml')
-        dir_entries = loadFile(dir_entries_path)
+        if os.path.exists(dir_entries_path):
+            dir_entries = loadFile(dir_entries_path)
+        else:
+            dir_entries = {}
         for cname in dir_entries:
             fromFS(ob, cname, path)
