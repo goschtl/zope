@@ -46,7 +46,7 @@ class PrincipalAnnotationService(Persistent):
     # implementation of IPrincipalAnnotationService
 
     def getAnnotation(self, principalId):
-        """Return object implementing IAnnotations for the givin principal.
+        """Return object implementing IAnnotations for the given principal.
 
         If there is no IAnnotations it will be created and then returned.
         """
