@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.13 2003/06/05 18:51:07 gvanrossum Exp $
+$Id: test_committer.py,v 1.14 2003/06/05 18:58:46 gvanrossum Exp $
 """
 
 import os
@@ -197,12 +197,14 @@ class TestCommitterModule(TestBase):
                           container, "Foo", 42)
 
     def test_create_object_factory_file(self):
+        provideSynchronizer(dict, DictAdapter)
         container = {}
-        entry = {"flag": "added", "factory": "__builtin__.int"}
+        entry = {"flag": "added", "factory": "__builtin__.dict"}
         tfn = os.path.join(self.tempdir(), "foo")
-        self.writefile(dumps(0), tfn)
+        data = {"hello": "world"}
+        self.writefile(dumps(data), tfn)
         committer.create_object(container, "foo", entry, tfn)
-        self.assertEqual(container, {"foo": 0})
+        self.assertEqual(container, {"foo": data})
 
     def test_create_object_factory_directory(self):
         provideSynchronizer(PretendContainer, DirectoryAdapter)
