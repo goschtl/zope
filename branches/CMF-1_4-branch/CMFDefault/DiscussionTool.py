@@ -18,6 +18,7 @@ $Id$
 from Globals import InitializeClass, DTMLFile
 from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import SimpleItem
+from Acquisition import aq_base
 
 from Products.CMFCore.utils import UniqueObject, getToolByName
 from Products.CMFCore.CMFCorePermissions import ManagePortal
@@ -97,11 +98,11 @@ class DiscussionTool( UniqueObject, SimpleItem, ActionProviderBase ):
         if not self.isDiscussionAllowedFor( content ):
             raise DiscussionNotAllowed
 
-        talkback = getattr( content, 'talkback', None )
+        talkback = getattr( aq_base(content), 'talkback', None )
         if not talkback:
-            talkback = self._createDiscussionFor( content )
+            talkback = self._createDiscussionFor(content)
 
-        return talkback
+        return content.talkback # Return wrapped talkback
 
     security.declarePublic( 'isDiscussionAllowedFor' )
     def isDiscussionAllowedFor( self, content ):
