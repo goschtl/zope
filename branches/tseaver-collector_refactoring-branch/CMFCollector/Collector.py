@@ -353,6 +353,38 @@ class Collector(SkinnedFolder):
         got.sort()
         return got
 
+    security.declareProtected(CMFCorePermissions.View, 'listTopics')
+    def listTopics(self):
+        """
+            Return the list of values which can be assigned as an issue's
+            'topic'.
+        """
+        return self.topics
+
+    security.declareProtected(CMFCorePermissions.View, 'listClassifications')
+    def listClassifications(self):
+        """
+            Return the list of values which can be assigned as an issue's
+            'classification'.
+        """
+        return self.classifications
+
+    security.declareProtected(CMFCorePermissions.View, 'listImportances')
+    def listImportances(self):
+        """
+            Return the list of values which can be assigned as an issue's
+            'importance'.
+        """
+        return self.importances
+
+    security.declareProtected(CMFCorePermissions.View, 'listSupporters')
+    def listSupporters(self):
+        """
+            Return the list of users who are assigned as supporters to
+            this collector.
+        """
+        return self.supporters
+
     security.declareProtected(CMFCorePermissions.View, 'Subject')
     def Subject(self):
         return self.topics
