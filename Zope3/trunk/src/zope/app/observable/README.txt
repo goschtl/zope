@@ -7,7 +7,7 @@ implements the proposal found at
 http://dev.zope.org/Zope3/InstanceAndTypeBasedSubscriptions .
 
 The package provides an event channel for dispatching events to the
-appropriate instance as well as an adapter from IAnnotatable to
+appropriate instance as well as an adapter from `IAnnotatable` to
 `IObservable`.  This is important because an object must support
 `IAnnotatable` (and therefore `IAnnotations`) in order to support
 instance-based subscriptions.
