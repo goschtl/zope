@@ -41,6 +41,9 @@ the directive.  There are four kinds of directives:
   are typically functions that take a context and zero or more
   keyword arguments and return a sequence of configuration actions.
 
+  To learn how to create simple directives, see tests/test_simple.py.
+
+
 - Grouping directives collect information to be used by nested
   directives. They are called with a context object which they adapt
   to some interface that extends IConfigurationContext.
@@ -54,9 +57,15 @@ the directive.  There are four kinds of directives:
   subdirectives. These objects also have __call__ methods that are
   called when processing of subdirectives is finished.
 
+  Complex directives only exist to support old directive
+  handlers. They will probably be deprecated in the future.
+
 - Subdirectives are nested in complex directives. They are like
   simple directives except that they hane handlers that are complex
   directive methods.
+
+  Subdirectives, like complex directives only exist to support old
+  directive handlers. They will probably be deprecated in the future.
 
 Directives are defined for an interface, which is
 IConfigurationContext by default.
