@@ -28,9 +28,10 @@ from zope.exceptions._duplicate import DuplicationError, IDuplicationError
 try:
     import zope.security
 except ImportError, v:
-    if not str(v).endswith(' zope.security'):
+    # "ImportError: No module named security"
+    if not str(v).endswith(' security'):
         raise
-else:    
+else:
     from zope.security.interfaces import IUnauthorized, Unauthorized
     from zope.security.interfaces import IForbidden, IForbiddenAttribute
     from zope.security.interfaces import Forbidden, ForbiddenAttribute
