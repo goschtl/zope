@@ -13,12 +13,11 @@
 ##############################################################################
 """Service manager interfaces
 
-$Id: xmlobject.py,v 1.13 2004/02/19 14:33:48 philikon Exp $
+$Id: xmlobject.py,v 1.14 2004/02/20 09:16:43 philikon Exp $
 """
 
 from zope.publisher.browser import BrowserView
 from zope.app import zapi
-from zope.app.interfaces.services.service import ISite
 from zope.app.interfaces.container import IReadContainer
 from zope.app.traversing import getParents, getParent, traverse
 from zope.interface import Interface
@@ -61,9 +60,8 @@ class ReadContainerXmlObjectView(BrowserView):
 
         keys = list(container.keys())
 
-        if ISite.isImplementedBy(container):
-            # include the service manager
-            keys.append('++etc++site')
+        # include the service manager
+        keys.append('++etc++site')
 
         for name in keys:
 
@@ -114,9 +112,8 @@ class ReadContainerXmlObjectView(BrowserView):
             else:
                 keys = []
 
-            if ISite.isImplementedBy(item):
-                # include the service manager
-                keys.append('++etc++site')
+            # include the service manager
+            keys.append('++etc++site')
 
             for name in keys:
                 # Only include items we can traverse to
