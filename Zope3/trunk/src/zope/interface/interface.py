@@ -14,7 +14,7 @@
 """Interface object implementation
 
 Revision information:
-$Id: interface.py,v 1.13 2003/10/03 20:36:30 sidnei Exp $
+$Id: interface.py,v 1.14 2003/11/21 07:49:11 philikon Exp $
 """
 
 import sys
@@ -28,7 +28,7 @@ class Element(object):
     # We can't say this yet because we don't have enough
     # infrastructure in place.
     #
-    #__implements__ = IElement
+    #implements(IElement)
 
     def __init__(self, __name__, __doc__=''):
         """Create an 'attribute' description
@@ -68,7 +68,7 @@ class InterfaceClass(Element):
     # We can't say this yet because we don't have enough
     # infrastructure in place.
     #
-    #__implements__ = IInterface
+    #implements(IInterface)
 
     def __init__(self, name, bases=(), attrs=None, __doc__=None,
                  __module__=None):
