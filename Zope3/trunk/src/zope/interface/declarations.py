@@ -24,7 +24,7 @@ There are three flavors of declarations:
     provided by objects.
     
 
-$Id: declarations.py,v 1.21 2004/04/05 19:43:59 jim Exp $
+$Id: declarations.py,v 1.22 2004/04/30 17:37:10 itamar Exp $
 """
 
 import sys
@@ -822,7 +822,12 @@ def directlyProvides(object, *interfaces):
     if cls is None:
         cls = type(object)
 
-    if issubclass(cls, DescriptorAwareMetaClasses):
+    issub = False
+    for damc in DescriptorAwareMetaClasses:
+        if issubclass(cls, damc):
+            issub = True
+            break
+    if issub:
         # we have a class or type.  We'll use a special descriptor
         # that provides some extra caching
         object.__provides__ = ClassProvides(object, cls, *interfaces)

@@ -15,9 +15,8 @@
 
 This implementationb is based on a notion of "surrogate" interfaces.
 
-$Id: adapter.py,v 1.18 2004/04/30 16:45:33 jim Exp $
+$Id: adapter.py,v 1.19 2004/04/30 17:37:10 itamar Exp $
 """
-
 
 # Implementation notes
 
@@ -80,6 +79,7 @@ $Id: adapter.py,v 1.18 2004/04/30 16:45:33 jim Exp $
 # {('s', specification, order) -> {with -> tuple([object])}}
 
 
+from __future__ import generators
 
 import weakref
 from zope.interface.ro import ro
@@ -88,6 +88,21 @@ from zope.interface.interface import InterfaceClass, Interface
 
 Default = InterfaceClass("Default", (), {})
 Null = InterfaceClass("Null", (), {})
+
+# 2.2 backwards compatability
+try:
+    enumerate
+except NameError:
+    def enumerate(l):
+        i = 0
+        for o in l:
+            yield i, o
+            i += 1
+try:
+    basestring
+except NameError:
+    basestring = (str, unicode)
+
 
 class ReadProperty(object):
 

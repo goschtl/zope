@@ -13,8 +13,11 @@
 ##############################################################################
 """Interface object implementation
 
-$Id: interface.py,v 1.24 2004/03/08 17:26:56 jim Exp $
+$Id: interface.py,v 1.25 2004/04/30 17:37:10 itamar Exp $
 """
+
+from __future__ import generators
+
 import sys
 import warnings
 import weakref
@@ -397,8 +400,12 @@ class InterfaceClass(Element, Specification):
             __doc__ = ''
 
         Element.__init__(self, name, __doc__)
-        
-        tagged_data = attrs.pop(TAGGED_DATA, None)
+
+        if attrs.has_key(TAGGED_DATA):
+            tagged_data = attrs[TAGGED_DATA]
+            del attrs[TAGGED_DATA]
+        else:
+            tagged_data = None
         if tagged_data is not None:
             for key, val in tagged_data.items():
                 self.setTaggedValue(key, val)
