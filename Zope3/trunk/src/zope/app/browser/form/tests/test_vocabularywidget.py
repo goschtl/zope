@@ -28,10 +28,9 @@ from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
 
 from zope.schema.interfaces import IVocabulary, IVocabularyQuery
-from zope.schema.interfaces import IVocabularyField, IVocabularyMultiField
-from zope.schema.interfaces import IVocabularyListField
+from zope.schema.interfaces import IVocabularyField, IVocabularyListField
 from zope.schema.interfaces import IIterableVocabularyQuery
-from zope.schema.interfaces import IVocabularyTokenized, ITokenizedTerm
+from zope.schema.interfaces import IVocabularyTokenized
 from zope.schema import vocabulary
 
 
@@ -190,19 +189,19 @@ class MultiSelectionViews:
         # This is equivalent to the default configuration for
         # vocabulary field view registration from configure.zcml.
         # Multi-selection views only.
-        provideView(IVocabularyMultiField,
+        provideView(IVocabularyListField,
                     "display",
                     IBrowserPresentation,
-                    vocabularywidget.VocabularyMultiFieldDisplayWidget)
+                    vocabularywidget.VocabularyListFieldDisplayWidget)
         provideView(IVocabularyListField,
                     "edit",
                     IBrowserPresentation,
                     vocabularywidget.VocabularyListFieldEditWidget)
         # Bind widgets to the vocabulary fields:
         provideView(IVocabularyTokenized,
-                    "field-display-multi-widget",
+                    "field-display-list-widget",
                     IBrowserPresentation,
-                    vocabularywidget.VocabularyMultiDisplayWidget)
+                    vocabularywidget.VocabularyListDisplayWidget)
         provideView(IVocabularyTokenized,
                     "field-edit-list-widget",
                     IBrowserPresentation,
@@ -215,7 +214,7 @@ class MultiSelectionViews:
         # sample vocabulary we're using, used to demonstrate how to
         # override widget selection based on vocabulary:
         provideView(ISampleVocabulary,
-                    "field-display-multi-widget",
+                    "field-display-list-widget",
                     IBrowserPresentation,
                     SampleDisplayWidget)
 

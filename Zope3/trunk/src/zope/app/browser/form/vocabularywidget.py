@@ -41,19 +41,27 @@ def VocabularyFieldDisplayWidget(field, request):
     """Return a display widget based on a vocabulary field."""
     return _get_vocabulary_widget(field, request, "display")
 
-def VocabularyMultiFieldDisplayWidget(field, request):
+def VocabularyBagFieldDisplayWidget(field, request):
     """Return a display widget based on a vocabulary field."""
-    return _get_vocabulary_widget(field, request, "display-multi")
+    return _get_vocabulary_widget(field, request, "display-bag")
+
+def VocabularyListFieldDisplayWidget(field, request):
+    """Return a display widget based on a vocabulary field."""
+    return _get_vocabulary_widget(field, request, "display-list")
+
+def VocabularySetFieldDisplayWidget(field, request):
+    """Return a display widget based on a vocabulary field."""
+    return _get_vocabulary_widget(field, request, "display-set")
+
+def VocabularyUniqueListFieldDisplayWidget(field, request):
+    """Return a display widget based on a vocabulary field."""
+    return _get_vocabulary_widget(field, request, "display-unique-list")
 
 # Edit
 
 def VocabularyFieldEditWidget(field, request):
     """Return a value-selection widget based on a vocabulary field."""
     return _get_vocabulary_edit_widget(field, request)
-
-def VocabularyMultiFieldEditWidget(field, request):
-    """Return a value-selection widget based on a vocabulary field."""
-    return _get_vocabulary_edit_widget(field, request, "multi")
 
 def VocabularyBagFieldEditWidget(field, request):
     """Return a value-selection widget based on a vocabulary field."""
@@ -101,9 +109,16 @@ class IterableVocabularyQuery(object):
         self.vocabulary = vocabulary
 
 
+class TranslationHook:
+
+    def translate(self, msgid):
+        # XXX This is where we should be calling on the translation service
+        return msgid.default
+
+
 # Widget implementation:
 
-class ViewSupport(object):
+class ViewSupport(object, TranslationHook):
     """Helper class for vocabulary and vocabulary-query widgets."""
 
     def textForValue(self, term):
@@ -261,8 +276,11 @@ class VocabularyDisplayWidget(SingleDataHelper, VocabularyWidgetBase):
     """Simple single-selection display that can be used in many cases."""
 
     def render(self, value):
-        term = self.context.vocabulary.getTerm(value)
-        return self.textForValue(term)
+        if value is None:
+            return "(no value)"
+        else:
+            term = self.context.vocabulary.getTerm(value)
+            return self.textForValue(term)
 
 
 class VocabularyMultiDisplayWidget(MultiDataHelper, VocabularyWidgetBase):
@@ -307,7 +325,25 @@ class VocabularyMultiDisplayWidget(MultiDataHelper, VocabularyWidgetBase):
         return L
 
 
-class ActionHelper(object):
+class VocabularyListDisplayWidget(VocabularyMultiDisplayWidget):
+    """Display widget for ordered multi-selection fields.
+
+    This can be used for both VocabularyListField and
+    VocabularyUniqueListField fields.
+    """
+    tag = 'ol'
+
+
+class VocabularyBagDisplayWidget(VocabularyMultiDisplayWidget):
+    """Display widget for unordered multi-selection fields.
+
+    This can be used for both VocabularyBagField and
+    VocabularySetField fields.
+    """
+    tag = 'ul'
+
+
+class ActionHelper(object, TranslationHook):
     __actions = None
 
     def addAction(self, action, msgid):
@@ -331,10 +367,6 @@ class ActionHelper(object):
         return ("<input type='submit' name='%s.action-%s' value=%s %s/>"
                 % (self.name, action, quoteattr(self.translate(msgid)),
                    disabled and "disabled " or ""))
-
-    def translate(self, msgid):
-        # XXX This is where we should be calling on the translation service
-        return msgid.default
 
 
 class VocabularyEditWidgetBase(VocabularyWidgetBase):
@@ -557,7 +589,7 @@ ADD_DONE = "adddone"
 ADD_MORE = "addmore"
 MORE = "more"
 
-def _message(msgid, default):
+def message(msgid, default):
     msgid.default = default
     return msgid
 
@@ -574,16 +606,16 @@ class IterableVocabularyQueryViewBase(VocabularyQueryViewBase):
 
     queryResultBatchSize = 8
 
-    _msg_add_done   = _message(_("vocabulary-query-button-add-done"),
-                               "Add")
-    _msg_add_more   = _message(_("vocabulary-query-button-add-more"),
-                               "Add+More")
-    _msg_more       = _message(_("vocabulary-query-button-more"),
-                               "More")
-    _msg_no_results = _message(_("vocabulary-query-message-no-results"),
-                               "No Results")
-    _msg_results_header = _message(_("vocabulary-query-header-results"),
-                                  "Search results")
+    _msg_add_done   = message(_("vocabulary-query-button-add-done"),
+                              "Add")
+    _msg_add_more   = message(_("vocabulary-query-button-add-more"),
+                              "Add+More")
+    _msg_more       = message(_("vocabulary-query-button-more"),
+                              "More")
+    _msg_no_results = message(_("vocabulary-query-message-no-results"),
+                              "No Results")
+    _msg_results_header = message(_("vocabulary-query-header-results"),
+                                 "Search results")
 
     def setName(self, name):
         VocabularyQueryViewBase.setName(self, name)

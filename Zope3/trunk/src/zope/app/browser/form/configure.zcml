@@ -131,7 +131,7 @@
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyBagField"
       name="display"
-      factory=".vocabularywidget.VocabularyMultiFieldDisplayWidget"
+      factory=".vocabularywidget.VocabularyBagFieldDisplayWidget"
       />
 
   <view
@@ -150,7 +150,7 @@
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyListField"
       name="display"
-      factory=".vocabularywidget.VocabularyMultiFieldDisplayWidget"
+      factory=".vocabularywidget.VocabularyListFieldDisplayWidget"
       />
 
   <view
@@ -169,7 +169,7 @@
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularySetField"
       name="display"
-      factory=".vocabularywidget.VocabularyMultiFieldDisplayWidget"
+      factory=".vocabularywidget.VocabularySetFieldDisplayWidget"
       />
 
   <view
@@ -188,7 +188,7 @@
       allowed_interface="zope.app.interfaces.browser.form.IBrowserWidget"
       for="zope.schema.vocabulary.IVocabularyUniqueListField"
       name="display"
-      factory=".vocabularywidget.VocabularyMultiFieldDisplayWidget"
+      factory=".vocabularywidget.VocabularyUniqueListFieldDisplayWidget"
       />
 
   <view
