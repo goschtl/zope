@@ -95,15 +95,15 @@ class DirectoryInformation:
         return types
 
     if Globals.DevelopmentMode and os.name=='nt':
-        
+
         def _changed(self):
             mtime=0
             filelist=[]
             try:
                 fp = expandpath(self.filepath)
                 mtime = stat(fp)[8]
-                # Windows directories don't change mtime when a file
-                # in them changes :-(
+                # some Windows directories don't change mtime 
+                # when a file in them changes :-(
                 # So keep a list of files as well, and see if that
                 # changes
                 path.walk(fp,_walker,filelist)
@@ -119,8 +119,9 @@ class DirectoryInformation:
             if mtime != self._v_last_read or filelist != self._v_last_filelist:
                 self._v_last_read = mtime
                 self._v_last_filelist = filelist
+                
                 return 1
-            
+
             return 0
         
     elif Globals.DevelopmentMode:
@@ -134,7 +135,7 @@ class DirectoryInformation:
             return 0
         
     else:
-        
+
         def _changed(self):
             return 0
         
@@ -143,7 +144,7 @@ class DirectoryInformation:
         if self.data is None or changed:
             try:
                 self.data, self.objects = self.prepareContents(registry,
-                    register_subdirs=fish)
+                    register_subdirs=changed)
             except:
                 LOG('DirectoryView',
                     ERROR,
@@ -207,6 +208,7 @@ class DirectoryInformation:
                     t = registry.getTypeByMetaType(mt)
                 if t is None:
                     t = registry.getTypeByExtension(ext)
+                
                 if t is not None:
                     try:
                         ob = t(name, e_filepath, fullname=entry)

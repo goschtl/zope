@@ -58,33 +58,22 @@ class DirectoryViewTests2( TestCase ):
         """ Check if DirectoryView method works """
         assert self.ob.fake_skin.test1()=='test1'
 
-import Globals
-import Products.CMFCore.DirectoryView
-
 test1path = join(skin_path_name,'test1.py')
 test2path = join(skin_path_name,'test2.py')
 test3path = join(skin_path_name,'test3')
 
+if DevelopmentMode:
 
-class DebugModeTests( TestCase ):
+  class DebugModeTests( TestCase ):
 
     def setUp( self ):
         get_transaction().begin()
         
-        # put us in debug mode, preserve the DirectoryRegistry
-        Globals.DevelopmentMode=1
-        _dirreg = Products.CMFCore.DirectoryView._dirreg
-        reload(Products.CMFCore.DirectoryView)
-        Products.CMFCore.DirectoryView._dirreg = _dirreg
-        
-
         # initialise skins
-        Products.CMFCore.DirectoryView.registerDirectory('fake_skins', globals())
+        registerDirectory('fake_skins', globals())
         ob = self.ob = Dummy()
-        Products.CMFCore.DirectoryView.addDirectoryViews(ob, 'fake_skins', globals())
+        addDirectoryViews(ob, 'fake_skins', globals())
 
-        print "in test"
-        
         # add a method to the fake skin folder
         f = open(test2path,'w')
         f.write("return 'test2'")
@@ -99,7 +88,6 @@ class DebugModeTests( TestCase ):
         # add a new folder
         mkdir(test3path)
         
-
     def tearDown( self ):
         
         # undo FS changes
@@ -117,12 +105,6 @@ class DebugModeTests( TestCase ):
             # it might be gone already
             pass
         
-        # take us out of debug mode, preserve the DirectoryRegistry
-        Globals.DevelopmentMode=None
-        _dirreg = Products.CMFCore.DirectoryView._dirreg
-        reload(Products.CMFCore.DirectoryView)
-        Products.CMFCore.DirectoryView._dirreg = _dirreg
-
         get_transaction().abort()
 
     def test_AddNewMethod( self ):
@@ -168,6 +150,11 @@ class DebugModeTests( TestCase ):
             pass
         else:
             self.fail('test3 still exists')
+
+else:
+
+    class DebugModeTests( TestCase ):
+        pass
 
 def test_suite():
     return TestSuite((
