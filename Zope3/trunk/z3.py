@@ -3,18 +3,18 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Start script for Zope3: loads configuration and starts the server.
 
-$Id: z3.py,v 1.12 2002/12/25 14:12:09 jim Exp $
+$Id: z3.py,v 1.13 2002/12/25 19:28:50 tim_one Exp $
 """
 
 import os, sys
@@ -49,7 +49,7 @@ def run(argv=sys.argv):
 
     # temp hack
     dir = os.getcwd()
-    
+
     # Copy products.zcml.in, if necessary
     if (not os.path.exists('products.zcml')
         and os.path.exists('products.zcml.in')
@@ -59,13 +59,13 @@ def run(argv=sys.argv):
     # Do global software config
     from zope.app import config
     config('site.zcml')
-    
+
     # Load server config
     if (not os.path.exists('zserver.zcml')
         and os.path.exists('zserver.zcml.in')
         ):
         open('zserver.zcml', 'w').write(open('zserver.zcml.in').read())
-        
+
     from zope.configuration.xmlconfig import XMLConfig
     XMLConfig(os.path.join(dir, 'zserver.zcml'))()
 

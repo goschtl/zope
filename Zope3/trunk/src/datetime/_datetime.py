@@ -1758,7 +1758,7 @@ def _isoweek1monday(year):
 # implementation had to get much trickier, and the code following emulates
 # what the C code had to do, so that pickles produced by the Python
 # implementation can be read by the C implementation, and vice versa.
- 
+
 def _date_pickler(date):
     state = date.__getstate__()
     return _date_unpickler, (state,)
