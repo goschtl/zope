@@ -43,6 +43,7 @@ from zope.app.registration.registration import \
     ComponentRegistrationAddSubscriber, \
     RegisterableMoveSubscriber
 from zope.app.registration.registration import Registered
+from zope.app.registration.registration import RegisterableCopier
 from zope.app.traversing.interfaces import IPhysicallyLocatable
 import zope.interface
 from zope.app.annotation.interfaces import IAnnotations
@@ -212,18 +213,18 @@ class TestComponentRegistrationEvents:
 class TestRegisterableEvents:
     """Tests handling of registered component rename.
 
-    >>> PlacefulSetup().setUp()
+    >>> sm = PlacefulSetup().setUp(site=True)
 
-    We'll first add a registerable component to the root folder:
+    We'll first add a registerable component to the default site management
+    folder:
 
-        >>> rootFolder = PlacefulSetup().rootFolder
         >>> component = DummyRegisterable()
-        >>> rootFolder['foo'] = component
+        >>> sm['default']['foo'] = component
 
     and create a registration for it:
 
         >>> reg = ComponentRegistration("foo")
-        >>> rootFolder['reg'] = reg
+        >>> sm['default']['reg'] = reg
         >>> ztapi.provideAdapter(IRegisterable, IRegistered, Registered)
         >>> IRegistered(component).addUsage('reg')
 
@@ -237,9 +238,9 @@ class TestRegisterableEvents:
     (i.e. oldParent is the same as newParent):
 
         >>> event = ObjectMovedEvent(component,
-        ...     oldParent=rootFolder,
+        ...     oldParent=sm['default'],
         ...     oldName='foo',
-        ...     newParent=rootFolder,
+        ...     newParent=sm['default'],
         ...     newName='bar')
         >>> RegisterableMoveSubscriber(component, event)
 
@@ -252,13 +253,57 @@ class TestRegisterableEvents:
     oldParent is different from newParent):
 
         >>> event = ObjectMovedEvent(component,
-        ...     oldParent=rootFolder,
+        ...     oldParent=sm['default'],
         ...     oldName='foo',
         ...     newParent=object(),
         ...     newName='foo')
         >>> RegisterableMoveSubscriber(component, event)
         Traceback (most recent call last):
         DependencyError: Can't move a registered component from its container.
+
+    >>> PlacefulSetup().tearDown()
+    """
+
+class TestRegisterableCopier:
+    """Tests the copier for registerable components.
+
+    >>> sm = PlacefulSetup().setUp(site=True)
+
+    Registered components have annotation noting which registrations are
+    currently using the component. Copied components should not be noted
+    as used.
+
+    RegisterableCopier is used instead of the default object copier to
+    ensure that such usages are removed from the copied component.
+
+    To illustrate, we'll setup a component in the default site management
+    folder:
+
+        >>> component = DummyRegisterable()
+        >>> sm['default']['foo'] = component
+
+    and create a registration for it:
+
+        >>> reg = ComponentRegistration("foo")
+        >>> sm['default']['reg'] = reg
+        >>> ztapi.provideAdapter(IRegisterable, IRegistered, Registered)
+        >>> IRegistered(component).addUsage('/++etc++site/default/reg')
+
+    Note the current usages for the component:
+
+        >>> IRegistered(component).usages()
+        (u'/++etc++site/default/reg',)
+
+    Using RegisterableCopier, we can make a copy of the component:
+
+        >>> copier = RegisterableCopier(component)
+        >>> copier.copyTo(sm['default'], 'bar')
+
+    The copied component is not used:
+
+        >>> copy = sm['default']['bar']
+        >>> IRegistered(copy).usages()
+        ()
 
     >>> PlacefulSetup().tearDown()
     """
