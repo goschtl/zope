@@ -1,4 +1,3 @@
-^cvsetc /cvs-repository/CVSROOT/precommit_actions
+^cvsetc echo CVSROOT: ${CVSROOT},
 
 ALL	echo .
-DEFAULT echo CVSROOT: ${CVSROOT}
