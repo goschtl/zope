@@ -13,11 +13,12 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.8 2003/03/23 22:35:42 jim Exp $
+$Id: test_cachingservice.py,v 1.9 2003/06/03 14:48:57 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface.verify import verifyObject
+from zope.interface import implements
 from zope.app.interfaces.cache.cache import ICache
 from zope.app.interfaces.cache.cache import ICachingService
 from zope.app.services.cache import CacheConfiguration
@@ -26,15 +27,13 @@ from zope.app.services.tests.eventsetup import EventSetup
 from zope.app.services.service import ServiceConfiguration
 from zope.app.traversing import getPath, traverse
 
-
 def sort(list):
     list.sort()
     return list
 
-
 class CacheStub:
 
-    __implements__ = ICache
+    implements(ICache)
 
     def __init__(self, name):
         self.name = name
@@ -64,12 +63,13 @@ class CachingServiceSetup(EventSetup):
         path = getPath(service)
         configuration = ServiceConfiguration("Caching", path)
         configure = default.getConfigurationManager()
-        key = configure.setObject(None, configuration)
+        key = configure.setObject('', configuration)
         traverse(configure, key).status = Active
 
         return service
 
-    def addCache(self, name, cache=None, cname=None, status=Active, folder=''):
+    def addCache(self, name, cache=None, cname=None, status=Active,
+                 folder=''):
         if not cache:
             cache = CacheStub("%s/%s" % (folder, name))
         if not cname:
@@ -79,8 +79,8 @@ class CachingServiceSetup(EventSetup):
         key = default.setObject(cname, cache)
         cache = traverse(default, key)
         configure = default.getConfigurationManager()
-        key = configure.setObject(None, CacheConfiguration(name,
-                                                           getPath(cache)))
+        key = configure.setObject('',
+                                  CacheConfiguration(name, getPath(cache)))
         traverse(configure, key).status = status
         return cache
 
