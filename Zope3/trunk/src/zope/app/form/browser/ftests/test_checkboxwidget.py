@@ -94,7 +94,6 @@ class Test(BrowserTestCase):
 
         # check new values in object
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.b1, False)
         self.assertEqual(object.b2, True)
 
@@ -116,7 +115,6 @@ class Test(BrowserTestCase):
 
         # values other than 'on' should be treated as False
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assertEqual(object.b1, False)
         self.assertEqual(object.b2, False)
 
@@ -141,7 +139,6 @@ class Test(BrowserTestCase):
 
         # confirm b1 is not missing
         object = traverse(self.getRootFolder(), 'test')
-        object._p_jar.sync()
         self.assert_(object.b1 != Bool.missing_value)
 
 
