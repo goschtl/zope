@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_schemautility.py,v 1.6 2003/11/12 18:46:34 sidnei Exp $
+$Id: test_schemautility.py,v 1.7 2003/12/12 22:24:03 sidnei Exp $
 """
 
 from unittest import TestCase, makeSuite, TestSuite
@@ -194,5 +194,6 @@ class SchemaUtilityTests(TestCase):
 
 def test_suite():
     return TestSuite(
-        (makeSuite(SchemaUtilityTests),
+        (
+        makeSuite(SchemaUtilityTests),
          ))

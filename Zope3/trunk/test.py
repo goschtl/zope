@@ -342,7 +342,7 @@ class ImmediateTestRunner(unittest.TextTestRunner):
             args = (self, test)
             r = prof.runcall(unittest.TextTestRunner.run, *args)
             prof.close()
-            stats = hotshot.stats.load("testrun.prof")
+            stats = hotshot.stats.load("tests_profile.prof")
             stats.sort_stats('cumulative', 'calls')
             stats.print_stats(50)
             return r
