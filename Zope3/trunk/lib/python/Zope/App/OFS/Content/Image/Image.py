@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: Image.py,v 1.3 2002/07/19 13:12:32 srichter Exp $
+$Id: Image.py,v 1.4 2002/07/24 23:15:30 jeremy Exp $
 """
 import struct
 
@@ -20,7 +20,7 @@ from Zope.App.OFS.Content.File.File import File
 from Zope.App.OFS.Content.File.IFile import IFile
 from Zope.App.OFS.Content.File.SFile import SFile
 from Zope.App.OFS.Annotation.IAnnotatable import IAnnotatable
-from StringIO import StringIO
+from cStringIO import StringIO
 
 
 class IImage(IFile):
