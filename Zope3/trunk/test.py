@@ -2,14 +2,14 @@
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
-# 
+#
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
 # THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
 # WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
-# 
+#
 ##############################################################################
 """Run the test suite.
 
@@ -168,7 +168,7 @@ class ImmediateTestResult(unittest._TextTestResult):
         if gc.garbage:
             print test
             print gc.garbage
-        
+
     def _print_traceback(self, msg, err, test, errlist):
         if self.showAll or self.dots:
             self.stream.writeln("\n")
@@ -461,7 +461,7 @@ def main(module_filter, test_filter):
 def process_args(argv=None):
     if argv is None:
         argv = sys.argv
-        
+
     import getopt
     global module_filter
     global test_filter
@@ -620,9 +620,9 @@ def debug(args=""):
 
       import pdb
       pdb.pm()
-    """    
+    """
     process_args(["", "-d"] + args.split())
-    
+
 
 if __name__ == "__main__":
     process_args()
