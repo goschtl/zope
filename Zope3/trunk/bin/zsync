@@ -1,0 +1,16 @@
+#! /usr/bin/env python2.2
+
+"""Command line script to drive the fssync client."""
+
+import os
+import sys
+
+here = os.path.realpath(os.path.dirname(sys.argv[0]))
+srcdir = os.path.join(os.path.dirname(here), "src")
+
+if srcdir not in sys.path:
+    sys.path.insert(0, srcdir)
+
+from zope.fssync.main import main
+
+sys.exit(main())

@@ -99,7 +99,7 @@ PLATFORM NOTES
 TO DO
 -----
 
-- Visible command line tool ("zsync"?) with better documentation
+- Documentation for the zsync command line tool
 
 - Explicit import/export facilities, similar to the functionality
   found in Zope 2
@@ -115,7 +115,7 @@ TO DO
 - Implement bundle commands.
 
   * Need a way to turn site-management folders into bundles, and
-    vice-versa; could be from command-line/fssync or more directly
+    vice-versa; could be from command-line/zsync or more directly
     through the ZMI.
 
   * Once something is "marked" as a bundle, it should be read-only.
@@ -150,11 +150,12 @@ TO DO
 
 - Code maintenance:
 
-  * Unit tests for the fssync utility.
+  * Unit tests for the zsync utility.
 
   * Rewrite toFS() to use the Metadata class, and add unit tests.
 
-  * More refactoring and cleanup of the fssync utility.
+  * More refactoring and cleanup of the zsync utility (the
+    zope.fssync.main module)
 
   * Use camelCase for public method names.
 
@@ -177,11 +178,6 @@ Working with bundles
   described in the ThroughTheWebSiteDevelopment Wiki page referenced
   above, but you can do some basic bundle-ish things.  All these need
   is a little better packaging.
-
-- The fssync command.  Below, examples use a command named fssync.
-  This doesn't yet exist.  Best is to have a shell alias that points
-  to the file <Zope3>/src/fssync/main.py, where <Zope3> is the root of
-  the Zope3 tree.
 
 - Permissions.  Everything described here requires the
   zope.ManageServices permission, which usually requires being logged
@@ -207,15 +203,15 @@ Working with bundles
 
 - Creating a bundle from an existing folder.  If you have some
   existing work done in the default folder or another non-bundle
-  folder, you can save your work to the filesystem using the fssync
+  folder, you can save your work to the filesystem using the zsync
   checkout command, and then check it in under a different name using
-  the fssync checkin command.  Example; replace u:p with your manager
+  the zsync checkin command.  Example; replace u:p with your manager
   username and password:
 
-  $ fssync checkout http://u:p@localhost:8080/++etc++site/default
+  $ zsync checkout http://u:p@localhost:8080/++etc++site/default
   <lots of output>
   All done.
-  $ fssync checkin http://u:p@localhost:8080/++etc++site/bundle-1.0 default
+  $ zsync checkin http://u:p@localhost:8080/++etc++site/bundle-1.0 default
   $
 
   Now go back to your web browser and check out the contents of
@@ -225,11 +221,11 @@ Working with bundles
 
 - Exporting a bundle.  First deactivate the bundle by using the
   "Deactivate bundle" button on the Bundle tab (see below).  Then save
-  the bundle to the filesystem using fssync checkout.  Finally tar or
+  the bundle to the filesystem using zsync checkout.  Finally tar or
   zip it up.  Make sure to include the @@Zope directory at the same
   level as the bundle directory in the archive.  Example:
 
-  $ fssync checkout http://u:p@localhost:8080/++etc++site/bundle-1.0
+  $ zsync checkout http://u:p@localhost:8080/++etc++site/bundle-1.0
   <lots of output>
   All done.
   $ tar tf - bundle-1.0 @@Zope | gzip >bundle-1.0.tgz
@@ -238,7 +234,7 @@ Working with bundles
   Now distribute the gzipped tar file via the web.
 
 - Importing a bundle.  First extract the zip or tar file to the
-  filesystem.  Then use fssync checkin command to add it to your Zope
+  filesystem.  Then use zsync checkin command to add it to your Zope
   server.  Warning: the checkin command will happily overwrite an
   existing site management folder!
 
