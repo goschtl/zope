@@ -26,5 +26,5 @@ def protect():
     # add __parent__ and __name__ to always available names
     import zope.security.checker
     for name in ['__name__', '__parent__']:
-        if name not in zope.security.checker._always_available:
-            zope.security.checker._always_available.append(name)
+        if name not in zope.security.checker._available_by_default:
+            zope.security.checker._available_by_default.append(name)

@@ -259,7 +259,7 @@ class ProxyTestCase(unittest.TestCase):
                                          "x=%r; y=%r; expr=%r" % (x, y, expr))
 
     def test_inplace(self):
-        # XXX should test all inplace operators...
+        # TODO: should test all inplace operators...
         P = self.new_proxy
 
         pa = P(1)
