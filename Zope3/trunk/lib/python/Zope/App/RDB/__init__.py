@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2001, 2002 Zope Corporation and Contributors.
+# Copyright (c) 2002 Zope Corporation and Contributors.
 # All Rights Reserved.
 # 
 # This software is subject to the provisions of the Zope Public License,
@@ -11,20 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 # 
 ##############################################################################
+"""XXX short summary goes here.
+
+XXX longer description goes here.
+
+$Id: __init__.py,v 1.1 2002/06/24 16:13:44 srichter Exp $
 """
-
-Revision information:
-$Id: IConnectionService.py,v 1.2 2002/06/24 16:13:44 srichter Exp $
-"""
-from Interface import Interface, Attribute
-
-class IConnectionService(Interface):
-
-    def getConnection(name):
-        """Returns a connection object by name. """
-        
-    def queryConnection(name, default):
-        """return a connection object by name or default"""        
-
-    def getAvailableConnections():
-        """returns the connections known to this connection service"""
