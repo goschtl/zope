@@ -14,16 +14,18 @@
 """
 Test class for use by test modules
 
-$Id: Directives.py,v 1.4 2002/09/22 16:05:18 rdmurray Exp $
+$Id: Directives.py,v 1.5 2002/11/06 22:30:22 rdmurray Exp $
 """
 
 from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
+from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 
 protections=[]
 
 class protectClass:
 
-    __implements__ = INonEmptyDirective
+    __class_implements__ = INonEmptyDirective
+    __implements__ = ISubdirectiveHandler
 
     def __init__(self, _context, name, permission=None, names=None):
         self._name=name
@@ -55,6 +57,7 @@ class protectClass:
         #If you put a protect inside a subsub, that'll set children,
         #so when the parser calls us, __call__ will return ().
         return self
+    subsub.__implements__ = INonEmptyDirective
 
 done = []
 

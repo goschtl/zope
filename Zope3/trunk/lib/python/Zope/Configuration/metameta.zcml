@@ -1,0 +1,78 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<directives namespace="http://namespaces.zope.org/zope">
+
+  <!-- Modify the bootstrap meta configuration directives
+
+  Note that the order we do this is important because we are
+  modifying the handlers we are using to process the text
+  that is triggering the modifications.
+
+  The first section here modifies the "directive" top-level
+  directive, which we aren't using in this file.  The second
+  section modifies the "directives" directive, which is the
+  directive used to trigger the modification.  So the handler
+  doesn't get changed until after it has already been called, and
+  all is well.
+
+  This file is perhaps a little bit too magical, since it depends
+  on the bootstrap registry's recursive data structure for
+  'subdirective' (the thing that allows subdirectives to be
+  defined to any desired nesting level).  But it's really pretty
+  straightforward:  we only need to modify the definition of
+  subdirective once, and that changes it both places it gets
+  used (directives/directive/subdirective and directive/subdirective)
+  and of course all the possible nested calls as well.
+
+  The handler routines called out by the declarations in this
+  file simply ignore the additional information provided by the
+  modified directives, which at the moment is what we want
+  done during normal running of zope.
+
+  XXX: In the current implementation of the bootstrap code, the
+  'attributes' attribute doesn't actually do anything.  I include
+  it anyway in case the bootstrap code gets modified to actually
+  do something with attributes.  This however seems unlikely,
+  since it would make more sense to modify the attribute subdirective
+  we are introducing here.  So after people are comfortable with
+  this meta-meta configuration, we could simplify the bootstrap
+  by doing away with 'attributes' in the bootstrap code and here.
+  -->
+
+  <directive
+      name="directive"
+      attributes="namespace name handler attributes description"
+      handler="Zope.Configuration.metametaConfigure.Directive"
+  >
+    <subdirective
+        name="attribute"
+        attributes="name description required" />
+    <subdirective
+        name="subdirective"
+        attributes="name attributes namespace handler_method description"
+    >
+      <subdirective
+          name="attribute"
+          attributes="name description required" />
+    </subdirective>
+  </directive>
+
+  <directive
+      name="directives"
+      attributes="namespace name handler attributes description"
+      handler="Zope.Configuration.metametaConfigure.DirectiveNamespace"
+    >
+    <subdirective
+        name="directive"
+        attributes="namespace name handler attributes description"
+    >
+      <subdirective
+          name="attribute"
+          attributes="name description required" />
+      <!-- subdirective was already modified above -->
+    </subdirective>
+  </directive>
+     
+</directives>
+
+</zopeConfigure>

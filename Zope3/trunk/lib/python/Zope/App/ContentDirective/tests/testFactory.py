@@ -23,6 +23,7 @@ from Zope.Configuration.xmlconfig import XMLConfig
 from Zope.App.tests.PlacelessSetup import PlacelessSetup
 from Zope.Security.SecurityManagement import newSecurityManager, system_user
 
+import Zope.Configuration
 import Zope.App.Security
 from Zope.App.Security.Exceptions import UndefinedPermissionError
 
@@ -41,6 +42,7 @@ class Test(PlacelessSetup, unittest.TestCase):
     def setUp(self):
         PlacelessSetup.setUp(self)
         newSecurityManager(system_user)
+        XMLConfig('metameta.zcml', Zope.Configuration)()
         XMLConfig('meta.zcml', Zope.App.ContentDirective)()
         XMLConfig('meta.zcml', Zope.App.Security)()
 

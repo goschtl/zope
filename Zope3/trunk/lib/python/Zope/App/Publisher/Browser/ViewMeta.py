@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ViewMeta.py,v 1.6 2002/10/28 18:41:18 stevea Exp $
+$Id: ViewMeta.py,v 1.7 2002/11/06 22:30:21 rdmurray Exp $
 """
 
 # XXX this will need to be refactored soon. :)
@@ -22,6 +22,8 @@ from Zope.Security.Proxy import Proxy
 from Zope.Security.Checker \
      import CheckerPublic, NamesChecker, Checker
 
+from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
+from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 from Zope.Configuration.Action import Action
 from Zope.Configuration.Exceptions import ConfigurationError
 
@@ -38,6 +40,9 @@ from Zope.App.PageTemplate import ViewPageTemplateFile
 from ResourceMeta import resource
 
 class view(resource):
+
+    __class_implements__ = INonEmptyDirective
+    __implements__ = ISubdirectiveHandler
 
     __pages = None
     __default = None

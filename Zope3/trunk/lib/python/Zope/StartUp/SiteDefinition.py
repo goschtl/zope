@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives. 
 
-$Id: SiteDefinition.py,v 1.9 2002/10/08 21:09:40 jeremy Exp $
+$Id: SiteDefinition.py,v 1.10 2002/11/06 22:30:22 rdmurray Exp $
 """
 
 import sys
@@ -22,6 +22,7 @@ import sys
 # Import Configuration-related classes
 from Zope.Configuration.Action import Action
 from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
+from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 
 from ServerTypeRegistry import getServerType
 
@@ -46,6 +47,7 @@ DEFAULT_LOG_CLASS = 'Zope.Server.HTTPServer.CommonHitLogger'
 class SiteDefinition:
 
     __class_implements__ = INonEmptyDirective    
+    __implements__ = ISubdirectiveHandler
 
     # Some special file names for log files
     _special_log_files = {'STDERR': sys.stderr,

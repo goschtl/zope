@@ -13,13 +13,15 @@
 ##############################################################################
 """XMLRPC configuration code
 
-$Id: metaConfigure.py,v 1.2 2002/06/29 15:41:40 srichter Exp $
+$Id: metaConfigure.py,v 1.3 2002/11/06 22:30:22 rdmurray Exp $
 """
 
 from Zope.Security.Proxy import Proxy
 from Zope.Security.Checker \
      import InterfaceChecker, CheckerPublic, NamesChecker, Checker
 
+from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
+from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 from Zope.Configuration.Action import Action
 from Zope.Configuration.Exceptions import ConfigurationError
 
@@ -31,6 +33,9 @@ from Zope.App.ComponentArchitecture.metaConfigure \
 
 class view(object):
     '''This view class handles the directives for the XML-RPC Presentation'''
+
+    __class_implements__ = INonEmptyDirective
+    __implementes__ = ISubdirectiveHandler
 
     type = IXMLRPCPresentation
 

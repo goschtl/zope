@@ -13,13 +13,15 @@
 ##############################################################################
 """Browser configuration code
 
-$Id: ResourceMeta.py,v 1.4 2002/10/28 11:57:13 stevea Exp $
+$Id: ResourceMeta.py,v 1.5 2002/11/06 22:30:21 rdmurray Exp $
 """
 
 from Zope.Security.Proxy import Proxy
 from Zope.Security.Checker \
      import CheckerPublic, NamesChecker, Checker
 
+from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
+from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 from Zope.Configuration.Action import Action
 from Zope.Configuration.Exceptions import ConfigurationError
 
@@ -31,6 +33,9 @@ from Zope.App.Publisher.Browser.FileResource \
      import FileResourceFactory, ImageResourceFactory
 
 class resource(object):
+
+    __class_implements__ = INonEmptyDirective
+    __implements__ = ISubdirectiveHandler
 
     type = IBrowserPresentation
     default_allowed_attributes = '__call__'  # space separated string

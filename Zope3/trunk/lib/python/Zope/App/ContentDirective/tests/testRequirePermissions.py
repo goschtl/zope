@@ -16,6 +16,7 @@
 import unittest
 from cStringIO import StringIO
 
+import Zope.Configuration
 import Zope.App.Security
 from Zope.App.Security import protectClass
 from Zope.App.Security.Exceptions import UndefinedPermissionError
@@ -31,6 +32,7 @@ from Zope.Testing.CleanUp import CleanUp # Base class w registry cleanup
 import Zope.App.ContentDirective
 
 def defineDirectives():
+    XMLConfig('metameta.zcml', Zope.Configuration)()
     XMLConfig('meta.zcml', Zope.App.ContentDirective)()
     XMLConfig('meta.zcml', Zope.App.Security)()
     xmlconfig(StringIO("""<zopeConfigure

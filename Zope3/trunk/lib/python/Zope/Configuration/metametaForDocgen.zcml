@@ -1,0 +1,177 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/zope'>
+
+<directives namespace="http://namespaces.zope.org/zope">
+  <!-- Install the docgen versions of the meta configuration handlers -->
+  <directive
+      name="directive"
+      handler="Zope.Configuration.metametaConfigureForDocgen.Directive" />
+  <directive
+      name="directives"
+      handler="Zope.Configuration.metametaConfigureForDocgen.DirectiveNamespace" />
+</directives>
+
+<directives namespace="http://namespaces.zope.org/zope">
+
+  <!-- Add help text for the meta configuration directives -->
+
+  <directive
+      name="directive"
+      handler="Zope.Configuration.metametaConfigureForDocgen.Directive"
+      description="Define a new configuration directive."
+  >
+    <attribute
+        name="namespace"
+        required="yes"
+        description="XML-style namespace identifier for the namespace
+            in which the directive being defined will reside." />
+    <attribute
+        name="name"
+        required="yes"
+        description="the name of the directive." />
+    <attribute
+        name="handler"
+        required="yes"
+        description="resolvable name of an IEmptyDirective or an
+            INonEmptyDirective that is to be called to handle
+            the directive." />
+    <attribute
+        name="description"
+        description="structured Text sentences that document the
+            purpose and function of the directive." />
+    <subdirective
+        name="attribute"
+        description="Define an attribute that may be specified on the
+            directive being defined"
+    >
+      <attribute
+          name="name"
+          required="yes"
+          description="the name of the attribute." />
+      <attribute
+          name="required"
+          required="no"
+          description="'yes', 'no', or missing.  'yes' indicates the attribute
+              being defined *must* be specified when the directive is used.
+              'no' means it can always be omitted.  If not specified, the
+              attribute may be part of a set of attributes one of which may
+              be required." />
+      <attribute
+          name="description"
+          description="structured Text sentences describing the purpose,
+            function, and allowed values of the attribute." />
+    </subdirective>
+    <subdirective
+        name="subdirective"
+        description="Define a subdirective that may be used inside
+            the enclosing directive in a configuration."
+    >
+      <attribute
+          name="name"
+          required="yes"
+          description="the name of the subdirective" />
+      <attribute
+          name="handler_method"
+          description="the name of an IEmptyDirective or an
+              INonEmptyDirective.  The name will be looked up on the
+              ISubDirectiveHandler returned by the handler for
+              the enclosing directive.  If not specified, the
+              subdirective name is used." />
+      <attribute
+          name="description"
+          description="structured Text sentences that document the
+              purpose and function of the subdirective." />
+      <attribute
+          name="namespace"
+          description="XML-style namespace identifier for the namespace
+              in which the directives being defined will reside.  If
+              specified it overrides the namespace inherited from
+              the enclosing directive." />
+      <subdirective
+          name="attribute"
+          description="Define an attribute that may be specified on the
+              subdirective being defined"
+      >
+        <attribute
+            name="name"
+            required="yes"
+            description="the name of the attribute." />
+        <attribute
+            name="required"
+            required="no"
+            description="'yes', 'no', or missing.  'yes' indicates the attribute
+                being defined *must* be specified when the directive is used.
+                'no' means it can always be omitted.  If not specified, the
+                attribute may be part of a set of attributes one of which may
+                be required." />
+        <attribute
+            name="description"
+            description="structured Text sentences describing the purpose,
+                function, and allowed values of the attribute." />
+      </subdirective>
+    </subdirective>
+  </directive>
+
+  <directive
+      name="directives"
+      handler="Zope.Configuration.metametaConfigureForDocgen.DirectiveNamespace"
+      description="Define a set of new configuration directives within a
+          defaultnamespace"
+  >
+    <attribute
+        name="namespace"
+        required="yes"
+        description="XML-style namespace identifier for the namespace
+            in which the directives being defined will reside." />
+    <subdirective
+        name="directive"
+        description="Define a new configuration directive."
+    >
+      <attribute
+          name="name"
+          required="yes"
+          description="the name of the directive." />
+      <attribute
+          name="handler"
+          required="yes"
+          description="resolvable name of an IEmptyDirective or an
+              INonEmptyDirective that is to be called to handle
+              the directive." />
+      <attribute
+          name="namespace"
+          description="XML-style namespace identifier for the namespace
+              in which the directive being defined will reside.  If
+              specified it overrides the namespace inherited from
+              the enclosing directives directive." />
+      <attribute
+          name="description"
+          description="structured Text sentences that document the
+              purpose and function of the directive." />
+      <subdirective
+          name="attribute"
+          description="Define an attribute that may be specified on the
+              directive being defined"
+      >
+        <attribute
+            name="name"
+            required="yes"
+            description="the name of the attribute." />
+        <attribute
+            name="required"
+            required="no"
+            description="'yes', 'no', or missing.  'yes' indicates the attribute
+                being defined *must* be specified when the directive is used.
+                'no' means it can always be omitted.  If not specified, the
+                attribute may be part of a set of attributes one of which may
+                be required." />
+        <attribute
+            name="description"
+            description="structured Text sentences describing the purpose,
+              function, and allowed values of the attribute." />
+      </subdirective>
+      <!-- The descriptions for subdirective were already added above -->
+    </subdirective>
+  </directive>
+
+</directives>
+
+</zopeConfigure>

@@ -13,11 +13,12 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: ContentDirective.py,v 1.8 2002/10/01 12:47:49 jim Exp $
+$Id: ContentDirective.py,v 1.9 2002/11/06 22:30:21 rdmurray Exp $
 """
 from types import ModuleType
 from Interface.Implements import implements
 from Zope.Configuration.INonEmptyDirective import INonEmptyDirective
+from Zope.Configuration.ISubdirectiveHandler import ISubdirectiveHandler
 from Zope.ComponentArchitecture import getService
 from Zope.Configuration.Exceptions import ConfigurationError
 from Zope.Configuration.Action import Action
@@ -35,7 +36,8 @@ class ProtectionDeclarationException(Exception):
 
 class ContentDirective:
 
-    __implements__ = INonEmptyDirective
+    __class_implements__ = INonEmptyDirective
+    __implements__ = ISubdirectiveHandler
 
     def __init__(self, _context, class_):
         self.__id = class_        

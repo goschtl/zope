@@ -1,20 +1,91 @@
 <zopeConfigure xmlns='http://namespaces.zope.org/zope'>
 
-  <!-- Zope.App.ContentDirective -->
-  <directives namespace="http://namespaces.zope.org/zope">
-    <directive name="content"
-               attributes="class"
-               handler="Zope.App.ContentDirective." >
-      <subdirective name="implements"
-                    attributes="interface" />
-      <subdirective name="require"
-                    attributes="permission attributes interface
-                                like_class set_attributes" />
-      <subdirective name="allow"
-                    attributes="attributes interface" />
-      <subdirective name="factory"
-                    attributes="id permission title description" />
-    </directive>
-  </directives>
+<!-- Zope.App.ContentDirective -->
+<directives namespace="http://namespaces.zope.org/zope">
+
+  <directive
+      name="content"
+      handler="Zope.App.ContentDirective." 
+      description="Make a component available as a content object type"
+  >
+    <attribute
+        name="class"
+        required="yes"
+        description="resolvable name of a class" />
+
+    <subdirective
+        name="implements"
+        description="Declare that the class given by the content
+            directive's class attribute implements a given interface"
+    >
+      <attribute
+          name="interface"
+          required="yes"
+          description="resolvable name of an Interface" />
+    </subdirective>
+
+    <subdirective
+        name="require"
+        description="Indicate that the a specified list of names or the
+          names in a given Interface require a given permission for
+          access."
+    >
+      <attribute
+          name="permission"
+          required="yes"
+          description="a permission id" />
+      <attribute
+          name="attributes"
+          description="space-separated list of attribute names" />
+      <attribute
+          name="interface"
+          description="the resolvable name of an interface" />
+      <attribute
+          name="like_class"
+          description="a class on which the security requirements
+              for this class will be based" />
+    </subdirective>
+
+    <subdirective
+        name="allow"
+        description="Declare a part of the class to be publicly
+            viewable (that is, requires the Zope.Public
+            permission).  Only one of the following two
+            attributes may be used."
+    >
+      <attribute
+          name="attributes"
+          description="space-separated list of attribute names" />
+      <attribute
+          name="interface"
+          description="the resolvable name of an interface" />
+    </subdirective>
+    <subdirective
+        name="factory"
+        description="Specify the factory used to create this
+            content object"
+    >
+      <attribute
+          name="permission"
+          description="permission id required to use this factory.
+              Although optional, this attribute should normally
+              be specified." />
+      <attribute
+          name="id"
+          description="the identifier for this factory in the
+              ZMI factory identification scheme.  If not given, defaults
+              to the literal string given as the content directive's
+              'class' attribute." />
+      <attribute
+          name="title"
+          description="text suitable for use in the 'add content' menu of
+              a management interface" />
+      <attribute
+          name="description"
+          description="longer narrative description of what this
+              factory does" />
+    </subdirective> 
+  </directive>
+</directives>
 
 </zopeConfigure>

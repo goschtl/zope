@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.15 2002/10/03 19:44:26 efge Exp $
+$Id: meta.py,v 1.16 2002/11/06 22:30:22 rdmurray Exp $
 """
 
 
@@ -85,9 +85,12 @@ def register(name, callable):
     the directive. The sub-directive registry is returned so that
     it can be used for subsequent sub-directive registration.
 
+    If the same name is registered a second time, the existing
+    subdirective registry will be returned.
+
     """
     
-    subdirs = {}
+    subdirs = _directives.get(name,(None,{}))[1]
     _directives[name] = callable, subdirs
     return subdirs
 
@@ -115,10 +118,13 @@ def registersub(directives, name, handler_method=None):
     subdirective. The sub-directive registry is returned so that it
     can be used for subsequent sub-directive registration.
 
+    If the same name is registered a second time, the existing
+    subdirective registry will be returned.
+
     """
     if not handler_method:
         handler_method = name[1]
-    subdirs = {}
+    subdirs = directives.get(name,({},))[0]
     directives[name] = subdirs, handler_method
     return subdirs
 
@@ -155,7 +161,7 @@ def _exe(callable, subs, context, kw):
 
     r = callable(context, **kw)
 
-    if subs or INonEmptyDirective.isImplementedBy(callable):
+    if INonEmptyDirective.isImplementedBy(callable):
         return r, subs
     else:
         return (
@@ -276,21 +282,31 @@ class DirectiveNamespace:
     def __init__(self, _context, namespace):
         self._namespace = namespace
 
-    def directive(self, _context, name, handler, attributes='',
-                  namespace=None):
+    def _register(self, _context, name, handler, namespace=None,
+                  attributes=''):
         namespace = namespace or self._namespace
         subs = register((namespace, name), _context.resolve(handler))
+        return subs, namespace
+        
+    def directive(self, *args, **kw):
+        subs, namespace = self._register(*args, **kw)
         return Subdirective(subs, namespace=namespace)
     directive.__implements__ = INonEmptyDirective
 
     def __call__(self):
         return ()
 
-def Directive(_context, namespace, name, handler, attributes=''):
+
+def _registerDirective(_context, namespace, name, handler, attributes=''):
     subs = register((namespace, name), _context.resolve(handler))
+    return subs, namespace
+
+def Directive(*args, **kw):
+    subs, namespace = _registerDirective(*args, **kw)
     return Subdirective(subs, namespace=namespace)
 
 Directive.__implements__ = INonEmptyDirective
+
 
 class Subdirective:
     """This is the meta-meta-directive"""
@@ -307,13 +323,17 @@ class Subdirective:
         self._subs = subs
         self._namespace = namespace
 
-    def subdirective(self, _context, name, attributes='',
-                     namespace=None, handler_method=None):
+    def _register(self, _context, name, namespace=None, handler_method=None,
+                  attributes=''):
         namespace = namespace or self._namespace
         if not namespace:
             raise InvalidDirectiveDefinition(name)
         #If handler_method is None, registersub will use name.
         subs = registersub(self._subs, (namespace, name), handler_method)
+        return subs, namespace
+
+    def subdirective(self, *args, **kw):
+        subs, namespace = self._register(*args, **kw)
         return Subdirective(subs,namespace=namespace)
     subdirective.__implements__ = INonEmptyDirective
 
@@ -323,24 +343,30 @@ class Subdirective:
 def _clear():
     """Initialize _directives data structure with bootstrap directives."""
 
-    #We initialize _directives with handlers for three (sub)directives:
-    #directives, directive, and subdirective.  Given these three
-    #(whose implementation is contained in this module) we can use
-    #zcml to define any other directives needed for a given system.
+    # We initialize _directives with handlers for three (sub)directives:
+    # directives, directive, and subdirective.  Given these three
+    # (whose implementation is contained in this module) we can use
+    # zcml to define any other directives needed for a given system.
     #
-    #This initialziation is done in a function to facilitate support
-    #the unittest CleanUp class.
+    # The data structure created here is both recursive and incestuous.
+    # The recursive part allows for an unlimited number of levels
+    # of subdirective definition nesting.  The incestuous part is
+    # perhaps less legitimate, but seems logical since I can't think of
+    # a reason you would want the subdirective subdirective of the
+    # directive directive to do anything different from the subdirective
+    # subdirective of the directive subdirective of the directives
+    # directive.
+    #
+    # This initialziation is done in a function to facilitate support
+    # the unittest CleanUp class.
 
+    _directives.clear()
     zopens = 'http://namespaces.zope.org/zope'
     subdirkey = (zopens, 'subdirective')
-    subdir1 = {subdirkey: ({}, 'subdirective')}
-    subdir2 = {subdirkey: (subdir1, 'subdirective')}
-    subdir3 = {subdirkey: (subdir2, 'subdirective')}
-    _directives.clear()
-    _directives[(zopens, 'directive')] = (Directive, subdir3)
-    #This is incecstuous, but since there's no way to modify a
-    #directive or subdirective other than replacement, it should be OK.
-    directive = {(zopens, 'directive'): (subdir3, 'directive')}
+    subs = {}
+    subs[subdirkey] = (subs, 'subdirective')
+    _directives[(zopens, 'directive')] = (Directive, subs)
+    directive = {(zopens, 'directive'): (subs, 'directive')}
     _directives[(zopens, 'directives')] = (DirectiveNamespace, directive)
 
 _clear()
