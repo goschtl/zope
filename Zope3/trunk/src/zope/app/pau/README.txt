@@ -98,7 +98,7 @@ We provide a principal factory plugin:
   ...         notify(interfaces.FoundPrincipalCreated(principal, info))
   ...         return principal
 
-  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(), 
+  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(),
   ...                name='pf')
 
 Finally, we create a PAU instance:
@@ -207,7 +207,7 @@ As with with authenticators, we can specify multiple extractors:
 
   >>> provideUtility(interfaces.IExtractionPlugin, OddExtractor(), name='eodd')
   >>> auth.extractors = 'eodd', 'emy'
- 
+
   >>> request = TestRequest(credentials=41)
   >>> auth.authenticate(request)
   Principal('1', "{'int': 1}")
@@ -245,15 +245,15 @@ And we can specify multiple factories:
   ...                     principal, info))
   ...         return principal
 
-  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, OddFactory(), 
+  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, OddFactory(),
   ...                name='oddf')
 
   >>> auth.factories = 'oddf', 'pf'
- 
+
   >>> request = TestRequest(credentials=41)
   >>> auth.authenticate(request)
   OddPrincipal('1', "{'int': 1}")
- 
+
   >>> request = TestRequest(credentials=42)
   >>> auth.authenticate(request)
   Principal('42', "{'domain': 42}")
@@ -269,7 +269,7 @@ data they need.
 Get a principal given an id
 ===========================
 
-We can ask the PAU for a principal, given an id. 
+We can ask the PAU for a principal, given an id.
 
 To do this, the PAU uses principal search plugins:
 
@@ -281,7 +281,7 @@ To do this, the PAU uses principal search plugins:
   ...         if principal_id == '42':
   ...             return {'domain': 42}
 
-  >>> provideUtility(interfaces.IPrincipalSearchPlugin, Search42(), 
+  >>> provideUtility(interfaces.IPrincipalSearchPlugin, Search42(),
   ...                name='s42')
 
   >>> class IntSearch:
@@ -296,9 +296,9 @@ To do this, the PAU uses principal search plugins:
   ...         if (i >= 0 and i < 100):
   ...             return {'int': i}
 
-  >>> provideUtility(interfaces.IPrincipalSearchPlugin, IntSearch(), 
+  >>> provideUtility(interfaces.IPrincipalSearchPlugin, IntSearch(),
   ...                name='sint')
- 
+
   >>> auth.searchers = 's42', 'sint'
 
   >>> auth.getPrincipal('41')
@@ -364,9 +364,9 @@ What happens if a plugin is registered depends on the plugin.  Let's
 create a plugin that sets a response header:
 
   >>> class Challenge:
-  ...     
+  ...
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...     
+  ...
   ...     def challenge(self, requests, response):
   ...         response.setHeader('X-Unauthorized', 'True')
   ...         return True
@@ -387,7 +387,7 @@ How challenges work in Zope 3
 -----------------------------
 
 To understand how the challenge plugins work, it's helpful to
-understand how the unauthorized method of authentication services 
+understand how the unauthorized method of authentication services
 get called.
 
 If an 'Unauthorized' exception is raised and not caught by application
@@ -420,12 +420,12 @@ add challenges to a X-Challenges headers:
 
   >>> class ColorChallenge:
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...     
+  ...
   ...     protocol = 'bridge'
-  ...     
+  ...
   ...     def challenge(self, requests, response):
   ...         challenge = response.getHeader('X-Challenge', '')
-  ...         response.setHeader('X-Challenge', 
+  ...         response.setHeader('X-Challenge',
   ...                            challenge + 'favorite color? ')
   ...         return True
 
@@ -434,12 +434,12 @@ add challenges to a X-Challenges headers:
 
   >>> class BirdChallenge:
   ...     zope.interface.implements(interfaces.IChallengePlugin)
-  ...     
+  ...
   ...     protocol = 'bridge'
-  ...     
+  ...
   ...     def challenge(self, requests, response):
   ...         challenge = response.getHeader('X-Challenge', '')
-  ...         response.setHeader('X-Challenge', 
+  ...         response.setHeader('X-Challenge',
   ...                            challenge + 'swallow air speed? ')
   ...         return True
 
@@ -523,7 +523,7 @@ ids. They're also used to find principals given search criteria.
 
 Different search plugins are likely to use very different search
 criteria.  There are two approaches a plugin can use to support
-searching: 
+searching:
 
 - A plugin can provide IQuerySchemaSearch, in addition to
   `IPrincipalSearchPlugin`.  In this case, the plugin provides a search
@@ -539,7 +539,7 @@ PAU uses search plugins in a very simple way.  It merely implements
 
   >>> [id for (id, queriable) in auth.getQueriables()]
   ['s42', 'sint']
-  >>> [queriable.__class__.__name__ 
+  >>> [queriable.__class__.__name__
   ...  for (id, queriable) in auth.getQueriables()]
   ['Search42', 'IntSearch']
 
@@ -550,4 +550,4 @@ Design Notes
   search or extraction and challenge. See
   `ISearchableAuthenticationPlugin` and
   `IExtractionAndChallengePlugin`.
- 
+
