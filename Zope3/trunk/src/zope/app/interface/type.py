@@ -11,10 +11,8 @@
 ##############################################################################
 """Persistent type registry
 
-$Id: type.py,v 1.2 2004/02/20 16:57:30 fdrake Exp $
+$Id: type.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
 """
-__metaclass__ = type
-
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zope.interface.type import TypeRegistry

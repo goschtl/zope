@@ -15,9 +15,8 @@
 
 This module contains code for interfaces in persistent modules.
 
-$Id: interface.py,v 1.21 2004/03/05 15:56:17 eddala Exp $
+$Id: __init__.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
 """
-
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from zodbcode.patch import registerWrapper, Wrapper

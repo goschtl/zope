@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.25 2004/03/07 13:54:15 jim Exp $
+$Id: __init__.py,v 1.26 2004/03/11 11:03:36 srichter Exp $
 """
 
 from zope.proxy import removeAllProxies
@@ -34,7 +34,7 @@ from zope.app.component.nextservice import getNextServiceManager
 from zope.component.service import IGlobalServiceManager
 from zope.interface.interfaces import IMethod
 from zope.schema.interfaces import IField
-from zope.app.interfaces.services.interface import IInterfaceBasedRegistry
+from zope.app.interface.interfaces import IInterfaceBasedRegistry
 from zope.app.component.interface import searchInterface
 from zope.app.component.interface import getInterface
 from zope.app.component.interface import provideInterface

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interface Service Tests
 
-$Id: test_interface.py,v 1.12 2004/03/05 22:09:17 jim Exp $
+$Id: test_interface.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
 """
 import unittest
 
@@ -23,7 +23,7 @@ from ZODB.tests.util import DB
 from zodbcode.module import ManagedRegistry
 
 from zope.interface import Interface
-from zope.app.services.interface import PersistentInterface
+from zope.app.interface import PersistentInterface
 
 code = """\
 from zope.interface import Interface

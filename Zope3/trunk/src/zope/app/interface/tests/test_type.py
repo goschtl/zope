@@ -11,15 +11,22 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interfaces related to the local interface service."""
+"""Persistent Type Registry Tests
 
-from zope.interface import Interface
+$Id: test_type.py,v 1.1 2004/03/11 11:03:37 srichter Exp $
+"""
 
-class IInterfaceBasedRegistry(Interface):
-    """Registries that use interfaces."""
+from unittest import TestSuite, makeSuite
+from zope.interface.tests.test_type import TestTypeRegistry
+from zope.app.interface.type import PersistentTypeRegistry
 
-    def getRegistrationsForInterface(iface):
-        """Return registrations related to iface.
+class Test(TestTypeRegistry):
 
-        The Return value is iterable of IRegistration object.
-        """
+    def new_instance(self):
+        return PersistentTypeRegistry()
+
+
+def test_suite():
+    return TestSuite((
+        makeSuite(Test),
+        ))
