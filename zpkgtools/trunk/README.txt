@@ -31,7 +31,7 @@ Running the unit tests
 ----------------------
 
 There are unit tests of the zpkgtools package in the zpkgtools.tests
-package.  This can most easily be run by running the *tests.py* script
+package.  This can most easily be run by running the *test.py* script
 found in the same directory as this README.txt file::
 
   $ python2.3 tests.py
