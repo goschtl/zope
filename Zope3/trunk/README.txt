@@ -23,6 +23,10 @@ Building and running tests
 
   On a unix variant, you can just type: make
 
+  On Windows, if you downloaded the binary distribution, this has
+  already been done for you (since the compiler we use on Windows
+  isn't free).
+
   Zope3 includes unit tests based on the Python unittest module.  If
   you checkin changes, you should verify that all the tests succeed
   before you checkin.
