@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: ErrorReportingService.py,v 1.8 2002/11/11 13:08:14 pnaveen Exp $
+$Id: ErrorReportingService.py,v 1.9 2002/11/11 13:13:07 stevea Exp $
 """
 
 import sys
@@ -103,12 +103,13 @@ class ErrorReportingService(Persistent):
                                            request.user.getTitle(),
                                            request.user.getDescription()
                                            )
-                    #Incase of unauthorized access handle the AttributeError silently.
+                    # When there's an unauthorized access, request.user is
+                    # not set, so we get an AttributeError
                     except AttributeError:
                         pass
 
-                    req_html = ''.join(['%s : %s<br>' % item for item in request.items()])
-
+                    req_html = ''.join(['%s : %s<br>' % item
+                                        for item in request.items()])
                 try:
                     strv = str(info[1])
                 # XXX bare except clause. Why is this here?
