@@ -87,12 +87,11 @@ lpSearchIndex      -d lib/python/SearchIndex Packages/SearchIndex
 lpZClasses         -d lib/python/ZClasses Packages/ZClasses
 lpWebdav      	   -d lib/python/webdav Packages/webdav
 
-lpSharedInit       -d lib/python/Shared cvs-indirect/Zope/Shared
-lpDCInit           -d lib/python/Shared/DC cvs-indirect/Zope/DC
-lpZRDB             -d lib/python/Shared/DC/ZRDB Packages/Shared/DC/ZRDB
-lpXml             -d lib/python/Shared/DC/xml Packages/Shared/DC/xml
+lpShared	   -d lib/python/Shared Packages/Shared
 
+# Use an indirection so 'cvs update -d' doesn't get all the other stuff:
 lpProductsInit    -d lib/python/Products cvs-indirect/Zope/Products
+
 lpOFSP            -d lib/python/Products/OFSP Packages/Products/OFSP
 lpIMAPAdapter     -d lib/python/Products/IMAPAdapter Packages/Products/IMAPAdapter
 lpNotMail         -d lib/python/Products/NotMail Packages/Products/NotMail
@@ -131,8 +130,8 @@ ZopeBase &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpHelpSys \
   &lpZPublisher &lpOFS &lpStructuredText &lpTreeDisplay \
   &lpSearchIndex \
-  &lpSharedInit &lpDCInit &lpProductsInit \
-  &lpZRDB &lpXml &lpOFSP &lpMailHost &lpExternalMethod \
+  &lpShared &lpProductsInit \
+  &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZSQLMethods &lpZGadflyDA \
   &lpZODB &lpZope &lpZopeZODB3 \
   &ZServer &lpMIMETools 
@@ -144,8 +143,8 @@ Zope  ZSrc &utilities &pcgi &ZopeHTTPServer &GreyThing \
   &lpHelpSys \
   &lpZPublisher &lpOFS &lpStructuredText &lpTreeDisplay \
   &lpSearchIndex \
-  &lpSharedInit &lpDCInit &lpProductsInit \
-  &lpZRDB &lpXml &lpOFSP &lpMailHost &lpExternalMethod \
+  &lpShared &lpProductsInit \
+  &lpOFSP &lpMailHost &lpExternalMethod \
   &lpZODB &lpZope &lpZopeZODB3 \
   &lpZSQLMethods &lpZGadflyDA &ZServer &lpMIMETools
 
