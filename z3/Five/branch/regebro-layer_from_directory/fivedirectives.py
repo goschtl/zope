@@ -11,7 +11,9 @@
 $Id$
 """
 from zope.interface import Interface
+from zope.app.publisher.browser.metadirectives import IBasicResourceInformation
 from zope.configuration.fields import GlobalObject, Tokens, PythonIdentifier
+from zope.schema import TextLine
 
 class IImplementsDirective(Interface):
     """State that a class implements something.
@@ -76,4 +78,24 @@ class IBridgeDirective(Interface):
         description=u"If not supplied, the new interface will have the same "
                     u"name as the source interface.",
         required=False
+        )
+
+class IPagesFromDirectoryDirective(IBasicResourceInformation):
+    """Register each file in a skin directory as a page resource
+    """
+
+    for_ = GlobalObject(
+        title=u"The interface this view is for.",
+        required=False
+        )
+
+    module = GlobalObject(
+        title=u"Module",
+        required=True
+        )
+
+    directory = TextLine(
+        title=u"Directory",
+        description=u"The directory containing the resource data.",
+        required=True
         )

@@ -14,6 +14,7 @@ $Id$
 """
 
 import os
+import glob
 import warnings
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
@@ -21,6 +22,7 @@ from zope.app.component.interface import provideInterface
 from viewable import Viewable
 from traversable import Traversable
 from bridge import fromZ2Interface
+from browserconfigure import page
 
 def findProducts():
     import Products
@@ -173,3 +175,24 @@ def bridge(_context, zope2, package, name=None):
     _context.action(
         discriminator = (zope2,),
         )
+
+def pagesFromDirectory(_context, directory, module, for_=None,
+                  layer='default', permission='zope.Public'):
+
+    if isinstance(module, basestring):
+        module = _context.resolve(module)
+
+    _prefix = os.path.dirname(module.__file__)
+    directory = os.path.join(_prefix, directory)
+
+    if not os.path.isdir(directory):
+        raise ConfigurationError(
+            "Directory %s does not exist" % directory
+            )
+
+    for fname in glob.glob(os.path.join(directory, '*.pt')):
+        name = os.path.splitext(os.path.basename(fname))[0]
+        page(_context, name=name, permission=permission,
+             layer=layer, for_=for_, template=fname)
+
+

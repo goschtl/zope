@@ -182,6 +182,12 @@
        handler=".eventconfigure.sendEvents"
        />
 
+    <meta:directive
+        name="pagesFromDirectory"
+        schema=".fivedirectives.IPagesFromDirectoryDirective"
+        handler=".fiveconfigure.pagesFromDirectory"
+        />
+
     <!-- viewable is deprecated, use traversable instead -->
 
     <meta:directive

@@ -21,6 +21,7 @@ from zope.configuration.exceptions import ConfigurationError
 from zope.component.servicenames import Presentation
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
+from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.component.metaconfigure import handler
 from zope.app.component.interface import provideInterface
@@ -31,6 +32,15 @@ from resource import DirectoryResourceFactory
 from browser import BrowserView
 from metaclass import makeClass
 from security import getSecurityInfo, protectClass, protectName, initializeClass
+
+class FivePageTemplateFile(ViewPageTemplateFile):
+
+    def pt_getContext(self, instance, request, **_kw):
+        # instance is a View component
+        namespace = super(FivePageTemplateFile, self).pt_getContext(instance, request, **_kw)
+        namespace['here'] = namespace['context']
+        return namespace
+
 
 def page(_context, name, permission, for_,
          layer='default', template=None, class_=None,
@@ -310,6 +320,8 @@ class ViewMixinForTemplates(BrowserView):
 
     # short cut to get to macros more easily
     def __getitem__(self, name):
+        if name == 'macros':
+            return self.index.macros
         return self.index.macros[name]
 
     # make the template publishable
@@ -321,7 +333,7 @@ def makeClassForTemplate(src, template=None, used_for=None,
     # XXX needs to deal with security from the bases?
     if cdict is None:
         cdict = {}
-    cdict.update({'index': ViewPageTemplateFile(src, template)})
+    cdict.update({'index': FivePageTemplateFile(src, template)})
     bases += (ViewMixinForTemplates,)
     class_ = makeClass("SimpleViewClass from %s" % src, bases, cdict)
 

@@ -36,6 +36,14 @@
 
   <five:defaultViewable class=".simplecontent.CallableSimpleContent" />
 
+  <!-- five:pagesFromDirectory loads all .pt files in a directory as pages.
+       This is mainly used to load Zope2 skin templates so they can be used
+       in five skins and layers. -->
+  <five:pagesFromDirectory
+      module="Products.FiveTest"
+      directory="."
+      />
+
   <browser:defaultView
       for=".interfaces.ICallableSimpleContent"
       name="__call__"
@@ -306,9 +314,9 @@
       class=".simplecontent.SimpleContent"
      />
 
-  <subscriber 
+  <subscriber
       factory=".subscriber.objectEventSubscriber"
-      for="zope.app.event.interfaces.IObjectEvent" 
+      for="zope.app.event.interfaces.IObjectEvent"
      />
 
   <subscriber
