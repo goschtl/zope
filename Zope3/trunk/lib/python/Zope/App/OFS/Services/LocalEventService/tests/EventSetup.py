@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: EventSetup.py,v 1.3 2002/07/11 18:21:31 jim Exp $
+$Id: EventSetup.py,v 1.4 2002/07/12 19:28:32 jim Exp $
 """
 from Zope.App.OFS.Services.ServiceManager.tests.PlacefulSetup \
   import PlacefulSetup
@@ -60,6 +60,10 @@ class EventSetup(PlacefulSetup):
               None, IPhysicallyLocatable, WrapperPhysicallyLocatable)
         adapterService.provideAdapter(
               IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
+
+        from Zope.App.Traversing.Namespaces import provideNamespaceHandler
+        from Zope.App.Traversing.EtcNamespace import etc
+        provideNamespaceHandler('etc', etc)
         
         from Zope.Event.IEventService import IEventService
         from Zope.Event.GlobalEventService import eventService

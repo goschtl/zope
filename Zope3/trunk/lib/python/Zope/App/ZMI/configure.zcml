@@ -25,4 +25,6 @@
 
   <browser:resource name="arrowUp.gif" file="www/arrowUp.gif"/>
 
+  <include package=".Browser.ZopeTop" />
+
 </zopeConfigure>

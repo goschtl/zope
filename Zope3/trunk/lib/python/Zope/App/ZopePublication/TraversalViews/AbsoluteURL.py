@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: AbsoluteURL.py,v 1.3 2002/07/11 19:33:58 jim Exp $
+$Id: AbsoluteURL.py,v 1.4 2002/07/12 19:28:34 jim Exp $
 """
 from Zope.Publisher.Browser.BrowserView import BrowserView
 from Zope.Proxy.ContextWrapper import getWrapperContainer, getInnerWrapperData
@@ -46,6 +46,8 @@ class AbsoluteURL(BrowserView):
         container = getWrapperContainer(context)
         if name is None or container is None:
             raise TypeError, 'Not enough context information to get a URL'
+        if name == '.':
+            name = dict.get('uri_segment', name)
 
         return "%s/%s" % (getView(container, 'absolute_url', self.request),
                           name)
@@ -59,6 +61,8 @@ class AbsoluteURL(BrowserView):
         container = getWrapperContainer(context)
         if name is None or container is None:
             raise TypeError, 'Not enough context information to get a URL'
+        if name == '.':
+            name = dict.get('uri_segment', name)
 
         base = getView(container, 'absolute_url', self.request).breadcrumbs()
         base += ({'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))}, )
@@ -69,11 +73,34 @@ class AbsoluteURL(BrowserView):
 class SiteAbsoluteURL(BrowserView):
 
     def __str__(self):
+        context = self.context
+        dict = getInnerWrapperData(context)
+        name = dict and dict.get('name') or None
+        if name:
+            if name == '.':
+                name = dict.get('uri_segment', name)
+            container = getWrapperContainer(context)
+            return "%s/%s" % (getView(container, 'absolute_url', self.request),
+                              name)
+        
         return self.request.getApplicationURL()
 
     __call__ = __str__
 
     def breadcrumbs(self):
+        context = self.context
+        dict = getInnerWrapperData(context)
+        name = dict and dict.get('name') or None
+        if name:
+            if name == '.':
+                name = dict.get('uri_segment', name)
+            container = getWrapperContainer(context)
+            base = getView(container, 'absolute_url',
+                           self.request).breadcrumbs()
+            base += ({'name': name,
+                      'url': ("%s/%s" % (base[-1]['url'], name))}, )
+            return base
+
         return ({'name':'', 'url': self.request.getApplicationURL()}, )
 
         

@@ -104,6 +104,14 @@ class BasePublicationTests(PlacelessSetup, unittest.TestCase):
             get_transaction().commit()
 
         connection.close()
+
+        
+        from Zope.App.Traversing.Namespaces import provideNamespaceHandler
+        from Zope.App.Traversing.PresentationNamespaces import view, resource
+        provideNamespaceHandler('view', view)
+        provideNamespaceHandler('resource', resource)
+
+
         
     def tearDown(self):
         setSecurityPolicy(self.policy) # XXX still needed?

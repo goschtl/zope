@@ -3,7 +3,7 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
-  <browser:skin name="ZopeTop" layers="templates images css default">
+  <browser:skin name="ZopeTop" layers="templates images css default" />
 
   <browser:view name="standard_macros"
                 permission="Zope.View"

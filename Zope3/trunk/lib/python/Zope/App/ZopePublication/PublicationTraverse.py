@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: PublicationTraverse.py,v 1.2 2002/06/10 23:29:20 jim Exp $
+Revision information: $Id: PublicationTraverse.py,v 1.3 2002/07/12 19:28:34 jim Exp $
 """
 
 from Zope.ComponentArchitecture import queryView, getService
@@ -58,6 +58,8 @@ class PublicationTraverse:
 
             if ns:
                 ob2 = namespaceLookup(name, ns, nm, unknown_parms, ob, request)
+                if ob2 == ob:
+                    return ContextWrapper(ob2, ob, name='.', uri_segment=name)
                 return ContextWrapper(ob2, ob, name=name)
 
             if unknown_parms:
