@@ -4,9 +4,6 @@ import Zope
 Zope.startup()
 from Interface.Verify import verifyClass
 
-from warnings import filterwarnings
-from warnings import filters
-
 from AccessControl import Unauthorized
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import noSecurityManager
@@ -46,17 +43,11 @@ class TypesToolTests(SecurityTest):
     def setUp( self ):
         SecurityTest.setUp(self)
 
-        filterwarnings('ignore', category=DeprecationWarning)
         self.site = DummySite('site').__of__(self.root)
         self.acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
         self.ttool = self.site._setObject( 'portal_types', TypesTool() )
         fti = FTIDATA_DUMMY[0].copy()
         self.ttool._setObject( 'Dummy Content', FTI(**fti) )
-
-    def tearDown(self):
-        del filters[0]
-
-        SecurityTest.tearDown(self)
 
     def test_allMetaTypes(self):
         """
@@ -116,12 +107,6 @@ def test_interface(self):
 
 
 class TypeInfoTests(TestCase):
-
-    def setUp(self):
-        filterwarnings('ignore', category=DeprecationWarning)
-
-    def tearDown(self):
-        del filters[0]
 
     def test_construction( self ):
         ti = self._makeInstance( 'Foo'

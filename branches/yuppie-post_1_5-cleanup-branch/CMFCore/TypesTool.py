@@ -177,13 +177,6 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
     #
     #   Accessors
     #
-    security.declareProtected(View, 'Type')
-    def Type(self):
-        """ Deprecated. Use Title(). """
-        warn('TypeInformation.Type() is deprecated, use Title().',
-             DeprecationWarning)
-        return self.Title()
-
     security.declareProtected(View, 'Title')
     def Title(self):
         """
@@ -847,7 +840,6 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
         result = typenames.keys()
         result.sort()
         return result
-
 
     security.declarePublic('constructContent')
     def constructContent( self
