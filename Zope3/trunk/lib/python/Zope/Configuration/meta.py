@@ -15,7 +15,7 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.7 2002/09/17 22:44:04 rdmurray Exp $
+$Id: meta.py,v 1.8 2002/09/18 03:49:52 rdmurray Exp $
 """
 
 
@@ -158,11 +158,10 @@ def sub(handlertuple, _name, _context, **kw):
 
     base, subdirs = handlertuple
     try:
-        subtuple = subdirs[_name]
+        subsubs, handler_method = subdirs[_name]
     except KeyError:
         raise InvalidDirective(_name)
         
-    subsubs, handler_method = subtuple
     callable = getattr(base, handler_method)
 
     return _exe(callable, subsubs, _context, kw)
