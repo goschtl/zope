@@ -21,6 +21,7 @@ import zope.interface
 from zope.publisher.interfaces.browser import ISkin
 from zope.app.component.interfaces import ISite
 from zope.app.preference.interfaces import IUserPreferences
+from zope.app.publisher.browser import applySkin as applySkinOnRequest
 
 def applySkin(event):
     # We only want to look for a new skin to set, if we entered a new site.
@@ -35,13 +36,5 @@ def applySkin(event):
     if not skin or skin.providedBy(event.request):
         return
 
-    # Remove the old skin
-    for iface in zope.interface.directlyProvidedBy(event.request):
-        if ISkin.providedBy(iface):
-            zope.interface.directlyProvides(
-                event.request,
-                zope.interface.directlyProvidedBy(event.request)-iface)
-            break
-
-    # Add the new skin
-    zope.interface.alsoProvides(event.request, skin)
+    # Remove the old skin and apply new one
+    applySkinOnRequest(event.request, skin)
