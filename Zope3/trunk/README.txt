@@ -3,7 +3,7 @@ Welcome to the Zope3 source
   This file provides some basic hints for people developing Zope3
   software.  There is more developer info in the Zope3 Wiki:
 
-  http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/Zope3DeveloperInfo
+  http://dev.zope.org/Zope3/Zope3DeveloperInfo
 
   For information about the current release, see CHANGES.txt.
 
@@ -34,6 +34,8 @@ Building and running tests
   Use test.py -h for usage.  The test script can run selected tests,
   stop after the first error, run the tests in a loop, etc.
 
+Starting Zope3
+
   Before running Zope, you need to create one or more bootstrap
   users. Try copying and editing the file sample_principals.zcml to
   principals.zcml.  Make sure you change the passwords.
@@ -55,21 +57,32 @@ Building and running tests
 
     http://localhost:8080/++skin++basic/manage
 
+  Copy principals.zcml.in to principals.zcml, and add a manager
+  entry to it based on the examples in sample_principals.zcml.
+
+  see doc/INSTALL for more information
 
 Finding out how to develop new content types:
 
-  We aren't as far along with documentatoion as we'd like to
-  be. Please be patient or help out.
+  We aren't as far along with documentation as we'd like to
+  be. Please be patient or help out. Some resources.
 
-  - See the developers tutorial at:
+  - The developers tutorial at:
 
-    http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/ProgrammerTutorial
+    http://dev.zope.org/Zope3/ProgrammerTutorial
+
+  - The Zope3 developer cookbook at:
+
+    http://dev/zope.org/Zope3/DevelCookbook
 
   - Look for tidbits in the doc directory.
 
   - Ask questions on the mailing list, 
     http://lists.zope.org/mailman/listinfo/zope3-dev,
     or on the irc channel, #zope3-dev, on irc.openprojects.net.
+
+  - To keep up with the latest changes, the cvs-commit mailing list
+    http://lists.zope.org/mailman/listinfo/zope3-checkins
 
 Acknowledgements
 
