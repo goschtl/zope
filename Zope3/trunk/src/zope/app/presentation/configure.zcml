@@ -3,15 +3,6 @@
     i18n_domain="zope"
     >
 
-
-<content class=".presentation.LocalPresentationService">
-  <factory />
-  <require
-      permission="zope.ManageServices"
-      interface="zope.app.registration.interfaces.IRegistry"
-      />
-</content>
-
 <content class=".presentation.ViewRegistration">
   <require
       permission="zope.ManageServices"

@@ -19,4 +19,3 @@ __docformat__ = 'restructuredtext'
 
 from zope.app.presentation.presentation import IPageRegistration
 from zope.app.presentation.presentation import PageRegistration
-from zope.app.presentation.presentation import LocalPresentationService

@@ -1,13 +1,5 @@
 <configure xmlns="http://namespaces.zope.org/browser">
 
-  <addMenuItem
-      class="...presentation.LocalPresentationService"
-      description=
-     "A Presentation Service allows you to register views, resources and skins"
-      title="Presentation Service"
-      permission="zope.ManageServices"
-      />
-
   <editform
     schema="...presentation.IPageRegistration"
     name="index.html"

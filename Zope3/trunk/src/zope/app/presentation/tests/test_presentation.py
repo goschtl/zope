@@ -29,13 +29,11 @@ from zope.app.container.interfaces import IObjectRemovedEvent
 from zope.app.folder import rootFolder
 from zope.app.presentation.zpt import IZPTTemplate
 from zope.app.site.service import ServiceManager
-from zope.app.servicenames import Presentation
 from zope.app.registration.tests.iregistry import TestingIRegistry
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.presentation.presentation import ViewRegistration
 from zope.app.presentation.presentation import PageRegistration
 from zope.app.presentation.presentation import BoundTemplate
-from zope.app.presentation.presentation import LocalPresentationService
 from zope.app.presentation.presentation import IPageRegistration
 from zope.app.presentation.presentation import PageRegistrationAddSubscriber
 from zope.app.presentation.presentation import PageRegistrationRemoveSubscriber
@@ -44,7 +42,6 @@ from zope.app.traversing.api import traverse
 
 from zope.component.exceptions import ComponentLookupError
 from zope.component.interfaces import IServiceService
-from zope.component.interfaces import IPresentationService
 from zope.app.tests import ztapi
 from zope.configuration.exceptions import ConfigurationError
 
@@ -81,7 +78,7 @@ class Registration(object):
     requestType = I2
     name = 'test'
     layer = 'default'
-    serviceType = Presentation
+    serviceType = zapi.servicenames.Adapters
     provided = Interface
 
     with = property(lambda self: (self.requestType, ))
@@ -123,219 +120,6 @@ class A(object):
         self.request = request
 
     run = PhonyTemplate()
-
-class TestLocalPresentationService(PlacefulSetup, TestingIRegistry, TestCase):
-
-    def setUp(self):
-        sm = PlacefulSetup.setUp(self, site=True)
-        self._service = setup.addService(sm, Presentation,
-                                         LocalPresentationService())
-
-    def test_defaultSkin(self):
-        # We don't let people set the default skin locally yet.
-        # So just test that we can get the default from the global service
-        zapi.getGlobalService(Presentation).defineSkin('bob', ['default'])
-        zapi.getGlobalService(Presentation).setDefaultSkin('bob')
-        self.assertEqual(self._service.defaultSkin, 'bob')
-
-    def test_querySkin(self):
-        # We don't let people define skins locally yet.
-        # So just test that we can get the defs from the global service
-        globalService = zapi.getGlobalService(Presentation)
-        globalService.defineLayer('bob')
-        globalService.defineSkin('bob', ['bob', 'default'])
-        self.assertEqual(self._service.querySkin('bob'), ('bob', 'default'))
-        
-    def test_queryLayer(self):
-        # We don't let people define layers locally yet.
-        # So just test that we can get the them from the global service
-        globalService = zapi.getGlobalService(Presentation)
-        layer = self._service.queryLayer('default')
-        self.assertEqual(layer.__parent__, globalService)
-        self.test_queryView()
-        layer = self._service.queryLayer('default')
-        self.assertEqual(layer.__parent__, self._service)
-
-    def test_queryDefaultViewName(self):
-        # We don't let people define the default view name locally
-        # yet.  So just test that we can get it from the global
-        # service
-        class O(object):
-            implements(I1)
-        o = O()
-        r = TestRequest()
-        self.assertEqual(self._service.queryDefaultViewName(o, r),
-                         None)
-        globalService = zapi.getGlobalService(Presentation)
-        globalService.setDefaultViewName(I1, IBrowserRequest, 'foo.html')
-        self.assertEqual(self._service.queryDefaultViewName(o, r),
-                         'foo.html')
-
-    def test_queryMultiView(self):
-        # We don't let people define multiviews locally yet.
-        # So just test that we can get them from the global service
-        class X(object):
-            implements(I1)
-        class Y(object):
-            implements(I3)
-        x = X()
-        y = Y()
-        r = TestRequest()
-        self.assertEqual(self._service.queryMultiView((x, y), r,
-                                                      name='foo.html'),
-                         None)
-        globalService = zapi.getGlobalService(Presentation)
-
-        class MV(object):
-            def __init__(self, x, y, request):
-                self.x, self.y, self.request = x, y, request
-                
-        globalService.provideAdapter(IBrowserRequest, MV, 'foo.html',
-                                     contexts=(I1, I3))
-        v = self._service.queryMultiView((x, y), r, name='foo.html')
-        self.assertEqual(v.__class__, MV)
-        self.assertEqual(v.request, r)
-        self.assertEqual(v.x, x)
-        self.assertEqual(v.y, y)
-        
-
-    def test_queryResource(self):
-        # We don't let people define resources locally yet.
-        # So just test that we can get them from the global service
-
-        r = TestRequest()
-        self.assertEqual(self._service.queryResource('logo.gif', r),
-                         None)
-
-        class Resource(object):
-            def __init__(self, request):
-                self.request = request
-
-        globalService = zapi.getGlobalService(Presentation)
-        globalService.provideResource('logo.gif', IBrowserRequest, Resource)
-        
-        resource = self._service.queryResource('logo.gif', r)
-        self.assertEqual(resource.__class__, Resource)
-        self.assertEqual(resource.request, r)
-
-    def test_implements_IPresentationService(self):
-        from zope.component.interfaces import IPresentationService
-
-        verifyObject(IPresentationService, self._service)
-
-    def createTestingRegistry(self):
-        return contained(LocalPresentationService(), C())
-
-    def createTestingRegistration(self):
-        return Registration()
-
-    def test_implements_IPresentationService(self):
-        verifyObject(IPresentationService, LocalPresentationService())
-
-    def test_queryView_no_view(self):
-        service = self._service
-        class O(object):
-            implements(I1)
-
-        o = O()
-        request = TestRequest()
-        self.assertEqual(service.queryView(o, 'test', request), None)
-        self.assertEqual(service.queryView(o, 'test', request, default=42), 42)
-
-    def test_queryView(self):
-        sm = traverse(self.rootFolder, '++etc++site')
-
-        registration_manager = traverse(sm, 'default').getRegistrationManager()
-        key = registration_manager.addRegistration(Registration())
-        registration = traverse(registration_manager, key)
-
-        class O(object):
-            implements(I1)
-
-        registration.factory = A
-
-        registry = self._service.createRegistrationsFor(registration)
-        registry.register(registration)
-        registry.activate(registration)
-
-        o = O()
-        request = TestRequest()
-
-        for r in I1, I1E:
-            o = O()
-            directlyProvides(o, r)
-
-            view = self._service.queryView(o, 'test', request)
-            self.assertEqual(view.__class__, A)
-            self.assertEqual(view.context, o)
-            self.assertEqual(view.request, request)
-
-    def test_queryView_delegation(self):
-        service = self._service
-
-        sm = self.buildFolders(site=True)
-        registration_manager = traverse(sm, 'default').getRegistrationManager()
-        registration = Registration()
-        name = registration_manager.addRegistration(registration)
-        registration = traverse(registration_manager, name)
-
-        class O(object):
-            implements(I1)
-
-        o = O()
-        request = TestRequest()
-
-        class A2(A): pass
-
-        ztapi.browserView(I1, 'test', A2)
-
-        view = service.queryView(o, 'test', request)
-        self.assertEqual(view.__class__, A2)
-        self.assertEqual(view.context, o)
-        self.assertEqual(view.request, request)
-
-    def test_registrations(self):
-        self.test_queryView()
-        registrations = map(str, self._service.registrations())
-        registrations.sort()
-        self.assertEqual(
-            registrations,
-
-            ['Registration(A)',
-
-             # These were set up by PlacefulSetup:
-             "zope.component.presentation.PresentationRegistration("
-               "default, ('IContainmentRoot', 'IBrowserRequest'), "
-               "'Interface', 'absolute_url', 'SiteAbsoluteURL', '')",
-             "zope.component.presentation.PresentationRegistration("
-               "default, (None, 'IBrowserRequest'), 'IAbsoluteURL', "
-               "'', 'AbsoluteURL', '')",
-             "zope.component.presentation.PresentationRegistration("
-               "default, (None, 'IBrowserRequest'), 'Interface', "
-               "'absolute_url', 'AbsoluteURL', '')",
-             "zope.component.presentation.PresentationRegistration("
-               "default, (None, None), "
-               "'ITraversable', 'etc', 'etc', '')",
-             ]
-            )
-
-    def test_localOnly_registrations(self):
-        self.test_queryView()
-        registrations = map(str, self._service.registrations(localOnly=True))
-        registrations.sort()
-        self.assertEqual(registrations, ['Registration(A)'])
-
-    def test_getRegistrationsForInterface(self):
-        self.test_queryView()
-        for reg in self._service.getRegistrationsForInterface(I1):
-            if reg.required is None:
-                continue
-            self.assertEqual(reg.required, I1)
-
-        for reg in self._service.getRegistrationsForInterface(I1E):
-            if reg.required is None:
-                continue
-            self.assertEqual(reg.required, I1)
 
 
 class PhonyServiceManager(ServiceManager):
@@ -497,7 +281,6 @@ class TestPageRegistration(PlacefulSetup, TestCase):
 
 def test_suite():
     return TestSuite([
-        makeSuite(TestLocalPresentationService),
         makeSuite(TestViewRegistration),
         makeSuite(TestPageRegistration),
         ])

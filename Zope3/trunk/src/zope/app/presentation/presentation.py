@@ -21,8 +21,6 @@ import persistent.dict
 
 from zope.interface import implements, providedBy, Interface, Attribute
 from zope.security.checker import NamesChecker, ProxyFactory
-from zope.component.presentation import IDefaultViewName
-from zope.component.presentation import PresentationRegistration
 
 import zope.app.container.contained
 import zope.app.registration.interfaces
@@ -30,7 +28,6 @@ import zope.app.site.interfaces
 import zope.app.adapter
 import zope.app.interface.interfaces
 import zope.component.interfaces
-import zope.component.presentation
 import zope.configuration.exceptions
 import zope.proxy
 import zope.publisher.interfaces.browser
@@ -41,209 +38,12 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dependable.interfaces import IDependable, DependencyError
 from zope.app.registration.interfaces import IRegistered
 
-# TODO: Skins and layer definitions are not handled by this service
-# but left up to services above, which effectively means the global
-# service.  This problem will probably become obsolete when the
-# ImplementViewsAsAdapters proposal is implemented.
-
-class LocalPresentationService(
-    zope.app.adapter.LocalAdapterBasedService,
-    ):
-
-    implements(
-        zope.component.interfaces.IPresentationService,
-        zope.app.site.interfaces.ISimpleService,
-        zope.app.registration.interfaces.IRegistry,
-        zope.app.interface.interfaces.IInterfaceBasedRegistry,
-        )
-
-    next = base = None
-
-    def __init__(self):
-        self.layers = persistent.dict.PersistentDict()
-        self.base = zapi.getGlobalService(zapi.servicenames.Presentation)
-
-    def setNext(self, next, global_):
-        if next is None:
-            self.delegate = global_
-        else:
-            self.delegate = next
-            
-        self.next = next
-        self.base = global_
-        for layername in self.layers:
-            nextlayer = next.queryLayer(layername)
-            globlayer = global_.queryLayer(layername)
-            self.layers[layername].setNext(nextlayer, globlayer)
-
-    def defaultSkin(self):
-        return self.delegate.defaultSkin
-    defaultSkin = property(defaultSkin)
-
-    def querySkin(self, name):
-        return self.delegate.querySkin(name)
-
-    def queryLayer(self, name):
-        r = self.layers.get(name)
-        if r is not None:
-            return r
-        return self.delegate.queryLayer(name)
-
-    def queryView(self, object, name, request, default=None,
-                  providing=Interface):
-        """Look for a named view for a given object and request
-
-        The request must implement `IPresentationRequest`.
-
-        The default will be returned if the component can't be found.
-        """
-        skin = request.getPresentationSkin() or self.defaultSkin
-        layers = self.querySkin(skin)
-        if not layers:
-            return default
-        
-        objects = object, request
-        for layername in layers:
-            layer = self.layers.get(layername)
-            if layer is None:
-                layer = self.delegate.queryLayer(layername)
-                if layer is None:
-                    raise ValueError("Bad layer", layer)
-
-            r = layer.queryMultiAdapter(objects, providing, name)
-            if r is not None:
-                return r
-        return default
-
-    def queryResource(self, name, request, default=None, providing=Interface):
-        """Look up a named resource for a given request
-        
-        The request must implement `IPresentationRequest`.
-        
-        The default will be returned if the component can't be found.
-        """
-        skin = request.getPresentationSkin() or self.defaultSkin
-        layers = self.querySkin(skin)
-        if not layers:
-            return default
-
-        for layername in layers:
-            layer = self.layers.get(layername)
-            if layer is None:
-                layer = self.delegate.queryLayer(layername)
-            if layer is None:
-                raise ValueError("Bad layer", layer)
-
-            r = layer.queryAdapter(request, providing, name)
-            if r is not None:
-                return r
-
-        return default
-
-    def queryMultiView(self, objects, request,
-                       providing=Interface, name='',
-                       default=None):
-        """Adapt the given objects and request
-
-        The first argument is a sequence of objects to be adapted with the
-        request.
-        """
-
-        skin = request.getPresentationSkin() or self.defaultSkin
-        layers = self.querySkin(skin)
-        if not layers:
-            return default
-
-        objects = objects + (request, )
-        for layername in layers:
-            layer = self.layers.get(layername)
-            if layer is None:
-                layer = self.delegate.queryLayer(layername)
-            if layer is None:
-                raise ValueError("Bad layer", layer)
-
-            r = layer.queryMultiAdapter(objects, providing, name)
-            if r is not None:
-                return r
-        return default
-
-    def queryDefaultViewName(self, object, request, default=None):
-        skin = request.getPresentationSkin() or self.defaultSkin
-        layers = self.querySkin(skin)
-        if not layers:
-            return default
-
-        objects = object, request
-        for layername in layers:
-            layer = self.layers.get(layername)
-            if layer is None:
-                layer = self.delegate.queryLayer(layername)
-            if layer is None:
-                raise ValueError("Bad layer", layer)
-            r = layer.lookup(map(providedBy, objects),
-                             IDefaultViewName)
-            if r is not None:
-                return r
-        return default
-
-    def queryRegistrationsFor(self, registration, default=None):
-        layername = registration.layer
-        layer = self.layers.get(layername)
-        if layer is None:
-            return default
-        return layer.queryRegistrationsFor(registration, default)
-
-    def createRegistrationsFor(self, registration):
-        layername = registration.layer
-        layer = self.layers.get(layername)
-        if layer is None:
-            if self.next is None:
-                next = None
-            else:
-                next = self.next.queryLayer(layername)
-            base = self.base.queryLayer(layername)
-            if base is None:
-                raise ValueError("Undefined layer", layername)
-            layer = LocalLayer(base, next, self, layername)
-            self.layers[layername] = layer
-            
-        return layer.createRegistrationsFor(registration)
-
-    def registrations(self, localOnly=False):
-        for layer in self.layers.itervalues():
-            for registration in layer.registrations():
-                yield registration
-
-        if localOnly is True:
-            return
-
-        next = self.next
-        if next is None:
-            next = self.base
-
-        for registration in next.registrations():
-            yield registration
-
-    def getRegistrationsForInterface(self, required):
-        iro = required.__iro__ + (None,)
-
-        for registration in self.registrations():
-            if IViewRegistration.providedBy(registration):
-                if registration.required in iro:
-                    yield registration
-
-            if isinstance(registration, PresentationRegistration):
-                if registration.required[0] in iro:
-                    # Not using an adapter here, since it would be just
-                    # overhead.
-                    yield GlobalViewRegistration(registration)                
-
 class GlobalViewRegistration(object):
     """Registrations representing global view service thingies."""
 
     implements(zope.app.registration.interfaces.IRegistration)
 
-    serviceType = zapi.servicenames.Presentation
+    serviceType = zapi.servicenames.Adapters
     status = zope.app.registration.interfaces.ActiveStatus
 
     def __init__(self, context):
@@ -316,7 +116,7 @@ class IViewRegistration(zope.app.adapter.IAdapterRegistration):
 class ViewRegistration(zope.app.registration.registration.SimpleRegistration):
     implements(IViewRegistration)
 
-    serviceType = zapi.servicenames.Presentation
+    serviceType = zapi.servicenames.Adapters
     provided = Interface
 
     # For usageSummary(); subclass may override

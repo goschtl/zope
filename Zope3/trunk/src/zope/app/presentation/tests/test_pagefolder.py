@@ -21,13 +21,11 @@ from zope.app.tests import setup
 from zope.app.site.tests.placefulsetup import PlacefulSetup
 from zope.app.presentation.pagefolder import PageFolder, IPageFolder
 from zope.app.presentation.zpt import ZPTTemplate
-from zope.app.presentation import LocalPresentationService
 from zope.app.registration.interfaces import ActiveStatus
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.registration.tests.test_registrationmanager \
      import RegisterableContainerTests
-from zope.component.servicenames import Presentation
 
 from zope.app.dependable.interfaces import IDependable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -35,7 +33,7 @@ from zope.app.dependable import Dependable
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
 from zope.app.annotation.attribute import AttributeAnnotations
-
+from zope.app.adapter.adapter import LocalAdapterService
 
 
 class I(Interface):
@@ -48,16 +46,12 @@ class Test(RegisterableContainerTests, PlacefulSetup, TestCase):
 
     def setUp(self):
         sm = PlacefulSetup.setUp(self, site=True)
-        zapi.getGlobalService(Presentation).defineLayer('debug')
-        setup.addService(sm, Presentation, LocalPresentationService(),
-                         suffix='service')
+        setup.addService(sm, zapi.servicenames.Adapters,
+                         LocalAdapterService(), suffix='service')        
         default = zapi.traverse(self.rootFolder, '++etc++site/default')
 
-        ztapi.provideAdapter(IAnnotatable, IAnnotations,
-                         AttributeAnnotations)
-
-        ztapi.provideAdapter(IAnnotatable, IDependable,
-                         Dependable)
+        ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
+        ztapi.provideAdapter(IAnnotatable, IDependable, Dependable)
 
         default["PF"] = PageFolder()
         pagefolder = zapi.traverse(default, "PF")
