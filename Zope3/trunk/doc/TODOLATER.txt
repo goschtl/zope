@@ -2,6 +2,24 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- Restructure registration framework to use direct references rather
+  than paths.
+
+- Partial adapters
+
+  http://dev.zope.org/Zope3/PartialAdapters
+
+  Maybe we can live without these.
+
+- Merge zope.conf and zdaemon.conf. This is a Fred Drake task. :)
+
+- http://dev.zope.org/Zope3/LifeCycleEvents
+
+- Permission rationalization
+
+  Absent deep thinking, then create a set of fine-grained permission
+  and a default permission redefinition that makes them course grained
+
 - Implement graceful shutdown and restart a la Zope 2. We have to add a bit of
   code to the server to support this, but it should not be too hard, since we
   have an implamentation in Zope 2.

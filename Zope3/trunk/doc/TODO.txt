@@ -1,11 +1,10 @@
 ============================================================
-Things to do for the next release (in no particular order)
+Things to do for the next release (sorted by importance)
 ============================================================
 
-- Persistent interfaces cannot be provided as providedBy or implementedBy
-  interfaces anymore. This functionality was broken during some interface and
-  adapter refactorings. Originally this was out of scope, but I think it is
-  too important and fundamental to be left out.
+- Distribution, packaging an installation system.  Fred is working on
+  a prototype. This will eventually inclide Zope-2 style installation,
+  configuration and process management.
 
 - http://dev.zope.org/Zope3/NoMoreSchemaBinding
 
@@ -15,12 +14,6 @@ Things to do for the next release (in no particular order)
 
   This is needed for a number of other tasks.  Nathan Yergler is
   working on this.
-
-- Merge zope.conf and zdaemon.conf. This is a Fred Drake task. :)
-
-- Distribution, packaging an installation system.  Fred is working on
-  a prototype. This will eventually inclide Zope-2 style installation,
-  configuration and process management.
 
 - Redo event service
 
@@ -34,11 +27,14 @@ Things to do for the next release (in no particular order)
 
   http://dev.zope.org/Zope3/FixedDefaultComponentLookup
 
-- Partial adapters
+- Finish location-relevent event work;
+  specifically, handling events on containers.  
 
-  http://dev.zope.org/Zope3/PartialAdapters
+  See: http://dev.zope.org/Zope3/LocationRelatedEvents
 
-  Maybe we can live without these.
+- Redo the way names input in add forms.
+
+  See: http://dev.zope.org/Zope3/AddingNameControl
 
 - Minor refactoring of security context
 
@@ -46,24 +42,7 @@ Things to do for the next release (in no particular order)
 
   Steve and Marius are working on this
 
-- Restructure registration framework to use direct references rather
-  than paths.
-
-- Finish location-relevent event work;
-  specifically, handling events on containers.  
-
-  See:
-   http://dev.zope.org/Zope3/LocationRelatedEvents
-
-- Redo the way names input in add forms.
-
-  See: http://dev.zope.org/Zope3/AddingNameControl
-
-  K. Narasimha Murthy is working on this.
-
-- http://dev.zope.org/Zope3/LifeCycleEvents
-
-- Permission rationalization
-
-  Absent deep thinking, then create a set of fine-grained permission
-  and a default permission redefinition that makes them course grained
+- Persistent interfaces cannot be provided as providedBy or implementedBy
+  interfaces anymore. This functionality was broken during some interface and
+  adapter refactorings. Originally this was out of scope, but I think it is
+  too important and fundamental to be left out.
