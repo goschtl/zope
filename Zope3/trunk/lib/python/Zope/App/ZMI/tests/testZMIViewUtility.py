@@ -13,10 +13,10 @@
 ##############################################################################
 """
 
-$Id: testZMIViewUtility.py,v 1.3 2002/06/18 19:34:58 jim Exp $
+$Id: testZMIViewUtility.py,v 1.4 2002/10/28 11:31:58 stevea Exp $
 """
 
-import unittest, sys
+import unittest
 from Interface import Interface
 
 from Zope.ComponentArchitecture import getService, getServiceManager
@@ -26,9 +26,7 @@ from Zope.App.ZMI.ZMIViewUtility import ZMIViewUtility
 from Zope.Publisher.Browser.IBrowserView import IBrowserView
 from Zope.Publisher.Browser.IBrowserPresentation import IBrowserPresentation
 from Zope.App.ZopePublication.Traversers import TestTraverser
-from Zope.Security.SecurityManagement import setSecurityPolicy
 from Zope.Security.SecurityManagement import newSecurityManager
-from Zope.Exceptions import Unauthorized
 from Zope.Security.Checker import defineChecker, NamesChecker, CheckerPublic
 from Zope.Security.Proxy import ProxyFactory
 from Zope.App.Publisher.Browser.IBrowserMenuService \
@@ -57,7 +55,7 @@ ob.a1 = C()
 ob.a2 = C()
 ob.a2.a3 = C()
 ob.abad = C()
-ob.abad.bad=1
+ob.abad.bad = 1
 
 class V:
     __implements__ = IBrowserView
@@ -74,8 +72,8 @@ class Test(PlacefulSetup, unittest.TestCase):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
-        defineService=getServiceManager(None).defineService
-        provideService=getServiceManager(None).provideService
+        defineService = getServiceManager(None).defineService
+        provideService = getServiceManager(None).provideService
 
 
         defineService('BrowserMenu', IBrowserMenuService)
@@ -105,7 +103,7 @@ class Request:
         return ''
         
 def test_suite():
-    loader=unittest.TestLoader()
+    loader = unittest.TestLoader()
     return loader.loadTestsFromTestCase(Test)
 
 if __name__=='__main__':
