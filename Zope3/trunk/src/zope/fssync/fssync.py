@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.33 2003/06/11 15:50:55 gvanrossum Exp $
+$Id: fssync.py,v 1.34 2003/07/02 21:13:14 fdrake Exp $
 """
 
 import os
@@ -194,6 +194,8 @@ class Network(object):
 
         XXX This doesn't support proxies or redirect responses.
         """
+        # XXX Don't change the case of the header names; httplib might
+        # not treat them in a properly case-insensitive manner.
         assert self.rooturl
         if not path.endswith("/"):
             path += "/"
@@ -234,6 +236,8 @@ class Network(object):
         other text documents as-is; and for non-text documents,
         returns just a string giving the content-type.
         """
+        # Too often, we just get HTTP response code 200 (OK), with an
+        # HTML document that explains what went wrong.
         data = fp.read()
         ctype = headers["Content-type"]
         if ctype == "text/html":
@@ -311,7 +315,8 @@ class FSSync(object):
             else:
                 names = self.metadata.getnames(target)
                 if not names:
-                    method(target) # Will raise an exception
+                    # just raise Error directly?
+                    method(target, *more) # Will raise an exception
                 else:
                     for name in names:
                         method(join(target, name), *more)
