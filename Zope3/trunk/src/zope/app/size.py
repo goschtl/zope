@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapters that give the size of an object.
 
-$Id: size.py,v 1.4 2003/01/17 00:02:06 efge Exp $
+$Id: size.py,v 1.5 2003/01/17 13:23:15 efge Exp $
 """
 
 from zope.app.interfaces.size import ISized
@@ -41,10 +41,10 @@ class DefaultSized:
         units, size = self._sortingSize
         if units == 'byte':
             return byteDisplay(size)
-        return u'n/a' # XXX this should be localizable
+        return u'n/a' # XXX L10N this should be localizable
 
 def byteDisplay(size):
-    # XXX this should be localizable
+    # XXX L10N this should be localizable
     if size == 0:
         return '0 KB'
     if size < 1024:
