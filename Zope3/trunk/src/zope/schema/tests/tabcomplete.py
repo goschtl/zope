@@ -15,8 +15,14 @@
 """Example vocabulary for tab completion."""
 
 
-from zope.schema.interfaces import ITerm, IVocabulary
-from zope.interface import implements
+from zope.schema.interfaces import ITerm, IVocabulary, IVocabularyQuery
+from zope.interface import implements, Interface
+
+
+class IPrefixQuery(IVocabularyQuery):
+    
+    def queryForPrefix(prefix):
+        """Return a vocabulary that contains terms beginning with prefix."""
 
 
 class Term:
@@ -48,19 +54,29 @@ class CompletionVocabulary(object):
     def __contains__(self, value):
         return value in self._values
 
-    def getTerm(self, value):
-        if value in self._values:
-            return Term(value)
-        raise LookupError(value)
-
     def __iter__(self):
         return TermIterator(self._values)
 
     def __len__(self):
         return len(self._values)
 
+    def getQuery(self):
+        return PrefixQuery(self)
+
+    def getTerm(self, value):
+        if value in self._values:
+            return Term(value)
+        raise LookupError(value)
+
+
+class PrefixQuery:
+    implements(IPrefixQuery)
+
+    def __init__(self, vocabulary):
+        self.vocabulary = vocabulary
+
     def queryForPrefix(self, prefix):
-        L = [v for v in self._values if v.startswith(prefix)]
+        L = [v for v in self.vocabulary._values if v.startswith(prefix)]
         if L:
             return CompletionVocabulary(L)
         else:

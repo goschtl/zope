@@ -16,7 +16,7 @@
 
 import unittest
 
-from zope.schema.interfaces import ITerm
+from zope.schema.interfaces import ITerm, IVocabularyQuery
 from zope.schema.tests import tabcomplete
 
 
@@ -26,15 +26,21 @@ class TabCompletionTests(unittest.TestCase):
         self.vocab = tabcomplete.CompletionVocabulary(['abc', 'def'])
 
     def test_successful_query(self):
-        subset = self.vocab.queryForPrefix("a")
+        query = self.vocab.getQuery()
+        subset = query.queryForPrefix("a")
         L = [term.value for term in subset]
         self.assertEqual(L, ["abc"])
-        subset = self.vocab.queryForPrefix("def")
+        subset = query.queryForPrefix("def")
         L = [term.value for term in subset]
         self.assertEqual(L, ["def"])
 
     def test_failed_query(self):
-        self.assertRaises(LookupError, self.vocab.queryForPrefix, "g")
+        query = self.vocab.getQuery()
+        self.assertRaises(LookupError, query.queryForPrefix, "g")
+
+    def test_query_interface(self):
+        query = self.vocab.getQuery()
+        self.assert_(IVocabularyQuery.isImplementedBy(query))
 
     def test_getTerm(self):
         term = self.vocab.getTerm("abc")
