@@ -13,13 +13,14 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metaconfigure.py,v 1.3 2003/08/02 06:54:00 philikon Exp $
+$Id: metaconfigure.py,v 1.4 2003/11/21 17:10:52 jim Exp $
 """
 from zope.app.component.metaconfigure import handler
 from zope.app.renderer.sourcetype import SourceTypes 
 from zope.configuration.fields import GlobalObject
 from zope.interface import Interface
 from zope.schema import TextLine
+from zope.component.servicenames import Presentation
 
 class ISourceTypeDirective(Interface):
     """The renderers directive specifies how a particular source text can
@@ -65,10 +66,10 @@ class IRendererDirective(Interface):
 
 def renderer(_context, sourceType, for_, factory):
     _context.action(
-        discriminator = ('view', sourceType, None, for_, 'default'),
+        discriminator = ('view', sourceType, u'', for_, 'default'),
         callable = handler,
-        args = ('Views', 'provideView',
-                sourceType, None, for_, factory, 'default')
+        args = (Presentation, 'provideView',
+                sourceType, u'', for_, factory, 'default')
         )
 
 def sourcetype(_context, interface, class_, title=u''):
