@@ -157,7 +157,7 @@ of installing Zope does not allow for easy uninstallation later:  you
 will need to delete Zope files manually from your Python's
 Lib\site-packages\ and Scripts\ directories.  If you use the Windows
 installer instead, it creates an uninstallation program, and an entry
-to run it in Contol Panel's Add/Remove Programs applet.
+to run it in Control Panel's Add/Remove Programs applet.
 
 
 Creating a Zope instance home
