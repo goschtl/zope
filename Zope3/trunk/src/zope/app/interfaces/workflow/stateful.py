@@ -14,7 +14,7 @@
 
 """Interfaces for stateful workflow process definition.
 
-$Id: stateful.py,v 1.10 2003/03/26 17:14:32 jack-e Exp $
+$Id: stateful.py,v 1.11 2003/03/28 18:17:02 jack-e Exp $
 """
 import zope.schema
 from zope.proxy.context import ContextProperty
@@ -76,7 +76,13 @@ class ITransition(Interface):
     condition = zope.schema.TextLine(
         title=u"Condition",
         description=u"""The condition that is evaluated to decide if the
-                        condition is fired or not.""",
+                        transition can be fired or not.""",
+        required=False)
+
+    script = zope.schema.TextLine(
+        title=u"Script",
+        description=u"""The script that is evaluated to decide if the
+                        transition can be fired or not.""",
         required=False)
 
     permission = PermissionField(
@@ -107,6 +113,12 @@ class ITransition(Interface):
 
     def setCondition(condition):
         """Set Condition."""
+
+    def getScript():
+        """Get Script."""
+
+    def setScript(script):
+        """Set Script."""
 
     def getPermission():
         """Get Permission."""
@@ -199,6 +211,12 @@ class IStatefulProcessDefinition(IProcessDefinition):
     def getTransitionNames():
         """Get the transition names.
         """
+
+    # XXX Temporarily till we find a better solution
+    def clear():
+        """Clear the whole ProcessDefinition.
+        """
+
 
 
 
