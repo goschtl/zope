@@ -236,10 +236,6 @@ Things to do After the next release (in no particular order)
 
   Current efforts could continue to be pursued as add-on items.
 
-- Redo menu service
-
-  http://dev.zope.org/Zope3/AdaptersForMenuItems
-
 - Finish persistent-module refactoring
 
   http://dev.zope.org/Zope3/ModulesAreGlobal

@@ -10,9 +10,40 @@ Zope Changes
 
     New features
 
+      - Removed Browser Menu Service and implemented menus as subscriber
+        adapters. Menu Item Types (in other words, menus) are now utilities
+        that provide `IMenuItemType`. 
+
+        + Completes http://dev.zope.org/Zope3/AdaptersForMenuItems. New
+          features such as sub-menus, icons, disabled entries and so on were
+          not well defined and should be reconsidered in a different proposal.
+
+        + Backward-compatibility of the existing `browser` directives was
+          ensured. 
+
+        + If you have a directive that accepts a menu as attribute, it now
+          needs to be a `MenuField`, so that it is correctly resolved to a menu
+          interface.
+
+        + The `browser:menu` directive has now an optional `interface`
+          attribute that allows you to specify a particular menu interface
+          instead of having the machinery create one for you.
+
+        + The two API methods `getMenu()` and `getFirstItemOfMenu()` of the
+          Browser Menu Service are now available as functions in 
+          `zope.app.publisher.browser.menu` having identical semantics.
+
+        + Added `order` attribute to the menu item that declares the item's
+          relative position. In general the menu items are always sorted from
+          most to least specific, which is determined by the order of the
+          implemented interfaces of the object. If ambiguities still exists,
+          the order and then the title of the menu item are taken account. 
+
       - Removed Presentation Serivce and implemented views as adapters. This
         mainly means that layers and skins became adapters. Here are some
         other points:
+        
+        + Completes http://dev.zope.org/Zope3/ImplementViewsAsAdapters.
 
         + Backward-compatibility of the Zope component API and the browser
           directives was ensured.
