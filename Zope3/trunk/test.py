@@ -1031,13 +1031,16 @@ def process_args(argv=None):
             else:
                 print "Running %s tests at level %d" % (kind, LEVEL)
 
-        if functional:
-            try:
-                from zope.app.tests.functional import FunctionalTestSetup
-            except ImportError:
-                print ('Skipping functional tests: could not import '
-                       'zope.app.tests.functional')
-                continue
+# This was to avoid functional tests outside of z3, but this doesn't really
+# work right.
+##         if functional:
+##             try:
+##                 from zope.app.tests.functional import FunctionalTestSetup
+##             except ImportError:
+##                 raise
+##                 print ('Skipping functional tests: could not import '
+##                        'zope.app.tests.functional')
+##                 continue
 
         # XXX We want to change *visible* warnings into errors.  The next
         # line changes all warnings into errors, including warnings we
