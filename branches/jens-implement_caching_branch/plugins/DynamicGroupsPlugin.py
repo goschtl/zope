@@ -16,6 +16,8 @@
 
 $Id$
 """
+import copy
+
 from Acquisition import aq_inner, aq_parent
 from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import SimpleItem
