@@ -45,7 +45,6 @@
        form to register it.  The form lets you define the connection
        name, a permission, and a registration status (Unregistered,
        Registered or Active). -->
-  <!--TBD: class AddCacheConfiguration-->
   <addform
       label="New Connection Registration"
       for="zope.app.interfaces.rdb.IZopeDatabaseAdapter"
