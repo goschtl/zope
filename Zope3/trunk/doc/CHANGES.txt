@@ -139,7 +139,11 @@ Zope Changes
       up by name but by a providing interface.
 
     Bug fixes
-    
+
+    - Content-Length header bug fixed. The problem was that while encoding
+      an output data to output encoding data length can be changed, but
+      headers were already sent.
+
     - Fixed issue 159. barryp sent in a patch concerning timezone handling in
       the HTTP server date utility. 
 
