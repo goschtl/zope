@@ -84,13 +84,13 @@ def init_table():
          'addrs': ["cmf-checkins@zope.org"]},
 
         {'path': "Packages/TAL",
-         'addrs': ["zpt@mail.zope.org"]},
+         'addrs': ["zpt-checkins@mail.zope.org"]},
         {'path': "Products/PageTemplates",
-         'addrs': ["zpt@mail.zope.org"]},
+         'addrs': ["zpt-checkins@mail.zope.org"]},
         {'path': "Packages/ZTUtils",
-         'addrs': ["zpt@mail.zope.org"]},
+         'addrs': ["zpt-checkins@mail.zope.org"]},
         {'path': "Products/PresentationTemplates",
-         'addrs': ["zpt@mail.zope.org"]},
+         'addrs': ["zpt-checkins@mail.zope.org"]},
 
         {'path': "Packages/Spread",
          'addrs': ["pythonlabs@zope.com"]},
