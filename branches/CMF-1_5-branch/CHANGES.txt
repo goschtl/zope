@@ -2,6 +2,11 @@ CMF 1.5.1beta (unreleased)
 
   New Features
 
+    - CMFSetup utils: Added 'ConfiguratorBase' class.
+      It's now recommended to use this class as base for all configurators.
+      The class includes some generic methods to handle subobjects and
+      properties.
+
     - FSObject: Now FSObject-derived items like FSImage or FSFile can have 
       security declarations inside the metadata file.
       (http://www.zope.org/Collectors/CMF/289)
