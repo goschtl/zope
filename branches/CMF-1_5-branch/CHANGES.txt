@@ -23,6 +23,9 @@ CMF 1.5.1beta (unreleased)
 
   Bug Fixes
 
+    - CMFSite: Made 'title' and 'description' properties undeletable.
+      This change has no effect on existing sites.
+
     - FSObject: Ensure that a cache manager association on a Filesystem-based
       object in the Skins Tool gets applied to the customized object in the
       ZODB upon customization. (http://www.zope.org/Collectors/CMF/304)
