@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: contents.py,v 1.9 2003/02/11 15:59:29 sidnei Exp $
+Revision information: $Id: contents.py,v 1.10 2003/02/17 15:10:39 sidnei Exp $
 """
 from zope.app.interfaces.container import IContainer, IZopeContainer
 from zope.app.interfaces.dublincore import IZopeDublinCore
@@ -26,10 +26,10 @@ from zope.app.interfaces.services.principalannotation \
 from zope.publisher.browser import BrowserView
 from zope.app.interfaces.traversing import IPhysicallyLocatable
 from zope.app.traversing import traverse, getPhysicalRoot
-from zope.app.interfaces.copy import IPrincipalClipboard
+from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.interfaces.container import IPasteTarget
-from zope.app.interfaces.copy import IObjectCopier
-from zope.app.interfaces.copy import IObjectMover
+from zope.app.interfaces.copypastemove import IObjectCopier
+from zope.app.interfaces.copypastemove import IObjectMover
 
 class Contents(BrowserView):
 
@@ -73,8 +73,7 @@ class Contents(BrowserView):
         container = getAdapter(self.context, IZopeContainer)
         for id, newid in zip(ids, newids):
             if newid != id:
-                obj = container[id]
-                getAdapter(obj, IObjectMover).moveTo(container, newid)
+                container.rename(id, newid)
         self.request.response.redirect('@@contents.html')
 
     def removeObjects(self, ids):
@@ -136,6 +135,8 @@ class Contents(BrowserView):
             obj = traverse(container, item['target'])
             if item['action'] == 'cut':
                 getAdapter(obj, IObjectMover).moveTo(target)
+                # XXX need to remove the item from the clipboard here
+                # as it will not be available anymore from the old location
             elif item['action'] == 'copy':
                 getAdapter(obj, IObjectCopier).copyTo(target)
             else:

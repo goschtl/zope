@@ -14,13 +14,13 @@
 """
 
 Revision information:
-$Id: copy.py,v 1.3 2003/02/11 15:59:28 sidnei Exp $
+$Id: copypastemove.py,v 1.1 2003/02/17 15:10:38 sidnei Exp $
 """
 
 from zope.app.traversing import getParent, objectName
 from zope.component import getAdapter, queryAdapter
-from zope.app.interfaces.copy import IObjectMover
-from zope.app.interfaces.copy import IObjectCopier
+from zope.app.interfaces.copypastemove import IObjectMover
+from zope.app.interfaces.copypastemove import IObjectCopier
 from zope.app.interfaces.container import IAddNotifiable
 from zope.app.interfaces.container import IDeleteNotifiable
 from zope.app.interfaces.container import IMoveNotifiable

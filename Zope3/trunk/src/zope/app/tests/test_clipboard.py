@@ -13,12 +13,12 @@ from zope.app.services.tests.test_auth import AuthSetup
 #
 ##############################################################################
 """
-$Id: test_clipboard.py,v 1.2 2003/02/11 16:00:00 sidnei Exp $
+$Id: test_clipboard.py,v 1.3 2003/02/17 15:10:41 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.interfaces.copy import IPrincipalClipboard
-from zope.app.copy import PrincipalClipboard
+from zope.app.interfaces.copypastemove import IPrincipalClipboard
+from zope.app.copypastemove import PrincipalClipboard
 from zope.app.interfaces.services.auth import IUser
 from zope.component import getAdapter, getService, getServiceManager
 from zope.component.adapter import provideAdapter

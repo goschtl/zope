@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.6 2003/02/12 20:46:49 fdrake Exp $
+$Id: test_contents.py,v 1.7 2003/02/17 15:10:39 sidnei Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -24,9 +24,9 @@ from zope.component.adapter import provideAdapter
 from zope.app.interfaces.traversing import ITraversable
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.container import IContainer
-from zope.app.interfaces.copy import IObjectMover
+from zope.app.interfaces.copypastemove import IObjectMover
 from zope.app.container.zopecontainer import ZopeContainerAdapter
-from zope.app.copy import ObjectMover
+from zope.app.copypastemove import ObjectMover
 
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectModifiedEvent
