@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: checker.py,v 1.25 2003/05/29 15:51:19 stevea Exp $
+$Id: checker.py,v 1.26 2003/06/02 12:46:03 stevea Exp $
 """
 
 import os
@@ -101,7 +101,6 @@ class Checker(TrustedCheckerBase):
             setattr_permission_func = setattr_permission_func.get
         self._setattr_permission_func = setattr_permission_func
 
-
     def getPermission_func(self):
         return self._permission_func
 
@@ -124,7 +123,6 @@ class Checker(TrustedCheckerBase):
 
     def check_setattr(self, object, name):
         'See IChecker'
-
         permission = self._setattr_permission_func(name)
         if permission is not None:
             if permission is CheckerPublic:
@@ -134,14 +132,13 @@ class Checker(TrustedCheckerBase):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized(name=name)
+                raise Unauthorized, name
 
         __traceback_supplement__ = (TracebackSupplement, object)
-        raise ForbiddenAttribute(name)
+        raise ForbiddenAttribute, name
 
     def check(self, object, name):
         'See IChecker'
-
         permission = self._permission_func(name)
         if permission is not None:
             if permission is CheckerPublic:
@@ -151,17 +148,15 @@ class Checker(TrustedCheckerBase):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized(name=name)
+                raise Unauthorized, name
         elif name in _always_available:
             return
 
         __traceback_supplement__ = (TracebackSupplement, object)
-        raise ForbiddenAttribute(name)
+        raise ForbiddenAttribute, name
 
     def proxy(self, value):
         'See IChecker'
-        # Now we need to create a proxy
-
         checker = getattr(value, '__Security_checker__', None)
         if checker is None:
             checker = selectChecker(value)
@@ -174,7 +169,6 @@ class Checker(TrustedCheckerBase):
 class DecoratedChecker(TrustedCheckerBase):
     """A checker using further permissions relative to an original checker.
     """
-
     implements(IChecker)
 
     def __init__(self, original_checker, permission_func,
@@ -224,7 +218,7 @@ class DecoratedChecker(TrustedCheckerBase):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized(name=name)
+                raise Unauthorized, name
         else:
             # let the original checker decide
             self._original_checker.check(object, name)
@@ -240,7 +234,7 @@ class DecoratedChecker(TrustedCheckerBase):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized(name=name)
+                raise Unauthorized, name
         else:
             # let the original checker decide
             self._original_checker.check_getattr(object, name)
@@ -256,7 +250,7 @@ class DecoratedChecker(TrustedCheckerBase):
                 return
             else:
                 __traceback_supplement__ = (TracebackSupplement, object)
-                raise Unauthorized(name=name)
+                raise Unauthorized, name
         else:
             # let the original checker decide
             self._original_checker.check_setattr(object, name)
@@ -264,8 +258,6 @@ class DecoratedChecker(TrustedCheckerBase):
 
     def proxy(self, value):
         'See IChecker'
-        # Now we need to create a proxy
-
         checker = getattr(value, '__Security_checker__', None)
         if checker is None:
             checker = selectChecker(value)
