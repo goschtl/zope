@@ -5,16 +5,21 @@
 
 # These packages are the Zope 3 components.
 #
-zodbcode              svn://svn.zope.org/repos/main/Zope3/tags/*/src/zodbcode
-zope                  svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope
+zodbcode       svn://svn.zope.org/repos/main/Zope3/tags/*/src/zodbcode
+zope           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope
 
 # These packages are copied from the ZConfig, zdaemon, and ZODB projects:
 #
-BTrees                svn://svn.zope.org/repos/main/Zope3/tags/*/src/BTrees
-persistent            svn://svn.zope.org/repos/main/Zope3/tags/*/src/persistent
-ThreadedAsync         svn://svn.zope.org/repos/main/Zope3/tags/*/src/ThreadedAsync
-transaction           svn://svn.zope.org/repos/main/Zope3/tags/*/src/transaction
-ZConfig               svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZConfig
-zdaemon               svn://svn.zope.org/repos/main/Zope3/tags/*/src/zdaemon
-ZEO                   svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZEO
-ZODB                  svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZODB
+BTrees         svn://svn.zope.org/repos/main/Zope3/tags/*/src/BTrees
+persistent     svn://svn.zope.org/repos/main/Zope3/tags/*/src/persistent
+ThreadedAsync  svn://svn.zope.org/repos/main/Zope3/tags/*/src/ThreadedAsync
+transaction    svn://svn.zope.org/repos/main/Zope3/tags/*/src/transaction
+ZConfig        svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZConfig
+zdaemon        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zdaemon
+ZEO            svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZEO
+ZODB           svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZODB
+
+# This package is the ZopeX3 release collection; it defines what goes
+# into the Zope X3 releases.
+#
+ZopeX3         svn://svn.zope.org/repos/main/Zope3/tags/*/releases/ZopeX3
