@@ -16,7 +16,9 @@
 
   <br />
     <input type="text" name="name" />
-    <input type="submit" name="@@addPackage.html:method" value="Add"
+    <input type="submit" 
+           name="@@addSiteManagementFolder.html:method"
+           value="Add"
            i18nXXX:attributes="value string:menu_add_button" />
     <input type="submit" name="@@removeObjects.html:method" value="Delete"
            i18nXXX:attributes="value string:menu_delete_button" /> 
