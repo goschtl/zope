@@ -476,9 +476,6 @@ class RequestStub(dict):
     def getPresentationType(self):
         return IUnitTestPresentation
 
-    def getPresentationSkin(self):
-        return ''
-
 
 class TestContainerView(PlacelessSetup, unittest.TestCase):
 

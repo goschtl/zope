@@ -61,7 +61,6 @@ class ZPTPageTests(PlacelessSetup, unittest.TestCase):
         ztapi.provideAdapter(
               IContainmentRoot, IPhysicallyLocatable, RootPhysicallyLocatable)
         defineChecker(Data, NamesChecker(['URL', 'name']))
-        defineChecker(TestRequest, NamesChecker(['getPresentationSkin']))
 
     def testZPTRendering(self):
         page = ZPTPage()
