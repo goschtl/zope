@@ -1,6 +1,10 @@
 CMF 1.3
 
   New Features
+  
+    - FSPageTemplates now autodetect XML if a document has the standard 
+      <?xml version="xx"?> at the top, setting the content_type to "text/xml"
+      so that it is parsed and served as XML.
 
     - Added a 'Workflows' tab in the ZMI that displays the workflow state
       of the object.
