@@ -13,7 +13,7 @@
 ##############################################################################
 """Handle form to create module
 
-$Id: module.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: module.py,v 1.3 2002/12/30 21:09:04 jeremy Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -26,15 +26,6 @@ class AddModule(BrowserView):
         mgr = self.context.add(mgr)
         mgr.new(name, source)
         self.request.response.redirect(self.context.nextURL())
-
-
-"""Handle form to edit module
-
-$Id: module.py,v 1.2 2002/12/25 14:12:36 jim Exp $
-"""
-
-from zope.publisher.browser import BrowserView
-from zope.app.services.module import Manager
 
 class EditModule(BrowserView):
 
