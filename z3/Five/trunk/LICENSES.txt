@@ -16,7 +16,8 @@ WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 FOR A PARTICULAR PURPOSE.
 """
 
+metaclass.py is derived from PEAK, copyright (C) 1996-2004 by Phillip
+J. Eby and Tyler C. Sarna. PEAK may be used under the same terms as Zope.
+
 The rest of the software falls under the BSD license and is copyright
 Infrae. This license is listed in BSD.txt.
-
-
