@@ -16,7 +16,10 @@
       alias="zope.app.interfaces.content.sql"
       />
 
-
+  <vocabulary
+      name="Connections"
+      factory="zope.app.utility.vocabulary.UtilityVocabulary"
+      interface="zope.app.rdb.interfaces.IZopeDatabaseAdapter" />
 
   <permission
       id="zope.AddSQLScripts"

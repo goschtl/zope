@@ -12,41 +12,24 @@
 #
 ##############################################################################
 """
-$Id: interfaces.py,v 1.4 2004/04/14 22:32:48 jim Exp $
+$Id: interfaces.py,v 1.5 2004/04/24 23:20:10 srichter Exp $
 """
 import zope.schema
 from zope.app import zapi
-from zope.app.rdb.interfaces import IZopeDatabaseAdapter, ISQLCommand
+from zope.app.rdb.interfaces import ISQLCommand
 from zope.component import getService, ComponentLookupError
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 class MissingInput(Exception):
     pass
 
-class SQLConnectionName(zope.schema.EnumeratedTextLine):
-    """SQL Connection Name"""
-
-    def __allowed(self):
-        """Note that this method works only if the Field is context wrapped."""
-        
-        try:
-            connections = zapi.getUtilitiesFor(self.context,
-                                                      IZopeDatabaseAdapter)
-
-        except ComponentLookupError:
-            return []
-
-        return  [c[0] for c in connections]
-        
-
-    allowed_values = property(__allowed)
-
 class ISQLScript(ISQLCommand):
     """A persistent script that can execute SQL."""
 
-    connectionName = SQLConnectionName(
+    connectionName = zope.schema.Choice(
         title=_(u"Connection Name"),
         description=_(u"The Connection Name for the connection to be used."),
+        vocabulary="Connections",
         required=False)
 
     arguments = zope.schema.BytesLine(
