@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_decorator.py,v 1.5 2003/05/09 16:01:00 stevea Exp $
+$Id: test_decorator.py,v 1.6 2003/05/11 16:31:21 stevea Exp $
 """
 import unittest
 
@@ -119,7 +119,7 @@ class DecoratorTestCase(WrapperTestCase):
 
         class MixinFactory(object):
             def __init__(self, inner, outer):
-                pass
+                self.someinstanceattr = 42
             def foo(self):
                 pass
             def bar(self):
@@ -128,7 +128,7 @@ class DecoratorTestCase(WrapperTestCase):
 
         c = object()
         f = MixinFactory
-        n = ('foo', 'spoo')
+        n = ('foo', 'spoo', 'someinstanceattr')
         w = self.proxy_class(obj, c, f, n)
 
         self.assert_(decorator.getmixin(w) is None)
@@ -141,6 +141,8 @@ class DecoratorTestCase(WrapperTestCase):
         mixin2 = decorator.getmixin(w)
         self.assert_(mixin is mixin2)
         self.assertEqual(w.spoo, 23)
+        # Check that an attribute on the mixin object can be retrieved.
+        self.assertEquals(w.someinstanceattr, 42)
 
     def test_typeerror_if_no_factory(self):
         w = self.proxy_class(object(), None, None, ('foo',))
@@ -171,7 +173,7 @@ class DecoratorTestCase(WrapperTestCase):
         del w.foo
         self.failIf(hasattr(mixin, 'fooval'))
 
-        # check that trying to set something in attrdict fails.
+        # Check that trying to set something in attrdict fails.
         self.assertRaises(AttributeError, setattr, w, 'baz', 23)
         self.assertRaises(AttributeError, delattr, w, 'baz')
 
