@@ -1,0 +1,48 @@
+<zopeConfigure xmlns='http://namespaces.zope.org/browser'>
+
+<!-- PageFolder -->
+
+  <page name="index.html" 
+
+        for="zope.app.interfaces.services.pagefolder.IPageFolder"
+        permission="zope.ManageServices" 
+        class="zope.app.browser.container.contents.JustContents"
+        attribute="index" 
+        />
+
+  <page name="contents.html"
+
+        for="zope.app.interfaces.services.pagefolder.IPageFolder"
+        permission="zope.ManageServices" 
+        class="zope.app.browser.container.contents.Contents"
+        menu="zmi_views"
+        title="Contents"
+        attribute="contents"
+        />
+
+  <editform name="DefaultRegistration.html"
+
+        label="Default registration parameters"
+        schema="zope.app.interfaces.services.pagefolder.IPageFolderInfo."
+        menu="zmi_views" title="Default Registration"
+        permission="zope.ManageServices"
+        class=".pagefolder.PageFolderDefaultConfiguration"
+        />
+
+  
+  <!-- Override the add action with a link to add a template -->
+  <menuItem
+     menu="zmi_actions"
+     for="zope.app.interfaces.services.pagefolder.IPageFolder"
+     title="Add"
+     action="contents.html?type_name=zope.app.services.zpt.template"
+     permission="zope.ManageServices"
+     />
+
+  <menuItem
+     menu="add_component"
+     for="zope.app.interfaces.container.IAdding"
+     action="zope.app.services.PageFolder"
+     title="Page Folder" />
+
+</zopeConfigure>
