@@ -15,18 +15,17 @@
 from persistence import Persistent
 from zodb.btrees.OOBTree import OOBTree
 from zope.app.content.fssync import DirectoryAdapter
-from zope.app.interfaces.content.folder import ICloneWithoutChildren
 from zope.app.interfaces.content.folder import IFolder, IRootFolder
 from zope.app.interfaces.services.service import ISite
 from zope.app.services.servicecontainer import ServiceManagerContainer
-from zope.app.zapi import ContextWrapper
 from zope.exceptions import DuplicationError
-from zope.interface import implements
+from zope.interface import implements, directlyProvides
+from zope.app.container.contained import Contained, setitem, uncontained
 
-class Folder(Persistent, ServiceManagerContainer):
+class Folder(Persistent, ServiceManagerContainer, Contained):
     """The standard Zope Folder implementation."""
 
-    implements(IFolder, ICloneWithoutChildren)
+    implements(IFolder)
 
     def __init__(self):
         self.data = OOBTree()
@@ -76,7 +75,7 @@ class Folder(Persistent, ServiceManagerContainer):
         """Return the number of objects in the folder."""
         return len(self.data)
 
-    def setObject(self, name, object):
+    def __setitem__(self, name, object):
         """Add the given object to the folder under the given name."""
 
         if not (isinstance(name, str) or isinstance(name, unicode)):
@@ -92,25 +91,20 @@ class Folder(Persistent, ServiceManagerContainer):
         if name in self.data:
             raise DuplicationError("name, %s, is already in use" % name)
 
-        self.data[name] = object
-        return name
+        setitem(self, self.data.__setitem__, name, object)
 
     def __delitem__(self, name):
         """Delete the named object from the folder. Raises a KeyError
            if the object is not found."""
+        uncontained(self.data[name], self, name)
         del self.data[name]
 
-    def cloneWithoutChildren(self):
-        new = self.__class__()
-        for k, v in self.__dict__.items():
-            if k != 'data':
-                new.__dict__[k] = v
-        return new
+RootFolder = Folder
 
-class RootFolder(Folder):
-    """The standard Zope root Folder implementation."""
-
-    implements(IRootFolder)
+def rootFolder():
+    f = Folder()
+    directlyProvides(f, IRootFolder)
+    return f
 
 
 class RootDirectoryFactory:
@@ -172,6 +166,5 @@ class FolderAdapter(DirectoryAdapter):
         result = super(FolderAdapter, self).contents()
         if ISite.isImplementedBy(self.context):
             sm = self.context.getSiteManager()
-            w = ContextWrapper(sm, self.context, name='++etc++site')
-            result.append(('++etc++site', w))
+            result.append(('++etc++site', sm))
         return result
