@@ -1,0 +1,145 @@
+<html>
+<head>
+    <script language="Javascript1.1" src="pdlib.js"></script>
+    <style type="text/css">
+        .drop-target {
+            padding-top: 4px;
+            margin-bottom: 4px;
+            border-bottom: 3px solid white;
+        }
+
+        .drop-target_highlighted {
+            cursor: default;
+            padding-top: 4px;
+            margin-bottom: 4px;
+            border-bottom: 3px solid black;
+        }
+
+        .box {
+            border: 1px solid black; 
+            margin-right: 12px;
+            padding-left: 0.5ex;
+        }
+
+    </style>
+</head>
+<body>
+    Drag the boxes before, after, or into the other boxes.
+    <span>
+    <div class="drop-target"><img src="blank_pixel.gif"></div>
+    <div class="draggable">
+        <div class="box">
+        Box 1
+        <div style="padding-left: 2em">
+            <span><div class="drop-target"><img src="blank_pixel.gif"></div></span>
+        </div>
+        </div>
+    </div>
+    </span>
+
+    <span>
+    <div class="drop-target"><img src="blank_pixel.gif"></div>
+    <div class="draggable">
+        <div class="box">
+        Box 2
+        <div style="padding-left: 2em">
+            <span><div class="drop-target"><img src="blank_pixel.gif"></div></span>
+        </div>
+        </div>
+    </div>
+    </span>
+
+    <span>
+    <div class="drop-target"><img src="blank_pixel.gif"></div>
+    <div class="draggable">
+        <div class="box">
+        Box 3
+        <div style="padding-left: 2em">
+            <span><div class="drop-target"><img src="blank_pixel.gif"></div></span>
+        </div>
+        </div>
+    </div>
+    </span>
+
+    <span>
+    <div class="drop-target"><img src="blank_pixel.gif"></div>
+    <div class="draggable">
+        <div class="box">
+        Box 4
+        <div style="padding-left: 2em">
+            <span><div class="drop-target"><img src="blank_pixel.gif"></div></span>
+        </div>
+        </div>
+    </div>
+    </span>
+
+    <span>
+    <div class="drop-target"><img src="blank_pixel.gif"></div>
+    <div class="draggable">
+        <div class="box">
+        Box 5
+        <div style="padding-left: 2em">
+            <span><div class="drop-target"><img src="blank_pixel.gif"></div></span>
+        </div>
+        </div>
+    </div>
+    </span>
+
+    <span>
+    <div class="drop-target"><img src="blank_pixel.gif"></div>
+    </span>
+
+    <!-- An element with this id is used by pdlib for drag feedback. Style as
+        desired. -->
+    <div id="drag-feedback-box" 
+            style="position: absolute; display: none; border: 1px dashed red;">
+    </div>
+
+    <script language="Javascript1.1">
+
+        // This function is called to determine if the selected items are
+        //  allowed to be dropped onto a target.
+        function checkmove(selected_items, target) {
+            // Don't let a box drop onto it's own preceeding drop target.
+            for (i = 0; i < selected_items.length; i++) {
+                my_target = selected_items[i].parentNode
+                                      .getElementsByTagName('div')[0];
+
+                if (my_target == target)
+                    return false;
+            }
+                    
+            return true;
+        }
+
+        // This function is called when a drop occurs.
+        function move(selected_items, target) {
+            if (!selected_items.length)
+                return;
+            moveNode(selected_items[0], target);
+        }
+
+        // This function is specific to the html layout of the example.
+        function moveNode(source, target) {
+            source.parentNode.parentNode.removeChild(source.parentNode);
+            target.parentNode.parentNode.insertBefore(source.parentNode, 
+                                                      target.parentNode);
+        }
+
+        function setUpBox(node) {
+            // pd_setupDragUI takes three arguments: the node to set up, 
+            //  the function to call when the node is dropped, and the 
+            //  function to call to see if it is OK to drop a node on a 
+            //  target.
+            pd_setupDragUI(node, move, checkmove);
+        }
+
+        // Tell pdlib how to set up objects of a particular class.  We don't
+        //  have to do this for drop-target because pdlib does the equivalent
+        //  automatically for that class name.
+        pd_node_setup['draggable'] = setUpBox
+
+        // Initialize pdlib.
+        pd_setupPage();
+    </script>
+</body>
