@@ -13,7 +13,7 @@
 ##############################################################################
 """Commit changes from the filesystem.
 
-$Id: committer.py,v 1.3 2003/05/28 22:31:46 gvanrossum Exp $
+$Id: committer.py,v 1.4 2003/05/29 16:10:29 gvanrossum Exp $
 """
 
 import os
@@ -34,7 +34,7 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.container import IContainer
 from zope.app.fssync.classes import Default
 from zope.app.traversing import getPath
-from zope.app.interfaces.file import IFileFactory
+from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 
 class SynchronizationError(Exception):
     pass
@@ -199,7 +199,7 @@ class Committer(object):
             factory = resolve(factory_name)
             obj = factory()
         else:
-            # No factory; try using the IFileFactory feature
+            # No factory; try using IFileFactory or IDirectoryFactory
             as = getService(container, "Adapters")
             isuffix = name.rfind(".")
             if isuffix >= 0:
@@ -207,17 +207,30 @@ class Committer(object):
             else:
                 suffix = "."
 
-            factory = as.queryNamedAdapter(container, IFileFactory, suffix)
-            if factory is None:
-                factory = as.queryAdapter(container, IFileFactory)
-
-            if factory:
-                data = self.read_file(fspath)
-                obj = factory(name, None, data)
-                obj = removeAllProxies(obj)
+            if os.path.isdir(fspath):
+                iface = IDirectoryFactory
             else:
-                # Oh well, assume the file is an xml pickle
-                obj = self.load_file(fspath)
+                iface = IFileFactory
+
+            factory = as.queryNamedAdapter(container, iface, suffix)
+            if factory is None:
+                factory = as.queryAdapter(container, iface)
+
+            if iface is IDirectoryFactory:
+                if factory:
+                    obj = factory(name)
+                    obj = removeAllProxies(obj)
+                else:
+                    raise SynchronizationError(
+                        "don't know how to create a directory")
+            else:
+                if factory:
+                    data = self.read_file(fspath)
+                    obj = factory(name, None, data)
+                    obj = removeAllProxies(obj)
+                else:
+                    # Oh well, assume the file is an xml pickle
+                    obj = self.load_file(fspath)
 
         self.set_item(container, name, obj, replace)
 
