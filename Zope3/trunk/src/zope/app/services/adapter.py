@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.12 2003/03/21 21:07:40 jim Exp $
+$Id: adapter.py,v 1.13 2003/03/29 00:42:12 sidnei Exp $
 """
 __metaclass__ = type
 
@@ -114,8 +114,8 @@ class AdapterService(Persistent):
             return object
 
         adapters = self._byName.get(name)
-        if adapters:
 
+        if adapters:
             registry = adapters.getForObject(
                 object, interface,
                 filter = lambda registry:
@@ -129,7 +129,7 @@ class AdapterService(Persistent):
 
         adapters = getNextService(self, Adapters)
 
-        return adapters.queryAdapter(object, interface, default)
+        return adapters.queryAdapter(object, interface, default, name)
 
     queryAdapter = ContextMethod(queryAdapter)
 
