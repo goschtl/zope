@@ -26,7 +26,7 @@ from zope.app.dublincore.creatorannotator import CreatorAnnotator
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.security.interfaces import IPrincipal
 from zope.app.event.interfaces import IEvent
-from zope.security.management import noSecurityManager, newSecurityManager
+from zope.security.management import newInteraction, endInteraction
 
 class IDummyContent(Interface):
     pass
@@ -65,16 +65,20 @@ class DummyPrincipal:
         self.title = title
         self.description = description
 
+class DummyRequest:
+
+    def __init__(self, principal):
+        self.principal = principal
+        self.interaction = None
+
 
 class Test(PlacefulSetup, TestCase, CleanUp):
 
     def setUp(self):
         PlacefulSetup.setUp(self)
         ztapi.provideAdapter(IDummyContent, IZopeDublinCore, DummyDCAdapter)
-        noSecurityManager()
 
     def tearDown(self):
-        noSecurityManager()
         PlacefulSetup.tearDown(self)
 
     def test_creatorannotation(self):
@@ -91,33 +95,37 @@ class Test(PlacefulSetup, TestCase, CleanUp):
                                     'this is a very bad author')
 
         # Check what happens if no user is there
-        noSecurityManager()
+        newInteraction(None)
         CreatorAnnotator.notify(event)
         self.assertEqual(data.creators,())
+        endInteraction()
 
         # Let the bad edit it first
-        security = newSecurityManager(bad_author)
+        newInteraction(DummyRequest(bad_author))
         CreatorAnnotator.notify(event)
 
         self.failIf(len(data.creators) != 1)
         self.failUnless(bad_author.id in data.creators)
+        endInteraction()
 
         # Now let the good edit it
-        security = newSecurityManager(good_author)
+        newInteraction(DummyRequest(good_author))
         CreatorAnnotator.notify(event)
 
         self.failIf(len(data.creators) != 2)
         self.failUnless(good_author.id in data.creators)
         self.failUnless(bad_author.id in data.creators)
+        endInteraction()
 
         # Let the bad edit it again
-        security = newSecurityManager(bad_author)
+        newInteraction(DummyRequest(bad_author))
         CreatorAnnotator.notify(event)
 
         # Check that the bad author hasn't been added twice.
         self.failIf(len(data.creators) != 2)
         self.failUnless(good_author.id in data.creators)
         self.failUnless(bad_author.id in data.creators)
+        endInteraction()
 
 def test_suite():
     return TestSuite((
