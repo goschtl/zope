@@ -6,7 +6,7 @@
 <div metal:fill-slot="body">
 
 <h1>Unauthorized</h1>
-<p>You're not allowed in here.</p>
+<p tal:content="context"/>
 
 </div>
 </body>
