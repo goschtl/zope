@@ -210,34 +210,6 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(events[0].original_event.object, parent_folder)
         self.assertEquals(events[0].object, folder)
 
-    def test_addIntIdSubscriber_and_localutilityservice(self):
-        # Their was a bug caused when a local utility service was
-        # registered within a intid utility
-
-        # setup first some stuff
-        from zope.app.intid import addIntIdSubscriber
-        from zope.app.container.contained import ObjectAddedEvent
-        from zope.app.intid.interfaces import IIntIdAddedEvent
-        parent_folder = self.root['folder1']['folder1_1']
-        folder = self.root['folder1']['folder1_1']['folder1_1_1']
-        events = []
-        ztapi.handle([IIntIdAddedEvent], events.append)
-        setSite(parent_folder)
-
-        # create a local utility sevice
-        utils = LocalUtilityService()
-        utils.__parent__ = folder # cheat IConnection adapter
-
-        # register utils
-        addIntIdSubscriber(utils, ObjectAddedEvent(parent_folder))
-
-        # check that the utilis got registered
-        id = self.utility.getId(utils)
-        id1 = self.utility1.getId(utils)
-        self.assertEquals(len(events), 1)
-        self.assertEquals(events[0].original_event.object, parent_folder)
-        self.assertEquals(events[0].object, utils)
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestIntIds))
