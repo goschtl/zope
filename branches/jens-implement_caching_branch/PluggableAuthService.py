@@ -303,7 +303,8 @@ class PluggableAuthService( Folder, Cacheable ):
                         info[ 'userid' ] = principal_id
                         info[ 'id' ] = self._computeMangledId( user_info )
                         info[ 'principal_type' ] = 'user'
-                        info[ 'title' ] = info[ 'login' ]
+                        if not info.has_key('title'):
+                            info[ 'title' ] = info[ 'login' ]
                         return ( info, )
                     else:
                         return ()
@@ -340,7 +341,8 @@ class PluggableAuthService( Folder, Cacheable ):
                     info[ 'userid' ] = info[ 'id' ]
                     info[ 'id' ] = self._computeMangledId( info )
                     info[ 'principal_type' ] = 'user'
-                    info[ 'title' ] = info[ 'login' ]
+                    if not info.has_key('title'):
+                        info[ 'title' ] = info[ 'login' ]
                     result.append(info)
 
             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
@@ -385,7 +387,8 @@ class PluggableAuthService( Folder, Cacheable ):
                         info[ 'groupid' ] = principal_id
                         info[ 'id' ] = self._computeMangledId( group_info )
                         info[ 'principal_type' ] = 'group'
-                        info[ 'title' ] = "(Group) %s" % principal_id
+                        if not info.has_key('title'):
+                            info[ 'title' ] = "(Group) %s" % principal_id
                         return ( info, )
                     else:
                         return ()
@@ -408,7 +411,8 @@ class PluggableAuthService( Folder, Cacheable ):
         if search_name:
             if kw.get('id') is not None:
                 del kw['id']
-            kw['title'] = kw['name']
+            if not kw.has_key('title'):
+                kw['title'] = kw['name']
 
         plugins = self._getOb( 'plugins' )
         enumerators = plugins.listPlugins( IGroupEnumerationPlugin )
@@ -422,7 +426,8 @@ class PluggableAuthService( Folder, Cacheable ):
                     info[ 'groupid' ] = info[ 'id' ]
                     info[ 'id' ] = self._computeMangledId( info )
                     info[ 'principal_type' ] = 'group'
-                    info[ 'title' ] = "(Group) %s" % info[ 'groupid' ]
+                    if not info.has_key('title'):
+                        info[ 'title' ] = "(Group) %s" % info[ 'groupid' ]
                     result.append(info)
             except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                 LOG('PluggableAuthService', WARNING,
@@ -453,7 +458,8 @@ class PluggableAuthService( Folder, Cacheable ):
         search_id = kw.get( 'id', None )
         search_name = kw.get( 'name', None )
         if search_name:
-            kw['title'] = search_name
+            if not kw.has_key('title'):
+                kw['title'] = search_name
             kw['login'] = search_name
 
         if exact_match and search_id:
@@ -468,7 +474,10 @@ class PluggableAuthService( Folder, Cacheable ):
                     if user_info:
                         local_key = 'userid'
                         principal_type = 'user'
-                        title_key = 'login'
+                        if kw.has_key('title'):
+                            title_key = 'title'
+                        else:
+                            title_key = 'login'
                         title_pattern = "%s"
                 if getattr( aq_base( plugin ), 'enumerateGroups', None ):
                     group_info = plugin.enumerateGroups( id=principal_id
@@ -476,8 +485,12 @@ class PluggableAuthService( Folder, Cacheable ):
                     if group_info:
                         local_key = 'groupid'
                         principal_type = 'group'
-                        title_key = 'groupid'
-                        title_pattern = "(Group) %s"
+                        if kw.has_key('title'):
+                            title_key = 'title'
+                            title_pattern = "%s"
+                        else:
+                            title_key = 'groupid'
+                            title_pattern = "(Group) %s"
                 try:
                     principal_info = filter(None, (user_info + group_info))
                     assert( len( principal_info ) in [ 0, 1 ] )
@@ -488,7 +501,8 @@ class PluggableAuthService( Folder, Cacheable ):
                         info[ local_key ] = principal_id
                         info[ 'id' ] = self._computeMangledId( principal_info )
                         info[ 'principal_type' ] = principal_type
-                        info[ 'title' ] = title_pattern % info[ title_key ]
+                        if not info.has_key('title'):
+                            info[ 'title' ] = title_pattern % info[ title_key ]
                         return ( info, )
                     else:
                         return ()
@@ -543,6 +557,7 @@ class PluggableAuthService( Folder, Cacheable ):
     #
     # ZMI stuff
     #
+    
     arrow_right_gif = ImageFile( 'www/arrow-right.gif', globals() )
     arrow_left_gif = ImageFile( 'www/arrow-left.gif', globals() )
     arrow_up_gif = ImageFile( 'www/arrow-up.gif', globals() )
@@ -690,8 +705,14 @@ class PluggableAuthService( Folder, Cacheable ):
                     for authenticator_id, auth in authenticators:
 
                         try:
-                            user_id, name = auth.authenticateCredentials(
-                                                                credentials )
+                            uid_and_name = auth.authenticateCredentials(
+                                credentials )
+
+                            if uid_and_name is None:
+                                continue
+
+                            user_id, name = uid_and_name
+                            
                         except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                             LOG('PluggableAuthService', WARNING,
                                 'AuthenticationPlugin %s error' %
