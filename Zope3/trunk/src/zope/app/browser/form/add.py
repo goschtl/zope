@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.19 2003/04/16 21:51:37 fdrake Exp $
+$Id: add.py,v 1.20 2003/04/30 17:22:45 gvanrossum Exp $
 """
 
 import sys
@@ -56,7 +56,7 @@ class AddView(EditView):
             self.update_status = ''
             try:
                 data = getWidgetsData(self, self.schema,
-                                      strict=False,
+                                      strict=True,
                                       names=self.fieldNames,
                                       set_missing=False)
                 content = self.createAndAdd(data)
