@@ -1,9 +1,17 @@
-<include package=".demo" />
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="versioning"
+    >
+    
+  <!--include package=".demo" /-->
 
-<adapter
-    factory=".repository.DummyCheckoutAware"
-    provides=".interfaces.ICheckoutAwareDefault"
-    for=".interfaces.IHistoryStorage"
-    permission="zope.Public"
-    />
+  <adapter
+      factory=".repository.DummyCheckoutAware"
+      provides="versioning.interfaces.ICheckoutAware"
+      for="versioning.interfaces.IHistoryStorage"
+      permission="zope.Public"
+      />
+  
+</configure>
 <!-- XXX above: permission=zope.Public? -->
