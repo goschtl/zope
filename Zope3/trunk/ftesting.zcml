@@ -6,9 +6,8 @@
 
   <include package="zope.app" />
 
-  <include files="products/*-meta.zcml" />
-  <include file="products_ftesting.zcml" />
-  <include files="products/*-configure.zcml" />
+  <include files="package-includes*-meta.zcml" />
+  <include files="package-includes/*-configure.zcml" />
 
   <!-- Principals -->
 

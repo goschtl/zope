@@ -2,9 +2,8 @@
 
   <include package="zope.app" />
 
-  <include files="products/*-meta.zcml" />
-  <include file="products.zcml" />
-  <include files="products/*-configure.zcml" />
+  <include files="package-includes/*-meta.zcml" />
+  <include files="package-includes/*-configure.zcml" />
 
   <!-- Provide local overrides of standard configurations-->
   <includeOverrides file="overrides.zcml" />
