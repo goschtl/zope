@@ -73,6 +73,8 @@ class PortalFolder(DynamicType, CMFCatalogAware, Folder):
     meta_type = 'Portal Folder'
     portal_type = 'Folder'
 
+    __implements__ = (DynamicType.__implements__, Folder.__implements__)
+
     security = ClassSecurityInfo()
 
     description = ''
