@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testBoolField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
+$Id: testBoolField.py,v 1.4 2002/11/11 20:24:35 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Bool, ErrorNames
@@ -20,6 +20,8 @@ from testField import FieldTestBase
 
 class BoolTest(FieldTestBase):
     """Test the Bool Field."""
+
+    _Field_Factory = Bool
 
     def testValidate(self):
         field = Bool(title=u'Bool field', description=u'',

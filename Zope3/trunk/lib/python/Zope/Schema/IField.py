@@ -13,19 +13,70 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: IField.py,v 1.9 2002/10/10 22:17:57 jeremy Exp $
+$Id: IField.py,v 1.10 2002/11/11 20:24:35 jim Exp $
 """
 from Interface import Interface
 
-from _bootstrapFields import Field, Text, Bool, Int, Container, Iteratable
+from _bootstrapFields \
+     import Field, Text, TextLine, Bool, Int, Container, Iteratable
 
 class IField(Interface):
     u"""Fields
 
-    Fields are attribute specifications.
+    Fields are attribute specifications. They specify the allowed
+    values for object attributes, Field are typically defined in an
+    interface. 
+
+    XXX We need to think aboyt the following
+    
+    Note that many field need information about the object
+    implementing a field. For example, when validating a value to be
+    set as an object attribute, it may be necessary for the field to
+    introspect the object's state. This meanss that the field needs to
+    have access to the object when performing validation.
+
+    We haven't really decided on the best way to approach providing
+    access to objects in field methods and properties. We've thought
+    of three approaches:
+
+    1. Always pass the object:
+
+         field.validate(value, object)
+
+    2. Bind the field to the object with a context wrapper:
+
+         field = ContextWrapper(field, object)
+         field.validate(value)
+
+    3. Provide a specialized binding protocol:
+
+         bound = field(object_
+         bound.validate(value)
+
+    Options 2 and 3 allow us to use properties, but require an extra
+    binding step.
+    
+    Option 1 and 3 will require a significant refactoring.
+
+    Option 2 requires us to make field methods, or at least the
+    validate method into ContextMethods, which is a bit intrusive.
+
+    For now, we will use option 3.  
+
     """
 
-    title = Text(
+    def bind(object):
+        """Bind the field to an object
+
+        This is done by returning a copy of the field with a "context"
+        attribute set to the object.
+
+        Many fields don't need to be bound. Only fields that condition
+        validation or properties on an object containing the field
+        need to be bound.
+        """
+
+    title = TextLine(
         title=u"Title",
         description=u"A short summary or label",
         default=u"",
@@ -159,10 +210,16 @@ class IBool(IField):
     u"""Describes the footprint of a Bool variable."""
 
 class IBytes(ISized, IEnumeratable, IIteratable):
-    u"""Describes the footprint of a Bytes variable."""
+    u"""Describes the footprint of a Bytes variable"""
+
+class ILine(IBytes):
+    u"""Describes the footprint of a Bytes variable withouit newlines"""
 
 class IText(ISized, IEnumeratable, IIteratable):
-    u"""Describes the footprint of a Str variable."""
+    u"""Describes the footprint of a Text variable."""
+
+class ITextLine(IText):
+    u"""Describes the footprint of a one-line Text variable."""
     
 class IInt(IEnumeratable, IOrderable):
     u"""Describes the footprint of an Int variable."""

@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _bootstrapFields.py,v 1.2 2002/09/18 15:05:51 jim Exp $
+$Id: _bootstrapFields.py,v 1.3 2002/11/11 20:24:35 jim Exp $
 """
 __metaclass__ = type
 
@@ -64,13 +64,19 @@ class Field(Attribute):
         self.description = description
         self.required = required
         self.readonly = readonly
-        self.constraint = constraint
+        if constraint is not None:
+            self.constraint = constraint
         self.default = default
 
         # Keep track of the order of field definition
         Field.order += 1
         self.order = Field.order
 
+    def bind(self, object):
+        clone = self.__class__.__new__(self.__class__)
+        clone.__dict__.update(self.__dict__)
+        clone.context = object
+        return clone
         
     def validate(self, value):
         if value is None:
@@ -196,9 +202,10 @@ class Enumeratable(Field):
 
         # Set allowed_values to None so that we can validate if
         # one of the super methods invoke validation.
-        self.allowed_values = None
+        self.__dict__['allowed_values'] = None
         super(Enumeratable, self).__init__(**kw)
-        self.allowed_values = allowed_values
+        if allowed_values is not None:
+            self.allowed_values = allowed_values
 
         # We've taken over setting default so it can be limited by min
         # and max.
@@ -209,12 +216,22 @@ class Enumeratable(Field):
 
         if self.allowed_values:
             if not value in self.allowed_values:
-                raise ValidationError(ErrorNames.InvalidValue)
+                raise ValidationError(ErrorNames.InvalidValue, value,
+                                      self.allowed_values)
 
 
 class Text(Sized, Enumeratable):
-    """A field representing a Str."""
+    """A field containing text used for human discourse."""
     _type = unicode
+    
+
+class TextLine(Text):
+    """A Text field with no newlines."""
+
+    def constraint(self, value):
+        # XXX we should probably use a more general definition of newlines
+        return '\n' not in value
+    
 
 class Bool(Field):
     """A field representing a Bool."""

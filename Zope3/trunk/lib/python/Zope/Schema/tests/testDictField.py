@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testDictField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
+$Id: testDictField.py,v 1.4 2002/11/11 20:24:35 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Dict, Int, Float, ErrorNames
@@ -20,6 +20,8 @@ from testField import FieldTestBase
 
 class DictTest(FieldTestBase):
     """Test the Dict Field."""
+
+    _Field_Factory = Dict
 
     def testValidate(self):
         field = Dict(title=u'Dict field',

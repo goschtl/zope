@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testDatetime.py,v 1.1 2002/10/04 18:24:55 jim Exp $
+$Id: testDatetime.py,v 1.2 2002/11/11 20:24:35 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Datetime, ErrorNames
@@ -21,6 +21,8 @@ from datetime import datetime
 
 class DatetimeTest(FieldTestBase):
     """Test the Datetime Field."""
+
+    _Field_Factory = Datetime
 
     def testValidate(self):
         field = Datetime(title=u'Datetime field', description=u'',

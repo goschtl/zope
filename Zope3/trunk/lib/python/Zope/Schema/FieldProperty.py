@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: FieldProperty.py,v 1.3 2002/09/11 22:06:41 jim Exp $
+$Id: FieldProperty.py,v 1.4 2002/11/11 20:24:35 jim Exp $
 """
 
 __metaclass__ = type
@@ -43,14 +43,16 @@ class FieldProperty:
 
         value = inst.__dict__.get(self.__name, _marker)
         if value is _marker:
-            value = getattr(self.__field, 'default', _marker)
+            field = self.__field.bind(inst)
+            value = getattr(field, 'default', _marker)
             if value is _marker:
                 raise AttributeError, self.__name
 
         return value
 
     def __set__(self, inst, value):
-        self.__field.validate(value)
+        field = self.__field.bind(inst)
+        field.validate(value)
         inst.__dict__[self.__name] = value
 
     def __getattr__(self, name):

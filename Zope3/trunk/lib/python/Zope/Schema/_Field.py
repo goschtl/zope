@@ -12,7 +12,7 @@
 # 
 ##############################################################################
 """
-$Id: _Field.py,v 1.4 2002/10/04 18:24:55 jim Exp $
+$Id: _Field.py,v 1.5 2002/11/11 20:24:35 jim Exp $
 """
 __metaclass__ = object
 
@@ -24,7 +24,7 @@ import ErrorNames
 
 import IField
 from _bootstrapFields import Field, Container, Iteratable, Orderable, Sized
-from _bootstrapFields import Enumeratable, Text, Bool, Int
+from _bootstrapFields import Enumeratable, Text, TextLine, Bool, Int
 from FieldProperty import FieldProperty
 from datetime import datetime
 
@@ -47,6 +47,7 @@ implements(Sized, IField.ISized)
 implements(Enumeratable, IField.IEnumeratable)
 
 implements(Text, IField.IText)
+implements(TextLine, IField.ITextLine)
 implements(Bool, IField.IBool)
 implements(Int, IField.IInt)
             
@@ -55,6 +56,16 @@ class Bytes(Sized, Enumeratable):
     __implements__ = IField.IBytes
     
     _type = str
+
+class Line(Bytes):
+    """A Text field with no newlines."""
+
+    __implements__ = IField.ILine
+
+    def constraint(self, value):
+        # XXX we should probably use a more general definition of newlines
+        return '\n' not in value
+    
 
 class Float(Enumeratable, Orderable):
     __doc__ = IField.IFloat.__doc__

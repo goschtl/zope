@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testIntField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
+$Id: testIntField.py,v 1.4 2002/11/11 20:24:35 jim Exp $
 """
 from unittest import TestSuite, main, makeSuite
 from Zope.Schema import Int, ErrorNames
@@ -21,6 +21,8 @@ from testField import FieldTestBase
 class IntTest(FieldTestBase):
     """Test the Int Field."""
 
+    _Field_Factory = Int
+    
     def testValidate(self):
         field = Int(title=u'Int field', description=u'',
                         readonly=False, required=False)

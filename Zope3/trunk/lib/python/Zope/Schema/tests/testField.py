@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: testField.py,v 1.3 2002/09/18 15:05:51 jim Exp $
+$Id: testField.py,v 1.4 2002/11/11 20:24:35 jim Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from Zope.Schema import Field, Text, IField, ErrorNames
@@ -28,13 +28,27 @@ class FieldTestBase(TestCase):
             return
         self.fail('Expected ValidationError')
 
+    def test_bind(self):
+        field = self._Field_Factory(
+            __name__ = 'x',
+            title=u'Not required field', description=u'',
+            readonly=False, required=False)
 
-class FieldTest(FieldTestBase):
-    """Test generic Field."""
+        class C(object):
+            x=None
+
+        c = C()
+        field2 = field.bind(c)
+
+        self.assertEqual(field2.context, c)
+        for n in ('__class__', '__name__', 'title', 'description',
+                  'readonly', 'required'):
+            self.assertEquals(getattr(field2, n), getattr(field, n), n)
 
     def testValidate(self):
-        field = Field(title=u'Not required field', description=u'',
-                      readonly=False, required=False)
+        field = self._Field_Factory(
+            title=u'Not required field', description=u'',
+            readonly=False, required=False)
         field.validate(None)
         field.validate('foo')
         field.validate(1)
@@ -42,8 +56,9 @@ class FieldTest(FieldTestBase):
         field.validate('')
     
     def testValidateRequired(self):
-        field = Field(title=u'Required field', description=u'',
-                      readonly=False, required=True)
+        field = self._Field_Factory(
+            title=u'Required field', description=u'',
+            readonly=False, required=True)
         field.validate('foo')
         field.validate(1)
         field.validate(0)
@@ -51,6 +66,13 @@ class FieldTest(FieldTestBase):
             
         self.assertRaisesErrorNames(ErrorNames.RequiredMissing,
                                     field.validate, None)
+
+class FieldTest(FieldTestBase):
+    """Test generic Field."""
+
+    
+    _Field_Factory = Field
+
 
     def testSillyDefault(self):
         
