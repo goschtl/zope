@@ -15,24 +15,24 @@
 
 Makes imports easier
 
-$Id: zapi.py,v 1.10 2003/09/03 18:33:54 sidnei Exp $
+$Id: zapi.py,v 1.11 2003/09/21 17:30:15 jim Exp $
 """
 
 from zope.app.interfaces.zapi import IZAPI
 from zope.interface import moduleProvides
-from zope.context import getWrapperData
 
 moduleProvides(IZAPI)
 __all__ = tuple(IZAPI)
 
 from zope.component import *
+
 # XXX: 'queryService' is not part of IComponentArchitecture;
 # XXX: Jim says you shouldn't need it anyway.
+# YYY: So why is it here?
+
 from zope.component import queryService
-from zope.context import *
-from zope.app.context import *
+
 from zope.app.traversing import *
 from zope.app.interfaces.exceptions import UserError
 
 name = getName
-
