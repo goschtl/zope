@@ -14,7 +14,7 @@
 
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.14 2003/05/28 19:58:50 gvanrossum Exp $
+$Id: fssync.py,v 1.15 2003/06/02 20:44:41 gvanrossum Exp $
 """
 
 import os
@@ -106,7 +106,14 @@ class SnarfCommit(BrowserView):
             # 4) Generate response (snarfed archive or error text)
             errors = c.get_errors()
             if not errors:
+                # The flush() isn't really needed, but it's better to
+                # waste some cycles now than to have this corrupt some
+                # files later.
                 md.flush()
+                # Do a fresh toFS(), to be sure to get all changes
+                shutil.rmtree(working)
+                os.mkdir(working)
+                toFS(self.context, objectName(self.context) or "root", working)
                 return snarf_dir(self.request.response, working)
             else:
                 txn.abort()
@@ -118,7 +125,5 @@ class SnarfCommit(BrowserView):
                 self.request.response.setHeader("Content-Type", "text/plain")
                 return "\n".join(lines)
         finally:
-            try:
+            if os.path.exists(working):
                 shutil.rmtree(working)
-            except os.error:
-                pass
