@@ -160,9 +160,9 @@ def _verifyActionPermissions(obj, action):
 
 security.declarePublic( 'getActionContext' )
 def getActionContext( self ):
-    # getActionContext is deprecated and will be removed in CMF 1.6.
-    # This is only used by the deprecated _getViewFor function and the
-    # deprecated getActionById method.
+    # getActionContext is deprecated and will be removed as soon as the
+    # backwards compatibility code in TypeInformation._guessMethodAliases is
+    # removed.
     data = { 'object_url'   : ''
            , 'folder_url'   : ''
            , 'portal_url'   : ''
