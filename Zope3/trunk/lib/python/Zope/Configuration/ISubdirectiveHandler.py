@@ -13,7 +13,7 @@
 ##############################################################################
 """Psuedo-directive (or meta-meta directive) to handle subdirectives
 
-$Id: ISubdirectiveHandler.py,v 1.2 2002/09/03 16:07:08 jim Exp $
+$Id: ISubdirectiveHandler.py,v 1.3 2002/09/18 17:52:16 rdmurray Exp $
 """
 from Interface import Interface
 
@@ -32,4 +32,9 @@ class ISubdirectiveHandler(Interface):
     def __call__():
         """Return a sequence of configuration actions.
         
-        See IEmptyDirective for a definition of configuration actions."""
+        See IEmptyDirective for a definition of configuration actions.
+
+        This method should be called *after* any subdirective methods are
+        called during the processing of the (sub)directive whose subdirectives
+        are being processed.  It may return an empty list.
+        """
