@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.10 2003/04/14 19:24:38 fdrake Exp $
+$Id: interfaces.py,v 1.11 2003/04/24 14:51:54 fdrake Exp $
 """
 from zope.interface import Interface
 
@@ -184,19 +184,25 @@ class IField(Interface):
 class IIterable(IField):
     u"""Fields with a value that can be iterated over.
 
-    The value needs to follow the python __iter__ protocol.
+    The value needs to support iteration; the implementation mechanism
+    is not constrained.  (Either __iter__() or __getitem__() may be
+    used.)
     """
 
 class IContainer(IField):
     u"""Fields whose value allows an 'x in value' check.
 
-    The Value needs to have a conventional __contains__ method.
+    The Value needs to support the 'in' operator, but is not
+    constrained in how it does so (whether it defines __contains__()
+    or __getitem__() is immaterial).
     """
 
 class IOrderable(IField):
     u"""a Field requiring its value to be orderable.
 
-    The value needs to have a conventional __cmp__ method.
+    The set of value needs support a complete ordering; the
+    implementation mechanism is not constrained.  Either __cmp__() or
+    'rich comparison' methods may be used.
     """
 
 class ILen(IField):
@@ -208,7 +214,7 @@ class ILen(IField):
 class IMinMax(IOrderable):
     u"""a Field requiring its value to be between min and max.
 
-    This also means that the value needs to support the IOrderable interface.
+    This implies that the value needs to support the IOrderable interface.
     """
 
     min = Field(
@@ -333,7 +339,7 @@ def _fields(values):
             return False
     return True
 
-class ISequence(IMinMaxLen, IIterable, IField):
+class ISequence(IMinMaxLen, IIterable, IContainer):
     u"""a Field containing a Sequence value.
 
     The Value must be iterable and may have a min_length/max_length.
@@ -356,11 +362,11 @@ class ITuple(ISequence):
 class IList(ISequence):
     u"""a Field containing a conventional list."""
 
-class IDict(IMinMaxLen, IIterable, IField):
+class IDict(IMinMaxLen, IIterable, IContainer):
     u"""a Field containing a conventional dict.
 
-    the key_types and value_types field allow specification
-    of restrictions for the dict.
+    The key_types and value_types field allow specification
+    of restrictions for keys and values contained in the dict.
     """
 
     key_types = Iterable(
