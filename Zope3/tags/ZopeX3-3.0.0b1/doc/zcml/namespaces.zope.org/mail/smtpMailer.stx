@@ -1,0 +1,40 @@
+smtpMailer
+
+  File zope/app/mail/meta.zcml, lines 23 - 27.
+
+  Handler: zope.app.mail.metaconfigure.smtpMailer
+
+  Registers a new SMTP mailer.
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Name
+
+      Name of the Mailer.
+
+    hostname -- BytesLine (optional, default='localhost')
+
+      Hostname
+
+      Hostname of the SMTP host.
+
+    port -- Int (optional, default=23)
+
+      Port
+
+      Port of the SMTP server.
+
+    username -- TextLine (optional, default=None)
+
+      Username
+
+      A username for SMTP AUTH.
+
+    password -- TextLine (optional, default=None)
+
+      Password
+
+      A password for SMTP AUTH.
+
