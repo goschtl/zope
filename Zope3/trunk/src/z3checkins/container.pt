@@ -57,7 +57,7 @@ if ((typeof window.sidebar == "object") &&
 <a tal:define="prev python:max(0, start - size)"
    tal:condition="python: start > 0"
    tal:attributes="href string:${request/URL}?start=${prev}${opt_size}"
-   >Previous<span tal:replace="size">20</span></a>
+   >Previous <span tal:replace="size">20</span></a>
 </div>
 
 <div tal:replace="structure view/renderCheckins" />
