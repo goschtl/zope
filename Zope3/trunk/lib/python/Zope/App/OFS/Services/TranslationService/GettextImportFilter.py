@@ -13,7 +13,7 @@
 ##############################################################################
 """Translation Service Message Import Filter 
 
-$Id: GettextImportFilter.py,v 1.1 2002/07/11 07:12:41 srichter Exp $
+$Id: GettextImportFilter.py,v 1.2 2002/07/18 15:07:32 jeremy Exp $
 """
 import time, re
 from types import StringTypes
@@ -104,7 +104,7 @@ def parseGetText(content):
         if state == 0:
             COM, MSGID, MSGSTR = [], [], []
             if com.match(line):
-                COM.append(strip(line))
+                COM.append(line.strip())
                 state = 1
                 pointer = pointer + 1
             elif msgid.match(line):
