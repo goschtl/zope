@@ -13,7 +13,7 @@
 ##############################################################################
 """A site management folder contains components and component registrations.
 
-$Id: folder.py,v 1.13 2003/08/12 22:00:18 fdrake Exp $
+$Id: folder.py,v 1.14 2003/09/21 17:32:51 jim Exp $
 """
 
 __metaclass__ = type
@@ -27,53 +27,11 @@ from zope.app.interfaces.services.service import IComponentManager
 from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.services.registration import RegistrationManagerContainer
 from zope.app.traversing import getPath
-from zope.app.context import ContextWrapper
-from zope.context import ContextMethod
 from zope.interface import implements
+from zope.app.container.contained import setitem
 
 class SiteManagementFolder(RegistrationManagerContainer, BTreeContainer):
     implements(ISiteManagementFolder)
-
-
-class SiteManagementFolders(BTreeContainer):
-    implements(ISiteManagementFolders)
-
-    def __init__(self):
-        super(SiteManagementFolders, self).__init__()
-        self.setObject('default', SiteManagementFolder())
-
-    def queryComponent(self, type=None, filter=None, all=0):
-        local = []
-        path = getPath(self)
-        for pkg_name in self:
-            package = ContextWrapper(self[pkg_name], self, name=pkg_name)
-            for name in package:
-                component = package[name]
-                if type is not None and not type.isImplementedBy(component):
-                    continue
-                if filter is not None and not filter(component):
-                    continue
-                wrapper =  ContextWrapper(component, package, name=name)
-                local.append({'path': "%s/%s/%s" % (path, pkg_name, name),
-                              'component': wrapper,
-                              })
-
-        if all:
-            next_service_manager = getNextServiceManager(self)
-            if IComponentManager.isImplementedBy(next_service_manager):
-                next_service_manager.queryComponent(type, filter, all)
-
-            local += list(all)
-
-        return local
-
-    queryComponent = ContextMethod(queryComponent)
-
-    def setObject(self, name, obj):
-        if not (ISiteManagementFolder.isImplementedBy(obj)
-                or IBundle.isImplementedBy(obj)):
-            raise TypeError("Can only add packages")
-        return super(SiteManagementFolders, self).setObject(name, obj)
 
 class SMFolderFactory(object):
 
@@ -87,7 +45,12 @@ class SMFolderFactory(object):
 
 # XXX Backward compatability. This is needed to support old pickles.
 Package = SiteManagementFolder
+
+class SiteManagementFolders(BTreeContainer):
+    pass 
 Packages = SiteManagementFolders
+
 import sys
+
 sys.modules['zope.app.services.package'
             ] = sys.modules['zope.app.services.folder']
