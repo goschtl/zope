@@ -28,7 +28,7 @@ class DM:
 
     def setstate(self, ob):
         ob.__setstate__({'x': 42})
-        self.cache.setstate(ob._p_oid, ob)
+        self.cache.activate(ob._p_oid)
 
 class Test(unittest.TestCase):
 
@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
         p1=P()
         p1._p_oid=1
         p1._p_jar=dm
-        dm.cache[1]=p1
+        dm.cache.set(1, p1)
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
@@ -48,12 +48,12 @@ class Test(unittest.TestCase):
         p1=P()
         p1._p_oid=1
         p1._p_jar=dm
-        dm.cache[1]=p1
+        dm.cache.set(1, p1)
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
-        p=dm.cache[1]
-        dm.cache.invalidate(1)
+        p=dm.cache.get(1)
+        dm.cache.invalidate([1])
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 1, 'active': 0},
                          )
@@ -66,7 +66,7 @@ class Test(unittest.TestCase):
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
-        dm.cache.invalidateMany([1])
+        dm.cache.invalidate([1])
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 1, 'active': 0},
                          )
@@ -79,7 +79,7 @@ class Test(unittest.TestCase):
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
-        dm.cache.invalidateMany(None)
+        dm.cache.clear()
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 1, 'active': 0},
                          )
@@ -94,7 +94,7 @@ class Test(unittest.TestCase):
                          {'ghosts': 0, 'active': 1},
                          )
         # No changed because p is modified:
-        dm.cache.incrgc()
+        dm.cache.shrink()
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
@@ -114,15 +114,15 @@ class Test(unittest.TestCase):
         p1=P()
         p1._p_oid=1
         p1._p_jar=dm
-        dm.cache[1]=p1
+        dm.cache.set(1, p1)
         p1.a=1
         p1._p_atime=int(time.time()-5000)%86400
-        dm.cache.incrgc()
+        dm.cache.shrink()
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
         p1._p_changed=0
-        dm.cache.incrgc()
+        dm.cache.shrink()
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 1, 'active': 0},
                          )
@@ -133,14 +133,13 @@ class Test(unittest.TestCase):
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 0, 'active': 1},
                          )
-        dm.cache.incrgc()
+        dm.cache.shrink()
         self.assertEqual(dm.cache.statistics(),
                          {'ghosts': 1, 'active': 0},
                          )
 
 def test_suite():
-    loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    return unittest.makeSuite(Test)
 
-if __name__=='__main__':
-    unittest.TextTestRunner().run(test_suite())
+if __name__ == "__main__":
+    unittest.main()

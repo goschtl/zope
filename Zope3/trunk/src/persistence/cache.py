@@ -15,6 +15,8 @@ from time import time
 from sys import getrefcount
 from weakref import ref
 
+import traceback
+
 import logging
 
 from persistence.interfaces import ICache
@@ -32,16 +34,6 @@ class Cache(object):
         self._inactive = inactive
         self._logger = logging.getLogger("persistence.cache")
 
-    def __getitem__(self, oid):
-        o = self.__gget(oid, self)
-        if o is self:
-            o = self.__active[oid]
-        o=o()
-        if o is None:
-            raise KeyError, oid
-        else:
-            return o
-
     def get(self, oid, default=None):
         o = self.__gget(oid, None)
         if o is None:
@@ -54,35 +46,33 @@ class Cache(object):
         else:
             return o
 
-    def __setitem__(self, oid, obj):
+    def set(self, oid, obj):
         if obj._p_changed is None:
             # ghost
             self.__ghosts[oid] = ref(obj, _dictdel(oid, self.__ghosts))
         else:
             self.__active[oid] = ref(obj, _dictdel(oid, self.__active))
 
-    def __delitem__(self, oid):
-        # XXX is there any way to know which dict the key is in?
-        try:
+    def remove(self, oid):
+        # XXX The oid should always be in one of these dicts, else
+        # there would be no need to remove it.
+        if oid in self.__ghosts:
             del self.__ghosts[oid]
-        except KeyError:
-            pass
-        try:
+        else:
             del self.__active[oid]
-        except KeyError:
-            pass
 
     def __len__(self):
         return len(self.__ghosts) + len(self.__active)
 
-    def setstate(self, oid, object):
-        try:
-            del self.__ghosts[oid]
-        except KeyError:
-            pass
-        self.__active[oid] = ref(object, _dictdel(oid, self.__active))
+    def activate(self, oid):
+        wref = self.__ghosts.get(oid)
+        if wref is None:
+            assert oid in self.__active
+            return
+        del self.__ghosts[oid]
+        self.__active[oid] = ref(wref(), _dictdel(oid, self.__active))
 
-    def incrgc(self):
+    def shrink(self):
         na = len(self.__active)
         if na < 1:
             return
@@ -140,7 +130,7 @@ class Cache(object):
             del self.__active[oid]
             self.__ghosts[oid] = ref(ob, _dictdel(oid, self.__ghosts))
 
-    def invalidate(self, oid):
+    def _invalidate(self, oid):
         ob = self.__aget(oid)
         if ob is None:
             return
@@ -149,15 +139,12 @@ class Cache(object):
         del self.__active[oid]
         self.__ghosts[oid] = ref(ob, _dictdel(oid, self.__ghosts))
 
-    def invalidateMany(self, oids):
-        if oids is None:
-            oids = self.__active.keys()
+    def invalidate(self, oids):
         for oid in oids:
-            self.invalidate(oid)
+            self._invalidate(oid)
 
     def clear(self):
-        for oid in self.__active.keys():
-            self.invalidate(oid)
+        self.invalidate(self.__active.keys())
 
     def statistics(self):
         return {
