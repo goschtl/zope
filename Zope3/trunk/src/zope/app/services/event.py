@@ -13,7 +13,7 @@
 ##############################################################################
 """Local Event Service and related classes.
 
-$Id: event.py,v 1.20 2003/03/16 15:44:05 stevea Exp $
+$Id: event.py,v 1.21 2003/04/12 11:42:08 stevea Exp $
 """
 
 from __future__ import generators
@@ -37,6 +37,7 @@ from zope.proxy.introspection import removeAllProxies
 
 from zope.app.event.subs import Subscribable, SubscriptionTracker
 
+import logging
 
 def getSubscriptionService(context):
     return getService(context, EventSubscription)
@@ -113,7 +114,9 @@ class EventChannel(Subscribable):
                 getAdapter(obj, ISubscriber).notify(event)
 
         for subscriber in badSubscribers:
-            # XXX this ought to be logged
+            logging.getLogger('SiteError').warn(
+                "Notifying a subscriber that does not exist."
+                " Unsubscribing it: %s" % subscriber)
             # Also, is it right that we should sometimes have
             # "write caused by a read" semantics? I'm seeing notify() as
             # basically a read, and (un)subscribe as a write.
@@ -175,7 +178,14 @@ class ServiceSubscriberEventChannel(SubscriptionTracker, EventChannel):
                 if removeAllProxies(es) is clean_self:
                     es = queryNextService(
                         wrapped_self, clean_self._subscribeToServiceName)
-            if es is not None:
+            if es is None:
+                subscribe_to = clean_self._subscribeToServiceName
+                logging.getLogger('SiteError').warn(
+                    "Unable to subscribe %s service to the %s service "
+                    "while binding the %s service. This is because the "
+                    "%s service could not be found." %
+                    (name, subscribe_to, name, subscribe_to))
+            else:
                 es.subscribe(
                     wrapped_self,
                     clean_self._subscribeToServiceInterface,
