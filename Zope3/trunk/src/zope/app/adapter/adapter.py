@@ -13,7 +13,7 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.5 2004/04/07 19:18:57 jim Exp $
+$Id: adapter.py,v 1.6 2004/04/08 21:31:39 jim Exp $
 """
 __metaclass__ = type
 
@@ -181,13 +181,6 @@ class LocalAdapterRegistry(AdapterRegistry, Persistent):
                 for info in stack.info():
                     yield info['registration']
 
-        next = self.next
-        if next is None:
-            next = self.base
-
-        for registration in next.registrations():
-            yield registration
-
 class LocalAdapterBasedService(
     zope.app.container.contained.Contained,
     Persistent,
@@ -244,12 +237,24 @@ class LocalAdapterService(LocalAdapterRegistry,
     zope.interface.implements(
         zope.component.interfaces.IAdapterService,
         zope.app.site.interfaces.ISimpleService,
+        zope.component.interfaces.IComponentRegistry,
         )
 
-    def __init__(self):
-        LocalAdapterRegistry.__init__(
-            self, zapi.getService(None, zapi.servicenames.Adapters)
-            )
+    def __init__(self, base=None):
+        if base is None:
+            base = zapi.getService(None, zapi.servicenames.Adapters)
+        LocalAdapterRegistry.__init__(self, base)
+
+    def registrations(self):
+        for registration in LocalAdapterRegistry.registrations(self):
+            yield registration
+
+        next = self.next
+        if next is None:
+            next = self.base
+
+        for registration in next.registrations():
+            yield registration
 
 class IAdapterRegistration(
     zope.app.registration.interfaces.IRegistration):

@@ -16,13 +16,9 @@
    Local surrogates and adapter registries share declarations with
    those "above" them.
 
-   Local adapter registries have "base" registries that mist be
-   IComponentRegistry objects.
+   Suppose we have a global AdapterRegistry:
 
-   Suppose we have a global adapter service, which is a type of
-   adapter registry that is an IComponentRegistry:
-
-   >>> G = GlobalAdapterService()
+   >>> G = AdapterRegistry()
 
    we also have a local adapter registry, with G as it's base:
 
@@ -128,36 +124,22 @@
    >>> L2.lookup([IF2], IB0)
    'A10G'
 
-   We can ask for all of the registrations locally:
+   We can ask for all of the registrations :
 
-   >>> registrations = map(repr, L1.registrations())
-   >>> registrations.sort()
-   >>> for registration in registrations:
-   ...     print registration
-   AdapterRegistration(('IF1',), 'IB1', '', 'A10G', '')
-   Registration('IF0', (), 'IB1', u'', 'A011')
+   >>> registrations = list(L1.registrations())
+   >>> registrations
+   [Registration('IF0', (), 'IB1', u'', 'A011')]
 
-   This shows the local registrations in L1 and the global registrations.
+   This shows only the local registrations in L1.
 
-   If we ask L2, we'll see the registrations from G, L1, and L2:
-   
-   >>> registrations = map(repr, L2.registrations())
-   >>> registrations.sort()
-   >>> for registration in registrations:
-   ...     print registration
-   AdapterRegistration(('IF1',), 'IB1', '', 'A10G', '')
-   Registration('IF0', (), 'IB1', u'', 'A011')
-   Registration('IF1', (), 'IB0', u'', 'A102')
-   Registration('IF1', (), 'IB1', u'', 'A112')
-
-   $Id: tests.py,v 1.6 2004/04/08 14:41:17 jim Exp $
+   $Id: tests.py,v 1.7 2004/04/08 21:31:39 jim Exp $
    """
 
 def test_named_adapters():
     """
-    Suppose we have a GlobalAdapterService:
+    Suppose we have a global AdapterRegistry:
 
-    >>> G = GlobalAdapterService()
+    >>> G = AdapterRegistry()
 
     we also have a local adapter registry, with G as it's base:
 
@@ -284,9 +266,9 @@ def test_named_adapters():
 
 def test_multi_adapters():
     """
-    Suppose we have a globalGlobalAdapterService:
+    Suppose we have a global AdapterRegistry:
 
-    >>> G = GlobalAdapterService()
+    >>> G = AdapterRegistry()
 
     we also have a local adapter registry, with G as it's base:
 
@@ -570,7 +552,7 @@ def test_persistence():
 
 def test_local_default():
     """
-    >>> G = GlobalAdapterService()
+    >>> G = AdapterRegistry()
     >>> L1 = LocalAdapterRegistry(G)
     >>> r = Registration(required = None, provided=IB1, factory='Adapter')
     >>> L1.createRegistrationsFor(r).activate(r)
@@ -581,7 +563,7 @@ def test_local_default():
 
 def test_changing_next():
     """
-    >>> G = GlobalAdapterService()
+    >>> G = AdapterRegistry()
     >>> L1 = LocalAdapterRegistry(G)
     >>> L2 = LocalAdapterRegistry(G, L1)
     >>> f2 = F2()
@@ -659,6 +641,7 @@ def test_LocalAdapterBasedService():
     Create a local service class, which must define setNext:
 
     >>> import zope.app.site.interfaces
+    >>> from zope.app.adapter.adapter import LocalAdapterBasedService
     >>> class LocalF(LocalAdapterBasedService):
     ...     zope.interface.implements(
     ...         IF2,
@@ -717,9 +700,9 @@ def test_LocalAdapterBasedService():
 
 import unittest
 from zope.testing.doctestunit import DocTestSuite
+from zope.interface.adapter import AdapterRegistry
 from zope.component.adapter import GlobalAdapterService
-from zope.app.adapter.adapter import LocalAdapterRegistry
-from zope.app.adapter.adapter import LocalAdapterBasedService
+from zope.app.adapter.adapter import LocalAdapterRegistry, LocalAdapterService
 import zope.interface
 from ZODB.tests.util import DB
 from transaction import get_transaction
@@ -779,7 +762,7 @@ class Registration:
 
 # Create a picklable global registry. The pickleability of other
 # global adapter registries is beyond the scope of these tests:
-class GlobalAdapterRegistry(GlobalAdapterService):
+class GlobalAdapterRegistry(AdapterRegistry):
     def __reduce__(self):
         return 'globalAdapterRegistry'
 
@@ -813,6 +796,67 @@ class LocalAdapterRegistry(LocalAdapterRegistry):
     """For testing, use custom stack type
     """
     _stackType = TestStack
+
+
+def test_service_registrations():
+    """Local Adapter Service Registration Tests
+
+
+       Local adapter services share declarations and registrations with
+       those "above" them.
+
+       Suppose we have a global adapter service, which is a type of
+       adapter registry that is an IComponentRegistry:
+
+       >>> G = GlobalAdapterService()
+
+       we also have a local adapter registry, with G as it's base:
+
+       >>> L1 = LocalAdapterService(G)
+
+       and another local, with G as it's base:
+
+       >>> L2 = LocalAdapterService(G)
+
+       and L1 as it's next service:
+       
+       >>> L2.setNext(L1)
+
+       Now will register some adapters:
+
+       >>> G.register([IF1], IB1, '', 'A11G')
+       >>> ra011 = Registration(required = IF0, provided=IB1, factory='A011')
+       >>> L1.createRegistrationsFor(ra011).register(ra011)
+       >>> ra112 = Registration(required = IF1, provided=IB1, factory='A112')
+       >>> L2.createRegistrationsFor(ra112).register(ra112)
+       >>> ra102 = Registration(required = IF1, provided=IB0, factory='A102')
+       >>> L2.createRegistrationsFor(ra102).register(ra102)
+
+       We can ask for all of the registrations locally:
+
+       >>> registrations = map(repr, L1.registrations())
+       >>> registrations.sort()
+       >>> for registration in registrations:
+       ...     print registration
+       AdapterRegistration(('IF1',), 'IB1', '', 'A11G', '')
+       Registration('IF0', (), 'IB1', u'', 'A011')
+
+       This shows the local registrations in L1 and the global registrations.
+
+       If we ask L2, we'll see the registrations from G, L1, and L2:
+
+       >>> registrations = map(repr, L2.registrations())
+       >>> registrations.sort()
+       >>> for registration in registrations:
+       ...     print registration
+       AdapterRegistration(('IF1',), 'IB1', '', 'A11G', '')
+       Registration('IF0', (), 'IB1', u'', 'A011')
+       Registration('IF1', (), 'IB0', u'', 'A102')
+       Registration('IF1', (), 'IB1', u'', 'A112')
+
+       $Id: tests.py,v 1.7 2004/04/08 21:31:39 jim Exp $
+       """
+    
     
 
 def test_suite():
