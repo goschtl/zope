@@ -14,7 +14,7 @@
  
  These are the basic CSS declarations.
 
- $Id: zopetopbasic.css,v 1.2 2002/12/25 14:12:43 jim Exp $
+ $Id: zopetop.css,v 1.1 2003/03/01 15:49:40 sidnei Exp $
 */
 
 
@@ -25,6 +25,26 @@ body {
     margin: 0;
     padding: 0;
 }
+
+#drag-feedback-box {
+  border: 1px dotted black;
+  position: absolute;
+  display: none;
+  z-index: 1000;
+}
+
+div.top { 
+  background-image: url('bg_top.jpg');
+  height: 37px;
+}
+
+div.top div.user { 
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  color: white;
+}
+
 
 a {
     text-decoration: none;
@@ -46,7 +66,7 @@ p {
 /* Default paragraph style*/
     font: 1em Tahoma, Helvetica, Arial, sans-serif;
     margin: 1em 0em;
-    text-align: justify;
+    text-align: left;
 }
 
 p a {
@@ -149,15 +169,12 @@ textarea {
 input {
 /* Small cosmetic fix which makes input gadgets look nicer.  */
     font: 1em Tahoma, Helvetica, Arial, sans-serif;
-/*    border: 1px solid #8cacbb;   */
     color: Black;
-/*    background-color: white; */
     margin: 1px 1px 1px 1px;
 }
 
 select {
     font: 1em Tahoma, Helvetica, Arial, sans-serif;
-/*    border: 1px solid #8cacbb;  */
     margin: 1px 1px 1px 1px;
 }
 
@@ -188,3 +205,146 @@ pre {
    Mostly strategically placed hr tags and &middot;'s */
     display: none;
 }
+
+table.listing {
+    /* The default table for document listings. Contains name, document types, modification times etc in a file-browser-like fashion */
+    border-collapse: collapse;
+    border-left: 1px solid #7B7AC6;
+    border-bottom: 1px solid #7B7AC6;
+    margin: 1em 0em 1em 0em;
+}
+
+table.listing th {
+    background: #A1A1F1;
+    border-top: 1px solid #7B7AC6;
+    border-bottom: 1px solid #7B7AC6;
+    border-right: 1px solid #7B7AC6;
+    color: #000000;
+    font-weight: normal;
+    padding: 0em 1em 0em 1em;
+}
+
+table.listing tr.odd {
+    /*every second line should be shaded */
+    background: transparent;
+}
+
+table.listing tr.even {
+    background: #ECFAFF;
+}
+
+table.listing td {
+    border-right: 1px solid #7B7AC6;
+    padding: 2px 1em 2px 1em;
+}
+
+table.listing a:hover {
+    text-decoration: underline;
+}
+
+table.listing img{
+    vertical-align: middle;
+}
+
+table.columns { 
+   width: 100%;
+   padding: 0;
+   margin: 0;
+   border-collapse: collapse;
+}
+
+table.columns td{ 
+  vertical-align: top;
+}
+
+table.columns td.main { 
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+    border-bottom: 1px solid #7B7AC6;
+}
+
+table.columns td.left {
+    background-color: #ccccff;
+    border-right: 1px solid #7B7AC6;
+    border-bottom: 1px solid #7B7AC6;
+    width: 20%;
+}
+
+table.columns td.right {
+    background-color: #ccccff;
+    border-left: 1px solid #7B7AC6;
+    border-bottom: 1px solid #7B7AC6;
+    width: 20%;
+}
+
+
+div.breadcrumbs{ 
+    background-color: #ccccff;
+    margin-top: 0.5em;
+    padding: 0.5em;
+}
+
+div.breadcrumbs img { 
+  vertical-align: middle;
+}
+
+div.breadcrumbs span.help { 
+   float: right;
+   position: relative;
+   bottom: 0.2em;
+}
+
+.darker {
+    background-color: #7B7AC6;
+}
+
+.hilite {
+    background: #FFFFFF;
+}
+
+.background {
+    border-bottom: 1px solid #7B7AC6;
+}
+
+.description {
+/* The summary text describing the document */
+    font: bold 1em Tahoma, Helvetica, Arial, sans-serif;
+    display: block;
+    margin-bottom: 1em;
+}
+
+.footer {
+    background: #DEE7EC;
+    border-top: 1px solid #8CACBB;
+    border-bottom: 1px solid #8CACBB;
+    color: Black;
+    clear: both;
+    float: none;
+    margin: 2em 0em;
+    padding: 0.5em 0em 1em 0em;
+    text-align: center;
+}
+
+.context-menu {
+  position: absolute;
+  border: 1px outset;
+  background-color: Menu;
+  color: MenuText;
+  cursor: default;
+  z-index: 1000;
+  visibility: hidden;
+  display: table;
+}
+
+.context-menu-item {
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.drop-target {
+  border: 2px solid transparent;
+  visibility: hidden;
+}
+

@@ -9,9 +9,9 @@
 <body>
 
 
-<span metal:define-macro="logged_user"
+<div class="user" metal:define-macro="logged_user"
    >Logged in as <span tal:replace="request/user/getTitle"
-   >dtremea</span></span>
+   >dtremea</span></div>
 
 
 <table metal:define-macro="services_box" align="center" class="box"
@@ -172,26 +172,26 @@
   </table>
 
 
-<table metal:define-macro="content_header_bar" width="100%" border="0" cellpadding="0" cellspacing="0">
-  <tr> 
-    <td width="26"> <img src="closed_folder.gif" width="26" height="25"
-      tal:attributes="src context/++resource++closed_folder.gif"/>
-    </td>
-    <td width="95">Folder at </td>
-    <td><span
+<div class="breadcrumbs" metal:define-macro="content_header_bar">
+  <span class="help">
+    <a href="#">
+      Help
+      <img src="help.gif" width="25" height="25"
+           tal:attributes="src context/++resource++help.gif"/>
+    </a>
+  </span>
+
+  Location:
+  <span
       metal:define-macro="breadcrumbs"
 	  tal:omit-tag=""
       tal:repeat="breadcrumb context/@@absolute_url/breadcrumbs"> <a href="" 
       tal:attributes="href breadcrumb/url"
       tal:content="string:${breadcrumb/name}/"
-      >name</a></span></td>
-    <td width="45" align="right">Help </td>
-    <td width="25"> <img src="help.gif" width="25" height="25"
-      tal:attributes="src context/++resource++help.gif"/>
-    </td>
-  </tr>
-</table>
+      >name</a></span>
 
+</div>
+  
 <div metal:define-macro="footer">
   <p>Powered by Zope</p>
 </div>

@@ -7,24 +7,12 @@
     tal:content="options/getTitle|view/getTitle|context/getTitle|default"
     >Zope</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="zopetopBasic.css" rel="stylesheet" type="text/css"
-        tal:attributes="href context/++resource++zopetopBasic.css" />
-<link href="zopetopWidgets.css" rel="stylesheet" type="text/css"
-        tal:attributes="href context/++resource++zopetopWidgets.css" />
-<link href="zopetopStructure.css" rel="stylesheet" type="text/css"
-        tal:attributes="href context/++resource++zopetopStructure.css" />
+<link href="zopetop.css" rel="stylesheet" type="text/css"
+        tal:attributes="href context/++resource++zopetop.css" />
 <script type="text/javascript" src="pdlib.js"
         tal:attributes="src context/++resource++pdlib.js"></script>
-<script type="text/javascript" src="zopetop_scripts.js"
-        tal:attributes="src context/++resource++zopetop_scripts.js"></script>
 
-<style type="text/css"><!--
-#drag-feedback-box {
-  border: 1px dotted black;
-  position: absolute;
-  display: none;
-  z-index: 1000;
-}
+<style type="text/css">
 </style>
 
 <div metal:define-slot="headers">
@@ -33,6 +21,58 @@
 
 </head>
 <body>
+<div class="top">
+  <img src="zope3logo.jpg" width="366" height="37" 
+                   alt="Zope 3 Logo"
+                   tal:attributes="src context/++resource++zope3logo.jpg" />
+  <span metal:use-macro="views/standard_macros/logged_user">
+      Logged in as user
+  </span>
+</div>
+<table class="columns">
+   <tr>
+     <td class="left">
+            <div class="box-holder">
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+                 tal:attributes="src context/++resource++spacer3.gif" /> 
+	    <span metal:use-macro="views/standard_macros/explorer_box" />
+            </div>
+            <div class="box-holder">
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+                 tal:attributes="src context/++resource++spacer3.gif" /> 
+            <span metal:use-macro="views/standard_macros/search_box" />
+            </div>
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+             tal:attributes="src context/++resource++spacer3.gif" />
+     </td>
+     <td class="main">
+         <span metal:use-macro="views/standard_macros/content_header_bar" />
+         <span metal:define-slot="body"></span>
+     </td>
+     <td class="right">
+            <div class="box-holder">
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+             tal:attributes="src context/++resource++spacer3.gif" />
+            <span metal:use-macro="views/standard_macros/metadata_box" />
+            </div>
+            <div class="box-holder">
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+             tal:attributes="src context/++resource++spacer3.gif" />
+            <span metal:use-macro="views/standard_macros/views_box" />
+            </div>
+            <div class="box-holder">
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+             tal:attributes="src context/++resource++spacer3.gif" />
+            <span metal:use-macro="views/standard_macros/services_box" />
+            </div>
+            <img src="spacer3.gif" width="150" height="8" class="drop-target"
+             tal:attributes="src context/++resource++spacer3.gif" />
+
+     </td>
+   </tr>
+</table>
+
+<!--
 <table width="100%" border="0" cellspacing="0" cellpadding="0"
        class="top-table">
   <tr> 
@@ -62,17 +102,6 @@
         </tr>
       </table></td>
   </tr>
-<!--
-  <tr> 
-    <td background="bg_bar.gif"
-         tal:attributes="background context/++resource++bg_bar.gif"> 
-      <span metal:use-macro="views/standard_macros/services_bar" />
-    </td>
-  </tr>
-  <tr>
-    <td bgcolor="#7d7cc0" height="1"></td>
-  </tr>
--->
 </table>
 <table width="100%" border="0" cellspacing="0" cellpadding="0"
        class="main-table">
@@ -90,7 +119,7 @@
             </div>
             <img src="spacer3.gif" width="150" height="8" class="drop-target"
              tal:attributes="src context/++resource++spacer3.gif" />
-          </td>
+w          </td>
           <td valign="top" class="hilite">
             <table width="100%" border="0" align="center" cellpadding="0" cellspacing="10">
               <tr> 
@@ -178,7 +207,7 @@
           </td>
         </tr>
 </table>
-
+-->
 
 <div id="box-context-menu" class="context-menu">
 <div class="context-menu-item" onmouseup="Box_add()">Add a box...</div>

@@ -44,27 +44,9 @@
       layer="templates" 
       />
 
-  <browser:resource 
-      name="zopetop_scripts.js" 
-      file="www/zopetop_scripts.js"
-      layer="templates" 
-      />
-
   <browser:resource
-      name="zopetopbasic.css" 
-      file="www/zopetopbasic.css"
-      layer="css" 
-      />
-
-  <browser:resource
-      name="zopetopwidgets.css" 
-      file="www/zopetopwidgets.css"
-      layer="css" 
-      />
-
-  <browser:resource
-      name="zopetopstructure.css" 
-      file="www/zopetopstructure.css" 
+      name="zopetop.css" 
+      file="www/zopetop.css" 
       layer="css" 
       />
 
