@@ -2,13 +2,13 @@ include MANIFEST
 include Makefile
 include test.py
 include log.ini
-recursive-include lib/python *.h *.c 
-recursive-include lib/python *.txt
-recursive-include lib/python *.conf *.zcml 
-recursive-include lib/python *.css *.gif *.html *.js *.png *.pt *.xml
-recursive-include lib/python *.mo *.po
+recursive-include src *.h *.c 
+recursive-include src *.txt
+recursive-include src *.conf *.zcml 
+recursive-include src *.css *.gif *.html *.js *.png *.pt *.xml
+recursive-include src *.mo *.po
 
-include lib/python/Zope/App/RDB/GadflyDA/gadfly/COPYRIGHT
-include lib/python/Zope/App/RDB/GadflyDA/gadfly/*.mar
+include src/zope/app/rdb/gadfly/COPYRIGHT
+include src/zope/app/rdb/gadfly/*.mar
 
 graft doc
