@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from datetime import datetime
 
 from zope.interface import implements
@@ -92,9 +94,9 @@ class SequenceProperty(SimpleProperty):
 class ZopeDublinCore(object):
     """Zope Dublin Core Mixin
 
-    Subclasses should define either _changed() or _p_changed.
+    Subclasses should define either `_changed()` or `_p_changed`.
 
-    Just mix with Persistence to get a persistent version.
+    Just mix with `Persistence` to get a persistent version.
     """
 
     implements(IZopeDublinCore)
@@ -110,25 +112,25 @@ class ZopeDublinCore(object):
     title = ScalarProperty(u'Title')
 
     def Title(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.title
 
     creators = SequenceProperty(u'Creator')
 
     def Creator(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.creators
 
     subjects = SequenceProperty(u'Subject')
 
     def Subject(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.subjects
 
     description = ScalarProperty(u'Description')
 
     def Description(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.description
 
     publisher = ScalarProperty(u'Publisher')
@@ -140,7 +142,7 @@ class ZopeDublinCore(object):
     contributors = SequenceProperty(u'Contributor')
 
     def Contributors(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.contributors
 
     def Date(self):
@@ -150,175 +152,175 @@ class ZopeDublinCore(object):
     created = DateProperty(u'Date.Created')
 
     def CreationDate(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return _scalar_get(self, u'Date.Created')
 
     effective = DateProperty(u'Date.Effective')
 
     def EffectiveDate(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return _scalar_get(self, u'Date.Effective')
 
     expires = DateProperty(u'Date.Expires')
 
     def ExpirationDate(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return _scalar_get(self, u'Date.Expires')
 
     modified = DateProperty(u'Date.Modified')
 
     def ModificationDate(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return _scalar_get(self, u'Date.Modified')
 
     type = ScalarProperty(u'Type')
 
     def Type(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.type
 
     format = ScalarProperty(u'Format')
 
     def Format(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.format
 
     identifier = ScalarProperty(u'Identifier')
 
     def Identifier(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.identifier
 
     language = ScalarProperty(u'Language')
 
     def Language(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.language
 
     rights = ScalarProperty(u'Rights')
 
     def Rights(self):
-        "See IZopeDublinCore"
+        "See `IZopeDublinCore`"
         return self.rights
 
     def setQualifiedTitles(self, qualified_titles):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Title', qualified_titles)
 
     def setQualifiedCreators(self, qualified_creators):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Creator', qualified_creators)
 
     def setQualifiedSubjects(self, qualified_subjects):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Subject', qualified_subjects)
 
     def setQualifiedDescriptions(self, qualified_descriptions):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Description', qualified_descriptions)
 
     def setQualifiedPublishers(self, qualified_publishers):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Publisher', qualified_publishers)
 
     def setQualifiedContributors(self, qualified_contributors):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Contributor', qualified_contributors)
 
     def setQualifiedDates(self, qualified_dates):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Date', qualified_dates)
 
     def setQualifiedTypes(self, qualified_types):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Type', qualified_types)
 
     def setQualifiedFormats(self, qualified_formats):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Format', qualified_formats)
 
     def setQualifiedIdentifiers(self, qualified_identifiers):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Identifier', qualified_identifiers)
 
     def setQualifiedSources(self, qualified_sources):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Source', qualified_sources)
 
     def setQualifiedLanguages(self, qualified_languages):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Language', qualified_languages)
 
     def setQualifiedRelations(self, qualified_relations):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Relation', qualified_relations)
 
     def setQualifiedCoverages(self, qualified_coverages):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Coverage', qualified_coverages)
 
     def setQualifiedRights(self, qualified_rights):
-        "See IWritableDublinCore"
+        "See `IWritableDublinCore`"
         return _set_qualified(self, u'Rights', qualified_rights)
 
     def getQualifiedTitles(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Title')
 
     def getQualifiedCreators(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Creator')
 
     def getQualifiedSubjects(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Subject')
 
     def getQualifiedDescriptions(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Description')
 
     def getQualifiedPublishers(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Publisher')
 
     def getQualifiedContributors(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Contributor')
 
     def getQualifiedDates(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Date')
 
     def getQualifiedTypes(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Type')
 
     def getQualifiedFormats(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Format')
 
     def getQualifiedIdentifiers(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Identifier')
 
     def getQualifiedSources(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Source')
 
     def getQualifiedLanguages(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Language')
 
     def getQualifiedRelations(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Relation')
 
     def getQualifiedCoverages(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Coverage')
 
     def getQualifiedRights(self):
-        "See IStandardDublinCore"
+        "See `IStandardDublinCore`"
         return _get_qualified(self, u'Rights')
 
 

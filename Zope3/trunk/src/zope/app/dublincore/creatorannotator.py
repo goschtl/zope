@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.security.management import queryInteraction
 

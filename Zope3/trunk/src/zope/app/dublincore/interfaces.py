@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from zope.app.annotation.interfaces import IAnnotatable
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Datetime, List
@@ -115,98 +117,98 @@ class IGeneralDublinCore(Interface):
 class IWritableGeneralDublinCore(Interface):
     """Provide write access to dublin core data
 
-    This interface augments IStandardDublinCore with methods for
+    This interface augments `IStandardDublinCore` with methods for
     writing elements.
     """
 
     def setQualifiedTitles(qualified_titles):
         """Set the qualified Title elements.
 
-        The argument must be a sequence of IDublinCoreElementItem.
+        The argument must be a sequence of `IDublinCoreElementItem`.
         """
 
     def setQualifiedCreators(qualified_creators):
         """Set the qualified Creator elements.
 
-        The argument must be a sequence of Creator IDublinCoreElementItem.
+        The argument must be a sequence of Creator `IDublinCoreElementItem`.
         """
 
     def setQualifiedSubjects(qualified_subjects):
         """Set the qualified Subjects elements.
 
-        The argument must be a sequence of Subject IDublinCoreElementItem.
+        The argument must be a sequence of Subject `IDublinCoreElementItem`.
         """
 
     def setQualifiedDescriptions(qualified_descriptions):
         """Set the qualified Descriptions elements.
 
-        The argument must be a sequence of Description IDublinCoreElementItem.
+        The argument must be a sequence of Description `IDublinCoreElementItem`.
         """
 
     def setQualifiedPublishers(qualified_publishers):
         """Set the qualified Publishers elements.
 
-        The argument must be a sequence of Publisher IDublinCoreElementItem.
+        The argument must be a sequence of Publisher `IDublinCoreElementItem`.
         """
 
     def setQualifiedContributors(qualified_contributors):
         """Set the qualified Contributors elements.
 
-        The argument must be a sequence of Contributor IDublinCoreElementItem.
+        The argument must be a sequence of Contributor `IDublinCoreElementItem`.
         """
 
     def setQualifiedDates(qualified_dates):
         """Set the qualified Dates elements.
 
-        The argument must be a sequence of Date IDublinCoreElementItem.
+        The argument must be a sequence of Date `IDublinCoreElementItem`.
         """
 
     def setQualifiedTypes(qualified_types):
         """Set the qualified Types elements.
 
-        The argument must be a sequence of Type IDublinCoreElementItem.
+        The argument must be a sequence of Type `IDublinCoreElementItem`.
         """
 
     def setQualifiedFormats(qualified_formats):
         """Set the qualified Formats elements.
 
-        The argument must be a sequence of Format IDublinCoreElementItem.
+        The argument must be a sequence of Format `IDublinCoreElementItem`.
         """
 
     def setQualifiedIdentifiers(qualified_identifiers):
         """Set the qualified Identifiers elements.
 
-        The argument must be a sequence of Identifier IDublinCoreElementItem.
+        The argument must be a sequence of Identifier `IDublinCoreElementItem`.
         """
 
     def setQualifiedSources(qualified_sources):
         """Set the qualified Sources elements.
 
-        The argument must be a sequence of Source IDublinCoreElementItem.
+        The argument must be a sequence of Source `IDublinCoreElementItem`.
         """
 
     def setQualifiedLanguages(qualified_languages):
         """Set the qualified Languages elements.
 
-        The argument must be a sequence of Language IDublinCoreElementItem.
+        The argument must be a sequence of Language `IDublinCoreElementItem`.
         """
 
     def setQualifiedRelations(qualified_relations):
         """Set the qualified Relations elements.
 
-        The argument must be a sequence of Relation IDublinCoreElementItem.
+        The argument must be a sequence of Relation `IDublinCoreElementItem`.
         """
 
     def setQualifiedCoverages(qualified_coverages):
         """Set the qualified Coverages elements.
 
-        The argument must be a sequence of Coverage IDublinCoreElementItem.
+        The argument must be a sequence of Coverage `IDublinCoreElementItem`.
         """
 
     def setQualifiedRights(qualified_rights):
         """Set the qualified Rights elements.
 
-        The argument must be a sequence of Rights IDublinCoreElementItem.
+        The argument must be a sequence of Rights `IDublinCoreElementItem`.
         """
 
 class IDCDescriptiveProperties(Interface):
@@ -300,7 +302,7 @@ class ICMFDublinCore(Interface):
     def Title():
         """Return the resource title.
 
-        The first unqualified Dublin Core 'Title' element value is
+        The first unqualified Dublin Core `Title` element value is
         returned as a unicode string if an unqualified element is
         defined, otherwise, an empty unicode string is returned.
         """
@@ -311,14 +313,14 @@ class ICMFDublinCore(Interface):
         Return the full name(s) of the author(s) of the content
         object.
 
-        The unqualified Dublin Core 'Creator' element values are
+        The unqualified Dublin Core `Creator` element values are
         returned as a sequence of unicode strings.
         """
 
     def Subject():
         """Return the resource subjects.
 
-        The unqualified Dublin Core 'Subject' element values are
+        The unqualified Dublin Core `Subject` element values are
         returned as a sequence of unicode strings.
         """
 
@@ -327,7 +329,7 @@ class ICMFDublinCore(Interface):
 
         Return a natural language description of this object.
 
-        The first unqualified Dublin Core 'Description' element value is
+        The first unqualified Dublin Core `Description` element value is
         returned as a unicode string if an unqualified element is
         defined, otherwise, an empty unicode string is returned.
         """
@@ -338,7 +340,7 @@ class ICMFDublinCore(Interface):
         Return full formal name of the entity or person responsible
         for publishing the resource.
 
-        The first unqualified Dublin Core 'Publisher' element value is
+        The first unqualified Dublin Core `Publisher` element value is
         returned as a unicode string if an unqualified element is
         defined, otherwise, an empty unicode string is returned.
         """
@@ -348,14 +350,14 @@ class ICMFDublinCore(Interface):
 
         Return any additional collaborators.
 
-        The unqualified Dublin Core 'Contributor' element values are
+        The unqualified Dublin Core `Contributor` element values are
         returned as a sequence of unicode strings.
         """
 
     def Date():
         """Return the default date
 
-        The first unqualified Dublin Core 'Date' element value is
+        The first unqualified Dublin Core `Date` element value is
         returned as a unicode string if an unqualified element is
         defined, otherwise, an empty unicode string is returned. The
         string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
@@ -364,7 +366,7 @@ class ICMFDublinCore(Interface):
     def CreationDate():
         """Return the creation date.
 
-        The value of the first Dublin Core 'Date' element qualified by
+        The value of the first Dublin Core `Date` element qualified by
         'creation' is returned as a unicode string if a qualified
         element is defined, otherwise, an empty unicode string is
         returned. The string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
@@ -373,7 +375,7 @@ class ICMFDublinCore(Interface):
     def EffectiveDate():
         """Return the effective date
 
-        The value of the first Dublin Core 'Date' element qualified by
+        The value of the first Dublin Core `Date` element qualified by
         'effective' is returned as a unicode string if a qualified
         element is defined, otherwise, an empty unicode string is
         returned. The string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
@@ -382,7 +384,7 @@ class ICMFDublinCore(Interface):
     def ExpirationDate():
         """Date resource expires.
 
-        The value of the first Dublin Core 'Date' element qualified by
+        The value of the first Dublin Core `Date` element qualified by
         'expiration' is returned as a unicode string if a qualified
         element is defined, otherwise, an empty unicode string is
         returned. The string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
@@ -391,7 +393,7 @@ class ICMFDublinCore(Interface):
     def ModificationDate():
         """Date resource last modified.
 
-        The value of the first Dublin Core 'Date' element qualified by
+        The value of the first Dublin Core `Date` element qualified by
         'modification' is returned as a unicode string if a qualified
         element is defined, otherwise, an empty unicode string is
         returned. The string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
@@ -402,7 +404,7 @@ class ICMFDublinCore(Interface):
 
         Return a human-readable type name for the resource.
 
-        The first unqualified Dublin Core 'Type' element value is
+        The first unqualified Dublin Core `Type` element value is
         returned as a unicode string if an unqualified element is
         defined, otherwise, an empty unicode string is returned.
         """
@@ -413,7 +415,7 @@ class ICMFDublinCore(Interface):
         Return the resource's MIME type (e.g., 'text/html',
         'image/png', etc.).
 
-        The first unqualified Dublin Core 'Format' element value is
+        The first unqualified Dublin Core `Format` element value is
         returned as a unicode string if an unqualified element is
         defined, otherwise, an empty unicode string is returned.
         """
@@ -431,7 +433,7 @@ class ICMFDublinCore(Interface):
         Return the RFC language code (e.g., 'en-US', 'pt-BR')
         for the resource.
 
-        The first unqualified Dublin Core 'Language' element value is
+        The first unqualified Dublin Core `Language` element value is
         returned as a unicode string if an unqualified element is
         defined, otherwise, an empty unicode string is returned.
         """
@@ -442,7 +444,7 @@ class ICMFDublinCore(Interface):
         Return a string describing the intellectual property status,
         if any, of the resource.  for the resource.
 
-        The first unqualified Dublin Core 'Rights' element value is
+        The first unqualified Dublin Core `Rights` element value is
         returned as a unicode string if an unqualified element is
         defined, otherwise, an empty unicode string is returned.
         """

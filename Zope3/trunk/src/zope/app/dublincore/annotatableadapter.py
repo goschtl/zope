@@ -15,6 +15,8 @@
 
 $Id$
 """
+__docformat__ = 'restructuredtext'
+
 from persistent.dict import PersistentDict
 
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
