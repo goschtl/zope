@@ -1,0 +1,16 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:dav="http://namespaces.zope.org/dav">
+
+<dav:provideInterface
+    for="http://namespaces.zope.org/dav/photo/1.0"
+    interface=".interfaces.IPhoto" />
+
+<adapter
+    provides=".interfaces.IPhoto"
+    for="zope.app.file.interfaces.IImage"
+    permission="zope.Public"
+    factory=".ImagePhotoNamespace"
+    trusted="True"/>
+
+</configure>
