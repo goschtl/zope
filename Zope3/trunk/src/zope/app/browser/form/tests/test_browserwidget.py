@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_browserwidget.py,v 1.13 2003/07/13 06:47:18 richard Exp $
+$Id: test_browserwidget.py,v 1.14 2003/07/15 16:08:51 Zen Exp $
 """
 
 from zope.interface import Interface, implements
@@ -37,9 +37,12 @@ class BrowserWidgetTest(PlacelessSetup,
     _FieldFactory = Text
     _WidgetFactory = BrowserWidget
 
-    def setUpContent(self):
+    def setUpContent(self, desc=u''):
         class ITestContent(Interface):
-            foo = self._FieldFactory(title = u"Foo Title")
+            foo = self._FieldFactory(
+                    title = u"Foo Title",
+                    description = desc,
+                    )
         class TestObject:
             implements(ITestContent)
 
@@ -85,6 +88,18 @@ class BrowserWidgetTest(PlacelessSetup,
     def testLabel(self):
         label = ' '.join(self._widget.label().strip().split())
         self.assertEqual(label, '<label for="field.foo">Foo Title</label>')
+
+        self.setUpContent(desc=u"Foo Description")
+        label = ' '.join(self._widget.label().strip().split())
+        self.assertEqual(label,
+                '<label for="field.foo">'
+                '<acronym title="Foo Description">Foo Title</acronym></label>'
+                )
+
+    def testDescription(self):
+        self.setUpContent(desc=u'Foo Description')
+        description = ' '.join(self._widget.description.strip().split())
+        self.assertEqual(description, u'Foo Description')
 
     def testTranslatedLabel(self):
         path = os.path.dirname(zope.app.browser.form.tests.__file__)

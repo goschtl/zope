@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_objectwidget.py,v 1.1 2003/07/13 06:47:18 richard Exp $
+$Id: test_objectwidget.py,v 1.2 2003/07/15 16:08:51 Zen Exp $
 """
 
 import unittest
@@ -40,11 +40,15 @@ class ObjectWidgetTest(BrowserWidgetTest):
         kw.update({'factory': TestContact})
         return ObjectWidget(context, request, **kw)
 
-    def setUpContent(self):
+    def setUpContent(self, desc=u''):
         provideView(ITextLine, 'edit', IBrowserPresentation, [TextWidget])
 
         class ITestContent(Interface):
-            foo = self._FieldFactory(ITestContact, title = u"Foo Title")
+            foo = self._FieldFactory(
+                    ITestContact, 
+                    title = u"Foo Title",
+                    description = desc
+                    )
         class TestObject:
             implements(ITestContent)
 

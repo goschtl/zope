@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: widget.py,v 1.42 2003/07/15 06:06:53 adams Exp $
+$Id: widget.py,v 1.43 2003/07/15 16:08:49 Zen Exp $
 """
 
 __metaclass__ = type
 
-import re
+import re, cgi
 import warnings
 from zope.app import zapi
 
@@ -207,22 +207,24 @@ class BrowserWidget(Widget, BrowserView):
         self.setData(value)
         return self.hidden()
 
+    def _tooltip(self, txt, description):
+        # TODO: Use a JavaScript tooltip instead of an abuse of the
+        # acronym HTML tag.
+        if description:
+            return '<acronym title="%s">%s</acronym>' % (
+                cgi.escape(description, quote=1), txt
+                )
+        else:
+            return txt
+
     def label(self):
-        ts = getService(self.context.context, "Translation")
+        ts = getService(self.context, "Translation")
         title = ts.translate(self.title, "zope", context=self.request)
         if title is None:
             title = self.title
-        # TODO: Use a JavaScript tooltip instead of an abuse of the
-        # acronym HTML tag.
-        desc = self.context.description
-        if desc:
-            return '<label for="%s"><acronym title="%s">%s</acronym></label>'%(
-                    self.name, desc, title,
-                    )
-        else:
-            return '<label for="%s">%s</label>' % (
-                    self.name, title,
-                    )
+        return '<label for="%s">%s</label>' % (
+            self.name, self._tooltip(title, self.context.description),
+            )
 
     def row(self):
         if self.error:
@@ -627,13 +629,6 @@ class TextAreaWidget(PossiblyEmptyMeansMissing, BrowserWidget):
                              contents = self._showData(),
                              extra = self.getValue('extra'))
 
-    def row(self):
-        # XXX This was originally set to make a colspan=2 table cell, and
-        #     have the label above the text area. Perhaps we should use
-        #     different div classes for this case?
-        return '<div class="label">%s</div><div class="field">%s</div>' % (
-                self.label(), self())
-
 class BytesAreaWidget(Bytes, TextAreaWidget):
     """BytesArea widget.
 
@@ -867,14 +862,14 @@ class RadioWidget(SingleItemsWidget):
         ts = getService(self.context.context, "Translation")
         title = ts.translate(self.title, "zope", context=self.request)
         if title is None:
-            title = self.title
-        # radio field's label isn't "for" anything
+            title  = self.title
+        # radio fields label isn't "for" anything
         return title
 
     def row(self):
         return ('<div class="label"><label for="%s">%s</label></div>'
                 '<div class="field" id="%s">%s</div>' % (
-                 self.name, self.label(), self.name, self())
+                self.name, self.label(), self.name, self())
                 )
 
 class MultiItemsWidget(ItemsWidget):

@@ -13,7 +13,7 @@
 ##############################################################################
 """These are the interfaces for the common fields.
 
-$Id: interfacewidget.py,v 1.29 2003/06/06 21:35:16 philikon Exp $
+$Id: interfacewidget.py,v 1.30 2003/07/15 16:08:47 Zen Exp $
 """
 
 import sys
@@ -27,10 +27,11 @@ from zope.app.services.servicenames import Interfaces
 from zope.schema.interfaces import ValidationError
 from zope.component.exceptions import ComponentLookupError
 from xml.sax.saxutils import quoteattr
+from zope.app.browser.form.widget import BrowserWidget
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-class InterfaceWidget(Widget, BrowserView):
+class InterfaceWidget(BrowserWidget, BrowserView):
     implements(IBrowserWidget)
 
     def haveData(self):
@@ -118,16 +119,6 @@ class InterfaceWidget(Widget, BrowserView):
                         % (self.name, interfaceToName(data))
                         )
 
-    def label(self):
-        return '<label for="%s">%s</label>' % (
-            self.name,
-            self.title,
-            )
-
-    def row(self):
-        return '<div class="label">%s</div><div class="field">%s</div>' % (
-                self.label(), self())
-
     # --- deprecated methods of IBrowserWidget
 
     def renderHidden(self, value):
@@ -141,7 +132,7 @@ class InterfaceWidget(Widget, BrowserView):
 
 # A MultiInterfaceWidget is for use with an InterfacesField,
 # which is a tuple of interfaces.
-class MultiInterfaceWidget(Widget, BrowserView):
+class MultiInterfaceWidget(BrowserWidget, BrowserView):
 
     implements(IBrowserWidget)
 
@@ -307,12 +298,14 @@ class MultiInterfaceWidget(Widget, BrowserView):
     def label(self):
         return '<label for="%s">%s</label>' % (
             self.name,
-            self.title,
+            self._tooltip(self.title, self.context.description),
             )
-
+    '''
     def row(self):
-        return '<div class="label">%s</div><div class="field">%s</div>' % (
-                self.label(), self())
+        return '<div class="label">%s</div><div class="field">%s</div>%s' % (
+                self.label(), self(), self._errorSnippet()
+                )
+    '''
 
     # --- deprecated methods of IBrowserWidget
 
