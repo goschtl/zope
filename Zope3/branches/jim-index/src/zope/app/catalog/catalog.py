@@ -16,20 +16,18 @@
 $Id$
 """
 from persistent import Persistent
-from persistent.dict import PersistentDict
 from zope.interface import implements
-from zope.exceptions import NotFoundError
+from zope.app.zapi import getUtility
 from zope.security.proxy import trustedRemoveSecurityProxy
-from zope.index.interfaces import ISimpleQuery
-
-from zope.app.zapi import getUtility, getPath
-from zope.app.annotation.interfaces import IAttributeAnnotatable
-from zope.app.utility.interfaces import ILocalUtility
-from zope.app.container.interfaces import IContainer
-
 from zope.app.container.sample import SampleContainer
+
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.container.interfaces import IContainer
 from zope.app.catalog.interfaces import ICatalog
 from zope.app.uniqueid.interfaces import IUniqueIdUtility
+from zope.app.utility.interfaces import ILocalUtility
+from zope.index.interfaces import ISimpleQuery
+
 
 class ResultSet:
     """Lazily accessed set of objects."""
