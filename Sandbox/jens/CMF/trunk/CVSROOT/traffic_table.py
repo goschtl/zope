@@ -50,8 +50,8 @@ def init_table():
          'specials': [("repolinks", "adjustlinks.py")],
          'verbose': 1},
 
-##       {'path': "test",
-##        'addrs': "klm@zope.com"},
+        {'path': "test",
+         'addrs': "klm@zope.com"},
 
         # Catchall for when *no other entry* matches:
         {'path': None,
