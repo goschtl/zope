@@ -13,7 +13,7 @@
   <browser:page name="action.html" attribute="action" />
 </browser:view>
 
-<browser:menuItem menu="add_connection"
+<browser:menuItem menu="add_component"
     for="Zope.App.OFS.Container.IAdding."
     title="Gadfly DA" 
     action="Zope.App.RDB.GadflyDA"

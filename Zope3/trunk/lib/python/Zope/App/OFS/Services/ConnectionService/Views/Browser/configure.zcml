@@ -1,46 +1,88 @@
 <zopeConfigure
-   xmlns="http://namespaces.zope.org/zope"
-   xmlns:browser="http://namespaces.zope.org/browser"
-   package="Zope.App.OFS.Services.ConnectionService">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:form="http://namespaces.zope.org/form"
+    package="Zope.App.OFS.Services.ConnectionService">
 
-<!-- Handle all Connection Service configuration -->
-
-  <browser:menu id="add_connection" 
-      title="Menu for adding new database connections." />
+<!-- ConnectionService -->
 
   <browser:defaultView 
-     for=".ConnectionService.ILocalConnectionService"
-     name="contents.html" />
+      for=".IConnectionManager"
+      name="index.html" />
 
   <browser:view 
-     permission="Zope.ManageServices" 
-     for=".ConnectionService.ILocalConnectionService"
-     factory="Zope.App.OFS.Container.Views.Browser.Contents.">
+      for=".IConnectionManager"
+      name="index.html"
+      template="Views/Browser/Connections.pt"
+      class=".Views.Browser.Connections."
+      permission="Zope.ManageServices" />
 
-     <browser:page name="contents.html" attribute="contents" />
-     <browser:page name="removeObjects.html" attribute="removeObjects" />
+  <browser:menuItem
+      menu="add_component"
+      for="Zope.App.OFS.Container.IAdding."
+      action="ConnectionService"
+      title="RDBMS Connection Service"
+      description="A Persistent RDBMS Connection Service for TTW development"
+      />
 
-  </browser:view>
+<!-- ConnectionConfiguration -->
+
+  <browser:defaultView 
+      for=".IConnectionConfiguration."
+      name="index.html" />
+
+  <browser:menuItems menu="zmi_views" for=".IConnectionConfiguration.">
+    <browser:menuItem title="Edit" action="index.html"/>
+  </browser:menuItems>
+
+  <form:edit
+      for=".IConnectionConfiguration."
+      name="index.html"
+      schema="Zope.App.OFS.Services.ConfigurationInterfaces.IConfiguration."
+      label="Connection Configuration"
+      permission="Zope.ManageServices"
+      template="Views/Browser/ConnectionConfigEdit.pt"
+      />
+
+  <form:edit
+      for=".IConnectionConfiguration."
+      name="ItemEdit"
+      schema= 
+        "Zope.App.OFS.Services.ConfigurationInterfaces.IConfigurationSummary."
+      label="Service Configuration"
+      template="Views/Browser/ConnectionConfigEditPart.pt"
+      class=".Views.Browser.ConnectionConfigURL."
+      permission = "Zope.ManageServices"
+      />
 
   <browser:view
-      name="+"  
-      for=".ConnectionService.ILocalConnectionService"
-      permission="Zope.ManageContent"
-      factory=".Views.Browser.Adding." >
+      for=".IConnectionConfiguration."
+      name="ConfigurationSummary"
+      template="Views/Browser/ConnectionConfigSummary.pt"
+      class=".Views.Browser.ConnectionConfigURL."
+      permission="Zope.ManageServices" 
+      />  
 
-    <browser:page name="index.html"  attribute="index" />
-    <browser:page name="action.html" attribute="action" />
+  <browser:view 
+      for="Zope.App.OFS.Container.IAdding."
+      name="ConnectionConfiguration"
+      factory=".Views.Browser.AddConnectionConfiguration."
+      permission="Zope.ManageServices">
+
+    <browser:page name="add.html" template="Views/Browser/add_config.pt" />
+    <browser:page name="finish.html" attribute="action" />
 
   </browser:view>
 
-  <browser:menuItem menu="add_component" for="Zope.App.OFS.Container.IAdding."
-       action="ConnectionService"  title="RDBMS Connection Service"
-       description="A Persistent RDBMS Connection Service for TTW
-       development"
-       />
+  <browser:menuItem
+      menu="add_configuration"
+      for="Zope.App.OFS.Container.IAdding."
+      action="ConnectionConfiguration"
+      title="Connection"
+      description="Database Connection"
+      />
 
-
-  <!-- Handle all generic Database Adapter configuration -->
+<!-- ZopeDatabaseAdapter default views -->
 
   <browser:defaultView for="Zope.App.RDB.IZopeDatabaseAdapter." 
       name="editForm.html" />
