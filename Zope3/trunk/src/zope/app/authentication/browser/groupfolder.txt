@@ -646,10 +646,10 @@ power-user groups:
   >>> betty = principals.getPrincipal(u'users.3')
   >>> betty.groups.sort()
   >>> betty.groups
-  [u'groups.1', u'groups.power']
+  [u'groups.1', u'groups.power', 'zope.Authenticated', 'zope.Everybody']
 
 And we'll get Bill, and see that he is only in the power-user group:
 
   >>> bill = principals.getPrincipal(u'users.2')
   >>> bill.groups
-  [u'groups.power']
+  ['zope.Everybody', 'zope.Authenticated', u'groups.power']

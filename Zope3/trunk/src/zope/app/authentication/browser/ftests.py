@@ -24,6 +24,7 @@ def test_suite():
         functional.FunctionalDocFileSuite('groupfolder.txt'),
         functional.FunctionalDocFileSuite(
             'group_searching_with_empty_string.txt'),
+        functional.FunctionalDocFileSuite('special-groups.txt'),
         ))
 
 if __name__ == '__main__':

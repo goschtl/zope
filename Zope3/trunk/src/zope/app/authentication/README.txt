@@ -42,34 +42,34 @@ corresponding interface declarations.
 Let's look at an example. We create a simple plugin that provides credential
 extraction:
 
-  >>> import zope.interface
+  >>> from zope import interface
   >>> from zope.app.authentication import interfaces
 
   >>> class MyExtractor:
   ...
-  ...     zope.interface.implements(interfaces.IExtractionPlugin)
+  ...     interface.implements(interfaces.IExtractionPlugin)
   ...
   ...     def extractCredentials(self, request):
   ...         return request.get('credentials')
 
 We need to register this as a utility. Normally, we'd do this in ZCML. For the
 example here, we'll use the `provideUtility()` function from
-`zope.app.tests.ztapi`:
+`zope.component`:
 
-  >>> from zope.app.tests.ztapi import provideUtility
-  >>> provideUtility(interfaces.IExtractionPlugin, MyExtractor(), name='emy')
+  >>> from zope.component import provideUtility
+  >>> provideUtility(MyExtractor(), name='emy')
 
 Now we also create an authenticator plugin that knows about object 42:
 
   >>> class Auth42:
   ...
-  ...     zope.interface.implements(interfaces.IAuthenticationPlugin)
+  ...     interface.implements(interfaces.IAuthenticationPlugin)
   ...
   ...     def authenticateCredentials(self, credentials):
   ...         if credentials == 42:
   ...             return '42', {'domain': 42}
 
-  >>> provideUtility(interfaces.IAuthenticationPlugin, Auth42(), name='a42')
+  >>> provideUtility(Auth42(), name='a42')
 
 We provide a principal factory plugin:
 
@@ -86,7 +86,7 @@ We provide a principal factory plugin:
   >>> from zope.event import notify
   >>> class PrincipalFactory:
   ...
-  ...     zope.interface.implements(interfaces.IPrincipalFactoryPlugin)
+  ...     interface.implements(interfaces.IPrincipalFactoryPlugin)
   ...
   ...     def createAuthenticatedPrincipal(self, id, info, request):
   ...         principal = Principal(id)
@@ -99,8 +99,7 @@ We provide a principal factory plugin:
   ...         notify(interfaces.FoundPrincipalCreated(principal, info))
   ...         return principal
 
-  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, PrincipalFactory(),
-  ...                name='pf')
+  >>> provideUtility(PrincipalFactory(), name='pf')
 
 Finally, we create a pluggable-authentication utility instance:
 
@@ -166,13 +165,13 @@ authentication plugin:
 
   >>> class AuthInt:
   ...
-  ...     zope.interface.implements(interfaces.IAuthenticationPlugin)
+  ...     interface.implements(interfaces.IAuthenticationPlugin)
   ...
   ...     def authenticateCredentials(self, credentials):
   ...         if isinstance(credentials, int):
   ...             return str(credentials), {'int': credentials}
 
-  >>> provideUtility(interfaces.IAuthenticationPlugin, AuthInt(), name='aint')
+  >>> provideUtility(AuthInt(), name='aint')
 
 If we put it before the original authenticator:
 
@@ -199,14 +198,14 @@ As with with authenticators, we can specify multiple extractors:
 
   >>> class OddExtractor:
   ...
-  ...     zope.interface.implements(interfaces.IExtractionPlugin)
+  ...     interface.implements(interfaces.IExtractionPlugin)
   ...
   ...     def extractCredentials(self, request):
   ...         credentials = request.get('credentials')
   ...         if isinstance(credentials, int) and (credentials%2):
   ...             return 1
 
-  >>> provideUtility(interfaces.IExtractionPlugin, OddExtractor(), name='eodd')
+  >>> provideUtility(OddExtractor(), name='eodd')
   >>> auth.extractors = 'eodd', 'emy'
 
   >>> request = TestRequest(credentials=41)
@@ -226,7 +225,7 @@ And we can specify multiple factories:
 
   >>> class OddFactory:
   ...
-  ...     zope.interface.implements(interfaces.IPrincipalFactoryPlugin)
+  ...     interface.implements(interfaces.IPrincipalFactoryPlugin)
   ...
   ...     def createAuthenticatedPrincipal(self, id, info, request):
   ...         i = info.get('int')
@@ -246,8 +245,7 @@ And we can specify multiple factories:
   ...                     principal, info))
   ...         return principal
 
-  >>> provideUtility(interfaces.IPrincipalFactoryPlugin, OddFactory(),
-  ...                name='oddf')
+  >>> provideUtility(OddFactory(), name='oddf')
 
   >>> auth.factories = 'oddf', 'pf'
 
@@ -277,18 +275,17 @@ plugins:
 
   >>> class Search42:
   ...
-  ...     zope.interface.implements(interfaces.IPrincipalSearchPlugin)
+  ...     interface.implements(interfaces.IPrincipalSearchPlugin)
   ...
   ...     def principalInfo(self, principal_id):
   ...         if principal_id == '42':
   ...             return {'domain': 42}
 
-  >>> provideUtility(interfaces.IPrincipalSearchPlugin, Search42(),
-  ...                name='s42')
+  >>> provideUtility(Search42(), name='s42')
 
   >>> class IntSearch:
   ...
-  ...     zope.interface.implements(interfaces.IPrincipalSearchPlugin)
+  ...     interface.implements(interfaces.IPrincipalSearchPlugin)
   ...
   ...     def principalInfo(self, principal_id):
   ...         try:
@@ -298,8 +295,7 @@ plugins:
   ...         if (i >= 0 and i < 100):
   ...             return {'int': i}
 
-  >>> provideUtility(interfaces.IPrincipalSearchPlugin, IntSearch(),
-  ...                name='sint')
+  >>> provideUtility(IntSearch(), name='sint')
 
   >>> auth.searchers = 's42', 'sint'
 
@@ -328,7 +324,7 @@ sure that it's delegated, we put in place a fake utility.
 
   >>> class FakeAuthUtility:
   ...
-  ...     zope.interface.implements(IAuthentication)
+  ...     interface.implements(IAuthentication)
   ...
   ...     lastGetPrincipalCall = lastUnauthorizedCall = None
   ...
@@ -368,13 +364,13 @@ create a plugin that sets a response header:
 
   >>> class Challenge:
   ...
-  ...     zope.interface.implements(interfaces.IChallengePlugin)
+  ...     interface.implements(interfaces.IChallengePlugin)
   ...
   ...     def challenge(self, requests, response):
   ...         response.setHeader('X-Unauthorized', 'True')
   ...         return True
 
-  >>> provideUtility(interfaces.IChallengePlugin, Challenge(), name='c')
+  >>> provideUtility(Challenge(), name='c')
   >>> auth.challengers = ('c', )
 
 Now if we call unauthorized:
@@ -422,7 +418,7 @@ called.  Let's look at an example.  We'll define two challengers that
 add challenges to a X-Challenges headers:
 
   >>> class ColorChallenge:
-  ...     zope.interface.implements(interfaces.IChallengePlugin)
+  ...     interface.implements(interfaces.IChallengePlugin)
   ...
   ...     protocol = 'bridge'
   ...
@@ -432,11 +428,11 @@ add challenges to a X-Challenges headers:
   ...                            challenge + 'favorite color? ')
   ...         return True
 
-  >>> provideUtility(interfaces.IChallengePlugin, ColorChallenge(), name='cc')
+  >>> provideUtility(ColorChallenge(), name='cc')
   >>> auth.challengers = 'cc, ', 'c'
 
   >>> class BirdChallenge:
-  ...     zope.interface.implements(interfaces.IChallengePlugin)
+  ...     interface.implements(interfaces.IChallengePlugin)
   ...
   ...     protocol = 'bridge'
   ...
@@ -446,7 +442,7 @@ add challenges to a X-Challenges headers:
   ...                            challenge + 'swallow air speed? ')
   ...         return True
 
-  >>> provideUtility(interfaces.IChallengePlugin, BirdChallenge(), name='bc')
+  >>> provideUtility(BirdChallenge(), name='bc')
   >>> auth.challengers = 'cc', 'c', 'bc'
 
 Now if we call unauthorized:
@@ -558,3 +554,78 @@ Design Notes
   `ISearchableAuthenticationPlugin` and
   `IExtractionAndChallengePlugin`.
 
+Special groups
+==============
+
+Two special groups, Authenticated, and Everyone may apply to users
+created by the pluggable-authentication utility.  There is a
+subscriber, specialGroups, that will set these groups on any non-group
+principals if IAuthenticatedGroup, or IEveryoneGroup utilities are
+provided.
+
+Lets define a group-aware principal:
+
+    >>> import zope.security.interfaces
+    >>> class GroupAwarePrincipal(Principal):
+    ...     interface.implements(zope.security.interfaces.IGroupAwarePrincipal)
+    ...     def __init__(self, id):
+    ...         Principal.__init__(self, id)
+    ...         self.groups = []
+
+If we notify the subscriber with this principal, nothing will happen
+because the groups haven't been defined:
+
+    >>> prin = GroupAwarePrincipal('x')
+    >>> event = interfaces.FoundPrincipalCreated(prin, {})
+    >>> authentication.authentication.specialGroups(event)
+    >>> prin.groups
+    []
+
+Now, if we define the Everybody group:
+
+    >>> import zope.app.security.interfaces
+    >>> class EverybodyGroup(Principal):
+    ...     interface.implements(zope.app.security.interfaces.IEveryoneGroup)
+
+    >>> everybody = EverybodyGroup('all')
+    >>> provideUtility(everybody)
+    
+Then the group will be added to the principal:
+
+    >>> authentication.authentication.specialGroups(event)
+    >>> prin.groups
+    ['all']
+
+Similarly for the authenticated group:
+
+    >>> class AuthenticatedGroup(Principal):
+    ...     interface.implements(
+    ...         zope.app.security.interfaces.IAuthenticatedGroup)
+
+    >>> authenticated = AuthenticatedGroup('auth')
+    >>> provideUtility(authenticated)
+    
+Then the group will be added to the principal:
+
+    >>> prin.groups = []
+    >>> authentication.authentication.specialGroups(event)
+    >>> prin.groups.sort()
+    >>> prin.groups
+    ['all', 'auth']
+
+These groups are only added to non-group principals:
+
+    >>> prin.groups = []
+    >>> interface.directlyProvides(prin, zope.security.interfaces.IGroup)
+    >>> authentication.authentication.specialGroups(event)
+    >>> prin.groups
+    []
+
+And they are only added to group aware principals:
+
+    >>> prin = Principal('eek')
+    >>> prin.groups = []
+    >>> event = interfaces.FoundPrincipalCreated(prin, {})
+    >>> authentication.authentication.specialGroups(event)
+    >>> prin.groups
+    []

@@ -15,4 +15,9 @@
       handler=".principalplugins.addTitleAndDescription"
       />
 
+  <subscriber
+      for=".interfaces.IPrincipalCreated"
+      handler=".authentication.specialGroups"
+      />
+
 </configure>

@@ -21,11 +21,11 @@ import zope.interface
 import zope.schema
 from persistent import Persistent
 
+from zope.component import queryUtility
 from zope.schema.interfaces import ISourceQueriables
-
-from zope.app import zapi
-
+from zope.security.interfaces import IGroupAwarePrincipal, IGroup
 from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthenticatedGroup, IEveryoneGroup
 from zope.app.utility.utility import queryNextUtility
 from zope.app.container.contained import Contained
 from zope.app.utility.interfaces import ILocalUtility
@@ -49,10 +49,10 @@ class PluggableAuthentication(object):
         self.prefix = prefix
 
     def authenticate(self, request):
-        authenticators = [zapi.queryUtility(IAuthenticationPlugin, name)
+        authenticators = [queryUtility(IAuthenticationPlugin, name)
                           for name in self.authenticators]
         for extractor in self.extractors:
-            extractor = zapi.queryUtility(IExtractionPlugin, extractor)
+            extractor = queryUtility(IExtractionPlugin, extractor)
             if extractor is None:
                 continue
             credentials = extractor.extractCredentials(request)
@@ -72,7 +72,7 @@ class PluggableAuthentication(object):
     def _create(self, meth, *args):
         # We got some data, lets create a user
         for factory in self.factories:
-            factory = zapi.queryUtility(IPrincipalFactoryPlugin,
+            factory = queryUtility(IPrincipalFactoryPlugin,
                                         factory)
             if factory is None:
                 continue
@@ -89,7 +89,7 @@ class PluggableAuthentication(object):
         id = id[len(self.prefix):]
 
         for searcher in self.searchers:
-            searcher = zapi.queryUtility(IPrincipalSearchPlugin, searcher)
+            searcher = queryUtility(IPrincipalSearchPlugin, searcher)
             if searcher is None:
                 continue
 
@@ -103,7 +103,7 @@ class PluggableAuthentication(object):
 
     def getQueriables(self):
         for searcher_id in self.searchers:
-            searcher = zapi.queryUtility(IPrincipalSearchPlugin, searcher_id)
+            searcher = queryUtility(IPrincipalSearchPlugin, searcher_id)
             yield searcher_id, searcher
         
 
@@ -114,7 +114,7 @@ class PluggableAuthentication(object):
         protocol = None
 
         for challenger in self.challengers:
-            challenger = zapi.queryUtility(IChallengePlugin, challenger)
+            challenger = queryUtility(IChallengePlugin, challenger)
             if challenger is None:
                 continue # skip non-existant challengers
 
@@ -150,3 +150,19 @@ class LocalPluggableAuthentication(PluggableAuthentication,
                                    Persistent, Contained):
     zope.interface.implements(IPluggableAuthentication,
                               ILocation, ILocalUtility)
+
+
+def specialGroups(event):
+    principal = event.principal
+    if (IGroup.providedBy(principal)
+        or not IGroupAwarePrincipal.providedBy(principal)
+        ):
+        return
+
+    everyone = queryUtility(IEveryoneGroup)
+    if everyone is not None:
+        principal.groups.append(everyone.id)
+
+    auth = queryUtility(IAuthenticatedGroup)
+    if auth is not None:
+        principal.groups.append(auth.id)
