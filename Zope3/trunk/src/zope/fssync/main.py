@@ -23,11 +23,14 @@ fssync [global_options] diff [local_options] [TARGET ...]
 fssync [global_options] add [local_options] TARGET ...
 fssync [global_options] remove [local_options] TARGET ...
 
-For now, the only global option is -h/--help; there are no local
-options yet except for diff, which supports a small subset of the
-options of GNU diff.
+For now, the only option (local as well as global) is -h or --help;
+there are no other options yet except for diff, which supports a small
+subset of the options of GNU diff as local options.
 
-$Id: main.py,v 1.10 2003/05/13 22:12:02 gvanrossum Exp $
+``fssync -h'' prints the global help (this message)
+``fssync command -h'' prints the local help for the command
+
+$Id: main.py,v 1.11 2003/05/14 14:40:50 gvanrossum Exp $
 """
 
 import os
@@ -103,9 +106,15 @@ def main(argv=None):
         short_opts, long_opts, handler = command_table[command]
 
         try:
-            opts, args = getopt.getopt(args[1:], short_opts, long_opts)
+            opts, args = getopt.getopt(args[1:],
+                                       "h"+short_opts,
+                                       ["help"] + long_opts)
         except getopt.error, msg:
             raise Usage("%s option error: %s", command, msg)
+
+        if ("-h", "") in opts or ("--help", "") in opts:
+            print handler.__doc__ or "No help for %s" % handler.__name__
+            return 0
 
         return handler(opts, args)
 
@@ -122,6 +131,21 @@ def main(argv=None):
         return None
 
 def checkout(opts, args):
+    """fssync checkout URL [TARGETDIR]
+
+    URL should be of the form ``http://user:password@host:port/path''.
+    Only http and https are supported (and https only where Python has
+    been built to support SSL).  This should identify a Zope 3 server;
+    user:password should have management privileges; /path should be
+    the traversal path to an existing object, not including views or
+    skins.
+
+    TARGETDIR should be a directory; if it doesn't exist, it will be
+    created.  The object tree rooted at /path is copied to a
+    subdirectory of TARGETDIR whose name is the last component of
+    /path.  TARGETDIR defaults to the current directory.  A metadata
+    directory named @@Zope is also created in TARGETDIR.
+    """
     if not args:
         raise Usage("checkout requires a URL argument")
     rooturl = args[0]
@@ -135,26 +159,69 @@ def checkout(opts, args):
     fs.checkout(target)
 
 def commit(opts, args):
+    """fssync commit [TARGET ...]
+
+    Commit the TARGET files or directories to the Zope 3 server
+    identified by the checkout command.  TARGET defaults to the
+    current directory.  Each TARGET is committed separately.  Each
+    TARGET should be up-to-date with respect to the state of the Zope
+    3 server; if not, a detailed error message will be printed, and
+    you should use the update command to bring your working directory
+    in sync with the server.
+    """
     fs = FSSync()
     fs.multiple(args, fs.commit)
 
 def update(opts, args):
+    """fssync update [TARGET ...]
+
+    Bring the TARGET files or directories in sync with the
+    corresponding objects on the Zope 3 server identified by the
+    checkout command.  TARGET defaults to the current directory.  Each
+    TARGET is updated independently.  This command will merge your
+    changes with changes made on the server; merge conflicts will be
+    indicated by diff3 markings in the file and noted by a 'C' in the
+    update output.
+    """
     fs = FSSync()
     fs.multiple(args, fs.update)
 
 def add(opts, args):
+    """fssync add TARGET ...
+
+    Add the TARGET files or directories to the set of registered
+    objects.  Each TARGET must exist.  The next commit will add them
+    to the Zope 3 server.
+    """
     fs = FSSync()
     for a in args:
         fs.add(a)
 
 def remove(opts, args):
+    """fssync remove TARGET ...
+
+    Remove the TARGET files or directories from the set of registered
+    objects.  No TARGET must exist.  The next commit will remove them
+    from the Zope 3 server.
+    """
     fs = FSSync()
     for a in args:
         fs.remove(a)
 
-diffflags = ["-b", "-B", "--brief", "-c", "-C", "--context=",
+diffflags = ["-b", "-B", "--brief", "-c", "-C", "--context",
              "-i", "-u", "-U", "--unified"]
 def diff(opts, args):
+    """fssync diff [diff_options] [TARGET ...]
+
+    Write a diff listing for the TARGET files or directories to
+    standard output.  This shows the differences between the working
+    version and the version seen on the server by the last update.
+    Nothing is printed for files that are unchanged from that version.
+    For directories, a recursive diff is used.
+
+    Various GNU diff options can be used, in particular -c, -C NUMBER,
+    -u, -U NUMBER, -b, -B, --brief, and -i.
+    """
     diffopts = []
     mode = 1
     for o, a in opts:
