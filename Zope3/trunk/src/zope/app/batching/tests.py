@@ -13,12 +13,12 @@
 ##############################################################################
 """Bug Tracker Mail Subscription and Mailer Tests
 
-$Id: test_batching.py,v 1.1 2003/07/31 19:14:14 srichter Exp $
+$Id: tests.py,v 1.1 2004/03/02 17:28:45 philikon Exp $
 """
 import unittest
 
 from zope.app.batching import Batch
-from zope.app.interfaces.batching import IBatch
+from zope.app.batching.interfaces import IBatch
 
 class BatchTest(unittest.TestCase):
 

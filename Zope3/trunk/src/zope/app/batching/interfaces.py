@@ -13,7 +13,7 @@
 ##############################################################################
 """Batching Support
 
-$Id: batching.py,v 1.1 2003/07/31 19:14:12 srichter Exp $
+$Id: interfaces.py,v 1.1 2004/03/02 17:28:45 philikon Exp $
 """
 from zope.interface.common.mapping import IItemMapping
 

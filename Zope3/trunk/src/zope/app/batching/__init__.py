@@ -13,10 +13,10 @@
 ##############################################################################
 """Batching Support
 
-$Id: batching.py,v 1.1 2003/07/31 19:14:09 srichter Exp $
+$Id: __init__.py,v 1.1 2004/03/02 17:28:45 philikon Exp $
 """
 from zope.interface import implements
-from zope.app.interfaces.batching import IBatch
+from zope.app.batching.interfaces import IBatch
 
 class Batch(object):
     implements(IBatch)
