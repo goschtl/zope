@@ -171,8 +171,8 @@ class ZPTPageAdapter(ObjectEntryAdapter):
     def setBody(self, data):
         # Convert the data to Unicode, since that's what ZPTTemplate
         # wants; it's normally read from a file so it'll be bytes.
-        # XXX This will die if it's not ASCII.  Guess encoding???
-        self.context.source = unicode(data)
+        # The default encoding in Zope is UTF-8.
+        self.context.source = data.decode('UTF-8')
 
     def extra(self):
         return AttrMapping(self.context, ('contentType', 'expand'))
