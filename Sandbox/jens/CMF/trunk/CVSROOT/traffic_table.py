@@ -102,13 +102,13 @@ def init_table():
          'addrs': ['zodb-checkins@zope.org']},
 
         {'path': "ZopeDocs",
-         'addrs': 'zopedocs-checkins@zope.org'},
+         'addrs': ['zopedocs-checkins@zope.org']},
 
         {'path': "Docs",
-         'addrs': 'zope-book@zope.org'},
+         'addrs': ['zope-book@zope.org']},
 
         {'path': "ZopeMozilla",
-         'addrs': 'zope-mozilla@zope.org'},
+         'addrs': ['zope-mozilla@zope.org']},
 
         {'path': "Products/TrackerBase",
          'addrs': ['tracker-dev@zope.org']},
