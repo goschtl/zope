@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: ISQLScript.py,v 1.11 2002/10/07 09:54:39 mgedmin Exp $
+$Id: ISQLScript.py,v 1.12 2002/10/10 08:57:37 mgedmin Exp $
 """
 from Zope.App.RDB.ISQLCommand import ISQLCommand
 from Interface.Attribute import Attribute
@@ -20,7 +20,7 @@ from Zope.ComponentArchitecture import getService
 from Zope.ContextWrapper import ContextMethod
 import Zope.Schema
 
-class SQLConnectionName(Zope.Schema.Bytes):
+class SQLConnectionName(Zope.Schema.Text):
     """SQL Connection Name"""
 
     def items(self):
