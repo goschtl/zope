@@ -15,12 +15,11 @@
 
 XXX longer description goes here.
 
-$Id: test_registrationstack.py,v 1.2 2003/07/02 19:43:32 fdrake Exp $
+$Id: test_registrationstack.py,v 1.3 2003/09/21 17:33:24 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.context import ContextWrapper, getItem
 from zope.app.services.registration import RegistrationStack
 from zope.app.traversing import traverse
 
@@ -41,11 +40,11 @@ class Test(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self, site=True)
         root = self.rootFolder
         self.__default = traverse(root, "++etc++site/default")
-        self.__registry = ContextWrapper(RegistrationStack(), root)
+        self.__registry = RegistrationStack(root)
 
     def __config(self, name):
-        self.__default.setObject(name, Registration())
-        return getItem(self.__default, name)
+        self.__default[name] = Registration()
+        return self.__default[name]
 
     def test_register_and_registered_and_nonzero_and_active(self):
         registry = self.__registry
