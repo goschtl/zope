@@ -91,7 +91,6 @@ class SimpleHistoryStorage(Folder) :
     
     implements(IHistoryStorage, IAnnotatable)
     
-    
     def __init__(self) :
         super(SimpleHistoryStorage, self).__init__()
         self.unique_ids = zapi.getUtility(IUniqueIdUtility)
@@ -109,6 +108,11 @@ class SimpleHistoryStorage(Folder) :
         """ Returns a unique id of an object as
             a ticket that remains stable across time.
         """
+        if obj._p_oid is None :
+            raise RuntimeError("cannot version uncommited object")
+        return unicode(obj._p_oid).encode("iso-8859-1")
+        
+        # XXX unique id utility is broken
         return str(self.unique_ids.register(obj))
     
   

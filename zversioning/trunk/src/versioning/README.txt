@@ -2,6 +2,7 @@
 Versioning
 ==========
 
+
 Versioning means different things to different people and there is no common optimal 
 solution for all the problems that are related to the history of evolving data.
 Therefore we want to provide a flexible framework that is pluggable in its
@@ -41,17 +42,28 @@ Within this overall pattern the following components are pluggable :
         to ensure that the changing versions can be accessed later on. 
         We use the abstract term ticket to describe the fact that different
         storages use quite different reference schemes, e.g. global unique ids,
-        paths and revision numbers, python pointers, the _p_oid in the ZODB etc.
+        paths and revision numbers like SVN, python references in the ZODB etc.
         to retrieve and access parts of the history of an object.
         
-    2.  IVersionableAspects. 
+        In the long run we want to be able to plug in
+        other versioning systems like Subversion or relational databases as
+        other backends.
+        
+        
+    2.  IVersionableAspects. A plugin for the replication process that determines
+        what is versioned and how it stored. This is implemented as multiadapter
+        from IVersionable to IHistoriesStorage because only the combination
+        of both is able to determine what is stored in which way.
     
    
-    3.  INameChooser.
+    3.  INameChooser. A plugin for different labelling schemes, e.g. version 1, 
+        version 2, ... vs. v1.0, v1.1, v.1.1.1 etc.
     
     
-    4.  ICheckoutAware.
-    
+    4.  ICheckoutAware. A plugin that adds the ability to mark items as checked out
+        to data storages that do not provide this functionality themselves.    
+
+
     XXX
     
     5.  IMergeStrategies 
@@ -233,11 +245,13 @@ We have a look if the version history grows with a checkin:
   >>> sample.text
   'text version 2 of sample'
 
+
   #>>> repo.revertToVersion(sample, u'001')
   #>>> db_root['sample'].text
   'text version 1 of sample'
   #>>> sample.text
   'text version 1 of sample'
+
   
   >>> len(repo.listVersions(sample))
   2
