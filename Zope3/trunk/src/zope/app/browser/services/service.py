@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.12 2003/03/13 17:04:57 gvanrossum Exp $
+$Id: service.py,v 1.13 2003/03/18 21:02:20 jim Exp $
 """
 
 from zope.app.browser.container.adding import Adding
@@ -259,7 +259,7 @@ class ServiceActivation(BrowserView):
         if active == "None":
             new_active = None
         else:
-            new_active = traverse(sm, "Packages/" + active)
+            new_active = traverse(sm, active)
         if old_active == new_active:
             return "No change"
 

@@ -204,7 +204,8 @@
         interface="zope.app.interfaces.container.IReadContainer" />
     <require
         permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.service.IServiceManager" />
+        interface="zope.app.interfaces.services.service.IServiceManager
+                   zope.app.interfaces.container.IWriteContainer" />
     <implements
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>
@@ -302,7 +303,7 @@
     <factory
       id = "zope.app.services.ViewPackage"
       permission = "zope.ManageServices"
-      title = "View Package"
+      title = "View Folder"
       />
     <require
         permission="zope.View"

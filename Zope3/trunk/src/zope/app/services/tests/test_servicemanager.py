@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_servicemanager.py,v 1.3 2003/03/18 21:02:23 jim Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -56,51 +56,39 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
     def testGetService(self):
         self.createServiceManager()
         sm = traverse(self.rootFolder, '++etc++Services')
-        default = traverse(sm, 'Packages/default')
+        default = traverse(sm, 'default')
 
         ts = TestService()
         default.setObject('test_service1', ts)
         configuration = ServiceConfiguration(
             'test_service',
-            '/++etc++Services/Packages/default/test_service1')
+            '/++etc++Services/default/test_service1')
 
         default['configure'].setObject('', configuration)
         traverse(default, 'configure/1').status = Active
 
         testOb = getService(self.rootFolder, 'test_service')
         c = getWrapperContainer
-        self.assertEqual(c(c(c(c(testOb)))), self.rootFolder)
+        self.assertEqual(c(c(c(testOb))), self.rootFolder)
         self.assertEqual(testOb, ts)
 
     def test_get(self):
         self.createServiceManager()
         sm = traverse(self.rootFolder, '++etc++Services')
-        default = traverse(sm, 'Packages/default')
-
-        ts = TestService()
-        default.setObject('test_service1', ts)
-        configuration = ServiceConfiguration(
-            'test_service',
-            '/++etc++Services/Packages/default/test_service1')
-
-        default['configure'].setObject('', configuration)
-        traverse(default, 'configure/1').status = Active
-
-        testOb = sm.get('test_service')
-        self.assertEqual(testOb, ts)
-        testOb = sm.get('test_service2')
-        self.assertEqual(testOb, None)
+        default = sm.get('default')
+        self.assertEqual(default, sm.Packages['default'])
+        self.assertEqual(sm.get('spam'), None)
 
     def testAddService(self):
         self.createServiceManager()
         sm = traverse(self.rootFolder, '++etc++Services')
-        default = traverse(sm, 'Packages/default')
+        default = traverse(sm, 'default')
 
         ts1 = TestService()
         default.setObject('test_service1', ts1)
         configuration = ServiceConfiguration(
             'test_service',
-            '/++etc++Services/Packages/default/test_service1')
+            '/++etc++Services/default/test_service1')
         default['configure'].setObject('', configuration)
         traverse(default, 'configure/1').status = Active
 
@@ -108,7 +96,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         default.setObject('test_service2', ts2)
         configuration = ServiceConfiguration(
             'test_service',
-            '/++etc++Services/Packages/default/test_service2')
+            '/++etc++Services/default/test_service2')
         default['configure'].setObject('', configuration)
         traverse(default, 'configure/2').status = Registered
 
@@ -125,7 +113,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.testGetService() # set up localservice
 
         sm = traverse(self.rootFolder, '++etc++Services')
-        traverse(sm, 'Packages/default/configure/1').status = Unregistered
+        traverse(sm, 'default/configure/1').status = Unregistered
 
         self.assertEqual(getService(self.rootFolder, 'test_service'), root_ts)
 
@@ -133,7 +121,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         self.testGetService() # set up localservice
         sm=getServiceManager(self.rootFolder)
         self.assertEqual(getService(self.folder1_1, 'test_service'),
-                         sm.Packages['default']['test_service1'])
+                         sm['default']['test_service1'])
 
     def testContextServiceLookupWithMultipleServiceManagers(self):
         self.testGetService() # set up root localservice
@@ -143,7 +131,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
         sm2=getServiceManager(self.folder1)
 
         self.assertEqual(getService(self.folder1, 'test_service'),
-                         sm.Packages['default']['test_service1'])
+                         sm['default']['test_service1'])
 
     def testComponentArchitectureServiceLookup(self):
         self.rootFolder.setServiceManager(ServiceManager())
@@ -165,8 +153,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         self.rootFolder.setServiceManager(ServiceManager())
         sm=getServiceManager(self.rootFolder)
-        Packages = cw(sm.Packages, sm, name='Packages')
-        default = cw(Packages['default'], Packages, name='Packages')
+        default = cw(sm['default'], self.rootFolder, name='Packages')
         default.setObject('m1', Manager())
         manager = cw(default['m1'], default, name='m1')
         manager.new('zope.app.services.tests.sample1',
@@ -177,8 +164,7 @@ class ServiceManagerTests(PlacefulSetup, TestCase):
 
         self.folder1.setServiceManager(ServiceManager())
         sm2=getServiceManager(self.folder1)
-        Packages = cw(sm2.Packages, sm2, name='Packages')
-        default = cw(Packages['default'], Packages, name='Packages')
+        default = cw(sm2['default'], self.folder1, name='Packages')
         default.setObject('m1', Manager())
         manager = cw(default['m1'], default, name='m1')
         manager.new('zope.app.services.tests.sample1',

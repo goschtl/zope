@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for ComponentConfigURL
 
-$Id: test_componentconfigurl.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: test_componentconfigurl.py,v 1.3 2003/03/18 21:02:20 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -48,20 +48,18 @@ class TestComponentConfigURL(PlacefulSetup, TestCase):
     def test_componentURL(self):
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
-        default = traverse(
-            self.rootFolder,
-            '++etc++Services/Packages/default',
+        default = traverse(self.rootFolder, '++etc++Services/default',
             )
         default.setObject('c', C())
         traverse(default, 'configure').setObject(
             '',
             ServiceConfiguration('test_service',
-                                 '/++etc++Services/Packages/default/c')
+                                 '/++etc++Services/default/c')
             )
         config = traverse(default, 'configure/1')
         view = V(config, TestRequest())
         self.assertEqual(view.componentURL(),
-                         'http://127.0.0.1/++etc++Services/Packages/default/c')
+                         'http://127.0.0.1/++etc++Services/default/c')
 
     def test_componentPath(self):
         context = ContextStub('/path/to/me')

@@ -14,7 +14,7 @@
 """View Service
 
 
-$Id: view.py,v 1.10 2003/03/11 16:11:22 jim Exp $
+$Id: view.py,v 1.11 2003/03/18 21:02:22 jim Exp $
 """
 __metaclass__ = type
 
@@ -272,7 +272,7 @@ class PageConfiguration(ViewConfiguration):
     def implementationSummary(self):
         L = []
         if self.template:
-            prefix = "/++etc++Services/Packages/"
+            prefix = "/++etc++Services/"
             t = self.template
             i = t.rfind(prefix)
             if i >= 0:

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_auth.py,v 1.8 2003/02/12 02:17:34 seanb Exp $
+$Id: test_auth.py,v 1.9 2003/03/18 21:02:23 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -62,7 +62,7 @@ class AuthSetup(EventSetup):
         if not folder.hasServiceManager():
             self.createServiceManager(folder)
 
-        default = traverse(folder, '++etc++Services/Packages/default')
+        default = traverse(folder, '++etc++Services/default')
         key = default.setObject("AuthenticationService", AuthenticationService())
         auth = traverse(default, key)
 

@@ -23,7 +23,7 @@ A service manager has a number of roles:
     ServiceManager to search for modules.  (This functionality will
     eventually be replaced by a separate module service.)
 
-$Id: service.py,v 1.12 2003/03/13 17:10:37 gvanrossum Exp $
+$Id: service.py,v 1.13 2003/03/18 21:02:22 jim Exp $
 """
 
 import sys
@@ -43,7 +43,7 @@ from zope.proxy.introspection import removeAllProxies
 from zope.app.component.nextservice import getNextService
 from zope.app.component.nextservice import getNextServiceManager
 
-from zope.app.interfaces.container import IReadContainer
+from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.services.service import IBindingAware
 from zope.app.interfaces.services.module import IModuleService
 from zope.app.interfaces.services.service import IServiceConfiguration
@@ -65,7 +65,7 @@ from zope.app.traversing import getPhysicalPathString
 
 class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
 
-    __implements__ = (IServiceManager, IReadContainer,
+    __implements__ = (IServiceManager, IContainer,
                       PersistentModuleRegistry.__implements__,
                       NameComponentConfigurable.__implements__,
                       IModuleService)
@@ -132,12 +132,32 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
         raise NameError(service_type)
     getInterfaceFor = ContextMethod(getInterfaceFor)
 
-    def queryComponent(wrapped_self, type=None, filter=None, all=0):
-        Packages = ContextWrapper(wrapped_self.Packages, wrapped_self,
-                                  name='Packages')
-        return Packages.queryComponent(type, filter, all)
-    queryComponent = ContextMethod(queryComponent)
+    def queryComponent(self, type=None, filter=None, all=0):
+        local = []
+        path = getPhysicalPathString(self)
+        for pkg_name in self:
+            package = ContextWrapper(self[pkg_name], self, name=pkg_name)
+            for name in package:
+                component = package[name]
+                if type is not None and not type.isImplementedBy(component):
+                    continue
+                if filter is not None and not filter(component):
+                    continue
+                wrapper =  ContextWrapper(component, package, name=name)
+                local.append({'path': "%s/%s/%s" % (path, pkg_name, name),
+                              'component': wrapper,
+                              })
 
+        if all:
+            next_service_manager = getNextServiceManager(self)
+            if IComponentManager.isImplementedBy(next_service_manager):
+                next_service_manager.queryComponent(type, filter, all)
+
+            local += list(all)
+
+        return local
+
+    queryComponent = ContextMethod(queryComponent)
 
     # We provide a mapping interface for traversal, but we only expose
     # local services through the mapping interface.
@@ -157,11 +177,7 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
         if key == 'Packages':
             return wrapped_self.Packages
 
-        service = wrapped_self.queryActiveComponent(key)
-        if service is None:
-            return default
-
-        return service
+        return wrapped_self.Packages.get(key, default)
 
     get = ContextMethod(get)
 
@@ -175,7 +191,7 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
         return iter(self.keys())
 
     def keys(self):
-        return ['Packages']
+        return self.Packages.keys()
 
     def values(self):
         return map(self.get, self.keys())
@@ -188,7 +204,10 @@ class ServiceManager(PersistentModuleRegistry, NameComponentConfigurable):
     items = ContextMethod(items)
 
     def __len__(self):
-        return 1
+        return len(self.Packages)
+
+    def setObject(self, name, value):
+        return self.Packages.setObject(name, value)
 
     def findModule(wrapped_self, name):
         # override to pass call up to next service manager

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to support service managers.
 
-$Id: service.py,v 1.9 2003/03/13 17:10:36 gvanrossum Exp $
+$Id: service.py,v 1.10 2003/03/18 21:02:22 jim Exp $
 """
 __metaclass__ = type
 
@@ -120,8 +120,6 @@ class IServiceManager(IServiceService, IComponentManager,
     to the ComponentArchitecture ServiceManager which contains file based
     services.
     """
-
-    Packages = Attribute("Package container")
 
 class IServiceConfiguration(configuration.INamedComponentConfiguration):
     """Service Configuration

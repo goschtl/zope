@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: changeconfigurations.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+$Id: changeconfigurations.py,v 1.3 2003/03/18 21:02:20 jim Exp $
 """
 
 from zope.publisher.browser import BrowserView
@@ -55,7 +55,7 @@ class ChangeConfigurations(BrowserView):
 
         self.configBase = str(getView(getServiceManager(self.context),
                                       'absolute_url', self.request)
-                              ) + '/Packages'
+                              )
 
         configurations = self.context.info()
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.6 2003/03/11 16:11:31 jim Exp $
+$Id: test_view.py,v 1.7 2003/03/18 21:02:23 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -128,7 +128,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++Services')
 
-        configure = traverse(sm, 'Packages/default/configure')
+        configure = traverse(sm, 'default/configure')
         configuration = Configuration()
         configure.setObject('', configuration)
         configuration = traverse(configure, '1')
@@ -163,7 +163,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
 
         sm = traverse(self.rootFolder, '++etc++Services')
 
-        configure = traverse(sm, 'Packages/default/configure')
+        configure = traverse(sm, 'default/configure')
         configuration = Configuration()
         configure.setObject('', configuration)
         configuration = traverse(configure, '1')
@@ -228,7 +228,7 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
         PlacefulSetup.setUp(self)
         self.rootFolder = RootFolder()
         self.rootFolder.setServiceManager(PhonyServiceManager())
-        default = traverse(self.rootFolder, '++etc++Services/Packages/default')
+        default = traverse(self.rootFolder, '++etc++Services/default')
         self.__template = PhonyTemplate()
         default.setObject('t', self.__template)
 
@@ -236,7 +236,7 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
         configuration = ContextWrapper(
             PageConfiguration(I1, 'test', 'zope.View',
                               "Foo.Bar.A",
-                              template='/++etc++Services/Packages/default/t',
+                              template='/++etc++Services/default/t',
                               ),
             self.rootFolder,
             )
@@ -277,7 +277,7 @@ class TestPageConfiguration(PlacefulSetup, TestCase):
         c = C()
         request = TestRequest()
         self.assertRaises(ConfigurationError, configuration.getView, c, request)
-        configuration.template = '/++etc++Services/Packages/default/t'
+        configuration.template = '/++etc++Services/default/t'
         configuration.attribute = 'run'
         self.assertRaises(ConfigurationError, configuration.getView, c, request)
 

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.5 2003/03/11 16:11:31 jim Exp $
+$Id: test_serviceconfiguration.py,v 1.6 2003/03/18 21:02:23 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -82,14 +82,14 @@ class Test(PlacefulSetup, TestCase):
         self.rootFolder.setServiceManager(ServiceManager())
         defineService('test_service', ITestService)
         default = traverse(self.rootFolder,
-                           '++etc++Services/Packages/default')
+                           '++etc++Services/default')
         self.__default = default
 
         default.setObject('c', TestService())
 
 
         configuration = ServiceConfiguration(
-            'test_service', '/++etc++Services/Packages/default/c')
+            'test_service', '/++etc++Services/default/c')
 
         self.__c = traverse(default, 'c')
         self.__cm = ZopeContainerAdapter(traverse(default, "configure"))
@@ -119,10 +119,10 @@ class Test(PlacefulSetup, TestCase):
 
     def test_afterAddHook(self):
         self.assertEqual(self.__c._dependents,
-                         ('/++etc++Services/Packages/default/configure/1', ))
+                         ('/++etc++Services/default/configure/1', ))
         u = getAdapter(self.__c, IUseConfiguration)
         self.assertEqual(list(u.usages()),
-                         ['/++etc++Services/Packages/default/configure/1'])
+                         ['/++etc++Services/default/configure/1'])
 
     def test_beforeDeleteHook_and_unregistered(self):
         self.__config.status = Registered
@@ -155,7 +155,7 @@ class Test(PlacefulSetup, TestCase):
             TypeError,
             ServiceConfiguration,
             'test_service',
-            '/++etc++Services/Packages/default/c2',
+            '/++etc++Services/default/c2',
             self.__default
             )
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """Component registration support for services
 
-$Id: configuration.py,v 1.11 2003/03/12 18:48:31 gvanrossum Exp $
+$Id: configuration.py,v 1.12 2003/03/18 21:02:22 jim Exp $
 """
 __metaclass__ = type
 
@@ -110,7 +110,7 @@ class ConfigurationRegistry(Persistent):
     def _id(self, ob):
 
         # Get and check relative path
-        prefix = "/++etc++Services/Packages/"
+        prefix = "/++etc++Services/"
         path = getPhysicalPathString(ob)
         lpackages = path.rfind(prefix)
         if lpackages < 0:
@@ -180,7 +180,7 @@ class ConfigurationRegistry(Persistent):
             else:
                 # We need to deactivate the currently active component
                 sm = getServiceManager(wrapped_self)
-                old = traverse(sm, 'Packages/'+data[0])
+                old = traverse(sm, data[0])
                 old.deactivated()
 
 
@@ -221,7 +221,7 @@ class ConfigurationRegistry(Persistent):
             if path is not None:
                 # Make sure we can traverse to it.
                 sm = getServiceManager(wrapped_self)
-                configuration = traverse(sm, 'Packages/'+path)
+                configuration = traverse(sm, path)
                 return configuration
 
         return None
@@ -235,7 +235,7 @@ class ConfigurationRegistry(Persistent):
 
         result = [{'id': path,
                    'active': False,
-                   'configuration': (path and traverse(sm, 'Packages/'+path))
+                   'configuration': (path and traverse(sm, path))
                    }
                   for path in wrapped_self._data
                   ]

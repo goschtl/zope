@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-Revision information: $Id: package.py,v 1.2 2002/12/25 14:12:36 jim Exp $
+Revision information: $Id: package.py,v 1.3 2003/03/18 21:02:20 jim Exp $
 """
 from zope.app.browser.container.contents import Contents
 from zope.app.interfaces.services.service import IServiceManager
@@ -30,7 +30,7 @@ class ViewPackageContents(Contents):
 
     def add(self, name):
         self.context.setObject(name, ZPTTemplate())
-        self.request.response.redirect('.')
+        self.request.response.redirect('@@contents.html')
 
 
 class PackagesContents(Contents):
@@ -41,4 +41,4 @@ class PackagesContents(Contents):
 
     def addPackage(self, name):
         self.context.setObject(name, Package())
-        self.request.response.redirect('.')
+        self.request.response.redirect('@@contents.html')

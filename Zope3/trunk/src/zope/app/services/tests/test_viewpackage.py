@@ -13,7 +13,7 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_viewpackage.py,v 1.5 2003/02/11 15:59:58 sidnei Exp $
+$Id: test_viewpackage.py,v 1.6 2003/03/18 21:02:23 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -35,7 +35,7 @@ class Test(PlacefulSetup, TestCase):
     def test_setObject(self):
         self.buildFolders()
         self.rootFolder.setServiceManager(ServiceManager())
-        default = traverse(self.rootFolder, '++etc++Services/Packages/default')
+        default = traverse(self.rootFolder, '++etc++Services/default')
         default.setObject('Views', ViewPackage())
         views = traverse(default, 'Views')
         views.forInterface = I
@@ -47,7 +47,7 @@ class Test(PlacefulSetup, TestCase):
         configure = traverse(default, 'configure')
         configuration = ServiceConfiguration(
             'Views',
-            '/++etc++Services/Packages/default/ViewService')
+            '/++etc++Services/default/ViewService')
         configure.setObject('', configuration)
         configuration = traverse(configure, '1')
         configuration.status = Active

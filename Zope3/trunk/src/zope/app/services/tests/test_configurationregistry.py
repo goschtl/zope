@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_configurationregistry.py,v 1.2 2002/12/25 14:13:20 jim Exp $
+$Id: test_configurationregistry.py,v 1.3 2003/03/18 21:02:23 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -44,7 +44,7 @@ class Test(PlacefulSetup, TestCase):
         root = self.rootFolder
 
         root.setServiceManager(ServiceManager())
-        self.__default = traverse(root, "++etc++Services/Packages/default")
+        self.__default = traverse(root, "++etc++Services/default")
         self.__registry = ContextWrapper(ConfigurationRegistry(), root)
 
     def __config(self, name):

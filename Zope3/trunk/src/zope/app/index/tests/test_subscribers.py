@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 ##############################################################################
 """
-$Id: test_subscribers.py,v 1.1 2003/03/16 23:19:30 seanb Exp $
+$Id: test_subscribers.py,v 1.2 2003/03/18 21:02:21 jim Exp $
 """
 
 from unittest import makeSuite, main, TestCase
@@ -29,7 +29,7 @@ class TestRegistration(PlacefulSetup, TestCase):
         self.buildFolders()
         self.createStandardServices()
         r = Registration()
-        default = traverse(self.rootFolder, '++etc++Services/Packages/default')
+        default = traverse(self.rootFolder, '++etc++Services/default')
         default.setObject('registrar', r)
         self.registrar = traverse(default, 'registrar')
         self.hub = getService(self.rootFolder, HubIds)

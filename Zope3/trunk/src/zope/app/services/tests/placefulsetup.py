@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: placefulsetup.py,v 1.12 2003/03/10 22:35:06 gvanrossum Exp $
+$Id: placefulsetup.py,v 1.13 2003/03/18 21:02:23 jim Exp $
 """
 from zope import component as CA
 from zope.component.adapter import provideAdapter
@@ -166,7 +166,7 @@ class PlacefulSetup(PlacelessSetup):
         if not folder.hasServiceManager():
             folder.setServiceManager(ServiceManager())
         sm = traverse(folder, '++etc++Services')
-        default = traverse(sm, 'Packages/default')
+        default = traverse(sm, 'default')
         service_name = 'anEventService'
         from zope.app.services.event import EventService
         default.setObject(service_name, EventService())
@@ -206,11 +206,11 @@ class PlacefulSetup(PlacelessSetup):
         defineService(HubIds, IObjectHub)
 
         sm = traverse(root, '++etc++Services')
-        default = traverse(sm, 'Packages/default')
+        default = traverse(sm, 'default')
         default.setObject("myEventService", EventService())
         default.setObject("myObjectHub", self.getObjectHub())
 
-        path = "%s/Packages/default/myEventService" % getPhysicalPathString(sm)
+        path = "%s/default/myEventService" % getPhysicalPathString(sm)
         configuration = ServiceConfiguration(EventPublication, path, self.rootFolder)
         default['configure'].setObject("myEventServiceDir", configuration)
         traverse(default, 'configure/1').status = Active
@@ -221,7 +221,7 @@ class PlacefulSetup(PlacelessSetup):
                 "mySubscriptionServiceDir", configuration)
         traverse(default, 'configure/2').status = Active
 
-        path = "%s/Packages/default/myObjectHub" % getPhysicalPathString(sm)
+        path = "%s/default/myObjectHub" % getPhysicalPathString(sm)
         configuration = ServiceConfiguration(HubIds, path, self.rootFolder)
         default['configure'].setObject("myHubIdsServiceDir", configuration)
         traverse(default, 'configure/3').status = Active

@@ -13,7 +13,7 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.8 2003/02/12 02:17:18 seanb Exp $
+$Id: contentdirective.py,v 1.9 2003/03/18 21:02:21 jim Exp $
 """
 from types import ModuleType
 from zope.interface.implements import implements
@@ -62,25 +62,29 @@ class ContentDirective:
         self.__context = _context
 
     def implements(self, _context, interface):
-        resolved_interface = _context.resolve(interface)
-        return [
-            Action(
-                discriminator = ('ContentDirective', self.__class, object()),
-                callable = implements,
-                # the last argument is check=1, which causes implements
-                # to verify that the class does implement the interface
-                args = (self.__class, resolved_interface, 1),
-                ),
-            Action(
-               discriminator = None,
-               callable = handler,
-               args = (Interfaces, 'provideInterface',
-                       resolved_interface.__module__+
-                       '.'+
-                       resolved_interface.__name__,
-                       resolved_interface)
-               )
-            ]
+        r = []
+        for interface in interface.strip().split():
+
+            resolved_interface = _context.resolve(interface)
+            r += [
+                Action(
+                    discriminator = ('ContentDirective', self.__class, object()),
+                    callable = implements,
+                    # the last argument is check=1, which causes implements
+                    # to verify that the class does implement the interface
+                    args = (self.__class, resolved_interface, 1),
+                    ),
+                Action(
+                   discriminator = None,
+                   callable = handler,
+                   args = (Interfaces, 'provideInterface',
+                           resolved_interface.__module__+
+                           '.'+
+                           resolved_interface.__name__,
+                           resolved_interface)
+                   )
+                ]
+        return r
 
     def require(self, _context,
                 permission=None, attributes=None, interface=None,
@@ -102,13 +106,15 @@ class ContentDirective:
 
 
         if interface:
-            self.__protectByInterface(interface, permission, r)
+            for i in interface.strip().split():
+                self.__protectByInterface(i, permission, r)
         if attributes:
             self.__protectNames(attributes, permission, r)
         if set_attributes:
             self.__protectSetAttributes(set_attributes, permission, r)
         if set_schema:
-            self.__protectSetSchema(set_schema, permission, r)
+            for s in set_schema.strip().split():
+                self.__protectSetSchema(s, permission, r)
 
 
         return r

@@ -529,7 +529,7 @@
 
   <page
      for="zope.app.interfaces.services.service.IServiceManager"
-     name="index.html"
+     name="services.html"
      menu="zmi_views" title="Services"
      template="services.pt"
      class=".service.ServiceSummary"
@@ -555,57 +555,46 @@
       for="zope.app.interfaces.services.service.IServiceManager"
       >
     <menuItem 
-        title="View local packages"
-        action="Packages/@@SelectedManagementView.html"
-        permission="zope.ManageServices"
-        />
-    <menuItem 
         title="Visit default package"
-        action="Packages/default/@@SelectedManagementView.html"
+        action="default/@@SelectedManagementView.html"
         permission="zope.ManageServices"
         />
     <menuItem
         title="Add service"
-        action="Packages/default/AddService"
+        action="default/AddService"
 	permission="zope.ManageServices"
 	/>
   </menuItems>
 
-<!-- Packages -->
-
   <pages
-      for="zope.app.interfaces.services.package.IPackages"
+      for="zope.app.interfaces.services.service.IServiceManager" 
       permission="zope.ManageServices"
       class="zope.app.browser.services.package.PackagesContents">
 
     <page name="contents.html"
-                  attribute="index"
-                  />
+          attribute="index"
+          menu="zmi_views" title="Contents" 
+          />
     <page name="addPackage.html"
-                  attribute="addPackage"
-                  />
+          attribute="addPackage"
+          />
     <page name="removeObjects.html"
-                  attribute="removeObjects"
-                  />
+          attribute="removeObjects"
+          />
   </pages>
 
-  <menuItem
-      menu="zmi_views" 
-      for="zope.app.interfaces.services.package.IPackages"
-      title="Packages"
-      action="@@contents.html"
-      />
 
+  <!-- Disable the add action -->
   <menuItem
       menu="zmi_actions" 
-      for="zope.app.interfaces.services.package.IPackages"
+      for="zope.app.interfaces.services.service.IServiceManager" 
       title="Add"
       action="@@contents.html"
       filter="nothing"
       />
 
   <pages
-      for="zope.app.interfaces.services.package.IPackages"
+      for="zope.app.interfaces.services.service.IServiceManager" 
       permission="zope.ManageServices" 
       class="zope.app.browser.container.contents.JustContents">
 
@@ -631,14 +620,12 @@
      class="zope.app.browser.container.contents.Contents"
      >
 
-    <page name="contents.html" attribute="contents" />
+    <page name="contents.html" 
+          attribute="contents"
+          menu="zmi_views" title="Contents"
+          />
     <page name="removeObjects.html" attribute="removeObjects" />
    </pages>
-
-  <menuItems menu="zmi_views" for="zope.app.interfaces.services.package.IPackage">
-    <menuItem title="Services"
-              action="@@contents.html"/>
-  </menuItems>
 
   <view
      name="+"
