@@ -16,7 +16,7 @@ Currently the actions are emailing checkin messages and doing an rsync
 to the public repository."""
 
 MAIL_CMD = "/bin/mail"
-SYNC_CMD = "/usr/bin/rsync"
+RSYNC_CMD = "/usr/bin/rsync"
 
 # XXX IDENTITY_FILE must be readable by the process of anyone doing a
 #     checkin that uses the rsync mechanism.  Ideally, that would be by
