@@ -44,6 +44,14 @@
         </description>
         </attribute>
 
+      <attribute name="fields" required="no">
+        <description>
+        The fields and the order in which to display them.  If this
+        is not specified, all schema fields will be displayed in the
+        order specified in the schema itself.
+        </description>
+      </attribute>
+
       <attribute name="layer" required="no">
         <description>
               The layer the view is in. 
@@ -164,6 +172,14 @@
         implement or be adaptable to the schema.
         </description>
         </attribute>
+
+      <attribute name="fields" required="no">
+        <description>
+        The fields and the order in which to display them.  If this
+        is not specified, all schema fields will be displayed in the
+        order specified in the schema itself.
+        </description>
+      </attribute>
 
       <attribute name="layer" required="no">
         <description>
@@ -293,6 +309,14 @@
         implement or be adaptable to the schema.
         </description>
         </attribute>
+
+      <attribute name="fields" required="no">
+        <description>
+        The fields and the order in which to display them.  If this
+        is not specified, all schema fields will be displayed in the
+        order specified in the schema itself.
+        </description>
+      </attribute>
 
       <attribute name="layer" required="no">
         <description>
