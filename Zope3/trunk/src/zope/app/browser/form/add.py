@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: add.py,v 1.23 2003/06/23 16:41:49 mgedmin Exp $
+$Id: add.py,v 1.24 2003/07/14 09:45:02 Zen Exp $
 """
 
 import sys
@@ -169,7 +169,7 @@ def add(_context, name, schema, content_factory='', label='',
         template = None, omit=None, fields=None,
         arguments='', keyword_arguments='',
         set_before_add='', set_after_add='',
-        menu=None, title=None,
+        menu=None, title=None, description='',
         ):
 
     # Handle menu attrs. We do this now to rather than later becaise
@@ -180,7 +180,7 @@ def add(_context, name, schema, content_factory='', label='',
                              "they must both be specified")
         actions = menuItemDirective(
             _context, menu, for_, '@@' + name, title,
-            permission=permission)
+            permission=permission, description=description)
     else:
         actions = []
 
