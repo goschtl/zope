@@ -48,6 +48,10 @@ Starting Zope3
 
     # python2.3 z3.py
 
+  Or, if you use make on Unix, you can run:
+
+    # bin/runzope
+
   This will run Zope on port 8080.  Visit the url:
 
     http://localhost:8080/manage
