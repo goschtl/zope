@@ -8,6 +8,9 @@
 docutils       svn://svn.zope.org/repos/main/Zope3/tags/*/src/docutils
 zodbcode       svn://svn.zope.org/repos/main/Zope3/tags/*/src/zodbcode
 zope           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope
+# Child packages of Zope are handled separately when constructing Zope
+# distributions; this tells where to find all of them.
+zope.*         svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope/
 
 # Related components for use with Zope 3:
 buddydemo      svn://svn.zope.org/repos/main/Zope3/tags/*/src/buddydemo
