@@ -40,7 +40,9 @@ class IDAVCreationDate(Interface):
                                 resources.  If present, it contains a
                                 timestamp of the moment when the
                                 resource was created (i.e., the moment
-                                it had non- null state).''')
+                                it had non- null state).''',
+
+                            readonly=True)
 
 
 class IDAVDisplayName(Interface):
@@ -102,7 +104,9 @@ class IGETDependentDAVSchema(Interface):
                                 The getcontentlength property MUST be
                                 defined on any DAV compliant resource
                                 that returns the Content-Length header
-                                in response to a GET.''')
+                                in response to a GET.''',
+
+                            readonly=True)
 
     getcontenttype = Text(title=u'''Contains the Content-Type header\
                                 returned by a GET without accept\
@@ -120,7 +124,9 @@ class IGETDependentDAVSchema(Interface):
                    description=u'''\
                                 The getetag property MUST be defined
                                 on any DAV compliant resource that
-                                returns the Etag header.''')
+                                returns the Etag header.''',
+
+                            readonly=True)
 
     getlastmodified = Text(title=u'''Contains the Last-Modified header\
                                 returned by a GET method without\
@@ -138,7 +144,9 @@ class IGETDependentDAVSchema(Interface):
                                 MUST be defined on any DAV compliant
                                 resource that returns the
                                 Last-Modified header in response to a
-                                GET.''')
+                                GET.''',
+
+                            readonly=True)
 
 
 class IDAV1Schema(IGETDependentDAVSchema):
@@ -150,7 +158,9 @@ class IDAV1Schema(IGETDependentDAVSchema):
                                 The resourcetype property MUST be
                                 defined on all DAV compliant
                                 resources.  The default value is
-                                empty.''')
+                                empty.''',
+
+                            readonly=True)
 
 
 class IDAV2Schema(IDAV1Schema):
@@ -169,7 +179,9 @@ class IDAV2Schema(IDAV1Schema):
                                  of this information if the requesting
                                  principal does not have sufficient
                                  access rights to see the requested
-                                 data.''')
+                                 data.''',
+
+                            readonly=True)
 
     supportedlock = Text(title=u'''To provide a listing of the lock\
                                 capabilities supported by the\
@@ -185,8 +197,9 @@ class IDAV2Schema(IDAV1Schema):
                                 controlled by access controls so a
                                 server is not required to provide
                                 information the client is not
-                                authorized to see.''')
+                                authorized to see.''',
 
+                            readonly=True)
 
 class IDAVSchema(IOptionalDAVSchema, IDAV2Schema):
     """Full DAV properties schema"""
