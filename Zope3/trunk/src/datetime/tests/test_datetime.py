@@ -2226,7 +2226,7 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         # Try with and without naming the keyword.
         off42 = FixedOffset(42, "42")
         another = meth(off42)
-        again = meth(tzinfo=off42)
+        again = meth(tz=off42)
         self.failUnless(another.tzinfo is again.tzinfo)
         self.assertEqual(another.utcoffset(), timedelta(minutes=42))
         # Bad argument with and w/o naming the keyword.
@@ -2237,6 +2237,24 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         # Too many args.
         self.assertRaises(TypeError, meth, off42, off42)
 
+        # We don't know which time zone we're in, and don't have a tzinfo
+        # class to represent it, so seeing whether a tz argument actually
+        # does a conversion is tricky.
+        weirdtz = FixedOffset(timedelta(hours=15, minutes=58), "weirdtz", 0)
+        utc = FixedOffset(0, "utc", 0)
+        for dummy in range(3):
+            now = datetime.now(weirdtz)
+            self.failUnless(now.tzinfo is weirdtz)
+            utcnow = datetime.utcnow().replace(tzinfo=utc)
+            now2 = utcnow.astimezone(weirdtz)
+            if abs(now - now2) < timedelta(seconds=30):
+                break
+            # Else the code is broken, or more than 30 seconds passed between
+            # calls; assuming the latter, just try again.
+        else:
+            # Three strikes and we're out.
+            self.fail("utcnow(), now(tz), or astimezone() may be broken")
+
     def test_tzinfo_fromtimestamp(self):
         import time
         meth = self.theclass.fromtimestamp
@@ -2246,7 +2264,7 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         # Try with and without naming the keyword.
         off42 = FixedOffset(42, "42")
         another = meth(ts, off42)
-        again = meth(ts, tzinfo=off42)
+        again = meth(ts, tz=off42)
         self.failUnless(another.tzinfo is again.tzinfo)
         self.assertEqual(another.utcoffset(), timedelta(minutes=42))
         # Bad argument with and w/o naming the keyword.
@@ -2258,6 +2276,20 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         self.assertRaises(TypeError, meth, ts, off42, off42)
         # Too few args.
         self.assertRaises(TypeError, meth)
+
+        # Try to make sure tz= actually does some conversion.
+        timestamp = 1000000000  #  2001-09-09 01:46:40 UTC, give or take
+        utc = FixedOffset(0, "utc", 0)
+        expected = datetime(2001, 9, 9, 1, 46, 40)
+        got = datetime.utcfromtimestamp(timestamp)
+        # We don't support leap seconds, but maybe the platfrom insists
+        # on using them, so don't demand exact equality).
+        self.failUnless(abs(got - expected) < timedelta(minutes=1))
+
+        est = FixedOffset(-5*60, "est", 0)
+        expected -= timedelta(hours=5)
+        got = datetime.fromtimestamp(timestamp, est).replace(tzinfo=None)
+        self.failUnless(abs(got - expected) < timedelta(minutes=1))
 
     def test_tzinfo_utcnow(self):
         meth = self.theclass.utcnow
@@ -2446,7 +2478,7 @@ class TestDateTimeTZ(TestDateTime, TZInfoBase):
         f44m = FixedOffset(44, "44")
         fm5h = FixedOffset(-timedelta(hours=5), "m300")
 
-        dt = self.theclass.now(tzinfo=f44m)
+        dt = self.theclass.now(tz=f44m)
         self.failUnless(dt.tzinfo is f44m)
         # Replacing with degenerate tzinfo raises an exception.
         self.assertRaises(ValueError, dt.astimezone, fnone)

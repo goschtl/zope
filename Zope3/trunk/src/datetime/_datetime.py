@@ -1196,15 +1196,24 @@ class datetime(date):
                            doc="microsecond (0-999999)")
     tzinfo = property(lambda self: self._tzinfo, doc="timezone info object")
 
-    def fromtimestamp(cls, t, tzinfo=None):
+    def fromtimestamp(cls, t, tz=None):
         """Construct a datetime from a POSIX timestamp (like time.time()).
 
         A timezone info object may be passed in as well.
         """
-        y, m, d, hh, mm, ss, weekday, jday, dst = _time.localtime(t)
+
+        _check_tzinfo_arg(tz)
+        if tz is None:
+            converter = _time.localtime
+        else:
+            converter = _time.gmtime
+        y, m, d, hh, mm, ss, weekday, jday, dst = converter(t)
         us = int((t % 1.0) * 1000000)
         ss = min(ss, 59)    # clamp out leap seconds if the platform has them
-        return cls(y, m, d, hh, mm, ss, us, tzinfo)
+        result = cls(y, m, d, hh, mm, ss, us, tz)
+        if tz is not None:
+            result = tz.fromutc(result)
+        return result
     fromtimestamp = classmethod(fromtimestamp)
 
     def utcfromtimestamp(cls, t):
@@ -1220,10 +1229,10 @@ class datetime(date):
     # XXX uses gettimeofday on platforms that have it, but that isn't
     # XXX available from Python.  So now() may return different results
     # XXX across the implementations.
-    def now(cls, tzinfo=None):
+    def now(cls, tz=None):
         "Construct a datetime from time.time() and optional time zone info."
         t = _time.time()
-        return cls.fromtimestamp(t, tzinfo)
+        return cls.fromtimestamp(t, tz)
     now = classmethod(now)
 
     def utcnow(cls):
