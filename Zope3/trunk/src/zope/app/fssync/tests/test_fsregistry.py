@@ -13,7 +13,7 @@
 ##############################################################################
 """Test FSRegistry File-system synchronization services
 
-$Id: test_fsregistry.py,v 1.1 2003/05/08 16:56:12 gvanrossum Exp $
+$Id: test_fsregistry.py,v 1.2 2003/06/30 16:52:49 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -39,7 +39,7 @@ class Test(CleanUp, TestCase):
         """ Test Class and Factory registration and getSynchronizer to get
            appropriate factory for that class.
         """
-	self.assertRaises(NotFoundError, getSynchronizer, C1())
+        self.assertRaises(NotFoundError, getSynchronizer, C1())
 
         provideSynchronizer(C1, CFileAdapter)
         cl = C1()
