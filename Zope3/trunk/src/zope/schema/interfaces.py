@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.6 2003/04/10 09:34:30 paul Exp $
+$Id: interfaces.py,v 1.7 2003/04/14 08:21:16 jim Exp $
 """
 from zope.interface import Interface
 
@@ -165,6 +165,21 @@ class IField(Interface):
         readonly=True,
         )
 
+    def get(object):
+        """Get the value of the field for the given object.
+        """
+
+    def query(object, default=None):
+        """Query the value of the field for the given object.
+
+        Return the default if the value hasn't been set.
+        """
+
+    def set(object, value):
+        """Set the value of the field for the object
+
+        Raises a type error if the field is a read-only field.
+        """
 
 class IIterable(IField):
     u"""Fields with a value that can be iterated over.

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: _bootstrapfields.py,v 1.8 2003/04/09 15:51:56 fdrake Exp $
+$Id: _bootstrapfields.py,v 1.9 2003/04/14 08:21:16 jim Exp $
 """
 __metaclass__ = type
 
@@ -125,6 +125,16 @@ class Field(Attribute):
         if self.constraint is not None and not self.constraint(value):
             raise ValidationError(errornames.ConstraintNotSatisfied, value)
 
+    def get(self, object):
+        return getattr(object, self.__name__)
+
+    def query(self, object, default=None):
+        return getattr(object, self.__name__, default)
+
+    def set(self, object, value):
+        if self.readonly:
+            raise TypeError("Can't set values on read-only fields")
+        setattr(object, self.__name__, value)
 
 class Container(Field):
 
