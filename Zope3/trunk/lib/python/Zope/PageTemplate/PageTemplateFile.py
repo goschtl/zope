@@ -18,10 +18,11 @@ Zope object encapsulating a Page Template from the filesystem.
 
 __metaclass__ = type
 
-__version__ = '$Revision: 1.5 $'[11:-2]
+__version__ = '$Revision: 1.6 $'[11:-2]
 
 import os, sys
-from zLOG import LOG, ERROR, INFO
+import logging
+
 from PageTemplate import PageTemplate
 
 def package_home(gdict):
@@ -54,7 +55,7 @@ class PageTemplateFile(PageTemplate):
         self.pt_edit(open(self.filename), None)
         self._cook()
         if self._v_errors:
-            LOG('PageTemplateFile', ERROR, 'Error in template',
+            logging.error('PageTemplateFile: Error in template: %s',
                 '\n'.join(self._v_errors))
             return
         self._v_last_read = mtime
