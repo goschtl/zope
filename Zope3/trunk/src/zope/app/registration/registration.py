@@ -19,6 +19,8 @@ import sys
 from persistent import Persistent
 
 import zope.cachedescriptors.property
+import zope.event
+
 from zope.interface import implements
 from zope.exceptions import DuplicationError
 from zope.proxy import removeAllProxies, getProxiedObject
@@ -31,6 +33,7 @@ from zope.app.container.contained import Contained
 from zope.app.container.contained import setitem, contained, uncontained
 from zope.app.copypastemove import ObjectCopier
 from zope.app.dependable.interfaces import IDependable, DependencyError
+from zope.app.event import objectevent
 from zope.app.component.localservice import getLocalServices
 from zope.app.location import inside
 from zope.app.module.interfaces import IModuleManager
@@ -846,6 +849,7 @@ class RegisterableContainer(object):
         rm = RegistrationManager()
         rm.__parent__ = self
         rm.__name__ = 'RegistrationManager'
+        zope.event.notify(objectevent.ObjectCreatedEvent(rm))
         self[rm.__name__] = rm
 
     def __delitem__(self, name):
