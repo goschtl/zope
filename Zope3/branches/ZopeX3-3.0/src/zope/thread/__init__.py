@@ -140,6 +140,8 @@ affects what we see:
 
   >>> mydata.number
   11
+
+$Id$
 """
 
 try:
