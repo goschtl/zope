@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.17 2003/05/21 21:11:23 fdrake Exp $
+$Id: interfaces.py,v 1.18 2003/05/28 14:34:28 fdrake Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -398,7 +398,7 @@ class IDict(IMinMaxLen, IIterable, IContainer):
         )
 
 
-class IAbstractVocabulary(Interface):
+class IBaseVocabulary(Interface):
     """Representation of a vocabulary.
 
     At this most basic level, a vocabulary only need to support a test
@@ -468,7 +468,7 @@ class ISubsetVocabulary(Interface):
         """Returns the vocabulary that this is a subset of."""
 
 
-class IVocabulary(IIterableVocabulary, IAbstractVocabulary):
+class IVocabulary(IIterableVocabulary, IBaseVocabulary):
     """Vocabulary which is iterable."""
 
 
@@ -486,11 +486,11 @@ class IVocabularyFieldMixin(Interface):
 
     vocabulary = Attribute(
         "vocabulary",
-        ("IAbstractVocabulary to be used, or None.\n"
+        ("IBaseVocabulary to be used, or None.\n"
          "\n"
          "If None, the vocabularyName should be used by an\n"
          "IVocabularyRegistry should be used to locate an appropriate\n"
-         "IAbstractVocabulary object."))
+         "IBaseVocabulary object."))
 
 
 class IVocabularyField(IVocabularyFieldMixin, IField):
@@ -510,7 +510,7 @@ class IVocabularyMultiField(IVocabularyFieldMixin, IField):
 
 
 class IVocabularyRegistry(Interface):
-    """Registry that provides IAbstractVocabulary objects for specific fields.
+    """Registry that provides IBaseVocabulary objects for specific fields.
     """
 
     def get(object, name):
