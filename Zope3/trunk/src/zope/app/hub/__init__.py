@@ -13,7 +13,7 @@
 ##############################################################################
 """Object hub implementation.
 
-$Id: __init__.py,v 1.2 2004/03/13 15:21:18 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/13 21:03:12 srichter Exp $
 """
 __metaclass__ = type
 
@@ -43,7 +43,7 @@ from zope.app.hub.interfaces import IObjectMovedHubEvent
 from zope.app.hub.interfaces import IObjectRemovedHubEvent
 from zope.app.hub.interfaces import ISubscriptionControl
 from zope.app.site.interfaces import ISimpleService
-from zope.app.interfaces.traversing import ITraverser, ITraversable
+from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.folder.interfaces import IFolder
 from zope.app.container.contained import ObjectAddedEvent
 from zope.interface import implements

@@ -13,7 +13,7 @@
 ##############################################################################
 """Test the presentation module
 
-$Id: test_presentation.py,v 1.3 2004/03/13 18:01:16 srichter Exp $
+$Id: test_presentation.py,v 1.4 2004/03/13 21:03:17 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.testing.doctestunit import DocTestSuite
@@ -52,7 +52,7 @@ from zope.app.container.interfaces import IContained, ILocation
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.registration.interfaces import IRegistered
-from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.dependable import Dependable
 
 class I1(Interface):

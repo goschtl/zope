@@ -13,14 +13,14 @@
 ##############################################################################
 """Classes to support implenting IContained
 
-$Id: __init__.py,v 1.4 2004/03/13 15:21:22 srichter Exp $
+$Id: __init__.py,v 1.5 2004/03/13 21:03:15 srichter Exp $
 """
 import zope.interface
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
-from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.traversing import ITraverser
+from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.app.traversing.interfaces import IContainmentRoot
+from zope.app.traversing.interfaces import ITraverser
 from zope.app.site.interfaces import ISite
 from zope.proxy import removeAllProxies
 from zope.proxy import ProxyBase, getProxiedObject

@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_localservice.py,v 1.3 2004/03/13 18:01:12 srichter Exp $
+$Id: test_localservice.py,v 1.4 2004/03/13 21:03:09 srichter Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
@@ -33,7 +33,7 @@ from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.interfaces import IEvent, ISubscriber, ISubscribingAware
 
 from zope.app.traversing import getPath, traverse
-from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.container.interfaces import IObjectAddedEvent, IObjectRemovedEvent
 from zope.app.container.contained import ObjectAddedEvent, Contained
 from zope.app.registration.interfaces import RegisteredStatus

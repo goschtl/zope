@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: __init__.py,v 1.2 2004/03/13 18:01:22 srichter Exp $
+$Id: __init__.py,v 1.3 2004/03/13 21:03:21 srichter Exp $
 """
 from zope.proxy import removeAllProxies
 from zope.app import zapi
@@ -438,7 +438,7 @@ class MakeSite(BrowserView):
 
         XXX we should also initialize some user-selected services.
 
-        >>> from zope.app.interfaces.traversing import IContainmentRoot
+        >>> from zope.app.traversing.interfaces import IContainmentRoot
         >>> from zope.interface import implements
 
         >>> class PossibleSite:

@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit tests for RAM Cache.
 
-$Id: test_ramcache.py,v 1.13 2004/03/02 18:50:56 philikon Exp $
+$Id: test_ramcache.py,v 1.14 2004/03/13 21:03:07 srichter Exp $
 """
 from time import time
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,7 +26,7 @@ from zope.app.cache.tests.test_icache import BaseICacheTest
 from zope.app.cache.interfaces import ICache
 from zope.app.cache.interfaces.ram import IRAMCache
 from zope.app.event.interfaces import ISubscriber
-from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 class Locatable:

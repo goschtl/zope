@@ -13,7 +13,7 @@
 ##############################################################################
 """Form Directives Tests
 
-$Id: test_directives.py,v 1.6 2004/03/08 12:05:54 srichter Exp $
+$Id: test_directives.py,v 1.7 2004/03/13 21:03:05 srichter Exp $
 """
 import os
 import unittest
@@ -74,7 +74,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         from zope.app.tests import ztapi
         from zope.app.traversing.adapters import DefaultTraversable
-        from zope.app.interfaces.traversing import ITraversable
+        from zope.app.traversing.interfaces import ITraversable
 
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
 

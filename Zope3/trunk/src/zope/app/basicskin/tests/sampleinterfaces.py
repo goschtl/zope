@@ -13,12 +13,12 @@
 ##############################################################################
 """
 
-$Id: sampleinterfaces.py,v 1.1 2004/03/02 17:11:11 philikon Exp $
+$Id: sampleinterfaces.py,v 1.2 2004/03/13 21:03:03 srichter Exp $
 """
 
 from zope.interface import Interface, implements
 
-from zope.app.interfaces.traversing import ITraverser
+from zope.app.traversing.interfaces import ITraverser
 
 class FakeTraverser:
 

@@ -58,7 +58,7 @@ the pickle unless it is stored in the object.
 >>> c4.__parent__ is c3
 1
 
-$Id: fspickle.py,v 1.6 2004/03/06 16:50:23 jim Exp $
+$Id: fspickle.py,v 1.7 2004/03/13 21:03:11 srichter Exp $
 """
 
 import cPickle
@@ -70,8 +70,8 @@ import zope.interface
 from zope.app import location
 from zope.app import zapi
 from zope.app.location.interfaces import ILocation
-from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.traversing import ITraverser
+from zope.app.traversing.interfaces import IContainmentRoot
+from zope.app.traversing.interfaces import ITraverser
 
 
 PARENT_MARKER = ".."

@@ -7,13 +7,13 @@
 
   <adapter
       for="*"
-      provides="zope.app.interfaces.talesapi.IZopeTalesAPI"
+      provides=".interfaces.IZopeTalesAPI"
       factory=".talesapi.ZopeTalesAPI" 
       />
 
   <tales:namespace 
       prefix="zope"
-      interface="zope.app.interfaces.talesapi.IZopeTalesAPI"
+      interface=".interfaces.IZopeTalesAPI"
       />
 
  <content class="zope.tales.tales.Iterator">

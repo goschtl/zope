@@ -101,7 +101,7 @@
 
   <zope:adapter
       factory=".traversal.SchemaFieldTraversable"
-      provides="zope.app.interfaces.traversing.ITraversable"
+      provides="zope.app.traversing.interfaces.ITraversable"
       for="zope.app.schema.interfaces.IMutableSchema" />
 
 </zope:configure>

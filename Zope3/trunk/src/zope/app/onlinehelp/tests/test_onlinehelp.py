@@ -13,7 +13,7 @@
 ##############################################################################
 """Test OnlineHelp
 
-$Id: test_onlinehelp.py,v 1.8 2004/02/27 16:15:26 philikon Exp $
+$Id: test_onlinehelp.py,v 1.9 2004/03/13 21:03:16 srichter Exp $
 """
 import os
 from unittest import TestSuite, makeSuite
@@ -22,8 +22,8 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import Interface
 from zope.interface.verify import verifyObject
 from zope.app.onlinehelp import OnlineHelp, IOnlineHelp
-from zope.app.interfaces.traversing import ITraversable, IPhysicallyLocatable
-from zope.app.interfaces.traversing import IContainmentRoot, ITraverser
+from zope.app.traversing.interfaces import ITraversable, IPhysicallyLocatable
+from zope.app.traversing.interfaces import IContainmentRoot, ITraverser
 from zope.app.location import LocationPhysicallyLocatable
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
 from test_onlinehelptopic import TestOnlineHelpTopic, testdir

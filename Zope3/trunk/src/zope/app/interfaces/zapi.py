@@ -13,11 +13,11 @@
 ##############################################################################
 """Interface definition for the Zope convenience API module
 
-$Id: zapi.py,v 1.10 2003/11/21 17:10:49 jim Exp $
+$Id: zapi.py,v 1.11 2004/03/13 21:03:14 srichter Exp $
 """
 from zope.interface import Attribute
 from zope.component.interfaces import IComponentArchitecture
-from zope.app.interfaces.traversing import ITraversalAPI
+from zope.app.traversing.interfaces import ITraversalAPI
 
 class IZAPI(
     IComponentArchitecture,

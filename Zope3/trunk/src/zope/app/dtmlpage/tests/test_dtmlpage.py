@@ -14,7 +14,7 @@
 """
 Basic tests for Page Templates used in content-space.
 
-$Id: test_dtmlpage.py,v 1.2 2004/02/24 16:49:38 philikon Exp $
+$Id: test_dtmlpage.py,v 1.3 2004/03/13 21:03:09 srichter Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.security.checker import NamesChecker, defineChecker
 
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
-from zope.app.interfaces.traversing import ITraverser, ITraversable
+from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.tests import ztapi
 from zope.app.container.contained import contained
 from zope.app.dtmlpage.dtmlpage import DTMLPage

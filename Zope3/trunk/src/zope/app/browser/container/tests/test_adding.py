@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.29 2004/03/09 12:39:04 srichter Exp $
+$Id: test_adding.py,v 1.30 2004/03/13 21:03:04 srichter Exp $
 """
 import unittest
 from zope.testing.doctestunit import DocTestSuite
@@ -24,7 +24,7 @@ from zope.app.browser.container.adding import Adding
 from zope.app.container.interfaces import IAdding
 from zope.app.container.interfaces import IObjectAddedEvent
 from zope.app.interfaces.exceptions import UserError
-from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.tests.placelesssetup import PlacelessSetup, setUp, tearDown
 from zope.component.interfaces import IFactory
 from zope.component.exceptions import ComponentLookupError

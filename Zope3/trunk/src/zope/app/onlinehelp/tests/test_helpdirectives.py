@@ -13,12 +13,12 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_helpdirectives.py,v 1.8 2003/11/27 13:59:22 philikon Exp $
+$Id: test_helpdirectives.py,v 1.9 2004/03/13 21:03:16 srichter Exp $
 """
 import unittest
 
-from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.interfaces.traversing import ITraverser, ITraversable
+from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.onlinehelp import tests
 from zope.app.onlinehelp import help
 from zope.app.location import LocationPhysicallyLocatable

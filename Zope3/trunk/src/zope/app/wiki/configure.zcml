@@ -175,7 +175,7 @@
 
   <adapter 
       factory=".traversal.WikiPageTraversable"
-      provides="zope.app.interfaces.traversing.ITraversable"
+      provides="zope.app.traversing.interfaces.ITraversable"
       for=".interfaces.IWikiPage" />
 
 

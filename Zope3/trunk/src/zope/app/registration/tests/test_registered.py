@@ -12,12 +12,12 @@
 #
 ##############################################################################
 """
-$Id: test_registered.py,v 1.1 2004/03/13 18:01:18 srichter Exp $
+$Id: test_registered.py,v 1.2 2004/03/13 21:03:19 srichter Exp $
 """
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.registration.registration import Registered
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.traversing import ITraverser
+from zope.app.traversing.interfaces import ITraverser
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.interface import implements
 from zope.app.container.contained import Contained

@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces to do with traversing.
 
-$Id: traversing.py,v 1.8 2004/02/24 14:20:43 srichter Exp $
+$Id: interfaces.py,v 1.1 2004/03/13 21:03:23 srichter Exp $
 """
 from zope.interface import Interface
 

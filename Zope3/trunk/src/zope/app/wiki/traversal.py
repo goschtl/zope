@@ -11,7 +11,7 @@
 ##############################################################################
 """Specific HTTP
 
-$Id: traversal.py,v 1.1 2004/02/27 11:06:58 philikon Exp $
+$Id: traversal.py,v 1.2 2004/03/13 21:03:25 srichter Exp $
 """
 from zope.interface import implements
 from zope.proxy import removeAllProxies
@@ -21,7 +21,7 @@ from zope.exceptions import NotFoundError
 
 from zope.app.traversing import getParent
 from zope.app.traversing.namespace import UnexpectedParameters
-from zope.app.interfaces.traversing import ITraversable
+from zope.app.traversing.interfaces import ITraversable
 from zope.app.wiki.interfaces import IWikiPage
 
 class WikiPageTraverser:

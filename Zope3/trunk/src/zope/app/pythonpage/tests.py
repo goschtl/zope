@@ -13,13 +13,13 @@
 ##############################################################################
 """Tests for Python Page
 
-$Id: tests.py,v 1.3 2004/03/02 15:50:04 srichter Exp $
+$Id: tests.py,v 1.4 2004/03/13 21:03:19 srichter Exp $
 """
 import unittest
 from zope.app import zapi
 from zope.app.container.contained import Contained
-from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.traversing.interfaces import IContainmentRoot
+from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.interpreter.interfaces import IInterpreter
 from zope.app.interpreter.python import PythonInterpreter
 from zope.app.location import LocationPhysicallyLocatable

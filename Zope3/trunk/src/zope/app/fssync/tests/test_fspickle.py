@@ -13,11 +13,11 @@
 ##############################################################################
 """Location support tests
 
-$Id: test_fspickle.py,v 1.3 2004/01/14 21:50:30 fdrake Exp $
+$Id: test_fspickle.py,v 1.4 2004/03/13 21:03:11 srichter Exp $
 """
 import unittest
 
-from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.location import TLocation
 from zope.app.fssync import fspickle
 from zope.interface import directlyProvides

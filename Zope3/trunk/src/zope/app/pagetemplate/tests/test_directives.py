@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests to check talesapi zcml configuration
 
-$Id: test_directives.py,v 1.9 2004/03/04 02:10:10 philikon Exp $
+$Id: test_directives.py,v 1.10 2004/03/13 21:03:17 srichter Exp $
 """
 
 import unittest
@@ -26,7 +26,7 @@ from zope.app.tests import ztapi
 import zope.app.pagetemplate
 from zope.app.pagetemplate.engine import Engine
 
-from zope.app.interfaces.traversing import ITraversable
+from zope.app.traversing.interfaces import ITraversable
 from zope.app.tests.placelesssetup import PlacelessSetup
 
 template = """<configure 

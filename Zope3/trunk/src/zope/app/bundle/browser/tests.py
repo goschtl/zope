@@ -15,12 +15,12 @@
 
 XXX Incomplete.
 
-$Id: tests.py,v 1.1 2004/03/10 13:11:13 srichter Exp $
+$Id: tests.py,v 1.2 2004/03/13 21:03:06 srichter Exp $
 """
 import unittest
 
 from zope.interface import implements
-from zope.app.interfaces.traversing import IPhysicallyLocatable
+from zope.app.traversing.interfaces import IPhysicallyLocatable
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.bundle.browser import BundleView
 

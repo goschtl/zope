@@ -13,7 +13,7 @@
 ##############################################################################
 """testObjectHub
 
-$Id: test_objecthub.py,v 1.1 2004/03/11 09:19:25 srichter Exp $
+$Id: test_objecthub.py,v 1.2 2004/03/13 21:03:13 srichter Exp $
 """
 import unittest
 from zope.app.tests import ztapi
@@ -41,7 +41,7 @@ from zope.app.hub import ObjectMovedHubEvent, ObjectRegisteredHubEvent
 from zope.app.hub import ObjectUnregisteredHubEvent
 from zope.app.hub import canonicalSlash, userPath
 
-from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.location import Location
 
 from zope.exceptions import NotFoundError
@@ -225,7 +225,7 @@ class TestSearchRegistrations(BasicHubTest):
         def fake_object_for_location(location):
             return FakeObject(canonicalPath(location))
 
-        from zope.app.interfaces.traversing import ITraverser
+        from zope.app.traversing.interfaces import ITraverser
         from zope.app.traversing.adapters import Traverser
         class DummyTraverser(Traverser):
             implements(ITraverser)

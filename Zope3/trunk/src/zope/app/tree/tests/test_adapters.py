@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: test_adapters.py,v 1.5 2004/03/13 15:21:38 srichter Exp $
+$Id: test_adapters.py,v 1.6 2004/03/13 21:03:24 srichter Exp $
 """
 
 import unittest
@@ -23,7 +23,7 @@ from zope.component.exceptions import ComponentLookupError
 from zope.app.location.interfaces import ILocation
 from zope.app.container.interfaces import IReadContainer
 from zope.app.site.interfaces import ISite
-from zope.app.interfaces.traversing import IContainmentRoot
+from zope.app.traversing.interfaces import IContainmentRoot
 
 from zope.app.container.sample import SampleContainer
 from zope.app.container.contained import setitem

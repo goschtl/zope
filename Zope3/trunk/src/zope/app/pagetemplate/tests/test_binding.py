@@ -13,7 +13,7 @@
 ##############################################################################
 """Binding Tests
 
-$Id: test_binding.py,v 1.9 2003/11/27 13:59:22 philikon Exp $
+$Id: test_binding.py,v 1.10 2004/03/13 21:03:17 srichter Exp $
 """
 import unittest
 
@@ -23,8 +23,8 @@ from zope.app.pagetemplate.tests.testpackage.content \
 # Wow, this is a lot of work. :(
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.app.traversing.adapters import Traverser, DefaultTraversable
-from zope.app.interfaces.traversing import ITraverser
-from zope.app.interfaces.traversing import ITraversable
+from zope.app.traversing.interfaces import ITraverser
+from zope.app.traversing.interfaces import ITraversable
 from zope.app.tests import ztapi
 
 

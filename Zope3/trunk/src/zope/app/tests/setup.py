@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.19 2004/03/13 18:01:23 srichter Exp $
+$Id: setup.py,v 1.20 2004/03/13 21:03:22 srichter Exp $
 """
 
 import zope.component
@@ -43,9 +43,9 @@ def setUpDependable():
 from zope.app.browser.absoluteurl import SiteAbsoluteURL, AbsoluteURL
 from zope.app.container.traversal import ContainerTraversable
 from zope.app.container.interfaces import ISimpleReadContainer
-from zope.app.interfaces.traversing import IContainmentRoot
-from zope.app.interfaces.traversing import IPhysicallyLocatable
-from zope.app.interfaces.traversing import ITraverser, ITraversable
+from zope.app.traversing.interfaces import IContainmentRoot
+from zope.app.traversing.interfaces import IPhysicallyLocatable
+from zope.app.traversing.interfaces import ITraverser, ITraversable
 from zope.app.traversing.adapters import DefaultTraversable
 from zope.app.traversing.adapters import Traverser, RootPhysicallyLocatable
 from zope.app.location import LocationPhysicallyLocatable
