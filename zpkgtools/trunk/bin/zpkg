@@ -47,6 +47,8 @@ class Application:
         tempfile.tempdir = self.tmpdir
         self.loader = cvsloader.CvsLoader()
         cf = config.Configuration(options.configfile)
+        if options.location_maps:
+            cf.location_maps[:0] = options.location_maps
         cf.finalize()
         self.locations = cf.locations
 
@@ -162,10 +164,16 @@ def main(argv=None):
         argv = sys.argv
     program = os.path.basename(argv[0])
     parser = optparse.OptionParser(
-        usage="usage: %prog [options] resource")
+        usage="usage: %prog [options] resource",
+        version="%prog 0.1")
     parser.add_option(
         "-C", "--configure", dest="configfile",
         help="path or URL to the configuration file")
+    parser.add_option(
+        "-m", "--resource-map", dest="location_maps",
+        action="append",
+        help=("specify an additional location map to load before"
+              " maps specified in the configuration"))
     parser.add_option(
         "-n", "--name", dest="release_name",
         help="base name of the distribution file")
