@@ -396,6 +396,10 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
     if not recurse:
         cmd = cmd + ' --exclude "/*/*"'
 
+    reposubdir = string.join(string.split(repo, '/')[1:], '/')
+    if reposubdir and reposubdir != '/':
+        path = path + '/' + reposubdir
+
     try:
         repodir = remote['repodir'] % path
     except TypeError:
@@ -403,24 +407,24 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
 
     # Special case for individual file targets:
     if os.path.isfile("%s/%s,v" % (os.environ["CVSROOT"], path)):
-        trailing_slash_or_comma_v_1 = ",v"
-        trailing_slash_or_comma_v_2 = ",v"
+        trailing_slash_or_comma_origin = ",v"
+        trailing_slash_or_comma_dest = ",v"
     elif doing_directory or recurse:
         # We must have the slash on the origin dir arg, or it'll be nested
         # in target:
-        trailing_slash_or_comma_v_1 = "/"
+        trailing_slash_or_comma_origin = "/"
         # If we don't have slash on target dir arg, it'll be created if
         # it's not already there:
-        trailing_slash_or_comma_v_2 = ""
+        trailing_slash_or_comma_dest = ""
     else:
-        trailing_slash_or_comma_v_1 = "/"
-        trailing_slash_or_comma_v_2 = "/"
+        trailing_slash_or_comma_origin = "/"
+        trailing_slash_or_comma_dest = "/"
 
     if remote.has_key('leading_path'):
         l = remote['leading_path']
         if not l or l[-1] != '/': l = l + '/'
         remotesubpath = ("%s%s%s" % (l, os.path.split(path)[-1],
-                                       trailing_slash_or_comma_v_2))
+                                       trailing_slash_or_comma_dest))
     else:
         if path and path[0] != '/':
             remotesubpath = '/' + path
@@ -432,7 +436,7 @@ def do_sync(path, repo, remote, subjs=None, excludes=None, recurse=0,
     cmd = ("%s%s %s/%s%s %s" % ((VERBOSE and "set -x; ") or "",
                                 cmd,
                                 os.environ["CVSROOT"], path,
-                                trailing_slash_or_comma_v_1,
+                                trailing_slash_or_comma_origin,
                                 remotepath))
     if VERBOSE:
         complain("%sDoing rsync cmd:\n\t%s\n",
