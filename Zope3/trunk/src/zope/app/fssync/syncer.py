@@ -13,7 +13,7 @@
 ##############################################################################
 """Filesystem synchronization functions.
 
-$Id: syncer.py,v 1.19 2003/05/21 20:29:45 jim Exp $
+$Id: syncer.py,v 1.20 2003/05/25 06:19:09 gvanrossum Exp $
 """
 
 import os
@@ -89,7 +89,7 @@ def toFS(ob, name, location):
 
     try:
         objectPath = str(getPath(ob))
-    except TypeError:
+    except (TypeError, KeyError):
         objectPath = ''
     else:
         entries[name]['path'] = objectPath
