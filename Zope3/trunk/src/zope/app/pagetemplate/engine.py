@@ -20,6 +20,7 @@ $Id$
 import sys
 
 from zope.tales.expressions import PathExpr, StringExpr, NotExpr, DeferExpr
+from zope.tales.expressions import SimpleModuleImporter
 from zope.tales.pythonexpr import PythonExpr
 from zope.tales.tales import ExpressionEngine, Context
 
@@ -57,11 +58,7 @@ class ZopePythonExpr(PythonExpr):
         vars = self._bind_used_names(econtext, RestrictedBuiltins)
         return eval(self._code, vars)
 
-class ZopeContext(Context):
-
-    def setContext(self, name, value):
-        # Hook to allow subclasses to do things like adding security proxies
-        Context.setContext(self, name, ProxyFactory(value))
+class ZopeContextBase(Context):
 
     def evaluateText(self, expr):
         text = self.evaluate(expr)
@@ -101,7 +98,7 @@ class ZopeContext(Context):
             error = _('No interpreter named "${lang_name}" was found.')
             error.mapping = {'lang_name': lang}
             raise InlineCodeError, error
-                  
+
         globals = self.vars.copy()
         result = interpreter.evaluateRawCode(code, globals)
         # Add possibly new global variables.
@@ -110,6 +107,17 @@ class ZopeContext(Context):
             if name not in old_names:
                 self.setGlobal(name, value)
         return result
+
+
+class ZopeContext(ZopeContextBase):
+
+    def setContext(self, name, value):
+        # Hook to allow subclasses to do things like adding security proxies
+        Context.setContext(self, name, ProxyFactory(value))
+
+
+class TrustedZopeContext(ZopeContextBase):
+    pass
 
 
 class AdapterNamespaces(object):
@@ -142,7 +150,7 @@ class AdapterNamespaces(object):
 
 
     Cleanup:
-    
+
       >>> tearDown()
     """
 
@@ -157,11 +165,13 @@ class AdapterNamespaces(object):
                     return zapi.getAdapter(object, IPathAdapter, name)
                 except ComponentLookupError:
                     raise KeyError, name
-                
+
             self.namespaces[name] = namespace
         return namespace
 
 class ZopeEngine(ExpressionEngine):
+
+    _create_context = ZopeContext
 
     def __init__(self):
         ExpressionEngine.__init__(self)
@@ -174,7 +184,7 @@ class ZopeEngine(ExpressionEngine):
             else:
                 namespace = __namespace
 
-        context = ZopeContext(self, namespace)
+        context = self._create_context(self, namespace)
 
         # Put request into context so path traversal can find it
         if 'request' in namespace:
@@ -186,16 +196,17 @@ class ZopeEngine(ExpressionEngine):
 
         return context
 
+
+class TrustedZopeEngine(ZopeEngine):
+
+    _create_context = TrustedZopeContext
+
+
 def _Engine(engine=None):
     if engine is None:
         engine = ZopeEngine()
-        
-    for pt in ZopePathExpr._default_type_names:
-        engine.registerType(pt, ZopePathExpr)
-    engine.registerType('string', StringExpr)
+    engine = _create_base_engine(engine)
     engine.registerType('python', ZopePythonExpr)
-    engine.registerType('not', NotExpr)
-    engine.registerType('defer', DeferExpr)
 
     # Using a proxy around sys.modules allows page templates to use
     # modules for which security declarations have been made, but
@@ -205,9 +216,34 @@ def _Engine(engine=None):
 
     return engine
 
+def _TrustedEngine(engine=None):
+    if engine is None:
+        engine = TrustedZopeEngine()
+    engine = _create_base_engine(engine)
+    engine.registerType('python', PythonExpr)
+    engine.registerBaseName('modules', SimpleModuleImporter())
+    return engine
+
+def _create_base_engine(engine):
+    for pt in ZopePathExpr._default_type_names:
+        engine.registerType(pt, ZopePathExpr)
+    engine.registerType('string', StringExpr)
+    engine.registerType('not', NotExpr)
+    engine.registerType('defer', DeferExpr)
+    return engine
+
+
 Engine = _Engine()
+TrustedEngine = _TrustedEngine()
+
 
 class AppPT(object):
 
     def pt_getEngine(self):
         return Engine
+
+
+class TrustedAppPT(object):
+
+    def pt_getEngine(self):
+        return TrustedEngine

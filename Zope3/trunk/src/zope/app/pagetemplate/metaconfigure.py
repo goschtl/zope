@@ -17,6 +17,7 @@ namespace in TALES.
 $Id$
 """
 from zope.app.pagetemplate.engine import Engine, _Engine
+from zope.app.pagetemplate.engine import TrustedEngine, _TrustedEngine
 from zope.testing.cleanup import addCleanUp
 from zope.interface import Interface
 from zope.configuration.fields import GlobalObject
@@ -42,13 +43,19 @@ class IExpressionTypeDirective(Interface):
 def expressiontype(_context, name, handler):
     _context.action(
         discriminator = ("tales:expressiontype", name),
-        callable = Engine.registerType,
+        callable = registerType,
         args = (name, handler)
         )
+
+def registerType(name, handler):
+    Engine.registerType(name, handler)
+    TrustedEngine.registerType(name, handler)
 
 
 def clear():
     Engine.__init__()
     _Engine(Engine)
+    TrustedEngine.__init__()
+    _TrustedEngine(TrustedEngine)
 
 addCleanUp(clear)
