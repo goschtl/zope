@@ -183,14 +183,14 @@ class StatefulProcessDefinition(ProcessDefinition):
         """See workflow.IProcessDefinition"""
         pi_obj = StatefulProcessInstance(definition_name)
 
-        # XXX
+        # TODO:
         # Process instances need to have a place, so they can look things
         # up.  It's not clear to me (Jim) what place they should have.
 
-        # XXX: The parent of the process instance should be the object it is
+        # The parent of the process instance should be the object it is
         # created for!!! This will cause all sorts of head-aches, but at this
         # stage we do not have the object around; it would need some API
-        # changes to do that for which I do not have time right now. (SR)
+        # changes to do that. (SR)
         pi_obj.__parent__ = self
 
 
