@@ -12,9 +12,12 @@
 #
 ##############################################################################
 """
-$Id: dublincore.py,v 1.2 2002/12/25 14:12:56 jim Exp $
+$Id: dublincore.py,v 1.3 2002/12/30 21:43:05 jeremy Exp $
 """
 
+from zope.app.interfaces.annotation import IAnnotatable
+from zope.app.dublincore.general \
+     import IGeneralDublinCore, IWritableGeneralDublinCore
 from zope.interface import Interface
 from zope.schema import Text, TextLine, Datetime, Sequence
 
@@ -103,15 +106,6 @@ class IDCExtended(Interface):
         u"The unqualified Dublin Core 'Contributor' element values",
         value_types = (TextLine(),),
         )
-
-
-
-
-"""
-$Id: dublincore.py,v 1.2 2002/12/25 14:12:56 jim Exp $
-"""
-
-from zope.interface import Interface
 
 class ICMFDublinCore(Interface):
     """This interface duplicates the CMF dublinc core interface.
@@ -271,21 +265,6 @@ class ICMFDublinCore(Interface):
         string is formatted  'YYYY-MM-DD H24:MN:SS TZ'.
         """
 
-
-
-__doc__ = ICMFDublinCore.__doc__ + __doc__
-
-
-"""
-$Id: dublincore.py,v 1.2 2002/12/25 14:12:56 jim Exp $
-"""
-
-from zope.app.dublincore.general \
-     import IGeneralDublinCore, IWritableGeneralDublinCore
-
-
-
-
 class IZopeDublinCore(
     IGeneralDublinCore,
     IWritableGeneralDublinCore,
@@ -295,24 +274,11 @@ class IZopeDublinCore(
     IDCPublishing,
     IDCExtended,
     ):
-    """Zope Dublin Core properties
-    """
-
-__doc__ = IZopeDublinCore.__doc__ + __doc__
-
-
-"""
-$Id: dublincore.py,v 1.2 2002/12/25 14:12:56 jim Exp $
-"""
-
-from zope.app.interfaces.annotation import IAnnotatable
+    """Zope Dublin Core properties"""
 
 class IZopeDublinCoreAnnotatable(IAnnotatable):
     """Objects that can be annotated with Zope Dublin-Core meta data
 
     This is a marker interface that indicates the intent to have
     Zope Dublin-Core meta data associated with an object.
-
     """
-
-__doc__ = IZopeDublinCoreAnnotatable.__doc__ + __doc__
