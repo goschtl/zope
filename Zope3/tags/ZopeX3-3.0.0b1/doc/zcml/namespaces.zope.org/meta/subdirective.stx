@@ -1,0 +1,22 @@
+subdirective
+
+  Manually registered in zope/configuration/config.py
+
+  Handler: zope.configuration.config.subdirective
+
+  Information common to all directive definitions have
+
+  Attributes
+
+    name -- TextLine (required)
+
+      Directive name
+
+      The name of the directive being defined
+
+    schema -- DirectiveSchema (required)
+
+      Directive handler
+
+      The dotted name of the directive handler
+

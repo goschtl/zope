@@ -1,0 +1,65 @@
+resource
+
+  File zope/app/component/meta.zcml, lines 50 - 54.
+
+  Handler: zope.app.component.metaconfigure.resource
+
+  Register a resource
+
+  Attributes
+
+    component -- GlobalObject (optional, default=None)
+
+      Component to be used
+
+      
+
+    permission -- Permission (optional, default=None)
+
+      Permission
+
+      
+
+    factory -- GlobalObject (optional, default=None)
+
+      Factory
+
+      
+
+    name -- TextLine (required)
+
+      The name of the resource.
+
+      The name shows up in URLs/paths. For example 'foo'.
+
+    provides -- GlobalObject (optional, default=<InterfaceClass zope.interface.Interface>)
+
+      The interface this component provides.
+
+      A view can provide an interface. This would be used for views that
+      support other views.
+
+    type -- GlobalObject (required)
+
+      Request type
+
+      
+
+    layer -- TextLine (optional, default=None)
+
+      The layer the resource is in.
+
+      
+
+    allowed_interface -- Tokens (optional, default=None)
+
+      Interface that is also allowed if user has permission.
+
+      
+
+    allowed_attributes -- Tokens (optional, default=None)
+
+      View attributes that are also allowed if user has permission.
+
+      
+

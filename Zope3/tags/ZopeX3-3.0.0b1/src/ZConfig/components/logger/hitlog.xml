@@ -1,0 +1,34 @@
+<component prefix="ZConfig.components.logger.logger">
+
+  <import package="ZConfig.components.logger" file="abstract.xml"/>
+  <import package="ZConfig.components.logger" file="base-logger.xml"/>
+
+  <abstracttype name="ZConfig.logger.accesslog"/>
+
+  <sectiontype name="accesslog"
+               datatype=".AccessLogFactory"
+               extends="ZConfig.logger.base-logger"
+               implements="ZConfig.logger.accesslog">
+    <description>
+      Configuration for the access logger.
+
+      Note that the setting of verbosity level and message formats are not
+      used.
+    </description>
+  </sectiontype>
+
+  <sectiontype name="hitlog"
+               datatype=".HitLogFactory"
+               extends="ZConfig.logger.base-logger"
+               implements="ZConfig.logger.accesslog">
+    <description>
+      DEPRECATED.  Use "accesslog" instead.
+
+      Configuration for the access logger.
+
+      Note that the setting of verbosity level and message formats are not
+      used.
+    </description>
+  </sectiontype>
+
+</component>
