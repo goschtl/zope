@@ -29,7 +29,7 @@ static int
 Proxy_Import(void)
 {
     if (_proxy_api == NULL) {
-        PyObject *m = PyImport_ImportModule("zope.proxy.proxy");
+        PyObject *m = PyImport_ImportModule("zope.proxy");
         if (m != NULL) {
             PyObject *tmp = PyObject_GetAttrString(m, "_CAPI");
             if (tmp != NULL) {

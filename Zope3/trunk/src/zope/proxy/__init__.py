@@ -13,10 +13,18 @@
 ##############################################################################
 """More convenience functions for dealing with proxies.
 
-$Id: __init__.py,v 1.5 2003/04/19 10:34:38 srichter Exp $
+$Id: __init__.py,v 1.6 2003/05/28 15:49:11 jim Exp $
 """
+
+from zope.interface import moduleProvides
+from zope.proxy.interfaces import IProxyIntrospection
 from types import ClassType
-from zope.proxy.introspection import removeAllProxies
+from zope.proxy._zope_proxy_proxy import *
+from zope.proxy._zope_proxy_proxy import _CAPI
+
+moduleProvides(IProxyIntrospection)
+__all__ = tuple(IProxyIntrospection)
+
 
 
 def proxy_compatible_isinstance(obj, cls):

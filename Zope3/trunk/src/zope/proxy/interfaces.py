@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: interfaces.py,v 1.2 2002/12/25 14:15:17 jim Exp $
+$Id: interfaces.py,v 1.3 2003/05/28 15:49:11 jim Exp $
 """
 
 from zope.interface import Interface
@@ -23,13 +23,17 @@ class IProxyIntrospection(Interface):
     """Provides methods for indentifying proxies and extracting proxied objects
     """
 
-    def removeProxy(obj):
-        """Return the immediately proxied object.
+    def isProxy(obj, proxytype=None):
+        """Check whether the given object is a proxy
 
-        If obj is not a proxied object, return obj.
+        If proxytype is not None, checkes whether the object is
+        proxied by the given proxytype.
+        """
 
-        Note that the object returned may still be a proxy, if there
-        are multiple layers of proxy.
+    def getObject(obj):
+        """Get the proxied Object
+
+        If the object isn't proxied, then just return the object.
         """
 
     def removeAllProxies(obj):
@@ -40,6 +44,16 @@ class IProxyIntrospection(Interface):
         The returned object has no proxies.
         """
 
-    def isProxy(obj):
-        """Checks whether the given object is a proxy
+    def queryProxy(obj, proxytype, default=None):
+        """Look for a proxy of the given type around the object
+
+        If no such proxy can be found, return the default.
+        """
+
+    def queryInnerProxy(obj, proxytype, default=None):
+        """Look for the inner-most proxy of the given type around the object
+
+        If no such proxy can be found, return the default.
+
+        If there is such a proxy, return the inner-most one.
         """

@@ -25,87 +25,12 @@ module, by calling defineProxyType, however, it short-circuits the definitions
 for two types, which, hopefully will be the only two types that need to get
 registered. ;)
 
-$Id: introspection.py,v 1.5 2003/05/27 14:18:30 jim Exp $
+$Id: introspection.py,v 1.6 2003/05/28 15:49:11 jim Exp $
 """
-from zope.interface import moduleProvides
-from zope.proxy.interfaces import IProxyIntrospection
 
-moduleProvides(IProxyIntrospection)
+import warnings
+from zope.proxy._zope_proxy_proxy import removeAllProxies, isProxy
 
-
-from zope.exceptions import DuplicationError
-
-class ProxyRegistry:
-
-    def __init__(self):
-        self._proxy_types = {}
-
-        # register security proxy
-        from zope.security.proxy import Proxy, getObject
-        self._proxy_types[Proxy] = getObject
-
-        # register context wrappers
-        from zope.context import wrapperTypes, getobject
-        for wrapper_type in wrapperTypes:
-            self._proxy_types[wrapper_type] = getobject
-
-    _clear = __init__
-
-    def defineProxyType(self, type_, remover):
-        """Register a proxy type
-
-        A type and a function are provides. The function should take a
-        proxy and return the object proxied.
-        """
-        if type_ in self._proxy_types:
-            raise DuplicationError(type_)
-
-        self._proxy_types[type_] = remover
-
-    def removeProxy(self, obj):
-        """Return the immediately proxied object.
-
-        If obj is not a proxied object, return obj.
-
-        Note that the object returned may still be a proxy, if there
-        are multiple layers of proxy.
-
-        """
-        remover = self._proxy_types.get(type(obj))
-        if remover is None:
-            return obj
-
-        return remover(obj)
-
-
-    def removeAllProxies(self, obj):
-        """Get the proxied oject with no proxies
-
-        If obj is not a proxied object, return obj.
-
-        The returned object has no proxies.
-        """
-
-        i=0
-        get = self._proxy_types.get
-        while i < 100:
-            remover = get(type(obj))
-            if remover is None:
-                return obj
-
-            obj = remover(obj)
-            i=i+1
-
-        raise TypeError('excessive proxy nesting')
-
-    def isProxy(self, obj):
-        """Check whether the given object is a proxy
-        """
-        return type(obj) in self._proxy_types
-
-theProxyRegistry = ProxyRegistry()
-
-isProxy = theProxyRegistry.isProxy
-removeProxy = theProxyRegistry.removeProxy
-removeAllProxies = theProxyRegistry.removeAllProxies
-_clear = theProxyRegistry._clear
+warnings.warn("The zope.proxy.introspection module is deprecated. "
+              "Use zope.proxy instead.",
+              DeprecationWarning, 2)

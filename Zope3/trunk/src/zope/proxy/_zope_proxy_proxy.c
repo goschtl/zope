@@ -604,9 +604,9 @@ wrap_methods[] = {
 
 statichere PyTypeObject
 ProxyType = {
-    PyObject_HEAD_INIT(NULL)
+    PyObject_HEAD_INIT(NULL)  /* PyObject_HEAD_INIT(&PyType_Type) */  
     0,
-    "proxy.proxy",
+    "zope.proxy.ProxyBase",
     sizeof(ProxyObject),
     0,
     wrap_dealloc,			/* tp_dealloc */
@@ -642,11 +642,10 @@ ProxyType = {
     0,					/* tp_descr_set */
     0,					/* tp_dictoffset */
     wrap_init,				/* tp_init */
-    0, /*PyType_GenericAlloc,*/		/* tp_alloc */
+    0,                   		/* tp_alloc */
     wrap_new,				/* tp_new */
     0, /*_PyObject_GC_Del,*/		/* tp_free */
 };
-
 
 static PyObject *
 create_proxy(PyObject *object)
@@ -711,29 +710,155 @@ static PyObject *api_object = NULL;
 
 static char
 getobject__doc__[] =
-"getobject(proxy) --> object\n"
+"getObject(proxy) --> object\n"
 "\n"
-"Return the underlying object for proxy, or raise TypeError if it is\n"
+"Get the underlying object for proxy, or the object itself, if it is\n"
 "not a proxy.";
 
 static PyObject *
 wrapper_getobject(PyObject *unused, PyObject *obj)
 {
-    PyObject *result = NULL;
+  if (Proxy_Check(obj)) 
+    obj = Proxy_GET_OBJECT(obj);
+  
+  if (obj == NULL)
+    obj = Py_None;
 
-    if (Proxy_Check(obj)) {
-        result = Proxy_GET_OBJECT(obj);
-	Py_INCREF(result);
-    }
-    else
-        PyErr_Format(PyExc_TypeError,
-		     "expected proxy, got %s", obj->ob_type->tp_name);
-    return result;
+  Py_INCREF(obj);
+  return obj;
 }
+
+static char
+isProxy__doc__[] =
+"Check whether the given object is a proxy\n"
+"\n"
+"If proxytype is not None, checkes whether the object is\n"
+"proxied by the given proxytype.\n"
+;
+
+static PyObject *
+wrapper_isProxy(PyObject *unused, PyObject *args)
+{
+  PyObject *obj, *result;
+  PyTypeObject *proxytype=&ProxyType;
+
+  if (! PyArg_ParseTuple(args, "O|O!:isProxy", 
+                         &obj, &PyType_Type, &proxytype)
+      )
+    return NULL;
+
+  while (obj && Proxy_Check(obj))
+  {
+    if (PyObject_TypeCheck(obj, proxytype))
+      {
+        result = Py_True;
+	Py_INCREF(result);
+        return result;
+      }
+    obj = Proxy_GET_OBJECT(obj);
+  }
+  result = Py_False;
+  Py_INCREF(result);
+  return result;
+}
+
+static char
+removeAllProxies__doc__[] =
+"removeAllProxies(proxy) --> object\n"
+"\n"
+"Get the proxied object with no proxies\n"
+"\n"
+"If obj is not a proxied object, return obj.\n"
+"\n"
+"The returned object has no proxies.\n"
+;
+
+static PyObject *
+wrapper_removeAllProxies(PyObject *unused, PyObject *obj)
+{
+  while (obj && Proxy_Check(obj)) 
+    obj = Proxy_GET_OBJECT(obj);
+  
+  if (obj == NULL)
+    obj = Py_None;
+
+  Py_INCREF(obj);
+  return obj;
+}
+
+static char
+queryProxy__doc__[] =
+"Look for a proxy of the given type around the object\n"
+"\n"
+"If no such proxy can be found, return the default.\n"
+;
+
+static PyObject *
+wrapper_queryProxy(PyObject *unused, PyObject *args)
+{
+  PyObject *obj, *result=Py_None;
+  PyTypeObject *proxytype=&ProxyType;
+
+  if (! PyArg_ParseTuple(args, "O|O!O:queryProxy", 
+                         &obj, &PyType_Type, &proxytype, &result)
+      )
+    return NULL;
+
+  while (obj && Proxy_Check(obj))
+  {
+    if (PyObject_TypeCheck(obj, proxytype))
+      {
+        Py_INCREF(obj);
+        return obj;
+      }
+    obj = Proxy_GET_OBJECT(obj);
+  }
+
+  Py_INCREF(result);
+  return result;
+}
+
+static char
+queryInnerProxy__doc__[] =
+"Look for the inner-most proxy of the given type around the object\n"
+"\n"
+"If no such proxy can be found, return the default.\n"
+"\n"
+"If there is such a proxy, return the inner-most one.\n"
+;
+
+static PyObject *
+wrapper_queryInnerProxy(PyObject *unused, PyObject *args)
+{
+  PyObject *obj, *result=Py_None;
+  PyTypeObject *proxytype=&ProxyType;
+
+  if (! PyArg_ParseTuple(args, "O|O!O:queryInnerProxy", 
+                         &obj, &PyType_Type, &proxytype, &result)
+      )
+    return NULL;
+
+  while (obj && Proxy_Check(obj))
+  {
+    if (PyObject_TypeCheck(obj, proxytype))
+      result = obj;
+    obj = Proxy_GET_OBJECT(obj);
+  }
+
+  Py_INCREF(result);
+  return result;
+}
+
 
 static PyMethodDef
 module_functions[] = {
-    {"getobject", wrapper_getobject, METH_O, getobject__doc__},
+    {"getObject", wrapper_getobject, METH_O, getobject__doc__},
+    {"isProxy", wrapper_isProxy, METH_VARARGS, isProxy__doc__},
+    {"queryProxy", wrapper_queryProxy, METH_VARARGS, queryProxy__doc__},
+    {"queryInnerProxy", wrapper_queryInnerProxy, METH_VARARGS, 
+     queryInnerProxy__doc__},
+    {"removeAllProxies", wrapper_removeAllProxies, METH_O, 
+     removeAllProxies__doc__},
     {NULL}
 };
 
@@ -747,9 +872,10 @@ act as proxies for the original object.";
 
 
 void
-initproxy(void)
+init_zope_proxy_proxy(void)
 {
-    PyObject *m = Py_InitModule3("proxy", module_functions, module___doc__);
+    PyObject *m = Py_InitModule3("_zope_proxy_proxy", 
+                                 module_functions, module___doc__);
 
     if (m == NULL)
         return;
@@ -757,14 +883,13 @@ initproxy(void)
     if (empty_tuple == NULL)
         empty_tuple = PyTuple_New(0);
 
-    ProxyType.ob_type = &PyType_Type;
-    ProxyType.tp_alloc = PyType_GenericAlloc;
     ProxyType.tp_free = _PyObject_GC_Del;
+
     if (PyType_Ready(&ProxyType) < 0)
         return;
 
     Py_INCREF(&ProxyType);
-    PyModule_AddObject(m, "proxy", (PyObject *)&ProxyType);
+    PyModule_AddObject(m, "ProxyBase", (PyObject *)&ProxyType);
 
     if (api_object == NULL) {
         api_object = PyCObject_FromVoidPtr(&wrapper_capi, NULL);

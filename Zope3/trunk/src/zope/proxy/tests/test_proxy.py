@@ -13,13 +13,14 @@
 ##############################################################################
 """Test base proxy class.
 
-$Id: test_proxy.py,v 1.8 2003/05/10 09:24:28 stevea Exp $
+$Id: test_proxy.py,v 1.9 2003/05/28 15:49:12 jim Exp $
 """
 import pickle
 import unittest
-
-from zope.proxy import proxy
-
+from zope.testing.doctestunit import DocTestSuite
+from zope.proxy.interfaces import IProxyIntrospection
+from zope.proxy import ProxyBase
+from zope import proxy
 
 class Thing:
     pass
@@ -58,7 +59,7 @@ class Comparable:
 
 class ProxyTestCase(unittest.TestCase):
 
-    proxy_class = proxy.proxy
+    proxy_class = ProxyBase
 
     def setUp(self):
         self.x = Thing()
@@ -115,11 +116,6 @@ class ProxyTestCase(unittest.TestCase):
         o.foo = 1
         w = self.new_proxy(o)
         self.assert_(w.foo == 1)
-
-    def test_getobject(self):
-        obj1 = object()
-        w = self.new_proxy(obj1)
-        self.assert_(proxy.getobject(w) is obj1)
 
     def test___class__(self):
         o = object()
@@ -347,9 +343,138 @@ class ProxyTestCase(unittest.TestCase):
         self.failUnless(b is y)
 
 
-def test_suite():
-    return unittest.makeSuite(ProxyTestCase)
+def test_isProxy():
+    """
+    >>> from zope.proxy import ProxyBase, isProxy
+    >>> class P1(ProxyBase):
+    ...     pass
+    >>> class P2(ProxyBase):
+    ...     pass
+    >>> class C:
+    ...     pass
+    >>> c = C()
+    >>> int(isProxy(c))
+    0
+    >>> p = P1(c)
+    >>> int(isProxy(p))
+    1
+    >>> int(isProxy(p, P1))
+    1
+    >>> int(isProxy(p, P2))
+    0
+    >>> p = P2(p)
+    >>> int(isProxy(p, P1))
+    1
+    >>> int(isProxy(p, P2))
+    1
 
+    """
+
+def test_getObject():
+    """
+    >>> from zope.proxy import ProxyBase, getObject
+    >>> class C:
+    ...     pass
+    >>> c = C()
+    >>> int(getObject(c) is c)
+    1
+    >>> p = ProxyBase(c)
+    >>> int(getObject(p) is c)
+    1
+    >>> p2 = ProxyBase(p)
+    >>> int(getObject(p2) is p)
+    1
+
+    """
+
+def test_removeAllProxies():
+    """
+    >>> from zope.proxy import ProxyBase, removeAllProxies
+    >>> class C:
+    ...     pass
+    >>> c = C()
+    >>> int(removeAllProxies(c) is c)
+    1
+    >>> p = ProxyBase(c)
+    >>> int(removeAllProxies(p) is c)
+    1
+    >>> p2 = ProxyBase(p)
+    >>> int(removeAllProxies(p2) is c)
+    1
+
+    """
+
+def test_queryProxy():
+    """
+    >>> from zope.proxy import ProxyBase, queryProxy
+    >>> class P1(ProxyBase):
+    ...    pass
+    >>> class P2(ProxyBase):
+    ...    pass
+    >>> class C:
+    ...     pass
+    >>> c = C()
+    >>> queryProxy(c, P1)
+    >>> queryProxy(c, P1, 42)
+    42
+    >>> p1 = P1(c)
+    >>> int(queryProxy(p1, P1) is p1)
+    1
+    >>> queryProxy(c, P2)
+    >>> queryProxy(c, P2, 42)
+    42
+    >>> p2 = P2(p1)
+    >>> int(queryProxy(p2, P1) is p1)
+    1
+    >>> int(queryProxy(p2, P2) is p2)
+    1
+    >>> int(queryProxy(p2, ProxyBase) is p2)
+    1
+    
+    """
+
+def test_queryInnerProxy():
+    """
+    >>> from zope.proxy import ProxyBase, queryProxy, queryInnerProxy
+    >>> class P1(ProxyBase):
+    ...    pass
+    >>> class P2(ProxyBase):
+    ...    pass
+    >>> class C:
+    ...     pass
+    >>> c = C()
+    >>> queryInnerProxy(c, P1)
+    >>> queryInnerProxy(c, P1, 42)
+    42
+    >>> p1 = P1(c)
+    >>> int(queryProxy(p1, P1) is p1)
+    1
+    >>> queryInnerProxy(c, P2)
+    >>> queryInnerProxy(c, P2, 42)
+    42
+    >>> p2 = P2(p1)
+    >>> int(queryInnerProxy(p2, P1) is p1)
+    1
+    >>> int(queryInnerProxy(p2, P2) is p2)
+    1
+    >>> int(queryInnerProxy(p2, ProxyBase) is p1)
+    1
+
+    >>> p3 = P1(p2)
+    >>> int(queryProxy(p3, P1) is p3)
+    1
+    >>> int(queryInnerProxy(p3, P1) is p1)
+    1
+    >>> int(queryInnerProxy(p3, P2) is p2)
+    1
+    
+    """
+
+
+def test_suite():
+    suite = unittest.makeSuite(ProxyTestCase)
+    suite.addTest(DocTestSuite())
+    return suite
 
 if __name__ == "__main__":
     import sys
