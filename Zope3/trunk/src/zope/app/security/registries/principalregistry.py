@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: principalregistry.py,v 1.9 2003/06/07 05:46:05 stevea Exp $
+$Id: principalregistry.py,v 1.10 2003/09/21 17:32:45 jim Exp $
 """
 __metaclass__ = type
 
@@ -24,6 +24,7 @@ from zope.app.interfaces.security import IAuthenticationService, IPrincipal
 from zope.app.interfaces.security import IUnauthenticatedPrincipal
 from zope.app.interfaces.services.service import ISimpleService
 from zope.interface import implements
+from zope.app.container.contained import Contained, contained
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
@@ -55,7 +56,7 @@ class PrincipalRegistry:
             raise DuplicateId(id)
         self.__defaultid = id
         p = UnauthenticatedPrincipal(principal, title, description)
-        self.__defaultObject = p
+        self.__defaultObject = contained(p, self, id)
         return p
 
     def unauthenticatedPrincipal(self):
@@ -102,6 +103,7 @@ class PrincipalRegistry:
             raise DuplicateId(id)
 
         p = Principal(id, title, description, login, password)
+        p = contained(p, self, id)
 
         self.__principalsByLogin[login]=p
         self.__principalsById[id]=p
@@ -118,7 +120,7 @@ from zope.testing.cleanup import addCleanUp
 addCleanUp(principalRegistry._clear)
 del addCleanUp
 
-class PrincipalBase:
+class PrincipalBase(Contained):
 
     def __init__(self, id, title, description):
         self.__id = id
