@@ -102,13 +102,6 @@ class StubIndex:
                 results.append(docid)
         return IISet(results)
 
-#        d = {}
-#        for docid in self.doc:
-#            obj = self.doc[docid]
-#            term = getattr(obj, self._field_name, '')
-#            d.setdefault(term, []).append(docid)
-#        return IISet(d.get(term, []))
-
 
 class stoopid:
     def __init__(self, **kw):
@@ -194,11 +187,9 @@ class Test(PlacelessSetup, unittest.TestCase):
         res = list(res)
 
 def test_suite():
-    import sys
-    return unittest.TestSuite((
-        unittest.makeSuite(Test),
-###        doctest.DocTestSuite(sys.modules[__name__]),
-        ))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(Test))
+    return suite
 
 if __name__ == "__main__":
     unittest.main()
