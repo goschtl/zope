@@ -15,14 +15,13 @@
 
 XXX longer description goes here.
 
-$Id: test_editconfiguration.py,v 1.2 2002/12/25 14:12:38 jim Exp $
+$Id: test_editconfiguration.py,v 1.3 2003/03/10 22:09:46 gvanrossum Exp $
 """
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.interface import Interface
-from zope.app.browser.services.service \
-     import EditConfiguration
+from zope.app.browser.services.service import EditConfiguration
 from zope.publisher.browser import TestRequest
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.interfaces.browser import IBrowserPresentation
