@@ -12,12 +12,12 @@
 #
 ##############################################################################
 
-from zope.textindex.ipipelineelementfactory \
-     import IPipelineElementFactory
+from zope.textindex.ipipelineelementfactory import IPipelineElementFactory
+from zope.interface import implements
 
 class PipelineElementFactory:
 
-    __implements__ = IPipelineElementFactory
+    implements(IPipelineElementFactory)
 
     def __init__(self):
         self._groups = {}

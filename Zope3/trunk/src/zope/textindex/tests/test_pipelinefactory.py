@@ -15,10 +15,10 @@
 from unittest import TestCase, main, makeSuite
 from zope.textindex.ipipelineelement import IPipelineElement
 from zope.textindex.pipelinefactory import PipelineElementFactory
+from zope.interface import implements
 
 class NullPipelineElement:
-
-    __implements__ = IPipelineElement
+    implements(IPipelineElement)
 
     def process(source):
         pass

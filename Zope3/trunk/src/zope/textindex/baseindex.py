@@ -18,6 +18,7 @@
 import math
 
 from persistence import Persistent
+from zope.interface import implements
 
 from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.IIBTree import IIBTree, IITreeSet
@@ -51,8 +52,7 @@ def unique(L):
     return IITreeSet(L).keys()
 
 class BaseIndex(Persistent):
-
-    __implements__ = IIndex
+    implements(IIndex)
 
     def __init__(self, lexicon):
         self._lexicon = lexicon

@@ -22,10 +22,11 @@ from zodb.btrees.IIBTree import IIBucket
 from zope.textindex.iindex import IIndex
 from zope.textindex.baseindex import \
      BaseIndex, inverse_doc_frequency, scaled_int
+from zope.interface import implements
 
 class OkapiIndex(BaseIndex):
 
-    __implements__ = IIndex
+    implements(IIndex)
 
     # BM25 free parameters.
     K1 = 1.2

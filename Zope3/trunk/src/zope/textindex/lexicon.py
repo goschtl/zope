@@ -14,6 +14,8 @@
 
 import re
 
+from zope.interface import implements
+
 import zodb
 
 from zodb.btrees.IOBTree import IOBTree
@@ -29,7 +31,7 @@ from zope.textindex.pipelinefactory import element_factory
 
 class Lexicon(Persistent):
 
-    __implements__ = ILexicon
+    implements(ILexicon)
 
     def __init__(self, *pipeline):
         self._wids = OIBTree()  # word -> wid

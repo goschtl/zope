@@ -17,6 +17,7 @@
 import math
 
 from zodb.btrees.IIBTree import IIBucket
+from zope.interface import implements
 
 from zope.textindex.iindex import IIndex
 from zope.textindex.baseindex import BaseIndex, \
@@ -25,7 +26,7 @@ from zope.textindex.baseindex import BaseIndex, \
 
 class CosineIndex(BaseIndex):
 
-    __implements__ = IIndex
+    implements(IIndex)
 
     def __init__(self, lexicon):
         BaseIndex.__init__(self, lexicon)

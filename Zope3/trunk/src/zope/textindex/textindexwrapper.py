@@ -15,10 +15,11 @@
 
 This exists to implement IInjection and IQuerying.
 
-$Id: textindexwrapper.py,v 1.2 2002/12/25 14:15:34 jim Exp $
+$Id: textindexwrapper.py,v 1.3 2003/06/03 15:32:37 stevea Exp $
 """
 
 from persistence import Persistent
+from zope.interface import implements
 
 from zope.textindex.okapiindex import OkapiIndex
 from zope.textindex.lexicon import Lexicon
@@ -31,7 +32,7 @@ from zope.textindex.textindexinterfaces import \
 
 class TextIndexWrapper(Persistent):
 
-    __implements__ = (IInjection, IQuerying, IStatistics)
+    implements(IInjection, IQuerying, IStatistics)
 
     def __init__(self, lexicon=None, index=None):
         """Provisional constructor.
