@@ -6,5 +6,6 @@
 <include package=".ConnectionService" />
 <include package=".RoleService" />
 <include package=".TranslationService" />
+<include package=".CachingService" />
 
 </zopeConfigure>

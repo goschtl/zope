@@ -3,8 +3,6 @@
    xmlns:browser="http://namespaces.zope.org/browser"
    package="Zope.App.OFS.Services.CachingService">
 
-<!-- Handle all Caching Service configuration -->
-
   <browser:menu id="add_cache"
       title="Menu for adding new caches." />
 
@@ -37,27 +35,5 @@
        description="A Persistent Caching Service for TTW
        development"
        />
-
-  <!-- Handle all generic Cache configuration -->
-
-<!-- TODO
-
-  <browser:defaultView for="Zope.App.Caching.ICache."
-      name="editForm.html" />
-
-  <browser:view
-      for="Zope.App.Caching.ICache."
-      permission="Zope.View"
-      factory=".Views.Browser.Caching.">
-    <browser:page name="editForm.html"
-        template="Views/Browser/caching.pt" />
-    <browser:page name="edit.html" attribute="edit" />
-  </browser:view>
-
-  <browser:menuItems menu="zmi_views" for="Zope.App.Caching.ICache.">
-    <browser:menuItem title="Edit" action="editForm.html"/>
-  </browser:menuItems>
-
-  -->
 
 </zopeConfigure>

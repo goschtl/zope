@@ -12,17 +12,17 @@
 # 
 ##############################################################################
 """
-$Id: IConnectionService.py,v 1.3 2002/07/10 23:37:26 srichter Exp $
+$Id: IConnectionService.py,v 1.4 2002/10/03 13:06:01 mgedmin Exp $
 """
 from Interface import Interface, Attribute
 
 class IConnectionService(Interface):
 
     def getConnection(name):
-        """Returns a connection object by name. """
-        
+        """Returns a connection object by name."""
+
     def queryConnection(name, default):
-        """return a connection object by name or default"""        
+        """Returns a connection object by name or default."""
 
     def getAvailableConnections():
-        """returns the connections known to this connection service"""
+        """Returns the connections known to this connection service."""

@@ -57,5 +57,7 @@
 <include package=".Event" />
 <include package=".StartUp" />
 
+<include package=".GadflyDA" />
+<include package=".NullCache" />
 
 </zopeConfigure>
