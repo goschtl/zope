@@ -147,6 +147,24 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.assertRaises(DuplicateId, self.reg.definePrincipal,
                           "anybody", "title")
 
+    def testRemovePrincipal(self):
+        p = self.reg.definePrincipal('3', 'Frank', 'Frank Popp', 'frank', '321')
+        self.assert_(p is self.reg.getPrincipal('3'))
+        self.assert_(p is self.reg.getPrincipalByLogin('frank'))
+        self.reg.removePrincipal('3')
+        try:
+            self.reg.getPrincipal('3')
+        except KeyError:
+            pass
+        else:
+            self.fail()
+        try:
+            self.reg.getPrincipalByLogin('frank')
+        except KeyError:
+            pass
+        else:
+            self.fail()
+
 
 def test_suite():
     return unittest.TestSuite((

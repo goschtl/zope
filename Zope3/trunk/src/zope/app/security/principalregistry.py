@@ -106,6 +106,11 @@ class PrincipalRegistry(object):
 
         return p
 
+    def removePrincipal(self, id):
+        p = self.__principalsById[id]
+        del self.__principalsById[id]
+        del self.__principalsByLogin[p.getLogin()]
+
     def registerGroup(self, group):
         id = group.id
         if id in self.__principalsById or id == self.__defaultid:
@@ -167,4 +172,4 @@ class AuthenticatedGroup(Group):
 class EverybodyGroup(Group):
 
     implements(interfaces.IEveryoneGroup)
-    
+

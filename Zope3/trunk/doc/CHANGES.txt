@@ -9,7 +9,7 @@ Zope Changes
   Some future release (Zope X3 3.1.0)
 
     New features
-    
+
       - zope.app.form.utility setUpEditWidgets, when given a source
         that is security proxied and asked to set up edit widgets
         for fields that will raise Unauthorized when set, now raises
@@ -24,8 +24,8 @@ Zope Changes
 
         Added a layer argument to the menu directives and made sure that all
         browser directives specify the layer for the menu directives.
-    
-      - Implemented issue 292: Add factory to browser:resource directive 
+
+      - Implemented issue 292: Add factory to browser:resource directive
 
       - Implemented issue 309: <schemadisplay> should support <widget>
 
@@ -34,7 +34,7 @@ Zope Changes
         on some context or adapted context but sent as a dictionary to special
         method (by default). By default these methods are named `getData()` and
         `setData(data)`.
- 
+
       - When raising the Unauthorized exception, the security checker
         now passes the object in question in addition to the attribute
         name and missing permission.  This should make debugging easier.
@@ -301,6 +301,11 @@ Zope Changes
         zope.app.container.constraints.containers) that greatly simplify
         expressing containment constraints.
 
+      - Added `removePrincipal` to the principal registry. The applications for
+        this are pretty limited, but it can be used to replace a ZCML-defined
+        principal in the event its login or password has changed (e.g. when
+        using a GUI management tool, etc.)
+
     Restructuring
 
       - Applied changes suggested in issue 339: Improvements to generated forms
@@ -318,7 +323,7 @@ Zope Changes
 
         Deprecated `zope:defaultView` directive and removed unused default
         view handler in `zope.app.publisher.browser.viewmeta`. Added a `layer`
-        attribute to the `browser:defaultView` directive. 
+        attribute to the `browser:defaultView` directive.
 
       - zope.component.createObject no longer accepts a positional
         context argument.  A context can be provided as a keyword argument.
@@ -505,18 +510,18 @@ Zope Changes
 
     Bug Fixes
 
-      - Fixed issue #345: Using response.write should not involve unicode 
+      - Fixed issue #345: Using response.write should not involve unicode
                           conversion
 
       - Fixed issue #371: OrderedMultiSelectWidget ignores setRenderedValue
 
       - Fixed issue #360: MultiSelectWidget configured for ISet but creates
                           list
-                          
+
         The correct type of the collection field is now discovered and used.
 
-      - Addressed issue #348: ZCML hides import errors 
- 
+      - Addressed issue #348: ZCML hides import errors
+
         I tried really hard to get a better error message, but it is not
         possible, so I just prepended "ImportError:" to the error message.
 
