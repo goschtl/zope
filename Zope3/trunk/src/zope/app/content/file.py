@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.12 2003/08/26 18:00:25 fdrake Exp $
+$Id: file.py,v 1.13 2003/08/26 18:17:18 fdrake Exp $
 """
 from persistence import Persistent
 from transaction import get_transaction
@@ -69,11 +69,7 @@ class File(Persistent):
             data = data.encode('UTF-8')
 
         if isinstance(data, str):
-            size = len(data)
-            if size < MAXCHUNKSIZE:
-                self._data, self._size = FileChunk(data), size
-                return
-            self._data, self._size = FileChunk(data), size
+            self._data, self._size = FileChunk(data), len(data)
             return
 
         # Handle case when data is None
