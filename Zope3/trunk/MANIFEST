@@ -2040,9 +2040,4 @@ lib/python/datetime/test_datetime.py
 lib/python/logging/__init__.py
 lib/python/logging/config.py
 lib/python/logging/handlers.py
-lib/python/zLOG/FormatException.py
-lib/python/zLOG/MinimalLogger.py
-lib/python/zLOG/__init__.py
-lib/python/zLOG/tests/__init__.py
-lib/python/zLOG/tests/testzLog.py
 utilities/makezcmldocs.zcml
