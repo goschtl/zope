@@ -280,10 +280,12 @@ def defineChecker(type_, checker):
     The checker can be a Checker, or a function that, when called with
     an object, returns a Checker.
     """
+    if not isinstance(type_, (type, types.ClassType, types.ModuleType)):
+        raise TypeError(
+                'type_ must be a type, class or module, not a %s' % type_)
     if type_ in _checkers:
         raise DuplicationError(type_)
     _checkers[type_] = checker    
-    
 
 NoProxy = object()
 

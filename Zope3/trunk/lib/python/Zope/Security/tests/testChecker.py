@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: testChecker.py,v 1.6 2002/11/19 23:25:18 jim Exp $
+$Id: testChecker.py,v 1.7 2002/12/16 13:30:55 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -25,6 +25,7 @@ from Zope.Exceptions import Forbidden, Unauthorized
 from Zope.Security.SecurityManagement import setSecurityPolicy
 from Zope.Security.Proxy import getChecker, getObject
 from Zope.Security.Checker import defineChecker
+import types
 
 class SecurityPolicy:
 
@@ -81,6 +82,19 @@ class Test(TestCase, CleanUp):
     def tearDown(self):
         setSecurityPolicy(self.__oldpolicy)
         CleanUp.tearDown(self)
+
+    def test_typesAcceptedByDefineChecker(self):
+        class ClassicClass:
+            __metaclass__ = types.ClassType
+        class NewStyleClass:
+            __metaclass__ = type
+        import Zope.Security
+        not_a_type = object()
+        defineChecker(ClassicClass, NamesChecker())
+        defineChecker(NewStyleClass, NamesChecker())
+        defineChecker(Zope.Security, NamesChecker())
+        self.assertRaises(TypeError,
+                defineChecker, not_a_type, NamesChecker())
 
     # check_getattr cases:
     #
