@@ -17,6 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.appsetup.appsetup import IDatabaseOpenedEvent, DatabaseOpened
-from zope.app.appsetup.appsetup import IProcessStartingEvent, ProcessStarting
+from zope.app.appsetup.interfaces import IDatabaseOpenedEvent, DatabaseOpened
+from zope.app.appsetup.interfaces import IProcessStartingEvent, ProcessStarting
 from zope.app.appsetup.appsetup import config, database

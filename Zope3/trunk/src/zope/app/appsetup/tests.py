@@ -17,6 +17,8 @@ $Id$
 """
 import unittest
 from transaction import get_transaction
+from zope.testing import doctest
+
 from ZODB.tests.util import DB
 
 from zope.app.component.testing import PlacefulSetup
@@ -31,6 +33,8 @@ from zope.app.traversing.api import traverse
 from zope.app.appsetup.bootstrap import bootStrapSubscriber
 from zope.app.appsetup.bootstrap import getInformationFromEvent, \
      ensureObject, ensureUtility
+
+from zope.app.testing import placelesssetup
 
 class EventStub(object):
 
@@ -112,9 +116,16 @@ class TestBootstrapSubscriber(PlacefulSetup, unittest.TestCase):
 
         cx.close()
 
+def bootstraptearDown(test):
+    test.globs['db'].close()
+
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(TestBootstrapSubscriber))
+    suite.addTest(doctest.DocFileSuite(
+        'bootstrap.txt',
+        setUp=placelesssetup.setUp, tearDown=placelesssetup.tearDown,
+        ))
     return suite
 
 if __name__ == '__main__':

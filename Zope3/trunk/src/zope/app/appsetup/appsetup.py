@@ -21,23 +21,7 @@ import zope.interface
 import zope.app.component.hooks
 from zope.security.interfaces import IParticipation
 from zope.security.management import system_user
-
-class IDatabaseOpenedEvent(zope.interface.Interface):
-    """The main database has been opened."""
-
-    database = zope.interface.Attribute("The main database.")
-
-class DatabaseOpened(object):
-    zope.interface.implements(IDatabaseOpenedEvent)
-
-    def __init__(self, database):
-        self.database = database
-
-class IProcessStartingEvent(zope.interface.Interface):
-    """The application server process is starting."""
-
-class ProcessStarting(object):
-    zope.interface.implements(IProcessStartingEvent)
+from zope.app.appsetup import interfaces
 
 class SystemConfigurationParticipation(object):
     zope.interface.implements(IParticipation)
@@ -98,7 +82,7 @@ def database(db):
 
     # The following will fail unless the application has been configured.
     from zope.event import notify
-    notify(DatabaseOpened(db))
+    notify(interfaces.DatabaseOpened(db))
 
     return db
 
@@ -106,3 +90,19 @@ def database(db):
 __config_source = None
 def getConfigSource():
     return __config_source
+
+
+# BBB
+import zope.deprecation
+IDatabaseOpenedEvent = interfaces.IDatabaseOpenedEvent
+DatabaseOpened = interfaces.DatabaseOpened
+IProcessStartingEvent = interfaces.IProcessStartingEvent
+ProcessStarting = interfaces.ProcessStarting
+zope.deprecation.deprecated(
+    ['IDatabaseOpenedEvent', 'DatabaseOpened',
+     'IProcessStartingEvent', 'ProcessStarting'
+     ],
+    "The database opened and process starting events have moved to "
+    "zope.app.appsetup.interfaces they will disappear from here in "
+    "in ZopeX3.3."
+    )

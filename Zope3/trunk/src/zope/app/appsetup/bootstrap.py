@@ -21,12 +21,15 @@ $Id$
 __docformat__ = 'restructuredtext'
 from transaction import get_transaction
 
+import zope.event
+
 from zope.app.component.interfaces import ISite
 from zope.app.component import site
 from zope.app.container.interfaces import INameChooser
 from zope.app.folder import rootFolder
 from zope.app.publication.zopepublication import ZopePublication
 from zope.app.traversing.api import traverse
+from zope.app.appsetup import interfaces
 
 def ensureObject(root_folder, object_name, object_type, object_factory):
     """Check that there's a basic object in the site
@@ -142,6 +145,8 @@ def bootStrapSubscriber(event):
         get_transaction().commit()
 
     connection.close()
+
+    zope.event.notify(interfaces.DatabaseOpenedWithRoot(db))
 
 ########################################################################
 ########################################################################
