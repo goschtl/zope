@@ -16,7 +16,7 @@
 The Adding View is used to add new objects to a container. It is sort of a
 factory screen.
 
-$Id: adding.py,v 1.15 2003/08/15 16:38:30 garrett Exp $
+$Id: adding.py,v 1.16 2003/08/15 19:41:14 garrett Exp $
 """
 __metaclass__ = type
 
@@ -45,6 +45,8 @@ class BasicAdding(BrowserView):
 
     def add(self, content):
         """See zope.app.interfaces.container.IAdding"""
+        if not self.contentName:
+            raise ValueError("contentName is not set")
         container = zapi.getAdapter(self.context, IZopeContainer)
         name = container.setObject(self.contentName, content)
         return container[name]
@@ -103,11 +105,11 @@ class BasicAdding(BrowserView):
             self.request.response.redirect(url)
             return
 
-        if not id:
-            raise UserError(_(u"You must specify an id"))
-
-        self.contentName = id
-
+        if self.namesAccepted():
+            if not id:
+                raise UserError(_(u"You must specify an id"))
+            self.contentName = id
+            
         content = zapi.createObject(self, type_name)
         publish(self.context, ObjectCreatedEvent(content))
 

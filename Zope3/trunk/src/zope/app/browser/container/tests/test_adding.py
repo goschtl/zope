@@ -13,44 +13,54 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.6 2003/06/05 12:41:54 stevea Exp $
+$Id: test_adding.py,v 1.7 2003/08/15 19:41:17 garrett Exp $
 """
 
 from unittest import TestCase, main, makeSuite
-from zope.component.adapter import provideAdapter
 from zope.app.browser.container.adding import Adding
 from zope.app.interfaces.container import IAdding
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component.view import provideView
+from zope.component.factory import provideFactory
+from zope.component.interfaces import IFactory
+from zope.component.exceptions import ComponentLookupError
 from zope.context import getWrapperContainer, getWrapperData
 from zope.publisher.browser import TestRequest
 from zope.publisher.browser import BrowserView
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
+from zope.app.interfaces.exceptions import UserError
 
-from zope.app.interfaces.container import IContainer
+from zope.app.interfaces.container import IZopeContainer
 from zope.interface import implements
 from zope.app.context import ContextWrapper
 
-class Container:
+class Container(dict):
 
-    implements(IContainer)
-
-    def __init__(self):
-        self._data = {}
+    implements(IZopeContainer)
 
     def setObject(self, name, obj):
-        self._data[name] = obj
+        self[name] = obj
         return name
 
-    def __getitem__(self, name):
-        return self._data[name]
 
 class CreationView(BrowserView):
 
     def action(self):
         return 'been there, done that'
+
+
+class Factory:
+
+    implements(IFactory)
+
+    def getInterfaces(self):
+        return ()
+
+    def __call__(self):
+        return 'some_content'
+
 
 class Test(PlacelessSetup, TestCase):
 
@@ -106,6 +116,37 @@ class Test(PlacelessSetup, TestCase):
         view = adding.publishTraverse(request, 'Thing=')
         self.assertEqual(adding.contentName, '')
 
+    def testAction(self):
+        provideFactory('foo', Factory())
+        container = Container()
+        adding = Adding(container, TestRequest())
+        adding.nextURL = lambda: '.'
+        adding.namesAccepted = lambda: True
+
+        # typical add - id is provided by user
+        adding.action(type_name='foo', id='bar')
+        self.assert_('bar' in container)
+
+        # missing type_name
+        self.assertRaises(UserError, adding.action, id='bar')
+
+        # missing id
+        self.assertRaises(UserError, adding.action, type_name='foo')
+
+        # bad type_name
+        self.assertRaises(ComponentLookupError, adding.action, 
+            type_name='***', id='bar')
+
+        # alternative add - id is provided internally instead of from user
+        adding.namesAccepted = lambda: False
+        adding.contentName = 'baz'
+        adding.action(type_name='foo')
+        self.assert_('baz' in container)
+
+        # alternative add w/missing contentName
+        adding.contentName = None
+        self.assertRaises(ValueError, adding.action, type_name='foo')
+        
 
 def test_suite():
     return makeSuite(Test)
