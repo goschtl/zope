@@ -1,0 +1,94 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<body>
+<div metal:fill-slot="body">
+
+  <form name="containerContentsForm" method="POST" action="."
+        tal:attributes="action request/URL"
+        tal:define="container_contents view/listContentInfo">
+
+    <input type="hidden" name="type_name" value=""
+           tal:attributes="value request/type_name"
+           tal:condition="request/type_name|nothing"
+           />
+    <input type="hidden" name="retitle_id" value=""
+           tal:attributes="value request/retitle_id"
+           tal:condition="request/retitle_id|nothing"
+           />
+
+    <div class="page_error"
+         tal:condition="view/error"
+         tal:content="view/error"
+         i18n:translate="">
+      Error message
+    </div>
+
+    <table id="sortable" class="listing" summary="Content listing"
+           i18n:attributes="summary">
+
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th i18n:translate="">Title</th>
+          <th i18n:translate="">Action</th>
+          <th i18n:translate="">Created</th>
+          <th i18n:translate="">Modified</th>
+        </tr>
+      </thead>
+
+      <tbody>
+
+      <metal:block tal:repeat="item container_contents">
+        <tr tal:define="oddrow repeat/item/odd; url item/url"
+            tal:attributes="class python:oddrow and 'even' or 'odd'" >
+          <td>
+            <input type="checkbox" class="noborder" name="ids:list" id="#"
+                   value="#"
+                   tal:attributes="value item/id;
+                                   id item/cb_id;
+                                   checked request/ids_checked|nothing;"/>
+          </td>
+          <td><span>
+                <a href="#"
+                   tal:attributes="href
+                               string:${url}/@@SelectedManagementView.html"
+                   tal:content="item/title"
+                   >foo</a
+              ></span
+             ></td>
+          <td><span>
+                <a href="#"
+                   tal:attributes="href
+                               string:${url}/@@SelectedManagementView.html"
+                   tal:content="item/action"
+                   >foo</a
+              ></span
+             ></td>
+
+          <td><span tal:define="created item/created|default"
+                    tal:content="created">&nbsp;</span></td>
+          <td><span tal:define="modified item/modified|default"
+                    tal:content="modified">&nbsp;</span></td>
+        </tr>
+      </metal:block>
+
+      </tbody>
+    </table>
+
+    <div tal:condition="view/normalButtons">
+      <input type="submit" name="container_delete_button" value="Delete"
+             i18n:attributes="value container-delete-button"
+             i18n:domain="zope"
+             />
+    </div>
+
+  </form>
+
+  <script ><!--
+      prettydump('focus', LG_INFO);
+      document.containerContentsForm.new_value.focus();
+      //-->
+  </script>
+
+</div>
+</body>
+</html>
