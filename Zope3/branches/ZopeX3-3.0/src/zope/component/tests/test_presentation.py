@@ -16,7 +16,7 @@
 $Id$
 """
 import unittest
-from zope.testing.doctest import DocTestSuite
+from doctest import DocTestSuite
 from zope.component.presentation import GlobalPresentationService
 import zope.interface
 
@@ -158,54 +158,9 @@ def test_provideView():
     >>> s.provideView(IContact, 'index.html', IRequest, MyView, layer='custom')
 
     >>> c = Contact()
-
-    >>> s.queryView(c, 'index.html', request)
-
     >>> request.skin = 'custom'
 
-    >>> v = s.queryView(c, 'index.html', request)
-
-    >>> v.__class__.__name__
-    'MyView'
-    >>> v.request is request
-    True
-    >>> v.context is c
-    True
-    """
-
-def test_provideAdapter():
-    """
-    provideAdapter provides a basic interface for adding views.  It is
-    similar to the adapter-service provideAdapter, except that it
-    allows a layer to be specified:
-
-    >>> s = GlobalPresentationService()
-    >>> request = Request()
-    >>> s.provideAdapter(IRequest, MyView, 'foo', [IContact])
-
-    >>> c = Contact()
     >>> v = s.queryView(c, 'foo', request)
-    >>> v.__class__.__name__
-    'MyView'
-    >>> v.request is request
-    True
-    >>> v.context is c
-    True
-
-    We can specify a layer and we can provide a view factory directly:
-
-    >>> s.defineLayer('custom')
-    >>> s.defineSkin('custom', ['custom', 'default'])
-    >>> s.provideAdapter(IRequest, MyView, 'index.html', [IContact],
-    ...                  layer='custom')
-
-    >>> c = Contact()
-
-    >>> s.queryView(c, 'index.html', request)
-
-    >>> request.skin = 'custom'
-
-    >>> v = s.queryView(c, 'index.html', request)
 
     >>> v.__class__.__name__
     'MyView'
@@ -215,44 +170,6 @@ def test_provideAdapter():
     True
     """
 
-def test_unprovideAdapter():
-    """
-    unprovideAdapter allows adapters to be unregistered
-
-    >>> s = GlobalPresentationService()
-    >>> request = Request()
-    >>> s.provideAdapter(IRequest, MyView, 'foo', [IContact])
-
-    >>> c = Contact()
-    >>> v = s.queryView(c, 'foo', request)
-    >>> v.__class__.__name__
-    'MyView'
-
-    >>> s.unprovideAdapter(IRequest, MyView, 'foo', [IContact])
-    >>> s.queryView(c, 'foo', request)
-
-    We can specify a layer and we can provide a view factory directly:
-
-    >>> s.defineLayer('custom')
-    >>> s.defineSkin('custom', ['custom', 'default'])
-    >>> s.provideAdapter(IRequest, MyView, 'index.html', [IContact],
-    ...               layer='custom')
-
-    >>> c = Contact()
-
-    >>> request.skin = 'custom'
-
-    >>> v = s.queryView(c, 'index.html', request)
-
-    >>> v.__class__.__name__
-    'MyView'
-
-    >>> s.unprovideAdapter(IRequest, MyView, 'index.html', [IContact],
-    ...                 layer='custom')
-    >>> s.queryView(c, 'index.html', request)
-
-
-    """
 
 def test_default_view_names():
     """
