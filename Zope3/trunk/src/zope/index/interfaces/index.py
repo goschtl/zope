@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces for a text index.
 
-$Id: textindexinterfaces.py,v 1.2 2002/12/25 14:15:34 jim Exp $
+$Id: index.py,v 1.1 2003/07/13 05:51:18 andyh Exp $
 """
 
 from zope.interface import Interface
@@ -66,3 +66,58 @@ class IStatistics(Interface):
 
     def wordCount():
         """Return the number of words currently indexed."""
+
+
+class IExtendedQuerying(Interface):
+
+    def search(term):
+        """Execute a search on a single term given as a string.
+
+        Return an IIBTree mapping docid to score, or None if all docs
+        match due to the lexicon returning no wids for the term (e.g.,
+        if the term is entirely composed of stopwords).
+        """
+
+    def search_phrase(phrase):
+        """Execute a search on a phrase given as a string.
+
+        Return an IIBtree mapping docid to score.
+        """
+
+    def search_glob(pattern):
+        """Execute a pattern search.
+
+        The pattern represents a set of words by using * and ?.  For
+        example, "foo*" represents the set of all words in the lexicon
+        starting with "foo".
+
+        Return an IIBTree mapping docid to score.
+        """
+
+    def query_weight(terms):
+        """Return the weight for a set of query terms.
+
+        'terms' is a sequence of all terms included in the query,
+        although not terms with a not.  If a term appears more than
+        once in a query, it should appear more than once in terms.
+
+        Nothing is defined about what "weight" means, beyond that the
+        result is an upper bound on document scores returned for the
+        query.
+        """
+
+class IRangeQuerying(Interface):
+
+    def rangesearch(minval, maxval):
+        """ Execute a range search.
+
+           Return an IISet of docids for all docs where
+
+           minval <= value <= maxval   if minval<=maxval and 
+                                       both minval and maxval are not None
+
+           value <= maxval             if minval is not None 
+
+           value >= minval             if maxval is not None
+        """             
+

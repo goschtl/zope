@@ -12,7 +12,7 @@
 ##############################################################################
 """
 
-$Id: test_batchedrankedprocessor.py,v 1.7 2003/06/07 06:37:27 stevea Exp $
+$Id: test_batchedrankedprocessor.py,v 1.8 2003/07/13 05:51:02 andyh Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -23,7 +23,7 @@ from zope.interface import implements
 
 from zope.component import getAdapter
 
-from zope.textindex.textindexinterfaces import IQuerying
+from zope.index.interfaces.index import IQuerying
 from zope.app.interfaces.index.interfaces import \
     IBatchedResult, IRankedHubIdList
 from zope.app.interfaces.services.query import IQueryProcessor

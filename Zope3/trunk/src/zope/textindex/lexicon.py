@@ -21,7 +21,7 @@ from zodb.btrees.OIBTree import OIBTree
 
 from persistence import Persistent
 
-from zope.textindex.ilexicon import ILexicon
+from zope.index.interfaces.lexicon import ILexicon
 from zope.textindex.stopdict import get_stopdict
 from zope.textindex.parsetree import QueryError
 from zope.textindex.pipelinefactory import element_factory

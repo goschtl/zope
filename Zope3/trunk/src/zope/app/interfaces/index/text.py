@@ -13,7 +13,7 @@
 ##############################################################################
 """Interfaces related to text indexing and searching.
 
-$Id: text.py,v 1.1 2002/12/28 17:49:27 stevea Exp $
+$Id: text.py,v 1.2 2003/07/13 05:51:06 andyh Exp $
 """
 
 from zope.interface import Interface
@@ -32,7 +32,7 @@ class ISearchableText(Interface):
         returning None indicates the object should not be indexed
         """
 
-from zope.textindex.textindexinterfaces import IStatistics
+from zope.index.interfaces.index import IStatistics
 
 class IUITextIndex(IStatistics):
 

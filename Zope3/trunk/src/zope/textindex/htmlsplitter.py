@@ -16,7 +16,7 @@ import re
 
 from zope.interface import implements
 
-from zope.textindex.isplitter import ISplitter
+from zope.index.interfaces.splitter import ISplitter
 from zope.textindex.pipelinefactory import element_factory
 
 

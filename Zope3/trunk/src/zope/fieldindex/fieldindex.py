@@ -20,14 +20,16 @@ from zodb.btrees.IOBTree import IOBTree
 from zodb.btrees.OOBTree import OOBTree
 from zodb.btrees.IIBTree import IITreeSet, IISet, union
 
-from zope.fieldindex.ifieldindex import IFieldIndex
 from types import ListType, TupleType
 from zope.interface import implements
+
+from zope.index.interfaces.index import IInjection, IQuerying, IStatistics, \
+    IRangeQuerying
 
 
 class FieldIndex(Persistent):
 
-    implements(IFieldIndex)
+    implements(IRangeQuerying, IInjection, IQuerying, IStatistics)
 
     def __init__(self):
         self.clear()
@@ -40,19 +42,25 @@ class FieldIndex(Persistent):
         self._rev_index = IOBTree()
 
     def documentCount(self):
-        """Return the number of documents in the index."""
+        """See interface IStatistics"""
         return len(self._rev_index)
+
+    def wordCount(self):
+        """See interface IStatistics"""
+        return len(self._fwd_index)
 
     def has_doc(self, docid):
         return bool(self._rev_index.has_key(docid))
 
     def index_doc(self, docid, value):
+        """See interface IInjection"""
         if self.has_doc(docid):       # unindex doc if present
             self.unindex_doc(docid)
         self._insert_forward(docid, value)
         self._insert_reverse(docid, value)
 
     def unindex_doc(self, docid):
+        """See interface IInjection"""
         try:      # ignore non-existing docids, don't raise
             value = self._rev_index[docid]
         except KeyError:
@@ -86,6 +94,13 @@ class FieldIndex(Persistent):
                 result = IISet()
 
         return result
+
+    def query(self, querytext, start=0, count=None):
+        """See interface IQuerying"""
+        res = self.search(querytext)
+        if start or count:
+            res = res[start:start+count]
+        return res
 
     def rangesearch(self, minvalue, maxvalue):
         return IISet(self._fwd_index.keys(minvalue, maxvalue))

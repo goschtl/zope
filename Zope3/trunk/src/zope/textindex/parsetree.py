@@ -16,7 +16,7 @@
 
 from zodb.btrees.IIBTree import difference
 
-from zope.textindex.iqueryparsetree import IQueryParseTree
+from zope.index.interfaces.queryparsetree import IQueryParseTree
 from zope.textindex.setops import mass_weightedIntersection, \
                                   mass_weightedUnion
 

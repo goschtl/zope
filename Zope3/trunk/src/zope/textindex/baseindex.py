@@ -25,7 +25,8 @@ from zodb.btrees.IIBTree import IIBTree, IITreeSet
 from zodb.btrees.IIBTree import intersection, difference
 from zodb.btrees import Length
 
-from zope.textindex.iindex import IIndex
+from zope.index.interfaces.index import IInjection, IStatistics, \
+    IExtendedQuerying
 from zope.textindex import widcode
 from zope.textindex.setops import mass_weightedIntersection, \
                                   mass_weightedUnion
@@ -52,7 +53,7 @@ def unique(L):
     return IITreeSet(L).keys()
 
 class BaseIndex(Persistent):
-    implements(IIndex)
+    implements(IInjection, IStatistics, IExtendedQuerying)
 
     def __init__(self, lexicon):
         self._lexicon = lexicon

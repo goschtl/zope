@@ -58,7 +58,7 @@ Summarizing the default operator rules:
 import re
 from zope.interface import implements
 
-from zope.textindex.iqueryparser import IQueryParser
+from zope.index.interfaces.queryparser import IQueryParser
 from zope.textindex import parsetree
 
 # Create unique symbols for token types.

@@ -16,8 +16,11 @@ from unittest import TestCase, TestSuite, main, makeSuite
 
 from zodb.btrees.IIBTree import IISet
 from zope.fieldindex.fieldindex import FieldIndex
-from zope.fieldindex.ifieldindex import IFieldIndex
 from zope.interface.verify import verifyClass
+
+from zope.index.interfaces.index import IInjection, IQuerying, IStatistics, \
+    IRangeQuerying
+
 
 class FieldIndexTest(TestCase):
 
@@ -53,7 +56,10 @@ class FieldIndexTest(TestCase):
 
 
     def test_interface(self):
-        verifyClass(IFieldIndex, FieldIndex)
+        verifyClass(IRangeQuerying, FieldIndex)
+        verifyClass(IInjection, FieldIndex)
+        verifyClass(IQuerying, FieldIndex)
+        verifyClass(IStatistics, FieldIndex)
 
     def test_empty_index(self):
         self.assertEqual(self.index.documentCount(), 0)

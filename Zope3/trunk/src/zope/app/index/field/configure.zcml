@@ -17,7 +17,7 @@
 <adapter
     factory="zope.app.index.text.processors.BatchedRankedProcessor"
     provides="zope.app.interfaces.services.query.IQueryProcessor"
-    for="zope.textindex.textindexinterfaces.IQuerying"
+    for="zope.index.interfaces.index.IQuerying"
     />
 -->
 

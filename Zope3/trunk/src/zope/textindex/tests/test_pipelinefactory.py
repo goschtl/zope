@@ -13,7 +13,7 @@
 ##############################################################################
 
 from unittest import TestCase, main, makeSuite
-from zope.textindex.ipipelineelement import IPipelineElement
+from zope.index.interfaces.pipelineelement import IPipelineElement
 from zope.textindex.pipelinefactory import PipelineElementFactory
 from zope.interface import implements
 

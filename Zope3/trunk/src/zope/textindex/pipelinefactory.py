@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-from zope.textindex.ipipelineelementfactory import IPipelineElementFactory
+from zope.index.interfaces.pipelineelementfactory import IPipelineElementFactory
 from zope.interface import implements
 
 class PipelineElementFactory:
