@@ -14,10 +14,6 @@
 
 $Id$
 """
-
-# XXX This is handled through configuration in Zope 2 now.  Perhaps
-# this can be trimmed / removed from Zope 3.
-
 import re, mimetypes
 
 find_binary = re.compile('[\0-\7]').search
