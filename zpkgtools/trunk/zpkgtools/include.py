@@ -158,6 +158,9 @@ class SpecificationSchema(cfgparser.Schema):
             raise cfgparser.ConfigurationError(
                 "all inclusion lines must be in a <collection> or"
                 " <distribution> section")
+        if not src:
+            raise InclusionSpecificationError("source information omitted",
+                                              self.filename)
         dest = normalize_path(dest, "destination")
         src = normalize_path_or_url(src, "source")
         if src == "-":
