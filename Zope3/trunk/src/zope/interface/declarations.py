@@ -11,19 +11,20 @@
 ##############################################################################
 """Implementation of interface declarations
 
-$Id: declarations.py,v 1.6 2003/05/13 19:48:23 jim Exp $
+$Id: declarations.py,v 1.7 2003/05/15 19:07:44 jim Exp $
 """
 
 import sys
-import weakref
 from zope.interface.interface import InterfaceClass, mergeOrderings
 import exceptions
 from types import ClassType
 
-DescriptorAwareMetaClasses = ClassType, type
+# There are imports from _zope_interface_ospec later in the file
+# because _zope_interface_ospec depends on some functions defined
+# here.
 
-# implementation info for immutable classes (heap flag clear)
-_implements_reg = weakref.WeakKeyDictionary()
+
+DescriptorAwareMetaClasses = ClassType, type
 
 __metaclass__ = type
 
@@ -34,20 +35,190 @@ heap = 1 << 9
 # We have 3 implementations of interface specifications:
 #
 # ImplementsSpecification
-#   Holds implements specification. 
+#   Holds specifications of interfaces of instances of classes. 
 #
 # ProvidesSpecification
-#   Holds provides specification. This is a descriptor that assures
+#   These are specifications for interfaces directly provided by
+#   objects.   This is a descriptor that assures
 #   that if we get it from a class for an instance, we get an attribute
 #   error.
 #
 # ObjectSpecification
 #   Holds the specification for all of the interfaces of an object.
+#   These are computed on the floy based on provides and implements
+#   specs.
 #
 # We also have a descriptor to support providedBy
 
 
-class InterfaceSpecification:
+# implementation info for immutable classes (heap flag clear)
+# This is overridden by _zope_interface_ospec.
+_implements_reg = {}
+
+# This is overridden by _zope_interface_ospec.
+class InterfaceSpecificationBase:
+    __slots__ = ['__signature__']
+
+
+# This function is needed by _zope_interface_ospec and, so, must be
+# defined before _zope_interface_ospec is imported. 
+def classImplements(cls, *interfaces):
+    """Declare additional interfaces implemented for instances of a class
+
+    The arguments after the class are one or more interfaces or
+    interface specifications (IInterfaceSpecification objects).
+
+    The interfaces given (including the interfaces in the
+    specifications) are added to any interfaces previously
+    declared.
+
+    Consider the following example::
+
+
+    for example:
+
+    >>> from zope.interface import Interface
+    >>> class I1(Interface): pass
+    ...
+    >>> class I2(Interface): pass
+    ...
+    >>> class I3(Interface): pass
+    ...
+    >>> class I4(Interface): pass
+    ...
+    >>> class I5(Interface): pass
+    ...
+    >>> class A:
+    ...   implements(I3)
+    >>> class B:
+    ...   implements(I4)
+    >>> class C(A, B):
+    ...   pass
+    >>> classImplements(C, I1, I2)
+    >>> [i.__name__ for i in implementedBy(C)]
+    ['I1', 'I2', 'I3', 'I4']
+    >>> classImplements(C, I5)
+    >>> [i.__name__ for i in implementedBy(C)]
+    ['I1', 'I2', 'I5', 'I3', 'I4']
+
+    Instances of ``C`` provide ``I1``, ``I2``, ``I5``, and whatever interfaces
+    instances of ``A`` and ``B`` provide.
+
+    """
+
+    _setImplements(cls,
+                   _getImplements(cls) + ImplementsSpecification(*interfaces)
+                   )
+
+# This function is needed by _zope_interface_ospec and, so, must be
+# defined before _zope_interface_ospec is imported. 
+def proxySig(cls):
+    # Get an implementation signature from a proxied class
+
+    # XXX If we got here, we must have a
+    # security-proxied class. This introduces an
+    # indirect dependency on security proxies,
+    # which we don't want. This is necessary to
+    # support old-style __implements__ interface
+    # declarations.
+
+    # If we got here, we must have an old-style
+    # declaration, so we'll just look for an
+    # __implements__.  We can't fix it because the class
+    # is probably security proxied.
+
+    implements = getattr(cls, '__implements__', None)
+    if implements is not None:
+        assert ((implements.__class__ == tuple)
+                or
+                (InterfaceClass in
+                 implements.__class__.__mro__)
+                )
+        sig = `implements`
+
+        return sig
+
+# This function is needed by _zope_interface_ospec and, so, must be
+# defined before _zope_interface_ospec is imported. 
+def oldSpecSig(cls, implements):
+    implements = OnlyImplementsSpecification(implements)
+    _setImplements(cls, implements)
+    return implements.__signature__
+
+# This is overridden by _zope_interface_ospec.
+class ObjectSpecificationBase:
+
+    __slots__ = ['ob']
+
+    def __init__(self, ob):
+        self.ob = ob
+
+    def __signature__(self):
+        ob = self.ob
+
+        provides = getattr(ob, '__provides__', None)
+        if provides is not None:
+            provides = provides.__signature__
+        else:
+            provides = ''
+        sig = ''
+
+        try:
+            cls = ob.__class__
+        except AttributeError:
+            # If there's no class, we'll just use the instance spec
+            pass
+        else:
+
+            try:
+                flags = cls.__flags__
+            except AttributeError:
+                flags = heap
+
+            if flags & heap:
+                try:
+                    dict = cls.__dict__
+                except AttributeError:
+                    sig = proxySig(cls)
+
+                else:
+                    # Normal case
+                    implements = dict.get('__implements__')
+                    if implements is None:
+                        # No implements spec, lets add one:
+                        classImplements(cls)
+                        implements = dict['__implements__']
+
+                    try:
+                        sig = implements.__signature__
+                    except AttributeError:
+                        # Old-style implements!  Fix it up.
+                        sig = oldSpecSig(cls, implements)
+
+            else:
+                # Look in reg
+                implements = _implements_reg.get(cls)
+                if implements is None:
+                        # No implements spec, lets add one:
+                        classImplements(cls)
+                        implements = _implements_reg[cls]
+                sig = implements.__signature__
+
+        if sig:
+            if provides:
+                return provides, sig
+            return sig
+        else:
+            return provides
+
+    __signature__ = property(__signature__)
+
+from _zope_interface_ospec import _implements_reg
+from _zope_interface_ospec import InterfaceSpecificationBase
+from _zope_interface_ospec import ObjectSpecificationBase
+
+
+class InterfaceSpecification(InterfaceSpecificationBase):
     """Create an interface specification
 
     The arguments are one or more interfaces or interface
@@ -116,7 +287,6 @@ class InterfaceSpecification:
           1
         """
         return interface in self.interfaces
-
     def __iter__(self):
         """Return an iterator for the interfaces in the specification
 
@@ -179,7 +349,6 @@ class InterfaceSpecification:
         """
 
         return iter(self.__iro__)
-
     def extends(self, interface):
         """Does the specification extend the given interface?
 
@@ -214,7 +383,6 @@ class InterfaceSpecification:
 
         """
         return interface in self.set
-
     def __add__(self, other):
         """Add twp specifications or a specification and an interface
 
@@ -420,7 +588,7 @@ class ObjectSpecificationDescriptor:
 
 _objectSpecificationDescriptor = ObjectSpecificationDescriptor()
 
-class ObjectSpecification:
+class ObjectSpecification(ObjectSpecificationBase):
     """Provide object specifications
 
     These combine information for the object and for it's classes.
@@ -486,153 +654,14 @@ class ObjectSpecification:
         1
     """
 
+    __slots__ = ['_specslot']
     only = True
 
-    def __init__(self, ob):
-        self.ob = ob
-
-    def _gathersig(self, c, result):
-        flags = getattr(c, '__flags__', heap)
-
-        if flags & heap:
-            try:
-                dict = c.__dict__
-            except AttributeError:
-
-                # XXX If we got here, we must have a
-                # security-proxied class. This introduces an
-                # indirect dependency on security proxies,
-                # which we don't want. This is necessary to
-                # support old-style __implements__ interface
-                # declarations.
-
-                # If we got here, we must have an old-style
-                # declaration, so we'll just look for an
-                # __implements__.  We can't fix it because the class
-                # is probably security proxied.
-
-                implements = getattr(c, '__implements__', None)
-                if implements is not None:
-                    assert ((implements.__class__ == tuple)
-                            or
-                            (InterfaceClass in
-                             implements.__class__.__mro__)
-                            )
-                    result.append(`implements`)
-
-            else:
-                # Normal case
-                implements = dict.get('__implements__')
-                if implements is None:
-                    # No implements spec, lets add one:
-                    classImplements(c)
-                    implements = dict['__implements__']
-
-                try:
-                    sig = implements.__signature__
-                except AttributeError:
-                    # Old-style implements!  Fix it up.
-                    implements = OnlyImplementsSpecification(
-                        implements)
-                    _setImplements(c, implements)
-                    sig = implements.__signature__
-
-                if sig:
-                    result.append(sig)
-                
-        else:
-            # Look in reg
-            implements = _implements_reg.get(c)
-            if implements is None:
-                    # No implements spec, lets add one:
-                    classImplements(c)
-                    implements = _implements_reg[c]
-            sig = implements.__signature__
-            if sig:
-                result.append(sig)
-
-
-    def __signature__(self):
-        ob = self.ob
-
-        provides = getattr(ob, '__provides__', None)
-        if provides is not None:
-            provides = provides.__signature__
-        else:
-            provides = ''
-        sig = ''
-
-        try:
-            cls = ob.__class__
-        except AttributeError:
-            # If there's no class, we'll just use the instance spec
-            pass
-        else:
-
-            flags = getattr(cls, '__flags__', heap)
-
-            if flags & heap:
-                try:
-                    dict = cls.__dict__
-                except AttributeError:
-
-                    # XXX If we got here, we must have a
-                    # security-proxied class. This introduces an
-                    # indirect dependency on security proxies,
-                    # which we don't want. This is necessary to
-                    # support old-style __implements__ interface
-                    # declarations.
-
-                    # If we got here, we must have an old-style
-                    # declaration, so we'll just look for an
-                    # __implements__.  We can't fix it because the class
-                    # is probably security proxied.
-
-                    implements = getattr(cls, '__implements__', None)
-                    if implements is not None:
-                        assert ((implements.__class__ == tuple)
-                                or
-                                (InterfaceClass in
-                                 implements.__class__.__mro__)
-                                )
-                        sig = `implements`
-
-                else:
-                    # Normal case
-                    implements = dict.get('__implements__')
-                    if implements is None:
-                        # No implements spec, lets add one:
-                        classImplements(cls)
-                        implements = dict['__implements__']
-
-                    try:
-                        sig = implements.__signature__
-                    except AttributeError:
-                        # Old-style implements!  Fix it up.
-                        implements = OnlyImplementsSpecification(
-                            implements)
-                        _setImplements(cls, implements)
-                        sig = implements.__signature__
-
-            else:
-                # Look in reg
-                implements = _implements_reg.get(cls)
-                if implements is None:
-                        # No implements spec, lets add one:
-                        classImplements(cls)
-                        implements = _implements_reg[cls]
-                sig = implements.__signature__
-
-        if sig:
-            if provides:
-                return provides, sig
-            return sig
-        else:
-            return provides
-
-    __signature__ = property(__signature__)
-
     def _v_spec(self):
+        spec = getattr(self, '_specslot', self)
+        if spec is not self:
+            return spec
+        
         ob = self.ob
         provides = getattr(ob, '__provides__', None)
         if provides is not None:
@@ -647,7 +676,7 @@ class ObjectSpecification:
         else:
             _gatherSpecs(cls, result)
 
-        self.__dict__['_v_spec'] = spec = InterfaceSpecification(*result)
+        self._specslot = spec = InterfaceSpecification(*result)
 
         return spec
 
@@ -691,54 +720,6 @@ def providedBy(ob):
         r = ObjectSpecification(ob)
         
     return r
-
-def classImplements(cls, *interfaces):
-    """Declare additional interfaces implemented for instances of a class
-
-    The arguments after the class are one or more interfaces or
-    interface specifications (IInterfaceSpecification objects).
-
-    The interfaces given (including the interfaces in the
-    specifications) are added to any interfaces previously
-    declared.
-
-    Consider the following example::
-
-
-    for example:
-
-    >>> from zope.interface import Interface
-    >>> class I1(Interface): pass
-    ...
-    >>> class I2(Interface): pass
-    ...
-    >>> class I3(Interface): pass
-    ...
-    >>> class I4(Interface): pass
-    ...
-    >>> class I5(Interface): pass
-    ...
-    >>> class A:
-    ...   implements(I3)
-    >>> class B:
-    ...   implements(I4)
-    >>> class C(A, B):
-    ...   pass
-    >>> classImplements(C, I1, I2)
-    >>> [i.__name__ for i in implementedBy(C)]
-    ['I1', 'I2', 'I3', 'I4']
-    >>> classImplements(C, I5)
-    >>> [i.__name__ for i in implementedBy(C)]
-    ['I1', 'I2', 'I5', 'I3', 'I4']
-
-    Instances of ``C`` provide ``I1``, ``I2``, ``I5``, and whatever interfaces
-    instances of ``A`` and ``B`` provide.
-
-    """
-
-    _setImplements(cls,
-                   _getImplements(cls) + ImplementsSpecification(*interfaces)
-                   )
 
 def classImplementsOnly(cls, *interfaces):
     """Declare the only interfaces implemented by instances of a class
@@ -1182,7 +1163,11 @@ def moduleProvides(*interfaces):
 
 
 def _getImplements(cls):
-    flags = getattr(cls, '__flags__', heap)
+
+    try:
+        flags = cls.__flags__
+    except AttributeError:
+        flags = heap
 
     if flags & heap:
         try:
