@@ -11,9 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Tests for the Observable Adapter.
+"""Tests for the Observable event infrastructure.
 
-$Id: tests.py,v 1.2 2004/03/30 14:13:57 nathan Exp $
+$Id: tests.py,v 1.3 2004/03/30 21:47:50 nathan Exp $
 """
 
 import doctest
@@ -25,6 +25,8 @@ from zope.app.observable.interfaces import IObservable
 from zope.app.event.interfaces import ISubscriber
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.interfaces import IObjectAddedEvent
+from zope.app.container.interfaces import IObjectRemovedEvent
+from zope.app.observable import observerevent
 
 class DummyAnnotationsClass(dict):
     implements(IAnnotations)
@@ -100,6 +102,60 @@ def test_notify():
     >>> adapter.notify(event, ISubscriber)
     >>> subscriber.events == [event]
     True
+    """
+
+class DummyObservable:
+    implements(IObservable)
+
+    def __init__(self):
+        self.flag = False
+
+    def notify(self, event, provided):
+        self.flag = True
+
+class DummyNotObservable:
+    
+    def __init__(self):
+        self.flag = False
+        
+    def notify(self, event, provided):
+        self.flag = True
+
+class DummyObservableEvent:
+    implements(IObjectRemovedEvent, IObservable)
+
+    def __init__(self):
+        self.object = DummyObservable()
+
+class DummyNotObservableEvent:
+    implements(IObjectRemovedEvent)
+    
+    def __init__(self):
+        self.object = DummyNotObservable()
+
+def testObservableEvents(self):
+    """
+    When an object that has subscriptions change, the
+    subscribers are notified.
+
+    >>> event = DummyObservableEvent()
+    >>> notifier = observerevent.ObserverEventNotifier()
+    >>> notifier.notify(event)
+    >>> event.object.flag
+    True
+    """
+
+def testNotObservableEvents(self):
+    """
+
+    When an object that has no subscriptions changes, the
+    ObserverEventNotifier doesn't do anything to it.
+
+    >>> event = DummyNotObservableEvent()
+    >>> notifier = observerevent.ObserverEventNotifier()
+    >>> notifier.notify(event)
+    >>> event.object.flag
+    False
     """
 
 def test_suite():
