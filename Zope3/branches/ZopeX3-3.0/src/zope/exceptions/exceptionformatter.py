@@ -112,7 +112,7 @@ class TextExceptionFormatter(object):
         return result
 
     def formatTracebackInfo(self, tbi):
-        return self.formatSupplementLine('__traceback_info__: %s' % tbi)
+        return self.formatSupplementLine('__traceback_info__: %s' % (tbi, ))
 
     def formatLine(self, tb):
         f = tb.tb_frame
