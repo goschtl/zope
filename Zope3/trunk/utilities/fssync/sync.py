@@ -58,20 +58,6 @@ def main(argv):
     if not opts and not args:
         return usage()
 
-    if not args:
-        return usage("no command specified")
-
-    known_operations = ['checkout', 'update', 'add', 'addtypes', 'diff',
-                        'commit', 'fcommit']
-
-    operation = args[0]
-    if operation not in known_operations:
-        return usage("command %r is not a known operation" % operation)
-
-    newobjectname = args[1:]
-    if newobjectname and operation != 'add':
-        return usage("only command 'add' takes arguments")
-
     objpath = ''
     targetfile = ''
     diffoption = '-1'
@@ -116,6 +102,20 @@ def main(argv):
     siteconfpath = os.path.realpath(siteconfpath)
     if patherror("siteconfpath(site.zcml)", siteconfpath):
         return 1
+
+    if not args:
+        return usage("no command specified")
+
+    known_operations = ['checkout', 'update', 'add', 'addtypes', 'diff',
+                        'commit', 'fcommit']
+
+    operation = args[0]
+    if operation not in known_operations:
+        return usage("command %r is not a known operation" % operation)
+
+    newobjectname = args[1:]
+    if newobjectname and operation != 'add':
+        return usage("only command 'add' takes arguments")
 
     if operation == 'checkout':
         err = checkout(fspath, dbpath, siteconfpath, objpath)
