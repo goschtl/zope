@@ -16,19 +16,23 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.15 2003/05/28 13:16:09 stevea Exp $
+$Id: __init__.py,v 1.16 2003/05/28 15:46:51 jim Exp $
 """
+from __future__ import generators
+
 __metaclass__ = type
 
+
 from zope.interface import moduleProvides
-from zope.security.proxy import Proxy, getChecker, getObject
-from zope.context.wrapper import getobject, getdict, getdictcreate
+from zope.security.proxy import Proxy, getChecker
+from zope.context.wrapper import getdict, getdictcreate
 from zope.context.wrapper import getcontext, getinnercontext
 from zope.context.wrapper import getinnerwrapper, getbaseobject
 from zope.context.wrapper import ContextDescriptor, ContextAware
 from zope.context.wrapper import ContextMethod, ContextProperty
 from zope.context.wrapper import Wrapper
 from zope.security.checker import defineChecker, selectChecker, BasicTypes
+from zope.proxy import queryProxy, queryInnerProxy, isProxy, getObject
 from zope.context.interfaces import IContextWrapper
 from zope.hookable import hookable
 
@@ -66,64 +70,67 @@ def getWrapperObject(_ob):
         # insert into proxies
         checker = getChecker(_ob)
         _ob = getObject(_ob)
-        _ob = Proxy(getobject(_ob), checker)
+        _ob = Proxy(getObject(_ob), checker)
     else:
-        _ob = getobject(_ob)
+        _ob = getObject(_ob)
 
     return _ob
 
-def _contextWrapperChecker(ob):
-    return selectChecker(getobject(ob))
-
 def getWrapperData(_ob, create=False):
-    if type(_ob) is Proxy:
-        _orig = _ob
-        _ob = getObject(_ob)
-    if create:
-        return getdictcreate(_ob)
+    wrapper = queryProxy(_ob, Wrapper)
+    if wrapper is not None:
+        if create:
+            return getdictcreate(wrapper)
+        else:
+            return getdict(wrapper)
     else:
-        return getdict(_ob)
+        if create:
+            raise TypeError("Not a context wrapper")
+        return None
 
 def getInnerWrapperData(_ob):
-    if type(_ob) is Proxy:
-        _ob = getObject(_ob)
-    return getdict(getinnerwrapper(_ob))
+    wrapper = queryInnerProxy(_ob, Wrapper)
+    if wrapper is not None:
+        return getdict(wrapper)
+    else:
+        return None
+
 
 def getWrapperContainer(_ob):
-    if type(_ob) is Proxy:
-        _ob = getObject(_ob)
-    return getinnercontext(_ob)
+    wrapper = queryInnerProxy(_ob, Wrapper)
+    if wrapper is not None:
+        return getcontext(wrapper)
+    else:
+        return None
 
 def getWrapperContext(_ob):
-    if type(_ob) is Proxy:
-        _ob = getObject(_ob)
-    return getcontext(_ob)
+    wrapper = queryProxy(_ob, Wrapper)
+    if wrapper is not None:
+        return getcontext(wrapper)
+    else:
+        return None
 
 def isWrapper(_ob):
-    if type(_ob) is Proxy:
-        _ob = getObject(_ob)
-    return type(_ob) in wrapperTypes
+    return isProxy(_ob, Wrapper)
 
-class ContainmentIterator:
 
-    def __init__(self, obj):
-        self._ob = Wrapper(None, obj)
+def ContainmentIterator(obj):
+    wrapper = queryInnerProxy(obj, Wrapper)
+    while wrapper is not None:
+        yield obj
+        obj = getcontext(wrapper)
+        wrapper = queryInnerProxy(obj, Wrapper)
 
-    def __iter__(self):
-        return self
+    yield obj
 
-    def next(self):
-        _ob = self._ob
+def ContextIterator(obj):
+    wrapper = queryProxy(obj, Wrapper)
+    while wrapper is not None:
+        yield obj
+        obj = getcontext(wrapper)
+        wrapper = queryProxy(obj, Wrapper)
 
-        if type(_ob) is Proxy:
-            _ob = getObject(_ob)
-
-        if type(_ob) not in wrapperTypes:
-            raise StopIteration
-
-        _ob = getinnercontext(_ob)
-        self._ob = _ob
-        return _ob
+    yield obj
 
 def getItem(collection, name):
     return ContextWrapper(collection[name], collection, name=name)
@@ -139,8 +146,10 @@ def queryAttr(collection, name, default=None):
     return ContextWrapper(getattr(collection, name, default),
                           collection, name=name)
 
-wrapperTypes = (Wrapper, )
 
+# XXX Do I actually need these?
+def _contextWrapperChecker(ob):
+    return selectChecker(getObject(ob))
 defineChecker(Wrapper, _contextWrapperChecker)
 
 class ContextSuper:
