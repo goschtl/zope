@@ -57,6 +57,7 @@ BUGS
 * After update or commit for a single file, the other files and
   directories in the same directory are silently removed!!!!
 
+
 TO DO
 -----
 
@@ -77,3 +78,38 @@ TO DO
   -3 diffs between original and remote
   -N shows diffs for added/removed files as diffs with /dev/null
   more GNU diff options?  e.g. --ignore-space-change etc.
+
+
+Jim's TO DO
+-----------
+
+Here's the TO DO list from zope3/doc/TODO.txt:
+
+  - Client command-line tool w HTTP-based interface to server
+    that provided CVS-like interface and features. Including:
+
+    - checkout and commit
+
+    - update including merge and offline version
+
+    - diff and offline diff
+
+  - Refine the adapter protocol or implementation to leverage
+    the file-system representation protocol.
+
+  - Maybe leverage adaptable storage ideas to assure
+    losslessness.
+
+  - In common case where extra data are simple values, store
+    extra data in the entries file to simplify representation
+    and updates.  Maybe do something similar w annotations.
+
+  - Maybe do some more xmlpickle refinement with an eye toward
+    impproving the usability of simple dictionary pickles.
+
+  - export and import as a special case
+
+  - Improve some common data file formats (e.g. simplify
+    entries file).
+
+  - Work out security details
