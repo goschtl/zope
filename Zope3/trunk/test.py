@@ -13,7 +13,7 @@
 #
 ##############################################################################
 """
-test.py [-aBbcdDfgGhLmPprtTuv] [modfilter [testfilter]]
+test.py [-abBcdDfFgGhklLmMPprstTuUv] [modfilter [testfilter]]
 
 Find and run tests written using the unittest module.
 
@@ -27,10 +27,21 @@ searches for packages and modules that contain "tests" as a component
 of the name, e.g. "frob.tests.nitz" matches this rule because tests is
 a sub-package of frob.  Within each "tests" package, it looks for
 modules that begin with the name "test."  For each test module, it
-imports the module and calls the test_suite() method, which must
+imports the module and calls the module's test_suite() function, which must
 return a unittest TestSuite object.
 
+Options can be specified as command line arguments (see below). However,
+options may also be specified in a file named 'test.config', a Python
+script which, if found, will be executed before the command line
+arguments are processed.
+
+The test.config script should specify options by setting zero or more of the
+global variables: LEVEL, BUILD, and other capitalized variable names found in
+the test runner script (see the list of global variables in process_args().).
+
+
 -a level
+--at-level level
 --all
     Run the tests at the given level.  Any test at a level at or below
     this is run, any test at a level above this is not run.  Level 0
@@ -44,19 +55,28 @@ return a unittest TestSuite object.
     Tests will be run from the build directory.
 
 -B
+--build-inplace
     Run "python setup.py build_ext -i" before running tests.  Tests will be
     run from the source directory.
 
--c  use pychecker
+-c
+--pychecker
+    use pychecker
 
 -d
+--debug
     Instead of the normal test harness, run a debug version which
     doesn't catch any exceptions.  This is occasionally handy when the
     unittest code catching the exception doesn't work right.
     Unfortunately, the debug harness doesn't print the name of the
     test, so Use With Care.
 
+-D
+--debug-inplace
+    Works like -d, except that it loads pdb when an exception occurs.
+
 --dir directory
+-s directory
     Option to limit where tests are searched for. This is important
     when you *really* want to limit the code that gets run.  This can
     be specified more than once to run tests in two different parts of
@@ -65,59 +85,107 @@ return a unittest TestSuite object.
     you have broken setups for tests in other packages. You *just* want to
     run the interface tests.
 
--D
-    Works like -d, except that it loads pdb when an exception occurs.
-
 -f
-    Run functional tests instead of unit tests.
+--skip-unit
+    Run functional tests but not unit tests.
+    Note that functional tests will be skipped if the module
+    zope.app.tests.functional cannot be imported.
+    Functional tests also expect to find the file ftesting.zcml,
+    which is used to configure the functional-test run.
 
 -F
-    Run both unit and functional tests.
+    DEPRECATED. Run both unit and functional tests.
+    This option is deprecated, because this is the new default mode.
+    Note that functional tests will be skipped if the module
+    zope.app.tests.functional cannot be imported.
 
 -g threshold
+--gc-threshold threshold
     Set the garbage collector generation0 threshold.  This can be used
     to stress memory and gc correctness.  Some crashes are only
     reproducible when the threshold is set to 1 (agressive garbage
     collection).  Do "-g 0" to disable garbage collection altogether.
 
 -G gc_option
+--gc-option gc_option
     Set the garbage collection debugging flags.  The argument must be one
     of the DEBUG_ flags defined bythe Python gc module.  Multiple options
     can be specified by using "-G OPTION1 -G OPTION2."
 
+-k
+--keepbytecode
+    Do not delete all stale bytecode before running tests
+
+-l test_root
 --libdir test_root
     Search for tests starting in the specified start directory
     (useful for testing components being developed outside the main
     "src" or "build" trees).
 
---keepbytecode
-    Do not delete all stale bytecode before running tests
-
 -L
+--loop
     Keep running the selected tests in a loop.  You may experience
     memory leakage.
 
--t
-    Time the individual tests and print a list of the top 50, sorted from
-    longest to shortest.
+-m
+-M  minimal GUI. See -U.
 
 -P
+--profile
     Run the tests under hotshot and display the top 50 stats, sorted by
     cumulative time and number of calls.
 
 -p
+--progress
     Show running progress.  It can be combined with -v or -vv.
 
 -r
+--refcount
     Look for refcount problems.
     This requires that Python was built --with-pydebug.
 
+-t
+--top-fifty
+    Time the individual tests and print a list of the top 50, sorted from
+    longest to shortest.
+
+--times n
+--times outfile
+    With an integer argument, time the tests and print a list of the top <n>
+    tests, sorted from longest to shortest.
+    With a non-integer argument, specifies a file to which timing information
+    is to be printed.
+
 -T
+--trace
     Use the trace module from Python for code coverage.  The current
     utility writes coverage files to a directory named `coverage' that
     is parallel to `build'.  It also prints a summary to stdout.
 
+-u
+--skip-functional
+    CHANGED. Run unit tests but not functional tests.
+    Note that the meaning of -u is changed from its former meaning,
+    which is now specified by -U or --gui.
+
+-U
+--gui
+    Use the PyUnit GUI instead of output to the command line.  The GUI
+    imports tests on its own, taking care to reload all dependencies
+    on each run.  The debug (-d), verbose (-v), progress (-p), and
+    Loop (-L) options will be ignored.  The testfilter filter is also
+    not applied.
+
+-m
+-M
+--minimal-gui
+    Note: -m is DEPRECATED in favour of -M or --minimal-gui.
+    -m starts the gui minimized.  Double-clicking the progress bar
+    will start the import and run all tests.
+
+
 -v
+--verbose
     Verbose output.  With one -v, unittest prints a dot (".") for each
     test run.  With -vv, unittest prints the name of each test (for
     some definition of "name" ...).  With no -v, unittest is silent
@@ -129,17 +197,6 @@ return a unittest TestSuite object.
     shown to the right of the percent indicator.  With -p and -vv the
     test name is not truncated to fit into 80 columns and it is not
     cleared after the test finishes.
-
--u
--m
-    Use the PyUnit GUI instead of output to the command line.  The GUI
-    imports tests on its own, taking care to reload all dependencies
-    on each run.  The debug (-d), verbose (-v), progress (-p), and
-    Loop (-L) options will be ignored.  The testfilter filter is also
-    not applied.
-
-    -m starts the gui minimized.  Double-clicking the progress bar
-    will start the import and run all tests.
 
 
 modfilter
@@ -171,7 +228,7 @@ Extreme (yet useful) examples:
     "testWriteClient".  Useful to avoid a specific failing test you don't
     want to deal with just yet.
 
-    test.py -m . "!^testWriteClient$"
+    test.py -M . "!^testWriteClient$"
 
     As before, but now opens up a minimized PyUnit GUI window (only showing
     the progress bar).  Useful for refactoring runs where you continually want
@@ -387,7 +444,7 @@ def club_debug(test):
     setDebugModeOn = getattr(test, 'setDebugModeOn', None)
     if setDebugModeOn is not None:
         setDebugModeOn()
-        
+
     for subtest in getattr(test, '_tests', ()):
         club_debug(subtest)
 
@@ -420,7 +477,7 @@ class PathInit:
         sys.path.insert(0, os.path.join(self.cwd, self.libdir))
         # Hack again for external products.
         global functional
-        kind = functional and "functional" or "unit"
+        kind = functional and "FUNCTIONAL" or "UNIT"
         if libdir:
             extra = os.path.join(self.org_cwd, libdir)
             print "Running %s tests from %s" % (kind, extra)
@@ -539,8 +596,8 @@ def find_tests(rx):
     global finder
     finder = TestFileFinder(pathinit.libdir)
 
-    if test_dirs:
-        for d in test_dirs:
+    if TEST_DIRS:
+        for d in TEST_DIRS:
             d = find_test_dir(d)
             walk_with_symlinks(d, finder.visit, rx)
     else:
@@ -584,7 +641,7 @@ def filter_testcases(s, rx):
     new = unittest.TestSuite()
     for test in s._tests:
         # See if the levels match
-        dolevel = (level == 0) or level >= getattr(test, "level", 0)
+        dolevel = (LEVEL == 0) or LEVEL >= getattr(test, "level", 0)
         if not dolevel:
             continue
         if isinstance(test, unittest.TestCase):
@@ -599,7 +656,7 @@ def filter_testcases(s, rx):
     return new
 
 def gui_runner(files, test_filter):
-    if build_inplace:
+    if BUILD_INPLACE:
         utildir = os.path.join(os.getcwd(), "utilities")
     else:
         utildir = os.path.join(os.getcwd(), "..", "utilities")
@@ -656,27 +713,27 @@ class TrackRefs:
         self.type2all = type2all
 
 def runner(files, test_filter, debug):
-    runner = ImmediateTestRunner(verbosity=VERBOSE, debug=debug,
-                                 progress=progress, profile=profile,
+    runner = ImmediateTestRunner(verbosity=VERBOSE, debug=DEBUG,
+                                 progress=PROGRESS, profile=PROFILE,
                                  descriptions=False)
     suite = unittest.TestSuite()
     for file in files:
         s = get_suite(file, runner.result)
         # See if the levels match
-        dolevel = (level == 0) or level >= getattr(s, "level", 0)
+        dolevel = (LEVEL == 0) or LEVEL >= getattr(s, "level", 0)
         if s is not None and dolevel:
             s = filter_testcases(s, test_filter)
             suite.addTest(s)
     try:
         r = runner.run(suite)
-        if timesfn:
-            r.print_times(open(timesfn, "w"))
+        if TIMESFN:
+            r.print_times(open(TIMESFN, "w"))
             if VERBOSE:
-                print "Wrote timing data to", timesfn
-        if timetests:
-            r.print_times(sys.stdout, timetests)
+                print "Wrote timing data to", TIMESFN
+        if TIMETESTS:
+            r.print_times(sys.stdout, TIMETESTS)
     except:
-        if debugger:
+        if DEBUGGER:
             print "%s:" % (sys.exc_info()[0], )
             print sys.exc_info()[1]
             pdb.post_mortem(sys.exc_info()[2])
@@ -694,7 +751,7 @@ def remove_stale_bytecode(arg, dirname, names):
                 os.unlink(fullname)
 
 def main(module_filter, test_filter, libdir):
-    if not keepStaleBytecode:
+    if not KEEP_STALE_BYTECODE:
         os.path.walk(os.curdir, remove_stale_bytecode, None)
 
     # Get the log.ini file from the current directory instead of possibly
@@ -705,7 +762,7 @@ def main(module_filter, test_filter, libdir):
 
     # Initialize the path and cwd
     global pathinit
-    pathinit = PathInit(build, build_inplace, libdir)
+    pathinit = PathInit(BUILD, BUILD_INPLACE, libdir)
 
     # Initialize the logging module.
 
@@ -742,7 +799,7 @@ def main(module_filter, test_filter, libdir):
             rc = sys.gettotalrefcount()
             track = TrackRefs()
         while True:
-            runner(files, test_filter, debug)
+            runner(files, test_filter, DEBUG)
             gc.collect()
             if gc.garbage:
                 print "GARBAGE:", len(gc.garbage), gc.garbage
@@ -753,137 +810,175 @@ def main(module_filter, test_filter, libdir):
                 print "totalrefcount=%-8d change=%-6d" % (rc, rc - prev)
                 track.update()
     else:
-        runner(files, test_filter, debug)
+        runner(files, test_filter, DEBUG)
 
     os.chdir(pathinit.org_cwd)
 
 
 def process_args(argv=None):
     import getopt
-    global module_filter
-    global test_filter
+    global MODULE_FILTER
+    global TEST_FILTER
     global VERBOSE
     global LOOP
     global GUI
     global TRACE
     global REFCOUNT
-    global debug
-    global debugger
-    global build
-    global level
-    global libdir
-    global timesfn
-    global timetests
-    global progress
-    global build_inplace
-    global keepStaleBytecode
-    global test_dirs
-    global profile
+    global DEBUG
+    global DEBUGGER
+    global BUILD
+    global LEVEL
+    global LIBDIR
+    global TIMESFN
+    global TIMETESTS
+    global PROGRESS
+    global BUILD_INPLACE
+    global KEEP_STALE_BYTECODE
+    global TEST_DIRS
+    global PROFILE
+    global GC_THRESHOLD
+    global GC_FLAGS
+    global RUN_UNIT
+    global RUN_FUNCTIONAL
+    global PYCHECKER
 
     if argv is None:
         argv = sys.argv
 
-    module_filter = None
-    test_filter = None
+    MODULE_FILTER = None
+    TEST_FILTER = None
     VERBOSE = 0
     LOOP = False
     GUI = False
     TRACE = False
     REFCOUNT = False
-    debug = False # Don't collect test results; simply let tests crash
-    debugger = False
-    build = False
-    build_inplace = False
-    gcthresh = None
+    DEBUG = False # Don't collect test results; simply let tests crash
+    DEBUGGER = False
+    BUILD = False
+    BUILD_INPLACE = False
+    GC_THRESHOLD = None
     gcdebug = 0
-    gcflags = []
-    level = 1
-    libdir = None
-    progress = False
-    timesfn = None
-    timetests = 0
-    keepStaleBytecode = 0
-    kinds = 'unit'
-    test_dirs = []
-    profile = False
+    GC_FLAGS = []
+    LEVEL = 1
+    LIBDIR = None
+    PROGRESS = False
+    TIMESFN = None
+    TIMETESTS = 0
+    KEEP_STALE_BYTECODE = 0
+    RUN_UNIT = True
+    RUN_FUNCTIONAL = True
+    TEST_DIRS = []
+    PROFILE = False
+    PYCHECKER = False
+    config_filename = 'test.config'
+
+    # import the config file
+    if os.path.isfile(config_filename):
+        print 'Configuration file found.'
+        execfile(config_filename, globals())
+
 
     try:
-        opts, args = getopt.getopt(argv[1:], "a:bBcdDfFg:G:hLmPprtTuv",
+        opts, args = getopt.getopt(argv[1:], "a:bBcdDfFg:G:hkl:LmMPprs:tTuUv",
                                    ["all", "help", "libdir=", "times=",
-                                    "keepbytecode", "dir=", "build"])
+                                    "keepbytecode", "dir=", "build",
+                                    "build-inplace",
+                                    "at-level=",
+                                    "pychecker", "debug", "pdebug",
+                                    "gc-threshold=", "gc-option=",
+                                    "loop", "gui", "minimal-gui",
+                                    "profile", "progress", "refcount", "trace",
+                                    "top-fifty", "verbose",
+                                    ])
+    # fixme: add the long names
+    # fixme: add the extra documentation
+    # fixme: test for functional first!
     except getopt.error, msg:
         print msg
         print "Try `python %s -h' for more information." % argv[0]
         sys.exit(2)
 
     for k, v in opts:
-        if k == "-a":
-            level = int(v)
+        if k in ("-a", "--at-level"):
+            LEVEL = int(v)
         elif k == "--all":
-            level = 0
+            LEVEL = 0
             os.environ["COMPLAIN_IF_TESTS_MISSED"]='1'
         elif k in ("-b", "--build"):
-            build = True
-        elif k == "-B":
-            build = build_inplace = True
-        elif k == "-c":
-            # make sure you have a recent version of pychecker
-            if not os.environ.get("PYCHECKER"):
-                os.environ["PYCHECKER"] = "-q"
-            import pychecker.checker
-        elif k == "-d":
-            debug = True
-        elif k == "-D":
-            debug = True
-            debugger = True
-        elif k == "-f":
-            kinds = "functional"
+            BUILD = True
+        elif k in ("-B", "--build-inplace"):
+            BUILD = BUILD_INPLACE = True
+        elif k in("-c", "--pychecker"):
+            PYCHECKER = True
+        elif k in ("-d", "--debug"):
+            DEBUG = True
+        elif k in ("-D", "--pdebug"):
+            DEBUG = True
+            DEBUGGER = True
+        elif k in ("-f", "--skip-unit"):
+            RUN_UNIT = False
+        elif k in ("-u", "--skip-functional"):
+            RUN_FUNCTIONAL = False
         elif k == "-F":
-            kinds = "all"
+            message = 'Unit plus functional is the default behaviour.'
+            warnings.warn(message, DeprecationWarning)
+            RUN_UNIT = True
+            RUN_FUNCTIONAL = True
         elif k in ("-h", "--help"):
             print __doc__
             sys.exit(0)
-        elif k == "-g":
-            gcthresh = int(v)
-        elif k == "-G":
+        elif k in ("-g", "--gc-threshold"):
+            GC_THRESHOLD = int(v)
+        elif k in ("-G", "--gc-option"):
             if not v.startswith("DEBUG_"):
                 print "-G argument must be DEBUG_ flag, not", repr(v)
                 sys.exit(1)
-            gcflags.append(v)
-        elif k == '--keepbytecode':
-            keepStaleBytecode = 1
-        elif k == '--libdir':
-            libdir = v
-        elif k == "-L":
+            GC_FLAGS.append(v)
+        elif k in ('-k', '--keepbytecode'):
+            KEEP_STALE_BYTECODE = 1
+        elif k in ('-l', '--libdir'):
+            LIBDIR = v
+        elif k in ("-L", "--loop"):
             LOOP = 1
         elif k == "-m":
             GUI = "minimal"
-        elif k == "-P":
-            profile = True
-        elif k == "-p":
-            progress = True
-        elif k == "-r":
-            if hasattr(sys, "gettotalrefcount"):
+            msg = "Use -M or --minimal-gui instead of -m."
+            warnings.warn(msg, DeprecationWarning)
+        elif k in ("-M", "--minimal-gui"):
+            GUI = "minimal"
+        elif k in ("-P", "--profile"):
+            PROFILE = True
+        elif k in ("-p", "--progress"):
+            PROGRESS = True
+        elif k in ("-r", "--refcount"):
                 REFCOUNT = True
-            else:
-                print "-r ignored, because it needs a debug build of Python"
-        elif k == "-T":
+        elif k in ("-T", "--trace"):
             TRACE = True
-        elif k == "-t":
-            if not timetests:
-                timetests = 50
-        elif k == "-u":
+        elif k in ("-t", "--top-fifty"):
+            if not TIMETESTS:
+                TIMETESTS = 50
+        elif k in ("-u", "--gui"):
             GUI = 1
-        elif k == "-v":
+        elif k in ("-v", "--verbose"):
             VERBOSE += 1
         elif k == "--times":
             try:
-                timetests = int(v)
+                TIMETESTS = int(v)
             except ValueError:
                 # must be a filename to write
-                timesfn = v
-        elif k == '--dir':
-            test_dirs.append(v)
+                TIMESFN = v
+        elif k in ('-s', '--dir'):
+            TEST_DIRS.append(v)
+
+    if PYCHECKER:
+        # make sure you have a recent version of pychecker
+        if not os.environ.get("PYCHECKER"):
+            os.environ["PYCHECKER"] = "-q"
+        import pychecker.checker
+
+    if REFCOUNT and not hasattr(sys, "gettotalrefcount"):
+        print "-r ignored, because it needs a debug build of Python"
+        REFCOUNT = False
 
     if sys.version_info < ( 2,3,2 ):
         print """\
@@ -891,17 +986,17 @@ def process_args(argv=None):
         Zope3 needs Python 2.3.2 or greater. You are running:""" + sys.version
         sys.exit(1)
 
-    if gcthresh is not None:
-        if gcthresh == 0:
+    if GC_THRESHOLD is not None:
+        if GC_THRESHOLD == 0:
             gc.disable()
             print "gc disabled"
         else:
-            gc.set_threshold(gcthresh)
+            gc.set_threshold(GC_THRESHOLD)
             print "gc threshold:", gc.get_threshold()
 
-    if gcflags:
+    if GC_FLAGS:
         val = 0
-        for flag in gcflags:
+        for flag in GC_FLAGS:
             v = getattr(gc, flag, None)
             if v is None:
                 print "Unknown gc flag", repr(flag)
@@ -913,14 +1008,14 @@ def process_args(argv=None):
     if gcdebug:
         gc.set_debug(gcdebug)
 
-    if build:
+    if BUILD:
         # Python 2.3 is more sane in its non -q output
         if sys.hexversion >= 0x02030000:
             qflag = ""
         else:
             qflag = "-q"
         cmd = sys.executable + " setup.py " + qflag + " build"
-        if build_inplace:
+        if BUILD_INPLACE:
             cmd += "_ext -i"
         if VERBOSE:
             print cmd
@@ -929,22 +1024,29 @@ def process_args(argv=None):
             print "Build failed", hex(sts)
             sys.exit(1)
 
-    if kinds == "unit":
-        k = [False]
-    elif kinds == "functional":
-        k = [True]
-    elif kinds == "all":
-        k = [False, True]
-    
+    k = []
+    if RUN_UNIT:
+        k.append(False)
+    if RUN_FUNCTIONAL:
+        k.append(True)
+
     global functional
     for functional in k:
-        
+
         if VERBOSE:
-            kind = functional and "functional" or "unit"
-            if level == 0:
+            kind = functional and "FUNCTIONAL" or "UNIT"
+            if LEVEL == 0:
                 print "Running %s tests at all levels" % kind
             else:
-                print "Running %s tests at level %d" % (kind, level)
+                print "Running %s tests at level %d" % (kind, LEVEL)
+
+        if functional:
+            try:
+                from zope.app.tests.functional import FunctionalTestSetup
+            except ImportError:
+                print ('Skipping functional tests: could not import '
+                       'zope.app.tests.functional')
+                continue
 
         # XXX We want to change *visible* warnings into errors.  The next
         # line changes all warnings into errors, including warnings we
@@ -960,8 +1062,8 @@ def process_args(argv=None):
 
         if args:
             if len(args) > 1:
-                test_filter = args[1]
-            module_filter = args[0]
+                TEST_FILTER = args[1]
+            MODULE_FILTER = args[0]
         try:
             if TRACE:
                 # if the trace module is used, then we don't exit with
@@ -973,7 +1075,7 @@ def process_args(argv=None):
                                      ignoremods=ignoremods,
                                      trace=False, count=True)
 
-                tracer.runctx("main(module_filter, test_filter, libdir)",
+                tracer.runctx("main(MODULE_FILTER, TEST_FILTER, LIBDIR)",
                               globals=globals(), locals=vars())
                 r = tracer.results()
                 path = "/tmp/trace.%s" % os.getpid()
@@ -982,9 +1084,10 @@ def process_args(argv=None):
                 cPickle.dump(r, f)
                 f.close()
                 print path
-                r.write_results(show_missing=True, summary=True, coverdir=coverdir)
+                r.write_results(show_missing=True,
+                                summary=True, coverdir=coverdir)
             else:
-                bad = main(module_filter, test_filter, libdir)
+                bad = main(MODULE_FILTER, TEST_FILTER, LIBDIR)
                 if bad:
                     sys.exit(1)
         except ImportError, err:
