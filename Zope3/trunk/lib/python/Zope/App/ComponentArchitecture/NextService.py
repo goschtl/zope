@@ -13,7 +13,7 @@
 ##############################################################################
 """Support for delegation among service managers
 
-$Id: NextService.py,v 1.1 2002/08/01 18:42:09 jim Exp $
+$Id: NextService.py,v 1.2 2002/11/19 23:12:36 jim Exp $
 """
 
 from Zope.ComponentArchitecture.Exceptions import ComponentLookupError
@@ -47,6 +47,10 @@ def queryNextService(context, name, default=None):
 def getNextServiceManager(context):
     """if the context is a service manager or a placeful service, tries
     to return the next highest service manager"""
+
+    # IMPORTANT
+    #
+    # This is not allowed to use any services to get it's job done!
 
     # get this service manager
     sm = getServiceManager_hook(context)
