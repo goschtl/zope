@@ -91,6 +91,8 @@ class AnnotationPrincipalRoleManager:
             creating one if necessary """
         annotations = getAdapter(self._context, IAnnotations)
         try:
+            # there's a chance that annotations is security proxied -
+            # remove proxy to avoid authentication failure on role lookup
             return trustedRemoveSecurityProxy(annotations)[annotation_key]
         except KeyError:
             if create:
