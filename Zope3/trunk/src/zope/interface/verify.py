@@ -60,6 +60,10 @@ def _verify(iface, candidate, tentative=0, vtype=None):
             raise BrokenImplementation(iface, n)
 
         attr = getattr(candidate, n)
+        if not isinstance(d, Method):
+            # If it's not a method, there's nothing else we can test
+            continue
+        
         if type(attr) is FunctionType:
             # should never get here
             meth = fromFunction(attr, n)
@@ -67,7 +71,11 @@ def _verify(iface, candidate, tentative=0, vtype=None):
               and type(attr.im_func) is FunctionType):
             meth = fromMethod(attr, n)
         else:
-            continue # must be an attribute...
+            if not callable(attr):
+                raise BrokenMethodImplementation(n, "Not a method")
+            # sigh, it's callable,but we don't know how to intrspect it, so
+            # we have to give it a pass.
+            continue
 
         d=d.getSignatureInfo()
         meth = meth.getSignatureInfo()
