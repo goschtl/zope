@@ -29,6 +29,7 @@ from zope.tales.tales import ExpressionEngine, Context
 from zope.component.exceptions import ComponentLookupError
 from zope.exceptions import NotFoundError
 from zope.proxy import removeAllProxies
+from zope.restrictedpython import rcompile
 from zope.security.proxy import ProxyFactory
 from zope.security.builtins import RestrictedBuiltins
 from zope.i18n import translate
@@ -54,12 +55,33 @@ class ZopePathExpr(PathExpr):
     def __init__(self, name, expr, engine):
         super(ZopePathExpr, self).__init__(name, expr, engine, zopeTraverser)
 
+
+# Create a version of the restricted built-ins that uses a safe
+# version of getattr() that wraps values in security proxies where
+# appropriate:
+
+_marker = object()
+
+def safe_getattr(object, name, default=_marker):
+    if default is _marker:
+        return ProxyFactory(getattr(object, name))
+    else:
+        return ProxyFactory(getattr(object, name, default))
+
+RestrictedBuiltins = RestrictedBuiltins.copy()
+RestrictedBuiltins["getattr"] = safe_getattr
+
+
 class ZopePythonExpr(PythonExpr):
 
     def __call__(self, econtext):
         __traceback_info__ = self.text
         vars = self._bind_used_names(econtext, RestrictedBuiltins)
         return eval(self._code, vars)
+
+    def _compile(self, text, filename):
+        return rcompile.compile(text, filename, 'eval')
+
 
 class ZopeContextBase(Context):
     """Base class for both trusted and untrusted evaluation contexts."""
@@ -204,6 +226,16 @@ class ZopeEngine(ExpressionEngine):
       Traceback (most recent call last):
         ...
       ForbiddenAttribute: ('_getframe', <module 'sys' (built-in)>)
+
+    The results of Python expressions evaluated by this engine are
+    wrapped in security proxies::
+
+      >>> r = context.evaluate('python: {12: object()}.values')
+      >>> type(r)
+      <type 'zope.security._proxy._Proxy'>
+      >>> r = context.evaluate('python: {12: object()}.values()[0].__class__')
+      >>> type(r)
+      <type 'zope.security._proxy._Proxy'>
 
     """
 
