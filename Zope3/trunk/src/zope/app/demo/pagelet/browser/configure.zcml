@@ -71,16 +71,18 @@
       weight="0"
       />
 
+  <!-- This pagelet is just visible with zope.ManageContent permission -->
   <pagelet
       name="demo_pagelet_macro2"
       layer="zope.publisher.interfaces.browser.IBrowserRequest"
       slot="..interfaces.IDemoSlot"
       template="demo_pagelet.pt"
       for="..interfaces.IPageletContent"
-      permission="zope.View"
+      permission="zope.ManageContent"
       weight="1"
       />
 
+  <!-- This pagelet is just visible with zope.ManageContent permission -->
   <pagelet
       name="demo_pagedata_pagelet_macro"
       layer="zope.publisher.interfaces.browser.IBrowserRequest"

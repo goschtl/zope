@@ -43,16 +43,29 @@ class TestPageletContent(BrowserTestCase):
         self.assertEqual(response.getHeader('Location'),
             'http://localhost/@@contents.html')
 
-        # check the content of the pagelet
+        # check the content of the pagelet without permission
+        # we should not get the pagelet content
         response = self.publish('/pagelet/@@index.html')
         self.assertEqual(response.getStatus(), 200)
         body = ' '.join(response.getBody().split())
-        self.assert_(body.find('<div>aTitle</div>') >= 0)
-        self.assert_(body.find('<span>global demo variable</span>') >= 0)
-        self.assert_(body.find('<h4>Pagelet: demo_pagelet.pt</h4>') >= 0)
-        self.assert_(body.find('<h4>Pagelet: demo_pagedata_pagelet.pt</h4>')
-            >= 0)
-        self.assert_(body.find('<span>DemoPageData title</span>') >= 0)
+        self.assert_(body.find('<div>aTitle</div>') != -1)
+
+        # This pagelet is visible because of the zope.View permission
+        self.assert_(body.find('Macro: demo_pagelet_macro') != -1)
+        
+        # we don't have zope.ManageContent permission where is required
+        self.assert_(body.find('demo_pagelet_macro2') == -1)
+
+        # check the content of the pagelet with permission
+        # now we should see the content of the pagelet
+        response = self.publish('/pagelet/@@index.html', basic='mgr:mgrpw')
+        self.assertEqual(response.getStatus(), 200)
+        body = ' '.join(response.getBody().split())
+        self.assert_(body.find('<div>aTitle</div>') != -1)
+
+        # As zope.Manager we see both pagelets
+        self.assert_(body.find('Macro: demo_pagelet_macro') != -1)
+        self.assert_(body.find('demo_pagelet_macro2') == -1)
 
 
 def test_suite():
