@@ -8,7 +8,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Thu Apr 15 17:24:04 2004\n"
+"POT-Creation-Date: Fri Apr 16 19:23:44 2004\n"
 "PO-Revision-Date: 2004-04-15 15:47-0400\n"
 "Last-Translator: \n"
 "Language-Team:  <en@li.org>\n"
@@ -36,6 +36,12 @@ msgstr "Adapterdienst"
 #: src/zope/app/adapter/browser/configure.zcml:7
 msgid "Allows the registration of Adapters in this site"
 msgstr "Erlaubt die Registrierung von Adaptern in dieser Webseite"
+
+#: src/zope/app/apidoc/viewmodule/__init__.py:200
+#: src/zope/app/apidoc/viewmodule/__init__.py:262
+#, fuzzy
+msgid "$file (line $line)"
+msgstr "${lines} Zeilen"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:10
 msgid "Server Control"
@@ -114,7 +120,8 @@ msgid "seconds"
 msgstr "Sekunden"
 
 #: src/zope/app/applicationcontrol/browser/server-control.pt:13
-msgid "If you specify a time of 0 seconds, then the server will do a hard shutdown."
+msgid ""
+"If you specify a time of 0 seconds, then the server will do a hard shutdown."
 msgstr ""
 "Wenn Sie eine Zeit von 0 Sekunden eingeben, dann wird der Server sofort "
 "angehalten (hard shutdown)."
@@ -241,7 +248,8 @@ msgstr "Dieses Bündel stellt keine Registrierungen zur Verfügung."
 
 #: src/zope/app/bundle/browser/bundle.pt:123
 msgid "Click \"Activate bundle\" to perform the above actions."
-msgstr "Klicken Sie auf \"Bündel aktivieren\" um die o.a. Aktionen durchzuführen."
+msgstr ""
+"Klicken Sie auf \"Bündel aktivieren\" um die o.a. Aktionen durchzuführen."
 
 #: src/zope/app/bundle/browser/bundle.pt:127
 msgid "activate-bundle-button"
@@ -254,7 +262,8 @@ msgid "reset-button"
 msgstr "Zurücksetzen"
 
 #: src/zope/app/bundle/browser/bundle.pt:137
-msgid "Click \"Deactivate bundle\" to unregister all registrations in this bundle."
+msgid ""
+"Click \"Deactivate bundle\" to unregister all registrations in this bundle."
 msgstr ""
 "Klicken Sie auf \"Bündel deaktivieren\", um alle Registrierungen in diesem "
 "Bündel nichtig zu machen."
@@ -376,7 +385,8 @@ msgstr "Cache ungültig machen"
 
 #: src/zope/app/cache/browser/cacheableedit.pt:5
 msgid "This edit form allows you to associate a cache with this object."
-msgstr "Dieses Formular erlaubt Ihnen einen Cache für dieses Objekt zu definieren."
+msgstr ""
+"Dieses Formular erlaubt Ihnen einen Cache für dieses Objekt zu definieren."
 
 #: src/zope/app/cache/browser/cacheableedit.pt:9
 msgid "Currently there is no cache associated with the object."
@@ -419,6 +429,7 @@ msgid "You can configure the RAM Cache here."
 msgstr "Hier können sie den RAM Cache konfigurieren."
 
 #: src/zope/app/cache/browser/ramstats.pt:20
+#: src/zope/app/hub/browser/hubcontrol.pt:31
 msgid "Path"
 msgstr "Pfad"
 
@@ -446,17 +457,27 @@ msgstr "RAMCahce Statistiken"
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
 msgstr "Der Katalog ist derzeit bei dem Objekt Hub <strong>abonniert</strong>."
 
-#: src/zope/app/catalog/browser/advanced.pt:27
+#: src/zope/app/catalog/browser/advanced.pt:16
+#: src/zope/app/hub/browser/subscription_control.pt:30
+#: src/zope/app/index/browser/field/control.pt:52
+#: src/zope/app/index/browser/text/control.pt:47
+#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:24
+#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:29
+msgid "unsubscribe-button"
+msgstr "Abonnieren"
+
+#: src/zope/app/catalog/browser/advanced.pt:28
+#: src/zope/app/hub/browser/subscription_control.pt:35
 #: src/zope/app/index/browser/field/control.pt:57
 #: src/zope/app/index/browser/text/control.pt:52
 msgid "subscribe-button"
 msgstr "Abonnieren"
 
-#: src/zope/app/catalog/browser/advanced.pt:30
+#: src/zope/app/catalog/browser/advanced.pt:31
 msgid "(and reindex all objects, if checked)"
 msgstr "(und reindiziere alle Objekte, wenn aus ausgewählt)"
 
-#: src/zope/app/catalog/browser/advanced.pt:51
+#: src/zope/app/catalog/browser/advanced.pt:52
 #: src/zope/app/dublincore/browser/edit.pt:31
 #: src/zope/app/errorservice/browser/error.pt:52
 #: src/zope/app/form/browser/add.pt:60 src/zope/app/form/browser/edit.pt:58
@@ -537,8 +558,8 @@ msgid "---select interface---"
 msgstr "---Interface wählen---"
 
 #: src/zope/app/component/browser/interfacewidget.py:299
-#: src/zope/app/presentation/presentation.py:276
-#: src/zope/app/presentation/presentation.py:357
+#: src/zope/app/presentation/presentation.py:263
+#: src/zope/app/presentation/presentation.py:344
 msgid "any-interface"
 msgstr "Jegliches"
 
@@ -644,7 +665,7 @@ msgstr "Suchen"
 #: src/zope/app/container/browser/metaconfigure.py:59
 #: src/zope/app/menu/browser/configure.zcml:63
 #: src/zope/app/bundle/browser/configure.zcml:11
-#: src/zope/app/workflow/browser/configure.zcml:45
+#: src/zope/app/workflow/browser/configure.zcml:35
 #: src/zope/app/folder/browser/configure.zcml:20
 #: src/zope/app/site/browser/configure.zcml:19
 msgid "Contents"
@@ -797,7 +818,8 @@ msgid "Error Logging Service"
 msgstr "Fehlermeldedienst"
 
 #: src/zope/app/errorservice/browser/error.pt:10
-msgid "This page lists the exceptions that have occurred in this site recently."
+msgid ""
+"This page lists the exceptions that have occurred in this site recently."
 msgstr ""
 "Diese Seite listet die Ausnahmen auf, die kürzlich in dieser Webseite "
 "aufgetreten sind."
@@ -895,7 +917,8 @@ msgstr "Ereignisdienst"
 
 #: src/zope/app/event/browser/configure.zcml:13
 msgid "An event service. One of these in the root is usually enough"
-msgstr "Ein Ereignisdienst. Normalerweise ist einer im Wurzelelement ausreichend"
+msgstr ""
+"Ein Ereignisdienst. Normalerweise ist einer im Wurzelelement ausreichend"
 
 #: src/zope/app/event/browser/eventcontrol.pt:5
 msgid "This is an event service."
@@ -1262,6 +1285,17 @@ msgstr "Objektregistrierungen ansehen"
 msgid "Hide Object Registrations"
 msgstr "Objektregistrierungen verstecken"
 
+#: src/zope/app/hub/browser/hubcontrol.pt:32
+#, fuzzy
+msgid "Object ID"
+msgstr "Objektfeld"
+
+#: src/zope/app/hub/browser/hubcontrol.pt:33
+#: src/zope/app/i18n/browser/synchronize.pt:89
+#: src/zope/app/site/browser/interfacedetail.pt:79
+msgid "Status"
+msgstr "Status"
+
 #: src/zope/app/hub/browser/hubcontrol.pt:44
 msgid "Unregister Missing Objects"
 msgstr "Registrierung fehlender Objekte löschen"
@@ -1303,14 +1337,14 @@ msgstr "Abonnementsstatus: AN"
 msgid "Registration \"Service\" Control Page"
 msgstr "Registrierungs-\"Dienst\" Kontrollseite"
 
-#: src/zope/app/hub/browser/subscription_control.pt:33
+#: src/zope/app/hub/browser/subscription_control.pt:34
 #: src/zope/app/index/browser/field/control.pt:56
 #: src/zope/app/index/browser/text/control.pt:51
 #: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:28
 msgid "Subscription state: OFF"
 msgstr "Abonnementsstatus: AUS"
 
-#: src/zope/app/hub/browser/subscription_control.pt:39
+#: src/zope/app/hub/browser/subscription_control.pt:41
 msgid "Register Existing Objects"
 msgstr "Existierende Objekte registrieren"
 
@@ -1319,7 +1353,7 @@ msgid "Translate"
 msgstr "Übersetzen"
 
 #: src/zope/app/i18n/browser/configure.zcml:35
-#: src/zope/app/workflow/browser/configure.zcml:25
+#: src/zope/app/workflow/browser/configure.zcml:15
 msgid "Import/Export"
 msgstr "Importiern/Exportieren"
 
@@ -1392,7 +1426,8 @@ msgstr "Aktualisieren"
 
 #: src/zope/app/i18n/browser/synchronize.pt:122
 msgid "No connection could be made to remote data source."
-msgstr "Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
+msgstr ""
+"Es konnte keine Verbindung mit der Fremddatenquelle hergestellt werden."
 
 #: src/zope/app/i18n/browser/synchronize.pt:26
 msgid "Server URL"
@@ -1415,11 +1450,6 @@ msgstr "Synchronisieren"
 #: src/zope/app/i18n/browser/translatemessage.pt:16
 msgid "Message Id"
 msgstr "Message Id"
-
-#: src/zope/app/i18n/browser/synchronize.pt:89
-#: src/zope/app/site/browser/interfacedetail.pt:79
-msgid "Status"
-msgstr "Status"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
 msgid "Up to Date"
@@ -1523,7 +1553,8 @@ msgid "Edit Form"
 msgstr "Bearbeitungsformular"
 
 #: src/zope/app/i18nfile/browser/i18nimage.py:28
-msgid "This edit form allows you to make changes to the properties of this image."
+msgid ""
+"This edit form allows you to make changes to the properties of this image."
 msgstr ""
 "Dieses Berarbeitungsformular erlaubt es ihnen Änderungen an den "
 "Einstellungen ihres Bildes vorzunehmen."
@@ -1591,13 +1622,6 @@ msgstr "Indiziere Attribut: ${field_name}"
 #: src/zope/app/index/browser/text/control.pt:36
 msgid "Documents: ${doc_count}"
 msgstr "Dokumente: ${doc_count}"
-
-#: src/zope/app/index/browser/field/control.pt:52
-#: src/zope/app/index/browser/text/control.pt:47
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:24
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:29
-msgid "unsubscribe-button"
-msgstr "Abonnieren"
 
 #: src/zope/app/index/browser/field/control.pt:73
 #: src/zope/app/index/browser/text/control.pt:68
@@ -1798,7 +1822,8 @@ msgid "Add Browser Menu (Registration)"
 msgstr "Browsermenü hinzufügen (Registrierung)"
 
 #: src/zope/app/menu/browser/configure.zcml:5
-msgid "Browser Menu tools are used to build menus for Web user        interfaces."
+msgid ""
+"Browser Menu tools are used to build menus for Web user        interfaces."
 msgstr ""
 "Browsermenü-Werkzeuge werden benutzt, um Menüs für Web-Benutzeroberflächen "
 "zu erstellen."
@@ -1893,7 +1918,8 @@ msgstr "Menü der hinzufügbaren Caches"
 
 #: src/zope/app/menus.zcml:17
 msgid "Menu of objects to be added to content folders"
-msgstr "Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden können"
+msgstr ""
+"Menü von Objekten die als Inhalt zu dem Ordner hinzugefügt werden können"
 
 #: src/zope/app/menus.zcml:21
 msgid "Menu for objects to be added according to containment constraints"
@@ -1903,7 +1929,8 @@ msgstr ""
 
 #: src/zope/app/menus.zcml:26
 msgid "Menu of objects to be added to site management folders"
-msgstr "Menü von Objekten die Webseitenverwaltungs-Ordnern hinzugefügt werden können"
+msgstr ""
+"Menü von Objekten die Webseitenverwaltungs-Ordnern hinzugefügt werden können"
 
 #: src/zope/app/menus.zcml:30
 msgid "Menu of database connections to be added"
@@ -2079,7 +2106,8 @@ msgstr "Anmeldung"
 
 #: src/zope/app/pluggableauth/interfaces.py:31
 msgid "The Login/Username of the user. This value can change."
-msgstr "Eine Anmeldung (Benutzername) fuer den Nutzer. Dieser Wert kann sich ändern."
+msgstr ""
+"Eine Anmeldung (Benutzername) fuer den Nutzer. Dieser Wert kann sich ändern."
 
 #: src/zope/app/pluggableauth/interfaces.py:37
 msgid "The password for the user."
@@ -2098,7 +2126,8 @@ msgid "Presentation Service"
 msgstr "Präsentationsdienst"
 
 #: src/zope/app/presentation/browser/configure.zcml:3
-msgid "A Presentation Service allows you to register views, resources and skins"
+msgid ""
+"A Presentation Service allows you to register views, resources and skins"
 msgstr ""
 "Ein Präsentationsdienst erlaubt es Ihnen, Ansichten, Ressourcen und Themen "
 "zu registrieren."
@@ -2124,31 +2153,31 @@ msgstr "Eine neue Ansichts-Seitenschablone registrieren"
 msgid "View Folder"
 msgstr "Ansichtenordner"
 
-#: src/zope/app/presentation/presentation.py:279
+#: src/zope/app/presentation/presentation.py:266
 msgid "${view_name} ${ptype} View for ${iface_name}"
 msgstr "${view_name} ${ptype} Ansicht für {iface_name}"
 
-#: src/zope/app/presentation/presentation.py:281
+#: src/zope/app/presentation/presentation.py:268
 msgid "${view_name} ${ptype} View for ${iface_name} in layer ${layer}"
 msgstr "${view_name} ${ptype} Ansicht für {iface_name} in Ebene ${layer}"
 
-#: src/zope/app/presentation/presentation.py:292
+#: src/zope/app/presentation/presentation.py:279
 msgid "Registered by ZCML"
 msgstr "Registriert durch ZCML"
 
-#: src/zope/app/presentation/presentation.py:343
+#: src/zope/app/presentation/presentation.py:330
 msgid "view-component"
 msgstr "Ansicht"
 
-#: src/zope/app/presentation/presentation.py:362
+#: src/zope/app/presentation/presentation.py:349
 msgid "${view_name} for ${pname} {what} {iface_name}"
 msgstr "${view_name} für ${pname} {what} {iface_name}"
 
-#: src/zope/app/presentation/presentation.py:364
+#: src/zope/app/presentation/presentation.py:351
 msgid "${view_name} for ${pname} ${what} ${iface_name} in layer ${layer}"
 msgstr "${view_name} für ${pname} {what} {iface_name} in Ebene ${layer}"
 
-#: src/zope/app/presentation/presentation.py:419
+#: src/zope/app/presentation/presentation.py:406
 msgid "page-component"
 msgstr "Seite"
 
@@ -2188,7 +2217,8 @@ msgstr "Die URL, die aufgerufen werden soll, wenn der Eintrag ausgewählt ist"
 
 #: src/zope/app/publisher/interfaces/browser.py:40
 msgid "The url is relative to the object the menu is being displayed for."
-msgstr "DIe URL ist relativ zu dem Objekt für das der Menüeintrag angezeigt wird."
+msgstr ""
+"DIe URL ist relativ zu dem Objekt für das der Menüeintrag angezeigt wird."
 
 #: src/zope/app/publisher/interfaces/browser.py:46
 msgid "The text to be displayed for the menu item"
@@ -2317,7 +2347,8 @@ msgid "Database Adapter"
 msgstr "Datenbankadapter"
 
 #: src/zope/app/rdb/browser/configure.zcml:5
-msgid "Database Adapters are used to connect to external       relational databases."
+msgid ""
+"Database Adapters are used to connect to external       relational databases."
 msgstr ""
 "Datenbankadapter werde benutzt, um Verbindungen zu externen relationalen "
 "Datenbanken herzustellen."
@@ -2365,7 +2396,8 @@ msgstr "Datenbankadapter - Testverbindung"
 
 #: src/zope/app/rdb/browser/rdbtestsql.pt:13
 msgid "Here you can enter an SQL statement, so you can test the connection."
-msgstr "Sie können hier eine SQL-Abfrage eingeben, um die Verbindung zu testen."
+msgstr ""
+"Sie können hier eine SQL-Abfrage eingeben, um die Verbindung zu testen."
 
 #: src/zope/app/rdb/browser/rdbtestsql.pt:18
 msgid "Query"
@@ -2503,13 +2535,18 @@ msgstr ""
 "Dieses Objekt wird eigentlich nicht benutzt werden, es sei denn es ist "
 "registriert, um eine spezielle Funktion zu erfüllen, und es ist aktiv."
 
+#: src/zope/app/registration/browser/registration.pt:50
+#: src/zope/app/site/browser/add_svc_config.pt:14
+msgid "register-button"
+msgstr "Registrieren"
+
 #: src/zope/app/registration/configure.zcml:36
 #: src/zope/app/registration/browser/editregistration.pt:10
 msgid "Registration Manager"
 msgstr "Registrierungsverwalter"
 
 #: src/zope/app/registration/interfaces.py:130
-#: src/zope/app/utility/interfaces.py:49
+#: src/zope/app/utility/interfaces.py:56
 msgid "Component path"
 msgstr "Komponenten-Pfad"
 
@@ -3085,7 +3122,8 @@ msgid "Login Failed!"
 msgstr "Login fehlgeschlagen!"
 
 #: src/zope/app/security/browser/login_failed.pt:9
-msgid "You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
+msgid ""
+"You cancelled the login procedure. <a href=\"\"> Click here to return. </a>"
 msgstr ""
 "Sie haben den Loginprozess abgebrochen. <a href=\"\"> Bitte hier klicken um "
 "zurückzukehren. </a>"
@@ -3277,7 +3315,8 @@ msgstr "Der Rolle zugewiesene Berechtigungen ${perm_title} (id: ${perm_id})"
 
 #: src/zope/app/securitypolicy/browser/manage_roleform.pt:9
 msgid "Helpful message explaining about how to set specific roles"
-msgstr "Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
+msgstr ""
+"Hilfreiche Nachricht die erklärt wie man spezifische Rollen setzen kann."
 
 #: src/zope/app/securitypolicy/browser/principal_permission_edit.pt:12
 msgid "Permission Settings"
@@ -3399,7 +3438,8 @@ msgid "Purge Interval"
 msgstr "Abfrageintervall"
 
 #: src/zope/app/session/interfaces.py:110
-msgid "How often stale data is purged in seconds. Higer values improve performance."
+msgid ""
+"How often stale data is purged in seconds. Higer values improve performance."
 msgstr ""
 "Wie oft verfallene Daten gelöscht werden, in Sekunden. Höhere Werte "
 "verbessern die Geschwindigkeit."
@@ -3481,10 +3521,6 @@ msgstr "Dienst deaktiviert"
 #: src/zope/app/site/browser/__init__.py:424
 msgid "${active_services} activated"
 msgstr "${active_services} aktiviert"
-
-#: src/zope/app/site/browser/add_svc_config.pt:14
-msgid "register-button"
-msgstr "Registrieren"
 
 #: src/zope/app/site/browser/add_svc_config.pt:15
 msgid "Service name"
@@ -3769,7 +3805,7 @@ msgstr "Registrierungen wurden deaktiviert."
 msgid "Name"
 msgstr "Name"
 
-#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:36
+#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:43
 msgid "The name that is registered"
 msgstr "Der Name der registriert ist"
 
@@ -4059,7 +4095,8 @@ msgid "Utility registrations for interface ${interface}"
 msgstr "Werkzeugregistrierung für Interface ${interface}"
 
 #: src/zope/app/utility/browser/configureutility.pt:9
-msgid "Utility registrations for interface ${interface} with name ${utility_name}"
+msgid ""
+"Utility registrations for interface ${interface} with name ${utility_name}"
 msgstr ""
 "Werkzeugregistrierung für Interface ${interface} mit dem Namen "
 "${utility_name}"
@@ -4072,19 +4109,19 @@ msgstr "Registrierung ändern"
 msgid "Utilities registered in this utility service"
 msgstr "Werkzeuge, die mit diesem Werkzeugdienst registriert sind"
 
-#: src/zope/app/utility/interfaces.py:35
+#: src/zope/app/utility/interfaces.py:42
 msgid "Register As"
 msgstr "Registrieren als"
 
-#: src/zope/app/utility/interfaces.py:42
+#: src/zope/app/utility/interfaces.py:49
 msgid "Provided interface"
 msgstr "Gegebene Interfaces"
 
-#: src/zope/app/utility/interfaces.py:43
+#: src/zope/app/utility/interfaces.py:50
 msgid "The interface provided by the adapter"
 msgstr "Das Interface das von dem Adapter bereitgestellt wird"
 
-#: src/zope/app/utility/interfaces.py:50
+#: src/zope/app/utility/interfaces.py:57
 msgid "The physical path to the component"
 msgstr "Der physische Pfad zu der Komponente"
 
@@ -4322,17 +4359,19 @@ msgstr "Elternname"
 msgid "Name of the parent wiki page."
 msgstr "Name der übergeordneten Wiki Seite."
 
-#: src/zope/app/workflow/browser/configure.zcml:16
-msgid "A workflow service"
-msgstr "Ein Arbeitsablaufdienst"
+#: src/zope/app/workflow/browser/configure.zcml:6
+#, fuzzy
+msgid ""
+"Workflow Process Definitions define a particular workflow       for an "
+"object."
+msgstr ""
+"Prozessdefinitionen werden dazu benutzt, das Verhalten von Arbeitsabläufen "
+"zu definieren."
 
-#: src/zope/app/workflow/browser/configure.zcml:16
-msgid "Workflow Service"
-msgstr "Arbeitsablaufdienst"
-
-#: src/zope/app/workflow/browser/configure.zcml:8
-msgid "Processes"
-msgstr "Prozesse"
+#: src/zope/app/workflow/browser/configure.zcml:6
+#: src/zope/app/workflow/browser/stateful/configure.zcml:158
+msgid "Workflows"
+msgstr "Arbeitsabläufe"
 
 #: src/zope/app/workflow/browser/definition_index.pt:11
 msgid "Process Definition: ${pd_name}"
@@ -4423,10 +4462,6 @@ msgstr "Zustandsbasierte Prozessdefinition"
 msgid "Content/Process Registry"
 msgstr "Inhalt/Prozess-Registrierung"
 
-#: src/zope/app/workflow/browser/stateful/configure.zcml:158
-msgid "Workflows"
-msgstr "Arbeitsabläufe"
-
 #: src/zope/app/workflow/browser/stateful/configure.zcml:28
 msgid "Relevant Data Schema"
 msgstr "Revelantes Datenschema"
@@ -4448,7 +4483,8 @@ msgid "Workflow Process Definitions"
 msgstr "Arbeitsablauf-Prozessdefinitionen"
 
 #: src/zope/app/workflow/browser/stateful/configure.zcml:5
-msgid "Process Definitions are used to define the way a workflow       will behave."
+msgid ""
+"Process Definitions are used to define the way a workflow       will behave."
 msgstr ""
 "Prozessdefinitionen werden dazu benutzt, das Verhalten von Arbeitsabläufen "
 "zu definieren."
@@ -4461,11 +4497,11 @@ msgstr "Übergänge"
 msgid "Stateful State"
 msgstr "Zustandsbasierter Zustand"
 
-#: src/zope/app/workflow/browser/stateful/contentworkflow.py:88
+#: src/zope/app/workflow/browser/stateful/contentworkflow.py:87
 msgid "Mapping(s) added."
 msgstr "Zuweisung(en) hinzugefügt."
 
-#: src/zope/app/workflow/browser/stateful/contentworkflow.py:96
+#: src/zope/app/workflow/browser/stateful/contentworkflow.py:95
 msgid "Mapping(s) removed."
 msgstr "Zuweisung(en) entfernt."
 
@@ -4522,7 +4558,7 @@ msgstr "Übergänge"
 msgid "Process Definition Transitions"
 msgstr "Prozessdefinitionen-Übergänge"
 
-#: src/zope/app/workflow/browser/stateful/instance.py:148
+#: src/zope/app/workflow/browser/stateful/instance.py:147
 msgid "Updated Workflow Data."
 msgstr "Arbeitsablaufdaten wurden aktualisiert."
 
@@ -4558,34 +4594,15 @@ msgstr "Übergang vornehmen"
 msgid "Workflow-relevant Data"
 msgstr "Arbeitsablauf-relevante Daten"
 
-#: src/zope/app/workflow/browser/workflows.pt:15
-msgid ""
-"To configure a Process Definition, add a Process Definition utility to a "
-"<em>package</em> in <a href=\"../../../Packages\">Packages</a> or to the <a "
-"href=\"../../../Packages/default\">default package</a>. After the utility is "
-"added, add a Process Definition configuration that configures the component "
-"to provide a Process Definition."
-msgstr ""
-"Um eine Prozessdefinition zu konfigurieren, fügen sie ein Proyessdefinitios-"
-"Werkzeug zu einem <em>Paket</em> in <a href=\"../../../Packages\">Paketen</"
-"a> oder zu dem <a href=\"../../../Packages/default\">default Paket</a> "
-"hinzu. Nachdem das Werkzeug hinzugefügt wurde, fügen Sie nun auch noch eine "
-"Konfiguration für die Prozessdefinition hinzu, sodaß die Definition auch "
-"nutzbar ist."
-
-#: src/zope/app/workflow/browser/workflows.pt:5
-msgid "Process Definitions configured in this workflow service"
-msgstr "Prozessdefinitionen die in diesem Ablaufdienst konfiguriert sind"
-
-#: src/zope/app/workflow/configure.zcml:15
+#: src/zope/app/workflow/configure.zcml:14
 msgid "create-workflow-processinstances-permission"
 msgstr "Arbeitsablauf-Prozessinstanzen erstellen"
 
-#: src/zope/app/workflow/configure.zcml:21
+#: src/zope/app/workflow/configure.zcml:20
 msgid "use-workflow-processinstances-permission"
 msgstr "Arbeitsablauf-Prozessinstanzen benutzen"
 
-#: src/zope/app/workflow/configure.zcml:9
+#: src/zope/app/workflow/configure.zcml:8
 msgid "manage-workflow-processdefinitions-permission"
 msgstr "Arbeitsablauf-Prozessdefinitionen verwalten"
 
@@ -4725,7 +4742,8 @@ msgstr "${lines} Zeilen"
 #: src/zope/exceptions/unauthorized.py:69
 #: src/zope/exceptions/unauthorized.py:72
 msgid "You are not allowed to access ${name} in this context"
-msgstr "Es ist Ihnen nicht gestattet auf ${name} in diesem Kontext zuzugreifen."
+msgstr ""
+"Es ist Ihnen nicht gestattet auf ${name} in diesem Kontext zuzugreifen."
 
 #: src/zope/exceptions/unauthorized.py:74
 msgid "You are not authorized"
@@ -4806,7 +4824,8 @@ msgstr "Vorgegebener Wert"
 msgid ""
 "The field default value may be None or a legal\n"
 "                        field value"
-msgstr "Der \"default\" Wert des Feldes kann None oder ein legaler Feldwert sein"
+msgstr ""
+"Der \"default\" Wert des Feldes kann None oder ein legaler Feldwert sein"
 
 #: src/zope/schema/interfaces.py:127
 msgid "Missing Value"
@@ -4834,9 +4853,13 @@ msgid ""
 "        (Fields in separate threads could have the same order.)\n"
 "        "
 msgstr ""
-"Das Ordnungsattribut (order) kann dazu benutzt werden die Reihenfolge der Felder wie sie im Schema definiert wurden zu bestimmen. Wenn ein Feld nach einem anderen (im gleichen Thread) erstellt wurde, dann ist seine Ordnungsnummer größer.\n"
+"Das Ordnungsattribut (order) kann dazu benutzt werden die Reihenfolge der "
+"Felder wie sie im Schema definiert wurden zu bestimmen. Wenn ein Feld nach "
+"einem anderen (im gleichen Thread) erstellt wurde, dann ist seine "
+"Ordnungsnummer größer.\n"
 "\n"
-"(Felder in unterschiedlichen Threads könnten die gleiche Ordnungsnummer haben.)"
+"(Felder in unterschiedlichen Threads könnten die gleiche Ordnungsnummer "
+"haben.)"
 
 #: src/zope/schema/interfaces.py:215 src/zope/schema/interfaces.py:315
 msgid "Start of the range"
@@ -4857,7 +4880,10 @@ msgid ""
 "        another sequence type). If min_length is None, there is\n"
 "        no minimum.\n"
 "        "
-msgstr "Der Wert nach der Leerraumbearbeitung kann nicht weniger als min_length Zeichen (wenn es eine Zeichenkette ist) oder Objekte (für all anderen Folgetypen) haben. Wenn min_length None ist, dann gibt es kein Minimum."
+msgstr ""
+"Der Wert nach der Leerraumbearbeitung kann nicht weniger als min_length "
+"Zeichen (wenn es eine Zeichenkette ist) oder Objekte (für all anderen "
+"Folgetypen) haben. Wenn min_length None ist, dann gibt es kein Minimum."
 
 #: src/zope/schema/interfaces.py:243
 msgid "Maximum length"
@@ -4869,7 +4895,10 @@ msgid ""
 "        or equal than max_length characters (if a string type) or \n"
 "        elements (if another sequence type). If max_length is\n"
 "        None, there is no maximum."
-msgstr "Der Wert nach der Leerraumbearbeitung kann nicht mehr als max_length Zeichen (wenn es eine Zeichenkette ist) oder Objekte (für all anderen Folgetypen) haben. Wenn max_length None ist, dann gibt es kein Maximum."
+msgstr ""
+"Der Wert nach der Leerraumbearbeitung kann nicht mehr als max_length Zeichen "
+"(wenn es eine Zeichenkette ist) oder Objekte (für all anderen Folgetypen) "
+"haben. Wenn max_length None ist, dann gibt es kein Maximum."
 
 #: src/zope/schema/interfaces.py:257
 msgid "Allowed Values"
@@ -4953,3 +4982,32 @@ msgstr "Bar"
 msgid "Bar description"
 msgstr "Bar Beschreibung"
 
+#, fuzzy
+#~ msgid "unsubscribe=button"
+#~ msgstr "Abonnieren"
+
+#~ msgid "A workflow service"
+#~ msgstr "Ein Arbeitsablaufdienst"
+
+#~ msgid "Workflow Service"
+#~ msgstr "Arbeitsablaufdienst"
+
+#~ msgid "Processes"
+#~ msgstr "Prozesse"
+
+#~ msgid ""
+#~ "To configure a Process Definition, add a Process Definition utility to a "
+#~ "<em>package</em> in <a href=\"../../../Packages\">Packages</a> or to the "
+#~ "<a href=\"../../../Packages/default\">default package</a>. After the "
+#~ "utility is added, add a Process Definition configuration that configures "
+#~ "the component to provide a Process Definition."
+#~ msgstr ""
+#~ "Um eine Prozessdefinition zu konfigurieren, fügen sie ein "
+#~ "Proyessdefinitios-Werkzeug zu einem <em>Paket</em> in <a href=\"../../../"
+#~ "Packages\">Paketen</a> oder zu dem <a href=\"../../../Packages/default"
+#~ "\">default Paket</a> hinzu. Nachdem das Werkzeug hinzugefügt wurde, fügen "
+#~ "Sie nun auch noch eine Konfiguration für die Prozessdefinition hinzu, "
+#~ "sodaß die Definition auch nutzbar ist."
+
+#~ msgid "Process Definitions configured in this workflow service"
+#~ msgstr "Prozessdefinitionen die in diesem Ablaufdienst konfiguriert sind"

@@ -21,7 +21,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: zope\n"
-"POT-Creation-Date: Thu Apr 15 17:24:04 2004\n"
+"POT-Creation-Date: Fri Apr 16 19:23:44 2004\n"
 "PO-Revision-Date: 2004-04-01 17:43+0200\n"
 "Last-Translator: Fabrizio Reale\n"
 "Language-Team:  <realefab@redomino.org>\n"
@@ -52,6 +52,12 @@ msgstr "Aggiungi un servizio"
 #, fuzzy
 msgid "Allows the registration of Adapters in this site"
 msgstr "Aggiungi una registrazione per questo oggetto"
+
+#: src/zope/app/apidoc/viewmodule/__init__.py:200
+#: src/zope/app/apidoc/viewmodule/__init__.py:262
+#, fuzzy
+msgid "$file (line $line)"
+msgstr "${lines} linee"
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:10
 msgid "Server Control"
@@ -450,6 +456,7 @@ msgid "You can configure the RAM Cache here."
 msgstr "Qui puoi configurare la Cache RAM."
 
 #: src/zope/app/cache/browser/ramstats.pt:20
+#: src/zope/app/hub/browser/hubcontrol.pt:31
 msgid "Path"
 msgstr "Percorso"
 
@@ -479,19 +486,30 @@ msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
 msgstr ""
 "Il Catalog è attulamente <strong>sottoscritto</strong> dall'oggetto hub."
 
+# Default: "Ritira sottoscrizione"
+#: src/zope/app/catalog/browser/advanced.pt:16
+#: src/zope/app/hub/browser/subscription_control.pt:30
+#: src/zope/app/index/browser/field/control.pt:52
+#: src/zope/app/index/browser/text/control.pt:47
+#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:24
+#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:29
+msgid "unsubscribe-button"
+msgstr "Ritira sottoscrizione"
+
 # Default: "Sottoscrivi"
-#: src/zope/app/catalog/browser/advanced.pt:27
+#: src/zope/app/catalog/browser/advanced.pt:28
+#: src/zope/app/hub/browser/subscription_control.pt:35
 #: src/zope/app/index/browser/field/control.pt:57
 #: src/zope/app/index/browser/text/control.pt:52
 msgid "subscribe-button"
 msgstr "Sottoscrivi"
 
-#: src/zope/app/catalog/browser/advanced.pt:30
+#: src/zope/app/catalog/browser/advanced.pt:31
 msgid "(and reindex all objects, if checked)"
 msgstr "(e reindicizza tutti gli oggetti, se selezionato)"
 
 # Default: "Rigenera"
-#: src/zope/app/catalog/browser/advanced.pt:51
+#: src/zope/app/catalog/browser/advanced.pt:52
 #: src/zope/app/dublincore/browser/edit.pt:31
 #: src/zope/app/errorservice/browser/error.pt:52
 #: src/zope/app/form/browser/add.pt:60 src/zope/app/form/browser/edit.pt:58
@@ -574,8 +592,8 @@ msgstr "---seleziona l'interfaccia---"
 
 # Default: "Qualunque"
 #: src/zope/app/component/browser/interfacewidget.py:299
-#: src/zope/app/presentation/presentation.py:276
-#: src/zope/app/presentation/presentation.py:357
+#: src/zope/app/presentation/presentation.py:263
+#: src/zope/app/presentation/presentation.py:344
 msgid "any-interface"
 msgstr "Qualunque"
 
@@ -691,7 +709,7 @@ msgstr "Trova"
 #: src/zope/app/container/browser/metaconfigure.py:59
 #: src/zope/app/menu/browser/configure.zcml:63
 #: src/zope/app/bundle/browser/configure.zcml:11
-#: src/zope/app/workflow/browser/configure.zcml:45
+#: src/zope/app/workflow/browser/configure.zcml:35
 #: src/zope/app/folder/browser/configure.zcml:20
 #: src/zope/app/site/browser/configure.zcml:19
 msgid "Contents"
@@ -1324,6 +1342,17 @@ msgstr "Visualizza le registrazioni degli oggetti"
 msgid "Hide Object Registrations"
 msgstr "Nascondi le registrazioni degli oggetti"
 
+#: src/zope/app/hub/browser/hubcontrol.pt:32
+#, fuzzy
+msgid "Object ID"
+msgstr "Campo Oggetto"
+
+#: src/zope/app/hub/browser/hubcontrol.pt:33
+#: src/zope/app/i18n/browser/synchronize.pt:89
+#: src/zope/app/site/browser/interfacedetail.pt:79
+msgid "Status"
+msgstr "Stato"
+
 #: src/zope/app/hub/browser/hubcontrol.pt:44
 msgid "Unregister Missing Objects"
 msgstr "Disattiva gli oggetti mancanti"
@@ -1365,14 +1394,14 @@ msgstr "Stato della sottoscrizione: Attivo"
 msgid "Registration \"Service\" Control Page"
 msgstr "Pagina di gestione della registrazione dei \"servizi\""
 
-#: src/zope/app/hub/browser/subscription_control.pt:33
+#: src/zope/app/hub/browser/subscription_control.pt:34
 #: src/zope/app/index/browser/field/control.pt:56
 #: src/zope/app/index/browser/text/control.pt:51
 #: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:28
 msgid "Subscription state: OFF"
 msgstr "Stato della sottoscrizione: Inattivo"
 
-#: src/zope/app/hub/browser/subscription_control.pt:39
+#: src/zope/app/hub/browser/subscription_control.pt:41
 msgid "Register Existing Objects"
 msgstr "Registra gli oggetti esistenti"
 
@@ -1381,7 +1410,7 @@ msgid "Translate"
 msgstr "Traduci"
 
 #: src/zope/app/i18n/browser/configure.zcml:35
-#: src/zope/app/workflow/browser/configure.zcml:25
+#: src/zope/app/workflow/browser/configure.zcml:15
 msgid "Import/Export"
 msgstr "Importa/Esporta"
 
@@ -1487,11 +1516,6 @@ msgstr "Sincronizza"
 #: src/zope/app/i18n/browser/translatemessage.pt:16
 msgid "Message Id"
 msgstr "Id del messaggio"
-
-#: src/zope/app/i18n/browser/synchronize.pt:89
-#: src/zope/app/site/browser/interfacedetail.pt:79
-msgid "Status"
-msgstr "Stato"
 
 #: src/zope/app/i18n/browser/synchronize.py:30
 msgid "Up to Date"
@@ -1670,14 +1694,6 @@ msgstr "Indicizzazione sull'attributo: ${field_name}"
 #: src/zope/app/index/browser/text/control.pt:36
 msgid "Documents: ${doc_count}"
 msgstr "Documenti: ${doc_count}"
-
-# Default: "Ritira sottoscrizione"
-#: src/zope/app/index/browser/field/control.pt:52
-#: src/zope/app/index/browser/text/control.pt:47
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:24
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:29
-msgid "unsubscribe-button"
-msgstr "Ritira sottoscrizione"
 
 #: src/zope/app/index/browser/field/control.pt:73
 #: src/zope/app/index/browser/text/control.pt:68
@@ -2211,33 +2227,33 @@ msgstr "Registra una ZPT di presentazione"
 msgid "View Folder"
 msgstr "Mostra Cartella"
 
-#: src/zope/app/presentation/presentation.py:279
+#: src/zope/app/presentation/presentation.py:266
 msgid "${view_name} ${ptype} View for ${iface_name}"
 msgstr "${view_name} ${ptype} Mostra per ${iface_name}"
 
-#: src/zope/app/presentation/presentation.py:281
+#: src/zope/app/presentation/presentation.py:268
 msgid "${view_name} ${ptype} View for ${iface_name} in layer ${layer}"
 msgstr "${view_name} ${ptype} Mostra per ${iface_name} nel livello ${layer}"
 
-#: src/zope/app/presentation/presentation.py:292
+#: src/zope/app/presentation/presentation.py:279
 msgid "Registered by ZCML"
 msgstr "Registrato dalla ZCML"
 
 # Default: "View"
-#: src/zope/app/presentation/presentation.py:343
+#: src/zope/app/presentation/presentation.py:330
 msgid "view-component"
 msgstr "Mostra"
 
-#: src/zope/app/presentation/presentation.py:362
+#: src/zope/app/presentation/presentation.py:349
 msgid "${view_name} for ${pname} {what} {iface_name}"
 msgstr "${view_name} per ${pname} {what} {iface_name}"
 
-#: src/zope/app/presentation/presentation.py:364
+#: src/zope/app/presentation/presentation.py:351
 msgid "${view_name} for ${pname} ${what} ${iface_name} in layer ${layer}"
 msgstr "${view_name} per ${pname} ${what} ${iface_name} nel livello ${layer}"
 
 # Default: "Page"
-#: src/zope/app/presentation/presentation.py:419
+#: src/zope/app/presentation/presentation.py:406
 msgid "page-component"
 msgstr "Pagina"
 
@@ -2609,13 +2625,19 @@ msgstr ""
 "Attualmente questo oggetto non sarà utilizzato se non è registrato per una "
 "specifica funzione e attivato."
 
+# Default: "Registra"
+#: src/zope/app/registration/browser/registration.pt:50
+#: src/zope/app/site/browser/add_svc_config.pt:14
+msgid "register-button"
+msgstr "Registra"
+
 #: src/zope/app/registration/configure.zcml:36
 #: src/zope/app/registration/browser/editregistration.pt:10
 msgid "Registration Manager"
 msgstr "Gestore di Registrazioni"
 
 #: src/zope/app/registration/interfaces.py:130
-#: src/zope/app/utility/interfaces.py:49
+#: src/zope/app/utility/interfaces.py:56
 msgid "Component path"
 msgstr "Percorso del componente"
 
@@ -3633,11 +3655,6 @@ msgstr "Servizio disattivato"
 msgid "${active_services} activated"
 msgstr "Attivati i servizi: ${active_services}"
 
-# Default: "Registra"
-#: src/zope/app/site/browser/add_svc_config.pt:14
-msgid "register-button"
-msgstr "Registra"
-
 #: src/zope/app/site/browser/add_svc_config.pt:15
 msgid "Service name"
 msgstr "Nome del servizio"
@@ -3952,7 +3969,7 @@ msgstr "cambia registrazione"
 msgid "Name"
 msgstr "Nome"
 
-#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:36
+#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:43
 msgid "The name that is registered"
 msgstr "Il nome registrato"
 
@@ -4274,19 +4291,19 @@ msgstr "cambia registrazione"
 msgid "Utilities registered in this utility service"
 msgstr "Utilità registrate in questo servizio di utilità"
 
-#: src/zope/app/utility/interfaces.py:35
+#: src/zope/app/utility/interfaces.py:42
 msgid "Register As"
 msgstr "Registrato come"
 
-#: src/zope/app/utility/interfaces.py:42
+#: src/zope/app/utility/interfaces.py:49
 msgid "Provided interface"
 msgstr "Interfaccia fornita"
 
-#: src/zope/app/utility/interfaces.py:43
+#: src/zope/app/utility/interfaces.py:50
 msgid "The interface provided by the adapter"
 msgstr "L'interfaccia fornita dall'adattatore"
 
-#: src/zope/app/utility/interfaces.py:50
+#: src/zope/app/utility/interfaces.py:57
 msgid "The physical path to the component"
 msgstr "Percorso fisico del componente"
 
@@ -4539,19 +4556,17 @@ msgstr "Nome dell'argomento"
 msgid "Name of the parent wiki page."
 msgstr "Torna alla pagina principale."
 
-#: src/zope/app/workflow/browser/configure.zcml:16
+#: src/zope/app/workflow/browser/configure.zcml:6
 #, fuzzy
-msgid "A workflow service"
-msgstr "Aggiungi un servizio"
+msgid ""
+"Workflow Process Definitions define a particular workflow       for an "
+"object."
+msgstr "Definizioni di Processo configurate in questo servizio di workflow."
 
-#: src/zope/app/workflow/browser/configure.zcml:16
-#, fuzzy
-msgid "Workflow Service"
-msgstr "Opzioni di workflow"
-
-#: src/zope/app/workflow/browser/configure.zcml:8
-msgid "Processes"
-msgstr "Processi"
+#: src/zope/app/workflow/browser/configure.zcml:6
+#: src/zope/app/workflow/browser/stateful/configure.zcml:158
+msgid "Workflows"
+msgstr ""
 
 #: src/zope/app/workflow/browser/definition_index.pt:11
 msgid "Process Definition: ${pd_name}"
@@ -4642,10 +4657,6 @@ msgstr "Definizione del Processo"
 msgid "Content/Process Registry"
 msgstr "Registro dei contenuti e dei processi"
 
-#: src/zope/app/workflow/browser/stateful/configure.zcml:158
-msgid "Workflows"
-msgstr ""
-
 #: src/zope/app/workflow/browser/stateful/configure.zcml:28
 msgid "Relevant Data Schema"
 msgstr "Schema dei dati importanti"
@@ -4681,11 +4692,11 @@ msgstr "Elementi delle transizioni"
 msgid "Stateful State"
 msgstr "Stato"
 
-#: src/zope/app/workflow/browser/stateful/contentworkflow.py:88
+#: src/zope/app/workflow/browser/stateful/contentworkflow.py:87
 msgid "Mapping(s) added."
 msgstr "Mappature aggiunte."
 
-#: src/zope/app/workflow/browser/stateful/contentworkflow.py:96
+#: src/zope/app/workflow/browser/stateful/contentworkflow.py:95
 msgid "Mapping(s) removed."
 msgstr "Mappature rimosse."
 
@@ -4745,7 +4756,7 @@ msgstr "Transizioni"
 msgid "Process Definition Transitions"
 msgstr "Transizioni delle Definizioni dei Processi"
 
-#: src/zope/app/workflow/browser/stateful/instance.py:148
+#: src/zope/app/workflow/browser/stateful/instance.py:147
 msgid "Updated Workflow Data."
 msgstr "Dati di workflow aggiornati."
 
@@ -4783,39 +4794,18 @@ msgstr "Crea transizione"
 msgid "Workflow-relevant Data"
 msgstr "Dati importanti di workflow"
 
-#: src/zope/app/workflow/browser/workflows.pt:15
-#, fuzzy
-msgid ""
-"To configure a Process Definition, add a Process Definition utility to a "
-"<em>package</em> in <a href=\"../../../Packages\">Packages</a> or to the <a "
-"href=\"../../../Packages/default\">default package</a>. After the utility is "
-"added, add a Process Definition configuration that configures the component "
-"to provide a Process Definition."
-msgstr ""
-"Per configurare una Definizione di Processo, aggiungi un componente di "
-"Definizione di Processo ad un <em>package</em> nei <a href=\"../../../"
-"Packages\">Packages</a> o al <a href=\"../../../Packages/default\">package "
-"principale</a>. Dopo che un componente è stato aggiunto, aggiungere una "
-"configurazione di Definizione di Processo che configuri il componente per "
-"fornire una Definizione di Processo."
-
-#: src/zope/app/workflow/browser/workflows.pt:5
-#, fuzzy
-msgid "Process Definitions configured in this workflow service"
-msgstr "Definizioni di Processo configurate in questo servizio di workflow."
-
 # Default: "Create Workflow ProcessInstances"
-#: src/zope/app/workflow/configure.zcml:15
+#: src/zope/app/workflow/configure.zcml:14
 msgid "create-workflow-processinstances-permission"
 msgstr "Crea Istanze di Processo di Workflow"
 
 # Default: "Use Workflow ProcessInstances"
-#: src/zope/app/workflow/configure.zcml:21
+#: src/zope/app/workflow/configure.zcml:20
 msgid "use-workflow-processinstances-permission"
 msgstr "Usa Istanze di Processo di Workflow"
 
 # Default: "Manage Workflow ProcessDefinitions"
-#: src/zope/app/workflow/configure.zcml:9
+#: src/zope/app/workflow/configure.zcml:8
 msgid "manage-workflow-processdefinitions-permission"
 msgstr "Gestisci Istanze di Processo di Workflow"
 
@@ -5187,6 +5177,41 @@ msgstr ""
 #, fuzzy
 msgid "Bar description"
 msgstr "Descrizione"
+
+# Default: "Ritira sottoscrizione"
+#, fuzzy
+#~ msgid "unsubscribe=button"
+#~ msgstr "Ritira sottoscrizione"
+
+#, fuzzy
+#~ msgid "A workflow service"
+#~ msgstr "Aggiungi un servizio"
+
+#, fuzzy
+#~ msgid "Workflow Service"
+#~ msgstr "Opzioni di workflow"
+
+#~ msgid "Processes"
+#~ msgstr "Processi"
+
+#, fuzzy
+#~ msgid ""
+#~ "To configure a Process Definition, add a Process Definition utility to a "
+#~ "<em>package</em> in <a href=\"../../../Packages\">Packages</a> or to the "
+#~ "<a href=\"../../../Packages/default\">default package</a>. After the "
+#~ "utility is added, add a Process Definition configuration that configures "
+#~ "the component to provide a Process Definition."
+#~ msgstr ""
+#~ "Per configurare una Definizione di Processo, aggiungi un componente di "
+#~ "Definizione di Processo ad un <em>package</em> nei <a href=\"../../../"
+#~ "Packages\">Packages</a> o al <a href=\"../../../Packages/default"
+#~ "\">package principale</a>. Dopo che un componente è stato aggiunto, "
+#~ "aggiungere una configurazione di Definizione di Processo che configuri il "
+#~ "componente per fornire una Definizione di Processo."
+
+#, fuzzy
+#~ msgid "Process Definitions configured in this workflow service"
+#~ msgstr "Definizioni di Processo configurate in questo servizio di workflow."
 
 #~ msgid "Edit Field Index"
 #~ msgstr "Modifica il campo Indice"

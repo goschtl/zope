@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Zope X3 Pre-M4\n"
-"POT-Creation-Date: Thu Apr 15 17:24:04 2004\n"
+"POT-Creation-Date: Fri Apr 16 19:23:44 2004\n"
 "PO-Revision-Date: 2003-08-07 19:51-0400\n"
 "Last-Translator: Godefroid Chapelle <gotcha@swing.be>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope3.org>\n"
@@ -31,6 +31,11 @@ msgstr ""
 
 #: src/zope/app/adapter/browser/configure.zcml:7
 msgid "Allows the registration of Adapters in this site"
+msgstr ""
+
+#: src/zope/app/apidoc/viewmodule/__init__.py:200
+#: src/zope/app/apidoc/viewmodule/__init__.py:262
+msgid "$file (line $line)"
 msgstr ""
 
 #: src/zope/app/applicationcontrol/browser/configure.zcml:10
@@ -425,6 +430,7 @@ msgid "You can configure the RAM Cache here."
 msgstr "Vous pouvez configurer le cache RAM ici."
 
 #: src/zope/app/cache/browser/ramstats.pt:20
+#: src/zope/app/hub/browser/hubcontrol.pt:31
 msgid "Path"
 msgstr "Chemin"
 
@@ -453,17 +459,27 @@ msgstr "Statistiques"
 msgid "Catalog is currently <strong>subscribed</strong> to the object hub."
 msgstr "Le catalogue est actuellement <strong>inscrit</strong> au hub objet"
 
-#: src/zope/app/catalog/browser/advanced.pt:27
+#: src/zope/app/catalog/browser/advanced.pt:16
+#: src/zope/app/hub/browser/subscription_control.pt:30
+#: src/zope/app/index/browser/field/control.pt:52
+#: src/zope/app/index/browser/text/control.pt:47
+#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:24
+#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:29
+msgid "unsubscribe-button"
+msgstr ""
+
+#: src/zope/app/catalog/browser/advanced.pt:28
+#: src/zope/app/hub/browser/subscription_control.pt:35
 #: src/zope/app/index/browser/field/control.pt:57
 #: src/zope/app/index/browser/text/control.pt:52
 msgid "subscribe-button"
 msgstr "Souscrire"
 
-#: src/zope/app/catalog/browser/advanced.pt:30
+#: src/zope/app/catalog/browser/advanced.pt:31
 msgid "(and reindex all objects, if checked)"
 msgstr "(si sélectionné, réindexe tous les objets)"
 
-#: src/zope/app/catalog/browser/advanced.pt:51
+#: src/zope/app/catalog/browser/advanced.pt:52
 #: src/zope/app/dublincore/browser/edit.pt:31
 #: src/zope/app/errorservice/browser/error.pt:52
 #: src/zope/app/form/browser/add.pt:60 src/zope/app/form/browser/edit.pt:58
@@ -546,8 +562,8 @@ msgstr "---choisir un interface---"
 
 # Default: "Anything"
 #: src/zope/app/component/browser/interfacewidget.py:299
-#: src/zope/app/presentation/presentation.py:276
-#: src/zope/app/presentation/presentation.py:357
+#: src/zope/app/presentation/presentation.py:263
+#: src/zope/app/presentation/presentation.py:344
 msgid "any-interface"
 msgstr ""
 
@@ -654,7 +670,7 @@ msgstr "Chercher"
 #: src/zope/app/container/browser/metaconfigure.py:59
 #: src/zope/app/menu/browser/configure.zcml:63
 #: src/zope/app/bundle/browser/configure.zcml:11
-#: src/zope/app/workflow/browser/configure.zcml:45
+#: src/zope/app/workflow/browser/configure.zcml:35
 #: src/zope/app/folder/browser/configure.zcml:20
 #: src/zope/app/site/browser/configure.zcml:19
 msgid "Contents"
@@ -1275,6 +1291,16 @@ msgstr ""
 msgid "Hide Object Registrations"
 msgstr ""
 
+#: src/zope/app/hub/browser/hubcontrol.pt:32
+msgid "Object ID"
+msgstr ""
+
+#: src/zope/app/hub/browser/hubcontrol.pt:33
+#: src/zope/app/i18n/browser/synchronize.pt:89
+#: src/zope/app/site/browser/interfacedetail.pt:79
+msgid "Status"
+msgstr ""
+
 #: src/zope/app/hub/browser/hubcontrol.pt:44
 msgid "Unregister Missing Objects"
 msgstr ""
@@ -1316,14 +1342,14 @@ msgstr ""
 msgid "Registration \"Service\" Control Page"
 msgstr ""
 
-#: src/zope/app/hub/browser/subscription_control.pt:33
+#: src/zope/app/hub/browser/subscription_control.pt:34
 #: src/zope/app/index/browser/field/control.pt:56
 #: src/zope/app/index/browser/text/control.pt:51
 #: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:28
 msgid "Subscription state: OFF"
 msgstr ""
 
-#: src/zope/app/hub/browser/subscription_control.pt:39
+#: src/zope/app/hub/browser/subscription_control.pt:41
 msgid "Register Existing Objects"
 msgstr ""
 
@@ -1332,7 +1358,7 @@ msgid "Translate"
 msgstr ""
 
 #: src/zope/app/i18n/browser/configure.zcml:35
-#: src/zope/app/workflow/browser/configure.zcml:25
+#: src/zope/app/workflow/browser/configure.zcml:15
 msgid "Import/Export"
 msgstr ""
 
@@ -1423,11 +1449,6 @@ msgstr ""
 #: src/zope/app/i18n/browser/translate.pt:76
 #: src/zope/app/i18n/browser/translatemessage.pt:16
 msgid "Message Id"
-msgstr ""
-
-#: src/zope/app/i18n/browser/synchronize.pt:89
-#: src/zope/app/site/browser/interfacedetail.pt:79
-msgid "Status"
 msgstr ""
 
 #: src/zope/app/i18n/browser/synchronize.py:30
@@ -1596,13 +1617,6 @@ msgstr ""
 #: src/zope/app/index/browser/field/control.pt:46
 #: src/zope/app/index/browser/text/control.pt:36
 msgid "Documents: ${doc_count}"
-msgstr ""
-
-#: src/zope/app/index/browser/field/control.pt:52
-#: src/zope/app/index/browser/text/control.pt:47
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:24
-#: src/zope/app/workflow/browser/stateful/contentworkflow_index.pt:29
-msgid "unsubscribe-button"
 msgstr ""
 
 #: src/zope/app/index/browser/field/control.pt:73
@@ -2114,33 +2128,33 @@ msgstr ""
 msgid "View Folder"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:279
+#: src/zope/app/presentation/presentation.py:266
 msgid "${view_name} ${ptype} View for ${iface_name}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:281
+#: src/zope/app/presentation/presentation.py:268
 msgid "${view_name} ${ptype} View for ${iface_name} in layer ${layer}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:292
+#: src/zope/app/presentation/presentation.py:279
 msgid "Registered by ZCML"
 msgstr ""
 
 # Default: "View"
-#: src/zope/app/presentation/presentation.py:343
+#: src/zope/app/presentation/presentation.py:330
 msgid "view-component"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:362
+#: src/zope/app/presentation/presentation.py:349
 msgid "${view_name} for ${pname} {what} {iface_name}"
 msgstr ""
 
-#: src/zope/app/presentation/presentation.py:364
+#: src/zope/app/presentation/presentation.py:351
 msgid "${view_name} for ${pname} ${what} ${iface_name} in layer ${layer}"
 msgstr ""
 
 # Default: "Page"
-#: src/zope/app/presentation/presentation.py:419
+#: src/zope/app/presentation/presentation.py:406
 msgid "page-component"
 msgstr ""
 
@@ -2471,13 +2485,19 @@ msgid ""
 "specific function and is activated."
 msgstr ""
 
+#: src/zope/app/registration/browser/registration.pt:50
+#: src/zope/app/site/browser/add_svc_config.pt:14
+#, fuzzy
+msgid "register-button"
+msgstr "Reset"
+
 #: src/zope/app/registration/configure.zcml:36
 #: src/zope/app/registration/browser/editregistration.pt:10
 msgid "Registration Manager"
 msgstr ""
 
 #: src/zope/app/registration/interfaces.py:130
-#: src/zope/app/utility/interfaces.py:49
+#: src/zope/app/utility/interfaces.py:56
 msgid "Component path"
 msgstr ""
 
@@ -3426,11 +3446,6 @@ msgstr ""
 msgid "${active_services} activated"
 msgstr ""
 
-#: src/zope/app/site/browser/add_svc_config.pt:14
-#, fuzzy
-msgid "register-button"
-msgstr "Reset"
-
 #: src/zope/app/site/browser/add_svc_config.pt:15
 msgid "Service name"
 msgstr ""
@@ -3707,7 +3722,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:36
+#: src/zope/app/site/interfaces.py:162 src/zope/app/utility/interfaces.py:43
 msgid "The name that is registered"
 msgstr ""
 
@@ -3999,19 +4014,19 @@ msgstr ""
 msgid "Utilities registered in this utility service"
 msgstr ""
 
-#: src/zope/app/utility/interfaces.py:35
+#: src/zope/app/utility/interfaces.py:42
 msgid "Register As"
 msgstr ""
 
-#: src/zope/app/utility/interfaces.py:42
+#: src/zope/app/utility/interfaces.py:49
 msgid "Provided interface"
 msgstr ""
 
-#: src/zope/app/utility/interfaces.py:43
+#: src/zope/app/utility/interfaces.py:50
 msgid "The interface provided by the adapter"
 msgstr ""
 
-#: src/zope/app/utility/interfaces.py:50
+#: src/zope/app/utility/interfaces.py:57
 msgid "The physical path to the component"
 msgstr ""
 
@@ -4250,16 +4265,15 @@ msgstr "Nom de l'argument"
 msgid "Name of the parent wiki page."
 msgstr ""
 
-#: src/zope/app/workflow/browser/configure.zcml:16
-msgid "A workflow service"
+#: src/zope/app/workflow/browser/configure.zcml:6
+msgid ""
+"Workflow Process Definitions define a particular workflow       for an "
+"object."
 msgstr ""
 
-#: src/zope/app/workflow/browser/configure.zcml:16
-msgid "Workflow Service"
-msgstr ""
-
-#: src/zope/app/workflow/browser/configure.zcml:8
-msgid "Processes"
+#: src/zope/app/workflow/browser/configure.zcml:6
+#: src/zope/app/workflow/browser/stateful/configure.zcml:158
+msgid "Workflows"
 msgstr ""
 
 #: src/zope/app/workflow/browser/definition_index.pt:11
@@ -4351,10 +4365,6 @@ msgstr ""
 msgid "Content/Process Registry"
 msgstr ""
 
-#: src/zope/app/workflow/browser/stateful/configure.zcml:158
-msgid "Workflows"
-msgstr ""
-
 #: src/zope/app/workflow/browser/stateful/configure.zcml:28
 msgid "Relevant Data Schema"
 msgstr ""
@@ -4388,11 +4398,11 @@ msgstr ""
 msgid "Stateful State"
 msgstr ""
 
-#: src/zope/app/workflow/browser/stateful/contentworkflow.py:88
+#: src/zope/app/workflow/browser/stateful/contentworkflow.py:87
 msgid "Mapping(s) added."
 msgstr ""
 
-#: src/zope/app/workflow/browser/stateful/contentworkflow.py:96
+#: src/zope/app/workflow/browser/stateful/contentworkflow.py:95
 msgid "Mapping(s) removed."
 msgstr ""
 
@@ -4447,7 +4457,7 @@ msgstr ""
 msgid "Process Definition Transitions"
 msgstr ""
 
-#: src/zope/app/workflow/browser/stateful/instance.py:148
+#: src/zope/app/workflow/browser/stateful/instance.py:147
 msgid "Updated Workflow Data."
 msgstr ""
 
@@ -4483,31 +4493,18 @@ msgstr ""
 msgid "Workflow-relevant Data"
 msgstr ""
 
-#: src/zope/app/workflow/browser/workflows.pt:15
-msgid ""
-"To configure a Process Definition, add a Process Definition utility to a "
-"<em>package</em> in <a href=\"../../../Packages\">Packages</a> or to the <a "
-"href=\"../../../Packages/default\">default package</a>. After the utility is "
-"added, add a Process Definition configuration that configures the component "
-"to provide a Process Definition."
-msgstr ""
-
-#: src/zope/app/workflow/browser/workflows.pt:5
-msgid "Process Definitions configured in this workflow service"
-msgstr ""
-
 # Default: "Create Workflow ProcessInstances"
-#: src/zope/app/workflow/configure.zcml:15
+#: src/zope/app/workflow/configure.zcml:14
 msgid "create-workflow-processinstances-permission"
 msgstr ""
 
 # Default: "Use Workflow ProcessInstances"
-#: src/zope/app/workflow/configure.zcml:21
+#: src/zope/app/workflow/configure.zcml:20
 msgid "use-workflow-processinstances-permission"
 msgstr ""
 
 # Default: "Manage Workflow ProcessDefinitions"
-#: src/zope/app/workflow/configure.zcml:9
+#: src/zope/app/workflow/configure.zcml:8
 msgid "manage-workflow-processdefinitions-permission"
 msgstr ""
 
@@ -4865,6 +4862,10 @@ msgstr ""
 #, fuzzy
 msgid "Bar description"
 msgstr "Souscrire"
+
+#, fuzzy
+#~ msgid "unsubscribe=button"
+#~ msgstr "Souscrire"
 
 #, fuzzy
 #~ msgid "Reload"
