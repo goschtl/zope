@@ -13,13 +13,13 @@
 ##############################################################################
 """Test loading of Dublin Core metadata from the XML representation.
 
-$Id: test_xmlmetadata.py,v 1.1 2003/08/20 21:25:15 fdrake Exp $
+$Id: test_xmlmetadata.py,v 1.2 2003/08/27 04:47:55 fdrake Exp $
 """
 
 import unittest
 
 from zope.app.dublincore import dcterms
-from zope.app.dublincore.xmlmetadata import parseString
+from zope.app.dublincore.xmlmetadata import dumpString, parseString
 
 
 # XXX still need tests for the serializer
@@ -270,9 +270,27 @@ class XMLDublinCoreLoadingTests(unittest.TestCase):
         self.assertRaises(ValueError, self.parse,
                           "<d:type s:type='t:DCMIType'>flub</d:type>")
 
+class XMLDublinCoreSerializationTests(unittest.TestCase):
+
+    def roundtrip(self, mapping):
+        text = dumpString(mapping)
+        parsed = parseString(text)
+        self.assertEqual(parsed, mapping)
+
+    def test_serialize_empty(self):
+        self.roundtrip({})
+
+    def test_single_entry(self):
+        self.roundtrip({"Title.Alternative": (u"Foo",)})
+
+    def test_two_titles(self):
+        self.roundtrip({"Title": (u"Foo", u"Bar")})
+
 
 def test_suite():
-    return unittest.makeSuite(XMLDublinCoreLoadingTests)
+    suite = unittest.makeSuite(XMLDublinCoreLoadingTests)
+    suite.addTest(unittest.makeSuite(XMLDublinCoreSerializationTests))
+    return suite
 
 if __name__ == "__main__":
     unittest.main(defaultTest="test_suite")
