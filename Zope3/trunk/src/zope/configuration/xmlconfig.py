@@ -12,11 +12,12 @@
 #
 ##############################################################################
 """
-$Id: xmlconfig.py,v 1.7 2003/06/12 09:28:11 jim Exp $
+$Id: xmlconfig.py,v 1.8 2003/06/22 19:00:58 jeremy Exp $
 """
 
 import os
 import sys
+import logging
 from keyword import iskeyword
 from types import StringType
 from os.path import abspath
@@ -34,6 +35,8 @@ from zope.configuration.exceptions import ConfigurationError
 # when included, and the same went for all of its parents.
 _NO_MODULE_GIVEN = object()
 
+
+logger = logging.getLogger("config")
 
 class ZopeXMLConfigurationError(ConfigurationError):
     """Zope XML Configuration error"""
@@ -355,6 +358,7 @@ class XMLConfig:
         return ()
 
     def _include(self, file_name, package):
+        logger.debug("include %s" % file_name)
         f = open(file_name)
         self._stack.append(file_name)
         xmlconfig(f, self._actions, Context(self._stack, package),
