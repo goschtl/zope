@@ -175,8 +175,10 @@ class ZPTPageTest(BrowserTestCase):
 
 
 def test_suite():
+    from zope.app.tests.functional import FunctionalDocFileSuite
     return unittest.TestSuite((
         unittest.makeSuite(ZPTPageTest),
+        FunctionalDocFileSuite('collector266.txt'),
         ))
 
 if __name__ == '__main__':
