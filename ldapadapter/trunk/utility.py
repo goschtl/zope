@@ -62,7 +62,7 @@ class LDAPAdapter(object):
         self.bindPassword = bindPassword
         self.useSSL = useSSL
 
-    def connect(self, dn, password=None):
+    def connect(self, dn=None, password=None):
         proto = self.useSSL and 'ldaps' or 'ldap'
         conn_str = '%s://%s:%s/' % (proto, self.host, self.port)
         conn = ldap.initialize(conn_str)
@@ -75,8 +75,9 @@ class LDAPAdapter(object):
         # TODO: conn.set_option(OPT_REFERRALS, 1)
 
         # Bind the connection to the dn
-        if not dn:
+        if dn is None:
             dn = self.bindDN
+            password = self.bindPassword
         conn.simple_bind_s(dn, password)
         # May raise INVALID_CREDENTIALS, SERVER_DOWN, ...
         
