@@ -965,7 +965,7 @@ def process_args(argv=None):
         elif k in ("-t", "--top-fifty"):
             if not TIMETESTS:
                 TIMETESTS = 50
-        elif k in ("-u", "--gui"):
+        elif k in ("-U", "--gui"):
             GUI = 1
         elif k in ("-v", "--verbose"):
             VERBOSE += 1
