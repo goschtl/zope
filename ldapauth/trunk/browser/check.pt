@@ -77,7 +77,7 @@
 				</thead>
 				<tbody>
 					<tr tal:repeat="line testreport" >
-						<td><span tal:content="structure line">report entry</span></td>
+						<td><span tal:content="structure line">report entry</span>&nbsp;</td>
 					</tr>
 				</tbody>
 			</table>

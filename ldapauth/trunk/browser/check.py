@@ -57,13 +57,19 @@ class CheckLDAPView(BrowserView):
         if runtest == "Run":
             un = self.request.get('username')
             pw = self.request.get('password')
+            
+            # get the ldapauth source
+            testadapter = ICheckLDAPAdapter(self.context)
 
             # test the connection to the LDAP server
-            self._addInfo("<strong>Test LDAP server connection</strong>")
-            testadapter = ICheckLDAPAdapter(self.context)
+            self._addInfo("<strong>Test python connection and LDAP server binding</strong>")
             self.report = self.report + testadapter.testConnection()
+            self._addInfo(" ")
 
             # test quering the LDAP server
+            self._addInfo("<strong>Test get principals</strong>")
+            self.report = self.report + testadapter.testGetPrincipals(un)
+            self._addInfo(" ")
 
             # test query the given username
 
