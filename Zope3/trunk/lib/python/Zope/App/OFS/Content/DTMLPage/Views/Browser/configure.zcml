@@ -51,7 +51,9 @@
   <browser:icon name="zmi_icon" for=".DTMLPage.IDTMLPage." file="dtml.gif" />
 
   <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Container.IAdding."
-                    title="DTML Page" action="DTMLPage"/>
+      for="Zope.App.OFS.Container.IAdding."
+      title="DTML Page" action="DTMLPage"
+      description="An object for dynamic content based on Document Templates."
+  />
 
 </zopeConfigure>

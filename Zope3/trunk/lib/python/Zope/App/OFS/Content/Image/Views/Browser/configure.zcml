@@ -83,10 +83,12 @@
 
   <browser:menuItem menu="add_content"
                     for="Zope.App.OFS.Container.IAdding."
-                    title="Image" action="Image"/>
+                    title="Image" action="Image"
+		    description="This object helps you manage your images." />
 
   <browser:menuItem menu="add_content"
                     for="Zope.App.OFS.Container.IAdding."
-                    title="I18n Image" action="I18nImage"/>
+                    title="I18n Image" action="I18nImage"
+		    description="A multi-locale version of an Image." />
 
 </zopeConfigure>

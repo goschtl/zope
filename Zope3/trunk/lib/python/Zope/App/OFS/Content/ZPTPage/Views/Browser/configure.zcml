@@ -51,7 +51,8 @@
   <browser:icon name="zmi_icon" for=".ZPTPage.IZPTPage." file="zpt.gif" />
 
   <browser:menuItem menu="add_content"
-                    for="Zope.App.OFS.Container.IAdding."
-                    title="Zope Page Template Page" action="ZPTPage"/>
+      for="Zope.App.OFS.Container.IAdding."
+      title="Zope Page Template Page" action="ZPTPage"
+      description="An object for dynamic content based on Page Templates." />
 
 </zopeConfigure>

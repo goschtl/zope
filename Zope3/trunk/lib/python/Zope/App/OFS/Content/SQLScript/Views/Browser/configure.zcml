@@ -33,6 +33,7 @@
 
 <browser:menuItem menu="add_content"
     for="Zope.App.OFS.Container.IAdding."
-    title="SQLScript" action="SQLScript" />
+    title="SQLScript" action="SQLScript"
+    description="A content object getting its data from a RDB." />
 
 </zopeConfigure>
