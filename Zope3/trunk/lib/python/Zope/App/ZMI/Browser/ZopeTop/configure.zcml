@@ -3,16 +3,15 @@
    xmlns:browser='http://namespaces.zope.org/browser'
 >
 
+  <browser:menu id="zmi_views" 
+                title="Menu for displaying alternate representations
+                       of an object" />
+
   <browser:skin name="ZopeTop" layers="templates images css default" />
 
   <browser:view name="standard_macros"
                 permission="Zope.View"
-                template="www/standard_macros.pt" 
-		layer="templates" />
-
-  <browser:view name="standard_widgets"
-                permission="Zope.View"
-                template="www/standard_widgets.pt" 
+                factory=".StandardMacros."
 		layer="templates" />
 
   <browser:resource name="zopetopBasic.css" 

@@ -38,9 +38,14 @@
      <p>Body here</p>
   </div>
 
-  <div metal:define-macro="footer">
-  <p>User: <span tal:replace="request/user/getTitle">User</span><p>
+  <div metal:define-macro="logged_user">
+  <p>User: <span tal:replace="request/user/getTitle">User</span></p>
   </div>
+
+  <div metal:define-macro="footer">
+  <p>Powered by Zope</p>
+  </div>
+
 </body>
 </html>
 
