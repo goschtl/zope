@@ -13,7 +13,7 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.10 2004/02/09 05:16:31 Zen Exp $
+$Id: setup.py,v 1.11 2004/02/09 05:31:27 Zen Exp $
 """
 
 import zope.component
@@ -204,6 +204,3 @@ def createStandardServices(folder, hubids=None):
 
     addService(sm, HubIds, hubids)
 
-    # Utilities service
-    defineService(LocalUtilityService, ILocalUtilityService)
-    addService(sm, Utilities, LocalUtilityService())
