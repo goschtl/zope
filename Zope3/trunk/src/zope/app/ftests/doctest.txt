@@ -8,7 +8,7 @@ Request/Response Functional Tests
 ---------------------------------
 
 You can create Functional tests as doctests.  Typically, this is done
-by using a script such as zope.app.tests.dochttp.py to convert
+by using a script such as src/zope/app/tests/dochttp.py to convert
 tcpwatch recorded output to a doctest, which is then edited to provide
 explanation and to remove uninyeresting details.  That is how this
 file was created.
@@ -110,16 +110,16 @@ Finally, lets access the default page for the site:
 Access to the object system
 ---------------------------
 
-You can use the getRootFolder function:
+You can use the `getRootFolder()` function:
 
   >>> root = getRootFolder()
   >>> root
   <zope.app.folder.folder.Folder object at ...>
 
-You can intermic http requests with regular Python calls.  Note,
-however, that making an http call implied a transaction commit.
+You can intermix HTTP requests with regular Python calls.  Note,
+however, that making an `http()` call implied a transaction commit.
 If you want to throw away changes made in Python code, abort the
-transaction before the http request.
+transaction before the HTTP request.
 
   >>> print http(r"""
   ... POST /@@contents.html HTTP/1.1
