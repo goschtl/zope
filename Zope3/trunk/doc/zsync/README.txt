@@ -169,6 +169,11 @@ To Do
 
     -3 diffs between original and remote
 
+  * Should have some sort of "zsync login" command so that users don't
+    need to include their Zope username and password in the URL they
+    type to do a checkout; this may just be a matter of asking for
+    missing username and password when performing a checkout.
+
   * Something akin to **cvs -n update** or **svn status -u**, which
     shows what update would do without actually doing it.
 
