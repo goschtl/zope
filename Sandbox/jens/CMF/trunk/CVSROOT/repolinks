@@ -24,9 +24,11 @@
 #   path translates to a link that points to an empty directory
 #   (CVSROOT/Emptydir) - the CVS equivalent of a removed directory.
 #
-#   Note that you must *add* any subdirectories that are also to be
-#   removed, otherwise you'll get "no such file or directory" errors
-#   when doing a cvs update, post-change.
+#   XXX Don't use this mechanism on non-leaf directories.  adjustlinks
+#   doesn't work correctly in that case.  You can't EmptyDir the
+#   subdirs because that'll just create recursive symlinks in
+#   EmptyDir.  What adjustlinks needs to do is create the parent
+#   directories and then symlink the leaves to EmptyDir.
 
 ####################                            #####################
 # Where Link Lives #                            # Where Link Points #
@@ -106,8 +108,9 @@
 #/StandaloneZODB/ZEO1/tests
 #/StandaloneZODB/ExtensionClass
 #/StandaloneZODB/BTrees
-#/StandaloneZODB/bsddb3Storage/bsddb3Storage
 #/StandaloneZODB/bsddb3Storage/docs
+#/StandaloneZODB/bsddb3Storage/bsddb3Storage
+#/StandaloneZODB/bsddb3Storage/bsddb3Storage/tests
 #/StandaloneZODB/Persistence
 #/StandaloneZODB/ThreadedAsync
 #/StandaloneZODB/zdaemon
@@ -115,8 +118,9 @@
 #/StandaloneZODB/logging
 
 # Retire these in favor of BDBStorage
-#/ZODB3/bsddb3Storage/bsddb3Storage
 #/ZODB3/bsddb3Storage/docs
+#/ZODB3/bsddb3Storage/bsddb3Storage
+#/ZODB3/bsddb3Storage/bsddb3Storage/tests
 
 /ZODB3/ZODB              /Packages/ZODB
 /ZODB3/ZEO               /Packages/ZEO
