@@ -14,7 +14,7 @@
 ##############################################################################
 """Interfaces that give the size of an object.
 
-$Id: size.py,v 1.2 2002/12/27 20:33:50 stevea Exp $
+$Id: size.py,v 1.3 2003/03/12 10:07:25 stevea Exp $
 """
 
 from zope.interface import Interface, Attribute
@@ -29,11 +29,11 @@ class ISized(Interface):
 
     def sizeForSorting():
         """Returns a tuple (basic_unit, amount)
-        
+
         Used for sorting among different kinds of sized objects.
         'amount' need only be sortable among things that share the
         same basic unit."""
-        
+
     def sizeForDisplay():
         """Returns a string giving the size.
         """

@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: file.py,v 1.5 2003/02/03 15:08:32 jim Exp $
+$Id: file.py,v 1.6 2003/03/12 10:07:27 stevea Exp $
 """
 import datetime
 zerotime = datetime.datetime.fromtimestamp(0)
@@ -37,20 +37,16 @@ class File(Persistent):
         self.data = data
         self.contentType = contentType
 
-
     def __len__(self):
         return self.size
-
 
     def setContentType(self, contentType):
         '''See interface IFile'''
         self._contentType = contentType
 
-
     def getContentType(self):
         '''See interface IFile'''
         return self._contentType
-
 
     def edit(self, data, contentType=None):
         '''See interface IFile'''
@@ -65,7 +61,6 @@ class File(Persistent):
         if data is not None:
             self.data = data
 
-
     def getData(self):
         '''See interface IFile'''
         if hasattr(self._data, '__class__') and \
@@ -73,7 +68,6 @@ class File(Persistent):
             return str(self._data)
         else:
             return self._data
-
 
     def setData(self, data):
         '''See interface IFile'''
@@ -160,7 +154,6 @@ class File(Persistent):
 
         self._data, self._size = next, size
         return None
-
 
     def getSize(self):
         '''See interface IFile'''
