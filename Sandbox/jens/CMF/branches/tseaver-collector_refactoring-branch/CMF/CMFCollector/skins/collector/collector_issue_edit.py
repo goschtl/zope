@@ -7,6 +7,11 @@ REQGET = context.REQUEST.get
 
 was_security_related = context.security_related
 
+#
+#   XXX:  Move all the "change computation" to this method, simplifying
+#         the actual 'edit' method.
+#
+
 changed = context.edit(title=REQGET('title'),
                        submitter_id=REQGET('submitter_id', None),
                        submitter_name=REQGET('submitter_name', None),

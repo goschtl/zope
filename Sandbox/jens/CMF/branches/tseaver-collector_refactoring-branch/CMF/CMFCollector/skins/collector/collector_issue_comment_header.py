@@ -8,7 +8,7 @@
 
 from DateTime import DateTime
 import string
-user = context.REQUEST.AUTHENTICATED_USER
+member = context.portal_membership.getAuthenticatedMember()
 
 if string.lower(type) == "comment":
     # We number the comments (sequence_number is incremented by add_comment)
@@ -17,5 +17,5 @@ else:
     # ... but don't number the other entries.
     lead = type
 
-return "%s by %s on %s ==>" % (lead, str(user), DateTime().aCommon())
+return "%s by %s on %s ==>" % (lead, member.getUserName(), DateTime().aCommon())
                                 
