@@ -475,20 +475,15 @@ class DatetimeWidget(TextWidget):
                 raise ConversionError(_("Invalid datetime data"), v)
 
 
-class DateWidget(TextWidget):
+class DateWidget(DatetimeWidget):
     """Date entry widget.
     """
 
-    displayWidth = 20
-
     def _toFieldValue(self, input):
-        if input == self._missing:
-            return self.context.missing_value
-        else:
-            try:
-                return parseDatetimetz(input).date()
-            except (DateTimeError, ValueError, IndexError), v:
-                raise ConversionError(_("Invalid datetime data"), v)
+        v = super(DateWidget, self)._toFieldValue(input)
+        if v != self.context.missing_value:
+            v = v.date()
+        return v
 
 
 class DateDisplayWidget(DisplayWidget):
