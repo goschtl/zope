@@ -14,7 +14,7 @@
 """
 Basic tests for XML Document.
 
-$Id: test_xmldocument.py,v 1.2 2003/04/10 13:04:43 faassen Exp $
+$Id: test_xmldocument.py,v 1.3 2003/04/11 10:52:16 philikon Exp $
 """
 
 import unittest
@@ -26,7 +26,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 
 from zope.interface import Interface
 from zope.interface.interface import InterfaceClass
-from zope.app.interfaces.xml.representable import IXMLRepresentable
+from zope.app.interfaces.xml.source import IXMLSource
 from zope.app.component.globalinterfaceservice import interfaceService
 
 class IRandomInterface(Interface):
@@ -59,7 +59,7 @@ class XMLDocumentTests(PlacelessSetup, unittest.TestCase):
 
         schema1 = 'http://schema.zope.org/hypothetical/schema1'
         schema2 = 'http://schema.zope.org/hypothetical/schema2'
-        extends = (IXMLRepresentable,)
+        extends = (IXMLSource,)
         interface1 = InterfaceClass(schema1, extends, {})
         interface2 = InterfaceClass(schema2, extends, {})
         
@@ -113,7 +113,7 @@ foo
         
         schema1 = 'http://schema.zope.org/hypothetical/schema1'
         schema2 = 'http://schema.zope.org/hypothetical/schema2'
-        extends = (IXMLRepresentable,)
+        extends = (IXMLSource,)
         interface1 = InterfaceClass(schema1, extends, {})
         interface2 = InterfaceClass(schema2, extends, {})
         

@@ -12,19 +12,19 @@
 #
 ##############################################################################
 """
-$Id: representable.py,v 1.1 2003/04/09 20:51:31 philikon Exp $
+$Id: source.py,v 1.1 2003/04/11 10:52:16 philikon Exp $
 """
 
 from zope.interface import Interface, Attribute
 
-class IXMLRepresentable(Interface):
+class IXMLSource(Interface):
     """
     This object can be adapted to one form of XML data representation
     """
 
-class IXMLText(IXMLRepresentable):
+class IXMLText(IXMLSource):
     """
     This object represents XML data as text.
     """
 
-    source = Attribute("XML text source")
+    source = Attribute("XML text")

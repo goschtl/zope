@@ -12,10 +12,10 @@
 #
 ##############################################################################
 """
-$Id: xmldocument.py,v 1.2 2003/04/10 08:38:11 philikon Exp $
+$Id: xmldocument.py,v 1.3 2003/04/11 10:52:16 philikon Exp $
 """
 import zope.app.xml.field
-from zope.app.interfaces.xml.representable import IXMLText
+from zope.app.interfaces.xml.source import IXMLText
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 class IXMLDocument(IXMLText):

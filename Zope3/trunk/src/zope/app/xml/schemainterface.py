@@ -13,11 +13,11 @@
 ##############################################################################
 """XML schema interfaces
 
-$Id: schemainterface.py,v 1.1 2003/04/10 16:07:45 philikon Exp $
+$Id: schemainterface.py,v 1.2 2003/04/11 10:52:17 philikon Exp $
 """
 
 from zope.interface.interface import InterfaceClass
-from zope.app.interfaces.xml.representable import IXMLRepresentable
+from zope.app.interfaces.xml.source import IXMLSource
 
 class XMLSchemaInterfaceClass(InterfaceClass):
     """
@@ -29,9 +29,9 @@ class XMLSchemaInterfaceClass(InterfaceClass):
     def __init__(self, uri):
         doc = """XML Schema based interface
 
-    Instances of this interface must be XML representable with XML that conforms
+    Instances of this interface must be an XML source that conforms
     to the schema: %s""" % uri
-        super(XMLSchemaInterfaceClass, self).__init__(uri, (IXMLRepresentable,),
+        super(XMLSchemaInterfaceClass, self).__init__(uri, (IXMLSource,),
                                                       __doc__=doc)
 
     def __reduce__(self):

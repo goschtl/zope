@@ -4,9 +4,9 @@ Zope 3 XML Architecture
 
 Short description of the Zope 3 XML Architecture:
 
-  * Framework to represent any object as XML (IXMLRepresentable).
+  * Framework to represent any object as XML (IXMLSource).
 
-  * XML Schema Interfaces. An IXMLRepresentable implements zero or
+  * XML Schema Interfaces. An IXMLSource implements zero or
     more XML Schema Interfaces on a per-instance basis.
 
   * Using XML Schema Interfaces, we can leverage Zope 3's Component
@@ -15,16 +15,16 @@ Short description of the Zope 3 XML Architecture:
     another. Multiple adapters can be strung together this way to
     create a pipelined transformation architecture.
 
-  * We can also provide views for XML representable objects based on the
+  * We can also provide views for XML source objects based on the
     schemas they implement, for instance an IXSLTView that uses an
     XSLT stylesheet to provide a presentation in HTML.
 
-IXMLRepresentable
+IXMLSource
 
-  Promises to be adaptable to one of (these are all IXMLRepresentable
-  as well):
+  Promises to be adaptable to one of the following (these are all
+  IXMLSource as well):
 
-    * IXMLText: XML source text
+    * IXMLText: XML text
 
     * IXMLDom: W3C DOM tree.
 
@@ -48,15 +48,15 @@ XML Schema Interfaces
     * provide an adapter from IInvoiceSchema to IInvoice.
 
     * create a class that implements IInvoice as well as
-      IXMLRepresentable. The only XML this object should represent
-      should be conformant to IInvoiceSchema.
+      IXMLSource. The only XML this object should represent should be
+      conformant to IInvoiceSchema.
 
 Views
 
-  Since XML schema interfaces can be treated like any other interfaces in many
-  ways, we can also define views for them. Using the above example schema, the
-  following browser page would be a view for XMLRepresentables implementing
-  it::
+  Since XML schema interfaces can be treated like any other interfaces
+  in many ways, we can also define views for them. Using the above
+  example schema, the following browser page would be a view for XML
+  sources implementing it::
 
     <browser:page
         name="report.html"
