@@ -7,6 +7,7 @@
     provides=".interfaces.IAdapted"
     factory=".classes.Adapter" />
 
+  <!-- attribute page -->
   <browser:page
     for=".interfaces.ISimpleContent"
     class=".browser.SimpleContentView"
@@ -15,6 +16,7 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <!-- template/class page -->
   <browser:page
     for=".interfaces.ISimpleContent"
     class=".browser.SimpleContentView"
@@ -23,6 +25,7 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <!-- template page (with simple python expression) -->
   <browser:page
     for=".interfaces.ISimpleContent"
     template="owl.pt"
@@ -30,6 +33,7 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <!-- template page which calls on context using python -->
   <browser:page
     for=".interfaces.ISimpleContent"
     template="flamingo.pt"
@@ -37,6 +41,7 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <!-- template page which calls on context using path -->
   <browser:page
     for=".interfaces.ISimpleContent"
     template="flamingo2.pt"
@@ -44,6 +49,7 @@
     permission="zope.ViewManagementScreens"
     />
 
+  <!-- template/class page which calls on context, view, views -->
   <browser:page
     for=".interfaces.ISimpleContent"
     class=".browser.SimpleContentView"
