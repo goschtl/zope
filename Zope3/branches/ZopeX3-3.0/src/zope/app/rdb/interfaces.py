@@ -405,7 +405,9 @@ class IZopeDatabaseAdapterManagement(Interface):
         "dbi://user:passwd/dbname\n"
         "dbi://user:passwd/dbname;param1=value...\n"
         "dbi://user:passwd@host:port/dbname\n"
-        "dbi://user:passwd@host:port/dbname;param1=value...\n"),
+        "dbi://user:passwd@host:port/dbname;param1=value...\n"
+        "\n"
+        "All values should be properlu URL-encoded."),
         default=u"dbi://dbname",
         required=True)
 

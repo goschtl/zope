@@ -21,6 +21,7 @@ $Id$
 """
 import types, string
 from types import StringTypes
+from urllib import unquote_plus
 
 from persistent import Persistent
 
@@ -171,10 +172,16 @@ def parseDSN(dsn):
 
        dbi://dbname
        dbi://dbname;param1=value...
+       dbi://user/dbname
        dbi://user:passwd/dbname
        dbi://user:passwd/dbname;param1=value...
+       dbi://user@host/dbname
+       dbi://user:passwd@host/dbname
        dbi://user:passwd@host:port/dbname
        dbi://user:passwd@host:port/dbname;param1=value...
+
+    Any values that might contain characters special for URIs need to be
+    quoted as it would be returned by `urllib.quote_plus`.
 
     Return value is a mapping with the following keys:
 
@@ -199,7 +206,9 @@ def parseDSN(dsn):
     dsn = raw_params[0]
     raw_params = raw_params[1:]
 
-    parameters = dict([param.split('=') for param in raw_params])
+    parameters = [param.split('=') for param in raw_params]
+    parameters = dict([(unquote_plus(key), unquote_plus(value))
+                       for key, value in parameters])
 
     result['parameters'] = parameters
 
@@ -210,12 +219,15 @@ def parseDSN(dsn):
         dbname = dsn
         dsn = ''
 
-    result['dbname'] = dbname
+    result['dbname'] = unquote_plus(dbname)
 
     # Get host and port from DSN
     if dsn and dsn.find('@') > 0:
         dsn, host_port = dsn.split('@')
-        host, port = host_port.split(':')
+        if host_port.find(':') > 0:
+            host, port = host_port.split(':')
+        else:
+            host, port = host_port, ''
     else:
         host, port = '', ''
 
@@ -224,12 +236,15 @@ def parseDSN(dsn):
 
     # Get username and password from DSN
     if dsn:
-        username, password = dsn.split(':', 1)
+        if dsn.find(':') > 0:
+            username, password = dsn.split(':', 1)
+        else:
+             username, password = dsn, ''
     else:
         username, password = '', ''
 
-    result['username'] = username
-    result['password'] = password
+    result['username'] = unquote_plus(username)
+    result['password'] = unquote_plus(password)
 
     return result
 

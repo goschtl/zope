@@ -6,6 +6,22 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
+  Zope X3.0.1
+
+    Bug Fixes
+
+      - Backported several bug fixes made to the DSN parser, including issue
+        304.
+
+    Much thanks to everyone who contributed to this release:
+
+      Jim Fulton, Stephan Richter
+
+      Note: If you are not listed and contributed, please add yourself. This
+      note will be deleted before the release.
+
+  ------------------------------------------------------------------
+
   Zope X3.0.0
 
     New features
@@ -33,9 +49,6 @@ Zope Changes
       Jim Fulton, Marius Gedminas, Fred Drake, Philipp von Weitershausen,
       Stephan Richter, Dmitry Vasiliev, Scott Pascoe, Bjorn Tillenius,
       Eckart Hertzler, Roger Ineichen, Stuart Bishop
-
-      Note: If you are not listed and contributed, please add yourself. This
-      note will be deleted before the release.
 
   ------------------------------------------------------------------
 
