@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the Committer class.
 
-$Id: test_committer.py,v 1.9 2003/06/02 19:48:49 gvanrossum Exp $
+$Id: test_committer.py,v 1.10 2003/06/03 17:08:53 gvanrossum Exp $
 """
 
 import os
@@ -36,14 +36,17 @@ from zope.app.interfaces.file import IFileFactory, IDirectoryFactory
 from zope.app.interfaces.fssync import IGlobalFSSyncService
 from zope.app.interfaces.traversing import ITraversable
 
-from zope.app.fssync.committer import Committer, SynchronizationError
+from zope.app.fssync import committer # The module
+from zope.app.fssync.committer import Checker, Committer, SynchronizationError
 from zope.app.fssync.fsregistry import provideSynchronizer, fsRegistry
 from zope.app.fssync.classes import Default
 
 from zope.app.content.fssync import DirectoryAdapter
 
+
 class Sample(object):
     pass
+
 
 class PretendContainer(object):
     
@@ -67,9 +70,16 @@ class PretendContainer(object):
         name = name.lower()
         return self.holding[name]
 
+    def get(self, name):
+        name = name.lower()
+        return self.holding.get(name)
+
     def __contains__(self, name):
         name = name.lower()
         return name in self.holding
+
+    def keys(self):
+        return self.holding.keys()
 
     def items(self):
         return self.holding.items()
@@ -81,6 +91,7 @@ class PretendContainer(object):
             raise NotFoundError
 
 PCname = PretendContainer.__module__ + "." + PretendContainer.__name__
+
 
 class DictAdapter(Default):
 
@@ -94,7 +105,10 @@ class DictAdapter(Default):
             if key not in new:
                 del old[key]
 
-class TestCommitter(TempFiles, PlacelessSetup):
+
+class TestBase(TempFiles, PlacelessSetup):
+
+    # Base class for test classes
 
     def setUp(self):
         # Set up standard services
@@ -108,12 +122,6 @@ class TestCommitter(TempFiles, PlacelessSetup):
         # Set up temporary name administration
         TempFiles.setUp(self)
 
-        # Instance initialization
-        self.metadata = MockMetadata() 
-        self.com = Committer(self.metadata)
-        self.getentry = self.metadata.getentry
-        self.getnames = self.metadata.getnames
-
     def tearDown(self):
         # Clean up temporary files and directories
         TempFiles.tearDown(self)
@@ -121,117 +129,79 @@ class TestCommitter(TempFiles, PlacelessSetup):
         # Clean up service registrations etc.
         PlacelessSetup.tearDown(self)
 
+
+def file_factory_maker(container):
+    def file_factory(name, content_type, data):
+        return loads(data)
+    return file_factory
+
+def directory_factory_maker(container):
+    def directory_factory(name):
+        return PretendContainer()
+    return directory_factory
+
+def sort(lst):
+    lst.sort()
+    return lst
+
+
+class TestCommitterModule(TestBase):
+
     def test_get_adapter(self):
         obj = Sample()
-        adapter = self.com.get_adapter(obj)
+        adapter = committer.get_adapter(obj)
         self.assertEqual(adapter.__class__, Default)
-
-    def test_remove(self):
-        tfn = self.tempfile("12345")
-        self.com.remove(tfn)
-        self.failIf(os.path.exists(tfn))
-        self.com.remove(tfn)
-        tfn = self.tempdir()
-        self.writefile("12345", os.path.join(tfn, "foo", "bar"))
-        self.com.remove(tfn)
-        self.failIf(os.path.exists(tfn))
-
-    def test_remove_all(self):
-        tfn = self.tempdir()
-        foo = os.path.join(tfn, "foo")
-        originalfoo = fsutil.getoriginal(foo)
-        extrafoo = os.path.join(fsutil.getextra(foo), "x")
-        annfoo = os.path.join(fsutil.getannotations(foo), "a")
-        self.writefile("12345", foo)
-        self.writefile("12345", originalfoo)
-        self.writefile("12345", extrafoo)
-        self.writefile("12345", annfoo)
-        self.com.remove_all(foo)
-        self.failIf(os.path.exists(foo))
-        self.failIf(os.path.exists(originalfoo))
-        self.failIf(os.path.exists(extrafoo))
-        self.failIf(os.path.exists(annfoo))
-
-    def test_write_file(self):
-        data = "12345\rabcde\n12345\r\nabcde"
-        tfn = self.tempfile(None)
-        self.com.write_file(data, tfn)
-        f = open(tfn, "rb")
-        try:
-            x = f.read()
-        finally:
-            f.close()
-        self.assertEqual(x, data)
-
-    def test_write_file_and_original(self):
-        data = "12345\rabcde\n12345\r\nabcde"
-        tfn = self.tempdir()
-        foofile = os.path.join(tfn, "foo")
-        self.com.write_file_and_original(data, foofile)
-        f = open(foofile, "rb")
-        try:
-            x = f.read()
-        finally:
-            f.close()
-        self.assertEqual(x, data)
-        f = open(fsutil.getoriginal(foofile), "rb")
-        try:
-            x = f.read()
-        finally:
-            f.close()
-        self.assertEqual(x, data)
 
     def test_read_file(self):
         data = "12345\rabcde\n12345\r\nabcde"
         tfn = self.tempfile(data, "wb")
-        x = self.com.read_file(tfn)
+        x = committer.read_file(tfn)
         self.assertEqual(x, data)
 
     def test_load_file(self):
         data = {"foo": [42]}
         tfn = self.tempfile(dumps(data))
-        x = self.com.load_file(tfn)
+        x = committer.load_file(tfn)
         self.assertEqual(x, data)
 
     def test_set_item_non_icontainer(self):
         container = {}
-        self.com.set_item(container, "foo", 42)
+        committer.set_item(container, "foo", 42)
         self.assertEqual(container, {"foo": 42})
 
     def test_set_item_icontainer_new(self):
         container = PretendContainer()
-        self.com.set_item(container, "foo", 42)
+        committer.set_item(container, "foo", 42)
         self.assertEqual(container.holding, {"foo": 42})
 
     def test_set_item_icontainer_replace(self):
         container = PretendContainer()
-        self.com.set_item(container, "foo", 42)
-        self.com.set_item(container, "foo", 24, replace=True)
+        committer.set_item(container, "foo", 42)
+        committer.set_item(container, "foo", 24, replace=True)
         self.assertEqual(container.holding, {"foo": 24})
 
     def test_set_item_icontainer_error_existing(self):
         container = PretendContainer()
-        self.com.set_item(container, "foo", 42)
-        self.assertRaises(KeyError, self.com.set_item,
+        committer.set_item(container, "foo", 42)
+        self.assertRaises(KeyError, committer.set_item,
                           container, "foo", 42)
 
     def test_set_item_icontainer_error_nonexisting(self):
         container = PretendContainer()
-        self.assertRaises(KeyError, self.com.set_item,
+        self.assertRaises(KeyError, committer.set_item,
                           container, "foo", 42, replace=True)
 
     def test_set_item_icontainer_error_newname(self):
         container = PretendContainer()
-        self.assertRaises(SynchronizationError, self.com.set_item,
+        self.assertRaises(SynchronizationError, committer.set_item,
                           container, "Foo", 42)
 
     def test_create_object_factory(self):
         container = {}
         entry = {"flag": "added", "factory": "__builtin__.int"}
         tfn = os.path.join(self.tempdir(), "foo")
-        self.com.create_object(container, "foo", entry, tfn)
+        committer.create_object(container, "foo", entry, tfn)
         self.assertEqual(container, {"foo": 0})
-        self.assertEqual(entry, {"factory": None, "type": "__builtin__.int"})
 
     def test_create_object_default(self):
         container = {}
@@ -239,210 +209,361 @@ class TestCommitter(TempFiles, PlacelessSetup):
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
         self.writefile(dumps(data), tfn)
-        self.com.create_object(container, "foo", entry, tfn)
+        committer.create_object(container, "foo", entry, tfn)
         self.assertEqual(container, {"foo": ["hello", "world"]})
-        self.assertEqual(entry, {"factory": None, "type": "__builtin__.list"})
 
     def test_create_object_ifilefactory(self):
-        def factory_maker(container):
-            def factory(name, content_type, data):
-                return loads(data)
-            return factory
-        provideAdapter(IContainer, IFileFactory, factory_maker)
+        provideAdapter(IContainer, IFileFactory, file_factory_maker)
         container = PretendContainer()
         entry = {"flag": "added"}
         data = ["hello", "world"]
         tfn = os.path.join(self.tempdir(), "foo")
         self.writefile(dumps(data), tfn)
-        self.com.create_object(container, "foo", entry, tfn)
+        committer.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.holding, {"foo": ["hello", "world"]})
-        self.assertEqual(entry, {"factory": None, "type": "__builtin__.list"})
 
     def test_create_object_idirectoryfactory(self):
-        def factory_maker(container):
-            def factory(name):
-                return PretendContainer()
-            return factory
-        provideSynchronizer(PretendContainer, DirectoryAdapter)
-        provideAdapter(IContainer, IDirectoryFactory, factory_maker)
+        provideAdapter(IContainer, IDirectoryFactory, directory_factory_maker)
         container = PretendContainer()
         entry = {"flag": "added"}
         tfn = os.path.join(self.tempdir(), "foo")
         os.mkdir(tfn)
-        self.com.create_object(container, "foo", entry, tfn)
+        committer.create_object(container, "foo", entry, tfn)
         self.assertEqual(container.holding["foo"].__class__, PretendContainer)
-        self.assertEqual(entry, {"factory": PCname, "type": PCname})
 
-    def test_synch(self):
-        # This is a big-ass test that tests various aspects of
-        # synch(), including synch_dir(), synch_new(), and
-        # synch_old().  It's such a pain to set things up that I don't
-        # split it up in a separate test method for each case in each
-        # method.  Nevertheless I expect to get good coverage.
 
+class TestCheckerClass(TestBase):
+
+    def setUp(self):
+        # Set up base class (PlacelessSetup and TempNames)
+        TestBase.setUp(self)
+
+        # Set up environment
         provideSynchronizer(PretendContainer, DirectoryAdapter)
         provideSynchronizer(dict, DictAdapter)
-        parent = PretendContainer()
-        child = PretendContainer()
-        parent.setObject("child", child)
-        foo = {}
-        child.setObject("foo", foo)
-        parentdir = self.tempdir()
-        childdir = os.path.join(parentdir, "child")
-        foofile = os.path.join(childdir, "foo")
-        self.writefile(dumps(foo), foofile, "wb")
-        originalfoofile = fsutil.getoriginal(foofile)
-        self.writefile(dumps(foo), originalfoofile, "wb")
-        parententry = self.getentry(parentdir)
-        parententry["@"] = "@" # To make it non-empty
-        childentry = self.getentry(childdir)
-        childentry["@"] = "@"
-        fooentry = self.getentry(foofile)
-        fooentry["type"] = "__builtin__.dict"
+        provideAdapter(IContainer, IFileFactory, file_factory_maker)
+        provideAdapter(IContainer, IDirectoryFactory, directory_factory_maker)
 
-        # Test a no-op
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(self.com.get_errors(), [])
-        self.assertEqual(parent.holding, {"child": child})
-        self.assertEqual(child.holding, {"foo": foo})
-        self.assertEqual(self.readfile(foofile, "rb"), dumps(foo))
-        self.assertEqual(self.readfile(originalfoofile, "rb"), dumps(foo))
+        # Set up fixed part of object tree
+        self.parent = PretendContainer()
+        self.child = PretendContainer()
+        self.grandchild = PretendContainer()
+        self.parent.setObject("child", self.child)
+        self.child.setObject("grandchild", self.grandchild)
+        self.foo = ["hello", "world"]
+        self.child.setObject("foo", self.foo)
 
-        # Test modifying a file
-        newfoo = {"x": 42}
-        self.writefile(dumps(newfoo), foofile)
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(self.com.get_errors(), [])
-        self.assertEqual(parent.holding, {"child": child})
-        self.assertEqual(child.holding, {"foo": newfoo})
-        self.assertEqual(self.readfile(foofile, "rb"), dumps(newfoo))
-        self.assertEqual(self.readfile(originalfoofile, "rb"), dumps(newfoo))
+        # Set up fixed part of filesystem tree
+        self.parentdir = self.tempdir()
+        self.childdir = os.path.join(self.parentdir, "child")
+        os.mkdir(self.childdir)
+        self.foofile = os.path.join(self.childdir, "foo")
+        self.writefile(dumps(self.foo), self.foofile)
+        self.originalfoofile = fsutil.getoriginal(self.foofile)
+        self.writefile(dumps(self.foo), self.originalfoofile)
+        self.grandchilddir = os.path.join(self.childdir, "grandchild")
+        os.mkdir(self.grandchilddir)
 
-        # Test adding a file
-        bar = {"y": 42}
-        barfile = os.path.join(childdir, "bar")
-        originalbarfile = fsutil.getoriginal(barfile)
+        # Set up metadata
+        self.metadata = MockMetadata()
+        self.getentry = self.metadata.getentry
+
+        # Set up fixed part of entries
+        self.parententry = self.getentry(self.parentdir)
+        self.parententry["path"] = "/parent"
+        self.childentry = self.getentry(self.childdir)
+        self.childentry["path"] = "/parent/child"
+        self.grandchildentry = self.getentry(self.grandchilddir)
+        self.grandchildentry["path"] = "/parent/child/grandchild"
+        self.fooentry = self.getentry(self.foofile)
+        self.fooentry["path"] = "/parent/child/foo"
+
+        # Set up checker
+        self.checker = Checker(self.metadata)
+
+    def check_errors(self, expected_errors):
+        # Helper to call the checker and assert a given set of errors
+        self.checker.check(self.parent, "", self.parentdir)
+        self.assertEqual(sort(self.checker.errors()), sort(expected_errors))
+
+    def check_no_errors(self):
+        # Helper to call the checker and assert there are no errors
+        self.check_errors([])
+
+    def test_vanilla(self):
+        # The vanilla situation should not be an error
+        self.check_no_errors()
+
+    def test_file_changed(self):
+        # Changing a file is okay
+        self.newfoo = self.foo + ["news"]
+        self.writefile(dumps(self.newfoo), self.foofile)
+        self.check_no_errors()
+
+    def test_file_type_changed(self):
+        # Changing a file's type is okay
+        self.newfoo = ("one", "two")
+        self.fooentry["type"] = "__builtin__.tuple"
+        self.writefile(dumps(self.newfoo), self.foofile)
+        self.check_no_errors()
+
+    def test_file_conflict(self):
+        # A real conflict is an error
+        newfoo = self.foo + ["news"]
+        self.writefile(dumps(newfoo), self.foofile)
+        self.foo.append("something else")
+        self.check_errors([self.foofile])
+
+    def test_file_sticky_conflict(self):
+        # A sticky conflict is an error
+        self.fooentry["conflict"] = 1
+        self.check_errors([self.foofile])
+
+    def test_file_added(self):
+        # Adding a file properly is okay
+        self.bar = ["this", "is", "bar"]
+        barfile = os.path.join(self.childdir, "bar")
+        self.writefile(dumps(self.bar), barfile)
         barentry = self.getentry(barfile)
         barentry["flag"] = "added"
+        self.check_no_errors()
+
+    def test_file_added_no_file(self):
+        # Flagging a non-existing file as added is an error
+        barfile = os.path.join(self.childdir, "bar")
+        barentry = self.getentry(barfile)
+        barentry["flag"] = "added"
+        self.check_errors([barfile])
+
+    def test_file_spurious(self):
+        # A spurious file (empty entry) is okay
+        bar = ["this", "is", "bar"]
+        barfile = os.path.join(self.childdir, "bar")
         self.writefile(dumps(bar), barfile)
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(child.holding, {"foo": newfoo, "bar": bar})
-        self.assertEqual(self.readfile(barfile, "rb"), dumps(bar))
-        self.assertEqual(self.readfile(originalbarfile, "rb"), dumps(bar))
-        self.assertEqual(barentry.get("flag"), None)
+        self.check_no_errors()
 
-        # Test removing a file
-        os.remove(barfile)
-        barentry["flag"] = "removed"
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(child.holding, {"foo": newfoo})
-        self.assertEqual(barentry, {})
-        self.failIf(os.path.exists(barfile))
-        self.failIf(os.path.exists(originalbarfile))
+    def test_file_added_no_flag(self):
+        # Adding a file without setting the "added" flag is an error
+        bar = ["this", "is", "bar"]
+        barfile = os.path.join(self.childdir, "bar")
+        self.writefile(dumps(bar), barfile)
+        barentry = self.getentry(barfile)
+        barentry["path"] = "/parent/child/bar"
+        self.check_errors([barfile])
 
-        # Test changing the type of an object
-        altfoo = 42
-        self.writefile(dumps(altfoo), foofile)
-        fooentry["type"] = "__builtin__.int"
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(child.holding, {"foo": altfoo})
-        self.assertEqual(self.readfile(foofile, "rb"), dumps(altfoo))
-        self.assertEqual(self.readfile(originalfoofile, "rb"), dumps(altfoo))
+    def test_file_added_twice(self):
+        # Adding a file in both places is an error
+        bar = ["this", "is", "bar"]
+        self.child.setObject("bar", bar)
+        barfile = os.path.join(self.childdir, "bar")
+        self.writefile(dumps(bar), barfile)
+        barentry = self.getentry(barfile)
+        barentry["path"] = "/parent/child/bar"
+        self.check_errors([barfile])
 
-        # Test adding an empty directory
-        kwikdir = os.path.join(childdir, "kwik")
-        os.mkdir(kwikdir)
-        kwikentry = self.getentry(kwikdir)
-        kwikentry["factory"] = PCname
-        kwikentry["flag"] = "added"
-        self.com.synch(parent, "", parentdir)
-        self.failUnless("kwik" in child)
-        self.assertEqual(child["kwik"].__class__, PretendContainer)
-        self.assertEqual(kwikentry.get("flag"), None)
+    def test_file_lost(self):
+        # Losing a file is an error
+        os.remove(self.foofile)
+        self.check_errors([self.foofile])
 
-        # Test removing an empty directory
-        kwikentry["flag"] = "removed"
-        shutil.rmtree(kwikdir)
-        self.com.synch(parent, "", parentdir)
-        self.failIf("kwik" in child)
-        self.assertEqual(kwikentry, {})
+    def test_file_lost_originial(self):
+        # Losing the original file is an error
+        os.remove(self.originalfoofile)
+        self.check_errors([self.foofile])
 
-        # Test adding a non-empty directory tree (parent/child/kwik/kwek/kwak)
-        kwikentry["flag"] = "added"
-        kwikentry["factory"] = PCname
-        kwekdir = os.path.join(kwikdir, "kwek")
-        kwekentry = self.getentry(kwekdir)
-        kwekentry["flag"] = "added"
-        kwekentry["factory"] = PCname
-        kwakfile = os.path.join(kwekdir, "kwak")
-        kwakentry = self.getentry(kwakfile)
-        kwakentry["flag"] = "added"
-        data = dumps(["Google", "Kwik", "Kwek", "Kwak"])
-        self.writefile(data, kwakfile)
-        assert os.path.isdir(kwikdir)
-        assert os.path.isdir(kwekdir)
-        assert os.path.isfile(kwakfile)
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(kwikentry.get("flag"), None)
-        self.assertEqual(kwekentry.get("flag"), None)
-        self.assertEqual(kwakentry.get("flag"), None)
-        self.failUnless(os.path.isfile(kwakfile))
-        self.assertEqual(self.readfile(kwakfile, "rb"), data)
-        self.failUnless(os.path.isfile(fsutil.getoriginal(kwakfile)))
+    def test_file_removed(self):
+        # Removing a file properly is okay
+        os.remove(self.foofile)
+        self.fooentry["flag"] = "removed"
+        self.check_no_errors()
 
-        # Test removing the subtree rooted at kwek
-        kwekentry["flag"] = "removed"
-        kwakentry["flag"] = "removed"
-        os.remove(kwakfile)
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(kwekentry, {})
-        self.assertEqual(kwakentry, {})
-        self.failIf(os.path.exists(kwakfile))
-        self.failIf(os.path.exists(kwekdir))
-        self.failUnless(os.path.exists(kwikdir))
+    def test_file_removed_conflict(self):
+        # Removing a file that was changed in the database is an error
+        os.remove(self.foofile)
+        self.fooentry["flag"] = "removed"
+        self.foo.append("news")
+        self.check_errors([self.foofile])
 
-        # Test conflict reporting for object modified in both places
-        self.writefile("something else", originalfoofile)
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(self.com.get_errors(), [foofile])
-        self.assertEqual(self.readfile(foofile, "rb"),
-                         self.readfile(originalfoofile, "rb"))
+    def test_file_removed_twice(self):
+        # Removing a file in both places is an error
+        os.remove(self.foofile)
+        self.fooentry["flag"] = "removed"
+        del self.child["foo"]
+        self.check_errors([self.foofile])
 
-        # Test conflict reporting for object added in both places
-        os.remove(originalfoofile)
-        fooentry["flag"] = "added"
-        self.com.conflicts = []
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(self.com.get_errors(), [foofile])
-        self.assertEqual(fooentry.get("flag"), None)
+    def test_file_removed_object(self):
+        # Removing the object should cause a conflict
+        del self.child["foo"]
+        self.check_errors([self.foofile])
 
-        # Test conflict reporting for object removed from container
-        del child["foo"]
-        self.com.conflicts = []
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(self.com.get_errors(), [foofile])
+    def test_file_entry_cleared(self):
+        # Clearing out a file's entry is an error
+        self.fooentry.clear()
+        self.check_errors([self.foofile])
 
-        # Test conflict reporting for existing file marked as removed
-        fooentry["flag"] = "removed"
-        self.com.conflicts = []
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(self.com.get_errors(), [foofile])
-        self.assertEqual(fooentry.get("flag"), None)
+    def test_dir_added(self):
+        # Adding a directory is okay
+        bardir = os.path.join(self.childdir, "bar")
+        os.mkdir(bardir)
+        barentry = self.getentry(bardir)
+        barentry["flag"] = "added"
+        self.check_no_errors()
 
-        # Test conflict reporting for non-existing file marked as added
-        fooentry["flag"] = "added"
-        self.com.conflicts = []
-        self.com.synch(parent, "", parentdir)
-        self.assertEqual(self.com.get_errors(), [foofile])
-        self.assertEqual(fooentry.get("flag"), None)
+    def test_dir_spurious(self):
+        # A spurious directory is okay
+        bardir = os.path.join(self.childdir, "bar")
+        os.mkdir(bardir)
+        self.check_no_errors()
 
-        # XXX Manipulation of Extra and Annotations is not tested
+    def test_dir_added_no_flag(self):
+        # Adding a directory without setting the "added" flag is an error
+        bardir = os.path.join(self.childdir, "bar")
+        os.mkdir(bardir)
+        barentry = self.getentry(bardir)
+        barentry["path"] = "/parent/child/bar"
+        self.check_errors([bardir])
 
-        # XXX Changing directories into files or vice versa is not supported
+    def test_dir_lost(self):
+        # Losing a directory is an error
+        shutil.rmtree(self.grandchilddir)
+        self.check_errors([self.grandchilddir])
+
+    def test_dir_removed(self):
+        # Removing a directory properly is okay
+        shutil.rmtree(self.grandchilddir)
+        self.grandchildentry["flag"] = "removed"
+        self.check_no_errors()
+
+    def test_dir_entry_cleared(self):
+        # Clearing ot a directory's entry is an error
+        self.grandchildentry.clear()
+        self.check_errors([self.grandchilddir])
+
+    def test_tree_added(self):
+        # Adding a subtree is okay
+        bardir = os.path.join(self.childdir, "bar")
+        os.mkdir(bardir)
+        barentry = self.getentry(bardir)
+        barentry["path"] = "/parent/child/bar"
+        barentry["flag"] = "added"
+        bazfile = os.path.join(bardir, "baz")
+        self.baz = ["baz"]
+        self.writefile(dumps(self.baz), bazfile)
+        bazentry = self.getentry(bazfile)
+        bazentry["flag"] = "added"
+        burpdir = os.path.join(bardir, "burp")
+        os.mkdir(burpdir)
+        burpentry = self.getentry(burpdir)
+        burpentry["flag"] = "added"
+        self.check_no_errors()
+
+    def test_tree_added_no_flag(self):
+        # Adding a subtree without flagging everything as added is an error
+        bardir = os.path.join(self.childdir, "bar")
+        os.mkdir(bardir)
+        barentry = self.getentry(bardir)
+        barentry["path"] = "/parent/child/bar"
+        barentry["flag"] = "added"
+        bazfile = os.path.join(bardir, "baz")
+        baz = ["baz"]
+        self.writefile(dumps(baz), bazfile)
+        bazentry = self.getentry(bazfile)
+        bazentry["path"] = "/parent/child/bar/baz"
+        burpdir = os.path.join(bardir, "burp")
+        os.mkdir(burpdir)
+        burpentry = self.getentry(burpdir)
+        burpentry["path"] = "/parent/child/bar/burp"
+        self.check_errors([bazfile, burpdir])
+
+    def test_tree_removed(self):
+        # Removing a subtree is okay
+        shutil.rmtree(self.childdir)
+        self.childentry["flag"] = "removed"
+        self.grandchildentry.clear()
+        self.fooentry.clear()
+        self.check_no_errors()
+
+    # XXX Extra and Annotations is not tested directly
+
+    # XXX Changing directories into files or vice versa is not tested
+
+
+
+class TestCommitterClass(TestCheckerClass):
+
+    # This class extends all tests from TestCheckerClass that call
+    # self.check_no_errors() to carry out the change and check on it.
+    # Yes, this means that all the tests that call check_errors() are
+    # repeated.  Big deal. :-)
+
+    def __init__(self, name):
+        self.super = super(TestCommitterClass, self)
+        self.super.__init__(name)
+        self.name = name
+
+    def setUp(self):
+        self.super.setUp()
+        self.committer = Committer(self.metadata)
+
+    def check_no_errors(self):
+        self.super.check_no_errors()
+        self.committer.synch(self.parent, "", self.parentdir)
+        name = "verify" + self.name[4:]
+        method = getattr(self, name, None)
+        if method:
+            method()
+        else:
+            print "?", name
+
+    def verify_vanilla(self):
+        self.assertEqual(self.parent.keys(), ["child"])
+        self.assertEqual(self.parent["child"], self.child)
+        self.assertEqual(sort(self.child.keys()), ["foo", "grandchild"])
+        self.assertEqual(self.child["foo"], self.foo)
+        self.assertEqual(self.child["grandchild"], self.grandchild)
+        self.assertEqual(self.grandchild.keys(), [])
+
+    def verify_file_added(self):
+        self.assertEqual(self.child["bar"], self.bar)
+        self.assertEqual(sort(self.child.keys()), ["bar", "foo", "grandchild"])
+
+    def verify_file_changed(self):
+        self.assertEqual(self.child["foo"], self.newfoo)
+    
+    def verify_file_removed(self):
+        self.assertEqual(self.child.keys(), ["grandchild"])
+
+    def verify_file_spurious(self):
+        self.verify_vanilla()
+
+    def verify_file_type_changed(self):
+        self.assertEqual(self.child["foo"], self.newfoo)
+
+    def verify_dir_removed(self):
+        self.assertEqual(self.child.keys(), ["foo"])
+
+    def verify_dir_added(self):
+        self.assertEqual(sort(self.child.keys()), ["bar", "foo", "grandchild"])
+
+    def verify_dir_spurious(self):
+        self.verify_vanilla()
+
+    def verify_tree_added(self):
+        self.assertEqual(sort(self.child.keys()), ["bar", "foo", "grandchild"])
+        bar = self.child["bar"]
+        self.assertEqual(bar.__class__, PretendContainer)
+        baz = bar["baz"]
+        self.assertEqual(self.baz, baz)
+
+    def verify_tree_removed(self):
+        self.assertEqual(self.parent.keys(), [])
+
 
 def test_suite():
     s = unittest.TestSuite()
-    s.addTest(unittest.makeSuite(TestCommitter))
+    s.addTest(unittest.makeSuite(TestCommitterModule))
+    s.addTest(unittest.makeSuite(TestCheckerClass))
+    s.addTest(unittest.makeSuite(TestCommitterClass))
     return s
 
 def test_main():

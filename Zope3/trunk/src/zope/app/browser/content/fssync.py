@@ -14,7 +14,7 @@
 
 """Code for the toFS.snarf view and its inverse, fromFS.snarf.
 
-$Id: fssync.py,v 1.15 2003/06/02 20:44:41 gvanrossum Exp $
+$Id: fssync.py,v 1.16 2003/06/03 17:08:51 gvanrossum Exp $
 """
 
 import os
@@ -28,7 +28,7 @@ from zope.app.traversing import objectName, getParent, getRoot
 from zope.app.interfaces.exceptions import UserError
 from zope.fssync.snarf import Snarfer, Unsnarfer
 from zope.app.fssync.syncer import toFS
-from zope.app.fssync.committer import Committer
+from zope.app.fssync.committer import Committer, Checker
 from zope.fssync.metadata import Metadata
 
 def snarf_dir(response, dirname):
@@ -91,7 +91,7 @@ class SnarfCommit(BrowserView):
             istr.seek(0)
             uns = Unsnarfer(istr)
             uns.unsnarf(working)
-            # 3) Commit; this includes the uptodate check and updates
+            # 3) Check uptodateness (may raise SynchronizationError)
             name = objectName(self.context)
             container = getParent(self.context)
             if container is None and name == "":
@@ -101,21 +101,11 @@ class SnarfCommit(BrowserView):
             else:
                 fspath = os.path.join(working, name)
             md = Metadata()
-            c = Committer(md)
-            c.synch(container, name, fspath)
-            # 4) Generate response (snarfed archive or error text)
-            errors = c.get_errors()
-            if not errors:
-                # The flush() isn't really needed, but it's better to
-                # waste some cycles now than to have this corrupt some
-                # files later.
-                md.flush()
-                # Do a fresh toFS(), to be sure to get all changes
-                shutil.rmtree(working)
-                os.mkdir(working)
-                toFS(self.context, objectName(self.context) or "root", working)
-                return snarf_dir(self.request.response, working)
-            else:
+            c = Checker(md)
+            c.check(container, name, fspath)
+            e = c.errors()
+            if e:
+                # 3.1) Generate error response
                 txn.abort()
                 lines = ["Up-to-date check failed:"]
                 working_sep = os.path.join(working, "") # E.g. foo -> foo/
@@ -124,6 +114,15 @@ class SnarfCommit(BrowserView):
                 lines.append("")
                 self.request.response.setHeader("Content-Type", "text/plain")
                 return "\n".join(lines)
+            # 4) Commit (may raise SynchronizationError)
+            c = Committer(md)
+            c.synch(container, name, fspath)
+            # 5) Call toFS() to return the complete new state
+            shutil.rmtree(working) # Start with clean slate
+            os.mkdir(working)
+            toFS(self.context, objectName(self.context) or "root", working)
+            # 6) Return successful response
+            return snarf_dir(self.request.response, working)
         finally:
             if os.path.exists(working):
                 shutil.rmtree(working)

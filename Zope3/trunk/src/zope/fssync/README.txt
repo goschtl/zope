@@ -59,21 +59,6 @@ BUGS
   tries to send the request to a view of the corresponding object,
   which doesn't exist yet.
 
-* When dealing with additions or removals, sometimes multiple updates
-  are required to get the Extra stuff to be updated.
-
-* Removing a directory tree doesn't work intuitively; if you "rm -r" a
-  subtree and then "sync remove" it, a following "sync commit" causes
-  a server-side exception.  It should just work.  (As a work-around,
-  you can remove individual files and commit those removals first,
-  then remove the directory last.)
-
-* When committing something creates additional stuff (for example,
-  committing an added site folder creates a RegistrationManager inside
-  the site folder), the commit operation doesn't send the created
-  stuff back necessarily.  (As a work-around, a subsequent update gets
-  them.)
-
 * Removing an object with annotations doesn't always remove the
   @@Zope/Annotations/<name>/ directory.  Probably the same for Extra.
 
@@ -86,11 +71,7 @@ TO DO
 
 - On the server side:
 
-  * Should be able to add various standard object types based on
-    filename extension.  (This now works for extensions .pt and .dtml,
-    and for .py extensions in the ++etc++site tree; for other
-    extensions, either an image or a plain file is created based on
-    the extension and the contents.  Is this good enough?)
+  * Nothing ATM.
 
 - In the sync application:
 
@@ -108,11 +89,13 @@ TO DO
 
 - Code maintenance:
 
-  * Unit tests for the fssync core functionality.
+  * Rewrite toFS() to use the Metadata class, and add unit tests.
 
-  * More refactoring and cleanup of the fssync core functionality.
+  * Unit tests for the fssync utility.
 
-  * Use camelCase for method names.
+  * More refactoring and cleanup of the fssync utility.
+
+  * Use camelCase for public method names.
 
 
 TO DO LATER
