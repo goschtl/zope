@@ -14,7 +14,7 @@
 """Register protection information for some standard low-level types
 
 Revision information:
-$Id: _protections.py,v 1.5 2003/09/21 17:32:43 jim Exp $
+$Id: _protections.py,v 1.6 2003/11/21 17:11:00 jim Exp $
 """
 
 def protect():
@@ -114,4 +114,6 @@ def protect():
 
     # add __parent__ and __name__ to always available names
     import zope.security.checker
-    zope.security.checker._always_available.extend(['__name__', '__parent__'])
+    for name in ['__name__', '__parent__']:
+        if name not in zope.security.checker._always_available:
+            zope.security.checker._always_available.append(name)
