@@ -37,6 +37,7 @@ from Products.CMFCore.tests.base.dummy import DummyUserFolder
 from Products.CMFCore.tests.base.tidata import FTIDATA_ACTIONS
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF14
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF14_FOLDER
+from Products.CMFCore.tests.base.tidata import FTIDATA_CMF14_SPECIAL
 from Products.CMFCore.tests.base.tidata import FTIDATA_CMF15
 from Products.CMFCore.tests.base.tidata import FTIDATA_DUMMY
 from Products.CMFCore.tests.base.tidata import STI_SCRIPT
@@ -308,7 +309,7 @@ class TypeInfoTests(TestCase):
 
         # use old FTI Data
         ti = self._makeInstanceByFTIData(FTIDATA_CMF14)
-        self.assertEqual( ti._aliases, wanted )
+        self.assertEqual(ti._aliases, wanted)
 
         # simulate old FTI
         del ti._aliases
@@ -316,14 +317,14 @@ class TypeInfoTests(TestCase):
 
         # migrate FTI
         ti.getMethodPath('view')
-        self.assertEqual( ti._aliases, wanted )
+        self.assertEqual(ti._aliases, wanted)
 
     def test_MethodAliases_folder_migration(self):
         wanted = { 'view':('(Default)',), }
 
         # use old FTI Data
         ti = self._makeInstanceByFTIData(FTIDATA_CMF14_FOLDER)
-        self.assertEqual( ti._aliases, wanted )
+        self.assertEqual(ti._aliases, wanted)
 
         # simulate old FTI
         del ti._aliases
@@ -331,7 +332,22 @@ class TypeInfoTests(TestCase):
 
         # migrate FTI
         ti.getMethodPath('view')
-        self.assertEqual( ti._aliases, wanted )
+        self.assertEqual(ti._aliases, wanted)
+
+    def test_MethodAliases_special_migration(self):
+        wanted = { 'view':('dummy_view',), }
+
+        # use old FTI Data
+        ti = self._makeInstanceByFTIData(FTIDATA_CMF14_SPECIAL)
+        self.assertEqual(ti._aliases, wanted)
+
+        # simulate old FTI
+        del ti._aliases
+        self.failIf( hasattr(ti, '_aliases') )
+
+        # migrate FTI
+        ti.getMethodPath('view')
+        self.assertEqual(ti._aliases, wanted)
 
 
 class FTIDataTests( TypeInfoTests ):

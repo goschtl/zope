@@ -110,6 +110,37 @@ FTIDATA_CMF14_FOLDER = (
     ,
     )
 
+FTIDATA_CMF14_SPECIAL = (
+      { 'id' : 'Dummy Content 14'
+      , 'meta_type' : 'Dummy'
+      , 'description' : (
+           'Dummy Content.')
+      , 'icon' : 'dummy_icon.gif'
+      , 'product' : 'FooProduct'
+      , 'factory' : 'addFoo'
+      , 'immediate_view' : 'metadata_edit_form'
+      , 'actions' : (
+            { 'id':'download',
+              'name':'Download',
+              'action':'string:${object_url}/',   # Note: special default view
+              'permissions':(View,) }
+          , { 'id':'edit',
+              'name':'Edit',
+              'action':'string:${object_url}/dummy_edit_form',
+              'permissions':(ModifyPortalContent,) }
+          , { 'id':'view',                  # Note: not first with 'View' perm
+              'name':'View',
+              'action':'string:${object_url}/dummy_view',
+              'permissions':(View,) }
+          , { 'id':'metadata',
+              'name':'Metadata',
+              'action':'string:${object_url}/metadata_edit_form',
+              'permissions':(ModifyPortalContent,) }
+          )
+      }
+    ,
+    )
+
 FTIDATA_CMF15 = (
       { 'id' : 'Dummy Content 15'
       , 'meta_type' : 'Dummy'

@@ -374,25 +374,37 @@ class TypeInformation (SimpleItemWithProperties, ActionProviderBase):
         context = getActionContext(self)
         actions = self.listActions()
         ordered = []
+        viewmethod = ''
         for action in actions:
             if action.getId() == 'view':
                 ordered.insert(0, action)
             else:
                 ordered.append(action)
+
+        # search 'view' action
         for action in ordered:
             perms = action.getPermissions()
             if not perms or View in perms:
-                method = action.action(context).strip()
-                if method.startswith('/'):
-                    method = method[1:]
-                if not method:
-                    self.setMethodAliases( {'view':'(Default)'} )
-                    break
-                self.setMethodAliases( {'(Default)':method, 'view':method} )
+                viewmethod = action.action(context).strip()
+                if viewmethod.startswith('/'):
+                    viewmethod = viewmethod[1:]
+                if not viewmethod:
+                    viewmethod = '(Default)'
                 break
         else:
-            # we couldn't find a default method
-            self.setMethodAliases( {'view':'(Default)'} )
+            viewmethod = '(Default)'
+
+        # search default action
+        for action in ordered:
+            defmethod = action.action(context).strip()
+            if defmethod.startswith('/'):
+                defmethod = defmethod[1:]
+            if not defmethod:
+                break
+        else:
+            defmethod = viewmethod
+
+        self.setMethodAliases( {'(Default)':defmethod, 'view':viewmethod} )
         return 1
 
 InitializeClass( TypeInformation )
