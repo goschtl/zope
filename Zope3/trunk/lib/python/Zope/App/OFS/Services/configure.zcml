@@ -9,6 +9,5 @@
 <include package=".CachingService" />
 <include package=".LocalObjectHub" />
 <include package=".ErrorReportingService" />
-<include package=".SmtpService" />
 
 </zopeConfigure>
