@@ -12,7 +12,7 @@
 #
 ##############################################################################
 """
-$Id: xmldocument.py,v 1.3 2003/04/11 10:52:16 philikon Exp $
+$Id: xmldocument.py,v 1.4 2003/07/01 14:34:15 fdrake Exp $
 """
 import zope.app.xml.field
 from zope.app.interfaces.xml.source import IXMLText
@@ -23,5 +23,5 @@ class IXMLDocument(IXMLText):
 
     source = zope.app.xml.field.XML(
         title=_(u"Source"),
-        description=_(u"""The text source of the XML document."""),
+        description=_(u"The text source of the XML document."),
         required=True)
