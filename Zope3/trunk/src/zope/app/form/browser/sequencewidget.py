@@ -80,10 +80,12 @@ class SequenceWidget(BrowserWidget, InputWidget):
         # possibly generate the "remove" and "add" buttons
         buttons = ''
         if render and num_items > min_length:
+            remove_botton_name = 'remove-selected-items-of-seq-' + self.name
             button_label = _('remove-selected-items', "Remove selected items")
             button_label = translate(self.context, button_label,
                                      context=self.request, default=button_label)
-            buttons += '<input type="submit" value="%s" />' % button_label
+            buttons += '<input type="submit" value="%s" name="%s"/>' % (
+                button_label, remove_botton_name)
         if max_length is None or num_items < max_length:
             field = self.context.value_type
             button_label = _('Add %s')
@@ -179,6 +181,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
         adding = False
         removing = []
         subprefix = re.compile(r'(\d+)\.(.*)$')
+        remove_botton_name = 'remove-selected-items-of-seq-' + self.name
         if self.context.value_type is None:
             return []
 
@@ -195,8 +198,12 @@ class SequenceWidget(BrowserWidget, InputWidget):
             if token == 'add':
                 # append a new blank field to the sequence
                 adding = True
-            elif token.startswith('remove_'):
-                # remove the index indicated
+            elif token.startswith('remove_') and \
+                    remove_botton_name in self.request:
+                # remove the index indicated if we press 
+                # the "Remove selected items" button.
+                # Otherwise we delete the items if we check
+                # the box and push the "Change" button.
                 removing.append(int(token[7:]))
             else:
                 match = subprefix.match(token)

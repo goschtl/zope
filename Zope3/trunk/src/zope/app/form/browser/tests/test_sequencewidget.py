@@ -153,7 +153,8 @@ class SequenceWidgetTest(BrowserWidgetTest):
 
     def test_remove(self):
         request = TestRequest(form={'field.foo.remove_0': u'Hello world!',
-            'field.foo.0.bar': u'existing', 'field.foo.1.bar': u'second'})
+            'field.foo.0.bar': u'existing', 'field.foo.1.bar': u'second',
+            'remove-selected-items-of-seq-field.foo': u'Remove selected items'})
         widget = TupleSequenceWidget(self.field, TextLine(), request)
         widget.setRenderedValue((u'existing', u'second'))
         self.assertEquals(widget.getInputValue(), (u'second',))
