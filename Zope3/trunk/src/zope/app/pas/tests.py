@@ -21,6 +21,28 @@ from zope.testing import doctest
 from zope.app.tests import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
 
+from zope.app.session.interfaces import \
+        IClientId, IClientIdManager, ISession, ISessionDataContainer, \
+        ISessionPkgData, ISessionData
+from zope.app.session.session import \
+        ClientId, Session, \
+        PersistentSessionDataContainer, RAMSessionDataContainer
+from zope.app.session.http import CookieClientIdManager
+
+from zope.publisher.interfaces import IRequest
+from zope.publisher.http import HTTPRequest
+
+def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
+    placelesssetup.setUp()
+    ztapi.provideAdapter(IRequest, IClientId, ClientId)
+    ztapi.provideAdapter(IRequest, ISession, Session)
+    ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
+    sdc = session_data_container_class()
+    for product_id in ('', 'products.foo', 'products.bar', 'products.baz'):
+        ztapi.provideUtility(ISessionDataContainer, sdc, product_id)
+    request = HTTPRequest(None, None, {}, None)
+    return request
+
 
 def test_suite():
     return unittest.TestSuite((
@@ -29,8 +51,8 @@ def test_suite():
                              tearDown=placelesssetup.tearDown,
                              globs={'provideUtility': ztapi.provideUtility,
                                     'getEvents': getEvents,
-                                    },
-                             ),
+                                    }),
+        doctest.DocTestSuite('zope.app.pas.extractionplugins'),
         ))
 
 if __name__ == '__main__':
