@@ -13,187 +13,118 @@
 ##############################################################################
 """Adapter Service
 
-$Id: adapter.py,v 1.22 2003/09/21 17:31:59 jim Exp $
+$Id: adapter.py,v 1.23 2003/11/21 17:10:07 jim Exp $
 """
 __metaclass__ = type
 
-import sys
 from zope.app import zapi
-from zope.interface.adapter import AdapterRegistry
-from persistence import Persistent
-from persistence.dict import PersistentDict
-from zope.interface import implements
-from zope.component.interfaces import IAdapterService
-from zope.component.exceptions import ComponentLookupError
-from zope.app.services.servicenames import Adapters
-from zope.app.interfaces.services.registration import IRegistry
-from zope.app.services.registration import RegistrationStack
-from zope.app.services.registration import SimpleRegistration
-from zope.app.component.nextservice import getNextService
-from zope.app.interfaces.services.service import ISimpleService
-from zope.app.interfaces.services.adapter import IAdapterRegistration
-from zope.app.container.contained import Contained
-
-class PersistentAdapterRegistry(Persistent, AdapterRegistry):
-
-    def __init__(self):
-        AdapterRegistry.__init__(self, PersistentDict())
+import sys
+import zope.app.component.interfacefield
+import zope.app.interfaces.services.registration
+import zope.app.interfaces.services.service
+import zope.app.security.permission
+import zope.app.services.registration
+import zope.app.services.surrogate
+import zope.component.interfaces
+import zope.interface
+import zope.schema
 
 
-class AdapterService(Persistent, Contained):
+class LocalAdapterService(
+    zope.app.services.surrogate.LocalSurrogateRegistry,
+    zope.app.services.surrogate.LocalSurrogateBasedService,
+    ):
 
-    implements(IAdapterService, IRegistry, ISimpleService)
+    zope.interface.implements(
+        zope.component.interfaces.IAdapterService,
+        zope.app.interfaces.services.service.ISimpleService,
+        )
 
     def __init__(self):
-        self._byName = PersistentDict()
+        zope.app.services.surrogate.LocalSurrogateRegistry.__init__(
+            self, zapi.getService(None, zapi.servicenames.Adapters)
+            )
 
-    def queryRegistrationsFor(self, registration, default=None):
-        "See IRegistry"
-        # XXX Need to add named adapter support
-        return self.queryRegistrations(
-            registration.forInterface, registration.providedInterface,
-            registration.adapterName,
-            default)
+        
 
-    def queryRegistrations(self,
-                            forInterface, providedInterface, adapterName,
-                            default=None):
+class IAdapterRegistration(
+    zope.app.interfaces.services.registration.IRegistration):
 
-        adapters = self._byName.get(adapterName)
-        if adapters is None:
-            return default
+    required = zope.app.component.interfacefield.InterfaceField(
+        title = u"For interface",
+        description = u"The interface of the objects being adapted",
+        readonly = True,
+        basetype = None,
+        )
 
-        registry = adapters.getRegistered(forInterface, providedInterface)
-        if registry is None:
-            return default
+    provided = zope.app.component.interfacefield.InterfaceField(
+        title = u"Provided interface",
+        description = u"The interface provided",
+        readonly = True,
+        required = True,
+        )
 
-        return registry
+    name = zope.schema.TextLine(
+        title=u"Name",
+        readonly=True,
+        required=False,
+        )
 
-    def createRegistrationsFor(self, registration):
-        "See IRegistry"
-        # XXX Need to add named adapter support
-        return self.createRegistrations(
-            registration.forInterface, registration.providedInterface,
-            registration.adapterName)
+    factoryName = zope.schema.BytesLine(
+        title=u"The dotted name of a factory for creating the adapter",
+        readonly = True,
+        required = True,
+        )
 
-    def createRegistrations(self, forInterface, providedInterface, name):
+    permission = zope.app.security.permission.PermissionField(
+        title=u"The permission required for use",
+        readonly=False,
+        required=False,
+        )
+        
+    factories = zope.interface.Attribute(
+        "A sequence of factories to be called to construct the component"
+        )
 
-        adapters = self._byName.get(name)
-        if adapters is None:
-            adapters = PersistentAdapterRegistry()
-            self._byName[name] = adapters
+class AdapterRegistration(zope.app.services.registration.SimpleRegistration):
 
-        registry = adapters.getRegistered(forInterface, providedInterface)
-        if registry is None:
-            registry = RegistrationStack(self)
-            adapters.register(forInterface, providedInterface, registry)
+    zope.interface.implements(IAdapterRegistration)
 
-        return registry
+    serviceType = zapi.servicenames.Adapters
 
-    def getAdapter(self, object, interface, name=''):
-        "See IAdapterService"
-        adapter = self.queryAdapter(object, interface, name=name)
-        if adapter is None:
-            raise ComponentLookupError(object, interface)
-        return adapter
+    with = () # XXX Don't support multi-adapters yet
 
-    def getNamedAdapter(self, object, interface, name):
-        "See IAdapterService"
-        adapter = self.queryNamedAdapter(object, interface, name)
-        if adapter is None:
-            raise ComponentLookupError(object, interface)
-        return adapter
-
-    def queryAdapter(self, object, interface, default=None, name=''):
-        """see IAdapterService interface"""
-        if name:
-            warnings.warn("The name argument to queryAdapter is deprecated",
-                          DeprecationWarning, 2)
-            return queryNamedAdapter(object, interface, name, default, context)
-    
-        conform = getattr(object, '__conform__', None)
-        if conform is not None:
-            try:
-                adapter = conform(interface)
-            except TypeError:
-                # We got a TypeError. It might be an error raised by
-                # the __conform__ implementation, or *we* may have
-                # made the TypeError by calling an unbound method
-                # (object is a class).  In the later case, we behave
-                # as though there is no __conform__ method. We can
-                # detect this case by checking whether there is more
-                # than one traceback object in the traceback chain:
-                if sys.exc_info()[2].tb_next is not None:
-                    # There is more than one entry in the chain, so
-                    # reraise the error:
-                    raise
-                # This clever trick is from Phillip Eby
-            else:
-                if adapter is not None:
-                    return adapter
-
-        if interface.isImplementedBy(object):
-            return object
-
-        return self.queryNamedAdapter(object, interface, name, default)
-
-    def queryNamedAdapter(self, object, interface, name, default=None):
-        adapters = self._byName.get(name)
-
-        if adapters:
-            registry = adapters.getForObject(
-                object, interface,
-                filter = lambda registry: registry.active(),
-                )
-
-            if registry is not None:
-                adapter = registry.active().getAdapter(object)
-                return adapter
-
-        adapters = getNextService(self, Adapters)
-
-        return adapters.queryNamedAdapter(object, interface, name, default)
-
-    # XXX need to add name support
-    def getRegisteredMatching(self,
-                              for_interfaces=None,
-                              provided_interfaces=None):
-
-        adapters = self._byName.get('')
-        if adapters is None:
-            return ()
-
-        return adapters.getRegisteredMatching(for_interfaces,
-                                              provided_interfaces)
-
-class AdapterRegistration(SimpleRegistration):
-
-    implements(IAdapterRegistration)
-
-    serviceType = Adapters
-
-    # XXX These should be positional arguments, except that forInterface
+    # XXX These should be positional arguments, except that required
     #     isn't passed in if it is omitted. To fix this, we need a
     #     required=False,explicitly_unrequired=True in the schema field
     #     so None will get passed in.
-    def __init__(self, forInterface=None, providedInterface=None,
-                 factoryName=None, adapterName=u'',
-                 # XXX The permission isn't plumbed. We're going to
-                 # redo all of this anyway.  
-                 permission=None,
-                 ):
-        if None in (providedInterface, factoryName):
-            raise TypeError(
-                "Must provide 'providedInterface' and 'factoryName'")
-        self.forInterface = forInterface
-        self.providedInterface = providedInterface
-        self.adapterName = adapterName
+    def __init__(self, provided, factoryName,
+                 name='', required=None, permission=None):
+        self.required = required
+        self.provided = provided
+        self.name = name
         self.factoryName = factoryName
+        self.permission = permission
 
-    def getAdapter(self, object):
+    def factories(self):
         folder = self.__parent__.__parent__
         factory = folder.resolve(self.factoryName)
-        return factory(object)
+        return factory,
+    factories = property(factories)
 
 # XXX Pickle backward compatability
 AdapterConfiguration = AdapterRegistration
+
+
+#BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+
+import persistence
+from zope.interface.surrogate import ReadProperty
+
+AdapterRegistration.required = ReadProperty(lambda self: self.forInterface)
+AdapterRegistration.provided = ReadProperty(
+    lambda self: self.providedInterface)
+AdapterRegistration.name     = ReadProperty(lambda self: self.adapterName)
+
+class AdapterService(persistence.Persistent):
+    pass
