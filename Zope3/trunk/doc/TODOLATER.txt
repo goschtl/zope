@@ -30,7 +30,7 @@ Things to do After the next release (in no particular order)
 
 - Implement graceful shutdown and restart a la Zope 2. We have to add a bit of
   code to the server to support this, but it should not be too hard, since we
-  have an implamentation in Zope 2.
+  have an implementation in Zope 2.
 
 - http://dev.zope.org/Zope3/ZCMLEnhancements
 
