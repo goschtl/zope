@@ -12,9 +12,8 @@
 ##############################################################################
 """Python implementations of document template some features
 
-$Id: pdocumenttemplate.py,v 1.3 2003/11/03 21:37:54 jeremy Exp $
+$Id: pdocumenttemplate.py,v 1.4 2004/02/24 14:04:02 srichter Exp $
 """
-
 import sys
 from types import StringTypes, TupleType, ClassType
 ClassTypes = [ClassType]
