@@ -69,7 +69,7 @@
 $Id: runurl.py,v 1.6 2003/11/21 17:12:47 jim Exp $
 """
 
-import sys, os, getopt
+import sys, os, getopt, gc
 
 def main(argv=None):
     global app, path, basic, run, stdin, env, debugger
@@ -142,7 +142,7 @@ def main(argv=None):
         _mainrun(debugger, path, basic, 1, stdin, env)
 
     if profilef or hotshotf:
-        cmd = "_mainrun(debugger, path, basic, run, stdin, env)"
+        cmd = "_mainrun(debugger, path, basic, run, stdin, env, True)"
         if profilef:
             import profile
             profile.run(cmd, profilef)
@@ -164,7 +164,10 @@ def main(argv=None):
         _mainrun(debugger, path, basic, run, stdin, env)
 
 resultfmt = "elapsed: %.4f, cpu=%.4f, status=%s"
-def _mainrun(debugger, path, basic, run, stdin, environment):
+def _mainrun(debugger, path, basic, run, stdin, environment, profile=False):
+    if profile:
+        threshold = gc.get_threshold()
+        gc.disable()
     if run:
         es = []
         cs = []
@@ -173,6 +176,8 @@ def _mainrun(debugger, path, basic, run, stdin, environment):
                                         environment=environment)
             es.append(e)
             cs.append(c)
+            if profile:
+                collect()
             print resultfmt % (e, c, status)
 
         if run > 1:
@@ -185,7 +190,20 @@ def _mainrun(debugger, path, basic, run, stdin, environment):
     else:
         print resultfmt % debugger.publish(path=path, basic=basic, stdin=stdin,
                                            environment=environment)
+    if profile:
+        gc.set_threshold(*threshold)
+        gc.enable()
 
+
+def collect():
+    #gc.collect()
+    gc.enable()
+    gc.set_threshold(1)
+    l = [1]
+    l = l * 10
+    l = None
+    gc.disable()
+    
 
 def _doimport(script, src):
     try:
