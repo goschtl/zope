@@ -13,24 +13,22 @@
 ##############################################################################
 """Manager for persistent modules associated with a service manager.
 
-$Id: module.py,v 1.12 2003/06/30 16:25:22 jim Exp $
+$Id: module.py,v 1.13 2003/07/12 09:41:19 jim Exp $
 """
 
 from persistence import Persistent
-from zodb.code.module import PersistentModule, compileModule
 from zodb.code.interfaces import IPersistentModuleImportRegistry
 from zodb.code.interfaces import IPersistentModuleUpdateRegistry
-
-from zope.interface import implements
-
-from zope.app import zapi
+from zodb.code.module import PersistentModule, compileModule
 from zope.app.event import function
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
+from zope.app import zapi
 from zope.app.interfaces.annotation import IAttributeAnnotatable
-from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.file import IFileFactory
+from zope.app.interfaces.fssync import IObjectFile
 from zope.app.interfaces.services.module import IModuleManager
-
+from zope.interface import implements
+from zope.security.proxy import trustedRemoveSecurityProxy
 
 class Manager(Persistent):
 
@@ -59,7 +57,18 @@ class Manager(Persistent):
             mod = self._module
         except AttributeError:
             mod = self._module = PersistentModule(self.name)
+
+
         folder = zapi.getWrapperContainer(self)
+
+        # XXX
+        # We are currently only supporting trusted code.
+        # We don't want the folder to be proxied because, if it is, then
+        # the modules will be proxied.
+        # When we do support untrusted code, we're going to have to do
+        # something different.
+        folder = trustedRemoveSecurityProxy(folder)
+            
         compileModule(mod, folder, self.source)
         self._recompile = False
 
