@@ -14,7 +14,7 @@
 Besides being functional, this module also serves as an example of
 creating a local service; see README.txt.
 
-$Id: utility.py,v 1.1 2004/04/15 15:29:31 jim Exp $
+$Id: utility.py,v 1.2 2004/04/17 14:33:46 srichter Exp $
 """
 
 from zope.app.adapter.adapter import LocalAdapterService
@@ -56,21 +56,6 @@ class LocalUtilityService(UtilityService, LocalAdapterService):
             if next_utils.get(name) != util:
                 yield name, util
 
-    def getRegisteredMatching(self, interface=None, name=None):
-        # doomed lame depreceated method backward-compatibly lame
-
-        L = []
-        for stacks in self.stacks.itervalues():
-            for ((s, w, reg_name, iface), stack) in stacks.iteritems():
-                if not stack:
-                    continue
-                if interface and not iface is interface:
-                    continue
-                if name is not None and reg_name.find(name) < 0:
-                    continue
-                L.append((iface, reg_name, stack))
-
-        return L
 
 
 class UtilityRegistration(ComponentRegistration):

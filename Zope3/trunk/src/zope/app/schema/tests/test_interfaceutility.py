@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: test_interfaceutility.py,v 1.7 2004/04/11 18:16:29 jim Exp $
+$Id: test_interfaceutility.py,v 1.8 2004/04/17 14:33:34 srichter Exp $
 """
 import unittest
 from zope.app.tests import setup
@@ -268,26 +268,6 @@ class TestInterfaceUtility(placefulsetup.PlacefulSetup, unittest.TestCase):
 
             self.assertEqual(utilities.getUtility(IInterface, name=name).foo(),
                              gout)
-
-    def test_getRegisteredMatching(self):
-        self.test_local_utilities()
-        utilities = getService(self.rootFolder, Utilities)
-        r = list(utilities.getRegisteredMatching())
-        r.sort()
-        path = "/++etc++site/default/foo"
-        cr1 = utilities.queryRegistrationsFor(
-            utility.UtilityRegistration("", IInterface, path))
-        cr2 = utilities.queryRegistrationsFor(
-            utility.UtilityRegistration("bob", IInterface, path))
-        self.assertEqual(r, [(IInterface, "", cr1), (IInterface, "bob", cr2)])
-        self.assertEqual(r[0][2].__parent__, utilities)
-        self.assertEqual(r[1][2].__parent__, utilities)
-        # Now tescvt that an empty registry doesn't show up
-        for cd in cr1.info(): # Remove everything from cr1
-            cd['registration'].status = UnregisteredStatus
-        self.assertEqual(bool(cr1), False)
-        r = list(utilities.getRegisteredMatching())
-        self.assertEqual(r, [(IInterface, "bob", cr2)])
 
 
 def test_suite():

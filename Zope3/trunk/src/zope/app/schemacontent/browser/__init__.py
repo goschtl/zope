@@ -13,7 +13,7 @@
 ##############################################################################
 """Content Component Views
 
-$Id: __init__.py,v 1.4 2004/03/14 01:11:41 srichter Exp $
+$Id: __init__.py,v 1.5 2004/04/17 14:33:35 srichter Exp $
 """
 import copy
 from zope.app import zapi
@@ -111,23 +111,20 @@ class AddContentComponentInstanceView(AddView):
             self.context.contentName = content_name
 
         utilities = zapi.getService(self.context, Utilities)
-        matching = utilities.getRegisteredMatching(IContentComponentDefinition)
-        # We do the filtering by name separately, since the
-        # getRegisteredMatching() only does a string find, not an exact match,
-        # which we desire here.
-        print matching
-        matching = filter(lambda m: m[1] == type_name, matching)
+        matching = [util
+                    for name, util in utilities.getUtilitiesFor(
+                                                  IContentComponentDefinition)
+                    if name == type_name]
             
-        if not (matching and matching[0][2].active()):
+        if not matching:
             raise ComponentLookupError, \
                   "No Content Component Definition named '%s' found" %type_name
 
-        self.definition = matching[0][2].active().getComponent()
+        self.definition = matching[0]
         self.schema = self.definition.schema
         self.label = 'Add %s' %self.definition.name
         super(AddContentComponentInstanceView, self).__init__(self.context,
                                                               request)
-
         return self.generated_form
 
     def createAndAdd(self, data):

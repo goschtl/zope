@@ -13,7 +13,7 @@
 ##############################################################################
 """Use-Registration view for utilities.
 
-$Id: __init__.py,v 1.5 2004/04/09 14:05:52 garrett Exp $
+$Id: __init__.py,v 1.6 2004/04/17 14:33:47 srichter Exp $
 """
 from zope.app.component.browser.interfacewidget import InterfaceWidget
 from zope.app.registration.browser import AddComponentRegistration
@@ -170,24 +170,22 @@ class Utilities(object):
         return s
 
     def getConfigs(self):
+        utils = removeAllProxies(self.context)
         L = []
-        for iface, name, cr in self.context.getRegisteredMatching():
-            active = obj = cr.active()
-            if obj is None:
-                obj = cr.info()[0]['registration'] # Pick a representative
-            ifname = interfaceToName(self.context, iface)
+        for registration in utils.registrations(localOnly=True):
+            ifname = interfaceToName(self.context, registration.provided)
             d = {"interface": ifname,
-                 "name": name,
+                 "name": registration.name,
                  "url": "",
-                 "summary": obj.usageSummary(),
+                 "summary": registration.usageSummary(),
                  "configurl": ("@@configureutility.html?interface=%s&name=%s"
-                               % (ifname, name)),
+                               % (ifname, registration.name)),
                  }
-            if active is not None:
-                d["url"] = str(zapi.getView(active.getComponent(),
-                                            "absolute_url",
-                                            self.request))
-            L.append((ifname, name, d))
+            stack = utils.queryRegistrationsFor(registration)
+            if stack.active():
+                d["url"] = str(zapi.getView(registration.component,
+                                            "absolute_url", self.request))
+            L.append((ifname, registration.name, d))
         L.sort()
         return [d for ifname, name, d in L]
 

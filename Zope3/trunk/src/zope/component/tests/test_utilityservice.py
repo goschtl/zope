@@ -13,9 +13,8 @@
 ##############################################################################
 """Utility service tests
 
-$Id: test_utilityservice.py,v 1.10 2004/04/11 18:16:43 jim Exp $
+$Id: test_utilityservice.py,v 1.11 2004/04/17 14:33:58 srichter Exp $
 """
-
 from unittest import TestCase, main, makeSuite
 from zope.component import \
      getUtility, getUtilitiesFor, getService, queryUtility, \
@@ -84,31 +83,6 @@ class Test(TestCase, CleanUp):
             map(str, us.registrations()),
             ["UtilityRegistration('IDummyUtility', '', 'DummyUtility', '')"])
         
-    def testRegisteredMatching(self):
-        us = getService(None, Utilities)
-        self.assertEqual(queryUtility(None, IDummyUtility), None)
-        self.assertEqual(queryUtility(None, IDummyUtility, self), self)
-        us.provideUtility(IDummyUtility, dummyUtility)
-        self.assertEqual(us.getRegisteredMatching(IDummyUtility),
-                         [(IDummyUtility, '', dummyUtility)])
-
-    def testRegisteredMatchingWithName(self):
-        us = getService(None, Utilities)
-        self.assertEqual(queryUtility(None, IDummyUtility), None)
-        self.assertEqual(queryUtility(None, IDummyUtility, self), self)
-        us.provideUtility(IDummyUtility, dummyUtility, 'dummy')
-        us.provideUtility(IDummyUtility, dummyUtility2, 'another')
-        self.assertEqual(us.getRegisteredMatching(IDummyUtility, 'dummy'),
-                         [(IDummyUtility, 'dummy', dummyUtility)])
-        self.assertEqual(us.getRegisteredMatching(IDummyUtility, 'another'),
-                         [(IDummyUtility, 'another', dummyUtility2)])
-        res = us.getRegisteredMatching(IDummyUtility)
-        res.sort()
-        self.assertEqual(res,
-                         [(IDummyUtility, 'another', dummyUtility2),
-                          (IDummyUtility, 'dummy',   dummyUtility )])
-        self.assertEqual(us.getRegisteredMatching(IDummyUtility, 'stupid'),
-                         [])
 
 def test_suite():
     return makeSuite(Test)

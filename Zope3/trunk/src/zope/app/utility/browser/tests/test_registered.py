@@ -13,7 +13,7 @@
 ##############################################################################
 """Tests for the registered view support.
 
-$Id: test_registered.py,v 1.2 2004/03/19 20:26:37 srichter Exp $
+$Id: test_registered.py,v 1.3 2004/04/17 14:33:47 srichter Exp $
 """
 import unittest
 
@@ -44,8 +44,11 @@ class Stub:
 
     implements(IStub)
 
-    def __init__(self, url=None):
+    def __init__(self, name, provided, url=None):
         self.url = url
+        self.name = name
+        self.provided = provided
+        self.component = self
 
     # registration registry
     def active(self):
@@ -59,7 +62,7 @@ class Stub:
 
     # registration
     def getComponent(self):
-        return self
+        return self.component
 
     def usageSummary(self):
         return ""
@@ -69,16 +72,17 @@ class StubAbsoluteURL(BrowserView):
         return self.context.url
 
 class StubLocalUtilityService:
-    def getRegisteredMatching(self):
-        return [
-            # (iface, name, configregistry)
-            (IFoo, '', Stub("1")),
-            (IFoo, 'myfoo-1', Stub("2")),
-            (IFoo, 'myfoo-2', Stub()),
-            (IBar, '', Stub()),
-            (IBar, 'mybar-1', Stub("3"))
-            ]
+    def registrations(self, localOnly=False):
+        return iter([
+            Stub('', IFoo, "1"),
+            Stub('myfoo-1', IFoo, "2"),
+            Stub('myfoo-2', IFoo),
+            Stub('', IBar),
+            Stub('mybar-1', IBar, "3")
+            ])
 
+    def queryRegistrationsFor(self, registration):
+        return registration
 
 class UtilitiesView(Utilities, BrowserView):
     """Adding BrowserView to Utilities; this is usually done by ZCML."""

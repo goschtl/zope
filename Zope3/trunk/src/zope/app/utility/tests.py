@@ -13,7 +13,7 @@
 ##############################################################################
 """Utility service tests
 
-$Id: tests.py,v 1.6 2004/04/15 15:29:31 jim Exp $
+$Id: tests.py,v 1.7 2004/04/17 14:33:46 srichter Exp $
 """
 import unittest
 from zope.app.tests import setup
@@ -194,25 +194,6 @@ class TestUtilityService(placefulsetup.PlacefulSetup, unittest.TestCase):
 
             self.assertEqual(utilities.getUtility(IFoo, name=name).foo(), gout)
 
-    def test_getRegisteredMatching(self):
-        self.test_local_utilities()
-        utilities = getService(self.rootFolder, "Utilities")
-        r = list(utilities.getRegisteredMatching())
-        r.sort()
-        path = "/++etc++site/default/foo"
-        cr1 = utilities.queryRegistrationsFor(
-            utility.UtilityRegistration("", IFoo, path))
-        cr2 = utilities.queryRegistrationsFor(
-            utility.UtilityRegistration("bob", IFoo, path))
-        self.assertEqual(r, [(IFoo, "", cr1), (IFoo, "bob", cr2)])
-        self.assertEqual(r[0][2].__parent__, utilities)
-        self.assertEqual(r[1][2].__parent__, utilities)
-        # Now test that an empty registry doesn't show up
-        for cd in cr1.info(): # Remove everything from cr1
-            cd['registration'].status = UnregisteredStatus
-        self.assertEqual(bool(cr1), False)
-        r = list(utilities.getRegisteredMatching())
-        self.assertEqual(r, [(IFoo, "bob", cr2)])
 
     def test_local_overrides(self):
         # Make sure that a local utility service can override another
