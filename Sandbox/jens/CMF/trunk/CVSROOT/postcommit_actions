@@ -359,7 +359,9 @@ def do_mail(name, remote, repo, addrs, subjs,
     else:
         message = ''
 
-    header = 'From: ' + SENDER_ADDR + '\012To: ' + string.join(addrs, ',') + '\012Subject: ' + subject + '\012'
+    header = ('From: ' + SENDER_ADDR
+              + '\012To: ' + string.join(addrs, ',')
+              + '\012Subject: ' + subject + '\012')
 
     try:
         mail_server = smtplib.SMTP(SMTP_SERVER)
