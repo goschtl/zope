@@ -10,6 +10,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 293 (sequence widget).
+
       - Backported several bug fixes made to the DSN parser, including issue
         304.
       
