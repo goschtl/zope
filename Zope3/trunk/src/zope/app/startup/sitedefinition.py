@@ -14,7 +14,7 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.10 2003/02/28 22:37:51 jim Exp $
+$Id: sitedefinition.py,v 1.11 2003/03/06 18:20:58 gvanrossum Exp $
 """
 
 import logging
@@ -47,7 +47,7 @@ from zope.app.services.interface import register
 
 DEFAULT_STORAGE_FILE = 'Data.fs'
 DEFAULT_LOG_FILE = 'STDERR'
-DEFAULT_LOG_LEVEL = 'INFO'
+DEFAULT_LOG_LEVEL = 'WARN'
 
 
 class SiteDefinition:
