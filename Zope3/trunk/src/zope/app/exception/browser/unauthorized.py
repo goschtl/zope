@@ -28,11 +28,5 @@ class Unauthorized(object):
         # challenge the user
         self.request.response.setStatus(403)
         principal = self.request.principal
-        prinreg = zapi.getParent(principal)
-        if not IAuthenticationService.providedBy(prinreg):
-            # With PluggableAuthenticationService, principals are
-            # contained in the PrincipalSource, which is contained in
-            # the service.
-            prinreg = zapi.getParent(prinreg)
-        assert IAuthenticationService.providedBy(prinreg)
-        prinreg.unauthorized(principal.id, self.request)
+        auth = zapi.getService(zapi.servicenames.Authentication)
+        auth.unauthorized(principal.id, self.request)
