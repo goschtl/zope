@@ -1,8 +1,12 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="sqlexpr"
+    xmlns:tales="http://namespaces.zope.org/tales"
+    i18n_domain="zope"
     >
 
-  <!-- Empty configuration file -->
+  <tales:expressiontype
+      name="sql"
+      handler=".sqlexpr.SQLExpr"
+      />
 
 </configure>
