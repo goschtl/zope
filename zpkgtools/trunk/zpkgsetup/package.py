@@ -21,7 +21,7 @@ make sense for package components.
 
 Package configuration files use a syntax very like the `ZConfig`_
 package, but fewer features are available.  The specific syntax is
-implemented by the `cfgparser` module.
+implemented by the `zpkgsetup.cfgparser` module.
 
 .. _ZConfig:  http://www.zope.org/Members/fdrake/zconfig/
 
@@ -44,7 +44,7 @@ The scripts and documentation files are listed very simply::
 The value to the right of the identifying keyword is a portable glob
 pattern, where *portable* here means the pattern uses the POSIX
 notation.  Path components should be separated by forward slashes
-(like all paths used with distutils), ``?`` can be replaced by any
+(like all paths used with `distutils`), ``?`` can be replaced by any
 single character, and ``*`` can be replaced by zero or more
 characters.
 
@@ -446,9 +446,9 @@ class PackageSchema(cfgparser.Schema):
 
     The <data-files> sections have keys that are glob-expanded (based
     on information passed to the constructor) and combined into a
-    single .data_files member on the resulting package information
-    object.  The value of the .data_files attribute is suitable for
-    passing to the distutils.core.setup() function.
+    single ``data_files`` member on the resulting package information
+    object.  The value of the ``data_files`` attribute is suitable for
+    passing to the `distutils.core.setup()` function.
 
     """
 
