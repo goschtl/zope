@@ -13,187 +13,148 @@
 #
 ##############################################################################
 
-import sys, string, getopt, os, commands
+"""Command line processor for Filesystem synchronization utility.
+
+The command line is of the form:
+
+    program [options] command [arguments]
+"""
+
+import sys, getopt, os, commands
+
+# Find the zope root directory.
+# XXX This assumes this script is <root>/utilities/fssync/sync.py
+scriptfile = sys.argv[0]
+scriptdir = os.path.realpath(os.path.dirname(scriptfile))
+rootdir = os.path.dirname(os.path.dirname(scriptdir))
 
 # Hack to fix the module search path
 try:
     import zope.app
     # All is well
 except ImportError:
-    # Fix the path, assuming this script is <root>/utilities/fssync/sync.py
-    # and the zope module is <root>/src/zope/.
-    _script = sys.argv[0]
-    _scriptdir = os.path.abspath(os.path.dirname(_script))
-    _rootdir = os.path.dirname(os.path.dirname(_scriptdir))
-    _srcdir = os.path.join(_rootdir, "src")
-    sys.path.append(_srcdir)
+    # Fix the path to include <root>/src
+    srcdir = os.path.join(rootdir, "src")
+    sys.path.append(srcdir)
 
+from usage import USAGE
 from diff import getdiff
-from common import checkFSPath, setPrint
 from checkout import checkout
 from commit import commit
 from update import update
-from usage import USAGE
 from add import add, addTypes
 
 def main(argv):
-    short_options = ':f:o:d:s:1:2:3:t:'
-    long_options = ['fspath='
-                   , 'objpath='
-                   , 'dbpath='
-                   , 'siteconfpath=']
+    """Main function.  Pass sys.argv.  Returns exit code for sys.exit()."""
 
-    operations = ['commit'
-                 , 'checkout'
-                 , 'update'
-                 , 'diff'
-                 , 'fcommit'
-                 , 'add'
-                 , 'addtypes']
-
-    err = ""
-
-    usage = USAGE % argv[0]
+    short_options = 'f:o:d:s:1:2:3:t:h'
+    long_options = ['fspath=', 'objpath=', 'dbpath=', 'siteconfpath=', "help"]
 
     try:
-        optlist, args = getopt.getopt(sys.argv[1:]
-                                      , short_options
-                                      , long_options)
+        opts, args = getopt.getopt(argv[1:], short_options, long_options)
+    except getopt.error, msg:
+        return usage(msg)
 
-        env=os.environ
+    if not opts and not args:
+        return usage()
 
-        objpath = ''
-        operation = ''
-        targetfile = ''
-        diffoption = '-1'
-        newobjectname = ''
-        newobjecttype = ''
+    if not args:
+        return usage("no command specified")
 
-        if env.has_key('SYNCROOT'): fspath = env['SYNCROOT']
-        else: fspath = '.'
-        if env.has_key('ZODBPATH'): dbpath = env['ZODBPATH']
-        else: dbpath = '../../../Data.fs'
-        if env.has_key('SITECONFPATH'): siteconfpath = env['SITECONFPATH']
-        else: siteconfpath = '../../../site.zcml'
+    known_operations = ['checkout', 'update', 'add', 'addtypes', 'diff',
+                        'commit', 'fcommit']
 
-        if len(optlist) > 0  or len(args) > 0:
-            for opt in optlist:
-                if (opt[0] == '-f') or (opt[0] == '--fspath'):
-                    fspath = opt[1]
-                elif (opt[0] == '-o') or (opt[0] == '--objpath'):
-                    objpath = opt[1]
-                elif (opt[0] == '-d') or (opt[0] == '--dbpath'):
-                    dbpath = opt[1]
-                elif (opt[0] == '-s') or (opt[0] == '--siteconfpath'):
-                    siteconfpath = opt[1]
-                elif (opt[0] == '-1' or opt[0] == '-2' or opt[0] == '-3'):
-                    diffoption = opt[0]
-                    targetfile = opt[1]
-                elif opt[0] == '-t':
-                    newobjecttype = opt[1]
+    operation = args[0]
+    if operation not in known_operations:
+        return usage("command %r is not a known operation" % operation)
 
-            newobjectname = args[1:]
+    newobjectname = args[1:]
+    if newobjectname and operation != 'add':
+        return usage("only command 'add' takes arguments")
 
-            if len(args) <1:
-                err = "No operation has been specified"
-                raise err
-            elif args[0] != 'add' and len(args) >1:
-                err = "CommandlineError"
-                raise err
-            elif args[0] not in operations:
-                err = "Invalid operation---"+str(args[0])
-                raise err
-            else:
-                operation = args[0]
+    objpath = ''
+    targetfile = ''
+    diffoption = '-1'
+    newobjecttype = ''
 
-            fspath, dbpath, siteconfpath = (os.path.abspath(fspath)
-                                            , os.path.abspath(dbpath)
-                                            , os.path.abspath(siteconfpath))
-            path=[fspath, dbpath, siteconfpath]
-            err=checkFSPath(path)
-            if err is not None:
-                raise err
+    fspath = os.curdir
+    dbpath = os.path.join(rootdir, 'Data.fs')
+    siteconfpath = os.path.join(rootdir, 'site.zcml')
 
-        else:
-            if len(args)>1:
-                if args[1]=='diff':
-                    targetfile = args[0]
-                    operation = args[1]
-                else:
-                    setPrint(usage)
-                    sys.exit(1)
-            else:
-                setPrint(usage)
-                sys.exit(1)
+    env = os.environ
+    if env.has_key('SYNCROOT'):
+        fspath = env['SYNCROOT']
+    if env.has_key('ZODBPATH'):
+        dbpath = env['ZODBPATH']
+    if env.has_key('SITECONFPATH'):
+        siteconfpath = env['SITECONFPATH']
 
-        #Calls the specified operation
-        err = operate(operation
-                      , fspath
-                      , dbpath
-                      , siteconfpath
-                      , objpath
-                      , targetfile
-                      , diffoption
-                      , newobjecttype
-                      , newobjectname)
-        if err is not None:
-            raise err
+    for o, a in opts:
+        if o in ('-h', '--help'):
+            print USAGE % argv[0]
+            return 0
+        elif o in ('-f', '--fspath'):
+            fspath = a
+        elif o in ('-o', '--objpath'):
+            objpath = a
+        elif o in ('-d', '--dbpath'):
+            dbpath = a
+        elif o in ('-s', '--siteconfpath'):
+            siteconfpath = a
+        elif o in ('-1', '-2', '-3'):
+            diffoption = o
+            targetfile = a
+        elif o == '-t':
+            newobjecttype = a
 
-    except err:
-        setPrint(err)
-        sys.exit(1)
+    fspath = os.path.realpath(fspath)
+    if patherror("fspath(.)", fspath):
+        return 1
+    dbpath = os.path.realpath(dbpath)
+    if patherror("dbpath(Data.fs)", dbpath):
+        return 1
+    siteconfpath = os.path.realpath(siteconfpath)
+    if patherror("siteconfpath(site.zcml)", siteconfpath):
+        return 1
 
-
-
-
-def operate(operation
-            , fspath
-            , dbpath
-            , siteconfpath
-            , objpath
-            , targetfile
-            , diffoption
-            , newobjecttype
-            , newobjectname):
-    """Operates based on the operations passed
-    """
-    err=""
     if operation == 'checkout':
-        err = checkout(fspath
-                       , dbpath
-                       , siteconfpath
-                       , objpath)
-    elif operation == 'commit':
-        err = commit(fspath
-                     , dbpath
-                     , siteconfpath)
+        err = checkout(fspath, dbpath, siteconfpath, objpath)
     elif operation == 'update':
-        err = update(fspath
-                     , dbpath
-                     , siteconfpath)
-    elif operation == 'diff':
-        err = getdiff(targetfile
-                      , objpath
-                      , dbpath
-                      , siteconfpath
-                      , diffoption)
-    elif operation == 'fcommit':
-        err = commit(fspath
-                     , dbpath
-                     , siteconfpath
-                     , 'F')
+        err = update(fspath, dbpath, siteconfpath)
     elif operation == 'add':
-        err = add(fspath
-                  , dbpath
-                  , siteconfpath
-                  , newobjecttype
-                  , newobjectname)
+        err = add(fspath, dbpath, siteconfpath, newobjecttype, newobjectname)
     elif operation == 'addtypes':
-        err = addTypes(dbpath
-                       , siteconfpath)
+        err = addTypes(dbpath, siteconfpath)
+    elif operation == 'diff':
+        err = getdiff(targetfile, objpath, dbpath, siteconfpath, diffoption)
+    elif operation == 'commit':
+        err = commit(fspath, dbpath, siteconfpath)
+    elif operation == 'fcommit':
+        err = commit(fspath, dbpath, siteconfpath, 'F')
+    else:
+        # Can't happen
+        assert 0, "Unsupported operation name: %r" % operation
 
-    return err
+    if err:
+        print err
+        return 1
+    else:
+        return 0
 
+def usage(msg=None):
+    """Print short usage message and return usage exit code (2)."""
+    if msg:
+        print msg
+    print "for help use --help"
+    return 2
 
-# If called from the command line
-if __name__=='__main__': main(sys.argv)
+def patherror(what, path):
+    """Check for existence of a path, print nice message if not."""
+    if not os.path.exists(path):
+        print "%s: path %r doesn't exist" % (what, path)
+        return True
+    else:
+        return False
+
+if __name__=='__main__':
+    sys.exit(main(sys.argv))
