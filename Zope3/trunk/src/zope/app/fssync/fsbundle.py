@@ -13,7 +13,7 @@
 ##############################################################################
 """High-level class to support bundle management on an fssync checkout.
 
-$Id: fsbundle.py,v 1.1 2003/09/05 21:13:15 fdrake Exp $
+$Id: fsbundle.py,v 1.2 2003/10/06 14:15:18 fdrake Exp $
 """
 
 import os
@@ -97,7 +97,6 @@ class FSBundle(object):
         self.check_directory_known(os.path.dirname(source))
         self.check_directory_known(source)
         type, factory = self.metadata.gettypeinfo(source)
-        if type not in allowed_types:
         if type == BUNDLE_TYPE:
             pass
         elif type == FOLDER_TYPE:
