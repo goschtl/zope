@@ -12,7 +12,7 @@
 #
 ##############################################################################
 
-import os, tempfile, string
+import os, tempfile
 
 from zope.app.fssync.fsregistry import getSynchronizer
 from zope.app.fssync.syncer import toFS
@@ -25,48 +25,36 @@ from zope.component import queryAdapter, getService
 from zope.exceptions import NotFoundError
 from zope.xmlpickle.xmlpickle import dumps, loads
 
-seperator = os.sep
-
 def getObjectAdapter(ob):
     """Returns the object adapter.
     """
     syncService = getService(ob, 'FSRegistryService')
-    adapter = syncService.getSynchronizer(ob)
-    return adapter
+    return syncService.getSynchronizer(ob)
 
-def getApplicationRoot(dbpath
-                       , siteconfpath):
+def getApplicationRoot(dbpath, siteconfpath):
     """Returns the application root.
     """
     app = Application(dbpath, siteconfpath)
-    root = app()
-    return root
+    return app()
 
-def getObject(objpath
-              , root
-              , prev=None
-              , name=None):
+def getObject(objpath, root, prev=None, name=None):
     """Gets the object from ZODB.
     """
     if prev is None:
         try:
-            ob = traverse(root,objpath)
-            return ob
-        except:
+            return traverse(root,objpath)
+        except: # XXX which exception are we trying to catch?
             return None
     else:
         try:
             ob = traverse(root,objpath)
-            return ob , name, objpath
-        except:
-            return (getObject(os.path.dirname(objpath)
-                              , root
-                              , 'Y'
-                              , os.path.basename(objpath)), name, objpath)[0]
+            return ob, name, objpath
+        except: # XXX which exception are we trying to catch?
+            # XXX Why return (X, Y, Z)[0] and not just X?
+            return (getObject(os.path.dirname(objpath), root, 'Y',
+                              os.path.basename(objpath)), name, objpath)[0]
 
-def getNewObject(ob
-                 , folders
-                 , files):
+def getNewObject(ob, folders, files):
     """Returns the entire tree of a ZODB object.
     """
     adapter = getObjectAdapter(ob)
@@ -74,6 +62,7 @@ def getNewObject(ob
     try:
         path = str(getPath(ob))
     except TypeError:
+        # XXX Really?
         pass
 
     if IObjectFile.isImplementedBy(adapter):
@@ -84,49 +73,39 @@ def getNewObject(ob
             getNewObject(cob, folders, files)
     return folders, files
 
-def getZODBPath(targetfile
-                , key=None):
+def getZODBPath(targetfile, key=None):
     """Returns the physical path of an object in the ZODB
     of a filesysten representation.
     """
     targetfile = os.path.abspath(targetfile)
-    entries_path = os.path.join(os.path.dirname(targetfile)
-                                ,'@@Zope'
-                                ,'Entries.xml')
+    entries_path = os.path.join(os.path.dirname(targetfile),
+                                '@@Zope', 'Entries.xml')
     entries = loads(open(entries_path).read())
     if key is None:
         objectpath = entries[os.path.basename(targetfile)]['path']
     else:
         try:
             objectpath = entries[os.path.basename(targetfile)][key]
-        except:
+        except: # XXX which exception are we trying to catch?
             return None
     return objectpath
 
 def isNewObject(targetfile):
-    """Determines if the object in the File-system is new.
+    """Determines if the object in the filesystem is new.
     """
     targetfile = os.path.abspath(targetfile)
-    entries_path = os.path.join(os.path.dirname(targetfile)
-                                ,'@@Zope'
-                                ,'Entries.xml')
+    entries_path = os.path.join(os.path.dirname(targetfile),
+                                '@@Zope', 'Entries.xml')
     entries = loads(open(entries_path).read())
-    if entries[os.path.basename(targetfile)].has_key('isNew'):
-        return 1
-    else:
-        return 0
+    return entries[os.path.basename(targetfile)].has_key('isNew')
 
 def getObjectData(ob):
     """Returns the data of a ZODB object.
     """
     adapter = adapter = getObjectAdapter(ob)
-    objectdata = adapter.getBody()
-    return objectdata
+    return adapter.getBody()
 
-def getObjectDataTempfile(targetfile
-                          , objpath
-                          , dbpath
-                          , siteconfpath):
+def getObjectDataTempfile(targetfile, objpath, dbpath, siteconfpath):
     """Returns the data of a particular object in ZODB.
     """
     root = getApplicationRoot(dbpath, siteconfpath)
@@ -138,88 +117,80 @@ def getObjectDataTempfile(targetfile
     object_data = adapter.getBody()
     temp_file = tempfile.mktemp('tmp')
     fo = open(temp_file,'w')
-    fo.write(string.strip(object_data))
+    fo.write(object_data.strip())
     fo.close()
     return temp_file, objectpath, modification_date
 
 
-def createTempfile(ob
-                   , objectpath):
-    """Creates a temporaty file in the File-system.
+def createTempfile(ob, objectpath):
+    """Creates a temporaty file in the filesystem and write ob's data to it.
+    XXX argument 'objectpath' is unused.
     """
     objectdata = getObjectData(ob)
     temp_file = tempfile.mktemp('tmp')
     fo = open(temp_file,'w')
-    fo.write(string.strip(objectdata))
+    fo.write(objectdata.strip())
     fo.close()
     return temp_file
 
-def mapFS(mappings
-          , root
-          , objectroot
-          , fsroot):
+def mapFS(mappings, root, objectroot, fsroot):
     """Returns the new object list in the zopedb which
-    are not available in the File-system.
+    are not available in the filesystem.
     """
     ob = getObject(objectroot, root)
     folders, files = getNewObject(ob, [], [])
     for folder in folders:
         path = fsroot
-        for part in string.split(folder, '/'):
+        for part in folder.split('/'):
             path = os.path.join(path, part)
         if not os.path.exists(path):
             location = os.path.dirname(path)
             ob = getObject(folder, root)
-            ob_name = string.split(folder, '/')[-1]
+            ob_name = folder.split('/')[-1]
             toFS(ob, ob_name, location)
     for file in files:
         path = fsroot
-        for part in string.split(file, '/'):
+        for part in file.split('/'):
             path = os.path.join(path, part)
         if not os.path.exists(path):
             location = os.path.dirname(path)
             ob = getObject(file, root)
-            ob_name = string.split(file, '/')[-1]
+            ob_name = file.split('/')[-1]
             toFS(ob, ob_name, location)
 
-def traverseFS(fspath
-               , mapping_paths):
-    """Traverse through the File-system.
+def traverseFS(fspath, mapping_paths):
+    """Traverse through the filesystem.
     """
     if os.path.isdir(fspath):
-        root=fspath
-        dirlist=os.listdir(root)
+        root = fspath
+        dirlist = os.listdir(root)
         for item in dirlist:
-            if item!='@@Zope':
-                fspath=os.path.join(root,item)
+            if item != '@@Zope':
+                fspath = os.path.join(root,item)
                 if os.path.isdir(fspath):
                     traverseFS(fspath, mapping_paths)
                 else:
                     sandbox_path = fspath
-                    original_path = os.path.join(os.path.dirname(fspath)
-                                                 , '@@Zope'
-                                                 , 'Original'
-                                                 , os.path.basename(fspath))
+                    original_path = os.path.join(os.path.dirname(fspath),
+                                                 '@@Zope', 'Original',
+                                                 os.path.basename(fspath))
                     if os.path.exists(original_path):
                         zopedb_path = getZODBPath(fspath)
-                        mapping_paths[sandbox_path] = [original_path
-                                                       , zopedb_path]
+                        mapping_paths[sandbox_path] = [original_path,
+                                                       zopedb_path]
     else:
         sandbox_path = fspath
-        original_path = os.path.join(os.path.dirname(fspath)
-                                     , '@@Zope'
-                                     , 'Original'
-                                     , os.path.basename(fspath))
+        original_path = os.path.join(os.path.dirname(fspath),
+                                     '@@Zope', 'Original',
+                                     os.path.basename(fspath))
         if os.path.exists(original_path):
             zopedb_path = getZODBPath(fspath)
-            mapping_paths[sandbox_path] = [original_path
-                                           , zopedb_path]
+            mapping_paths[sandbox_path] = [original_path, zopedb_path]
 
     return mapping_paths
 
-def checkConflictData(sandbox_path
-                      , zopedb_path):
-    """Checks for conflict data in the File-system.
+def checkConflictData(sandbox_path, zopedb_path):
+    """Checks for conflict data in the filesystem.
     """
     isConflict = 0
     f = open(sandbox_path,'r')
@@ -227,20 +198,15 @@ def checkConflictData(sandbox_path
     f.close()
     filter1 = '<<<<<<< %s' % (sandbox_path)
     filter2 = '>>>>>>> %s' % (zopedb_path)
-    if string.find(data, filter1)<>-1 and string.find(data, filter2)<>-1:
+    if data.find(filter1) >= 0 and data.find(filter2) >= 0:
         isConflict = 1
     else:
         isConflict = 0
 
     return isConflict
 
-
-def makeNewEntry(admin_dir
-                 , name=None
-                 , type=None
-                 , factory=None
-                 , objpath=None
-                 , isNew=None):
+def makeNewEntry(admin_dir, name=None, type=None, factory=None,
+                 objpath=None, isNew=None):
     """Edits the Entries.xml file.
     """
     entries = {}
@@ -249,26 +215,20 @@ def makeNewEntry(admin_dir
         entries = loads(open(entries_path).read())
     if not entries.has_key(name) and name is not None:
         if isNew:
-            entries[name] = {'type': type
-                             , 'factory': factory
-                             , 'isNew': 'Y'
-                             , 'path': objpath}
+            entries[name] = {'type': type, 'factory': factory,
+                             'isNew': 'Y', 'path': objpath}
         else:
-            entries[name] = {'type': type
-                             , 'factory': factory
-                             , 'path': objpath}
+            entries[name] = {'type': type, 'factory': factory, 'path': objpath}
     open(entries_path, 'w').write(dumps(entries))
 
-def getFSRoot(fspath
-              , next=None):
+def getFSRoot(fspath, next=None):
     """Returns the sandbox root.
     """
     fspath = os.path.abspath(fspath)
     if not os.path.exists(os.path.join(fspath,'@@Zope')):
         return os.path.join(fspath,next)
     else:
-        return getFSRoot(os.path.dirname(fspath)
-                         , os.path.basename(fspath))
+        return getFSRoot(os.path.dirname(fspath), os.path.basename(fspath))
 
 def setPrint(output_string):
     print output_string
