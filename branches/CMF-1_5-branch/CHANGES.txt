@@ -4,6 +4,17 @@ CMF 1.5.0rc1 (unreleased)
 
     - RegistrationTool: Generated passwords no longer contain 'OQ0Il1'.
 
+    - The permalink feature is now turned off by default and may be turned 
+      on by setting the boolean property 'enable_permalink' in the cmfs 
+      root property sheet through the ZMI. Through the 'get_permalink' 
+      script the permanent link of an content object can be asked for. 
+      Additionaly the site may be asked if the permalink feature is turned
+      on or not by adding 'isAvailable' instead of an unique id
+      (http://www.example.com/permalink/isAvailable). Returns '1' or '0'.
+      Also removed the badly designed 'tal:on-error' directive in 
+      'main_template'.
+
+
 CMF 1.5.0beta2 (2004/09/27)
 
   New Features
