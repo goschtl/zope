@@ -13,16 +13,15 @@
 ##############################################################################
 """Zope 3 Component Architecture
 
-$Id: __init__.py,v 1.21 2004/03/06 02:50:18 garrett Exp $
+$Id: __init__.py,v 1.22 2004/03/09 12:41:15 srichter Exp $
 """
 import sys
 import warnings
 from zope.interface import moduleProvides, Interface
-from zope.component.interfaces import IComponentArchitecture
+from zope.component.interfaces import IComponentArchitecture, IFactory
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
 from zope.component.servicenames import Adapters, Presentation
-from zope.component.servicenames import Factories
 
 # Try to be hookable. Do so in a try/except to avoid a hard dependence
 try:
@@ -164,19 +163,31 @@ def querySubscriptionMultiAdapter(objects, interface, context, name=u'',
     return adapters.querySubscriptionMultiAdapter(objects, interface, name,
                                                   default)
 
-# Factory service
+# Factories
 
 def createObject(context, name, *args, **kwargs):
-    return getService(context, Factories).createObject(name, *args, **kwargs)
-
-def getFactory(context, name):
-    return getService(context, Factories).getFactory(name)
-
-def queryFactory(context, name, default=None):
-    return getService(context, Factories).queryFactory(name, default)
+    return getUtility(context, IFactory, name)(*args, **kwargs)
 
 def getFactoryInterfaces(context, name):
-    return getService(context, Factories).getInterfaces(name)
+    return getUtility(context, IFactory, name).getInterfaces()
+
+def getFactoriesFor(context, interface):
+    utils =  getService(context, 'Utilities')
+    return [(name, factory) \
+            for iface, name, factory in utils.getRegisteredMatching(IFactory) \
+            if interface in tuple(factory.getInterfaces())]
+
+def getFactory(context, name):
+    warnings.warn(
+        "Use getUtility(context, IFactory, name) instead of getFactory(...)",
+        DeprecationWarning, 2)
+    return getUtility(context, IFactory, name)
+
+def queryFactory(context, name, default=None):
+    warnings.warn(
+        "Use getUtility(context, IFactory, name) instead of getFactory(...)",
+        DeprecationWarning, 2)
+    return queryUtility(context, IFactory, name)
 
 
 # Presentation service
