@@ -13,7 +13,7 @@
 ##############################################################################
 """Browser widgets with file-based input
 
-$Id:$
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -26,7 +26,66 @@ from zope.app.form.browser.widget import DisplayWidget
 from zope.app.form.browser.textwidgets import escape
 
 
+class MimeWidget(SimpleInputWidget):
+    """MimeWidget renders the subwidgets for the interface IMime.
+    
+    The widget also extracts the filename and the fileupload to the session. 
+    The subwidgets MimeDataWidget and MimeTypeWidget will access this 
+    information for storing the fileupload and the mime-type.
+    
+    For more information about widgets which render subwidgets see the 
+    ObjectWidget implementation in 
+    'zope.app.form.browser.objectwidget.ObjectWidget'.
+    """
+    pass
 
+
+class MimeDataWidget(SimpleInputWidget):
+    """MimeDataWidget extracts the fileupload information from the session.
+    
+    The session is initiated from the MimeWidget and contains the fileupload.
+    The method _toFieldValue() reads the fileupload (input) from the session.
+    """
+    pass
+
+
+class MimeTypeWidget(SimpleInputWidget):
+    """MimeTypeWidget is used for to guess the mime-type.
+    
+    The session is initiated from the MimeWidget and contains the filename.
+    The method _toFieldValue() reads the filename (input) from the session
+    and finds the mime-type via the python mimetypes lib.
+    """
+    pass
+
+
+# TODO: better description.
+class MimeDataEncodingWidget(SimpleInputWidget):
+    """MimeDataEncodingWidget set the encoding on text-based data.
+    
+    If we have a file with a mime-type 'text/...' we can set the encoding.
+    """
+    pass
+
+
+class MimeDisplayWidget(DisplayWidget):
+    """Mime data display widget."""
+    # There need to be probably some widget options to determine how
+    # the file is displayed, e.g. as a download link.
+
+    def __call__(self):
+        if self._renderedValueSet():
+            content = self._data
+        else:
+            content = self.context.default
+
+        show = u"Filename %s, size in bytes: %s" (content.filename,
+                                                  content.getSize())
+        return renderElement("span", contents=escape(show))
+
+
+
+# TODO remove old implementations
 class FileWidget(SimpleInputWidget):
     """File Widget"""
 
@@ -135,19 +194,3 @@ class MimeWidget(SimpleInputWidget):
             return True
         else:
             return False
-
-
-class MimeDisplayWidget(DisplayWidget):
-    """Mime data display widget."""
-    # There need to be probably some widget options to determine how
-    # the file is displayed, e.g. as a download link.
-
-    def __call__(self):
-        if self._renderedValueSet():
-            content = self._data
-        else:
-            content = self.context.default
-
-        show = u"Filename %s, size in bytes: %s" (content.filename,
-                                                  content.getSize())
-        return renderElement("span", contents=escape(show))
