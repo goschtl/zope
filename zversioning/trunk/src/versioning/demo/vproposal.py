@@ -16,5 +16,5 @@ class VProposal(persistent.Persistent):
         self.issues = issues
         
     def proposal(self):
-        return "%s\n%s" % (self.title,self.usecase,self.concept,self.todo, \
-                           self.issues)        
+        return "%s\n%s\n%s\n%s\n%s" % (self.title,self.usecase,self.concept, \
+                           self.todo,self.issues)        

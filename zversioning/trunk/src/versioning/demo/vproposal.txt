@@ -1,0 +1,8 @@
+>>> from versioning.demo import vproposal
+>>> vprop = vproposal.VProposal('Proptitle','Usecases are ...', 
+... 'Technical Concept','Todo: Steps are ...','Open Issues ...')
+... 
+>>> vprop.title, vprop.usecase, vprop.concept
+('Proptitle', 'Usecases are ...', 'Technical Concept')
+>>> vprop.todo, vprop.issues
+('Todo: Steps are ...', 'Open Issues ...')
