@@ -28,7 +28,7 @@
     <td></td>
     <td>
       <input type=submit name='refresh_submit' value="Refresh">
-      <input type=submit name='update_submit' value="Update">
+      <input type=submit name='UPDATE_SUBMIT' value="Update">
       <input type=submit name='add_submit' value="Add">
       <input type=submit name='remove_submit' value="Remove">&nbsp;&nbsp;
       <input type=submit name='top_submit' value="Top">
