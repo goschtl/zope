@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2002 Zope Corporation and Contributors.
+# Copyright (c) 2004 Zope Corporation and Contributors.
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,28 +11,18 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Interfaces for zope.thread.
+"""Unit tests for zope.thread.
 
 $Id$
 """
 
-from zope.interface import Interface, Attribute
+def test_suite():
+    import unittest
+    from doctest import DocTestSuite
+    suite = unittest.TestSuite()
+    suite.addTest(DocTestSuite('zope.thread'))
+    return suite
 
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
 
-class IZopeThreadAPI(Interface):
-
-    def thread_globals(thread=None):
-        """Return the thread globals instance for the given thread.
-
-        If thread is None, returns the globals for the current thread.
-        """
-
-
-class IInteractionThreadGlobal(Interface):
-
-    interaction = Attribute("""IInteraction for the current thread.""")
-
-
-class ISiteThreadGlobal(Interface):
-
-    site = Attribute("""Site for the current thread.""")

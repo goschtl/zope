@@ -243,6 +243,9 @@ ext_modules = [
     Extension("zope.hookable._zope_hookable",
               ["src/zope/hookable/_zope_hookable.c"]),
 
+    Extension("zope.thread._zope_thread",
+              ["src/zope/thread/_zope_thread.c"]),
+
     Extension("zope.app.container._zope_app_container_contained",
               ["src/zope/app/container/_zope_app_container_contained.c"],
               include_dirs = ["src/persistent",
