@@ -112,7 +112,7 @@ import sys
 import traceback
 import unittest
 import linecache
-from os.path import join
+from os.path import join, commonprefix
 
 from distutils.util import get_platform
 
@@ -242,18 +242,29 @@ def match(rx, s):
         return re.search(rx, s) is not None
 
 class TestFileFinder:
-    def __init__(self):
+    def __init__(self, prefix):
         self.files = []
+        self.prefix = prefix
 
     def visit(self, rx, dir, files):
-        if dir[-5:] != "tests":
+        if not dir.endswith('tests'):
             return
         # ignore tests that aren't in packages
         if not "__init__.py" in files:
             if not files or files == ['CVS']:
                 return
-
             print "not a package", dir
+            return
+
+        # ignore tests when the package can't be imported, possibly due to
+        # dependency failures.
+        pkg = dir[len(self.prefix)+1:].replace('/', '.')
+        try:
+            __import__(pkg)
+        # We specifically do not want to catch ImportError since that's useful
+        # information to know when running the tests.
+        except RuntimeError, e:
+            print 'skipping', pkg, 'because:', e
             return
 
         for file in files:
@@ -263,8 +274,9 @@ class TestFileFinder:
                     self.files.append(path)
 
 def find_tests(rx):
-    finder = TestFileFinder()
-    os.path.walk(join('lib','python'), finder.visit, rx)
+    prefix = join('lib', 'python')
+    finder = TestFileFinder(prefix)
+    os.path.walk(prefix, finder.visit, rx)
     return finder.files
 
 def package_import(modname):
