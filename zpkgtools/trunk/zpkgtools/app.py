@@ -42,8 +42,35 @@ class Application:
         returned by `parse_args()`.
         """
         self.logger = logging.getLogger(options.program)
-        self.ip = None
         self.options = options
+        cf = config.Configuration()
+        cf.location_maps.extend(options.location_maps)
+        path = options.configfile
+        if path is None:
+            path = config.defaultConfigurationPath()
+            if os.path.exists(path):
+                self.logger.debug("loading configuration file %s", path)
+                cf.loadPath(path)
+        elif path:
+            self.logger.debug("loading configuration file %s", path)
+            cf.loadPath(path)
+        cf.finalize()
+        self.locations = cf.locations
+
+        # XXX Hack: This should be part of BuilderApplication
+        if options.include_support_code is None:
+            options.include_support_code = cf.include_support_code
+
+    def error(self, message, rc=1):
+        print >>sys.stderr, message
+        sys.exit(rc)
+
+
+class BuilderApplication(Application):
+
+    def __init__(self, options):
+        Application.__init__(self, options)
+        self.ip = None
         self.resource = locationmap.normalizeResourceId(options.resource)
         self.resource_type, self.resource_name = self.resource.split(":", 1)
         if not options.release_name:
@@ -55,29 +82,11 @@ class Application:
             self.loader = loader.Loader(tag=options.revision_tag)
         else:
             self.loader = loader.Loader()
-        cf = config.Configuration()
-        cf.location_maps.extend(options.location_maps)
-        path = options.configfile
-        if path is None:
-            path = config.defaultConfigurationPath()
-            if os.path.exists(path):
-                cf.loadPath(path)
-        elif path:
-            cf.loadPath(path)
-
-        cf.finalize()
-        self.locations = cf.locations
-        if options.include_support_code is None:
-            options.include_support_code = cf.include_support_code
 
         if self.resource not in self.locations:
             self.error("unknown resource: %s" % self.resource)
         self.resource_url = self.locations[self.resource]
         self.handled_resources = sets.Set()
-
-    def error(self, message, rc=1):
-        print >>sys.stderr, message
-        sys.exit(rc)
 
     def build_distribution(self):
         """Create the distribution tree.
@@ -92,7 +101,7 @@ class Application:
         # distribution; it's the former if there's an __init__.py in
         # the source directory.
         os.mkdir(self.destination)
-        self.ip = include.InclusionProcessor(self.source, loader=self.loader)
+        self.ip = include.InclusionProcessor(self.source, self.loader)
         self.ip.add_manifest(self.destination)
         self.handled_resources.add(self.resource)
         name = "build_%s_distribution" % self.resource_type
@@ -102,12 +111,14 @@ class Application:
     def build_package_distribution(self):
         pkgname = self.metadata.name
         pkgdest = os.path.join(self.destination, pkgname)
-        spec, dist = include.load(self.source)
+        specs = include.load(self.source)
+        self.ip.addIncludes(self.source, specs.loads)
+        specs.collection.cook()
         try:
-            self.ip.createDistributionTree(pkgdest, spec)
+            self.ip.createDistributionTree(pkgdest, specs.collection)
         except cvsloader.CvsLoadingError, e:
             self.error(str(e))
-        self.ip.addIncludes(self.destination, dist)
+        self.ip.addIncludes(self.destination, specs.distribution)
         pkgdir = os.path.join(self.destination, pkgname)
         pkginfo = package.loadPackageInfo(pkgname, pkgdir, pkgname)
         setup_cfg = os.path.join(self.destination, "setup.cfg")
@@ -189,7 +200,10 @@ class Application:
                 unhandled_resources.add(resource)
                 continue
             #
-            source = self.loader.load(self.locations[resource])
+            location = self.locations[resource]
+            self.logger.debug("loading resource %r from %s",
+                              resource, location)
+            source = self.loader.load_mutable_copy(location)
             self.handled_resources.add(resource)
             deps = self.add_component(type, name, source)
             if type == "package" and "." in name:
@@ -230,15 +244,17 @@ class Application:
         """
         destination = os.path.join(self.destination, name)
         self.ip.add_manifest(destination)
-        spec, dist = include.load(source)
+        specs = include.load(source)
+        self.ip.addIncludes(source, specs.loads)
+        specs.collection.cook()
 
         if type == "package":
-            self.add_package_component(name, destination, spec)
+            self.add_package_component(name, destination, specs.collection)
         elif type == "collection":
-            self.add_collection_component(name, destination, spec)
+            self.add_collection_component(name, destination, specs.collection)
 
         if distribution:
-            self.ip.addIncludes(self.destination, dist)
+            self.ip.addIncludes(self.destination, specs.distribution)
 
         self.create_manifest(destination)
         deps_file = os.path.join(source, "DEPENDENCIES.cfg")
@@ -299,7 +315,9 @@ class Application:
 
     def load_resource(self):
         """Load the primary resource and initialize internal metadata."""
-        self.source = self.loader.load(self.resource_url)
+        self.logger.debug("loading resource %r from %s",
+                          self.resource, self.resource_url)
+        self.source = self.loader.load_mutable_copy(self.resource_url)
         self.load_metadata()
         release_name = self.options.release_name
         self.target_name = "%s-%s" % (release_name, self.options.version)
@@ -442,6 +460,8 @@ class Application:
                 mod = sys.modules[name]
                 source = os.path.abspath(mod.__path__[0])
         if source is None:
+            self.logger.debug("loading resource 'package:%s' from %s",
+                              name, url)
             source = self.loader.load(url)
 
         tests_dir = os.path.join(source, "tests")
@@ -493,7 +513,7 @@ class Application:
 
     def run(self):
         """Run the application, using the other methods of the
-        ``Application`` object.
+        ``BuilderApplication`` object.
         """
         try:
             try:
@@ -553,6 +573,8 @@ def parse_args(argv):
         prog=prog,
         usage="usage: %prog [options] resource",
         version="%prog 0.1")
+
+    # "global" options:
     parser.add_option(
         "-C", "--configure", dest="configfile",
         help="path or URL to the configuration file", metavar="FILE")
@@ -565,6 +587,8 @@ def parse_args(argv):
         action="append", default=[],
         help=("specify an additional location map to load before"
               " maps specified in the configuration"), metavar="MAP")
+
+    # options specific to building a package:
     parser.add_option(
         "-n", "--name", dest="release_name",
         help="base name of the distribution file", metavar="NAME")
@@ -581,6 +605,7 @@ def parse_args(argv):
     parser.add_option(
         "-v", dest="version",
         help="version label for the new distribution")
+
     options, args = parser.parse_args(argv[1:])
     if len(args) != 1:
         parser.error("wrong number of arguments")
@@ -612,7 +637,7 @@ def main(argv=None):
         return 2
 
     try:
-        app = Application(options)
+        app = BuilderApplication(options)
         app.run()
     except SystemExit, e:
         return e.code

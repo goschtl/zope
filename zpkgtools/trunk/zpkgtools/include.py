@@ -22,6 +22,9 @@
     that are copied.  Any file with a name matching these patterns
     will be ignored.
 
+  - `PACKAGE_CONF`: The name of the file that specifies how the
+    package is assembled.
+
 """
 
 import fnmatch
@@ -35,7 +38,7 @@ import urllib2
 from zpkgtools import Error
 
 from zpkgtools import cfgparser
-from zpkgtools import cvsloader
+from zpkgtools import loader
 from zpkgtools import publication
 
 
@@ -74,10 +77,10 @@ def load(sourcedir):
             config = parser.load()
         finally:
             f.close()
-        config.collection.excludes[package_conf] = package_conf
+        config.collection.add_exclusion(package_conf)
     else:
         config = schema.getConfiguration()
-    return config.collection, config.distribution
+    return config
 
 
 def filter_names(names):
@@ -93,7 +96,7 @@ def filter_names(names):
     return names
 
 
-def normalize_path(path, type):
+def normalize_path(path, type, group):
     if ":" in path:
         scheme, rest = urllib.splittype(path)
         if len(scheme) == 1:
@@ -101,6 +104,9 @@ def normalize_path(path, type):
             # 'cause that's not allowable:
             raise InclusionSpecificationError(
                 "drive letters are not allowed in inclusions: %r" % path)
+        else:
+            raise InclusionSpecificationError(
+                "URLs are not allowed in inclusions")
     np = posixpath.normpath(path)
     if posixpath.isabs(np) or np[:1] == ".":
         raise InclusionSpecificationError(
@@ -110,17 +116,17 @@ def normalize_path(path, type):
     return np.replace("/", os.sep)
 
 
-def normalize_path_or_url(path, type):
+def normalize_path_or_url(path, type, group):
     if ":" in path:
         scheme, rest = urllib.splittype(path)
         if len(scheme) != 1:
             # should normalize the URL, but skip that for now
             return path
-    return normalize_path(path, type)
+    return normalize_path(path, type, group)
 
 
 class SpecificationSchema(cfgparser.Schema):
-    """Specialized schema that handles populating a pair of Specifications.
+    """Specialized schema that handles populating a set of Specifications.
     """
 
     def __init__(self, source, filename):
@@ -129,8 +135,12 @@ class SpecificationSchema(cfgparser.Schema):
 
     def getConfiguration(self):
         conf = cfgparser.SectionValue(None, None, None)
-        conf.collection = self.collection = Specification(self.source)
-        conf.distribution = self.distribution = Specification(self.source)
+        conf.loads = Specification(
+            self.source, self.filename, "load")
+        conf.collection = Specification(
+            self.source, self.filename, "collection")
+        conf.distribution = Specification(
+            self.source, self.filename, "distribution")
         return conf
 
     def startSection(self, parent, typename, name):
@@ -140,9 +150,11 @@ class SpecificationSchema(cfgparser.Schema):
             return parent.collection
         elif typename == "distribution":
             return parent.distribution
+        elif typename == "load":
+            return parent.loads
         raise cfgparser.ConfigurationError("unknown section type: %s"
                                            % typename)
-                                           
+
     def endSection(self, parent, typename, name, child):
         pass
 
@@ -161,21 +173,18 @@ class SpecificationSchema(cfgparser.Schema):
         if not src:
             raise InclusionSpecificationError("source information omitted",
                                               self.filename)
-        dest = normalize_path(dest, "destination")
-        src = normalize_path_or_url(src, "source")
+        dest = normalize_path(dest, "destination", section.group)
+        if section.group == "load":
+            f = normalize_path_or_url
+        else:
+            f = normalize_path
+        src = f(src, "source", section.group)
         if src == "-":
-            if section is self.distribution:
+            if section.group != "collection":
                 raise InclusionSpecificationError(
-                    "cannot exclude files from the distribution root",
+                    "can only exclude files from the collection group",
                     self.filename)
-            path = os.path.join(self.source, dest)
-            expansions = filter_names(glob.glob(path))
-            if not expansions:
-                raise InclusionSpecificationError(
-                    "exclusion %r doesn't match any files" % dest,
-                    self.filename)
-            for fn in expansions:
-                section.excludes[fn] = fn
+            section.add_exclusion(dest)
         else:
             section.includes[dest] = src
 
@@ -194,16 +203,7 @@ class Specification:
 
     """
 
-    # XXX Needing to pass the source directory to the constructor is a
-    # bit of a hack, ...  A
-    # better approach may be to have "raw" and "cooked" versions of
-    # the specification object; the raw version would only have the
-    # information loaded from a specification file, and the cooked
-    # version would be (essentially) a list of directory creation and
-    # file copy operations.  The input source directory would be a
-    # parameter to the "cook" operation.
-
-    def __init__(self, source):
+    def __init__(self, source, filename, group):
         """Initialize the Specification object.
 
         :Parameters:
@@ -213,9 +213,26 @@ class Specification:
         """
         # The source directory is needed since globbing is performed
         # to locate files if the spec includes wildcards.
-        self.excludes = {}
+        self.excludes = []
         self.includes = {}
         self.source = source
+        self.filename = filename
+        self.group = group
+
+    def add_exclusion(self, path):
+        self.excludes.append(path)
+
+    def cook(self):
+        patterns = self.excludes
+        self.excludes = []
+        for pat in patterns:
+            path = os.path.join(self.source, pat)
+            expansions = filter_names(glob.glob(path))
+            if not expansions:
+                raise InclusionSpecificationError(
+                    "exclusion %r doesn't match any files" % pat,
+                    self.filename)
+            self.excludes.extend(expansions)
 
 
 class InclusionProcessor:
@@ -225,15 +242,13 @@ class InclusionProcessor:
     the output tree.
 
     """
-    def __init__(self, source, loader=None):
+    def __init__(self, source, loader):
         if not os.path.exists(source):
             raise InclusionError("source directory does not exist: %r"
                                  % source)
         self.source = os.path.abspath(source)
         self.manifests = []
-        if loader is None:
-            loader = cvsloader.CvsLoader()
-        self.cvs_loader = loader
+        self.loader = loader
 
     def createDistributionTree(self, destination, spec=None):
         """Create the output tree according to `spec`.
@@ -248,9 +263,9 @@ class InclusionProcessor:
 
         """
         if spec is None:
-            spec = Specification(self.source)
+            spec = Specification(self.source, None, "collection")
         destination = os.path.abspath(destination)
-        self.copyTree(spec.source, destination, spec.excludes)
+        self.copyTree(self.source, destination, spec.excludes)
         self.addIncludes(destination, spec)
 
     def copyTree(self, source, destination, excludes={}):
@@ -381,24 +396,18 @@ class InclusionProcessor:
         # This is what we want to create:
         destdir = os.path.join(destdir, basename)
 
+        type = urllib.splittype(source)[0] or ''
+        if len(type) in (0, 1):
+            # figure it's a path ref, possibly w/ a Windows drive letter
+            source = os.path.join(self.source, source)
+            source = "file://" + urllib.pathname2url(source)
+            type = "file"
         try:
-            cvsurl = cvsloader.parse(source)
+            path = self.loader.load(source)
         except ValueError:
-            # not a cvs: or repository: URL
-            type, rest = urllib.splittype(source)
-            if type:
-                # some sort of URL
-                self.includeFromUrl(source, destdir)
-            else:
-                # local path; perhaps this join should be handled by
-                # the Specification to avoid having to keep
-                # self.source around?
-                self.includeFromLocalTree(os.path.join(self.source, source),
-                                          destdir)
-        else:
-            if isinstance(cvsurl, cvsloader.RepositoryUrl):
-                raise InclusionError("can't load from repository: URL")
-            self.includeFromCvs(cvsurl, destdir)
+            # not a supported URL type
+            raise InclusionError("cannot load from a %r URL" % type)
+        self.includeFromLocalTree(path, destdir)
 
     def includeFromLocalTree(self, source, destination):
         # Check for file-ness here since copyTree() doesn't handle
@@ -407,20 +416,3 @@ class InclusionProcessor:
             self.copy_file(source, destination)
         else:
             self.copyTree(source, destination)
-
-    def includeFromUrl(self, source, destination):
-        # XXX treat FTP URLs specially to get permission bits and directories?
-        inf = urllib2.urlopen(source)
-        try:
-            outf = open(destination, "w")
-            try:
-                shutil.copyfileobj(inf, outf)
-            finally:
-                outf.close()
-            self.add_output(destination)
-        finally:
-            inf.close()
-
-    def includeFromCvs(self, cvsurl, destination):
-        source = self.cvs_loader.load(cvsurl.getUrl())
-        self.includeFromLocalTree(source, destination)

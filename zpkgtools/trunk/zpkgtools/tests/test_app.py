@@ -211,7 +211,7 @@ class ApplicationSupportTestCase(unittest.TestCase):
                 "-f", "-m", self.mapfile, "-v1.0",
                 "collection:application"]
         options = app.parse_args(argv)
-        application = app.Application(options)
+        application = app.BuilderApplication(options)
         self.assertEqual(application.resource_type, "collection")
         #
         application.load_resource()

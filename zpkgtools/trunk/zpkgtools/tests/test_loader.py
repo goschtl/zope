@@ -13,10 +13,12 @@
 ##############################################################################
 """Tests for the zpkgtools.loader module."""
 
+import filecmp
 import os
 import shutil
 import tempfile
 import unittest
+import urllib
 
 from zpkgtools import loader
 
@@ -31,8 +33,115 @@ class LoaderTestBase(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.workingdir)
 
+    def createLoader(self, tag=None):
+        return loader.Loader(tag)
 
-class DummyLoader:
+
+class LoaderTestCase(LoaderTestBase):
+
+    def test_transform_url_with_default_tag(self):
+        convert = loader.Loader("TAG").transform_url
+        self.check_unchanging_urls(convert)
+        eq = self.assertEqual
+        # cvs:
+        
+        # repository:
+        eq(convert("repository::"),
+           "repository::TAG")
+        eq(convert("repository:path"),
+           "repository:path:TAG")
+        eq(convert("repository:/some/path/:"),
+           "repository:/some/path/:TAG")
+
+    def test_transform_url_without_default_tag(self):
+        convert = loader.Loader().transform_url
+        self.check_unchanging_urls(convert)
+        eq = self.assertEqual
+
+    def check_unchanging_urls(self, convert):
+        eq = self.assertEqual
+        eq(convert("http://example.org/foo/bar.txt"),
+           "http://example.org/foo/bar.txt")
+        eq(convert("https://example.org/foo/bar.txt"),
+           "https://example.org/foo/bar.txt")
+        eq(convert("file://localhost/path/to/somewhere.py"),
+           "file://localhost/path/to/somewhere.py")
+        eq(convert("file:///path/to/somewhere.py"),
+           "file:///path/to/somewhere.py")
+        eq(convert("cvs://cvs.example.org/cvsroot:path/:tag"),
+           "cvs://cvs.example.org/cvsroot:path/:tag")
+        eq(convert("repository:path/:tag"),
+           "repository:path/:tag")
+        eq(convert("repository:/some/path/:tag"),
+           "repository:/some/path/:tag")
+        # not really a URL, but a supported tagless thing
+        eq(convert("local/path/reference.conf"),
+           "local/path/reference.conf")
+
+    def test_load_with_file(self):
+        filename = os.path.abspath(__file__)
+        URL = "file://" + urllib.pathname2url(filename)
+        loader = self.createLoader()
+        # Check that the file isn't copied if we don't ask for a mutable copy:
+        p1 = loader.load(URL)
+        self.assertEqual(p1, filename)
+        # Check that we use the same copy if we ask again:
+        p2 = loader.load(URL)
+        self.assertEqual(p1, p2)
+
+    def test_load_mutable_copy_with_file(self):
+        filename = os.path.abspath(__file__)
+        URL = "file://" + urllib.pathname2url(filename)
+        loader = self.createLoader()
+        # Check that the file isn't copied if we don't ask for a mutable copy:
+        p1 = loader.load(URL)
+        self.assertEqual(p1, filename)
+        # Check that it is copied if we do:
+        p2 = loader.load_mutable_copy(URL)
+        self.assert_(filecmp.cmp(p1, filename, shallow=False))
+        self.assertNotEqual(p1, p2)
+        self.assert_(p2.startswith(tempfile.gettempdir()))
+        # And check that it isn't copied again if we ask again:
+        p3 = loader.load_mutable_copy(URL)
+        self.assertEqual(p2, p3)
+        loader.cleanup()
+
+    def test_load_mutable_copy_with_directory(self):
+        filename = os.path.abspath(__file__)
+        filename = os.path.join(os.path.dirname(filename), "input")
+        self.check_load_mutable_copy_with_directory(filename)
+
+    def test_load_mutable_copy_with_directory_trailing_slash(self):
+        filename = os.path.abspath(__file__)
+        filename = os.path.join(os.path.dirname(filename), "input", "")
+        self.check_load_mutable_copy_with_directory(filename)
+
+    def check_load_mutable_copy_with_directory(self, filename):
+        URL = "file://" + urllib.pathname2url(filename)
+        loader = self.createLoader()
+        # Check that the file isn't copied if we don't ask for a mutable copy:
+        p1 = loader.load(URL)
+        self.assertEqual(p1, filename)
+        # Check that it is copied if we do:
+        common_files = [
+            "packages.map",
+            "README.txt",
+            "collection-1/DEPENDENCIES.cfg",
+            "package/__init__.py",
+            ]
+        # Check that it is copied if we do:
+        p2 = loader.load_mutable_copy(URL)
+        self.assert_(filecmp.cmpfiles(p1, filename, common_files,
+                                      shallow=False))
+        self.assertNotEqual(p1, p2)
+        self.assert_(p2.startswith(tempfile.gettempdir()))
+        # And check that it isn't copied again if we ask again:
+        p3 = loader.load_mutable_copy(URL)
+        self.assertEqual(p2, p3)
+        loader.cleanup()
+
+
+class FileProxyLoader:
 
     cleanup_called = False
 
@@ -43,7 +152,7 @@ class DummyLoader:
 class FileProxyTestCase(unittest.TestCase):
 
     def setUp(self):
-        self.loader = DummyLoader()
+        self.loader = FileProxyLoader()
         self.mode = "rU"
         self.fp = loader.FileProxy(__file__, self.mode, self.loader)
 
@@ -87,6 +196,7 @@ class FileProxyTestCase(unittest.TestCase):
 
 def test_suite():
     suite = unittest.makeSuite(FileProxyTestCase)
+    suite.addTest(unittest.makeSuite(LoaderTestCase))
     return suite
 
 if __name__ == "__main__":
