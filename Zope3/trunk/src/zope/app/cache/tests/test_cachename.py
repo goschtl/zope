@@ -15,7 +15,7 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: test_cachename.py,v 1.4 2003/06/03 21:42:59 jim Exp $
+$Id: test_cachename.py,v 1.5 2003/06/05 12:03:14 stevea Exp $
 """
 
 import unittest
@@ -24,14 +24,20 @@ from zope.app.interfaces.cache.cache import CacheName
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
 from zope.app.interfaces.services.service import ILocalService
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.interface import implements
 
-class CachingServiceStub(object):
+__metaclass__ = type
 
-    __implements__ = ILocalService
+class CachingServiceStub:
+
+    implements(ILocalService, IAttributeAnnotatable)
 
     def getAvailableCaches(self):
         return 'foo', 'bar', 'baz'
 
+    # IAttributeAnnotatable is implemented so that there will be an
+    # IDependable adapter available.
 
 class CacheNameTest(PlacefulSetup, unittest.TestCase):
 

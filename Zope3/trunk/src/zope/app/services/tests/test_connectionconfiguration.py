@@ -13,7 +13,7 @@
 ##############################################################################
 """Unit test for ConnectionConfiguration.
 
-$Id: test_connectionconfiguration.py,v 1.13 2003/06/03 22:46:22 jim Exp $
+$Id: test_connectionconfiguration.py,v 1.14 2003/06/05 12:03:18 stevea Exp $
 """
 __metaclass__ = type
 
@@ -21,7 +21,6 @@ from unittest import TestCase, main, makeSuite
 from zope.app.services.connection import ConnectionConfiguration
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.traversing import traverse
-from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.interfaces.services.configuration import Active, Unregistered
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.interfaces.dependable import IDependable
@@ -34,10 +33,11 @@ from zope.app.interfaces.services.configuration \
      import IAttributeUseConfigurable, IUseConfiguration
 from zope.app.tests import setup
 from zope.app.interfaces.services.service import ILocalService
+from zope.interface import implements
 
 class DependableStub:
 
-    __implements__ = IDependable
+    implements(IDependable)
 
     def addDependent(self, location):
         pass
@@ -51,7 +51,7 @@ class DependableStub:
 
 class TestDA(DependableStub):
 
-    __implements__ = IZopeDatabaseAdapter, IDependable, IUseConfiguration
+    implements(IZopeDatabaseAdapter, IDependable, IUseConfiguration)
 
     def addUsage(self, location):
         pass
@@ -59,8 +59,8 @@ class TestDA(DependableStub):
 
 class ConnectionServiceStub(DependableStub):
 
-    __implements__ = (IConnectionService, IConfigurable, IDependable,
-                      IAttributeUseConfigurable, ILocalService)
+    implements(IConnectionService, IConfigurable, IDependable,
+               IAttributeUseConfigurable, ILocalService)
 
     def __init__(self):
         self.bindings = {}
@@ -99,7 +99,7 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         self.default.setObject('da', TestDA())
         self.da = traverse(self.default, 'da')
 
-        self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
+        self.cm = self.default.getConfigurationManager()
         key = self.cm.setObject('',
                   ConnectionConfiguration('conn_name',
                                           '/++etc++site/default/da'))

@@ -13,7 +13,7 @@
 ##############################################################################
 """Adding implementation tests
 
-$Id: test_adding.py,v 1.4 2003/05/28 23:15:05 jim Exp $
+$Id: test_adding.py,v 1.5 2003/06/05 12:03:13 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
@@ -31,13 +31,12 @@ from zope.app.interfaces.event import IObjectAddedEvent, IObjectModifiedEvent
 
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.container import IContainer
-from zope.app.container.zopecontainer import ZopeContainerAdapter
-
+from zope.interface import implements
 
 
 class Container:
 
-    __implements__ = IContainer
+    implements(IContainer)
 
     def __init__(self):
         self._data = {}
@@ -58,7 +57,6 @@ class Test(PlacelessSetup, TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
 
     def test(self):
         container = Container()

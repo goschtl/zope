@@ -14,11 +14,11 @@
 """
 
 Revision information:
-$Id: test_servicemanager.py,v 1.11 2003/06/03 21:43:00 jim Exp $
+$Id: test_servicemanager.py,v 1.12 2003/06/05 12:03:18 stevea Exp $
 """
 from unittest import TestCase, TestLoader, TextTestRunner
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.context import getWrapperContainer
 from zope.app.services.service import ServiceManager
 from zope.app.services.service import ServiceConfiguration
@@ -28,13 +28,13 @@ from zope.app.traversing import traverse
 from zope.app.interfaces.services.configuration import Active, Unregistered
 from zope.app.interfaces.services.configuration import Registered
 from zope.component.service import serviceManager
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 class ITestService(Interface):
     pass
 
 class TestService:
-
-    __implements__ = ITestService
+    implements(ITestService, IAttributeAnnotatable)
 
 class ServiceManagerTests(PlacefulSetup, TestCase):
 

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_eventservice.py,v 1.25 2003/06/03 22:46:22 jim Exp $
+$Id: test_eventservice.py,v 1.26 2003/06/05 12:03:18 stevea Exp $
 """
 
 from unittest import TestCase, TestLoader, TextTestRunner
@@ -256,14 +256,20 @@ class TestEventPublisher(EventSetup, TestCase):
         self.assertEqual(self.folder1Subscriber.notified, 0)
         self.assertEqual(self.folder1_1Subscriber.notified, 1)
 
-        # Now, put folder1Subscriber back. It should not be notified
-        # now, because it was removed as a bad subscriber.
+        # Now, put folder1Subscriber back. This incidentally fires off a
+        # ObjectAddedEvent, since self.folder1 is decorated with a context
+        # decorator.
         self.folder1.setObject('folder1Subscriber', folder1Subscriber)
-
-        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
         self.assertEqual(self.rootFolderSubscriber.notified, 2)
         self.assertEqual(self.folder1Subscriber.notified, 0)
         self.assertEqual(self.folder1_1Subscriber.notified, 2)
+
+        # folder1Subscriber should not be notified now, because it was removed
+        # as a bad subscriber.
+        publish(self.folder1, ObjectAddedEvent(None, '/foo'))
+        self.assertEqual(self.rootFolderSubscriber.notified, 3)
+        self.assertEqual(self.folder1Subscriber.notified, 0)
+        self.assertEqual(self.folder1_1Subscriber.notified, 3)
 
     def testByPathExplicit(self):
         # test complex interaction, with hubids available but explicitly

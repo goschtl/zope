@@ -13,7 +13,7 @@
 ##############################################################################
 """
 
-$Id: test_rolecontents.py,v 1.4 2003/06/03 14:42:54 stevea Exp $
+$Id: test_rolecontents.py,v 1.5 2003/06/05 12:03:14 stevea Exp $
 """
 
 import unittest
@@ -33,7 +33,12 @@ class Dummy:
 class Test(BaseTestContentsBrowserView, unittest.TestCase):
 
     def _TestView__newContext(self):
-        return RoleService()
+        from zope.app.container.sample import SampleContainer
+        from zope.app.content.folder import RootFolder
+        from zope.app.context import ContextWrapper
+        root = RootFolder()
+        container = RoleService()
+        return ContextWrapper(container, root, name='sample')
 
     def _TestView__newView(self, container):
         from zope.publisher.browser import TestRequest

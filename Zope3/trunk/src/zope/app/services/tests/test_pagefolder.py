@@ -13,13 +13,15 @@
 ##############################################################################
 """View package tests.
 
-$Id: test_pagefolder.py,v 1.4 2003/06/03 21:43:00 jim Exp $
+$Id: test_pagefolder.py,v 1.5 2003/06/05 12:03:18 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests import setup
 from zope.app.services.tests.placefulsetup import PlacefulSetup
-from zope.app.services.pagefolder import PageFolder
+from zope.app.services.pagefolder import PageFolder, PageFolderContextDecorator
+from zope.app.interfaces.services.pagefolder import IPageFolder
+from zope.app.interfaces.context import IZopeContextWrapper
 from zope.app.traversing import traverse
 from zope.app.services.zpt import ZPTTemplate
 from zope.app.services.view import ViewService
@@ -28,15 +30,18 @@ from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.services.tests.test_configurationmanager \
      import ConfigurationManagerContainerTests
+from zope.component.adapter import provideAdapter
 
-class I(Interface): pass
+class I(Interface):
+    pass
 
 class Test(ConfigurationManagerContainerTests, PlacefulSetup, TestCase):
 
     def test_setObject(self):
+        provideAdapter(IPageFolder, IZopeContextWrapper,
+                       PageFolderContextDecorator)
         sm = self.buildFolders(site=True)
         setup.addService(sm, 'Views', ViewService(), suffix='service')
-
 
         default = traverse(self.rootFolder, '++etc++site/default')
         default.setObject('Views', PageFolder())

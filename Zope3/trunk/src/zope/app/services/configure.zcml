@@ -324,6 +324,12 @@
         interface="zope.app.interfaces.annotation.IAttributeAnnotatable" />
     </content>
 
+    <adapter
+        for="zope.app.interfaces.services.pagefolder.IPageFolder"
+        provides="zope.app.interfaces.context.IZopeContextWrapper"
+        factory="zope.app.services.pagefolder.PageFolderContextDecorator"
+        />
+
 <!-- Connection Service -->
 
   <content class="zope.app.services.connection.ConnectionService">

@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_instance.py,v 1.5 2003/06/03 22:46:23 jim Exp $
+$Id: test_instance.py,v 1.6 2003/06/05 12:03:20 stevea Exp $
 """
 
 import unittest
@@ -34,6 +34,7 @@ from zope.security.management import newSecurityManager
 from zope.app.context import ContextWrapper
 
 from zope.app.interfaces.services.configuration import IUseConfigurable
+from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.configuration import Active
 
@@ -50,8 +51,11 @@ from zope.app import zapi
 
 # define and create ProcessDefinition (PD) for tests
 class TestProcessDefinition(StatefulProcessDefinition):
-    implements(IAttributeAnnotatable, IUseConfigurable)
+    implements(IAttributeAnnotatable, IUseConfigurable, IUseConfiguration)
 
+    # Incompletely implementing IUseConfiguration
+    def addUsage(self, location):
+        pass
 
 class ITestDataSchema(Interface):
 

@@ -15,13 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: test_editconfiguration.py,v 1.2 2003/04/30 23:37:56 faassen Exp $
+$Id: test_editconfiguration.py,v 1.3 2003/06/05 12:03:13 stevea Exp $
 """
 __metaclass__ = type
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.browser.services.configuration import EditConfiguration
-from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IZopeContainer
@@ -51,9 +50,6 @@ class C:
 class Test(PlacefulSetup, TestCase):
 
     def test_remove_objects(self):
-
-        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
-
         c1 = C()
         c2 = C()
         c7 = C()

@@ -16,11 +16,12 @@
 Page folders support easy creation and configuration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.9 2003/06/01 15:59:36 jim Exp $
+$Id: pagefolder.py,v 1.10 2003/06/05 12:03:17 stevea Exp $
 """
 __metaclass__ = type
 
 from zope.app.container.btree import BTreeContainer
+from zope.app.container.zopecontainer import ZopeContainerDecorator
 from zope.app.interfaces.services.view import IZPTTemplate
 from zope.publisher.interfaces.browser import IBrowserPresentation
 from zope.app.traversing import getPath
@@ -35,10 +36,11 @@ from zope.app.interfaces.services.configuration import IConfigurationManager
 from zope.app.interfaces.file import IDirectoryFactory
 from zope.app.fssync.classes import ObjectEntryAdapter, AttrMapping
 from zope.app.interfaces.fssync import IObjectDirectory
+from zope.interface import implements
 
 class PageFolder(ConfigurationManagerContainer, BTreeContainer):
 
-    __implements__ = IPageFolder
+    implements(IPageFolder)
 
     presentationType = IBrowserPresentation
     layer = "default"
@@ -49,34 +51,11 @@ class PageFolder(ConfigurationManagerContainer, BTreeContainer):
     template = None
 
     def setObject(self, name, object):
-        if IConfigurationManager.isImplementedBy(object):
-            # We allow configuration managers as well as templates
+        if (IConfigurationManager.isImplementedBy(object) or
+            IZPTTemplate.isImplementedBy(object)):
             return super(PageFolder, self).setObject(name, object)
-
-        if not IZPTTemplate.isImplementedBy(object):
+        else:
             raise TypeError("Can only add templates", object)
-
-        # super() does not work on a context wrapped instance
-        base = removeAllProxies(self)
-
-        name = super(PageFolder, base).setObject(name, object)
-        template = getItem(self, name)
-        template = getPath(template)
-        config = PageConfiguration(
-            forInterface=self.forInterface,
-            viewName=name,
-            permission=self.permission,
-            class_=self.factoryName,
-            template=template,
-            layer=self.layer,
-            )
-        configure = self.getConfigurationManager()
-        id = configure.setObject('', config)
-        config = getItem(configure, id)
-        config.status = Active
-        return name
-
-    setObject = ContextMethod(setObject)
 
     def configured(self):
         return (hasattr(self, 'permission')
@@ -100,7 +79,7 @@ _attrNames = (
 class PageFolderAdapter(ObjectEntryAdapter):
     """ObjectFile adapter for PageFolder objects."""
 
-    __implements__ =  IObjectDirectory
+    implements(IObjectDirectory)
 
     def contents(self):
         return self.context.items()
@@ -109,15 +88,39 @@ class PageFolderAdapter(ObjectEntryAdapter):
         return AttrMapping(self.context, _attrNames)
 
 
-class PageFolderFactory(object):
+class PageFolderFactory:
 
-    __implements__ = IDirectoryFactory
+    implements(IDirectoryFactory)
 
     def __init__(self, context):
         self.context = context
 
     def __call__(self, name):
         return PageFolder()
+
+class PageFolderContextDecorator(ZopeContainerDecorator):
+
+    def setObject(self, name, object):
+        name = super(PageFolderContextDecorator, self).setObject(name, object)
+
+        # If a template is added, we need to configure it too.
+        if IZPTTemplate.isImplementedBy(object):
+            template = getItem(self, name)
+            template = getPath(template)
+            config = PageConfiguration(
+                forInterface=self.forInterface,
+                viewName=name,
+                permission=self.permission,
+                class_=self.factoryName,
+                template=template,
+                layer=self.layer,
+                )
+            configure = self.getConfigurationManager()
+            id = configure.setObject('', config)
+            config = getItem(configure, id)
+            config.status = Active
+        return name
+
 
 # XXX Backward compatibility. This is needed to support old pickles.
 ViewPackage = PageFolder

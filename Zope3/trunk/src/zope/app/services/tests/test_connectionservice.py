@@ -12,12 +12,11 @@
 ##############################################################################
 """DT_SQLVar Tests
 
-$Id: test_connectionservice.py,v 1.10 2003/06/03 22:46:22 jim Exp $
+$Id: test_connectionservice.py,v 1.11 2003/06/05 12:03:18 stevea Exp $
 """
 
 import unittest
 
-from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
 from zope.app.interfaces.services.configuration import Active, Registered
@@ -28,15 +27,15 @@ from zope.app.services.connection import ConnectionService
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
 from zope.app import zapi
+from zope.interface import implements
 
 class ConnectionServiceForTests(ConnectionService):
 
-    __implements__ = (ConnectionService.__implements__,
-                      IAttributeUseConfigurable)
+    implements(IAttributeUseConfigurable)
 
 class DAStub:
 
-    __implements__ = IZopeDatabaseAdapter, IAttributeAnnotatable
+    implements(IZopeDatabaseAdapter, IAttributeAnnotatable)
 
     def __init__(self, n):
         self.n = n
@@ -61,7 +60,7 @@ class TestConnectionService(unittest.TestCase, PlacefulSetup):
         self.default.setObject('da1', DAStub(1))
         self.default.setObject('da2', DAStub(2))
 
-        self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
+        self.cm = self.default.getConfigurationManager()
 
         k = self.cm.setObject('', ConnectionConfiguration('conn1',
                                 '/++etc++site/default/da1'))
@@ -82,8 +81,8 @@ class TestConnectionService(unittest.TestCase, PlacefulSetup):
         default1 = zapi.traverse(sm, 'default')
         default1.setObject('da3', DAStub(3))
         default1.setObject('da4', DAStub(4))
-        
-        cm1 = ZopeContainerAdapter(default1.getConfigurationManager())
+
+        cm1 = default1.getConfigurationManager()
 
         k = cm1.setObject('', ConnectionConfiguration('conn1',
                             '/folder1/++etc++site/default/da3'))

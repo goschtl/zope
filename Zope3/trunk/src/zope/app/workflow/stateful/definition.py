@@ -14,7 +14,7 @@
 
 """Stateful workflow process definition.
 
-$Id: definition.py,v 1.4 2003/06/03 22:46:23 jim Exp $
+$Id: definition.py,v 1.5 2003/06/05 12:03:19 stevea Exp $
 """
 __metaclass__ = type
 
@@ -34,26 +34,26 @@ from zope.app.interfaces.workflow.stateful import IStatefulTransitionsContainer
 from zope.app.workflow.definition import ProcessDefinition
 from zope.app.workflow.definition import ProcessDefinitionElementContainer
 from zope.app.workflow.stateful.instance import StatefulProcessInstance
-
+from zope.interface import implements
 
 
 class State(Persistent):
     """State."""
 
-    __implements__ = IState
+    implements(IState)
 
 
 
 class StatesContainer(ProcessDefinitionElementContainer):
     """Container that stores States.
     """
-    __implements__ = IStatefulStatesContainer
+    implements(IStatefulStatesContainer)
 
 
 class Transition(Persistent):
     """Transition."""
 
-    __implements__ = ITransition
+    implements(ITransition)
 
     def __init__(self, source=None, destination=None, condition=None,
                  script=None, permission=None, triggerMode=None):
@@ -125,19 +125,17 @@ class Transition(Persistent):
         return getWrapperContainer(self).getProcessDefinition()
     getProcessDefinition = ContextMethod(getProcessDefinition)
 
-                    
 
 class TransitionsContainer(ProcessDefinitionElementContainer):
     """Container that stores Transitions.
     """
-    __implements__ = IStatefulTransitionsContainer
-
+    implements(IStatefulTransitionsContainer)
 
 
 class StatefulProcessDefinition(ProcessDefinition):
     """Stateful workflow process definition."""
 
-    __implements__ = IStatefulProcessDefinition, IReadContainer
+    implements(IStatefulProcessDefinition, IReadContainer)
 
     def __init__(self):
         super(StatefulProcessDefinition, self).__init__()
@@ -167,43 +165,43 @@ class StatefulProcessDefinition(ProcessDefinition):
 
 
     states = property(lambda self: self.__states)
-    
+
     transitions = property(lambda self: self.__transitions)
-    
+
     def addState(self, name, state):
         if name in self.states:
             raise KeyError, name
         self.states.setObject(name, state)
-    
+
     def getState(self, name):
         return self.states[name]
     getState = ContextMethod(getState)
-    
+
     def removeState(self, name):
         del self.states[name]
-    
+
     def getStateNames(self):
         return self.states.keys()
 
     # XXX This shouldn't be hardcoded
     def getInitialStateName(self):
         return 'INITIAL'
-    
+
     def addTransition(self, name, transition):
         if name in self.transitions:
             raise KeyError, name
         self.transitions.setObject(name, transition)
-    
+
     def getTransition(self, name):
         return self.transitions[name]
     getTransition = ContextMethod(getTransition)
-    
+
     def removeTransition(self, name):
         del self.transitions[name]
-    
+
     def getTransitionNames(self):
         return self.transitions.keys()
-    
+
     # IProcessDefinition
 
     def createProcessInstance(self, definition_name):
@@ -222,52 +220,52 @@ class StatefulProcessDefinition(ProcessDefinition):
 
     def __getitem__(self, key):
         "See Interface.Common.Mapping.IReadMapping"
- 
+
         result = self.get(key)
         if result is None:
             raise KeyError(key)
- 
+
         return result
-    
+
     __getitem__ = ContextMethod(__getitem__)
- 
+
     def get(self, key, default=None):
         "See Interface.Common.Mapping.IReadMapping"
- 
+
         if key == 'states':
             return self.states
- 
+
         if key == 'transitions':
             return self.transitions
 
         return default
- 
+
     get = ContextMethod(get)
- 
+
     def __contains__(self, key):
         "See Interface.Common.Mapping.IReadMapping"
- 
+
         return self.get(key) is not None
- 
+
     # Enumeration methods. We'll only expose Packages for now:
     def __iter__(self):
         return iter(self.keys())
- 
+
     def keys(self):
         return ['states', 'transitions']
- 
+
     def values(self):
         return map(self.get, self.keys())
- 
+
     values = ContextMethod(values)
- 
+
     def items(self):
         return [(key, self.get(key)) for key in self.keys()]
- 
+
     items = ContextMethod(items)
- 
+
     def __len__(self):
-        return 2    
+        return 2
 
 
     #

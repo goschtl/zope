@@ -13,12 +13,11 @@
 ##############################################################################
 """Unit test for CacheConfiguration.
 
-$Id: test_cacheconfiguration.py,v 1.12 2003/06/03 22:46:22 jim Exp $
+$Id: test_cacheconfiguration.py,v 1.13 2003/06/05 12:03:18 stevea Exp $
 """
 __metaclass__ = type
 
 from unittest import TestCase, main, makeSuite
-from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.context import ContextWrapper
 from zope.app.interfaces.cache.cache import ICache
 from zope.app.interfaces.cache.cache import ICachingService
@@ -34,10 +33,11 @@ from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
 from zope.app.traversing import traverse
 from zope.context import ContextMethod
+from zope.interface import implements
 
 class DependableStub:
 
-    __implements__ = IDependable
+    implements(IDependable)
 
     def addDependent(self, location):
         pass
@@ -51,7 +51,7 @@ class DependableStub:
 
 class TestCache(DependableStub):
 
-    __implements__ = ICache, IDependable, IAttributeUseConfigurable
+    implements(ICache, IAttributeUseConfigurable)
 
     def invalidateAll(self):
         self.invalidated = True
@@ -59,8 +59,7 @@ class TestCache(DependableStub):
 
 class CachingServiceStub(DependableStub):
 
-    __implements__ = (ICachingService, IConfigurable, IDependable,
-                      IAttributeUseConfigurable, ILocalService)
+    implements(ICachingService, IConfigurable, ILocalService)
 
     def __init__(self):
         self.bindings = {}
@@ -109,7 +108,7 @@ class TestConnectionConfiguration(PlacefulSetup, TestCase):
         self.default.setObject('cch', TestCache())
         self.cch = traverse(self.default, 'cch')
 
-        self.cm = ZopeContainerAdapter(self.default.getConfigurationManager())
+        self.cm = self.default.getConfigurationManager()
         key = self.cm.setObject('',
                                 CacheConfiguration('cache_name',
                                                    '/++etc++site/default/cch'))

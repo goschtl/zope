@@ -12,11 +12,10 @@
 #
 ##############################################################################
 """
-$Id: test_configurationmanager.py,v 1.9 2003/06/03 21:43:00 jim Exp $
+$Id: test_configurationmanager.py,v 1.10 2003/06/05 12:03:18 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
-from zope.app.container.zopecontainer import ZopeContainerAdapter
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.container import IDeleteNotifiable
 from zope.app.interfaces.container import IZopeContainer
@@ -28,18 +27,17 @@ from zope.app.traversing import traverse
 from zope.component.adapter import provideAdapter
 from zope.interface.common.tests.basemapping import BaseTestIEnumerableMapping
 from zope.interface.verify import verifyObject
-
+from zope.interface import implements
 
 class Undeletable:
 
-    __implements__ = IDeleteNotifiable
+    implements(IDeleteNotifiable)
 
     def beforeDeleteHook(self, object, container):
         self.was_called = 1
 
 
 class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
-
     """Testing for Configuration Manager """
 
     def setUp(self):
@@ -334,7 +332,6 @@ class Test(BaseTestIEnumerableMapping, PlacelessSetup, TestCase):
     #########################################################
 
     def test_manageBeforeDelete(self):
-        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
         container = []
         manager = ConfigurationManager()
         thingy = Undeletable()
@@ -367,7 +364,6 @@ class ConfigurationManagerContainerTests(placefulsetup.PlacefulSetup):
                           default.__delitem__, 'configuration')
         default.setObject('xxx', ConfigurationManager())
         del default['RegistrationManager']
-        
 
 
 def test_suite():

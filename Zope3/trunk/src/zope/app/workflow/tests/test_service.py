@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_service.py,v 1.3 2003/06/03 22:46:24 jim Exp $
+$Id: test_service.py,v 1.4 2003/06/05 12:03:20 stevea Exp $
 """
 
 import unittest
@@ -25,7 +25,7 @@ from zope.interface.verify import verifyClass
 
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.interfaces.services.configuration import IUseConfigurable
-
+from zope.app.interfaces.services.configuration import IUseConfiguration
 from zope.app.interfaces.services.configuration import Active, Registered
 
 from zope.app.workflow.tests.workflowsetup import WorkflowSetup
@@ -36,7 +36,8 @@ from zope.app.workflow.service import ProcessDefinitionConfiguration
 
 # define and create dummy ProcessDefinition (PD) for tests
 class DummyProcessDefinition:
-    implements(IProcessDefinition, IAttributeAnnotatable, IUseConfigurable)
+    implements(IProcessDefinition, IAttributeAnnotatable, IUseConfigurable,
+               IUseConfiguration)
 
     def __init__(self, n):
         self.n = n
@@ -46,6 +47,12 @@ class DummyProcessDefinition:
 
     def createProcessInstance(self, definition_name):
         return 'PI #%d' % self.n
+
+    # Implements (incompletely) IUseConfiguration to satisfy the promise that
+    # it is IUseConfigurable.
+    # Only the method addUsage is implemented.
+    def addUsage(self, location):
+        pass
 
 
 def sort(l):

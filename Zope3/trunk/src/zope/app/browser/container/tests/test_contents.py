@@ -14,7 +14,7 @@
 """
 
 Revision information:
-$Id: test_contents.py,v 1.17 2003/06/01 15:59:26 jim Exp $
+$Id: test_contents.py,v 1.18 2003/06/05 12:03:13 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,7 +26,6 @@ from zope.app.interfaces.traversing import ITraversable
 from zope.app.interfaces.container import IZopeContainer
 from zope.app.interfaces.container import IContainer
 from zope.app.interfaces.copypastemove import IObjectMover
-from zope.app.container.zopecontainer import ZopeContainerAdapter
 
 from zope.app.traversing import traverse
 from zope.app.traversing import IObjectName
@@ -44,18 +43,16 @@ from zope.app.container.copypastemove import PasteTarget
 from zope.app.container.copypastemove import MoveSource
 from zope.app.container.copypastemove import CopySource
 from zope.app.container.copypastemove import PasteNamesChooser
-from zope.app.container.zopecontainer import ZopeContainerAdapter
 
-from zope.app.event.tests.placelesssetup import getEvents
+from zope.app.event.tests.placelesssetup import getEvents, clearEvents
 from zope.app.interfaces.event import IObjectRemovedEvent, IObjectModifiedEvent
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.proxy import removeAllProxies
 
 from zope.app.interfaces.copypastemove import IPrincipalClipboard
 from zope.app.copypastemove import PrincipalClipboard
 from zope.component import getServiceManager
-from zope.app.services.principalannotation \
-    import PrincipalAnnotationService
+from zope.app.services.principalannotation import PrincipalAnnotationService
 from zope.app.interfaces.services.principalannotation \
     import IPrincipalAnnotationService
 from zope.app.interfaces.annotation import IAnnotations
@@ -72,8 +69,6 @@ class BaseTestContentsBrowserView(PlacelessSetup):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
-        provideAdapter(ITraversable, IZopeContainer, ZopeContainerAdapter)
         provideAdapter(None, IObjectMover, ObjectMover)
 
     def testInfo(self):
@@ -108,7 +103,7 @@ class BaseTestContentsBrowserView(PlacelessSetup):
         from datetime import datetime
         from zope.app.interfaces.dublincore import IZopeDublinCore
         class FauxDCAdapter:
-            __implements__ = IZopeDublinCore
+            implements(IZopeDublinCore)
 
             def __init__(self, context):
                 pass
@@ -141,8 +136,14 @@ class BaseTestContentsBrowserView(PlacelessSetup):
 
         fc = self._TestView__newView(container)
 
-        self.failIf(getEvents(IObjectModifiedEvent))
         self.failIf(getEvents(IObjectRemovedEvent))
+        self.failUnless(
+            getEvents(IObjectModifiedEvent,
+                      filter =
+                      lambda event:
+                      removeAllProxies(event.object) == container)
+           )
+        clearEvents()
 
         fc.removeObjects(['document2'])
 
@@ -176,7 +177,7 @@ class IDocument(Interface):
     pass
 
 class Document:
-    __implements__ = IDocument
+    implements(IDocument)
 
 
 class Principal:
@@ -186,12 +187,10 @@ class Principal:
 
 
 class TestCutCopyPaste(PlacefulSetup, TestCase):
-    
+
     def setUp(self):
         PlacefulSetup.setUp(self)
         PlacefulSetup.buildFolders(self)
-        provideAdapter(IContainer, IZopeContainer, ZopeContainerAdapter)
-        provideAdapter(ITraversable, IZopeContainer, ZopeContainerAdapter)
         provideAdapter(None, IObjectCopier, ObjectCopier)
         provideAdapter(None, IObjectMover, ObjectMover)
         provideAdapter(IContainer, IPasteTarget, PasteTarget)

@@ -15,12 +15,12 @@
 
 XXX longer description goes here.
 
-$Id: test_serviceconfiguration.py,v 1.11 2003/06/03 22:46:22 jim Exp $
+$Id: test_serviceconfiguration.py,v 1.12 2003/06/05 12:03:18 stevea Exp $
 """
 
 from unittest import TestCase, main, makeSuite
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 
 from zope.component import getServiceManager, getAdapter
 from zope.app.traversing import traverse, getPath
@@ -36,14 +36,12 @@ from zope.app.interfaces.services.service import ISimpleService
 from zope.app.interfaces.dependable import IDependable
 from zope.app.interfaces.dependable import DependencyError
 
-from zope.app.container.zopecontainer import ZopeContainerAdapter
-
 
 class ITestService(Interface):
     pass
 
 class TestServiceBase:
-    __implements__ = (ITestService, IBindingAware, IDependable)
+    implements(ITestService, IBindingAware, IDependable)
 
     _bound = _unbound = ()
 
@@ -71,7 +69,7 @@ class TestServiceBase:
         return self._dependents
 
 class TestService(TestServiceBase):
-    __implements__ = TestServiceBase.__implements__, ISimpleService
+    implements(ISimpleService)
 
 class Test(PlacefulSetup, TestCase):
 
@@ -91,7 +89,7 @@ class Test(PlacefulSetup, TestCase):
             'test_service', '/++etc++site/default/c')
 
         self.__c = traverse(default, 'c')
-        self.__cm = ZopeContainerAdapter(default.getConfigurationManager())
+        self.__cm = default.getConfigurationManager()
 
         self.__cm.setObject('', configuration)
 

@@ -13,7 +13,7 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.10 2003/06/03 21:43:00 jim Exp $
+$Id: test_cachingservice.py,v 1.11 2003/06/05 12:03:18 stevea Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -26,6 +26,7 @@ from zope.app.services.cache import CacheConfiguration
 from zope.app.interfaces.services.configuration import Active, Registered
 from zope.app.services.tests.eventsetup import EventSetup
 from zope.app.traversing import getPath, traverse
+from zope.app.interfaces.annotation import IAttributeAnnotatable
 
 def sort(list):
     list.sort()
@@ -33,7 +34,7 @@ def sort(list):
 
 class CacheStub:
 
-    implements(ICache)
+    implements(ICache, IAttributeAnnotatable)
 
     def __init__(self, name):
         self.name = name
@@ -54,19 +55,16 @@ class CachingServiceSetup(EventSetup):
 
         return service
 
-    def addCache(self, name, cache=None, cname=None, status=Active,
-                 folder=''):
+    def addCache(self, name, cache=None, cname=None, status=Active, folder=''):
         if not cache:
             cache = CacheStub("%s/%s" % (folder, name))
         if not cname:
             cname = name
-        default = traverse(self.rootFolder,
-                           folder +'/++etc++site/default')
+        default = traverse(self.rootFolder, folder +'/++etc++site/default')
         key = default.setObject(cname, cache)
         cache = traverse(default, key)
         configure = default.getConfigurationManager()
-        key = configure.setObject('',
-                                  CacheConfiguration(name, getPath(cache)))
+        key = configure.setObject('', CacheConfiguration(name, getPath(cache)))
         traverse(configure, key).status = status
         return cache
 

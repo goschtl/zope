@@ -16,7 +16,7 @@
 Page folders support easy creation and configuration of page views
 using folders of templates.
 
-$Id: pagefolder.py,v 1.2 2003/03/23 19:24:45 jim Exp $
+$Id: pagefolder.py,v 1.3 2003/06/05 12:03:16 stevea Exp $
 """
 from zope.app.component.interfacefield import InterfaceField
 from zope.schema import BytesLine
@@ -56,7 +56,7 @@ class IPageFolderInfo(Interface):
         description=u"The permission required to use the view",
         required = True,
         )
-    
+
 class IPageFolder(IPageFolderInfo,
                   IContainer,
                   IConfigurationManagerContainer):

@@ -13,13 +13,14 @@
 ##############################################################################
 """Setting up an environment for testing context-dependent objects
 
-$Id: setup.py,v 1.2 2003/06/04 14:57:58 stevea Exp $
+$Id: setup.py,v 1.3 2003/06/05 12:03:19 stevea Exp $
 """
 
 import zope.component
 from zope.app import zapi
 from zope.component.adapter import provideAdapter
 from zope.component.view import provideView
+from zope.interface import classImplements
 
 #------------------------------------------------------------------------
 # Annotations
@@ -35,8 +36,8 @@ def setUpAnnotations():
 from zope.app.dependable import Dependable
 from zope.app.interfaces.dependable import IDependable
 def setUpDependable():
-    provideAdapter(IAttributeAnnotatable, IDependable, Dependable)
-
+    provideAdapter(IAttributeAnnotatable, IDependable,
+                   Dependable)
 
 #------------------------------------------------------------------------
 # Traversal
@@ -175,7 +176,9 @@ def createStandardServices(folder, hubids=None):
 
     defineService(HubIds, IObjectHub)
 
-
+    # EventService must be IAttributeAnnotatable so that it can support
+    # dependencies.
+    classImplements(EventService, IAttributeAnnotatable)
     events = EventService()
     addService(sm, EventPublication, events)
     addService(sm, EventSubscription, events, suffix='sub')
