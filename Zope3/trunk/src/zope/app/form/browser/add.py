@@ -21,6 +21,7 @@ import sys
 
 from zope.app import zapi
 from zope.event import notify
+from zope.interface import Interface
 
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 from zope.app.form.utility import setUpWidgets, getWidgetsData
@@ -142,7 +143,6 @@ def AddViewFactory(name, schema, label, permission, layer,
                    keyword_arguments, set_before_add, set_after_add,
                    menu=u''):
 
-    s = zapi.getGlobalService(zapi.servicenames.Presentation)
     class_  = SimpleViewClass(
         template,
         used_for = schema, bases = bases
@@ -166,5 +166,8 @@ def AddViewFactory(name, schema, label, permission, layer,
                     permission,
                     )
                   )
-
-    s.provideView(for_, name, IBrowserRequest, class_, layer)
+    if layer is None:
+        layer = IBrowserRequest
+    
+    s = zapi.getGlobalService(zapi.servicenames.Adapters)
+    s.register((for_, layer), Interface, name, class_)
