@@ -110,7 +110,7 @@ class SimpleHistoryStorage(Folder) :
         """
         if obj._p_oid is None :
             raise RuntimeError("cannot version uncommited object")
-        return unicode(obj._p_oid).encode("iso-8859-1")
+        return unicode(obj._p_oid, "iso-8859-1")
         
         # XXX unique id utility is broken
         return str(self.unique_ids.register(obj))

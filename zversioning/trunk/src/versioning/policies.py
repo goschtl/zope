@@ -16,6 +16,7 @@ import unittest, doctest
 from zope.interface import implements
 from zope.app.copypastemove.interfaces import IObjectCopier
 from zope.app.container.interfaces import IContained
+from zope.app.traversing.interfaces import IContainmentRoot
 
 from interfaces import IVersionableAspects
   
@@ -83,9 +84,20 @@ class VersionableAspectsAdapter(object) :
     def copyVersionedData(self, source, target) :
         """ The internal copy routine """
         parent = target.__parent__
-        name = target.__name__       
-        del parent[name]
-        IObjectCopier(source.data).copyTo(parent, name)
+        name = target.__name__
+        
+        # arrggghh!
+        # when the target lives in the zodb root for now we raise an 
+        # exception. We have to think about what reverting to the root
+        # means first.
+        db_root = target._p_jar.root()
+        root_names = db_root.keys()
+        for key, obj in db_root.items():
+            if obj is target:
+                raise RuntimeError, "Can not copy versioned state to root."
+        else:
+            del parent[name]
+            IObjectCopier(source.data).copyTo(parent, name)
 
 
 class ReplaceWithCopyPolicy(VersionableAspectsAdapter) :
