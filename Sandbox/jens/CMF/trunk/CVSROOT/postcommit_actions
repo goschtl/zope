@@ -55,9 +55,10 @@ import re, string
 import getopt
 
 OUTPUT_LOG = "/var/tmp/cvs-postcommit_actions.log"
+ERROR_LOG = "/var/tmp/cvs-postcommit_actions.errors"
 
 MAIL_CMD = "/bin/mail"
-RSYNC_CMD = "/usr/bin/rsync"
+SSH_EXE_PATH = RSYNC_EXE_PATH = ["/bin", "/usr/bin", "/usr/local/bin"]
 
 # XXX IDENTITY_FILE must be readable by the process of anyone doing a
 #     checkin that uses the rsync mechanism.  Ideally, that would be by
@@ -81,14 +82,19 @@ def main(args):
 
     global SCRIPT, DRYRUN, VERBOSE, RECURSE, WAIT, MSGFILENM
 
-    complain("Args: %s\n", args)                 # DEBUG
-
     orig_args = args[:]
 
     SCRIPT = args[0]
-    opts, args = getopt.getopt(args[1:], "", ["verbose", "dryrun",
-                                              "recurse", "wait",
-                                              "msgfile="])
+    try:
+        opts, args = getopt.getopt(args[1:], "", ["verbose", "dryrun",
+                                                  "recurse", "wait",
+                                                  "msgfile=", "initrepo"])
+    except getopt.error, err:
+        complain("%s\n", err)
+        raise SystemExit, 1
+
+    only_repo = 0
+
     if len(args) != 1:
         usage(); raise SystemExit, 1
     for opt, val in opts:
@@ -106,8 +112,14 @@ def main(args):
             complain("%s: Not doing activities in background...\n", SCRIPT)
         elif opt == "--msgfile":
             MSGFILENM = val
+        elif opt == "--initrepo":
+            print "initrepo..."         # DEBUG
+            RECURSE = 1
+            WAIT = 1
+            VERBOSE = 1
+            only_repo = 1
         else:
-            complain("Unrecognize option '%s'\n", opt)
+            complain("Unrecognized option '%s'\n", opt)
             raise SystemExit, 1
     if VERBOSE:
         complain("Initial args: %s '%s'\n",
@@ -128,17 +140,27 @@ def main(args):
     if not WAIT:
         detach(orig_args)
 
-    do_chmod(subjs)
+    if not only_repo:
+        do_chmod(subjs)
 
     for entry in got:
         (nm, expr, addrs, remote) = entry
-        if addrs:
-            do_mail(nm, repo, addrs, subjs)
+        if addrs and not only_repo:
+                do_mail(nm, repo, addrs, subjs)
         if remote:
+            print "remote:", remote
             do_sync(nm, repo, remote, subjs, recurse=RECURSE)
+    if not got and only_repo:
+            print "no remote"
+            note_failure("*** --initrepo invalid - no repository"
+                         " for %s in config file.\n",
+                         repo)
 
     if VERBOSE:
         complain("Th th th th that's all folks.\n")
+
+    if failures:
+        handle_failures()
 
 def detach(args):
     """Fork us into the background, with stdout and stderr to OUTPUT_LOG."""
@@ -148,6 +170,7 @@ def detach(args):
     doctored_args.append("--wait")
     if not MSGFILENM:
         tempfile.mktemp()           # Throw one away, to get initial template.
+        tempfile.tempdir = "/tmp"
         tempfile.template = "cvs-log" + tempfile.template
         msgfile = open(tempfile.mktemp(), 'w')
         msgfile.write(sys.stdin.read())
@@ -164,6 +187,8 @@ def detach(args):
         complain("Reexecing detached, cmd:\n\t%s\n", cmd)
 
     os.system(cmd)
+    loosen_file(OUTPUT_LOG)
+
     os._exit(0)
 
 def find_entries(repo):
@@ -173,7 +198,7 @@ def find_entries(repo):
     for t in traffic_table.table:
         if re.search(t[1], repo):
             got.append(t)
-    if VERBOSE:
+    if VERBOSE > 1:
         complain("Resolved table entry:\n  %s\n", got)
     return got
 
@@ -196,7 +221,9 @@ def do_mail(name, repo, addrs, subjs):
 
     if VERBOSE:
         complain("Doing mail cmd:\n\t%s\n", cmd)
-    os.system(cmd)
+    result = os.system(cmd)
+    if result:
+        note_failure("*** Mail returned %s...", result)
 
     if MSGFILENM:
         os.unlink(MSGFILENM)
@@ -209,18 +236,29 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     the recursion extends to full depth below the repo dir (and the
     activity is conducted in the foreground)."""
 
+    RSYNC_EXE = get_command("rsync", RSYNC_EXE_PATH)
+    if not RSYNC_EXE:
+        note_failure("*** Rsync executable not found, skipping it!")
+        return
+    SSH_EXE = get_command("ssh", SSH_EXE_PATH)
+    if not SSH_EXE:
+        note_failure("*** Ssh executable not found, skipping rsync!")
+        return
+
     if VERBOSE:
         fnames = string.join(map(lambda x: x[0], subjs), ",")
         complain("Sync for %s to %s; of %s/ %s / %s\n",
                  name, remote, os.environ["CVSROOT"], repo, fnames)
 
-    ssh_fragment = ('--rsh="/usr/bin/ssh %s -i %s -l %s"'
-                    % ((VERBOSE and "-v") or "", IDENTITY_FILE, IDENTITY_ACCT))
-    cmd = (RSYNC_CMD
+    ssh_fragment = ('--rsh="%s %s -i %s -l %s"'
+                    % (SSH_EXE, (VERBOSE and "-v") or "",
+                       IDENTITY_FILE, IDENTITY_ACCT))
+    cmd = (RSYNC_EXE
            + " %s " % ssh_fragment
            + " --update"                # Preserve newer files
            + " --recursive"
            + ' --exclude "#cvs.*"'      # Do not dup cvs lock files
+           + ' --exclude ".#*"'         # Do not dup cvs backup files
            + " --links"                 # preserve soft-links
            + " --hard-links"            #    "     hard-links
            + " --perms"                 #    "     permissions
@@ -248,7 +286,9 @@ def do_sync(name, repo, remote, subjs=None, recurse=0):
     if VERBOSE:
         complain("Doing rsync cmd:\n\t%s\n", cmd)
 
-    os.system(cmd)
+    result = os.system(cmd)
+    if result:
+        note_failure("*** Rsync returned %s...", result)
 
 def do_chmod(subjs):
     fnames = map(lambda x: x[0], subjs)
@@ -259,7 +299,16 @@ def do_chmod(subjs):
                                  string.join(fnames, " ")))
     if VERBOSE:
         complain("Reexecing, cmd:\n\t%s\n", cmd)
-    os.system(cmd)
+    result = os.system(cmd)
+    if result:
+        note_failure("*** Chmod returned %s...", result)
+
+def loosen_file(fname):
+    """Relax permissions on (newly created) file so others can use it too."""
+    try:
+        os.chmod(fname, 0777)
+    except os.error, err:
+        complain("loosen_file of %s can't: %s", fname, err)
 
 def grok_file(s):
     """Separate "file,old-version,new-version"."""
@@ -268,11 +317,43 @@ def grok_file(s):
         raise ValueError, "'%s' not in file,old-vers,new-vers format" % s
     return m.groups()
 
+failures = 0
+def note_failure(msg, *args):
+    """Register a failure for handle_failures to announce at the end."""
+    global failures
+    failures = 1
+    apply(complain, (msg,) + args)
+
+def handle_failures():
+    """Do something useful with the session log, if we saw any failures."""
+    complain("Adding session log to errors %s\n", `ERROR_LOG`)
+    if os.path.isfile(OUTPUT_LOG):
+        all = open(OUTPUT_LOG, 'r').read()
+    else:
+        # Can only do the complaints:
+        all = string.join(complaints, "\n")
+    loosen_file(OUTPUT_LOG)
+
+    open(ERROR_LOG, 'a').write(all)
+    loosen_file(ERROR_LOG)
+
 def usage():
     complain("Usage: %s [options...] ", SCRIPT)
     complain("repo-path file,oldv,newv [f2,o2,n2 ...]\n")
 
+def get_command(cmd, path):
+    """Get a valid exe for cmd on path."""
+    for d in path:
+        maybe = os.path.join(d, cmd)
+        if os.path.isfile(maybe):
+            return maybe
+    note_failure("No usable %s executable found.\n", `cmd`)
+    
+
+complaints = []
 def complain(msg, *args):
+    global complaints
+    complaints.append(msg % args)
     sys.stderr.write(msg % args)
     sys.stderr.flush()
 
