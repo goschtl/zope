@@ -13,7 +13,7 @@
 ##############################################################################
 """Schema interfaces and exceptions
 
-$Id: interfaces.py,v 1.16 2003/05/20 16:10:30 fdrake Exp $
+$Id: interfaces.py,v 1.17 2003/05/21 21:11:23 fdrake Exp $
 """
 from zope.interface import Interface, Attribute
 from zope.i18n import MessageIDFactory
@@ -434,6 +434,10 @@ class IVocabularyQuery(Interface):
                            This needs to be available for use by the
                            query view.
                            """)
+
+class IIterableVocabularyQuery(IVocabularyQuery):
+    """Marker interface for a query for a vocabulary that is iterable
+    but does not support a specialized query interface."""
 
 
 class ITerm(Interface):

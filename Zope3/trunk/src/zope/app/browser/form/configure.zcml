@@ -140,6 +140,15 @@
       factory=".vocabularywidget.VocabularyMultiFieldEditWidget"
       />
 
+  <view
+      permission="zope.Public"
+      type="zope.publisher.interfaces.browser.IBrowserPresentation"
+      allowed_interface="zope.app.interfaces.browser.form.IVocabularyQueryView"
+      for="zope.schema.interfaces.IIterableVocabularyQuery"
+      name="widget-query-multi-helper"
+      factory=".vocabularywidget.IterableVocabularyQueryView"
+      />
+
   <!-- Default simple display view -->
   <browser:page
       permission="zope.Public"

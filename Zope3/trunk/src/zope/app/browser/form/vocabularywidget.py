@@ -20,11 +20,15 @@ query objects and helper views.
 
 """
 
+from xml.sax.saxutils import quoteattr
+
 from zope.app.browser.form import widget
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.browser.form import IVocabularyQueryView
 from zope.publisher.browser import BrowserView
 from zope.component import getView
+from zope.schema.interfaces import IIterableVocabulary, IVocabularyQuery
+from zope.schema.interfaces import IIterableVocabularyQuery
 
 
 # These widget factories delegate to the vocabulary on the field.
@@ -62,10 +66,21 @@ def _get_vocabulary_edit_widget(field, request, ismulti):
         queryname = "widget-query-helper"
     view = _get_vocabulary_widget(field, request, viewname)
     query = field.vocabulary.getQuery()
+    if query is None and IIterableVocabulary.isImplementedBy(field.vocabulary):
+        query = IterableVocabularyQuery(vocabulary)
     if query is not None:
         queryview = getView(query, queryname, request)
         view.setQuery(query, queryview)
     return view
+
+
+class IterableVocabularyQuery:
+    """Simple query object used to invoke the simple selection mechanism."""
+
+    __implements__ = IIterableVocabularyQuery
+
+    def __init__(self, vocabulary):
+        self.vocabulary = vocabulary
 
 
 # Widget implementation:
@@ -73,15 +88,26 @@ def _get_vocabulary_edit_widget(field, request, ismulti):
 class ViewSupport:
     """Helper class for vocabulary and vocabulary-query widgets."""
 
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-        self.field = None
-
     def textForValue(self, term):
         # Extract the value from the term.  This can be overridden to
         # support more complex term objects.
         return term.value
+
+    def mkselectionlist(self, type, info, name):
+        L = ["<table>\n"]
+        for term, selected, disabled in info:
+            flag = ""
+            if selected:
+                flag = "checked "
+            if disabled:
+                flag += "disabled "
+            L.append("<tr><td>"
+                     "<input type='%s' value='%s' name='%s' %s/>"
+                     "</td>\n    <td>%s</td>"
+                     "</tr>\n"
+                     % (type, term.value, name, flag, self.textForValue(term)))
+        L.append("</table>")
+        return ''.join(L)
 
 
 class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
@@ -92,23 +118,27 @@ class VocabularyWidgetBase(ViewSupport, widget.BrowserWidget):
     extra = ""
     type = "vocabulary"
 
+    def __init__(self, context, request):
+        self.request = request
+        self.context = None
+
     def _getDefault(self):
         # Override this since the context is not the field for
         # vocabulary-based widgets.
-        return self.field.default
+        return self.context.default
 
     def setField(self, field):
-        assert self.field is None
+        assert self.context is None
         # only allow this to happen for a bound field
         assert field.context is not None
-        self.field = field
+        self.context = field
         self.name = self._prefix + field.__name__
 
     def __call__(self):
         if self.haveData():
             value = self._showData()
         else:
-            value = self.field.get(self.field.context)
+            value = self.context.get(self.context.context)
         return self.render(value)
 
     def render(self, value):
@@ -120,7 +150,7 @@ class VocabularyDisplayWidget(VocabularyWidgetBase):
     """Simple single-selection display that can be used in many cases."""
 
     def render(self, value):
-        term = self.field.vocabulary.getTerm(value)
+        term = self.context.vocabulary.getTerm(value)
         return self.textForValue(term)
 
 
@@ -153,7 +183,7 @@ class VocabularyMultiDisplayWidget(VocabularyWidgetBase):
 
     def renderItems(self, value):
         L = []
-        vocabulary = self.context
+        vocabulary = self.context.vocabulary
         cssClass = self.getValue('cssClass') or ''
         if cssClass:
             cssClass += "-item"
@@ -231,7 +261,7 @@ class VocabularyEditWidgetBase(VocabularyWidgetBase):
         # vocabulary, so that need not be considered here
         rendered_items = []
         count = 0
-        for term in self.context:
+        for term in self.context.vocabulary:
             item_value = term.value
             item_text = self.textForValue(term)
 
@@ -350,6 +380,12 @@ class VocabularyQueryViewBase(ViewSupport, BrowserView):
     # This specifically isn't a widget in it's own right, but is a
     # form of BrowserView (at least conceptually).
 
+    def __init__(self, context, request):
+        self.vocabulary = context.vocabulary
+        self.context = context
+        self.request = request
+        super(VocabularyQueryViewBase, self).__init__(context, request)
+
     def setName(self, name):
         assert not name.endswith(".")
         self.name = name
@@ -377,3 +413,146 @@ class VocabularyQueryViewBase(ViewSupport, BrowserView):
         # object (self.context), and returning a results object.  If
         # there isn't a query in the form, returns None.
         return None
+
+    _performed_action = False
+
+    def performAction(self, value):
+        """Make sure the real action, performQueryAction(), only runs once."""
+        if self._performed_action:
+            return value
+        self._performed_action = True
+        return self.performQueryAction(value)
+
+
+ADD_DONE = "adddone"
+ADD_MORE = "addmore"
+MORE = "more"
+
+def _message(msgid, default):
+    msgid.default = default
+    return msgid
+
+
+class IterableVocabularyQueryView(VocabularyQueryViewBase):
+    """Query view for IIterableVocabulary objects without more
+    specific query views.
+
+    This should only be used (directly) for vocabularies for which
+    getQuery() returns None.
+    """
+
+    __implements__ = IVocabularyQueryView
+
+    queryResultBatchSize = 8
+
+    action = None
+
+    def setName(self, name):
+        VocabularyQueryViewBase.setName(self, name)
+        name = self.name
+        self.adddone_name = name + "." + ADD_DONE
+        self.addmore_name = name + "." + ADD_MORE
+        self.more_name = name + "." + MORE
+        self.query_index_name = name + ".start"
+        self.query_selections_name = name + ".picks"
+        #
+        get = self.request.form.get
+        if get(self.adddone_name):
+            self.action = ADD_DONE
+        elif get(self.addmore_name):
+            self.action = ADD_MORE
+        elif get(self.more_name):
+            self.action = MORE
+        try:
+            self.query_index = int(get(self.query_index_name, 0))
+        except ValueError:
+            self.query_index = 0
+        else:
+            if self.query_index < 0:
+                self.query_index = 0
+        self.query_selections = get(self.query_selections_name, [])
+        if not isinstance(self.query_selections, list):
+            self.query_selections = [self.query_selections]
+
+    def renderQueryInput(self):
+        # There's no query support, so we can't actually have input.
+        return ""
+
+    def getResults(self):
+        return self.vocabulary
+
+    def renderQueryResults(self, results, value):
+        # display query results batch
+        it = iter(results)
+        qi = self.query_index
+        have_more = True
+        try:
+            for xxx in range(qi):
+                it.next()
+        except StopIteration:
+            have_more = False
+        items = []
+        QS = []
+        try:
+            for i in range(qi, qi + self.queryResultBatchSize):
+                term = it.next()
+                disabled = term.value in value
+                selected = disabled
+                if term.value in self.query_selections:
+                    QS.append(term.value)
+                    selected = True
+                items.append((term, selected, disabled))
+            else:
+                # see if there's anything else:
+                it.next()
+        except StopIteration:
+            have_more = False
+        self.query_selections = QS
+        L = ["<div class='results'>\n",
+             self.mkselectionlist("checkbox",
+                                  items, self.query_selections_name), "\n",
+             self._mkbutton(ADD_DONE), "\n",
+             self._mkbutton(ADD_MORE, not have_more), "\n",
+             self._mkbutton(MORE, not have_more), "\n"]
+        if qi:
+            L.append("<input type='hidden' name='%s' value='%d' />\n"
+                     % (self.query_index_name, qi))
+        L.append("</div>")
+        return ''.join(L)
+
+    _messages = {
+        ADD_DONE: _message(_("vocabulary-query-button-add-done"), "Add"),
+        ADD_MORE: _message(_("vocabulary-query-button-add-more"), "Add+More"),
+        MORE:     _message(_("vocabulary-query-button-more"),     "More"),
+        }
+
+    def _mkbutton(self, action, disabled=False):
+        msg = self._messages[action]
+        return ("<input name='%s.%s' type='submit' value=%s %s/>"
+                % (self.name, action,
+                   quoteattr(self.translate(msg)),
+                   (disabled and "disabled " or "")))
+
+    def translate(self, msgid):
+        # XXX This is where we should be calling on the translation service
+        return msgid.default
+
+    def performQueryAction(self, value):
+        if self.action == ADD_DONE:
+            value = self.addSelections(value)
+            self.query_index = 0
+            self.query_selections = []
+        elif self.action == ADD_MORE:
+            value = self.addSelections(value)
+            self.query_index += self.queryResultBatchSize
+        elif self.action == MORE:
+            self.query_index += self.queryResultBatchSize
+        elif self.action:
+            raise ValueError("unknown action in request: %r" % self.action)
+        return value
+
+    def addSelections(self, value):
+        for item in self.query_selections:
+            if item not in value and item in self.context.vocabulary:
+                value.append(item)
+        return value
