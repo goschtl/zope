@@ -13,9 +13,8 @@
 ##############################################################################
 """
 
-$Id: queryfield.py,v 1.3 2003/06/07 06:54:23 stevea Exp $
+$Id: queryfield.py,v 1.4 2003/06/30 16:25:55 jim Exp $
 """
-from zope.app.services.field import locateComponent
 from zope.schema import Tuple
 from zope.schema.interfaces import ValidationError
 from zope.component import getAdapter
