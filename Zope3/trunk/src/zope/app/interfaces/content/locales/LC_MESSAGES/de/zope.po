@@ -1,4 +1,4 @@
-# SOME DESCRIPTIVE TITLE.
+make run# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
@@ -17,50 +17,52 @@ msgstr ""
 
 #: dtmlpage.py:31 sql.py:52 zpt.py:40
 msgid "Source"
-msgstr ""
+msgstr "Quellcode"
 
 #: dtmlpage.py:32
 msgid "The source of the dtml page."
-msgstr ""
+msgstr "Der Quellcode der DTML Page"
 
 #: file.py:25
 msgid "Content Type"
-msgstr ""
+msgstr "Inhaltstyp"
 
 #: file.py:26
 msgid "The content type identifies the type of data."
-msgstr ""
+msgstr "Der Inhaltstyp definiert die Art von Daten."
 
 #: file.py:32
 msgid "Data"
-msgstr ""
+msgstr "Daten"
 
 #: file.py:33
 msgid "The actual content of the object."
-msgstr ""
+msgstr "Der eigentliche Inhlat des Objects."
 
 #: sql.py:41
 msgid "Connection Name"
-msgstr ""
+msgstr "Verbindungsname"
 
 #: sql.py:42
 msgid "The Connection Name for the connection to be used."
-msgstr ""
+msgstr "Der Verbindungsname fuer die zu benutzende Verbindung."
 
 #: sql.py:46
 msgid "Arguments"
-msgstr ""
+msgstr "Argumente"
 
 #: sql.py:47
 msgid ""
 "A set of attributes that can be used during the DTML rendering process to "
 "provide dynamic data."
 msgstr ""
+"Eine Sammlung von Attributen die waehrend des DTML Rendering Prozesses "
+"als dynamische Variablen verfuegbar sind."
 
 #: sql.py:53 zpt.py:41
 msgid "The source of the page template."
-msgstr ""
+msgstr "Der Quellcode der Page Template."
 
 #: zpt.py:45
 msgid "Expand macros"
-msgstr ""
+msgstr "Erweitere Macros"
