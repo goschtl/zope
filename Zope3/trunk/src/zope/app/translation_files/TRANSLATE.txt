@@ -1,12 +1,12 @@
 Internationalization (I18n) and Localization (L10n)
 =====================================================
 
-  Crating/Updating Message Catalog Template (POT) Files
+  Creating/Updating Message Catalog Template (POT) Files
   -----------------------------------------------------
 
-    1. Execute extract.py::
+    1. Execute i18nextract.py from ZOPE/utilities directory::
 
-        python2.3 extract.py
+        python2.3 i18nextract.py
 
 
   Updating Message Catalog (PO) Files
