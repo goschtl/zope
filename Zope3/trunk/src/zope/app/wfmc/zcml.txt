@@ -6,11 +6,11 @@ XPDL can be loaded in zcml files with the ``xpdl`` tag::
     >>> import os
     >>> file_name = os.path.join(this_directory, 'publication.xpdl')
     >>> zcml("""
-    ...    <configure 
-    ...        xmlns="http://namespaces.zope.org/zope"
-    ...        xmlns:wfmc="http://namespaces.zope.com/wfmc"
-    ...        i18n_domain="test"
-    ...        >
+    ...     <configure 
+    ...         xmlns="http://namespaces.zope.org/zope"
+    ...         xmlns:wfmc="http://namespaces.zope.com/wfmc"
+    ...         i18n_domain="test"
+    ...         >
     ...
     ...         <wfmc:xpdl 
     ...             file="%(file_name)s" 
@@ -18,7 +18,7 @@ XPDL can be loaded in zcml files with the ``xpdl`` tag::
     ...             id="example.publication"
     ...             />
     ...
-    ...    </configure>
+    ...     </configure>
     ... """ % locals())
 
 Lets verify that they were configured::
