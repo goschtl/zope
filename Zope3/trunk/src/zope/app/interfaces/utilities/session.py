@@ -22,12 +22,11 @@ from zope.app.i18n import ZopeMessageIDFactory as _
 # XXX: These mapping interfaces should probably live somewhere like 
 # zope.interface.common.mapping, but there are already similar but less
 # useful ones defined there.
-_missing = []
 class IReadMapping(Interface):
     ''' Mapping methods for retrieving data '''
     def __getitem__(key): 'Return a value'
     def __contains__(key): 'True if there is a value for key'
-    def get(key, default=_missing):
+    def get(key, default=None):
         'Return a value, or default if key not found'
 
 class IWriteMapping(Interface):

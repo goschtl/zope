@@ -13,7 +13,7 @@
 #
 ##############################################################################
 '''
-$Id: test_session.py,v 1.3 2004/02/10 15:16:23 Zen Exp $
+$Id: test_session.py,v 1.4 2004/02/23 01:02:56 Zen Exp $
 '''
 
 import unittest, doctest, time, rfc822
@@ -204,8 +204,8 @@ def test_Session():
     >>> [x for x in session]
     ['color']
     >>> del session['color']
-    >>> session.get('color', 'missing')
-    'missing'
+    >>> session.get('color') is None
+    True
     """
 
 
