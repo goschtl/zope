@@ -13,7 +13,7 @@
 ##############################################################################
 """Test for datetime interfaces
 
-$Id: test_idatetime.py,v 1.1 2003/04/23 13:37:44 ryzaja Exp $
+$Id: test_idatetime.py,v 1.2 2003/05/05 08:26:14 ryzaja Exp $
 """
 
 import unittest
@@ -22,7 +22,7 @@ from zope.interface.verify import verifyObject, verifyClass
 from zope.interface.common.idatetime import ITimeDelta, ITimeDeltaClass
 from zope.interface.common.idatetime import IDate, IDateClass
 from zope.interface.common.idatetime import IDateTime, IDateTimeClass
-from zope.interface.common.idatetime import ITime, ITimeClass, ITZInfoClass
+from zope.interface.common.idatetime import ITime, ITimeClass, ITZInfo
 from datetime import timedelta, date, datetime, time, tzinfo
 
 class TestDateTimeInterfaces(unittest.TestCase):
@@ -32,11 +32,11 @@ class TestDateTimeInterfaces(unittest.TestCase):
         verifyObject(IDate, date(2000, 1, 2))
         verifyObject(IDateTime, datetime(2000, 1, 2, 10, 20))
         verifyObject(ITime, time(20, 30, 15, 1234))
+        verifyObject(ITZInfo, tzinfo())
         verifyClass(ITimeDeltaClass, timedelta)
         verifyClass(IDateClass, date)
         verifyClass(IDateTimeClass, datetime)
         verifyClass(ITimeClass, time)
-        verifyClass(ITZInfoClass, tzinfo)
 
 
 def test_suite():
