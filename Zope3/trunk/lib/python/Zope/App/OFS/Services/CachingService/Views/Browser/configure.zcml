@@ -8,14 +8,15 @@
 
   <browser:defaultView
      for=".CachingService.ILocalCachingService"
-     name="index.html" />
+     name="contents.html" />
 
   <browser:view
      permission="Zope.ManageServices"
      for=".CachingService.ILocalCachingService"
      factory="Zope.App.OFS.Container.Views.Browser.Contents.">
 
-     <browser:page name="index.html" attribute="index" />
+     <browser:page name="contents.html" attribute="contents" />
+     <browser:page name="removeObjects.html" attribute="removeObjects" />
 
   </browser:view>
 
