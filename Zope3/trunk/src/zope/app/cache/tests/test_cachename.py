@@ -15,12 +15,11 @@
 
 In particular, test the proper getting of cache names in allowed_values.
 
-$Id: test_cachename.py,v 1.5 2003/06/05 12:03:14 stevea Exp $
+$Id: test_cachename.py,v 1.6 2003/08/19 17:34:12 srichter Exp $
 """
-
 import unittest
 
-from zope.app.interfaces.cache.cache import CacheName
+from zope.app.interfaces.cache import CacheName
 from zope.app.services.tests.placefulsetup import PlacefulSetup
 from zope.app.tests import setup
 from zope.app.interfaces.services.service import ILocalService

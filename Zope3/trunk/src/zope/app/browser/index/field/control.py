@@ -13,7 +13,7 @@
 ##############################################################################
 """Control view for the text index.
 
-$Id: control.py,v 1.4 2003/08/11 16:57:35 sidnei Exp $
+$Id: control.py,v 1.5 2003/08/19 17:33:59 srichter Exp $
 """
 from __future__ import generators
 
@@ -36,7 +36,7 @@ class ControlView(BrowserView):
         self.hub = getService(context, HubIds)
 
     def interface_name(self):
-        return interfaceToName(self.context.interface)
+        return interfaceToName(self.context, self.context.interface)
 
     def query(self):
         queryText = self.request.get('queryText', '')

@@ -13,21 +13,23 @@
 ##############################################################################
 """CachingService tests.
 
-$Id: test_cachingservice.py,v 1.12 2003/06/21 21:22:13 jim Exp $
+$Id: test_cachingservice.py,v 1.13 2003/08/19 17:34:28 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.tests import setup
-from zope.interface.verify import verifyObject
-from zope.interface import implements
-from zope.app.interfaces.cache.cache import ICache
-from zope.app.interfaces.cache.cache import ICachingService
-from zope.app.services.cache import CacheRegistration
+from zope.app import zapi
+from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.app.interfaces.cache import ICache, ICachingService
 from zope.app.interfaces.services.registration import RegisteredStatus
 from zope.app.interfaces.services.registration import ActiveStatus
+from zope.app.services.cache import CachingService
+from zope.app.services.servicenames import Caching, Utilities
 from zope.app.services.tests.eventsetup import EventSetup
+from zope.app.services.utility import LocalUtilityService, UtilityRegistration
+from zope.app.tests import setup
 from zope.app.traversing import getPath, traverse
-from zope.app.interfaces.annotation import IAttributeAnnotatable
+from zope.interface import implements
+from zope.interface.verify import verifyObject
 
 def sort(list):
     list.sort()
@@ -49,14 +51,14 @@ class CacheStub:
 class CachingServiceSetup(EventSetup):
 
     def createCachingService(self, path=None):
-        from zope.app.services.cache import CachingService
-
         sm = self.makeSite(path)
-        return setup.addService(sm, "Caching", CachingService())
+        setup.addService(sm, Utilities, LocalUtilityService())
+        return setup.addService(sm, Caching, CachingService())
 
         return service
 
-    def addCache(self, name, cache=None, cname=None, status=ActiveStatus, folder=''):
+    def addCache(self, name, cache=None, cname=None, status=ActiveStatus,
+                 folder=''):
         if not cache:
             cache = CacheStub("%s/%s" % (folder, name))
         if not cname:
@@ -64,16 +66,19 @@ class CachingServiceSetup(EventSetup):
         default = traverse(self.rootFolder, folder +'/++etc++site/default')
         key = default.setObject(cname, cache)
         cache = traverse(default, key)
-        configure = default.getRegistrationManager()
-        key = configure.setObject('', CacheRegistration(name, getPath(cache)))
-        traverse(configure, key).status = status
-        return cache
+        path = "%s/%s" % (zapi.getPath(default), name)
+        registration = UtilityRegistration(name, ICache, path)
+        key = default.getRegistrationManager().setObject("", registration)
+        zapi.traverse(default.getRegistrationManager(), key).status = status
+        return zapi.traverse(default, name)    
 
 
 class TestCachingService(CachingServiceSetup, TestCase):
 
     def setUp(self):
         CachingServiceSetup.setUp(self)
+
+
         self.service = self.createCachingService()
         self.cache1 = self.addCache('cache1')
         self.cache2 = self.addCache('cache2')

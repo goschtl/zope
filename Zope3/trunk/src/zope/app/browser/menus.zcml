@@ -16,6 +16,11 @@
       usage="activitydialog" />
 
   <menu
+      id="add_cache"
+      title="Menu of caches to be added"
+      usage="addingdialog" />
+
+  <menu
       id="add_content"
       title="Menu of objects to be added to content folders"
       usage="addingdialog" />
@@ -23,6 +28,16 @@
   <menu
       id="add_component"
       title="Menu of objects to be added to service manager packages"
+      usage="addingdialog" />
+
+  <menu
+      id="add_connection"
+      title="Menu of database connections to be added"
+      usage="addingdialog" />
+
+  <menu
+      id="add_registration"
+      title="Menu of addable configuration objects"
       usage="addingdialog" />
 
   <menu
@@ -35,20 +50,6 @@
       title="Menu of utilities to be added"
       usage="addingdialog" />
 
-  <menu
-      id="add_connection"
-      title="Menu of database connections to be added"
-      usage="addingdialog" />
-
-  <menu
-      id="add_cache"
-      title="Menu of database connections to be added"
-      usage="addingdialog" />
-
-  <menu
-      id="add_registration"
-      title="Menu of addable configuration objects"
-      usage="addingdialog" />
 
   <!-- Management view selector -->
   <!-- Get first accessable item from zmi_views menu -->

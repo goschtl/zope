@@ -13,15 +13,11 @@
 ##############################################################################
 """A registration for a cache.
 
-$Id: cache.py,v 1.3 2003/06/21 21:22:10 jim Exp $
+$Id: cache.py,v 1.4 2003/08/19 17:34:21 srichter Exp $
 """
+from zope.app.interfaces.services.event import IEventChannel
+from zope.app.interfaces.services.service import ISimpleService
+from zope.app.interfaces.cache import ICachingService
 
-from zope.app.interfaces.services.registration \
-     import INamedComponentRegistration
-
-class ICacheRegistration(INamedComponentRegistration):
-    """Cache registration
-
-    Cache registrations are dependent on the caches that they configure. They
-    register themselves as component dependents.
-    """
+class ILocalCachingService(ICachingService, IEventChannel):
+    """TTW manageable caching service"""

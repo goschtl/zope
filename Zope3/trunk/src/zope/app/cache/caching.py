@@ -14,7 +14,7 @@
 """Helpers for caching."""
 
 from zope.component import getAdapter, getService, ComponentLookupError
-from zope.app.interfaces.cache.cache import ICacheable
+from zope.app.interfaces.cache import ICacheable
 from zope.app.traversing import getPath
 
 

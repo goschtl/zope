@@ -3,12 +3,18 @@
 <!-- Browser directives for the connection service -->
 
   <menuItem
-    menu="add_component"
-    for="zope.app.interfaces.container.IAdding"
-    action="../AddSQLConnection"
-    title="SQL Connection"
-    description="Takes you to a menu of SQL Connections to add"
-    permission="zope.ManageServices" />
+     menu="add_component"
+     for="zope.app.interfaces.container.IAdding"
+     action="../AddSQLConnection"
+     title="SQL Connection"
+     description="Takes you to a menu of SQL Connections to add"
+     permission="zope.ManageServices" />
+
+  <menuItem
+      for="zope.app.interfaces.services.connection.ILocalConnectionService"
+      menu="zmi_actions" title="Add DA"
+      action="../AddSQLConnection"
+      permission="zope.ManageServices" />
 
   <view
       for="zope.app.interfaces.services.folder.ISiteManagementFolder"
@@ -20,12 +26,6 @@
     <page name="action.html" attribute="action" />
       
   </view>
-
-  <menuItem
-      for="zope.app.interfaces.services.connection.ILocalConnectionService"
-      menu="zmi_actions" title="Add DA"
-      action="../AddSQLConnection"
-      permission="zope.ManageServices" />
 
   <!-- "Add service" menu entry to add a connection service.
        The action attribute matches a factory name defined in

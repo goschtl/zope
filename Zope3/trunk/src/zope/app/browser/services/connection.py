@@ -13,9 +13,10 @@
 ##############################################################################
 """Connection View classes
 
-$Id: connection.py,v 1.16 2003/08/19 13:14:47 srichter Exp $
+$Id: connection.py,v 1.17 2003/08/19 17:34:02 srichter Exp $
 """
 from zope.app import zapi
+from zope.app.browser.services.service import ComponentAdding
 from zope.app.component.nextservice import queryNextService
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.interfaces.rdb import IZopeDatabaseAdapter
@@ -53,7 +54,6 @@ class Connections:
         info['dsn'] = match[2].active().getComponent().dsn    
         return info
 
-from zope.app.browser.services.service import ComponentAdding
 
 class ConnectionAdding(ComponentAdding):
 

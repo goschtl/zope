@@ -13,7 +13,7 @@
 ##############################################################################
 """View support for adding and configuring services and other components.
 
-$Id: service.py,v 1.37 2003/08/19 13:14:47 srichter Exp $
+$Id: service.py,v 1.38 2003/08/19 17:34:02 srichter Exp $
 """
 from zope.app import zapi
 from zope.app.browser.container.adding import Adding
@@ -89,6 +89,7 @@ class ServiceAdding(ComponentAdding):
 
         return zapi.ContextSuper(ServiceAdding, self).add(content)
 
+
 class UtilityAdding(ComponentAdding):
     """Adding subclass used for adding utilities."""
 
@@ -100,13 +101,7 @@ class UtilityAdding(ComponentAdding):
         if not ILocalUtility.isImplementedBy(content):
             raise TypeError("%s is not a local utility" % content)
         return zapi.ContextSuper(UtilityAdding, self).add(content)
-
-
-class CacheAdding(ComponentAdding):
-    """Adding subclass used for adding caches."""
-
-    menu_id = "add_cache"
-
+    
 
 class AddServiceRegistration(BrowserView):
     """A view on a service implementation, used by add_svc_config.py."""

@@ -13,12 +13,12 @@
 ##############################################################################
 """Unit tests for ICache interface
 
-$Id: test_icache.py,v 1.2 2002/12/25 14:12:45 jim Exp $
+$Id: test_icache.py,v 1.3 2003/08/19 17:34:12 srichter Exp $
 """
 
 from unittest import TestSuite, main
 from zope.interface.verify import verifyObject
-from zope.app.interfaces.cache.cache import ICache
+from zope.app.interfaces.cache import ICache
 
 
 class BaseICacheTest:

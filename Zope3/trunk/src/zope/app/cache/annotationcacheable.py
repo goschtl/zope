@@ -11,11 +11,14 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""An adapter of annotatable objects."""
+"""An adapter of annotatable objects.
 
-from zope.component import getAdapter, getService
+$Id: annotationcacheable.py,v 1.4 2003/08/19 17:34:08 srichter Exp $
+"""
+from zope.app import zapi
 from zope.app.interfaces.annotation import IAnnotations
-from zope.app.interfaces.cache.cache import ICacheable
+from zope.app.interfaces.cache import ICacheable
+from zope.app.services.servicenames import Caching
 from zope.interface import implements
 
 annotation_key = 'zope.app.cache.CacheManager'
@@ -29,17 +32,17 @@ class AnnotationCacheable:
         self._context = context
 
     def getCacheId(self):
-        annotations = getAdapter(self._context, IAnnotations)
+        annotations = zapi.getAdapter(self._context, IAnnotations)
         return annotations.get(annotation_key, None)
 
     def setCacheId(self, id):
         # Remove object from old cache
         old_cache_id = self.getCacheId()
         if old_cache_id and old_cache_id != id:
-            service = getService(self._context, "Caching")
+            service = zapi.getService(self._context, Caching)
             cache = service.getCache(old_cache_id)
             cache.invalidate(self._context)
-        annotations = getAdapter(self._context, IAnnotations)
+        annotations = zapi.getAdapter(self._context, IAnnotations)
         annotations[annotation_key] = id
 
     cacheId = property(getCacheId, setCacheId, None, "Associated cache name")

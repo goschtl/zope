@@ -196,30 +196,12 @@
 <!-- Caching Service -->
 
   <content class="zope.app.services.cache.CachingService">
-    <factory id="CachingService" permission="zope.ManageServices" />
+    <factory 
+          id="zope.services.CachingService" 
+          permission="zope.ManageServices" />
       <require
           permission="zope.View"
-          interface="zope.app.interfaces.cache.cache.ICachingService"
-          attributes="queryRegistrations queryRegistrationsFor
-                      listRegistrationNames" />
-      <require
-          permission="zope.ManageServices"
-          interface="zope.app.interfaces.container.IContainer" />
-    </content>
-
-  <content class="zope.app.services.cache.CacheRegistration">
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.services.cache.ICacheRegistration"
-        set_attributes="name componentPath permission"
-        set_schema=
-            "zope.app.interfaces.services.registration.IRegistration" />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IAddNotifiable" />
-    <require
-        permission="zope.ManageServices"
-        interface="zope.app.interfaces.container.IDeleteNotifiable" />
+          interface="zope.app.interfaces.cache.ICachingService" />
     </content>
 
 <!-- Service Manager -->
@@ -484,11 +466,6 @@
 <fssync:adapter
     class=".zpt.ZPTTemplate"
     factory=".zpt.ZPTPageAdapter"
-    />
-
-<fssync:adapter
-    class=".cache.CacheRegistration"
-    factory=".registration.ComponentRegistrationAdapter"
     />
 
 <fssync:adapter

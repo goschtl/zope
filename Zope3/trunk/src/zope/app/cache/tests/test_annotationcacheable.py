@@ -13,9 +13,8 @@
 ##############################################################################
 """Unit test for AnnotationCacheable adapter.
 
-$Id: test_annotationcacheable.py,v 1.8 2003/06/06 20:44:30 stevea Exp $
+$Id: test_annotationcacheable.py,v 1.9 2003/08/19 17:34:12 srichter Exp $
 """
-
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.component import getService
@@ -24,7 +23,7 @@ from zope.app.interfaces.annotation import IAnnotations
 from zope.app.interfaces.annotation import IAttributeAnnotatable
 from zope.app.attributeannotations import AttributeAnnotations
 from zope.app.cache.annotationcacheable import AnnotationCacheable
-from zope.app.interfaces.cache.cache import ICachingService
+from zope.app.interfaces.cache import ICachingService
 from zope.component.service import serviceManager as sm
 from zope.app.interfaces.services.service import ISimpleService
 from zope.interface import implements

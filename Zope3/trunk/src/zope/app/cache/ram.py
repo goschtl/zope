@@ -13,18 +13,16 @@
 ##############################################################################
 """RAM cache implementation.
 
-$Id: ram.py,v 1.7 2003/06/21 21:22:09 jim Exp $
+$Id: ram.py,v 1.8 2003/08/19 17:34:08 srichter Exp $
 """
-
 from time import time
 from thread import allocate_lock
 from pickle import dumps
-
 from persistence import Persistent
 
 from zope.app.interfaces.cache.ram import IRAMCache
+from zope.app.interfaces.cache import ICache
 from zope.app.interfaces.event import IObjectModifiedEvent
-from zope.app.interfaces.services.registration import IAttributeRegisterable
 from zope.interface import implements
 
 # A global caches dictionary shared between threads
@@ -55,7 +53,7 @@ class RAMCache(Persistent):
     handle their blocking internally.
     """
 
-    implements(IRAMCache, IAttributeRegisterable)
+    implements(IRAMCache)
 
     def __init__(self):
 

@@ -13,12 +13,11 @@
 ##############################################################################
 """Unit tests for caching helpers.
 
-$Id: test_caching.py,v 1.8 2003/06/06 20:44:30 stevea Exp $
+$Id: test_caching.py,v 1.9 2003/08/19 17:34:12 srichter Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
-from zope.app.interfaces.cache.cache import ICacheable
-from zope.app.interfaces.cache.cache import ICachingService
+from zope.app.interfaces.cache import ICacheable, ICachingService
 from zope.app.cache.caching import getCacheForObj
 from zope.app.cache.annotationcacheable import AnnotationCacheable
 from zope.app.interfaces.annotation import IAnnotatable

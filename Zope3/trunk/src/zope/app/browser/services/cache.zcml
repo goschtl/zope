@@ -2,56 +2,49 @@
 
 <!-- Browser directives for the cache service -->
 
+  <menuItem
+      menu="add_component"
+      for="zope.app.interfaces.container.IAdding"
+      action="../AddCache"
+      title="Cache"
+      description="Takes you to a menu of Caches to add"
+      permission="zope.ManageServices" />
+
+  <menuItem
+      for="zope.app.interfaces.services.cache.ILocalCachingService"
+      menu="zmi_actions" title="Add Cache"
+      action="../AddCache"
+      permission="zope.ManageServices" />
+
+  <view
+      for="zope.app.interfaces.services.folder.ISiteManagementFolder"
+      name="AddCache"
+      class=".cache.CacheAdding"
+      permission="zope.ManageContent">
+      
+    <page name="index.html"  attribute="index"/>
+    <page name="action.html" attribute="action" />
+
+  </view>
+
   <!-- "Add service" menu entry to add a cache service.
        The action attribute matches a factory id defined in
        zope/app/services/configure.zcml. -->
   <menuItem
       for="zope.app.interfaces.container.IAdding"
       menu="add_service" title="Caching Service"
-      action="CachingService"
-      permission="zope.ManageServices"
-      description="A Persistent Caching Service for TTW development" />
+      description="A Persistent Caching Service for TTW development"
+      action="zope.services.CachingService"
+      permission="zope.ManageServices" />
 
   <!-- ZMI tab named "Caches" for the cache service -->
   <page
-      for="zope.app.services.cache.ILocalCachingService"
+      for="zope.app.interfaces.services.cache.ILocalCachingService"
       name="index.html"
       template="caches.pt"
       class=".cache.Caches"
       permission="zope.ManageServices"
       menu="zmi_views" title="Caches" />
 
-<!-- Browser directives for configuring individual cache objects -->
-
-  <!-- Configuration page for cache objects.  You get here by
-       clicking on the (configure) link for a particular cache
-       in the "Caches" tab of the cache service.  It shows
-       a menu of different registrations, at most one of which
-       is active.  You can activate a different registration, or
-       click on an individual registration to edit it.
-       (Note that this page doesn't really apply to a single cache,
-       it applies to a single cache name. -->
-  <page
-      for="zope.app.services.cache.ILocalCachingService"
-      name="configureCache.html"
-      template="configureCache.pt"
-      class=".cache.ConfigureCache"
-      permission="zope.ManageServices" />
-
-  <!-- When creating a new cache object, you are taken to this
-       form to configure it.  The form lets you choose a name,
-       an interface, a permission, and a registration status
-       (Unregistered, Registered or Active). -->
-  <addform
-      label="New Cache Registration"
-      for="zope.app.interfaces.cache.cache.ICache"
-      name="addRegistration.html"
-      schema="zope.app.interfaces.services.cache.ICacheRegistration"
-      class=".cache.AddCacheRegistration"
-      permission="zope.ManageServices"
-      content_factory="zope.app.services.cache.CacheRegistration"
-      arguments="name componentPath"
-      set_after_add="status"
-      fields="name componentPath permission status" />
 
 </configure>

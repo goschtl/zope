@@ -14,13 +14,14 @@
 """
 Default service names
 
-$Id: servicenames.py,v 1.10 2003/08/16 00:44:08 srichter Exp $
+$Id: servicenames.py,v 1.11 2003/08/19 17:34:24 srichter Exp $
 """
 
 from zope.component.servicenames import *
 
 Authentication = 'Authentication'
 BrowserMenu = 'BrowserMenu'
+Caching = 'Caching'
 DAVSchema = 'DAVSchema'
 EventPublication = 'EventPublication'
 EventSubscription = 'Subscription'

@@ -1,63 +1,25 @@
 <html metal:use-macro="context/@@standard_macros/page">
 <body>
-<div metal:fill-slot="body"
-     tal:define="message view/update; configs view/getConfigs">
+<div metal:fill-slot="body">
 
-  <h2 i18n:translate="">Caches registered in this cache service:</h2>
+  <h2 i18n:translate="">Local Caches</h2>
+  <ul>
+    <li tal:repeat="cache view/getLocalCaches">
+      <a href="" tal:attributes="href cache/url">
+        <b tal:content="cache/id" />
+      </a>
+    </li>
+  </ul>
+  <a href="../AddCache">Add Cache</a>
 
-  <div class="message" tal:condition="message">
-    <span tal:replace="message">view/update message here</span>
-    <br /><br />
-    <i><a href="" i18n:translate="">(click to clear message)</a></i>
-  </div>
-
-  <p tal:condition="not:configs">None</p>
-
-  <form method="POST" action="index.html" tal:condition="configs">
-
-    <table>
-      <tr tal:repeat="config configs">
-        <td><input type="checkbox" name="selected:list"
-                   tal:attributes="value config/name" />
-        </td>
-        <td>
-
-          <a href="."
-             tal:condition="config/url"
-             tal:attributes="href config/url">
-             <span tal:replace="config/name" />
-          </a>
-
-          <span tal:condition="not:config/url">
-            <span tal:replace="config/name" />
-            <span i18n:translate="">(inactive)</span>
-          </span>
-
-        </td>
-        <td>
-          <a href="."
-             tal:attributes="href config/configurl"
-             i18n:translate=""
-             >(change registration)</a>
-        </td>
-      </tr>
-    </table>
-
-    <input type="submit" name="Activate" value="Activate" 
-           i18n:attributes="value activate-button"/>
-    <input type="submit" name="Deactivate" value="Deactivate"
-           i18n:attributes="value deactivate-button"/>
-    &nbsp;
-    <input type="submit" name="Delete" value="Delete"
-           i18n:attributes="value delete-button"/>
-    &nbsp;
-    <input type="submit" name="Refresh" value="Refresh"
-           i18n:attributes="value refresh-button"/>
-
-  </form>
-
-  <p><a href="../AddCache" i18n:translate="">
-    Add a cache to this cache service</a></p>
+  <h2 i18n:translate="">Inherited Caches</h2>
+  <ul>
+    <li tal:repeat="cache view/getInheritedCaches">
+      <a href="" tal:attributes="href cache/url">
+        <b tal:content="cache/id" />
+      </a>
+    </li>
+  </ul>
 
 </div>
 </body>
