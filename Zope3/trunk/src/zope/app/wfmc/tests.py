@@ -1,3 +1,6 @@
+"""
+$Id: $
+"""
 import os
 import unittest
 
