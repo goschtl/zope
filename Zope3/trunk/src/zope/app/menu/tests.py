@@ -96,7 +96,6 @@ class LocalBrowserMenuServiceTest(unittest.TestCase):
         classImplements(LocalBrowserMenu, IAttributeAnnotatable)
         
         # Create Placeless Components
-        ps = zapi.getGlobalService(zapi.servicenames.Presentation)
         ms = zapi.getGlobalService(BrowserMenu)
         ms.menu('test_id', 'test menu')
         ms.menu('test_id2', 'test menu 2')
