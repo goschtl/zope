@@ -85,6 +85,24 @@ class TestViewZPT(PlacefulSetup, unittest.TestCase):
         self.failUnless(the_view is views[the_view_name])
 
 
+    def test_render_sets_content_type_unless_set(self):
+        from zope.publisher.browser import TestRequest
+        t = ViewPageTemplateFile('test.pt')
+
+        self.request = TestRequest()
+        response = self.request.response
+        self.assert_(not response.getHeader('Content-Type'))
+        t(self)
+        self.assertEquals(response.getHeader('Content-Type'), 'text/html')
+
+        self.request = TestRequest()
+        response = self.request.response
+        response.setHeader('Content-Type', 'application/x-test-junk')
+        t(self)
+        self.assertEquals(response.getHeader('Content-Type'),
+                          'application/x-test-junk')
+        
+
 class TestViewZPTContentType(unittest.TestCase):
 
     def testInitWithoutType(self):
