@@ -95,22 +95,20 @@ class PROPFIND(object):
 
     def _depthRecurse(self, ms):
         depth = self.getDepth()
-        if depth == '1':
-            subdepth = '0'
-        if depth == 'infinity':
-            subdepth = 'infinity'
-        if depth != '0':
-            if IReadContainer.providedBy(self.context):
-                for id, obj in self.context.items():
-                    pfind = zapi.queryView(obj, 'PROPFIND', self.request, None)
-                    if pfind is not None:
-                        pfind.setDepth(subdepth)
-                        value = pfind.PROPFIND()
-                        parsed = minidom.parseString(value)
-                        responses = parsed.getElementsByTagNameNS(
-                            self.default_ns, 'response')
-                        for r in responses:
-                            ms.appendChild(r)
+        if depth == '0' or not IReadContainer.providedBy(self.context):
+            return
+        subdepth = (depth == '1') and '0' or 'infinity'
+        for id, obj in self.context.items():
+            pfind = zapi.queryView(obj, 'PROPFIND', self.request, None)
+            if pfind is None:
+                continue
+            pfind.setDepth(subdepth)
+            value = pfind.PROPFIND()
+            parsed = minidom.parseString(value)
+            responses = parsed.getElementsByTagNameNS(
+                self.default_ns, 'response')
+            for r in responses:
+                ms.appendChild(r)
 
     def _handleProp(self, source):
         props = {}
