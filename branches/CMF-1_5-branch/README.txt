@@ -14,12 +14,14 @@ Zope Content Management Framework (CMF) README
 
     General
 
-      - The mailing list, zope-cmf@zope.org.
+      - The mailing list, "zope-cmf@zope.org",
+        mailto:zope-cmf@zope.org.
       
-        o List information and online signup are available at:
+        o List information and online signup are available at the
+          list's "Mailman information page",
 	      http://lists.zope.org/mailman/listinfo/zope-cmf.
         
-        o Archives of the list are at:
+        o Archives of the list are at the "Pipermail archive",
           http://lists.zope.org/pipermail/zope-cmf.
 
       - The 'docs/' directory contains user-oriented documentation
@@ -39,7 +41,7 @@ Zope Content Management Framework (CMF) README
 
     Known Issues
 
-      - Please search the "CMF Collector", http://collector.zope.org/CMF
+      - Please search the "CMF Collector", http://zope.org/Collectors/CMF
         for issues which are open against the CMF. You can also report
         issues there (please look for similar ones first!).
 
