@@ -10,6 +10,9 @@ Zope Changes
 
     New features
 
+    - 'Content-Type' header now updates with charset information if
+      necessary.
+
     - Implemented ObservableAdapter and Observers registry for 
       Instance-based subscriptions.
 
