@@ -20,7 +20,7 @@ from zope.schema import Field
 
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
-from zope.app.container.interfaces import IContained, IContainer
+from zope.app.container.interfaces import IContainer
 from zope.app.file.interfaces import IImage
 
 
