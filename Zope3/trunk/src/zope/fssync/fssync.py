@@ -16,7 +16,7 @@
 class Network -- handle network connection
 class FSSync  -- implement various commands (checkout, commit etc.)
 
-$Id: fssync.py,v 1.28 2003/05/29 16:29:21 gvanrossum Exp $
+$Id: fssync.py,v 1.29 2003/06/02 17:09:19 gvanrossum Exp $
 """
 
 import os
@@ -308,7 +308,6 @@ class FSSync(object):
             raise Error("nothing known about", target)
         self.network.loadrooturl(target)
         path = entry["path"]
-        snarffile = tempfile.mktemp(".snf")
         head, tail = split(realpath(target))
         try:
             view = "@@fromFS.snarf?note=%s" % urllib.quote(note)
@@ -319,8 +318,6 @@ class FSSync(object):
             outfp, headers = self.network.httpreq(path, view, datasource)
         finally:
             pass
-            if isfile(snarffile):
-                os.remove(snarffile)
         try:
             self.merge_snarffile(outfp, head, tail)
         finally:
