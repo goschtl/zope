@@ -79,6 +79,8 @@ class FieldIndexTest(TestCase):
 
         self._populate_index()
 
+        self._search(None, IISet())
+        self._search('', IISet())
         self._search('the', IISet([1]))
         self._search('quick', IISet([2]))
         self._search('brown', IISet([3]))
