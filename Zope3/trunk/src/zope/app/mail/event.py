@@ -13,15 +13,14 @@
 ##############################################################################
 """Collection of possible Mail Events.
 
-$Id: event.py,v 1.3 2003/06/23 15:45:39 alga Exp $
+$Id: event.py,v 1.4 2004/03/03 09:15:41 srichter Exp $
 """
-from zope.app.interfaces.mail import IMailSentEvent, IMailErrorEvent
 from zope.interface import implements
 
-__metaclass__ = type
+from zope.app.mail.interfaces import IMailSentEvent, IMailErrorEvent
 
 
-class MailSentEvent:
+class MailSentEvent(object):
     __doc__ = IMailSentEvent.__doc__
 
     implements(IMailSentEvent)
@@ -30,7 +29,7 @@ class MailSentEvent:
         self.messageId = messageId
 
 
-class MailErrorEvent:
+class MailErrorEvent(object):
     __doc__ = IMailErrorEvent.__doc__
 
     implements(IMailErrorEvent)

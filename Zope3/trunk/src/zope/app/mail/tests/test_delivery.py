@@ -13,24 +13,21 @@
 ##############################################################################
 """MailService Implementation
 
-Simple implementation of the MailService, Mailers and MailEvents.
+Simple implementation of the MailDelivery, Mailers and MailEvents.
 
-$Id: test_service.py,v 1.4 2003/09/23 22:16:13 alga Exp $
+$Id: test_delivery.py,v 1.1 2004/03/03 09:15:43 srichter Exp $
 """
 import os.path
 from tempfile import mktemp
 from unittest import TestCase, TestSuite, makeSuite
+from transaction import get_transaction
 
 from zope.interface import implements
 from zope.interface.verify import verifyObject
-from zope.app.interfaces.mail import IMailer
-
-from transaction import get_transaction
-
-__metaclass__ = type
+from zope.app.mail.interfaces import IMailer
 
 
-class MailerStub:
+class MailerStub(object):
 
     implements(IMailer)
     def __init__(self, *args, **kw):
@@ -44,27 +41,27 @@ class TestMailDataManager(TestCase):
 
     def testInterface(self):
         from transaction.interfaces import IDataManager
-        from zope.app.mail.service import MailDataManager
+        from zope.app.mail.delivery import MailDataManager
         manager = MailDataManager(object, (1, 2))
         verifyObject(IDataManager, manager)
         self.assertEqual(manager.callable, object)
         self.assertEqual(manager.args, (1, 2))
 
 
-class TestDirectMailService(TestCase):
+class TestDirectMailDelivery(TestCase):
 
     def testInterface(self):
-        from zope.app.interfaces.mail import IDirectMailService
-        from zope.app.mail.service import DirectMailService
+        from zope.app.mail.interfaces import IDirectMailDelivery
+        from zope.app.mail.delivery import DirectMailDelivery
         mailer = MailerStub()
-        service = DirectMailService(mailer)
-        verifyObject(IDirectMailService, service)
-        self.assertEqual(service.mailer, mailer)
+        delivery = DirectMailDelivery(mailer)
+        verifyObject(IDirectMailDelivery, delivery)
+        self.assertEqual(delivery.mailer, mailer)
 
     def testSend(self):
-        from zope.app.mail.service import DirectMailService
+        from zope.app.mail.delivery import DirectMailDelivery
         mailer = MailerStub()
-        service = DirectMailService(mailer)
+        delivery = DirectMailDelivery(mailer)
         fromaddr = 'Jim <jim@example.com'
         toaddrs = ('Guido <guido@example.com>',
                    'Steve <steve@examplecom>')
@@ -76,7 +73,7 @@ class TestDirectMailService(TestCase):
                        '\n'
                        'This is just an example\n')
 
-        msgid = service.send(fromaddr, toaddrs, opt_headers + message)
+        msgid = delivery.send(fromaddr, toaddrs, opt_headers + message)
         self.assertEquals(msgid, '20030519.1234@example.org')
         self.assertEquals(mailer.sent_messages, [])
         get_transaction().commit()
@@ -84,7 +81,7 @@ class TestDirectMailService(TestCase):
                           [(fromaddr, toaddrs, opt_headers + message)])
 
         mailer.sent_messages = []
-        msgid = service.send(fromaddr, toaddrs, message)
+        msgid = delivery.send(fromaddr, toaddrs, message)
         self.assert_('@' in msgid)
         self.assertEquals(mailer.sent_messages, [])
         get_transaction().commit()
@@ -96,13 +93,13 @@ class TestDirectMailService(TestCase):
         self.assert_(new_headers.find('Message-Id: <%s>' % msgid) != -1)
 
         mailer.sent_messages = []
-        msgid = service.send(fromaddr, toaddrs, opt_headers + message)
+        msgid = delivery.send(fromaddr, toaddrs, opt_headers + message)
         self.assertEquals(mailer.sent_messages, [])
         get_transaction().abort()
         self.assertEquals(mailer.sent_messages, [])
 
 
-class MaildirWriterStub:
+class MaildirWriterStub(object):
 
     data = ''
     commited_messages = []  # this list is shared among all instances
@@ -123,7 +120,7 @@ class MaildirWriterStub:
         self.aborted_messages.append(self.data)
 
 
-class MaildirStub:
+class MaildirStub(object):
 
     def __init__(self, path, create=False):
         self.path = path
@@ -139,7 +136,7 @@ class MaildirStub:
         self.msgs.append(m)
         return m
 
-class LoggerStub:
+class LoggerStub(object):
 
     def __init__(self):
         self.infos = []
@@ -157,7 +154,7 @@ class LoggerStub:
 class BizzarreMailError(IOError):
     pass
 
-class BrokenMailerStub:
+class BrokenMailerStub(object):
 
     implements(IMailer)
     def __init__(self, *args, **kw):
@@ -166,29 +163,29 @@ class BrokenMailerStub:
     def send(self, fromaddr, toaddrs, message):
         raise BizzarreMailError("bad things happened while sending mail")
 
-class TestQueuedMailService(TestCase):
+class TestQueuedMailDelivery(TestCase):
 
     def setUp(self):
-        import zope.app.mail.service as mail_service_module
-        self.mail_service_module = mail_service_module
-        self.old_Maildir = mail_service_module.Maildir
-        mail_service_module.Maildir = MaildirStub
+        import zope.app.mail.delivery as mail_delivery_module
+        self.mail_delivery_module = mail_delivery_module
+        self.old_Maildir = mail_delivery_module.Maildir
+        mail_delivery_module.Maildir = MaildirStub
 
     def tearDown(self):
-        self.mail_service_module.Maildir = self.old_Maildir
+        self.mail_delivery_module.Maildir = self.old_Maildir
         MaildirWriterStub.commited_messages = []
         MaildirWriterStub.aborted_messages = []
 
     def testInterface(self):
-        from zope.app.interfaces.mail import IQueuedMailService
-        from zope.app.mail.service import QueuedMailService
-        service = QueuedMailService('/path/to/mailbox')
-        verifyObject(IQueuedMailService, service)
-        self.assertEqual(service.queuePath, '/path/to/mailbox')
+        from zope.app.mail.interfaces import IQueuedMailDelivery
+        from zope.app.mail.delivery import QueuedMailDelivery
+        delivery = QueuedMailDelivery('/path/to/mailbox')
+        verifyObject(IQueuedMailDelivery, delivery)
+        self.assertEqual(delivery.queuePath, '/path/to/mailbox')
 
     def testSend(self):
-        from zope.app.mail.service import QueuedMailService
-        service = QueuedMailService('/path/to/mailbox')
+        from zope.app.mail.delivery import QueuedMailDelivery
+        delivery = QueuedMailDelivery('/path/to/mailbox')
         fromaddr = 'jim@example.com'
         toaddrs = ('guido@example.com',
                    'steve@examplecom')
@@ -202,7 +199,7 @@ class TestQueuedMailService(TestCase):
                        '\n'
                        'This is just an example\n')
 
-        msgid = service.send(fromaddr, toaddrs, opt_headers + message)
+        msgid = delivery.send(fromaddr, toaddrs, opt_headers + message)
         self.assertEquals(msgid, '20030519.1234@example.org')
         self.assertEquals(MaildirWriterStub.commited_messages, [])
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
@@ -212,7 +209,7 @@ class TestQueuedMailService(TestCase):
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
 
         MaildirWriterStub.commited_messages = []
-        msgid = service.send(fromaddr, toaddrs, message)
+        msgid = delivery.send(fromaddr, toaddrs, message)
         self.assert_('@' in msgid)
         self.assertEquals(MaildirWriterStub.commited_messages, [])
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
@@ -226,7 +223,7 @@ class TestQueuedMailService(TestCase):
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
 
         MaildirWriterStub.commited_messages = []
-        msgid = service.send(fromaddr, toaddrs, opt_headers + message)
+        msgid = delivery.send(fromaddr, toaddrs, opt_headers + message)
         self.assertEquals(MaildirWriterStub.commited_messages, [])
         self.assertEquals(MaildirWriterStub.aborted_messages, [])
         get_transaction().abort()
@@ -237,7 +234,7 @@ class TestQueuedMailService(TestCase):
 class TestQueueProcessorThread(TestCase):
 
     def setUp(self):
-        from zope.app.mail.service import QueueProcessorThread
+        from zope.app.mail.delivery import QueueProcessorThread
         self.md = MaildirStub('/foo/bar/baz')
         self.thread = QueueProcessorThread()
         self.thread.setMaildir(self.md)
@@ -301,7 +298,10 @@ class TestQueueProcessorThread(TestCase):
 def test_suite():
     return TestSuite((
         makeSuite(TestMailDataManager),
-        makeSuite(TestDirectMailService),
-        makeSuite(TestQueuedMailService),
+        makeSuite(TestDirectMailDelivery),
+        makeSuite(TestQueuedMailDelivery),
         makeSuite(TestQueueProcessorThread),
         ))
+
+if __name__ == '__main__':
+    unittest.main()

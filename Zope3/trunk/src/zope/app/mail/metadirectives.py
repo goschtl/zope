@@ -13,19 +13,19 @@
 ##############################################################################
 """'mail' ZCML Namespaces Schemas
 
-$Id: metadirectives.py,v 1.3 2003/12/17 10:20:49 mukruthi Exp $
+$Id: metadirectives.py,v 1.4 2004/03/03 09:15:41 srichter Exp $
 """
 from zope.configuration.fields import Path
 from zope.interface import Interface
 from zope.schema import TextLine, Bytes, ASCII, BytesLine, Int
 
-class IServiceDirective(Interface):
+class IDeliveryDirective(Interface):
     """This abstract directive describes a generic mail service
     registration."""
     
     name = TextLine(
         title=u"Name",
-        description=u'Specifies the Service name of the mail service. '\
+        description=u'Specifies the Delivery name of the mail service. '\
                     u'The default is "Mail".',
         default=u"Mail",
         required=False)
@@ -41,7 +41,7 @@ class IServiceDirective(Interface):
         required=True)
 
 
-class IQueuedServiceDirective(IServiceDirective):
+class IQueuedDeliveryDirective(IDeliveryDirective):
     """This directive creates and registers a global queued mail service. It
     should be only called once during startup."""
 
@@ -51,7 +51,7 @@ class IQueuedServiceDirective(IServiceDirective):
         required=True)
 
 
-class IDirectServiceDirective(IServiceDirective):
+class IDirectDeliveryDirective(IDeliveryDirective):
     """This directive creates and registers a global direct mail service. It
     should be only called once during startup."""
 
@@ -59,9 +59,9 @@ class IDirectServiceDirective(IServiceDirective):
 class IMailerDirective(Interface):
     """A generic directive registering a mailer for the mail service."""
 
-    id = TextLine(
-        title=u"Id",
-        description=u"Id of the Mailer.",
+    name = TextLine(
+        title=u"Name",
+        description=u"Name of the Mailer.",
         required=True)
     
 

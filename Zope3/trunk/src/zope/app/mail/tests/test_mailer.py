@@ -13,13 +13,13 @@
 ##############################################################################
 """Tests for mailers.
 
-$Id: test_mailer.py,v 1.2 2003/06/23 15:45:40 alga Exp $
+$Id: test_mailer.py,v 1.3 2004/03/03 09:15:43 srichter Exp $
 """
 
 import unittest
 from StringIO import StringIO
 from zope.interface.verify import verifyObject
-from zope.app.interfaces.mail import ISendmailMailer, ISMTPMailer
+from zope.app.mail.interfaces import ISendmailMailer, ISMTPMailer
 
 
 class TestSendmailMailer(unittest.TestCase):
@@ -43,7 +43,8 @@ class TestSendmailMailer(unittest.TestCase):
 
     def test_send(self):
         msgtext = 'Headers: headers\n\nbodybodybody\n-- \nsig\n'
-        self.mailer.send('me@example.com', ('you@example.com', 'him@example.com'),
+        self.mailer.send('me@example.com',
+                         ('you@example.com', 'him@example.com'),
                          msgtext)
         self.assertEquals(self.input.getvalue(), msgtext)
         self.assertEquals(self.cmd_arg, "/usr/lib/sendmail -oem -oi"

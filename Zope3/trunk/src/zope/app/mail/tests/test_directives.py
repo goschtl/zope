@@ -13,21 +13,24 @@
 ##############################################################################
 """Test the gts ZCML namespace directives.
 
-$Id: test_directives.py,v 1.9 2003/11/27 13:59:21 philikon Exp $
+$Id: test_directives.py,v 1.10 2004/03/03 09:15:43 srichter Exp $
 """
 import os
 import unittest
 import threading
 import time
 
-from zope.app.component.metaconfigure import managerHandler, provideInterface
-from zope.app.interfaces.mail import IMailService, ISMTPMailer, ISendmailMailer
-from zope.app.mail.metaconfigure import provideMailer, queryMailer
-from zope.app.mail.service import QueueProcessorThread
-from zope.app.mail import service
-from zope.component import getService
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.configuration import xmlconfig
+from zope.interface import implements
+
+from zope.app import zapi
+from zope.app.component.metaconfigure import managerHandler, provideInterface
+from zope.app.mail.interfaces import \
+     IMailDelivery, IMailer, ISMTPMailer, ISendmailMailer
+from zope.app.mail.delivery import QueueProcessorThread
+from zope.app.mail import delivery
+from zope.app.tests import ztapi
 import zope.app.mail.tests
 
 
@@ -43,24 +46,25 @@ class MaildirStub:
     def newMessage(self):
         return None
 
+class Mailer:
+    implements(IMailer)
+
 
 class DirectivesTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(DirectivesTest, self).setUp()
-        managerHandler('defineService', 'Mail', IMailService)
-        managerHandler('defineService', 'Mail2', IMailService)
-        provideInterface('zope.app.interfaces.mail.IMailService', IMailService)
-        provideMailer("test.smtp", object())
-        self.testMailer = object()
-        provideMailer('test.mailer', self.testMailer)
-        self.context = xmlconfig.file("mail.zcml", zope.app.mail.tests)
-        self.orig_maildir = service.Maildir
-        service.Maildir = MaildirStub
-        
+        self.testMailer = Mailer()
 
+        ztapi.provideUtility(IMailer, Mailer(), name="test.smtp")
+        ztapi.provideUtility(IMailer, self.testMailer, name="test.mailer")
+
+        self.context = xmlconfig.file("mail.zcml", zope.app.mail.tests)
+        self.orig_maildir = delivery.Maildir
+        delivery.Maildir = MaildirStub
+        
     def tearDown(self):
-        service.Maildir = self.orig_maildir
+        delivery.Maildir = self.orig_maildir
 
         # Tear down the mail queue processor thread.
         # Give the other thread a chance to start:
@@ -71,26 +75,25 @@ class DirectivesTest(PlacelessSetup, unittest.TestCase):
                 thread.stop()
                 thread.join()
                 
-        
-
-    def testQueuedService(self):
-        service = getService(None, 'Mail')
-        self.assertEqual('QueuedMailService', service.__class__.__name__)
+    def testQueuedDelivery(self):
+        delivery = zapi.getUtility(None, IMailDelivery, "Mail")
+        self.assertEqual('QueuedMailDelivery', delivery.__class__.__name__)
         testdir = os.path.dirname(zope.app.mail.tests.__file__)
         self.assertEqual(os.path.join(testdir, 'mailbox'),
-                         service.queuePath)
+                         delivery.queuePath)
 
-    def testDirectService(self):
-        service = getService(None, 'Mail2')
-        self.assertEqual('DirectMailService', service.__class__.__name__)
-        self.assert_(self.testMailer is service.mailer)
-
+    def testDirectDelivery(self):
+        delivery = zapi.getUtility(None, IMailDelivery, "Mail2")
+        self.assertEqual('DirectMailDelivery', delivery.__class__.__name__)
+        self.assert_(self.testMailer is delivery.mailer)
 
     def testSendmailMailer(self):
-        self.assert_(ISendmailMailer.isImplementedBy(queryMailer("Sendmail")))
+        mailer = zapi.getUtility(None, IMailer, "Sendmail")
+        self.assert_(ISendmailMailer.isImplementedBy(mailer))
 
     def testSMTPMailer(self):
-        self.assert_(ISMTPMailer.isImplementedBy(queryMailer("smtp")))
+        mailer = zapi.getUtility(None, IMailer, "smtp")
+        self.assert_(ISMTPMailer.isImplementedBy(mailer))
 
 
 def test_suite():

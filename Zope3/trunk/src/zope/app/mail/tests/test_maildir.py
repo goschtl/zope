@@ -13,22 +13,20 @@
 ##############################################################################
 """Unit tests for zope.app.mail.maildir module
 
-$Id: test_maildir.py,v 1.6 2003/09/23 22:16:13 alga Exp $
+$Id: test_maildir.py,v 1.7 2004/03/03 09:15:43 srichter Exp $
 """
-
 import unittest
 import stat
 
 from zope.interface.verify import verifyObject
 
-__metaclass__ = type
 
-class FakeSocketModule:
+class FakeSocketModule(object):
 
     def gethostname(self):
         return 'myhostname'
 
-class FakeTimeModule:
+class FakeTimeModule(object):
 
     _timer = 1234500000
 
@@ -38,7 +36,7 @@ class FakeTimeModule:
     def sleep(self, n):
         self._timer += n
 
-class FakeOsPathModule:
+class FakeOsPathModule(object):
 
     def __init__(self, files, dirs):
         self.files = files
@@ -55,7 +53,7 @@ class FakeOsPathModule:
     def exists(self, p):
         return self._exists_never_fails or p in self.files
 
-class FakeOsModule:
+class FakeOsModule(object):
 
     F_OK = 0
     _stat_mode = {
@@ -109,7 +107,7 @@ class FakeOsModule:
     def rename(self, old, new):
         self._renamed_files += ((old, new), )
 
-class FakeFile:
+class FakeFile(object):
 
     def __init__(self, filename, mode):
         self._filename = filename
@@ -152,7 +150,7 @@ class TestMaildir(unittest.TestCase):
         self.fake_os_module.path._exists_never_fails = False
 
     def test_factory(self):
-        from zope.app.interfaces.mail import IMaildirFactory, IMaildir
+        from zope.app.mail.interfaces import IMaildirFactory, IMaildir
         from zope.app.mail.maildir import Maildir
         verifyObject(IMaildirFactory, Maildir)
 
@@ -193,7 +191,7 @@ class TestMaildir(unittest.TestCase):
 
     def test_newMessage(self):
         from zope.app.mail.maildir import Maildir
-        from zope.app.interfaces.mail import IMaildirMessageWriter
+        from zope.app.mail.interfaces import IMaildirMessageWriter
         m = Maildir('/path/to/maildir')
         fd = m.newMessage()
         verifyObject(IMaildirMessageWriter, fd)
@@ -202,7 +200,7 @@ class TestMaildir(unittest.TestCase):
 
     def test_newMessage_never_loops(self):
         from zope.app.mail.maildir import Maildir
-        from zope.app.interfaces.mail import IMaildirMessageWriter
+        from zope.app.mail.interfaces import IMaildirMessageWriter
         self.fake_os_module.path._exists_never_fails = True
         m = Maildir('/path/to/maildir')
         self.assertRaises(RuntimeError, m.newMessage)

@@ -13,91 +13,87 @@
 ##############################################################################
 """mail ZCML Namespace handler
 
-$Id: metaconfigure.py,v 1.5 2003/08/17 06:07:13 philikon Exp $
+$Id: metaconfigure.py,v 1.6 2004/03/03 09:15:41 srichter Exp $
 """
 from zope.configuration.exceptions import ConfigurationError
-from zope.app.component.metaconfigure import provideService
-from zope.app.mail.service import QueuedMailService, DirectMailService
-from zope.app.mail.service import QueueProcessorThread
+
+from zope.security.checker import InterfaceChecker, CheckerPublic
+
+from zope.app import zapi
+from zope.app.component.metaconfigure import handler, proxify, PublicPermission
+from zope.app.mail.delivery import QueuedMailDelivery, DirectMailDelivery
+from zope.app.mail.delivery import QueueProcessorThread
+from zope.app.mail.interfaces import IMailer, IMailDelivery
 from zope.app.mail.mailer import SendmailMailer, SMTPMailer
 
 
-def queuedService(_context, permission, queuePath, mailer, name="Mail"):
+def _assertPermission(permission, interfaces, component):
+    if permission is not None:
+        if permission == PublicPermission:
+            permission = CheckerPublic
+        checker = InterfaceChecker(interfaces, permission)
 
-    def createQueuedService():
-        component = QueuedMailService(queuePath)
-        provideService(name, component, permission)
+    return proxify(component, checker)
+    
+
+def queuedDelivery(_context, permission, queuePath, mailer, name=None):
+
+    def createQueuedDelivery():
+        delivery = QueuedMailDelivery(queuePath)
+        delivery = _assertPermission(permission, IMailDelivery, delivery)
+
+        utilities = zapi.getService(None, 'Utilities')
+        handler('Utilities', 'provideUtility', IMailDelivery, delivery, name)
+
+        mailerObject = zapi.queryUtility(None, IMailer, name=mailer)
+        if mailerObject is None:
+            raise ConfigurationError("Mailer %r is not defined" %mailer)
 
         thread = QueueProcessorThread()
-        thread.setMailer(getMailer(mailer))
+        thread.setMailer(mailerObject)
         thread.setQueuePath(queuePath)
         thread.setDaemon(True)
         thread.start()
 
     _context.action(
-            discriminator = ('service', name),
-            callable = createQueuedService,
+            discriminator = ('delivery', name),
+            callable = createQueuedDelivery,
             args = () )
 
-def directService(_context, permission, mailer, name="Mail"):
 
-    def makeService():
-        mailer_component = queryMailer(mailer)
-        if mailer_component is None:
-            raise ConfigurationError("Mailer %r is not defined" % mailer)
-        component = DirectMailService(mailer_component)
-        provideService(name, component, permission)
+def directDelivery(_context, permission, mailer, name=None):
+
+    def createDirectDelivery():
+        mailerObject = zapi.queryUtility(None, IMailer, name=mailer)
+        if mailerObject is None:
+            raise ConfigurationError("Mailer %r is not defined" %mailer)
+
+        delivery = DirectMailDelivery(mailerObject)
+        delivery = _assertPermission(permission, IMailDelivery, delivery)
+
+        utilities = zapi.getService(None, 'Utilities')
+        handler('Utilities', 'provideUtility', IMailDelivery, delivery, name)
 
     _context.action(
-            discriminator = ('service', name),
-            callable = makeService,
+            discriminator = ('utility', IMailDelivery, name),
+            callable = createDirectDelivery,
             args = () )
 
 
-def sendmailMailer(_context, id,
+def sendmailMailer(_context, name,
                    command="/usr/lib/sendmail -oem -oi -f %(from)s %(to)s"):
     _context.action(
-        discriminator=('mailer', id),
-        callable=provideMailer,
-        args=(id, SendmailMailer(command)) )
+        discriminator = ('utility', IMailer, name),
+        callable = handler,
+        args = ('Utilities', 'provideUtility',
+                IMailer, SendmailMailer(command), name)
+        )
 
-
-def smtpMailer(_context, id, hostname="localhost", port="25",
+def smtpMailer(_context, name, hostname="localhost", port="25",
                username=None, password=None):
     _context.action(
-        discriminator=('mailer', id),
-        callable=provideMailer,
-        args=(id, SMTPMailer(hostname, port, username, password)) )
-
-# Example of mailer configuration:
-#
-#   def smtp(_context, id, hostname, port):
-#       component = SMTPMailer(hostname, port)
-#       if queryMailer(id) is not None:
-#           raise ConfigurationError("Redefinition of mailer %r" % id)
-#       provideMailer(id, component)
-#       return []
-#
-# or is it better to make mailer registration an Action?  But that won't work,
-# because queryMailer will get called during directive processing, before any
-# actions are run.
-
-
-mailerRegistry = {}
-queryMailer = mailerRegistry.get
-provideMailer = mailerRegistry.__setitem__
-
-def getMailer(mailer):
-    result = queryMailer(mailer)
-    if result is None:
-        raise ConfigurationError("Mailer lookup failed")
-    return result
-
-# Register our cleanup with Testing.CleanUp to make writing unit tests simpler.
-try:
-    from zope.testing.cleanup import addCleanUp
-except ImportError:
-    pass
-else:
-    addCleanUp(mailerRegistry.clear)
-    del addCleanUp
+        discriminator = ('utility', IMailer, name),
+        callable = handler,
+        args = ('Utilities', 'provideUtility',
+                IMailer, SMTPMailer(hostname, port, username, password), name)
+        )

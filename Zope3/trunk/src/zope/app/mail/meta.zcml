@@ -4,15 +4,15 @@
 
   <meta:directive 
       namespace="http://namespaces.zope.org/mail"
-      name="queuedService" 
-      schema=".metadirectives.IQueuedServiceDirective"
-      handler=".metaconfigure.queuedService" />
+      name="queuedDelivery" 
+      schema=".metadirectives.IQueuedDeliveryDirective"
+      handler=".metaconfigure.queuedDelivery" />
 
   <meta:directive 
       namespace="http://namespaces.zope.org/mail"
-      name="directService" 
-      schema=".metadirectives.IDirectServiceDirective"
-      handler=".metaconfigure.directService" />
+      name="directDelivery" 
+      schema=".metadirectives.IDirectDeliveryDirective"
+      handler=".metaconfigure.directDelivery" />
 
   <meta:directive 
       namespace="http://namespaces.zope.org/mail"

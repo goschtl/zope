@@ -15,17 +15,19 @@
 
 Simple implementation of the MailService, Mailers and MailEvents.
 
-$Id: test_event.py,v 1.2 2003/06/23 15:45:40 alga Exp $
+$Id: test_event.py,v 1.3 2004/03/03 09:15:43 srichter Exp $
 """
 from unittest import TestCase, TestSuite, makeSuite
+
 from zope.interface.verify import verifyObject
-from zope.app.interfaces.mail import IMailSentEvent, IMailErrorEvent
+
+from zope.app.mail.interfaces import IMailSentEvent, IMailErrorEvent
+from zope.app.mail.event import MailSentEvent
 
 
 class TestMailEvents(TestCase):
 
     def testMailSendEvent(self):
-        from zope.app.mail.event import MailSentEvent
         msgid = '<1234@example.com>'
         m = MailSentEvent(msgid)
         verifyObject(IMailSentEvent, m)
@@ -45,3 +47,6 @@ def test_suite():
     return TestSuite((
         makeSuite(TestMailEvents),
         ))
+
+if __name__ == '__main__':
+    unittest.main()

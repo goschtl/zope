@@ -15,19 +15,18 @@
 
 XXX check exception types
 
-$Id: maildir.py,v 1.3 2003/07/01 09:46:52 mgedmin Exp $
+$Id: maildir.py,v 1.4 2004/03/03 09:15:41 srichter Exp $
 """
-
 import os
 import socket
 import time
+
 from zope.interface import implements, classProvides
-from zope.app.interfaces.mail import IMaildirFactory, IMaildir
-from zope.app.interfaces.mail import IMaildirMessageWriter
 
-__metaclass__ = type
+from zope.app.mail.interfaces import \
+     IMaildirFactory, IMaildir, IMaildirMessageWriter
 
-class Maildir:
+class Maildir(object):
     """See zope.app.interfaces.mail.IMaildir"""
 
     classProvides(IMaildirFactory)
@@ -96,7 +95,7 @@ class Maildir:
         return MaildirMessageWriter(filename, join(subdir_new, unique))
 
 
-class MaildirMessageWriter:
+class MaildirMessageWriter(object):
     """See zope.app.interfaces.mail.IMaildirMessageWriter"""
 
     implements(IMaildirMessageWriter)

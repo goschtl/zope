@@ -15,17 +15,16 @@
 """These are classes which abstract different channels an email
 message could be sent out by.
 
-$Id: mailer.py,v 1.5 2003/06/23 15:45:39 alga Exp $
+$Id: mailer.py,v 1.6 2004/03/03 09:15:41 srichter Exp $
 """
-
-from zope.interface import implements
-from zope.app.interfaces.mail import ISendmailMailer, ISMTPMailer
 from os import popen
 from smtplib import SMTP
 
-__metaclass__ = type
+from zope.interface import implements
+from zope.app.mail.interfaces import ISendmailMailer, ISMTPMailer
 
-class SendmailMailer:
+
+class SendmailMailer(object):
 
     implements(ISendmailMailer)
 
@@ -41,7 +40,7 @@ class SendmailMailer:
         f.write(message)
         f.close()
 
-class SMTPMailer:
+class SMTPMailer(object):
 
     implements(ISMTPMailer)
 
