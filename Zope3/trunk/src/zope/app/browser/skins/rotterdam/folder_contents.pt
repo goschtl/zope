@@ -7,8 +7,9 @@
 <div metal:fill-slot="commonTasks">
 Add new content:<br>
     <tal:block repeat="info context/@@+/addingInfo">
-    <a href="#" tal:attributes="href string:${request/getURL}?type_name=${info/title};
-                                class info/selected" >
+    <a href="#"
+       tal:attributes="href string:${request/getURL}?type_name=${info/action};
+                       class info/selected" >
     <div tal:attributes="value info/id|default"
             tal:content="info/title">Folder
     </div>
