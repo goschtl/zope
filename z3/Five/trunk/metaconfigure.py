@@ -20,6 +20,18 @@ from zope.component.servicenames import Adapters
 from provideinterface import provideInterface
 from zope.app.security.permission import Permission
 from zope.app.security.interfaces import IPermission
+from types import ModuleType
+from zope.interface import classImplements
+from zope.configuration.exceptions import ConfigurationError
+from zope.component import getUtility
+from zope.app.security.interfaces import IPermission
+
+# Zope 2 stuff
+from AccessControl import ClassSecurityInfo
+from Globals import InitializeClass
+
+CheckerPublic = 'zope.Public'
+CheckerPrivate = 'zope.Private'
 
 def handler(serviceName, methodName, *args, **kwargs):
     method=getattr(getService(serviceName), methodName)
@@ -133,3 +145,91 @@ def definePermission(_context, id, title, description=''):
     permission = Permission(id, title, description)
     utility(_context, IPermission, permission, name=id)
 
+class ContentDirective:
+
+    def __init__(self, _context, class_):
+        self.__class = class_
+        if isinstance(self.__class, ModuleType):
+            raise ConfigurationError('Content class attribute must be a class')
+        self.__context = _context
+
+    def implements(self, _context, interface):
+        for interface in interface:
+            _context.action(
+                discriminator = (
+                'five::directive:content', self.__class, object()),
+                callable = classImplements,
+                args = (self.__class, interface),
+                )
+            interface(_context, interface)
+
+    def require(self, _context, permission=None,
+                attributes=None, interface=None):
+        """Require a the permission to access a specific aspect"""
+
+        if not (interface or attributes):
+            raise ConfigurationError("Nothing required")
+
+        if interface:
+            for i in interface:
+                if i:
+                    self.__protectByInterface(i, permission)
+        if attributes:
+            self.__protectNames(attributes, permission)
+
+    def allow(self, _context, attributes=None, interface=None):
+        """Like require, but with permission_id zope.Public"""
+        return self.require(_context, CheckerPublic, attributes, interface)
+
+    def __protectByInterface(self, interface, permission_id):
+        "Set a permission on names in an interface."
+        for n, d in interface.namesAndDescriptions(1):
+            self.__protectName(n, permission_id)
+        interface(self.__context, interface)
+
+    def __protectName(self, name, permission_id):
+        "Set a permission on a particular name."
+        self.__context.action(
+            discriminator = ('five:protectName', self.__class, name),
+            callable = protectName,
+            args = (self.__class, name, permission_id)
+            )
+
+    def __protectNames(self, names, permission_id):
+        "Set a permission on a bunch of names."
+        for name in names:
+            self.__protectName(name, permission_id)
+
+    def __call__(self):
+        "Handle empty/simple declaration."
+        return self.__context.action(
+            discriminator = ('five:initialize:class', self.__class),
+            callable = initializeClass,
+            args = (self.__class,)
+            )
+
+def initializeClass(klass):
+    InitializeClass(klass)
+
+def _getSecurity(klass):
+    info = vars(klass)
+    for k, v in info.items():
+        if hasattr(v, '__security_info__'):
+            return v
+    security = ClassSecurityInfo()
+    setattr(klass, '__security__', security)
+    return security
+
+def protectName(klass, name, permission_id):
+    security = _getSecurity(klass)
+    # Zope 2 uses string, not unicode yet
+    name = str(name)
+    if permission_id == CheckerPublic:
+        security.declarePublic(name)
+    elif permission_id == CheckerPrivate:
+        security.declarePrivate(name)
+    else:
+        permission = getUtility(IPermission, name=permission_id)
+        # Zope 2 uses string, not unicode yet
+        perm = str(permission.title)
+        security.declareProtected(perm, name)

@@ -22,7 +22,7 @@ from viewable import Viewable
 from api import BrowserView
 from metaclass import makeClass
 from security.permission import getSecurityInfo, CheckerPublic
-from handlers.content import protectName, initializeClass
+from metaconfigure import protectName, initializeClass
 
 #def handler(serviceName, methodName, *args, **kwargs):
 #    method=getattr(getService(serviceName), methodName)

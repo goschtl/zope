@@ -42,7 +42,7 @@
     <meta:complexDirective
         name="content"
         schema="zope.app.component.metadirectives.IClassDirective"
-        handler=".handlers.content.ContentDirective"
+        handler=".metaconfigure.ContentDirective"
         >
 
       <meta:subdirective
