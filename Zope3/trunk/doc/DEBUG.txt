@@ -9,19 +9,28 @@ Using the Zope Debugger
   Setting up Environment
 
     Setup your PYTHONPATH environment variable to include
-    lib/python.. ie (unix bash syntax)::
+    src. ie (unix bash syntax)::
 
       cd Zope3
-      export PYTHONPATH=$PWD/lib/python:$PYTHONPATH
+      export PYTHONPATH=$PWD/src:$PYTHONPATH
     
     To start interacting with the debugger you need to initialize the
     zope application::
 
       python2.2
-      >> from Zope.App import Application
+      >> from zope.app import Application
       >> app = Application('path/to/zodb/', 'path/to/site.zcml')
             
   Using the Debugger
+
+    There are several method you can call on the application object:
+
+      - the 'publish' method executes a request as the publisher would
+        and prints the response headers and body.
+
+      - run executes a request with the publisher's normal error
+        handling disabled and without outputing anything.  This
+        is useful for use with Python's post-mortem. debugger
 
     Once you have the application object you can call its debug method
     to debug a zope object publication.
