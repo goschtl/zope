@@ -20,10 +20,12 @@ __docformat__ = "reStructuredText"
 import zope.interface
 import zope.schema
 
-class IPAUPrincipalCreated(zope.interface.Interface):
-    """A PAU principal object has been created
+class IPrincipalCreated(zope.interface.Interface):
+    """A PluggableAuthentication principal object has been created
 
-    This event is generated when a transient PAU principal has been created.
+    This event is generated when a transient PluggableAutentication
+    principal has been created.
+
     """
 
     principal = zope.interface.Attribute("The principal that was created")
@@ -36,7 +38,7 @@ class IPAUPrincipalCreated(zope.interface.Interface):
           ),
         )
 
-class IAuthenticatedPrincipalCreated(IPAUPrincipalCreated):
+class IAuthenticatedPrincipalCreated(IPrincipalCreated):
     """An authenticated principal object has been created
 
     This event is generated when a principal has been created by
@@ -56,7 +58,7 @@ class AuthenticatedPrincipalCreated:
         self.info = info
         self.request = request
 
-class IFoundPrincipalCreated(IPAUPrincipalCreated):
+class IFoundPrincipalCreated(IPrincipalCreated):
     """Event indicating that a principal was created based on a search
     """
 
@@ -69,20 +71,22 @@ class FoundPrincipalCreated:
         self.info = info
 
 class IPlugin(zope.interface.Interface):
-    """Provide functionality to be pluged into a PAU
+    """Provide functionality to be pluged into a Pluggable Authentication
     """
 
 class IPrincipalIdAwarePlugin(IPlugin):
     """Principal-Id aware plugin
 
     A requirements of plugins that deal with principal ids is that
-    principal ids must be unique within a PAU.  A PAU manager may want
-    to use plugins to support multiple principal sources.  If the ids
-    from the various principal sources overlap, there needs to be some
-    way to disambiguate them.  For this reason, it's a good idea for
-    id-aware plugins to provide a way for a PAU manager to configure
-    an id prefix or some other mechanism to make sure that
-    principal-ids from different domains don't overlap.
+    principal ids must be unique within a PluggableAuthentication.  A
+    PluggableAuthentication manager may want to use plugins to support
+    multiple principal sources.  If the ids from the various principal
+    sources overlap, there needs to be some way to disambiguate them.
+    For this reason, it's a good idea for id-aware plugins to provide
+    a way for a PluggableAuthentication manager to configure an id
+    prefix or some other mechanism to make sure that principal-ids
+    from different domains don't overlap.
+    
     """
 
 class IExtractionPlugin(IPlugin):

@@ -17,4 +17,5 @@ $Id$
 """
 
 import interfaces
-from zope.app.pau.pau import PAU, LocalPAU
+from zope.app.authentication.authentication import PluggableAuthentication
+from zope.app.authentication.authentication import LocalPluggableAuthentication

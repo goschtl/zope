@@ -1,12 +1,12 @@
 Using Principal Folders
 =======================
 
-Principal folders are PAU plugins that manage principal information,
-especially authentication credentials.  To use a principal folder, you
-need to create a principal folder in a site management folder and then
-configure it in a PAU.  Let's look at an example, in which we'll
-define a new manager named Bob.  Initially, attempts to log in as Bob
-fail:
+Principal folders are Pluggable-Authentication plugins that manage
+principal information, especially authentication credentials.  To use
+a principal folder, you need to create a principal folder in a site
+management folder and then configure it in a plugins authentication.
+Let's look at an example, in which we'll define a new manager named
+Bob.  Initially, attempts to log in as Bob fail:
 
   >>> print http(r"""
   ... GET /manage HTTP/1.1
@@ -120,20 +120,18 @@ register a pluggable authentication utility:
   >>> print http(r"""
   ... POST /++etc++site/default/@@contents.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 58
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ... 
-  ... type_name=BrowserAdd__zope.app.pau.pau.LocalPAU&new_value=""")
+  ... type_name=BrowserAdd__zope.app.authentication.authentication.LocalPluggableAuthentication&new_value=""")
   HTTP/1.1 303 See Other
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/default/LocalPAU/addRegistration.html HTTP/1.1
+  ... POST /++etc++site/default/LocalPluggableAuthentication/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 852
   ... Content-Type: multipart/form-data; boundary=---------------------------1649392783947785437368129046
-  ... Referer: http://localhost:8081/++etc++site/default/LocalPAU/
+  ... Referer: http://localhost:8081/++etc++site/default/LocalPluggableAuthentication/
   ... 
   ... -----------------------------1649392783947785437368129046
   ... Content-Disposition: form-data; name="field.name"
@@ -167,11 +165,10 @@ register a pluggable authentication utility:
 and configure it to use the principal folder:
 
   >>> print http(r"""
-  ... POST /++etc++site/default/LocalPAU/@@edit.html HTTP/1.1
+  ... POST /++etc++site/default/LocalPluggableAuthentication/@@edit.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 1818
   ... Content-Type: multipart/form-data; boundary=---------------------------11831623361211414588608810327
-  ... Referer: http://localhost:8081/++etc++site/default/LocalPAU/@@edit.html
+  ... Referer: http://localhost:8081/++etc++site/default/LocalPluggableAuthentication/@@edit.html
   ... 
   ... -----------------------------11831623361211414588608810327
   ... Content-Disposition: form-data; name="field.extractors.to"

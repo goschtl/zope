@@ -6,25 +6,25 @@
 
   <interface interface=".interfaces.IPrincipalSearchPlugin" />
 
-  <localUtility class=".LocalPAU">
+  <localUtility class=".LocalPluggableAuthentication">
     <require
         permission="zope.ManageServices"
-        interface=".pau.IPAU"
-        set_schema=".pau.IPAU"
+        interface=".authentication.IPluggableAuthentication"
+        set_schema=".authentication.IPluggableAuthentication"
         />
   </localUtility>
 
   <interface interface=".interfaces.IPrincipalSearchPlugin" />
   
   <browser:addMenuItem
-       class=".pau.LocalPAU"
+       class=".authentication.LocalPluggableAuthentication"
        title="Pluggable Authentication Utility"
        description="New-style pluggable authentication utility"
        permission="zope.ManageServices"
        />
 
   <browser:editform
-      schema=".pau.IPAU"
+      schema=".authentication.IPluggableAuthentication"
       label="Edit Pluggable Authentication Utility"
       name="edit.html"
       menu="zmi_views" title="Edit"
@@ -33,35 +33,35 @@
   <vocabulary
     name="ExtractionPlugins"
     factory="zope.app.utility.vocabulary.UtilityVocabulary"
-    interface="zope.app.pau.interfaces.IExtractionPlugin" 
+    interface="zope.app.authentication.interfaces.IExtractionPlugin" 
     nameOnly="True"
    />
 
   <vocabulary
     name="AuthenticationPlugins"
     factory="zope.app.utility.vocabulary.UtilityVocabulary"
-    interface="zope.app.pau.interfaces.IAuthenticationPlugin" 
+    interface="zope.app.authentication.interfaces.IAuthenticationPlugin" 
     nameOnly="True"
    />
 
   <vocabulary
     name="ChallengePlugins"
     factory="zope.app.utility.vocabulary.UtilityVocabulary"
-    interface="zope.app.pau.interfaces.IChallengePlugin" 
+    interface="zope.app.authentication.interfaces.IChallengePlugin" 
     nameOnly="True"
    />
 
   <vocabulary
     name="PrincipalFactoryPlugins"
     factory="zope.app.utility.vocabulary.UtilityVocabulary"
-    interface="zope.app.pau.interfaces.IPrincipalFactoryPlugin" 
+    interface="zope.app.authentication.interfaces.IPrincipalFactoryPlugin" 
     nameOnly="True"
    />
 
   <vocabulary
     name="PrincipalSearchPlugins"
     factory="zope.app.utility.vocabulary.UtilityVocabulary"
-    interface="zope.app.pau.interfaces.IPrincipalSearchPlugin" 
+    interface="zope.app.authentication.interfaces.IPrincipalSearchPlugin" 
     nameOnly="True"
    />
 

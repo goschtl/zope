@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""PAU Views
+"""Pluggable Authentication Views
 
 $Id$
 """

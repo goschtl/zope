@@ -3,13 +3,13 @@ Using Group Folders
 
 Group folders are used to define groups.  Before you can define
 groups, you have to create a group folder and configure it in a
-pluggable authentication service (PAU). The group folder has to be
-registered with a PAU before defining any groups.  This is because the
-groups folder needs to use the PAU to find all of the groups
-containing a given group so that it can check for group cycles. Not
-all of a group's groups need to be defined in it's group folder. Other
-groups folders or group-defining plugins could define groups for a
-group.
+pluggable authentication utility. The group folder has to be
+registered with a pluggable authentication utility before defining any
+groups.  This is because the groups folder needs to use the pluggable
+authentication utility to find all of the groups containing a given
+group so that it can check for group cycles. Not all of a group's
+groups need to be defined in it's group folder. Other groups folders
+or group-defining plugins could define groups for a group.
 
 Let's walk through an example.
 
@@ -30,7 +30,6 @@ First, we'll create a principal folder:
   >>> print http(r"""
   ... POST /++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 434
   ... Content-Type: multipart/form-data; boundary=---------------------------190685539214643056941988788830
   ... Referer: http://localhost:8081/++etc++site/AddISearchableAuthenticationPluginTool/AddPrincipalFolder.html=
   ... 
@@ -58,7 +57,6 @@ Next we'l add some users:
   >>> print http(r"""
   ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 784
   ... Content-Type: multipart/form-data; boundary=---------------------------62010169718836874861388307181
   ... 
   ... -----------------------------62010169718836874861388307181
@@ -95,7 +93,6 @@ Next we'l add some users:
   >>> print http(r"""
   ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 779
   ... Content-Type: multipart/form-data; boundary=---------------------------1501629520183211901834390790
   ... 
   ... -----------------------------1501629520183211901834390790
@@ -132,7 +129,6 @@ Next we'l add some users:
   >>> print http(r"""
   ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 781
   ... Content-Type: multipart/form-data; boundary=---------------------------3362827831346173768318792608
   ... 
   ... -----------------------------3362827831346173768318792608
@@ -169,7 +165,6 @@ Next we'l add some users:
   >>> print http(r"""
   ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 781
   ... Content-Type: multipart/form-data; boundary=---------------------------1771586876978613244952985501
   ... 
   ... -----------------------------1771586876978613244952985501
@@ -206,7 +201,6 @@ Next we'l add some users:
   >>> print http(r"""
   ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 783
   ... Content-Type: multipart/form-data; boundary=---------------------------6406512534224572322062554722
   ... 
   ... -----------------------------6406512534224572322062554722
@@ -243,7 +237,6 @@ Next we'l add some users:
   >>> print http(r"""
   ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 779
   ... Content-Type: multipart/form-data; boundary=---------------------------1596878616204415667781266350
   ... 
   ... -----------------------------1596878616204415667781266350
@@ -280,7 +273,6 @@ Next we'l add some users:
   >>> print http(r"""
   ... POST /++etc++site/tools/users/+/AddPrincipalInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 793
   ... Content-Type: multipart/form-data; boundary=---------------------------160587971417390263241080578782
   ... 
   ... -----------------------------160587971417390263241080578782
@@ -319,7 +311,6 @@ Next, we'll add out groups folder:
   >>> print http(r"""
   ... POST /++etc++site/AddIPrincipalSearchPluginTool/AddGroupFolder.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 432
   ... Content-Type: multipart/form-data; boundary=---------------------------18984415031531709165482618952
   ... 
   ... -----------------------------18984415031531709165482618952
@@ -341,25 +332,24 @@ Next, we'll add out groups folder:
   Location: ../@@manageIPrincipalSearchPluginTool.html
   ...
 
-Now, before we can define any groups, we have to add and register a PAU:
+Now, before we can define any groups, we have to add and register a
+pluggable authentication utility:
 
   >>> print http(r"""
   ... POST /++etc++site/default/@@contents.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 58
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ... 
-  ... type_name=BrowserAdd__zope.app.pau.pau.LocalPAU&new_value=""")
+  ... type_name=BrowserAdd__zope.app.authentication.authentication.LocalPluggableAuthentication&new_value=""")
   HTTP/1.1 303 See Other
   ...
 
   >>> print http(r"""
-  ... POST /++etc++site/default/LocalPAU/addRegistration.html HTTP/1.1
+  ... POST /++etc++site/default/LocalPluggableAuthentication/addRegistration.html HTTP/1.1
   ... Authorization: Basic bWdyOm1ncnB3
-  ... Content-Length: 852
   ... Content-Type: multipart/form-data; boundary=---------------------------1649392783947785437368129046
-  ... Referer: http://localhost:8081/++etc++site/default/LocalPAU/
+  ... Referer: http://localhost:8081/++etc++site/default/LocalPluggableAuthentication/
   ... 
   ... -----------------------------1649392783947785437368129046
   ... Content-Disposition: form-data; name="field.name"
@@ -395,9 +385,8 @@ and configure it to use the principal folder and the groups folder:
 
 
   >>> print http(r"""
-  ... POST /++etc++site/default/LocalPAU/@@edit.html HTTP/1.1
+  ... POST /++etc++site/default/LocalPluggableAuthentication/@@edit.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 2073
   ... Content-Type: multipart/form-data; boundary=---------------------------18023914511159666166636904990
   ... 
   ... -----------------------------18023914511159666166636904990
@@ -471,7 +460,6 @@ Now, we can define some groups.  Let's start with a group named
   >>> print http(r"""
   ... POST /++etc++site/tools/groups/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 540
   ... Content-Type: multipart/form-data; boundary=---------------------------5412502961004181070544094984
   ... 
   ... -----------------------------5412502961004181070544094984
@@ -502,7 +490,6 @@ That includes Betty, Mary and Mike:
   >>> print http(r"""
   ... POST /++etc++site/tools/groups/1/@@edit.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 1426
   ... Content-Type: multipart/form-data; boundary=---------------------------67523504021030130962010243745
   ... Referer: http://localhost:8081/++etc++site/tools/groups/1/@@edit.html
   ... 
@@ -556,7 +543,6 @@ and a group "Power Users":
   >>> print http(r"""
   ... POST /++etc++site/tools/groups/+/AddGroupInformation.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 556
   ... Content-Type: multipart/form-data; boundary=---------------------------14430301351028860873795053640
   ... 
   ... -----------------------------14430301351028860873795053640
@@ -587,7 +573,6 @@ with users Betty, Bill, Bob, George, and Mary:
   >>> print http(r"""
   ... POST /++etc++site/tools/groups/power/@@edit.html HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Length: 1708
   ... Content-Type: multipart/form-data; boundary=---------------------------46600477014278930691159535998
   ... 
   ... -----------------------------46600477014278930691159535998
@@ -650,7 +635,7 @@ thread-local site:
   >>> from zope.app.component.hooks import setSite
   >>> setSite(getRootFolder())
 
-and we'll get the PAU:
+and we'll get the pluggable authentication utility:
 
   >>> from zope.app import zapi
   >>> principals = zapi.principals()

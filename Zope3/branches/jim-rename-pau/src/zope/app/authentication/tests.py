@@ -62,12 +62,12 @@ def groupSetUp(test):
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('zope.app.pau.generic'),
-        doctest.DocTestSuite('zope.app.pau.httpplugins'),
+        doctest.DocTestSuite('zope.app.authentication.generic'),
+        doctest.DocTestSuite('zope.app.authentication.httpplugins'),
         doctest.DocFileSuite('principalfolder.txt'),
         doctest.DocFileSuite('idpicker.txt'),
-        doctest.DocTestSuite('zope.app.pau.principalplugins'),
-        doctest.DocTestSuite('zope.app.pau.browserplugins',
+        doctest.DocTestSuite('zope.app.authentication.principalplugins'),
+        doctest.DocTestSuite('zope.app.authentication.browserplugins',
                              setUp=formAuthSetUp,
                              tearDown=formAuthTearDown),
         doctest.DocFileSuite('README.txt',

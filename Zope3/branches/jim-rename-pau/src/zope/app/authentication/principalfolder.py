@@ -20,7 +20,7 @@ __docformat__ = "reStructuredText"
 import zope.interface
 from zope.schema import Text, TextLine, Password
 
-from zope.app.pau import interfaces
+from zope.app.authentication import interfaces
 
 from persistent import Persistent
 from zope.interface import Interface, implements

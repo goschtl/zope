@@ -4,7 +4,7 @@ Id Pickler
 The Id pickler is a variation on the name chooser that picks numeric
 ids when no name is given.
 
-  >>> from zope.app.pau.idpicker import IdPicker
+  >>> from zope.app.authentication.idpicker import IdPicker
   >>> IdPicker({}).chooseName('', None)
   u'1'
 

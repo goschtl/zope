@@ -31,15 +31,15 @@ from zope.app.container.contained import Contained
 from zope.app.utility.interfaces import ILocalUtility
 from zope.app.location.interfaces import ILocation
 
-from zope.app.pau import interfaces
-from zope.app.pau.interfaces import IExtractionPlugin
-from zope.app.pau.interfaces import IAuthenticationPlugin
-from zope.app.pau.interfaces import IChallengePlugin
-from zope.app.pau.interfaces import IPrincipalFactoryPlugin
-from zope.app.pau.interfaces import IPrincipalSearchPlugin
+from zope.app.authentication import interfaces
+from zope.app.authentication.interfaces import IExtractionPlugin
+from zope.app.authentication.interfaces import IAuthenticationPlugin
+from zope.app.authentication.interfaces import IChallengePlugin
+from zope.app.authentication.interfaces import IPrincipalFactoryPlugin
+from zope.app.authentication.interfaces import IPrincipalSearchPlugin
 
 
-class IPAU(zope.interface.Interface):
+class IPluggableAuthentication(zope.interface.Interface):
     """Pluggable Authentication Utility
     """
 
@@ -73,9 +73,10 @@ class IPAU(zope.interface.Interface):
         default=[],
         )
 
-class PAU(object):
+class PluggableAuthentication(object):
 
-    zope.interface.implements(IPAU, IAuthentication, ISourceQueriables)
+    zope.interface.implements(
+        IPluggableAuthentication, IAuthentication, ISourceQueriables)
 
     authenticators = extractors = challengers = factories = searchers = ()
 
@@ -180,5 +181,7 @@ class PAU(object):
             DeprecationWarning, stacklevel=2)
         return ()
 
-class LocalPAU(PAU, Persistent, Contained):
-    zope.interface.implements(IPAU, ILocation, ILocalUtility)
+class LocalPluggableAuthentication(PluggableAuthentication,
+                                   Persistent, Contained):
+    zope.interface.implements(IPluggableAuthentication,
+                              ILocation, ILocalUtility)
