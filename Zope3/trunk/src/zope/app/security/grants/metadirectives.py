@@ -13,15 +13,15 @@
 ##############################################################################
 """Grant Directive Schema
 
-$Id: metadirectives.py,v 1.1 2003/08/02 20:05:36 srichter Exp $
+$Id: metadirectives.py,v 1.2 2003/12/14 08:25:34 srichter Exp $
 """
 from zope.interface import Interface
-from zope.schema import BytesLine, Id 
+from zope.schema import Id 
 
 class IGrantDirective(Interface):
     """Grant Permissions to roles and principals and roles to principals."""
 
-    principal = BytesLine(
+    principal = Id(
         title=u"Principal",
         description=u"Specifies the Principal to be mapped.",
         required=False)
@@ -31,7 +31,7 @@ class IGrantDirective(Interface):
         description=u"Specifies the Permission to be mapped.",
         required=False)
 
-    role = BytesLine(
+    role = Id(
         title=u"Role",
         description=u"Specifies the Role to be mapped.",
         required=False)

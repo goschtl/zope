@@ -13,7 +13,7 @@
 ##############################################################################
 """Renderer configuration code
 
-$Id: metadirectives.py,v 1.4 2003/08/17 06:08:05 philikon Exp $
+$Id: metadirectives.py,v 1.5 2003/12/14 08:25:34 srichter Exp $
 """
 from zope.interface import Interface
 from zope.schema import TextLine, Id
@@ -22,7 +22,7 @@ from zope.configuration.fields import MessageID
 class IBaseDefineDirective(Interface):
     """Define a new security object."""
     
-    id = TextLine(
+    id = Id(
         title=u"Id",
         description=u"Id as which this object will be known and used.",
         required=True)
@@ -41,17 +41,12 @@ class IBaseDefineDirective(Interface):
 class IDefinePermissionDirective(IBaseDefineDirective):
     """Define a new permission."""
 
-    id = Id(
-        title=u"Id",
-        description=u"Id as which this permission will be known and used.",
-        required=True)
-
 class IDefineRoleDirective(IBaseDefineDirective):
     """Define a new role."""
 
 class IBasePrincipalDirective(Interface):
     
-    id = TextLine(
+    id = Id(
         title=u"Id",
         description=u"Id as which this object will be known and used.",
         required=True)

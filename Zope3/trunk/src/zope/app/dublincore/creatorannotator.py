@@ -13,7 +13,7 @@
 ##############################################################################
 """Object that takes care of annotating the dublin core creator field.
 
-$Id: creatorannotator.py,v 1.4 2003/06/06 21:21:46 stevea Exp $
+$Id: creatorannotator.py,v 1.5 2003/12/14 08:25:33 srichter Exp $
 """
 __metaclass__ = type
 
@@ -41,6 +41,6 @@ class CreatorAnnotatorClass:
             return
         principalid = principal.getId()
         if not principalid in dc.creators:
-            dc.creators = dc.creators + (principalid, )
+            dc.creators = dc.creators + (unicode(principalid), )
 
 CreatorAnnotator = CreatorAnnotatorClass()

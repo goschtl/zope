@@ -70,7 +70,7 @@ class RoleRegistry(Registry):
     def _clear(self):
         # Standard roles
         Registry._clear(self)
-        self.register("Anonymous", "Everybody",
+        self.register("zope.Anonymous", "Everybody",
                       "All users have this role implicitly")
 
 roleRegistry = RoleRegistry()

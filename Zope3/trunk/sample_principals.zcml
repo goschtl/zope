@@ -5,11 +5,12 @@
 <configure xmlns='http://namespaces.zope.org/zope'>
 
 
-<unauthenticatedPrincipal  id="anybody" 
-                           title="Unauthenticated User" />
+<unauthenticatedPrincipal 
+    id="zope.anybody" 
+    title="Unauthenticated User" />
 
 <principal
-    id="sample_manager"
+    id="zope.sample_manager"
     title="Sample Manager"
 
     login="gandalf"
@@ -18,7 +19,7 @@
     />
 
 <principal
-    id="sample_member"
+    id="zope.sample_member"
     title="Sample ordinary user (member)"
 
     login="frodo"
@@ -26,7 +27,7 @@
 
     />
 
-<grant role="Manager" principal="sample_manager" />
-<grant role="Member"  principal="sample_member" />
+<grant role="zope.Manager" principal="zope.sample_manager" />
+<grant role="zope.Member"  principal="zope.sample_member" />
 
 </configure>

@@ -6,7 +6,7 @@
   <include package="zope.app.security" file="meta.zcml"/>
 
   <role
-      id="Everyperson"
+      id="zope.Everyperson"
       title="Tout le monde"
       description="The common man, woman, person, or thing" />
  

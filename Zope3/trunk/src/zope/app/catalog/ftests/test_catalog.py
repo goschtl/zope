@@ -171,7 +171,7 @@ class TestCatalogAdd(BrowserTestCase):
         self.assert_(len(res)==0)
         res = cat.searchResults(fulltext='sample', dctitle='Zeroth File')
         self.assert_(len(res)==0)
-        res = cat.searchResults(dccreator='mgr', dctitle='Third File')
+        res = cat.searchResults(dccreator='zope.mgr', dctitle='Third File')
         self.assert_(len(res)==3)
 
 def test_suite():

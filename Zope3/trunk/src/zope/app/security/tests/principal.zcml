@@ -6,13 +6,13 @@
   <include package="zope.app.security" file="meta.zcml"/>
 
   <principal 
-      id="1"
+      id="zope.p1"
       title="Sir Tim Peters"
       description="Tim Peters"
       login="tim" password="123" />
 
   <principal 
-      id="2"
+      id="zope.p2"
       title="Sir Jim Fulton"
       description="Jim Fulton"
       login="jim" password="123" />

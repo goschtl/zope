@@ -4,15 +4,15 @@
 
  <grant
      permission="zope.Foo"
-     role="Bar" />
+     role="zope.Bar" />
 
  <grant
      permission="zope.Foo"
-     principal="Blah" />
+     principal="zope.Blah" />
 
  <grant
-     role="Bar"
-     principal="Blah" />
+     role="zope.Bar"
+     principal="zope.Blah" />
 
  
 </configure>

@@ -11,10 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
+"""Tests the standard zope policy.
 
-
-Revision information: $Id: test_zopepolicy.py,v 1.16 2003/11/21 17:12:12 jim Exp $
+$Id: test_zopepolicy.py,v 1.17 2003/12/14 08:25:35 srichter Exp $
 """
 
 import unittest
@@ -172,7 +171,8 @@ class Test(PlacefulSetup, unittest.TestCase):
         self.__assertPermissions(self.tim, ['read', 'write'])
         self.__assertPermissions(self.unknown, [])
 
-        rolePermissionManager.grantPermissionToRole(self.read, 'Anonymous')
+        rolePermissionManager.grantPermissionToRole(
+            self.read, 'zope.Anonymous')
 
         self.failUnless(
             self.policy.checkPermission(
@@ -260,7 +260,7 @@ class Test(PlacefulSetup, unittest.TestCase):
             test, self.jim.getId())
 
         # Make sure multiple conflicting role permissions resolve correctly
-        ARPM(ob2).grantPermissionToRole(test, 'Anonymous')
+        ARPM(ob2).grantPermissionToRole(test, 'zope.Anonymous')
         ARPM(ob2).grantPermissionToRole(test, self.arole)
         ARPM(ob3).denyPermissionToRole(test, self.peon)
 

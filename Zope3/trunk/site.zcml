@@ -5,26 +5,32 @@
 <include package="zope.app" />
 
 <configure i18n_domain="zope">
-  <role id="Manager" title="Site Manager" />
-  <role id="Member" title="Site Member" />
+  <role id="zope.Manager" title="Site Manager" />
+  <role id="zope.Member" title="Site Member" />
 </configure>
 
 <!-- Remove the following directive if you don't want public access -->
-<grant permission="zope.View" role="Anonymous" />
+<grant permission="zope.View" role="zope.Anonymous" />
 
-<grant permission="zope.View"              role="Manager" />
-<grant permission="zope.ManageContent"     role="Manager" />
-<grant permission="zope.Security"          role="Manager" />
-<grant permission="zope.ManageCode"        role="Manager" />
-<grant permission="zope.ManageServices"    role="Manager" />
-<grant permission="zope.ManageApplication" role="Manager" />
-<grant permission="zope.ManageBindings"    role="Manager" />
-<grant permission="zope.SendMail"    role="Manager" />
+<grant permission="zope.View"              role="zope.Manager" />
+<grant permission="zope.ManageContent"     role="zope.Manager" />
+<grant permission="zope.Security"          role="zope.Manager" />
+<grant permission="zope.ManageCode"        role="zope.Manager" />
+<grant permission="zope.ManageServices"    role="zope.Manager" />
+<grant permission="zope.ManageApplication" role="zope.Manager" />
+<grant permission="zope.ManageBindings"    role="zope.Manager" />
+<grant permission="zope.SendMail"          role="zope.Manager" />
 
 <!-- Grant Manager all necessary Permissions for using Workflows -->
-<grant permission="zope.workflow.ManageProcessDefinitions" role="Manager" />
-<grant permission="zope.workflow.CreateProcessInstances"  role="Manager" />
-<grant permission="zope.workflow.UseProcessInstances" role="Manager" />
+<grant 
+    permission="zope.workflow.ManageProcessDefinitions" 
+    role="zope.Manager" />
+<grant 
+    permission="zope.workflow.CreateProcessInstances"
+    role="zope.Manager" />
+<grant 
+    permission="zope.workflow.UseProcessInstances" 
+    role="zope.Manager" />
 
 <include file="products.zcml" />
 
