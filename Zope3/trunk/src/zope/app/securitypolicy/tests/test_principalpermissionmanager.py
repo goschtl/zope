@@ -22,7 +22,7 @@ from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.security.interfaces import IPermission
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication2
 from zope.app.security.permission import Permission
 
 from zope.app.security.settings import Allow, Deny, Unset
@@ -41,7 +41,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        ztapi.provideUtility(IAuthentication, principalRegistry)
+        ztapi.provideUtility(IAuthentication2, principalRegistry)
 
 
     def _make_principal(self, id=None, title=None):
@@ -63,7 +63,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ValueError,
                           manager.grantPermissionToPrincipal,
                           permission, 'principal')
-        
+
 
     def testPrincipalPermission(self):
         permission = definePermission('APerm', 'title').id

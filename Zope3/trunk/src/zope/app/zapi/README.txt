@@ -18,25 +18,25 @@ service is defined, a ComponentLookupError is raised:
   Traceback (most recent call last):
   ...
   ComponentLookupError:
-  (<InterfaceClass zope.app.security.interfaces.IAuthentication>, '')
+  (<InterfaceClass zope.app.security.interfaces.IAuthentication2>, '')
 
 
 But if we provide an authentication service:
 
   >>> import zope.interface
-  >>> from zope.app.security.interfaces import IAuthentication
+  >>> from zope.app.security.interfaces import IAuthentication2
   >>> class FakeAuthenticationUtility:
-  ...     zope.interface.implements(IAuthentication)
+  ...     zope.interface.implements(IAuthentication2)
   >>> fake = FakeAuthenticationUtility()
-  
+
   >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(IAuthentication, fake)
+  >>> ztapi.provideUtility(IAuthentication2, fake)
 
 Then we should be able to get the service back when we ask for the
-principals: 
+principals:
 
   >>> zapi.principals() is fake
   True
 
-    
+
 

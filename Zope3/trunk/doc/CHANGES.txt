@@ -10,8 +10,8 @@ Zope Changes
 
     New features
 
-      - Added virtual host support in xml and static tree. The tree will 
-        switch the root to the virtualhost base. 
+      - Added virtual host support in xml and static tree. The tree will
+        switch the root to the virtualhost base.
 
       - Change addMenuItem directive. Make use of class and menu attributes.
         This makes it possible to use the directive for own IAdding menu
@@ -38,7 +38,7 @@ Zope Changes
         Added a layer argument to the menu directives and made sure that all
         browser directives specify the layer for the menu directives.
 
-      - Implemented issue 292: Add factory to browser:resource directive 
+      - Implemented issue 292: Add factory to browser:resource directive
 
       - Implemented issue 309: <schemadisplay> should support <widget>
 
@@ -47,7 +47,7 @@ Zope Changes
         on some context or adapted context but sent as a dictionary to special
         method (by default). By default these methods are named `getData()` and
         `setData(data)`.
- 
+
       - When raising the Unauthorized exception, the security checker
         now passes the object in question in addition to the attribute
         name and missing permission.  This should make debugging easier.
@@ -230,27 +230,16 @@ Zope Changes
         new public `interface` attribute that stores the interface they are
         defined in.
 
-      - New Pluggable Authentication Service, which is similar in philosophy to
-        the Zope 2 PAS.  One of the main reasons for this is to support
-        principal groups. The following features are available in the core:
+      - New Pluggable Authentication Utility (PAU), which is similar in
+        philosophy to the Zope 2 PAS. The following features are available in
+        the in the basic PAU facility:
 
-        o Extraction Plugins: Basic HTTP Auth, Session
+        o Credentials Plugins: Basic HTTP Auth, Session
 
-        o Challenger Plugins: Basic HTTP Auth, No Challenge if Authenticated,
-          Form Challenger
+        o Authenticator Plugins: Principal Folder, Group Folder
 
-        o Authentication Plugins: Persistent (ZODB), SQL-based (LDAP is also
-          available, but needs to be separately be downloaded)
-
-        o Principal Factory Plugins: Default factory
-
-        o Principal Search Plugins: Persistent (ZODB), SQL-based
-
-        o Group Folder: The group folder allows the developer to assign groups
-          to principals.
-
-        o Home Folder: This utility allows you assign a home folder to a
-          principal.
+        For a detailed description of the pluggable authentication utility,
+        see zope/app/authentication/README.txt.
 
       - Added "sources", which are like vocabularies except that they
         support very large collections of values that must be
@@ -314,6 +303,19 @@ Zope Changes
         zope.app.container.constraints.containers) that greatly simplify
         expressing containment constraints.
 
+      - Added IAuthentication2, which formally supports logout. Support for
+        IAuthentication is deprecated and will be dropped in Zope 3.3. If
+        you provide an IAuthentication utility, add a 'logout' method (see
+        zope.app.security.interfaces.IAuthentication2) and register it as
+        providing IAuthentication2.
+
+      - Added a view 'failsafelogin.html' that always uses HTTP basic auth
+        credentials to identify a principal. This can be used to login as
+        admin in the event a site authentication configuration is broken and
+        needs to be fixed. E.g. to login using basic auth, use a URL such as:
+
+          http://yoursite.com/@@failsafelogin.html
+
     Restructuring
 
       - Applied changes suggested in issue 339: Improvements to generated forms
@@ -331,7 +333,7 @@ Zope Changes
 
         Deprecated `zope:defaultView` directive and removed unused default
         view handler in `zope.app.publisher.browser.viewmeta`. Added a `layer`
-        attribute to the `browser:defaultView` directive. 
+        attribute to the `browser:defaultView` directive.
 
       - zope.component.createObject no longer accepts a positional
         context argument.  A context can be provided as a keyword argument.
@@ -522,12 +524,22 @@ Zope Changes
         securitypolicy.zcml. If you want to change the default security policy
         for a Zope instance, you can modify this file in your etc directory.
 
+      - Made the 'Logout' link optionally configured by registering a marker
+        component in ZCML. To display the link, add this:
+
+          <adapter factory="zope.app.security.LogoutSupported" />
+
+        to your site.zcml or overrides.zcml. The burden is now on the site
+        admin to configure a site so that the 'logout' function is supported.
+        (The default authentication scheme, HTTP basic auth, does not support
+        logout.) See zope/app/security/browser/loginlogout.txt for details.
+
     Bug Fixes
 
       - Fixed issue #334: Failing RuntimeInfo tests
 
       - Fix: Pagelet directive was inoring the permission. Pagelets which
-        not the right permission are not shwon if calling via the Tales 
+        not the right permission are not shwon if calling via the Tales
         expression "pagelets:". If calling named pagelets directly via the
         Tales expression "pagelet:" we raise a Unauthorized exception if
         the permission ins't right.
@@ -537,7 +549,7 @@ Zope Changes
 
       - Fix: Make use of the layer attribute in the menuItemDirective
 
-      - Fixed issue #345: Using response.write should not involve unicode 
+      - Fixed issue #345: Using response.write should not involve unicode
                           conversion
 
       - Fixed issue #371: OrderedMultiSelectWidget ignores setRenderedValue
@@ -547,8 +559,8 @@ Zope Changes
 
         The correct type of the collection field is now discovered and used.
 
-      - Addressed issue #348: ZCML hides import errors 
- 
+      - Addressed issue #348: ZCML hides import errors
+
         I tried really hard to get a better error message, but it is not
         possible, so I just prepended "ImportError:" to the error message.
 

@@ -4,12 +4,15 @@
     Sign in
   </title>
 </head>
-<body><div metal:fill-slot="body">
-    <p i18n:translate="">Please provide Login Information</p>
+<body><div metal:fill-slot="body" tal:define="principal python:request.principal.id">
+    <p i18n:translate="" tal:condition="python: principal == 'zope.anybody'">
+      Please provide Login Information</p>
+    <p i18n:translate="" tal:condition="python: principal != 'zope.anybody'">
+      You are not authorized to perform this action. However, you may login as a 
+      different user who is authorized.</p>
     <form action="" method="post">
-        <div tal:omit-tag="" 
-            tal:define="principal python:request.principal.id" 
-            tal:condition="python:principal != 'zope.anybody'">
+        <div tal:omit-tag=""
+            tal:condition="python:principal != 'zope.anybody' and 'SUBMIT' in request">
             <span tal:define="dummy python:request.response.redirect(request.get('camefrom', ''))" />
         </div>
         <div class="row">

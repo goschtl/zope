@@ -273,5 +273,5 @@ Including unauthenticated principals, of course:
     >>> p.id, g.id in p.groups
     ('zope.unknown4', True)
 
-Note that it is up to IAuthentication implementations to associate
+Note that it is up to IAuthentication2 implementations to associate
 these groups with their principals, as appropriate.

@@ -29,9 +29,9 @@ class DuplicateId(Exception): pass
 
 class PrincipalRegistry(object):
 
-    implements(interfaces.IAuthentication)
+    implements(interfaces.IAuthentication2)
 
-    # Methods implementing IAuthentication
+    # Methods implementing IAuthentication2
 
     def authenticate(self, request):
         a = interfaces.ILoginPassword(request, None)
@@ -82,6 +82,10 @@ class PrincipalRegistry(object):
         return [p for p in self.__principalsById.itervalues()
                   if p.title.lower().startswith(name) or
                      p.getLogin().lower().startswith(name)]
+
+    def logout(self, request):
+        # not supporting basic auth logout -- no such thing
+        pass
 
     # Management methods
 
@@ -167,4 +171,4 @@ class AuthenticatedGroup(Group):
 class EverybodyGroup(Group):
 
     implements(interfaces.IEveryoneGroup)
-    
+

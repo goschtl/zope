@@ -21,7 +21,7 @@ from zope.app import zapi
 from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication2
 from zope.app.security.settings import Allow, Deny
 from zope.app.security.principalregistry import principalRegistry
 
@@ -38,7 +38,7 @@ class Test(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         super(Test, self).setUp()
-        ztapi.provideUtility(IAuthentication, principalRegistry)
+        ztapi.provideUtility(IAuthentication2, principalRegistry)
 
     def _make_principal(self, id=None, title=None):
         p = principalRegistry.definePrincipal(
@@ -46,7 +46,7 @@ class Test(PlacelessSetup, unittest.TestCase):
             title or 'A Principal',
             login = id or 'APrincipal')
         return p.id
-    
+
     def testUnboundPrincipalRole(self):
         role = defineRole('ARole', 'A Role').id
         principal = self._make_principal()
@@ -97,7 +97,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertRaises(ValueError,
                           principalRoleManager.assignRoleToPrincipal,
                           'role1', prin1)
-        
+
 
     def testManyRolesOnePrincipal(self):
         role1 = defineRole('Role One', 'Role #1').id

@@ -25,11 +25,9 @@ except NameError:
 import BTrees.OOBTree
 import persistent
 
-from zope import interface, event, schema
-
+from zope import interface, event, schema, component
 from zope.interface import alsoProvides
-
-from zope.security.interfaces import IGroup
+from zope.security.interfaces import IGroup, IGroupAwarePrincipal
 
 from zope.app import zapi
 from zope.app.container.btree import BTreeContainer
@@ -37,9 +35,9 @@ import zope.app.container.constraints
 import zope.app.container.interfaces
 from zope.app.i18n import ZopeMessageIDFactory as _
 import zope.app.security.vocabulary
+from zope.app.security.interfaces import IAuthenticatedGroup, IEveryoneGroup
+from zope.app.authentication import principalfolder, interfaces
 
-from zope.app.authentication import principalplugins, interfaces
-        
 class IGroupInformation(interface.Interface):
 
     title = schema.TextLine(
@@ -57,11 +55,11 @@ class IGroupInformation(interface.Interface):
         value_type=schema.Choice(
             source=zope.app.security.vocabulary.PrincipalSource()),
         description=_(
-        "List of principal ids of principals which belong to the group"),
+        "List of ids of principals which belong to the group"),
         required=False)
-        
-class IGroupFolder(zope.app.container.interfaces.IContainer,
-                   interfaces.IQuerySchemaSearch):
+
+
+class IGroupFolder(zope.app.container.interfaces.IContainer):
 
     zope.app.container.constraints.contains(IGroupInformation)
 
@@ -70,17 +68,18 @@ class IGroupFolder(zope.app.container.interfaces.IContainer,
         description=u"Prefix added to IDs of groups in this folder",
         readonly=True,
         )
-       
+
     def getGroupsForPrincipal(principalid):
         """Get groups the given principal belongs to"""
-        
+
     def getPrincipalsForGroup(groupid):
         """Get principals which belong to the group"""
-        
+
+
 class IGroupContained(zope.app.container.interfaces.IContained):
 
     zope.app.container.constraints.containers(IGroupFolder)
-             
+
 
 class IGroupSearchCriteria(interface.Interface):
 
@@ -90,12 +89,16 @@ class IGroupSearchCriteria(interface.Interface):
         missing_value=u'',
         )
 
-
 class GroupFolder(BTreeContainer):
 
-    interface.implements(IGroupFolder)
+    interface.implements(
+        interfaces.IAuthenticatorPlugin,
+        interfaces.IQueriableAuthenticator,
+        interfaces.IQuerySchemaSearch,
+        IGroupFolder)
+
     schema = (IGroupSearchCriteria)
-    
+
     def __init__(self, prefix=u''):
         self.prefix=prefix
         super(BTreeContainer,self).__init__()
@@ -107,7 +110,7 @@ class GroupFolder(BTreeContainer):
         group_id = self._groupid(value)
         for principal_id in value.principals:
             self._addPrincipalToGroup(principal_id, group_id)
-        group = principalplugins.Principal(self.prefix+name)
+        group = principalfolder.Principal(self.prefix + name)
         event.notify(interfaces.GroupAdded(group))
 
     def __delitem__(self, name):
@@ -134,11 +137,10 @@ class GroupFolder(BTreeContainer):
             self.__inverseMapping[principal_id] = new
         else:
             del self.__inverseMapping[principal_id]
-   
+
     def getGroupsForPrincipal(self, principalid):
         """Get groups the given principal belongs to"""
         return self.__inverseMapping.get(principalid, ())
-        
 
     def search(self, query, start=None, batch_size=None):
         """ Search for groups"""
@@ -156,15 +158,26 @@ class GroupFolder(BTreeContainer):
                         n += 1
                         yield self.prefix+id
                 i += 1
-        
+
+    def authenticateCredentials(self, credentials):
+        # user folders don't authenticate
+        pass
+
     def principalInfo(self, id):
         if id.startswith(self.prefix):
             id = id[len(self.prefix):]
             info = self.get(id)
             if info is not None:
-                return {'title': info.title,
-                        'description': info.description,
-                        }
+                return principalfolder.PrincipalInfo(id, info.title,
+                                                     info.description)
+
+    def createAuthenticatedPrincipal(self, info, request):
+        return component.getMultiAdapter((info, request),
+            interfaces.IAuthenticatedPrincipalFactory)()
+
+    def createFoundPrincipal(self, info):
+        return interfaces.IFoundPrincipalFactory(info)()
+
 
 class GroupCycle(Exception):
     """There is a cyclic relationship among groups
@@ -180,8 +193,7 @@ class InvalidGroupId(Exception):
 
 def nocycles(principal_id, seen, getPrincipal):
     if principal_id in seen:
-        if principal_id in seen:
-            raise GroupCycle(principal_id, seen)
+        raise GroupCycle(principal_id, seen)
     seen.append(principal_id)
     principal = getPrincipal(principal_id)
     for group_id in principal.groups:
@@ -191,22 +203,22 @@ def nocycles(principal_id, seen, getPrincipal):
 class GroupInformation(persistent.Persistent):
 
     interface.implements(IGroupInformation, IGroupContained)
-    
+
     __parent__ = __name__ = None
 
     _principals = ()
-    
+
     def __init__(self, title='', description=''):
         self.title = title
         self.description = description
-        
+
     def setPrincipals(self, prinlist):
         parent = self.__parent__
         if parent is not None:
             old = set(self._principals)
             new = set(prinlist)
             group_id = parent._groupid(self)
-            
+
             for principal_id in old - new:
                 try:
                     parent._removePrincipalFromGroup(principal_id, group_id)
@@ -222,30 +234,40 @@ class GroupInformation(persistent.Persistent):
             nocycles(group_id, [], zapi.principals().getPrincipal)
 
         self._principals = tuple(prinlist)
-        
+
     principals = property(lambda self: self._principals, setPrincipals)
+
+
+def specialGroups(event):
+    principal = event.principal
+    if (IGroup.providedBy(principal) or
+        not IGroupAwarePrincipal.providedBy(principal)):
+        return
+
+    everyone = component.queryUtility(IEveryoneGroup)
+    if everyone is not None:
+        principal.groups.append(everyone.id)
+
+    auth = component.queryUtility(IAuthenticatedGroup)
+    if auth is not None:
+        principal.groups.append(auth.id)
+
 
 def setGroupsForPrincipal(event):
     """Set group information when a principal is created"""
 
     principal = event.principal
-    try:
-        groups = principal.groups
-    except AttributeError:
-        # If the principal doesn't support groups. then do nothing
+    if not IGroupAwarePrincipal.providedBy(principal):
         return
-    
-    groupfolders = zapi.getUtilitiesFor(interfaces.IPrincipalSearchPlugin)
-    for name, groupfolder in groupfolders:
-        # It's annoying that we have to filter here, but there isn't
-        # a good reason for people to register group folder utilities.
-        if not isinstance(groupfolder, GroupFolder):
+
+    plugins = zapi.getUtilitiesFor(interfaces.IAuthenticatorPlugin)
+    for name, plugin in plugins:
+        if not IGroupFolder.providedBy(plugin):
             continue
+        groupfolder = plugin
         principal.groups.extend(
-            groupfolder.getGroupsForPrincipal(principal.id),
-            )
+            groupfolder.getGroupsForPrincipal(principal.id),)
         id = principal.id
         prefix = groupfolder.prefix
         if id.startswith(prefix) and id[len(prefix):] in groupfolder:
             alsoProvides(principal, IGroup)
-            

@@ -17,11 +17,11 @@ principals. The view unfortunately depends on a lot of other components:
 
     >>> from zope.app.security.permission import Permission
     >>> from zope.app.security.interfaces import IPermission
-    >>> ztapi.provideUtility(IPermission, Permission(u'permission1', 
+    >>> ztapi.provideUtility(IPermission, Permission(u'permission1',
     ...                      u'Permission 1'), u'permission1')
     >>> ztapi.provideUtility(IPermission, Permission(u'permission2',
     ...                      u'Permission 2'), u'permission2')
-    >>> ztapi.provideUtility(IPermission, Permission(u'permission3', 
+    >>> ztapi.provideUtility(IPermission, Permission(u'permission3',
     ...                      u'Permission 3'), u'permission3')
 
   - Authentication Utility
@@ -29,11 +29,11 @@ principals. The view unfortunately depends on a lot of other components:
     >>> class Principal:
     ...     def __init__(self, id, title): self.id, self.title = id, title
 
-    >>> from zope.app.security.interfaces import IAuthentication
+    >>> from zope.app.security.interfaces import IAuthentication2
     >>> from zope.app.security.interfaces import PrincipalLookupError
     >>> from zope.interface import implements
     >>> class AuthUtility:
-    ...     implements(IAuthentication)
+    ...     implements(IAuthentication2)
     ...     data = {'jim': Principal('jim', 'Jim Fulton'),
     ...             'stephan': Principal('stephan', 'Stephan Richter')}
     ...
@@ -44,11 +44,11 @@ principals. The view unfortunately depends on a lot of other components:
     ...             raise PrincipalLookupError(id)
     ...
     ...     def getPrincipals(self, search):
-    ...         return [principal 
+    ...         return [principal
     ...                 for principal in self.data.values()
     ...                 if search in principal.title]
 
-    >>> ztapi.provideUtility(IAuthentication, AuthUtility())
+    >>> ztapi.provideUtility(IAuthentication2, AuthUtility())
 
   - Security-related Adapters
 
@@ -56,7 +56,7 @@ principals. The view unfortunately depends on a lot of other components:
     >>> from zope.app.securitypolicy.interfaces import IPrincipalRoleManager
     >>> from zope.app.securitypolicy.principalrole import \
     ...     AnnotationPrincipalRoleManager
- 
+
     >>> ztapi.provideAdapter(IAnnotatable, IPrincipalRoleManager,
     ...                      AnnotationPrincipalRoleManager)
 
@@ -64,7 +64,7 @@ principals. The view unfortunately depends on a lot of other components:
     ...     IPrincipalPermissionManager
     >>> from zope.app.securitypolicy.principalpermission import \
     ...     AnnotationPrincipalPermissionManager
- 
+
     >>> ztapi.provideAdapter(IAnnotatable, IPrincipalPermissionManager,
     ...                      AnnotationPrincipalPermissionManager)
 
@@ -78,8 +78,8 @@ principals. The view unfortunately depends on a lot of other components:
     >>> from zope.schema.interfaces import IVocabularyTokenized
     >>> from zope.publisher.interfaces.browser import IBrowserRequest
     >>> from zope.app.form.browser import DropdownWidget
-    >>> ztapi.provideMultiView((IChoice, IVocabularyTokenized), 
-    ...                        IBrowserRequest, IInputWidget, '', 
+    >>> ztapi.provideMultiView((IChoice, IVocabularyTokenized),
+    ...                        IBrowserRequest, IInputWidget, '',
     ...                        DropdownWidget)
 
   - Support Views for the Principal Source Widget
@@ -91,23 +91,23 @@ principals. The view unfortunately depends on a lot of other components:
 
     >>> from zope.app.security.browser.auth import AuthUtilitySearchView
     >>> from zope.app.form.browser.interfaces import ISourceQueryView
-    >>> ztapi.browserViewProviding(IAuthentication, 
+    >>> ztapi.browserViewProviding(IAuthentication2,
     ...                            AuthUtilitySearchView,
     ...                            ISourceQueryView)
 
 
     >>> from zope.schema.interfaces import ISource
     >>> from zope.app.form.browser.source import SourceInputWidget
-    >>> ztapi.provideMultiView((IChoice, ISource), IBrowserRequest, 
+    >>> ztapi.provideMultiView((IChoice, ISource), IBrowserRequest,
     ...                        IInputWidget, '', SourceInputWidget)
 
   - Attribute Annotatable Adapter
-  
+
     >>> from zope.app.testing import setup
     >>> setup.setUpAnnotations()
     >>> setup.setUpSiteManagerLookup()
 
-  - Content Object 
+  - Content Object
 
     >>> from zope.app.annotation.interfaces import IAttributeAnnotatable
     >>> class Content:
@@ -116,12 +116,12 @@ principals. The view unfortunately depends on a lot of other components:
 
   (This is Jim's understanding of a "easy" setup!)
 
-Now that we have all the components we need, let's create *the* view. 
+Now that we have all the components we need, let's create *the* view.
 
   >>> ob = Content()
   >>> from zope.publisher.browser import TestRequest
   >>> request = TestRequest()
- 
+
   >>> from zope.app.securitypolicy.browser.granting import Granting
   >>> view = Granting(ob, request)
 
@@ -142,7 +142,7 @@ Now that we have a selected principal, then
   >>> view.request.form['field.principal.displayed'] = 'y'
   >>> view.request.form['field.principal'] = 'amlt'
 
-(Yes, 'amlt' is the base 64 code for 'jim'.)   
+(Yes, 'amlt' is the base 64 code for 'jim'.)
 
   >>> view.status()
   u''

@@ -20,49 +20,10 @@ import base64
 from persistent import Persistent
 from zope.interface import implements, Interface
 from zope.publisher.interfaces.http import IHTTPRequest
-from zope.schema import TextLine 
+from zope.schema import TextLine
 
 from zope.app.container.contained import Contained
-from interfaces import IExtractionPlugin, IChallengePlugin
-
-
-class HTTPBasicAuthExtractor(Persistent, Contained):
-    """A Basic HTTP Authentication Crendentials Extraction Plugin
-
-    First we need to create a request that contains some credentials.
-
-    >>> from zope.publisher.browser import TestRequest
-    >>> request = TestRequest(
-    ...     environ={'HTTP_AUTHORIZATION': u'Basic bWdyOm1ncnB3'})
-
-    Now create the extraction plugin and get the credentials.
-
-    >>> extractor = HTTPBasicAuthExtractor()
-    >>> extractor.extractCredentials(request)
-    {'login': u'mgr', 'password': u'mgrpw'}
-
-    Make sure we return `None`, if no authentication header has been
-    specified.
-
-    >>> extractor.extractCredentials(TestRequest()) is None
-    True
-
-    Also, this extractor can *only* handle basic authentication.
-
-    >>> request = TestRequest({'HTTP_AUTHORIZATION': 'foo bar'})
-    >>> extractor.extractCredentials(TestRequest()) is None
-    True
-    """
-    implements(IExtractionPlugin)
-
-    def extractCredentials(self, request):
-        if request._auth:
-            if request._auth.lower().startswith(u'basic '):
-                credentials = request._auth.split()[-1]
-                login, password = base64.decodestring(credentials).split(':')
-                return {'login': login.decode('utf-8'),
-                        'password': password.decode('utf-8')}
-        return None
+from zope.app.authentication import interfaces
 
 
 class IHTTPBasicAuthRealm(Interface):
@@ -75,42 +36,105 @@ class IHTTPBasicAuthRealm(Interface):
                      description=u'HTTP Basic Authentication Realm',
                      required=True,
                      default=u'Zope')
-    
 
-class HTTPBasicAuthChallenger(Persistent, Contained):
-    """A Basic HTTP Authentication Challenge Plugin
 
-    >>> challenger = HTTPBasicAuthChallenger()
+class HTTPBasicAuthCredentialsPlugin(Persistent, Contained):
 
-    The challenger adds its challenge to the HTTP response.
-
-    >>> from zope.publisher.browser import TestRequest
-    >>> request = TestRequest()
-    >>> response = request.response
-    >>> challenger.challenge(request, response)
-    True
-    >>> response._status
-    401
-    >>> response.getHeader('WWW-Authenticate', literal=True)
-    'basic realm=Zope'
-
-    The challenger only works with HTTP requests.
-
-    >>> from zope.publisher.base import TestRequest
-    >>> request = TestRequest('/')
-    >>> response = request.response
-    >>> challenger.challenge(request, response) is None
-    True
-    """
-    implements(IChallengePlugin, IHTTPBasicAuthRealm)
+    implements(interfaces.ICredentialsPlugin, IHTTPBasicAuthRealm)
 
     realm = 'Zope'
+
     protocol = 'http auth'
 
-    def challenge(self, request, response):
+    def extractCredentials(self, request):
+        """Extracts HTTP basic auth credentisla from a request.
+
+        First we need to create a request that contains some credentials.
+
+          >>> from zope.publisher.browser import TestRequest
+          >>> request = TestRequest(
+          ...     environ={'HTTP_AUTHORIZATION': u'Basic bWdyOm1ncnB3'})
+
+        Now create the plugin and get the credentials.
+
+          >>> plugin = HTTPBasicAuthCredentialsPlugin()
+          >>> plugin.extractCredentials(request)
+          {'login': u'mgr', 'password': u'mgrpw'}
+
+        Make sure we return `None`, if no authentication header has been
+        specified.
+
+          >>> print plugin.extractCredentials(TestRequest())
+          None
+
+        Also, this plugin can *only* handle basic authentication.
+
+          >>> request = TestRequest({'HTTP_AUTHORIZATION': 'foo bar'})
+          >>> print plugin.extractCredentials(TestRequest())
+          None
+
+        """
+        if request._auth:
+            if request._auth.lower().startswith(u'basic '):
+                credentials = request._auth.split()[-1]
+                login, password = base64.decodestring(credentials).split(':')
+                return {'login': login.decode('utf-8'),
+                        'password': password.decode('utf-8')}
+        return None
+
+    def challenge(self, request):
+        """Issues an HTTP basic auth challenge for credentials.
+
+        The challenge is issued by setting the appropriate response headers.
+        To illustrate, we'll create a plugin:
+
+          >>> plugin = HTTPBasicAuthCredentialsPlugin()
+
+        The plugin adds its challenge to the HTTP response.
+
+          >>> from zope.publisher.browser import TestRequest
+          >>> request = TestRequest()
+          >>> response = request.response
+          >>> plugin.challenge(request)
+          True
+          >>> response._status
+          401
+          >>> response.getHeader('WWW-Authenticate', literal=True)
+          'basic realm=Zope'
+
+        The plugin only works with HTTP requests.
+
+          >>> from zope.publisher.base import TestRequest
+          >>> request = TestRequest('/')
+          >>> response = request.response
+          >>> print plugin.challenge(request)
+          None
+
+        """
         if not IHTTPRequest.providedBy(request):
             return None
-        response.setHeader("WWW-Authenticate", "basic realm=%s" % self.realm,
-                           literal=True)
-        response.setStatus(401)
+        request.response.setHeader("WWW-Authenticate",
+                                   "basic realm=%s" % self.realm, literal=True)
+        request.response.setStatus(401)
         return True
+
+    def logout(self, request):
+        """Always returns False as logout is not supported by basic auth.
+
+          >>> plugin = HTTPBasicAuthCredentialsPlugin()
+          >>> from zope.publisher.browser import TestRequest
+          >>> plugin.logout(TestRequest())
+          False
+
+        """
+        return False
+
+
+# BBB, everything below is gone for 3.1
+# =============================================================================
+
+class HTTPBasicAuthExtractor(Persistent, Contained):
+    pass
+
+class HTTPBasicAuthChallenger(Persistent, Contained):
+    pass

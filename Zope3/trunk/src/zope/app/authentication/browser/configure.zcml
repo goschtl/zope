@@ -2,146 +2,81 @@
     xmlns:zope="http://namespaces.zope.org/zope"
     xmlns="http://namespaces.zope.org/browser">
 
+  <addMenuItem
+       class="..authentication.PluggableAuthentication"
+       title="Pluggable Authentication Utility"
+       description="New-style pluggable authentication utility"
+       permission="zope.ManageServices"
+       />
+
+  <editform
+      schema="..interfaces.IPluggableAuthentication"
+      label="Edit Pluggable Authentication Utility"
+      name="configure.html"
+      fields="credentialsPlugins authenticatorPlugins"
+      menu="zmi_views" title="Configure"
+      permission="zope.ManageServices" />
+      
   <page
-      name="loginForm.html" 
-      for="*"
-      template="loginform.pt"
-      permission="zope.Public" 
+      name="plugins.html"
+      for="..interfaces.IPluggableAuthentication"
+      menu="zmi_views" title="Plugins"
+      permission="zope.ManageSite"
+      class="zope.app.container.browser.contents.Contents"
+      attribute="contents" 
+      />
+
+  <menuItem 
+      menu="zmi_views"
+      for="..interfaces.IPluggableAuthentication"
+      title="Contents" 
+      action=""
+      filter="python:False" />
+
+  <addform
+      label="New Pluggable Authentication Utility Registration"
+      for="..interfaces.IPluggableAuthentication"
+      name="addRegistration.html"
+      schema="zope.app.component.interfaces.IUtilityRegistration"
+      class="zope.app.component.browser.registration.AddComponentRegistration"
+      permission="zope.ManageSite"
+      content_factory=".register.pluggableAuthenticationRegistration"
+      arguments="component"
+      fields="component status permission"
       />
 
   <addform
-      schema="..principalfolder.IInternalPrincipalContainer"
-      label="Add Principal Folder"
-      content_factory="..principalfolder.PrincipalFolder"
-      keyword_arguments="prefix"
-      name="AddPrincipalFolder.html"
-      permission="zope.ManageServices"
-      />
-
-  <addMenuItem
-      title="Principal Folder"
-      description="A Pluggable Authentication Persistent Authentication Plugin"
-      class="..principalfolder.PrincipalFolder"
-      permission="zope.ManageServices"
-      view="AddPrincipalFolder.html"
+      label="New Credentials Plugin Registration"
+      for="..interfaces.ICredentialsPlugin"
+      name="addRegistration.html"
+      schema="zope.app.component.interfaces.IUtilityRegistration"
+      class="zope.app.component.browser.registration.AddComponentRegistration"
+      permission="zope.ManageSite"
+      content_factory=".register.credentialsPluginRegistration"
+      arguments="name component"
+      fields="name component status permission"
       />
 
   <addform
-      schema="..principalfolder.IInternalPrincipal"
-      label="Add Principal Information"
-      content_factory="..principalfolder.PrincipalInformation"
-      arguments="login password title"
-      keyword_arguments="description"
-      name="AddPrincipalInformation.html"
-      permission="zope.ManageServices"
-      />
-
-  <addMenuItem
-      title="Principal Information" 
-      class="..principalfolder.PrincipalInformation"
-      permission="zope.ManageServices"
-      view="AddPrincipalInformation.html"
-      />
-
-  <editform
-      schema="..principalfolder.IInternalPrincipal"
-      label="Change Internal Principal"
-      name="edit.html"
-      fields="login password title description"
-      permission="zope.ManageServices"
-      menu="zmi_views" title="Edit" />
-
-  <containerViews
-      for="..principalfolder.IInternalPrincipalContainer"
-      add="zope.ManageServices"
-      contents="zope.ManageServices"
-      index="zope.ManageServices"
-      />
-
-  <schemadisplay
-      schema="..principalfolder.IInternalPrincipalContainer"
-      label="Principal Folder Prefix"
-      name="prefix.html"
-      fields="prefix"
-      permission="zope.ManageServices"
-      menu="zmi_views" title="Prefix" />
-
-  <editform
-      schema="..httpplugins.IHTTPBasicAuthRealm"
-      label="Change Realm"
-      name="edit.html"
-      permission="zope.ManageServices"
-      menu="zmi_views" title="Edit" />
-
-  <editform
-      schema="..browserplugins.IFormChallengerLoginPageName"
-      label="Change login page name"
-      name="edit.html"
-      permission="zope.ManageServices"
-      menu="zmi_views" title="Edit" />
-
-  <zope:adapter
-      for="..interfaces.IQuerySchemaSearch
-           zope.publisher.interfaces.browser.IBrowserRequest"
-      provides="zope.app.form.browser.interfaces.ISourceQueryView"
-      factory=".schemasearch.QuerySchemaSearchView"
+      label="New Authenticator Plugin Registration"
+      for="..interfaces.IAuthenticatorPlugin"
+      name="addRegistration.html"
+      schema="zope.app.component.interfaces.IUtilityRegistration"
+      class="zope.app.component.browser.registration.AddComponentRegistration"
+      permission="zope.ManageSite"
+      content_factory=".register.authenticatorPluginRegistration"
+      arguments="name component"
+      fields="name component status permission"
       />
 
   <tool
-      interface="..interfaces.IAuthenticationPlugin"
-      title="Pluggable-Authentication Authentication Plugin"
+      interface="..interfaces.ICredentialsPlugin"
+      title="Credentials Plugin"
       />
 
   <tool
-      interface="..interfaces.IPrincipalSearchPlugin"
-      title="Pluggable-Authentication Search Plugin"
+      interface="..interfaces.IAuthenticatorPlugin"
+      title="Authenticator Plugin"
       />
-
-  <tool
-      interface="..interfaces.ISearchableAuthenticationPlugin"
-      title="Pluggable-Authentication Search and Authentication Plugin"
-      />
-
-  <tool
-      interface="..interfaces.IExtractionPlugin"
-      title="Pluggable-Authentication Extraction Plugin"
-      />
-
-  <tool
-      interface="..interfaces.IChallengePlugin"
-      title="Pluggable-Authentication Challenge Plugin"
-      />
-
-  <tool
-      interface="..interfaces.IExtractionAndChallengePlugin"
-      title=
-      "Pluggable-Authentication Credential Extraction and Challenge Plugin"
-      />
-
-  <include file="groupfolder.zcml" />
-
-<!-- Challengers -->
-  
-  <addMenuItem
-      title="Pluggable-Authentication Custom Realm Basic Auth Challenge Plugin"
-      class="..httpplugins.HTTPBasicAuthChallenger"
-      permission="zope.ManageContent"
-      />
-
-  <addMenuItem
-      title="Custom Form Session Challenge Plugin"
-      description="A Pluggable-Authentication Challenge Plugin"
-      class="..browserplugins.FormChallenger"
-      permission="zope.ManageServices"
-      />
-
-<!-- Extractors -->
-
-  <addMenuItem
-      title="Pluggable-Authentication Browser Session Extractor"
-      class="..browserplugins.SessionExtractor"
-      permission="zope.ManageServices"
-      />
-
 
 </zope:configure>

@@ -137,7 +137,14 @@ class IAuthentication(Interface):
         object hierarchy.
         """
 
-class IAuthenticationUtility(IAuthentication):
+class IAuthentication2(IAuthentication):
+    """The second iteration of IAuthentication."""
+    
+    def logout(request):
+        """Perform a logout."""
+
+
+class IAuthenticationUtility(IAuthentication2):
     """This interface is deprecated
     """
     
@@ -176,3 +183,10 @@ class ILoginPassword(Interface):
 class IPrincipalSource(ISource):
     """A Source of Principal Ids"""
 
+
+class ILogoutSupported(Interface):
+    """A marker indicating that the security configuration supports logout.
+    
+    Provide an adapter to this interface to signal that the security system
+    supports logout.
+    """

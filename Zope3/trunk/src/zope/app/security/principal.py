@@ -17,7 +17,7 @@ $Id$
 """
 from zope.app import zapi
 from zope.app.security.interfaces import PrincipalLookupError
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication2
 
 # BBB Backward Compatibility
 from zope.exceptions import NotFoundError
@@ -25,7 +25,7 @@ import warnings
 
 def checkPrincipal(context, principal_id):
 
-    auth = zapi.getUtility(IAuthentication, context=context)
+    auth = zapi.getUtility(IAuthentication2, context=context)
     try:
         if auth.getPrincipal(principal_id):
             return
@@ -40,5 +40,5 @@ def checkPrincipal(context, principal_id):
             "be raised instead."
             % auth.__class__.__name__,
             DeprecationWarning)
-    
+
     raise ValueError("Undefined principal id", principal_id)

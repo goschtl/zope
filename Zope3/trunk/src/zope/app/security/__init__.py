@@ -19,3 +19,17 @@ $Id$
 import _protections
 _protections.protect()
 del _protections
+
+
+class LogoutSupported:
+    """A class that can be registered as an adapter to flag logout support."""
+
+    from zope.component import adapts
+    from zope.interface import implements, Interface
+    from zope.app.security.interfaces import ILogoutSupported
+
+    adapts(Interface)    
+    implements(ILogoutSupported)
+
+    def __init__(self, dummy):
+        pass

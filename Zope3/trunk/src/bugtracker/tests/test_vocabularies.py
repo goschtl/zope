@@ -27,7 +27,7 @@ from zope.app.testing.placelesssetup import PlacelessSetup
 from zope.app.annotation.attribute import AttributeAnnotations
 from zope.app.annotation.interfaces import IAnnotations, IAttributeAnnotatable
 from zope.app.container.contained import contained, Contained
-from zope.app.security.interfaces import IAuthentication
+from zope.app.security.interfaces import IAuthentication2
 from zope.app.security.principalregistry import principalRegistry, Principal
 
 from bugtracker.interfaces import IManagableVocabulary
@@ -126,7 +126,7 @@ class ManagableVocabularyBaseTest(PlacelessSetup):
         vocab.default = vocab.getTerm('3')
         self.assertEqual(vocab.default.value, '3')
         self.assertEqual(vocab.default.title, 'three')
-    
+
 
 class StatusVocabularyTest(ManagableVocabularyBaseTest, unittest.TestCase):
 
@@ -172,7 +172,7 @@ class SimpleTermTest(unittest.TestCase):
 class UserTermTest(unittest.TestCase):
 
     def setUp(self):
-        principal = Principal('0', 'Stephan', 'blah', 'srichter', 'Nothing') 
+        principal = Principal('0', 'Stephan', 'blah', 'srichter', 'Nothing')
         self.term = UserTerm(principal)
 
     def test_Interface(self):
@@ -194,7 +194,7 @@ class UserVocabularyTest(PlacelessSetup, unittest.TestCase):
 
     def setUp(self):
         PlacelessSetup.setUp(self)
-        ztapi.provideUtility(IAuthentication, principalRegistry)
+        ztapi.provideUtility(IAuthentication2, principalRegistry)
         principalRegistry.definePrincipal(
             '0', 'title0', 'desc0', 'zero', 'pass0')
         principalRegistry.definePrincipal(
@@ -243,7 +243,7 @@ class SampleObject(Contained):
 
     sample = property(VocabularyPropertyGetter('_sample', 'Vocabs'),
                       VocabularyPropertySetter('_sample', 'Vocabs'))
-    
+
 
 class ManagableVocabularyBaseTest(PlacelessSetup, unittest.TestCase):
 

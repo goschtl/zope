@@ -4,7 +4,7 @@
 
 
   <adapter
-      for="zope.app.security.interfaces.IAuthentication
+      for="zope.app.security.interfaces.IAuthentication2
            zope.publisher.interfaces.browser.IBrowserRequest"
       provides="zope.app.form.browser.interfaces.ISourceQueryView"
       factory="zope.app.security.browser.auth.AuthUtilitySearchView"
@@ -22,6 +22,15 @@
       title="Authentication"
       description="Authenticates Principals."
       unique="true"
+      />
+
+  <browser:page
+      name="failsafelogin.html"
+      for="*"
+      class=".auth.HTTPBasicAuthenticationLogin"
+      attribute="login"
+      permission="zope.Public"
+      allowed_interface="zope.app.publisher.interfaces.http.ILogin"
       />
 
   <browser:page

@@ -21,12 +21,13 @@ import unittest
 
 from zope.testing import doctest
 from zope.interface import implements
+from zope.component import provideUtility
 from zope.publisher.interfaces import IRequest
 from zope.publisher.tests.httprequest import TestRequest
 
 from zope.app import zapi
 from zope.app.testing import placelesssetup, ztapi
-from zope.app.event.tests.placelesssetup import getEvents
+from zope.app.event.tests.placelesssetup import getEvents, clearEvents
 from zope.app.testing.setup import placefulSetUp, placefulTearDown
 from zope.app.session.interfaces import \
         IClientId, IClientIdManager, ISession, ISessionDataContainer, \
@@ -42,6 +43,12 @@ class TestClientId(object):
     def __new__(cls, request):
         return 'dummyclientidfortesting'
 
+def siteSetUp(self, test=None):
+    placefulSetUp(site=True)
+
+def siteTearDown(self, test=None):
+    placefulTearDown()
+
 def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     placelesssetup.setUp()
     ztapi.provideAdapter(IRequest, IClientId, TestClientId)
@@ -50,43 +57,30 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     sdc = session_data_container_class()
     ztapi.provideUtility(ISessionDataContainer, sdc, '')
 
-def formAuthSetUp(self):
-    placefulSetUp(site=True)
-
-def formAuthTearDown(self):
-    placefulTearDown()
-
-def groupSetUp(test):
-    placelesssetup.setUp()
-
-def searcheableSetUp(self):
-    placefulSetUp(site=True)
-
-def searcheableTearDown(self):
-    placefulTearDown()
-
-
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite('zope.app.authentication.generic'),
         doctest.DocTestSuite('zope.app.authentication.httpplugins'),
         doctest.DocFileSuite('principalfolder.txt'),
-        doctest.DocFileSuite('idpicker.txt'),
-        doctest.DocTestSuite('zope.app.authentication.principalplugins'),
-        doctest.DocTestSuite('zope.app.authentication.browserplugins',
-                             setUp=formAuthSetUp,
-                             tearDown=formAuthTearDown),
+        doctest.DocTestSuite('zope.app.authentication.principalfolder',
+                             setUp=placelesssetup.setUp,
+                             tearDown=placelesssetup.tearDown),
+        doctest.DocTestSuite('zope.app.authentication.idpicker'),
+        doctest.DocTestSuite('zope.app.authentication.session',
+                             setUp=siteSetUp,
+                             tearDown=siteTearDown),
         doctest.DocFileSuite('README.txt',
-                             setUp=searcheableSetUp,
-                             tearDown=searcheableTearDown,
-                             globs={'provideUtility': ztapi.provideUtility,
+                             setUp=siteSetUp,
+                             tearDown=siteTearDown,
+                             globs={'provideUtility': provideUtility,
                                     'getEvents': getEvents,
+                                    'clearEvents': clearEvents,
+                                    'subscribe': ztapi.subscribe,
                                     }),
         doctest.DocFileSuite('groupfolder.txt',
-                             setUp=groupSetUp,
+                             setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown,
                              ),
-        
         ))
 
 if __name__ == '__main__':

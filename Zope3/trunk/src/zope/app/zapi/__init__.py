@@ -38,8 +38,8 @@ from zope.app.exception.interfaces import UserError
 name = getName
 
 def principals():
-    from zope.app.security.interfaces import IAuthentication
-    return getUtility(IAuthentication)
+    from zope.app.security.interfaces import IAuthentication2
+    return getUtility(IAuthentication2)
 
 # BBB: Gone in 3.3.
 from zope.deprecation import deprecated

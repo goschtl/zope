@@ -19,7 +19,7 @@ from unittest import TestCase, main, makeSuite
 from zope.interface import implements
 from zope.publisher.browser import TestRequest
 from zope.app.testing import ztapi
-from zope.app.security.interfaces import IAuthentication, IPrincipal
+from zope.app.security.interfaces import IAuthentication2, IPrincipal
 from zope.app.exception.browser.unauthorized import Unauthorized
 from zope.app.testing.placelesssetup import PlacelessSetup
 
@@ -41,7 +41,7 @@ class DummyPrincipal(object):
         return self.id
 
 class DummyAuthUtility(object):
-    implements(IAuthentication)  # this is a lie
+    implements(IAuthentication2)  # this is a lie
 
     def unauthorized(self, principal_id, request):
         self.principal_id = principal_id
@@ -56,7 +56,7 @@ class Test(PlacelessSetup, TestCase):
     def setUp(self):
         super(Test, self).setUp()
         self.auth = DummyAuthUtility()
-        ztapi.provideUtility(IAuthentication, self.auth)
+        ztapi.provideUtility(IAuthentication2, self.auth)
 
     def tearDown(self):
         super(Test, self).tearDown()

@@ -17,87 +17,83 @@ $Id$
 """
 __docformat__ = "reStructuredText"
 
-import zope.interface
-from zope.schema import Text, TextLine, Password
-
-from zope.app.authentication import interfaces
-
 from persistent import Persistent
-from zope.interface import Interface, implements
+from zope import interface
+from zope import component
+from zope.event import notify
+from zope.schema import Text, TextLine, Password
+from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.security.interfaces import IGroupAwarePrincipal
+
 from zope.app.container.contained import Contained
 from zope.app.container.constraints import contains, containers
 from zope.app.container.btree import BTreeContainer
 from zope.app.i18n import ZopeMessageIDFactory as _
 
+from zope.app.authentication import interfaces
 
-class IInternalPrincipal(Interface):
+
+class IInternalPrincipal(interface.Interface):
     """Principal information"""
 
     login = TextLine(
         title=_("Login"),
         description=_("The Login/Username of the principal. "
-                      "This value can change."),
-        required=True)
+                      "This value can change."))
 
     password = Password(
         title=_(u"Password"),
-        description=_("The password for the principal."),
-        required=True)
+        description=_("The password for the principal."))
 
     title = TextLine(
         title=_("Title"),
-        description=_("Provides a title for the principal."),
-        required=True)
+        description=_("Provides a title for the principal."))
 
     description = Text(
         title=_("Description"),
         description=_("Provides a description for the principal."),
         required=False,
         missing_value='',
-        default=u'',
-        )
+        default=u'')
 
 
-class IInternalPrincipalContainer(Interface):
+class IInternalPrincipalContainer(interface.Interface):
     """A container that contains internal principals."""
 
     prefix = TextLine(
         title=_("Prefix"),
         description=_(
         "Prefix to be added to all principal ids to assure "
-        "that all ids are unique within the authentication service"
-        ),
+        "that all ids are unique within the authentication service"),
         required=False,
         missing_value=u"",
         default=u'',
-        readonly=True,
-        )
+        readonly=True)
 
     contains(IInternalPrincipal)
 
 
-class IInternalPrincipalContained(Interface):
+class IInternalPrincipalContained(interface.Interface):
     """Principal information"""
 
     containers(IInternalPrincipalContainer)
 
 
-class ISearchSchema(Interface):
+class ISearchSchema(interface.Interface):
     """Search Interface for this Principal Provider"""
 
-    search = zope.schema.TextLine(
+    search = TextLine(
         title=_("Search String"),
         description=_("A Search String"),
         required=False,
         default=u'',
-        missing_value=u'',
-        )
+        missing_value=u'')
 
 
-class PrincipalInformation(Persistent, Contained):
+class InternalPrincipal(Persistent, Contained):
     """An internal principal for Persistent Principal Folder."""
 
-    implements(IInternalPrincipal, IInternalPrincipalContained)
+    interface.implements(IInternalPrincipal, IInternalPrincipalContained)
 
     def __init__(self, login, password, title, description=u''):
         self._login = login
@@ -125,12 +121,49 @@ class PrincipalInformation(Persistent, Contained):
             return getattr(self, attr)
 
 
-class PrincipalFolder(BTreeContainer):
-    """A Persistent Principal Folder and Authentication plugin."""
+# BBB, alias gone in 3.1
+PrincipalInformation = InternalPrincipal
 
-    implements(interfaces.ISearchableAuthenticationPlugin,
-               interfaces.IQuerySchemaSearch,
-               IInternalPrincipalContainer)
+
+class PrincipalInfo:
+    """A basic implementation of interfaces.IPrincipalInfo.
+    
+    A principal info is created with id, title, and description:
+      
+      >>> info = PrincipalInfo('foo', 'Foo', 'An over-used term.')
+      >>> info
+      PrincipalInfo('foo')
+      >>> info.id
+      'foo'
+      >>> info.title
+      'Foo'
+      >>> info.description
+      'An over-used term.'
+
+    """
+    interface.implements(interfaces.IPrincipalInfo)
+    
+    def __init__(self, id, title, description):
+        self.id = id
+        self.title = title
+        self.description = description
+
+    def __repr__(self):
+        return 'PrincipalInfo(%r)' % self.id
+
+    
+class PrincipalFolder(BTreeContainer):
+    """A Persistent Principal Folder and Authentication plugin.
+    
+    See principalfolder.txt for details.
+    """
+
+    interface.implements(interfaces.IAuthenticatorPlugin,
+                         interfaces.IQueriableAuthenticator,
+                         interfaces.IQuerySchemaSearch,
+                         IInternalPrincipalContainer)
+
+    schema = ISearchSchema
 
     def __init__(self, prefix=''):
         self.prefix = unicode(prefix)
@@ -169,33 +202,24 @@ class PrincipalFolder(BTreeContainer):
         """
         if not isinstance(credentials, dict):
             return None
-
         if not ('login' in credentials and 'password' in credentials):
             return None
-
         id = self.__id_by_login.get(credentials['login'])
         if id is None:
             return None
-
         principal = self[id]
         if principal.password != credentials['password']:
             return None
+        return PrincipalInfo(
+            id=self.prefix + id, 
+            title=principal.title,
+            description=principal.description)
 
-        id = self.prefix + id
-
-        return id, {'login': principal.login,
-                    'title': principal.title,
-                    'description': principal.description}
-
-    def principalInfo(self, principal_id):
-        if principal_id.startswith(self.prefix):
-            principal = self.get(principal_id[len(self.prefix):])
-            if principal is not None:
-                return {'login': principal.login,
-                        'title': principal.title,
-                        'description': principal.description}
-
-    schema = ISearchSchema
+    def principalInfo(self, id):
+        if id.startswith(self.prefix):
+            internal = self.get(id[len(self.prefix):])
+            if internal is not None:
+                return PrincipalInfo(id, internal.title, internal.description)
 
     def search(self, query, start=None, batch_size=None):
         """Search through this principal provider."""
@@ -214,3 +238,155 @@ class PrincipalFolder(BTreeContainer):
                     n += 1
                     yield self.prefix + value.__name__
                 i += 1
+
+    def createAuthenticatedPrincipal(self, info, request):
+        return component.getMultiAdapter((info, request), 
+            interfaces.IAuthenticatedPrincipalFactory)()
+
+    def createFoundPrincipal(self, info):
+        return interfaces.IFoundPrincipalFactory(info)()
+
+
+class Principal:
+    """A group-aware implementation of zope.security.interfaces.IPrincipal.
+
+    A principal is created with an ID:
+
+      >>> p = Principal(1)
+      >>> p
+      Principal(1)
+      >>> p.id
+      1
+    
+    title and description may also be provided:
+
+      >>> p = Principal('george', 'George', 'A site member.')
+      >>> p
+      Principal('george')
+      >>> p.id
+      'george'
+      >>> p.title
+      'George'
+      >>> p.description
+      'A site member.'
+     
+    """
+    interface.implements(IGroupAwarePrincipal)
+    
+    def __init__(self, id, title=u'', description=u''):
+        self.id = id
+        self.title = title
+        self.description = description
+        self.groups = []
+
+    def __repr__(self):
+        return 'Principal(%r)' % self.id
+
+
+class AuthenticatedPrincipalFactory:
+    """Creates 'authenticated' principals.
+    
+    An authenticated principal is created as a result of an authentication
+    operation.
+    
+    To use the factory, create it with the info (interfaces.IPrincipalInfo) of
+    the principal to create and a request:
+    
+      >>> info = PrincipalInfo('mary', 'Mary', 'The site admin.')
+      >>> from zope.publisher.browser import TestRequest
+      >>> request = TestRequest()
+      >>> factory = AuthenticatedPrincipalFactory(info, request)
+      >>> principal = factory()
+  
+    The factory uses the info to create a principal with the same ID, title,
+    and description:
+ 
+      >>> principal.id
+      'mary'
+      >>> principal.title
+      'Mary'
+      >>> principal.description
+      'The site admin.'
+      
+    It also fires an AuthenticatedPrincipalCreatedEvent:
+
+      >>> from zope.app.event.tests.placelesssetup import getEvents
+      >>> [event] = getEvents(interfaces.IAuthenticatedPrincipalCreated)
+      >>> event.principal is principal
+      True
+      >>> event.info
+      PrincipalInfo('mary')
+      >>> event.request is request
+      True
+      
+    Listeners can subscribe to this event to perform additional operations
+    when the authenticated principal is created.
+
+    For information on how factories are used in the authentication process,
+    see README.txt.
+    """
+    component.adapts(interfaces.IPrincipalInfo, IBrowserRequest)
+
+    interface.implements(interfaces.IAuthenticatedPrincipalFactory)
+    
+    def __init__(self, info, request):
+        self.info = info
+        self.request = request
+
+    def __call__(self):
+        principal = Principal(self.info.id, self.info.title,
+                              self.info.description)
+        notify(interfaces.AuthenticatedPrincipalCreated(
+            principal, self.info, self.request))
+        return principal
+        
+
+class FoundPrincipalFactory:
+    """Creates 'found' principals.
+    
+    A 'found' principal is created as a result of a principal lookup.
+    
+    To use the factory, create it with the info (interfaces.IPrincipalInfo) of
+    the principal to create:
+    
+      >>> info = PrincipalInfo('sam', 'Sam', 'A site user.')
+      >>> factory = FoundPrincipalFactory(info)
+      >>> principal = factory()
+  
+    The factory uses the info to create a principal with the same ID, title,
+    and description:
+ 
+      >>> principal.id
+      'sam'
+      >>> principal.title
+      'Sam'
+      >>> principal.description
+      'A site user.'
+      
+    It also fires a FoundPrincipalCreatedEvent:
+
+      >>> from zope.app.event.tests.placelesssetup import getEvents
+      >>> [event] = getEvents(interfaces.IFoundPrincipalCreated)
+      >>> event.principal is principal
+      True
+      >>> event.info
+      PrincipalInfo('sam')
+      
+    Listeners can subscribe to this event to perform additional operations
+    when the 'found' principal is created.
+    
+    For information on how factories are used in the authentication process,
+    see README.txt.
+    """    
+    component.adapts(interfaces.IPrincipalInfo)
+
+    interface.implements(interfaces.IFoundPrincipalFactory)
+    
+    def __init__(self, info):
+        self.info = info
+
+    def __call__(self):
+        principal = Principal(self.info.id, self.info.title,
+                              self.info.description)
+        notify(interfaces.FoundPrincipalCreated(principal, self.info))
+        return principal

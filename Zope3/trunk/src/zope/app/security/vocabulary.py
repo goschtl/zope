@@ -22,7 +22,7 @@ from zope.app import zapi
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleTerm, SimpleVocabulary
 from zope.schema.interfaces import ISourceQueriables
-from zope.app.security.interfaces import IPermission, IAuthentication
+from zope.app.security.interfaces import IPermission, IAuthentication2
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app.component import queryNextUtility
 
@@ -34,13 +34,13 @@ from interfaces import IPrincipalSource
 
 class PermissionIdsVocabulary(SimpleVocabulary):
     """A vocabular of permission IDs.
-    
+
     Term values are the permission ID strings except for 'zope.Public', which
     is the global permission CheckerPublic.
-    
+
     Term titles are the permission ID strings except for 'zope.Public', which
     is shortened to 'Public'.
-    
+
     Terms are sorted by title except for 'Public', which always appears as
     the first term.
 
@@ -54,7 +54,7 @@ class PermissionIdsVocabulary(SimpleVocabulary):
 
     We also need to register some sample permission utilities, including
     the special permission 'zope.Public':
-    
+
         >>> from zope.app.security.interfaces import IPermission
         >>> from zope.app.security.permission import Permission
         >>> from zope.app.testing import ztapi
@@ -64,18 +64,18 @@ class PermissionIdsVocabulary(SimpleVocabulary):
         >>> ztapi.provideUtility(IPermission, Permission('a'), 'a')
 
     We can now lookup these permissions using the vocabulary:
-    
+
         >>> vocab = registry.get(None, 'Permission Ids')
 
-	The non-public permissions 'a' and 'b' are string values:
-	
-	    >>> vocab.getTermByToken('a').value
-	    u'a'
-	    >>> vocab.getTermByToken('b').value
-	    u'b'
+  The non-public permissions 'a' and 'b' are string values:
+
+      >>> vocab.getTermByToken('a').value
+      u'a'
+      >>> vocab.getTermByToken('b').value
+      u'b'
 
     However, the public permission value is CheckerPublic:
-    
+
         >>> vocab.getTermByToken('zope.Public').value is CheckerPublic
         True
 
@@ -86,10 +86,10 @@ class PermissionIdsVocabulary(SimpleVocabulary):
 
     The terms are sorted by title except for the public permission, which is
     listed first:
-    
+
         >>> [term.title for term in vocab]
         [u'Public', u'a', u'b']
-        
+
         >>> tearDown()
     """
     def __init__(self, context):
@@ -121,7 +121,7 @@ class PrincipalSource(object):
 
         First we need to create a dummy utility that will return a user, if
         the id is 'bob'.
-        
+
         >>> class DummyUtility:
         ...     def getPrincipal(self, id):
         ...         if id == 'bob':
@@ -147,7 +147,7 @@ class PrincipalSource(object):
 
         >>> zapi.getUtility = temp
         """
-        auth = zapi.getUtility(IAuthentication)
+        auth = zapi.getUtility(IAuthentication2)
         try:
             auth.getPrincipal(id)
         except PrincipalLookupError:
@@ -166,7 +166,7 @@ class PrincipalSource(object):
             return True
 
     def getQueriables(self):
-        """Returns an iteratable of queriables. 
+        """Returns an iteratable of queriables.
 
         Queriables are responsible for providing interfaces to search for
         principals by a set of given parameters (can be different for the
@@ -174,28 +174,28 @@ class PrincipalSource(object):
         authentication utilities to look for queriables.
 
         >>> class DummyUtility1:
-        ...     implements(IAuthentication)
+        ...     implements(IAuthentication2)
         ...     __parent__ = None
         ...     def __repr__(self): return 'dummy1'
         >>> dummy1 = DummyUtility1()
-        
+
         >>> class DummyUtility2:
-        ...     implements(ISourceQueriables, IAuthentication)
+        ...     implements(ISourceQueriables, IAuthentication2)
         ...     __parent__ = None
         ...     def getQueriables(self):
         ...         return ('1', 1), ('2', 2), ('3', 3)
         >>> dummy2 = DummyUtility2()
 
         >>> class DummyUtility3(DummyUtility2):
-        ...     implements(IAuthentication)
+        ...     implements(IAuthentication2)
         ...     def getQueriables(self):
         ...         return ('4', 4),
         >>> dummy3 = DummyUtility3()
 
         >>> from zope.app.component.testing import testingNextUtility
-        >>> testingNextUtility(dummy1, dummy2, IAuthentication)
-        >>> testingNextUtility(dummy2, dummy3, IAuthentication)
-        
+        >>> testingNextUtility(dummy1, dummy2, IAuthentication2)
+        >>> testingNextUtility(dummy2, dummy3, IAuthentication2)
+
         >>> temp = zapi.getUtility
         >>> zapi.getUtility = lambda iface: dummy1
 
@@ -206,7 +206,7 @@ class PrincipalSource(object):
         >>> zapi.getUtility = temp
         """
         i = 0
-        auth = zapi.getUtility(IAuthentication)
+        auth = zapi.getUtility(IAuthentication2)
         yielded = []
         while True:
             queriables = ISourceQueriables(auth, None)
@@ -214,12 +214,12 @@ class PrincipalSource(object):
                 yield unicode(i), auth
             else:
                 for qid, queriable in queriables.getQueriables():
-                    # ensure that we dont return same yielded utility more 
+                    # ensure that we dont return same yielded utility more
                     # then once
                     if queriable not in yielded:
                         yield unicode(i)+'.'+unicode(qid), queriable
                         yielded.append(queriable)
-            auth = queryNextUtility(auth, IAuthentication)
+            auth = queryNextUtility(auth, IAuthentication2)
             if auth is None:
                 break
             i += 1

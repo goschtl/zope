@@ -2,630 +2,675 @@
 Pluggable-Authentication Utility
 ================================
 
-The Pluggable-Authentication Utility provides a framework for
-authenticating principals and associating information with them.  It uses a
-variety of different utilities, called plugins, and subscribers to get its
-work done.
+The Pluggable-Authentication Utility (PAU) provides a framework for
+authenticating principals and associating information with them. It uses 
+plugins and subscribers to get its work done.
 
 Authentication
 ==============
 
-The primary job of an authentication utility is to authenticate principals.
-Given a request object, the authentication utility returns a principal object,
-if it can.  The pluggable-authentication utility does this in two steps:
+The primary job of PAU is to authenticate principals. It uses two types of
+plug-ins in its work:
 
-1. It determines a principal ID based on authentication credentials found in a
-   request, and then
+  - Credentials Plugins
+  
+  - Authenticator Plugins
+  
+Credentials plugins are responsible for extracting user credentials from a 
+request. A credentials plugin may in some cases issue a 'challenge' to obtain 
+credentials. For example, a 'session' credentials plugin reads credentials
+from a session (the "extraction"). If it cannot find credentials, it will
+redirect the user to a login form in order to provide them (the "challenge").
 
-2. It constructs a principal from the given ID, combining information from a
-   number of sources.
+Authenticator plugins are responsible for authenticating the credentials
+extracted by a credentials plugin. They are also typically able to create
+principal objects for credentials they successfully authenticate.
 
-It uses plug-ins in both phases of its work. Plugins are named utilities that
-the utility is configured to use in some order.
+Given a request object, the PAU returns a principal object, if it can. The PAU 
+does this by first iterateing through its credentials plugins to obtain a
+set of credentials. If it gets credentials, it iterates through its
+authenticator plugins to authenticate them.
 
-In the first phase, the pluggable-authentication utility iterates
-through a sequence of extractor plugins.  From each plugin, it
-attempts to get a set of credentials.  If it gets credentials, it
-iterates through a sequence of authentication plugins, trying to get a
-principal id for the given credentials.  It continues this until it
-gets a principal id.
-
-Once it has a principal id, it begins the second phase.  In the second phase,
-it iterates through a collection of principal-factory plugins until a plugin
-returns a principal object for given principal ID.
-
-When a factory creates a principal, it publishes a principal-created event.
-Subscribers to this event are responsible for adding data, especially groups,
-to the principal.  Typically, if a subscriber adds data, it should also add
+If an authenticator succeeds in authenticating a set of credentials, the PAU 
+uses the authenticator to create a principal corresponding to the credentials.
+The authenticator notifies subscribers if an authenticated princiapl is created.
+Subscribers are responsible for adding data, especially groups, to the
+principal. Typically, if a subscriber adds data, it should also add
 corresponding interface declarations.
 
-Let's look at an example. We create a simple plugin that provides credential
-extraction:
+Simple Credentials Plugin
+-------------------------
+To illustrate, we'll create a simple credentials plugin:
 
   >>> from zope import interface
   >>> from zope.app.authentication import interfaces
 
-  >>> class MyExtractor:
+  >>> class MyCredentialsPlugin:
   ...
-  ...     interface.implements(interfaces.IExtractionPlugin)
+  ...     interface.implements(interfaces.ICredentialsPlugin)
   ...
   ...     def extractCredentials(self, request):
   ...         return request.get('credentials')
-
-We need to register this as a utility. Normally, we'd do this in ZCML. For the
-example here, we'll use the `provideUtility()` function from
-`zope.component`:
-
-  >>> from zope.component import provideUtility
-  >>> provideUtility(MyExtractor(), name='emy')
-
-Now we also create an authenticator plugin that knows about object 42:
-
-  >>> class Auth42:
   ...
-  ...     interface.implements(interfaces.IAuthenticationPlugin)
+  ...     def challenge(self, request):
+  ...         pass # challenge is a no-op for this plugin
+  ...
+  ...     def logout(request):
+  ...         pass # logout is a no-op for this plugin
+
+As a plugin, MyCredentialsPlugin needs to be registered as a named utility:
+
+  >>> provideUtility(MyCredentialsPlugin(), name='My Credentials Plugin')
+
+Simple Authenticator Plugin
+---------------------------
+Next we'll create a simple authenticator plugin:
+
+  >>> from zope.app.authentication import principalfolder
+  >>> from zope.event import notify
+
+  >>> class MyAuthenticatorPlugin:
+  ...
+  ...     interface.implements(interfaces.IAuthenticatorPlugin)
   ...
   ...     def authenticateCredentials(self, credentials):
-  ...         if credentials == 42:
-  ...             return '42', {'domain': 42}
-
-  >>> provideUtility(Auth42(), name='a42')
-
-We provide a principal factory plugin:
-
-  >>> class Principal:
+  ...         if credentials == 'secretcode':
+  ...             return principalfolder.PrincipalInfo('bob', 'Bob', '')
   ...
-  ...     description = title = ''
-  ...
-  ...     def __init__(self, id):
-  ...         self.id = id
-  ...
-  ...     def __repr__(self):
-  ...         return 'Principal(%r, %r)' % (self.id, self.title)
-
-  >>> from zope.event import notify
-  >>> class PrincipalFactory:
-  ...
-  ...     interface.implements(interfaces.IPrincipalFactoryPlugin)
-  ...
-  ...     def createAuthenticatedPrincipal(self, id, info, request):
-  ...         principal = Principal(id)
+  ...     def createAuthenticatedPrincipal(self, info, request):
+  ...         principal = principalfolder.Principal(info.id)
   ...         notify(interfaces.AuthenticatedPrincipalCreated(
-  ...                     principal, info, request))
+  ...             principal, info, request))
   ...         return principal
   ...
-  ...     def createFoundPrincipal(self, id, info):
-  ...         principal = Principal(id)
+  ...     def createFoundPrincipal(self, info):
+  ...         principal = principalfolder.Principal(info.id)
   ...         notify(interfaces.FoundPrincipalCreated(principal, info))
   ...         return principal
+  ...
+  ...     def principalInfo(self, id):
+  ...         pass # plugin not currently supporting search
 
-  >>> provideUtility(PrincipalFactory(), name='pf')
+As with the credentials plugin, the authenticator plugin must be registered
+as a named utility:
 
-Finally, we create a pluggable-authentication utility instance:
+  >>> provideUtility(MyAuthenticatorPlugin(), name='My Authenticator Plugin')
+
+Configuring a PAU
+-----------------
+Finally, we'll create the PAU itself:
 
   >>> from zope.app import authentication
-  >>> auth = authentication.LocalPluggableAuthentication()
+  >>> pau = authentication.PluggableAuthentication()
 
-Now, we'll create a request and try to authenticate:
+and configure it with the two plugins:
+
+  >>> pau.credentialsPlugins = ('My Credentials Plugin', )
+  >>> pau.authenticatorPlugins = ('My Authenticator Plugin', )
+
+Using the PAU to Authenticate
+-----------------------------
+We can now use the PAU to authenticate a sample request:
 
   >>> from zope.publisher.browser import TestRequest
-  >>> request = TestRequest(credentials=42)
-  >>> auth.authenticate(request)
+  >>> print pau.authenticate(TestRequest())
+  None
 
-We don't get anything. Why?  Because we haven't configured the authentication
-utility to use our plugins. Let's fix that:
+In this case, we cannot authenticate an empty request. In the same way, we
+will not be able to authenticate a request with the wrong credentials:
 
-  >>> auth.extractors = ('emy', )
-  >>> auth.authenticators = ('a42', )
-  >>> auth.factories = ('pf', )
-  >>> principal = auth.authenticate(request)
+  >>> print pau.authenticate(TestRequest(credentials='let me in!'))
+  None
+
+However, if we provide the proper credentials:
+
+  >>> request = TestRequest(credentials='secretcode')
+  >>> principal = pau.authenticate(request)
   >>> principal
-  Principal('42', '')
+  Principal('bob')
 
-In addition to getting a principal, an `IPrincipalCreated` event will
-have been generated.  We'll use the testing event logging API to see that 
-this is the case:
+we get an authenticated principal.
 
-  >>> from zope.app.event.tests.placelesssetup import getEvents, clearEvents
+Authenticated Principal Creates Events
+--------------------------------------
+We can verify that the appropriate event was published:
 
   >>> [event] = getEvents(interfaces.IAuthenticatedPrincipalCreated)
-
-The event's principal is set to the principal:
-
   >>> event.principal is principal
   True
-
-its info is set to the information returned by the authenticator:
-
   >>> event.info
-  {'domain': 42}
-
-and it's request set to the request we created:
-
+  PrincipalInfo('bob')
   >>> event.request is request
   True
 
 Normally, we provide subscribers to these events that add additional
 information to the principal. For examples, we'll add one that sets
-the title to a repr of the event info:
+the title:
 
   >>> def add_info(event):
-  ...     event.principal.title = `event.info`
+  ...     event.principal.title = event.info.title
+  >>> subscribe([interfaces.IAuthenticatedPrincipalCreated], None, add_info)
 
-  >>> from zope.app.testing.ztapi import subscribe
-  >>> subscribe([interfaces.IPrincipalCreated], None, add_info)
+Now, if we authenticate a principal, its title is set:
 
-Now, if we authenticate a principal, its title will be set:
+  >>> principal = pau.authenticate(request)
+  >>> principal.title
+  'Bob'
 
-  >>> auth.authenticate(request)
-  Principal('42', "{'domain': 42}")
+Multiple Authenticator Plugins
+------------------------------
+The PAU works with multiple authenticator plugins. It uses each plugin, in the
+order specified in the PAU's authenticatorPlugins attribute, to authenticate
+a set of credentials.
 
-We can supply multiple plugins. For example, let's override our
-authentication plugin:
+To illustrate, we'll create another authenticator:
 
-  >>> class AuthInt:
-  ...
-  ...     interface.implements(interfaces.IAuthenticationPlugin)
+  >>> class MyAuthenticatorPlugin2(MyAuthenticatorPlugin):
   ...
   ...     def authenticateCredentials(self, credentials):
-  ...         if isinstance(credentials, int):
-  ...             return str(credentials), {'int': credentials}
+  ...         if credentials == 'secretcode':
+  ...             return principalfolder.PrincipalInfo('black', 'Black Spy', '')
+  ...         elif credentials == 'hiddenkey':
+  ...             return principalfolder.PrincipalInfo('white', 'White Spy', '')
 
-  >>> provideUtility(AuthInt(), name='aint')
+  >>> provideUtility(MyAuthenticatorPlugin2(), name='My Authenticator Plugin 2')
 
 If we put it before the original authenticator:
 
-  >>> auth.authenticators = 'aint', 'a42'
+  >>> pau.authenticatorPlugins = (
+  ...     'My Authenticator Plugin 2',
+  ...     'My Authenticator Plugin')
 
-Then it will override the original:
+Then it will be given the first opportunity to authenticate a request:
 
-  >>> auth.authenticate(request)
-  Principal('42', "{'int': 42}")
+  >>> pau.authenticate(TestRequest(credentials='secretcode'))
+  Principal('black')
 
-But if we put it after, the original will be used:
+If neither plugins can authenticate, pau returns None:
 
-  >>> auth.authenticators = 'a42', 'aint'
-  >>> auth.authenticate(request)
-  Principal('42', "{'domain': 42}")
+  >>> print pau.authenticate(TestRequest(credentials='let me in!!'))
+  None
 
-But we'll fall back to the new one:
+When we change the order of the authenticator plugins:
 
-  >>> request = TestRequest(credentials=1)
-  >>> auth.authenticate(request)
-  Principal('1', "{'int': 1}")
+  >>> pau.authenticatorPlugins = (
+  ...     'My Authenticator Plugin',
+  ...     'My Authenticator Plugin 2')
 
-As with with authenticators, we can specify multiple extractors:
+we see that our original plugin is now acting first:
 
-  >>> class OddExtractor:
+  >>> pau.authenticate(TestRequest(credentials='secretcode'))
+  Principal('bob')
+
+The second plugin, however, gets a chance to authenticate if first does not:
+
+  >>> pau.authenticate(TestRequest(credentials='hiddenkey'))
+  Principal('white')
+
+Multiple Credentials Plugins
+----------------------------
+As with with authenticators, we can specify multiple credentials plugins. To
+illustrate, we'll create a credentials plugin that extracts credentials from
+a request form:
+
+  >>> class FormCredentialsPlugin:
   ...
-  ...     interface.implements(interfaces.IExtractionPlugin)
+  ...     interface.implements(interfaces.ICredentialsPlugin)
   ...
   ...     def extractCredentials(self, request):
-  ...         credentials = request.get('credentials')
-  ...         if isinstance(credentials, int) and (credentials%2):
-  ...             return 1
-
-  >>> provideUtility(OddExtractor(), name='eodd')
-  >>> auth.extractors = 'eodd', 'emy'
-
-  >>> request = TestRequest(credentials=41)
-  >>> auth.authenticate(request)
-  Principal('1', "{'int': 1}")
-
-  >>> request = TestRequest(credentials=42)
-  >>> auth.authenticate(request)
-  Principal('42', "{'domain': 42}")
-
-And we can specify multiple factories:
-
-  >>> class OddPrincipal(Principal):
+  ...         return request.form.get('my_credentials')
   ...
-  ...     def __repr__(self):
-  ...         return 'OddPrincipal(%r, %r)' % (self.id, self.title)
-
-  >>> class OddFactory:
+  ...     def challenge(self, request):
+  ...         pass
   ...
-  ...     interface.implements(interfaces.IPrincipalFactoryPlugin)
-  ...
-  ...     def createAuthenticatedPrincipal(self, id, info, request):
-  ...         i = info.get('int')
-  ...         if not (i and (i%2)):
-  ...             return None
-  ...         principal = OddPrincipal(id)
-  ...         notify(interfaces.AuthenticatedPrincipalCreated(
-  ...                     principal, info, request))
-  ...         return principal
-  ...
-  ...     def createFoundPrincipal(self, id, info):
-  ...         i = info.get('int')
-  ...         if not (i and (i%2)):
-  ...             return None
-  ...         principal = OddPrincipal(id)
-  ...         notify(interfaces.FoundPrincipalCreated(
-  ...                     principal, info))
-  ...         return principal
+  ...     def logout(request):
+  ...         pass
 
-  >>> provideUtility(OddFactory(), name='oddf')
+  >>> provideUtility(FormCredentialsPlugin(),
+  ...                name='Form Credentials Plugin')
 
-  >>> auth.factories = 'oddf', 'pf'
+and insert the new credentials plugin before the existing plugin:
 
-  >>> request = TestRequest(credentials=41)
-  >>> auth.authenticate(request)
-  OddPrincipal('1', "{'int': 1}")
+  >>> pau.credentialsPlugins = (
+  ...     'Form Credentials Plugin',
+  ...     'My Credentials Plugin')
 
-  >>> request = TestRequest(credentials=42)
-  >>> auth.authenticate(request)
-  Principal('42', "{'domain': 42}")
+The PAU will use each plugin in order to try and obtain credentials from a
+request.
 
-In this example, we used the supplemental information to get the
-integer credentials.  It's common for factories to decide whether they
-should be used depending on supplemental information.  Factories
-should not try to inspect the principal ids. Why? Because, as we'll
-see later, the pluggable-authentication utility may modify ids before
-giving them to factories.  Similarly, subscribers should use the
-supplemental information for any data they need.
+  >>> pau.authenticate(TestRequest(credentials='secretcode',
+  ...                              form={'my_credentials': 'hiddenkey'}))
+  Principal('white')
 
-Get a principal given an id
-===========================
+In this case, the first credentials plugin succeeded in getting credentials
+from the form and the second authenticator was able to authenticate the
+credentials. Specifically, the PAU went through these steps:
 
-We can ask the pluggable-authentication utility for a principal, given an id.
+ - Get credentials using 'Form Credentials Plugin'
+ 
+ - Got 'hiddenkey' credentials using 'Form Credentials Plugin', try to 
+   authenticate using 'My Authenticator Plugin'
+   
+ - Failed to authenticate 'hiddenkey' with 'My Authenticator Plugin', try
+   'My Authenticator Plugin 2'
+ 
+ - Succeeded in authenticating with 'My Authenticator Plugin 2'
 
-To do this, the pluggable-authentication utility uses principal search
-plugins:
+Let's try a different scenario:
 
-  >>> class Search42:
-  ...
-  ...     interface.implements(interfaces.IPrincipalSearchPlugin)
-  ...
-  ...     def principalInfo(self, principal_id):
-  ...         if principal_id == '42':
-  ...             return {'domain': 42}
+  >>> pau.authenticate(TestRequest(credentials='secretcode'))
+  Principal('bob')
 
-  >>> provideUtility(Search42(), name='s42')
+In this case, the PAU went through these steps:
 
-  >>> class IntSearch:
-  ...
-  ...     interface.implements(interfaces.IPrincipalSearchPlugin)
-  ...
-  ...     def principalInfo(self, principal_id):
-  ...         try:
-  ...             i = int(principal_id)
-  ...         except ValueError:
-  ...             return None
-  ...         if (i >= 0 and i < 100):
-  ...             return {'int': i}
+  - Get credentials using 'Form Credentials Plugin'
+  
+  - Failed to get credentials using 'Form Credentials Plugin', try
+    'My Credentials Plugin'
+    
+  - Got 'scecretcode' credentials using 'My Credentials Plugin', try to
+    authenticate using 'My Authenticator Plugin'
+  
+  - Succeeded in authenticating with 'My Authenticator Plugin'
 
-  >>> provideUtility(IntSearch(), name='sint')
+Let's try a slightly more complex scenario:
 
-  >>> auth.searchers = 's42', 'sint'
+  >>> pau.authenticate(TestRequest(credentials='hiddenkey',
+  ...                              form={'my_credentials': 'bogusvalue'}))
+  Principal('white')
 
-  >>> auth.getPrincipal('41')
-  OddPrincipal('41', "{'int': 41}")
+This highlights PAU's ability to use multiple plugins for authentication:
 
-In addition to returning a principal, this will generate an event:
+  - Get credentials using 'Form Credentials Plugin'
+  
+  - Got 'bogusvalue' credentials using 'Form Credentials Plugin', try to
+    authenticate using 'My Authenticator Plugin'
 
-  >>> clearEvents()
-  >>> auth.getPrincipal('42')
-  Principal('42', "{'domain': 42}")
+  - Failed to authenticate 'boguskey' with 'My Authenticator Plugin', try
+    'My Authenticator Plugin 2'
 
-  >>> [event] = getEvents(interfaces.IPrincipalCreated)
-  >>> event.principal
-  Principal('42', "{'domain': 42}")
+  - Failed to authenticate 'boguskey' with 'My Authenticator Plugin 2' --
+    there are no more authenticators to try, so lets try the next credentials
+    plugin for some new credentials
 
-  >>> event.info
-  {'domain': 42}
+  - Get credentials using 'My Credentials Plugin'
+  
+  - Got 'hiddenkey' credentials using 'My Credentials Plugin', try to
+    authenticate using 'My Authenticator Plugin'
+    
+  - Failed to authenticate 'hiddenkey' using 'My Authenticator Plugin', try
+    'My Authenticator Plugin 2'
 
-Our pluggable-authentication utility will not find a principal with
-the ID '123'. Therefore it will delegate to the next utility. To make
-sure that it's delegated, we put in place a fake utility.
+  - Succeeded in authenticating with 'My Authenticator Plugin 2' (shouts and
+    cheers!)
 
-  >>> from zope.app.component.testing import testingNextUtility
-  >>> from zope.app.security.interfaces import IAuthentication
 
-  >>> class FakeAuthUtility:
-  ...
-  ...     interface.implements(IAuthentication)
-  ...
-  ...     lastGetPrincipalCall = lastUnauthorizedCall = None
-  ...
-  ...     def getPrincipal(self, name):
-  ...         self.lastGetPrincipalCall = name
-  ...
-  ...     def unauthorized(self, id, request):
-  ...         self.lastUnauthorizedCall = id
-
-  >>> nextauth = FakeAuthUtility()
-  >>> testingNextUtility(auth, nextauth, IAuthentication)
-
-  >>> auth.getPrincipal('123')
-  >>> nextauth.lastGetPrincipalCall
-  '123'
-
-Issuing a challenge
+Principal Searching
 ===================
 
-If the unauthorized method is called on the pluggable-authentication
-utility, the pluggable-authentication utility iterates through a
-sequence of challenge plugins calling their challenge methods until
-one returns True, indicating that a challenge was issued. (This is a
-simplification. See "Protocols" below.)
+As a component that provides IAuthentication2, a PAU lets you lookup a
+principal with a principal ID. The PAU looks up a principal by delegating to 
+its authenticators. In out example, none of the authenticators implement this
+search capability, so when we look for a principal:
 
-Nothing will happen if there are no plugins registered.
+  >>> print pau.getPrincipal('bob')
+  None
+  
+  >>> print pau.getPrincipal('white')
+  None
+  
+  >>> print pau.getPrincipal('black')
+  None
 
-  >>> auth.unauthorized(42, request)
+For a PAU to support search, it needs to be configured with one or more
+authenticator plugins that support search. To illustrate, we'll create a new
+authenticator:
 
-However, our next utility was asked:
+  >>> class SearchableAuthenticatorPlugin:
+  ...
+  ...     interface.implements(interfaces.IAuthenticatorPlugin)
+  ...
+  ...     def __init__(self):
+  ...         self.infos = {}
+  ...         self.ids = {}
+  ...
+  ...     def principalInfo(self, id):
+  ...         return self.infos.get(id)
+  ...
+  ...     def authenticateCredentials(self, credentials):
+  ...         id = self.ids.get(credentials)
+  ...         if id is not None:
+  ...             return self.infos[id]
+  ...
+  ...     def createAuthenticatedPrincipal(self, info, request):
+  ...         principal = principalfolder.Principal(info.id)
+  ...         notify(interfaces.AuthenticatedPrincipalCreated(
+  ...             principal, info, request))
+  ...         return principal
+  ...
+  ...     def createFoundPrincipal(self, info):
+  ...         principal = principalfolder.Principal(info.id)
+  ...         notify(interfaces.FoundPrincipalCreated(principal, info))
+  ...         return principal
+  ...
+  ...     def add(self, id, title, description, credentials):
+  ...         self.infos[id] = principalfolder.PrincipalInfo(
+  ...             id, title, description)
+  ...         self.ids[credentials] = id
 
-  >>> 42 == nextauth.lastUnauthorizedCall
+This class is typical of an authenticator plugin. It can both authenticate
+principals and find principals given a ID. While there are cases
+where an authenticator may opt to not perform one of these two functions, they
+are less typical.
+
+As with any plugin, we need to register it as a utility:
+  
+  >>> searchable = SearchableAuthenticatorPlugin()
+  >>> provideUtility(searchable, name='Searchable Authentication Plugin')
+
+We'll now configure the PAU to use only the searchable authenticator:
+
+  >>> pau.authenticatorPlugins = ('Searchable Authentication Plugin',)
+
+and add some principals to the authenticator:
+
+  >>> searchable.add('bob', 'Bob', 'A nice guy', 'b0b')
+  >>> searchable.add('white', 'White Spy', 'Sneaky', 'deathtoblack')
+
+Now when we ask the PAU to find a principal:
+
+  >>> pau.getPrincipal('bob')
+  Principal('bob')
+
+but only those it knows about:
+
+  >>> print pau.getPrincipal('black')
+  None
+
+Found Principal Creates Events
+------------------------------
+As evident in the authenticator's 'createFoundPrincipal' method (see above),
+a FoundPrincipalCreatedEvent is published when the authenticator finds a
+principal on behalf of PAU's 'getPrincipal':
+
+  >>> clearEvents()
+  >>> principal = pau.getPrincipal('white')
+  >>> principal
+  Principal('white')
+
+  >>> [event] = getEvents(interfaces.IFoundPrincipalCreated)
+  >>> event.principal is principal
   True
+  >>> event.info
+  PrincipalInfo('white')
+  
+As we have seen with authenticated principals, it is common to subscribe to
+principal created events to add information to the newly created principal.
+In this case, we need to subscribe to IFoundPrincipalCreated events:
+  
+  >>> subscribe([interfaces.IFoundPrincipalCreated], None, add_info)
 
-What happens if a plugin is registered depends on the plugin.  Let's
-create a plugin that sets a response header:
+Now when a principal is created as a result of a search, it's title and
+description will be set (by the add_info handler function).
 
-  >>> class Challenge:
+Multiple Authenticator Plugins
+------------------------------
+As with the other operations we've seen, the PAU uses multiple plugins to
+find a principal. If the first authenticator plugin can't find the requested
+principal, the next plugin is used, and so on.
+
+To illustrate, we'll create and register a second searchable authenticator:
+
+  >>> searchable2 = SearchableAuthenticatorPlugin()
+  >>> provideUtility(searchable2, name='Searchable Authentication Plugin 2')
+
+and add a principal to it:
+
+  >>> searchable.add('black', 'Black Spy', 'Also sneaky', 'deathtowhite')
+
+When we configure the PAU to use both searchable authenticators (note the
+order):
+
+  >>> pau.authenticatorPlugins = (
+  ...     'Searchable Authentication Plugin 2',
+  ...     'Searchable Authentication Plugin')
+
+we see how the PAU uses both plugins:
+
+  >>> pau.getPrincipal('white')
+  Principal('white')
+
+  >>> pau.getPrincipal('black')
+  Principal('black')
+
+If more than one plugin know about the same principal ID, the first plugin is
+used and the remaining are not delegated to. To illustrate, we'll add
+another principal with the same ID as an existing principal:
+
+  >>> searchable2.add('white', 'White Rider', '', 'r1der')
+  >>> pau.getPrincipal('white').title
+  'White Rider'
+
+If we change the order of the plugins:
+
+  >>> pau.authenticatorPlugins = (
+  ...     'Searchable Authentication Plugin',
+  ...     'Searchable Authentication Plugin 2')
+
+we get a different principal for ID 'white':
+
+  >>> pau.getPrincipal('white').title
+  'White Spy'
+
+
+Issuing a Challenge
+===================
+
+Part of PAU's IAuthentication2 contract is to challenge the user for
+credentials when its 'unauthorized' method is called. The need for this
+functionality is driven by the following use case:
+
+  - A user attempts to perform an operation he is not authorized to perform.
+  
+  - A handler responds to the unauthorized error by calling IAuthentication2
+    'unauthorized'.
+    
+  - The authentication component (in our case, a PAU) issues a challenge to
+    the user to collect new credentials (typically in the form of logging in
+    as a new user).
+
+The PAU handles the credentials challenge by delegating to its credentials
+plugins.
+
+Currently, the PAU is configured with the credentials plugins that don't 
+perform any action when asked to challenge (see above the 'challenge' methods).
+
+To illustrate challenges, we'll subclass an existing credentials plugin and
+do something in its 'challenge':
+
+  >>> class LoginFormCredentialsPlugin(FormCredentialsPlugin):
   ...
-  ...     interface.implements(interfaces.IChallengePlugin)
+  ...     def __init__(self, loginForm):
+  ...         self.loginForm = loginForm
   ...
-  ...     def challenge(self, requests, response):
-  ...         response.setHeader('X-Unauthorized', 'True')
+  ...     def challenge(self, request):
+  ...         request.response.redirect(self.loginForm)
   ...         return True
 
-  >>> provideUtility(Challenge(), name='c')
-  >>> auth.challengers = ('c', )
+This plugin handles a challenge by redirecting the response to a login form.
+It returns True to signal to the PAU that it handled the challenge.
 
-Now if we call unauthorized:
+We will now create and register a couple of these plugins:
 
-  >>> auth.unauthorized(42, request)
+  >>> provideUtility(LoginFormCredentialsPlugin('simplelogin.html'),
+  ...                name='Simple Login Form Plugin')
 
-the response `X-Unauthorized` is set:
+  >>> provideUtility(LoginFormCredentialsPlugin('advancedlogin.html'),
+  ...                name='Advanced Login Form Plugin')
 
-  >>> request.response.getHeader('X-Unauthorized')
-  'True'
+and configure the PAU to use them:
 
-How challenges work in Zope 3
------------------------------
+  >>> pau.credentialsPlugins = (
+  ...     'Simple Login Form Plugin',
+  ...     'Advanced Login Form Plugin')
 
-To understand how the challenge plugins work, it's helpful to
-understand how the unauthorized method of authentication services
-get called.
+Now when we call 'unauthorized' on the PAU:
 
-If an 'Unauthorized' exception is raised and not caught by application
-code, then the following things happen:
+  >>> request = TestRequest()
+  >>> pau.unauthorized(id=None, request=request)
 
-1. The current transaction is aborted.
+we see that the user is redirected to the simple login form:
 
-2. A view is looked up for the exception.
+  >>> request.response.getStatus()
+  302
+  >>> request.response.getHeader('location')
+  'simplelogin.html'
 
-3. The view gets the authentication utility and calls it's
-   'unauthorized' method.
+We can change the challenge policy by reordering the plugins:
 
-4. The pluggable-authentication utility will call its challenge
-   plugins.  If none return a value, then the pluggable-authentication
-   utility delegates to the next authentication utility above it in
-   the containment hierarchy, or to the global authentication utility.
+  >>> pau.credentialsPlugins = (
+  ...     'Advanced Login Form Plugin',
+  ...     'Simple Login Form Plugin')
 
-5. The view sets the body of the response.
+Now when we call 'unauthorized':
 
-Protocols
----------
+  >>> request = TestRequest()
+  >>> pau.unauthorized(id=None, request=request)
 
-Sometimes, we want multiple challengers to work together.  For
-example, the HTTP specification allows multiple challenges to be issued
-in a response.  A challenge plugin can provide a `protocol`
-attribute.  If multiple challenge plugins have the same protocol,
-then, if any of them are called and return True, then they will all be
-called.  Let's look at an example.  We'll define two challengers that
-add challenges to a X-Challenges headers:
+the advanced plugin is used because it's first:
 
-  >>> class ColorChallenge:
-  ...     interface.implements(interfaces.IChallengePlugin)
+  >>> request.response.getStatus()
+  302
+  >>> request.response.getHeader('location')
+  'advancedlogin.html'
+
+Challenge Protocols
+-------------------
+Sometimes, we want multiple challengers to work together. For example, the
+HTTP specification allows multiple challenges to be issued in a response. A
+challenge plugin can provide a `challengeProtocol` attribute that effectively
+groups related plugins together for challenging. If a plugin returns `True`
+from its challenge and provides a non-None challengeProtocol, subsequent
+plugins in the credentialsPlugins list that have the same challenge protocol
+will also be used to challenge.
+
+Without a challengeProtocol, only the first plugin to succeed in a challenge
+will be used.
+
+Let's look at an example. We'll define a new plugin that specifies an
+'X-Challenge' protocol:
+
+  >>> class XChallengeCredentialsPlugin(FormCredentialsPlugin):
   ...
-  ...     protocol = 'bridge'
+  ...     challengeProtocol = 'X-Challenge'
   ...
-  ...     def challenge(self, requests, response):
-  ...         challenge = response.getHeader('X-Challenge', '')
-  ...         response.setHeader('X-Challenge',
-  ...                            challenge + 'favorite color? ')
+  ...     def __init__(self, challengeValue):
+  ...         self.challengeValue = challengeValue
+  ...
+  ...     def challenge(self, request):
+  ...         value = self.challengeValue
+  ...         existing = request.response.getHeader('X-Challenge', '')
+  ...         if existing:
+  ...             value += ' ' + existing
+  ...         request.response.setHeader('X-Challenge', value)
   ...         return True
 
-  >>> provideUtility(ColorChallenge(), name='cc')
-  >>> auth.challengers = 'cc, ', 'c'
+and register a couple instances as utilities:
 
-  >>> class BirdChallenge:
-  ...     interface.implements(interfaces.IChallengePlugin)
-  ...
-  ...     protocol = 'bridge'
-  ...
-  ...     def challenge(self, requests, response):
-  ...         challenge = response.getHeader('X-Challenge', '')
-  ...         response.setHeader('X-Challenge',
-  ...                            challenge + 'swallow air speed? ')
-  ...         return True
+  >>> provideUtility(XChallengeCredentialsPlugin('basic'),
+  ...                name='Basic X-Challenge Plugin')
 
-  >>> provideUtility(BirdChallenge(), name='bc')
-  >>> auth.challengers = 'cc', 'c', 'bc'
+  >>> provideUtility(XChallengeCredentialsPlugin('advanced'),
+  ...                name='Advanced X-Challenge Plugin')
 
-Now if we call unauthorized:
+When we use both plugins with the PAU:
 
-  >>> request = TestRequest(credentials=42)
-  >>> auth.unauthorized(42, request)
+  >>> pau.credentialsPlugins = (
+  ...     'Basic X-Challenge Plugin',
+  ...     'Advanced X-Challenge Plugin')
 
-the response `X-Unauthorized` is not set:
+and call 'unauthorized':
 
-  >>> request.response.getHeader('X-Unauthorized')
+  >>> request = TestRequest()
+  >>> pau.unauthorized(None, request)
 
-But the X-Challenge header has been set by both of the new challengers
-with the bridge protocol:
+we see that both plugins participate in the challange, rather than just the
+first plugin:
 
   >>> request.response.getHeader('X-Challenge')
-  'favorite color? swallow air speed? '
+  'advanced basic'
 
-Of course, if we put the original challenge first:
-
-  >>> auth.challengers = 'c', 'cc', 'bc'
-  >>> request = TestRequest(credentials=42)
-  >>> auth.unauthorized(42, request)
-
-We get 'X-Unauthorized' but not 'X-Challenge':
-
-  >>> request.response.getHeader('X-Unauthorized')
-  'True'
-  >>> request.response.getHeader('X-Challenge')
-
-Issuing challenges during authentication
-----------------------------------------
-
-During authentication, extraction and authentication plugins can raise
-an 'Unauthorized' exception to indicate that a challenge should be
-issued immediately. They might do this if they recognize partial
-credentials that pertain to them.
 
 Pluggable-Authentication Prefixes
 =================================
 
-Principal ids are required to be unique system wide.  Plugins will
-often provide options for providing id prefixes, so that different
-sets of plugins provide unique ids within a pluggable-authentication
-utility.  If there are multiple pluggable-authentication utilities in
-a system, it's a good idea to give each pluggable-authentication
-utility a unique prefix, so that principal ids from different
-pluggable-authentication utilities don't conflict. We can provide a
-prefix when a pluggable-authentication utility is created:
+Principal ids are required to be unique system wide. Plugins will often provide
+options for providing id prefixes, so that different sets of plugins provide
+unique ids within a PAU. If there are multiple pluggable-authentication
+utilities in a system, it's a good idea to give each PAU a unique prefix, so
+that principal ids from different PAUs don't conflict. We can provide a prefix
+when a PAU is created:
 
-  >>> auth = authentication.PluggableAuthentication('mypas_')
-  >>> auth.extractors = 'eodd', 'emy'
-  >>> auth.authenticators = 'a42', 'aint'
-  >>> auth.factories = 'oddf', 'pf'
-  >>> auth.searchers = 's42', 'sint'
+  >>> pau = authentication.PluggableAuthentication('mypau_')
+  >>> pau.credentialsPlugins = ('My Credentials Plugin', )
+  >>> pau.authenticatorPlugins = ('My Authenticator Plugin', )
 
-Now, we'll create a request and try to authenticate:
+When we create a request and try to authenticate:
 
-  >>> request = TestRequest(credentials=42)
-  >>> principal = auth.authenticate(request)
-  >>> principal
-  Principal('mypas_42', "{'domain': 42}")
+  >>> pau.authenticate(TestRequest(credentials='secretcode'))
+  Principal('mypau_bob')
 
 Note that now, our principal's id has the pluggable-authentication
 utility prefix.
 
 We can still lookup a principal, as long as we supply the prefix:
 
-  >>> auth.getPrincipal('mypas_42')
+  >> pau.getPrincipal('mypas_42')
   Principal('mypas_42', "{'domain': 42}")
 
-  >>> auth.getPrincipal('mypas_41')
+  >> pau.getPrincipal('mypas_41')
   OddPrincipal('mypas_41', "{'int': 41}")
+
 
 Searching
 =========
 
-As their name suggests, search plugins provide searching support.
-We've already seen them used to get principals given principal
-ids. They're also used to find principals given search criteria.
+PAU implements ISourceQueriables:
 
-Different search plugins are likely to use very different search
-criteria.  There are two approaches a plugin can use to support
-searching:
+  >>> from zope.schema.interfaces import ISourceQueriables
+  >>> ISourceQueriables.implementedBy(authentication.PluggableAuthentication)
+  True
 
-- A plugin can provide IQuerySchemaSearch, in addition to
-  `IPrincipalSearchPlugin`.  In this case, the plugin provides a search
-  method and a schema that describes the input to be provided to the
-  search method.
+This means a PAU can be used in a principal source vocabulary (Zope provides a
+sophisticated searching UI for principal sources).
 
-- For browser-based applications, the plugin can provide a browser
-  view that provides
-  `zope.app.form.browser.interfaces.ISourceQueryView`.
+As we've seen, a PAU uses each of its authenticator plugins to locate a
+principal with a given ID. However, plugins may also provide the interface
+IQueriableAuthenticator to indicate they can be used as PAU 'queriables'.
 
-Pluggable-authentication utilities use search plugins in a very simple
-way.  They merely implements
-`zope.schema.interfaces.ISourceQueriables`:
+Currently, our list of authenticators:
 
-  >>> [id for (id, queriable) in auth.getQueriables()]
-  ['s42', 'sint']
-  >>> [queriable.__class__.__name__
-  ...  for (id, queriable) in auth.getQueriables()]
-  ['Search42', 'IntSearch']
+  >>> pau.authenticatorPlugins
+  ('My Authenticator Plugin',)
 
-Design Notes
-============
+does not include a queriable authenticator. PAU cannot therefore provide any
+queriables:
 
-- It is common for the same component to implement authentication and
-  search or extraction and challenge. See
-  `ISearchableAuthenticationPlugin` and
-  `IExtractionAndChallengePlugin`.
+  >>> list(pau.getQueriables())
+  []
 
-Special groups
-==============
+If we install a queriable plugin:
 
-Two special groups, Authenticated, and Everyone may apply to users
-created by the pluggable-authentication utility.  There is a
-subscriber, specialGroups, that will set these groups on any non-group
-principals if IAuthenticatedGroup, or IEveryoneGroup utilities are
-provided.
+  >>> class QueriableAuthenticatorPlugin(MyAuthenticatorPlugin):
+  ...
+  ...     interface.implements(interfaces.IQueriableAuthenticator)
+  ...
+  >>> provideUtility(QueriableAuthenticatorPlugin(),
+  ...                provides=interfaces.IAuthenticatorPlugin,
+  ...                name='Queriable')
+  >>> pau.authenticatorPlugins += ('Queriable',)
 
-Lets define a group-aware principal:
+the PAU will provide it as a queriable:
 
-    >>> import zope.security.interfaces
-    >>> class GroupAwarePrincipal(Principal):
-    ...     interface.implements(zope.security.interfaces.IGroupAwarePrincipal)
-    ...     def __init__(self, id):
-    ...         Principal.__init__(self, id)
-    ...         self.groups = []
-
-If we notify the subscriber with this principal, nothing will happen
-because the groups haven't been defined:
-
-    >>> prin = GroupAwarePrincipal('x')
-    >>> event = interfaces.FoundPrincipalCreated(prin, {})
-    >>> authentication.authentication.specialGroups(event)
-    >>> prin.groups
-    []
-
-Now, if we define the Everybody group:
-
-    >>> import zope.app.security.interfaces
-    >>> class EverybodyGroup(Principal):
-    ...     interface.implements(zope.app.security.interfaces.IEveryoneGroup)
-
-    >>> everybody = EverybodyGroup('all')
-    >>> provideUtility(everybody)
-    
-Then the group will be added to the principal:
-
-    >>> authentication.authentication.specialGroups(event)
-    >>> prin.groups
-    ['all']
-
-Similarly for the authenticated group:
-
-    >>> class AuthenticatedGroup(Principal):
-    ...     interface.implements(
-    ...         zope.app.security.interfaces.IAuthenticatedGroup)
-
-    >>> authenticated = AuthenticatedGroup('auth')
-    >>> provideUtility(authenticated)
-    
-Then the group will be added to the principal:
-
-    >>> prin.groups = []
-    >>> authentication.authentication.specialGroups(event)
-    >>> prin.groups.sort()
-    >>> prin.groups
-    ['all', 'auth']
-
-These groups are only added to non-group principals:
-
-    >>> prin.groups = []
-    >>> interface.directlyProvides(prin, zope.security.interfaces.IGroup)
-    >>> authentication.authentication.specialGroups(event)
-    >>> prin.groups
-    []
-
-And they are only added to group aware principals:
-
-    >>> prin = Principal('eek')
-    >>> prin.groups = []
-    >>> event = interfaces.FoundPrincipalCreated(prin, {})
-    >>> authentication.authentication.specialGroups(event)
-    >>> prin.groups
-    []
+  >>> list(pau.getQueriables()) # doctest: +ELLIPSIS
+  [('Queriable', ...QueriableAuthenticatorPlugin instance...)]

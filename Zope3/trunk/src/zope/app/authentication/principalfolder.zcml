@@ -29,26 +29,11 @@
       for=".principalfolder.IInternalPrincipalContainer"
       factory=".idpicker.IdPicker"
       />
-      
-  <localUtility class=".sql.SQLAuthenticationPlugin">
 
-    <require
-        permission="zope.ManageContent"
-        interface="zope.app.sqlscript.interfaces.ISQLScript"
-        set_schema="zope.app.sqlscript.interfaces.ISQLScript"
-        />
-    <require
-        permission="zope.ManageContent"
-        interface=".interfaces.IAuthenticationPlugin" />
+  <adapter factory=".principalfolder.FoundPrincipalFactory" />
 
-  </localUtility>
+  <adapter factory=".principalfolder.AuthenticatedPrincipalFactory" />
 
-
-  <browser:addMenuItem
-      title="SQL Pluggable-Authentication Authentication Plugin"
-      description="A SQL Pluggable-Authentication Authentication Plugin"
-      class=".sql.SQLAuthenticationPlugin"
-      permission="zope.ManageContent"
-      />
+  <include package=".browser" file="principalfolder.zcml" />
 
 </configure>

@@ -4,72 +4,44 @@
     i18n_domain="zope"
     >
 
-  <interface interface=".interfaces.IPrincipalSearchPlugin" />
-
-  <localUtility class=".LocalPluggableAuthentication">
+  <localUtility class=".PluggableAuthentication">
     <require
         permission="zope.ManageServices"
-        interface=".authentication.IPluggableAuthentication"
-        set_schema=".authentication.IPluggableAuthentication"
+        interface=".interfaces.IPluggableAuthentication"
+        set_schema=".interfaces.IPluggableAuthentication"
+        />
+    <require
+        permission="zope.ManageServices"
+        attributes="registrationManager"
         />
   </localUtility>
 
-  <interface interface=".interfaces.IPrincipalSearchPlugin" />
-
-  <browser:addMenuItem
-       class=".authentication.LocalPluggableAuthentication"
-       title="Pluggable Authentication Utility"
-       description="New-style pluggable authentication utility"
-       permission="zope.ManageServices"
-       />
-
-  <browser:editform
-      schema=".authentication.IPluggableAuthentication"
-      label="Edit Pluggable Authentication Utility"
-      name="edit.html"
-      menu="zmi_views" title="Edit"
-      permission="zope.ManageServices" />
-
+  <!-- This explicit declaration is needed indirectly by vocabulary to make
+    the interface available as an IInterface utility. This is bogus...the
+    vocabulary directive should make sure this registration happens. -->
+  <interface interface=".interfaces.IAuthenticatorPlugin" />
   <vocabulary
-    name="ExtractionPlugins"
+    name="CredentialsPlugins"
     factory="zope.app.component.vocabulary.UtilityVocabulary"
-    interface="zope.app.authentication.interfaces.IExtractionPlugin"
+    interface="zope.app.authentication.interfaces.ICredentialsPlugin"
     nameOnly="True"
    />
 
   <vocabulary
-    name="AuthenticationPlugins"
+    name="AuthenticatorPlugins"
     factory="zope.app.component.vocabulary.UtilityVocabulary"
-    interface="zope.app.authentication.interfaces.IAuthenticationPlugin"
+    interface="zope.app.authentication.interfaces.IAuthenticatorPlugin"
     nameOnly="True"
    />
 
-  <vocabulary
-    name="ChallengePlugins"
-    factory="zope.app.component.vocabulary.UtilityVocabulary"
-    interface="zope.app.authentication.interfaces.IChallengePlugin"
-    nameOnly="True"
-   />
+  <utility
+      name="No Challenge if Authenticated"
+      factory=".generic.NoChallengeCredentialsPlugin"
+      provides=".interfaces.ICredentialsPlugin"
+      />
 
-  <vocabulary
-    name="PrincipalFactoryPlugins"
-    factory="zope.app.component.vocabulary.UtilityVocabulary"
-    interface="zope.app.authentication.interfaces.IPrincipalFactoryPlugin"
-    nameOnly="True"
-   />
-
-  <vocabulary
-    name="PrincipalSearchPlugins"
-    factory="zope.app.component.vocabulary.UtilityVocabulary"
-    interface="zope.app.authentication.interfaces.IPrincipalSearchPlugin"
-    nameOnly="True"
-   />
-
-  <include file="extractionplugins.zcml" />
-  <include file="challengeplugins.zcml" />
-  <include file="principalplugins.zcml" />
-  <include file="authenticationplugins.zcml" />
-  <include file="groupfolder.zcml" />
+  <include file="session.zcml" />
+  <include file="httpplugins.zcml" />
 
   <include package=".browser" />
 

@@ -1,13 +1,13 @@
+=============
 Group Folders
 =============
 
-Group folders provide support for groups information stored in the
-ZODB.
+Group folders provide support for groups information stored in the ZODB.
 
 Like other principals, groups are created when they are needed.
 
-Group folders contain group-information objects that contain group
-information.  We create group information using the `GroupInformation` class:
+Group folders contain group-information objects that contain group information.
+We create group information using the `GroupInformation` class:
 
   >>> import zope.app.authentication.groupfolder
   >>> g1 = zope.app.authentication.groupfolder.GroupInformation("Group 1")
@@ -30,12 +30,13 @@ To illustrate the group interaction with the authentication service,
 we'll create a sample authentication service:
 
   >>> from zope import interface
-  >>> from zope.app.security.interfaces import IAuthentication, IPrincipal
+  >>> from zope.app.security.interfaces import IAuthentication2
+  >>> from zope.security.interfaces import IGroupAwarePrincipal
   >>> from zope.app.authentication.groupfolder import setGroupsForPrincipal
 
   >>> class Principal:
-  ...     interface.implements(IPrincipal)
-  ...     def __init__(self, id, title, description):
+  ...     interface.implements(IGroupAwarePrincipal)
+  ...     def __init__(self, id, title='', description=''):
   ...         self.id, self.title, self.description = id, title, description
   ...         self.groups = []
 
@@ -43,14 +44,16 @@ we'll create a sample authentication service:
   ...     def __init__(self, principal):
   ...         self.principal = principal
 
+  >>> from zope.app.authentication import principalfolder
+
   >>> class Principals:
   ...
-  ...     interface.implements(IAuthentication)
+  ...     interface.implements(IAuthentication2)
   ...
   ...     def __init__(self, groups):
   ...         self.principals = {
-  ...            'p1': {'title': '', 'description': ''},
-  ...            'p2': {'title': '', 'description': ''},
+  ...            'p1': principalfolder.PrincipalInfo('p1', '', ''),
+  ...            'p2': principalfolder.PrincipalInfo('p2', '', ''),
   ...            }
   ...         self.groups = groups
   ...
@@ -60,27 +63,25 @@ we'll create a sample authentication service:
   ...             info = self.groups.principalInfo(id)
   ...             if info is None:
   ...                return None
-  ...         principal = Principal(id, **info)
+  ...         principal = Principal(id, info.title, info.description)
   ...         setGroupsForPrincipal(PrincipalCreatedEvent(principal))
   ...         return principal
 
-This class doesn't really implement the full `IAuthenticationService`
-interface, but it implements the `getPrincipal` method used by groups.
-It works very much like the pluggable authentication utility.  It
-creates principals on demand.  It calls `setGroupsForPrincipal`, which
-is normally called as an event subscriber, when principals are
-created.  In order for `setGroupsForPrincipal` to find out group
-folder, we have to register it as a utility:
+This class doesn't really implement the full `IAuthentication2` interface, but
+it implements the `getPrincipal` method used by groups. It works very much
+like the pluggable authentication utility.  It creates principals on demand. It
+calls `setGroupsForPrincipal`, which is normally called as an event subscriber,
+when principals are created. In order for `setGroupsForPrincipal` to find out
+group folder, we have to register it as a utility:
 
   >>> from zope.app.testing import ztapi
-  >>> ztapi.provideUtility(zope.app.authentication.groupfolder.IGroupFolder,
-  ...                      groups)
+  >>> from zope.app.authentication.interfaces import IAuthenticatorPlugin
+  >>> ztapi.provideUtility(IAuthenticatorPlugin, groups)
 
-The authentication service has a very simple implementation.  It has a
-`principals` dictionary and a groups folder.
+We will create and register a new principals utility:
 
   >>> principals = Principals(groups)
-  >>> ztapi.provideUtility(IAuthentication, principals)
+  >>> ztapi.provideUtility(IAuthentication2, principals)
 
 Now we can set the principals on the group:
 
@@ -101,7 +102,7 @@ If we delete a group:
   >>> del groups['g1']
 
 then the groups folder loses the group information for that group's
-principals: 
+principals:
 
   >>> groups.getGroupsForPrincipal('p1')
   ()
@@ -136,7 +137,7 @@ Groups cannot contain cycles:
   Traceback (most recent call last):
   ...
   GroupCycle: (u'group.G1', [u'group.G1', u'group.G2'])
-  
+
 They need not be hierarchical:
 
   >>> ga = zope.app.authentication.groupfolder.GroupInformation("Group A")
@@ -179,12 +180,12 @@ If you don't supply a search key, no results will be returned:
 
 Identifying groups
 ------------------
-
 The function, `setGroupsForPrincipal`, is a subscriber to
 principal-creation events.  It adds any group-folder-defined groups to
 users in those groups:
 
   >>> principal = principals.getPrincipal('p1')
+
   >>> principal.groups
   [u'group.G1', u'group.GA']
 
@@ -198,8 +199,87 @@ In addition to setting principal groups, the `setGroupsForPrincipal`
 function also declares the `IGroup` interface on groups:
 
   >>> [iface.__name__ for iface in interface.providedBy(principal)]
-  ['IGroup', 'IPrincipal']
-  
-  >>> [iface.__name__ 
+  ['IGroup', 'IGroupAwarePrincipal']
+
+  >>> [iface.__name__
   ...  for iface in interface.providedBy(principals.getPrincipal('p1'))]
-  ['IPrincipal']
+  ['IGroupAwarePrincipal']
+
+Special groups
+--------------
+Two special groups, Authenticated, and Everyone may apply to users
+created by the pluggable-authentication utility.  There is a
+subscriber, specialGroups, that will set these groups on any non-group
+principals if IAuthenticatedGroup, or IEveryoneGroup utilities are
+provided.
+
+Lets define a group-aware principal:
+
+  >>> import zope.security.interfaces
+  >>> class GroupAwarePrincipal(Principal):
+  ...     interface.implements(zope.security.interfaces.IGroupAwarePrincipal)
+  ...     def __init__(self, id):
+  ...         Principal.__init__(self, id)
+  ...         self.groups = []
+
+If we notify the subscriber with this principal, nothing will happen
+because the groups haven't been defined:
+
+  >>> prin = GroupAwarePrincipal('x')
+  >>> event = interfaces.FoundPrincipalCreated(prin, {})
+  >>> zope.app.authentication.groupfolder.specialGroups(event)
+  >>> prin.groups
+  []
+
+Now, if we define the Everybody group:
+
+  >>> import zope.app.security.interfaces
+  >>> class EverybodyGroup(Principal):
+  ...     interface.implements(zope.app.security.interfaces.IEveryoneGroup)
+
+  >>> everybody = EverybodyGroup('all')
+  >>> ztapi.provideUtility(zope.app.security.interfaces.IEveryoneGroup,
+  ...                      everybody)
+
+Then the group will be added to the principal:
+
+  >>> zope.app.authentication.groupfolder.specialGroups(event)
+  >>> prin.groups
+  ['all']
+
+Similarly for the authenticated group:
+
+  >>> class AuthenticatedGroup(Principal):
+  ...     interface.implements(
+  ...         zope.app.security.interfaces.IAuthenticatedGroup)
+
+  >>> authenticated = AuthenticatedGroup('auth')
+  >>> ztapi.provideUtility(zope.app.security.interfaces.IAuthenticatedGroup,
+  ...                      authenticated)
+
+Then the group will be added to the principal:
+
+  >>> prin.groups = []
+  >>> zope.app.authentication.groupfolder.specialGroups(event)
+  >>> prin.groups.sort()
+  >>> prin.groups
+  ['all', 'auth']
+
+These groups are only added to non-group principals:
+
+  >>> prin.groups = []
+  >>> interface.directlyProvides(prin, zope.security.interfaces.IGroup)
+  >>> zope.app.authentication.groupfolder.specialGroups(event)
+  >>> prin.groups
+  []
+
+And they are only added to group aware principals:
+
+  >>> class SolitaryPrincipal:
+  ...     interface.implements(zope.security.interfaces.IPrincipal)
+  ...     id = title = description = ''
+
+  >>> event = interfaces.FoundPrincipalCreated(SolitaryPrincipal(), {})
+  >>> zope.app.authentication.groupfolder.specialGroups(event)
+  >>> prin.groups
+  []

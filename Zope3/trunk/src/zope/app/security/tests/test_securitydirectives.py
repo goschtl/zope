@@ -24,7 +24,7 @@ from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 from zope.app.servicenames import Authentication
-from zope.app.security.interfaces import IAuthentication, IPermission
+from zope.app.security.interfaces import IAuthentication2, IPermission
 from zope.app.security.principalregistry import principalRegistry
 from zope.app.security.settings import Allow
 import zope.app.security.tests
@@ -34,7 +34,7 @@ class TestBase(PlacelessSetup):
 
     def setUp(self):
         super(TestBase, self).setUp()
-        ztapi.provideUtility(IAuthentication, principalRegistry)
+        ztapi.provideUtility(IAuthentication2, principalRegistry)
 
 
 class TestPrincipalDirective(TestBase, unittest.TestCase):

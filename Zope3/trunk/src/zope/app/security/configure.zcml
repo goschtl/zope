@@ -23,7 +23,7 @@
   <include file="_protections.zcml" />
 
   <utility
-      provides=".interfaces.IAuthentication"
+      provides=".interfaces.IAuthentication2"
       component=".principalregistry.principalRegistry" />
 
   <localUtility class=".permission.LocalPermission">
@@ -98,9 +98,9 @@
       title="[manage-services-permission] Manage Services"
       />
 
-  <permission 
-      id="zope.ManageSite" 
-      title="[manage-site-permission] Manage Site" 
+  <permission
+      id="zope.ManageSite"
+      title="[manage-site-permission] Manage Site"
       />
 
   <permission
