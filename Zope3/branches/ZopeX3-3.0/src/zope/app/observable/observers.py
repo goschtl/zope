@@ -121,7 +121,7 @@ class LocalSurrogate(Surrogate):
     """
 
     def __init__(self, spec, registry):
-        Surrogate.__init__(self, spec, registry)
+        super(LocalSurrogate, self).__init__(spec, registry)
         self.registry = registry
 
     def clean(self):
@@ -135,26 +135,32 @@ class LocalSurrogate(Surrogate):
                 )
         else:
             self.adapters = {}
-
-        Surrogate.clean(self)
+        super(LocalSurrogate, self).clean()
 
 class Observers(AdapterRegistry, Persistent):
     """Local/persistent surrogate registry
     """
-
     
     _surrogateClass = LocalSurrogate
 
     def __init__(self):
         self.adapters = {}
-        AdapterRegistry.__init__(self)
+        super(Observers, self).__init__()
 
     def __getstate__(self):
         state = Persistent.__getstate__(self).copy()
-        del state['_surrogates']
+
+        # set by AdapterRegistry.__init__
         del state['_default']
         del state['_null']
-        del state['_remove']
+
+        # the following attributes are instance methods that
+        # AdapterRegistry.__init__ took from its AdapterLookup
+        # instance
+        for key in ('lookup', 'lookup1', 'queryAdapter', 'get',
+                    'adapter_hook', 'subscriptions',
+                    'queryMultiAdapter', 'subscribers'):
+            del state[key]
         return state
 
     def __setstate__(self, state):
