@@ -752,6 +752,10 @@ def main(module_filter, test_filter, libdir):
     pathinit = PathInit(BUILD, BUILD_INPLACE, libdir)
 
     files = find_tests(module_filter)
+    if not files:
+        print ("No %s tests to be run."
+               % (functional and "functional" or "unit"))
+        return
     files.sort()
 
     # Make sure functional tests find ftesting.zcml
