@@ -15,10 +15,11 @@
 
 See IEmptyDirective, INonEmptyDirective, and ISubdirectiveHandler.
 
-$Id: meta.py,v 1.4 2002/12/31 02:52:10 jim Exp $
+$Id: meta.py,v 1.5 2003/04/18 22:12:31 jim Exp $
 """
 
 
+from zope.interface import directlyProvides, classProvides
 from zope.configuration.interfaces import INonEmptyDirective
 from zope.configuration.interfaces import ISubdirectiveHandler
 
@@ -285,7 +286,7 @@ def end(base):
 
 class DirectiveNamespace:
 
-    __class_implements__ = INonEmptyDirective
+    classProvides(INonEmptyDirective)
     __implements__ = ISubdirectiveHandler
 
     def __init__(self, _context, namespace):
@@ -300,7 +301,7 @@ class DirectiveNamespace:
     def directive(self, *args, **kw):
         subs, namespace = self._register(*args, **kw)
         return Subdirective(subs, namespace=namespace)
-    directive.__implements__ = INonEmptyDirective
+    directlyProvides(directive, INonEmptyDirective)
 
     def __call__(self):
         return ()
@@ -333,7 +334,7 @@ class Subdirective:
     def subdirective(self, *args, **kw):
         subs, namespace = self._register(*args, **kw)
         return Subdirective(subs,namespace=namespace)
-    subdirective.__implements__ = INonEmptyDirective
+    directlyProvides(subdirective, INonEmptyDirective)
 
     def __call__(self):
         return ()

@@ -15,7 +15,7 @@
 
 XXX longer description goes here.
 
-$Id: test_utility.py,v 1.11 2003/04/14 08:27:16 jim Exp $
+$Id: test_utility.py,v 1.12 2003/04/18 22:12:26 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
@@ -23,7 +23,7 @@ from zope.app.tests.placelesssetup import PlacelessSetup
 from zope.publisher.browser import BrowserView
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserPresentation
-from zope.interface import Interface
+from zope.interface import Interface, directlyProvides
 from zope.schema import Text, accessors
 from zope.app.browser.form.widget import TextWidget
 from zope.component.view import provideView, setDefaultViewName
@@ -81,7 +81,7 @@ class ViewWithCustomTitleWidgetFactory(BrowserView):
         w.custom = 1
         return w
 
-    title.__implements__ = IViewFactory
+    directlyProvides(title, IViewFactory)
 
 def kw(**kw):
     return kw

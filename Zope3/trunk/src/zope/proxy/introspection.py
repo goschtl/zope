@@ -25,11 +25,12 @@ module, by calling defineProxyType, however, it short-circuits the definitions
 for two types, which, hopefully will be the only two types that need to get
 registered. ;)
 
-$Id: introspection.py,v 1.3 2003/04/15 21:19:47 bwarsaw Exp $
+$Id: introspection.py,v 1.4 2003/04/18 22:12:32 jim Exp $
 """
+from zope.interface import moduleProvides
 from zope.proxy.interfaces import IProxyIntrospection
 
-__implements__ = IProxyIntrospection
+moduleProvides(IProxyIntrospection)
 
 
 from zope.exceptions import DuplicationError

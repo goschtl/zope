@@ -14,9 +14,10 @@
 """
 This module handles the :startup directives.
 
-$Id: sitedefinition.py,v 1.13 2003/04/09 21:17:37 bwarsaw Exp $
+$Id: sitedefinition.py,v 1.14 2003/04/18 22:12:29 jim Exp $
 """
 
+from zope.interface import classProvides
 import logging
 import sys
 
@@ -55,7 +56,7 @@ DEFAULT_LOG_LEVEL = 'INFO'
 
 class SiteDefinition:
 
-    __class_implements__ = INonEmptyDirective
+    classProvides(INonEmptyDirective)
     __implements__ = ISubdirectiveHandler
 
     # Some special file names for log files

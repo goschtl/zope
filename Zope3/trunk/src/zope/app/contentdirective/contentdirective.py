@@ -13,8 +13,9 @@
 ##############################################################################
 """ Register class directive.
 
-$Id: contentdirective.py,v 1.11 2003/04/09 20:51:31 philikon Exp $
+$Id: contentdirective.py,v 1.12 2003/04/18 22:12:26 jim Exp $
 """
+from zope.interface import classProvides
 from types import ModuleType
 from zope.interface.implements import implements
 from zope.configuration.interfaces import INonEmptyDirective
@@ -49,7 +50,7 @@ def assertPermission(permission=None, *args, **kw):
 
 class ContentDirective:
 
-    __class_implements__ = INonEmptyDirective
+    classProvides(INonEmptyDirective)
     __implements__ = ISubdirectiveHandler
 
     def __init__(self, _context, class_):

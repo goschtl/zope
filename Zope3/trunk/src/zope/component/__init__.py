@@ -13,16 +13,17 @@
 ##############################################################################
 """
 
-$Id: __init__.py,v 1.6 2003/02/12 02:17:42 seanb Exp $
+$Id: __init__.py,v 1.7 2003/04/18 22:12:30 jim Exp $
 """
 
+from zope.interface import moduleProvides
 from zope.component.interfaces import IComponentArchitecture
 from zope.component.exceptions import ComponentLookupError
 from zope.component.service import serviceManager
 from zope.component.servicenames import Adapters, Skins, Resources
 from zope.component.servicenames import Factories
 
-__implements__ = IComponentArchitecture
+moduleProvides(IComponentArchitecture)
 
 def getServiceManager(context): # hookable
     return getServiceManager_hook(context)

@@ -14,19 +14,20 @@
 """
 Default ISecurityManagement implementation
 
-$Id: management.py,v 1.2 2003/02/25 10:23:24 alga Exp $
+$Id: management.py,v 1.3 2003/04/18 22:12:34 jim Exp $
 """
 
 # Special system user that has all permissions
 # zope.security.manager needs it
 system_user = object()
 
+from zope.interface import moduleProvides
 from zope.security.interfaces import ISecurityManagement, ISecurityManagementSetup
 from zope.security.manager import SecurityManager
 from zope.security.manager import setSecurityPolicy as _setSecurityPolicy
 from zope.security.context import SecurityContext
 
-__implements__ = (ISecurityManagement, ISecurityManagementSetup)
+moduleProvides(ISecurityManagement, ISecurityManagementSetup)
 
 try:
     import thread

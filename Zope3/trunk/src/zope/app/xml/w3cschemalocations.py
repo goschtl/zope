@@ -14,8 +14,9 @@
 """
 This module contains a few utilities to extract information from XML text.
 
-$Id: w3cschemalocations.py,v 1.2 2003/04/11 14:44:27 philikon Exp $
+$Id: w3cschemalocations.py,v 1.3 2003/04/18 22:12:30 jim Exp $
 """
+from zope.interface import directlyProvides
 from xml.parsers.expat import ParserCreate, ExpatError
 from zope.app.component.globalinterfaceservice import interfaceService
 
@@ -73,7 +74,7 @@ def setInstanceInterfaces(ob, interfaces):
             pass
         return
 
-    ob.__implements__ = tuple(implements)    
+    directlyProvides(ob, *implements)
 
 def getW3CXMLSchemaLocations(xml):
     """Give list of URIs of the schema an XML document promises to implement.

@@ -13,13 +13,13 @@
 ##############################################################################
 """Test the adapter module
 
-$Id: test_adapter.py,v 1.9 2003/04/07 11:30:10 stevea Exp $
+$Id: test_adapter.py,v 1.10 2003/04/18 22:12:28 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.iconfigurable import TestingIConfigurable
 from zope.app.services.adapter import AdapterService
-from zope.interface import Interface
+from zope.interface import Interface, directlyProvides
 from zope.proxy.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
@@ -134,7 +134,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
             for r in I1, I1E:
                 for p in I2B, I2:
                     o = O()
-                    o.__implements__ = r
+                    directlyProvides(o, r)
 
                     adapter = getattr(service, m)(o, p,)
                     self.assertEqual(adapter.__class__, A)
@@ -172,7 +172,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         for r in I1, I1E:
             for p in I2B, I2:
                 o = O()
-                o.__implements__ = r
+                directlyProvides(o, r)
 
                 adapter = service.getAdapter(o, p, u"Yatta!")
                 self.assertEqual(adapter.__class__, A)
@@ -184,7 +184,7 @@ class TestAdapterService(PlacefulSetup, TestingIConfigurable, TestCase):
         for r in I1, I1E:
             for p in I2B, I2:
                 o = O()
-                o.__implements__ = r
+                directlyProvides(o, r)
 
                 adapter = service.queryAdapter(o, p, None, u"Yatta!")
                 self.assertEqual(adapter.__class__, A)

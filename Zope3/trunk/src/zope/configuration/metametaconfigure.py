@@ -12,9 +12,11 @@
 #
 ##############################################################################
 """
-$Id: metametaconfigure.py,v 1.4 2002/12/31 02:52:10 jim Exp $
+$Id: metametaconfigure.py,v 1.5 2003/04/18 22:12:31 jim Exp $
 """
-from zope.configuration.meta import DirectiveNamespace as bootstrapDirectiveNamespace
+from zope.interface import directlyProvides
+from zope.configuration.meta \
+     import DirectiveNamespace as bootstrapDirectiveNamespace
 from zope.configuration.meta import Subdirective as bootstrapSubdirective
 from zope.configuration.interfaces import INonEmptyDirective
 from zope.configuration.interfaces import IEmptyDirective
@@ -49,7 +51,7 @@ class DirectiveNamespace(bootstrapDirectiveNamespace):
 
         return self._Subdirective(subs, namespace=namespace, name=name)
 
-    directive.__implements__ = INonEmptyDirective
+    directlyProvides(directive, INonEmptyDirective)
 
 
 class Subdirective(bootstrapSubdirective):
@@ -77,7 +79,7 @@ class Subdirective(bootstrapSubdirective):
         self._useDescription(namespace, name, subs, description)
         return self.__class__(subs, namespace=namespace, name=name)
 
-    subdirective.__implements__ = INonEmptyDirective
+    directlyProvides(subdirective, INonEmptyDirective)
 
     def _useAttributeDescription(self, name, required, description):
         pass
@@ -85,12 +87,12 @@ class Subdirective(bootstrapSubdirective):
     def attribute(self, _context, name, required='', description=''):
         return Attribute(self, name, required, description)
 
-    attribute.__implements__ = INonEmptyDirective
+    directlyProvides(attribute, INonEmptyDirective)
 
     def description(self, _context):
         return Description(self)
 
-    description.__implements__ = INonEmptyDirective
+    directlyProvides(description, INonEmptyDirective)
 
 class Description:
 
@@ -131,7 +133,7 @@ class Attribute:
     def description(self, _context):
         return AttrDescription(self)
 
-    description.__implements__ = INonEmptyDirective
+    directlyProvides(description, INonEmptyDirective)
 
     def __call__(self):
         self._dir._useAttributeDescription(

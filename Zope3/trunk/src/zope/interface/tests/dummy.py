@@ -11,9 +11,10 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
+from zope.interface import moduleProvides
 from zope.interface.tests.ifoo import IFoo
 
-__implements__ = IFoo
+moduleProvides(IFoo)
 
 def bar(baz):
     pass

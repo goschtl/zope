@@ -13,13 +13,13 @@
 ##############################################################################
 """Test the view module
 
-$Id: test_view.py,v 1.9 2003/03/23 22:35:42 jim Exp $
+$Id: test_view.py,v 1.10 2003/04/18 22:12:28 jim Exp $
 """
 
 from unittest import TestCase, TestSuite, main, makeSuite
 from zope.app.services.tests.iconfigurable import TestingIConfigurable
 from zope.app.services.view import ViewService
-from zope.interface import Interface
+from zope.interface import Interface, directlyProvides
 from zope.proxy.context import ContextWrapper
 from zope.component.exceptions import ComponentLookupError
 from zope.app.services.tests.placefulsetup import PlacefulSetup
@@ -148,7 +148,7 @@ class TestViewService(PlacefulSetup, TestingIConfigurable, TestCase):
         for m in 'queryView', 'getView':
             for r in I1, I1E:
                 o = O()
-                o.__implements__ = r
+                directlyProvides(o, r)
 
                 view = getattr(service, m)(o, 'test', request)
                 self.assertEqual(view.__class__, A)

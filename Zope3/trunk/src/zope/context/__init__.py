@@ -16,10 +16,11 @@
 Specifically, coordinate use of context wrappers and security proxies.
 
 Revision information:
-$Id: __init__.py,v 1.5 2003/04/09 11:36:21 philikon Exp $
+$Id: __init__.py,v 1.6 2003/04/18 22:12:33 jim Exp $
 """
 __metaclass__ = type
 
+from zope.interface import moduleProvides
 from zope.security.proxy import Proxy, getChecker, getObject
 from zope.proxy.context.wrapper import getobject, getdict
 from zope.proxy.context.wrapper import getcontext, getinnercontext
@@ -32,7 +33,7 @@ from types import ClassType
 import inspect
 from zope.proxy.interfaces.context import IContextWrapper
 
-__implements__ = IContextWrapper
+moduleProvides(IContextWrapper)
 
 def ContextWrapper(_ob, _parent, **kw):
     """Create a context wrapper around an object with data

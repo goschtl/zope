@@ -14,12 +14,12 @@
 """
 
 Revision information:
-$Id: iadapter.py,v 1.2 2002/12/25 14:15:12 jim Exp $
+$Id: iadapter.py,v 1.3 2003/04/18 22:12:32 jim Exp $
 """
 
 import unittest
 
-from zope.interface import Interface
+from zope.interface import Interface, directlyProvides
 
 class R1(Interface): pass
 class R12(Interface): pass
@@ -87,15 +87,15 @@ class TestIAdapterRegistry(unittest.TestCase):
         c = C()
 
         for R in [R2, R3, R4, (R12, R2), (R12, R4)]:
-            c.__implements__ = R
+            directlyProvides(c, R)
             for P in [P1, P2, P3]:
                 self.assertEqual(registry.getForObject(c, P), 'R2 P3')
 
         for R in [None, R1, R2, R3, R4, (R12, R2), (R12, R4)]:
-            c.__implements__ = R
+            directlyProvides(c, R)
             self.assertEqual(registry.getForObject(c, None), None)
 
-        c.__implements__ = R1
+        directlyProvides(c, R1)
         for P in [P1, P2, P3]:
             self.assertEqual(registry.getForObject(c, P), 'any P3')
 
@@ -125,7 +125,7 @@ class TestIAdapterRegistry(unittest.TestCase):
         c = C()
 
         for R in [R2, R3, R4, (R12, R2), (R12, R4)]:
-            c.__implements__ = R
+            directlyProvides(c, R)
             for P in [P1, P2, P3]:
                 self.assertEqual(
                     registry.getForObject(c, P,
