@@ -68,7 +68,7 @@ class IWritePrincipalSource(Interface):
 class IPrincipalSource(IReadPrincipalSource, IWritePrincipalSource):
     """A read-write principal source."""
 
-class ILoginPasswordPrincipalSource(IPrincipalSource):
+class ILoginPasswordPrincipalSource(Interface):
     """ A principal source which can authenticate a user given a
     login and a password """
 

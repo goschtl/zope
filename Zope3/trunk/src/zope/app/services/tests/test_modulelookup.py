@@ -16,7 +16,7 @@
 Note that when we get around to implementing module services, those
 tests will go here too.
 
-$Id: test_modulelookup.py,v 1.2 2003/06/30 16:37:14 jim Exp $
+$Id: test_modulelookup.py,v 1.3 2003/07/03 15:42:48 srichter Exp $
 """
 
 from zope.testing.doctestunit import DocTestSuite
@@ -69,7 +69,7 @@ def test_findMoule():
 
     >>> import zope.app.services.tests.test_modulelookup
     >>> m = folder.findModule('zope.app.services.tests.test_modulelookup')
-    >>> m is zope.app.services.tests.test_modulelookup
+    >>> int(m is zope.app.services.tests.test_modulelookup)
     1
     
     """
@@ -80,7 +80,7 @@ def test_resolve():
     >>> import zope.app.services.tests.test_modulelookup
     >>> f = folder.resolve(
     ...    'zope.app.services.tests.test_modulelookup.test_resolve')
-    >>> f is zope.app.services.tests.test_modulelookup.test_resolve
+    >>> int(f is zope.app.services.tests.test_modulelookup.test_resolve)
     1
     """
 
