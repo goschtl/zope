@@ -32,7 +32,7 @@ Options:
         Specifies the package that is supposed to be searched
         (i.e. 'zope/app')
 """
-__id__ = "$Id: extract.py,v 1.8 2003/08/20 05:02:20 philikon Exp $"
+__id__ = "$Id: extract.py,v 1.9 2003/08/20 16:29:55 srichter Exp $"
 
 import os, sys, fnmatch
 import getopt
@@ -40,6 +40,7 @@ import time
 import tokenize
 import traceback
 from pygettext import safe_eval, normalize, make_escapes
+from zope.i18n.messageid import MessageID
 
 __meta_class__ = type
 
@@ -199,6 +200,7 @@ class TokenEater:
     def __keywordseen(self, ttype, tstring, lineno):
         if ttype == tokenize.OP and tstring == '(':
             self.__data = []
+            self.__msgid = ''
             self.__lineno = lineno
             self.__state = self.__openseen
         else:
@@ -210,16 +212,27 @@ class TokenEater:
             # line number of the first line of the strings and update the list 
             # of messages seen.  Reset state for the next batch.  If there
             # were no strings inside _(), then just ignore this entry.
-            if self.__data:
-                self.__addentry(''.join(self.__data))
+            if self.__data or self.__msgid:
+                if self.__msgid:
+                    msgid = self.__msgid
+                    default = ''.join(self.__data)
+                else:
+                    msgid = ''.join(self.__data)
+                    default = None
+                self.__addentry(msgid, default)
             self.__state = self.__waiting
+        elif ttype == tokenize.OP and tstring == ',':
+            self.__msgid = ''.join(self.__data)
+            self.__data = []
         elif ttype == tokenize.STRING:
             self.__data.append(safe_eval(tstring))
 
-    def __addentry(self, msg, lineno=None, isdocstring=0):
+    def __addentry(self, msg, default=None, lineno=None, isdocstring=0):
         if lineno is None:
             lineno = self.__lineno
 
+        if default is not None:
+            msg = MessageID(msg, default=default)
         entry = (self.__curfile, lineno)
         self.__messages.setdefault(msg, {})[entry] = isdocstring
 
