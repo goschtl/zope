@@ -13,7 +13,7 @@
 ##############################################################################
 """Testing helper functions
 
-$Id: ztapi.py,v 1.5 2004/03/06 02:46:20 garrett Exp $
+$Id: ztapi.py,v 1.6 2004/03/15 20:42:20 jim Exp $
 """
 from zope.app import zapi
 import zope.interface
@@ -24,18 +24,24 @@ def browserView(for_, name, factory, layer='default',
                 providing=zope.interface.Interface):
     """Define a global browser view
     """
+    if isinstance(factory, (list, tuple)):
+        raise ValueError("Factory cannot be a list or tuple")
     s = zapi.getService(None, Presentation)
     return s.provideView(for_, name, IBrowserRequest, factory, layer,
                          providing=providing)
 
 def browserViewProviding(for_, factory, providing, layer='default'):
     """Define a view providing a particular interface."""
+    if isinstance(factory, (list, tuple)):
+        raise ValueError("Factory cannot be a list or tuple")
     return browserView(for_, '', factory, layer, providing)
 
 def browserResource(name, factory, layer='default',
                     providing=zope.interface.Interface):
     """Define a global browser view
     """
+    if isinstance(factory, (list, tuple)):
+        raise ValueError("Factory cannot be a list or tuple")
     s = zapi.getService(None, Presentation)
     return s.provideResource(name, IBrowserRequest, factory, layer,
                              providing=providing)
@@ -46,10 +52,16 @@ def setDefaultViewName(for_, name, layer='default'):
 
 stypes = list, tuple
 def provideAdapter(required, provided, factory, name='', with=()):
+    if isinstance(factory, (list, tuple)):
+        raise ValueError("Factory cannot be a list or tuple")
     s = zapi.getService(None, Adapters)
-    if not isinstance(factory, stypes):
-        factory = [factory]
-    s.provideAdapter(required, provided, factory, name, with)
+
+    if with:
+        required = (required, ) + tuple(with)
+    elif not isinstance(required, stypes):
+        required = [required]
+            
+    s.register(required, provided, name, factory)
     
 def provideUtility(provided, component, name=''):
     s = zapi.getService(None, Utilities)
