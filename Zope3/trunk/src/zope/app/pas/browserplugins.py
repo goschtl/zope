@@ -69,7 +69,6 @@ class SessionCredentials:
 
     def __str__(self): return self.getLogin() + ':' + self.getPassword()
 
-
 class SessionExtractor(Persistent, Contained):
     """ session-based credential extractor.
 
@@ -83,8 +82,8 @@ class SessionExtractor(Persistent, Contained):
         >>> sessionSetUp(RAMSessionDataContainer)
         >>> se = SessionExtractor()
 
-
         Start: No credentials available
+
         >>> request = TestRequest()
         >>> se.extractCredentials(request) is None
         True
@@ -93,6 +92,7 @@ class SessionExtractor(Persistent, Contained):
         If the session does not contain the credentials check
         the request for form variables and store the credentials in
         the session.
+
         >>> request = TestRequest(login='scott', password='tiger')
         >>> se.extractCredentials(request)
         {'login': 'scott', 'password': 'tiger'}
@@ -100,11 +100,13 @@ class SessionExtractor(Persistent, Contained):
         After login the credentials are stored in the session.
         (The tests.sessionSetUp() method ensures that in this test the request
         always gets the same client id so we get the same session data.)
+
         >>> request = TestRequest()
         >>> se.extractCredentials(request)
         {'login': 'scott', 'password': 'tiger'}
 
         We must be able to re-login with another username and password:
+
         >>> request = TestRequest(login='harry', password='hirsch')
         >>> se.extractCredentials(request)
         {'login': 'harry', 'password': 'hirsch'}
@@ -114,11 +116,10 @@ class SessionExtractor(Persistent, Contained):
 
         Magic logout command in URL forces log out by deleting the
         credentials from the session.
+
         >>> request = TestRequest(authrequest='logout')
-        >>> se.extractCredentials(request) is None
-        True
-        >>> Session(request)['pas']['credentials'] is None
-        True
+        >>> se.extractCredentials(request)
+        >>> Session(request)['zope.app.pas.browserplugins']['credentials']
      """
     implements(IExtractionPlugin)
 
@@ -126,7 +127,7 @@ class SessionExtractor(Persistent, Contained):
         """ return credentials from session, request or None """
         #if not credentials:
             # check for form data
-        sessionData = ISession(request)['pas']
+        sessionData = ISession(request)['zope.app.pas.browserplugins']
         login = request.get('login', None)
         password = request.get('password', None)
         if login and password:
