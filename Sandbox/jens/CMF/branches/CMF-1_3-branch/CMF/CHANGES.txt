@@ -2,6 +2,9 @@ CMF 1.3
 
   New Features
 
+    - Added a 'Workflows' tab in the ZMI that displays the workflow state
+      of the object.
+
     - Wired 'scrubHTML' check into default versions of 'document_edit'
       and 'newsitem_edit' skins (site managers who prefer to allow
       JavaScript in content can customize to remove the check).
