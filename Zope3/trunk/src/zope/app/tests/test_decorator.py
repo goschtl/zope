@@ -13,7 +13,7 @@
 ##############################################################################
 """Context Tests
 
-$Id: test_decorator.py,v 1.2 2003/09/21 17:33:33 jim Exp $
+$Id: test_decorator.py,v 1.3 2003/11/21 17:09:39 jim Exp $
 """
 
 import pickle
@@ -65,101 +65,24 @@ def test_providedBy_iter_w_new_style_class():
     ['I4', 'I3', 'I1', 'I2']
     """
 
-def test_providedBy_signature_w_new_style_class():
-    """
-    >>> class X(object):
-    ...   implements(I3)
-
-    >>> x = X()
-
-    >>> int(providedBy(x).__signature__ == implementedBy(X).__signature__)
-    1
-
-    >>> int(providedBy(Decorator(x)).__signature__ ==
-    ...     implementedBy(X).__signature__)
-    1
-
-    >>> directlyProvides(x, I4)    
-    >>> int(providedBy(x).__signature__ ==
-    ...      (directlyProvidedBy(x).__signature__,
-    ...       implementedBy(X).__signature__,
-    ...      )
-    ...     )
-    1
-
-    >>> int(providedBy(D1(x)).__signature__ ==
-    ...      (
-    ...       (directlyProvidedBy(x).__signature__,
-    ...        implementedBy(X).__signature__,
-    ...       ),
-    ...       implementedBy(D1).__signature__,
-    ...      )
-    ...     )
-    1
-
-    >>> int(providedBy(D2(D1(x))).__signature__ ==
-    ...       (
-    ...        (
-    ...         (directlyProvidedBy(x).__signature__,
-    ...          implementedBy(X).__signature__,
-    ...         ),
-    ...         implementedBy(D1).__signature__,
-    ...        ),
-    ...        implementedBy(D2).__signature__,
-    ...       )
-    ...     )
-    1
-
-    """
-
-def test_providedBy_signature_w_classic_class():
+def test_providedBy_iter_w_classic_class():
     """
     >>> class X:
     ...   implements(I3)
 
     >>> x = X()
-
-
-    >>> int(providedBy(x).__signature__ == implementedBy(X).__signature__)
-    1
-
-    >>> int(providedBy(Decorator(x)).__signature__ ==
-    ...     implementedBy(X).__signature__)
-    1
-
     >>> directlyProvides(x, I4)
 
-    >>> int(providedBy(x).__signature__ ==
-    ...      (directlyProvidedBy(x).__signature__,
-    ...       implementedBy(X).__signature__,
-    ...      )
-    ...     )
-    1
+    >>> [interface.getName() for interface in list(providedBy(x))]
+    ['I4', 'I3']
 
-    >>> int(providedBy(D1(x)).__signature__ ==
-    ...      (
-    ...       (directlyProvidedBy(x).__signature__,
-    ...        implementedBy(X).__signature__,
-    ...       ),
-    ...       implementedBy(D1).__signature__,
-    ...      )
-    ...     )
-    1
+    >>> [interface.getName() for interface in list(providedBy(D1(x)))]
+    ['I4', 'I3', 'I1']
 
-    >>> int(providedBy(D2(D1(x))).__signature__ ==
-    ...       (
-    ...        (
-    ...         (directlyProvidedBy(x).__signature__,
-    ...          implementedBy(X).__signature__,
-    ...         ),
-    ...         implementedBy(D1).__signature__,
-    ...        ),
-    ...        implementedBy(D2).__signature__,
-    ...       )
-    ...     )
-    1
-
+    >>> [interface.getName() for interface in list(providedBy(D2(D1(x))))]
+    ['I4', 'I3', 'I1', 'I2']
     """
+
 
 class Thing:
     pass
