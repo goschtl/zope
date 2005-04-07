@@ -29,6 +29,8 @@ CO_VARARGS = 4
 CO_VARKEYWORDS = 8
 TAGGED_DATA = '__interface_tagged_values__'
 
+_decorator_non_return = object()
+
 def invariant(call):
     f_locals = sys._getframe(1).f_locals
     tags = f_locals.get(TAGGED_DATA)
@@ -38,6 +40,7 @@ def invariant(call):
     if invariants is None:
         invariants = tags['invariants'] = []
     invariants.append(call)
+    return _decorator_non_return
 
 class Element(object):
 
@@ -448,6 +451,8 @@ class InterfaceClass(Element, Specification):
                     attr.__name__ = name
             elif isinstance(attr, FunctionType):
                 attrs[name] = fromFunction(attr, self, name=name)
+            elif attr is _decorator_non_return:
+                del attrs[name]
             else:
                 raise InvalidInterface("Concrete attribute, %s" %name)
 

@@ -15,12 +15,14 @@
 
 $Id$
 """
+import sys
 import unittest
 from zope.testing.doctestunit import DocTestSuite
 from zope.interface.tests.unitfixtures import *  # hehehe
 from zope.interface.exceptions import BrokenImplementation, Invalid
 from zope.interface import implementedBy, providedBy
 from zope.interface import Interface, directlyProvides, Attribute
+from zope import interface
 
 class InterfaceTests(unittest.TestCase):
 
@@ -278,10 +280,44 @@ class _I2(_I1__):
     f23 = f22
 
 
+
+if sys.version_info >= (2, 4):
+    def test_invariant_as_decorator():
+        """Invaiants can be deined in line
+
+          >>> class IRange(interface.Interface):
+          ...     min = interface.Attribute("Lower bound")
+          ...     max = interface.Attribute("Upper bound")
+          ...
+          ...     @interface.invariant
+          ...     def range_invariant(ob):
+          ...         if ob.max < ob.min:
+          ...             raise Invalid('max < min')
+
+
+          >>> class Range(object):
+          ...     interface.implements(IRange)
+          ...
+          ...     def __init__(self, min, max):
+          ...         self.min, self.max = min, max
+
+          >>> IRange.validateInvariants(Range(1,2))
+          >>> IRange.validateInvariants(Range(1,1))
+          >>> IRange.validateInvariants(Range(2,1))
+          Traceback (most recent call last):
+          ...
+          Invalid: max < min
+
+
+        """
+
+
 def test_suite():
     from zope.testing import doctest
     suite = unittest.makeSuite(InterfaceTests)
     suite.addTest(doctest.DocTestSuite("zope.interface.interface"))
+    if sys.version_info >= (2, 4):
+        suite.addTest(doctest.DocTestSuite())
     suite.addTest(doctest.DocFileSuite(
         '../README.txt',
         globs={'__name__': '__main__'},
