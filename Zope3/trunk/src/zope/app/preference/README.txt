@@ -365,7 +365,7 @@ Let's register the ZMI settings again under a new name via ZCML:
   >>> interfaces.IPreferenceCategory.providedBy(prefs.ZMISettings2)
   True
 
-And the tree can built again by carefully cosntructing the id:
+And the tree can built again by carefully constructing the id:
 
   >>> context = xmlconfig.string('''
   ...     <configure
