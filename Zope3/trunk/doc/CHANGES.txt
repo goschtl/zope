@@ -692,6 +692,11 @@ Zope Changes
         (``IUserPreferredLanguages``), instead of hard-wiring the
         default one.
 
+      - For ``for`` parameter of the <browser:menuItem> and
+        <browser:menuItems> directives was not marked as required in
+        the directive schema, while it actually was expected to be
+        required.
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
