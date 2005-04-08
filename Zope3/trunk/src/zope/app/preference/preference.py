@@ -46,7 +46,7 @@ class PreferenceGroup(Location):
     zope.interface.implements(IPreferenceGroup, IReadContainer)
 
     # Declare attributes here, so that they are always available.
-    __id__ = None
+    __id__ = ''
     __schema__ = None
     __title__ = None
     __description__ = None
@@ -100,7 +100,6 @@ class PreferenceGroup(Location):
                 if id != self.__id__ and \
                    id.startswith(self.__id__) and \
                    id[cutoff:].find('.') == -1]
-
 
     def __getitem__(self, key):
         """See zope.app.container.interfaces.IReadContainer"""
@@ -164,7 +163,9 @@ class PreferenceGroup(Location):
             self.__dict__[key] = value
             # If the schema changed, we really need to change the security
             # checker as well.
-            self.__dict__['__Security_checker__'] = PreferenceGroupChecker(self)
+            if key is '__schema__':
+                checker = PreferenceGroupChecker(self)
+                self.__dict__['__Security_checker__'] = checker
 
     def __delattr__(self, key):
         if self.__schema__ and key in self.__schema__:
