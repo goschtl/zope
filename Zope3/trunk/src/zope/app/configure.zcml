@@ -36,7 +36,6 @@
   <include package="zope.app.pagetemplate" />
   <include package=".generations" />
   <include package=".zapi" />
-  <include package="zope.app.preference" />
 
   <!-- Views -->
   <include package="zope.app.http" />
