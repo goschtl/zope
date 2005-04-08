@@ -90,15 +90,19 @@ def doctest_RecordingHTTPRequestParser():
 def doctest_RecordingHTTPServer():
     r"""Unit tests for RecordingHTTPServer.
 
-    RecordingHTTPServer is a very thin wrapper over PublisherHTTPServer.  To
-    keep things simple, we will override the constructor and prevent it from
-    listening on sockets.
+    RecordingHTTPServer is a very thin wrapper over PublisherHTTPServer. First
+    we create a custom request:
+
+        >>> class RecorderRequest(TestRequest):
+        ...     publication = PublicationStub()
+
+    Further, to keep things simple, we will override the constructor and
+    prevent it from listening on sockets.
 
         >>> from zope.app.recorder import RecordingHTTPServer
         >>> class RecordingHTTPServerForTests(RecordingHTTPServer):
         ...     def __init__(self):
-        ...         self.request_factory = TestRequest
-        ...         self.request_factory.publication = PublicationStub()
+        ...         self.request_factory = RecorderRequest
         >>> server = RecordingHTTPServerForTests()
 
     We will need a request parser
