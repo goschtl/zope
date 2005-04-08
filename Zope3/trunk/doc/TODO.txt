@@ -7,7 +7,7 @@ Features
 
 - Support for iterable sources
 
-- Issue 390: Request body and bodyFile are bogus, and have a 
+- Issue 390: Request body and bodyFile are bogus, and have a
              misleading documentation
 
 Miscellaneous
@@ -26,7 +26,7 @@ Bug Fixes
 Navigation Tree
 ~~~~~~~~~~~~~~~
 
-  * 333: XML Tree doesn't load if some item contains non-ASCII characters 
+  * 333: XML Tree doesn't load if some item contains non-ASCII characters
 
 FTP Server
 ~~~~~~~~~~
@@ -35,7 +35,7 @@ FTP Server
 
   * 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
 
-  * 375: ftp data channel does not tell control channel about activity 
+  * 375: ftp data channel does not tell control channel about activity
 
 File Content Component
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -54,42 +54,46 @@ TAL i18n-namspace
 Others
 ~~~~~~
 
-  * 284: Bogus 404 errors with TALES traversal fails 
-  
-  * 296: missing display widgets 
-  
+  * 284: Bogus 404 errors with TALES traversal fails
+
+  * 296: missing display widgets
+
   * 298: Role/permission title and description should be messageids
-  
+
   * 307: browser:addMenuItem and broken view references
-  
-  * 313: importchecker.py ignores assignment to module attributes 
-  
+
+  * 313: importchecker.py ignores assignment to module attributes
+
   * 316: Zope3X test.py truncates path with dir=
-  
+
   * 332: Death to IContentContainer
-  
-  * 334: Failing RuntimeInfo tests 
-  
+
   * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
-  
-  * 340: Adding a big file eats a lot of memory / memory leak? 
-  
+
+  * 340: Adding a big file eats a lot of memory / memory leak?
+
   * 344: PAU registration error
-  
-  * 356: Copy and Paste does not handle exceptions raised by __setitem__ 
-  
+
+  * 356: Copy and Paste does not handle exceptions raised by __setitem__
+
   * 369: DAV is hosed on the trunk
-  
+
   * 372: WidgetInputError.doc is broken
-  
-  * 373: Adding objects requires permission zope.app.dublincore.change 
-  
-  * 380: Local Utility don't get correct removed  
+
+  * 373: Adding objects requires permission zope.app.dublincore.change
+
+  * 380: Local Utility don't get correct removed
 
   - 381: Handle migration of site instance 'securitypolicy.zcml' files
- 
+
   * 384: Problems with permissions in zcml utility directives
 
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well.
+
+Done
+~~~~
+
+  * 334: Failing RuntimeInfo tests
+         Fixed: on trunk at rev 29616, on ZopeX3-3.0 branch at rev 29906
