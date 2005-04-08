@@ -162,6 +162,9 @@ class PreferenceGroup(Location):
             self.data[key] = value
         else:
             self.__dict__[key] = value
+            # If the schema changed, we really need to change the security
+            # checker as well.
+            self.__dict__['__Security_checker__'] = PreferenceGroupChecker(self)
 
     def __delattr__(self, key):
         if self.__schema__ and key in self.__schema__:
@@ -188,9 +191,8 @@ class PreferenceGroup(Location):
     data = property(data)
 
 
-
 def PreferenceGroupChecker(instance):
-    """A function that can be registered as a Checker in defineChecker()
+    """A function that generates a custom security checker.
 
     The attributes available in a preference group are dynamically generated
     based on the group schema and the available sub-groups. Thus, the
@@ -219,8 +221,6 @@ def PreferenceGroupChecker(instance):
         write_perm_dict[name] = CheckerPublic
 
     return Checker(read_perm_dict, write_perm_dict)
-
-defineChecker(PreferenceGroup, PreferenceGroupChecker)
 
 
 def UserPreferences(context=None):
