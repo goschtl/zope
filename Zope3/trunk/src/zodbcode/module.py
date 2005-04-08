@@ -230,6 +230,7 @@ class PersistentModuleImporter:
         if self._saved_import is None:
             raise TypeError("Not installed!")
         __builtin__.__import__ = self._saved_import
+        self._saved_import = None
 
     def _import(self, registry, name, parent, fromlist):
         mod = None

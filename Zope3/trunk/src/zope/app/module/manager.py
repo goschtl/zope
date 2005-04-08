@@ -43,6 +43,7 @@ class ModuleManager(persistent.Persistent, Contained):
             mod = self._module = zodbcode.module.PersistentModule(self.name)
 
         zodbcode.module.compileModule(mod, ZopeModuleRegistry, self.source)
+        self._module.__name__ = self.name
         self._recompile = False
 
     def getModule(self):

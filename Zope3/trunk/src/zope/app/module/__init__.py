@@ -26,7 +26,11 @@ from zope.app.module.interfaces import IModuleManager
 
 
 class ZopeModuleRegistry(object):
-    """TODO: who am I?"""
+    """Zope-specific registry of persistent modules.
+
+    This registry is used to lookup local module managers and then get the
+    module from them.
+    """
     implements(zodbcode.interfaces.IPersistentModuleImportRegistry)
 
     def findModule(self, name):
@@ -55,9 +59,22 @@ def resolve(name, context=None):
     return getattr(mod, name[pos+1:], None)
 
 
+class ZopePersistentModuleImporter(zodbcode.module.PersistentModuleImporter):
+
+    def __init__(self, registry):
+        self._registry = registry
+
+    def __import__(self, name, globals={}, locals={}, fromlist=[]):
+        mod = self._import(self._registry, name, self._get_parent(globals),
+                           fromlist)
+        if mod is not None:
+            return mod
+        return self._saved_import(name, globals, locals, fromlist)
+
+
 # Installer function that can be called from ZCML.
 # This installs an import hook necessary to support persistent modules.
-importer = zodbcode.module.PersistentModuleImporter()
+importer = ZopePersistentModuleImporter(ZopeModuleRegistry)
 
 def installPersistentModuleImporter(event):
     importer.install()

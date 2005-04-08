@@ -57,15 +57,14 @@ and activate the registration a name will be set:
   >>> root_sm = setup.createSiteManager(root)
 
   >>> from zope.app.module import interfaces
-  >>> manager = setup.addUtility(root_sm, 'zope.mymodule',
+  >>> manager = setup.addUtility(root_sm, 'mymodule',
   ...                            interfaces.IModuleManager, manager)
 
   >>> manager.name
-  'zope.mymodule'
+  'mymodule'
 
-  # XXX This does not currently work for some reason.
-  #>>> manager.getModule().__name__
-  #'zope.mymodule'
+  >>> manager.getModule().__name__
+  'mymodule'
 
 Next, let's ensure that the module's persistence works correctly. To do that
 let's create a database and add the root folder to it:
@@ -84,7 +83,7 @@ different connection.
   >>> conn2 = db.open()
   >>> root2 = conn2.root()['Application']
   >>> module2 = root2.getSiteManager().queryUtility(
-  ...     interfaces.IModuleManager, 'zope.mymodule').getModule()
+  ...     interfaces.IModuleManager, 'mymodule').getModule()
   >>> module2.foo
   1
   >>> module2.bar()
@@ -101,7 +100,7 @@ registires that behave pretty much like `sys.modules`. Zope 3 provides its own
 module registry that uses the registered utilities to look up modules:
 
   >>> from zope.app.module import ZopeModuleRegistry
-  >>> ZopeModuleRegistry.findModule('zope.mymodule')
+  >>> ZopeModuleRegistry.findModule('mymodule')
 
 But why did we not get the module back? Because we have not set the site yet:
 
@@ -111,23 +110,23 @@ But why did we not get the module back? Because we have not set the site yet:
 Now it will find the module and we can retrieve a list of all persistent
 module names:
 
-  >>> ZopeModuleRegistry.findModule('zope.mymodule') is module
+  >>> ZopeModuleRegistry.findModule('mymodule') is module
   True
   >>> ZopeModuleRegistry.modules()
-  ['zope.mymodule']
+  ['mymodule']
 
 Additionally, the package provides two API functions that look up a module in
 the registry and then in `sys.modules`:
 
   >>> import zope.app.module
-  >>> zope.app.module.findModule('zope.mymodule') is module
+  >>> zope.app.module.findModule('mymodule') is module
   True
   >>> zope.app.module.findModule('zope.app.module') is zope.app.module
   True
 
 The second function can be used to lookup objects inside any module:
 
-  >>> zope.app.module.resolve('zope.mymodule.foo')
+  >>> zope.app.module.resolve('mymodule.foo')
   1
   >>> zope.app.module.resolve('zope.app.module.foo.resolve')
 
@@ -137,16 +136,16 @@ to install the importer hook, which is commonly done with an event subscriber:
   >>> event = object()
   >>> zope.app.module.installPersistentModuleImporter(event)
   >>> __builtins__['__import__'] # doctest: +ELLIPSIS
-  <bound method PersistentModuleImporter.__import__ of ...>
+  <bound method ZopePersistentModuleImporter.__import__ of ...>
 
 Now we can simply import the persistent module:
 
-  # XXX This appears to be currently broken!
-  #>>> import zope.mymodule
-  #>>> zope.mymodule.Blah('my id')
-  #Blah('my id')
+  >>> import mymodule
+  >>> mymodule.Blah('my id')
+  Blah(id=my id)
 
 Finally, we unregister the hook again:
 
   >>> zope.app.module.uninstallPersistentModuleImporter(event)
-
+  >>> __builtins__['__import__'] # doctest: +ELLIPSIS
+  <built-in function __import__>

@@ -390,7 +390,6 @@ class TestModuleReload(unittest.TestCase):
         pmtest.f(4)
         self.close()
         pmtest._p_deactivate()
-        self.importer.uninstall()
         self.open()
         del pmtest
         import pmtest
@@ -406,7 +405,6 @@ class TestModuleReload(unittest.TestCase):
         transaction.commit()
         self.close()
         foo._p_deactivate()
-        self.importer.uninstall()
         self.open()
         del foo
         import foo
