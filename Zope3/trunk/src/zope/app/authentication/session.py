@@ -168,7 +168,6 @@ class SessionCredentialsPlugin(Persistent, Contained):
         credentials = sessionData.get('credentials', None)
         if not credentials:
             return None
-        authrequest = request.get('authrequest', None)
         return {'login': credentials.getLogin(),
                 'password': credentials.getPassword()}
 
