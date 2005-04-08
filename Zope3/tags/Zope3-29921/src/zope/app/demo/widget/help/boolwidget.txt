@@ -1,0 +1,235 @@
+=================
+BoolWidget sample
+=================
+
+Interface
+---------
+
+Add a interfaces with Bool fields::
+
+class IReadDemoBoolWidget(Interface):
+    """Widget read interface."""
+
+    readonly = Bool(
+        title = _(u"readonly"),
+        description=_(u"zope.schema.Int field with readonly = True."),
+        required=False,
+        readonly=True,
+        default=42)
+
+
+class IWriteDemoBoolWidget(Interface):
+    """Widget write interface."""
+
+    standard = Bool(
+        title = _(u"standard"),
+        description=_(u"""zope.schema.Bool field with only title and description."""),
+        )
+
+    required = Bool(
+        title = _(u"required"),
+        description=_(u"zope.schema.Bool field with required = True."),
+        required=True)
+
+    constraint = Bool(
+        title = _(u"constraint"),
+        description=_(u"""zope.schema.Bool field with constraint """
+            """lambda x: x == True."""),
+        constraint=lambda x: x == True)
+
+    default = Bool(
+        title = _(u"default"),
+        description=_(u"""zope.schema.Bool field with """
+            """default = True."""),
+        default=True)
+
+
+class IDemoBoolWidget(IDemoWidget, IReadDemoBoolWidget, IWriteDemoBoolWidget):
+    """Widget interface inherites read and write interfaces."""
+
+Define a class::
+
+class DemoBoolWidget(DemoWidget):
+    """Demo TextWidget implementation."""
+
+    implements(IDemoBoolWidget)
+    
+    standard = FieldProperty(IDemoBoolWidget['standard'])
+    required = FieldProperty(IDemoBoolWidget['required'])
+    readonly = FieldProperty(IDemoBoolWidget['readonly'])
+    constraint = FieldProperty(IDemoBoolWidget['constraint'])
+    default = FieldProperty(IDemoBoolWidget['default'])
+
+Register the class::
+
+  <content class=".boolwidget.DemoBoolWidget">
+
+    <require permission="zope.View" 
+        interface=".interfaces.IDemoBoolWidget"
+        />
+
+    <require permission="zope.ManageContent" 
+        set_schema=".interfaces.IDemoBoolWidget"
+        />
+
+  </content>
+
+Register a addform::
+
+  <addMenuItem
+      title="BoolWidget"
+      description="Add a Demo BoolWidget"
+      class="..boolwidget.DemoBoolWidget"
+      permission="zope.ManageContent"
+      view="addDemoBoolWidget.html"
+      />
+
+  <addform
+      name="addDemoBoolWidget.html"
+      label="Add a Demo BoolWidget"
+      schema="..interfaces.IWriteDemoBoolWidget"
+      content_factory="..boolwidget.DemoBoolWidget"
+      permission="zope.ManageContent"
+      />
+
+Register a editform::
+
+  <editform
+      name="edit.html"
+      label="Edit"
+      for="..interfaces.IDemoBoolWidget"
+      schema="..interfaces.IWriteDemoBoolWidget"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+
+Add a DemoWidgetContainer for test the widgets::
+
+  >>> print http(r"""
+  ... POST /@@contents.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: application/x-www-form-urlencoded
+  ... 
+  ... type_name=BrowserAdd__zope.app.demo.widget.app.DemoWidgetContainer&new_value=widgets""")
+  HTTP/1.1 303 See Other
+  ...
+
+Add a BoolWidget using the addform::
+
+  >>> print http(r"""
+  ... POST /widgets/+/addDemoBoolWidget.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Content-Type: multipart/form-data; boundary=---------------------------7d538b36c0aea
+  ... Referer: http://localhost:8081/widgets/+/addDemoBoolWidget.html=
+  ... 
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="field.standard.used"
+  ... 
+  ... 
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="field.standard"
+  ... 
+  ... on
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="field.required.used"
+  ... 
+  ... 
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="field.required"
+  ... 
+  ... on
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="field.constraint.used"
+  ... 
+  ... 
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="field.constraint"
+  ... 
+  ... on
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="field.default.used"
+  ... 
+  ... 
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="field.default"
+  ... 
+  ... on
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Add
+  ... -----------------------------7d538b36c0aea
+  ... Content-Disposition: form-data; name="add_input_name"
+  ... 
+  ... demo
+  ... -----------------------------7d538b36c0aea--
+  ... """)
+  HTTP/1.1 303 See Other
+  ...
+        <div class="row">
+            <div class="label">
+              <label for="field.standard"
+                     title="zope.schema.Bool field with only title and description.">standard</label>
+            </div>
+            <div class="field"><input class="hiddenType" id="field.standard.used" name="field.standard.used" type="hidden" value="" /> <input class="checkboxType" checked="checked" id="field.standard" name="field.standard" type="checkbox" value="on"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.required"
+                     title="zope.schema.Bool field with required = True.">required</label>
+            </div>
+            <div class="field"><input class="hiddenType" id="field.required.used" name="field.required.used" type="hidden" value="" /> <input class="checkboxType" checked="checked" id="field.required" name="field.required" type="checkbox" value="on"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.constraint"
+                     title="zope.schema.Bool field with constraint lambda x: x == True.">constraint</label>
+            </div>
+            <div class="field"><input class="hiddenType" id="field.constraint.used" name="field.constraint.used" type="hidden" value="" /> <input class="checkboxType" checked="checked" id="field.constraint" name="field.constraint" type="checkbox" value="on"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.default"
+                     title="zope.schema.Bool field with default = True.">default</label>
+            </div>
+            <div class="field"><input class="hiddenType" id="field.default.used" name="field.default.used" type="hidden" value="" /> <input class="checkboxType" checked="checked" id="field.default" name="field.default" type="checkbox" value="on"  /></div>
+        </div...
+
+
+Check the editform::
+
+  >>> print http(r"""
+  ... GET /widgets/demo/@@edit.html HTTP/1.1
+  ... Authorization: Basic mgr:mgrpw
+  ... Referer: http://localhost:8081/widgets/demo/@@contents.html
+  ... """)
+  HTTP/1.1 200 Ok
+  ...
+        <div class="row">
+            <div class="label">
+              <label for="field.standard"
+                     title="zope.schema.Bool field with only title and description.">standard</label>
+            </div>
+            <div class="field"><input class="hiddenType" id="field.standard.used" name="field.standard.used" type="hidden" value="" /> <input class="checkboxType" checked="checked" id="field.standard" name="field.standard" type="checkbox" value="on"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.required"
+                     title="zope.schema.Bool field with required = True.">required</label>
+            </div>
+            <div class="field"><input class="hiddenType" id="field.required.used" name="field.required.used" type="hidden" value="" /> <input class="checkboxType" checked="checked" id="field.required" name="field.required" type="checkbox" value="on"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.constraint"
+                     title="zope.schema.Bool field with constraint lambda x: x == True.">constraint</label>
+            </div>
+            <div class="field"><input class="hiddenType" id="field.constraint.used" name="field.constraint.used" type="hidden" value="" /> <input class="checkboxType" checked="checked" id="field.constraint" name="field.constraint" type="checkbox" value="on"  /></div>
+        </div>
+        <div class="row">
+            <div class="label">
+              <label for="field.default"
+                     title="zope.schema.Bool field with default = True.">default</label>
+            </div>
+            <div class="field"><input class="hiddenType" id="field.default.used" name="field.default.used" type="hidden" value="" /> <input class="checkboxType" checked="checked" id="field.default" name="field.default" type="checkbox" value="on"  /></div>
+        </div...

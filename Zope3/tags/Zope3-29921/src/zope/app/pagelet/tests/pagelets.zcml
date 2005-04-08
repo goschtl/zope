@@ -1,0 +1,28 @@
+<zope:configure 
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    xmlns:meta="http://namespaces.zope.org/meta"
+    i18n_domain="zope"
+    >
+
+  <meta:directives namespace="http://namespaces.zope.org/browser">
+
+    <meta:directive
+        name="pagelet"
+        schema="zope.app.pagelet.metadirectives.IPageletDirective"
+        handler="zope.app.pagelet.metaconfigure.pagelet"
+        />
+
+  </meta:directives>
+
+  <pagelet
+      name="testpagelet"
+      layer="zope.publisher.interfaces.browser.IBrowserRequest"
+      slot="zope.app.pagelet.tests.ITestSlot"
+      template="testfiles/test_pagelet.pt"
+      for="*"
+      permission="zope.Public"
+      />
+
+</zope:configure>
+

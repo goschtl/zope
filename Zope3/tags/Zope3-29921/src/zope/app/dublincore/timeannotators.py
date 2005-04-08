@@ -1,0 +1,42 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Objects that take care of annotating dublin core meta data times
+
+$Id$
+"""
+__docformat__ = 'restructuredtext'
+
+from datetime import datetime
+from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.security.proxy import removeSecurityProxy
+
+
+def ModifiedAnnotator(event):
+    dc = IZopeDublinCore(event.object, None)
+    if dc is not None:
+        # Principals that can modify objects do not necessary have permissions
+        # to arbitrarily modify DC data, see issue 373
+        dc = removeSecurityProxy(dc)
+        dc.modified = datetime.utcnow()
+
+
+def CreatedAnnotator(event):
+    dc = IZopeDublinCore(event.object, None)
+    if dc is not None:
+        # Principals that can create objects do not necessary have permissions
+        # to arbitrarily modify DC data, see issue 373
+        dc = removeSecurityProxy(dc)
+        now = datetime.utcnow()
+        dc.created = now
+        dc.modified = now

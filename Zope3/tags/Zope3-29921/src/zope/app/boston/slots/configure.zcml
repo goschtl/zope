@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <interface interface="zope.app.boston.slots.IHead" />
+  <interface interface="zope.app.boston.slots.IJavaScript" />
+  <interface interface="zope.app.boston.slots.ICSS" />
+  <interface interface="zope.app.boston.slots.IToolBar" />
+  <interface interface="zope.app.boston.slots.ILeft" />
+  <interface interface="zope.app.boston.slots.IContextMenu" />
+
+</configure>

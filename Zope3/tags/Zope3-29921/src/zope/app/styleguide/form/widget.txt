@@ -1,0 +1,5 @@
+=======
+Widgets
+=======
+
+Include the package zope.app.demo.widget and you will see some widget samples.

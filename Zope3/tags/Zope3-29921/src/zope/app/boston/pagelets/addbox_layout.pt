@@ -1,0 +1,25 @@
+<html>
+<body>
+
+<metal:block define-macro="addbox_layout">
+  <div class="slotbox" id="addbox">
+    <div class="header">
+      <img id="arrowAddBox" class="icon" style="cursor:hand" 
+           onClick="javascript:toggle(document.getElementById('arrowAddBox'), 
+                                      'addboxToggle')"
+           border="0" src="collapse.gif" width="16" height="16"
+           tal:attributes="src context/++resource++collapse.gif" />
+      <metal:block define-slot="header">
+        This text will be replace by the content of the pagelet.
+      </metal:block>
+    </div>
+    <div class="toggle body" id="addboxToggle">
+      <metal:block define-slot="body">
+        This text will be replace by the content of the pagelet.
+      </metal:block>
+    </div>
+  </div>
+</metal:block>
+
+</body>
+</html>
