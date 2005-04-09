@@ -49,8 +49,11 @@ class Test(CleanUp, unittest.TestCase):
         bbb.__warn__ = False
         bbb.service.__warn__ = False
 
-    def cleanUp(self):
+    def tearDown(self):
         super(Test, self).cleanUp()
+        # Make sure that the testServiceManager is clean
+        global testServiceManager
+        testServiceManager.sm.__init__(testServiceManager.sm.__name__)
         from zope.component import bbb
         bbb.__warn__ = True
         bbb.service.__warn__ = True
@@ -142,9 +145,9 @@ bbb.service.__warn__ = True
 
 
 def test_suite():
-    loader = unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
-
+    return unittest.TestSuite((
+        unittest.makeSuite(Test),
+                           ))
 
 if __name__ == '__main__':
-    unittest.TextTestRunner().run(test_suite())
+    unittest.main(defaultTest='test_suite')

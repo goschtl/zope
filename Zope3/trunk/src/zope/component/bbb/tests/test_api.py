@@ -457,8 +457,8 @@ class Test(PlacelessSetup, unittest.TestCase):
             ['object', '', 'request', 'default', 'providing', 'context'])
 
         # restore zope.component
-        zope.component.getView = savedGetView
-        zope.component.queryView = savedQueryView
+        zope.component.bbb.getView = savedGetView
+        zope.component.bbb.queryView = savedQueryView
 
     def testResource(self):
         from zope.component import getResource, queryResource, getService
