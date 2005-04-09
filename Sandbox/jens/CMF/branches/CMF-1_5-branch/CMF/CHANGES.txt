@@ -28,6 +28,10 @@ After CMF-1.5.1beta
 
   Bug Fixes
 
+    - CMFDefault.DublinCore: Force local timezone when displaying date
+      metadata. ( http://www.zope.org/Collectors/CMF/325 )
+      
+
     - CMFCore.SkinsTool: Prevent adding skin layers with invalid path elements
       There is a disconnect between the ability to define what can be ignored
       inside DirectoryViews and what can be put into skins paths in
