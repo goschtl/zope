@@ -133,9 +133,10 @@ The second function can be used to lookup objects inside any module:
 In order to use this framework in real Python code import statements, we need
 to install the importer hook, which is commonly done with an event subscriber:
 
+  >>> import __builtin__
   >>> event = object()
   >>> zope.app.module.installPersistentModuleImporter(event)
-  >>> __builtins__['__import__'] # doctest: +ELLIPSIS
+  >>> __builtin__.__import__ # doctest: +ELLIPSIS
   <bound method ZopePersistentModuleImporter.__import__ of ...>
 
 Now we can simply import the persistent module:
@@ -147,5 +148,5 @@ Now we can simply import the persistent module:
 Finally, we unregister the hook again:
 
   >>> zope.app.module.uninstallPersistentModuleImporter(event)
-  >>> __builtins__['__import__'] # doctest: +ELLIPSIS
+  >>> __builtin__.__import__
   <built-in function __import__>

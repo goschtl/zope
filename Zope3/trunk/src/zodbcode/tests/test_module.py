@@ -97,10 +97,10 @@ class TestBase(unittest.TestCase):
         self._pmtest = os.path.join(_dir, "_pmtest.py")
 
     def tearDown(self):
-        self.importer.uninstall()
         # just in case
         transaction.abort()
         self.db.close()
+        self.importer.uninstall()
 
     def sameModules(self, registry):
         m1 = self.registry.modules()
@@ -365,6 +365,7 @@ class TestModuleReload(unittest.TestCase):
 
     def tearDown(self):
         transaction.abort()
+        self.close()
         self.db.close()
 
     def open(self):
