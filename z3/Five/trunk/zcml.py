@@ -48,3 +48,11 @@ def load_config(file, package=None):
     global _context
     _context = xmlconfig.file(file, package, _context)
 
+def load_string(s):
+    """Load a snipped of ZCML into the context.
+
+    Use with extreme care.
+    """
+    global _context
+    _context = xmlconfig.string(s, _context)
+
