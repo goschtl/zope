@@ -166,7 +166,7 @@ class ActionProvidersConfigurator(ConfiguratorBase):
 
         return {
           'actions-tool':
-             { 'action-provider': {KEY: 'providers'} },
+             { 'action-provider': {KEY: 'providers', DEFAULT: ()} },
           'action-provider':
              { 'id':              {},
                'action':          {KEY: 'actions', DEFAULT: ()} },

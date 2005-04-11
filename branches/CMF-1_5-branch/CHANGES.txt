@@ -2,6 +2,9 @@ After CMF-1.5.1beta
 
   New Features
 
+    - CMFSetup: Improved update directives for extension profiles.
+      See the new PROFILES.txt for details.
+
     - CMFCore.DirectoryView: Made list of file names to ignore configurable.
       The previously hardcoded list of files to ignore when creating their
       ZODB representations can now be configured by passing a sequence of
@@ -30,7 +33,6 @@ After CMF-1.5.1beta
 
     - CMFDefault.DublinCore: Force local timezone when displaying date
       metadata. ( http://www.zope.org/Collectors/CMF/325 )
-      
 
     - CMFCore.SkinsTool: Prevent adding skin layers with invalid path elements
       There is a disconnect between the ability to define what can be ignored
@@ -72,17 +74,17 @@ After CMF-1.5.1beta
       fallback in Zope 2.7.
 
     - CMFCore.TypesTool: Added backwards compatibility code to the fix for
-      collector issue 49 (http://collector.zope.org/CMF/49)
+      collector issue 49. (http://www.zope.org/Collectors/CMF/49)
 
     - CMFCore.Skinnable: Changed the way layers (skindata) are stored
       (no more _v_ attribute) to prevent them being lost in the middle
       of a request when memory pressure is high. This change is
       incompatible with SpeedPack, but includes one of its two
-      optimizations about skins. (http://collector.zope.org/CMF/198)
+      optimizations about skins. (http://www.zope.org/Collectors/CMF/198)
 
     - DublinCore: Fixed creators upgrade to not call a potentially
       costly method on the user folder.
-      (http://zope.org/Collectors/CMF/300)
+      (http://www.zope.org/Collectors/CMF/300)
 
     - CMFCatalogAware: When reindexing security, all subobjects must be
       reindexed even if they are not visible by the current user.
