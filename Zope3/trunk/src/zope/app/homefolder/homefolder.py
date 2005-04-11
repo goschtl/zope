@@ -35,6 +35,7 @@ class HomeFolderManager(Persistent, Contained):
     # See IHomeFolderManager
     homeFolderBase = None
     createHomeFolder = True
+    autoCreateAssignment = False
     homeFolderRole = u'zope.Manager'
 
     def __init__(self):
@@ -68,7 +69,10 @@ class HomeFolderManager(Persistent, Contained):
     def getHomeFolder(self, principalId):
         """See IHomeFolderManager"""
         if principalId not in self.assignments:
-            return None
+            if self.autoCreateAssignment:
+                self.assignHomeFolder(principalId, create=True)
+            else:
+                return None
         
         return self.homeFolderBase.get(self.assignments[principalId], None)
 

@@ -44,10 +44,17 @@ class IHomeFolderManager(Interface):
 
     createHomeFolder = Bool(
         title=_("Create Home Folder"),
-        description=_("Whether home folders should be created, if missing."),
+        description=_("Whether home folders should be created upon adding a assignment, if missing."),
         required=True,
         default=True)
-
+        
+    autoCreateAssignment = Bool(
+        title=_("Auto create assignment"),
+        description=_("Whether assignment and folder should be created when "
+                      "calling getHomeFolder, if not existing."),
+        required=True,
+        default=False)
+            
     homeFolderRole = Choice(
         title=_("Local Home Folder Role"),
         description=_("The local role that the user will have in "
@@ -80,10 +87,14 @@ class IHomeFolderManager(Interface):
     def getHomeFolder(principalId):
         """Get the home folder instance of the specified principal.
 
-        If the home folder does not exist and `autoCreateFolder` is set to
-        `True`, then create the home folder. During creation, the principal
-        should get manager rights inside the folder.
+        If a assignment does not exist and `autoCreateAssignment` is set to
+        `True`, then create the assignment and the homefolder. The homefolder 
+        will always be created regardless of the value of createHomeFolder.
+        The folder will be given the same name like the principalId.
+        
+        During creation, the principal should get the rights specified in 
+        homeFolderRole inside the folder.
 
-        If the home folder does not exist and `autoCreateFolder` is set to
+        If the home folder does not exist and `autoCreateAssignment` is set to
         `False`, then return `None`.
         """

@@ -129,14 +129,27 @@ can be done as follows:
 
 
 If you try to get a folder and it does not yet exist, `None` will be
-returned. Remember 'dreamcatcher', which has an assignment, but not a folder?
+returned if autoCreateAssignment is False. Remember 'dreamcatcher', which 
+has an assignment, but not a folder:
 
   >>> 'dreamcatcher' in baseFolder
   False
   >>> homeFolder = manager.getHomeFolder('dreamcatcher')
   >>> homeFolder is None
   True
+  
+However, if autoCreateAssignment is True and you try to get a home folder
+of a principal which has no assignment, the assignment and the folder
+will be automatically created. The folder will always be created, regardless
+of the value of createHomeFolder. The name of the folder will be identically
+to the principalId:
 
+  >>> manager.autoCreateAssignment = True
+  >>> homeFolder = manager.getHomeFolder('florian')
+  >>> 'florian' in manager.assignments
+  True
+  >>> 'florian' in baseFolder
+  True
 
 Accessing the Home Folder
 -------------------------
