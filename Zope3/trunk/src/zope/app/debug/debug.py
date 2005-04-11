@@ -21,7 +21,7 @@ import base64, time
 from StringIO import StringIO
 from zope.publisher.publish import publish as _publish, debug_call
 from zope.publisher.browser import TestRequest
-from zope.app.publication.browser import BrowserPublication
+from zope.app.publication.browser import BrowserPublication, setDefaultSkin
 from zope.app.appsetup import config, database
 
 class Debugger(object):
@@ -53,7 +53,7 @@ class Debugger(object):
     def _request(self,
                  path='/', stdin='', stdout=None, basic=None,
                  environment = None, form=None,
-                 request=TestRequest, publication=BrowserPublication):
+                 request=None, publication=BrowserPublication):
         """Create a request
         """
 
@@ -82,7 +82,11 @@ class Debugger(object):
 
         pub = publication(self.db)
 
-        request = request(stdin, stdout, env)
+        if request is not None:
+            request = request(stdin, stdout, env)
+        else:
+            request = TestRequest(stdin, stdout, env)
+            setDefaultSkin(request)
         request.setPublication(pub)
         if form:
             # This requires that request class has an attribute 'form'
