@@ -220,12 +220,12 @@ def next():
 
 def installSiteHook(_context, class_, utility_provider):
     _context.action(
-        discriminator = None,
+        discriminator = (class_,),
         callable = classSiteHook,
         args=(class_,)
         )
     _context.action(
-        discriminator = None,
+        discriminator = (class_, IPossibleSite),
         callable = classImplements,
         args=(class_, IPossibleSite)
         )
@@ -239,7 +239,7 @@ def installSiteHook(_context, class_, utility_provider):
             provides=IUtilityProvider,
             for_=(iface,))
     _context.action(
-        discriminator = None,
+        discriminator = (class_, 'UtilityMarker'),
         callable = classImplements,
         args=(class_, iface)
         )
