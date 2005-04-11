@@ -10,6 +10,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 394 (starting zope with command -C arg
+        causes request.form to contain '-C':'').
+
       - Fixed issue 334 (Failing RuntimeInfo tests).
 
       - Fixed issue 293 (sequence widget).
