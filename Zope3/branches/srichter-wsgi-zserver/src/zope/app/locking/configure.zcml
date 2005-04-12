@@ -1,6 +1,0 @@
-<configure xmlns="http://namespaces.zope.org/zope"
-           i18n_domain="zope.app.locking">
-
-  <permission id="zope.app.locking.UseLocking" title="Use locking" />
-
-</configure>
