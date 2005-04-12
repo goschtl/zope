@@ -234,7 +234,7 @@ classes).  We do this using a Python-2.4-style decorator named
 Note that the implementer decorator may modify it's argument. Callers
 should not assume that a new object is created.
 
-Also note that, at least for now, implementer cannt be used with
+Also note that, at least for now, implementer can't be used with
 classes:
 
   >>> zope.interface.implementer(IFoo)(Foo)
@@ -505,7 +505,7 @@ method for that::
 Inheritance if attribute specifications
 ---------------------------------------
 
-An interface may override attribute definitions frob base interfaces.
+An interface may override attribute definitions from base interfaces.
 If two base interfaces define the same attribute, the attribute is
 inherited from the most specific interface. For example, with:
 
