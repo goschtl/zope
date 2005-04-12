@@ -1,0 +1,29 @@
+Installation
+============
+
+  - Since Wiki is not enabled by default, you need to include the Wiki
+    package in your instance's configuration.  Create
+    $INSTANCE_HOME/package-includes/zwiki-configure by copying the file
+    package-includes/zwiki-configure.zcml from the Zope repository, or create
+    it with the following contents::
+
+    <include package="zwiki" />
+
+  - You need to define the following role declarations to your user in order
+    to use the wiki package effectively::
+
+    <grant role="zwiki.Admin" principal="user" />
+    <grant role="zwiki.Editor" principal="user" />
+    <grant role="zwiki.User" principal="user" />
+
+    <grant role="zwiki.User" principal="anybody" />
+
+Usage
+=====
+
+  1. To see Wikis in action, go into the management interface and add a Wiki
+     object named 'wiki'. Leave the two preselected options.
+
+  2. To enter the end user interface, enter::
+
+      http://localhost:8080/++skin++wiki/wiki

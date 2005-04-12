@@ -1,0 +1,546 @@
+/*
+** Boston style sheet for CSS2-capable browsers.
+**
+*/
+
+
+/* Basic Elements 
+*/
+html {
+	height: 100%;
+}
+body {
+	height: 100%;
+	font: 75% Verdana, Helvetica, Arial, sans-serif;
+	color: #181818;
+	background: #F9F9F9;
+	margin: 0;
+	padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: BLACK;
+    background-color: transparent;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+img {
+	border: none;
+}
+
+p {
+    margin: 0.5em 0em 1em 0em;
+    line-height: 1.5em;
+}
+
+p a {
+    text-decoration: underline;
+}
+
+p a:visited {
+    color: Purple;
+    background-color: transparent;
+}
+
+p a:active {
+    color: Red;
+    background-color: transparent;
+}
+
+p img {
+    border: 0;
+    margin: 0;
+}
+
+
+hr {
+    clear: both;
+    height: 1px;
+    color: #006600;
+    background-color: transparent;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+    color: Black;
+    clear: left;
+    font: 100% bold Verdana, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding-top: 0.5em;
+}
+
+h1 {
+    font-size: 140%;
+}
+
+h2 {
+    font-size: 120%;
+}
+
+h3 {
+    font-weight: bold;
+    font-size: 100%;
+}
+
+h4 {
+    color: #777777;
+    font-size: 100%;
+    font-weight: bold;
+}
+
+h5 {
+    font-size: 100%;
+}
+
+h6 {
+    font-size: 80%;
+}
+
+ul { 
+    line-height: 1.5em;
+    /* list-style-image: url("bullet.gif"); */
+    margin-left: 2em;
+    padding:0;
+}
+
+ol {
+    line-height: 1.5em;
+    margin-left: 2em;
+    padding:0;
+}
+
+ul a, ol a {
+    text-decoration: underline;
+}
+
+dl {
+}
+
+dt {
+    font-weight: bold;    
+}
+
+dd {
+    line-height: 1.5em;
+    margin-bottom: 1em;
+}
+
+
+fieldset {
+    border: 1px solid #A0A0A0;
+    margin: 2em 0em 1em 0em;
+    padding: 1em 0em;
+}
+
+legend {
+    background: transparent;
+    padding: 0.5em;
+}
+
+
+form {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+textarea {
+    color: Black;
+    width: 100%;
+    border: 1px solid #9B9B9B;
+    padding: 0.1em;
+}
+
+input {
+    font: normal 100% Verdana, Helvetica, Arial, sans-serif;
+    color: Black;
+    border: 1px solid #9B9B9B;
+    vertical-align: middle;
+    margin-bottom: 1px; /* IE bug fix */
+    padding: 0.1em;
+}
+
+input.noborder {
+    border: 0;
+}
+
+select {
+    font: normal 100% Verdana, Helvetica, Arial, sans-serif;
+    vertical-align: top;
+}
+
+abbr, acronym, .explain {
+    border-bottom: 1px dotted Black;
+    color: Black;
+    background-color: transparent;
+    cursor: help;
+}
+
+q {
+    font-family: Times, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 120%;
+}
+
+blockquote {
+    font-family: Times, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 120%;
+}
+
+code {
+    font-size: 120%;
+    color: Black;
+    background-color: #CCCCCC;
+}
+
+pre {
+    font-size: 120%;
+    padding: 1em;
+    border: 1px solid #A0A0A0;
+    color: Black;
+    background-color: #CCCCCC;
+}
+
+table {
+    border-collapse: collapse;
+    font-size: 100%;
+}
+
+.netscape4 {
+    display: none;
+}
+
+
+/* layout styles
+*/
+#layout {
+    width: 100%;
+	height: 79px;
+    font-size: 100%;
+}
+
+#layout td {
+    vertical-align: top;
+}
+
+#layout tr.menu {
+    width: 100%;
+}
+
+#layout tr.menu td {
+    height: 24px;
+    background-color: #EBE9DF;
+    border: 1px solid #C1BBAC;
+}
+
+#layout tr.head{
+	background-color: #0066CC;
+}
+
+#layout td.logo {
+    height: 55px;
+    width: 250px;
+}
+
+#layout td.logo img {
+    padding-top: 7px;
+    padding-left: 7px;
+}
+
+.actions {
+    height: 20px;
+	float: left;
+    padding: 4px 0px 0px 0px;
+}
+
+.actions span {
+    white-space: nowrap;
+}
+
+.actions a {
+	color: #666666;
+    margin: 1px 6px 3px 6px;
+}
+
+.actions a:hover {
+	color: black;
+    text-decoration: none;
+	background-color: #D9DAF2;
+	border: 1px solid #0066CC;
+    padding: 1px 5px 3px 5px;
+    margin: 0px;
+}
+
+#userdetails {
+	color: #898074;
+	float: right;
+	padding: 4px 5px 0px 5px;
+}
+
+#breadcrumbs {
+	color: #CCCCCC;
+    font: 100% Verdana, Helvetica, Arial, sans-serif;
+	margin: 30px 0px 0px 15px;
+}
+
+#breadcrumbs a {
+    color: #CCCCCC;
+}
+
+
+/* navigation area 
+*/
+#navigation {
+    width: 200px;
+    vertical-align: top;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+/* slot boxes
+*/
+#slotbox {
+    width: 200px;
+    padding: 20px 5px 0px 5px;
+}
+
+.slotbox {
+	border: 2px solid #0066CC;
+    margin-bottom: 10px;
+    padding: 0px;
+}
+
+.slotbox div.header {
+    widht: 100%;
+	height: 22px;
+	color: white;
+	font-weight: bold;
+	background-color: #0066CC;
+	padding: 0px 0px 0px 5px;
+	margin: 0px 0px 0px 0px;
+}
+
+.slotbox div.header img.icon {
+	float: right;
+	position: relative;
+	padding: 2px;
+}
+
+.slotbox div.title {
+    height: 17px;
+    white-space: nowrap;
+	padding: 3px 0px 0px 0px;
+}
+
+.slotbox div.body {
+	margin: 0px 0px 0px 0px;
+}
+
+.slotbox div.body div {
+    color: #777777;
+	padding: 2px 0px 5px 5px;
+	margin: 0px;
+}
+
+.slotbox div.body div.tip {
+    color: #B30000;
+	padding: 2px 0px 5px 5px;
+}
+
+.slotbox div.treebody {
+	margin: 5px 5px 5px 5px;
+}
+
+.slotbox div.body div.even {
+    background: #EBEBE2;
+	padding: 4px;
+}
+
+.slotbox div.body div.odd {
+	padding: 4px;
+}
+
+.slotbox div.body a:hover {
+    text-decoration: underline;
+}
+
+
+/* content area
+*/
+#contextmenu {
+    margin: 0px 0px 0px 0px;
+    padding: 18px 0px 0px 0px;
+}
+
+#contextmenu div {
+    font: 100% Verdana, Helvetica, Arial, sans-serif;
+    background-color: #EBE9DF;
+    border: 1px solid #C1BBAC;
+    padding: 5px 0px 5px 5px;
+    margin: 2px 0px 10px 0px;
+}
+
+#contextmenu div span {
+    white-space: nowrap;
+}
+
+#contextmenu div a {
+	color: #666666;
+    font-weight: normal;
+    padding: 2px 6px 2px 6px;
+}
+
+#contextmenu div a:hover {
+	color: black;
+	text-decoration: none;
+	background-color: #CECEFF;
+	border: 1px solid #0066CC;
+    padding: 2px 5px 2px 5px;
+}
+
+#contextmenu div a.selected {
+	color: black;
+	text-decoration: none;
+	background-color: #D9DAF2;
+	border: 1px solid #0066CC;
+    padding: 2px 5px 2px 5px;
+}
+
+#content {
+    width: 100%;
+    margin: 0px;
+    padding: 0px 10px 0px 10px;
+}
+
+
+/* standard fields
+*/
+div.row div.field {
+    clear: left;
+}
+
+div.row div.label {
+    font-weight: bold;
+	margin: 0;
+}
+
+div.row span.error {
+    background: #A51212;
+    color: white;
+	margin: 0;
+}
+
+
+/* widget row layout
+*/
+#widgets {
+    width: 100%;
+    margin: 0px 0px 10px 0px;
+}
+
+#widgets td {
+    height: 25px;
+    vertical-align: top;
+}
+
+#widgets td.labels {
+    width: 100px;
+    text-align: right;
+    background: #DAD8CF;
+    padding: 7px 5px 5px 0px;
+}
+
+#widgets td.fields {
+    background: #EBEBE2;
+    padding: 7px 5px 5px 20px;
+}
+
+#widgets div.error {
+    color: #A51212;
+}
+
+
+/* footer area 
+*/
+#footer {
+    float: left;
+    clear: both;
+}
+
+
+/* table layout
+*/
+table.listing {
+    width: 100%;
+    margin: 0px 0px 10px 0px;
+}
+
+table.listing th {
+    height: 18px;
+    background: #EBE9DF;
+    color: black;
+    font-weight: normal;
+    text-align: left;
+    white-space: nowrap;
+    padding: 2px 0px 2px 0px;
+    margin: 0px 0px 0px 0px;
+}
+
+table.listing td.top {
+    text-align: right ! important;
+    padding: 0px 0px 0px 0px;
+}
+
+table.listing tr.odd {
+    background: #F3F3EE;
+}
+
+table.listing tr.even {
+    border: 0px;
+    background: transparent;
+}
+
+table.listing td {
+    text-align: left;
+    padding: 2px 0px 2px 0px;
+}
+
+table.listing img {
+    vertical-align: middle;
+}
+
+table.listing input {
+    padding: 3px 5px 0px 5px;
+}
+
+
+/* messages and errors
+*/
+div.message {
+    height: 18px;
+    color: Black;
+    font: 100% Verdana, Helvetica, Arial, sans-serif;
+    background: #D9DAF2;
+    border: 1px solid #0066CC;
+    padding: 3px 6px 10px 6px;
+    margin-right: 10px;
+}
+
+div.message a {
+    color: Black;
+    text-decoration: underline;
+}
+
+div.page_error {  
+    font: 100% Verdana, Helvetica, Arial, sans-serif;
+    background: #F29F9F;
+    border: 1px solid #A51212; 
+    padding: 2px 5px; 
+    margin: 0px 0px 10px 0px; 
+    vertical-align: middle; 
+}

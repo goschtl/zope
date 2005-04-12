@@ -1,0 +1,6 @@
+<fieldset>
+  <legend tal:content="context/legendTitle">The Legend</legend>
+  <div class="row" tal:repeat="widget context/subwidgets">
+    <metal:block use-macro="context/@@form_macros/widget_row" />
+  </div>
+</fieldset>
