@@ -21,6 +21,7 @@ from zope.app import zapi
 from zope.app.error.interfaces import IErrorReportingUtility
 from zope.app.error.interfaces import ILocalErrorReportingUtility
 
+
 class EditErrorLog(object):
     __used_for__ = ILocalErrorReportingUtility
 
@@ -36,18 +37,16 @@ class EditErrorLog(object):
 class ErrorRedirect(BrowserView):
 
     def action(self):
-
-        # Some locations (eg ++site++process) throw a TypeError exception when
+        # Some locations (eg ++etc++process) throw a TypeError exception when
         # finding their absoluteurl, if this happens catch the error and
         # redirect the browser to the site root "/@@errorRedirect.html"
         # to handle redirection to the site error logger instead
         try:
             err = zapi.getUtility(IErrorReportingUtility)
             url = zapi.absoluteURL(err, self.request)
-            url = url + "/@@SelectedManagementView.html"
         except TypeError:
-            # siterooturl = self.request.getApplicationURL()
-            url = self.request.getURL(1) + "/@@SelectedManagementView.html"
+            url = self.request.getApplicationURL() + "/@@errorRedirect.html"
+        else:
+            url = url + "/@@SelectedManagementView.html"
 
         self.request.response.redirect(url)
-
