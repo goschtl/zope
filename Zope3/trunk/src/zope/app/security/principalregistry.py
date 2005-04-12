@@ -119,6 +119,8 @@ class PrincipalRegistry(object):
 
     def _clear(self):
         self.__init__()
+        self.__defaultid = None
+        self.__defaultObject = None
 
 principalRegistry = PrincipalRegistry()
 
