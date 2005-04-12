@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<bugtracker version="1.0" title="Bug Tracker">
+
+  <vocabularies>
+    <vocabulary name="Stati">
+      <term value="closed" title="Closed"/>
+      <term value="new" title="New" default=""/>
+    </vocabulary>
+    <vocabulary name="Priorities">
+      <term value="urgent" title="Urgent"/>
+      <term value="low" title="Low" default=""/>
+    </vocabulary>
+    <vocabulary name="BugTypes">
+      <term value="bug" title="Bug" default=""/>
+    </vocabulary>
+    <vocabulary name="Releases">
+      <term value="None" title="(not specified)" default=""/>
+    </vocabulary>
+  </vocabularies>
+
+  <bugs>
+    <bug id="1" title="Bug 1" submitter="anybody"
+         status="new" priority="urgent" type="bug"
+         release="None" owners="jim, srichter" dependencies=""
+         created="Jan 1, 2003 11:00:00 PM "
+         modified="Jan 2, 2003 11:00:00 PM ">
+
+      <description ttype="zope.source.stx">
+This is Bug 1.
+      </description>
+
+      <comments>
+        <comment created="Jan 1, 2003 1:00:00 PM "
+                 id="comment1" creator="srichter"
+                 ttype="zope.source.rest">
+This is a comment.
+        </comment>
+      </comments>
+
+      <attachments>
+        <attachment created="Jan 1, 2003 2:00:00 PM "
+                    type="File" id="document.gif"
+                    creator="srichter">R0lGODlhEAAQAOYAAP///////v39/vz9/fr7/Pj7+/f5+vb5+vX4+fP2+PL29/L19/D09vD09e/z
+9e3y9Ovx8+rv8env8uju8ebt8OXt7+Ts7+Pr7eLq7uHq7d/o7N7o693n6tzm6tvl6dvk6dnk6Njk
+59fi5tXh5tTg5dPg5dLf49Hf5NDd48/d4s/c4c7c4c3c4c3c4Mva38ra4MnZ38nY3sjY3cfY3cbX
+3cbX3MTW3MTV28PU2sLU2sLT2cHT2cDS2b/R2L3R2L3Q17zP17vP1rvO1brO1bnN1LjN1LbM1LbL
+07XL0rTK0bPJ0bLI0LHH0LDHz6/Gzq7Ezq3EzavDzKnCy6jByqbAyaS+yKK9x6C7xZ66xJu/zJi2
+wY2uukZncwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwA
+AAAAEAAQAAAHmoAAgoOEhYRbiImIXIYAW4IBAwYLj4yFjwAECAwQmJaDWwIFCQ4RFVtcqZ+OBwoP
+ExcbIFm0q1sNEBQZHSImLDJZthIWGh8jKC41OsGHGBwhJSowNjxCzKAeIictMzg+REnXglskKS81
+O0BGS0/ijisxNz1DSE1RVO5bNDk/RUpOUqpcybcjyBEmUKZYwaIlH62HEN2pmkgRQCAAOw==
+</attachment>
+      </attachments>
+
+    </bug>
+  </bugs>
+
+</bugtracker>

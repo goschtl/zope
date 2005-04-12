@@ -1,0 +1,20 @@
+====
+TODO
+====
+
+- Change slotbox layout macros to tables, because they don't expand the width
+  correctly in pure <div> CSS layout
+
+- Add JS for nested menu support
+
+- Integrate preferences for individual user settings.
+
+  Possible preferences are:
+
+  - static or xml tree
+
+  - navigation width of left slot
+
+  - order of boxes in left slot
+
+  - status of a box (collapsed or expanded)

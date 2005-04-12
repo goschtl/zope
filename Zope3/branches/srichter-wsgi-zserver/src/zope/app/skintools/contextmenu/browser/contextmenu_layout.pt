@@ -1,0 +1,11 @@
+<html>
+<body>
+
+<metal:block define-macro="contextmenu_layout">
+  <metal:block define-slot="contextmenu">
+    context menu content
+  </metal:block>
+</metal:block>
+
+</body>
+</html>

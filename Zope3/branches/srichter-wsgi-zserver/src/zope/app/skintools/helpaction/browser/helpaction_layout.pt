@@ -1,0 +1,13 @@
+<html>
+<body>
+
+<metal:block define-macro="helpaction_layout">
+  <div class="actions">
+    <metal:block define-slot="helpaction">
+      Help action content
+    </metal:block>
+  </div>
+</metal:block>
+
+</body>
+</html>
