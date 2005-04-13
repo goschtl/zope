@@ -31,6 +31,11 @@ After CMF-1.5.1beta
 
   Bug Fixes
 
+    - TypesTool: Removed _checkViewType.
+      The control-content-creating-by-typeinfo-view-permission feature did
+      never work. Use DCWorkflow's allowCreate method instead.
+      (http://www.zope.org/Collectors/CMF/114)
+
     - CMFDefault.DublinCore: Force local timezone when displaying date
       metadata. ( http://www.zope.org/Collectors/CMF/325 )
 
