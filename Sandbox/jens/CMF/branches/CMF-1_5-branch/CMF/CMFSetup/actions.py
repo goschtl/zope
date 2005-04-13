@@ -81,6 +81,11 @@ def importActionProviders( context ):
 
     for p_info in tool_info['providers']:
 
+        if 'remove' in p_info:
+            if p_info['id'] in actions_tool.listActionProviders():
+                actions_tool.deleteActionProvider(p_info['id'])
+            continue
+
         if p_info['id'] not in actions_tool.listActionProviders():
 
             actions_tool.addActionProvider(p_info['id'])
@@ -169,6 +174,7 @@ class ActionProvidersConfigurator(ConfiguratorBase):
              { 'action-provider': {KEY: 'providers', DEFAULT: ()} },
           'action-provider':
              { 'id':              {},
+               'remove':          {},
                'action':          {KEY: 'actions', DEFAULT: ()} },
           'action':
              { 'action_id':       {KEY: 'id'},
