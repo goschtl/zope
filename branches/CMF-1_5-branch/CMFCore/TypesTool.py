@@ -104,28 +104,29 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     content_meta_type = ''
     content_icon = ''
     immediate_view = ''
-    filter_content_types = 1
+    filter_content_types = True
     allowed_content_types = ()
-    allow_discussion = 0
-    global_allow = 1
+    allow_discussion = False
+    global_allow = True
 
     def __init__(self, id, **kw):
 
         self.id = id
 
+        if not kw:
+            return
+
         kw = kw.copy()  # Get a modifiable dict.
 
-        if kw:
+        if (not kw.has_key('content_meta_type')
+            and kw.has_key('meta_type')):
+            kw['content_meta_type'] = kw['meta_type']
 
-            if (not kw.has_key('content_meta_type')
-                and kw.has_key('meta_type')):
-                kw['content_meta_type'] = kw['meta_type']
+        if (not kw.has_key('content_icon')
+            and kw.has_key('icon')):
+            kw['content_icon'] = kw['icon']
 
-            if (not kw.has_key('content_icon')
-                and kw.has_key('icon')):
-                kw['content_icon'] = kw['icon']
-
-            self.manage_changeProperties(**kw)
+        self.manage_changeProperties(**kw)
 
         actions = kw.get( 'actions', () )
         # make sure we have a copy
@@ -259,7 +260,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
     def listActions(self, info=None, object=None):
         """ Return a sequence of the action info objects for this type.
         """
-        if self._actions and type( self._actions[0] ) == type( {} ):
+        if self._actions and isinstance(self._actions[0], dict):
             self._convertActions()
 
         return self._actions or ()
@@ -367,7 +368,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             if isinstance(method_id, tuple):
                 aliases[key] = method_id[0]
                 self._p_changed = True
-        return aliases
+        return aliases.copy()
 
     security.declareProtected(ManagePortal, 'setMethodAliases')
     def setMethodAliases(self, aliases):
@@ -845,7 +846,7 @@ class TypesTool(UniqueObject, Folder, ActionProviderBase):
             an object, rather than a string, attempt to look up
             the appropriate type info using its portal_type.
         """
-        if type( contentType ) is not type( '' ):
+        if not isinstance(contentType, basestring):
             if hasattr(aq_base(contentType), 'getPortalTypeName'):
                 contentType = contentType.getPortalTypeName()
                 if contentType is None:
