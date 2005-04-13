@@ -26,8 +26,7 @@ from urllib import unquote_plus
 from persistent import Persistent
 
 import transaction
-from transaction.interfaces import IDataManager, IRollback
-from transaction.util import NoSavepointSupportRollback
+from transaction.interfaces import IDataManager
 
 from zope.security.checker import NamesChecker
 
@@ -375,30 +374,6 @@ class ZopeDBTransactionManager(object):
     def commit(self, txn):
         self._dbconn.commit()
 
-    def savepoint(self, txn):
-        """Create a savepoint that can not be rolled back
-
-        Savepoint implementation for data managers that do not
-        support savepoints. We don't raise an error here, because
-        there's no harm in ignoring a call if no one ever tries to
-        rollback a savepoint.  By ignoring the call, the data
-        manager can be used with data managers that so support
-        savepoints.
-
-        We return a rollback that raises an error if we call it.
-
-        >>> dm = ZopeDBTransactionManager(None)
-        >>> rb = dm.savepoint(None)
-        >>> rb.rollback()
-        Traceback (most recent call last):
-        ...
-        NotImplementedError: """ \
-           """ZopeDBTransactionManager data managers do not support """ \
-           """savepoints (aka subtransactions
-        """
-
-        return NoSavepointSupportRollback(self)
-
     def sortKey(self):
         """
         ZODB uses a global sort order to prevent deadlock when it commits
@@ -457,7 +432,3 @@ def RowClassFactory(columns):
     klass_namespace['__slots__'] = tuple(columns)
 
     return type('GeneratedRowClass', (Row,), klass_namespace)
-
-
-
-
