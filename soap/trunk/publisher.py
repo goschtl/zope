@@ -77,7 +77,7 @@ class SOAPRequest(HTTPRequest):
             if len(actors):
                 self._setError(ZSI.FaultFromActor(actors[0]))
                 return
-        
+
             must = parsed.WhatMustIUnderstand()
             if len(must):
                 uri, localname = must[0]
@@ -176,4 +176,3 @@ class SOAPResponse(HTTPResponse):
             value = ZSI.FaultFromException(value, 0)
         self.setStatus(500)
         self.setBody(value)
-
