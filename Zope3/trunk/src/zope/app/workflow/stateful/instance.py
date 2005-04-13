@@ -181,6 +181,7 @@ class StatefulProcessInstance(ProcessInstance, Persistent):
         if schema:
             # create relevant-data
             self._data = RelevantData(schema, clean_pd.schemaPermissions)
+            self._data.__parent__ = self
         else:
             self._data = None
         # setup permission on data

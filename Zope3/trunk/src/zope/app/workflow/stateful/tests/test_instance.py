@@ -124,6 +124,9 @@ class SimpleProcessInstanceTests(WorkflowSetup, unittest.TestCase):
         self.assertEqual(data.text, 'no text')
         self.assertEqual(data.value, 1)
 
+        self.assertNotEqual(data.__parent__, None)
+        self.assertEqual(self.pi, self.pi.data.__parent__)
+
         data.text = 'another text'
         self.assert_(IBeforeRelevantDataChangeEvent.providedBy(events[0])) 
         self.assert_(IAfterRelevantDataChangeEvent.providedBy(events[-1])) 
