@@ -1,0 +1,36 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="zope">
+
+  <utility
+      name="RecordingHTTP"
+      component=".recordinghttp"
+      provides="zope.app.server.servertype.IServerType"
+      />
+
+  <browser:page
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      name="RecordedSessions.html"
+      permission="zope.ManageApplication"
+      class=".browser.RecordedSessionsView"
+      template="sessions.pt"
+      menu="zmi_views" title="Recorded Sessions"
+      />
+
+  <browser:page
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      name="RecordedRequest.html"
+      permission="zope.ManageApplication"
+      class=".browser.RecordedSessionsView"
+      attribute="recordedRequest"
+      />
+
+  <browser:page
+      for="zope.app.applicationcontrol.interfaces.IApplicationControl"
+      name="RecordedResponse.html"
+      permission="zope.ManageApplication"
+      class=".browser.RecordedSessionsView"
+      attribute="recordedResponse"
+      />
+
+</configure>
