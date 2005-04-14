@@ -6,7 +6,8 @@ After CMF 1.4.8
       user folder. (http://zope.org/Collectors/CMF/300)
 
     - CMFCatalogAware: When reindexing security, all subobjects must be
-      reindexed even if they are not visible by the current user.
+      reindexed even if they are not visible by the current user. Also
+      fixed to work correctly with Zope >= 2.7.6.
 
   New Features
 
