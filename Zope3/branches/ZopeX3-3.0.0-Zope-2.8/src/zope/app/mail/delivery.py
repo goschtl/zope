@@ -34,7 +34,6 @@ from zope.app.mail.interfaces import IDirectMailDelivery, IQueuedMailDelivery
 from zope.app.mail.maildir import Maildir
 from transaction.interfaces import IDataManager
 import transaction
-from transaction.util import NoSavepointSupportRollback
 
 class MailDataManager(object):
     implements(IDataManager)
