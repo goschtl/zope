@@ -28,6 +28,17 @@ interrupt-check-interval 200
   <filestorage>
     path Data.fs
   </filestorage>
+
+# uncomment this if you want to connect to a local ZEO server
+# instead:
+#  <zeoclient>
+#    server localhost:9999
+#   storage 1
+#    # ZEO client cache, in bytes
+#    cache-size 20MB
+#    # Uncomment to have a persistent disk cache
+#    #client zeo1
+#  </zeoclient>
 </zodb>
 
 <accesslog>
