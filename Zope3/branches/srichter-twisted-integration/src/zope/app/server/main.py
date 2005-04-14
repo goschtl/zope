@@ -22,12 +22,16 @@ import time
 
 from zdaemon import zdoptions
 
-import ThreadedAsync
+import twisted.web2.wsgi
+import twisted.web2.server
+import twisted.application.service
+import twisted.application.strports
+from twisted.internet import reactor
 
 import zope.app.appsetup
 import zope.app.appsetup.interfaces
+from zope.app import wsgi
 from zope.event import notify
-from zope.server.taskthreads import ThreadedTaskDispatcher
 
 CONFIG_FILENAME = "zope.conf"
 
@@ -73,7 +77,7 @@ def debug(args=None):
 
 def run():
     try:
-        ThreadedAsync.loop()
+        reactor.run()
     except KeyboardInterrupt:
         # Exit without spewing an exception.
         pass
@@ -104,11 +108,17 @@ def setup(options):
 
     notify(zope.app.appsetup.interfaces.DatabaseOpened(db))
 
-    task_dispatcher = ThreadedTaskDispatcher()
-    task_dispatcher.setThreadCount(options.threads)
+    # Simple setup of a WSGI-based Twisted HTTP server
+    resource = twisted.web2.wsgi.WSGIResource(
+        wsgi.WSGIPublisherApplication(db))
 
-    for server in options.servers:
-        server.create(task_dispatcher, db)
+    reactor.listenTCP(8080, twisted.web2.server.Site(resource))
+
+    #task_dispatcher = ThreadedTaskDispatcher()
+    #task_dispatcher.setThreadCount(options.threads)
+    #
+    #for server in options.servers:
+    #    server.create(task_dispatcher, db)
 
     notify(zope.app.appsetup.interfaces.ProcessStarting())
 

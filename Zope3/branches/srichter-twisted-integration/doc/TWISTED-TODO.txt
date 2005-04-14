@@ -1,0 +1,59 @@
+ToDo List for Twisted Integration
+=================================
+
+* Implement graceful shutdown, including KeyboardInterrupt.
+
+* Forms do not work. :( This is absolutely critical!
+
+* Set the thread count. Itamar suggested having our own thread pool.
+
+* Use configuration information to create servers.
+
+* Use old server-type utility code to generate servers.
+
+* Have information being displayed on the screen upon server start.
+
+* Display log on screen. In general, we need to do logging based on the info
+  from zope.conf.
+
+* Now that we use twisted, the input stream is not seekable anymore:
+
+  2005-04-13T21:03:16 WARNING ZopePublication Competing writes/reads at /@@/zope3_tablelayout.css
+
+  Traceback (most recent call last):
+    File "/opt/zope/Zope3/Zope3-Twisted/src/zope/publisher/publish.py", line 143, in publish
+      publication.afterCall(request, object)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/zope/app/publication/browser.py", line 70, in afterCall
+      super(BrowserPublication, self).afterCall(request, ob)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/zope/app/publication/zopepublication.py", line 161, in afterCall
+      txn.commit()
+    File "/opt/zope/Zope3/Zope3-Twisted/src/transaction/_transaction.py", line 297, in commit
+      self._commitResources(subtransaction)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/transaction/_transaction.py", line 337, in _commitResources
+      rm.commit(self)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/ZODB/Connection.py", line 320, in commit
+      self._store_objects(ObjectWriter(obj), transaction)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/ZODB/Connection.py", line 343, in _store_objects
+      s = self._storage.store(oid, serial, p, self._version, transaction)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/ZODB/FileStorage/FileStorage.py", line 659, in store
+      raise POSException.ConflictError(
+  ConflictError: database conflict error (oid 0x13, class BTrees._OOBTree.OOBTree, serial this txn started with 0x035c94d66a7aa0aa 2005-04-14 00:22:24.956019, serial currently committed 0x035c94ff459c5411 2005-04-14 01:03:16.314998)
+  Traceback (most recent call last):
+    File "/opt/python2.3/lib/python2.3/threading.py", line 416, in run
+      self.__target(*self.__args, **self.__kwargs)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/twisted/python/threadpool.py", line 145, in _worker
+      context.call(ctx, function, *args, **kwargs)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/twisted/python/context.py", line 52, in callWithContext
+      return self.currentContext().callWithContext(ctx, func, *args, **kw)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/twisted/python/context.py", line 31, in callWithContext
+      return func(*args,**kw)
+  --- <exception caught here> ---
+    File "/opt/zope/Zope3/Zope3-Twisted/src/twisted/web2/wsgi.py", line 132, in run
+      result = self.application(self.environment, self.startWSGIResponse)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/zope/app/wsgi/__init__.py", line 106, in __call__
+      publish(request)
+    File "/opt/zope/Zope3/Zope3-Twisted/src/zope/publisher/publish.py", line 159, in publish
+      newrequest = request.retry()
+    File "/opt/zope/Zope3/Zope3-Twisted/src/zope/publisher/http.py", line 370, in retry
+      self._body_instream.seek(0)
+  exceptions.AttributeError: 'InputStream' object has no attribute 'seek'
