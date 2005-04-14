@@ -138,6 +138,7 @@ class Tests(PlacelessSetup, unittest.TestCase):
         h.endheaders()
         if request_body:
             h.send(request_body)
+        #import pdb; pdb.set_trace()
         response = h.getresponse()
         length = int(response.getheader('Content-Length', '0'))
         if length:

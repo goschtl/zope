@@ -127,9 +127,8 @@ class SnarfSubmission(BrowserView):
             shutil.rmtree(self.tempdir)
 
     def unsnarf_body(self):
-        fp = self.request.bodyFile
-        fp.seek(0)
-        uns = Unsnarfer(fp)
+        stream = self.request.bodyStream
+        uns = Unsnarfer(stream)
         uns.unsnarf(self.tempdir)
 
     def call_committer(self):

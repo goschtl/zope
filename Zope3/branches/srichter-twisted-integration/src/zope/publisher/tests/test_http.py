@@ -20,7 +20,7 @@ import unittest
 
 from zope.interface import implements
 from zope.publisher.interfaces.logginginfo import ILoggingInfo
-from zope.publisher.http import HTTPRequest, HTTPResponse
+from zope.publisher.http import HTTPRequest, HTTPResponse, HTTPInputStream
 from zope.publisher.publish import publish
 from zope.publisher.base import DefaultPublication
 from zope.publisher.interfaces.http import IHTTPRequest, IHTTPResponse
@@ -47,6 +47,49 @@ class UserStub(object):
     def getLogMessage(self):
         return self._id
 
+
+data = '''\
+line 1
+line 2
+line 3'''
+    
+    
+
+class HTTPInputStreamTests(unittest.TestCase):
+
+    def setUp(self):
+        self.stream = HTTPInputStream(StringIO(data))
+
+    def testRead(self):
+        output = ''
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        output += self.stream.read(5)
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        output += self.stream.read()
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        self.assertEqual(data, self.stream.cacheStream.getvalue())
+
+    def testReadLine(self):
+        output = self.stream.readline()
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        output += self.stream.readline()
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        output += self.stream.readline()
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        output += self.stream.readline()
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        self.assertEqual(data, self.stream.cacheStream.getvalue())
+
+    def testReadLines(self):
+        output = ''.join(self.stream.readlines(4))
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        output += ''.join(self.stream.readlines())
+        self.assertEqual(output, self.stream.cacheStream.getvalue())
+        self.assertEqual(data, self.stream.cacheStream.getvalue())
+
+    def testGetChacheStream(self):
+        self.stream.read(5)
+        self.assertEqual(data, self.stream.getCacheStream().getvalue())        
 
 class HTTPTests(unittest.TestCase):
 
@@ -602,6 +645,7 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ConcreteHTTPTests))
     suite.addTest(unittest.makeSuite(TestHTTPResponse))
+    suite.addTest(unittest.makeSuite(HTTPInputStreamTests))
     return suite
 
 

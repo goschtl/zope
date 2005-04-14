@@ -29,9 +29,7 @@ class NullResource(object):
 
     def MKCOL(self):
         request = self.request
-        data = request.bodyFile
-        data.seek(0)
-        data = data.read()
+        data = request.bodyStream.read()
         if len(data):
             # We don't (yet) support a request body on MKCOL.
             request.response.setStatus(415)
