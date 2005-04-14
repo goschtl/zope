@@ -28,9 +28,13 @@ from zope.app.form.browser.interfaces import IWidgetInputErrorView
 
 class SourceDisplayWidget(zope.app.form.Widget):
 
+    zope.interface.implements(zope.app.form.interfaces.IDisplayWidget)
+
     def __init__(self, field, source, request):
         super(SourceDisplayWidget, self).__init__(field, request)
         self.source = source
+
+    required = property(lambda self: self.context.required)
 
     def hidden(self):
         return ''
