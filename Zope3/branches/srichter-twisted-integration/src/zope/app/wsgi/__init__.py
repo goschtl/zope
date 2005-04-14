@@ -98,6 +98,12 @@ class WSGIPublisherApplication(object):
         # manager and (2) it functions as the output stream for the publisher. 
         wsgiOutput = WSGIOutput(start_response)
 
+        # Clean-up environment
+        # 1. Remove empty content type header, since it confuses
+        #    cgi.FieldStorage
+        if 'CONTENT_TYPE' in environ and not environ['CONTENT_TYPE']:
+            del environ['CONTENT_TYPE']
+
         request = self.requestFactory(
             environ['wsgi.input'], wsgiOutput, environ)
 

@@ -3,8 +3,6 @@ ToDo List for Twisted Integration
 
 * Implement graceful shutdown, including KeyboardInterrupt.
 
-* Forms do not work. :( This is absolutely critical!
-
 * Set the thread count. Itamar suggested having our own thread pool.
 
 * Use configuration information to create servers.
@@ -13,5 +11,8 @@ ToDo List for Twisted Integration
 
 * Have information being displayed on the screen upon server start.
 
-* Display log on screen. In general, we need to do logging based on the info
+* Display username in logs. In general, we need to do logging based on the info
   from zope.conf.
+
+* We need to get an FTP server working. FTP is a long-supported protocol and
+  we cannot have a Zope 3 version without it.
