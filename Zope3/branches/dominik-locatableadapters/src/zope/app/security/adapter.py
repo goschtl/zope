@@ -18,7 +18,100 @@ $Id$
 
 from zope.security.checker import ProxyFactory
 from zope.security.proxy import removeSecurityProxy
-from zope.app.location import ILocation, Location
+from zope.app.location import ILocation, Location, LocationProxy
+
+
+def assertLocation(adapter, parent):
+    """Assert locatable adapters.
+
+    This function asserts that the adapter get location-proxied unless it does
+    not provide ILocation itself. Further more the returned locatable adapter
+    get its parent set unless its __parent__ attribute is not None.
+    
+    Arguments
+    ---------
+    adapter - proxied or unproxied adapter
+    parent - unproxied locatable object
+
+    Usage
+    -----
+    Suppose we have a location that plays the duty-parent in cases
+    where no regular-parent is provided by the adapter itself:
+
+        >>> dutyparent = Location()
+
+    We account three different base use cases A, B and C.
+    
+    A. Adapters which do not provide ILocation get location-proxied
+    and theirs parent is set to the duty-parent:
+
+        >>> class A(object):
+        ...     def __init__(self, context):
+        ...         self.context = context
+
+        >>> a = A(dutyparent)
+        >>> a1 = assertLocation(a, dutyparent)
+
+        >>> ILocation.providedBy(a1)
+        True
+        >>> a1.__parent__ is dutyparent
+        True
+        >>> type(a1).__name__
+        'LocationProxy'
+
+    B. Adapters which do provide ILocation get never location-proxied,
+    but theirs parent is also set to the duty-parent unless their parent is
+    not None:
+
+        >>> class B(Location):
+        ...     def __init__(self, context):
+        ...         self.context = context
+
+        >>> b = B(dutyparent)
+        >>> b1 = assertLocation(b, dutyparent)
+
+        >>> ILocation.providedBy(b1)
+        True
+        >>> b1.__parent__ is dutyparent
+        True
+        >>> type(b1).__name__
+        'B'
+
+    C. In those cases where the parent is provided by the adapter itself, the adapter
+    keeps its regular-parent:
+
+        >>> regularparent = Location()
+
+        >>> class C(Location):
+        ...     def __init__(self, context):
+        ...         self.context = context
+        ...         self.__parent__ = context
+
+        >>> c = C(regularparent)
+        >>> c1 = assertLocation(c, dutyparent)
+
+        >>> ILocation.providedBy(c1)
+        True
+        >>> c1.__parent__ is regularparent
+        True
+        >>> type(c1).__name__
+        'C'
+    """
+    # handle none-locatable adapters (A)
+    if not ILocation.providedBy(adapter):
+        locatable = LocationProxy(adapter)
+        locatable.__parent__ = parent
+        return locatable
+
+    # handle locatable, parentless adapters (B)
+    if adapter.__parent__ is None:
+        adapter.__parent__ = parent
+        return adapter
+
+    # handle locatable, parentful adapters (C)
+    else:
+        return adapter
+
 
 class TrustedAdapterFactory(object):
     """Adapt an adapter factory to to provide trusted adapters
@@ -27,9 +120,20 @@ class TrustedAdapterFactory(object):
        adapt any proxied objects, it will unproxy them and then proxy the
        resulting adapter.
 
+       Further trusted adapters always provide a location. If an adapter
+       itself does not provide ILocation it is wrapped within a location proxy
+       and it parent will be set:
+
+           security proxy > location proxy > adapter > object(s)
+
+       If the adapter does provide ILocation and it's __parent__ is None,
+       we set the __parent__ only: 
+       
+           security proxy > adapter > object(s) 
+
        Suppose we have an adapter factory:
 
-         >>> class A(object):
+         >>> class B(Location):
          ...     def __init__(self, context):
          ...         self.context = context
 
@@ -40,12 +144,12 @@ class TrustedAdapterFactory(object):
 
        If we adapt it:
 
-         >>> a = A(p)
+         >>> a = B(p)
 
        the result is not a proxy:
 
          >>> type(a).__name__
-         'A'
+         'B'
 
        But the object it adapts still is:
 
@@ -54,11 +158,11 @@ class TrustedAdapterFactory(object):
 
        Now, will we'll adapt our adapter factory to a trusted adapter factory:
 
-         >>> TA = TrustedAdapterFactory(A)
+         >>> TB = TrustedAdapterFactory(B)
 
        and if we use it:
 
-         >>> a = TA(p)
+         >>> a = TB(p)
 
        then the adapter is proxied:
 
@@ -74,7 +178,7 @@ class TrustedAdapterFactory(object):
 
        This works with multiple objects too:
 
-         >>> class M(object):
+         >>> class M(Location):
          ...     def __init__(self, *context):
          ...         self.context = context
 
@@ -97,32 +201,45 @@ class TrustedAdapterFactory(object):
          >>> a.context[0] is o, a.context[1] is o2, a.context[2] is o3
          (True, True, True)
 
-       The __parent__ will be set to the first object if the adapter
-       is a location. M isn't a location, so the adapter has no
-       __parent__:
+       The __parent__ will be always set to the first object unless the
+       adapter's parent is not None. This happens even if the adapter 
+       itself does not provide a location.
+       
+       A. None-locatable Adapters:
 
-         >>> a.__parent__
-         Traceback (most recent call last):
-         ...
-         AttributeError: 'M' object has no attribute '__parent__'
+         >>> class A(object):
+         ...     def __init__(self, context):
+         ...         self.context = context
 
-       But if we create an adapter that is a Location:
-
-         >>> class L(A, Location):
-         ...     pass
-         >>> TL = TrustedAdapterFactory(L)
-
-       Then __parent__ will be set:
-
-         >>> TL(o).__parent__ is o
+         >>> TA = TrustedAdapterFactory(A)
+         >>> TA(o).__parent__ is o
          True
-         >>> removeSecurityProxy(TL(p)).__parent__ is o
+
+       B. Locatable, parentless Adapters:
+
+         >>> TB = TrustedAdapterFactory(B)
+         >>> TB(o).__parent__ is o
+         True
+         >>> removeSecurityProxy(TB(p)).__parent__ is o
+         True
+
+       C. Locatable, parentful Adapters:
+
+         >>> class C(Location):
+         ...     def __init__(self, context):
+         ...         self.context = context
+         ...         self.__parent__ = context
+
+         >>> TC = TrustedAdapterFactory(C)
+         >>> TC(o).__parent__ is o
+         True
+         >>> removeSecurityProxy(TC(p)).__parent__ is o
          True
 
        The factory adapter has the __name__ and __module__ of the
        factory it adapts:
 
-         >>> (TA.__module__, TA.__name__) == (A.__module__, A.__name__)
+         >>> (TB.__module__, TB.__name__) == (B.__module__, B.__name__)
          True
 
        """
@@ -137,13 +254,101 @@ class TrustedAdapterFactory(object):
             if removeSecurityProxy(arg) is not arg:
                 args = map(removeSecurityProxy, args)
                 adapter = self.factory(*args)
-                if (ILocation.providedBy(adapter)
-                    and adapter.__parent__ is None):
-                    adapter.__parent__ = args[0]
-                return ProxyFactory(adapter)
+                return ProxyFactory(assertLocation(adapter, args[0]))
 
         adapter = self.factory(*args)
-        if (ILocation.providedBy(adapter)
-            and adapter.__parent__ is None):
-            adapter.__parent__ = args[0]
-        return adapter
+        return assertLocation(adapter, args[0])
+
+
+class UntrustedAdapterFactory(object):
+    """Adapt an adapter factory to provide locatable untrusted adapters
+
+       Untrusted adapters always adapt proxied objects. If any permission
+       other than zope.Public is required, untrusted adapters need a location
+       in order that the local authentication mechanism can be inovked correctly.
+
+       If the adapter doesn't provide ILocation, we location proxy it and
+       set the parent:
+       
+        location proxy > adapter > security proxy > object(s) 
+       
+       If the adapter does provide ILocation and it's __parent__ is None,
+       we set the __parent__ only:
+
+         adapter > security proxy > object(s)
+
+       Now, suppose have an object and proxy it:
+
+         o = []
+         >>> o = []
+         >>> p = ProxyFactory(o)
+
+       A. Adapters which do not provide ILocation get location-proxied
+       and theirs parent is set:
+
+         >>> class A(object):
+         ...     def __init__(self, context):
+         ...         self.context = context
+
+         >>> UA = UntrustedAdapterFactory(A)
+         >>> a = UA(o)
+
+         >>> ILocation.providedBy(a)
+         True
+         >>> a.__parent__ is o
+         True
+         >>> type(a).__name__
+         'LocationProxy'
+
+       B. Adapters which do provide ILocation get never location-proxied,
+       but theirs parent is also set unless their parent is
+       not None:
+
+           >>> class B(Location):
+           ...     def __init__(self, context):
+           ...         self.context = context
+
+           >>> UB = UntrustedAdapterFactory(B)
+           >>> b = UB(o)
+
+           >>> ILocation.providedBy(b)
+           True
+           >>> b.__parent__ is o
+           True
+           >>> type(b).__name__
+           'B'
+
+       C. In those cases where the parent is provided by the adapter itself,
+       nothing happens:
+
+           >>> class C(Location):
+           ...     def __init__(self, context):
+           ...         self.context = context
+           ...         self.__parent__ = context
+
+           >>> UC = UntrustedAdapterFactory(C)
+           >>> c = UC(o)
+
+           >>> ILocation.providedBy(c)
+           True
+           >>> c.__parent__ is o
+           True
+           >>> type(c).__name__
+           'C'
+
+        The factory adapter has the __name__ and __module__ of the
+        factory it adapts:
+
+            >>> (UB.__module__, UB.__name__) == (B.__module__, B.__name__)
+            True
+
+    """
+
+    def __init__(self, factory):
+        self.factory = factory
+        self.__name__ = factory.__name__
+        self.__module__ = factory.__module__
+
+    def __call__(self, *args):
+        adapter = self.factory(*args)
+        return assertLocation(adapter, args[0])

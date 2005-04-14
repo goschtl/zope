@@ -29,7 +29,8 @@ from zope.security.checker import Checker, NamesChecker
 from zope.security.proxy import Proxy
 
 from zope.app import zapi
-from zope.app.security.adapter import TrustedAdapterFactory
+from zope.app.security.adapter import TrustedAdapterFactory, UntrustedAdapterFactory
+
 
 PublicPermission = 'zope.Public'
 
@@ -176,8 +177,13 @@ def adapter(_context, factory, provides=None, for_=None, permission=None,
         checker = InterfaceChecker(provides, permission)
         factory = _protectedFactory(factory, checker)
 
-    if trusted:
-        factory = TrustedAdapterFactory(factory)
+        if trusted:
+            factory = TrustedAdapterFactory(factory)
+        elif permission != PublicPermission:
+            factory = UntrustedAdapterFactory(factory)
+    else:
+        if trusted:
+            factory = TrustedAdapterFactory(factory)
 
     _context.action(
         discriminator = ('adapter', for_, provides, name),
