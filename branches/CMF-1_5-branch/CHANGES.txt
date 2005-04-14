@@ -92,7 +92,8 @@ After CMF-1.5.1beta
       (http://www.zope.org/Collectors/CMF/300)
 
     - CMFCatalogAware: When reindexing security, all subobjects must be
-      reindexed even if they are not visible by the current user.
+      reindexed even if they are not visible by the current user. Also
+      fixed to work correctly with Zope >= 2.7.6.
 
 CMF 1.5.1beta (2005/03/24)
 
