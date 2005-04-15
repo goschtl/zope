@@ -705,7 +705,7 @@ Zope Changes
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
       Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
-      Bishop, Dominik Huber, Dmitry Vasiliev
+      Bishop, Dominik Huber, Dmitry Vasiliev, Gary Poster
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
