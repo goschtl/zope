@@ -99,8 +99,9 @@ skin layers(request)-, contenttype-, view- and slot-interfaces.
 
 Inside a pagetemplate of a view, the registered pagelets can be called by
 the tal:pagelets command. The return value is a list of macros where each
-macro correspondents to a registered pagelet. This macros can be used to
-invoke the pagelets::
+macro correspondents to a registered pagelet. The pagelet engine always uses
+the macro from the pagelet which has the same name like the pagelet itself.
+This macros can be used to invoke the pagelets:
 
   <div class="row">
     <tal:repeat="pagelets pagelets:zope.app.demo.pagelet.interfaces.IDemoSlot">
