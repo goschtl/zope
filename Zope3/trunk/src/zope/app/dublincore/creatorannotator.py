@@ -19,10 +19,14 @@ __docformat__ = 'restructuredtext'
 
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.security.management import queryInteraction
+from zope.security.proxy import removeSecurityProxy
 
 def CreatorAnnotator(event):
     """Update Dublin-Core creator property"""
     dc = IZopeDublinCore(event.object, None)
+    # Principals that can create object do not necessarily have
+    # 'zope.app.dublincore.change' permission. See issue 373.
+    dc = removeSecurityProxy(dc)
     if dc is None:
         return
 
