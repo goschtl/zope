@@ -23,7 +23,7 @@ class IDestination(Interface):
     """The result of an adaption"""
 
     def method():
-	"""Do something"""
+        """Do something"""
 
 class ISimpleContent(Interface):
     pass
