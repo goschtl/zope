@@ -566,7 +566,7 @@ Zope Changes
 
     Bug Fixes
 
-      - the getAdapters function on site managers returned None when
+      - The getAdapters function on site managers returned None when
         adapter factories returned None. These values should not be
         included in the output and now aren't.
 
