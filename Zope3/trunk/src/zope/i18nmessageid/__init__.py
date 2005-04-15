@@ -15,5 +15,9 @@
 
 $Id$
 """
+# this is the old message id implementation; it is on the slate to be
+# deprecated sometime in the future.
 from messageid import MessageID, MessageIDFactory
+# this is the new message id implementation.  It is the one to use if you
+# have a choice.  Please see messages.txt for more details.
 from message import Message, MessageFactory
