@@ -50,9 +50,10 @@ through attributes:
   >>> robot.default
   u'${name} is a robot.'
   >>> robot.mapping
-  >>> 
+  >>> robot.domain
+  'futurama'
 
-The messags's attributes are considered part of the immutable message
+The message's attributes are considered part of the immutable message
 object.  They cannot be changed once the message id is created:
 
   >>> robot.domain = "planetexpress"
@@ -110,8 +111,8 @@ in one implementation.
 
 The proposed solution for backward compatability is to support both
 implementations in parallel, deprecating the mutable one.  A separate
-factory, 'I18nMessageFactory', will instanciate immutable message ids,
-while the deprecated oldone will continue to work like before.
+factory, 'I18nMessageFactory', will instantiate immutable message ids,
+while the deprecated old one will continue to work like before.
 
 The roadmap to immutable-only message ids is proposed as follows:
 
