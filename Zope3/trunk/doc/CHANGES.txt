@@ -343,6 +343,11 @@ Zope Changes
 
           http://yoursite.com/@@failsafelogin.html
 
+      - Added a re-implementation of i18n message IDs (now simply
+        called ``Message``) that is immutable and thus can be treated
+        like unicode strings with respect to security proxying.  This
+        implementation will replace the old one in upcoming versions.
+
     Restructuring
 
       - Applied changes suggested in issue 339: Improvements to generated forms
