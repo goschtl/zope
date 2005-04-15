@@ -436,6 +436,18 @@ def testGetAdapters():
       >>> adapters.sort()
       >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
       [(u'', 'Comp'), (u'foo', 'Comp')]
+
+    Note that the output doesn't include None values. If an adapter
+    factory returns None, it is as if it wasn't present.
+
+      >>> zope.component.getGlobalSiteManager().provideAdapter(
+      ...     [I1], I2, 'nah', lambda context: None)
+      >>> adapters = zope.component.getAdapters((ob,), I2)
+      >>> adapters.sort()
+      >>> [(name, adapter.__class__.__name__) for name, adapter in adapters]
+      [(u'', 'Comp'), (u'foo', 'Comp')]
+      
+
     """
 
 def testUtility():

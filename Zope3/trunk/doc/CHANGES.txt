@@ -566,6 +566,10 @@ Zope Changes
 
     Bug Fixes
 
+      - the getAdapters function on site managers returned None when
+        adapter factories returned None. These values should not be
+        included in the output and now aren't.
+
       - Fixed issue #394: starting zope with command -C arg
         causes request.form to contain '-C':''
 
