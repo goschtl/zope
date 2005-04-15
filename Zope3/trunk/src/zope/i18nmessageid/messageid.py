@@ -55,7 +55,7 @@ class MessageID(unicode):
     >>> id.default = u'blah'
     >>> id.default
     u'blah'
-    
+
     It is quite common to pass an abstract identifier as message id
     and then a default text:
 
