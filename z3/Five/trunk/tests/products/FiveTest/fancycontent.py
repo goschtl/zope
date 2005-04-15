@@ -36,7 +36,7 @@ class FancyContent(SimpleItem):
         return FancyAttribute(name).__of__(self)
 
     def get_size(self):
-	return 43
+        return 43
 
 InitializeClass(FancyContent)
 
