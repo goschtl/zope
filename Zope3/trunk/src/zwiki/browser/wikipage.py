@@ -114,10 +114,8 @@ class EditWikiPage(object):
 class ViewWikiPage:
     """A rendered View of the wiki page."""
 
-    def renderWikiLinks(self, source):
+    def renderWikiLinks(self, html):
         """Add Wiki Links to the source"""
-
-        html = str(source)
         html = re.sub(protectedLine, self._protectLine, html)
         html = re.sub(interwikilink, self._interwikilinkReplace, html)
         html = re.sub(wikilink, self._wikilinkReplace, html)
