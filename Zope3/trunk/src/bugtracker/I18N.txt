@@ -7,14 +7,12 @@ Internationalization (I18n) and Localization (L10n)
     1. Install 'bugtracker' in 'ZOPE3/src'. See INSTALL.txt for details.
 
     2. Set the the Python path::
-       
-        export PYTHONPATH=ZOPE3/src
-  
-    3. Go into the 'locales' directory and execute extract.py::
 
-      python2.3 utilities/i18nextract.py -d bugtracker \
-                                         -p src/bugtracker/ \
-                                         -o locales
+        export PYTHONPATH=ZOPE3/src
+
+    3. Go into the 'locales' directory and execute i18nextract.py::
+
+      python2.3 utilities/i18nextract.py -d bugtracker -p ..
 
 
   Updating Message Catalog (PO) Files
