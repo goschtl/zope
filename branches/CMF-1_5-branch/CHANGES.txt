@@ -2,6 +2,12 @@ After CMF-1.5.1beta
 
   New Features
 
+    - DCWorkflow: To bridge some of the bound variable name differences
+      between TALES expressions used in DCWorkflow and those used elsewhere
+      in the CMF, added two "aliases" to the expression context that reflect
+      the CMF conventions: "object" points to "here", and "folder" points
+      to "container" (http://www.zope.org/Collectors/CMF/338)
+
     - CMFSetup: Improved update directives for extension profiles.
       See the new PROFILES.txt for details.
 
