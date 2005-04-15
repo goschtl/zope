@@ -16,3 +16,5 @@
 $Id$
 """
 
+from zope.i18nmessageid import MessageIDFactory
+ZWikiMessageID = MessageIDFactory("zwiki")

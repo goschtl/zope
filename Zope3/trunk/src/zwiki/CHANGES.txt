@@ -1,5 +1,8 @@
 CHANGES
 
+  Version 0.2.5
+
+    - Added translations.
 
   Version 0.2
 
