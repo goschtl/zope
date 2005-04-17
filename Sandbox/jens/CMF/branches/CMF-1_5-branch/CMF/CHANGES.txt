@@ -1,4 +1,4 @@
-After CMF-1.5.1beta
+CMF-1.5.1beta2 (2005/04/17)
 
   New Features
 
