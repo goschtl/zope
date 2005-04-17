@@ -1,3 +1,12 @@
+After CMF-1.5.1beta2
+
+  Other
+
+    - Made INSTALL.txt more general so it does not refer to specific CMF
+      version numbers in the 1.5 series and thus won't look outdated from
+      one release to the next.
+
+
 CMF-1.5.1beta2 (2005/04/17)
 
   New Features

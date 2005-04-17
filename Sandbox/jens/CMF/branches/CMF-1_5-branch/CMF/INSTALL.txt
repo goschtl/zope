@@ -1,4 +1,4 @@
-Installing CMF 1.5.0
+Installing CMF 1.5.x
 
   Requirements
 
@@ -12,15 +12,15 @@ Installing CMF 1.5.0
     - New installation
 
     - Zope configured using INSTANCE_HOME, /var/zope, and
-      SOFTWARE_HOME, /usr/local/zope/Zope-2.7.0
+      SOFTWARE_HOME, /usr/local/zope/Zope-2.7.x
 
   Procedure
 
-    1. Unpack the CMF-1.5.0.tar.gz tarball into a working
+    1. Unpack the CMF-1.5.x.tar.gz tarball into a working
        directory. For instance::
 
         $ cd /usr/local/zope
-        $ tar xzf /tmp/CMF-1.5.0.tar.gz
+        $ tar xzf /tmp/CMF-1.5.x.tar.gz
 
        Note for Windows users:  if you are using WinZip to unpack
           the file, be *sure* to disable the "TAR file smart CR/LF
@@ -33,19 +33,19 @@ Installing CMF 1.5.0
        For instance::
 
         $ cd /var/zope/Products  # /var/zope is INSTANCE_HOME
-        $ ln -s /usr/local/zope/CMF-1.5.0/CMFCore .
-        $ ln -s /usr/local/zope/CMF-1.5.0/CMFDefault .
-        $ ln -s /usr/local/zope/CMF-1.5.0/CMFTopic .
-        $ ln -s /usr/local/zope/CMF-1.5.0/CMFActionIcons .
-        $ ln -s /usr/local/zope/CMF-1.5.0/CMFCalendar .
-        $ ln -s /usr/local/zope/CMF-1.5.0/CMFSetup .
-        $ ln -s /usr/local/zope/CMF-1.5.0/CMFUid .
-        $ ln -s /usr/local/zope/CMF-1.5.0/DCWorkflow .
+        $ ln -s /usr/local/zope/CMF-1.5.x/CMFCore .
+        $ ln -s /usr/local/zope/CMF-1.5.x/CMFDefault .
+        $ ln -s /usr/local/zope/CMF-1.5.x/CMFTopic .
+        $ ln -s /usr/local/zope/CMF-1.5.x/CMFActionIcons .
+        $ ln -s /usr/local/zope/CMF-1.5.x/CMFCalendar .
+        $ ln -s /usr/local/zope/CMF-1.5.x/CMFSetup .
+        $ ln -s /usr/local/zope/CMF-1.5.x/CMFUid .
+        $ ln -s /usr/local/zope/CMF-1.5.x/DCWorkflow .
 
        or, as a shortcut::
 
-        $ ln -s /usr/local/zope/CMF-1.5.0/CMF* .
-        $ ln -s /usr/local/zope/CMF-1.5.0/DCWorkflow .
+        $ ln -s /usr/local/zope/CMF-1.5.x/CMF* .
+        $ ln -s /usr/local/zope/CMF-1.5.x/DCWorkflow .
 
        Since linking doesn't apply on Windows, you will need
        to cut or copy the files from the place where you unpacked
@@ -54,11 +54,9 @@ Installing CMF 1.5.0
     3. Restart Zope; verify that the CMF products loaded
        property, by examining them in Control_Panel/Product.
 
-    4. Create a CMF Site object. join, and begin adding content.
-       Enjoy!
+    4. Create a "Configured CMF Site" object. join, and begin adding 
+       content. Enjoy!
 
-    5. If you want to use CMFCalendar: Build and run the installation
-       ExternalMethod as described in CMFCalendar/INSTALL.txt.
 
 Installing Internationalization (I18N) Support for CMF
 
@@ -101,7 +99,7 @@ Upgrading from Earlier Versions
 
   Install the New Software.
 
-    0. "Download":CMF-1.5.0.tar.gz the tarball.
+    0. "Download":CMF-1.5.x.tar.gz the tarball.
 
     1. Copy your "working" products off to one side (in case
        you need / choose to revert).
