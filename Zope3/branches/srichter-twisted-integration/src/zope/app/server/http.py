@@ -15,19 +15,31 @@
 
 $Id$
 """
+import twisted.web2.wsgi
+import twisted.web2.server
 
-from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
-from zope.app.server.servertype import ServerType
-from zope.server.http.commonaccesslogger import CommonAccessLogger
-from zope.server.http.publisherhttpserver import PMDBHTTPServer
-from zope.server.http.publisherhttpserver import PublisherHTTPServer
+from zope.app.server.server import ServerType, SSLServerType
+from zope.app import wsgi
 
-http = ServerType(PublisherHTTPServer,
-                  HTTPPublicationRequestFactory,
-                  CommonAccessLogger,
-                  8080, True)
 
-pmhttp = ServerType(PMDBHTTPServer,
-                    HTTPPublicationRequestFactory,
-                    CommonAccessLogger,
-                    8013, True)
+def createHTTPFactory(db):
+    resource = twisted.web2.wsgi.WSGIResource(
+        wsgi.WSGIPublisherApplication(db))
+    
+    return twisted.web2.server.Site(resource)
+
+
+http = ServerType(createHTTPFactory, 8080)
+
+https = SSLServerType(createHTTPFactory, 8443)
+
+
+def createHTTPFactory(db):
+    resource = twisted.web2.wsgi.WSGIResource(
+        wsgi.PMDBWSGIPublisherApplication(db))
+    
+    return twisted.web2.server.Site(resource)
+
+pmhttp = ServerType(createHTTPFactory, 8080)
+
+

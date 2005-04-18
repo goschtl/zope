@@ -7,25 +7,27 @@
   <utility
       name="HTTP"
       component=".http.http"
-      provides=".servertype.IServerType"
+      provides=".interfaces.IServerType"
+      />
+
+  <utility
+      name="HTTPS"
+      component=".http.https"
+      provides=".interfaces.IServerType"
       />
 
   <utility
       name="PostmortemDebuggingHTTP"
       component=".http.pmhttp"
-      provides=".servertype.IServerType"
+      provides=".interfaces.IServerType"
       />
 
-  <utility
-      name="WSGI-HTTP"
-      component=".wsgi.http"
-      provides=".servertype.IServerType"
-      />
-
+<!--
   <utility
       name="FTP"
       component=".ftp.server"
-      provides=".servertype.IServerType"
+      provides=".interfaces.IServerType"
       />
+-->
 
 </configure>

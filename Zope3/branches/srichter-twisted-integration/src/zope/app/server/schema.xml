@@ -16,8 +16,17 @@
   <sectiontype name="server" datatype="zope.app.server.server.ServerFactory">
     <key name="type" required="yes" />
     <key name="address" datatype="inet-address" />
-    <key name="verbose" datatype="boolean" />
+    <key name="backlog" datatype="integer" default="50" />
   </sectiontype>
+
+  <sectiontype name="sslserver" 
+               extends="server"
+               datatype="zope.app.server.server.SSLServerFactory">
+    <key name="privatekeypath" datatype="existing-file" required="yes" />
+    <key name="certificatepath" datatype="existing-file" required="yes" />
+    <key name="tls" datatype="boolean" default="false" />
+  </sectiontype>
+
 
   <section type="ZODB.database" name="*" required="yes"
            attribute="database">
@@ -40,6 +49,7 @@
   </section>
 
   <multisection type="server" name="*" attribute="servers" />
+  <multisection type="sslserver" name="*" attribute="sslservers" />
 
   <key name="site-definition" default="site.zcml">
     <description>

@@ -1,1 +1,3 @@
-<include package="zope.app.recorder" />
+<!-- XXX: This code relies on ZServer, which is not more! -->
+<!-- include package="zope.app.recorder" / -->
+<configure />
