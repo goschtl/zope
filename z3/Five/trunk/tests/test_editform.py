@@ -10,7 +10,7 @@ from zope.app.form.browser.submit import Update
 
 from Products.Five.tests.products.FiveTest.simplecontent import manage_addFieldSimpleContent
 from Products.Five.tests.products.FiveTest.helpers import manage_addFiveTraversableFolder
-from Products.Five.tests.products.FiveTest.fancycontent import manage_addComplexSchemaContent
+from Products.Five.tests.products.FiveTest.schemacontent import manage_addComplexSchemaContent
 
 
 class EditFormTest(Functional, FiveTestCase):
