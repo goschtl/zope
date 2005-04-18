@@ -383,9 +383,3 @@ class IHTTPResponse(IResponse):
         """This convinience function determines the character set based on the
            HTTP header information.
         """
-
-    def setHTTPTransaction(http_transaction):
-        """Sets an HTTP transaction.
-
-        Returns an HTTPTask or None. It is used for logging.
-        """
