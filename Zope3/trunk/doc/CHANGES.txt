@@ -10,6 +10,10 @@ Zope Changes
 
     New features
 
+      - Implemented proper HTTP 405 Method Not Allowed handling in the
+        HTTP publication if a requested method does not have a corresponding
+        view.
+
       - Implemented a generic user preferences system.
 
         * User preferences are combined in groups that are described by
