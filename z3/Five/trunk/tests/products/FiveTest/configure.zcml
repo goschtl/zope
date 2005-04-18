@@ -310,7 +310,7 @@
       permission="zope2.Public"
       />
       
-  <five:traversable class=".fancycontent.ComplexSchemaContent" />
+  <five:traversable class=".schemacontent.ComplexSchemaContent" />
 
   <browser:editform
       schema=".interfaces.IComplexSchemaContent"
