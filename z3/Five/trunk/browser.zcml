@@ -24,6 +24,14 @@
       allowed_interface="zope.interface.common.mapping.IItemMapping"
       />
 
+  <browser:page
+      for="*"
+      name="form_macros"
+      permission="zope2.View"
+      class=".skin.FormMacros"
+      allowed_interface="zope.interface.common.mapping.IItemMapping"
+      />
+
   <view
       for="*"
       factory=".browser.AbsoluteURL"
