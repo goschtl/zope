@@ -413,7 +413,7 @@ The following security objectives have been defined for the TOE:
                     delegate the ability to control access to selected
                     operations to others. To delegate a permission, a meta permission
                     that allows you to delegate this permission must be granted.
-    
+
     O.Audit         The TOE will provide the means of recording any 
                     security relevant events, so as to assist an 
                     administrator in the detection of potential attacks 
@@ -785,8 +785,8 @@ FIA_UAU.5 Multiple authentication systems
 FIA_UAU.5.1 
     The TSF shall provide *[extensible support for multiple
     authentication mechanisms. The default mechanism uses login names
-    and passwords in combination with HTTP Basic Authorization and FTP
-    authorization]*
+    and passwords in combination with HTTP Basic Authentication and FTP
+    authentication]*
 
 FIA_UAU.5.2
     The TSF shall authenticate any users claimed identity according to
@@ -999,14 +999,13 @@ The client software must support "protected authentication feedback"
 (FIA_UAU.7), to at least not echo a user's credentials in plain text.
 
 One or more "trusted paths" to the TOE must be provided using secure
-proxies, such as an HTTPS proxy like apache w ssl, or Pound.
+proxies, such as an HTTPS proxy like Apache with SSL, or Pound.
 
 If external IT systems are used, a trusted channel between the TOE and
 those systems must be provided by the TOE host environment.  For
 example, while the TOE may communicate with clients on a public
 network through a specific port allowed through a firewall, all
 communication with other IT systems could be over a private network.
-
 
 To ensure a "trusted path" to the TOE, users of the TOE must use
 secure proxies correctly (for example, being sure to accept only
@@ -1029,236 +1028,190 @@ The major functions implemented by the TOE are:
 Protection
 ----------
 
-The protection subsystem is responsible for controlling the access of
-subjects to objects.  It does this through the use of security
-proxies.  Any non-basic objects that an interaction accesses is
-wrapped in a security proxy.  All operations on these non-basic
-objects are performed through the security proxies. 
-
-        Protection
-        ^^^^^^^^^^
-
-        XXX To cover: FDP_ACC.2, FDP_ACF.1, FDP_ETC.2, FDP_ITC.1, FDP_ITC.2,
-        FDP_ROL.1_UNDO, FAU_UAU.1, FMT_MOF.1, FMT_MSA.1, FMT_SMR.1, FPT_RVM.1,
-        FPT_SEP.1 
-
-        The protection subsystem is responsible for controlling the access of
-        interactions (subjects) to objects.  It does this through the use of
-        security proxies.  Any non-basic objects that an interaction accesses
-        is wrapped in a security proxy.  All operations on these non-basic
-        objects are performed through the security proxies.  
-
-        Basic objects are immutable objects that contain only immutable
-        subobjects. Examples if basic objects include:
-
-        - Strings,
-
-        - Integers (long and normal),
-
-        - Floating-point objects,
-
-        - Date-time objects, 
-
-        - Boolean objects (True and False), and 
-
-        - The special (nil) object, None.
-
-        Subjects only have access to basic objects and proxied objects.
-
-        For the purposes of the protection system, all operations can be
-        reduced to one of two kinds of operations:
-
-        - Read the value of a named attribute
-
-        - Write the value of a named attribute
-
-        Higher-level operations are reduced to these low-level operations. For example,
-        to look up a key in a mapping object, we first execute read operation on the
-        '__getitem__' attribute.  The value of the '__getitem__' attribute is the
-        Python method for looking up a key.  To actually call the method, we need to
-        access it's '__call__' attribute.
+The protection subsystem is responsible for controlling the access of subjects
+to objects.  It does this through the use of security proxies.  Any non-basic
+objects that an interaction accesses is wrapped in a security proxy.  All
+operations on these non-basic objects are performed through the security
+proxies. Security proxies use the authorization system to decide whether access
+is allowed.  Any non-basic results of operations performed through security
+proxies are security proxied.
 
 Authentication
 --------------
 
 Zope provides a flexible authentication schema that by default supports HTTP
-Basic Auth, HTTP Cookie auth and is extensible to support different data
-storages...
+Basic Auth and is extensible to support different data
+storages. Zope defines interfaces to implement different mechanisms for
+authentication data schemas as well as authentication mechanisms. By default
+Zope provides components to store username/password pairs in the ZODB and to
+authenticate with a username/password pair through HTTP Basic Authentication
+and FTP authentication.
 
-Authorization
--------------
 
-Zope provides authorization mechanisms that decide wether an operation under a
-given subject is allowed...
+Authorization / Access Control
+------------------------------
+
+To determine whether an operation under a given subject is allowed, Zope has an
+authorization subsystem (aka access control). The authorization subsystem uses
+pluggable policies to allow the implementation of different rule sets. Zope
+provides a default security policy called 'zopepolicy'. 
+
+Policies implement a method 'checkPermission' to determine whether the
+requested access is allowed or not. Policies define the information required to
+make authorization decisions.  Policies therefore can be implemented to extend
+or reduce the current functionality, e.g. for introducing groups.
+
+The default policy considers roles, grants and denials, location and principals
+to drive the decision. Permissions can be granted or denied to principals
+directly or by roles.  Subjects can consider multiple principals if the
+execution of untrusted code is involved. 
+
+If no principal is associated with a subject, the subject is allowed to perform
+any operation. The publisher component is required to bind an anonymous
+principal with the special role "zope.Anonymous" if no user has been
+authenticated.
+
+Every principal is automatically granted the "zope.Anonymous" role which can't be
+denied by any means. Also, every principal is granted the "zope.Public"
+permission which can't be denied by any means.
+
+The 'zopepolicy' favors more specific declarations (permissions granted to
+principals over permissions granted to roles or grants that are nearer in terms
+of location) in contrast to more general (e.g. global declarations). Therefore
+it is possible to make exceptions for individuals from permissions granted to a
+role.
 
 Auditing
 --------
 
 Zope provides an auditing system that listens for events within Zope according
-to the SFRs described above. It is implemented using the event
-framework of Zope 3 to subscribe to the audit relevant events and log them
-appropriately. The provided infrastructure (event listener + logger)
-satisfies the requirements as described in FAU_GEN.1 and FAU_GEN.2.
+to the SFRs described above. It is implemented using the event framework of
+Zope 3 to subscribe to the audit relevant events and log them appropriately.
+The infrastructure provided (event listener + logger) satisfies the
+requirements as described in FAU_GEN.1 and FAU_GEN.2.
 
 Zope relies on the operating system to deliver reliable time stamps for the
 audit log.
-
+                
 Transaction management
 ----------------------
 
-Undo
+Most data is stored on persistent objects. The transaction machinery rolls back
+all data that is stored on persistent objects. 
+
+Undo 
 ----
 
-Publisher
----------
+- storage support
+
+- can redo
+
+- any level
+
+- can undo a transaction, if there aren't any un-undone transactions that touch
+  the same objects, if a conflict arises while changing the objects during
+  undo, application level conflict resolution is used to try to resolve a
+  conflict. if a conflict can't be resolved the undo can't be done.
+
+Undo only allows the rollback of serial N last transaction to avoid integrity issues.
+
+Publication / Server
+--------------------
+
+XXX get servers, protocols and publisher right
+
+The publisher allows users to communicate with the Zope server through a
+network, using standard protocols and client software like HTTP and browsers or
+FTP and FTP clients.
+
+The publisher is extensible to allow support for further protocols.
+
+To support FIA_UAU.1 the implementation of a protocol includes the ability to
+communicate with a user for requesting authentication data. The ability to
+present credentials is specific to the used protocol and clients. By default
+HTTP Basic Auth and FTP authentication are supported. 
+
+To support FIA_USB.1, the publisher also returns the credentials to Zope and
+calls the authentication subsystem to validate this data and binds the
+authenticated principal to the running interaction.
 
 Automated Tests
 ---------------
 
-Zope provides a suite of automated tests that allow the user to ensure that
-the security functionality implemented with a delivered package is consistent
-with the tests. Those tests can be run as unit tests in offline mode.
+Zope provides a suite of automated tests that allow the user to ensure that the
+security functionality implemented with a delivered package is consistent with
+the tests. Those tests can be run in offline mode.
 
-    Automated tests
-    ^^^^^^^^^^^^^^^
-
-    One objective of the Zope 3 effort is to provide a good coverage of all
-    functions with automated tests to support the agile software development process.
-    Those are tests that are written in Python and run as test scenarios to assure
-    correct functioning of components with respect to their declared interfaces.
-
-    A subset of those tests is the set of tests that cover the security functions.
-    Zope 3 provides a program to run those tests and gather feedback about the
-    result. This is done as an offline operation outside of Zope itself.
-
-    The tests are provided as modules called "tests" that reside
-    within the packages they provide tests for. The provided utility is able to
-    run only subsets of those specific to their location within the Zope package
-    hierarchy.
-
-    Those tests cover the abstract machine testing as described in FPT_AMT.1.
-
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
-- permission declarations [isn't needed IMHO, Christian]
-
-X protection
-
-X authentication [Christian, ]
-
-X authorization (aka access)
-
-X auditing [Christian, done?]
-
-X transaction management
-
-X undo
-
-X publisher
-
-X automated tests [Christian, done?]
-
-Additionally the Python and host environment provide functionality
-required by the security functions.
-
-XXX Helpful points to start: SecurityFramework in Wiki
-
-Definitions
-^^^^^^^^^^^
-
-Principal
-        An object, managed by an Authentication service that
-        represents a user of the system.  Principal have 
-        system-unique identifiers that aree used by other systems to maintain
-        information about them.
-
-Permission
-        An object, managed by the Zope application that represents the
-        ability to perform one or more operations.
-
-
-The auditing subsystem
-^^^^^^^^^^^^^^^^^^^^^^
-
-Zope provides an auditing system that listens for events within Zope according
-to the SFRs described above. It is implemented using the event
-framework of Zope 3 to subscribe to the audit relevant events and log them
-appropriately. The provided infrastructure (event listener + logger)
-satisfies the requirements as described in FAU_GEN.1 and FAU_GEN.2.
-
-Zope relies on the operating system to deliver reliable time stamps for the
-audit log. 
-
-    Annotation: The ZODB assures that timestamps for transactions increase
-    monotonously with at least one microsecond since the last to work around
-    compromised clocks.
-
-XXX talk about the format here
-
-The events are defined outside the TSC within ZCML configuration statements
-within the other Zope packages that are relevant for the events defined by the
-SFRs.
-
-Events supported by Zope
-************************
-
-Following events are supported by Zope:
-
-    -   IAuditStartup, IAuditShutdown for startup and shutdown of the audit
-        function (FAU_GEN.1)
-
-    -   IOperationAllowed, IOperationDenied for a successful/unsuccessful
-        request to perform an operation on an object covered by the SFP
-        (FAU_ACF.1)
-
-    -   IExportSuccess, IExportFailure for a successful/unsuccessful attempt to
-        export user data. (FDP_ETC.2)
-
-    -   IImportSuccess, IImportFailure which detail imported security
-        attributes for a successfull/unsuccessfull attempt to import user data
-        (FDP_ITC.1, FDP_ITC.2)
-
-    -   ITransactionAbortSuccess, ITransactionAbortFailure for a
-        successfull/unsuccessfull attempt to abort a transaction.
-        (FDP_ROL.2_TRANSACTIONS)
-
-    -   IUndoSuccess, IUndoFailure for a successful/unsuccessful attempt to
-        undo former transactions within Zope. (FDP_ROL.1_UNDO)
-
-    -   IFailedAuthenticationThresholdfor surpassing the threshold of
-        authentication failures and IAuthenticationFailureReset for
-        re-enabling a disabled login name after the configured period of time.
-        (FIA_AFL_z.1)
-
-    -   IAuthenticationFailure for unsuccessful use of the authentication
-        mechanism. (FIA_UAU.1)
-
-    -   IAuthenticationDecision for a final authentication decision (FIA_UAU.5)
-
-    -   IReauthenticationFailure for unsuccessful re-authentication attempts
-        (FIA_UAU.6) 
-        XXX Could that be covered by IAuthenticationFailure? Or is
-        this maybe a derived interface?
-
-    -   IUSBFailure for unsuccessful binding of user security attributes to an
-        interaction (FIA_USB.1) XXX argh ... i wonder about an actual example
-        for that ...
-        
-    -   IAuthenticationManagement for changes to the authentication functions
-        (like adding/removing principals, exchanging authentication modules
-        ...) (FMT_MOF.1) XXX not required by minimal auditing
-
-    -   ISecurityAttributeModification for modifications to security
-        attributes (grants, denies, login names, passwords) (FMT_MSA.1,
-        FMT_SMR.1) XXX FMT_MSA.1 is not required by minimal auditing
-        
-Exceptions from the functional requirements for auditing
-********************************************************
+Python Environment XXX
+----------------------
 
 As Zope relies on Python and the host environment to provide reliable time
 stamps, we regard auditing adjustments to the time being out of scope.
 Therefore external log mechanisms (Syslog on Unix hosts or the Event log on
 Windows hosts) should be consulted to detect those changes. (FPT_STM.1)
+
+Table: Functions to Security Functional Requirements Mapping
+------------------------------------------------------------
+
+    ==================  =================================================
+    Functions           Security Functional Requirements
+    ==================  =================================================
+    Protection          FDP_ACC.2, FDP_ACF.1, FDP_ETC.2, FDP_ITC.1, 
+                        FDP_ITC.2, FDP_ROL.1_UNDO, FIA_UAU.1, FMT_MOF.1,
+                        FMT_MSA.1, FMT_SMR.1, FPT_RVM.1, FPT_SEP.1 
+
+    Authentication      FIA_AFL_z.1, FIA_ATD.1, FIA_UAU.5, FIA_UAU.6,
+                        FMT_MSA.1
+                        
+    Authorization       FDP_ACC.2, FDP_ACF.1, FDP_ETC.2, FDP_ITC.1,
+                        FTP_ITC.2, FDP_RIP.1, FDP_ROL.1_Undo, FIA_ATD.1,
+                        FIA_UAU.1, FIA_USB.1, FMT_MOF.1, FMT_MSA.1,
+                        FMT_MSA.3, FMT_SMR.1, 
+
+    Auditing            FAU_GEN.1, FAU_GEN.2, FPT_STM.1
+    
+    Transaction         FDP_ROL.2_Transactions
+    management
+
+    Undo                FDP_ROL.1_Undo
+
+    Publisher           FIA_UAU.1, FIA_USB.1
+
+    Automated Tests     FPT_AMT.1
+    Python Environemnt  FPT_STM.1
+    ==================  =================================================
+
+Table: Security Functional Requirements to Functions Mapping
+------------------------------------------------------------
+
+    ======================  =================================================
+    SFR                     Function
+    ======================  =================================================
+    FAU_GEN.1               Audit
+    FAU_GEN.2               Audit
+    FDP_ACC.2               Authorization, Protection
+    FDP_ACF.1               Authorization, Protection
+    FDP_ETC.2               Authorization, Protection, Synchronization
+    FDP_ITC.1               Authorization, Protection, Synchronization
+    FDP_ITC.2               Authorization, Protection, Synchronization
+    FDP_RIP.1               Authorization
+    FDP_ROL.2_Transactions  Transaction management
+    FDP_ROL.1_Undo          Undo, Authorization, Protection
+    FIA_AFL_z.1             Authentication
+    FIA_ATD.1               Authentication
+    FIA_UAU.1               Publication, Authorization, Protection
+    FIA_UAU.5               Authentication
+    FIA_UAU.6               Authentication
+    FIA_USB.1               Publication, Authorization
+    FMT_MOF.1               Authorization, Protection, Authentication
+    FMT_MSA.3               Authorization
+    FMT_SMR.1               Authorization, Protection
+    FPT_AMT.1               Automated Tests
+    FPT_RVM.1               Protection
+    FPT_FLS.1               Transaction management
+    FPT_SEP.1               Protection
+    FPT_STM.1               Python environment
+    ======================  =================================================
 
 Assurance measures
 ------------------
@@ -1304,8 +1257,33 @@ Rationale
 Security objectives rationale
 -----------------------------
 
-XXX
+O.IA
+    This security objective is necessary to counter the threat T.IA
+    because it requires that users must be accuratly identified and
+    authenticated or incorporate the anonymous principal.
 
+O.Delegation
+    
+
+O.Audit
+
+O.Protect
+
+Table: Mapping of Threats to Security Objectives
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+                    T.IA    T.Perm  T.Operation T.AuditFake T.Import    T.RIP T.Transaction T.Undo    T.USB T.Timestamps    T.Trustedpath   T.Host
+
+    O.IA            X
+    O.Delegation
+    O.Audit
+    O.Protect                                           
+    O.Access
+    O.Integrity
+    O.Attributes
+    O.ManageRisk
+    
+    
 Security requirements rationale
 -------------------------------
 
@@ -1331,20 +1309,21 @@ The assurance level is **EAL 1**.
 Evaluation Assurance Level rationale:
 -------------------------------------
 
-
 XXX review this paragraph please.
 
 The Zope development community recognizes the need of mature and well defined
 security functions by its users.
 
-Therefore to meet this requirements the decision for an entry level evaluation
-was made in respect to the resource constraints of available developers and
+Therefore to meet this requirement the decision for an entry level evaluation
+was made on the basis of resource constraints of available developers and
 budget. 
 
 Additionally an entry level evaluation gives a glance to the community how
-certification may effect Zopes degree of documentation and stabilize the good
-security history even more, maybe raising the interest for projects that require
-good security behaviour and seek free alternatives. 
+certification may effect Zope's degree of documentation and stabilize the good
+security history even more, maybe raising the interest for projects that
+require good security behaviour and seek free alternatives. 
+
+XXX mention "confidence"
 
 It is intended to show that mature open source projects can outperform
 proprietary systems not only on pure functional and monetary aspects but also
@@ -1434,7 +1413,7 @@ Notes
   is that cache data are not transactional.
 
 - It would be useful, when time allows (hehe) to abstract the security
-  policy into a profile and then see if other security-profiles could
+  policy into a profile and then see if other security profiles could
   be "substituted".
 
 - We will need to define events that the auditing system can subscribe
@@ -1469,3 +1448,21 @@ This will make the evaluation more specific and/but easier.
 * In TSF_AUD (summary specification): I'm guessing about the function of the security audit
   logger (doesn't sound too hard, maybe I should/could write that thing)
 
+
+- Talk about caching of security data
+
+Stuff I don't want to throw away
+================================
+
+Definitions
+^^^^^^^^^^^
+
+Principal
+        An object, managed by an Authentication service that
+        represents a user of the system.  Principal have 
+        system-unique identifiers that aree used by other systems to maintain
+        information about them.
+
+Permission
+        An object, managed by the Zope application that represents the
+        ability to perform one or more operations.
