@@ -24,6 +24,7 @@ from soap.interfaces import ISOAPRequest, ISOAPResponse
 from ZSI import TC, ParsedSoap, ParseException
 from ZSI import SoapWriter, Fault
 from zope.security.proxy import isinstance
+from zope.security.interfaces import IUnauthorized
 from zope.publisher.xmlrpc import premarshal
 from zope.interface import implements
 from StringIO import StringIO
@@ -172,6 +173,11 @@ class SOAPResponse(HTTPResponse):
     def handleException(self, exc_info):
         """Handle exceptions that occur during processing."""
         type, value = exc_info[:2]
+        if IUnauthorized.providedBy(value):
+            self.setStatus(401)
+            self._body = ""
+            self._updateContentLength()
+            return
         if not isinstance(value, Fault):
             value = ZSI.FaultFromException(value, 0)
         self.setStatus(500)
