@@ -20,7 +20,7 @@
       for="*"
       name="standard_macros"
       permission="zope2.View"
-      class=".browser.StandardMacros"
+      class=".skin.StandardMacros"
       allowed_interface="zope.interface.common.mapping.IItemMapping"
       />
 

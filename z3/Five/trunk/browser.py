@@ -24,8 +24,6 @@ from Globals import InitializeClass
 # Zope 3
 from interfaces import ITraversable
 from zope.interface import implements
-from zope.interface.common.mapping import IItemMapping
-from zope.component import getView
 from zope.component import getViewProviding
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
 from zope.app.location.interfaces import ILocation
@@ -113,35 +111,6 @@ class SiteAbsoluteURL(AbsoluteURL):
         return ({'name': context.getId(),
                  'url': context.absolute_url()
                  },)
-
-class Macros:
-    implements(IItemMapping)
-
-    macro_pages = ()
-    aliases = {
-        'view': 'page',
-        'dialog': 'page',
-        'addingdialog': 'page'
-        }
-
-    def __getitem__(self, key):
-        key = self.aliases.get(key, key)
-        context = self.context
-        request = self.request
-        for name in self.macro_pages:
-            page = getView(context, name, request)
-            try:
-                v = page[key]
-            except KeyError:
-                pass
-            else:
-                return v
-        raise KeyError, key
-
-class StandardMacros(BrowserView, Macros):
-    macro_pages = ('five_template',
-                   'widget_macros',
-                   'form_macros',) 
 
 class EditView(BrowserView):
     """Simple edit-view base class
