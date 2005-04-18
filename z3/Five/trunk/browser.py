@@ -237,7 +237,6 @@ class AddView(EditView):
         setUpWidgets(self, self.schema, IInputWidget, names=self.fieldNames)
 
     def update(self):
-
         if self.update_status is not None:
             # We've been called before. Just return the previous result.
             return self.update_status
