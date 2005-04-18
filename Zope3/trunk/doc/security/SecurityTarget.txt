@@ -1455,7 +1455,7 @@ Stuff I don't want to throw away
 ================================
 
 Definitions
-^^^^^^^^^^^
+-----------
 
 Principal
         An object, managed by an Authentication service that
