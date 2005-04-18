@@ -17,6 +17,7 @@ warnings.warn('The use of the Products.Five.api module has been deprecated. '
               'Import directly from Products.Five instead for public API.',
               DeprecationWarning)
 
-from browser import BrowserView, StandardMacros
+from browser import BrowserView
+from form.standardmacros import StandardMacros
 from traversable import Traversable
 from viewable import Viewable

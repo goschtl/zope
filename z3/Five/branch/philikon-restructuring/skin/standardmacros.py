@@ -46,7 +46,3 @@ class StandardMacros(BrowserView, Macros):
     macro_pages = ('five_template',
                    'widget_macros',
                    'form_macros',) 
-
-# copy of zope.app.form.browser.macros.FormMacros
-class FormMacros(StandardMacros):    
-    macro_pages = ('widget_macros', 'addform_macros')

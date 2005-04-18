@@ -36,7 +36,7 @@ from zExceptions import BadRequest
 
 from Products.Five import BrowserView
 from Products.Five.traversable import Traversable
-from Products.Five.pagetemplatefile import ZopeTwoPageTemplateFile
+from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 
 from Acquisition import Implicit
 from OFS.SimpleItem import SimpleItem

@@ -6,111 +6,29 @@
 # License (ZPL) v2.1. See COPYING.txt for more information.
 #
 ##############################################################################
-"""Provide basic browser functionality
+"""Add and edit views
 
 $Id$
 """
-
-# python
 import sys
 from datetime import datetime
 
-# Zope 2
 import Acquisition
-from  Acquisition import aq_inner, aq_parent, aq_base
-from AccessControl import ClassSecurityInfo
-from Globals import InitializeClass
 
-# Zope 3
-from interfaces import ITraversable
-from zope.interface import implements
-from zope.component import getViewProviding
-from zope.app.traversing.browser.interfaces import IAbsoluteURL
+from zope.event import notify
+from zope.schema.interfaces import ValidationError
 from zope.app.location.interfaces import ILocation
 from zope.app.location import LocationProxy
 from zope.app.form.utility import setUpEditWidgets, applyWidgetsChanges
 from zope.app.form.browser.submit import Update
 from zope.app.form.interfaces import WidgetsError, MissingInputError
-from zope.event import notify
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.interfaces import IInputWidget, WidgetsError
-from zope.schema.interfaces import ValidationError
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 
-# Five
-from Products.Five.pagetemplatefile import FivePageTemplateFile
-
-class BrowserView(Acquisition.Explicit):
-    security = ClassSecurityInfo()
-
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-    # XXX do not create any methods on the subclass called index_html,
-    # as this makes Zope 2 traverse into that first!
-
-InitializeClass(BrowserView)
-
-class AbsoluteURL(BrowserView):
-    """An adapter for Zope3-style absolute_url using Zope2 methods
-
-    (original: zope.app.traversing.browser.absoluteurl)
-    """
-
-    def __init__(self, context, request):
-        self.context, self.request = context, request
-
-    implements(IAbsoluteURL)
-
-    def __str__(self):
-        context = aq_inner(self.context)
-        return context.absolute_url()
-
-    __call__ = __str__
-
-    def breadcrumbs(self):
-        context = self.context.aq_inner
-        container = context.aq_parent
-        request = self.request
-
-        name = context.getId()
-        
-        if container is None or self._isVirtualHostRoot() \
-            or not ITraversable.providedBy(container):
-            return (
-                {'name': name, 'url': context.absolute_url()},)
-
-        view = getViewProviding(container, IAbsoluteURL, request)
-        base = tuple(view.breadcrumbs())
-        base += (
-            {'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))},)
-
-        return base
-
-    def _isVirtualHostRoot(self):
-        virtualrootpath = self.request.get('VirtualRootPhysicalPath', None)
-        if virtualrootpath is None:
-            return False
-        context = self.context.aq_inner
-        return context.restrictedTraverse(virtualrootpath) == context
-
-class SiteAbsoluteURL(AbsoluteURL):
-    """An adapter for Zope3-style absolute_url using Zope2 methods
-
-    This one is just used to stop breadcrumbs from crumbing up
-    to the Zope root.
-
-    (original: zope.app.traversing.browser.absoluteurl)
-    """
-
-    def breadcrumbs(self):
-        context = self.context
-        request = self.request
-
-        return ({'name': context.getId(),
-                 'url': context.absolute_url()
-                 },)
+from Products.Five.interfaces import ITraversable
+from Products.Five.browser import BrowserView
+from Products.Five.browser.pagetemplatefile import FivePageTemplateFile
 
 class EditView(BrowserView):
     """Simple edit-view base class

@@ -4,37 +4,14 @@
   <browser:page
       for="*"
       name="absolute_url"
-      class=".browser.AbsoluteURL"
+      class=".absoluteurl.AbsoluteURL"
       permission="zope.Public"
       allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
       />
 
-  <browser:page
-      for="*"
-      template="five_template.pt"
-      name="five_template"
-      permission="zope.Public"
-      />
-
-  <browser:page
-      for="*"
-      name="standard_macros"
-      permission="zope2.View"
-      class=".skin.StandardMacros"
-      allowed_interface="zope.interface.common.mapping.IItemMapping"
-      />
-
-  <browser:page
-      for="*"
-      name="form_macros"
-      permission="zope2.View"
-      class=".skin.FormMacros"
-      allowed_interface="zope.interface.common.mapping.IItemMapping"
-      />
-
   <view
       for="*"
-      factory=".browser.AbsoluteURL"
+      factory=".absoluteurl.AbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
       provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
@@ -43,21 +20,21 @@
   <browser:page
       for="zope.app.traversing.interfaces.IContainmentRoot"
       name="absolute_url"
-      class=".browser.SiteAbsoluteURL"
+      class=".absoluteurl.SiteAbsoluteURL"
       permission="zope.Public"
       allowed_interface="zope.app.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <view
       for="zope.app.traversing.interfaces.IContainmentRoot"
-      factory=".browser.SiteAbsoluteURL"
+      factory=".absoluteurl.SiteAbsoluteURL"
       type="zope.publisher.interfaces.http.IHTTPRequest"
       permission="zope.Public"
       provides="zope.app.traversing.browser.interfaces.IAbsoluteURL"
       />
 
   <browser:view
-      for=".interfaces.IObjectManager"
+      for="Products.Five.interfaces.IObjectManager"
       name="+"
       class=".adding.ContentAdding"
       permission="zope2.ViewManagementScreens"
@@ -67,5 +44,11 @@
     <browser:page name="action.html" attribute="action" />
 
   </browser:view>
+
+  <adapter
+      for="Products.Five.interfaces.IObjectManager"
+      factory=".adding.ObjectManagerNameChooser"
+      provides="zope.app.container.interfaces.INameChooser"
+      />
 
 </configure>

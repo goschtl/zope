@@ -10,14 +10,13 @@
 
 $Id: browser.py 5259 2004-06-23 15:59:52Z philikon $
 """
-
 import os
 import urllib
 
 from Acquisition import Explicit, aq_inner, aq_parent
 from ComputedAttribute import ComputedAttribute
-from browser import BrowserView
 from OFS.Traversable import Traversable as OFSTraversable
+
 from zope.exceptions import NotFoundError
 from zope.interface import implements
 from zope.component.interfaces import IResource
@@ -28,6 +27,8 @@ from zope.app.datetimeutils import time as timeFromDateTimeString
 from zope.app.publisher.fileresource import File, Image
 from zope.app.publisher.pagetemplateresource import PageTemplate
 from zope.app.publisher.browser.resources import empty
+
+from Products.Five.browser import BrowserView
 
 _marker = []
 

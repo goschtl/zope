@@ -12,17 +12,18 @@ These directives are specific to Five and have no equivalents in Zope 3.
 
 $Id$
 """
-
 import os
 import glob
 import warnings
+
 from zope.interface import classImplements
 from zope.configuration import xmlconfig
 from zope.app.component.interface import provideInterface
+
 from viewable import Viewable
 from traversable import Traversable
 from bridge import fromZ2Interface
-from browserconfigure import page
+from browser.metaconfigure import page
 
 def findProducts():
     import Products

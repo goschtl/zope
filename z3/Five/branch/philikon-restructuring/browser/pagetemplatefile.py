@@ -1,18 +1,25 @@
-'''A 'PageTemplateFile' without security restrictions.'''
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""A 'PageTemplateFile' without security restrictions.
 
+$Id$
+"""
 import os, sys
 
-# Zope 2
 from Globals import package_home
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
-# Zope 3
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-# Five
-from ReuseUtils import rebindFunction
-from TrustedExpression import getEngine, ModuleImporter
+from Products.Five.ReuseUtils import rebindFunction
+from Products.Five.TrustedExpression import getEngine, ModuleImporter
 
 class ZopeTwoPageTemplateFile(PageTemplateFile):
     """A strange hybrid between Zope 2 and Zope 3 page template.

@@ -22,7 +22,7 @@ monkey.monkeyPatch()
 # public API provided by Five
 # usage: from Products.Five import <something>
 from browser import BrowserView
-from skin import StandardMacros
+from skin.standardmacros import StandardMacros
 
 def initialize(context):
     zcml.load_site()
