@@ -4,7 +4,8 @@ from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 
 from zope.interface import implements
-from interfaces import IFancyContent
+from interfaces import IFancyContent, IComplexSchemaContent
+from simplecontent import FieldSimpleContent
 
 class FancyAttribute(Acquisition.Explicit):
     """Doc test fanatics"""
@@ -43,4 +44,21 @@ InitializeClass(FancyContent)
 def manage_addFancyContent(self, id, REQUEST=None):
     """Add the fancy fancy content."""
     id = self._setObject(id, FancyContent(id))
+    return ''
+
+class ComplexSchemaContent(SimpleItem):
+    
+     implements(IComplexSchemaContent)
+     
+     def __init__(self, id):
+         self.id = id
+         self.fish = FieldSimpleContent('fish', 'title')
+         self.fish.description = ""
+         self.fishtype = 'Lost fishy'
+
+InitializeClass(FancyContent)
+
+def manage_addComplexSchemaContent(self, id, REQUEST=None):
+    """Add the fancy fancy content."""
+    id = self._setObject(id, ComplexSchemaContent(id))
     return ''

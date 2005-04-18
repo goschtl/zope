@@ -1,5 +1,8 @@
 from Products.Five import BrowserView
 from Products.Five import StandardMacros as BaseMacros
+from simplecontent import FieldSimpleContent
+from zope.app.form import CustomWidgetFactory
+from zope.app.form.browser import ObjectWidget
 
 class SimpleContentView(BrowserView):
     """More docstring. Please Zope"""
@@ -55,3 +58,8 @@ class StandardMacros(BaseMacros):
     macro_pages = ('bird_macros', 'dog_macros')
     aliases = {'flying':'birdmacro',
                'walking':'dogmacro'}
+
+class ComplexSchemaView:
+    """Needs a docstring"""
+    
+    fish_widget = CustomWidgetFactory(ObjectWidget, FieldSimpleContent)

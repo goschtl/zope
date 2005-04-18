@@ -310,6 +310,24 @@
       permission="zope2.Public"
       />
       
+  <five:traversable class=".fancycontent.ComplexSchemaContent" />
+
+  <browser:editform
+      schema=".interfaces.IComplexSchemaContent"
+      for=".interfaces.IComplexSchemaContent"
+      name="edit.html"
+      permission="zope2.Public"
+      class=".browser.ComplexSchemaView"
+      />
+
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.IObject"
+      provides="zope.app.form.interfaces.IInputWidget"
+      factory="zope.app.form.browser.objectwidget.ObjectWidget"
+      permission="zope.Public"
+      />
+
   <!-- With a widget override -->
   <browser:editform
       schema=".interfaces.IFieldSimpleContent"
