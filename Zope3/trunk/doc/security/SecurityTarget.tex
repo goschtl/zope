@@ -1,40 +1,24 @@
-\documentclass[10pt,a4paper,english]{scrbook}
+\documentclass[12pt,english]{scrbook}
 \usepackage{babel}
 \usepackage{shortvrb}
 \usepackage[latin1]{inputenc}
 \usepackage{tabularx}
 \usepackage{longtable}
-\setlength{\extrarowheight}{2pt}
+%\setlength{\extrarowheight}{2pt}
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{multirow}
 \usepackage{ifthen}
 \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
-%% generator Docutils: http://docutils.sourceforge.net/
-% begin: floats for footnotes tweaking.
-\setlength{\floatsep}{0.5em}
-\setlength{\textfloatsep}{\fill}
-\addtolength{\textfloatsep}{3em}
-\renewcommand{\textfraction}{0.5}
-\renewcommand{\topfraction}{0.5}
-\renewcommand{\bottomfraction}{0.5}
-\setcounter{totalnumber}{50}
-\setcounter{topnumber}{50}
-\setcounter{bottomnumber}{50}
-% end floats for footnotes
-% some commands, that could be overwritten in the style file.
-\newcommand{\rubric}[1]{\section{~\hfill {\it #1} \hfill ~}}
-\newcommand{\titlereference}[1]{\textsl{#1}}
-% end of "some commands"
+
 \title{Zope X3 Security Target for EAL 1 ({\$}Rev: 30023 {\$} - Draft)}
 \author{Christian Theune, Steve Alexander, Jim Fulton, Christian Zagrodnick}
-\date{}
+\date{\today}
 \hypersetup{
 pdftitle={Zope X3 Security Target for EAL 1 ({\$}Rev: 30023 {\$} - Draft)},
 pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve Alexander {\textless}steve@catbox.net{\textgreater};Jim Fulton {\textless}jim@zope.com{\textgreater}}
 }
-\raggedbottom
 \begin{document}
 \maketitle
 
@@ -56,8 +40,8 @@ pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve Alexand
 
 %___________________________________________________________________________
 
-\hypertarget{document-history}{}
-\pdfbookmark[0]{Document History}{document-history}
+
+
 \chapter{Document History}
 
 \begin{longtable}{|l|l|l|l|}
@@ -86,15 +70,15 @@ Christian Theune
 
 %___________________________________________________________________________
 
-\hypertarget{st-introduction}{}
-\pdfbookmark[0]{ST introduction}{st-introduction}
+
+
 \chapter{ST introduction}
 
 
 %___________________________________________________________________________
 
-\hypertarget{st-identification}{}
-\pdfbookmark[1]{ST identification}{st-identification}
+
+
 \section{ST identification}
 
 \begin{description}
@@ -169,8 +153,8 @@ Zope Corporation
 
 %___________________________________________________________________________
 
-\hypertarget{st-overview}{}
-\pdfbookmark[1]{ST overview}{st-overview}
+
+
 \section{ST overview}
 
 The main objectives of this Security Target are:
@@ -203,8 +187,8 @@ security functions specifications and the assurance measures.
 
 %___________________________________________________________________________
 
-\hypertarget{iso-iec-15408-cc-conformance}{}
-\pdfbookmark[1]{ISO/IEC 15408 (CC) Conformance}{iso-iec-15408-cc-conformance}
+
+
 \section{ISO/IEC 15408 (CC) Conformance}
 
 This ST is claimed to be conformant with the ISO/IEC 15408:1999 (Common
@@ -226,15 +210,15 @@ The assurance level is EAL 1.
 
 %___________________________________________________________________________
 
-\hypertarget{toe-description}{}
-\pdfbookmark[0]{TOE description}{toe-description}
+
+
 \chapter{TOE description}
 
 
 %___________________________________________________________________________
 
-\hypertarget{overview}{}
-\pdfbookmark[1]{Overview}{overview}
+
+
 \section{Overview}
 
 Zope 3 (also referred to as ``Zope'') is a component based framework that may be
@@ -264,8 +248,8 @@ them together into more complex systems.
 
 %___________________________________________________________________________
 
-\hypertarget{toe-definition}{}
-\pdfbookmark[1]{TOE definition}{toe-definition}
+
+
 \section{TOE definition}
 
 As a general rule it is possible to describe all activities with and within Zope as
@@ -285,8 +269,8 @@ authentication mechanisms are possible.
 
 %___________________________________________________________________________
 
-\hypertarget{toe-development-and-production}{}
-\pdfbookmark[1]{TOE Development and Production}{toe-development-and-production}
+
+
 \section{TOE Development and Production}
 
 The development of Zope 3 is driven by the Zope Corporation together with the
@@ -321,8 +305,8 @@ test for new code he writes or problems he solves, as far as applicable.
 
 %___________________________________________________________________________
 
-\hypertarget{toe-life-cycle}{}
-\pdfbookmark[1]{TOE Life Cycle}{toe-life-cycle}
+
+
 \section{TOE Life Cycle}
 
 The TOE is developed in cycles. New features are introduced in iterative steps
@@ -370,15 +354,15 @@ upcoming feature relaese in free development mode
 
 %___________________________________________________________________________
 
-\hypertarget{toe-boundaries}{}
-\pdfbookmark[1]{TOE Boundaries}{toe-boundaries}
+
+
 \section{TOE Boundaries}
 
 
 %___________________________________________________________________________
 
-\hypertarget{physical-boundaries}{}
-\pdfbookmark[2]{Physical Boundaries}{physical-boundaries}
+
+
 \subsection{Physical Boundaries}
 
 The TOE is physically limited by the files that are included in a Zope 3
@@ -388,8 +372,8 @@ packages that are not part of the TOE. (E.g. Python runtime libraries)
 
 %___________________________________________________________________________
 
-\hypertarget{toe-logical-boundaries}{}
-\pdfbookmark[2]{TOE Logical Boundaries}{toe-logical-boundaries}
+
+
 \subsection{TOE Logical Boundaries}
 
 The logical boundary for the TOE consists of the four security sub-systems of
@@ -412,15 +396,15 @@ authorization
 
 %___________________________________________________________________________
 
-\hypertarget{toe-security-environment}{}
-\pdfbookmark[0]{TOE security environment}{toe-security-environment}
+
+
 \chapter{TOE security environment}
 
 
 %___________________________________________________________________________
 
-\hypertarget{assets}{}
-\pdfbookmark[1]{Assets}{assets}
+
+
 \section{Assets}
 
 The following primary assets have been identified:
@@ -520,8 +504,8 @@ principal.
 
 %___________________________________________________________________________
 
-\hypertarget{subject}{}
-\pdfbookmark[1]{Subject}{subject}
+
+
 \section{Subject}
 
 Zope has a concept of interactions, which model the interaction of one
@@ -534,8 +518,8 @@ to as ``subjects'' in the TOE.
 
 %___________________________________________________________________________
 
-\hypertarget{operations}{}
-\pdfbookmark[1]{Operations}{operations}
+
+
 \section{Operations}
 
 Operations are performed on objects. They are defined in an objects class. A
@@ -552,8 +536,8 @@ an attribute. Reading and writing can be guarded with different permission grant
 
 %___________________________________________________________________________
 
-\hypertarget{assumptions-about-the-environment}{}
-\pdfbookmark[1]{Assumptions (about the environment)}{assumptions-about-the-environment}
+
+
 \section{Assumptions (about the environment)}
 
 The following assumptions need to be made about the TOE environment:
@@ -620,8 +604,8 @@ Trojan horses.
 
 %___________________________________________________________________________
 
-\hypertarget{threats}{}
-\pdfbookmark[1]{Threats}{threats}
+
+
 \section{Threats}
 
 The following threat agents have been identified:
@@ -782,8 +766,8 @@ Host, Object
 
 %___________________________________________________________________________
 
-\hypertarget{organisational-security-policies}{}
-\pdfbookmark[1]{Organisational security policies}{organisational-security-policies}
+
+
 \section{Organisational security policies}
 
 OSPs are to be defined by the developer who creates applications using Zope and
@@ -793,15 +777,15 @@ server does neither require nor impose any OSPs.
 
 %___________________________________________________________________________
 
-\hypertarget{security-objectives}{}
-\pdfbookmark[0]{Security objectives}{security-objectives}
+
+
 \chapter{Security objectives}
 
 
 %___________________________________________________________________________
 
-\hypertarget{security-objectives-for-the-toe}{}
-\pdfbookmark[1]{Security objectives for the TOE}{security-objectives-for-the-toe}
+
+
 \section{Security objectives for the TOE}
 
 The following security objectives have been defined for the TOE:
@@ -897,8 +881,8 @@ negative impact.
 
 %___________________________________________________________________________
 
-\hypertarget{security-objectives-for-the-environment}{}
-\pdfbookmark[1]{Security objectives for the environment}{security-objectives-for-the-environment}
+
+
 \section{Security objectives for the environment}
 
 The following security objectives have been defined for the TOE environment:
@@ -980,22 +964,22 @@ secret.
 
 %___________________________________________________________________________
 
-\hypertarget{security-requirements}{}
-\pdfbookmark[0]{Security requirements}{security-requirements}
+
+
 \chapter{Security requirements}
 
 
 %___________________________________________________________________________
 
-\hypertarget{toe-security-requirements}{}
-\pdfbookmark[1]{TOE security requirements}{toe-security-requirements}
+
+
 \section{TOE security requirements}
 
 
 %___________________________________________________________________________
 
-\hypertarget{toe-security-functional-requirements}{}
-\pdfbookmark[2]{TOE security functional requirements}{toe-security-functional-requirements}
+
+
 \subsection{TOE security functional requirements}
 
 The following functional requirements identify the TOE functional requirements.
@@ -1004,15 +988,15 @@ They have been drawn from the CC Part 2 functional requirements components.
 
 %___________________________________________________________________________
 
-\hypertarget{class-fau-audit-data-generation}{}
-\pdfbookmark[3]{Class FAU: Audit data generation}{class-fau-audit-data-generation}
+
+
 \subsection{Class FAU: Audit data generation}
 
 
 %___________________________________________________________________________
 
-\hypertarget{fau-gen-1-audit-data-generation}{}
-\pdfbookmark[4]{FAU{\_}GEN.1 Audit data generation}{fau-gen-1-audit-data-generation}
+
+
 \subsection{FAU{\_}GEN.1 Audit data generation}
 \begin{description}
 %[visit_definition_list_item]
@@ -1077,8 +1061,8 @@ of the functional components included in the ST,
 
 %___________________________________________________________________________
 
-\hypertarget{fau-gen-2-user-identity-assocation}{}
-\pdfbookmark[4]{FAU{\_}GEN.2 User identity assocation}{fau-gen-2-user-identity-assocation}
+
+
 \subsection{FAU{\_}GEN.2 User identity assocation}
 \begin{description}
 %[visit_definition_list_item]
@@ -1095,15 +1079,15 @@ of the user that caused the event.
 
 %___________________________________________________________________________
 
-\hypertarget{class-fdp-data-protection}{}
-\pdfbookmark[3]{Class FDP: Data protection}{class-fdp-data-protection}
+
+
 \subsection{Class FDP: Data protection}
 
 
 %___________________________________________________________________________
 
-\hypertarget{fdp-acc-2-complete-access-control}{}
-\pdfbookmark[4]{FDP{\_}ACC.2 Complete access control}{fdp-acc-2-complete-access-control}
+
+
 \subsection{FDP{\_}ACC.2 Complete access control}
 \begin{description}
 %[visit_definition_list_item]
@@ -1142,8 +1126,8 @@ access control SFP.
 
 %___________________________________________________________________________
 
-\hypertarget{fdp-acf-1-security-attribute-based-access-control}{}
-\pdfbookmark[4]{FDP{\_}ACF.1 Security attribute based access control}{fdp-acf-1-security-attribute-based-access-control}
+
+
 \subsection{FDP{\_}ACF.1 Security attribute based access control}
 \begin{description}
 %[visit_definition_list_item]
@@ -1213,8 +1197,8 @@ based on the following additional rules: \emph{{[}none]}
 
 %___________________________________________________________________________
 
-\hypertarget{fdp-etc-2-export-of-user-data-with-security-attributes}{}
-\pdfbookmark[4]{FDP{\_}ETC.2 Export of user data with security attributes}{fdp-etc-2-export-of-user-data-with-security-attributes}
+
+
 \subsection{FDP{\_}ETC.2 Export of user data with security attributes}
 \begin{description}
 %[visit_definition_list_item]
@@ -1270,8 +1254,8 @@ is exported from the TSC: \emph{{[}none]}.
 
 %___________________________________________________________________________
 
-\hypertarget{fdp-itc-1-import-of-user-data-without-security-attributes}{}
-\pdfbookmark[4]{FDP{\_}ITC.1 Import of user data without security attributes}{fdp-itc-1-import-of-user-data-without-security-attributes}
+
+
 \subsection{FDP{\_}ITC.1 Import of user data without security attributes}
 \begin{description}
 %[visit_definition_list_item]
@@ -1334,8 +1318,8 @@ FDP{\_}ACF.1.2.
 
 %___________________________________________________________________________
 
-\hypertarget{fdp-itc-2-import-of-user-data-with-security-attributes}{}
-\pdfbookmark[4]{FDP{\_}ITC.2 Import of user data with security attributes}{fdp-itc-2-import-of-user-data-with-security-attributes}
+
+
 \subsection{FDP{\_}ITC.2 Import of user data with security attributes}
 \begin{description}
 %[visit_definition_list_item]
@@ -1406,8 +1390,8 @@ entire import will fail and an explanatory error will be provided.
 
 %___________________________________________________________________________
 
-\hypertarget{fdp-rip-1-subset-residual-information-protection}{}
-\pdfbookmark[4]{FDP{\_}RIP.1 Subset residual information protection}{fdp-rip-1-subset-residual-information-protection}
+
+
 \subsection{FDP{\_}RIP.1 Subset residual information protection}
 \begin{description}
 %[visit_definition_list_item]
@@ -1434,8 +1418,8 @@ need to think through the implications of undo for rip -- Steve's
 
 %___________________________________________________________________________
 
-\hypertarget{fdp-rol-2-transactions-advanced-rollback}{}
-\pdfbookmark[4]{FDP{\_}ROL.2{\_}TRANSACTIONS Advanced Rollback}{fdp-rol-2-transactions-advanced-rollback}
+
+
 \subsection{FDP{\_}ROL.2{\_}TRANSACTIONS Advanced Rollback}
 \begin{description}
 %[visit_definition_list_item]
@@ -1473,8 +1457,8 @@ during the course of a transaction.
 
 %___________________________________________________________________________
 
-\hypertarget{fdp-rol-1-undo-basic-rollback}{}
-\pdfbookmark[4]{FDP{\_}ROL.1{\_}UNDO Basic rollback}{fdp-rol-1-undo-basic-rollback}
+
+
 \subsection{FDP{\_}ROL.1{\_}UNDO Basic rollback}
 \begin{description}
 %[visit_definition_list_item]
@@ -1502,15 +1486,15 @@ exist]}.
 
 %___________________________________________________________________________
 
-\hypertarget{class-fia-identification-and-authentication}{}
-\pdfbookmark[3]{Class FIA: Identification and authentication}{class-fia-identification-and-authentication}
+
+
 \subsection{Class FIA: Identification and authentication}
 
 
 %___________________________________________________________________________
 
-\hypertarget{fia-afl-z-1-authentication-failure-handling}{}
-\pdfbookmark[4]{FIA{\_}AFL{\_}z.1 Authentication failure handling}{fia-afl-z-1-authentication-failure-handling}
+
+
 \subsection{FIA{\_}AFL{\_}z.1 Authentication failure handling}
 \begin{description}
 %[visit_definition_list_item]
@@ -1543,8 +1527,8 @@ configurable period of time.
 
 %___________________________________________________________________________
 
-\hypertarget{fia-atd-1-user-attribute-definition}{}
-\pdfbookmark[4]{FIA{\_}ATD.1 User attribute definition}{fia-atd-1-user-attribute-definition}
+
+
 \subsection{FIA{\_}ATD.1 User attribute definition}
 \begin{description}
 %[visit_definition_list_item]
@@ -1562,8 +1546,8 @@ and denials]}
 
 %___________________________________________________________________________
 
-\hypertarget{fia-uau-1-timing-of-authentication}{}
-\pdfbookmark[4]{FIA{\_}UAU.1 Timing of authentication}{fia-uau-1-timing-of-authentication}
+
+
 \subsection{FIA{\_}UAU.1 Timing of authentication}
 \begin{description}
 %[visit_definition_list_item]
@@ -1595,8 +1579,8 @@ of that user.
 
 %___________________________________________________________________________
 
-\hypertarget{fia-uau-5-multiple-authentication-systems}{}
-\pdfbookmark[4]{FIA{\_}UAU.5 Multiple authentication systems}{fia-uau-5-multiple-authentication-systems}
+
+
 \subsection{FIA{\_}UAU.5 Multiple authentication systems}
 \begin{description}
 %[visit_definition_list_item]
@@ -1625,8 +1609,8 @@ username/password pair and the protocol used]}
 
 %___________________________________________________________________________
 
-\hypertarget{fia-uau-6-re-authentication}{}
-\pdfbookmark[4]{FIA{\_}UAU.6 Re-authentication}{fia-uau-6-re-authentication}
+
+
 \subsection{FIA{\_}UAU.6 Re-authentication}
 \begin{description}
 %[visit_definition_list_item]
@@ -1654,8 +1638,8 @@ permission grants to perform the requested operation.
 
 %___________________________________________________________________________
 
-\hypertarget{fia-usb-1-user-subject-binding}{}
-\pdfbookmark[4]{FIA{\_}USB.1 User-subject binding}{fia-usb-1-user-subject-binding}
+
+
 \subsection{FIA{\_}USB.1 User-subject binding}
 \begin{description}
 %[visit_definition_list_item]
@@ -1672,15 +1656,15 @@ attributes with subjects acting on behalf of that user.
 
 %___________________________________________________________________________
 
-\hypertarget{class-fmt-security-management}{}
-\pdfbookmark[3]{Class FMT: Security management}{class-fmt-security-management}
+
+
 \subsection{Class FMT: Security management}
 
 
 %___________________________________________________________________________
 
-\hypertarget{fmt-mof-1-management-of-security-functions}{}
-\pdfbookmark[4]{FMT{\_}MOF.1 Management of security functions}{fmt-mof-1-management-of-security-functions}
+
+
 \subsection{FMT{\_}MOF.1 Management of security functions}
 \begin{description}
 %[visit_definition_list_item]
@@ -1709,8 +1693,8 @@ protected by different permissions.
 
 %___________________________________________________________________________
 
-\hypertarget{fmt-msa-1-management-of-security-attributes}{}
-\pdfbookmark[4]{FMT{\_}MSA.1 Management of security attributes}{fmt-msa-1-management-of-security-attributes}
+
+
 \subsection{FMT{\_}MSA.1 Management of security attributes}
 \begin{description}
 %[visit_definition_list_item]
@@ -1751,8 +1735,8 @@ modify their own authentication data]}.
 
 %___________________________________________________________________________
 
-\hypertarget{fmt-msa-3-static-attribute-initialisation}{}
-\pdfbookmark[4]{FMT{\_}MSA.3 Static attribute initialisation}{fmt-msa-3-static-attribute-initialisation}
+
+
 \subsection{FMT{\_}MSA.3 Static attribute initialisation}
 \begin{description}
 %[visit_definition_list_item]
@@ -1789,8 +1773,8 @@ denials. The default is an empty collection.
 
 %___________________________________________________________________________
 
-\hypertarget{fmt-smr-1-security-roles}{}
-\pdfbookmark[4]{FMT{\_}SMR.1 Security roles}{fmt-smr-1-security-roles}
+
+
 \subsection{FMT{\_}SMR.1 Security roles}
 
 XXX update/rewrite section
@@ -1845,15 +1829,15 @@ The TSF shall be able to associate \emph{{[}principals]} with roles.
 
 %___________________________________________________________________________
 
-\hypertarget{class-fpt-protection-of-the-tsf}{}
-\pdfbookmark[3]{Class FPT: Protection of the TSF}{class-fpt-protection-of-the-tsf}
+
+
 \subsection{Class FPT: Protection of the TSF}
 
 
 %___________________________________________________________________________
 
-\hypertarget{fpt-amt-1-abstract-machine-testing}{}
-\pdfbookmark[4]{FPT{\_}AMT.1 Abstract machine testing}{fpt-amt-1-abstract-machine-testing}
+
+
 \subsection{FPT{\_}AMT.1 Abstract machine testing}
 \begin{description}
 %[visit_definition_list_item]
@@ -1872,8 +1856,8 @@ TSF.
 
 %___________________________________________________________________________
 
-\hypertarget{fpt-fls-1-failure-with-preservation-of-secure-state}{}
-\pdfbookmark[4]{FPT{\_}FLS.1 Failure with preservation of secure state}{fpt-fls-1-failure-with-preservation-of-secure-state}
+
+
 \subsection{FPT{\_}FLS.1 Failure with preservation of secure state}
 \begin{description}
 %[visit_definition_list_item]
@@ -1891,8 +1875,8 @@ exhaustion and host restart]}.
 
 %___________________________________________________________________________
 
-\hypertarget{fpt-rvm-1-non-bypassability-of-the-tsp}{}
-\pdfbookmark[4]{FPT{\_}RVM.1 Non-bypassability of the TSP}{fpt-rvm-1-non-bypassability-of-the-tsp}
+
+
 \subsection{FPT{\_}RVM.1 Non-bypassability of the TSP}
 \begin{description}
 %[visit_definition_list_item]
@@ -1910,8 +1894,8 @@ proceed.
 
 %___________________________________________________________________________
 
-\hypertarget{fpt-sep-1-tsf-domain-separation}{}
-\pdfbookmark[4]{FPT{\_}SEP.1 TSF domain separation}{fpt-sep-1-tsf-domain-separation}
+
+
 \subsection{FPT{\_}SEP.1 TSF domain separation}
 \begin{description}
 %[visit_definition_list_item]
@@ -1938,8 +1922,8 @@ security domains of subjects in the TSC.
 
 %___________________________________________________________________________
 
-\hypertarget{fpt-stm-1-reliable-time-stamps}{}
-\pdfbookmark[4]{FPT{\_}STM.1 Reliable time stamps}{fpt-stm-1-reliable-time-stamps}
+
+
 \subsection{FPT{\_}STM.1 Reliable time stamps}
 \begin{description}
 %[visit_definition_list_item]
@@ -1955,8 +1939,8 @@ The TSF shall be able to provide reliable time stamps for its own use.
 
 %___________________________________________________________________________
 
-\hypertarget{toe-security-assurance-requirements}{}
-\pdfbookmark[1]{TOE security assurance requirements}{toe-security-assurance-requirements}
+
+
 \section{TOE security assurance requirements}
 
 The Evaluation Assurance Level chosen for this Evaluation is EAL 1.
@@ -2069,8 +2053,8 @@ AGD{\_}USR.1
 
 %___________________________________________________________________________
 
-\hypertarget{security-requirements-for-the-it-environment}{}
-\pdfbookmark[1]{Security requirements for the IT environment}{security-requirements-for-the-it-environment}
+
+
 \section{Security requirements for the IT environment}
 
 ITITIT
@@ -2103,8 +2087,8 @@ valid server certificates with HTTPS).
 
 %___________________________________________________________________________
 
-\hypertarget{security-requirements-for-the-non-it-environment}{}
-\pdfbookmark[1]{Security requirements for the non-IT environment}{security-requirements-for-the-non-it-environment}
+
+
 \section{Security requirements for the non-IT environment}
 
 XXX I can't find any right here, maybe I should check cross-references, but it
@@ -2113,15 +2097,15 @@ also looks like non-IT requirements are not mandatory.
 
 %___________________________________________________________________________
 
-\hypertarget{toe-summary-specification}{}
-\pdfbookmark[0]{TOE summary specification}{toe-summary-specification}
+
+
 \chapter{TOE summary specification}
 
 
 %___________________________________________________________________________
 
-\hypertarget{toe-security-functions}{}
-\pdfbookmark[1]{TOE security functions}{toe-security-functions}
+
+
 \section{TOE security functions}
 
 The major functions implemented by the TOE are:
@@ -2129,8 +2113,8 @@ The major functions implemented by the TOE are:
 
 %___________________________________________________________________________
 
-\hypertarget{protection}{}
-\pdfbookmark[1]{Protection}{protection}
+
+
 \section{Protection}
 
 The protection subsystem is responsible for controlling the access of subjects
@@ -2144,8 +2128,8 @@ proxies are security proxied.
 
 %___________________________________________________________________________
 
-\hypertarget{authentication}{}
-\pdfbookmark[1]{Authentication}{authentication}
+
+
 \section{Authentication}
 
 Zope provides a flexible authentication schema that by default supports HTTP
@@ -2159,8 +2143,8 @@ and FTP authentication.
 
 %___________________________________________________________________________
 
-\hypertarget{authorization-access-control}{}
-\pdfbookmark[1]{Authorization / Access Control}{authorization-access-control}
+
+
 \section{Authorization / Access Control}
 
 To determine whether an operation under a given subject is allowed, Zope has an
@@ -2196,8 +2180,8 @@ role.
 
 %___________________________________________________________________________
 
-\hypertarget{auditing}{}
-\pdfbookmark[1]{Auditing}{auditing}
+
+
 \section{Auditing}
 
 Zope provides an auditing system that listens for events within Zope according
@@ -2212,8 +2196,8 @@ audit log.
 
 %___________________________________________________________________________
 
-\hypertarget{transaction-management}{}
-\pdfbookmark[1]{Transaction management}{transaction-management}
+
+
 \section{Transaction management}
 
 Most data is stored on persistent objects. The transaction machinery rolls back
@@ -2222,8 +2206,8 @@ all data that is stored on persistent objects.
 
 %___________________________________________________________________________
 
-\hypertarget{undo}{}
-\pdfbookmark[1]{Undo}{undo}
+
+
 \section{Undo}
 \begin{itemize}
 \item {} 
@@ -2248,8 +2232,8 @@ Undo only allows the rollback of serial N last transaction to avoid integrity is
 
 %___________________________________________________________________________
 
-\hypertarget{publication-server}{}
-\pdfbookmark[1]{Publication / Server}{publication-server}
+
+
 \section{Publication / Server}
 
 XXX get servers, protocols and publisher right
@@ -2272,8 +2256,8 @@ authenticated principal to the running interaction.
 
 %___________________________________________________________________________
 
-\hypertarget{automated-tests}{}
-\pdfbookmark[1]{Automated Tests}{automated-tests}
+
+
 \section{Automated Tests}
 
 Zope provides a suite of automated tests that allow the user to ensure that the
@@ -2283,8 +2267,8 @@ the tests. Those tests can be run in offline mode.
 
 %___________________________________________________________________________
 
-\hypertarget{python-environment-xxx}{}
-\pdfbookmark[1]{Python Environment XXX}{python-environment-xxx}
+
+
 \section{Python Environment XXX}
 
 As Zope relies on Python and the host environment to provide reliable time
@@ -2295,8 +2279,8 @@ Windows hosts) should be consulted to detect those changes. (FPT{\_}STM.1)
 
 %___________________________________________________________________________
 
-\hypertarget{table-functions-to-security-functional-requirements-mapping}{}
-\pdfbookmark[1]{Table: Functions to Security Functional Requirements Mapping}{table-functions-to-security-functional-requirements-mapping}
+
+
 \section{Table: Functions to Security Functional Requirements Mapping}
 \begin{quote}
 
@@ -2379,8 +2363,8 @@ FPT{\_}STM.1
 
 %___________________________________________________________________________
 
-\hypertarget{table-security-functional-requirements-to-functions-mapping}{}
-\pdfbookmark[1]{Table: Security Functional Requirements to Functions Mapping}{table-security-functional-requirements-to-functions-mapping}
+
+
 \section{Table: Security Functional Requirements to Functions Mapping}
 \begin{quote}
 
@@ -2543,15 +2527,15 @@ Python environment
 
 %___________________________________________________________________________
 
-\hypertarget{assurance-measures}{}
-\pdfbookmark[1]{Assurance measures}{assurance-measures}
+
+
 \section{Assurance measures}
 
 
 %___________________________________________________________________________
 
-\hypertarget{am-acm-configuration-management}{}
-\pdfbookmark[2]{AM{\_}ACM: CONFIGURATION MANAGEMENT}{am-acm-configuration-management}
+
+
 \subsection{AM{\_}ACM: CONFIGURATION MANAGEMENT}
 
 A document describing the configuration management will be provided.
@@ -2559,8 +2543,8 @@ A document describing the configuration management will be provided.
 
 %___________________________________________________________________________
 
-\hypertarget{am-ado-delivery-and-operation}{}
-\pdfbookmark[2]{AM{\_}ADO: DELIVERY AND OPERATION}{am-ado-delivery-and-operation}
+
+
 \subsection{AM{\_}ADO: DELIVERY AND OPERATION}
 
 A document describing the delivery and operation of the TOE will be provided.
@@ -2568,8 +2552,8 @@ A document describing the delivery and operation of the TOE will be provided.
 
 %___________________________________________________________________________
 
-\hypertarget{am-adv-development}{}
-\pdfbookmark[2]{AM{\_}ADV: DEVELOPMENT}{am-adv-development}
+
+
 \subsection{AM{\_}ADV: DEVELOPMENT}
 
 A functional specification and a RCR document will be provided.
@@ -2577,8 +2561,8 @@ A functional specification and a RCR document will be provided.
 
 %___________________________________________________________________________
 
-\hypertarget{am-agd-guidance-documents}{}
-\pdfbookmark[2]{AM{\_}AGD: GUIDANCE DOCUMENTS}{am-agd-guidance-documents}
+
+
 \subsection{AM{\_}AGD: GUIDANCE DOCUMENTS}
 
 The guidance documents AGD{\_}ADM and AGD{\_}USR will be provided.
@@ -2586,8 +2570,8 @@ The guidance documents AGD{\_}ADM and AGD{\_}USR will be provided.
 
 %___________________________________________________________________________
 
-\hypertarget{am-ate-tests}{}
-\pdfbookmark[2]{AM{\_}ATE: TESTS}{am-ate-tests}
+
+
 \subsection{AM{\_}ATE: TESTS}
 
 No deliverable. Only independend testing from the evaluator is needed.
@@ -2595,8 +2579,8 @@ No deliverable. Only independend testing from the evaluator is needed.
 
 %___________________________________________________________________________
 
-\hypertarget{pp-claims}{}
-\pdfbookmark[0]{PP claims}{pp-claims}
+
+
 \chapter{PP claims}
 
 There are no PP claims.
@@ -2604,8 +2588,8 @@ There are no PP claims.
 
 %___________________________________________________________________________
 
-\hypertarget{sof-claims}{}
-\pdfbookmark[0]{SOF claims}{sof-claims}
+
+
 \chapter{SOF claims}
 
 There is no SOF claim here for EAL 1.
@@ -2613,15 +2597,15 @@ There is no SOF claim here for EAL 1.
 
 %___________________________________________________________________________
 
-\hypertarget{rationale}{}
-\pdfbookmark[0]{Rationale}{rationale}
+
+
 \chapter{Rationale}
 
 
 %___________________________________________________________________________
 
-\hypertarget{security-objectives-rationale}{}
-\pdfbookmark[1]{Security objectives rationale}{security-objectives-rationale}
+
+
 
 \section{Security objectives rationale}
 
@@ -2692,8 +2676,8 @@ O.ManageRisk &   X   &       &            &            &         &      &       
 
 %___________________________________________________________________________
 
-\hypertarget{security-requirements-rationale}{}
-\pdfbookmark[1]{Security requirements rationale}{security-requirements-rationale}
+
+
 \section{Security requirements rationale}
 
 - Table showing that all objectives are covered and no SFR doesn't belong to an objective
@@ -2797,8 +2781,8 @@ O.ManageRisk &   X   &       &            &            &         &      &       
 
 %___________________________________________________________________________
 
-\hypertarget{choice-of-security-functional-requirements}{}
-\pdfbookmark[2]{Choice of security functional requirements}{choice-of-security-functional-requirements}
+
+
 \subsection{Choice of security functional requirements}
 
 XXX
@@ -2806,15 +2790,15 @@ XXX
 
 %___________________________________________________________________________
 
-\hypertarget{justification-for-suitability-of-sfr-toe-security-objectives}{}
-\pdfbookmark[1]{Justification for suitability of SFR - TOE security objectives}{justification-for-suitability-of-sfr-toe-security-objectives}
+
+
 \section{Justification for suitability of SFR - TOE security objectives}
 
 
 %___________________________________________________________________________
 
-\hypertarget{choice-of-toe-security-assurance-requirements}{}
-\pdfbookmark[2]{Choice of TOE security assurance requirements}{choice-of-toe-security-assurance-requirements}
+
+
 \subsection{Choice of TOE security assurance requirements}
 
 The choice of assurance requirements is based on the analysis of the security
@@ -2826,8 +2810,8 @@ The assurance level is \textbf{EAL 1}.
 
 %___________________________________________________________________________
 
-\hypertarget{evaluation-assurance-level-rationale}{}
-\pdfbookmark[1]{Evaluation Assurance Level rationale:}{evaluation-assurance-level-rationale}
+
+
 \section{Evaluation Assurance Level rationale:}
 
 XXX review this paragraph please.
@@ -2853,8 +2837,8 @@ in domains that are typically governed by proprietary systems.
 
 %___________________________________________________________________________
 
-\hypertarget{glossary}{}
-\pdfbookmark[0]{Glossary}{glossary}
+
+
 \chapter{Glossary}
 \begin{description}
 %[visit_definition_list_item]
@@ -2918,15 +2902,15 @@ TOE Security Functions
 
 %___________________________________________________________________________
 
-\hypertarget{todo}{}
-\pdfbookmark[0]{TODO}{todo}
+
+
 \chapter{TODO}
 
 
 %___________________________________________________________________________
 
-\hypertarget{general}{}
-\pdfbookmark[1]{General}{general}
+
+
 \section{General}
 \begin{quote}
 \begin{itemize}
@@ -2942,8 +2926,8 @@ Numbering of sections would be fine
 
 %___________________________________________________________________________
 
-\hypertarget{part-1}{}
-\pdfbookmark[1]{Part 1}{part-1}
+
+
 \section{Part 1}
 \begin{quote}
 \begin{itemize}
@@ -2962,8 +2946,8 @@ TOE security functions (ctheune)
 
 %___________________________________________________________________________
 
-\hypertarget{part-2}{}
-\pdfbookmark[1]{Part 2}{part-2}
+
+
 \section{Part 2}
 \begin{quote}
 \begin{itemize}
