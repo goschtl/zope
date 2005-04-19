@@ -10,8 +10,13 @@
 
 $Id$
 """
+from Acquisition import aq_inner, aq_parent
+
 from zope.interface import implements
+from zope.app import zapi
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
+
+from Products.Five.interfaces import ITraversable
 from Products.Five.browser import BrowserView
 
 class AbsoluteURL(BrowserView):
@@ -32,8 +37,8 @@ class AbsoluteURL(BrowserView):
     __call__ = __str__
 
     def breadcrumbs(self):
-        context = self.context.aq_inner
-        container = context.aq_parent
+        context = aq_inner(self.context)
+        container = aq_parent(context)
         request = self.request
 
         name = context.getId()
@@ -43,7 +48,7 @@ class AbsoluteURL(BrowserView):
             return (
                 {'name': name, 'url': context.absolute_url()},)
 
-        view = getViewProviding(container, IAbsoluteURL, request)
+        view = zapi.getViewProviding(container, IAbsoluteURL, request)
         base = tuple(view.breadcrumbs())
         base += (
             {'name': name, 'url': ("%s/%s" % (base[-1]['url'], name))},)
@@ -54,7 +59,7 @@ class AbsoluteURL(BrowserView):
         virtualrootpath = self.request.get('VirtualRootPhysicalPath', None)
         if virtualrootpath is None:
             return False
-        context = self.context.aq_inner
+        context = aq_inner(self.context)
         return context.restrictedTraverse(virtualrootpath) == context
 
 class SiteAbsoluteURL(AbsoluteURL):
