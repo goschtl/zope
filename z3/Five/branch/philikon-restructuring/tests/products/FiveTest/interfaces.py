@@ -36,32 +36,3 @@ class IIndexSimpleContent(ISimpleContent):
 
 class IFancyContent(Interface):
     pass
-
-class IFieldSimpleContent(ISimpleContent):
-    title = TextLine(
-        title=u"Title",
-        description=u"A short description of the event.",
-        default=u"",
-        required=True)
-
-    description = Text(
-        title=u"Description",
-        description=u"A long description of the event.",
-        default=u"",
-        required=False)
-    
-    
-class IComplexSchemaContent(Interface):
-    
-    fishtype = TextLine(
-        title=u"Fish type",
-        description=u"The type of fish",
-        default=u"It was a lovely little fish. And it went wherever I did go.",
-        required=False)
-
-    fish = Object(
-        title=u"Fish",
-        schema=IFieldSimpleContent,
-        description=u"The fishy object",
-        required=True)
-

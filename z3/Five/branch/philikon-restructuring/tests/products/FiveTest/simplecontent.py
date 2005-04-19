@@ -5,7 +5,7 @@ from helpers import add_and_edit
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 from interfaces import ISimpleContent, ICallableSimpleContent,\
-     IIndexSimpleContent, IFieldSimpleContent
+     IIndexSimpleContent
 
 class SimpleContent(SimpleItem):
     implements(ISimpleContent)
@@ -53,14 +53,6 @@ class IndexSimpleContent(SimpleItem):
 
 InitializeClass(IndexSimpleContent)
 
-class FieldSimpleContent(SimpleContent):
-    """A Viewable piece of content with fields"""
-    implements(IFieldSimpleContent)
-
-    meta_type = 'Five FieldSimpleContent'
-
-InitializeClass(FieldSimpleContent)
-
 manage_addSimpleContentForm = PageTemplateFile(
     "www/simpleContentAdd", globals(),
     __name__ = 'manage_addSimpleContentForm')
@@ -80,15 +72,5 @@ def manage_addCallableSimpleContent(self, id, title, REQUEST=None):
 def manage_addIndexSimpleContent(self, id, title, REQUEST=None):
     """Add the viewable simple content."""
     id = self._setObject(id, IndexSimpleContent(id, title))
-    add_and_edit(self, id, REQUEST)
-    return ''
-
-manage_addFieldSimpleContentForm = PageTemplateFile(
-    "www/fieldSimpleContentAdd", globals(),
-    __name__ = 'manage_addFieldSimpleContentForm')
-
-def manage_addFieldSimpleContent(self, id, title, REQUEST=None):
-    """Add the viewable simple content."""
-    id = self._setObject(id, FieldSimpleContent(id, title))
     add_and_edit(self, id, REQUEST)
     return ''

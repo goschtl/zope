@@ -1,25 +1,39 @@
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Test edit forms
 
+$Id$
+"""
 import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Products.Five.tests.fivetest import *
+from Testing.ZopeTestCase import FunctionalTestCase, installProduct
+installProduct('Five')
 
 from AccessControl import Unauthorized
 from zope.app.form.browser.submit import Update
 
-from Products.Five.tests.products.FiveTest.simplecontent import manage_addFieldSimpleContent
-from Products.Five.tests.products.FiveTest.helpers import manage_addFiveTraversableFolder
-from Products.Five.tests.products.FiveTest.schemacontent import manage_addComplexSchemaContent
+import Products.Five.form.tests
+from Products.Five import zcml
+from Products.Five.tests.helpers import manage_addFiveTraversableFolder
+from Products.Five.form.tests.schemacontent import manage_addFieldContent
+from Products.Five.form.tests.schemacontent import manage_addComplexSchemaContent
 
-
-class EditFormTest(Functional, FiveTestCase):
+class EditFormTest(FunctionalTestCase):
 
     def afterSetUp(self):
-        manage_addFieldSimpleContent(self.folder, 'edittest', 'Test')
+        manage_addFieldContent(self.folder, 'edittest', 'Test')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
+	zcml.load_config('configure.zcml', package=Products.Five.form.tests)
 
     def test_editform(self):
         response = self.publish('/test_folder_1_/edittest/edit.html',
@@ -75,4 +89,3 @@ def test_suite():
 
 if __name__ == '__main__':
     framework()
-
