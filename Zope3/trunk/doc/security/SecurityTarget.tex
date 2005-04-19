@@ -2630,7 +2630,10 @@ There is no SOF claim here for EAL 1.
   he is allowed to delegate. It must not be possible for him to gain any extra
   permissions.
   
-  \item[O.Audit:] This security objective is necessary to counter the threat
+  \item[O.Audit:] This security objective is necessary to detect an recover
+  from most threats: T.IA, T.Perm
+
+  
   T.AuditFake because it loggs security relevant events and thus supports an
   administrator in finding those events.
 
@@ -2655,31 +2658,35 @@ There is no SOF claim here for EAL 1.
   threat T.IA because it makes ist less likely an attacker impersonates a
   principal which allows operations with high negaitive impact since those
   principals are better protected.
-    
+
+
+% bullet: finished
+% X: todo
   
 \end{description}
 
 \begin{table}
-  \begin{tabular}{rRRRRRRRRRRRR}
+  \scriptsize
+  \begin{tabular}{rRRRRRRRRRRRRRRRRRR}
     \toprule
-    & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import  & T.RIP&T.Transaction&T.Undo &  T.USB&T.Timestamps &  T.Trustedpath & T.Host \\
+    & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import  & T.RIP&T.Transaction&T.Undo &  T.USB&T.Timestamps &  T.Trustedpath & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential & A.Integrity \\
     \midrule
-O.IA         &  \oh  &       &            &            &         &      &             &       &       &             &                 &       \\
-O.Delegation &       &   \oh &            &            &         &      &             &       &       &             &                 &        \\
-O.Audit      &       &       &            &    \oh     &         &      &             &       &       &             &                 &        \\
-O.Protect    &       &       &            &    \oh     &         &      &             &       &       &             &                 &        \\
-O.Access     &       &       &      \oh   &            &         &      &             &       &       &             &                 &  \oh   \\
-O.Integrity  &       &       &            &            &         &  \oh &             &       &       &             &                 &        \\
-O.Attributes &       &       &            &            &         &      &             &  \oh  &       &             &                 &        \\
-O.ManageRisk &   \oh &       &            &            &         &      &             &       &       &             &                 &        \\
+O.IA         &  \oh  &       &            &            &         &      &             &       &       &             &         &       \\
+O.Delegation &       &   \oh &            &            &         &      &             &       &       &             &         &        \\
+O.Audit      & \oh   &       &            &    \oh     &         &      &             &       &       &             &         &        \\
+O.Protect    &       &       &            &    \oh     &         &      &             &       &       &             &         &        \\
+O.Access     &       &       &      \oh   &            &         &      &             &       &       &             &         &  \oh   \\
+O.Integrity  &       &       &            &            &         &  \oh &             &       &       &             &         &        \\
+O.Attributes &       &       &            &            &         &      &             &  \oh  &       &             &         &        \\
+O.ManageRisk &   \oh &       &            &            &         &      &             &       &       &             &         &        \\
 \midrule
-OE.OS \\
-OE.Trust \\
-OE.Manage \\
+OE.OS        &       &       &            &            &         &      &             &       &       &      X      &         &      & X  \\
+OE.Trust     &       &       &            &            &         &      &             &       &       &             &         &      &      &   X \\
+OE.Manage    &       &       &            &            &         &      &             &       &       &             &         &      &      &        &     X \\
 OE.AUDITLOG \\
-OE.Network \\
-OE.Client \\
-OE.Credential \\
+OE.Network   &       &       &            &            &         &      &             &       &       &             &         &      &      &        &     X   &   X          &               &     X    \\
+OE.Client    &       &       &            &            &         &      &             &       &       &             &         &      &      &        &         &              &       X        &       \\
+OE.Credential&       &       &            &            &         &      &             &       &       &             &         &      &      &        &         &              &       X        &       \\
 
 \bottomrule
   \end{tabular}
