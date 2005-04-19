@@ -10,12 +10,10 @@ import glob
 import unittest
 import zope
 
-from zope.interface import directlyProvides, Interface, implements
+from zope.interface import Interface, implements
 from zope.component import getViewProviding
 from zope.schema import Choice, TextLine
 from zope.app.form.interfaces import IInputWidget
-from zope.app.traversing.browser.interfaces import IAbsoluteURL
-from zope.app.traversing.interfaces import IContainmentRoot
 
 from Products.Five.tests.products.FiveTest.classes import Adaptable, Origin
 from Products.Five.tests.products.FiveTest.interfaces import IAdapted, IDestination
@@ -215,37 +213,6 @@ class FiveTest(FiveTestCase):
         abs_url = self.folder.unrestrictedTraverse(base % '')()
         expected = 'http://nohost/test_folder_1_/testoid/++resource++fivetest_resources'
         self.assertEquals(abs_url, expected)
-
-    def test_breadcrumbs(self):
-        view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
-        expected = (
-            {'url': 'http://nohost', 'name': ''},
-            {'url': 'http://nohost/test_folder_1_', 'name': 'test_folder_1_'},
-            {'url': 'http://nohost/test_folder_1_/testoid', 'name': 'testoid'})
-        self.assertEquals(expected, view.breadcrumbs())
-
-    def test_virtualhost_breadcrumbs(self):
-        # Get REQUEST in shape
-        request = self.request = self.app.REQUEST
-        request['PARENTS'] = [self.folder.test_folder_1_]
-        request.setServerURL(
-            protocol='http', hostname='foo.bar.com', port='80')
-        request.setVirtualRoot('')
-
-        view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
-        expected = (
-            {'url': 'http://foo.bar.com', 'name': 'test_folder_1_'},
-            {'url': 'http://foo.bar.com/testoid', 'name': 'testoid'})
-        self.assertEquals(expected, view.breadcrumbs())
-
-    def test_containement_root_breadcrumbs(self):
-        # Should stop breadcrumbs from crumbing
-        directlyProvides(self.folder, IContainmentRoot)
-        view = self.folder.unrestrictedTraverse('testoid/@@absolute_url')
-        expected = (
-            {'url': 'http://nohost/test_folder_1_', 'name': 'test_folder_1_'},
-            {'url': 'http://nohost/test_folder_1_/testoid', 'name': 'testoid'})
-        self.assertEquals(expected, view.breadcrumbs())
 
     def test_standard_macros(self):
         view = self.folder.unrestrictedTraverse('testoid/@@fivetest_macros')
