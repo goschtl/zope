@@ -11,113 +11,83 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""
-HTTP session recorder.
+"""HTTP session recorder.
 
 $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import time
 import thread
 import threading
+import cStringIO
+
+import twisted.web2.wsgi
+from twisted.protocols import policies
+
 import transaction
 import ZODB.MappingStorage
 from ZODB.POSException import ConflictError
 from BTrees.IOBTree import IOBTree
-from zope.app.publication.httpfactory import HTTPPublicationRequestFactory
-from zope.app.server.servertype import ServerType
-from zope.server.http.commonaccesslogger import CommonAccessLogger
-from zope.server.http.publisherhttpserver import PublisherHTTPServer
-from zope.server.http.httpserverchannel import HTTPServerChannel
-from zope.server.http.httprequestparser import HTTPRequestParser
-from zope.server.http.httptask import HTTPTask
-from zope.publisher.publish import publish
+from zope.app import wsgi
+from zope.app.server.server import ServerType
 
+class RecordingProtocol(policies.ProtocolWrapper):
+    """A special protocol that keeps track of all input and output of an HTTP
+    connection.
 
-class RecordingHTTPTask(HTTPTask):
-    """An HTTPTask that remembers the response as a string."""
+    The data is recorded for later analysis, such as generation of doc tests.  
+    """
 
-    def __init__(self, *args, **kw):
-        self._response_data = []
-        HTTPTask.__init__(self, *args, **kw)
+    def __init__(self, factory, wrappedProtocol):
+        policies.ProtocolWrapper.__init__(self, factory, wrappedProtocol)
+        self.input = cStringIO.StringIO()
+        self.output = cStringIO.StringIO()
+        self.chanRequest = None
+
+    def dataReceived(self, data):
+        self.input.write(data)
+        policies.ProtocolWrapper.dataReceived(self, data)
 
     def write(self, data):
-        """Send data to the client.
+        if not self.chanRequest:
+            self.chanRequest = self.wrappedProtocol.requests[-1]
+        self.output.write(data)
+        policies.ProtocolWrapper.write(self, data)
 
-        Wraps HTTPTask.write and records the response.
-        """
-        if not self.wrote_header:
-            # HTTPTask.write will call self.buildResponseHeader() and send the
-            # result before sending 'data'.  This code assumes that
-            # buildResponseHeader will return the same string when called the
-            # second time.
-            self._response_data.append(self.buildResponseHeader())
-        HTTPTask.write(self, data)
-        self._response_data.append(data)
+    def writeSequence(self, data):
+        for entry in data:
+            self.output.write(entry)
+        policies.ProtocolWrapper.writeSequence(self, data)            
 
-    def getRawResponse(self):
-        """Return the full HTTP response as a string."""
-        return ''.join(self._response_data)
+    def connectionLost(self, reason):
+        policies.ProtocolWrapper.connectionLost(self, reason)
 
-
-class RecordingHTTPRequestParser(HTTPRequestParser):
-    """An HTTPRequestParser that remembers the raw request as a string."""
-
-    def __init__(self, *args, **kw):
-        self._request_data = []
-        HTTPRequestParser.__init__(self, *args, **kw)
-
-    def received(self, data):
-        """Process data received from the client.
-
-        Wraps HTTPRequestParser.write and records the request.
-        """
-        consumed = HTTPRequestParser.received(self, data)
-        self._request_data.append(data[:consumed])
-        return consumed
-
-    def getRawRequest(self):
-        """Return the full HTTP request as a string."""
-        return ''.join(self._request_data)
+        if not self.chanRequest:
+            return
+        firstLine = self.output.getvalue().split('\r\n')[0]
+        proto, status, reason = firstLine.split(' ', 2)
+        requestStorage.add(RecordedRequest(
+            time.time(),
+            self.input.getvalue(),
+            self.output.getvalue(),
+            method = self.chanRequest.command.upper(),
+            path = self.chanRequest.path,
+            status = int(status),
+            reason = reason
+            ) )
 
 
-class RecordingHTTPServerChannel(HTTPServerChannel):
-    """An HTTPServerChannel that records request and response."""
-
-    task_class = RecordingHTTPTask
-    parser_class = RecordingHTTPRequestParser
+class RecordingFactory(policies.WrappingFactory):
+    """Special server factory that supports recording."""
+    protocol = RecordingProtocol
 
 
-class RecordingHTTPServer(PublisherHTTPServer):
-    """Zope Publisher-specific HTTP server that can record requests."""
-
-    channel_class = RecordingHTTPServerChannel
-    num_retries = 10
-
-    def executeRequest(self, task):
-        """Process a request.
-
-        Wraps PublisherHTTPServer.executeRequest().
-        """
-        PublisherHTTPServer.executeRequest(self, task)
-        # PublisherHTTPServer either committed or aborted a transaction,
-        # so we need a new one.
-        # TODO: Actually, we only need a transaction if we use
-        #       ZODBBasedRequestStorage, which we don't since it has problems
-        #       keeping data fresh enough.  This loop will go away soon, unless
-        #       I manage to fix ZODBBasedRequestStorage.
-        for n in range(self.num_retries):
-            try:
-                txn = transaction.begin()
-                txn.note("request recorder")
-                requestStorage.add(RecordedRequest.fromHTTPTask(task))
-                transaction.commit()
-            except ConflictError:
-                transaction.abort()
-                if n == self.num_retries - 1:
-                    raise
-            else:
-                break
+def createRecordingHTTPFactory(db):
+    resource = twisted.web2.wsgi.WSGIResource(
+        wsgi.WSGIPublisherApplication(db))
+    
+    return RecordingFactory(twisted.web2.server.Site(resource))
 
 
 class RecordedRequest(object):
@@ -130,25 +100,11 @@ class RecordedRequest(object):
         self.response_string = response_string
         # The following attributes could be extracted from request_string and
         # response_string, but it is simpler to just take readily-available
-        # values from RecordingHTTPTask.
+        # values from RecordingProtocol.
         self.method = method
         self.path = path
         self.status = status
         self.reason = reason
-
-    def fromHTTPTask(cls, task):
-        """Create a RecordedRequest with data extracted from RecordingHTTPTask.
-        """
-        rq = cls(timestamp=task.start_time,
-                 request_string=task.request_data.getRawRequest(),
-                 response_string=task.getRawResponse(),
-                 method=task.request_data.command.upper(),
-                 path=task.request_data.path,
-                 status=task.status,
-                 reason=task.reason)
-        return rq
-
-    fromHTTPTask = classmethod(fromHTTPTask)
 
 
 class RequestStorage(object):
@@ -194,75 +150,10 @@ class RequestStorage(object):
         self._requests.clear()
 
 
-class ZODBBasedRequestStorage(object):
-    """A collection of recorded requests.
-
-    This class is thread-safe, that is, its methods can be called from multiple
-    threads simultaneously.
-
-    In addition, it is transactional.
-
-    TODO: The simple ID allocation strategy used by RequestStorage.add will
-          cause frequent conflict errors.  Something should be done about that.
-
-    TODO: _getData() tends to return stale data, and you need to refresh the
-          ++etc++process/RecordedSessions.html page two or three times until
-          it becomes up to date.
-
-    TODO: This class is not used because of the previous problem.  Either fix
-          the problem, or remove this class.
-    """
-
-    _key = 'RequestStorage'
-
-    def __init__(self):
-        self._ram_storage = ZODB.MappingStorage.MappingStorage()
-        self._ram_db = ZODB.DB(self._ram_storage)
-        self._conns = {}
-
-    def _getData(self):
-        """Get the shared data container from the mapping storage."""
-        # This method closely mimics RAMSessionDataContainer._getData
-        # from zope.app.session.session
-        tid = thread.get_ident()
-        if tid not in self._conns:
-            self._conns[tid] = self._ram_db.open()
-        root = self._conns[tid].root()
-        if self._key not in root:
-            root[self._key] = IOBTree()
-        return root[self._key]
-
-    def add(self, rr):
-        """Add a RecordedRequest to the list."""
-        requests = self._getData()
-        rr.id = len(requests) + 1
-        requests[rr.id] = rr
-
-    def __len__(self):
-        """Return the number of recorded requests."""
-        return len(self._getData())
-
-    def __iter__(self):
-        """List all recorded requests."""
-        return iter(self._getData().values())
-
-    def get(self, id):
-        """Return the request with a given id, or None."""
-        requests = self._getData()
-        return requests.get(id)
-
-    def clear(self):
-        """Clear all recorded requests."""
-        self._getData().clear()
-
-
 #
 # Globals
 #
 
 requestStorage = RequestStorage()
 
-recordinghttp = ServerType(RecordingHTTPServer,
-                           HTTPPublicationRequestFactory,
-                           CommonAccessLogger,
-                           8081, True)
+recordinghttp = ServerType(createRecordingHTTPFactory, 8081)

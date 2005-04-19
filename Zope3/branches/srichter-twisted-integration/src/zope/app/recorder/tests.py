@@ -19,6 +19,7 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+import time
 import unittest
 import transaction
 from zope.testing import doctest
@@ -27,132 +28,85 @@ from zope.app.testing import setup, ztapi
 from zope.app.publisher.browser import BrowserView
 
 
-def doctest_RecordingHTTPServer():
-    r"""Unit tests for RecordingHTTPServer.
+def doctest_RecordingProtocol():
+    r"""Unit tests for ``RecordingProtocol``.
 
-    We will use stubs instead of real channel and request parser objects, to
-    keep the test fixture small.
+    To create a recording protocol we need a protocol and a factory. To keep
+    the test fixture small, we are using a stub implementation for the
+    protocol
 
-        >>> from zope.app.recorder import RecordingHTTPTask
-        >>> channel = ChannelStub()
-        >>> request_data = RequestDataStub()
-        >>> task = RecordingHTTPTask(channel, request_data)
+      >>> protocol = ProtocolStub()
 
-    RecordingHTTPTask is a thin wrapper around HTTPTask.  It records all data
-    written through task.write, plus the response header, of course.
+    and the factory is created with a provided function:
 
-        >>> task.write('request body\n')
-        >>> task.write('goes in here')
+      >>> from zope.app import recorder
+      >>> db = 'ZODB'
+      >>> factory = recorder.createRecordingHTTPFactory(db)
 
-    We need to strip CR characters, as they confuse doctest.
+    We can now instantiate the recording protcol:
 
-        >>> print task.getRawResponse().replace('\r', '')
-        HTTP/1.1 200 Ok
-        Connection: close
-        Server: Stub Server
-        <BLANKLINE>
-        request body
-        goes in here
+      >>> recording = recorder.RecordingProtocol(factory, protocol)
+      >>> recording.transport = TransportStub()
+      >>> factory.protocols = {recording: 1}
 
-    """
+    When we now send data to the protocol,
 
+      >>> recording.dataReceived('GET / HTTP/1.1\n\n')
+      >>> recording.dataReceived('hello world!\n')
 
-def doctest_RecordingHTTPRequestParser():
-    r"""Unit tests for RecordingHTTPRequestParser.
+    then the result is immediately available in the ``input`` attribute:
 
-        >>> from zope.app.recorder import RecordingHTTPRequestParser
-        >>> from zope.server.adjustments import default_adj
-        >>> parser = RecordingHTTPRequestParser(default_adj)
+      >>> print recording.input.getvalue()
+      GET / HTTP/1.1
+      <BLANKLINE>
+      hello world!
+      <BLANKLINE>
 
-    RecordingHTTPRequestParser is a thin wrapper around HTTPRequestParser.  It
-    records all data consumed by parser.received.
+    Once the request has been processed, the response is written
 
-        >>> parser.received('GET / HTTP/1.1\r\n')
-        16
-        >>> parser.received('Content-Length: 3\r\n')
-        19
-        >>> parser.received('\r\n')
-        2
-        >>> parser.received('abc plus some junk')
-        3
+      >>> recording.writeSequence(('HTTP/1.1 200 Okay.\n',
+      ...                          'header1: value1\n',
+      ...                          'header2: value2\n'))
+      >>> recording.write('\n')
+      >>> recording.write('This is my answer.')
 
-    We need to strip CR characters, as they confuse doctest.
+    and we can again look at it:
 
-        >>> print parser.getRawRequest().replace('\r', '')
-        GET / HTTP/1.1
-        Content-Length: 3
-        <BLANKLINE>
-        abc
+      >>> print recording.output.getvalue()
+      HTTP/1.1 200 Okay.
+      header1: value1
+      header2: value2
+      <BLANKLINE>
+      This is my answer.
 
-    """
+    Once the request is finished and the response is written, the connection
+    is closed and a recorded request obejct is written:
 
+      >>> recording.connectionLost(None)
 
-def doctest_RecordingHTTPServer():
-    r"""Unit tests for RecordingHTTPServer.
+    Let's now inspect the recorded requets object:
 
-    RecordingHTTPServer is a very thin wrapper over PublisherHTTPServer. First
-    we create a custom request:
-
-        >>> class RecorderRequest(TestRequest):
-        ...     publication = PublicationStub()
-
-    Further, to keep things simple, we will override the constructor and
-    prevent it from listening on sockets.
-
-        >>> from zope.app.recorder import RecordingHTTPServer
-        >>> class RecordingHTTPServerForTests(RecordingHTTPServer):
-        ...     def __init__(self):
-        ...         self.request_factory = RecorderRequest
-        >>> server = RecordingHTTPServerForTests()
-
-    We will need a request parser
-
-        >>> from zope.app.recorder import RecordingHTTPRequestParser
-        >>> from zope.server.adjustments import default_adj
-        >>> parser = RecordingHTTPRequestParser(default_adj)
-        >>> parser.received('GET / HTTP/1.1\r\n\r\n')
-        18
-
-    We will also need a task
-
-        >>> from zope.app.recorder import RecordingHTTPTask
-        >>> channel = ChannelStub()
-        >>> task = RecordingHTTPTask(channel, parser)
-        >>> task.start_time = 42
-
-    Go!
-
-        >>> server.executeRequest(task)
-
-    Let's see what we got:
-
-        >>> from zope.app import recorder
-        >>> len(recorder.requestStorage)
-        1
-        >>> rq = iter(recorder.requestStorage).next()
-        >>> rq.timestamp
-        42
-        >>> rq.request_string
-        'GET / HTTP/1.1\r\n\r\n'
-        >>> rq.method
-        'GET'
-        >>> rq.path
-        '/'
-        >>> print rq.response_string.replace('\r', '')
-        HTTP/1.1 599 No status set
-        Content-Length: 0
-        X-Powered-By: Zope (www.zope.org), Python (www.python.org)
-        Server: Stub Server
-        <BLANKLINE>
-        <BLANKLINE>
-        >>> rq.status
-        599
-        >>> rq.reason
-        'No status set'
+      >>> len(recorder.requestStorage)
+      1
+      >>> rq = iter(recorder.requestStorage).next()
+      >>> rq.timestamp < time.time()
+      True
+      >>> rq.request_string
+      'GET / HTTP/1.1\n\nhello world!\n'
+      >>> rq.method
+      'GET'
+      >>> rq.path
+      '/'
+      >>> print rq.response_string.replace('\r', '')
+      HTTP/1.1 200 Okay.
+      header1: value1
+      header2: value2
+      <BLANKLINE>
+      This is my answer.
 
     Clean up:
 
-        >>> recorder.requestStorage.clear()
+      >>> recorder.requestStorage.clear()
 
     """
 
@@ -606,31 +560,31 @@ def doctest_RecordedSessionsView_call():
     """
 
 
+class ChannelRequestStub(object):
 
-class ServerStub(object):
-    """Stub for HTTPServer."""
-
-    SERVER_IDENT = 'Stub Server'
-    server_name = 'RecordingHTTPServer'
-    port = 8081
+    command = 'GeT'
+    path = '/'
 
 
-class ChannelStub(object):
-    """Stub for HTTPServerChannel."""
-
-    server = ServerStub()
-    creation_time = 42
-    addr = ('addr', )
-
+class TransportStub(object):
+    
     def write(self, data):
+        pass
+    
+    def writeSequence(self, data):
         pass
 
 
-class RequestDataStub(object):
-    """Stub for HTTPRequestParser."""
+class ProtocolStub(object):
+    """Stub for the HTTP Protocol"""
 
-    version = "1.1"
-    headers = {}
+    requests = [ChannelRequestStub()]
+
+    def dataReceived(self, data):
+        pass
+
+    def connectionLost(self, reason):
+        pass
 
 
 class PublicationStub(object):
