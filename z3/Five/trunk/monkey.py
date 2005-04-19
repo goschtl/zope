@@ -28,3 +28,5 @@ def monkeyPatch():
 
     HTTPRequest.getPresentationSkin = getPresentationSkin
     HTTPRequest.setPresentationSkin = setPresentationSkin
+
+    HTTPRequest.__contains__ = lambda self, key: self.has_key(key)
