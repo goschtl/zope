@@ -73,7 +73,16 @@ class HTTPBasicAuthCredentialsPlugin(Persistent, Contained):
           >>> print plugin.extractCredentials(TestRequest())
           None
 
+        This plugin only works with HTTP requests.
+
+          >>> from zope.publisher.base import TestRequest
+          >>> print plugin.extractCredentials(TestRequest('/'))
+          None
+
         """
+        if not IHTTPRequest.providedBy(request):
+            return None
+
         if request._auth:
             if request._auth.lower().startswith(u'basic '):
                 credentials = request._auth.split()[-1]
@@ -108,11 +117,11 @@ class HTTPBasicAuthCredentialsPlugin(Persistent, Contained):
           >>> request = TestRequest('/')
           >>> response = request.response
           >>> print plugin.challenge(request)
-          None
+          False
 
         """
         if not IHTTPRequest.providedBy(request):
-            return None
+            return False
         request.response.setHeader("WWW-Authenticate",
                                    "basic realm=%s" % self.realm, literal=True)
         request.response.setStatus(401)

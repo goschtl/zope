@@ -37,6 +37,8 @@ from zope.app.session.session import \
         PersistentSessionDataContainer, RAMSessionDataContainer
 from zope.app.session.http import CookieClientIdManager
 
+from zope.publisher import base
+from zope.app.authentication.session import SessionCredentialsPlugin
 
 class TestClientId(object):
     implements(IClientId)
@@ -57,10 +59,45 @@ def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
     sdc = session_data_container_class()
     ztapi.provideUtility(ISessionDataContainer, sdc, '')
 
+def nonHTTPSessionTestCaseSetUp(sdc_class=PersistentSessionDataContainer):
+    # I am getting an error with ClientId and not TestClientId
+    placelesssetup.setUp()
+    ztapi.provideAdapter(IRequest, IClientId, ClientId)
+    ztapi.provideAdapter(IRequest, ISession, Session)
+    ztapi.provideUtility(IClientIdManager, CookieClientIdManager())
+    sdc = sdc_class()
+    ztapi.provideUtility(ISessionDataContainer, sdc, '')
+
+
+class NonHTTPSessionTestCase(unittest.TestCase):
+    # Small test suite to catch an error with non HTTP protocols, like FTP
+    # and SessionCredentialsPlugin.
+    def setUp(self):
+        nonHTTPSessionTestCaseSetUp()
+
+    def tearDown(self):
+        placefulTearDown()
+
+    def test_exeractCredentials(self):
+        plugin = SessionCredentialsPlugin()
+
+        self.assertEqual(plugin.extractCredentials(base.TestRequest('/')), None)
+
+    def test_challenge(self):
+        plugin = SessionCredentialsPlugin()
+
+        self.assertEqual(plugin.challenge(base.TestRequest('/')), False)
+
+    def test_logout(self):
+        plugin = SessionCredentialsPlugin()
+
+        self.assertEqual(plugin.logout(base.TestRequest('/')), False)
+
 def test_suite():
     return unittest.TestSuite((
         doctest.DocTestSuite('zope.app.authentication.generic'),
         doctest.DocTestSuite('zope.app.authentication.httpplugins'),
+        doctest.DocTestSuite('zope.app.authentication.ftpplugins'),
         doctest.DocFileSuite('principalfolder.txt'),
         doctest.DocTestSuite('zope.app.authentication.principalfolder',
                              setUp=placelesssetup.setUp,
@@ -82,6 +119,7 @@ def test_suite():
                              setUp=placelesssetup.setUp,
                              tearDown=placelesssetup.tearDown,
                              ),
+        unittest.makeSuite(NonHTTPSessionTestCase),
         ))
 
 if __name__ == '__main__':

@@ -44,6 +44,7 @@
   <include file="httpplugins.zcml" />
   <include file="principalfolder.zcml" />
   <include file="groupfolder.zcml" />
+  <include file="ftpplugins.zcml" />
 
   <include package=".browser" />
 

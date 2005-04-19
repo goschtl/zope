@@ -22,6 +22,7 @@ from urllib import urlencode
 
 from zope.interface import implements, Interface
 from zope.schema import TextLine
+from zope.publisher.interfaces.http import IHTTPRequest
 
 from zope.app import zapi
 from zope.app.component import hooks
@@ -157,6 +158,8 @@ class SessionCredentialsPlugin(Persistent, Contained):
 
     def extractCredentials(self, request):
         """Extracts credentials from a session if they exist."""
+        if not IHTTPRequest.providedBy(request):
+            return None
 
         sessionData = ISession(request)[
             'zope.app.authentication.browserplugins']
@@ -227,6 +230,9 @@ class SessionCredentialsPlugin(Persistent, Contained):
         This can be used by the login form to redirect the user back to the
         originating URL upon successful authentication.
         """
+        if not IHTTPRequest.providedBy(request):
+            return False
+
         site = hooks.getSite()
         camefrom = request.getURL()
         url = '%s/@@%s?%s' % (absoluteURL(site, request),
@@ -237,6 +243,9 @@ class SessionCredentialsPlugin(Persistent, Contained):
 
     def logout(self, request):
         """Performs logout by clearing session data credentials."""
+        if not IHTTPRequest.providedBy(request):
+            return False
+
         sessionData = ISession(request)[
             'zope.app.authentication.browserplugins']
         sessionData['credentials'] = None
