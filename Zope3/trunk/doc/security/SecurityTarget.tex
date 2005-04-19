@@ -1704,43 +1704,39 @@ protected by different permissions.
 
 
 
+
 \subsection{FMT{\_}MSA.1 Management of security attributes}
 \begin{description}
-%[visit_definition_list_item]
 \item[FMT{\_}MSA.1.1.grants]
-%[visit_definition]
+    The TSF shall enforce the \emph{\[formal security policy\]} to restrict the
+    ability to \emph{\[query, modify, delete, and add\]} the security
+    attributes \emph{\[permission grants and denials\]} to \emph{\[authorized
+    grantors\]}.
 
-The TSF shall enforce the \emph{{[}formal security policy]} to restrict
-the ability to \emph{{[}query, modify, delete,
-and add]]} the security attributes \emph{{[}permission grants and denials]} to
-\emph{{[}authorized grantors]}.
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
 \item[FMT{\_}MSA.1.1.loginname]
-%[visit_definition]
+    The TSF shall enforce the \emph{{[}formal security policy]} to restrict the
+    ability to \emph{{[}query and modify]} the security attribute
+    \emph{{[}login name]} to \emph{{[}authorized administrators and users
+    authorized to modify their own authentication data]}.
 
-The TSF shall enforce the \emph{{[}formal security policy]} to restrict
-the ability to \emph{{[}query and modify]} the security
-attribute \emph{{[}login name]} to \emph{{[}authorized administrators and users
-authorized to modify their own authentication data]}.
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
 \item[FMT{\_}MSA.1.1.password]
-%[visit_definition]
+    The TSF shall enforce the \emph{\[formal security policy\]} to restrict
+    the ability to \emph{\[modify\]} the security attribute
+    \emph{\[password\]} to \emph{\[authorized administrators and users authorized to
+    modify their own authentication data\]}.
 
-The TSF shall enforce the \emph{{[}formal security policy]} to restrict
-the ability to \emph{{[}modify]} the security attribute
-\emph{{[}password]} to \emph{{[}authorized administrators and users authorized to
-modify their own authentication data]}.
-
-%[depart_definition]
-%[depart_definition_list_item]
 \end{description}
 
+\subsection{FMT{\_}MSA.2 Secure security attributes}
+
+\begin{description}
+
+\item[FMT{\_}MSA.2.1]
+
+    The TSF shall ensure that only secure values are accepted for security
+    attributes.
+
+\end{description}
 
 %___________________________________________________________________________
 
@@ -2773,6 +2769,13 @@ OE.Credential&       &       &            &            &         &      &       
 
 \minisec{O.Audit}
 
+    The TOE shall provide functionality to generate audit data (FAU\_GEN.1,
+    FAU\_GEN.2).
+
+    The TOE includes reliable time stamps to guarantee reasonable data to be
+    logged (FPT\_STM.1) and connects all events with the relevant user
+    attributes. (FIA\_ATD.1)
+
 \minisec{O.Protect -- Protect the TOE from tampering}
 
     The TOE provides some effort to not allow an insecure situation that
@@ -2793,18 +2796,75 @@ OE.Credential&       &       &            &            &         &      &       
     possible. Asserting restrictive default values for security attributes
     avoids permission elevation and results in a better protected TOE.
     
-    FPT\_AMT.1
-    FPT\_FLS.1
-    FPT\_SEP.1
-    FPT\_STM.1
+    Using abstract machine tests, the system is able to check if the security
+    code has been modified and does not hold to the assumptions of the security
+    machinery anymore. (FPT\_AMT.1)
 
-\minisec{O.Access}
+    By keeping a secure state (FPT\_FLS.1) the system is able to protect itself
+    during (intentional or not) hardware failures or other environmental
+    interruptions.
+    
+    The TOE holds a special domain for running untrusted codes that allows
+    external entities not to directly modify or call any security relevant
+    attributes or functions. (FPT\_SEP.1)
 
+\minisec{O.Access --- Mediate every access to objects}
+
+    Mediating every access to an object through operations is another major
+    objective to enforce the TSP. (FDP\_ACC.2)
+
+    A set of attributes and rules is used to describe how to apply those
+    attributes for deriving an access decision. (FDP\_ACF.1, FIA\_ATD.1)  
+
+    Certain special operations like import and export of user data are handled
+    in a way that they cannot be exploited for exporting data a user doesn't
+    have access to nor importing data that may extend a users privileges in a
+    not intended way. Import and export of user data also do not allow a user
+    to work around existing permission grants or denials. In the same manner (FDP\_ETC.2,
+    FDP\_ITC.1, FDP\_ITC.2)
+
+    To ensure the non-bypassability of the TSP a special paradigm (security
+    proxies) for accessing TOE objects from external entities. (FIA\_RVM.1)
+    
 \minisec{O.Integrity}
+
+    Providing an ACID compatible transaction management system that allows
+    secure rollback from a failed transaction satisfies the objective to have
+    the system stay in an integer state. (FDP\_ROL.2\_Transactions, FPT\_FLS.1)
+
+    The rollback is performed by the TOE automatically as soon as an error is
+    encountered and not handled by any application logic.
 
 \minisec{O.Attributes}
 
+    To assure an enduring consistent state of all security attributes we
+    enforce the security policy model upon any changes to security attributes.
+    (FMT\_MSA.2)
+
+    Special functionality like user data import with security attributes
+    (FDP\_ITC.2), residual information protection (FDP\_RIP.1) and rollback to
+    historic revisions (FDP\_ROL.1\_Undo) also have to assure that the used
+    security attributes do not reference invalid identifiers. To allow the
+    import of data with security attributes, FDP\_ETC.1 is required.
+    
 \minisec{O.ManageRisk}
+
+    To manage the risk of using stronger authentication schemes for sensible
+    operations in opposition of weaker authentication schemes for less sensible
+    operations, the TOE allows a selection of the authentication system to
+    happen. (FIA\_UAU.5) To increase a users level of access for accessing more
+    sensible operations, a reauthentication may be needed. (FIA\_UAU.6)
+    
+    The decision what authentication schemes are needed for which operations
+    can be managed by authorised administrators. (FMT\_MOF.1)
+
+    Additionally code can be run either within the trusted or untrusted
+    security domains of the TOE. Installing code in the trusted security domain
+    requires an external entity that has access to the physical secure host to
+    install software into the TOE. This allows developers to trade off between
+    functionality of their code and the level of trust they have to gain from
+    administrators installing their extensions. FPT\_SEP.1 supports the
+    distinction between the trusted and untrusted domain.
 
 %___________________________________________________________________________
 
