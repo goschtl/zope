@@ -15,7 +15,9 @@ if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 import unittest
-from Testing.ZopeTestCase import ZopeDocFileSuite
+from Testing.ZopeTestCase import installProduct, ZopeDocFileSuite
+
+installProduct('Five')
 
 def test_suite():
     return ZopeDocFileSuite('bridge.txt', package="Products.Five.tests")
