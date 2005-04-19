@@ -10,7 +10,6 @@
 
 $Id$
 """
-
 import Acquisition
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
