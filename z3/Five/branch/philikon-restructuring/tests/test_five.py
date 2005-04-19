@@ -243,16 +243,6 @@ class PublishTest(Functional, FiveTestCase):
         response = self.publish('/test_folder_1_/fancy/fancy')
         self.assertEquals("Fancy, fancy", response.getBody())
 
-    def test_publish_image_resource(self):
-        url = '/test_folder_1_/testoid/++resource++pattern.png'
-        response = self.publish(url, basic='manager:r00t')
-        self.assertEquals(200, response.getStatus())
-
-    def test_publish_file_resource(self):
-        url = '/test_folder_1_/testoid/++resource++style.css'
-        response = self.publish(url, basic='manager:r00t')
-        self.assertEquals(200, response.getStatus())
-
     # Disabled __call__ overriding for now. Causes more trouble
     # than it fixes.
     # def test_existing_call(self):

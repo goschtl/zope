@@ -14,7 +14,8 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Testing.ZopeTestCase import ZopeTestCase, installProduct
+from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
+from Testing.ZopeTestCase import installProduct
 installProduct('Five')
 
 import glob
@@ -30,7 +31,7 @@ dir_resource_names = [os.path.basename(r)
                                 glob.glob('%s/[a-z]*.py' % _prefix) +
                                 glob.glob('%s/*.css' % _prefix))]
 
-class AbsoluteURLTests(ZopeTestCase):
+class ResourceTests(ZopeTestCase):
 
     def afterSetUp(self):
 	zcml.load_config('configure.zcml', package=Products.Five.browser.tests)
@@ -69,6 +70,24 @@ class AbsoluteURLTests(ZopeTestCase):
         abs_url = self.folder.unrestrictedTraverse(base % '')()
         expected = 'http://nohost/test_folder_1_/testoid/++resource++fivetest_resources'
         self.assertEquals(abs_url, expected)
+
+class PublishResourceTests(FunctionalTestCase):
+
+    def afterSetUp(self):
+	zcml.load_config('configure.zcml', package=Products.Five.browser.tests)
+	manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
+        uf = self.folder.acl_users
+        uf._doAddUser('manager', 'r00t', ['Manager'], [])
+
+    def test_publish_image_resource(self):
+        url = '/test_folder_1_/testoid/++resource++pattern.png'
+        response = self.publish(url, basic='manager:r00t')
+        self.assertEquals(200, response.getStatus())
+
+    def test_publish_file_resource(self):
+        url = '/test_folder_1_/testoid/++resource++style.css'
+        response = self.publish(url, basic='manager:r00t')
+        self.assertEquals(200, response.getStatus())
 
 if __name__ == '__main__':
     framework()
