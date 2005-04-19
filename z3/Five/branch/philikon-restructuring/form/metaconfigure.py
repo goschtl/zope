@@ -29,7 +29,8 @@ def EditViewFactory(name, schema, label, permission, layer,
                     template, default_template, bases, for_, fields,
                     fulledit_path=None, fulledit_label=None, menu=u''):
     s = getGlobalService(Presentation)
-    class_ = makeClassForTemplate(template, used_for=schema, bases=bases)
+    class_ = makeClassForTemplate(template, globals(), used_for=schema,
+                                  bases=bases)
     class_.schema = schema
     class_.label = label
     class_.fieldNames = fields
@@ -82,7 +83,8 @@ def AddViewFactory(name, schema, label, permission, layer,
                    menu=u''):
 
     s = getGlobalService(Presentation)
-    class_ = makeClassForTemplate(template, used_for=schema, bases=bases)
+    class_ = makeClassForTemplate(template, globals(), used_for=schema,
+                                  bases=bases)
 
     class_.schema = schema
     class_.label = label
