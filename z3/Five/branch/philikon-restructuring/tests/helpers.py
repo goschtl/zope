@@ -1,4 +1,6 @@
 import urllib
+from OFS.Folder import Folder
+from Products.Five.traversable import Traversable
 
 def add_and_edit(self, id, REQUEST):
     """Helper function to point to the object's management screen if
@@ -15,9 +17,6 @@ def add_and_edit(self, id, REQUEST):
         u = "%s/%s" % (u, urllib.quote(id))
     REQUEST.RESPONSE.redirect(u+'/manage_main')
 
-
-from OFS.Folder import Folder
-
 class NoVerifyPasteFolder(Folder):
     """Folder that does not perform paste verification.
     Used by test_events
@@ -31,8 +30,8 @@ def manage_addNoVerifyPasteFolder(container, id, title=''):
     folder.id = id
     folder.title = title
 
-class FiveTraversableFolder(Folder):
-    """Folder that is declared Five traversable, see configure.zcml
+class FiveTraversableFolder(Traversable, Folder):
+    """Folder that is five-traversable
     """
     pass
 
@@ -41,4 +40,3 @@ def manage_addFiveTraversableFolder(container, id, title=''):
     folder = container[id]
     folder.id = id
     folder.title = title
-
