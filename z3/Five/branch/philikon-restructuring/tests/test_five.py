@@ -20,7 +20,7 @@ from zope.app.traversing.interfaces import IContainmentRoot
 from Products.Five.tests.products.FiveTest.classes import Adaptable, Origin
 from Products.Five.tests.products.FiveTest.interfaces import IAdapted, IDestination
 from Products.Five.tests.products.FiveTest.browser import SimpleContentView
-from Products.Five.resource import Resource, PageTemplateResource
+from Products.Five.browser.resource import Resource, PageTemplateResource
 from Products.Five.traversable import FakeRequest
 from Products.Five.fiveconfigure import classDefaultViewable
 from OFS.Traversable import Traversable
