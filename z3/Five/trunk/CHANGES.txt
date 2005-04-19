@@ -1,17 +1,24 @@
 Five Changes
 ============
 
+To be released
+--------------
+
 * Zope 3 style ``ISized`` adapters for objects are now exposed to the
   ZMI and other Zope 2 frameworks via the known ``get_size`` method,
   provided this is turned for the class in question via the
   five:sizable ZCML directive.
 
 * There is now a standard standard_macros. Five page templates can use
-  context/@@standard_macros/view to get the default site layout.
+  context/@@standard_macros/view to get the default site layout, and
+  people can register their own standard_macros in a skin.
 
 * The addform and editform directive now supports the widget ZCML
   subdirective, that previously was ignored.
-  
+
+* The checkbox widget did not work correctly in its off state, this
+  has been fixed.
+
 * Five now supports the vocabulary ZCML directive.
 
 Five 0.3 (2005-03-11)
