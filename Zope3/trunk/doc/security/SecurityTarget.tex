@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper,english]{book}
+\documentclass[10pt,a4paper,english]{scrbook}
 \usepackage{babel}
 \usepackage{shortvrb}
 \usepackage[latin1]{inputenc}
@@ -11,23 +11,7 @@
 \usepackage{multirow}
 \usepackage{ifthen}
 \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
-\usepackage[DIV12]{typearea}
 %% generator Docutils: http://docutils.sourceforge.net/
-\newlength{\admonitionwidth}
-\setlength{\admonitionwidth}{0.9\textwidth}
-\newlength{\docinfowidth}
-\setlength{\docinfowidth}{0.9\textwidth}
-\newlength{\locallinewidth}
-\newcommand{\optionlistlabel}[1]{\bf #1 \hfill}
-\newenvironment{optionlist}[1]
-{\begin{list}{}
-  {\setlength{\labelwidth}{#1}
-   \setlength{\rightmargin}{1cm}
-   \setlength{\leftmargin}{\rightmargin}
-   \addtolength{\leftmargin}{\labelwidth}
-   \addtolength{\leftmargin}{\labelsep}
-   \renewcommand{\makelabel}{\optionlistlabel}}
-}{\end{list}}
 % begin: floats for footnotes tweaking.
 \setlength{\floatsep}{0.5em}
 \setlength{\textfloatsep}{\fill}
@@ -56,22 +40,16 @@ pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve Alexand
 
 %___________________________________________________________________________
 
-\begin{center}
-\begin{tabularx}{\docinfowidth}{lX}
-\textbf{Version}: &
-	30023 (Draft) \\
-\textbf{Date}: &
-	2005-04-18 15:47:51 +0200 (Mon, 18 Apr 2005) \\
-\textbf{Author}: &
-	Christian Theune {\textless}ct@gocept.com{\textgreater} \\
-\textbf{Author}: &
-	Steve Alexander {\textless}steve@catbox.net{\textgreater} \\
-\textbf{Author}: &
-	Jim Fulton {\textless}jim@zope.com{\textgreater} \\
-\textbf{DocumentID}: &
-	SecurityTarget.txt 30023 2005-04-18 13:47:51Z zagy \\
-\end{tabularx}
-\end{center}
+\begin{description}
+    \item[Version:] $Version$ (Draft)
+    \item[Date:] $Date$ 
+    \item[Author:] Christian Theune, ct@gocept.com
+    \item[Author:] Steve Alexander, steve@catbox.net
+    \item[Author:] Jim Fulton, jim@zope.com
+    \item[DocumentID:] $Id$
+\end{description}
+
+\newpage
 
 \tableofcontents
 
@@ -166,7 +144,7 @@ This ST is based upon Common Criteria, Version 2.1 (\emph{{[}CC]}).
 The TOE consists of the following component:
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.14\locallinewidth}|p{0.13\locallinewidth}|p{0.20\locallinewidth}|}
+\begin{longtable}[c]{|l|l|l|}
 \hline
 \textbf{
 Component
@@ -448,7 +426,7 @@ authorization
 The following primary assets have been identified:
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.21\locallinewidth}|p{0.62\locallinewidth}|}
+\begin{longtable}[c]{|l|l|}
 \hline
 \textbf{
 Asset Name
@@ -474,7 +452,7 @@ information by the objects context.
 The following secondary assets have been identified:
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.21\locallinewidth}|p{0.67\locallinewidth}|}
+\begin{longtable}[c]{|l|l|}
 \hline
 \textbf{
 Asset Name
@@ -581,7 +559,7 @@ an attribute. Reading and writing can be guarded with different permission grant
 The following assumptions need to be made about the TOE environment:
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.19\locallinewidth}|p{0.61\locallinewidth}|}
+\begin{longtable}[c]{|l|l|}
 \hline
 \textbf{
 Assumption Name
@@ -664,7 +642,7 @@ principal trying to authenticate as this.
 The following threats against the assets have been identified:
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.11\locallinewidth}|p{0.35\locallinewidth}|p{0.49\locallinewidth}|}
+\begin{longtable}[c]{|l|l|l|}
 \hline
 \textbf{
 Threat
@@ -829,7 +807,7 @@ server does neither require nor impose any OSPs.
 The following security objectives have been defined for the TOE:
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.17\locallinewidth}|p{0.77\locallinewidth}|}
+\begin{longtable}[c]{|l|l|}
 \hline
 \textbf{
 Objective Name
@@ -924,17 +902,11 @@ negative impact.
 \section{Security objectives for the environment}
 
 The following security objectives have been defined for the TOE environment:
-\begin{quote}
 
-\begin{longtable}[c]{|p{0.19\locallinewidth}|p{0.66\locallinewidth}|}
+\begin{tabularx}{\linewidth}{|l|X|}
 \hline
-\textbf{
-Assumption Name
-} & \textbf{
-Description
-} \\
+Assumption Name  &  Description \\
 \hline
-\endhead
 
 OE.OS
  & 
@@ -962,25 +934,21 @@ OE.AUDITLOG
 Administrators of the TOE must ensure that audit
 facilities are used and managed effectively. In
 particular:
-\newcounter{listcnt1}
-\begin{list}{\alph{listcnt1})}
-{
-\usecounter{listcnt1}
-\setlength{\rightmargin}{\leftmargin}
-}
-\item {} 
+
+\begin{itemize}
+\item 
 Appropriate action must be taken to ensure continued
 audit logging, e.g. by regular archiving of logs
 before audit trail exhaustion to ensure sufficient
 free space.
 
-\item {} 
+\item 
 Audit logs should be inspected on a regular basis,
 and appropriate action should be taken on the
 detection of breaches of security, or events that
 are likely to lead to a breach in the future.
 
-\end{list}
+\end{itemize}
  \\
 \hline
 
@@ -1007,8 +975,7 @@ The user is keeping the credentials to authenticate
 secret.
  \\
 \hline
-\end{longtable}
-\end{quote}
+\end{tabularx}
 
 
 %___________________________________________________________________________
@@ -1997,7 +1964,7 @@ The Evaluation Assurance Level chosen for this Evaluation is EAL 1.
 The following TOE assurance requirements drawn from CC Part 3 are valid:
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.18\locallinewidth}|p{0.46\locallinewidth}|p{0.24\locallinewidth}|}
+\begin{longtable}[c]{|l|l|l|}
 \hline
 \textbf{
 Identification
@@ -2333,7 +2300,7 @@ Windows hosts) should be consulted to detect those changes. (FPT{\_}STM.1)
 \section{Table: Functions to Security Functional Requirements Mapping}
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.23\locallinewidth}|p{0.59\locallinewidth}|}
+\begin{longtable}[c]{|l|l|}
 \hline
 \textbf{
 Functions
@@ -2417,7 +2384,7 @@ FPT{\_}STM.1
 \section{Table: Security Functional Requirements to Functions Mapping}
 \begin{quote}
 
-\begin{longtable}[c]{|p{0.27\locallinewidth}|p{0.59\locallinewidth}|}
+\begin{longtable}[c]{|l|l|}
 \hline
 \textbf{
 SFR
@@ -2729,8 +2696,104 @@ O.ManageRisk &   X   &       &            &            &         &      &       
 \pdfbookmark[1]{Security requirements rationale}{security-requirements-rationale}
 \section{Security requirements rationale}
 
-XXX
+- Table showing that all objectives are covered and no SFR doesn't belong to an objective
 
+% XXX do table \dots
+
+\minisec{O.IA --- Identification and Authentication}
+
+    A central part of the security machinery within the TOE is the correct
+    identification and authentification of users.
+
+    This is covered by the activities:
+
+    \begin{description}
+        \item[Asking for and validating a user's credentials]
+
+            The TOE holds information to uniquely identify a principal and its
+            required credentials. (FIA\_ATD.1) 
+            
+            The TOE presents the user with a prompt to supply his credentials
+            if an operation requires an authenticated principal (FIA\_UAU.1)
+
+            Depending on the communication channel, the system selects a
+            suitable authentication mechanism to ask a user for his
+            credentials. (FIA\_UAU.5)
+
+            If an authenticated user does not have enough permission grants to
+            perform an operation, he will get the chance to authenticate with
+            other credentials. (FIA\_UAU.6)
+
+            If the credentials stored at the user agent expire (e.g. cookies in
+            a web browser), the user will be asked to represent his credentials
+            before performing any further operation. (FIA\_UAU.6)
+
+        \item[Binding users to the correct principals]
+
+            The TOE allows users to interact with the system without presenting
+            credentials by binding unauthenticated users to the ``Anonymous''
+            principal. This allows parts of applications to be accessible without
+            presenting any credentials. (FIA\_UAU.1)
+
+            Once a user has been identified and authenticated, the subject of
+            the operation is bound to the user by selecting the correct
+            principal. (FIA\_USB.1)
+
+        \item[Managing required security attributes]
+
+            The TOE manages the required security attributes (permission grants
+            and denials, credentials, \dots). Special permissions are required
+            to read or write certain security attributes. (FMT\_MSA.1)
+
+        \item[Associating principals with the correct security attributes]
+
+            This is covered by FIA\_ATD.1 and FIA\_USB.1
+
+    \end{description}
+
+\minisec{O.Delegation -- Securely delegate control}
+
+    - delegating a permission requires a grant for the meta permission
+    - having a meta permission allows to spell grants and denials for the meta permission and the permission
+    
+    FDP\_ITC.2
+    FDP\_ATD.1
+    FMT\_MSA.1
+
+\minisec{O.Audit}
+
+\minisec{O.Protect -- Protect the TOE from tampering}
+
+    The TOE provides some effort to not allow an insecure situation that
+    resulted from tampering with the system. Most situations have to be avoided
+    due to correct appliance of the environmental requirements though.
+
+    As the TOE is normally run with access through open communication channels
+    like the internet, credentials very likely might be compromised by brute
+    force attacks. This is avoided by applying FIA\_AFL\_z.1.
+
+    Changing the behaviour of security functions is a critical operation.
+    Therefore a set of well known permissions and roles are established to
+    easily identify people that are able to change any security relevant
+    behaviour. (FMT\_MOF.1)
+    
+    In the case of data loss, failure of subsystems or unexpected situations,
+    the usage of FMT\_MSA.3 allows the system to stay in the most secure state
+    possible. Asserting restrictive default values for security attributes
+    avoids permission elevation and results in a better protected TOE.
+    
+    FPT\_AMT.1
+    FPT\_FLS.1
+    FPT\_SEP.1
+    FPT\_STM.1
+
+\minisec{O.Access}
+
+\minisec{O.Integrity}
+
+\minisec{O.Attributes}
+
+\minisec{O.ManageRisk}
 
 %___________________________________________________________________________
 
