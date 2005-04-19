@@ -2655,79 +2655,71 @@ There is no SOF claim here for EAL 1.
 
 \hypertarget{security-objectives-rationale}{}
 \pdfbookmark[1]{Security objectives rationale}{security-objectives-rationale}
+
 \section{Security objectives rationale}
+
 \begin{description}
-%[visit_definition_list_item]
-\item[O.IA]
-%[visit_definition]
+  
+  \item[O.IA:] This security objective is necessary to counter the threat T.IA
+  because it requires that users must be accurately identified and
+  authenticated or incorporate the anonymous principal.
 
-This security objective is necessary to counter the threat T.IA
-because it requires that users must be accurately identified and
-authenticated or incorporate the anonymous principal.
 
-%[depart_definition]
-%[depart_definition_list_item]
+  \item[O.Delegation:] This security objective is necessary to counter the
+  threat T.Perm because a user must only be able to delegate the permissions
+  he is allowed to delegate. It must not be possible for him to gain any extra
+  permissions.
+  
+  \item[O.Audit:] This security objective is necessary to counter the threat
+  T.AuditFake because it loggs security relevant events and thus supports an
+  administrator in finding those events.
+
+  \item[O.Protect:] This security objective is necessary to counter the threat
+  T.AuditFake because it protects the audit data generation function and
+  thereby prevents logging of false information.
+  
+  \item[O.Access:] This security objective is necessary to counter the threat
+  T.Operation because it prevents performing operations on an object without
+  having the correct permission. It also counters the threat T.Host because
+  functions are objects which are protected.  XXX: T.USB?
+
+  \item[O.Integrity:] This security objective is necessary to counter the
+  threat T.RIP because it prevents that any data will be written if an 
+  unhandled error occours.
+  
+  \item[O.Attributes:] This security objective is necessary to counter the
+  threat T.Undo because it prevents using undefined identifiers which could
+  allow an attacker to gain more access than intended.
+
+  \item[O.ManagerRisk:] This security objective is necessary to counter the
+  threat T.IA because it makes ist less likely an attacker impersonates a
+  principal which allows operations with high negaitive impact since those
+  principals are better protected.
+    
+  
 \end{description}
 
-O.Delegation
-\begin{quote}
+\begin{table}
+  \begin{tabular}{rcccccccccccc}
+             & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import  & T.RIP&T.Transaction&T.Undo &  T.USB&T.Timestamps &  T.Trustedpath & T.Host \\
+             &       &       &            &            &         &      &             &       &       &             &                 &       \\ 
+O.IA         &   X   &       &            &            &         &      &             &       &       &             &                 &       \\
+O.Delegation &       &    X  &            &            &         &      &             &       &       &             &                 &        \\
+O.Audit      &       &       &            &     X      &         &      &             &       &       &             &                 &        \\
+O.Protect    &       &       &            &     X      &         &      &             &       &       &             &                 &        \\
+O.Access     &       &       &       X    &            &         &      &             &       &       &             &                 &        \\
+O.Integrity  &       &       &            &            &         &    X &             &       &       &             &                 &        \\
+O.Attributes &       &       &            &            &         &      &             &    X  &       &             &                 &        \\
+O.ManageRisk &   X   &       &            &            &         &      &             &       &       &             &                 &        \\
+  \end{tabular}
+  \caption{Mapping of Threats to Security Objectives}
+\end{table}
 
-This security objective is necessary to counter the threat T.Perm
-because a user must only be able to delegate the permissions he
-is allowed to delegate. It must not be possible for him to gain
-any extra permissions.
-\end{quote}
-\begin{description}
-%[visit_definition_list_item]
-\item[O.Audit]
-%[visit_definition]
-
-This security objective is necessary to counter the threat T.AuditFake
-because it loggs security relevant events and thus supports an 
-administrator in finding those events.
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
-\item[O.Protect]
-%[visit_definition]
-
-XXX
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
-\item[O.Access]
-%[visit_definition]
-
-This security objective is necessary to counter the threat T.Operation
-because it prevents performing operations on an object without haveing the
-correct permission.
-
-%[depart_definition]
-%[depart_definition_list_item]
-\end{description}
-
-
-%___________________________________________________________________________
-
-\hypertarget{table-mapping-of-threats-to-security-objectives}{}
-\pdfbookmark[2]{Table: Mapping of Threats to Security Objectives}{table-mapping-of-threats-to-security-objectives}
-\subsection{Table: Mapping of Threats to Security Objectives}
 \begin{quote}
 \begin{quote}
 
-T.IA    T.Perm  T.Operation T.AuditFake T.Import    T.RIP T.Transaction T.Undo    T.USB T.Timestamps    T.Trustedpath   T.Host
 \end{quote}
 
-O.IA            X
-O.Delegation             X
-O.Audit                                          X                                    
-O.Protect                                           
-O.Access                        X
-O.Integrity
-O.Attributes
-O.ManageRisk
 \end{quote}
 
 
