@@ -43,10 +43,10 @@ class TestClientId(object):
     def __new__(cls, request):
         return 'dummyclientidfortesting'
 
-def siteSetUp(self, test=None):
+def siteSetUp(test):
     placefulSetUp(site=True)
 
-def siteTearDown(self, test=None):
+def siteTearDown(test):
     placefulTearDown()
 
 def sessionSetUp(session_data_container_class=PersistentSessionDataContainer):
