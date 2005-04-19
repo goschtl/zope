@@ -11,6 +11,15 @@
 \usepackage{multirow}
 \usepackage{ifthen}
 \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
+\usepackage{booktabs}
+\usepackage{rotating}
+
+\newcolumntype{R}{%
+  >{\begin{turn}{90}%
+          \hspace{0pt}}l%
+  <{\end{turn}}%
+}
+\newcommand{\oh}{$\bullet$}
 
 \title{Zope X3 Security Target for EAL 1 ({\$}Rev: 30023 {\$} - Draft)}
 \author{Christian Theune, Steve Alexander, Jim Fulton, Christian Zagrodnick}
@@ -2651,17 +2660,28 @@ There is no SOF claim here for EAL 1.
 \end{description}
 
 \begin{table}
-  \begin{tabular}{rcccccccccccc}
-             & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import  & T.RIP&T.Transaction&T.Undo &  T.USB&T.Timestamps &  T.Trustedpath & T.Host \\
-             &       &       &            &            &         &      &             &       &       &             &                 &       \\ 
-O.IA         &   X   &       &            &            &         &      &             &       &       &             &                 &       \\
-O.Delegation &       &    X  &            &            &         &      &             &       &       &             &                 &        \\
-O.Audit      &       &       &            &     X      &         &      &             &       &       &             &                 &        \\
-O.Protect    &       &       &            &     X      &         &      &             &       &       &             &                 &        \\
-O.Access     &       &       &       X    &            &         &      &             &       &       &             &                 &        \\
-O.Integrity  &       &       &            &            &         &    X &             &       &       &             &                 &        \\
-O.Attributes &       &       &            &            &         &      &             &    X  &       &             &                 &        \\
-O.ManageRisk &   X   &       &            &            &         &      &             &       &       &             &                 &        \\
+  \begin{tabular}{rRRRRRRRRRRRR}
+    \toprule
+    & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import  & T.RIP&T.Transaction&T.Undo &  T.USB&T.Timestamps &  T.Trustedpath & T.Host \\
+    \midrule
+O.IA         &  \oh  &       &            &            &         &      &             &       &       &             &                 &       \\
+O.Delegation &       &   \oh &            &            &         &      &             &       &       &             &                 &        \\
+O.Audit      &       &       &            &    \oh     &         &      &             &       &       &             &                 &        \\
+O.Protect    &       &       &            &    \oh     &         &      &             &       &       &             &                 &        \\
+O.Access     &       &       &      \oh   &            &         &      &             &       &       &             &                 &  \oh   \\
+O.Integrity  &       &       &            &            &         &  \oh &             &       &       &             &                 &        \\
+O.Attributes &       &       &            &            &         &      &             &  \oh  &       &             &                 &        \\
+O.ManageRisk &   \oh &       &            &            &         &      &             &       &       &             &                 &        \\
+\midrule
+OE.OS \\
+OE.Trust \\
+OE.Manage \\
+OE.AUDITLOG \\
+OE.Network \\
+OE.Client \\
+OE.Credential \\
+
+\bottomrule
   \end{tabular}
   \caption{Mapping of Threats to Security Objectives}
 \end{table}
