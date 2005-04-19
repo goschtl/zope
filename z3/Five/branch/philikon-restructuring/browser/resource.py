@@ -13,7 +13,7 @@ $Id: browser.py 5259 2004-06-23 15:59:52Z philikon $
 import os
 import urllib
 
-from Acquisition import Explicit, aq_inner, aq_parent
+from Acquisition import Explicit
 from ComputedAttribute import ComputedAttribute
 from OFS.Traversable import Traversable as OFSTraversable
 
