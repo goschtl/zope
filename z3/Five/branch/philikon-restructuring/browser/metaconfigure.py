@@ -449,14 +449,14 @@ class ViewMixinForTemplates(BrowserView):
     def __call__(self, *args, **kw):
         return self.index(self, *args, **kw)
 
-def makeClassForTemplate(src, template=None, used_for=None,
+def makeClassForTemplate(filename, globals=None, used_for=None,
                          bases=(), cdict=None):
     # XXX needs to deal with security from the bases?
     if cdict is None:
         cdict = {}
-    cdict.update({'index': ZopeTwoPageTemplateFile(src, template)})
+    cdict.update({'index': ZopeTwoPageTemplateFile(filename, globals)})
     bases += (ViewMixinForTemplates,)
-    class_ = makeClass("SimpleViewClass from %s" % src, bases, cdict)
+    class_ = makeClass("SimpleViewClass from %s" % filename, bases, cdict)
 
     if used_for is not None:
         class_.__used_for__ = used_for
