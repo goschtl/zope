@@ -634,10 +634,6 @@ class TestRequest(BrowserRequest):
         else:
             directlyProvides(self, IDefaultBrowserLayer)
 
-    def setPrincipal(self, principal):
-        # HTTPRequest needs to notify the HTTPTask of the username.
-        # We don't want to have to stub HTTPTask in the tests.
-        BaseRequest.setPrincipal(self, principal)
 
 class BrowserResponse(HTTPResponse):
     """Browser response
