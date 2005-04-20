@@ -2096,6 +2096,11 @@ role.
 %___________________________________________________________________________
 
 
+\subsection{Configuration}
+
+- assigning roles/permissions/etc via zcml
+- assigning permissions/roles/users via management interface
+- assigning permissions/roles/users via API
 
 \subsection{Auditing}
 
@@ -2219,11 +2224,10 @@ A document describing the delivery and operation of the TOE will be provided.
 %___________________________________________________________________________
 
 
-
 \subsection{AM{\_}ADV: DEVELOPMENT}
 
-A functional specification and a RCR document will be provided.
-
+A functional specification,  a RCR document and a security policy model
+(ADV\_SPM) will be provided.
 
 %___________________________________________________________________________
 
@@ -2382,8 +2386,8 @@ FDP\_ACC.2                  &      & \oh          &         &           & \oh   
 FDP\_ACF.1                  &      &              &         &           &  \oh     &             &              &              \\
 FDP\_ETC.2                  &      &              &         &           &          &             &  \oh         &              \\                
 FDP\_ITC.1                  &      &              &         &           &          &             &  \oh         &              \\
-FDP\_ITC.2                  &      &              &         &           &          &             &     \oh      &              \\
-FDP\_RIP.1                  &      &              &         &           &          &             &      \oh     &              \\
+FDP\_ITC.2                  &      &              &         &           &          &             &  \oh         &              \\
+FDP\_RIP.1                  &      &              &         &           &          &             &  \oh         &              \\
 FDP\_ROL.2\_Transactions    &      &              &         &           &          &   \oh       &              &              \\
 FDP\_ROL.1\_Undo            &      &              &         &           &          &             &  \oh         &              \\
 FIA\_AFL\_z.1               &      &              &         &   \oh     &          &             &              &              \\
@@ -2394,7 +2398,8 @@ FAU\_UAU.6                  & \oh  &              &         &           &       
 FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
 FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              & \oh          \\
 FMT\_MSA.1                  & \oh  &  \oh         &         &           &          &             &              &              \\
-FMT\_MSA.3                  &      &              &         & \oh       &          &             &              &              \\
+FMT\_MSA.2                  &      &              &         &           &          &             &  \oh         &              \\  
+FMT\_MSA.3                  &      &              &         & \oh       &          &             &  \oh         &              \\
 FMT\_SMR.1                  &      &              &         &           &          &             &              &              \\
 FPT\_AMT.1                  &      &              &         & \oh       &          &             &              &              \\
 FPT\_RVM.1                  &      &              &         &           &  \oh     &             &              &              \\
@@ -2405,6 +2410,10 @@ FPT\_STM.1                  &      &              &  \oh    &           &       
  \end{tabular}
  \caption{Mapping of Security Objectives to Security Functional Requirements}
 \end{table}
+
+\subsection{SFR Component dependency analysis}
+
+XXX See Guide for ST/PP production page 57
 
 \subsection{O.IA --- Identification and Authentication}
 
@@ -2544,7 +2553,7 @@ FPT\_STM.1                  &      &              &  \oh    &           &       
 
     To assure an enduring consistent state of all security attributes we
     enforce the security policy model upon any changes to security attributes.
-    (FMT\_MSA.2)
+    (FMT\_MSA.2) Additionally static security attribute initialization assures a predictable and secure state if no specific attributes are given. (FMT\_MSA.3)
 
     Special functionality like user data import with security attributes
     (FDP\_ITC.2), residual information protection (FDP\_RIP.1) and rollback to
@@ -2573,251 +2582,50 @@ FPT\_STM.1                  &      &              &  \oh    &           &       
 
 \section{Summary Specification Rationale}
 
-\begin{quote}
-
-\begin{longtable}[c]{|l|l|}
-\hline
-\textbf{
-Functions
-} & \textbf{
-Security Functional Requirements
-} \\
-\hline
-\endhead
-
-Protection
- & 
-FDP{\_}ACC.2, FDP{\_}ACF.1, FDP{\_}ETC.2, FDP{\_}ITC.1,
-FDP{\_}ITC.2, FDP{\_}ROL.1{\_}UNDO, FIA{\_}UAU.1, FMT{\_}MOF.1,
-FMT{\_}MSA.1, FMT{\_}SMR.1, FPT{\_}RVM.1, FPT{\_}SEP.1
- \\
-\hline
-
-Authentication
- & 
-FIA{\_}AFL{\_}z.1, FIA{\_}ATD.1, FIA{\_}UAU.5, FIA{\_}UAU.6,
-FMT{\_}MSA.1
- \\
-\hline
-
-Authorization
- & 
-FDP{\_}ACC.2, FDP{\_}ACF.1, FDP{\_}ETC.2, FDP{\_}ITC.1,
-FTP{\_}ITC.2, FDP{\_}RIP.1, FDP{\_}ROL.1{\_}Undo, FIA{\_}ATD.1,
-FIA{\_}UAU.1, FIA{\_}USB.1, FMT{\_}MOF.1, FMT{\_}MSA.1,
-FMT{\_}MSA.3, FMT{\_}SMR.1,
- \\
-\hline
-
-Auditing
- & 
-FAU{\_}GEN.1, FAU{\_}GEN.2, FPT{\_}STM.1
- \\
-\hline
-
-Transaction
- & 
-FDP{\_}ROL.2{\_}Transactions
- \\
-\hline
-
-management
- &  \\
-\hline
-
-Undo
- & 
-FDP{\_}ROL.1{\_}Undo
- \\
-\hline
-
-Publisher
- & 
-FIA{\_}UAU.1, FIA{\_}USB.1
- \\
-\hline
-
-Automated Tests
- & 
-FPT{\_}AMT.1
- \\
-\hline
-
-Python Environemnt
- & 
-FPT{\_}STM.1
- \\
-\hline
-\end{longtable}
-\end{quote}
+\subsection{Security Functions Rationale}
 
 
+
+\subsection{Assurance Measures}
+
+The assurance measures are selected in accordance to EAL 1. Additionally due to
+the selection of FMT\_MSA.2 the document ADV\_SPM has been selected.
+
+\begin{table}
+    \scriptsize
+    \begin{tabular}{rRRRRRRRRRR}
+        \toprule
+                    & Protection & Authentication & Authorization & Auditing & Configuration & Transaction management & Undo & Publication/Server & Automated Tests & Python Environment \\
+        \midrule
+FAU\_GEN.1          &            &                &               & \oh      &               &                        &      &                    &                 &                    \\   
+FAU\_GEN.2          &            &                &               & \oh      &               &                        &      &                    &                 &                    \\   
+FDP\_ACC.2          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_ACF.1          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_ETC.2          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_ITC.1          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_ITC.2          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_RIP.1          &            &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_ROL.2          & \oh        &                &               &          &               & \oh                    &      &                    &                 &                    \\   
+FDP\_ROL.1          & \oh        &                &  \oh          &          &               &                        & \oh  &                    &                 &                    \\   
+FIA\_AFL\_z.1       &            &  \oh           &               &          &               &                        &      &                    &                 &                    \\   
+FIA\_ATD.1          &            &  \oh           &               &          &               &                        &      &                    &                 &                    \\   
+FAU\_UAU.1          & \oh        &                &  \oh          &          &               &                        &      & \oh                &                 &                    \\   
+FAU\_UAU.5          &            &  \oh           &               &          &               &                        &      &                    &                 &                    \\   
+FAU\_UAU.6          &            &  \oh           &               &          &               &                        &      &                    &                 &                    \\   
+FIA\_USB.1          &            &  \oh           &               &          &               &                        &      &  \oh               &                 &                    \\   
+FMT\_MOF.1          & \oh        &  \oh           &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FMT\_MSA.1          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
+FMT\_MSA.2          &            &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FMT\_MSA.3          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
+FMT\_SMR.1          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FPT\_AMT.1          &            &                &               &          &               &                        &      &                    &    \oh          &                    \\   
+FPT\_RVM.1          & \oh        &                &               &          &               &                        &      &                    &                 &                    \\   
+FPT\_FLS.1          &            &                &               &          &               &     \oh                &      &                    &                 &                    \\   
+FPT\_SEP.1          &  \oh       &                &               &          &               &                        &      &                    &                 &                    \\ 
+FPT\_STM.1          &            &                &               &          &               &                        &      &                    &                 &   \oh              \\        \bottomrule
+    \end{tabular}
+\end{table}
 %___________________________________________________________________________
-
-
-
-\section{Table: Security Functional Requirements to Functions Mapping}
-\begin{quote}
-
-\begin{longtable}[c]{|l|l|}
-\hline
-\textbf{
-SFR
-} & \textbf{
-Function
-} \\
-\hline
-\endhead
-
-FAU{\_}GEN.1
- & 
-Audit
- \\
-\hline
-
-FAU{\_}GEN.2
- & 
-Audit
- \\
-\hline
-
-FDP{\_}ACC.2
- & 
-Authorization, Protection
- \\
-\hline
-
-FDP{\_}ACF.1
- & 
-Authorization, Protection
- \\
-\hline
-
-FDP{\_}ETC.2
- & 
-Authorization, Protection, Synchronization
- \\
-\hline
-
-FDP{\_}ITC.1
- & 
-Authorization, Protection, Synchronization
- \\
-\hline
-
-FDP{\_}ITC.2
- & 
-Authorization, Protection, Synchronization
- \\
-\hline
-
-FDP{\_}RIP.1
- & 
-Authorization
- \\
-\hline
-
-FDP{\_}ROL.2{\_}Transactions
- & 
-Transaction management
- \\
-\hline
-
-FDP{\_}ROL.1{\_}Undo
- & 
-Undo, Authorization, Protection
- \\
-\hline
-
-FIA{\_}AFL{\_}z.1
- & 
-Authentication
- \\
-\hline
-
-FIA{\_}ATD.1
- & 
-Authentication
- \\
-\hline
-
-FIA{\_}UAU.1
- & 
-Publication, Authorization, Protection
- \\
-\hline
-
-FIA{\_}UAU.5
- & 
-Authentication
- \\
-\hline
-
-FIA{\_}UAU.6
- & 
-Authentication
- \\
-\hline
-
-FIA{\_}USB.1
- & 
-Publication, Authorization
- \\
-\hline
-
-FMT{\_}MOF.1
- & 
-Authorization, Protection, Authentication
- \\
-\hline
-
-FMT{\_}MSA.3
- & 
-Authorization
- \\
-\hline
-
-FMT{\_}SMR.1
- & 
-Authorization, Protection
- \\
-\hline
-
-FPT{\_}AMT.1
- & 
-Automated Tests
- \\
-\hline
-
-FPT{\_}RVM.1
- & 
-Protection
- \\
-\hline
-
-FPT{\_}FLS.1
- & 
-Transaction management
- \\
-\hline
-
-FPT{\_}SEP.1
- & 
-Protection
- \\
-\hline
-
-FPT{\_}STM.1
- & 
-Python environment
- \\
-\hline
-\end{longtable}
-\end{quote}
-
-
-%___________________________________________________________________________
-
 
 \subsection{Choice of TOE security assurance requirements}
 
@@ -2827,11 +2635,10 @@ objectives.
 
 The assurance level is \textbf{EAL 1}.
 
-
 %___________________________________________________________________________
 
 
-\section{Evaluation Assurance Level rationale:}
+\section{Evaluation Assurance Level rationale}
 
 The Zope development community recognizes the need of mature and well defined
 security functions by its users.
