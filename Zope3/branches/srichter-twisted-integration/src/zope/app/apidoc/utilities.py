@@ -87,7 +87,7 @@ def getPythonPath(obj):
     # accessed (which is probably not a bad idea). So, we remove the security
     # proxies for this check.
     naked = removeSecurityProxy(obj)
-    if hasattr(naked, "im_class"):
+    if hasattr(naked, 'im_class'):
         naked = naked.im_class
     module = getattr(naked, '__module__', _marker)
     if module is _marker:
