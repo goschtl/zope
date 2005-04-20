@@ -310,6 +310,13 @@
       permission="zope2.Public"
       />
       
+  <browser:editform
+      schema=".interfaces.ISimpleContent"
+      for=".interfaces.ISimpleContent"
+      name="protectededitform.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
   <five:traversable class=".schemacontent.ComplexSchemaContent" />
 
   <browser:editform
