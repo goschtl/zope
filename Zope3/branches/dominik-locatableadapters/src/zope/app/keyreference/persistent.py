@@ -23,16 +23,9 @@ $Id$
 from ZODB.interfaces import IConnection
 import zope.interface
 
-from zope.app.location import Location
-
 import zope.app.keyreference.interfaces
 
-# TODO: I do not understand that test
-# I get pickable Errors within the functional tests of zope.app.intid
-# The reference derives from Location to prevent its location-proxying
-# by the trusted adapters facility. 
-
-class KeyReferenceToPersistent(Location):
+class KeyReferenceToPersistent(object):
     """An IReference for persistent object which is comparable.
 
     These references compare by _p_oids of the objects they reference.

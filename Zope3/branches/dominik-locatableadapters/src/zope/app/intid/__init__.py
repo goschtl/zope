@@ -27,7 +27,7 @@ from persistent import Persistent
 
 from zope.event import notify
 from zope.interface import implements
-from zope.proxy import removeAllProxies
+from zope.security.proxy import removeSecurityProxy
 
 from zope.app import zapi
 from zope.app.container.contained import Contained
@@ -103,7 +103,7 @@ class IntIds(Persistent, Contained):
 
     def register(self, ob):
         # Note that we'll still need to keep this proxy removal.
-        ob = removeAllProxies(ob)
+        ob = removeSecurityProxy(ob)
         ref = IKeyReference(ob)
         if ref in self.ids:
             return self.ids[ref]
