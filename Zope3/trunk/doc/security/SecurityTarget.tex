@@ -812,12 +812,8 @@ The following security objectives have been defined for the TOE:
   transaction started.
    \\
 
-  O.Attributes
-   & 
-  Whenever attributes are set using identifiers
-  (e.g. principal or permission identifiers), the
-  identifiers must have been defined previously.
-   \\
+  O.Attributes &  All security attributes (e.g. principal or permission
+    identifiers) together must form a meaningful whole at all times. \\
 
   O.ManageRisk
    & 
@@ -858,7 +854,7 @@ The following security objectives have been defined for the TOE environment:
   Those responsible for the TOE must be trustworthy.
    \\
 
-  OE.AUDITLOG
+  OE.Auditlog
    & 
   Administrators of the TOE must ensure that audit
   facilities are used and managed effectively. In
@@ -2278,16 +2274,16 @@ No PP compatibility is beeing claimed.
     \midrule
 O.IA         &  \oh  &       &            &            &         &      &             &       &             &        &      &       \\
 O.Delegation &       &   \oh &            &            &         &      &             &       &             &        &      &        \\
-O.Audit      & \oh   &       &            &    \oh     &         &      &             &       &             &        &      &        \\
+O.Audit      & \oh   &   \oh &     \oh    &            &  \oh    &      &             &  \oh  &             &        &      &        \\
 O.Protect    &       &       &            &    \oh     &         &      &             &       &             &        &      &        \\
-O.Access     &       &       &      \oh   &            &         &      &             &       &             &        &      &  \oh   \\
+O.Access     &       &       &      \oh   &            &         &      &    \oh      &       &             &   \oh  &      &        \\
 O.Integrity  &       &       &            &            &         &  \oh &             &       &             &        &      &        \\
-O.Attributes &       &       &            &            &         &      &             &  \oh  &             &        &      &        \\
+O.Attributes &       &       &            &            &   \oh   &  \oh &             &  \oh  &             &        &      &        \\
 O.ManageRisk &   \oh &       &            &            &         &      &             &       &             &        &      &        \\
 \midrule
 OE.OS        &       &       &            &            &         &      &             &       &    \oh      &        &  \oh &         &         &            &          \\
 OE.Trust     &       &       &            &            &         &      &             &       &             &        &      &  \oh    &         &            &            \\
-OE.AUDITLOG  &       &       &            &            &         &      &             &       &             &        &      &         &         &            &                   \\  
+OE.Auditlog  &       &       &            &            &         &      &             &       &             &        &      &         &         &            &                   \\  
 OE.Network   &       &       &            &            &         &      &             &       &             &        &      &         &  \oh    &            &                   \\   
 OE.Client    &       &       &            &            &         &      &             &       &             &        &      &         &         &    \oh     &                   \\
 OE.Credential&       &       &            &            &         &      &             &       &             &        &      &         &         &            &    \oh    \\ 
@@ -2312,33 +2308,33 @@ the threads and assumptions.
   permissions.
   
   \item[O.Audit:] This security objective is necessary to detect and recover
-  from most threats: \textbf{T.IA, T.Perm, T.Operation, T.RIP, T.Transaction
-    and T.Undo}. XXX
+  from most threats: \textbf{T.IA, T.Perm, T.Operation, T.Transaction
+    and T.Undo} as those events are logged by the audit log.
   
-  T.AuditFake because it logs security relevant events and thus supports an
-  administrator in finding those events.
-
   \item[O.Protect:] This security objective is necessary to counter the threat
   \textbf{T.AuditFake} because it protects the audit data generation function
   and thereby prevents logging of false information.
   
   \item[O.Access:] This security objective is necessary to counter the threat
-  T.Operation because it prevents performing operations on an object without
-  having the correct permission. It also counters the threats \textbf{T.Host}
-  and \textbf{T.Tiemstamps} because functions are objects which are protected.
-  % XXX: T.USB?
+  \textbf{T.Operation} because it prevents performing operations on an object
+  without having the correct permission. It also counters the threats
+  \textbf{T.Host} because functions are objects, too, which are protected.
+
+  O.Access also counters the threat \textbf{T.Transaction} because transaction
+  managing functions are also objects and therefor protected.
 
   \item[O.Integrity:] This security objective is necessary to counter the
-  threat T.RIP because it prevents that any data will be written if an 
-  unhandled error occurs.
+  threat \textbf{T.RIP} because it prevents that any data will be written if
+  an unhandled error occurs.
   
   \item[O.Attributes:] This security objective is necessary to counter the
-  threat T.Undo because it prevents using undefined identifiers which could
-  allow an attacker to gain more access than intended.
+  threats \textbf{T.Undo}, \textbf{T.Import} and \textbf{T.RIP} because it
+  prevents an attacker form setting inconsistend security attributes from
+  which he could gain more access than intended.
 
-  \item[O.ManagerRisk:] This security objective is necessary to counter the
-  threat T.IA because it makes ist less likely an attacker impersonates a
-  principal which allows operations with high negaitive impact since those
+  \item[O.ManageRisk:] This security objective is necessary to counter the
+  threat \textbf{T.IA} because it makes it less likely an attacker impersonates a
+  principal which allows operations with high negative impact since those
   principals are better protected.
 
   \item[OE.OS:] This security objective is necessary to both counter the
@@ -2350,7 +2346,7 @@ the threads and assumptions.
   \item[OE.Trust:] This security objective covers the assumption
   \textbf{A.Admin}.
 
-  \item[OE.AUDITLOG:] XXX
+  \item[OE.Auditlog:] XXX
 
   \item[OE.Network:] This security objective covers the assumptions
   \textbf{A.Network} because it asserts that all
@@ -2362,7 +2358,7 @@ the threads and assumptions.
   authentication data is not monitored or interfered.
 
   \item[OE.Credential:] This security objective covers the assumption
-  \textbf{A.Credentialt} because it demands that the user is keeping the
+  \textbf{A.Credentials} because it demands that the user is keeping the
   credentials to authenticate secret.
   
 \end{description}
