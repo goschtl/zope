@@ -49,6 +49,7 @@ class EditFormTest(Functional, FiveTestCase):
         self.folder = self.folder.ftf
         response = self.publish('/test_folder_1_/ftf/+/addsimplecontent.html',
                                 basic='manager:r00t')
+        self.assertEquals(200, response.getStatus())
         # we're using a GET request to post variables, but seems to be
         # the easiest..
         response = self.publish(
