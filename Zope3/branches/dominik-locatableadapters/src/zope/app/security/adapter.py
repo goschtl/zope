@@ -129,7 +129,11 @@ class TrustedAdapterFactoryMixin(object):
         self.__module__ = factory.__module__
 
     # protected methods
-    def _customize(self, adapter, context):
+    def _customizeProtected(self, adapter, context):
+        """Subclasses might overwrite this method."""
+        return adapter
+
+    def _customizeUnprotected(self, adapter, context):
         """Subclasses might overwrite this method."""
         return adapter
 
@@ -138,11 +142,11 @@ class TrustedAdapterFactoryMixin(object):
             if removeSecurityProxy(arg) is not arg:
                 args = map(removeSecurityProxy, args)
                 adapter = self.factory(*args)
-                adapter = self._customize(adapter, args[0])
+                adapter = self._customizeProtected(adapter, args[0])
                 return ProxyFactory(adapter)
 
         adapter = self.factory(*args)
-        adapter = self._customize(adapter, args[0])
+        adapter = self._customizeUnprotected(adapter, args[0])
         return adapter
 
 
@@ -343,12 +347,17 @@ class TrustedAdapterFactory(TrustedAdapterFactoryMixin):
         'C'
     """
 
-    def _customize(self, adapter, context):
+    def _customizeProtected(self, adapter, context):
         if (ILocation.providedBy(adapter)
             and adapter.__parent__ is None):
                     adapter.__parent__ = context
         return adapter
 
+    def _customizeUnprotected(self, adapter, context):
+        if (ILocation.providedBy(adapter)
+            and adapter.__parent__ is None):
+                    adapter.__parent__ = context
+        return adapter
 
 
 class LocatingTrustedAdapterFactory(TrustedAdapterFactoryMixin):
@@ -460,8 +469,131 @@ class LocatingTrustedAdapterFactory(TrustedAdapterFactoryMixin):
         'C'
     """
 
-    def _customize(self, adapter, context):
+    def _customizeProtected(self, adapter, context):
         return assertLocation(adapter, context)
+
+    def _customizeUnprotected(self, adapter, context):
+        return assertLocation(adapter, context)
+
+
+class PartiallyLocatingTrustedAdapterFactory(TrustedAdapterFactoryMixin):
+    """Adapt an adapter factory to to provide location for protected adapters
+
+    Trusted adapters always adapt unproxied objects. If asked to
+    adapt any proxied objects, it will unproxy them and then 
+    security-proxy the resulting adapter unless the objects where not
+    security-proxied before.
+
+    Further locating trusted adapters provide a location for protected
+    adapters only. If such a protected adapter itself does not provide
+    ILocation it is wrapped within a location proxy and it parent will 
+    be set:
+
+        security proxy > location proxy > adapter > object(s)
+
+    If the adapter does provide ILocation and it's __parent__ is None,
+    we set the __parent__ only: 
+    
+        security proxy > adapter > object(s) 
+
+    Now, suppose have an object and proxy it:
+
+        >>> o = []
+        >>> p = ProxyFactory(o)
+
+    A. Unlocatable adatpers
+
+        >>> class A(object):
+        ...     def __init__(self, context):
+        ...         self.context = context
+
+        >>> TA = PartiallyLocatingTrustedAdapterFactory(A)
+
+    AS. Security-proxied:
+
+        >>> a = TA(p)
+        >>> removeSecurityProxy(a.__parent__) is o
+        True
+        >>> type(a).__name__
+        '_Proxy'
+        >>> type(removeSecurityProxy(a)).__name__
+        'LocationProxy'
+        >>> from zope.proxy import removeAllProxies
+        >>> type(removeAllProxies(a)).__name__
+        'A'
+
+    AN. None-security-proxied:
+
+        >>> a = TA(o)
+        >>> a.__parent__ is o
+        Traceback (most recent call last):
+        ...
+        AttributeError: 'A' object has no attribute '__parent__'
+        >>> type(a).__name__
+        'A'
+
+    B. Locatable, but parentless adapters
+
+        >>> class B(Location):
+        ...     def __init__(self, context):
+        ...         self.context = context
+
+
+        >>> TB = PartiallyLocatingTrustedAdapterFactory(B)
+
+    BS. Security-proxied:
+
+        >>> a = TB(p)
+        >>> removeSecurityProxy(a.__parent__) is o
+        True
+        >>> type(a).__name__
+        '_Proxy'
+
+    BS. None-security-proxied:
+
+        >>> a = TB(o)
+        >>> a.__parent__ is o
+        True
+        >>> type(a).__name__
+        'B'
+
+    C. Locatable and parentful adapter
+
+        >>> marker = Location()
+
+        >>> class C(Location):
+        ...     def __init__(self, context):
+        ...         self.context = context
+        ...         self.__parent__ = marker
+
+
+        >>> TC = PartiallyLocatingTrustedAdapterFactory(C)
+
+    CS. Security-proxied:
+
+        >>> a = TC(p)
+        >>> removeSecurityProxy(a.__parent__) is marker
+        True
+        >>> type(a).__name__
+        '_Proxy'
+
+    CS. None-security-proxied:
+
+        >>> a = TC(o)
+        >>> a.__parent__ is marker
+        True
+        >>> type(a).__name__
+        'C'
+    """
+
+    def _customizeProtected(self, adapter, context):
+        return assertLocation(adapter, context)
+
+    def _customizeUnprotected(self, adapter, context):
+        if (ILocation.providedBy(adapter)
+            and adapter.__parent__ is None):
+                    adapter.__parent__ = context
+        return adapter
 
 
 class LocatingUntrustedAdapterFactory(object):
