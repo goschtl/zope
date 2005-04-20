@@ -100,23 +100,23 @@ Zope X3, Security target
 
 
 \item [Document ID:]
-{\$}Id: SecurityTarget.txt 30023 2005-04-18 13:47:51Z zagy {\$}
+$Id$
 
 
 \item [Document Version:]
-{\$}Rev: 30023 {\$}
+$Rev$
 
 
 \item [Origin:]
-Zope Corporation public CVS server
+Zope Corporation public Subversion server
 
 
 \item [TOE Reference:]
-Zope X3 3.1/CC
+Zope X3 3.1/CC              % XXX still to define. Possible alternative: Zope CC 3.1
 
 
 \item [TOE Commercial Name:]
-Zope X3
+Zope X3                     % XXX to define, depending on TOE Reference
 
 
 \item [TOE Short Description:]
@@ -979,7 +979,7 @@ secret.
 
 
 
-\chapter{Security requirements}
+\chapter{IT Security requirements}
 
 
 %___________________________________________________________________________
@@ -1003,14 +1003,14 @@ They have been drawn from the CC Part 2 functional requirements components.
 
 
 
-\subsection{Class FAU: Audit data generation}
+\subsubsection{Class FAU: Audit data generation}
 
 
 %___________________________________________________________________________
 
 
 
-\subsection{FAU{\_}GEN.1 Audit data generation}
+\minisec{FAU{\_}GEN.1 Audit data generation}
 \begin{description}
 %[visit_definition_list_item]
 \item[FAU{\_}GEN.1.1]
@@ -1076,7 +1076,7 @@ of the functional components included in the ST,
 
 
 
-\subsection{FAU{\_}GEN.2 User identity assocation}
+\minisec{FAU{\_}GEN.2 User identity assocation}
 \begin{description}
 %[visit_definition_list_item]
 \item[FAU{\_}GEN.2.1]
@@ -1094,14 +1094,14 @@ of the user that caused the event.
 
 
 
-\subsection{Class FDP: Data protection}
+\subsubsection{Class FDP: Data protection}
 
 
 %___________________________________________________________________________
 
 
 
-\subsection{FDP{\_}ACC.2 Complete access control}
+\minisec{FDP{\_}ACC.2 Complete access control}
 \begin{description}
 %[visit_definition_list_item]
 \item[FDP{\_}ACC.2.1 ]
@@ -1141,7 +1141,7 @@ access control SFP.
 
 
 
-\subsection{FDP{\_}ACF.1 Security attribute based access control}
+\minisec{FDP{\_}ACF.1 Security attribute based access control}
 \begin{description}
 %[visit_definition_list_item]
 \item[FDP{\_}ACF.1.1]
@@ -1212,7 +1212,7 @@ based on the following additional rules: \emph{{[}none]}
 
 
 
-\subsection{FDP{\_}ETC.2 Export of user data with security attributes}
+\minisec{FDP{\_}ETC.2 Export of user data with security attributes}
 \begin{description}
 %[visit_definition_list_item]
 \item[Note]
@@ -1269,7 +1269,7 @@ is exported from the TSC: \emph{{[}none]}.
 
 
 
-\subsection{FDP{\_}ITC.1 Import of user data without security attributes}
+\minisec{FDP{\_}ITC.1 Import of user data without security attributes}
 \begin{description}
 %[visit_definition_list_item]
 \item[Note]
@@ -1333,7 +1333,7 @@ FDP{\_}ACF.1.2.
 
 
 
-\subsection{FDP{\_}ITC.2 Import of user data with security attributes}
+\minisec{FDP{\_}ITC.2 Import of user data with security attributes}
 \begin{description}
 %[visit_definition_list_item]
 \item[Note]
@@ -1405,7 +1405,7 @@ entire import will fail and an explanatory error will be provided.
 
 
 
-\subsection{FDP{\_}RIP.1 Subset residual information protection}
+\minisec{FDP{\_}RIP.1 Subset residual information protection}
 \begin{description}
 %[visit_definition_list_item]
 \item[FDP{\_}RIP.2.1]
@@ -1433,7 +1433,7 @@ need to think through the implications of undo for rip -- Steve's
 
 
 
-\subsection{FDP{\_}ROL.2{\_}TRANSACTIONS Advanced Rollback}
+\minisec{FDP{\_}ROL.2{\_}TRANSACTIONS Advanced Rollback}
 \begin{description}
 %[visit_definition_list_item]
 \item[FDP{\_}ROL.2.1 ]
@@ -1472,7 +1472,7 @@ during the course of a transaction.
 
 
 
-\subsection{FDP{\_}ROL.1{\_}UNDO Basic rollback}
+\minisec{FDP{\_}ROL.1{\_}UNDO Basic rollback}
 \begin{description}
 %[visit_definition_list_item]
 \item[FDP{\_}ROL.1.1 ]
@@ -1501,14 +1501,14 @@ exist]}.
 
 
 
-\subsection{Class FIA: Identification and authentication}
+\subsubsection{Class FIA: Identification and authentication}
 
 
 %___________________________________________________________________________
 
 
 
-\subsection{FIA{\_}AFL{\_}z.1 Authentication failure handling}
+\minisec{FIA{\_}AFL{\_}z.1 Authentication failure handling}
 \begin{description}
 %[visit_definition_list_item]
 \item[FIA{\_}AFL{\_}z.1.1]
@@ -1542,7 +1542,7 @@ configurable period of time.
 
 
 
-\subsection{FIA{\_}ATD.1 User attribute definition}
+\minisec{FIA{\_}ATD.1 User attribute definition}
 \begin{description}
 %[visit_definition_list_item]
 \item[FIA{\_}ATD.1.1 ]
@@ -1561,7 +1561,7 @@ and denials]}
 
 
 
-\subsection{FIA{\_}UAU.1 Timing of authentication}
+\minisec{FIA{\_}UAU.1 Timing of authentication}
 \begin{description}
 %[visit_definition_list_item]
 \item[FIA{\_}UAU.1.1 ]
@@ -1594,7 +1594,7 @@ of that user.
 
 
 
-\subsection{FIA{\_}UAU.5 Multiple authentication systems}
+\minisec{FIA{\_}UAU.5 Multiple authentication systems}
 \begin{description}
 %[visit_definition_list_item]
 \item[FIA{\_}UAU.5.1 ]
@@ -1624,7 +1624,7 @@ username/password pair and the protocol used]}
 
 
 
-\subsection{FIA{\_}UAU.6 Re-authentication}
+\minisec{FIA{\_}UAU.6 Re-authentication}
 \begin{description}
 %[visit_definition_list_item]
 \item[FIA{\_}UAU.6.1 ]
@@ -1653,7 +1653,7 @@ permission grants to perform the requested operation.
 
 
 
-\subsection{FIA{\_}USB.1 User-subject binding}
+\minisec{FIA{\_}USB.1 User-subject binding}
 \begin{description}
 %[visit_definition_list_item]
 \item[FIA{\_}USB.1.1]
@@ -1671,14 +1671,14 @@ attributes with subjects acting on behalf of that user.
 
 
 
-\subsection{Class FMT: Security management}
+\subsubsection{Class FMT: Security management}
 
 
 %___________________________________________________________________________
 
 
 
-\subsection{FMT{\_}MOF.1 Management of security functions}
+\minisec{FMT{\_}MOF.1 Management of security functions}
 \begin{description}
 %[visit_definition_list_item]
 \item[FMT{\_}MOF.1.1]
@@ -1709,7 +1709,7 @@ protected by different permissions.
 
 
 
-\subsection{FMT{\_}MSA.1 Management of security attributes}
+\minisec{FMT{\_}MSA.1 Management of security attributes}
 \begin{description}
 \item[FMT{\_}MSA.1.1.grants]
     The TSF shall enforce the \emph{\[formal security policy\]} to restrict the
@@ -1731,7 +1731,7 @@ protected by different permissions.
 
 \end{description}
 
-\subsection{FMT{\_}MSA.2 Secure security attributes}
+\minisec{FMT{\_}MSA.2 Secure security attributes}
 
 \begin{description}
 
@@ -1746,7 +1746,7 @@ protected by different permissions.
 
 
 
-\subsection{FMT{\_}MSA.3 Static attribute initialisation}
+\minisec{FMT{\_}MSA.3 Static attribute initialisation}
 \begin{description}
 %[visit_definition_list_item]
 \item[FMT{\_}MSA.3.1]
@@ -1784,7 +1784,7 @@ denials. The default is an empty collection.
 
 
 
-\subsection{FMT{\_}SMR.1 Security roles}
+\minisec{FMT{\_}SMR.1 Security roles}
 
 XXX update/rewrite section
 \begin{description}
@@ -1840,14 +1840,14 @@ The TSF shall be able to associate \emph{{[}principals]} with roles.
 
 
 
-\subsection{Class FPT: Protection of the TSF}
+\subsubsection{Class FPT: Protection of the TSF}
 
 
 %___________________________________________________________________________
 
 
 
-\subsection{FPT{\_}AMT.1 Abstract machine testing}
+\minisec{FPT{\_}AMT.1 Abstract machine testing}
 \begin{description}
 %[visit_definition_list_item]
 \item[FPT{\_}AMT.1.1 ]
@@ -1867,7 +1867,7 @@ TSF.
 
 
 
-\subsection{FPT{\_}FLS.1 Failure with preservation of secure state}
+\minisec{FPT{\_}FLS.1 Failure with preservation of secure state}
 \begin{description}
 %[visit_definition_list_item]
 \item[FPT{\_}FLS.1.1 ]
@@ -1886,7 +1886,7 @@ exhaustion and host restart]}.
 
 
 
-\subsection{FPT{\_}RVM.1 Non-bypassability of the TSP}
+\minisec{FPT{\_}RVM.1 Non-bypassability of the TSP}
 \begin{description}
 %[visit_definition_list_item]
 \item[FPT{\_}RVM.1.1 ]
@@ -1905,7 +1905,7 @@ proceed.
 
 
 
-\subsection{FPT{\_}SEP.1 TSF domain separation}
+\minisec{FPT{\_}SEP.1 TSF domain separation}
 \begin{description}
 %[visit_definition_list_item]
 \item[FPT{\_}SEP.1.1 ]
@@ -1933,7 +1933,7 @@ security domains of subjects in the TSC.
 
 
 
-\subsection{FPT{\_}STM.1 Reliable time stamps}
+\minisec{FPT{\_}STM.1 Reliable time stamps}
 \begin{description}
 %[visit_definition_list_item]
 \item[FPT{\_}STM.1.1]
@@ -1950,7 +1950,7 @@ The TSF shall be able to provide reliable time stamps for its own use.
 
 
 
-\section{TOE security assurance requirements}
+\subsection{TOE security assurance requirements}
 
 The Evaluation Assurance Level chosen for this Evaluation is EAL 1.
 
@@ -2093,22 +2093,9 @@ To ensure a ``trusted path'' to the TOE, users of the TOE must use
 secure proxies correctly (for example, being sure to accept only
 valid server certificates with HTTPS).
 
-
 %___________________________________________________________________________
-
-
-
-
-
-%___________________________________________________________________________
-
-
 
 \chapter{TOE summary specification}
-
-
-%___________________________________________________________________________
-
 
 
 \section{TOE security functions}
@@ -2120,7 +2107,7 @@ The major functions implemented by the TOE are:
 
 
 
-\section{Protection}
+\subsection{Protection}
 
 The protection subsystem is responsible for controlling the access of subjects
 to objects.  It does this through the use of security proxies.  Any non-basic
@@ -2135,7 +2122,7 @@ proxies are security proxied.
 
 
 
-\section{Authentication}
+\subsection{Authentication}
 
 Zope provides a flexible authentication schema that by default supports HTTP
 Basic Auth and is extensible to support different data
@@ -2150,7 +2137,7 @@ and FTP authentication.
 
 
 
-\section{Authorization / Access Control}
+\subsection{Authorization / Access Control}
 
 To determine whether an operation under a given subject is allowed, Zope has an
 authorization subsystem (aka access control). The authorization subsystem uses
@@ -2187,7 +2174,7 @@ role.
 
 
 
-\section{Auditing}
+\subsection{Auditing}
 
 Zope provides an auditing system that listens for events within Zope according
 to the SFRs described above. It is implemented using the event framework of
@@ -2203,7 +2190,7 @@ audit log.
 
 
 
-\section{Transaction management}
+\subsection{Transaction management}
 
 Most data is stored on persistent objects. The transaction machinery rolls back
 all data that is stored on persistent objects.
@@ -2213,7 +2200,7 @@ all data that is stored on persistent objects.
 
 
 
-\section{Undo}
+\subsection{Undo}
 \begin{itemize}
 \item {} 
 storage support
@@ -2239,7 +2226,7 @@ Undo only allows the rollback of serial N last transaction to avoid integrity is
 
 
 
-\section{Publication / Server}
+\subsection{Publication / Server}
 
 XXX get servers, protocols and publisher right
 
@@ -2263,7 +2250,7 @@ authenticated principal to the running interaction.
 
 
 
-\section{Automated Tests}
+\subsection{Automated Tests}
 
 Zope provides a suite of automated tests that allow the user to ensure that the
 security functionality implemented with a delivered package is consistent with
@@ -2274,7 +2261,7 @@ the tests. Those tests can be run in offline mode.
 
 
 
-\section{Python Environment XXX}
+\subsection{Python Environment XXX}
 
 As Zope relies on Python and the host environment to provide reliable time
 stamps, we regard auditing adjustments to the time being out of scope.
@@ -2283,255 +2270,6 @@ Windows hosts) should be consulted to detect those changes. (FPT{\_}STM.1)
 
 
 %___________________________________________________________________________
-
-
-
-\section{Table: Functions to Security Functional Requirements Mapping}
-\begin{quote}
-
-\begin{longtable}[c]{|l|l|}
-\hline
-\textbf{
-Functions
-} & \textbf{
-Security Functional Requirements
-} \\
-\hline
-\endhead
-
-Protection
- & 
-FDP{\_}ACC.2, FDP{\_}ACF.1, FDP{\_}ETC.2, FDP{\_}ITC.1,
-FDP{\_}ITC.2, FDP{\_}ROL.1{\_}UNDO, FIA{\_}UAU.1, FMT{\_}MOF.1,
-FMT{\_}MSA.1, FMT{\_}SMR.1, FPT{\_}RVM.1, FPT{\_}SEP.1
- \\
-\hline
-
-Authentication
- & 
-FIA{\_}AFL{\_}z.1, FIA{\_}ATD.1, FIA{\_}UAU.5, FIA{\_}UAU.6,
-FMT{\_}MSA.1
- \\
-\hline
-
-Authorization
- & 
-FDP{\_}ACC.2, FDP{\_}ACF.1, FDP{\_}ETC.2, FDP{\_}ITC.1,
-FTP{\_}ITC.2, FDP{\_}RIP.1, FDP{\_}ROL.1{\_}Undo, FIA{\_}ATD.1,
-FIA{\_}UAU.1, FIA{\_}USB.1, FMT{\_}MOF.1, FMT{\_}MSA.1,
-FMT{\_}MSA.3, FMT{\_}SMR.1,
- \\
-\hline
-
-Auditing
- & 
-FAU{\_}GEN.1, FAU{\_}GEN.2, FPT{\_}STM.1
- \\
-\hline
-
-Transaction
- & 
-FDP{\_}ROL.2{\_}Transactions
- \\
-\hline
-
-management
- &  \\
-\hline
-
-Undo
- & 
-FDP{\_}ROL.1{\_}Undo
- \\
-\hline
-
-Publisher
- & 
-FIA{\_}UAU.1, FIA{\_}USB.1
- \\
-\hline
-
-Automated Tests
- & 
-FPT{\_}AMT.1
- \\
-\hline
-
-Python Environemnt
- & 
-FPT{\_}STM.1
- \\
-\hline
-\end{longtable}
-\end{quote}
-
-
-%___________________________________________________________________________
-
-
-
-\section{Table: Security Functional Requirements to Functions Mapping}
-\begin{quote}
-
-\begin{longtable}[c]{|l|l|}
-\hline
-\textbf{
-SFR
-} & \textbf{
-Function
-} \\
-\hline
-\endhead
-
-FAU{\_}GEN.1
- & 
-Audit
- \\
-\hline
-
-FAU{\_}GEN.2
- & 
-Audit
- \\
-\hline
-
-FDP{\_}ACC.2
- & 
-Authorization, Protection
- \\
-\hline
-
-FDP{\_}ACF.1
- & 
-Authorization, Protection
- \\
-\hline
-
-FDP{\_}ETC.2
- & 
-Authorization, Protection, Synchronization
- \\
-\hline
-
-FDP{\_}ITC.1
- & 
-Authorization, Protection, Synchronization
- \\
-\hline
-
-FDP{\_}ITC.2
- & 
-Authorization, Protection, Synchronization
- \\
-\hline
-
-FDP{\_}RIP.1
- & 
-Authorization
- \\
-\hline
-
-FDP{\_}ROL.2{\_}Transactions
- & 
-Transaction management
- \\
-\hline
-
-FDP{\_}ROL.1{\_}Undo
- & 
-Undo, Authorization, Protection
- \\
-\hline
-
-FIA{\_}AFL{\_}z.1
- & 
-Authentication
- \\
-\hline
-
-FIA{\_}ATD.1
- & 
-Authentication
- \\
-\hline
-
-FIA{\_}UAU.1
- & 
-Publication, Authorization, Protection
- \\
-\hline
-
-FIA{\_}UAU.5
- & 
-Authentication
- \\
-\hline
-
-FIA{\_}UAU.6
- & 
-Authentication
- \\
-\hline
-
-FIA{\_}USB.1
- & 
-Publication, Authorization
- \\
-\hline
-
-FMT{\_}MOF.1
- & 
-Authorization, Protection, Authentication
- \\
-\hline
-
-FMT{\_}MSA.3
- & 
-Authorization
- \\
-\hline
-
-FMT{\_}SMR.1
- & 
-Authorization, Protection
- \\
-\hline
-
-FPT{\_}AMT.1
- & 
-Automated Tests
- \\
-\hline
-
-FPT{\_}RVM.1
- & 
-Protection
- \\
-\hline
-
-FPT{\_}FLS.1
- & 
-Transaction management
- \\
-\hline
-
-FPT{\_}SEP.1
- & 
-Protection
- \\
-\hline
-
-FPT{\_}STM.1
- & 
-Python environment
- \\
-\hline
-\end{longtable}
-\end{quote}
-
-
-%___________________________________________________________________________
-
 
 
 \section{Assurance measures}
@@ -2588,20 +2326,10 @@ No deliverable. Only independend testing from the evaluator is needed.
 
 \chapter{PP claims}
 
-There are no PP claims.
+No PP compatibility is beeing claimed.
 
 
 %___________________________________________________________________________
-
-
-
-\chapter{SOF claims}
-
-There is no SOF claim here for EAL 1.
-
-
-%___________________________________________________________________________
-
 
 
 \chapter{Rationale}
@@ -2905,6 +2633,251 @@ FPT\_STM.1                  &      &              &  \oh    &           &       
     functionality of their code and the level of trust they have to gain from
     administrators installing their extensions. FPT\_SEP.1 supports the
     distinction between the trusted and untrusted domain.
+
+\section{Summary Specification Rationale}
+
+\begin{quote}
+
+\begin{longtable}[c]{|l|l|}
+\hline
+\textbf{
+Functions
+} & \textbf{
+Security Functional Requirements
+} \\
+\hline
+\endhead
+
+Protection
+ & 
+FDP{\_}ACC.2, FDP{\_}ACF.1, FDP{\_}ETC.2, FDP{\_}ITC.1,
+FDP{\_}ITC.2, FDP{\_}ROL.1{\_}UNDO, FIA{\_}UAU.1, FMT{\_}MOF.1,
+FMT{\_}MSA.1, FMT{\_}SMR.1, FPT{\_}RVM.1, FPT{\_}SEP.1
+ \\
+\hline
+
+Authentication
+ & 
+FIA{\_}AFL{\_}z.1, FIA{\_}ATD.1, FIA{\_}UAU.5, FIA{\_}UAU.6,
+FMT{\_}MSA.1
+ \\
+\hline
+
+Authorization
+ & 
+FDP{\_}ACC.2, FDP{\_}ACF.1, FDP{\_}ETC.2, FDP{\_}ITC.1,
+FTP{\_}ITC.2, FDP{\_}RIP.1, FDP{\_}ROL.1{\_}Undo, FIA{\_}ATD.1,
+FIA{\_}UAU.1, FIA{\_}USB.1, FMT{\_}MOF.1, FMT{\_}MSA.1,
+FMT{\_}MSA.3, FMT{\_}SMR.1,
+ \\
+\hline
+
+Auditing
+ & 
+FAU{\_}GEN.1, FAU{\_}GEN.2, FPT{\_}STM.1
+ \\
+\hline
+
+Transaction
+ & 
+FDP{\_}ROL.2{\_}Transactions
+ \\
+\hline
+
+management
+ &  \\
+\hline
+
+Undo
+ & 
+FDP{\_}ROL.1{\_}Undo
+ \\
+\hline
+
+Publisher
+ & 
+FIA{\_}UAU.1, FIA{\_}USB.1
+ \\
+\hline
+
+Automated Tests
+ & 
+FPT{\_}AMT.1
+ \\
+\hline
+
+Python Environemnt
+ & 
+FPT{\_}STM.1
+ \\
+\hline
+\end{longtable}
+\end{quote}
+
+
+%___________________________________________________________________________
+
+
+
+\section{Table: Security Functional Requirements to Functions Mapping}
+\begin{quote}
+
+\begin{longtable}[c]{|l|l|}
+\hline
+\textbf{
+SFR
+} & \textbf{
+Function
+} \\
+\hline
+\endhead
+
+FAU{\_}GEN.1
+ & 
+Audit
+ \\
+\hline
+
+FAU{\_}GEN.2
+ & 
+Audit
+ \\
+\hline
+
+FDP{\_}ACC.2
+ & 
+Authorization, Protection
+ \\
+\hline
+
+FDP{\_}ACF.1
+ & 
+Authorization, Protection
+ \\
+\hline
+
+FDP{\_}ETC.2
+ & 
+Authorization, Protection, Synchronization
+ \\
+\hline
+
+FDP{\_}ITC.1
+ & 
+Authorization, Protection, Synchronization
+ \\
+\hline
+
+FDP{\_}ITC.2
+ & 
+Authorization, Protection, Synchronization
+ \\
+\hline
+
+FDP{\_}RIP.1
+ & 
+Authorization
+ \\
+\hline
+
+FDP{\_}ROL.2{\_}Transactions
+ & 
+Transaction management
+ \\
+\hline
+
+FDP{\_}ROL.1{\_}Undo
+ & 
+Undo, Authorization, Protection
+ \\
+\hline
+
+FIA{\_}AFL{\_}z.1
+ & 
+Authentication
+ \\
+\hline
+
+FIA{\_}ATD.1
+ & 
+Authentication
+ \\
+\hline
+
+FIA{\_}UAU.1
+ & 
+Publication, Authorization, Protection
+ \\
+\hline
+
+FIA{\_}UAU.5
+ & 
+Authentication
+ \\
+\hline
+
+FIA{\_}UAU.6
+ & 
+Authentication
+ \\
+\hline
+
+FIA{\_}USB.1
+ & 
+Publication, Authorization
+ \\
+\hline
+
+FMT{\_}MOF.1
+ & 
+Authorization, Protection, Authentication
+ \\
+\hline
+
+FMT{\_}MSA.3
+ & 
+Authorization
+ \\
+\hline
+
+FMT{\_}SMR.1
+ & 
+Authorization, Protection
+ \\
+\hline
+
+FPT{\_}AMT.1
+ & 
+Automated Tests
+ \\
+\hline
+
+FPT{\_}RVM.1
+ & 
+Protection
+ \\
+\hline
+
+FPT{\_}FLS.1
+ & 
+Transaction management
+ \\
+\hline
+
+FPT{\_}SEP.1
+ & 
+Protection
+ \\
+\hline
+
+FPT{\_}STM.1
+ & 
+Python environment
+ \\
+\hline
+\end{longtable}
+\end{quote}
+
 
 %___________________________________________________________________________
 
