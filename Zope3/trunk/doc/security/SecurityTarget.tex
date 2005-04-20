@@ -160,7 +160,7 @@ Supplier
 
 Zope
  & 
-X3
+X3          % XXX to be defined
  & 
 Zope Corporation
  \\
@@ -171,37 +171,27 @@ Zope Corporation
 
 %___________________________________________________________________________
 
-
-
 \section{ST overview}
 
-The main objectives of this Security Target are:
-\begin{quote}
-\begin{itemize}
-\item {} 
-To describe the Target of Evaluation (TOE).
+Zope 3 is a general purpose web application server written in Python. 
 
-\item {} 
-To describe the security environment of the TOE including the assets to
-be protected and the threats to be countered by the TOE and its
-environment.
+Beeing an application server Zope 3 provides developers with a flexible
+security machinery that allows complex applications developed for Zope 3 to be
+effectively protected.
 
-\item {} 
-To describe the security objectives of the TOE and its supporting
-environment.
+This includes modules for identification, authentication and authorization and
+integrates seemlessly with all other subsystems Zope 3 provides.
 
-\item {} 
-To specify the Security Requirements, which include the TOE security
-functional requirements as of CC, part 2 and the assurance requirements as
-of CC, part 3.
+Developers using Zope 3 instruct the security machinery to protect objects and
+operations in the application server with given permissions.
 
-\item {} 
-To set up the TOE summary specification, which includes the TOE
-security functions specifications and the assurance measures.
+Administrators managing a Zope 3 based application grant users permissions to
+use certain objects and operations and configure the server and application to
+conform to local security policies.
 
-\end{itemize}
-\end{quote}
-
+The flexibility of the system allows tailored use of the security functions on
+multiple levels, to allow easy integration of third party Zope 3 applications
+into an existing IT environment.
 
 %___________________________________________________________________________
 
@@ -394,23 +384,28 @@ packages that are not part of the TOE. (E.g. Python runtime libraries)
 
 \subsection{TOE Logical Boundaries}
 
-The logical boundary for the TOE consists of the four security sub-systems of
-Zope:
+The logical boundary for the TOE consists of several security-relevant sub-systems of
+Zope 3:
+
 \begin{itemize}
-\item {} 
-permission declaration
+\item Protection
 
-\item {} 
-protection
+\item Authentication
 
-\item {} 
-authentication
+\item Authorization / Access Control
 
-\item {} 
-authorization
+\item Auditing
+
+\item Transaction Management
+
+\item Undo
+
+\item Publication / Server
 
 \end{itemize}
 
+See section ``TOE security functions`` % XXX do real  reference here
+for more details regarding those sub-systems.
 
 %___________________________________________________________________________
 
@@ -596,6 +591,11 @@ The following threat agents have been identified:
 
 \end{itemize}
 
+Specific threat agents with specific motivation, resources and skills have to
+be identified for any specific application build on Zope 3. From the point of a
+generic application server, attackers are either to be expected to  be
+authenticated and trying to extend their level of access or not having been
+authenticated at all and trying to break into the system.
 
 The following threats against the assets have been identified:
 
@@ -2845,8 +2845,6 @@ The assurance level is \textbf{EAL 1}.
 
 \section{Evaluation Assurance Level rationale:}
 
-XXX review this paragraph please.
-
 The Zope development community recognizes the need of mature and well defined
 security functions by its users.
 
@@ -2854,17 +2852,17 @@ Therefore to meet this requirement the decision for an entry level evaluation
 was made on the basis of resource constraints of available developers and
 budget.
 
-Additionally an entry level evaluation gives a glance to the community how
+Additionally an entry level evaluation gives a glance to the community how a
 certification may effect Zope's degree of documentation and stabilize the good
-security history even more, maybe raising the interest for projects that
-require good security behaviour and seek free alternatives.
-
-XXX mention ``confidence''
+security history even more. Eventually this raises interest in Zope 3 for
+projects that have strong requirements in respect to security and do seek free
+alternatives to closed source projects.
 
 It is intended to show that mature open source projects can outperform
 proprietary systems not only on pure functional and monetary aspects but also
-in domains that are typically governed by proprietary systems.
-
+in domains that are typically governed by proprietary systems. Performing a
+well known standardized evaluation also substantiates confidence and trust that
+Zope as a free software project receives by it's users.
 
 %___________________________________________________________________________
 
@@ -2891,64 +2889,15 @@ in domains that are typically governed by proprietary systems.
 \chapter{TODO}
 
 
-%___________________________________________________________________________
-
-
-
-\section{General}
-\begin{quote}
-\begin{itemize}
-\item {} 
-Bibliographic references
-
-\item {} 
-Numbering of sections would be fine
-
-\end{itemize}
-\end{quote}
-
-
-%___________________________________________________________________________
-
-
-
-\section{Part 1}
-\begin{quote}
-\begin{itemize}
-\item {} 
-Threat agents (ctheune)
-
-\item {} 
-TOE description (ctheune)
-
-\item {} 
-TOE security functions (ctheune)
-
-\end{itemize}
-\end{quote}
-
-
-%___________________________________________________________________________
-
-
-
 \section{Part 2}
 \begin{quote}
 \begin{itemize}
-\item {} 
-Rationale
 
 \item {} 
 Security Objectives Rationale (zagy)
 
 \item {} 
-Security Requirements Rationale (ctheune)
-
-\item {} 
 TOE summary specification rationale
-
-\item {} 
-PP claims rationale
 
 \end{itemize}
 \end{quote}
