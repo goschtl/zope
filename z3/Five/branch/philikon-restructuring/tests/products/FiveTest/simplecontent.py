@@ -1,7 +1,7 @@
 from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-from helpers import add_and_edit
+from Products.Five.tests.helpers import add_and_edit
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.interface import implements
 from interfaces import ISimpleContent, ICallableSimpleContent,\
