@@ -238,6 +238,8 @@ def assertLocation(adapter, parent):
         return adapter
 
 
+# BBB: The trusted adapter factory is replaced by the locating trusted adapter
+# factory
 class TrustedAdapterFactory(TrustedAdapterFactoryMixin):
     """Adapt an adapter factory to to provide trusted adapters
 

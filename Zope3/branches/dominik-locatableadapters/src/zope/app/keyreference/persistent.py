@@ -24,8 +24,9 @@ from ZODB.interfaces import IConnection
 import zope.interface
 
 import zope.app.keyreference.interfaces
+from zope.app.location import Location
 
-class KeyReferenceToPersistent(object):
+class KeyReferenceToPersistent(Location):
     """An IReference for persistent object which is comparable.
 
     These references compare by _p_oids of the objects they reference.
