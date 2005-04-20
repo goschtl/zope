@@ -77,11 +77,12 @@ class ActionProviderBase:
     security.declarePublic('listActionInfos')
     def listActionInfos(self, action_chain=None, object=None,
                         check_visibility=1, check_permissions=1,
-                        check_condition=1, max=-1):
+                        check_condition=1, max=-1, ec=None):
         # List ActionInfo objects.
         # (method is without docstring to disable publishing)
         #
-        ec = getExprContext(self, object)
+        if ec is None:
+            ec = getExprContext(self, object)
         actions = self.listActions(object=object)
         actions = [ ActionInfo(action, ec) for action in actions ]
 

@@ -159,9 +159,13 @@ class DiscussionTool (UniqueObject, SimpleItem, ActionProviderBase):
     security.declarePrivate('listActions')
     def listActions(self, info=None, object=None):
         # Return actions for reply and show replies
-        if object is not None or info is None:
+        if object is None and info is None:
+            return ()
+        if info is None:
             info = getOAI(self, object)
-        content = info.object
+        if object is None:
+            object = info.object
+        content = object
         if content is None or not self.isDiscussionAllowedFor(content):
             return ()
 

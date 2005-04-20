@@ -90,21 +90,25 @@ def createExprContext(folder, portal, object):
     else:
         object_url = object.absolute_url()
     if pm.isAnonymousUser():
-        member = None
+        member = member_folder = member_url = None
     else:
         member = pm.getAuthenticatedMember()
+        member_folder = pm.getHomeFolder()
+        member_url = member_folder and member_folder.absolute_url() or None
     data = {
-        'object_url':   object_url,
-        'folder_url':   folder.absolute_url(),
-        'portal_url':   portal.absolute_url(),
-        'object':       object,
-        'folder':       folder,
-        'portal':       portal,
-        'nothing':      None,
-        'request':      getattr( object, 'REQUEST', None ),
-        'modules':      SecureModuleImporter,
-        'member':       member,
-        'here':         object,
+        'object_url':       object_url,
+        'folder_url':       folder.absolute_url(),
+        'portal_url':       portal.absolute_url(),
+        'object':           object,
+        'folder':           folder,
+        'portal':           portal,
+        'nothing':          None,
+        'request':          getattr( object, 'REQUEST', None ),
+        'modules':          SecureModuleImporter,
+        'member':           member,
+        'member_folder':    member_folder,
+        'member_url':       member_url,
+        'here':             object,
         }
     return getEngine().getContext(data)
 

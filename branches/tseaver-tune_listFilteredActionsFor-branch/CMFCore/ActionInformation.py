@@ -55,7 +55,7 @@ class ActionInfo(UserDict):
         else:
             self._action = action
             UserDict.__init__( self, action.getMapping() )
-            self.data['name'] = self.data['title']
+            self.title = self.data['name'] = self.data['title']
             del self.data['description']
 
             if self.data['action']:
@@ -104,6 +104,8 @@ class ActionInfo(UserDict):
         """ Get the result of the URL expression in the current context.
         """
         return self._action._getActionObject()(self._ec)
+
+    url = _getURL
 
     def _checkCondition(self):
         """ Check condition expression in the current context.

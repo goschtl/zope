@@ -16,6 +16,7 @@ $Id$
 """
 
 from warnings import warn
+from time import time
 
 from AccessControl import ClassSecurityInfo
 from Acquisition import aq_base
@@ -36,7 +37,7 @@ from utils import _checkPermission
 from utils import _dtmldir
 from utils import SimpleItemWithProperties
 from utils import UniqueObject
-
+from utils import getToolByName
 
 class ActionsTool(UniqueObject, Folder, ActionProviderBase):
     """
@@ -149,13 +150,44 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
     def listFilteredActionsFor(self, object=None):
         """ List all actions available to the user.
         """
+        #cache = None
+        #cache_mgr = getToolByName(self, 'portal_actionscache', None)
+
+        #if cache_mgr is not None:
+        #    cache = cache_mgr.ZCacheManager_getCache()
+
+        #if cache is not None:
+        #    pm = getToolByName(self, 'portal_membership')
+        #    if object is None:
+        #        object_url = ''
+        #    else:
+        #        object_url = object.absolute_url()
+        #    if pm.isAnonymousUser():
+        #        member = None
+        #    else:
+        #        member = pm.getAuthenticatedMember()
+        #    # Prepare a cache key.
+        #    keyset = {'object_url': object_url,
+        #              'member': member,
+        #             }
+        #    result = cache.ZCache_get(ob=self, keywords=keyset)
+        #    if result is not None:
+        #        # Got a cached value.
+        #        return result
+
         actions = []
+        ec = getExprContext(self, object)
 
         # Include actions from specific tools.
         for provider_name in self.listActionProviders():
             provider = getattr(self, provider_name)
             if IActionProvider.isImplementedBy(provider):
-                actions.extend( provider.listActionInfos(object=object) )
+                start = time()
+                actions.extend( provider.listActionInfos(object=object,
+                                                         ec=ec) )
+                stop = time()
+                open( '/tmp/provider_times', 'a' ).write(
+                   '%-20s: %8.3f\n' % (provider_name, (stop-start)*1000) )
             else:
                 # for Action Providers written for CMF versions before 1.5
                 actions.extend( self._listActionInfos(provider, object) )
@@ -181,12 +213,27 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
             catlist = filtered_actions.setdefault(action['category'], [])
             catlist.append(action)
 
+        #if cache is not None:
+        #    result = cache.ZCache_set(ob=self, data=filtered_actions,
+        #                              keywords=keyset)
         return filtered_actions
 
     # listFilteredActions() is an alias.
     security.declarePublic('listFilteredActions')
     listFilteredActions = listFilteredActionsFor
 
+    security.declarePrivate('ZCacheable_getModTime')
+    def ZCacheable_getModTime(self, mtime_func=None):
+        '''Returns the highest of the last mod times.'''
+        # Based on:
+        #   mtime_func
+        #   self.mtime
+        #   self.__class__.mtime
+        #   (if in a ZClass) zclass_instance.mtime
+        #                    zclass_instance.__class__.mtime
+        mtime = mtime_func and mtime_func() or 0
+        base = aq_base(self)
+        return max(getattr(base, '_p_mtime', mtime), mtime)
     #
     #   Helper method for backwards compatibility
     #

@@ -227,8 +227,10 @@ class WorkflowTool(UniqueObject, Folder, ActionProviderBase):
 
         o Global actions are supplied by all workflows.
         """
-        if object is not None or info is None:
+        if info is None:
             info = getOAI(self, object)
+        if object is None:
+            object = info.object
         chain = self.getChainFor(info.object)
         did = {}
         actions = []

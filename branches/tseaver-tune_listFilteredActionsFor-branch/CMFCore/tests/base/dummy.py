@@ -281,6 +281,7 @@ class DummyTool(Implicit,ActionProviderBase):
 
     def __init__(self, anon=1):
         self.anon = anon
+        self.home = DummyFolder()
 
     def __call__( self ):
         return self.root
@@ -302,6 +303,11 @@ class DummyTool(Implicit,ActionProviderBase):
 
     def checkPermission(self, permissionName, object, subobjectName=None):
         return True
+
+    def getHomeFolder(self):
+        if self.anon:
+            return None
+        return self.home
 
     # TypesTool
     def listTypeInfo(self, container=None):
