@@ -1713,13 +1713,13 @@ protected by different permissions.
     attributes \emph{\[permission grants and denials\]} to \emph{\[authorized
     grantors\]}.
 
-\item[FMT{\_}MSA.1.1.loginname]
+\item[FMT{\_}MSA.1.2.loginname]
     The TSF shall enforce the \emph{{[}formal security policy]} to restrict the
     ability to \emph{{[}query and modify]} the security attribute
     \emph{{[}login name]} to \emph{{[}authorized administrators and users
     authorized to modify their own authentication data]}.
 
-\item[FMT{\_}MSA.1.1.password]
+\item[FMT{\_}MSA.1.3.password]
     The TSF shall enforce the \emph{\[formal security policy\]} to restrict
     the ability to \emph{\[modify\]} the security attribute
     \emph{\[password\]} to \emph{\[authorized administrators and users authorized to
@@ -2094,10 +2094,6 @@ valid server certificates with HTTPS).
 
 
 
-\section{Security requirements for the non-IT environment}
-
-XXX I can't find any right here, maybe I should check cross-references, but it
-also looks like non-IT requirements are not mandatory.
 
 
 %___________________________________________________________________________
@@ -2703,11 +2699,45 @@ OE.Credential&       &       &            &            &         &      &       
 
 \section{Security requirements rationale}
 
-- Table showing that all objectives are covered and no SFR doesn't belong to an objective
 
-% XXX do table \dots
+\begin{table}
+    \scriptsize
+    \begin{tabular}{rRRRRRRRR}
+        \toprule
+                            & O.IA & O.Delegation & O.Audit & O.Protect & O.Access & O.Integrity & O.Attributes & O.ManageRisk \\
+        \midrule
 
-\minisec{O.IA --- Identification and Authentication}
+FAU\_GEN.1                  &      &              & \oh     &           &          &             &              &              \\
+FAU\_GEN.2                  &      &              & \oh     &           &          &             &              &              \\
+FDP\_ACC.2                  &      & \oh          &         &           & \oh      &             &              &              \\
+FDP\_ACF.1                  &      &              &         &           &  \oh     &             &              &              \\
+FDP\_ETC.2                  &      &              &         &           &          &             &  \oh         &              \\                
+FDP\_ITC.1                  &      &              &         &           &          &             &  \oh         &              \\
+FDP\_ITC.2                  &      &              &         &           &          &             &     \oh      &              \\
+FDP\_RIP.1                  &      &              &         &           &          &             &      \oh     &              \\
+FDP\_ROL.2\_Transactions    &      &              &         &           &          &   \oh       &              &              \\
+FDP\_ROL.1\_Undo            &      &              &         &           &          &             &  \oh         &              \\
+FIA\_AFL\_z.1               &      &              &         &   \oh     &          &             &              &              \\
+FIA\_ATD.1                  & \oh  &  \oh         &   \oh   &           & \oh      &             &              &              \\
+FAU\_UAU.1                  & \oh  &              &         &           &          &             &              &              \\
+FAU\_UAU.5                  & \oh  &              &         &           &          &             &              & \oh          \\
+FAU\_UAU.6                  & \oh  &              &         &           &          &             &              & \oh          \\
+FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
+FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              & \oh          \\
+FMT\_MSA.1                  & \oh  &  \oh         &         &           &          &             &              &              \\
+FMT\_MSA.3                  &      &              &         & \oh       &          &             &              &              \\
+FMT\_SMR.1                  &      &              &         &           &          &             &              &              \\
+FPT\_AMT.1                  &      &              &         & \oh       &          &             &              &              \\
+FPT\_RVM.1                  &      &              &         &           &  \oh     &             &              &              \\
+FPT\_FLS.1                  &      &              &         &  \oh      &          &   \oh       &              &              \\
+FPT\_SEP.1                  &      &              &         &   \oh     &          &             &              &   \oh        \\
+FPT\_STM.1                  &      &              &  \oh    &           &          &             &              &              \\
+ \bottomrule
+ \end{tabular}
+ \caption{Mapping of Security Objectives to Security Functional Requirements}
+\end{table}
+
+\subsection{O.IA --- Identification and Authentication}
 
     A central part of the security machinery within the TOE is the correct
     identification and authentification of users.
@@ -2715,7 +2745,7 @@ OE.Credential&       &       &            &            &         &      &       
     This is covered by the activities:
 
     \begin{description}
-        \item[Asking for and validating a user's credentials]
+        \item[Asking for and validating a user's credentials:]
 
             The TOE holds information to uniquely identify a principal and its
             required credentials. (FIA\_ATD.1) 
@@ -2735,7 +2765,7 @@ OE.Credential&       &       &            &            &         &      &       
             a web browser), the user will be asked to represent his credentials
             before performing any further operation. (FIA\_UAU.6)
 
-        \item[Binding users to the correct principals]
+        \item[Binding users to the correct principals:]
 
             The TOE allows users to interact with the system without presenting
             credentials by binding unauthenticated users to the ``Anonymous''
@@ -2746,28 +2776,34 @@ OE.Credential&       &       &            &            &         &      &       
             the operation is bound to the user by selecting the correct
             principal. (FIA\_USB.1)
 
-        \item[Managing required security attributes]
+        \item[Managing required security attributes:]
 
             The TOE manages the required security attributes (permission grants
             and denials, credentials, \dots). Special permissions are required
             to read or write certain security attributes. (FMT\_MSA.1)
 
-        \item[Associating principals with the correct security attributes]
+        \item[Associating principals with the correct security attributes:]
 
             This is covered by FIA\_ATD.1 and FIA\_USB.1
 
     \end{description}
 
-\minisec{O.Delegation -- Securely delegate control}
+\subsection{O.Delegation  --- Securely delegate control}
 
-    - delegating a permission requires a grant for the meta permission
-    - having a meta permission allows to spell grants and denials for the meta permission and the permission
-    
-    FDP\_ITC.2
-    FDP\_ATD.1
-    FMT\_MSA.1
+    Changing permission grants and denials allows the delegation of permission
+    grants and denials to other users. Administrators that have grants for all
+    permissions introduce new users to the system by delegating the required
+    permissions to them (e.g. via roles, direct permission grants or denials).
 
-\minisec{O.Audit}
+    Delegating control is a normal operation performed on the TOEs objects. To
+    grant a permission special meta permissions are introduced that control the
+    ability to delegate a permission. (FMT\_ATD.1)
+
+    Those operations are securely managed because they are covered by the TSF
+    (FDP\_ACC.2) and follow special rules regarding the management of security
+    attributes. (FMT\_MSA.1)
+
+\subsection{O.Audit --- Provide a reliable security audit trail}
 
     The TOE shall provide functionality to generate audit data (FAU\_GEN.1,
     FAU\_GEN.2).
@@ -2776,7 +2812,7 @@ OE.Credential&       &       &            &            &         &      &       
     logged (FPT\_STM.1) and connects all events with the relevant user
     attributes. (FIA\_ATD.1)
 
-\minisec{O.Protect -- Protect the TOE from tampering}
+\subsection{O.Protect --- Protect the TOE from external tampering}
 
     The TOE provides some effort to not allow an insecure situation that
     resulted from tampering with the system. Most situations have to be avoided
@@ -2808,7 +2844,7 @@ OE.Credential&       &       &            &            &         &      &       
     external entities not to directly modify or call any security relevant
     attributes or functions. (FPT\_SEP.1)
 
-\minisec{O.Access --- Mediate every access to objects}
+\subsection{O.Access --- Mediate every access to objects}
 
     Mediating every access to an object through operations is another major
     objective to enforce the TSP. (FDP\_ACC.2)
@@ -2826,7 +2862,7 @@ OE.Credential&       &       &            &            &         &      &       
     To ensure the non-bypassability of the TSP a special paradigm (security
     proxies) for accessing TOE objects from external entities. (FIA\_RVM.1)
     
-\minisec{O.Integrity}
+\subsection{O.Integrity --- Ensure faultless data}
 
     Providing an ACID compatible transaction management system that allows
     secure rollback from a failed transaction satisfies the objective to have
@@ -2835,7 +2871,7 @@ OE.Credential&       &       &            &            &         &      &       
     The rollback is performed by the TOE automatically as soon as an error is
     encountered and not handled by any application logic.
 
-\minisec{O.Attributes}
+\subsection{O.Attributes --- Ensure consistent security attributes}
 
     To assure an enduring consistent state of all security attributes we
     enforce the security policy model upon any changes to security attributes.
@@ -2847,7 +2883,7 @@ OE.Credential&       &       &            &            &         &      &       
     security attributes do not reference invalid identifiers. To allow the
     import of data with security attributes, FDP\_ETC.1 is required.
     
-\minisec{O.ManageRisk}
+\subsection{O.ManageRisk --- Provide choice of flexibility versus security}
 
     To manage the risk of using stronger authentication schemes for sensible
     operations in opposition of weaker authentication schemes for less sensible
@@ -2869,23 +2905,6 @@ OE.Credential&       &       &            &            &         &      &       
 %___________________________________________________________________________
 
 
-
-\subsection{Choice of security functional requirements}
-
-XXX
-
-
-%___________________________________________________________________________
-
-
-
-\section{Justification for suitability of SFR - TOE security objectives}
-
-
-%___________________________________________________________________________
-
-
-
 \subsection{Choice of TOE security assurance requirements}
 
 The choice of assurance requirements is based on the analysis of the security
@@ -2896,7 +2915,6 @@ The assurance level is \textbf{EAL 1}.
 
 
 %___________________________________________________________________________
-
 
 
 \section{Evaluation Assurance Level rationale:}
