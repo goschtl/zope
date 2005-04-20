@@ -1,10 +1,11 @@
+
 # test events triggered by Five
 
 import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Products.Five.tests.fivetest import *
+from Testing.ZopeTestCase import ZopeTestCase
 
 from Products.Five.tests.products.FiveTest.subscriber import clear
 from Products.Five.tests.products.FiveTest.subscriber import objectEventCatcher, \
@@ -12,10 +13,10 @@ from Products.Five.tests.products.FiveTest.subscriber import objectEventCatcher,
      objectCopiedEventCatcher, objectRemovedEventCatcher
 
 from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
-from Products.Five.tests.products.FiveTest.helpers import manage_addNoVerifyPasteFolder
+from Products.Five.tests.helpers import manage_addNoVerifyPasteFolder
 
 
-class EventTest(FiveTestCase):
+class EventTest(ZopeTestCase):
 
     def afterSetUp(self):
         manage_addNoVerifyPasteFolder(self.folder, 'npvf')

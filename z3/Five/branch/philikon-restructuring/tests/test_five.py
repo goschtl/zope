@@ -7,6 +7,8 @@ import re
 import unittest
 import zope
 
+from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
+
 from zope.interface import Interface, implements
 from zope.component import getViewProviding
 from zope.schema import Choice, TextLine
@@ -30,7 +32,7 @@ def normalize_html(s):
     return s
 
 
-class FiveTest(FiveTestCase):
+class FiveTest(ZopeTestCase):
 
     def afterSetUp(self):
         manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
@@ -208,7 +210,7 @@ class FiveTest(FiveTestCase):
     #     self.assertEquals("Default __call__ called", view())
 
 
-class PublishTest(Functional, FiveTestCase):
+class PublishTest(FunctionalTestCase):
     """Test a few publishing features"""
 
     def afterSetUp(self):
@@ -296,7 +298,7 @@ class RecursionTest(unittest.TestCase):
 from zope.app.publisher.browser.globalbrowsermenuservice import \
      globalBrowserMenuService
 
-class MenuTest(FiveTestCase):
+class MenuTest(ZopeTestCase):
 
     def afterSetUp(self):
         manage_addIndexSimpleContent(self.folder, 'test', 'Test')
@@ -316,7 +318,7 @@ class MenuTest(FiveTestCase):
         self.assertEquals('Test Menu Item 2', menu[1]['title'])
         self.assertEquals('parakeet.html', menu[1]['action'])
 
-class SizeTest(FiveTestCase):
+class SizeTest(ZopeTestCase):
 
     def test_no_get_size_on_original(self):
         manage_addSimpleContent(self.folder, 'simple', 'Simple')

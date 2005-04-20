@@ -3,7 +3,7 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Products.Five.tests.fivetest import *
+from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
 
 from AccessControl import getSecurityManager
 from AccessControl import Unauthorized
@@ -22,7 +22,7 @@ ViewManagementScreens = 'View management screens'
 from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
 
 
-class RestrictedPythonTest(FiveTestCase):
+class RestrictedPythonTest(ZopeTestCase):
     """
     Test whether code is really restricted
 
@@ -139,7 +139,7 @@ class SecurityTest(RestrictedPythonTest):
             'context.restrictedTraverse("testoid/eagle.method").eagle()')
 
 
-class PublishTest(Functional, FiveTestCase):
+class PublishTest(FunctionalTestCase):
     """A functional test for security actually involving the publisher.
     """
     def afterSetUp(self):

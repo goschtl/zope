@@ -3,8 +3,6 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Products.Five.tests.fivetest import *
-
 from zope.component import getView
 from zope.testing.cleanup import CleanUp
 from Products.Five import zcml
@@ -12,9 +10,10 @@ from Products.Five.traversable import FakeRequest
 from Products.Five.security import clearSecurityInfo, checkPermission
 from Products.Five.tests.dummy import Dummy1, Dummy2
 from Globals import InitializeClass
+from Testing.ZopeTestCase import ZopeTestCase
 
 
-class PageSecurityTest(FiveTestCase):
+class PageSecurityTest(ZopeTestCase):
 
     def test_page_security(self):
         decl = """
@@ -52,7 +51,7 @@ class PageSecurityTest(FiveTestCase):
         self.assertEquals(view_roles, ('Manager',))
 
 
-class SecurityEquivalenceTest(FiveTestCase):
+class SecurityEquivalenceTest(ZopeTestCase):
 
     def setUp(self):
         self.dummy1 = Dummy1
@@ -118,7 +117,7 @@ class SecurityEquivalenceTest(FiveTestCase):
         self.assertEquals(baz_roles2, ())
 
 
-class CheckPermissionTest(FiveTestCase):
+class CheckPermissionTest(ZopeTestCase):
 
     def test_publicPermissionId(self):
         self.failUnless(checkPermission('zope2.Public', self.folder))
