@@ -858,13 +858,6 @@ The following security objectives have been defined for the TOE environment:
   Those responsible for the TOE must be trustworthy.
    \\
 
-  OE.Manage
-   & 
-  Those responsible for the TOE must ensure that the TOE
-  is delivered, installed, managed, and operated in a
-  manner which maintains IT security.
-   \\
-
   OE.AUDITLOG
    & 
   Administrators of the TOE must ensure that audit
@@ -2279,34 +2272,29 @@ No PP compatibility is beeing claimed.
 % bullet: finished
 % X: todo
 
-\begin{table}
-  \scriptsize
-  \begin{tabular}{rRRRRRRRRRRRRRRRRRR}
+  \begin{longtable}{rRRRRRRRRRRRRRRR}
     \toprule
-    & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import  & T.RIP&T.Transaction&T.Undo &  T.USB&T.Timestamps &  T.Trustedpath & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential & A.Integrity \\
+              & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import & T.RIP&T.Transaction&T.Undo &T.Timestamps & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential  \\
     \midrule
-O.IA         &  \oh  &       &            &            &         &      &             &       &       &             &         &       \\
-O.Delegation &       &   \oh &            &            &         &      &             &       &       &             &         &        \\
-O.Audit      & \oh   &       &            &    \oh     &         &      &             &       &       &             &         &        \\
-O.Protect    &       &       &            &    \oh     &         &      &             &       &       &             &         &        \\
-O.Access     &       &       &      \oh   &            &         &      &             &       &       &             &         &  \oh   \\
-O.Integrity  &       &       &            &            &         &  \oh &             &       &       &             &         &        \\
-O.Attributes &       &       &            &            &         &      &             &  \oh  &       &             &         &        \\
-O.ManageRisk &   \oh &       &            &            &         &      &             &       &       &             &         &        \\
+O.IA         &  \oh  &       &            &            &         &      &             &       &             &        &      &       \\
+O.Delegation &       &   \oh &            &            &         &      &             &       &             &        &      &        \\
+O.Audit      & \oh   &       &            &    \oh     &         &      &             &       &             &        &      &        \\
+O.Protect    &       &       &            &    \oh     &         &      &             &       &             &        &      &        \\
+O.Access     &       &       &      \oh   &            &         &      &             &       &             &        &      &  \oh   \\
+O.Integrity  &       &       &            &            &         &  \oh &             &       &             &        &      &        \\
+O.Attributes &       &       &            &            &         &      &             &  \oh  &             &        &      &        \\
+O.ManageRisk &   \oh &       &            &            &         &      &             &       &             &        &      &        \\
 \midrule
-OE.OS        &       &       &            &            &         &      &             &       &       &   \oh       &         &      & \oh  \\
-OE.Trust     &       &       &            &            &         &      &             &       &       &             &         &      &      &   \oh \\
-OE.Manage    &       &       &            &            &         &      &             &       &       &             &         &      &      &        &         &              &                & \oh \\
-OE.AUDITLOG \\
-OE.Network   &       &       &            &            &         &      &             &       &       &             &         &      &      &        &  \oh    &              &                &     \oh  \\
-OE.Client    &       &       &            &            &         &      &             &       &       &             &         &      &      &        &         &              &       X        &       \\
-OE.Credential&       &       &            &            &         &      &             &       &       &             &         &      &      &        &         &              &       X        &       \\
-
+OE.OS        &       &       &            &            &         &      &             &       &    \oh      &        &  \oh &         &         &            &          \\
+OE.Trust     &       &       &            &            &         &      &             &       &             &        &      &  \oh    &         &            &            \\
+OE.AUDITLOG  &       &       &            &            &         &      &             &       &             &        &      &         &         &            &                   \\  
+OE.Network   &       &       &            &            &         &      &             &       &             &        &      &         &  \oh    &            &                   \\   
+OE.Client    &       &       &            &            &         &      &             &       &             &        &      &         &         &    \oh     &                   \\
+OE.Credential&       &       &            &            &         &      &             &       &             &        &      &         &         &            &    \oh    \\ 
 \bottomrule
-  \end{tabular}
-  \label{tab-SOR}
   \caption{Mapping of Threats and Assumptions to Security Objectives}
-\end{table}
+  \label{tab-SOR}
+\end{longtable}
 
 Table~\vref{tab-SOR} shows that all threads and assumptions are covered
 by a security objectives. The following list explains why the objectives cover
@@ -2361,17 +2349,21 @@ the threads and assumptions.
 
   \item[OE.Trust:] This security objective covers the assumption
   \textbf{A.Admin}.
-  
-  \item[OE.Manage:] This security objective covers the assumption
-  \textbf{A.Integrity} because it ensures the TOE is administered in a way to
-  maintain IT security preventing malicious software.
 
   \item[OE.AUDITLOG:] XXX
 
   \item[OE.Network:] This security objective covers the assumptions
-  \textbf{A.Network} and \textbf{A.Integrity} because it asserts that all
+  \textbf{A.Network} because it asserts that all
   network connections which are not related to the TOE are secure in way not
   compromising the integrity.
+
+  \item[OE.Client:] This security objective covers the assumption
+  \textbf{A.Client} because it makes sure that the identification and
+  authentication data is not monitored or interfered.
+
+  \item[OE.Credential:] This security objective covers the assumption
+  \textbf{A.Credentialt} because it demands that the user is keeping the
+  credentials to authenticate secret.
   
 \end{description}
 %___________________________________________________________________________
