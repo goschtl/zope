@@ -365,6 +365,12 @@
          
   </browser:addform>
 
+  <browser:addform
+     schema=".interfaces.IFieldSimpleContent"
+     content_factory=".simplecontent.FieldSimpleContent"
+     name="protectedaddform.html"
+     permission="zope2.ViewManagementScreens"
+     />
 
   <!-- stuff that we'll override in overrides.zcml -->
 
