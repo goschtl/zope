@@ -3,8 +3,11 @@ from AccessControl import ClassSecurityInfo
 from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 
-from zope.interface import implements
+from zope.interface import Interface, implements
 from interfaces import IFancyContent
+
+class IFancyContent(Interface):
+    pass
 
 class FancyAttribute(Acquisition.Explicit):
     """Doc test fanatics"""
