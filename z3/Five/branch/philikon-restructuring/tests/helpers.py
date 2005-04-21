@@ -1,8 +1,24 @@
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Test helpers
+
+$Id$
+"""
 import urllib
+
 from OFS.Folder import Folder
 from AccessControl import Unauthorized
-from Products.Five.traversable import Traversable
 from Testing.ZopeTestCase import ZopeTestCase
+
+from zope.interface import implements
+from Products.Five.traversable import Traversable
+from Products.Five.interfaces import IFolder
 
 def add_and_edit(self, id, REQUEST):
     """Helper function to point to the object's management screen if
@@ -35,7 +51,7 @@ def manage_addNoVerifyPasteFolder(container, id, title=''):
 class FiveTraversableFolder(Traversable, Folder):
     """Folder that is five-traversable
     """
-    pass
+    implements(IFolder)
 
 def manage_addFiveTraversableFolder(container, id, title=''):
     container._setObject(id, FiveTraversableFolder())
