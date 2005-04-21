@@ -1068,57 +1068,6 @@ based on the following additional rules: \emph{{[}none]}
 
 
 
-\minisec{FDP{\_}ETC.2 Export of user data with security attributes}
-\begin{description}
-%[visit_definition_list_item]
-\item[Note]
-%[visit_definition]
-
-The TOE may, initially, satisfy the requirements in this
-function by not supporting data export, or, by only
-supporting export from outside the TSC (outside the
-software interfaces).
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
-\item[FDP{\_}ETC.2.1]
-%[visit_definition]
-
-The TSF shall enforce the \emph{{[}formal security policy]} when exporting user
-data, controlled under the SFP, outside the TSC.
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
-\item[FDP{\_}ETC.2.2]
-%[visit_definition]
-
-The TSF shall export the user data with the user data's associated 
-security attributes.
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
-\item[FDP{\_}ETC.2.3]
-%[visit_definition]
-
-The TSF shall ensure that the security attributes, when 
-exported outside the TSC, are unambiguously associated 
-with the exported user data.
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
-\item[FDP{\_}ETC.2.4]
-%[visit_definition]
-
-The TSF shall enforce the following rules when user data 
-is exported from the TSC: \emph{{[}none]}.
-
-%[depart_definition]
-%[depart_definition_list_item]
-\end{description}
 
 
 %___________________________________________________________________________
@@ -1268,22 +1217,13 @@ entire import will fail and an explanatory error will be provided.
 %[visit_definition]
 
 The TSF shall ensure that any previous information content of a
-resource is made unavailable upon the \emph{{[}selection: deallocation of
-the resource from]} all objects.
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
-\item[XXX ]
-%[visit_definition]
-
-need to think through the implications of undo for rip -- Steve's
-``Bob'' example.
-
-%[depart_definition]
-%[depart_definition_list_item]
+resource is made unavailable upon the \emph{\[selection: deallocation of
+security attributes from\]} all objects.
 \end{description}
 
+Note: This includes removing references to the security attributes beeing
+deallocated. E.g. permission grants and denials belonging to a principal beeing
+deallocated.
 
 %___________________________________________________________________________
 
@@ -1849,6 +1789,8 @@ The following TOE assurance requirements drawn from CC Part 3 are valid:
 
 \section{Security requirements for the IT environment}
 
+XXX 
+
 The following security requirements exist for the IT environment:
 
 \begin{itemize}
@@ -1891,7 +1833,6 @@ The major functions implemented by the TOE are:
 %___________________________________________________________________________
 
 
-
 \subsection{Protection}
 
 The protection subsystem is responsible for controlling the access of subjects
@@ -1901,7 +1842,6 @@ operations on these non-basic objects are performed through the security
 proxies. Security proxies use the authorization system to decide whether access
 is allowed.  Any non-basic results of operations performed through security
 proxies are security proxied.
-
 
 %___________________________________________________________________________
 
@@ -1966,6 +1906,8 @@ role.
   \item assigning permissions/roles/users via API
 \end{itemize}
 
+- only allow consistent configurations to be accepted
+
 \subsection{Auditing}
 
 Zope provides an auditing system that listens for events within Zope according
@@ -2020,11 +1962,11 @@ Undo only allows the rollback of serial N last transaction to avoid integrity is
 
 \subsection{Publication / Server}
 
-XXX get servers, protocols and publisher right
-
 The publisher allows users to communicate with the Zope server through a
 network, using standard protocols and client software like HTTP and browsers or
-FTP and FTP clients.
+FTP and FTP clients. The publisher is the only valid entry point to communicate
+with a Zope 3 application as it also is the starting point for the protection
+subsystem to be involved.
 
 The publisher is extensible to allow support for further protocols.
 
@@ -2037,9 +1979,7 @@ To support FIA{\_}USB.1, the publisher also returns the credentials to Zope and
 calls the authentication subsystem to validate this data and binds the
 authenticated principal to the running interaction.
 
-
 %___________________________________________________________________________
-
 
 
 \subsection{Automated Tests}
@@ -2249,9 +2189,6 @@ FAU\_GEN.1                  &      &              & \oh     &           &       
 FAU\_GEN.2                  &      &              & \oh     &           &          &             &              &              \\
 FDP\_ACC.2                  &      & \oh          &         &           & \oh      &             &              &              \\
 FDP\_ACF.1                  &      &              &         &           &  \oh     &             &              &              \\
-FDP\_ETC.2                  &      &              &         &           &          &             &  \oh         &              \\                
-FDP\_ITC.1                  &      &              &         &           &          &             &  \oh         &              \\
-FDP\_ITC.2                  &      &              &         &           &          &             &  \oh         &              \\
 FDP\_RIP.1                  &      &              &         &           &          &             &  \oh         &              \\
 FDP\_ROL.2\_Transactions    &      &              &         &           &          &   \oh       &              &              \\
 FDP\_ROL.1\_Undo            &      &              &         &           &          &             &  \oh         &              \\
@@ -2398,9 +2335,7 @@ XXX See Guide for ST/PP production page 57
     Certain special operations like import and export of user data are handled
     in a way that they cannot be exploited for exporting data a user doesn't
     have access to nor importing data that may extend a users privileges in a
-    not intended way. Import and export of user data also do not allow a user
-    to work around existing permission grants or denials. In the same manner (FDP\_ETC.2,
-    FDP\_ITC.1, FDP\_ITC.2)
+    not intended way. 
 
     To ensure the non-bypassability of the TSP a special paradigm (security
     proxies) for accessing TOE objects from external entities. (FIA\_RVM.1)
@@ -2418,13 +2353,13 @@ XXX See Guide for ST/PP production page 57
 
     To assure an enduring consistent state of all security attributes we
     enforce the security policy model upon any changes to security attributes.
-    (FMT\_MSA.2) Additionally static security attribute initialization assures a predictable and secure state if no specific attributes are given. (FMT\_MSA.3)
+    (FMT\_MSA.2) Additionally static security attribute initialization assures
+    a predictable and secure state if no specific attributes are given.
+    (FMT\_MSA.3)
 
-    Special functionality like user data import with security attributes
-    (FDP\_ITC.2), residual information protection (FDP\_RIP.1) and rollback to
-    historic revisions (FDP\_ROL.1\_Undo) also have to assure that the used
-    security attributes do not reference invalid identifiers. To allow the
-    import of data with security attributes, FDP\_ETC.1 is required.
+    Special functions like residual information protection (FDP\_RIP.1) and
+    rollback to historic revisions (FDP\_ROL.1\_Undo) also have to assure that
+    the used security attributes do not reference invalid identifiers. 
     
 \subsection{O.ManageRisk --- Provide choice of flexibility versus security}
 
@@ -2449,13 +2384,6 @@ XXX See Guide for ST/PP production page 57
 
 \subsection{Security Functions Rationale}
 
-
-
-\subsection{Assurance Measures}
-
-The assurance measures are selected in accordance to EAL 1. Additionally due to
-the selection of FMT\_MSA.2 the document ADV\_SPM has been selected.
-
 \begin{table}
     \scriptsize
     \begin{tabular}{rRRRRRRRRRR}
@@ -2464,32 +2392,204 @@ the selection of FMT\_MSA.2 the document ADV\_SPM has been selected.
         \midrule
 FAU\_GEN.1          &            &                &               & \oh      &               &                        &      &                    &                 &                    \\   
 FAU\_GEN.2          &            &                &               & \oh      &               &                        &      &                    &                 &                    \\   
-FDP\_ACC.2          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
-FDP\_ACF.1          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
-FDP\_ETC.2          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
-FDP\_ITC.1          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
-FDP\_ITC.2          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
-FDP\_RIP.1          &            &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
-FDP\_ROL.2          & \oh        &                &               &          &               & \oh                    &      &                    &                 &                    \\   
-FDP\_ROL.1          & \oh        &                &  \oh          &          &               &                        & \oh  &                    &                 &                    \\   
-FIA\_AFL\_z.1       &            &  \oh           &               &          &               &                        &      &                    &                 &                    \\   
-FIA\_ATD.1          &            &  \oh           &               &          &               &                        &      &                    &                 &                    \\   
-FAU\_UAU.1          & \oh        &                &  \oh          &          &               &                        &      & \oh                &                 &                    \\   
-FAU\_UAU.5          &            &  \oh           &               &          &               &                        &      &                    &                 &                    \\   
-FAU\_UAU.6          &            &  \oh           &               &          &               &                        &      &                    &                 &                    \\   
-FIA\_USB.1          &            &  \oh           &               &          &               &                        &      &  \oh               &                 &                    \\   
-FMT\_MOF.1          & \oh        &  \oh           &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_ACC.2          & \oh        &                &               &          &               &                        &      & \oh                &                 &                    \\   
+FDP\_ACF.1          &            &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FDP\_RIP.1          &            &                &               &          & \oh           &                        &      &                    &                 &                    \\   
+FDP\_ROL.2\_TRANSACTIONS
+                    & \oh        &                &  \oh          &          &               & \oh                    &      &                    &                 &                    \\   
+FDP\_ROL.1\_UNDO    & \oh        &                &  \oh          &          &               &                        & \oh  &                    &                 &                    \\   
+FIA\_AFL\_z.1       &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_ATD.1          &            &                &               &          & \oh           &                        &      &                    &                 &                    \\   
+FAU\_UAU.1          &            &                &               &          &               &                        &      & \oh                &                 &                    \\   
+FAU\_UAU.5          &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FAU\_UAU.6          &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_USB.1          &            &                &               &          &               &                        &      &  \oh               &                 &                    \\   
+FMT\_MOF.1          & \oh        &  \oh           &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
 FMT\_MSA.1          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
-FMT\_MSA.2          &            &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FMT\_MSA.2          &            &                &               &          & \oh           &                        &      &                    &                 &                    \\   
 FMT\_MSA.3          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
-FMT\_SMR.1          & \oh        &                &  \oh          &          &               &                        &      &                    &                 &                    \\   
+FMT\_SMR.1          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
 FPT\_AMT.1          &            &                &               &          &               &                        &      &                    &    \oh          &                    \\   
-FPT\_RVM.1          & \oh        &                &               &          &               &                        &      &                    &                 &                    \\   
+FPT\_RVM.1          & \oh        &                &               &          &               &                        &      &  \oh               &                 &                    \\   
 FPT\_FLS.1          &            &                &               &          &               &     \oh                &      &                    &                 &                    \\   
 FPT\_SEP.1          &  \oh       &                &               &          &               &                        &      &                    &                 &                    \\ 
 FPT\_STM.1          &            &                &               &          &               &                        &      &                    &                 &   \oh              \\        \bottomrule
     \end{tabular}
 \end{table}
+
+\subsubsection{Suitability of SF to meet the SFRs}
+
+\minisec{FDP\_ACC.2 --- Complete Access Control}
+
+Complete access control is achieved by the \textbf{Protection} subsystem. The
+\textbf{Publication} subsystem serves as a single entry point to the Zope 3
+application which wraps all published objects into security proxies. The
+transient nature of security proxies then covers that all subsequent accesses
+are security proxied as well. Thereby all operations among those objects are
+covered by the protection subsytem which enforces the formal security policy.
+
+\minisec{FDP\_RIP.1 --- Subset residual information protection}
+
+RIP is covered by the \textbf{Configuration} subsystem. This subsystem provides
+an API that verifies that the removal of security attributes (like user
+accounts) also results in a consistent removal of depending security attributes
+(group memberships, role grants, permission grants \ldots).
+
+\minisec{FDP\_ROL.2\_TRANSACTIONS --- Advanced Rollback}
+
+The \textbf{Transaction management} of ZODB allows rollback of transaction. The
+\textbf{Protection} and \textbf{Authorization} subsystems (in place by the
+complete access control) will deny the unauthorized use of those management
+functions. As a result only the subject of a transaction is able to roll back
+it's corresponding transaction.
+
+As transactions are only valid within a single subject (operation), there is no
+possibility to cancel other transactions through the use of the
+\textbf{Publication} subsystem.
+
+\minisec{FDP\_ROL.1\_UNDO --- Basic Rollback}
+
+The \textbf{Undo} subsystem covers undoing old transactions in a secure and
+consistent manner. Old transactions that are not to be undone consistently
+are not allowed to be undone.
+
+The \textbf{Protection} and \textbf{Authorization} subsystems ensure that only
+authorized principals can access this functionality. This is similar as to the
+rollback of transactions.
+
+\minisec{FIA\_AFL\_z.1 --- Authentication Failure Handling}
+
+AFL is handled in cooperation of the \textbf{Authentication} and
+\textbf{Publication} subsystem. The \textbf{Publication} subsystem identifies
+individual authentication trials and uses the authentication subsystem to
+update the security attributes that store the information about failed
+requests. The split of this functionality is needed as the
+\textbf{Authentication} subsystem may not be able to distinguish two requests
+to be different user initiated requests or started off at another point in the
+application.
+  
+
+\minisec{FAU\_UAU.1 --- Timing of authentication}
+
+The \textbf{Publication} subsystem detects provided credentials and existing
+sessions on the implemented network protocols. It then either authenticates the
+user for this subject or uses the anonymous principal to perform the requested
+operation. If the anonymous principal is not allowed to perform the requested
+operation, the \textbf{Publication} subsystem challenges the user to provide
+sufficient credentials for authentication resulting in another subject.
+
+\minisec{FAU\_UAU.5 --- Multiple Authentication Systems}
+
+The \textbf{Publication} and \textbf{Authentication} subsystems work together
+to identify a meaningful way of asking a user for his credentials. 
+
+The \textbf{Authentication} subsystem can then implement different schemes for
+validating the credentials that the \textbf{Publication} system retrieved from
+the user.
+
+The choice of retrieval and verification can depend on the network protocol
+(FTP, HTTP) and the strength of authentication that is requests (e.g. password,
+client certificates).
+
+\minisec{FAU\_UAU.6 --- Re-authentication}
+
+If an operation could not be performed due to missing permission grants, the
+\textbf{Publication} subsystem may -- instead of denying further operation --
+may ask the user to provide other credentials to authenticate for a different
+principal.
+
+\emph{Note:} This is implemented by the same scheme that is used to initially
+retrieve credentials from a user when the operation could not be performed by
+the anonymous principal.
+
+\minisec{FIA\_USB.1 --- User-Subject Binding}
+
+When the \textbf{Publication} system sets up to perform an operation, it
+creates a context of ``interaction''. This interaction is always associated
+with (at least) one principal. If a principal was authenticated during the
+creation of this context, the interaction gets associated with this principal.
+Otherwise the anonymous principal will be bound to the subject.
+
+Binding a principal to an interaction transitively associates the required security
+attributes (e.g. permission grants) to this interaction.
+
+\minisec{FMT\_MOF.1 --- Management of Security Functions}
+
+Management of security functions happens by different physical ways (editing
+configuration files, working with the web interface, writing scripts) that are
+all addressing a single security configuration API that is offered by the
+\textbf{Configuration}, \textbf{Authentication} and \textbf{Authorization}
+subsystems. Access to those subsystems is -- as always -- covered by the
+complete access control policy and enforced by the \textbf{Protection}
+subsystem.
+
+\minisec{FMT\_MSA.1 --- Management of Security Attributes}
+
+The management of security attributes is provided by the \textbf{Configuration}
+subsystem. This happens by using the same API as for FMT\_MOF.1 including the
+different ways of accessing this API.
+
+\minisec{FMT\_MSA.2 --- Secure Security Attributes}
+
+The \textbf{Configuration} subsystems API for managing security functions and
+attributes perform consistency checks upon the change of any security
+attributes. This includes for example the check of dependencies that the
+removal of principals also has the effect of removal of all dependent
+permission grants and denials. 
+
+Also only already existing identifiers (user names, permission names) may only
+be used as references if they have been defined previously.
+
+\minisec{FMT\_MSA.3 --- Static Attribute Initialization}
+
+A set of fixed rules that are used whenever an attribute definition is missing
+realize the static attribute initialisation. These rules are implemented in the
+different subsystems (\textbf{Authorization} and \textbf{Configuration})
+whenever a specific attribute would be used or defined.
+
+\minisec{FMT\_SMR.1 --- Security roles}
+
+The \textbf{Authorization} system resolves roles that users hold into
+permissions they are granted or denied. The configuration system holds the
+definition of what users posess which roles and which roles are granted which
+permissions.
+
+Pre-defined permission/role-mappings are delivered with the certified Zope
+configuration to match the Administrator, Grantor and User roles. 
+
+\minisec{FPT\_RVM.1 --- Non-bypassability of the TSP}
+
+The concept of the \textbf{Protection} system is to put a layer of protection
+around any object that is beeing accessed from an interaction. It is designed
+in a transitive manner that it will not allow any computation to bypass it.
+
+\minisec{FPT\_FLS.1 --- Failure With Preservation of Secure State}
+
+The ZODB's \textbf{Transaction management} functions implement an ACID
+compatible transaction scheme. The correct implementation of the storage layer
+which has been tested extensively for FileStorage and ZEOStorage preserves
+consistent and secure states on process termination and host restart. Resource
+exhaustion will either result in a process termination (RAM usage) or denial of
+service (upon disk usage) not allowing any further operation until the host
+administrator resolves the situation.
+
+\minisec{FPT\_SEP.1 --- TSF domain seperation}
+
+The \textbf{Protection} subsystem allows code that has been brought to the
+system via installation on the host filesystem to remove security proxies. This
+results in the ability (for performance or functional reasons) to write code
+that calls system functions and internal APIs without disturbing the protected
+code areas.
+
+When data is passed from the trusted domain into an untrusted (read: security
+proxied domain), the Protection system will prevent the elevation of privileges
+by putting reinstalling the layer of security proxies again.
+
+\subsection{Assurance Measures}
+
+The assurance measures are selected in accordance to EAL 1. Additionally due to
+the selection of FMT\_MSA.2 the document ADV\_SPM has been selected.
+
 %___________________________________________________________________________
 
 \subsection{Choice of TOE security assurance requirements}
@@ -2553,8 +2653,6 @@ Zope as a free software project receives by it's users.
 \begin{quote}
 \begin{itemize}
 
-\item {} 
-Security Objectives Rationale (zagy)
 
 \item {} 
 TOE summary specification rationale
