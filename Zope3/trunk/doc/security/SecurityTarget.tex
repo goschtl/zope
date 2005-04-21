@@ -642,17 +642,6 @@ The following threats against the assets have been identified:
    \\
   
 
-  T.Import
-   & 
-  An attacker might try to make the system
-  interpret imported security attributes in a
-  not intended way to acquire a higher level of
-  access to the system.
-   & 
-  Secondary assets
-   \\
-  
-
   T.RIP
    & 
   An attacker might try to make the system use
@@ -2273,23 +2262,23 @@ by a security objectives.
 
   \begin{longtable}{rRRRRRRRRRRRRRRR}
     \toprule
-              & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import & T.RIP&T.Transaction&T.Undo &T.Timestamps & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential  \\
+              & T.IA  & T.Perm &T.Operation&T.AuditFake& T.RIP&T.Transaction&T.Undo &T.Timestamps & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential  \\
     \midrule\endhead
-O.IA         &  \oh  &       &            &            &         &      &             &       &             &        &      &       \\
-O.Delegation &       &   \oh &            &            &         &      &             &       &             &        &      &        \\
-O.Audit      & \oh   &   \oh &     \oh    &            &  \oh    &      &             &  \oh  &             &        &      &        \\
-O.Protect    &       &       &            &    \oh     &         &      &             &       &             &        &      &        \\
-O.Access     &       &       &      \oh   &            &         &      &    \oh      &       &             &   \oh  &      &        \\
-O.Integrity  &       &       &            &            &         &  \oh &             &       &             &        &      &        \\
-O.Attributes &       &       &            &            &   \oh   &  \oh &             &  \oh  &             &        &      &        \\
-O.ManageRisk &   \oh &       &            &            &         &      &             &       &             &        &      &        \\
+O.IA         &  \oh  &       &            &            &      &             &       &             &        &      &       \\
+O.Delegation &       &   \oh &            &            &      &             &       &             &        &      &        \\
+O.Audit      & \oh   &   \oh &     \oh    &            &      &             &  \oh  &             &        &      &        \\
+O.Protect    &       &       &            &    \oh     &      &             &       &             &        & \oh  &        \\
+O.Access     &       &       &      \oh   &            &      &    \oh      &       &             &   \oh  &      &        \\
+O.Integrity  &       &       &            &            &  \oh &             &       &             &        &      &        \\
+O.Attributes &       &       &            &            &  \oh &             &  \oh  &             &        &      &        \\
+O.ManageRisk &   \oh &       &            &            &      &             &       &             &        &      &        \\
 \midrule
-OE.OS        &       &       &            &            &         &      &             &       &    \oh      &        &  \oh &         &         &            &          \\
-OE.Trust     &       &       &            &            &         &      &             &       &             &        &      &  \oh    &         &            &            \\
-OE.Auditlog  &       &       &            &            &         &      &             &       &             &        & \oh  &         &         &            &                   \\  
-OE.Network   &       &       &            &            &         &      &             &       &             &        &      &         &  \oh    &            &                   \\   
-OE.Client    &       &       &            &            &         &      &             &       &             &        &      &         &         &    \oh     &                   \\
-OE.Credential&       &       &            &            &         &      &             &       &             &        &      &         &         &            &    \oh    \\ 
+OE.OS        &       &       &            &            &      &             &       &    \oh      &        &  \oh &         &         &            &          \\
+OE.Trust     &       &       &            &            &      &             &       &             &        &      &  \oh    &         &            &            \\
+OE.Auditlog  &       &       &            &            &      &             &       &             &        & \oh  &         &         &            &                   \\  
+OE.Network   &       &       &            &            &      &             &       &             &        &      &         &  \oh    &            &                   \\   
+OE.Client    &       &       &            &            &      &             &       &             &        &      &         &         &    \oh     &                   \\
+OE.Credential&       &       &            &            &      &             &       &             &        &      &         &         &            &    \oh    \\ 
 \bottomrule
   \caption{Mapping of Threats and Assumptions to Security Objectives}
   \label{tab-SOR}
@@ -2310,12 +2299,15 @@ the threads and assumptions.
   permissions.
   
   \item[O.Audit:] This security objective is necessary to detect and recover
-  from most threats: \textbf{T.IA, T.Perm, T.Operation, T.Import and T.Undo}
+  from most threats: \textbf{T.IA, T.Perm, T.Operation and T.Undo}
   as those events are logged by the audit log.
   
   \item[O.Protect:] This security objective is necessary to counter the threat
   \textbf{T.AuditFake} because it protects the audit data generation function
-  and thereby prevents logging of false information.
+  and thereby prevents logging of false information. It also covers the
+  assumption \textbf{A.OS} because self-protection mechanisms decrease the
+  risk of compromising the TOE and thereby the risk of compromising the
+  host system.
   
   \item[O.Access:] This security objective is necessary to counter the threat
   \textbf{T.Operation} because it prevents performing operations on an object
@@ -2330,7 +2322,7 @@ the threads and assumptions.
   an unhandled error occurs.
   
   \item[O.Attributes:] This security objective is necessary to counter the
-  threats \textbf{T.Undo}, \textbf{T.Import} and \textbf{T.RIP} because it
+  threats \textbf{T.Undo} and \textbf{T.RIP} because it
   prevents an attacker form setting inconsistent security attributes from
   which he could gain more access than intended.
 
@@ -2344,9 +2336,6 @@ the threads and assumptions.
   it asserts that the machine and the operating system the TOE is running on
   are physically secure. This means an attacker cannot access the machine
   directly, i.e. around Zope.
-
-  \item[OE.Trust:] This security objective covers the assumption
-  \textbf{A.Admin}.
 
   \item[OE.Auditlog:] This security objective covers the assumption
   \textbf{A.OS}. To keep the operating system secure and detect possible
