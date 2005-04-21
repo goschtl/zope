@@ -6,6 +6,7 @@
 # These packages are the Zope 3 components.
 #
 docutils       svn://svn.zope.org/repos/main/Zope3/tags/*/src/docutils
+pytz           svn://svn.zope.org/repos/main/Zope3/tags/*/src/pytz
 zodbcode       svn://svn.zope.org/repos/main/Zope3/tags/*/src/zodbcode
 zope           svn://svn.zope.org/repos/main/Zope3/tags/*/src/zope
 # Child packages of Zope are handled separately when constructing Zope
