@@ -14,6 +14,7 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+import unittest
 from Testing.ZopeTestCase import ZopeTestCase, installProduct
 installProduct('Five')
 
@@ -57,6 +58,11 @@ class AbsoluteURLTests(ZopeTestCase):
             {'url': 'http://nohost/test_folder_1_', 'name': 'test_folder_1_'},
             {'url': 'http://nohost/test_folder_1_/testoid', 'name': 'testoid'})
         self.assertEquals(expected, view.breadcrumbs())
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(AbsoluteURLTests))
+    return suite
 
 if __name__ == '__main__':
     framework()
