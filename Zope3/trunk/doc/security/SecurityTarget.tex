@@ -1,6 +1,7 @@
 \documentclass[12pt,english]{scrbook}
 \usepackage{babel}
 \usepackage[latin1]{inputenc}
+\usepackage{url}
 \usepackage{tabularx}
 \usepackage{longtable}
 \usepackage{graphicx}
@@ -19,17 +20,32 @@
 \newcommand{\oh}{$\bullet$}
 
 
-
-\title{Zope X3 Security Target for EAL 1 (Draft)}
-\author{Christian Theune \and Steve Alexander \and Jim Fulton \and
-  Christian Zagrodnick}
-
-\uppertitleback{}
-\date{\today}
 \hypersetup{
 pdftitle={Zope X3 Security Target for EAL 1 (Draft)},
 pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve Alexander {\textless}steve@catbox.net{\textgreater};Jim Fulton {\textless}jim@zope.com{\textgreater}}
 }
+
+
+\subject{Zope X3}
+\title{Security Target for EAL 1 (Draft)}
+\author{Christian Theune \\
+  Steve Alexander \\
+  Jim Fulton \\
+  Christian Zagrodnick}
+
+\uppertitleback{
+\begin{description}
+    \item[Version:] \$Rev$ $\$ (Draft)
+    \item[Date:] \$Date$ $\$
+    \item[Author:] Christian Theune, ct@gocept.com
+    \item[Author:] Steve Alexander, steve@catbox.net
+    \item[Author:] Jim Fulton, jim@zope.com
+    \item[Author:] Christian Zagrodnick, cz@gocept.com
+    \item[DocumentID:] \$Id$ $\$
+  \end{description}
+}
+\date{\today}
+
 
 
 \begin{document}
@@ -37,53 +53,10 @@ pdfauthor={Christian Theune {\textless}ct@gocept.com{\textgreater};Steve Alexand
 
 %___________________________________________________________________________
 
-\uppertitleback
-\begin{description}
-    \item[Version:] $Rev$ (Draft)
-    \item[Date:] $Date$ 
-    \item[Author:] Christian Theune, ct@gocept.com
-    \item[Author:] Steve Alexander, steve@catbox.net
-    \item[Author:] Jim Fulton, jim@zope.com
-    \item[Author:] Christian Zagrodnick, cz@gocept.com
-    \item[DocumentID:] $Id$
-\end{description}
-
-\newpage
 
 \tableofcontents
 \newpage
 \listoftables
-
-
-
-%___________________________________________________________________________
-
-
-
-\chapter{Document History}
-
-\begin{longtable}{|l|l|l|l|}
-\hline
-\textbf{
-Version
-} & \textbf{
-Date
-} & \textbf{
-Change
-} & \textbf{
-Editor
-} \\
-\hline
-\endhead
-
-0.1
- &  & 
-First draft
- & 
-Christian Theune
- \\
-\hline
-\end{longtable}
 
 
 %___________________________________________________________________________
@@ -100,73 +73,50 @@ Christian Theune
 \section{ST identification}
 
 \begin{description}
-\item [Document Title:]
-Zope X3, Security target
+  
+  \item [Document Title:] Zope X3, Security target
+
+  \item [Document ID:]
+    \$Id$ $\$
+  
+  \item [Document Version:] \$Rev$ $\$
+  
+  \item [Origin:] Zope Corporation public Subversion server
+  
+  \item [TOE Reference:] Zope X3 3.1/CC       
+  % XXX still to define. Possible alternative: Zope CC 3.1
+
+  \item [TOE Commercial Name:] Zope X3   
+  % XXX to define, depending on TOE Reference
+
+  \item [TOE Short Description:] A platform independent web application server
+  and framework written in Python
 
 
-\item [Document ID:]
-$Id$
+  \item [Product Type:] Web Application Server
 
 
-\item [Document Version:]
-$Rev$
+  \item [Evaluation Body:] Evaluation Body of T"UV Informationstechnik GmbH,
+  Germany
 
-
-\item [Origin:]
-Zope Corporation public Subversion server
-
-
-\item [TOE Reference:]
-Zope X3 3.1/CC              % XXX still to define. Possible alternative: Zope CC 3.1
-
-
-\item [TOE Commercial Name:]
-Zope X3                     % XXX to define, depending on TOE Reference
-
-
-\item [TOE Short Description:]
-A platform independent web application server and framework written in Python
-
-
-\item [Product Type:]
-Web Application Server
-
-
-\item [Evaluation Body:]
-Evaluation Body of TUV Informationstechnik GmbH, Germany
-
-
-\item [Certification Body:]
-Certification Body of TUV Informationstechnik GmbH, Germany
+  \item [Certification Body:] Certification Body of T"UV Informationstechnik
+  GmbH, Germany
 
 
 \end{description}
 
-This ST is based upon Common Criteria, Version 2.1 (\emph{{[}CC]}).
+This ST is based upon Common Criteria, Version 2.1 
 The TOE consists of the following component:
-\begin{quote}
 
-\begin{longtable}[c]{|l|l|l|}
-\hline
-\textbf{
-Component
-} & \textbf{
-Version
-} & \textbf{
-Supplier
-} \\
-\hline
-\endhead
-
-Zope
- & 
-X3          % XXX to be defined
- & 
-Zope Corporation
- \\
-\hline
+\begin{longtable}[c]{lll}
+  \toprule
+  Component & Version & Supplier \\
+  \midrule \endhead
+  Zope & X3 & Zope Corporation \\
+  % The version needs to be defined 
+  \bottomrule
+  \caption{TOE Components}
 \end{longtable}
-\end{quote}
 
 
 %___________________________________________________________________________
@@ -199,19 +149,17 @@ into an existing IT environment.
 
 \section{ISO/IEC 15408 (CC) Conformance}
 
-This ST is claimed to be conformant with the ISO/IEC 15408:1999 (Common
-Criteria, Version 2.1 with final interpretations, see \emph{{[}CC]}) and its following
+This ST is claimed to be conforming with the ISO/IEC 15408:1999 (Common
+Criteria, Version 2.1 with final interpretations) and its following
 parts:
-\begin{quote}
-\begin{itemize}
-\item {} 
-Part 2 and
 
-\item {} 
-Part 3, EAL1.
+\begin{itemize}
+  
+  \item Part 2 and
+  
+  \item Part 3, EAL1.
 
 \end{itemize}
-\end{quote}
 
 The assurance level is EAL 1.
 
@@ -229,9 +177,9 @@ The assurance level is EAL 1.
 
 \section{Overview}
 
-Zope 3 (also referred to as ``Zope'') is a component based framework that may be
-used to build web applications. It's development is historically focused but
-not limited on building content management systems.
+Zope 3 (also referred to as ``Zope'') is a component based framework that may
+be used to build web applications. It's development is historically focused,
+but not limited, on building content management systems.
 
 It is written as platform independent software using the Python programming
 language. Therefore it is available for Windows NT, Linux, MacOS X and other
@@ -293,7 +241,7 @@ identified by a tag.
 To ensure a stable production every developer wishing to directly access the
 repository must retrieve authorisation from Zope Corporation. This is
 expressed by providing a signed contributors agreement,
-\href{http://dev.zope.org/DevHome/Subversion/Contributor.pdf}{http://dev.zope.org/DevHome/Subversion/Contributor.pdf}.
+\url{http://dev.zope.org/DevHome/Subversion/Contributor.pdf}.
 
 Write access to the repository is only available through ssh and by providing
 a public key to the maintainer of the repository.
@@ -323,17 +271,18 @@ steps called ``bugfix releases''.
 
 The version numbers of the TOE releases express if it is a feature or bugfix
 release like this: 3.f.b where f and b are continuous given numbers and f
-expresses the f-th feature relase for Zope 3 and b expresses the b-th bugfix
-relase for the f-th feature release. Every feature release starts with bugfix
-release 0 in which case the bugfix number may be ommitted. (E.g. 3.1.4,
+expresses the f-th feature release for Zope 3 and b expresses the b-th bugfix
+release for the f-th feature release. Every feature release starts with bugfix
+release 0 in which case the bugfix number may be omitted. (E.g. 3.1.4,
 3.1.0/3.1, 3.0.0/3.0)
 
-Test releases are identified by adding their grade (a for alpha, b for beta, rc
-for release candidate) at the end of the version number that it is targeted at.
-(3.1.4b2 would be the second beta release for the upcoming version 3.1.4)
+Test releases are identified by adding their grade (a for alpha, b for beta,
+  rc for release candidate) at the end of the version number that it is
+targeted at.  (3.1.4b2 would be the second beta release for the upcoming
+  version 3.1.4)
 
 New features are proposed and agreed within the developers community by the use
-of mailinglists and wiki pages. They are incorportated in an agreed feature
+of mailing lists and wiki pages. They are incorporated in an agreed feature
 release.
 
 Until agreed to be ready for public test the development and until all
@@ -345,19 +294,16 @@ identify changes that are applied for maintenance.  New features will be
 introduced on the trunk that is heading for the next feature release.
 
 Therefore an overall of about 3 concurrent maintained versions can exist:
-\begin{quote}
+
 \begin{itemize}
-\item {} 
-old feature release in maintenance mode
+  
+  \item old feature release in maintenance mode
 
-\item {} 
-upcoming feature release, already in maintance mode but not stable
+  \item upcoming feature release, already in maintenance mode but not stable
 
-\item {} 
-upcoming feature relaese in free development mode
+  \item upcoming feature release in free development mode
 
 \end{itemize}
-\end{quote}
 
 
 %___________________________________________________________________________
@@ -384,28 +330,28 @@ packages that are not part of the TOE. (E.g. Python runtime libraries)
 
 \subsection{TOE Logical Boundaries}
 
-The logical boundary for the TOE consists of several security-relevant sub-systems of
-Zope 3:
+The logical boundary for the TOE consists of several security-relevant
+sub-systems of Zope 3:
 
 \begin{itemize}
-\item Protection
 
-\item Authentication
+  \item Protection
 
-\item Authorization / Access Control
+  \item Authentication
 
-\item Auditing
+  \item Authorization / Access Control
 
-\item Transaction Management
+  \item Auditing
 
-\item Undo
+  \item Transaction Management
 
-\item Publication / Server
+  \item Undo
+
+  \item Publication / Server
 
 \end{itemize}
 
-See section ``TOE security functions`` % XXX do real  reference here
-for more details regarding those sub-systems.
+See section \vref{toe-sec-funcs} for more details regarding those sub-systems.
 
 %___________________________________________________________________________
 
@@ -420,7 +366,7 @@ for more details regarding those sub-systems.
 
 \section{Assets}
 
-The following primary asssets have been identified:
+The following primary assets have been identified:
 
 \begin{longtable}[c]{lp{10cm}}
   \toprule 
@@ -924,12 +870,10 @@ They have been drawn from the CC Part 2 functional requirements components.
 
 \minisec{FAU{\_}GEN.1 Audit data generation}
 \begin{description}
-%[visit_definition_list_item]
-\item[FAU{\_}GEN.1.1]
-%[visit_definition]
-
-The TSF shall be able to generate an audit record of the following auditable
-events:
+  
+  \item[FAU\_GEN.1.1] The TSF shall be able to generate an audit record of the
+  following auditable events:
+  
 \newcounter{listcnt2}
 \begin{list}{\alph{listcnt2})}
 {
@@ -1867,109 +1811,36 @@ The TSF shall be able to provide reliable time stamps for its own use.
 The Evaluation Assurance Level chosen for this Evaluation is EAL 1.
 
 The following TOE assurance requirements drawn from CC Part 3 are valid:
-\begin{quote}
 
-\begin{longtable}[c]{|l|l|l|}
-\hline
-\textbf{
-Identification
-} & \textbf{
-Description
-} & \textbf{
-Direct dependencies
-} \\
-\hline
-\endhead
 
-\textbf{ACM}
- & 
-Configuration management (CM)
- &  \\
-\hline
+\begin{longtable}[c]{lp{6cm}l}
+  \toprule
+  Identification & Description & Direct dependencies\\
+  \midrule \endhead
 
-ACM{\_}CAP.1
- & 
-Version numbers
- & 
-None
- \\
-\hline
+  \textbf{ACM} & Configuration management (CM) &  \\
+  ACM{\_}CAP.1 & Version numbers & None \\
 
-\textbf{ADO}
- & 
-Delivery and Operation
- &  \\
-\hline
+  \textbf{ADO} & Delivery and Operation &  \\
+  ADO{\_}IGS.1 & Installation, generation and start-up & AGD{\_}ADM.1 \\
+  
+  \textbf{ADV} & Development &  \\
+  ADV{\_}FSP.1 & Informal Functional specification & ADV{\_}RCR.1 \\
 
-ADO{\_}IGS.1
- & 
-Installation, generation and start-up
- & 
-AGD{\_}ADM.1
- \\
-\hline
+  ADV{\_}RCR.1 & Representation correspondence: Information correspondence
+  demonstration & None \\ 
 
-\textbf{ADV}
- & 
-Development
- &  \\
-\hline
+  \textbf{AGD} & Guidance documents &  \\
+  AGD{\_}ADM.1 & Administrator guidance & ADV{\_}FSP.1 \\
+  AGD{\_}USR.1 & User guidance & ADV{\_}FSP.1 \\
+  \textbf{ATE} &  &  \\ 
+  ATE{\_}IND.1 & Independent testing - conformance & ADV{\_}FSP.1 AGD{\_}ADM.1 AGD{\_}USR.1 \\
 
-ADV{\_}FSP.1
- & 
-Informal Functional specification
- & 
-ADV{\_}RCR.1
- \\
-\hline
 
-ADV{\_}RCR.1
- & 
-Representation correspondence:
-Information correspondence
-demonstration
- & 
-None
- \\
-\hline
-
-\textbf{AGD}
- & 
-Guidance documents
- &  \\
-\hline
-
-AGD{\_}ADM.1
- & 
-Administrator guidance
- & 
-ADV{\_}FSP.1
- \\
-\hline
-
-AGD{\_}USR.1
- & 
-User guidance
- & 
-ADV{\_}FSP.1
- \\
-\hline
-
-\textbf{ATE}
- &  &  \\
-\hline
-
-ATE{\_}IND.1
- & 
-Independent testing - conformance
- & 
-ADV{\_}FSP.1
-AGD{\_}ADM.1
-AGD{\_}USR.1
- \\
-\hline
+  \bottomrule
+  \caption{TOE Assurance Requirements}
+            
 \end{longtable}
-\end{quote}
 
 
 %___________________________________________________________________________
@@ -1978,39 +1849,41 @@ AGD{\_}USR.1
 
 \section{Security requirements for the IT environment}
 
-ITITIT
-
 The following security requirements exist for the IT environment:
 
-The operating system is Windows 2000, Windows XP or Linux. Either all
-known security patches must have been installed.
+\begin{itemize}
 
-The Python Version is 2.3.2 or a compatible Bugfix release.
+  \item The operating system is Windows 2000, Windows XP or Linux. Either all
+  known security patches must have been installed.
 
-The ZODB storage is FSStorage or XXX ... What else?.
+  \item The Python Version is 2.3.2 or a compatible Bugfix release.
 
-The client software must support ``protected authentication feedback''
-(FIA{\_}UAU.7), to at least not echo a user's credentials in plain text.
+  \item The ZODB storage is FSStorage or XXX ... What else?.
 
-One or more ``trusted paths'' to the TOE must be provided using secure
-proxies, such as an HTTPS proxy like Apache with SSL, or Pound.
+  \item The client software must support ``protected authentication feedback''
+  (FIA{\_}UAU.7), to at least not echo a user's credentials in plain text.
 
-If external IT systems are used, a trusted channel between the TOE and
-those systems must be provided by the TOE host environment.  For
-example, while the TOE may communicate with clients on a public
-network through a specific port allowed through a firewall, all
-communication with other IT systems could be over a private network.
+  \item One or more ``trusted paths'' to the TOE must be provided using secure
+  proxies, such as an HTTPS proxy like Apache with SSL, or Pound.
 
-To ensure a ``trusted path'' to the TOE, users of the TOE must use
-secure proxies correctly (for example, being sure to accept only
-valid server certificates with HTTPS).
+  \item If external IT systems are used, a trusted channel between the TOE and
+  those systems must be provided by the TOE host environment.  For example,
+  while the TOE may communicate with clients on a public network through a
+  specific port allowed through a firewall, all communication with other IT
+  systems could be over a private network.
 
+  \item To ensure a ``trusted path'' to the TOE, users of the TOE must use
+  secure proxies correctly (for example, being sure to accept only valid
+    server certificates with HTTPS).
+
+\end{itemize}
 %___________________________________________________________________________
 
 \chapter{TOE summary specification}
 
 
-\section{TOE security functions}
+\section{TOE security functions}  \label{toe-sec-funcs}
+
 
 The major functions implemented by the TOE are:
 
@@ -2087,9 +1960,11 @@ role.
 
 \subsection{Configuration}
 
-- assigning roles/permissions/etc via zcml
-- assigning permissions/roles/users via management interface
-- assigning permissions/roles/users via API
+\begin{itemize}
+  \item assigning roles/permissions/etc via zcml
+  \item assigning permissions/roles/users via management interface
+  \item assigning permissions/roles/users via API
+\end{itemize}
 
 \subsection{Auditing}
 
@@ -2304,10 +2179,9 @@ the threads and assumptions.
   
   \item[O.Protect:] This security objective is necessary to counter the threat
   \textbf{T.AuditFake} because it protects the audit data generation function
-  and thereby prevents logging of false information. It also covers the
-  assumption \textbf{A.OS} because self-protection mechanisms decrease the
-  risk of compromising the TOE and thereby the risk of compromising the
-  host system.
+  and thereby prevents logging of false information. It also helps to covers
+  the assumption \textbf{A.OS} because self-protection mechanisms help to
+  dtect security problems in the runtime environment.
   
   \item[O.Access:] This security objective is necessary to counter the threat
   \textbf{T.Operation} because it prevents performing operations on an object
