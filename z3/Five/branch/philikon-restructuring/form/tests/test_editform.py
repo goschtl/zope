@@ -34,7 +34,7 @@ class EditFormTest(FunctionalTestCase):
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
-	zcml.load_config('configure.zcml', package=Products.Five.form.tests)
+        zcml.load_config('configure.zcml', package=Products.Five.form.tests)
 
     def test_editform(self):
         response = self.publish('/test_folder_1_/edittest/edit.html',
@@ -64,6 +64,7 @@ class EditFormTest(FunctionalTestCase):
         self.folder = self.folder.ftf
         response = self.publish('/test_folder_1_/ftf/+/addsimplecontent.html',
                                 basic='manager:r00t')
+        self.assertEquals(200, response.getStatus())
         # we're using a GET request to post variables, but seems to be
         # the easiest..
         response = self.publish(
