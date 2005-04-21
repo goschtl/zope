@@ -26,6 +26,13 @@ interrupt-check-interval 200
 #  address 8080
 #</server>
 
+# A special HTTP server that records HTTP session that can be converted to
+# functional tests.
+# <server>
+#   type RecordingHTTP
+#   address 8081
+# </server>
+
 # XXX: Deactivated FTP server right now, since twisted's FTP server is not
 # ready for prime time yet.
 # <server>
