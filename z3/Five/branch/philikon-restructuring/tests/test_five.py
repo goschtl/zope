@@ -10,9 +10,6 @@ import zope
 from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
 
 from zope.interface import Interface, implements
-from zope.component import getViewProviding
-from zope.schema import Choice, TextLine
-from zope.app.form.interfaces import IInputWidget
 
 from Products.Five.tests.products.FiveTest.classes import Adaptable, Origin
 from Products.Five.tests.products.FiveTest.interfaces import IAdapted, IDestination
@@ -191,17 +188,6 @@ class FiveTest(ZopeTestCase):
     def test_unrestrictedTraverse_non_existing(self):
         self.assertRaises(AttributeError, self.folder.unrestrictedTraverse,
                           'testoid/@@invalid_page')
-
-    def test_get_widgets_for_schema_fields(self):
-        salutation = Choice(title=u'Salutation', values=("Mr.", "Mrs.", "Captain", "Don"))
-        contactname = TextLine(title=u'Name')
-        request = FakeRequest()
-        salutation = salutation.bind(request)
-        contactname = contactname.bind(request)
-        view1 = getViewProviding(contactname, IInputWidget, request)
-        self.assertEquals(view1.__class__, zope.app.form.browser.textwidgets.TextWidget)
-        view2 = getViewProviding(salutation, IInputWidget, request)
-        self.assertEquals(view2.__class__, zope.app.form.browser.itemswidgets.DropdownWidget)
 
     # Disabled __call__ overriding for now. Causes more trouble
     # than it fixes.

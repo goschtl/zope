@@ -19,10 +19,16 @@ from Testing.ZopeTestCase import FunctionalTestCase, installProduct
 installProduct('Five')
 
 from AccessControl import Unauthorized
+from zope.schema import Choice, TextLine
+from zope.app import zapi
 from zope.app.form.browser.submit import Update
+from zope.app.form.interfaces import IInputWidget
+from zope.app.form.browser.textwidgets import TextWidget
+from zope.app.form.browser.itemswidgets import DropdownWidget
 
 import Products.Five.form.tests
 from Products.Five import zcml
+from Products.Five.traversable import FakeRequest
 from Products.Five.tests.helpers import manage_addFiveTraversableFolder
 from Products.Five.form.tests.schemacontent import manage_addFieldContent
 from Products.Five.form.tests.schemacontent import manage_addComplexSchemaContent
@@ -99,6 +105,18 @@ class EditFormTest(FunctionalTestCase):
         response = self.publish('/test_folder_1_/ftf/+/protectedaddform.html',
                                 basic='viewer:secret')
         self.assertEqual(response.getStatus(), 401)
+
+    def test_get_widgets_for_schema_fields(self):
+        salutation = Choice(title=u'Salutation',
+                            values=("Mr.", "Mrs.", "Captain", "Don"))
+        contactname = TextLine(title=u'Name')
+        request = FakeRequest()
+        salutation = salutation.bind(request)
+        contactname = contactname.bind(request)
+        view1 = zapi.getViewProviding(contactname, IInputWidget, request)
+        self.assertEquals(view1.__class__, TextWidget)
+        view2 = zapi.getViewProviding(salutation, IInputWidget, request)
+        self.assertEquals(view2.__class__, DropdownWidget)
 
 def test_suite():
     suite = unittest.TestSuite()
