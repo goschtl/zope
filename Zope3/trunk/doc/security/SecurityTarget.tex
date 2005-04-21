@@ -2266,16 +2266,15 @@ No PP compatibility is beeing claimed.
 
 
 
-
 \section{Security Objectives Rationale}
 
-% bullet: finished
-% X: todo
+The following table shows that all threads and assumptions are covered
+by a security objectives. 
 
   \begin{longtable}{rRRRRRRRRRRRRRRR}
     \toprule
               & T.IA  & T.Perm &T.Operation&T.AuditFake&T.Import & T.RIP&T.Transaction&T.Undo &T.Timestamps & T.Host & A.OS & A.Admin & A.Network & A.Client & A.Credential  \\
-    \midrule
+    \midrule\endhead
 O.IA         &  \oh  &       &            &            &         &      &             &       &             &        &      &       \\
 O.Delegation &       &   \oh &            &            &         &      &             &       &             &        &      &        \\
 O.Audit      & \oh   &   \oh &     \oh    &            &  \oh    &      &             &  \oh  &             &        &      &        \\
@@ -2287,7 +2286,7 @@ O.ManageRisk &   \oh &       &            &            &         &      &       
 \midrule
 OE.OS        &       &       &            &            &         &      &             &       &    \oh      &        &  \oh &         &         &            &          \\
 OE.Trust     &       &       &            &            &         &      &             &       &             &        &      &  \oh    &         &            &            \\
-OE.Auditlog  &       &       &            &            &         &      &             &       &             &        &      &         &         &            &                   \\  
+OE.Auditlog  &       &       &            &            &         &      &             &       &             &        & \oh  &         &         &            &                   \\  
 OE.Network   &       &       &            &            &         &      &             &       &             &        &      &         &  \oh    &            &                   \\   
 OE.Client    &       &       &            &            &         &      &             &       &             &        &      &         &         &    \oh     &                   \\
 OE.Credential&       &       &            &            &         &      &             &       &             &        &      &         &         &            &    \oh    \\ 
@@ -2296,8 +2295,7 @@ OE.Credential&       &       &            &            &         &      &       
   \label{tab-SOR}
 \end{longtable}
 
-Table~\vref{tab-SOR} shows that all threads and assumptions are covered
-by a security objectives. The following list explains why the objectives cover
+The following list explains why the objectives cover
 the threads and assumptions.
 
 \begin{description}
@@ -2312,8 +2310,8 @@ the threads and assumptions.
   permissions.
   
   \item[O.Audit:] This security objective is necessary to detect and recover
-  from most threats: \textbf{T.IA, T.Perm, T.Operation, T.Transaction
-    and T.Undo} as those events are logged by the audit log.
+  from most threats: \textbf{T.IA, T.Perm, T.Operation, T.Import and T.Undo}
+  as those events are logged by the audit log.
   
   \item[O.Protect:] This security objective is necessary to counter the threat
   \textbf{T.AuditFake} because it protects the audit data generation function
@@ -2321,11 +2319,11 @@ the threads and assumptions.
   
   \item[O.Access:] This security objective is necessary to counter the threat
   \textbf{T.Operation} because it prevents performing operations on an object
-  without having the correct permission. It also counters the threats
-  \textbf{T.Host} because functions are objects, too, which are protected.
+  without having the correct permission. It also counters the threat
+  \textbf{T.Host} because functions are objects and thereby protected.
 
   O.Access also counters the threat \textbf{T.Transaction} because transaction
-  managing functions are also objects and therefor protected.
+  managing functions are also objects and therefore protected.
 
   \item[O.Integrity:] This security objective is necessary to counter the
   threat \textbf{T.RIP} because it prevents that any data will be written if
@@ -2333,13 +2331,13 @@ the threads and assumptions.
   
   \item[O.Attributes:] This security objective is necessary to counter the
   threats \textbf{T.Undo}, \textbf{T.Import} and \textbf{T.RIP} because it
-  prevents an attacker form setting inconsistend security attributes from
+  prevents an attacker form setting inconsistent security attributes from
   which he could gain more access than intended.
 
   \item[O.ManageRisk:] This security objective is necessary to counter the
-  threat \textbf{T.IA} because it makes it less likely an attacker impersonates a
-  principal which allows operations with high negative impact since those
-  principals are better protected.
+  threat \textbf{T.IA} because it makes it less likely that an attacker
+  impersonates a principal which allows operations with high negative impact
+  since those principals are better protected.
 
   \item[OE.OS:] This security objective is necessary to both counter the
   threat \textbf{T.Timestamps} and cover the assumption \textbf{A.OS} because
@@ -2350,7 +2348,11 @@ the threads and assumptions.
   \item[OE.Trust:] This security objective covers the assumption
   \textbf{A.Admin}.
 
-  \item[OE.Auditlog:] XXX
+  \item[OE.Auditlog:] This security objective covers the assumption
+  \textbf{A.OS}. To keep the operating system secure and detect possible
+  intrusions it is vital to continuously monitor the audit log. It is also
+  important to keep the Auditlog in a safe place to have enough information to
+  recover from an attack.
 
   \item[OE.Network:] This security objective covers the assumptions
   \textbf{A.Network} because it asserts that all
@@ -2362,7 +2364,7 @@ the threads and assumptions.
   authentication data is not monitored or interfered.
 
   \item[OE.Credential:] This security objective covers the assumption
-  \textbf{A.Credentials} because it demands that the user is keeping the
+  \textbf{A.Credential} because it demands that the user is keeping the
   credentials to authenticate secret.
   
 \end{description}
