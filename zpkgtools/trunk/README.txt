@@ -8,7 +8,7 @@ undercooked at this time.  This is initially targetted at supporting
 the creation of Zope 3 releases.
 
 The "zpkg" script in the bin/ directory is the command line tool that
-ise used to generate a package from source information.  Most of the
+is used to generate a package from source information.  Most of the
 implementation is stored in the ``zpkgtools`` Python package.
 
 Documentation for this software can be found in the doc/ directory.
