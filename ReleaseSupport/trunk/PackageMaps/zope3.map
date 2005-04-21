@@ -18,15 +18,17 @@ z3checkins     svn://svn.zope.org/repos/main/Zope3/tags/*/src/z3checkins
 
 # These packages are copied from the ZConfig, zdaemon, and ZODB projects:
 #
-BTrees         svn://svn.zope.org/repos/main/Zope3/tags/*/src/BTrees
-persistent     svn://svn.zope.org/repos/main/Zope3/tags/*/src/persistent
+BTrees          svn://svn.zope.org/repos/main/ZODB/tags/*/src/BTrees
+persistent      svn://svn.zope.org/repos/main/ZODB/tags/*/src/persistent
+transaction     svn://svn.zope.org/repos/main/ZODB/tags/*/src/transaction
+ThreadedAsync   svn://svn.zope.org/repos/main/ZODB/tags/*/src/ThreadedAsync
+ZEO             svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZEO
+ZODB            svn://svn.zope.org/repos/main/ZODB/tags/*/src/ZODB
+
 RestrictedPython svn://svn.zope.org/repos/main/Zope3/tags/*/src/RestrictedPython
-ThreadedAsync  svn://svn.zope.org/repos/main/Zope3/tags/*/src/ThreadedAsync
-transaction    svn://svn.zope.org/repos/main/Zope3/tags/*/src/transaction
 ZConfig        svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZConfig
 zdaemon        svn://svn.zope.org/repos/main/Zope3/tags/*/src/zdaemon
-ZEO            svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZEO
-ZODB           svn://svn.zope.org/repos/main/Zope3/tags/*/src/ZODB
+
 
 # These packages are the release collections based on the Zope 3
 # project; they define what goes into the Zope X3 and related
