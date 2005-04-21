@@ -3,10 +3,12 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
+from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase, installProduct
+
+installProduct("Five")
+installProduct("PythonScripts")
 
 from AccessControl import getSecurityManager
-from AccessControl import Unauthorized
 
 import glob
 from Products.Five.tests.products import FiveTest
@@ -20,42 +22,7 @@ dir_resource_names = [os.path.basename(r)
 ViewManagementScreens = 'View management screens'
 
 from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
-
-
-class RestrictedPythonTest(ZopeTestCase):
-    """
-    Test whether code is really restricted
-
-    Kind permission from Plone to use this.
-    """
-
-    def addPS(self, id, params='', body=''):
-        # clean up any 'ps' that's already here..
-        try:
-            self.folder._getOb(id)
-            self.folder.manage_delObjects([id])
-        except AttributeError:
-            pass # it's okay, no 'ps' exists yet
-        factory = self.folder.manage_addProduct['PythonScripts']
-        factory.manage_addPythonScript(id)
-        self.folder[id].ZPythonScript_edit(params, body)
-
-    def check(self, psbody):
-        self.addPS('ps', body=psbody)
-        try:
-            self.folder.ps()
-        except (ImportError, Unauthorized), e:
-            self.fail(e)
-
-    def checkUnauthorized(self, psbody):
-        self.addPS('ps', body=psbody)
-        try:
-            self.folder.ps()
-        except (AttributeError, Unauthorized):
-            pass
-        else:
-            self.fail("Authorized but shouldn't be")
-
+from Products.Five.tests.helpers import RestrictedPythonTestCase
 
 view_names = [
     'eagle.txt',
@@ -70,14 +37,8 @@ public_view_names = [
     'public_template_page',
     'public_template_class_page']
 
-resource_names = [
-    'cockatiel.html',
-    'style.css',
-    'pattern.png'
-    ]
 
-
-class SecurityTest(RestrictedPythonTest):
+class SecurityTest(RestrictedPythonTestCase):
 
     def afterSetUp(self):
         manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
@@ -91,41 +52,11 @@ class SecurityTest(RestrictedPythonTest):
             self.checkUnauthorized(
                 'context.restrictedTraverse("testoid/%s")()' % view_name)
 
-    def test_resource_no_permission(self):
-        self.login('viewer')
-        for resource in resource_names:
-            self.checkUnauthorized(
-                'context.restrictedTraverse("testoid/++resource++%s")()' %
-                resource)
-
-    def test_directory_resource_no_permission(self):
-        self.login('viewer')
-        base = 'testoid/++resource++fivetest_resources/%s'
-        for resource in dir_resource_names:
-            path = base % resource
-            self.checkUnauthorized(
-                'context.restrictedTraverse("%s")' % path)
-
     def test_permission(self):
         self.login('manager')
         for view_name in view_names:
             self.check(
                 'context.restrictedTraverse("testoid/%s")()' % view_name)
-
-    def test_resource_permission(self):
-        self.login('manager')
-        for resource in resource_names:
-            self.check(
-                'context.restrictedTraverse("testoid/++resource++%s")()' %
-                resource)
-
-    def test_directory_resource_permission(self):
-        self.login('manager')
-        base = 'testoid/++resource++fivetest_resources/%s'
-        for resource in dir_resource_names:
-            path = base % resource
-            self.check(
-                'context.restrictedTraverse("%s")' % path)
 
     def test_public_permission(self):
         self.logout()
@@ -155,7 +86,31 @@ class PublishTest(FunctionalTestCase):
             # we expect that we get a 401 Unauthorized
             self.assertEqual(response.getStatus(), 401)
 
-    def test_permission(self):
+    def test_all_permissions(self):
+        permissions = self.folder.possible_permissions()
+        self.folder._addRole('Viewer')
+        self.folder.manage_role('Viewer', permissions)
+        self.folder.manage_addLocalRoles('viewer', ['Viewer'])
+        
+        for view_name in view_names:
+            response = self.publish('/test_folder_1_/testoid/%s' % view_name,
+                                    basic='viewer:secret')
+            self.assertEqual(response.getStatus(), 200)
+
+    def test_almost_all_permissions(self):
+        permissions = self.folder.possible_permissions()
+        permissions.remove(ViewManagementScreens)
+        self.folder._addRole('Viewer')
+        self.folder.manage_role('Viewer', permissions)
+        self.folder.manage_addLocalRoles('viewer', ['Viewer'])
+        
+        for view_name in view_names:
+            response = self.publish('/test_folder_1_/testoid/%s' % view_name,
+                                    basic='viewer:secret')
+            # we expect that we get a 401 Unauthorized
+            self.assertEqual(response.getStatus(), 401)
+
+    def test_manager_permission(self):
         for view_name in view_names:
             response = self.publish('/test_folder_1_/testoid/%s' % view_name,
                                     basic='manager:r00t')
@@ -166,7 +121,6 @@ class PublishTest(FunctionalTestCase):
         for view_name in public_view_names:
             response = self.publish('/test_folder_1_/testoid/%s' % view_name)
             self.assertEqual(response.getStatus(), 200)
-
 
 def test_suite():
     from unittest import TestSuite, makeSuite

@@ -66,4 +66,11 @@
          
   </browser:addform>
 
+  <browser:addform
+     schema=".schemacontent.IFieldContent"
+     content_factory=".schemacontent.FieldContent"
+     name="protectedaddform.html"
+     permission="zope2.ViewManagementScreens"
+     />
+
 </configure>

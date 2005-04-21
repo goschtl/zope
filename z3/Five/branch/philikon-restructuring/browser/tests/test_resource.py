@@ -17,12 +17,14 @@ if __name__ == '__main__':
 from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
 from Testing.ZopeTestCase import installProduct
 installProduct('Five')
+installProduct("PythonScripts")  # for SecurityResourceTests
 
 import glob
 import Products.Five.browser.tests
 from Products.Five import zcml
 from Products.Five.browser.resource import Resource, PageTemplateResource
 from Products.Five.tests.helpers import manage_addFiveTraversableFolder
+from Products.Five.tests.helpers import RestrictedPythonTestCase
 
 _prefix = os.path.dirname(Products.Five.browser.tests.__file__)
 dir_resource_names = [os.path.basename(r)
@@ -88,6 +90,58 @@ class PublishResourceTests(FunctionalTestCase):
         url = '/test_folder_1_/testoid/++resource++style.css'
         response = self.publish(url, basic='manager:r00t')
         self.assertEquals(200, response.getStatus())
+
+resource_names = [
+    'cockatiel.html',
+    'style.css',
+    'pattern.png'
+    ]
+
+class SecurityResourceTests(RestrictedPythonTestCase):
+
+    def afterSetUp(self):
+	zcml.load_config('configure.zcml', package=Products.Five.browser.tests)
+	manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
+        uf = self.folder.acl_users
+        uf._doAddUser('viewer', 'secret', [], [])
+        uf._doAddUser('manager', 'r00t', ['Manager'], [])
+
+    def test_resource_no_permission(self):
+        self.login('viewer')
+        for resource in resource_names:
+            self.checkUnauthorized(
+                'context.restrictedTraverse("testoid/++resource++%s")()' %
+                resource)
+
+    def test_directory_resource_no_permission(self):
+        self.login('viewer')
+        base = 'testoid/++resource++fivetest_resources/%s'
+        for resource in dir_resource_names:
+            path = base % resource
+            self.checkUnauthorized(
+                'context.restrictedTraverse("%s")' % path)
+
+    def test_resource_permission(self):
+        self.login('manager')
+        for resource in resource_names:
+            self.check(
+                'context.restrictedTraverse("testoid/++resource++%s")()' %
+                resource)
+
+    def test_directory_resource_permission(self):
+        self.login('manager')
+        base = 'testoid/++resource++fivetest_resources/%s'
+        for resource in dir_resource_names:
+            path = base % resource
+            self.check(
+                'context.restrictedTraverse("%s")' % path)
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ResourceTests))
+    suite.addTest(unittest.makeSuite(PublishResourceTests))
+    suite.addTest(unittest.makeSuite(SecurityResourceTests))
+    return suite
 
 if __name__ == '__main__':
     framework()

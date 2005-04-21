@@ -78,10 +78,27 @@ class EditFormTest(FunctionalTestCase):
         self.assertEquals('FooDescription', self.folder.alpha.description)
 
     def test_objectWidget(self):
-        manage_addComplexSchemaContent(self.folder, 'csc')
-        response = self.publish('/test_folder_1_/csc/edit.html',
+        manage_addComplexSchemaContent(self.folder, 'ftf')
+        response = self.publish('/test_folder_1_/ftf/edit.html',
                                 basic='manager:r00t')
         self.assertEquals(200, response.getStatus())
+
+    def test_addpages(self):
+        manage_addFiveTraversableFolder(self.folder, 'ftf')
+
+        # Unprotected as anonymous
+        response = self.publish('/test_folder_1_/ftf/+/addsimplecontent.html')
+        self.assertEqual(response.getStatus(), 200)
+        
+        # Protected as manager
+        response = self.publish('/test_folder_1_/ftf/+/protectedaddform.html',
+                                basic='manager:r00t')
+        self.assertEqual(response.getStatus(), 200)
+
+        # Protected as user
+        response = self.publish('/test_folder_1_/ftf/+/protectedaddform.html',
+                                basic='viewer:secret')
+        self.assertEqual(response.getStatus(), 401)
 
 def test_suite():
     suite = unittest.TestSuite()
