@@ -37,7 +37,7 @@ dir_resource_names = [os.path.basename(r)
 class ResourceTests(ZopeTestCase):
 
     def afterSetUp(self):
-	zcml.load_config('configure.zcml', package=Products.Five.browser.tests)
+	zcml.load_config('resource.zcml', package=Products.Five.browser.tests)
 	manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
 
     def test_template_resource(self):
@@ -77,7 +77,7 @@ class ResourceTests(ZopeTestCase):
 class PublishResourceTests(FunctionalTestCase):
 
     def afterSetUp(self):
-	zcml.load_config('configure.zcml', package=Products.Five.browser.tests)
+	zcml.load_config('resource.zcml', package=Products.Five.browser.tests)
 	manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
         uf = self.folder.acl_users
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
@@ -101,7 +101,7 @@ resource_names = [
 class SecurityResourceTests(RestrictedPythonTestCase):
 
     def afterSetUp(self):
-	zcml.load_config('configure.zcml', package=Products.Five.browser.tests)
+	zcml.load_config('resource.zcml', package=Products.Five.browser.tests)
 	manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
