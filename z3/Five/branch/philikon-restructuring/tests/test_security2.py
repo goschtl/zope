@@ -30,7 +30,8 @@ view_names = [
     'owl.html',
     'flamingo.html',
     'flamingo2.html',
-    'condor.html']
+    'condor.html',
+    'protectededitform.html']
 
 public_view_names = [
     'public_attribute_page',
