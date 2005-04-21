@@ -1,5 +1,4 @@
 from zope.interface import implements, Interface
-from interfaces import IAdaptable, IAdapted, IOrigin, IDestination
 
 class IAdaptable(Interface):
     """This is a Zope 3 interface.

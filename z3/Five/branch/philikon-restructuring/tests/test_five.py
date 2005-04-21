@@ -9,15 +9,13 @@ import zope
 
 from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
 
-from Products.Five.tests.products.FiveTest.classes import Adaptable, Origin
-from Products.Five.tests.products.FiveTest.interfaces import IAdapted, IDestination
-from Products.Five.tests.products.FiveTest.browser import SimpleContentView
+from Products.Five.tests.adapters import IAdapted, IDestination
+from Products.Five.tests.adapters import Adaptable, Origin
 
-from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
-from Products.Five.tests.products.FiveTest.simplecontent import manage_addCallableSimpleContent
-from Products.Five.tests.products.FiveTest.simplecontent import manage_addIndexSimpleContent
-from Products.Five.tests.products.FiveTest.fancycontent import manage_addFancyContent
-
+from Products.Five.tests.simplecontent import manage_addSimpleContent
+from Products.Five.tests.simplecontent import manage_addCallableSimpleContent
+from Products.Five.tests.simplecontent import manage_addIndexSimpleContent
+from Products.Five.tests.fancycontent import manage_addFancyContent
 
 class FiveTest(ZopeTestCase):
     """Test very basic Five functionality (adapters, ZCML, etc.)"""

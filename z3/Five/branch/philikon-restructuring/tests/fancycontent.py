@@ -4,7 +4,6 @@ from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 
 from zope.interface import Interface, implements
-from interfaces import IFancyContent
 
 class IFancyContent(Interface):
     pass
