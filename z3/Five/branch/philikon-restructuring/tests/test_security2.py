@@ -24,53 +24,6 @@ ViewManagementScreens = 'View management screens'
 from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
 from Products.Five.tests.helpers import RestrictedPythonTestCase
 
-view_names = [
-    'eagle.txt',
-    'falcon.html',
-    'owl.html',
-    'flamingo.html',
-    'flamingo2.html',
-    'condor.html',
-    'protectededitform.html']
-
-public_view_names = [
-    'public_attribute_page',
-    'public_template_page',
-    'public_template_class_page']
-
-
-class SecurityTest(RestrictedPythonTestCase):
-
-    def afterSetUp(self):
-        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
-        uf = self.folder.acl_users
-        uf._doAddUser('viewer', 'secret', [], [])
-        uf._doAddUser('manager', 'r00t', ['Manager'], [])
-
-    def test_no_permission(self):
-        self.login('viewer')
-        for view_name in view_names:
-            self.checkUnauthorized(
-                'context.restrictedTraverse("testoid/%s")()' % view_name)
-
-    def test_permission(self):
-        self.login('manager')
-        for view_name in view_names:
-            self.check(
-                'context.restrictedTraverse("testoid/%s")()' % view_name)
-
-    def test_public_permission(self):
-        self.logout()
-        for view_name in public_view_names:
-            self.check(
-                'context.restrictedTraverse("testoid/%s")()' % view_name)
-
-    def test_view_method_permission(self):
-        self.login('manager')
-        self.check(
-            'context.restrictedTraverse("testoid/eagle.method").eagle()')
-
-
 class PublishTest(FunctionalTestCase):
     """A functional test for security actually involving the publisher.
     """

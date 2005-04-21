@@ -1,6 +1,18 @@
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Test browser pages
+
+$Id$
+"""
 from Products.Five import BrowserView
 
-class SimpleContentView(BrowserView):
+class SimpleView(BrowserView):
     """More docstring. Please Zope"""
 
     def eagle(self):
@@ -10,12 +22,6 @@ class SimpleContentView(BrowserView):
     def mouse(self):
         """Docstring"""
         return "The mouse has been eaten by the eagle"
-
-class FancyContentView(BrowserView):
-    """Fancy, fancy stuff"""
-
-    def view(self):
-        return "Fancy, fancy"
 
 class CallableNoDocstring:
 

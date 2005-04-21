@@ -1,13 +1,32 @@
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Simple content class(es) for browser tests
+
+$Id$
+"""
 from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-from Products.Five.tests.helpers import add_and_edit
-from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from zope.interface import implements
-from interfaces import ISimpleContent, ICallableSimpleContent,\
-     IIndexSimpleContent
 
-class SimpleContent(SimpleItem):
+from zope.interface import Interface, implements
+from Products.Five.traversable import Traversable
+
+class ISimpleContent(Interface):
+    pass
+
+class ICallableSimpleContent(ISimpleContent):
+    pass
+
+class IIndexSimpleContent(ISimpleContent):
+    pass
+
+class SimpleContent(Traversable, SimpleItem):
     implements(ISimpleContent)
 
     meta_type = 'Five SimpleContent'
@@ -53,24 +72,14 @@ class IndexSimpleContent(SimpleItem):
 
 InitializeClass(IndexSimpleContent)
 
-manage_addSimpleContentForm = PageTemplateFile(
-    "www/simpleContentAdd", globals(),
-    __name__ = 'manage_addSimpleContentForm')
-
 def manage_addSimpleContent(self, id, title, REQUEST=None):
     """Add the simple content."""
-    id = self._setObject(id, SimpleContent(id, title))
-    add_and_edit(self, id, REQUEST)
-    return ''
+    self._setObject(id, SimpleContent(id, title))
 
 def manage_addCallableSimpleContent(self, id, title, REQUEST=None):
     """Add the viewable simple content."""
-    id = self._setObject(id, CallableSimpleContent(id, title))
-    add_and_edit(self, id, REQUEST)
-    return ''
+    self._setObject(id, CallableSimpleContent(id, title))
 
 def manage_addIndexSimpleContent(self, id, title, REQUEST=None):
     """Add the viewable simple content."""
-    id = self._setObject(id, IndexSimpleContent(id, title))
-    add_and_edit(self, id, REQUEST)
-    return ''
+    self._setObject(id, IndexSimpleContent(id, title))

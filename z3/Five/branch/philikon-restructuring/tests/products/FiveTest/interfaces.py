@@ -25,14 +25,6 @@ class IDestination(Interface):
     def method():
         """Do something"""
 
-class ISimpleContent(Interface):
-    pass
-
-class ICallableSimpleContent(ISimpleContent):
-    pass
-
-class IIndexSimpleContent(ISimpleContent):
-    pass
 
 class IFancyContent(Interface):
     pass

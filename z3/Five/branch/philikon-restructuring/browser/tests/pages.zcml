@@ -1,0 +1,181 @@
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- attribute page -->
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      attribute="eagle"
+      name="eagle.txt"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      name="eagle.method"
+      permission="zope2.ViewManagementScreens"
+      allowed_attributes="eagle"
+      />
+
+  <browser:pages
+      for=".simplecontent.ISimpleContent"
+      class=".pages.NoDocstringView"
+      permission="zope2.Public">
+    <browser:page
+        name="nodoc-method"
+        attribute="method"
+        />
+    <browser:page
+        name="nodoc-function"
+        attribute="function"
+        />
+    <browser:page
+        name="nodoc-object"
+        attribute="object"
+        />
+  </browser:pages>
+
+  <!-- attribute page -->
+  <browser:pages
+      for=".simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      permission="zope2.ViewManagementScreens"
+      >
+    <browser:page
+        name="eagle-page.txt"
+        attribute="eagle"
+        />
+    <browser:page
+        name="mouse-page.txt"
+        attribute="mouse"
+        />
+  </browser:pages>
+
+  <!-- template/class page -->
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      template="falcon.pt"
+      name="falcon.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <!-- template page (with simple python expression) -->
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      template="owl.pt"
+      name="owl.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <!-- template page which calls on context using python -->
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      template="flamingo.pt"
+      name="flamingo.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <!-- template page which calls on context using path -->
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      template="flamingo2.pt"
+      name="flamingo2.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <!-- template/class page which calls on context, view, views -->
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      template="condor.pt"
+      name="condor.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <!-- test TALES -->
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      template="ostrich.pt"
+      name="ostrich.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      template="ostrich2.pt"
+      name="ostrich2.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      template="tales_traversal.pt"
+      name="tales_traversal.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <!-- template security -->
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      template="security.pt"
+      name="security.html"
+      permission="zope2.View"
+      />
+
+  <!-- a publicly accessible page, attribute, template, template/class -->
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      attribute="eagle"
+      name="public_attribute_page"
+      permission="zope2.Public"
+      />
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      template="owl.pt"
+      name="public_template_page"
+      permission="zope2.Public"
+      />
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      template="falcon.pt"
+      name="public_template_class_page"
+      permission="zope2.Public"
+      />
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      template="parakeet.pt"
+      name="parakeet.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <!-- browser:page directives with new style classes are ignored -->
+
+  <browser:page
+      for=".simplecontent.ISimpleContent"
+      class=".pages.NewStyleClass"
+      name="invalid_page"
+      attribute="method"
+      permission="zope2.Public"
+      />
+
+
+  <!-- XXX this should really be in Five.form.tests -->
+
+  <!-- protected edit form for permission check -->
+  <browser:editform
+      schema=".simplecontent.ISimpleContent"
+      name="protectededitform.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+</configure>
