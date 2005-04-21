@@ -3,7 +3,7 @@
 
   <!-- attribute page -->
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       attribute="eagle"
       name="eagle.txt"
@@ -11,7 +11,7 @@
       />
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       name="eagle.method"
       permission="zope2.ViewManagementScreens"
@@ -19,7 +19,7 @@
       />
 
   <browser:pages
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.NoDocstringView"
       permission="zope2.Public">
     <browser:page
@@ -38,7 +38,7 @@
 
   <!-- attribute page -->
   <browser:pages
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       permission="zope2.ViewManagementScreens"
       >
@@ -54,7 +54,7 @@
 
   <!-- template/class page -->
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       template="falcon.pt"
       name="falcon.html"
@@ -63,7 +63,7 @@
 
   <!-- template page (with simple python expression) -->
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="owl.pt"
       name="owl.html"
       permission="zope2.ViewManagementScreens"
@@ -71,7 +71,7 @@
 
   <!-- template page which calls on context using python -->
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="flamingo.pt"
       name="flamingo.html"
       permission="zope2.ViewManagementScreens"
@@ -79,7 +79,7 @@
 
   <!-- template page which calls on context using path -->
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="flamingo2.pt"
       name="flamingo2.html"
       permission="zope2.ViewManagementScreens"
@@ -87,7 +87,7 @@
 
   <!-- template/class page which calls on context, view, views -->
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       template="condor.pt"
       name="condor.html"
@@ -96,21 +96,21 @@
 
   <!-- test TALES -->
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="ostrich.pt"
       name="ostrich.html"
       permission="zope2.ViewManagementScreens"
       />
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="ostrich2.pt"
       name="ostrich2.html"
       permission="zope2.ViewManagementScreens"
       />
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="tales_traversal.pt"
       name="tales_traversal.html"
       permission="zope2.ViewManagementScreens"
@@ -119,7 +119,7 @@
   <!-- template security -->
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="security.pt"
       name="security.html"
       permission="zope2.View"
@@ -128,7 +128,7 @@
   <!-- a publicly accessible page, attribute, template, template/class -->
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       attribute="eagle"
       name="public_attribute_page"
@@ -136,14 +136,14 @@
       />
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="owl.pt"
       name="public_template_page"
       permission="zope2.Public"
       />
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       template="falcon.pt"
       name="public_template_class_page"
@@ -151,7 +151,7 @@
       />
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.SimpleView"
       template="parakeet.pt"
       name="parakeet.html"
@@ -161,7 +161,7 @@
   <!-- browser:page directives with new style classes are ignored -->
 
   <browser:page
-      for=".simplecontent.ISimpleContent"
+      for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.NewStyleClass"
       name="invalid_page"
       attribute="method"
@@ -173,7 +173,7 @@
 
   <!-- protected edit form for permission check -->
   <browser:editform
-      schema=".simplecontent.ISimpleContent"
+      schema="Products.Five.tests.simplecontent.ISimpleContent"
       name="protectededitform.html"
       permission="zope2.ViewManagementScreens"
       />

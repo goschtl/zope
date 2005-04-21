@@ -27,7 +27,7 @@ from Products.Five.traversable import FakeRequest
 from Products.Five.tests.dummy import Dummy1
 from Products.Five.tests.helpers import RestrictedPythonTestCase
 from Products.Five.tests.helpers import manage_addFiveTraversableFolder
-from Products.Five.browser.tests.simplecontent import manage_addSimpleContent
+from Products.Five.tests.simplecontent import manage_addSimpleContent
 
 view_names = [
     'eagle.txt',

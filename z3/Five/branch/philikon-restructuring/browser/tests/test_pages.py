@@ -21,8 +21,8 @@ installProduct('Five')
 import re
 import Products.Five.browser.tests
 from Products.Five import zcml
+from Products.Five.tests.simplecontent import manage_addSimpleContent
 from Products.Five.browser.tests.pages import SimpleView
-from Products.Five.browser.tests.simplecontent import manage_addSimpleContent
 
 def normalize_html(s):
     s = re.sub(r"[ \t\n]+", "", s)
