@@ -14,6 +14,7 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+import unittest
 from Testing.ZopeTestCase import FunctionalTestCase, installProduct
 installProduct('Five')
 
@@ -80,6 +81,11 @@ class EditFormTest(FunctionalTestCase):
         response = self.publish('/test_folder_1_/csc/edit.html',
                                 basic='manager:r00t')
         self.assertEquals(200, response.getStatus())
+
+def test_suite():
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(EditFormTest))
+    return suite
 
 if __name__ == '__main__':
     framework()
