@@ -5,7 +5,10 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Testing.ZopeTestCase import ZopeTestCase
+import unittest
+from Testing.ZopeTestCase import ZopeTestCase, installProduct
+from Testing.ZopeTestCase import standard_permissions
+installProduct('Five')
 
 from Products.Five.tests.products.FiveTest.subscriber import clear
 from Products.Five.tests.products.FiveTest.subscriber import objectEventCatcher, \
@@ -14,7 +17,6 @@ from Products.Five.tests.products.FiveTest.subscriber import objectEventCatcher,
 
 from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
 from Products.Five.tests.helpers import manage_addNoVerifyPasteFolder
-
 
 class EventTest(ZopeTestCase):
 
@@ -132,11 +134,9 @@ class EventTest(ZopeTestCase):
         self.assertEquals(1, len(events))
         self.assertEquals('foo', events[0].object.id)
 
-
 def test_suite():
-    from unittest import TestSuite, makeSuite
-    suite = TestSuite()
-    suite.addTest(makeSuite(EventTest))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(EventTest))
     return suite
 
 if __name__ == '__main__':
