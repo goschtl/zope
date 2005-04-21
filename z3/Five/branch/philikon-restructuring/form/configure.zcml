@@ -1,6 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser">
 
+  <include package="zope.app.form.browser" />
+
   <browser:page
       for="*"
       name="form_macros"
