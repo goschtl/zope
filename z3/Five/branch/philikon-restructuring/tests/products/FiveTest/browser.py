@@ -1,5 +1,4 @@
 from Products.Five import BrowserView
-from Products.Five import StandardMacros as BaseMacros
 
 class SimpleContentView(BrowserView):
     """More docstring. Please Zope"""
@@ -49,9 +48,3 @@ class NewStyleClass(object):
     def method(self):
         """Docstring"""
         return
-
-class StandardMacros(BaseMacros):
-
-    macro_pages = ('bird_macros', 'dog_macros')
-    aliases = {'flying':'birdmacro',
-               'walking':'dogmacro'}

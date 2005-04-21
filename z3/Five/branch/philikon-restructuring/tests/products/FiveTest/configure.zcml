@@ -200,55 +200,6 @@
       permission="zope2.View"
       />
 
-  <!-- macro page -->
-  <browser:page
-      for=".interfaces.ISimpleContent"
-      template="bird.pt"
-      name="bird.pt"
-      permission="zope2.ViewManagementScreens"
-      />
-
-  <!-- macro aggregation page -->
-  <browser:page
-      for="*"
-      name="fivetest_macros"
-      permission="zope2.View"
-      class=".browser.StandardMacros"
-      allowed_interface="zope.interface.common.mapping.IItemMapping"
-      />
-
-  <browser:page
-      for=".interfaces.ISimpleContent"
-      template="bird.pt"
-      name="bird_macros"
-      permission="zope2.ViewManagementScreens"
-      />
-
-  <browser:page
-      for=".interfaces.ISimpleContent"
-      template="dog.pt"
-      name="dog_macros"
-      permission="zope2.ViewManagementScreens"
-      />
-
-
-  <!-- template page that uses macro page -->
-  <browser:page
-      for=".interfaces.ISimpleContent"
-      class=".browser.SimpleContentView"
-      template="seagull.pt"
-      name="seagull.html"
-      permission="zope2.ViewManagementScreens"
-      />
-
-  <browser:page
-      for=".interfaces.ISimpleContent"
-      class=".browser.SimpleContentView"
-      template="parakeet.pt"
-      name="parakeet.html"
-      permission="zope2.ViewManagementScreens"
-      />
-
   <!-- a publicly accessible page, attribute, template, template/class -->
 
   <browser:page
@@ -299,60 +250,6 @@
       name="invalid_page"
       attribute="method"
       permission="zope2.Public"
-      />
-
-  <!-- browser menu support -->
-  <browser:menu
-      id="testmenu"
-      title="Test menu" />
-
-  <browser:menuItem
-      for=".interfaces.ISimpleContent"
-      menu="testmenu"
-      title="Test Menu Item"
-      action="seagull.html"
-      description="This is a test menu item"
-      permission="zope2.Public"
-      />
-
-  <browser:menuItems
-      for=".interfaces.ISimpleContent"
-      menu="testmenu">
-
-      <menuItem
-          title="Test Menu Item 2"
-          action="parakeet.html"
-          description="This is a test menu item"
-          permission="zope2.Public"
-          />
-
-      <menuItem
-          title="Test Menu Item 3"
-          action="falcon.html"
-          description="This is a test menu item"
-          permission="zope2.Public"
-          />
-
-  </browser:menuItems>
-
-  <!-- page in a menu -->
-  <browser:page
-      for=".interfaces.ISimpleContent"
-      class=".browser.SimpleContentView"
-      template="parakeet.pt"
-      name="parakeet_beyond.html"
-      permission="zope2.ViewManagementScreens"
-      title="A page based entry"
-      menu="testmenu"
-      />
-
-  <browser:editform
-      schema=".interfaces.IFieldSimpleContent"
-      for=".interfaces.IFieldSimpleContent"
-      name="edit2.html"
-      permission="zope2.Public"
-      title="An edit form based entry"
-      menu="testmenu"
       />
 
   <!-- protected edit form for permission check -->

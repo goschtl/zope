@@ -14,7 +14,6 @@ from zope.interface import Interface, implements
 from Products.Five.tests.products.FiveTest.classes import Adaptable, Origin
 from Products.Five.tests.products.FiveTest.interfaces import IAdapted, IDestination
 from Products.Five.tests.products.FiveTest.browser import SimpleContentView
-from Products.Five.traversable import FakeRequest
 from Products.Five.fiveconfigure import classDefaultViewable
 from OFS.Traversable import Traversable
 
@@ -136,10 +135,6 @@ class FiveTest(ZopeTestCase):
 """
         self.assertEquals(expected, view())
 
-    def test_macro_access(self):
-        view = self.folder.unrestrictedTraverse('testoid/seagull.html')
-        self.assertEquals('<html><head><title>bird macro</title></head><body>Color: gray</body></html>\n', view())
-
     def test_repeat_iterator(self):
         view = self.folder.unrestrictedTraverse('testoid/ostrich2.html')
         expected = """\
@@ -167,23 +162,6 @@ class FiveTest(ZopeTestCase):
 <div>smtpd</div>
 """
         self.assertEquals(expected, view())
-
-    def test_standard_macros(self):
-        view = self.folder.unrestrictedTraverse('testoid/@@fivetest_macros')
-        self.assertRaises(KeyError, view.__getitem__, 'non-existing-macro')
-        self.failUnless(view['birdmacro'])
-        self.failUnless(view['dogmacro'])
-        # Test aliases
-        self.failUnless(view['flying'])
-        self.failUnless(view['walking'])
-        self.assertEquals(view['flying'], view['birdmacro'])
-        self.assertEquals(view['walking'], view['dogmacro'])
-        # Test traversal
-        base = 'testoid/@@fivetest_macros/%s'
-        for macro in ('birdmacro', 'dogmacro',
-                      'flying', 'walking'):
-            view = self.folder.unrestrictedTraverse(base % macro)
-        self.failUnless(view)
 
     def test_unrestrictedTraverse_non_existing(self):
         self.assertRaises(AttributeError, self.folder.unrestrictedTraverse,
@@ -280,30 +258,6 @@ class RecursionTest(unittest.TestCase):
         self.assertEquals(self.ob.view(), 'foo')
         self.assertEquals(self.ob(), 'foo')
 
-
-from zope.app.publisher.browser.globalbrowsermenuservice import \
-     globalBrowserMenuService
-
-class MenuTest(ZopeTestCase):
-
-    def afterSetUp(self):
-        manage_addIndexSimpleContent(self.folder, 'test', 'Test')
-
-    def test_menu(self):
-        request = FakeRequest()
-        # XXX not sure why we need this..
-        request.getURL = lambda: 'http://www.infrae.com'
-        menu = globalBrowserMenuService.getMenu('testmenu',
-                                                self.folder.test,
-                                                request)
-        self.assertEquals(3, len(menu))
-        # sort menu items by title so we get a stable testable result
-        menu.sort(lambda x, y: cmp(x['title'], y['title']))
-        self.assertEquals('Test Menu Item', menu[0]['title'])
-        self.assertEquals('seagull.html', menu[0]['action'])
-        self.assertEquals('Test Menu Item 2', menu[1]['title'])
-        self.assertEquals('parakeet.html', menu[1]['action'])
-
 class SizeTest(ZopeTestCase):
 
     def test_no_get_size_on_original(self):
@@ -322,7 +276,6 @@ def test_suite():
     suite.addTest(makeSuite(RecursionTest))
     suite.addTest(makeSuite(FiveTest))
     suite.addTest(makeSuite(PublishTest))
-    suite.addTest(makeSuite(MenuTest))
     suite.addTest(makeSuite(SizeTest))
     return suite
 
