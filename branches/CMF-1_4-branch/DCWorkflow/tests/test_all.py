@@ -2,8 +2,12 @@
 import unittest
 from Products.CMFCore.tests.base.utils import build_test_suite
 
-def test_suite():
+def suite():
     return unittest.TestSuite()
 
+def test_suite():
+    # Just toilence the top-level test.py
+    return None
+
 if __name__ == '__main__':
-    unittest.main(defaultTest='test_suite')
+    unittest.main(defaultTest='suite')

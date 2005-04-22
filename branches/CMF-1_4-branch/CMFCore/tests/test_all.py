@@ -2,7 +2,7 @@ import Zope
 from unittest import main
 from Products.CMFCore.tests.base.utils import build_test_suite
 
-def test_suite():
+def suite():
 
     return build_test_suite('Products.CMFCore.tests',[
         'test_ContentTypeRegistry',
@@ -32,5 +32,9 @@ def test_suite():
         'test_URLTool',
         ])
 
+def test_suite():
+    # Just toilence the top-level test.py
+    return None
+
 if __name__ == '__main__':
-    main(defaultTest='test_suite')
+    main(defaultTest='suite')
