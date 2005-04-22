@@ -1,6 +1,15 @@
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Test events triggered by Five
 
-# test events triggered by Five
-
+$Id: test_size.py 11016 2005-04-22 10:58:55Z philikon $
+"""
 import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
@@ -10,6 +19,8 @@ from Testing.ZopeTestCase import ZopeTestCase, installProduct
 from Testing.ZopeTestCase import standard_permissions
 installProduct('Five')
 
+import Products.Five.tests
+from Products.Five import zcml
 from Products.Five.testing import manage_addNoVerifyPasteFolder
 from Products.Five.tests.simplecontent import manage_addSimpleContent
 from Products.Five.tests.subscriber import clear
@@ -20,6 +31,7 @@ from Products.Five.tests.subscriber import objectEventCatcher, \
 class EventTest(ZopeTestCase):
 
     def afterSetUp(self):
+	zcml.load_config('event.zcml', package=Products.Five.tests)
         manage_addNoVerifyPasteFolder(self.folder, 'npvf')
         self.folder = self.folder.npvf
 
