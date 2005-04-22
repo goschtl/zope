@@ -888,21 +888,13 @@ following information:
 \usecounter{listcnt3}
 \setlength{\rightmargin}{\leftmargin}
 }
-\item {} 
+\item 
 Date and time of the event, type of event, subject identity,
 and the outcome (success or failure) of the event; and
 
-\item {} \begin{description}
-%[visit_definition_list_item]
-\item[For each audit event type, based on auditable event definitions]
-%[visit_definition]
-
+\item \textbf{For each audit event type, based on auditable event definitions}
 of the functional components included in the ST,
 \emph{{[}assignment: the ID of the corresponding interaction]}
-
-%[depart_definition]
-%[depart_definition_list_item]
-\end{description}
 
 \end{list}
 
@@ -1501,10 +1493,10 @@ protected by different permissions.
 \minisec{FMT{\_}MSA.1 Management of security attributes}
 \begin{description}
 \item[FMT{\_}MSA.1.1.grants]
-    The TSF shall enforce the \emph{\[formal security policy\]} to restrict the
-    ability to \emph{\[query, modify, delete, and add\]} the security
-    attributes \emph{\[permission grants and denials\]} to \emph{\[authorized
-    grantors\]}.
+    The TSF shall enforce the \emph{{[}formal security policy]} to restrict the
+    ability to \emph{{[}query, modify, delete, and add]} the security
+    attributes \emph{{[}permission grants and denials]} to \emph{{[}authorized
+    grantors]}.
 
 \item[FMT{\_}MSA.1.2.loginname]
     The TSF shall enforce the \emph{{[}formal security policy]} to restrict the
@@ -1513,10 +1505,10 @@ protected by different permissions.
     authorized to modify their own authentication data]}.
 
 \item[FMT{\_}MSA.1.3.password]
-    The TSF shall enforce the \emph{\[formal security policy\]} to restrict
-    the ability to \emph{\[modify\]} the security attribute
-    \emph{\[password\]} to \emph{\[authorized administrators and users authorized to
-    modify their own authentication data\]}.
+    The TSF shall enforce the \emph{{[}formal security policy]} to restrict
+    the ability to \emph{{[}modify]} the security attribute
+    \emph{{[}password]} to \emph{{[}authorized administrators and users authorized to
+    modify their own authentication data]}.
 
 \end{description}
 
@@ -1725,7 +1717,7 @@ The Evaluation Assurance Level chosen for this Evaluation is EAL 1.
 The following TOE assurance requirements drawn from CC Part 3 are valid:
 
 
-\begin{longtable}[c]{lp{6cm}l}
+\begin{longtable}[c]{lp{7cm}p{3cm}}
   \toprule
   Identification & Description & Direct dependencies\\
   \midrule \endhead
@@ -1772,8 +1764,8 @@ The following security requirements exist for the IT environment:
 
   \item The ZODB storage is FileStorage or FileStorage through a ZEO server.
 
-  \item The client software must support ``protected authentication feedback''
-      (FIA{\_}UAU.7), to at least not echo a user's credentials in plain text.
+  \item The client software must support ``protected authentication feedback'',
+  to at least not echo a user's credentials in plain text (FIA{\_}UAU.7).
 
   \item The TOE can only be accessed through a ``trusted path'' using secure
       proxies, such as an HTTPS proxy like Apache with SSL, or Pound. Users are
@@ -2127,7 +2119,7 @@ the threads and assumptions.
 
   \item[OE.Network:] This security objective covers the assumptions
   \textbf{A.Network} because it asserts that all
-  network connections which are not related to the TOE are secure in way not
+  network !(!5
   compromising the integrity.
 
   \item[OE.Client:] This security objective covers the assumption
@@ -2146,12 +2138,10 @@ the threads and assumptions.
 \section{Security requirements rationale}
 
 
-\begin{table}
-    \scriptsize
-    \begin{tabular}{rRRRRRRRR}
+\begin{longtable}{rRRRRRRRR}
         \toprule
                             & O.IA & O.Delegation & O.Audit & O.Protect & O.Access & O.Integrity & O.Attributes & O.ManageRisk \\
-        \midrule
+        \midrule\endhead
 
 FAU\_GEN.1                  &      &              & \oh     &           &          &             &              &              \\
 FAU\_GEN.2                  &      &              & \oh     &           &          &             &              &              \\
@@ -2178,18 +2168,15 @@ FPT\_FLS.1                  &      &              &         &  \oh      &       
 FPT\_SEP.1                  &      &              &         &   \oh     &          &             &              &   \oh        \\
 FPT\_STM.1                  &      &              &  \oh    &           &          &             &              &              \\
  \bottomrule
- % XXX \caption{Mapping of Security Objectives to Security Functional Requirements}
- \end{tabular}
-\end{table}
+ \caption{Mapping of Security Objectives to Security Functional Requirements}
+\end{longtable}
 
 \subsection{SFR Component dependency analysis}
 
-\begin{table}
-    \scriptsize
-    \begin{tabular}{rl}
+\begin{longtable}{rp{8cm}}
         \toprule
         SFR                 &   Depends on  \\
-        \midrule
+        \midrule\endhead
 FAU\_GEN.1                  &   FPT\_STM.1   \\
 FAU\_GEN.2                  &   FAU\_GEN.1, FIA\_UID.1 \\
 FDP\_ACC.2                  &   FDP\_ACF.1 \\
@@ -2215,9 +2202,8 @@ FPT\_FLS.1                  &   ADV\_SPM.1 \\
 FPT\_SEP.1                  &   -- \\
 FPT\_STM.1                  &   -- \\
 \bottomrule
-% XXX \caption{SFR Dependency Analysis}
-\end{tabular}
-\end{table}
+   \caption{SFR Dependency Analysis}
+\end{longtable}
 
 All dependencies required by the chosen SFRs are covered. See table XXX.
 
@@ -2232,7 +2218,7 @@ All dependencies required by the chosen SFRs are covered. See table XXX.
         \item[Asking for and validating a user's credentials:]
 
             The TOE holds information to uniquely identify a principal and its
-            required credentials. (FIA\_ATD.1) 
+            required credentials (FIA\_ATD.1).
             
             The TOE presents the user with a prompt to supply his credentials
             if an operation requires an identified and authenticated principal (FIA\_UAU.1, FIA\_UID.1)
@@ -2388,12 +2374,10 @@ All dependencies required by the chosen SFRs are covered. See table XXX.
 
 \subsection{Security Functions Rationale}
 
-\begin{table}
-    \scriptsize
-    \begin{tabular}{rRRRRRRRRRR}
+\begin{longtable}{rRRRRRRRRRR}
         \toprule
                     & Protection & Authentication & Authorization & Auditing & Configuration & Transaction management & Undo & Publication/Server & Automated Tests & Python Environment \\
-        \midrule
+        \midrule\endhead
 FAU\_GEN.1          &            &                &               & \oh      &               &                        &      &                    &                 &                    \\   
 FAU\_GEN.2          &            &                &               & \oh      &               &                        &      &                    &                 &                    \\   
 FDP\_ACC.2          & \oh        &                &               &          &               &                        &      & \oh                &                 &                    \\   
@@ -2420,9 +2404,9 @@ FPT\_FLS.1          &            &                &               &          &  
 FPT\_SEP.1          &  \oh       &                &               &          &               &                        &      &                    &                 &                    \\ 
 FPT\_STM.1          &            &                &               &          &               &                        &      &                    &                 &   \oh              \\       
     \bottomrule
-    % XXX \caption{Security Functions Rationale}
-    \end{tabular}
-\end{table}
+    \caption{Security Functions Rationale} % XXX
+
+\end{longtable}
 
 \subsubsection{Suitability of SF to meet the SFRs}
 
@@ -2455,7 +2439,7 @@ possibility to cancel other transactions through the use of the
 \textbf{Publication} subsystem.
 
 \minisec{FDP\_ROL.1\_UNDO --- Basic Rollback}
-
+(FIA{\_}UAU.7), 
 The \textbf{Undo} subsystem covers undoing old transactions in a secure and
 consistent manner. Old transactions that are not to be undone consistently
 are not allowed to be undone.
