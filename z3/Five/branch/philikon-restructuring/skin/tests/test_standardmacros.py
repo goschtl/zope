@@ -26,8 +26,11 @@ from Products.Five.tests.helpers import manage_addFiveTraversableFolder
 class StandardMacrosTests(ZopeTestCase):
 
     def afterSetUp(self):
-	zcml.load_config('configure.zcml', package=Products.Five.skin.tests)
-	manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
+        zcml.load_config('configure.zcml', package=Products.Five.skin.tests)
+        uf = self.folder.acl_users
+        uf._doAddUser('manager', 'r00t', ['Manager'], [])
+        self.login('manager')
+        manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
 
     def test_standard_macros(self):
         view = self.folder.unrestrictedTraverse('testoid/@@fivetest_macros')
