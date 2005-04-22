@@ -18,8 +18,8 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from zope.app.pagetemplate.viewpagetemplatefile import ViewMapper
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 
-from Products.Five.ReuseUtils import rebindFunction
-from Products.Five.TrustedExpression import getEngine, ModuleImporter
+from Products.Five.browser.ReuseUtils import rebindFunction
+from Products.Five.browser.TrustedExpression import getEngine, ModuleImporter
 
 class ZopeTwoPageTemplateFile(PageTemplateFile):
     """A strange hybrid between Zope 2 and Zope 3 page template.
