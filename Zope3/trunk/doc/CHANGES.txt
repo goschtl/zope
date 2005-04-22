@@ -94,9 +94,14 @@ Zope Changes
         features can be tested with the new zcml:condition attribute.
 
       - ZCML supports conditional directives using the zcml:condition
-        attribute.  The value of the attribute is an expression of the
-        form "verb arguments".  Currently the only recognized verb is "have",
-        and it takes a single name of a feature as an argument.
+        attribute. The value of the attribute is an expression of the
+        form "verb arguments". The following verbs are recognized:
+
+        * `have` -- It takes a single name of a feature as an
+          argument. Features can be registed via the 'zcml:feature' directive.
+
+        * `installed` -- It's argument is a single package name. If the
+          package is importable, return true.
 
         If the expression is true, the element the attribute is attached to
         will be used, otherwise the element and its descendents will be
