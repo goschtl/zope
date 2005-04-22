@@ -2,6 +2,11 @@ After CMF 1.4.8
 
   Bug Fixes
 
+    - Hide 'test_all' from the "standard" testrunner in Zope 2.7, to
+      avoid duplicating test runs (which can lead to spurious test failures).
+      'bin/zopectl test' from an instance home with CMF installed should now
+      run all tests cleanly.  Backport from the 1.5 changes a year back.
+
     - Fixed Creator() to not call a potentially costly method on the
       user folder. (http://zope.org/Collectors/CMF/300)
 
