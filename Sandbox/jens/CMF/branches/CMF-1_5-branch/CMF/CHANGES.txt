@@ -6,6 +6,8 @@ After CMF-1.5.1beta2
       version numbers in the 1.5 series and thus won't look outdated from
       one release to the next.
 
+    - CMFCatalogAware: reindexObjectSecurity() optimizations in case
+      of an indexable container.
 
 CMF-1.5.1beta2 (2005/04/17)
 
