@@ -9,6 +9,10 @@ After CMF-1.5.1beta2
    -  CMFCatalogAware: reindexObjectSecurity() optimizations in case
       of an indexable container.
 
+  Bug Fixes
+
+   - CMFCore.Skinnable: Don't catch ConflictError in __of__.
+
 CMF-1.5.1beta2 (2005/04/17)
 
   New Features
