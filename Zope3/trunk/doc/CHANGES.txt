@@ -10,6 +10,13 @@ Zope Changes
 
     New features
 
+      - The http() function exposed to functional doctests how accepts
+        an optional "form" argument to use as the set of form values.
+        This works for any type of request; this can used to make
+        functional doctests involving form submissions much easier to
+        read and maintain.  It's also convenient when some of the form
+        values are computed.
+
       - Implemented proper HTTP 405 Method Not Allowed handling in the
         HTTP publication if a requested method does not have a corresponding
         view.
