@@ -1,29 +1,37 @@
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Test the basic ZCML directives
 
+$Id$
+"""
 import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import re
 import unittest
-import zope
-
 from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
+from Testing.ZopeTestCase import installProduct
+installProduct('Five')
+
+import Products.Five.tests
+from Products.Five import zcml
 
 from Products.Five.tests.adapters import IAdapted, IDestination
 from Products.Five.tests.adapters import Adaptable, Origin
-
 from Products.Five.tests.simplecontent import manage_addSimpleContent
-from Products.Five.tests.simplecontent import manage_addCallableSimpleContent
-from Products.Five.tests.simplecontent import manage_addIndexSimpleContent
 from Products.Five.tests.fancycontent import manage_addFancyContent
 
-class FiveTest(ZopeTestCase):
+class DirectivesTest(ZopeTestCase):
     """Test very basic Five functionality (adapters, ZCML, etc.)"""
 
     def afterSetUp(self):
-        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
-        manage_addCallableSimpleContent(self.folder, 'testcall', 'TestCall')
-        manage_addIndexSimpleContent(self.folder, 'testindex', 'TestIndex')
+        zcml.load_config('directives.zcml', package=Products.Five.tests)
 
     def test_adapters(self):
         obj = Adaptable()
@@ -32,22 +40,21 @@ class FiveTest(ZopeTestCase):
             "Adapted: The method",
             adapted.adaptedMethod())
 
-    #XXX move to browser
     def test_overrides(self):
+        zcml.load_string(
+            """<includeOverrides
+                   package="Products.Five.tests"
+                   file="overrides.zcml" />""")
         origin = Origin()
         dest = IDestination(origin)
         self.assertEquals(dest.method(), "Overridden")
 
-        view = self.folder.unrestrictedTraverse('testoid/overridden_view')
-        self.assertEquals(view(), "The mouse has been eaten by the eagle")
-
-class PublishTest(FunctionalTestCase):
+class PublishDirectivesTest(FunctionalTestCase):
     """Test a few publishing features"""
 
     def afterSetUp(self):
+        zcml.load_config('directives.zcml', package=Products.Five.tests)
         manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
-        manage_addCallableSimpleContent(self.folder, 'testcall', 'TestCall')
-        manage_addIndexSimpleContent(self.folder, 'testindex', 'TestIndex')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
@@ -76,20 +83,6 @@ class PublishTest(FunctionalTestCase):
         response = self.publish('/test_folder_1_/fancy/fancy')
         self.assertEquals("Fancy, fancy", response.getBody())
 
-    # Disabled __call__ overriding for now. Causes more trouble
-    # than it fixes.
-    # def test_existing_call(self):
-    #     response = self.publish('/test_folder_1_/testcall')
-    #     self.assertEquals("Default __call__ called", response.getBody())
-
-    def test_existing_index(self):
-        response = self.publish('/test_folder_1_/testindex')
-        self.assertEquals("Default index_html called", response.getBody())
-
-    def test_default_view(self):
-        response = self.publish('/test_folder_1_/testoid', basic='manager:r00t')
-        self.assertEquals("The eagle has landed", response.getBody())
-
     def test_pages_from_directory(self):
         response = self.publish('/test_folder_1_/testoid/dirpage1')
         self.assert_('page 1' in response.getBody())
@@ -97,10 +90,9 @@ class PublishTest(FunctionalTestCase):
         self.assert_('page 2' in response.getBody())
 
 def test_suite():
-    from unittest import TestSuite, makeSuite
-    suite = TestSuite()
-    suite.addTest(makeSuite(FiveTest))
-    suite.addTest(makeSuite(PublishTest))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(DirectivesTest))
+    suite.addTest(unittest.makeSuite(PublishDirectivesTest))
     return suite
 
 if __name__ == '__main__':

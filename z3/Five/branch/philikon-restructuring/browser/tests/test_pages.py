@@ -147,11 +147,13 @@ class PagesTest(ZopeTestCase):
         self.assertRaises(AttributeError, self.folder.unrestrictedTraverse,
                           'testoid/@@invalid_page')
 
-    # Disabled __call__ overriding for now. Causes more trouble
-    # than it fixes.
-    # def test_existing_call(self):
-    #     view = self.folder.unrestrictedTraverse('testcall')
-    #     self.assertEquals("Default __call__ called", view())
+    def test_overrides(self):
+        zcml.load_string(
+            """<includeOverrides
+                   package="Products.Five.browser.tests"
+                   file="overrides.zcml" />""")
+        view = self.folder.unrestrictedTraverse('testoid/overridden_view')
+        self.assertEquals(view(), "The mouse has been eaten by the eagle")
 
 def test_suite():
     suite = unittest.TestSuite()

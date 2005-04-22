@@ -178,4 +178,13 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <!-- stuff that we'll override in overrides.zcml -->
+  <browser:page
+      for="Products.Five.tests.simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      attribute="eagle"
+      name="overridden_view"
+      permission="zope2.Public"
+      />
+
 </configure>
