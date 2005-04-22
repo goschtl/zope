@@ -13,6 +13,10 @@ After CMF-1.5.1beta2
 
    - CMFCore.Skinnable: Don't catch ConflictError in __of__.
 
+   - CMFCore.CMFCatalogAware: In reindexObjectSecurity, use
+     _unrestrictedGetObject when available, and LOG when the object
+     cannot be retrieved.
+
 CMF-1.5.1beta2 (2005/04/17)
 
   New Features
