@@ -87,4 +87,20 @@
       name="Role Ids"
       factory=".vocabulary.RoleIdsVocabulary" />
 
+  <!-- Registering documentation with API doc -->
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="zopepolicy"
+        title="Default Security Policy"
+        doc_path="zopepolicy.txt"
+        parent="security"
+        />
+
+  </configure>
+
+
 </configure>

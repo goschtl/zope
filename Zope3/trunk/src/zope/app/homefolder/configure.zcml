@@ -77,5 +77,20 @@
       description="A Principal Home Folder Manager"
       />
 
+  <!-- Registering documentation with API doc -->
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="homefolder"
+        title="Principal Home Folder"
+        doc_path="README.txt"
+        parent="security"
+        />
+
+  </configure>
+
 
 </configure>

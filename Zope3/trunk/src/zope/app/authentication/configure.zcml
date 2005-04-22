@@ -40,6 +40,21 @@
       provides=".interfaces.ICredentialsPlugin"
       />
 
+  <!-- Registering documentation with API doc -->
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="authentication"
+        title="Pluggable Authentication"
+        doc_path="README.txt"
+        parent="security"
+        />
+
+  </configure>
+
   <include file="session.zcml" />
   <include file="httpplugins.zcml" />
   <include file="principalfolder.zcml" />
