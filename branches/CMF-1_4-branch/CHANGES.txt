@@ -2,6 +2,9 @@ After CMF 1.4.8
 
   Bug Fixes
 
+    - Ensure that syndication tool coerces property values into correct
+      types. (http://zope.org/Collectors/CMF/344)
+
     - Hide 'test_all' from the "standard" testrunner in Zope 2.7, to
       avoid duplicating test runs (which can lead to spurious test failures).
       'bin/zopectl test' from an instance home with CMF installed should now
