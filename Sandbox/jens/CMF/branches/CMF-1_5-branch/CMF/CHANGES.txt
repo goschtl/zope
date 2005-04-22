@@ -6,16 +6,16 @@ After CMF-1.5.1beta2
       version numbers in the 1.5 series and thus won't look outdated from
       one release to the next.
 
-   -  CMFCatalogAware: reindexObjectSecurity() optimizations in case
+    - CMFCatalogAware: reindexObjectSecurity() optimizations in case
       of an indexable container.
 
   Bug Fixes
 
-   - CMFCore.Skinnable: Don't catch ConflictError in __of__.
+    - CMFCore.Skinnable: Don't catch ConflictError in __of__.
 
-   - CMFCore.CMFCatalogAware: In reindexObjectSecurity, use
-     _unrestrictedGetObject when available, and LOG when the object
-     cannot be retrieved.
+    - CMFCore.CMFCatalogAware: In reindexObjectSecurity, use
+      _unrestrictedGetObject when available, and LOG when the object
+      cannot be retrieved.
 
 CMF-1.5.1beta2 (2005/04/17)
 
