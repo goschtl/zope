@@ -24,9 +24,6 @@ class FiveTest(ZopeTestCase):
         manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
         manage_addCallableSimpleContent(self.folder, 'testcall', 'TestCall')
         manage_addIndexSimpleContent(self.folder, 'testindex', 'TestIndex')
-        uf = self.folder.acl_users
-        uf._doAddUser('manager', 'r00t', ['Manager'], [])
-        self.login('manager')
 
     def test_adapters(self):
         obj = Adaptable()
@@ -35,13 +32,7 @@ class FiveTest(ZopeTestCase):
             "Adapted: The method",
             adapted.adaptedMethod())
 
-    def test_adapters2(self):
-        obj = Adaptable()
-        adapted = IAdapted(obj)
-        self.assertEquals(
-            "Adapted: The method",
-            adapted.adaptedMethod())
-
+    #XXX move to browser
     def test_overrides(self):
         origin = Origin()
         dest = IDestination(origin)
@@ -104,18 +95,6 @@ class PublishTest(FunctionalTestCase):
         self.assert_('page 1' in response.getBody())
         response = self.publish('/test_folder_1_/testoid/dirpage2')
         self.assert_('page 2' in response.getBody())
-
-class SizeTest(ZopeTestCase):
-
-    def test_no_get_size_on_original(self):
-        manage_addSimpleContent(self.folder, 'simple', 'Simple')
-	obj = self.folder.simple
-	self.assertEquals(obj.get_size(), 42)
-
-    def test_get_size_on_original_and_fallback(self):
-	manage_addFancyContent(self.folder, 'fancy', 'Fancy')
-	obj = self.folder.fancy
-	self.assertEquals(obj.get_size(), 43)
 
 def test_suite():
     from unittest import TestSuite, makeSuite
