@@ -606,7 +606,6 @@ The following threats against the assets have been identified:
   perform operations on the behalf of other
   users.
    & 
-  XXX was given by TUV. not sure if this really applies ...
   All assets in ZODB
    \\
   
@@ -617,17 +616,6 @@ The following threats against the assets have been identified:
   operation to invalid revisions.
    & 
   All assets in ZODB
-   \\
-  
-
-  T.USB
-   & 
-  An attacker might try to use executable code
-  which runs on behalf of another user to perform
-  unauthorized operations and maybe hide his
-  traces.
-   & 
-  XXX does this only apply to TTW code which we dropped anyway?
    \\
   
 
@@ -880,14 +868,9 @@ They have been drawn from the CC Part 2 functional requirements components.
 \usecounter{listcnt2}
 \setlength{\rightmargin}{\leftmargin}
 }
-\item {} 
-Startup and shutdown of audit functions;
+\item Startup and shutdown of audit functions;
 
-\item {} 
-All auditable events for the \emph{{[}minimum]} level of audit; and
-
-\item {} 
-\emph{{[}select: other events XXX]}
+\item All auditable events for the \emph{\[minimum\]} level of audit.
 
 \end{list}
 
@@ -963,33 +946,16 @@ of the user that caused the event.
 \item[FDP{\_}ACC.2.1 ]
 %[visit_definition]
 
-The TSF shall enforce the \emph{{[}formal security policy]} on
-\emph{{[}subjects: interactions and objects: content objects]} and all
+The TSF shall enforce the \emph{\[formal security policy\]} on
+\emph{\[subjects: interactions and objects: content objects\]} and all
 operations among subjects and objects covered by the SFP.
-\begin{description}
-%[visit_definition_list_item]
-\item[XXX]
-%[visit_definition]
 
-We now protect adapters of various kinds. This implies that
-adapters are assets, but we think that they should not be.
-
-%[depart_definition]
-%[depart_definition_list_item]
-\end{description}
-
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
 \item[FDP{\_}ACC.2.2]
-%[visit_definition]
 
 The TSF shall ensure that all operations between any
 subject in the TSC and any object within the TSC are covered by an
 access control SFP.
 
-%[depart_definition]
-%[depart_definition_list_item]
 \end{description}
 
 
@@ -1445,6 +1411,33 @@ permission grants to perform the requested operation.
 \end{description}
 
 
+\minisec{FIA{\_}UID.1 Timing of identification}
+\begin{description}
+%[visit_definition_list_item]
+\item[FIA{\_}UID.1.1 ]
+%[visit_definition]
+
+The TSF shall allow \emph{\[only those operations granted to the
+unauthenticated principal\]} on behalf of the user before the user is
+identified.
+
+\emph{Note:} It is possible to deny all operations to the anonymous
+principal. This means that a user must login before any operations may
+be performed on their behalf. This fullfills the terms of FIA\_UID.2
+
+%[depart_definition]
+%[depart_definition_list_item]
+%[visit_definition_list_item]
+\item[FIA{\_}UID.1.2 ]
+%[visit_definition]
+
+The TSF shall require each user to be successfully
+identified before allowing any other TSF-mediated actions on behalf
+of that user.
+
+%[depart_definition]
+%[depart_definition_list_item]
+\end{description}
 %___________________________________________________________________________
 
 
@@ -1582,53 +1575,32 @@ denials. The default is an empty collection.
 
 \minisec{FMT{\_}SMR.1 Security roles}
 
-XXX update/rewrite section
 \begin{description}
-%[visit_definition_list_item]
-\item[FMT{\_}SMR.1.1]
-%[visit_definition]
+    \item[FMT{\_}SMR.1.1]
 
-The TSF shall maintain the roles:
+    The TSF shall maintain the roles:
 \begin{description}
-%[visit_definition_list_item]
 \item[Authorized administrator]
-%[visit_definition]
 
 Users who can perform system-wide security functions. These are
 people who have the zope.ManageSecurity permission.
 
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
 \item[Grantor ]
-%[visit_definition]
 
 Users who have the ability to grant or deny permissions to
 users for objects.  These are users who have any of the grant
 meta-permissions.
 
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
 \item[Users authorized to modify their own authentication data]
-%[visit_definition]
 
 The role name says it all.
 
-%[depart_definition]
-%[depart_definition_list_item]
 \end{description}
 
-%[depart_definition]
-%[depart_definition_list_item]
-%[visit_definition_list_item]
 \item[FMT{\_}SMR.1.2]
-%[visit_definition]
 
-The TSF shall be able to associate \emph{{[}principals]} with roles.
+The TSF shall be able to associate \emph{\[principals\]} with roles.
 
-%[depart_definition]
-%[depart_definition_list_item]
 \end{description}
 
 
@@ -1789,34 +1761,30 @@ The following TOE assurance requirements drawn from CC Part 3 are valid:
 
 \section{Security requirements for the IT environment}
 
-XXX 
-
 The following security requirements exist for the IT environment:
 
 \begin{itemize}
 
   \item The operating system is Windows 2000, Windows XP or Linux. Either all
-  known security patches must have been installed.
+      known security patches must have been installed.
 
-  \item The Python Version is 2.3.2 or a compatible Bugfix release.
+  \item The Python Version is 2.3.4 or a compatible Bugfix release.
 
-  \item The ZODB storage is FSStorage or XXX ... What else?.
+  \item The ZODB storage is FileStorage or FileStorage through a ZEO server.
 
   \item The client software must support ``protected authentication feedback''
-  (FIA{\_}UAU.7), to at least not echo a user's credentials in plain text.
+      (FIA{\_}UAU.7), to at least not echo a user's credentials in plain text.
 
-  \item One or more ``trusted paths'' to the TOE must be provided using secure
-  proxies, such as an HTTPS proxy like Apache with SSL, or Pound.
+  \item The TOE can only be accessed through a ``trusted path'' using secure
+      proxies, such as an HTTPS proxy like Apache with SSL, or Pound. Users are
+      taught to make correct use of secure channels (e.g. accepting only valid
+      SSL certificates).
 
   \item If external IT systems are used, a trusted channel between the TOE and
-  those systems must be provided by the TOE host environment.  For example,
-  while the TOE may communicate with clients on a public network through a
-  specific port allowed through a firewall, all communication with other IT
-  systems could be over a private network.
-
-  \item To ensure a ``trusted path'' to the TOE, users of the TOE must use
-  secure proxies correctly (for example, being sure to accept only valid
-    server certificates with HTTPS).
+      those systems must be provided by the TOE host environment.  For example,
+      while the TOE may communicate with clients on a public network through a
+      specific port allowed through a firewall, all communication with other IT
+      systems should be over a (virtual) private network.
 
 \end{itemize}
 %___________________________________________________________________________
@@ -1993,13 +1961,13 @@ the tests. Those tests can be run in offline mode.
 
 
 
-\subsection{Python Environment XXX}
+\subsection{Python Environment}
 
 As Zope relies on Python and the host environment to provide reliable time
-stamps, we regard auditing adjustments to the time being out of scope.
-Therefore external log mechanisms (Syslog on Unix hosts or the Event log on
-Windows hosts) should be consulted to detect those changes. (FPT{\_}STM.1)
-
+stamps. Changes to the external clock are not audited within the system as we
+regard then as beeing out of scope.  Therefore external log mechanisms (Syslog
+on Unix hosts or the Event log on Windows hosts) should be consulted to detect
+those changes. (FPT{\_}STM.1)
 
 %___________________________________________________________________________
 
@@ -2194,9 +2162,10 @@ FDP\_ROL.2\_Transactions    &      &              &         &           &       
 FDP\_ROL.1\_Undo            &      &              &         &           &          &             &  \oh         &              \\
 FIA\_AFL\_z.1               &      &              &         &   \oh     &          &             &              &              \\
 FIA\_ATD.1                  & \oh  &  \oh         &   \oh   &           & \oh      &             &              &              \\
-FAU\_UAU.1                  & \oh  &              &         &           &          &             &              &              \\
-FAU\_UAU.5                  & \oh  &              &         &           &          &             &              & \oh          \\
-FAU\_UAU.6                  & \oh  &              &         &           &          &             &              & \oh          \\
+FIA\_UAU.1                  & \oh  &              &         &           &          &             &              &              \\
+FIA\_UAU.5                  & \oh  &              &         &           &          &             &              & \oh          \\
+FIA\_UAU.6                  & \oh  &              &         &           &          &             &              & \oh          \\
+FIA\_UID.1                  & \oh  &              &         &           &          &             &              &              \\
 FIA\_USB.1                  & \oh  &              &         &           &          &             &              &              \\
 FMT\_MOF.1                  &      &              &         &  \oh      &          &             &              & \oh          \\
 FMT\_MSA.1                  & \oh  &  \oh         &         &           &          &             &              &              \\
@@ -2209,13 +2178,48 @@ FPT\_FLS.1                  &      &              &         &  \oh      &       
 FPT\_SEP.1                  &      &              &         &   \oh     &          &             &              &   \oh        \\
 FPT\_STM.1                  &      &              &  \oh    &           &          &             &              &              \\
  \bottomrule
+ % XXX \caption{Mapping of Security Objectives to Security Functional Requirements}
  \end{tabular}
- \caption{Mapping of Security Objectives to Security Functional Requirements}
 \end{table}
 
 \subsection{SFR Component dependency analysis}
 
-XXX See Guide for ST/PP production page 57
+\begin{table}
+    \scriptsize
+    \begin{tabular}{rl}
+        \toprule
+        SFR                 &   Depends on  \\
+        \midrule
+FAU\_GEN.1                  &   FPT\_STM.1   \\
+FAU\_GEN.2                  &   FAU\_GEN.1, FIA\_UID.1 \\
+FDP\_ACC.2                  &   FDP\_ACF.1 \\
+FDP\_ACF.1                  &   FDP\_ACC.1, FMT\_MSA.3 \\
+FDP\_RIP.1                  &   -- \\
+FDP\_ROL.2\_Transactions    &   -- \\
+FDP\_ROL.1\_Undo            &   -- \\
+FIA\_AFL\_z.1               &   FIA\_UAU.1 \\
+FIA\_ATD.1                  &   -- \\
+FIA\_UAU.1                  &   FIA\_UID.1 \\
+FIA\_UAU.5                  &   -- \\
+FIA\_UAU.6                  &   -- \\
+FIA\_UID.1                  &   -- \\
+FIA\_USB.1                  &   FIA\_ATD.1 \\
+FMT\_MOF.1                  &   FMT\_SMR.1 \\
+FMT\_MSA.1                  &   FMT\_SMR.1 \\
+FMT\_MSA.2                  &   ADV\_SPM.1, FMT\_MSA.1, FMT\_SMR.1 \\
+FMT\_MSA.3                  &   FMT\_MSA.1, FMT\_SMR.1 \\
+FMT\_SMR.1                  &   FIA\_UID.1 \\
+FPT\_AMT.1                  &   -- \\
+FPT\_RVM.1                  &   -- \\
+FPT\_FLS.1                  &   ADV\_SPM.1 \\
+FPT\_SEP.1                  &   -- \\
+FPT\_STM.1                  &   -- \\
+\bottomrule
+% XXX \caption{SFR Dependency Analysis}
+\end{tabular}
+\end{table}
+
+All dependencies required by the chosen SFRs are covered. See table XXX.
 
 \subsection{O.IA --- Identification and Authentication}
 
@@ -2231,7 +2235,7 @@ XXX See Guide for ST/PP production page 57
             required credentials. (FIA\_ATD.1) 
             
             The TOE presents the user with a prompt to supply his credentials
-            if an operation requires an authenticated principal (FIA\_UAU.1)
+            if an operation requires an identified and authenticated principal (FIA\_UAU.1, FIA\_UID.1)
 
             Depending on the communication channel, the system selects a
             suitable authentication mechanism to ask a user for his
@@ -2400,9 +2404,10 @@ FDP\_ROL.2\_TRANSACTIONS
 FDP\_ROL.1\_UNDO    & \oh        &                &  \oh          &          &               &                        & \oh  &                    &                 &                    \\   
 FIA\_AFL\_z.1       &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
 FIA\_ATD.1          &            &                &               &          & \oh           &                        &      &                    &                 &                    \\   
-FAU\_UAU.1          &            &                &               &          &               &                        &      & \oh                &                 &                    \\   
-FAU\_UAU.5          &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
-FAU\_UAU.6          &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_UAU.1          &            &                &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_UAU.5          &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_UAU.6          &            &  \oh           &               &          &               &                        &      & \oh                &                 &                    \\   
+FIA\_UID.1          &            &                &               &          &               &                        &      & \oh                &                 &                    \\   
 FIA\_USB.1          &            &                &               &          &               &                        &      &  \oh               &                 &                    \\   
 FMT\_MOF.1          & \oh        &  \oh           &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
 FMT\_MSA.1          &            &                &  \oh          &          & \oh           &                        &      &                    &                 &                    \\   
@@ -2413,7 +2418,9 @@ FPT\_AMT.1          &            &                &               &          &  
 FPT\_RVM.1          & \oh        &                &               &          &               &                        &      &  \oh               &                 &                    \\   
 FPT\_FLS.1          &            &                &               &          &               &     \oh                &      &                    &                 &                    \\   
 FPT\_SEP.1          &  \oh       &                &               &          &               &                        &      &                    &                 &                    \\ 
-FPT\_STM.1          &            &                &               &          &               &                        &      &                    &                 &   \oh              \\        \bottomrule
+FPT\_STM.1          &            &                &               &          &               &                        &      &                    &                 &   \oh              \\       
+    \bottomrule
+    % XXX \caption{Security Functions Rationale}
     \end{tabular}
 \end{table}
 
@@ -2469,16 +2476,17 @@ to be different user initiated requests or started off at another point in the
 application.
   
 
-\minisec{FAU\_UAU.1 --- Timing of authentication}
+\minisec{FIA\_UAU.1, FIA\_UID.1 --- Timing of authentication and identification}
 
 The \textbf{Publication} subsystem detects provided credentials and existing
-sessions on the implemented network protocols. It then either authenticates the
-user for this subject or uses the anonymous principal to perform the requested
-operation. If the anonymous principal is not allowed to perform the requested
-operation, the \textbf{Publication} subsystem challenges the user to provide
-sufficient credentials for authentication resulting in another subject.
+sessions on the implemented network protocols. It then either identifies and
+authenticates the user for this subject or uses the anonymous principal to
+perform the requested operation. If the anonymous principal is not allowed to
+perform the requested operation, the \textbf{Publication} subsystem challenges
+the user to provide sufficient credentials for authentication and
+identification.
 
-\minisec{FAU\_UAU.5 --- Multiple Authentication Systems}
+\minisec{FIA\_UAU.5 --- Multiple Authentication Systems}
 
 The \textbf{Publication} and \textbf{Authentication} subsystems work together
 to identify a meaningful way of asking a user for his credentials. 
@@ -2491,7 +2499,7 @@ The choice of retrieval and verification can depend on the network protocol
 (FTP, HTTP) and the strength of authentication that is requests (e.g. password,
 client certificates).
 
-\minisec{FAU\_UAU.6 --- Re-authentication}
+\minisec{FIA\_UAU.6 --- Re-authentication}
 
 If an operation could not be performed due to missing permission grants, the
 \textbf{Publication} subsystem may -- instead of denying further operation --
@@ -2644,20 +2652,5 @@ Zope as a free software project receives by it's users.
 
 %___________________________________________________________________________
 
-
-
-\chapter{TODO}
-
-
-\section{Part 2}
-\begin{quote}
-\begin{itemize}
-
-
-\item {} 
-TOE summary specification rationale
-
-\end{itemize}
-\end{quote}
 
 \end{document}
