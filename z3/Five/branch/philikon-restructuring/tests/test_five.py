@@ -101,7 +101,6 @@ def test_suite():
     suite = TestSuite()
     suite.addTest(makeSuite(FiveTest))
     suite.addTest(makeSuite(PublishTest))
-    suite.addTest(makeSuite(SizeTest))
     return suite
 
 if __name__ == '__main__':
