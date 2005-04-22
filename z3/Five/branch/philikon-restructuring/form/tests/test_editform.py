@@ -29,7 +29,7 @@ from zope.app.form.browser.itemswidgets import DropdownWidget
 import Products.Five.form.tests
 from Products.Five import zcml
 from Products.Five.traversable import FakeRequest
-from Products.Five.tests.helpers import manage_addFiveTraversableFolder
+from Products.Five.testing import manage_addFiveTraversableFolder
 from Products.Five.form.tests.schemacontent import manage_addFieldContent
 from Products.Five.form.tests.schemacontent import manage_addComplexSchemaContent
 

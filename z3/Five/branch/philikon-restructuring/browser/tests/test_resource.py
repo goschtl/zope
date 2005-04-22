@@ -24,8 +24,8 @@ import glob
 import Products.Five.browser.tests
 from Products.Five import zcml
 from Products.Five.browser.resource import Resource, PageTemplateResource
-from Products.Five.tests.helpers import manage_addFiveTraversableFolder
-from Products.Five.tests.helpers import RestrictedPythonTestCase
+from Products.Five.testing import manage_addFiveTraversableFolder
+from Products.Five.testing import RestrictedPythonTestCase
 
 _prefix = os.path.dirname(Products.Five.browser.tests.__file__)
 dir_resource_names = [os.path.basename(r)

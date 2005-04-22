@@ -21,7 +21,7 @@ installProduct('Five')
 from zope.interface import directlyProvides
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
-from Products.Five.tests.helpers import manage_addFiveTraversableFolder
+from Products.Five.testing import manage_addFiveTraversableFolder
 
 class AbsoluteURLTests(ZopeTestCase):
 

@@ -10,8 +10,8 @@ from Testing.ZopeTestCase import ZopeTestCase, installProduct
 from Testing.ZopeTestCase import standard_permissions
 installProduct('Five')
 
+from Products.Five.testing import manage_addNoVerifyPasteFolder
 from Products.Five.tests.simplecontent import manage_addSimpleContent
-from Products.Five.tests.helpers import manage_addNoVerifyPasteFolder
 from Products.Five.tests.subscriber import clear
 from Products.Five.tests.subscriber import objectEventCatcher, \
      objectAddedEventCatcher, objectMovedEventCatcher, \

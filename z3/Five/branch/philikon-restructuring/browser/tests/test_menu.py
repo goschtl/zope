@@ -24,7 +24,7 @@ from zope.app.publisher.browser.globalbrowsermenuservice import \
 import Products.Five.browser.tests
 from Products.Five import zcml
 from Products.Five.traversable import newInteraction, FakeRequest
-from Products.Five.tests.helpers import manage_addFiveTraversableFolder
+from Products.Five.testing import manage_addFiveTraversableFolder
 
 class MenuTest(ZopeTestCase):
 

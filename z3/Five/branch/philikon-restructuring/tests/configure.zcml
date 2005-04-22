@@ -3,39 +3,7 @@
            xmlns:five="http://namespaces.zope.org/five"
            i18n_domain="fivetest">
 
-  <!-- this is a test whether five:traversable can be called more than
-       once on a class; SimpleContent inherits from api.Viewable, so
-       one directive suffices here -->
-
-  <five:traversable class=".simplecontent.SimpleContent" />
-
-  <five:defaultViewable class=".simplecontent.SimpleContent" />
-
-  <!-- this is a test whether the *directive* can be called -->
-  <!-- more than once without raising a conflicting -->
-  <!-- configuration exception -->
-
-  <five:traversable class=".simplecontent.SimpleContent" />
-
-  <five:defaultViewable class=".simplecontent.SimpleContent" />
-
-  <browser:defaultView
-      for=".interfaces.ISimpleContent"
-      name="eagle.txt"
-      />
-
-  <!-- this tests whether five:traversable can be called on a class that
-       already provides __bobo_traverse__, such as our FancyContent -->
-
-  <five:traversable class=".fancycontent.FancyContent" />
-
-
-  <!-- this tests whether five:defaultViewable can be called on a class that
-       already provides __call__, such as our
-       CallableSimpleContent
-  -->
-
-  <five:defaultViewable class=".simplecontent.CallableSimpleContent" />
+  <!-- XXX browser -->
 
   <!-- five:pagesFromDirectory loads all .pt files in a directory as pages.
        This is mainly used to load Zope2 skin templates so they can be used
@@ -45,31 +13,6 @@
       directory="pages"
       />
 
-  <browser:defaultView
-      for=".interfaces.ICallableSimpleContent"
-      name="__call__"
-      />
-
-  <!-- this tests whether five:defaultViewable can be called on a class that
-       already provides index_html, such as our
-       IndexSimpleContent
-  -->
-
-  <five:defaultViewable class=".simplecontent.IndexSimpleContent" />
-
-  <browser:defaultView
-      for=".interfaces.IIndexSimpleContent"
-      name="index_html"
-      />
-
-  <adapter
-      for=".interfaces.IAdaptable"
-      provides=".interfaces.IAdapted"
-      factory=".classes.Adapter"
-      />
-
-
-
   <browser:page
       for=".interfaces.IFancyContent"
       class=".browser.FancyContentView"
@@ -77,91 +20,5 @@
       name="fancy"
       permission="zope2.Public"
       />
-
-
-
-  <!-- stuff that we'll override in overrides.zcml -->
-
-  <browser:page
-      for=".interfaces.ISimpleContent"
-      class=".browser.SimpleContentView"
-      attribute="eagle"
-      name="overridden_view"
-      permission="zope2.Public"
-      />
-
-  <adapter
-      for=".interfaces.IOrigin"
-      provides=".interfaces.IDestination"
-      factory=".classes.OriginalAdapter"
-      />
-
-  <!-- register size adapters -->
-
-  <five:sizable
-      class=".simplecontent.SimpleContent"
-      />
-
-  <five:sizable
-      class=".fancycontent.FancyContent"
-      />
-
-  <adapter
-      for=".interfaces.ISimpleContent"
-      provides="zope.app.size.interfaces.ISized"
-      factory=".size.SimpleContentSize"
-      />
-
-  <adapter
-      for=".interfaces.IFancyContent"
-      provides="zope.app.size.interfaces.ISized"
-      factory=".size.FancyContentSize"
-      />
-
-  <!-- subscribe to all events -->
-  <five:sendEvents
-      class=".simplecontent.SimpleContent"
-      />
-
-  <subscriber
-      factory=".subscriber.objectEventSubscriber"
-      for="zope.app.event.interfaces.IObjectEvent"
-     />
-
-  <subscriber
-      factory=".subscriber.objectMovedEventSubscriber"
-      for="zope.app.container.interfaces.IObjectMovedEvent"
-      />
-
-  <subscriber
-      factory=".subscriber.objectAddedEventSubscriber"
-      for="zope.app.container.interfaces.IObjectAddedEvent"
-      />
-
-  <subscriber
-      factory=".subscriber.objectCopiedEventSubscriber"
-      for="zope.app.event.interfaces.IObjectCopiedEvent"
-      />
-
-  <subscriber
-      factory=".subscriber.objectRemovedEventSubscriber"
-      for="zope.app.container.interfaces.IObjectRemovedEvent"
-      />
-
-  <!-- Testing the vocabulary directive -->
-  <vocabulary
-     name="aVocabulary"
-     factory="zope.schema.tests.test_vocabulary.SampleVocabulary"
-     />
-
-  <!-- testing that products meta.zcml statements are picked up. -->
-  <five:parrot
-      class=".metaconfigure.NorwegianBlue"
-      name="Polly"
-      />
-      
-  <!-- as new style classes are ignored, zope.app.form.browser
-       can be imported -->
-  <include package="zope.app.form.browser"/>
 
 </configure>

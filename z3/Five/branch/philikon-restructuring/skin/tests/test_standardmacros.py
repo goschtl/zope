@@ -21,7 +21,7 @@ installProduct('Five')
 import glob
 import Products.Five.skin.tests
 from Products.Five import zcml
-from Products.Five.tests.helpers import manage_addFiveTraversableFolder
+from Products.Five.testing import manage_addFiveTraversableFolder
 
 class StandardMacrosTests(ZopeTestCase):
 

@@ -24,9 +24,9 @@ from zope.app import zapi
 import Products.Five.browser.tests
 from Products.Five import zcml
 from Products.Five.traversable import FakeRequest
+from Products.Five.testing import RestrictedPythonTestCase
+from Products.Five.testing import manage_addFiveTraversableFolder
 from Products.Five.tests.dummy import Dummy1
-from Products.Five.tests.helpers import RestrictedPythonTestCase
-from Products.Five.tests.helpers import manage_addFiveTraversableFolder
 from Products.Five.tests.simplecontent import manage_addSimpleContent
 
 view_names = [
