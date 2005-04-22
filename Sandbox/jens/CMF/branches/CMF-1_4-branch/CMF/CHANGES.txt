@@ -9,6 +9,8 @@ After CMF 1.4.8
       reindexed even if they are not visible by the current user. Also
       fixed to work correctly with Zope >= 2.7.6.
 
+    - CMFCore.Skinnable: Don't catch ConflictError in __of__.
+
   New Features
 
     - CatalogTool.CatalogTool now has a private 'unrestrictedSearchResults'
