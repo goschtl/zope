@@ -80,9 +80,9 @@ class DummyBrain:
 class TheClass(CMFCatalogAware, Folder):
     def __init__(self, id):
         self._setId(id)
-        self.notified = False
+        self.notified = 0
     def notifyModified(self):
-        self.notified = True
+        self.notified = 1
 
 
 class CMFCatalogAwareTests(unittest.TestCase):
