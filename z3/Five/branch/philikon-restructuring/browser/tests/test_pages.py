@@ -31,8 +31,11 @@ def normalize_html(s):
 class PagesTest(ZopeTestCase):
 
     def afterSetUp(self):
-	zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
-	manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+        zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
+        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+        uf = self.folder.acl_users
+        uf._doAddUser('manager', 'r00t', ['Manager'], [])
+        self.login('manager')
 
     def test_attribute_view(self):
         view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
@@ -70,14 +73,11 @@ class PagesTest(ZopeTestCase):
         self.assertEquals(u'<p>Hello world</p>\n', view())
 
     def test_template_view_resource_traversal(self):
+        zcml.load_config('resource.zcml', package=Products.Five.browser.tests)
         view = self.folder.unrestrictedTraverse('testoid/parakeet.html')
         expected = """\
         <html>
-        <head>
-        <title>bird macro</title>
-        </head>
         <body>
-        Color: green
         <img alt="" src="http://nohost/test_folder_1_/testoid/++resource++pattern.png" />
         </body>
         </html>
