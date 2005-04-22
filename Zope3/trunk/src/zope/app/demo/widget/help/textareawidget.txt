@@ -136,50 +136,18 @@ Add a DemoWidgetContainer for test the widgets::
 
 Add a TextWidget using the addform::
 
-  >>> print http(r"""
+  >>> print post(r"""
   ... POST /widgets/+/addDemoTextAreaWidget.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... Content-Type: multipart/form-data; boundary=---------------------------7d5ae0c0aea
-  ... Referer: http://localhost:8081/widgets/+/addDemoTextAreaWidget.html=
-  ... 
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="field.standard"
-  ... 
-  ... textarea
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="field.required"
-  ... 
-  ... textarea
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="field.constraint"
-  ... 
-  ... constraint
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="field.default"
-  ... 
-  ... default
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="field.min_length"
-  ... 
-  ... abcdef
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="field.max_length"
-  ... 
-  ... abcdef
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="field.min_max"
-  ... 
-  ... abcdef
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
-  ... 
-  ... Add
-  ... -----------------------------7d5ae0c0aea
-  ... Content-Disposition: form-data; name="add_input_name"
-  ... 
-  ... textarea
-  ... -----------------------------7d5ae0c0aea--
-  ... """)
+  ... """, {"field.standard": "textarea",
+  ...       "field.required": "textarea",
+  ...       "field.constraint": "constraint",
+  ...       "field.default": "default",
+  ...       "field.min_length": "abcdef",
+  ...       "field.max_length": "abcdef",
+  ...       "field.min_max": "abcdef",
+  ...       "UPDATE_SUBMIT": "Add",
+  ...       "add_input_name": "textarea"})
   HTTP/1.1 303 See Other
   ...
         <div class="row">
