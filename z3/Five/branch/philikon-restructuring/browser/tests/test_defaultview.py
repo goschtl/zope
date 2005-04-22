@@ -42,13 +42,13 @@ class DefaultViewTest(FunctionalTestCase):
     #     response = self.publish('/test_folder_1_/testcall')
     #     self.assertEquals("Default __call__ called", response.getBody())
 
-    def test_existing_index(self):
-        response = self.publish('/test_folder_1_/testindex')
-        self.assertEquals("Default index_html called", response.getBody())
-
     def test_default_view(self):
         response = self.publish('/test_folder_1_/testoid', basic='manager:r00t')
         self.assertEquals("The eagle has landed", response.getBody())
+
+    def test_existing_index(self):
+        response = self.publish('/test_folder_1_/testindex')
+        self.assertEquals("Default index_html called", response.getBody())
 
 def test_suite():
     suite = unittest.TestSuite()

@@ -5,6 +5,19 @@
   <five:defaultViewable
       class="Products.Five.tests.simplecontent.SimpleContent" />
 
+  <browser:defaultView
+      for="Products.Five.tests.simplecontent.ISimpleContent"
+      name="eagledefaultview.txt"
+      />
+
+  <browser:page
+      for="Products.Five.tests.simplecontent.ISimpleContent"
+      name="eagledefaultview.txt"
+      class=".pages.SimpleView"
+      attribute="eagle"
+      permission="zope2.Public"
+      />
+
   <!-- this tests whether five:defaultViewable can be called on a class that
        already provides __call__, such as our CallableSimpleContent -->
 
@@ -20,11 +33,6 @@
   <browser:defaultView
       for="Products.Five.tests.simplecontent.IIndexSimpleContent"
       name="index_html"
-      />
-
-  <browser:defaultView
-      for="Products.Five.tests.simplecontent.IIndexSimpleContent"
-      name="eagle.txt"
       />
 
 </configure>
