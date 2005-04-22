@@ -11,6 +11,9 @@ After CMF-1.5.1beta2
 
   Bug Fixes
 
+    - CMFDefault.SyndicationTOol: Coerce property values into correct
+      types. (http://zope.org/Collectors/CMF/344)
+
     - CMFCore.Skinnable: Don't catch ConflictError in __of__.
 
     - CMFCore.CMFCatalogAware: In reindexObjectSecurity, use
