@@ -136,18 +136,18 @@ Add a DemoWidgetContainer for test the widgets::
 
 Add a TextWidget using the addform::
 
-  >>> print post(r"""
+  >>> print http(r"""
   ... POST /widgets/+/addDemoTextAreaWidget.html%3D HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
-  ... """, {"field.standard": "textarea",
-  ...       "field.required": "textarea",
-  ...       "field.constraint": "constraint",
-  ...       "field.default": "default",
-  ...       "field.min_length": "abcdef",
-  ...       "field.max_length": "abcdef",
-  ...       "field.min_max": "abcdef",
-  ...       "UPDATE_SUBMIT": "Add",
-  ...       "add_input_name": "textarea"})
+  ... """, form={"field.standard": "textarea",
+  ...            "field.required": "textarea",
+  ...            "field.constraint": "constraint",
+  ...            "field.default": "default",
+  ...            "field.min_length": "abcdef",
+  ...            "field.max_length": "abcdef",
+  ...            "field.min_max": "abcdef",
+  ...            "UPDATE_SUBMIT": "Add",
+  ...            "add_input_name": "textarea"})
   HTTP/1.1 303 See Other
   ...
         <div class="row">
