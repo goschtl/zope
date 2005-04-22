@@ -23,6 +23,7 @@ from OFS.ObjectManager import ObjectManager
 from Acquisition import ImplicitAcquisitionWrapper, aq_base, aq_inner
 from ExtensionClass import Base
 from AccessControl import ClassSecurityInfo
+from ZODB.POSException import ConflictError
 
 
 # superGetAttr is assigned to whatever ObjectManager.__getattr__
@@ -141,6 +142,8 @@ class SkinnableObjectManager (ObjectManager):
         w_self = ImplicitAcquisitionWrapper(self, parent)
         try:
             w_self.setupCurrentSkin()
+        except ConflictError:
+            raise
         except:
             # This shouldn't happen, even if the requested skin
             # does not exist.
