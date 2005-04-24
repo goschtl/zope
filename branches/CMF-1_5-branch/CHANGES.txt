@@ -1,3 +1,10 @@
+After CMF-1.5.1
+
+  Bugs Fixed
+
+    - Sync catalog metadata column with correct name of DublinCore string
+      ExpirationDate method. (http://zope.org/Collectors/CMF/345)
+
 CMF-1.5.1 (2005/04/24)
 
   Other
