@@ -2,6 +2,9 @@ After CMF 1.4.8
 
   Bug Fixes
 
+    - Sync catalog metadata column with correct name of DublinCore string
+      ExpirationDate method. (http://zope.org/Collectors/CMF/345)
+
     - Ensure that syndication tool coerces property values into correct
       types. (http://zope.org/Collectors/CMF/344)
 
