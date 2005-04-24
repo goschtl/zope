@@ -37,7 +37,7 @@ class SyndicationToolTests(SecurityTest):
         tool.editProperties(updatePeriod=PERIOD,
                             updateFrequency=FREQUENCY,
                             updateBase=NOW,
-                            isAllowed=True,
+                            isAllowed=1,
                             max_items=MAX_ITEMS,
                            )
 
