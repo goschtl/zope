@@ -1,0 +1,18 @@
+<html metal:use-macro="context/@@standard_macros/page">
+ <head>
+  <title metal:fill-slot="title" i18n:translate="">
+    Process Definition
+  </title>
+</head>
+
+<body>
+<div metal:fill-slot="body">
+
+  <p i18n:translate="">
+    Process Definition: 
+    <tal:block tal:replace="view/getName" i18n:name="name"/>
+  </p>
+ 
+</div> 
+</body>
+</html>

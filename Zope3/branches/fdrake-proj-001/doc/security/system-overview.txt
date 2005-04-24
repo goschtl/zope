@@ -1,0 +1,116 @@
+======================
+Four part architecture
+======================
+
+Started by Steve Alexander and Jim Fulton on 15 January 2004
+
+Introduction
+------------
+
+In Zope3 the whole security system is divided into four subsystems, each
+having a well-defined set of responsibilities.
+
+These four systems are:
+
+- Authentication
+- Permission declarations
+- Enforcement
+- Authorization
+
+Authentication
+--------------
+
+The authenticaton system is responsible for managing and identifying
+principals.
+
+See IAuthenticationService and IPrincipal.
+
+The pluggable authentication service is an example of this.
+
+Permission declarations
+-----------------------
+
+What is a permission?
+
+A permission is a kind of access. Saltzer and Schroeder say "A particular
+form of allowed access, e.g., permission to READ as contrasted with permission
+to WRITE."
+
+In Zope, permissions are extensible. Objects don't just have read/write/execute permissions.
+
+See the Zope 3 Glossary for more information about what a permission is:
+
+  http://dev.zope.org/Wikis/DevSite/Projects/ComponentArchitecture/Permission
+
+A programmer (or site developer) declares what permissions are required
+to access the attributes of particular objects and particular kinds of
+objects. Different permissions govern reading and writing attributes. Note
+that in Python, calling a method involves reading an attribute of an object.
+There is no special permission for calling a method as compared to simply
+reading the same attribute.
+
+Permissions are typically declared using the 'require' and 'allow' zcml
+directives, and the 'permission' attribute of component definitions in zcml.
+Before a permission is used in zcml, it must be defined, usually using the
+zcml 'permission' directive.
+
+The 'zope.Public' permission is somewhat special permission that means
+"no permission is required".
+
+Permissions are identified using ids (dotted-name or URI). For every
+permission id, there is an IPermission object registered in the system.
+
+See IPermission, and zope/app/security/meta.zcml XXX (better place to look!)
+
+
+Enforcement system
+------------------
+
+The enforcement system is responsible for ensuring that permission
+requirements are met. That is, the system should ensure that the principals
+can do only what they are allowed to do.
+
+
+XXX The active principal is one or more principals that are collectively
+responsible for the request that was made and the code that is being
+executed. (XXX this needs better explanation, and perhaps not here)
+
+See zope.security.readme.txt for information about security proxies
+and checkers.
+
+
+Authorization
+-------------
+
+XXX maybe read "security request context hybrid" for "principal"
+
+The authorization system consists of a security policy, and other things to
+support the security policy.
+
+The security policy decides whether or not a principal has a particular
+permission on an object. The security policy may use a knowledge base
+of grants or implications or other information to give that answer.
+
+In any case, the security policy is given the following information:
+* The object
+* The context (from which it gets the active principal ids)
+* The permission in question
+
+A simple security policy would maintain a knowledge base of what permissions
+a principal is granted. The simplest security policy just always says "yes"
+or perhaps "no".
+
+Another simple policy says "yes" for the permission zope.Public, "yes" for
+any action by the "system user", and "no" otherwise.
+
+More complex security policies may add other abstractions such as roles,
+so that a principal may get permission to do things to an object based
+on roles granted to the principal and permissions granted to those roles.
+
+The authorization system is also responsible for all of the UI and other
+mechanisms for maintaining the knowledge base, for example, the UI to
+assign local roles that is familiar from zope 2.
+
+XXX security policy add-on, roles, knowledge base, implications, grants
+
+See zope.security.simplepolicies.py

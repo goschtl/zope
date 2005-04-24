@@ -1,0 +1,42 @@
+<html metal:use-macro="views/standard_macros/view"
+    i18n:domain="zwiki">
+  <head>
+    <style metal:fill-slot="style_slot">
+    </style>
+  </head>
+  <body>
+    <div metal:fill-slot="body">
+
+      <form action="setParents.html" method="post">
+
+        <table cellspacing="0" cellpadding="2" border="0">
+          <tr>
+            <td i18n:translate="">Parents</td>
+            <td>
+	      <select name="parents:list" multiple="">
+                  <div tal:repeat="parent view/availableWikis" tal:omit-tag="">
+                <option tal:content="parent" selected=""
+                        tal:condition="python: parent in view.parents()">
+                  Wiki1
+                </option>
+                <option tal:content="parent"
+                        tal:condition="python: parent not in view.parents()">
+                  Wiki1
+                </option>
+                </div>
+              </select>
+            </td>
+          </tr>
+        </table>
+        <input type="submit" name="submit" value="Reparent" 
+               i18n:attributes="value reparent-button" />
+
+      </form>
+
+      <h3 i18n:translate="">Branch</h3>
+
+      <p tal:replace="structure view/branch" />
+
+    </div>
+  </body>
+</html>
