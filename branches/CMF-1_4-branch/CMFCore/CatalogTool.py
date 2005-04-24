@@ -146,7 +146,7 @@ class CatalogTool (UniqueObject, ZCatalog, ActionProviderBase):
                , 'modified'
                , 'CreationDate'
                , 'EffectiveDate'
-               , 'ExpiresDate'
+               , 'ExpirationDate'
                , 'ModificationDate'
                , 'id'
                , 'getId'
