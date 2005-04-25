@@ -40,7 +40,7 @@ Zope Changes
           namespace::
 
             /++preferences++/zmi/folder/sortedby
-     
+
         * Preferences are easily accessible in Python code::
 
            >>> prefs = IUserPreferences(context)
@@ -590,6 +590,9 @@ Zope Changes
         logout.) See zope/app/security/browser/loginlogout.txt for details.
 
     Bug Fixes
+
+      - Fixed issue #314: i18n:translate removes line breaks
+        from <pre>...</pre> contents
 
       - The getAdapters function on site managers returned None when
         adapter factories returned None. These values should not be
@@ -1828,5 +1831,3 @@ Zope Changes
       - FTP support (not sure if this works)
 
       - XML-RPC support  (not sure if this works)
-
-
