@@ -69,13 +69,10 @@ class InputWidget(Widget):
 
     def hasValidInput(self):
         try:
-            self.validate()
+            self.getInputValue()
             return True
         except InputErrors:
             return False
-
-    def validate(self):
-        self.getInputValue()
 
     def applyChanges(self, content):
         field = self.context
