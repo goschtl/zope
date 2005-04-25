@@ -77,6 +77,7 @@ class FSImage(FSObject):
     __str__ = Image.__str__.im_func
 
     _image_tag = Image.tag
+    _image_tag = Image.tag.im_func
     security.declareProtected(View, 'tag')
     def tag(self, *args, **kw):
         # Hook into an opportunity to reload metadata.

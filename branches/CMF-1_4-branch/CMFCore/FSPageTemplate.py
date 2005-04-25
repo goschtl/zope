@@ -128,7 +128,7 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
         return result
 
     security.declarePrivate( '_ZPT_exec' )
-    _ZPT_exec = ZopePageTemplate._exec
+    _ZPT_exec = ZopePageTemplate._exec.im_func
 
     security.declarePrivate( '_exec' )
     def _exec(self, bound_names, args, kw):
@@ -186,21 +186,21 @@ class FSPageTemplate(FSObject, Script, PageTemplate):
  
     # Copy over more methods
     security.declareProtected(FTPAccess, 'manage_FTPget')
-    manage_FTPget = ZopePageTemplate.manage_FTPget
+    manage_FTPget = ZopePageTemplate.manage_FTPget.im_func
 
     security.declareProtected(View, 'get_size')
-    get_size = ZopePageTemplate.get_size
+    get_size = ZopePageTemplate.get_size.im_func
     getSize = get_size
 
     security.declareProtected(ViewManagementScreens, 'PrincipiaSearchSource')
-    PrincipiaSearchSource = ZopePageTemplate.PrincipiaSearchSource
+    PrincipiaSearchSource = ZopePageTemplate.PrincipiaSearchSource.im_func
 
     security.declareProtected(ViewManagementScreens, 'document_src')
-    document_src = ZopePageTemplate.document_src
+    document_src = ZopePageTemplate.document_src.im_func
 
     pt_getContext = ZopePageTemplate.pt_getContext.im_func
 
-    ZScriptHTML_tryParams = ZopePageTemplate.ZScriptHTML_tryParams
+    ZScriptHTML_tryParams = ZopePageTemplate.ZScriptHTML_tryParams.im_func
 
 
 s = Src()

@@ -24,6 +24,10 @@ After CMF 1.4.8
 
     - CMFCore.Skinnable: Don't catch ConflictError in __of__.
 
+    - CMFCore.FSPageTemplate, CMFCore.FSImage:  Remove two more
+      Z28-incompatible borrowings of bound methods from base classes
+      (http://zope.org/Collectors/CMF/321)
+
   New Features
 
     - CatalogTool.CatalogTool now has a private 'unrestrictedSearchResults'
