@@ -1,5 +1,13 @@
 After CMF-1.5.1
 
+  Other
+
+    - CMFCatalogAware: reindexObjectSecurity() now supports an
+      optional argument 'skip_self' that prevents the object itself
+      from being reindexed, but its descendants still are. Allows an
+      optimization when you want to reindex all the idxs *and* the
+      security in a single shot with reindexObject().
+
   Bugs Fixed
 
     - Sync catalog metadata column with correct name of DublinCore string
