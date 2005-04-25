@@ -17,31 +17,6 @@ from zope.app import zapi
 
 from Products.PageTemplates import GlobalTranslationService as GTS
 
-# these are needed for the monkey
-_fallback_translation_service = GTS.DummyTranslationService()
-fiveTranslationService = FiveTranslationService()
-
-def getGlobalTranslationService():
-    return fiveTranslationService
-
-def setGlobalTranslationService(newservice):
-    global _fallback_translation_service
-    oldservice, _fallback_translation_service = \
-        _fallback_translation_service, newservice
-    return oldservice
-
-def monkey():
-    # get the services that has been registered so far and plug in our
-    # new one
-    global _fallback_translation_service
-    _fallback_translation_service = \
-	GTS.setGlobalTranslationService(fiveTranslationService)
-
-    # now override the getter/setter so that noone else can mangle
-    # with it anymore
-    GTS.getGlobalTranslationService = getGlobalTranslationService
-    GTS.setGlobalTranslationService = setGlobalTranslationService
-
 class FiveTranslationService:
     """Translation service that delegates to ``zope.i18n`` machinery.
     """
@@ -60,11 +35,37 @@ class FiveTranslationService:
             # fallback to translation service that was registered,
             # DummyTranslationService the worst
             ts = _fallback_translation_service
-            ts.translate(domain, msgid, mapping, context, target_language,
-                         default)
+            return ts.translate(domain, msgid, mapping, context, target_language,
+                                default)
 
         # in Zope3, context is adapted to IUserPreferredLanguages,
         # which means context should be the request in this case.
         if context is not None:
             context = context.REQUEST
         return util.translate(msgid, mapping, context, target_language, default)
+
+
+# these are needed for the monkey
+_fallback_translation_service = GTS.DummyTranslationService()
+fiveTranslationService = FiveTranslationService()
+
+def getGlobalTranslationService():
+    return fiveTranslationService
+
+def setGlobalTranslationService(newservice):
+    global _fallback_translation_service
+    oldservice, _fallback_translation_service = \
+        _fallback_translation_service, newservice
+    return oldservice
+
+def monkey():
+    # get the services that has been registered so far and plug in our
+    # new one
+    global _fallback_translation_service
+    _fallback_translation_service = \
+        GTS.setGlobalTranslationService(fiveTranslationService)
+
+    # now override the getter/setter so that noone else can mangle
+    # with it anymore
+    GTS.getGlobalTranslationService = getGlobalTranslationService
+    GTS.setGlobalTranslationService = setGlobalTranslationService
