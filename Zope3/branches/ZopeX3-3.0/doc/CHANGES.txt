@@ -10,6 +10,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue 314 (i18n:translate removes line breaks
+        from <pre>...</pre> contents).
+
       - Fixed issue 394 (starting zope with command -C arg
         causes request.form to contain '-C':'').
 

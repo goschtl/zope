@@ -23,6 +23,7 @@ from StringIO import StringIO
 
 from zope.tal.taldefs import METALError, I18NError
 from zope.tal.htmltalparser import HTMLTALParser
+from zope.tal.talparser import TALParser
 from zope.tal.talinterpreter import TALInterpreter
 from zope.tal.dummyengine import DummyEngine, DummyTranslationDomain
 from zope.tal.tests import utils
@@ -62,7 +63,7 @@ class MacroErrorsTestCase(TestCaseBase):
 
 
 class MacroFunkyErrorTest(TestCaseBase):
-    
+
     def test_div_in_p_using_macro(self):
         dummy, macros = self._compile('<p metal:define-macro="M">Booh</p>')
         engine = DummyEngine(macros)
@@ -187,8 +188,7 @@ class I18NCornerTestCase(TestCaseBase):
         self._check(program,
                     '<div>THIS IS TEXT FOR <span>BARVALUE</span>.</div>\n')
 
-    def test_for_correct_msgids(self):
-
+    def _getCollectingTranslationDomain(self):
         class CollectingTranslationDomain(DummyTranslationDomain):
             data = []
 
@@ -201,6 +201,10 @@ class I18NCornerTestCase(TestCaseBase):
 
         xlatdmn = CollectingTranslationDomain()
         self.engine.translationDomain = xlatdmn
+        return xlatdmn
+
+    def test_for_correct_msgids(self):
+        xlatdmn = self._getCollectingTranslationDomain()
         result = StringIO()
         program, macros = self._compile(
             '<div i18n:translate="">This is text for '
@@ -214,6 +218,42 @@ class I18NCornerTestCase(TestCaseBase):
                      xlatdmn.data)
         self.assertEqual(
             '<div>THIS IS TEXT FOR <span>BARVALUE</span>.</div>\n',
+            result.getvalue())
+
+    def test_for_raw_msgids(self):
+        # Test for Issue 314: i18n:translate removes line breaks from
+        # <pre>...</pre> contents
+        # HTML mode
+        xlatdmn = self._getCollectingTranslationDomain()
+        result = StringIO()
+        program, macros = self._compile(
+            '<pre i18n:translate=""> This is text\n'
+            ' <b>\tfor</b>\n barvalue. </pre>')
+        self.interpreter = TALInterpreter(program, {}, self.engine,
+                                          stream=result)
+        self.interpreter()
+        self.assert_(' This is text\n <b>\tfor</b>\n barvalue. ' in
+                     xlatdmn.data)
+        self.assertEqual(
+            '<pre> THIS IS TEXT\n <B>\tFOR</B>\n BARVALUE. </pre>\n',
+            result.getvalue())
+
+        # XML mode
+        xlatdmn = self._getCollectingTranslationDomain()
+        result = StringIO()
+        parser = TALParser()
+        parser.parseString(
+            '<pre xmlns:i18n="http://xml.zope.org/namespaces/i18n"'
+            ' i18n:translate=""> This is text\n'
+            ' <b>\tfor</b>\n barvalue. </pre>')
+        program, macros = parser.getCode()
+        self.interpreter = TALInterpreter(program, {}, self.engine,
+                                          stream=result)
+        self.interpreter()
+        self.assert_('This is text <b> for</b> barvalue.' in
+                     xlatdmn.data)
+        self.assertEqual(
+            '<pre>THIS IS TEXT <B> FOR</B> BARVALUE.</pre>\n',
             result.getvalue())
 
     def test_for_handling_unicode_vars(self):
