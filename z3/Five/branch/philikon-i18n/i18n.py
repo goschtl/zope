@@ -35,14 +35,15 @@ class FiveTranslationService:
             # fallback to translation service that was registered,
             # DummyTranslationService the worst
             ts = _fallback_translation_service
-            return ts.translate(domain, msgid, mapping, context, target_language,
-                                default)
+            return ts.translate(domain, msgid, mapping, context,
+                                target_language, default)
 
         # in Zope3, context is adapted to IUserPreferredLanguages,
         # which means context should be the request in this case.
         if context is not None:
             context = context.REQUEST
-        return util.translate(msgid, mapping, context, target_language, default)
+        return util.translate(msgid, mapping, context, target_language,
+                              default)
 
 
 # these are needed for the monkey
