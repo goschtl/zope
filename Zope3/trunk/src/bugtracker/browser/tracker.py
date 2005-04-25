@@ -184,11 +184,11 @@ class Overview(object):
     #   - Vocabulary Registry name
     #   - Display Title
     #   - bug attribute name
-    filter_vars = (('stati', 'Stati', 'Status', 'status'),
-                   ('types', 'BugTypes', 'Type', 'type'),
-                   ('releases', 'Releases', 'Release', 'release'),
-                   ('priorities', 'Priorities', 'Priority', 'priority'),
-                   ('owners', 'Users', 'Owners', 'owners'),
+    filter_vars = (('stati', 'Stati', _('Status'), 'status'),
+                   ('types', 'BugTypes', _('Type'), 'type'),
+                   ('releases', 'Releases', _('Release'), 'release'),
+                   ('priorities', 'Priorities', _('Priority'), 'priority'),
+                   ('owners', 'Users', _('Owners'), 'owners'),
                    )
 
     def getBugs(self):

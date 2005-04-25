@@ -1,4 +1,5 @@
-<html metal:use-macro="context/@@standard_macros/dialog">
+<html metal:use-macro="context/@@standard_macros/dialog"
+    i18n:domain="bugtracker">
 <body>
 <div metal:fill-slot="body">
 
@@ -8,18 +9,18 @@
     <h3 tal:condition="view/label"
         tal:content="view/label"
         >Edit something</h3>
-  
+
     <p tal:define="status view/update"
        tal:condition="status"
        tal:content="status" />
-  
+
     <p tal:condition="view/errors">
       <span i18n:translate="">There are
-      <strong tal:content="python:len(view.errors)" 
+      <strong tal:content="python:len(view.errors)"
               i18n:name="num_errors">6</strong>
       input errors.</span>
     </p>
-  
+
     <div>
 
       <div class="row">
@@ -67,7 +68,7 @@
       <div class="controls">
         <input type="submit" value="Refresh" 
             i18n:attributes="value refresh-button" />
-        <input type="submit" name="UPDATE_SUBMIT" value="Submit" 
+        <input type="submit" name="UPDATE_SUBMIT" value="Submit"
             i18n:attributes="value submit-button"/>
       </div>
     </div>

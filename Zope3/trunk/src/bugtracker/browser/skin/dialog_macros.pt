@@ -4,10 +4,11 @@
   xmlns="http://www.w3.org/1999/xhtml"
   xml:lang="en"
   lang="en" 
-  i18n:domain="zope">
+  i18n:domain="bugtracker">
 
   <head>
-    <title metal:define-slot="title">Zope 3 Bug Tracker</title>
+  <title metal:define-slot="title"
+      i18n:translate="">Zope 3 Bug Tracker</title>
 
 
     <style type="text/css" 
@@ -90,7 +91,7 @@
             <div class="body">
               <div class="content odd">
                 <metal:block define-slot="pagetip" tal:replace="pagetip">
-                  A short tip goes here              
+                  A short tip goes here
                 </metal:block>
               </div>
             </div>
@@ -100,7 +101,7 @@
     </div>
 
     <div id="footer"
-      metal:define-macro="footer">
+      metal:define-macro="footer" i18n:translate="">
       Powered by Zope 3. Written by Stephan Richter in 2003.
     </div>
 
