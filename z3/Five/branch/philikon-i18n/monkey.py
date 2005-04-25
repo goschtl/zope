@@ -30,3 +30,6 @@ def monkeyPatch():
     HTTPRequest.setPresentationSkin = setPresentationSkin
 
     HTTPRequest.__contains__ = lambda self, key: self.has_key(key)
+
+    from Products.Five import i18n
+    i18n.monkey()
