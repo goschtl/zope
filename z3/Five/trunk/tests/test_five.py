@@ -185,10 +185,7 @@ class FiveTest(FiveTestCase):
     def test_template_resource(self):
         resource = self.folder.unrestrictedTraverse('testoid/++resource++cockatiel.html')
         self.assert_(isinstance(resource, Resource))
-        expected = """\
-<p>Have you ever seen a cockatiel?</p>
-<p>maybe</p>
-"""
+        expected = 'http://nohost/test_folder_1_/testoid/++resource++cockatiel.html'
         self.assertEquals(expected, resource())
 
     def test_file_resource(self):
@@ -331,6 +328,11 @@ class PublishTest(Functional, FiveTestCase):
         response = self.publish(url, basic='manager:r00t')
         self.assertEquals(200, response.getStatus())
 
+    def test_publish_template_resource(self):
+        url = '/test_folder_1_/testoid/++resource++cockatiel.html'
+        response = self.publish(url, basic='manager:r00t')
+        self.assertEquals(200, response.getStatus())
+        
     # Disabled __call__ overriding for now. Causes more trouble
     # than it fixes.
     # def test_existing_call(self):
