@@ -122,7 +122,7 @@ msgstr "Удалить"
 
 #: src/zwiki/browser/subscriptions.pt:26
 msgid "Enter new Users (separate by 'Return')"
-msgstr "Ввести новых пользователей (разделяя переводом строки)"
+msgstr "Введите новых пользователей (разделяя переводом строки)"
 
 # Default: "Refresh"
 #: src/zwiki/browser/subscriptions.pt:36 src/zwiki/browser/wiki_add.pt:30
