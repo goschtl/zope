@@ -591,6 +591,8 @@ Zope Changes
 
     Bug Fixes
 
+      - The interface directive supports multiple interface types now.
+
       - Fixed issue #314: i18n:translate removes line breaks
         from <pre>...</pre> contents
 
