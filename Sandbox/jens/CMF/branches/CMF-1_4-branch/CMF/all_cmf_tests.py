@@ -1,28 +1,44 @@
-#! /usr/bin/env python
+#!/usr/bin/env python
+
+##############################################################################
+#
+# Copyright (c) 2001 Zope Corporation and Contributors. All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.0 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+""" CMF tests.
+
+$Id$
+"""
+
 import unittest
+import Testing
+import Zope
+Zope.startup()
+
+import getopt
 import sys
 
+from Products.CMFCore.tests.base.utils import build_test_suite
+
+
 #                  PackageName     Required?
-CMF_PACKAGES = [ ( 'CMFCore',       1 )
-               , ( 'CMFDefault',    1 )
-               , ( 'CMFTopic',      1 )
-               , ( 'CMFCalendar',   0 )
-               , ( 'DCWorkflow',    1 )
+CMF_PACKAGES = [ ( 'CMFCore',        1 )
+               , ( 'CMFDefault',     1 )
+               , ( 'CMFTopic',       1 )
+               , ( 'CMFCalendar',    0 )
+               , ( 'DCWorkflow',     1 )
                ]
 
 PACKAGES_UNDER_TEST = []
 
 def test_suite():
-
-    import Testing
-    import Zope
-
-    try:
-        Zope.startup()
-    except AttributeError:  # Zope <= 2.6.0
-        pass
-
-    from Products.CMFCore.tests.base.utils import build_test_suite
 
     suite = unittest.TestSuite()
 
@@ -33,6 +49,7 @@ def test_suite():
         suite.addTest( build_test_suite( dotted
                                        , [ 'test_all' ]
                                        , required=required
+                                       , suite_name='suite'
                                        ) )
 
     return suite
@@ -52,8 +69,6 @@ where
     sys.exit( 2 )
 
 def main():
-
-    import getopt
 
     try:
         opts, args = getopt.getopt( sys.argv[1:], 'vq?' )
@@ -76,6 +91,11 @@ def main():
 
     unittest.main(defaultTest='test_suite')
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
+    from warnings import warn
+    warn("'all_cmf_tests' is a deprecated mode for running CMF tests, "
+         "for backward compatibility with Zope 2.6.x.  It is not present "
+         "in CMF >= 1.5.  The preferred mode is to use 'bin/zopectl test' "
+         "from within your $INSTANCE_HOME", DeprecationWarning)
     main()
