@@ -15,11 +15,10 @@ from zope.i18n.interfaces import ITranslationDomain
 from zope.i18nmessageid import MessageID
 from zope.app import zapi
 
-from Products.PageTemplates.GlobalTranslationService \
-    import DummyTranslationService
+from Products.PageTemplates import GlobalTranslationService as GTS
 
 # these are needed for the monkey
-_fallback_translation_service = DummyTranslationService()
+_fallback_translation_service = GTS.DummyTranslationService()
 fiveTranslationService = FiveTranslationService()
 
 def getGlobalTranslationService():
@@ -32,8 +31,14 @@ def setGlobalTranslationService(newservice):
     return oldservice
 
 def monkey():
-    from Products.PageTemplates import GlobalTranslationService as GTS
-    GTS.translationService = fiveTranslationService
+    # get the services that has been registered so far and plug in our
+    # new one
+    global _fallback_translation_service
+    _fallback_translation_service = \
+	GTS.setGlobalTranslationService(fiveTranslationService)
+
+    # now override the getter/setter so that noone else can mangle
+    # with it anymore
     GTS.getGlobalTranslationService = getGlobalTranslationService
     GTS.setGlobalTranslationService = setGlobalTranslationService
 
