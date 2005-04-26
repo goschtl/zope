@@ -33,12 +33,10 @@ interrupt-check-interval 200
 #   address 8081
 # </server>
 
-# XXX: Deactivated FTP server right now, since twisted's FTP server is not
-# ready for prime time yet.
-# <server>
-#   type FTP
-#   address 8021
-# </server>
+<server>
+  type FTP
+  address 8021
+</server>
 
 # Standard Filestorage
 <zodb>
