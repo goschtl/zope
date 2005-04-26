@@ -8,6 +8,10 @@ After CMF-1.5.1
       optimization when you want to reindex all the idxs *and* the
       security in a single shot with reindexObject().
 
+    - doActionFor() propagates **kw to isActionSupported() through
+      _checkTransitionGuard() until the guard.check() method so that
+      StateChangeInfo() can be constructed with those kwargs.
+
   Bugs Fixed
 
     - Sync catalog metadata column with correct name of DublinCore string
