@@ -1,6 +1,9 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser">
 
+  <!-- make the zope2.Public permission work -->
+  <redefinePermission from="zope2.Public" to="zope.Public" />
+
   <!-- attribute page -->
   <browser:page
       for="Products.Five.tests.simplecontent.ISimpleContent"

@@ -3,6 +3,9 @@
            xmlns:five="http://namespaces.zope.org/five"
            i18n_domain="fivetest">
 
+  <!-- make the zope2.Public permission work -->
+  <redefinePermission from="zope2.Public" to="zope.Public" />
+
   <!-- browser forms -->
   <five:traversable class=".schemacontent.FieldContent" />
 

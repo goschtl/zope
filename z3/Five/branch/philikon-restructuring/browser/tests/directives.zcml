@@ -2,6 +2,9 @@
            xmlns:browser="http://namespaces.zope.org/browser"
            xmlns:five="http://namespaces.zope.org/five">
 
+  <!-- make the zope2.Public permission work -->
+  <redefinePermission from="zope2.Public" to="zope.Public" />
+
   <browser:pages
       for="Products.Five.tests.simplecontent.ISimpleContent"
       class=".pages.NoDocstringView"
