@@ -155,7 +155,8 @@ class PublishTest(Functional, FiveTestCase):
             response = self.publish('/test_folder_1_/testoid/%s' % view_name,
                                     basic='viewer:secret')
             # we expect that we get a 401 Unauthorized
-            self.assertEqual(response.getStatus(), 401)
+            status = response.getStatus()
+            self.failUnless(status == 401, (status, 401, view_name))
 
     def test_all_permissions(self):
         permissions = self.folder.possible_permissions()
@@ -163,11 +164,12 @@ class PublishTest(Functional, FiveTestCase):
         self.folder.manage_role('Viewer', permissions)
         self.folder.manage_addLocalRoles(
             'viewer', ['Viewer'])
-        
+
         for view_name in view_names:
             response = self.publish('/test_folder_1_/testoid/%s' % view_name,
                                     basic='viewer:secret')
-            self.assertEqual(response.getStatus(), 200)
+            status = response.getStatus()
+            self.failUnless(status == 200, (status, 200, view_name))
 
     def test_almost_all_permissions(self):
         permissions = self.folder.possible_permissions()
@@ -176,12 +178,13 @@ class PublishTest(Functional, FiveTestCase):
         self.folder.manage_role('Viewer', permissions)
         self.folder.manage_addLocalRoles(
             'viewer', ['Viewer'])
-        
+
         for view_name in view_names:
             response = self.publish('/test_folder_1_/testoid/%s' % view_name,
                                     basic='viewer:secret')
             # we expect that we get a 401 Unauthorized
-            self.assertEqual(response.getStatus(), 401)
+            status = response.getStatus()
+            self.failUnless(status == 401, (status, 401, view_name))
 
     def test_manager_permission(self):
         for view_name in view_names:
@@ -193,7 +196,8 @@ class PublishTest(Functional, FiveTestCase):
     def test_public_permission(self):
         for view_name in public_view_names:
             response = self.publish('/test_folder_1_/testoid/%s' % view_name)
-            self.assertEqual(response.getStatus(), 200)
+            status = response.getStatus()
+            self.failUnless(status == 200, (status, 200, view_name))
 
     def test_addpages(self):
         manage_addFiveTraversableFolder(self.folder, 'ftf')
@@ -201,7 +205,7 @@ class PublishTest(Functional, FiveTestCase):
         # Unprotected as anonymous
         response = self.publish('/test_folder_1_/ftf/+/addsimplecontent.html')
         self.assertEqual(response.getStatus(), 200)
-        
+
         # Protected as manager
         response = self.publish('/test_folder_1_/ftf/+/protectedaddform.html',
                                     basic='manager:r00t')

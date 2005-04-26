@@ -443,7 +443,8 @@ def EditViewFactory(name, schema, label, permission, layer,
 
 
     s.provideView(for_, name, IBrowserRequest, class_, layer)
-
+    protectClass(class_, permission)
+    initializeClass(class_)
 
 class FiveFormDirective(BaseFormDirective):
 
@@ -474,6 +475,7 @@ class EditFormDirective(FiveFormDirective):
             kw={'menu': self.menu},
         )
 
+
 def AddViewFactory(name, schema, label, permission, layer,
                    template, default_template, bases, for_,
                    fields, content_factory, arguments,
@@ -495,6 +497,8 @@ def AddViewFactory(name, schema, label, permission, layer,
     class_.generated_form = ZopeTwoPageTemplateFile(default_template)
 
     s.provideView(for_, name, IBrowserRequest, class_, layer)
+    protectClass(class_, permission)
+    initializeClass(class_)
 
 class AddFormDirective(FiveFormDirective):
 
