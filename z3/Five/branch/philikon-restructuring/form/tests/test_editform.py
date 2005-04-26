@@ -95,7 +95,7 @@ class EditFormTest(FunctionalTestCase):
         # Unprotected as anonymous
         response = self.publish('/test_folder_1_/ftf/+/addsimplecontent.html')
         self.assertEqual(response.getStatus(), 200)
-        
+
         # Protected as manager
         response = self.publish('/test_folder_1_/ftf/+/protectedaddform.html',
                                 basic='manager:r00t')
