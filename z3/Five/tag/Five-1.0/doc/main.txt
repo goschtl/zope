@@ -37,13 +37,13 @@ will be included in Zope 2.8. Download it here:
 
 http://codespeak.net/z3/five/release/Five-1.0.tgz
 
+And view changes here:
+
+http://codespeak.net/z3/five/CHANGES.html
+
 2005-03-11 -- We have released Five 0.3! Download it here:
 
 http://codespeak.net/z3/five/release/Five-0.3.tgz
-
-And changes here:
-
-http://codespeak.net/z3/five/CHANGES.html
 
 2004-09-24 -- Five 0.2b is released. Download it here:
 
