@@ -1,13 +1,17 @@
 How to install Five
 -------------------
 
-Requirements for Five 0.3
+Requirements for Five 1.0
 =========================
 
 * Zope 2.7.4+ with python 2.3.x. Zope versions lower than Zope 2.7.4
   may work, but no guarantees.
 
 * Zope X3.0.0, found here: http://zope.org/Products/ZopeX3/3.0.0final/
+
+Note that Five 1.0 is also part of Zope 2.8, so if you are using Zope
+2.8, you do not need to install Five separately, unless you want to
+use a version of Five later than 1.0.
 
 Installing Five
 ===============
@@ -57,11 +61,11 @@ Installing Five is relatively straightforward.
 * Next, install the Five product into your Zope 2.7 instance as a
   product and restart Zope. Five should now be installed.
 
-* You can also install various products in the ``demo`` subdirectory
-  of Five by copying them into your ``Products`` directory. In
-  addition, you can look at tests/products/FiveTest, which is a
-  product used for the Five tests, and may contain more recent
-  examples.
+* You can also install various products in the ``doc/products``
+  subdirectory of Five by copying them into your ``Products``
+  directory. In addition, you can look at ``tests/products/FiveTest``,
+  which is installed automatically when you run the Five tests. This
+  may contain examples of more recent features.
 
 Installing the tests
 ====================
