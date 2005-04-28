@@ -1,0 +1,63 @@
+<html metal:use-macro="context/@@standard_macros/view">
+ <head>
+  <title metal:fill-slot="title" i18n:translate="">
+    Process Definition <-> Content Type Registry
+  </title>
+</head>
+
+<body>
+<div metal:fill-slot="body">
+
+  <p tal:define="status view/update"
+     tal:condition="status"
+     tal:content="status" />
+
+  <form action="./@@edit.html" method="post">
+    <h3 i18n:translate="">Set Workflow-Relevant Data Schema</h3>
+
+    <div class="row" tal:define="widget nocall:view/relevantDataSchema_widget">
+      <metal:block use-macro="context/@@form_macros/widget_row" />
+    </div>
+
+    <div class="row">
+      <div class="controls" style="width: 100%">
+        <input type="submit" value="Refresh"
+            i18n:attributes="value refresh-button" />
+        <input type="submit" value="Set Schema" name="UPDATE_SUBMIT"
+            i18n:attributes="value set-schema-button" />
+       </div>
+    </div>
+
+    <tal:block define="widgets view/getPermissionWidgets"
+               condition="widgets">
+      <h3 i18n:translate="">Map permissions to Schema fields</h3>
+
+      <tal:block repeat="pwidget widgets">
+        <h5 tal:content="string:${pwidget/fieldTitle} (${pwidget/fieldName})">
+          FieldName (Field Title)
+        </h5>
+
+        <div class="row" tal:define="widget nocall:pwidget/getter">
+          <metal:block use-macro="context/@@form_macros/widget_row" />
+        </div>
+
+        <div class="row" tal:define="widget nocall:pwidget/setter">
+          <metal:block use-macro="context/@@form_macros/widget_row" />
+        </div>
+
+      </tal:block>
+      <div class="row">
+        <div class="controls" style="width: 100%">
+          <input type="submit" value="Refresh"
+                 i18n:attributes="value refresh-button" />
+          <input type="submit" value="Change" name="CHANGE"
+                 i18n:attributes="value change-button" />
+         </div>
+      </div>
+    </tal:block>
+
+  </form>
+
+</div>
+</body>
+</html>

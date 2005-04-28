@@ -1,0 +1,100 @@
+==========================================================
+Things to do for the next release (in no particular order)
+==========================================================
+
+Features
+--------
+
+- Support for iterable sources
+
+- Issue 390: Request body and bodyFile are bogus, and have a
+             misleading documentation
+
+Miscellaneous
+-------------
+
+- Remove XXX comments (there are about 80 in zope)
+
+- Ensure backward compatibility
+
+  o Run book sources against source tree (Stephan and Phillip)
+
+
+Bug Fixes
+---------
+
+Navigation Tree
+~~~~~~~~~~~~~~~
+
+  * 333: XML Tree doesn't load if some item contains non-ASCII characters
+
+FTP Server
+~~~~~~~~~~
+
+  * 350: ServerChannelBase does not update last_activity
+
+  * 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
+
+  * 375: ftp data channel does not tell control channel about activity
+
+File Content Component
+~~~~~~~~~~~~~~~~~~~~~~
+
+  * 302: File objects can't contain non-ascii characters
+
+  * 327: File type change clears object content
+
+TAL i18n-namspace
+~~~~~~~~~~~~~~~~~
+
+  * 301: Bug with i18n:name and i18n:translate on the same element 
+
+Others
+~~~~~~
+
+  * 284: Bogus 404 errors with TALES traversal fails
+
+  * 296: missing display widgets
+
+  * 298: Role/permission title and description should be messageids
+
+  * 307: browser:addMenuItem and broken view references
+
+  * 313: importchecker.py ignores assignment to module attributes
+
+  * 316: Zope3X test.py truncates path with dir=
+
+  * 332: Death to IContentContainer
+
+  * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
+
+  * 340: Adding a big file eats a lot of memory / memory leak?
+
+  * 344: PAU registration error
+
+  * 356: Copy and Paste does not handle exceptions raised by __setitem__
+
+  * 369: DAV is hosed on the trunk
+
+  * 372: WidgetInputError.doc is broken
+
+  * 373: Adding objects requires permission zope.app.dublincore.change
+
+  * 380: Local Utility don't get correct removed
+
+  - 381: Handle migration of site instance 'securitypolicy.zcml' files
+
+  * 384: Problems with permissions in zcml utility directives
+
+
+Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
+well.
+
+Done
+~~~~
+
+  * 334: Failing RuntimeInfo tests
+         Fixed: on trunk at rev 29616, on ZopeX3-3.0 branch at rev 29906
+
+  * 314: i18n:translate removes line breaks from <pre>...</pre> contents
+         Fixed: on trunk at rev 30152, on ZopeX3-3.0 branch at rev 30153
