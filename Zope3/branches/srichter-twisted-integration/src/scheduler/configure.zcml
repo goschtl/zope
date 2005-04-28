@@ -1,0 +1,25 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:apidoc="http://namespaces.zope.org/apidoc"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   i18n_domain="zope"
+   >
+
+  <!-- Register event listener for  -->
+  <subscriber
+      handler=".manager.startAllTasks"
+      for="zope.app.appsetup.interfaces.IProcessStartingEvent"
+      />
+
+  <!-- Register scheduler package with API Doc Tool -->
+  <apidoc:rootModule module="scheduler" zcml:condition="have apidoc" />
+
+  <!-- Register the documentation as a chapter in the API doc book -->
+  <apidoc:bookchapter 
+      id="scheduler"
+      title="The Task Scheduler"
+      doc_path="README.txt"
+      zcml:condition="have apidoc"
+      />
+
+</configure>
