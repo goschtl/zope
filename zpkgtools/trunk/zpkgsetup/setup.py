@@ -128,6 +128,7 @@ class SetupContext:
     def load_metadata(self, path):
         f = open(path, "rU")
         publication.load(f, metadata=self)
+        f.close()
         if self.platforms:
             self.platforms = ", ".join(self.platforms)
         if self.version:

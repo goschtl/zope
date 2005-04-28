@@ -117,6 +117,7 @@ def fromPath(path):
                         localtag = localtag[1:]
                     tag = localtag or tag
                     break
+            entries.close()
     try:
         modpath = _read_one_line(os.path.join(cvsdir, "Repository"))
         repo = _read_one_line(os.path.join(cvsdir, "Root"))

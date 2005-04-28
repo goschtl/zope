@@ -230,7 +230,9 @@ class FileProxyTestCase(unittest.TestCase):
 
     def test_read(self):
         text = self.fp.read()
-        expected = open(__file__, self.mode).read()
+        f = open(__file__, self.mode)
+        expected = f.read()
+        f.close()
         self.assertEqual(text, expected)
 
     def test_url_as_name(self):

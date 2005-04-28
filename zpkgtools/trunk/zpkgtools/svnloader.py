@@ -224,6 +224,7 @@ def fromPath(path):
     s = xml.sax.xmlreader.InputSource(urlutils.file_url(entriesfile))
     s.setByteStream(f)
     p.parse(s)
+    f.close()
     if basename in h.entries:
         return parse(h.entries[basename])
     else:
