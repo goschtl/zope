@@ -27,6 +27,7 @@ import urllib2
 import urlparse
 
 from zpkgsetup import loggingapi as logging
+from zpkgsetup.utils import rmtree_force
 
 from zpkgtools import cvsloader
 from zpkgtools import svnloader
@@ -113,7 +114,7 @@ class Loader:
             if istemporary:
                 if directory:
                     trace("removing temp dir %s (%s)", directory, url)
-                    shutil.rmtree(directory)
+                    rmtree_force(directory)
                 else:
                     trace("removing temp file %s (%s)", path, url)
                     os.unlink(path)
