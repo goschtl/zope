@@ -120,6 +120,7 @@ And run it.
   HTTP/1.1 200 Ok
   Content-Length: 119
   Content-Type: text/html;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <html>
   <body>

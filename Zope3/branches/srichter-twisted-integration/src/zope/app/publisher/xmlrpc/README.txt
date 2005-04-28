@@ -76,6 +76,7 @@ And call our xmlrpc method:
   HTTP/1.0 200 Ok
   Content-Length: 208
   Content-Type: text/xml;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <?xml version='1.0'?>
   <methodResponse>
@@ -198,6 +199,7 @@ Now, when we access the `contents`, we do so through the listing view:
   HTTP/1.0 200 Ok
   Content-Length: 208
   Content-Type: text/xml;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <?xml version='1.0'?>
   <methodResponse>
@@ -296,6 +298,7 @@ back, surprise!, the sum:
   HTTP/1.0 200 Ok
   Content-Length: 122
   Content-Type: text/xml;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <?xml version='1.0'?>
   <methodResponse>
@@ -362,6 +365,7 @@ Now, when we call it, we get a proper XML-RPC fault:
   HTTP/1.0 200 Ok
   Content-Length: 272
   Content-Type: text/xml;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <?xml version='1.0'?>
   <methodResponse>
@@ -436,6 +440,7 @@ Now, when we call it, we get a DateTime value
   HTTP/1.0 200 Ok
   Content-Length: 163
   Content-Type: text/xml;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <?xml version='1.0'?>
   <methodResponse>

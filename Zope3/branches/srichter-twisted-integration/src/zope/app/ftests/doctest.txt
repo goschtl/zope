@@ -44,6 +44,7 @@ Next, we'll access the same page with credentials:
   HTTP/1.1 200 Ok
   Content-Length: ...
   Content-Type: text/html;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <!DOCTYPE html PUBLIC ...
 
@@ -64,6 +65,7 @@ we got redirected:
   Content-Length: 0
   Content-Type: text/plain;charset=utf-8
   Location: @@contents.html
+  X-Principal: zope.mgr
   <BLANKLINE>
 
 Note that, in this case, we got a 303 response.  A 303 response is the
@@ -79,6 +81,7 @@ HTTP 1.0, we'd get a 302 response:
   Content-Length: 0
   Content-Type: text/plain;charset=utf-8
   Location: @@contents.html
+  X-Principal: zope.mgr
   <BLANKLINE>
 
 Lets visit the page we were redirected to:
@@ -91,6 +94,7 @@ Lets visit the page we were redirected to:
   HTTP/1.1 200 Ok
   Content-Length: ...
   Content-Type: text/html;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <!DOCTYPE html PUBLIC ...
 
@@ -103,6 +107,7 @@ Finally, lets access the default page for the site:
   HTTP/1.1 200 Ok
   Content-Length: ...
   Content-Type: text/html;charset=utf-8
+  X-Principal: zope.mgr
   <BLANKLINE>
   <!DOCTYPE html PUBLIC ...
 
@@ -131,6 +136,7 @@ transaction before the HTTP request.
   Content-Length: ...
   Content-Type: text/html;charset=utf-8
   Location: http://localhost/@@contents.html
+  X-Principal: zope.mgr
   <BLANKLINE>
   <!DOCTYPE html ...
 
