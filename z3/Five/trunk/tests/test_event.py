@@ -1,23 +1,37 @@
-# test events triggered by Five
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Test events triggered by Five
 
+$Id: test_size.py 11016 2005-04-22 10:58:55Z philikon $
+"""
 import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Products.Five.tests.fivetest import *
+import unittest
+from Testing.ZopeTestCase import ZopeTestCase, installProduct
+from Testing.ZopeTestCase import standard_permissions
+installProduct('Five')
 
-from Products.Five.tests.products.FiveTest.subscriber import clear
-from Products.Five.tests.products.FiveTest.subscriber import objectEventCatcher, \
+import Products.Five.tests
+from Products.Five import zcml
+from Products.Five.testing import manage_addNoVerifyPasteFolder
+from Products.Five.tests.simplecontent import manage_addSimpleContent
+from Products.Five.tests.subscriber import clear
+from Products.Five.tests.subscriber import objectEventCatcher, \
      objectAddedEventCatcher, objectMovedEventCatcher, \
      objectCopiedEventCatcher, objectRemovedEventCatcher
 
-from Products.Five.tests.products.FiveTest.simplecontent import manage_addSimpleContent
-from Products.Five.tests.products.FiveTest.helpers import manage_addNoVerifyPasteFolder
-
-
-class EventTest(FiveTestCase):
+class EventTest(ZopeTestCase):
 
     def afterSetUp(self):
+	zcml.load_config('event.zcml', package=Products.Five.tests)
         manage_addNoVerifyPasteFolder(self.folder, 'npvf')
         self.folder = self.folder.npvf
 
@@ -131,13 +145,10 @@ class EventTest(FiveTestCase):
         self.assertEquals(1, len(events))
         self.assertEquals('foo', events[0].object.id)
 
-
 def test_suite():
-    from unittest import TestSuite, makeSuite
-    suite = TestSuite()
-    suite.addTest(makeSuite(EventTest))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(EventTest))
     return suite
 
 if __name__ == '__main__':
     framework()
-

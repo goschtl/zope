@@ -1,3 +1,5 @@
+# Dummy objects and views for the security tests
+
 from zope.interface import Interface, implements
 
 from Products.Five import BrowserView

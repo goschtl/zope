@@ -18,12 +18,8 @@ _context = None
 
 
 def load_site():
-    """Load the appropriate ZCML file.
-
-    Note that this can be called multiple times, unlike in Zope 3. This
-    is needed because in Zope 2 we don't (yet) have a master ZCML file
-    which can include all the others.
-    """
+    """Load a Five/Zope site by finding and loading the appropriate site
+    configuration file."""
     global _initialized
     if _initialized:
         return

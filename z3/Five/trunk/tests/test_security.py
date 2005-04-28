@@ -1,58 +1,30 @@
+##############################################################################
+#
+# Copyright (c) 2005 Five Contributors. All rights reserved.
+#
+# This software is distributed under the terms of the Zope Public
+# License (ZPL) v2.1. See COPYING.txt for more information.
+#
+##############################################################################
+"""Test security induced by ZCML
 
+$Id$
+"""
 import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-from Products.Five.tests.fivetest import *
+import unittest
+from Testing.ZopeTestCase import ZopeTestCase, installProduct
+installProduct('Five')
 
-from zope.component import getView
 from zope.testing.cleanup import CleanUp
 from Products.Five import zcml
-from Products.Five.traversable import FakeRequest
 from Products.Five.security import clearSecurityInfo, checkPermission
 from Products.Five.tests.dummy import Dummy1, Dummy2
 from Globals import InitializeClass
 
-
-class PageSecurityTest(FiveTestCase):
-
-    def test_page_security(self):
-        decl = """
-        <configure xmlns="http://namespaces.zope.org/zope"
-            xmlns:browser="http://namespaces.zope.org/browser">
-
-          <browser:page
-             for="Products.Five.tests.dummy.IDummy"
-             class="Products.Five.tests.dummy.DummyView"
-             attribute="foo"
-             name="test_page_security"
-             permission="zope2.ViewManagementScreens"
-           />
-
-        </configure>
-        """
-        zcml.load_string(decl)
-        request = FakeRequest()
-        # Wrap into an acquisition so that imPermissionRole objects
-        # can be evaluated.
-        view = getView(Dummy1(), 'test_page_security', request)
-
-        ac = getattr(view, '__ac_permissions__')
-        # It's protecting the object with the permission, and not the
-        # attribute, so we get ('',) instead of ('foo',).
-        ex_ac = (('View management screens', ('',)),)
-        self.assertEquals(ac, ex_ac)
-
-        # Wrap into an acquisition so that imPermissionRole objects
-        # can be evaluated. __roles__ is a imPermissionRole object.
-        view = view.__of__(self.folder)
-        view_roles = getattr(view, '__roles__', None)
-        self.failIf(view_roles is None)
-        self.failIf(view_roles == ())
-        self.assertEquals(view_roles, ('Manager',))
-
-
-class SecurityEquivalenceTest(FiveTestCase):
+class SecurityEquivalenceTest(ZopeTestCase):
 
     def setUp(self):
         self.dummy1 = Dummy1
@@ -117,8 +89,7 @@ class SecurityEquivalenceTest(FiveTestCase):
         baz_roles2 = getattr(self.dummy2, 'baz__roles__')
         self.assertEquals(baz_roles2, ())
 
-
-class CheckPermissionTest(FiveTestCase):
+class CheckPermissionTest(ZopeTestCase):
 
     def test_publicPermissionId(self):
         self.failUnless(checkPermission('zope2.Public', self.folder))
@@ -134,13 +105,10 @@ class CheckPermissionTest(FiveTestCase):
     def test_invalidPermissionId(self):
         self.failIf(checkPermission('notapermission', self.folder))
 
-
 def test_suite():
-    from unittest import TestSuite, makeSuite
-    suite = TestSuite()
-    suite.addTest(makeSuite(SecurityEquivalenceTest))
-    suite.addTest(makeSuite(PageSecurityTest))
-    suite.addTest(makeSuite(CheckPermissionTest))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(SecurityEquivalenceTest))
+    suite.addTest(unittest.makeSuite(CheckPermissionTest))
     return suite
 
 if __name__ == '__main__':
