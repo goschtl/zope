@@ -28,6 +28,7 @@ from zpkgsetup import package
 from zpkgsetup import publication
 from zpkgsetup import setup
 from zpkgsetup import urlutils
+from zpkgsetup.utils import rmtree_force
 
 from zpkgtools import config
 from zpkgtools import dependencies
@@ -304,7 +305,7 @@ class BuilderApplication(Application):
             source = self.loader.load_mutable_copy(url)
             tests_dir = os.path.join(source, "tests")
             if os.path.exists(tests_dir):
-                shutil.rmtree(tests_dir)
+                rmtree_force(tests_dir)
 
         self.ip.copyTree(source, destination)
 
@@ -326,13 +327,13 @@ class BuilderApplication(Application):
             self.error("error generating %s" % self.target_file)
         # We have a tarball; clear some space, then copy the tarball
         # to the current directory:
-        shutil.rmtree(self.destination)
+        rmtree_force(self.destination)
         shutil.copy(os.path.join(self.tmpdir, self.target_file),
                     self.target_file)
 
     def cleanup(self):
         """Remove all temporary data storage."""
-        shutil.rmtree(self.tmpdir)
+        rmtree_force(self.tmpdir)
         if self.tmpdir == tempfile.tempdir:
             tempfile.tempdir = self.old_tmpdir
 
