@@ -278,7 +278,7 @@ class Specification:
                     "%r doesn't match any files in <%s>" % (pat, self.group),
                     self.filename)
             for fn in expansions:
-                suffix = fn[len(prefix):]
+                suffix = fn[len(prefix):].replace(os.sep, "/") # POSIX form
                 self.includes[suffix] = suffix
         excludes = []
         for pat in self.excludes:
@@ -289,7 +289,7 @@ class Specification:
                     "%r doesn't match any files in <%s>" % (pat, self.group),
                     self.filename)
             for fn in expansions:
-                suffix = fn[len(prefix):]
+                suffix = fn[len(prefix):].replace(os.sep, "/") # POSIX form
                 if suffix not in excludes:
                     excludes.append(suffix)
         self.excludes[:] = excludes

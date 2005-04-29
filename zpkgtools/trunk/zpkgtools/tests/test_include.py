@@ -166,10 +166,8 @@ class InclusionProcessorTestCase(unittest.TestCase):
             specs.collection.cook()
             self.assertEqual(len(specs.collection.excludes), 4)
             self.assert_("foobar.txt" in specs.collection.excludes)
-            self.assert_(
-                join("doc", "todo-1.txt") in specs.collection.excludes)
-            self.assert_(
-                join("doc", "todo-2.txt") in specs.collection.excludes)
+            self.assert_("doc/todo-1.txt" in specs.collection.excludes)
+            self.assert_("doc/todo-2.txt" in specs.collection.excludes)
             self.assert_(include.PACKAGE_CONF in specs.collection.excludes)
         finally:
             shutil.rmtree(docdir)
