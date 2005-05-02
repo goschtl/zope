@@ -44,11 +44,6 @@ File Content Component
 
   * 327: File type change clears object content
 
-TAL i18n-namspace
-~~~~~~~~~~~~~~~~~
-
-  * 301: Bug with i18n:name and i18n:translate on the same element 
-
 Others
 ~~~~~~
 
@@ -93,8 +88,14 @@ well.
 Done
 ~~~~
 
-  * 334: Failing RuntimeInfo tests
-         Fixed: on trunk at rev 29616, on ZopeX3-3.0 branch at rev 29906
+  * 301: Bug with i18n:name and i18n:translate on the same element 
+         Fixed: on the trunk at rev 30226, the fix shouldn't be backported on
+         the ZopeX3-3.0 branch since backward compatibility issues
 
   * 314: i18n:translate removes line breaks from <pre>...</pre> contents
-         Fixed: on trunk at rev 30152, on ZopeX3-3.0 branch at rev 30153
+         Fixed: on the trunk at rev 30152, on the ZopeX3-3.0
+         branch at rev 30153
+
+  * 334: Failing RuntimeInfo tests
+         Fixed: on the trunk at rev 29616, on the ZopeX3-3.0
+         branch at rev 29906
