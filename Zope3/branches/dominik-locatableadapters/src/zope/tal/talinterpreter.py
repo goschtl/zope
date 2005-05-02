@@ -21,14 +21,16 @@ import sys
 # Do not use cStringIO here!  It's not unicode aware. :(
 from StringIO import StringIO
 
-from zope.i18nmessageid import MessageID
+from zope.i18nmessageid import MessageID, Message
 from zope.tal.taldefs import quote, TAL_VERSION, METALError
 from zope.tal.taldefs import isCurrentVersion
 from zope.tal.taldefs import getProgramVersion, getProgramMode
 from zope.tal.talgenerator import TALGenerator
 from zope.tal.translationcontext import TranslationContext
 
-BOOLEAN_HTML_ATTRS = [
+
+# TODO: In Python 2.4 we can use frozenset() instead of dict.fromkeys()
+BOOLEAN_HTML_ATTRS = dict.fromkeys([
     # List of Boolean attributes in HTML that should be rendered in
     # minimized form (e.g. <img ismap> rather than <img ismap="">)
     # From http://www.w3.org/TR/xhtml1/#guidelines (C.10)
@@ -37,15 +39,7 @@ BOOLEAN_HTML_ATTRS = [
     "compact", "nowrap", "ismap", "declare", "noshade", "checked",
     "disabled", "readonly", "multiple", "selected", "noresize",
     "defer"
-]
-
-def _init():
-    d = {}
-    for s in BOOLEAN_HTML_ATTRS:
-        d[s] = 1
-    return d
-
-BOOLEAN_HTML_ATTRS = _init()
+])
 
 _nulljoin = ''.join
 _spacejoin = ' '.join
@@ -354,6 +348,7 @@ class TALInterpreter(object):
         # for start tags with no attributes; those are optimized down
         # to rawtext events.  Hence, there is no special "fast path"
         # for that case.
+        self._currentTag = name
         L = ["<", name]
         append = L.append
         col = self.col + _len(name) + 1
@@ -579,7 +574,7 @@ class TALInterpreter(object):
         if text is self.Default:
             self.interpret(stuff[1])
             return
-        if isinstance(text, MessageID):
+        if isinstance(text, (MessageID, Message)):
             # Translate this now.
             text = self.engine.translate(text)
         # '&' must be done first!
@@ -618,7 +613,7 @@ class TALInterpreter(object):
                 value = self.engine.evaluate(expression)
 
             # evaluate() does not do any I18n, so we do it here.
-            if isinstance(value, MessageID):
+            if isinstance(value, (MessageID, Message)):
                 # Translate this now.
                 value = self.engine.translate(value)
 
@@ -661,8 +656,11 @@ class TALInterpreter(object):
         # message id.  All other useful information will be in the i18ndict on
         # the top of the i18nStack.
         default = tmpstream.getvalue()
-        if msgid == '':
-            msgid = normalize(default)
+        if not msgid:
+            if self.html and self._currentTag == "pre":
+                msgid = default
+            else:
+                msgid = normalize(default)
         self.i18nStack.pop()
         # See if there is was an i18n:data for msgid
         if len(stuff) > 2:

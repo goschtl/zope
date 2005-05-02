@@ -76,9 +76,13 @@ class SiteManager(object):
     
     def getAdapters(self, objects, provided):
         """See ISiteManager interface"""
-        return [(name, adapter(*objects))
-                for name, adapter in self.adapters.lookupAll(
-                                        map(providedBy, objects), provided)]
+        result = []
+        for name, factory in self.adapters.lookupAll(map(providedBy, objects),
+                                                     provided):
+            adapter = factory(*objects)
+            if adapter is not None:
+                result.append((name, adapter))
+        return result
 
     def subscribers(self, required, provided):
         """See ISiteManager interface"""

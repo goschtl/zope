@@ -122,7 +122,8 @@ class CheckBoxWidgetTest(SimpleInputWidgetTest):
     constraint will always be met with checkbox input:
 
         >>> field.required = True
-        >>> widget.validate()
+        >>> widget.getInputValue()
+        True
     """
 
     _FieldFactory = Bool

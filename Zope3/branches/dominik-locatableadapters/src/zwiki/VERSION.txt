@@ -1,1 +1,1 @@
-Zope3 Wiki 0.2.0
+Zope3 Wiki 0.2.5

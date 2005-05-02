@@ -24,10 +24,11 @@ from StringIO import StringIO
 
 from zope.tal.taldefs import METALError, I18NError, TAL_VERSION
 from zope.tal.htmltalparser import HTMLTALParser
+from zope.tal.talparser import TALParser
 from zope.tal.talinterpreter import TALInterpreter
 from zope.tal.dummyengine import DummyEngine, DummyTranslationDomain
 from zope.tal.tests import utils
-from zope.i18nmessageid import MessageID
+from zope.i18nmessageid import MessageID, Message
 
 class TestCaseBase(unittest.TestCase):
 
@@ -145,11 +146,13 @@ class MacroExtendTestCase(TestCaseBase):
         self.assertEqual(actual, expected)
 
 
-class I18NCornerTestCase(TestCaseBase):
+class I18NCornerTestCaseBase(TestCaseBase):
+
+    factory = None # set in subclass to Message and MessageID
 
     def setUp(self):
         self.engine = DummyEngine()
-        self.engine.setLocal('foo', MessageID('FoOvAlUe', 'default'))
+        self.engine.setLocal('foo', self.factory('FoOvAlUe', 'default'))
         self.engine.setLocal('bar', 'BaRvAlUe')
 
     def _check(self, program, expected):
@@ -258,8 +261,7 @@ class I18NCornerTestCase(TestCaseBase):
         self._check(program,
                     '<div>THIS IS TEXT FOR <span>BARVALUE</span>.</div>\n')
 
-    def test_for_correct_msgids(self):
-
+    def _getCollectingTranslationDomain(self):
         class CollectingTranslationDomain(DummyTranslationDomain):
             data = []
 
@@ -272,6 +274,10 @@ class I18NCornerTestCase(TestCaseBase):
 
         xlatdmn = CollectingTranslationDomain()
         self.engine.translationDomain = xlatdmn
+        return xlatdmn
+
+    def test_for_correct_msgids(self):
+        xlatdmn = self._getCollectingTranslationDomain()
         result = StringIO()
         program, macros = self._compile(
             '<div i18n:translate="">This is text for '
@@ -287,6 +293,48 @@ class I18NCornerTestCase(TestCaseBase):
             '<div>THIS IS TEXT FOR <span>BARVALUE</span>.</div>\n',
             result.getvalue())
 
+    def test_for_raw_msgids(self):
+        # Test for Issue 314: i18n:translate removes line breaks from
+        # <pre>...</pre> contents
+        # HTML mode
+        xlatdmn = self._getCollectingTranslationDomain()
+        result = StringIO()
+        program, macros = self._compile(
+            '<div i18n:translate=""> This is text\n'
+            ' \tfor\n div. </div>'
+            '<pre i18n:translate=""> This is text\n'
+            ' <b>\tfor</b>\n pre. </pre>')
+        self.interpreter = TALInterpreter(program, {}, self.engine,
+                                          stream=result)
+        self.interpreter()
+        self.assert_('This is text for div.' in xlatdmn.data)
+        self.assert_(' This is text\n <b>\tfor</b>\n pre. ' in
+                     xlatdmn.data)
+        self.assertEqual(
+            '<div>THIS IS TEXT FOR DIV.</div>'
+            '<pre> THIS IS TEXT\n <B>\tFOR</B>\n PRE. </pre>\n',
+            result.getvalue())
+
+        # XML mode
+        xlatdmn = self._getCollectingTranslationDomain()
+        result = StringIO()
+        parser = TALParser()
+        parser.parseString(
+            '<?xml version="1.0"?>\n'
+            '<pre xmlns:i18n="http://xml.zope.org/namespaces/i18n"'
+            ' i18n:translate=""> This is text\n'
+            ' <b>\tfor</b>\n barvalue. </pre>')
+        program, macros = parser.getCode()
+        self.interpreter = TALInterpreter(program, {}, self.engine,
+                                          stream=result)
+        self.interpreter()
+        self.assert_('This is text <b> for</b> barvalue.' in
+                     xlatdmn.data)
+        self.assertEqual(
+            '<?xml version="1.0"?>\n'
+            '<pre>THIS IS TEXT <B> FOR</B> BARVALUE.</pre>\n',
+            result.getvalue())
+
     def test_for_handling_unicode_vars(self):
         # Make sure that non-ASCII Unicode is substituted correctly.
         # http://collector.zope.org/Zope3-dev/264
@@ -295,6 +343,11 @@ class I18NCornerTestCase(TestCaseBase):
             "Foo <span tal:replace='bar' i18n:name='bar' /></div>")
         self._check(program, u"<div>FOO \u00C0</div>\n")
 
+class I18NCornerTestCaseMessageID(I18NCornerTestCaseBase):
+    factory = MessageID
+
+class I18NCornerTestCaseMessage(I18NCornerTestCaseBase):
+    factory = Message
 
 class ScriptTestCase(TestCaseBase):
 
@@ -515,7 +568,8 @@ def test_suite():
     suite.addTest(unittest.makeSuite(MacroExtendTestCase))
     suite.addTest(unittest.makeSuite(OutputPresentationTestCase))
     suite.addTest(unittest.makeSuite(ScriptTestCase))
-    suite.addTest(unittest.makeSuite(I18NCornerTestCase))
+    suite.addTest(unittest.makeSuite(I18NCornerTestCaseMessageID))
+    suite.addTest(unittest.makeSuite(I18NCornerTestCaseMessage))
     suite.addTest(unittest.makeSuite(TestSourceAnnotations))
 
     # TODO: Deactivated test, since we have not found a solution for this and

@@ -1,4 +1,5 @@
-<html metal:use-macro="views/standard_macros/view">
+<html metal:use-macro="views/standard_macros/view"
+    i18n:domain="bugtracker">
 <head>
   <style metal:fill-slot="style_slot"
       type="text/css" media="all"
@@ -59,40 +60,40 @@
   <h4 i18n:translate="">Description</h4>
   <div class="single_p" id="description"
       tal:content="structure view/description">Bug Description</div>
-  
+
   <h4 i18n:translate="" i18n:domain="bugtracker">Direct Dependencies</h4>
   <div class="single_p">
     <tal:block repeat="dep view/dependencies" tal:omit-tag="">
       <a href="" tal:attributes="href string:../$dep"
                  tal:content="dep">Dep Bug</a>
       <d tal:condition="not:repeat/dep/end" tal:replace="string:," />
-  
+
     </tal:block>
   </div>
   <div class="action" i18n:domain="bugtracker">
-    <a href="./@@+/action.html?type_name=AddDependentBug.html" 
+    <a href="./@@+/action.html?type_name=AddDependentBug.html"
       i18n:translate="">Add Bug</a>
   </div>
-  
+
   <h4 i18n:translate="" i18n:domain="bugtracker">Attachments</h4>
   <ul id="attachments" tal:condition="view/attachments">
     <li tal:repeat="attch view/attachments">
-        <a href="" tal:attributes="href string: ./${attch/name}" 
+        <a href="" tal:attributes="href string: ./${attch/name}"
                    tal:content="attch/name">Attachment 1</a>
         (<div tal:replace="attch/size">Size here</div>)
     </li>
   </ul>
   <div class="action" i18n:domain="bugtracker">
-    <a href="./@@+/action.html?type_name=zope.app.file.File" 
+    <a href="./@@+/action.html?type_name=zope.app.file.File"
       i18n:translate="">Add File</a> |
-    <a href="./@@+/action.html?type_name=zope.app.file.Image" 
+    <a href="./@@+/action.html?type_name=zope.app.file.Image"
       i18n:translate="">Add Image</a>
   </div>
 
   <h4 i18n:translate="" i18n:domain="bugtracker">Comments</h4>
   <div tal:repeat="comment view/comments" i18n:domain="">
       <h5 style="margin: 0em 0.6em" i18n:translate="">
-        Entry #<d tal:replace="repeat/comment/number" i18n:name="bug_id"/> by 
+        Entry #<d tal:replace="repeat/comment/number" i18n:name="bug_id"/> by
         <d tal:replace="comment/creator/title" i18n:name="creator"/> on 
         <d tal:replace="comment/modified" i18n:name="modified_datetime"/>
       </h5>
@@ -100,7 +101,7 @@
        tal:content="structure comment/body">Comment body</div>
   </div>
   <div class="action" i18n:domain="bugtracker">
-    <a href="./@@+/action.html?type_name=AddBugComment.html" 
+    <a href="./@@+/action.html?type_name=AddBugComment.html"
       i18n:translate="">Add Comment</a>
   </div>
 

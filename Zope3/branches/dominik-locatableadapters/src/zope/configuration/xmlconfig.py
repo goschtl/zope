@@ -233,8 +233,9 @@ class ConfigurationHandler(ContentHandler):
 
         `expression` is a string of the form "verb arguments".
 
-        Currently the only supported verb is 'have'.  It takes one argument:
-        the name of a feature.
+        Currently the two supported verba are 'have' and 'installed'.
+
+        The 'have' verb takes one argument: the name of a feature.
 
         >>> from zope.configuration.config import ConfigurationContext
         >>> context = ConfigurationContext()
@@ -261,6 +262,31 @@ class ConfigurationHandler(ContentHandler):
         Traceback (most recent call last):
           ...
         ValueError: Feature name missing: 'have'
+
+
+        The 'installed' verb takes one argument: the dotted name of a
+        pacakge. If the pacakge is found, in other words, can be imported,
+        then the condition will return true.
+
+        >>> from zope.configuration.config import ConfigurationContext
+        >>> context = ConfigurationContext()
+        >>> c = ConfigurationHandler(context, testing=True)
+        >>> c.evaluateCondition('installed zope.interface')
+        True
+        >>> c.evaluateCondition('installed zope.foo')
+        False
+
+        Ill-formed expressions raise an error
+
+        >>> c.evaluateCondition("installed foo bar")
+        Traceback (most recent call last):
+          ...
+        ValueError: Only one package allowed: 'installed foo bar'
+
+        >>> c.evaluateCondition("installed")
+        Traceback (most recent call last):
+          ...
+        ValueError: Package name missing: 'installed'
         """
         arguments = expression.split(None)
         verb = arguments.pop(0)
@@ -270,6 +296,16 @@ class ConfigurationHandler(ContentHandler):
             if len(arguments) > 1:
                 raise ValueError("Only one feature allowed: %r" % expression)
             return self.context.hasFeature(arguments[0])
+        elif verb == 'installed':
+            if not arguments:
+                raise ValueError("Package name missing: %r" % expression)
+            if len(arguments) > 1:
+                raise ValueError("Only one package allowed: %r" % expression)
+            try:
+                __import__(arguments[0])
+            except ImportError:
+                return False
+            return True
         else:
             raise ValueError("Invalid ZCML condition: %r" % expression)
 

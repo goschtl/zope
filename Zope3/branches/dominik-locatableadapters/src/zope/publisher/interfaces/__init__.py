@@ -305,8 +305,12 @@ class IPublicationRequest(IPresentationRequest, IParticipation):
         """Release resources held by the request.
         """
 
-    def hold(object):
-        """Hold a reference to an object until the request is closed
+    def hold(held):
+        """Hold a reference to an object until the request is closed.
+
+        The object should be an IHeld.  If it is an IHeld, it's
+        release method will be called when it is released.
+        
         """
 
     def getTraversalStack():
@@ -332,6 +336,17 @@ class IPublicationRequest(IPresentationRequest, IParticipation):
         It should be IPrincipal wrapped in it's AuthenticationService's context.
         """
 
+class IHeld(Interface):
+    """Object to be held and explicitly released by a request
+    """
+
+    def release():
+        """Release the held object
+
+        This is called by a request that holds the IHeld when the
+        request is closed
+
+        """
 
 class IPublisherRequest(IPublicationRequest):
     """Request interface use by the publisher
@@ -421,6 +436,20 @@ class IApplicationRequest(IEnumerableMapping):
         This is a read-only mapping from variable name to value.
         """)
 
+    annotations = Attribute(
+        """Stores arbitrary application data under package-unique keys.
+
+        By "package-unique keys", we mean keys that are are unique by
+        virtue of including the dotted name of a package as a prefex.  A
+        package name is used to limit the authority for picking names for
+        a package to the people using that package.
+    
+        For example, when implementing annotations for hypothetical
+        request-persistent adapters in a hypothetical zope.persistentadapter
+        package, the key would be (or at least begin with) the following::
+    
+          "zope.persistentadapter"
+        """)
 
 class IResponse(IPublisherResponse, IApplicationResponse):
     """The basic response contract

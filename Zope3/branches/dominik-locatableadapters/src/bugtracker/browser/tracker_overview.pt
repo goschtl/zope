@@ -1,4 +1,5 @@
-<html metal:use-macro="context/@@standard_macros/view">
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="bugtracker">
 <head>
   <style metal:fill-slot="style_slot"
       type="text/css" media="all"
@@ -12,22 +13,22 @@
 <div metal:fill-slot="body" tal:define="bugs view/getBugs">
 
   <div class="box">
-    <h4 style="padding: 0.3em">Filter Options</h4>
+    <h4 style="padding: 0.3em" i18n:translate="">Filter Options</h4>
     <div class="body">
-      <form action="updateOverviewSettings.html" method="post" 
+      <form action="updateOverviewSettings.html" method="post"
           class="even" style="padding: 0.5em;"
           tal:define="settings view/getSettingsInfo">
-            
+
         <div class="row"
             tal:condition="view/getShowFilterOptions">
           <div class="field">
-            <b>Filter Text</b>
+            <b i18n:translate="">Filter Text</b>
             <input type="text" name="search_text" value=""
                 tal:attributes="value view/getSearchText">
           </div>
           <div class="field">&nbsp;&nbsp;&nbsp;&nbsp;</div>
           <div class="field">
-            <b>View Type</b>
+            <b i18n:translate="">View Type</b>
             <select name="view_type">
               <tal:block repeat="vt python: ('normal', 'compressed')">
                 <option selected=""
@@ -42,11 +43,11 @@
             </select>
           </div>
         </div>
-    
+
         <div class="row"
             tal:condition="view/getShowFilterOptions">
           <div class="field" tal:repeat="var settings">
-    
+
             <b tal:content="var/title">Status</b><br/>
             <select size="5" name="stati:list" multiple="yes"
                 tal:attributes="name string:${var/name}:list">
@@ -61,7 +62,7 @@
                   tal:content="entry/title">New</option>
               </tal:block>
             </select>
-    
+
           </div>
         </div>
         <div class="row">
@@ -74,14 +75,14 @@
             <input type="submit" name="COLLAPSE" value="Collapse"
                 tal:condition="view/getShowFilterOptions"
                 i18n:attributes="value collapse-button" />
-    
+
             <input type="submit" name="EXPAND" value="Expand" 
                 tal:condition="not: view/getShowFilterOptions"
-                i18n:attributes="value expand-button" />        
+                i18n:attributes="value expand-button" />
           </div>
         </div>
         <div class="clear"/>
-    
+
       </form>
     </div>
   </div>
@@ -89,12 +90,12 @@
   <div class="row" i18n:domain="bugtracker">
     <div class="control">
       <form action="./+/AddBug.html=" method="post">
-        <input type="submit" name="add" value="Add Bug" 
+        <input type="submit" name="add" value="Add Bug"
                i18n:attributes="value add-bug-button"/>
       </form>
     </div>
   </div>
-  <div class="batch" tal:condition="bugs/startNumber" i18n:domain="bugtracker">
+  <div class="batch" tal:condition="bugs/startNumber">
     <div class="prev_batch" tal:define="prev bugs/prevBatch">
       <a href=""
           tal:condition="prev"
@@ -102,12 +103,12 @@
               string:./@@overview.html?start=${prev/start}&size=${prev/size}"
           i18n:translate="">
         Previous
-        (<d tal:replace="prev/startNumber" i18n:name="start_number" /> to 
+        (<d tal:replace="prev/startNumber" i18n:name="start_number" /> to
          <d tal:replace="prev/endNumber" i18n:name="end_number" />) 
       </a>&nbsp;
     </div>
     <div class="curr_batch" i18n:translate="">
-        <d tal:replace="bugs/startNumber" i18n:name="start_number"/> to 
+        <d tal:replace="bugs/startNumber" i18n:name="start_number"/> to
         <d tal:replace="bugs/endNumber" i18n:name="end_number"/>
         of <d tal:replace="bugs/total" i18n:name="batch_total_number"/> found
         (<d tal:replace="view/numberOfBugs" i18n:name="bug_number"/> total)
@@ -119,22 +120,22 @@
               string:./@@overview.html?start=${next/start}&size=${next/size}"
           i18n:translate="">
         Next
-        (<d tal:replace="next/startNumber" i18n:name="start_number" /> to 
-         <d tal:replace="next/endNumber" i18n:name="end_number" />) 
+        (<d tal:replace="next/startNumber" i18n:name="start_number" /> to
+         <d tal:replace="next/endNumber" i18n:name="end_number" />)
       </a>&nbsp;
     </div>
-    <div class="clear"></div> 
+    <div class="clear"></div>
   </div>
 
-  <div 
+  <div
       tal:condition="python: view.getViewType() == 'normal'"
       tal:replace="structure view/bug_listing_normal" />
 
-  <div 
+  <div
       tal:condition="python: view.getViewType() == 'compressed'"
       tal:replace="structure view/bug_listing_compressed" />
 
-  <div class="batch" tal:condition="bugs/startNumber" i18n:domain="bugtracker">
+  <div class="batch" tal:condition="bugs/startNumber">
     <div class="prev_batch" tal:define="prev bugs/prevBatch">
       <a href=""
           tal:condition="prev"
@@ -142,12 +143,12 @@
               string:./@@overview.html?start=${prev/start}&size=${prev/size}"
           i18n:translate="">
         Previous
-        (<d tal:replace="prev/startNumber" i18n:name="start_number" /> to 
-         <d tal:replace="prev/endNumber" i18n:name="end_number" />) 
+        (<d tal:replace="prev/startNumber" i18n:name="start_number" /> to
+         <d tal:replace="prev/endNumber" i18n:name="end_number" />)
       </a>&nbsp;
     </div>
     <div class="curr_batch" i18n:translate="">
-        <d tal:replace="bugs/startNumber" i18n:name="start_number"/> to 
+        <d tal:replace="bugs/startNumber" i18n:name="start_number"/> to
         <d tal:replace="bugs/endNumber" i18n:name="end_number"/>
         of <d tal:replace="bugs/total" i18n:name="batch_total_number"/> found
         (<d tal:replace="view/numberOfBugs" i18n:name="bug_number"/> total)
@@ -159,8 +160,8 @@
               string:./@@overview.html?start=${next/start}&size=${next/size}"
           i18n:translate="">
         Next
-        (<d tal:replace="next/startNumber" i18n:name="start_number" /> to 
-         <d tal:replace="next/endNumber" i18n:name="end_number" />) 
+        (<d tal:replace="next/startNumber" i18n:name="start_number" /> to
+         <d tal:replace="next/endNumber" i18n:name="end_number" />)
       </a>&nbsp;
     </div>
     <div class="clear"></div> 
@@ -168,7 +169,7 @@
   <div class="row" i18n:domain="bugtracker">
     <div class="control">
       <form action="./+/AddBug.html=" method="post">
-        <input type="submit" name="add" value="Add Bug" 
+        <input type="submit" name="add" value="Add Bug"
                i18n:attributes="value add-bug-button"/>
       </form>
     </div>

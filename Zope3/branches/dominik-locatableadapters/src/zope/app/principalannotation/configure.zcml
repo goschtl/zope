@@ -33,4 +33,6 @@
       handler=".bootstrap.bootStrapSubscriber"
       />
 
+  <adapter factory=".annotations" />
+
 </configure>

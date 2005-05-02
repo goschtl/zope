@@ -17,8 +17,6 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-import re, cgi
-import traceback
 from xml.sax.saxutils import quoteattr, escape
 
 from zope.interface import implements
@@ -420,37 +418,30 @@ def renderTag(tag, **kw):
     attr_list = []
 
     # special case handling for cssClass
-    cssClass = ''
-    if 'cssClass' in kw:
-        if kw['cssClass']:
-            cssClass = kw['cssClass']
-        del kw['cssClass']
+    cssClass = kw.pop('cssClass', u'')
 
     # If the 'type' attribute is given, append this plus 'Type' as a
     # css class. This allows us to do subselector stuff in css without
     # necessarily having a browser that supports css subselectors.
     # This is important if you want to style radio inputs differently than
     # text inputs.
-    cssWidgetType = kw.get('type')
+    cssWidgetType = kw.get('type', u'')
     if cssWidgetType:
         cssWidgetType += u'Type'
-    else:
-        cssWidgetType = u''
-    if cssWidgetType or cssClass:
-        names = filter(None, (cssClass, cssWidgetType))
-        attr_list.append(u'class="%s"' %' '.join(names))
+    names = [c for c in (cssClass, cssWidgetType) if c]
+    if names:
+        attr_list.append(u'class="%s"' % u' '.join(names))
 
-    if 'style' in kw:
-        if kw['style'] != u'':
-            attr_list.append(u'style=%s' % quoteattr(kw['style']))
-        del kw['style']
+    style = kw.pop('style', u'')
+    if style:
+        attr_list.append(u'style=%s' % quoteattr(style))
 
     # special case handling for extra 'raw' code
     if 'extra' in kw:
-        extra = u" " + kw['extra'] # could be empty string but we don't care
-        del kw['extra']
+        # could be empty string but we don't care
+        extra = u" " + kw.pop('extra')
     else:
-        extra = ""
+        extra = u''
 
     # handle other attributes
     if kw:
@@ -476,10 +467,9 @@ def renderTag(tag, **kw):
 
 
 def renderElement(tag, **kw):
-    if 'contents' in kw:
+    contents = kw.pop('contents', None)
+    if contents is not None:
         # Do not quote contents, since it often contains generated HTML.
-        contents = kw['contents']
-        del kw['contents']
         return u"%s>%s</%s>" % (renderTag(tag, **kw), contents, tag)
     else:
         return renderTag(tag, **kw) + " />"

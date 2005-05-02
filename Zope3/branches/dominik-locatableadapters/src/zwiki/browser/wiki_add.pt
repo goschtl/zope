@@ -1,4 +1,5 @@
-<html metal:use-macro="views/standard_macros/page">
+<html metal:use-macro="views/standard_macros/page"
+    i18n:domain="zwiki">
   <head>
     <style metal:fill-slot="style_slot">
     </style>

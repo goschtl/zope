@@ -11,7 +11,7 @@ We can add catalog indexes to catalogs.  A catalog index is, among
 other things, an attribute index. It indexes attributes of objects. To
 see how this works, we'll create a demonstration attribute index. Our
 attribute index will simply keep track of objects that have a given
-attribute value.  The `catalog` package provides an attrbute-index
+attribute value.  The `catalog` package provides an attribute-index
 mix-in class that is meant to work with a base indexing class. First,
 we'll write the base index class:
 
@@ -71,7 +71,7 @@ index:
     ...             ):
     ...    zope.interface.implements(zope.app.catalog.interfaces.ICatalogIndex)
 
-Unfortunately, because of the way we currenty handle containment
+Unfortunately, because of the way we currently handle containment
 constraints, we have to provide `ICatalogIndex`, which extends
 `IContained`. We subclass `Contained` to get an implementation for
 `IContained`. 
@@ -175,7 +175,7 @@ If we clear the catalog, we'll clear all of the indexes:
     [0, 0, 0]
 
 Note that you don't have to use the catalog's search methods. You can
-access it's indexes directly, since the catalog is a mapping:
+access its indexes directly, since the catalog is a mapping:
 
     >>> [(name, cat[name].field_name) for name in cat]
     [(u'age', 'age'), (u'color', 'color'), (u'size', 'sz')]

@@ -161,22 +161,6 @@ class IInputWidget(IWidget):
         a checkbox) to avoid unnecessary 'required' UI notations.
         """)
 
-    def validate():
-        """Returns a valid value from the widget.
-
-        This method returns the data of the field in the native Python
-        format. The value is also validated against the field's constraints.
-
-        If the field is required and no input was found, a
-        ``MissingInputError`` will be raised.
-
-        If the field is not required and no input was found, then return the
-        ``missing_value`` of the field.
-
-        If validation errors occurred, then they are all collected in a new
-        ``WidgetInputError`` exception, which is raised.
-        """
-
     def getInputValue():
         """Return value suitable for the widget's field.
 

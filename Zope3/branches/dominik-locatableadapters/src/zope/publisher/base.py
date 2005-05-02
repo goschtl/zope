@@ -25,7 +25,7 @@ from zope.interface import implements, providedBy
 from zope.interface.common.mapping import IReadMapping, IEnumerableMapping
 from zope.publisher.interfaces import NotFound
 
-from zope.publisher.interfaces import IPublication
+from zope.publisher.interfaces import IPublication, IHeld
 from zope.publisher.interfaces import NotFound, DebugError, Unauthorized
 from zope.publisher.interfaces import IRequest, IResponse, IDebugFlags
 from zope.publisher.publish import mapply
@@ -192,6 +192,7 @@ class BaseRequest(object):
         '_principal',        # request principal, set by publication
         'interaction',       # interaction, set by interaction
         'debug',             # debug flags
+        'annotations',       # per-package annotations
         )
 
     environment = RequestDataProperty(RequestEnvironment)
@@ -215,6 +216,7 @@ class BaseRequest(object):
         self._principal = None
         self.debug = DebugFlags()
         self.interaction = None
+        self.annotations = {}
 
     def setPrincipal(self, principal):
         self._principal = principal
@@ -278,6 +280,11 @@ class BaseRequest(object):
 
     def close(self):
         'See IPublicationRequest'
+
+        for held in self._held:
+            if IHeld.providedBy(held):
+                held.release()
+        
         self._held = None
         self._response = None
         self._body_instream = None

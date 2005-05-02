@@ -15,6 +15,7 @@
 
 $Id$
 """
+import doctest
 from unittest import TestCase, TestLoader, TextTestRunner
 
 import zope.component
@@ -22,11 +23,10 @@ from zope.interface import implements
 from zope.app import zapi
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.principalannotation import PrincipalAnnotationUtility
-from zope.app.principalannotation import AnnotationsForPrincipal
 from zope.app.security.interfaces import IPrincipal
 from zope.app.component.testing import PlacefulSetup
 from zope.app.testing import ztapi, setup
-from interfaces import IPrincipalAnnotationUtility
+from zope.app.principalannotation.interfaces import IPrincipalAnnotationUtility
 
 class Principal(object):
 
@@ -41,7 +41,6 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
     def setUp(self):
         PlacefulSetup.setUp(self)
         sm = self.buildFolders(site='/')
-
         self.util = PrincipalAnnotationUtility()
         zope.component.provideUtility(self.util, IPrincipalAnnotationUtility)
 
@@ -83,20 +82,12 @@ class PrincipalAnnotationTests(PlacefulSetup, TestCase):
 
         self.assertEquals(parentAnnotation.get("foo"), None)
 
-
-    def testAdapter(self):
-        p = Principal('somebody')
-        ztapi.provideAdapter(IPrincipal, IAnnotations,
-                             AnnotationsForPrincipal(self.util))
-        annotations = IAnnotations(p)
-        annotations["test"] = "bar"
-        annotations = IAnnotations(p)
-        self.assertEquals(annotations["test"], "bar")
-
-
 def test_suite():
     loader=TestLoader()
-    return loader.loadTestsFromTestCase(PrincipalAnnotationTests)
+    tests = loader.loadTestsFromTestCase(PrincipalAnnotationTests)
+    import zope.app.principalannotation
+    tests.addTest(doctest.DocTestSuite(zope.app.principalannotation))
+    return tests
 
 if __name__=='__main__':
     TextTestRunner().run(test_suite())

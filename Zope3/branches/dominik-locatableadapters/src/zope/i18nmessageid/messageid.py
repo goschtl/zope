@@ -16,6 +16,11 @@
 $Id$
 """
 
+# Note that this module is slated for deprecation.  Please see messages.txt
+# in this directory for more information.  The short advice is to use 
+# message.Message instead of messageid.MessageID, and message.MessageFactory
+# instead of messageid.MessageIDFactory.
+
 class MessageID(unicode):
     """Message ID.
 
@@ -55,7 +60,7 @@ class MessageID(unicode):
     >>> id.default = u'blah'
     >>> id.default
     u'blah'
-    
+
     It is quite common to pass an abstract identifier as message id
     and then a default text:
 

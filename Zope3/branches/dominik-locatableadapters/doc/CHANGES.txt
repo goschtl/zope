@@ -10,6 +10,17 @@ Zope Changes
 
     New features
 
+      - The http() function exposed to functional doctests how accepts
+        an optional "form" argument to use as the set of form values.
+        This works for any type of request; this can used to make
+        functional doctests involving form submissions much easier to
+        read and maintain.  It's also convenient when some of the form
+        values are computed.
+
+      - Implemented proper HTTP 405 Method Not Allowed handling in the
+        HTTP publication if a requested method does not have a corresponding
+        view.
+
       - Implemented a generic user preferences system.
 
         * User preferences are combined in groups that are described by
@@ -29,7 +40,7 @@ Zope Changes
           namespace::
 
             /++preferences++/zmi/folder/sortedby
-     
+
         * Preferences are easily accessible in Python code::
 
            >>> prefs = IUserPreferences(context)
@@ -71,28 +82,34 @@ Zope Changes
         Added a layer argument to the menu directives and made sure that all
         browser directives specify the layer for the menu directives.
 
-      - Implemented issue 292: Add factory to browser:resource directive
+      - Implemented issue 292: Add factory to ``browser:resource`` directive
 
-      - Implemented issue 309: <schemadisplay> should support <widget>
+      - Implemented issue 309: ``<schemadisplay>`` should support ``<widget>``
 
-      - Developed a generic browser:form directive. It is pretty much the same
-        as the browser:editform directive, except that the data is not stored
-        on some context or adapted context but sent as a dictionary to special
-        method (by default). By default these methods are named `getData()` and
-        `setData(data)`.
+      - Developed a generic ``browser:form`` directive. It is pretty much the
+        same as the ``browser:editform`` directive, except that the data is
+        not stored on some context or adapted context but sent as a dictionary
+        to special method (by default). By default these methods are named
+        ``getData()`` and ``setData(data)``.
 
       - When raising the Unauthorized exception, the security checker
         now passes the object in question in addition to the attribute
-        name and missing permission.  This should make debugging easier.
+        name and missing permission. This should make debugging easier.
 
       - You can declare "features" provided by your package with the new
-        <meta:provides feature="name" /> ZCML directive.  The presence of these
-        features can be tested with the new zcml:condition attribute.
+        ``<meta:provides feature="name" />`` ZCML directive. The presence of
+        these features can be tested with the new ``zcml:condition``
+        attribute.
 
       - ZCML supports conditional directives using the zcml:condition
-        attribute.  The value of the attribute is an expression of the
-        form "verb arguments".  Currently the only recognized verb is "have",
-        and it takes a single name of a feature as an argument.
+        attribute. The value of the attribute is an expression of the
+        form "verb arguments". The following verbs are recognized:
+
+        * `have` -- It takes a single name of a feature as an
+          argument.
+
+        * `installed` -- It's argument is a single package name. If the
+          package is importable, return true.
 
         If the expression is true, the element the attribute is attached to
         will be used, otherwise the element and its descendents will be
@@ -105,9 +122,9 @@ Zope Changes
         * A new `bookmodule` compiles all our README.txt and other text
           documentation files to a nice book-like format.
 
-        * A new `typemodule` lists all interface types (such as
-          `IContentType`) and then let's you see all interfaces providing this
-          type (for example `IFile`)
+        * A new ``typemodule`` lists all interface types (such as
+          ``IContentType``) and then let's you see all interfaces providing
+          this type (for example ``IFile``)
 
         * Views are now shown in the Interface details screen.
 
@@ -121,16 +138,16 @@ Zope Changes
           want to see by default in the interface details screen.
 
       - Zope 3 can now listen on specified network interfaces only.  Example
-        of a server section in zope.conf:
+        of a server section in `zope.conf`::
 
             <server>
               type HTTP
               address 127.0.0.1:8080
             </server>
 
-      - Improvements to zope.i18n.format.
+      - Improvements to ``zope.i18n.format``.
 
-        * Support for parsing and formatting timezones based on pytz.
+        * Support for parsing and formatting timezones based on ``pytz``.
 
         * Reinterpretation of of ICU documentation, revealed that any number
           of formatting fields should be accepted by the formatter and parser.
@@ -138,8 +155,8 @@ Zope Changes
         * Implemented formatting of several missing formatting fields. Now all
           fields are correctly implemented.
 
-      - Added pytz to the repository. Stuart Bishop licensed it for us under
-        ZPL 2.1. Thanks!
+      - Added ``pytz`` to the repository. Stuart Bishop licensed it for us
+        under ZPL 2.1. Thanks!
 
       - New schema field: Timedelta.
 
@@ -165,13 +182,13 @@ Zope Changes
 
       - It is no longer necessary to supply a for attribute in adapter
         directives if the factory declares the interfaces or classes that it
-        adapts using zope.component.adapts.
+        adapts using ``zope.component.adapts``.
 
       - It is no longer necessary to specify a provides attribute in
         an adapter or utility directive if the factory/component
         implements/provides a single interface.
 
-      - Added `zope.security.canAccess` and `zope.security.canWrite`
+      - Added ``zope.security.canAccess`` and ``zope.security.canWrite``
         convenience methods.  Often code wants to check if a certain option is
         open to a user before presenting it.  If the code relies on a certain
         permission, the Zope 3 goal of keeping knowledge of security
@@ -182,8 +199,8 @@ Zope Changes
 
       - Added lazy properties. (See zope/cachedescriptors/README.txt)
 
-      - Added new `getNextUtility()`, `queryNextUtility()`, and
-        `testingNextUtility()` functions to make it easier to find and test
+      - Added new ``getNextUtility()``, ``queryNextUtility()``, and
+        ``testingNextUtility()`` functions to make it easier to find and test
         for utilities in higher-up sites. These mimic their service-based
         equivalents.
 
@@ -306,11 +323,12 @@ Zope Changes
       - Schemas are now copied before they are appended to content type or
         instance. This should probably become a policy later.
 
-      - Implemented ICacheable view's current_cache_url() method, so that a
-        link to the cache utility can be provided.
+      - Implemented ``ICacheable`` view's ``current_cache_url()`` method, so
+        that a link to the cache utility can be provided.
 
-      - Added ++debug++ traversal adapter that allows you to turn on debugging
-        flags in request.debug.  Currently the following flags are defined:
+      - Added '++debug++' traversal adapter that allows you to turn on
+        debugging flags in request.debug.  Currently the following flags are
+        defined:
 
         + "source" adds HTML comments to rendered page templates showing
            where each code snippet came from.
@@ -323,17 +341,18 @@ Zope Changes
         Try e.g. http://localhost:8080/++debug++source,tal/@@contents.html
         and view the source of the resulting page.
 
-      - Added 'url' adapter for IPathAdapter. It provides quoting mechanisms
-        to strings (and string-like objects) from within ZPT, e.g:
+      - Added 'url' adapter for ``IPathAdapter``. It provides quoting
+        mechanisms to strings (and string-like objects) from within ZPT, e.g::
 
         tal:attributes="href string:login.html?nextURL=${request/URL/url:quote}
 
-        Other functions available are quote_plus, unquote, unquote_plus.
+        Other functions available are ``quote_plus``, ``unquote``,
+        ``unquote_plus``.
 
       - Added basic cataloging functionality.
 
-      - Added functions (zope.app.container.constraints.contains and
-        zope.app.container.constraints.containers) that greatly simplify
+      - Added functions (``zope.app.container.constraints.contains`` and
+        ``zope.app.container.constraints.containers``) that greatly simplify
         expressing containment constraints.
 
       - Added a view 'failsafelogin.html' that always uses HTTP basic auth
@@ -343,11 +362,16 @@ Zope Changes
 
           http://yoursite.com/@@failsafelogin.html
 
+      - Added a re-implementation of i18n message IDs (now simply
+        called ``Message``) that is immutable and thus can be treated
+        like unicode strings with respect to security proxying.  This
+        implementation will replace the old one in upcoming versions.
+
     Restructuring
 
       - Applied changes suggested in issue 339: Improvements to generated forms
 
-      - Deprecated `zope.app.introspector`. You should use the public apidoc
+      - Deprecated ``zope.app.introspector``. You should use the public apidoc
         utilities isntead. A new "Introspector" tab was implemented that
         redirects you to the correct code browser documentation screen.
 
@@ -358,16 +382,17 @@ Zope Changes
 
       - Addressed issue 295: Sort out defaultView.
 
-        Deprecated `zope:defaultView` directive and removed unused default
-        view handler in `zope.app.publisher.browser.viewmeta`. Added a `layer`
-        attribute to the `browser:defaultView` directive.
+        Deprecated ``zope:defaultView`` directive and removed unused default
+        view handler in ``zope.app.publisher.browser.viewmeta``. Added a
+        ``layer`` attribute to the `browser:defaultView` directive.
 
-      - zope.component.createObject no longer accepts a positional
+      - ``zope.component.createObject`` no longer accepts a positional
         context argument.  A context can be provided as a keyword argument.
 
-      - Deprecated _configureCopy in zope.app.copypastemove.ObjectCopier. To
-        configure a recently copied object, suscribe to IObjectCopiedEvent for
-        the type of object you're interested in configuring.
+      - Deprecated ``_configureCopy`` in
+        ``zope.app.copypastemove.ObjectCopier``. To configure a recently
+        copied object, suscribe to IObjectCopiedEvent for the type of object
+        you're interested in configuring.
 
       - Several changes have been made to the API doc tool:
 
@@ -383,21 +408,21 @@ Zope Changes
 
         + Converted most tests to text files.
 
-        + Moved code from `__init__.py` files to modules.
+        + Moved code from ``__init__.py`` files to modules.
 
-        + Removed `viewmodule`, since its functionality has been merged into
+        + Removed ``viewmodule``, since its functionality has been merged into
           the interface details view.
 
       - Changed the test-counting mechanism for doctests.  Now a
         doctest count a test for every example that is preceeded by
         prose. (Although a doctest will never count less than 1 test.)
 
-      - Moved reusable test setups/APIs from `zope.app.tests` to
-        `zope.app.testing`. No reusable testing code should be in a `tests`
+      - Moved reusable test setups/APIs from ``zope.app.tests`` to
+        ``zope.app.testing``. No reusable testing code should be in a ``tests``
         package or module.
 
       - Removal of Services. You can now access the adapter and utiliy
-        registry directly via the site manager's `adapters` and `utilities`
+        registry directly via the site manager's ``adapters`` and ``utilities``
         attribute, respecitvely.
 
         + Converted Error Reporting Service to a utility. Added database
@@ -566,6 +591,15 @@ Zope Changes
 
     Bug Fixes
 
+      - The interface directive supports multiple interface types now.
+
+      - Fixed issue #314: i18n:translate removes line breaks
+        from <pre>...</pre> contents
+
+      - The getAdapters function on site managers returned None when
+        adapter factories returned None. These values should not be
+        included in the output and now aren't.
+
       - Fixed issue #394: starting zope with command -C arg
         causes request.form to contain '-C':''
 
@@ -705,7 +739,7 @@ Zope Changes
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
       Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
-      Bishop, Dominik Huber, Dmitry Vasiliev
+      Bishop, Dominik Huber, Dmitry Vasiliev, Gary Poster
 
       Note: If you are not listed and contributed, please add yourself. This
       note will be deleted before the release.
@@ -1799,5 +1833,3 @@ Zope Changes
       - FTP support (not sure if this works)
 
       - XML-RPC support  (not sure if this works)
-
-

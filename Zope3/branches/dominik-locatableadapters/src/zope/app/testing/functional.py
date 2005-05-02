@@ -357,14 +357,20 @@ class BrowserTestCase(CookieHandler, FunctionalTestCase):
                     object = publication.getApplication(request)
                     object = request.traverse(object)
                     publication.afterTraversal(request, object)
-                except (KeyError, NameError, AttributeError, Unauthorized, Forbidden):
-                    e = traceback.format_exception_only(*sys.exc_info()[:2])[-1]
+                except (KeyError, NameError, AttributeError, Unauthorized,
+                        Forbidden):
+                    e = traceback.format_exception_only(
+                        *sys.exc_info()[:2])[-1]
                     errors.append((a, e.strip()))
             finally:
                 publication.endRequest(request, object)
                 self.setSite(old_site)
-                # Bad Things(TM) related to garbage collection and special
-                # __del__ methods happen if request.close() is not called here
+
+                # Make sure we don't have pending changes
+                abort()
+                
+                # The request should always be closed to free resources
+                # held by the request
                 if request:
                     request.close()
         if errors:
@@ -537,7 +543,7 @@ def sample_test_suite():
 class HTTPCaller(CookieHandler):
     """Execute an HTTP request string via the publisher"""
 
-    def __call__(self, request_string, handle_errors=True):
+    def __call__(self, request_string, handle_errors=True, form=None):
         # Commit work done by previous python code.
         commit()
 
@@ -588,6 +594,11 @@ class HTTPCaller(CookieHandler):
         if request_cls is BrowserRequest:
             # Only browser requests have skins
             interface.directlyProvides(request, _getDefaultSkin())
+
+        if form is not None:
+            if request.form:
+                raise ValueError("only one set of form values can be provided")
+            request.form = form
 
         header_output = HTTPHeaderOutput(
             protocol, ('x-content-type-warning', 'x-powered-by'))

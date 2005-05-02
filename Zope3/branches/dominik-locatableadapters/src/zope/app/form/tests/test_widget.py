@@ -107,20 +107,13 @@ class TestInputWidget(object):
         ...     pass
         >>> widget = TestInputWidget(field, Request(ITestRequest))
 
-    The default implementation of hasValidInput and validate both rely on
+    The default implementation of hasValidInput relies on
     getInputValue to perform the validation of the current widget input.
     In this simple example, the widget will always raise an error when its
     field is read only:
 
         >>> field.readonly = True
         >>> widget.getInputValue()
-        Traceback (most recent call last):
-        WidgetInputError: ('', '', None)
-
-    A call to validate, however, accomplishes the same thing with improved
-    readability:
-
-        >>> widget.validate()
         Traceback (most recent call last):
         WidgetInputError: ('', '', None)
 
@@ -135,10 +128,6 @@ class TestInputWidget(object):
         >>> field.required = False
         >>> widget.getInputValue()
         'Foo Bar'
-
-    Correspondingly, validate does not raise an error:
-
-        >>> widget.validate()
 
     and hasValidInput returns True:
 

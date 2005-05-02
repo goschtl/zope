@@ -3,13 +3,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="en"
     lang="en"
-    i18n:domain="zope">
+    i18n:domain="bugtracker">
 
   <head>
-    <title 
+    <title
         metal:define-slot="title"
         tal:content="context/title|default"
-        i18n:domain="bugtracker" i18n:translate="">Zope 3 Bug Tracker</title>
+        >Zope 3 Bug Tracker</title>
 
 
     <style type="text/css"
@@ -148,8 +148,7 @@
                                            + url + ','
                                            + name + ','
                                            + settings +')'"
-               tal:content="help_info/title"
-               i18n:translate="">
+               tal:content="help_info/title" >
               Action name
           </a>
         </span>
@@ -228,8 +227,8 @@
       </div>
     </div>
 
-    <div id="footer" metal:define-macro="footer" 
-         i18n:domain="bugtracker" i18n:translate="">
+    <div id="footer" metal:define-macro="footer"
+         i18n:translate="">
       Powered by Zope 3. Written by Stephan Richter in 2003.
     </div>
 

@@ -49,8 +49,6 @@ TAL i18n-namspace
 
   * 301: Bug with i18n:name and i18n:translate on the same element 
 
-  * 314: i18n:translate removes line breaks from <pre>...</pre> contents
-
 Others
 ~~~~~~
 
@@ -97,3 +95,6 @@ Done
 
   * 334: Failing RuntimeInfo tests
          Fixed: on trunk at rev 29616, on ZopeX3-3.0 branch at rev 29906
+
+  * 314: i18n:translate removes line breaks from <pre>...</pre> contents
+         Fixed: on trunk at rev 30152, on ZopeX3-3.0 branch at rev 30153

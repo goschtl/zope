@@ -1,9 +1,10 @@
 <configure
    xmlns="http://namespaces.zope.org/zope"
    xmlns:mail="http://namespaces.zope.org/mail"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
    xmlns:apidoc="http://namespaces.zope.org/apidoc"
    xmlns:zcml="http://namespaces.zope.org/zcml"
-   i18n_domain="zope"
+   i18n_domain="zwiki"
    >
 
   <!-- Backward compatibility -->
@@ -122,7 +123,7 @@
   <adapter
       factory=".wikipage.MailSubscriptions"
       provides=".interfaces.IMailSubscriptions"
-      for=".interfaces.IWiki" 
+      for=".interfaces.IWiki"
       trusted="true"
       />
 
@@ -140,7 +141,7 @@
 
   <!-- Wiki Page Content Type -->
 
-  <interface 
+  <interface
       interface=".interfaces.IWikiPage" 
       type="zope.app.content.interfaces.IContentType"
       /> 
@@ -187,7 +188,7 @@
   <interface 
       interface=".interfaces.IComment" 
       type="zope.app.content.interfaces.IContentType"
-      /> 
+      />
 
   <content class=".comment.Comment">
 
@@ -205,16 +206,16 @@
         permission="zwiki.CommentWikiPage"
         set_schema=".interfaces.IComment" />
 
-  </content>  
+  </content>
 
-  <adapter 
+  <adapter
      for=".interfaces.IComment"
      provides="zope.app.filerepresentation.interfaces.IReadFile"
      factory=".comment.CommentFile"
      permission="zwiki.ViewWikiPage"
      />
 
-  <adapter 
+  <adapter
      for=".interfaces.IComment"
      provides="zope.app.filerepresentation.interfaces.IWriteFile"
      factory=".comment.CommentFile"
@@ -226,20 +227,20 @@
   <adapter
       factory=".wikipage.MailSubscriptions"
       provides=".interfaces.IMailSubscriptions"
-      for=".interfaces.IWikiPage" 
+      for=".interfaces.IWikiPage"
       trusted="true"
       />
 
-  <adapter 
+  <adapter
       factory=".traversal.WikiPageTraversable"
       provides="zope.app.traversing.interfaces.ITraversable"
-      for=".interfaces.IWikiPage" 
+      for=".interfaces.IWikiPage"
       trusted="true"
       />
 
 
   <!-- WikiPage FTP configurations -->
-  <adapter 
+  <adapter
      for=".interfaces.IWikiPage"
      provides="zope.app.filerepresentation.interfaces.IReadDirectory"
      factory=".wikipage.Directory"
@@ -262,7 +263,7 @@
 
   <!-- Register mail delivery for change mails -->
   <mail:smtpMailer name="wiki-smtp" hostname="localhost" port="25" />
-  
+
   <mail:queuedDelivery 
       name="wiki-delivery"
       permission="zope.SendMail"
@@ -289,5 +290,8 @@
 
   <!-- Register application with API Doc Tool -->
   <apidoc:rootModule module="zwiki" zcml:condition="have apidoc" />
+
+  <!-- Translations -->
+  <i18n:registerTranslations directory="locales" />
 
 </configure>

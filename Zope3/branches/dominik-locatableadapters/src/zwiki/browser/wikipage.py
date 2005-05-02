@@ -16,36 +16,38 @@
 $Id$
 """
 import re
-from urllib import quote, unquote
-from datetime import datetime
+from urllib import quote
 
 from zope.proxy import removeAllProxies
-from zope.app.publisher.browser import BrowserView 
+from zope.app.publisher.browser import BrowserView
 
 from zope.app import zapi
 from zope.app.form.browser.submit import Update
 from zope.app.dublincore.interfaces import ICMFDublinCore
-from zope.app.traversing.api import getParent, getPath, getName
+from zope.app.traversing.api import getParent, getName
 
 from zwiki.interfaces import IWikiPageHierarchy, IMailSubscriptions
 
 urlchars = r'[A-Za-z0-9/:@_%~#=&\.\-\?\+\$,]+'
 urlendchar  = r'[A-Za-z0-9/]'
-url = r'["=]?((about|gopher|http|https|ftp|mailto|file):%s)' %urlchars
+url_re = r'["=]?((about|gopher|http|https|ftp|mailto|file):%s)' % urlchars
+url = re.compile(url_re)
 
-bracketedexpr = r'\[([^\n\]]+)\]'
+bracketedexpr_re = r'\[([^\n\]]+)\]'
+bracketedexpr = re.compile(bracketedexpr_re)
 
-protectedLine = r'(?m)^!(.*)$'
+protectedLine = re.compile(r'(?m)^!(.*)$')
 
 U = 'A-Z\xc0-\xdf'
 L = 'a-z\xe0-\xff'
-b = '(?<![%s0-9])' % (U+L)
-wikiname1 = r'(?L)%s[%s]+[%s]+[%s][%s]*[0-9]*' % (b,U,L,U,U+L)
-wikiname2 = r'(?L)%s[%s][%s]+[%s][%s]*[0-9]*'  % (b,U,U,L,U+L)
-wikilink  = r'!?(%s|%s|%s|%s)' % (wikiname1,wikiname2,bracketedexpr,url)
-localwikilink = r'!?(%s|%s|%s)' % (wikiname1, wikiname2, bracketedexpr)
-interwikilink = r'!?((?P<local>%s):(?P<remote>%s))' % \
-                (localwikilink, urlchars+urlendchar)
+b = '(?<![%s0-9])' % (U + L)
+wikiname1 = r'(?L)%s[%s]+[%s]+[%s][%s]*[0-9]*' % (b, U, L, U, U + L)
+wikiname2 = r'(?L)%s[%s][%s]+[%s][%s]*[0-9]*'  % (b, U, U, L, U + L)
+wikilink  = re.compile(r'!?(%s|%s|%s|%s)' %
+            (wikiname1, wikiname2, bracketedexpr_re, url_re))
+localwikilink = r'!?(%s|%s|%s)' % (wikiname1, wikiname2, bracketedexpr_re)
+interwikilink = re.compile(r'!?((?P<local>%s):(?P<remote>%s))' %
+                (localwikilink, urlchars + urlendchar))
 
 
 class DublinCoreViews(BrowserView):
@@ -70,7 +72,7 @@ class DublinCoreViews(BrowserView):
 
 class GenericWikiPageViews(DublinCoreViews):
     """Some generic Wiki page views."""
-    
+
     def breadcrumbs(self):
         """Get the path of this page."""
         hier = IWikiPageHierarchy(self.context)
@@ -111,16 +113,14 @@ class EditWikiPage(object):
         return status
 
 
-class ViewWikiPage:
+class ViewWikiPage(object):
     """A rendered View of the wiki page."""
 
-    def renderWikiLinks(self, source):
+    def renderWikiLinks(self, html):
         """Add Wiki Links to the source"""
-
-        html = str(source)
-        html = re.sub(protectedLine, self._protectLine, html)
-        html = re.sub(interwikilink, self._interwikilinkReplace, html)
-        html = re.sub(wikilink, self._wikilinkReplace, html)
+        html = protectedLine.sub(self._protectLine, html)
+        html = interwikilink.sub(self._interwikilinkReplace, html)
+        html = wikilink.sub(self._wikilinkReplace, html)
         return html
 
     def render(self):
@@ -149,7 +149,7 @@ class ViewWikiPage:
         return result
 
     def _protectLine(self, match):
-        return re.sub(wikilink, r'!\1', match.group(1))
+        return wikilink.sub(r'!\1', match.group(1))
 
     def _wikilinkReplace(self, match, allowed=0, state=None, text=''):
         # tasty spaghetti regexps! better suggestions welcome ?
@@ -174,10 +174,10 @@ class ViewWikiPage:
         wiki = getParent(self.context)
 
         # if it's a bracketed expression,
-        if re.match(bracketedexpr, m):
+        if bracketedexpr.match(m):
 
             # strip the enclosing []'s
-            m = re.sub(bracketedexpr, r'\1', m)
+            m = bracketedexpr.sub(r'\1', m)
 
             # extract a (non-url) path if there is one
             pathmatch = re.match(r'(([^/]*/)+)([^/]+)', m)
@@ -196,7 +196,7 @@ class ViewWikiPage:
             # otherwise fall through to normal link processing
 
         # if it's an ordinary url, link to it
-        if re.match(url,m):
+        if url.match(m):
             # except, if preceded by " or = it should probably be left alone
             if re.match('^["=]', m):     # "
                 return m
@@ -235,8 +235,8 @@ class ViewWikiPage:
         remotename = match.group('remote') # named groups come in handy here!
 
         # NB localname could be [bracketed]
-        if re.match(bracketedexpr,localname):
-            localname = re.sub(bracketedexpr, r'\1', localname)
+        if bracketedexpr.match(localname):
+            localname = bracketedexpr.sub(r'\1', localname)
 
         # look for a RemoteWikiURL definition
         if hasattr(getParent(self.context), localname):
@@ -250,13 +250,13 @@ class ViewWikiPage:
                 link = '<a href="%s%s">%s:%s</a>' % \
                        (remoteurl, remotename, localname, remotename)
                 # protect it from any later wiki-izing passes
-                return re.sub(wikilink, r'!\1', link)
+                return wikilink.sub(r'!\1', link)
 
         # otherwise, leave alone
         return match.group(0)
 
 
-class EditWikiParents:
+class EditWikiParents(object):
 
     def parents(self):
         hier = IWikiPageHierarchy(self.context)
@@ -293,7 +293,7 @@ class AddComment(object):
         return '../'
 
 
-class MailSubscriptions:
+class MailSubscriptions(object):
 
     def subscriptions(self):
         return IMailSubscriptions(self.context).getSubscriptions()

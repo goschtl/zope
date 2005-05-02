@@ -26,7 +26,8 @@ from zope.app.container.interfaces import IContainer, IContentContainer
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.event.interfaces import IObjectEvent
-from zope.app.i18n import ZopeMessageIDFactory as _ 
+
+from zwiki import ZWikiMessageID as _ 
 
 class IComment(Interface):
     """A simple Wiki Page comment.

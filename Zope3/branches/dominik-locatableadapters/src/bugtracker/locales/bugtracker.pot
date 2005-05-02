@@ -13,8 +13,8 @@
 ##############################################################################
 msgid ""
 msgstr ""
-"Project-Id-Version: Development/Revision: 27349\n"
-"POT-Creation-Date: Mon Aug 30 17:09:39 2004\n"
+"Project-Id-Version: Development/Revision: 30057\n"
+"POT-Creation-Date: Wed Apr 20 18:16:40 2005\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Zope 3 Developers <zope3-dev@zope.org>\n"
@@ -23,17 +23,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: zope/app/locales/extract.py\n"
 
+#: src/bugtracker/browser/bug_edit.pt:24
+#: src/bugtracker/browser/bug_add.pt:19
+msgid "There are ${num_errors} input errors."
+msgstr ""
+
+#: src/bugtracker/browser/bug_edit.pt:77
+#: src/bugtracker/browser/bug_add.pt:71
+# Default: "Submit"
+msgid "submit-button"
+msgstr ""
+
 #: src/bugtracker/browser/bug_listing_normal.pt:10
 msgid "Bug #${bug_id} - ${bug_title}"
 msgstr ""
 
 #: src/bugtracker/browser/bug_listing_normal.pt:18
-#: src/bugtracker/browser/bug_edit.pt:42
+#: src/bugtracker/browser/bug_edit.pt:43
+#: src/bugtracker/browser/bug_add.pt:35
 msgid "Status:"
 msgstr ""
 
 #: src/bugtracker/browser/bug_listing_normal.pt:24
-#: src/bugtracker/browser/bug_edit.pt:39
+#: src/bugtracker/browser/bug_edit.pt:40
+#: src/bugtracker/browser/bug_add.pt:32
 msgid "Type:"
 msgstr ""
 
@@ -41,100 +54,112 @@ msgstr ""
 msgid "Posted by ${submitter} on ${created_date} - ${num_comments} comments"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:17
-#: src/bugtracker/browser/bug_edit.pt:33
+#: src/bugtracker/browser/bug_overview.pt:18
+#: src/bugtracker/browser/bug_edit.pt:34
 msgid "From ${user} at ${date}"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:33
+#: src/bugtracker/browser/bug_overview.pt:34
 #: src/bugtracker/browser/bug_listing_normal.pt:21
-#: src/bugtracker/browser/bug_edit.pt:48
+#: src/bugtracker/browser/bug_edit.pt:49
+#: src/bugtracker/browser/bug_add.pt:41
 msgid "Priority:"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:38
-#: src/bugtracker/browser/bug_edit.pt:51
+#: src/bugtracker/browser/bug_overview.pt:39
+#: src/bugtracker/browser/bug_edit.pt:52
+#: src/bugtracker/browser/bug_add.pt:44
 msgid "Release Target:"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:43
-#: src/bugtracker/browser/bug_edit.pt:57
+#: src/bugtracker/browser/bug_overview.pt:44
+#: src/bugtracker/browser/bug_edit.pt:58
+#: src/bugtracker/browser/bug_add.pt:50
 msgid "Owners:"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:63
+#: src/bugtracker/browser/bug_overview.pt:54
+#: src/bugtracker/browser/bug_edit.pt:64
+msgid "Last modified:"
+msgstr ""
+
+#: src/bugtracker/browser/bug_overview.pt:64
 msgid "Direct Dependencies"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:77
+#: src/bugtracker/browser/bug_overview.pt:78
 msgid "Attachments"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:86
+#: src/bugtracker/browser/bug_overview.pt:87
 msgid "Add File"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:88
+#: src/bugtracker/browser/bug_overview.pt:89
 msgid "Add Image"
 msgstr ""
 
-#: src/bugtracker/browser/bug_overview.pt:92
+#: src/bugtracker/browser/bug_overview.pt:93
 msgid "Comments"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:142
+#: src/bugtracker/browser/bug_overview.pt:98
+msgid "Entry #${bug_id} by ${creator} on ${modified_datetime}"
+msgstr ""
+
+#: src/bugtracker/browser/configure.zcml:144
 msgid "Add Dependent Bug"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:173
+#: src/bugtracker/browser/configure.zcml:175
 msgid "Change Bug"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:173
-#: src/bugtracker/browser/configure.zcml:260
+#: src/bugtracker/browser/configure.zcml:175
+#: src/bugtracker/browser/configure.zcml:262
 msgid "Edit"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:236
-#: src/bugtracker/browser/bug_overview.pt:103
+#: src/bugtracker/browser/configure.zcml:238
+#: src/bugtracker/browser/bug_overview.pt:104
 msgid "Add Comment"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:252
+#: src/bugtracker/browser/configure.zcml:254
 msgid "Bug Comment"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:252
+#: src/bugtracker/browser/configure.zcml:254
 msgid "A Comment"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:260
+#: src/bugtracker/browser/configure.zcml:262
 msgid "Change Comment"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:29
+#: src/bugtracker/browser/configure.zcml:31
 msgid "Add Bug Tracker"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:58
-#: src/bugtracker/browser/configure.zcml:203
+#: src/bugtracker/browser/configure.zcml:60
+#: src/bugtracker/browser/configure.zcml:205
 msgid "Overview"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:64
+#: src/bugtracker/browser/configure.zcml:66
 msgid "Bug Tracker - Overview"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:77
+#: src/bugtracker/browser/configure.zcml:79
 msgid "Settings"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:84
-#: src/bugtracker/browser/configure.zcml:216
+#: src/bugtracker/browser/configure.zcml:86
+#: src/bugtracker/browser/configure.zcml:218
 msgid "Subscriptions"
 msgstr ""
 
-#: src/bugtracker/browser/configure.zcml:96
+#: src/bugtracker/browser/configure.zcml:98
 msgid "XML Export/Import"
 msgstr ""
 
@@ -168,16 +193,6 @@ msgstr ""
 
 #: src/bugtracker/browser/dependencies.pt:40
 msgid "Available Bugs"
-msgstr ""
-
-#: src/bugtracker/browser/dependencies.pt:91
-# Default: "Collapse"
-msgid "collapse-button"
-msgstr ""
-
-#: src/bugtracker/browser/dependencies.pt:95
-# Default: "Expand"
-msgid "expand-button"
 msgstr ""
 
 #: src/bugtracker/browser/exportimport.pt:14
@@ -221,12 +236,29 @@ msgstr ""
 msgid "Subscribers successfully deleted: $emails"
 msgstr ""
 
-#: src/bugtracker/browser/skin/template.pt:168
+#: src/bugtracker/browser/skin/dialog_macros.pt:10
+msgid "Zope 3 Bug Tracker"
+msgstr ""
+
+#: src/bugtracker/browser/skin/dialog_macros.pt:103
+#: src/bugtracker/browser/skin/template.pt:230
+msgid "Powered by Zope 3. Written by Stephan Richter in 2003."
+msgstr ""
+
+#: src/bugtracker/browser/skin/template.pt:155
+msgid "Logout"
+msgstr ""
+
+#: src/bugtracker/browser/skin/template.pt:160
+msgid "Login"
+msgstr ""
+
+#: src/bugtracker/browser/skin/template.pt:167
 msgid "You are logged in as ${user_title}."
 msgstr ""
 
-#: src/bugtracker/browser/skin/template.pt:231
-msgid "Powered by Zope 3. Written by Stephan Richter in 2003."
+#: src/bugtracker/browser/skin/template.pt:204
+msgid "Tip"
 msgstr ""
 
 #: src/bugtracker/browser/skin/template.pt:92
@@ -247,13 +279,36 @@ msgid "Enter new Users (separate by 'Return')"
 msgstr ""
 
 #: src/bugtracker/browser/subscriptions.pt:37
+#: src/bugtracker/browser/bug_edit.pt:75
+#: src/bugtracker/browser/bug_add.pt:69
 # Default: "Refresh"
 msgid "refresh-button"
 msgstr ""
 
 #: src/bugtracker/browser/subscriptions.pt:39
+#: src/bugtracker/browser/tracker_settings.pt:39
 # Default: "Add"
 msgid "add-button"
+msgstr ""
+
+#: src/bugtracker/browser/tracker.py:187
+#: src/bugtracker/interfaces.py:78
+msgid "Status"
+msgstr ""
+
+#: src/bugtracker/browser/tracker.py:188
+#: src/bugtracker/interfaces.py:92
+msgid "Type"
+msgstr ""
+
+#: src/bugtracker/browser/tracker.py:190
+#: src/bugtracker/interfaces.py:85
+msgid "Priority"
+msgstr ""
+
+#: src/bugtracker/browser/tracker.py:191
+#: src/bugtracker/interfaces.py:106
+msgid "Owners"
 msgstr ""
 
 #: src/bugtracker/browser/tracker.py:50
@@ -282,8 +337,8 @@ msgid "Closed"
 msgstr ""
 
 #: src/bugtracker/browser/tracker.py:56
-#: src/bugtracker/configure.zcml:233
-#: src/bugtracker/browser/configure.zcml:134
+#: src/bugtracker/configure.zcml:245
+#: src/bugtracker/browser/configure.zcml:136
 msgid "Bug"
 msgstr ""
 
@@ -292,6 +347,7 @@ msgid "Feature"
 msgstr ""
 
 #: src/bugtracker/browser/tracker.py:58
+#: src/bugtracker/browser/tracker.py:189
 #: src/bugtracker/interfaces.py:99
 msgid "Release"
 msgstr ""
@@ -319,33 +375,89 @@ msgstr ""
 msgid "Critical"
 msgstr ""
 
-#: src/bugtracker/browser/tracker_overview.pt:106
-#: src/bugtracker/browser/tracker_overview.pt:146
+#: src/bugtracker/browser/tracker_add.pt:13
+msgid "Create Initial Vocabulary Entries"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_add.pt:15
+msgid "To make your life easier, when this option is selected, it creates vocabulary entries for the status, release, priority and type fields of a bug. This will save you some time with the setup."
+msgstr ""
+
+#: src/bugtracker/browser/tracker_overview.pt:107
+#: src/bugtracker/browser/tracker_overview.pt:147
 msgid "Previous (${start_number} to ${end_number})"
 msgstr ""
 
-#: src/bugtracker/browser/tracker_overview.pt:113
-#: src/bugtracker/browser/tracker_overview.pt:153
+#: src/bugtracker/browser/tracker_overview.pt:114
+#: src/bugtracker/browser/tracker_overview.pt:154
 msgid "${start_number} to ${end_number} of ${batch_total_number} found (${bug_number} total)"
 msgstr ""
 
-#: src/bugtracker/browser/tracker_overview.pt:123
-#: src/bugtracker/browser/tracker_overview.pt:163
+#: src/bugtracker/browser/tracker_overview.pt:124
+#: src/bugtracker/browser/tracker_overview.pt:164
 msgid "Next (${start_number} to ${end_number})"
 msgstr ""
 
-#: src/bugtracker/browser/tracker_overview.pt:92
-#: src/bugtracker/browser/tracker_overview.pt:171
+#: src/bugtracker/browser/tracker_overview.pt:16
+msgid "Filter Options"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_overview.pt:25
+msgid "Filter Text"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_overview.pt:31
+msgid "View Type"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_overview.pt:70
+# Default: "Apply Filter/Changes"
+msgid "save-filter-changes-button"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_overview.pt:75
+#: src/bugtracker/browser/dependencies.pt:91
+# Default: "Collapse"
+msgid "collapse-button"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_overview.pt:79
+#: src/bugtracker/browser/dependencies.pt:95
+# Default: "Expand"
+msgid "expand-button"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_overview.pt:93
+#: src/bugtracker/browser/tracker_overview.pt:172
 # Default: "Add Bug"
 msgid "add-bug-button"
 msgstr ""
 
-#: src/bugtracker/browser/tracker_settings.pt:14
+#: src/bugtracker/browser/tracker_settings.pt:15
 msgid "Existing Values:"
 msgstr ""
 
-#: src/bugtracker/browser/tracker_settings.pt:29
+#: src/bugtracker/browser/tracker_settings.pt:25
+# Default: "Delete"
+msgid "delete-button"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_settings.pt:27
+# Default: "Set Default"
+msgid "set-default-button"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_settings.pt:30
 msgid "Default Value:"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_settings.pt:35
+msgid "Value:"
+msgstr ""
+
+#: src/bugtracker/browser/tracker_settings.pt:37
+#: src/bugtracker/browser/bug_add.pt:27
+msgid "Title:"
 msgstr ""
 
 #: src/bugtracker/bug.py:45
@@ -368,108 +480,108 @@ msgstr ""
 msgid "Releases"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:11
+#: src/bugtracker/configure.zcml:13
 msgid "Bug Tracker User"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:11
+#: src/bugtracker/configure.zcml:13
 msgid "The user can browse the bug tracker"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:16
-msgid "Bug Tracker Editor"
-msgstr ""
-
-#: src/bugtracker/configure.zcml:16
-msgid "The Bug Tracker editor can add and edit bugs."
-msgstr ""
-
-#: src/bugtracker/configure.zcml:165
-#: src/bugtracker/browser/configure.zcml:39
+#: src/bugtracker/configure.zcml:172
+#: src/bugtracker/browser/configure.zcml:41
 msgid "A Bug Tracker"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:165
-#: src/bugtracker/browser/configure.zcml:39
+#: src/bugtracker/configure.zcml:172
+#: src/bugtracker/browser/configure.zcml:41
 msgid "Bug Tracker"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:21
+#: src/bugtracker/configure.zcml:18
+msgid "Bug Tracker Editor"
+msgstr ""
+
+#: src/bugtracker/configure.zcml:18
+msgid "The Bug Tracker editor can add and edit bugs."
+msgstr ""
+
+#: src/bugtracker/configure.zcml:23
 msgid "The Admin can fully manage a bug tracker."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:21
+#: src/bugtracker/configure.zcml:23
 msgid "Bug Tracker Administrator"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:233
-#: src/bugtracker/browser/configure.zcml:134
+#: src/bugtracker/configure.zcml:245
+#: src/bugtracker/browser/configure.zcml:136
 msgid "A Bug"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:26
+#: src/bugtracker/configure.zcml:28
 msgid "Manage Bug Tracker"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:26
+#: src/bugtracker/configure.zcml:28
 msgid "Allows to change the settings of the Bug Tracker."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:311
+#: src/bugtracker/configure.zcml:325
 msgid "Comment"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:311
+#: src/bugtracker/configure.zcml:325
 msgid "A comment about the bug."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:35
+#: src/bugtracker/configure.zcml:37
 msgid "Allows to view the overview of the Bug Tracker."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:35
+#: src/bugtracker/configure.zcml:37
 msgid "View Bug Tracker"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:44
+#: src/bugtracker/configure.zcml:46
 msgid "View Bug"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:44
+#: src/bugtracker/configure.zcml:46
 msgid "Allows to view the overview and dependencies of the Bug."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:53
+#: src/bugtracker/configure.zcml:55
 msgid "Allows to add a Bug to the Tracker."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:53
-#: src/bugtracker/browser/configure.zcml:109
-#: src/bugtracker/browser/bug_overview.pt:73
+#: src/bugtracker/configure.zcml:55
+#: src/bugtracker/browser/configure.zcml:111
+#: src/bugtracker/browser/bug_overview.pt:74
 msgid "Add Bug"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:62
+#: src/bugtracker/configure.zcml:64
 msgid "Allows to edit the data of a Bug."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:62
+#: src/bugtracker/configure.zcml:64
 msgid "Edit Bug"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:71
+#: src/bugtracker/configure.zcml:73
 msgid "Allows to add comments to a bug."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:71
+#: src/bugtracker/configure.zcml:73
 msgid "Add Bug Comment"
 msgstr ""
 
-#: src/bugtracker/configure.zcml:80
+#: src/bugtracker/configure.zcml:82
 msgid "Allows to add attachments (files and images)  to a bug."
 msgstr ""
 
-#: src/bugtracker/configure.zcml:80
+#: src/bugtracker/configure.zcml:82
 msgid "Add Bug Attachment"
 msgstr ""
 
@@ -477,16 +589,12 @@ msgstr ""
 msgid "Defines the release for which the bug is scheduled."
 msgstr ""
 
-#: src/bugtracker/interfaces.py:106
-msgid "Owners"
-msgstr ""
-
 #: src/bugtracker/interfaces.py:107
 msgid "List of people assigned as owners of the bug."
 msgstr ""
 
 #: src/bugtracker/interfaces.py:139
-#: src/bugtracker/browser/configure.zcml:211
+#: src/bugtracker/browser/configure.zcml:213
 #: src/bugtracker/browser/dependencies.pt:59
 #: src/bugtracker/browser/dependencies.pt:65
 msgid "Dependencies"
@@ -546,6 +654,9 @@ msgid "Title/Summary of the bug."
 msgstr ""
 
 #: src/bugtracker/interfaces.py:68
+#: src/bugtracker/browser/bug_overview.pt:60
+#: src/bugtracker/browser/bug_edit.pt:70
+#: src/bugtracker/browser/bug_add.pt:57
 msgid "Description"
 msgstr ""
 
@@ -561,51 +672,39 @@ msgstr ""
 msgid "Name of the person that submitted the bug."
 msgstr ""
 
-#: src/bugtracker/interfaces.py:78
-msgid "Status"
-msgstr ""
-
 #: src/bugtracker/interfaces.py:79
 msgid "The current status of the bug."
-msgstr ""
-
-#: src/bugtracker/interfaces.py:85
-msgid "Priority"
 msgstr ""
 
 #: src/bugtracker/interfaces.py:86
 msgid "Specifies how urgent this bug is."
 msgstr ""
 
-#: src/bugtracker/interfaces.py:92
-msgid "Type"
-msgstr ""
-
 #: src/bugtracker/interfaces.py:93
 msgid "Specifies of what nature the bug is."
 msgstr ""
 
-#: src/bugtracker/vocabulary.py:120
+#: src/bugtracker/vocabulary.py:101
+msgid "Cannot delete default value '${value}'."
+msgstr ""
+
+#: src/bugtracker/vocabulary.py:124
 msgid "The value '${value}' was not found in the vocabulary"
 msgstr ""
 
-#: src/bugtracker/vocabulary.py:136
+#: src/bugtracker/vocabulary.py:140
 msgid "Status Definitions"
 msgstr ""
 
-#: src/bugtracker/vocabulary.py:146
+#: src/bugtracker/vocabulary.py:150
 msgid "Release Definitions"
 msgstr ""
 
-#: src/bugtracker/vocabulary.py:156
+#: src/bugtracker/vocabulary.py:160
 msgid "Priority Definitions"
 msgstr ""
 
-#: src/bugtracker/vocabulary.py:166
+#: src/bugtracker/vocabulary.py:170
 msgid "Bug Type Definitions"
-msgstr ""
-
-#: src/bugtracker/vocabulary.py:97
-msgid "Cannot delete default value '${value}'."
 msgstr ""
 

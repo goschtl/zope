@@ -22,7 +22,8 @@ __docformat__ = 'restructuredtext'
 from persistent import Persistent
 from persistent.dict import PersistentDict
 from BTrees.OOBTree import OOBTree
-from zope.interface import implements
+from zope import interface, component
+import zope.security.interfaces
 
 from zope.app.annotation.interfaces import IAnnotations
 from zope.app.container.contained import Contained
@@ -36,7 +37,7 @@ class PrincipalAnnotationUtility(Persistent, Contained):
     The utility ID is 'PrincipalAnnotation'.
     """
 
-    implements(IPrincipalAnnotationUtility)
+    interface.implements(IPrincipalAnnotationUtility)
 
     def __init__(self):
         self.annotations = OOBTree()
@@ -70,7 +71,7 @@ class PrincipalAnnotationUtility(Persistent, Contained):
 class Annotations(Persistent, Location):
     """Stores annotations."""
 
-    implements(IAnnotations)
+    interface.implements(IAnnotations)
 
     def __init__(self, principalId, store=None):
         self.principalId = principalId
@@ -106,20 +107,39 @@ class Annotations(Persistent, Location):
     def get(self, key, default=None):
         return self.data.get(key, default)
 
-
-class AnnotationsForPrincipal(object):
-    """Adapter from IPrincipal to `IAnnotations` for a
-    `PrincipalAnnotationUtility`.
-
-    Register an *instance* of this class as an adapter.
-    """
-
-    def __init__(self, utility):
-        self.utility = utility
-
-    def __call__(self, principal):
-        return self.utility.getAnnotationsById(principal.id)
-
+def annotations(principal):
+    """adapt principal to annotations via principal annotation utility.
+    
+    To illustrate, we'll register the adapter and a dummy 
+    principal annotation utility.
+    
+    >>> component.provideAdapter(annotations)
+    >>> class DummyPrincipal(object):
+    ...     interface.implements(zope.security.interfaces.IPrincipal)
+    ...     def __init__(self, id, title=None, description=None):
+    ...         self.id = id
+    ...         self.title = title
+    ...         self.description = description
+    ...
+    >>> dummy_annotation = {}
+    >>> class DummyPAU(object):
+    ...     interface.implements(interfaces.IPrincipalAnnotationUtility)
+    ...     def getAnnotations(self, principal):
+    ...         if principal.id == 'sue':
+    ...             return dummy_annotation
+    ...         raise NotImplementedError
+    ...
+    >>> pau = DummyPAU()
+    >>> component.provideUtility(pau)
+    >>> sue = DummyPrincipal('sue')
+    >>> annotation = IAnnotations(sue)
+    >>> annotation is dummy_annotation
+    True
+    """ # TODO move this out to a doctest file when we have one...
+    utility = component.getUtility(IPrincipalAnnotationUtility)
+    return utility.getAnnotations(principal)
+component.adapter(zope.security.interfaces.IPrincipal)(annotations)
+interface.implementer(IAnnotations)(annotations)
 
 #############################################################################
 # BBB: 12/20/2004

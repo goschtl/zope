@@ -22,7 +22,7 @@ from zope import interface
 from zope import component
 from zope.event import notify
 from zope.schema import Text, TextLine, Password
-from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.publisher.interfaces import IRequest
 from zope.security.interfaces import IGroupAwarePrincipal
 
 from zope.app.container.contained import Contained
@@ -288,8 +288,8 @@ class AuthenticatedPrincipalFactory:
     the principal to create and a request:
 
       >>> info = PrincipalInfo('users.mary', 'mary', 'Mary', 'The site admin.')
-      >>> from zope.publisher.browser import TestRequest
-      >>> request = TestRequest()
+      >>> from zope.publisher.base import TestRequest
+      >>> request = TestRequest('/')
       >>> factory = AuthenticatedPrincipalFactory(info, request)
       >>> principal = factory()
 
@@ -320,7 +320,7 @@ class AuthenticatedPrincipalFactory:
     For information on how factories are used in the authentication process,
     see README.txt.
     """
-    component.adapts(interfaces.IPrincipalInfo, IBrowserRequest)
+    component.adapts(interfaces.IPrincipalInfo, IRequest)
 
     interface.implements(interfaces.IAuthenticatedPrincipalFactory)
 

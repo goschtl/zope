@@ -14,7 +14,7 @@ to Zope 2.
 Requirements
 ------------
 
-Zope X3 requires that Python 2.3.4 or newer be installed.
+Zope X3 requires that Python 2.3.5 or newer be installed.
 
 Building the Zope X3 software requires a C compiler supported by the
 distutils.
@@ -39,15 +39,15 @@ installations and pick the best one for use with Zope:
   Testing for an acceptable Python interpreter...
 
   Python version 2.4a0 found at /usr/local/bin/python
-  Python version 2.3.4 found at /usr/local/bin/python2.3
+  Python version 2.3.5 found at /usr/local/bin/python2.3
 
-  The optimum Python version (2.3.4) was found at /usr/local/bin/python2.3.
+  The optimum Python version (2.3.5) was found at /usr/local/bin/python2.3.
 
 If you want to specify which Python should be used with Zope, use the
 "--with-python" option to indicate the specific Python interpreter to
 use:
 
-  $ ./configure --with-python /opt/Python-2.3.4/bin/python
+  $ ./configure --with-python /opt/Python-2.3.5/bin/python
 
   Using Python interpreter at python2.3
 
@@ -66,9 +66,9 @@ directory, use the "--prefix" option to specify an alternate location:
   Testing for an acceptable Python interpreter...
 
   Python version 2.4a0 found at /usr/local/bin/python
-  Python version 2.3.4 found at /usr/local/bin/python2.3
+  Python version 2.3.5 found at /usr/local/bin/python2.3
 
-  The optimum Python version (2.3.4) was found at /usr/local/bin/python2.3.
+  The optimum Python version (2.3.5) was found at /usr/local/bin/python2.3.
 
 If you want to use the same prefix as a previous installation, you
 need to remove the original installation first.  Instances created

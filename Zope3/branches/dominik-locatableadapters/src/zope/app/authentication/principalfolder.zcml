@@ -36,4 +36,19 @@
 
   <include package=".browser" file="principalfolder.zcml" />
 
+  <!-- Registering documentation with API doc -->
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="principalfolder"
+        title="Principal Folder"
+        doc_path="principalfolder.txt"
+        parent="security/authentication"
+        />
+
+  </configure>
+
 </configure>

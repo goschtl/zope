@@ -10,14 +10,31 @@
 
   <include files="package-includes/*-meta.zcml" />
   <include files="package-includes/*-configure.zcml" />
+  <include files="package-includes/*-ftesting.zcml" />
 
   <include file="securitypolicy.zcml" />
+  <include file="securitypolicy-ftesting.zcml" />
 
   <!-- Principals -->
 
   <unauthenticatedPrincipal
       id="zope.anybody"
       title="Unauthenticated User" />
+
+  <unauthenticatedGroup
+    id="zope.Anybody"
+    title="Unauthenticated Users" 
+    />
+
+  <authenticatedGroup
+    id="zope.Authenticated"
+    title="Authenticated Users" 
+    />
+
+  <everybodyGroup
+    id="zope.Everybody"
+    title="All Users" 
+    />
 
   <!-- Principal that tests generally run as -->
   <principal

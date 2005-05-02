@@ -315,10 +315,7 @@ def provideUtility(component, provides=None, name=u''):
 
 def provideAdapter(factory, adapts=None, provides=None, name=''):
     if provides is None:
-        if IFactory.providedBy(factory):
-            provides = factory.getInterfaces()
-        else:
-            provides = list(implementedBy(factory))
+        provides = list(implementedBy(factory))
         if len(provides) == 1:
             provides = provides[0]
         else:
@@ -334,10 +331,7 @@ def provideAdapter(factory, adapts=None, provides=None, name=''):
 
 def provideSubscriptionAdapter(factory, adapts=None, provides=None):
     if provides is None:
-        if IFactory.providedBy(factory):
-            provides = factory.getInterfaces()
-        else:
-            provides = list(implementedBy(factory))
+        provides = list(implementedBy(factory))
         if len(provides) == 1:
             provides = provides[0]
         else:

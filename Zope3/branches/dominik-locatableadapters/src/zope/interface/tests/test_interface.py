@@ -146,7 +146,7 @@ class InterfaceTests(unittest.TestCase):
         # Make sure function attributes become tagged values.
         meth = _I1['f12']
         self.assertEqual(meth.getTaggedValue('optional'), 1)
-    
+
     def testInvariant(self):
         # set up
         o = InvariantC()
@@ -320,6 +320,11 @@ def test_suite():
         suite.addTest(doctest.DocTestSuite())
     suite.addTest(doctest.DocFileSuite(
         '../README.txt',
+        globs={'__name__': '__main__'},
+        optionflags=doctest.NORMALIZE_WHITESPACE,
+        ))
+    suite.addTest(doctest.DocFileSuite(
+        '../README.ru.txt',
         globs={'__name__': '__main__'},
         optionflags=doctest.NORMALIZE_WHITESPACE,
         ))
