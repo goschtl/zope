@@ -591,6 +591,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #301: Bug with i18n:name and i18n:translate
+        on the same element
+
       - The interface directive supports multiple interface types now.
 
       - Fixed issue #314: i18n:translate removes line breaks
