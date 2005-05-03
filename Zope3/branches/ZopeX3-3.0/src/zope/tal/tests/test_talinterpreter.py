@@ -81,6 +81,7 @@ class I18NCornerTestCase(TestCaseBase):
         self.engine = DummyEngine()
         self.engine.setLocal('foo', MessageID('FoOvAlUe', 'default'))
         self.engine.setLocal('bar', 'BaRvAlUe')
+        self.engine.setLocal('raw', ' \tRaW\n ')
 
     def _check(self, program, expected):
         result = StringIO()
@@ -194,7 +195,7 @@ class I18NCornerTestCase(TestCaseBase):
 
             def translate(self, msgid, mapping=None,
                           context=None, target_language=None, default=None):
-                self.data.append(msgid)
+                self.data.append((msgid, mapping))
                 return DummyTranslationDomain.translate(
                     self,
                     msgid, mapping, context, target_language, default)
@@ -213,9 +214,12 @@ class I18NCornerTestCase(TestCaseBase):
         self.interpreter = TALInterpreter(program, {}, self.engine,
                                           stream=result)
         self.interpreter()
-        self.assert_('BaRvAlUe' in xlatdmn.data)
-        self.assert_('This is text for ${bar_name}.' in
-                     xlatdmn.data)
+        msgids = list(xlatdmn.data)
+        msgids.sort()
+        self.assertEqual(2, len(msgids))
+        self.assertEqual('BaRvAlUe', msgids[0][0])
+        self.assertEqual('This is text for ${bar_name}.', msgids[1][0])
+        self.assertEqual({'bar_name': '<span>BARVALUE</span>'}, msgids[1][1])
         self.assertEqual(
             '<div>THIS IS TEXT FOR <span>BARVALUE</span>.</div>\n',
             result.getvalue())
@@ -227,15 +231,21 @@ class I18NCornerTestCase(TestCaseBase):
         xlatdmn = self._getCollectingTranslationDomain()
         result = StringIO()
         program, macros = self._compile(
+            '<div i18n:translate=""> This is text\n'
+            ' \tfor\n div. </div>'
             '<pre i18n:translate=""> This is text\n'
-            ' <b>\tfor</b>\n barvalue. </pre>')
+            ' <b>\tfor</b>\n pre. </pre>')
         self.interpreter = TALInterpreter(program, {}, self.engine,
                                           stream=result)
         self.interpreter()
-        self.assert_(' This is text\n <b>\tfor</b>\n barvalue. ' in
-                     xlatdmn.data)
+        msgids = list(xlatdmn.data)
+        msgids.sort()
+        self.assertEqual(2, len(msgids))
+        self.assertEqual(' This is text\n <b>\tfor</b>\n pre. ', msgids[0][0])
+        self.assertEqual('This is text for div.', msgids[1][0])
         self.assertEqual(
-            '<pre> THIS IS TEXT\n <B>\tFOR</B>\n BARVALUE. </pre>\n',
+            '<div>THIS IS TEXT FOR DIV.</div>'
+            '<pre> THIS IS TEXT\n <B>\tFOR</B>\n PRE. </pre>\n',
             result.getvalue())
 
         # XML mode
@@ -243,6 +253,7 @@ class I18NCornerTestCase(TestCaseBase):
         result = StringIO()
         parser = TALParser()
         parser.parseString(
+            '<?xml version="1.0"?>\n'
             '<pre xmlns:i18n="http://xml.zope.org/namespaces/i18n"'
             ' i18n:translate=""> This is text\n'
             ' <b>\tfor</b>\n barvalue. </pre>')
@@ -250,10 +261,33 @@ class I18NCornerTestCase(TestCaseBase):
         self.interpreter = TALInterpreter(program, {}, self.engine,
                                           stream=result)
         self.interpreter()
-        self.assert_('This is text <b> for</b> barvalue.' in
-                     xlatdmn.data)
+        msgids = list(xlatdmn.data)
+        msgids.sort()
+        self.assertEqual(1, len(msgids))
+        self.assertEqual('This is text <b> for</b> barvalue.', msgids[0][0])
         self.assertEqual(
+            '<?xml version="1.0"?>\n'
             '<pre>THIS IS TEXT <B> FOR</B> BARVALUE.</pre>\n',
+            result.getvalue())
+
+    def test_raw_msgids_and_i18ntranslate_i18nname(self):
+        xlatdmn = self._getCollectingTranslationDomain()
+        result = StringIO()
+        program, macros = self._compile(
+            '<div i18n:translate=""> This is text\n \tfor\n'
+            '<pre tal:content="raw" i18n:name="raw"'
+            ' i18n:translate=""></pre>.</div>')
+        self.interpreter = TALInterpreter(program, {}, self.engine,
+                                          stream=result)
+        self.interpreter()
+        msgids = list(xlatdmn.data)
+        msgids.sort()
+        self.assertEqual(2, len(msgids))
+        self.assertEqual(' \tRaW\n ', msgids[0][0])
+        self.assertEqual('This is text for ${raw}.', msgids[1][0])
+        self.assertEqual({'raw': '<pre> \tRAW\n </pre>'}, msgids[1][1])
+        self.assertEqual(
+            u'<div>THIS IS TEXT FOR <pre> \tRAW\n </pre>.</div>\n',
             result.getvalue())
 
     def test_for_handling_unicode_vars(self):
