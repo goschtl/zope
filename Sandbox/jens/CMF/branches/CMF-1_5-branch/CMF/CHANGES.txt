@@ -14,6 +14,11 @@ After CMF-1.5.1
 
   Bugs Fixed
 
+    - When customizing filesystem objects in the skins tool, some 
+      security-related settings were not transferred to the customized 
+      object, namely proxy roles and permission settings.
+      (http://www.zope.org/Collectors/CMF/351)
+
     - Sync catalog metadata column with correct name of DublinCore string
       ExpirationDate method. (http://zope.org/Collectors/CMF/345)
 
