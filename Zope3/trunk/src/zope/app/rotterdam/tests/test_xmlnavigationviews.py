@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 ##############################################################################
 #
 # Copyright (c) 2001, 2002 Zope Corporation and Contributors.
@@ -40,7 +41,7 @@ class File(object):
     pass
 
 class TestXmlObject(PlacefulSetup, TestCase):
-    
+
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
 
@@ -54,7 +55,7 @@ class TestXmlObject(PlacefulSetup, TestCase):
 
         treeView = rcxov(self.folder1_1_1, TestRequest()).children
         check_xml(treeView(), util.read_output('test3.xml'))
-        
+
         treeView = rcxov(self.rootFolder, TestRequest()).children
         check_xml(treeView(), util.read_output('test4.xml'))
 
@@ -71,7 +72,7 @@ class TestXmlObject(PlacefulSetup, TestCase):
                 raise NotFound(self, name, request)
             def __call__(self):
                 return self.singleBranchTree()
-            
+
         ztapi.browserView(IReadContainer, 'singleBranchTree.xml',
                           ReadContainerView)
 
@@ -89,7 +90,7 @@ class TestXmlObject(PlacefulSetup, TestCase):
         sm = LocalSiteManager(folder1)
         subsite.setSiteManager(sm)
         folder1['subsite'] = subsite
-        
+
         # add some more folder to the subsite
         subfolder1 = Folder()
         subsite['subfolder1'] = subfolder1
@@ -97,7 +98,7 @@ class TestXmlObject(PlacefulSetup, TestCase):
         subfolder2_1 = Folder()
         subfolder2['subfolder2_1'] = subfolder2_1
         subsite['subfolder2'] = subfolder2
-        
+
         # set the virtualhost on the request
         request = TestRequest()
         request._vh_root = subsite
@@ -109,11 +110,11 @@ class TestXmlObject(PlacefulSetup, TestCase):
         rcxov = ReadContainerXmlObjectView
         treeView = rcxov(subsite, request).singleBranchTree
         check_xml(treeView(), util.read_output('test6.xml'))
-         
+
         rcxov = ReadContainerXmlObjectView
         treeView = rcxov(subfolder1, request).singleBranchTree
         check_xml(treeView(), util.read_output('test7.xml'))
-         
+
         rcxov = ReadContainerXmlObjectView
         treeView = rcxov(subfolder2_1, request).singleBranchTree
         check_xml(treeView(), util.read_output('test8.xml'))

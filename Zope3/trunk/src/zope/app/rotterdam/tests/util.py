@@ -24,8 +24,8 @@ output_dir = os.path.join(dir, 'output')
 
 def read_input(filename):
     filename = os.path.join(input_dir, filename)
-    return open(filename, 'r').read()
+    return open(filename, 'r').read().decode("utf-8")
 
 def read_output(filename):
     filename = os.path.join(output_dir, filename)
-    return open(filename, 'r').read()
+    return open(filename, 'r').read().decode("utf-8")

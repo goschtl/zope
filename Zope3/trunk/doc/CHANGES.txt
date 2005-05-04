@@ -591,6 +591,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #333: XML Tree doesn't load if some item
+        contains non-ASCII characters 
+
       - Fixed issue #301: Bug with i18n:name and i18n:translate
         on the same element
 

@@ -21,28 +21,32 @@ from xml.sax.saxutils import quoteattr
 from zope.interface import Interface
 from zope.proxy import sameProxiedObjects
 from zope.security.interfaces import Unauthorized, Forbidden
+from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 from zope.app.container.interfaces import IReadContainer
 from zope.app.traversing.api import getParents, getParent, traverse
 
+from zope.app.i18n import ZopeMessageIDFactory as _
+
 
 def setNoCacheHeaders(response):
     """Ensure that the tree isn't cached"""
     response.setHeader('Pragma', 'no-cache')
     response.setHeader('Cache-Control', 'no-cache')
-    response.setHeader('Expires', formatdate(time.time()-7*86400))#7 days ago
+    response.setHeader('Expires',
+                       formatdate(time.time() - 7 * 86400)) # 7 days ago
 
 def xmlEscape(format, *args):
-    quotedArgs = [ quoteattr(str(arg)) for arg in args ]
-    return format%tuple(quotedArgs)
-        
+    quotedArgs = [quoteattr(unicode(arg)) for arg in args]
+    return format % tuple(quotedArgs)
+
 def xmlEscapeWithCData(format, *args):
     cData = args[-1]
-    quotedArgs = [ quoteattr(str(arg)) for arg in args[:-1] ]
+    quotedArgs = [quoteattr(unicode(arg)) for arg in args[:-1]]
     quotedArgsWithCData = quotedArgs + [cData]
-    return format%tuple(quotedArgsWithCData)
+    return format % tuple(quotedArgsWithCData)
 
 def getParentsFromContextToObject(context, obj):
     """Returns a list starting with the given context's parent followed by
@@ -62,7 +66,7 @@ def getParentsFromContextToObject(context, obj):
             break
         if w is None:
             break
-        
+
         parents.append(w)
 
     return parents
@@ -97,7 +101,7 @@ class ReadContainerXmlObjectView(BrowserView):
         keys = list(container.keys())
 
         # include the site manager
-        keys.append('++etc++site')
+        keys.append(u'++etc++site')
 
         for name in keys:
 
@@ -110,14 +114,14 @@ class ReadContainerXmlObjectView(BrowserView):
             item_len = self.getLengthOf(item)
             if item_len >= 0:
                 result.append(xmlEscape(
-                    '<collection name=%s length=%s icon_url=%s/>',
+                    u'<collection name=%s length=%s icon_url=%s/>',
                     name, item_len, iconUrl))
             else:
                 result.append(xmlEscape(
-                    '<item name=%s icon_url=%s/>',
+                    u'<item name=%s icon_url=%s/>',
                     name, iconUrl))
 
-        return ' '.join(result)
+        return u' '.join(result)
 
 
     def children(self):
@@ -139,7 +143,7 @@ class ReadContainerXmlObjectView(BrowserView):
         """
         result = ''
         oldItem = self.context
-        
+
         vh = self.request.getVirtualHostRoot()
         if vh:
             vhrootView = zapi.getMultiAdapter(
@@ -150,13 +154,15 @@ class ReadContainerXmlObjectView(BrowserView):
             except:
                 # we got the containment root itself as the virtual host
                 # and there is no name.
-                rootName = '[top]'
+                rootName = _('[top]')
             parents = getParentsFromContextToObject(self.context, vh)
         else:
-            rootName = '[top]'
-            baseURL = self.request.getApplicationURL()+'/'
+            rootName = _('[top]')
+            baseURL = self.request.getApplicationURL() + '/'
             parents = getParents(self.context)
-        
+
+        rootName = translate(rootName, context=self.request, default=rootName)
+
         for item in parents:
             # skip skin if present
             #if item == oldItem:
@@ -168,7 +174,7 @@ class ReadContainerXmlObjectView(BrowserView):
                 keys = []
 
             # include the site manager
-            keys.append('++etc++site')
+            keys.append(u'++etc++site')
 
             for name in keys:
                 # Only include items we can traverse to
@@ -176,34 +182,35 @@ class ReadContainerXmlObjectView(BrowserView):
                 iconUrl = self.getIconUrl(subItem)
                 subitem_len = self.getLengthOf(subItem)
                 if subitem_len >= 0:
-                    # the test below seems to be browken with the ++etc++site case
+                    # the test below seems to be broken
+                    # with the ++etc++site case
                     if subItem == oldItem:
                         subItems.append(xmlEscapeWithCData(
-                            '<collection name=%s length=%s '
-                            'icon_url=%s>%s</collection>', 
+                            u'<collection name=%s length=%s '
+                            u'icon_url=%s>%s</collection>', 
                             name, subitem_len, iconUrl, result))
                     else:
                         subItems.append(xmlEscape(
-                            '<collection name=%s length=%s '
-                            'icon_url=%s/>',
+                            u'<collection name=%s length=%s '
+                            u'icon_url=%s/>',
                             name, subitem_len, iconUrl))
                 else:
                     subItems.append(xmlEscape(
-                        '<item name=%s icon_url=%s />', name, iconUrl))
+                        u'<item name=%s icon_url=%s />', name, iconUrl))
 
-            result = ' '.join(subItems)
+            result = u' '.join(subItems)
             oldItem = item
 
         # do not forget root folder
         iconUrl = self.getIconUrl(oldItem)
-        result = (xmlEscapeWithCData('<collection name=%s baseURL=%s length=%s '
-                  'icon_url=%s isroot="">%s</collection>',
+        result = (xmlEscapeWithCData(
+                  u'<collection name=%s baseURL=%s length=%s '
+                  u'icon_url=%s isroot="">%s</collection>',
                   rootName, baseURL, len(oldItem), iconUrl, result))
 
         self.request.response.setHeader('Content-Type', 'text/xml')
         setNoCacheHeaders(self.request.response)
-        res= u'<?xml version="1.0" ?><children> %s </children>' % result
-        return res
+        return u'<?xml version="1.0" ?><children> %s </children>' % result
 
 class XmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""
