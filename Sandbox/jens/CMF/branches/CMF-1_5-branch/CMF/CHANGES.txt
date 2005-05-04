@@ -14,6 +14,10 @@ After CMF-1.5.1
 
   Bugs Fixed
 
+    - CMFSetup.workflow: Make sure to set the "permissions" attribute on
+      DCWorkflow definitions to a tuple, which is expected throughout
+      the DCWorkflow code. (http://www.zope.org/Collectors/CMF/346)
+
     - CMFCore.FSObject: Try to find and call the appropriate method to
       determine the skins tool name instead of hardcoding "portal_skins".
       (http://www.zope.org/Collectors/CMF/349)
