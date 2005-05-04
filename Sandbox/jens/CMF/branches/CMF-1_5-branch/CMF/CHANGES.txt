@@ -14,6 +14,10 @@ After CMF-1.5.1
 
   Bugs Fixed
 
+    - CMFCore.FSObject: Try to find and call the appropriate method to
+      determine the skins tool name instead of hardcoding "portal_skins".
+      (http://www.zope.org/Collectors/CMF/349)
+
     - CMFCore.FSZSQLMethod: Add the forgotten setting to allow simple 
       direct traversal for ZSQL methods to the list of settings recognized 
       and applied by FSZSQLMethods during instantiation and customization.
