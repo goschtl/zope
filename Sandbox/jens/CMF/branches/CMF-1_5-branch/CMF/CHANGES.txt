@@ -14,6 +14,12 @@ After CMF-1.5.1
 
   Bugs Fixed
 
+    - CMFDefault.MetadataTool: When asked for a non-existing metadata
+      policy, the tool would return the default policy unwrapped. This
+      means, at a minimum, that the security declarations on the 
+      MetadataElementPolicy instance would never be applied correctly.
+      (http://www.zope.org/Collectors/CMF/342)
+
     - CMFSetup.workflow: Make sure to set the "permissions" attribute on
       DCWorkflow definitions to a tuple, which is expected throughout
       the DCWorkflow code. (http://www.zope.org/Collectors/CMF/346)
