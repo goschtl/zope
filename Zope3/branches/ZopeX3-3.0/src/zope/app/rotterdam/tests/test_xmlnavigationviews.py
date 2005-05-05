@@ -36,7 +36,7 @@ class File(object):
     pass
 
 class TestXmlObject(PlacefulSetup, TestCase):
-    
+
     def setUp(self):
         PlacefulSetup.setUp(self, site=True)
         self.createStandardServices()
@@ -51,7 +51,7 @@ class TestXmlObject(PlacefulSetup, TestCase):
 
         treeView = rcxov(self.folder1_1_1, TestRequest()).children
         check_xml(treeView(), util.read_output('test3.xml'))
-        
+
         treeView = rcxov(self.rootFolder, TestRequest()).children
         check_xml(treeView(), util.read_output('test4.xml'))
 
@@ -68,7 +68,7 @@ class TestXmlObject(PlacefulSetup, TestCase):
                 raise NotFoundError(self, name, request)
             def __call__(self):
                 return self.singleBranchTree()
-            
+
         ztapi.browserView(IReadContainer, 'singleBranchTree.xml',
                           ReadContainerView)
 

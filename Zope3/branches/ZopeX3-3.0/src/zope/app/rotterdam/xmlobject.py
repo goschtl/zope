@@ -31,15 +31,15 @@ def setNoCacheHeaders(response):
     response.setHeader('Expires', formatdate(time.time()-7*86400))#7 days ago
 
 def xmlEscape(format, *args):
-    quotedArgs = [ quoteattr(str(arg)) for arg in args ]
-    return format%tuple(quotedArgs)
-        
+    quotedArgs = [quoteattr(unicode(arg)) for arg in args]
+    return format % tuple(quotedArgs)
+
 def xmlEscapeWithCData(format, *args):
     cData = args[-1]
-    quotedArgs = [ quoteattr(str(arg)) for arg in args[:-1] ]
+    quotedArgs = [quoteattr(unicode(arg)) for arg in args[:-1]]
     quotedArgsWithCData = quotedArgs + [cData]
-    return format%tuple(quotedArgsWithCData)
-        
+    return format % tuple(quotedArgsWithCData)
+
 
 class ReadContainerXmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""
@@ -61,7 +61,7 @@ class ReadContainerXmlObjectView(BrowserView):
         keys = list(container.keys())
 
         # include the service manager
-        keys.append('++etc++site')
+        keys.append(u'++etc++site')
 
         for name in keys:
 
@@ -73,14 +73,14 @@ class ReadContainerXmlObjectView(BrowserView):
             iconUrl = self.getIconUrl(item)
             if IReadContainer.providedBy(item):
                 result.append(xmlEscape(
-                    '<collection name=%s length=%s icon_url=%s/>',
+                    u'<collection name=%s length=%s icon_url=%s/>',
                     name, len(item), iconUrl))
             else:
                 result.append(xmlEscape(
-                    '<item name=%s icon_url=%s/>',
+                    u'<item name=%s icon_url=%s/>',
                     name, iconUrl))
 
-        return ' '.join(result)
+        return u' '.join(result)
 
 
     def children(self):
@@ -113,7 +113,7 @@ class ReadContainerXmlObjectView(BrowserView):
                 keys = []
 
             # include the service manager
-            keys.append('++etc++site')
+            keys.append(u'++etc++site')
 
             for name in keys:
                 # Only include items we can traverse to
@@ -123,30 +123,29 @@ class ReadContainerXmlObjectView(BrowserView):
                     # the test below seems to be browken with the ++etc++site case
                     if subItem == oldItem:
                         subItems.append(xmlEscapeWithCData(
-                            '<collection name=%s length=%s '
-                            'icon_url=%s>%s</collection>', 
+                            u'<collection name=%s length=%s '
+                            u'icon_url=%s>%s</collection>', 
                             name, len(subItem), iconUrl, result))
                     else:
                         subItems.append(xmlEscape(
-                            '<collection name=%s length=%s '
-                            'icon_url=%s/>',
+                            u'<collection name=%s length=%s '
+                            u'icon_url=%s/>',
                             name, len(subItem), iconUrl))
                 else:
-                    subItems.append(xmlEscape('<item name=%s />', name))
+                    subItems.append(xmlEscape(u'<item name=%s />', name))
 
             result = ' '.join(subItems)
             oldItem = item
 
         # do not forget root folder
         iconUrl = self.getIconUrl(oldItem)
-        result = (xmlEscapeWithCData('<collection name="" length=%s '
-                  'icon_url=%s isroot="">%s</collection>',
+        result = (xmlEscapeWithCData(u'<collection name="" length=%s '
+                  u'icon_url=%s isroot="">%s</collection>',
                   len(oldItem), iconUrl, result))
 
         self.request.response.setHeader('Content-Type', 'text/xml')
         setNoCacheHeaders(self.request.response)
-        res= u'<?xml version="1.0" ?><children> %s </children>' % result
-        return res
+        return u'<?xml version="1.0" ?><children> %s </children>' % result
 
 class XmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""
