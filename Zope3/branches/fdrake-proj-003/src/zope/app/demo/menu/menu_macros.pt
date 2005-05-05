@@ -1,0 +1,24 @@
+<metal:block define-macro="itemdisplay">
+   <img class="itemicon"
+        tal:condition="menuitem/icon"
+        tal:attributes="src menuitem/icon" />
+   &nbsp;
+   <span tal:content="menuitem/title" />
+
+   <img class="submenuhint" src="/++resource++submenuhint.png" 
+        tal:condition="menuitem/submenu"/>
+</metal:block>
+
+<metal:block define-macro="menuitem">
+  <a href=""
+     tal:attributes="href menuitem/action;">
+    <metal:block use-macro="context/@@menudemo_macros/itemdisplay" />
+  </a>
+  <ul tal:condition="menuitem/submenu">
+    <li tal:repeat="subitem menuitem/submenu">
+      <tal:block define="menuitem subitem">
+        <metal:block use-macro="context/@@menudemo_macros/menuitem" />
+      </tal:block>
+    </li>
+  </ul>
+</metal:block>

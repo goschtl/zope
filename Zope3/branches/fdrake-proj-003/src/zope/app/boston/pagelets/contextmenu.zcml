@@ -1,0 +1,27 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <configure package="zope.app.skintools.contextmenu.browser">
+    <pagelet
+        name="contextmenu"
+        for="*"
+        slot="zope.app.boston.slots.IContextMenu"
+        permission="zope.View"
+        template="contextmenu.pt"
+        layer="zope.app.boston.boston"
+        weight="0"
+        />
+
+    <pagelet
+        name="contextmenu_layout"
+        for="*"
+        slot="zope.app.skintools.contextmenu.IContextMenuLayout"
+        permission="zope.View"
+        template="contextmenu_layout.pt"
+        layer="zope.app.boston.boston"
+        />
+  </configure>
+
+</configure>
