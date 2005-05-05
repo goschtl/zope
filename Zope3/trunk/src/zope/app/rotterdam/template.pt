@@ -112,8 +112,7 @@
           <a href=""
             tal:attributes="href view/action;
                             class view/selected;"
-            tal:content="view/title"
-            i18n:translate="">
+            tal:content="view/title">
             label
           </a>
         </tal:block>
@@ -131,8 +130,7 @@
 					><a href="#"
                tal:repeat="info actions"
                tal:attributes="href info/action"
-               tal:content="info/title"
-               i18n:translate="">
+               tal:content="info/title">
               Action name
           </a></span
 				><span tal:condition="help_actions"
@@ -153,8 +151,7 @@
                                            + url + ','
                                            + name + ','
                                            + settings +')'"
-               tal:content="help_info/title"
-               i18n:translate="">
+               tal:content="help_info/title">
               Action name
           </a></span>
       </div>

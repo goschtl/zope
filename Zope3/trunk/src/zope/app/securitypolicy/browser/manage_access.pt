@@ -40,7 +40,6 @@
         <td align="center" tal:repeat="role view/roles">
           <div class="list-item">
             <a href="RolePermissions.html"
-              i18n:translate=""
               tal:attributes="
               href string:RolePermissions.html?role_to_manage=${role/id}" 
               tal:content="role/title">Anonymous</a>
@@ -60,7 +59,6 @@
         <td align="left" nowrap="nowrap">
           <div class="list-item">
              <a href="RolesWithPermission.html"
-                i18n:translate=""
                 tal:attributes="href 
            string:RolesWithPermission.html?permission_to_manage=${perm/id}"
                 tal:content="perm/title"
