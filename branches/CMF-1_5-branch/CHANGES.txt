@@ -2,6 +2,11 @@ After CMF-1.5.1
 
   Other
 
+    - DCWorkflow: Add a note to the Transitions and States forms
+      explaining that the renaming actions will not automatically
+      update any items in the workflow that might be affected by
+      the change. (http://www.zope.org/Collectors/CMF/89)
+
     - CMFCatalogAware: reindexObjectSecurity() now supports an
       optional argument 'skip_self' that prevents the object itself
       from being reindexed, but its descendants still are. Allows an
