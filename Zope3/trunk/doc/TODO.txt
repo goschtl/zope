@@ -23,11 +23,6 @@ Miscellaneous
 Bug Fixes
 ---------
 
-Navigation Tree
-~~~~~~~~~~~~~~~
-
-  * 333: XML Tree doesn't load if some item contains non-ASCII characters
-
 FTP Server
 ~~~~~~~~~~
 
@@ -95,6 +90,10 @@ Done
   * 314: i18n:translate removes line breaks from <pre>...</pre> contents
          Fixed: on the trunk at rev 30152, on the ZopeX3-3.0
          branch at rev 30153
+
+  * 333: XML Tree doesn't load if some item contains non-ASCII characters
+         Fixed: on the trunk at rev 30238, on the ZopeX3-3.0
+         branch at rev 30240
 
   * 334: Failing RuntimeInfo tests
          Fixed: on the trunk at rev 29616, on the ZopeX3-3.0
