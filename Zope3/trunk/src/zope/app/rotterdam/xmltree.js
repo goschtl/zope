@@ -7,6 +7,7 @@ var EXPAND = 'EXPAND';
 var XML_CHILDREN_VIEW = '@@children.xml';
 var SINGLE_BRANCH_TREE_VIEW = '@@singleBranchTree.xml';
 var CONTENT_VIEW = '@@SelectedManagementView.html';
+var NUM_TEMPLATE = '$${num}';
 
 
 var LG_DEBUG = 6;
@@ -17,6 +18,8 @@ var LG_NOLOG = 0;
 
 
 // globals
+var loadingMsg = 'Loading...';
+var titleTemplate = 'Contains ' + NUM_TEMPLATE + ' item(s)';
 var baseurl;
 var navigationTree;
 var docNavTree;
@@ -47,12 +50,12 @@ navigationTreeNode.prototype.setPath = function(path) {
 }
 
 navigationTreeNode.prototype.collapse = function() {
- 	this.isCollapsed = 1;
+        this.isCollapsed = 1;
         this.changeExpandIcon("pl.gif");
 }
 
 navigationTreeNode.prototype.expand = function() {
- 	this.isCollapsed = 0;
+        this.isCollapsed = 0;
         this.changeExpandIcon("mi.gif");
 }
 
@@ -115,13 +118,13 @@ with (this) {
 navigationTreeNode.prototype.refreshExpansion = function() {
 with (this) {
         if (isCollapsed) {
-	 	expand();
+                expand();
                 showChildren();
-   		}
+        }
         else {
                 collapse();
                 hideChildren();
-   		}
+        }
         }
 }
 
@@ -130,9 +133,9 @@ navigationTreeNode.prototype.hideChildren = function() {
 with (this) {
         prettydump('hideChildren', LG_TRACE);
         var num = childNodes.length;
-	for (var i = num - 1; i >=0; i--) {
-	        childNodes[i].domNode.style.display = 'none';
-        	}
+        for (var i = num - 1; i >=0; i--) {
+                childNodes[i].domNode.style.display = 'none';
+        }
         }
 }
 
@@ -140,9 +143,9 @@ navigationTreeNode.prototype.showChildren = function() {
 with (this) {
         prettydump('showChildren', LG_TRACE);
         var num = childNodes.length;
-	for (var i = num - 1; i >=0; i--) {
-	        childNodes[i].domNode.style.display = 'block';
-        	}
+        for (var i = num - 1; i >=0; i--) {
+                childNodes[i].domNode.style.display = 'block';
+            }
         }
 }
 
@@ -151,15 +154,15 @@ function prettydump(s, locallog) {
         // Put the string "s" in a box on the screen as an log message
         if (locallog <= loglevel) {
                 var logger = document.getElementById('logger');
-  	        var msg = document.createElement('code');
-	        var br1 = document.createElement('br');
-  	        var br2 = document.createElement('br');
-  	        var msg_text = document.createTextNode(s);
-  	        msg.appendChild(msg_text);
-          	logger.insertBefore(br1, logger.firstChild);
-  	        logger.insertBefore(br2, logger.firstChild);
-          	logger.insertBefore(msg, logger.firstChild);
-	        }
+                var msg = document.createElement('code');
+                var br1 = document.createElement('br');
+                var br2 = document.createElement('br');
+                var msg_text = document.createTextNode(s);
+                msg.appendChild(msg_text);
+                logger.insertBefore(br1, logger.firstChild);
+                logger.insertBefore(br2, logger.firstChild);
+                logger.insertBefore(msg, logger.firstChild);
+        }
         }
 
 
@@ -172,15 +175,15 @@ function debug(s) {
 
 // DOM utilities
 function getTreeEventTarget(e) {
-	var elem;
+        var elem;
         if(e.target) {
                 // Mozilla uses this
-       		if (e.target.nodeType == TEXT_NODE) {
+                if (e.target.nodeType == TEXT_NODE) {
                         elem=e.target.parentNode;
-		        }
-		else {
-		        elem=e.target;
-			}
+        }
+        else {
+                elem=e.target;
+                }
                 }
         else {
                 // IE uses this
@@ -190,21 +193,21 @@ function getTreeEventTarget(e) {
         }
 
 function isCollection(elem) {
-	return (checkTagName(elem, COLLECTION));
-	}
+        return (checkTagName(elem, COLLECTION));
+        }
 
 
 function isIcon(elem) {
-	return (checkTagName(elem, ICON));
-	}
+        return (checkTagName(elem, ICON));
+        }
 
 function isExpand(elem) {
-	return (checkTagName(elem, EXPAND));
-	}
+        return (checkTagName(elem, EXPAND));
+        }
 
 function checkTagName(elem, tagName) {
-	return (elem.tagName.toUpperCase() == tagName);
-	}
+        return (elem.tagName.toUpperCase() == tagName);
+        }
 
 function getCollectionChildNodes(xmlDomElem) {
         // get collection element nodes among childNodes of elem
@@ -299,16 +302,16 @@ function loadtreexml (url, node) {
 
 
                 xmlHttp.onreadystatechange = function () {
-        		if (xmlHttp.readyState == 4) {
+                    if (xmlHttp.readyState == 4) {
                                 prettydump('Response XML ' + xmlHttp.responseText, LG_INFO);
-			        parseXML(xmlHttp.responseXML, node);
-		                }
-	                };
+                                parseXML(xmlHttp.responseXML, node);
+                            }
+                            };
 
                 // call in new thread to allow ui to update
-	        window.setTimeout(function () {
-		        xmlHttp.send(null);
-	                }, 10);
+                window.setTimeout(function () {
+                        xmlHttp.send(null);
+                        }, 10);
                 }
         else {
                 }
@@ -318,7 +321,7 @@ function loadtree (rooturl, thisbaseurl) {
         baseurl = rooturl;  // Global baseurl
         docNavTree = document.getElementById('navtreecontents');
 
-	var url = thisbaseurl + SINGLE_BRANCH_TREE_VIEW;
+        var url = thisbaseurl + SINGLE_BRANCH_TREE_VIEW;
         loadtreexml(url, null);
         }
 
@@ -338,6 +341,8 @@ function parseXML(responseXML, node) {
                 if (node == null) {
                         //[top] node
                         removeChildren(docNavTree);
+                        titleTemplate = data.getAttribute('title_tpl');
+                        loadingMsg = data.getAttribute('loading_msg');
                         addNavigationTreeNodes(data, null, 1);
 //                        docNavTree.appendChild(navigationTree.domNode);
                         }
@@ -385,7 +390,8 @@ function createPresentationNodes(title, targetUrl, icon_url, length) {
         var titleTextNode = document.createTextNode(title);
 
         linkElem.appendChild(titleTextNode);
-        linkElem.setAttribute('title', 'Contains ' + length + ' item(s)');
+        var titleText = titleTemplate.split(NUM_TEMPLATE).join(length);
+        linkElem.setAttribute('title', titleText);
         linkElem.setAttribute('href', targetUrl);
 
         iconElem.appendChild(linkElem);
@@ -395,8 +401,7 @@ function createPresentationNodes(title, targetUrl, icon_url, length) {
 
 function createLoadingNode() {
         var loadingElem = document.createElement('loading');
-        //XXX should not hardcode loading string
-        var titleTextNode = document.createTextNode('Loading...');
+        var titleTextNode = document.createTextNode(loadingMsg);
 
         loadingElem.appendChild(titleTextNode);
 
@@ -458,4 +463,3 @@ function createNavigationTreeNode(source, basePath, deep) {
                 }
         return navTreeNode;
         }
-

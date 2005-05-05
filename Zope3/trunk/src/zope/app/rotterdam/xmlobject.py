@@ -31,6 +31,9 @@ from zope.app.traversing.api import getParents, getParent, traverse
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 
+titleTemplate = _('Contains $${num} item(s)')
+loadingMsg = _('Loading...')
+
 def setNoCacheHeaders(response):
     """Ensure that the tree isn't cached"""
     response.setHeader('Pragma', 'no-cache')
@@ -203,14 +206,21 @@ class ReadContainerXmlObjectView(BrowserView):
 
         # do not forget root folder
         iconUrl = self.getIconUrl(oldItem)
-        result = (xmlEscapeWithCData(
+        result = xmlEscapeWithCData(
                   u'<collection name=%s baseURL=%s length=%s '
                   u'icon_url=%s isroot="">%s</collection>',
-                  rootName, baseURL, len(oldItem), iconUrl, result))
+                  rootName, baseURL, len(oldItem), iconUrl, result)
 
         self.request.response.setHeader('Content-Type', 'text/xml')
         setNoCacheHeaders(self.request.response)
-        return u'<?xml version="1.0" ?><children> %s </children>' % result
+        title = translate(titleTemplate,
+                          context=self.request, default=titleTemplate)
+        loading = translate(loadingMsg,
+                          context=self.request, default=loadingMsg)
+        return xmlEscapeWithCData(
+                u'<?xml version="1.0" ?>'
+                u'<children title_tpl=%s loading_msg=%s>%s</children>',
+                title, loading, result)
 
 class XmlObjectView(BrowserView):
     """Provide a xml interface for dynamic navigation tree in UI"""
