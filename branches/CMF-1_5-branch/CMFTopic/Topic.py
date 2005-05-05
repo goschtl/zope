@@ -113,12 +113,13 @@ class Topic( PortalFolder ):
 
         """ Invoke the default action.
         """
-        view = _getViewFor( self )
+        view_id = self.getTypeInfo().queryMethodID('view')
+        view_obj = self.unrestrictedTraverse(view_id)
 
-        if getattr( aq_base( view ), 'isDocTemp', 0 ):
-            return view(self, self.REQUEST)
+        if getattr( aq_base( view_obj ), 'isDocTemp', 0 ):
+            return view_obj(self, self.REQUEST)
         else:
-            return view()
+            return view_obj()
 
     index_html = None  # This special value informs ZPublisher to use __call__
 

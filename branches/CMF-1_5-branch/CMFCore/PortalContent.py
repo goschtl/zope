@@ -76,8 +76,7 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
     security.declareProtected(FTPAccess, 'manage_FTPlist')
 
     def failIfLocked(self):
-        """
-        Check if isLocked via webDav
+        """ Check if isLocked via webDav
         """
         if self.wl_isLocked():
             raise ResourceLockedError('This resource is locked via webDAV.')
@@ -95,22 +94,22 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
         return "%s %s" % (self.Title(), self.Description())
 
     def __call__(self):
-        '''
-        Invokes the default view.
-        '''
-        view = _getViewFor(self)
-        if getattr(aq_base(view), 'isDocTemp', 0):
-            return view(self, self.REQUEST)
+        """ Invokes the default view.
+        """
+        view_id = self.getTypeInfo().queryMethodID('view')
+        view_obj = self.unrestrictedTraverse(view_id)
+
+        if getattr(aq_base(view_obj), 'isDocTemp', 0):
+            return view_obj(self, self.REQUEST)
         else:
-            return view()
+            return view_obj()
 
     index_html = None  # This special value informs ZPublisher to use __call__
 
     security.declareProtected(View, 'view')
     def view(self):
-        '''
-        Returns the default view even if index_html is overridden.
-        '''
+        """ Returns the default view even if index_html is overridden.
+        """
         return self()
 
 InitializeClass(PortalContent)
