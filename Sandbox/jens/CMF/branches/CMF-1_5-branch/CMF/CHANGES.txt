@@ -14,6 +14,11 @@ After CMF-1.5.1
 
   Bugs Fixed
 
+    - CMFTopic.Topic/CMFCore.PortalContent: Both these classes were using
+      the now-deprecated CMFCore.utils._getViewFor method, and strangely
+      enough the deprecation warning didn't show. Replaced with the
+      new method of getting the view.
+
     - CMFDefault.MetadataTool: When asked for a non-existing metadata
       policy, the tool would return the default policy unwrapped. This
       means, at a minimum, that the security declarations on the 
