@@ -79,22 +79,3 @@ Others
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well.
-
-Done
-~~~~
-
-  * 301: Bug with i18n:name and i18n:translate on the same element 
-         Fixed: on the trunk at rev 30226, the fix shouldn't be backported on
-         the ZopeX3-3.0 branch since backward compatibility issues
-
-  * 314: i18n:translate removes line breaks from <pre>...</pre> contents
-         Fixed: on the trunk at rev 30152, on the ZopeX3-3.0
-         branch at rev 30153
-
-  * 333: XML Tree doesn't load if some item contains non-ASCII characters
-         Fixed: on the trunk at rev 30238, on the ZopeX3-3.0
-         branch at rev 30240
-
-  * 334: Failing RuntimeInfo tests
-         Fixed: on the trunk at rev 29616, on the ZopeX3-3.0
-         branch at rev 29906
