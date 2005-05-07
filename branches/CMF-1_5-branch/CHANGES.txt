@@ -1,5 +1,12 @@
 After CMF-1.5.1
 
+  Features Added
+
+    - CMFSetup.skins: Small featurelet that adds a new keyword to the
+      "layer" tag in skins.xml named "remove". If "remove" is
+      specified, the named layer will be explicitly removed from the 
+      skins path(s).
+
   Other
 
     - DCWorkflow: Add a note to the Transitions and States forms
