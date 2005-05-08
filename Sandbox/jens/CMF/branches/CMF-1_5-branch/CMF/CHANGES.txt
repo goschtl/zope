@@ -26,6 +26,9 @@ After CMF-1.5.1
 
   Bugs Fixed
 
+    - CMFSetup utils: Fixed handling of comments and empty descriptions.
+      (http://www.zope.org/Collectors/CMF/352)
+
     - CMFTopic.Topic/CMFCore.PortalContent: Both these classes were using
       the now-deprecated CMFCore.utils._getViewFor method, and strangely
       enough the deprecation warning didn't show. Replaced with the
