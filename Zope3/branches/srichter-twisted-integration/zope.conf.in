@@ -38,6 +38,13 @@ interrupt-check-interval 200
   address 8021
 </server>
 
+# You must install pycrypto to use the SFTP server.
+# <sshserver>
+#   type SFTP
+#   address 8115
+#   hostkey ssh_host_rsa_key
+# </sshserver>
+
 # Standard Filestorage
 <zodb>
   <filestorage>
