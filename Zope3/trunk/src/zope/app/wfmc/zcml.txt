@@ -16,7 +16,7 @@ XPDL can be loaded in zcml files with the ``xpdl`` tag::
     ...             file="%(file_name)s" 
     ...             process="Publication"
     ...             id="example.publication"
-    ...             integration="zope.wfmc.component.integration"
+    ...             integration="zope.wfmc.adapter.integration"
     ...             />
     ...
     ...     </configure>
@@ -31,5 +31,7 @@ Lets verify that they were configured::
     >>> pd
     ProcessDefinition('example.publication')
 
-    >>> import zope.wfmc.component
-    >>> pd.integration = zope.wfmc.component.integration
+    >>> import zope.wfmc.adapter
+    >>> pd.integration is zope.wfmc.adapter.integration
+    True
+
