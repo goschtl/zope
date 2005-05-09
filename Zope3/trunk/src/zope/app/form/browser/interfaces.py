@@ -179,10 +179,14 @@ class ISourceQueryView(Interface):
 
     def render(name):
         """Return a rendering of the search form elements
+
+        The query view should use `name` as the prefix for its widgets.
         """
 
     def results(name):
         """Return the results of the query
+
+        The query view should use `name` as the prefix for its widgets.
 
         The value returned is an iterable.
 
