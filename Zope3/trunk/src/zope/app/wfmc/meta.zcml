@@ -3,7 +3,7 @@
 
   <meta:directive namespace="http://namespaces.zope.org/wfmc"
                   name="xpdl"
-                  schema=".metadirectives.IdefineXpdl"
+                  schema=".metaconfigure.IdefineXpdl"
                   handler=".metaconfigure.defineXpdl" />
 
 </configure>
