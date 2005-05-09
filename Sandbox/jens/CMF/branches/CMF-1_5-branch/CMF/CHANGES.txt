@@ -9,6 +9,11 @@ After CMF-1.5.1
 
   Other
 
+    - CMFTopic.Topic/CMFCore.PortalContent: Clean up a previous change
+      by changing __call__ methods to be aligned with what's on CVS
+      HEAD and using the old _getViewFor function as a fallback to
+      retain backwards compatibility.
+
     - DCWorkflow: Add a note to the Transitions and States forms
       explaining that the renaming actions will not automatically
       update any items in the workflow that might be affected by
@@ -28,11 +33,6 @@ After CMF-1.5.1
 
     - CMFSetup utils: Fixed handling of comments and empty descriptions.
       (http://www.zope.org/Collectors/CMF/352)
-
-    - CMFTopic.Topic/CMFCore.PortalContent: Both these classes were using
-      the now-deprecated CMFCore.utils._getViewFor method, and strangely
-      enough the deprecation warning didn't show. Replaced with the
-      new method of getting the view.
 
     - CMFDefault.MetadataTool: When asked for a non-existing metadata
       policy, the tool would return the default policy unwrapped. This
