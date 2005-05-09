@@ -96,13 +96,17 @@ class PortalContent(DynamicType, CMFCatalogAware, SimpleItem):
     def __call__(self):
         """ Invokes the default view.
         """
-        view_id = self.getTypeInfo().queryMethodID('view')
-        view_obj = self.unrestrictedTraverse(view_id)
-
-        if getattr(aq_base(view_obj), 'isDocTemp', 0):
-            return view_obj(self, self.REQUEST)
+        ti = self.getTypeInfo()
+        method_id = ti and ti.queryMethodID('(Default)')
+        if method_id:
+            method = getattr(self, method_id)
         else:
-            return view_obj()
+            method = _getViewFor(self)
+
+        if getattr(aq_base(method), 'isDocTemp', 0):
+            return method(self, self.REQUEST)
+        else:
+            return method()
 
     index_html = None  # This special value informs ZPublisher to use __call__
 
