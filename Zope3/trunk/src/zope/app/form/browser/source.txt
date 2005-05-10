@@ -203,11 +203,11 @@ Now if we render the widget, we'll see the search results:
   <input type="submit" name="field.dog.query" value="Search">
         </div> <!-- queryinput -->
         <div class="queryresults">
-  <select name="field.dog.selection">
+  <select name="field.dog.query.selection">
   <option value="Ym93c2Vy">bowser</option>
   <option value="c3BvdA==">spot</option>
   </select>
-  <input type="submit" name="field.dog.apply" value="Apply">
+  <input type="submit" name="field.dog.query.apply" value="Apply">
         </div> <!-- queryresults -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -218,8 +218,8 @@ If we select an item:
   >>> request.form['field.dog.displayed'] = u'y'
   >>> del request.form['field.dog.query.string']
   >>> del request.form['field.dog.query']
-  >>> request.form['field.dog.selection'] = u'c3BvdA=='
-  >>> request.form['field.dog.apply'] = u'Apply'
+  >>> request.form['field.dog.query.selection'] = u'c3BvdA=='
+  >>> request.form['field.dog.query.apply'] = u'Apply'
 
 Then we'll show the newly selected value:
 
@@ -321,14 +321,14 @@ and cats:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MA__.query.string">
-  <input type="submit" name="field.pet.MA__.query" value="Search">
+  <input name="field.pet.MA__.string">
+  <input type="submit" name="field.pet.MA__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MQ__.query.string">
-  <input type="submit" name="field.pet.MQ__.query" value="Search">
+  <input name="field.pet.MQ__.string">
+  <input type="submit" name="field.pet.MQ__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -337,8 +337,8 @@ and cats:
 As before, we can perform a search:
 
   >>> request.form['field.pet.displayed'] = u'y'
-  >>> request.form['field.pet.MQ__.query.string'] = u't'
-  >>> request.form['field.pet.MQ__.query'] = u'Search'
+  >>> request.form['field.pet.MQ__.string'] = u't'
+  >>> request.form['field.pet.MQ__'] = u'Search'
 
 In which case, we'll get some results:
 
@@ -356,14 +356,14 @@ In which case, we'll get some results:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MA__.query.string">
-  <input type="submit" name="field.pet.MA__.query" value="Search">
+  <input name="field.pet.MA__.string">
+  <input type="submit" name="field.pet.MA__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MQ__.query.string">
-  <input type="submit" name="field.pet.MQ__.query" value="Search">
+  <input name="field.pet.MQ__.string">
+  <input type="submit" name="field.pet.MQ__" value="Search">
         </div> <!-- queryinput -->
         <div class="queryresults">
   <select name="field.pet.MQ__.selection">
@@ -381,8 +381,8 @@ In which case, we'll get some results:
 from which we can choose:
 
   >>> request.form['field.pet.displayed'] = u'y'
-  >>> del request.form['field.pet.MQ__.query.string']
-  >>> del request.form['field.pet.MQ__.query']
+  >>> del request.form['field.pet.MQ__.string']
+  >>> del request.form['field.pet.MQ__']
   >>> request.form['field.pet.MQ__.selection'] = u'dGFiYnk='
   >>> request.form['field.pet.MQ__.apply'] = u'Apply'
 
@@ -403,14 +403,14 @@ and get a selection:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MA__.query.string">
-  <input type="submit" name="field.pet.MA__.query" value="Search">
+  <input name="field.pet.MA__.string">
+  <input type="submit" name="field.pet.MA__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pet.MQ__.query.string">
-  <input type="submit" name="field.pet.MQ__.query" value="Search">
+  <input name="field.pet.MQ__.string">
+  <input type="submit" name="field.pet.MQ__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -465,14 +465,14 @@ If we render the widget:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MA__.query.string">
-  <input type="submit" name="field.pets.MA__.query" value="Search">
+  <input name="field.pets.MA__.string">
+  <input type="submit" name="field.pets.MA__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MQ__.query.string">
-  <input type="submit" name="field.pets.MQ__.query" value="Search">
+  <input name="field.pets.MQ__.string">
+  <input type="submit" name="field.pets.MQ__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -486,8 +486,8 @@ selected values.)
 As before, we can search one of the sources:
 
   >>> request.form['field.pets.displayed'] = u'y'
-  >>> request.form['field.pets.MQ__.query.string'] = u't'
-  >>> request.form['field.pets.MQ__.query'] = u'Search'
+  >>> request.form['field.pets.MQ__.string'] = u't'
+  >>> request.form['field.pets.MQ__'] = u'Search'
 
 In which case, we'll get some results:
 
@@ -497,14 +497,14 @@ In which case, we'll get some results:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MA__.query.string">
-  <input type="submit" name="field.pets.MA__.query" value="Search">
+  <input name="field.pets.MA__.string">
+  <input type="submit" name="field.pets.MA__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MQ__.query.string">
-  <input type="submit" name="field.pets.MQ__.query" value="Search">
+  <input name="field.pets.MQ__.string">
+  <input type="submit" name="field.pets.MQ__" value="Search">
         </div> <!-- queryinput -->
         <div class="queryresults">
   <select name="field.pets.MQ__.selection:list" multiple>
@@ -522,8 +522,8 @@ In which case, we'll get some results:
 from which we can select some values:
 
   >>> request.form['field.pets.displayed'] = u'y'
-  >>> del request.form['field.pets.MQ__.query.string']
-  >>> del request.form['field.pets.MQ__.query']
+  >>> del request.form['field.pets.MQ__.string']
+  >>> del request.form['field.pets.MQ__']
   >>> request.form['field.pets.MQ__.selection'] = [
   ...     u'dGFiYnk=', u'dGlnZXI=', u'dG9t']
   >>> request.form['field.pets.MQ__.apply'] = u'Apply'
@@ -550,14 +550,14 @@ Which then leads to the selections appearing as widget selections:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MA__.query.string">
-  <input type="submit" name="field.pets.MA__.query" value="Search">
+  <input name="field.pets.MA__.string">
+  <input type="submit" name="field.pets.MA__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MQ__.query.string">
-  <input type="submit" name="field.pets.MQ__.query" value="Search">
+  <input name="field.pets.MQ__.string">
+  <input type="submit" name="field.pets.MQ__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->
@@ -590,14 +590,14 @@ buttons that allow is to remove selections:
     <div class="queries">
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MA__.query.string">
-  <input type="submit" name="field.pets.MA__.query" value="Search">
+  <input name="field.pets.MA__.string">
+  <input type="submit" name="field.pets.MA__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
       <div class="query">
         <div class="queryinput">
-  <input name="field.pets.MQ__.query.string">
-  <input type="submit" name="field.pets.MQ__.query" value="Search">
+  <input name="field.pets.MQ__.string">
+  <input type="submit" name="field.pets.MQ__" value="Search">
         </div> <!-- queryinput -->
       </div> <!-- query -->
     </div> <!-- queries -->

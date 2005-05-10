@@ -26,8 +26,8 @@ which we can choose:
   ... Referer: http://localhost:8081/@@grant.html
   ... 
   ... field.principal.displayed=y"""
-  ... """&field.principal.MA__.query.searchstring="""
-  ... """&field.principal.MA__.query.search=Search""")
+  ... """&field.principal.MA__.searchstring="""
+  ... """&field.principal.MA__.search=Search""")
   HTTP/1.1 200 Ok
   ...
   <option value="em9wZS5tZ3I_">Manager</option>
@@ -44,7 +44,7 @@ elements for inputing security settings:
   ... Referer: http://localhost:8081/@@grant.html
   ... 
   ... field.principal.displayed=y"""
-  ... """&field.principal.MA__.query.searchstring="""
+  ... """&field.principal.MA__.searchstring="""
   ... """&field.principal.MA__.selection=em9wZS5tZ3I_"""
   ... """&field.principal.MA__.apply=Apply""")
   HTTP/1.1 200 Ok
@@ -123,7 +123,7 @@ to reduce dependencies on specific roles and permissions:
   ... 
   ... field.principal=em9wZS5tZ3I_"""
   ... """&field.principal.displayed=y"""
-  ... """&field.principal.MA__.query.searchstring="""
+  ... """&field.principal.MA__.searchstring="""
   ... """&field.em9wZS5tZ3I_.role.zope.Member=allow"""
   ... """&field.em9wZS5tZ3I_.role.zope.Member-empty-marker=1"""
   ... """&field.em9wZS5tZ3I_.permission.zope.ManageCode=deny"""

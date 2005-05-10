@@ -112,23 +112,25 @@ class SourceInputWidget(zope.app.form.InputWidget):
             zope.app.form.browser.interfaces.ITerms,
             )
 
-        queriables = ISourceQueriables(source, None)
+    def queryviews(self):
+        queriables = ISourceQueriables(self.source, None)
         if queriables is None:
             # treat the source itself as a queriable
-            queriables = ((self.name, source), )
+            queriables = ((self.name + '.query', self.source), )
         else:
-            base = self.name+'.'
             queriables = [
-                (base +
+                (self.name + '.' +
                  unicode(i).encode('base64').strip().replace('=', '_'), s)
                           for (i, s) in queriables.getQueriables()]
             
-        self.queryviews = [
-            (i, zapi.getMultiAdapter(
-                    (s, self.request),
+        return [
+            (name, zapi.getMultiAdapter(
+                    (source, self.request),
                     zope.app.form.browser.interfaces.ISourceQueryView,
                     )
-             ) for (i, s) in queriables]
+             ) for (name, source) in queriables]
+
+    queryviews = property(queryviews)
             
     def _value(self):
         if self._renderedValueSet():
@@ -226,10 +228,10 @@ class SourceInputWidget(zope.app.form.InputWidget):
         for name, queryview in self.queryviews:
             result.append('    <div class="query">')
             result.append('      <div class="queryinput">')
-            result.append(queryview.render(name+'.query'))
+            result.append(queryview.render(name))
             result.append('      </div> <!-- queryinput -->')
 
-            qresults = queryview.results(name+'.query')
+            qresults = queryview.results(name)
             if qresults:
                 result.append('      <div class="queryresults">\n%s' %
                               self._renderResults(qresults, name))
@@ -425,10 +427,10 @@ class SourceListInputWidget(SourceInputWidget):
         for name, queryview in self.queryviews:
             result.append('    <div class="query">')
             result.append('      <div class="queryinput">')
-            result.append(queryview.render(name+'.query'))
+            result.append(queryview.render(name))
             result.append('      </div> <!-- queryinput -->')
 
-            qresults = queryview.results(name+'.query')
+            qresults = queryview.results(name)
             if qresults:
                 result.append('      <div class="queryresults">\n%s' %
                               self._renderResults(qresults, name))

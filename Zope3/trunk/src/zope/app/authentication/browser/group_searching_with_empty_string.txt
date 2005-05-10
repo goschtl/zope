@@ -231,7 +231,7 @@ Now, if we search for a group, but don't supply a string:
   ... Content-Type: application/x-www-form-urlencoded
   ... Referer: http://localhost:8081/@@grant.html
   ... 
-  ... field.principal.displayed=y&field.principal.MC5ncm91cHM_.query.field.search=&field.principal.MC5ncm91cHM_.query.search=Search&field.principal.MQ__.query.searchstring=""")
+  ... field.principal.displayed=y&field.principal.MC5ncm91cHM_.field.search=&field.principal.MC5ncm91cHM_.search=Search&field.principal.MQ__.searchstring=""")
   HTTP/1.1 200 Ok
   ...Test1...Test2...
 
