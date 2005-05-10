@@ -121,6 +121,8 @@ class ItemDisplayWidgetTest(ItemsWidgetBaseTest):
         widget = self._makeWidget(form={'field.choice': 'token1'})
         self.assertEqual(widget(), 'One')
 
+    def test_not_required(self):
+        self.failIf(self._makeWidget().required)
 
 class ItemsMultiDisplayWidgetTest(ItemsWidgetBaseTest):
     
@@ -150,6 +152,15 @@ class ItemsMultiDisplayWidgetTest(ItemsWidgetBaseTest):
         self.assertRaises(LookupError, widget.renderItems, 'one')
         self.assertRaises(TypeError, widget.renderItems, 1)
 
+
+    def test_not_required(self):
+        numbers = List(value_type=ICollector['choice']).bind(Collector(None))
+        request = TestRequest()
+        widget = self._widget(numbers, self._vocabulary, request) 
+        self.failIf(widget.required)
+
+
+        
 
 class ListDisplayWidgetTest(ItemsMultiDisplayWidgetTest):
     _widget = ListDisplayWidget

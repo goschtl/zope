@@ -46,6 +46,18 @@ def test_implemented_interfaces():
     'not implemented'
     """
 
+def test_not_required():
+    """Make sure that display widgets are not required
+
+    >>> field = TextLine(title = u'Title',
+    ...                  __name__ = u'title',
+    ...                  default = u'<My Title>')
+    >>> widget = DisplayWidget(field, TestRequest())
+    >>> widget.required
+    False
+    
+    """
+
 def test_value_escaping():
     """Make sure that the returned values are correctly escaped.
 

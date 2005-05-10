@@ -440,6 +440,11 @@ doesn't assign values:
   >>> print widget()
   tabby
 
+Like any good display widget, input is not required:
+
+  >>> widget.required
+  False
+
 If we specify a list of choices:
 
   >>> pets = zope.schema.List(__name__ = 'pets', title=u"Pets",

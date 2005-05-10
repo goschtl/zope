@@ -216,6 +216,10 @@ class MultiDataHelper(object):
 class ItemDisplayWidget(SingleDataHelper, ItemsWidgetBase):
     """Simple single-selection display that can be used in many cases."""
 
+    def __init__(self, *args, **kw):
+        ItemsWidgetBase.__init__(self, *args, **kw)
+        self.required = False
+
     _messageNoValue = message(_("item-missing-single-value-for-display"), "")
 
     def __call__(self):
@@ -230,6 +234,10 @@ class ItemDisplayWidget(SingleDataHelper, ItemsWidgetBase):
 
 class ItemsMultiDisplayWidget(MultiDataHelper, ItemsWidgetBase):
     """Displays a sequence of items."""
+
+    def __init__(self, *args, **kw):
+        ItemsWidgetBase.__init__(self, *args, **kw)
+        self.required = False
 
     _messageNoValue = message(
         _("vocabulary-missing-multiple-value-for-display"), "")
@@ -273,7 +281,6 @@ class ListDisplayWidget(ItemsMultiDisplayWidget):
     This can be used for both Sequence, List, and Tuple fields.
     """
     tag = 'ol'
-
 
 class SetDisplayWidget(ItemsMultiDisplayWidget):
     """Display widget for unordered multi-selection fields.

@@ -199,3 +199,10 @@ class IInputWidget(IWidget):
 
 class IDisplayWidget(IWidget):
     """A widget for displaying a field value."""
+
+    required = Bool(
+        title=u"Required",
+        description=u"""If True, widget should be displayed as requiring input.
+        
+        Display widgets should never be required.
+        """)

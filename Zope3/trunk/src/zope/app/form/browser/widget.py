@@ -390,6 +390,11 @@ class SimpleInputWidget(BrowserWidget, InputWidget):
 
 class DisplayWidget(BrowserWidget):
 
+    def __init__(self, context, request):
+        super(DisplayWidget, self).__init__(context, request)
+        self.required = False
+
+
     def __call__(self):
         if self._renderedValueSet():
             value = self._data
@@ -400,7 +405,7 @@ class DisplayWidget(BrowserWidget):
         return escape(value)
 
 
-class UnicodeDisplayWidget(BrowserWidget):
+class UnicodeDisplayWidget(DisplayWidget):
     """Display widget that converts the value to unicode before display."""
 
     def __call__(self):

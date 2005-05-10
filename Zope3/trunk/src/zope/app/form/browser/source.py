@@ -34,7 +34,7 @@ class SourceDisplayWidget(zope.app.form.Widget):
         super(SourceDisplayWidget, self).__init__(field, request)
         self.source = source
 
-    required = property(lambda self: self.context.required)
+    required = False
 
     def hidden(self):
         return ''
