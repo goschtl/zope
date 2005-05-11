@@ -247,18 +247,20 @@ class SourceInputWidget(zope.app.form.InputWidget):
             term = self.terms.getTerm(value)
             terms.append((term.title, term.token))
         terms.sort()
-        
+
+        apply = self._translate(_("SourceInputWidget-apply", default="Apply"))
         return (
             '<select name="%s.selection">\n'
             '%s\n'
             '</select>\n'
-            '<input type="submit" name="%s.apply" value="Apply">'
+            '<input type="submit" name="%s.apply" value="%s">'
             % (name,
                '\n'.join(
                    [('<option value="%s">%s</option>'
                      % (token, title))
                     for (title, token) in terms]),
-               name)
+               name,
+               apply)
             )
 
     required = property(lambda self: self.context.required)
@@ -443,6 +445,8 @@ class SourceListInputWidget(SourceInputWidget):
 
     def _renderResults(self, results, name):
         terms = []
+        apply = self._translate(_("SourceListInputWidget-apply",
+                                  default="Apply"))
         for value in results:
             term = self.terms.getTerm(value)
             terms.append((term.title, term.token))
@@ -451,11 +455,12 @@ class SourceListInputWidget(SourceInputWidget):
             '<select name="%s.selection:list" multiple>\n'
             '%s\n'
             '</select>\n'
-            '<input type="submit" name="%s.apply" value="Apply">'
+            '<input type="submit" name="%s.apply" value="%s">'
             % (name,
                '\n'.join([('<option value="%s">%s</option>' % (token, title))
                           for (title, token) in terms]),
-               name)
+               name,
+               apply)
             )
 
     def getInputValue(self):
