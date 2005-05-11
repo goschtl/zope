@@ -26,6 +26,7 @@ import zope.proxy
 
 import zope.deprecation
 
+
 class ShowSwitch(object):
     """Simple stack-based switch."""
 
@@ -116,11 +117,11 @@ def deprecated(specifier, message):
         locals = sys._getframe(1).f_locals
         if '__name__' in locals:
             modname = locals['__name__']
-            
+
         if not isinstance(sys.modules[modname], DeprecationProxy):
             sys.modules[modname] = DeprecationProxy(sys.modules[modname])
         sys.modules[modname].deprecate(specifier, message)
-        
+
 
     # ... that means the specifier is a method or attribute of the class
     if isinstance(specifier, types.FunctionType):
@@ -134,5 +135,3 @@ def deprecated(specifier, message):
             return DeprecatedGetSetProperty(prop, message)
         elif hasattr(prop, '__get__'):
             return DeprecatedGetProperty(prop, message)
-
-    

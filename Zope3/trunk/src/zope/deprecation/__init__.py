@@ -24,4 +24,3 @@ from zope.deprecation.deprecation import deprecated, ShowSwitch
 # components without arnings being produced.
 
 __show__ = ShowSwitch()
-
