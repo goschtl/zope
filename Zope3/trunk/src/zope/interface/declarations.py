@@ -303,7 +303,7 @@ def implementedByFallback(cls):
         # security proxy.  If this is the case, then probably no
         # descriptor was installed for the class.
 
-        # We don't want to depend directly on zope.secury in
+        # We don't want to depend directly on zope.security in
         # zope.interface, but we'll try to make reasonable
         # accommodations in an indirect way.
 
@@ -335,7 +335,7 @@ def implementedByFallback(cls):
         if spec is not None:
             return spec
 
-    # TODO: need old style __implements__ comptability?
+    # TODO: need old style __implements__ compatibility?
     if spec is not None:
         # old-style __implemented__ = foo declaration
         spec = (spec, ) # tuplefy, as it might be just an int
@@ -700,7 +700,7 @@ def Provides(*interfaces):
     """Cache instance declarations
 
       Instance declarations are shared among instances that have the
-      same declaration.  The declarations are cached in an weak value
+      same declaration.  The declarations are cached in a weak value
       dictionary.
 
       (Note that, in the examples below, we are going to make
