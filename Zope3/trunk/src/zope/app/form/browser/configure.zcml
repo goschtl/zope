@@ -352,13 +352,12 @@
   <!-- These widgets are minimal and only support lists with unique members,
        without ordering capabilities -->
 
-  <!-- TODO: This will generate a list and not a set, so be careful!!!-->
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.ISet
            zope.schema.interfaces.IVocabularyTokenized"
       provides="zope.app.form.interfaces.IInputWidget"
-      factory=".MultiSelectWidget"
+      factory=".MultiSelectSetWidget"
       permission="zope.Public"
       />
 

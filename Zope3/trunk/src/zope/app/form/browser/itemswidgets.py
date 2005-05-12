@@ -545,6 +545,16 @@ class MultiSelectWidget(ItemsMultiEditWidgetBase):
     """Provide a selection list for the list to be selected."""
 
 
+class MultiSelectSetWidget(MultiSelectWidget):
+    """Provide a selection list for the set to be selected."""
+
+    def _toFieldValue(self, input):
+        value = super(MultiSelectSetWidget, self)._toFieldValue(input)
+        if isinstance(value, list):
+            value = sets.Set(value)
+        return value
+
+
 class OrderedMultiSelectWidget(ItemsMultiEditWidgetBase):
     """A multi-selection widget with ordering support."""
 

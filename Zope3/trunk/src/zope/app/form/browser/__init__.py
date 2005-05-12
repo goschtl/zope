@@ -60,6 +60,7 @@ from zope.app.form.browser.itemswidgets import RadioWidget
 # Widgets that let you choose several items from a list
 # These widgets are multi-views on (field, vocabulary)
 from zope.app.form.browser.itemswidgets import MultiSelectWidget
+from zope.app.form.browser.itemswidgets import MultiSelectSetWidget
 from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
 from zope.app.form.browser.itemswidgets import OrderedMultiSelectWidget
 
