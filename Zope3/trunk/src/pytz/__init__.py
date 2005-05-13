@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 '''
-$Id: __init__.py,v 1.11 2005/01/07 04:51:33 zenzen Exp $
+$Id: __init__.py,v 1.12 2005/02/15 20:21:41 zenzen Exp $
 
 datetime.tzinfo timezone definitions generated from the
 Olson timezone database:
@@ -11,11 +11,8 @@ See the datetime section of the Python Library Reference for information
 on how to use these modules.
 '''
 
-__rcs_id__  = '$Id: __init__.py,v 1.11 2005/01/07 04:51:33 zenzen Exp $'
-__version__ = '$Revision: 1.11 $'[11:-2]
-
 # The Olson database has historically been updated about 4 times a year
-OLSON_VERSION = '2005e'
+OLSON_VERSION = '2005i'
 VERSION = OLSON_VERSION
 #VERSION = OLSON_VERSION + '.2'
 
@@ -51,6 +48,22 @@ class UTC(datetime.tzinfo):
     
     def __reduce__(self):
         return _UTC, ()
+
+    def localize(self, dt, is_dst=False):
+        '''Convert naive time to local time'''
+        if dt.tzinfo is not None:
+            raise ValueError, 'Not naive datetime (tzinfo is already set)'
+        return dt.replace(tzinfo=self)
+
+    def normalize(self, dt, is_dst=False):
+        '''Correct the timezone information on the given datetime'''
+        if dt.tzinfo is None:
+            raise ValueError, 'Naive time - no tzinfo set'
+        return dt.replace(tzinfo=self)
+
+    def __repr__(self):
+        return '<UTC>'
+
 
 UTC = utc = UTC()
 
@@ -107,6 +120,8 @@ def timezone(zone):
     '2002-10-27 01:10:00 EST (-0500)'
     '''
     zone = _munge_zone(zone)
+    if zone.upper() == 'UTC':
+        return utc
     zone_bits = ['zoneinfo'] + zone.split('/')
 
     # Load zone's module

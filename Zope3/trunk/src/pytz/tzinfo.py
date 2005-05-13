@@ -1,8 +1,5 @@
 #!/usr/bin/env python
-'''$Id: tzinfo.py,v 1.6 2004/07/24 21:21:28 zenzen Exp $'''
-
-__rcs_id__  = '$Id: tzinfo.py,v 1.6 2004/07/24 21:21:28 zenzen Exp $'
-__version__ = '$Revision: 1.6 $'[11:-2]
+'''$Id: tzinfo.py,v 1.7 2005/02/15 20:21:52 zenzen Exp $'''
 
 from datetime import datetime, timedelta, tzinfo
 from bisect import bisect_right

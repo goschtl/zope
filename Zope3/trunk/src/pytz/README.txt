@@ -2,7 +2,6 @@ pytz - World Timezone Definitions for Python
 ============================================
 
 :Author: Stuart Bishop <stuart@stuartbishop.net>
-:Version: $Revision: 1.13 $
 
 Introduction
 ~~~~~~~~~~~~
@@ -194,19 +193,26 @@ computers that move roam through multiple timezones.
 License
 ~~~~~~~
 
-MIT license. I'm happy to relicense this code if necessary 
-for inclusion in other open source projects.
+MIT license.
 
+This code is also available as part of Zope 3 under the Zope Public
+License,  Version 2.1 (ZPL).
+
+I'm happy to relicense this code if necessary for inclusion in other
+open source projects.
 
 Latest Versions
 ~~~~~~~~~~~~~~~
 
 This package will be updated after releases of the Olson timezone database.
 The latest version can be downloaded from Sourceforge_. The code that
-is used to generate this distribution is available in the Sourceforge_
-project's CVS repository.
+is used to generate this distribution is available using the Bazaar_
+revision control system in at:
+
+http://mirrors.sourcecontrol.net/stuart@stuartbishop.net--public/pytz--devel--0
 
 .. _Sourceforge: http://sourceforge.net/projects/pytz/
+.. _Bazaar: http://bazaar.canonical.com/
 
 
 Issues & Limitations
@@ -225,9 +231,8 @@ Issues & Limitations
 Further Reading
 ~~~~~~~~~~~~~~~
 
-More info than you want to know about timezones::
-
-    http://www.twinsun.com/tz/tz-link.htm
+More info than you want to know about timezones:
+http://www.twinsun.com/tz/tz-link.htm
 
 
 Contact

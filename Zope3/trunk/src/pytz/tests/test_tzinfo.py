@@ -7,12 +7,13 @@ $Id: test_tzinfo.py,v 1.9 2004/10/25 04:14:00 zenzen Exp $
 __rcs_id__  = '$Id: test_tzinfo.py,v 1.9 2004/10/25 04:14:00 zenzen Exp $'
 __version__ = '$Revision: 1.9 $'[11:-2]
 
-import sys, os
-sys.path.insert(0, os.pardir)
+import sys, os, os.path
+sys.path.insert(0, os.path.join(os.pardir, os.pardir))
 
 import unittest, doctest
 from datetime import datetime, tzinfo, timedelta
-import pytz, reference
+import pytz
+from pytz import reference
 
 fmt = '%Y-%m-%d %H:%M:%S %Z%z'
 
