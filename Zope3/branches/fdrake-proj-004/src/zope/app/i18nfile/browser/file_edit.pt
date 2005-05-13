@@ -1,0 +1,98 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<head>
+  <style metal:fill-slot="headers" type="text/css">
+    <!--
+    .ContentIcon {
+        width: 20px;
+    }
+
+    .ContentTitle {
+        text-align: left;
+    }
+    -->
+  </style>
+</head>
+
+<body>
+<div metal:fill-slot="body">
+
+  <p tal:content="context/msg"
+     tal:condition="python: hasattr(context, 'msg')">
+    Message will go here.
+  </p>
+
+  <p tal:content="view/description">
+    Description of the Form.
+  </p>
+
+  <form action="edit.html" method="post">
+
+    <div class="row">
+      <div class="label" i18n:translate="">Content Type</div>
+      <div class="field">
+        <input name="contentType" type="text" size="20"
+               tal:attributes="value context/contentType" />
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="label" i18n:translate="">Default Language</div>
+      <div class="field">
+        <select name="defaultLanguage">
+          <span tal:repeat="lang context/getAvailableLanguages"
+                tal:omit-tag="">
+          <option tal:attributes="
+                      value lang;
+                      selected python:context.getDefaultLanguage() == lang"
+                  tal:content="lang" />
+         </span>
+        </select>
+      </div>
+    </div>
+    <hr />
+    <div class="row">
+      <div class="label" i18n:translate="">Language</div>
+      <div class="field">
+        <select name="language">
+          <span tal:repeat="lang context/getAvailableLanguages"
+                tal:omit-tag="">
+          <option tal:attributes="
+                      value lang;
+                      selected python:request.get('language',
+                                      context.getDefaultLanguage()) == lang"
+                  tal:content="lang" />
+         </span>
+        </select>
+        <input type="submit" name="selectLanguage" value="Show" 
+               i18n:attributes="value show-button"/>
+        <input type="submit" name="removeLanguage" value="Remove"
+               i18n:attributes="value remove-button"/>
+        &nbsp;&nbsp;
+        <input type="submit" name="addLanguage"
+               value="Add new language"
+               i18n:attributes="value" />
+        <input type="text" name="newLanguage" size="10" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="label" i18n:translate="">Data</div>
+      <div class="field">
+        <textarea name="data" cols="70" rows="10"
+             tal:content="python:context.getData(request.get('language'))" />
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="controls">
+        <input type="submit" name="edit" value="Save Changes" 
+               i18n:attributes="value save-changes-button"/>
+      </div>
+    </div>
+
+  </form>
+
+</div>
+</body>
+</html>
+
+
