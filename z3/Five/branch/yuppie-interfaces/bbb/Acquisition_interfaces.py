@@ -22,9 +22,6 @@ class IAcquirer(Interface):
     def __of__(context):
         """Get the object in a context."""
 
-# BBB: old name used in Five 1.0
-IAcquisition = IAcquirer
-
 
 class IAcquisitionWrapper(Interface):
 

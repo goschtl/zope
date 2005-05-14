@@ -98,9 +98,6 @@ class IPermissionMappingSupport(Interface):
         """Change the permission mapping
         """
 
-# BBB: old name used in Five 1.0
-IPermissionMapping = IPermissionMappingSupport
-
 
 # XXX: might contain non-API methods and outdated comments;
 #      not synced with ZopeBook API Reference;

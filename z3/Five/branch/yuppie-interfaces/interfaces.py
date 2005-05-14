@@ -76,3 +76,7 @@ except ImportError:
         sys.modules['App.interfaces'] = App_interfaces
         sys.modules['OFS.interfaces'] = OFS_interfaces
         sys.modules['webdav.interfaces'] = webdav_interfaces
+
+# BBB: for old names used in Five 1.0
+IAcquisition = IAcquirer
+IPermissionMapping = IPermissionMappingSupport
