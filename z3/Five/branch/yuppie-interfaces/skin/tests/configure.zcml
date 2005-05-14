@@ -12,21 +12,21 @@
 
   <!-- macro pages -->
   <browser:page
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       template="bird.pt"
       name="bird.pt"
       permission="zope2.ViewManagementScreens"
       />
 
   <browser:page
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       template="bird.pt"
       name="bird_macros"
       permission="zope2.ViewManagementScreens"
       />
 
   <browser:page
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       template="dog.pt"
       name="dog_macros"
       permission="zope2.ViewManagementScreens"
@@ -34,7 +34,7 @@
 
   <!-- template page that uses macro page -->
   <browser:page
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       template="seagull.pt"
       name="seagull.html"
       permission="zope2.ViewManagementScreens"

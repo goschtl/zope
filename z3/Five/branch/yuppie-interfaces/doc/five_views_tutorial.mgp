@@ -80,7 +80,7 @@ Page example: configure.zcml
     class="OFS.Folder.Folder"
     />
   <browser:page
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       name="overview.html"
       template="overview.pt"
       permission="zope2.ViewManagementScreens"
@@ -155,7 +155,7 @@ Example: configure.zcml
 
 %size 4, fore "blue"
   <browser:page
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       name="overview2.html"
       template="overview2.pt"
       permission="zope2.ViewManagementScreens"
@@ -198,7 +198,7 @@ Attribute example: configure zcml
 
 %size 4, fore "blue"
   <browser:page
-    for="Products.Five.interfaces.IFolder"
+    for="OFS.interfaces.IFolder"
     name="test.html"
     class=".browser.Overview"
     attribute="directlyPublished"
@@ -219,7 +219,7 @@ Multiple pages example
 
 %size 4, fore "blue"
   <browser:pages
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       class=".browser.NewExample"
       permission="zope2.ViewManagementScreens"
       >

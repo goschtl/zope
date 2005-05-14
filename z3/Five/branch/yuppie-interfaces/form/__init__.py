@@ -26,7 +26,6 @@ from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.interfaces import IInputWidget, WidgetsError
 from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
 
-from Products.Five.interfaces import ITraversable
 from Products.Five.browser import BrowserView
 from Products.Five.browser.pagetemplatefile import FivePageTemplateFile
 

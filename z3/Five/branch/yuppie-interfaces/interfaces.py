@@ -10,10 +10,8 @@
 
 $Id$
 """
-
 from zope.interface import Interface
 from zope.interface.interfaces import IInterface
-
 
 class IBrowserDefault(Interface):
     """Provide a hook for deciding about the default view for an object"""
@@ -23,7 +21,6 @@ class IBrowserDefault(Interface):
         (usually self) and a sequence of names to traverse to
         find the method to be published.
         """
-
 
 class IMenuItemType(IInterface):
     """Menu item type
@@ -68,10 +65,14 @@ except ImportError:
 
     def monkey():
         import sys
-        import bbb
+        from bbb import AccessControl_interfaces
+        from bbb import Acquisition_interfaces
+        from bbb import App_interfaces
+        from bbb import OFS_interfaces
+        from bbb import webdav_interfaces
 
-        sys.modules['AccessControl.interfaces'] = bbb.AccessControl_interfaces
-        sys.modules['Acquisition.interfaces'] = bbb.Acquisition_interfaces
-        sys.modules['App.interfaces'] = bbb.App_interfaces
-        sys.modules['OFS.interfaces'] = bbb.OFS_interfaces
-        sys.modules['webdav.interfaces'] = bbb.webdav_interfaces
+        sys.modules['AccessControl.interfaces'] = AccessControl_interfaces
+        sys.modules['Acquisition.interfaces'] = Acquisition_interfaces
+        sys.modules['App.interfaces'] = App_interfaces
+        sys.modules['OFS.interfaces'] = OFS_interfaces
+        sys.modules['webdav.interfaces'] = webdav_interfaces

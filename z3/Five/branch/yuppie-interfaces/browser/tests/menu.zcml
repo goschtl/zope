@@ -12,7 +12,7 @@
       />
 
   <browser:menuItem
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       menu="testmenu"
       title="Test Menu Item"
       action="seagull.html"
@@ -21,7 +21,7 @@
       />
 
   <browser:menuItems
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       menu="testmenu">
 
       <menuItem
@@ -42,7 +42,7 @@
 
   <!-- page in a menu -->
   <browser:page
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       template="cockatiel.pt"
       name="cockatiel_menu.html"
       permission="zope2.ViewManagementScreens"

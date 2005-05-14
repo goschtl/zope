@@ -124,7 +124,7 @@
 
   <implements
       class="AccessControl.Owned.Owned"
-      interface=".interfaces.IOwned"
+      interface="AccessControl.interfaces.IOwned"
       />
 
   <implements

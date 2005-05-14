@@ -8,14 +8,14 @@
     />
 
   <browser:page
-    for="Products.Five.interfaces.IFolder"
+    for="OFS.interfaces.IFolder"
     name="overview.html"
     template="overview.pt"
     permission="zope2.ViewManagementScreens"
     />
      
   <browser:page
-    for="Products.Five.interfaces.IFolder"
+    for="OFS.interfaces.IFolder"
     name="overview2.html"
     template="overview2.pt"
     permission="zope2.ViewManagementScreens"
@@ -23,7 +23,7 @@
     />
 
   <browser:page
-    for="Products.Five.interfaces.IFolder"
+    for="OFS.interfaces.IFolder"
     name="test.html"
     class=".browser.Overview"
     attribute="directlyPublished"
@@ -31,7 +31,7 @@
     />
 
   <browser:pages
-      for="Products.Five.interfaces.IFolder"
+      for="OFS.interfaces.IFolder"
       class=".browser.NewExample"
       permission="zope2.ViewManagementScreens"
       >
