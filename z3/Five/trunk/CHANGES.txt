@@ -2,6 +2,17 @@
 Five Changes
 ============
 
+Five 1.1 (unreleased)
+=====================
+
+* Relocated Zope core interfaces. Future Zope versions will ship with their
+  own z3 interfaces. Five now patches the older Zope versions to make sure
+  you can always find the interfaces in 'AccessControl.interfaces',
+  'Acquisition.interfaces', 'App.interfaces', 'OFS.interfaces' and
+  'webdav.interfaces'. Please don't use the aliases in 'Five.interfaces' or
+  'Five.bbb.*interfaces' - they are only provided for backwards
+  compatibility.
+
 Five 1.0 (2005-04-27)
 =====================
 

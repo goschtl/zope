@@ -13,12 +13,12 @@ $Id$
 import urllib
 
 from OFS.Folder import Folder
+from OFS.interfaces import IFolder
 from AccessControl import Unauthorized
 from Testing.ZopeTestCase import ZopeTestCase
 
 from zope.interface import implements
 from Products.Five.traversable import Traversable
-from Products.Five.interfaces import IFolder
 
 def add_and_edit(self, id, REQUEST):
     """Helper function to point to the object's management screen if

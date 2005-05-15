@@ -11,12 +11,12 @@
 $Id$
 """
 from Acquisition import aq_inner, aq_parent
+from OFS.interfaces import ITraversable
 
 from zope.interface import implements
 from zope.app import zapi
 from zope.app.traversing.browser.interfaces import IAbsoluteURL
 
-from Products.Five.interfaces import ITraversable
 from Products.Five.browser import BrowserView
 
 class AbsoluteURL(BrowserView):
