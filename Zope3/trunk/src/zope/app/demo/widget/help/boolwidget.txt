@@ -5,60 +5,60 @@ BoolWidget sample
 Interface
 ---------
 
-Add a interfaces with Bool fields::
+Add interfaces with Bool fields::
 
-class IReadDemoBoolWidget(Interface):
-    """Widget read interface."""
-
-    readonly = Bool(
-        title = _(u"readonly"),
-        description=_(u"zope.schema.Int field with readonly = True."),
-        required=False,
-        readonly=True,
-        default=42)
-
-
-class IWriteDemoBoolWidget(Interface):
-    """Widget write interface."""
-
-    standard = Bool(
-        title = _(u"standard"),
-        description=_(u"""zope.schema.Bool field with only title and description."""),
-        )
-
-    required = Bool(
-        title = _(u"required"),
-        description=_(u"zope.schema.Bool field with required = True."),
-        required=True)
-
-    constraint = Bool(
-        title = _(u"constraint"),
-        description=_(u"""zope.schema.Bool field with constraint """
-            """lambda x: x == True."""),
-        constraint=lambda x: x == True)
-
-    default = Bool(
-        title = _(u"default"),
-        description=_(u"""zope.schema.Bool field with """
-            """default = True."""),
-        default=True)
-
-
-class IDemoBoolWidget(IDemoWidget, IReadDemoBoolWidget, IWriteDemoBoolWidget):
-    """Widget interface inherites read and write interfaces."""
+    class IReadDemoBoolWidget(Interface):
+        """Widget read interface."""
+    
+        readonly = Bool(
+            title = _(u"readonly"),
+            description=_(u"zope.schema.Int field with readonly = True."),
+            required=False,
+            readonly=True,
+            default=42)
+    
+    
+    class IWriteDemoBoolWidget(Interface):
+        """Widget write interface."""
+    
+        standard = Bool(
+            title = _(u"standard"),
+            description=_(u"""zope.schema.Bool field with only title and description."""),
+            )
+    
+        required = Bool(
+            title = _(u"required"),
+            description=_(u"zope.schema.Bool field with required = True."),
+            required=True)
+    
+        constraint = Bool(
+            title = _(u"constraint"),
+            description=_(u"""zope.schema.Bool field with constraint """
+                """lambda x: x == True."""),
+            constraint=lambda x: x == True)
+    
+        default = Bool(
+            title = _(u"default"),
+            description=_(u"""zope.schema.Bool field with """
+                """default = True."""),
+            default=True)
+    
+    
+    class IDemoBoolWidget(IDemoWidget, IReadDemoBoolWidget, IWriteDemoBoolWidget):
+        """Widget interface inherits read and write interfaces."""
 
 Define a class::
 
-class DemoBoolWidget(DemoWidget):
-    """Demo TextWidget implementation."""
-
-    implements(IDemoBoolWidget)
+    class DemoBoolWidget(DemoWidget):
+        """Demo TextWidget implementation."""
     
-    standard = FieldProperty(IDemoBoolWidget['standard'])
-    required = FieldProperty(IDemoBoolWidget['required'])
-    readonly = FieldProperty(IDemoBoolWidget['readonly'])
-    constraint = FieldProperty(IDemoBoolWidget['constraint'])
-    default = FieldProperty(IDemoBoolWidget['default'])
+        implements(IDemoBoolWidget)
+        
+        standard = FieldProperty(IDemoBoolWidget['standard'])
+        required = FieldProperty(IDemoBoolWidget['required'])
+        readonly = FieldProperty(IDemoBoolWidget['readonly'])
+        constraint = FieldProperty(IDemoBoolWidget['constraint'])
+        default = FieldProperty(IDemoBoolWidget['default'])
 
 Register the class::
 
