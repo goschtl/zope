@@ -28,10 +28,18 @@
       />
 
   <help:register
-      id="textwidget"
+      id="textlinewidget"
+      parent="samples/widgets"
+      title="TextLineWidget"
+      doc_path="textwidget.txt"
+      class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
+      />
+
+  <help:register
+      id="textareawidget"
       parent="samples/widgets"
       title="TextWidget"
-      doc_path="textwidget.txt"
+      doc_path="textareawidget.txt"
       class="zope.app.onlinehelp.onlinehelptopic.RESTOnlineHelpTopic"
       />
 
