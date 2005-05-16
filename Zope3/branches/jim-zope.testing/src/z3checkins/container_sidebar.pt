@@ -1,0 +1,59 @@
+<html>
+<head>
+<title tal:content="view/title">Zope 3 Checkins</title>
+<style type="text/css">
+  * { font-size: small; }
+  h1 { font-size: medium; margin-bottom: 0.5ex; }
+  div.toolbar { font-size: xx-small; margin-left: 1em; margin-bottom: 1.5em; }
+  div.toolbar > a { display: block; width: 100%; }
+  div.navigation { margin-top: 1em; }
+  div.navigation > a { display: block; width: 100%; text-align: right; }
+  .message { margin-top: 1ex; }
+  .description { font-size: small; margin-left: 1em; }
+  .same { color: gray; margin-top: 0.5ex; }
+  .author { font-weight: bold; }
+  a.title { display: block; width: 100%; }
+  a:hover { background: #e0e6ff; }
+  img.icon { float: right; padding: 0ex; margin: 2px; border: none; }
+  hr { width: 60%; border: none; background: gray; height: 1px;
+       margin-top: 1ex; margin-bottom: 0ex; }
+</style>
+<link rel="alternate" type="application/rss+xml" title="RSS"
+      tal:attributes="href string:${context/@@absolute_url}/@@checkins.rss" />
+</head>
+<body tal:define="dummy view/placeBookmark;
+                  start python:int(request.get('start', '0'));
+                  size python:int(request.get('size', '20'));
+                  opt_size python:(size != 20) and '&amp;size=%d' % size or ''">
+<h1 tal:replace="view/title">Zope 3 Checkins</h1>
+
+<div class="toolbar"
+     tal:define="first_batch python:start <= 0">
+<a tal:condition="view/archive_url"
+   tal:attributes="href view/archive_url"
+   target="_content"
+   href="http://mail.zope.org/pipermail/zope3-checkins/">List archives</a>
+<a tal:condition="first_batch"
+   href="javascript:window.location.reload()">Refresh</a>
+<a tal:condition="not: first_batch"
+   tal:attributes="href request/URL">Newest checkins</a>
+</div>
+
+<div class="navigation">
+<a tal:define="prev python:max(0, start - size)"
+   tal:condition="python: start > 0"
+   tal:attributes="href string:${request/URL}?start=${prev}${opt_size}">Previous
+   <span tal:replace="size">20</span></a>
+</div>
+
+<div tal:replace="structure view/renderCheckins" />
+
+<div class="navigation">
+<a tal:define="next python:start + size"
+   tal:condition="python: next < view.count()"
+   tal:attributes="href string:${request/URL}?start=${next}${opt_size}">Next
+   <span tal:replace="size">20</span></a>
+</div>
+
+</body>
+</html>

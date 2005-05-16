@@ -1,0 +1,36 @@
+Internationalization (I18n) and Localization (L10n)
+=====================================================
+
+  Creating/Updating Message Catalog Template (POT) Files
+  -----------------------------------------------------
+
+    1. Install 'buddydemo' in 'ZOPE3/src'. See INSTALL.txt for details.
+
+    2. Set the the Python path::
+
+        export PYTHONPATH=ZOPE3/src
+
+    3. Go into the 'locales' directory and execute i18nextract.py::
+
+      python2.3 utilities/i18nextract.py -d buddydemo -p ..
+
+
+  Updating Message Catalog (PO) Files
+  -----------------------------------
+
+    1. For each language do simply::
+
+        msgmerge -U de/LC_MESSAGES/buddydemo.po buddydemo.pot
+
+    2. Translate the updated PO file. 
+       Note: KBabel is a great tool for this task!
+
+
+  Compiling Message Catalogs (PO) to binary (MO) Files
+  ----------------------------------------------------
+
+    1. Go to the right directory, such as '<buddydemo>/locales/de/LC_MESSAGES'.
+
+    2. Run the following command::
+
+        msgfmt -o buddydemo.mo buddydemo.po

@@ -1,0 +1,20 @@
+<div class="message">
+<a class="title" tal:attributes="href context/@@absolute_url" target="_content">
+  <img class="icon"
+       tal:define="icon view/icon"
+       tal:attributes="src icon/src; alt icon/alt; title icon/title" />
+  <img tal:condition="context/branch | nothing"
+       class="icon" src="++resource++branch.png" alt="Branch"
+       tal:attributes="title string:Branch: ${context/branch}"/>
+  <span class="date" tal:content="context/date/@@isodatetime" />:
+  <span class="author" tal:content="context/author_name" />
+  - <span class="subject" tal:content="context/subject" />
+</a>
+<tal:if condition="context/log_message | nothing">
+<div class="same description" tal:condition="options/same_as_previous">
+(Same as above)
+</div>
+<div class="description" tal:condition="not:options/same_as_previous"
+     tal:content="context/log_message" />
+</tal:if>
+</div>
