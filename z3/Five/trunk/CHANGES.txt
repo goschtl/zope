@@ -5,6 +5,9 @@ Five Changes
 Five 1.1 (unreleased)
 =====================
 
+* Fixed small bug in BrowserDefault which caused an error if the class is
+  defaultViewable but the object's interfaces have no defaultView.
+
 * Relocated Zope core interfaces. Future Zope versions will ship with their
   own z3 interfaces. Five now patches the older Zope versions to make sure
   you can always find the interfaces in 'AccessControl.interfaces',
