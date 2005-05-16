@@ -1,9 +1,0 @@
-/*colorize the matrix table used in grant.html*/
-table.matrix td.default {
-    background: #82BA78;
-}
-
-
-table.matrix td.changed {
-    background: #D96868;
-}
