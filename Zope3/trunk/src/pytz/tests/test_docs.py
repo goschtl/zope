@@ -2,7 +2,7 @@
 # -*- coding: ascii -*-
 
 import unittest, os, os.path, sys
-from doctest import DocFileSuite
+from zope.testing.doctest import DocFileSuite
 sys.path.insert(0, os.path.join(os.pardir, os.pardir))
 
 README = DocFileSuite('../README.txt')
