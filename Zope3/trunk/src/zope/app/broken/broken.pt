@@ -2,9 +2,9 @@
 
 <div metal:fill-slot="body">
 
-<p>This object is broken because it's class can't be found.</p>
+<p>This object is broken because its class can not be found.</p>
 
-<p>This probably because the class' module, 
+<p>This probably because the class module,
 <strong tal:content="context/__class__/__module__">somemodule</strong>,
 can't be found or because the name, <strong
 tal:content="context/__class__/__name__">somemodule</strong>, is no longer
