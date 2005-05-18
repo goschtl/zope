@@ -591,6 +591,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #407: zope.app.publication.http.MethodNotAllowed.__str__:
+        'request' should be self.request
+
       - Fixed issue #333: XML Tree doesn't load if some item
         contains non-ASCII characters 
 
