@@ -1,3 +1,8 @@
+#############################################################################
+# CAUTION:  As of 18 May 2005 (ZODB 3.4 development), ZODB uses its
+# own local copy of zodb3.map instead.  This is mostly because the
+# correct configuration is tied to a specific ZODB release.
+#############################################################################
 # These packages are used to provide the standalone ZODB distribution.
 # This package map can be addressed as
 #
