@@ -64,8 +64,6 @@ Others
 
   * 356: Copy and Paste does not handle exceptions raised by __setitem__
 
-  * 369: DAV is hosed on the trunk
-
   * 372: WidgetInputError.doc is broken
 
   * 373: Adding objects requires permission zope.app.dublincore.change
