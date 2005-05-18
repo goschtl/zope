@@ -74,14 +74,10 @@ Others
 
   * 392: adapter registry subscribers method can return None when it shouldn't
 
-  * 396: Bug in multi-adapter lookup (Jim is working on it)
-
   * 397: DisplayView shouldn't display fields with private suffix
 
   * 400: i18n image broken in trunk
   
-  * 402: classImplements after implementsOnly gets wrong declaration (Jim)
-
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well.
