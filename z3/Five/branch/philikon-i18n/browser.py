@@ -14,7 +14,6 @@ $Id$
 # python
 import sys
 from datetime import datetime
-from types import StringType
 
 # Zope 2
 import Acquisition
@@ -133,27 +132,7 @@ class EditView(BrowserView):
         BrowserView.__init__(self, context, request)
         self._setUpWidgets()
 
-    def _getFormEncoding(self):
-        content_type = self.request['CONTENT_TYPE']
-        if content_type.find('charset=') != -1:
-            return content_type.split('charset=')[1]
-        return self.request['HTTP_ACCEPT_CHARSET'].split(',', 1)[0]
-
-    def _convertFormToUnicode(self):
-        encoding = self._getFormEncoding()
-        new_form = {}
-        for key, value in self.request.form.items():
-            if not isinstance(value, StringType):
-                new_form[key] = value
-            else:
-                try:
-                    new_form[key] = unicode(value, encoding)
-                except UnicodeDecodeError:
-                    new_form[key] = value
-        self.request.form = new_form
-
     def _setUpWidgets(self):
-        self._convertFormToUnicode()
         adapted = self.schema(self.context)
         if adapted is not self.context:
             if not ILocation.providedBy(adapted):
@@ -224,7 +203,6 @@ class AddView(EditView):
     """
 
     def _setUpWidgets(self):
-        self._convertFormToUnicode()
         setUpWidgets(self, self.schema, IInputWidget, names=self.fieldNames)
 
     def update(self):
