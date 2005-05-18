@@ -17,9 +17,18 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.interface import Interface
+from zope.interface import Interface, implements
 from zope.schema import Text
+from zope.schema.interfaces import IText
 from zope.app.form.interfaces import IInputWidget
+
+class IXMLText(IText):
+    """A Text field that can optionally contain has its value a
+    minidom DOM Node.
+    """
+
+class XMLText(Text):
+    implements(IXMLText)
 
 
 class IDAVNamespace(Interface):
@@ -152,15 +161,15 @@ class IGETDependentDAVSchema(Interface):
 class IDAV1Schema(IGETDependentDAVSchema):
     """DAV properties required for Level 1 compliance"""
 
-    resourcetype = Text(title=u'''Specifies the nature of the resource''',
+    resourcetype = XMLText(title=u'''Specifies the nature of the resource''',
 
-                        description=u'''\
+                           description=u'''\
                                 The resourcetype property MUST be
                                 defined on all DAV compliant
                                 resources.  The default value is
                                 empty.''',
 
-                            readonly=True)
+                           readonly=True)
 
 
 class IDAV2Schema(IDAV1Schema):
@@ -211,15 +220,16 @@ class IDAVWidget(IInputWidget):
     def __call__():
         """Render the widget.
 
-        Optionally, this method could return a minidom DOM Node as the value;
-        this node will then be inersted into the resulting DAV XML response. 
-        Use a DocumentFragment if you want to include multiple nodes.
+        This method should not contain a minidom DOM Node as its value; if its
+        value is a minidom DOM Node then its value will be normalized to a
+        string.
+
+        If a value should be a minidom DOM Node then use the XMLDAVWidget for
+        inserting its value into the DAV XML response.
         """
     
     def setRenderedValue(value):
         """Set the DAV value for the property
-
-        value can be a DOM Element node representing the value.
         """
 
 
@@ -230,3 +240,13 @@ class ITextDAVWidget(IDAVWidget):
 class ISequenceDAVWidget(IDAVWidget):
     """A DAV widget for sequences."""
 
+
+class IXMLDAVWidget(IDAVWidget):
+    """A DAV widget for rendering XML values.
+
+    This widget should be used if you want to insert any minidom DOM Nodes
+    into the DAV XML response.
+
+    It it receives something other then a minidom DOM Node has its value then
+    it just renders has an empty string.
+    """

@@ -20,7 +20,7 @@ from StringIO import StringIO
 from unittest import TestCase, TestSuite, main, makeSuite
 from datetime import datetime
 
-from zope.interface import Interface,  directlyProvides
+from zope.interface import Interface,  directlyProvides, implements
 from zope.publisher.interfaces.http import IHTTPRequest
 
 from zope.pagetemplate.tests.util import normalize_xml
@@ -39,12 +39,18 @@ from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.annotation.interfaces import IAnnotatable, IAnnotations
 from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.size.interfaces import ISized
+from zope.app.file.interfaces import IFile
 
 from zope.app.dav import propfind
 from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dav.interfaces import IDAVNamespace
 from zope.app.dav.interfaces import IDAVWidget
-from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget
+from zope.app.dav.interfaces import IXMLDAVWidget
+from zope.app.dav.interfaces import IXMLText
+from zope.app.dav.widget import TextDAVWidget, SequenceDAVWidget, \
+     XMLDAVWidget
+from zope.app.dav.interfaces import IXMLText
 from zope.app.dav.opaquenamespaces import DAVOpaqueNamespacesAdapter
 from zope.app.dav.opaquenamespaces import IDAVOpaqueNamespaces
 from zope.app.dav.adapter import DAVSchemaAdapter
@@ -81,6 +87,18 @@ def _createRequest(body=None, headers=None, skip_headers=None):
     request = TestRequest(StringIO(body), StringIO(), _environ)
     return request
 
+class FileSized(object):
+    implements(ISized)
+
+    def __init__(self, context):
+        self.context = context
+
+    def sizeForSorting(self):
+        return 'byte', len(self.context.data)
+
+    def sizeForDisplay(self):
+        return 'big'
+
 class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
 
     def setUp(self):
@@ -104,6 +122,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         ztapi.browserViewProviding(ITextLine, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(IDatetime, TextDAVWidget, IDAVWidget)
         ztapi.browserViewProviding(ISequence, SequenceDAVWidget, IDAVWidget)
+        ztapi.browserViewProviding(IXMLText, XMLDAVWidget, IXMLDAVWidget)
         ztapi.provideAdapter(IAnnotatable, IAnnotations, AttributeAnnotations)
         ztapi.provideAdapter(IAnnotatable, IZopeDublinCore,
                              ZDCAnnotatableAdapter)
@@ -111,6 +130,7 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
                              DAVOpaqueNamespacesAdapter)
         ztapi.provideAdapter(None, IDAVSchema,
                              DAVSchemaAdapter)
+        ztapi.provideAdapter(IFile, ISized, FileSized)
         sm = zapi.getGlobalSiteManager()
         directlyProvides(IDAVSchema, IDAVNamespace)
         sm.provideUtility(IDAVNamespace, IDAVSchema, 'DAV:')
@@ -250,6 +270,61 @@ class TestPlacefulPROPFIND(PlacefulSetup, TestCase):
         s1 = normalize_xml(request.response._body)
         s2 = normalize_xml(expect)
         self.assertEqual(s1, s2)
+
+    def test_resourcetype(self):
+        file = self.file
+        folder = traverse(self.rootFolder, 'folder')
+        req = '''<prop>
+        <resourcetype/>
+        </prop>
+        '''
+        expect_file = '''<prop>
+        <resourcetype></resourcetype>
+        </prop>
+        '''
+        expect_folder = '''<prop>
+        <resourcetype><collection/></resourcetype>
+        </prop>
+        '''
+        self._checkPropfind(file, req, expect_file)
+        self._checkPropfind(folder, req, expect_folder)
+
+    def test_getcontentlength(self):
+        file = self.file
+        folder = traverse(self.rootFolder, 'folder')
+        req = '''<prop>
+        <getcontentlength/>
+        </prop>
+        '''
+        expected_file = '''<prop>
+        <getcontentlength>%d</getcontentlength>
+        </prop>
+        ''' % len(file.data)
+        expected_folder = '''<prop>
+        <getcontentlength></getcontentlength>
+        </prop>
+        '''
+        self._checkPropfind(file, req, expected_file)
+        self._checkPropfind(folder, req, expected_folder)
+
+    def test_getcontenttype(self):
+        root = self.rootFolder
+        file = self.file
+        folder = traverse(root, 'folder')
+        req = '''<prop>
+        <getcontenttype/>
+        </prop>
+        '''
+        expected_file = '''<prop>
+        <getcontenttype>text/plain</getcontenttype>
+        </prop>
+        '''
+        expected_folder = '''<prop>
+        <getcontenttype></getcontenttype>
+        </prop>
+        '''
+        self._checkPropfind(file, req, expected_file)
+        self._checkPropfind(folder, req, expected_folder)
 
     def test_davpropdctitle(self):
         root = self.rootFolder

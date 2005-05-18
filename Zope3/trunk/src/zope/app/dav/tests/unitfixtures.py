@@ -21,14 +21,16 @@ from persistent import Persistent
 from zope.interface import implements
 
 from zope.app.filerepresentation.interfaces import IWriteFile
+from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.container.interfaces import IReadContainer
 from zope.app.annotation.interfaces import IAnnotatable
+from zope.app.file.interfaces import IFile
 
 import zope.app.location
 
 class Folder(zope.app.location.Location, Persistent):
 
-    implements(IReadContainer)
+    implements(IReadContainer, IReadDirectory)
 
     def __init__(self, name, level=0, parent=None):
         self.name = self.__name__ = name
@@ -48,13 +50,14 @@ class Folder(zope.app.location.Location, Persistent):
 
 class File(zope.app.location.Location, Persistent):
 
-    implements(IWriteFile)
+    implements(IWriteFile, IFile)
 
     def __init__(self, name, content_type, data, parent=None):
         self.name = self.__name__ = name
         self.content_type = content_type
         self.data = data
         self.__parent__ = parent
+        self.contentType = content_type
 
     def write(self, data):
         self.data = data

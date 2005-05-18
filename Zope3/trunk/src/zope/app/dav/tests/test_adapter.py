@@ -50,7 +50,7 @@ class RobotSize(object):
         self.context = context
 
     def sizeForSorting(self):
-        return None
+        return None, None
 
     def sizeForDisplay(self):
         msg = _(u"${num} robot unit")
@@ -121,7 +121,7 @@ def test_DAVSchemaAdapter():
 
     >>> ztapi.provideAdapter(IRobot, ISized, RobotSize)
     >>> dav.getcontentlength
-    '1 robot unit'
+    ''
 
     And if robots were directories:
 

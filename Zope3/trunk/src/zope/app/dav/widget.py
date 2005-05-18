@@ -22,6 +22,7 @@ from xml.dom import minidom
 from zope.app.dav.interfaces import IDAVWidget
 from zope.app.dav.interfaces import ITextDAVWidget
 from zope.app.dav.interfaces import ISequenceDAVWidget
+from zope.app.dav.interfaces import IXMLDAVWidget
 
 from zope.app.form import InputWidget
 from zope.interface import implements
@@ -66,3 +67,21 @@ class SequenceDAVWidget(DAVWidget):
     
     def getInputValue(self):
         return [v.strip() for v in self._data.split(',')]
+
+class XMLDAVWidget(DAVWidget):
+
+    implements(IXMLDAVWidget)
+
+    def getInputValue(self):
+        return self._data
+
+    def __str__(self):
+        raise ValueError, "xmldavwidget is not a string."
+
+    def __call__(self):
+        return self._data
+
+    def setRenderedValue(self, value):
+        if not isinstance(value, minidom.Node):
+            value = ''
+        self._data = value

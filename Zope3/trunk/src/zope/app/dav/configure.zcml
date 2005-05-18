@@ -64,6 +64,14 @@
   
   <view
       type="zope.publisher.interfaces.http.IHTTPRequest"
+      for=".interfaces.IXMLText"
+      provides="zope.app.dav.interfaces.IDAVWidget"
+      factory="zope.app.dav.widget.XMLDAVWidget"
+      permission="zope.Public"
+      />
+
+  <view
+      type="zope.publisher.interfaces.http.IHTTPRequest"
       for="zope.schema.interfaces.IBytes"
       provides="zope.app.dav.interfaces.IDAVWidget"
       factory="zope.app.dav.widget.TextDAVWidget"

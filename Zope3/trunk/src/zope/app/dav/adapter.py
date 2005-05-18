@@ -27,6 +27,7 @@ from zope.app.dav.interfaces import IDAVSchema
 from zope.app.dublincore.interfaces import IDCTimes
 from zope.app.filerepresentation.interfaces import IReadDirectory
 from zope.app.size.interfaces import ISized
+from zope.app.file.interfaces import IFile
 
 class DAVSchemaAdapter(object):
     """An adapter for all content objects that provides the basic DAV
@@ -63,7 +64,10 @@ class DAVSchemaAdapter(object):
         sized = ISized(self.context, None)
         if sized is None:
             return ''
-        return str(translate(sized.sizeForDisplay()))
+        units, size = sized.sizeForSorting()
+        if units == 'byte':
+            return str(size)
+        return ''
     getcontentlength = property(getcontentlength)
 
     def getlastmodified(self):
@@ -76,3 +80,10 @@ class DAVSchemaAdapter(object):
     def executable(self):
         return ''
     executable = property(executable)
+
+    def getcontenttype(self):
+        file = IFile(self.context, None)
+        if file is not None:
+            return file.contentType
+        return ''
+    getcontenttype = property(getcontenttype)
