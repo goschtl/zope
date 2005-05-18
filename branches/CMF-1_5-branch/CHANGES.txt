@@ -31,6 +31,11 @@ After CMF-1.5.1
 
   Bugs Fixed
 
+    - CMFCore.DirectoryView: Do not cause ZODB writes or ConflictError
+      if an old DirectoryView with a non-existing path is left. Sends a
+      warning to stderr about those.
+      (http://www.zope.org/Collectors/CMF/347)
+
     - CMFSetup utils: Fixed handling of comments and empty descriptions.
       (http://www.zope.org/Collectors/CMF/352)
 
