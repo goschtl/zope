@@ -31,7 +31,7 @@ def bootStrapSubscriber(event):
 
     db, connection, root, root_folder = getInformationFromEvent(event)
 
-    ensureUtility(root_folder, IErrorReportingUtility, 'ErrorReporting',
+    ensureUtility(root_folder, IErrorReportingUtility, '',
                   RootErrorReportingUtility, copy_to_zlog=False)
 
     transaction.commit()
