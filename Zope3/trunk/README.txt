@@ -60,10 +60,10 @@ Starting Zope3
   this release of Zope 3 requires recent versions of Mozilla or IE.
 
   If you insist on using an older browser (or a text-based browser)
-  you can use the basic Zope 3 skin by putting '++skin++basic' after
+  you can use the basic Zope 3 skin by putting '++skin++Basic' after
   the server part of the URL::
 
-    http://localhost:8080/++skin++basic/manage
+    http://localhost:8080/++skin++Basic/manage
 
   See doc/INSTALL.txt for more information.
 
