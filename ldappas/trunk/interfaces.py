@@ -11,50 +11,57 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""LDAP PAS Plugin interfaces
+"""LDAP Pluggable Authentication Plugin interfaces
 
 $Id$
 """
-
 import re
-from zope.app.i18n import ZopeMessageIDFactory as _
-from zope.interface import Interface
-from zope.schema import Choice
-from zope.schema import TextLine
+import zope.interface
+import zope.schema
 
-class ILDAPAuthentication(Interface):
-    adapterName = Choice(
+from zope.app.i18n import ZopeMessageIDFactory as _
+
+
+class ILDAPAuthentication(zope.interface.Interface):
+    """LDAP-specifc Autentication Plugin for the Pluggable Authentication."""
+
+    adapterName = zope.schema.Choice(
         title=_(u"LDAP Adapter Name"),
         description=_(u"The LDAP adapter name for the connection to be used."),
         vocabulary="LDAP Adapter Names",
         required=True,
         )
-    searchBase = TextLine(
+
+    searchBase = zope.schema.TextLine(
         title=_("Search base"),
         description=_(u"The LDAP search base where principals are found."),
         default=u'dc=example,dc=org',
         required=True,
         )
-    searchScope = TextLine(
+
+    searchScope = zope.schema.TextLine(
         title=_("Search scope"),
         description=_(u"The LDAP search scope used to find principals."),
         default=u'sub',
         required=True,
         )
-    loginAttribute = TextLine(
+
+    loginAttribute = zope.schema.TextLine(
         title=_("Login attribute"),
         description=_(u"The LDAP attribute used to find principals."),
         constraint=re.compile("[a-zA-Z][-a-zA-Z0-9]*$").match,
         default=u'uid',
         required=True,
         )
-    principalIdPrefix = TextLine(
+
+    principalIdPrefix = zope.schema.TextLine(
         title=_("Principal id prefix"),
         description=_(u"The prefix to add to all principal ids."),
         default=u'ldap.',
         required=False,
         )
-    idAttribute = TextLine(
+
+    idAttribute = zope.schema.TextLine(
         title=_("Id attribute"),
         description=_(
             u"The LDAP attribute used to determine a principal's id."),
@@ -62,7 +69,8 @@ class ILDAPAuthentication(Interface):
         default=u'uid',
         required=True,
         )
-    titleAttribute = TextLine(
+
+    titleAttribute = zope.schema.TextLine(
         title=_("Title attribute"),
         description=_(
             u"The LDAP attribute used to determine a principal's title."),
@@ -70,4 +78,5 @@ class ILDAPAuthentication(Interface):
         default=u'cn',
         required=True,
         )
-    #searchObjectClasses
+
+    # searchObjectClasses

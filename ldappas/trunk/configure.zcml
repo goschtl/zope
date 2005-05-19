@@ -9,46 +9,51 @@
     <implements
         interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
         />
-
-    <implements
-        interface="zope.app.pas.interfaces.ISearchableAuthenticationPlugin"
-        />
-
     <require
-        permission="zope.ManageServices"
-        interface="zope.app.pas.interfaces.IAuthenticationPlugin"
-        />
-
-    <require
-        permission="zope.ManageServices"
+        permission="zope.ManageSite"
         interface="ldappas.interfaces.ILDAPAuthentication"
         set_schema="ldappas.interfaces.ILDAPAuthentication"
         />
 
   </localUtility>
 
-  <browser:addMenuItem
-      title="PAS LDAP Authentication Plugin"
-      description="A PAS LDAP Authentication Plugin"
-      class=".authentication.LDAPAuthentication"
-      permission="zope.ManageServices"
-      view="addPASLDAPAuthenticationPlugin"
-      />
-
   <browser:addform
       schema="ldappas.interfaces.ILDAPAuthentication"
-      label="Add a PAS LDAP Authentication Plugin"
+      label="Add LDAP Authentication Plugin"
       content_factory=".authentication.LDAPAuthentication"
-      name="addPASLDAPAuthenticationPlugin"
-      permission="zope.ManageServices"
+      name="addLDAPAuthentication.html"
+      permission="zope.ManageSite"
+      />
+
+  <browser:addMenuItem
+      title="LDAP Authentication"
+      description="A LDAP Authentication Plugin"
+      class=".authentication.LDAPAuthentication"
+      permission="zope.ManageSite"
+      view="addLDAPAuthentication.html"
       />
 
   <browser:editform
       schema="ldappas.interfaces.ILDAPAuthentication"
       name="edit.html"
-      menu="zmi_views"
       title="Edit"
-      permission="zope.ManageServices"
+      permission="zope.ManageSite"
+      menu="zmi_views"
       />
+
+  <!-- Registering documentation with API doc -->
+  <configure
+      xmlns:apidoc="http://namespaces.zope.org/apidoc"
+      xmlns:zcml="http://namespaces.zope.org/zcml"
+      zcml:condition="have apidoc">
+
+    <apidoc:bookchapter
+        id="ldapauth"
+        title="LDAP Authentication"
+        doc_path="README.txt"
+        parent="security/authentication"
+        />
+
+  </configure>
 
 </configure>

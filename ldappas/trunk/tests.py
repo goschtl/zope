@@ -15,33 +15,26 @@
 
 $Id$
 """
-
-import sys
 import unittest
-from zope.testing import doctest
 
-from zope.interface import implements
+import zope.interface
+from zope.testing import doctest, doctestunit
 from zope.app import zapi
-from zope.app.tests import setup
-from zope.app.servicenames import Utilities
-from zope.app.utility import LocalUtilityService
+from zope.app.testing import setup
 
-from ldapadapter.interfaces import ILDAPAdapter
-from ldapadapter.exceptions import ServerDown
-from ldapadapter.exceptions import InvalidCredentials
-from ldapadapter.exceptions import NoSuchObject
+import ldapadapter.interfaces
 
 class FakeLDAPAdapter:
-    implements(ILDAPAdapter)
+    zope.interface.implements(ldapadapter.interfaces.ILDAPAdapter)
     _isDown = False
     def connect(self, dn=None, password=None):
         if self._isDown:
-            raise ServerDown
+            raise ldapadapter.interfaces.ServerDown
         if not dn and not password:
             return FakeLDAPConnection()
         if dn == 'uid=42,dc=test' and password == '42pw':
             return FakeLDAPConnection()
-        raise InvalidCredentials
+        raise ldapadapter.interfaces.InvalidCredentials
 
 class FakeLDAPConnection:
     def search(self, base, scope='sub', filter='(objectClass=*)', attrs=[]):
@@ -62,7 +55,7 @@ class FakeLDAPConnection:
                    'mult': [u'm1', u'm2'],
                    }
         if base.endswith('dc=bzzt'):
-            raise NoSuchObject
+            raise ldapadapter.interfaces.NoSuchObject
         if filter == '(cn=none)':
             return []
         if filter in ('(cn=many)', '(cn=*many*)'):
@@ -75,21 +68,22 @@ class FakeLDAPConnection:
             return [(dn1, entry1), (dn2, entry2), (dn42, entry42)]
         return []
 
+
 def setUp(test):
     root = setup.placefulSetUp(site=True)
-    sm = zapi.getServices(root)
-    setup.addService(sm, Utilities, LocalUtilityService())
-    setup.addUtility(sm, 'fake_ldap_adapter', ILDAPAdapter,
-                     FakeLDAPAdapter())
+    sm = root.getSiteManager()
+    setup.addUtility(sm, 'fake_ldap_adapter',
+                     ldapadapter.interfaces.ILDAPAdapter, FakeLDAPAdapter())
 
 def tearDown(test):
     setup.placefulTearDown()
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocTestSuite('ldappas.authentication',
+        doctest.DocFileSuite('README.txt',
                              setUp=setUp, tearDown=tearDown,
-                             ),
+                             globs={'pprint': doctestunit.pprint},
+                             optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
 
 if __name__ == '__main__':

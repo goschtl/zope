@@ -15,23 +15,54 @@
 
 $Id$
 """
+import zope.schema
+import zope.interface
+from persistent import Persistent
 
 from zope.app import zapi
-from persistent import Persistent
+from zope.app import authentication
 from zope.app.container.contained import Contained
-from zope.interface import implements
-
-from zope.interface import Interface
-from zope.schema import TextLine
-from zope.app.pas.interfaces import IAuthenticationPlugin
-from zope.app.pas.interfaces import IQuerySchemaSearch
-from ldapadapter.interfaces import ILDAPAdapter
-from interfaces import ILDAPAuthentication
 
 from ldap.filter import filter_format
-from ldapadapter.exceptions import ServerDown
-from ldapadapter.exceptions import InvalidCredentials
-from ldapadapter.exceptions import NoSuchObject
+from ldapadapter.interfaces import ServerDown
+from ldapadapter.interfaces import InvalidCredentials
+from ldapadapter.interfaces import NoSuchObject
+from ldapadapter.interfaces import ILDAPAdapter
+from ldappas.interfaces import ILDAPAuthentication
+
+
+class ILDAPSearchSchema(zope.interface.Interface):
+    """A LDAP-specific schema for searching for principals."""
+
+    uid = zope.schema.TextLine(
+        title=u'uid',
+        required=False)
+
+    cn = zope.schema.TextLine(
+        title=u'cn',
+        required=False)
+
+    givenName = zope.schema.TextLine(
+        title=u'givenName',
+        required=False)
+
+    sn = zope.schema.TextLine(
+        title=u'sn',
+        required=False)
+
+
+class PrincipalInfo:
+    """An implementation of IPrincipalInfo used by the principal folder."""
+    zope.interface.implements(authentication.interfaces.IPrincipalInfo)
+
+    def __init__(self, id, login='', title='', description=''):
+        self.id = id
+        self.login = login
+        self.title = title
+        self.description = description
+
+    def __repr__(self):
+        return 'PrincipalInfo(%r)' % self.id
 
 
 class LDAPAuthentication(Persistent, Contained):
@@ -42,7 +73,11 @@ class LDAPAuthentication(Persistent, Contained):
     information, and additional authentication-specific informations.
     """
 
-    implements(ILDAPAuthentication, IAuthenticationPlugin, IQuerySchemaSearch)
+    zope.interface.implements(
+        ILDAPAuthentication,
+        authentication.interfaces.IAuthenticatorPlugin,
+        authentication.interfaces.IQueriableAuthenticator,
+        authentication.interfaces.IQuerySchemaSearch)
 
     adapterName = ''
     searchBase = ''
@@ -52,8 +87,7 @@ class LDAPAuthentication(Persistent, Contained):
     idAttribute = ''
     titleAttribute = ''
 
-    def __init__(self):
-        pass
+    schema = ILDAPSearchSchema
 
     def getLDAPAdapter(self):
         """Get the LDAP adapter according to our configuration.
@@ -64,102 +98,7 @@ class LDAPAuthentication(Persistent, Contained):
         return da
 
     def authenticateCredentials(self, credentials):
-        r"""See zope.app.pas.interfaces.IAuthenticationPlugin.
-
-        An LDAP Adapter has to be registered, we'll use a fake one
-        (registered by the test framework).
-
-        >>> auth = LDAPAuthentication()
-        >>> auth.adapterName = 'fake_ldap_adapter'
-        >>> auth.searchBase = 'dc=test'
-        >>> auth.searchScope = 'sub'
-        >>> auth.loginAttribute = 'cn'
-        >>> auth.principalIdPrefix = ''
-        >>> auth.idAttribute = 'uid'
-        >>> auth.titleAttribute = 'sn'
-        >>> da = auth.getLDAPAdapter()
-        >>> authCreds = auth.authenticateCredentials
-
-        Incorrect credentials types are rejected.
-
-        >>> authCreds(123) is None
-        True
-        >>> authCreds({'glop': 'bzz'}) is None
-        True
-
-        You cannot authenticate if the search returns several results.
-
-        >>> len(da.connect().search('dc=test', 'sub', '(cn=many)')) > 1
-        True
-        >>> authCreds({'login': 'many', 'password': 'p'}) is None
-        True
-
-        You cannot authenticate if the search returns nothing.
-
-        >>> conn = da.connect()
-        >>> len(conn.search('dc=test', 'sub', '(cn=none)')) == 0
-        True
-        >>> authCreds({'login': 'none', 'password': 'p'}) is None
-        True
-
-        You cannot authenticate with the wrong password.
-
-        >>> authCreds({'login': 'ok', 'password': 'hm'}) is None
-        True
-
-        Authentication succeeds if you provide the correct password.
-
-        >>> id, info = authCreds({'login': 'ok', 'password': '42pw'})
-        >>> id, info['login'], info['title'], info['description']
-        (u'42', u'ok', u'the question', u'the question')
-
-        The id returned comes from a configurable attribute, and can be
-        prefixed so that it is unique.
-
-        >>> auth.principalIdPrefix = 'ldap.'
-        >>> auth.idAttribute = 'cn'
-        >>> authCreds({'login': 'ok', 'password': '42pw'})[0]
-        u'ldap.ok'
-
-        The id attribute 'dn' can be specified to use the full dn as id.
-
-        >>> auth.idAttribute = 'dn'
-        >>> authCreds({'login': 'ok', 'password': '42pw'})[0]
-        u'ldap.uid=42,dc=test'
-
-        If the id attribute returns several values, the first one is
-        used.
-
-        >>> auth.idAttribute = 'mult'
-        >>> conn.search('dc=test', 'sub', '(cn=ok)')[0][1]['mult']
-        [u'm1', u'm2']
-        >>> authCreds({'login': 'ok', 'password': '42pw'})[0]
-        u'ldap.m1'
-
-        Authentication fails if the id attribute is not present:
-
-        >>> auth.idAttribute = 'nonesuch'
-        >>> conn.search('dc=test', 'sub', '(cn=ok)')[0][1]['nonesuch']
-        Traceback (most recent call last):
-        ...
-        KeyError: 'nonesuch'
-        >>> authCreds({'login': 'ok', 'password': '42pw'}) is None
-        True
-
-        You cannot authenticate if the server to which the adapter
-        connects is down.
-
-        >>> da._isDown = True
-        >>> authCreds({'login': 'ok', 'password': '42pw'}) is None
-        True
-        >>> da._isDown = False
-
-        You cannot authenticate if the plugin has a bad configuration.
-
-        >>> auth.searchBase = 'dc=bzzt'
-        >>> authCreds({'login': 'ok', 'password': '42pw'}) is None
-        True
-        """
+        """See zope.app.authentication.interfaces.IAuthenticationPlugin."""
 
         if not isinstance(credentials, dict):
             return None
@@ -204,7 +143,7 @@ class LDAPAuthentication(Persistent, Contained):
         except (ServerDown, InvalidCredentials):
             return None
 
-        return id, self.getInfoFromEntry(dn, entry)
+        return PrincipalInfo(id, **self.getInfoFromEntry(dn, entry))
 
     def getInfoFromEntry(self, dn, entry):
         try:
@@ -216,104 +155,8 @@ class LDAPAuthentication(Persistent, Contained):
                 'description': title,
                 }
 
-    def get(self, id):
-        """See zope.app.pas.interfaces.IPrincipalSearchPlugin.
-
-        >>> auth = LDAPAuthentication()
-        >>> auth.adapterName = 'fake_ldap_adapter'
-        >>> auth.loginAttribute = 'cn'
-        >>> auth.principalIdPrefix = 'ldap.'
-        >>> auth.idAttribute = 'uid'
-        >>> auth.titleAttribute = 'sn'
-
-        If the id is not in this plugin, return nothing.
-
-        >>> auth.get('42') is None
-        True
-
-        Otherwise return the info if we have it.
-
-        >>> auth.get('ldap.123') is None
-        True
-        >>> info = auth.get('ldap.42')
-        >>> info['login'], info['title'], info['description']
-        (u'ok', u'the question', u'the question')
-        """
-        if not id.startswith(self.principalIdPrefix):
-            return None
-        id = id[len(self.principalIdPrefix):]
-
-        da = self.getLDAPAdapter()
-        if da is None:
-            return None
-        try:
-            conn = da.connect()
-        except ServerDown:
-            return None
-
-        filter = filter_format('(%s=%s)', (self.idAttribute, id))
-        try:
-            res = conn.search(self.searchBase, self.searchScope,
-                              filter=filter)
-        except NoSuchObject:
-            return None
-
-        if len(res) != 1:
-            # Search returned no result or too many.
-            return None
-        dn, entry = res[0]
-
-        return self.getInfoFromEntry(dn, entry)
-
-    class schema(Interface):
-        """See of zope.app.pas.interfaces.IQuerySchemaSearch.
-        """
-        uid = TextLine(
-            title=u'uid',
-            required=False)
-        cn = TextLine(
-            title=u'cn',
-            required=False)
-        givenName = TextLine(
-            title=u'givenName',
-            required=False)
-        sn = TextLine(
-            title=u'sn',
-            required=False)
-
     def search(self, query, start=None, batch_size=None):
-        """See zope.app.pas.interfaces.IQuerySchemaSearch.
-
-        >>> auth = LDAPAuthentication()
-        >>> auth.adapterName = 'fake_ldap_adapter'
-        >>> auth.loginAttribute = 'cn'
-        >>> auth.principalIdPrefix = 'ldap.'
-        >>> auth.idAttribute = 'uid'
-
-        An empty search returns everything.
-
-        >>> auth.search({})
-        [u'ldap.1', u'ldap.2', u'ldap.42']
-
-        A search for a specific entry returns it.
-
-        >>> auth.search({'cn': 'many'})
-        [u'ldap.1', u'ldap.2']
-
-        You can have multiple search criteria, they are ANDed.
-
-        >>> auth.search({'cn': 'many', 'sn': 'mr2'})
-        [u'ldap.2']
-
-        Batching can be used to restrict the result range.
-
-        >>> auth.search({}, start=1)
-        [u'ldap.2', u'ldap.42']
-        >>> auth.search({}, start=1, batch_size=1)
-        [u'ldap.2']
-        >>> auth.search({}, batch_size=2)
-        [u'ldap.1', u'ldap.2']
-        """
+        """See zope.app.authentication.interfaces.IQuerySchemaSearch."""
         da = self.getLDAPAdapter()
         if da is None:
             return ()
