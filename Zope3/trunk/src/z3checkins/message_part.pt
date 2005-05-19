@@ -8,13 +8,14 @@
        tal:attributes="title string:Branch: ${context/branch}"/>
   <span class="date" tal:content="context/date/@@isodatetime" />:
   <span class="author" tal:content="context/author_name" />
-  - <span class="subject" tal:content="context/subject" />
+  - <span class="subject" i18n:translate="" tal:content="context/subject" />
 </a>
 <tal:if condition="context/log_message | nothing">
-<div class="same description" tal:condition="options/same_as_previous">
+<div class="same description" tal:condition="options/same_as_previous"
+    i18n:translate="">
 (Same as above)
 </div>
 <div class="description" tal:condition="not:options/same_as_previous"
-     tal:content="context/log_message" />
+     tal:content="context/log_message" i18n:translate=""/>
 </tal:if>
 </div>

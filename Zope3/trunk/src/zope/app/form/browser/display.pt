@@ -9,6 +9,7 @@
     <h3 tal:condition="view/label"
         tal:content="view/label"
         metal:define-slot="heading"
+        i18n:translate=""
         >Display something</h3>
 
     <div metal:define-slot="extra_info" tal:replace="nothing">

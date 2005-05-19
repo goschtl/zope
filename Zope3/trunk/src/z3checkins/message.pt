@@ -40,12 +40,14 @@
      class="icon" src="++resource++branch.png" alt="Branch"
      tal:attributes="title string:Branch: ${context/branch}"/>
 <div class="headers">
-<p><span class="header">From:</span>
+<p><span class="header" i18n:translate="">From:</span>
     <span class="value" tal:content="context/author_name" />
     &lt;<span class="value" tal:content="context/author_email" />&gt;
 </p>
-<p><span class="header">Date:</span> <span class="value" tal:content="context/date/@@rfc822" /></p>
-<p><span class="header">Subject:</span> <span class="value" tal:content="context/subject" /></p>
+<p><span class="header" i18n:translate="">Date:</span>
+    <span class="value" tal:content="context/date/@@rfc822" /></p>
+<p><span class="header" i18n:translate="">Subject:</span>
+    <span class="value" i18n:translate="" tal:content="context/subject" /></p>
 </div>
 <div class="body" tal:content="structure view/body" />
 </body>

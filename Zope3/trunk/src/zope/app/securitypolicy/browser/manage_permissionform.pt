@@ -7,7 +7,7 @@
       background-color: #ffffff;
       border: none;
     }
-    
+
     .row-hilite {
       background-color: #efefef;
       border: none;
@@ -32,8 +32,8 @@
     <p class="form-text" i18n:translate="">
       Roles assigned to the permission
       <strong tal:content="perm/title" 
-          i18n:name="perm_title">Change DTML Methods</strong>
-      (id: <strong tal:content="perm/id" 
+          i18n:name="perm_title" i18n:translate="">Change DTML Methods</strong>
+      (id: <strong tal:content="perm/id"
           i18n:name="perm_id">Zope.Some.Permission</strong>)
     </p>
 
@@ -62,7 +62,7 @@
 
             <tr class="row-normal"
                 tal:repeat="setting perm/roleSettings"
-                tal:attributes="class 
+                tal:attributes="class
           python:path('repeat/setting/even') and 'row-normal' or 'row-hilite'">
               <td align="left" valign="top"
                   tal:define="ir repeat/setting/index"
@@ -75,7 +75,8 @@
                        tal:repeat="option view/availableSettings"
                        tal:attributes="value option/id;
                                        selected python:setting == option['id']"
-                       tal:content="option/shorttitle">+</option>
+                       tal:content="option/shorttitle"
+                       i18n:translate="">+</option>
                 </select>
               </td>
             </tr>

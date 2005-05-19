@@ -12,11 +12,11 @@
 <div metal:fill-slot="body">
 
   <p>
-    <a href="@@AllRolePermissions.html" 
+    <a href="@@AllRolePermissions.html"
        i18n:translate="">Grant permissions to roles</a>
   </p>
   <p>
-    <a href="@@PrincipalRoles.html" 
+    <a href="@@PrincipalRoles.html"
        i18n:translate="">Grant roles to principals</a>
   </p>
 

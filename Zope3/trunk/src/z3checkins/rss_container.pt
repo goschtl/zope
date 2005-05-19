@@ -1,13 +1,18 @@
 <?xml version="1.0"?>
-<rss version="2.0" xmlns:tal="http://xml.zope.org/namespaces/tal">
+<rss version="2.0"
+    xmlns:tal="http://xml.zope.org/namespaces/tal"
+    xmlns:i18n="http://xml.zope.org/namespaces/i18n">
   <channel tal:define="webmaster context/webmaster_email | nothing">
-    <title tal:content="view/title">Zope 3 Checkins</title>
+    <title tal:content="view/title" i18n:translate="">Zope 3 Checkins</title>
     <link tal:content="string:${context/@@absolute_url}"></link>
-    <description tal:content="view/description" tal:condition="view/description">Latest Zope 3 Checkins</description>
+    <description tal:content="view/description"
+        tal:condition="view/description"
+        i18n:translate="">Latest Zope 3 Checkins</description>
     <language>en-us</language>
     <docs>http://backend.userland.com/rss</docs>
     <generator>z3checkins</generator>
     <webMaster tal:condition="webmaster" tal:content="webmaster" />
-<item tal:repeat="item view/checkins" tal:replace="structure item/@@rss|nothing" />
+    <item tal:repeat="item view/checkins"
+        tal:replace="structure item/@@rss|nothing" />
   </channel>
 </rss>

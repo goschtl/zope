@@ -10,7 +10,7 @@
 
   <p tal:define="status view/update"
      tal:condition="status"
-     tal:content="status" />
+     tal:content="status" i18n:translate=""/>
 
   <form action="./@@edit.html" method="post">
     <h3 i18n:translate="">Set Workflow-Relevant Data Schema</h3>
@@ -33,8 +33,8 @@
       <h3 i18n:translate="">Map permissions to Schema fields</h3>
 
       <tal:block repeat="pwidget widgets">
-        <h5 tal:content="string:${pwidget/fieldTitle} (${pwidget/fieldName})">
-          FieldName (Field Title)
+        <h5><tal:block tal:replace="pwidget/fieldTitle" i18n:translate=""/>
+        (<tal:block tal:replace="pwidget/fieldName" i18n:translate=""/>)
         </h5>
 
         <div class="row" tal:define="widget nocall:pwidget/getter">

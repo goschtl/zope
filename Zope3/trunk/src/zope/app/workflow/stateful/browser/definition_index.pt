@@ -9,10 +9,10 @@
 <div metal:fill-slot="body">
 
   <p i18n:translate="">
-    Process Definition: 
-    <tal:block tal:replace="view/getName" i18n:name="name"/>
+    Process Definition:
+    <tal:block tal:replace="view/getName" i18n:name="name" i18n:translate=""/>
   </p>
- 
-</div> 
+
+</div>
 </body>
 </html>

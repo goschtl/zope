@@ -19,9 +19,10 @@
           <td class="TypeName">
             <label style="font-weight: bold;"
                    tal:attributes="for info/action">
-              <span tal:replace="info/title" >Folder</span>
+              <span tal:replace="info/title" i18n:translate="">Folder</span>
             </label>
-            <div class="TypeDescription" tal:content="info/description">
+            <div class="TypeDescription" tal:content="info/description"
+                i18n:translate="">
               Folders are generic containers for content, including other
               folders.
             </div>
@@ -36,7 +37,7 @@
 
           <td class="Selector">
             <input type="radio" name="type_name" value="" />
-                   
+
           </td>
 
           <td class="TypeName">

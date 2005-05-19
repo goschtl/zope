@@ -14,6 +14,7 @@
             <h3 tal:condition="view/label"
                 tal:content="view/label"
                 metal:define-slot="heading"
+                i18n:translate=""
                 >Edit something</h3>
 
                 <p tal:condition="view/feedback" tal:content="view/feedback" />

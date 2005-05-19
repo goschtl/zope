@@ -4,13 +4,13 @@
     Process Definition <-> Content Type Registry
   </title>
 </head>
- 
+
 <body>
 <div metal:fill-slot="body">
- 
+
   <p tal:define="status view/update"
      tal:condition="status"
-     tal:content="status" />
+     tal:content="status" i18n:translate=""/>
 
   <p i18n:translate="">
     This screen let's you specify which content types (by interface) can
@@ -18,11 +18,11 @@
 
   <form action="." method="post">
     <h3 i18n:translate="">Available Mappings</h3>
-     
+
     <ul tal:condition="view/process_based">
       <input type="hidden" name="other_view" value="0"/>
       <li tal:repeat="process view/getProcessInterfacesMapping">
-        <b tal:content="process/name" /><br/>
+        <b tal:content="process/name" i18n:translate=""/><br/>
         <tal:block repeat="iface process/ifaces">
           <input type="checkbox" name="mappings:list"
             tal:attributes="value string:${process/name}:${iface}">
@@ -38,7 +38,7 @@
         <tal:block repeat="name iface/names">
           <input type="checkbox" name="mappings:list"
             tal:attributes="value string:${name}:${iface/iface}">
-          <d tal:replace="name"/><br/>
+          <d tal:replace="name" i18n:translate=""/><br/>
         </tal:block>
       </li>
     </ul>
@@ -53,15 +53,15 @@
     </div>
 
     <h3 i18n:translate="">Add new Mapping</h3>
-    
+
     <div class="row" tal:define="widget nocall:view/iface_widget">
       <metal:block use-macro="context/@@form_macros/widget_row" />
     </div>
-    
+
     <div class="row" tal:define="widget nocall:view/name_widget">
       <metal:block use-macro="context/@@form_macros/widget_row" />
     </div>
-    
+
     <div class="row">
       <div class="controls"> 
          <input type="submit" value="Add Mappings" name="ADD"
@@ -69,7 +69,7 @@
        </div>
     </div>
   </form>
- 
+
 </div>
-</body> 
+</body>
 </html>

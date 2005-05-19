@@ -34,7 +34,7 @@ class BindingTestCase(placelesssetup.PlacelessSetup, unittest.TestCase):
         comp = PTComponent(Content(), TestRequest())
         self.assertEqual(comp.index(), "42\n")
         self.assertEqual(comp.nothing(), "\n")
-        self.assertEqual(comp.default(), "<span>42</span>\n")
+        self.assertEqual(comp.default(), "42\n")
 
 def test_suite():
     return unittest.makeSuite(BindingTestCase)

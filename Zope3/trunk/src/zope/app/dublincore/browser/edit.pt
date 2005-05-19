@@ -11,7 +11,7 @@
 
     <p tal:condition="data/message"
        tal:content="data/message" 
-       >Message here</p>
+       i18n:translate="">Message here</p>
 
     <div class="row">
       <div class="label" i18n:translate="">Title</div>

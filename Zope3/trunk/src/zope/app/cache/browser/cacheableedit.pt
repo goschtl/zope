@@ -50,7 +50,7 @@
              i18n:attributes="value invalidate-cache-button" />
 
     </form>
-    <div tal:content="options/message|nothing" />
+    <div tal:content="options/message|nothing" i18n:translate="" />
 
   </div>
   </body>

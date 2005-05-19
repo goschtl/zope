@@ -8,7 +8,8 @@
 
     <h3 i18n:translate="">Upload a file</h3>
 
-    <div tal:define="errors view/errors" tal:content="errors" />
+    <div tal:define="errors view/errors" tal:content="errors"
+        i18n:translate=""/>
 
     <div class="row">
       <div class="label">

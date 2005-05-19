@@ -5,7 +5,7 @@
 
 <body>
 <div metal:fill-slot="body">
- 
+
   <form action="." method="post" enctype="multipart/form-data">
 
     <div class="row">
@@ -20,7 +20,7 @@
       <div class="field">
         <select name="source">
           <option tal:repeat="state states"
-                  tal:content="state" />
+                  tal:content="state" i18n:translate=""/>
         </select>
       </div>
     </div>
@@ -30,7 +30,7 @@
       <div class="field">
         <select name="destination">
           <option tal:repeat="state states"
-                  tal:content="state" />
+                  tal:content="state" i18n:translate=""/>
         </select>
       </div>
     </div>
@@ -58,7 +58,7 @@
     </div>
 
   </form>
- 
+
 </div> 
 </body>
 </html>

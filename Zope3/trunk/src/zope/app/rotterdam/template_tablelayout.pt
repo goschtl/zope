@@ -112,8 +112,8 @@
                         <tal:block repeat="view context/@@view_get_menu/zmi_views">
                             <a href=""
                                 tal:attributes="href view/action;
-                                                                class view/selected;"
-                                tal:content="view/title">
+                                    class view/selected;"
+                                tal:content="view/title" i18n:translate="">
                                 label
                             </a>
                         </tal:block>
@@ -129,7 +129,8 @@
                             <li tal:condition="actions" tal:repeat="info actions"
                                 ><a href="#"
                                          tal:attributes="href info/action"
-                                         tal:content="info/title">
+                                         tal:content="info/title"
+                                         i18n:translate="">
                                         Action name
                                 </a></li>
                             <li tal:condition="help_actions" tal:repeat="help_info help_actions"
@@ -148,7 +149,8 @@
                                                                                              + url + ','
                                                                                              + name + ','
                                                                                              + settings +')'"
-                                     tal:content="help_info/title">
+                                     tal:content="help_info/title"
+                                     i18n:translate="">
                                     Action name
                                 </a></li>
                         </ul>

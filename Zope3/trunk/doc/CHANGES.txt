@@ -591,6 +591,10 @@ Zope Changes
 
     Bug Fixes
 
+      - Disabled automatic translation of message id's in TAL.
+
+      - Fixed tal:replace="default" bug.
+
       - Fixed issue #380: Local Utility don't get correct removed
 
       - Fixed issue #369: DAV is broken on the trunk.

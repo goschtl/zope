@@ -5,6 +5,7 @@
   <title 
     metal:define-slot="title"
     tal:content="options/getTitle|view/getTitle|context/getTitle|default"
+    i18n:translate=""
     >Zope</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link href="/@@/zopetopBasic.css" rel="stylesheet" type="text/css"
@@ -21,7 +22,7 @@
   <table metal:define-macro="zmi_tabs"><tr>
     <td tal:repeat="view context/@@view_get_menu/zmi_views">
     <a href="" tal:attributes="href view/action" tal:content="view/title"
-       >label</a>
+       i18n:translate="">label</a>
     <tal:block condition="not: repeat/view/end">'</tal:block>
     </td>
    </tr></table>

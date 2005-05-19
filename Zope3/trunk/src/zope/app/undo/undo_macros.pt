@@ -14,7 +14,7 @@
   <span tal:condition="showall">
     <p>
       <span i18n:translate="">You are looking at transactions
-      regardless of location.</span> <a href="?" 
+      regardless of location.</span> <a href="?"
       i18n:translate="">View only transactions in this location</a>.
     </p>
   </span>
@@ -22,7 +22,7 @@
   <span tal:condition="not:showall">
     <p>
       <span i18n:translate="">You are looking only at transactions
-      from this location.</span> <a href="?showall=true" 
+      from this location.</span> <a href="?showall=true"
       i18n:translate="">View transactions regardless of location</a>.
     </p>
   </span>
@@ -57,7 +57,7 @@
                  tal:attributes="value item/id" />
         </td>
 
-	<td tal:define="location item/location | nothing">
+    <td tal:define="location item/location | nothing">
           <tal:location replace="location" />
           <tal:if condition="not:location"
                   i18n:translate="label-not-available">not available</tal:if>
@@ -83,7 +83,8 @@
         </td>
 
         <td>
-          <tal:description replace="item/description | nothing" />
+          <tal:description i18n:translate=""
+            replace="item/description | nothing" />
           <tal:if condition="not:item/description"
                   i18n:translate="label-not-available">not available</tal:if>
         </td>
@@ -117,10 +118,9 @@
 </p>
 
 <p metal:define-macro="submit_button">
-  <input type="submit" value="Undo" 
+  <input type="submit" value="Undo"
          i18n:attributes="value undo-button" />
 </p>
 
 </body>
 </html>
-

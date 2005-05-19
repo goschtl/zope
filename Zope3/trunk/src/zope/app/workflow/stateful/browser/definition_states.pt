@@ -8,7 +8,7 @@
 <div metal:fill-slot="body">
 
   <p i18n:translate="">States</p>
- 
-</div> 
+
+</div>
 </body>
 </html>

@@ -139,7 +139,7 @@ function selectionError()
                           id string:${view/name}.from">
         <option tal:repeat="entry view/choices"
                 tal:attributes="value entry/value"
-                tal:content="entry/text" />
+                tal:content="entry/text" i18n:translate=""/>
       </select>
     </td>
     <td>
@@ -159,7 +159,7 @@ function selectionError()
                           id string:${view/name}.to">
         <option tal:repeat="entry view/selected"
                 tal:attributes="value entry/value"
-                tal:content="entry/text" />
+                tal:content="entry/text" i18n:translate=""/>
       </select>
       <input name="foo-empty-marker" type="hidden"
         tal:attributes="name string:${view/name}-empty-marker"/>
@@ -187,4 +187,3 @@ function selectionError()
     </td>
   </tr>
 </table>
-
