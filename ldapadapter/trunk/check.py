@@ -11,20 +11,19 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""A plugable authentication module for LDAP.
+"""A LDAP Adapter Test Facility
 
 $Id:$
 """
-
-from zope.security.proxy import removeSecurityProxy
+import zope.interface
 from zope.interface import implements
 
-from interfaces import ICheckLDAPAdapter
+from ldapadapter.interfaces import ICheckLDAPAdapter
 
 class CheckLDAPAdapter:
     """A LDAP connection test adapter."""
 
-    implements(ICheckLDAPAdapter)
+    zope.interface.implements(ICheckLDAPAdapter)
 
     def __init__(self, context):
         self.context = context

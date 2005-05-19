@@ -17,14 +17,16 @@ $Id$
 """
 import re
 
-from zope.interface import implements
+import zope.interface
 
 from zope.schema.interfaces import IURI
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import InvalidURI
+from zope.schema._bootstrapinterfaces import ValidationError
 from zope.schema import URI
 
-from ldapadapter.exceptions import InvalidLDAPURI
+from zope.i18nmessageid import MessageIDFactory
+_ = MessageIDFactory("ldapadapter")
 
 
 """
@@ -60,11 +62,17 @@ _isldapuri = re.compile(
     ).match
 
 
+# LDAP-Adapter Exeptions
+# Note: Located here to avoid circular references.
+class InvalidLDAPURI(ValidationError):
+    __doc__ = _("""The specified LDAP URI is not valid.""")
+
+
 class LDAPURI(URI):
     """LDAPURI schema field
     """
 
-    implements(IURI, IFromUnicode)
+    zope.interface.implements(IURI, IFromUnicode)
 
     def _validate(self, value):
         """

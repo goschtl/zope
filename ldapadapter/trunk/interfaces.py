@@ -15,40 +15,60 @@
 
 $Id$
 """
-from zope.interface import Interface
-from zope.interface import Attribute
-from zope.schema import Int
-from zope.schema import Bool
-from zope.schema import TextLine
-from zope.schema import URI
+import zope.interface
+import zope.schema
+
 from ldapadapter.field import LDAPURI
 
 from zope.i18nmessageid import MessageIDFactory
 _ = MessageIDFactory("ldapadapter")
 
 
-class ILDAPAdapter(Interface):
+# LDAP Adapter management errors
+
+class LDAPURIParseError(Exception):
+    """The given ldap uri is not valid."""
+
+LDAP_uri_parse_error = _(u'The LDAP URI could not be parsed.')
+
+
+# LDAP Adapter exceptions
+
+class LDAPException(Exception):
+    """LDAP exception"""
+
+class ServerDown(LDAPException):
+    """The server doesn't answer"""
+
+class InvalidCredentials(LDAPException):
+    """The credentials are incorrect"""
+
+class NoSuchObject(LDAPException):
+    """The base object doesn't exist"""
+
+
+class ILDAPAdapter(zope.interface.Interface):
     """Adapter to an LDAP server."""
-    host = TextLine(
+    host = zope.schema.TextLine(
         title=_("Host"),
         default=u'localhost',
         required=True,
         )
-    port = Int(
+    port = zope.schema.Int(
         title=_("Port"),
         default=389,
         required=True,
         )
-    useSSL = Bool(
+    useSSL = zope.schema.Bool(
         title=_("Use SSL"),
         default=False,
         )
-    bindDN = TextLine(
+    bindDN = zope.schema.TextLine(
         title=_("Bind DN"),
         default=u'',
         required=False,
         )
-    bindPassword = TextLine(
+    bindPassword = zope.schema.TextLine(
         title=_("Bind password"),
         default=u'',
         required=False,
@@ -62,7 +82,7 @@ class ILDAPAdapter(Interface):
         May raise InvalidCredentials.
         """
 
-class ILDAPAdapterManagement(Interface):
+class ILDAPAdapterManagement(zope.interface.Interface):
     serverURL = LDAPURI(
         title=_("Server URL"),
         description=_(
@@ -73,12 +93,12 @@ class ILDAPAdapterManagement(Interface):
             ),
         default="ldap://localhost",
         )
-    bindDN = TextLine(
+    bindDN = zope.schema.TextLine(
         title=_("Bind DN"),
         default=u'',
         required=False,
         )
-    bindPassword = TextLine(
+    bindPassword = zope.schema.TextLine(
         title=_("Bind password"),
         default=u'',
         required=False,
@@ -89,7 +109,7 @@ class IManageableLDAPAdapter(ILDAPAdapter,
     """LDAP Adapter with management functions."""
 
 
-class ILDAPConnection(Interface):
+class ILDAPConnection(zope.interface.Interface):
     """LDAP connection to a server, bound to a user."""
 
     def add(dn, entry):
@@ -136,7 +156,7 @@ class ILDAPConnection(Interface):
         # TODO: some values are binary and should not be converted to unicode
 
 
-class ICheckLDAPAdapter(Interface):
+class ICheckLDAPAdapter(zope.interface.Interface):
     """A test adapter for to test the connection between Zope and LDAP."""
 
     def testConnection():

@@ -12,8 +12,6 @@ An LDAP adapter stores the settings to use to connect to an LDAP server.
 You get an LDAP adapter by calling LDAPAdapter, which implements
 ILDAPAdapter:
 
-  >>> from pprint import PrettyPrinter
-  >>> pprint = PrettyPrinter(width=60).pprint
   >>> from ldapadapter.utility import LDAPAdapter
   >>> from ldapadapter.interfaces import ILDAPAdapter
   >>> from zope.interface.verify import verifyClass, verifyObject
@@ -118,9 +116,9 @@ The default scope is 'sub':
 
   >>> res = conn.search('dc=test', attrs=['givenName'])
   >>> pprint(res)
-  [(u'dc=test', {}),
-   (u'cn=foo,dc=test', {'givenName': [u'John']}),
+  [(u'cn=foo,dc=test', {'givenName': [u'John']}),
    (u'cn=bar,dc=test', {'givenName': [u'Joey']}),
+   (u'dc=test', {}),
    (u'cn=baz,dc=test', {'givenName': [u'Raoul']})]
 
 You can use a search filter to filter the entries returned:

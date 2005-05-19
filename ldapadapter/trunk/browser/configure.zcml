@@ -1,52 +1,46 @@
 <configure
-  xmlns:zope="http://namespaces.zope.org/zope"
-  xmlns="http://namespaces.zope.org/browser"
-  i18n_domain="ldapadapter">
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="ldapadapter">
 
-    <!-- LDAPAdapter -->
-    <tool
-        interface="ldapadapter.interfaces.ILDAPAdapter"
-        title="LDAP Adapter"
-        description="A LDAP adapter."
-        />
+  <!-- LDAPAdapter -->
+  <tool
+      interface="ldapadapter.interfaces.ILDAPAdapter"
+      title="LDAP Adapter"
+      description="A LDAP adapter."
+      />
 
-    <addform
-        label="LDAP Adapter"
-        for= "ldapadapter.interfaces.ILDAPAdapterManagement"
-        name="addLDAPAdapter.html"
-        schema="zope.app.utility.interfaces.IUtilityRegistration"
-        class="zope.app.utility.browser.AddRegistration"
-        permission="zope.ManageServices"
-        content_factory=
-            "ldapadapter.utility.LDAPAdapter"
-        arguments="name interface"
-        set_after_add="status"
-        fields="name interface permission status"
-        />
-
-    <addMenuItem
-        class="ldapadapter.utility.ManageableLDAPAdapter"
-        title="LDAP Adapter"
-        description="A LDAP adapter"
-        permission="zope.ManageServices"
-        />
-
-    <editform
-        for="ldapadapter.interfaces.IManageableLDAPAdapter"
-        schema="ldapadapter.interfaces.ILDAPAdapterManagement"
-        name="edit.html"
-        menu="zmi_views" title="Edit"
-        permission="zope.ManageContent"
-        />
-
-    <!-- LDAPAdapter connetion test view -->
-    <page
-        for="ldapadapter.interfaces.IManageableLDAPAdapter"
-        name="checkLDAPAdapter.html"
-        attribute="check"
-        class=".check.CheckLDAPAdapterView"
-        menu="zmi_views" title="Test LDAP Adapter"
-        permission="zope.ManageServices"
-        />
+  <addform
+      name="AddLDAPAdapter.html"
+      label="Add a LDAP Adapter"
+      schema="ldapadapter.interfaces.ILDAPAdapterManagement"
+      permission="zope.ManageSite"
+      content_factory="ldapadapter.utility.LDAPAdapter"
+      />
+  
+  <addMenuItem
+      class="ldapadapter.utility.ManageableLDAPAdapter"
+      title="LDAP Adapter"
+      description="A LDAP adapter"
+      permission="zope.ManageSite"
+      />
+  
+  <editform
+      for="ldapadapter.interfaces.IManageableLDAPAdapter"
+      schema="ldapadapter.interfaces.ILDAPAdapterManagement"
+      name="edit.html"
+      menu="zmi_views" title="Edit"
+      permission="zope.ManageContent"
+      />
+  
+  <!-- LDAPAdapter connetion test view -->
+  <page
+      for="ldapadapter.interfaces.IManageableLDAPAdapter"
+      name="checkLDAPAdapter.html"
+      attribute="check"
+      class=".check.CheckLDAPAdapterView"
+      menu="zmi_views" title="Test LDAP Adapter"
+      permission="zope.ManageServices"
+      />
 
 </configure>

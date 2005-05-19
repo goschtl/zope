@@ -15,7 +15,6 @@
 
 $Id:$
 """
-
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.publisher.browser import BrowserView
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -24,11 +23,9 @@ from ldapadapter.interfaces import IManageableLDAPAdapter
 from ldapadapter.interfaces import ICheckLDAPAdapter
 
 
-
 class CheckLDAPAdapterView(BrowserView):
 
     __used_for__ = IManageableLDAPAdapter
-
 
     def __init__(self, context, request):
         self.context = context
@@ -53,7 +50,9 @@ class CheckLDAPAdapterView(BrowserView):
             dn = self.context.bindDN
             pw = self.context.bindPassword
             testadapter = ICheckLDAPAdapter(self.context)
-            self._addInfo("<strong>Test python connection and LDAP server binding</strong>")
+            self._addInfo("<strong>"
+                          "Test python connection and LDAP server binding"
+                          "</strong>")
             self.report = self.report + testadapter.testConnection(dn, pw)
             self._addInfo("<strong>Tests done</strong>")
             self._addInfo(" ")
@@ -64,7 +63,9 @@ class CheckLDAPAdapterView(BrowserView):
             dn = ''
             pw = ''
             testadapter = ICheckLDAPAdapter(self.context)
-            self._addInfo("<strong>Test python connection and LDAP server binding</strong>")
+            self._addInfo("<strong>"
+                          "Test python connection and LDAP server binding"
+                          "</strong>")
             self.report = self.report + testadapter.testConnection(dn, pw)
             self._addInfo("<strong>Tests done</strong>")
             self._addInfo(" ")

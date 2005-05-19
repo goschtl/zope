@@ -15,22 +15,13 @@
 
 $Id$
 """
-
 import re
 import ldap
-from persistent import Persistent
-from zope.interface import implements
+import persistent
+import zope.interface
 from zope.app.container.contained import Contained
 
-from exceptions import LDAPURIParseError
-from exceptions import LDAP_uri_parse_error
-from exceptions import ServerDown
-from exceptions import InvalidCredentials
-from exceptions import NoSuchObject
-
-from interfaces import ILDAPAdapter
-from interfaces import ILDAPConnection
-from interfaces import IManageableLDAPAdapter
+from ldapadapter import interfaces
 
 SCOPES = {'base': ldap.SCOPE_BASE,
           'one': ldap.SCOPE_ONELEVEL,
@@ -45,7 +36,7 @@ def valuesToUTF8(values):
 
 
 class LDAPAdapter(object):
-    implements(ILDAPAdapter)
+    zope.interface.implements(interfaces.ILDAPAdapter)
 
     def __init__(self, host='localhost', port=389, useSSL=False,
                  bindDN='', bindPassword=''):
@@ -73,9 +64,9 @@ class LDAPAdapter(object):
         try:
             conn.simple_bind_s(dn, password)
         except ldap.SERVER_DOWN:
-            raise ServerDown
+            raise interfaces.ServerDown
         except ldap.INVALID_CREDENTIALS:
-            raise InvalidCredentials
+            raise interfaces.InvalidCredentials
 
         return LDAPConnection(conn)
 
@@ -86,7 +77,7 @@ class LDAPAdapter(object):
 
 
 class LDAPConnection(object):
-    implements(ILDAPConnection)
+    zope.interface.implements(interfaces.ILDAPConnection)
 
     def __init__(self, conn):
         self.conn = conn
@@ -105,7 +96,7 @@ class LDAPConnection(object):
         # Get current entry
         res = self.search(dn, 'base')
         if not res:
-            raise NoSuchObject(dn)
+            raise interfaces.NoSuchObject(dn)
         cur_dn, cur_entry = res[0]
 
         mod_list = []
@@ -138,7 +129,7 @@ class LDAPConnection(object):
         try:
             ldap_entries = self.conn.search_s(base, scope, filter, attrs)
         except ldap.NO_SUCH_OBJECT:
-            raise NoSuchObject(base)
+            raise interfaces.NoSuchObject(base)
         # May raise SIZELIMIT_EXCEEDED
 
         # Convert returned values from utf-8 to unicode.
@@ -153,10 +144,10 @@ class LDAPConnection(object):
         return results
 
 
-class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
+class ManageableLDAPAdapter(LDAPAdapter, persistent.Persistent, Contained):
     """LDAP adapter utility
     """
-    implements(IManageableLDAPAdapter)
+    zope.interface.implements(interfaces.IManageableLDAPAdapter)
 
     def _setServerURL(self, url):
         """Set the server info from an LDAP URL.
@@ -172,7 +163,7 @@ class ManageableLDAPAdapter(LDAPAdapter, Persistent, Contained):
             if len(urlList) == 3:
                 port = int(urlList[2])
         else:
-            raise LDAPURIParseError(LDAP_uri_parse_error)
+            raise interfaces.LDAPURIParseError(interface.LDAP_uri_parse_error)
 
         self.host = host
         self.port = port

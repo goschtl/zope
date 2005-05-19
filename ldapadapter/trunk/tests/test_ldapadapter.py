@@ -18,7 +18,7 @@ $Id$
 __docformat__ = "reStructuredText"
 import sys
 import unittest
-from zope.testing import doctest
+from zope.testing import doctest, doctestunit
 from zope.app.tests import placelesssetup, ztapi
 from zope.app.event.tests.placelesssetup import getEvents
 
@@ -48,7 +48,10 @@ def tearDown(test):
 
 def test_suite():
     return unittest.TestSuite((
-        doctest.DocFileSuite('../README.txt', setUp=setUp, tearDown=tearDown),
+        doctest.DocFileSuite('../README.txt',
+                             setUp=setUp, tearDown=tearDown,
+                             globs={'pprint': doctestunit.pprint},
+                             optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
 
 if __name__ == '__main__':
