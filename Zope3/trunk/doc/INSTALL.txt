@@ -7,7 +7,7 @@ Building and installing Zope from source
 
 Important notes
 
-   ZOPE 3 REQUIRES PYTHON 2.3.4!
+   ZOPE 3 REQUIRES PYTHON 2.3.5!
 
 Quick Start
 
