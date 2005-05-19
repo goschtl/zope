@@ -173,7 +173,9 @@ class FileUpload(FileUpdateView):
 
     def update_object(self, data, contenttype):
         self.context.contentType = contenttype
-        self.context.data = data
+        # Update *only* if a new value is specified
+        if data:
+            self.context.data = data
         formatter = self.request.locale.dates.getFormatter(
             'dateTime', 'medium')
         status = _("Updated on ${date_time}")

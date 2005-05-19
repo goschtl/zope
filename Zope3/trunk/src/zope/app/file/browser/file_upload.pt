@@ -7,7 +7,7 @@
         method="post" enctype="multipart/form-data">
 
     <h3 i18n:translate="">Upload a file</h3>
-
+    
     <div tal:define="errors view/errors" tal:content="errors"
         i18n:translate=""/>
 
@@ -23,11 +23,8 @@
                name="field.contentType"
                size="20"
                type="text"
-               value="" />
-      <tal:span i18n:translate="" tal:condition="context/contentType"
-        >(currently
-        <span i18n:name="content-type"
-              tal:replace="context/contentType"/>)</tal:span>
+               value="" 
+	       tal:attributes="value context/contentType"/>
       </div>
     </div>
 
@@ -42,7 +39,7 @@
                id="field.data"
                name="field.data"
                size="20"
-               type="file" /></div>
+               type="file"/></div>
     </div>
 
     <div class="row">

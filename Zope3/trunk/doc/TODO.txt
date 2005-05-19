@@ -37,8 +37,6 @@ File Content Component
 
   * 302: File objects can't contain non-ascii characters
 
-  * 327: File type change clears object content
-
 Others
 ~~~~~~
 

@@ -590,6 +590,8 @@ Zope Changes
         logout.) See zope/app/security/browser/loginlogout.txt for details.
 
     Bug Fixes
+    
+      - Fix #327 : File type change clears object content
 
       - Disabled automatic translation of message id's in TAL.
 
