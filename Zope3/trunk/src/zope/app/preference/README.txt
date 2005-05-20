@@ -183,7 +183,7 @@ item on the parent group ...
   >>> ztapi.provideUtility(interfaces.IPreferenceGroup, folderSettings,
   ...                      name='ZMISettings.Folder')
 
-If we now try to lookup the sub-group again, we should be successfull:
+If we now try to lookup the sub-group again, we should be successful:
 
   >>> settings.Folder #doctest:+ELLIPSIS
   <zope.app.preference.preference.PreferenceGroup object at ...>
@@ -245,7 +245,7 @@ then the default of the setting changes:
   >>> settings.Folder.sortedBy
   'size'
 
-The default preference providers also implictly acquire default values from
+The default preference providers also implicitly acquire default values from
 parent sites. So if we make `folder1` a site and set it as the active site
 
   >>> folder1 = root['folder1']
@@ -443,7 +443,7 @@ Security
 --------
 
 You might already wonder under which permissions the preferences are
-available. They are actually available publically (`CheckerPublic`), but that
+available. They are actually available publicly (`CheckerPublic`), but that
 is not a problem, since the available values are looked up specifically for
 the current user. And why should a user not have full access to his/her
 preferences? 
@@ -457,7 +457,7 @@ actually using:
   >>> checker.setattr_permission_id('skin')
   Global(CheckerPublic,zope.security.checker)
 
-The id, title, description, and schema are publically available for access,
+The id, title, description, and schema are publicly available for access,
 but are not available for mutation at all:
 
   >>> checker.permission_id('__id__')
