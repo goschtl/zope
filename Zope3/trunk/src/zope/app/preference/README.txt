@@ -25,7 +25,7 @@ Preference Groups
 ------------------
 
 Preferences are grouped in preference groups and the preferences inside a
-group a spcified via the preferences group schema:
+group are specified via the preferences group schema:
 
   >>> import zope.interface
   >>> import zope.schema
@@ -48,9 +48,9 @@ group a spcified via the preferences group schema:
   ...                     u"at the top of the screen.",
   ...         default=True)
 
-Now we can instantiate the preference group. Each preference group must have
-an id by which it can be accessed and has an optional title and description
-field for UI purposes:
+Now we can instantiate the preference group. Each preference group must have an
+ID by which it can be accessed and optional title and description fields for UI
+purposes:
 
   >>> settings = preference.PreferenceGroup(
   ...     "ZMISettings",
@@ -102,8 +102,8 @@ interaction:
 
 We also need a principal annotations utility, in which we store the settings:
 
-  >>> from zope.app.principalannotation.interfaces import \
-  ...         IPrincipalAnnotationUtility
+  >>> from zope.app.principalannotation.interfaces import (
+  ...         IPrincipalAnnotationUtility)
   >>> class PrincipalAnnotations(dict):
   ...     zope.interface.implements(IPrincipalAnnotationUtility)
   ...
