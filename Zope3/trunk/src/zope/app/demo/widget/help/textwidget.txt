@@ -1,6 +1,6 @@
-=================
-TextWidget sample
-=================
+=====================
+TextLineWidget sample
+=====================
 
 Interface
 ---------
