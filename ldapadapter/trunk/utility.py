@@ -139,7 +139,11 @@ class LDAPConnection(object):
             for key, values in entry.items():
                 # TODO: Can key be non-ascii? Check LDAP spec.
                 # FIXME: there may be non-textual binary values.
-                values[:] = [unicode(v, 'utf-8') for v in values]
+                try:
+                    values[:] = [unicode(v, 'utf-8') for v in values]
+                except UnicodeDecodeError:
+                    # Not all data is unicode, so decoding does not always work.
+                    pass
             results.append((dn, entry))
         return results
 
