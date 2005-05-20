@@ -130,7 +130,7 @@ class ErrorReportingUtility(Persistent, Contained):
             # A call to str(obj) could raise anything at all.
             # We'll ignore these errors, and print something
             # useful instead, but also log the error.
-            except: # XXX Yikes, a bare except!
+            except:
                 logging.getLogger('SiteError').exception(
                     'Error in ErrorReportingUtility while getting a str '
                     'representation of an object')
