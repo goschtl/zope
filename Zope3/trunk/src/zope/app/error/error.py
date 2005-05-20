@@ -50,6 +50,8 @@ _temp_logs = {}  # { oid -> [ traceback string ] }
 
 cleanup_lock = allocate_lock()
 
+log = logging.getLogger('SiteError')
+
 class ErrorReportingUtility(Persistent, Contained):
     """Error Reporting Utility"""
     implements(IErrorReportingUtility, ILocalErrorReportingUtility)
@@ -86,10 +88,8 @@ class ErrorReportingUtility(Persistent, Contained):
                 return
 
             if not isinstance(info[2], StringTypes):
-                tb_text = ''.join(
-                        format_exception(*info, **{'as_html': 0}))
-                tb_html = ''.join(
-                    format_exception(*info, **{'as_html': 1}))
+                tb_text = ''.join(format_exception(as_html=0, *info))
+                tb_html = ''.join(format_exception(as_html=1, *info))
             else:
                 tb_text = info[2]
 
@@ -107,11 +107,11 @@ class ErrorReportingUtility(Persistent, Contained):
                         login = request.principal.getLogin()
                     else:
                         login = 'unauthenticated'
-                    username = ', '.join(map(unicode, (login,
+                    username = ', '.join([unicode(s) for s in (login,
                                           request.principal.id,
                                           request.principal.title,
                                           request.principal.description
-                                         )))
+                                         )])
                 # When there's an unauthorized access, request.principal is
                 # not set, so we get an AttributeError
                 # XXX is this right? Surely request.principal should be set!
@@ -131,7 +131,7 @@ class ErrorReportingUtility(Persistent, Contained):
             # We'll ignore these errors, and print something
             # useful instead, but also log the error.
             except:
-                logging.getLogger('SiteError').exception(
+                log.exception(
                     'Error in ErrorReportingUtility while getting a str '
                     'representation of an object')
                 strv = '<unprintable %s object>' % (
@@ -170,13 +170,13 @@ class ErrorReportingUtility(Persistent, Contained):
         when = _rate_restrict_pool.get(strtype,0)
         if now > when:
             next_when = max(when,
-                            now - _rate_restrict_burst*_rate_restrict_period)
+                            now - _rate_restrict_burst * _rate_restrict_period)
             next_when += _rate_restrict_period
             _rate_restrict_pool[strtype] = next_when
             try:
                 raise info[0], info[1], info[2]
             except:
-                logging.getLogger('SiteError').exception(str(url))
+                log.exception(str(url))
 
     def getProperties(self):
         return {
@@ -189,11 +189,10 @@ class ErrorReportingUtility(Persistent, Contained):
                       ignored_exceptions=()):
         """Sets the properties of this site error log.
         """
-        copy_to_zlog = bool(copy_to_zlog)
         self.keep_entries = int(keep_entries)
-        self.copy_to_zlog = copy_to_zlog
+        self.copy_to_zlog = bool(copy_to_zlog)
         self._ignored_exceptions = tuple(
-                filter(None, map(str, ignored_exceptions))
+                [str(e) for e in ignored_exceptions if e]
                 )
 
     def getLogEntries(self):
@@ -213,10 +212,10 @@ class ErrorReportingUtility(Persistent, Contained):
             if entry['id'] == id:
                 return entry.copy()
         return None
-    
+
 class RootErrorReportingUtility(ErrorReportingUtility):
     rootId = 'root'
-    
+
     def _getLog(self):
         """Returns the log for this object.
 
