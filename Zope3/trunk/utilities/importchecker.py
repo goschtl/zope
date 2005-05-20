@@ -24,7 +24,6 @@ import compiler
 import os, os.path
 import sys
 
-
 def _findDottedNamesHelper(node, result):
     more_node = node
     name = node.__class__.__name__
@@ -45,6 +44,12 @@ def _findDottedNamesHelper(node, result):
         result.append(node.name)
         return
     elif name == 'AssAttr':
+        # Can be on an import as well.
+        # for instance
+        # from x import y
+        # y.k = v
+        expr = node.expr
+        result.append(expr.__dict__.get('name', ''))
         return
     for child in more_node.getChildNodes():
         _findDottedNamesHelper(child, result)

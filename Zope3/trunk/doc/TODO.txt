@@ -48,8 +48,6 @@ Others
 
   * 307: browser:addMenuItem and broken view references
 
-  * 313: importchecker.py ignores assignment to module attributes
-
   * 316: Zope3X test.py truncates path with dir=
 
   * 332: Death to IContentContainer
