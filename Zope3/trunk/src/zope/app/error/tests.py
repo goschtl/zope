@@ -66,16 +66,22 @@ class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
 
         tb_text = ''.join(format_exception(*exc_info, **{'as_html': 0}))
 
-        err_id =  getErrLog[0]['id']
+        err_id = getErrLog[0]['id']
         self.assertEquals(tb_text,
                           errUtility.getLogEntryById(err_id)['tb_text'])
 
-    def test_ErrorLog_Unicode_urls(self):
+    def test_ErrorLog_unicode(self):
         # Emulate a unicode url, it gets encoded to utf-8 before it's passed
         # to the request. Also add some unicode field to the request's
-        # environment
+        # environment and make the principal's title unicode.
         request = TestRequest(environ={'PATH_INFO': '/\xd1\x82',
                                        'SOME_UNICODE': u'\u0441'})
+        class PrincipalStub(object):
+            id = u'\u0441'
+            title = u'\u0441'
+            description = u'\u0441'
+        request.setPrincipal(PrincipalStub())
+
         errUtility = ErrorReportingUtility()
         exc_info = C1().getAnErrorInfo()
         errUtility.raising(exc_info, request=request)
@@ -84,10 +90,13 @@ class ErrorReportingUtilityTests(PlacelessSetup, unittest.TestCase):
 
         tb_text = ''.join(format_exception(*exc_info, **{'as_html': 0}))
 
-        err_id =  getErrLog[0]['id']
+        err_id = getErrLog[0]['id']
         self.assertEquals(tb_text,
                           errUtility.getLogEntryById(err_id)['tb_text'])
-        
+
+        username = getErrLog[0]['username']
+        self.assertEquals(username, u'unauthenticated, \u0441, \u0441, \u0441')
+
 
 def test_suite():
     return unittest.TestSuite((

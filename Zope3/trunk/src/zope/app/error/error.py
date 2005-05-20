@@ -107,7 +107,7 @@ class ErrorReportingUtility(Persistent, Contained):
                         login = request.principal.getLogin()
                     else:
                         login = 'unauthenticated'
-                    username = ', '.join(map(str, (login,
+                    username = ', '.join(map(unicode, (login,
                                           request.principal.id,
                                           request.principal.title,
                                           request.principal.description
