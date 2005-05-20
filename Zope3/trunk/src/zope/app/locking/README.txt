@@ -349,3 +349,68 @@ by applications. Note that expiration of a lock *does not* fire an event
 
   >>> obj.breaklock()
   BreakLockEvent ...
+
+
+TALES conditions based on locking
+---------------------------------
+
+TALES expressions can use a named path adapter to get information
+about the lock status for an object, including whether or not the
+object can be locked.  The default registration for this adapter uses
+the name "locking", so a condition might be expressed like
+"context/locking:ownLock", for example.
+
+For objects that aren't lockable, the adapter provides information
+that makes sense::
+
+  >>> from zope.component import getAdapter
+
+  >>> from zope.app.traversing.interfaces import IPathAdapter
+
+  >>> ns = getAdapter(42, IPathAdapter, "locking")
+  >>> ns.lockable
+  False
+
+  >>> ns.locked
+  False
+
+  >>> ns.lockedOut
+  False
+
+  >>> ns.ownLock
+  False
+
+Using an object that's lockable, but unlocked, also gives the expected
+results::
+
+  >>> ns = getAdapter(item1, IPathAdapter, "locking")
+  >>> ns.lockable
+  True
+
+  >>> ns.locked
+  False
+
+  >>> ns.lockedOut
+  False
+
+  >>> ns.ownLock
+  False
+
+If we lock the object, the adapter indicates that the object is locked
+and that we own it::
+
+  >>> ob = ILockable(item1)
+  >>> ob.lock()
+  LockedEvent for ...
+
+  >>> ns.lockable
+  True
+
+  >>> ns.locked
+  True
+
+  >>> ns.lockedOut
+  False
+
+  >>> ns.ownLock
+  True

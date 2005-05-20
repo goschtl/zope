@@ -17,4 +17,18 @@
 
   </configure>
 
+  <adapter
+      for="*"
+      factory=".adapter.LockingPathAdapter"
+      name="locking"
+      permission="zope.Public"
+      />
+
+  <class class=".adapter.LockingPathAdapter">
+    <require
+        permission="zope.Public"
+        attributes="lockable locked lockedOut ownLock"
+        />
+  </class>
+
 </configure>

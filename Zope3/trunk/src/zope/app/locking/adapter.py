@@ -149,3 +149,25 @@ class UnlockedEvent(EventBase):
 
 class BreakLockEvent(UnlockedEvent):
     zope.interface.implements(IBreakLockEvent)
+
+
+class LockingPathAdapter(object):
+
+    zope.interface.implements(
+        zope.app.traversing.interfaces.IPathAdapter)
+
+    def __init__(self, target):
+        self._locking = LockingAdapterFactory(target)
+        self.lockable = self._locking is not None
+
+    def lockedOut(self):
+        return (self._locking is not None) and self._locking.isLockedOut()
+    lockedOut = property(lockedOut)
+
+    def locked(self):
+        return (self._locking is not None) and self._locking.locked()
+    locked = property(locked)
+
+    def ownLock(self):
+        return (self._locking is not None) and self._locking.ownLock()
+    ownLock = property(ownLock)
