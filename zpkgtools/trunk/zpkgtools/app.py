@@ -37,8 +37,12 @@ from zpkgtools import loader
 from zpkgtools import runlog
 
 
+zpkgsetup_dir = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+    "zpkgsetup")
+
 DEFAULT_SUPPORT_PACKAGES = [
-    ("zpkgsetup", ("svn://svn.zope.org/repos/main/zpkgtools/trunk/zpkgsetup")),
+    ("zpkgsetup", urlutils.file_url(zpkgsetup_dir)),
     ]
 
 

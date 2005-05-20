@@ -114,9 +114,10 @@ The ``include-support-code`` key is used to control whether **zpkg**
 bundles the support code along with the resulting distribution.  The
 value is a boolean, where the strings ``true`` and ``false`` can be
 used in the configuration file.  If true (the default), copies of the
-``zpkgsetup`` package will be included in the distribution (less the
-test code).  If false, the package will be assumed to be available for
-import on target systems.
+``zpkgsetup`` package and any additionally configured support packages
+will be included in the distribution (less the test code).  If false,
+these packages will be assumed to be available for import on target
+systems.
 
 The value for ``resource-map`` is a path or URL (including
 ``cvs:`` URLs) for a file that defines the map.  Relative paths are
@@ -228,13 +229,7 @@ consulted to determine their location.  One difference is that if the
 resource map does not define the appropriate resources, a built-in
 fallback location will be used.
 
-Retrieving the support packages from the fallback CVS repositories can
-be quite slow.  The easiest way to improve the load time is to have a
-copy available on the local system and add a resource entry for it
-using a ``file:`` URL::
-
-  zpkgsetup   file:///home/myuser/stuff/zpkgtools/zpkgsetup
-
-(The path should identify the directory that contains the
-``zpkgsetup`` package itself, not the directory that
-would be on ``sys.path`` to allow it to be importable.)
+The fallback location for the ``zpkgsetup`` package is the copy
+provided as part of the running **zpkg**; a location only needs to be
+specified if a different version should be used.  (This seems highly
+unlikely.)
