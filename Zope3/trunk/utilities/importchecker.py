@@ -49,7 +49,7 @@ def _findDottedNamesHelper(node, result):
         # from x import y
         # y.k = v
         expr = node.expr
-        result.append(expr.__dict__.get('name', ''))
+        result.append(getattr(expr, 'name', ''))
         return
     for child in more_node.getChildNodes():
         _findDottedNamesHelper(child, result)
