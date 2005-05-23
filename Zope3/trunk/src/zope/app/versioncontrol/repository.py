@@ -33,7 +33,7 @@ from zope.app.annotation.interfaces import IAnnotations
 from zope.app.versioncontrol.history import VersionHistory
 from zope.app.versioncontrol.interfaces import VersionControlError
 from zope.app.versioncontrol.interfaces import IVersionable, IVersioned
-from zope.app.versioncontrol.interfaces import IVersionControl
+from zope.app.versioncontrol.interfaces import IRepository
 from zope.app.versioncontrol.interfaces import CHECKED_IN, CHECKED_OUT
 from zope.app.versioncontrol.interfaces import ACTION_CHECKIN, ACTION_CHECKOUT
 from zope.app.versioncontrol.interfaces import ACTION_UNCHECKOUT, ACTION_UPDATE
@@ -48,7 +48,7 @@ class Repository(persistent.Persistent):
     """The repository implementation manages the actual data of versions
     and version histories. It does not handle user interface issues."""
 
-    zope.interface.implements(IVersionControl)
+    zope.interface.implements(IRepository)
 
     def __init__(self):
         # These keep track of symbolic label and branch names that
@@ -142,6 +142,12 @@ class Repository(persistent.Persistent):
         raise VersionControlError(
             "Object is not under version control.")
 
+    def queryVersionInfo(self, object, default=None):
+        if IVersioned.providedBy(object):
+            annotations = IAnnotations(object)
+            return annotations[VERSION_INFO_KEY]
+        return default
+
     def applyVersionControl(self, object, message=None):
         if IVersioned.providedBy(object):
             raise VersionControlError(
@@ -160,7 +166,7 @@ class Repository(persistent.Persistent):
         if parent is None:
             p_info = None
         else:
-            p_info = self.getVersionInfo(parent)
+            p_info = self.queryVersionInfo(parent)
         if p_info is not None:
             sticky = p_info.sticky
             if sticky and sticky[0] == 'B':
@@ -376,7 +382,7 @@ class Repository(persistent.Persistent):
         # Make sure that labels and branch ids do not collide.
         if self._branches.has_key(label) or label == 'mainline':
             raise VersionControlError(
-                'The label value given is already in use as an activity id.'
+                'The label value given is already in use as a branch id.'
                 )
         if not self._labels.has_key(label):
             self._labels[label] = 1
@@ -384,7 +390,7 @@ class Repository(persistent.Persistent):
         history = self.getVersionHistory(info.history_id)
         history.labelVersion(info.version_id, label, force)
 
-    def makeActivity(self, object, branch_id):
+    def makeBranch(self, object, branch_id):
         # Note - this is not part of the official version control API yet.
         # It is here to allow unit testing of the architectural aspects
         # that are already in place to support activities in the future.
@@ -397,7 +403,7 @@ class Repository(persistent.Persistent):
 
         branch_id = branch_id or None
 
-        # Make sure that activity ids and labels do not collide.
+        # Make sure that branch ids and labels do not collide.
         if self._labels.has_key(branch_id) or branch_id == 'mainline':
             raise VersionControlError(
                 'The value given is already in use as a version label.'
@@ -410,11 +416,10 @@ class Repository(persistent.Persistent):
 
         if history._branches.has_key(branch_id):
             raise VersionControlError(
-                'The resource is already associated with the given activity.'
+                'The resource is already associated with the given branch.'
                 )
 
         history.createBranch(branch_id, info.version_id)
-        return object
 
     def getVersionOfResource(self, history_id, selector):
         history = self.getVersionHistory(history_id)

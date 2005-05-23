@@ -21,6 +21,8 @@ import unittest
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.testing import doctest, module
 from transaction import abort
+import zope.app.location
+import zope.app.versioncontrol.version
 
 name = 'zope.app.versioncontrol.README'
 
@@ -38,10 +40,39 @@ def tearDown(test):
         db.close()
     ps.tearDown()
 
+
+
+def testLocationSanity_for_cloneByPickle():
+    """\
+cloneByPickle should not go outside a location
+
+    >>> parent = zope.app.location.Location()
+    >>> parent.poison = lambda: None
+    >>> ob = zope.app.location.Location()
+    >>> ob.__parent__ = parent
+    >>> x = zope.app.location.Location()
+    >>> x.poison = lambda: None
+    >>> ob.x = x
+    >>> ob.y = zope.app.location.Location()
+    >>> ob.y.__parent__ = ob
+    >>> clone = zope.app.versioncontrol.version.cloneByPickle(ob)
+    >>> clone.__parent__ is ob.__parent__
+    True
+    >>> clone.x is ob.x
+    True
+    >>> clone.y is ob.y
+    False
+
+"""
+    
+
 def test_suite():
-    return doctest.DocFileSuite('README.txt',
-                                setUp=setUp, tearDown=tearDown,
-                                )
+    return unittest.TestSuite((
+        doctest.DocFileSuite('README.txt',
+                             setUp=setUp, tearDown=tearDown,
+                             ),
+        doctest.DocTestSuite(),
+        ))
 
 if __name__ == '__main__':
     unittest.main(defaultTest='test_suite')

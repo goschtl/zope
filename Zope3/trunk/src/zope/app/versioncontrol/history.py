@@ -82,7 +82,7 @@ class VersionHistory(persistent.Persistent, zope.app.location.Location):
            new branch is rooted at the version named by version_id."""
         if self._branches.has_key(branch_id):
             raise VersionControlError(
-                'Activity already exists: %s' % branch_id
+                'Branch already exists: %s' % branch_id
                 )
         branch = BranchInfo(branch_id, version_id)
         branch.__parent__ = self

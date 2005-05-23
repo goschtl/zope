@@ -44,7 +44,9 @@ def cloneByPickle(obj, ignore_list=()):
     def persistent_id(ob):
         if ignore_dict.has_key(id(ob)):
             return 'ignored'
-        if (zope.app.location.ILocation.providedBy(object)
+
+        # XXX obviously no test for this
+        if (zope.app.location.ILocation.providedBy(ob)
             and not zope.app.location.inside(ob, obj)):
             myid = id(ob)
             ids[myid] = ob

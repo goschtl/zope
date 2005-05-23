@@ -32,7 +32,7 @@ class VersionControlError(Exception):
     pass
 
 
-class IVersionControl(zope.interface.Interface):
+class IRepository(zope.interface.Interface):
     """Main API for version control operations.
 
     This interface hides most of the details of version data storage
@@ -54,7 +54,7 @@ class IVersionControl(zope.interface.Interface):
     def isResourceUpToDate(object, require_branch=False):
         """
         Returns true if a resource is based on the latest version. Note
-        that the latest version is in the context of any activity (branch).
+        that the latest version is in the context of any branch.
 
         If the require_branch flag is true, this method returns false if
         the resource is updated to a particular version, label, or date.
@@ -130,7 +130,7 @@ class IVersionControl(zope.interface.Interface):
         """
         Update the state of the given object to that of a specific version
         of the object. The object must be in the checked-in state to be
-        updated. The selector must be a string (version id, activity id,
+        updated. The selector must be a string (version id, branch id,
         label or date) that is used to select a version from the version
         history.
 
@@ -153,7 +153,7 @@ class IVersionControl(zope.interface.Interface):
         Given a version history id and a version selector, return the
         object as of that version. Note that the returned object has no
         acquisition context. The selector must be a string (version id,
-        activity id, label or date) that is used to select a version
+        branch id, label or date) that is used to select a version
         from the version history.
 
         Permission: Use version control
@@ -184,6 +184,12 @@ class IVersionControl(zope.interface.Interface):
         are associated with a version-controlled object.
 
         Permission: Use version control
+        """
+
+    def makeBranch(object, branch_id):
+        """Create a new branch with the given branch id
+
+        The branch is created from the object's version.
         """
 
 CHECKED_OUT = 0
