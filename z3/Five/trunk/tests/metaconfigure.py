@@ -8,7 +8,7 @@
 ##############################################################################
 """Parrot directive and support classes
 
-$Id: metaconfigure.py 5287 2004-06-25 11:42:27Z philikon $
+$Id$
 """
 
 from zope.interface import Interface
