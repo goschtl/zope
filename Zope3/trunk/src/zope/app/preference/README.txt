@@ -102,8 +102,8 @@ interaction:
 
 We also need a principal annotations utility, in which we store the settings:
 
-  >>> from zope.app.principalannotation.interfaces import (
-  ...         IPrincipalAnnotationUtility)
+  >>> from zope.app.principalannotation.interfaces import \
+  ...         IPrincipalAnnotationUtility
   >>> class PrincipalAnnotations(dict):
   ...     zope.interface.implements(IPrincipalAnnotationUtility)
   ...
