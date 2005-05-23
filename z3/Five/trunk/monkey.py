@@ -20,16 +20,19 @@ def monkeyPatch():
 
     from ZPublisher.HTTPRequest import HTTPRequest
 
-    def getPresentationSkin(self):
-        return getattr(self, '_presentation_skin', None)
+    if not hasattr(HTTPRequest, 'getPresentationSkin'):
+        # BBB: for Zope 2.7
 
-    def setPresentationSkin(self, skin):
-        self._presentation_skin = skin
+        def getPresentationSkin(self):
+            return getattr(self, '_presentation_skin', None)
 
-    HTTPRequest.getPresentationSkin = getPresentationSkin
-    HTTPRequest.setPresentationSkin = setPresentationSkin
+        def setPresentationSkin(self, skin):
+            self._presentation_skin = skin
 
-    HTTPRequest.__contains__ = lambda self, key: self.has_key(key)
+        HTTPRequest.getPresentationSkin = getPresentationSkin
+        HTTPRequest.setPresentationSkin = setPresentationSkin
+
+        HTTPRequest.__contains__ = lambda self, key: self.has_key(key)
 
     from Products.Five import interfaces
     interfaces.monkey()

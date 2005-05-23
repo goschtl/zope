@@ -5,6 +5,10 @@ Five Changes
 Five 1.1 (unreleased)
 =====================
 
+* Zope 2.8 HTTPRequest is no longer patched. It has the required methods.
+
+* The deprecated get_transaction method is no longer used in Zope 2.8.
+
 * Fixed small bug in BrowserDefault which caused an error if the class is
   defaultViewable but the object's interfaces have no defaultView.
 
