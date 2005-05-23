@@ -169,7 +169,8 @@
       factory=".wikipage.WikiPageHierarchyAdapter"
       provides=".interfaces.IWikiPageHierarchy"
       for=".interfaces.IWikiPage"
-      trusted="true" />
+      trusted="true"
+      locate="true" />
 
   <class class=".wikipage.WikiPageHierarchyAdapter">
     <require

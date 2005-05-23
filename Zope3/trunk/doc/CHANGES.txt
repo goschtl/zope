@@ -10,6 +10,14 @@ Zope Changes
 
     New features
 
+      - Add content_factory_id attribute to the addform and addwizard
+        directive so that named factories can be invoked too.
+
+      - Add locate attribute to the adapter directive in order to ensure
+        location for security proxied objects. An explicite locate should be
+        if complex adapter security declarations within an additional class
+        directive are used.
+
       - The http() function exposed to functional doctests how accepts
         an optional "form" argument to use as the set of form values.
         This works for any type of request; this can used to make
@@ -590,6 +598,12 @@ Zope Changes
         logout.) See zope/app/security/browser/loginlogout.txt for details.
 
     Bug Fixes
+
+      - Fix 'Wiki permissions and PAU' bug reported by Paolo Invernizzi
+
+      - Assert location if a non-public permission was specified within an
+        adapter directive so that restricted adapters work with local
+        authentication too.
 
       - Fix #313 : importchecker.py ignores assignment to module attributes
     

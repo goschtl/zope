@@ -18,114 +18,111 @@ $Id$
 
 from zope.security.checker import ProxyFactory
 from zope.security.proxy import removeSecurityProxy
-from zope.app.location import ILocation, Location
+from zope.app.location import ILocation, Location, LocationProxy
 
-class TrustedAdapterFactory(object):
-    """Adapt an adapter factory to to provide trusted adapters
 
-       Trusted adapters always adapt unproxied objects.  If asked to
-       adapt any proxied objects, it will unproxy them and then proxy the
-       resulting adapter.
+def assertLocation(adapter, parent):
+    """Assert locatable adapters.
 
-       Suppose we have an adapter factory:
+    This function asserts that the adapter get location-proxied unless it does
+    not provide ILocation itself. Further more the returned locatable adapter
+    get its parent set unless its __parent__ attribute is not None.
 
-         >>> class A(object):
-         ...     def __init__(self, context):
-         ...         self.context = context
+    see adapter.txt
+    """
+    # handle none-locatable adapters (A)
+    if not ILocation.providedBy(adapter):
+        locatable = LocationProxy(adapter)
+        locatable.__parent__ = parent
+        return locatable
 
-       Now, suppose have an object and proxy it:
+    # handle locatable, parentless adapters (B)
+    if adapter.__parent__ is None:
+        adapter.__parent__ = parent
+        return adapter
 
-         >>> o = []
-         >>> p = ProxyFactory(o)
+    # handle locatable, parentful adapters (C)
+    else:
+        return adapter
 
-       If we adapt it:
 
-         >>> a = A(p)
+class LocatingTrustedAdapterFactory(object):
+    """Adapt an adapter factory to provide trusted and (locatable) adapters.
 
-       the result is not a proxy:
+    Trusted adapters always adapt unproxied objects. If asked to
+    adapt any proxied objects, it will unproxy them and then 
+    security-proxy the resulting adapter (S) unless the objects where not
+    security-proxied before (N).
 
-         >>> type(a).__name__
-         'A'
+    Further locating trusted adapters provide a location for protected
+    adapters only (S). If such a protected adapter itself does not provide
+    ILocation it is wrapped within a location proxy and it parent will 
+    be set. If the adapter does provide ILocation and it's __parent__ is None,
+    we set the __parent__ to the adapter's context: 
 
-       But the object it adapts still is:
+    see adapter.txt
+    """
+    def __init__(self, factory):
+        self.factory = factory
+        self.__name__ = factory.__name__
+        self.__module__ = factory.__module__
 
-         >>> type(a.context).__name__
-         '_Proxy'
+    # protected methods
+    def _customizeProtected(self, adapter, context):
+        return assertLocation(adapter, context)
 
-       Now, will we'll adapt our adapter factory to a trusted adapter factory:
+    def _customizeUnprotected(self, adapter, context):
+        if (ILocation.providedBy(adapter)
+            and adapter.__parent__ is None):
+                    adapter.__parent__ = context
+        return adapter
 
-         >>> TA = TrustedAdapterFactory(A)
+    def __call__(self, *args):
+        for arg in args:
+            if removeSecurityProxy(arg) is not arg:
+                args = map(removeSecurityProxy, args)
+                adapter = self.factory(*args)
+                adapter = self._customizeProtected(adapter, args[0])
+                return ProxyFactory(adapter)
 
-       and if we use it:
+        adapter = self.factory(*args)
+        adapter = self._customizeUnprotected(adapter, args[0])
+        return adapter
 
-         >>> a = TA(p)
 
-       then the adapter is proxied:
+# BBB, entire class gone in 3.2 
+class TrustedAdapterFactory(LocatingTrustedAdapterFactory):
+    """Adapt an adapter factory to provide trusted adapters.
 
-         >>> type(a).__name__
-         '_Proxy'
+    Trusted adapters always adapt unproxied objects. If asked to
+    adapt any proxied objects, it will unproxy them and then 
+    security-proxy the resulting adapter unless the objects where not
+    security-proxied before.
 
-       And the object proxied is not.  (We actually have to remove the
-       adapter to get to the adapted object in this case.)
+    If the adapter does provide ILocation and it's __parent__ is None,
+    we set the __parent__ to the adapter's context.
+    """
 
-         >>> a = removeSecurityProxy(a)
-         >>> type(a.context).__name__
-         'list'
+    # do not location-proxy the adapter
+    def _customizeProtected(self, adapter, context):
+        return self._customizeUnprotected(adapter, context)
 
-       This works with multiple objects too:
 
-         >>> class M(object):
-         ...     def __init__(self, *context):
-         ...         self.context = context
+class LocatingUntrustedAdapterFactory(object):
+    """Adapt an adapter factory to provide locatable untrusted adapters
 
-         >>> TM = TrustedAdapterFactory(M)
+    Untrusted adapters always adapt proxied objects. If any permission
+    other than zope.Public is required, untrusted adapters need a location
+    in order that the local authentication mechanism can be inovked
+    correctly.
 
-         >>> o2 = []
-         >>> o3 = []
+    If the adapter does not provide ILocation, we location proxy it and
+    set the parent. If the adapter does provide ILocation and 
+    it's __parent__ is None, we set the __parent__ to the adapter's
+    context only:
 
-         >>> a = TM(p, o2, o3)
-         >>> type(a).__name__
-         '_Proxy'
-         >>> a = removeSecurityProxy(a)
-         >>> a.context[0] is o, a.context[1] is o2, a.context[2] is o3
-         (True, True, True)
-
-         >>> a = TM(p, ProxyFactory(o2), ProxyFactory(o3))
-         >>> type(a).__name__
-         '_Proxy'
-         >>> a = removeSecurityProxy(a)
-         >>> a.context[0] is o, a.context[1] is o2, a.context[2] is o3
-         (True, True, True)
-
-       The __parent__ will be set to the first object if the adapter
-       is a location. M isn't a location, so the adapter has no
-       __parent__:
-
-         >>> a.__parent__
-         Traceback (most recent call last):
-         ...
-         AttributeError: 'M' object has no attribute '__parent__'
-
-       But if we create an adapter that is a Location:
-
-         >>> class L(A, Location):
-         ...     pass
-         >>> TL = TrustedAdapterFactory(L)
-
-       Then __parent__ will be set:
-
-         >>> TL(o).__parent__ is o
-         True
-         >>> removeSecurityProxy(TL(p)).__parent__ is o
-         True
-
-       The factory adapter has the __name__ and __module__ of the
-       factory it adapts:
-
-         >>> (TA.__module__, TA.__name__) == (A.__module__, A.__name__)
-         True
-
-       """
+    see adapter.txt
+    """
 
     def __init__(self, factory):
         self.factory = factory
@@ -133,17 +130,5 @@ class TrustedAdapterFactory(object):
         self.__module__ = factory.__module__
 
     def __call__(self, *args):
-        for arg in args:
-            if removeSecurityProxy(arg) is not arg:
-                args = map(removeSecurityProxy, args)
-                adapter = self.factory(*args)
-                if (ILocation.providedBy(adapter)
-                    and adapter.__parent__ is None):
-                    adapter.__parent__ = args[0]
-                return ProxyFactory(adapter)
-
         adapter = self.factory(*args)
-        if (ILocation.providedBy(adapter)
-            and adapter.__parent__ is None):
-            adapter.__parent__ = args[0]
-        return adapter
+        return assertLocation(adapter, args[0])
