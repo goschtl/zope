@@ -179,6 +179,12 @@ class ICommonAddInformation(Interface):
         required=False
         )
 
+    content_factory_id = Id(
+        title=u"Content factory id",
+        description=u"A factory id to create new content objects",
+        required = False,
+        )
+
     arguments = Tokens(
         title=u"Arguments",
         description=u"""

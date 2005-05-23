@@ -20,6 +20,7 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from zope.app import zapi
+from zope.component.interfaces import IFactory
 from zope.event import notify
 from zope.interface import Interface
 
@@ -133,6 +134,19 @@ class AddView(EditView):
     def nextURL(self):
         return self.context.nextURL()
 
+# helper for factory resp. content_factory handling
+def _getFactory(self):
+    # get factory or factory id
+    factory = self.__dict__.get('_factory_or_id', self._factory_or_id)
+
+    if type(factory) is str: # factory id
+        return zapi.getUtility(IFactory, factory, self.context)
+    else:
+        return factory
+
+def _setFactory(self, value):
+    self.__dict__['_factory_or_id'] = value
+
 
 def AddViewFactory(name, schema, label, permission, layer,
                    template, default_template, bases, for_,
@@ -146,7 +160,8 @@ def AddViewFactory(name, schema, label, permission, layer,
     class_.schema = schema
     class_.label = label
     class_.fieldNames = fields
-    class_._factory = content_factory
+    class_._factory_or_id = content_factory
+    class_._factory = property(_getFactory, _setFactory)
     class_._arguments = arguments
     class_._keyword_arguments = keyword_arguments
     class_._set_before_add = set_before_add

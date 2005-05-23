@@ -20,7 +20,10 @@ __docformat__ = 'restructuredtext'
 import sys
 
 from zope.app import zapi
+from zope.component.interfaces import IFactory
 from zope.event import notify
+from zope.interface import Interface
+
 from zope.app.event.objectevent import ObjectCreatedEvent
 from zope.app.form.utility import setUpWidgets
 from zope.app.form.interfaces import WidgetsError, IInputWidget
@@ -108,6 +111,21 @@ class AddWizardView(EditWizardView):
         self.request.response.redirect(self.context.nextURL())
         return False
 
+
+# helper for factory resp. content_factory handling
+def _getFactory(self):
+    # get factory or factory id
+    factory = self.__dict__.get('_factory_or_id', self._factory_or_id)
+
+    if type(factory) is str: # factory id
+        return zapi.getUtility(IFactory, factory, self.context)
+    else:
+        return factory
+
+def _setFactory(self, value):
+    self.__dict__['_factory_or_id'] = value
+
+
 # XXX: Needs unittest
 def AddWizardViewFactory(
     name, schema, permission, layer, panes, fields,
@@ -120,7 +138,8 @@ def AddWizardViewFactory(
     class_.schema = schema
     class_.panes = panes
     class_.fieldNames = fields
-    class_._factory = content_factory
+    class_._factory_or_id = content_factory
+    class_._factory = property(_getFactory, _setFactory)
     class_._arguments = arguments or []
     class_._keyword_arguments = keyword_arguments or []
     class_._set_before_add = set_before_add or []

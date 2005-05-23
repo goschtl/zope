@@ -17,23 +17,27 @@ $Id$
 """
 import unittest
 
-from zope.app import zapi
-from zope.app.testing import ztapi
+from zope.component.interfaces import IFactory
+from zope.component.interfaces import ISiteManager
+from zope.component.factory import Factory
 from zope.interface import Interface, implements
+from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-from zope.publisher.browser import TestRequest
 from zope.schema import TextLine, accessors
 from zope.security.checker import CheckerPublic
 
+from zope.app import zapi
+from zope.app.component.site import SiteManagerAdapter
+from zope.app.container.interfaces import IAdding
 from zope.app.event.tests.placelesssetup import getEvents
 from zope.app.event.interfaces import IObjectCreatedEvent, IObjectModifiedEvent
-from zope.app.form.browser.add import AddViewFactory, AddView
-from zope.app.form.browser.metaconfigure import AddFormDirective
-from zope.app.container.interfaces import IAdding
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import TextWidget as Text
+from zope.app.form.browser.add import AddViewFactory, AddView
+from zope.app.form.browser.metaconfigure import AddFormDirective
 from zope.app.form.browser.submit import Update
+from zope.app.testing import ztapi
 from zope.app.testing.placelesssetup import PlacelessSetup
 
 # Foo needs to be imported as globals() are checked
@@ -190,6 +194,44 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         return args
 
+    def test_add_content_factory_id(self, args=None):
+        self._invoke_add(content_factory='C')
+        (descriminator, callable, args, kw) = self._context.last_action
+
+        self.assertEqual(descriminator,
+                         ('view', IAdding, 'addthis', IBrowserRequest, 
+                         IDefaultBrowserLayer))
+
+        self.assertEqual(callable, AddViewFactory)
+
+        (name, schema, label, permission, layer, template,
+         default_template, bases, for_, fields, content_factory,
+         arguments, keyword_arguments, set_before_add,
+         set_after_add)  = args
+
+        self.assertEqual(name, 'addthis')
+        self.assertEqual(schema, I)
+        self.assertEqual(label, 'Add this')
+        self.assertEqual(permission, CheckerPublic) # 'zope.Public' translated
+        self.assertEqual(layer, IDefaultBrowserLayer)
+        self.assertEqual(template, 'add.pt')
+        self.assertEqual(default_template, 'add.pt')
+        self.assertEqual(bases, (V, AddView, ))
+        self.assertEqual(for_, IAdding)
+        self.assertEqual(" ".join(fields),
+                         "name first last email address getfoo extra1 extra2")
+        self.assertEqual(content_factory, 'C')
+        self.assertEqual(" ".join(arguments),
+                         "first last")
+        self.assertEqual(" ".join(keyword_arguments),
+                         "email")
+        self.assertEqual(" ".join(set_before_add),
+                         "getfoo")
+        self.assertEqual(" ".join(set_after_add),
+                         "extra1 name address extra2")
+
+        return args
+
     def test_create(self):
 
         class Adding(object):
@@ -213,6 +255,43 @@ class Test(PlacelessSetup, unittest.TestCase):
 
         adding = Adding(self)
         self._invoke_add()
+        (descriminator, callable, args, kw) = self._context.last_action
+        factory = AddViewFactory(*args)
+        request = TestRequest()
+        view = zapi.getMultiAdapter((adding, request), name='addthis')
+        content = view.create('a',0,abc='def')
+
+        self.failUnless(isinstance(content, C))
+        self.assertEqual(content.args, ('a', 0))
+        self.assertEqual(content.kw, {'abc':'def'})
+
+    def test_create_content_factory_id(self):
+
+        class Adding(object):
+
+            implements(IAdding)
+
+            def __init__(self, test):
+                self.test = test
+
+            def add(self, ob):
+                self.ob = ob
+                self.test.assertEqual(
+                    ob.__dict__,
+                    {'args': ("bar", "baz"),
+                     'kw': {'email': 'baz@dot.com'},
+                     '_foo': 'foo',
+                    })
+                return ob
+            def nextURL(self):
+                return "."
+
+        # register content factory for content factory id lookup
+        ztapi.provideAdapter(None, ISiteManager, SiteManagerAdapter)
+        ztapi.provideUtility(IFactory, Factory(C), name='C')
+        
+        adding = Adding(self)
+        self._invoke_add(content_factory='C')
         (descriminator, callable, args, kw) = self._context.last_action
         factory = AddViewFactory(*args)
         request = TestRequest()

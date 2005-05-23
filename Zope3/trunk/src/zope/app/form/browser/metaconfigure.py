@@ -177,6 +177,7 @@ class AddFormDirective(BaseFormDirective):
 
     # default add form information
     description = None
+    content_factory_id = None
     content_factory = None
     arguments = None
     keyword_arguments = None
@@ -252,9 +253,14 @@ class AddFormDirective(BaseFormDirective):
         else:
             self.set_after_add = leftover
 
+    def _handle_content_factory(self):
+        if self.content_factory is None:
+            self.content_factory = self.content_factory_id
+
     def __call__(self):
         self._processWidgets()
         self._handle_menu()
+        self._handle_content_factory()
         self._handle_arguments()
 
         self._context.action(
@@ -338,6 +344,7 @@ class AddWizardDirective(BaseWizardDirective, AddFormDirective):
 
     def __call__(self):
         self._handle_menu()
+        self._handle_content_factory()
 
         all_fields = self.fields
         leftover = []
