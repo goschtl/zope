@@ -79,4 +79,4 @@ class IWriteDemoTextAreaWidget(Interface):
 
 class IDemoTextAreaWidget(IDemoWidget, IReadDemoTextAreaWidget, 
     IWriteDemoTextAreaWidget):
-    """Widget interface inherites read and write interfaces."""
+    """Widget interface inherits read and write interfaces."""

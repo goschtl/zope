@@ -13,7 +13,7 @@
 ##############################################################################
 """Implementation of OnlineHelp System.
 
-This the default implementation of the `OnlineHelp`. It defines the global
+This is the default implementation of the `OnlineHelp`. It defines the global
 `OnlineHelp` in which all basic Zope-core help screens are registered.
 
 $Id$

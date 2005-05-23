@@ -31,7 +31,7 @@ class IDemoWidgetContainer(IContainer):
     """Interface for the demo widgets container.
     
     We use a precondition for to let just childs to be added which implements
-    the interface ITiksSampleContent
+    the interface IDemoWidget
     """
 
     def __setitem__(name, object):

@@ -26,7 +26,7 @@ from zope.app.demo.widget.app import DemoWidget
 
 
 class DemoTextWidget(DemoWidget):
-    """Demo TextWidget implementation.
+    """Demo TextLineWidget implementation.
 
     >>> content = DemoTextWidget()
     >>> content.standard

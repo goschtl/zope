@@ -13,7 +13,7 @@
 ##############################################################################
 """Demo widget implementation
 
-$Id: intwidget.py 29419 2005-03-09 01:45:19Z rogerineichen $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -62,4 +62,4 @@ class IWriteDemoBoolWidget(Interface):
 
 
 class IDemoBoolWidget(IDemoWidget, IReadDemoBoolWidget, IWriteDemoBoolWidget):
-    """Widget interface inherites read and write interfaces."""
+    """Widget interface inherits read and write interfaces."""

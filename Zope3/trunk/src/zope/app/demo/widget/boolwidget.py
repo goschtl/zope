@@ -13,7 +13,7 @@
 ##############################################################################
 """Demo widget implementation
 
-$Id: intwidget.py 29331 2005-02-27 23:49:31Z rogerineichen $
+$Id$
 """
 __docformat__ = 'restructuredtext'
 
@@ -26,7 +26,7 @@ from zope.app.demo.widget.app import DemoWidget
 
 
 class DemoBoolWidget(DemoWidget):
-    """Demo TextWidget implementation.
+    """Demo BoolWidget implementation.
     
     >>> content = DemoBoolWidget()
     >>> content.standard
