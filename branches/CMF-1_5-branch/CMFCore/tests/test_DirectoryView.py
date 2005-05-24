@@ -102,6 +102,7 @@ class DirectoryViewPathTests( TestCase ):
         from Products.CMFCore import DirectoryView
         warnings = [t[0] for t in DirectoryView.__warningregistry__]
         text = 'DirectoryView fake_skin refers to a non-existing path %s' % file
+        text = text.replace('\\','/')
         self.assert_(text in warnings)
 
     def test_UnhandleableMinimalPath( self ):
