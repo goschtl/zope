@@ -17,6 +17,7 @@ $Id$
 """
 import sys
 import unittest
+import persistent
 
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.testing import doctest, module
@@ -41,6 +42,56 @@ def tearDown(test):
     ps.tearDown()
 
 
+class L(persistent.Persistent, zope.app.location.Location):
+    pass
+
+
+def testLocationSanity_for__findModificationTime():
+    """\
+_findModificationTime should not go outside the location
+
+    >>> import ZODB.tests.util
+    >>> db = ZODB.tests.util.DB()
+    >>> conn = db.open()
+
+
+    >>> ob = L()
+    >>> conn.root()['ob'] = ob
+    >>> ob.y = L()
+    >>> ob.y.__parent__ = ob
+    >>> parent = L()
+    >>> ob.__parent__ = parent
+    >>> x = L()
+    >>> ob.x = x
+
+    >>> import transaction
+    >>> transaction.commit()
+
+    >>> parent.v = 1
+    >>> transaction.commit()
+
+    >>> import zope.app.versioncontrol.utility
+    >>> p = zope.app.versioncontrol.utility._findModificationTime(ob)
+    >>> p == ob._p_serial == ob.y._p_serial
+    True
+
+    >>> ob.x.v = 1
+    >>> transaction.commit()
+
+    >>> p = zope.app.versioncontrol.utility._findModificationTime(ob)
+    >>> p == ob._p_serial == ob.y._p_serial
+    True
+
+    >>> ob.y.v = 1
+    >>> transaction.commit()
+
+    >>> p = zope.app.versioncontrol.utility._findModificationTime(ob)
+    >>> p == ob._p_serial
+    False
+    >>> p == ob.y._p_serial
+    True
+    
+"""
 
 def testLocationSanity_for_cloneByPickle():
     """\

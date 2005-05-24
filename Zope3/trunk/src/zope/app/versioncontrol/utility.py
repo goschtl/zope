@@ -16,6 +16,8 @@
 $Id$
 """
 import time
+from cStringIO import StringIO
+from cPickle import Pickler
 
 import persistent
 
@@ -72,36 +74,29 @@ def _findModificationTime(object):
        themselves version-controlled objects. Note that this will
        return None if the object has no modification time."""
 
-    mtime = getattr(object, '_p_serial', None)
-    if mtime is None:
+    serial = [object._p_serial]
+
+    def persistent_id(ob):
+        s = getattr(ob, '_p_serial', None)
+        if not isinstance(s, str):
+            return None
+
+        # XXX obviously no test for this
+        if (zope.app.location.ILocation.providedBy(ob)
+            and not zope.app.location.inside(ob, object)):
+            return '1' # go away
+
+#          The location check above should wake the object
+##         if getattr(ob, '_p_changed', 0) is None:
+##             ob._p_changed = 0
+
+        serial[0] = max(serial[0], s)
+        
         return None
 
-    latest = mtime
-    conn = object._p_jar
-    load = conn._storage.load
-    version = conn._version
-    refs = referencesf
+    stream = StringIO()
+    p = Pickler(stream, 1)
+    p.persistent_id = persistent_id
+    p.dump(object)
 
-    oids=[object._p_oid]
-    done_oids={}
-    done=done_oids.has_key
-    first = True
-
-    while oids:
-        oid=oids[0]
-        del oids[0]
-        if done(oid):
-            continue
-        done_oids[oid]=1
-        try: p, serial = load(oid, version)
-        except: pass # invalid reference!
-        else:
-            if first:
-                first = False
-            else:
-                if p.find('U\x0b__vc_info__') == -1:
-                    if serial > latest:
-                        latest = serial
-            refs(p, oids)
-
-    return latest
+    return serial[0]
