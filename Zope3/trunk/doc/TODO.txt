@@ -68,8 +68,6 @@ Others
 
   * 384: Problems with permissions in zcml utility directives
 
-  * 392: adapter registry subscribers method can return None when it shouldn't
-
   * 397: DisplayView shouldn't display fields with private suffix
 
   * 400: i18n image broken in trunk
