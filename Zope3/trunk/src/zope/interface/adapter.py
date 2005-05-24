@@ -406,14 +406,12 @@ class AdapterLookup(object):
             adapter = factory(object)
             if adapter is not None:
                 return adapter
-
         return default
 
     def queryAdapter(self, object, interface, name='', default=None):
         # Note that we rarely call queryAdapter directly
         # We usually end up calling adapter_hook
         return self.adapter_hook(interface, object, name, default)
-
 
     def subscriptions(self, required, provided):
         if provided is None:
@@ -473,7 +471,10 @@ class AdapterLookup(object):
 
     def subscribers(self, objects, interface):
         subscriptions = self.subscriptions(map(providedBy, objects), interface)
-        return [subscription(*objects) for subscription in subscriptions]
+        subscribers = [subscription(*objects)
+                       for subscription in subscriptions]
+        # Filter None values
+        return [x for x in subscribers if x is not None]
 
     def get(self, declaration):
         if declaration is None:

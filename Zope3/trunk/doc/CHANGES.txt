@@ -599,6 +599,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix #392 : adapter registry subscribers method can return None
+        when it shouldn't
+
       - Fix 'Wiki permissions and PAU' bug reported by Paolo Invernizzi
 
       - Assert location if a non-public permission was specified within an

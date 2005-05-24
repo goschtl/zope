@@ -487,6 +487,15 @@ example of multiple-object subscribers::
   >>> [(s.x is x and s.q is q) for s in subscribers]
   [True, True]
 
+adapter factory subcribers can't return None values
+
+  >>> def M3(x, y):
+  ...     return None
+
+  >>> registry.subscribe([IR, IQ], IM, M3)
+  >>> subscribers = registry.subscribers((x, q), IM)
+  >>> len(subscribers)
+  2
 
 Handlers
 --------
