@@ -552,12 +552,16 @@ for revision 2:
 
 Now we can use this object to make a branch:
 
-    >>> repository.makeBranch(obranch, '2-branch')
+    >>> repository.makeBranch(obranch)
+    '2.1'
+
+The `makeBranch` method returns the new branch name.  This is needed
+to check out a working version for the branch.
 
 To create a new version on the branch, we first have to check out the
 object on the branch:
 
-    >>> repository.updateResource(obranch, '2-branch')
+    >>> repository.updateResource(obranch, '2.1')
     >>> repository.checkoutResource(obranch)
 
     >>> repository.getVersionInfo(obranch).version_id
@@ -572,8 +576,10 @@ object on the branch:
     >>> transaction.commit()
 
     >>> repository.getVersionInfo(obranch).version_id
-    '2-branch.1'
+    '2.1.1'
 
+Note that the new version number is the branch name followed by a
+number on the branch.
 
 Supporting separately versioned subobjects
 ------------------------------------------

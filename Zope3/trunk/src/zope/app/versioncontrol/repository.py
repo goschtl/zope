@@ -390,7 +390,7 @@ class Repository(persistent.Persistent):
         history = self.getVersionHistory(info.history_id)
         history.labelVersion(info.version_id, label, force)
 
-    def makeBranch(self, object, branch_id):
+    def makeBranch(self, object, branch_id=None):
         # Note - this is not part of the official version control API yet.
         # It is here to allow unit testing of the architectural aspects
         # that are already in place to support activities in the future.
@@ -401,7 +401,18 @@ class Repository(persistent.Persistent):
                 'The selected resource must be checked in.'
                 )
 
-        branch_id = branch_id or None
+        history = self.getVersionHistory(info.history_id)
+
+        if branch_id is None:
+            i = 1
+            while 1:
+                branch_id = "%s.%d" % (info.version_id, i)
+                if not (history._branches.has_key(branch_id)
+                        or
+                        self._labels.has_key(branch_id)
+                        ):
+                    break
+                i += 1
 
         # Make sure that branch ids and labels do not collide.
         if self._labels.has_key(branch_id) or branch_id == 'mainline':
@@ -412,14 +423,14 @@ class Repository(persistent.Persistent):
         if not self._branches.has_key(branch_id):
             self._branches[branch_id] = 1
 
-        history = self.getVersionHistory(info.history_id)
-
         if history._branches.has_key(branch_id):
             raise VersionControlError(
                 'The resource is already associated with the given branch.'
                 )
 
         history.createBranch(branch_id, info.version_id)
+
+        return branch_id
 
     def getVersionOfResource(self, history_id, selector):
         history = self.getVersionHistory(history_id)

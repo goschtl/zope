@@ -186,10 +186,12 @@ class IRepository(zope.interface.Interface):
         Permission: Use version control
         """
 
-    def makeBranch(object, branch_id):
-        """Create a new branch with the given branch id
+    def makeBranch(object):
+        """Create a new branch, returning the branch id.
 
         The branch is created from the object's version.
+
+        A branch id is computed and returned.
         """
 
 CHECKED_OUT = 0
