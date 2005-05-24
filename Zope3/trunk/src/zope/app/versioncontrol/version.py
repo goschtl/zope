@@ -45,14 +45,17 @@ def cloneByPickle(obj, ignore_list=()):
         if ignore_dict.has_key(id(ob)):
             return 'ignored'
 
-        # XXX obviously no test for this
         if (zope.app.location.ILocation.providedBy(ob)
             and not zope.app.location.inside(ob, obj)):
             myid = id(ob)
             ids[myid] = ob
             return myid
-        if getattr(ob, '_p_changed', 0) is None:
-            ob._p_changed = 0
+
+
+#          The location check above should wake the object
+##         if getattr(ob, '_p_changed', 0) is None:
+##             ob._p_changed = 0
+
         return None
 
     stream = StringIO()
