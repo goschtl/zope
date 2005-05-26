@@ -125,12 +125,29 @@ You cannot authenticate if the plugin has a bad configuration.
   >>> auth.authenticateCredentials({'login': 'ok', 'password': '42pw'}) is None
   True
 
+When dealing with security settings, only the prinipal id is stored. To
+retrieve the principal object, the pluggable autnetication utility uses the
+authenticator'a ``principalInfo(id)`` method to extract further details.
+
+If the id is not in this plugin, return nothing.   
+
+  >>> auth.idAttribute = 'uid'   
+  >>> auth.searchBase = 'dc=test'
+  >>> auth.principalInfo('42') is None   
+  True   
+
+Otherwise return the info if we have it.   
+
+  >>> auth.principalInfo('ldap.123') is None   
+  True   
+  >>> info = auth.principalInfo('ldap.42')   
+  >>> info, info.login, info.title, info.description
+  (PrincipalInfo('42'), u'ok', u'the question', u'the question')
+
 In user interfaces, you commonly want to search through the available
 principals for managment purposes. The authentication plugin provides an API
 for searching through the principals. An empty search returns everything.
 
-  >>> auth.idAttribute = 'uid'
-  >>> auth.searchBase = 'dc=test'
   >>> auth.search({})
   [u'ldap.1', u'ldap.2', u'ldap.42']
 

@@ -98,7 +98,7 @@ class LDAPAuthentication(Persistent, Contained):
         return da
 
     def authenticateCredentials(self, credentials):
-        """See zope.app.authentication.interfaces.IAuthenticationPlugin."""
+        """See zope.app.authentication.interfaces.IAuthenticatorPlugin."""
 
         if not isinstance(credentials, dict):
             return None
@@ -142,6 +142,33 @@ class LDAPAuthentication(Persistent, Contained):
             conn = da.connect(dn, password)
         except (ServerDown, InvalidCredentials):
             return None
+
+        return PrincipalInfo(id, **self.getInfoFromEntry(dn, entry))
+
+    def principalInfo(self, id):
+        """See zope.app.authentication.interfaces.IAuthenticatorPlugin."""
+        if not id.startswith(self.principalIdPrefix):   
+            return None
+        id = id[len(self.principalIdPrefix):]
+           
+        da = self.getLDAPAdapter()
+        if da is None:
+            return None
+
+        # Search for a matching entry.
+        try:
+            conn = da.connect()
+        except ServerDown:
+            return None
+        filter = filter_format('(%s=%s)', (self.idAttribute, id))
+        try:
+            res = conn.search(self.searchBase, self.searchScope, filter=filter)
+        except NoSuchObject:
+            return None
+        if len(res) != 1:
+            # Search returned no result or too many.
+            return None
+        dn, entry = res[0]
 
         return PrincipalInfo(id, **self.getInfoFromEntry(dn, entry))
 
