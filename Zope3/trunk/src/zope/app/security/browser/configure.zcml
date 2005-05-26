@@ -18,7 +18,7 @@
       />
 
   <browser:tool
-      interface="..interfaces.IAuthenticationUtility"
+      interface="..interfaces.IAuthentication"
       title="Authentication"
       description="Authenticates Principals."
       unique="true"
