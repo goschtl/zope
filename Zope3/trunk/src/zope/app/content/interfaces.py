@@ -22,6 +22,6 @@ from zope.interface.interfaces import IInterface
 class IContentType(IInterface):
     """This interface represents a content type.
 
-    If an **interface** provides this interface type, then all object
+    If an **interface** provides this interface type, then all objects
     providing the **interface** are considered content objects.
     """
