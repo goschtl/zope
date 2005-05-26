@@ -60,8 +60,6 @@ class IRepository(zope.interface.Interface):
         the resource is updated to a particular version, label, or date.
         Useful for determining whether a call to checkoutResource()
         will succeed.
-
-        Permission: public
         """
 
     def isResourceChanged(object):
@@ -69,8 +67,6 @@ class IRepository(zope.interface.Interface):
         Return true if the state of a resource has changed in a transaction
         *after* the version bookkeeping was saved. Note that this method is 
         not appropriate for detecting changes within a transaction!
-
-        Permission: public
         """
 
     def getVersionInfo(object):
@@ -80,8 +76,6 @@ class IRepository(zope.interface.Interface):
         The VersionInfo object contains version control bookkeeping
         information.  If the object is not under version control, a
         VersionControlError will be raised.
-
-        Permission: public
         """
 
     def applyVersionControl(object, message=None):
@@ -94,8 +88,6 @@ class IRepository(zope.interface.Interface):
 
         If no message is passed the 'Initial checkin.' message string is 
         written as the message log entry.
-
-        Permission: Use version control
         """
 
     def checkoutResource(object):
@@ -104,8 +96,6 @@ class IRepository(zope.interface.Interface):
         state, allowing changes to be made to the object. If the object is
         not under version control or the object is already checked out, a
         VersionControlError will be raised.
-
-        Permission: Use version control
         """
 
     def checkinResource(object, message=''):
@@ -115,8 +105,6 @@ class IRepository(zope.interface.Interface):
         message should describe the changes being committed. If the object
         is not under version control or is already in the checked-in state,
         a VersionControlError will be raised.
-
-        Permission: Use version control
         """
 
     def uncheckoutResource(object):
@@ -133,8 +121,6 @@ class IRepository(zope.interface.Interface):
         updated. The selector must be a string (version id, branch id,
         label or date) that is used to select a version from the version
         history.
-
-        Permission: Use version control
         """
 
     def labelResource(object, label, force=None):
@@ -144,8 +130,6 @@ class IRepository(zope.interface.Interface):
         replaced with the new association. If force is false and there is
         an existing association with the given label, a VersionControlError
         will be raised.
-
-        Permission: Use version control
         """
 
     def getVersionOfResource(history_id, selector):
@@ -155,8 +139,6 @@ class IRepository(zope.interface.Interface):
         acquisition context. The selector must be a string (version id,
         branch id, label or date) that is used to select a version
         from the version history.
-
-        Permission: Use version control
         """
 
     def getVersionIds(object):
@@ -164,8 +146,6 @@ class IRepository(zope.interface.Interface):
         Return a sequence of the (string) version ids corresponding to the
         available versions of an object. This should be used by UI elements
         to populate version selection widgets, etc.
-
-        Permission: Use version control
         """
 
     def getLabelsForResource(object):
@@ -174,16 +154,12 @@ class IRepository(zope.interface.Interface):
         versions of the given object that have been associated with a
         label. This should be used by UI elements to populate version
         selection widgets, etc.
-
-        Permission: Use version control
         """
 
     def getLogEntries(object):
         """
         Return a sequence of LogEntry objects (most recent first) that
         are associated with a version-controlled object.
-
-        Permission: Use version control
         """
 
     def makeBranch(object):
