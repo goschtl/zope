@@ -149,7 +149,7 @@ class LDAPAuthentication(Persistent, Contained):
         """See zope.app.authentication.interfaces.IAuthenticatorPlugin."""
         if not id.startswith(self.principalIdPrefix):   
             return None
-        id = id[len(self.principalIdPrefix):]
+        internal_id = id[len(self.principalIdPrefix):]
            
         da = self.getLDAPAdapter()
         if da is None:
@@ -160,7 +160,7 @@ class LDAPAuthentication(Persistent, Contained):
             conn = da.connect()
         except ServerDown:
             return None
-        filter = filter_format('(%s=%s)', (self.idAttribute, id))
+        filter = filter_format('(%s=%s)', (self.idAttribute, internal_id))
         try:
             res = conn.search(self.searchBase, self.searchScope, filter=filter)
         except NoSuchObject:

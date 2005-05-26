@@ -142,7 +142,7 @@ Otherwise return the info if we have it.
   True   
   >>> info = auth.principalInfo('ldap.42')   
   >>> info, info.login, info.title, info.description
-  (PrincipalInfo('42'), u'ok', u'the question', u'the question')
+  (PrincipalInfo('ldap.42'), u'ok', u'the question', u'the question')
 
 In user interfaces, you commonly want to search through the available
 principals for managment purposes. The authentication plugin provides an API
@@ -217,7 +217,7 @@ We are finally ready to create a pluggable authentication utility and register
 the two plugins with it:
 
   >>> from zope.app import authentication
-  >>> pau = authentication.PluggableAuthentication()
+  >>> pau = authentication.PluggableAuthentication('pau.')
   >>> pau.credentialsPlugins = ('simple-creds', )
   >>> pau.authenticatorPlugins = ('ldap-authenticator', )
 
@@ -228,4 +228,12 @@ And now we can just authenticate a user using LDAP:
   >>> request = TestRequest(credentials={'login': 'ok', 'password': '42pw'})
   >>> principal = pau.authenticate(request)
   >>> principal
-  Principal(u'ldap.ok')
+  Principal(u'pau.ldap.ok')
+
+You can also ask the authentication utility about a particular principal, once
+you have its id:
+
+  >>> provideAdapter(principalfolder.FoundPrincipalFactory)
+
+  >>> pau.getPrincipal(u'pau.ldap.ok')
+  Principal(u'pau.ldap.ok')
