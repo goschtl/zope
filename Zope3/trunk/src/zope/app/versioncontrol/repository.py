@@ -121,6 +121,7 @@ class Repository(persistent.Persistent):
         # *after* the version bookkeeping was saved. Note that this method is
         # not appropriate for detecting changes within a transaction!
         info = self.getVersionInfo(object)
+        info.version_id # deghostify info
         itime = getattr(info, '_p_serial', None)
         if itime is None:
             return False
