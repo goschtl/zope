@@ -19,11 +19,7 @@ from Testing.ZopeTestCase import ZopeTestCase, installProduct
 from Testing.ZopeTestCase import standard_permissions
 installProduct('Five')
 
-try:
-    import transaction
-except ImportError:
-    # BBB: for Zope 2.7
-    from Products.Five.bbb import transaction
+import transaction
 
 import Products.Five.tests
 from Products.Five import zcml

@@ -14,11 +14,7 @@ import sys
 from datetime import datetime
 
 import Acquisition
-try:
-    import transaction
-except ImportError:
-    # BBB: for Zope 2.7
-    from Products.Five.bbb import transaction
+import transaction
 from zope.event import notify
 from zope.schema.interfaces import ValidationError
 from zope.app.location.interfaces import ILocation

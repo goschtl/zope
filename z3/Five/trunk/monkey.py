@@ -36,3 +36,10 @@ def monkeyPatch():
 
     from Products.Five import interfaces
     interfaces.monkey()
+
+    try:
+        import Zope2
+    except ImportError:
+        import sys
+        from Products.Five.bbb import transaction
+        sys.modules['transaction'] = transaction
