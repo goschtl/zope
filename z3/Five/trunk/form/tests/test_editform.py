@@ -63,7 +63,7 @@ class EditFormTest(FunctionalTestCase):
         # we expect that we get a 200 Ok
         self.assertEqual(200, response.getStatus())
         self.assertEquals('Test', self.folder.edittest.title)
-        self.assertEquals('BarDescription', self.folder.edittest.description)
+        self.assertEquals('', self.folder.edittest.description)
 
     def test_addform(self):
         manage_addFiveTraversableFolder(self.folder, 'ftf')
