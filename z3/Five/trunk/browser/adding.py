@@ -228,18 +228,16 @@ class ObjectManagerNameChooser:
             suffix = ''
 
         n = name + suffix
-        i = 1
+        i = 0
         while True:
-            try:
-                container._getOb(n)
-            except AttributeError:
-                pass
-            else:
-                break
             i += 1
+            try:
+                self.context._getOb(n)
+            except AttributeError:
+                break
             n = name + '-' + str(i) + suffix
             
-        # Make sure tha name is valid.  We may have started with something bad.
+        # Make sure the name is valid.  We may have started with something bad.
         self.checkName(n, object)
 
         return n
