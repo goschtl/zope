@@ -45,6 +45,13 @@ class IPluggableAuthentication(ILogout, IContainer):
         default=[],
         )
 
+    prefix = zope.schema.TextLine(
+        title=u'Prefix',
+        default=u'',
+        required=True,
+        readonly=True,
+        )
+
     def logout(request):
         """Performs a logout by delegating to its authentictor plugins."""
 
