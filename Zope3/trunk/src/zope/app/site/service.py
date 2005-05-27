@@ -24,6 +24,7 @@ from zope.app.component.interfaces.registration import \
      IRegisterableContainerContaining as IRegisterableContainerContainer
 
 zope.deprecation.__show__.off()
+from zope.component.bbb.service import IService
 from interfaces import IServiceRegistration
 zope.deprecation.__show__.on()
 
