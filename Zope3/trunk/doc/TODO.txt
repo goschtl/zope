@@ -2,14 +2,6 @@
 Things to do for the next release (in no particular order)
 ==========================================================
 
-Features
---------
-
-- Support for iterable sources
-
-- Issue 390: Request body and bodyFile are bogus, and have a
-             misleading documentation
-
 Miscellaneous
 -------------
 
@@ -22,15 +14,6 @@ Miscellaneous
 
 Bug Fixes
 ---------
-
-FTP Server
-~~~~~~~~~~
-
-  * 350: ServerChannelBase does not update last_activity
-
-  * 363: ftp access with gftp 2.x to the zope x3 ftp server seems broken
-
-  * 375: ftp data channel does not tell control channel about activity
 
 File Content Component
 ~~~~~~~~~~~~~~~~~~~~~~

@@ -2,6 +2,13 @@
 Things to do After the next release (in no particular order) 
 ============================================================
 
+- Support for iterable sources
+
+- Issue 390: Request body and bodyFile are bogus, and have a misleading
+  documentation. (This issue has been addressed in the Twisted-Integration
+  branch, which  will be merged to the trunk after the 3.1 split and thus be
+  in for 3.2.)
+
 - Finish new Message support (Philipp)
 
 - Write tests for the Dublin Core Structured Value support, especially errors
