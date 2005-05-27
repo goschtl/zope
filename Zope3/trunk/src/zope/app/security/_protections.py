@@ -17,7 +17,7 @@ $Id$
 """
 
 def protect():
-    from zope.security.checker import defineChecker, NamesChecker, NoProxy
+    from zope.security.checker import defineChecker, NoProxy
 
     # Make sure the message id gets never proxied
     from zope.i18n.messageid import MessageID
