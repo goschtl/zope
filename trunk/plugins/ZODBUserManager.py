@@ -156,13 +156,29 @@ class ZODBUserManager( BasePlugin, Cacheable ):
         if cached_info is not None:
             return tuple(cached_info)
 
-        if exact_match and ( id or login ):
+        terms = id or login
 
-            if id:
-                user_ids.extend( id )
-            elif login:
-                user_ids.extend( [ self._login_to_userid.get( x )
-                                    for x in login ] )
+        if exact_match:
+            if terms:
+
+                if id:
+                    # if we're doing an exact match based on id, it
+                    # absolutely will have been qualified (if we have a
+                    # prefix), so we can ignore any that don't begin with
+                    # our prefix
+                    id = [ x for x in id if x.startswith(self.prefix) ]
+                    user_ids.extend( [ x[len(self.prefix):] for x in id ] )
+                elif login:
+                    user_ids.extend( [ self._login_to_userid.get( x )
+                                       for x in login ] )
+
+                # we're claiming an exact match search, if we still don't
+                # have anything, better bail.
+                if not user_ids:
+                    return ()
+            else:
+                # insane - exact match with neither login nor id
+                return ()
 
         if user_ids:
             user_filter = None
@@ -177,7 +193,7 @@ class ZODBUserManager( BasePlugin, Cacheable ):
                 e_url = '%s/manage_users' % self.getId()
                 qs = 'user_id=%s' % user_id
 
-                info = { 'id' : user_id
+                info = { 'id' : self.prefix + user_id
                        , 'login' : self._userid_to_login[ user_id ]
                        , 'pluginid' : plugin_id
                        , 'editurl' : '%s?%s' % (e_url, qs)

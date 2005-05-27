@@ -17,6 +17,7 @@
 $Id$
 """
 from OFS.SimpleItem import SimpleItem
+from OFS.PropertyManager import PropertyManager
 from Acquisition import aq_parent, aq_inner
 from AccessControl import ClassSecurityInfo
 from App.class_init import default__class_init__ as InitializeClass
@@ -26,7 +27,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.permissions import ManageUsers
 
-class BasePlugin(SimpleItem):
+class BasePlugin(SimpleItem, PropertyManager):
 
     """ Base class for all PluggableAuthService Plugins
     """
@@ -35,22 +36,29 @@ class BasePlugin(SimpleItem):
 
     __implements__ = SimpleItem.__implements__
 
-    manage_options = ( ( { 'label': 'Activate', 
+    manage_options = ( ( { 'label': 'Activate',
                            'action': 'manage_activateInterfacesForm', }
                          ,
                        )
                      + SimpleItem.manage_options
+                     + PropertyManager.manage_options
                      )
+
+    prefix = ''
+
+    _properties = (
+        dict(id='prefix', type='string', mode='w',
+             label='Optional Prefix'),)
 
     security.declareProtected( ManageUsers, 'manage_activateInterfacesForm' )
     manage_activateInterfacesForm = PageTemplateFile(
-        'www/bpActivateInterfaces', globals(), 
+        'www/bpActivateInterfaces', globals(),
         __name__='manage_activateInterfacesForm')
 
     security.declareProtected( ManageUsers, 'listInterfaces' )
     def listInterfaces( self ):
         """ For ZMI update of interfaces. """
-        
+
         results = []
 
         for iface in flattenInterfaces( self.__implements__ ):
@@ -73,7 +81,7 @@ class BasePlugin(SimpleItem):
         active_interfaces = []
 
         for iface_name in interfaces:
-            active_interfaces.append( plugins._getInterfaceFromName( 
+            active_interfaces.append( plugins._getInterfaceFromName(
                                                 iface_name ) )
 
         pt = plugins._plugin_types

@@ -84,9 +84,6 @@ _SWALLOWABLE_PLUGIN_EXCEPTIONS = ( NameError
                                  , ValueError
                                  )
 
-security.declarePublic( 'MANGLE_DELIMITER' )
-MANGLE_DELIMITER = '__'
-
 MultiPlugins = []
 def registerMultiPlugin(meta_type):
     """ Register a 'multi-plugin' in order to expose it to the Add List
@@ -202,26 +199,7 @@ class PluggableAuthService( Folder, Cacheable ):
         user_id = None
         login = None
 
-        try:
-            plugin_id, principal_id = self._unmangleId( id )
-        except ValueError:
-            user_id = self._verifyUser( plugins, user_id=id )
-        else:
-            plugin = getattr( self, plugin_id, None )
-
-            if plugin is not None:
-                try:
-                    user_info = plugin.enumerateUsers( id=principal_id
-                                                     , exact_match=True )
-                    assert( len( user_info ) in [ 0, 1 ] )
-                except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    LOG('PluggableAuthService', BLATHER,
-                        'UserEnumerationPlugin %s error' % plugin_id,
-                        error=sys.exc_info())
-                else:
-                    if user_info:
-                        user_id = id
-                        login = user_info[0].get( 'login' )
+        user_id = self._verifyUser( plugins, user_id=id )
 
         if not user_id:
             return default
@@ -286,35 +264,8 @@ class PluggableAuthService( Folder, Cacheable ):
     def searchUsers(self, **kw):
         """ Search for users
         """
-        exact_match = kw.get( 'exact_match', False )
         search_id = kw.get( 'id', None )
         search_name = kw.get( 'name', None )
-
-        if exact_match and search_id:
-            plugin_id, principal_id = self._unmangleId( search_id )
-            plugin = getattr( self, plugin_id, None )
-            if plugin is not None:
-                try:
-                    user_info = plugin.enumerateUsers( id=principal_id
-                                                     , exact_match=True )
-                    assert( len( user_info ) in [ 0, 1 ] )
-                    if user_info:
-                        user_info = user_info[ 0 ]
-                        info = {}
-                        info.update( user_info )
-                        info[ 'userid' ] = principal_id
-                        info[ 'id' ] = self._computeMangledId( user_info )
-                        info[ 'principal_type' ] = 'user'
-                        if not info.has_key('title'):
-                            info[ 'title' ] = info[ 'login' ]
-                        return ( info, )
-                    else:
-                        return ()
-                except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    LOG('PluggableAuthService', BLATHER,
-                        'UserEnumerationPlugin %s error' % plugin_id,
-                        error=sys.exc_info())
-                    return ()
 
         result = []
         max_results = kw.get('max_results', '')
@@ -341,7 +292,6 @@ class PluggableAuthService( Folder, Cacheable ):
                     info = {}
                     info.update( user_info )
                     info[ 'userid' ] = info[ 'id' ]
-                    info[ 'id' ] = self._computeMangledId( info )
                     info[ 'principal_type' ] = 'user'
                     if not info.has_key('title'):
                         info[ 'title' ] = info[ 'login' ]
@@ -370,35 +320,8 @@ class PluggableAuthService( Folder, Cacheable ):
     def searchGroups(self, **kw):
         """ Search for groups
         """
-        exact_match = kw.get( 'exact_match', False )
         search_id = kw.get( 'id', None )
         search_name = kw.get( 'name', None )
-
-        if exact_match and search_id:
-            plugin_id, principal_id = self._unmangleId( search_id )
-            plugin = getattr( self, plugin_id, None )
-            if plugin is not None:
-                try:
-                    group_info = plugin.enumerateGroups( id=principal_id
-                                                       , exact_match=True )
-                    assert( len( group_info ) in [ 0, 1 ] )
-                    if group_info:
-                        group_info = group_info[ 0 ]
-                        info = {}
-                        info.update( group_info )
-                        info[ 'groupid' ] = principal_id
-                        info[ 'id' ] = self._computeMangledId( group_info )
-                        info[ 'principal_type' ] = 'group'
-                        if not info.has_key('title'):
-                            info[ 'title' ] = "(Group) %s" % principal_id
-                        return ( info, )
-                    else:
-                        return ()
-                except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    LOG('PluggableAuthService', BLATHER,
-                        'GroupEnumerationPlugin %s error' % plugin_id,
-                        error=sys.exc_info())
-                    return ()
 
         result = []
         max_results = kw.get('max_results', '')
@@ -426,7 +349,6 @@ class PluggableAuthService( Folder, Cacheable ):
                     info = {}
                     info.update( group_info )
                     info[ 'groupid' ] = info[ 'id' ]
-                    info[ 'id' ] = self._computeMangledId( info )
                     info[ 'principal_type' ] = 'group'
                     if not info.has_key('title'):
                         info[ 'title' ] = "(Group) %s" % info[ 'groupid' ]
@@ -454,7 +376,6 @@ class PluggableAuthService( Folder, Cacheable ):
     def searchPrincipals(self, groups_first=False, **kw):
         """ Search for principals (users, groups, or both)
         """
-        exact_match = kw.get( 'exact_match', False )
         max_results = kw.get( 'max_results', '' )
 
         search_id = kw.get( 'id', None )
@@ -463,56 +384,6 @@ class PluggableAuthService( Folder, Cacheable ):
             if not kw.has_key('title'):
                 kw['title'] = search_name
             kw['login'] = search_name
-
-        if exact_match and search_id:
-            user_info = group_info = ()
-
-            plugin_id, principal_id = self._unmangleId( search_id )
-            plugin = getattr( self, plugin_id, None )
-            if plugin is not None:
-                if getattr( aq_base( plugin ), 'enumerateUsers', None ):
-                    user_info = plugin.enumerateUsers( id=principal_id
-                                                     , exact_match=True )
-                    if user_info:
-                        local_key = 'userid'
-                        principal_type = 'user'
-                        if kw.has_key('title'):
-                            title_key = 'title'
-                        else:
-                            title_key = 'login'
-                        title_pattern = "%s"
-                if getattr( aq_base( plugin ), 'enumerateGroups', None ):
-                    group_info = plugin.enumerateGroups( id=principal_id
-                                                       , exact_match=True )
-                    if group_info:
-                        local_key = 'groupid'
-                        principal_type = 'group'
-                        if kw.has_key('title'):
-                            title_key = 'title'
-                            title_pattern = "%s"
-                        else:
-                            title_key = 'groupid'
-                            title_pattern = "(Group) %s"
-                try:
-                    principal_info = filter(None, (user_info + group_info))
-                    assert( len( principal_info ) in [ 0, 1 ] )
-                    if principal_info:
-                        principal_info = principal_info[ 0 ]
-                        info = {}
-                        info.update( principal_info )
-                        info[ local_key ] = principal_id
-                        info[ 'id' ] = self._computeMangledId( principal_info )
-                        info[ 'principal_type' ] = principal_type
-                        if not info.has_key('title'):
-                            info[ 'title' ] = title_pattern % info[ title_key ]
-                        return ( info, )
-                    else:
-                        return ()
-                except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
-                    LOG('PluggableAuthService', BLATHER,
-                        'UserEnumeratePlugin %s error' % plugin_id,
-                        error=sys.exc_info())
-                    return ()
 
         users = [ d.copy() for d in self.searchUsers( **kw ) ]
         groups = [ d.copy() for d in self.searchGroups( **kw ) ]
@@ -707,14 +578,14 @@ class PluggableAuthService( Folder, Cacheable ):
                     for authenticator_id, auth in authenticators:
 
                         try:
-                            uid_and_name = auth.authenticateCredentials(
+                            uid_and_info = auth.authenticateCredentials(
                                 credentials )
 
-                            if uid_and_name is None:
+                            if uid_and_info is None:
                                 continue
 
-                            user_id, name = uid_and_name
-                            
+                            user_id, info = uid_and_info
+
                         except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                             LOG('PluggableAuthService', BLATHER,
                                 'AuthenticationPlugin %s error' %
@@ -722,9 +593,7 @@ class PluggableAuthService( Folder, Cacheable ):
                             continue
 
                         if user_id is not None:
-                            mangled_id = self._mangleId(authenticator_id,
-                                                        user_id)
-                            user_ids.append( (mangled_id, name) )
+                            user_ids.append( (user_id, info) )
 
                 result.extend( user_ids )
 
@@ -736,25 +605,6 @@ class PluggableAuthService( Folder, Cacheable ):
                 result.append( ( user_id, name ) )
 
         return result
-
-    security.declarePrivate( '_unmangleId' )
-    def _unmangleId( self, mangled_id ):
-
-        return mangled_id.split( MANGLE_DELIMITER, 1 )
-
-    security.declarePrivate( '_mangleId' )
-    def _mangleId( self, namespace, id ):
-
-        return MANGLE_DELIMITER.join( ( namespace, id ) )
-
-    security.declarePrivate( '_computeMangledId' )
-    def _computeMangledId( self, info_dict ):
-
-        """ Synthesize an from info_dict.
-
-        o Mangle plugin and original id together.
-        """
-        return self._mangleId( info_dict[ 'pluginid' ], info_dict[ 'id' ] )
 
     security.declarePrivate( '_tryEmergencyUserAuthentication' )
     def _tryEmergencyUserAuthentication( self, credentials ):
@@ -794,17 +644,8 @@ class PluggableAuthService( Folder, Cacheable ):
                 continue
             groups = groupmaker.getGroupsForPrincipal( principal, request )
             for group in groups:
-                try:
-                    # We may be getting a mangled groupid already
-                    group_plugin, group_id = self._unmangleId( group )
-                except ValueError:
-                    # group id hasn't been mangled yet
-                    mangled_group = self._mangleId( groupmaker_id, group )
-                else:
-                    # group has already been mangled
-                    mangled_group = group
-                principal._addGroups( [ mangled_group ] )
-                all_groups[ mangled_group ] = 1
+                principal._addGroups( [ group ] )
+                all_groups[ group ] = 1
 
         return all_groups.keys()
 
@@ -879,8 +720,6 @@ class PluggableAuthService( Folder, Cacheable ):
 
                 roles = rolemaker.getRolesForPrincipal( user, request )
 
-                # Role names *can't* be mangled;  other parts of the
-                # client applications know about them!
                 if roles:
                     user._addRoles( roles )
 
@@ -928,7 +767,7 @@ class PluggableAuthService( Folder, Cacheable ):
                     info = enumerator.enumerateUsers( **criteria )
 
                     if info:
-                        id = self._computeMangledId( info[0] )
+                        id = info[0]['id']
                         # Put the computed value into the cache
                         self.ZCacheable_set( id
                                            , view_name=view_name

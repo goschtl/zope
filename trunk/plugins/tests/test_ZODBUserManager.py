@@ -357,6 +357,31 @@ class ZODBUserManagerTests( unittest.TestCase
         self.assertEqual( user_id, 'new_user' )
         self.assertEqual( login, 'new_user@example.com' )
 
+    def test_enumerateUsersWithOptionalMangling(self):
+
+        zum = self._makeOne()
+        zum.prefix = 'special__'
+
+        zum.addUser('user', 'login', 'password')
+        info = zum.enumerateUsers(login='login')
+        self.assertEqual(info[0]['id'], 'special__user')
+
+    def test_getUserByIdWithOptionalMangling(self):
+
+        zum = self._makeOne()
+        zum.prefix = 'special__'
+
+        zum.addUser('user', 'login', 'password')
+
+        info = zum.enumerateUsers(id='user', exact_match=True)
+        self.assertEqual(len(info), 0)
+
+        info = zum.enumerateUsers(id='special__user', exact_match=True)
+        self.assertEqual(info[0]['id'], 'special__user')
+
+        info = zum.enumerateUsers(id='special__luser', exact_match=True)
+        self.assertEqual(len(info), 0)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -37,15 +37,21 @@ class DummyUserEnumerator( DummyPlugin ):
             login = user_id
 
         self._login = login
+        self.identifier = None
 
     def enumerateUsers( self, **kw ):
 
-        result = [ { 'id' : self._user_id
+        _id = self._user_id
+
+        if self.identifier is not None:
+            _id = "%s%s" % (self.identifier, self._user_id)
+
+        result = [ { 'id' : _id
                    , 'login' : self._login
                    , 'pluginid' : self.PLUGINID
                    } ]
 
-        if kw.get( 'id' ) == self._user_id:
+        if kw.get( 'id' ) == _id:
             return tuple(result)
 
         if kw.get( 'login' ) == self._login:
@@ -58,6 +64,7 @@ class DummyGroupEnumerator( DummyPlugin ):
     def __init__( self, group_id ):
 
         self._group_id = self.PLUGINID = group_id
+        self.identifier = None
 
     def enumerateGroups( self
                        , id=None
@@ -67,12 +74,17 @@ class DummyGroupEnumerator( DummyPlugin ):
                        , **kw
                        ):
 
-        result = [ { 'id' : self._group_id
+        _id = self._group_id
+
+        if self.identifier is not None:
+            _id = "%s%s" % (self.identifier, self._group_id)
+
+        result = [ { 'id' : _id
                    , 'pluginid' : self.PLUGINID
                    } ]
 
         if id:
-            if self._group_id.find( id ) >= 0:
+            if _id.find( id ) >= 0:
                 return tuple(result)
         return ()
 
@@ -84,6 +96,7 @@ class DummySuperEnumerator(DummyUserEnumerator, DummyGroupEnumerator):
         self._user_id = user_id
         self._login = login
         self._group_id = group_id
+        self.identifier = None
 
 class DummyGroupPlugin(DummyPlugin):
 
@@ -459,7 +472,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'login__foo' )
+        self.assertEqual( user_ids[0][0], 'foo' )
 
     def test__extractUserIds_one_extractor_two_authenticators( self ):
 
@@ -495,8 +508,8 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 2 )
-        self.assertEqual( user_ids[ 0 ][0], 'always__baz' )
-        self.assertEqual( user_ids[ 1 ][0], 'login__foo' )
+        self.assertEqual( user_ids[0][0], 'baz' )
+        self.assertEqual( user_ids[1][0], 'foo' )
 
     def test__extractUserIds_two_extractors_two_authenticators( self ):
 
@@ -534,7 +547,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'login__foo' )
+        self.assertEqual( user_ids[0][0], 'foo' )
 
         request[ 'extra' ] = 'qux'
 
@@ -543,8 +556,8 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 2, user_ids )
-        self.assertEqual( user_ids[ 0 ][0], 'extra__qux' )
-        self.assertEqual( user_ids[ 1 ][0], 'login__foo' )
+        self.assertEqual( user_ids[0][0], 'qux' )
+        self.assertEqual( user_ids[1][0], 'foo' )
 
     def test__extractUserIds_broken_extractor( self ):
 
@@ -580,7 +593,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'login__foo' )
+        self.assertEqual( user_ids[0][0], 'foo' )
 
     def test_authenticate_emergency_user_with_broken_extractor( self ):
 
@@ -618,7 +631,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'foo' )
+        self.assertEqual( user_ids[0][0], 'foo' )
 
         PluggableAuthService.emergency_user = old_eu
 
@@ -656,7 +669,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
                                        )
 
         self.assertEqual( len( user_ids ), 1 )
-        self.assertEqual( user_ids[ 0 ][0], 'login__foo' )
+        self.assertEqual( user_ids[0][0], 'foo' )
 
     def test__getObjectContext_no_steps( self ):
 
@@ -956,8 +969,8 @@ class PluggableAuthServiceTests( unittest.TestCase ):
 
         groups = user.getGroups()
         self.assertEqual( len( groups ), 2 )
-        self.failUnless( 'foo__group1' in groups )
-        self.failUnless( 'foo__group2' in groups )
+        self.failUnless( 'group1' in groups )
+        self.failUnless( 'group2' in groups )
 
     def test__findUser_with_groups_ignoring_one( self ):
 
@@ -1137,6 +1150,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         self.assertEqual(  zcuf.getUser( 'zope' ), None )
 
     def test_getUser_with_plugins( self ):
+        # XXX: This will produce insane results when uniquifiers not present
 
         from Products.PluggableAuthService.interfaces.plugins \
              import IUserEnumerationPlugin
@@ -1158,12 +1172,42 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         self.assertEqual( zcuf.getUser( 'zope' ), None )
 
         user = zcuf.getUser( 'foo' )
-        self.assertEqual( user.getId(), 'foo__foo' )
+        self.assertEqual( user.getId(), 'foo' )
 
-        self.assertEqual( zcuf.getUser( 'foo__bar' ), None )
+        self.assertEqual( zcuf.getUser( 'who_knows' ), None )
 
         user = zcuf.getUser( 'bar@example.com' )
-        self.assertEqual( user.getId(), 'bar__bar' )
+        self.assertEqual( user.getId(), 'bar' )
+
+    def test_getUser_with_uniquifying_plugins( self ):
+        from Products.PluggableAuthService.interfaces.plugins \
+             import IUserEnumerationPlugin
+
+        plugins = self._makePlugins()
+        zcuf = self._makeOne( plugins )
+
+        foo = self._makeUserEnumerator( 'foo' )
+        foo.identifier = 'foo/'
+        zcuf._setObject( 'foo', foo )
+
+        bar = self._makeUserEnumerator( 'bar', 'bar@example.com' )
+        bar.identifier = 'bar+'
+        zcuf._setObject( 'bar', bar )
+
+        plugins = zcuf._getOb( 'plugins' )
+
+        plugins.activatePlugin( IUserEnumerationPlugin, 'foo' )
+        plugins.activatePlugin( IUserEnumerationPlugin, 'bar' )
+
+        self.assertEqual( zcuf.getUser( 'zope' ), None )
+
+        user = zcuf.getUser( 'foo' )
+        self.assertEqual( user.getId(), 'foo/foo' )
+
+        self.assertEqual( zcuf.getUser( 'who_knows' ), None )
+
+        user = zcuf.getUser( 'bar@example.com' )
+        self.assertEqual( user.getId(), 'bar+bar' )
 
     def test_simple_getUserGroups_with_Groupplugin(self):
 
@@ -1304,7 +1348,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         directlyProvides( olivier, ( IUserEnumerationPlugin, IRolesPlugin ) )
         olivier.enumerateUsers = lambda id: id == 'foo' or None
         olivier.getRolesForPrincipal = lambda user, req: (
-                     user.getId() == 'login__olivier' and ( 'Hamlet', ) or () )
+                     user.getId() == 'olivier' and ( 'Hamlet', ) or () )
 
         zcuf._setObject( 'olivier', olivier )
 
@@ -1488,13 +1532,9 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         plugins.activatePlugin( IUserEnumerationPlugin, 'foo' )
         plugins.activatePlugin( IGroupEnumerationPlugin, 'foobar' )
 
-        self.failIf(      zcuf.searchPrincipals( id='zope' ) )
-        self.failUnless(  len( zcuf.searchPrincipals( id='foo__foo'
-                                                    , exact_match=True )
-                               ) == 1 )
-        self.failUnless(  len( zcuf.searchPrincipals( id='foo'
-                                                    , exact_match=False )
-                               ) == 2 )
+        self.failIf( zcuf.searchPrincipals( id='zope' ) )
+        self.failUnless( len( zcuf.searchPrincipals( id='foo' )
+                            ) == 2 )
 
     def test_searchPrincipalsWithSuperEnumerator( self ):
 
@@ -1515,11 +1555,9 @@ class PluggableAuthServiceTests( unittest.TestCase ):
 
         self.failIf(      zcuf.searchPrincipals( id='zope' ) )
         self.failUnless(
-            len( zcuf.searchPrincipals( id='s00per__user'
-                                      , exact_match=True ) ) == 1 )
+            len( zcuf.searchPrincipals(id='user')) == 1 )
         self.failUnless(
-            len( zcuf.searchPrincipals( id='s00per__group'
-                                      , exact_match=True ) ) == 1 )
+            len( zcuf.searchPrincipals(id='group')) == 1 )
 
 
     def test_no_challenger(self):
