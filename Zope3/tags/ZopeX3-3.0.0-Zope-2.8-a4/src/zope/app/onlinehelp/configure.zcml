@@ -1,0 +1,78 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:help="http://namespaces.zope.org/help"
+   i18n_domain="zope"
+   >
+
+  <content class=".onlinehelptopic.OnlineHelpTopic">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IOnlineHelpTopic"
+        />
+  </content>
+
+  <content class=".onlinehelp.OnlineHelp">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IOnlineHelpTopic"
+        />
+    <require
+        permission="zope.View"
+        attributes="context"
+        />
+  </content>
+
+  <content class=".onlinehelptopic.OnlineHelpResource">
+    <require
+        permission="zope.View"
+        interface=".interfaces.IOnlineHelpResource"
+        />
+  </content>
+
+  <!-- Setup OnlineHelp Root as a Utility -->
+  <utility
+      provides=".interfaces.IOnlineHelp"
+      component="zope.app.onlinehelp.help"
+      name="OnlineHelp" />
+
+  <!-- Help Namespace Configuration -->
+  <view
+      name="help" 
+      type="*"
+      provides="zope.app.traversing.interfaces.ITraversable" 
+      for="*"
+      factory=".helpNamespace"
+      />
+
+  <adapter
+      name="help"
+      provides="zope.app.traversing.interfaces.ITraversable" 
+      for="*"
+      factory=".helpNamespace"
+      />
+
+  <!-- Register initial Help Topics -->
+  <help:register
+      id="ui"
+      title="Zope UI Help"
+      doc_path="./help/ui.stx"
+      resources="mgmt-main-1.png"
+      />
+
+  <help:register 
+      id="welcome"
+      title="Welcome"
+      parent="ui"
+      doc_path="./help/welcome.stx"
+      />
+
+  <help:register
+      id="onlinehelp"
+      title="Online Help System"
+      doc_path="./help/README.stx"
+      />
+
+  <!-- include browser package -->
+  <include package=".browser" />
+
+</configure>

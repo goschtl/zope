@@ -1,0 +1,17 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:help="http://namespaces.zope.org/help"
+    i18n_domain="zope"
+    >
+
+  <include package="zope.app.onlinehelp" file="meta.zcml"/>
+
+  <help:register 
+      id = "help1"
+      title = "Help"
+      for = ".test_helpdirectives.I1"
+      view = "view.html"
+      doc_path = "help.txt" 
+      resources = "test1.png"/>
+
+</configure>

@@ -1,0 +1,73 @@
+<configure 
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <content class=".PluggableAuthenticationService">
+    <factory
+        id="zope.app.services.PluggableAuthenticationService"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface=".interfaces.IPluggableAuthenticationService"
+        />
+<!--
+    <allow
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.container.interfaces.IWriteContainer"
+        />
+-->
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.site.interfaces.ISimpleService"
+        />
+  </content>
+
+  <subscriber
+        for=".interfaces.IPluggableAuthenticationService
+             zope.app.container.interfaces.IObjectAddedEvent"
+        factory=".PluggableAuthenticationServiceAddSubscriber"
+        />
+
+  <content class=".BTreePrincipalSource">
+    <factory
+        id="zope.app.principalsources.BTreePrincipalSource"
+        />
+    <allow
+        interface="zope.app.container.interfaces.IReadContainer"
+        />
+    <require
+        permission="zope.ManageServices"
+        interface="zope.app.container.interfaces.IWriteContainer
+                   zope.app.container.interfaces.INameChooser"
+        />
+    <allow
+        interface=".interfaces.IPrincipalSource"
+        />
+  </content>
+
+  <content class=".SimplePrincipal">
+    <factory
+        id="zope.app.principals.SimplePrincipal"
+        />
+    <allow
+        interface=".interfaces.IUserSchemafied"
+        />
+    <require
+        permission="zope.ManageServices"
+        set_schema=".interfaces.IUserSchemafied"
+        />
+  </content>
+
+  <browser:view
+      name="login"
+      for=".interfaces.ILoginPasswordPrincipalSource"
+      class="zope.app.pluggableauth.PrincipalAuthenticationView"
+      permission="zope.Public" />
+
+  <include package=".browser" />
+
+</configure>

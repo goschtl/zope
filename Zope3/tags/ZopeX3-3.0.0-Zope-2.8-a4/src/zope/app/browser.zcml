@@ -1,0 +1,18 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser">
+
+  <browser:defaultView name="index.html" />
+  <browser:defaultSkin name="Rotterdam" />
+
+  <include package="zope.app.exception.browser" />
+  <include package="zope.app.traversing.browser" />
+
+  <include package="zope.app.container.browser" />
+  <include package="zope.app.registration.browser" />
+  <include package="zope.app.form.browser" />
+  <include package="zope.app.utility.browser" />
+
+  <include package="zope.app.site.browser" />
+
+</configure>

@@ -1,0 +1,17 @@
+<configure 
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:test="http://namespaces.zope.org/test"
+  package="zope.configuration.tests.directives"
+  >
+
+  <directives namespace="http://namespaces.zope.org/test">
+  
+     <directive name="k" attributes="for * class x"
+                handler=".kkw" />
+          
+  </directives>
+
+  <test:k  for="f"  class="c"  x="x" a="a" b="b" />
+
+</configure>
+

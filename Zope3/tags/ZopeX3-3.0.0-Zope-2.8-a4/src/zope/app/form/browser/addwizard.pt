@@ -1,0 +1,85 @@
+<tal:block condition="view/update"/><html metal:use-macro="context/@@standard_macros/page">
+
+  <body>
+    <div metal:fill-slot="body">
+
+      <div metal:define-macro="body">
+
+        <form action="." tal:attributes="action request/URL" method="post"
+              enctype="multipart/form-data">
+
+          <div metal:define-macro="formbody">
+
+            <h3 tal:condition="view/label"
+                tal:content="view/label"
+                metal:define-slot="heading"
+                >Edit something</h3>
+
+                <p tal:condition="view/feedback" tal:content="view/feedback">
+                  A feedback message to the user
+                </p>
+
+                <div tal:condition="view/errors">
+                  <ul>
+                    <li tal:repeat="error view/errors">
+                      <strong tal:content="error/__class__">
+                        Error Type</strong>:
+                        <span tal:content="error">Error text</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div metal:define-slot="extra_info" tal:replace="nothing">
+                </div>
+
+                <div class="row" metal:define-slot="extra_top"
+                     tal:replace="nothing">
+                  <div class="label">Extra top</div>
+                  <div class="label">
+                    <input type="text" style="width:100%" />
+                  </div>
+                </div>
+
+                <div metal:use-macro="context/@@form_macros/widget_rows" />
+
+                <div class="row"
+                     metal:define-slot="extra_bottom"
+                     tal:replace="nothing">
+                  <div class="label">Extra bottom</div>
+                  <div class="field">
+                    <input type="text" style="width:100%" />
+                  </div>
+                </div>
+
+          </div>
+
+          <div class="row">
+            <div class="controls">
+              <!--
+                <input type="submit" value="Refresh"
+                       i18n:attributes="value refresh-button"
+                       />
+              -->
+              <input tal:condition="view/show_previous"
+                     type="submit" name="PREVIOUS_SUBMIT" value="Previous"
+                     i18n:attributes="value previous-button" />
+              <input tal:condition="view/show_submit"
+                     type="submit" name="UPDATE_SUBMIT" value="Submit"
+                     i18n:attributes="value submit-button"/>
+              <input tal:condition="view/show_next"
+                     type="submit" name="NEXT_SUBMIT" value="Next"
+                     i18n:attributes="value next-button" />
+            </div>
+          </div>
+          <div class="separator"></div>
+
+          <div tal:replace="structure view/renderHidden">
+            <!-- type=hidden input controls for passing state without session -->
+            <input type="hidden" name="example" value="foo" />
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+
+</html>

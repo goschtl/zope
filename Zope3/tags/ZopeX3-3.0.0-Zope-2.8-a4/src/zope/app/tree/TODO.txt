@@ -1,0 +1,10 @@
+====
+TODO
+====
+
+for v1.3
+
+- allow sorting: would work similar to filter
+
+- add XML representation so it's compatible with rotterdam's
+  xmltree.js, but stateful
