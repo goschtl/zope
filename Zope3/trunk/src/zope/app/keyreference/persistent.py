@@ -34,7 +34,12 @@ class KeyReferenceToPersistent(object):
 
     def __init__(self, object):
         if not getattr(object, '_p_oid', None):
-            IConnection(object).add(object)
+            connection = IConnection(object, None)
+            if connection is None:
+                raise zope.app.keyreference.interfaces.NotYet(object)
+
+            connection.add(object)
+
         self.object = object
 
     def __call__(self):
@@ -50,6 +55,7 @@ class KeyReferenceToPersistent(object):
         return cmp(self.object._p_oid, other.object._p_oid)
 
 
+
 def connectionOfPersistent(ob):
     """An adapter which gets a ZODB connection of a persistent object.
 
@@ -62,6 +68,6 @@ def connectionOfPersistent(ob):
     while not getattr(cur, '_p_jar', None):
         cur = getattr(cur, '__parent__', None)
         if cur is None:
-            raise ValueError('Can not get connection of %r' % (ob,))
+            return None
     return cur._p_jar
 

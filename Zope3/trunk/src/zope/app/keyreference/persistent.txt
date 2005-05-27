@@ -83,7 +83,10 @@ yet:
     ... # doctest: +ELLIPSIS
     Traceback (most recent call last):
     ...
-    TypeError: ('Could not adapt', ...
+    NotYet: <persistent.dict.PersistentDict object at ...>
+
+Note that we get a NotYet error. This indicates that we might be able
+to get a key reference later.
 
 We can get references to unsaved objects if they have an adapter to
 `ZODB.interfaces.IConnection`.  The `add` method on the connection
@@ -112,11 +115,8 @@ checked to see if the object has a `__parent__` that has a connection:
 
     >>> from zope.app.keyreference.persistent import connectionOfPersistent
     >>> ob3 = PersistentDict()
-    >>> connectionOfPersistent(ob3)
-    ... # doctest: +ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    ValueError: Can not get connection of ...
+    >>> print connectionOfPersistent(ob3)
+    None
 
     >>> ob3.__parent__ = root2['ob1']
     >>> connectionOfPersistent(ob3) is conn2

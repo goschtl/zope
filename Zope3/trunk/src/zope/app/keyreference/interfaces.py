@@ -17,6 +17,13 @@ $Id$
 """
 import zope.interface
 
+class NotYet(Exception):
+    """Can't compute a key reference for an object
+
+    It might b epossible to compute one later
+    (e.g. at the end of the transaction).
+    """
+
 class IKeyReference(zope.interface.Interface):
     """A reference to an object (similar to a weak reference).
 
