@@ -80,10 +80,12 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
         self.assertRaises(KeyError, u.getId, obj)
         self.assertRaises(KeyError, u.getId, t_obj)
+        self.assertRaises(KeyError, u.getId, P())
         self.assertRaises(TypeError, u.getId, object())
 
         self.assert_(u.queryId(obj) is None)
         self.assert_(u.queryId(obj, 42) is 42)
+        self.assert_(u.queryId(P(), 42) is 42)
         self.assert_(u.queryId(t_obj) is None)
         self.assertRaises(TypeError, u.queryId, object())
         self.assert_(u.queryObject(42) is None)

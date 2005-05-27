@@ -31,7 +31,7 @@ from zope.security.proxy import removeSecurityProxy
 
 from zope.app import zapi
 from zope.app.container.contained import Contained
-from zope.app.keyreference.interfaces import IKeyReference
+from zope.app.keyreference.interfaces import IKeyReference, NotYet
 from zope.app.location.interfaces import ILocation
 from zope.app.location.interfaces import ITransientLocation
 
@@ -74,8 +74,16 @@ class IntIds(Persistent, Contained):
 
     def getId(self, ob):
         if not ITransientLocation.providedBy(ob):
-            ref = IKeyReference(ob)
-            return self.ids[ref]
+            try:
+                ref = IKeyReference(ob)
+            except NotYet:
+                raise KeyError(ob)
+
+            try:
+                return self.ids[ref]
+            except KeyError:
+                raise KeyError(ob)
+
         else:
             raise KeyError(ob)
 
