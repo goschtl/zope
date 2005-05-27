@@ -1209,6 +1209,28 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         user = zcuf.getUser( 'bar@example.com' )
         self.assertEqual( user.getId(), 'bar+bar' )
 
+    def test_getUser_id_and_name( self ):
+        # Tests fetching a user by ID versus fetching by username.
+        from Products.PluggableAuthService.interfaces.plugins \
+             import IUserEnumerationPlugin
+
+        plugins = self._makePlugins()
+        zcuf = self._makeOne( plugins )
+
+        bar = self._makeUserEnumerator( 'bar', 'bar@example.com' )
+        bar.identifier = 'bar/'
+        zcuf._setObject( 'bar', bar )
+
+        zcuf.plugins.activatePlugin(IUserEnumerationPlugin, 'bar')
+        # Fetch the new user by ID and name, and check we get the same.
+        user = zcuf.getUserById('bar/bar')
+        self.assertEqual( user.getId(), 'bar/bar')
+        self.assertEqual( user.getUserName(), 'bar@example.com' )
+
+        user2 = zcuf.getUser('bar@example.com')
+        self.assertEqual( user2.getId(), 'bar/bar')
+        self.assertEqual( user2.getUserName(), 'bar@example.com' )
+
     def test_simple_getUserGroups_with_Groupplugin(self):
 
         from Products.PluggableAuthService.interfaces.plugins \

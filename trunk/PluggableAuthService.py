@@ -183,12 +183,12 @@ class PluggableAuthService( Folder, Cacheable ):
         """
         plugins = self._getOb( 'plugins' )
 
-        user_id = self._verifyUser( plugins, login=name )
+        user_info = self._verifyUser( plugins, login=name )
 
-        if not user_id:
+        if not user_info:
             return None
 
-        return self._findUser( plugins, user_id, name )
+        return self._findUser( plugins, user_info['id'], user_info['login'])
 
     security.declareProtected( ManageUsers, 'getUserById' )
     def getUserById( self, id, default=None ):
@@ -196,15 +196,13 @@ class PluggableAuthService( Folder, Cacheable ):
         """ See IUserFolder.
         """
         plugins = self._getOb( 'plugins' )
-        user_id = None
-        login = None
 
-        user_id = self._verifyUser( plugins, user_id=id )
+        user_info = self._verifyUser( plugins, user_id=id )
 
-        if not user_id:
+        if not user_info:
             return default
 
-        return self._findUser( plugins, user_id, login )
+        return self._findUser( plugins, user_info['id'], user_info['login'])
 
     security.declarePublic( 'validate' )     # XXX: public?
     def validate( self, request, auth='', roles=_noroles ):
@@ -738,7 +736,7 @@ class PluggableAuthService( Folder, Cacheable ):
     security.declarePrivate( '_verifyUser' )
     def _verifyUser( self, plugins, user_id=None, login=None ):
 
-        """ user_id -> boolean
+        """ user_id -> info_dict or None
         """
         criteria = {}
 
@@ -767,20 +765,19 @@ class PluggableAuthService( Folder, Cacheable ):
                     info = enumerator.enumerateUsers( **criteria )
 
                     if info:
-                        id = info[0]['id']
                         # Put the computed value into the cache
-                        self.ZCacheable_set( id
+                        self.ZCacheable_set( info[0]
                                            , view_name=view_name
                                            , keywords=criteria
                                            )
-                        return id
+                        return info[0]
 
                 except _SWALLOWABLE_PLUGIN_EXCEPTIONS:
                     LOG('PluggableAuthService', BLATHER,
                         'UserEnumerationPlugin %s error' % enumerator_id,
                         error=sys.exc_info())
 
-        return 0
+        return None
 
     security.declarePrivate( '_authorizeUser' )
     def _authorizeUser( self
