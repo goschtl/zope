@@ -42,6 +42,8 @@ class MailDataManager(object):
         self.callable = callable
         self.args = args
         self.onAbort = onAbort
+        # Use the default thread transaction manager.
+        self.transaction_manager = transaction.manager
 
     def commit(self, transaction):
         self.callable(*self.args)
