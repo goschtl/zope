@@ -24,12 +24,12 @@ and don't contain invalid characters.
   >>> chooser.checkName('testoid', object())
   Traceback (most recent call last):
   ...
-  UserError: Id is in use or invalid
+  UserError: The id "testoid" is invalid - it is already in use.
 
   >>> chooser.checkName('slash/slash', object())
   Traceback (most recent call last):
   ...
-  UserError: Id is in use or invalid
+  UserError: The id "slash/slash" contains characters illegal in URLs.
 
 ``INameChooser`` also promises us a ``chooseName()`` method that
 chooses a name for us in case we don't have one or that chooses a
@@ -37,6 +37,9 @@ different name in case the one we chose was invalid.
 
   >>> chooser.chooseName('', self.folder.testoid)
   'FiveTraversableFolder'
+
+  >>> chooser.chooseName('abc', self.folder.testoid)
+  'abc'
 
   >>> chooser.chooseName('testoid', self.folder.testoid)
   'testoid-1'
@@ -47,4 +50,4 @@ become good automagically:
   >>> chooser.chooseName('slash/slash', object())
   Traceback (most recent call last):
   ...
-  UserError: Id is in use or invalid
+  UserError: The id "slash/slash" contains characters illegal in URLs.

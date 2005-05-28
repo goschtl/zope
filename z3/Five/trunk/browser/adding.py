@@ -66,7 +66,11 @@ class BasicAdding(Implicit, BrowserView):
                 name = chooser.chooseName(self.contentName or '', content)
             elif name == '':
                 name = chooser.chooseName('', content)
-            chooser.checkName(name, container)
+            else:
+                # Invoke the name chooser even when we have a
+                # name. It'll do useful things with it like converting
+                # the incoming unicode to an ASCII string.
+                name = chooser.chooseName(name, container)
         
         content.id = name
         container._setObject(name, content)
@@ -211,14 +215,27 @@ class ObjectManagerNameChooser:
         self.context = context
 
     def checkName(self, name, object):
+        # ObjectManager can only deal with ASCII names. Specially
+        # ObjectManager._checkId can only deal with strings.
+        try:
+            name = name.encode('ascii')
+        except UnicodeDecodeError:
+            raise UserError, "Id must contain only ASCII characters."
+
         try:
             self.context._checkId(name, allow_dup=False)
-        except BadRequest:
-            raise UserError, "Id is in use or invalid"
+        except BadRequest, e:
+            msg = ' '.join(e.args) or "Id is in use or invalid"
+            raise UserError, msg
 
     def chooseName(self, name, object):
         if not name:
             name = object.__class__.__name__
+        else:
+            try:
+                name = name.encode('ascii')
+            except UnicodeDecodeError:
+                raise UserError, "Id must contain only ASCII characters."
 
         dot = name.rfind('.')
         if dot >= 0:
@@ -237,7 +254,8 @@ class ObjectManagerNameChooser:
                 break
             n = name + '-' + str(i) + suffix
             
-        # Make sure the name is valid.  We may have started with something bad.
+        # Make sure the name is valid.  We may have started with
+        # something bad.
         self.checkName(n, object)
 
         return n
