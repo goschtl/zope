@@ -66,8 +66,7 @@ on it:
   ... -----------------------------968064918930967154199105236--
   ... """, handle_errors=False)
   HTTP/1.1 302 Moved Temporarily
-  Content-Length: 1596
-  Content-Type: text/html; charset=iso-8859-1
+  ...
   Location: http://localhost/test_folder_1_/ftf/manage_main
   ...
 
