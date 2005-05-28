@@ -1,0 +1,177 @@
+Testing forms
+=============
+
+Before we can begin, we need to setup a traversable folder.
+Otherwise, Five won't get to to do its view lookup:
+
+  >>> from Products.Five.testing import manage_addFiveTraversableFolder
+  >>> manage_addFiveTraversableFolder(self.folder, 'ftf')
+
+
+Add forms
+---------
+
+We can add objects to containers (object managers) through add forms.
+An unprotected form can be accessed with anonymously:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/ftf/+/addfieldcontent.html HTTP/1.1
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+
+For a protected one we need a manager account:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/ftf/+/protectedaddform.html HTTP/1.1
+  ... Authorization: Basic manager:r00t
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+
+otherwise we will fail to access it:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/ftf/+/protectedaddform.html HTTP/1.1
+  ... Authorization: Basic viewer:secret
+  ... """, handle_errors=False)
+  HTTP/1.1 401 Unauthorized
+  ...
+
+Now let's add a piece of our sample content object to test more things
+on it:
+
+  >>> print http(r"""
+  ... POST /test_folder_1_/ftf/+/addfieldcontent.html HTTP/1.1
+  ... Authorization: Basic manager:r00t
+  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
+  ... Content-Length: 527
+  ... 
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.title"
+  ... 
+  ... title
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.description"
+  ... 
+  ... 
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Add
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="add_input_name"
+  ... 
+  ... edittest
+  ... -----------------------------968064918930967154199105236--
+  ... """, handle_errors=False)
+  HTTP/1.1 302 Moved Temporarily
+  Content-Length: 1596
+  Content-Type: text/html; charset=iso-8859-1
+  Location: http://localhost/test_folder_1_/ftf/manage_main
+  ...
+
+Having added this piece of content, we can access it under its URL:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/ftf/edittest HTTP/1.1
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+
+We can also verify that the title was set correctly, and the not
+specified attribute is the default value:
+
+  >>> edittest = self.folder.ftf.edittest
+  >>> edittest.title
+  u'title'
+  >>> edittest.description #XXX shouldn't we get a u'' here???
+
+
+Edit forms
+----------
+
+First, it's important to note that forms validate user input.
+Therefore, if we specify invalid data, our object won't change:
+
+  >>> print http(r"""
+  ... POST /test_folder_1_/ftf/edittest/@@edit.html HTTP/1.1
+  ... Authorization: Basic manager:r00t
+  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
+  ... Content-Length: 418
+  ... 
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.title"
+  ... 
+  ... 
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.description"
+  ... 
+  ... BarDescription
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Change
+  ... -----------------------------968064918930967154199105236--
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+            There are <strong>1</strong> input errors.
+  ...
+
+We will see that nothing has changed:
+
+  >>> edittest.title
+  u'title'
+  >>> edittest.description #XXX shouldn't we get a u'' here???
+
+However, when we specify the correct fields:
+
+  >>> print http(r"""
+  ... POST /test_folder_1_/ftf/edittest/@@edit.html HTTP/1.1
+  ... Authorization: Basic manager:r00t
+  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
+  ... Content-Length: 426
+  ... 
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.title"
+  ... 
+  ... FooTitle
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.description"
+  ... 
+  ... FooDescription
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Change
+  ... -----------------------------968064918930967154199105236--
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+
+the data will have changed:
+
+We will see that nothing has changed:
+
+  >>> edittest.title
+  u'FooTitle'
+  >>> edittest.description
+  u'FooDescription'
+
+
+Object widget:
+--------------
+
+A little more complex is the ``ObjectWidget``.  Here we simply test
+that the edit form works:
+
+  >>> from Products.Five.form.tests.schemacontent import \
+  ...     manage_addComplexSchemaContent
+  >>> n = manage_addComplexSchemaContent(self.folder.ftf, 'objecttest')
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/ftf/objecttest/@@edit.html HTTP/1.1
+  ... """, handle_errors=False)
+  HTTP/1.1 200 OK
+  ...

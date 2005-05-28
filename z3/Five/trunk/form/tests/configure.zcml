@@ -52,7 +52,7 @@
   <browser:addform
      schema=".schemacontent.IFieldContent"
      content_factory=".schemacontent.FieldContent"
-     name="addsimplecontent.html"
+     name="addfieldcontent.html"
      permission="zope2.Public"
      />
      

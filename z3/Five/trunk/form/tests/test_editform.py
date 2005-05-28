@@ -6,7 +6,7 @@
 # License (ZPL) v2.1. See COPYING.txt for more information.
 #
 ##############################################################################
-"""Test edit forms
+"""Test forms
 
 $Id$
 """
@@ -15,113 +15,53 @@ if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 import unittest
-from Testing.ZopeTestCase import FunctionalTestCase, installProduct
+from Testing.ZopeTestCase import ZopeDocTestSuite
+from Testing.ZopeTestCase import FunctionalDocFileSuite
+from Testing.ZopeTestCase import installProduct
 installProduct('Five')
 
-from AccessControl import Unauthorized
-from zope.schema import Choice, TextLine
-from zope.app import zapi
-from zope.app.form.browser.submit import Update
-from zope.app.form.interfaces import IInputWidget
-from zope.app.form.browser.textwidgets import TextWidget
-from zope.app.form.browser.itemswidgets import DropdownWidget
+def test_get_widgets_for_schema_fields():
+    """
+    >>> from zope.schema import Choice, TextLine
+    >>> salutation = Choice(title=u'Salutation',
+    ...                     values=("Mr.", "Mrs.", "Captain", "Don"))
+    >>> contactname = TextLine(title=u'Name')
 
-import Products.Five.form.tests
-from Products.Five import zcml
-from Products.Five.traversable import FakeRequest
-from Products.Five.testing import manage_addFiveTraversableFolder
-from Products.Five.form.tests.schemacontent import manage_addFieldContent
-from Products.Five.form.tests.schemacontent import manage_addComplexSchemaContent
+    >>> from Products.Five.traversable import FakeRequest
+    >>> request = FakeRequest()
+    >>> salutation = salutation.bind(request)
+    >>> contactname = contactname.bind(request)
 
-class EditFormTest(FunctionalTestCase):
+    >>> from zope.app import zapi
+    >>> from zope.app.form.interfaces import IInputWidget
+    >>> from zope.app.form.browser.textwidgets import TextWidget
+    >>> from zope.app.form.browser.itemswidgets import DropdownWidget
 
-    def afterSetUp(self):
-        manage_addFieldContent(self.folder, 'edittest', 'Test')
-        uf = self.folder.acl_users
-        uf._doAddUser('viewer', 'secret', [], [])
-        uf._doAddUser('manager', 'r00t', ['Manager'], [])
-        zcml.load_config('configure.zcml', package=Products.Five.form.tests)
+    >>> view1 = zapi.getViewProviding(contactname, IInputWidget, request)
+    >>> view1.__class__ == TextWidget
+    True
 
-    def test_editform(self):
-        response = self.publish('/test_folder_1_/edittest/edit.html',
-                                basic='manager:r00t')
-        # we're using a GET request to post variables, but seems to be
-        # the easiest..
-        response = self.publish(
-            '/test_folder_1_/edittest/edit.html?%s=1&field.title=FooTitle&field.description=FooDescription' % Update,
-            basic='manager:r00t')
-        self.assertEquals('FooTitle', self.folder.edittest.title)
-        self.assertEquals('FooDescription', self.folder.edittest.description)
+    >>> view2 = zapi.getViewProviding(salutation, IInputWidget, request)
+    >>> view2.__class__ == DropdownWidget
+    True
+    """
 
-    def test_editform_invalid(self):
-        # missing title, which is required
-        self.folder.edittest.description = ''
-
-        response = self.publish(
-            '/test_folder_1_/edittest/edit.html?%s=1&field.title=&field.description=BarDescription' % Update,
-            basic='manager:r00t')
-        # we expect that we get a 200 Ok
-        self.assertEqual(200, response.getStatus())
-        self.assertEquals('Test', self.folder.edittest.title)
-        self.assertEquals('', self.folder.edittest.description)
-
-    def test_addform(self):
-        manage_addFiveTraversableFolder(self.folder, 'ftf')
-        self.folder = self.folder.ftf
-        response = self.publish('/test_folder_1_/ftf/+/addsimplecontent.html',
-                                basic='manager:r00t')
-        self.assertEquals(200, response.getStatus())
-        # we're using a GET request to post variables, but seems to be
-        # the easiest..
-        response = self.publish(
-            '/test_folder_1_/ftf/+/addsimplecontent.html?%s=1&add_input_name=alpha&field.title=FooTitle&field.description=FooDescription' % Update,
-            basic='manager:r00t')
-        # we expect to get a 302 (redirect)
-        self.assertEquals(302, response.getStatus())
-        # we expect the object to be there with the right id
-        self.assertEquals('alpha', self.folder.alpha.id)
-        self.assertEquals('FooTitle', self.folder.alpha.title)
-        self.assertEquals('FooDescription', self.folder.alpha.description)
-
-    def test_objectWidget(self):
-        manage_addComplexSchemaContent(self.folder, 'ftf')
-        response = self.publish('/test_folder_1_/ftf/edit.html',
-                                basic='manager:r00t')
-        self.assertEquals(200, response.getStatus())
-
-    def test_addpages(self):
-        manage_addFiveTraversableFolder(self.folder, 'ftf')
-
-        # Unprotected as anonymous
-        response = self.publish('/test_folder_1_/ftf/+/addsimplecontent.html')
-        self.assertEqual(response.getStatus(), 200)
-
-        # Protected as manager
-        response = self.publish('/test_folder_1_/ftf/+/protectedaddform.html',
-                                basic='manager:r00t')
-        self.assertEqual(response.getStatus(), 200)
-
-        # Protected as user
-        response = self.publish('/test_folder_1_/ftf/+/protectedaddform.html',
-                                basic='viewer:secret')
-        self.assertEqual(response.getStatus(), 401)
-
-    def test_get_widgets_for_schema_fields(self):
-        salutation = Choice(title=u'Salutation',
-                            values=("Mr.", "Mrs.", "Captain", "Don"))
-        contactname = TextLine(title=u'Name')
-        request = FakeRequest()
-        salutation = salutation.bind(request)
-        contactname = contactname.bind(request)
-        view1 = zapi.getViewProviding(contactname, IInputWidget, request)
-        self.assertEquals(view1.__class__, TextWidget)
-        view2 = zapi.getViewProviding(salutation, IInputWidget, request)
-        self.assertEquals(view2.__class__, DropdownWidget)
+def setUpForms(self):
+    uf = self.folder.acl_users
+    uf._doAddUser('viewer', 'secret', [], [])
+    uf._doAddUser('manager', 'r00t', ['Manager'], [])
+    import Products.Five.form.tests
+    from Products.Five import zcml
+    zcml.load_config('configure.zcml', package=Products.Five.form.tests)
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(EditFormTest))
-    return suite
+    return unittest.TestSuite((
+            ZopeDocTestSuite(),
+            FunctionalDocFileSuite(
+		'forms.txt',
+		package="Products.Five.form.tests",
+		setUp=setUpForms),
+            ))
 
 if __name__ == '__main__':
     framework()
