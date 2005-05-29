@@ -1,3 +1,5 @@
+<tal:tag condition="view/processInputs" />
+<tal:tag condition="view/setPageEncoding" />
 <tal:tag condition="view/update"/>
 <html metal:use-macro="context/@@standard_macros/page">
 <body metal:fill-slot="body">

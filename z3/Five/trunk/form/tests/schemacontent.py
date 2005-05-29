@@ -14,22 +14,31 @@ from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 
 from zope.interface import implements, Interface
-from zope.schema import TextLine, Text, Object
+from zope.schema import TextLine, Text, Object, Int
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import ObjectWidget
 
 class IFieldContent(Interface):
+
     title = TextLine(
         title=u"Title",
         description=u"A short description of the event.",
         default=u"",
-        required=True)
+        required=True
+        )
 
     description = Text(
         title=u"Description",
         description=u"A long description of the event.",
         default=u"",
-        required=False)
+        required=False
+        )
+
+    somenumber = Int(
+        title=u"Some number",
+        default=0,
+        required=False
+        )
 
 class FieldContent(SimpleItem):
     """A Viewable piece of content with fields"""
