@@ -5,6 +5,8 @@ Five Changes
 Five 1.1 (unreleased)
 =====================
 
+* Modified edit.pt to make sure editforms have only one body tag.
+
 * Zope 2.8 HTTPRequest is no longer patched. It has the required methods.
 
 * The deprecated get_transaction method is no longer used in Zope 2.8.
