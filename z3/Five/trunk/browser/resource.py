@@ -1,14 +1,19 @@
 ##############################################################################
 #
-# Copyright (c) 2004 Five Contributors. All rights reserved.
+# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
 #
-# This software is distributed under the terms of the Zope Public
-# License (ZPL) v2.1. See COPYING.txt for more information.
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
 """Provide basic resource functionality
 
-$Id: browser.py 5259 2004-06-23 15:59:52Z philikon $
+$Id$
 """
 import os
 import urllib
