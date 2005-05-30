@@ -7,6 +7,8 @@ Five 1.0.1 (unreleased)
 
 This version is also included in Zope 2.8.
 
+* Modified edit.pt to make sure editforms have only one body tag.
+
 * Fixed the ``INameChooser`` adapter for ObjectManagers (e.g. Zope 2
   folders) and added unit tests.
 
