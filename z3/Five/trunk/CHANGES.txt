@@ -5,14 +5,9 @@ Five Changes
 Five 1.1 (unreleased)
 =====================
 
-* Modified edit.pt to make sure editforms have only one body tag.
-
 * Zope 2.8 HTTPRequest is no longer patched. It has the required methods.
 
 * The deprecated get_transaction method is no longer used in Zope 2.8.
-
-* Fixed small bug in BrowserDefault which caused an error if the class is
-  defaultViewable but the object's interfaces have no defaultView.
 
 * Relocated Zope core interfaces. Future Zope versions will ship with their
   own z3 interfaces. Five now patches the older Zope versions to make sure
@@ -22,10 +17,36 @@ Five 1.1 (unreleased)
   'Five.bbb.*interfaces' - they are only provided for backwards
   compatibility.
 
-Five 1.0 (2005-04-27)
-=====================
+Five 1.0.1 (unreleased)
+=======================
 
 This version is also included in Zope 2.8.
+
+* Made automatically generated add and edit forms unicode-aware.
+  ZPublisher does not automatically decode incoming form values to
+  unicode, so AddView and EditView emulate this behaviour themselves
+  now.  They also take care of setting the right charset on the
+  outgoing form so that ZPublisher will encode it accordingly when
+  sending the response to the client.  (In Zope 3, all charset
+  negotation between the client and the server takes place in the
+  publisher.)
+
+* Added ``IHTTPCharset`` adapter for ``IHTTPRequest`` so that
+  application can find out the preferred character set of the HTTP
+  client (Zope 2 applications needs to take care of their own charset
+  header).  The adapter is used for the automatically-generated forms
+  when determining encodings for unicode field content.
+
+* Modified edit.pt to make sure editforms have only one body tag.
+
+* Fixed the ``INameChooser`` adapter for ObjectManagers (e.g. Zope 2
+  folders) and added unit tests.
+
+* Fixed small bug in BrowserDefault which caused an error if the class is
+  defaultViewable but the object's interfaces have no defaultView.
+
+Five 1.0 (2005-04-27)
+=====================
 
 Features
 --------
