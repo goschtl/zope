@@ -21,6 +21,10 @@ Zope Changes
 
       - Fixed issue 334 (Failing RuntimeInfo tests).
 
+      - Fix SequenceWidgets
+        Added a CustomSequenceWidgetFactory for using object widgets within a 
+        sequence. Added a howto for ObjectWidget
+
       - Fixed issue 293 (sequence widget).
 
       - Backported several bug fixes made to the DSN parser, including issue
