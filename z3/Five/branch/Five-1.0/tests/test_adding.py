@@ -14,9 +14,10 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+import Products.Five.tests.fivetest   # starts Zope, loads Five, etc.
+
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocFileSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocFileSuite
     return ZopeDocFileSuite('adding.txt',
                             package="Products.Five.tests")
 
