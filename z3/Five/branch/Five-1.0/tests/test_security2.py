@@ -203,7 +203,7 @@ class PublishTest(Functional, FiveTestCase):
         manage_addFiveTraversableFolder(self.folder, 'ftf')
 
         # Unprotected as anonymous
-        response = self.publish('/test_folder_1_/ftf/+/addsimplecontent.html')
+        response = self.publish('/test_folder_1_/ftf/+/addfieldcontent.html')
         self.assertEqual(response.getStatus(), 200)
 
         # Protected as manager
