@@ -8,7 +8,7 @@
 ##############################################################################
 """Machinery for making things viewable
 
-$Id: traversable.py 5763 2004-07-28 20:15:11Z dreamcatcher $
+$Id$
 """
 
 import inspect
@@ -100,9 +100,8 @@ class BrowserDefault(object):
 
     def defaultView(self, request):
         context = self.context
-        name = None
         try:
             name = getDefaultViewName(context, request)
+            return context, [name,]
         except ComponentLookupError:
-            pass
-        return context, [name,]
+            return context, None

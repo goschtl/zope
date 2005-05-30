@@ -2,10 +2,16 @@
 Five Changes
 ============
 
-Five 1.0 (2005-04-27)
+Five 1.0.1 (unreleased)
 =====================
 
 This version is also included in Zope 2.8.
+
+* Fixed small bug in BrowserDefault which caused an error if the class is
+  defaultViewable but the object's interfaces have no defaultView.
+
+Five 1.0 (2005-04-27)
+=====================
 
 Features
 --------
