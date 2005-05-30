@@ -15,8 +15,8 @@
 
 $Id$
 """
-
-import unittest, doctest
+import unittest
+from zope.testing import doctest
 
 from zope.app.tests import ztapi
 from zope.interface import Interface, implements
@@ -27,6 +27,7 @@ from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser import TextWidget, ObjectWidget
 from zope.interface.verify import verifyClass
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
+from zope.app.tests.placelesssetup import setUp, tearDown
 
 class ITestContact(Interface):
     name = TextLine()
@@ -101,6 +102,8 @@ class ObjectWidgetTest(BrowserWidgetTest):
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(ObjectWidgetTest),
+        doctest.DocFileSuite('../objectwidget.txt',
+                             setUp=setUp, tearDown=tearDown),
         doctest.DocTestSuite(),
         ))
 

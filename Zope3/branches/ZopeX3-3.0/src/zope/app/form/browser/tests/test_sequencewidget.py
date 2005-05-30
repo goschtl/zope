@@ -30,6 +30,7 @@ from zope.app.form.browser import TupleSequenceWidget, ListSequenceWidget
 from zope.app.form.browser import SequenceWidget
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form import CustomWidgetFactory
+from zope.app.form import CustomSequenceWidgetFactory
 
 from zope.app.form.browser.tests.test_browserwidget import BrowserWidgetTest
 
@@ -57,7 +58,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         field = field.bind(self.content)
         request = TestRequest(HTTP_ACCEPT_LANGUAGE='pl')
         request.form['field.foo'] = u'Foo Value'
-        self._widget = self._WidgetFactory(field, request)
+        self._widget = self._WidgetFactory(field, TextLine(), request)
 
     def _FieldFactory(self, **kw):
         kw.update({
@@ -93,16 +94,16 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest()
 
         # set up the custom widget factory and verify that it works
-        sw = CustomWidgetFactory(ListSequenceWidget)
-        widget = sw(self.field, request)
+        sw = CustomSequenceWidgetFactory(ListSequenceWidget)
+        widget = sw(self.field, TextLine(), request)
         assert widget.subwidget is None
         assert widget.context.value_type is value_type
 
         # set up a variant that specifies the subwidget to use and verify it
         class PollOption(object) : pass
         ow = CustomWidgetFactory(ObjectWidget, PollOption)
-        sw = CustomWidgetFactory(ListSequenceWidget, subwidget=ow)
-        widget = sw(self.field, request)
+        sw = CustomSequenceWidgetFactory(ListSequenceWidget, subwidget=ow)
+        widget = sw(self.field, TextLine(), request)
         assert widget.subwidget is ow
         assert widget.context.value_type is value_type
 
@@ -116,7 +117,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
 
         class PollOption(object) : pass
         ow = CustomWidgetFactory(ObjectWidget, PollOption)
-        widget = SequenceWidget(self.field, request, subwidget=ow)
+        widget = SequenceWidget(self.field, TextLine(), request, subwidget=ow)
         assert widget.subwidget is ow
 
     def test_list(self):
@@ -124,23 +125,23 @@ class SequenceWidgetTest(BrowserWidgetTest):
             __name__=u'foo',
             value_type=TextLine(__name__=u'bar'))
         request = TestRequest()
-        widget = ListSequenceWidget(self.field, request)
+        widget = ListSequenceWidget(self.field, TextLine(), request)
         self.failIf(widget.hasInput())
         self.assertEquals(widget.getInputValue(), [])
 
         request = TestRequest(form={'field.foo.add': u'Add bar'})
-        widget = ListSequenceWidget(self.field, request)
+        widget = ListSequenceWidget(self.field, TextLine(), request)
         self.assert_(widget.hasInput())
         self.assertRaises(ValidationError, widget.getInputValue)
 
         request = TestRequest(form={'field.foo.0.bar': u'Hello world!'})
-        widget = ListSequenceWidget(self.field, request)
+        widget = ListSequenceWidget(self.field, TextLine(), request)
         self.assert_(widget.hasInput())
         self.assertEquals(widget.getInputValue(), [u'Hello world!'])
 
     def test_new(self):
         request = TestRequest()
-        widget = TupleSequenceWidget(self.field, request)
+        widget = TupleSequenceWidget(self.field, TextLine(), request)
         self.failIf(widget.hasInput())
         self.assertEquals(widget.getInputValue(), ())
         check_list = ('input', 'name="field.foo.add"')
@@ -148,7 +149,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
 
     def test_add(self):
         request = TestRequest(form={'field.foo.add': u'Add bar'})
-        widget = TupleSequenceWidget(self.field, request)
+        widget = TupleSequenceWidget(self.field, TextLine(), request)
         self.assert_(widget.hasInput())
         self.assertRaises(ValidationError, widget.getInputValue)
         check_list = (
@@ -159,13 +160,13 @@ class SequenceWidgetTest(BrowserWidgetTest):
 
     def test_request(self):
         request = TestRequest(form={'field.foo.0.bar': u'Hello world!'})
-        widget = TupleSequenceWidget(self.field, request)
+        widget = TupleSequenceWidget(self.field, TextLine(), request)
         self.assert_(widget.hasInput())
         self.assertEquals(widget.getInputValue(), (u'Hello world!',))
 
     def test_existing(self):
         request = TestRequest()
-        widget = TupleSequenceWidget(self.field, request)
+        widget = TupleSequenceWidget(self.field, TextLine(), request)
         widget.setRenderedValue((u'existing',))
         self.assert_(widget.hasInput())
         self.assertEquals(widget.getInputValue(), (u'existing',))
@@ -191,7 +192,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
         request = TestRequest(form={'field.foo.remove_0': u'Hello world!',
             'field.foo.0.bar': u'existing', 'field.foo.1.bar': u'second',
             'remove-selected-items-of-seq-field.foo': u'Remove selected items'})
-        widget = TupleSequenceWidget(self.field, request)
+        widget = TupleSequenceWidget(self.field, TextLine(), request)
         widget.setRenderedValue((u'existing', u'second'))
         self.assertEquals(widget.getInputValue(), (u'second',))
         check_list = (
@@ -204,7 +205,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
     def test_min(self):
         request = TestRequest()
         self.field.min_length = 2
-        widget = TupleSequenceWidget(self.field, request)
+        widget = TupleSequenceWidget(self.field, TextLine(), request)
         widget.setRenderedValue((u'existing',))
         self.assertEquals(widget.getInputValue(), (u'existing',))
         check_list = (
@@ -219,7 +220,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
     def test_max(self):
         request = TestRequest()
         self.field.max_length = 1
-        widget = TupleSequenceWidget(self.field, request)
+        widget = TupleSequenceWidget(self.field, TextLine(), request)
         widget.setRenderedValue((u'existing',))
         self.assertEquals(widget.getInputValue(), (u'existing',))
         s = widget()
@@ -228,7 +229,7 @@ class SequenceWidgetTest(BrowserWidgetTest):
     def test_anonymousfield(self):
         self.field = Tuple(__name__=u'foo', value_type=TextLine())
         request = TestRequest()
-        widget = TupleSequenceWidget(self.field, request)
+        widget = TupleSequenceWidget(self.field, TextLine(), request)
         widget.setRenderedValue((u'existing',))
         s = widget()
         check_list = (

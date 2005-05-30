@@ -39,7 +39,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
     _type = tuple
     _data = () # pre-existing sequence items (from setRenderedValue)
 
-    def __init__(self, context, request, subwidget=None):
+    def __init__(self, context, field, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
 
         self.subwidget = subwidget

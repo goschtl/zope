@@ -93,3 +93,19 @@ class CustomWidgetFactory(object):
         for name, value in self.kw.items():
             setattr(instance, name, value)
         return instance
+
+class CustomSequenceWidgetFactory(object):
+    """Custom Widget Factory."""
+    implements(IViewFactory)
+
+    def __init__(self, widget_factory, *args, **kw):
+        self._widget_factory = widget_factory
+        self.args = args
+        self.kw = kw
+
+    def __call__(self, context, field, request):
+        args = (context, field, request) + self.args
+        instance = self._widget_factory(*args)
+        for name, value in self.kw.items():
+            setattr(instance, name, value)
+        return instance
