@@ -1,5 +1,5 @@
 from zope.interface import Interface
-from zope.schema import Text, TextLine, Object, Int
+from zope.schema import Text, TextLine, Object, Int, List
 
 class IAdaptable(Interface):
     """This is a Zope 3 interface.
@@ -59,6 +59,13 @@ class IFieldSimpleContent(ISimpleContent):
         required=False
         )
 
+    somelist = List(
+        title=u"Some List",
+        value_type=TextLine(title=u"Some item"),
+	default=[],
+        required=False
+        )
+
 class IComplexSchemaContent(Interface):
     
     fishtype = TextLine(
@@ -72,4 +79,3 @@ class IComplexSchemaContent(Interface):
         schema=IFieldSimpleContent,
         description=u"The fishy object",
         required=True)
-
