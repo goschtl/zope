@@ -5,9 +5,12 @@ Five Changes
 Five 1.1 (unreleased)
 =====================
 
-* Zope 2.8 HTTPRequest is no longer patched. It has the required methods.
-
-* The deprecated get_transaction method is no longer used in Zope 2.8.
+* Restructured the Five source code to be easier to navigate in.
+  Three subpackages were created, Five.browser, Five.form and
+  Five.skin.  The former test product, ``FiveTest``, was converted
+  into separate modules that provide the mock objects for the
+  corresponding tests and are located right next to them.  Overall,
+  the testing framework was much simplified.
 
 * Relocated Zope core interfaces. Future Zope versions will ship with their
   own z3 interfaces. Five now patches the older Zope versions to make sure
@@ -17,10 +20,21 @@ Five 1.1 (unreleased)
   'Five.bbb.*interfaces' - they are only provided for backwards
   compatibility.
 
-Five 1.0.1 (unreleased)
+* Zope 2.8 HTTPRequest is no longer patched. It has the required methods.
+
+* The deprecated get_transaction method is no longer used in Zope 2.8.
+
+Five 1.0.1 (2005-05-31)
 =======================
 
 This version is also included in Zope 2.8.
+
+* Changed license headers to the ones used in the Zope.org repository.
+  This makes merging between the main development line of Five (hosted
+  on codespeak.net) and the version integrated into Zope 2.8 much
+  easier.  The actual copyright ownership isn't affected because Five
+  had been contributed to the Zope project anyway (which was blessed
+  by all Five contributors).
 
 * Made automatically generated add and edit forms unicode-aware.
   ZPublisher does not automatically decode incoming form values to
