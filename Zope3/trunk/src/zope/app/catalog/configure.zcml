@@ -72,6 +72,8 @@
   
   <include package=".browser" />
 
+  <interface interface="zope.index.text.interfaces.ISearchableText" />
+
   <!-- Registering documentation with API doc -->
   <configure
       xmlns:apidoc="http://namespaces.zope.org/apidoc"
