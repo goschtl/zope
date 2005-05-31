@@ -19,6 +19,7 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+import Products.Five.tests.fivetest   # starts Zope, loads Five, etc.
 
 def test_defaultView():
     """
@@ -65,10 +66,8 @@ def test_defaultView():
 
     """
 
-
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':
