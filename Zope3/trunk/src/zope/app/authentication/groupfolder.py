@@ -170,6 +170,10 @@ class GroupFolder(BTreeContainer):
         """Get groups the given principal belongs to"""
         return self.__inverseMapping.get(principalid, ())
 
+    def getPrincipalsForGroup(self, groupid):
+        """Get principals which belong to the group"""
+        return self[groupid].principals
+
     def search(self, query, start=None, batch_size=None):
         """ Search for groups"""
         search = query.get('search')
