@@ -29,4 +29,4 @@ class Advanced:
     def reindex(self):
         self.context.clear()
         self.context.updateIndexes()
-        self.request.response.redirect(".")
+        self.request.response.redirect('@@advanced.html')
