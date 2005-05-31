@@ -20,7 +20,7 @@ import zope.interface
 class NotYet(Exception):
     """Can't compute a key reference for an object
 
-    It might b epossible to compute one later
+    It might be possible to compute one later
     (e.g. at the end of the transaction).
     """
 
