@@ -56,6 +56,8 @@ class EditView(BrowserView):
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
+	self._processInputs()
+	self._setPageEncoding()
         self._setUpWidgets()
 
     def _setUpWidgets(self):
@@ -82,14 +84,14 @@ class EditView(BrowserView):
                 pass
         return text
 
-    def processInputs(self):
+    def _processInputs(self):
         request = self.request
         for name, value in request.form.items():
 	    if (not (isCGI_NAME(name) or name.startswith('HTTP_'))
 		and isinstance(value, str)):
                 request.form[name] = self._decode(value)
 
-    def setPageEncoding(self):
+    def _setPageEncoding(self):
         """Set the encoding of the form page via the Content-Type header.
         ZPublisher uses the value of this header to determine how to
         encode unicode data for the browser."""

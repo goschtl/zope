@@ -19,7 +19,7 @@ from OFS.SimpleItem import SimpleItem
 from Globals import InitializeClass
 
 from zope.interface import implements, Interface
-from zope.schema import TextLine, Text, Object, Int
+from zope.schema import TextLine, Text, Object, Int, List
 from zope.app.form import CustomWidgetFactory
 from zope.app.form.browser import ObjectWidget
 
@@ -42,6 +42,13 @@ class IFieldContent(Interface):
     somenumber = Int(
         title=u"Some number",
         default=0,
+        required=False
+        )
+
+    somelist = List(
+        title=u"Some List",
+        value_type=TextLine(title=u"Some item"),
+	default=[],
         required=False
         )
 

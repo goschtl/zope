@@ -334,6 +334,79 @@ We see that the object's data has changed:
   >>> unicodetest.somenumber
   1
 
+Let's also not forget about List widgets.  Let's see if we can add an
+element to the list:
+
+  >>> print http(r"""
+  ... POST /test_folder_1_/ftf/unicodetest/@@edit.html HTTP/1.1
+  ... Authorization: Basic manager:r00t
+  ... Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
+  ... Content-Length: 418
+  ... 
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.title"
+  ... 
+  ... %s
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.description"
+  ... 
+  ... %s
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.somenumber"
+  ... 
+  ... 1
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.somelist.add"
+  ... 
+  ... Add
+  ... -----------------------------968064918930967154199105236--
+  ... """ % (wo_hen_hao, ni_hao), handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+  ...<input class="textType" id="field.somelist.0." name="field.somelist.0." size="20" type="text" value=""  />...
+  ...
+
+Now, let's enter some more Chinese:
+
+  >>> de_guo = '\345\276\267\345\233\275'
+  
+  >>> print http(r"""
+  ... POST /test_folder_1_/ftf/unicodetest/@@edit.html HTTP/1.1
+  ... Authorization: Basic manager:r00t
+  ... Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7
+  ... Content-Type: multipart/form-data; boundary=---------------------------968064918930967154199105236
+  ... Content-Length: 418
+  ... 
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.title"
+  ... 
+  ... %s
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.description"
+  ... 
+  ... %s
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.somenumber"
+  ... 
+  ... 1
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="field.somelist.0."
+  ... 
+  ... %s
+  ... -----------------------------968064918930967154199105236
+  ... Content-Disposition: form-data; name="UPDATE_SUBMIT"
+  ... 
+  ... Change
+  ... -----------------------------968064918930967154199105236--
+  ... """ % (wo_hen_hao, ni_hao, de_guo), handle_errors=False)
+  HTTP/1.1 200 OK
+  ...
+
+The object's data will have changed accordingly:
+
+  >>> unicodetest.somelist == [de_guo.decode('utf-8')]
+  True
 
 Object widget:
 --------------
