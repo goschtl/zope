@@ -1,8 +1,6 @@
 ##############################################################################
 #
-# Copyright (c) 2000-2003 Zope Corporation and Contributors.
-# Copyright (c) 2004 Five Contributors.
-# All Rights Reserved.
+# Copyright (c) 2000-2005 Zope Corporation and Contributors.
 #
 # This software is subject to the provisions of the Zope Public License,
 # Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.

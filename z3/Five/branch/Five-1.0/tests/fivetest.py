@@ -1,4 +1,20 @@
+##############################################################################
+#
+# Copyright (c) 2004, 2005 Zope Corporation and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+"""Five test fixtures.
 
+$Id$
+"""
 # ZopeTestCase was not designed to run tests as part of the
 # Zope test suite proper. In particular, it intercepts product
 # installation. We have to work around this for the Five tests
