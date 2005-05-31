@@ -151,8 +151,9 @@ def addIntIdSubscriber(ob, event):
     Registers the object added in all unique id utilities and fires
     an event for the catalogs.
     """
-    if not ITransientLocation.providedBy(ob): # do not register transient locations
-        for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
+    # do not register transient locations
+    if not ITransientLocation.providedBy(ob):
+        for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds):
             utility.register(ob)
     
         # Notify the catalogs that this object was added.
