@@ -56,8 +56,8 @@ class EditView(BrowserView):
 
     def __init__(self, context, request):
         BrowserView.__init__(self, context, request)
-	self._processInputs()
-	self._setPageEncoding()
+        self._processInputs()
+        self._setPageEncoding()
         self._setUpWidgets()
 
     def _setUpWidgets(self):
@@ -87,8 +87,8 @@ class EditView(BrowserView):
     def _processInputs(self):
         request = self.request
         for name, value in request.form.items():
-	    if (not (isCGI_NAME(name) or name.startswith('HTTP_'))
-		and isinstance(value, str)):
+            if (not (isCGI_NAME(name) or name.startswith('HTTP_'))
+                and isinstance(value, str)):
                 request.form[name] = self._decode(value)
 
     def _setPageEncoding(self):

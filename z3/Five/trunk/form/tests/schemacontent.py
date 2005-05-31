@@ -48,7 +48,7 @@ class IFieldContent(Interface):
     somelist = List(
         title=u"Some List",
         value_type=TextLine(title=u"Some item"),
-	default=[],
+        default=[],
         required=False
         )
 
