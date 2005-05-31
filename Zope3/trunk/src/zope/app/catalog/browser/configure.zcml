@@ -90,6 +90,7 @@
 
 <schemadisplay
     name="index.html"
+    fields="interface field_name field_callable"
     schema="..text.ITextIndex"
     label="Text Index"
     permission="zope.ManageServices"
