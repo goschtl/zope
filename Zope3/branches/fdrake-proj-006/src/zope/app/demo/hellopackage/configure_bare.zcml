@@ -1,0 +1,39 @@
+<!-- See configure.zcml for this with a lot of comments. This is just
+     to demo how short it is without comments. -->
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:browser="http://namespaces.zope.org/browser"
+   i18n_domain="hellopackage"
+   >
+
+<content class=".hellomodule.HelloClass">
+  <factory
+      id="hellopackage.Hello"
+      title="Hello world"
+      description="A simple hello world object."
+      />
+  <require
+      permission="zope.View"
+      attributes="getHello"
+      />
+</content>
+
+<browser:page
+    name="hello.html"
+    for=".interfaces.IHello"
+    template="hello.pt"
+    permission="zope.View"
+    />
+
+<browser:defaultView
+    name="hello.html"
+    for=".interfaces.IHello"
+    />
+
+<browser:addMenuItem
+    factory="hellopackage.Hello"
+    title="Hello world"
+    description="An object for hello worlding."
+    />
+
+</configure>

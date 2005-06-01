@@ -1,0 +1,84 @@
+<html metal:use-macro="context/@@standard_macros/view">
+<body>
+<div metal:fill-slot="body">
+
+  <h3 i18n:translate="">Workflow Options</h3>
+  <br/>
+
+  <div metal:define-macro="contents">
+    <div metal:define-macro="contents_selectWorkflow"
+         tal:define="workflow request/workflow | nothing">
+      <div tal:condition="not:workflow" tal:omit-tag="">
+        <form name="containerContentsForm" method="get" 
+              action="@@workflows.html" 
+              tal:define="container_contents view/listContentInfo"
+              tal:condition="container_contents">
+          <span i18n:translate="">Workflow:</span>
+          <select name="workflow" size="1">
+            <option tal:repeat="workflow container_contents" 
+                    tal:attributes="value workflow/id"
+                    tal:content="workflow/name" i18n:translate=""></option>
+          </select>
+          &nbsp;<input type="submit" value="Choose" 
+                       i18n:attributes="value choose-button"/>
+        </form>
+      </div>
+      <div tal:condition="workflow" tal:omit-tag="" i18n:translate="">
+        Workflow:
+        <div tal:replace="view/getWorkflowTitle"
+             i18n:name="wf_title" i18n:translate=""/>
+      </div>
+    </div>
+    <div metal:define-macro="contents_changeState">
+    </div>
+
+  </div>
+  <br />
+  <div metal:define-macro="contents_transitions"
+       tal:define="info view/getTransitions"
+       tal:condition="info">
+      <div i18n:translate="">
+        Current Status:
+        <div tal:replace="info/status" i18n:translate=""/>
+      </div>
+      <br />
+      <span i18n:translate="">Possible State Changes:</span>
+      <form action="@@fireTransition.html" method="get">
+      <input type="hidden" name="workflow"
+             tal:attributes="value request/workflow | nothing" />
+        <div tal:repeat="trans info/transitions" 
+             tal:condition="info/transitions | nothing"
+             tal:omit-tag="">
+          <input type="radio"
+                 name="selTransition"
+                 tal:attributes="value trans/name"/>
+          <span tal:replace="trans/title" i18n:translate=""/><br />
+        </div>
+        <input type="submit" value="Make Transition"
+               i18n:attributes="value make-transition-button"/>
+        </form>
+  </div>
+ 
+  <h3 i18n:translate="">Workflow-relevant Data</h3>
+
+  <p tal:define="status view/update"
+     tal:condition="status"
+     tal:content="status" i18n:translate=""/>
+
+  <form name="." method="post">
+
+    <div metal:use-macro="context/@@form_macros/widget_rows" />
+
+    <div class="row">
+      <div class="controls">
+        <input type="submit" value="Refresh" 
+            i18n:attributes="value refresh-button" />
+        <input type="submit" name="UPDATE_SUBMIT" value="Submit" 
+            i18n:attributes="value submit-button"/>
+      </div>
+    </div>
+  </form>
+
+</div>
+</body>
+</html>

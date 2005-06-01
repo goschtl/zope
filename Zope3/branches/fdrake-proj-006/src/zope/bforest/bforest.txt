@@ -1,0 +1,251 @@
+===========
+BForest API
+===========
+
+BForests are dictionary-like objects that use multiple BTrees for a backend and
+support rotation of the composite trees.  This supports various implementations 
+of timed member expirations, enabling caches and semi-persistent storage.  A
+useful and simple subclass would be to promote a key-value pair to the
+first (newest) bucket whenever the key is accessed, for instance.  It also is
+useful with disabling the rotation capability.
+
+Like btrees, bforests come in four flavors: Integer-Integer (IIBForest), 
+Integer-Object (IOBForest), Object-Integer (OIBForest), and Object-Object
+(OOBForest).  The examples here will deal with them in the abstract: we will
+create classes from the imaginary and representative BForest class, and
+generate keys from KeyGenerator and values from ValueGenerator.  From the 
+examples you should be able to extrapolate usage of all four types.
+
+First let's instantiate a bforest and look at an empty example.  By default,
+a new bforest creates two composite btree buckets.
+
+    >>> d = BForest()
+    >>> list(d.keys())
+    []
+    >>> list(d.values())
+    []
+    >>> len(d.buckets)
+    2
+    >>> dummy_key = KeyGenerator()
+    >>> d.get(dummy_key)
+    >>> d.get(dummy_key, 42)
+    42
+
+Now we'll populate it.  We'll first create a dictionary we'll use to compare.
+
+    >>> original = {}
+    >>> for i in range(10):
+    ...     original[KeyGenerator()] = ValueGenerator()
+    ... 
+    >>> d.update(original)
+    >>> d == original
+    True
+    >>> d_keys = list(d.keys())
+    >>> d_keys.sort()
+    >>> o_keys = original.keys()
+    >>> o_keys.sort()
+    >>> d_keys == o_keys
+    True
+    >>> d_values = list(d.values())
+    >>> d_values.sort()
+    >>> o_values = original.values()
+    >>> o_values.sort()
+    >>> o_values == d_values
+    True
+    >>> d_items = list(d.items())
+    >>> d_items.sort()
+    >>> o_items = original.items()
+    >>> o_items.sort()
+    >>> o_items == d_items
+    True
+    >>> key, value = d.popitem()
+    >>> value == original.pop(key)
+    True
+    >>> key, value = original.popitem()
+    >>> value == d.pop(key)
+    True
+    >>> len(d) == len(original)
+    True
+
+Now let's rotate the buckets.
+
+    >>> d.rotateBucket()
+
+...and we'll do the exact same test as above, first.
+
+    >>> d == original
+    True
+    >>> d_keys = list(d.keys())
+    >>> d_keys.sort()
+    >>> o_keys = original.keys()
+    >>> o_keys.sort()
+    >>> d_keys == o_keys
+    True
+    >>> d_values = list(d.values())
+    >>> d_values.sort()
+    >>> o_values = original.values()
+    >>> o_values.sort()
+    >>> o_values == d_values
+    True
+    >>> d_items = list(d.items())
+    >>> d_items.sort()
+    >>> o_items = original.items()
+    >>> o_items.sort()
+    >>> o_items == d_items
+    True
+    >>> key, value = d.popitem()
+    >>> value == original.pop(key)
+    True
+    >>> key, value = original.popitem()
+    >>> value == d.pop(key)
+    True
+    >>> len(d) == len(original)
+    True
+
+Now we'll make a new dictionary to represent changes made after the bucket
+rotation.
+
+    >>> second = {}
+    >>> for i in range(10):
+    ...     key = KeyGenerator()
+    ...     value = ValueGenerator()
+    ...     second[key] = value
+    ...     d[key] = value
+    ... 
+    >>> original.update(second)
+
+...and we'll do almost the exact same test as above, first.
+
+    >>> d == original
+    True
+    >>> d_keys = list(d.keys())
+    >>> d_keys.sort()
+    >>> o_keys = original.keys()
+    >>> o_keys.sort()
+    >>> d_keys == o_keys
+    True
+    >>> d_values = list(d.values())
+    >>> d_values.sort()
+    >>> o_values = original.values()
+    >>> o_values.sort()
+    >>> o_values == d_values
+    True
+    >>> d_items = list(d.items())
+    >>> d_items.sort()
+    >>> o_items = original.items()
+    >>> o_items.sort()
+    >>> o_items == d_items
+    True
+    >>> key, value = d.popitem()
+    >>> ignore = second.pop(key, None) # keep second up-to-date
+    >>> value == original.pop(key)
+    True
+    >>> key, value = original.popitem()
+    >>> ignore = second.pop(key, None) # keep second up-to-date
+    >>> value == d.pop(key)
+    True
+    >>> len(d) == len(original)
+    True
+
+Now if we rotate the buckets, the first set of items will be gone, but the 
+second will remain.
+
+    >>> d.rotateBucket()
+    >>> d == original
+    False
+    >>> d == second
+    True
+
+Let's set a value, check the copy behavior,  and then rotate it one more time.
+
+    >>> third = {KeyGenerator(): ValueGenerator()}
+    >>> d.update(third)
+    >>> copy = d.copy()
+    >>> copy == d
+    True
+    >>> copy != second # because second doesn't have the values of third
+    True
+    >>> list(copy.buckets[0].items()) == list(d.buckets[0].items())
+    True
+    >>> list(copy.buckets[1].items()) == list(d.buckets[1].items())
+    True
+    >>> copy[KeyGenerator()] = ValueGenerator()
+    >>> copy == d
+    False
+    >>> d.rotateBucket()
+    >>> d == third
+    True
+    >>> d.clear()
+    >>> d == BForest() == {}
+    True
+    
+    >>> d.update(second)
+
+We'll make a value in one bucket that we'll override in another.
+
+    >>> d[third.keys()[0]] = ValueGenerator()
+    >>> d.rotateBucket()
+    >>> d.update(third)
+    >>> second.update(third)
+    >>> d == second
+    True
+    >>> second == d
+    True
+
+The tree method converts the bforest to a btree as efficiently as I know how
+for a common case of more items in buckets than buckets.
+
+    >>> tree = d.tree()
+    >>> d_items = list(d.items())
+    >>> d_items.sort()
+    >>> t_items = list(tree.items())
+    >>> t_items.sort()
+    >>> t_items == d_items
+    True
+
+Finally, comparisons work similarly to dicts but in a simpleminded 
+way--improvements welcome!  We've already looked at a lot of examples above,
+but here are some additional cases
+
+    >>> d == None
+    False
+    >>> d != None
+    True
+    >>> None == d
+    False
+    >>> d != None
+    True
+    >>> d >= second
+    True
+    >>> d >= dict(second)
+    True
+    >>> d <= second
+    True
+    >>> d <= dict(second)
+    True
+    >>> d > second
+    False
+    >>> d > dict(second)
+    False
+    >>> d < second
+    False
+    >>> d > dict(second)
+    False
+    >>> second.popitem()[0] in d
+    True
+    >>> d > second
+    True
+    >>> d < second
+    False
+    >>> d >= second
+    True
+    >>> d <= second
+    False
+    >>> second < d
+    True
+    >>> second > d
+    False
+    >>> second <= d
+    True
+    >>> second >= d
+    False

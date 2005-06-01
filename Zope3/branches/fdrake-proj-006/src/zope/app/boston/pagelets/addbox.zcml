@@ -1,0 +1,27 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <configure package="zope.app.skintools.addbox.browser">
+    <pagelet
+        name="addbox"
+        for="zope.app.container.interfaces.IWriteContainer"
+        slot="zope.app.boston.slots.ILeft"
+        permission="zope.View"
+        template="addbox.pt"
+        layer="zope.app.boston.boston"
+        weight="1"
+        />
+  </configure>
+
+  <pagelet
+      name="addbox_layout"
+      for="*"
+      slot="zope.app.skintools.addbox.IAddBoxLayout"
+      permission="zope.View"
+      template="addbox_layout.pt"
+      layer="zope.app.boston.boston"
+      />
+
+</configure>
