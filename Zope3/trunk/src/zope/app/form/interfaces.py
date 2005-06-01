@@ -31,7 +31,7 @@ class IWidgetInputError(Interface):
 
 class WidgetInputError(UserError):
     """One or more user input errors occurred."""
-    
+
     implements(IWidgetInputError)
 
     def __init__(self, field_name, widget_title, errors=None):
@@ -45,7 +45,7 @@ class WidgetInputError(UserError):
         self.errors = errors
 
     def doc(self):
-        # XXX this duck typing is to get the code working.  See 
+        # XXX this duck typing is to get the code working.  See
         # collector issue 372
         if isinstance(self.errors, basestring):
             return self.errors
@@ -99,11 +99,11 @@ class ErrorContainer(Exception):
 
 class WidgetsError(ErrorContainer):
     """A collection of errors from widget processing.
-    
+
     widgetValues is a map containing the list of values that were obtained
     from the widgets, keyed by field name.
     """
-    
+
     def __init__(self, errors, widgetsData={}):
         ErrorContainer.__init__(self, *errors)
         self.widgetsData = widgetsData
@@ -121,26 +121,26 @@ class IWidget(IView):
 
     label = Attribute(
         """The widget label.
-        
+
         Label may be translated for the request.""")
 
     hint = Attribute(
         """A hint regarding the use of the widget.
-        
+
         Hints are traditionally rendered using tooltips in GUIs, but may be
         rendered differently depending on the UI implementation.
-        
+
         Hint may be translated for the request.""")
-        
+
     visible = Attribute(
         """A flag indicating whether or not the widget is visible.""")
-       
+
     def setRenderedValue(value):
         """Set the value to be rendered by the widget.
 
         Calling this method will override any values provided by the user.
         """
-        
+
     def setPrefix(prefix):
         """Set the name prefix used for the widget
 
@@ -155,7 +155,7 @@ class IInputWidget(IWidget):
     required = Bool(
         title=u"Required",
         description=u"""If True, widget should be displayed as requiring input.
-        
+
         By default, this value is the field's 'required' attribute. This
         field can be set to False for widgets that always provide input (e.g.
         a checkbox) to avoid unnecessary 'required' UI notations.
@@ -203,6 +203,6 @@ class IDisplayWidget(IWidget):
     required = Bool(
         title=u"Required",
         description=u"""If True, widget should be displayed as requiring input.
-        
+
         Display widgets should never be required.
         """)
