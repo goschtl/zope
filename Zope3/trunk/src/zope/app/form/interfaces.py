@@ -139,6 +139,11 @@ class IWidget(IView):
         """Set the value to be rendered by the widget.
 
         Calling this method will override any values provided by the user.
+
+        For input widgets (`IInputWidget` implementations), calling
+        this sets the value that will be rendered even if there is
+        already user input.
+
         """
 
     def setPrefix(prefix):
@@ -166,12 +171,16 @@ class IInputWidget(IWidget):
 
         The widget must return a value that can be legally assigned to
         its bound field or otherwise raise ``WidgetInputError``.
+
+        The return value is not affected by `setRenderedValue()`.
         """
 
     def applyChanges(content):
-        """Validate the widget data and apply it to the content.
+        """Validate the user input data and apply it to the content.
 
         Return a boolean indicating whether a change was actually applied.
+
+        This raises an error if there is no user input.
         """
 
     def hasInput():
@@ -185,8 +194,15 @@ class IInputWidget(IWidget):
         `hasValidInput` to determine whether or not `getInputValue` will return
         a valid value.
 
-        A widget that does not have input should generally not be used to
-        update its bound field.
+        A widget that does not have input should generally not be used
+        to update its bound field.  Values set using
+        `setRenderedValue()` do not count as user input.
+
+        A widget that has been rendered into a form which has been
+        submitted must report that it has input.  If the form
+        containing the widget has not been submitted, the widget
+        shall report that it has no input.
+
         """
 
     def hasValidInput():
