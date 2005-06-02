@@ -23,6 +23,7 @@ from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.form.interfaces import IInputWidget
+from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
 from zope.app.i18n import ZopeMessageIDFactory as _
@@ -37,7 +38,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
     implements(IInputWidget)
 
     _type = tuple
-    _data = () # pre-existing sequence items (from setRenderedValue)
+    _data = None # pre-existing sequence items (from setRenderedValue)
 
     def __init__(self, context, field, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
@@ -52,16 +53,10 @@ class SequenceWidget(BrowserWidget, InputWidget):
         render = []
 
         # length of sequence info
-        sequence = list(self._generateSequence())
+        sequence = self._getRenderedValue()
         num_items = len(sequence)
         min_length = self.context.min_length
         max_length = self.context.max_length
-
-        # ensure minimum number of items in the form
-        if num_items < min_length:
-            for i in range(min_length - num_items):
-                sequence.append(None)
-        num_items = len(sequence)
 
         # generate each widget from items in the sequence - adding a
         # "remove" button for each one
@@ -80,12 +75,11 @@ class SequenceWidget(BrowserWidget, InputWidget):
         # possibly generate the "remove" and "add" buttons
         buttons = ''
         if render and num_items > min_length:
-            remove_botton_name = 'remove-selected-items-of-seq-' + self.name
             button_label = _('remove-selected-items', "Remove selected items")
             button_label = translate(button_label, context=self.request,
                                      default=button_label)
-            buttons += '<input type="submit" value="%s" name="%s"/>' % (
-                button_label, remove_botton_name)
+            buttons += ('<input type="submit" value="%s" name="%s.remove"/>'
+                        % (button_label, self.name))
         if max_length is None or num_items < max_length:
             field = self.context.value_type
             button_label = _('Add %s')
@@ -97,7 +91,8 @@ class SequenceWidget(BrowserWidget, InputWidget):
         if buttons:
             render.append('<tr><td>%s</td></tr>' % buttons)
 
-        return '<table border="0">' + ''.join(render) + '</table>'
+        return ('<table border="0">%s</table>\n%s'
+                % (''.join(render), self._getPresenceMarker(num_items)))
 
     def _getWidget(self, i):
         field = self.context.value_type
@@ -109,26 +104,40 @@ class SequenceWidget(BrowserWidget, InputWidget):
         return widget
 
     def hidden(self):
-        ''' Render the list as hidden fields '''
+        '''Render the list as hidden fields.'''
         # length of sequence info
-        sequence = self._generateSequence()
-        num_items = len(sequence)
-        min_length = self.context.min_length
-
-        # ensure minimum number of items in the form
-        if num_items < min_length:
-            for i in range(min_length - num_items):
-                sequence.append(None)
+        sequence = self._getRenderedValue()
         num_items = len(sequence)
 
         # generate hidden fields for each value
-        s = ''
+        parts = [self._getPresenceMarker(num_items)]
         for i in range(num_items):
             value = sequence[i]
             widget = self._getWidget(i)
             widget.setRenderedValue(value)
-            s += widget.hidden()
-        return s
+            parts.append(widget.hidden())
+        return "\n".join(parts)
+
+    def _getRenderedValue(self):
+        sequence = self._data
+        if sequence is None:
+            if self.hasInput():
+                sequence = list(self._generateSequence())
+            else:
+                sequence = []
+        # ensure minimum number of items in the form
+        if len(sequence) < self.context.min_length:
+            sequence = list(sequence)
+            for i in range(self.context.min_length - len(sequence)):
+                # Shouldn't this use self.field.value_type.missing_value,
+                # instead of None?
+                sequence.append(None)
+            sequence = self._type(sequence)
+        return sequence
+
+    def _getPresenceMarker(self, count=0):
+        return ('<input type="hidden" name="%s.count" value="%d" />'
+                % (self.name, count))
 
     def getInputValue(self):
         """Return converted and validated widget data.
@@ -139,14 +148,18 @@ class SequenceWidget(BrowserWidget, InputWidget):
         If there is no user input and the field is not required, then
         the field default value will be returned.
 
-        A ``WidgetInputError`` is returned in the case of one or more
+        A ``WidgetInputError`` is raised in the case of one or more
         errors encountered, inputting, converting, or validating the data.
         """
-        sequence = self._generateSequence()
-        # validate the input values
-        for value in sequence:
-            self.context.value_type.validate(value)
-        return self._type(sequence)
+        if self.hasInput():
+            sequence = self._type(self._generateSequence())
+            if sequence != self.context.missing_value:
+                self.context.validate(sequence)
+            elif self.context.required:
+                raise MissingInputError(self.context.__name__,
+                                        self.context.title)
+            return sequence
+        raise MissingInputError(self.context.__name__, self.context.title)
 
     # TODO: applyChanges isn't reporting "change" correctly (we're
     # re-generating the sequence with every edit, and need to be smarter)
@@ -163,10 +176,10 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
         Return ``True`` if there is data and ``False`` otherwise.
         """
-        return len(self._generateSequence()) != 0
+        return (self.name + ".count") in self.request.form
 
     def setRenderedValue(self, value):
-        """Set the default data for the widget.
+        """Set the data that should be rendered by the widget.
 
         The given value should be used even if the user has entered
         data.
@@ -176,51 +189,41 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
     def _generateSequence(self):
         """Take sequence info in the self.request and _data.
+
+        This can only be called if self.hasInput() returns true.
         """
         len_prefix = len(self.name)
         adding = False
         removing = []
-        subprefix = re.compile(r'(\d+)\.(.*)$')
-        remove_botton_name = 'remove-selected-items-of-seq-' + self.name
         if self.context.value_type is None:
+            # Why would this ever happen?
             return []
+        # the marker field tells how many individual items were
+        # included in the input; we check for exactly that many input
+        # widgets
+        try:
+            count = int(self.request.form[self.name + ".count"])
+        except ValueError:
+            # could not convert to int; the input was not generated
+            # from the widget as implemented here
+            raise WidgetInputError(self.context.__name__, self.context.title)
 
         # pre-populate
         found = {}
-        if self._data is not None:
-            found = dict(enumerate(self._data))
 
         # now look through the request for interesting values
-        for key in self.request.keys():
-            if not key.startswith(self.name):
-                continue
-            token = key[len_prefix+1:]        # skip the '.'
-            if token == 'add':
-                # append a new blank field to the sequence
-                adding = True
-            elif token.startswith('remove_') and \
-                    remove_botton_name in self.request:
-                # remove the index indicated if we press 
-                # the "Remove selected items" button.
-                # Otherwise we delete the items if we check
-                # the box and push the "Change" button.
-                removing.append(int(token[7:]))
-            else:
-                match = subprefix.match(token)
-                if match is None:
-                    continue
-                # key refers to a sub field
-                i = int(match.group(1))
-
-                # find a widget for the sub-field and use that to parse the
-                # request data
-                widget = self._getWidget(i)
-                value = widget.getInputValue()
-                found[i] = value
+        for i in range(count):
+            remove_key = "%s.remove_%d" % (self.name, i)
+            if remove_key in self.request.form:
+                removing.append(i)
+            widget = self._getWidget(i)
+            found[i] = widget.getInputValue()
+        adding = (self.name + ".add") in self.request.form
 
         # remove the indicated indexes
-        for i in removing:
-            del found[i]
+        if (self.name + ".remove") in self.request.form:
+            for i in removing:
+                del found[i]
 
         # generate the list, sorting the dict's contents by key
         items = found.items()
@@ -229,6 +232,8 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
         # add an entry to the list if the add button has been pressed
         if adding:
+            # Should this be using self.context.value_type.missing_value
+            # instead of None?
             sequence.append(None)
 
         return sequence
