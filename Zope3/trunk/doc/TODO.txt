@@ -53,8 +53,6 @@ Others
 
   * 397: DisplayView shouldn't display fields with private suffix
 
-  * 400: i18n image broken in trunk
-  
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
 well.

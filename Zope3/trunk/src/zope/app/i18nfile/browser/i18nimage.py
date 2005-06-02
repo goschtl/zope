@@ -23,17 +23,22 @@ from zope.i18n.negotiator import negotiator
 
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.file.browser.image import ImageData
-from zope.app.size import byteDisplay
+from zope.app.size import ISized
+
 
 class I18nImageEdit(object):
 
     name = 'editForm'
     title = _('Edit Form')
-    description = _('This edit form allows you to make changes to the ' +
+    description = _('This edit form allows you to make changes to the '
                    'properties of this image.')
 
-    def size(self, language=None):
-        sized = ISized(self.context._get(language))
+    def size(self):
+        if self.request is not None:
+            language = self.request.get("language")
+        else:
+            language = None
+        sized = ISized(self.context.getObject(language))
         return sized.sizeForDisplay()
 
     def action(self, contentType, data, language, defaultLanguage,
@@ -53,7 +58,6 @@ class I18nImageEdit(object):
         return self.request.response.redirect(self.request.URL[-1] +
                       "/upload.html?language=%s" % quote(language, ''))
 
-    
 class I18nImageData(ImageData):
 
     def __call__(self):

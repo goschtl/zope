@@ -599,6 +599,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fixed issue #400: i18n image broken in trunk
+
       - Fix #392 : adapter registry subscribers method can return None
         when it shouldn't
 
@@ -609,7 +611,7 @@ Zope Changes
         authentication too.
 
       - Fix #313 : importchecker.py ignores assignment to module attributes
-    
+
       - Fix #327 : File type change clears object content
 
       - Disabled automatic translation of message id's in TAL.

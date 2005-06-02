@@ -23,6 +23,12 @@ from zope.app.file.interfaces import IFile, IImage
 class II18nFile(IFile, II18nAware):
     """I18n aware file interface."""
 
+    def getObject(language=None):
+        """Return a subobject for a given language,
+        and if it does not exist, return a subobject for the default
+        language.
+        """
+
     def getData(language=None):
         """Return the object data for a given language
         or for the default language.

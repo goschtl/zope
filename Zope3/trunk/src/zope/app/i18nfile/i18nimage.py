@@ -23,6 +23,7 @@ from zope.app.i18nfile.i18nfile import I18nFile
 
 from interfaces import II18nImage
 
+
 class I18nImage(I18nFile):
     """An internationalized Image object.  Note that images of all
     languages share the same content type.
@@ -47,4 +48,4 @@ class I18nImage(I18nFile):
 
     def getImageSize(self, language=None):
         '''See interface `II18nImage`'''
-        return self._get(language).getImageSize()
+        return self.getObject(language).getImageSize()

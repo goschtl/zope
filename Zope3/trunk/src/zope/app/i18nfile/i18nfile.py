@@ -43,11 +43,8 @@ class I18nFile(Persistent):
         """
         return File(data)
 
-    def _get(self, language):
-        """Helper function -- return a subobject for a given language,
-        and if it does not exist, return a subobject for the default
-        language.
-        """
+    def getObject(self, language=None):
+        """See interface `II18nFile`"""
         file = self._data.get(language)
         if not file:
             file = self._data[self.defaultLanguage]
@@ -67,7 +64,7 @@ class I18nFile(Persistent):
 
     def getData(self, language=None):
         """See interface `II18nFile`"""
-        return self._get(language).data
+        return self.getObject(language).data
 
     def setData(self, data, language=None):
         """See interface `II18nFile`"""
@@ -78,7 +75,7 @@ class I18nFile(Persistent):
 
     def getSize(self, language=None):
         """See interface `II18nFile`"""
-        return self._get(language).getSize()
+        return self.getObject(language).getSize()
 
     def getDefaultLanguage(self):
         """See `II18nAware`"""

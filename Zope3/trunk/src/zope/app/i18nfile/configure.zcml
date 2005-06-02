@@ -34,7 +34,7 @@
         />
     <require
         permission="zope.View"
-        attributes="getDefaultLanguage getAvailableLanguages getData"
+        attributes="getDefaultLanguage getAvailableLanguages getData getObject"
         />
     <require
         permission="zope.ManageContent"
@@ -54,7 +54,7 @@
     <require
         permission="zope.View"
         interface="zope.app.file.interfaces.IFile"
-        attributes="getImageSize"
+        attributes="getImageSize getObject"
         />
     <require
         permission="zope.ManageContent"
