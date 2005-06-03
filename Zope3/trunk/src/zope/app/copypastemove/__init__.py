@@ -674,7 +674,7 @@ def dispatchToSublocations(object, event):
       >>> seen = []
       >>> def handler(ob, event):
       ...     seen.append((ob, event.object))
-    
+
     Finally, we need to register our handler for copy events:
 
       >>> from zope.app.tests import ztapi
@@ -682,13 +682,13 @@ def dispatchToSublocations(object, event):
       >>> ztapi.handle([None, IObjectCopiedEvent], handler)
 
     and this function as a dispatcher:
-        
+
       >>> ztapi.handle([None, IObjectCopiedEvent], dispatchToSublocations)
 
     When we notify that our root object has been copied:
-      
+
       >>> notify(ObjectCopiedEvent(c))
-    
+
     we see that our handler has seen all of the subobjects:
 
       >>> seenreprs = map(repr, seen)
