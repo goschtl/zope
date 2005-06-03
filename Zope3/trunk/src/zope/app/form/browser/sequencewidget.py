@@ -22,10 +22,11 @@ from zope.interface import implements
 from zope.i18n import translate
 
 from zope.app import zapi
-from zope.app.form.interfaces import IInputWidget
+from zope.app.form.interfaces import IDisplayWidget, IInputWidget
 from zope.app.form.interfaces import WidgetInputError, MissingInputError
 from zope.app.form import InputWidget
 from zope.app.form.browser.widget import BrowserWidget
+from zope.app.form.browser.widget import DisplayWidget, renderElement
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 class SequenceWidget(BrowserWidget, InputWidget):
@@ -38,7 +39,6 @@ class SequenceWidget(BrowserWidget, InputWidget):
     implements(IInputWidget)
 
     _type = tuple
-    _data = None # pre-existing sequence items (from setRenderedValue)
 
     def __init__(self, context, field, request, subwidget=None):
         super(SequenceWidget, self).__init__(context, request)
@@ -96,7 +96,7 @@ class SequenceWidget(BrowserWidget, InputWidget):
 
     def _getWidget(self, i):
         field = self.context.value_type
-        if self.subwidget:
+        if self.subwidget is not None:
             widget = self.subwidget(field, self.request)
         else:
             widget = zapi.getMultiAdapter((field, self.request), IInputWidget)
@@ -119,12 +119,12 @@ class SequenceWidget(BrowserWidget, InputWidget):
         return "\n".join(parts)
 
     def _getRenderedValue(self):
-        sequence = self._data
-        if sequence is None:
-            if self.hasInput():
-                sequence = list(self._generateSequence())
-            else:
-                sequence = []
+        if self._renderedValueSet():
+            sequence = self._data
+        elif self.hasInput():
+            sequence = list(self._generateSequence())
+        else:
+            sequence = []
         # ensure minimum number of items in the form
         if len(sequence) < self.context.min_length:
             sequence = list(sequence)
@@ -132,7 +132,6 @@ class SequenceWidget(BrowserWidget, InputWidget):
                 # Shouldn't this use self.field.value_type.missing_value,
                 # instead of None?
                 sequence.append(None)
-            sequence = self._type(sequence)
         return sequence
 
     def _getPresenceMarker(self, count=0):
@@ -177,15 +176,6 @@ class SequenceWidget(BrowserWidget, InputWidget):
         Return ``True`` if there is data and ``False`` otherwise.
         """
         return (self.name + ".count") in self.request.form
-
-    def setRenderedValue(self, value):
-        """Set the data that should be rendered by the widget.
-
-        The given value should be used even if the user has entered
-        data.
-        """
-        # the current list of values derived from the "value" parameter
-        self._data = value
 
     def _generateSequence(self):
         """Take sequence info in the self.request and _data.
@@ -243,3 +233,66 @@ class TupleSequenceWidget(SequenceWidget):
 
 class ListSequenceWidget(SequenceWidget):
     _type = list
+
+
+# Basic display widget
+
+class SequenceDisplayWidget(DisplayWidget):
+
+    _missingValueMessage = _("sequence-value-not-provided",
+                             u"(no value available)")
+
+    _emptySequenceMessage = _("sequence-value-is-empty",
+                              u"(no values)")
+
+    tag = "ol"
+    itemTag = "li"
+    cssClass = "sequenceWidget"
+    extra = ""
+
+    def __init__(self, context, field, request, subwidget=None):
+        super(SequenceDisplayWidget, self).__init__(context, request)
+        self.subwidget = subwidget
+
+    def __call__(self):
+        # get the data to display:
+        if self._renderedValueSet():
+            data = self._data
+        else:
+            data = self.context.get(self.context.context)
+
+        # deal with special cases:
+        if data == self.context.missing_value:
+            return translate(self._missingValueMessage, self.request,
+                             self._missingValueMessage.default)
+        data = list(data)
+        if not data:
+            return translate(self._emptySequenceMessage, self.request,
+                             self._emptySequenceMessage.default)
+
+        parts = []
+        for i, item in enumerate(data):
+            widget = self._getWidget(i)
+            widget.setRenderedValue(item)
+            s = widget()
+            if self.itemTag:
+                s = "<%s>%s</%s>" % (self.itemTag, s, self.itemTag)
+            parts.append(s)
+        contents = "\n".join(parts)
+        if self.tag:
+            contents = "\n%s\n" % contents
+            contents = renderElement(self.tag,
+                                     cssClass=self.cssClass,
+                                     extra=self.extra,
+                                     contents=contents)
+        return contents
+
+    def _getWidget(self, i):
+        field = self.context.value_type
+        if self.subwidget is not None:
+            widget = self.subwidget(field, self.request)
+        else:
+            widget = zapi.getMultiAdapter(
+                (field, self.request), IDisplayWidget)
+        widget.setPrefix('%s.%d.'%(self.name, i))
+        return widget

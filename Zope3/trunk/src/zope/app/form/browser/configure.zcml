@@ -265,6 +265,15 @@
       permission="zope.Public"
       />
 
+  <view
+      type="zope.publisher.interfaces.browser.IBrowserRequest"
+      for="zope.schema.interfaces.ISequence
+           zope.schema.interfaces.IField"
+      provides="zope.app.form.interfaces.IDisplayWidget"
+      factory=".SequenceDisplayWidget"
+      permission="zope.Public"
+      />
+
   <!-- Choice collections.  dispatch to field + vocabulary lookup.
        We must register the collection + choice factories for all ICollection
        subclasses because the field (the collection) has precedence: therefore

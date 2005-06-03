@@ -64,8 +64,11 @@ from zope.app.form.browser.itemswidgets import MultiSelectSetWidget
 from zope.app.form.browser.itemswidgets import MultiCheckBoxWidget
 from zope.app.form.browser.itemswidgets import OrderedMultiSelectWidget
 
+# Widgets that let you enter several items in a sequence
+# These widgets are multi-views on (sequence type, value type)
 from zope.app.form.browser.sequencewidget import SequenceWidget
 from zope.app.form.browser.sequencewidget import TupleSequenceWidget
 from zope.app.form.browser.sequencewidget import ListSequenceWidget
+from zope.app.form.browser.sequencewidget import SequenceDisplayWidget
 
 from zope.app.form.browser.objectwidget import ObjectWidget
