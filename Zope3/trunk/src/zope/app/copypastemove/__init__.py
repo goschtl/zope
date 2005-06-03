@@ -59,7 +59,7 @@ class ObjectMover(object):
     object is movable:
 
     >>> mover.moveable()
-    1
+    True
 
     which, at least for now, they always are.  A better question to
     ask is whether we can move to a particular container. Right now,
@@ -67,7 +67,7 @@ class ObjectMover(object):
 
     >>> container2 = ExampleContainer()
     >>> mover.moveableTo(container2)
-    1
+    True
     >>> mover.moveableTo({})
     Traceback (most recent call last):
     ...
@@ -83,7 +83,7 @@ class ObjectMover(object):
     >>> list(container2)
     [u'foo']
     >>> ob.__parent__ is container2
-    1
+    True
 
     We can also specify a name:
 
@@ -92,7 +92,7 @@ class ObjectMover(object):
     >>> list(container2)
     [u'bar']
     >>> ob.__parent__ is container2
-    1
+    True
     >>> ob.__name__
     u'bar'
 
@@ -141,9 +141,9 @@ class ObjectMover(object):
     >>> from zope.app.container.constraints import checkObject
     >>> container3 = C1()
     >>> mover.moveableTo(container3, 'ZDummy')
-    0
+    False
     >>> mover.moveableTo(container3, 'newName')
-    1
+    True
 
     And a test for constraints:
 
@@ -164,10 +164,10 @@ class ObjectMover(object):
     >>> cO = constrainedObject()
     >>> mover2 = ObjectMover(cO)
     >>> mover2.moveableTo(container)
-    0
+    False
     >>> container.x = 1
     >>> mover2.moveableTo(container)
-    1
+    True
 
     """
 
@@ -240,7 +240,7 @@ class ObjectCopier(object):
     object is movable:
 
     >>> copier.copyable()
-    1
+    True
 
     which, at least for now, they always are.  A better question to
     ask is whether we can copy to a particular container. Right now,
@@ -248,7 +248,7 @@ class ObjectCopier(object):
 
     >>> container2 = ExampleContainer()
     >>> copier.copyableTo(container2)
-    1
+    True
     >>> copier.copyableTo({})
     Traceback (most recent call last):
     ...
@@ -264,11 +264,11 @@ class ObjectCopier(object):
     >>> list(container2)
     [u'foo']
     >>> ob.__parent__ is container
-    1
+    True
     >>> container2[u'foo'] is ob
-    0
+    False
     >>> container2[u'foo'].__parent__ is container2
-    1
+    True
     >>> container2[u'foo'].__name__
     u'foo'
 
@@ -282,11 +282,11 @@ class ObjectCopier(object):
     [u'bar', u'foo']
 
     >>> ob.__parent__ is container
-    1
+    True
     >>> container2[u'bar'] is ob
-    0
+    False
     >>> container2[u'bar'].__parent__ is container2
-    1
+    True
     >>> container2[u'bar'].__name__
     u'bar'
 
@@ -333,9 +333,9 @@ class ObjectCopier(object):
     >>> from zope.app.container.constraints import checkObject
     >>> container3 = C1()
     >>> copier.copyableTo(container3, 'ZDummy')
-    0
+    False
     >>> copier.copyableTo(container3, 'newName')
-    1
+    True
 
     And a test for constraints:
 
@@ -356,10 +356,10 @@ class ObjectCopier(object):
     >>> cO = constrainedObject()
     >>> copier2 = ObjectCopier(cO)
     >>> copier2.copyableTo(container)
-    0
+    False
     >>> container.x = 1
     >>> copier2.copyableTo(container)
-    1
+    True
 
     """
 
