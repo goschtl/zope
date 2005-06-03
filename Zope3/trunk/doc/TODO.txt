@@ -37,8 +37,6 @@ Others
 
   * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
 
-  * 340: Adding a big file eats a lot of memory / memory leak?
-
   * 344: PAU registration error
 
   * 356: Copy and Paste does not handle exceptions raised by __setitem__
