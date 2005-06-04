@@ -5,7 +5,7 @@ site-definition site.zcml
 # interruptions (SIGINTR, thread switches):
 interrupt-check-interval 200
 
-<server>
+<server http>
   type HTTP
   address 8080
 </server>
@@ -13,18 +13,18 @@ interrupt-check-interval 200
 # For debugging purposes, you can use this publisher instead/as well
 # (obviously if it's as well, use a different port number). If there's
 # an exception, Zope will drop into pdb at the point of the exception.
-#<server>
+#<server dbhttp>
 #  type PostmortemDebuggingHTTP
 #  address 8080
 #</server>
 
-<server>
+<server ftp>
   type FTP
   address 8021
 </server>
 
 # Standard Filestorage
-<zodb>
+<zodb main>
   <filestorage>
     path Data.fs
   </filestorage>
