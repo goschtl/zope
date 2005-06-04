@@ -84,7 +84,7 @@ Random Details
       and 'test.py' will run all of the unit tests (see UNITTEST.txt
       in the doc directory for more information on unit tests).
 
-    * You should be using Python 2.3.4 or later to run anything
+    * You should be using Python 2.3.5 or later to run anything
       related to Zope3.
 
     * The Python you run Zope with *must* have threads compiled in.

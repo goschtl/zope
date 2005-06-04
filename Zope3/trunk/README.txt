@@ -12,7 +12,7 @@ Welcome to the Zope3 source
 
 Building and running tests
 
-  Zope3 requires Python 2.3.4 or later.
+  See INSTALL.txt which Python version is required for Zope 3.
 
   In the top-level Zope3 directory, you should find a script called
   setup.py.  Run it to build the extension modules needed by
