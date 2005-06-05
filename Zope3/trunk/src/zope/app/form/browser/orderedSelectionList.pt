@@ -45,12 +45,16 @@ function to2from(name)
 
 function swapFields(a, b)
   {
-  // swap items
+  // swap text
   var temp = a.text;
   a.text = b.text;
   b.text = temp;
+  // swap value
+  temp = a.value;
+  a.value = b.value;
+  b.value = temp;
   // swap selection
-  var temp = a.selected;
+  temp = a.selected;
   a.selected = b.selected;
   b.selected = temp;
   }
@@ -76,18 +80,20 @@ function moveUp(name)
 // move selected item in "to" selection one down
 function moveDown(name)
   {
-  // shortcuts for selection field
-  var toSel = document.getElementById(name+".to");
+    // shortcuts for selection field
+    var toSel = document.getElementById(name+".to");
 
-  if (toSel.selectedIndex == -1)
-      selectionError();
-  else if (toSel.options[toSel.length-1].selected)
-      alert("Cannot move further down!");
-  else for (var i = toSel.length-1; i >= 0; i--)
-    if (toSel.options[i].selected)
-    {
-    swapFields(toSel.options[i+1], toSel.options[i]);
-    copyDataForSubmit(name);
+    if (toSel.selectedIndex == -1) {
+        selectionError();
+    } else if (toSel.options[toSel.length-1].selected) {
+        alert("Cannot move further down!");
+    } else {
+      for (var i = toSel.length-1; i >= 0; i--) {
+        if (toSel.options[i].selected) {
+          swapFields(toSel.options[i+1], toSel.options[i]);
+        }
+      }
+      copyDataForSubmit(name);
     }
   }
 
@@ -104,7 +110,7 @@ function copyDataForSubmit(name)
 
   // create new hidden input fields - one for each selection item of
   // "to" selection
-  for (var i = 0; i < toSel.length; i++)
+  for (var i = 0; i < toSel.options.length; i++)
     {
     // create virtual node with suitable attributes
     var newNode = document.createElement("input");
@@ -117,7 +123,7 @@ function copyDataForSubmit(name)
     newNode.setAttributeNode(newAttr);
 
     newAttr = document.createAttribute("value");
-    newAttr.nodeValue = toSel[i].value;
+    newAttr.nodeValue = toSel.options[i].value;
     newNode.setAttributeNode(newAttr);
 
     // actually append virtual node to DOM tree
