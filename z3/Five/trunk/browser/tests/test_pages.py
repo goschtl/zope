@@ -95,6 +95,10 @@ class PagesTest(ZopeTestCase):
         expected = normalize_html(expected)
         self.assertEquals(expected, normalize_html(view()))
 
+    def test_template_macro_access(self):
+        view = self.folder.unrestrictedTraverse('testoid/seagull.html')
+        self.assertEquals('<html><head><title>bird macro</title></head><body>Color: gray</body></html>\n', view())
+
     def test_view_backwards_compatibility(self):
         old_view = self.folder.unrestrictedTraverse('testoid/direct')
         self.assertEquals('Direct traversal worked', old_view())

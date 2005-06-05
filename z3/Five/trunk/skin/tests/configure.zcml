@@ -32,12 +32,4 @@
       permission="zope2.ViewManagementScreens"
       />
 
-  <!-- template page that uses macro page -->
-  <browser:page
-      for="OFS.interfaces.IFolder"
-      template="seagull.pt"
-      name="seagull.html"
-      permission="zope2.ViewManagementScreens"
-      />
-
 </configure>

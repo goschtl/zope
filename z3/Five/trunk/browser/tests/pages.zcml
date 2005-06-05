@@ -79,6 +79,22 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <!-- template page that defines a macro page -->
+  <browser:page
+      for="Products.Five.tests.simplecontent.ISimpleContent"
+      template="birdmacro.pt"
+      name="bird.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
+  <!-- template page that uses macro page -->
+  <browser:page
+      for="Products.Five.tests.simplecontent.ISimpleContent"
+      template="seagull.pt"
+      name="seagull.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
   <!-- test TALES -->
   <browser:page
       for="Products.Five.tests.simplecontent.ISimpleContent"

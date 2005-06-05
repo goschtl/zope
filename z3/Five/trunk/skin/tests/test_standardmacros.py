@@ -20,48 +20,66 @@ if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 import unittest
-from Testing.ZopeTestCase import ZopeTestCase, installProduct
+from Testing.ZopeTestCase import ZopeDocTestSuite, installProduct
 installProduct('Five')
 
-import glob
-import Products.Five.skin.tests
-from Products.Five import zcml
-from Products.Five.testing import manage_addFiveTraversableFolder
+def test_standard_macros():
+    """Test standard macros
 
-class StandardMacrosTests(ZopeTestCase):
+    Test macro access through our flavour of StandardMacros.  First,
+    when looking up a non-existing macro, we get a KeyError:
 
-    def afterSetUp(self):
-        zcml.load_config('configure.zcml', package=Products.Five.skin.tests)
-        uf = self.folder.acl_users
-        uf._doAddUser('manager', 'r00t', ['Manager'], [])
-        self.login('manager')
-        manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
+      >>> view = self.folder.unrestrictedTraverse('testoid/@@fivetest_macros')
+      >>> view['non-existing-macro']
+      Traceback (most recent call last):
+      ...
+      KeyError: 'non-existing-macro'
 
-    def test_standard_macros(self):
-        view = self.folder.unrestrictedTraverse('testoid/@@fivetest_macros')
-        self.assertRaises(KeyError, view.__getitem__, 'non-existing-macro')
-        self.failUnless(view['birdmacro'])
-        self.failUnless(view['dogmacro'])
-        # Test aliases
-        self.failUnless(view['flying'])
-        self.failUnless(view['walking'])
-        self.assertEquals(view['flying'], view['birdmacro'])
-        self.assertEquals(view['walking'], view['dogmacro'])
-        # Test traversal
-        base = 'testoid/@@fivetest_macros/%s'
-        for macro in ('birdmacro', 'dogmacro',
-                      'flying', 'walking'):
-            view = self.folder.unrestrictedTraverse(base % macro)
-        self.failUnless(view)
+    Existing macros are accessible through index notation:
 
-    def test_macro_access(self):
-        view = self.folder.unrestrictedTraverse('testoid/seagull.html')
-        self.assertEquals('<html><head><title>bird macro</title></head><body>Color: gray</body></html>\n', view())
+      >>> for macroname in ('birdmacro', 'dogmacro', 'flying', 'walking'):
+      ...     view[macroname] is not None
+      True
+      True
+      True
+      True
+
+    Aliases are resolve correctly:
+
+      >>> view['flying'] is view['birdmacro']
+      True
+      >>> view['walking'] is view['dogmacro']
+      True
+
+    One can also access the macros through regular traversal:
+
+      >>> base = 'testoid/@@fivetest_macros/%s'
+      >>> for macro in ('birdmacro', 'dogmacro', 'flying', 'walking'):
+      ...     view = self.folder.unrestrictedTraverse(base % macro)
+      ...     view is not None
+      True
+      True
+      True
+      True
+
+    """
+
+def setUpStandardMacros(self):
+    uf = self.folder.acl_users
+    uf._doAddUser('manager', 'r00t', ['Manager'], [])
+    self.login('manager')
+
+    from Products.Five.testing import manage_addFiveTraversableFolder
+    manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
+
+    import Products.Five.skin.tests
+    from Products.Five import zcml
+    zcml.load_config('configure.zcml', package=Products.Five.skin.tests)    
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(StandardMacrosTests))
-    return suite
+    return unittest.TestSuite((
+            ZopeDocTestSuite(setUp=setUpStandardMacros),
+            ))
 
 if __name__ == '__main__':
     framework()
