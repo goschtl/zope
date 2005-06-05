@@ -20,33 +20,37 @@ if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 import unittest
-from Testing.ZopeTestCase import ZopeTestCase, installProduct
+from Testing.ZopeTestCase import ZopeDocTestSuite, installProduct
 installProduct('Five')
 
-import Products.Five.tests
-from Products.Five import zcml
-from Products.Five.tests.simplecontent import manage_addSimpleContent
-from Products.Five.tests.fancycontent import manage_addFancyContent
+def setUpSize(self):
+    import Products.Five.tests
+    from Products.Five import zcml
+    zcml.load_config('size.zcml', package=Products.Five.tests)
+    
+def test_size():
+    """Test size adapters
 
-class SizeTest(ZopeTestCase):
+      >>> from Products.Five.tests.simplecontent import manage_addSimpleContent
+      >>> from Products.Five.tests.fancycontent import manage_addFancyContent
 
-    def afterSetUp(self):
-	zcml.load_config('size.zcml', package=Products.Five.tests)
+    We have registered an ``ISized`` adapter for SimpleContent:
 
-    def test_no_get_size_on_original(self):
-        manage_addSimpleContent(self.folder, 'simple', 'Simple')
-	obj = self.folder.simple
-	self.assertEquals(obj.get_size(), 42)
+      >>> n = manage_addSimpleContent(self.folder, 'simple', 'Simple')
+      >>> self.folder.simple.get_size()
+      42
 
-    def test_get_size_on_original_and_fallback(self):
-	manage_addFancyContent(self.folder, 'fancy', 'Fancy')
-	obj = self.folder.fancy
-	self.assertEquals(obj.get_size(), 43)
+    Fancy content already has a ``get_size`` method
+
+      >>> n = manage_addFancyContent(self.folder, 'fancy', 'Fancy')
+      >>> self.folder.fancy.get_size()
+      43
+    """
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SizeTest))
-    return suite
+    return unittest.TestSuite((
+            ZopeDocTestSuite(setUp=setUpSize),
+            ))
 
 if __name__ == '__main__':
     framework()
