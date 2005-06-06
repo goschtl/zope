@@ -33,7 +33,6 @@ from zope.app import zapi
 from zope.app.container.contained import Contained
 from zope.app.keyreference.interfaces import IKeyReference, NotYet
 from zope.app.location.interfaces import ILocation
-from zope.app.location.interfaces import ITransientLocation
 
 from zope.app.intid.interfaces import IIntIds
 from zope.app.intid.interfaces import IntIdRemovedEvent
@@ -73,18 +72,14 @@ class IntIds(Persistent, Contained):
         return default
 
     def getId(self, ob):
-        if not ITransientLocation.providedBy(ob):
-            try:
-                ref = IKeyReference(ob)
-            except NotYet:
-                raise KeyError(ob)
+        try:
+            ref = IKeyReference(ob)
+        except NotYet:
+            raise KeyError(ob)
 
-            try:
-                return self.ids[ref]
-            except KeyError:
-                raise KeyError(ob)
-
-        else:
+        try:
+            return self.ids[ref]
+        except KeyError:
             raise KeyError(ob)
 
     def queryId(self, ob, default=None):
@@ -134,15 +129,14 @@ def removeIntIdSubscriber(ob, event):
     id utilities.
     """
 
-    if not ITransientLocation.providedBy(ob): # do not unregister transient locations
-        # Notify the catalogs that this object is about to be removed.
-        notify(IntIdRemovedEvent(ob, event))
-    
-        for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
-            try:
-                utility.unregister(ob)
-            except KeyError:
-                pass
+    # Notify the catalogs that this object is about to be removed.
+    notify(IntIdRemovedEvent(ob, event))
+
+    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
+        try:
+            utility.unregister(ob)
+        except KeyError:
+            pass
 
 
 def addIntIdSubscriber(ob, event):
@@ -151,13 +145,12 @@ def addIntIdSubscriber(ob, event):
     Registers the object added in all unique id utilities and fires
     an event for the catalogs.
     """
-    # do not register transient locations
-    if not ITransientLocation.providedBy(ob):
-        for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds):
-            utility.register(ob)
-    
-        # Notify the catalogs that this object was added.
-        notify(IntIdAddedEvent(ob, event))
+
+    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds):
+        utility.register(ob)
+
+    # Notify the catalogs that this object was added.
+    notify(IntIdAddedEvent(ob, event))
 
 
 # BBB

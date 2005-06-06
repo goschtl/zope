@@ -42,10 +42,3 @@ class ISublocations(Interface):
         An iterable of objects whose __parent__ is the object
         providing the interface is returned.
         """
-
-
-class ITransientLocation(ILocation):
-    """Mark transient resp. none-persistent location explicitly.
-
-    Do not reference marked objects directly.
-    """
