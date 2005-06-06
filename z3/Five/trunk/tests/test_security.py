@@ -19,15 +19,7 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing.ZopeTestCase import ZopeTestCase, installProduct
-installProduct('Five')
-
 from zope.interface import Interface, implements
-from zope.testing.cleanup import CleanUp
-from Products.Five import zcml
-from Products.Five.security import clearSecurityInfo, checkPermission
-from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
 
 class IDummy(Interface):
@@ -48,94 +40,137 @@ class Dummy2(Dummy1):
     security.declarePrivate('baz')
     security.declareProtected('View management screens', 'keg')
 
-# reimport so that __main__.Dummy{1,2} and test_security.Dummy{1,2}
-# are the same objects.
-from Products.Five.tests.test_security import Dummy1, Dummy2
+def test_security_equivalence():
+    """This test demonstrates that the traditional declarative security of
+    Zope 2 can be replaced by ZCML statements without any loss of
+    information.
 
-class SecurityEquivalenceTest(ZopeTestCase):
+    We start out with two classes, ``Dummy1`` and ``Dummy2``.  They
+    are identical in every way, except that ``Dummy2`` has security
+    declarations and ``Dummy1`` does not.  Before we do anything, none
+    of them have security access controls:
 
-    def setUp(self):
-        self.dummy1 = Dummy1
-        self.dummy2 = Dummy2
+      >>> from Products.Five.tests.test_security import Dummy1, Dummy2
+      >>> hasattr(Dummy1, '__ac_permissions__')
+      False
+      >>> hasattr(Dummy2, '__ac_permissions__')
+      False
 
-    def tearDown(self):
-        clearSecurityInfo(self.dummy1)
-        clearSecurityInfo(self.dummy2)
+    Now we initialize the security for ``Dummy2`` and provide some
+    ZCML declarations for ``Dummy1``:
 
-    def test_equivalence(self):
-        self.failIf(hasattr(self.dummy1, '__ac_permissions__'))
-        self.failIf(hasattr(self.dummy2, '__ac_permissions__'))
+      >>> configure_zcml = '''
+      ... <configure xmlns="http://namespaces.zope.org/zope">
+      ...   <content class="Products.Five.tests.test_security.Dummy1">
+      ...     <allow attributes="foo" />
+      ...     <!--deny attributes="baz" /--> <!-- XXX not yet supported -->
+      ...     <require attributes="bar keg"
+      ...              permission="zope2.ViewManagementScreens"
+      ...              />
+      ...   </content>
+      ... </configure>
+      ... '''
+      >>> 
+      >>> from Products.Five import zcml
+      >>> zcml.load_string(configure_zcml)
 
-        decl = """
-        <configure xmlns="http://namespaces.zope.org/zope">
-          <content class="Products.Five.tests.test_security.Dummy1">
+      >>> from Globals import InitializeClass
+      >>> InitializeClass(Dummy2)
 
-            <allow attributes="foo" />
+    Now we compare their access controls:
 
-            <!-- XXX not yet supported
-            <deny attributes="baz" />
-            -->
+      >>> ac1 = getattr(Dummy1, '__ac_permissions__')
+      >>> ac2 = getattr(Dummy2, '__ac_permissions__')
+      >>> ac1 == ac2
+      True
 
-            <require attributes="bar keg"
-                     permission="zope2.ViewManagementScreens"
-                     />
+    Now we look at the individual permissions:
 
-          </content>
-        </configure>
-        """
-        zcml.load_string(decl)
-        InitializeClass(self.dummy2)
+      >>> bar_roles1 = getattr(Dummy1, 'bar__roles__').__of__(Dummy1)
+      >>> bar_roles1.__of__(Dummy1)
+      ('Manager',)
 
-        ac1 = getattr(self.dummy1, '__ac_permissions__')
-        ac2 = getattr(self.dummy2, '__ac_permissions__')
-        self.assertEquals(ac1, ac2)
+      >>> keg_roles1 = getattr(Dummy1, 'keg__roles__').__of__(Dummy1)
+      >>> keg_roles1.__of__(Dummy1)
+      ('Manager',)
 
-        bar_roles1 = getattr(self.dummy1, 'bar__roles__').__of__(self.dummy1)
-        self.assertEquals(bar_roles1.__of__(self.dummy1), ('Manager',))
+      >>> foo_roles1 = getattr(Dummy1, 'foo__roles__')
+      >>> foo_roles1 is None
+      True
 
-        keg_roles1 = getattr(self.dummy1, 'keg__roles__').__of__(self.dummy1)
-        self.assertEquals(keg_roles1.__of__(self.dummy1), ('Manager',))
+      >>> # XXX Not yet supported.
+      >>> # baz_roles1 = getattr(Dummy1, 'baz__roles__')
+      >>> # baz_roles1
+      ()
+        
+      >>> bar_roles2 = getattr(Dummy2, 'bar__roles__').__of__(Dummy2)
+      >>> bar_roles2.__of__(Dummy2)
+      ('Manager',)
 
-        foo_roles1 = getattr(self.dummy1, 'foo__roles__')
-        self.assertEquals(foo_roles1, None)
+      >>> keg_roles2 = getattr(Dummy2, 'keg__roles__').__of__(Dummy2)
+      >>> keg_roles2.__of__(Dummy2)
+      ('Manager',)
 
-        # XXX Not yet supported.
-        # baz_roles1 = getattr(self.dummy1, 'baz__roles__')
-        # self.assertEquals(baz_roles1, ())
+      >>> foo_roles2 = getattr(Dummy2, 'foo__roles__')
+      >>> foo_roles2 is None
+      True
 
-        bar_roles2 = getattr(self.dummy2, 'bar__roles__').__of__(self.dummy2)
-        self.assertEquals(bar_roles2.__of__(self.dummy2), ('Manager',))
+      >>> baz_roles2 = getattr(Dummy2, 'baz__roles__')
+      >>> baz_roles2
+      ()
 
-        keg_roles2 = getattr(self.dummy2, 'keg__roles__').__of__(self.dummy2)
-        self.assertEquals(keg_roles2.__of__(self.dummy2), ('Manager',))
+    Before we end we should clean up after ourselves:
 
-        foo_roles2 = getattr(self.dummy2, 'foo__roles__')
-        self.assertEquals(foo_roles2, None)
+      >>> from Products.Five.security import clearSecurityInfo
+      >>> clearSecurityInfo(Dummy1)
+      >>> clearSecurityInfo(Dummy2)
+    """
 
-        baz_roles2 = getattr(self.dummy2, 'baz__roles__')
-        self.assertEquals(baz_roles2, ())
+def test_checkPermission():
+    """Zope 3 has a function zope.security.checkPermission which provides
+    an easy way of checking whether the currently authenticated user
+    has the permission to access an object.  The function delegates to
+    the security policy's checkPermission() method.
 
-class CheckPermissionTest(ZopeTestCase):
+    Five has the same function, Five.security.checkPermission, but in
+    a Zope2-compatible implementation.  It too uses the currently
+    active security policy of Zope 2 for the actual permission
+    checking.
 
-    def test_publicPermissionId(self):
-        self.failUnless(checkPermission('zope2.Public', self.folder))
+    In the following we want to test Five's checkPermission function.
+    We do that by taking the test's folder and asserting several
+    standard permissions.  What we want to assure is that
+    checkPermission translates the Zope 2 permissions correctly,
+    especially the edge cases:
 
-    def test_privatePermissionId(self):
-        self.failIf(checkPermission('zope.Private', self.folder))
-        self.failIf(checkPermission('zope2.Private', self.folder))
+    a) zope2.Public (which should always be available to everyone)
 
-    def test_accessPermissionId(self):
-        self.failUnless(checkPermission('zope2.AccessContentsInformation',
-                                        self.folder))
+      >>> from Products.Five.security import checkPermission
+      >>> checkPermission('zope2.Public', self.folder)
+      True
 
-    def test_invalidPermissionId(self):
-        self.failIf(checkPermission('notapermission', self.folder))
+    b) zope2.Private (which should never available to anyone)
+
+      >>> checkPermission('zope.Private', self.folder)
+      False
+      >>> checkPermission('zope2.Private', self.folder)
+      False
+
+    Any other standard Zope 2 permission will also resolve correctly:
+
+      >>> checkPermission('zope2.AccessContentsInformation', self.folder)
+      True
+
+    Invalid permissions will obviously result in a negative response:
+
+      >>> checkPermission('notapermission', self.folder)
+      False
+    """
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SecurityEquivalenceTest))
-    suite.addTest(unittest.makeSuite(CheckPermissionTest))
-    return suite
+    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
+    installProduct('Five')
+    return ZopeDocTestSuite()
 
 if __name__ == '__main__':
     framework()
