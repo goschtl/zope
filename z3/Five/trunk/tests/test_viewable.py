@@ -19,7 +19,6 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-
 def test_defaultView():
     """
     Take a class Foo and an interface I1::
@@ -62,9 +61,7 @@ def test_defaultView():
       True
       >>> path
       ['foo.html']
-
     """
-
 
 def test_suite():
     from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
