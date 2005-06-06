@@ -23,11 +23,60 @@ import unittest
 from Testing.ZopeTestCase import ZopeDocTestSuite, installProduct
 installProduct('Five')
 
+from zope.interface import implements
+from zope.app.size.interfaces import ISized
+
+class SimpleContentSize(object):
+    """Size for ``SimpleContent`` objects."""
+    implements(ISized)
+
+    def __init__(self, context):
+	self.context = context
+
+    def sizeForSorting(self):
+	return ('byte', 42)
+
+    def sizeForDisplay(self):
+	return "What is the meaning of life?"
+
+class FancyContentSize(object):
+    """Size for ``SimpleContent`` objects."""
+    implements(ISized)
+
+    def __init__(self, context):
+	self.context = context
+
+    def sizeForSorting(self):
+	return ('line', 143)
+
+    def sizeForDisplay(self):
+	return "That's not the meaning of life!"
+
+configure_zcml = """
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:five="http://namespaces.zope.org/five">
+
+  <five:sizable class="Products.Five.tests.simplecontent.SimpleContent" />
+  <five:sizable class="Products.Five.tests.fancycontent.FancyContent" />
+
+  <adapter
+      for="Products.Five.tests.simplecontent.ISimpleContent"
+      provides="zope.app.size.interfaces.ISized"
+      factory="Products.Five.tests.test_size.SimpleContentSize"
+      />
+  <adapter
+      for="Products.Five.tests.fancycontent.IFancyContent"
+      provides="zope.app.size.interfaces.ISized"
+      factory="Products.Five.tests.test_size.FancyContentSize"
+      />
+
+</configure>
+"""
+
 def setUpSize(self):
-    import Products.Five.tests
     from Products.Five import zcml
-    zcml.load_config('size.zcml', package=Products.Five.tests)
-    
+    zcml.load_string(configure_zcml)
+
 def test_size():
     """Test size adapters
 
