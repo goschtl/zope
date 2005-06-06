@@ -27,11 +27,11 @@ installProduct('PythonScripts')  # for RestrictedPythonTestCase
 
 from zope.app import zapi
 import Products.Five.browser.tests
-from Products.Five import zcml
+from Products.Five import zcml, BrowserView
 from Products.Five.traversable import FakeRequest
 from Products.Five.testing import RestrictedPythonTestCase
 from Products.Five.testing import manage_addFiveTraversableFolder
-from Products.Five.tests.dummy import Dummy1
+from Products.Five.tests.test_security import Dummy1
 from Products.Five.tests.simplecontent import manage_addSimpleContent
 
 view_names = [
@@ -49,6 +49,13 @@ public_view_names = [
     'public_template_class_page']
 
 ViewManagementScreens = 'View management screens'
+
+class DummyView(BrowserView):
+    """A dummy view"""
+
+    def foo(self):
+        """A foo"""
+        return 'A foo view'
 
 class SecurityTest(RestrictedPythonTestCase):
 
@@ -90,8 +97,8 @@ class PageSecurityTest(ZopeTestCase):
             xmlns:browser="http://namespaces.zope.org/browser">
 
           <browser:page
-             for="Products.Five.tests.dummy.IDummy"
-             class="Products.Five.tests.dummy.DummyView"
+             for="Products.Five.tests.test_security.IDummy"
+             class="Products.Five.browser.tests.test_security.DummyView"
              attribute="foo"
              name="test_page_security"
              permission="zope2.ViewManagementScreens"

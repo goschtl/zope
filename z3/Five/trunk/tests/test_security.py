@@ -23,11 +23,34 @@ import unittest
 from Testing.ZopeTestCase import ZopeTestCase, installProduct
 installProduct('Five')
 
+from zope.interface import Interface, implements
 from zope.testing.cleanup import CleanUp
 from Products.Five import zcml
 from Products.Five.security import clearSecurityInfo, checkPermission
-from Products.Five.tests.dummy import Dummy1, Dummy2
 from Globals import InitializeClass
+from AccessControl import ClassSecurityInfo
+
+class IDummy(Interface):
+    """Just a marker interface"""
+
+class Dummy1:
+    implements(IDummy)
+    def foo(self): pass
+    def bar(self): pass
+    def baz(self): pass
+    def keg(self): pass
+    def wot(self): pass
+
+class Dummy2(Dummy1):
+    security = ClassSecurityInfo()
+    security.declarePublic('foo')
+    security.declareProtected('View management screens', 'bar')
+    security.declarePrivate('baz')
+    security.declareProtected('View management screens', 'keg')
+
+# reimport so that __main__.Dummy{1,2} and test_security.Dummy{1,2}
+# are the same objects.
+from Products.Five.tests.test_security import Dummy1, Dummy2
 
 class SecurityEquivalenceTest(ZopeTestCase):
 
@@ -45,21 +68,19 @@ class SecurityEquivalenceTest(ZopeTestCase):
 
         decl = """
         <configure xmlns="http://namespaces.zope.org/zope">
+          <content class="Products.Five.tests.test_security.Dummy1">
 
-        <content
-            class="Products.Five.tests.dummy.Dummy1">
+            <allow attributes="foo" />
 
-          <allow attributes="foo" />
+            <!-- XXX not yet supported
+            <deny attributes="baz" />
+            -->
 
-          <!-- XXX not yet supported
-          <deny attributes="baz" />
-          -->
+            <require attributes="bar keg"
+                     permission="zope2.ViewManagementScreens"
+                     />
 
-          <require attributes="bar keg"
-              permission="zope2.ViewManagementScreens"
-              />
-
-        </content>
+          </content>
         </configure>
         """
         zcml.load_string(decl)
