@@ -575,7 +575,7 @@ class OrderedContainerItemRenamer(ContainerItemRenamer):
 class PrincipalClipboard(object):
     """Principal clipboard
 
-    Clipboard information consists on tuples of
+    Clipboard information consists of tuples of
     ``{'action':action, 'target':target}``.
     """
 
