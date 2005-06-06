@@ -75,7 +75,7 @@ class IPrincipalClipboard(Interface):
     """Interface for adapters that store/retrieve clipboard information
     for a principal.
 
-    Clipboard information consists on tuples of
+    Clipboard information consists of tuples of
       ``{'action':action, 'target':target}``.
     """
 
