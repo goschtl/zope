@@ -19,10 +19,6 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing.ZopeTestCase import ZopeDocTestSuite, installProduct
-installProduct('Five')
-
 from zope.interface import implements
 from zope.app.size.interfaces import ISized
 
@@ -97,9 +93,9 @@ def test_size():
     """
 
 def test_suite():
-    return unittest.TestSuite((
-            ZopeDocTestSuite(setUp=setUpSize),
-            ))
+    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
+    installProduct('Five')
+    return ZopeDocTestSuite(setUp=setUpSize)
 
 if __name__ == '__main__':
     framework()
