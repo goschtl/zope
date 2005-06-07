@@ -19,10 +19,6 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing.ZopeTestCase import ZopeDocTestSuite, installProduct
-installProduct('Five')
-
 def test_standard_macros():
     """Test standard macros
 
@@ -77,9 +73,9 @@ def setUpStandardMacros(self):
     zcml.load_config('configure.zcml', package=Products.Five.skin.tests)    
 
 def test_suite():
-    return unittest.TestSuite((
-            ZopeDocTestSuite(setUp=setUpStandardMacros),
-            ))
+    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
+    installProduct('Five')
+    return ZopeDocTestSuite(setUp=setUpStandardMacros)
 
 if __name__ == '__main__':
     framework()
