@@ -2,6 +2,9 @@ After CMF 1.4.8
 
   Bug Fixes
 
+    - Set cache headers in 304 responses from FSImage / FSFile
+      (http://zope.org/Collectors/355)
+
     - Sync catalog metadata column with correct name of DublinCore string
       ExpirationDate method. (http://zope.org/Collectors/CMF/345)
 
