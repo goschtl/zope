@@ -35,6 +35,9 @@ After CMF-1.5.1
 
   Bugs Fixed
 
+    - Set cache headers in 304 responses from FSImage / FSFile
+      (http://zope.org/Collectors/355)
+
     - CMFCore.DirectoryView: Do not cause ZODB writes or ConflictError
       if an old DirectoryView with a non-existing path is left. Sends a
       warning to stderr about those.
