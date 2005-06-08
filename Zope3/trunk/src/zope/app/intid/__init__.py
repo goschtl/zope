@@ -73,12 +73,12 @@ class IntIds(Persistent, Contained):
 
     def getId(self, ob):
         try:
-            ref = IKeyReference(ob)
+            key = IKeyReference(ob)
         except NotYet:
             raise KeyError(ob)
 
         try:
-            return self.ids[ref]
+            return self.ids[key]
         except KeyError:
             raise KeyError(ob)
 
@@ -104,22 +104,22 @@ class IntIds(Persistent, Contained):
                 return uid
             self._v_nextid = None
 
-    def register(self, ob):
+    def register(self, key):
         # Note that we'll still need to keep this proxy removal.
-        ob = removeSecurityProxy(ob)
-        ref = IKeyReference(ob)
-        if ref in self.ids:
-            return self.ids[ref]
+        key = removeSecurityProxy(key)
+        if key in self.ids:
+            return self.ids[key]
         uid = self._generateId()
-        self.refs[uid] = ref
-        self.ids[ref] = uid
+        self.refs[uid] = key
+        self.ids[key] = uid
         return uid
 
-    def unregister(self, ob):
-        ref = IKeyReference(ob)
-        uid = self.ids[ref]
+    def unregister(self, key):
+        # Note that we'll still need to keep this proxy removal.
+        key = removeSecurityProxy(key)
+        uid = self.ids[key]
         del self.refs[uid]
-        del self.ids[ref]
+        del self.ids[key]
 
 
 def removeIntIdSubscriber(ob, event):
@@ -129,14 +129,18 @@ def removeIntIdSubscriber(ob, event):
     id utilities.
     """
 
-    # Notify the catalogs that this object is about to be removed.
-    notify(IntIdRemovedEvent(ob, event))
-
-    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds, ob):
-        try:
-            utility.unregister(ob)
-        except KeyError:
-            pass
+    utilities = tuple(zapi.getAllUtilitiesRegisteredFor(IIntIds))
+    if utilities:
+        key = IKeyReference(ob, None)
+        # Register only objects that adapt to key reference
+        if key is not None:
+            # Notify the catalogs that this object is about to be removed.
+            notify(IntIdRemovedEvent(ob, event))
+            for utility in utilities:
+                try:
+                    utility.unregister(key)
+                except KeyError:
+                    pass
 
 
 def addIntIdSubscriber(ob, event):
@@ -146,12 +150,15 @@ def addIntIdSubscriber(ob, event):
     an event for the catalogs.
     """
 
-    for utility in zapi.getAllUtilitiesRegisteredFor(IIntIds):
-        utility.register(ob)
-
-    # Notify the catalogs that this object was added.
-    notify(IntIdAddedEvent(ob, event))
-
+    utilities = tuple(zapi.getAllUtilitiesRegisteredFor(IIntIds))
+    if utilities: # assert that there are any utilites
+        key = IKeyReference(ob, None)
+        # Register only objects that adapt to key reference
+        if key is not None:
+            for utility in utilities:
+                utility.register(key)
+            # Notify the catalogs that this object was added.
+            notify(IntIdAddedEvent(ob, event))
 
 # BBB
 UniqueIdUtility = IntIds

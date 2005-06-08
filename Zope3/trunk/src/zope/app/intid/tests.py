@@ -67,6 +67,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
     def test(self):
         from zope.app.intid import IntIds
+        from zope.app.keyreference.interfaces import IKeyReference
 
         u = IntIds()
         obj = P()
@@ -84,21 +85,24 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assert_(u.queryObject(42) is None)
         self.assert_(u.queryObject(42, obj) is obj)
 
-        uid = u.register(obj)
+        key = IKeyReference(obj)
+
+        uid = u.register(key)
         self.assert_(u.getObject(uid) is obj)
         self.assert_(u.queryObject(uid) is obj)
         self.assertEquals(u.getId(obj), uid)
         self.assertEquals(u.queryId(obj), uid)
 
-        uid2 = u.register(obj)
+        uid2 = u.register(key)
         self.assertEquals(uid, uid2)
 
-        u.unregister(obj)
+        u.unregister(key)
         self.assertRaises(KeyError, u.getObject, uid)
         self.assertRaises(KeyError, u.getId, obj)
 
     def test_len_items(self):
         from zope.app.intid import IntIds
+        from zope.app.keyreference.interfaces import IKeyReference
         from zope.app.keyreference.persistent import KeyReferenceToPersistent
         u = IntIds()
         obj = P()
@@ -108,7 +112,9 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(u.items(), [])
         self.assertEquals(list(u), [])
 
-        uid = u.register(obj)
+        key = IKeyReference(obj)
+
+        uid = u.register(key)
         ref = KeyReferenceToPersistent(obj)
         self.assertEquals(len(u), 1)
         self.assertEquals(u.items(), [(uid, ref)])
@@ -117,7 +123,9 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         obj2 = P()
         obj2.__parent__ = obj
 
-        uid2 = u.register(obj2)
+        key2 = IKeyReference(obj2)
+
+        uid2 = u.register(key2)
         ref2 = KeyReferenceToPersistent(obj2)
         self.assertEquals(len(u), 2)
         result = u.items()
@@ -131,8 +139,8 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         expected.sort()
         self.assertEquals(result, expected)
 
-        u.unregister(obj)
-        u.unregister(obj2)
+        u.unregister(key)
+        u.unregister(key2)
         self.assertEquals(len(u), 0)
         self.assertEquals(u.items(), [])
 
@@ -173,13 +181,15 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.utility1 = setup.addUtility(sm1_1, '2', IIntIds, IntIds())
 
     def test_removeIntIdSubscriber(self):
-        from zope.app.intid import removeIntIdSubscriber
         from zope.app.container.contained import ObjectRemovedEvent
+        from zope.app.intid import removeIntIdSubscriber
         from zope.app.intid.interfaces import IIntIdRemovedEvent
+        from zope.app.keyreference.interfaces import IKeyReference
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
-        id = self.utility.register(folder)
-        id1 = self.utility1.register(folder)
+        key = IKeyReference(folder)
+        id = self.utility.register(key)
+        id1 = self.utility1.register(key)
         self.assertEquals(self.utility.getObject(id), folder)
         self.assertEquals(self.utility1.getObject(id1), folder)
         setSite(self.folder1_1)
@@ -220,6 +230,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(len(events), 1)
         self.assertEquals(events[0].original_event.object, parent_folder)
         self.assertEquals(events[0].object, folder)
+
 
 def test_suite():
     suite = unittest.TestSuite()

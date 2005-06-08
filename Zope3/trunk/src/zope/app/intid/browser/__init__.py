@@ -17,6 +17,7 @@ $Id$
 """
 from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
+from zope.app.keyreference.interfaces import IKeyReference
     
 
 class IntIdsView(object):
@@ -26,8 +27,8 @@ class IntIdsView(object):
 
     def populate(self):
         # TODO: I think this should be moved to the functional test.
-        self.context.register(zapi.traverse(self.context, "/"))
-        self.context.register(zapi.traverse(self.context, "/++etc++site"))
+        self.context.register(IKeyReference(zapi.traverse(self.context, "/")))
+        self.context.register(IKeyReference(zapi.traverse(self.context, "/++etc++site")))
         self.request.response.redirect('index.html')
 
     def items(self):  
