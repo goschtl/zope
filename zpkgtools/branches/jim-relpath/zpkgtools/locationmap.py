@@ -30,6 +30,7 @@ from zpkgtools import svnloader
 
 _logger = logging.getLogger(__name__)
 
+urlmatch = re.compile(r'[a-zA-Z]+://').match
 
 class MapLoadingError(ValueError):
     def __init__(self, message, filename, lineno):
@@ -168,6 +169,15 @@ def load(f, base=None, mapping=None):
         except ValueError:
             # conventional URL
             if cvsbase is None:
+                if base is None:
+                    base = ''
+                    
+                if not urlmatch(base):
+                    base = ('file://' +
+                            urllib.pathname2url(os.path.abspath(base))
+                            + '/'
+                            )
+
                 url = urlparse.urljoin(base, url)
         else:
             if isinstance(cvsurl, cvsloader.RepositoryUrl):

@@ -165,14 +165,22 @@ class LoadTestCase(unittest.TestCase):
         sio = StringIO("foo.*  cvs://cvs.example.org/cvsroot:foo\n"
                        "bar.*  file:///some/path/\n"
                        "bat.*  some/path\n")
+
+        old_getcwd = os.getcwd
+        os.getcwd = lambda : '/home/dudette/python/project'
+        
         map = locationmap.load(sio)
+        
+        os.getcwd = old_getcwd
+
         eq = self.assertEqual
         self.assert_("foo.bar" in map)
         self.assert_("bar.foo" in map)
         self.assert_("bat.splat.funk" in map)
         eq(map["foo.bar"], "cvs://cvs.example.org/cvsroot:foo/bar")
         eq(map["bar.foo"], "file:///some/path/foo")
-        eq(map["bat.splat.funk"], "some/path/splat/funk")
+        eq(map["bat.splat.funk"],
+           "file:///home/dudette/python/project/some/path/splat/funk")
 
     def test_unmatched_wildcard(self):
         sio = StringIO("foo.bar.*  some/path\n")
@@ -326,6 +334,80 @@ class LocationMapTestCase(unittest.TestCase):
         self.assert_(m.has_key("bat"))
         self.assertEqual(m["bat"], 3)
 
+    def test_load_w_relative_paths(self):
+        map_file = StringIO('''
+foo     svn+ssh://svn.zope.org/repos/main/Foo/trunk/src/foo
+bar     ../../bar
+baz     baz
+spam    file://spam.com/spam
+tools   cvs://anonymous@cvs.sourceforge.net:pserver/'''
+      '''cvsroot/python:python/n\ondist/sandbox/setuptools/setuptools
+        ''')
+
+        old_getcwd = os.getcwd
+        os.getcwd = lambda : '/home/dudette/python/project'
+
+        mappingNone = locationmap.load(map_file)
+
+        map_file.seek(0)
+        mapping = locationmap.load(map_file, '')
+
+        map_file.seek(0)
+        mappingAbsBase = locationmap.load(map_file, '/projects/special/demo')
+
+        map_file.seek(0)
+        mappingRelBase = locationmap.load(map_file, 'special/demo')
+
+        map_file.seek(0)
+        mappingUrlBase = locationmap.load(map_file, 'http://acme.com/xxx')
+
+        os.getcwd = old_getcwd
+
+        # Several of the locations should be unaffected
+        for m in (mappingNone, mappingAbsBase, mappingRelBase,
+                  mappingUrlBase):
+
+            self.assertEqual(
+                m['foo'],
+                'svn+ssh://svn.zope.org/repos/main/Foo/trunk/src/foo',
+                )
+
+            self.assertEqual(
+                mappingNone['spam'],
+                'file://spam.com/spam',
+                )
+
+            self.assertEqual(
+                mappingNone['tools'],
+                'cvs://anonymous@cvs.sourceforge.net:pserver/'
+                'cvsroot/python:python/n\ondist/sandbox/setuptools/setuptools'
+                )
+
+        self.assertEqual(
+            mappingNone['bar'],
+            'file:///home/dudette/bar',
+            )
+        self.assertEqual(
+            mappingNone['baz'],
+            'file:///home/dudette/python/project/baz',
+            )
+            
+
+
+
+    """
+We often want to use relative file paths in location maps.
+
+We can currently use URL, including file URLs.  But these must be absolute.
+
+Let's look at a sample map file that has several kinds of URLs and
+relative paths:
+
+
+Now, we'll load this map.  
+
+
+"""
 
 def test_suite():
     suite = unittest.makeSuite(LoadTestCase)
