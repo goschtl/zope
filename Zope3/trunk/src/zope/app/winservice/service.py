@@ -16,13 +16,14 @@
 Windows NT/2K service installer/controller for Zope/ZEO/ZRS instances.
 """
 
+import time
+import os
+
+import pywintypes
 import win32serviceutil
 import win32service
 import win32event
 import win32process
-import pywintypes
-import time
-import os
 
 # the max seconds we're allowed to spend backing off
 BACKOFF_MAX = 300
@@ -97,13 +98,13 @@ class Service(win32serviceutil.ServiceFramework):
         backoff_cumulative = 0
 
         import servicemanager
-        
+
         # log a service started message
         servicemanager.LogMsg(
             servicemanager.EVENTLOG_INFORMATION_TYPE,
             servicemanager.PYS_SERVICE_STARTED,
             (self._svc_name_, ' (%s)' % self._svc_display_name_))
-        
+
         while 1:
             start_time = time.time()
             info = self.createProcess(self.start_cmd)
@@ -172,7 +173,7 @@ class Service(win32serviceutil.ServiceFramework):
 
         # log a service stopped message
         servicemanager.LogMsg(
-            servicemanager.EVENTLOG_INFORMATION_TYPE, 
+            servicemanager.EVENTLOG_INFORMATION_TYPE,
             servicemanager.PYS_SERVICE_STOPPED,
             (self._svc_name_, ' (%s) ' % self._svc_display_name_))
 
