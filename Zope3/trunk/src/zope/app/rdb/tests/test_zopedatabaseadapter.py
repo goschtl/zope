@@ -18,6 +18,7 @@ $Id$
 import unittest
 from zope.app.rdb import ZopeDatabaseAdapter
 from zope.app.rdb import ZopeConnection
+from threading import Thread
 
 class ConnectionStub(object):
 
@@ -51,6 +52,9 @@ class TestZopeDatabaseAdapter(unittest.TestCase):
         da = self._da
         da.disconnect()
         self.assertEqual(None, da._v_connection)
+        da.connect()
+        da.disconnect()
+        self.assertEqual(None, da._v_connection)
 
     def testIsConnected(self):
         da = self._da
@@ -69,6 +73,19 @@ class TestZopeDatabaseAdapter(unittest.TestCase):
         da = self._da
         conv = da.getConverter('any')
         self.assert_(conv is identity, "default converter is wrong")
+
+    def testThreading(self):
+        # Ensure that different threads get distinct connections
+        cons = []
+        def get_con():
+            self._da.connect()
+            cons.append(self._da._v_connection)
+        get_con()
+        t = Thread(target=get_con)
+        t.start()
+        t.join()
+        self.failUnlessEqual(len(cons), 2)
+        self.failIfEqual(id(cons[0]), id(cons[1]))
 
 
 def test_suite():

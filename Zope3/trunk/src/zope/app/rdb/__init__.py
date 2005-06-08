@@ -19,7 +19,7 @@ sub transactions need to implement their own proxy.
 
 $Id$
 """
-import types, string
+import types, string, time, random, thread
 from types import StringTypes
 from urllib import unquote_plus
 
@@ -39,6 +39,7 @@ from zope.app.rdb.interfaces import IZopeConnection, IZopeCursor
 from zope.app.rdb.interfaces import ISQLCommand
 from zope.app.rdb.interfaces import IManageableZopeDatabaseAdapter
 from zope.app.rdb.interfaces import IZopeDatabaseAdapter
+from zope.thread import local
 
 
 def sqlquote(x):
@@ -109,10 +110,30 @@ class DatabaseAdapterError(Exception):
 class ZopeDatabaseAdapter(Persistent, Contained):
 
     implements(IManageableZopeDatabaseAdapter)
-    _v_connection =  None
+
+    # We need to store our connections in a thread local to ensure that
+    # different threads do not accidently use the same connection. This
+    # is important when instantiating database adapters using
+    # rdb:provideConnection as the same ZopeDatabaseAdapter instance will
+    # be used by all threads.
+    _connections = local()
 
     def __init__(self, dsn):
         self.setDSN(dsn)
+        self._unique_id = '%s.%s.%s' % (
+                time.time(), random.random(), thread.get_ident()
+                )
+
+    def _get_v_connection(self):
+        """We used to store the ZopeConnection in a volatile attribute.
+           However this was not always thread safe.
+        """
+        return getattr(ZopeDatabaseAdapter._connections, self._unique_id, None)
+
+    def _set_v_connection(self, value):
+        setattr(ZopeDatabaseAdapter._connections, self._unique_id, value)
+
+    _v_connection = property(_get_v_connection, _set_v_connection)
 
     def _connection_factory(self):
         """This method should be overwritten by all subclasses"""
@@ -137,15 +158,13 @@ class ZopeDatabaseAdapter(Persistent, Contained):
             except Exception, error:
                 raise DatabaseException, str(error)
 
-
     def disconnect(self):
         if self.isConnected():
             self._v_connection.close()
             self._v_connection = None
 
     def isConnected(self):
-        return hasattr(self, '_v_connection') and \
-               self._v_connection is not None
+        return self._v_connection is not None
 
     def __call__(self):
         self.connect()
