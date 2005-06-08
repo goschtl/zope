@@ -82,8 +82,7 @@ Document Templates may be created 2 ways by default:
 $Id$
 '''
 
-ParseError='Document Template Parse Error'
-
+from zope.documenttemplate.dt_util import ParseError
 from zope.documenttemplate.dt_string import String
 from zope.documenttemplate.dt_html import HTML
 from zope.documenttemplate.dt_util import html_quote
