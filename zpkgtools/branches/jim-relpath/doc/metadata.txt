@@ -1,0 +1,308 @@
+=======================================
+Metadata Descriptions for Distributions
+=======================================
+
+Overview
+--------
+
+Distributions will be described using a collection of files that
+contain different aspects of the relevant metadata.  Each of these
+files is optional if the information in that file is not needed.
+
+`DEPENDENCIES.cfg`
+  A list of dependencies for this distribution.  This is currently
+  simply a list of imported Python packages that aren't provided with
+  the distribution (listed one per line), but additional features may
+  be identified by adding lines that use a prefix to denote the type
+  of the dependency.  For example::
+
+    feature:XML parser
+
+  Blank lines and lines starting with ``#`` as the first non-white
+  character are ignored.  All other lines are considered a single
+  dependency; leading and trailing whitespace will be ignored.
+  Dependencies are case-sensitive.
+
+  Note that dependencies are kept separate from the information in the
+  `SETUP.cfg` file since that's intended to record information about
+  what the distribution contains, while dependencies serve as
+  constraints on any software included in the distribution.
+
+  For packages which only depend on the Python standard library, this
+  file need not be provided.
+
+`PACKAGE.cfg`
+  Control over the files that are included in the distribution when it
+  is constructed.  See `Package Construction Information`_ for
+  details.
+
+`PUBLICATION.cfg`
+  General metadata related to a distribution.  This includes
+  information such as the name of the component (i.e., "Frobnitz
+  Manager"), author and maintainer information, and Trove
+  classification.  Version information should not be included; it will
+  be ignored if present (perhaps should be an error?).  This is the
+  information distutils normally pushes into the generated `PKG-INFO`
+  file; this file has the same format as `PKG-INFO`.  This file is
+  required to create a distribution for which the component is the
+  primary component.
+
+`SETUP.cfg`
+  This file contains information on building extension modules.
+  Information about scripts and documentation files will also be
+  included in this file.  See `Embedded Package Definitions`_ for more
+  information.
+
+Package Construction Information
+--------------------------------
+
+The `PACKAGE.cfg` file can contain three distinct sections; the
+``<load>`` section identifies files that need to be loaded from
+other sources, the ``<distribution>`` section is used to include
+files in the distribution root, and the ``<collection>`` section is
+used to include files in the component itself (even if the component
+isn't a collection; this name is used since it usually will be a
+collection).
+
+The way `PACKAGE.cfg` is processed is straightforward, but warrants
+explanation.  The process has the following steps:
+
+1. A copy of the component is made that can be written to.  This is
+   the *workspace*.
+
+2. External references are loaded into the workspace.  It is
+   possible for this to overwrite portions of the component itself,
+   so specify the loads carefully.  This is based on the ``<load>``
+   section of `PACKAGE.cfg`.
+
+3. Files from the workspace are copied into their final locations in
+   the component-specific portion of the distribution tree.
+
+   If `PACKAGE.cfg` contains a ``<collection>`` section, it is used
+   to specify which files should be copied into the
+   component-specific portion of the distribution tree.  Only files
+   listed will be copied.  If the ``<collection>`` section specifies
+   exclusions, all files will be copied *except* for those excluded.
+
+   If the ``<collection>`` section is not present or is empty, all
+   files in the workspace are copied; directories are copied
+   recursively.  Files named `.cvsignore` and directories with names
+   of `{arch}`, `CVS`, `_darcs`, `RCS`, `SCCS`, or `.svn` are
+   excluded.
+
+   A copy of a file with a new name can be generated in the
+   distribution tree using a line like this in `PACKAGE.cfg`:
+
+     *source*   *destination*
+
+   This causes the file or directory identified by *source* in the
+   workspace to be copied to the name *destination* in the
+   distribution tree.
+
+   If *destination* is omitted, the destination is assumed to have
+   the same name as the source.  In this case, *source* can contain
+   POSIX globbing wildcards.
+
+   Files and directories can be excluded from the collection by
+   specifying exclusions instead of inclusions.  It is not possible to
+   specify both using the current |zpkg|_ implementation.  An
+   exclusion is similar to an inclusion, but the destination is always
+   ``-`` (a single hyphen):
+
+     *source* ``-``
+
+   will cause files and directories matching *source* to be excluded
+   from the distribution.  *source* can contain POSIX globbing
+   wildcards.
+
+4. If the component being processed is the primary resource being
+   packaged, files from the workspace can be copied into the
+   distribution root.  This is done using the ``<distribution>``
+   section of `PACKAGE.cfg`.  This is most useful for including a
+   `README.txt` in the distribution root so people unpacking the
+   distribution can read about the package they've just unpacked.
+
+   Including a file in the distribution root is done using a basic
+   inclusion line of the form
+
+     *destination*   *source*
+
+   Unlike inclusions in the ``<collection>`` section, the
+   *destination* is interpreted relative to the distribution root
+   rather than the component-specific portion of the distribution
+   tree.
+
+As an example, this is the `PACKAGE.cfg` used for the ``ZConfig``
+package::
+
+  # Load the license from an external source, so we don't have to keep a
+  # copy of it sitting around:
+  <load>
+    LICENSE.txt  http://cvs.zope.org/Zope3/ZopePublicLicense.txt?rev=HEAD
+  </load>
+
+  # Add a few things to the distribution root.
+  <distribution>
+    doc
+    LICENSE.txt
+    NEWS.txt
+    README.txt
+  </distribution>
+
+  # Specify what is included in the component.
+  <collection>
+    # Python modules from the package:
+    *.py
+
+    # Child packages:
+    components
+    tests
+
+    # Other files and directories needed when distutils runs:
+    scripts
+  </collection>
+
+What isn't obvious is that one of the files in the ``ZConfig``
+package under revision control isn't included in either the
+distribution root or the component-specific directory (the
+`BRANCHES.txt` file in particular).
+
+
+Embedded Package Definitions
+----------------------------
+
+Distribution components can include a `SETUP.cfg` that contains
+information about special files in the component (such as
+documentation and scripts), and what extensions need to be built.
+This file is a ZConfig-like configuration file that can contain the
+following settings, repeated as necessary:
+
+**documentation**
+  The name of a file or directory containing documentation. This is
+  used to support RPM generation.
+
+**header**
+  Identifies C and C++ header files that are provided by the package
+  as part of it's API.  This is used to allow sharing of headers by C
+  extensions within a distribution but in different packages; there's
+  not a general way to do this with distutils.
+
+**script**
+  Only files may be identified using this.  These files are included
+  in the distribution and will be installed as executable scripts for
+  the end user.
+
+For paths, POSIX path separators must be used, and Unix-style glob
+expansion is performed.  Path names may not include leading or
+trailing whitespace.  Directories named `CVS`, `RCS`, `SCCS`, or
+`.svn` are ignored, as are files named `.cvsignore`.
+
+Paths can only refer to descendants of the directory containing
+`SETUP.cfg`, never to that directory itself or anything higher up
+the filesystem hierarchy.
+
+Support for Compiled Extensions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Compiled extensions are described using **<extension>** sections in
+the `SETUP.cfg` file.  The name of the section should be the name of
+the extension module within the Python package.  For example, the
+extension ``persistent.cPersistence`` would be represented using a
+section of the form::
+
+  <extension cPersistence>
+    ...
+  </extension>
+
+The **<extension>** section can contain the settings described below.
+All of these can be repeated with the exception of the **language**
+setting.
+
+**define**
+  Define additional symbols for the C preprocessor.  Values must be of
+  the form ``NAME`` or ``NAME=value``.  For example::
+
+    define NAME
+
+  is equivalent to including the following line at the top of the C
+  source::
+
+    #define NAME
+
+  and this::
+
+    define NAME=value
+
+  is equivalent to this line in C::
+
+    #define NAME value
+
+  The ``NAME`` portion must be a valid C identifier.
+
+**depends-on**
+  Additional files that the compiled extension depends on.  This is
+  used by distutils to determine whether the extension needs to be
+  recompiled.  Since the source files are identified by the **source**
+  setting, this is normally only needed for header files.
+
+  Headers provided by other packages should not be identified using
+  **depends-on**, but the package that provides the needed header
+  should be listed in `DEPENDENCIES.cfg`.
+
+**language**
+  The source language of the extension; this may be needed to control
+  compiler selection if unusual extensions are used for the source
+  files.  This is not normally needed.
+
+**source**
+  Source files for the extension.  Each file is compiled into object
+  code, and the individual objects are linked to create the
+  extension module.  At least one source file must be listed.
+
+**undefine**
+  Specify one or more macros that should not be initially defined by
+  preprocessor.  For example, this line::
+
+    undefine NAME ANOTHER
+
+  is equivalent to the source lines::
+
+    #undef NAME
+    #undef ANOTHER
+
+  at the top of the compilation unit.
+
+Installing Additional Files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Files that would traditionally be installed by identifying them in the
+``data_files`` keyword argument to the ``distutils.core.setup()``
+function may be identified using `SETUP.cfg` as well.
+
+A series of **<data-files>** sections can be used for this purpose;
+one section should be given for each destination directory.  Each line
+of the section should give a glob pattern specifying files that should
+be installed in the directory identified by the name of the section.
+
+For example, this section::
+
+  <data-files etc>
+    myapp.conf
+  </data-files>
+
+will cause the file `myapp.conf`, found in the same directory as the
+`SETUP.cfg` which includes this section, to be copied to
+`$prefix/etc/myapp.conf`.
+
+This section::
+
+  <data-files etc/myapp>
+    default-config/*
+  </data-files>
+
+will cause all the files in the `default-config` directory (a sibling
+of the `SETUP.cfg` file containing this section) to be copied into the
+directory `$prefix/etc/myapp/`; this directory will be created if
+necessary.
+
+.. include:: links.rst

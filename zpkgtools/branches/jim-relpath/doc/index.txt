@@ -1,0 +1,75 @@
+========================
+The Zope Packaging Tools
+========================
+
+Overview
+--------
+
+`Packaging Tool Quick Start <quickstart.html>`_
+  How to get started with |zpkg|_.
+
+`Running the zpkg tool <zpkg.html>`_
+  Essentially a man page for |zpkg|_.  This describes command line
+  options and configuration of the tool.
+
+`Metadata Descriptions for Distributions <metadata.html>`_
+  Descriptions of the metadata files read by |zpkg|_ to allow it to
+  create distributions from components.
+
+`Resource Locations <resources.html>`_
+  Information about how locations for resources are specified for
+  |zpkg|_, with an emphasis on URL schemes used to support revision
+  control systems.
+
+`Collection Distributions <collections.html>`_
+  A description of how collection distributions are put together.
+
+`API documentation <apiref/index.html>`_
+  Documentation on the ``zpkgtools`` interface.  The interface to this
+  package is entirely open to change at this point, but this might
+  help to understand how to tool works.
+
+`To-do list <TODO.html>`_
+  List of things that still need to be handled, of course.
+
+
+Related Links
+-------------
+
+`Zope 3 Packaging Proposal`__
+  Discussion of the packaging requirements for Zope 3.
+  Currently labelled as a pre-proposal.
+
+`PEP 241: Distribution metadata`__
+  This PEP describes a mechanism for adding metadata to Python
+  packages.  It includes specifics of the field names, and their
+  semantics and usage.
+
+`PEP 262: A Database of Installed Python Packages`__
+  This PEP describes a mechanism for adding metadata to Python
+  packages.  It includes specifics of the field names, and their
+  semantics and usage.
+
+  Implementation of PEP 262 in distutils, along with a general way to
+  identify dependencies, would allow import-less dependency checking
+  as well as uninstallation.
+
+`Andrew Kuchling's notes from the Distribution BoF at PyCon2003`__
+
+`Dependency Support in Distutils`__
+  Phillip Eby's ideas about what dependency support should look like
+  (in the python.org Wiki).
+
+`Distutils Wishlist from the Distutils-SIG`__
+  Notes on changes to the distutils from the members of the
+  Distutils-SIG.  This is most a list of suggestions of warts that
+  should be fixed.
+
+
+.. __: http://dev.zope.org/Zope3/Zope3PackagingProposal
+.. __: http://www.python.org/peps/pep-0241.html
+.. __: http://www.python.org/peps/pep-0262.html
+.. __: http://www.amk.ca/diary/2003/03/28#2003-03-28-4
+.. __: http://www.python.org/cgi-bin/moinmoin/DistutilsDependencies
+.. __: http://www.python.org/cgi-bin/moinmoin/DistUtils20
+.. include:: links.rst

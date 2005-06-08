@@ -1,0 +1,235 @@
+=========================
+Running the **zpkg** tool
+=========================
+
+Overview and the Command Line
+-----------------------------
+
+Configuration of **zpkg** is generally required since **zpkg** always
+refers to a `resource map` to provide information about the resource
+its packaging.  Regardless of the availability of an appropriate
+checkout, **zpkg** always uses the resource map to locate the
+components it's adding to the release.
+
+The **zpkg** command provides some command line options to control
+configuration, and a very simple configuration file to allow
+configurations to be saved.
+
+The following command line options are provided:
+
+-a, --application
+  Generate an "application" distribution instead of a typical
+  distutils distribution.  An application does not have a `setup.py`
+  file for distutils, but has a more conventional **configure** /
+  **make** / **make install** build process that creates an
+  application-specific installation tree (for example,
+  `/usr/local/ZopeX3`).
+
+-c, --collection
+  Collect dependencies as well as the resource named on the command
+  line into a "collection" distribution; the dependencies will be
+  installed in addition to the named resource.
+
+-C FILE, --configuraion=FILE
+  Load the configuration file `FILE` instead of the default
+  configuration file.  `FILE` must exist.
+
+--distribution CLASS
+  Set the distribution class to be used by distutils.  By default, the
+  zpkgsetup.dist.ZPkgDistribution class is used, but this allows an
+  alternate class to be used instead.
+
+-f
+  Don't load any configuration file, not even the default.
+
+-m MAP, --resource-map=MAP
+  Load the resource map `MAP` before loading any map files identified in
+  the configuration file.  Maps identified using **-m** take
+  precedence over any identified in the configuration file.
+
+-n NAME, --name=NAME
+  Use `NAME` as the unversioned name of the resulting distribution.
+  If not specified, the name portion of the resource being distributed
+  is used for the package name.
+
+-r TAG, --revision-tag=TAG
+  Generate the distribution using the CVS tag `TAG` instead of the
+  ``HEAD`` tag.  The revision tag is used to generate the release
+  version if that's not specified directly and the tag follows the
+  Zope Corporation tagging convention (see below).
+
+-s
+  Include required support packages in the distribution.  This is the
+  default.
+
+-S
+  Don't include the required support packages in the distribution.
+  This can be used to generate smaller distributions when the
+  ``zpkgsetup`` package is known to be available on target systems.
+
+--support RESOURCE
+  Include an additional resource in the Support/ directory of the
+  distribution, if the Support/ directory is included at all.  The
+  additional resource should normally be a top-level Python package.
+  This can be used to provide additional software to be used when
+  distutils is running for the distributed package.
+
+-v VERSION
+  Set the version number of the release to `VERSION`.
+
+--version
+  Print the version number of **zpkg** and exit.
+
+-x PACKAGE, --exclude=PACKAGE
+  Name a resource (usually a Python package) to exclude the from
+  distribution.  Dependencies of the named package will be included
+  due to `PACKAGE` needing them, but may be included due to an another
+  dependency.  This option may be given as many times as needed.
+
+If neither **-C** nor **-f** is specified on the command line, a
+default configuration file is loaded if it exists.  This is
+`~/.zpkg/zpkg.conf` on Unix and `~/zpkg/zpkg.conf` on Windows (note
+that there's no dot in the directory name for Windows).  The directory
+containing the default configuration file can be used to store
+resource maps.
+
+If the **-f** option is used to disallow reading the configuration
+file, the only way to initialize the resource map is by using the
+**-m** option.
+
+
+Configuration File Format
+-------------------------
+
+The configuration files used by **zpkg** use a subset of the
+`ZConfig`_ configuration language.
+
+Blank lines and comments (lines that start with ``#`` as the first
+non-blank character) are ignored.
+
+Two keys are currently defined for the configuration file:
+``include-support-code`` and ``resource-map``.
+
+The ``include-support-code`` key is used to control whether **zpkg**
+bundles the support code along with the resulting distribution.  The
+value is a boolean, where the strings ``true`` and ``false`` can be
+used in the configuration file.  If true (the default), copies of the
+``zpkgsetup`` package and any additionally configured support packages
+will be included in the distribution (less the test code).  If false,
+these packages will be assumed to be available for import on target
+systems.
+
+The value for ``resource-map`` is a path or URL (including
+``cvs:`` URLs) for a file that defines the map.  Relative paths are
+interpreted as relative to the directory containing the configuration
+file.  The ``resource-map`` key may be given any number of times;
+entries in the first named map take precedence over entries of the
+same name in later maps.
+
+For example, if the configuration file `/home/fdrake/zpkg.conf`
+contains::
+
+  resource-map  local.map
+  resource-map  cvs://cvs.zope.org/cvs-repository:Packages2/packages.map
+
+**zpkg** will first load the maps in the order:
+
+1. ``/home/fdrake/local.map``
+2. ``cvs://cvs.zope.org/cvs-repository:Packages2/packages.map``
+
+
+.. _ZConfig: http://www.zope.org/Members/fdrake/zconfig/
+
+
+Resource Maps
+-------------
+
+A `resource map` is a mapping of resource names to URLs.  The URLs
+will most often be ``cvs:``, ``svn:``, or ``repository:`` URLs, but do
+not have to be.  See `Resource Locations <resources.html>`_ for more
+information on using URLs for specific locations.
+
+Resources are identified by names without any whitespace; if the
+resource is a Python package, the resource name is the full package
+name ("ZConfig" or "zope.app.tree" for example).  Resource names must
+be unique.
+
+A file representing a resource map is a simple two-column table with
+the fields separated by whitespace.  Blank lines and comments (lines
+that start with ``#`` as the first non-blank character) are ignored.
+
+The first field is the name of a resource, and the second field is the
+URL by which it can be accessed.
+
+For resources which are Python packages, a shortcut syntax can be used
+to identify an entire tree of packages::
+
+  foo    svn://svn.example.org/myproject/tags/*/src/foo
+  foo.*  svn://svn.example.org/myproject/tags/*/src/foo/
+
+allows all descendent packages of "foo" to be located.
+
+Resource maps which have CVS locations of their own can contain
+``repository:`` URLs; the ``cvs:`` or ``svn:`` URL of the directory
+containing the map itself is used as the base for resolving
+``repository:`` URLs.
+
+
+Zope Corporation Tagging Convention
+-----------------------------------
+
+When **zpkg** is passed a **-r**/**--revision-tag** option but not a
+**-v** option to explicitly set a version for the release, it will
+attempt to generate a version number from the revision tag.  For this
+to be successful, the revision tag must follow a convention used
+within Zope Corporation.
+
+Release tags which follow this convention all have the form:
+
+  *name*-*encoded-version*
+
+where *name* is the name of the package being released and
+*encoded-version* is the result of a simple transformation of the
+version number.  **zpkg** doesn't ever care about the name used in the
+tag, only about the version information.  It is significant that the
+version information follows the last hyphen in the tag name; it *must*
+be the last part of the tag.  The encoded version is the version
+number with all periods replaced by underscore characters; it may
+prove that the replacement isn't necessary when working with
+Subversion, though it is required for CVS.  The version number must
+conform to a pattern of two to four numbers separated by periods,
+optionally followed by one or more letters, which in turn may be
+optionally followed by another number.  Reasonable examples include
+``1.0``, ``0.1``, ``1.1.42``, ``2.3.4.5``, ``1.0a``, ``1.0a1``, and
+``5.4.3beta2``.
+
+For example, for the package ``mypkg``, the following tags correspond
+to the following version numbers:
+
+==================  ============
+Tag                 Version
+==================  ============
+mypkg-1_0           1.0
+mypkg-0_1           0.1
+mypkg-1_1_42        1.1.42
+mypkg-2_3_4_5       2.3.4.5
+mypkg-1_0a          1.0a
+mypkg-1_0a1         1.0a1
+mypkg-5_4_3_0beta2  5.4.3.0beta2
+==================  ============
+
+
+Support Packages
+----------------
+
+**zpkg** creates distributions which require some additional support
+packages to operate properly.  These packages are located in much the
+same way that other packages are located: the resource map is
+consulted to determine their location.  One difference is that if the
+resource map does not define the appropriate resources, a built-in
+fallback location will be used.
+
+The fallback location for the ``zpkgsetup`` package is the copy
+provided as part of the running **zpkg**; a location only needs to be
+specified if a different version should be used.  (This seems highly
+unlikely.)

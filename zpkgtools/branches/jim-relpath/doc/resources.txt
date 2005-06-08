@@ -1,0 +1,144 @@
+==================
+Resource Locations
+==================
+
+.. This is a reStructuredText document.
+.. include:: links.rst
+
+Overview
+--------
+
+The |zpkg|_ tool uses URLs to identify external resources.  In most
+cases, any URL type supported by Python's ``urllib2`` module is
+supported if the identified resource is a simple file.  (Directories
+are *not* handled well via HTTP or FTP in the current implementation,
+but that's considered a quality-of-implementation issue that can be
+dealt with if needed.)
+
+Two additional URL scheme have been defined specifically for use with
+this tool.  The ``cvs:`` scheme identifies a resource stored in a CVS
+repository (either local or remote), and the ``repository:`` scheme
+provides a way to spell a location relative to another in a CVS
+repository.  (It makes sense to 'join' a ``cvs:`` and a
+``repository:`` URL to generate a new ``cvs:`` URL.)
+
+Subversion is supported using the ``svn:``, ``svn+ssh:`` (as well as
+Subversion's general ``svn+special:`` schemes), and
+``file:`` schemes.  |zpkg|_ is able to determine whether a ``file:``
+URL refers to a Subversion repository or refers to a normal
+filesystem path and will handle either appropriately.
+
+
+Absolute Locations and the ``cvs:`` Scheme
+------------------------------------------
+
+The ``cvs:`` scheme can be used to identify any absolute path on any
+branch or tag within a CVS repository.  It contains the following
+components, separated by colons:
+
+- scheme identifier (always ``cvs``)
+- host part
+- host-relative cvs root
+- path
+- tag
+
+The host part can include optional username, password, and connection
+type parts::
+
+  [ username [ ":" password ] "@" ] hostname [ ":" connection-type ]
+
+This is very similar to the format used for FTP or HTTP with Basic
+authentication, where connection-type replaces the port number.
+
+XXX We should actually still support a port number, at least for
+``pserver`` connections.  The default port for ``pserver`` is 2041.
+
+The path may be omitted (left empty) to refer to the entire
+repository, including the top-level `CVSROOT/` directory.
+
+The tag part, including the colon used to separate it from the rest,
+can be omitted.  The tag can specify a symbolic tag, a branch tag, or
+a revision number.
+
+Some examples::
+
+  cvs:///usr/local/cvsroot:module
+
+  cvs://cvs.example.org:ext/cvs-repository:myproject/README.txt:1.2
+
+  cvs://user@pw:cvs.example.org:pserver/cvsroot/module/doc/:r1-1-maint-branch
+
+
+Relative Locations and the ``repository:`` Scheme
+-------------------------------------------------
+
+The ``repository:`` scheme is used to identify a resource relative to
+some other URL used with a revision control system.  It contains the
+following parts, separated by colons:
+
+- scheme identifier (always ``repository``)
+- path
+- tag
+
+The path can be relative or absolute, or omitted.  If the path is
+omitted, the join operation with a ``cvs:`` URL does not modify the
+path of the resource that's identified.
+
+The tag part, including the colon used to separate it from the rest,
+can be omitted.  The tag can specify a symbolic tag, a branch tag, or
+a revision number.
+
+Some examples::
+
+  repository:README.txt
+
+  repository:src/mypackage/
+
+  repository:src/module.py:release-1-2
+
+  repository:/Zope3:ZopeX3-0_0-m3
+
+
+Joining ``cvs:`` and ``repository:`` URLs
+-----------------------------------------
+
+Joining a ``cvs:`` and ``repository:`` URL results in a new ``cvs:``
+URL.  The only portions of the URL which may differ from the original
+``cvs:`` URL are the path and tag components; the ``repository:`` URL
+cannot affect the repository which is referenced.
+
+If the ``repository:`` URL specifies an absolute path, that path is
+used instead of the path from the original ``cvs:`` URL; otherwise the
+two paths are joined in the same manner as path components for HTTP
+URLs are joined.
+
+If the ``repository:`` URL specifies a tag, that is used, otherwise
+the tag from the original ``cvs:`` URL is used.
+
+Some examples:
+
+========================= ========================== ====================================
+Base URL                  Relative URL               Result
+========================= ========================== ====================================
+cvs:///cvsroot:module:TAG repository:README.txt      cvs:///cvsroot:module/README.txt:TAG
+cvs:///cvsroot:module     repository:/pkg/README.txt cvs:///cvsroot:pkg/README.txt
+cvs:///cvsroot:module     repository::tag            cvs:///cvsroot:module:tag
+cvs:///cvsroot:module:FOO repository:README.txt:BAR  cvs:///cvsroot:module/README.txt:BAR
+========================= ========================== ====================================
+
+
+Joining Subversion and ``repository:`` URLs
+-------------------------------------------
+
+XXX To be written
+
+
+Supporting Other Revision Control Systems
+-----------------------------------------
+
+Currently, CVS is supported generally, and Subversion is supported in
+a somewhat limited fashion.
+
+Support for additional systems hinges on creating new URL schemes for
+each system, and an appropriate join operation if ``repository:`` URLs
+need to be usable with them.

@@ -1,0 +1,220 @@
+==========================
+Packaging Tool Quick Start
+==========================
+
+Overview
+--------
+
+This is a very brief "getting started" guide to using the Zope 3
+package tool, |zpkg|_.  We'll start with simple instructions for
+building the ZopeX3 distribution.  These instructions only apply to
+Unix systems.
+
+The packaging tool builds a distribution pacakge based on *resources*.
+The tool builds a distribution based on a single resource named on the
+command line; this is called the *primary resource*.  Individual
+resources can be Python packages or *collections*, which are
+(essentially) a bunch of files that should be included.  Resources
+have *metadata* which describe what they contain and how they should
+be installed.  One part of the metadata is a list of dependencies; a
+resource can depend on other resources.  The packaging tool can be
+told to collect the dependencies of the primary resource into the
+distribution using a command-line option.
+
+
+Preparation
+-----------
+
+Before you can build a distribution, you need to have the packaging
+tool itself and at least a minimal configuration.  This only needs to
+be done once.
+
+There isn't a distribution for |zpkg|_ yet (simply because we haven't
+had time), but this is easy to get from Subversion.  Use the following
+command to retrieve the ``zpkgtools`` code::
+
+  svn co svn://svn.zope.org/repos/main/zpkgtools/trunk zpkgtools
+
+It can be convenient to either add *zpkgtools/bin/* to your PATH or
+add a symlink to *zpkgtools/bin/zpkg* to a directory already on your
+PATH; either allows you to simply type |zpkg|_ at the command line to
+run the packager.
+
+You will need to define a *resource map* to tell |zpkg|_ where package
+components can be found.  Resource maps can be loaded from local files
+or from remote locations specified by URL.  If you are primarily
+working with the Zope 3 packages, you should be able to use some
+prepared resource maps rather than defining your own.
+
+The resource maps can be specified from the |zpkg|_ command line or in
+a configuration file.  It's generally easiest to work with a
+configuration file since that avoids always needing to use really long
+command lines.  The default configuration file is *~/.zkpg/zpkg.conf*
+on Unix or *zpkg\\zpkg.conf* in the *\\Documents and Setting\\username*
+folder on Windows.  The exact name of the folder on Windows depends
+on the native language settings; you can determine the actual location
+using the Python interpreter::
+
+  >>> import os
+  >>> os.path.expanduser('~')
+  'C:\\Documents and Settings\\username'
+
+A good starting configuration to allow working with the resources
+defined for the Zope 3 project would be::
+
+  # Resources for the Zope 3 project:
+  resource-map svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/zope3.map
+
+  # Resources for use by zpkg:
+  resource-map svn://svn.zope.org/repos/main/ReleaseSupport/trunk/PackageMaps/support.map
+
+Read more about resource maps in |zpkg|_, and about how resource
+locations are specified in `Resource Locations <resources.html>`_.
+
+
+Building a Distribution
+-----------------------
+
+Let's start by building a distribution using existing resources and
+metadata.  Make sure you have lots of disk space in */tmp/* and enough
+to hold the finished tarball in the current directory.
+
+Run |zpkg|_ using this command::
+
+  zpkg -ac -vVERSION ZopeX3
+
+After listening to a good CD, or perhaps having some good Thai food,
+you should find a very large tarball named *ZopeX3-VERSION.tgz* in the
+current directory.
+
+
+Defining a New Resource
+-----------------------
+
+The Basics
+~~~~~~~~~~
+
+The next step in using |zpkg|_ is to define new resources that can be
+used in constructing distributions.  Most resources are Python
+packages, so we'll start with a simple package.  It will contain some
+Python modules, a data file that should be installed inside the
+package (this is how ZCML files are handled for Zope 3), and a
+sub-package.
+
+Our sample package will be called ``samplepkg``.  For now, we aren't
+going to worry about package hierarchies; we'll see later how a
+hierarchy can be broken down into a collection of packages.  Our
+package is represented by the following files::
+
+  samplepkg/
+      __init__.py
+      interfaces.py
+      module1.py
+      module2.py
+      configuration.zcml
+      helpers/
+          __init__.py
+          useful.py
+          stuff.py
+          tests/
+              __init__.py
+              test_useful.py
+              test_stuff.py
+      tests/
+          __init__.py
+          test_module1.py
+          test_module2.py
+
+So, what's needed to make this Python package "play nice" with the
+packaging tool?  Fortunately, not a lot.
+
+Most packages depend on some external libraries; we need to identify
+the libraries that are required before ``samplepkg`` can be used.
+It's safe to assume that all packages depend on the Python standard
+library, but since that's always available, we don't require that that
+dependency be spelled out.  Since this package contains some ZCML,
+it's a good bet that this package depends on Zope in some way.  Let's
+say that the *interfaces.py* file (at least) imports
+``zope.interface``, and some other module depends on
+``zope.app.zapi``.  These dependencies need to be recorded inside the
+package so that |zpkg|_ knows about them.  This is done by listing
+them inside a simple text file named *DEPENDENCIES.cfg* inside the
+package (parallel to the *__init__.py* file)::
+
+  zope.app
+  zope.interface
+
+Notice that we didn't list ``zope.app.zapi``, but simply ``zope.app``;
+this is because ``zope.app`` is the resource that contains the
+``zope.app.zapi`` module.  The *DEPENDENCIES.cfg* file lists
+*resources*, not arbitrary Python modules and packages.
+
+Now, what do we need to do about *configuration.zcml*?  Distutils
+normally would not pick this file up as part of the package, and
+|zpkg|_ definately generates distutils packages.  What |zpkg|_ does
+do, however, is control how distutils is used, so is able to provide
+the support needed to include additional data files inside the
+package; that's what it does with all files in Python packages by
+default.  Non-Python files inside your package are included as package
+data by default by |zpkg|_.
+
+Support for use as a primary resource
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The resource we've provided so far is usable as a resource that can be
+used in a collection, but it isn't sufficient to be packaged by
+itself.  For that, at least a small bit of additional metadata is
+required.
+
+The additional metadata required is called "publication metadata" and
+is stored in the file *PUBLICATION.cfg* in the top directory of the
+resource being described.  For Python packages, this is the directory
+that contains the *__init__.py* file.  The *PUBLICATION.cfg* file has
+the same format as the *PKG-INFO* file generated in a distribution by
+distutils.  Most fields are optional, and fields with version-specific
+information will be ignored.  (In particular, the **Version** field is
+ignored.)  These fields are used to provide general publication
+metadata to distutils; such metadata is used to respond to
+command-line queries and to register the package in the `Python
+Package Index <http://www.python.org/pypi/>`_.
+
+The following metadata fields should be provided:
+
+**Name**
+  The short name of the package, such as "Zope X3" or "ZConfig".
+
+**Summary**
+  Single line description of the package.
+
+**Home-page**
+  URL for more information about the package.
+
+**License**
+  Commonly recognized short name of the license, if there is one ("ZPL
+  2", "LGPL"), or a URL for the full text of the license if it's less
+  well known.
+
+**Author**, **Author-email**
+  The name and contact email address for the author of the package.
+  For packages developed by a collective, the "author" may be a
+  description of the group ("Zope Corporation and Contributors") and
+  the email address may be for a mailing list.
+
+**Maintainer**, **Maintainer-email**
+  The name and contact email address for the maintainer of the
+  package.  This should only be provided if it differs from the author
+  information.
+
+The format of the file is simply a series of RFC 2822 headers, with
+the header names matching the field names.  For example::
+
+  Name: Zope X3
+  Summary: Zope 3 Application Server
+  Home-page: http://dev.zope.org/Zope3/
+  Author: Zope Corporation and Contributors
+  Author-email: zope3-dev@zope.org
+  License: ZPL 2
+
+
+
+.. include:: links.rst

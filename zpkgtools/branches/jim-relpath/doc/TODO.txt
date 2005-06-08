@@ -1,0 +1,94 @@
+===========================
+Things that need to be done
+===========================
+
+- Need name + acronym to describe what gets built, not normal words
+  (Jim sez).  Zope3-Dev seems to want to call them "packages".
+
+- Package assembler script and distribution runtime
+
+  - We should have a way to express dependence on particular versions
+    of Python, and a way to say which is preferred.  (This can be used
+    when building an "application" distribution since that has some
+    support to select from different available Python interpreters.)
+
+  - There should be a way to specify a Download-URL when building a
+    package; using the distutils "register" command would then cause
+    that field to be provided via PyPI.
+
+    An alternative is to not include the Download-URL information in
+    the distribution and to simply edit the finished registration
+    manually.  This doesn't feel like it "plays nice" in the distutils
+    world, though.
+
+  - Consider looking for the configuration file in the current
+    directory before looking in ~/.zpkg/.  Note that it's already
+    possible to specify an configuration file, or just add additional
+    resource maps, using command-line options.
+
+  - Re-visit the abstractions for parsed revision control URLs:
+
+    - The current abstraction is pretty painful to work with, and
+      requires too much awareness of what kind of URL is being
+      handled.
+
+    - It would be really nice to be able to build a distribution from
+      a Subversion branch as well as a tag for the purpose of testing
+      the generated distribution, instead of having alternate resource
+      maps to work from a checkout to access the branch.
+
+  - CVS retriever (mostly done; need to deal with unspecified type and
+    user for remote repositories)
+
+    - can check *~/.cvspass* to see if there's an entry there
+
+    - otherwise assume :ext: if there's a CVS_RSH setting?  or just
+      always?  try anonymous :pserver: access?
+
+    - more configuration settings?
+
+    It's not clear these remaining issues are particularly important.
+
+  - Use delayed loading of resource maps, especially those that need to
+    be retrieved from remote systems.  The basic model of the resource
+    map allows this strategy to be employed effectively.  Low priority.
+
+  - Support use of http: and https: for access to Subversion
+    repositories.  Very low priority since we're using svn: and svn+ssh:
+    for svn.zope.org.
+
+  - Implement tarball generation directly in Python to avoid
+    dependence on external applications (because that's
+    platform-specific).
+
+  - Support different types of generated archives; bzipped tarballs,
+    gzipped tarballs and ZIP archives should both be easily generated.
+    Perhaps a configuration option should specify which are produced
+    by default.  Low priority.
+
+- Look at the package manager used by the MacPython people to see what
+  can be/has been done.
+
+- Deal with a package tree like the zope package tree that includes
+  both pure-Python and non-pure packages; these could easily land in
+  separate directory hierarchies for installations using a different
+  $prefix and $exec_prefix.  (The ``pkgutil`` module from the standard
+  library does not provide an acceptable solution due to a bug: see
+  http://www.python.org/sf/935117 for more info.)
+
+  (We're currently dealing with them by saying "use **--home** when
+  installing" on Unix.  This may be sufficient since this isn't an
+  issue for Windows systems (which never separate $prefix and
+  $exec_prefix).)
+
+- Fix up finddeps.py to stop searching at defined boundaries.  How to
+  define these boundaries is in flux at the moment.
+
+- Write a new setup.py for Zope 3 and ZODB to use in a checkout that
+  uses the package metadata; this can happen after the ZopeX3 release.
+
+  A preliminary setup.py replacement for the ZODB project is much
+  shorter than the conventional setup.py (28 lines, not including the
+  license blurb).
+
+- Documentation, documentation, documentation!
