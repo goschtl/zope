@@ -177,7 +177,8 @@ class Loader:
                 else:
                     method = self.unknown_load
         else:
-            raise ValueError("can only load from URLs, not path references")
+            raise ValueError("can only load from URLs, not path references",
+                             url)
         path = method(url)
         assert path == self.workdirs[url][1]
         trace("LOADED %s -> %s", url, path)
