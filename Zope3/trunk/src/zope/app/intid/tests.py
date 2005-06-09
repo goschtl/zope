@@ -65,9 +65,8 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
         verifyObject(IIntIds, IntIds())
 
-    def test_empty(self):
+    def test(self):
         from zope.app.intid import IntIds
-        from zope.app.keyreference.interfaces import IKeyReference
 
         u = IntIds()
         obj = P()
@@ -84,53 +83,6 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(TypeError, u.queryId, object())
         self.assert_(u.queryObject(42) is None)
         self.assert_(u.queryObject(42, obj) is obj)
-
-        key = IKeyReference(obj)
-
-        uid = u.register(key)
-        self.assert_(u.getObject(uid) is obj)
-        self.assert_(u.queryObject(uid) is obj)
-        self.assertEquals(u.getId(obj), uid)
-        self.assertEquals(u.queryId(obj), uid)
-
-        uid2 = u.register(key)
-        self.assertEquals(uid, uid2)
-
-        u.unregister(key)
-        self.assertRaises(KeyError, u.getObject, uid)
-        self.assertRaises(KeyError, u.getId, obj)
-
-    def test_key(self):
-        from zope.app.intid import IntIds
-        from zope.app.keyreference.interfaces import IKeyReference
-
-        u = IntIds()
-        obj = P()
-        
-        obj._p_jar = ConnectionStub()
-
-        key = IKeyReference(obj)
-
-        uid = u.register(key)
-        self.assert_(u.getObject(uid) is obj)
-        self.assert_(u.queryObject(uid) is obj)
-        self.assertEquals(u.getId(obj), uid)
-        self.assertEquals(u.queryId(obj), uid)
-
-        uid2 = u.register(key)
-        self.assertEquals(uid, uid2)
-
-        u.unregister(key)
-        self.assertRaises(KeyError, u.getObject, uid)
-        self.assertRaises(KeyError, u.getId, obj)
-
-    def test_ob(self):
-        from zope.app.intid import IntIds
-
-        u = IntIds()
-        obj = P()
-        
-        obj._p_jar = ConnectionStub()
 
         uid = u.register(obj)
         self.assert_(u.getObject(uid) is obj)
@@ -221,15 +173,13 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.utility1 = setup.addUtility(sm1_1, '2', IIntIds, IntIds())
 
     def test_removeIntIdSubscriber(self):
-        from zope.app.container.contained import ObjectRemovedEvent
         from zope.app.intid import removeIntIdSubscriber
+        from zope.app.container.contained import ObjectRemovedEvent
         from zope.app.intid.interfaces import IIntIdRemovedEvent
-        from zope.app.keyreference.interfaces import IKeyReference
         parent_folder = self.root['folder1']['folder1_1']
         folder = self.root['folder1']['folder1_1']['folder1_1_1']
-        key = IKeyReference(folder)
-        id = self.utility.register(key)
-        id1 = self.utility1.register(key)
+        id = self.utility.register(folder)
+        id1 = self.utility1.register(folder)
         self.assertEquals(self.utility.getObject(id), folder)
         self.assertEquals(self.utility1.getObject(id1), folder)
         setSite(self.folder1_1)
@@ -270,7 +220,6 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(len(events), 1)
         self.assertEquals(events[0].original_event.object, parent_folder)
         self.assertEquals(events[0].object, folder)
-
 
 def test_suite():
     suite = unittest.TestSuite()
