@@ -40,7 +40,7 @@ class IContentComponentMenuItem(IBrowserMenuItem):
         vocabulary="Interfaces",
         default=IAdding,
         required=True)
-    
+
     menuId = TextLine(
         title=_("Menu Id"),
         description=_("Specifies the menu this menu item will be added to."),
@@ -49,15 +49,15 @@ class IContentComponentMenuItem(IBrowserMenuItem):
 
     create = Bool(
         title=_("Create Menu"),
-        description=_("If set to True, the system will create a local Browser"
-                      "local browser menu item for you. If this "
+        description=_("If set to True, the system will create a "
+                      "local browser menu for you. If this "
                       "option is set to False, the system will try to find "
                       "the next site manager that has a menu "
                       "with the specifed id. If no menu was found or the menu "
-                      "is a global menu, then an error is created."),
+                      "is a global menu, then an error is occurred."),
         default=True,
         required=True)
-                 
+
     def createMenuItem():
         """Create a menu item from the information in this object."""
 
