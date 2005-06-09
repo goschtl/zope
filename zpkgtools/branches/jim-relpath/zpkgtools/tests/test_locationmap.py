@@ -335,6 +335,7 @@ class LocationMapTestCase(unittest.TestCase):
         self.assertEqual(m["bat"], 3)
 
     def test_load_w_relative_paths(self):
+
         map_file = StringIO('''
 foo     svn+ssh://svn.zope.org/repos/main/Foo/trunk/src/foo
 bar     ../../bar
@@ -359,7 +360,7 @@ tools   cvs://anonymous@cvs.sourceforge.net:pserver/'''
         mappingRelBase = locationmap.load(map_file, 'special/demo')
 
         map_file.seek(0)
-        mappingUrlBase = locationmap.load(map_file, 'http://acme.com/xxx')
+        mappingUrlBase = locationmap.load(map_file, 'http://acme.com/xxx/yyy/')
 
         os.getcwd = old_getcwd
 
@@ -391,23 +392,44 @@ tools   cvs://anonymous@cvs.sourceforge.net:pserver/'''
             mappingNone['baz'],
             'file:///home/dudette/python/project/baz',
             )
+
+        self.assertEqual(
+            mapping['bar'],
+            'file:///home/dudette/bar',
+            )
+        self.assertEqual(
+            mapping['baz'],
+            'file:///home/dudette/python/project/baz',
+            )
+
+        self.assertEqual(
+            mappingAbsBase['bar'],
+            'file:///projects/bar',
+            )
+        self.assertEqual(
+            mappingAbsBase['baz'],
+            'file:///projects/special/demo/baz',
+            )
             
 
+        self.assertEqual(
+            mappingRelBase['bar'],
+            'file:///home/dudette/python/project/bar',
+            )
+        self.assertEqual(
+            mappingRelBase['baz'],
+            'file:///home/dudette/python/project/special/demo/baz',
+            )
 
+        self.assertEqual(
+            mappingUrlBase['bar'],
+            'http://acme.com/bar',
+            )
+        self.assertEqual(
+            mappingUrlBase['baz'],
+            'http://acme.com/xxx/yyy/baz',
+            )
 
-    """
-We often want to use relative file paths in location maps.
-
-We can currently use URL, including file URLs.  But these must be absolute.
-
-Let's look at a sample map file that has several kinds of URLs and
-relative paths:
-
-
-Now, we'll load this map.  
-
-
-"""
 
 def test_suite():
     suite = unittest.makeSuite(LoadTestCase)
