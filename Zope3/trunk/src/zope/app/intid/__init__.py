@@ -104,9 +104,13 @@ class IntIds(Persistent, Contained):
                 return uid
             self._v_nextid = None
 
-    def register(self, key):
+    def register(self, ob_or_key):
         # Note that we'll still need to keep this proxy removal.
-        key = removeSecurityProxy(key)
+        key = removeSecurityProxy(ob_or_key)
+
+        if not IKeyReference.providedBy(key):
+            key = IKeyReference(key)
+
         if key in self.ids:
             return self.ids[key]
         uid = self._generateId()
@@ -114,9 +118,13 @@ class IntIds(Persistent, Contained):
         self.ids[key] = uid
         return uid
 
-    def unregister(self, key):
+    def unregister(self, ob_or_key):
         # Note that we'll still need to keep this proxy removal.
-        key = removeSecurityProxy(key)
+        key = removeSecurityProxy(ob_or_key)
+
+        if not IKeyReference.providedBy(key):
+            key = IKeyReference(key)
+
         uid = self.ids[key]
         del self.refs[uid]
         del self.ids[key]

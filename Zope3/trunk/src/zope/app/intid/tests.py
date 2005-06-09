@@ -65,7 +65,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
         verifyObject(IIntIds, IntIds())
 
-    def test(self):
+    def test_empty(self):
         from zope.app.intid import IntIds
         from zope.app.keyreference.interfaces import IKeyReference
 
@@ -100,9 +100,53 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(KeyError, u.getObject, uid)
         self.assertRaises(KeyError, u.getId, obj)
 
-    def test_len_items(self):
+    def test_key(self):
         from zope.app.intid import IntIds
         from zope.app.keyreference.interfaces import IKeyReference
+
+        u = IntIds()
+        obj = P()
+        
+        obj._p_jar = ConnectionStub()
+
+        key = IKeyReference(obj)
+
+        uid = u.register(key)
+        self.assert_(u.getObject(uid) is obj)
+        self.assert_(u.queryObject(uid) is obj)
+        self.assertEquals(u.getId(obj), uid)
+        self.assertEquals(u.queryId(obj), uid)
+
+        uid2 = u.register(key)
+        self.assertEquals(uid, uid2)
+
+        u.unregister(key)
+        self.assertRaises(KeyError, u.getObject, uid)
+        self.assertRaises(KeyError, u.getId, obj)
+
+    def test_ob(self):
+        from zope.app.intid import IntIds
+
+        u = IntIds()
+        obj = P()
+        
+        obj._p_jar = ConnectionStub()
+
+        uid = u.register(obj)
+        self.assert_(u.getObject(uid) is obj)
+        self.assert_(u.queryObject(uid) is obj)
+        self.assertEquals(u.getId(obj), uid)
+        self.assertEquals(u.queryId(obj), uid)
+
+        uid2 = u.register(obj)
+        self.assertEquals(uid, uid2)
+
+        u.unregister(obj)
+        self.assertRaises(KeyError, u.getObject, uid)
+        self.assertRaises(KeyError, u.getId, obj)
+
+    def test_len_items(self):
+        from zope.app.intid import IntIds
         from zope.app.keyreference.persistent import KeyReferenceToPersistent
         u = IntIds()
         obj = P()
@@ -112,9 +156,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(u.items(), [])
         self.assertEquals(list(u), [])
 
-        key = IKeyReference(obj)
-
-        uid = u.register(key)
+        uid = u.register(obj)
         ref = KeyReferenceToPersistent(obj)
         self.assertEquals(len(u), 1)
         self.assertEquals(u.items(), [(uid, ref)])
@@ -123,9 +165,7 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         obj2 = P()
         obj2.__parent__ = obj
 
-        key2 = IKeyReference(obj2)
-
-        uid2 = u.register(key2)
+        uid2 = u.register(obj2)
         ref2 = KeyReferenceToPersistent(obj2)
         self.assertEquals(len(u), 2)
         result = u.items()
@@ -139,8 +179,8 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         expected.sort()
         self.assertEquals(result, expected)
 
-        u.unregister(key)
-        u.unregister(key2)
+        u.unregister(obj)
+        u.unregister(obj2)
         self.assertEquals(len(u), 0)
         self.assertEquals(u.items(), [])
 

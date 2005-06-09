@@ -33,17 +33,18 @@ class IIntIdsQuery(Interface):
 
 class IIntIdsSet(Interface):
 
-    def register(key):
-        """Register a key reference and returns a unique id generated for it.
+    def register(ob_or_key):
+        """Register an object or a key reference and return a unique id.
 
         If the object adapted to key reference is already registered, its 
-        id is returned anyway.
+        id is returned anyway otherwise,  a unique id is generated for it
+        and returned.
         """
 
-    def unregister(key):
-        """Remove the key reference from the indexes.
+    def unregister(ob_or_key):
+        """Remove the object or the key reference from the indexes.
 
-        ValueError is raised if the object adapted to key reference is not
+        KeyError is raised if the object adapted to key reference is not
         registered previously.
         """
 
