@@ -14,11 +14,14 @@
 """Tests for zpkgtools.config."""
 
 import os
+import shutil
+import tempfile
 import unittest
 
 from StringIO import StringIO
 
 from zpkgsetup import cfgparser
+from zpkgsetup import urlutils
 from zpkgtools import config
 
 
@@ -46,7 +49,7 @@ class ConfigTestCase(unittest.TestCase):
         self.assertEqual(
             cf.location_maps,
             ["cvs://cvs.example.org/cvsroot:module/package/PACKAGES.txt",
-             os.path.join(here, "relative/path.txt")])
+             urlutils.file_url(os.path.join(here, "relative/path.txt"))])
 
     def test_constructor_bad_config_setting(self):
         # unknown option:
@@ -78,10 +81,65 @@ class ConfigTestCase(unittest.TestCase):
         sio = StringIO(text)
         cf.loadStream(sio, path, basedir)
         return cf
-        
+
+
+class ConfigurationLocationMapIntegrationTestCase(unittest.TestCase):
+
+    def setUp(self):
+        self.tmpdir = tempfile.mkdtemp()
+
+    def tearDown(self):
+        shutil.rmtree(self.tmpdir)
+
+    def test_relative_paths_mapped(self):
+        os.mkdir(os.path.join(self.tmpdir, "releases"))
+        reldir = os.path.join(self.tmpdir, "releases", "Thing")
+        os.mkdir(reldir)
+        cfgpath = os.path.join(reldir, "zpkg.conf")
+        f = open(cfgpath, "w")
+        f.write("resource-map one.map\n")
+                #"resource-map two.map\n")
+        f.close()
+        mapfile = os.path.join(reldir, "one.map")
+        f = open(mapfile, "w")
+        f.write("pkg1 ../../src/pkg1\n"
+                "pkg2 ../Thong\n"
+                "pkg3 some/dir\n")
+        f.close()
+
+        cf = config.Configuration()
+        old_path = os.getcwd()
+        os.chdir(self.tmpdir)
+        try:
+            cf.loadPath("releases/Thing/zpkg.conf")
+        finally:
+            os.chdir(old_path)
+
+        # make sure we're looking at the right location map:
+        self.assertEqual(cf.location_maps, [urlutils.file_url(mapfile)])
+
+        # load the finished map and make sure we get the right values:
+        cf.finalize()
+        expected = urlutils.file_url(
+            os.path.join(self.tmpdir, "src", "pkg1"))
+        self.assertEqual(cf.locations["pkg1"], expected)
+
+        expected = urlutils.file_url(
+            os.path.join(self.tmpdir, "releases", "Thong"))
+        self.assertEqual(cf.locations["pkg2"], expected)
+
+        expected = urlutils.file_url(
+            os.path.join(self.tmpdir, "releases", "Thing", "some", "dir"))
+        self.assertEqual(cf.locations["pkg3"], expected)
+
 
 def test_suite():
-    return unittest.makeSuite(ConfigTestCase)
+    suite = unittest.TestSuite()
+    suite.addTest(
+        unittest.makeSuite(ConfigTestCase))
+    suite.addTest(
+        unittest.makeSuite(ConfigurationLocationMapIntegrationTestCase))
+    return suite
 
 if __name__ == "__main__":
     unittest.main(defaultTest="test_suite")

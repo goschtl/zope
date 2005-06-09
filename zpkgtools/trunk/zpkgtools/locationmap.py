@@ -255,7 +255,7 @@ def fromPathOrUrl(path, mapping=None):
             f = urllib2.urlopen(path, "rU")
         else:
             f = loader.open(path, "rU")
-        base = loader.baseUrl(path)
+        base = path
     if mapping is None:
         mapping = LocationMap()
     try:

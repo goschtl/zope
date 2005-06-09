@@ -25,8 +25,10 @@ worth it.
 
 import os
 import urllib
+import urlparse
 
 from zpkgsetup import cfgparser
+from zpkgsetup import urlutils
 from zpkgtools import locationmap
 
 
@@ -107,12 +109,9 @@ class Configuration:
         """
         p = cfgparser.Parser(f, path, SCHEMA)
         cf = p.load()
+        base = urlutils.file_url(os.path.abspath(basedir)) + "/"
         for value in cf.resource_map:
-            type, rest = urllib.splittype(value)
-            if basedir and not type:
-                # local path references are relative to the file
-                # we're loading
-                value = os.path.join(basedir, value)
+            value = urlparse.urljoin(base, value)
             self.location_maps.append(value)
         if len(cf.include_support_code) > 1:
             raise cfgparser.ConfigurationError(
