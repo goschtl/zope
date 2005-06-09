@@ -23,4 +23,13 @@
                       mailer="smtp" />
    -->
 
+  <interface interface="zope.app.mail.interfaces.IMailDelivery" />
+
+  <vocabulary
+      name="Mail Delivery Names"
+      factory="zope.app.component.vocabulary.UtilityVocabulary"
+      interface="zope.app.mail.interfaces.IMailDelivery" 
+      nameOnly="True" />
+
+
 </configure>
