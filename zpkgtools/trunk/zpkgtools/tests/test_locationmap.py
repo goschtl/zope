@@ -235,25 +235,24 @@ class LoadTestCase(unittest.TestCase):
 
     def test_load_w_relative_paths(self):
         map_file = StringIO('''
-foo     svn+ssh://svn.zope.org/repos/main/Foo/trunk/src/foo
-bar     ../../bar
-baz     baz
-spam    file://spam.com/spam
-tools   cvs://anonymous@cvs.sourceforge.net:pserver/'''
-      '''cvsroot/python:python/n\ondist/sandbox/setuptools/setuptools
-        ''')
+          foo     svn+ssh://svn.zope.org/repos/main/Foo/trunk/src/foo
+          bar     ../../bar
+          baz     baz
+          ''')
 
         old_getcwd = os.getcwd
         os.getcwd = lambda: '/home/dudette/python/project'
-
         try:
-            locationmap.load(map_file, 'http://acme.com/xxx', self.mapping)
+            locationmap.load(map_file, 'http://acme.com/xxx/yyy/',
+                             self.mapping)
         finally:
             os.getcwd = old_getcwd
 
         self.assertEqual(
             self.mapping['foo'],
             'svn+ssh://svn.zope.org/repos/main/Foo/trunk/src/foo')
+        self.assertEqual(self.mapping['bar'], 'http://acme.com/bar')
+        self.assertEqual(self.mapping['baz'], 'http://acme.com/xxx/yyy/baz')
 
 
 class CollectingHandler(logging.Handler):
