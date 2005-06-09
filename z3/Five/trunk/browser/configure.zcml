@@ -1,6 +1,8 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser">
 
+  <browser:defaultView name="index.html" />
+
   <browser:page
       for="*"
       name="absolute_url"

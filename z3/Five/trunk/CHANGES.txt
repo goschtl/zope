@@ -26,6 +26,10 @@ Five 1.1 (unreleased)
 
 * Support for the standard <factory /> ZCML directive was added.
 
+* The default browser view name for all objects is now 'index.html',
+  just as it is in Zope 3.  This means that a view by that name will
+  be looked up if no specific view name is given in the URL.
+
 Five 1.0.1 (2005-05-31)
 =======================
 
