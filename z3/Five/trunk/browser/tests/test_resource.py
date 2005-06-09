@@ -127,8 +127,7 @@ class SecurityResourceTests(RestrictedPythonTestCase):
         base = 'testoid/++resource++fivetest_resources/%s'
         for resource in dir_resource_names:
             path = base % resource
-            self.checkUnauthorized(
-                'context.restrictedTraverse("%s")' % path)
+            self.checkUnauthorized('context.restrictedTraverse("%s")' % path)
 
     def test_resource_permission(self):
         self.login('manager')
@@ -142,8 +141,7 @@ class SecurityResourceTests(RestrictedPythonTestCase):
         base = 'testoid/++resource++fivetest_resources/%s'
         for resource in dir_resource_names:
             path = base % resource
-            self.check(
-                'context.restrictedTraverse("%s")' % path)
+            self.check('context.restrictedTraverse("%s")' % path)
 
 def test_suite():
     suite = unittest.TestSuite()
