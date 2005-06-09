@@ -32,6 +32,8 @@ class KeyReferenceToPersistent(object):
     """
     zope.interface.implements(zope.app.keyreference.interfaces.IKeyReference)
 
+    key_type_id = 'zope.app.keyreference.persistent'
+
     def __init__(self, object):
         if not getattr(object, '_p_oid', None):
             connection = IConnection(object, None)
@@ -49,11 +51,10 @@ class KeyReferenceToPersistent(object):
         return hash(self.object._p_oid)
 
     def __cmp__(self, other):
-        if not isinstance(other, KeyReferenceToPersistent):
-            raise TypeError("Cannot compare ReferenceToPersistent with %r" %
-                            (other,))
-        return cmp(self.object._p_oid, other.object._p_oid)
+        if self.key_type_id == other.key_type_id:
+            return cmp(self.object._p_oid, other.object._p_oid)
 
+        return cmp(self.key_type_id, other.key_type_id)
 
 
 def connectionOfPersistent(ob):
@@ -70,4 +71,3 @@ def connectionOfPersistent(ob):
         if cur is None:
             return None
     return cur._p_jar
-

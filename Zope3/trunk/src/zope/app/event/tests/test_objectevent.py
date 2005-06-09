@@ -15,7 +15,8 @@
 
 $Id$
 """
-import unittest, doctest
+import unittest
+from zope.testing import doctest
 
 from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
 from zope.app.annotation.interfaces import IAttributeAnnotatable
@@ -112,9 +113,9 @@ class TestObjectEventNotifications(unittest.TestCase):
 def setUpObjectEventDocTest(test) :
     setUp()
         
-    ztapi.provideAdapter(IAttributeAnnotatable, \
+    ztapi.provideAdapter(IAttributeAnnotatable,
                                 IAnnotations, AttributeAnnotations) 
-    ztapi.provideAdapter(IAnnotatable, \
+    ztapi.provideAdapter(IAnnotatable,
                                 IZopeDublinCore, ZDCAnnotatableAdapter)    
 
 def tearDownObjectEventDocTest(test) :
@@ -126,9 +127,10 @@ def test_suite():
         unittest.makeSuite(TestObjectAnnotationsModifiedEvent),
         unittest.makeSuite(TestObjectContentModifiedEvent),
         unittest.makeSuite(TestObjectEventNotifications),
-        doctest.DocTestSuite("zope.app.event.objectevent", \
-                                       setUp=setUpObjectEventDocTest, \
-                                       tearDown=tearDownObjectEventDocTest),
+        doctest.DocTestSuite("zope.app.event.objectevent",
+                                       setUp=setUpObjectEventDocTest,
+                                       tearDown=tearDownObjectEventDocTest,
+                                       optionflags=doctest.NORMALIZE_WHITESPACE),
         ))
 
 if __name__=='__main__':

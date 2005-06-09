@@ -603,6 +603,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Made different key reference implementations comparable:IKeyReference
+        interface is extended by an additional key_type_id attribute.
+
       - Fixed issue #400: i18n image broken in trunk
 
       - Fix #392 : adapter registry subscribers method can return None

@@ -43,6 +43,35 @@ and have the same hashes:
     >>> hash(KeyReferenceToPersistent(root['ob1'])) == hash(key1)
     True
 
+Other key reference implementations are differed by their key type id.
+Key references should sort first on their key type and second on any
+type-specific information:
+
+    >>> from zope.interface import implements
+    >>> from zope.app.keyreference.interfaces import IKeyReference
+
+    >>> class DummyKeyReference(object):
+    ...     implements(IKeyReference)
+    ...     key_type_id = 'zope.app.keyreference.object'
+    ...     def __init__(self, obj):
+    ...         self.object = obj
+    ...     def __cmp__(self, other):
+    ...          if self.key_type_id == other.key_type_id:
+    ...              return cmp(self.object, other.object)
+    ...          return cmp(self.key_type_id, other.key_type_id)
+
+    >>> dummy_key1 = DummyKeyReference(object())
+    >>> dummy_key2 = DummyKeyReference(object())
+    >>> dummy_key3 = DummyKeyReference(object())
+
+    >>> keys = [key1, dummy_key1, dummy_key2, key2, dummy_key3]
+    >>> keys.sort()
+    >>> key_type_ids = [key.key_type_id for key in keys]
+    >>> key_type_ids[0:3].count('zope.app.keyreference.object') 
+    3
+    >>> key_type_ids[3:].count('zope.app.keyreference.persistent')
+    2
+
 We'll store the key references in the database:
 
     >>> root['key1'] = key1

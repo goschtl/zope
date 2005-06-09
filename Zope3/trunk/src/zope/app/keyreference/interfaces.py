@@ -16,6 +16,10 @@
 $Id$
 """
 import zope.interface
+from zope.schema import DottedName
+
+from zope.app.i18n import ZopeMessageIDFactory as _
+
 
 class NotYet(Exception):
     """Can't compute a key reference for an object
@@ -29,6 +33,12 @@ class IKeyReference(zope.interface.Interface):
 
     The references are compared by their hashes.
     """
+
+    key_type_id = DottedName(title=_('Key Type Id'),
+        description=_('Key references should sort first '
+            'on their key type and second on any type-specific '
+            'information.')
+        )
 
     def __call__():
         """Get the object this reference is linking to.
