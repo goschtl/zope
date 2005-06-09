@@ -22,6 +22,7 @@ import urlparse
 import UserDict
 
 from zpkgsetup import loggingapi as logging
+from zpkgsetup import urlutils
 
 from zpkgtools import cvsloader
 from zpkgtools import loader
@@ -141,15 +142,25 @@ class LocationMap(UserDict.UserDict):
         return key in self._wildcards
 
 
-def load(f, base=None, mapping=None):
-    cvsbase = None
-    if base is not None:
-        try:
-            cvsbase = loader.parse(base)
-        except ValueError:
-            pass
-    if mapping is None:
-        mapping = LocationMap()
+def load(f, base, mapping):
+    """Parse a location map from an open file.
+
+    :param f:  The open file to read from.
+
+    :param base:  URL corresponding to the open file.
+
+    :param mapping:  Mapping to update.
+
+    This routine is not part of the API for this module; it is
+    separated out from the `fromPathOrUrl()` function to make it
+    easier to test the map parsing aspect of this module.
+
+    """
+    assert base
+    try:
+        cvsbase = loader.parse(base)
+    except ValueError:
+        cvsbase = None
     local_entries = {}
     lineno = 0
     for line in f:
@@ -204,8 +215,6 @@ def load(f, base=None, mapping=None):
             mapping[resource] = url
         local_entries[resource] = resource
 
-    return mapping
-
 
 def get_template_url(parsed):
     #
@@ -221,11 +230,21 @@ def get_template_url(parsed):
 
 
 def fromPathOrUrl(path, mapping=None):
+    """Load or update a map base on the content of a path or URL.
+
+    :param path:  Path to a file (absolute or relative), or URL.
+
+    :param mapping:  Mapping object to update; if omitted or `None`, a
+      new `LocationMap` will be created and returned.
+
+    :return: New or updated location map.
+
+    """
     if os.path.isfile(path):
         # prefer a revision-control URL over a local path if possible:
         rcurl = loader.fromPath(path)
         if rcurl is None:
-            base = os.path.dirname(path)
+            base = urlutils.file_url(path)
         else:
             base = loader.baseUrl(rcurl)
         f = open(path, "rU")
@@ -237,10 +256,13 @@ def fromPathOrUrl(path, mapping=None):
         else:
             f = loader.open(path, "rU")
         base = loader.baseUrl(path)
+    if mapping is None:
+        mapping = LocationMap()
     try:
-        return load(f, base, mapping)
+        load(f, base, mapping)
     finally:
         f.close()
+    return mapping
 
 
 _ident = "[a-zA-Z_][a-zA-Z_0-9]*"

@@ -15,6 +15,8 @@
 
 import doctest
 import os.path
+import shutil
+import tempfile
 import unittest
 import urllib
 
@@ -61,16 +63,19 @@ EXPECTED_OUTPUT = {
 
 class LoadTestCase(unittest.TestCase):
 
+    def setUp(self):
+        self.mapping = locationmap.LocationMap()
+
     def test_subversion_urls_dont_lose_templateness(self):
         url = "svn://svn.example.org/svnroot/proj/tags/*/file.txt"
         sio = StringIO("pkg %s \n" % url)
-        mapping = locationmap.load(sio)
-        self.assertEqual(mapping["pkg"], url)
+        locationmap.load(sio, "file:///does/not/exist.map", self.mapping)
+        self.assertEqual(self.mapping["pkg"], url)
 
     def test_load_without_base(self):
         sio = StringIO(SAMPLE_INPUT_WITHOUT_REPOSITORY_URLS)
-        mapping = locationmap.load(sio)
-        self.check_sample_results(mapping)
+        locationmap.load(sio, "file:///does/not/exist.map", self.mapping)
+        self.check_sample_results(self.mapping)
 
     def test_load_without_base_update(self):
         # Make sure that an existing mapping is updated, not ignored,
@@ -78,7 +83,7 @@ class LoadTestCase(unittest.TestCase):
         sio = StringIO(SAMPLE_INPUT_WITHOUT_REPOSITORY_URLS)
         d = {"other":   "over-there",
              "ZConfig": "http://www.example.org/"}
-        mapping = locationmap.load(sio, mapping=d)
+        locationmap.load(sio, "file:///does/not/exist.map", d)
         self.assertEqual(d.pop("other"), "over-there")
         self.assertEqual(d["ZConfig"], "http://www.example.org/")
         # Slam in the expected result, now that we've checked the
@@ -88,11 +93,12 @@ class LoadTestCase(unittest.TestCase):
 
     def test_load_with_cvs_base(self):
         sio = StringIO(SAMPLE_INPUT_WITH_REPOSITORY_URLS)
-        mapping = locationmap.load(
-            sio, "cvs://cvs.example.org:ext/cvsroot:module")
-        self.check_sample_results(mapping)
+        locationmap.load(
+            sio, "cvs://cvs.example.org:ext/cvsroot:module",
+            self.mapping)
+        self.check_sample_results(self.mapping)
 
-    def test_load_with_file_base(self):
+    def test_fromPathOrUrl_with_url(self):
         dirname = os.path.dirname(os.path.abspath(__file__))
         dirname = os.path.join(dirname, "input")
         fn = os.path.join(dirname, "packages.map")
@@ -103,6 +109,26 @@ class LoadTestCase(unittest.TestCase):
                          base + "/collection-1/")
         self.assertEqual(map["collection:collection-2"],
                          base + "/collection-2/")
+
+    def test_fromPathOrUrl_with_path(self):
+        # create a directory that contains no revision control stuff:
+        dirpath = tempfile.mkdtemp()
+        # compute paths:
+        here = os.path.dirname(os.path.abspath(__file__))
+        input = os.path.join(here, "input", "packages.map")
+        output = os.path.join(dirpath, "packages.map")
+        try:
+            # copy in our sample input:
+            shutil.copy(input, output)
+            # check the map:
+            map = locationmap.fromPathOrUrl(output)
+            base = urlutils.file_url(dirpath)
+            self.assertEqual(map["collection:collection-1"],
+                             base + "/collection-1/")
+            self.assertEqual(map["collection:collection-2"],
+                             base + "/collection-2/")
+        finally:
+            shutil.rmtree(dirpath)
 
     def check_sample_results(self, mapping):
         d = {}
@@ -125,31 +151,32 @@ class LoadTestCase(unittest.TestCase):
     def check_error(self, input):
         sio = StringIO(input)
         try:
-            locationmap.load(sio)
+            locationmap.load(sio, "file:///does/not/exist.map",
+                             self.mapping)
         except locationmap.MapLoadingError, e:
             self.assertEqual(e.lineno, 1)
         else:
             self.fail("expected MapLoadingError")
 
     def test_duplicate_entry_generates_warning(self):
-        map = self.check_duplicate_entry_generates_warning("r1")
-        self.assertEqual(len(map), 1)
+        self.check_duplicate_entry_generates_warning("r1")
+        self.assertEqual(len(self.mapping), 1)
 
     def test_duplicate_wildcard_generates_warning(self):
-        map = self.check_duplicate_entry_generates_warning("pkg.*")
-        # len(map) == 0, but it's not clear we care at this point;
+        self.check_duplicate_entry_generates_warning("pkg.*")
+        # len(self.mapping) == 0, but it's not clear we care at this point;
         # wildcards make the len() pretty questionable
 
     def check_duplicate_entry_generates_warning(self, resource_name):
         sio = StringIO("%s cvs://cvs.example.org/cvsroot:foo\n"
                        "%s cvs://cvs.example.org/cvsroot:foo\n"
                        % (resource_name, resource_name))
-        map = self.collect_warnings(locationmap.load, sio)
+        self.collect_warnings(
+            locationmap.load, sio, "file:///does/not/exist.map", self.mapping)
         self.assertEqual(len(self.warnings), 1)
         r = self.warnings[0]
         self.assertEqual(r.levelno, logging.WARNING)
         self.assertEqual(r.name, "zpkgtools.locationmap")
-        return map
 
     def collect_warnings(self, callable, *args, **kw):
         self.warnings = []
@@ -165,22 +192,32 @@ class LoadTestCase(unittest.TestCase):
         sio = StringIO("foo.*  cvs://cvs.example.org/cvsroot:foo\n"
                        "bar.*  file:///some/path/\n"
                        "bat.*  some/path\n")
-        map = locationmap.load(sio)
+
+        old_getcwd = os.getcwd
+        os.getcwd = lambda: "/home/dudette/python/project"
+
+        try:
+            locationmap.load(
+                sio, "file:///home/dudette/python/project/", self.mapping)
+        finally:
+            os.getcwd = old_getcwd
+
         eq = self.assertEqual
-        self.assert_("foo.bar" in map)
-        self.assert_("bar.foo" in map)
-        self.assert_("bat.splat.funk" in map)
-        eq(map["foo.bar"], "cvs://cvs.example.org/cvsroot:foo/bar")
-        eq(map["bar.foo"], "file:///some/path/foo")
-        eq(map["bat.splat.funk"], "some/path/splat/funk")
+        self.assert_("foo.bar" in self.mapping)
+        self.assert_("bar.foo" in self.mapping)
+        self.assert_("bat.splat.funk" in self.mapping)
+        eq(self.mapping["foo.bar"], "cvs://cvs.example.org/cvsroot:foo/bar")
+        eq(self.mapping["bar.foo"], "file:///some/path/foo")
+        eq(self.mapping["bat.splat.funk"],
+           "file:///home/dudette/python/project/some/path/splat/funk")
 
     def test_unmatched_wildcard(self):
         sio = StringIO("foo.bar.*  some/path\n")
-        map = locationmap.load(sio)
+        locationmap.load(sio, "file:///does/not/exist.map", self.mapping)
         eq = self.assertEqual
-        self.assert_("foo" not in map)
-        self.assert_("foo.bar" not in map)
-        self.assert_("foo.bar.bat" in map)
+        self.assert_("foo" not in self.mapping)
+        self.assert_("foo.bar" not in self.mapping)
+        self.assert_("foo.bar.bat" in self.mapping)
 
     def test_invalid_wildcards(self):
         self.check_error("not-a-package.*           some/path \n")
@@ -192,9 +229,31 @@ class LoadTestCase(unittest.TestCase):
 
     def test_wildcards_with_subversion_tags(self):
         sio = StringIO("foo.* svn://svn.example.org/proj/tags/*/path\n")
-        map = locationmap.load(sio)
-        eq = self.assertEqual
-        eq(map["foo.bar"], "svn://svn.example.org/proj/tags/*/path/bar")
+        locationmap.load(sio, "file:///does/not/exist.map", self.mapping)
+        self.assertEqual(self.mapping["foo.bar"],
+                         "svn://svn.example.org/proj/tags/*/path/bar")
+
+    def test_load_w_relative_paths(self):
+        map_file = StringIO('''
+foo     svn+ssh://svn.zope.org/repos/main/Foo/trunk/src/foo
+bar     ../../bar
+baz     baz
+spam    file://spam.com/spam
+tools   cvs://anonymous@cvs.sourceforge.net:pserver/'''
+      '''cvsroot/python:python/n\ondist/sandbox/setuptools/setuptools
+        ''')
+
+        old_getcwd = os.getcwd
+        os.getcwd = lambda: '/home/dudette/python/project'
+
+        try:
+            locationmap.load(map_file, 'http://acme.com/xxx', self.mapping)
+        finally:
+            os.getcwd = old_getcwd
+
+        self.assertEqual(
+            self.mapping['foo'],
+            'svn+ssh://svn.zope.org/repos/main/Foo/trunk/src/foo')
 
 
 class CollectingHandler(logging.Handler):

@@ -74,8 +74,7 @@ class Configuration:
     def finalize(self):
         """Load the location maps into `locations`."""
         for loc in self.location_maps:
-            self.locations = locationmap.fromPathOrUrl(loc,
-                                                       mapping=self.locations)
+            self.locations = locationmap.fromPathOrUrl(loc, self.locations)
 
     def loadPath(self, path):
         """Load configuration from a file.
