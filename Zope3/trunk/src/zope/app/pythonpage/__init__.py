@@ -38,7 +38,7 @@ class IPythonPage(Interface):
     source = SourceText(
         title=_("Source"),
         description=_("The source of the Python page."),
-        required=False)
+        required=True)
 
     contentType = TextLine(
         title=_("Content Type"),
