@@ -29,11 +29,10 @@ class AbsoluteURL(BrowserView):
 
     (original: zope.app.traversing.browser.absoluteurl)
     """
+    implements(IAbsoluteURL)
 
     def __init__(self, context, request):
         self.context, self.request = context, request
-
-    implements(IAbsoluteURL)
 
     def __str__(self):
         context = aq_inner(self.context)
