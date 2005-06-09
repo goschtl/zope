@@ -1,5 +1,6 @@
 <tal:tag condition="view/update"/>
-<html metal:use-macro="context/@@standard_macros/view">
+<html metal:use-macro="context/@@standard_macros/view"
+    i18n:domain="zope">
   <body>
   <div metal:fill-slot="body">
 
@@ -13,11 +14,11 @@
         <h3 tal:condition="view/label"
             tal:content="view/label"
             metal:define-slot="heading"
-            >Edit something</h3>
+            i18n:translate="">Edit something</h3>
 
         <p tal:define="status view/update"
            tal:condition="status"
-           tal:content="status" />
+           tal:content="status" i18n:translate=""/>
 
         <p tal:condition="view/errors" i18n:translate="">
           There are  <strong tal:content="python:len(view.errors)"
@@ -27,11 +28,11 @@
         <div class="message"
            tal:condition="view/syntaxError"
            tal:define="err view/syntaxError">
-          <h3 i18n:translate="">Syntax Error: 
+          <h3 i18n:translate="">Syntax Error:
             <span tal:content="err/msg" i18n:name="msg">invalid syntax</span>
           </h3>
           <div i18n:translate="">
-            File 
+            File
             "<span tal:replace="err/filename" i18n:name="filename">
                filename
             </span>",
@@ -52,9 +53,9 @@
             <div class="label">Extra top</div>
             <div class="field"><input type="text" style="width:100%" /></div>
         </div>
-        
+
         <div metal:use-macro="context/@@form_macros/widget_rows" />
-        
+
         <div class="separator"></div>
         <div class="row"
              metal:define-slot="extra_bottom" tal:replace="nothing">
