@@ -27,6 +27,7 @@ from zope.component.servicenames import Presentation
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.app.publisher.browser.viewmeta import pages as zope_app_pages
 from zope.app.publisher.browser.viewmeta import view as zope_app_view
+from zope.app.publisher.browser.viewmeta import providesCallable
 from zope.app.publisher.browser.globalbrowsermenuservice import\
      menuItemDirective
 from zope.app.component.metaconfigure import handler

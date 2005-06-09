@@ -169,6 +169,15 @@
       permission="zope2.Public"
       />
 
+  <!-- Verify that browser:view works, especially when no specific
+       view attribute is specified -->
+
+  <browser:view
+      name=""
+      for="Products.Five.tests.simplecontent.ISimpleContent"
+      class=".pages.SimpleView"
+      permission="zope2.Public"
+      />
 
   <!-- XXX this should really be in Five.form.tests -->
 
