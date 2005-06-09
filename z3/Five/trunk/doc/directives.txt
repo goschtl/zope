@@ -55,8 +55,13 @@ Declare a global utility.
 
 interface
 ---------
+
 Register an interface in ZCML.
 
+factory
+-------
+
+Register an object factory.
 
 browser ``http://namespaces.zope.org/browser``
 ==============================================

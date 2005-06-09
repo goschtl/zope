@@ -24,6 +24,8 @@ Five 1.1 (unreleased)
 
 * The deprecated get_transaction method is no longer used in Zope 2.8.
 
+* Support for the standard <factory /> ZCML directive was added.
+
 Five 1.0.1 (2005-05-31)
 =======================
 
