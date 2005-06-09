@@ -127,8 +127,9 @@ class File(Persistent):
             return str(self._data)
         else:
             return self._data
-
-    def _setData(self, data):
+            
+    def _setData(self, data) :
+     
         # Handle case when data is a string
         if isinstance(data, unicode):
             data = data.encode('UTF-8')

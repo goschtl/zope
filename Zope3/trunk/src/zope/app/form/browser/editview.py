@@ -28,6 +28,7 @@ from zope.security.checker import defineChecker, NamesChecker
 from zope.app import zapi
 from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.event.objectevent import Attributes
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.interfaces import WidgetsError
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -98,7 +99,8 @@ class EditView(BrowserView):
                 # We should not generate events when an adapter is used.
                 # That's the adapter's job.
                 if changed and self.context is self.adapted:
-                    notify(ObjectModifiedEvent(content))
+                    description = Attributes(self.schema, *self.fieldNames)
+                    notify(ObjectModifiedEvent(content, description))
             except WidgetsError, errors:
                 self.errors = errors
                 status = _("An error occured.")

@@ -15,8 +15,13 @@
 
 $Id$
 """
-import unittest
+import unittest, doctest
 
+from zope.app.annotation.interfaces import IAnnotations, IAnnotatable
+from zope.app.annotation.interfaces import IAttributeAnnotatable
+from zope.app.annotation.attribute import AttributeAnnotations
+from zope.app.dublincore.interfaces import IZopeDublinCore
+from zope.app.dublincore.annotatableadapter import ZDCAnnotatableAdapter
 from zope.app.event.objectevent import ObjectModifiedEvent
 from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
 from zope.app.event.objectevent import ObjectContentModifiedEvent
@@ -28,10 +33,10 @@ from zope.app.container.sample import SampleContainer
 from zope.app.testing.placelesssetup import setUp, tearDown
 from zope.app.testing import ztapi
 
+    
 class TestObjectModifiedEvent(unittest.TestCase):
 
     klass = ObjectModifiedEvent
-
     object = object()
 
     def setUp(self):
@@ -42,9 +47,16 @@ class TestObjectModifiedEvent(unittest.TestCase):
 
 class TestObjectAnnotationsModifiedEvent(TestObjectModifiedEvent):
     klass = ObjectAnnotationsModifiedEvent
+    
+    def setUp(self):
+        self.event = self.klass(self.object, deprecated_use=False)
 
 class TestObjectContentModifiedEvent(TestObjectModifiedEvent):
     klass = ObjectContentModifiedEvent
+    
+    def setUp(self):
+        self.event = self.klass(self.object, deprecated_use=False)
+        
 
 class TestObjectEventNotifications(unittest.TestCase):
     def setUp(self):
@@ -97,12 +109,26 @@ class TestObjectEventNotifications(unittest.TestCase):
     def tearDown(self):
         tearDown()
 
+def setUpObjectEventDocTest(test) :
+    setUp()
+        
+    ztapi.provideAdapter(IAttributeAnnotatable, \
+                                IAnnotations, AttributeAnnotations) 
+    ztapi.provideAdapter(IAnnotatable, \
+                                IZopeDublinCore, ZDCAnnotatableAdapter)    
+
+def tearDownObjectEventDocTest(test) :
+    tearDown()
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite(TestObjectModifiedEvent),
         unittest.makeSuite(TestObjectAnnotationsModifiedEvent),
         unittest.makeSuite(TestObjectContentModifiedEvent),
         unittest.makeSuite(TestObjectEventNotifications),
+        doctest.DocTestSuite("zope.app.event.objectevent", \
+                                       setUp=setUpObjectEventDocTest, \
+                                       tearDown=tearDownObjectEventDocTest),
         ))
 
 if __name__=='__main__':

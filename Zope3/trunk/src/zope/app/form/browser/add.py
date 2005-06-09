@@ -24,7 +24,9 @@ from zope.component.interfaces import IFactory
 from zope.event import notify
 from zope.interface import Interface
 
-from zope.app.event.objectevent import ObjectCreatedEvent, ObjectModifiedEvent
+from zope.app.event.objectevent import ObjectCreatedEvent
+from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.event.objectevent import Attributes
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.form.interfaces import IInputWidget, WidgetsError
@@ -121,7 +123,8 @@ class AddView(EditView):
 
             # We have modified the object, so we need to publish an
             # object-modified event:
-            notify(ObjectModifiedEvent(content))
+            description = Attributes(self.schema, *self._set_after_add)
+            notify(ObjectModifiedEvent(content, description))
 
         if errors:
             raise WidgetsError(*errors)

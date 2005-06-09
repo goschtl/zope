@@ -23,6 +23,7 @@ from zope.security.checker import defineChecker, NamesChecker
 from zope.app import zapi
 from zope.event import notify
 from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.event.objectevent import Attributes
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.pagetemplate.simpleviewclass import SimpleViewClass
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
@@ -173,7 +174,8 @@ class EditWizardView(EditView):
         # We should not generate events when an adapter is used.
         # That's the adapter's job
         if changed and self.context is self.adapted:
-            notify(ObjectModifiedEvent(content))
+            description = Attributes(self.schema, *self.fieldNames)
+            notify(ObjectModifiedEvent(content, description))
         return not changed
 
     def renderHidden(self):

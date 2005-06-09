@@ -19,7 +19,8 @@ __docformat__ = 'restructuredtext'
 
 from datetime import datetime
 from zope.event import notify
-from zope.app.event.objectevent import ObjectAnnotationsModifiedEvent
+from zope.app.event.objectevent import ObjectModifiedEvent
+from zope.app.event.objectevent import Attributes
 from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.dublincore.interfaces import IZopeDublinCore
 
@@ -36,7 +37,8 @@ class MetaDataEdit(object):
         if 'dctitle' in request:
             dc.title = unicode(request['dctitle'])
             dc.description = unicode(request['dcdescription'])
-            notify(ObjectAnnotationsModifiedEvent(self.context))
+            description = Attributes(IZopeDublinCore, 'title', 'description')
+            notify(ObjectModifiedEvent(self.context, description))
             message = _("Changed data ${datetime}")
             message.mapping = {'datetime': formatter.format(datetime.utcnow())}
 
