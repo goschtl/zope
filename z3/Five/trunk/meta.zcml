@@ -50,6 +50,12 @@
         />
 
     <meta:directive
+        name="factory"
+        schema="zope.app.component.metadirectives.IFactoryDirective"
+        handler="zope.app.component.metaconfigure.factory"
+        />
+
+    <meta:directive
         name="serviceType"
         schema="zope.app.component.metadirectives.IServiceTypeDirective"
         handler="zope.app.component.metaconfigure.serviceType"
