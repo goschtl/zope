@@ -35,16 +35,19 @@ be provided as optional modification descriptions of the ObjectModifiedEvent.
 Some examples:
     
     >>> from zope.app.file import File
-    >>> from zope.fssync.server.interfaces import IObjectFile
+    >>> from zope.app.file.interfaces import IFile
     >>> file = File()
     >>> file.data = "123"
-    >>> notify(ObjectModifiedEvent(obj, IObjectFile))
+    >>> notify(ObjectModifiedEvent(obj, IFile))
     
-This says that we modified the objects file data.  Note that an interface is an 
+This says that we modified something via IFile.  Note that an interface is an 
 acceptable description. In fact, we might allow pretty much anything as a 
-description.
+description and it depends on your needs what kind of descriptions 
+you use.
 
-    
+In the following we use an IAttributes description to describe in more detail
+which parts of an object where modified :
+
     >>> file.data = "456"
  
     >>> from zope.app.dublincore.interfaces import IZopeDublinCore
@@ -54,7 +57,7 @@ description.
     
     >>> IZopeDublinCore(file).title = u"New title"
     >>> IZopeDublinCore(file).title = u"New description"
-    >>> event = ObjectModifiedEvent(obj, IObjectFile,
+    >>> event = ObjectModifiedEvent(obj, Attributes(IFile, 'data'),
     ...                  Attributes(IZopeDublinCore, 'title', 'description'),
     ...                  )
     >>> notify(event)
