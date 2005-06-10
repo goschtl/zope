@@ -6,7 +6,7 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Some future release (Zope X3 3.1.0)
+  Some future release (Zope 3.1.0)
 
     New features
 
@@ -378,6 +378,17 @@ Zope Changes
         called ``Message``) that is immutable and thus can be treated
         like unicode strings with respect to security proxying.  This
         implementation will replace the old one in upcoming versions.
+
+      - Added support for different text orientations in locale data.
+        This is typically used for loading different webpage
+        stylesheets when the locale uses right-to-left characters.
+
+        The orientation of lines is typically accessed through
+        ``request.locale.orientation.lines``, the orientation of
+        characters within a line through
+        ``request.locale.orientation.characters``.  Both variables can
+        hold either value of 'left-to-right', 'right-to-left',
+        'top-to-bottom', 'bottom-to-top'.
 
     Restructuring
 
