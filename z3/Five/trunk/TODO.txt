@@ -2,17 +2,41 @@
 TODO
 ====
 
-- more extensive testing whether event system works with things like Zope 2 
-  folders etc 
+v1.1
+----
 
-- ensuring that the event-sending behavior is as close to Zope 3's as 
-  possible. A lot of edge cases with different behavior likely remain, 
-  and things like IObjectModifiedEvents are not sent yet for folders.
+- more atomic tests (philikon)
 
-- allow the multiple use of five:sendEvents
-  
-- allow Zope2 boilerplate context.registerClass be configured through zcml
+- i18n, l10n (philikon, regebro)
+
+- more tests for browser.adding (faassen?)
+
+- more extensive testing whether event system works with things like
+  Zope 2 folders etc. (faassen?)
+
+- ensuring that the event-sending behavior is as close to Zope 3's as
+  possible.  A lot of edge cases with different behavior likely
+  remain, and things like IObjectModifiedEvents are not sent yet for
+  folders. (faassen?)
+
+v1.2
+----
+
+- Introduce site concept, make rendering of resource urls support sites.
+
+- Allow Zope2 boilerplate context.registerClass be configured through zcml
 
 - Figure out where add-view redirects should go.
 
 - Instructions on using add views.
+
+- HTTP/WebDAV: support dispatching of all HTTP/WebDAV methods to HTTP
+  views.  If lookup fails, fall back to methods on the object (Zope 2
+  style).  Security is implied by HTTP views.
+
+- FTP: allow manage_FTPstat, manage_FTPget, manage_FTPlist to dispatch to
+  filerepresentation adapters.  Make sure to handle security correctly.
+
+- Icons through <browser:icon>?
+
+- Grant security stuff through ZCML (<grant />)?
