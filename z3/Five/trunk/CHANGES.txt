@@ -30,6 +30,9 @@ Five 1.1 (unreleased)
   just as it is in Zope 3.  This means that a view by that name will
   be looked up if no specific view name is given in the URL.
 
+* Fixed a bug with resource directories.  Resources within those were
+  not rendering their absolute URL correctly.
+
 Five 1.0.1 (2005-05-31)
 =======================
 
