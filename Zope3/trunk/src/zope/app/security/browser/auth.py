@@ -19,17 +19,16 @@ import urllib
 from zope.interface import implements
 from zope.i18n import translate
 from zope import component
-from zope.app.zapi import getName, getPath
-from zope.app.publisher.interfaces.http import ILogin, ILogout
+from zope.app.publisher.interfaces.http import ILogin
 from zope.app.security.interfaces import IAuthentication
 from zope.app.security.interfaces import IUnauthenticatedPrincipal
 from zope.app.security.interfaces import ILogout, ILogoutSupported
 from zope.app.pagetemplate import ViewPageTemplateFile
-from zope.proxy import removeAllProxies
 from zope.app.i18n import ZopeMessageIDFactory as _
 
 
 search_label = _('search-button', 'Search')
+search_title = _('Search String')
 
 class AuthUtilitySearchView(object):
 
@@ -44,11 +43,11 @@ class AuthUtilitySearchView(object):
         html = []
 
         # add sub title for source search field
-        html.append('<h4 i18n:translate="">%s</h4>' % sourcename)
+        html.append('<h4>%s</h4>' % sourcename)
         # start row for search fields
         html.append('<div class="row">')
         html.append('<div class="label">')
-        html.append('Search String')
+        html.append(translate(search_title, context=self.request))
         html.append('</div>')
         html.append('<div class="field">')
         html.append('<input type="text" name="%s" />' %(name+'.searchstring'))
