@@ -63,6 +63,17 @@ factory
 
 Register an object factory.
 
+modulealias
+-----------
+
+Provide a module under an alias name, e.g. for persistent backward
+compatability.
+
+hook
+----
+
+Install a hook on a hookable object.
+
 browser ``http://namespaces.zope.org/browser``
 ==============================================
 
