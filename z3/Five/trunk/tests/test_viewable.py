@@ -35,7 +35,7 @@ def test_defaultView():
       >>> from zope.app import zapi
       >>> pres = zapi.getGlobalService('Presentation')
       >>> from zope.publisher.interfaces.browser import IBrowserRequest
-      >>> pres.setDefaultViewName(I1, IBrowserRequest, 'foo.html')
+      >>> pres.setDefaultViewName(I1, IBrowserRequest, u'foo.html')
 
     and a BrowserDefault for an instance of Foo::
 
@@ -43,14 +43,16 @@ def test_defaultView():
       >>> from Products.Five.viewable import BrowserDefault
       >>> bd = BrowserDefault(foo)
 
-    You'll see that no default view is returned::
+    You'll see that by default the default view name is 'index.html':
+    (XXX this test really shouldn't load Five.browser/configure.zcml;
+    in fact, it doesn't need any ZCML initialization at all.)
 
       >>> request = self.app.REQUEST
       >>> obj, path = bd.defaultView(request)
       >>> obj is foo
       True
-      >>> path is None
-      True
+      >>> path
+      [u'index.html']
 
     unless you mark the object with I1::
 
@@ -60,7 +62,7 @@ def test_defaultView():
       >>> obj is foo
       True
       >>> path
-      ['foo.html']
+      [u'foo.html']
     """
 
 def test_suite():
