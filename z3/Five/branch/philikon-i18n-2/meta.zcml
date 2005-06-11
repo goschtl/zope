@@ -170,14 +170,7 @@
 
   </meta:directives>
 
-  <meta:directives namespace="http://namespaces.zope.org/i18n">
-
-    <meta:directive
-        name="registerTranslations"
-        schema="zope.app.i18n.metadirectives.IRegisterTranslationsDirective"
-        handler="zope.app.i18n.metaconfigure.registerTranslations"
-        />
-
-  </meta:directives>
+  <!-- load the i18n:registerTranslations directive -->
+  <include package="zope.app.i18n" file="meta.zcml" />
 
 </configure>
