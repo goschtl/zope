@@ -5,6 +5,10 @@
   <include package=".browser" file="meta.zcml" />
   <include package=".form" file="meta.zcml" />
 
+  <!-- load the zope:modulealias and zope:hook directives -->
+  <include package="zope.modulealias" file="meta.zcml" />
+  <include package="zope.configuration" file="meta.zcml" />
+
   <meta:directives namespace="http://namespaces.zope.org/zope">
 
     <meta:directive
