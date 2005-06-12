@@ -119,13 +119,6 @@ def setUp(test):
 def tearDown(test):
     placelesssetup.tearDown()
     
-def assertRaises(exceptionType, callable, *args):
-    try:
-        callable(*args)
-        return False
-    except Exception, e:
-        return isinstance(e, exceptionType)
-       
 class TestSetUpWidget(object):
     
     def test_typical(self):
@@ -202,9 +195,10 @@ class TestSetUpWidget(object):
         
             >>> view = BrowserView(Content(), request)
             >>> setattr(view, 'foo_widget', 'not a widget')
-            >>> assertRaises(TypeError, setUpWidget,
-            ...              view, 'foo', IContent['foo'], IFooWidget)
-            True
+            >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget)
+            Traceback (most recent call last):
+            ...
+            TypeError: Unable to configure a widget for foo - attribute foo_widget does not provide IWidget
             
         Similarly, if a view has a widget attribute that implements 
         IViewFactory, the object created by the factory must implement IWidget.
@@ -214,9 +208,10 @@ class TestSetUpWidget(object):
             ...     def __call__(self, request, context):
             ...         return 'not a widget'
             >>> setattr(view, 'foo_widget', Factory())
-            >>> assertRaises(TypeError, setUpWidget,
-            ...              view, 'foo', IContent['foo'], IFooWidget)
-            True
+            >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget)
+            Traceback (most recent call last):
+            ...
+            TypeError: Unable to configure a widget for foo - attribute foo_widget does not provide IWidget
         """
         
     def test_context(self):
@@ -287,9 +282,11 @@ class TestSetUpWidget(object):
             >>> class IUnregisteredWidget(IWidget):
             ...     pass
             >>> delattr(view, 'foo_widget')
-            >>> assertRaises(ComponentLookupError, setUpWidget,
-            ...              view, 'foo', IContent['foo'], IUnregisteredWidget)
-            True
+            >>> setUpWidget(view, 'foo', IContent['foo'],
+            ...             IUnregisteredWidget)           # doctest: +ELLIPSIS
+            Traceback (most recent call last):
+            ...
+            ComponentLookupError: ...
         """
         
     def test_prefix(self):
