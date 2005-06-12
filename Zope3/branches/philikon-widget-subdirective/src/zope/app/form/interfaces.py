@@ -18,7 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.schema.interfaces import ValidationError
-from zope.component.interfaces import IView
+from zope.component.interfaces import IView, IViewFactory
 from zope.interface import Attribute, Interface, implements
 from zope.schema import Bool
 from zope.app.exception.interfaces import UserError
@@ -153,6 +153,28 @@ class IWidget(IView):
         input data. For example, for HTTP forms, the widget name is
         used for the form key.
         """
+
+class IWidgetFactory(IViewFactory):
+    """Create a widget."""
+
+class ISequenceWidgetFactory(IWidgetFactory):
+    """Create a sequence widget.
+
+    A widget factory should provide this interface to indicate that
+    its call signature is different from other widget factories."""
+
+    def __call__(context, field, request):
+        """Creates a sequence widget with ``field`` being the list element
+        field type."""
+
+class IVocabularyWidgetFactory(IWidgetFactory):
+    """Create a vocabulary widget.
+
+    A widget factory should provide this interface to indicate that
+    its call signature is different from other widget factories."""
+
+    def __call__(field, vocabulary, request):
+        """Creates a vocabulary widget."""
 
 class IInputWidget(IWidget):
     """A widget for editing a field value."""

@@ -72,3 +72,19 @@ from zope.app.form.browser.sequencewidget import ListSequenceWidget
 from zope.app.form.browser.sequencewidget import SequenceDisplayWidget
 
 from zope.app.form.browser.objectwidget import ObjectWidget
+
+# mark items and sequence widgets with the correct factory interfaces
+from zope.interface import directlyProvides
+from zope.app.form.interfaces import IVocabularyWidgetFactory
+from zope.app.form.interfaces import ISequenceWidgetFactory
+
+for widget_class in (ItemDisplayWidget, ItemsMultiDisplayWidget,
+                     SetDisplayWidget, ListDisplayWidget, SelectWidget,
+                     DropdownWidget, RadioWidget, MultiSelectWidget,
+                     MultiSelectSetWidget, MultiCheckBoxWidget,
+                     OrderedMultiSelectWidget):
+    directlyProvides(widget_class, IVocabularyWidgetFactory)
+
+for widget_class in (SequenceWidget, TupleSequenceWidget,
+                     ListSequenceWidget, SequenceDisplayWidget):
+    directlyProvides(widget_class, ISequenceWidgetFactory)
