@@ -95,11 +95,10 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
     if widget is None:
         # does not exist - create it
         widget = _createWidget(context, field, viewType, view.request)
-        setattr(view, widgetName, widget)
     elif IViewFactory.providedBy(widget):
         # exists, but is actually a factory - use it to create the widget
         widget = widget(field.bind(context), view.request)
-        setattr(view, widgetName, widget)
+    setattr(view, widgetName, widget)
         
     # widget must implement IWidget
     if not IWidget.providedBy(widget):
