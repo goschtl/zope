@@ -17,10 +17,11 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.form.interfaces import IWidget, InputErrors
 from zope.component.interfaces import IViewFactory
 from zope.interface import implements
 from zope.i18n import translate
+from zope.schema.interfaces import IChoice, ICollection
+from zope.app.form.interfaces import IWidget, InputErrors
 
 class Widget(object):
     """Mixin class providing functionality common across widget types."""
@@ -92,25 +93,29 @@ class CustomWidgetFactory(object):
         self.args = args
         self.kw = kw
 
+    def _create(self, args):
+        instance = self._widget_factory(*args)
+        for name, value in self.kw.items():
+            setattr(instance, name, value)
+        return instance
+
     def __call__(self, context, request):
-        args = (context, request) + self.args
-        instance = self._widget_factory(*args)
-        for name, value in self.kw.items():
-            setattr(instance, name, value)
-        return instance
+        return self._create((context, request) + self.args)
 
-class CustomSequenceWidgetFactory(object):
-    """Custom Widget Factory."""
-    implements(IViewFactory)
+class CustomSequenceWidgetFactory(CustomWidgetFactory):
+    """Custom sequence widget factory."""
 
-    def __init__(self, widget_factory, *args, **kw):
-        self._widget_factory = widget_factory
-        self.args = args
-        self.kw = kw
+    def __call__(self, context, request):
+        if not ICollection.providedBy(context):
+            raise TypeError, "Provided field does not provide ICollection."
+        args = (context, context.value_type, request) + self.args
+        return self._create(args)
 
-    def __call__(self, context, field, request):
-        args = (context, field, request) + self.args
-        instance = self._widget_factory(*args)
-        for name, value in self.kw.items():
-            setattr(instance, name, value)
-        return instance
+class CustomVocabularyWidgetFactory(CustomWidgetFactory):
+    """Custom vocabulary widget factory."""
+
+    def __call__(self, context, request):
+        if not IChoice.providedBy(context):
+            raise TypeError, "Provided field does not provide ICollection."
+        args = (context, context.vocabulary, request) + self.args
+        return self._create(args)
