@@ -45,13 +45,13 @@ request = TestRequest()
 
 class IFoo(IField):
     pass
-    
+
 class Foo(Field):
     implements(IFoo)
-    
+
 class IBar(IField):
     pass
-    
+
 class Bar(Field):
     implements(IBar)
 
@@ -60,12 +60,12 @@ class IBaz(IInt):
 
 class Baz(Int):
     implements(IBaz)
-    
+
 class IContent(Interface):
     foo = Foo()
     bar = Bar()
 
-    
+
 class Content(object):
     implements(IContent)
     __Security_checker__ = utils.SchemaChecker(IContent)
@@ -82,7 +82,7 @@ class FooWidget(Widget):
     def getPrefix(self): return self._prefix  # exposes _prefix for testing
     def getRenderedValue(self): return self._data # exposes _data for testing
     def renderedValueSet(self): return self._renderedValueSet() # for testing
-    
+
 class BarWidget(Widget):
     implements(IBarWidget)
     def getRenderedValue(self): return self._data # exposes _data for testing
@@ -106,7 +106,7 @@ class ExtendedContent(Content):
     def setAnotherBaz(self, value): self._anotherbaz = value
 
 extended_checker = utils.DummyChecker(
-        {'foo':True, 'bar': True, 'getBaz': True, 'setBaz': True, 
+        {'foo':True, 'bar': True, 'getBaz': True, 'setBaz': True,
          'getAnotherBaz': True, 'setAnotherBaz': False, 'shazam': False},
         {'foo':True, 'bar': False, 'shazam': True})
 
@@ -115,27 +115,27 @@ def setUp(test):
     placelesssetup.setUp()
     ztapi.browserView(IFoo, '', FooWidget, providing=IFooWidget)
     ztapi.browserView(IBar, '', BarWidget, providing=IBarWidget)
-    
+
 def tearDown(test):
     placelesssetup.tearDown()
-    
+
 class TestSetUpWidget(object):
-    
+
     def test_typical(self):
         """Documents and tests the typical uses of setUpWidget.
-        
+
         setUpWidget ensures that the appropriate widget exists as an
         attribute of a view. There are four required arguments to the
         function:
-        
+
             >>> view = BrowserView(Content(), request)
             >>> name = 'foo'
             >>> field = IContent['foo']
             >>> typeView = IFooWidget
-            
+
         setUpWidget will add the appropriate widget as attribute to view
         named 'foo_widget'.
-        
+
             >>> hasattr(view, 'foo_widget')
             False
             >>> setUpWidget(view, name, field, typeView)
@@ -143,16 +143,16 @@ class TestSetUpWidget(object):
             True
             >>> IFooWidget.providedBy(view.foo_widget)
             True
-            
+
         If the view already has an attribute with that name, it attempts to
         use the existing value to create a widget. Two types are supported:
-           
+
             - IViewFactory
             - IWidget
-           
+
         If the existing attribute value implements IViewFactory, it is used
         to create a widget:
-           
+
             >>> widget = FooWidget(IContent['foo'], request)
             >>> class Factory(object):
             ...     implements(IViewFactory)
@@ -164,10 +164,10 @@ class TestSetUpWidget(object):
             >>> setUpWidget(view, name, field, typeView)
             >>> view.foo_widget is widget
             True
-            
+
         If the existing attribute value implements IWidget, it is used without
         modification:
-           
+
             >>> setattr(view, 'foo_widget', widget)
             >>> IWidget.providedBy(widget)
             True
@@ -181,28 +181,28 @@ class TestSetUpWidget(object):
 
             >>> IContent['foo'].required = True
         """
-        
+
     def test_validation(self):
         """Documents and tests validation performed by setUpWidget.
-        
+
         setUpWidget ensures that the the view has an attribute that implements
         IWidget. If setUpWidget cannot configure a widget, it raises a
-        TypeError. 
-        
-        E.g., if a view already has a widget attribute of the name 
+        TypeError.
+
+        E.g., if a view already has a widget attribute of the name
         <field_name> + '_widget' that does not implement IViewFactory or
-        IWidget, setUpWidget raises a TypeError: 
-        
+        IWidget, setUpWidget raises a TypeError:
+
             >>> view = BrowserView(Content(), request)
             >>> setattr(view, 'foo_widget', 'not a widget')
             >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget)
             Traceback (most recent call last):
             ...
             TypeError: Unable to configure a widget for foo - attribute foo_widget does not provide IWidget
-            
-        Similarly, if a view has a widget attribute that implements 
+
+        Similarly, if a view has a widget attribute that implements
         IViewFactory, the object created by the factory must implement IWidget.
-        
+
             >>> class Factory(object):
             ...     implements(IViewFactory)
             ...     def __call__(self, request, context):
@@ -213,25 +213,25 @@ class TestSetUpWidget(object):
             ...
             TypeError: Unable to configure a widget for foo - attribute foo_widget does not provide IWidget
         """
-        
+
     def test_context(self):
         """Documents and tests the role of context in setUpWidget.
-        
+
         setUpWidget configures a widget by associating it to a bound field,
         which is a copy of a schema field that is bound to an object. The
         object the field is bound to can be explicitly specified in the
         setUpWidget 'context' argument.
-        
+
         By default, the context used by setUpWidget is the view context:
-            
+
             >>> context = Content()
             >>> view = BrowserView(context, request)
             >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget)
             >>> view.foo_widget.context.context is context
             True
-            
+
         Alternatively, you can specify a context explicitly:
-            
+
             >>> view = BrowserView(context, request)
             >>> altContext = Content()
             >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget,
@@ -241,32 +241,32 @@ class TestSetUpWidget(object):
             >>> view.foo_widget.context.context is altContext
             True
         """
-        
+
     def test_widgetLookup(self):
         """Documents and tests how widgets are looked up by type.
-        
+
         If the view does not already have a widget configured for the
         specified field name, setUpWidget will look up a widget using
         an interface specified for the widgetType argument.
-        
+
         Widgets are typically looked up for IInputWidget and IDisplayWidget
         types. To illustrate this, we'll create two widgets, one for editing
         and another for displaying IFoo attributes. Each widget is registered
         as a view providing the appropriate widget type.
-        
+
             >>> class EditFooWidget(Widget):
             ...     implements(IInputWidget)
             ...     def hasInput(self):
             ...         return False
             >>> ztapi.browserViewProviding(IFoo, EditFooWidget, IInputWidget)
             >>> class DisplayFooWidget(Widget):
-            ...     implements(IDisplayWidget)            
-            >>> ztapi.browserViewProviding(IFoo, DisplayFooWidget, 
+            ...     implements(IDisplayWidget)
+            >>> ztapi.browserViewProviding(IFoo, DisplayFooWidget,
             ...                            IDisplayWidget)
-            
-        A call to setUpWidget will lookup the widgets based on the specified 
+
+        A call to setUpWidget will lookup the widgets based on the specified
         type.
-            
+
             >>> view = BrowserView(Content(), request)
             >>> setUpWidget(view, 'foo', IContent['foo'], IInputWidget)
             >>> IInputWidget.providedBy(view.foo_widget)
@@ -275,10 +275,10 @@ class TestSetUpWidget(object):
             >>> setUpWidget(view, 'foo', IContent['foo'], IDisplayWidget)
             >>> IDisplayWidget.providedBy(view.foo_widget)
             True
-            
+
         A ComponentError is raised if a widget is not registered for the
         specified type:
-            
+
             >>> class IUnregisteredWidget(IWidget):
             ...     pass
             >>> delattr(view, 'foo_widget')
@@ -288,60 +288,60 @@ class TestSetUpWidget(object):
             ...
             ComponentLookupError: ...
         """
-        
+
     def test_prefix(self):
         """Documents and tests the specification of widget prefixes.
-        
+
         Widgets support a prefix that can be used to group related widgets
         on a view. To specify the prefix for a widget, specify in the call to
         setUpWidget:
-            
+
             >>> view = BrowserView(Content(), request)
             >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget,
             ...             prefix='mygroup')
             >>> view.foo_widget.getPrefix()
             'mygroup.'
         """
-        
+
     def test_value(self):
         """Documents and tests values and setUpWidget.
-        
+
         setUpWidget configures the widget with the value specified in the
         'value' argument:
-            
+
             >>> view = BrowserView(Content(), request)
-            >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget, 
+            >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget,
             ...             value='Explicit Widget Value')
             >>> view.foo_widget.renderedValueSet()
             True
             >>> view.foo_widget.getRenderedValue()
             'Explicit Widget Value'
-            
+
         The utility module provides a marker object 'no_value' that can be
-        used as setUpWidget's 'value' argument to indicate that a value 
+        used as setUpWidget's 'value' argument to indicate that a value
         doesn't exist for the bound field. This may seem a bit unusual since
         None is typically used for this purpose. However, None is a valid
         value for many fields and does not indicate 'no value'.
-        
+
         When no_value is specified in a call to setUpWidget, the effected
         widget is not configured with a value:
-        
+
             >>> delattr(view, 'foo_widget')
             >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget,
             ...             value=no_value)
             >>> view.foo_widget.renderedValueSet()
             False
-            
+
         This is the also default behavior when the value argument is omitted:
-            
+
             >>> delattr(view, 'foo_widget')
             >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget)
             >>> view.foo_widget.renderedValueSet()
             False
-            
+
         Note that when None is specified for 'value', the widget is configured
         with None:
-            
+
             >>> delattr(view, 'foo_widget')
             >>> setUpWidget(view, 'foo', IContent['foo'], IFooWidget,
             ...             value=None)
@@ -350,49 +350,49 @@ class TestSetUpWidget(object):
             >>> view.foo_widget.getRenderedValue() is None
             True
         """
-        
+
     def test_stickyValues(self):
         """Documents and tests setUpWidget's handling of sticky values.
-        
+
         setUpWidget supports the concept of 'sticky values'. A sticky value
         is a value displayed by a widget that should persist across multiple
         across multiple object edit sessions. Sticky values ensure that invalid
-        user is available for the user to modify rather than being replaced 
+        user is available for the user to modify rather than being replaced
         by some other value.
-        
+
         setUpWidget inferst that a widget has a sticky value if:
-            
+
             - The widget implements IInputWidget
             - The widget returns True for its hasInput method
-            
-        To illustrate, we'll create and register an edit widget for foo that 
+
+        To illustrate, we'll create and register an edit widget for foo that
         has input:
-            
+
             >>> class EditFooWidget(Widget):
             ...     implements(IInputWidget)
             ...     _data = "Original Value"
             ...     def hasInput(self): return True
             ...     def getRenderedValue(self): return self._data
-            >>> ztapi.browserView(IFoo, '', EditFooWidget, 
+            >>> ztapi.browserView(IFoo, '', EditFooWidget,
             ...                   providing=IInputWidget)
-            
+
         Specifying a value to setUpWidget would typically cause that value
         to be set for the widget:
-        
+
             >>> view = BrowserView(Content(), request)
             >>> setUpWidget(view, 'foo', IContent['foo'], IInputWidget,
             ...     value="A New Value")
-            
-        However, because EditFooWidget has input (i.e. has a 'sticky' value), 
+
+        However, because EditFooWidget has input (i.e. has a 'sticky' value),
         setUpWidget will not overwrite its value:
-            
+
             >>> view.foo_widget._data
             'Original Value'
-            
+
         You can use setUpWidget's 'ignoreStickyValues' argument to override
         this behavior and force the widget's value to be overwritten with
         the 'value' argument:
-            
+
             >>> delattr(view, 'foo_widget')
             >>> setUpWidget(view, 'foo', IContent['foo'], IInputWidget,
             ...             value="A New Value", ignoreStickyValues=True)
@@ -401,35 +401,35 @@ class TestSetUpWidget(object):
         """
 
 class TestSetUpWidgets(object):
-    
+
     def test_typical(self):
         """Tests the typical use of setUpWidgets.
-        
+
         The simplest use of setUpWidget configures a view with widgets of a
         particular type for a schema:
-        
+
             >>> view = BrowserView(Content(), request)
             >>> setUpWidgets(view, IContent, IWidget)
-            
+
         The view now has two widgets, one for each field in the specified
         schema:
-            
+
             >>> IWidget.providedBy(view.foo_widget)
             True
             >>> IWidget.providedBy(view.bar_widget)
             True
-            
+
         Because we did not provide initial values, the widget values are not
         configured:
-            
+
             >>> view.foo_widget.renderedValueSet()
             False
             >>> view.bar_widget.renderedValueSet()
             False
-            
+
         To specify initial values for the widgets, we can use the 'initial'
         argument:
-            
+
             >>> view = BrowserView(Content(), request)
             >>> initial = {'foo': 'Value of Foo', 'bar': 'Value of Bar'}
             >>> setUpWidgets(view, IContent, IWidget, initial=initial)
@@ -437,14 +437,14 @@ class TestSetUpWidgets(object):
             'Value of Foo'
             >>> view.bar_widget.getRenderedValue()
             'Value of Bar'
-        """        
-        
+        """
+
     def test_names(self):
         """Documents and tests the use of names in setUpWidgets.
-        
+
         The names argument can be used to configure a specific set of widgets
         for a view:
-            
+
             >>> view = BrowserView(Content(), request)
             >>> IContent.names()
             ['foo', 'bar']
@@ -454,23 +454,23 @@ class TestSetUpWidgets(object):
             >>> hasattr(view, 'bar_widget')
             True
         """
-        
+
     def test_delegation(self):
         """Tests setUpWidgets' use of setUpWidget.
-        
+
         setUpWidgets delegates several of its arguments to multiple calls to
         setUpWidget - one call for each widget being configured. The arguments
         passed directly through to calls to setUpWidget are:
-            
+
             view
             viewType
             prefix
             ignoreStickyValues
             context
 
-        To illustrate this, we'll replace setUpWidget in the utility module 
+        To illustrate this, we'll replace setUpWidget in the utility module
         and capture arguments passed to it when setUpWidgets is called.
-        
+
             >>> _widgets = []
             >>> def setUpWidget(view, name, field, viewType, value=None,
             ...                 prefix=None, ignoreStickyValues=False,
@@ -486,10 +486,10 @@ class TestSetUpWidgets(object):
             >>> import zope.app.form.utility
             >>> setUpWidgetsSave = zope.app.form.utility.setUpWidget
             >>> zope.app.form.utility.setUpWidget = setUpWidget
-            
-        When we call setUpWidgets, we should see that setUpWidget is called 
+
+        When we call setUpWidgets, we should see that setUpWidget is called
         for each field in the specified schema:
-            
+
             >>> view = BrowserView(Content(), request)
             >>> setUpWidgets(view, IContent, IWidget, 'prefix', True,
             ...              initial={ "bar":"Bar" },
@@ -549,19 +549,19 @@ class TestSetUpWidgets(object):
             Traceback (most recent call last):
             ForbiddenAttribute: ('some context', 'tryme')
         """
-        
+
 class TestFormSetUp(object):
-    
+
     def test_setUpEditWidgets(self):
         """Documents and tests setUpEditWidgets.
-        
+
         setUpEditWidgets configures a view to collect field values from a
-        user. The function looks up widgets of type IInputWidget for the 
+        user. The function looks up widgets of type IInputWidget for the
         specified schema.
-        
+
         We'll first create and register widgets for the schema fields for
         which we want input:
-            
+
             >>> class InputWidget(Widget):
             ...     implements(IInputWidget)
             ...     def hasInput(self):
@@ -571,20 +571,20 @@ class TestFormSetUp(object):
             >>> ztapi.browserViewProviding(IBar, InputWidget, IInputWidget)
 
         Next we'll configure a view with a context object:
-            
+
             >>> context = Content()
             >>> context.foo = 'abc'
             >>> context.bar = 'def'
             >>> view = BrowserView(context, request)
-            
+
         A call to setUpEditWidgets with the view:
-            
+
             >>> setUpEditWidgets(view, IContent)
             ['foo', 'bar']
-            
-        configures the view with widgets that accept input for the context 
+
+        configures the view with widgets that accept input for the context
         field values:
-            
+
             >>> isinstance(view.foo_widget, InputWidget)
             True
             >>> view.foo_widget.getRenderedValue()
@@ -593,10 +593,10 @@ class TestFormSetUp(object):
             True
             >>> view.bar_widget.getRenderedValue()
             'def'
-            
+
         setUpEditWidgets provides a 'source' argument that provides an
         alternate source of values to be edited:
-            
+
             >>> view = BrowserView(context, request)
             >>> source = Content()
             >>> source.foo = 'abc2'
@@ -607,10 +607,10 @@ class TestFormSetUp(object):
             'abc2'
             >>> view.bar_widget.getRenderedValue()
             'def2'
-            
+
         If a field is read only, setUpEditWidgets will use a display widget
         (IDisplayWidget) intead of an input widget to display the field value.
-        
+
             >>> class DisplayWidget(Widget):
             ...     implements(IDisplayWidget)
             >>> ztapi.browserViewProviding(IFoo, DisplayWidget, IDisplayWidget)
@@ -622,14 +622,14 @@ class TestFormSetUp(object):
             >>> isinstance(view.foo_widget, DisplayWidget)
             True
             >>> IContent['foo'].readonly = save  # restore readonly value
-        
+
         By default, setUpEditWidgets raises Unauthorized if it is asked to
         set up a field to which the user does not have permission to
         access or to change.  In the definition of the ExtendedContent
         interface, notice the __Security_checker__ attribute, which stubs
         out a checker that allows the user to view the bar attribute,
         but not set it, and call getAnotherBaz but not setAnotherBaz.
-        
+
             >>> view.context = context = zope.security.checker.Proxy(
             ...     ExtendedContent(), extended_checker)
             >>> setUpEditWidgets(view, IExtendedContent, names=['bar'])
@@ -649,13 +649,13 @@ class TestFormSetUp(object):
             Traceback (most recent call last):
             ...
             Unauthorized
-        
-        Two optional flags can change this behavior.  degradeDisplay=True 
+
+        Two optional flags can change this behavior.  degradeDisplay=True
         causes the form machinery to skip fields silently that the user may
         not access.  In this case, the return value of setUpEditWidgets--
         a list of the field names set up--will be different that the names
         provided to the function.
-        
+
             >>> delattr(view, 'foo_widget')
             >>> delattr(view, 'bar_widget')
             >>> ztapi.browserViewProviding(IBaz, InputWidget, IInputWidget)
@@ -671,17 +671,17 @@ class TestFormSetUp(object):
             Traceback (most recent call last):
             ...
             AttributeError: 'BrowserView' object has no attribute 'shazam_widget'
-        
+
         Similarly, degradeInput=True causes the function to degrade to
         display widgets for any fields that the current user cannot change,
         but can see.
-        
+
             >>> delattr(view, 'foo_widget')
             >>> delattr(view, 'getBaz_widget')
             >>> ztapi.browserViewProviding(IBar, DisplayWidget, IDisplayWidget)
             >>> ztapi.browserViewProviding(IBaz, DisplayWidget, IDisplayWidget)
             >>> setUpEditWidgets(
-            ...     view, IExtendedContent, 
+            ...     view, IExtendedContent,
             ...     names=['foo', 'bar', 'getBaz', 'getAnotherBaz'],
             ...     degradeInput=True)
             ['foo', 'bar', 'getBaz', 'getAnotherBaz']
@@ -693,24 +693,24 @@ class TestFormSetUp(object):
             True
             >>> IDisplayWidget.providedBy(view.getAnotherBaz_widget)
             True
-        
+
         Note that if the user cannot view the current value then they cannot
-        view the input widget.  The two flags can then, of course, be used 
+        view the input widget.  The two flags can then, of course, be used
         together.
-        
+
             >>> delattr(view, 'foo_widget')
             >>> delattr(view, 'bar_widget')
             >>> delattr(view, 'getBaz_widget')
             >>> delattr(view, 'getAnotherBaz_widget')
             >>> setUpEditWidgets(
-            ...     view, IExtendedContent, 
+            ...     view, IExtendedContent,
             ...     names=['foo', 'bar', 'shazam', 'getBaz', 'getAnotherBaz'],
             ...     degradeInput=True)
             Traceback (most recent call last):
             ...
             Unauthorized
             >>> setUpEditWidgets(
-            ...     view, IExtendedContent, 
+            ...     view, IExtendedContent,
             ...     names=['foo', 'bar', 'shazam', 'getBaz', 'getAnotherBaz'],
             ...     degradeInput=True, degradeDisplay=True)
             ['foo', 'bar', 'getBaz', 'getAnotherBaz']
@@ -727,17 +727,17 @@ class TestFormSetUp(object):
             ...
             AttributeError: 'BrowserView' object has no attribute 'shazam_widget'
         """
-        
+
     def test_setUpDisplayWidgets(self):
         """Documents and tests setUpDisplayWidgets.
-        
+
         setUpDisplayWidgets configures a view for use as a display only form.
         The function looks up widgets of type IDisplayWidget for the specified
         schema.
-        
+
         We'll first create and register widgets for the schema fields
         we want to edit:
-            
+
             >>> class DisplayWidget(Widget):
             ...     implements(IDisplayWidget)
             ...     def getRenderedValue(self): return self._data
@@ -745,19 +745,19 @@ class TestFormSetUp(object):
             >>> ztapi.browserViewProviding(IBar, DisplayWidget, IDisplayWidget)
 
         Next we'll configure a view with a context object:
-            
+
             >>> context = Content()
             >>> context.foo = 'abc'
             >>> context.bar = 'def'
             >>> view = BrowserView(context, request)
-            
+
         A call to setUpDisplayWidgets with the view:
-            
+
             >>> setUpDisplayWidgets(view, IContent)
             ['foo', 'bar']
-            
+
         configures the view with widgets that display the context fields:
-            
+
             >>> isinstance(view.foo_widget, DisplayWidget)
             True
             >>> view.foo_widget.getRenderedValue()
@@ -766,10 +766,10 @@ class TestFormSetUp(object):
             True
             >>> view.bar_widget.getRenderedValue()
             'def'
-            
+
         Like setUpEditWidgets, setUpDisplayWidgets accepts a 'source'
         argument that provides an alternate source of values to be edited:
-            
+
             >>> view = BrowserView(context, request)
             >>> source = Content()
             >>> source.foo = 'abc2'
@@ -780,23 +780,23 @@ class TestFormSetUp(object):
             'abc2'
             >>> view.bar_widget.getRenderedValue()
             'def2'
-        
+
         Also like setUpEditWidgets, the degradeDisplay flag allows widgets
         to silently disappear if they are unavailable.
-        
+
             >>> view.context = context = zope.security.checker.Proxy(
             ...     ExtendedContent(), extended_checker)
             >>> delattr(view, 'foo_widget')
             >>> delattr(view, 'bar_widget')
             >>> ztapi.browserViewProviding(IBaz, DisplayWidget, IDisplayWidget)
             >>> setUpDisplayWidgets(
-            ...     view, IExtendedContent, 
+            ...     view, IExtendedContent,
             ...     names=['foo', 'bar', 'shazam', 'getBaz', 'getAnotherBaz'])
             Traceback (most recent call last):
             ...
             Unauthorized
             >>> setUpDisplayWidgets(
-            ...     view, IExtendedContent, 
+            ...     view, IExtendedContent,
             ...     names=['foo', 'bar', 'shazam', 'getBaz', 'getAnotherBaz'],
             ...     degradeDisplay=True)
             ['foo', 'bar', 'getBaz', 'getAnotherBaz']
@@ -813,18 +813,18 @@ class TestFormSetUp(object):
             ...
             AttributeError: 'BrowserView' object has no attribute 'shazam_widget'
         """
-        
+
 class TestForms(object):
-    
+
     def test_viewHasInput(self):
         """Tests viewHasInput.
-        
+
         viewHasInput returns True if any of the widgets for a set of fields
         have user input.
-        
+
         This method is typically invoked on a view that has been configured
         with one setUpEditWidgets.
-        
+
             >>> class InputWidget(Widget):
             ...     implements(IInputWidget)
             ...     input = None
@@ -835,32 +835,32 @@ class TestForms(object):
             >>> view = BrowserView(Content(), request)
             >>> setUpEditWidgets(view, IContent)
             ['foo', 'bar']
-            
+
         Because InputWidget is configured to not have input by default, the
         view does not have input:
-            
+
             >>> viewHasInput(view, IContent)
             False
-            
+
         But if we specify input for at least one widget:
-            
+
             >>> view.foo_widget.input = 'Some Value'
             >>> viewHasInput(view, IContent)
             True
         """
-        
+
     def test_applyWidgetsChanges(self):
         """Documents and tests applyWidgetsChanges.
-        
+
         applyWidgetsChanges updates the view context, or an optional alternate
         context, with widget values. This is typically called when a form
         is submitted.
-        
+
         We'll first create a simple edit widget that can be used to update
         an object:
-        
+
             >>> class InputWidget(Widget):
-            ...     implements(IInputWidget)           
+            ...     implements(IInputWidget)
             ...     input = None
             ...     valid = True
             ...     def hasInput(self):
@@ -873,17 +873,17 @@ class TestForms(object):
             ...         return True
             >>> ztapi.browserViewProviding(IFoo, InputWidget, IInputWidget)
             >>> ztapi.browserViewProviding(IBar, InputWidget, IInputWidget)
-            
+
         Before calling applyWidgetsUpdate, we need to configure a context and
         a view with edit widgets:
-            
+
             >>> context = Content()
             >>> view = BrowserView(context, request)
             >>> setUpEditWidgets(
             ...     view, IContent, context=context, names=('foo',))
             ['foo']
-            
-        We now specify new widget input and apply the changes: 
+
+        We now specify new widget input and apply the changes:
 
             >>> view.foo_widget.input = 'The quick brown fox...'
             >>> context.foo
@@ -892,33 +892,33 @@ class TestForms(object):
             True
             >>> context.foo
             'The quick brown fox...'
-            
+
         By default, applyWidgetsChanges applies the new widget values to the
         view context. Alternatively, we can provide a 'target' argument to
         be updated:
-            
+
             >>> target = Content()
             >>> target.foo
             'Foo'
-            >>> applyWidgetsChanges(view, IContent, target=target, 
+            >>> applyWidgetsChanges(view, IContent, target=target,
             ...                     names=('foo',))
             True
             >>> target.foo
             'The quick brown fox...'
-            
+
         applyWidgetsChanges is typically used in conjunction with one of the
         setUp utility functions. If applyWidgetsChanges is called using a
         view that was not previously configured with a setUp function, or
         was not otherwise configured with widgets for each of the applicable
         fields, an AttributeError will be raised:
-            
+
             >>> view = BrowserView(context, request)
             >>> applyWidgetsChanges(view, IContent, names=('foo',))
             Traceback (most recent call last):
             AttributeError: 'BrowserView' object has no attribute 'foo_widget'
 
         When applyWidgetsChanges is called with multiple form
-        fields, some with valid data and some with invalid data, 
+        fields, some with valid data and some with invalid data,
         *changes may be applied*.  For instance, below see that context.foo
         changes from 'Foo' to 'a' even though trying to change context.bar
         fails.  Generally, ZODB transactional behavior is expected to
@@ -943,16 +943,16 @@ class TestForms(object):
             >>> getattr(context, 'bar', 'not really')
             'not really'
         """
-        
+
 class TestGetWidgetsData(object):
-    
+
     def test_typical(self):
         """Documents and tests the typical use of getWidgetsData.
-        
+
         getWidgetsData retrieves the current values from widgets on a view.
         For this test, we'll create a simple edit widget and register it
         for the schema field types:
-            
+
             >>> class InputWidget(Widget):
             ...     implements(IInputWidget)
             ...     input = None
@@ -965,13 +965,13 @@ class TestGetWidgetsData(object):
 
         We use setUpEditWidgets to configure a view with widgets for the
         IContent schema:
-        
+
             >>> view = BrowserView(Content(), request)
             >>> setUpEditWidgets(view, IContent)
             ['foo', 'bar']
-            
+
         The simplest form of getWidgetsData requires a view and a schema:
-            
+
             >>> try:
             ...     result = getWidgetsData(view, IContent)
             ... except Exception, e:
@@ -980,74 +980,74 @@ class TestGetWidgetsData(object):
             getWidgetsData failed
             MissingInputError: ('foo', u'', 'the field is required')
             MissingInputError: ('bar', u'', 'the field is required')
-            
+
         We see that getWidgetsData raises a MissingInputError if a required
         field does not have input from a widget.:
-            
+
             >>> view.foo_widget.input = 'Input for foo'
             >>> view.bar_widget.input = 'Input for bar'
             >>> result = getWidgetsData(view, IContent)
-            
+
         The result of getWidgetsData is a map of field names to widget values.
-        
+
             >>> keys = result.keys(); keys.sort(); keys
             ['bar', 'foo']
             >>> result['foo']
             'Input for foo'
             >>> result['bar']
             'Input for bar'
-            
+
         If a field is not required, however:
-            
+
             >>> IContent['foo'].required = False
-            
+
         we can omit input for its widget:
-            
+
             >>> view.foo_widget.input = None
             >>> result = getWidgetsData(view, IContent)
             >>> 'foo' in result
             False
-            
+
         Note that when a widget indicates that is does not have input, its
         results are omitted from getWidgetsData's return value. Users of
         getWidgetsData should explicitly check for field values before
         accessing them:
-            
+
             >>> for name in IContent:
             ...     if name in result:
             ...         print (name, result[name])
             ('bar', 'Input for bar')
-            
-        You can also specify an optional 'names' argument (a tuple) to 
+
+        You can also specify an optional 'names' argument (a tuple) to
         request a subset of the schema fields:
-            
+
             >>> result = getWidgetsData(view, IContent, names=('bar',))
             >>> result.keys()
             ['bar']
         """
-        
+
     def test_widgetsErrorException(self):
         """Documents and tests WidgetsError.
-        
+
         WidgetsError wraps one or more errors, which are specified as a
         sequence in the 'errors' argument:
-        
+
             >>> error = WidgetsError(('foo',))
             >>> error
             str: foo
-            
+
         WidgetsError also provides a 'widgetsData' attribute, which is a
         map of valid field values, keyed by field name, that were obtained
         in the same read operation that generated the errors:
-            
+
             >>> error = WidgetsError(('foo',), widgetsData={'bar': 'Bar'})
             >>> error.widgetsData
             {'bar': 'Bar'}
-            
+
         The most typical use of this error is when reading a set of widget
         values -- the read operation can generate more than one error, as well
         as a set of successfully read values:
-            
+
             >>> values = {'foo': 'Foo'}
             >>> errors = []
             >>> widgetsData = {}
@@ -1061,17 +1061,17 @@ class TestGetWidgetsData(object):
             ...     raise widgetsError
             Traceback (most recent call last):
             WidgetsError: KeyError: 'bar'
-            
+
         The handler of error can access all of the widget error as well as
         the widget values read:
-            
+
             >>> for error in widgetsError:
             ...     error.__class__.__name__
             'KeyError'
             >>> widgetsError.widgetsData
             {'foo': 'Foo'}
         """
-            
+
 def test_suite():
     from zope.testing.doctest import DocTestSuite
     return DocTestSuite(setUp=setUp, tearDown=tearDown)

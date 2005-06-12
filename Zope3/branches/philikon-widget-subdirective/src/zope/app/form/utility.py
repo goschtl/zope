@@ -57,16 +57,16 @@ def _fieldlist(names, schema):
     else:
         fields = [ (name, schema[name]) for name in names ]
     return fields
-    
-    
+
+
 def _createWidget(context, field, viewType, request):
-    """Creates a widget given a `context`, `field`, and `viewType`."""    
+    """Creates a widget given a `context`, `field`, and `viewType`."""
     field = field.bind(context)
     return zapi.getMultiAdapter((field, request), viewType)
 
 def _widgetHasStickyValue(widget):
     """Returns ``True`` if the widget has a sticky value.
-    
+
     A sticky value is input from the user that should not be overridden
     by an object's current field value. E.g. a user may enter an invalid
     postal code, submit the form, and receive a validation error - the postal
@@ -74,7 +74,7 @@ def _widgetHasStickyValue(widget):
     the object.
     """
     return IInputWidget.providedBy(widget) and widget.hasInput()
-    
+
 def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
                 ignoreStickyValues=False, context=None):
     """Sets up a single view widget.
@@ -89,7 +89,7 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
     if context is None:
         context = view.context
     widgetName = name + '_widget'
-    
+
     # check if widget already exists
     widget = getattr(view, widgetName, None)
     if widget is None:
@@ -99,16 +99,16 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
         # exists, but is actually a factory - use it to create the widget
         widget = widget(field.bind(context), view.request)
     setattr(view, widgetName, widget)
-        
+
     # widget must implement IWidget
     if not IWidget.providedBy(widget):
         raise TypeError(
             "Unable to configure a widget for %s - attribute %s does not "
             "provide IWidget" % (name, widgetName))
-    
+
     if prefix:
         widget.setPrefix(prefix)
-        
+
     if value is not no_value and (
         ignoreStickyValues or not _widgetHasStickyValue(widget)):
         widget.setRenderedValue(value)
@@ -117,11 +117,11 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
 def setUpWidgets(view, schema, viewType, prefix=None, ignoreStickyValues=False,
                  initial={}, names=None, context=None):
     """Sets up widgets for the fields defined by a `schema`.
-    
+
     Appropriate for collecting input without a current object implementing
     the schema (such as an add form).
 
-    `view` is the view that will be configured with widgets. 
+    `view` is the view that will be configured with widgets.
 
     `viewType` is the type of widgets to create (e.g. IInputWidget or
     IDisplayWidget).
@@ -145,34 +145,34 @@ def setUpWidgets(view, schema, viewType, prefix=None, ignoreStickyValues=False,
     `context` provides an alternative context for acquisition.
     """
     for (name, field) in _fieldlist(names, schema):
-        setUpWidget(view, name, field, viewType, 
+        setUpWidget(view, name, field, viewType,
                     value=initial.get(name, no_value),
                     prefix=prefix,
-                    ignoreStickyValues=ignoreStickyValues, 
+                    ignoreStickyValues=ignoreStickyValues,
                     context=context)
 
 def setUpEditWidgets(view, schema, source=None, prefix=None,
                      ignoreStickyValues=False, names=None, context=None,
                      degradeInput=False, degradeDisplay=False):
     """Sets up widgets to collect input on a view.
-    
+
     See `setUpWidgets` for details on `view`, `schema`, `prefix`,
     `ignoreStickyValues`, `names`, and `context`.
-    
+
     `source`, if specified, is an object from which initial widget values are
     read. If source is not specified, the view context is used as the source.
-    
+
     `degradeInput` is a flag that changes the behavior when a user does not
     have permission to edit a field in the names.  By default, the function
     raises Unauthorized.  If degradeInput is True, the field is changed to
     an IDisplayWidget.
-    
+
     `degradeDisplay` is a flag that changes the behavior when a user does not
     have permission to access a field in the names.  By default, the function
     raises Unauthorized.  If degradeDisplay is True, the field is removed from
     the form.
-    
-    Returns a list of names, equal to or a subset of the names that were 
+
+    Returns a list of names, equal to or a subset of the names that were
     supposed to be drawn, with uninitialized undrawn fields missing.
     """
     if context is None:
@@ -224,23 +224,23 @@ def setUpEditWidgets(view, schema, source=None, prefix=None,
         res_names.append(name)
     return res_names
 
-def setUpDisplayWidgets(view, schema, source=None, prefix=None, 
+def setUpDisplayWidgets(view, schema, source=None, prefix=None,
                         ignoreStickyValues=False, names=None, context=None,
                         degradeDisplay=False):
     """Sets up widgets to display field values on a view.
-    
+
     See `setUpWidgets` for details on `view`, `schema`, `prefix`,
     `ignoreStickyValues`, `names`, and `context`.
-    
+
     `source`, if specified, is an object from which initial widget values are
     read. If source is not specified, the view context is used as the source.
-    
+
     `degradeDisplay` is a flag that changes the behavior when a user does not
     have permission to access a field in the names.  By default, the function
     raises Unauthorized.  If degradeDisplay is True, the field is removed from
     the form.
-    
-    Returns a list of names, equal to or a subset of the names that were 
+
+    Returns a list of names, equal to or a subset of the names that were
     supposed to be drawn, with uninitialized undrawn fields missing.
     """
     if context is None:
@@ -267,9 +267,9 @@ def setUpDisplayWidgets(view, schema, source=None, prefix=None,
 
 def viewHasInput(view, schema, names=None):
     """Returns ``True`` if the any of the view's widgets contain user input.
-    
+
     `schema` specifies the set of fields that correspond to the view widgets.
-    
+
     `names` can be specified to provide a subset of these fields.
     """
     for name, field in _fieldlist(names, schema):
@@ -279,14 +279,14 @@ def viewHasInput(view, schema, names=None):
 
 def applyWidgetsChanges(view, schema, target=None, names=None):
     """Updates an object with values from a view's widgets.
-    
+
     `view` contained the widgets that perform the update. By default, the
     widgets will update the view's context.
-    
+
     `target` can be specified as an alternative object to update.
-    
+
     `schema` contrains the values provided by the widgets.
-    
+
     `names` can be specified to update a subset of the schema constrained
     values.
     """
@@ -309,30 +309,30 @@ def applyWidgetsChanges(view, schema, target=None, names=None):
 
 def getWidgetsData(view, schema, names=None):
     """Returns user entered data for a set of `schema` fields.
-    
+
     The return value is a map of field names to data values.
-    
+
     `view` is the view containing the widgets. `schema` is the schema that
     defines the widget fields. An optional `names` argument can be provided
     to specify an alternate list of field values to return. If `names` is
     not specified, or is ``None``, `getWidgetsData` will attempt to return
     values for all of the fields in the schema.
-    
+
     A requested field value may be omitted from the result for one of two
     reasons:
-        
+
         - The field is read only, in which case its widget will not have
           user input.
-          
-        - The field is editable and not required but its widget does not 
+
+        - The field is editable and not required but its widget does not
           contain user input.
-    
+
     If a field is required and its widget does not have input, `getWidgetsData`
     raises an error.
-    
+
     A widget may raise a validation error if it cannot return a value that
     satisfies its field's contraints.
-    
+
     Errors, if any, are collected for all fields and reraised as a single
     `WidgetsError`.
     """
@@ -350,9 +350,8 @@ def getWidgetsData(view, schema, names=None):
             elif field.required:
                 errors.append(MissingInputError(
                     name, widget.label, 'the field is required'))
-            
+
     if errors:
         raise WidgetsError(errors, widgetsData=result)
-        
-    return result
 
+    return result
