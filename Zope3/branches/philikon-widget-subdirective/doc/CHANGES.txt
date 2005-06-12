@@ -729,9 +729,19 @@ Zope Changes
 
       - Fixed issue #353 (applySkin does not work in functional doctests).
 
-      - Fix SequenceWidgets
-        Added a CustomSequenceWidgetFactory for using object widgets within a 
-        sequence. Added a howto for ObjectWidget
+      - Add support for sequence and vocabulary widgets to the <widget />
+        subdirective of the browser form directives.  Next to
+        CustomWidgetFactory, a CustomSequenceWidgetFactory and
+        CustomVocabularyFactory were created that handle these
+        widgets.  The subdirective handler determines which factory to
+        call depending on whether the specified widget class
+        provides either
+
+          - zope.app.form.interfaces.ISequenceWidgetFactory
+          - zope.app.form.interfaces.IVocabularyWidgetFactory
+          - none of the above (regular widget)
+
+        A howto for ObjectWidget as also added.
 
       - Fixed issue #293 (SequenceWidget and CustomWidgetFactory).
 
