@@ -21,23 +21,20 @@ from cStringIO import StringIO
 
 from zope.component.exceptions import ComponentLookupError
 from zope.configuration.xmlconfig import xmlconfig, XMLConfig
-from zope.app.traversing.interfaces import TraversalError
 from zope.interface import Interface, implements
 from zope.publisher.browser import TestRequest
-from zope.schema import TextLine, Int
+from zope.schema import TextLine, Choice, List, Int
 from zope.security.proxy import ProxyFactory
 
-from zope.app import zapi
 import zope.app.component
 import zope.app.form.browser
 import zope.app.publisher.browser
-from zope.app.form.browser import TextWidget
+from zope.app import zapi
 from zope.app.testing.placelesssetup import PlacelessSetup
+from zope.app.traversing.interfaces import TraversalError
 from zope.app.form.tests import utils
-
-tests_path = os.path.join(
-    os.path.dirname(zope.app.publisher.browser.__file__),
-    'tests')
+from zope.app.form.browser import TextWidget
+from zope.app.form.browser import DropdownWidget, TupleSequenceWidget
 
 template = """<configure
    xmlns='http://namespaces.zope.org/zope'
@@ -46,23 +43,31 @@ template = """<configure
    %s
    </configure>"""
 
-
-request = TestRequest()
-
 class Schema(Interface):
 
     text = TextLine(
         title=u'Text',
         description=u'Nice text',
-        required=False)
+        required=False
+        )
 
-class IC(Schema): pass
+    choice = Choice(
+        title=u'Choice',
+        values=['a', 'b', 'c'],
+        required=False
+        )
+
+    seq = List(
+        title=u'List',
+        value_type = TextLine(title=u'Element'),
+        required=False
+        )
+
+class IC(Schema):
+    pass
 
 class Ob(object):
     implements(IC)
-
-unwrapped_ob = Ob()
-ob = utils.securityWrap(unwrapped_ob, IC)
 
 class ISomeWidget(Interface):
     displayWidth = Int(
@@ -73,6 +78,14 @@ class ISomeWidget(Interface):
 class SomeWidget(TextWidget):
     implements(ISomeWidget)
 
+# reimport classes from absolute module path so that __main__.<class>
+# is identical to zope.app.form.browser.tests.test_directives.<class>.
+from zope.app.form.browser.tests.test_directives import Schema, IC, Ob
+from zope.app.form.browser.tests.test_directives import ISomeWidget, SomeWidget
+
+unwrapped_ob = Ob()
+ob = utils.securityWrap(unwrapped_ob, IC)
+request = TestRequest()
 
 class Test(PlacelessSetup, unittest.TestCase):
 
@@ -85,9 +98,7 @@ class Test(PlacelessSetup, unittest.TestCase):
         from zope.app.testing import ztapi
         from zope.app.traversing.adapters import DefaultTraversable
         from zope.app.traversing.interfaces import ITraversable
-
         ztapi.provideAdapter(None, ITraversable, DefaultTraversable)
-
         
     def testAddForm(self):
         self.assertEqual(
@@ -209,12 +220,45 @@ class Test(PlacelessSetup, unittest.TestCase):
               permission="zope.Public"
               />
 
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.IChoice"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.ChoiceInputWidget"
+              permission="zope.Public"
+              />
+
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.IChoice
+                   zope.schema.interfaces.IVocabularyTokenized"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.DropdownWidget"
+              permission="zope.Public"
+              />
+
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ICollection"
+              provides="zope.app.form.interfaces.IDisplayWidget"
+              factory="zope.app.form.browser.CollectionDisplayWidget"
+              permission="zope.Public"
+              />
+
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.IList
+                   zope.schema.interfaces.IField"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.ListSequenceWidget"
+              permission="zope.Public"
+              />
+
           <browser:addform
               for="zope.app.form.browser.tests.test_directives.IC"
               schema="zope.app.form.browser.tests.test_directives.Schema"
               name="add.html"
               label="Add a ZPT page"
-              fields="text"
               permission="zope.Public">
 
             <widget
@@ -222,6 +266,16 @@ class Test(PlacelessSetup, unittest.TestCase):
                 class="zope.app.form.browser.tests.test_directives.SomeWidget"
                 displayWidth="30"
                 extra="foo"
+                />
+
+            <widget
+                field="choice"
+                class="zope.app.form.browser.DropdownWidget"
+                />
+
+            <widget
+                field="seq"
+                class="zope.app.form.browser.TupleSequenceWidget"
                 />
 
           </browser:addform>
@@ -233,6 +287,10 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(view.text_widget.extra, u'foo')
         self.assertEqual(view.text_widget.displayWidth, 30)
 
+        self.assert_(hasattr(view, 'choice_widget'))
+        self.assert_(isinstance(view.choice_widget, DropdownWidget))
+        self.assert_(hasattr(view, 'seq_widget'))
+        self.assert_(isinstance(view.seq_widget, TupleSequenceWidget))
 
     def testEditFormWithWidget(self):
         self.assertEqual(
@@ -247,12 +305,45 @@ class Test(PlacelessSetup, unittest.TestCase):
               permission="zope.Public"
               />
 
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.IChoice"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.ChoiceInputWidget"
+              permission="zope.Public"
+              />
+
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.IChoice
+                   zope.schema.interfaces.IVocabularyTokenized"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.DropdownWidget"
+              permission="zope.Public"
+              />
+
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.ICollection"
+              provides="zope.app.form.interfaces.IDisplayWidget"
+              factory="zope.app.form.browser.CollectionDisplayWidget"
+              permission="zope.Public"
+              />
+
+          <view
+              type="zope.publisher.interfaces.browser.IBrowserRequest"
+              for="zope.schema.interfaces.IList
+                   zope.schema.interfaces.IField"
+              provides="zope.app.form.interfaces.IInputWidget"
+              factory="zope.app.form.browser.ListSequenceWidget"
+              permission="zope.Public"
+              />
+
           <browser:editform
               for="zope.app.form.browser.tests.test_directives.IC"
               schema="zope.app.form.browser.tests.test_directives.Schema"
               name="edit.html"
               label="Edit a ZPT page"
-              fields="text"
               permission="zope.Public">
 
             <widget
@@ -260,6 +351,16 @@ class Test(PlacelessSetup, unittest.TestCase):
                 class="zope.app.form.browser.tests.test_directives.SomeWidget"
                 displayWidth="30"
                 extra="foo"
+                />
+
+            <widget
+                field="choice"
+                class="zope.app.form.browser.DropdownWidget"
+                />
+
+            <widget
+                field="seq"
+                class="zope.app.form.browser.TupleSequenceWidget"
                 />
 
           </browser:editform>
@@ -270,6 +371,11 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assert_(isinstance(view.text_widget, SomeWidget))
         self.assertEqual(view.text_widget.extra, u'foo')
         self.assertEqual(view.text_widget.displayWidth, 30)
+
+        self.assert_(hasattr(view, 'choice_widget'))
+        self.assert_(isinstance(view.choice_widget, DropdownWidget))
+        self.assert_(hasattr(view, 'seq_widget'))
+        self.assert_(isinstance(view.seq_widget, TupleSequenceWidget))
 
     def testSchemaDisplayWithWidget(self):
         self.assertEqual(
@@ -307,10 +413,10 @@ class Test(PlacelessSetup, unittest.TestCase):
         self.assertEqual(view.text_widget.extra, u'foo')
         self.assertEqual(view.text_widget.displayWidth, 30)
 
-
 def test_suite():
-    loader=unittest.TestLoader()
-    return loader.loadTestsFromTestCase(Test)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(Test))
+    return suite
 
-if __name__=='__main__':
-    unittest.TextTestRunner().run(test_suite())
+if __name__ == '__main__':
+    unittest.main(defaultTest='test_suite')
