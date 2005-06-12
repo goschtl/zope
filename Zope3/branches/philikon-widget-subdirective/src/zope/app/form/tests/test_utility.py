@@ -512,21 +512,18 @@ class TestSetUpWidgets(object):
         To illustrate this, we'll replace setUpWidget in the utility module 
         and capture arguments passed to it when setUpWidgets is called.
         
-            >>> def setUpWidget(view, name, field, viewType, value=None, 
-            ...                 prefix=None, ignoreStickyValues=False, 
+            >>> _widgets = []
+            >>> def setUpWidget(view, name, field, viewType, value=None,
+            ...                 prefix=None, ignoreStickyValues=False,
             ...                 context=None):
-            ...     print "view: %s" % view.__class__
-            ...     print "name: %s" % name
-            ...     print "field: %s" % field.__class__
-            ...     print "viewType: %s" % viewType.__class__
+            ...     global _widgets
             ...     if value is no_value:
-            ...         print "value: not specified"
-            ...     else:
-            ...         print "value: %s" % value
-            ...     print "prefix %s" % prefix
-            ...     print "ignoreStickyValues: %s" % ignoreStickyValues
-            ...     print "context: %s" % context
-            ...     print '---'
+            ...         value = "value not specified"
+            ...     _widgets.append(
+            ...         [view.__class__, name, field.__class__, viewType,
+            ...          value, prefix, ignoreStickyValues, context]
+            ...         )
+            ...
             >>> import zope.app.form.utility
             >>> setUpWidgetsSave = zope.app.form.utility.setUpWidget
             >>> zope.app.form.utility.setUpWidget = setUpWidget
@@ -538,24 +535,25 @@ class TestSetUpWidgets(object):
             >>> setUpWidgets(view, IContent, IWidget, 'prefix', True,
             ...              initial={ "bar":"Bar" },
             ...              context="Alt Context")
-            view: <class 'zope.app.publisher.browser.BrowserView'>
-            name: foo
-            field: <class 'zope.app.form.tests.test_utility.Foo'>
-            viewType: <class 'zope.interface.interface.InterfaceClass'>
-            value: not specified
-            prefix prefix
-            ignoreStickyValues: True
-            context: Alt Context
-            ---
-            view: <class 'zope.app.publisher.browser.BrowserView'>
-            name: bar
-            field: <class 'zope.app.form.tests.test_utility.Bar'>
-            viewType: <class 'zope.interface.interface.InterfaceClass'>
-            value: Bar
-            prefix prefix
-            ignoreStickyValues: True
-            context: Alt Context
-            ---
+            >>> _widgets.sort()
+            >>> import pprint
+            >>> pprint.pprint(_widgets)  # doctest: +ELLIPSIS
+            [[<class 'zope.app.publisher.browser.BrowserView'>,
+              'bar',
+              <class '....Bar'>,
+              <InterfaceClass zope.app.form.interfaces.IWidget>,
+              'Bar',
+              'prefix',
+              True,
+              'Alt Context'],
+             [<class 'zope.app.publisher.browser.BrowserView'>,
+              'foo',
+              <class '....Foo'>,
+              <InterfaceClass zope.app.form.interfaces.IWidget>,
+              'value not specified',
+              'prefix',
+              True,
+              'Alt Context']]
             >>> zope.app.form.utility.setUpWidget = setUpWidgetsSave
      
         >>> tearDown()
@@ -1142,7 +1140,8 @@ class TestGetWidgetsData(object):
         """
             
 def test_suite():
-    return doctest.DocTestSuite()
+    from zope.testing.doctest import DocTestSuite
+    return DocTestSuite()
 
 if __name__=='__main__':
     import unittest
