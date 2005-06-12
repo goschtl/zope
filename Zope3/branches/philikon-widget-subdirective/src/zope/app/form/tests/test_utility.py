@@ -110,13 +110,13 @@ extended_checker = utils.DummyChecker(
          'getAnotherBaz': True, 'setAnotherBaz': False, 'shazam': False},
         {'foo':True, 'bar': False, 'shazam': True})
 
-def setUp():
+def setUp(test):
     """Setup for tests."""
     placelesssetup.setUp()
     ztapi.browserView(IFoo, '', FooWidget, providing=IFooWidget)
     ztapi.browserView(IBar, '', BarWidget, providing=IBarWidget)
     
-def tearDown():
+def tearDown(test):
     placelesssetup.tearDown()
     
 def assertRaises(exceptionType, callable, *args):
@@ -131,8 +131,6 @@ class TestSetUpWidget(object):
     def test_typical(self):
         """Documents and tests the typical uses of setUpWidget.
         
-        >>> setUp()
-          
         setUpWidget ensures that the appropriate widget exists as an
         attribute of a view. There are four required arguments to the
         function:
@@ -189,15 +187,11 @@ class TestSetUpWidget(object):
         so we have to change that back.
 
             >>> IContent['foo'].required = True
-
-        >>> tearDown()
         """
         
     def test_validation(self):
         """Documents and tests validation performed by setUpWidget.
         
-        >>> setUp()
-            
         setUpWidget ensures that the the view has an attribute that implements
         IWidget. If setUpWidget cannot configure a widget, it raises a
         TypeError. 
@@ -223,14 +217,10 @@ class TestSetUpWidget(object):
             >>> assertRaises(TypeError, setUpWidget,
             ...              view, 'foo', IContent['foo'], IFooWidget)
             True
-            
-        >>> tearDown()
         """
         
     def test_context(self):
         """Documents and tests the role of context in setUpWidget.
-        
-        >>> setUp()
         
         setUpWidget configures a widget by associating it to a bound field,
         which is a copy of a schema field that is bound to an object. The
@@ -255,14 +245,10 @@ class TestSetUpWidget(object):
             False
             >>> view.foo_widget.context.context is altContext
             True
-                    
-        >>> tearDown()
         """
         
     def test_widgetLookup(self):
         """Documents and tests how widgets are looked up by type.
-        
-        >>> setUp()
         
         If the view does not already have a widget configured for the
         specified field name, setUpWidget will look up a widget using
@@ -304,14 +290,10 @@ class TestSetUpWidget(object):
             >>> assertRaises(ComponentLookupError, setUpWidget,
             ...              view, 'foo', IContent['foo'], IUnregisteredWidget)
             True
-
-        >>> tearDown()
         """
         
     def test_prefix(self):
         """Documents and tests the specification of widget prefixes.
-        
-        >>> setUp()
         
         Widgets support a prefix that can be used to group related widgets
         on a view. To specify the prefix for a widget, specify in the call to
@@ -322,14 +304,10 @@ class TestSetUpWidget(object):
             ...             prefix='mygroup')
             >>> view.foo_widget.getPrefix()
             'mygroup.'
-        
-        >>> tearDown()
         """
         
     def test_value(self):
         """Documents and tests values and setUpWidget.
-        
-        >>> setUp()
         
         setUpWidget configures the widget with the value specified in the
         'value' argument:
@@ -374,14 +352,10 @@ class TestSetUpWidget(object):
             True
             >>> view.foo_widget.getRenderedValue() is None
             True
-            
-        >>> tearDown()
         """
         
     def test_stickyValues(self):
         """Documents and tests setUpWidget's handling of sticky values.
-        
-        >>> setUp()
         
         setUpWidget supports the concept of 'sticky values'. A sticky value
         is a value displayed by a widget that should persist across multiple
@@ -427,16 +401,12 @@ class TestSetUpWidget(object):
             ...             value="A New Value", ignoreStickyValues=True)
             >>> view.foo_widget.getRenderedValue()
             'A New Value'
-        
-        >>> tearDown()
         """
 
 class TestSetUpWidgets(object):
     
     def test_typical(self):
         """Tests the typical use of setUpWidgets.
-        
-        >>> setUp()
         
         The simplest use of setUpWidget configures a view with widgets of a
         particular type for a schema:
@@ -470,14 +440,10 @@ class TestSetUpWidgets(object):
             'Value of Foo'
             >>> view.bar_widget.getRenderedValue()
             'Value of Bar'
-        
-        >>> tearDown()
         """        
         
     def test_names(self):
         """Documents and tests the use of names in setUpWidgets.
-        
-        >>> setUp()
         
         The names argument can be used to configure a specific set of widgets
         for a view:
@@ -490,14 +456,10 @@ class TestSetUpWidgets(object):
             False
             >>> hasattr(view, 'bar_widget')
             True
-        
-        >>> tearDown()
         """
         
     def test_delegation(self):
         """Tests setUpWidgets' use of setUpWidget.
-        
-        >>> setUp()
         
         setUpWidgets delegates several of its arguments to multiple calls to
         setUpWidget - one call for each widget being configured. The arguments
@@ -555,14 +517,10 @@ class TestSetUpWidgets(object):
               True,
               'Alt Context']]
             >>> zope.app.form.utility.setUpWidget = setUpWidgetsSave
-     
-        >>> tearDown()
         """
 
     def test_forbiddenAttributes(self):
         """Tests that forbidden attributes cause an error in widget setup.
-
-        >>> setUp()
 
         If an attribute cannot be read from a source object because it's
         forbidden, the ForbiddenAttribute error is allowed to pass through
@@ -593,16 +551,12 @@ class TestSetUpWidgets(object):
             >>> setUpDisplayWidgets(view, IMySchema)
             Traceback (most recent call last):
             ForbiddenAttribute: ('some context', 'tryme')
-
-        >>> tearDown()
         """
         
 class TestFormSetUp(object):
     
     def test_setUpEditWidgets(self):
         """Documents and tests setUpEditWidgets.
-        
-        >>> setUp()
         
         setUpEditWidgets configures a view to collect field values from a
         user. The function looks up widgets of type IInputWidget for the 
@@ -775,14 +729,10 @@ class TestFormSetUp(object):
             Traceback (most recent call last):
             ...
             AttributeError: 'BrowserView' object has no attribute 'shazam_widget'
-        
-        >>> tearDown()
         """
         
     def test_setUpDisplayWidgets(self):
         """Documents and tests setUpDisplayWidgets.
-        
-        >>> setUp()
         
         setUpDisplayWidgets configures a view for use as a display only form.
         The function looks up widgets of type IDisplayWidget for the specified
@@ -865,16 +815,12 @@ class TestFormSetUp(object):
             Traceback (most recent call last):
             ...
             AttributeError: 'BrowserView' object has no attribute 'shazam_widget'
-        
-        >>> tearDown()
         """
         
 class TestForms(object):
     
     def test_viewHasInput(self):
         """Tests viewHasInput.
-        
-        >>> setUp()
         
         viewHasInput returns True if any of the widgets for a set of fields
         have user input.
@@ -904,14 +850,10 @@ class TestForms(object):
             >>> view.foo_widget.input = 'Some Value'
             >>> viewHasInput(view, IContent)
             True
-            
-        >>> tearDown()
         """
         
     def test_applyWidgetsChanges(self):
         """Documents and tests applyWidgetsChanges.
-        
-        >>> setUp()
         
         applyWidgetsChanges updates the view context, or an optional alternate
         context, with widget values. This is typically called when a form
@@ -1003,16 +945,12 @@ class TestForms(object):
             'a'
             >>> getattr(context, 'bar', 'not really')
             'not really'
-
-        >>> tearDown()
         """
         
 class TestGetWidgetsData(object):
     
     def test_typical(self):
         """Documents and tests the typical use of getWidgetsData.
-        
-        >>> setUp()
         
         getWidgetsData retrieves the current values from widgets on a view.
         For this test, we'll create a simple edit widget and register it
@@ -1089,8 +1027,6 @@ class TestGetWidgetsData(object):
             >>> result = getWidgetsData(view, IContent, names=('bar',))
             >>> result.keys()
             ['bar']
-            
-        >>> tearDown()
         """
         
     def test_widgetsErrorException(self):
@@ -1141,7 +1077,7 @@ class TestGetWidgetsData(object):
             
 def test_suite():
     from zope.testing.doctest import DocTestSuite
-    return DocTestSuite()
+    return DocTestSuite(setUp=setUp, tearDown=tearDown)
 
 if __name__=='__main__':
     import unittest
