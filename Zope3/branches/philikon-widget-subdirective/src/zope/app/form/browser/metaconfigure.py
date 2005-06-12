@@ -31,8 +31,11 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.app.publisher.browser.menumeta import menuItemDirective
 from zope.app.i18n import ZopeMessageIDFactory as _
 
-from zope.app.form import CustomWidgetFactory
+from zope.app.form import CustomWidgetFactory, CustomSequenceWidgetFactory
+from zope.app.form import CustomVocabularyWidgetFactory
 from zope.app.form.interfaces import IInputWidget, IDisplayWidget
+from zope.app.form.interfaces import ISequenceWidgetFactory
+from zope.app.form.interfaces import IVocabularyWidgetFactory
 from add import AddView, AddViewFactory
 from editview import EditView, EditViewFactory
 from formview import FormView
@@ -86,7 +89,13 @@ class BaseFormDirective(object):
             # attribute.  This can be used to override some of the
             # presentational attributes of the widget implementation.
             class_ = self._default_widget_factory
-        self._widgets[field+'_widget'] = CustomWidgetFactory(class_, **attrs) 
+        if ISequenceWidgetFactory.providedBy(class_):
+            widget = CustomSequenceWidgetFactory(class_, **attrs)
+        elif IVocabularyWidgetFactory.providedBy(class_):
+            widget = CustomVocabularyWidgetFactory(class_, **attrs)
+        else:
+            widget = CustomWidgetFactory(class_, **attrs)
+        self._widgets[field+'_widget'] = widget
 
     def _processWidgets(self):
         if self._widgets:
