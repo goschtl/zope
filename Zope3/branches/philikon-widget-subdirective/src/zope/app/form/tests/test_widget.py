@@ -25,6 +25,7 @@ from zope.schema import Text
 
 from zope.app.form import Widget
 from zope.app.form import CustomWidgetFactory, CustomSequenceWidgetFactory
+from zope.app.form import CustomVocabularyWidgetFactory
 from zope.app.form.interfaces import IWidget
 from zope.app.testing.placelesssetup import setUp, tearDown
 
@@ -163,7 +164,7 @@ class TestCustomSequenceWidgetFactory(object):
 
         >>> ow = CustomWidgetFactory(FooWidget, bar='baz')
         >>> sw = CustomSequenceWidgetFactory(ListSequenceWidget, subwidget=ow)
-        >>> widget = sw(field, TextLine(), request)
+        >>> widget = sw(field, request)
         >>> isinstance(widget, ListSequenceWidget)
         True
         >>> isinstance(widget.subwidget, CustomWidgetFactory)
@@ -172,6 +173,26 @@ class TestCustomSequenceWidgetFactory(object):
         True
         >>> widget.context.value_type is value_type
         True
+    """
+
+class TestCustomVocabularyWidgetFactory(object):
+    """Tests the custom vocabulary widget factory.
+
+    Custom widgets can be created using a custom widget
+    factory. Factories are used to assign attribute values to widgets
+    they create. The custom vocabulary widget factory can be used to
+    use items widgets for the Choice field:
+
+        >>> from zope.schema import Choice
+        >>> from zope.app.form.browser import SelectWidget
+        >>> field = Choice(__name__=u'foo', values=['a', 'b', 'c'])
+
+        >>> vw = CustomVocabularyWidgetFactory(SelectWidget, bar='baz')
+        >>> widget = vw(field.bind(context), request)
+        >>> isinstance(widget, SelectWidget)
+        True
+        >>> [term.value for term in widget.vocabulary]
+        ['a', 'b', 'c']
     """
 
 def test_suite():
