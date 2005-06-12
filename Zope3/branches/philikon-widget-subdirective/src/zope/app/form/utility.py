@@ -105,7 +105,7 @@ def setUpWidget(view, name, field, viewType, value=no_value, prefix=None,
     if not IWidget.providedBy(widget):
         raise TypeError(
             "Unable to configure a widget for %s - attribute %s does not "
-            "implement IWidget" % (name, widgetName))
+            "provide IWidget" % (name, widgetName))
     
     if prefix:
         widget.setPrefix(prefix)
