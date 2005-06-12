@@ -1,0 +1,31 @@
+<configure
+    xmlns:zope="http://namespaces.zope.org/zope"
+    xmlns="http://namespaces.zope.org/browser"
+    i18n_domain="zope">
+
+  <!-- This is only a sample configure.zcml file
+       See README.txt in zope.app.skintools for more 
+       information about the skintools concept.
+       --> 
+
+  <!-- pagelet defining the box data -->
+  <pagelet
+      name="toolbar"
+      for="*"
+      slot="the slot used in your skin"
+      permission="zope.ManageContent"
+      template="toolbar.pt"
+      layer="the layer of your skin"
+      weight="2"
+      />
+
+  <!-- pagelet defining the layout -->
+  <pagelet
+      name="toolbar_layout"
+      for="*"
+      slot="zope.app.skintools.toolbar.IToolBarLayout"
+      permission="zope.ManageContent"
+      template="toolbar_layout.pt"
+      />
+
+</configure>

@@ -1,0 +1,15 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+  <include files="package-includes/*-meta.zcml" />
+
+  <include package="zope.app" />
+
+  <include files="package-includes/*-configure.zcml" />
+
+  <!-- Provide local overrides of standard configurations-->
+  <includeOverrides file="overrides.zcml" />
+
+  <include file="securitypolicy.zcml" />
+  <include file="principals.zcml" />
+
+</configure>

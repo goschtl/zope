@@ -1,0 +1,88 @@
+<configure
+    xmlns='http://namespaces.zope.org/zope'
+    xmlns:browser='http://namespaces.zope.org/browser'
+    i18n_domain='zope'
+    >
+
+  <!-- i18nfile directives -->
+
+  <browser:page
+      name="index.html"
+      for="zope.app.i18nfile.interfaces.II18nFile"
+      permission="zope.View"
+      class=".i18nfile.I18nFileView"
+      />
+
+  <browser:pages
+      for="zope.app.i18nfile.interfaces.II18nFile"
+      permission="zope.ManageContent"
+      class=".i18nfile.I18nFileEdit">
+
+    <browser:page name="editForm.html" template="file_edit.pt" />
+    <browser:page name="edit.html" attribute="action" />
+
+  </browser:pages>
+
+  <browser:menuItems
+      menu="zmi_views"
+      for="zope.app.i18nfile.interfaces.II18nFile">
+
+      <!-- Keep original edit view, for now -->
+      <browser:menuItem title="Edit" action="editForm.html" />
+
+      <!-- Supress the upload view from file -->
+      <browser:menuItem title="Upload" action="editForm.html"
+                        filter="python: False" />
+
+  </browser:menuItems>
+
+  <browser:addMenuItem
+      class="zope.app.i18nfile.I18nFile"
+      title="I18n File"
+      description="A file that supports multiple locales."
+      permission="zope.ManageContent"
+      />
+
+
+  <!-- i18nimage directives -->
+
+  <browser:page
+      name="index.html"
+      for="zope.app.i18nfile.interfaces.II18nImage"
+      permission="zope.View"
+      allowed_attributes="__call__ tag"
+      class=".i18nimage.I18nImageData"
+      />
+
+  <browser:pages
+      for="zope.app.i18nfile.interfaces.II18nImage"
+      permission="zope.ManageContent"
+      class=".i18nimage.I18nImageEdit">
+
+      <browser:page name="upload.html" template="image_edit.pt" />
+      <browser:page name="uploadAction.html" attribute="action" />
+
+  </browser:pages>
+
+  <browser:menuItems
+      menu="zmi_views"
+      for="zope.app.i18nfile.interfaces.II18nImage"
+      >
+
+      <!-- Keep the old "edit" form -->
+      <browser:menuItem title="Edit" action="upload.html"/>
+
+      <!-- Suppress upload form (from IFile) -->
+      <browser:menuItem title="Upload" action="upload.html"
+                        filter="python: False" />
+
+  </browser:menuItems>
+
+  <browser:addMenuItem
+      class="zope.app.i18nfile.I18nImage"
+      title="I18n Image"
+      description="A multi-locale version of an Image." 
+      permission="zope.ManageContent"
+      />
+
+</configure>
