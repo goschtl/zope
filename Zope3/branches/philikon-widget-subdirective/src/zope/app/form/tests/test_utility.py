@@ -1145,4 +1145,5 @@ def test_suite():
     return doctest.DocTestSuite()
 
 if __name__=='__main__':
-    main(defaultTest='test_suite')
+    import unittest
+    unittest.main(defaultTest='test_suite')
