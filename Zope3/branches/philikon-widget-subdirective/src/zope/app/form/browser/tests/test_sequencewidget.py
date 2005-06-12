@@ -92,14 +92,13 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         """Verify that the widget can be constructed via the CustomWidgetFactory
         (Issue #293)
         """
-
         value_type = TextLine(__name__=u'bar')
         self.field = List( __name__=u'foo', value_type=value_type )
         request = TestRequest()
 
         # set up the custom widget factory and verify that it works
         sw = CustomSequenceWidgetFactory(ListSequenceWidget)
-        widget = sw(self.field, TextLine(), request)
+        widget = sw(self.field, request)
         assert widget.subwidget is None
         assert widget.context.value_type is value_type
 
@@ -107,7 +106,7 @@ class SequenceWidgetTest(SequenceWidgetTestHelper, BrowserWidgetTest):
         class PollOption(object) : pass
         ow = CustomWidgetFactory(ObjectWidget, PollOption)
         sw = CustomSequenceWidgetFactory(ListSequenceWidget, subwidget=ow)
-        widget = sw(self.field, TextLine(), request)
+        widget = sw(self.field, request)
         assert widget.subwidget is ow
         assert widget.context.value_type is value_type
 
