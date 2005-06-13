@@ -35,6 +35,7 @@ zdaemon        ../src/zdaemon
 # project; they define what goes into the Zope X3 and related
 # releases.
 #
+Zope-win       ../releases/Zope-win
 Zope           ../releases/Zope
 ZopeInterface  ../releases/ZopeInterface
 Workflow       ../releases/Workflow
