@@ -18,4 +18,3 @@ $Id$
 
 import interfaces
 from zope.app.authentication.authentication import PluggableAuthentication
-from zope.app.authentication.authentication import LocalPluggableAuthentication

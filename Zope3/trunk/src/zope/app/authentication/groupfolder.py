@@ -215,14 +215,14 @@ class InvalidGroupId(Exception):
     """A user has a group id for a group that can't be found
     """
 
-def nocycles(principal_id, seen, getPrincipal):
-    if principal_id in seen:
-        raise GroupCycle(principal_id, seen)
-    seen.append(principal_id)
-    principal = getPrincipal(principal_id)
-    for group_id in principal.groups:
-        nocycles(group_id, seen, getPrincipal)
-    seen.pop()
+def nocycles(principal_ids, seen, getPrincipal):
+    for principal_id in principal_ids:
+        if principal_id in seen:
+            raise GroupCycle(principal_id, seen)
+        seen.append(principal_id)
+        principal = getPrincipal(principal_id)
+        nocycles(principal.groups, seen, getPrincipal)
+        seen.pop()
 
 class GroupInformation(persistent.Persistent):
 
@@ -236,28 +236,36 @@ class GroupInformation(persistent.Persistent):
         self.title = title
         self.description = description
 
-    def setPrincipals(self, prinlist):
+    def setPrincipals(self, prinlist, check=True):
         parent = self.__parent__
+        old = self._principals
+        self._principals = tuple(prinlist)
+
         if parent is not None:
-            old = set(self._principals)
+            oldset = set(old)
             new = set(prinlist)
             group_id = parent._groupid(self)
 
-            for principal_id in old - new:
+            for principal_id in oldset - new:
                 try:
                     parent._removePrincipalFromGroup(principal_id, group_id)
                 except AttributeError:
                     pass
 
-            for principal_id in new - old:
+            for principal_id in new - oldset:
                 try:
                     parent._addPrincipalToGroup(principal_id, group_id)
                 except AttributeError:
                     pass
 
-            nocycles(group_id, [], zapi.principals().getPrincipal)
+            if check:
+                try:
+                    nocycles(new, [], zapi.principals().getPrincipal)
+                except GroupCycle:
+                    # abort
+                    self.setPrincipals(old, False)
+                    raise
 
-        self._principals = tuple(prinlist)
 
     principals = property(lambda self: self._principals, setPrincipals)
 
@@ -284,14 +292,18 @@ def setGroupsForPrincipal(event):
     if not IGroupAwarePrincipal.providedBy(principal):
         return
 
+    authentication = event.authentication
+
     plugins = zapi.getUtilitiesFor(interfaces.IAuthenticatorPlugin)
     for name, plugin in plugins:
         if not IGroupFolder.providedBy(plugin):
             continue
         groupfolder = plugin
         principal.groups.extend(
-            groupfolder.getGroupsForPrincipal(principal.id),)
+            [authentication.prefix + id
+             for id in groupfolder.getGroupsForPrincipal(principal.id)
+             ])
         id = principal.id
-        prefix = groupfolder.prefix
+        prefix = authentication.prefix + groupfolder.prefix
         if id.startswith(prefix) and id[len(prefix):] in groupfolder:
             alsoProvides(principal, IGroup)

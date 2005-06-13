@@ -291,7 +291,7 @@ class AuthenticatedPrincipalFactory:
       >>> from zope.publisher.base import TestRequest
       >>> request = TestRequest('/')
       >>> factory = AuthenticatedPrincipalFactory(info, request)
-      >>> principal = factory()
+      >>> principal = factory(42)
 
     The factory uses the info to create a principal with the same ID, title,
     and description:
@@ -307,8 +307,8 @@ class AuthenticatedPrincipalFactory:
 
       >>> from zope.app.event.tests.placelesssetup import getEvents
       >>> [event] = getEvents(interfaces.IAuthenticatedPrincipalCreated)
-      >>> event.principal is principal
-      True
+      >>> event.principal is principal, event.authentication == 42
+      (True, True)
       >>> event.info
       PrincipalInfo('users.mary')
       >>> event.request is request
@@ -328,11 +328,11 @@ class AuthenticatedPrincipalFactory:
         self.info = info
         self.request = request
 
-    def __call__(self):
+    def __call__(self, authentication):
         principal = Principal(self.info.id, self.info.title,
                               self.info.description)
         notify(interfaces.AuthenticatedPrincipalCreated(
-            principal, self.info, self.request))
+            authentication, principal, self.info, self.request))
         return principal
 
 
@@ -346,7 +346,7 @@ class FoundPrincipalFactory:
 
       >>> info = PrincipalInfo('users.sam', 'sam', 'Sam', 'A site user.')
       >>> factory = FoundPrincipalFactory(info)
-      >>> principal = factory()
+      >>> principal = factory(42)
 
     The factory uses the info to create a principal with the same ID, title,
     and description:
@@ -362,8 +362,8 @@ class FoundPrincipalFactory:
 
       >>> from zope.app.event.tests.placelesssetup import getEvents
       >>> [event] = getEvents(interfaces.IFoundPrincipalCreated)
-      >>> event.principal is principal
-      True
+      >>> event.principal is principal, event.authentication == 42
+      (True, True)
       >>> event.info
       PrincipalInfo('users.sam')
 
@@ -380,8 +380,9 @@ class FoundPrincipalFactory:
     def __init__(self, info):
         self.info = info
 
-    def __call__(self):
+    def __call__(self, authentication):
         principal = Principal(self.info.id, self.info.title,
                               self.info.description)
-        notify(interfaces.FoundPrincipalCreated(principal, self.info))
+        notify(interfaces.FoundPrincipalCreated(authentication,
+                                                principal, self.info))
         return principal

@@ -127,8 +127,12 @@ class IPrincipalInfo(zope.interface.Interface):
 class IPrincipalFactory(zope.interface.Interface):
     """A principal factory."""
 
-    def __call__():
-        """Creates a principal."""
+    def __call__(authentication):
+        """Creates a principal.
+
+        The authentication utility that called the factory is passed
+        and should be included in the principal-created event.
+        """
 
 
 class IFoundPrincipalFactory(IPrincipalFactory):
@@ -144,6 +148,9 @@ class IPrincipalCreated(zope.interface.Interface):
 
     principal = zope.interface.Attribute("The principal that was created")
 
+    authentication = zope.interface.Attribute(
+        "The authentication utility that created the principal")
+
     info = zope.interface.Attribute("An object providing IPrincipalInfo.")
 
 
@@ -158,7 +165,8 @@ class AuthenticatedPrincipalCreated:
 
     zope.interface.implements(IAuthenticatedPrincipalCreated)
 
-    def __init__(self, principal, info, request):
+    def __init__(self, authentication, principal, info, request):
+        self.authentication = authentication
         self.principal = principal
         self.info = info
         self.request = request
@@ -172,7 +180,8 @@ class FoundPrincipalCreated:
 
     zope.interface.implements(IFoundPrincipalCreated)
 
-    def __init__(self, principal, info):
+    def __init__(self, authentication, principal, info):
+        self.authentication = authentication
         self.principal = principal
         self.info = info
 

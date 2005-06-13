@@ -27,7 +27,6 @@ from zope.app.component.site import SiteManagementFolder
 
 from zope.app.authentication import interfaces
 
-
 class PluggableAuthentication(SiteManagementFolder):
 
     zope.interface.implements(
@@ -60,7 +59,7 @@ class PluggableAuthentication(SiteManagementFolder):
                 if info is None:
                     continue
                 principal = component.getMultiAdapter((info, request),
-                    interfaces.IAuthenticatedPrincipalFactory)()
+                    interfaces.IAuthenticatedPrincipalFactory)(self)
                 principal.id = self.prefix + info.id
                 return principal
         return None
@@ -78,7 +77,7 @@ class PluggableAuthentication(SiteManagementFolder):
             info = authplugin.principalInfo(id)
             if info is None:
                 continue
-            principal = interfaces.IFoundPrincipalFactory(info)()
+            principal = interfaces.IFoundPrincipalFactory(info)(self)
             principal.id = self.prefix + info.id
             return principal
         next = queryNextUtility(self, IAuthentication)
@@ -88,8 +87,9 @@ class PluggableAuthentication(SiteManagementFolder):
 
     def getQueriables(self):
         for name in self.authenticatorPlugins:
-            authplugin = component.queryUtility(interfaces.IAuthenticatorPlugin,
-                                                name, context=self)
+            authplugin = component.queryUtility(
+                interfaces.IAuthenticatorPlugin,
+                name, context=self)
             if authplugin is None:
                 continue
             queriable = interfaces.IQueriableAuthenticator(authplugin, None)
@@ -141,26 +141,3 @@ class PluggableAuthentication(SiteManagementFolder):
             next = queryNextUtility(self, IAuthentication)
             if next is not None:
                 next.logout(request)
-
-    # BBB gone in 3.1
-    def getPrincipals(self, name):
-        return ()
-
-    # BBB gone in 3.1
-    def __len__(self):
-        return hasattr(self, '_SampleContainer__data') and \
-            len(self._SampleContainer__data) or 0
-
-    # BBB gone in 3.1
-    def items(self):
-        return hasattr(self, '_SampleContainer__data') and \
-            self._SampleContainer__data.items() or []
-
-    # BBB gone in 3.1
-    def __iter__(self):
-        return hasattr(self, '_SampleContainer__data') and \
-            iter(self._SampleContainer__data) or iter([])
-
-
-# BBB, gone in 3.1
-LocalPluggableAuthentication = PluggableAuthentication

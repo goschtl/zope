@@ -40,6 +40,7 @@ corresponding interface declarations.
 
 Simple Credentials Plugin
 -------------------------
+
 To illustrate, we'll create a simple credentials plugin:
 
   >>> from zope import interface
@@ -64,6 +65,7 @@ As a plugin, MyCredentialsPlugin needs to be registered as a named utility:
 
 Simple Authenticator Plugin
 ---------------------------
+
 Next we'll create a simple authenticator plugin. For our plugin, we'll need
 an implementation of IPrincipalInfo:
 
@@ -111,6 +113,7 @@ For more information on these factories, see their docstrings.
 
 Configuring a PAU
 -----------------
+
 Finally, we'll create the PAU itself:
 
   >>> from zope.app import authentication
@@ -123,6 +126,7 @@ and configure it with the two plugins:
 
 Using the PAU to Authenticate
 -----------------------------
+
 We can now use the PAU to authenticate a sample request:
 
   >>> from zope.publisher.browser import TestRequest
@@ -146,6 +150,7 @@ we get an authenticated principal.
 
 Authenticated Principal Creates Events
 --------------------------------------
+
 We can verify that the appropriate event was published:
 
   >>> [event] = getEvents(interfaces.IAuthenticatedPrincipalCreated)
@@ -157,7 +162,7 @@ We can verify that the appropriate event was published:
   True
 
 Normally, we provide subscribers to these events that add additional
-information to the principal. For examples, we'll add one that sets
+information to the principal. For example, we'll add one that sets
 the title:
 
   >>> def add_info(event):
@@ -172,6 +177,7 @@ Now, if we authenticate a principal, its title is set:
 
 Multiple Authenticator Plugins
 ------------------------------
+
 The PAU works with multiple authenticator plugins. It uses each plugin, in the
 order specified in the PAU's authenticatorPlugins attribute, to authenticate
 a set of credentials.
@@ -222,6 +228,7 @@ The second plugin, however, gets a chance to authenticate if first does not:
 
 Multiple Credentials Plugins
 ----------------------------
+
 As with with authenticators, we can specify multiple credentials plugins. To
 illustrate, we'll create a credentials plugin that extracts credentials from
 a request form:
@@ -394,6 +401,7 @@ but only those it knows about:
 
 Found Principal Creates Events
 ------------------------------
+
 As evident in the authenticator's 'createFoundPrincipal' method (see above),
 a FoundPrincipalCreatedEvent is published when the authenticator finds a
 principal on behalf of PAU's 'getPrincipal':
@@ -420,6 +428,7 @@ description will be set (by the add_info handler function).
 
 Multiple Authenticator Plugins
 ------------------------------
+
 As with the other operations we've seen, the PAU uses multiple plugins to
 find a principal. If the first authenticator plugin can't find the requested
 principal, the next plugin is used, and so on.
@@ -551,6 +560,7 @@ the advanced plugin is used because it's first:
 
 Challenge Protocols
 -------------------
+
 Sometimes, we want multiple challengers to work together. For example, the
 HTTP specification allows multiple challenges to be issued in a response. A
 challenge plugin can provide a `challengeProtocol` attribute that effectively
