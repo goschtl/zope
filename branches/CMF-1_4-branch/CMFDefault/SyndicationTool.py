@@ -127,7 +127,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
         else:
             try:
                 del self.syUpdatePeriod
-            except KeyError:
+            except (AttributeError, KeyError):
                 pass
 
         if updateFrequency is not None:
@@ -135,7 +135,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
         else:
             try:
                 del self.syUpdateFrequency
-            except KeyError:
+            except (AttributeError, KeyError):
                 pass
 
         if updateBase is not None:
@@ -145,7 +145,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
         else:
             try:
                 del self.syUpdateBase
-            except KeyError:
+            except (AttributeError, KeyError):
                 pass
 
         if max_items is not None:
@@ -153,7 +153,7 @@ class SyndicationTool (UniqueObject, SimpleItem, ActionProviderBase):
         else:
             try:
                 del self.max_items
-            except KeyError:
+            except (AttributeError, KeyError):
                 pass
 
         if REQUEST is not None:
