@@ -36,6 +36,8 @@ class IIntIdsSet(Interface):
     def register(ob):
         """Register an object and returns a unique id generated for it.
 
+        The object *must* be adaptable to IKeyReference.
+
         If the object is already registered, its id is returned anyway.
         """
 
