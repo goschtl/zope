@@ -386,7 +386,7 @@ class TypeInformation(SimpleItemWithProperties, ActionProviderBase):
             return False
 
     security.declarePublic('queryMethodID')
-    def queryMethodID(self, alias, default=None):
+    def queryMethodID(self, alias, default=None, context=None):
         """ Query method ID by alias.
         """
         if not hasattr(self, '_aliases'):

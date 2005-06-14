@@ -98,7 +98,7 @@ class ContentTypeInformation(Interface):
         Returns -- Boolean value
         """
 
-    def queryMethodID(alias, default=None):
+    def queryMethodID(alias, default=None, context=None):
         """ Query method ID by alias.
 
         Permission -- Always available
