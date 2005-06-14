@@ -27,7 +27,30 @@ from zope.security.proxy import removeSecurityProxy
 from zope.app import zapi
 from zope.app.component.interface import searchInterface, getInterface
 from zope.app.introspector.interfaces import IIntrospector
-from zope.app.module import resolve
+
+##############################################################################
+# from zope.app.module import resolve
+
+# Break the dependency on zope.app.module.  In the long run,
+# we need to handle this better.  Perhaps througha utility.
+
+## def findModule(name, context=None):
+##     """Find the module matching the provided name."""
+##     module = ZopeModuleRegistry.findModule(name)
+##     return module or sys.modules.get(name)
+
+import sys
+
+def resolve(name, context=None):
+    """Resolve a dotted name to a Python object."""
+    pos = name.rfind('.')
+    mod = sys.modules.get(name[:pos])
+##    mod = findModule(name[:pos], context)
+    return getattr(mod, name[pos+1:], None)
+
+# from zope.app.module import resolve
+##############################################################################
+
 
 class Introspector(object):
     """Introspects an object"""
