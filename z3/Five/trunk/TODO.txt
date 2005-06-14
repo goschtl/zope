@@ -40,3 +40,6 @@ v1.2
 - Icons through <browser:icon>?
 
 - Grant security stuff through ZCML (<grant />)?
+
+- top-level <require />, <allow /> directives as a ZCML spelling of
+  allowModule, allowClass
