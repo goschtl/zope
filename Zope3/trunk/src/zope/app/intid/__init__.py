@@ -74,7 +74,7 @@ class IntIds(Persistent, Contained):
     def getId(self, ob):
         try:
             key = IKeyReference(ob)
-        except NotYet:
+        except (NotYet, TypeError):
             raise KeyError(ob)
 
         try:
@@ -119,7 +119,9 @@ class IntIds(Persistent, Contained):
     def unregister(self, ob):
         # Note that we'll still need to keep this proxy removal.
         ob = removeSecurityProxy(ob)
-        key = IKeyReference(ob)
+        key = IKeyReference(ob, None)
+        if key is None:
+            return
 
         uid = self.ids[key]
         del self.refs[uid]

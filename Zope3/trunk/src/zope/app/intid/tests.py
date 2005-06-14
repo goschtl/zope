@@ -29,6 +29,12 @@ from zope.app import zapi
 from zope.app.location.interfaces import ILocation
 from zope.app.component.hooks import setSite
 
+from zope.app.intid.interfaces import IIntIds
+from zope.app.intid import IntIds
+from zope.app.keyreference.persistent import KeyReferenceToPersistent
+from zope.app.keyreference.persistent import connectionOfPersistent
+from zope.app.keyreference.interfaces import IKeyReference
+
 
 class P(Persistent):
     implements(ILocation)
@@ -45,9 +51,6 @@ class ConnectionStub(object):
 class ReferenceSetupMixin(object):
     """Registers adapters ILocation->IConnection and IPersistent->IReference"""
     def setUp(self):
-        from zope.app.keyreference.persistent import connectionOfPersistent
-        from zope.app.keyreference.persistent import KeyReferenceToPersistent
-        from zope.app.keyreference.interfaces import IKeyReference
         self.root = setup.placefulSetUp(site=True)
         ztapi.provideAdapter(IPersistent, IConnection, connectionOfPersistent)
         ztapi.provideAdapter(IPersistent, IKeyReference,
@@ -60,14 +63,17 @@ class ReferenceSetupMixin(object):
 class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
     def test_interface(self):
-        from zope.app.intid.interfaces import IIntIds
-        from zope.app.intid import IntIds
-
         verifyObject(IIntIds, IntIds())
 
-    def test(self):
-        from zope.app.intid import IntIds
+    def test_non_keyreferences(self):
+        u = IntIds()
+        obj = object()
 
+        self.assert_(u.queryId(obj) is None)
+        self.assert_(u.unregister(obj) is None)
+        self.assertRaises(KeyError, u.getId, obj)
+
+    def test(self):
         u = IntIds()
         obj = P()
         
@@ -75,12 +81,10 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 
         self.assertRaises(KeyError, u.getId, obj)
         self.assertRaises(KeyError, u.getId, P())
-        self.assertRaises(TypeError, u.getId, object())
 
         self.assert_(u.queryId(obj) is None)
         self.assert_(u.queryId(obj, 42) is 42)
         self.assert_(u.queryId(P(), 42) is 42)
-        self.assertRaises(TypeError, u.queryId, object())
         self.assert_(u.queryObject(42) is None)
         self.assert_(u.queryObject(42, obj) is obj)
 
@@ -98,8 +102,6 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertRaises(KeyError, u.getId, obj)
 
     def test_len_items(self):
-        from zope.app.intid import IntIds
-        from zope.app.keyreference.persistent import KeyReferenceToPersistent
         u = IntIds()
         obj = P()
         obj._p_jar = ConnectionStub()
@@ -137,8 +139,6 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
         self.assertEquals(u.items(), [])
 
     def test_getenrateId(self):
-        from zope.app.intid import IntIds
-
         u = IntIds()
         self.assertEquals(u._v_nextid, None)
         id1 = u._generateId()
@@ -155,8 +155,6 @@ class TestIntIds(ReferenceSetupMixin, unittest.TestCase):
 class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
 
     def setUp(self):
-        from zope.app.intid.interfaces import IIntIds
-        from zope.app.intid import IntIds
         from zope.app.folder import Folder, rootFolder
 
         ReferenceSetupMixin.setUp(self)
