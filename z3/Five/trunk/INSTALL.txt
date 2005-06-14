@@ -63,9 +63,7 @@ Installing Five is relatively straightforward.
 
 * You can also install various products in the ``doc/products``
   subdirectory of Five by copying them into your ``Products``
-  directory. In addition, you can look at ``tests/products/FiveTest``,
-  which is installed automatically when you run the Five tests. This
-  may contain examples of more recent features.
+  directory.
 
 Installing the tests
 ====================
