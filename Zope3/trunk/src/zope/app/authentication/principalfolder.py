@@ -291,13 +291,20 @@ class AuthenticatedPrincipalFactory:
       >>> from zope.publisher.base import TestRequest
       >>> request = TestRequest('/')
       >>> factory = AuthenticatedPrincipalFactory(info, request)
-      >>> principal = factory(42)
 
-    The factory uses the info to create a principal with the same ID, title,
-    and description:
+    The factory must be called with a pluggable-authentication object:
+
+      >>> class Auth:
+      ...     prefix = 'auth.'
+      >>> auth = Auth()
+
+      >>> principal = factory(auth)
+
+    The factory uses the pluggable authentication and the info to
+    create a principal with the same ID, title, and description:
 
       >>> principal.id
-      'users.mary'
+      'auth.users.mary'
       >>> principal.title
       'Mary'
       >>> principal.description
@@ -307,7 +314,7 @@ class AuthenticatedPrincipalFactory:
 
       >>> from zope.app.event.tests.placelesssetup import getEvents
       >>> [event] = getEvents(interfaces.IAuthenticatedPrincipalCreated)
-      >>> event.principal is principal, event.authentication == 42
+      >>> event.principal is principal, event.authentication is auth
       (True, True)
       >>> event.info
       PrincipalInfo('users.mary')
@@ -329,7 +336,8 @@ class AuthenticatedPrincipalFactory:
         self.request = request
 
     def __call__(self, authentication):
-        principal = Principal(self.info.id, self.info.title,
+        principal = Principal(authentication.prefix + self.info.id,
+                              self.info.title,
                               self.info.description)
         notify(interfaces.AuthenticatedPrincipalCreated(
             authentication, principal, self.info, self.request))
@@ -346,13 +354,20 @@ class FoundPrincipalFactory:
 
       >>> info = PrincipalInfo('users.sam', 'sam', 'Sam', 'A site user.')
       >>> factory = FoundPrincipalFactory(info)
-      >>> principal = factory(42)
 
-    The factory uses the info to create a principal with the same ID, title,
-    and description:
+    The factory must be called with a pluggable-authentication object:
+
+      >>> class Auth:
+      ...     prefix = 'auth.'
+      >>> auth = Auth()
+
+      >>> principal = factory(auth)
+
+    The factory uses the pluggable-authentication object and the info
+    to create a principal with the same ID, title, and description:
 
       >>> principal.id
-      'users.sam'
+      'auth.users.sam'
       >>> principal.title
       'Sam'
       >>> principal.description
@@ -362,7 +377,7 @@ class FoundPrincipalFactory:
 
       >>> from zope.app.event.tests.placelesssetup import getEvents
       >>> [event] = getEvents(interfaces.IFoundPrincipalCreated)
-      >>> event.principal is principal, event.authentication == 42
+      >>> event.principal is principal, event.authentication is auth
       (True, True)
       >>> event.info
       PrincipalInfo('users.sam')
@@ -381,7 +396,8 @@ class FoundPrincipalFactory:
         self.info = info
 
     def __call__(self, authentication):
-        principal = Principal(self.info.id, self.info.title,
+        principal = Principal(authentication.prefix + self.info.id,
+                              self.info.title,
                               self.info.description)
         notify(interfaces.FoundPrincipalCreated(authentication,
                                                 principal, self.info))
