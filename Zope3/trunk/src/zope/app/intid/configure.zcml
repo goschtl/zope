@@ -1,4 +1,4 @@
-<configure xmlns="http://namespaces.zope.org/zope">
+<configure xmlns="http://namespaces.zope.org/zope" i18n_domain="zope">
 
   <localUtility class=".IntIds">
     <factory
