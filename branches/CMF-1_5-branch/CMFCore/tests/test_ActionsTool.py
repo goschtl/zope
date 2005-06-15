@@ -1,14 +1,26 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors. All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+""" Unit tests for ActionsTool module.
+
+$Id$
+"""
+
 from unittest import TestSuite, makeSuite, main
 import Testing
 import Zope
 Zope.startup()
-from Interface.Verify import verifyClass
 
-from Products.CMFCore.ActionInformation import ActionInformation
-from Products.CMFCore.ActionsTool import ActionsTool
-from Products.CMFCore.Expression import Expression
 from Products.CMFCore.MembershipTool import MembershipTool
-from Products.CMFCore.PortalFolder import PortalFolder
 from Products.CMFCore.RegistrationTool import RegistrationTool
 from Products.CMFCore.tests.base.testcase import SecurityRequestTest
 from Products.CMFCore.TypesTool import TypesTool
@@ -17,18 +29,46 @@ from Products.CMFCore.URLTool import URLTool
 
 class ActionsToolTests( SecurityRequestTest ):
 
-    def setUp( self ):
+    def _makeOne(self, *args, **kw):
+        from Products.CMFCore.ActionsTool import ActionsTool
 
+        return ActionsTool(*args, **kw)
+
+    def setUp(self):
         SecurityRequestTest.setUp(self)
 
         root = self.root
-        root._setObject( 'portal_actions', ActionsTool() )
+        root._setObject( 'portal_actions', self._makeOne() )
         root._setObject( 'portal_url', URLTool() )
         root._setObject( 'foo', URLTool() )
         root._setObject('portal_membership', MembershipTool())
         root._setObject('portal_types', TypesTool())
         self.tool = root.portal_actions
         self.tool.action_providers = ('portal_actions',)
+
+    def test_z2interfaces(self):
+        from Interface.Verify import verifyClass
+        from Products.CMFCore.ActionsTool import ActionsTool
+        from Products.CMFCore.interfaces.portal_actions \
+                import ActionProvider as IActionProvider
+        from Products.CMFCore.interfaces.portal_actions \
+                import portal_actions as IActionsTool
+
+        verifyClass(IActionProvider, ActionsTool)
+        verifyClass(IActionsTool, ActionsTool)
+
+    def test_z3interfaces(self):
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            # BBB: for Zope 2.7
+            return
+        from Products.CMFCore.ActionsTool import ActionsTool
+        from Products.CMFCore.interfaces import IActionProvider
+        from Products.CMFCore.interfaces import IActionsTool
+
+        verifyClass(IActionProvider, ActionsTool)
+        verifyClass(IActionsTool, ActionsTool)
 
     def test_actionProviders(self):
         tool = self.tool
@@ -73,15 +113,6 @@ class ActionsToolTests( SecurityRequestTest ):
                                       'allowed': True,
                                       'category': 'folder'}],
                           'global': []})
-
-    def test_interface(self):
-        from Products.CMFCore.interfaces.portal_actions \
-                import portal_actions as IActionsTool
-        from Products.CMFCore.interfaces.portal_actions \
-                import ActionProvider as IActionProvider
-
-        verifyClass(IActionsTool, ActionsTool)
-        verifyClass(IActionProvider, ActionsTool)
 
 
 def test_suite():

@@ -5,23 +5,8 @@
   <!-- ActionInformation -->
 
   <implements
-      class=".ActionInformation.ActionCategory"
-      interface=".interfaces.IActionCategory"
-      />
-
-  <implements
-      class=".ActionInformation.Action"
-      interface=".interfaces.IAction"
-      />
-
-  <implements
       class=".ActionInformation.ActionInfo"
       interface=".interfaces.IActionInfo"
-      />
-
-  <implements
-      class=".ActionInformation.ActionInformation"
-      interface=".interfaces.IAction"
       />
 
   <!-- ActionProviderBase -->

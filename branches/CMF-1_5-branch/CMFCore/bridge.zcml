@@ -99,18 +99,6 @@
       />
 
   <bridge
-      zope2=".interfaces.portal_actions.ActionCategory"
-      package=".interfaces"
-      name="IActionCategory"
-      />
-
-  <bridge
-      zope2=".interfaces.portal_actions.Action"
-      package=".interfaces"
-      name="IAction"
-      />
-
-  <bridge
       zope2=".interfaces.portal_actions.ActionInfo"
       package=".interfaces"
       name="IActionInfo"

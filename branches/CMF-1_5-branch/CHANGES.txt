@@ -1,6 +1,9 @@
-After CMF-1.5.1
+CMF 1.5.2beta (unreleased)
 
-  Features Added
+  New Features
+
+    - Interfaces: Added newstyle (Zope 3) interfaces.
+      This change has no effect on Zope 2.7 without Five.
 
     - CMFSetup.skins: Small featurelet that adds a new keyword to the
       "layer" tag in skins.xml named "remove". If "remove" is
