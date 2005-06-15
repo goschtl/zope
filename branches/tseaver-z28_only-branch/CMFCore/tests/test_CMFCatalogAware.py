@@ -151,7 +151,7 @@ class CMFCatalogAwareTests(unittest.TestCase):
         self.failIf(bar.notified)
         self.failIf(hop.notified)
 
-    def test_reindexObjectSecurity_oldbrain(self):
+    def BBB_test_reindexObjectSecurity_oldbrain(self):
         self.site.portal_catalog.brain_class = DummyOldBrain
         foo = self.site.foo
         self.site.foo.bar = TheClass('bar')
@@ -194,7 +194,7 @@ class CMFCatalogAwareTests(unittest.TestCase):
         self.failIf(foo.notified)
         self.failIf(missing.notified)
 
-    def test_reindexObjectSecurity_missing_oldbrain(self):
+    def BBB_test_reindexObjectSecurity_missing_oldbrain(self):
         # Missing object is swallowed by old Zope brains
         self.site.portal_catalog.brain_class = DummyOldBrain
         foo = self.site.foo
