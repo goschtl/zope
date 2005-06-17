@@ -47,9 +47,10 @@ made available under the ICU License:
   or other dealings in this Software without prior written authorization
   of the copyright holder.
 
-  ------------------------------------------------------------------------------
+  -----------------------------------------------------------------------------
 
-  All trademarks and registered trademarks mentioned herein are the property of their respective owners.
+  All trademarks and registered trademarks mentioned herein are the property of
+  their respective owners.
 
 ----------------------------------------------------------------------
 
