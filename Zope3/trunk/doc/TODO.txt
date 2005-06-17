@@ -39,8 +39,6 @@ Others
 
   * 344: PAU registration error
 
-  * 356: Copy and Paste does not handle exceptions raised by __setitem__
-
   * 372: WidgetInputError.doc is broken
 
   * 373: Adding objects requires permission zope.app.dublincore.change
@@ -53,4 +51,4 @@ Others
 
 
 Bugs starting with * represent bugs that must be fixed for the 3.0.x branch as
-well.
+well .

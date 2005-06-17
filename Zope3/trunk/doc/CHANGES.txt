@@ -614,6 +614,9 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix #356 : Copy and Paste does not handle exceptions raised by
+        __setitem__
+
       - Made different key reference implementations comparable:IKeyReference
         interface is extended by an additional key_type_id attribute.
 

@@ -25,6 +25,7 @@ from zope.schema import Text, TextLine, Password
 from zope.publisher.interfaces import IRequest
 from zope.security.interfaces import IGroupAwarePrincipal
 
+from zope.app.container.interfaces import DuplicateIDError
 from zope.app.container.contained import Contained
 from zope.app.container.constraints import contains, containers
 from zope.app.container.btree import BTreeContainer
@@ -186,10 +187,34 @@ class PrincipalFolder(BTreeContainer):
         self.__id_by_login[principal.login] = principal.__name__
 
     def __setitem__(self, id, principal):
-        """Add principal information."""
+        """Add principal information.
+
+        Create a Principal Folder
+
+            >>> pf = PrincipalFolder()
+
+        Create a principal with 1 as id
+        Add a login attr since __setitem__ is in need of one
+        
+            >>> principal = Principal(1)
+            >>> principal.login = 1
+
+        Add the principal within the Principal Folder
+
+            >>> pf.__setitem__(u'1', principal)
+
+        Try to add another principal with the same id.
+        It should raise a DuplicateIDError
+
+            >>> try:
+            ...     pf.__setitem__(u'1', principal)
+            ... except DuplicateIDError, e:
+            ...     pass
+            >>>
+        """
         # A user with the new login already exists
         if principal.login in self.__id_by_login:
-            raise ValueError, 'Principal Login already taken!'
+            raise DuplicateIDError, 'Principal Login already taken!'
 
         super(PrincipalFolder, self).__setitem__(id, principal)
         self.__id_by_login[principal.login] = id
