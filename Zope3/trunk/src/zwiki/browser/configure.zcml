@@ -21,6 +21,12 @@
       permission="zope.ManageContent"
       view="AddWiki.html" />
 
+  <browser:containerViews
+      for="zwiki.interfaces.IWiki"
+      contents="zwiki.AddWikiPage"
+      add="zwiki.AddWikiPage"
+      />
+
   <browser:page
       name="toc.html"
       for="zwiki.interfaces.IWiki"
