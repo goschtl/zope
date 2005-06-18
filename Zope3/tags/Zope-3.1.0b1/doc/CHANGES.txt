@@ -6,45 +6,6 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Some future release (Zope 3.2.0)
-
-    New features
-
-      - Added a re-implementation of i18n message IDs (now simply
-        called ``Message``) that is immutable and thus can be treated
-        like unicode strings with respect to security proxying.  This
-        implementation will replace the old one in upcoming versions.
-
-      - Added pagelet concept. Pagelets are responsible for a piece
-        of content in a view. They can be used to render additionaly
-        provided information into a pagetemplate.
-
-        + Added tales expression 'pagelet'
-
-        + Added tales expression 'pagelets'
-
-        + Added tales expression 'pagedata'
-
-      - Added pagelet chooser for store pagelet name in the annotation
-        of a object.
-
-    Restructuring
-
-    Bug Fixes
-
-      - Fix: Pagelet directive was inoring the permission. Pagelets which
-        not the right permission are not shwon if calling via the Tales
-        expression ``pagelets:``. If calling named pagelets directly via the
-        Tales expression ``pagelet:`` we raise a Unauthorized exception if
-        the permission ins't right.
-
-    Much thanks to everyone who contributed to this release:
-
-    Note: If you are not listed and contributed, please add yourself. This
-          note will be deleted before the release.
-
-  ------------------------------------------------------------------
-
   Zope 3.1.0
 
     New features
