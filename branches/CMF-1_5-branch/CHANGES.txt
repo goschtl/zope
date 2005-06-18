@@ -11,6 +11,9 @@ CMF 1.5.2beta (unreleased)
       skins path(s).
 
   Other
+  
+    - CMFCore.TypesTool.TypeInformation.queryMethodID(): Add new argument
+      context=None and change all calls of queryMethodID to apply the context.
 
     - CMFTopic.Topic/CMFCore.PortalContent: Clean up a previous change
       by changing __call__ methods to be aligned with what's on CVS
