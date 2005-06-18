@@ -6,23 +6,63 @@ Zope Changes
 
   For information on future releases, see ROADMAP.txt.
 
-  Some future release (Zope 3.1.0)
+  Some future release (Zope 3.2.0)
 
     New features
 
-      - Change zope.app.intid.addIntIdSubscriber and .removeIntIdSubscriber
-        to adapt it's ob argument to IKeyReference. They register/unregister
-        the object only if it get the adapter.
+      - Added a re-implementation of i18n message IDs (now simply
+        called ``Message``) that is immutable and thus can be treated
+        like unicode strings with respect to security proxying.  This
+        implementation will replace the old one in upcoming versions.
 
-      - Add content_factory_id attribute to the addform and addwizard
-        directive so that named factories can be invoked too.
+      - Added pagelet concept. Pagelets are responsible for a piece
+        of content in a view. They can be used to render additionaly
+        provided information into a pagetemplate.
 
-      - Add locate attribute to the adapter directive in order to ensure
-        location for security proxied objects. An explicite locate should be
-        if complex adapter security declarations within an additional class
-        directive are used.
+        + Added tales expression 'pagelet'
 
-      - The http() function exposed to functional doctests how accepts
+        + Added tales expression 'pagelets'
+
+        + Added tales expression 'pagedata'
+
+      - Added pagelet chooser for store pagelet name in the annotation
+        of a object.
+
+    Restructuring
+
+    Bug Fixes
+
+      - Fix: Pagelet directive was inoring the permission. Pagelets which
+        not the right permission are not shwon if calling via the Tales
+        expression ``pagelets:``. If calling named pagelets directly via the
+        Tales expression ``pagelet:`` we raise a Unauthorized exception if
+        the permission ins't right.
+
+    Much thanks to everyone who contributed to this release:
+
+    Note: If you are not listed and contributed, please add yourself. This
+          note will be deleted before the release.
+
+  ------------------------------------------------------------------
+
+  Zope 3.1.0
+
+    New features
+
+      - Change ``zope.app.intid.addIntIdSubscriber`` and
+        ``.removeIntIdSubscriber`` to adapt it's ob argument to
+        ``IKeyReference``. They register/unregister the object only if it get
+        the adapter.
+
+      - Add ``content_factory_id`` attribute to the ``addform`` and
+        ``addwizard`` directive so that named factories can be invoked too.
+
+      - Add ``locate`` attribute to the adapter directive in order to ensure
+        location for security proxied objects. An explicit ``locate`` should
+        be provided, if complex adapter security declarations within an
+        additional class directive are used.
+
+      - The ``http()`` function exposed to functional doctests how accepts
         an optional "form" argument to use as the set of form values.
         This works for any type of request; this can used to make
         functional doctests involving form submissions much easier to
@@ -69,25 +109,25 @@ Zope Changes
       - Added virtual host support in xml and static tree. The tree will
         switch the root to the virtualhost base.
 
-      - Change addMenuItem directive. Make use of class and menu attributes.
-        This makes it possible to use the directive for own IAdding menu
-        implementation. The addMenuItem directive supports now also the order
-        layer, extra and icon attributes.
+      - Change ``addMenuItem`` directive. Make use of class and menu
+        attributes.  This makes it possible to use the directive for own
+        ``IAdding`` menu implementation. The ``addMenuItem`` directive
+        supports now also the order layer, extra and icon attributes.
 
       - Added the HTTP request recorder, which lets you inspect raw HTTP
         requests and responses.  It can be used to create functional doctests
         without requiring third-party tools such as TCPWatch.  See the
-        README.txt file in zope.app.recorder for instructions.
+        `README.txt` file in ``zope.app.recorder`` for instructions.
 
-      - zope.app.form.utility setUpEditWidgets, when given a source
+      - ``zope.app.form.utility`` ``setUpEditWidgets``, when given a source
         that is security proxied and asked to set up edit widgets
-        for fields that will raise Unauthorized when set, now raises
-        Unauthorized by default, eliminating the lie that the form
-        is usable.  It also accepts degradeDisplay and degradeInput
+        for fields that will raise ``Unauthorized`` when set, now raises
+        ``Unauthorized`` by default, eliminating the lie that the form
+        is usable.  It also accepts ``degradeDisplay`` and ``degradeInput``
         optional keyword arguments to change the behavior to degrade
         unavailable input widgets to display widgets and to hide
-        unavailable display widgets.  setUpDisplayWidgets also accepts
-        degradeDisplay.
+        unavailable display widgets.  ``setUpDisplayWidgets`` also accepts
+        ``degradeDisplay``.
 
       - Implemented issue 306: page/view-menu-layer configuration
 
@@ -104,7 +144,7 @@ Zope Changes
         to special method (by default). By default these methods are named
         ``getData()`` and ``setData(data)``.
 
-      - When raising the Unauthorized exception, the security checker
+      - When raising the ``Unauthorized`` exception, the security checker
         now passes the object in question in addition to the attribute
         name and missing permission. This should make debugging easier.
 
@@ -129,9 +169,15 @@ Zope Changes
 
       - API doctool has received some upgrades:
 
+        * Fixed security hole by disabling automatic import of paths when a
+          module is not available in ``sys.modules`` by default. It can be
+          activated using::
+  
+            <apidoc:moduleImport allow="true" /> 
+
         * Code Browser now also shows interfaces and text files.
 
-        * A new `bookmodule` compiles all our README.txt and other text
+        * A new `bookmodule` compiles all our `README.txt` and other text
           documentation files to a nice book-like format.
 
         * A new ``typemodule`` lists all interface types (such as
@@ -170,24 +216,24 @@ Zope Changes
       - Added ``pytz`` to the repository. Stuart Bishop licensed it for us
         under ZPL 2.1. Thanks!
 
-      - New schema field: Timedelta.
+      - New schema field: ``Timedelta``.
 
       - Implemented some initial deprecation framework, see
-        `zope.deprecation`. It allows one to deprecate methods and properties
-        in classes as well as any name in a module.
+        ``zope.deprecation``. It allows one to deprecate methods and
+        properties in classes as well as any name in a module.
 
-      - The `browser:containerViews` directive provides an optional layer
+      - The ``browser:containerViews`` directive provides an optional layer
         attribute.
 
       - Groups for unauthenticated users, authenticated users, and
         everybody can now be defined in ZCML.
 
-      - A handler attribute is now used in subscriber directives for
+      - A ``handler`` attribute is now used in ``subscriber`` directives for
         event subscribers that don't create objects, which is the case
-        for most subscribers.  Using the factory attribute without a
-        provides attribute to register a handler is deprecated.
+        for most subscribers.  Using the ``factory`` attribute without a
+        ``provides`` attribute to register a handler is deprecated.
 
-      - Added the function `zope.component.adapts` for declaring interfaces
+      - Added the function ``zope.component.adapts`` for declaring interfaces
         adapted by classes. This is similar to zope.interface.implements in
         that it puts a marker on the class that has a significant meaning in
         the component architecture machinery.
@@ -209,7 +255,7 @@ Zope Changes
         pertinent aspect of the object.  canAccess is used for both read
         access on an attribute and call access to methods.
 
-      - Added lazy properties. (See zope/cachedescriptors/README.txt)
+      - Added lazy properties. (See `zope/cachedescriptors/README.txt`)
 
       - Added new ``getNextUtility()``, ``queryNextUtility()``, and
         ``testingNextUtility()`` functions to make it easier to find and test
@@ -227,11 +273,11 @@ Zope Changes
         and indexing structures can share the same id scheme, allowing
         cross-catalog joins and other sorts of aggregated analyses.
 
-      - Added `getInfo(generation)` method to `zope.app.generations`'s
-        `ISchemaManager`. It will return some information about the evolver
+      - Added ``getInfo(generation)`` method to ``zope.app.generations``'s
+        ``ISchemaManager``. It will return some information about the evolver
         that brings the database to the specified generation. This way we can
-        document the various evolutions. The standard `ISchemaManager`
-        implementation uses the `evolve()` function's docstring to determine
+        document the various evolutions. The standard ``ISchemaManager``
+        implementation uses the ``evolve()`` function's docstring to determine
         the information string. Added a view showing the information strings
         via the Web UI.
 
@@ -239,32 +285,19 @@ Zope Changes
         right now, since we do not support TTW development yet, but it will
         become important somewhen.
 
-      - Page templates now allow metal:define-macro and
-        metal:use-macro in the same tag.  This allows a macro to
+      - Page templates now allow ``metal:define-macro`` and
+        ``metal:use-macro`` in the same tag.  This allows a macro to
         extend another macro, which is particularly useful for writing
         a skin that customizes another skin.
 
-      - Added pagelet concept. Pagelets are responsible for a piece
-        of content in a view. They can be used to render additionaly
-        provided information into a pagetemplate.
-
-        + Added tales expression 'pagelet'
-
-        + Added tales expression 'pagelets'
-
-        + Added tales expression 'pagedata'
-
-      - Added pagelet chooser for store pagelet name in the annotation
-        of a object.
-
-      - Allow the <widget> subdirective to be used without specifying
-        a "class" attribute.  This allows overriding some attributes
+      - Allow the ``widget`` subdirective to be used without specifying
+        a ``class`` attribute.  This allows overriding some attributes
         for the default widget implementation without having to
         specify the widget class itself.
 
-      - Added a "debug" command to zopectl.  This loads the Zope
+      - Added a ``debug`` command to ``zopectl``.  This loads the Zope
         configuration and provides an interactive Python session in
-        which a `zope.app.debug.debug.Debugger` instance has been
+        which a ``zope.app.debug.debug.Debugger`` instance has been
         provided as "debugger".  This allows exercising Zope under the
         debugger using the same appserver configuration that the
         server process uses.  The servers themselves are not started.
@@ -272,25 +305,25 @@ Zope Changes
       - Created a new granting UI that allows advanced searching of
         principal sources.
 
-      - Implemented the `zope:localService` directive, so that you can use it
-        instead of the `zope:content` directive, which we had to use
+      - Implemented the ``zope:localService`` directive, so that you can use
+        it instead of the ``zope:content`` directive, which we had to use
         before. The new directive automatically makes the service implement
-        `ISimpleService`. I also changed all the local service declarations to
-        use this new directive.
+        ``ISimpleService``. I also changed all the local service declarations
+        to use this new directive.
 
-      - Implemented the `zope:localUtility` directive, so that you can use it
-        instead of the `zope:content` directive, which we had to use
+      - Implemented the ``zope:localUtility`` directive, so that you can use
+        it instead of the ``zope:content`` directive, which we had to use
         before. The new directive automatically makes the utility implement
-        `ILocalUtility` and `IAttributeAnnotatable`. I also changed all the
-        local utility declarations to use this new directive.
+        ``ILocalUtility`` and ``IAttributeAnnotatable``. I also changed all
+        the local utility declarations to use this new directive.
 
         The directive now also makes sure that the class implements the
-        `IPersistent` and `ILocation` interfaces; without those a class cannot
-        be a local utility. This addresses issue 297.
+        ``IPersistent`` and ``ILocation`` interfaces; without those a class
+        cannot be a local utility. This addresses issue 297.
 
-      - The `Attribute` and `Method` class of the `zope.interface` have now a
-        new public `interface` attribute that stores the interface they are
-        defined in.
+      - The ``Attribute`` and ``Method`` class of the ``zope.interface`` have
+        now a new public `interface` attribute that stores the interface they
+        are defined in.
 
       - New Pluggable Authentication Utility (PAU), which is similar in
         philosophy to the Zope 2 PAS. The following features are available in
@@ -301,7 +334,7 @@ Zope Changes
         o Authenticator Plugins: Principal Folder, Group Folder
 
         For a detailed description of the pluggable authentication utility,
-        see zope/app/authentication/README.txt.
+        see ``zope/app/authentication/README.txt``.
 
       - Added "sources", which are like vocabularies except that they
         support very large collections of values that must be
@@ -309,20 +342,21 @@ Zope Changes
 
       - Ported Zope Version Control
 
-      - Added an option (-1) to the test runner to suppress doctest
+      - Added the option ``-1`` to the test runner to suppress doctest
         errors after the first within each doctest.
 
-      - If the adapter factory returns `None` as adapter instance, the default
-        is returned instead of `None`. For benefits and the discussions see
-        http://mail.zope.org/pipermail/interface-dev/2004-September/000070.html
+      - If the adapter factory returns ``None`` as adapter instance, the
+        default is returned instead of `None`. For benefits and the
+        discussions see
+        `http://mail.zope.org/pipermail/interface-dev/2004-September/000070.html`
 
-      - Added new API method `getAdapters(objects, provided)` to `zapi`. It
+      - Added new API method ``getAdapters(objects, provided)`` to ``zapi``. It
         will return all available adapters for this configuration. Note that
         every name will be only returned once.
 
       - When parsing a DSN, allow the host to be specified without a port.
 
-      - Added `apidoc:rootModule` directive, so that third-party products can
+      - Added ``apidoc:rootModule`` directive, so that third-party products can
         add their packages to the class browser documentation module.
 
       - Separated the trusted and untrusted behaviors of page
@@ -330,7 +364,7 @@ Zope Changes
         templates are trusted, and database-based templates are
         untrusted.
 
-      - Implemented rdb:gadflyRoot directive.
+      - Implemented ``rdb:gadflyRoot`` directive.
 
       - Schemas are now copied before they are appended to content type or
         instance. This should probably become a policy later.
@@ -339,8 +373,8 @@ Zope Changes
         that a link to the cache utility can be provided.
 
       - Added '++debug++' traversal adapter that allows you to turn on
-        debugging flags in request.debug.  Currently the following flags are
-        defined:
+        debugging flags in ``request.debug``.  Currently the following flags
+        are defined:
 
         + "source" adds HTML comments to rendered page templates showing
            where each code snippet came from.
@@ -350,7 +384,7 @@ Zope Changes
 
         + "errors" shows full tracebacks when a system error occurs.
 
-        Try e.g. http://localhost:8080/++debug++source,tal/@@contents.html
+        Try e.g. `http://localhost:8080/++debug++source,tal/@@contents.html`
         and view the source of the resulting page.
 
       - Added 'url' adapter for ``IPathAdapter``. It provides quoting
@@ -367,17 +401,12 @@ Zope Changes
         ``zope.app.container.constraints.containers``) that greatly simplify
         expressing containment constraints.
 
-      - Added a view 'failsafelogin.html' that always uses HTTP basic auth
+      - Added a view `failsafelogin.html` that always uses HTTP basic auth
         credentials to identify a principal. This can be used to login as
         admin in the event a site authentication configuration is broken and
         needs to be fixed. E.g. to login using basic auth, use a URL such as:
 
           http://yoursite.com/@@failsafelogin.html
-
-      - Added a re-implementation of i18n message IDs (now simply
-        called ``Message``) that is immutable and thus can be treated
-        like unicode strings with respect to security proxying.  This
-        implementation will replace the old one in upcoming versions.
 
       - Added support for different text orientations in locale data.
         This is typically used for loading different webpage
@@ -403,28 +432,28 @@ Zope Changes
         turned out that subscribers did not accept classes yet, so I
         implemented the feature for subscribers.
 
-      - Addressed issue 295: Sort out defaultView.
+      - Addressed issue 295: Sort out ``defaultView``.
 
         Deprecated ``zope:defaultView`` directive and removed unused default
         view handler in ``zope.app.publisher.browser.viewmeta``. Added a
-        ``layer`` attribute to the `browser:defaultView` directive.
+        ``layer`` attribute to the ``browser:defaultView`` directive.
 
       - ``zope.component.createObject`` no longer accepts a positional
         context argument.  A context can be provided as a keyword argument.
 
       - Deprecated ``_configureCopy`` in
         ``zope.app.copypastemove.ObjectCopier``. To configure a recently
-        copied object, suscribe to IObjectCopiedEvent for the type of object
-        you're interested in configuring.
+        copied object, suscribe to ``IObjectCopiedEvent`` for the type of
+        object you're interested in configuring.
 
       - Several changes have been made to the API doc tool:
 
-        + Rewrote the ZCML file parser to reuse the zope.configuration
+        + Rewrote the ZCML file parser to reuse the ``zope.configuration``
           code. This makes the code much more stable and predictable.
 
         + General inspection utilities are now *publically* available in the
-          modules: utilities, interface, component, presentation,
-          classregistry
+          modules: `utilities`, `interface`, `component`, `presentation`,
+          `classregistry`
 
         + The interface details view has been broken up into macros, so that
           the HTML code snippets can be reused.
@@ -448,177 +477,183 @@ Zope Changes
         registry directly via the site manager's ``adapters`` and ``utilities``
         attribute, respecitvely.
 
-        + Converted Error Reporting Service to a utility. Added database
+        + Converted `Error Reporting Service` to a utility. Added database
           evolution code to convert all service instances to utilities.
 
-        + Converted Authentication Service to be a utility. Renamed PAS to
+        + Converted `Authentication Service` to be a utility. Renamed PAS to
           PAU.
 
-        + Converted Principal Annotation Service to be a utility. Added
+        + Converted `Principal Annotation Service` to be a utility. Added
           database evolution code to convert all service instances to
           utilities.
 
-        + Converted FSSync Service to be a utility.
+        + Converted `FSSync` Service to be a utility.
 
         + Created the concept of a global site manager. The adapter and
           utility registry, formerly the adapter and utility service, are now
           managed by the site manager.
 
-        + The `zope.app.utility` package has been merged into
-          `zope.app.component`. The utility registration class is in
-          `site.py`. The utility vocabulary is in `vocabulary.py`.
+        + The ``zope.app.utility`` package has been merged into
+          ``zope.app.component``. The utility registration class is in
+          ``site.py``. The utility vocabulary is in ``vocabulary.py``.
 
-        + The `zope.app.site` package has been merged into
-          `zope.app.component`. The site code can be found in `site.py`.
+        + The ``zope.app.site`` package has been merged into
+          ``zope.app.component``. The site code can be found in ``site.py``.
 
         + Fixed persistent modules code. Persistent modules are now simply
-          utilities providing `IModuleManager`. The local site manager also
+          utilities providing ``IModuleManager``. The local site manager also
           does not know any thing about persistent modules anymore.
 
-        + Updated `zope.app.pluggableauth`, so that it will work as an
+        + Updated ``zope.app.pluggableauth``, so that it will work as an
           authentication utility.
 
-        + Restructured `zope.app.presentation` (a.k.a page folders) to
+        + Restructured ``zope.app.presentation`` (a.k.a page folders) to
           the new component API.
 
       - Simplified the registration framework by only supporting two states:
-        active and inactive. This allowed us to get rid of the registration
-        stack and the complexity it introduced to the site management.
+        `active` and `inactive`. This allowed us to get rid of the
+        registration stack and the complexity it introduced to the site
+        management.
 
-      - Removed all presentation-related APIs from `zope.component`. This
+      - Removed all presentation-related APIs from ``zope.component``. This
         included the removal of presentation-related interfaces and the
         deprecation of all view-related API functions. One should use the
         adapter API functions instead.
 
-      - The `pluggableauth` package has been deprecated. The `authentication`
-        module provides a much more modular approach with many more
-        capabilities.
+      - The ``pluggableauth`` package has been deprecated. The
+        ``authentication`` module provides a much more modular approach with
+        many more capabilities.
 
-      - Removed special `DomainRegistration` now that we have events for
+      - Removed special ``DomainRegistration`` now that we have events for
         notification.
 
-      - Removed special `RoleRegistration` now that we have events for
-        notification. Also, renamed `PersistentRole` to `LocalRole`.
+      - Removed special ``RoleRegistration`` now that we have events for
+        notification. Also, renamed ``PersistentRole`` to ``LocalRole``.
 
       - Refactored Registration component for local components
 
-        + Deprecated the `activated()` and `deactivated()` method. It is now
-          replaced with the 'IRegistrationActivatedEvent' and
-          'IRegistrationDectivatedEvent', respectively.
+        + Deprecated the ``activated()`` and ``deactivated()`` method. It is
+          now replaced with the ``IRegistrationActivatedEvent`` and
+          ``IRegistrationDectivatedEvent``, respectively.
 
         + Added an event dispatcher for component registrations to support
           subscriptions for specific component types. E.g. one can declare a
-          subscriber for (IFoo, IRegistrationActivatedEvent) to be notified
-          when IFoo component registrations are activated.
+          subscriber for ``(IFoo, IRegistrationActivatedEvent)`` to be
+          notified when ``IFoo`` component registrations are activated.
 
         + Restructured registration framework to use direct references rather
           than paths.
 
-      - Replaced NotFoundError uses with more specific and meaningful
-        exceptions. Eventually, NotFoundError will be deprecated.
+      - Replaced ``NotFoundError`` uses with more specific and meaningful
+        exceptions. Eventually, ``NotFoundError`` will be deprecated.
 
-        - Publishing traversal components noew raise NotFound
+        - Publishing traversal components now raise ``NotFound``
 
-        - Other traversal components raise TraversalError
+        - Other traversal components raise ``TraversalError``
 
-        - getPrincipal of IAuthenticationService now raises
-          PrincipalLookupError.
+        - ``getPrincipal()`` of ``IAuthenticationService`` now raises
+          ``PrincipalLookupError``.
 
       - Removed Browser Menu Service and implemented menus as subscriber
-        adapters. Menus are utilities providing `IBrowserMenu`. The default
+        adapters. Menus are utilities providing ``IBrowserMenu``. The default
         menu implementation looks up menu items as views on the provided
-        object. The view must provide `IMenuItemType`.
+        object. The view must provide ``IMenuItemType``.
 
         + Implemented sub-menus. Sub-menus keep track of the menu id that
           provides the sub-entries.
 
-        + Completes http://dev.zope.org/Zope3/AdaptersForMenuItems. New
+        + Completes `http://dev.zope.org/Zope3/AdaptersForMenuItems`. New
           features such as sub-menus, icons, disabled entries and so on were
           not well defined and should be reconsidered in a different proposal.
 
-        + Backward-compatibility of the existing `browser` directives was
+        + Backward-compatibility of the existing ``browser`` directives was
           ensured.
 
         + If you have a directive that accepts a menu as attribute, it now
-          needs to be a `MenuField`, so that it is correctly resolved to a menu
-          interface.
+          needs to be a ``MenuField``, so that it is correctly resolved to a
+          menu interface.
 
-        + The `browser:menu` directive has now an optional `interface`
+        + The ``browser:menu`` directive has now an optional ``interface``
           attribute that allows you to specify a particular menu interface
           instead of having the machinery create one for you.
 
-        + The two API methods `getMenu()` and `getFirstItemOfMenu()` of the
-          Browser Menu Service are now available as functions in
-          `zope.app.publisher.browser.menu` having identical semantics.
+        + The two API methods ``getMenu()`` and ``getFirstItemOfMenu()`` of
+          the Browser Menu Service are now available as functions in
+          ``zope.app.publisher.browser.menu`` having identical semantics.
 
-        + Added `order` attribute to the menu item that declares the item's
-          relative position. In general the menu items are always sorted from
-          most to least specific, which is determined by the order of the
-          implemented interfaces of the object. If ambiguities still exists,
-          the order and then the title of the menu item are taken account.
+        + Added the ``order`` attribute to the menu item that declares the
+          item's relative position. In general the menu items are always
+          sorted from most to least specific, which is determined by the order
+          of the implemented interfaces of the object. If ambiguities still
+          exists, the order and then the title of the menu item are taken
+          account.
 
       - Removed Presentation Serivce and implemented views as adapters. This
         mainly means that layers and skins became adapters. Here are some
         other points:
 
-        + Completes http://dev.zope.org/Zope3/ImplementViewsAsAdapters.
+        + Completes `http://dev.zope.org/Zope3/ImplementViewsAsAdapters`.
 
         + Backward-compatibility of the Zope component API and the browser
           directives was ensured.
 
-        + The `setPresentationSkin()` and `getPresentationSkin()` directives
-          of `IRequest` objects were removed. They were not used anywhere but
-          testing anyways.
+        + The ``setPresentationSkin()`` and ``getPresentationSkin()``
+          directives of ``IRequest`` objects were removed. They were not used
+          anywhere but testing anyways.
 
-        + The default skin is now just an adapter from `IRequest` to
-          `IDefaultSkin`. You have to use `adapter_service.lookup()`, since
-          the returned component is a skin interface and not a factory.
+        + The default skin is now just an adapter from ``IRequest`` to
+          ``IDefaultSkin``. You have to use ``adapter_service.lookup()``,
+          since the returned component is a skin interface and not a factory.
 
         + The adapter service can now provide adapters from objects as well,
           like it was possible in the presentation service before.
 
-        + Gave `browser:skin` and `browser:layer` directive a new attribute
-          `interface`, which allows you to directly specify the skin's or
-          layer's interface instead of autogenerating it.
+        + Gave ``browser:skin`` and ``browser:layer`` directive a new
+          attribute ``interface``, which allows you to directly specify the
+          skin's or layer's interface instead of autogenerating it.
 
-        + Created function `applySkin(request, skin)`
-          (`zope.app.publisher.browser`) that allows you to assign a new skin
-          to a request. This effectively replaces the `setPresentationSkin()`
-          method.
+        + Created function ``applySkin(request, skin)``
+          (``zope.app.publisher.browser``) that allows you to assign a new
+          skin to a request. This effectively replaces the
+          ``setPresentationSkin()`` method.
 
-        + Created an explicit IDefaultLayer, which is, by default, added to
+        + Created an explicit ``IDefaultLayer``, which is, by default, added to
           incoming browser requests. However, it is not added when an explicit
           skin is specified. This allows developers to create skins that do
           not include the default layer.
 
-      - Replaced copypastemove.rename with adapters to IContainerItemRenamer.
-        Instead of `rename(container, oldName, newName)`, one should use
-        `IContainerItemRenamer(container).renameItem(oldName, newName)`.
+      - Replaced ``copypastemove.rename`` with adapters to
+        ``IContainerItemRenamer``.  Instead of 
+        ``rename(container, oldName, newName)``, one should use
+        ``IContainerItemRenamer(container).renameItem(oldName, newName)``.
 
       - Moved site-specific security policy configuration into
-        securitypolicy.zcml. If you want to change the default security policy
-        for a Zope instance, you can modify this file in your etc directory.
+        ``securitypolicy.zcml``. If you want to change the default security
+        policy for a Zope instance, you can modify this file in your etc
+        directory.
 
-      - Added formal support for logout. See zope/app/security/logout.txt for
-        more information.
+      - Added formal support for logout. See ``zope/app/security/logout.txt``
+        for more information.
 
       - Made the 'Logout' link optionally configured by registering a marker
         component in ZCML. To display the link, add this:
 
           <adapter factory="zope.app.security.LogoutSupported" />
 
-        to your site.zcml or overrides.zcml. The burden is now on the site
-        admin to configure a site so that the 'logout' function is supported.
-        (The default authentication scheme, HTTP basic auth, does not support
-        logout.) See zope/app/security/browser/loginlogout.txt for details.
+        to your ``site.zcml`` or ``overrides.zcml``. The burden is now on the
+        site admin to configure a site so that the ``logout()`` function is
+        supported.  (The default authentication scheme, HTTP basic auth, does
+        not support logout.) See ``zope/app/security/browser/loginlogout.txt``
+        for details.
 
     Bug Fixes
 
       - Fix #356 : Copy and Paste does not handle exceptions raised by
-        __setitem__
+        ``__setitem__``
 
-      - Made different key reference implementations comparable:IKeyReference
-        interface is extended by an additional key_type_id attribute.
+      - Made different key reference implementations comparable:
+        ``IKeyReference`` interface is extended by an additional
+        ``key_type_id`` attribute.
 
       - Fixed issue #400: i18n image broken in trunk
 
@@ -631,61 +666,56 @@ Zope Changes
         adapter directive so that restricted adapters work with local
         authentication too.
 
-      - Fix #313 : importchecker.py ignores assignment to module attributes
+      - Fix #313 : `importchecker.py` ignores assignment to module attributes
 
       - Fix #327 : File type change clears object content
 
       - Disabled automatic translation of message id's in TAL.
 
-      - Fixed tal:replace="default" bug.
+      - Fixed ``tal:replace="default"`` bug.
 
       - Fixed issue #380: Local Utility don't get correct removed
 
       - Fixed issue #369: DAV is broken on the trunk.
 
-      - Fixed issue #407: zope.app.publication.http.MethodNotAllowed.__str__:
-        'request' should be self.request
+      - Fixed issue #407: `zope.app.publication.http.MethodNotAllowed.__str__`:
+        ``request`` should be ``self.request``
 
       - Fixed issue #333: XML Tree doesn't load if some item
         contains non-ASCII characters 
 
-      - Fixed issue #301: Bug with i18n:name and i18n:translate
+      - Fixed issue #301: Bug with ``i18n:name`` and ``i18n:translate``
         on the same element
 
       - The interface directive supports multiple interface types now.
 
-      - Fixed issue #314: i18n:translate removes line breaks
-        from <pre>...</pre> contents
+      - Fixed issue #314: ``i18n:translate`` removes line breaks from
+        ``<pre>...</pre>`` contents
 
-      - The getAdapters function on site managers returned None when
-        adapter factories returned None. These values should not be
+      - The ``getAdapters()`` function on site managers returned ``None`` when
+        adapter factories returned ``None``. These values should not be
         included in the output and now aren't.
 
-      - Fixed issue #394: starting zope with command -C arg
-        causes request.form to contain '-C':''
+      - Fixed issue #394: starting zope with command ``-C`` arg
+        causes ``request.form`` to contain ``'-C':''``
 
       - Fixed issue #387: apidoc and Cookie
 
-      - Fixed issue #334: Failing RuntimeInfo tests
+      - Fixed issue #334: Failing ``RuntimeInfo`` tests
 
-      - Fix: Pagelet directive was inoring the permission. Pagelets which
-        not the right permission are not shwon if calling via the Tales
-        expression "pagelets:". If calling named pagelets directly via the
-        Tales expression "pagelet:" we raise a Unauthorized exception if
-        the permission ins't right.
+      - Fix: Register the `zmi_actions` on the right layer if the layer
+        attribute is used in the containerViews directive
 
-      - Fix: Register the zmi_actions on the right layer if the layer attribute
-        is used in the containerViews directive
+      - Fix: Make use of the ``layer`` attribute in the ``menuItemDirective``
 
-      - Fix: Make use of the layer attribute in the menuItemDirective
-
-      - Fixed issue #345: Using response.write should not involve unicode
+      - Fixed issue #345: Using ``response.write`` should not involve unicode
                           conversion
 
-      - Fixed issue #371: OrderedMultiSelectWidget ignores setRenderedValue
+      - Fixed issue #371: ``OrderedMultiSelectWidget`` ignores
+                          ``setRenderedValue``
 
-      - Fixed issue #360: MultiSelectWidget configured for ISet but creates
-                          list
+      - Fixed issue #360: ``MultiSelectWidget`` configured for ``ISet`` but
+                          creates list
 
         The correct type of the collection field is now discovered and used.
 
@@ -695,50 +725,49 @@ Zope Changes
         possible, so I just prepended "ImportError:" to the error message.
 
       - Fixed issue #352: documentation for
-        zope.app.form.interfaces.IInputWidget.validate is wrong
+        ``zope.app.form.interfaces.IInputWidget.validate`` is wrong
 
       - Fixed issue #317: Relative links don't work in Page Template
 
-      - Fixed issue #335 (debug layer does not work with Zope3-trunk)
+      - Fixed issue #335 (`debug` layer does not work with Zope3-trunk)
 
-      - Fixed issue #338 (zapi help missing from the online help)
+      - Fixed issue #338 (`zapi` help missing from the online help)
 
-      - Fixed issue #349 (Adapter registry doesn't notice __bases__ changes.)
+      - Fixed issue #349 (Adapter registry doesn't notice `__bases__` changes.)
 
         Thanks to "foom" for the report and the fix.
 
-      - Fixed issue #354 (apidoc: 'SubscriptionRegistration' object has no
-                          attribute 'name')
+      - Fixed issue #354 (apidoc: ``SubscriptionRegistration`` object has no
+                          attribute ``name``)
 
-      - Fixed issue #366 (_zope_interface_coptimizations.c compilation error)
+      - Fixed issue #366 (`_zope_interface_coptimizations.c` compilation error)
 
-      - Fixed issue #368 (Typo fix in src/zope/app/container/constraints.py)
+      - Fixed issue #368 (Typo fix in `src/zope/app/container/constraints.py`)
 
       - Fixed issue #329 (apidoc + TAL)
 
       - Object copy events weren't dispatched for object sublocations.
 
       - When I converted layers and skins to interfaces, I got the layer part
-        wrong and made layer interfaces extend `ILayer`. But `ILayer` is an
-        `IInterface`, *not* an Interface. Layers should not extend but provide
-        `ILayer`.
+        wrong and made layer interfaces extend ``ILayer``. But ``ILayer`` is
+        an ``IInterface``, *not* an ``Interface``. Layers should not extend
+        but provide ``ILayer``.
 
-      - Fixed most formatting characters for i18n's datetime formatter. Only
-        timezones are left.
+      - Fixed most formatting characters for i18n's datetime formatter.
 
-      - Partially fixed issue #306 (Problem 2: Browser page and view directive
-        cannot register serveral pages views within different layers for
-        the same for, menu and title attributes.)
+      - Partially fixed issue #306 (Problem 2: Browser ``page`` and ``view``
+        directive cannot register serveral pages views within different layers
+        for the same for, menu and title attributes.)
 
-      - Fixed issue #353 (applySkin does not work in functional doctests).
+      - Fixed issue #353 (``applySkin()`` does not work in functional doctests).
 
-      - Fix SequenceWidgets
-        Added a CustomSequenceWidgetFactory for using object widgets within a 
-        sequence. Added a howto for ObjectWidget
+      - Fix ``SequenceWidget``s. Added a ``CustomSequenceWidgetFactory`` for
+        using object widgets within a sequence. Added a howto for``
+        ObjectWidget``.
 
-      - Fixed issue #293 (SequenceWidget and CustomWidgetFactory).
+      - Fixed issue #293 (``SequenceWidget`` and ``CustomWidgetFactory``).
 
-      - TextWidgets set the value attribute to "value" when the field
+      - ``TextWidget``s set the ``value`` attribute to "value" when the field
         has a missing value set and was not required and when there
         was no input.
 
@@ -749,25 +778,25 @@ Zope Changes
         values in a DSN are properly URL-encoded, so that all values can
         contain any special character, except for the hostname and the port.
 
-      - Fixed intid utility: Registration and unregistration of
+      - Fixed `intid` utility: Registration and unregistration of
         local utitlity services, context aware registration of nested
         components that may provide their own intids utiltities.
 
-      - Fixed browser:defaultView metaconfigure: for_ passes a GlobalObject
-        and not a Token of GlobalObjects.
+      - Fixed ``browser:defaultView`` metaconfigure: ``for_`` passes a
+        ``GlobalObject`` and not a ``Token`` of ``GlobalObjects``.
 
-      - Changed negotiator import with "INegotiator" utility lookup in
-        default global "TranslationDomain". This makes it possible to
-        use local INegotiator utilities with the standard translation
+      - Changed negotiator import with ``INegotiator`` utility lookup in
+        default global ``TranslationDomain``. This makes it possible to
+        use local ``INegotiator`` utilities with the standard translation
         domain.
 
-      - contents.html no longer breaks when no IAdding is available.
+      - `contents.html` no longer breaks when no ``IAdding`` is available.
 
       - Fixed the page that reports "system errors", errors that
         represent a failure of the system, rather than the user, to set
         the response status to 500.
 
-      - NotFound pages and stattus codes are now returned only when
+      - ``NotFound`` pages and stattus codes are now returned only when
         something can't be found during publishing-path (e.g. URL)
         traversal. Traversal errors within application code are no
         longer treated as "Not Found" errors.
@@ -778,15 +807,15 @@ Zope Changes
       - Small but important fix to security map. It was not marking objects
         with modified permissions as changed, due to a missing assignment.
 
-      - Contents/contents.pt didn't quote the values that were used in
-        href:s, thus it couldn't function properly if the items contained
+      - ``Contents/contents.p``t didn't quote the values that were used in
+        ``href:``'s, thus it couldn't function properly if the items contained
         certain characters.
 
-      - If the content-type was text/*, HTTPResponse.write re-set the
-        content-length header to the first chunk of data.
+      - If the `content-type` was "text/*", ``HTTPResponse.write` re-set the
+        `content-length` header to the first chunk of data.
 
-      - Don't unconditionally add Content-Length header in
-        HTTPResponse.getHeaders(). Do it only in output(), where the
+      - Don't unconditionally add `Content-Length` header in
+        ``HTTPResponse.getHeaders()``. Do it only in ``output()``, where the
         size of the data is known.
 
       - Let the determination of an HTTP request's locale be handled
@@ -794,8 +823,8 @@ Zope Changes
         (``IUserPreferredLanguages``), instead of hard-wiring the
         default one.
 
-      - For ``for`` parameter of the <browser:menuItem> and
-        <browser:menuItems> directives was not marked as required in
+      - For ``for`` parameter of the ``browser:menuItem`` and
+        ``browser:menuItems`` directives was not marked as required in
         the directive schema, while it actually was expected to be
         required.
 
@@ -806,8 +835,6 @@ Zope Changes
       Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
       Bishop, Dominik Huber, Dmitry Vasiliev, Gary Poster
 
-      Note: If you are not listed and contributed, please add yourself. This
-      note will be deleted before the release.
 
   ------------------------------------------------------------------
 
