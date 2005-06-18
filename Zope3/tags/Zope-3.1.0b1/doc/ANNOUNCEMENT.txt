@@ -18,7 +18,7 @@ release, so please let us know if the new release breaks your code.
 
 Downloads
 
-  http://zope.org/Products/Zope3
+  http://zope.org/Products/Zope3/
 
   Installation instructions for both Windows and Un*x/Linux are now available
   in the top level 'README.txt' file of the distribution. The binary installer
