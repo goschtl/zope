@@ -239,9 +239,6 @@
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
 
-    <implements
-       interface="zope.app.container.interfaces.IContentContainer" />
-
     <factory
         id="bugtracker.Bug"
         title="Bug"

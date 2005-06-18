@@ -25,12 +25,11 @@ from zope.schema.interfaces import IVocabulary, IVocabularyTokenized
 from zope.app.container.constraints import ContainerTypesConstraint
 from zope.app.container.constraints import ItemTypePrecondition
 from zope.app.container.interfaces import IContainer, IContained
-from zope.app.container.interfaces import IContentContainer
 from zope.app.file.interfaces import IFile
 from bugtracker import TrackerMessageID as _
 
 
-class IBugTracker(IContainer, IContentContainer):
+class IBugTracker(IContainer):
     """A Bug Tracker object represents a collection of bugs for a particular
     software or subject.
 
@@ -174,7 +173,7 @@ class IAttachment(Interface):
     """A marker interface for objects that can serve as Bug attachments."""
 
 
-class IAttachmentContainer(IContainer, IContentContainer):
+class IAttachmentContainer(IContainer):
     """An object that contains attachments, i.e. comments and files."""
 
     def __setitem__(name, object):
