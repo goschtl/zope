@@ -648,6 +648,8 @@ Zope Changes
 
     Bug Fixes
 
+      - Fix #332 : Death to IContentContainer
+
       - Fix #356 : Copy and Paste does not handle exceptions raised by
         ``__setitem__``
 

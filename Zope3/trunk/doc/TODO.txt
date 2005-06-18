@@ -33,8 +33,6 @@ Others
 
   * 316: Zope3X test.py truncates path with dir=
 
-  * 332: Death to IContentContainer
-
   * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
 
   * 344: PAU registration error

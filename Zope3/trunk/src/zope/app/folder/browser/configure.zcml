@@ -21,6 +21,7 @@
       for="zope.app.folder.interfaces.IFolder"
       contents="zope.ManageContent"
       index="zope.View"
+      add="zope.ManageContent"
       />
 
   <!-- Preview view - requires zope.app.preview -->

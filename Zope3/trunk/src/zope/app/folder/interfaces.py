@@ -17,13 +17,12 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
-from zope.app.container.interfaces import IContainer, IContentContainer
+from zope.app.container.interfaces import IContainer
 from zope.app.traversing.interfaces import IContainmentRoot
 from zope.app.component.interfaces import IPossibleSite
 from zope.app.annotation.interfaces import IAttributeAnnotatable
 
-class IFolder(IContainer, IContentContainer, IPossibleSite,
-              IAttributeAnnotatable):
+class IFolder(IContainer, IPossibleSite, IAttributeAnnotatable):
     """The standard Zope Folder object interface."""
 
 class IRootFolder(IFolder, IContainmentRoot):
