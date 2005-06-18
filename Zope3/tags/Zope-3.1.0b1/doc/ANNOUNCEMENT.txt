@@ -1,0 +1,135 @@
+Release date: June 18, 2005
+
+The Zope 3 development team is proud to announce Zope 3.1.0 beta 1.
+
+Zope 3 is the next major Zope release and has been written from scratch based
+on the latest software design patterns and the experiences of Zope 2.
+
+It is in our opinion that Zope 3.1 is more than ready for production use,
+which is why we decided to drop the 'X' for experimental from the name. We
+will also continue to work on making the transition between Zope 2 and Zope 3
+as smooth as possible. As a first step, Zope 2.8 includes Zope 3 features in
+the form of Five.
+
+Please test this release carefully and send us any feedback! In particular, we
+have tried very hard to keep backward-compatibility with the previous X3 3.0
+release, so please let us know if the new release breaks your code.
+
+
+Downloads
+
+  http://zope.org/Products/Zope3
+
+  Installation instructions for both Windows and Un*x/Linux are now available
+  in the top level 'README.txt' file of the distribution. The binary installer
+  is recommended for Windows.
+
+  Zope 3.1 requires Python 2.3.5 or 2.4.1 to run. You must also have zlib
+  installed on your system.
+
+
+Most Important Changes Since 3.0
+
+  - New Pluggable Authentication Utility (PAU), which is similar in
+    philosophy to the Zope 2 PAS. The following features are available in
+    the in the basic PAU facility:
+
+    + Credentials Plugins: Basic HTTP Auth, Session
+
+    + Authenticator Plugins: Principal Folder, Group Folder
+
+    For a detailed description of the pluggable authentication utility,
+    see 'zope/app/authentication/README.txt'.
+
+  - Major simplifications to the component architecture:
+
+    + Removal of the concept of a service. All outstanding services were
+      converted to utilities: Error Reporting, FSSync, Authentication.
+
+    + Site Managers are global and local now; adapters and utilties are
+      directly registered with the site manager. Now global and local
+      component registration and lookup behaves very similar.
+
+    + Local registrations can now only have two states: active and
+      inactive. This simplified the code so much, that 'zope.app.utility',
+      'zope.app.registration' and 'zope.app.site' were all merged into
+      'zope.app.component'.
+
+    + Implemented menus as utilities. The API also supports sub-menus now.
+
+    + Implemented views as adapters. Skins and layers are now simply
+      interfaces that the request provides.
+
+  - Added an integer-id facility for assigning integer identifiers
+    to objects.
+
+  - Added basic catalog and index frameworks.
+
+  - Added "sources", which are like vocabularies except that they
+    support very large collections of values that must be
+    searched, rather than browsed.
+
+  - Created a new granting UI that allows advanced searching of
+    principal sources.
+
+  - Implemented a generic user preferences systsem that was designed to be
+    easily used in TALES expressions and via Python code. Preferences can be
+    edited via 'http://localhost:8080/++preferences++/'. A demo of the
+    preferences can be found at::
+
+      http://svn.zope.org/Zope3/trunk/src/zope/app/demo/skinpref/
+
+  - ZCML now supports conditional directives using the 'zcml:condition'
+    attribute. The condition is of the form "verb argument". Two verbs, 'have
+    feature' and 'installed module' are currently implemented. Features can be
+    declared via the 'meta:provides' directive.
+
+  - Improved API doctool: Code Browser now shows interfaces, text files and
+    ZCML files; the new Book Module compiles all available doctext files into
+    an organized book; the new Type Module lets you browser all interface
+    types and discover interfaces that provide types; views are shown in the
+    interface details screen; views and adapters are categorized into
+    specific, extended and generic; user preferences allow you to customize
+    certain views; 3rd party modules can now be added to the Code Browser.
+
+  - Improved I18n-based number and datetime formatting by integrating 'pytz'
+    for timezone support, implementing all missing format characters, and
+    reinterpreting the ICU documentation to correctly parse patterns.
+
+  - Added '++debug++' traversal adapter that allows you to turn on
+    debugging flags in 'request.debug'. Currently the following flags
+    are defined: source, tal, errors.
+
+  - Improved logout support.
+
+  - Added the HTTP request recorder, which lets you inspect raw HTTP requests
+    and responses.  It can be used to create functional doctests without
+    requiring third-party tools such as TCPWatch.
+
+  - Developed a generic 'browser:form' directive. It is pretty much the
+    same as the 'browser:editform' directive, except that the data is
+    not stored on some context or adapted context but sent as a dictionary
+    to special method (by default).
+
+  For a complete list of changes see the 'CHANGES.txt' file.
+
+
+Resources
+
+  - "Zope 3 Development Web Site":http://dev.zope.org/Zope3
+
+  - "Zope 3 Dev Mailing List":http://mail.zope.org/mailman/listinfo/zope3-dev
+
+  - "Zope 3 Users Mailing List":http://mail.zope.org/mailman/listinfo/zope3-users
+
+  - IRC Channel: #zope3-dev at irc.freenode.net
+
+
+Acknowledgments
+
+  Thanks goes to everyone that contributed.
+
+  Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
+  Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
+  Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
+  Bishop, Dominik Huber, Dmitry Vasiliev, Gary Poster, Julien Anguenot
