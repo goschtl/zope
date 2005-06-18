@@ -1,99 +1,123 @@
+===========================
 Welcome to the Zope3 source
+===========================
 
-  This file provides some basic hints for people developing Zope3
-  software.  There is more developer info in the Zope3 Wiki:
+This file provides some basic hints for people developing Zope3 software.
+There is more developer info in the Zope 3 Wiki:
 
   http://dev.zope.org/Zope3/Zope3DeveloperInfo
 
-  For information about the current release, see doc/CHANGES.txt.
+For information about the current release, see ``doc/CHANGES.txt``.
 
-  Zope 3 is in an early stage of development. See doc/CHANGES.txt to
-  find out more!
+Zope 3 is now a stable platform on which production systems can and are built.
+
 
 Building and running tests
+--------------------------
 
-  See INSTALL.txt which Python version is required for Zope 3.
+See ``INSTALL.txt`` which Python version is required for Zope 3.
 
-  In the top-level Zope3 directory, you should find a script called
-  setup.py.  Run it to build the extension modules needed by
-  Zope.  Example::
+In the top-level ``Zope3`` directory, you should find a script called
+setup.py.  Run it to build the extension modules needed by Zope.  Example::
 
-    # cd Zope3
-    # python2.3 setup.py -q build_ext -i
+  # cd Zope3
+  # python setup.py -q build_ext -i
 
-  On a unix variant, you can just type: 'make'
+On a unix variant, you can just type: ``make``
 
-  On Windows, if you downloaded the binary distribution, this has
-  already been done for you (since the compiler we use on Windows
-  isn't free).
+On Windows, if you downloaded the binary distribution, this has already been
+done for you (since the compiler we use on Windows isn't free).
 
-  Zope3 includes unit tests based on the Python unittest module.  If
-  you check in changes, you should verify that all the tests succeed
-  before you commit changes.
+Zope 3 includes unit tests based on the Python unittest module.  If you check
+in changes, you should verify that all the tests succeed before you commit
+changes.
 
-  To run all the tests, use the script test.py::
+To run all the tests, use the script test.py::
 
-    # python2.3 test.py -v
+  # python test.py -v
 
-  Use test.py -h for usage.  The test script can run selected tests,
-  stop after the first error, run the tests in a loop, etc.
+Use ``test.py -h`` for usage.  The test script can run selected tests, stop
+after the first error, run the tests in a loop, etc.
 
-Starting Zope3
 
-  Before running Zope, you need to create one or more bootstrap users.
-  Copy the file 'sample_principals.zcml' to 'principals.zcml', and edit the
-  result to your needs.  Make sure you change the passwords.
+Starting Zope 3
+---------------
 
-  To run Zope just run the z3.py script:
+Before running Zope, you need to create one or more bootstrap users.  Copy the
+file ``sample_principals.zcml`` to ``principals.zcml``, and edit the result to
+your needs.  Make sure you change the passwords.
 
-    # python2.3 z3.py
+To run Zope just run the ``z3.py`` script::
 
-  Or, if you use make on Unix, you can run:
+  # python z3.py
 
-    # bin/runzope
+Or, if you use make on Unix, you can run::
 
-  This will run Zope on port 8080.  Visit the url:
+  # bin/runzope
 
-    http://localhost:8080/manage
+This will run Zope on port 8080.  Visit the url::
 
-  This goes to the Zope 3 default management interface.  Note that
-  this release of Zope 3 requires recent versions of Mozilla or IE.
+  http://localhost:8080/manage
 
-  If you insist on using an older browser (or a text-based browser)
-  you can use the basic Zope 3 skin by putting '++skin++Basic' after
-  the server part of the URL::
+This goes to the Zope 3 default management interface.  Note that
+this release of Zope 3 requires recent versions of Mozilla or IE. Note that
+other modern browsers, such as Konqueror and Safari, also mostly work well.
 
-    http://localhost:8080/++skin++Basic/manage
+If you insist on using an older browser (or a text-based browser)
+you can use the basic Zope 3 skin by putting ``++skin++Basic`` after
+the server part of the URL::
 
-  See doc/INSTALL.txt for more information.
+  http://localhost:8080/++skin++Basic/manage
 
-Finding out how to develop new content types:
+See ``doc/INSTALL.txt`` for more information.
 
-  We aren't as far along with documentation as we'd like to
-  be.  Please be patient or help out.  Some resources:
+
+Finding out how to develop new content types
+--------------------------------------------
+
+There are several documentation sources out there. As of this writing two
+books have been published and much online documentation is available:
+
+  - Zope 3 comes with an extensive API documentation tool, which also compiles
+    many of the package-specific README files. Once you start up Zope, simply
+    go to:
+
+      http://localhost:8080/++apidoc++
+
+  - `Zope 3 Developer's Handbook`:
+
+    * On Paper: http://www.samspublishing.com/title/0672326175
+
+    * Online: http://dev.zope.org/Zope3/Zope3Book
+
+  - `Web Component Development with Zope 3`:
+
+    * On Paper: http://www.springeronline.com/sgw/cda/frontpage/0,11855,1-102-22-35029949-0,00.html
+
+    * Online: http://www.worldcookery.com
 
   - The developers tutorial at:
 
     http://dev.zope.org/Zope3/ProgrammerTutorial
 
-  - The Zope3 developers book at:
+  - Ask questions on the mailing lists and chat channels:
 
-    http://dev.zope.org/Zope3/Zope3Book
+    * Zope 3 Development: ``http://lists.zope.org/mailman/listinfo/zope3-dev``
 
-  - Look for tidbits in the doc directory.
+    * Zope 3 Users: ``http://lists.zope.org/mailman/listinfo/zope3-users``
 
-  - Ask questions on the mailing list, 
-    http://lists.zope.org/mailman/listinfo/zope3-dev,
-    or on the irc channel, #zope3-dev, on irc.openprojects.net.
+    * IRC channel `#zope3-dev` on irc.freenode.net
 
   - To keep up with the latest changes, the commits mailing list
-    http://lists.zope.org/mailman/listinfo/zope3-checkins
+    ``http://lists.zope.org/mailman/listinfo/zope3-checkins``
+
 
 Acknowledgements
+----------------
 
-  Zope 3 is a Zope Community effort.  There are many Zope 3
-  contributors without whom there wouldn't be a Zope 3.
+Zope 3 is a Zope Community effort.  There are many Zope 3 contributors without
+whom there wouldn't be a Zope 3.
 
-  See the doc/CREDITS.txt file for details.
+See the ``doc/CREDITS.txt`` file for details.
 
-  Much thanks folks!
+Much thanks folks!
