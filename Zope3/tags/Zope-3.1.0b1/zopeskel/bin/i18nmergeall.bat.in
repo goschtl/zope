@@ -1,0 +1,4 @@
+@echo off
+set PYTHON=<<PYTHON>>
+set INSTANCE_HOME=<<INSTANCE_HOME>>
+"%PYTHON%" "%INSTANCE_HOME%\bin\i18nmergeall" %1 %2 %3 %4 %5 %6 %7

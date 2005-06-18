@@ -1,0 +1,19 @@
+include MANIFEST
+include Makefile
+include test.py
+include log.ini
+include z3.py
+include zope.conf.in
+include site.zcml sample_principals.zcml
+include *.zcml.in
+
+recursive-include src *.h *.c
+recursive-include src *.txt
+recursive-include src *.conf *.zcml *.in
+recursive-include src *.css *.gif *.html *.js *.pt *.xml *.jpg
+recursive-include src *.mo *.po
+
+include src/zope/app/rdb/gadfly/COPYRIGHT
+include src/zope/app/rdb/gadfly/*.mar
+
+graft doc

@@ -1,0 +1,51 @@
+====
+TODO
+====
+
+- Decide where we should place the style guides. I think the source zope.app 
+  is the right place, because we can include it in the onlinehelp.
+
+- fix ther onlinehelp template. Make it work that the tree box and 
+  the topic are next to each other and not below.
+  
+- Chechout if the online help works and include it in a own section
+  like 'skins.???'
+
+- Remove CSS test skin
+
+  Test skin "CSS" (just for prototyping) is located in src.css.browser
+  You can call it like::
+
+  http://localhost:8080/++skin++CSS
+
+  I've added a temporary test skin "CSS" in ./skin. We will remove it
+  after defining the style sheet. The new style sheet will be used in the
+  Rotterdam skin or the replacement of the Rotterdam later.
+
+  The default (Rotterdam) skin should use the zope3.css file in this
+  package. This way we can support one place where we have to update.
+
+  That's also the reason why this pakage is here and not in the 
+  zope.doc.
+
+- Search for used styles and add it to the following files:
+
+  o samples.html
+  o zope3.css
+  
+  We can copy paste it form the rotterdam skin. But check each
+  css tag. Perhaps we have obsolate tags in the rotterdam css
+  since we never did take care on it
+
+- Review text and correct Roger's swiss-german-english typos
+
+Bugs (seen in Rotterdam skin)
+-----------------------------
+
+- Fix resizing of left navigation, the navigation cuts long words
+
+- Fix long menues (zmi_actions), they get lost on the white background if
+  they get rendered in a second line below the blue bar
+
+- Fix colors in zope3.css
+  Don't use short colors like #369, they are not useable all graphic tools

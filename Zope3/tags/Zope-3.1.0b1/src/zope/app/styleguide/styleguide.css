@@ -1,0 +1,74 @@
+table.samples {
+    width: 650px;
+    border-top: 1px solid #CCCCCC;
+    border-left: 1px solid #CCCCCC;
+}
+
+table.samples th {
+    font-size: 15px;
+    font-weight: normal;
+    text-align: left;
+    white-space: nowrap;
+    background: silver;
+    padding: 5px 10px 5px 10px;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+table.samples th.number {
+    padding: 5px;
+}
+
+table.samples td.header {
+    font-size: 15px;
+    font-weight: bold;
+    text-align: left;
+    background: gainsboro;
+    padding: 5px 10px 5px 5px;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+table.samples td.abstract {
+    font-size: 14px;
+    color: #666666;
+    background: #F0F0F0;
+    padding: 5px 10px 5px 20px;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+table.samples td.number {
+    width: 30px;
+    height: 20px;
+    color: white;
+    background: #306090;
+    padding: 5px;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+table.samples td.tag, td.element, td.class {
+    width: 30px;
+    height: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    background: gainsboro;
+    padding: 5px 10px 5px 20px;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+table.samples td.description {
+    font-size: 13px;
+    color: #666666;
+    background: #F0F0F0;
+    padding: 5px 10px 5px 20px;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+}
+
+table.samples td.sample, td.code {
+    white-space: nowrap;
+    padding: 5px 10px 5px 20px;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+}
