@@ -148,7 +148,7 @@
 
 
   <page
-      for="zope.app.container.interfaces.IContentContainer"
+      for="zope.app.container.interfaces.IContainer"
       permission="zope.View"
       class=".content_filter.FilterList"
       name="published_content.html"
