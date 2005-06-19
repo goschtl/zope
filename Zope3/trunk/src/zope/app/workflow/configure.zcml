@@ -58,8 +58,6 @@
   <content 
         class="zope.app.workflow.definition.ProcessDefinitionElementContainer">
 
-    <implements interface="zope.app.container.interfaces.IContentContainer" />
-
     <implements
        interface="zope.app.annotation.interfaces.IAttributeAnnotatable"
        />

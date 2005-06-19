@@ -32,17 +32,16 @@
 
 <!-- ProcessDefinitionElementContainer -->
 
-  <page
-      for="zope.app.workflow.interfaces.IProcessDefinitionElementContainer"
-      permission="zope.workflow.ManageProcessDefinitions"
-      class="zope.app.container.browser.contents.Contents"
-      name="contents.html" 
-      attribute="contents"
-      menu="zmi_views" title="Contents" />
+<containerViews
+    for="zope.app.workflow.interfaces.IProcessDefinitionElementContainer"
+    contents="zope.workflow.ManageProcessDefinitions"
+    add="zope.workflow.ManageProcessDefinitions"
+    />
 
-  <defaultView
-      for="zope.app.workflow.interfaces.IProcessDefinitionElementContainer"
-      name="contents.html" />  
+<defaultView
+    for="zope.app.workflow.interfaces.IProcessDefinitionElementContainer"
+    name="contents.html" 
+    />  
 
   <!-- ProcessInstanceContainerAdaptable 
        Note: Commented Out ... it is just a demo
