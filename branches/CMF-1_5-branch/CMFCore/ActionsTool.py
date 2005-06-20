@@ -24,10 +24,8 @@ from Globals import InitializeClass
 from OFS.Folder import Folder
 
 from ActionInformation import ActionInformation
-from ActionInformation import getOAI
 from ActionProviderBase import ActionProviderBase
 from Expression import Expression
-from Expression import getExprContext
 from interfaces.portal_actions import ActionProvider as IActionProvider
 from interfaces.portal_actions import portal_actions as IActionsTool
 from permissions import ListFolderContents
@@ -197,12 +195,12 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
              'portal_actions will ignore listActions() of \'%s\'.'
              % provider.getId(),
              DeprecationWarning)
-        info = self._getOAI(self, object)
+        info = self._getOAI(object)
         actions = provider.listActions(info)
 
         action_infos = []
         if actions and not isinstance(actions[0], dict):
-            ec = self._getExprContext(self, object)
+            ec = self._getExprContext(object)
             for ai in actions:
                 if not ai.getVisibility():
                     continue
