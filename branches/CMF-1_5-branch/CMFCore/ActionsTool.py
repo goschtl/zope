@@ -197,12 +197,12 @@ class ActionsTool(UniqueObject, Folder, ActionProviderBase):
              'portal_actions will ignore listActions() of \'%s\'.'
              % provider.getId(),
              DeprecationWarning)
-        info = getOAI(self, object)
+        info = self._getOAI(self, object)
         actions = provider.listActions(info)
 
         action_infos = []
         if actions and not isinstance(actions[0], dict):
-            ec = getExprContext(self, object)
+            ec = self._getExprContext(self, object)
             for ai in actions:
                 if not ai.getVisibility():
                     continue
