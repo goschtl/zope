@@ -2,6 +2,13 @@ CMF 1.5.2beta (unreleased)
 
   New Features
 
+    - CMFCore.ActionProviderBase: Add the methods _getOAI and _getExprContext
+      which can be used to hook in custom version of getOAI() and
+      getExprContext().
+
+    - CMFCore.TypesTool.TypeInformation.queryMethodID(): Add new argument
+      context=None and change all calls of queryMethodID to apply the context.
+
     - Interfaces: Added newstyle (Zope 3) interfaces.
       This change has no effect on Zope 2.7 without Five.
 
@@ -9,25 +16,6 @@ CMF 1.5.2beta (unreleased)
       "layer" tag in skins.xml named "remove". If "remove" is
       specified, the named layer will be explicitly removed from the 
       skins path(s).
-
-  Other
-  
-    - CMFCore.ActionProviderBase: Add the methods _getOAI and _getExprContext
-      which can be used to hook in custom version of getOAI() and
-      getExprContext().
-  
-    - CMFCore.TypesTool.TypeInformation.queryMethodID(): Add new argument
-      context=None and change all calls of queryMethodID to apply the context.
-
-    - CMFTopic.Topic/CMFCore.PortalContent: Clean up a previous change
-      by changing __call__ methods to be aligned with what's on CVS
-      HEAD and using the old _getViewFor function as a fallback to
-      retain backwards compatibility.
-
-    - DCWorkflow: Add a note to the Transitions and States forms
-      explaining that the renaming actions will not automatically
-      update any items in the workflow that might be affected by
-      the change. (http://www.zope.org/Collectors/CMF/89)
 
     - CMFCatalogAware: reindexObjectSecurity() now supports an
       optional argument 'skip_self' that prevents the object itself
@@ -43,7 +31,17 @@ CMF 1.5.2beta (unreleased)
       _checkTransitionGuard() until the guard.check() method so that
       StateChangeInfo() can be constructed with those kwargs.
 
-  Bugs Fixed
+  Bug Fixes
+
+    - CMFTopic.Topic/CMFCore.PortalContent: Clean up a previous change
+      by changing __call__ methods to be aligned with what's on CVS
+      HEAD and using the old _getViewFor function as a fallback to
+      retain backwards compatibility.
+
+    - DCWorkflow: Add a note to the Transitions and States forms
+      explaining that the renaming actions will not automatically
+      update any items in the workflow that might be affected by
+      the change. (http://www.zope.org/Collectors/CMF/89)
 
     - CMFDefault.SyndicationTool: Zope 2.8 raises AttributeError where
       earlier Zopes used to raise KeyError.
