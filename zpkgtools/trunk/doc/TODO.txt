@@ -2,6 +2,10 @@
 Things that need to be done
 ===========================
 
+- zpkg should detect when multiple resources are used with names which
+  differ only in case; this information should be used to alert users
+  on Unix that Windows users will encounter problems.
+
 - Need name + acronym to describe what gets built, not normal words
   (Jim sez).  Zope3-Dev seems to want to call them "packages".
 
