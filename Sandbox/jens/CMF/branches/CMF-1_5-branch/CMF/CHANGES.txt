@@ -12,6 +12,10 @@ CMF 1.5.2beta (unreleased)
 
   Other
   
+    - CMFCore.ActionProviderBase: Add the methods _getOAI and _getExprContext
+      which can be used to hook in custom version of getOAI() and
+      getExprContext().
+  
     - CMFCore.TypesTool.TypeInformation.queryMethodID(): Add new argument
       context=None and change all calls of queryMethodID to apply the context.
 
