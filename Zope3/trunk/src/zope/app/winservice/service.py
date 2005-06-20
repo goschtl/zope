@@ -62,6 +62,13 @@ class Service(win32serviceutil.ServiceFramework):
     def SvcStop(self):
         # Before we do anything, tell the SCM we are starting the stop process.
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
+
+        # TODO:  This TerminateProcess call doesn't make much sense:  it's
+        # doing a hard kill _first_, never giving the process a chance to
+        # shut down cleanly.  Compare to current Zope2 service code, which
+        # uses Windows events to give the process a chance to shut down
+        # cleanly, doing a hard kill only if that doesn't succeed.
+
         # stop the process if necessary
         try:
             win32process.TerminateProcess(self.hZope, 0)
@@ -70,6 +77,11 @@ class Service(win32serviceutil.ServiceFramework):
             pass
         # And set my event.
         win32event.SetEvent(self.hWaitStop)
+
+    # SvcStop only gets triggered when the user explictly stops (or restarts)
+    # the service.  To shut the service down cleanly when Windows is shutting
+    # down, we also need to hook SvcShutdown.
+    SvcShutdown = SvcStop
 
     def createProcess(self, cmd):
         return win32process.CreateProcess(
