@@ -60,8 +60,8 @@ class DummyView(BrowserView):
 class SecurityTest(RestrictedPythonTestCase):
 
     def afterSetUp(self):
-	zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
-	manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+        zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
+        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])
@@ -130,8 +130,8 @@ class PublishSecurityTest(FunctionalTestCase):
     """A functional test for security actually involving the publisher.
     """
     def afterSetUp(self):
-	zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
-	manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+        zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
+        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
         uf = self.folder.acl_users
         uf._doAddUser('viewer', 'secret', [], [])
         uf._doAddUser('manager', 'r00t', ['Manager'], [])

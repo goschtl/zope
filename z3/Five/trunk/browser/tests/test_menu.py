@@ -34,9 +34,9 @@ from Products.Five.testing import manage_addFiveTraversableFolder
 class MenuTest(ZopeTestCase):
 
     def afterSetUp(self):
-	newInteraction()  # needed for menu configuration
-	zcml.load_config('menu.zcml', package=Products.Five.browser.tests)
-	manage_addFiveTraversableFolder(self.folder, 'test', 'Test')
+        newInteraction()  # needed for menu configuration
+        zcml.load_config('menu.zcml', package=Products.Five.browser.tests)
+        manage_addFiveTraversableFolder(self.folder, 'test', 'Test')
 
     def test_menu(self):
         request = FakeRequest()

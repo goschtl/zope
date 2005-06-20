@@ -43,9 +43,9 @@ class PagesTest(ZopeTestCase):
         self.login('manager')
 
     def test_new_style_classes_are_ignored(self):
-	# simple test: we import zope.app.form.browser which is full
-	# of new-style classes
-	zcml.load_string("""<include package="zope.app.form.browser"/>""")
+        # simple test: we import zope.app.form.browser which is full
+        # of new-style classes
+        zcml.load_string("""<include package="zope.app.form.browser"/>""")
 
     def test_attribute_view(self):
         view = self.folder.unrestrictedTraverse('testoid/eagle.txt')
