@@ -142,6 +142,21 @@ class PagesTest(ZopeTestCase):
 """
         self.assertEquals(expected, view())
 
+
+    def test_template_variables(self):
+        view = self.folder.unrestrictedTraverse('testoid/template_variables.html')
+        expected = ['View is a view: True',
+                    'Context is testoid: testoid',
+                    'Container is contexts parent: True',
+                    'Container is folder: test_folder_1_',
+                    'Nothing is None: True',
+                    'Here is context: True',
+                   ]
+        result = view().split('\n')
+        for i in range(0, len(expected)):
+            self.assertEquals(expected[i], result[i] )
+
+
     def test_zpt_security(self):
         self.logout()
         view = self.folder.unrestrictedTraverse('testoid/security.html')

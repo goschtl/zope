@@ -117,6 +117,13 @@
       permission="zope2.ViewManagementScreens"
       />
 
+  <browser:page
+      for="Products.Five.tests.simplecontent.ISimpleContent"
+      template="template_variables.pt"
+      name="template_variables.html"
+      permission="zope2.ViewManagementScreens"
+      />
+
   <!-- template security -->
 
   <browser:page
