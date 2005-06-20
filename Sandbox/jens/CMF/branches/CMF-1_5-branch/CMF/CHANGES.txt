@@ -2,6 +2,11 @@ CMF 1.5.2beta (unreleased)
 
   New Features
 
+    - CMFCore.PortalFolder: A new class PortalFolderBase was added. The
+      class is a subclass of Folder while PortalFolder is a subclass of
+      PortalFolderBase and OrderedFolder. It was added for software which
+      is incompatible w/ the ordered interface.
+
     - CMFCore.ActionProviderBase: Add the methods _getOAI and _getExprContext
       which can be used to hook in custom version of getOAI() and
       getExprContext().
