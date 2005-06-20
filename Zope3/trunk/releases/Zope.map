@@ -37,6 +37,7 @@ zdaemon        ../src/zdaemon
 #
 Zope-win       ../releases/Zope-win
 Zope           ../releases/Zope
+Zope-src       ../releases/Zope
 ZopeInterface  ../releases/ZopeInterface
 Workflow       ../releases/Workflow
 ZPT            ../releases/ZPT
