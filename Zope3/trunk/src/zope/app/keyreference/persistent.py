@@ -48,11 +48,16 @@ class KeyReferenceToPersistent(object):
         return self.object
 
     def __hash__(self):
-        return hash(self.object._p_oid)
+        return hash((self.object._p_jar.db().database_name,
+                     self.object._p_oid,
+                     ))
 
     def __cmp__(self, other):
         if self.key_type_id == other.key_type_id:
-            return cmp(self.object._p_oid, other.object._p_oid)
+            return cmp(
+                (self.object._p_jar.db().database_name,  self.object._p_oid),
+                (other.object._p_jar.db().database_name, other.object._p_oid),
+                )
 
         return cmp(self.key_type_id, other.key_type_id)
 

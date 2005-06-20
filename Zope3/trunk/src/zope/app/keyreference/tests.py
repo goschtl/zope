@@ -17,10 +17,43 @@ $Id$
 """
 import unittest
 
+def test_multi_databases():
+    """
+    >>> from ZODB.tests.util import DB
+    >>> import transaction
+    >>> from BTrees.OOBTree import OOBucket
+
+    >>> databases = {}
+
+    >>> db1 = DB(databases=databases, database_name='1')
+    >>> db2 = DB(databases=databases, database_name='2')
+
+    >>> conn1 = db1.open()
+    >>> conn1.root()['ob'] = OOBucket()
+
+    >>> conn2 = conn1.get_connection('2')
+    >>> conn2.root()['ob'] = OOBucket()
+
+    >>> conn1.root()['ob']._p_oid == conn2.root()['ob']._p_oid
+    True
+
+    >>> transaction.commit()
+
+    >>> from zope.app.keyreference.persistent import KeyReferenceToPersistent
+
+    >>> key1 = KeyReferenceToPersistent(conn1.root()['ob'])
+    >>> key2 = KeyReferenceToPersistent(conn2.root()['ob'])
+
+    >>> key1 != key2, key2 > key1, hash(key1) != hash(key2)
+    (True, True, True)
+
+"""
+
 def test_suite():
     from zope.testing import doctest
     return unittest.TestSuite((
         doctest.DocFileSuite('persistent.txt'),
+        doctest.DocTestSuite(),
         ))
 
 if __name__ == '__main__':
