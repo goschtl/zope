@@ -38,7 +38,7 @@ from Products.Five.tests.subscriber import objectEventCatcher, \
 class EventTest(ZopeTestCase):
 
     def afterSetUp(self):
-	zcml.load_config('event.zcml', package=Products.Five.tests)
+        zcml.load_config('event.zcml', package=Products.Five.tests)
         manage_addNoVerifyPasteFolder(self.folder, 'npvf')
         self.folder = self.folder.npvf
 
