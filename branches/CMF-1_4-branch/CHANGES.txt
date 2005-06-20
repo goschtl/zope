@@ -2,6 +2,9 @@ After CMF 1.4.8
 
   Bug Fixes
 
+    - DCWorkflow.Scripts:  Usinng inherited manage_main requires wrapping 
+      for Zope 2.8 compatibility.
+
     - CMFDefault.SyndicationTool: Zope 2.8 raises AttributeError where
       earlier Zopes used to raise KeyError.
 
