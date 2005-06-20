@@ -144,7 +144,7 @@ class SOAPResponse(HTTPResponse):
                 body = premarshal(body)
                 output = StringIO()
                 result = body
-            
+
                 if hasattr(result, 'typecode'):
                     tc = result.typecode
                 else:
@@ -153,7 +153,7 @@ class SOAPResponse(HTTPResponse):
 
                 SoapWriter(output).serialize(result, tc)
                 output.seek(0)
-                
+
                 if not self._status_set:
                     self.setStatus(200)
                 self.setHeader('content-type', 'text/xml')
