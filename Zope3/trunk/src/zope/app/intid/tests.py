@@ -42,6 +42,12 @@ class P(Persistent):
 
 class ConnectionStub(object):
     next = 1
+
+    def db(self):
+        return self
+
+    database_name = 'ConnectionStub'
+    
     def add(self, ob):
         ob._p_jar = self
         ob._p_oid = self.next
