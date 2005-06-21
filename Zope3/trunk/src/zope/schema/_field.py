@@ -33,7 +33,7 @@ from zope.schema.interfaces import IBool, IInt, IFloat, IDatetime
 from zope.schema.interfaces import IChoice, ITuple, IList, ISet, IDict
 from zope.schema.interfaces import IPassword, IObject, IDate, ITimedelta
 from zope.schema.interfaces import IURI, IId, IFromUnicode
-from zope.schema.interfaces import ISource, IVocabulary
+from zope.schema.interfaces import ISource, IBaseVocabulary
 
 from zope.schema.interfaces import ValidationError, InvalidValue
 from zope.schema.interfaces import WrongType, WrongContainedType, NotUnique
@@ -184,7 +184,7 @@ class Choice(Field):
         """Initialize object."""
         if vocabulary is not None:
             assert (isinstance(vocabulary, basestring)
-                    or IVocabulary.providedBy(vocabulary))
+                    or IBaseVocabulary.providedBy(vocabulary))
             assert source is None, (
                 "You cannot specify both source and vocabulary.")
         elif source is not None:
