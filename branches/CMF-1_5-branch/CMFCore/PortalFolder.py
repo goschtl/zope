@@ -586,6 +586,9 @@ class PortalFolder(OrderSupport, PortalFolderBase):
 
     security = ClassSecurityInfo()
 
+    manage_options = ( OrderSupport.manage_options +
+                       PortalFolderBase.manage_options[1:] )
+
     security.declareProtected(AddPortalFolders, 'manage_addPortalFolder')
     def manage_addPortalFolder(self, id, title='', REQUEST=None):
         """Add a new PortalFolder object with id *id*.
