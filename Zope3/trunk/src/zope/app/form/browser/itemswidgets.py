@@ -100,16 +100,19 @@ class ItemsWidgetBase(TranslationHook, SimpleInputWidget):
     def __call__(self):
         """Render the widget to HTML."""
         raise NotImplementedError(
-            "__call__() must be implemented by a subclass; use _getFormValue()")
+            "__call__() must be implemented by a subclass; use _getFormValue()"
+            )
 
     def textForValue(self, term):
         """Extract a string from the `term`.
 
         The `term` must be a vocabulary tokenized term.
 
-        This can be overridden to support more complex `term` objects. The token
-        is returned here since it's the only thing known to be a string, or
-        str()able."""
+        This can be overridden to support more complex `term`
+        objects. The token is returned here since it's the only thing
+        known to be a string, or str()able.
+
+        """
         if ITitledTokenizedTerm.providedBy(term):
             return self.translate(term.title)
         return term.token
