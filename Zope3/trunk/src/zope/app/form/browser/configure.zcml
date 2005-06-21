@@ -343,7 +343,7 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IChoice
-           zope.schema.interfaces.IVocabularyTokenized"
+           zope.schema.interfaces.IBaseVocabulary"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".ItemDisplayWidget"
       permission="zope.Public"
@@ -382,7 +382,7 @@
   <view
       type="zope.publisher.interfaces.browser.IBrowserRequest"
       for="zope.schema.interfaces.IList
-           zope.schema.interfaces.IVocabularyTokenized"
+           zope.schema.interfaces.IBaseVocabulary"
       provides="zope.app.form.interfaces.IDisplayWidget"
       factory=".SetDisplayWidget"
       permission="zope.Public"
