@@ -94,6 +94,12 @@ CMF 1.5.2beta (unreleased)
     - Sync catalog metadata column with correct name of DublinCore string
       ExpirationDate method. (http://zope.org/Collectors/CMF/345)
 
+  Others
+
+    - WorkflowTool: Marked WorkflowInformation and getActionsFor deprecated.
+      getActionsFor is superseded by listActionInfos and WorkflowInformation
+      was just used by getActionsFor.
+
 CMF-1.5.1 (2005/04/24)
 
   Other
