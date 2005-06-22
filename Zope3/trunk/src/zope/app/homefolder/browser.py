@@ -13,7 +13,7 @@
 ##############################################################################
 """Home Folder related views.
 
-$Id$
+$Id:$
 """
 __docformat__ = "reStructuredText"
 import zope.schema
@@ -24,15 +24,23 @@ from zope.app import zapi
 from zope.app.form.browser import TextWidget, MultiSelectWidget
 from zope.app.form.utility import setUpWidget
 from zope.app.form.interfaces import IInputWidget
-from zope.app.security.vocabulary import PrincipalSource 
+from zope.app.form.interfaces import ConversionError
+
+from zope.app.security.vocabulary import PrincipalSource
+from zope.app.traversing.interfaces import TraversalError
 
 class PathWidget(TextWidget):
 
     def _toFieldValue(self, input):
         path = super(PathWidget, self)._toFieldValue(input)
         root = zapi.getRoot(self.context.context)
-        return removeSecurityProxy(zapi.traverse(root, path))
-    
+        try:
+            proxy = zapi.traverse(root, path)
+        except TraversalError, e:
+            raise ConversionError(_('path is not correct !'), e)
+        else:
+            return removeSecurityProxy(proxy)
+
     def _toFormValue(self, value):
         if value is None:
             return ''
@@ -47,7 +55,7 @@ class AssignHomeFolder(object):
             title=u'Principal Id',
             source=PrincipalSource(),
             required=False)
-    
+
         self.folderName_field = zope.schema.TextLine(
             __name__ = 'folderName',
             title=u'Folder Name',
@@ -80,7 +88,7 @@ class AssignHomeFolder(object):
 
             principal = self.principal_widget.getInputValue()
             name = self.folderName_widget.getInputValue()
-        
+
             self.context.assignHomeFolder(principal, name)
             self.setupWidgets()
             return u'Home Folder assignment was successful.'
