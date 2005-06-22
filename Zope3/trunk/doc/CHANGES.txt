@@ -646,6 +646,8 @@ Zope Changes
         not support logout.) See ``zope/app/security/browser/loginlogout.txt``
         for details.
 
+      - Changed directory resources to support recursion into subdirectories.
+
     Bug Fixes
 
       - Fix #332 : Death to IContentContainer
