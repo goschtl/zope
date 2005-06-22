@@ -14,7 +14,7 @@
 """ Implementations of the session-based and cookie-based extractor and
     challenge plugins.
 
-$Id: $
+$Id$
 """
 import transaction
 from persistent import Persistent
@@ -24,10 +24,9 @@ from zope.interface import implements, Interface
 from zope.schema import TextLine
 from zope.publisher.interfaces.http import IHTTPRequest
 
-from zope.app import zapi
 from zope.app.component import hooks
 from zope.app.container.contained import Contained
-from zope.app.session.interfaces import ISession, IClientId
+from zope.app.session.interfaces import ISession
 from zope.app.traversing.browser.absoluteurl import absoluteURL
 
 from zope.app.authentication.interfaces import ICredentialsPlugin
@@ -50,7 +49,7 @@ class ISessionCredentials(Interface):
         """Return password."""
 
 
-class SessionCredentials:
+class SessionCredentials(object):
     """Credentials class for use with sessions.
 
     A session credential is created with a login and a password:

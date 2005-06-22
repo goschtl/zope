@@ -90,7 +90,7 @@ class IGroupSearchCriteria(interface.Interface):
         )
 
 
-class GroupInfo:
+class GroupInfo(object):
     """An implementation of IPrincipalInfo used by the group folder.
 
     A group info is created with id, title, and description:

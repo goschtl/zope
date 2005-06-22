@@ -126,7 +126,7 @@ class InternalPrincipal(Persistent, Contained):
 PrincipalInformation = InternalPrincipal
 
 
-class PrincipalInfo:
+class PrincipalInfo(object):
     """An implementation of IPrincipalInfo used by the principal folder.
 
     A principal info is created with id, login, title, and description:
@@ -195,7 +195,7 @@ class PrincipalFolder(BTreeContainer):
 
         Create a principal with 1 as id
         Add a login attr since __setitem__ is in need of one
-        
+
             >>> principal = Principal(1)
             >>> principal.login = 1
 
@@ -267,7 +267,7 @@ class PrincipalFolder(BTreeContainer):
                 i += 1
 
 
-class Principal:
+class Principal(object):
     """A group-aware implementation of zope.security.interfaces.IPrincipal.
 
     A principal is created with an ID:
@@ -303,7 +303,7 @@ class Principal:
         return 'Principal(%r)' % self.id
 
 
-class AuthenticatedPrincipalFactory:
+class AuthenticatedPrincipalFactory(object):
     """Creates 'authenticated' principals.
 
     An authenticated principal is created as a result of an authentication
@@ -369,7 +369,7 @@ class AuthenticatedPrincipalFactory:
         return principal
 
 
-class FoundPrincipalFactory:
+class FoundPrincipalFactory(object):
     """Creates 'found' principals.
 
     A 'found' principal is created as a result of a principal lookup.

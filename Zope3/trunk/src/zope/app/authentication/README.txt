@@ -46,7 +46,7 @@ To illustrate, we'll create a simple credentials plugin:
   >>> from zope import interface
   >>> from zope.app.authentication import interfaces
 
-  >>> class MyCredentialsPlugin:
+  >>> class MyCredentialsPlugin(object):
   ...
   ...     interface.implements(interfaces.ICredentialsPlugin)
   ...
@@ -56,7 +56,7 @@ To illustrate, we'll create a simple credentials plugin:
   ...     def challenge(self, request):
   ...         pass # challenge is a no-op for this plugin
   ...
-  ...     def logout(request):
+  ...     def logout(self, request):
   ...         pass # logout is a no-op for this plugin
 
 As a plugin, MyCredentialsPlugin needs to be registered as a named utility:
@@ -83,7 +83,7 @@ an implementation of IPrincipalInfo:
 
 Our authenticator uses this type when it creates a principal info:
 
-  >>> class MyAuthenticatorPlugin:
+  >>> class MyAuthenticatorPlugin(object):
   ...
   ...     interface.implements(interfaces.IAuthenticatorPlugin)
   ...
@@ -688,4 +688,4 @@ If we install a queriable plugin:
 the PAU will provide it as a queriable:
 
   >>> list(pau.getQueriables()) # doctest: +ELLIPSIS
-  [('Queriable', ...QueriableAuthenticatorPlugin instance...)]
+  [('Queriable', ...QueriableAuthenticatorPlugin object...)]

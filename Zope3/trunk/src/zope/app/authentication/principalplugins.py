@@ -28,5 +28,5 @@ from zope import component
 from zope.app.authentication import interfaces
 
 
-class PrincipalFactory:
+class PrincipalFactory(object):
     pass
