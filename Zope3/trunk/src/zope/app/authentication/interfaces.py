@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.schema
+from zope.app.i18n import ZopeMessageIDFactory as _
 from zope.app.security.interfaces import ILogout
 from zope.app.container.constraints import contains, containers
 from zope.app.container.interfaces import IContainer
@@ -34,19 +35,19 @@ class IPluggableAuthentication(ILogout, IContainer):
     contains(IPlugin)
 
     credentialsPlugins = zope.schema.List(
-        title=u'Credentials Plugins',
+        title=_('Credentials Plugins'),
         value_type=zope.schema.Choice(vocabulary='CredentialsPlugins'),
         default=[],
         )
 
     authenticatorPlugins = zope.schema.List(
-        title=u'Authenticator Plugins',
+        title=_('Authenticator Plugins'),
         value_type=zope.schema.Choice(vocabulary='AuthenticatorPlugins'),
         default=[],
         )
 
     prefix = zope.schema.TextLine(
-        title=u'Prefix',
+        title=_('Prefix'),
         default=u'',
         required=True,
         readonly=True,
