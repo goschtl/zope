@@ -1,9 +1,11 @@
-<html metal:use-macro="context/@@standard_macros/page">
+<html metal:use-macro="context/@@standard_macros/page"
+    i18n:domain="zope">
 <body>
 <div metal:fill-slot="body">
 
   <ul>
-    <li tal:repeat="part context" tal:content="part">Error message</li>
+    <li tal:repeat="part context" tal:content="part"
+        i18n:translate="">Error message</li>
   </ul>
 
 </div>
