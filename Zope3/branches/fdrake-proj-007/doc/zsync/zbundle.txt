@@ -1,0 +1,136 @@
+======================================
+zbundle -- Zope bundle management tool
+======================================
+
+
+Name
+----
+
+**zbundle** - Zope bundle management tool
+
+
+Synopsis
+--------
+
+**zbundle** *command* [*command-options*...] [*args*]
+
+
+Description
+-----------
+
+The **zbundle** command is used to manage site management bundles
+within a |zsync|_ checkout.
+
+**create**
+  Create a bundle and schedule it for addition to Zope via |zsync|_.
+
+**help**
+  Display help text.
+
+Options for specific commands must be supplied after the name of the
+specific command.
+
+
+The **zbundle create** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**create** [**-f** *factory*] [**-t** *type*] *bundle* *source*
+
+Description
++++++++++++
+
+Create a bundle from a site management folder or another bundle.  The
+bundle will only be created if the container is a site management
+folder.  *bundle* must be a valid bundle name.
+
+The contents of *source* are copied into the newly created bundle, and
+are scheduled for addition to the database.  The new bundle can be
+manipulated using **zsync add** and **zsync revert** (as well as just
+editing the contents) as needed before committing it to the database.
+
+Options
++++++++
+
+-f factory, --factory factory
+  Specify the object factory to use for the object being added.
+
+-t type, --type type           
+  The type of the object to be created.  Normally only *factory* needs
+  to be specified, if the default isn't sufficient.
+
+
+The **zbundle help** Command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Synopsis
+++++++++
+
+**help** [*command* ...]
+
+Description
++++++++++++
+
+When used without specifying *command*, this displays general help on
+using **zbundle**.  When *command* is given, information about each
+command listed is presented.
+
+
+Security Notes
+--------------
+
+**zbundle** does not introduce any new security issues beyond those
+inherent in |zsync|_.  Refer to the |zsync|_ documentation for
+details on security issues.
+
+
+Files
+-----
+
+**zbundle** does not create any supplemental files beyond what
+|zsync|_ produces.  Refer to the |zsync|_ documentation for details on
+those files.
+
+
+Reporting Bugs
+--------------
+
+Bugs in **zbundle** and the filesystem synchronization support in Zope 3
+should be reported via the `Zope 3 Development Issue Collector`_, an
+online reporting tool that allows you to enter reports directly into
+our bug-tracking system.
+
+
+See Also
+--------
+
+If you're interested in using **zbundle**, you should be familiar with
+|zsync|_.
+
+There are two interesting and directly relevant articles in the `Zope 3
+wiki`_:
+
+* The |FSSYNC|_ is the initial proposal for a way to synchronize
+  copies of a Zope-based website between a filesystem-based
+  representation and the database backing the live site.
+
+* Bundles are discussed in |TTWSITE|_; this gives more information on
+  the motivation and goals surrounding this work.
+
+
+Copyright
+---------
+
+Copyright (c) 2003 `Zope Corporation`_ and Contributors.
+All Rights Reserved.
+
+This software is subject to the provisions of the `Zope Public
+License`_, Version 2.1 (ZPL).  A copy of the ZPL should accompany
+this distribution.  THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL
+EXPRESS OR IMPLIED WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST
+INFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE.
+
+.. include:: links.rst

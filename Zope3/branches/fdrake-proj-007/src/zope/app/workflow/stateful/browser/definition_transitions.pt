@@ -1,0 +1,14 @@
+<html metal:use-macro="context/@@standard_macros/page">
+<head>
+  <title metal:fill-slot="title" i18n:translate="">
+    Process Definition Transitions
+  </title>
+</head>
+<body>
+<div metal:fill-slot="body">
+
+  <p i18n:translate="">Transitions</p>
+
+</div>
+</body>
+</html>

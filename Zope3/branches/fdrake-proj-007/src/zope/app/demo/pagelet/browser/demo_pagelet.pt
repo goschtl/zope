@@ -1,0 +1,23 @@
+<html metal:use-macro="views/@@demo_pagelet_macros/demo_pagelet_box">
+<body>
+
+<div metal:fill-slot="default">
+
+	<div class="row" metal:define-macro="demo_pagelet_macro">
+		<h4>Pagelet: demo_pagelet.pt</h4>
+		<h5>Macro: demo_pagelet_macro</h5>
+		<h6>Content: title</h6>
+		<div tal:content="view/title">title</div>
+	</div>
+	
+	<div class="row" metal:define-macro="demo_pagelet_macro2">
+		<h4>Pagelet: demo_pagelet.pt</h4>
+		<h5>Macro: demo_pagelet_macro2</h5>
+		<h6>Content: (global demoVar from index.pt)</h6>
+		<span tal:content="demoVar">demoVar</span>
+	</div>
+
+</div>
+
+</body>
+</html>
