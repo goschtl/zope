@@ -100,6 +100,11 @@ class ActionInfo(UserDict):
         else:
             return self.data == other
 
+    def copy(self):
+        c = UserDict.copy(self)
+        c._lazy_keys = self._lazy_keys[:]
+        return c
+
     def _getURL(self):
         """ Get the result of the URL expression in the current context.
         """
