@@ -165,3 +165,31 @@ You can delete an entry.
   Traceback (most recent call last):
   ...
   NoSuchObject: cn=foo,dc=test
+
+
+Checking the Connection
+=======================
+
+When first configuring a LDAP adapter, we often want to check the success of
+connecting to the LDAP server. This can be done with a check adapter:
+
+  >>> from ldapadapter import check
+  >>> check = check.CheckLDAPAdapter(da)
+
+This adapter has a ``testConnection()`` method that accepts a `bindDN` and
+`bindPassword` argument to establish the conection:
+
+  >>> check.testConnection('cn=Manager,dc=org', 'supersecret') \
+  ... # doctest: +ELLIPSIS
+  ['... start check connection', 
+   '... try connect with:', 
+   '... serverURL = ldap://localhost:389', 
+   '... bindDN = cn=Manager,dc=org', 
+   '... <strong>connection OK!</strong>', 
+   '... <strong><ldapadapter.utility.LDAPConnection object at ...></strong>']
+
+  >>> check.testConnection('cn=Bob', 'pretend')
+  ['... start check connection', 
+   '... try connect with:', 
+   '... serverURL = ldap://localhost:389', 
+   '... bindDN = cn=Bob', '... <strong>Test failed!</strong>']

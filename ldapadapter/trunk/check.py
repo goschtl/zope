@@ -17,6 +17,7 @@ $Id:$
 """
 import zope.interface
 from zope.interface import implements
+from zope.security.proxy import removeSecurityProxy
 
 from ldapadapter.interfaces import ICheckLDAPAdapter
 
