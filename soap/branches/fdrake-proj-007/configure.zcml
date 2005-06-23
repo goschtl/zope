@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:soap="http://namespaces.zope.org/soap"
+    >
+
+  <view 
+      for="zope.interface.Interface"
+      type="soap.interfaces.ISOAPRequest"
+      provides="soap.interfaces.ISOAPPublisher"
+      factory="zope.app.publication.traversers.SimpleComponentTraverser"
+      permission="zope.Public"
+      />
+
+  <view 
+      for="zope.app.container.interfaces.IItemContainer"
+      type="soap.interfaces.ISOAPRequest"
+      provides="soap.interfaces.ISOAPPublisher"
+      factory="zope.app.container.traversal.ItemTraverser"
+      permission="zope.Public"
+      />
+
+  <view 
+      for="zope.app.container.interfaces.IReadContainer"
+      type="soap.interfaces.ISOAPRequest"
+      provides="soap.interfaces.ISOAPPublisher"
+      factory="zope.app.container.traversal.ContainerTraverser"
+      permission="zope.Public"
+      />
+
+  <!-- This registers the SOAP handler with the publisher -->
+
+  <utility
+      component="soap.publisher.factory"
+      provides="zope.app.publication.interfaces.ISOAPRequestFactory"
+      />
+
+
+</configure>
