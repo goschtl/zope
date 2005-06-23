@@ -43,6 +43,8 @@ CMF 1.5.2beta (unreleased)
 
   Bug Fixes
 
+    - ActionInfo: Fixed copy method.
+
     - CMFTopic.Topic/CMFCore.PortalContent: Clean up a previous change
       by changing __call__ methods to be aligned with what's on CVS
       HEAD and using the old _getViewFor function as a fallback to
