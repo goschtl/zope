@@ -3,7 +3,7 @@ Version Control
 
 This package provides a framework for managing multiple versions of objects
 within a ZODB database.  The framework defines several interfaces that objects
-may provide to participate with the framework.  For an object to particpate in
+may provide to participate with the framework.  For an object to participate in
 version control, it must provide `IVersionable`.  `IVersionable` is an
 interface that promises that there will be adapters to:
 
@@ -12,11 +12,11 @@ interface that promises that there will be adapters to:
 - `IPhysicallyLocatable`.
 
 It also requires that instances support `IPersistent` and `IAnnotatable`.
-   
+
 Normally, these interfaces will be provided by adapters.  To simplify the
 example, we'll just create a class that already implements the required
-interfaces directly.  We need to be careful to avoid including the __name__
-and __parent__ attributes in state copies, so even a fairly simple
+interfaces directly.  We need to be careful to avoid including the `__name__`
+and `__parent__` attributes in state copies, so even a fairly simple
 implementation of INonVersionedData has to deal with these for objects that
 contain their own location information.
 
@@ -36,7 +36,7 @@ contain their own location information.
     ...         zope.app.annotation.interfaces.IAttributeAnnotatable,
     ...         zope.app.traversing.interfaces.IPhysicallyLocatable,
     ...         )
-    ...   
+    ...
     ...     # Methods defined by INonVersionedData
     ...     # This is a trivial implementation; using INonVersionedData
     ...     # is discussed later.
@@ -104,7 +104,7 @@ Placing an object under version control requires an instance of an
 `IRepository` object.  This package provides an implementation of this
 interface on the `Repository` class (from
 `zope.app.versioncontrol.repository`).  Only the `IRepository` instance is
-responsible for providing version control operations; an instance should never
+responsible for providing version control operations; an object should never
 be asked to perform operations directly.
 
     >>> import zope.app.versioncontrol.repository
@@ -264,7 +264,7 @@ repository.
     >>> transaction.commit()
 
 We can now see that the object has been changed since it was last
-checked in::
+checked in:
 
     >>> repository.isResourceChanged(samp)
     True
@@ -336,7 +336,7 @@ make the request:
     ['1', '2', '3']
 
 No version information is available for objects that have not had
-version control applied::
+version control applied:
 
     >>> repository.getVersionIds(samp2)
     Traceback (most recent call last):
@@ -364,7 +364,7 @@ repository:
     >>> repository.labelResource(samp, 'my-second-label')
 
 The list of labels assigned to some version of an object can be
-retrieved using the repository's `getLabelsForResource()` method::
+retrieved using the repository's `getLabelsForResource()` method:
 
     >>> list(repository.getLabelsForResource(samp))
     ['my-first-label', 'my-second-label']
@@ -432,7 +432,7 @@ it is up-to-date or changed is based on the version it was updated to.
     False
 
 The `isResourceUpToDate()` method indicates whether
-`checkoutResource()` will succeed or raise an exception::
+`checkoutResource()` will succeed or raise an exception:
 
     >>> repository.checkoutResource(samp)
     ... # doctest: +NORMALIZE_WHITESPACE
@@ -517,7 +517,7 @@ Note that the entry with the checkin entry for version 3 includes the
 comment passed to `checkinResource()`.
 
 The version history also contains the principal id related to each
-entry::
+entry:
 
     >>> entries[0].user_id
     'bob'
@@ -578,9 +578,9 @@ object-specific data that isn't part of the abstract resource the
 version control framework is supporting.
 
 For the sake of examples, let's create a simple class that actually
-implements these to interfaces.  In this example, we'll create a
-simple object that excluses any versionable subobjects and any
-subobjects with names that start with "bob".  Note that as for the
+implements these two interfaces.  In this example, we'll create a
+simple object that excludes any versionable subobjects and any
+subobjects with names that start with "bob".  Note that, as for the
 `Sample` class above, we're still careful to consider the values for
 `__name__` and `__parent__` to be non-versioned:
 
@@ -740,9 +740,9 @@ revisions in the repository:
     >>> box.bob_list
     [3, 2, 1, 0]
 
-The list-remaining method of the `INonVersionedData` interface is a
-little different, but remains very tightly tied to the details of the
-object's state.  The `listNonVersionedObjects()` method should return
+The remaining `listNonVersionedObjects()` method of the
+`INonVersionedData` interface is a little different, but remains very
+tightly tied to the details of the object's state. It should return
 a sequence of all the objects that should not be copied as part of the
 object's state.  The difference between this method and
 `getNonVersionedData()` may seem simple, but is significant in
