@@ -21,13 +21,15 @@ from zope.interface import implements
 from zope.i18n import translate
 from zope.schema import getFieldsInOrder
 from zope.app.zapi import getName, getPath
-from zope.app.authentication.interfaces import IQuerySchemaSearch
 from zope.app.form.utility import setUpWidgets, getWidgetsData
 from zope.app.form.interfaces import IInputWidget
 from zope.app.form.browser.interfaces import ISourceQueryView
 from zope.app.i18n import ZopeMessageIDFactory as _
 
+
 search_label = _('search-button', 'Search')
+source_label = _(u"Source path")
+source_title = _(u"Path to the source utility")
 
 class QuerySchemaSearchView(object):
     implements(ISourceQueryView)
@@ -51,8 +53,8 @@ class QuerySchemaSearchView(object):
         
         # for each source add path of source
         html.append('  <div class="label">')
-        label = _(u"Source path")
-        title = _(u"Path to the source utility")
+        label = translate(source_label, context=self.request)
+        title = translate(source_title, context=self.request)
         html.append('    <label for="%s" title="%s">' % (sourcename, title))
         html.append('      %s' % label)
         html.append('    </label>')
@@ -69,7 +71,7 @@ class QuerySchemaSearchView(object):
         for field_name, field in getFieldsInOrder(schema):
             widget = getattr(self, field_name+'_widget')
             
-            # for each field add lable...
+            # for each field add label...
             html.append('  <div class="label">')
             html.append('    <label for="%s" title="%s">'
                         % (widget.name, widget.hint))

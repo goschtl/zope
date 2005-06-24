@@ -16,8 +16,9 @@
 $Id$
 """
 __docformat__ = "reStructuredText"
+
 import zope.schema
-from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+from zope.schema.vocabulary import SimpleTerm
 from zope.app import zapi
 from zope.app.security.vocabulary import PrincipalSource
 from zope.app.form.utility import setUpWidget
@@ -33,6 +34,7 @@ from zope.app.securitypolicy.vocabulary import GrantVocabulary
 from zope.app.security.interfaces import IPermission
 from zope.app.security import settings
 
+
 settings_vocabulary = GrantVocabulary(
     [SimpleTerm(settings.Allow, token="allow", title=_('Allow')),
      SimpleTerm(settings.Unset, token="unset", title=_('Unset')),
@@ -42,12 +44,12 @@ settings_vocabulary = GrantVocabulary(
 
 class GrantWidget(RadioWidget):
     """Garnt widget for build a colorized matrix.
-    
+
     The matrix shows anytime the status if you edit the radio widgets.
     This special widget shows the radio input field without labels.
     The labels are added in the header of the table. The order of the radio
     input fields is 'Allowed', 'Unset', 'Deny'.
-    
+
     """
     orientation = "horizontal"
     _tdTemplate = u'\n<td class="%s">\n<center>\n<label for="%s" title="%s">\n%s\n</label>\n</center>\n</td>\n'
@@ -63,14 +65,14 @@ class GrantWidget(RadioWidget):
 
     def renderItem(self, index, text, value, name, cssClass):
         """Render an item of the list. 
-        
-        Revert the order of label and text. Added field id to the lable 
+
+        Revert the order of label and text. Added field id to the lable
         attribute.
-        
+
         Added tabel td tags for fit in the matrix table.
-        
+
         """
-        
+
         tdClass = ''
         id = '%s.%s' % (name, index)
         elem = renderElement(u'input',
@@ -84,8 +86,8 @@ class GrantWidget(RadioWidget):
 
     def renderSelectedItem(self, index, text, value, name, cssClass):
         """Render a selected item of the list. 
-        
-        Revert the order of label and text. Added field id to the lable 
+
+        Revert the order of label and text. Added field id to the lable
         attribute.
         """
 
@@ -145,7 +147,7 @@ class Granting(object):
         setUpWidget(self, 'principal', self.principal_field, IInputWidget)
         if not self.principal_widget.hasInput():
             return u''
-        
+
         principal = self.principal_widget.getInputValue()
         self.principal = principal
 
@@ -186,7 +188,7 @@ class Granting(object):
 
         if 'GRANT_SUBMIT' not in self.request:
             return u''
-        
+
         for role in roles:
             name = principal_token + '.role.'+role.id
             role_widget = getattr(self, name+'_widget')
@@ -202,7 +204,7 @@ class Granting(object):
                 else:
                     principal_roles.unsetRoleForPrincipal(
                         role.id, principal)
-        
+
         for perm in perms:
             if perm.id == 'zope.Public':
                 continue
@@ -220,5 +222,5 @@ class Granting(object):
                 else:
                     principal_perms.unsetPermissionForPrincipal(
                         perm.id, principal)
-                    
-        return u'Grants updated.'
+
+        return _('Grants updated.')
