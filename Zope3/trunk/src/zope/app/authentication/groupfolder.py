@@ -183,7 +183,8 @@ class GroupFolder(BTreeContainer):
             search = search.lower()
             for id, groupinfo in self.items():
                 if (search in groupinfo.title.lower() or
-                    search in groupinfo.description.lower()):
+                    (groupinfo.description and 
+                     search in groupinfo.description.lower())):
                     if not ((start is not None and i < start)
                             or
                             (batch_size is not None and n >= batch_size)):
