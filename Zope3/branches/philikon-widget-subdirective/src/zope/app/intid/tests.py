@@ -185,7 +185,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         setSite(self.folder1_1)
 
         events = []
-        ztapi.subscribe([IIntIdRemovedEvent], None, events.append)
+        ztapi.handle([IIntIdRemovedEvent], events.append)
 
         # This should unregister the object in all utilities, not just the
         # nearest one.
@@ -207,7 +207,7 @@ class TestSubscribers(ReferenceSetupMixin, unittest.TestCase):
         setSite(self.folder1_1)
 
         events = []
-        ztapi.subscribe([IIntIdAddedEvent], None, events.append)
+        ztapi.handle([IIntIdAddedEvent], events.append)
 
         # This should register the object in all utilities, not just the
         # nearest one.

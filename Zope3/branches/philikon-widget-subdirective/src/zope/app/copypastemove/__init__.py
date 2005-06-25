@@ -679,12 +679,11 @@ def dispatchToSublocations(object, event):
 
       >>> from zope.app.tests import ztapi
       >>> from zope.app.event.interfaces import IObjectCopiedEvent
-      >>> ztapi.subscribe([None, IObjectCopiedEvent], None, handler)
+      >>> ztapi.handle([None, IObjectCopiedEvent], handler)
 
     and this function as a dispatcher:
 
-      >>> ztapi.subscribe([None, IObjectCopiedEvent], None,
-      ...                 dispatchToSublocations)
+      >>> ztapi.handle([None, IObjectCopiedEvent], dispatchToSublocations)
 
     When we notify that our root object has been copied:
 

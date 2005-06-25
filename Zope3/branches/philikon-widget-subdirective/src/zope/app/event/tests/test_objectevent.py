@@ -70,7 +70,7 @@ class TestObjectEventNotifications(unittest.TestCase):
         def record(*args):
             events.append(args)
 
-        ztapi.subscribe([IContained, IObjectRemovedEvent], None, record)
+        ztapi.handle([IContained, IObjectRemovedEvent], record)
 
         item = Contained()
         event = ObjectRemovedEvent(item)
@@ -87,7 +87,7 @@ class TestObjectEventNotifications(unittest.TestCase):
         self.assertEqual([], events)
 
     def testVeto(self):
-        ztapi.subscribe([IObjectEvent], None, objectevent.objectEventNotify)
+        ztapi.handle([IObjectEvent], objectevent.objectEventNotify)
         container = SampleContainer()
         item = Contained()
 
@@ -102,7 +102,7 @@ class TestObjectEventNotifications(unittest.TestCase):
             self.assertEqual(item, event.object)
             raise Veto
 
-        ztapi.subscribe([IContained, IObjectRemovedEvent], None, callback)
+        ztapi.handle([IContained, IObjectRemovedEvent], callback)
 
         # del container['Fred'] will fire an ObjectRemovedEvent event.
         self.assertRaises(Veto, container.__delitem__, 'Fred')
