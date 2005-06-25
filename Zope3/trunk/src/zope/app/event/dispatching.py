@@ -36,8 +36,8 @@ So, to subscribe to an event, use a subscription adapter to ``None``:
 
   >>> from zope.app.testing import ztapi
   >>> from zope.interface import implementedBy
-  >>> ztapi.handle([implementedBy(E1)], handler1) # old way
-  >>> ztapi.handle((E2,), handler2) # new way
+  >>> ztapi.subscribe([implementedBy(E1)], None, handler1) # old way
+  >>> ztapi.subscribe((E2,), None, handler2) # new way
 
   >>> from zope.event import notify
 
@@ -62,6 +62,7 @@ from zope.component import subscribers
 import zope.event
 
 def dispatch(*event):
+    # iterating over subscribers assures they get executed
     for ignored in subscribers(event, None):
         pass
 
