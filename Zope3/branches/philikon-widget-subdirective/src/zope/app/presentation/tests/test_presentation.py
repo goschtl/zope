@@ -213,8 +213,8 @@ class TestPageRegistration(PlacefulSetup, unittest.TestCase):
     def test_registerAddSubscriber_template(self):
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
                              PhonyPathAdapter)
-        ztapi.handle((IPageRegistration, IObjectAddedEvent),
-                     PageRegistrationAddSubscriber)
+        ztapi.subscribe((IPageRegistration, IObjectAddedEvent), None,
+                        PageRegistrationAddSubscriber)
         registration = PageRegistration(I1, 'test', 'zope.View', "Foo.Bar.A",
                                         template=self.__template)
         
@@ -226,8 +226,8 @@ class TestPageRegistration(PlacefulSetup, unittest.TestCase):
     def test_registerRemoveSubscriber_template(self):
         ztapi.provideAdapter(ILocation, IPhysicallyLocatable,
                              PhonyPathAdapter)
-        ztapi.handle((IPageRegistration, IObjectRemovedEvent),
-                     PageRegistrationRemoveSubscriber)
+        ztapi.subscribe((IPageRegistration, IObjectRemovedEvent), None,
+                        PageRegistrationRemoveSubscriber)
         registration = PageRegistration(I1, 'test', 'zope.View', "Foo.Bar.A",
                                         template=self.__template)
 

@@ -40,8 +40,8 @@ class PlacelessSetup(object):
 
     def setUp(self):
         clearEvents()
-        ztapi.handle([None], events.append)
-        ztapi.handle([IObjectEvent], objectEventNotify)
+        ztapi.subscribe([None], None, events.append)
+        ztapi.subscribe([IObjectEvent], None, objectEventNotify)
 
 import zope.testing.cleanup
 zope.testing.cleanup.addCleanUp(clearEvents)
