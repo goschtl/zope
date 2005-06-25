@@ -61,23 +61,21 @@ class FiveBrowserLanguages(BrowserLanguages):
         selected_language = self.request.cookies.get('LOCALIZER_LANGUAGE', None)
 
         if selected_language is None:
-            # 2. From PlacelessTranslationService. 
-            # XXX This is untested, as I don't have  PTS, 
-            # and is based on reading the source. 
+            # 2. From PlacelessTranslationService.
             selected_language = self.request.cookies.get('pts_language', None)
-            
-        if selected_language: 
-            # Make sure the selected langauge is first in the list
-            if len(language_list) == 0:
+
+        if selected_language:
+            # Make sure the selected language is first in the list
+            if not language_list:
                 return [selected_language]
             if selected_language == language_list[0]:
                 # Already first
-                return langauge_list
+                return language_list
             if selected_language in language_list:
                 language_list.remove(selected_language)
             language_list.insert(0, selected_language)
-            
-        return language_list 
+
+        return language_list
 
 # these are needed for the monkey
 _fallback_translation_service = GTS.DummyTranslationService()
