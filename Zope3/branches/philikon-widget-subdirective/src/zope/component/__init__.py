@@ -182,7 +182,9 @@ def subscribers(objects, interface, context=None):
 
 def handle(*objects):
     sitemanager = getSiteManager(None)
-    tuple(sitemanager.subscribers(objects, None))
+    # iterating over subscribers assures they get executed
+    for ignored in sitemanager.subscribers(objects, None):
+        pass
 
 class _adapts_descr(object):
     def __init__(self, interfaces):
