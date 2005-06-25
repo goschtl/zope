@@ -16,7 +16,7 @@
 $Id$
 """
 from zope.i18n import interpolate
-from zope.i18n.interfaces import ITranslationDomain
+from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
 from zope.i18nmessageid import MessageID
 from zope.app import zapi
 from zope.publisher.browser import BrowserLanguages
@@ -46,10 +46,20 @@ class FiveTranslationService:
 
         # in Zope3, context is adapted to IUserPreferredLanguages,
         # which means context should be the request in this case.
-        if context is not None:
-            context = context.REQUEST
         return util.translate(msgid, mapping=mapping, context=context,
                               target_language=target_language, default=default)
+
+def languagesFromRequest(context):
+    """This adapter factory dispatches adapter lookup to the request
+    instead of the current context object.
+
+    In Zope 2, the preferred languages can be chosen placefully which
+    is why the FiveTranslationService passes the general context
+    object as a translation context.  In Zope 3, the request object is
+    normally used for this; we mimic this behaviour here by being an
+    adapter factory for * and dispatching to an adapter lookup on the
+    request."""
+    return IUserPreferredLanguages(context.REQUEST)
 
 class FiveBrowserLanguages(BrowserLanguages):
 

@@ -6,15 +6,21 @@
       />
 
   <adapter
-      factory="Products.Five.i18n.FiveBrowserLanguages"
-      for="zope.publisher.interfaces.http.IHTTPRequest"
+      for="*"
       provides="zope.i18n.interfaces.IUserPreferredLanguages"
+      factory="Products.Five.i18n.languagesFromRequest"
       />
 
   <adapter
-      factory="zope.publisher.http.HTTPCharsets"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.i18n.interfaces.IUserPreferredLanguages"
+      factory="Products.Five.i18n.FiveBrowserLanguages"
+      />
+
+  <adapter
       for="zope.publisher.interfaces.http.IHTTPRequest"
       provides="zope.i18n.interfaces.IUserPreferredCharsets"
+      factory="zope.publisher.http.HTTPCharsets"
       />
 
 </configure>
