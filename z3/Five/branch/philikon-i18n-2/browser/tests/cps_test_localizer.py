@@ -11,7 +11,9 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test the Localizer language integration for CPS
+"""Test the Localizer language integration for CPS.  This test
+requires a full blown CPS installation to run.  It is therefore
+prefixed with ``cps_`` so it won't be picked up by the test runner.
 
 $Id$
 """
