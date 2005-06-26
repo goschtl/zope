@@ -74,6 +74,18 @@ class LocalizerLanguages(object):
             langs.remove('')
         return langs
 
+class PTSLanguages(object):
+    """Languages adapter that chooses languages like
+    PlacelessTranslationService."""
+    implements(IUserPreferredLanguages)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getPreferredLanguages(self):
+        from Products.PlacelessTranslationService.Negotiator import getLangPrefs
+        return getLangPrefs(self.context)
+
 # these are needed for the monkey
 _fallback_translation_service = GTS.DummyTranslationService()
 fiveTranslationService = FiveTranslationService()
