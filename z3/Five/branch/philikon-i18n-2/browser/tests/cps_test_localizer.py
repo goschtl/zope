@@ -38,8 +38,8 @@ def test_suite():
     installProduct('CPSUserFolder')
     installProduct('TranslationService')
     installProduct('SiteAccess')
-    # XXX: these products should (and used to be) be optional, but they aren't
-    # right now.
+    # these products should (and used to be) be optional, but they
+    # aren't right now.
     installProduct('CPSForum')
     installProduct('CPSSubscriptions')
     installProduct('CPSNewsLetters')
@@ -47,20 +47,12 @@ def test_suite():
     installProduct('CPSDocument')
     installProduct('PortalTransforms')
     installProduct('Epoz')
-
-    # Optional products
-    try: installProduct('NuxMetaDirectories')
-    except: pass
-    try: installProduct('CPSRSS')
-    except: pass
-    try: installProduct('CPSChat')
-    except: pass
-    try: installProduct('CPSCalendar')
-    except: pass
-    try: installProduct('CPSCollector')
-    except: pass
-    try: installProduct('CPSMailBoxer')
-    except: pass
+    # optional products, but apparently still needed...
+    installProduct('CPSRSS')
+    installProduct('CPSChat')
+    installProduct('CPSCalendar')
+    installProduct('CPSCollector')
+    installProduct('CPSMailBoxer')
 
     return FunctionalDocFileSuite('cps_test_localizer.txt',
                                   package='Products.Five.browser.tests')
