@@ -15,6 +15,7 @@
 
 $Id$
 """
+from zope.interface import implements
 from zope.i18n import interpolate
 from zope.i18n.interfaces import ITranslationDomain, IUserPreferredLanguages
 from zope.i18nmessageid import MessageID
@@ -44,8 +45,9 @@ class FiveTranslationService:
             return ts.translate(domain, msgid, mapping=mapping, context=context,
                                 target_language=target_language, default=default)
 
-        # in Zope3, context is adapted to IUserPreferredLanguages,
-        # which means context should be the request in this case.
+        # context is adapted to IUserPreferredLanguages; that means in
+        # Zope 3 it is a request, here we use the general context
+        # object because translation might be chosen placefully.
         return util.translate(msgid, mapping=mapping, context=context,
                               target_language=target_language, default=default)
 
@@ -60,32 +62,6 @@ def languagesFromRequest(context):
     adapter factory for * and dispatching to an adapter lookup on the
     request."""
     return IUserPreferredLanguages(context.REQUEST)
-
-class FiveBrowserLanguages(BrowserLanguages):
-
-    def getPreferredLanguages(self):
-        language_list = super(FiveBrowserLanguages, self).getPreferredLanguages()
-
-        # Support for getting a user selected languages
-        # 1. From Localizer
-        selected_language = self.request.cookies.get('LOCALIZER_LANGUAGE', None)
-
-        if selected_language is None:
-            # 2. From PlacelessTranslationService.
-            selected_language = self.request.cookies.get('pts_language', None)
-
-        if selected_language:
-            # Make sure the selected language is first in the list
-            if not language_list:
-                return [selected_language]
-            if selected_language == language_list[0]:
-                # Already first
-                return language_list
-            if selected_language in language_list:
-                language_list.remove(selected_language)
-            language_list.insert(0, selected_language)
-
-        return language_list
 
 # these are needed for the monkey
 _fallback_translation_service = GTS.DummyTranslationService()
