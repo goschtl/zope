@@ -63,6 +63,35 @@ def languagesFromRequest(context):
     request."""
     return IUserPreferredLanguages(context.REQUEST)
 
+class LocalizerLanguages(object):
+    """Languages adapter that chooses languages according to Localizer
+    settings."""
+    implements(IUserPreferredLanguages)
+
+    def __init__(self, context):
+        self.context = context
+
+    def getPreferredLanguages(self):
+        accept_language = self.context.REQUEST.AcceptLanguage
+        langs = []
+        for lang, node in accept_language.children.items():
+            langs.append((node.get_quality(), lang))
+            langs.extend([(n.get_quality(), l) for l, n
+                          in node.children.items()])
+        langs.sort()
+        langs.reverse()
+        langs = [l for q, l in langs]
+        if '' in langs:
+            langs.remove('')
+
+        # You can also set a site-wide default language in Localizer
+        localizer = getattr(self.context, 'Localizer', None)
+        if localizer is not None:
+            default_lang = localizer._default_language
+            if default_lang not in langs:
+                langs.append(default_lang)
+        return langs
+
 # these are needed for the monkey
 _fallback_translation_service = GTS.DummyTranslationService()
 fiveTranslationService = FiveTranslationService()
