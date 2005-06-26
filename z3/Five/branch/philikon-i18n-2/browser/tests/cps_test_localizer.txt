@@ -25,7 +25,7 @@ and 4) register our test page:
   ...   <five:traversable class="Products.CPSDefault.Portal.CPSDefaultSite" />
   ... 
   ...   <adapter
-  ...       for="*"
+  ...       for="zope.publisher.interfaces.http.IHTTPRequest"
   ...       provides="zope.i18n.interfaces.IUserPreferredLanguages"
   ...       factory="Products.Five.i18n.LocalizerLanguages"
   ...       />
@@ -111,53 +111,5 @@ the language, for example the ``LOCALIZER_LANGUAGE`` cookie:
   <!-- fivetest is a Zope 3 style i18n domain, default is a Localizer domain -->
   <p>This is a message</p>
   <p>Object actions</p>
-  </body>
-  </html>
-
-Finally, we want to test a very Localizer specific feature, the
-default language setting.  Let's change Localizer's default language:
-
-  >>> print http(r"""
-  ... POST /test_folder_1_/cps/Localizer HTTP/1.1
-  ... Authorization: Basic manager:r00t
-  ... Content-Length: 54
-  ... Content-Type: application/x-www-form-urlencoded
-  ... 
-  ... language=de&manage_changeDefaultLang%3Amethod=+Change+""")
-  HTTP/1.1 302 Moved Temporarily
-  Content-Length: 0
-  Location: http://localhost/test_folder_1_/cps/Localizer/manage_languages
-  <BLANKLINE>
-
-For weird reasons, Localizer allows/requires you to set the default
-language for each domain separately, so we need to repeat this setting
-for the ``default`` domain that we're using:
-
-  >>> print http(r"""
-  ... POST /test_folder_1_/cps/Localizer/default HTTP/1.1
-  ... Authorization: Basic manager:r00t
-  ... Content-Length: 54
-  ... Content-Type: application/x-www-form-urlencoded
-  ... 
-  ... language=de&manage_changeDefaultLang%3Amethod=+Change+""")
-  HTTP/1.1 302 Moved Temporarily
-  Content-Length: 0
-  Location: http://localhost/test_folder_1_/cps/Localizer/default/manage_languages
-  <BLANKLINE>
-
-Now, neither the HTTP headers nor any cookie is leaving a clue about
-how stuff should be translated.  That means the default language
-setting should kick in, in both systems equally:
-
-  >>> print http(r"""
-  ... GET /test_folder_1_/cps/cps_test_localizer.html HTTP/1.1
-  ... """)
-  HTTP/1.1 200 OK
-  ...
-  <html>
-  <body>
-  <!-- fivetest is a Zope 3 style i18n domain, default is a Localizer domain -->
-  <p>Dies ist eine Nachricht</p>
-  <p>Objekt Aktionen</p>
   </body>
   </html>

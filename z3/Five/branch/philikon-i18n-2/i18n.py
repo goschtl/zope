@@ -45,23 +45,12 @@ class FiveTranslationService:
             return ts.translate(domain, msgid, mapping=mapping, context=context,
                                 target_language=target_language, default=default)
 
-        # context is adapted to IUserPreferredLanguages; that means in
-        # Zope 3 it is a request, here we use the general context
-        # object because translation might be chosen placefully.
+        # in Zope3, context is adapted to IUserPreferredLanguages,
+        # which means context should be the request in this case.
+        if context is not None:
+            context = context.REQUEST
         return util.translate(msgid, mapping=mapping, context=context,
                               target_language=target_language, default=default)
-
-def languagesFromRequest(context):
-    """This adapter factory dispatches adapter lookup to the request
-    instead of the current context object.
-
-    In Zope 2, the preferred languages can be chosen placefully which
-    is why the FiveTranslationService passes the general context
-    object as a translation context.  In Zope 3, the request object is
-    normally used for this; we mimic this behaviour here by being an
-    adapter factory for * and dispatching to an adapter lookup on the
-    request."""
-    return IUserPreferredLanguages(context.REQUEST)
 
 class LocalizerLanguages(object):
     """Languages adapter that chooses languages according to Localizer
@@ -72,7 +61,7 @@ class LocalizerLanguages(object):
         self.context = context
 
     def getPreferredLanguages(self):
-        accept_language = self.context.REQUEST.AcceptLanguage
+        accept_language = self.context.AcceptLanguage
         langs = []
         for lang, node in accept_language.children.items():
             langs.append((node.get_quality(), lang))
@@ -83,13 +72,6 @@ class LocalizerLanguages(object):
         langs = [l for q, l in langs]
         if '' in langs:
             langs.remove('')
-
-        # You can also set a site-wide default language in Localizer
-        localizer = getattr(self.context, 'Localizer', None)
-        if localizer is not None:
-            default_lang = localizer._default_language
-            if default_lang not in langs:
-                langs.append(default_lang)
         return langs
 
 # these are needed for the monkey

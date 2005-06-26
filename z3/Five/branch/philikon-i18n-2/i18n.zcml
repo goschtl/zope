@@ -6,12 +6,6 @@
       />
 
   <adapter
-      for="*"
-      provides="zope.i18n.interfaces.IUserPreferredLanguages"
-      factory="Products.Five.i18n.languagesFromRequest"
-      />
-
-  <adapter
       for="zope.publisher.interfaces.http.IHTTPRequest"
       provides="zope.i18n.interfaces.IUserPreferredLanguages"
       factory="zope.publisher.browser.BrowserLanguages"
