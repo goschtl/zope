@@ -1,4 +1,4 @@
-CMF 1.5.2beta (unreleased)
+CMF 1.5.2beta1 (2005/06/26)
 
   New Features
 
