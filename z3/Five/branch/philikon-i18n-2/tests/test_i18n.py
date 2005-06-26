@@ -19,6 +19,9 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
+from zope.interface import implements
+from zope.i18n.interfaces import IUserPreferredLanguages
+
 def test_directive():
     """
     Let's register the gettext locales using the ZCML directive:
@@ -49,7 +52,42 @@ def test_directive():
       u'Dies ist eine explizite Nachricht'
     """
 
-#XXX test the request adapter dispatch
+class DummyRequestLanguages(object):
+    implements(IUserPreferredLanguages)
+
+    def __init__(self, context):
+        self.context = context
+
+def test_request_adapter_dispatch():
+    """By default, Five dispatches ``IUserPreferredLanguages`` adapter
+    lookup to the request.  We shall test this here.
+
+    First, we register our own languages adapter for the request (not
+    for *):
+ 
+      >>> configure_zcml = '''
+      ... <configure xmlns="http://namespaces.zope.org/zope"
+      ...            package="Products.Five.tests">
+      ...   <adapter
+      ...       for="zope.publisher.interfaces.http.IHTTPRequest"
+      ...       provides="zope.i18n.interfaces.IUserPreferredLanguages"
+      ...       factory="Products.Five.tests.test_i18n.DummyRequestLanguages"
+      ...       />
+      ... </configure>'''
+      >>> from Products.Five import zcml
+      >>> zcml.load_string(configure_zcml)
+
+    Now we lookup the ``IUserPreferredLanguages`` adapter for an
+    arbitrary object that can acquire the request, such as the test
+    folder.  We expect to get the adapter we registered for
+    ``IHTTPRequest``:
+
+      >>> from Products.Five.tests.test_i18n import DummyRequestLanguages
+      >>> from zope.i18n.interfaces import IUserPreferredLanguages
+      >>> adapter = IUserPreferredLanguages(self.folder)
+      >>> isinstance(adapter, DummyRequestLanguages)
+      True
+    """
 
 def test_suite():
     from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
