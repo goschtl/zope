@@ -43,6 +43,9 @@ CMF 1.5.2beta (unreleased)
 
   Bug Fixes
 
+    - ActionInfo: Make 'setActionExpression' sane if passed a string
+      which is already prefixed with "string;".
+
     - ActionInfo: Fixed copy method.
 
     - CMFTopic.Topic/CMFCore.PortalContent: Clean up a previous change
