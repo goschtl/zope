@@ -1,4 +1,4 @@
-PYTHON=~/buildout2/bin/python
+PYTHON=python
 TESTFLAGS=-v
 TESTOPTS=
 SETUPFLAGS=
