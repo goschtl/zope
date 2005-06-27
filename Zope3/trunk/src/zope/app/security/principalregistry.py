@@ -15,14 +15,12 @@
 
 $Id$
 """
-from warnings import warn
 from zope.interface import implements
 from zope.app.security.interfaces import PrincipalLookupError
 from zope.app import zapi
 from zope.security.interfaces import IPrincipal, IGroupAwarePrincipal
 from zope.app.security import interfaces
 from zope.app.container.contained import Contained, contained
-from warnings import warn
 
 class DuplicateLogin(Exception): pass
 class DuplicateId(Exception): pass
