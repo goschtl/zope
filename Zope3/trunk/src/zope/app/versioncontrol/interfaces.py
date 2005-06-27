@@ -23,6 +23,7 @@ import zope.schema
 from zope.schema.vocabulary import SimpleVocabulary
 
 import zope.app.annotation.interfaces
+import zope.app.event.interfaces
 
 from zope.i18nmessageid import MessageIDFactory
 _ = MessageIDFactory('zope.app.versioncontrol')
@@ -299,3 +300,64 @@ class IVersionable(persistent.interfaces.IPersistent,
 
 class IVersioned(IVersionable):
     """Version control is in effect for this object."""
+
+
+# Events that are raised for interesting occurances:
+
+class IVersionEvent(zope.app.event.interfaces.IObjectEvent):
+    """Base interface for all version-control events."""
+
+class IVersionControlApplied(IVersionEvent):
+    """Event fired when version control is initially applied to an object."""
+
+    message = zope.schema.Text(
+        title=_("Message"),
+        description=_("Message text passed to applyVersionControl()"
+                      " for the object."),
+        )
+
+    info = zope.interface.Attribute(
+        "VersionInfo object reflecting the action.")
+
+
+class IVersionCheckedIn(IVersionEvent):
+    """Event fired when an object is checked in."""
+
+
+class IVersionCheckedOut(IVersionEvent):
+    """Event fired when an object is checked out."""
+
+
+class IVersionReverted(IVersionEvent):
+    """Event fired when a checked-out object is reverted.
+
+    (Fired by the uncheckoutResource() repository method.)
+    """
+
+
+class IVersionUpdated(IVersionEvent):
+    """Event fired when an object is updated to the latest version."""
+
+
+class IVersionRetrieved(IVersionEvent):
+    """Event fired when a versioned object is retrieved from the repository."""
+
+
+class IVersionLabelled(IVersionEvent):
+    """Event fired when a label is attached to a version."""
+
+    # TODO: should be ASCIILine
+    label = zope.schema.ASCII(
+        title=_("Label"),
+        description=_("Label applied to the version."),
+        )
+
+
+class IBranchCreated(IVersionEvent):
+    """Event fired when a new branch is created."""
+
+    # TODO: should be ASCIILine
+    branch_id = zope.schema.ASCII(
+        title=_("Branch Id"),
+        description=_("Identifier for the new branch."),
+        )

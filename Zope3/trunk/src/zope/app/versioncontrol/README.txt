@@ -64,6 +64,9 @@ contain their own location information.
     ...     # Method from IPhysicallyLocatable that is actually used:
     ...     def getPath(self):
     ...         return '/' + self.__name__
+    ...
+    ...     def __repr__(self):
+    ...         return "<%s object>" % self.__class__.__name__
 
     >>> component.provideAdapter(
     ...     zope.app.annotation.attribute.AttributeAnnotations)
@@ -127,10 +130,21 @@ user making changes.  Let's set up an interaction now.
     >>> import zope.security.management
     >>> zope.security.management.newInteraction(participation)
 
+Let's register some subscribers so we can check that interesting
+events are being fired for version control actions:
+
+    >>> def showEvent(label, object, event):
+    ...     print label, "for", object
+
+    >>> component.provideHandler(
+    ...     (lambda ob, evt: showEvent("applied version control", ob, evt)),
+    ...     (interface.Interface, interfaces.IVersionControlApplied))
+
 Now, let's put an object under version control and verify that we can
 determine that fact by checking against the interface:
 
     >>> repository.applyVersionControl(samp)
+    applied version control to <Sample object>
     >>> interfaces.IVersioned.providedBy(samp)
     True
     >>> transaction.commit()
@@ -175,6 +189,7 @@ available version to return.  The value `mainline` tells the
 `IRepository` to return the most recent version on the main branch.
 
     >>> ob = repository.getVersionOfResource(info.history_id, 'mainline')
+    retrieved <Sample object>, version 1
     >>> type(ob)
     <class 'zope.app.versioncontrol.README.Sample'>
     >>> ob is samp
@@ -201,8 +216,10 @@ we can see that it changes:
 Now, let's check out the object and add an attribute:
 
     >>> repository.checkoutResource(ob)
+    checked out <Sample object>, version 1
     >>> ob.value = 42
     >>> repository.checkinResource(ob)
+    checked in <Sample object>, version 2
     >>> transaction.commit()
 
 We can now compare information about the updated version with the
@@ -219,8 +236,10 @@ differences between the two:
 
     >>> o1 = repository.getVersionOfResource(orig_history_id,
     ...                                      orig_version_id)
+    retrieved <Sample object>, version 1
     >>> o2 = repository.getVersionOfResource(orig_history_id,
     ...                                      newinfo.version_id)
+    retrieved <Sample object>, version 2
     >>> o1.value
     Traceback (most recent call last):
       ...
@@ -255,7 +274,9 @@ committing it without checking a new version into the version control
 repository.
 
     >>> repository.updateResource(samp)
+    updated <Sample object> from version 1 to 2
     >>> repository.checkoutResource(samp)
+    checked out <Sample object>, version 2
     >>> transaction.commit()
 
     >>> repository.isResourceChanged(samp)
@@ -275,9 +296,11 @@ We'll also demonstrate that `checkinResource()` can take an optional
 message argument; we'll see later how this can be used.
 
     >>> repository.checkinResource(samp, 'sample checkin')
+    checked in <Sample object>, version 3
     >>> transaction.commit()
 
     >>> repository.checkoutResource(samp)
+    checked out <Sample object>, version 3
     >>> transaction.commit()
 
     >>> repository.isResourceUpToDate(samp)
@@ -301,6 +324,7 @@ database for the "working copy".  This is done using the
     >>> repository.isResourceChanged(samp)
     True
     >>> repository.uncheckoutResource(samp)
+    reverted <Sample object> to version 3
     >>> transaction.commit()
 
     >>> samp.value
@@ -315,12 +339,14 @@ An old copy of an object can be "updated" to the most recent version
 of an object:
 
     >>> ob = repository.getVersionOfResource(orig_history_id, orig_version_id)
+    retrieved <Sample object>, version 1
     >>> ob.__name__ = "foo"
     >>> repository.isResourceUpToDate(ob)
     False
     >>> repository.getVersionInfo(ob).version_id
     '1'
     >>> repository.updateResource(ob, version_id)
+    updated <Sample object> from version 1 to 3
     >>> repository.getVersionInfo(ob).version_id == version_id
     True
     >>> ob.value
@@ -361,7 +387,9 @@ Labels can be assigned to objects that are checked into the
 repository:
 
     >>> repository.labelResource(samp, 'my-first-label')
+    created label my-first-label from version 3 of <Sample object>
     >>> repository.labelResource(samp, 'my-second-label')
+    created label my-second-label from version 3 of <Sample object>
 
 The list of labels assigned to some version of an object can be
 retrieved using the repository's `getLabelsForResource()` method:
@@ -381,6 +409,7 @@ repository:
     >>> repository.getVersionInfo(samp).version_id
     '3'
     >>> ob = repository.getVersionOfResource(orig_history_id, 'my-first-label')
+    retrieved <Sample object>, version 3
     >>> repository.getVersionInfo(ob).version_id
     '3'
 
@@ -388,6 +417,7 @@ It's also possible to move a label from one version to another, but
 only when this is specifically indicated as allowed:
 
     >>> ob = repository.getVersionOfResource(orig_history_id, orig_version_id)
+    retrieved <Sample object>, version 1
     >>> ob.__name__ = "bar"
     >>> repository.labelResource(ob, 'my-second-label')
     ... # doctest: +NORMALIZE_WHITESPACE
@@ -397,12 +427,14 @@ only when this is specifically indicated as allowed:
     with a version.
 
     >>> repository.labelResource(ob, 'my-second-label', force=True)
+    created label my-second-label from version 1 of <Sample object>
 
 Labels can also be used to update an object to a specific version:
 
     >>> repository.getVersionInfo(ob).version_id
     '1'
     >>> repository.updateResource(ob, 'my-first-label')
+    updated <Sample object> from version 1 to 3
     >>> repository.getVersionInfo(ob).version_id
     '3'
     >>> ob.value
@@ -417,6 +449,7 @@ an object is updated to a specific date, determination of whether
 it is up-to-date or changed is based on the version it was updated to.
 
     >>> repository.updateResource(samp, orig_version_id)
+    updated <Sample object> from version 3 to 1
     >>> transaction.commit()
 
     >>> samp.value
@@ -532,6 +565,7 @@ for the version we want to branch from.  Here's we'll get an object
 for revision 2:
 
     >>> obranch = repository.getVersionOfResource(orig_history_id, '2')
+    retrieved <Sample object>, version 2
     >>> obranch.__name__ = "obranch"
     >>> root["obranch"] = obranch
     >>> repository.getVersionInfo(obranch).version_id
@@ -540,6 +574,7 @@ for revision 2:
 Now we can use this object to make a branch:
 
     >>> repository.makeBranch(obranch)
+    created branch 2.1 from version 2 of <Sample object>
     '2.1'
 
 The `makeBranch` method returns the new branch name.  This is needed
@@ -549,7 +584,9 @@ To create a new version on the branch, we first have to check out the
 object on the branch:
 
     >>> repository.updateResource(obranch, '2.1')
+    updated <Sample object> from version 2 to 2
     >>> repository.checkoutResource(obranch)
+    checked out <Sample object>, version 2
 
     >>> repository.getVersionInfo(obranch).version_id
     '2'
@@ -560,6 +597,7 @@ object on the branch:
     >>> obranch.value = 100
 
     >>> repository.checkinResource(obranch)
+    checked in <Sample object>, version 2.1.1
     >>> transaction.commit()
 
     >>> repository.getVersionInfo(obranch).version_id
@@ -642,6 +680,7 @@ We'll also add some contained objects:
 Let's apply version control to the container:
 
     >>> repository.applyVersionControl(box)
+    applied version control to <SampleContainer object>
 
 We'll start by showing some basics of how the INonVersionedData
 interface is used.  
@@ -721,12 +760,14 @@ using `updateResource()` and retrieving specific versions using
 revisions in the repository:
 
     >>> repository.checkoutResource(box)
+    checked out <SampleContainer object>, version 1
     >>> transaction.commit()
     >>> version_id = repository.getVersionInfo(box).version_id
 
     >>> box.aList.append(4)
     >>> box.bob_list.append(0)
     >>> repository.checkinResource(box)
+    checked in <SampleContainer object>, version 2
     >>> transaction.commit()
 
     >>> box.aList
@@ -735,6 +776,7 @@ revisions in the repository:
     [3, 2, 1, 0]
 
     >>> repository.updateResource(box, version_id)
+    updated <SampleContainer object> from version 2 to 1
     >>> box.aList
     [1, 2, 3]
     >>> box.bob_list

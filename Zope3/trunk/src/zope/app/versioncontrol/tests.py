@@ -23,6 +23,9 @@ from zope import component, interface
 from zope.component.tests.placelesssetup import PlacelessSetup
 from zope.testing import doctest, module
 from transaction import abort
+
+import zope.event
+
 import zope.app.annotation.interfaces
 import zope.app.annotation.attribute
 import zope.app.location
@@ -37,6 +40,7 @@ ps = PlacelessSetup()
 def setUp(test):
     ps.setUp()
     module.setUp(test, name)
+    zope.event.subscribers.append(eventHandler)
 
 def tearDown(test):
     module.tearDown(test, name)
@@ -45,6 +49,11 @@ def tearDown(test):
     if db is not None:
         db.close()
     ps.tearDown()
+    if eventHandler in zope.event.subscribers:
+        zope.event.subscribers.remove(eventHandler)
+
+def eventHandler(event):
+    print event
 
 
 class L(persistent.Persistent, zope.app.location.Location):

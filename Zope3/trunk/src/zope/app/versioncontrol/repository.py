@@ -23,6 +23,7 @@ import persistent
 from BTrees.OOBTree import OOBTree
 from BTrees.OIBTree import OIBTree
 
+import zope.event
 import zope.interface
 
 from zope.app import datetimeutils
@@ -30,6 +31,7 @@ from zope.app import zapi
 
 from zope.app.annotation.interfaces import IAnnotations
 
+from zope.app.versioncontrol import event
 from zope.app.versioncontrol.history import VersionHistory
 from zope.app.versioncontrol.interfaces import VersionControlError
 from zope.app.versioncontrol.interfaces import IVersionable, IVersioned
@@ -195,6 +197,8 @@ class Repository(persistent.Persistent):
                             message is None and 'Initial checkin.' or message
                             )
 
+        zope.event.notify(event.VersionControlApplied(object, info, message))
+
     def checkoutResource(self, object):
         info = self.getVersionInfo(object)
         if info.status != CHECKED_IN:
@@ -226,6 +230,8 @@ class Repository(persistent.Persistent):
         # Update bookkeeping information.
         info.status = CHECKED_OUT
         info.touch()
+
+        zope.event.notify(event.VersionCheckedOut(object, info))
 
     def checkinResource(self, object, message=''):
         info = self.getVersionInfo(object)
@@ -267,6 +273,8 @@ class Repository(persistent.Persistent):
         info.status = CHECKED_IN
         info.touch()
 
+        zope.event.notify(event.VersionCheckedIn(object, info))
+
     def uncheckoutResource(self, object):
         info = self.getVersionInfo(object)
         if info.status != CHECKED_OUT:
@@ -294,6 +302,8 @@ class Repository(persistent.Persistent):
         annotations = IAnnotations(object)
         annotations[VERSION_INFO_KEY] = info
 
+        zope.event.notify(event.VersionReverted(object, info))
+
     def updateResource(self, object, selector=None):
         info = self.getVersionInfo(object)
         if info.status != CHECKED_IN:
@@ -302,6 +312,7 @@ class Repository(persistent.Persistent):
                 )
 
         history = self.getVersionHistory(info.history_id)
+        oldversion = info.version_id
         version = None
         sticky = info.sticky
 
@@ -373,6 +384,8 @@ class Repository(persistent.Persistent):
         annotations = IAnnotations(object)
         annotations[VERSION_INFO_KEY] = info
 
+        zope.event.notify(event.VersionUpdated(object, info, oldversion))
+
     def labelResource(self, object, label, force=0):
         info = self.getVersionInfo(object)
         if info.status != CHECKED_IN:
@@ -390,6 +403,8 @@ class Repository(persistent.Persistent):
 
         history = self.getVersionHistory(info.history_id)
         history.labelVersion(info.version_id, label, force)
+
+        zope.event.notify(event.VersionLabelled(object, info, label))
 
     def makeBranch(self, object, branch_id=None):
         # Note - this is not part of the official version control API yet.
@@ -431,6 +446,8 @@ class Repository(persistent.Persistent):
 
         history.createBranch(branch_id, info.version_id)
 
+        zope.event.notify(event.BranchCreated(object, info, branch_id))
+
         return branch_id
 
     def getVersionOfResource(self, history_id, selector):
@@ -470,6 +487,8 @@ class Repository(persistent.Persistent):
             info.sticky = sticky
         annotations = IAnnotations(object)
         annotations[VERSION_INFO_KEY] = info
+
+        zope.event.notify(event.VersionRetrieved(object, info))
 
         return object
 
