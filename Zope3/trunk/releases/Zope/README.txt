@@ -55,7 +55,7 @@ it will match the version number from the compressed tarball you unpacked.  To
 change the installation directory, use the ``--prefix`` option to specify an
 alternate location:
 
-  $ ./configure --prefix /opt/ZopeX3-3.0.0
+  $ ./configure --prefix /opt/Zope-3.0.0
 
   Configuring Zope 3 installation
 
@@ -85,7 +85,7 @@ optional step, and can take a while to complete.  The tests can be run using
   python2.3 install.py -q build
   python2.3 test.py -v
   Running UNIT tests at level 1
-  Running UNIT tests from /home/user/ZopeX3-3.0.0/build/lib.linux-i686-2.3
+  Running UNIT tests from /home/user/Zope-3.0.0/build/lib.linux-i686-2.3
   [...lots of dots, one per test...]
   ----------------------------------------------------------------------
   Ran 4510 tests in 501.389s
@@ -154,15 +154,15 @@ the ``\Python23\python `` at the start of each command line.
 Build the Zope software by switching to the directory created by unpacking the
 source distribution, then running the command::
 
-  C:\ZopeX3-3.0.0> \Python23\python install.py -q build
+  C:\Zope-3.0.0> \Python23\python install.py -q build
 
 The unit tests for the Zope software can be run once this is complete.  This
 is an optional step, and can take a while to complete.  The tests can be run
 using the command::
 
-  C:\ZopeX3-3.0.0> \Python23\python test.py -v
+  C:\Zope-3.0.0> \Python23\python test.py -v
   Running UNIT tests at level 1
-  Running UNIT tests from C:\ZopeX3-3.0.0\build\lib.win32-2.3
+  Running UNIT tests from C:\Zope-3.0.0\build\lib.win32-2.3
   [...lots of dots, one per test...]
   ----------------------------------------------------------------------
   Ran 4500 tests in 501.389s

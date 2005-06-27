@@ -157,7 +157,7 @@ class PrincipalSource(object):
                 "A %s instance raised a NotFoundError in "
                 "getPrincipals.  Raising NotFoundError in this "
                 "method is deprecated and will no-longer be supported "
-                "starting in ZopeX3 3.3.  PrincipalLookupError should "
+                "starting in Zope 3.3.  PrincipalLookupError should "
                 "be raised instead."
                 % auth.__class__.__name__,
                 DeprecationWarning)

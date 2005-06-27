@@ -36,7 +36,7 @@ class Request(object):
             warnings.warn(
                 "The skin argument is deprecated for "
                 "zope.component.tests.request.Request and will go away in "
-                "ZopeX3 3.3. Use zope.publisher.browser.TestRequest if "
+                "Zope 3.3. Use zope.publisher.browser.TestRequest if "
                 "you need to test skins.",
                 DeprecationWarning)
             zope.interface.directlyProvides(self, skin)

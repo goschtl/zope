@@ -175,7 +175,7 @@ class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
         if deprecated_use :
             warnings.warn(
                 "%s is deprecated and will no-longer be supported "
-                "starting in ZopeX3 3.3.  Use ObjectModifiedEvent "
+                "starting in Zope 3.3.  Use ObjectModifiedEvent "
                 "and modification descriptors instead."
                 % self.__class__.__name__,
                 DeprecationWarning)
@@ -183,7 +183,7 @@ class ObjectAnnotationsModifiedEvent(ObjectModifiedEvent):
 def annotationModified(object, deprecated_use=True):
     warnings.warn(
                 "annotationModified is deprecated and will no-longer be "
-                "supported starting in ZopeX3 3.3.  Use modified "
+                "supported starting in Zope 3.3.  Use modified "
                 "and modification descriptors instead."
                 % self.__class__.__name__,
                 DeprecationWarning)
@@ -200,7 +200,7 @@ class ObjectContentModifiedEvent(ObjectModifiedEvent):
         if deprecated_use :
             warnings.warn(
                 "%s is deprecated and will no-longer be supported "
-                "starting in ZopeX3 3.3.  Use ObjectModifiedEvent "
+                "starting in Zope 3.3.  Use ObjectModifiedEvent "
                 "and modification descriptors instead."
                 % self.__class__.__name__,
                 DeprecationWarning)
@@ -208,7 +208,7 @@ class ObjectContentModifiedEvent(ObjectModifiedEvent):
 def contentModified(object, deprecated_use=True):
     warnings.warn(
                 "contentModified is deprecated and will no-longer be "
-                "supported starting in ZopeX3 3.3.  Use modified "
+                "supported starting in Zope 3.3.  Use modified "
                 "and modification descriptors instead."
                 % self.__class__.__name__,
                 DeprecationWarning)

@@ -272,7 +272,7 @@ ext_modules = [
 # We're using the module docstring as the distutils descriptions.
 doclines = __doc__.split("\n")
 
-setup(name="ZopeX3",
+setup(name="Zope",
       version="3.0m5",
       maintainer="Zope Corporation",
       maintainer_email="zope3-dev@zope.org",

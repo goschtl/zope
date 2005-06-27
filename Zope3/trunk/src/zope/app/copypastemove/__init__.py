@@ -615,7 +615,7 @@ def rename(container, oldid, newid):
     # BBB (remove in 3.3)
     warnings.warn(
         "rename is deprecated and will not be supported starting in "
-        "ZopeX3 3.3. Use IContainerItemRenamer(container).renameItem "
+        "Zope 3.3. Use IContainerItemRenamer(container).renameItem "
         "instead.", DeprecationWarning)
     IContainerItemRenamer(container).renameItem(oldid, newid)
 

@@ -31,7 +31,7 @@ Others
 
   * 307: browser:addMenuItem and broken view references
 
-  * 316: Zope3X test.py truncates path with dir=
+  * 316: Zope3 test.py truncates path with dir=
 
   * 336: zpkg: defining 'zpkgsetup' resource shouldn't be necessary
 

@@ -109,5 +109,5 @@ zope.deprecation.deprecated(
      ],
     "The database opened and process starting events have moved to "
     "zope.app.appsetup.interfaces they will disappear from here in "
-    "in ZopeX3.3."
+    "in Zope 3.3."
     )
