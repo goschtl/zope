@@ -68,7 +68,8 @@ class TestIntIds(BrowserTestCase):
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 302)
 
-        response = self.publish(self.basepath + '/intid/@@index.html',
+        response = self.publish(self.basepath
+                                + '/intid/@@index.html?testing=1',
                                 basic='mgr:mgrpw')
         self.assertEquals(response.getStatus(), 200)
         body = response.getBody()

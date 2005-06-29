@@ -30,5 +30,6 @@ class IntIdsView(object):
         self.context.register(zapi.traverse(self.context, "/++etc++site"))
         self.request.response.redirect('index.html')
 
-    def items(self):  
+    def _items(self):
+        """return all items and their path (for testing only!)"""
         return [(uid, zapi.getPath(ref())) for uid, ref in self.context.items()]

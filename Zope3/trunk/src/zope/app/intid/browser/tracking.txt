@@ -106,7 +106,7 @@ Now, if we look at the index page for the unique id utility, we'll see
 the objects we added:
 
   >>> print http(r"""
-  ... GET /++etc++site/default/IntIds/@@index.html HTTP/1.1
+  ... GET /++etc++site/default/IntIds/@@index.html?testing=1 HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ... """)
@@ -133,7 +133,7 @@ If we move the top object:
 We'll see that reflected in the utility:
 
   >>> print http(r"""
-  ... GET /++etc++site/default/IntIds/@@index.html HTTP/1.1
+  ... GET /++etc++site/default/IntIds/@@index.html?testing=1 HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ... """)
@@ -160,7 +160,7 @@ And if we delete the top object:
 all of the objects will go away:
 
   >>> print http(r"""
-  ... GET /++etc++site/default/IntIds/@@index.html HTTP/1.1
+  ... GET /++etc++site/default/IntIds/@@index.html?testing=1 HTTP/1.1
   ... Authorization: Basic mgr:mgrpw
   ... Referer: http://localhost:8081/++etc++site/default/@@contents.html
   ... """)
