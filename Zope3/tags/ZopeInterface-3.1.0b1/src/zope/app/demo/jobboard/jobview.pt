@@ -1,0 +1,40 @@
+<html i18n:domain="jobboard">
+<head>
+<title tal:content="context/summary">Job summary goes here</title>
+</head>
+<body>
+
+  <h3 tal:content="context/summary">Job summary goes here</h3>
+
+  <table border=0>
+  <tr><td i18n:translate="full-description">Description:</td>
+      <td>
+      <pre tal:content="context/description">Full descripion goes here
+      (multiple lines)
+      </pre>
+      </td>
+  </tr>
+  <tr><td i18n:translate="contact">Contact:</td>
+      <td><a href="user@host.com"
+             tal:attributes="href string:mailto:${context/contact}"
+             tal:content="context/contact">user@host.com</a></td>
+  </tr>
+  <tr><td i18n:translate="salary">Salary Range:</td>
+      <td tal:content="context/salary"></td>
+  </tr>
+  <tr><td i18n:translate="startdate">Start date:</td>
+      <td><span tal:omit-tag=""  tal:condition="exists: context/startdate" 
+tal:content="context/startdate"/></td>
+  </tr>
+
+  </table>
+
+  <table border=0>
+      <tr><td>
+      <a href=".." i18n:translate="back-to-jobs">Back to jobs</a>
+      </td></tr>
+  </table>
+
+</body>
+</html>
+

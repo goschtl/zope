@@ -1,0 +1,387 @@
+<configure
+   xmlns="http://namespaces.zope.org/zope"
+   xmlns:xmlrpc="http://namespaces.zope.org/xmlrpc"
+   xmlns:mail="http://namespaces.zope.org/mail"
+   xmlns:i18n="http://namespaces.zope.org/i18n"
+   xmlns:apidoc="http://namespaces.zope.org/apidoc"
+   xmlns:zcml="http://namespaces.zope.org/zcml"
+   i18n_domain="bugtracker"
+   >
+
+  <!-- Security setup -->
+
+  <role
+      id="bugtracker.User"
+      title="Bug Tracker User"
+      description="The user can browse the bug tracker" />
+
+  <role
+      id="bugtracker.Editor"
+      title="Bug Tracker Editor"
+      description="The Bug Tracker editor can add and edit bugs." />
+
+  <role
+      id="bugtracker.Admin"
+      title="Bug Tracker Administrator"
+      description="The Admin can fully manage a bug tracker." />
+
+  <permission
+      id="bugtracker.ManageBugTracker"
+      title="Manage Bug Tracker"
+      description="Allows to change the settings of the Bug Tracker." />
+
+  <grant
+      permission="bugtracker.ManageBugTracker"
+      role="bugtracker.Admin" />
+
+  <permission
+      id="bugtracker.ViewBugTracker"
+      title="View Bug Tracker"
+      description="Allows to view the overview of the Bug Tracker." />
+
+  <grant
+      permission="bugtracker.ViewBugTracker"
+      role="bugtracker.User" />
+
+  <permission
+      id="bugtracker.ViewBug"
+      title="View Bug"
+      description="Allows to view the overview and dependencies of the Bug." />
+
+  <grant
+      permission="bugtracker.ViewBug"
+      role="bugtracker.User" />
+
+  <permission
+      id="bugtracker.AddBug"
+      title="Add Bug"
+      description="Allows to add a Bug to the Tracker." />
+
+  <grant
+      permission="bugtracker.AddBug"
+      role="bugtracker.User" />
+
+  <permission
+      id="bugtracker.EditBug"
+      title="Edit Bug"
+      description="Allows to edit the data of a Bug." />
+
+  <grant
+      permission="bugtracker.EditBug"
+      role="bugtracker.Editor" />
+
+  <permission
+      id="bugtracker.AddComment"
+      title="Add Bug Comment"
+      description="Allows to add comments to a bug." />
+
+  <grant
+      permission="bugtracker.AddComment"
+      role="bugtracker.User" />
+
+  <permission
+      id="bugtracker.AddAttachment"
+      title="Add Bug Attachment"
+      description="Allows to add attachments (files and images)  to a bug." />
+
+  <grant
+      permission="bugtracker.AddAttachment"
+      role="bugtracker.Editor" />
+
+  <!-- Setting up the vocabularies for the bug tracker -->  
+
+  <vocabulary
+     name="Stati"
+     factory=".vocabulary.StatusVocabulary" />
+
+  <vocabulary
+     name="Releases"
+     factory=".vocabulary.ReleaseVocabulary" />
+
+  <vocabulary
+     name="Priorities"
+     factory=".vocabulary.PriorityVocabulary" />
+
+  <vocabulary
+     name="BugTypes"
+     factory=".vocabulary.BugTypeVocabulary" />
+
+  <vocabulary
+     name="Users"
+     factory=".vocabulary.UserVocabulary" />
+
+  <content class=".vocabulary.ManagableVocabulary">
+    <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
+    <allow attributes="default title"/>
+    <require
+        permission="bugtracker.ManageBugTracker"
+        attributes="add delete"
+        set_attributes="default"/>
+  </content>
+
+  <content class=".vocabulary.StatusVocabulary">
+    <require like_class=".vocabulary.ManagableVocabulary"/>    
+  </content>
+
+  <content class=".vocabulary.PriorityVocabulary">
+    <require like_class=".vocabulary.ManagableVocabulary"/>    
+  </content>
+
+  <content class=".vocabulary.ReleaseVocabulary">
+    <require like_class=".vocabulary.ManagableVocabulary"/>    
+  </content>
+
+  <content class=".vocabulary.BugTypeVocabulary">
+    <require like_class=".vocabulary.ManagableVocabulary"/>    
+  </content>
+
+  <content class=".vocabulary.SimpleTerm">
+    <allow interface="zope.schema.interfaces.ITokenizedTerm"/>
+    <allow attributes="title"/>
+  </content>
+
+  <content class=".vocabulary.UserVocabulary">
+    <allow interface="zope.schema.interfaces.IVocabularyTokenized"/>
+  </content>
+
+  <content class=".vocabulary.UserTerm">
+    <allow
+        interface="zope.schema.interfaces.ITokenizedTerm"/>
+    <allow attributes="principal title"/>
+  </content>
+
+  <content class=".mail.MailSubscriptions">
+    <require
+        permission="bugtracker.EditBug"
+        attributes="addSubscriptions removeSubscriptions" />
+    <allow attributes="getSubscriptions" />
+  </content>
+
+  <!-- Bug Tracker related configuration -->
+
+  <interface 
+      interface=".interfaces.IBugTracker" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".tracker.BugTracker">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable" />
+
+    <factory
+        id="bugtracker.BugTracker"
+        title="Bug Tracker"
+        description="A Bug Tracker" />
+
+    <require
+        permission="bugtracker.ViewBugTracker"
+        interface="zope.app.container.interfaces.IReadContainer"/>
+
+    <require
+        permission="bugtracker.AddBug"
+        interface="zope.app.container.interfaces.IWriteContainer"/>
+
+    <require
+        permission="bugtracker.ViewBugTracker"
+        attributes="title" />
+
+    <require
+        permission="zope.ManageContent"
+        set_schema=".interfaces.IBugTracker" />
+
+  </content>
+
+  <adapter 
+      for=".interfaces.IBugTracker"
+      factory=".tracker.BugTrackerNameChooser"
+      provides="zope.app.container.interfaces.INameChooser" />
+
+  <adapter
+      factory=".vocabulary.StatusVocabulary"
+      provides=".interfaces.IStatusVocabulary"
+      for=".interfaces.IBugTracker"
+      trusted="True" />
+
+  <adapter
+      factory=".vocabulary.ReleaseVocabulary"
+      provides=".interfaces.IReleaseVocabulary"
+      for=".interfaces.IBugTracker"
+      trusted="True" />
+
+  <adapter
+      factory=".vocabulary.PriorityVocabulary"
+      provides=".interfaces.IPriorityVocabulary"
+      for=".interfaces.IBugTracker"
+      trusted="True" />
+
+  <adapter
+      factory=".vocabulary.BugTypeVocabulary"
+      provides=".interfaces.IBugTypeVocabulary"
+      for=".interfaces.IBugTracker"
+      trusted="True" />
+
+  <adapter
+      factory=".mail.MailSubscriptions"
+      provides=".interfaces.IMailSubscriptions"
+      for=".interfaces.IBugTracker"
+      trusted="True" />
+
+  <!-- Bug related configuration -->
+
+  <interface 
+      interface=".interfaces.IBug" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".bug.Bug">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
+
+    <factory
+        id="bugtracker.Bug"
+        title="Bug"
+        description="A Bug" />
+
+    <require
+        permission="bugtracker.ViewBug"
+        interface="zope.app.container.interfaces.IReadContainer"/>
+
+    <require
+        permission="bugtracker.EditBug"
+        interface="zope.app.container.interfaces.IWriteContainer"/>
+
+    <require
+        permission="bugtracker.ViewBug"
+        interface=".interfaces.IBug" />
+
+    <require
+        permission="bugtracker.AddBug"
+        set_schema=".interfaces.IBug" />
+
+  </content>
+
+  <adapter 
+      factory=".bug.SearchableText"
+      provides=".interfaces.ISearchableText"
+      for=".interfaces.IBug" />
+
+  <content class=".bug.BugDependencyAdapter">
+
+    <require
+        permission="bugtracker.ViewBug"
+        attributes="dependencies dependents findChildren"/>
+
+    <require
+        permission="bugtracker.EditBug"
+        attributes="addDependencies deleteDependencies 
+                    addDependents deleteDependents" 
+        set_schema=".interfaces.IBugDependencies"/>
+
+  </content>
+
+  <adapter
+      factory=".bug.BugDependencyAdapter"
+      provides=".interfaces.IBugDependencies"
+      for=".interfaces.IBug"
+      trusted="True" />
+
+  <adapter
+      factory=".mail.MailSubscriptions"
+      provides=".interfaces.IMailSubscriptions"
+      for=".interfaces.IBug"
+      trusted="True" />
+
+
+  <!-- File and Image Attachment related configuration -->
+
+  <content class="zope.app.file.file.File">
+    <implements 
+        interface="bugtracker.interfaces.IAttachment" />
+  </content>
+
+  <content class="zope.app.file.image.Image">
+    <implements 
+        interface="bugtracker.interfaces.IAttachment" />
+  </content>
+
+
+  <!-- Comment related configuration -->
+
+  <interface 
+      interface=".interfaces.IComment" 
+      type="zope.app.content.interfaces.IContentType"
+      /> 
+
+  <content class=".comment.Comment">
+
+    <implements
+       interface="zope.app.annotation.interfaces.IAttributeAnnotatable"/>
+
+    <factory
+        id="bugtracker.BugComment"
+        title="Comment"
+        description="A comment about the bug." />
+
+    <require
+        permission="bugtracker.ViewBug"
+        interface=".interfaces.IComment" />
+
+    <require
+        permission="bugtracker.AddComment"
+        set_schema=".interfaces.IComment" />
+
+  </content>
+
+
+  <!-- XML-RPC presentation -->
+  <xmlrpc:view
+      for=".interfaces.IBugTracker"
+      permission="bugtracker.ViewBug" 
+      methods="getBugNames addBug deleteBug"
+      class=".xmlrpc.BugTrackerMethods" />
+
+  <xmlrpc:view
+      for=".interfaces.IBug"
+      permission="bugtracker.ViewBug" 
+      methods="getProperties setProperties 
+                       getCommentNames addComment deleteComment
+                       getAttachmentNames addAttachment deleteAttachment
+                       "
+      class=".xmlrpc.BugMethods" />
+
+  <xmlrpc:view
+      for=".interfaces.IComment"
+      permission="bugtracker.ViewBug" 
+      methods="getBody setBody"
+      class=".xmlrpc.CommentMethods" />
+
+
+  <!-- Register Mailer and Mail Service -->
+
+  <mail:smtpMailer name="bugs-smtp" hostname="localhost" port="25" />
+
+  <mail:queuedDelivery 
+      permission="zope.SendMail"
+      queuePath="./mail-queue"
+      mailer="bugs-smtp"
+      name="bug-mailer"/>
+
+  <!-- Register event listener for change mails -->
+  <subscriber
+      handler=".mail.Mailer"
+      for="zope.app.event.interfaces.IObjectCreatedEvent
+           zope.app.event.interfaces.IObjectModifiedEvent" />
+
+
+  <!-- Register various browser related components, including all views -->
+  <include package=".browser" />
+
+  <!-- Translations -->
+  <i18n:registerTranslations directory="locales" />
+
+  <!-- Register application with API Doc Tool -->
+  <apidoc:rootModule module="bugtracker" zcml:condition="have apidoc" />
+
+</configure>
