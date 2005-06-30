@@ -1,8 +1,0 @@
-<html>
-<head>
-<title>Functional widget test view</title>
-</head>
-<body>
-<div metal:use-macro="context/@@form_macros/widget_rows" />
-</body>
-</html>

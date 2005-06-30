@@ -1,6 +1,0 @@
-<configure
-    xmlns="http://namespaces.zope.org/zope">
-
-  <interface interface="zope.app.skintools.toolbar.IToolBarLayout" />
-
-</configure>
