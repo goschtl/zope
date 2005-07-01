@@ -101,6 +101,10 @@ CMF 1.5.2beta1 (2005/06/26)
 
   Others
 
+    - CMFSetup: the import/export of portal types uses a new XML format
+      that can hold arbitrary properties, to facilitate subclassing. The
+      old format is still recognized when importing.
+
     - WorkflowTool: Marked WorkflowInformation and getActionsFor deprecated.
       getActionsFor is superseded by listActionInfos and WorkflowInformation
       was just used by getActionsFor.
