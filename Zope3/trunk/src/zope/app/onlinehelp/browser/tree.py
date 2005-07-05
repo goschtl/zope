@@ -17,6 +17,8 @@ $Id$
 """
 __docformat__ = 'restructuredtext'
 
+from zope.i18n import translate
+
 from zope.app import zapi
 from zope.app.publisher.browser import BrowserView
 
@@ -32,15 +34,15 @@ class OnlineHelpTopicTreeView(BrowserView):
 
     def getTopicTree(self):
         """Return the tree of help topics.
-        
+
         We build a flat list of tpoics info dict.
         Iterate this dict oan build from the level info
         a navigation tree in the page tmeplate.
         Each time you get a level 0 means this is a subitem of the
         Onlinehelp itself.
-        
+
         info = [('id',{infoDict}),(),()]
-        
+
         <ul class="tree" id="tree">
           <li><a href="#">items</a>
             <ul>
@@ -71,12 +73,10 @@ class OnlineHelpTopicTreeView(BrowserView):
 
     def renderTree(self, root, request):
         """Reder a unordered list 'ul' tree with a class name 'tree'."""
-        res=[]
+        res = []
         intend = "  "
         res.append('<ul class="tree" id="tree">')
         for topic in root.getSubTopics():
-            title = topic.title
-            url = topic.id
             item = self.renderLink(topic)
 
             # expand if context is in tree
@@ -90,12 +90,12 @@ class OnlineHelpTopicTreeView(BrowserView):
             res.append('  </li>')
 
         res.append('<ul>')
-    
+
         return '\n'.join(res)
 
     def renderItemList(self, topic, intend):
         """Render a 'ul' elements as childs of the 'ul' tree."""
-        res=[]
+        res = []
         intend = intend + "  "
         res.append('%s<ul>' % intend)
 
@@ -106,36 +106,35 @@ class OnlineHelpTopicTreeView(BrowserView):
                 res.append('  %s<li class="expand">' % intend)
             else:
                 res.append('  %s<li>' % intend)
-            
+
             res.append(self.renderLink(item))
             if len(item.getSubTopics()) > 0:
                 res.append('    %s%s' % (self.renderItemList(item, intend), 
                     intend))
             res.append('  %s</li>' % intend)
         res.append('%s</ul>' % intend)
-    
+
         return '\n'.join(res)
-    
+
     def renderLink(self, topic):
         """Render a href element."""
-        res = []
-        title = topic.title
+        title = translate(topic.title, context=self.request,
+                default=topic.title)
         if topic.parentPath:
-            url = topic.parentPath +'/'+ topic.id
+            url = zapi.joinPath(topic.parentPath, topic.id)
         else:
             url = topic.id
-    
         return '<a href="/++help++/%s">%s</a>\n' % (url, title)
 
     def isExpanded(self, topic):
         if topic.parentPath:
-            path = topic.parentPath +'/'+ topic.id
+            path = zapi.joinPath(topic.parentPath, topic.id)
         else:
             path = topic.id
         try:
-            if zapi.getPath(self.context).startswith('/'+path):
+            if zapi.getPath(self.context).startswith('/' + path):
                 return True
         except:
-            # TODO: fix it, functioanl test doesn't like zapi.getPath? ri
+            # TODO: fix it, functional test doesn't like zapi.getPath? ri
             pass
         return False

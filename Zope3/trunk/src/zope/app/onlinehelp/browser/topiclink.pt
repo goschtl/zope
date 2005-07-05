@@ -1,7 +1,0 @@
-<div class="menu" tal:repeat="item view/listHelpItems" i18n:domain="zope">
-    <a href=""
-       tal:attributes="href item/path"
-       tal:content="item/title"
-       i18n:translate="">Title</a>
-   <div tal:replace="structure item/topics">sub topics</div>
-</div>

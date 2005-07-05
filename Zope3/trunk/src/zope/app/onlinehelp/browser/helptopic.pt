@@ -8,8 +8,7 @@
 
 <div metal:fill-slot="body">
 
-  <p tal:content="structure view/topicContent"
-      i18n:translate="">Content of Online Help.</p>
+  <p tal:content="structure view/topicContent">Content of Online Help.</p>
 
 </div>
 
