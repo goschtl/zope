@@ -69,9 +69,9 @@ class OnlineHelpTopicTreeView(BrowserView):
           </li>
         <ul>
         """
-        return self.renderTree(self.onlinehelp, self.request)
+        return self.renderTree(self.onlinehelp)
 
-    def renderTree(self, root, request):
+    def renderTree(self, root):
         """Reder a unordered list 'ul' tree with a class name 'tree'."""
         res = []
         intend = "  "
@@ -109,8 +109,8 @@ class OnlineHelpTopicTreeView(BrowserView):
 
             res.append(self.renderLink(item))
             if len(item.getSubTopics()) > 0:
-                res.append('    %s%s' % (self.renderItemList(item, intend), 
-                    intend))
+                res.append('    %s%s' % (
+                    self.renderItemList(item, intend), intend))
             res.append('  %s</li>' % intend)
         res.append('%s</ul>' % intend)
 
