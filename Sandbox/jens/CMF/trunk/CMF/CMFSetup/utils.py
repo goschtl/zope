@@ -326,21 +326,21 @@ class ExportConfiguratorBase(Implicit):
     #
     #   generic object and property support
     #
-    _o_nodes = PageTemplateFile('object_nodes.xml', _xmldir)
-    _p_nodes = PageTemplateFile('property_nodes.xml', _xmldir)
+    _ob_nodes = PageTemplateFile('object_nodes.xml', _xmldir)
+    _prop_nodes = PageTemplateFile('property_nodes.xml', _xmldir)
 
     security.declareProtected(ManagePortal, 'generateObjectNodes')
     def generateObjectNodes(self, obj_infos):
         """ Pseudo API.
         """
-        lines = self._o_nodes(objects=obj_infos).splitlines()
+        lines = self._ob_nodes(objects=obj_infos).splitlines()
         return '\n'.join(lines)
 
     security.declareProtected(ManagePortal, 'generatePropertyNodes')
     def generatePropertyNodes(self, prop_infos):
         """ Pseudo API.
         """
-        lines = self._p_nodes(properties=prop_infos).splitlines()
+        lines = self._prop_nodes(properties=prop_infos).splitlines()
         return '\n'.join(lines)
 
     def _extractObject(self, obj):
