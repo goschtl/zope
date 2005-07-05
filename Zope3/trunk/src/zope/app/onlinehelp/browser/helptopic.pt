@@ -1,6 +1,6 @@
-<html metal:use-macro="views/onlinehelp_macros/page">
+<html metal:use-macro="views/onlinehelp_macros/page" i18n:domain="zope">
 <head>
-  <title metal:fill-slot="title" 
+  <title metal:fill-slot="title"
       tal:content="context/title"
       i18n:translate="">Title</title>
 </head>
@@ -15,5 +15,3 @@
 
 </body>
 </html>
-
-

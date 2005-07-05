@@ -1,4 +1,7 @@
-﻿<metal:block define-macro="page"><metal:block define-slot="doctype"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"></metal:block>
+﻿<metal:block define-macro="page">
+<metal:block define-slot="doctype">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+</metal:block>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
     xml:lang="en"
@@ -37,27 +40,27 @@
 
   <body onload="buildTrees();">
 
-		<div class="headline">
-			<div class="title">Onlinehelp</div>
-		</div>
+    <div class="headline">
+        <div class="title" i18n:translate="">Onlinehelp</div>
+    </div>
 
-	  <!-- get rid of the crapy divs where place the content below the tree box 
-		     if somebody has a better solution, fell free the change it. 
-				 But I don't whana see the content below the navigation box. -->
-		<table class="layout" border="0" cellspacing="0" cellpadding="0">
-			<tr>
-				<td class="navigation" nowrap="nowrap">
-					<metal:block define-slot="navigation ">
-					  <metal:navigation use-macro="views/onlinehelp_navigation_macros/navigation" />
-					</metal:block>
-				</td>
-				<td class="content">
-					<metal:block define-slot="body">
-            content
-          </metal:block>
-				</td>
-			</tr>
-		</table>
+    <!-- get rid of the crapy divs where place the content below the tree box
+         if somebody has a better solution, fell free the change it.
+         But I don't whana see the content below the navigation box. -->
+    <table class="layout" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td class="navigation" nowrap="nowrap">
+                <metal:block define-slot="navigation ">
+                <metal:navigation use-macro="views/onlinehelp_navigation_macros/navigation" />
+                </metal:block>
+            </td>
+            <td class="content">
+                <metal:block define-slot="body">
+                    content
+                </metal:block>
+            </td>
+        </tr>
+    </table>
 
     <div id="footer" metal:define-macro="footer" />
 
@@ -66,4 +69,3 @@
 </html>
 
 </metal:block>
-
