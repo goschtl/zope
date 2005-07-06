@@ -25,6 +25,8 @@ from Products.PluggableAuthService.interfaces.plugins import IRolesPlugin
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 
+from Products.PluggableAuthService.utils import classImplements
+
 manage_addLocalRolePluginForm = PageTemplateFile(
     'www/lrpAdd', globals(), __name__='manage_addLocalRolePluginForm' )
 
@@ -45,8 +47,6 @@ class LocalRolePlugin( BasePlugin ):
         assignments made on the root object.
     """
 
-    __implements__ = BasePlugin.__implements__ + ( IRolesPlugin, )
-    
     meta_type = 'Local Role Plugin'
     security = ClassSecurityInfo()
 
@@ -69,6 +69,6 @@ class LocalRolePlugin( BasePlugin ):
             return None
         return local_roles.get( principal.getId() )
 
-InitializeClass( LocalRolePlugin )
+classImplements( LocalRolePlugin, IRolesPlugin )
 
-    
+InitializeClass( LocalRolePlugin )

@@ -21,6 +21,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import default__class_init__ as InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
         ILoginPasswordHostExtractionPlugin, \
@@ -46,11 +47,6 @@ def manage_addSessionAuthHelper(dispatcher, id, title=None, REQUEST=None):
 
 class SessionAuthHelper(BasePlugin):
     """ Multi-plugin for managing details of Session Authentication. """
-    __implements__ = ( ILoginPasswordHostExtractionPlugin
-                     , ICredentialsUpdatePlugin
-                     , ICredentialsResetPlugin
-                     )
-
     meta_type = 'Session Auth Helper'
     security = ClassSecurityInfo()
 
@@ -97,13 +93,18 @@ class SessionAuthHelper(BasePlugin):
         """ Respond to change of credentials. """
         request.SESSION.set('__ac_name', login)
         request.SESSION.set('__ac_password', new_password)
-        
+
     security.declarePrivate('resetCredentials')
     def resetCredentials(self, request, response):
         """ Empty out the currently-stored session values """
         request.SESSION.set('__ac_name', '')
         request.SESSION.set('__ac_password', '')
 
+classImplements( SessionAuthHelper
+               , ILoginPasswordHostExtractionPlugin
+               , ICredentialsUpdatePlugin
+               , ICredentialsResetPlugin
+               )
 
 InitializeClass(SessionAuthHelper)
 

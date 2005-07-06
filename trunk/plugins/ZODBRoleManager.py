@@ -23,6 +23,7 @@ from Globals import InitializeClass
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.interfaces.plugins \
     import IRolesPlugin
 from Products.PluggableAuthService.interfaces.plugins \
@@ -54,11 +55,6 @@ class ZODBRoleManager( BasePlugin ):
 
     """ PAS plugin for managing roles in the ZODB.
     """
-    __implements__ = ( IRolesPlugin
-                     , IRoleEnumerationPlugin
-                     , IRoleAssignerPlugin
-                     )
-
     meta_type = 'ZODB Role Manager'
 
     security = ClassSecurityInfo()
@@ -439,6 +435,12 @@ class ZODBRoleManager( BasePlugin ):
                            + '&manage_tabs_message=%s'
                            ) % ( self.absolute_url(), role_id, message )
                          )
+
+classImplements( ZODBRoleManager
+               , IRolesPlugin
+               , IRoleEnumerationPlugin
+               , IRoleAssignerPlugin
+               )
 
 
 InitializeClass( ZODBRoleManager )

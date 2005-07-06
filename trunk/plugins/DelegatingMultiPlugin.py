@@ -31,6 +31,7 @@ from AccessControl import ClassSecurityInfo
 from AccessControl.SpecialUsers import emergency_user
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
     IAuthenticationPlugin, IUserEnumerationPlugin, IRolesPlugin, \
@@ -65,11 +66,6 @@ class DelegatingMultiPlugin(Folder, BasePlugin):
     """ The adapter that mediates between the PAS and the DelegatingUserFolder """
     security = ClassSecurityInfo()
     meta_type = 'Delegating Multi Plugin'
-
-    __implements__ = ( IAuthenticationPlugin, IUserEnumerationPlugin
-                     , IRolesPlugin, ICredentialsUpdatePlugin
-                     , ICredentialsResetPlugin, IPropertiesPlugin
-                     )
 
     manage_options = ( BasePlugin.manage_options[:1]
                      + Folder.manage_options
@@ -236,6 +232,15 @@ class DelegatingMultiPlugin(Folder, BasePlugin):
                     pass
 
         return tuple(result)
+
+classImplements( DelegatingMultiPlugin
+               , IAuthenticationPlugin
+               , IUserEnumerationPlugin
+               , IRolesPlugin
+               , ICredentialsUpdatePlugin
+               , ICredentialsResetPlugin
+               , IPropertiesPlugin
+               )
 
 
 InitializeClass(DelegatingMultiPlugin)

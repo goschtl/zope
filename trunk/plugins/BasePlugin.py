@@ -25,6 +25,7 @@ from Interface.Implements import flattenInterfaces
 
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from Products.PluggableAuthService.utils import classImplements, implementedBy
 from Products.PluggableAuthService.permissions import ManageUsers
 
 class BasePlugin(SimpleItem, PropertyManager):
@@ -33,8 +34,6 @@ class BasePlugin(SimpleItem, PropertyManager):
     """
 
     security = ClassSecurityInfo()
-
-    __implements__ = SimpleItem.__implements__
 
     manage_options = ( ( { 'label': 'Activate',
                            'action': 'manage_activateInterfacesForm', }
@@ -104,5 +103,14 @@ class BasePlugin(SimpleItem, PropertyManager):
     def _getPAS( self ):
         """ Canonical way to get at the PAS instance from a plugin """
         return aq_parent( aq_inner( self ) )
+
+try:
+    from Products.Five.bridge import fromZ2Interface
+except ImportError:
+    BasePlugin.__implements__ = SimpleItem.__implements__
+else:
+    classImplements( BasePlugin
+                   , *implementedBy(SimpleItem)
+                   )
 
 InitializeClass(BasePlugin)

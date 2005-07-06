@@ -379,7 +379,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
              import IUserEnumerationPlugin
 
         enumerator = DummyUserEnumerator( user_id, login )
-        directlyProvides( enumerator, ( IUserEnumerationPlugin, ) )
+        directlyProvides( enumerator, IUserEnumerationPlugin )
 
         return enumerator
 
@@ -389,7 +389,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
              import IGroupEnumerationPlugin
 
         enumerator = DummyGroupEnumerator( group_id )
-        directlyProvides( enumerator, ( IGroupEnumerationPlugin, ) )
+        directlyProvides( enumerator, IGroupEnumerationPlugin )
 
         return enumerator
 
@@ -401,8 +401,8 @@ class PluggableAuthServiceTests( unittest.TestCase ):
              import IGroupEnumerationPlugin
 
         enumerator = DummySuperEnumerator( user_id, login, group_id )
-        directlyProvides( enumerator, ( IUserEnumerationPlugin,
-                                        IGroupEnumerationPlugin ) )
+        directlyProvides( enumerator
+                        , IUserEnumerationPlugin, IGroupEnumerationPlugin )
 
         return enumerator
 
@@ -411,7 +411,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
              import IGroupsPlugin
 
         gp = DummyGroupPlugin(id, groups=groups)
-        directlyProvides( gp, (IGroupsPlugin,) )
+        directlyProvides( gp, IGroupsPlugin )
         return gp
 
     def _makeChallengePlugin(self, id, klass):
@@ -419,7 +419,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
              import IChallengePlugin
 
         cp = klass(id)
-        directlyProvides( cp, (IChallengePlugin,) )
+        directlyProvides( cp, IChallengePlugin )
         return cp
 
     def test_conformance_IUserFolder( self ):
@@ -456,7 +456,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
         zcuf._setObject( 'login', login )
@@ -483,14 +483,14 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
 
         zcuf._setObject( 'login', login )
 
         always = DummyPlugin()
-        directlyProvides( always, ( IAuthenticationPlugin, ) )
+        directlyProvides( always, IAuthenticationPlugin )
         always.authenticateCredentials = lambda creds: ('baz', None)
 
         zcuf._setObject( 'always', always )
@@ -520,14 +520,14 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
 
         zcuf._setObject( 'login', login )
 
         extra = DummyPlugin()
-        directlyProvides( extra, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( extra, IExtractionPlugin, IAuthenticationPlugin )
         extra.extractCredentials = _extractExtra
         extra.authenticateCredentials = _authExtra
 
@@ -568,14 +568,14 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
 
         zcuf._setObject( 'login', login )
 
         borked = DummyPlugin()
-        directlyProvides( borked, ( IExtractionPlugin, ) )
+        directlyProvides( borked, IExtractionPlugin )
         borked.extractCredentials = lambda req: 'abc'
 
         zcuf._setObject( 'borked', borked )
@@ -614,7 +614,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         borked = DummyPlugin()
-        directlyProvides( borked, ( IExtractionPlugin, ) )
+        directlyProvides( borked, IExtractionPlugin )
         borked.extractCredentials = lambda req: 'abc'
 
         zcuf._setObject( 'borked', borked )
@@ -644,14 +644,14 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
 
         zcuf._setObject( 'login', login )
 
         borked = DummyPlugin()
-        directlyProvides( borked, ( IAuthenticationPlugin, ) )
+        directlyProvides( borked, IAuthenticationPlugin )
         borked.authenticateCredentials = lambda creds: creds['nonesuch']
 
         zcuf._setObject( 'borked', borked )
@@ -887,7 +887,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         bar = DummyPlugin()
-        directlyProvides( bar, ( IUserFactoryPlugin, ) )
+        directlyProvides( bar, IUserFactoryPlugin )
 
         def _makeUser( user_id, name ):
             user = FauxUser( user_id )
@@ -921,13 +921,13 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         foo = DummyPlugin()
-        directlyProvides( foo, ( IPropertiesPlugin, ) )
+        directlyProvides( foo, IPropertiesPlugin )
         foo.getPropertiesForUser = lambda user, req: { 'login': user.getId() }
 
         zcuf._setObject( 'foo', foo )
 
         bar = DummyPlugin()
-        directlyProvides( bar, ( IPropertiesPlugin, ) )
+        directlyProvides( bar, IPropertiesPlugin )
         bar.getPropertiesForUser = lambda user, req: { 'a': 0, 'b': 'bar' }
 
         zcuf._setObject( 'bar', bar )
@@ -956,7 +956,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         foo = DummyPlugin()
-        directlyProvides( foo, ( IGroupsPlugin, ) )
+        directlyProvides( foo, IGroupsPlugin )
         foo.getGroupsForPrincipal = lambda user, req: ( 'group1', 'group2' )
 
         zcuf._setObject( 'foo', foo )
@@ -981,11 +981,11 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         foo = DummyPlugin()
-        directlyProvides( foo, ( IGroupsPlugin, ) )
+        directlyProvides( foo, IGroupsPlugin )
         foo.getGroupsForPrincipal = lambda user, req: ( 'group1', 'group2' )
 
         bar = DummyPlugin()
-        directlyProvides( bar, ( IGroupsPlugin, ) )
+        directlyProvides( bar, IGroupsPlugin )
         bar.getGroupsForPrincipal = lambda user, req: ( 'group3', 'group4' )
 
         zcuf._setObject( 'foo', foo )
@@ -1268,13 +1268,13 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
         zcuf._setObject( 'login', login )
 
         foo = DummyPlugin()
-        directlyProvides( foo, ( IUserEnumerationPlugin, ) )
+        directlyProvides( foo, IUserEnumerationPlugin )
         foo.enumerateUsers = lambda id: id == 'foo' or None
 
         zcuf._setObject( 'foo', foo )
@@ -1315,13 +1315,13 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
         zcuf._setObject( 'login', login )
 
         foo = DummyPlugin()
-        directlyProvides( foo, ( IUserEnumerationPlugin, ) )
+        directlyProvides( foo, IUserEnumerationPlugin )
         foo.enumerateUsers = lambda id: id == 'foo' or None
 
         zcuf._setObject( 'foo', foo )
@@ -1361,13 +1361,13 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
         zcuf._setObject( 'login', login )
 
         olivier = DummyPlugin()
-        directlyProvides( olivier, ( IUserEnumerationPlugin, IRolesPlugin ) )
+        directlyProvides( olivier, IUserEnumerationPlugin, IRolesPlugin )
         olivier.enumerateUsers = lambda id: id == 'foo' or None
         olivier.getRolesForPrincipal = lambda user, req: (
                      user.getId() == 'olivier' and ( 'Hamlet', ) or () )
@@ -1418,7 +1418,7 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         nested = self._makeOne( plugins )
 
         anon = DummyPlugin()
-        directlyProvides( anon, ( IAnonymousUserFactoryPlugin, ) )
+        directlyProvides( anon, IAnonymousUserFactoryPlugin )
         anon.createAnonymousUser = _makeAnon
         zcuf._setObject( 'anon', anon )
 
@@ -1485,13 +1485,13 @@ class PluggableAuthServiceTests( unittest.TestCase ):
         zcuf = self._makeOne( plugins )
 
         login = DummyPlugin()
-        directlyProvides( login, ( IExtractionPlugin, IAuthenticationPlugin ) )
+        directlyProvides( login, IExtractionPlugin, IAuthenticationPlugin )
         login.extractCredentials = _extractLogin
         login.authenticateCredentials = _authLogin
         zcuf._setObject( 'login', login )
 
         foo = DummyPlugin()
-        directlyProvides( foo, ( IUserEnumerationPlugin, ) )
+        directlyProvides( foo, IUserEnumerationPlugin )
         foo.enumerateUsers = lambda id: id == 'foo' or None
 
         zcuf._setObject( 'foo', foo )
@@ -1744,10 +1744,9 @@ class PluggableAuthServiceTests( unittest.TestCase ):
 
         plugins = zcuf._getOb('plugins')
         directlyProvides( creds_store
-                        , ( IExtractionPlugin
-                          , ICredentialsUpdatePlugin
-                          , ICredentialsResetPlugin
-                          )
+                        , IExtractionPlugin
+                        , ICredentialsUpdatePlugin
+                        , ICredentialsResetPlugin
                         )
         plugins.activatePlugin(IExtractionPlugin, 'creds')
         plugins.activatePlugin(ICredentialsUpdatePlugin, 'creds')

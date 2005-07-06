@@ -29,6 +29,7 @@ from AccessControl.Permissions import manage_users
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 # PluggableAuthService imports
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
     IAuthenticationPlugin, IRolesPlugin
@@ -55,8 +56,6 @@ class DomainAuthHelper(BasePlugin):
     """ Domain Authentication plugin for the PluggableAuthService """
     security = ClassSecurityInfo()
     meta_type = 'Domain Authentication Plugin'
-
-    __implements__ = (IAuthenticationPlugin, IRolesPlugin)
 
     security.declareProtected(manage_users, 'manage_map')
     manage_map = PageTemplateFile('www/daMatches', globals())
@@ -292,6 +291,10 @@ class DomainAuthHelper(BasePlugin):
             else:
                 return self.manage_genericmap(manage_tabs_message=msg)
 
+classImplements( DomainAuthHelper
+               , IAuthenticationPlugin
+               , IRolesPlugin
+               )
 
 InitializeClass(DomainAuthHelper)
 

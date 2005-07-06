@@ -29,6 +29,7 @@ from AccessControl import ClassSecurityInfo
 from AccessControl.SpecialUsers import emergency_user
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
      IUserEnumerationPlugin, IGroupEnumerationPlugin
@@ -58,8 +59,6 @@ class SearchPrincipalsPlugin(BasePlugin):
     """
     security = ClassSecurityInfo()
     meta_type = 'Search Principals Plugin'
-
-    __implements__ = ( IUserEnumerationPlugin, IGroupEnumerationPlugin )
 
     _properties = ( { 'id' : 'delegate'
                     , 'label' : ' Delegate Path'
@@ -126,6 +125,10 @@ class SearchPrincipalsPlugin(BasePlugin):
                                , sort_by=sort_by
                                , max_results=max_results
                                , **kw )
-    
+
+classImplements( SearchPrincipalsPlugin
+               , IUserEnumerationPlugin
+               , IGroupEnumerationPlugin
+               )
 
 InitializeClass(SearchPrincipalsPlugin)

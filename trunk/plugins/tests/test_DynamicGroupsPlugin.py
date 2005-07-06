@@ -48,7 +48,7 @@ class FauxPrincipal:
         return self._id
 
 class DynamicGroupsPlugin( unittest.TestCase
-                         , IGroupsPlugin_conformance 
+                         , IGroupsPlugin_conformance
                          , IGroupEnumerationPlugin_conformance
                          ):
 
@@ -328,7 +328,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
         dpg = self._makeOne( 'ggp_request' )
         principal = FauxPrincipal( 'faux' )
-        
+
         groups = dpg.getGroupsForPrincipal( principal )
 
         self.assertEqual( len( groups ), 0 )
@@ -337,7 +337,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
         dpg = self._makeOne( 'ggp_principal' )
         principal = FauxPrincipal( 'faux' )
-        
+
         dpg.addGroup( 'effable', 'python:principal.getId().startswith("f")' )
         groups = dpg.getGroupsForPrincipal( principal, {} )
         self.assertEqual( len( groups ), 1 )
@@ -347,7 +347,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
         dpg = self._makeOne( 'ggp_python' )
         principal = FauxPrincipal( 'faux' )
-        
+
         dpg.addGroup( 'everyone', 'python:1' )
         groups = dpg.getGroupsForPrincipal( principal, {} )
         self.assertEqual( len( groups ), 1 )
@@ -357,7 +357,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
         dpg = self._makeOne( 'ggp_request' )
         principal = FauxPrincipal( 'faux' )
-        
+
         dpg.addGroup( 'local', 'request/is_local | nothing' )
 
         groups = dpg.getGroupsForPrincipal( principal, {} )
@@ -377,7 +377,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
         dpg = self._makeOne( 'ggp_group' )
         principal = FauxPrincipal( 'faux' )
-        
+
         dpg.addGroup( 'willing', 'group/willing' )
         dpg.willing._setProperty( 'willing', type='boolean', value=0 )
 
@@ -393,7 +393,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
         dpg = self._makeOne( 'ggp_plugin' )
         principal = FauxPrincipal( 'faux' )
-        
+
         dpg.addGroup( 'scripted', 'python: plugin.callme(request)' )
         callme = FauxScript( 'callme', 0 )
         dpg._setOb( 'callme', callme )
@@ -405,7 +405,7 @@ class DynamicGroupsPlugin( unittest.TestCase
 
         dpg = self._makeOne( 'ggp_plugin' )
         principal = FauxPrincipal( 'faux' )
-        
+
         dpg.addGroup( 'scripted', 'python: plugin.callme(request)' )
         callme = FauxScript( 'callme', 1 )
         dpg._setOb( 'callme', callme )
@@ -414,11 +414,71 @@ class DynamicGroupsPlugin( unittest.TestCase
         self.assertEqual( len( groups ), 1 )
         self.failUnless( 'scripted' in groups )
 
+    def test_enumerateGroups_matching_with_optional_prefix( self ):
+
+        from Products.PluggableAuthService.tests.test_PluggableAuthService \
+            import FauxRoot
+
+        root = FauxRoot()
+        dpg = self._makeOne( 'enumerating' ).__of__( root )
+        dpg.prefix = 'enumerating_'
+
+        dpg.addGroup( 'everyone', 'python:True', 'Everyone', '', True )
+        dpg.addGroup( 'noone', 'python:False', active=True )
+        dpg.addGroup( 'hohum', 'nothing', active=True )
+
+        ID_LIST = ( 'enumerating_everyone', )
+
+        info_list = dpg.enumerateGroups( id=ID_LIST, exact_match=True )
+
+        self.assertEqual( len( info_list ), len( ID_LIST ) )
+
+        ids = [ x[ 'id' ] for x in info_list ]
+
+        for id in ID_LIST:
+            self.failUnless( id in ids )
+
+    def test_enumerateGroups_enumerating_with_optional_prefix( self ):
+
+        from Products.PluggableAuthService.tests.test_PluggableAuthService \
+            import FauxRoot
+
+        root = FauxRoot()
+        dpg = self._makeOne( 'enumerating' ).__of__( root )
+        dpg.prefix = 'enumerating_'
+
+        dpg.addGroup( 'everyone', 'python:True', 'Everyone', '', True )
+        dpg.addGroup( 'noone', 'python:False', active=True )
+        dpg.addGroup( 'hohum', 'nothing', active=True )
+
+        ID_LIST = ( 'enumerating_everyone', 'enumerating_noone',
+                    'enumerating_hohum' )
+
+        info_list = dpg.enumerateGroups()
+
+        self.assertEqual( len( info_list ), len( ID_LIST ) )
+
+        ids = [ x[ 'id' ] for x in info_list ]
+
+        for id in ID_LIST:
+            self.failUnless( id in ids )
+
+    def test_getGroupsForPrincipal_optional_prefix( self ):
+
+        dpg = self._makeOne( 'ggp_prefixed' )
+        dpg.prefix = 'ggp_'
+
+        principal = FauxPrincipal( 'faux' )
+
+        dpg.addGroup( 'effable', 'python:principal.getId().startswith("f")' )
+        groups = dpg.getGroupsForPrincipal( principal, {} )
+        self.assertEqual( len( groups ), 1 )
+        self.failUnless( 'ggp_effable' in groups )
+
 if __name__ == "__main__":
     unittest.main()
-        
+
 def test_suite():
     return unittest.TestSuite((
         unittest.makeSuite( DynamicGroupsPlugin ),
         ))
-        

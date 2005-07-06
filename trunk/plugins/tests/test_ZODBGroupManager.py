@@ -229,6 +229,42 @@ class ZODBGroupManagerTests( unittest.TestCase
         for info in info_list:
             self.failUnless( info[ 'id' ] in SUBSET )
 
+    def test_enumerateGroups_prefixed( self ):
+
+        from Products.PluggableAuthService.tests.test_PluggableAuthService \
+            import FauxRoot
+
+        root = FauxRoot()
+        zrm = self._makeOne( id='prefixed' ).__of__( root )
+        zrm.prefix = 'prefixed_'
+
+        ID_LIST = ( 'foo', 'bar', 'baz', 'bam' )
+        PRE_LIST = tuple(['prefixed_%s' % x for x in ID_LIST])
+
+        for id in ID_LIST:
+
+            zrm.addGroup( id, 'Group %s' % id, 'This is group, %s' % id )
+
+        info_list = zrm.enumerateGroups()
+
+        self.assertEqual( len( info_list ), len( ID_LIST ) )
+
+        for info in info_list:
+            self.failUnless( info[ 'id' ] in PRE_LIST )
+
+    def test_addPrincipalToGroup( self ):
+
+        zgm = self._makeOne()
+        zgm.prefix = 'prefixed_'
+
+        zgm.addGroup( 'group' )
+
+        user = DummyUser( 'userid' )
+
+        zgm.addPrincipalToGroup( user.getId(), 'group' )
+        groups = zgm.getGroupsForPrincipal( user )
+        self.assertEqual( groups, ( 'prefixed_group', ) )
+
 if __name__ == "__main__":
     unittest.main()
 

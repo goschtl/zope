@@ -15,7 +15,13 @@
 import unittest
 from OFS.Folder import Folder
 from OFS.SimpleItem import SimpleItem
-from Interface import Interface
+
+try:
+    from zope.interface import Interface
+except ImportError:
+    from Interface import Interface
+
+from Products.PluggableAuthService.utils import providedBy
 
 class IFaux( Interface ):
 
@@ -54,7 +60,8 @@ class ScriptablePluginTests( unittest.TestCase ):
     def test_empty( self ):
 
         scriptable_plugin = self._makeOne()
-        self.assertEqual( len(scriptable_plugin.__implements__), 2 )
+        self.assertFalse( IFaux in providedBy(scriptable_plugin) )
+        self.assertFalse( IFauxTwo in providedBy(scriptable_plugin) )
 
     def test_withTwo( self ):
 
@@ -71,7 +78,8 @@ class ScriptablePluginTests( unittest.TestCase ):
 
         scriptable_plugin.manage_updateInterfaces( ['IFaux', 'IFauxTwo'] )
 
-        self.assertEqual( len(scriptable_plugin.__implements__), 4 )
+        self.assertTrue( IFaux in providedBy(scriptable_plugin) )
+        self.assertTrue( IFauxTwo in providedBy(scriptable_plugin) )
 
     def test_withTwoOnlyOneWired( self ):
 
@@ -88,7 +96,7 @@ class ScriptablePluginTests( unittest.TestCase ):
 
         scriptable_plugin.manage_updateInterfaces( ['IFaux',] )
 
-        self.assertEqual( len(scriptable_plugin.__implements__), 3 )
+        self.assertTrue( IFaux in providedBy(scriptable_plugin) )
 
     def test_withTwoMinusOne( self ):
 
@@ -107,7 +115,8 @@ class ScriptablePluginTests( unittest.TestCase ):
 
         scriptable_plugin._delObject( 'two_method' )
 
-        self.assertEqual( len(scriptable_plugin.__implements__), 3 )
+        self.assertTrue( IFaux in providedBy(scriptable_plugin) )
+        self.assertFalse( IFauxTwo in providedBy(scriptable_plugin) )
 
 
 if __name__ == '__main__':

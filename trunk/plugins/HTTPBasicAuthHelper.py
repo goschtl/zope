@@ -23,6 +23,7 @@ from AccessControl.SecurityInfo import ClassSecurityInfo
 from App.class_init import default__class_init__ as InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
         ILoginPasswordHostExtractionPlugin, \
@@ -52,11 +53,6 @@ class HTTPBasicAuthHelper( BasePlugin ):
 
     """ Multi-plugin for managing details of HTTP Basic Authentication.
     """
-    __implements__ = ( ILoginPasswordHostExtractionPlugin
-                     , IChallengePlugin
-                     , ICredentialsResetPlugin
-                     )
-
     meta_type = 'HTTP Basic Auth Helper'
 
     security = ClassSecurityInfo()
@@ -116,5 +112,11 @@ class HTTPBasicAuthHelper( BasePlugin ):
         """
         # XXX:  Does this need to check whether we have an HTTP response?
         response.unauthorized()
+
+classImplements( HTTPBasicAuthHelper
+               , ILoginPasswordHostExtractionPlugin
+               , IChallengePlugin
+               , ICredentialsResetPlugin
+               )
 
 InitializeClass( HTTPBasicAuthHelper )

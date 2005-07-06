@@ -21,7 +21,10 @@ class IExtractionPlugin_conformance:
 
     def test_IExtractionPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IExtractionPlugin
 
@@ -31,7 +34,10 @@ class ILoginPasswordExtractionPlugin_conformance:
 
     def test_ILoginPasswordExtractionPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import ILoginPasswordExtractionPlugin
 
@@ -41,7 +47,10 @@ class ILoginPasswordHostExtractionPlugin_conformance:
 
     def test_ILoginPasswordHostExtractionPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import ILoginPasswordHostExtractionPlugin
 
@@ -52,7 +61,10 @@ class IChallengePlugin_conformance:
 
     def test_IChallengePlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IChallengePlugin
 
@@ -62,7 +74,10 @@ class ICredentialsUpdatePlugin_conformance:
 
     def test_ICredentialsUpdatePlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import ICredentialsUpdatePlugin
 
@@ -72,7 +87,10 @@ class ICredentialsResetPlugin_conformance:
 
     def test_ICredentialsResetPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import ICredentialsResetPlugin
 
@@ -83,7 +101,10 @@ class IAuthenticationPlugin_conformance:
 
     def test_AuthenticationPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IAuthenticationPlugin
 
@@ -94,7 +115,10 @@ class IUserEnumerationPlugin_conformance:
 
     def test_UserEnumerationPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IUserEnumerationPlugin
 
@@ -105,7 +129,10 @@ class IUserAdderPlugin_conformance:
 
     def test_UserAdderPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IUserAdderPlugin
 
@@ -116,7 +143,10 @@ class IGroupEnumerationPlugin_conformance:
 
     def test_GroupEnumerationPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IGroupEnumerationPlugin
 
@@ -127,7 +157,10 @@ class IGroupsPlugin_conformance:
 
     def test_GroupsPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IGroupsPlugin
 
@@ -138,7 +171,10 @@ class IRoleEnumerationPlugin_conformance:
 
     def test_RoleEnumerationPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IRoleEnumerationPlugin
 
@@ -149,7 +185,10 @@ class IRolesPlugin_conformance:
 
     def test_RolesPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IRolesPlugin
 
@@ -159,7 +198,10 @@ class IRoleAssignerPlugin_conformance:
 
     def test_RoleAssignerPlugin_conformance( self ):
 
-        from Interface.Verify import verifyClass
+        try:
+            from zope.interface.verify import verifyClass
+        except ImportError:
+            from Interface.Verify import verifyClass
         from Products.PluggableAuthService.interfaces.plugins \
             import IRoleAssignerPlugin
 

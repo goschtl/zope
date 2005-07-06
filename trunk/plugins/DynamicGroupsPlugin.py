@@ -40,7 +40,7 @@ from Products.PluggableAuthService.permissions import ManageGroups
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 
-from Products.PluggableAuthService.utils import createViewName
+from Products.PluggableAuthService.utils import createViewName, classImplements
 
 
 manage_addDynamicGroupsPluginForm = PageTemplateFile(
@@ -178,7 +178,6 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
 
       'request' -- the request object.
     """
-    __implements__ = ( IGroupsPlugin, IGroupEnumerationPlugin )
     meta_type = 'Dynamic Groups Plugin'
 
     security = ClassSecurityInfo()
@@ -196,11 +195,12 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
 
         """ See IGroupsPlugin.
         """
+        grps = []
         DGD = DynamicGroupDefinition.meta_type
-        return[ group.getId() for  group in self.objectValues( DGD )
-                    if group.active and group( principal, request ) ]
-
-
+        for group in self.objectValues( DGD ):
+            if group.active and group( principal, request ):
+                grps.append('%s%s' % (self.prefix, group.getId()))
+        return grps
 
     security.declareProtected( ManageGroups, 'enumerateGroups' )
     def enumerateGroups( self
@@ -257,6 +257,8 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
             info[ 'properties_url' ] = url
             info[ 'members_url' ] = url
 
+            info[ 'id' ] = '%s%s' % (self.prefix, info['id'])
+
             if not group_filter or group_filter( info ):
                 if info[ 'active' ]:
                     group_info.append( info )
@@ -295,7 +297,10 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
         try:
             original = self._getOb( group_id )
         except AttributeError:
-            raise KeyError, group_id
+            try:
+                original = self._getOb( group_id[len(self.prefix):] )
+            except AttributeError:
+                raise KeyError, group_id
 
         if not isinstance( original, DynamicGroupDefinition ):
             raise KeyError, group_id
@@ -502,6 +507,11 @@ class DynamicGroupsPlugin( Folder, BasePlugin, Cacheable ):
             RESPONSE.redirect( '%s/manage_groups?manage_tabs_message=%s'
                              % ( self.absolute_url(), message )
                              )
+
+classImplements( DynamicGroupsPlugin
+               , IGroupsPlugin
+               , IGroupEnumerationPlugin
+               )
 
 InitializeClass( DynamicGroupsPlugin )
 

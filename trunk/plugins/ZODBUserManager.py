@@ -27,7 +27,7 @@ from OFS.Cache import Cacheable
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-from Products.PluggableAuthService.utils import createViewName
+from Products.PluggableAuthService.utils import createViewName, classImplements
 from Products.PluggableAuthService.interfaces.plugins \
     import IAuthenticationPlugin
 from Products.PluggableAuthService.interfaces.plugins \
@@ -59,10 +59,6 @@ class ZODBUserManager( BasePlugin, Cacheable ):
 
     """ PAS plugin for managing users in the ZODB.
     """
-    __implements__ = ( IAuthenticationPlugin
-                     , IUserEnumerationPlugin
-                     , IUserAdderPlugin
-                     )
 
     meta_type = 'ZODB User Manager'
 
@@ -472,6 +468,12 @@ class ZODBUserManager( BasePlugin, Cacheable ):
                                '?manage_tabs_message=%s'
                              % ( self.absolute_url(), message )
                              )
+
+classImplements( ZODBUserManager
+               , IAuthenticationPlugin
+               , IUserEnumerationPlugin
+               , IUserAdderPlugin
+               )
 
 InitializeClass( ZODBUserManager )
 

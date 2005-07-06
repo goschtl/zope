@@ -22,6 +22,7 @@ from Globals import InitializeClass
 from BTrees.OOBTree import OOBTree
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.PropertiedUser import PropertiedUser
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins \
@@ -63,8 +64,6 @@ class RecursiveGroupsPlugin( BasePlugin ):
 
     """ PAS plugin for recursively flattening a collection of groups
     """
-    __implements__ = ( IGroupsPlugin, )
-
     meta_type = 'Recursive Groups Plugin'
 
     security = ClassSecurityInfo()
@@ -96,3 +95,7 @@ class RecursiveGroupsPlugin( BasePlugin ):
                 set.extend( new_groups )
 
         return tuple( seen )
+
+classImplements( RecursiveGroupsPlugin, IGroupsPlugin )
+
+InitializeClass(RecursiveGroupsPlugin)

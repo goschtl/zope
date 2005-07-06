@@ -27,6 +27,7 @@ from App.class_init import default__class_init__ as InitializeClass
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PageTemplates.ZopePageTemplate import ZopePageTemplate
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins import \
         ILoginPasswordHostExtractionPlugin, IChallengePlugin,  \
@@ -56,11 +57,6 @@ def addCookieAuthHelper( dispatcher
 
 class CookieAuthHelper(Folder, BasePlugin):
     """ Multi-plugin for managing details of Cookie Authentication. """
-    __implements__ = ( ILoginPasswordHostExtractionPlugin
-                     , IChallengePlugin
-                     , ICredentialsUpdatePlugin
-                     , ICredentialsResetPlugin
-                     )
 
     meta_type = 'Cookie Auth Helper'
     cookie_name = '__ginger_snap'
@@ -240,6 +236,12 @@ class CookieAuthHelper(Folder, BasePlugin):
 
         return response.redirect(came_from)
 
+classImplements( CookieAuthHelper
+               , ILoginPasswordHostExtractionPlugin
+               , IChallengePlugin
+               , ICredentialsUpdatePlugin
+               , ICredentialsResetPlugin
+               )
 
 InitializeClass(CookieAuthHelper)
 

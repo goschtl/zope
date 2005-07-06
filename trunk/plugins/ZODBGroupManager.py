@@ -22,6 +22,7 @@ from Globals import InitializeClass
 from BTrees.OOBTree import OOBTree
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 
+from Products.PluggableAuthService.utils import classImplements
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from Products.PluggableAuthService.interfaces.plugins \
     import IGroupEnumerationPlugin
@@ -50,10 +51,6 @@ class ZODBGroupManager( BasePlugin ):
 
     """ PAS plugin for managing groups, and groups of groups in the ZODB
     """
-    __implements__ = ( IGroupEnumerationPlugin
-                     , IGroupsPlugin
-                     )
-
     meta_type = 'ZODB Group Manager'
 
     security = ClassSecurityInfo()
@@ -118,6 +115,8 @@ class ZODBGroupManager( BasePlugin ):
                 info[ 'properties_url' ] = '%s?%s' % ( e_url, p_qs )
                 info[ 'members_url' ] = '%s?%s' % ( e_url, m_qs )
 
+                info[ 'id' ] = '%s%s' % (self.prefix, info['id'])
+
                 if not group_filter or group_filter( info ):
                     group_info.append( info )
 
@@ -131,7 +130,8 @@ class ZODBGroupManager( BasePlugin ):
 
         """ See IGroupsPlugin.
         """
-        return tuple( self._principal_groups.get( principal.getId(), () ) )
+        unadorned = self._principal_groups.get( principal.getId(), () )
+        return tuple(['%s%s' % (self.prefix, x) for x in unadorned])
 
     #
     #   (notional)IZODBGroupManager interface
@@ -441,6 +441,11 @@ class ZODBGroupManager( BasePlugin ):
                                + '&manage_tabs_message=%s'
                                ) % ( self.absolute_url(), group_id, message )
                              )
+
+classImplements( ZODBGroupManager
+               , IGroupEnumerationPlugin
+               , IGroupsPlugin
+               )
 
 InitializeClass( ZODBGroupManager )
 
