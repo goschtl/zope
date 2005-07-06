@@ -1,3 +1,11 @@
+After CMF 1.5.2beta1
+
+  Bugs Fixed
+
+    - CMFCore.WorkflowTool:  Make (deprecated) WorkflowInformation objects
+      schema-compatible with current ActionInformation.
+      (http://zope.org/Collectors/355)
+
 CMF 1.5.2beta1 (2005/06/26)
 
   New Features
