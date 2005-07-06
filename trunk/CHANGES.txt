@@ -1,9 +1,0 @@
-PluggableAuthService Product Change Log
-
-  PluggableAuthService 1.1b1 (2005/07/06)
-
-    - PAS-level id mangling is no more. All (optional) mangling is now
-      done on a per-plugin basis.
-
-    - Interfaces used by PAS are now usable in both Zope 2.7 and 2.8
-      (Five compatible)
