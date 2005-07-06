@@ -18,12 +18,50 @@ import unittest
 from Globals import package_home
 
 try:
-    from zope.interface import directlyProvides
+    from zope.interface import providedBy
+except ImportError:
+    def providedBy(obj):
+        return obj.__implements__
+
+try:
+    from zope.interface import implementedBy
+except ImportError:
+    def implementedBy(klass):
+        return klass.__implements__
+
+try:
+    from zope import interface
 except ImportError:
     def directlyProvides(obj, *interfaces):
-        obj.__implements__ = ( getattr( obj.__class__, '__implements__', () ) +
-                               tuple( interfaces )
-                             )
+        obj.__implements__ = tuple( interfaces )
+
+    def classImplements(class_, *interfaces):
+        class_.__implements__ = tuple( interfaces )
+
+else:
+    def directlyProvides(obj, *interfaces):
+        from Products.Five.bridge import fromZ2Interface
+        # convert any Zope 2 interfaces to Zope 3 using fromZ2Interface
+        normalized_interfaces = []
+        for i in interfaces:
+            try:
+                i = fromZ2Interface(i)
+            except ValueError: # already a Zope 3 interface
+                pass
+            normalized_interfaces.append(i)
+        return interface.directlyProvides(obj, *normalized_interfaces)
+
+    def classImplements(class_, *interfaces):
+        from Products.Five.bridge import fromZ2Interface
+        # convert any Zope 2 interfaces to Zope 3 using fromZ2Interface
+        normalized_interfaces = []
+        for i in interfaces:
+            try:
+                i = fromZ2Interface(i)
+            except ValueError: # already a Zope 3 interface
+                pass
+            normalized_interfaces.append(i)
+        return interface.classImplements(class_, *normalized_interfaces)
 
 
 product_dir = package_home( globals() )
