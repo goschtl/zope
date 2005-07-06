@@ -47,6 +47,10 @@ class VersionCheckedIn(VersionEvent):
     zope.interface.implements(
         zope.app.versioncontrol.interfaces.IVersionCheckedIn)
 
+    def __init__(self, object, info, message):
+        super(VersionCheckedIn, self).__init__(object, info)
+        self.message = message
+
     def __str__(self):
         return "checked in %s, version %s" % (
             self.object, self.info.version_id)

@@ -307,6 +307,8 @@ class IVersioned(IVersionable):
 class IVersionEvent(zope.app.event.interfaces.IObjectEvent):
     """Base interface for all version-control events."""
 
+    info = zope.interface.Attribute("Version info (IVersionInfo)")
+
 class IVersionControlApplied(IVersionEvent):
     """Event fired when version control is initially applied to an object."""
 
@@ -323,6 +325,9 @@ class IVersionControlApplied(IVersionEvent):
 class IVersionCheckedIn(IVersionEvent):
     """Event fired when an object is checked in."""
 
+    message = zope.schema.Text(
+        title=_("Checkin Message"),
+        )
 
 class IVersionCheckedOut(IVersionEvent):
     """Event fired when an object is checked out."""

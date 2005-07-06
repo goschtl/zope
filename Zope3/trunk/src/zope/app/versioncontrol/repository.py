@@ -273,7 +273,7 @@ class Repository(persistent.Persistent):
         info.status = CHECKED_IN
         info.touch()
 
-        zope.event.notify(event.VersionCheckedIn(object, info))
+        zope.event.notify(event.VersionCheckedIn(object, info, message))
 
     def uncheckoutResource(self, object):
         info = self.getVersionInfo(object)
