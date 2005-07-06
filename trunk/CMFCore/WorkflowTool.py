@@ -47,7 +47,7 @@ class WorkflowInformation:
         warn('WorkflowInformation() is deprecated and will be removed in '
              'CMF 1.7.',
              DeprecationWarning)
-        self.content = object
+        self.object = self.content = object
         self.content_url = object.absolute_url()
         self.portal_url = self.folder_url = ''
 

@@ -288,6 +288,21 @@ class WorkflowToolTests(TestCase):
         self.failUnless( 'dummy' in vars.keys() )
         self.failUnless( 'a: dummy' in vars.values() )
 
+    def test_getActionsFor( self ):
+
+        import warnings
+
+        # Collector #360: Test AtttributeError in deprecated API :(
+        tool = self._makeWithTypesAndChain()
+        dummy = DummyContent( 'dummy' )
+
+        warnings.filterwarnings("ignore", category=DeprecationWarning)
+        try:
+            actions = tool.getActionsFor( dummy )
+        finally:
+            warnings.resetwarnings()
+        self.assertEqual( len( actions ), 0 )
+
     def test_getInfoFor( self ):
 
         tool = self._makeWithTypesAndChain()
