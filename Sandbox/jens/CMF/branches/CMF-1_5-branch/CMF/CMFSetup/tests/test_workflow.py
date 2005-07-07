@@ -1459,15 +1459,15 @@ return 'after_kill'
 _WF_SCRIPTS = \
 { 'before_open':    ( PythonScript.meta_type
                     , _BEFORE_OPEN_SCRIPT
-                    , 'workflows/%s/before_open.py'
+                    , 'workflows/%s/scripts/before_open.py'
                     )
 , 'after_close':    ( PythonScript.meta_type
                     , _AFTER_CLOSE_SCRIPT
-                    , 'workflows/%s/after_close.py'
+                    , 'workflows/%s/scripts/after_close.py'
                     )
 , 'after_kill':     ( PythonScript.meta_type
                     , _AFTER_KILL_SCRIPT
-                    , 'workflows/%s/after_kill.py'
+                    , 'workflows/%s/scripts/after_kill.py'
                     )
 }
 
@@ -1577,7 +1577,9 @@ _EMPTY_WORKFLOW_EXPORT = """\
 </dc-workflow>
 """
 
-_NORMAL_WORKFLOW_EXPORT = """\
+# Make sure old exports are still imported well. Changes:
+# - scripts are now in in a 'scripts' subdirectory
+_OLD_WORKFLOW_EXPORT = """\
 <?xml version="1.0"?>
 <dc-workflow
     workflow_id="%(workflow_id)s"
@@ -1807,6 +1809,236 @@ _NORMAL_WORKFLOW_EXPORT = """\
 </dc-workflow>
 """
 
+_NORMAL_WORKFLOW_EXPORT = """\
+<?xml version="1.0"?>
+<dc-workflow
+    workflow_id="%(workflow_id)s"
+    title="%(title)s"
+    state_variable="state"
+    initial_state="%(initial_state)s">
+ <permission>Open content for modifications</permission>
+ <permission>Modify content</permission>
+ <permission>Query history</permission>
+ <permission>Restore expired content</permission>
+ <state
+    state_id="closed"
+    title="Closed">
+  <description>Closed for modifications</description>
+  <exit-transition
+    transition_id="open"/>
+  <exit-transition
+    transition_id="kill"/>
+  <exit-transition
+    transition_id="expire"/>
+  <permission-map
+    acquired="False"
+    name="Modify content">
+  </permission-map>
+  <assignment
+    name="is_closed"
+    type="bool">True</assignment>
+  <assignment
+    name="is_opened"
+    type="bool">False</assignment>
+ </state>
+ <state
+    state_id="expired"
+    title="Expired">
+  <description>Expiration date has passed</description>
+  <exit-transition
+    transition_id="open"/>
+  <permission-map
+    acquired="True"
+    name="Modify content">
+   <permission-role>Owner</permission-role>
+   <permission-role>Manager</permission-role>
+  </permission-map>
+  <assignment
+    name="is_closed"
+    type="bool">False</assignment>
+  <assignment
+    name="is_opened"
+    type="bool">False</assignment>
+ </state>
+ <state
+    state_id="killed"
+    title="Killed">
+  <description>Permanently unavailable</description>
+ </state>
+ <state
+    state_id="opened"
+    title="Opened">
+  <description>Open for modifications</description>
+  <exit-transition
+    transition_id="close"/>
+  <exit-transition
+    transition_id="kill"/>
+  <exit-transition
+    transition_id="expire"/>
+  <permission-map
+    acquired="True"
+    name="Modify content">
+   <permission-role>Owner</permission-role>
+   <permission-role>Manager</permission-role>
+  </permission-map>
+  <group-map name="Content_owners">
+   <group-role>Owner</group-role>
+  </group-map>
+  <assignment
+    name="is_closed"
+    type="bool">False</assignment>
+  <assignment
+    name="is_opened"
+    type="bool">True</assignment>
+ </state>
+ <transition
+    transition_id="close"
+    title="Close"
+    trigger="USER"
+    new_state="closed"
+    before_script=""
+    after_script="after_close">
+  <description>Close the object for modifications</description>
+  <action
+    category="workflow"
+    url="string:${object_url}/close_for_modifications">Close</action>
+  <guard>
+   <guard-role>Owner</guard-role>
+   <guard-role>Manager</guard-role>
+  </guard>
+ </transition>
+ <transition
+    transition_id="expire"
+    title="Expire"
+    trigger="AUTOMATIC"
+    new_state="expired"
+    before_script=""
+    after_script="">
+  <description>Retire objects whose expiration is past.</description>
+  <guard>
+   <guard-expression>python: object.expiration() &lt;= object.ZopeTime()</guard-expression>
+  </guard>
+  <assignment
+    name="when_expired">object/ZopeTime</assignment>
+ </transition>
+ <transition
+    transition_id="kill"
+    title="Kill"
+    trigger="USER"
+    new_state="killed"
+    before_script=""
+    after_script="after_kill">
+  <description>Make the object permanently unavailable.</description>
+  <action
+    category="workflow"
+    url="string:${object_url}/kill_object">Kill</action>
+  <guard>
+   <guard-group>Content_assassins</guard-group>
+  </guard>
+  <assignment
+    name="killed_by">string:${user/getId}</assignment>
+ </transition>
+ <transition
+    transition_id="open"
+    title="Open"
+    trigger="USER"
+    new_state="opened"
+    before_script="before_open"
+    after_script="">
+  <description>Open the object for modifications</description>
+  <action
+    category="workflow"
+    url="string:${object_url}/open_for_modifications">Open</action>
+  <guard>
+   <guard-permission>Open content for modifications</guard-permission>
+  </guard>
+  <assignment
+    name="when_opened">object/ZopeTime</assignment>
+ </transition>
+ <worklist
+    worklist_id="alive_list"
+    title="Alive">
+  <description>Worklist for content not yet expired / killed</description>
+  <action
+    category="workflow"
+    url="string:${portal_url}/expired_items">Expired items</action>
+  <guard>
+   <guard-permission>Restore expired content</guard-permission>
+  </guard>
+  <match name="state" values="open; closed"/>
+ </worklist>
+ <worklist
+    worklist_id="expired_list"
+    title="Expired">
+  <description>Worklist for expired content</description>
+  <action
+    category="workflow"
+    url="string:${portal_url}/expired_items">Expired items</action>
+  <guard>
+   <guard-permission>Restore expired content</guard-permission>
+  </guard>
+  <match name="state" values="expired"/>
+ </worklist>
+ <variable
+    variable_id="killed_by"
+    for_catalog="True"
+    for_status="False"
+    update_always="True">
+   <description>Killed by</description>
+   <default>
+    <value type="string">n/a</value>
+   </default>
+   <guard>
+    <guard-role>Hangman</guard-role>
+    <guard-role>Sherrif</guard-role>
+   </guard>
+ </variable>
+ <variable
+    variable_id="when_expired"
+    for_catalog="True"
+    for_status="False"
+    update_always="True">
+   <description>Expired when</description>
+   <default>
+    <expression>nothing</expression>
+   </default>
+   <guard>
+    <guard-permission>Query history</guard-permission>
+    <guard-permission>Open content for modifications</guard-permission>
+   </guard>
+ </variable>
+ <variable
+    variable_id="when_opened"
+    for_catalog="True"
+    for_status="False"
+    update_always="True">
+   <description>Opened when</description>
+   <default>
+    <expression>python:None</expression>
+   </default>
+   <guard>
+    <guard-permission>Query history</guard-permission>
+    <guard-permission>Open content for modifications</guard-permission>
+   </guard>
+ </variable>
+ <script
+    script_id="after_close"
+    type="Script (Python)"
+    filename="workflows/%(workflow_filename)s/scripts/after_close.py"
+    />
+ <script
+    script_id="after_kill"
+    type="Script (Python)"
+    filename="workflows/%(workflow_filename)s/scripts/after_kill.py"
+    />
+ <script
+    script_id="before_open"
+    type="Script (Python)"
+    filename="workflows/%(workflow_filename)s/scripts/before_open.py"
+    />
+</dc-workflow>
+"""
+
 class Test_exportWorkflow( _WorkflowSetup
                          , _GuardChecker
                          ):
@@ -1855,7 +2087,8 @@ class Test_exportWorkflow( _WorkflowSetup
         from Products.CMFSetup.workflow import exportWorkflowTool
         exportWorkflowTool( context )
 
-        self.assertEqual( len( context._wrote ), 2 )
+        # workflows list, wf defintion and 3 scripts
+        self.assertEqual( len( context._wrote ), 5 )
 
         filename, text, content_type = context._wrote[ 0 ]
         self.assertEqual( filename, 'workflows.xml' )
@@ -1872,6 +2105,12 @@ class Test_exportWorkflow( _WorkflowSetup
                             , 'workflow_filename' : WF_ID_DC.replace(' ', '_')
                             } )
         self.assertEqual( content_type, 'text/xml' )
+
+        # just testing first script
+        filename, text, content_type = context._wrote[ 2 ]
+        self.assertEqual( filename, 'workflows/%s/scripts/after_close.py' % WF_ID_DC )
+        self.assertEqual( text, _AFTER_CLOSE_SCRIPT)
+        self.assertEqual( content_type, 'text/plain' )
 
     def test_with_filenames( self ):
 
@@ -1896,7 +2135,8 @@ class Test_exportWorkflow( _WorkflowSetup
         from Products.CMFSetup.workflow import exportWorkflowTool
         exportWorkflowTool( context )
 
-        self.assertEqual( len( context._wrote ), 2 )
+        # workflows list, wf defintion and 3 scripts
+        self.assertEqual( len( context._wrote ), 5 )
 
         filename, text, content_type = context._wrote[ 0 ]
         self.assertEqual( filename, 'workflows.xml' )
@@ -1915,6 +2155,13 @@ class Test_exportWorkflow( _WorkflowSetup
                             } )
         self.assertEqual( content_type, 'text/xml' )
 
+        # just testing first script
+        filename, text, content_type = context._wrote[ 2 ]
+        self.assertEqual( filename, 'workflows/%s/scripts/after_close.py' %
+                          WF_ID_DC.replace(' ', '_'))
+        self.assertEqual( text, _AFTER_CLOSE_SCRIPT)
+        self.assertEqual( content_type, 'text/plain' )
+
 class Test_importWorkflow( _WorkflowSetup
                          , _GuardChecker
                          ):
@@ -1931,6 +2178,39 @@ class Test_importWorkflow( _WorkflowSetup
 
         context._files[ 'workflows/%s/definition.xml' % wf_id
                       ] = ( _NORMAL_WORKFLOW_EXPORT
+                            % { 'workflow_id' : wf_id
+                              , 'title' : wf_title
+                              , 'initial_state' : wf_initial_state
+                              , 'workflow_filename' : workflow_filename
+                              }
+                          )
+
+        context._files[ 'workflows/%s/scripts/after_close.py' % workflow_filename
+                      ] = _AFTER_CLOSE_SCRIPT
+
+        context._files[ 'workflows/%s/scripts/after_kill.py' % workflow_filename
+                      ] = _AFTER_KILL_SCRIPT
+
+        context._files[ 'workflows/%s/scripts/before_open.py' % workflow_filename
+                      ] = _BEFORE_OPEN_SCRIPT
+
+        from Products.CMFSetup.workflow import importWorkflowTool
+        importWorkflowTool( context )
+
+        return wf_tool
+
+    def _importOldWorkflow( self, wf_id, wf_title, wf_initial_state ):
+
+        site = self._initSite()
+        wf_tool = site.portal_workflow
+        workflow_filename = wf_id.replace(' ', '_')
+
+        context = DummyImportContext( site )
+        context._files[ 'workflows.xml'
+                      ] = _NORMAL_TOOL_EXPORT_WITH_FILENAME % workflow_filename
+
+        context._files[ 'workflows/%s/definition.xml' % wf_id
+                      ] = ( _OLD_WORKFLOW_EXPORT
                             % { 'workflow_id' : wf_id
                               , 'title' : wf_title
                               , 'initial_state' : wf_initial_state
@@ -2285,6 +2565,28 @@ class Test_importWorkflow( _WorkflowSetup
             self.assertEqual( guard.roles, expected[ 7 ] )
             self.assertEqual( guard.groups, expected[ 8 ] )
             self.assertEqual( guard.getExprText(), expected[ 9 ] )
+
+    def test_from_old_dcworkflow_workflow_scripts( self ):
+
+        WF_ID = 'old_dcworkflow_scripts'
+        WF_TITLE = 'Old DC Workflow testing scripts'
+        WF_INITIAL_STATE = 'closed'
+
+        tool = self._importOldWorkflow( WF_ID, WF_TITLE, WF_INITIAL_STATE )
+
+        workflow = tool.objectValues()[ 0 ]
+
+        scripts = workflow.scripts
+
+        self.assertEqual( len( scripts.objectItems() )
+                        , len( _WF_SCRIPTS ) )
+
+        for script_id, script in scripts.objectItems():
+
+            expected = _WF_SCRIPTS[ script_id ]
+
+            self.assertEqual( script.meta_type, expected[ 0 ] )
+            self.assertEqual( script.manage_FTPget(), expected[ 1 ] )
 
     def test_from_empty_dcworkflow_workflow_scripts( self ):
 
