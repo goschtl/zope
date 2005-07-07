@@ -108,6 +108,9 @@ class FSFile(FSObject):
         """
         self._updateFromFS()
         data = self._readFile(0)
+        data_len = len(data)
+        last_mod = self._file_mod_time
+        status = 200
         # HTTP If-Modified-Since header handling.
         header=REQUEST.get_header('If-Modified-Since', None)
         if header is not None:
@@ -118,23 +121,31 @@ class FSFile(FSObject):
             # with common servers such as Apache (which can usually
             # understand the screwy date string as a lucky side effect
             # of the way they parse it).
-            try:    mod_since=long(DateTime(header).timeTime())
-            except: mod_since=None
+            try:
+                mod_since=long(DateTime(header).timeTime())
+            except:
+                mod_since=None
+                
             if mod_since is not None:
-                last_mod = self._file_mod_time
                 if last_mod > 0 and last_mod <= mod_since:
-                    # Set header values since apache caching will return
-                    # Content-Length of 0 in response if size is not set here
-                    RESPONSE.setHeader('Last-Modified', rfc1123_date(last_mod))
-                    RESPONSE.setHeader('Content-Type', self.content_type)
-                    RESPONSE.setHeader('Content-Length', self.get_size())
-                    RESPONSE.setStatus(304)
-                    return ''
+                    status = 304
+                    data = ''
 
-        RESPONSE.setHeader('Last-Modified', rfc1123_date(self._file_mod_time))
+        #Last-Modified will get stomped on by a cache policy it there is
+        #one set....
+        RESPONSE.setStatus(status)
+        RESPONSE.setHeader('Last-Modified', rfc1123_date(last_mod))
         RESPONSE.setHeader('Content-Type', self.content_type)
-        RESPONSE.setHeader('Content-Length', len(data))
 
+        # We always set a content-length, even if the response is a 304,
+        # contrary to RFC 2616 because Apache proxies < 1.3.27
+        # will set a content-length header of "0" if one is not present
+        # in the response.  See http://www.zope.org/Collectors/Zope/544
+        RESPONSE.setHeader('Content-Length', data_len)
+
+        #There are 2 Cache Managers which can be in play....
+        #need to decide which to use to determine where the cache headers
+        #are decided on.
         if self.ZCacheable_getManager() is not None:
             self.ZCacheable_set(None)
         else:
