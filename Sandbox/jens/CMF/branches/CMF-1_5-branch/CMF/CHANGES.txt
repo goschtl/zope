@@ -3,18 +3,22 @@ After CMF 1.5.2beta1
   Features Added
 
     - CMFDefault/skins/zpt_generic/talkback_tree:  Add link to allow
-      managers to delete replies (http://zope.org/Collectors/38).
+      managers to delete replies (http://www.zope.org/Collectors/38).
 
   Bugs Fixed
+
+    - CMFCore.MembershipTool:  allow 'getMemberById' to crawl up the
+      hierarchy of user folders until it finds the user.
+      (http://www.zope.org/Collectors/354, also http://)
 
     - CatalogTool: Added manage_convertIndexes.
       This method should not be used with Zope 2.7. It overrides the broken
       manage_convertIndexes of Zope 2.8.0.
-      (http://zope.org/Collectors/357)
+      (http://www.zope.org/Collectors/357)
 
     - CMFCore.WorkflowTool:  Make (deprecated) WorkflowInformation objects
       schema-compatible with current ActionInformation.
-      (http://zope.org/Collectors/355)
+      (http://www.zope.org/Collectors/355)
 
     - CMFCore.utils.ToolInit: For icon registration to work with ToolInit
       you would have to have the same product_name parameter as the actual
@@ -94,7 +98,7 @@ CMF 1.5.2beta1 (2005/06/26)
       earlier Zopes used to raise KeyError.
 
     - Set cache headers in 304 responses from FSImage / FSFile
-      (http://zope.org/Collectors/355)
+      (http://www.zope.org/Collectors/355)
 
     - CMFCore.DirectoryView: Do not cause ZODB writes or ConflictError
       if an old DirectoryView with a non-existing path is left. Sends a
@@ -129,7 +133,7 @@ CMF 1.5.2beta1 (2005/06/26)
       (http://www.zope.org/Collectors/CMF/351)
 
     - Sync catalog metadata column with correct name of DublinCore string
-      ExpirationDate method. (http://zope.org/Collectors/CMF/345)
+      ExpirationDate method. (http://www.zope.org/Collectors/CMF/345)
 
   Others
 
@@ -155,7 +159,7 @@ CMF-1.5.1 (2005/04/24)
   Bug Fixes
 
     - CMFDefault.SyndicationTool: Coerce property values into correct
-      types. (http://zope.org/Collectors/CMF/344)
+      types. (http://www.zope.org/Collectors/CMF/344)
 
     - CMFCore.Skinnable: Don't catch ConflictError in __of__.
 
@@ -278,7 +282,7 @@ CMF 1.5.1beta (2005/03/24)
       called from code it will now hand back the created object's ID. This
       does not change any behavior when called directly from the web. Both
       methods returned None before, so there is no dependencies anywhere
-      on their return values, anyway. (http://collector.zope.org/CMF/331)
+      on their return values, anyway. (http://www.zope.org/Collectors/CMF/331)
 
     - CMFSetup: When importing skins configurations you can now specify a
       layer to be inserted after a given layer. Previously you could only
@@ -298,7 +302,7 @@ CMF 1.5.1beta (2005/03/24)
     - CMFSetup tool: Improved 'Properties' tab.
       The active site configuration can now be selected from a list of
       registered profiles and stored snapshots.
-      (http://collector.zope.org/CMF/264)
+      (http://www.zope.org/Collectors/CMF/264)
 
     - CMFSetup: Added handlers for site properties.
 
@@ -309,7 +313,7 @@ CMF 1.5.1beta (2005/03/24)
 
     - FSObject: Now FSObject-derived items like FSImage or FSFile can have 
       security declarations inside the metadata file.
-      (http://collector.zope.org/CMF/289)
+      (http://www.zope.org/Collectors/CMF/289)
 
     - profiles: Moved 'default' profile to CMFDefault.
       Using the new 'importVarious' handler this profile now allows to create
@@ -320,11 +324,11 @@ CMF 1.5.1beta (2005/03/24)
       are implemented for these steps.
 
     - CachePolicyManager: You can now set a ETag using a TALES expression
-      (http://collector.zope.org/CMF/236) 
+      (http://www.zope.org/Collectors/CMF/236) 
 
     - RegistrationTool: The regular expression that limits what people
       can put in as a valid member ID is now configurable TTW in the
-      portal_registration tool (http://collector.zope.org/CMF/117)
+      portal_registration tool (http://www.zope.org/Collectors/CMF/117)
 
   Bug Fixes
   
@@ -364,7 +368,7 @@ CMF 1.5.1beta (2005/03/24)
       from OFS.tests.testCopySupport.
 
     - CMFDefault.RegistrationTool: Allow '+' in e-mail addresses.
-      (http://collector.zope.org/CMF/322)
+      (http://www.zope.org/Collectors/CMF/322)
 
     - ActionInfo: Fixed issue with oldstyle Action info mappings.
       The 'allowed' key was broken for non-empty 'permissions'.
@@ -387,20 +391,20 @@ CMF 1.5.1beta (2005/03/24)
 
     - CMFSetup: Fixed import of workflow bindings.
       The 'workflow' import step has to be run after the 'typeinfo' step.
-      (http://collector.zope.org/CMF/265)
+      (http://www.zope.org/Collectors/CMF/265)
 
     - CMFCore.CatalogTool: Take into account query restrictions on
       'effective' or 'expires' attributes during a search.
-      (http://collector.zope.org/CMF/120)
+      (http://www.zope.org/Collectors/CMF/120)
 
     - WorkflowTool: Fixed 'setChainForPortalTypes'.
       If 'chain' was an empty string, it wasn't set correctly.
 
     - FSFile, FSImage: Made available to caching policy manager as
-      standard content. (http://collector.zope.org/CMF/299)
+      standard content. (http://www.zope.org/Collectors/CMF/299)
 
     - FSDTMLMethod: Small code cleanup to remove duplicate variable
-      definition (http://collector.zope.org/CMF/291)
+      definition (http://www.zope.org/Collectors/CMF/291)
 
     - Portal: Fixed 'setupDefaultProperties'.
       Backwards compatibility was broken and the 'default_charset' argument
@@ -409,15 +413,15 @@ CMF 1.5.1beta (2005/03/24)
     - Document/NewsItem: If the "plain text" format is selected the
       content will no longer be tested for HTML and reduced to text
       between opening and closing "body" tags
-      (http://collector.zope.org/CMF/214)
+      (http://www.zope.org/Collectors/CMF/214)
 
     - Document/NewsItem: A call to setFormat will now re-cook the
       document content if the format has been changed (arising from
-      discussion about http://collector.zope.org/CMF/214)
+      discussion about http://www.zope.org/Collectors/CMF/214)
 
     - DirectoryViews/FSMetadata: Corrected some erroneous docstrings
       about proxy role handling using .metadata files
-      (http://collector.zope.org/CMF/177)
+      (http://www.zope.org/Collectors/CMF/177)
 
   Other
 
@@ -430,28 +434,28 @@ CMF 1.5.0 (2004/10/21)
   New Features
 
     - Portal: Added 'default_charset' property.
-      (http://collector.zope.org/CMF/261)
+      (http://www.zope.org/Collectors/CMF/261)
 
     - CMFDefault utils: Added 'toUnicode' function.
-      (http://collector.zope.org/CMF/261)
+      (http://www.zope.org/Collectors/CMF/261)
 
   Bug Fixes
 
     - ZPT skin: Fixed 'RSS'.
       Values are now converted to unicode, using 'default_charset'.
-      (http://collector.zope.org/CMF/261)
+      (http://www.zope.org/Collectors/CMF/261)
 
     - DublinCore: Added 'setCreators' method.  Note that
       'notifyModified' also modifies creators. If the current user
       should not be added to creators, make sure notifyModified() is not
-      called after setCreators().  (http://collector.zope.org/CMF/61)
+      called after setCreators().  (http://www.zope.org/Collectors/CMF/61)
 
     - ZPT skin: Fixed '*metadata_edit_form'.
       Setting "Enable Discussion?" to 'Off' was broken.
 
     - CMFSetup: Made sure imported values are converted to strings.
       For now imports and exports work only with 'ascii' encoding.
-      (http://collector.zope.org/CMF/287)
+      (http://www.zope.org/Collectors/CMF/287)
 
     - FSPageTemplate: Don't hide sub-tracebacks in development mode.
 
@@ -521,11 +525,11 @@ CMF 1.5.0beta2 (2004/09/27)
       Aliases for method paths are no longer supported.
 
     - FSFile: Allow setting a content_type value using a .metadata file
-      (http://collector.zope.org/CMF/281)
+      (http://www.zope.org/Collectors/CMF/281)
 
     - FSPageTemplate: Refine the XML content type detection so that
       addtional data such as encoding is preserved
-      (http://collector.zope.org/CMF/228)
+      (http://www.zope.org/Collectors/CMF/228)
 
     - ActionInformation: If a path expression ending in an object that
       gets called using __render_with_namespace__ (such as DTML objects
@@ -534,18 +538,18 @@ CMF 1.5.0beta2 (2004/09/27)
       expects the namespace to contain "here", which the context coming
       from CMFCore.Expressions.createExprContext did not provide. Added
       "here" as an alias pointing to the provided "object"
-      (http://collector.zope.org/CMF/171)
+      (http://www.zope.org/Collectors/CMF/171)
 
     - DiscussionItem: Made sure that the workflow is notified of their
       creation.
-      (http://collector.zope.org/CMF/280)
+      (http://www.zope.org/Collectors/CMF/280)
 
     - CMFCatalogAware: When pasting a content item, local roles were not
       changed to reflect the new ownership.
-      (http://collector.zope.org/CMF/205)
+      (http://www.zope.org/Collectors/CMF/205)
 
     - ZPT skin: Added missing RSS script and template.
-      (http://collector.zope.org/CMF/279)
+      (http://www.zope.org/Collectors/CMF/279)
 
     - DirectoryView: Improved createDirectoryView() backwards compatibility.
       Using platform specific path separators is deprecated.
@@ -585,11 +589,11 @@ CMF 1.5.0beta (2004/08/12)
       applications using the CatalogTool.
 
     - CMFCalendar.CalendarTool: Made workflow states configurable TTW.
-      (http://collector.zope.org/CMF/110)
+      (http://www.zope.org/Collectors/CMF/110)
 
     - Minor featurelet: The "Action Providers" ZMI tab on the portal_actions
       tool now links directly to the tools shown
-      (http://collector.zope.org/CMF/181)
+      (http://www.zope.org/Collectors/CMF/181)
 
     - CMFCore.utils: Introduced contributorsplitter() utility function
       along the lines of keywordsplitter().
@@ -631,7 +635,7 @@ CMF 1.5.0beta (2004/08/12)
 
     - CMFCore.PortalFolder: Enforce check of "Delete objects" permission
       during cut + paste.
-      (http://collector.zope.org/CMF/259)
+      (http://www.zope.org/Collectors/CMF/259)
 
       N.B.  This fix depends on an update to the underlying Zope software,
             e.g., Zope 2.7.3 or later.  Two new unit tests fail on
@@ -639,14 +643,14 @@ CMF 1.5.0beta (2004/08/12)
 
     - CMFDefault.MetadataTool: Validation would disallow
       vocabulary-constrained metadata elements to be empty
-      (http://collector.zope.org/CMF/217)
+      (http://www.zope.org/Collectors/CMF/217)
 
     - CMFDefault.DiscussionItem: Replies were not sorted chronologically
-      (http://collector.zope.org/CMF/211)
+      (http://www.zope.org/Collectors/CMF/211)
 
     - CMFDefault.Image and CMFDefault.File: When copy/pasting Image and File
       objects the review state did not revert to "private".
-      (http://collector.zope.org/CMF/176)
+      (http://www.zope.org/Collectors/CMF/176)
 
     - CMFSetup: Refactored rolemap.
       Converted the roles attribute to role sub-elements. Fixed an
@@ -659,16 +663,16 @@ CMF 1.5.0beta (2004/08/12)
 
     - CMFTopic: Change topic_view template to show title and ID (it only
       showed title before)
-      (http://collector.zope.org/CMF/180)
+      (http://www.zope.org/Collectors/CMF/180)
 
     - CMFCore.PortalFolder: Unlike other content, only Managers were able
       to create PortalFolders using mkdir in FTP. Fixed by inserting
       missing security declaration for PortalFolder.manage_addFolder
-      (http://collector.zope.org/CMF/167)
+      (http://www.zope.org/Collectors/CMF/167)
 
     - Default text format for NewsItems is now structured-text, just like
       it is for Documents, tuhs removing a spurious difference.
-      (http://collector.zope.org/CMF/138)
+      (http://www.zope.org/Collectors/CMF/138)
 
     - CMFCalendar.CalendarTool: (Lost) fix for issues 65 and 159.
       The determination of the date/time range constituting a specific month
@@ -683,17 +687,17 @@ CMF 1.5.0beta (2004/08/12)
 
     - CMFCalendar.Event: Day, month, and year were processed in the wrong
       order by Event.edit().
-      (http://collector.zope.org/CMF/202)
+      (http://www.zope.org/Collectors/CMF/202)
 
     - CMFCore.PortalFolder: _verifyObjectPaste() did not check the
       container's allowed content types, enabling users to paste objects
       they were not allowed to add.
-      (http://collector.zope.org/CMF/216)
+      (http://www.zope.org/Collectors/CMF/216)
 
     - CMFDefault.File and CMFDefault.Image: setFormat() failed to update
       the content_type property causing index_html() to use a stale mimetype
       when serving the file or image.
-      (http://collector.zope.org/CMF/226)
+      (http://www.zope.org/Collectors/CMF/226)
 
     - CMFDefault.Document, CMFDefault.Link, and CMFCalendar.Event:
       WebDAV PUT() caused improper splitting of 'Contributors' metadata
