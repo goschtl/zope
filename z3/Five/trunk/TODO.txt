@@ -22,7 +22,8 @@ v1.1
 v1.2
 ----
 
-- Introduce site concept, make rendering of resource urls support sites.
+- Introduce site concept, make rendering of resource urls support
+  sites.  Merge Sidnei's localsitemanager branch.
 
 - Allow Zope2 boilerplate context.registerClass be configured through zcml
 
@@ -43,3 +44,5 @@ v1.2
 
 - top-level <require />, <allow /> directives as a ZCML spelling of
   allowModule, allowClass
+
+- zope2.Public doesn't work in browser:page (at least in functionaldoctestsuite)
