@@ -45,6 +45,11 @@ def formatRFC822Headers( headers ):
     for key, value in headers:
 
         vallines = linesplit.split( value )
+        while vallines:
+            if vallines[-1].rstrip() == '':
+                vallines = vallines[:-1]
+            else:
+                break
         munged.append( '%s: %s' % ( key, '\r\n  '.join( vallines ) ) )
 
     return '\r\n'.join( munged )
@@ -99,7 +104,7 @@ def parseHeadersBody( body, headers=None, rc=re.compile( r'\n|\r\n' ) ):
 
     for line in lines:
 
-        if not line.strip():
+        if not line:
             break
 
         tokens = line.split( ': ' )

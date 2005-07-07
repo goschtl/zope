@@ -170,6 +170,64 @@ Header: value
         self.assertEqual( toUnicode( {'foo': 'bar'}, 'iso-8859-1' ),
                           {'foo': u'bar'} )
 
+    def test_formatRFC822Headers_simple(self):
+        from Products.CMFDefault.utils import formatRFC822Headers
+
+        HEADERS = [ ('Foo', 'foo')
+                  , ('Bar', 'bar')
+                  ]
+
+        formatted = formatRFC822Headers( HEADERS )
+
+        self.assertEqual( formatted, 'Foo: foo\r\nBar: bar' )
+
+    def test_formatRFC822Headers_empty(self):
+        from Products.CMFDefault.utils import formatRFC822Headers
+
+        HEADERS = [ ('Foo', 'foo')
+                  , ('Bar', '')
+                  ]
+
+        formatted = formatRFC822Headers( HEADERS )
+
+        self.assertEqual( formatted, 'Foo: foo\r\nBar: ' )
+
+    def test_formatRFC822Headers_multiline(self):
+        from Products.CMFDefault.utils import formatRFC822Headers
+
+        HEADERS = [ ('Foo', 'foo')
+                  , ('Bar', 'bar\nwith multiline')
+                  ]
+
+        formatted = formatRFC822Headers( HEADERS )
+
+        self.assertEqual( formatted
+                        , 'Foo: foo\r\nBar: bar\r\n  with multiline' )
+
+    def test_formatRFC822Headers_multiline_trailing_blank_line(self):
+        from Products.CMFDefault.utils import formatRFC822Headers
+
+        HEADERS = [ ('Foo', 'foo')
+                  , ('Bar', 'bar\nwith multiline\n')
+                  ]
+
+        formatted = formatRFC822Headers( HEADERS )
+
+        self.assertEqual( formatted
+                        , 'Foo: foo\r\nBar: bar\r\n  with multiline' )
+
+    def test_formatRFC822Headers_multiline_intermediate_blank_line(self):
+        from Products.CMFDefault.utils import formatRFC822Headers
+
+        HEADERS = [ ('Foo', 'foo')
+                  , ('Bar', 'bar\n\nwith multiline')
+                  ]
+
+        formatted = formatRFC822Headers( HEADERS )
+
+        self.assertEqual( formatted
+                        , 'Foo: foo\r\nBar: bar\r\n  \r\n  with multiline' )
+
 
 def test_suite():
     return makeSuite(DefaultUtilsTests)
