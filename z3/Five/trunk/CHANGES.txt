@@ -5,6 +5,18 @@ Five Changes
 Five 1.1 (unreleased)
 =====================
 
+Features
+--------
+
+* Support for the standard <factory /> ZCML directive was added.
+
+* The default browser view name for all objects is now 'index.html',
+  just as it is in Zope 3.  This means that a view by that name will
+  be looked up if no specific view name is given in the URL.
+
+Restructuring
+-------------
+
 * Restructured the Five source code to be easier to navigate in.
   Three subpackages were created, Five.browser, Five.form and
   Five.skin.  The former test product, ``FiveTest``, was converted
@@ -22,13 +34,10 @@ Five 1.1 (unreleased)
 
 * Zope 2.8 HTTPRequest is no longer patched. It has the required methods.
 
+Bugfixes
+--------
+
 * The deprecated get_transaction method is no longer used in Zope 2.8.
-
-* Support for the standard <factory /> ZCML directive was added.
-
-* The default browser view name for all objects is now 'index.html',
-  just as it is in Zope 3.  This means that a view by that name will
-  be looked up if no specific view name is given in the URL.
 
 * Fixed a bug with resource directories.  Resources within those were
   not rendering their absolute URL correctly.
