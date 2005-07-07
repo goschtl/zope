@@ -32,11 +32,9 @@ def initialize( context ):
 
     ToolInit( 'CMF Setup Tool'
             , tools=[ SetupTool ]
-            , product_name='Setup'
-            , icon=None
+            , product_name='CMFSetup'
+            , icon='www/tool.png'
             ).initialize( context )
-
-    registerIcon(  SetupTool, 'www/tool.png', globals() )
 
     from factory import addConfiguredSiteForm
     from factory import addConfiguredSite
