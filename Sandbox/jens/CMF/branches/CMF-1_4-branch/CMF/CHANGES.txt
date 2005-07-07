@@ -2,6 +2,10 @@ After CMF 1.4.8
 
   Bug Fixes
 
+    - CMFCore.FSObject:  Make FSObject-derivatives role managers, so that
+      role settings in '.metadata' files work.  Thanks to Dieter Maurer for
+      the patch!  (http://www.zope.org/Collectors/CMF/359)
+
     - DCWorkflow.Scripts:  Usinng inherited manage_main requires wrapping 
       for Zope 2.8 compatibility.
 
@@ -9,13 +13,13 @@ After CMF 1.4.8
       earlier Zopes used to raise KeyError.
 
     - Set cache headers in 304 responses from FSImage / FSFile
-      (http://zope.org/Collectors/355)
+      (http://www.zope.org/Collectors/CMF/355)
 
     - Sync catalog metadata column with correct name of DublinCore string
-      ExpirationDate method. (http://zope.org/Collectors/CMF/345)
+      ExpirationDate method. (http://www.zope.org/Collectors/CMF/345)
 
     - Ensure that syndication tool coerces property values into correct
-      types. (http://zope.org/Collectors/CMF/344)
+      types. (http://www.zope.org/Collectors/CMF/344)
 
     - Hide 'test_all' from the "standard" testrunner in Zope 2.7, to
       avoid duplicating test runs (which can lead to spurious test failures).
@@ -25,7 +29,7 @@ After CMF 1.4.8
       to run (mostly) the same tests.
 
     - Fixed Creator() to not call a potentially costly method on the
-      user folder. (http://zope.org/Collectors/CMF/300)
+      user folder. (http://www.zope.org/Collectors/CMF/300)
 
     - CMFCatalogAware: When reindexing security, all subobjects must be
       reindexed even if they are not visible by the current user. Also
@@ -35,7 +39,7 @@ After CMF 1.4.8
 
     - CMFCore.FSPageTemplate, CMFCore.FSImage:  Remove two more
       Z28-incompatible borrowings of bound methods from base classes
-      (http://zope.org/Collectors/CMF/321)
+      (http://www.zope.org/Collectors/CMF/321)
 
   New Features
 
