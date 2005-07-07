@@ -49,7 +49,7 @@ from StructuredText.StructuredText import HTML
 
 from exceptions import AccessControl_Unauthorized
 from exceptions import NotFound
-
+from warnings import warn
 
 security = ModuleSecurityInfo( 'Products.CMFCore.utils' )
 
@@ -418,14 +418,21 @@ class ToolInit:
     security = ClassSecurityInfo()
     security.declareObjectPrivate()     # equivalent of __roles__ = ()
 
-    def __init__(self, meta_type, tools, product_name, icon):
+    def __init__(self, meta_type, tools, product_name=None, icon=None):
         self.meta_type = meta_type
         self.tools = tools
+        if product_name is not None:
+            warn("The product_name parameter of ToolInit is deprecated and "
+                 "will be ignored in CMF1.6: %s" % product_name,
+                 DeprecationWarning)
         self.product_name = product_name
         self.icon = icon
 
     def initialize(self, context):
         # Add only one meta type to the folder add list.
+        if self.product_name is None:
+            productObject = context._ProductContext__prod
+            self.product_name = productObject.id
         context.registerClass(
             meta_type = self.meta_type,
             # This is a little sneaky: we add self to the
@@ -441,7 +448,6 @@ class ToolInit:
             icon = os_path.split(self.icon)[1]
         else:
             icon = None
-
         for tool in self.tools:
             tool.__factory_meta_type__ = self.meta_type
             tool.icon = 'misc_/%s/%s' % (self.product_name, icon)
