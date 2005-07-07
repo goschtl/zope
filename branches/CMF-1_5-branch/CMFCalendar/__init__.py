@@ -48,8 +48,7 @@ event_globals=globals()
 registerDirectory('skins', globals())
 
 def initialize( context ):
-    utils.ToolInit('CMF Calendar Tool', tools=tools,
-                   product_name='CMFCalendar', icon='tool.gif',
+    utils.ToolInit('CMF Calendar Tool', tools=tools, icon='tool.gif',
                    ).initialize( context )
 
     utils.initializeBasesPhase2( z_bases, context )

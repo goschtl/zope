@@ -124,7 +124,6 @@ def initialize(context):
 
     utils.ToolInit( 'CMF Core Tool'
                   , tools=tools
-                  , product_name='CMFCore'
                   , icon='tool.gif'
                   ).initialize( context )
 

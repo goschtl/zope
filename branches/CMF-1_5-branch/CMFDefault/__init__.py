@@ -135,7 +135,6 @@ def initialize( context ):
 
     ToolInit( 'CMF Default Tool'
             , tools=tools
-            , product_name='CMFDefault'
             , icon='tool.gif'
             ).initialize( context )
 
