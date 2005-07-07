@@ -187,6 +187,7 @@ def exportWorkflowTool( context ):
 
         wf_dirname = wf_id.replace( ' ', '_' )
         wf_xml = wfdc.generateWorkflowXML( wf_id )
+        wf_scripts = wfdc.getWorkflowScripts(wf_id)
 
         if wf_xml is not None:
             context.writeDataFile( 'definition.xml'
@@ -194,6 +195,10 @@ def exportWorkflowTool( context ):
                                  , 'text/xml'
                                  , 'workflows/%s' % wf_dirname
                                  )
+            for script_info in wf_scripts:
+                context.writeDataFile(script_info['filename'],
+                                      script_info['body'],
+                                      'text/plain')
 
     return 'Workflows exported.'
 
@@ -289,7 +294,7 @@ class WorkflowToolConfigurator(ConfiguratorBase):
         for wf in val:
             if wf['meta_type'] == DCWorkflowDefinition.meta_type:
                 if wf['filename'] == wf['workflow_id']:
-                    wf['filename'] = _getTypeFilename( wf['filename'] )
+                    wf['filename'] = _getWorkflowFilename( wf['filename'] )
             else:
                 wf['filename'] = None
 
@@ -358,6 +363,20 @@ class WorkflowDefinitionConfigurator( Implicit ):
 
         return self._workflowConfig( workflow_id=workflow_id )
 
+    security.declareProtected( ManagePortal, 'generateWorkflowScripts' )
+    def getWorkflowScripts( self, workflow_id ):
+        """ Get workflow scripts inforation
+        """
+        workflow_tool = getToolByName( self._site, 'portal_workflow' )
+        workflow = workflow_tool.getWorkflowById( workflow_id )
+
+        if workflow.meta_type != DCWorkflowDefinition.meta_type:
+            return []
+
+        scripts = self._extractScripts(workflow)
+        return scripts
+
+
     security.declareProtected( ManagePortal, 'parseWorkflowXML' )
     def parseWorkflowXML( self, xml, encoding=None ):
 
@@ -372,12 +391,12 @@ class WorkflowDefinitionConfigurator( Implicit ):
         state_variable = _getNodeAttribute( root, 'state_variable', encoding )
         initial_state = _getNodeAttribute( root, 'initial_state', encoding )
 
-        states = _extractStateNodes( root )
-        transitions = _extractTransitionNodes( root )
-        variables = _extractVariableNodes( root )
-        worklists = _extractWorklistNodes( root )
-        permissions = _extractPermissionNodes( root )
-        scripts = _extractScriptNodes( root )
+        states = _extractStateNodes( root, encoding )
+        transitions = _extractTransitionNodes( root, encoding )
+        variables = _extractVariableNodes( root, encoding )
+        worklists = _extractWorklistNodes( root, encoding )
+        permissions = _extractPermissionNodes( root, encoding )
+        scripts = _extractScriptNodes( root, encoding )
 
         return ( workflow_id
                , title
@@ -809,7 +828,7 @@ def _getScriptFilename( workflow_id, script_id, meta_type ):
     """
     wf_dir = workflow_id.replace( ' ', '_' )
     suffix = _METATYPE_SUFFIXES[ meta_type ]
-    return 'workflows/%s/%s.%s' % ( wf_dir, script_id, suffix )
+    return 'workflows/%s/scripts/%s.%s' % ( wf_dir, script_id, suffix )
 
 def _extractStateNodes( root, encoding=None ):
 
