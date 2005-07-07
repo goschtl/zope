@@ -21,6 +21,10 @@ After CMF 1.5.2beta1
       'scripts' subdirectory, and encoding was not propagated at import
       time.
 
+  Others
+
+    - CatalogTool: Removed obsolete Vocabulary.
+
 CMF 1.5.2beta1 (2005/06/26)
 
   New Features
