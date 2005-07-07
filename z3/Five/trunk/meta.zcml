@@ -170,4 +170,7 @@
 
   </meta:directives>
 
+  <!-- load the i18n:registerTranslations directive -->
+  <include package="zope.app.i18n" file="meta.zcml" />
+
 </configure>

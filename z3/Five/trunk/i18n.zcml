@@ -1,9 +1,20 @@
 <configure xmlns="http://namespaces.zope.org/zope">
 
+  <utility 
+      provides="zope.i18n.interfaces.INegotiator"
+      component="zope.i18n.negotiator.negotiator"
+      />
+
   <adapter
-      factory="zope.publisher.http.HTTPCharsets"
+      for="zope.publisher.interfaces.http.IHTTPRequest"
+      provides="zope.i18n.interfaces.IUserPreferredLanguages"
+      factory="zope.publisher.browser.BrowserLanguages"
+      />
+
+  <adapter
       for="zope.publisher.interfaces.http.IHTTPRequest"
       provides="zope.i18n.interfaces.IUserPreferredCharsets"
+      factory="zope.publisher.http.HTTPCharsets"
       />
 
 </configure>

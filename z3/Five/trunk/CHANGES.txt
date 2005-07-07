@@ -8,6 +8,13 @@ Five 1.1 (unreleased)
 Features
 --------
 
+* Zope 3-style i18n support has been provided.  Apart from being able
+  to register translations through ZCML, Five now lets Zope 2 ZPTs
+  automatically use Zope 3 translation domains.  Fallback to an
+  old-style translation service (e.g. Localizer or PTS) is supported.
+  This also includes the detection of preferred languages.  See
+  ``doc/i18n.txt`` for more information.
+
 * Support for the standard <factory /> ZCML directive was added.
 
 * The default browser view name for all objects is now 'index.html',

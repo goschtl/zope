@@ -39,8 +39,9 @@ def monkeyPatch():
 
         HTTPRequest.__contains__ = lambda self, key: self.has_key(key)
 
-    from Products.Five import interfaces
+    from Products.Five import interfaces, i18n
     interfaces.monkey()
+    i18n.monkey()
 
     try:
         import Zope2
