@@ -4,7 +4,10 @@
 <table cellspacing="0" border="0"
        metal:define-macro="tree"
        tal:define="t python:here.setup_talkback_tree(here);
-                   height t/root/height;">
+                   height t/root/height;
+                   mtool here/portal_membership;
+                   member mtool/getAuthenticatedMember;
+                  ">
  <tr tal:repeat="row t/rows">
   <td colspan="1"
       tal:define="indent python: row.depth - 1"
@@ -40,6 +43,9 @@
  ><tal:case tal:condition="not: obj/listCreators"
   ><span tal:omit-tag="" i18n:translate="">unknown</span></tal:case>
    on <span tal:replace="obj/CreationDate">Today</span>
+  <a href="#"
+     tal:condition="python: member.has_permission('Manage portal', here)"
+     tal:attributes="href python: url + '/discitem_delete'">[ delete reply ]</a>
   </td>
  </tr>
 </table>

@@ -1,5 +1,10 @@
 After CMF 1.5.2beta1
 
+  Features Added
+
+    - CMFDefault/skins/zpt_generic/talkback_tree:  Add link to allow
+      managers to delete replies (http://zope.org/Collectors/38).
+
   Bugs Fixed
 
     - CMFCore.WorkflowTool:  Make (deprecated) WorkflowInformation objects
