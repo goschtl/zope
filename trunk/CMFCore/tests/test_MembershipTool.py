@@ -21,6 +21,7 @@ import Zope2
 Zope2.startup()
 
 from AccessControl.SecurityManagement import newSecurityManager
+from OFS.Folder import Folder
 
 from Products.CMFCore.MemberDataTool import MemberDataTool
 from Products.CMFCore.PortalFolder import PortalFolder
@@ -60,14 +61,17 @@ class MembershipToolSecurityTests(SecurityTest):
 
         return MembershipTool(*args, **kw)
 
-    def setUp(self):
-        SecurityTest.setUp(self)
-        self.site = DummySite('site').__of__(self.root)
-        self.site._setObject( 'portal_membership', self._makeOne() )
+    def _makeSite(self, parent=None):
+        if parent is None:
+            parent = self.root
+        site = DummySite( 'site' ).__of__( parent )
+        site._setObject( 'portal_membership', self._makeOne() )
+        return site
 
     def test_getCandidateLocalRoles(self):
-        mtool = self.site.portal_membership
-        acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
+        site = self._makeSite()
+        mtool = site.portal_membership
+        acl_users = site._setObject( 'acl_users', DummyUserFolder() )
 
         newSecurityManager(None, acl_users.user_foo)
         rval = mtool.getCandidateLocalRoles(mtool)
@@ -77,10 +81,11 @@ class MembershipToolSecurityTests(SecurityTest):
         self.assertEqual( rval, ('Manager', 'Member', 'Owner', 'Reviewer') )
 
     def test_createMemberArea(self):
-        mtool = self.site.portal_membership
-        members = self.site._setObject( 'Members', PortalFolder('Members') )
-        acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
-        wtool = self.site._setObject( 'portal_workflow', DummyTool() )
+        site = self._makeSite()
+        mtool = site.portal_membership
+        members = site._setObject( 'Members', PortalFolder('Members') )
+        acl_users = site._setObject( 'acl_users', DummyUserFolder() )
+        wtool = site._setObject( 'portal_workflow', DummyTool() )
 
         # permission
         mtool.createMemberArea('user_foo')
@@ -107,12 +112,13 @@ class MembershipToolSecurityTests(SecurityTest):
                           % str( f.get_local_roles() ) )
 
     def test_deleteMembers(self):
-        mtool = self.site.portal_membership
-        members = self.site._setObject( 'Members', PortalFolder('Members') )
-        acl_users = self.site._setObject( 'acl_users', DummyUserFolder() )
-        utool = self.site._setObject( 'portal_url', DummyTool() )
-        wtool = self.site._setObject( 'portal_workflow', DummyTool() )
-        mdtool = self.site._setObject( 'portal_memberdata', MemberDataTool() )
+        site = self._makeSite()
+        mtool = site.portal_membership
+        members = site._setObject( 'Members', PortalFolder('Members') )
+        acl_users = site._setObject( 'acl_users', DummyUserFolder() )
+        utool = site._setObject( 'portal_url', DummyTool() )
+        wtool = site._setObject( 'portal_workflow', DummyTool() )
+        mdtool = site._setObject( 'portal_memberdata', MemberDataTool() )
         newSecurityManager(None, acl_users.all_powerful_Oz)
 
         self.assertEqual( acl_users.getUserById('user_foo'),
@@ -128,6 +134,56 @@ class MembershipToolSecurityTests(SecurityTest):
         self.failIf( mdtool._members.has_key('user_foo') )
         self.failIf( hasattr(members.aq_self, 'user_foo') )
 
+    def test_getMemberById_nonesuch(self):
+        INVALID_USER_ID = 'nonesuch'
+
+        self.root._setObject( 'folder', Folder( 'folder' ) )
+        site = self._makeSite( self.root.folder )
+        tool = site.portal_membership
+        site.acl_users = DummyUserFolder()
+        self.assertEqual( None, tool.getMemberById( INVALID_USER_ID ) )
+
+    def test_getMemberById_local(self):
+        LOCAL_USER_ID = 'user_foo'
+
+        self.root._setObject( 'folder', Folder('folder') )
+        site = self._makeSite( self.root.folder )
+        site._setObject( 'acl_users', DummyUserFolder() )
+        tool = site.portal_membership
+        member = tool.getMemberById( LOCAL_USER_ID)
+        self.assertEqual( member.getId(), LOCAL_USER_ID )
+
+    def test_getMemberById_nonlocal(self):
+        NONLOCAL_USER_ID = 'user_bar'
+
+        self.root._setObject( 'folder', Folder( 'folder' ) )
+        site = self._makeSite( self.root.folder )
+        self.root.folder._setObject( 'acl_users', DummyUserFolder() )
+        tool = site.portal_membership
+        member = tool.getMemberById( NONLOCAL_USER_ID )
+        self.assertEqual( member.getId(), NONLOCAL_USER_ID )
+
+    def test_getMemberById_chained(self):
+        LOCAL_USER_ID = 'user_foo'
+        NONLOCAL_USER_ID = 'user_bar'
+
+        self.root._setObject( 'folder', Folder( 'folder' ) )
+        site = self._makeSite( self.root.folder )
+        tool = site.portal_membership
+
+        local_uf = DummyUserFolder()
+        delattr( local_uf, NONLOCAL_USER_ID )
+        site._setObject('acl_users', local_uf)
+
+        nonlocal_uf = DummyUserFolder()
+        delattr( nonlocal_uf, LOCAL_USER_ID )
+        self.root.folder._setObject('acl_users', nonlocal_uf)
+
+        local_member = tool.getMemberById(LOCAL_USER_ID)
+        self.assertEqual(local_member.getId(), LOCAL_USER_ID)
+
+        nonlocal_member = tool.getMemberById(NONLOCAL_USER_ID)
+        self.assertEqual(nonlocal_member.getId(), NONLOCAL_USER_ID)
 
 def test_suite():
     return TestSuite((

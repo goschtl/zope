@@ -346,10 +346,23 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
         '''
         Returns the given member.
         '''
-        u = self.acl_users.getUserById(id, None)
-        if u is not None:
-            u = self.wrapUser(u)
-        return u
+        def hauntUser(username,start):
+            """Find user in the hierarchy starting from bottom level 'start'.
+            """
+            uf = start.acl_users
+            while uf is not None:
+                user = uf.getUserById(username)
+                if user:
+                    return user
+                parent = aq_parent(aq_inner(uf))
+                parent = aq_parent(aq_inner(parent))
+                uf = getattr(parent, 'acl_users', None)
+            return None
+
+        user = hauntUser(id, self)
+        if user is not None:
+            user = self.wrapUser(user)
+        return user
 
     def __getPUS(self):
         # Gets something we can call getUsers() and getUserNames() on.
