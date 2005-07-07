@@ -20,6 +20,7 @@ from os import path, stat
 
 import Acquisition, Globals
 from AccessControl import ClassSecurityInfo
+from AccessControl.Role import RoleManager
 from OFS.SimpleItem import Item
 from DateTime import DateTime
 from Products.PythonScripts.standard import html_quote
@@ -31,7 +32,7 @@ from CMFCorePermissions import ManagePortal
 
 from OFS.Cache import Cacheable
 
-class FSObject(Acquisition.Implicit, Item, Cacheable):
+class FSObject(Acquisition.Implicit, Item, Cacheable, RoleManager):
     """FSObject is a base class for all filesystem based look-alikes.
     
     Subclasses of this class mimic ZODB based objects like Image and
