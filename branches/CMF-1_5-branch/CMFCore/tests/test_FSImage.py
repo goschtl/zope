@@ -1,3 +1,19 @@
+##############################################################################
+#
+# Copyright (c) 2002 Zope Corporation and Contributors. All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+""" Unit tests for FSImage module.
+
+$Id$
+"""
 import unittest
 import Testing
 import Zope
@@ -89,6 +105,9 @@ class FSImageTests( RequestTest, FSDVTest):
         data = image.index_html( self.REQUEST, self.RESPONSE )
 
         self.assertEqual( data, '' )
+        # test that we properly hack around apache bug noted in code
+        self.assertEqual( self.RESPONSE.getHeader('Content-Length'.lower()),
+                                                  str(len(ref)) )
         self.assertEqual( self.RESPONSE.getStatus(), 304 )
 
     def test_index_html_without_304( self ):
