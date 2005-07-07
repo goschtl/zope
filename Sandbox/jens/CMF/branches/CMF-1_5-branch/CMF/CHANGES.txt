@@ -6,6 +6,12 @@ After CMF 1.5.2beta1
       schema-compatible with current ActionInformation.
       (http://zope.org/Collectors/355)
 
+    - CMFCore.utils.ToolInit: For icon registration to work with ToolInit
+      you would have to have the same product_name parameter as the actual
+      product name of the product. product_name is now optional, defaulting 
+      to the real product name. It is also deprecated, and starting with 
+      CMF1.6 product_name it will be ignored.
+
 CMF 1.5.2beta1 (2005/06/26)
 
   New Features
@@ -632,12 +638,6 @@ CMF 1.5.0beta (2004/08/12)
     - CMFWiki: Prevent deprecation notice for the deprecated
       CMFWikiPermissions module by replacing its usage in CMFWiki.__init__
       with the new permissions module.
-
-    - CMFCore.utils.ToolInit: For icon registration to work with ToolInit
-      you would have to have the same product_name parameter as the actual
-      product name of the product. product_name is now optional, defaulting 
-      to the real product name. It is also deprecated, and starting with 
-      CMF1.6 product_name it will be ignored.
 
     - CMFTopic: Change topic_view template to show title and ID (it only
       showed title before)
