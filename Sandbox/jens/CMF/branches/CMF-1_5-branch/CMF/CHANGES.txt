@@ -7,6 +7,11 @@ After CMF 1.5.2beta1
 
   Bugs Fixed
 
+    - CatalogTool: Added manage_convertIndexes.
+      This method should not be used with Zope 2.7. It overrides the broken
+      manage_convertIndexes of Zope 2.8.0.
+      (http://zope.org/Collectors/357)
+
     - CMFCore.WorkflowTool:  Make (deprecated) WorkflowInformation objects
       schema-compatible with current ActionInformation.
       (http://zope.org/Collectors/355)
