@@ -27,7 +27,15 @@ HEAD only (unreleased)
       a registered meta type can now be used in the TypesTool.
 
   Bug Fixes
+    - CMFCore.utils.ToolInit: For icon registration to work with ToolInit
+      you would have to have the same product_name parameter as the actual
+      product name of the product. Now we just pick up that product name from
+      the product context instead, and ignore the product_name parameter (with
+      a deprecation warning).
 
+    - CMFSetup: Merged the registerClass and registerIcon call since 
+      registerClass is capable of registering icons.
+    
     - DublinCore and PortalFolder: Changed fallback in 'Type' method.
       The fallback is only necessary if the related type info is missing.
 
