@@ -12,6 +12,10 @@ After CMF 1.5.2beta1
       to the real product name. It is also deprecated, and starting with 
       CMF1.6 product_name it will be ignored.
 
+    - CMFSetup.workflow: scripts were not exported, they're now in a
+      'scripts' subdirectory, and encoding was not propagated at import
+      time.
+
 CMF 1.5.2beta1 (2005/06/26)
 
   New Features
