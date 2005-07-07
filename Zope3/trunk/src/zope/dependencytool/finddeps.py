@@ -315,7 +315,7 @@ def parse_args(argv):
                 module = sys.modules[arg]
                 options.path = os.path.dirname(module.__file__)
             except ImportError:
-                usage(1, "Could not import module %s" % module)
+                usage(1, "Could not import module %s" % arg)
         elif opt in ('-p', '--packages'):
             options.packages = True
         elif opt in ('-z', '--zcml'):
