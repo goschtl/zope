@@ -32,7 +32,6 @@ def initialize( context ):
 
     ToolInit( 'CMF Setup Tool'
             , tools=[ SetupTool ]
-            , product_name='Setup'
             , icon=None
             ).initialize( context )
 
