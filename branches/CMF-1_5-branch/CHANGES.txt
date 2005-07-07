@@ -7,6 +7,10 @@ After CMF 1.5.2beta1
 
   Bugs Fixed
 
+    - CMFDefault.utils.parseHeadersBody:  use standard library's 'rfc822'
+      module to parse metadata headers, to take advantage of better handling
+      of edge cases.
+
     - CMFDefault.utils.formatRFC822Headers:  strip trailing blank line
       of multi-line value, to prevent premature halt of parsing.
       (http://www.zope.org/Collectors/230)
