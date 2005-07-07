@@ -7,9 +7,14 @@ After CMF 1.5.2beta1
 
   Bugs Fixed
 
+    - CMFDefault.utils.formatRFC822Headers:  strip trailing blank line
+      of multi-line value, to prevent premature halt of parsing.
+      (http://www.zope.org/Collectors/230)
+
     - CMFCore.MembershipTool:  allow 'getMemberById' to crawl up the
       hierarchy of user folders until it finds the user.
-      (http://www.zope.org/Collectors/354, also http://)
+      (http://www.zope.org/Collectors/354, also
+       http://www.zope.org/Collectors/63)
 
     - CatalogTool: Added manage_convertIndexes.
       This method should not be used with Zope 2.7. It overrides the broken
