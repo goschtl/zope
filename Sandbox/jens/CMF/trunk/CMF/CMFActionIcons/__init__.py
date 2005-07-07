@@ -29,6 +29,5 @@ def initialize( context ):
 
     ToolInit( meta_type='CMF Action Icons Tool'
             , tools=( ActionIconsTool, )
-            , product_name='CMFActionIcons'
             , icon="tool.gif"
             ).initialize( context )
