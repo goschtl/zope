@@ -33,23 +33,28 @@ Title: Test Products.CMFDefault.utils.parseHeadersBody'''
     MULTILINE_DESCRIPTION = '''Description: this description spans
         multiple lines.'''
 
+    MULTIPARAGRAPH_DESCRIPTION = \
+        '''Description: this description spans multiple lines.
+        
+        It includes a second paragraph'''
+
     TEST_BODY = '''Body goes here, and can span multiple
 lines.  It can even include "headerish" lines, like:
 
 Header: value
 '''
 
-    def test_NoBody( self ):
+    def test_parseHeadersBody_no_body( self ):
         from Products.CMFDefault.utils import parseHeadersBody
 
         headers, body = parseHeadersBody( '%s\n\n' % self.COMMON_HEADERS )
-        assert( len( headers ) == 2, '%d!' % len( headers ) )
-        assert( 'Author' in headers.keys() )
-        assert( headers[ 'Author' ] == 'Tres Seaver' )
-        assert( 'Title' in headers.keys() )
-        assert( len( body ) == 0, '%d!' % len( body ) )
+        self.assertEqual( len( headers ), 2 )
+        self.failUnless( 'Author' in headers.keys() )
+        self.assertEqual( headers[ 'Author' ], 'Tres Seaver' )
+        self.failUnless( 'Title' in headers.keys() )
+        self.assertEqual( len( body ), 0 )
 
-    def test_Continuation( self ):
+    def test_parseHeadersBody_continuation( self ):
         from Products.CMFDefault.utils import parseHeadersBody
 
         headers, body = parseHeadersBody( '%s\n%s\n\n'
@@ -57,13 +62,30 @@ Header: value
                                           , self.MULTILINE_DESCRIPTION
                                           )
                                         )
-        assert( len( headers ) == 3, '%d!' % len( headers )  )
-        assert( 'Description' in headers.keys() )
+        self.assertEqual( len( headers ), 3 )
+        self.failUnless( 'Description' in headers.keys() )
         desc_len = len( headers[ 'Description' ].split('\n') )
-        assert( desc_len == 2, '%d!' % desc_len )
-        assert( len( body ) == 0, '%d!' % len( body ) )
+        self.assertEqual( desc_len, 2 )
+        self.assertEqual( len( body ), 0 )
 
-    def test_Body( self ):
+    def test_parseHeadersBody_embedded_blank_line( self ):
+        from Products.CMFDefault.utils import parseHeadersBody
+
+        headers, body = parseHeadersBody( '%s\n%s\n\n%s'
+                                        % ( self.COMMON_HEADERS
+                                          , self.MULTIPARAGRAPH_DESCRIPTION
+                                          , self.TEST_BODY
+                                          )
+                                        )
+        self.assertEqual( len( headers ), 3 )
+        self.failUnless( 'Description' in headers.keys() )
+        desc_lines = headers[ 'Description' ].split('\n')
+        desc_len = len( desc_lines )
+        self.assertEqual( desc_len, 3, desc_lines )
+        self.assertEqual( desc_lines[1], ' ' )
+        self.assertEqual( body, self.TEST_BODY )
+
+    def test_parseHeadersBody_body( self ):
         from Products.CMFDefault.utils import parseHeadersBody
 
         headers, body = parseHeadersBody( '%s\n\n%s'
@@ -71,10 +93,21 @@ Header: value
                                           , self.TEST_BODY
                                           )
                                         )
-        assert( len( headers ) == 2, '%d!' % len( headers ) )
-        assert( body == self.TEST_BODY )
+        self.assertEqual( len( headers ), 2 )
+        self.assertEqual( body, self.TEST_BODY )
 
-    def test_Preload( self ):
+    def test_parseHeadersBody_body_malformed_terminator( self ):
+        from Products.CMFDefault.utils import parseHeadersBody
+
+        headers, body = parseHeadersBody( '%s\n \n%s'
+                                        % ( self.COMMON_HEADERS
+                                          , self.TEST_BODY
+                                          )
+                                        )
+        self.assertEqual( len( headers ), 2 )
+        self.assertEqual( body, self.TEST_BODY )
+
+    def test_parseHeadersBody_preload( self ):
         from Products.CMFDefault.utils import parseHeadersBody
 
         preloaded = { 'Author' : 'xxx', 'text_format' : 'structured_text' }
@@ -85,9 +118,9 @@ Header: value
                                           )
                                         , preloaded
                                         )
-        assert( len( headers ) == 3, '%d!' % len( headers ) )
-        assert( preloaded[ 'Author' ] != headers[ 'Author' ] )
-        assert( preloaded[ 'text_format' ] == headers[ 'text_format' ] )
+        self.assertEqual( len( headers ), 4 )
+        self.assertNotEqual( preloaded[ 'Author' ], headers[ 'Author' ] )
+        self.assertEqual( preloaded[ 'text_format' ], headers[ 'text_format' ] )
 
     def test_scrubHTML(self):
         from Products.CMFDefault.utils import scrubHTML
@@ -227,7 +260,6 @@ Header: value
 
         self.assertEqual( formatted
                         , 'Foo: foo\r\nBar: bar\r\n  \r\n  with multiline' )
-
 
 def test_suite():
     return makeSuite(DefaultUtilsTests)

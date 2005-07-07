@@ -17,6 +17,8 @@ $Id$
 
 import os
 import re
+import StringIO
+import rfc822
 from cgi import escape
 from sgmllib import SGMLParser
 
@@ -91,39 +93,15 @@ def parseHeadersBody( body, headers=None, rc=re.compile( r'\n|\r\n' ) ):
 
         Allow passing initial dictionary as headers.
     """
-    # Split the lines apart, taking into account Mac|Unix|Windows endings
-    lines = rc.split(body)
+    buffer = StringIO.StringIO(body)
+    message = rfc822.Message(buffer)
 
-    i = 0
-    if headers is None:
-        headers = {}
-    else:
-        headers = headers.copy()
+    headers = headers and headers.copy() or {}
 
-    hdrlist = []
+    for key in message.keys():
+        headers[key.capitalize()] = '\n'.join(message.getheaders(key))
 
-    for line in lines:
-
-        if not line:
-            break
-
-        tokens = line.split( ': ' )
-
-        if len( tokens ) > 1:
-            hdrlist.append( ( tokens[0], ': '.join( tokens[1:] ) ) )
-        elif i == 0:
-            return headers, body     # no headers, just return those passed in.
-        else:    # continuation
-            last, hdrlist = hdrlist[ -1 ], hdrlist[ :-1 ]
-            hdrlist.append( ( last[ 0 ]
-                            , '\n'.join( ( last[1], line.lstrip() ) )
-                            ) )
-        i = i + 1
-
-    for hdr in hdrlist:
-        headers[ hdr[0] ] = hdr[ 1 ]
-
-    return headers, '\n'.join( lines[ i+1: ] )
+    return headers, buffer.read()
 
 
 security.declarePublic('semi_split')
