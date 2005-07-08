@@ -346,23 +346,23 @@ class MembershipTool(UniqueObject, Folder, ActionProviderBase):
         '''
         Returns the given member.
         '''
-        def hauntUser(username,start):
-            """Find user in the hierarchy starting from bottom level 'start'.
-            """
-            uf = start.acl_users
-            while uf is not None:
-                user = uf.getUserById(username)
-                if user:
-                    return user
-                parent = aq_parent(aq_inner(uf))
-                parent = aq_parent(aq_inner(parent))
-                uf = getattr(parent, 'acl_users', None)
-            return None
-
-        user = hauntUser(id, self)
+        user = self._huntUser(id, self)
         if user is not None:
             user = self.wrapUser(user)
         return user
+
+    def _huntUser(self, username, context):
+        """Find user in the hierarchy starting from bottom level 'start'.
+        """
+        uf = context.acl_users
+        while uf is not None:
+            user = uf.getUserById(username)
+            if user is not None:
+                return user
+            container = aq_parent(aq_inner(uf))
+            parent = aq_parent(aq_inner(container))
+            uf = getattr(parent, 'acl_users', None)
+        return None
 
     def __getPUS(self):
         # Gets something we can call getUsers() and getUserNames() on.
