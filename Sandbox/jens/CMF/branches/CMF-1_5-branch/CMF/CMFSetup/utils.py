@@ -295,6 +295,11 @@ class ImportConfiguratorBase(Implicit):
 
         if prop_map.get('type') == 'multiple selection':
             prop_value = p_info['elements'] or ()
+        elif prop_map.get('type') == 'boolean':
+            # Make sure '0' is imported as False
+            prop_value = str(p_info['value'])
+            if prop_value == '0':
+                prop_value = ''
         else:
             # if we pass a *string* to _updateProperty, all other values
             # are converted to the right type
