@@ -25,6 +25,7 @@ from zope.app.container.interfaces import IObjectAddedEvent,\
 from zope.app.container.contained import ObjectMovedEvent
 from zope.app.event.objectevent import ObjectCopiedEvent
 
+# holds classes that were monkeyed with; for clean up
 _monkied = []
 
 # ObjectAddedEvent and ObjectRemovedEvent are different in Zope 2
@@ -104,6 +105,8 @@ def sendEvents(_context, class_):
         callable = classSendEvents,
         args=(class_,)
         )
+
+# clean up code
 
 def unsendEvents(class_):
     """Restore class's initial state with respect to sending events"""
