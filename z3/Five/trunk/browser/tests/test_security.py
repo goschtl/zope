@@ -1,3 +1,4 @@
+
 ##############################################################################
 #
 # Copyright (c) 2004, 2005 Zope Corporation and Contributors.
@@ -39,7 +40,6 @@ view_names = [
     'falcon.html',
     'owl.html',
     'flamingo.html',
-    'flamingo2.html',
     'condor.html',
     'protectededitform.html']
 
