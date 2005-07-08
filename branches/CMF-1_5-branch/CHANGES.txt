@@ -16,7 +16,9 @@ After CMF 1.5.2beta1
       (http://www.zope.org/Collectors/CMF/230)
 
     - CMFCore.MembershipTool:  allow 'getMemberById' to crawl up the
-      hierarchy of user folders until it finds the user.
+      hierarchy of user folders until it finds the user.  This means that
+      users from any user folder in or above the portal will be treated
+      as full members of the portal.
       (http://www.zope.org/Collectors/CMF/354, also
        http://www.zope.org/Collectors/CMF/63)
 
