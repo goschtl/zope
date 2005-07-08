@@ -16,9 +16,7 @@
 Windows NT/2K service installer/controller for Zope/ZEO/ZRS instances.
 """
 
-import time
-import os
-
+import sys, os, time
 import pywintypes
 import win32serviceutil
 import win32service
@@ -58,6 +56,13 @@ class Service(win32serviceutil.ServiceFramework):
         # Create an event which we will use to wait on.
         # The "service stop" request will set this event.
         self.hWaitStop = win32event.CreateEvent(None, 0, 0, None)
+        self.redirectOutput()
+
+    def redirectOutput(self):
+        sys.stdout.close()
+        sys.stderr.close()
+        sys.stdout = NullOutput()
+        sys.stderr = NullOutput()
 
     def SvcStop(self):
         # Before we do anything, tell the SCM we are starting the stop process.
@@ -188,6 +193,36 @@ class Service(win32serviceutil.ServiceFramework):
             servicemanager.EVENTLOG_INFORMATION_TYPE,
             servicemanager.PYS_SERVICE_STOPPED,
             (self._svc_name_, ' (%s) ' % self._svc_display_name_))
+
+
+class NullOutput:
+    """A stdout / stderr replacement that discards everything."""
+
+    def noop(self, *args, **kw):
+        pass
+
+    write = writelines = close = seek = flush = truncate = noop
+
+    def __iter__(self):
+        return self
+
+    def next(self):
+        raise StopIteration
+
+    def isatty(self):
+        return False
+
+    def tell(self):
+        return 0
+
+    def read(self, *args, **kw):
+        return ''
+
+    readline = read
+
+    def readlines(self, *args, **kw):
+        return []
+   
 
 if __name__=='__main__':
     win32serviceutil.HandleCommandLine(Service)
