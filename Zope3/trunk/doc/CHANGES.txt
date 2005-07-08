@@ -832,12 +832,15 @@ Zope Changes
         the directive schema, while it actually was expected to be
         required.
 
+      - Added redirection of stdout / stderr when running as a windows 
+        service (otherwise logging and other output will cause problems).
+
     Much thanks to everyone who contributed to this release:
 
       Jim Fulton, Fred Drake, Philipp von Weitershausen, Stephan Richter,
       Gustavo Niemeyer, Daniel Nouri, Volker Bachschneider, Roger Ineichen,
       Shane Hathaway, Bjorn Tillenius, Garrett Smith, Marius Gedminas, Stuart
-      Bishop, Dominik Huber, Dmitry Vasiliev, Gary Poster
+      Bishop, Dominik Huber, Dmitry Vasiliev, Gary Poster, Brian Lloyd
 
 
   ------------------------------------------------------------------
