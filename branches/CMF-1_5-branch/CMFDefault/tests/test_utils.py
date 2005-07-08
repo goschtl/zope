@@ -2,7 +2,7 @@ from unittest import TestCase, makeSuite, main
 import Testing
 try:
     import Zope2
-except: 	# BBB: for Zope 2.7
+except ImportError: # BBB: for Zope 2.7
     import Zope as Zope2
 Zope2.startup()
 
