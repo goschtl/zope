@@ -69,7 +69,7 @@ class LinkTests(TestCase):
         self.assertEqual( desc_lines[0]
                         , 'Link to the Zope Community website,' )
         self.assertEqual( desc_lines[1]
-                        , 'including hundreds of contributed Zope products.' )
+                        , ' including hundreds of contributed Zope products.' )
         self.assertEqual( len(d.Subject()), 3 )
         self.assertEqual( d.getRemoteUrl(), 'http://www.zope.org' )
 
