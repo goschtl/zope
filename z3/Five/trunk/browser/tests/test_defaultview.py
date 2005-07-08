@@ -19,46 +19,69 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing.ZopeTestCase import FunctionalTestCase, installProduct
-installProduct('Five')
+def test_default_view():
+    """
+    Test default view functionality
 
-import Products.Five.browser.tests
-from Products.Five import zcml
-from Products.Five.tests.simplecontent import manage_addSimpleContent
-from Products.Five.tests.simplecontent import manage_addCallableSimpleContent
-from Products.Five.tests.simplecontent import manage_addIndexSimpleContent
+    Let's register a couple of default views and make our stub classes
+    default viewable:
 
-class DefaultViewTest(FunctionalTestCase):
+      >>> import Products.Five.browser.tests
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('defaultview.zcml',
+      ...                  package=Products.Five.browser.tests)
 
-    def afterSetUp(self):
-        zcml.load_config('defaultview.zcml', package=Products.Five.browser.tests)
-        manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
-        manage_addCallableSimpleContent(self.folder, 'testcall', 'TestCall')
-        manage_addIndexSimpleContent(self.folder, 'testindex', 'TestIndex')
-        uf = self.folder.acl_users
-        uf._doAddUser('viewer', 'secret', [], [])
-        uf._doAddUser('manager', 'r00t', ['Manager'], [])
 
-    # Disabled __call__ overriding for now. Causes more trouble
-    # than it fixes.
+    Now let's add a couple of stub objects:
 
-    # def test_existing_call(self):
-    #     response = self.publish('/test_folder_1_/testcall')
-    #     self.assertEquals("Default __call__ called", response.getBody())
+      >>> from Products.Five.tests.simplecontent import manage_addSimpleContent
+      >>> from Products.Five.tests.simplecontent import manage_addCallableSimpleContent
+      >>> from Products.Five.tests.simplecontent import manage_addIndexSimpleContent
 
-    def test_default_view(self):
-        response = self.publish('/test_folder_1_/testoid', basic='manager:r00t')
-        self.assertEquals("The eagle has landed", response.getBody())
+      >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+      >>> manage_addCallableSimpleContent(self.folder, 'testcall', 'TestCall')
+      >>> manage_addIndexSimpleContent(self.folder, 'testindex', 'TestIndex')
 
-    def test_existing_index(self):
-        response = self.publish('/test_folder_1_/testindex')
-        self.assertEquals("Default index_html called", response.getBody())
+    As a last act of preparation, we create a manager login:
+
+      >>> uf = self.folder.acl_users
+      >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
+
+    Test a simple default view:
+
+      >>> print http(r'''
+      ... GET /test_folder_1_/testoid HTTP/1.1
+      ... Authorization: Basic manager:r00t
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      The eagle has landed
+
+    This tests whether an existing ``index_html`` method is still
+    supported and called:
+
+      >>> print http(r'''
+      ... GET /test_folder_1_/testindex HTTP/1.1
+      ... ''')
+      HTTP/1.1 200 OK
+      ...
+      Default index_html called
+
+    Disabled __cal__ overriding for now.  Causese more trouble than it
+    fixes.  Thus, no test here:
+
+      #>>> print http(r'''
+      #... GET /test_folder_1_/testcall HTTP/1.1
+      #... ''')
+      #HTTP/1.1 200 OK
+      #...
+      #Default __call__ called
+    """
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DefaultViewTest))
-    return suite
+    from Testing.ZopeTestCase import installProduct, FunctionalDocTestSuite
+    installProduct('Five')
+    return FunctionalDocTestSuite()
 
 if __name__ == '__main__':
     framework()
