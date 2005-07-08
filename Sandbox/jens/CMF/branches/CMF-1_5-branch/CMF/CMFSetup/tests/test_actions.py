@@ -17,8 +17,11 @@ $Id$
 
 import unittest
 import Testing
-import Zope
-Zope.startup()
+try:
+    import Zope2
+except: 	# BBB: for Zope 2.7
+    import Zope as Zope2
+Zope2.startup()
 
 from Acquisition import Implicit
 from Acquisition import aq_parent

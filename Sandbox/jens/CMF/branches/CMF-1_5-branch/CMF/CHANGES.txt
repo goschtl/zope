@@ -3,7 +3,7 @@ After CMF 1.5.2beta1
   Features Added
 
     - CMFDefault/skins/zpt_generic/talkback_tree:  Add link to allow
-      managers to delete replies (http://www.zope.org/Collectors/38).
+      managers to delete replies (http://www.zope.org/Collectors/CMF/38).
 
   Bugs Fixed
 
@@ -13,21 +13,21 @@ After CMF 1.5.2beta1
 
     - CMFDefault.utils.formatRFC822Headers:  strip trailing blank line
       of multi-line value, to prevent premature halt of parsing.
-      (http://www.zope.org/Collectors/230)
+      (http://www.zope.org/Collectors/CMF/230)
 
     - CMFCore.MembershipTool:  allow 'getMemberById' to crawl up the
       hierarchy of user folders until it finds the user.
-      (http://www.zope.org/Collectors/354, also
-       http://www.zope.org/Collectors/63)
+      (http://www.zope.org/Collectors/CMF/354, also
+       http://www.zope.org/Collectors/CMF/63)
 
     - CatalogTool: Added manage_convertIndexes.
       This method should not be used with Zope 2.7. It overrides the broken
       manage_convertIndexes of Zope 2.8.0.
-      (http://www.zope.org/Collectors/357)
+      (http://www.zope.org/Collectors/CMF/357)
 
     - CMFCore.WorkflowTool:  Make (deprecated) WorkflowInformation objects
       schema-compatible with current ActionInformation.
-      (http://www.zope.org/Collectors/355)
+      (http://www.zope.org/Collectors/CMF/355)
 
     - CMFCore.utils.ToolInit: For icon registration to work with ToolInit
       you would have to have the same product_name parameter as the actual
@@ -40,6 +40,10 @@ After CMF 1.5.2beta1
       time.
 
   Others
+
+    - Moved tests which used to 'import Zope' to try 'import Zope2'
+      (with a fallback for Zope 2.7).  Thanks to sacco for the patch!
+      (http://www.zope.org/Collectors/CMF/362)
 
     - CatalogTool: Removed obsolete Vocabulary.
 
@@ -107,7 +111,7 @@ CMF 1.5.2beta1 (2005/06/26)
       earlier Zopes used to raise KeyError.
 
     - Set cache headers in 304 responses from FSImage / FSFile
-      (http://www.zope.org/Collectors/355)
+      (http://www.zope.org/Collectors/CMF/355)
 
     - CMFCore.DirectoryView: Do not cause ZODB writes or ConflictError
       if an old DirectoryView with a non-existing path is left. Sends a
@@ -225,7 +229,7 @@ CMF-1.5.1beta2 (2005/04/17)
       (http://www.zope.org/Collectors/CMF/114)
 
     - CMFDefault.DublinCore: Force local timezone when displaying date
-      metadata. ( http://www.zope.org/Collectors/CMF/325 )
+      metadata. (http://www.zope.org/Collectors/CMF/325)
 
     - CMFCore.SkinsTool: Prevent adding skin layers with invalid path elements
       There is a disconnect between the ability to define what can be ignored
