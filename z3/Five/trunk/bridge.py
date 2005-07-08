@@ -24,7 +24,6 @@ from zope.interface.interface import Interface as Z3_Interface
 from zope.interface.interface import Attribute as Z3_Attribute
 
 def fromZ2Interface(z2i):
-
     """ Return a Zope 3 interface corresponding to 'z2i'.
 
     o 'z2i' must be a Zope 2 interface.
@@ -36,9 +35,7 @@ def fromZ2Interface(z2i):
         return Z3_Interface
 
     name = z2i.getName()
-
     bases = [ fromZ2Interface(x) for x in z2i.getBases() ]
-
     attrs = {}
 
     for k, v in z2i.namesAndDescriptions():
@@ -54,11 +51,9 @@ def fromZ2Interface(z2i):
                              bases=bases,
                              attrs=attrs,
                              __doc__=z2i.getDoc(),
-                             __module__=z2i.__module__,
-                            )
+                             __module__=z2i.__module__)
 
 def fromZ2Attribute(z2a):
-
     """ Return a Zope 3 interface attribute corresponding to 'z2a'.
 
     o 'z2a' must be a Zope 2 interface attribute.
