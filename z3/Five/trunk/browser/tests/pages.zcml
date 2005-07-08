@@ -98,13 +98,6 @@
 
   <browser:page
       for="Products.Five.tests.simplecontent.ISimpleContent"
-      template="ostrich2.pt"
-      name="ostrich2.html"
-      permission="zope2.ViewManagementScreens"
-      />
-
-  <browser:page
-      for="Products.Five.tests.simplecontent.ISimpleContent"
       template="tales_traversal.pt"
       name="tales_traversal.html"
       permission="zope2.ViewManagementScreens"

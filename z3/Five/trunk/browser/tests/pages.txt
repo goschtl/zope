@@ -122,9 +122,6 @@ Make sure that tal:repeat works in ZPT browser pages:
   <li>Beta</li>
   <li>Gamma</li>
   </ul>
-
-  >>> view = self.folder.unrestrictedTraverse('testoid/ostrich2.html')
-  >>> print view()
   <ul>
   <li>0</li>
   <li>1</li>
