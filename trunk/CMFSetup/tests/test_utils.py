@@ -47,6 +47,7 @@ Text</property>
             select_variable="foobarbaz">
    <element value="Foo"/>
    <element value="Baz"/></property>
+  <property name="foo_boolean0" type="boolean">0</property>
 """
 
 _FIXED_PROPERTY_NODES = """\
@@ -69,6 +70,7 @@ Text</property>
   <property name="foo_mselection">
    <element value="Foo"/>
    <element value="Baz"/></property>
+  <property name="foo_boolean0">0</property>
 """
 
 _NORMAL_PROPERTY_INFO = ( { 'id': 'foo_boolean',
@@ -125,7 +127,13 @@ _NORMAL_PROPERTY_INFO = ( { 'id': 'foo_boolean',
                             'value': '',
                             'elements': ('Foo', 'Baz'),
                             'type': 'multiple selection',
-                            'select_variable': 'foobarbaz' } )
+                            'select_variable': 'foobarbaz' },
+                          { 'id': 'foo_boolean0',
+                            'value': False, # 0 imports as False
+                            'elements': (),
+                            'type': 'boolean',
+                            'select_variable': None },
+                          )
 
 _NORMAL_PROPERTY_EXPORT = """\
 <?xml version="1.0"?>
@@ -252,6 +260,7 @@ class _ConfiguratorBaseTests(BaseRegistryTests):
             site.dummy._setProperty('foo_selection', 'foobarbaz', 'selection')
             site.dummy._setProperty('foo_mselection', 'foobarbaz',
                                     'multiple selection')
+            site.dummy._setProperty('foo_boolean0', '', 'boolean')
 
         if foo > 1:
             site.dummy._updateProperty('foo_boolean', 'True')
@@ -265,6 +274,7 @@ class _ConfiguratorBaseTests(BaseRegistryTests):
             site.dummy._updateProperty( 'foo_tokens', ('Foo', 'Tokens') )
             site.dummy._updateProperty('foo_selection', 'Foo')
             site.dummy._updateProperty( 'foo_mselection', ('Foo', 'Baz') )
+            site.dummy.foo_boolean0 = 0
 
         return site
 
@@ -356,7 +366,7 @@ class ImportConfiguratorBaseTests(_ConfiguratorBaseTests):
         configurator = self._makeOne(site)
         site_info = configurator.parseXML(_NORMAL_PROPERTY_EXPORT)
 
-        self.assertEqual( len( site_info['properties'] ), 11 )
+        self.assertEqual( len( site_info['properties'] ), 12 )
 
         info = site_info['properties'][0]
         self.assertEqual( info['id'], 'foo_boolean' )
@@ -432,6 +442,12 @@ class ImportConfiguratorBaseTests(_ConfiguratorBaseTests):
         self.assertEqual( info['type'], 'multiple selection' )
         self.assertEqual( info['select_variable'], 'foobarbaz' )
 
+        info = site_info['properties'][11]
+        self.assertEqual( info['id'], 'foo_boolean0' )
+        self.assertEqual( info['value'], '0' )
+        self.assertEqual( len( info['elements'] ), 0 )
+        self.assertEqual( info['type'], 'boolean' )
+
     def test_parseXML_special(self):
 
         site = self._initSite()
@@ -477,7 +493,7 @@ class ImportConfiguratorBaseTests(_ConfiguratorBaseTests):
         configurator = self._makeOne(site)
         site_info = configurator.parseXML(_FIXED_PROPERTY_EXPORT)
 
-        self.assertEqual( len( dummy.propertyIds() ), 11 )
+        self.assertEqual( len( dummy.propertyIds() ), 12 )
 
         for prop_info in site_info['properties']:
             configurator.initProperty(dummy, prop_info)
