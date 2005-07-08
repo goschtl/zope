@@ -19,45 +19,53 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing.ZopeTestCase import installProduct
-installProduct('Five')
+def test_recursion():
+    """
+    Test recursion
 
-from OFS.Traversable import Traversable
-from zope.interface import Interface, implements
-from Products.Five.fiveconfigure import classDefaultViewable
+    This test makes sure that recursion is avoided for view lookup.
+    First, we need to set up a stub interface...
 
-class IRecurse(Interface):
-    pass
+      >>> from zope.interface import Interface, implements
+      >>> class IRecurse(Interface):
+      ...     pass
+      ...
 
-class Recurse(Traversable):
-    implements(IRecurse)
+    and a class that is callable and has a view method:
 
-    def view(self):
-        return self()
+      >>> from OFS.Traversable import Traversable
+      >>> class Recurse(Traversable):
+      ...     implements(IRecurse)
+      ...     def view(self):
+      ...         return self()
+      ...     def __call__(self):
+      ...         return 'foo'
+      ...
 
-    def __call__(self):
-        return 'foo'
+    Now we make the class default viewable and register a default view
+    name for it:
 
-classDefaultViewable(Recurse)
+      >>> from Products.Five.fiveconfigure import classDefaultViewable
+      >>> classDefaultViewable(Recurse)
 
-class RecursionTest(unittest.TestCase):
+      >>> from zope.app import zapi
+      >>> from zope.publisher.interfaces.browser import IBrowserRequest
+      >>> pres = zapi.getGlobalService('Presentation')
+      >>> pres.setDefaultViewName(IRecurse, IBrowserRequest, 'view')
 
-    def setUp(self):
-        self.ob = Recurse()
+    Here comes the actual test:
 
-    def test_recursive_call(self):
-        from zope.app import zapi
-        from zope.publisher.interfaces.browser import IBrowserRequest
-        pres = zapi.getGlobalService('Presentation')
-        pres.setDefaultViewName(IRecurse, IBrowserRequest, 'view')
-        self.assertEquals(self.ob.view(), 'foo')
-        self.assertEquals(self.ob(), 'foo')
+      >>> ob = Recurse()
+      >>> ob.view()
+      'foo'
+      >>> ob()
+      'foo'
+    """
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(RecursionTest))
-    return suite
+    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
+    installProduct('Five')
+    return ZopeDocTestSuite()
 
 if __name__ == '__main__':
     framework()
