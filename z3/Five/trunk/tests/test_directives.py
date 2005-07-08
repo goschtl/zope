@@ -19,43 +19,50 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing.ZopeTestCase import ZopeTestCase, installProduct
-installProduct('Five')
+def test_directives():
+    """
+    Test ZCML directives
 
-import Products.Five.tests
-from Products.Five import zcml
+    There isn't much to test here since the actual directive handlers
+    are either tested in other, more specific tests, or they're
+    already tested in Zope 3.  We'll just do a symbolic test of
+    adapters and overrides of adapters here as well as registering
+    meta directives.
 
-from Products.Five.tests.adapters import IAdapted, IDestination
-from Products.Five.tests.adapters import Adaptable, Origin
-from Products.Five.tests.simplecontent import manage_addSimpleContent
+    But first, we load the configuration file:
 
-class DirectivesTest(ZopeTestCase):
-    """Test very basic Five functionality (adapters, ZCML, etc.)"""
+      >>> import Products.Five.tests
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('directives.zcml', package=Products.Five.tests)
 
-    def afterSetUp(self):
-        zcml.load_config('directives.zcml', package=Products.Five.tests)
+    Now for some testing.  Here we check whether the registered
+    adapter works:
 
-    def test_adapters(self):
-        obj = Adaptable()
-        adapted = IAdapted(obj)
-        self.assertEquals(
-            "Adapted: The method",
-            adapted.adaptedMethod())
+      >>> from Products.Five.tests.adapters import IAdapted, IDestination
+      >>> from Products.Five.tests.adapters import Adaptable, Origin
 
-    def test_overrides(self):
-        zcml.load_string(
-            """<includeOverrides
-                   package="Products.Five.tests"
-                   file="overrides.zcml" />""")
-        origin = Origin()
-        dest = IDestination(origin)
-        self.assertEquals(dest.method(), "Overridden")
+      >>> obj = Adaptable()
+      >>> adapted = IAdapted(obj)
+      >>> adapted.adaptedMethod()
+      'Adapted: The method'
+
+    Now let's load some overriding ZCML statements:
+
+      >>> zcml.load_string(
+      ...     '''<includeOverrides
+      ...              package="Products.Five.tests"
+      ...              file="overrides.zcml" />''')
+
+      >>> origin = Origin()
+      >>> dest = IDestination(origin)
+      >>> dest.method()
+      'Overridden'
+    """
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DirectivesTest))
-    return suite
+    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
+    installProduct('Five')
+    return ZopeDocTestSuite()
 
 if __name__ == '__main__':
     framework()
