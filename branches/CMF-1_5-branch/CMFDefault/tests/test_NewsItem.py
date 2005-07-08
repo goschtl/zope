@@ -17,8 +17,11 @@ $Id$
 
 from unittest import TestCase, TestSuite, makeSuite, main
 import Testing
-import Zope
-Zope.startup()
+try:
+    import Zope2
+except: 	# BBB: for Zope 2.7
+    import Zope as Zope2
+Zope2.startup()
 
 from Products.CMFCore.tests.base.content import BASIC_HTML
 from Products.CMFCore.tests.base.content import BASIC_STRUCTUREDTEXT
