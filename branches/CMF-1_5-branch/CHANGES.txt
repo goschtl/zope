@@ -1,4 +1,4 @@
-After CMF 1.5.2beta1
+CMF 1.5.2beta2 (2005/07/08)
 
   Features Added
 
@@ -49,7 +49,7 @@ After CMF 1.5.2beta1
 
     - CatalogTool: Removed obsolete Vocabulary.
 
-CMF 1.5.2beta1 (2005/06/26)
+CMF 1.5.2beta (2005/06/26)
 
   New Features
 
