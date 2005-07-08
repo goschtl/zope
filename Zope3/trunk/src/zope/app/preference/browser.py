@@ -16,10 +16,12 @@
 $Id: menu.py 29269 2005-02-23 22:22:48Z srichter $
 """
 __docformat__ = 'restructuredtext'
+
 import re
 import zope.interface
 import zope.schema
 from zope.security.proxy import removeSecurityProxy
+from zope.i18n import translate
 
 from zope.app import zapi
 from zope.app.basicskin.standardmacros import StandardMacros
@@ -28,8 +30,10 @@ from zope.app.form.browser.editview import EditView
 from zope.app.pagetemplate.simpleviewclass import simple
 from zope.app.pagetemplate.viewpagetemplatefile import ViewPageTemplateFile
 from zope.app.tree.browser.cookie import CookieTreeView
+from zope.app.i18n import ZopeMessageIDFactory as _
 
 from zope.app.preference import interfaces
+
 
 NoneInterface = zope.interface.interface.InterfaceClass('None')
 
@@ -53,7 +57,7 @@ class PreferenceGroupFilter(object):
                 return True
 
         return False
-        
+
 
 class PreferencesTree(CookieTreeView):
     """Preferences Tree using the stateful cookie tree."""
@@ -63,6 +67,7 @@ class PreferencesTree(CookieTreeView):
         filter = PreferenceGroupFilter()
         return self.cookieTree(root, filter)
 
+pref_msg = _("${name} Preferences")
 
 class EditPreferenceGroup(EditView):
 
@@ -74,13 +79,16 @@ class EditPreferenceGroup(EditView):
             self.schema = NoneInterface 
             zope.interface.alsoProvides(removeSecurityProxy(context),
                                         NoneInterface)
-            
-        self.label = context.__title__ + ' Preferences'
+
+        self.label = pref_msg
+        self.label.mapping["name"] = translate(context.__title__,
+            context=request, default=context.__title__)
         super(EditPreferenceGroup, self).__init__(context, request)
         self.setPrefix(context.__id__)
 
     def getIntroduction(self):
         text = self.context.__description__ or self.schema.__doc__
+        text = translate(text, context=self.request, default=text)
 
         # Determine common whitespace ...
         cols = len(re.match('^[ ]*', text).group())
@@ -94,4 +102,3 @@ class EditPreferenceGroup(EditView):
         source = zapi.createObject('zope.source.rest', text)
         renderer = zapi.getMultiAdapter((source, self.request))
         return renderer.render()
-

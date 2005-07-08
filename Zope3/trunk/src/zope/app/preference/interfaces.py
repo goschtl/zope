@@ -19,6 +19,7 @@ __docformat__ = "reStructuredText"
 
 import zope.interface
 import zope.schema
+from zope.configuration.fields import MessageID
 
 from zope.app.container.interfaces import IReadContainer
 from zope.app.location.interfaces import ILocation
@@ -50,12 +51,12 @@ class IPreferenceGroup(ILocation):
         description=u"Schema describing the preferences of the group.",
         required=False)
 
-    __title__ = zope.schema.TextLine(
+    __title__ = MessageID(
         title=u"Title",
         description=u"The title of the group used in the UI.",
         required=True)
 
-    __description__ = zope.schema.Text(
+    __description__ = MessageID(
         title=u"Description",
         description=u"The description of the group used in the UI.",
         required=False)
