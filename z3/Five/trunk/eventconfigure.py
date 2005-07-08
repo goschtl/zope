@@ -107,25 +107,17 @@ def sendEvents(_context, class_):
         )
 
 # clean up code
+from Products.Five.fiveconfigure import killMonkey
+from zope.testing.cleanup import addCleanUp
 
 def unsendEvents(class_):
     """Restore class's initial state with respect to sending events"""
     for name in ['manage_afterAdd', 'manage_beforeDelete']:
-        method = getattr(class_, name, None)
-        if isFiveMethod(method):
-            original = getattr(class_, '__five_original_' + name, None)
-            if original is None:
-                try:
-                    delattr(class_, name)
-                except AttributeError:
-                    pass
-            else:                
-                setattr(class_, name, original)
+        killMonkey(class_, name, '__five_original_'+name)
 
 def cleanUp():
     for class_ in _monkied:
         unsendEvents(class_)
 
-from zope.testing.cleanup import addCleanUp
 addCleanUp(cleanUp)
 del addCleanUp

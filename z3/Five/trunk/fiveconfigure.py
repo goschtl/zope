@@ -80,6 +80,7 @@ def implements(_context, class_, interface):
 def isFiveMethod(m):
     return hasattr(m, '__five_method__')
 
+_traversable_monkies = []
 def classTraversable(class_):
     # If a class already has this attribute, it means it is either a
     # subclass of Traversable or was already processed with this
@@ -105,6 +106,8 @@ def classTraversable(class_):
     setattr(class_, '__bobo_traverse__',
             Traversable.__bobo_traverse__.im_func)
     setattr(class_, '__five_traversable__', True)
+    # remember class for clean up
+    _traversable_monkies.append(class_)
 
 def traversable(_context, class_):
     _context.action(
@@ -113,6 +116,7 @@ def traversable(_context, class_):
         args = (class_,)
         )
 
+_defaultviewable_monkies = []
 def classDefaultViewable(class_):
     # If a class already has this attribute, it means it is either a
     # subclass of DefaultViewable or was already processed with this
@@ -137,6 +141,8 @@ def classDefaultViewable(class_):
     setattr(class_, '__browser_default__',
             Viewable.__browser_default__.im_func)
     setattr(class_, '__five_viewable__', True)
+    # remember class for clean up
+    _defaultviewable_monkies.append(class_)
 
 def defaultViewable(_context, class_):
     _context.action(
@@ -201,4 +207,44 @@ def pagesFromDirectory(_context, directory, module, for_=None,
         page(_context, name=name, permission=permission,
              layer=layer, for_=for_, template=fname)
 
+# clean up code
 
+def killMonkey(class_, name, fallback, attr=None):
+    """Die monkey, die!"""
+    method = getattr(class_, name, None)
+    if isFiveMethod(method):
+        original = getattr(class_, fallback, None)
+        if original is None:
+            try:
+                delattr(class_, name)
+            except AttributeError:
+                pass
+        else:                
+            setattr(class_, name, original)
+
+    if attr is not None:
+        try:
+            delattr(class_, attr)
+        except AttributeError:
+            pass
+
+def untraversable(class_):
+    """Restore class's initial state with respect to traversability"""
+    killMonkey(class_, '__bobo_traverse__', '__fallback_traverse__',
+               '__five_traversable__')
+
+def undefaultViewable(class_):
+    """Restore class's initial state with respect to being default
+    viewable."""
+    killMonkey(class_, '__browser_default__', '__fallback_default__',
+               '__five_viewable__')
+
+def cleanUp():
+    for class_ in _traversable_monkies:
+        untraversable(class_)
+    for class_ in _defaultviewable_monkies:
+        undefaultViewable(class_)
+
+from zope.testing.cleanup import addCleanUp
+addCleanUp(cleanUp)
+del addCleanUp

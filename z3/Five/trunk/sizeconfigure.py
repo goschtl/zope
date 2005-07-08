@@ -44,3 +44,18 @@ def sizable(_context, class_):
         callable = classSizable,
         args=(class_,)
         )
+
+# clean up code
+from Products.Five.fiveconfigure import killMonkey
+from zope.testing.cleanup import addCleanUp
+
+def unsizable(class_):
+    """Restore class's initial state with respect to being sizable"""
+    killMonkey(class_, 'get_size', '__five_original_get_size')
+
+def cleanUp():
+    for class_ in _monkied:
+        unsizable(class_)
+
+addCleanUp(cleanUp)
+del addCleanUp
