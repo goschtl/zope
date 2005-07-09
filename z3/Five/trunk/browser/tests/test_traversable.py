@@ -11,7 +11,7 @@
 # FOR A PARTICULAR PURPOSE.
 #
 ##############################################################################
-"""Test browser-related ZCML directives
+"""Test Five-traversable classes
 
 $Id$
 """
