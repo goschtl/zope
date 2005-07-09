@@ -90,6 +90,11 @@ def test_size():
       >>> n = manage_addFancyContent(self.folder, 'fancy', 'Fancy')
       >>> self.folder.fancy.get_size()
       43
+
+    Clean up:
+
+      >>> from Products.Five.sizeconfigure import cleanUp
+      >>> cleanUp()
     """
 
 def test_suite():
