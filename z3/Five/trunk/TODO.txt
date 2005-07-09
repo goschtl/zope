@@ -2,12 +2,10 @@
 TODO
 ====
 
-v1.1
-----
+v1.1 (mid-July)
+---------------
 
 - more atomic tests (philikon)
-
-- i18n, l10n (philikon, regebro)
 
 - more tests for browser.adding (faassen?)
 
@@ -19,11 +17,24 @@ v1.1
   remain, and things like IObjectModifiedEvents are not sent yet for
   folders. (faassen?)
 
-v1.2
-----
 
-- Introduce site concept, make rendering of resource urls support
-  sites.  Merge Sidnei's localsitemanager branch.
+v2.0 (mid-August, to ship with Zope 2.9)
+----------------------------------------
+
+- Zope 3.1 support
+
+- Drop old-style ExtensionClass support (and all other support for Zope 2.7)
+
+- Possibly: introduce site concept, make rendering of resource urls
+  support sites.  Merge Sidnei's localsitemanager branch (will
+  probably have to be fixed up for component architecture refactoring
+  in Zope 3.1) (sidnei)
+
+
+v2.1 (...)
+----------
+
+- l10n (philikon)
 
 - Allow Zope2 boilerplate context.registerClass be configured through zcml
 
@@ -44,5 +55,3 @@ v1.2
 
 - top-level <require />, <allow /> directives as a ZCML spelling of
   allowModule, allowClass
-
-- zope2.Public doesn't work in browser:page (at least in functionaldoctestsuite)
