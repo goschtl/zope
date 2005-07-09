@@ -1,0 +1,69 @@
+Functional Browser Pages Test
+=============================
+
+This test tests publishing aspects of browser pages.
+
+Docstrings
+----------
+
+In Zope 2, objects normally have to have a docstring in order to be
+published.  This crazy requirement luckily isn't true for Zope 3, so
+it should be possible to write docstring-less view classes that are
+still published through ZPublisher.
+
+Let's register three different docstring-less callables for views:
+
+  >>> configure_zcml = """
+  ... <configure xmlns="http://namespaces.zope.org/zope"
+  ...            xmlns:browser="http://namespaces.zope.org/browser">
+  ...   <redefinePermission from="zope2.Public" to="zope.Public" />
+  ...   <browser:pages
+  ...       for="Products.Five.tests.simplecontent.ISimpleContent"
+  ...       class="Products.Five.browser.tests.pages.NoDocstringView"
+  ...       permission="zope2.Public">
+  ...     <browser:page
+  ...         name="nodoc-method"
+  ...         attribute="method"
+  ...         />
+  ...     <browser:page
+  ...         name="nodoc-function"
+  ...         attribute="function"
+  ...         />
+  ...     <browser:page
+  ...         name="nodoc-object"
+  ...         attribute="object"
+  ...         />
+  ...   </browser:pages>
+  ... </configure>"""
+
+  >>> from Products.Five import zcml
+  >>> zcml.load_string(configure_zcml)
+
+Now let's add a stub object that we registered the view for:
+
+  >>> from Products.Five.tests.simplecontent import manage_addSimpleContent
+  >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+
+We see that even though the callables have no docstring, they are
+published nevertheless:
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/testoid/nodoc-function HTTP/1.1
+  ... """)
+  HTTP/1.1 200 OK
+  ...
+  No docstring
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/testoid/nodoc-method HTTP/1.1
+  ... """)
+  HTTP/1.1 200 OK
+  ...
+  No docstring
+
+  >>> print http(r"""
+  ... GET /test_folder_1_/testoid/nodoc-object HTTP/1.1
+  ... """)
+  HTTP/1.1 200 OK
+  ...
+  No docstring

@@ -20,9 +20,16 @@ if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 def test_suite():
+    import unittest
     from Testing.ZopeTestCase import installProduct, ZopeDocFileSuite
+    from Testing.ZopeTestCase import FunctionalDocFileSuite
     installProduct('Five')
-    return ZopeDocFileSuite('pages.txt', package='Products.Five.browser.tests')
+    return unittest.TestSuite((
+            ZopeDocFileSuite('pages.txt',
+                             package='Products.Five.browser.tests'),
+            FunctionalDocFileSuite('pages_ftest.txt',
+                                   package='Products.Five.browser.tests'),
+            ))
 
 if __name__ == '__main__':
     framework()
