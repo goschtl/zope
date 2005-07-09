@@ -57,6 +57,11 @@ def test_directives():
       >>> dest = IDestination(origin)
       >>> dest.method()
       'Overridden'
+
+    Clean up:
+
+      >>> from Products.Five.fiveconfigure import cleanUp
+      >>> cleanUp()
     """
 
 def test_suite():

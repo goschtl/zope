@@ -423,3 +423,9 @@ that the edit form works:
   ... """, handle_errors=False)
   HTTP/1.1 200 OK
   ...
+
+
+Finally, we need to clean up:
+
+  >>> from Products.Five.fiveconfigure import cleanUp
+  >>> cleanUp()

@@ -67,7 +67,7 @@ def test_default_view():
       ...
       Default index_html called
 
-    Disabled __cal__ overriding for now.  Causese more trouble than it
+    Disabled __call__ overriding for now.  Causese more trouble than it
     fixes.  Thus, no test here:
 
       #>>> print http(r'''
@@ -76,6 +76,11 @@ def test_default_view():
       #HTTP/1.1 200 OK
       #...
       #Default __call__ called
+
+    Clean up:
+
+      >>> from Products.Five.fiveconfigure import cleanUp
+      >>> cleanUp()
     """
 
 def test_suite():
