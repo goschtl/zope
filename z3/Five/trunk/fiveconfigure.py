@@ -225,7 +225,7 @@ def killMonkey(class_, name, fallback, attr=None):
     if attr is not None:
         try:
             delattr(class_, attr)
-        except AttributeError:
+        except (AttributeError, KeyError):
             pass
 
 def untraversable(class_):
