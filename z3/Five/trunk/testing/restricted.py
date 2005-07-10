@@ -13,39 +13,53 @@
 ##############################################################################
 """Restricted python test helpers
 
+Based on Plone's RestrictedPythonTestCase, with kind permission by the
+Plone developers.
+
 $Id$
 """
 from AccessControl import Unauthorized
 from Testing.ZopeTestCase import ZopeTestCase
 
-class RestrictedPythonTestCase(ZopeTestCase):
-    """Test whether code is really restricted.
+def addPythonScript(folder, id, params='', body=''):
+    """Add a PythonScript to folder."""
+    # clean up any 'ps' that's already here..
+    try:
+        folder._getOb(id)
+        folder.manage_delObjects([id])
+    except AttributeError:
+        pass # it's okay, no 'ps' exists yet
+    factory = folder.manage_addProduct['PythonScripts']
+    factory.manage_addPythonScript(id)
+    folder[id].ZPythonScript_edit(params, body)
 
-    Kind permission from Plone to use this."""
+def checkRestricted(folder, psbody):
+    """Perform a check by running restricted Python code."""
+    addPythonScript(folder, 'ps', body=psbody)
+    try:
+        folder.ps()
+    except Unauthorized, e:
+        raise AssertionError, e
+
+def checkUnauthorized(folder, psbody):
+    """Perform a check by running restricted Python code.  Expect to
+    encounter an Unauthorized exception."""
+    addPythonScript(folder, 'ps', body=psbody)
+    try:
+        folder.ps()
+    except Unauthorized:
+        pass
+    else:
+        raise AssertionError, "Authorized but shouldn't be"
+
+class RestrictedPythonTestCase(ZopeTestCase):
+    """Javiotic test case for restricted code."""
 
     def addPS(self, id, params='', body=''):
-        # clean up any 'ps' that's already here..
-        try:
-            self.folder._getOb(id)
-            self.folder.manage_delObjects([id])
-        except AttributeError:
-            pass # it's okay, no 'ps' exists yet
-        factory = self.folder.manage_addProduct['PythonScripts']
-        factory.manage_addPythonScript(id)
-        self.folder[id].ZPythonScript_edit(params, body)
+        addPythonScript(self.folder, id, params, body)
 
     def check(self, psbody):
-        self.addPS('ps', body=psbody)
-        try:
-            self.folder.ps()
-        except (ImportError, Unauthorized), e:
-            self.fail(e)
+        checkRestricted(self.folder, psbody)
 
     def checkUnauthorized(self, psbody):
-        self.addPS('ps', body=psbody)
-        try:
-            self.folder.ps()
-        except (AttributeError, Unauthorized):
-            pass
-        else:
-            self.fail("Authorized but shouldn't be")
+        checkUnauthorized(self.folder, psbody)
