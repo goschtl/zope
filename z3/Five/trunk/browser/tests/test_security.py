@@ -20,18 +20,14 @@ if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
 import unittest
-from Testing.ZopeTestCase import ZopeTestCase, FunctionalTestCase
-from Testing.ZopeTestCase import installProduct
+from Testing.ZopeTestCase import ZopeTestCase, installProduct
 installProduct('Five')
 installProduct('PythonScripts')  # for RestrictedPythonTestCase
 
-from zope.app import zapi
 import Products.Five.browser.tests
 from Products.Five import zcml, BrowserView
-from Products.Five.traversable import FakeRequest
 from Products.Five.testing import RestrictedPythonTestCase
 from Products.Five.testing import manage_addFiveTraversableFolder
-from Products.Five.tests.test_security import Dummy1
 from Products.Five.tests.simplecontent import manage_addSimpleContent
 
 view_names = [
@@ -46,13 +42,6 @@ public_view_names = [
     'public_attribute_page',
     'public_template_page',
     'public_template_class_page']
-
-class DummyView(BrowserView):
-    """A dummy view"""
-
-    def foo(self):
-        """A foo"""
-        return 'A foo view'
 
 class SecurityTest(RestrictedPythonTestCase):
 
@@ -86,47 +75,9 @@ class SecurityTest(RestrictedPythonTestCase):
         self.check(
             'context.restrictedTraverse("testoid/eagle.method").eagle()')
 
-class PageSecurityTest(ZopeTestCase):
-
-    def test_page_security(self):
-        decl = """
-        <configure xmlns="http://namespaces.zope.org/zope"
-            xmlns:browser="http://namespaces.zope.org/browser">
-
-          <browser:page
-             for="Products.Five.tests.test_security.IDummy"
-             class="Products.Five.browser.tests.test_security.DummyView"
-             attribute="foo"
-             name="test_page_security"
-             permission="zope2.ViewManagementScreens"
-           />
-
-        </configure>
-        """
-        zcml.load_string(decl)
-        request = FakeRequest()
-        # Wrap into an acquisition so that imPermissionRole objects
-        # can be evaluated.
-        view = zapi.getView(Dummy1(), 'test_page_security', request)
-
-        ac = getattr(view, '__ac_permissions__')
-        # It's protecting the object with the permission, and not the
-        # attribute, so we get ('',) instead of ('foo',).
-        ex_ac = (('View management screens', ('',)),)
-        self.assertEquals(ac, ex_ac)
-
-        # Wrap into an acquisition so that imPermissionRole objects
-        # can be evaluated. __roles__ is a imPermissionRole object.
-        view = view.__of__(self.folder)
-        view_roles = getattr(view, '__roles__', None)
-        self.failIf(view_roles is None)
-        self.failIf(view_roles == ())
-        self.assertEquals(view_roles, ('Manager',))
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SecurityTest))
-    suite.addTest(unittest.makeSuite(PageSecurityTest))
     return suite
 
 if __name__ == '__main__':

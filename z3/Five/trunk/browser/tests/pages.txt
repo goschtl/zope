@@ -172,6 +172,32 @@ Test pages registered through the <five:pagesFromDirectory /> directive:
   </html>
 
 
+Security
+--------
+
+Test security on a low level (functional pages test has high-level
+security tests).  Let's manually look up a protected view:
+
+  >>> from Products.Five.traversable import FakeRequest
+  >>> from zope.app import zapi
+  >>> request = FakeRequest()
+  >>> view = zapi.getView(self.folder.testoid, 'eagle.txt', request)
+
+It's protecting the object with the permission, and not the attribute,
+so we get ('',) instead of ('eagle',):
+
+  >>> getattr(view, '__ac_permissions__')
+  (('View management screens', ('',)),)
+
+Wrap into an acquisition so that imPermissionRole objects can be
+evaluated. __roles__ is a imPermissionRole object:
+
+  >>> view = view.__of__(self.folder.testoid)
+  >>> view_roles = getattr(view, '__roles__', None)
+  >>> view_roles
+  ('Manager',)
+
+
 Other
 -----
 
