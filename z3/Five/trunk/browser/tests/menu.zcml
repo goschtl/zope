@@ -20,6 +20,15 @@
       permission="zope2.Public"
       />
 
+  <browser:menuItem
+      for="OFS.interfaces.IFolder"
+      menu="testmenu"
+      title="Protected Test Menu Item"
+      action="seagull.html"
+      description="This is a protected test menu item"
+      permission="zope2.ViewManagementScreens"
+      />
+
   <browser:menuItems
       for="OFS.interfaces.IFolder"
       menu="testmenu">
@@ -38,15 +47,31 @@
           permission="zope2.Public"
           />
 
+      <menuItem
+          title="Protected Test Menu Item 2"
+          action="falcon.html"
+          description="This is a protected test menu item"
+          permission="zope2.ViewManagementScreens"
+          />
+
   </browser:menuItems>
 
   <!-- page in a menu -->
   <browser:page
       for="OFS.interfaces.IFolder"
       template="cockatiel.pt"
-      name="cockatiel_menu.html"
+      name="cockatiel_menu_public.html"
+      permission="zope2.Public"
+      title="Page in a menu (public)"
+      menu="testmenu"
+      />
+
+  <browser:page
+      for="OFS.interfaces.IFolder"
+      template="cockatiel.pt"
+      name="cockatiel_menu_protected.html"
       permission="zope2.ViewManagementScreens"
-      title="A page based entry"
+      title="Page in a menu (protected)"
       menu="testmenu"
       />
 
