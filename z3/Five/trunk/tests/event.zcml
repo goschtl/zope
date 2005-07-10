@@ -3,7 +3,7 @@
 
   <!-- subscribe to all events -->
   <five:sendEvents
-      class=".simplecontent.SimpleContent"
+      class="Products.Five.testing.simplecontent.SimpleContent"
       />
 
   <subscriber

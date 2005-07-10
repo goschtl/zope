@@ -10,7 +10,7 @@ some:
 
 Let's also add one of our stub objects to play with:
 
-  >>> from Products.Five.tests.simplecontent import manage_addSimpleContent
+  >>> from Products.Five.testing.simplecontent import manage_addSimpleContent
   >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
 
 

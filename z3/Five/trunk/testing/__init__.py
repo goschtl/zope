@@ -16,6 +16,7 @@
 $Id$
 """
 from Products.Five.testing.restricted import RestrictedPythonTestCase
+
 from Products.Five.testing.folder import FiveTraversableFolder
 from Products.Five.testing.folder import manage_addFiveTraversableFolder
 from Products.Five.testing.folder import NoVerifyPasteFolder

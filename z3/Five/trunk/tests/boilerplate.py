@@ -29,8 +29,8 @@ from Products.Five import zcml
 # uncomment any of these if your test needs to deal with either
 # FiveTraversableFolder/SimpleContent/FancyContent
 #from Products.Five.testing import manage_addFiveTraversableFolder
-#from Products.Five.tests.simplecontent import manage_addSimpleContent
-#from Products.Five.tests.fancycontent import manage_addFancyContent
+#from Products.Five.testing.simplecontent import manage_addSimpleContent
+#from Products.Five.testing.fancycontent import manage_addFancyContent
 
 class BoilerPlateTest(ZopeTestCase):
 

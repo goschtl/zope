@@ -29,7 +29,7 @@ def test_traversable():
     the wrong reason: None doesn't have a docstring so BaseRequest
     raises NotFoundError.)
 
-      >>> from Products.Five.tests.simplecontent import manage_addSimpleContent
+      >>> from Products.Five.testing.simplecontent import manage_addSimpleContent
       >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
       >>> print http(r'''
       ... GET /test_folder_1_/testoid/doesntexist HTTP/1.1
@@ -49,11 +49,11 @@ def test_traversable():
       ... <redefinePermission from="zope2.Public" to="zope.Public" />
       ... 
       ... <five:traversable
-      ...     class="Products.Five.tests.fancycontent.FancyContent"
+      ...     class="Products.Five.testing.fancycontent.FancyContent"
       ...     />
       ... 
       ... <browser:page
-      ...     for="Products.Five.tests.fancycontent.IFancyContent"
+      ...     for="Products.Five.testing.fancycontent.IFancyContent"
       ...     class="Products.Five.browser.tests.pages.FancyView"
       ...     attribute="view"
       ...     name="fancy"
@@ -65,7 +65,7 @@ def test_traversable():
       >>> from Products.Five import zcml
       >>> zcml.load_string(configure_zcml)
 
-      >>> from Products.Five.tests.fancycontent import manage_addFancyContent
+      >>> from Products.Five.testing.fancycontent import manage_addFancyContent
       >>> info = manage_addFancyContent(self.folder, 'fancy', '')
 
     In the following test we let the original __bobo_traverse__ method

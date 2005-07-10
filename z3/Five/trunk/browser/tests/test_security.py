@@ -28,7 +28,7 @@ import Products.Five.browser.tests
 from Products.Five import zcml, BrowserView
 from Products.Five.testing import RestrictedPythonTestCase
 from Products.Five.testing import manage_addFiveTraversableFolder
-from Products.Five.tests.simplecontent import manage_addSimpleContent
+from Products.Five.testing.simplecontent import manage_addSimpleContent
 
 view_names = [
     'eagle.txt',
