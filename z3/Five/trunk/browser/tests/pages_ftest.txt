@@ -1,7 +1,18 @@
 Functional Browser Pages Test
 =============================
 
-This test tests publishing aspects of browser pages.
+This test tests publishing aspects of browser pages.  Let's register
+some:
+
+  >>> import Products.Five.browser.tests
+  >>> from Products.Five import zcml
+  >>> zcml.load_config('pages.zcml', package=Products.Five.browser.tests)
+
+Let's also add one of our stub objects to play with:
+
+  >>> from Products.Five.tests.simplecontent import manage_addSimpleContent
+  >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
+
 
 Docstrings
 ----------
@@ -10,39 +21,6 @@ In Zope 2, objects normally have to have a docstring in order to be
 published.  This crazy requirement luckily isn't true for Zope 3, so
 it should be possible to write docstring-less view classes that are
 still published through ZPublisher.
-
-Let's register three different docstring-less callables for views:
-
-  >>> configure_zcml = """
-  ... <configure xmlns="http://namespaces.zope.org/zope"
-  ...            xmlns:browser="http://namespaces.zope.org/browser">
-  ...   <redefinePermission from="zope2.Public" to="zope.Public" />
-  ...   <browser:pages
-  ...       for="Products.Five.tests.simplecontent.ISimpleContent"
-  ...       class="Products.Five.browser.tests.pages.NoDocstringView"
-  ...       permission="zope2.Public">
-  ...     <browser:page
-  ...         name="nodoc-method"
-  ...         attribute="method"
-  ...         />
-  ...     <browser:page
-  ...         name="nodoc-function"
-  ...         attribute="function"
-  ...         />
-  ...     <browser:page
-  ...         name="nodoc-object"
-  ...         attribute="object"
-  ...         />
-  ...   </browser:pages>
-  ... </configure>"""
-
-  >>> from Products.Five import zcml
-  >>> zcml.load_string(configure_zcml)
-
-Now let's add a stub object that we registered the view for:
-
-  >>> from Products.Five.tests.simplecontent import manage_addSimpleContent
-  >>> manage_addSimpleContent(self.folder, 'testoid', 'Testoid')
 
 We see that even though the callables have no docstring, they are
 published nevertheless:
@@ -67,3 +45,77 @@ published nevertheless:
   HTTP/1.1 200 OK
   ...
   No docstring
+
+
+Security
+--------
+
+Browser pages need to be protected with a permission.  Let's test
+those; we start by adding two users:
+
+  >>> uf = self.folder.acl_users
+  >>> uf._doAddUser('viewer', 'secret', [], [])
+  >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
+
+  >>> protected_view_names = [
+  ...     'eagle.txt', 'falcon.html', 'owl.html', 'flamingo.html',
+  ...     'condor.html', 'protectededitform.html']
+  >>> 
+  >>> public_view_names = [
+  ...     'public_attribute_page',
+  ...     'public_template_page',
+  ...     'public_template_class_page',
+  ...     'nodoc-method', 'nodoc-function', 'nodoc-object',
+  ...     'dirpage1', 'dirpage2']
+  >>> 
+  >>> ViewManagementScreens = 'View management screens'
+
+As a normal user we shouldn't get to see those pages protected with
+the 'View management screens' permission.  Thus we expect a 401
+Unauthorized:
+
+  >>> for view_name in protected_view_names:
+  ...     response = self.publish('/test_folder_1_/testoid/%s' % view_name,
+  ...                             basic='viewer:secret')
+  ...     status = response.getStatus()
+  ...     self.failUnless(status == 401, (status, 401, view_name))
+
+The same should apply for the user if he has all other permissions
+except 'View management screens':
+
+  >>> permissions = self.folder.possible_permissions()
+  >>> permissions.remove(ViewManagementScreens)
+  >>> self.folder._addRole('Viewer')
+  >>> self.folder.manage_role('Viewer', permissions)
+  >>> self.folder.manage_addLocalRoles('viewer', ['Viewer'])
+
+  >>> for view_name in protected_view_names:
+  ...     response = self.publish('/test_folder_1_/testoid/%s' % view_name,
+  ...                             basic='viewer:secret')
+  ...     status = response.getStatus()
+  ...     self.failUnless(status == 401, (status, 401, view_name))
+
+If we grant 'View management screens' now, the protected views should
+become viewable:
+
+  >>> self.folder.manage_role('Viewer', [ViewManagementScreens])
+  >>> for view_name in protected_view_names:
+  ...     response = self.publish('/test_folder_1_/testoid/%s' % view_name,
+  ...                             basic='viewer:secret')
+  ...     status = response.getStatus()
+  ...     self.failUnless(status == 200, (status, 200, view_name))
+
+Managers should always be able to view anything, including proctected
+stuff:
+
+  >>> for view_name in protected_view_names:
+  ...     response = self.publish('/test_folder_1_/testoid/%s' % view_name,
+  ...                             basic='manager:r00t')
+  ...     self.assertEqual(response.getStatus(), 200)
+
+All public views should always be accessible by anyone:
+
+  >>> for view_name in public_view_names:
+  ...     response = self.publish('/test_folder_1_/testoid/%s' % view_name)
+  ...     status = response.getStatus()
+  ...     self.failUnless(status == 200, (status, 200, view_name))
