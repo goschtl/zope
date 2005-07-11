@@ -44,6 +44,10 @@ Restructuring
 Bugfixes
 --------
 
+* zope.security.checkPermission now behaves exactly like
+  Five.security.checkPermission (in fact, the former now calls the
+  latter through the indirection of Zope 3 security policies).
+
 * Fixed some issues with bridged interfaces: Bases and Methods were not
   bridged correctly. extends() was never True.
 
