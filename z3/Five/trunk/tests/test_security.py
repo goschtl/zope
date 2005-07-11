@@ -165,6 +165,39 @@ def test_checkPermission():
 
       >>> checkPermission('notapermission', self.folder)
       False
+
+
+    In addition to using Five's ``checkPermission`` function directly,
+    we also expect the same behaviour when we use Zope 3's
+    zope.security.checkPermission function.  Code from within Zope 3
+    will use that and therefore it should work transparently.  For
+    that to work, a new "interaction" needs to be started:
+
+      >>> from Products.Five.security import newInteraction
+      >>> newInteraction()
+
+    a) zope2.Public (which should always be available to everyone)
+
+      >>> from zope.security import checkPermission
+      >>> checkPermission('zope2.Public', self.folder)
+      True
+
+    b) zope2.Private (which should never available to anyone)
+
+      >>> checkPermission('zope.Private', self.folder)
+      False
+      >>> checkPermission('zope2.Private', self.folder)
+      False
+
+    Any other standard Zope 2 permission will also resolve correctly:
+
+      >>> checkPermission('zope2.AccessContentsInformation', self.folder)
+      True
+
+    Invalid permissions will obviously result in a negative response:
+
+      >>> checkPermission('notapermission', self.folder)
+      False
     """
 
 def test_suite():
