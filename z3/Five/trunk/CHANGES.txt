@@ -44,14 +44,19 @@ Restructuring
 Bugfixes
 --------
 
-* zope.security.checkPermission now behaves exactly like
-  Five.security.checkPermission (in fact, the former now calls the
-  latter through the indirection of Zope 3 security policies).
+* The deprecated get_transaction method is no longer used in Zope 2.8.
+
+Five 1.0.2 (2005-07-12)
+=======================
+
+This version is also included in Zope 2.8.1
 
 * Fixed some issues with bridged interfaces: Bases and Methods were not
   bridged correctly. extends() was never True.
 
-* The deprecated get_transaction method is no longer used in Zope 2.8.
+* zope.security.checkPermission now behaves exactly like
+  Five.security.checkPermission (in fact, the former now calls the
+  latter through the indirection of Zope 3 security policies).
 
 * Fixed a bug with resource directories.  Resources within those were
   not rendering their absolute URL correctly.
@@ -59,7 +64,7 @@ Bugfixes
 Five 1.0.1 (2005-05-31)
 =======================
 
-This version is also included in Zope 2.8.
+This version is also included in Zope 2.8.0
 
 * Changed license headers to the ones used in the Zope.org repository.
   This makes merging between the main development line of Five (hosted
