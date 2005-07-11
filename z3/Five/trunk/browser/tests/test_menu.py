@@ -26,7 +26,7 @@ def test_menu():
     Before we can start we need to set up a few things.  For menu
     configuration, we have to start a new interaction:
 
-      >>> from Products.Five.traversable import newInteraction
+      >>> from Products.Five.security import newInteraction
       >>> newInteraction()
 
       >>> import Products.Five.browser.tests
@@ -75,8 +75,7 @@ def test_menu():
         'selected': '',
         'title': u'Test Menu Item 3'}]
 
-    Let's create a manager user account and log in.  We should get the
-    protected menu items now:
+    Let's create a manager user account and log in.
 
       >>> uf = self.folder.acl_users
       >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
@@ -86,24 +85,48 @@ def test_menu():
       >>> menu = globalBrowserMenuService.getMenu(
       ...     'testmenu', self.folder, request)
 
-
-    XXX This should really yield 7 menu items here (4 public ones + 3
-    protected ones).  The problem is this: GlobalBrowserMenuService
-    uses zope.security.management.checkPermission to see whether we're
-    qualified to see a menu item.  That function uses the
-    interaction's checkPermission method.  We thought that we could
-    register getSecurityManager() as an interaction, but that expects
-    a Zope 2 permission name whereas GlobalBrowserMenuService sends a
-    Zope 3 permission id.
-
-    TODO possible fix: register menu items with the permission title,
-    not permission id.  Another, probably more thorough option:
-    decorate getSecurityManager()'s checkPermission method with one
-    that does the conversion between zope 3 permission id and zope 2
-    permission title.
+    We should get the protected menu items now:
 
       >>> len(menu)
-      4
+      7
+
+      >>> menu.sort(lambda x, y: cmp(x['title'], y['title']))
+      >>> pprint(menu)
+      [{'action': '@@cockatiel_menu_protected.html',
+        'description': '',
+        'extra': None,
+        'selected': '',
+        'title': u'Page in a menu (protected)'},
+       {'action': '@@cockatiel_menu_public.html',
+       'description': '',
+       'extra': None,
+       'selected': '',
+       'title': u'Page in a menu (public)'},
+      {'action': u'seagull.html',
+       'description': u'This is a protected test menu item',
+       'extra': None,
+       'selected': '',
+       'title': u'Protected Test Menu Item'},
+      {'action': u'falcon.html',
+       'description': u'This is a protected test menu item',
+       'extra': None,
+       'selected': '',
+       'title': u'Protected Test Menu Item 2'},
+      {'action': u'seagull.html',
+       'description': u'This is a test menu item',
+       'extra': None,
+       'selected': '',
+       'title': u'Test Menu Item'},
+      {'action': u'parakeet.html',
+       'description': u'This is a test menu item',
+       'extra': None,
+       'selected': '',
+        'title': u'Test Menu Item 2'},
+      {'action': u'falcon.html',
+       'description': u'This is a test menu item',
+       'extra': None,
+       'selected': '',
+       'title': u'Test Menu Item 3'}]
     """
 
 def test_suite():
