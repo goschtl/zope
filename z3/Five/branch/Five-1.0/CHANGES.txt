@@ -2,6 +2,12 @@
 Five Changes
 ============
 
+Five 1.0.2 (2005-07-12)
+=======================
+
+* Fixed some issues with bridged interfaces: Bases and Methods were not
+  bridged correctly. extends() was never True.
+
 Five 1.0.1 (2005-05-31)
 =======================
 
