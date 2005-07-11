@@ -77,7 +77,7 @@ Security
 
   >>> resource_names = ['cockatiel.html', 'style.css', 'pattern.png']
 
-We should get unauthorized as long as we're unauthenticated:
+We should get Unauthorized as long as we're unauthenticated:
 
   >>> for resource in resource_names:
   ...     checkUnauthorized(
