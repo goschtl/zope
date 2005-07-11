@@ -370,8 +370,8 @@ class ToolInit:
 
     def initialize(self, context):
         # Add only one meta type to the folder add list.
-        productObject=context._ProductContext__prod
-        pid=productObject.id
+        productObject = context._ProductContext__prod
+        self.product_name = productObject.id
         context.registerClass(
             meta_type = self.meta_type,
             # This is a little sneaky: we add self to the
@@ -389,7 +389,7 @@ class ToolInit:
             icon = None
         for tool in self.tools:
             tool.__factory_meta_type__ = self.meta_type
-            tool.icon = 'misc_/%s/%s' % (pid, icon)
+            tool.icon = 'misc_/%s/%s' % (self.product_name, icon)
 
 InitializeClass( ToolInit )
 
