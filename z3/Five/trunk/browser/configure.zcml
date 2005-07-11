@@ -1,6 +1,17 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser">
 
+  <serviceType
+      id="BrowserMenu"
+      interface="zope.app.publisher.interfaces.browser.IBrowserMenuService"
+      />
+
+  <service
+      serviceType="BrowserMenu"
+      permission="zope.Public"
+      component="zope.app.publisher.browser.globalbrowsermenuservice.globalBrowserMenuService"
+      />
+
   <browser:defaultView name="index.html" />
 
   <browser:page
@@ -51,6 +62,15 @@
       for="OFS.interfaces.IObjectManager"
       factory=".adding.ObjectManagerNameChooser"
       provides="zope.app.container.interfaces.INameChooser"
+      />
+
+  <!-- Menu access -->
+  <browser:page
+      for="*"
+      name="view_get_menu"
+      permission="zope.Public"
+      class=".menu.MenuAccessView"
+      allowed_interface="zope.app.publisher.interfaces.browser.IMenuAccessView"
       />
 
 </configure>
