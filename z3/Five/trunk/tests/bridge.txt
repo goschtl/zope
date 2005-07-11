@@ -11,7 +11,7 @@ interfaces from the two generations:
 
   >>> from zope.interface import Interface as Z3_Interface
   >>> from zope.interface import Attribute as Z3_Attribute
-  >>> from zope.interface import Attribute as Z3_Method
+  >>> from zope.interface.interface import Method as Z3_Method
 
 
 An empty interface
@@ -21,12 +21,40 @@ An empty interface
   ...     pass
 
   >>> from Products.Five.bridge import fromZ2Interface
-  >>> converted = fromZ2Interface(IEmpty)
+  >>> IEmptyConverted = fromZ2Interface(IEmpty)
 
-  >>> Z3_Interface.isEqualOrExtendedBy(converted)
+  >>> Z3_Interface.isEqualOrExtendedBy(IEmptyConverted)
   True
-  >>> len(converted.names())
+  >>> len(IEmptyConverted.names())
   0
+
+
+Bases
+-----
+
+  >>> class IBase(Z2_Interface):
+  ...     pass
+  >>> class IDerived(IBase):
+  ...     pass
+  >>> IBase.getBases() == (Z2_Interface,)
+  True
+  >>> IDerived.getBases() == (IBase,)
+  True
+  >>> IDerived.extends(IBase)
+  1
+  >>> IDerived.extends(IEmpty)
+  0
+
+  >>> IBaseConverted = fromZ2Interface(IBase)
+  >>> IDerivedConverted = fromZ2Interface(IDerived)
+  >>> IBaseConverted.getBases() == (Z3_Interface,)
+  True
+  >>> IDerivedConverted.getBases() == (IBaseConverted,)
+  True
+  >>> IDerivedConverted.extends(IBaseConverted)
+  True
+  >>> IDerivedConverted.extends(IEmptyConverted)
+  False
 
 
 Attributes
@@ -91,6 +119,8 @@ Methods
   'one'
   >>> one.getDoc()
   'One method.'
+  >>> one.getSignatureString()
+  '()'
 
   >>> another = converted.getDescriptionFor('another')
   >>> isinstance(another, Z3_Method)
@@ -99,6 +129,8 @@ Methods
   'another'
   >>> another.getDoc()
   'Another method, taking arguments.'
+  >>> another.getSignatureString()
+  '(arg1, arg2)'
 
 
 Invalid parameters

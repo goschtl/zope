@@ -44,6 +44,9 @@ Restructuring
 Bugfixes
 --------
 
+* Fixed some issues with bridged interfaces: Bases and Methods were not
+  bridged correctly. extends() was never True.
+
 * The deprecated get_transaction method is no longer used in Zope 2.8.
 
 * Fixed a bug with resource directories.  Resources within those were
