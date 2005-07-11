@@ -8,6 +8,10 @@ Five 1.0.2 (2005-07-12)
 * Fixed some issues with bridged interfaces: Bases and Methods were not
   bridged correctly. extends() was never True.
 
+* zope.security.checkPermission now behaves exactly like
+  Five.security.checkPermission (in fact, the former now calls the
+  latter through the indirection of Zope 3 security policies).
+
 Five 1.0.1 (2005-05-31)
 =======================
 
