@@ -14,6 +14,9 @@ This version is also included in Zope 2.8.1
   Five.security.checkPermission (in fact, the former now calls the
   latter through the indirection of Zope 3 security policies).
 
+* Fixed a bug with resource directories.  Resources within those were
+  not rendering their absolute URL correctly.
+
 Five 1.0.1 (2005-05-31)
 =======================
 
