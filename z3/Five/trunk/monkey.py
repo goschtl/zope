@@ -39,6 +39,12 @@ def monkeyPatch():
 
         HTTPRequest.__contains__ = lambda self, key: self.has_key(key)
 
+    if not hasattr(HTTPRequest, 'getURL'):
+        # BBB: for Zope 2.7, 2.8.0
+        def getURL(self):
+            return self.URL
+        HTTPRequest.getURL = getURL
+
     from Products.Five import interfaces, i18n
     interfaces.monkey()
     i18n.monkey()
