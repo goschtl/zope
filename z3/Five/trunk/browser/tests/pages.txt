@@ -172,11 +172,11 @@ Test pages registered through the <five:pagesFromDirectory /> directive:
   </html>
 
 
-Security
---------
+Low-level security
+------------------
 
-Test security on a low level (functional pages test has high-level
-security tests).  Let's manually look up a protected view:
+This tests security on a low level (functional pages test has
+high-level security tests).  Let's manually look up a protected view:
 
   >>> from Products.Five.traversable import FakeRequest
   >>> from zope.app import zapi
@@ -196,6 +196,51 @@ evaluated. __roles__ is a imPermissionRole object:
   >>> view_roles = getattr(view, '__roles__', None)
   >>> view_roles
   ('Manager',)
+
+
+High-level security
+-------------------
+
+  >>> protected_view_names = [
+  ...     'eagle.txt', 'falcon.html', 'owl.html', 'flamingo.html',
+  ...     'condor.html', 'protectededitform.html']
+  >>> 
+  >>> public_view_names = [
+  ...     'public_attribute_page',
+  ...     'public_template_page',
+  ...     'public_template_class_page',
+  ...     'nodoc-method', 'nodoc-function', 'nodoc-object',
+  ...     'dirpage1', 'dirpage2']
+
+  >>> from Products.Five.testing.restricted import checkRestricted
+  >>> from Products.Five.testing.restricted import checkUnauthorized
+
+As long as we're not authenticated, we should get Unauthorized for
+protected views, but we should be able to view the public ones:
+
+  >>> self.logout()
+  >>> for view_name in protected_view_names:
+  ...     checkUnauthorized(
+  ...         self.folder,
+  ...         'context.restrictedTraverse("testoid/%s")()' % view_name)
+
+  >>> for view_name in public_view_names:
+  ...     checkRestricted(
+  ...         self.folder,
+  ...         'context.restrictedTraverse("testoid/%s")()' % view_name)
+  >>> self.login('manager')
+
+Being logged in as a manager again, we find that the protected pages
+are not accessible to us:
+
+  >>> for view_name in protected_view_names:
+  ...     checkRestricted(
+  ...         self.folder,
+  ...         'context.restrictedTraverse("testoid/%s")()' % view_name)
+
+  >>> checkRestricted(
+  ...     self.folder,
+  ...     'context.restrictedTraverse("testoid/eagle.method").eagle()')
 
 
 Other
