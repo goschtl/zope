@@ -31,7 +31,10 @@ def monkeyPatch():
     def setPresentationSkin(self, skin):
         self._presentation_skin = skin
 
+    def getURL(self):
+        return self.URL
+
     HTTPRequest.getPresentationSkin = getPresentationSkin
     HTTPRequest.setPresentationSkin = setPresentationSkin
-
     HTTPRequest.__contains__ = lambda self, key: self.has_key(key)
+    HTTPRequest.getURL = getURL
