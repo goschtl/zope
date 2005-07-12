@@ -25,6 +25,10 @@ def test_absoluteurl():
 
     First we make some preparations:
 
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config("configure.zcml", Products.Five)
+
       >>> from Products.Five.testing import manage_addFiveTraversableFolder
       >>> manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
 
@@ -78,11 +82,16 @@ def test_absoluteurl():
       ...     info
       [('name', 'test_folder_1_'), ('url', 'http://foo.bar.com')]
       [('name', 'testoid'), ('url', 'http://foo.bar.com/testoid')]
+
+
+    Clean up:
+
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':
