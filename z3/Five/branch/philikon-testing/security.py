@@ -62,7 +62,6 @@ def checkPermission(permission, object, interaction=None):
     checkPermission is guaranteed to return True if permission is
     CheckerPublic or None.
     """
-
     if (permission in ('zope.Public', 'zope2.Public') or
         permission is None or permission is CheckerPublic):
         return True
