@@ -45,6 +45,9 @@ def test_security_equivalence():
     Zope 2 can be replaced by ZCML statements without any loss of
     information.
 
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+
     We start out with two classes, ``Dummy1`` and ``Dummy2``.  They
     are identical in every way, except that ``Dummy2`` has security
     declarations and ``Dummy1`` does not.  Before we do anything, none
@@ -55,6 +58,14 @@ def test_security_equivalence():
       False
       >>> hasattr(Dummy2, '__ac_permissions__')
       False
+
+    Before we can make security declarations through ZCML, we need to
+    register the directive and the permission:
+
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('meta.zcml', Products.Five)
+      >>> zcml.load_config('permissions.zcml', Products.Five)
 
     Now we initialize the security for ``Dummy2`` and provide some
     ZCML declarations for ``Dummy1``:
@@ -70,8 +81,6 @@ def test_security_equivalence():
       ...   </content>
       ... </configure>
       ... '''
-      >>> 
-      >>> from Products.Five import zcml
       >>> zcml.load_string(configure_zcml)
 
       >>> from Globals import InitializeClass
@@ -124,10 +133,18 @@ def test_security_equivalence():
       >>> from Products.Five.security import clearSecurityInfo
       >>> clearSecurityInfo(Dummy1)
       >>> clearSecurityInfo(Dummy2)
+
+      >>> tearDown()
     """
 
 def test_checkPermission():
-    """Zope 3 has a function zope.security.checkPermission which provides
+    """
+    Test checkPermission
+
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+
+    Zope 3 has a function zope.security.checkPermission which provides
     an easy way of checking whether the currently authenticated user
     has the permission to access an object.  The function delegates to
     the security policy's checkPermission() method.
@@ -136,6 +153,11 @@ def test_checkPermission():
     a Zope2-compatible implementation.  It too uses the currently
     active security policy of Zope 2 for the actual permission
     checking.
+
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('meta.zcml', Products.Five)
+      >>> zcml.load_config('permissions.zcml', Products.Five)
 
     In the following we want to test Five's checkPermission function.
     We do that by taking the test's folder and asserting several
@@ -171,7 +193,11 @@ def test_checkPermission():
     we also expect the same behaviour when we use Zope 3's
     zope.security.checkPermission function.  Code from within Zope 3
     will use that and therefore it should work transparently.  For
-    that to work, a new "interaction" needs to be started:
+    that to work, a new Five "interaction" needs to be started (the
+    old one from placelesssetup needs to be ended first):
+
+      >>> from zope.security.management import endInteraction
+      >>> endInteraction()
 
       >>> from Products.Five.security import newInteraction
       >>> newInteraction()
@@ -198,11 +224,15 @@ def test_checkPermission():
 
       >>> checkPermission('notapermission', self.folder)
       False
+
+
+    Clean up:
+
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':
