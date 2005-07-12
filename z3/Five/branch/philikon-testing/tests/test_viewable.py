@@ -21,53 +21,66 @@ if __name__ == '__main__':
 
 def test_defaultView():
     """
-    Take a class Foo and an interface I1::
+    Testing default view functionality
+
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+
+    Take a class Foo and an interface IFoo:
 
       >>> class Foo:
       ...     pass
 
       >>> from zope.interface import Interface
-      >>> class I1(Interface):
+      >>> class IFoo(Interface):
       ...     pass
 
-    Set up a default view for I1::
+    Set up a default view for IFoo:
 
       >>> from zope.app import zapi
       >>> pres = zapi.getGlobalService('Presentation')
       >>> from zope.publisher.interfaces.browser import IBrowserRequest
-      >>> pres.setDefaultViewName(I1, IBrowserRequest, u'foo.html')
 
-    and a BrowserDefault for an instance of Foo::
+    and default view names for everything and IFoo objects in particular:
+
+      >>> pres.setDefaultViewName(None, IBrowserRequest, u'index.html')
+      >>> pres.setDefaultViewName(IFoo, IBrowserRequest, u'foo.html')
+
+    Now take a BrowserDefault for an instance of Foo::
 
       >>> foo = Foo()
       >>> from Products.Five.viewable import BrowserDefault
       >>> bd = BrowserDefault(foo)
 
-    You'll see that by default the default view name is 'index.html':
-    (XXX this test really shouldn't load Five.browser/configure.zcml;
-    in fact, it doesn't need any ZCML initialization at all.)
+    For now the default view name is index.html, like we set above:
 
-      >>> request = self.app.REQUEST
+      >>> from Products.Five.traversable import FakeRequest
+      >>> request = FakeRequest()
+
       >>> obj, path = bd.defaultView(request)
       >>> obj is foo
       True
       >>> path
       [u'index.html']
 
-    unless you mark the object with I1::
+    until we mark the object with IFoo:
 
       >>> from zope.interface import directlyProvides
-      >>> directlyProvides(foo, I1)
+      >>> directlyProvides(foo, IFoo)
       >>> obj, path = bd.defaultView(request)
       >>> obj is foo
       True
       >>> path
       [u'foo.html']
+
+
+    Clean up:
+
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':
