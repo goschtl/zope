@@ -38,6 +38,9 @@ class FakeRequest:
     def has_key(self, key):
         return False
 
+    def getURL(self):
+        return "http://codespeak.net/z3/five"
+
 class Traversable:
     """A mixin to make an object traversable using an ITraverser adapter.
     """
