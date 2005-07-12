@@ -165,7 +165,7 @@ class File(Persistent):
 
         # Make sure we have an _p_jar, even if we are a new object, by
         # doing a sub-transaction commit.
-        transaction.commit(1)
+        transaction.savepoint()
 
         jar = self._p_jar
 
@@ -197,7 +197,7 @@ class File(Persistent):
             data.next = next
 
             # Now make it get saved in a sub-transaction!
-            transaction.commit(1)
+            transaction.savepoint()
 
             # Now make it a ghost to free the memory.  We
             # don't need it anymore!
