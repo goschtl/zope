@@ -28,9 +28,8 @@ def test_default_view():
 
       >>> import Products.Five.browser.tests
       >>> from Products.Five import zcml
-      >>> zcml.load_config('defaultview.zcml',
-      ...                  package=Products.Five.browser.tests)
-
+      >>> zcml.load_config("configure.zcml", Products.Five)
+      >>> zcml.load_config('defaultview.zcml', Products.Five.browser.tests)
 
     Now let's add a couple of stub objects:
 
@@ -77,15 +76,15 @@ def test_default_view():
       #...
       #Default __call__ called
 
+
     Clean up:
 
-      >>> from Products.Five.fiveconfigure import cleanUp
-      >>> cleanUp()
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, FunctionalDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import FunctionalDocTestSuite
     return FunctionalDocTestSuite()
 
 if __name__ == '__main__':
