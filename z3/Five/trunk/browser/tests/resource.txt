@@ -5,6 +5,7 @@ Set up the test fixtures:
 
   >>> import Products.Five.browser.tests
   >>> from Products.Five import zcml
+  >>> zcml.load_config("configure.zcml", Products.Five)
   >>> zcml.load_config('resource.zcml', package=Products.Five.browser.tests)
 
   >>> from Products.Five.testing import manage_addFiveTraversableFolder
@@ -106,3 +107,10 @@ We can now view them all:
   >>> for resource in dir_resource_names:
   ...     path = base % resource
   ...     checkRestricted(self.folder, 'context.restrictedTraverse("%s")' % path)
+
+
+Clean up
+--------
+
+  >>> from zope.app.tests.placelesssetup import tearDown
+  >>> tearDown()

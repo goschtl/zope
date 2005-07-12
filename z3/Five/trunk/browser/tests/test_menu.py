@@ -26,12 +26,13 @@ def test_menu():
     Before we can start we need to set up a few things.  For menu
     configuration, we have to start a new interaction:
 
-      >>> from Products.Five.security import newInteraction
-      >>> newInteraction()
-
       >>> import Products.Five.browser.tests
       >>> from Products.Five import zcml
-      >>> zcml.load_config('menu.zcml', package=Products.Five.browser.tests) 
+      >>> zcml.load_config("configure.zcml", Products.Five)
+      >>> zcml.load_config('menu.zcml', package=Products.Five.browser.tests)
+
+      >>> from Products.Five.security import newInteraction
+      >>> newInteraction()
 
     Now for some actual testing... Let's look up the menu we registered:
 
@@ -40,7 +41,6 @@ def test_menu():
       ...     globalBrowserMenuService
 
       >>> request = FakeRequest()
-      >>> request.getURL = lambda: 'http://www.infrae.com'
       >>> menu = globalBrowserMenuService.getMenu(
       ...     'testmenu', self.folder, request)
 
@@ -127,11 +127,16 @@ def test_menu():
        'extra': None,
        'selected': '',
        'title': u'Test Menu Item 3'}]
+
+
+    Clean up:
+
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':

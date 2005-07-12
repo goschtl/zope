@@ -23,6 +23,10 @@ def test_traversable():
     """
     Test the behaviour of Five-traversable classes.
 
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config("configure.zcml", Products.Five)
+
     ``SimpleContent`` is a traversable class by default.  Its fallback
     traverser should raise NotFound when traversal fails.  (Note: If
     we return None in __fallback_traverse__, this test passes but for
@@ -61,8 +65,6 @@ def test_traversable():
       ...     />
       ... 
       ... </configure>'''
-
-      >>> from Products.Five import zcml
       >>> zcml.load_string(configure_zcml)
 
       >>> from Products.Five.testing.fancycontent import manage_addFancyContent
@@ -89,15 +91,14 @@ def test_traversable():
       Fancy, fancy
 
 
-    Since we monkeyed with the class, we need to clean up now:
+    Clean up:
 
-      >>> from Products.Five.fiveconfigure import cleanUp
-      >>> cleanUp()
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, FunctionalDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import FunctionalDocTestSuite
     return FunctionalDocTestSuite()
 
 if __name__ == '__main__':

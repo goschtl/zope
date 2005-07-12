@@ -2,10 +2,8 @@
 TODO
 ====
 
-v1.1 (mid-July)
----------------
-
-- more atomic tests (philikon)
+v1.1.1 (...)
+------------
 
 - more tests for browser.adding (faassen?)
 
@@ -29,6 +27,10 @@ v2.0 (mid-August, to ship with Zope 2.9)
   support sites.  Merge Sidnei's localsitemanager branch (will
   probably have to be fixed up for component architecture refactoring
   in Zope 3.1) (sidnei)
+
+- if Zope 2.9 includes the new test runner: convert functional test
+  cases to true ftests (configuration is loaded once before all ftests
+  are run; they're run separately from the unit tests).
 
 
 v2.1 (...)

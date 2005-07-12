@@ -19,33 +19,33 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-configure_zcml = """
-<configure 
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:browser="http://namespaces.zope.org/browser"
-    xmlns:i18n="http://namespaces.zope.org/i18n"
-    >
-  <configure package="Products.Five.tests">
-    <i18n:registerTranslations directory="locales" />
-  </configure>
-
-  <configure package="Products.Five.browser.tests">
-    <browser:page
-        for="Products.Five.interfaces.IFolder"
-        template="i18n.pt"
-        name="i18n.html"
-        permission="zope2.View"
-        />
-  </configure>
-</configure>
-"""
-
-def setUp(test):
-    from Products.Five.zcml import load_string
-    load_string(configure_zcml)
-
 def test_zpt_i18n():
     """
+    Test i18n functionality in ZPTs
+
+      >>> configure_zcml = '''
+      ... <configure 
+      ...     xmlns="http://namespaces.zope.org/zope"
+      ...     xmlns:browser="http://namespaces.zope.org/browser"
+      ...     xmlns:i18n="http://namespaces.zope.org/i18n">
+      ...   <configure package="Products.Five.tests">
+      ...     <i18n:registerTranslations directory="locales" />
+      ...   </configure>
+      ...   <configure package="Products.Five.browser.tests">
+      ...     <browser:page
+      ...         for="Products.Five.interfaces.IFolder"
+      ...         template="i18n.pt"
+      ...         name="i18n.html"
+      ...         permission="zope2.View"
+      ...         />
+      ...   </configure>
+      ... </configure>'''
+
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config("configure.zcml", Products.Five)
+      >>> zcml.load_string(configure_zcml)
+
     In order to be able to traverse to the PageTemplate view, we need
     a traversable object:
 
@@ -76,13 +76,18 @@ def test_zpt_i18n():
       </body>
       </html>
       ...
+
+
+    Clean up:
+
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, FunctionalDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import FunctionalDocTestSuite
     from zope.testing.doctest import ELLIPSIS
-    return FunctionalDocTestSuite(setUp=setUp, optionflags=ELLIPSIS)
+    return FunctionalDocTestSuite(optionflags=ELLIPSIS)
 
 if __name__ == '__main__':
     framework()

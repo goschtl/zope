@@ -21,8 +21,9 @@ from zope.exceptions import NotFoundError
 from zope.component import getView, getDefaultViewName, ComponentLookupError
 from zope.interface import implements
 from zope.publisher.interfaces.browser import IBrowserRequest
-from traversable import FakeRequest
-from interfaces import IBrowserDefault
+
+from Products.Five.traversable import FakeRequest
+from Products.Five.interfaces import IBrowserDefault
 
 _marker = object
 
@@ -96,7 +97,6 @@ class Viewable:
 #     return False
 
 class BrowserDefault(object):
-
     implements(IBrowserDefault)
 
     def __init__(self, context):

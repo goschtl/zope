@@ -23,6 +23,9 @@ def test_recursion():
     """
     Test recursion
 
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+
     This test makes sure that recursion is avoided for view lookup.
     First, we need to set up a stub interface...
 
@@ -60,11 +63,15 @@ def test_recursion():
       'foo'
       >>> ob()
       'foo'
+
+
+    Clean up:
+
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':

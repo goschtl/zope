@@ -21,6 +21,17 @@ if __name__ == '__main__':
 
 def test_directive():
     """
+    Test the i18n directive
+
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+
+    First, we need to register the ZCML directive:
+
+      >>> import zope.app.i18n
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('meta.zcml', zope.app.i18n)
+
     Let's register the gettext locales using the ZCML directive:
 
       >>> configure_zcml = '''
@@ -29,8 +40,6 @@ def test_directive():
       ...            package="Products.Five.tests">
       ...   <i18n:registerTranslations directory="locales" />
       ... </configure>'''
-
-      >>> from Products.Five import zcml
       >>> zcml.load_string(configure_zcml)
 
     Now, take an arbitrary message id from that domain:
@@ -47,11 +56,15 @@ def test_directive():
       u'This is an explicit message'
       >>> translate(msg, target_language='de')
       u'Dies ist eine explizite Nachricht'
+
+
+    Clean up:
+
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':

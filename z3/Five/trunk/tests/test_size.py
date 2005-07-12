@@ -48,33 +48,36 @@ class FancyContentSize(object):
     def sizeForDisplay(self):
         return "That's not the meaning of life!"
 
-configure_zcml = """
-<configure xmlns="http://namespaces.zope.org/zope"
-           xmlns:five="http://namespaces.zope.org/five">
-
-  <five:sizable class="Products.Five.testing.simplecontent.SimpleContent" />
-  <five:sizable class="Products.Five.testing.fancycontent.FancyContent" />
-
-  <adapter
-      for="Products.Five.testing.simplecontent.ISimpleContent"
-      provides="zope.app.size.interfaces.ISized"
-      factory="Products.Five.tests.test_size.SimpleContentSize"
-      />
-  <adapter
-      for="Products.Five.testing.fancycontent.IFancyContent"
-      provides="zope.app.size.interfaces.ISized"
-      factory="Products.Five.tests.test_size.FancyContentSize"
-      />
-
-</configure>
-"""
-
-def setUpSize(self):
-    from Products.Five import zcml
-    zcml.load_string(configure_zcml)
-
 def test_size():
-    """Test size adapters
+    """
+    Test size adapters
+
+    Set up:
+
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+
+      >>> configure_zcml = '''
+      ... <configure xmlns="http://namespaces.zope.org/zope"
+      ...            xmlns:five="http://namespaces.zope.org/five">
+      ...   <five:sizable class="Products.Five.testing.simplecontent.SimpleContent" />
+      ...   <five:sizable class="Products.Five.testing.fancycontent.FancyContent" />
+      ...   <adapter
+      ...       for="Products.Five.testing.simplecontent.ISimpleContent"
+      ...       provides="zope.app.size.interfaces.ISized"
+      ...       factory="Products.Five.tests.test_size.SimpleContentSize"
+      ...       />
+      ...   <adapter
+      ...       for="Products.Five.testing.fancycontent.IFancyContent"
+      ...       provides="zope.app.size.interfaces.ISized"
+      ...       factory="Products.Five.tests.test_size.FancyContentSize"
+      ...       />
+      ... </configure>'''
+
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('meta.zcml', Products.Five)
+      >>> zcml.load_string(configure_zcml)
 
       >>> from Products.Five.testing.simplecontent import manage_addSimpleContent
       >>> from Products.Five.testing.fancycontent import manage_addFancyContent
@@ -93,14 +96,12 @@ def test_size():
 
     Clean up:
 
-      >>> from Products.Five.sizeconfigure import cleanUp
-      >>> cleanUp()
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
-    return ZopeDocTestSuite(setUp=setUpSize)
+    from Testing.ZopeTestCase import ZopeDocTestSuite
+    return ZopeDocTestSuite()
 
 if __name__ == '__main__':
     framework()

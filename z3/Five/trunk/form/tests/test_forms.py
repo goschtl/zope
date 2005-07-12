@@ -19,53 +19,54 @@ import os, sys
 if __name__ == '__main__':
     execfile(os.path.join(sys.path[0], 'framework.py'))
 
-import unittest
-from Testing.ZopeTestCase import ZopeDocTestSuite
-from Testing.ZopeTestCase import FunctionalDocFileSuite
-from Testing.ZopeTestCase import installProduct
-installProduct('Five')
-
 def test_get_widgets_for_schema_fields():
     """
-    >>> from zope.schema import Choice, TextLine
-    >>> salutation = Choice(title=u'Salutation',
-    ...                     values=("Mr.", "Mrs.", "Captain", "Don"))
-    >>> contactname = TextLine(title=u'Name')
+    Test widget lookup for schema fields
 
-    >>> from Products.Five.traversable import FakeRequest
-    >>> request = FakeRequest()
-    >>> salutation = salutation.bind(request)
-    >>> contactname = contactname.bind(request)
+    First, load the configuration files:
 
-    >>> from zope.app import zapi
-    >>> from zope.app.form.interfaces import IInputWidget
-    >>> from zope.app.form.browser.textwidgets import TextWidget
-    >>> from zope.app.form.browser.itemswidgets import DropdownWidget
+      >>> import Products.Five
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('configure.zcml', Products.Five)
 
-    >>> view1 = zapi.getViewProviding(contactname, IInputWidget, request)
-    >>> view1.__class__ == TextWidget
-    True
+    Now for some actual testing...
 
-    >>> view2 = zapi.getViewProviding(salutation, IInputWidget, request)
-    >>> view2.__class__ == DropdownWidget
-    True
+      >>> from zope.schema import Choice, TextLine
+      >>> salutation = Choice(title=u'Salutation',
+      ...                     values=("Mr.", "Mrs.", "Captain", "Don"))
+      >>> contactname = TextLine(title=u'Name')
+
+      >>> from Products.Five.traversable import FakeRequest
+      >>> request = FakeRequest()
+      >>> salutation = salutation.bind(request)
+      >>> contactname = contactname.bind(request)
+
+      >>> from zope.app import zapi
+      >>> from zope.app.form.interfaces import IInputWidget
+      >>> from zope.app.form.browser.textwidgets import TextWidget
+      >>> from zope.app.form.browser.itemswidgets import DropdownWidget
+
+      >>> view1 = zapi.getViewProviding(contactname, IInputWidget, request)
+      >>> view1.__class__ == TextWidget
+      True
+
+      >>> view2 = zapi.getViewProviding(salutation, IInputWidget, request)
+      >>> view2.__class__ == DropdownWidget
+      True
+
+    Clean up:
+
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
-def setUpForms(self):
-    uf = self.folder.acl_users
-    uf._doAddUser('viewer', 'secret', [], [])
-    uf._doAddUser('manager', 'r00t', ['Manager'], [])
-    import Products.Five.form.tests
-    from Products.Five import zcml
-    zcml.load_config('configure.zcml', package=Products.Five.form.tests)
-
 def test_suite():
+    import unittest
+    from Testing.ZopeTestCase import ZopeDocTestSuite, FunctionalDocFileSuite
     return unittest.TestSuite((
             ZopeDocTestSuite(),
-            FunctionalDocFileSuite(
-		'forms.txt',
-		package="Products.Five.form.tests",
-		setUp=setUpForms),
+            FunctionalDocFileSuite('forms.txt',
+                                   package="Products.Five.form.tests",),
             ))
 
 if __name__ == '__main__':

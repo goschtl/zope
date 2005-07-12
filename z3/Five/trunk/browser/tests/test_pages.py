@@ -23,7 +23,6 @@ def test_suite():
     import unittest
     from Testing.ZopeTestCase import installProduct, ZopeDocFileSuite
     from Testing.ZopeTestCase import FunctionalDocFileSuite
-    installProduct('Five')
     installProduct('PythonScripts')  # for Five.testing.restricted
     return unittest.TestSuite((
             ZopeDocFileSuite('pages.txt',

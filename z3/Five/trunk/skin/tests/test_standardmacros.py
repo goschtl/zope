@@ -22,6 +22,18 @@ if __name__ == '__main__':
 def test_standard_macros():
     """Test standard macros
 
+      >>> uf = self.folder.acl_users
+      >>> uf._doAddUser('manager', 'r00t', ['Manager'], [])
+      >>> self.login('manager')
+
+      >>> from Products.Five.testing import manage_addFiveTraversableFolder
+      >>> manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
+
+      >>> import Products.Five.skin.tests
+      >>> from Products.Five import zcml
+      >>> zcml.load_config('configure.zcml', package=Products.Five)
+      >>> zcml.load_config('configure.zcml', package=Products.Five.skin.tests)    
+
     Test macro access through our flavour of StandardMacros.  First,
     when looking up a non-existing macro, we get a KeyError:
 
@@ -58,24 +70,15 @@ def test_standard_macros():
       True
       True
 
+    Clean up:
+
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
-def setUpStandardMacros(self):
-    uf = self.folder.acl_users
-    uf._doAddUser('manager', 'r00t', ['Manager'], [])
-    self.login('manager')
-
-    from Products.Five.testing import manage_addFiveTraversableFolder
-    manage_addFiveTraversableFolder(self.folder, 'testoid', 'Testoid')
-
-    import Products.Five.skin.tests
-    from Products.Five import zcml
-    zcml.load_config('configure.zcml', package=Products.Five.skin.tests)    
-
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
-    return ZopeDocTestSuite(setUp=setUpStandardMacros)
+    from Testing.ZopeTestCase import ZopeDocTestSuite
+    return ZopeDocTestSuite()
 
 if __name__ == '__main__':
     framework()
