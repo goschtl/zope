@@ -4,8 +4,8 @@ Test events
 Before we can start, we need to set up an event subscriber that allows
 us to inspect events that will be thrown during the test:
 
-  >>> from zope.app.event.tests.placelesssetup import PlacelessSetup
-  >>> PlacelessSetup().setUp()
+  >>> from zope.app.tests.placelesssetup import setUp, tearDown
+  >>> setUp()
 
 Add a folder that doesn't verify objects on paste.  We use it as a
 test sandbox:
@@ -252,7 +252,6 @@ Finally, we need to put our stub class back the way it was before we
 monkeyed with it:
 
   >>> from Products.Five.eventconfigure import cleanUp
-
   >>> cleanUp()
 
 Now adding an object won't trigger an event anymore:
@@ -261,3 +260,7 @@ Now adding an object won't trigger an event anymore:
   >>> manage_addSimpleContent(folder, 'foo', 'Foo')
   >>> len(getEvents())
   0
+
+Finally, we need to tear down everything else (services, etc.)
+
+  >>> tearDown()
