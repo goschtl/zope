@@ -76,6 +76,12 @@ def test_zpt_i18n():
       </body>
       </html>
       ...
+
+
+    Clean up:
+
+      >>> from zope.app.tests.placelesssetup import tearDown
+      >>> tearDown()
     """
 
 def test_suite():
