@@ -149,7 +149,7 @@ function selectionError()
       </select>
     </td>
     <td>
-      <button type="button" value=" -&gt;"
+      <button name="from2toButton" type="button" value=" -&gt;"
           onclick="javascript:from2to()"
           tal:attributes="onClick string:javascript:from2to('${view/name}')"
           >&nbsp;-&gt;</button>
