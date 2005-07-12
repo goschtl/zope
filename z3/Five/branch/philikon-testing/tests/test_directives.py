@@ -23,6 +23,9 @@ def test_directives():
     """
     Test ZCML directives
 
+      >>> from zope.app.tests.placelesssetup import setUp, tearDown
+      >>> setUp()
+
     There isn't much to test here since the actual directive handlers
     are either tested in other, more specific tests, or they're
     already tested in Zope 3.  We'll just do a symbolic test of
@@ -33,7 +36,8 @@ def test_directives():
 
       >>> import Products.Five.tests
       >>> from Products.Five import zcml
-      >>> zcml.load_config('directives.zcml', package=Products.Five.tests)
+      >>> zcml.load_config('meta.zcml', Products.Five)
+      >>> zcml.load_config('directives.zcml', Products.Five.tests)
 
     Now for some testing.  Here we check whether the registered
     adapter works:
@@ -60,13 +64,11 @@ def test_directives():
 
     Clean up:
 
-      >>> from Products.Five.fiveconfigure import cleanUp
-      >>> cleanUp()
+      >>> tearDown()
     """
 
 def test_suite():
-    from Testing.ZopeTestCase import installProduct, ZopeDocTestSuite
-    installProduct('Five')
+    from Testing.ZopeTestCase import ZopeDocTestSuite
     return ZopeDocTestSuite()
 
 if __name__ == '__main__':
