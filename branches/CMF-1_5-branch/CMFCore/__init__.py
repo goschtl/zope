@@ -71,7 +71,7 @@ cmfcore_globals=globals()
 
 _CONTENT_TYPES = ( PortalFolder.PortalFolder, )
 _EXTRA_CONSTRUCTORS = ( PortalFolder.manage_addPortalFolder, )
-_FTI = ( PortalFolder.factory_type_information, )
+_FTI = PortalFolder.factory_type_information
 
 
 # BBB / FFF:  We provide CMFBTreeFolder IFF the BTreeFolder2 product is
@@ -92,7 +92,7 @@ else:
     import CMFBTreeFolder
     _CONTENT_TYPES += ( CMFBTreeFolder.CMFBTreeFolder, )
     _EXTRA_CONSTRUCTORS += ( CMFBTreeFolder.manage_addCMFBTreeFolder, )
-    _FTI += ( CMFBTreeFolder.factory_type_information, )
+    _FTI += CMFBTreeFolder.factory_type_information
 
 def initialize(context):
 
