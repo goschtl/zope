@@ -77,7 +77,7 @@ _EXTRA_CONSTRUCTORS = ( PortalFolder.manage_addPortalFolder
                       )
 
 _FTI = ( PortalFolder.factory_type_information
-       , CMFBTreeFolder.factory_type_information
+       + CMFBTreeFolder.factory_type_information
        )
 
 
