@@ -18,6 +18,7 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from datetime import datetime
+import pytz
 from zope.app.dublincore.interfaces import IZopeDublinCore
 from zope.security.proxy import removeSecurityProxy
 
@@ -28,7 +29,7 @@ def ModifiedAnnotator(event):
         # Principals that can modify objects do not necessary have permissions
         # to arbitrarily modify DC data, see issue 373
         dc = removeSecurityProxy(dc)
-        dc.modified = datetime.utcnow()
+        dc.modified = datetime.now(pytz.utc)
 
 
 def CreatedAnnotator(event):
@@ -37,6 +38,6 @@ def CreatedAnnotator(event):
         # Principals that can create objects do not necessary have permissions
         # to arbitrarily modify DC data, see issue 373
         dc = removeSecurityProxy(dc)
-        now = datetime.utcnow()
+        now = datetime.now(pytz.utc)
         dc.created = now
         dc.modified = now
