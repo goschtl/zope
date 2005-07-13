@@ -39,8 +39,6 @@ Others
 
   * 372: WidgetInputError.doc is broken
 
-  * 373: Adding objects requires permission zope.app.dublincore.change
-
   - 381: Handle migration of site instance 'securitypolicy.zcml' files
 
   * 384: Problems with permissions in zcml utility directives
