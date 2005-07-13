@@ -15,7 +15,17 @@ Features
   This also includes the detection of preferred languages.  See
   ``doc/i18n.txt`` for more information.
 
-* Support for the standard <factory /> ZCML directive was added.
+* Added support for Zope 3 -> Zope 2 interface bridging.  This
+  functionality will be part of Zope 2.9, with Five you can already
+  use it in Zope 2.7/2.8.  Since Zope 2 interfaces are rarely used and
+  their Zope 3 equivalents are more meaningful (for the Component
+  Architecture), the preferred way of dealing with interface migration
+  is to write Zope 3 interfaces and bridge them to Zope 2 ones as
+  needed.  To bridge, use the ``Interface.bridge.fromZ3Interface()``
+  function.
+
+* Support for the standard <factory />, <modulealias /> and <hook />
+  ZCML directives was added.
 
 * The default browser view name for all objects is now 'index.html',
   just as it is in Zope 3.  This means that a view by that name will
