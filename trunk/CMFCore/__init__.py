@@ -30,6 +30,7 @@ import ActionInformation
 import CookieCrumbler
 import ContentTypeRegistry
 import CachingPolicyManager
+import CMFBTreeFolder
 import utils
 
 from permissions import AddPortalFolders
@@ -66,6 +67,28 @@ FolderConstructorForm = ( 'manage_addPortalFolderForm'
                         )
 
 cmfcore_globals=globals()
+
+_CONTENT_TYPES = ( PortalFolder.PortalFolder
+                 ,  CMFBTreeFolder.CMFBTreeFolder
+                 )
+
+_EXTRA_CONSTRUCTORS = ( PortalFolder.manage_addPortalFolder
+                      ,  CMFBTreeFolder.manage_addCMFBTreeFolder
+                      )
+
+_FTI = ( PortalFolder.factory_type_information
+       , CMFBTreeFolder.factory_type_information
+       )
+
+
+# Because persistent objects may be out there which were
+# created when the module was in that product, we need
+# __module_aliases__ . 
+__module_aliases__ = ( ( 'Products.BTreeFolder2.CMFBTreeFolder'
+                       , 'Products.CMFCore.CMFBTreeFolder'
+                       )
+                     ,
+                     )
 
 def initialize(context):
 
@@ -152,11 +175,10 @@ def initialize(context):
                   ).initialize( context )
 
     utils.ContentInit( 'CMF Core Content'
-                     , content_types=( PortalFolder.PortalFolder, )
+                     , content_types=_CONTENT_TYPES
                      , permission=AddPortalFolders
-                     , extra_constructors=(
-                           PortalFolder.manage_addPortalFolder, )
-                     , fti=PortalFolder.factory_type_information
+                     , extra_constructors=_EXTRA_CONSTRUCTORS
+                     , fti=_FTI
                      ).initialize( context )
 
     # make registerHelp work with 2 directories
@@ -170,4 +192,3 @@ def initialize(context):
         help.lastRegistered = None
         context.registerHelp(directory='interfaces', clear=0)
     context.registerHelpTitle('CMF Core Help')
-
