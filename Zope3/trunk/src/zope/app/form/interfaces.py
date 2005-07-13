@@ -150,8 +150,13 @@ class IWidget(IView):
         """Set the name prefix used for the widget
 
         The widget name is used to identify the widget's data within
-        input data. For example, for HTTP forms, the widget name is
+        input data.  For example, for HTTP forms, the widget name is
         used for the form key.
+
+        It is acceptable to *reset* the prefix: set it once to read
+        values from the request, and again to redraw with a different
+        prefix but maintained state.
+                        
         """
 
 class IInputWidget(IWidget):
