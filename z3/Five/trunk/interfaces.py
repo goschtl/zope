@@ -39,7 +39,7 @@ class IMenuItemType(IInterface):
 # BBB: Zope core interfaces
 #
 # The interfaces here are only provided for backwards compatibility and will
-# be removed in Five 1.3. Please import interfaces from the corresponding Zope
+# be removed in Five 1.2. Please import interfaces from the corresponding Zope
 # package instead.
 #
 
@@ -61,26 +61,28 @@ try:
         pass
 
 except ImportError:
-    # BBB: for Zope 2.7 and 2.8.0
-    from bbb.AccessControl_interfaces import *
-    from bbb.Acquisition_interfaces import *
-    from bbb.App_interfaces import *
-    from bbb.OFS_interfaces import *
-    from bbb.webdav_interfaces import *
+    # BBB: for Zope 2.7 and 2.8
+    from Products.Five.bbb.AccessControl_interfaces import *
+    from Products.Five.bbb.Acquisition_interfaces import *
+    from Products.Five.bbb.App_interfaces import *
+    from Products.Five.bbb.OFS_interfaces import *
+    from Products.Five.bbb.webdav_interfaces import *
 
     def monkey():
         import sys
-        from bbb import AccessControl_interfaces
-        from bbb import Acquisition_interfaces
-        from bbb import App_interfaces
-        from bbb import OFS_interfaces
-        from bbb import webdav_interfaces
+        from Products.Five.bbb import AccessControl_interfaces
+        from Products.Five.bbb import Acquisition_interfaces
+        from Products.Five.bbb import App_interfaces
+        from Products.Five.bbb import OFS_interfaces
+        from Products.Five.bbb import webdav_interfaces
+        from Products.Five.bbb import z3bridge
 
         sys.modules['AccessControl.interfaces'] = AccessControl_interfaces
         sys.modules['Acquisition.interfaces'] = Acquisition_interfaces
         sys.modules['App.interfaces'] = App_interfaces
         sys.modules['OFS.interfaces'] = OFS_interfaces
         sys.modules['webdav.interfaces'] = webdav_interfaces
+        sys.modules['Interface.bridge'] = z3bridge
 
 # BBB: for old names used in Five 1.0
 IAcquisition = IAcquirer
