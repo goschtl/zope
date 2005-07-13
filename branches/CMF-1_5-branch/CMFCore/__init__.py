@@ -69,6 +69,31 @@ FolderConstructorForm = ( 'manage_addPortalFolderForm'
 
 cmfcore_globals=globals()
 
+_CONTENT_TYPES = ( PortalFolder.PortalFolder, )
+_EXTRA_CONSTRUCTORS = ( PortalFolder.manage_addPortalFolder, )
+_FTI = ( PortalFolder.factory_type_information, )
+
+
+# BBB / FFF:  We provide CMFBTreeFolder IFF the BTreeFolder2 product is
+#             available, which it is by default in Zope 2.8.0.
+try:
+    import Products.BTreeFolder2
+except ImportError:
+    pass
+else:
+    # Because persistent objects may be out there which were
+    # created when the module was in that product, we need
+    # __module_aliases__ . 
+    __module_aliases__ = ( ( 'Products.BTreeFolder2.CMFBTreeFolder'
+                           , 'Products.CMFCore.CMFBTreeFolder'
+                           )
+                         ,
+                         )
+    import CMFBTreeFolder
+    _CONTENT_TYPES += ( CMFBTreeFolder.CMFBTreeFolder, )
+    _EXTRA_CONSTRUCTORS += ( CMFBTreeFolder.manage_addCMFBTreeFolder, )
+    _FTI += ( CMFBTreeFolder.factory_type_information, )
+
 def initialize(context):
 
     utils.initializeBasesPhase2(z_bases, context)
@@ -128,11 +153,10 @@ def initialize(context):
                   ).initialize( context )
 
     utils.ContentInit( 'CMF Core Content'
-                     , content_types=( PortalFolder.PortalFolder, )
+                     , content_types=_CONTENT_TYPES
                      , permission=AddPortalFolders
-                     , extra_constructors=(
-                           PortalFolder.manage_addPortalFolder, )
-                     , fti=PortalFolder.factory_type_information
+                     , extra_constructors=_EXTRA_CONSTRUCTORS
+                     , fti=_FTI
                      ).initialize( context )
 
     # make registerHelp work with 2 directories
@@ -146,4 +170,3 @@ def initialize(context):
         help.lastRegistered = None
         context.registerHelp(directory='interfaces', clear=0)
     context.registerHelpTitle('CMF Core Help')
-

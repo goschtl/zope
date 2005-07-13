@@ -1,3 +1,10 @@
+After CMF 1.5.2beta2
+
+    - CMFCore/CMFBTreeFolder.py:  Moved here from Zope core's
+      Products/BTreeFolder2;  conditional import, with module alias, into
+      __init__.py, for compatibility with Zope 2.7;  2.8.0 has BTreeFolder2
+      in the core (see http://www.zope.org/Collectors/Zope/1813).
+
 CMF 1.5.2beta2 (2005/07/08)
 
   Features Added
