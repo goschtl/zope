@@ -568,8 +568,8 @@ We can get the selected values:
   >>> widget.getInputValue()
   ['tabby', 'tiger', 'tom']
 
-We now see the values we selected.  We also have chackboxes and
-buttons that allow is to remove selections:
+We now see the values we selected.  We also have checkboxes and
+buttons that allow us to remove selections:
 
   >>> request.form['field.pets.displayed'] = u'y'
   >>> request.form['field.pets'] = [u'dGFiYnk=', u'dGlnZXI=', u'dG9t']
