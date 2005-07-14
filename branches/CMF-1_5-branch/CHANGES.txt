@@ -1,10 +1,14 @@
 After CMF 1.5.2beta2
 
+  Bugs Fixed
+
     - CMFUid/UniqueIdGeneratorTool.py: Replaced the old BTree.Length.Length
       implementation by a simple counter. Using a BTree.Length.Length object
       as counter may have caused setting the same unique id to multiple 
       objects under high load. The tools counter gets automigrated on the 
       first access.
+
+  Others
 
     - CMFCore/CMFBTreeFolder.py:  Moved here from Zope core's
       Products/BTreeFolder2;  conditional import, with module alias, into
