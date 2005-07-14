@@ -1,7 +1,7 @@
 # Authors: David Goodger; Ueli Schlaepfer
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# Revision: $Revision: 1645 $
+# Date: $Date: 2003-08-27 22:50:43 +0200 (Wed, 27 Aug 2003) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -28,6 +28,7 @@ class Reader(Component):
     """
 
     component_type = 'reader'
+    config_section = 'readers'
 
     def __init__(self, parser=None, parser_name='restructuredtext'):
         """

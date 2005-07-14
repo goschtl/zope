@@ -1,7 +1,7 @@
 # Authors: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:07 $
+# Revision: $Revision: 1645 $
+# Date: $Date: 2003-08-27 22:50:43 +0200 (Wed, 27 Aug 2003) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -18,6 +18,9 @@ class Writer(writers.Writer):
 
     supported = ('pprint', 'pformat', 'pseudoxml')
     """Formats this writer supports."""
+
+    config_section = 'pseudoxml writer'
+    config_section_dependencies = ('writers',)
 
     output = None
     """Final translated form of `document`."""

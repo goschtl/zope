@@ -1,7 +1,7 @@
 # Author: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# Revision: $Revision: 3129 $
+# Date: $Date: 2005-03-26 17:21:28 +0100 (Sat, 26 Mar 2005) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -16,15 +16,6 @@ from docutils.transforms import peps, references
 from docutils.parsers import rst
 
 
-class Inliner(rst.states.Inliner):
-
-    """
-    Extend `rst.Inliner` for local PEP references.
-    """
-
-    pep_url = rst.states.Inliner.pep_url_local
-
-
 class Reader(standalone.Reader):
 
     supported = ('pep',)
@@ -36,10 +27,13 @@ class Reader(standalone.Reader):
         'reStructuredText parser) are on by default.',
         ())
 
+    config_section = 'pep reader'
+    config_section_dependencies = ('readers', 'standalone reader')
+
     default_transforms = (references.Substitutions,
+                          references.PropagateTargets,
                           peps.Headers,
                           peps.Contents,
-                          references.ChainedTargets,
                           references.AnonymousHyperlinks,
                           references.IndirectHyperlinks,
                           peps.TargetNotes,
@@ -49,7 +43,7 @@ class Reader(standalone.Reader):
 
     settings_default_overrides = {'pep_references': 1, 'rfc_references': 1}
 
-    inliner_class = Inliner
+    inliner_class = rst.states.Inliner
 
     def __init__(self, parser=None, parser_name=None):
         """`parser` should be ``None``."""

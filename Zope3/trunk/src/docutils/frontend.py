@@ -1,7 +1,7 @@
 # Author: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:04 $
+# Revision: $Revision: 3358 $
+# Date: $Date: 2005-05-21 02:00:25 +0200 (Sat, 21 May 2005) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -9,10 +9,21 @@ Command-line and common processing for Docutils front-end tools.
 
 Exports the following classes:
 
-- `OptionParser`: Standard Docutils command-line processing.
-- `Values`: Runtime settings; objects are simple structs
-  (``object.attribute``).
-- `ConfigParser`: Standard Docutils config file processing.
+* `OptionParser`: Standard Docutils command-line processing.
+* `Option`: Customized version of `optparse.Option`; validation support.
+* `Values`: Runtime settings; objects are simple structs
+  (``object.attribute``).  Supports cumulative list settings (attributes).
+* `ConfigParser`: Standard Docutils config file processing.
+
+Also exports the following functions:
+
+* Option callbacks: `store_multiple`, `read_config_file`.
+* Setting validators: `validate_encoding`,
+  `validate_encoding_error_handler`,
+  `validate_encoding_and_error_handler`, `validate_boolean`,
+  `validate_threshold`, `validate_colon_separated_string_list`,
+  `validate_dependency_file`.
+* `make_paths_absolute`.
 """
 
 __docformat__ = 'reStructuredText'
@@ -21,17 +32,19 @@ import os
 import os.path
 import sys
 import types
+import copy
+import warnings
 import ConfigParser as CP
 import codecs
 import docutils
 import optparse
-from optparse import Values, SUPPRESS_HELP
+from optparse import SUPPRESS_HELP
 
 
 def store_multiple(option, opt, value, parser, *args, **kwargs):
     """
     Store multiple values in `parser.values`.  (Option callback.)
-    
+
     Store `None` for each attribute named in `args`, and store the value for
     each key (attribute name) in `kwargs`.
     """
@@ -44,51 +57,31 @@ def read_config_file(option, opt, value, parser):
     """
     Read a configuration file during option processing.  (Option callback.)
     """
-    config_parser = ConfigParser()
-    config_parser.read(value, parser)
-    settings = config_parser.get_section('options')
-    make_paths_absolute(settings, parser.relative_path_settings,
-                        os.path.dirname(value))
-    parser.values.__dict__.update(settings)
-
-def set_encoding(option, opt, value, parser):
-    """
-    Validate & set the encoding specified.  (Option callback.)
-    """
     try:
-        value = validate_encoding(option.dest, value)
-    except LookupError, error:
-        raise (optparse.OptionValueError('option "%s": %s' % (opt, error)),
-               None, sys.exc_info()[2])
-    setattr(parser.values, option.dest, value)
+        new_settings = parser.get_config_file_settings(value)
+    except ValueError, error:
+        parser.error(error)
+    parser.values.update(new_settings, parser)
 
-def validate_encoding(name, value):
+def validate_encoding(setting, value, option_parser,
+                      config_parser=None, config_section=None):
     try:
         codecs.lookup(value)
     except LookupError:
-        raise (LookupError('unknown encoding: "%s"' % value),
+        raise (LookupError('setting "%s": unknown encoding: "%s"'
+                           % (setting, value)),
                None, sys.exc_info()[2])
     return value
 
-def set_encoding_error_handler(option, opt, value, parser):
-    """
-    Validate & set the encoding error handler specified.  (Option callback.)
-    """
-    try:
-        value = validate_encoding_error_handler(option.dest, value)
-    except LookupError, error:
-        raise (optparse.OptionValueError('option "%s": %s' % (opt, error)),
-               None, sys.exc_info()[2])
-    setattr(parser.values, option.dest, value)
-
-def validate_encoding_error_handler(name, value):
+def validate_encoding_error_handler(setting, value, option_parser,
+                                    config_parser=None, config_section=None):
     try:
         codecs.lookup_error(value)
     except AttributeError:              # prior to Python 2.3
-        if value not in ('strict', 'ignore', 'replace'):
+        if value not in ('strict', 'ignore', 'replace', 'xmlcharrefreplace'):
             raise (LookupError(
                 'unknown encoding error handler: "%s" (choices: '
-                '"strict", "ignore", or "replace")' % value),
+                '"strict", "ignore", "replace", or "xmlcharrefreplace")' % value),
                    None, sys.exc_info()[2])
     except LookupError:
         raise (LookupError(
@@ -99,30 +92,80 @@ def validate_encoding_error_handler(name, value):
                None, sys.exc_info()[2])
     return value
 
-def set_encoding_and_error_handler(option, opt, value, parser):
+def validate_encoding_and_error_handler(
+    setting, value, option_parser, config_parser=None, config_section=None):
     """
-    Validate & set the encoding and error handler specified.  (Option callback.)
+    Side-effect: if an error handler is included in the value, it is inserted
+    into the appropriate place as if it was a separate setting/option.
     """
-    try:
-        value = validate_encoding_and_error_handler(option.dest, value)
-    except LookupError, error:
-        raise (optparse.OptionValueError('option "%s": %s' % (opt, error)),
-               None, sys.exc_info()[2])
     if ':' in value:
         encoding, handler = value.split(':')
-        setattr(parser.values, option.dest + '_error_handler', handler)
+        validate_encoding_error_handler(
+            setting + '_error_handler', handler, option_parser,
+            config_parser, config_section)
+        if config_parser:
+            config_parser.set(config_section, setting + '_error_handler',
+                              handler)
+        else:
+            setattr(option_parser.values, setting + '_error_handler', handler)
     else:
         encoding = value
-    setattr(parser.values, option.dest, encoding)
+    validate_encoding(setting, encoding, option_parser,
+                      config_parser, config_section)
+    return encoding
 
-def validate_encoding_and_error_handler(name, value):
-    if ':' in value:
-        encoding, handler = value.split(':')
-        validate_encoding_error_handler(name + '_error_handler', handler)
-    else:
-        encoding = value
-    validate_encoding(name, encoding)
+def validate_boolean(setting, value, option_parser,
+                     config_parser=None, config_section=None):
+    if isinstance(value, types.StringType):
+        try:
+            return option_parser.booleans[value.strip().lower()]
+        except KeyError:
+            raise (LookupError('unknown boolean value: "%s"' % value),
+                   None, sys.exc_info()[2])
     return value
+
+def validate_nonnegative_int(setting, value, option_parser,
+                             config_parser=None, config_section=None):
+    value = int(value)
+    if value < 0:
+        raise ValueError('negative value; must be positive or zero')
+    return value
+
+def validate_threshold(setting, value, option_parser,
+                       config_parser=None, config_section=None):
+    try:
+        return int(value)
+    except ValueError:
+        try:
+            return option_parser.thresholds[value.lower()]
+        except (KeyError, AttributeError):
+            raise (LookupError('unknown threshold: %r.' % value),
+                   None, sys.exc_info[2])
+
+def validate_colon_separated_string_list(
+    setting, value, option_parser, config_parser=None, config_section=None):
+    if isinstance(value, types.StringType):
+        value = value.split(':')
+    else:
+        last = value.pop()
+        value.extend(last.split(':'))
+    return value
+
+def validate_url_trailing_slash(
+    setting, value, option_parser, config_parser=None, config_section=None):
+    if not value:
+        return './'
+    elif value.endswith('/'):
+        return value
+    else:
+        return value + '/'
+
+def validate_dependency_file(
+    setting, value, option_parser, config_parser=None, config_section=None):
+    try:
+        return docutils.utils.DependencyList(value)
+    except IOError:
+        return docutils.utils.DependencyList(None)
 
 def make_paths_absolute(pathdict, keys, base_path=None):
     """
@@ -134,9 +177,72 @@ def make_paths_absolute(pathdict, keys, base_path=None):
     if base_path is None:
         base_path = os.getcwd()
     for key in keys:
-        if pathdict.has_key(key) and pathdict[key]:
-            pathdict[key] = os.path.normpath(
-                os.path.abspath(os.path.join(base_path, pathdict[key])))
+        if pathdict.has_key(key):
+            value = pathdict[key]
+            if isinstance(value, types.ListType):
+                value = [make_one_path_absolute(base_path, path)
+                         for path in value]
+            elif value:
+                value = make_one_path_absolute(base_path, value)
+            pathdict[key] = value
+
+def make_one_path_absolute(base_path, path):
+    return os.path.abspath(os.path.join(base_path, path))
+
+
+class Values(optparse.Values):
+
+    """
+    Updates list attributes by extension rather than by replacement.
+    Works in conjunction with the `OptionParser.lists` instance attribute.
+    """
+
+    def __init__(self, *args, **kwargs):
+        optparse.Values.__init__(self, *args, **kwargs)
+        if (not hasattr(self, 'record_dependencies')
+            or self.record_dependencies is None):
+            # Set up dependency list, in case it is needed.
+            self.record_dependencies = docutils.utils.DependencyList()
+
+    def update(self, other_dict, option_parser):
+        if isinstance(other_dict, Values):
+            other_dict = other_dict.__dict__
+        other_dict = other_dict.copy()
+        for setting in option_parser.lists.keys():
+            if (hasattr(self, setting) and other_dict.has_key(setting)):
+                value = getattr(self, setting)
+                if value:
+                    value += other_dict[setting]
+                    del other_dict[setting]
+        self._update_loose(other_dict)
+
+
+class Option(optparse.Option):
+
+    ATTRS = optparse.Option.ATTRS + ['validator', 'overrides']
+
+    def process(self, opt, value, values, parser):
+        """
+        Call the validator function on applicable settings and
+        evaluate the 'overrides' option.
+        Extends `optparse.Option.process`.
+        """
+        result = optparse.Option.process(self, opt, value, values, parser)
+        setting = self.dest
+        if setting:
+            if self.validator:
+                value = getattr(values, setting)
+                try:
+                    new_value = self.validator(setting, value, parser)
+                except Exception, error:
+                    raise (optparse.OptionValueError(
+                        'Error in option "%s":\n    %s: %s'
+                        % (opt, error.__class__.__name__, error)),
+                           None, sys.exc_info()[2])
+                setattr(values, setting, new_value)
+            if self.overrides:
+                setattr(values, self.overrides, None)
+        return result
 
 
 class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
@@ -151,11 +257,22 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
     are restrict to using long options.
     """
 
+    standard_config_files = [
+        '/etc/docutils.conf',           # system-wide
+        './docutils.conf',              # project-specific
+        '~/.docutils']                  # user-specific
+    """Docutils configuration files, using ConfigParser syntax.  Filenames
+    will be tilde-expanded later.  Later files override earlier ones."""
+
     threshold_choices = 'info 1 warning 2 error 3 severe 4 none 5'.split()
     """Possible inputs for for --report and --halt threshold values."""
 
     thresholds = {'info': 1, 'warning': 2, 'error': 3, 'severe': 4, 'none': 5}
     """Lookup table for --report and --halt threshold values."""
+
+    booleans={'1': 1, 'on': 1, 'yes': 1, 'true': 1,
+              '0': 0, 'off': 0, 'no': 0, 'false': 0, '': 0}
+    """Lookup table for boolean configuration file settings."""
 
     if hasattr(codecs, 'backslashreplace_errors'):
         default_error_encoding_error_handler = 'backslashreplace'
@@ -167,7 +284,8 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
         None,
         (('Include a "Generated by Docutils" credit and link at the end '
           'of the document.',
-          ['--generator', '-g'], {'action': 'store_true'}),
+          ['--generator', '-g'], {'action': 'store_true',
+                                  'validator': validate_boolean}),
          ('Do not include a generator credit.',
           ['--no-generator'], {'action': 'store_false', 'dest': 'generator'}),
          ('Include the date at the end of the document (UTC).',
@@ -181,7 +299,8 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
           ['--no-datestamp'], {'action': 'store_const', 'const': None,
                                'dest': 'datestamp'}),
          ('Include a "View document source" link (relative to destination).',
-          ['--source-link', '-s'], {'action': 'store_true'}),
+          ['--source-link', '-s'], {'action': 'store_true',
+                                    'validator': validate_boolean}),
          ('Use the supplied <URL> verbatim for a "View document source" '
           'link; implies --source-link.',
           ['--source-url'], {'metavar': '<URL>'}),
@@ -204,27 +323,35 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
          ('Enable backlinks from footnotes and citations to their '
           'references.  This is the default.',
           ['--footnote-backlinks'],
-          {'action': 'store_true', 'default': 1}),
+          {'action': 'store_true', 'default': 1,
+           'validator': validate_boolean}),
          ('Disable backlinks from footnotes and citations.',
           ['--no-footnote-backlinks'],
           {'dest': 'footnote_backlinks', 'action': 'store_false'}),
+         ('Disable Docutils section numbering',
+          ['--no-section-numbering'],
+          {'action': 'store_false', 'dest': 'sectnum_xform',
+           'default': 1, 'validator': validate_boolean}),
          ('Set verbosity threshold; report system messages at or higher than '
           '<level> (by name or number: "info" or "1", warning/2, error/3, '
           'severe/4; also, "none" or "5").  Default is 2 (warning).',
           ['--report', '-r'], {'choices': threshold_choices, 'default': 2,
-                               'dest': 'report_level', 'metavar': '<level>'}),
+                               'dest': 'report_level', 'metavar': '<level>',
+                               'validator': validate_threshold}),
          ('Report all system messages, info-level and higher.  (Same as '
           '"--report=info".)',
-          ['--verbose', '-v'], {'action': 'store_const', 'const': 'info',
+          ['--verbose', '-v'], {'action': 'store_const', 'const': 1,
                                 'dest': 'report_level'}),
          ('Do not report any system messages.  (Same as "--report=none".)',
-          ['--quiet', '-q'], {'action': 'store_const', 'const': 'none',
+          ['--quiet', '-q'], {'action': 'store_const', 'const': 5,
                               'dest': 'report_level'}),
          ('Set the threshold (<level>) at or above which system messages are '
-          'converted to exceptions, halting execution immediately.  Levels '
-          'as in --report.  Default is 4 (severe).',
+          'converted to exceptions, halting execution immediately by '
+          'exiting (or propagating the exception if --traceback set).  '
+          'Levels as in --report.  Default is 4 (severe).',
           ['--halt'], {'choices': threshold_choices, 'dest': 'halt_level',
-                       'default': 4, 'metavar': '<level>'}),
+                       'default': 4, 'metavar': '<level>',
+                       'validator': validate_threshold}),
          ('Same as "--halt=info": halt processing at the slightest problem.',
           ['--strict'], {'action': 'store_const', 'const': 'info',
                          'dest': 'halt_level'}),
@@ -232,48 +359,76 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
           'system messages (at or above <level>) were generated.  Levels as '
           'in --report.  Default is 5 (disabled).  Exit status is the maximum '
           'system message level plus 10 (11 for INFO, etc.).',
-          ['--exit'], {'choices': threshold_choices, 'dest': 'exit_level',
-                       'default': 5, 'metavar': '<level>'}),
-         ('Report debug-level system messages.',
-          ['--debug'], {'action': 'store_true'}),
-         ('Do not report debug-level system messages.',
+          ['--exit-status'], {'choices': threshold_choices,
+                              'dest': 'exit_status_level',
+                              'default': 5, 'metavar': '<level>',
+                              'validator': validate_threshold}),
+         ('Report debug-level system messages and generate diagnostic output.',
+          ['--debug'], {'action': 'store_true', 'validator': validate_boolean}),
+         ('Do not report debug-level system messages or generate diagnostic '
+          'output.',
           ['--no-debug'], {'action': 'store_false', 'dest': 'debug'}),
          ('Send the output of system messages (warnings) to <file>.',
           ['--warnings'], {'dest': 'warning_stream', 'metavar': '<file>'}),
-         ('Specify the encoding of input text.  Default is locale-dependent.',
+         ('Enable Python tracebacks when halt-level system messages and '
+          'other exceptions occur.  Useful for debugging, and essential for '
+          'issue reports.',
+          ['--traceback'], {'action': 'store_true', 'default': None,
+                            'validator': validate_boolean}),
+         ('Disable Python tracebacks when errors occur; report just the error '
+          'instead.  This is the default.',
+          ['--no-traceback'], {'dest': 'traceback', 'action': 'store_false'}),
+         ('Specify the encoding of input text.  Default is locale-dependent.  '
+          'Optionally also specify the error handler for undecodable '
+          'characters, after a colon (":"); default is "strict".  (See '
+          '"--intput-encoding-error-handler".)',
           ['--input-encoding', '-i'],
-          {'action': 'callback', 'callback': set_encoding,
-           'metavar': '<name>', 'type': 'string', 'dest': 'input_encoding'}),
+          {'metavar': '<name[:handler]>',
+           'validator': validate_encoding_and_error_handler}),
+         ('Specify the error handler for undecodable characters in '
+          'the input.  Acceptable values include "strict", "ignore", and '
+          '"replace".  Default is "strict".  '
+          'Usually specified as part of --input-encoding.',
+          ['--input-encoding-error-handler'],
+          {'default': 'strict', 'validator': validate_encoding_error_handler}),
          ('Specify the text encoding for output.  Default is UTF-8.  '
-          'Optionally also specify the encoding error handler for unencodable '
-          'characters (see "--error-encoding"); default is "strict".',
+          'Optionally also specify the error handler for unencodable '
+          'characters, after a colon (":"); default is "strict".  (See '
+          '"--output-encoding-error-handler".)',
           ['--output-encoding', '-o'],
-          {'action': 'callback', 'callback': set_encoding_and_error_handler,
-           'metavar': '<name[:handler]>', 'type': 'string',
-           'dest': 'output_encoding', 'default': 'utf-8'}),
-         (SUPPRESS_HELP,                # usually handled by --output-encoding
-          ['--output_encoding_error_handler'],
-          {'action': 'callback', 'callback': set_encoding_error_handler,
-           'type': 'string', 'dest': 'output_encoding_error_handler',
-           'default': 'strict'}),
+          {'metavar': '<name[:handler]>', 'default': 'utf-8',
+           'validator': validate_encoding_and_error_handler}),
+         ('Specify the error handler for unencodable characters in '
+          'the output.  Acceptable values include "strict", "ignore", '
+          '"replace", "xmlcharrefreplace", and '
+          '"backslashreplace" (in Python 2.3+).  Default is "strict".  '
+          'Usually specified as part of --output-encoding.',
+          ['--output-encoding-error-handler'],
+          {'default': 'strict', 'validator': validate_encoding_error_handler}),
          ('Specify the text encoding for error output.  Default is ASCII.  '
-          'Optionally also specify the encoding error handler for unencodable '
-          'characters, after a colon (":").  Acceptable values are the same '
-          'as for the "error" parameter of Python\'s ``encode`` string '
-          'method.  Default is "%s".' % default_error_encoding_error_handler,
+          'Optionally also specify the error handler for unencodable '
+          'characters, after a colon (":"); default is "%s".  (See '
+          '"--output-encoding-error-handler".)'
+          % default_error_encoding_error_handler,
           ['--error-encoding', '-e'],
-          {'action': 'callback', 'callback': set_encoding_and_error_handler,
-           'metavar': '<name[:handler]>', 'type': 'string',
-           'dest': 'error_encoding', 'default': 'ascii'}),
-         (SUPPRESS_HELP,                # usually handled by --error-encoding
-          ['--error_encoding_error_handler'],
-          {'action': 'callback', 'callback': set_encoding_error_handler,
-           'type': 'string', 'dest': 'error_encoding_error_handler',
-           'default': default_error_encoding_error_handler}),
+          {'metavar': '<name[:handler]>', 'default': 'ascii',
+           'validator': validate_encoding_and_error_handler}),
+         ('Specify the error handler for unencodable characters in '
+          'error output.  See --output-encoding-error-handler for acceptable '
+          'values.  Default is "%s".  Usually specified as part of '
+          '--error-encoding.' % default_error_encoding_error_handler,
+          ['--error-encoding-error-handler'],
+          {'default': default_error_encoding_error_handler,
+           'validator': validate_encoding_error_handler}),
          ('Specify the language of input text (ISO 639 2-letter identifier).'
           '  Default is "en" (English).',
           ['--language', '-l'], {'dest': 'language_code', 'default': 'en',
                                  'metavar': '<name>'}),
+         ('Write dependencies (caused e.g. by file inclusions) to '
+          '<file>.  Useful in conjunction with programs like "make".',
+          ['--record-dependencies'],
+          {'metavar': '<file>', 'validator': validate_dependency_file,
+           'default': None}),           # default set in Values class
          ('Read configuration settings from <file>, if it exists.',
           ['--config'], {'metavar': '<file>', 'type': 'string',
                          'action': 'callback', 'callback': read_config_file}),
@@ -281,21 +436,31 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
           ['--version', '-V'], {'action': 'version'}),
          ('Show this help message and exit.',
           ['--help', '-h'], {'action': 'help'}),
+         # Typically not useful for non-programmatical use.
+         (SUPPRESS_HELP, ['--id-prefix'], {'default': ''}),
+         (SUPPRESS_HELP, ['--auto-id-prefix'], {'default': 'id'}),
          # Hidden options, for development use only:
          (SUPPRESS_HELP, ['--dump-settings'], {'action': 'store_true'}),
          (SUPPRESS_HELP, ['--dump-internals'], {'action': 'store_true'}),
          (SUPPRESS_HELP, ['--dump-transforms'], {'action': 'store_true'}),
          (SUPPRESS_HELP, ['--dump-pseudo-xml'], {'action': 'store_true'}),
          (SUPPRESS_HELP, ['--expose-internal-attribute'],
-          {'action': 'append', 'dest': 'expose_internals'}),))
+          {'action': 'append', 'dest': 'expose_internals',
+           'validator': validate_colon_separated_string_list}),
+         (SUPPRESS_HELP, ['--strict-visitor'], {'action': 'store_true'}),
+         ))
     """Runtime settings and command-line options common to all Docutils front
     ends.  Setting specs specific to individual Docutils components are also
     used (see `populate_from_components()`)."""
 
-    settings_defaults = {'_disable_config': None}
+    settings_defaults = {'_disable_config': None,
+                         '_source': None,
+                         '_destination': None}
     """Defaults for settings that don't have command-line option equivalents."""
 
     relative_path_settings = ('warning_stream',)
+
+    config_section = 'general'
 
     version_template = '%%prog (Docutils %s)' % docutils.__version__
     """Default version message."""
@@ -307,25 +472,27 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
         ``.settings_spec`` attribute.  `defaults` is a mapping of setting
         default overrides.
         """
+
+        self.lists = {}
+        """Set of list-type settings."""
+
         optparse.OptionParser.__init__(
-            self, add_help_option=None,
+            self, option_class=Option, add_help_option=None,
             formatter=optparse.TitledHelpFormatter(width=78),
             *args, **kwargs)
         if not self.version:
             self.version = self.version_template
         # Make an instance copy (it will be modified):
         self.relative_path_settings = list(self.relative_path_settings)
-        self.populate_from_components((self,) + tuple(components))
-        defaults = defaults or {}
+        self.components = (self,) + tuple(components)
+        self.populate_from_components(self.components)
+        self.set_defaults(**(defaults or {}))
         if read_config_files and not self.defaults['_disable_config']:
-            config = ConfigParser()
-            config.read_standard_files(self)
-            config_settings = config.get_section('options')
-            make_paths_absolute(config_settings, self.relative_path_settings)
-            defaults.update(config_settings)
-        # Internal settings with no defaults from settings specifications;
-        # initialize manually:
-        self.set_defaults(_source=None, _destination=None, **defaults)
+            try:
+                config_settings = self.get_standard_config_settings()
+            except ValueError, error:
+                self.error(error)
+            self.set_defaults(**config_settings.__dict__)
 
     def populate_from_components(self, components):
         """
@@ -337,11 +504,10 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
         for component in components:
             if component is None:
                 continue
-            i = 0
             settings_spec = component.settings_spec
             self.relative_path_settings.extend(
                 component.relative_path_settings)
-            while i < len(settings_spec):
+            for i in range(0, len(settings_spec), 3):
                 title, description, option_spec = settings_spec[i:i+3]
                 if title:
                     group = optparse.OptionGroup(self, title, description)
@@ -349,35 +515,56 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
                 else:
                     group = self        # single options
                 for (help_text, option_strings, kwargs) in option_spec:
-                    group.add_option(help=help_text, *option_strings,
-                                     **kwargs)
+                    option = group.add_option(help=help_text, *option_strings,
+                                              **kwargs)
+                    if kwargs.get('action') == 'append':
+                        self.lists[option.dest] = 1
                 if component.settings_defaults:
                     self.defaults.update(component.settings_defaults)
-                i += 3
         for component in components:
             if component and component.settings_default_overrides:
                 self.defaults.update(component.settings_default_overrides)
 
+    def get_standard_config_files(self):
+        """Return list of config files, from environment or standard."""
+        try:
+            config_files = os.environ['DOCUTILSCONFIG'].split(os.pathsep)
+        except KeyError:
+            config_files = self.standard_config_files
+        return [os.path.expanduser(f) for f in config_files if f.strip()]
+
+    def get_standard_config_settings(self):
+        settings = Values()
+        for filename in self.get_standard_config_files():
+            settings.update(self.get_config_file_settings(filename), self)
+        return settings
+
+    def get_config_file_settings(self, config_file):
+        """Returns a dictionary containing appropriate config file settings."""
+        parser = ConfigParser()
+        parser.read(config_file, self)
+        base_path = os.path.dirname(config_file)
+        applied = {}
+        settings = Values()
+        for component in self.components:
+            if not component:
+                continue
+            for section in (tuple(component.config_section_dependencies or ())
+                            + (component.config_section,)):
+                if applied.has_key(section):
+                    continue
+                applied[section] = 1
+                settings.update(parser.get_section(section), self)
+        make_paths_absolute(
+            settings.__dict__, self.relative_path_settings, base_path)
+        return settings.__dict__
+
     def check_values(self, values, args):
-        if hasattr(values, 'report_level'):
-            values.report_level = self.check_threshold(values.report_level)
-        if hasattr(values, 'halt_level'):
-            values.halt_level = self.check_threshold(values.halt_level)
-        if hasattr(values, 'exit_level'):
-            values.exit_level = self.check_threshold(values.exit_level)
+        """Store positional arguments as runtime settings."""
         values._source, values._destination = self.check_args(args)
         make_paths_absolute(values.__dict__, self.relative_path_settings,
                             os.getcwd())
         return values
-
-    def check_threshold(self, level):
-        try:
-            return int(level)
-        except ValueError:
-            try:
-                return self.thresholds[level.lower()]
-            except (KeyError, AttributeError):
-                self.error('Unknown threshold: %r.' % level)
 
     def check_args(self, args):
         source = destination = None
@@ -396,54 +583,96 @@ class OptionParser(optparse.OptionParser, docutils.SettingsSpec):
                        'destination.  It will clobber the source file.')
         return source, destination
 
+    def get_default_values(self):
+        """Needed to get custom `Values` instances."""
+        return Values(self.defaults)
+
+    def get_option_by_dest(self, dest):
+        """
+        Get an option by its dest.
+
+        If you're supplying a dest which is shared by several options,
+        it is undefined which option of those is returned.
+
+        A KeyError is raised if there is no option with the supplied
+        dest.
+        """
+        for group in self.option_groups + [self]:
+            for option in group.option_list:
+                if option.dest == dest:
+                    return option
+        raise KeyError('No option with dest == %r.' % dest)
+
 
 class ConfigParser(CP.ConfigParser):
 
-    standard_config_files = (
-        '/etc/docutils.conf',               # system-wide
-        './docutils.conf',                  # project-specific
-        os.path.expanduser('~/.docutils'))  # user-specific
-    """Docutils configuration files, using ConfigParser syntax (section
-    'options').  Later files override earlier ones."""
+    old_settings = {
+        'pep_stylesheet': ('pep_html writer', 'stylesheet'),
+        'pep_stylesheet_path': ('pep_html writer', 'stylesheet_path'),
+        'pep_template': ('pep_html writer', 'template')}
+    """{old setting: (new section, new setting)} mapping, used by
+    `handle_old_config`, to convert settings from the old [options] section."""
 
-    validation = {
-        'options':
-        {'input_encoding': validate_encoding,
-         'output_encoding': validate_encoding,
-         'output_encoding_error_handler': validate_encoding_error_handler,
-         'error_encoding': validate_encoding,
-         'error_encoding_error_handler': validate_encoding_error_handler}}
-    """{section: {option: validation function}} mapping, used by
-    `validate_options`.  Validation functions take two parameters: name and
-    value.  They return a (possibly modified) value, or raise an exception."""
-
-    def read_standard_files(self, option_parser):
-        self.read(self.standard_config_files, option_parser)
+    old_warning = """
+The "[option]" section is deprecated.  Support for old-format configuration
+files may be removed in a future Docutils release.  Please revise your
+configuration files.  See <http://docutils.sf.net/docs/user/config.html>,
+section "Old-Format Configuration Files".
+"""
 
     def read(self, filenames, option_parser):
-        if type(filenames) in types.StringTypes:
+        if type(filenames) in (types.StringType, types.UnicodeType):
             filenames = [filenames]
         for filename in filenames:
             CP.ConfigParser.read(self, filename)
-            self.validate_options(filename, option_parser)
+            if self.has_section('options'):
+                self.handle_old_config(filename)
+            self.validate_settings(filename, option_parser)
 
-    def validate_options(self, filename, option_parser):
-        for section in self.validation.keys():
-            if not self.has_section(section):
-                continue
-            for option in self.validation[section].keys():
-                if self.has_option(section, option):
-                    value = self.get(section, option)
-                    validator = self.validation[section][option]
+    def handle_old_config(self, filename):
+        warnings.warn_explicit(self.old_warning, ConfigDeprecationWarning,
+                               filename, 0)
+        options = self.get_section('options')
+        if not self.has_section('general'):
+            self.add_section('general')
+        for key, value in options.items():
+            if self.old_settings.has_key(key):
+                section, setting = self.old_settings[key]
+                if not self.has_section(section):
+                    self.add_section(section)
+            else:
+                section = 'general'
+                setting = key
+            if not self.has_option(section, setting):
+                self.set(section, setting, value)
+        self.remove_section('options')
+
+    def validate_settings(self, filename, option_parser):
+        """
+        Call the validator function and implement overrides on all applicable
+        settings.
+        """
+        for section in self.sections():
+            for setting in self.options(section):
+                try:
+                    option = option_parser.get_option_by_dest(setting)
+                except KeyError:
+                    continue
+                if option.validator:
+                    value = self.get(section, setting, raw=1)
                     try:
-                        new_value = validator(option, value)
+                        new_value = option.validator(
+                            setting, value, option_parser,
+                            config_parser=self, config_section=section)
                     except Exception, error:
                         raise (ValueError(
                             'Error in config file "%s", section "[%s]":\n'
                             '    %s: %s\n        %s = %s'
                             % (filename, section, error.__class__.__name__,
-                               error, option, value)), None, sys.exc_info()[2])
-                    self.set(section, option, new_value)
+                               error, setting, value)), None, sys.exc_info()[2])
+                    self.set(section, setting, new_value)
+                if option.overrides:
+                    self.set(section, option.overrides, None)
 
     def optionxform(self, optionstr):
         """
@@ -451,21 +680,17 @@ class ConfigParser(CP.ConfigParser):
         """
         return optionstr.lower().replace('-', '_')
 
-    def get_section(self, section, raw=0, vars=None):
+    def get_section(self, section):
         """
         Return a given section as a dictionary (empty if the section
         doesn't exist).
-
-        All % interpolations are expanded in the return values, based on the
-        defaults passed into the constructor, unless the optional argument
-        `raw` is true.  Additional substitutions may be provided using the
-        `vars` argument, which must be a dictionary whose contents overrides
-        any pre-existing defaults.
-
-        The section DEFAULT is special.
         """
         section_dict = {}
         if self.has_section(section):
             for option in self.options(section):
-                section_dict[option] = self.get(section, option, raw, vars)
+                section_dict[option] = self.get(section, option, raw=1)
         return section_dict
+
+
+class ConfigDeprecationWarning(DeprecationWarning):
+    """Warning for deprecated configuration file features."""

@@ -1,8 +1,13 @@
 # Author: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# Revision: $Revision: 3184 $
+# Date: $Date: 2005-04-07 21:36:11 +0200 (Thu, 07 Apr 2005) $
 # Copyright: This module has been placed in the public domain.
+
+# New language mappings are welcome.  Before doing a new translation, please
+# read <http://docutils.sf.net/docs/howto/i18n.html>.  Two files must be
+# translated for each language: one in docutils/languages, the other in
+# docutils/parsers/rst/languages.
 
 """
 English-language mappings for language-dependent features of
@@ -13,6 +18,7 @@ __docformat__ = 'reStructuredText'
 
 
 directives = {
+      # language-dependent: fixed
       'attention': 'attention',
       'caution': 'caution',
       'danger': 'danger',
@@ -31,7 +37,11 @@ directives = {
       'epigraph': 'epigraph',
       'highlights': 'highlights',
       'pull-quote': 'pull-quote',
+      'compound': 'compound',
       #'questions': 'questions',
+      'table': 'table',
+      'csv-table': 'csv-table',
+      'list-table': 'list-table',
       #'qa': 'questions',
       #'faq': 'questions',
       'meta': 'meta',
@@ -43,9 +53,12 @@ directives = {
       'replace': 'replace',
       'unicode': 'unicode',
       'class': 'class',
+      'role': 'role',
       'contents': 'contents',
       'sectnum': 'sectnum',
       'section-numbering': 'sectnum',
+      'header': 'header',
+      'footer': 'footer',
       #'footnotes': 'footnotes',
       #'citations': 'citations',
       'target-notes': 'target-notes',
@@ -54,6 +67,7 @@ directives = {
 mapping."""
 
 roles = {
+    # language-dependent: fixed
     'abbreviation': 'abbreviation',
     'ab': 'abbreviation',
     'acronym': 'acronym',
@@ -82,6 +96,7 @@ roles = {
     'target': 'target',
     'uri-reference': 'uri-reference',
     'uri': 'uri-reference',
-    'url': 'uri-reference',}
+    'url': 'uri-reference',
+    'raw': 'raw',}
 """Mapping of English role names to canonical role names for interpreted text.
 """

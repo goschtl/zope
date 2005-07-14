@@ -1,8 +1,13 @@
-# Author: Nicola Larosa
-# Contact: docutils@tekNico.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# Author: Nicola Larosa, Lele Gaifax
+# Contact: docutils@tekNico.net, lele@seldati.it
+# Revision: $Revision: 3184 $
+# Date: $Date: 2005-04-07 21:36:11 +0200 (Thu, 07 Apr 2005) $
 # Copyright: This module has been placed in the public domain.
+
+# Beware: the italian translation of the reStructuredText documentation
+# at http://docit.bice.dyndns.org/static/ReST, in particular
+# http://docit.bice.dyndns.org/static/ReST/ref/rst/directives.html, needs
+# to be synced with the content of this file.
 
 """
 Italian-language mappings for language-dependent features of
@@ -22,18 +27,22 @@ directives = {
       'nota': 'note',
       'consiglio': 'tip',
       'avvertenza': 'warning',
-      'admonition (translation required)': 'admonition',
-      'sidebar (translation required)': 'sidebar',
+      'ammonizione': 'admonition',
+      'riquadro': 'sidebar',
       'argomento': 'topic',
-      'blocco di linee': 'line-block',
-      'parsed-literal': 'parsed-literal',
-      'rubric (translation required)': 'rubric',
-      'epigraph (translation required)': 'epigraph',
-      'highlights (translation required)': 'highlights',
-      'pull-quote (translation required)': 'pull-quote',
+      'blocco-di-righe': 'line-block',
+      'blocco-interpretato': 'parsed-literal',
+      'rubrica': 'rubric',
+      'epigrafe': 'epigraph',
+      'punti-salienti': 'highlights',
+      'estratto-evidenziato': 'pull-quote',
+      'composito': 'compound',
       #'questions': 'questions',
       #'qa': 'questions',
       #'faq': 'questions',
+      'tabella': 'table',
+      'tabella-csv': 'csv-table',
+      'tabella-elenco': 'list-table',
       'meta': 'meta',
       #'imagemap': 'imagemap',
       'immagine': 'image',
@@ -42,13 +51,40 @@ directives = {
       'grezzo': 'raw',
       'sostituisci': 'replace',
       'unicode': 'unicode',
-      'class (translation required)': 'class',
+      'classe': 'class',
+      'ruolo': 'role',
       'indice': 'contents',
+      'contenuti': 'contents',
       'seznum': 'sectnum',
-      'section-numbering': 'sectnum',
-      'target-notes': 'target-notes',
+      'sezioni-autonumerate': 'sectnum',
+      'annota-riferimenti-esterni': 'target-notes',
+      u'header (translation required)': 'header',
+      u'footer (translation required)': 'footer',
       #'footnotes': 'footnotes',
       #'citations': 'citations',
       'restructuredtext-test-directive': 'restructuredtext-test-directive'}
-"""English name to registered (in directives/__init__.py) directive name
+"""Italian name to registered (in directives/__init__.py) directive name
 mapping."""
+
+roles = {
+      'abbreviazione': 'abbreviation',
+      'acronimo': 'acronym',
+      'indice': 'index',
+      'deponente': 'subscript',
+      'esponente': 'superscript',
+      'riferimento-titolo': 'title-reference',
+      'riferimento-pep': 'pep-reference',
+      'riferimento-rfc': 'rfc-reference',
+      'enfasi': 'emphasis',
+      'forte': 'strong',
+      'letterale': 'literal',
+      'riferimento-con-nome': 'named-reference',
+      'riferimento-anonimo': 'anonymous-reference',
+      'riferimento-nota': 'footnote-reference',
+      'riferimento-citazione': 'citation-reference',
+      'riferimento-sostituzione': 'substitution-reference',
+      'destinazione': 'target',
+      'riferimento-uri': 'uri-reference',
+      'grezzo': 'raw',}
+"""Mapping of Italian role names to canonical role names for interpreted text.
+"""

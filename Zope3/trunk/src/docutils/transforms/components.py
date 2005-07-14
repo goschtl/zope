@@ -1,7 +1,7 @@
 # Author: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# Revision: $Revision: 853 $
+# Date: $Date: 2002-10-24 02:51:10 +0200 (Thu, 24 Oct 2002) $
 # Copyright: This module has been placed in the public domain.
 
 """

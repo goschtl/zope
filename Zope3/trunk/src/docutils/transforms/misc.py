@@ -1,7 +1,7 @@
 # Author: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# Revision: $Revision: 3155 $
+# Date: $Date: 2005-04-02 23:57:06 +0200 (Sat, 02 Apr 2005) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -36,22 +36,29 @@ class CallBack(Transform):
 
 class ClassAttribute(Transform):
 
+    """
+    Move the "class" attribute specified in the "pending" node into the
+    immediately following non-comment element.
+    """
+
     default_priority = 210
 
     def apply(self):
         pending = self.startnode
-        class_value = pending.details['class']
         parent = pending.parent
         child = pending
         while parent:
+            # Check for appropriate following siblings:
             for index in range(parent.index(child) + 1, len(parent)):
                 element = parent[index]
-                if isinstance(element, nodes.comment):
+                if (isinstance(element, nodes.Invisible) or
+                    isinstance(element, nodes.system_message)):
                     continue
-                element.set_class(class_value)
+                element['classes'] += pending.details['class']
                 pending.parent.remove(pending)
                 return
             else:
+                # At end of section or container; apply to sibling
                 child = parent
                 parent = parent.parent
         error = self.document.reporter.error(

@@ -1,7 +1,7 @@
 # Author: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:05 $
+# Revision: $Revision: 1645 $
+# Date: $Date: 2003-08-27 22:50:43 +0200 (Wed, 27 Aug 2003) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -16,6 +16,7 @@ from docutils import Component
 class Parser(Component):
 
     component_type = 'parser'
+    config_section = 'parsers'
 
     def parse(self, inputstring, document):
         """Override to parse `inputstring` into document tree `document`."""

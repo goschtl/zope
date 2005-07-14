@@ -1,7 +1,7 @@
 # Authors: David Goodger, Ueli Schlaepfer
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# Revision: $Revision: 3066 $
+# Date: $Date: 2005-03-21 18:33:42 +0100 (Mon, 21 Mar 2005) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -60,6 +60,7 @@ class Transform:
             document.settings.language_code)
         """Language module local to this document."""
 
+
     def apply(self):
         """Override to apply the transform to the document tree."""
         raise NotImplementedError('subclass must override this method')
@@ -76,13 +77,17 @@ class Transformer(TransformSpec):
 
     default_transforms = (universal.Decorations,
                           universal.FinalChecks,
-                          universal.Messages)
+                          universal.Messages,
+                          universal.FilterMessages)
     """These transforms are applied to all document trees."""
 
     def __init__(self, document):
         self.transforms = []
         """List of transforms to apply.  Each item is a 3-tuple:
         ``(priority string, transform class, pending node or None)``."""
+
+        self.unknown_reference_resolvers = []
+        """List of hook functions which assist in resolving references"""
 
         self.document = document
         """The `nodes.document` object this Transformer is attached to."""
@@ -149,6 +154,15 @@ class Transformer(TransformSpec):
             self.add_transforms(component.default_transforms)
             self.components[component.component_type] = component
         self.sorted = 0
+        # Setup all of the reference resolvers for this transformer. Each
+        # component of this transformer is able to register its own helper
+        # functions to help resolve references.
+        unknown_reference_resolvers = []
+        for i in components:
+            unknown_reference_resolvers.extend(i.unknown_reference_resolvers)
+        decorated_list = [(f.priority, f) for f in unknown_reference_resolvers]
+        decorated_list.sort()
+        self.unknown_reference_resolvers.extend([f[1] for f in decorated_list])
 
     def apply_transforms(self):
         """Apply all of the stored transforms, in priority order."""

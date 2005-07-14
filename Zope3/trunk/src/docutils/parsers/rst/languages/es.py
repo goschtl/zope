@@ -1,8 +1,14 @@
-# Author: Marcelo Huerta San Martín
-# Contact: mghsm@uol.com.ar
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# -*- coding: iso-8859-1 -*-
+# Author: Marcelo Huerta San Martï¿½
+# Contact: richieadler@users.sourceforge.net
+# Revision: $Revision: 3190 $
+# Date: $Date: 2005-04-08 05:06:12 +0200 (Fri, 08 Apr 2005) $
 # Copyright: This module has been placed in the public domain.
+
+# New language mappings are welcome.  Before doing a new translation, please
+# read <http://docutils.sf.net/docs/howto/i18n.html>.  Two files must be
+# translated for each language: one in docutils/languages, the other in
+# docutils/parsers/rst/languages.
 
 """
 Spanish-language mappings for language-dependent features of
@@ -36,28 +42,38 @@ directives = {
       u'epigrafe': 'epigraph',
       u'destacado': 'highlights',
       u'cita-destacada': 'pull-quote',
+      u'combinacion': 'compound',
+      u'combinaci\u00f3n': 'compound',
       #'questions': 'questions',
       #'qa': 'questions',
       #'faq': 'questions',
+      u'tabla': 'table',
+      u'tabla-vsc': 'csv-table',
+      u'tabla-csv': 'csv-table',
+      u'tabla-lista': 'list-table',
       u'meta': 'meta',
       #'imagemap': 'imagemap',
       u'imagen': 'image',
       u'figura': 'figure',
       u'incluir': 'include',
-      u'raw': 'raw',
+      u'sin-analisis': 'raw',
+      u'sin-an\u00e1lisis': 'raw',
       u'reemplazar': 'replace',
       u'unicode': 'unicode',
       u'clase': 'class',
+      u'rol': 'role',
       u'contenido': 'contents',
       u'numseccion': 'sectnum',
       u'numsecci\u00f3n': 'sectnum',
       u'numeracion-seccion': 'sectnum',
       u'numeraci\u00f3n-secci\u00f3n': 'sectnum',
       u'notas-destino': 'target-notes',
+      u'cabecera': 'header',
+      u'pie': 'footer',
       #'footnotes': 'footnotes',
       #'citations': 'citations',
       u'restructuredtext-test-directive': 'restructuredtext-test-directive'}
-"""English name to registered (in directives/__init__.py) directive name
+"""Spanish name to registered (in directives/__init__.py) directive name
 mapping."""
 
 roles = {
@@ -68,6 +84,10 @@ roles = {
     u'ac': 'acronym',
     u'indice': 'index',
     u'i': 'index',
+    u'subindice': 'subscript',
+    u'sub\u00edndice': 'subscript',
+    u'superindice': 'superscript',
+    u'super\u00edndice': 'superscript',
     u'referencia-titulo': 'title-reference',
     u'titulo': 'title-reference',
     u't': 'title-reference',
@@ -78,7 +98,7 @@ roles = {
     u'enfasis': 'emphasis',
     u'\u00e9nfasis': 'emphasis',
     u'destacado': 'strong',
-    u'literal': 'literal',
+    u'literal': 'literal',              # "literal" is also a word in Spanish :-)
     u'referencia-con-nombre': 'named-reference',
     u'referencia-anonima': 'anonymous-reference',
     u'referencia-an\u00f3nima': 'anonymous-reference',
@@ -90,6 +110,8 @@ roles = {
     u'referencia-uri': 'uri-reference',
     u'uri': 'uri-reference',
     u'url': 'uri-reference',
-    }
+    u'sin-analisis': 'raw',
+    u'sin-an\u00e1lisis': 'raw',
+}
 """Mapping of Spanish role names to canonical role names for interpreted text.
 """

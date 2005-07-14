@@ -1,7 +1,7 @@
 # Authors: David Goodger, Ueli Schlaepfer, Dmitry Jemerov
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:06 $
+# Revision: $Revision: 3199 $
+# Date: $Date: 2005-04-09 03:32:29 +0200 (Sat, 09 Apr 2005) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -33,19 +33,28 @@ class SectNum(Transform):
 
     def apply(self):
         self.maxdepth = self.startnode.details.get('depth', sys.maxint)
+        self.startvalue = self.startnode.details.get('start', 1)
+        self.prefix = self.startnode.details.get('prefix', '')
+        self.suffix = self.startnode.details.get('suffix', '')
         self.startnode.parent.remove(self.startnode)
-        self.update_section_numbers(self.document)
+        if self.document.settings.sectnum_xform:
+            self.update_section_numbers(self.document)
 
     def update_section_numbers(self, node, prefix=(), depth=0):
         depth += 1
-        sectnum = 1
+        if prefix:
+            sectnum = 1
+        else:
+            sectnum = self.startvalue
         for child in node:
             if isinstance(child, nodes.section):
                 numbers = prefix + (str(sectnum),)
                 title = child[0]
                 # Use &nbsp; for spacing:
                 generated = nodes.generated(
-                    '', '.'.join(numbers) + u'\u00a0' * 3, CLASS='sectnum')
+                    '', (self.prefix + '.'.join(numbers) + self.suffix
+                         +  u'\u00a0' * 3),
+                    classes=['sectnum'])
                 title.insert(0, generated)
                 title['auto'] = 1
                 if depth < self.maxdepth:
@@ -58,11 +67,11 @@ class Contents(Transform):
     """
     This transform generates a table of contents from the entire document tree
     or from a single branch.  It locates "section" elements and builds them
-    into a nested bullet list, which is placed within a "topic".  A title is
-    either explicitly specified, taken from the appropriate language module,
-    or omitted (local table of contents).  The depth may be specified.
-    Two-way references between the table of contents and section titles are
-    generated (requires Writer support).
+    into a nested bullet list, which is placed within a "topic" created by the
+    contents directive.  A title is either explicitly specified, taken from
+    the appropriate language module, or omitted (local table of contents).
+    The depth may be specified.  Two-way references between the table of
+    contents and section titles are generated (requires Writer support).
 
     This transform requires a startnode, which which contains generation
     options and provides the location for the generated table of contents (the
@@ -72,41 +81,25 @@ class Contents(Transform):
     default_priority = 720
 
     def apply(self):
-        topic = nodes.topic(CLASS='contents')
         details = self.startnode.details
-        if details.has_key('class'):
-            topic.set_class(details['class'])
-        title = details['title']
         if details.has_key('local'):
-            startnode = self.startnode.parent
-            # @@@ generate an error if the startnode (directive) not at
-            # section/document top-level? Drag it up until it is?
-            while not isinstance(startnode, nodes.Structural):
+            startnode = self.startnode.parent.parent
+            while not (isinstance(startnode, nodes.section)
+                       or isinstance(startnode, nodes.document)):
+                # find the ToC root: a direct ancestor of startnode
                 startnode = startnode.parent
         else:
             startnode = self.document
-            if not title:
-                title = nodes.title('', self.language.labels['contents'])
-        if title:
-            name = title.astext()
-            topic += title
-        else:
-            name = self.language.labels['contents']
-        name = nodes.fully_normalize_name(name)
-        if not self.document.has_name(name):
-            topic['name'] = name
-        self.document.note_implicit_target(topic)
-        self.toc_id = topic['id']
+        self.toc_id = self.startnode.parent['ids'][0]
         if details.has_key('backlinks'):
             self.backlinks = details['backlinks']
         else:
             self.backlinks = self.document.settings.toc_backlinks
         contents = self.build_contents(startnode)
         if len(contents):
-            topic += contents
-            self.startnode.parent.replace(self.startnode, topic)
+            self.startnode.parent.replace(self.startnode, contents)
         else:
-            self.startnode.parent.remove(self.startnode)
+            self.startnode.parent.parent.remove(self.startnode.parent)
 
     def build_contents(self, node, level=0):
         level += 1
@@ -123,15 +116,17 @@ class Contents(Transform):
             title = section[0]
             auto = title.get('auto')    # May be set by SectNum.
             entrytext = self.copy_and_filter(title)
-            reference = nodes.reference('', '', refid=section['id'],
+            reference = nodes.reference('', '', refid=section['ids'][0],
                                         *entrytext)
             ref_id = self.document.set_id(reference)
             entry = nodes.paragraph('', '', reference)
             item = nodes.list_item('', entry)
-            if self.backlinks == 'entry':
-                title['refid'] = ref_id
-            elif self.backlinks == 'top':
-                title['refid'] = self.toc_id
+            if (self.backlinks in ('entry', 'top') and title.next_node(
+                lambda n: isinstance(n, nodes.reference)) is None):
+                if self.backlinks == 'entry':
+                    title['refid'] = ref_id
+                elif self.backlinks == 'top':
+                    title['refid'] = self.toc_id
             if level < depth:
                 subsects = self.build_contents(section, level)
                 item += subsects
@@ -139,7 +134,7 @@ class Contents(Transform):
         if entries:
             contents = nodes.bullet_list('', *entries)
             if auto:
-                contents.set_class('auto-toc')
+                contents['classes'].append('auto-toc')
             return contents
         else:
             return []
@@ -154,7 +149,7 @@ class Contents(Transform):
 class ContentsFilter(nodes.TreeCopyVisitor):
 
     def get_entry_text(self):
-        return self.get_tree_copy().get_children()
+        return self.get_tree_copy().children
 
     def visit_citation_reference(self, node):
         raise nodes.SkipNode

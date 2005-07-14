@@ -54,12 +54,8 @@ class ManagerDetails(object):
       >>> import pprint
       >>> pp = pprint.PrettyPrinter(width=76)
       >>> pp.pprint(info)
-      [{'from': 0,
-        'info': u'<div class="document">\nEvolver 1</div>\n',
-        'to': 1},
-       {'from': 1,
-        'info': u'<div class="document">\nEvolver 2</div>\n',
-        'to': 2},
+      [{'info': u'<p>Evolver 1</p>\n', 'to': 1, 'from': 0},
+       {'info': u'<p>Evolver 2</p>\n', 'to': 2, 'from': 1},
        {'info': '', 'to': 3, 'from': 2}]
 
     We'd better clean up:

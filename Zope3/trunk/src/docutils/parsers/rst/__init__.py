@@ -1,7 +1,7 @@
 # Author: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:05 $
+# Revision: $Revision: 3171 $
+# Date: $Date: 2005-04-05 17:26:16 +0200 (Tue, 05 Apr 2005) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -75,6 +75,7 @@ __docformat__ = 'reStructuredText'
 import docutils.parsers
 import docutils.statemachine
 from docutils.parsers.rst import states
+from docutils import frontend
 
 
 class Parser(docutils.parsers.Parser):
@@ -87,18 +88,50 @@ class Parser(docutils.parsers.Parser):
     settings_spec = (
         'reStructuredText Parser Options',
         None,
-        (('Recognize and link to PEP references (like "PEP 258").',
+        (('Recognize and link to standalone PEP references (like "PEP 258").',
           ['--pep-references'],
-          {'action': 'store_true'}),
-         ('Recognize and link to RFC references (like "RFC 822").',
+          {'action': 'store_true', 'validator': frontend.validate_boolean}),
+         ('Base URL for PEP references '
+          '(default "http://www.python.org/peps/").',
+          ['--pep-base-url'],
+          {'metavar': '<URL>', 'default': 'http://www.python.org/peps/',
+           'validator': frontend.validate_url_trailing_slash}),
+         ('Recognize and link to standalone RFC references (like "RFC 822").',
           ['--rfc-references'],
-          {'action': 'store_true'}),
+          {'action': 'store_true', 'validator': frontend.validate_boolean}),
+         ('Base URL for RFC references (default "http://www.faqs.org/rfcs/").',
+          ['--rfc-base-url'],
+          {'metavar': '<URL>', 'default': 'http://www.faqs.org/rfcs/',
+           'validator': frontend.validate_url_trailing_slash}),
          ('Set number of spaces for tab expansion (default 8).',
           ['--tab-width'],
           {'metavar': '<width>', 'type': 'int', 'default': 8}),
          ('Remove spaces before footnote references.',
           ['--trim-footnote-reference-space'],
-          {'action': 'store_true'}),))
+          {'action': 'store_true', 'validator': frontend.validate_boolean}),
+         ('Leave spaces before footnote references.',
+          ['--leave-footnote-reference-space'],
+          {'action': 'store_false', 'dest': 'trim_footnote_reference_space',
+           'validator': frontend.validate_boolean}),
+         ('Disable directives that insert the contents of external file '
+          '("include" & "raw"); replaced with a "warning" system message.',
+          ['--no-file-insertion'],
+          {'action': 'store_false', 'default': 1,
+           'dest': 'file_insertion_enabled'}),
+         ('Enable directives that insert the contents of external file '
+          '("include" & "raw").  Enabled by default.',
+          ['--file-insertion-enabled'],
+          {'action': 'store_true', 'dest': 'file_insertion_enabled'}),
+         ('Disable the "raw" directives; replaced with a "warning" '
+          'system message.',
+          ['--no-raw'],
+          {'action': 'store_false', 'default': 1, 'dest': 'raw_enabled'}),
+         ('Enable the "raw" directive.  Enabled by default.',
+          ['--raw-enabled'],
+          {'action': 'store_true', 'dest': 'raw_enabled'}),))
+
+    config_section = 'restructuredtext parser'
+    config_section_dependencies = ('parsers',)
 
     def __init__(self, rfc2822=None, inliner=None):
         if rfc2822:
@@ -111,11 +144,10 @@ class Parser(docutils.parsers.Parser):
     def parse(self, inputstring, document):
         """Parse `inputstring` and populate `document`, a document tree."""
         self.setup_parse(inputstring, document)
-        debug = document.reporter[''].debug
         self.statemachine = states.RSTStateMachine(
               state_classes=self.state_classes,
               initial_state=self.initial_state,
-              debug=debug)
+              debug=document.reporter.debug_flag)
         inputlines = docutils.statemachine.string2lines(
               inputstring, tab_width=document.settings.tab_width,
               convert_whitespace=1)

@@ -1,8 +1,13 @@
 # Author: Nicola Larosa
 # Contact: docutils@tekNico.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:05 $
+# Revision: $Revision: 2944 $
+# Date: $Date: 2005-01-20 13:11:50 +0100 (Thu, 20 Jan 2005) $
 # Copyright: This module has been placed in the public domain.
+
+# New language mappings are welcome.  Before doing a new translation, please
+# read <http://docutils.sf.net/docs/howto/i18n.html>.  Two files must be
+# translated for each language: one in docutils/languages, the other in
+# docutils/parsers/rst/languages.
 
 """
 Italian-language mappings for language-dependent features of Docutils.
@@ -40,7 +45,7 @@ bibliographic_fields = {
       'autori': 'authors',
       'organizzazione': 'organization',
       'indirizzo': 'address',
-      'contatti': 'contact',
+      'contatto': 'contact',
       'versione': 'version',
       'revisione': 'revision',
       'status': 'status',

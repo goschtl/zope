@@ -1,7 +1,7 @@
 # Author: David Goodger
 # Contact: goodger@users.sourceforge.net
-# Revision: $Revision: 1.1 $
-# Date: $Date: 2003/07/30 20:14:07 $
+# Revision: $Revision: 3129 $
+# Date: $Date: 2005-03-26 17:21:28 +0100 (Sat, 26 Mar 2005) $
 # Copyright: This module has been placed in the public domain.
 
 """
@@ -13,7 +13,7 @@ __docformat__ = 'reStructuredText'
 
 import sys
 import docutils
-from docutils import nodes, frontend, utils
+from docutils import frontend, nodes, utils
 from docutils.writers import html4css1
 
 
@@ -21,20 +21,9 @@ class Writer(html4css1.Writer):
 
     settings_spec = html4css1.Writer.settings_spec + (
         'PEP/HTML-Specific Options',
-        'The HTML --footnote-references option is set to "brackets" by '
-        'default.',
-        (('Specify a PEP stylesheet URL, used verbatim.  Default is '
-          '--stylesheet\'s value.  If given, --pep-stylesheet overrides '
-          '--stylesheet.',
-          ['--pep-stylesheet'],
-          {'metavar': '<URL>'}),
-         ('Specify a PEP stylesheet file, relative to the current working '
-          'directory.  The path is adjusted relative to the output HTML '
-          'file.  Overrides --pep-stylesheet and --stylesheet-path.',
-          ['--pep-stylesheet-path'],
-          {'metavar': '<path>'}),
-         ('Specify a template file.  Default is "pep-html-template".',
-          ['--pep-template'],
+        None,
+        (('Specify a template file.  Default is "pep-html-template".',
+          ['--template'],
           {'default': 'pep-html-template', 'metavar': '<file>'}),
          ('Python\'s home URL.  Default is ".." (parent directory).',
           ['--python-home'],
@@ -42,14 +31,16 @@ class Writer(html4css1.Writer):
          ('Home URL prefix for PEPs.  Default is "." (current directory).',
           ['--pep-home'],
           {'default': '.', 'metavar': '<URL>'}),
-         # Workaround for SourceForge's broken Python
-         # (``import random`` causes a segfault).
+         # For testing.
          (frontend.SUPPRESS_HELP,
-          ['--no-random'], {'action': 'store_true'}),))
+          ['--no-random'],
+          {'action': 'store_true', 'validator': frontend.validate_boolean}),))
 
-    settings_default_overrides = {'footnote_references': 'brackets'}
+    relative_path_settings = (html4css1.Writer.relative_path_settings
+                              + ('template',))
 
-    relative_path_settings = ('pep_stylesheet_path', 'pep_template')
+    config_section = 'pep_html writer'
+    config_section_dependencies = ('writers', 'html4css1 writer')
 
     def __init__(self):
         html4css1.Writer.__init__(self)
@@ -58,7 +49,7 @@ class Writer(html4css1.Writer):
     def translate(self):
         html4css1.Writer.translate(self)
         settings = self.document.settings
-        template = open(settings.pep_template).read()
+        template = open(settings.template).read()
         # Substitutions dict for template:
         subs = {}
         subs['encoding'] = settings.output_encoding
@@ -82,7 +73,7 @@ class Writer(html4css1.Writer):
             subs['banner'] = random.randrange(64)
         try:
             subs['pepnum'] = '%04i' % int(pepnum)
-        except:
+        except ValueError:
             subs['pepnum'] = pepnum
         subs['title'] = header[1][1].astext()
         subs['body'] = ''.join(
@@ -93,21 +84,7 @@ class Writer(html4css1.Writer):
 
 class HTMLTranslator(html4css1.HTMLTranslator):
 
-    def get_stylesheet_reference(self, relative_to=None):
-        settings = self.settings
-        if relative_to == None:
-            relative_to = settings._destination
-        if settings.pep_stylesheet_path:
-            return utils.relative_path(relative_to,
-                                       settings.pep_stylesheet_path)
-        elif settings.pep_stylesheet:
-            return settings.pep_stylesheet
-        elif settings._stylesheet_path:
-            return utils.relative_path(relative_to, settings.stylesheet_path)
-        else:
-            return settings.stylesheet
-
     def depart_field_list(self, node):
         html4css1.HTMLTranslator.depart_field_list(self, node)
-        if node.get('class') == 'rfc2822':
+        if 'rfc2822' in node['classes']:
              self.body.append('<hr />\n')

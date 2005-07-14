@@ -1,8 +1,13 @@
 # :Author: Miroslav Vasko
 # :Contact: zemiak@zoznam.sk
-# :Revision: $Revision: 1.1 $
-# :Date: $Date: 2003/07/30 20:14:05 $
+# :Revision: $Revision: 2224 $
+# :Date: $Date: 2004-06-05 21:40:46 +0200 (Sat, 05 Jun 2004) $
 # :Copyright: This module has been placed in the public domain.
+
+# New language mappings are welcome.  Before doing a new translation, please
+# read <http://docutils.sf.net/docs/howto/i18n.html>.  Two files must be
+# translated for each language: one in docutils/languages, the other in
+# docutils/parsers/rst/languages.
 
 """
 Slovak-language mappings for language-dependent features of Docutils.
