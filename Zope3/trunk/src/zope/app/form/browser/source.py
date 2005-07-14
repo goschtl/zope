@@ -68,9 +68,15 @@ class SourceDisplayWidget(zope.app.form.Widget):
                 value = self._translate(_("SourceDisplayWidget-invalid",
                                           default="Invalid value"))
             else:
-                value = xml.sax.saxutils.escape(term.title)
+                value = self.renderTermForDisplay(term)
 
         return value
+
+    def renderTermForDisplay(self, term):
+        # Provide a rendering of `term` for display; this is not for
+        # use when generating a select list.
+        return xml.sax.saxutils.escape(term.title)
+
 
 class SourceSequenceDisplayWidget(SourceDisplayWidget):
 
@@ -93,7 +99,7 @@ class SourceSequenceDisplayWidget(SourceDisplayWidget):
                 value = self._translate(_("SourceDisplayWidget-invalid",
                                           default="Invalid value"))
             else:
-                value = xml.sax.saxutils.escape(term.title)
+                value = self.renderTermForDisplay(term)
 
             result.append(value)
 
@@ -217,7 +223,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
                               )
                 result.append('    </div>')
                 result.append('    <div class="field">')
-                result.append(u'     ' + xml.sax.saxutils.escape(term.title))
+                result.append(u'     ' + self.renderTermForDisplay(term))
                 result.append('    </div>')
                 result.append('  </div>')
                 result.append('  <input type="hidden" name="%s" value="%s">'
@@ -264,6 +270,11 @@ class SourceInputWidget(zope.app.form.InputWidget):
                name,
                apply)
             )
+
+    def renderTermForDisplay(self, term):
+        # Provide a rendering of `term` for display; this is not for
+        # use when generating a select list.
+        return xml.sax.saxutils.escape(term.title)
 
     required = property(lambda self: self.context.required)
 
@@ -409,7 +420,7 @@ class SourceListInputWidget(SourceInputWidget):
                         ' value="%s">'
                         % (self.name, cgi.escape(term.token))
                         )
-                    result.append('  ' + xml.sax.saxutils.escape(term.title))
+                    result.append('  ' + self.renderTermForDisplay(term))
                     result.append(
                         '  <input type="hidden" name="%s:list" value="%s">'
                         % (self.name, cgi.escape(term.token)))
