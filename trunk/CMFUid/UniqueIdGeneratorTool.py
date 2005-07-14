@@ -29,6 +29,9 @@ from Products.CMFUid.interfaces import IUniqueIdGenerator
 
 class UniqueIdGeneratorTool(UniqueObject, SimpleItem, ActionProviderBase):
     """Generator of unique ids.
+    
+    This is a dead simple implementation using a counter. May cause
+    ConflictErrors under high load and the values are predictable.
     """
 
     __implements__ = (
@@ -47,16 +50,21 @@ class UniqueIdGeneratorTool(UniqueObject, SimpleItem, ActionProviderBase):
     def __init__(self):
         """Initialize the generator
         """
-        # Using the Length implementation of the BTree.Length module as
-        # counter handles zodb conflicts for us.
-        self._uid_counter = Length(0)
+        # The previous ``BTrees.Length.Length`` implementation may cause 
+        # double unique ids under high load. So for the moment we just use 
+        # a simple counter.
+        self._uid_counter = 0
 
     security.declarePrivate('__call__')
     def __call__(self):
         """See IUniqueIdGenerator.
         """
-        self._uid_counter.change(+1)
-        return self._uid_counter()
+        # For sites that have already used CMF 1.5.1 (and older) the
+        # BTrees.Length.Length object has to be migrated to an integer.
+        if isinstance(self._uid_counter, Length):
+            self._uid_counter = self._uid_counter()
+        self._uid_counter += 1
+        return self._uid_counter
 
     security.declarePrivate('convert')
     def convert(self, uid):
