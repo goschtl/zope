@@ -23,6 +23,7 @@ except ImportError: # BBB: for Zope 2.7
     import Zope as Zope2
 Zope2.startup()
 
+from BTrees.Length import Length
 from Interface.Verify import verifyObject
 
 from Products.CMFCore.tests.base.dummy import DummyContent
@@ -56,6 +57,18 @@ class UniqueIdGeneratorTests(SecurityTest):
         str_uid = str(uid)
         result = generator.convert(str_uid)
         self.assertEqual(result, uid)
+        
+    def test_migrationFromBTreeLengthToInteger(self):
+        # For backwards compatibility with CMF 1.5.0 and 1.5.1, check if
+        # the generator correctly replaces a ``BTree.Length.Length`` object
+        # to an integer.
+        generator = self.root.portal_uidgenerator
+        uid1 = generator()
+        generator._uid_counter = Length(uid1)
+        self.failUnless(isinstance(generator._uid_counter, Length))
+        uid2 = generator()
+        self.failUnless(isinstance(generator._uid_counter, int))
+        self.failIfEqual(uid1, uid2)
 
 def test_suite():
     return TestSuite((
