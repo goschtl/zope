@@ -16,6 +16,8 @@
 $Id$
 """
 import cgi
+import xml.sax.saxutils
+
 import zope.schema.interfaces
 from zope.schema.interfaces import ISourceQueriables, ValidationError
 from zope.app import zapi 
@@ -66,7 +68,7 @@ class SourceDisplayWidget(zope.app.form.Widget):
                 value = self._translate(_("SourceDisplayWidget-invalid",
                                           default="Invalid value"))
             else:
-                value = cgi.escape(term.title)
+                value = xml.sax.saxutils.escape(term.title)
 
         return value
 
@@ -91,7 +93,7 @@ class SourceSequenceDisplayWidget(SourceDisplayWidget):
                 value = self._translate(_("SourceDisplayWidget-invalid",
                                           default="Invalid value"))
             else:
-                value = cgi.escape(term.title)
+                value = xml.sax.saxutils.escape(term.title)
 
             result.append(value)
 
@@ -215,7 +217,7 @@ class SourceInputWidget(zope.app.form.InputWidget):
                               )
                 result.append('    </div>')
                 result.append('    <div class="field">')
-                result.append(u'     ' + cgi.escape(term.title))
+                result.append(u'     ' + xml.sax.saxutils.escape(term.title))
                 result.append('    </div>')
                 result.append('  </div>')
                 result.append('  <input type="hidden" name="%s" value="%s">'
@@ -407,7 +409,7 @@ class SourceListInputWidget(SourceInputWidget):
                         ' value="%s">'
                         % (self.name, cgi.escape(term.token))
                         )
-                    result.append('  ' + cgi.escape(term.title))
+                    result.append('  ' + xml.sax.saxutils.escape(term.title))
                     result.append(
                         '  <input type="hidden" name="%s:list" value="%s">'
                         % (self.name, cgi.escape(term.token)))
