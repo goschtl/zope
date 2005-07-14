@@ -49,9 +49,9 @@ class Wrapper:
 
 class TALESPageletsExpression(StringExpr):
     """Collect pagelets via a tal namespace called tal:pagelets.
-    
+
     Imports:
-    
+
         >>> from zope.interface import Interface
         >>> from zope.security.checker import defineChecker
         >>> from zope.publisher.browser import TestRequest
@@ -82,7 +82,7 @@ class TALESPageletsExpression(StringExpr):
         >>> provideInterface('', IPageletSlot, None)
 
     Register pagelets collector as a adapter:
-        
+
         >>> from zope.app.pagelet.collector import MacrosCollector
         >>> collector_factory = MacrosCollector
         >>> gsm.provideAdapter(
@@ -90,7 +90,7 @@ class TALESPageletsExpression(StringExpr):
         ...        , IMacrosCollector, '', collector_factory)
 
     Register pagelets expression:
-    
+
         >>> from zope.app.pagetemplate.metaconfigure import registerType
         >>> registerType('pagelets', TALESPageletsExpression)
 
@@ -116,12 +116,12 @@ class TALESPageletsExpression(StringExpr):
 
         >>> no_slot_iface_index = ViewPageTemplateFile(
         ...     'tests/testfiles/index_pagelets_iface_error.pt')
-        
+
         >>> try:
         ...     html = no_slot_iface_index(view, request)
         ... except PageletSlotInterfaceLookupError, e:
         ...     print e
-        (u'Pagelet slot interface not found.', 'zope.interface.Interface')
+        (u'Pagelet slot interface not found.', u'zope.interface.Interface')
 
     Register zope.app.interface as a utility and try again:
 
@@ -131,10 +131,10 @@ class TALESPageletsExpression(StringExpr):
         ...     html = no_slot_iface_index(view, request)
         ... except PageletSlotInterfaceNotProvidedException, e:
         ...     print e
-        (u'IPageletSlot interface not provided.', 'zope.interface.Interface')
+        (u'IPageletSlot interface not provided.', u'zope.interface.Interface')
 
         >>> setup.placefulTearDown()
-    
+
     """
 
     implements(ITALESPageletsExpression)
@@ -148,7 +148,7 @@ class TALESPageletsExpression(StringExpr):
 
         # get interface from key
         slotiface = queryInterface(expr)
-        
+
         # check slot
         if slotiface is None:
             raise PageletSlotInterfaceLookupError(
@@ -158,10 +158,10 @@ class TALESPageletsExpression(StringExpr):
         if not slotiface.isOrExtends(IPageletSlot):
             raise PageletSlotInterfaceNotProvidedException(
                     PageletError_slot_interface_not_provided, expr)
-        
+
         slot = Wrapper()
         directlyProvides(slot, slotiface)
-        
+
         collector = zapi.getMultiAdapter((context, request, view, slot)
                                         , IMacrosCollector)
 
@@ -173,9 +173,9 @@ class TALESPageletsExpression(StringExpr):
 
 class TALESPageletExpression(StringExpr):
     """Collects a single pagelet via a tal namespace called tal:pagelet.
-    
+
     Imports:
-    
+
         >>> import zope.component
         >>> from zope.interface import Interface
         >>> from zope.security.checker import defineChecker
@@ -207,7 +207,7 @@ class TALESPageletExpression(StringExpr):
         >>> provideInterface('', IPageletSlot, None)
 
     Register pagelets collector as a adapter:
-        
+
         >>> from zope.app.pagelet.collector import MacroCollector
         >>> collector_factory = MacroCollector
         >>> gsm.provideAdapter(
@@ -215,7 +215,7 @@ class TALESPageletExpression(StringExpr):
         ...        , IMacroCollector, '', collector_factory)
 
     Register pagelets expression:
-    
+
         >>> from zope.app.pagetemplate.metaconfigure import registerType
         >>> registerType('pagelet', TALESPageletExpression)
 
@@ -241,12 +241,12 @@ class TALESPageletExpression(StringExpr):
 
         >>> no_slot_iface_index = ViewPageTemplateFile(
         ...     'tests/testfiles/index_pagelet_iface_error.pt')
-        
+
         >>> try:
         ...     html = no_slot_iface_index(view, request)
         ... except PageletSlotInterfaceLookupError, e:
         ...     print e
-        (u'Pagelet slot interface not found.', 'zope.interface.Interface')
+        (u'Pagelet slot interface not found.', u'zope.interface.Interface')
 
     Register zope.app.interface as a utility and try again:
 
@@ -255,10 +255,10 @@ class TALESPageletExpression(StringExpr):
         ...     html = no_slot_iface_index(view, request)
         ... except PageletSlotInterfaceNotProvidedException, e:
         ...     print e
-        (u'IPageletSlot interface not provided.', 'zope.interface.Interface')
+        (u'IPageletSlot interface not provided.', u'zope.interface.Interface')
 
         >>> setup.placefulTearDown()
-    
+
     """
 
     implements(ITALESPageletExpression)
@@ -284,7 +284,7 @@ class TALESPageletExpression(StringExpr):
         context = econtext.vars['context']
         request = econtext.vars['request']
         view = econtext.vars['view']
-        
+
         # get interface from key
         slotiface = queryInterface(iface)
 
@@ -297,10 +297,10 @@ class TALESPageletExpression(StringExpr):
         if not slotiface.isOrExtends(IPageletSlot):
             raise PageletSlotInterfaceNotProvidedException(
                     PageletError_slot_interface_not_provided, iface)
-        
+
         slot = Wrapper()
         directlyProvides(slot, slotiface)
-        
+
         collector = zapi.getMultiAdapter((context, request, view, slot)
                                         , IMacroCollector)
 
@@ -310,9 +310,9 @@ class TALESPageletExpression(StringExpr):
 
 class TALESPageDataExpression(StringExpr):
     """Collect page data adapters via a tal namespace called tal:pagedata.
-    
+
     Imports:
-    
+
         >>> import zope.component
         >>> from zope.interface import Interface
         >>> from zope.security.checker import defineChecker
@@ -342,7 +342,7 @@ class TALESPageDataExpression(StringExpr):
         >>> provideInterface('', IPageData, None)
 
     Register pagelets collector as a adapter:
-        
+
         >>> from zope.app.pagelet.collector import MacroCollector
         >>> collector_factory = MacroCollector
         >>> gsm.provideAdapter(
@@ -350,7 +350,7 @@ class TALESPageDataExpression(StringExpr):
         ...        , IMacroCollector, '', collector_factory)
 
     Register pagedata expression:
-    
+
         >>> from zope.app.pagetemplate.metaconfigure import registerType
         >>> registerType('pagedata', TALESPageDataExpression)
 
@@ -371,7 +371,7 @@ class TALESPageDataExpression(StringExpr):
         >>> import string
         >>> string.count(html, 'A demo string.')
         1
-       
+
     """
 
     implements(ITALESPageDataExpression)
@@ -382,7 +382,7 @@ class TALESPageDataExpression(StringExpr):
             parts = expr.split('/')
             self._iface = parts[0]
             self._name = parts[1]
-        
+
         else:
             # unnamed adapter
             self._iface = expr
@@ -395,7 +395,7 @@ class TALESPageDataExpression(StringExpr):
         context = econtext.vars['context']
         request = econtext.vars['request']
         view = econtext.vars['view']
-        
+
         # get interface from key
         iface = queryInterface(iface)
 
@@ -408,9 +408,9 @@ class TALESPageDataExpression(StringExpr):
         if not iface.isOrExtends(IPageData):
             raise PageletSlotInterfaceNotProvidedException(
                     PageletError_slot_interface_not_provided, iface)
-        
+
         # get a page data adapter registred on context, request, view
         pagedata = zapi.getMultiAdapter((context, request, view)
                                        , iface, name)
-        
+
         return pagedata

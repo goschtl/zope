@@ -18,7 +18,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
-from zope.proxy import isProxy
 from zope.security import canAccess
 from zope.security.interfaces import Unauthorized
 
@@ -84,7 +83,7 @@ class MacrosCollector(object):
 
         >>> rawtextOffset = macros[0][5][1][0]
         >>> rawtextOffset
-        'testpagelet macro content</div>'
+        u'testpagelet macro content</div>'
 
       >>> placelesssetup.tearDown()
 
@@ -117,7 +116,7 @@ class MacrosCollector(object):
 
 class MacroCollector(object):
     """Replaceable sample implementation of IMacroCollector.
-    
+
     Collect a single pagelet from the site manager and returns 
     a macro by name.
     Pagelet adapters are registred on context, request, view and slot
@@ -171,7 +170,7 @@ class MacroCollector(object):
 
         >>> rawtextOffset = macro[5][1][0]
         >>> rawtextOffset
-        'testpagelet macro content</div>'
+        u'testpagelet macro content</div>'
 
       >>> placelesssetup.tearDown()
 
@@ -184,14 +183,14 @@ class MacroCollector(object):
         self.request = request
         self.view = view
         self.slot = slot
-        
+
     def __getitem__(self, key):
         macros = []
 
         # collect a single pagelet which is a pagelet
         objects = self.context, self.request, self.view, self.slot
         pagelet = zapi.getMultiAdapter(objects, IPagelet, key)
-        
+
         # rasie Unauthorized exception if we don't have the permission for 
         # calling the pagelet's macro code
         if canAccess(pagelet, '__getitem__'):

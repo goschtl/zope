@@ -18,7 +18,6 @@ $Id$
 __docformat__ = 'restructuredtext'
 
 from zope.interface import implements
-from zope.proxy import isProxy
 from zope.security import canAccess
 from zope.security.interfaces import Unauthorized
 
@@ -32,7 +31,7 @@ from zope.app.pageletchooser.interfaces import IPageletNameManager
 
 class MacroChooser(MacroCollector):
     """Returns the macro by name.
-        
+
         For to get the macro name, the adapter IPageletNameManager is 
         calling the mapped name under the given key via getattr. This
         means the adapted object has to support a field property with
@@ -90,7 +89,7 @@ class MacroChooser(MacroCollector):
 
         >>> rawtextOffset = macro[5][1][0]
         >>> rawtextOffset
-        'testpagelet macro content</div>'
+        u'testpagelet macro content</div>'
 
       >>> placelesssetup.tearDown()
 
