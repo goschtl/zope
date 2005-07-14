@@ -142,11 +142,13 @@ class UniqueIdHandlerTool(UniqueObject, SimpleItem, ActionProviderBase):
             raise UniqueIdError, "It's forbidden to set a unique id to 'None'."
         
         # check for uniqueness if enabled
-        result = self.queryObject(uid)
-        if check_uniqueness and result is not None and result != obj:
-            if callable(uid):
-                uid = uid()
-            raise UniqueIdError, "The unique id '%s' is already in use" % uid
+        if check_uniqueness:
+            result = self.queryObject(uid)
+            if result is not None and result != obj:
+                if callable(uid):
+                    uid = uid()
+                raise UniqueIdError, \
+                      "The unique id '%s' is already in use" % uid
         
         # everything is ok: set it!
         self._setUid(obj, uid)
