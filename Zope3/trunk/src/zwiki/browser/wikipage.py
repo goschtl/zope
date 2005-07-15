@@ -201,7 +201,8 @@ class ViewWikiPage(object):
             if re.match('^["=]', m):     # "
                 return m
             else:
-                return '<a href="../%s">%s</a>' % (m, m)
+                # leave the URL alone; docutils will add the href tag correctly
+                return m
 
         # it might be a structured text footnote ?
         elif re.search(r'(?si)<a name="%s"' % (m),text):
